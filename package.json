@@ -13,6 +13,6 @@
     "underscore": "1.2.4"
   },
   "scripts": {
-    "test": "node tests/run.js"
+    "test": "node testRunner.js"
   }
 }

@@ -1,15 +1,15 @@
 "use strict";
-var colors = require('../src/lib/colors');
+var colors = require('./src/lib/colors');
 var FileFinder = require('node-find-files');
-var JSONStreamParser = require('../src/lib/JSONStreamParser');
+var JSONStreamParser = require('./src/lib/JSONStreamParser');
 var path = require('path');
 var Q = require('q');
-var utils = require('../src/lib/utils');
+var utils = require('./src/lib/utils');
 var WorkerPool = require('node-worker-pool');
 
 var colorize = colors.colorize;
 
-var CONFIG_FILE_PATH = path.resolve(__dirname, './test-config.json');
+var CONFIG_FILE_PATH = path.resolve(__dirname, './testConfig.json');
 
 var HIDDEN_FILE_REGEXP = /\/\.[^\/]*$/;
 var TEST_FILE_PATH_REGEXP = /\/__tests__\/.*\.js$/;

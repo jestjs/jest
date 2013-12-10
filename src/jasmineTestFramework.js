@@ -1,5 +1,5 @@
 var fs = require('fs');
-var JasmineReporter = require('./jasmineReporter').JasmineReporter;
+var JasmineReporter = require('./JasmineReporter');
 var mockTimers = require('./mockTimers');
 var Q = require('q');
 

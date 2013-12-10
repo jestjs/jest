@@ -2,7 +2,7 @@
   "projectName": "jest",
 
   "testRunner": "./src/JSDomTestRunner.js",
-  "moduleLoader": "./NodeHasteModuleLoader",
+  "moduleLoader": "./nodeHasteModuleLoader",
   "testFramework": "./jasmineTestFramework",
 
   "jsScanDirs": [

@@ -178,4 +178,4 @@ JasmineReporter.prototype.log = function(str) {
   console.log('logging: ', str);
 };
 
-exports.JasmineReporter = JasmineReporter;
+module.exports = JasmineReporter

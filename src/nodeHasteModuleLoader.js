@@ -1,4 +1,4 @@
-var codeCoverage = require('./codeCoverage');
+var codeCoverage = require('./lib/codeCoverage');
 var fs = require('fs');
 var hasteLoaders = require('node-haste/lib/loaders');
 var inherits = require('util').inherits;
