@@ -1,0 +1,11 @@
+{
+  "projectName": "jest",
+
+  "testRunner": "./src/JSDomTestRunner.js",
+  "moduleLoader": "./NodeHasteModuleLoader",
+  "testFramework": "./jasmineTestFramework",
+
+  "jsScanDirs": [
+    "./src"
+  ]
+}

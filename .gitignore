@@ -1,0 +1,5 @@
+*~
+*.swp
+.DS_STORE
+.haste_cache_dir
+node_modules
