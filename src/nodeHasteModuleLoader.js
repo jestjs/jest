@@ -9,6 +9,7 @@ var os = require('os');
 var path = require('path');
 var PathResolver = require('node-haste/lib/PathResolver');
 var Q = require('q');
+var resolve = require('resolve');
 var utils = require('./lib/utils');
 
 var IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
@@ -163,11 +164,11 @@ function initialize(config) {
 
       var boundModuleRequire = this.requireModuleOrMock.bind(this, modulePath);
       boundModuleRequire.resolve = function(moduleName) {
-        var modulePath = this._moduleNameToPath(modulePath, moduleName);
-        if (!modulePath) {
+        var ret = this._moduleNameToPath(modulePath, moduleName);
+        if (!ret) {
           throw new Error('Module(' + moduleName + ') not found!');
         }
-        return modulePath;
+        return ret;
       }.bind(this);
       boundModuleRequire.generateMock = this._generateMock.bind(
         this,
@@ -279,13 +280,14 @@ function initialize(config) {
     Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
       // Handle module names like require('jest/lib/util')
       var subModulePath = null;
+      var moduleProjectPart;
       if (/\//.test(moduleName)) {
         var projectPathParts = moduleName.split('/');
-        moduleName = projectPathParts.shift();
+        moduleProjectPart = projectPathParts.shift();
         subModulePath = projectPathParts.join('/');
       }
 
-      // Memoize the project name -> resource lookup map
+      // Memoize the project name -> package.json resource lookup map
       if (this._nodeModulProjectConfigNameToResource === null) {
         this._nodeModulProjectConfigNameToResource = {};
         var resources =
@@ -296,17 +298,20 @@ function initialize(config) {
       }
 
       // Get the resource for the package.json file
-      var resource = this._nodeModulProjectConfigNameToResource[moduleName];
+      var resource = this._nodeModulProjectConfigNameToResource[moduleProjectPart];
       if (!resource) {
-        return require.resolve(moduleName);
+        if (NODE_CORE_MODULES[moduleName]) {
+          return null;
+        }
+        return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
       }
 
       // Make sure the resource path is above the currFilePath in the fs path
-      // tree
+      // tree. If so, just use node's resolve
       var resourceDirname = path.dirname(resource.path);
       var currFileDirname = path.dirname(currPath);
       if (resourceDirname.indexOf(currFileDirname) > 0) {
-        return require.resolve(moduleName);
+        return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
       }
 
       if (subModulePath === null) {
@@ -316,7 +321,10 @@ function initialize(config) {
           : 'index.js';
       }
 
-      return this._moduleNameToPath(resource.path, './' + subModulePath);
+      return this._moduleNameToPath(
+        resource.path,
+        './' + subModulePath
+      );
     };
 
     /**
@@ -452,8 +460,8 @@ function initialize(config) {
     Loader.prototype.requireModule = function(currFilePath, moduleName) {
       var modulePath = this._moduleNameToPath(currFilePath, moduleName);
 
-      if (NODE_CORE_MODULES[modulePath]) {
-        return require(modulePath);
+      if (!modulePath && NODE_CORE_MODULES[moduleName]) {
+        return require(moduleName);
       }
 
       var moduleObj = this._builtInModules[modulePath];

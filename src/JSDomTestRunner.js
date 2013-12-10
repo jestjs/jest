@@ -156,7 +156,7 @@ if (require.main === module) {
       workerUtils.startWorker(function(message) {
         return testRunner.runTestByPath(message.testFilePath);
       });
-    });
+    }).done();
   } catch (e) {
     workerUtils.respondWithError(e);
   }

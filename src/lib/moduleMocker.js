@@ -248,7 +248,8 @@ function _getMetadata(component, _refs) {
         continue;
       }
 
-      if (component.hasOwnProperty(slot) ||
+      if (!component.hasOwnProperty && component[slot] !== undefined ||
+          component.hasOwnProperty(slot) ||
           (type == 'object' && component[slot] != Object.prototype[slot])) {
         addMember(slot, _getMetadata(component[slot], refs));
       }
