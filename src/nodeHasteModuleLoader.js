@@ -3,7 +3,7 @@ var fs = require('fs');
 var hasteLoaders = require('node-haste/lib/loaders');
 var inherits = require('util').inherits;
 var JSResource = require('node-haste/lib/resource/JS');
-var moduleMocker = require('./moduleMocker');
+var moduleMocker = require('./lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
@@ -575,7 +575,7 @@ function initialize(config) {
             }.bind(this),
 
             useActualTimers: function() {
-              require('./mockTimers').uninstallMockTimers(this._contextGlobal);
+              require('./lib/mockTimers').uninstallMockTimers(this._contextGlobal);
             }.bind(this)
           }
         }

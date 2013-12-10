@@ -1,6 +1,6 @@
 var utils = require('./lib/utils');
 var jsdom = require('jsdom').jsdom;
-var mockTimers = require('./mockTimers');
+var mockTimers = require('./lib/mockTimers');
 var optimist = require('optimist');
 var path = require('path');
 var Q = require('q');

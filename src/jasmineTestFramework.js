@@ -1,6 +1,6 @@
 var fs = require('fs');
 var JasmineReporter = require('./JasmineReporter');
-var mockTimers = require('./mockTimers');
+var mockTimers = require('./lib/mockTimers');
 var Q = require('q');
 
 var JASMINE_PATH = require.resolve('./vendor/jasmine/jasmine-1.3.0');
@@ -55,7 +55,6 @@ function runTest(contextGlobal, contextRunner, testExecutor) {
   }
 
   var jasmine = contextGlobal.jasmine;
-
 
   // Disable typechecks while doing toThrow tests
   // TODO: (see jstest/support/jasmine.js)
