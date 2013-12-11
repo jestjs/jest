@@ -148,29 +148,4 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
   });
-
-  describe('requireMock', function() {
-    pit('uses manual mocks before attempting to automock', function() {
-      return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'ManuallyMocked');
-        expect(exports.isManualMockModule).toBe(true);
-      });
-    });
-
-    pit('stores and re-uses manual mock exports', function() {
-      return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'ManuallyMocked');
-        exports.setModuleStateValue('test value');
-        exports = loader.requireMock(null, 'ManuallyMocked');
-        expect(exports.getModuleStateValue()).toBe('test value');
-      });
-    });
-
-    pit('automocks real modules when a manual mock doesnt exist', function() {
-      return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'RegularModule');
-        expect(exports.getModuleStateValue._isMockFunction).toBe(true);
-      });
-    });
-  });
 });

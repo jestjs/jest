@@ -85,7 +85,6 @@ function _filterPassingSuites(suite) {
 
 function runTestsByPathPattern(config, pathPattern) {
   var workerPool = new WorkerPool(8, 'node', [
-  //var workerPool = new WorkerPool(1, 'node', [
     config.testRunner,
     '--config=' + JSON.stringify(config)
   ]);
