@@ -1,16 +1,16 @@
-var codeCoverage = require('./lib/codeCoverage');
+var codeCoverage = require('../lib/codeCoverage');
 var fs = require('fs');
 var hasteLoaders = require('node-haste/lib/loaders');
 var inherits = require('util').inherits;
 var JSResource = require('node-haste/lib/resource/JS');
-var moduleMocker = require('./lib/moduleMocker');
+var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
 var PathResolver = require('node-haste/lib/PathResolver');
 var Q = require('q');
 var resolve = require('resolve');
-var utils = require('./lib/utils');
+var utils = require('../lib/utils');
 
 var IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
@@ -280,7 +280,7 @@ function initialize(config) {
     Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
       // Handle module names like require('jest/lib/util')
       var subModulePath = null;
-      var moduleProjectPart;
+      var moduleProjectPart = moduleName;
       if (/\//.test(moduleName)) {
         var projectPathParts = moduleName.split('/');
         moduleProjectPart = projectPathParts.shift();
@@ -460,8 +460,14 @@ function initialize(config) {
     Loader.prototype.requireModule = function(currFilePath, moduleName) {
       var modulePath = this._moduleNameToPath(currFilePath, moduleName);
 
-      if (!modulePath && NODE_CORE_MODULES[moduleName]) {
-        return require(moduleName);
+      if (!modulePath) {
+        if (NODE_CORE_MODULES[moduleName]) {
+          return require(moduleName);
+        }
+        throw new Error(
+          'Cannot find module \'' + moduleName + '\' from \'' + currFilePath +
+          '\''
+        );
       }
 
       var moduleObj = this._builtInModules[modulePath];
@@ -542,8 +548,6 @@ function initialize(config) {
             // TODO: This is such a bad name, we should rename it to
             //       `resetModuleRegistry()` -- or anything else, really
             dumpCache: function() {
-              this.resetModuleRegistry();
-
               var globalMock;
               for (var key in this._contextGlobal) {
                 globalMock = this._contextGlobal[key];
@@ -555,6 +559,8 @@ function initialize(config) {
               if (this._contextGlobal.mockClearTimers) {
                 this._contextGlobal.mockClearTimers();
               }
+
+              this.resetModuleRegistry();
 
               return this._builtInModules['mock-modules'].exports;
             }.bind(this),

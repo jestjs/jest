@@ -84,15 +84,21 @@ function _filterPassingSuites(suite) {
 }
 
 function runTestsByPathPattern(config, pathPattern) {
-  //var workerPool = new WorkerPool(8, 'node', [
-  var workerPool = new WorkerPool(1, 'node', [
+  var workerPool = new WorkerPool(8, 'node', [
+  //var workerPool = new WorkerPool(1, 'node', [
     config.testRunner,
     '--config=' + JSON.stringify(config)
   ]);
 
+  var dirSkipRegex = new RegExp(config.dirSkipRegex);
+
   var numTests = 0;
   var failedTests = 0;
   function _onFinderMatch(pathStr, stat) {
+    if (dirSkipRegex.test(pathStr)) {
+      return;
+    }
+
     numTests++;
 
     workerPool.sendMessage({testFilePath: pathStr}).then(function(results) {

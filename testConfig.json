@@ -2,9 +2,10 @@
   "projectName": "jest",
 
   "testRunner": "./src/JSDomTestRunner.js",
-  "moduleLoader": "./nodeHasteModuleLoader",
+  "moduleLoader": "./nodeHasteModuleLoader/loader",
   "testFramework": "./jasmineTestFramework",
 
+  "dirSkipRegex": "/__tests__/[^/]*/.+",
   "jsScanDirs": [
     "./src"
   ]

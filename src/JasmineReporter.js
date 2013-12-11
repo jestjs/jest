@@ -102,7 +102,15 @@ function _extractSpecResults(container, spec) {
       case 'expect':
         if (result.passed()) {
           numPassingTests++;
-        } else if (!result.matcherName) { // exception thrown
+        } else if (!result.matcherName && result.trace.stack) { // exception thrown
+          // jasmine doesn't give us access to the actual Error object, so we
+          // have to regexp out the message from the stack string in order to
+          // colorize the `message` value
+          result.trace.stack = result.trace.stack.replace(
+            /(^.*$(?=\n\s*at))/m,
+            colorize('$1', ERROR_TITLE_COLOR)
+          );
+
           failureMessages.push(result.trace.stack);
         } else {
           var message;
@@ -162,7 +170,11 @@ JasmineReporter.prototype = new jasmine.Reporter();
 // All describe() suites have finished
 JasmineReporter.prototype.reportRunnerResults = function(runner) {
   var suites = {};
-  runner.suites().forEach(_extractSuiteResults.bind(null, suites));
+  runner.suites().forEach(function(suite) {
+    if (suite.parentSuite === null) {
+      _extractSuiteResults(suites, suite);
+    }
+  });
 
   this._resultsDeferred.resolve({
     suites: suites,
