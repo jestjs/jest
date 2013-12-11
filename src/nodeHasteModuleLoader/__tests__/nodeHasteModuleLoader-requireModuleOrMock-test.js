@@ -78,9 +78,26 @@ describe('nodeHasteModuleLoader', function() {
   });
 
   describe('requireModuleOrMock', function() {
-    pit('mocks requires by default', function() {
+    pit('mocks modules by default', function() {
       return buildLoader().then(function(loader) {
+        var exports = loader.requireModuleOrMock(null, 'RegularModule');
+        expect(exports.setModuleStateValue._isMockFunction).toBe(true);
+      });
+    });
 
+    pit('doesnt mock modules when explicitly dontMock()ed', function() {
+      return buildLoader().then(function(loader) {
+        loader.requireModuleOrMock(null, 'mock-modules').dontMock('RegularModule');
+        var exports = loader.requireModuleOrMock(null, 'RegularModule');
+        expect(exports.isRealModule).toBe(true);
+      });
+    });
+
+    pit('doesnt mock modules when autoMockOff() has been called', function() {
+      return buildLoader().then(function(loader) {
+        loader.requireModuleOrMock(null, 'mock-modules').autoMockOff();
+        var exports = loader.requireModuleOrMock(null, 'RegularModule');
+        expect(exports.isRealModule).toBe(true);
       });
     });
   });
