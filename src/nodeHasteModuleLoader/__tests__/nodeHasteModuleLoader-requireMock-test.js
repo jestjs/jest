@@ -12,42 +12,6 @@ describe('nodeHasteModuleLoader', function() {
     projectName: "nodeHasteModuleLoader-tests"
   };
 
-  /**
-   * jasmine + promises = clowntown
-   *
-   * This is a helper function to make it simpler to just supply a promise, and
-   * ensure any expect()s that happen allong the way to its fulfillment are
-   * heard.
-   *
-   * TODO: It's stupid that this is in this test. It's useful in lots of tests!
-   *       We should package it as a jasmine add-on
-   */
-  function pit(specName, promiseBuilder) {
-    it(specName, function() {
-      var isFinished = false;
-      var error = null;
-
-      runs(function() {
-        try {
-          var promise = promiseBuilder();
-          if (promise !== undefined) {
-            promise
-              .catch(function(err) { error = err; isFinished = true; })
-              .done(function() { isFinished = true; });
-          } else {
-            isFinished = true;
-          }
-        } catch (e) {
-          error = e;
-          isFinished = true;
-        }
-      });
-
-      waitsFor(function() { return isFinished; });
-      runs(function() { if (error) throw error; });
-    });
-  }
-
   function buildLoader(config) {
     config = config || CONFIG;
 

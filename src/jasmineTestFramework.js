@@ -1,4 +1,5 @@
 var fs = require('fs');
+var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
 var mockTimers = require('./lib/mockTimers');
 var Q = require('q');
@@ -22,6 +23,9 @@ function runTest(contextGlobal, contextRunner, testExecutor) {
 
   // Execute jasmine's main code
   contextRunner(jasmineFileContent, JASMINE_PATH);
+
+  // Install jasmine-pit -- because it's amazing
+  jasminePit.install(contextGlobal);
 
   // TODO: This is fb-specific, and that's bad for open-sourcing
   //       Find some way to get this out of here. Putting it into the config as
