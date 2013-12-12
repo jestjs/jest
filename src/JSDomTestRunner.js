@@ -59,6 +59,19 @@ JSDomTestRunner.prototype.runTestByPath = function(testFilePath) {
   mockTimers.installMockTimers(jsdomWindow);
   timer.end();
 
+  // I kinda wish tests just did this manually rather than relying on a
+  // helper function to do it, but I'm keeping it for backward compat reasons
+  // while we get jest deployed internally. Then we can look into removing it.
+  //
+  // #3376754
+  if (!jsdomWindow.hasOwnProperty('mockSetReadOnlyProperty')) {
+    jsdomWindow.mockSetReadOnlyProperty = function(obj, property, value) {
+      obj.__defineGetter__(property, function() {
+        return value;
+      });
+    };
+  }
+
   timer.start('jsdomEnvSetup');
   if (this._setupEnvScriptContent) {
     var tmpLoader = new this._ModuleLoaderClass(jsdomWindow, jsdomWindow.run);
