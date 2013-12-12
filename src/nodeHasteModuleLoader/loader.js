@@ -591,6 +591,13 @@ function initialize(config) {
 
             useActualTimers: function() {
               require('../lib/mockTimers').uninstallMockTimers(this._contextGlobal);
+            }.bind(this),
+
+            loadActualModule: function(moduleName) {
+              return this.requireModule(
+                this._currentlyExecutingModulePath,
+                moduleName
+              );
             }.bind(this)
           }
         }
