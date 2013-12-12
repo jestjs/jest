@@ -92,20 +92,26 @@ JSDomTestRunner.prototype.runTestByPath = function(testFilePath) {
   var consoleMessages = [];
   jsdomWindow.console = {
     error: function() {
-      var args = Array.prototype.slice.call(arguments, 0);
-      args = args.map(utils.serializeConsoleArgValue);
+      var args = Array.prototype.map.call(
+        arguments,
+        utils.serializeConsoleArgValue
+      );
       consoleMessages.push({type: 'error', args: args});
     },
     log: function() {
-      var args = Array.prototype.slice.call(arguments, 0)
-      args = args.map(utils.serializeConsoleArgValue);
+      var args = Array.prototype.map.call(
+        arguments,
+        utils.serializeConsoleArgValue
+      );
       consoleMessages.push({type: 'log', args: args});
     },
     warn: function() {
       // TODO: Should this be a no-op? jstest doesn't proxy it through to
       //       the console, but I don't see a good reason not to?
-      var args = Array.prototype.slice.call(arguments, 0);
-      args = args.map(utils.serializeConsoleArgValue);
+      var args = Array.prototype.map.call(
+        arguments,
+        utils.serializeConsoleArgValue
+      );
       consoleMessages.push({type: 'warn', args: args});
     }
   };
