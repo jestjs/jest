@@ -589,7 +589,7 @@ function initialize(config) {
             }.bind(this),
 
             useActualTimers: function() {
-              require('./lib/mockTimers').uninstallMockTimers(this._contextGlobal);
+              require('../lib/mockTimers').uninstallMockTimers(this._contextGlobal);
             }.bind(this)
           }
         }
