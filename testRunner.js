@@ -85,19 +85,16 @@ function _filterPassingSuites(suite) {
 
 function runTestsByPathPattern(config, pathPattern) {
   var workerPool = new WorkerPool(8, 'node', [
+    '--harmony',
     config.testRunner,
     '--config=' + JSON.stringify(config)
   ]);
 
   var dirSkipRegex = new RegExp(config.dirSkipRegex);
 
-  var numTests = 0;
+  var numTests = 1;
   var failedTests = 0;
   function _onFinderMatch(pathStr, stat) {
-    if (dirSkipRegex.test(pathStr)) {
-      return;
-    }
-
     numTests++;
 
     workerPool.sendMessage({testFilePath: pathStr}).then(function(results) {
@@ -191,6 +188,7 @@ function runTestsByPathPattern(config, pathPattern) {
           TEST_FILE_PATH_REGEXP.test(pathStr)
           && !HIDDEN_FILE_REGEXP.test(pathStr)
           && pathPatternRegExp.test(pathStr)
+          && !dirSkipRegex.test(pathStr)
         );
       }
     });
