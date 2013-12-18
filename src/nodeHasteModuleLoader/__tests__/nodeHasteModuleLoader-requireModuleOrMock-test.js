@@ -20,14 +20,6 @@ describe('nodeHasteModuleLoader', function() {
     });
   }
 
-  function extendConfig(extension) {
-    var ret = Object.create(CONFIG);
-    for (var key in extension) {
-      ret[key] = extension[key];
-    }
-    return ret;
-  }
-
   beforeEach(function() {
     getMockFn = require('mocks').getMockFunction;
     nodeHasteModuleLoader = require('../loader');

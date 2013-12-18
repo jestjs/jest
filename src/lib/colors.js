@@ -4,7 +4,6 @@ var GREEN_BG = '\u001b[1;42m';
 var MAGENTA_BG = '\u001b[1;45m';
 var RED = '\u001b[1;31m';
 var RED_BG = '\u001b[1;41m';
-var RED_FG = '\u001b[1;31m';
 var RESET = '\u001b[0m';
 var UNDERLINE = '\u001b[1;4m';
 
@@ -18,7 +17,6 @@ exports.GREEN_BG = GREEN_BG;
 exports.MAGENTA_BG = MAGENTA_BG;
 exports.RED = RED;
 exports.RED_BG = RED_BG;
-exports.RED_FG = RED_FG;
 exports.RESET = RESET;
 exports.UNDERLINE = UNDERLINE;
 

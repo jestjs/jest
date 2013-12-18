@@ -5,7 +5,7 @@ var Q = require('q');
 
 var colorize = colors.colorize;
 
-var ERROR_TITLE_COLOR = colors.RED_FG + colors.BOLD + colors.UNDERLINE;
+var ERROR_TITLE_COLOR = colors.RED + colors.BOLD + colors.UNDERLINE;
 var DIFFABLE_MATCHERS = {
   toBe: true,
   toNotBe: true,
@@ -40,7 +40,7 @@ function _prettyPrint(obj, indent) {
   if (typeof obj === 'object' && obj !== null) {
     if (jasmine.isDomNode(obj)) {
       var attrStr = '';
-      Array.prototype.slice.call(obj.attributes).forEach(function(attr) {
+      Array.prototype.forEach.call(obj.attributes, function(attr) {
         var attrName = attr.nodeName.trim();
         var attrValue = attr.nodeValue.trim();
         attrStr += ' ' + attrName + '="' + attrValue + '"';
@@ -139,10 +139,6 @@ function _extractSpecResults(container, spec) {
             message = message.split('\n').filter(function(line) {
               return !/vendor\/jasmine\//.test(line);
             }).join('\n');
-
-            // Shift the stack trace lines to the left to keep inline with
-            // two-space indent
-            message = message.replace(/^\s*at/gm, '  at');
           }
 
           failureMessages.push(message);
@@ -161,11 +157,11 @@ function _extractSpecResults(container, spec) {
 }
 
 function JasmineReporter(testName) {
+  jasmine.Reporter.call(this);
   this._logs = [];
-
   this._resultsDeferred = Q.defer();
 }
-JasmineReporter.prototype = new jasmine.Reporter();
+JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
 
 // All describe() suites have finished
 JasmineReporter.prototype.reportRunnerResults = function(runner) {

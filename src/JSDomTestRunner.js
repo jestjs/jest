@@ -166,7 +166,7 @@ if (require.main === module) {
 
     var moduleLoader = require(config.moduleLoader);
     var testFrameworkRunner = require(config.testFramework).runTest;
-    return moduleLoader.initialize(config).then(function(ModuleLoaderClass) {
+    return moduleLoader.initialize(config).done(function(ModuleLoaderClass) {
       var testRunner = new JSDomTestRunner(
         config,
         ModuleLoaderClass,
@@ -175,10 +175,10 @@ if (require.main === module) {
       workerUtils.startWorker(function(message) {
         return testRunner.runTestByPath(message.testFilePath);
       });
-    }).done();
+    });
   } catch (e) {
     workerUtils.respondWithError(e);
   }
-} else {
-  module.exports = JSDomTestRunner;
 }
+
+module.exports = JSDomTestRunner;

@@ -1,7 +1,6 @@
 "use strict";
 var colors = require('./src/lib/colors');
 var FileFinder = require('node-find-files');
-var JSONStreamParser = require('./src/lib/JSONStreamParser');
 var path = require('path');
 var Q = require('q');
 var utils = require('./src/lib/utils');
@@ -83,6 +82,41 @@ function _filterPassingSuites(suite) {
   }
 }
 
+function _printConsoleMessage(msg) {
+  switch (msg.type) {
+    case 'error':
+      // TODO: jstest doesn't print console.error messages.
+      //       This is a big WAT, and we should come back to this -- but
+      //       right now the goal is jest/jstest feature parity, not test
+      //       cleanup.
+      break;
+
+      console.error.apply(console, msg.args.map(function(arg) {
+        arg = utils.stringifySerializedConsoleArgValue(arg);
+        return colorize(arg, colors.RED);
+      }));
+      break;
+    case 'log':
+      console.log.apply(console, msg.args.map(function(arg) {
+        arg = utils.stringifySerializedConsoleArgValue(arg);
+        return colorize(arg, colors.GRAY);
+      }));
+      break;
+    case 'warn':
+      // TODO: jstest doesn't print console.warn messages.
+      //       Turning this on gets pretty noisy...but we should probably
+      //       clean this up as warns are likely a sign of clownitude
+      break;
+      console.warn.apply(console, msg.args.map(function(arg) {
+        arg = utils.stringifySerializedConsoleArgValue(arg);
+        return colorize(arg, colors.RED);
+      }));
+      break;
+    default:
+      throw new Error('Unknown console message type!: ' + JSON.stringify(msg));
+  }
+}
+
 function runTestsByPathPattern(config, pathPattern) {
   var workerPool = new WorkerPool(8, 'node', [
     '--harmony',
@@ -97,7 +131,7 @@ function runTestsByPathPattern(config, pathPattern) {
   function _onFinderMatch(pathStr, stat) {
     numTests++;
 
-    workerPool.sendMessage({testFilePath: pathStr}).then(function(results) {
+    workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
       if (results === undefined) {
         console.log(JSON.stringify(results));
         throw new Error(pathStr);
@@ -111,40 +145,7 @@ function runTestsByPathPattern(config, pathPattern) {
 
       console.log(passFailTag + ' ' + colorize(pathStr, TEST_TITLE_COLOR));
 
-      results.consoleMessages.forEach(function(message) {
-        switch (message.type) {
-          case 'error':
-            // TODO: jstest doesn't print console.error messages.
-            //       This is a big WAT, and we should come back to this -- but
-            //       right now the goal is jest/jstest feature parity, not test
-            //       cleanup.
-            break;
-
-            console.error.apply(console, message.args.map(function(arg) {
-              arg = utils.stringifySerializedConsoleArgValue(arg);
-              return colorize(arg, colors.RED);
-            }));
-            break;
-          case 'log':
-            console.log.apply(console, message.args.map(function(arg) {
-                arg = utils.stringifySerializedConsoleArgValue(arg);
-              return colorize(arg, colors.GRAY);
-            }));
-            break;
-          case 'warn':
-            // TODO: jstest doesn't print console.warn messages.
-            //       Turning this on gets pretty noisy...but we should probably
-            //       clean this up as warns are likely a sign of clownitude
-            break;
-            console.warn.apply(console, message.args.map(function(arg) {
-                arg = utils.stringifySerializedConsoleArgValue(arg);
-              return colorize(arg, colors.RED);
-            }));
-            break;
-          default:
-            throw new Error('Unknown console message type!: ' + JSON.stringify(message));
-        }
-      });
+      results.consoleMessages.forEach(_printConsoleMessage);
 
       if (!allTestsPassed) {
         failedTests++;
@@ -165,20 +166,18 @@ function runTestsByPathPattern(config, pathPattern) {
           });
         }
       }
-    }).done();
+    });
   }
 
   var _completedFinders = 0;
   function _onFinderComplete() {
     _completedFinders++;
     if (_completedFinders === config.jsScanDirs.length) {
-      workerPool.shutDown().then(function() {
+      workerPool.shutDown().done(function() {
         console.log(failedTests + '/' + numTests + ' tests failed!');
-      }).done();
+      });
     }
   }
-
-  var pathPatternRegExp = new RegExp(pathPattern);
 
   config.jsScanDirs.forEach(function(scanDir) {
     var finder = new FileFinder({
@@ -187,7 +186,7 @@ function runTestsByPathPattern(config, pathPattern) {
         return (
           TEST_FILE_PATH_REGEXP.test(pathStr)
           && !HIDDEN_FILE_REGEXP.test(pathStr)
-          && pathPatternRegExp.test(pathStr)
+          && pathPattern.test(pathStr)
           && !dirSkipRegex.test(pathStr)
         );
       }
@@ -198,11 +197,11 @@ function runTestsByPathPattern(config, pathPattern) {
   });
 }
 
-utils.loadConfigFromFile(CONFIG_FILE_PATH).then(function(config) {
+utils.loadConfigFromFile(CONFIG_FILE_PATH).done(function(config) {
   var argv = require('optimist').argv;
   var searchPathPattern =
     argv.all || argv._.length == 0
-    ? '.*'
-    : argv._.join('|');
+    ? /.*/
+    : new RegExp(argv._.join('|'));
   runTestsByPathPattern(config, searchPathPattern);
-}).done();
+});

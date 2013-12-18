@@ -20,14 +20,6 @@ describe('nodeHasteModuleLoader', function() {
     });
   }
 
-  function extendConfig(extension) {
-    var ret = Object.create(CONFIG);
-    for (var key in extension) {
-      ret[key] = extension[key];
-    }
-    return ret;
-  }
-
   beforeEach(function() {
     getMockFn = require('mocks').getMockFunction;
     nodeHasteModuleLoader = require('../loader');
@@ -98,7 +90,7 @@ describe('nodeHasteModuleLoader', function() {
     pit('finds and loads JSON files without file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(__filename, './test_root/JSONFile');
-        expect(exports.isRealModule).toBe(true);
+        expect(exports.isJSONModule).toBe(true);
       });
     });
 
@@ -108,7 +100,7 @@ describe('nodeHasteModuleLoader', function() {
           __filename,
           './test_root/JSONFile.json'
         );
-        expect(exports.isRealModule).toBe(true);
+        expect(exports.isJSONModule).toBe(true);
       });
     });
   });
