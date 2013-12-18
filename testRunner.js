@@ -126,7 +126,7 @@ function runTestsByPathPattern(config, pathPattern) {
 
   var dirSkipRegex = new RegExp(config.dirSkipRegex);
 
-  var numTests = 1;
+  var numTests = 0;
   var failedTests = 0;
   function _onFinderMatch(pathStr, stat) {
     numTests++;
