@@ -20,7 +20,7 @@ var timer = {
   times: {}
 };
 
-function JSDomTestRunner(config, ModuleLoaderClass, testFrameworkRunner) {
+function JSDomTestWorker(config, ModuleLoaderClass, testFrameworkRunner) {
   this._ModuleLoaderClass = ModuleLoaderClass;
   this._testFrameworkRunner = testFrameworkRunner;
 
@@ -35,7 +35,7 @@ function JSDomTestRunner(config, ModuleLoaderClass, testFrameworkRunner) {
   }
 }
 
-JSDomTestRunner.prototype.runTestByPath = function(testFilePath) {
+JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
   timer.start('jsdomInit');
   var jsdomWindow = jsdom().parentWindow;
 
@@ -167,13 +167,13 @@ if (require.main === module) {
     var moduleLoader = require(config.moduleLoader);
     var testFrameworkRunner = require(config.testFramework).runTest;
     return moduleLoader.initialize(config).done(function(ModuleLoaderClass) {
-      var testRunner = new JSDomTestRunner(
+      var testWorker = new JSDomTestWorker(
         config,
         ModuleLoaderClass,
         testFrameworkRunner
       );
       workerUtils.startWorker(function(message) {
-        return testRunner.runTestByPath(message.testFilePath);
+        return testWorker.runTestByPath(message.testFilePath);
       });
     });
   } catch (e) {
@@ -181,4 +181,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = JSDomTestRunner;
+module.exports = JSDomTestWorker;

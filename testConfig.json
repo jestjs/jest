@@ -1,7 +1,7 @@
 {
   "projectName": "jest",
 
-  "testRunner": "./src/JSDomTestRunner.js",
+  "testWorker": "./src/JSDomTestWorker.js",
   "moduleLoader": "./nodeHasteModuleLoader/loader",
   "testFramework": "./jasmineTestFramework",
 
