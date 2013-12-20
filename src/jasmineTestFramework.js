@@ -2,12 +2,14 @@ var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
 var mockTimers = require('./lib/mockTimers');
+var path = require('path');
 var Q = require('q');
+var utils = require('./lib/utils');
 
 var JASMINE_PATH = require.resolve('./vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
-function runTest(contextGlobal, contextRunner, testExecutor) {
+function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   //
@@ -94,33 +96,31 @@ function runTest(contextGlobal, contextRunner, testExecutor) {
       return (mismatchKeys.length == 0 && mismatchValues.length == 0);
     };
 
+  if (config.setupTestFrameworkScriptFile) {
+    var setupScriptContent = utils.readAndPreprocessFileContent(
+      config.setupTestFrameworkScriptFile,
+      config
+    );
 
-  // TODO: This is fb-specific, and that's bad for open-sourcing
-  //       Find some way to get this out of here. Putting it into the config as
-  //       a 'setupTestFrameworkScript' options seems reasonable
-  /*
-  var toThrow = contextGlobal.jasmine.Matchers.prototype.toThrow;
-  var originalValue;
-  var mockCheckFn = function(arg) {
-    // TODO: Wish I know what 'arg' was :/
-    return arg[0];
-  };
-  mockCheckFn.reset = function() {
-    contextGlobal.__t = originalValue;
-  };
-
-  contextGlobal.jasmine.Matchers.prototype.toThrow = function() {
-    if (contextGlobal.__THROWONTYPECHECKS__) {
-      return toThrow.apply(this, arguments);
-    }
-    // swap out the typechecker with a no-op function
-    originalValue = contextGlobal.__t;
-    contextGlobal.__t = mockCheckFn;
-    var returnValue = toThrow.apply(this, arguments);
-    mockCheckFn.reset();
-    return returnValue;
-  };
-  */
+    utils.runContentWithLocalBindings(
+      contextRunner,
+      setupScriptContent,
+      config.setupTestFrameworkScriptFile,
+      {
+        __dirname: path.dirname(config.setupTestFrameworkScriptFile),
+        __filename: config.setupTestFrameworkScriptFile,
+        console: console,
+        require: moduleLoader.requireModule.bind(
+          moduleLoader,
+          config.setupTestFrameworkScriptFile
+        ),
+        requireMock: moduleLoader.requireMock.bind(
+          moduleLoader,
+          config.setupTestFrameworkScriptFile
+        )
+      }
+    );
+  }
 
   if (hasMockedTimeouts) {
     mockTimers.installMockTimers(contextGlobal);
@@ -163,14 +163,12 @@ function runTest(contextGlobal, contextRunner, testExecutor) {
     });
   });
 
-  // Use WeakMap for detecting cycles (rather than __Jasmine_been_here_before__)
-  // to support detecting cycles with frozen objects.
-  // TODO: (see jstest/support/jasmine.js)
-
   var jasmineReporter = new JasmineReporter();
   jasmine.getEnv().addReporter(jasmineReporter);
 
-  testExecutor();
+  // Run the test by require()ing it
+  moduleLoader.requireModule(testPath, './' + path.basename(testPath));
+
   jasmine.getEnv().execute();
   return jasmineReporter.getResults();
 }

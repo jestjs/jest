@@ -97,12 +97,17 @@ function loadConfigFromFile(filePath) {
   });
 }
 
+var contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
+  if (contentCache.hasOwnProperty(filePath)) {
+    return contentCache[filePath];
+  }
+
   var fileData = fs.readFileSync(filePath, 'utf8');
   if (config.scriptPreprocessor) {
     fileData = require(config.scriptPreprocessor).process(fileData, filePath);
   }
-  return fileData;
+  return contentCache[filePath] = fileData;
 }
 
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,

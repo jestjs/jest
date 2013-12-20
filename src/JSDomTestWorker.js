@@ -143,14 +143,11 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
 
   jobTimer.start('runTest');
   return this._testFrameworkRunner(
+    config,
     jsdomWindow,
     jsdomWindow.run,
-    function() {
-      return moduleLoader.requireModule(
-        testFilePath,
-        './' + path.basename(testFilePath)
-      );
-    }
+    moduleLoader,
+    testFilePath
   ).then(function(results) {
     jobTimer.end();
     results.times = jobTimer.times;
