@@ -551,8 +551,8 @@ function initialize(config) {
               var globalMock;
               for (var key in this._contextGlobal) {
                 globalMock = this._contextGlobal[key];
-                if (typeof globalMock === 'function'
-                    || typeof globalMock === 'object') {
+                if ((typeof globalMock === 'object' && globalMock !== null)
+                    || typeof globalMock === 'function') {
                   globalMock._isMockFunction && globalMock.mockClear();
                 }
               }
