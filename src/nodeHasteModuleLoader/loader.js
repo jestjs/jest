@@ -75,7 +75,7 @@ function _buildResourceMap(config) {
       ignorePaths: function(path) {
         return path.match(DIR_SKIP_REGEX);
       },
-      version: config.version + '_' + JSON.stringify(config),
+      version: JSON.stringify(config),
       useNativeFind: true,
       // TODO: Hmm...what's node-haste doing with processes?
       maxProcesses: os.cpus().length,
