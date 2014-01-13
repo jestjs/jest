@@ -75,12 +75,7 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
   timer.start('jsdomEnvSetup');
   if (this._setupEnvScriptContent) {
     var tmpLoader = new this._ModuleLoaderClass(jsdomWindow, jsdomWindow.run);
-    var setupEnvRequire = tmpLoader.requireModule.bind(
-      tmpLoader,
-      this._setupEnvScriptFilePath
-    );
-    var setupEnvRequireMock = tmpLoader.requireMock.bind(
-      tmpLoader,
+    var setupEnvRequire = tmpLoader.constructBoundRequire(
       this._setupEnvScriptFilePath
     );
     utils.runContentWithLocalBindings(
@@ -91,8 +86,7 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
         __dirname: path.dirname(this._setupEnvScriptFilePath),
         __filename: this._setupEnvScriptFilePath,
         console: console,
-        require: setupEnvRequire,
-        requireMock: setupEnvRequireMock
+        require: setupEnvRequire
       }
     );
   }

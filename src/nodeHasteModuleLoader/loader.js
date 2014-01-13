@@ -162,18 +162,7 @@ function initialize(config) {
         moduleContentCache[modulePath] = moduleContent;
       }
 
-      var boundModuleRequire = this.requireModuleOrMock.bind(this, modulePath);
-      boundModuleRequire.resolve = function(moduleName) {
-        var ret = this._moduleNameToPath(modulePath, moduleName);
-        if (!ret) {
-          throw new Error('Module(' + moduleName + ') not found!');
-        }
-        return ret;
-      }.bind(this);
-      boundModuleRequire.generateMock = this._generateMock.bind(
-        this,
-        modulePath
-      );
+      var boundModuleRequire = this.constructBoundRequire(modulePath);
 
       var moduleLocalBindings = {
         'module': moduleObj,
@@ -375,6 +364,35 @@ function initialize(config) {
       } else {
         return false;
       }
+    };
+
+    Loader.prototype.constructBoundRequire = function(sourceModulePath) {
+      var boundModuleRequire = this.requireModuleOrMock.bind(
+        this,
+        sourceModulePath
+      );
+
+      boundModuleRequire.resolve = function(moduleName) {
+        var ret = this._moduleNameToPath(sourceModulePath, moduleName);
+        if (!ret) {
+          throw new Error('Module(' + moduleName + ') not found!');
+        }
+        return ret;
+      }.bind(this);
+      boundModuleRequire.generateMock = this._generateMock.bind(
+        this,
+        sourceModulePath
+      );
+      boundModuleRequire.requireMock = this.requireMock.bind(
+        this,
+        sourceModulePath
+      );
+      boundModuleRequire.requireActual = this.requireModule.bind(
+        this,
+        sourceModulePath
+      );
+
+      return boundModuleRequire;
     };
 
     /**
