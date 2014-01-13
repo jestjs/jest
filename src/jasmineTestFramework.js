@@ -110,12 +110,7 @@ function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
         __dirname: path.dirname(config.setupTestFrameworkScriptFile),
         __filename: config.setupTestFrameworkScriptFile,
         console: console,
-        require: moduleLoader.requireModule.bind(
-          moduleLoader,
-          config.setupTestFrameworkScriptFile
-        ),
-        requireMock: moduleLoader.requireMock.bind(
-          moduleLoader,
+        require: moduleLoader.constructBoundRequire(
           config.setupTestFrameworkScriptFile
         )
       }
