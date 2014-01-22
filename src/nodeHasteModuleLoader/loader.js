@@ -135,6 +135,20 @@ function initialize(config) {
       // the module.
       this._currentlyExecutingModulePath = null;
 
+      // DO NOT USE THIS. IT IS GOING AWAY
+      //
+      // This is necessary for the dirty behavior of how manual mocks can
+      // override the existence of real modules *always*.
+      //
+      // I don't like this behavior as it makes the module system's mocking
+      // rules harder to understand. Would much prefer that you had to
+      // explicitly request a module that exists as a manual mock only.
+      //
+      // The only reason we're supporting this in jest for now is because we
+      // have some tests that depend on this behavior. I'd like to clean this
+      // up at some point in the future.
+      this._currentlyExecutingManualMock = false;
+
       this.resetModuleRegistry();
     }
 
@@ -144,9 +158,10 @@ function initialize(config) {
      * objects.
      *
      * @param string modulePath
+     * @param bool isManualMock = false
      * @return object
      */
-    Loader.prototype._execModule = function(moduleObj) {
+    Loader.prototype._execModule = function(moduleObj, isManualMock) {
       var modulePath = moduleObj.__filename;
 
       var moduleContent = moduleContentCache[modulePath];
@@ -186,12 +201,17 @@ function initialize(config) {
       var lastExecutingModulePath = this._currentlyExecutingModulePath;
       this._currentlyExecutingModulePath = modulePath;
 
+      var origCurrExecutingManualMock = this._currentlyExecutingManualMock;
+      this._currentlyExecutingManualMock = !!isManualMock;
+
       utils.runContentWithLocalBindings(
         this._contextRunner,
         moduleContent,
         modulePath,
         moduleLocalBindings
       );
+
+      this._currentlyExecutingManualMock = origCurrExecutingManualMock;
       this._currentlyExecutingModulePath = lastExecutingModulePath;
     };
 
@@ -333,22 +353,25 @@ function initialize(config) {
       } else if (this._explicitMockStatus.hasOwnProperty(moduleName)) {
         return this._explicitMockStatus[moduleName];
       } else if (this._shouldAutoMock) {
-        // See if there's a manual mock
-        var moduleResource = resourceMap.getResource('JS', moduleName);
-        var manualMockResource = resourceMap.getResource('JSMock', moduleName);
-        if (manualMockResource) {
-          return true;
-        }
-
         // See if the module is specified in the config as a module that should
         // never be mocked
         if (this._unmockListModuleNames.hasOwnProperty(moduleName)) {
           return this._unmockListModuleNames[moduleName];
         } else if (configUnmockListRegExps.length > 0) {
-          var modulePath = this._moduleNameToPath(
-            currFilePath,
-            moduleName
-          );
+          try {
+            var modulePath = this._moduleNameToPath(currFilePath, moduleName);
+          } catch(e) {
+            // It's possible there isn't a real resource but there is a manual
+            // mock. If that's the case, return true -- otherwise there's a
+            // problem and bubble the exception.
+
+            var manualMockResource = resourceMap.getResource('JS', moduleName);
+            if (manualMockResource) {
+              return true;
+            }
+
+            throw e;
+          }
           var unmockRegExp;
           for (var i = 0; i < configUnmockListRegExps.length; i++) {
             unmockRegExp = configUnmockListRegExps[i];
@@ -476,12 +499,39 @@ function initialize(config) {
      * @return object
      */
     Loader.prototype.requireModule = function(currFilePath, moduleName) {
-      var modulePath = this._moduleNameToPath(currFilePath, moduleName);
+      var modulePath;
+
+      // I don't like this behavior as it makes the module system's mocking
+      // rules harder to understand. Would much prefer that mock state were
+      // either "on" or "off" -- rather than "automock on", "automock off", or
+      // "automock off -- but there's a manual mock, so you get that if you ask
+      // for the module". To accomplish this I'd like to move to a system where
+      // tests must explicitly call .mock() on a module to recieve the mocked
+      // version if automocking is off. If a manual mock exists, that is used.
+      // Otherwise we fall back to the automocking system to generate one for
+      // you.
+      //
+      // The only reason we're supporting this in jest for now is because we
+      // have some tests that depend on this behavior. I'd like to clean this
+      // up at some point in the future.
+      var manualMockResource = null;
+      if (!this._currentlyExecutingManualMock) {
+        manualMockResource = resourceMap.getResource('JSMock', moduleName);
+        if (manualMockResource
+            && this._explicitMockStatus[moduleName] !== false) {
+          modulePath = manualMockResource.path;
+        }
+      }
+
+      if (!modulePath) {
+        modulePath = this._moduleNameToPath(currFilePath, moduleName);
+      }
 
       if (!modulePath) {
         if (NODE_CORE_MODULES[moduleName]) {
           return require(moduleName);
         }
+
         throw new Error(
           'Cannot find module \'' + moduleName + '\' from \'' + currFilePath +
           '\''
@@ -508,7 +558,7 @@ function initialize(config) {
           __filename: modulePath,
           exports: {}
         };
-        this._execModule(moduleObj);
+        this._execModule(moduleObj, manualMockResource !== null);
       }
 
       return moduleObj.exports;

@@ -103,5 +103,44 @@ describe('nodeHasteModuleLoader', function() {
         expect(exports.isJSONModule).toBe(true);
       });
     });
+
+    describe('features I want to remove, but must exist for now', function() {
+      /**
+       * I'd like to kill this and make all tests use something more explicit
+       * when they want a manual mock, like:
+       *
+       *   require.mock('MyManualMock');
+       *   var ManuallyMocked = require('ManuallyMocked');
+       *
+       *   --or--
+       *
+       *   var ManuallyMocked = require.manualMock('ManuallyMocked');
+       *
+       * For now, however, this is built-in and many tests rely on it, so we
+       * must support it until we can do some cleanup.
+       */
+      pit('overrides real modules with manual mock when one exists', function(){
+        return buildLoader().then(function(loader) {
+          var exports = loader.requireModule(__filename, 'ManuallyMocked');
+          expect(exports.isManualMockModule).toBe(true);
+        });
+      });
+
+      /**
+       * requireModule() should *always* return the real module. Mocks should
+       * only be returned by requireMock().
+       *
+       * See the 'overrides real modules with manual mock when one exists' test
+       * for more info on why I want to kill this feature.
+       */
+      pit('doesnt override real modules with manual mocks when explicitly ' +
+          'marked with .dontMock()', function() {
+        return buildLoader().then(function(loader) {
+          loader.requireModule(__filename, 'mock-modules').dontMock('ManuallyMocked');
+          var exports = loader.requireModule(__filename, 'ManuallyMocked');
+          expect(exports.isManualMockModule).toBe(false);
+        });
+      });
+    });
   });
 });
