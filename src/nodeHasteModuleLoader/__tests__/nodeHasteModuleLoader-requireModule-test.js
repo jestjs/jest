@@ -119,10 +119,13 @@ describe('nodeHasteModuleLoader', function() {
        * For now, however, this is built-in and many tests rely on it, so we
        * must support it until we can do some cleanup.
        */
-      pit('overrides real modules with manual mock when one exists', function(){
+      pit('provides manual mock when real module doesnt exist', function() {
         return buildLoader().then(function(loader) {
-          var exports = loader.requireModule(__filename, 'ManuallyMocked');
-          expect(exports.isManualMockModule).toBe(true);
+          var exports = loader.requireModule(
+            __filename,
+            'ExclusivelyManualMock'
+          );
+          expect(exports.isExclusivelyManualMockModule).toBe(true);
         });
       });
 

@@ -353,6 +353,23 @@ function initialize(config) {
       } else if (this._explicitMockStatus.hasOwnProperty(moduleName)) {
         return this._explicitMockStatus[moduleName];
       } else if (this._shouldAutoMock) {
+        // rules harder to understand. Would much prefer that mock state were
+        // either "on" or "off" -- rather than "automock on", "automock off", or
+        // "automock off -- but there's a manual mock, so you get that if you
+        // ask for the module". To accomplish this I'd like to move to a system
+        // where tests must explicitly call .mock() on a module to recieve the
+        // mocked version if automocking is off. If a manual mock exists, that
+        // is used. Otherwise we fall back to the automocking system to generate
+        // one for you.
+        //
+        // The only reason we're supporting this in jest for now is because we
+        // have some tests that depend on this behavior. I'd like to clean this
+        // up at some point in the future.
+        var manualMockResource = resourceMap.getResource('JSMock', moduleName);
+        if (manualMockResource) {
+          return true;
+        }
+
         // See if the module is specified in the config as a module that should
         // never be mocked
         if (this._unmockListModuleNames.hasOwnProperty(moduleName)) {
@@ -505,19 +522,22 @@ function initialize(config) {
       // rules harder to understand. Would much prefer that mock state were
       // either "on" or "off" -- rather than "automock on", "automock off", or
       // "automock off -- but there's a manual mock, so you get that if you ask
-      // for the module". To accomplish this I'd like to move to a system where
-      // tests must explicitly call .mock() on a module to recieve the mocked
-      // version if automocking is off. If a manual mock exists, that is used.
-      // Otherwise we fall back to the automocking system to generate one for
-      // you.
+      // for the module and one doesnt exist". To accomplish this I'd like to
+      // move to a system where tests must explicitly call .mock() on a module
+      // to recieve the mocked version if automocking is off. If a manual mock
+      // exists, that is used. Otherwise we fall back to the automocking system
+      // to generate one for you.
       //
       // The only reason we're supporting this in jest for now is because we
       // have some tests that depend on this behavior. I'd like to clean this
       // up at some point in the future.
       var manualMockResource = null;
+      var moduleResource = null;
       if (!this._currentlyExecutingManualMock) {
+        moduleResource = resourceMap.getResource('JS', moduleName);
         manualMockResource = resourceMap.getResource('JSMock', moduleName);
-        if (manualMockResource
+        if (!moduleResource
+            && manualMockResource
             && this._explicitMockStatus[moduleName] !== false) {
           modulePath = manualMockResource.path;
         }

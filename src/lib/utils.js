@@ -113,16 +113,28 @@ function readAndPreprocessFileContent(filePath, config) {
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
                                      bindings) {
   var boundIdents = Object.keys(bindings);
-  var wrapperFunc = contextRunner(
-    '(function(' + boundIdents.join(',') + '){' +
-    scriptContent +
-    '\n})',
-    scriptPath
-  );
+  try {
+    var wrapperFunc = contextRunner(
+      '(function(' + boundIdents.join(',') + '){' +
+      scriptContent +
+      '\n})',
+      scriptPath
+    );
+  } catch (e) {
+    e.message = scriptPath + ': ' + e.message;
+    throw e;
+  }
+
   var bindingValues = boundIdents.map(function(ident) {
     return bindings[ident];
   });
-  wrapperFunc.apply(null, bindingValues);
+
+  try {
+    wrapperFunc.apply(null, bindingValues);
+  } catch (e) {
+    e.message = scriptPath + ': ' + e.message;
+    throw e;
+  }
 }
 
 function serializeConsoleArgValue(arg) {
