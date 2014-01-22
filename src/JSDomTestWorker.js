@@ -163,8 +163,16 @@ if (require.main === module) {
         ModuleLoaderClass,
         testFrameworkRunner
       );
+
       workerUtils.startWorker(function(message) {
-        return testWorker.runTestByPath(message.testFilePath);
+        var testStart = Date.now();
+        var testRunStats = {start: testStart, end: 0};
+        return testWorker.runTestByPath(message.testFilePath)
+          .then(function(results) {
+            testRunStats.end = Date.now();
+            results.stats = testRunStats;
+            return results;
+          });
       });
     });
   } catch (e) {

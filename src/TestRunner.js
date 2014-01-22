@@ -112,7 +112,9 @@ TestRunner.prototype.run = function(pathPattern) {
   function _onFinderMatch(pathStr, stat) {
     numTests++;
 
+    var testStart = Date.now();
     workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
+      var testFinished = Date.now();
       var filteredResults = utils.filterPassingSuiteResults(results);
       var allTestsPassed = filteredResults === null;
 
@@ -120,7 +122,11 @@ TestRunner.prototype.run = function(pathPattern) {
         ? colorize(' PASS ', PASS_COLOR)
         : colorize(' FAIL ', FAIL_COLOR);
 
-      console.log(passFailTag + ' ' + colorize(pathStr, TEST_TITLE_COLOR));
+      console.log(
+        passFailTag + ' ' + colorize(pathStr, TEST_TITLE_COLOR) +
+        ' wall(' + ((testFinished - testStart) / 1000) + 's)' +
+        ' run(' + ((results.stats.end - results.stats.start) / 1000) + 's)'
+      );
 
       results.consoleMessages.forEach(_printConsoleMessage);
 
@@ -160,6 +166,7 @@ TestRunner.prototype.run = function(pathPattern) {
   }
 
   var skipRegex = new RegExp(config.dirSkipRegex);
+  var scanStart = Date.now();
   config.jsScanDirs.forEach(function(scanDir) {
     var finder = new FileFinder({
       rootFolder: scanDir,
@@ -173,7 +180,13 @@ TestRunner.prototype.run = function(pathPattern) {
       }
     });
     finder.on('match', _onFinderMatch);
-    finder.on('complete', _onFinderComplete);
+    finder.on('complete', function() {
+      var finderEnd = Date.now();
+      _onFinderComplete();
+      if (_completedFinders === config.jsScanDirs.length) {
+        console.log('Test search time: ', finderEnd - scanStart);
+      }
+    });
     finder.startSearch();
   });
 
