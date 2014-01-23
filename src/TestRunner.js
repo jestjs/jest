@@ -112,9 +112,7 @@ TestRunner.prototype.run = function(pathPattern) {
   function _onFinderMatch(pathStr, stat) {
     numTests++;
 
-    var testStart = Date.now();
     workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-      var testFinished = Date.now();
       var filteredResults = utils.filterPassingSuiteResults(results);
       var allTestsPassed = filteredResults === null;
 
@@ -124,8 +122,7 @@ TestRunner.prototype.run = function(pathPattern) {
 
       console.log(
         passFailTag + ' ' + colorize(pathStr, TEST_TITLE_COLOR) +
-        ' wall(' + ((testFinished - testStart) / 1000) + 's)' +
-        ' run(' + ((results.stats.end - results.stats.start) / 1000) + 's)'
+        ' (' + ((results.stats.end - results.stats.start) / 1000) + 's)'
       );
 
       results.consoleMessages.forEach(_printConsoleMessage);

@@ -353,50 +353,46 @@ function initialize(config) {
       } else if (this._explicitMockStatus.hasOwnProperty(moduleName)) {
         return this._explicitMockStatus[moduleName];
       } else if (this._shouldAutoMock) {
-        // rules harder to understand. Would much prefer that mock state were
-        // either "on" or "off" -- rather than "automock on", "automock off", or
-        // "automock off -- but there's a manual mock, so you get that if you
-        // ask for the module". To accomplish this I'd like to move to a system
-        // where tests must explicitly call .mock() on a module to recieve the
-        // mocked version if automocking is off. If a manual mock exists, that
-        // is used. Otherwise we fall back to the automocking system to generate
-        // one for you.
-        //
-        // The only reason we're supporting this in jest for now is because we
-        // have some tests that depend on this behavior. I'd like to clean this
-        // up at some point in the future.
-        var manualMockResource = resourceMap.getResource('JSMock', moduleName);
-        if (manualMockResource) {
-          return true;
-        }
 
         // See if the module is specified in the config as a module that should
         // never be mocked
         if (this._unmockListModuleNames.hasOwnProperty(moduleName)) {
           return this._unmockListModuleNames[moduleName];
         } else if (configUnmockListRegExps.length > 0) {
+          this._unmockListModuleNames[moduleName] = true;
+
+          var manualMockResource =
+            resourceMap.getResource('JSMock', moduleName);
           try {
             var modulePath = this._moduleNameToPath(currFilePath, moduleName);
           } catch(e) {
-            // It's possible there isn't a real resource but there is a manual
-            // mock. If that's the case, return true -- otherwise there's a
-            // problem and bubble the exception.
-
-            var manualMockResource = resourceMap.getResource('JS', moduleName);
+            // If there isn't a real module, we don't have a path to match
+            // against the unmockList regexps. If there is also not a manual
+            // mock, then we throw because this module doesn't exist anywhere.
+            //
+            // However, it's possible that someone has a manual mock for a
+            // non-existant real module. In this case, we should mock the module
+            // (because we technically can).
+            //
+            // Ideally this should never happen, but we have some odd
+            // pre-existing edge-cases that rely on it so we need it for now.
+            // Eventually I'd like to eliminate this behavior in favor of
+            // requiring that all module environments are complete (meaning you
+            // can't just write a manual mock as a substitute for a real
+            // module).
             if (manualMockResource) {
               return true;
             }
-
             throw e;
           }
           var unmockRegExp;
+
+          this._unmockListModuleNames[moduleName] = true;
           for (var i = 0; i < configUnmockListRegExps.length; i++) {
             unmockRegExp = configUnmockListRegExps[i];
             if (unmockRegExp.test(modulePath)) {
-              this._unmockListModuleNames[moduleName] = false;
-              break;
+              return this._unmockListModuleNames[moduleName] = false;
             }
-            this._unmockListModuleNames[moduleName] = true;
           }
           return this._unmockListModuleNames[moduleName];
         }
