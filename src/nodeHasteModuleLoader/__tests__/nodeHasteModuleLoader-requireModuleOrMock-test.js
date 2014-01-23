@@ -72,22 +72,5 @@ describe('nodeHasteModuleLoader', function() {
         expect(exports.isManualMockModule).toBe(false);
       });
     });
-
-    describe('features I want to remove, but must exist for now', function() {
-      /**
-       * I'd like to kill this and make all tests use something more explicit
-       * when they want a manual mock, like:
-       *
-       *   require.mock('MyManualMock');
-       *   var ManuallyMocked = require('ManuallyMocked');
-       *
-       *   --or--
-       *
-       *   var ManuallyMocked = require.manualMock('ManuallyMocked');
-       *
-       * For now, however, this is built-in and many tests rely on it, so we
-       * must support it until we can do some cleanup.
-       */
-    });
   });
 });

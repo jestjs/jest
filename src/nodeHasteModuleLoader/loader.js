@@ -135,18 +135,6 @@ function initialize(config) {
       // the module.
       this._currentlyExecutingModulePath = null;
 
-      // DO NOT USE THIS. IT IS GOING AWAY
-      //
-      // This is necessary for the dirty behavior of how manual mocks can
-      // override the existence of real modules *always*.
-      //
-      // I don't like this behavior as it makes the module system's mocking
-      // rules harder to understand. Would much prefer that you had to
-      // explicitly request a module that exists as a manual mock only.
-      //
-      // The only reason we're supporting this in jest for now is because we
-      // have some tests that depend on this behavior. I'd like to clean this
-      // up at some point in the future.
       this._currentlyExecutingManualMock = false;
 
       this.resetModuleRegistry();
@@ -194,10 +182,6 @@ function initialize(config) {
       };
 
 
-      // DO NOT USE THIS. IT IS GOING AWAY
-      //
-      // See comment above the initializer for this in the constructor.
-      // It's pure clowntown. Don't you dare rely on it!
       var lastExecutingModulePath = this._currentlyExecutingModulePath;
       this._currentlyExecutingModulePath = modulePath;
 
@@ -376,10 +360,10 @@ function initialize(config) {
             //
             // Ideally this should never happen, but we have some odd
             // pre-existing edge-cases that rely on it so we need it for now.
-            // Eventually I'd like to eliminate this behavior in favor of
-            // requiring that all module environments are complete (meaning you
-            // can't just write a manual mock as a substitute for a real
-            // module).
+            //
+            // I'd like to eliminate this behavior in favor of requiring that
+            // all module environments are complete (meaning you can't just
+            // write a manual mock as a substitute for a real module).
             if (manualMockResource) {
               return true;
             }
@@ -516,13 +500,17 @@ function initialize(config) {
 
       // I don't like this behavior as it makes the module system's mocking
       // rules harder to understand. Would much prefer that mock state were
-      // either "on" or "off" -- rather than "automock on", "automock off", or
+      // either "on" or "off" -- rather than "automock on", "automock off",
       // "automock off -- but there's a manual mock, so you get that if you ask
-      // for the module and one doesnt exist". To accomplish this I'd like to
-      // move to a system where tests must explicitly call .mock() on a module
-      // to recieve the mocked version if automocking is off. If a manual mock
-      // exists, that is used. Otherwise we fall back to the automocking system
-      // to generate one for you.
+      // for the module and one doesnt exist", or "automock off -- but theres a
+      // useAutoMock: false entry in the package.json -- and theres a manual
+      // mock -- and the module is listed in the unMockList in the test config
+      // -- soooo...uhh...fuck I lost track".
+      //
+      // To simplify things I'd like to move to a system where tests must
+      // explicitly call .mock() on a module to recieve the mocked version if
+      // automocking is off. If a manual mock exists, that is used. Otherwise
+      // we fall back to the automocking system to generate one for you.
       //
       // The only reason we're supporting this in jest for now is because we
       // have some tests that depend on this behavior. I'd like to clean this
