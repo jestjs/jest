@@ -173,10 +173,6 @@ function initialize(config) {
         'require': boundModuleRequire,
         '__dirname': path.dirname(modulePath),
         '__filename': modulePath,
-        'requireDynamic': boundModuleRequire,
-        'requireLazy': function(dependencies, cb) {
-          cb && cb.apply(null, dependencies.map(boundModuleRequire));
-        },
         'global': this._contextGlobal,
         'console': this._contextGlobal.console
       };
