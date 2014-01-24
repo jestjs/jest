@@ -6,20 +6,6 @@ var path = require('path');
 var Q = require('q');
 var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 
-var timer = {
-  _currName: '',
-  _startTime: 0,
-  start: function(name) {
-    this._startTime = Date.now();
-    this._currName = name;
-  },
-  end: function() {
-    var end = Date.now();
-    this.times[this._currName] = end - this._startTime;
-  },
-  times: {}
-};
-
 function JSDomTestWorker(config, ModuleLoaderClass, testFrameworkRunner) {
   this._ModuleLoaderClass = ModuleLoaderClass;
   this._testFrameworkRunner = testFrameworkRunner;
@@ -36,7 +22,6 @@ function JSDomTestWorker(config, ModuleLoaderClass, testFrameworkRunner) {
 }
 
 JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
-  timer.start('jsdomInit');
   var jsdomWindow = jsdom().parentWindow;
 
   // Stuff jsdom doesn't support out of the box
@@ -52,12 +37,9 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
   jsdomWindow.Uint32Array = Uint32Array;
   jsdomWindow.DataView = DataView;
   jsdomWindow.Buffer = Buffer;
-  timer.end();
 
-  timer.start('installMockTimers');
   mockTimers.reset();
   mockTimers.installMockTimers(jsdomWindow);
-  timer.end();
 
   // I kinda wish tests just did this manually rather than relying on a
   // helper function to do it, but I'm keeping it for backward compat reasons
@@ -72,10 +54,13 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
     };
   }
 
-  timer.start('jsdomEnvSetup');
+  var moduleLoader = new this._ModuleLoaderClass(
+    jsdomWindow,
+    jsdomWindow.run
+  );
+
   if (this._setupEnvScriptContent) {
-    var tmpLoader = new this._ModuleLoaderClass(jsdomWindow, jsdomWindow.run);
-    var setupEnvRequire = tmpLoader.constructBoundRequire(
+    var setupEnvRequire = moduleLoader.constructBoundRequire(
       this._setupEnvScriptFilePath
     );
     utils.runContentWithLocalBindings(
@@ -90,10 +75,6 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
       }
     );
   }
-  timer.end();
-
-  var jobTimer = Object.create(timer);
-  jobTimer.times = {bootTimes: timer.times};
 
   // Capture console.logs so they can be passed through the worker response
   var consoleMessages = [];
@@ -128,14 +109,6 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
   //       worker processes...
   jsdomWindow.process = process;
 
-  jobTimer.start('createModuleLoader');
-  var moduleLoader = new this._ModuleLoaderClass(
-    jsdomWindow,
-    jsdomWindow.run
-  );
-  jobTimer.end();
-
-  jobTimer.start('runTest');
   return this._testFrameworkRunner(
     config,
     jsdomWindow,
@@ -143,8 +116,6 @@ JSDomTestWorker.prototype.runTestByPath = function(testFilePath) {
     moduleLoader,
     testFilePath
   ).then(function(results) {
-    jobTimer.end();
-    results.times = jobTimer.times;
     results.consoleMessages = consoleMessages;
     return results;
   });
