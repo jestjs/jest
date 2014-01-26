@@ -1,4 +1,4 @@
-var jsdom = require('jsdom').jsdom;
+var jsdom = require('./lib/jsdom-compat').jsdom;
 var mockTimers = require('./lib/mockTimers');
 var TestEnvironment = require('./TestEnvironment');
 var utils = require('./lib/utils');
