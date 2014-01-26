@@ -3,10 +3,8 @@ var path = require('path');
 describe('nodeHasteModuleLoader', function() {
   require('mock-modules').autoMockOff();
   var getMockFn;
-  var nodeHasteModuleLoader;
-
-  var mockContextGlobal;
-  var mockContextRunner;
+  var HasteModuleLoader;
+  var mockEnvironment;
 
   var CONFIG = {
     projectName: "nodeHasteModuleLoader-tests"
@@ -14,23 +12,22 @@ describe('nodeHasteModuleLoader', function() {
 
   function buildLoader(config) {
     config = config || CONFIG;
-
-    return nodeHasteModuleLoader.initialize(config).then(function(Loader) {
-      return new Loader(mockContextGlobal, mockContextRunner);
-    });
+    return HasteModuleLoader.create(config, mockEnvironment);
   }
 
   beforeEach(function() {
     getMockFn = require('mocks').getMockFunction;
-    nodeHasteModuleLoader = require('../loader');
+    HasteModuleLoader = require('../HasteModuleLoader');
 
-    mockContextGlobal = {
-      console: {},
-      mockClearTimers: getMockFn()
+    mockEnvironment = {
+      global: {
+        console: {},
+        mockClearTimers: getMockFn()
+      },
+      runSourceText: getMockFn().mockImplementation(function(codeStr) {
+        return (new Function('return ' + codeStr))();
+      })
     };
-    mockContextRunner = getMockFn().mockImplementation(function(codeStr) {
-      return (new Function('return ' + codeStr))();
-    });
   });
 
   describe('requireModuleOrMock', function() {

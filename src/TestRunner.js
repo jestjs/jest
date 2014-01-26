@@ -9,6 +9,8 @@ var WorkerPool = require('node-worker-pool');
 
 var colorize = colors.colorize;
 
+var TEST_WORKER_PATH = require.resolve('./TestWorker');
+
 var DEFAULT_OPTIONS = {
   /**
    * The maximum number of workers to run tests concurrently with.
@@ -103,8 +105,11 @@ TestRunner.prototype.run = function(pathPattern) {
 
   var workerPool = new WorkerPool(this._opts.maxWorkers, this._opts.nodePath, [
     '--harmony',
-    config.testWorker,
-    '--config=' + JSON.stringify(config)
+    TEST_WORKER_PATH,
+    '--config=' + JSON.stringify(config),
+    '--moduleLoader=' + config.moduleLoader,
+    '--environmentBuilder=' + config.environmentBuilder,
+    '--testRunner=' + config.testRunner
   ]);
 
   var numTests = 0;
@@ -145,6 +150,8 @@ TestRunner.prototype.run = function(pathPattern) {
             console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
           });
         }
+
+        //process.exit(0);
       }
     });
   }

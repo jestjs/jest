@@ -1,15 +1,14 @@
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
-var mockTimers = require('./lib/mockTimers');
+var mockTimers = require('../lib/mockTimers');
 var path = require('path');
-var Q = require('q');
-var utils = require('./lib/utils');
+var utils = require('../lib/utils');
 
-var JASMINE_PATH = require.resolve('./vendor/jasmine/jasmine-1.3.0');
+var JASMINE_PATH = require.resolve('../vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
-function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
+function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   //
@@ -18,32 +17,32 @@ function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
   // (it will store refs to setTimeout, etc internally), we restore the mock
   // timers.
   var hasMockedTimeouts = false;
-  if (contextGlobal._originalTimeouts) {
+  if (environment.global._originalTimeouts) {
     hasMockedTimeouts = true;
-    mockTimers.uninstallMockTimers(contextGlobal);
+    mockTimers.uninstallMockTimers(environment.global);
   }
 
   // Execute jasmine's main code
-  contextRunner(jasmineFileContent, JASMINE_PATH);
+  environment.runSourceText(jasmineFileContent, JASMINE_PATH);
 
   // Install jasmine-pit -- because it's amazing
-  jasminePit.install(contextGlobal);
+  jasminePit.install(environment.global);
 
   // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to detect
   // cycles, but that doesn't work on frozen objects so we use a WeakMap instead.
   var _comparedObjects = new WeakMap();
-  contextGlobal.jasmine.Env.prototype.compareObjects_ =
+  environment.global.jasmine.Env.prototype.compareObjects_ =
     function(a, b, mismatchKeys, mismatchValues) {
       if (_comparedObjects.get(a) === b && _comparedObjects.get(b) === a) {
         return true;
       }
-      var areArrays = contextGlobal.jasmine.isArray_(a) && contextGlobal.jasmine.isArray_(b);
+      var areArrays = environment.global.jasmine.isArray_(a) && environment.global.jasmine.isArray_(b);
 
       _comparedObjects.set(a, b);
       _comparedObjects.set(b, a);
 
       var hasKey = function(obj, keyName) {
-        return obj != null && obj[keyName] !== contextGlobal.jasmine.undefined;
+        return obj != null && obj[keyName] !== environment.global.jasmine.undefined;
       };
 
       for (var property in b) {
@@ -77,10 +76,10 @@ function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
         {
           mismatchValues.push(
             "'" + property + "' was '" + (b[property] ?
-              contextGlobal.jasmine.util.htmlEscape(b[property].toString()) :
+              environment.global.jasmine.util.htmlEscape(b[property].toString()) :
               b[property]) +
             "' in expected, but was '" + (a[property] ?
-              contextGlobal.jasmine.util.htmlEscape(a[property].toString()) :
+              environment.global.jasmine.util.htmlEscape(a[property].toString()) :
               a[property]) + "' in actual."
           );
         }
@@ -103,13 +102,12 @@ function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
     );
 
     utils.runContentWithLocalBindings(
-      contextRunner,
+      environment.runSourceText,
       setupScriptContent,
       config.setupTestFrameworkScriptFile,
       {
         __dirname: path.dirname(config.setupTestFrameworkScriptFile),
         __filename: config.setupTestFrameworkScriptFile,
-        console: console,
         require: moduleLoader.constructBoundRequire(
           config.setupTestFrameworkScriptFile
         )
@@ -118,10 +116,10 @@ function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
   }
 
   if (hasMockedTimeouts) {
-    mockTimers.installMockTimers(contextGlobal);
+    mockTimers.installMockTimers(environment.global);
   }
 
-  var jasmine = contextGlobal.jasmine;
+  var jasmine = environment.global.jasmine;
 
   // Disable typechecks while doing toThrow tests
   // TODO: (see jstest/support/jasmine.js)
@@ -168,4 +166,4 @@ function runTest(config, contextGlobal, contextRunner, moduleLoader, testPath) {
   return jasmineReporter.getResults();
 }
 
-exports.runTest = runTest;
+module.exports = jasmineTestRunner;
