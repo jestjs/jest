@@ -1,10 +1,12 @@
-var path = require('path');
+require('mock-modules').autoMockOff();
+
+var Q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
-  require('mock-modules').autoMockOff();
   var getMockFn;
   var HasteModuleLoader;
   var mockEnvironment;
+  var resourceMap;
 
   var CONFIG = {
     projectName: "nodeHasteModuleLoader-tests"
@@ -12,7 +14,14 @@ describe('nodeHasteModuleLoader', function() {
 
   function buildLoader(config) {
     config = config || CONFIG;
-    return HasteModuleLoader.create(config, mockEnvironment);
+    if (!resourceMap) {
+      return HasteModuleLoader.loadResourceMap(config).then(function(map) {
+        resourceMap = map;
+        return buildLoader(config);
+      });
+    } else {
+      return Q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
+    }
   }
 
   beforeEach(function() {
