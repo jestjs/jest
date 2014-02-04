@@ -187,9 +187,6 @@ TestRunner.prototype.run = function(pathPattern) {
     finder.on('complete', function() {
       var finderEnd = Date.now();
       _onFinderComplete();
-      if (_completedFinders === config.jsScanDirs.length) {
-        console.log('Test search time: ', finderEnd - scanStart);
-      }
     });
     finder.startSearch();
   });

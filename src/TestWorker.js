@@ -37,29 +37,37 @@ if (require.main === module) {
       );
     }
 
-    workerUtils.startWorker(function(message) {
-      var testRunStats = {start: Date.now()};
-      var testFilePath = message.testFilePath;
-      var environment = environmentBuilder();
+    // Longer term we should do something smarter and more efficient like prime
+    // the haste map in the parent thread (exactly once), then pass the haste
+    // map down to all the children.
+    //
+    // Even this hack still sucks because it means all children are competing to
+    // update the haste cache when they first boot. This is massively redundant
+    // and inefficient.
+    ModuleLoader.loadResourceMap(config).done(function(resourceMap) {
+      workerUtils.startWorker(function(message) {
+        var testRunStats = {start: Date.now()};
+        var testFilePath = message.testFilePath;
+        var environment = environmentBuilder();
 
-      // Capture console logs so they are properly passed through the
-      // worker response back to the parent thread
-      var consoleMessages = [];
-      environment.global.console = {
-        error: function() {
-          consoleMessages.push(_serializeConsoleArguments('error', arguments));
-        },
+        // Capture console logs so they are properly passed through the
+        // worker response back to the parent thread
+        var consoleMessages = [];
+        environment.global.console = {
+          error: function() {
+            consoleMessages.push(_serializeConsoleArguments('error', arguments));
+          },
 
-        log: function() {
-          consoleMessages.push(_serializeConsoleArguments('log', arguments));
-        },
+          log: function() {
+            consoleMessages.push(_serializeConsoleArguments('log', arguments));
+          },
 
-        warn: function() {
-          consoleMessages.push(_serializeConsoleArguments('warn', arguments));
-        }
-      };
+          warn: function() {
+            consoleMessages.push(_serializeConsoleArguments('warn', arguments));
+          }
+        };
 
-      return ModuleLoader.create(config, environment).then(function(moduleLoader) {
+        var moduleLoader = new ModuleLoader(config, environment, resourceMap);
         if (setupEnvScriptContent) {
           utils.runContentWithLocalBindings(
             environment.runSourceText,

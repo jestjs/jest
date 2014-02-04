@@ -89,7 +89,7 @@ function HasteModuleLoader(config, environment, resourceMap) {
   this.resetModuleRegistry();
 }
 
-HasteModuleLoader.create = function(config, environment) {
+HasteModuleLoader.loadResourceMap = function(config) {
   var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
   var DIR_SKIP_REGEX = new RegExp(config.dirSkipRegex || '__NOT_EXIST__');
 
@@ -119,26 +119,19 @@ HasteModuleLoader.create = function(config, environment) {
   );
 
   var deferred = Q.defer();
-  function _onHasteUpdated(updatedMap) {
-    deferred.resolve(updatedMap);
-  }
-
   try {
     hasteInst.update(
       CACHE_FILE_PATH,
       function(resourceMap) {
-        deferred.resolve(
-          new HasteModuleLoader(config, environment, resourceMap)
-        );
+        deferred.resolve(resourceMap);
       },
-      {forceRescan: true} // TODO: This should probably be togglable?
+      {forceRescan: true}
     );
   } catch (e) {
     deferred.reject(e);
   }
   return deferred.promise;
 }
-
 
 /**
  * Given the path to a module: Read it from disk (synchronously) and
