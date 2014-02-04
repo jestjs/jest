@@ -64,7 +64,7 @@ function HasteModuleLoader(config, environment, resourceMap) {
   // TODO: Rename to _explicitShouldMock
   this._explicitMockStatus = {};
   // TODO: Rename to _isCurrentlyExecutingManualMock
-  this._currentlyExecutingManualMock = false;
+  this._currentlyExecutingManualMock = null;
   // TODO: Rename to _mockMetaDataCache
   this._mockMetaData = {};
   // TODO: Init the following property as an object for consistent typing
@@ -79,7 +79,6 @@ function HasteModuleLoader(config, environment, resourceMap) {
   } else {
     this._unmockListRegExps = _configUnmockListRegExpCache.get(config);
     if (!this._unmockListRegExps) {
-      console.log('no cache found! regenerating');
       this._unmockListRegExps = config.unmockList.map(function(unmockPathRe) {
         return new RegExp(unmockPathRe);
       });
@@ -186,7 +185,7 @@ HasteModuleLoader.prototype._execModule = function(moduleObj, isManualMock) {
   this._currentlyExecutingModulePath = modulePath;
 
   var origCurrExecutingManualMock = this._currentlyExecutingManualMock;
-  this._currentlyExecutingManualMock = !!isManualMock;
+  this._currentlyExecutingManualMock = modulePath;//!!isManualMock;
 
   utils.runContentWithLocalBindings(
     this._environment.runSourceText,
@@ -517,14 +516,13 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName) {
   // up at some point in the future.
   var manualMockResource = null;
   var moduleResource = null;
-  if (!this._currentlyExecutingManualMock) {
-    moduleResource = this._resourceMap.getResource('JS', moduleName);
-    manualMockResource = this._resourceMap.getResource('JSMock', moduleName);
-    if (!moduleResource
-        && manualMockResource
-        && this._explicitMockStatus[moduleName] !== false) {
-      modulePath = manualMockResource.path;
-    }
+  moduleResource = this._resourceMap.getResource('JS', moduleName);
+  manualMockResource = this._resourceMap.getResource('JSMock', moduleName);
+  if (!moduleResource
+      && manualMockResource
+      && manualMockResource.path !== this._currentlyExecutingManualMock
+      && this._explicitMockStatus[moduleName] !== false) {
+    modulePath = manualMockResource.path;
   }
 
   if (!modulePath) {
