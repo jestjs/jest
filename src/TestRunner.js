@@ -3,6 +3,7 @@
 var colors = require('./lib/colors');
 var FileFinder = require('node-find-files');
 var os = require('os');
+var path = require('path');
 var Q = require('q');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
@@ -70,6 +71,19 @@ function _printConsoleMessage(msg) {
   }
 }
 
+function _printTestResultSummary(passed, testPath, runTime) {
+  var passFailTag = passed
+    ? colorize(' PASS ', PASS_COLOR)
+    : colorize(' FAIL ', FAIL_COLOR);
+
+  var summary = passFailTag + ' ' + colorize(testPath, TEST_TITLE_COLOR);
+
+  if (runTime) {
+    summary += ' (' + runTime + 's)';
+  }
+
+  console.log(summary);
+}
 
 /**
  * A class that takes a config and a test-path search pattern, finds all the
@@ -117,43 +131,44 @@ TestRunner.prototype.run = function(pathPattern) {
   function _onFinderMatch(pathStr, stat) {
     numTests++;
 
-    workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-      var filteredResults = utils.filterPassingSuiteResults(results);
-      var allTestsPassed = filteredResults === null;
+    workerPool.sendMessage({testFilePath: pathStr})
+      .done(function(results) {
+        var filteredResults = utils.filterPassingSuiteResults(results);
+        var allTestsPassed = filteredResults === null;
 
-      var passFailTag = allTestsPassed
-        ? colorize(' PASS ', PASS_COLOR)
-        : colorize(' FAIL ', FAIL_COLOR);
+        _printTestResultSummary(
+          allTestsPassed,
+          config.rootDir ? path.relative(config.rootDir, pathStr) : pathStr,
+          (results.stats.end - results.stats.start) / 1000
+        );
 
-      console.log(
-        passFailTag + ' ' + colorize(pathStr, TEST_TITLE_COLOR) +
-        ' (' + ((results.stats.end - results.stats.start) / 1000) + 's)'
-      );
+        results.consoleMessages.forEach(_printConsoleMessage);
 
-      results.consoleMessages.forEach(_printConsoleMessage);
+        if (!allTestsPassed) {
+          failedTests++;
 
-      if (!allTestsPassed) {
-        failedTests++;
+          var descBullet = colorize('\u25cf ', colors.BOLD);
+          var msgBullet = '  - ';
+          var msgIndent = msgBullet.replace(/./g, ' ');
 
-        var descBullet = colorize('\u25cf ', colors.BOLD);
-        var msgBullet = '  - ';
-        var msgIndent = msgBullet.replace(/./g, ' ');
+          var flattenedResults = utils.flattenSuiteResults(filteredResults);
 
-        var flattenedResults = utils.flattenSuiteResults(filteredResults);
+          var testErrors;
+          for (var testDesc in flattenedResults.failingTests) {
+            testErrors = flattenedResults.failingTests[testDesc];
 
-        var testErrors;
-        for (var testDesc in flattenedResults.failingTests) {
-          testErrors = flattenedResults.failingTests[testDesc];
+            console.log(descBullet + testDesc);
+            testErrors.forEach(function(errorMsg) {
+              console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
+            });
+          }
 
-          console.log(descBullet + testDesc);
-          testErrors.forEach(function(errorMsg) {
-            console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
-          });
+          //process.exit(0);
         }
-
-        //process.exit(0);
-      }
-    });
+      }, function(errMsg) {
+        _printTestResultSummary(false, pathStr);
+        console.log(errMsg);
+      });
   }
 
   var _completedFinders = 0;

@@ -93,6 +93,7 @@ function loadConfigFromFile(filePath) {
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
     var rootDir = path.resolve(path.dirname(filePath), config.rootDir);
+    config.rootDir = rootDir;
     return _replaceRootDirTags(rootDir, config);
   });
 }
