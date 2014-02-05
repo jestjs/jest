@@ -79,7 +79,11 @@ function _printTestResultSummary(passed, testPath, runTime) {
   var summary = passFailTag + ' ' + colorize(testPath, TEST_TITLE_COLOR);
 
   if (runTime) {
-    summary += ' (' + runTime + 's)';
+    var runTimeStr = '(' + runTime + 's)';
+    if (runTime > 1.5) {
+      runTimeStr = colorize(runTimeStr, FAIL_COLOR);
+    }
+    summary += ' ' + runTimeStr;
   }
 
   console.log(summary);
