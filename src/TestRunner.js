@@ -80,7 +80,7 @@ function _printTestResultSummary(passed, testPath, runTime) {
 
   if (runTime) {
     var runTimeStr = '(' + runTime + 's)';
-    if (runTime > 1.5) {
+    if (runTime > 2.5) {
       runTimeStr = colorize(runTimeStr, FAIL_COLOR);
     }
     summary += ' ' + runTimeStr;
