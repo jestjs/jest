@@ -36,6 +36,14 @@ function jsdomEnvironmentBuilder() {
     };
   }
 
+  // jsdom doesn't have support for window.Image, so we just replace it with a
+  // dummy constructor
+  try {
+    new jsdomWindow.Image();
+  } catch (e) {
+    jsdomWindow.Image = function Image() {};
+  }
+
   // Pass through the node `process` global.
   // TODO: Consider locking this down somehow so tests can't do crazy stuff to
   //       worker processes...

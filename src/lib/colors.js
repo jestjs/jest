@@ -8,7 +8,7 @@ var RESET = '\u001b[0m';
 var UNDERLINE = '\u001b[1;4m';
 
 function colorize(str, color) {
-  return color + str.split(RESET).join(RESET + color) + RESET;
+  return color + str.toString().split(RESET).join(RESET + color) + RESET;
 }
 
 exports.BOLD = BOLD;
