@@ -61,12 +61,9 @@ function HasteModuleLoader(config, environment, resourceMap) {
   this._config = config;
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
-  // TODO: Rename to _explicitShouldMock
-  this._explicitMockStatus = {};
-  // TODO: Rename to _isCurrentlyExecutingManualMock
-  this._currentlyExecutingManualMock = null;
-  // TODO: Rename to _mockMetaDataCache
-  this._mockMetaData = {};
+  this._explicitShouldMock = {};
+  this._isCurrentlyExecutingManualMock = null;
+  this._mockMetaDataCache = {};
   // TODO: Init the following property as an object for consistent typing
   this._nodeModuleProjectConfigNameToResource = null;
   this._resourceMap = resourceMap;
@@ -177,8 +174,8 @@ HasteModuleLoader.prototype._execModule = function(moduleObj, isManualMock) {
   var lastExecutingModulePath = this._currentlyExecutingModulePath;
   this._currentlyExecutingModulePath = modulePath;
 
-  var origCurrExecutingManualMock = this._currentlyExecutingManualMock;
-  this._currentlyExecutingManualMock = modulePath;//!!isManualMock;
+  var origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
+  this._isCurrentlyExecutingManualMock = modulePath;//!!isManualMock;
 
   utils.runContentWithLocalBindings(
     this._environment.runSourceText,
@@ -187,7 +184,7 @@ HasteModuleLoader.prototype._execModule = function(moduleObj, isManualMock) {
     moduleLocalBindings
   );
 
-  this._currentlyExecutingManualMock = origCurrExecutingManualMock;
+  this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
   this._currentlyExecutingModulePath = lastExecutingModulePath;
 };
 
@@ -326,8 +323,8 @@ HasteModuleLoader.prototype._nodeModuleNameToPath = function(currPath, moduleNam
 HasteModuleLoader.prototype._shouldMock = function(currFilePath, moduleName) {
   if (this._builtInModules[moduleName]) {
     return false;
-  } else if (this._explicitMockStatus.hasOwnProperty(moduleName)) {
-    return this._explicitMockStatus[moduleName];
+  } else if (this._explicitShouldMock.hasOwnProperty(moduleName)) {
+    return this._explicitShouldMock[moduleName];
   } else if (this._shouldAutoMock) {
 
     // See if the module is specified in the config as a module that should
@@ -466,15 +463,15 @@ HasteModuleLoader.prototype.requireMock = function(currFilePath, moduleName) {
 HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
   var modulePath = this._moduleNameToPath(currFilePath, moduleName);
 
-  if (!this._mockMetaData.hasOwnProperty(modulePath)) {
+  if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
     var moduleExports = this.requireModule(currFilePath, moduleName);
-    this._mockMetaData[modulePath] = moduleMocker.getMetadata(
+    this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata(
       moduleExports
     );
   }
 
   return moduleMocker.generateFromMetadata(
-    this._mockMetaData[modulePath]
+    this._mockMetaDataCache[modulePath]
   );
 };
 
@@ -513,8 +510,8 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName) {
   manualMockResource = this._resourceMap.getResource('JSMock', moduleName);
   if (!moduleResource
       && manualMockResource
-      && manualMockResource.path !== this._currentlyExecutingManualMock
-      && this._explicitMockStatus[moduleName] !== false) {
+      && manualMockResource.path !== this._isCurrentlyExecutingManualMock
+      && this._explicitShouldMock[moduleName] !== false) {
     modulePath = manualMockResource.path;
   }
 
@@ -585,7 +582,7 @@ HasteModuleLoader.prototype.requireModuleOrMock = function(currFilePath, moduleN
  * @return void
  */
 HasteModuleLoader.prototype.resetModuleRegistry = function() {
-  var explicitMockStatus = this._explicitMockStatus;
+  var explicitMockStatus = this._explicitShouldMock;
 
   this._mockRegistry = {};
   this._moduleRegistry = {};
@@ -594,12 +591,12 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
     'mock-modules': {
       exports: {
         dontMock: function(moduleName) {
-          this._explicitMockStatus[moduleName] = false;
+          this._explicitShouldMock[moduleName] = false;
           return this._builtInModules['mock-modules'].exports;
         }.bind(this),
 
         mock: function(moduleName) {
-          this._explicitMockStatus[moduleName] = true;
+          this._explicitShouldMock[moduleName] = true;
           return this._builtInModules['mock-modules'].exports;
         }.bind(this),
 
@@ -635,7 +632,7 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
         }.bind(this),
 
         setMock: function(moduleName, moduleExports) {
-          this._explicitMockStatus[moduleName] = true;
+          this._explicitShouldMock[moduleName] = true;
           var modulePath = this._moduleNameToPath(
             this._currentlyExecutingModulePath,
             moduleName
