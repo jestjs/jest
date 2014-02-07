@@ -608,6 +608,11 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
           return this._builtInModules['mock-modules'].exports;
         }.bind(this),
 
+        autoMockOn: function() {
+          this._shouldAutoMock = true;
+          return this._builtInModules['mock-modules'].exports;
+        }.bind(this),
+
         // TODO: This is such a bad name, we should rename it to
         //       `resetModuleRegistry()` -- or anything else, really
         dumpCache: function() {
