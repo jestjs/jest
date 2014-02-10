@@ -166,8 +166,7 @@ HasteModuleLoader.prototype._execModule = function(moduleObj, isManualMock) {
     'require': boundModuleRequire,
     '__dirname': path.dirname(modulePath),
     '__filename': modulePath,
-    'global': this._environment.global,
-    'console': this._environment.global.console
+    'global': this._environment.global
   };
 
 
