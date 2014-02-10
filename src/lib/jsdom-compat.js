@@ -132,6 +132,29 @@ if (elements && elements.HTMLInputElement) {
   }
 }
 
+// Make sure we unselect all but the first selected option when a <select>
+// element has its "multiple" attribute set to false.
+if (elements && elements.HTMLSelectElement) {
+  var proto = elements.HTMLSelectElement.prototype;
+  var oldAttrModified = proto._attrModified;
+  proto._attrModified = function(name, value) {
+    if (name === "multiple" && !value) {
+      var leaveNextOptionSelected = true;
+      this.options._toArray().forEach(function(option, i) {
+        if (option.selected) {
+          if (leaveNextOptionSelected) {
+            leaveNextOptionSelected = false;
+          } else {
+            option.selected = false;
+          }
+        }
+      });
+    }
+
+    return oldAttrModified.apply(this, arguments);
+  }
+}
+
 // Require this module if you want to require('jsdom'), to ensure the
 // above compatibility measures have been implemented.
 module.exports = jsdom;
