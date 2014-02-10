@@ -482,9 +482,12 @@ HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
  * @param string currFilePath The path of the file that is attempting to
  *                            resolve the module
  * @param string moduleName The name of the module to be resolved
+ * @param bool bypassRegistryCache Whether we should read from/write to the
+ *                                 module registry. Fuck this arg.
  * @return object
  */
-HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName) {
+HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName,
+                                                     bypassRegistryCache) {
   var modulePath;
 
   // I don't like this behavior as it makes the module system's mocking
@@ -531,7 +534,7 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName) {
   }
 
   var moduleObj = this._builtInModules[modulePath];
-  if (!moduleObj) {
+  if (!moduleObj && !bypassRegistryCache) {
     moduleObj = this._moduleRegistry[modulePath];
   }
   if (!moduleObj) {
@@ -546,10 +549,15 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName) {
     // We must register the pre-allocated module object first so that any
     // circular dependencies that may arise while evaluating the module can
     // be satisfied.
-    moduleObj = this._moduleRegistry[modulePath] = {
+    moduleObj = {
       __filename: modulePath,
       exports: {}
     };
+
+    if (!bypassRegistryCache) {
+      this._moduleRegistry[modulePath] = moduleObj;
+    }
+
     this._execModule(moduleObj, manualMockResource !== null);
   }
 
@@ -658,10 +666,15 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
           require('../lib/mockTimers').uninstallMockTimers(this._environment.global);
         }.bind(this),
 
+        /**
+         * Load actual module without reading from or writing to module exports
+         * registry. This method's name is devastatingly misleading. :(
+         */
         loadActualModule: function(moduleName) {
           return this.requireModule(
             this._currentlyExecutingModulePath,
-            moduleName
+            moduleName,
+            true // yay boolean args!
           );
         }.bind(this)
       }
