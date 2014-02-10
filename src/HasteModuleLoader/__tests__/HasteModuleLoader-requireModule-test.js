@@ -39,14 +39,14 @@ describe('nodeHasteModuleLoader', function() {
   });
 
   describe('requireModule', function() {
-    xpit('finds @providesModule modules', function() {
+    pit('finds @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
-    xpit('throws on non-existant @providesModule modules', function() {
+    pit('throws on non-existant @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
           loader.requireModule(null, 'DoesntExist');
@@ -54,7 +54,7 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
-    xpit('finds relative-path modules without file extension', function() {
+    pit('finds relative-path modules without file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(
           __filename,
@@ -64,7 +64,7 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
-    xpit('finds relative-path modules with file extension', function() {
+    pit('finds relative-path modules with file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(
           __filename,
@@ -74,7 +74,7 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
-    xpit('throws on non-existant relative-path modules', function() {
+    pit('throws on non-existant relative-path modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
           loader.requireModule(__filename, './DoesntExist');
@@ -84,7 +84,7 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
-    xpit('finds node core built-in modules', function() {
+    pit('finds node core built-in modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
           loader.requireModule(null, 'fs');
@@ -92,14 +92,14 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
-    xpit('finds and loads JSON files without file extension', function() {
+    pit('finds and loads JSON files without file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(__filename, './test_root/JSONFile');
         expect(exports.isJSONModule).toBe(true);
       });
     });
 
-    xpit('finds and loads JSON files with file extension', function() {
+    pit('finds and loads JSON files with file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(
           __filename,
@@ -124,7 +124,7 @@ describe('nodeHasteModuleLoader', function() {
        * For now, however, this is built-in and many tests rely on it, so we
        * must support it until we can do some cleanup.
        */
-      xpit('provides manual mock when real module doesnt exist', function() {
+      pit('provides manual mock when real module doesnt exist', function() {
         return buildLoader().then(function(loader) {
           var exports = loader.requireModule(
             __filename,
