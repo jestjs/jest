@@ -143,7 +143,7 @@ function serializeConsoleArgValue(arg) {
     case 'function':
       return JSON.stringify({
         type: 'function',
-        value: arg.toString()
+        value: '[Function: ' + arg.name + ']'
       });
 
     case 'object':
@@ -151,6 +151,13 @@ function serializeConsoleArgValue(arg) {
         return JSON.stringify({
           type: 'null',
           value: 'null'
+        });
+      }
+
+      if (Array.isArray(arg)) {
+        return JSON.stringify({
+          type: 'array',
+          value: arg.map(serializeConsoleArgValue)
         });
       }
 
@@ -188,6 +195,8 @@ function stringifySerializedConsoleArgValue(arg) {
   switch (metadata.type) {
     case 'null':
       return 'null';
+    case 'array':
+      return metadata.value.map(stringifySerializedConsoleArgValue);
     case 'object':
       var ret = {};
       for (var key in metadata.value) {
