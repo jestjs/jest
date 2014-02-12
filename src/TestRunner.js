@@ -5,6 +5,8 @@ var FileFinder = require('node-find-files');
 var os = require('os');
 var path = require('path');
 var Q = require('q');
+var stream = require('stream');
+var TestWorker = require('./TestWorker');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 
@@ -109,14 +111,87 @@ function TestRunner(jestConfig, options) {
   }
 }
 
+TestRunner.prototype._getTestFinderStream = function(scanDirs, skipPattern,
+                                                     pathPattern) {
+  var foundTests = new stream.Readable({encoding: 'utf8', objectMode: true});
+  foundTests._read = function() {};
+
+  var numMatchers = scanDirs.length;
+  function _onMatcherEnd() {
+    numMatchers--;
+    if (numMatchers === 0) {
+      foundTests.push(null);
+    }
+  }
+
+  function _onMatcherMatch(pathStr) {
+    foundTests.push(pathStr);
+  }
+
+  scanDirs.forEach(function(scanDir) {
+    var finder = new FileFinder({
+      rootFolder: scanDir,
+      filterFunction: function(pathStr, stat) {
+        return (
+          NODE_HASTE_TEST_PATH_RE.test(pathStr)
+          && !HIDDEN_FILE_RE.test(pathStr)
+          && pathPattern.test(pathStr)
+          && !skipPattern.test(pathStr)
+        );
+      }
+    });
+    finder.on('match', _onMatcherMatch);
+    finder.on('complete', _onMatcherEnd);
+    finder.startSearch();
+  });
+
+  return foundTests;
+};
+
+TestRunner.prototype._printTestResults = function(results) {
+  var pathStr = results.testFilePath;
+  var filteredResults = utils.filterPassingSuiteResults(results);
+  var allTestsPassed = filteredResults === null;
+
+  var rootDir = this._config.rootDir;
+  _printTestResultSummary(
+    allTestsPassed,
+    rootDir ? path.relative(rootDir, pathStr) : pathStr,
+    (results.stats.end - results.stats.start) / 1000
+  );
+
+  results.consoleMessages.forEach(_printConsoleMessage);
+
+  if (!allTestsPassed) {
+    var descBullet = colorize('\u25cf ', colors.BOLD);
+    var msgBullet = '  - ';
+    var msgIndent = msgBullet.replace(/./g, ' ');
+
+    var flattenedResults = utils.flattenSuiteResults(filteredResults);
+
+    var testErrors;
+    for (var testDesc in flattenedResults.failingTests) {
+      testErrors = flattenedResults.failingTests[testDesc];
+
+      console.log(descBullet + testDesc);
+      testErrors.forEach(function(errorMsg) {
+        console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
+      });
+    }
+  }
+
+  return allTestsPassed;
+};
+
 /**
- * Run all tests matching the given path pattern RegExp.
+ * Run all tests (in parallel) matching the given path pattern RegExp.
+ * Uses a worker pool of child processes to run tests in parallel.
  *
  * @param pathPattern A RegExp object that a given test path must match in
  *                    order to be run.
  * @return promise Fulfilled when all tests have finished running
  */
-TestRunner.prototype.run = function(pathPattern) {
+TestRunner.prototype.runAllParallel = function(pathPattern) {
   var startTime = Date.now();
   var config = this._config;
   var deferred = Q.defer();
@@ -130,87 +205,98 @@ TestRunner.prototype.run = function(pathPattern) {
     '--testRunner=' + config.testRunner
   ]);
 
-  var numTests = 0;
+  var testFinderStream = this._getTestFinderStream(
+    config.jsScanDirs,
+    new RegExp(config.dirSkipRegex),
+    pathPattern
+  );
+
   var failedTests = 0;
-  function _onFinderMatch(pathStr, stat) {
+  var numTests = 0;
+  var self = this;
+  testFinderStream.on('data', function(pathStr) {
     numTests++;
-
-    workerPool.sendMessage({testFilePath: pathStr})
-      .done(function(results) {
-        var filteredResults = utils.filterPassingSuiteResults(results);
-        var allTestsPassed = filteredResults === null;
-
-        _printTestResultSummary(
-          allTestsPassed,
-          config.rootDir ? path.relative(config.rootDir, pathStr) : pathStr,
-          (results.stats.end - results.stats.start) / 1000
-        );
-
-        results.consoleMessages.forEach(_printConsoleMessage);
-
-        if (!allTestsPassed) {
-          failedTests++;
-
-          var descBullet = colorize('\u25cf ', colors.BOLD);
-          var msgBullet = '  - ';
-          var msgIndent = msgBullet.replace(/./g, ' ');
-
-          var flattenedResults = utils.flattenSuiteResults(filteredResults);
-
-          var testErrors;
-          for (var testDesc in flattenedResults.failingTests) {
-            testErrors = flattenedResults.failingTests[testDesc];
-
-            console.log(descBullet + testDesc);
-            testErrors.forEach(function(errorMsg) {
-              console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
-            });
-          }
-
-          //process.exit(0);
-        }
-      }, function(errMsg) {
-        _printTestResultSummary(false, pathStr);
-        console.log(errMsg);
-      });
-  }
-
-  var _completedFinders = 0;
-  function _onFinderComplete() {
-    _completedFinders++;
-    if (_completedFinders === config.jsScanDirs.length) {
-      workerPool.shutDown().done(function() {
-        var endTime = Date.now();
-        console.log(failedTests + '/' + numTests + ' tests failed');
-        console.log('Run time:', ((endTime - startTime) / 1000) + 's');
-        deferred.resolve();
-      }, deferred.reject);
-    }
-  }
-
-  var skipRegex = new RegExp(config.dirSkipRegex);
-  var scanStart = Date.now();
-  config.jsScanDirs.forEach(function(scanDir) {
-    var finder = new FileFinder({
-      rootFolder: scanDir,
-      filterFunction: function(pathStr, stat) {
-        return (
-          NODE_HASTE_TEST_PATH_RE.test(pathStr)
-          && !HIDDEN_FILE_RE.test(pathStr)
-          && pathPattern.test(pathStr)
-          && !skipRegex.test(pathStr)
-        );
-      }
+    workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
+      var allTestsPassed = self._printTestResults(results);
+      if (!allTestsPassed) failedTests++
+    }, function(errMsg) {
+      _printTestResultSummary(false, pathStr);
+      console.log(errMsg);
     });
-    finder.on('match', _onFinderMatch);
-    finder.on('complete', function() {
-      var finderEnd = Date.now();
-      _onFinderComplete();
-    });
-    finder.startSearch();
+  });
+
+  testFinderStream.on('end', function() {
+    workerPool.shutDown().done(function() {
+      var endTime = Date.now();
+      console.log(failedTests + '/' + numTests + ' tests failed');
+      console.log('Run time:', ((endTime - startTime) / 1000) + 's');
+      deferred.resolve();
+    }, deferred.reject);
   });
 
   return deferred.promise;
+};
+
+/**
+ * Run all tests (serially) matching the given path pattern RegExp.
+ * This runs all tests serially and in the current process (i.e. no child
+ * processes). This is mostly useful for debugging issues with Jest or rare,
+ * complicated issues with some tests.
+ *
+ * @param pathPattern A RegExp object that a given test path must match in order
+ *                    to be run.
+ * @return promise Fulfilled when all tests have finished running
+ */
+TestRunner.prototype.runAllInBand = function(pathPattern) {
+  var startTime = Date.now();
+
+  // TODO: This is copypasta from TestWorker.js
+  //
+  //       At some point we should probably just fold TestWorker.js into this
+  //       file and make all of its operations methods on TestRunner
+  var config = this._config;
+  var ModuleLoader = require(config.moduleLoader);
+  var environmentBuilder = require(config.environmentBuilder);
+  var testRunner = require(config.testRunner);
+
+  var testFinderStream = this._getTestFinderStream(
+    this._config.jsScanDirs,
+    new RegExp(config.dirSkipRegex),
+    pathPattern
+  );
+
+  var runTest = TestWorker.runTest.bind(null, config, testRunner);
+  var self = this;
+
+  ModuleLoader.loadResourceMap(config).done(function(resourceMap) {
+    var testDeferredStart = Q.defer();
+
+    var failedTests = 0;
+    var numTests = 0;
+    var lastTest = testDeferredStart.promise;
+    testFinderStream.on('data', function(pathStr) {
+      numTests++;
+      lastTest = lastTest.then(function() {
+        var environment = environmentBuilder();
+        var moduleLoader = new ModuleLoader(config, environment, resourceMap);
+
+        return runTest(environment, moduleLoader, pathStr)
+          .then(function(results) {
+            var allTestsPassed = self._printTestResults(results);
+            if (!allTestsPassed) failedTests++
+          });
+      });
+    });
+
+    testFinderStream.on('end', function() {
+      lastTest.done(function() {
+        var endTime = Date.now();
+        console.log(failedTests + '/' + numTests + ' tests failed');
+        console.log('Run time:', ((endTime - startTime) / 1000) + 's');
+      });
+      testDeferredStart.resolve();
+    });
+  });
 };
 
 module.exports = TestRunner;

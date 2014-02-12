@@ -13,6 +13,53 @@ function _serializeConsoleArguments(type, args) {
   };
 }
 
+function runTest(config, testRunner, environment, moduleLoader, testFilePath) {
+  var testRunStats = {start: Date.now()};
+
+  // Capture console logs so they are properly passed through the
+  // worker response back to the parent thread
+  var consoleMessages = [];
+  environment.global.console = {
+    error: function() {
+      consoleMessages.push(_serializeConsoleArguments('error', arguments));
+    },
+
+    log: function() {
+      consoleMessages.push(_serializeConsoleArguments('log', arguments));
+    },
+
+    warn: function() {
+      consoleMessages.push(_serializeConsoleArguments('warn', arguments));
+    }
+  };
+
+  if (config.setupEnvScriptFile) {
+    utils.runContentWithLocalBindings(
+      environment.runSourceText,
+      utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
+      config.setupEnvScriptFile,
+      {
+        __dirname: path.dirname(config.setupEnvScriptFile),
+        __filename: config.setupEnvScriptFile,
+        require: moduleLoader.constructBoundRequire(
+          config.setupEnvScriptFile
+        )
+      }
+    );
+  }
+
+  return testRunner(config, environment, moduleLoader, testFilePath)
+    .then(function(results) {
+      testRunStats.end = Date.now();
+      results.consoleMessages = consoleMessages;
+      results.stats = testRunStats;
+      results.testFilePath = testFilePath;
+      return results;
+    });
+}
+
+exports.runTest = runTest;
+
 if (require.main === module) {
   try {
     var argv = optimist.demand([
@@ -28,15 +75,6 @@ if (require.main === module) {
     var environmentBuilder = require(argv.environmentBuilder);
     var testRunner = require(argv.testRunner);
 
-    // Memoize the file content for the environment setup script
-    var setupEnvScriptContent = null;
-    if (config.setupEnvScriptFile) {
-      setupEnvScriptContent = utils.readAndPreprocessFileContent(
-        config.setupEnvScriptFile,
-        config
-      );
-    }
-
     // Longer term we should do something smarter and more efficient like prime
     // the haste map in the parent thread (exactly once), then pass the haste
     // map down to all the children.
@@ -46,50 +84,10 @@ if (require.main === module) {
     // and inefficient.
     ModuleLoader.loadResourceMap(config).done(function(resourceMap) {
       workerUtils.startWorker(function(message) {
-        var testRunStats = {start: Date.now()};
-        var testFilePath = message.testFilePath;
+        var testPath = message.testFilePath;
         var environment = environmentBuilder();
-
-        // Capture console logs so they are properly passed through the
-        // worker response back to the parent thread
-        var consoleMessages = [];
-        environment.global.console = {
-          error: function() {
-            consoleMessages.push(_serializeConsoleArguments('error', arguments));
-          },
-
-          log: function() {
-            consoleMessages.push(_serializeConsoleArguments('log', arguments));
-          },
-
-          warn: function() {
-            consoleMessages.push(_serializeConsoleArguments('warn', arguments));
-          }
-        };
-
         var moduleLoader = new ModuleLoader(config, environment, resourceMap);
-        if (setupEnvScriptContent) {
-          utils.runContentWithLocalBindings(
-            environment.runSourceText,
-            setupEnvScriptContent,
-            config.setupEnvScriptFile,
-            {
-              __dirname: path.dirname(config.setupEnvScriptFile),
-              __filename: config.setupEnvScriptFile,
-              require: moduleLoader.constructBoundRequire(
-                config.setupEnvScriptFile
-              )
-            }
-          );
-        }
-
-        return testRunner(config, environment, moduleLoader, testFilePath)
-          .then(function(results) {
-            testRunStats.end = Date.now();
-            results.consoleMessages = consoleMessages;
-            results.stats = testRunStats;
-            return results;
-          });
+        return runTest(config, testRunner, environment, moduleLoader, testPath);
       });
     });
   } catch (e) {
