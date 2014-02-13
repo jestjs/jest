@@ -111,21 +111,18 @@ function TestRunner(jestConfig, options) {
   }
 }
 
-TestRunner.prototype._getTestFinderStream = function(scanDirs, skipPattern,
-                                                     pathPattern) {
-  var foundTests = new stream.Readable({encoding: 'utf8', objectMode: true});
-  foundTests._read = function() {};
-
+TestRunner.prototype._getTestFinderStream = function(
+    scanDirs, skipPattern, pathPattern, onFind, onComplete) {
   var numMatchers = scanDirs.length;
   function _onMatcherEnd() {
     numMatchers--;
     if (numMatchers === 0) {
-      foundTests.push(null);
+      onComplete();
     }
   }
 
   function _onMatcherMatch(pathStr) {
-    foundTests.push(pathStr);
+    onFind(pathStr);
   }
 
   scanDirs.forEach(function(scanDir) {
@@ -144,8 +141,6 @@ TestRunner.prototype._getTestFinderStream = function(scanDirs, skipPattern,
     finder.on('complete', _onMatcherEnd);
     finder.startSearch();
   });
-
-  return foundTests;
 };
 
 TestRunner.prototype._printTestResults = function(results) {
@@ -194,7 +189,6 @@ TestRunner.prototype._printTestResults = function(results) {
 TestRunner.prototype.runAllParallel = function(pathPattern) {
   var startTime = Date.now();
   var config = this._config;
-  var deferred = Q.defer();
 
   var workerPool = new WorkerPool(this._opts.maxWorkers, this._opts.nodePath, [
     '--harmony',
@@ -205,16 +199,12 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     '--testRunner=' + config.testRunner
   ]);
 
-  var testFinderStream = this._getTestFinderStream(
-    config.jsScanDirs,
-    new RegExp(config.dirSkipRegex),
-    pathPattern
-  );
-
+  var deferred = Q.defer();
   var failedTests = 0;
   var numTests = 0;
   var self = this;
-  testFinderStream.on('data', function(pathStr) {
+
+  function _onTestFound(pathStr) {
     numTests++;
     workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
       var allTestsPassed = self._printTestResults(results);
@@ -223,16 +213,24 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
       _printTestResultSummary(false, pathStr);
       console.log(errMsg);
     });
-  });
+  }
 
-  testFinderStream.on('end', function() {
+  function _onSearchComplete() {
     workerPool.shutDown().done(function() {
       var endTime = Date.now();
       console.log(failedTests + '/' + numTests + ' tests failed');
       console.log('Run time:', ((endTime - startTime) / 1000) + 's');
       deferred.resolve();
     }, deferred.reject);
-  });
+  }
+
+  this._getTestFinderStream(
+    config.jsScanDirs,
+    new RegExp(config.dirSkipRegex),
+    pathPattern,
+    _onTestFound,
+    _onSearchComplete
+  );
 
   return deferred.promise;
 };
@@ -259,22 +257,17 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
   var environmentBuilder = require(config.environmentBuilder);
   var testRunner = require(config.testRunner);
 
-  var testFinderStream = this._getTestFinderStream(
-    this._config.jsScanDirs,
-    new RegExp(config.dirSkipRegex),
-    pathPattern
-  );
-
+  var dirSkipPattern = new RegExp(config.dirSkipRegex);
   var runTest = TestWorker.runTest.bind(null, config, testRunner);
   var self = this;
 
-  ModuleLoader.loadResourceMap(config).done(function(resourceMap) {
-    var testDeferredStart = Q.defer();
-
+  return ModuleLoader.loadResourceMap(config).then(function(resourceMap) {
+    var deferred = Q.defer();
     var failedTests = 0;
     var numTests = 0;
-    var lastTest = testDeferredStart.promise;
-    testFinderStream.on('data', function(pathStr) {
+    var lastTest = Q();
+
+    function _onTestFound(pathStr) {
       numTests++;
       lastTest = lastTest.then(function() {
         var environment = environmentBuilder();
@@ -286,16 +279,26 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
             if (!allTestsPassed) failedTests++
           });
       });
-    });
+    }
 
-    testFinderStream.on('end', function() {
-      lastTest.done(function() {
+    function _onSearchComplete() {
+      lastTest.then(function() {
         var endTime = Date.now();
         console.log(failedTests + '/' + numTests + ' tests failed');
         console.log('Run time:', ((endTime - startTime) / 1000) + 's');
+        deferred.resolve();
       });
-      testDeferredStart.resolve();
-    });
+    }
+
+    self._getTestFinderStream(
+      config.jsScanDirs,
+      dirSkipPattern,
+      pathPattern,
+      _onTestFound,
+      _onSearchComplete
+    );
+
+    return deferred.promise;
   });
 };
 
