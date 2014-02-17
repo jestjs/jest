@@ -463,7 +463,24 @@ HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
   var modulePath = this._moduleNameToPath(currFilePath, moduleName);
 
   if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
+    // In order to avoid it being possible for automocking to potentially cause
+    // side-effects within the module environment, we need to execute the module
+    // in isolation. This accomplishes that by temporarily clearing out the
+    // module and mock registries while the module being analyzed is executed.
+    //
+    // An example scenario where this could cause issue is if the module being
+    // mocked has calls into side-effectful APIs on another module.
+    var origMockRegistry = this._mockRegistry;
+    var origModuleRegistry = this._moduleRegistry;
+    this._mockRegistry = {};
+    this._moduleRegistry = {};
+
     var moduleExports = this.requireModule(currFilePath, moduleName);
+
+    // Restore the "real" module/mock registries
+    this._mockRegistry = origMockRegistry;
+    this._moduleRegistry = origModuleRegistry;
+
     this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata(
       moduleExports
     );
@@ -652,7 +669,7 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
         hasDependency: function(moduleNameA, moduleNameB) {
           var resourceA = this._resourceMap.getResource('JS', moduleNameA);
           // TODO
-        },
+        }.bind(this),
 
         generateMock: function(moduleName) {
           return this._generateMock(
