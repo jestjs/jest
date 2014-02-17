@@ -665,10 +665,28 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
           return this._builtInModules['mock-modules'].exports;
         }.bind(this),
 
-        // TODO: Wat. Is. This.
-        hasDependency: function(moduleNameA, moduleNameB) {
-          var resourceA = this._resourceMap.getResource('JS', moduleNameA);
-          // TODO
+        // wtf is this shit?
+        hasDependency: function(moduleAName, moduleBName) {
+          //var resourceA = this._resourceMap.getResource('JS', moduleAName);
+          var resourceMap = this._resourceMap;
+          var traversedModules = {};
+
+          function _recurse(moduleAName, moduleBName) {
+            traversedModules[moduleAName] = true;
+            if (moduleAName === moduleBName) {
+              return true;
+            }
+            var moduleAResource = resourceMap.getResource('JS', moduleAName);
+            return !!(
+              moduleAResource
+              && moduleAResource.requiredModules
+              && moduleAResource.requiredModules.some(function(dep) {
+                return !traversedModules[dep] && _recurse(dep, moduleBName);
+              })
+            );
+          }
+
+          return _recurse(moduleAName, moduleBName);
         }.bind(this),
 
         generateMock: function(moduleName) {
