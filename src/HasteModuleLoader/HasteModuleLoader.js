@@ -463,6 +463,10 @@ HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
   var modulePath = this._moduleNameToPath(currFilePath, moduleName);
 
   if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
+    // This allows us to handle circular dependencies while generating an
+    // automock
+    this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
+
     // In order to avoid it being possible for automocking to potentially cause
     // side-effects within the module environment, we need to execute the module
     // in isolation. This accomplishes that by temporarily clearing out the
