@@ -74,13 +74,32 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         }
         if (!this.equals_(a[property], b[property], mismatchKeys, mismatchValues))
         {
+          var aprop;
+          var bprop;
+          if (!a[property]) {
+            aprop = a[property];
+          } else if (a[property].toString) {
+            aprop = environment.global.jasmine.util.htmlEscape(
+              a[property].toString()
+            );
+          } else {
+            aprop = Object.prototype.toString.call(a[property]);
+          }
+
+          if (!b[property]) {
+            bprop = b[property];
+          } else if (b[property].toString) {
+            bprop = environment.global.jasmine.util.htmlEscape(
+              b[property].toString()
+            );
+          } else {
+            bprop = Object.prototype.toString.call(b[property]);
+          }
+
           mismatchValues.push(
-            "'" + property + "' was '" + (b[property] ?
-              environment.global.jasmine.util.htmlEscape(b[property].toString()) :
-              b[property]) +
-            "' in expected, but was '" + (a[property] ?
-              environment.global.jasmine.util.htmlEscape(a[property].toString()) :
-              a[property]) + "' in actual."
+            "'" + property + "' was '" + bprop +
+            "' in expected, but was '" + aprop +
+            "' in actual."
           );
         }
       }
