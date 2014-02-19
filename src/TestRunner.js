@@ -12,9 +12,13 @@ var WorkerPool = require('node-worker-pool');
 
 var colorize = colors.colorize;
 
-var JEST_ROOT_DIR = path.resolve(__dirname, '..');
-var JEST_NODE_MODULES_ROOT_DIR = path.join(JEST_ROOT_DIR, 'node_modules');
-var JEST_Q_ROOT_DIR = path.resolve(__dirname, '..', 'node_modules', 'q');
+// A RegExp that matches paths that should not be included in error stack traces
+// (mostly because these paths represent noisy/unhelpful libs)
+var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
+    path.resolve(__dirname, '..', 'node_modules', 'q'),
+    path.resolve(__dirname, '..', 'src', 'vendor', 'jasmine')
+].join('|') + ')');
+
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 var DEFAULT_OPTIONS = {
@@ -173,18 +177,15 @@ TestRunner.prototype._printTestResults = function(results) {
 
       console.log(descBullet + testDesc);
       testErrors.forEach(function(errorMsg) {
-        // Filter out q entries from the stack trace. They're super noisy and
-        // unhelpful
+        // Filter out q and jasmine entries from the stack trace.
+        // They're super noisy and unhelpful
         errorMsg = errorMsg.split('\n').filter(function(line) {
           if (/^\s+at .*?/.test(line)) {
             // Extract the file path from the trace line
             var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-            if (filePath) {
-              var pathRoot = 
-                filePath[1].substr(0, JEST_Q_ROOT_DIR.length + 1);
-              if (pathRoot === JEST_Q_ROOT_DIR + '/') {
-                return false;
-              }
+            if (filePath
+                && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
+              return false;
             }
           }
           return true;
