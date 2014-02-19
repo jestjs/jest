@@ -671,7 +671,6 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
 
         // wtf is this shit?
         hasDependency: function(moduleAName, moduleBName) {
-          //var resourceA = this._resourceMap.getResource('JS', moduleAName);
           var resourceMap = this._resourceMap;
           var traversedModules = {};
 
