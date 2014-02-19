@@ -1,5 +1,6 @@
 require('mock-modules').autoMockOff();
 
+var path = require('path');
 var Q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
@@ -9,7 +10,8 @@ describe('nodeHasteModuleLoader', function() {
   var resourceMap;
 
   var CONFIG = {
-    projectName: "nodeHasteModuleLoader-tests"
+    projectName: "nodeHasteModuleLoader-tests",
+    jsScanDirs: [path.resolve(__dirname, 'test_root')]
   };
 
   function buildLoader(config) {
