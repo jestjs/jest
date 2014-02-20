@@ -116,7 +116,7 @@ function formatConfig(config, relativeTo) {
   }, {});
 
   if (newConfig.rootDir) {
-    newConfig = _replaceRootDirTags(newConfig.rootdir, newConfig);
+    newConfig = _replaceRootDirTags(newConfig.rootDir, newConfig);
   }
 
   // If any config entries weren't specified but have default values, apply the
