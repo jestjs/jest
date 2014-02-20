@@ -224,10 +224,7 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
   var numTests = 0;
   var self = this;
 
-  console.log('running');
-
   function _onTestFound(pathStr) {
-    console.log('found', pathStr);
     numTests++;
     workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
       var allTestsPassed = self._printTestResults(results);
