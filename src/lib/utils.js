@@ -4,7 +4,6 @@ var path = require('path');
 var Q = require('q');
 
 function _replaceRootDirTags(rootDir, config) {
-  var objValue;
   switch (typeof config) {
     case 'object':
       if (Array.isArray(config)) {
@@ -12,10 +11,14 @@ function _replaceRootDirTags(rootDir, config) {
           return _replaceRootDirTags(rootDir, item);
         });
       } else if (config !== null) {
+        var newConfig = {};
         for (var configKey in config) {
-          config[configKey] = _replaceRootDirTags(rootDir, config[configKey]);
+          newConfig[configKey] = _replaceRootDirTags(
+            rootDir, 
+            config[configKey]
+          );
         }
-        return config;
+        return newConfig;
       }
       break;
     case 'string':
@@ -89,13 +92,34 @@ function flattenSuiteResults(suite) {
   }
 }
 
-function loadConfigFromFile(filePath) {
+function formatConfig(config, relativeTo) {
+  var newConfig = Object.keys(config).reduce(function(newConfig, key) {
+    var value;
+    switch (key) {
+      case 'rootDir':
+        value = config[key];
+        if (relativeTo) {
+          value = path.resolve(path.dirname(relativeTo), config[key]);
+        }
+        break;
+      default:
+        value = config[key];
+    }
+    newConfig[key] = value;
+    return newConfig;
+  }, {});
+
+  if (newConfig.rootDir) {
+    newConfig = _replaceRootDirTags(newConfig.rootdir, newConfig);
+  }
+
+  return newConfig;
+}
+
+function loadConfigFromFile(filePath, relativeTo) {
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
-    if (config.rootDir) {
-      config.rootDir = path.resolve(path.dirname(filePath), config.rootDir);
-    }
-    return _replaceRootDirTags(config.rootDir, config);
+    return formatConfig(config, relativeTo || path.dirname(filePath));
   });
 }
 
