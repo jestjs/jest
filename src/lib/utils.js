@@ -108,8 +108,14 @@ function formatConfig(config, relativeTo) {
           value = path.resolve(relativeTo, config[key]);
         }
         break;
+      case 'jsScanDirs':
+        value = config[key].map(function(scanDir) {
+          return path.resolve(relativeTo, scanDir);
+        });
+        break;
       default:
         value = config[key];
+        break;
     }
     newConfig[key] = value;
     return newConfig;
