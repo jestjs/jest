@@ -105,7 +105,7 @@ function formatConfig(config, relativeTo) {
       case 'rootDir':
         value = config[key];
         if (relativeTo) {
-          value = path.resolve(path.dirname(relativeTo), config[key]);
+          value = path.resolve(relativeTo, config[key]);
         }
         break;
       default:
@@ -132,9 +132,10 @@ function formatConfig(config, relativeTo) {
 }
 
 function loadConfigFromFile(filePath, relativeTo) {
+  relativeTo = relativeTo || path.dirname(filePath);
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
-    return formatConfig(config, relativeTo || path.dirname(filePath));
+    return formatConfig(config, relativeTo);
   });
 }
 
