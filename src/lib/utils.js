@@ -3,6 +3,12 @@ var fs = require('fs');
 var path = require('path');
 var Q = require('q');
 
+var DEFAULT_CONFIG_VALUES = {
+  environmentBuilder: require.resolve('../jsdomEnvironmentBuilder'),
+  moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
+  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
+};
+
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
     case 'object':
@@ -112,6 +118,15 @@ function formatConfig(config, relativeTo) {
   if (newConfig.rootDir) {
     newConfig = _replaceRootDirTags(newConfig.rootdir, newConfig);
   }
+
+  // If any config entries weren't specified but have default values, apply the
+  // default values
+  Object.keys(DEFAULT_CONFIG_VALUES).reduce(function(newConfig, key) {
+    if (!newConfig[key]) {
+      newConfig[key] = DEFAULT_CONFIG_VALUES[key];
+    }
+    return newConfig;
+  }, newConfig);
 
   return newConfig;
 }
