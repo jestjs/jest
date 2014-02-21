@@ -11,7 +11,7 @@ describe('nodeHasteModuleLoader', function() {
 
   var CONFIG = {
     projectName: "nodeHasteModuleLoader-tests",
-    jsScanDirs: [path.resolve(__dirname, 'test_root')]
+    testPathDirs: [path.resolve(__dirname, 'test_root')]
   };
 
   function buildLoader(config) {
