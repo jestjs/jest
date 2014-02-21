@@ -258,11 +258,6 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     }, deferred.reject);
   }
 
-  var testPathIgnorePattern =
-    config.testPathIgnores
-    ? new RegExp(config.testPathIgnores.join('|'))
-    : null;
-
   this._findTestFilePaths(
     config,
     pathPattern,
@@ -336,11 +331,6 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
         deferred.resolve(completionData);
       });
     }
-
-    var testPathIgnorePattern =
-      config.testPathIgnores
-      ? new RegExp(config.testPathIgnores.join('|'))
-      : null;
 
     self._findTestFilePaths(
       config,
