@@ -140,7 +140,7 @@ TestRunner.prototype._findTestFilePaths = function(
           NODE_HASTE_TEST_PATH_RE.test(pathStr)
           && !HIDDEN_FILE_RE.test(pathStr)
           && pathPattern.test(pathStr)
-          && (ignorePattern === null || !ignorePattern.test(pathStr))
+          && (!ignorePattern || !ignorePattern.test(pathStr))
         );
       }
     });
