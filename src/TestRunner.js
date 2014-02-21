@@ -119,8 +119,14 @@ function TestRunner(jestConfig, options) {
 }
 
 TestRunner.prototype._findTestFilePaths = function(
-    scanDirs, ignorePattern, pathPattern, onFind, onComplete) {
-  var numMatchers = scanDirs.length;
+    config, pathPattern, onFind, onComplete) {
+
+  var testPathIgnorePattern =
+    config.testPathIgnores
+    ? new RegExp(config.testPathIgnores.join('|'))
+    : null;
+
+  var numMatchers = config.testPathDirs.length;
   function _onMatcherEnd() {
     numMatchers--;
     if (numMatchers === 0) {
@@ -132,7 +138,7 @@ TestRunner.prototype._findTestFilePaths = function(
     onFind(pathStr);
   }
 
-  scanDirs.forEach(function(scanDir) {
+  config.testPathDirs.forEach(function(scanDir) {
     var finder = new FileFinder({
       rootFolder: scanDir,
       filterFunction: function(pathStr, stat) {
@@ -140,7 +146,7 @@ TestRunner.prototype._findTestFilePaths = function(
           NODE_HASTE_TEST_PATH_RE.test(pathStr)
           && !HIDDEN_FILE_RE.test(pathStr)
           && pathPattern.test(pathStr)
-          && (!ignorePattern || !ignorePattern.test(pathStr))
+          && (!testPathIgnorePattern || !testPathIgnorePattern.test(pathStr))
         );
       }
     });
@@ -258,8 +264,7 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     : null;
 
   this._findTestFilePaths(
-    config.testPathDirs,
-    testPathIgnorePattern,
+    config,
     pathPattern,
     _onTestFound,
     _onSearchComplete
@@ -338,8 +343,7 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
       : null;
 
     self._findTestFilePaths(
-      config.testPathDirs,
-      testPathIgnorePattern,
+      config,
       pathPattern,
       _onTestFound,
       _onSearchComplete
