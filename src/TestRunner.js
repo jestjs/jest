@@ -230,6 +230,7 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
       var allTestsPassed = self._printTestResults(results);
       if (!allTestsPassed) failedTests++
     }, function(errMsg) {
+      failedTests++;
       _printTestResultSummary(false, pathStr);
       console.log(errMsg);
     });
@@ -238,9 +239,16 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
   function _onSearchComplete() {
     workerPool.shutDown().done(function() {
       var endTime = Date.now();
+
+      var completionData = {
+        numFailedTests: failedTests,
+        numTotalTests: numTests
+      };
+
       console.log(failedTests + '/' + numTests + ' tests failed');
       console.log('Run time:', ((endTime - startTime) / 1000) + 's');
-      deferred.resolve();
+
+      deferred.resolve(completionData);
     }, deferred.reject);
   }
 
@@ -302,6 +310,9 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
           .then(function(results) {
             var allTestsPassed = self._printTestResults(results);
             if (!allTestsPassed) failedTests++
+          }, function(err) {
+            failedTests++;
+            return err;
           });
       });
     }
@@ -309,9 +320,16 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
     function _onSearchComplete() {
       lastTest.then(function() {
         var endTime = Date.now();
+
+        var completionData = {
+          numFailedTests: failedTests,
+          numTotalTests: numTests
+        };
+
         console.log(failedTests + '/' + numTests + ' tests failed');
         console.log('Run time:', ((endTime - startTime) / 1000) + 's');
-        deferred.resolve();
+
+        deferred.resolve(completionData);
       });
     }
 

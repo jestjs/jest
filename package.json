@@ -14,7 +14,14 @@
     "resolve": "~0.6.1",
     "underscore": "1.2.4"
   },
+  "bin": {
+    "runTests": "./bin/runTests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest"
+  },
   "scripts": {
-    "test": "node runTests.js"
+    "test": "node bin/runTests.js --config=testConfig.json"
   }
 }
