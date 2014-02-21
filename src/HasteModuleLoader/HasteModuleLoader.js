@@ -89,7 +89,7 @@ function HasteModuleLoader(config, environment, resourceMap) {
 HasteModuleLoader.loadResourceMap = function(config) {
   var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
   var HASTE_IGNORE_REGEX = new RegExp(
-    config.moduleLoaderPathIgnores || '__NOT_EXIST__'
+    config.moduleLoaderPathIgnores.join('|') || '__NOT_EXIST__'
   );
 
   if (!fs.existsSync(CACHE_DIR_PATH)) {
