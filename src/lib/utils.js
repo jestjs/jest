@@ -12,7 +12,9 @@ var DEFAULT_CONFIG_VALUES = {
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
     case 'object':
-      if (Array.isArray(config)) {
+      if (config instanceof RegExp) {
+        return config;
+      } else if (Array.isArray(config)) {
         return config.map(function(item) {
           return _replaceRootDirTags(rootDir, item);
         });
@@ -122,7 +124,8 @@ function normalizeConfig(config, relativeTo) {
       case 'rootDir':
         // Skip because we've already copied it above
         return newConfig;
-      case 'jsScanDirs':
+
+      case 'testPathDirs':
         value = config[key].map(function(scanDir) {
           return (
             /^\./.test(scanDir) 
@@ -131,6 +134,21 @@ function normalizeConfig(config, relativeTo) {
           );
         });
         break;
+
+      case 'testPathIgnores':
+      case 'moduleLoaderPathIgnores':
+        // _replaceRootDirTags is specifically well-suited for substituting
+        // <rootDir> in paths (it deals with properly interpreting relative path
+        // separators, etc).
+        //
+        // For patterns, direct global substitution is far more ideal, so we
+        // special case substitutions for patterns here.
+        value = config[key].map(function(pattern) {
+          return pattern.replace(/<rootDir>/g, newConfig.rootDir);
+        });
+        value = new RegExp('(?:' + value.join('|') + ')');
+        break;
+
       default:
         value = config[key];
         break;

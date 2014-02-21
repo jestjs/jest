@@ -88,7 +88,9 @@ function HasteModuleLoader(config, environment, resourceMap) {
 
 HasteModuleLoader.loadResourceMap = function(config) {
   var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
-  var DIR_SKIP_REGEX = new RegExp(config.dirSkipRegex || '__NOT_EXIST__');
+  var HASTE_IGNORE_REGEX = new RegExp(
+    config.moduleLoaderPathIgnores || '__NOT_EXIST__'
+  );
 
   if (!fs.existsSync(CACHE_DIR_PATH)) {
     fs.mkdirSync(CACHE_DIR_PATH);
@@ -105,7 +107,7 @@ HasteModuleLoader.loadResourceMap = function(config) {
     (config.jsScanDirs || []),
     {
       ignorePaths: function(path) {
-        return path.match(DIR_SKIP_REGEX);
+        return path.match(HASTE_IGNORE_REGEX);
       },
       version: JSON.stringify(config),
       useNativeFind: true,

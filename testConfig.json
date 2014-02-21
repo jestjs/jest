@@ -1,8 +1,11 @@
 {
   "projectName": "jest",
 
-  "testSkipRegex": "/__tests__/[^/]*/.+",
-  "jsScanDirs": [
+  "testPathDirs": [
     "./src"
+  ],
+
+  "testPathIgnores": [
+    "/__tests__/[^/]*/.+"
   ]
 }

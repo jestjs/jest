@@ -118,8 +118,8 @@ function TestRunner(jestConfig, options) {
   }
 }
 
-TestRunner.prototype._getTestFinderStream = function(
-    scanDirs, skipPattern, pathPattern, onFind, onComplete) {
+TestRunner.prototype._findTestFilePaths = function(
+    scanDirs, ignorePattern, pathPattern, onFind, onComplete) {
   var numMatchers = scanDirs.length;
   function _onMatcherEnd() {
     numMatchers--;
@@ -140,7 +140,7 @@ TestRunner.prototype._getTestFinderStream = function(
           NODE_HASTE_TEST_PATH_RE.test(pathStr)
           && !HIDDEN_FILE_RE.test(pathStr)
           && pathPattern.test(pathStr)
-          && (skipPattern === null || !skipPattern.test(pathStr))
+          && (ignorePattern === null || !ignorePattern.test(pathStr))
         );
       }
     });
@@ -252,14 +252,9 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     }, deferred.reject);
   }
 
-  var testSkipRegex = 
-    config.hasOwnProperty('testSkipRegex')
-    ? new RegExp(config.testSkipRegex)
-    : null;
-
-  this._getTestFinderStream(
-    config.jsScanDirs,
-    testSkipRegex,
+  this._findTestFilePaths(
+    config.testPathDirs,
+    config.testPathIgnores,
     pathPattern,
     _onTestFound,
     _onSearchComplete
@@ -290,7 +285,6 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
   var environmentBuilder = require(config.environmentBuilder);
   var testRunner = require(config.testRunner);
 
-  var dirSkipPattern = new RegExp(config.dirSkipRegex);
   var runTest = TestWorker.runTest.bind(null, config, testRunner);
   var self = this;
 
@@ -333,14 +327,9 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
       });
     }
 
-  var testSkipRegex = 
-    config.hasOwnProperty('testSkipRegex')
-    ? new RegExp(config.testSkipRegex)
-    : null;
-
-    self._getTestFinderStream(
-      config.jsScanDirs,
-      testSkipRegex,
+    self._findTestFilePaths(
+      config.testPathDirs,
+      config.testPathIgnores,
       pathPattern,
       _onTestFound,
       _onSearchComplete
