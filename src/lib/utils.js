@@ -19,16 +19,23 @@ function _replaceRootDirTags(rootDir, config) {
       } else if (config !== null) {
         var newConfig = {};
         for (var configKey in config) {
-          newConfig[configKey] = _replaceRootDirTags(
-            rootDir, 
-            config[configKey]
-          );
+          newConfig[configKey] = 
+            configKey === 'rootDir'
+            ? config[configKey]
+            : _replaceRootDirTags(rootDir, config[configKey]);
         }
         return newConfig;
       }
       break;
     case 'string':
-      return config.replace(/<rootDir>/g, rootDir);
+      if (!/^<rootDir>/.test(config)) {
+        return config;
+      }
+
+      return path.resolve(
+        rootDir, 
+        './' + path.normalize(config.substr('<rootDir>'.length))
+      );
   }
   return config;
 }
@@ -98,19 +105,30 @@ function flattenSuiteResults(suite) {
   }
 }
 
-function formatConfig(config, relativeTo) {
-  var newConfig = Object.keys(config).reduce(function(newConfig, key) {
+function normalizeConfig(config, relativeTo) {
+  var newConfig = {};
+
+  // Normalize rootDir into an absolute path
+  if (config.rootDir) {
+    newConfig.rootDir =
+      relativeTo
+      ? path.resolve(relativeTo, config.rootDir)
+      : config.rootDir;
+  }
+
+  Object.keys(config).reduce(function(newConfig, key) {
     var value;
     switch (key) {
       case 'rootDir':
-        value = config[key];
-        if (relativeTo) {
-          value = path.resolve(relativeTo, config[key]);
-        }
-        break;
+        // Skip because we've already copied it above
+        return newConfig;
       case 'jsScanDirs':
         value = config[key].map(function(scanDir) {
-          return path.resolve(relativeTo, scanDir);
+          return (
+            /^\./.test(scanDir) 
+            ? path.resolve(relativeTo, scanDir)
+            : scanDir
+          );
         });
         break;
       default:
@@ -119,11 +137,7 @@ function formatConfig(config, relativeTo) {
     }
     newConfig[key] = value;
     return newConfig;
-  }, {});
-
-  if (newConfig.rootDir) {
-    newConfig = _replaceRootDirTags(newConfig.rootDir, newConfig);
-  }
+  }, newConfig);
 
   // If any config entries weren't specified but have default values, apply the
   // default values
@@ -134,14 +148,14 @@ function formatConfig(config, relativeTo) {
     return newConfig;
   }, newConfig);
 
-  return newConfig;
+  return _replaceRootDirTags(newConfig.rootDir || '', newConfig);
 }
 
 function loadConfigFromFile(filePath, relativeTo) {
   relativeTo = relativeTo || path.dirname(filePath);
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
-    return formatConfig(config, relativeTo);
+    return normalizeConfig(config, relativeTo);
   });
 }
 
@@ -263,6 +277,7 @@ function stringifySerializedConsoleArgValue(arg) {
 exports.filterPassingSuiteResults = filterPassingSuiteResults;
 exports.flattenSuiteResults = flattenSuiteResults;
 exports.loadConfigFromFile = loadConfigFromFile;
+exports.normalizeConfig = normalizeConfig;
 exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
 exports.runContentWithLocalBindings = runContentWithLocalBindings;
 exports.serializeConsoleArgValue = serializeConsoleArgValue;
