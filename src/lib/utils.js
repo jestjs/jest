@@ -146,7 +146,6 @@ function normalizeConfig(config, relativeTo) {
         value = config[key].map(function(pattern) {
           return pattern.replace(/<rootDir>/g, newConfig.rootDir);
         });
-        value = new RegExp('(?:' + value.join('|') + ')');
         break;
 
       default:
