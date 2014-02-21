@@ -103,7 +103,7 @@ HasteModuleLoader.loadResourceMap = function(config) {
       new hasteLoaders.JSLoader(config.setupJSLoaderOptions),
       new hasteLoaders.ResourceLoader()
     ],
-    (config.jsScanDirs || []),
+    (config.testPathDirs || []),
     {
       ignorePaths: function(path) {
         return path.match(HASTE_IGNORE_REGEX);
