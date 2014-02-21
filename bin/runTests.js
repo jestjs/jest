@@ -55,6 +55,24 @@ var argv = optimist
         'useful for debugging, but such use cases are pretty rare.'
       ),
       type: 'boolean'
+    },
+    maxWorkers: {
+      alias: 'w',
+      description: _wrapDesc(
+        'Specifies the maximum number of workers the worker-pool will spawn ' +
+        'for running tests. This defaults to the number of the cores ' + 
+        'available on your machine. (its usually best not to override this ' + 
+        'default)'
+      ),
+      type: 'string' // no, optimist -- its a number.. :(
+    }
+  })
+  .check(function(argv) {
+    if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
+      throw (
+        "Both --runInBand and --maxWorkers were specified, but these two " +
+        "options don't make sense together. Which is it?"
+      );
     }
   })
   .argv
@@ -65,7 +83,12 @@ utils.loadConfigFromFile(argv.config).done(function(config) {
     ? /.*/
     : new RegExp(argv._.join('|'));
 
-  var testRunner = new TestRunner(config);
+  var testRunnerOpts = {};
+  if (argv.maxWorkers) {
+    testRunnerOpts.maxWorkers = argv.maxWorkers;
+  }
+
+  var testRunner = new TestRunner(config, testRunnerOpts);
 
   if (argv.runInBand) {
     console.log('Running tests serially in the current node process...');
