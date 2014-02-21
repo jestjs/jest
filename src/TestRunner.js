@@ -254,7 +254,7 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
 
   var testPathIgnorePattern =
     config.testPathIgnores
-    ? new RegExp(config.testPathIgnores)
+    ? new RegExp(config.testPathIgnores.join('|'))
     : null;
 
   this._findTestFilePaths(
@@ -334,7 +334,7 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
 
     var testPathIgnorePattern =
       config.testPathIgnores
-      ? new RegExp(config.testPathIgnores)
+      ? new RegExp(config.testPathIgnores.join('|'))
       : null;
 
     self._findTestFilePaths(
