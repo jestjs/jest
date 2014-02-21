@@ -252,9 +252,14 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     }, deferred.reject);
   }
 
+  var testPathIgnorePattern =
+    config.testPathIgnores
+    ? new RegExp(config.testPathIgnores)
+    : null;
+
   this._findTestFilePaths(
     config.testPathDirs,
-    config.testPathIgnores ? new RegExp(config.testPathIgnores) : null,
+    testPathIgnorePattern,
     pathPattern,
     _onTestFound,
     _onSearchComplete
@@ -327,9 +332,14 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
       });
     }
 
+    var testPathIgnorePattern =
+      config.testPathIgnores
+      ? new RegExp(config.testPathIgnores)
+      : null;
+
     self._findTestFilePaths(
       config.testPathDirs,
-      config.testPathIgnores ? new RegExp(config.testPathIgnores) : null,
+      testPathIgnorePattern,
       pathPattern,
       _onTestFound,
       _onSearchComplete
