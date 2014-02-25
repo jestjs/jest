@@ -62,6 +62,7 @@ function HasteModuleLoader(config, environment, resourceMap) {
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
   this._explicitShouldMock = {};
+  this._explicitlySetMocks = {};
   this._isCurrentlyExecutingManualMock = null;
   this._mockMetaDataCache = {};
   // TODO: Init the following property as an object for consistent typing
@@ -89,7 +90,7 @@ function HasteModuleLoader(config, environment, resourceMap) {
 HasteModuleLoader.loadResourceMap = function(config) {
   var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
   var HASTE_IGNORE_REGEX = new RegExp(
-    config.moduleLoaderPathIgnores 
+    config.moduleLoaderPathIgnores
     ? config.moduleLoaderPathIgnores.join('|')
     : '__NOT_EXIST__'
   );
@@ -432,6 +433,10 @@ HasteModuleLoader.prototype.constructBoundRequire = function(sourceModulePath) {
 HasteModuleLoader.prototype.requireMock = function(currFilePath, moduleName) {
   var modulePath;
 
+  if (this._explicitlySetMocks.hasOwnProperty(moduleName)) {
+    return this._explicitlySetMocks[moduleName];
+  }
+
   // Look in the node-haste resource map
   var manualMockResource = this._resourceMap.getResource('JSMock', moduleName);
   var modulePath;
@@ -665,11 +670,7 @@ HasteModuleLoader.prototype.resetModuleRegistry = function() {
 
         setMock: function(moduleName, moduleExports) {
           this._explicitShouldMock[moduleName] = true;
-          var modulePath = this._moduleNameToPath(
-            this._currentlyExecutingModulePath,
-            moduleName
-          );
-          this._mockRegistry[modulePath] = moduleExports;
+          this._explicitlySetMocks[moduleName] = moduleExports;
           return this._builtInModules['mock-modules'].exports;
         }.bind(this),
 
