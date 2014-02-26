@@ -14,14 +14,18 @@ function _replaceRootDirTags(rootDir, config) {
     case 'object':
       if (config instanceof RegExp) {
         return config;
-      } else if (Array.isArray(config)) {
+      }
+
+      if (Array.isArray(config)) {
         return config.map(function(item) {
           return _replaceRootDirTags(rootDir, item);
         });
-      } else if (config !== null) {
+      }
+
+      if (config !== null) {
         var newConfig = {};
         for (var configKey in config) {
-          newConfig[configKey] = 
+          newConfig[configKey] =
             configKey === 'rootDir'
             ? config[configKey]
             : _replaceRootDirTags(rootDir, config[configKey]);
@@ -35,7 +39,7 @@ function _replaceRootDirTags(rootDir, config) {
       }
 
       return path.resolve(
-        rootDir, 
+        rootDir,
         './' + path.normalize(config.substr('<rootDir>'.length))
       );
   }
@@ -128,7 +132,7 @@ function normalizeConfig(config, relativeTo) {
       case 'testPathDirs':
         value = config[key].map(function(scanDir) {
           return (
-            /^\./.test(scanDir) 
+            /^\./.test(scanDir)
             ? path.resolve(relativeTo, scanDir)
             : scanDir
           );
