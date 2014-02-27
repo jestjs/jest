@@ -188,7 +188,12 @@ function readAndPreprocessFileContent(filePath, config) {
 
   var fileData = fs.readFileSync(filePath, 'utf8');
   if (config.scriptPreprocessor) {
-    fileData = require(config.scriptPreprocessor).process(fileData, filePath);
+    try {
+      fileData = require(config.scriptPreprocessor).process(fileData, filePath);
+    } catch (e) {
+      e.message = config.scriptPreprocessor + ': ' + e.message;
+      throw e;
+    }
   }
   return contentCache[filePath] = fileData;
 }
