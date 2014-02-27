@@ -57,7 +57,7 @@ var NODE_CORE_MODULES = {
 var _configUnmockListRegExpCache = new WeakMap();
 var _moduleContentCache = {};
 
-function HasteModuleLoader(config, environment, resourceMap) {
+function Loader(config, environment, resourceMap) {
   this._config = config;
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
@@ -87,7 +87,7 @@ function HasteModuleLoader(config, environment, resourceMap) {
   this.resetModuleRegistry();
 }
 
-HasteModuleLoader.loadResourceMap = function(config) {
+Loader.loadResourceMap = function(config) {
   var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
   var HASTE_IGNORE_REGEX = new RegExp(
     config.moduleLoaderPathIgnores
@@ -144,7 +144,7 @@ HasteModuleLoader.loadResourceMap = function(config) {
  * @param bool isManualMock = false
  * @return object
  */
-HasteModuleLoader.prototype._execModule = function(moduleObj, isManualMock) {
+Loader.prototype._execModule = function(moduleObj, isManualMock) {
   var modulePath = moduleObj.__filename;
 
   var moduleContent = _moduleContentCache[modulePath];
@@ -201,13 +201,13 @@ HasteModuleLoader.prototype._execModule = function(moduleObj, isManualMock) {
  * Also contains special case logic for built-in modules, in which it just
  * returns the module name.
  *
- * @param string currFilePath The path of the file that is attempting to
+ * @param string currPath The path of the file that is attempting to
  *                            resolve the module
  * @param string moduleName The name of the module to be resolved
  * @return string
  */
-HasteModuleLoader.prototype._moduleNameToPath = function(currFilePath, moduleName) {
-  if (this._builtInModules[moduleName]) {
+Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
+  if (this._builtInModules.hasOwnProperty(moduleName)) {
     return moduleName;
   }
 
@@ -216,7 +216,7 @@ HasteModuleLoader.prototype._moduleNameToPath = function(currFilePath, moduleNam
   // require().
   if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
     // Normalize the relative path to an absolute path
-    var modulePath = path.resolve(currFilePath, '..', moduleName);
+    var modulePath = path.resolve(currPath, '..', moduleName);
 
     if (fs.existsSync(modulePath)) {
       if (fs.statSync(modulePath).isDirectory()) {
@@ -255,7 +255,7 @@ HasteModuleLoader.prototype._moduleNameToPath = function(currFilePath, moduleNam
     var resource = this._resourceMap.getResource('JS', moduleName);
     if (!resource) {
       return this._nodeModuleNameToPath(
-        currFilePath,
+        currPath,
         moduleName
       );
     }
@@ -263,7 +263,7 @@ HasteModuleLoader.prototype._moduleNameToPath = function(currFilePath, moduleNam
   }
 };
 
-HasteModuleLoader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
+Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   // Handle module names like require('jest/lib/util')
   var subModulePath = null;
   var moduleProjectPart = moduleName;
@@ -292,7 +292,7 @@ HasteModuleLoader.prototype._nodeModuleNameToPath = function(currPath, moduleNam
     return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
   }
 
-  // Make sure the resource path is above the currFilePath in the fs path
+  // Make sure the resource path is above the currPath in the fs path
   // tree. If so, just use node's resolve
   var resourceDirname = path.dirname(resource.path);
   var currFileDirname = path.dirname(currPath);
@@ -313,22 +313,79 @@ HasteModuleLoader.prototype._nodeModuleNameToPath = function(currPath, moduleNam
   );
 };
 
+Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
+  var moduleType;
+  var mockAbsPath = null;
+  var realAbsPath = null;
+
+  if (this._builtInModules.hasOwnProperty(moduleName)) {
+    moduleType = 'builtin';
+    realAbsPath = moduleName;
+  } else if (NODE_CORE_MODULES.hasOwnProperty(moduleName)) {
+    moduleType = 'node';
+    realAbsPath = moduleName;
+  } else {
+    moduleType = 'user';
+
+    // If this is a path-based module name, resolve it to an absolute path and
+    // then see if there's a node-haste resource for it (so that we can extract
+    // info from the resource, like whether its a mock, or a
+    if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
+      var absolutePath = this._moduleNameToPath(currPath, moduleName);
+      if (absolutePath === undefined) {
+        throw new Error(
+          'Cannot find module \'' + moduleName + '\' from \'' + currPath + '\''
+        );
+      }
+
+      // See if node-haste is already aware of this resource. If so, we need to
+      // look up if it has an associated manual mock.
+      var resource = this._resourceMap.getResourceByPath(absolutePath);
+      if (resource) {
+        if (resource.type === 'JS') {
+          realAbsPath = absolutePath;
+        } else if (resource.type === 'JSMock') {
+          mockAbsPath = absolutePath;
+        }
+        moduleName = resource.id;
+      }
+    }
+
+    if (realAbsPath === null) {
+      var moduleResource = this._resourceMap.getResource('JS', moduleName);
+      if (moduleResource) {
+        realAbsPath = moduleResource.path;
+      }
+    }
+
+    if (mockAbsPath === null) {
+      var mockResource = this._resourceMap.getResource('JSMock', moduleName);
+      if (mockResource) {
+        mockAbsPath = mockResource.path;
+      }
+    }
+  }
+
+  return [moduleType, realAbsPath, mockAbsPath].join(':');
+};
+
 /**
  * Indicates whether a given module is mocked per the current state of the
  * module loader. When a module is "mocked", that means calling
  * `requireModuleOrMock()` for the module will return the mock version
  * rather than the real version.
  *
- * @param string currFilePath The path of the file that is attempting to
+ * @param string currPath The path of the file that is attempting to
  *                            resolve the module
  * @param string moduleName The name of the module to be resolved
  * @return bool
  */
-HasteModuleLoader.prototype._shouldMock = function(currFilePath, moduleName) {
-  if (this._builtInModules[moduleName]) {
+Loader.prototype._shouldMock = function(currPath, moduleName) {
+  var moduleID = this._getNormalizedModuleID(currPath, moduleName);
+  if (this._builtInModules.hasOwnProperty(moduleName)) {
     return false;
-  } else if (this._explicitShouldMock.hasOwnProperty(moduleName)) {
-    return this._explicitShouldMock[moduleName];
+  } else if (this._explicitShouldMock.hasOwnProperty(moduleID)) {
+    return this._explicitShouldMock[moduleID];
   } else if (this._shouldAutoMock) {
 
     // See if the module is specified in the config as a module that should
@@ -341,7 +398,7 @@ HasteModuleLoader.prototype._shouldMock = function(currFilePath, moduleName) {
       var manualMockResource =
         this._resourceMap.getResource('JSMock', moduleName);
       try {
-        var modulePath = this._moduleNameToPath(currFilePath, moduleName);
+        var modulePath = this._moduleNameToPath(currPath, moduleName);
       } catch(e) {
         // If there isn't a real module, we don't have a path to match
         // against the unmockList regexps. If there is also not a manual
@@ -379,7 +436,7 @@ HasteModuleLoader.prototype._shouldMock = function(currFilePath, moduleName) {
   }
 };
 
-HasteModuleLoader.prototype.constructBoundRequire = function(sourceModulePath) {
+Loader.prototype.constructBoundRequire = function(sourceModulePath) {
   var boundModuleRequire = this.requireModuleOrMock.bind(
     this,
     sourceModulePath
@@ -425,16 +482,17 @@ HasteModuleLoader.prototype.constructBoundRequire = function(sourceModulePath) {
  *   3) Look for a real module, pass it to the mocker utility (to create a
  *      mock), and return the resulting generated mock
  *
- * @param string currFilePath The path of the file that is attempting to
+ * @param string currPath The path of the file that is attempting to
  *                            resolve the module
  * @param string moduleName The name of the module to be resolved
  * @return object
  */
-HasteModuleLoader.prototype.requireMock = function(currFilePath, moduleName) {
+Loader.prototype.requireMock = function(currPath, moduleName) {
   var modulePath;
+  var moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-  if (this._explicitlySetMocks.hasOwnProperty(moduleName)) {
-    return this._explicitlySetMocks[moduleName];
+  if (this._explicitlySetMocks.hasOwnProperty(moduleID)) {
+    return this._explicitlySetMocks[moduleID];
   }
 
   // Look in the node-haste resource map
@@ -443,7 +501,7 @@ HasteModuleLoader.prototype.requireMock = function(currFilePath, moduleName) {
   if (manualMockResource) {
     modulePath = manualMockResource.path;
   } else {
-    modulePath = this._moduleNameToPath(currFilePath, moduleName);
+    modulePath = this._moduleNameToPath(currPath, moduleName);
   }
 
   if (this._mockRegistry.hasOwnProperty(modulePath)) {
@@ -460,7 +518,7 @@ HasteModuleLoader.prototype.requireMock = function(currFilePath, moduleName) {
   } else {
     // Look for a real module to generate an automock from
     this._mockRegistry[modulePath] = this._generateMock(
-      currFilePath,
+      currPath,
       moduleName
     );
   }
@@ -468,8 +526,8 @@ HasteModuleLoader.prototype.requireMock = function(currFilePath, moduleName) {
   return this._mockRegistry[modulePath];
 };
 
-HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
-  var modulePath = this._moduleNameToPath(currFilePath, moduleName);
+Loader.prototype._generateMock = function(currPath, moduleName) {
+  var modulePath = this._moduleNameToPath(currPath, moduleName);
 
   if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
     // This allows us to handle circular dependencies while generating an
@@ -488,7 +546,7 @@ HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
     this._mockRegistry = {};
     this._moduleRegistry = {};
 
-    var moduleExports = this.requireModule(currFilePath, moduleName);
+    var moduleExports = this.requireModule(currPath, moduleName);
 
     // Restore the "real" module/mock registries
     this._mockRegistry = origMockRegistry;
@@ -508,16 +566,17 @@ HasteModuleLoader.prototype._generateMock = function(currFilePath, moduleName) {
  * Given a module name, return the *real* (un-mocked) version of said
  * module.
  *
- * @param string currFilePath The path of the file that is attempting to
+ * @param string currPath The path of the file that is attempting to
  *                            resolve the module
  * @param string moduleName The name of the module to be resolved
  * @param bool bypassRegistryCache Whether we should read from/write to the
  *                                 module registry. Fuck this arg.
  * @return object
  */
-HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName,
-                                                     bypassRegistryCache) {
+Loader.prototype.requireModule = function(currPath, moduleName,
+                                          bypassRegistryCache) {
   var modulePath;
+  var moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
   // I don't like this behavior as it makes the module system's mocking
   // rules harder to understand. Would much prefer that mock state were
@@ -543,12 +602,12 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName,
   if (!moduleResource
       && manualMockResource
       && manualMockResource.path !== this._isCurrentlyExecutingManualMock
-      && this._explicitShouldMock[moduleName] !== false) {
+      && this._explicitShouldMock[moduleID] !== false) {
     modulePath = manualMockResource.path;
   }
 
   if (!modulePath) {
-    modulePath = this._moduleNameToPath(currFilePath, moduleName);
+    modulePath = this._moduleNameToPath(currPath, moduleName);
   }
 
   if (!modulePath) {
@@ -557,12 +616,16 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName,
     }
 
     throw new Error(
-      'Cannot find module \'' + moduleName + '\' from \'' + currFilePath +
+      'Cannot find module \'' + moduleName + '\' from \'' + currPath +
       '\''
     );
   }
 
-  var moduleObj = this._builtInModules[modulePath];
+  var moduleObj;
+  if (modulePath && this._builtInModules.hasOwnProperty(modulePath)) {
+    moduleObj = this._builtInModules[modulePath](currPath);
+  }
+
   if (!moduleObj && !bypassRegistryCache) {
     moduleObj = this._moduleRegistry[modulePath];
   }
@@ -598,16 +661,16 @@ HasteModuleLoader.prototype.requireModule = function(currFilePath, moduleName,
  * that module -- depending on the mocking state of the loader (and, perhaps
  * the mocking state for the requested module).
  *
- * @param string currFilePath The path of the file that is attempting to
+ * @param string currPath The path of the file that is attempting to
  *                            resolve the module
  * @param string moduleName The name of the module to be resolved
  * @return object
  */
-HasteModuleLoader.prototype.requireModuleOrMock = function(currFilePath, moduleName) {
-  if (this._shouldMock(currFilePath, moduleName)) {
-    return this.requireMock(currFilePath, moduleName);
+Loader.prototype.requireModuleOrMock = function(currPath, moduleName) {
+  if (this._shouldMock(currPath, moduleName)) {
+    return this.requireMock(currPath, moduleName);
   } else {
-    return this.requireModule(currFilePath, moduleName);
+    return this.requireModule(currPath, moduleName);
   }
 };
 
@@ -618,110 +681,120 @@ HasteModuleLoader.prototype.requireModuleOrMock = function(currFilePath, moduleN
  *
  * @return void
  */
-HasteModuleLoader.prototype.resetModuleRegistry = function() {
+Loader.prototype.resetModuleRegistry = function() {
   var explicitMockStatus = this._explicitShouldMock;
 
   this._mockRegistry = {};
   this._moduleRegistry = {};
   this._builtInModules = {
-    'mocks': {exports: moduleMocker},
-    'mock-modules': {
-      exports: {
-        dontMock: function(moduleName) {
-          this._explicitShouldMock[moduleName] = false;
-          return this._builtInModules['mock-modules'].exports;
-        }.bind(this),
+    'mocks': function() {
+      return {
+        exports: moduleMocker
+      };
+    },
+    'mock-modules': function(currPath) {
+      var mockModules = {
+        exports: {
+          dontMock: function(moduleName) {
+            var moduleID = this._getNormalizedModuleID(currPath, moduleName);
+            this._explicitShouldMock[moduleID] = false;
+            return mockModules.exports;
+          }.bind(this),
 
-        mock: function(moduleName) {
-          this._explicitShouldMock[moduleName] = true;
-          return this._builtInModules['mock-modules'].exports;
-        }.bind(this),
+          mock: function(moduleName) {
+            var moduleID = this._getNormalizedModuleID(currPath, moduleName);
+            this._explicitShouldMock[moduleID] = true;
+            return mockModules.exports;
+          }.bind(this),
 
-        autoMockOff: function() {
-          this._shouldAutoMock = false;
-          return this._builtInModules['mock-modules'].exports;
-        }.bind(this),
+          autoMockOff: function() {
+            this._shouldAutoMock = false;
+            return mockModules.exports;
+          }.bind(this),
 
-        autoMockOn: function() {
-          this._shouldAutoMock = true;
-          return this._builtInModules['mock-modules'].exports;
-        }.bind(this),
+          autoMockOn: function() {
+            this._shouldAutoMock = true;
+            return mockModules.exports;
+          }.bind(this),
 
-        // TODO: This is such a bad name, we should rename it to
-        //       `resetModuleRegistry()` -- or anything else, really
-        dumpCache: function() {
-          var globalMock;
-          for (var key in this._environment.global) {
-            globalMock = this._environment.global[key];
-            if ((typeof globalMock === 'object' && globalMock !== null)
-                || typeof globalMock === 'function') {
-              globalMock._isMockFunction && globalMock.mockClear();
+          // TODO: This is such a bad name, we should rename it to
+          //       `resetModuleRegistry()` -- or anything else, really
+          dumpCache: function() {
+            var globalMock;
+            for (var key in this._environment.global) {
+              globalMock = this._environment.global[key];
+              if ((typeof globalMock === 'object' && globalMock !== null)
+                  || typeof globalMock === 'function') {
+                globalMock._isMockFunction && globalMock.mockClear();
+              }
             }
-          }
 
-          if (this._environment.global.mockClearTimers) {
-            this._environment.global.mockClearTimers();
-          }
-
-          this.resetModuleRegistry();
-
-          return this._builtInModules['mock-modules'].exports;
-        }.bind(this),
-
-        setMock: function(moduleName, moduleExports) {
-          this._explicitShouldMock[moduleName] = true;
-          this._explicitlySetMocks[moduleName] = moduleExports;
-          return this._builtInModules['mock-modules'].exports;
-        }.bind(this),
-
-        // wtf is this shit?
-        hasDependency: function(moduleAName, moduleBName) {
-          var resourceMap = this._resourceMap;
-          var traversedModules = {};
-
-          function _recurse(moduleAName, moduleBName) {
-            traversedModules[moduleAName] = true;
-            if (moduleAName === moduleBName) {
-              return true;
+            if (this._environment.global.mockClearTimers) {
+              this._environment.global.mockClearTimers();
             }
-            var moduleAResource = resourceMap.getResource('JS', moduleAName);
-            return !!(
-              moduleAResource
-              && moduleAResource.requiredModules
-              && moduleAResource.requiredModules.some(function(dep) {
-                return !traversedModules[dep] && _recurse(dep, moduleBName);
-              })
+
+            this.resetModuleRegistry();
+
+            return mockModules.exports;
+          }.bind(this),
+
+          setMock: function(moduleName, moduleExports) {
+            var moduleID = this._getNormalizedModuleID(currPath, moduleName);
+            this._explicitShouldMock[moduleID] = true;
+            this._explicitlySetMocks[moduleID] = moduleExports;
+            return mockModules.exports;
+          }.bind(this),
+
+          // wtf is this shit?
+          hasDependency: function(moduleAName, moduleBName) {
+            var resourceMap = this._resourceMap;
+            var traversedModules = {};
+
+            function _recurse(moduleAName, moduleBName) {
+              traversedModules[moduleAName] = true;
+              if (moduleAName === moduleBName) {
+                return true;
+              }
+              var moduleAResource = resourceMap.getResource('JS', moduleAName);
+              return !!(
+                moduleAResource
+                && moduleAResource.requiredModules
+                && moduleAResource.requiredModules.some(function(dep) {
+                  return !traversedModules[dep] && _recurse(dep, moduleBName);
+                })
+              );
+            }
+
+            return _recurse(moduleAName, moduleBName);
+          }.bind(this),
+
+          generateMock: function(moduleName) {
+            return this._generateMock(
+              this._currentlyExecutingModulePath,
+              moduleName
             );
-          }
+          }.bind(this),
 
-          return _recurse(moduleAName, moduleBName);
-        }.bind(this),
+          useActualTimers: function() {
+            require('../lib/mockTimers').uninstallMockTimers(this._environment.global);
+          }.bind(this),
 
-        generateMock: function(moduleName) {
-          return this._generateMock(
-            this._currentlyExecutingModulePath,
-            moduleName
-          );
-        }.bind(this),
-
-        useActualTimers: function() {
-          require('../lib/mockTimers').uninstallMockTimers(this._environment.global);
-        }.bind(this),
-
-        /**
-         * Load actual module without reading from or writing to module exports
-         * registry. This method's name is devastatingly misleading. :(
-         */
-        loadActualModule: function(moduleName) {
-          return this.requireModule(
-            this._currentlyExecutingModulePath,
-            moduleName,
-            true // yay boolean args!
-          );
-        }.bind(this)
-      }
-    }
+          /**
+           * Load actual module without reading from or writing to module exports
+           * registry. This method's name is devastatingly misleading. :(
+           */
+          loadActualModule: function(moduleName) {
+            return this.requireModule(
+              this._currentlyExecutingModulePath,
+              moduleName,
+              true // yay boolean args!
+            );
+          }.bind(this)
+        }
+      };
+      return mockModules;
+    }.bind(this)
   };
 };
 
-module.exports = HasteModuleLoader;
+module.exports = Loader;

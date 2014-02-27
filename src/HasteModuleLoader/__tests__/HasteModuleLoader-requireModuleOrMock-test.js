@@ -57,6 +57,16 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
+    pit('doesnt mock modules when explicitly dontMock()ed via a different ' +
+        'denormalized module name', function() {
+      return buildLoader().then(function(loader) {
+        var mockModules = loader.requireModuleOrMock(__filename, 'mock-modules');
+        mockModules.dontMock('./test_root/RegularModule');
+        var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
+        expect(exports.isRealModule).toBe(true);
+      });
+    });
+
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
         loader.requireModuleOrMock(null, 'mock-modules').autoMockOff();
