@@ -192,6 +192,74 @@ Loader.prototype._execModule = function(moduleObj, isManualMock) {
   this._currentlyExecutingModulePath = lastExecutingModulePath;
 };
 
+Loader.prototype._getResource = function(resourceType, resourceName) {
+  var resource = this._resourceMap.getResource(resourceType, resourceName);
+
+  // TODO: Fix this properly in node-haste, not here :(
+  if (resource === undefined && resourceType === 'JS' && /\//.test(resourceName)
+      && !/\.js$/.test(resourceName)) {
+    resource = this._resourceMap.getResource(resourceType, resourceName + '.js');
+  }
+
+  return resource;
+};
+
+Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
+  var moduleType;
+  var mockAbsPath = null;
+  var realAbsPath = null;
+
+  if (this._builtInModules.hasOwnProperty(moduleName)) {
+    moduleType = 'builtin';
+    realAbsPath = moduleName;
+  } else if (NODE_CORE_MODULES.hasOwnProperty(moduleName)) {
+    moduleType = 'node';
+    realAbsPath = moduleName;
+  } else {
+    moduleType = 'user';
+
+    // If this is a path-based module name, resolve it to an absolute path and
+    // then see if there's a node-haste resource for it (so that we can extract
+    // info from the resource, like whether its a mock, or a
+    if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
+      var absolutePath = this._moduleNameToPath(currPath, moduleName);
+      if (absolutePath === undefined) {
+        throw new Error(
+          'Cannot find module \'' + moduleName + '\' from \'' + currPath + '\''
+        );
+      }
+
+      // See if node-haste is already aware of this resource. If so, we need to
+      // look up if it has an associated manual mock.
+      var resource = this._resourceMap.getResourceByPath(absolutePath);
+      if (resource) {
+        if (resource.type === 'JS') {
+          realAbsPath = absolutePath;
+        } else if (resource.type === 'JSMock') {
+          mockAbsPath = absolutePath;
+        }
+        moduleName = resource.id;
+      }
+    }
+
+    if (realAbsPath === null) {
+      var moduleResource = this._getResource('JS', moduleName);
+      if (moduleResource) {
+        realAbsPath = moduleResource.path;
+      }
+    }
+
+    if (mockAbsPath === null) {
+      var mockResource = this._getResource('JSMock', moduleName);
+      if (mockResource) {
+        mockAbsPath = mockResource.path;
+      }
+    }
+  }
+
+  return [moduleType, realAbsPath, mockAbsPath].join(':');
+};
+
 /**
  * Given a module name and the current file path, returns the normalized
  * (absolute) module path for said module. Relative-path CommonJS require()s
@@ -252,7 +320,7 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
       return modulePath + '.json';
     }
   } else {
-    var resource = this._resourceMap.getResource('JS', moduleName);
+    var resource = this._getResource('JS', moduleName);
     if (!resource) {
       return this._nodeModuleNameToPath(
         currPath,
@@ -313,62 +381,6 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   );
 };
 
-Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
-  var moduleType;
-  var mockAbsPath = null;
-  var realAbsPath = null;
-
-  if (this._builtInModules.hasOwnProperty(moduleName)) {
-    moduleType = 'builtin';
-    realAbsPath = moduleName;
-  } else if (NODE_CORE_MODULES.hasOwnProperty(moduleName)) {
-    moduleType = 'node';
-    realAbsPath = moduleName;
-  } else {
-    moduleType = 'user';
-
-    // If this is a path-based module name, resolve it to an absolute path and
-    // then see if there's a node-haste resource for it (so that we can extract
-    // info from the resource, like whether its a mock, or a
-    if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
-      var absolutePath = this._moduleNameToPath(currPath, moduleName);
-      if (absolutePath === undefined) {
-        throw new Error(
-          'Cannot find module \'' + moduleName + '\' from \'' + currPath + '\''
-        );
-      }
-
-      // See if node-haste is already aware of this resource. If so, we need to
-      // look up if it has an associated manual mock.
-      var resource = this._resourceMap.getResourceByPath(absolutePath);
-      if (resource) {
-        if (resource.type === 'JS') {
-          realAbsPath = absolutePath;
-        } else if (resource.type === 'JSMock') {
-          mockAbsPath = absolutePath;
-        }
-        moduleName = resource.id;
-      }
-    }
-
-    if (realAbsPath === null) {
-      var moduleResource = this._resourceMap.getResource('JS', moduleName);
-      if (moduleResource) {
-        realAbsPath = moduleResource.path;
-      }
-    }
-
-    if (mockAbsPath === null) {
-      var mockResource = this._resourceMap.getResource('JSMock', moduleName);
-      if (mockResource) {
-        mockAbsPath = mockResource.path;
-      }
-    }
-  }
-
-  return [moduleType, realAbsPath, mockAbsPath].join(':');
-};
-
 /**
  * Indicates whether a given module is mocked per the current state of the
  * module loader. When a module is "mocked", that means calling
@@ -396,7 +408,7 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
       this._unmockListModuleNames[moduleName] = true;
 
       var manualMockResource =
-        this._resourceMap.getResource('JSMock', moduleName);
+        this._getResource('JSMock', moduleName);
       try {
         var modulePath = this._moduleNameToPath(currPath, moduleName);
       } catch(e) {
@@ -496,7 +508,7 @@ Loader.prototype.requireMock = function(currPath, moduleName) {
   }
 
   // Look in the node-haste resource map
-  var manualMockResource = this._resourceMap.getResource('JSMock', moduleName);
+  var manualMockResource = this._getResource('JSMock', moduleName);
   var modulePath;
   if (manualMockResource) {
     modulePath = manualMockResource.path;
@@ -597,8 +609,8 @@ Loader.prototype.requireModule = function(currPath, moduleName,
   // up at some point in the future.
   var manualMockResource = null;
   var moduleResource = null;
-  moduleResource = this._resourceMap.getResource('JS', moduleName);
-  manualMockResource = this._resourceMap.getResource('JSMock', moduleName);
+  moduleResource = this._getResource('JS', moduleName);
+  manualMockResource = this._getResource('JSMock', moduleName);
   if (!moduleResource
       && manualMockResource
       && manualMockResource.path !== this._isCurrentlyExecutingManualMock
@@ -682,8 +694,6 @@ Loader.prototype.requireModuleOrMock = function(currPath, moduleName) {
  * @return void
  */
 Loader.prototype.resetModuleRegistry = function() {
-  var explicitMockStatus = this._explicitShouldMock;
-
   this._mockRegistry = {};
   this._moduleRegistry = {};
   this._builtInModules = {
@@ -747,15 +757,15 @@ Loader.prototype.resetModuleRegistry = function() {
 
           // wtf is this shit?
           hasDependency: function(moduleAName, moduleBName) {
-            var resourceMap = this._resourceMap;
             var traversedModules = {};
 
+            var self = this;
             function _recurse(moduleAName, moduleBName) {
               traversedModules[moduleAName] = true;
               if (moduleAName === moduleBName) {
                 return true;
               }
-              var moduleAResource = resourceMap.getResource('JS', moduleAName);
+              var moduleAResource = self._getResource('JS', moduleAName);
               return !!(
                 moduleAResource
                 && moduleAResource.requiredModules
