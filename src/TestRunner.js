@@ -35,7 +35,18 @@ var DEFAULT_OPTIONS = {
    *
    * This is used in the process of booting each of the workers.
    */
-  nodePath: process.execPath
+  nodePath: process.execPath,
+
+  /**
+   * The args to be passed to the node binary executable.
+   *
+   * this is used in the process of booting each of the workers.
+   */
+  nodeArgv: process.execArgv.filter(function(arg) {
+    // Passing --debug off to child processes can screw with socket connections
+    // of the parent process.
+    return arg !== '--debug';
+  })
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
@@ -216,14 +227,18 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
   var startTime = Date.now();
   var config = this._config;
 
-  var workerPool = new WorkerPool(this._opts.maxWorkers, this._opts.nodePath, [
-    '--harmony',
-    TEST_WORKER_PATH,
-    '--config=' + JSON.stringify(config),
-    '--moduleLoader=' + config.moduleLoader,
-    '--environmentBuilder=' + config.environmentBuilder,
-    '--testRunner=' + config.testRunner
-  ]);
+  var workerPool = new WorkerPool(
+    this._opts.maxWorkers,
+    this._opts.nodePath,
+    this._opts.nodeArgv.concat([
+      '--harmony',
+      TEST_WORKER_PATH,
+      '--config=' + JSON.stringify(config),
+      '--moduleLoader=' + config.moduleLoader,
+      '--environmentBuilder=' + config.environmentBuilder,
+      '--testRunner=' + config.testRunner
+    ])
+  );
 
   var deferred = Q.defer();
   var failedTests = 0;
