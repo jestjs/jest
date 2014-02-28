@@ -707,7 +707,7 @@ Loader.prototype.resetModuleRegistry = function() {
           }.bind(this)
         }
       };
-    },
+    }.bind(this),
     'mocks': function() {
       return {
         exports: moduleMocker
