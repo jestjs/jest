@@ -697,6 +697,17 @@ Loader.prototype.resetModuleRegistry = function() {
   this._mockRegistry = {};
   this._moduleRegistry = {};
   this._builtInModules = {
+    'node-haste': function() {
+      return {
+        exports: {
+          // Keeping this interface deliberately incomplete, only offering
+          // what is actually needed by tests.
+          getResourceMap: function() {
+            return this._resourceMap;
+          }.bind(this)
+        }
+      };
+    },
     'mocks': function() {
       return {
         exports: moduleMocker
