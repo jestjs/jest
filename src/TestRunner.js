@@ -11,13 +11,6 @@ var WorkerPool = require('node-worker-pool');
 
 var colorize = colors.colorize;
 
-// A RegExp that matches paths that should not be included in error stack traces
-// (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
-    path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'src', 'vendor', 'jasmine')
-].join('|') + ')');
-
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 var DEFAULT_OPTIONS = {
@@ -45,68 +38,23 @@ var DEFAULT_OPTIONS = {
     // Passing --debug off to child processes can screw with socket connections
     // of the parent process.
     return arg !== '--debug';
-  })
+  }),
+
+  /**
+   * Function for handling (usually printing) the results of a given test.
+   * This function will be called once for each test when the test is complete,
+   * and with the following arguments:
+   *
+   * @param {object} config The config object supplied to the TestRunner
+   * @param {object} testResult The results of the test
+   *
+   * TODO: Document + formalized the format of the results object
+   */
+  testResultsHandler: require('./defaultTestResultHandler')
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
 var NODE_HASTE_TEST_PATH_RE = /\/__tests__\/.*\.js$/;
-
-var FAIL_COLOR = colors.RED_BG;
-var PASS_COLOR = colors.GREEN_BG;
-var TEST_TITLE_COLOR = colors.BOLD + colors.UNDERLINE;
-
-function _printConsoleMessage(msg) {
-  switch (msg.type) {
-    case 'error':
-      // TODO: jstest doesn't print console.error messages.
-      //       This is a big WAT, and we should come back to this -- but
-      //       right now the goal is jest/jstest feature parity, not test
-      //       cleanup.
-      break;
-
-      console.error.apply(console, msg.args.map(function(arg) {
-        arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colorize(arg, colors.RED);
-      }));
-      break;
-    case 'log':
-      console.log.apply(console, msg.args.map(function(arg) {
-        arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colorize(arg, colors.GRAY);
-      }));
-      break;
-    case 'warn':
-      // TODO: jstest doesn't print console.warn messages.
-      //       Turning this on gets pretty noisy...but we should probably
-      //       clean this up as warns are likely a sign of clownitude
-      break;
-      console.warn.apply(console, msg.args.map(function(arg) {
-        arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colorize(arg, colors.RED);
-      }));
-      break;
-    default:
-      throw new Error('Unknown console message type!: ' + JSON.stringify(msg));
-  }
-}
-
-function _printTestResultSummary(passed, testPath, runTime) {
-  var passFailTag = passed
-    ? colorize(' PASS ', PASS_COLOR)
-    : colorize(' FAIL ', FAIL_COLOR);
-
-  var summary = passFailTag + ' ' + colorize(testPath, TEST_TITLE_COLOR);
-
-  if (runTime) {
-    var runTimeStr = '(' + runTime + 's)';
-    if (runTime > 2.5) {
-      runTimeStr = colorize(runTimeStr, FAIL_COLOR);
-    }
-    summary += ' ' + runTimeStr;
-  }
-
-  console.log(summary);
-}
 
 function _serializeConsoleArguments(type, args) {
   return {
@@ -201,54 +149,6 @@ TestRunner.prototype._loadConfigDependencies = function() {
   return this._configDeps;
 };
 
-TestRunner.prototype._printTestResults = function(results) {
-  var pathStr = results.testFilePath;
-  var filteredResults = utils.filterPassingSuiteResults(results);
-  var allTestsPassed = filteredResults === null;
-
-  var rootDir = this._config.rootDir;
-  _printTestResultSummary(
-    allTestsPassed,
-    rootDir ? path.relative(rootDir, pathStr) : pathStr,
-    (results.stats.end - results.stats.start) / 1000
-  );
-
-  results.consoleMessages.forEach(_printConsoleMessage);
-
-  if (!allTestsPassed) {
-    var descBullet = colorize('\u25cf ', colors.BOLD);
-    var msgBullet = '  - ';
-    var msgIndent = msgBullet.replace(/./g, ' ');
-
-    var flattenedResults = utils.flattenSuiteResults(filteredResults);
-
-    var testErrors;
-    for (var testDesc in flattenedResults.failingTests) {
-      testErrors = flattenedResults.failingTests[testDesc];
-
-      console.log(descBullet + testDesc);
-      testErrors.forEach(function(errorMsg) {
-        // Filter out q and jasmine entries from the stack trace.
-        // They're super noisy and unhelpful
-        errorMsg = errorMsg.split('\n').filter(function(line) {
-          if (/^\s+at .*?/.test(line)) {
-            // Extract the file path from the trace line
-            var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-            if (filePath
-                && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-              return false;
-            }
-          }
-          return true;
-        }).join('\n');
-        console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
-      });
-    }
-  }
-
-  return allTestsPassed;
-};
-
 /**
  * Run the given single test file path.
  * This just contains logic for running a single test given it's file path.
@@ -338,28 +238,29 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
   function _onTestFound(pathStr) {
     numTests++;
     workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-      var allTestsPassed = self._printTestResults(results);
+      var allTestsPassed = self._opts.testResultsHandler(config, results);
       if (!allTestsPassed) failedTests++
     }, function(errMsg) {
       failedTests++;
-      _printTestResultSummary(false, pathStr);
-      console.log(errMsg);
+      self._opts.testResultsHandler(config, {
+        testFilePath: pathStr,
+        testExecError: errMsg,
+        suites: {},
+        tests: {},
+        consoleMessages: []
+      });
     });
   }
 
   function _onSearchComplete() {
     workerPool.shutDown().done(function() {
       var endTime = Date.now();
-
-      var completionData = {
+      deferred.resolve({
         numFailedTests: failedTests,
-        numTotalTests: numTests
-      };
-
-      console.log(failedTests + '/' + numTests + ' tests failed');
-      console.log('Run time:', ((endTime - startTime) / 1000) + 's');
-
-      deferred.resolve(completionData);
+        numTotalTests: numTests,
+        startTime: startTime,
+        endTime: endTime
+      });
     }, deferred.reject);
   }
 
@@ -385,6 +286,7 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
  */
 TestRunner.prototype.runAllInBand = function(pathPattern) {
   var startTime = Date.now();
+  var config = this._config;
 
   var deferred = Q.defer();
   var failedTests = 0;
@@ -397,7 +299,7 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
     numTests++;
     lastTest = lastTest.then(function() {
       return self.runTest(pathStr).then(function(results) {
-        var allTestsPassed = self._printTestResults(results);
+        var allTestsPassed = self._opts.testResultsHandler(config, results);
         if (!allTestsPassed) failedTests++;
       }, function(err) {
         failedTests++;
@@ -409,15 +311,12 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
   function _onSearchComplete() {
     lastTest.then(function() {
       var endTime = Date.now();
-      var completionData = {
+      deferred.resolve({
         numFailedTests: failedTests,
-        numTotalTests: numTests
-      };
-
-      console.log(failedTests + '/' + numTests + ' tests failed');
-      console.log('Run time:', ((endTime - startTime) / 1000) + 's');
-
-      deferred.resolve(completionData);
+        numTotalTests: numTests,
+        startTime: startTime,
+        endTime: endTime
+      });
     });
   }
 

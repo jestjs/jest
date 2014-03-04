@@ -8,9 +8,13 @@ var TestRunner = require('../src/TestRunner');
 var utils = require('../src/lib/utils');
 
 function _onRunComplete(completionData) {
-  if (completionData.numTotalTests > 0 && completionData.numFailedTests > 0) {
-    process.exit(1);
-  }
+  var numFailedTests = completionData.numFailedTests;
+  var numTotalTests = completionData.numTotalTests;
+  var startTime = completionData.startTime;
+  var endTime = completionData.endTime;
+
+  console.log(numFailedTests + '/' + numTotalTests + ' tests failed');
+  console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
 }
 
 /**
