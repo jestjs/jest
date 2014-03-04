@@ -6,7 +6,6 @@ var os = require('os');
 var path = require('path');
 var Q = require('q');
 var stream = require('stream');
-var TestWorker = require('./TestWorker');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 
@@ -109,6 +108,16 @@ function _printTestResultSummary(passed, testPath, runTime) {
   console.log(summary);
 }
 
+function _serializeConsoleArguments(type, args) {
+  return {
+    type: type,
+    args: Array.prototype.map.call(
+      args,
+      utils.serializeConsoleArgValue
+    )
+  };
+}
+
 /**
  * A class that takes a config and a test-path search pattern, finds all the
  * tests that match the pattern, runs them in the worker pool, and prints the
@@ -120,7 +129,9 @@ function _printTestResultSummary(passed, testPath, runTime) {
  */
 function TestRunner(jestConfig, options) {
   this._config = jestConfig;
+  this._configDeps = null;
   this._opts = Object.create(DEFAULT_OPTIONS);
+  this._resourceMapPromise = null;
 
   if (options) {
     for (var key in options) {
@@ -128,6 +139,17 @@ function TestRunner(jestConfig, options) {
     }
   }
 }
+
+TestRunner.prototype._constructModuleLoader = function(environment) {
+  var config = this._config;
+  var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
+  if (this._resourceMapPromise === null) {
+    this._resourceMapPromise = ModuleLoader.loadResourceMap(this._config);
+  }
+  return this._resourceMapPromise.then(function(resourceMap) {
+    return new ModuleLoader(config, environment, resourceMap);
+  });
+};
 
 TestRunner.prototype._findTestFilePaths = function(
     config, pathPattern, onFind, onComplete) {
@@ -165,6 +187,18 @@ TestRunner.prototype._findTestFilePaths = function(
     finder.on('complete', _onMatcherEnd);
     finder.startSearch();
   });
+};
+
+TestRunner.prototype._loadConfigDependencies = function() {
+  var config = this._config;
+  if (this._configDeps === null) {
+    this._configDeps = {
+      ModuleLoader: require(config.moduleLoader),
+      environmentBuilder: require(config.environmentBuilder).bind(null),
+      testRunner: require(config.testRunner).bind(null)
+    };
+  }
+  return this._configDeps;
 };
 
 TestRunner.prototype._printTestResults = function(results) {
@@ -216,6 +250,65 @@ TestRunner.prototype._printTestResults = function(results) {
 };
 
 /**
+ * Run the given single test file path.
+ * This just contains logic for running a single test given it's file path.
+ *
+ * @param {string} testFilePath
+ * @return {Promise} Results of the test
+ */
+TestRunner.prototype.runTest = function(testFilePath) {
+  var config = this._config;
+  var configDeps = this._loadConfigDependencies();
+
+  var environment = configDeps.environmentBuilder();
+  var testRunner = configDeps.testRunner;
+
+  // Capture and serialize console.{log|warning|error}s so they can be passed
+  // around (such as through some channel back to a parent process)
+  var consoleMessages = [];
+  environment.global.console = {
+    error: function() {
+      consoleMessages.push(_serializeConsoleArguments('error', arguments));
+    },
+
+    log: function() {
+      consoleMessages.push(_serializeConsoleArguments('log', arguments));
+    },
+
+    warn: function() {
+      consoleMessages.push(_serializeConsoleArguments('warn', arguments));
+    }
+  };
+
+  return this._constructModuleLoader(environment).then(function(moduleLoader) {
+    if (config.setupEnvScriptFile) {
+      utils.runContentWithLocalBindings(
+        environment.runSourceText,
+        utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
+        config.setupEnvScriptFile,
+        {
+          __dirname: path.dirname(config.setupEnvScriptFile),
+          __filename: config.setupEnvScriptFile,
+          require: moduleLoader.constructBoundRequire(
+            config.setupEnvScriptFile
+          )
+        }
+      );
+    }
+
+    var testExecStats = {start: Date.now()};
+    return testRunner(config, environment, moduleLoader, testFilePath)
+      .then(function(results) {
+        testExecStats.end = Date.now();
+        results.consoleMessages = consoleMessages;
+        results.stats = testExecStats;
+        results.testFilePath = testFilePath;
+        return results;
+      });
+  });
+};
+
+/**
  * Run all tests (in parallel) matching the given path pattern RegExp.
  * Uses a worker pool of child processes to run tests in parallel.
  *
@@ -233,10 +326,7 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     this._opts.nodeArgv.concat([
       '--harmony',
       TEST_WORKER_PATH,
-      '--config=' + JSON.stringify(config),
-      '--moduleLoader=' + config.moduleLoader,
-      '--environmentBuilder=' + config.environmentBuilder,
-      '--testRunner=' + config.testRunner
+      '--config=' + JSON.stringify(config)
     ])
   );
 
@@ -296,66 +386,49 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
 TestRunner.prototype.runAllInBand = function(pathPattern) {
   var startTime = Date.now();
 
-  // TODO: This is copypasta from TestWorker.js
-  //
-  //       At some point we should probably just fold TestWorker.js into this
-  //       file and make all of its operations methods on TestRunner
-  var config = this._config;
-  var ModuleLoader = require(config.moduleLoader);
-  var environmentBuilder = require(config.environmentBuilder);
-  var testRunner = require(config.testRunner);
+  var deferred = Q.defer();
+  var failedTests = 0;
+  var numTests = 0;
 
-  var runTest = TestWorker.runTest.bind(null, config, testRunner);
+  var lastTest = Q();
+  var rejectDeferred = deferred.reject.bind(deferred);
   var self = this;
-
-  return ModuleLoader.loadResourceMap(config).then(function(resourceMap) {
-    var deferred = Q.defer();
-    var failedTests = 0;
-    var numTests = 0;
-    var lastTest = Q();
-
-    function _onTestFound(pathStr) {
-      numTests++;
-      lastTest = lastTest.then(function() {
-        var environment = environmentBuilder();
-        var moduleLoader = new ModuleLoader(config, environment, resourceMap);
-
-        return runTest(environment, moduleLoader, pathStr)
-          .then(function(results) {
-            var allTestsPassed = self._printTestResults(results);
-            if (!allTestsPassed) failedTests++
-          }, function(err) {
-            failedTests++;
-            return err;
-          });
+  function _onTestFound(pathStr) {
+    numTests++;
+    lastTest = lastTest.then(function() {
+      return self.runTest(pathStr).then(function(results) {
+        var allTestsPassed = self._printTestResults(results);
+        if (!allTestsPassed) failedTests++;
+      }, function(err) {
+        failedTests++;
+        throw err;
       });
-    }
+    }, rejectDeferred);
+  }
 
-    function _onSearchComplete() {
-      lastTest.then(function() {
-        var endTime = Date.now();
+  function _onSearchComplete() {
+    lastTest.then(function() {
+      var endTime = Date.now();
+      var completionData = {
+        numFailedTests: failedTests,
+        numTotalTests: numTests
+      };
 
-        var completionData = {
-          numFailedTests: failedTests,
-          numTotalTests: numTests
-        };
+      console.log(failedTests + '/' + numTests + ' tests failed');
+      console.log('Run time:', ((endTime - startTime) / 1000) + 's');
 
-        console.log(failedTests + '/' + numTests + ' tests failed');
-        console.log('Run time:', ((endTime - startTime) / 1000) + 's');
+      deferred.resolve(completionData);
+    });
+  }
 
-        deferred.resolve(completionData);
-      });
-    }
+  this._findTestFilePaths(
+    this._config,
+    pathPattern,
+    _onTestFound.bind(this),
+    _onSearchComplete.bind(this)
+  );
 
-    self._findTestFilePaths(
-      config,
-      pathPattern,
-      _onTestFound,
-      _onSearchComplete
-    );
-
-    return deferred.promise;
-  });
+  return deferred.promise;
 };
 
 module.exports = TestRunner;

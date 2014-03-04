@@ -60,8 +60,8 @@ var argv = optimist
       alias: 'w',
       description: _wrapDesc(
         'Specifies the maximum number of workers the worker-pool will spawn ' +
-        'for running tests. This defaults to the number of the cores ' + 
-        'available on your machine. (its usually best not to override this ' + 
+        'for running tests. This defaults to the number of the cores ' +
+        'available on your machine. (its usually best not to override this ' +
         'default)'
       ),
       type: 'string' // no, optimist -- its a number.. :(
