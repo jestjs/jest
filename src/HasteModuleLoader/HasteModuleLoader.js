@@ -87,7 +87,9 @@ function Loader(config, environment, resourceMap) {
   this.resetModuleRegistry();
 }
 
-Loader.loadResourceMap = function(config) {
+Loader.loadResourceMap = function(config, options) {
+  options = options || {};
+
   var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
   var HASTE_IGNORE_REGEX = new RegExp(
     config.moduleLoaderPathIgnores
@@ -116,7 +118,7 @@ Loader.loadResourceMap = function(config) {
       useNativeFind: true,
       // TODO: Hmm...what's node-haste doing with processes?
       maxProcesses: os.cpus().length,
-      maxOpenFiles: 1000
+      maxOpenFiles: options.maxOpenFiles || 100
     }
   );
 
