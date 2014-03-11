@@ -192,7 +192,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
           require: moduleLoader.constructBoundRequire(
             config.setupEnvScriptFile
           )
-        }
+        },
+        true
       );
     }
 
@@ -203,6 +204,10 @@ TestRunner.prototype.runTest = function(testFilePath) {
         results.consoleMessages = consoleMessages;
         results.stats = testExecStats;
         results.testFilePath = testFilePath;
+        results.coverage =
+          config.collectCoverage
+          ? moduleLoader.getAllCoverageInfo()
+          : [];
         return results;
       });
   });
@@ -317,7 +322,7 @@ TestRunner.prototype.runAllInBand = function(pathPattern) {
         startTime: startTime,
         endTime: endTime
       });
-    });
+    }, rejectDeferred);
   }
 
   this._findTestFilePaths(

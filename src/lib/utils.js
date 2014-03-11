@@ -111,6 +111,69 @@ function flattenSuiteResults(suite) {
   }
 }
 
+/**
+ * Given the coverage info for a single file (as output by
+ * CoverageCollector.js), return an array whose entries are bools indicating
+ * whether anything on the line could have been covered and was, or null if the
+ * line wasn't measurable (like empty lines, declaration keywords, etc).
+ *
+ * For example, for the following coverage info:
+ *
+ * COVERED:     var a = [];
+ * NO CODE:
+ * COVERED:     for (var i = 0; i < a.length; i++)
+ * NOT COVERED:   console.log('hai!');
+ *
+ * You'd get an array that looks like this:
+ *
+ * [true, null, true, false]
+ */
+function getLineCoverageFromCoverageInfo(coverageInfo) {
+  var coveredLines = {};
+  coverageInfo.coveredSpans.forEach(function(coveredSpan) {
+    var startLine = coveredSpan.start.line;
+    var endLine = coveredSpan.end.line;
+    for (var i = startLine - 1; i < endLine; i++) {
+      coveredLines[i] = true;
+    }
+  });
+
+  var uncoveredLines = {};
+  coverageInfo.uncoveredSpans.forEach(function(uncoveredSpan) {
+    var startLine = uncoveredSpan.start.line;
+    var endLine = uncoveredSpan.end.line;
+    for (var i = startLine - 1; i < endLine; i++) {
+      uncoveredLines[i] = true;
+    }
+  });
+
+  return coverageInfo.sourceText.trim().split('\n').map(function(line, lineIndex) {
+    if (uncoveredLines[lineIndex] === true) {
+      return false;
+    } else if (coveredLines[lineIndex] === true) {
+      return true;
+    } else {
+      return null;
+    }
+  });
+}
+
+function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
+  var lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
+  var numMeasuredLines = 0;
+  var numCoveredLines = lineCoverage.reduce(function(counter, lineIsCovered) {
+    if (lineIsCovered !== null) {
+      numMeasuredLines++;
+      if (lineIsCovered === true) {
+        counter++;
+      }
+    }
+    return counter;
+  }, 0);
+
+  return numCoveredLines / numMeasuredLines;
+}
+
 function normalizeConfig(config, relativeTo) {
   var newConfig = {};
 
@@ -302,6 +365,9 @@ function stringifySerializedConsoleArgValue(arg) {
 
 exports.filterPassingSuiteResults = filterPassingSuiteResults;
 exports.flattenSuiteResults = flattenSuiteResults;
+exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
+exports.getLinePercentCoverageFromCoverageInfo =
+  getLinePercentCoverageFromCoverageInfo;
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.normalizeConfig = normalizeConfig;
 exports.readAndPreprocessFileContent = readAndPreprocessFileContent;

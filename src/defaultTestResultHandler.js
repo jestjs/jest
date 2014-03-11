@@ -4,7 +4,7 @@ var utils = require('./lib/utils');
 
 var FAIL_COLOR = colors.RED_BG;
 var PASS_COLOR = colors.GREEN_BG;
-var TEST_TITLE_COLOR = colors.BOLD + colors.UNDERLINE;
+var TEST_NAME_COLOR = colors.BOLD + colors.UNDERLINE;
 
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
@@ -48,22 +48,15 @@ function _printConsoleMessage(msg) {
   }
 }
 
-function _printTestResultSummary(passed, testPath, runTime) {
+function _getResultHeader(passed, testName, columns) {
   var passFailTag = passed
     ? colors.colorize(' PASS ', PASS_COLOR)
     : colors.colorize(' FAIL ', FAIL_COLOR);
 
-  var summary = passFailTag + ' ' + colors.colorize(testPath, TEST_TITLE_COLOR);
-
-  if (runTime) {
-    var runTimeStr = '(' + runTime + 's)';
-    if (runTime > 2.5) {
-      runTimeStr = colors.colorize(runTimeStr, FAIL_COLOR);
-    }
-    summary += ' ' + runTimeStr;
-  }
-
-  console.log(summary);
+  return [
+    passFailTag,
+    colors.colorize(testName, TEST_NAME_COLOR)
+  ].concat(columns || []).join(' ');
 }
 
 function defaultTestResultHandler(config, testResult) {
@@ -73,7 +66,7 @@ function defaultTestResultHandler(config, testResult) {
     : testResult.testFilePath;
 
   if (testResult.testExecError) {
-    _printTestResultSummary(false, pathStr);
+    console.log(_getResultHeader(false, pathStr));
     console.log(testResult.testExecError);
     return false;
   }
@@ -86,7 +79,18 @@ function defaultTestResultHandler(config, testResult) {
     ? (testResult.stats.end - testResult.stats.start) / 1000
     : null;
 
-  _printTestResultSummary(allTestsPassed, pathStr, testRunTime);
+  var testRunTimeString = '(' + testRunTime + 's)';
+  if (testRunTime > 2.5) {
+    testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
+  }
+
+  if (config.collectCoverage) {
+    // TODO: Find a nice pretty way to print this out
+  }
+
+  console.log(_getResultHeader(allTestsPassed, pathStr, [
+    testRunTimeString
+  ]));
 
   testResult.consoleMessages.forEach(_printConsoleMessage);
 

@@ -51,6 +51,13 @@ var argv = optimist
       ),
       type: 'string'
     },
+    coverage: {
+      description: _wrapDesc(
+        'Indicates that test coverage information should be collected and ' +
+        'reported in the output.'
+      ),
+      type: 'boolean'
+    },
     runInBand: {
       alias: 'i',
       description: _wrapDesc(
@@ -90,6 +97,10 @@ utils.loadConfigFromFile(argv.config).done(function(config) {
   var testRunnerOpts = {};
   if (argv.maxWorkers) {
     testRunnerOpts.maxWorkers = argv.maxWorkers;
+  }
+
+  if (argv.coverage) {
+    config.collectCoverage = true;
   }
 
   var testRunner = new TestRunner(config, testRunnerOpts);

@@ -1,4 +1,5 @@
 var codeCoverage = require('../lib/codeCoverage');
+var CoverageCollector = require('../CoverageCollector');
 var fs = require('fs');
 var hasteLoaders = require('node-haste/lib/loaders');
 var inherits = require('util').inherits;
@@ -14,6 +15,7 @@ var utils = require('../lib/utils');
 
 var MAIN_DIR = path.resolve(__dirname + '/../');
 var CACHE_DIR_PATH = MAIN_DIR + '/.haste_cache_dir';
+var COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
 
 var IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
@@ -59,6 +61,7 @@ var _moduleContentCache = {};
 
 function Loader(config, environment, resourceMap) {
   this._config = config;
+  this._coverageCollectors = {};
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
   this._explicitShouldMock = {};
@@ -176,12 +179,23 @@ Loader.prototype._execModule = function(moduleObj, isManualMock) {
     'global': this._environment.global
   };
 
+  if (this._config.collectCoverage) {
+    var coverageDataStore = moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] = {};
+    var coverageCollector = new CoverageCollector(
+      moduleContent,
+      coverageDataStore
+    );
+    this._coverageCollectors[modulePath] = coverageCollector;
+    moduleContent = coverageCollector.getInstrumentedSource(
+      COVERAGE_STORAGE_VAR_NAME
+    );
+  }
 
   var lastExecutingModulePath = this._currentlyExecutingModulePath;
   this._currentlyExecutingModulePath = modulePath;
 
   var origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
-  this._isCurrentlyExecutingManualMock = modulePath;//!!isManualMock;
+  this._isCurrentlyExecutingManualMock = modulePath;
 
   utils.runContentWithLocalBindings(
     this._environment.runSourceText,
@@ -477,6 +491,41 @@ Loader.prototype.constructBoundRequire = function(sourceModulePath) {
   );
 
   return boundModuleRequire;
+};
+
+/**
+ * Returns a map from modulePath -> coverageInfo, where coverageInfo is of the
+ * structure returned By CoverageCollector.extractRuntimeCoverageInfo()
+ */
+Loader.prototype.getAllCoverageInfo = function() {
+  if (!this._config.collectCoverage) {
+    throw new Error(
+      'config.collectCoverage was not set, so no coverage info has been ' +
+      '(or will be) collected!'
+    );
+  }
+
+  var coverageInfo = {};
+  for (var filePath in this._coverageCollectors) {
+    coverageInfo[filePath] =
+      this._coverageCollectors[filePath].extractRuntimeCoverageInfo();
+  }
+  return coverageInfo;
+};
+
+Loader.prototype.getCoverageForFilePath = function(filePath) {
+  if (!this._config.collectCoverage) {
+    throw new Error(
+      'config.collectCoverage was not set, so no coverage info has been ' +
+      '(or will be) collected!'
+    );
+  }
+
+  return (
+    this._coverageCollectors.hasOwnProperty(filePath)
+    ? this._coverageCollectors[filePath].extractRuntimeCoverageInfo()
+    : []
+  );
 };
 
 /**
