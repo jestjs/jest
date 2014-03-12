@@ -147,7 +147,9 @@ function getLineCoverageFromCoverageInfo(coverageInfo) {
     }
   });
 
-  return coverageInfo.sourceText.trim().split('\n').map(function(line, lineIndex) {
+  var sourceLines = coverageInfo.sourceText.trim().split('\n');
+
+  return sourceLines.map(function(line, lineIndex) {
     if (uncoveredLines[lineIndex] === true) {
       return false;
     } else if (coveredLines[lineIndex] === true) {
@@ -158,6 +160,20 @@ function getLineCoverageFromCoverageInfo(coverageInfo) {
   });
 }
 
+/**
+ * Given the coverage info for a single file (as output by
+ * CoverageCollector.js), return the decimal percentage of lines in the file
+ * that had any coverage info.
+ *
+ * For example, for the following coverage info:
+ *
+ * COVERED:     var a = [];
+ * NO CODE:
+ * COVERED:     for (var i = 0; i < a.length; i++)
+ * NOT COVERED:   console.log('hai');
+ *
+ * You'd get: 2/3 = 0.666666
+ */
 function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
   var lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
   var numMeasuredLines = 0;

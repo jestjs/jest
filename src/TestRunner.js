@@ -192,8 +192,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
           require: moduleLoader.constructBoundRequire(
             config.setupEnvScriptFile
           )
-        },
-        true
+        }
       );
     }
 
