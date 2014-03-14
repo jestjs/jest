@@ -1,3 +1,11 @@
+"use strict";
+
+// Node always must be run with --harmony in order for this class to work since
+// it uses WeakMap
+if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
+  throw new Error('Please run node with the --harmony flag!');
+}
+
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');

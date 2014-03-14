@@ -1,5 +1,11 @@
 "use strict";
 
+// Node always must be run with --harmony in order for this class to work since
+// it uses WeakMap
+if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
+  throw new Error('Please run node with the --harmony flag!');
+}
+
 /**
  * TODO: This file has grown into a monster. It really needs to be refactored
  *       into smaller pieces. One of the best places to start would be to move a
