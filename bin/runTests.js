@@ -28,9 +28,14 @@ function _findChangedFiles(dirPath) {
 
   child.on('close', function(code) {
     if (code === 0) {
-      deferred.resolve(stdout.trim().split('\n').map(function(changedPath) {
-        return path.resolve(dirPath, changedPath);
-      }));
+      stdout = stdout.trim();
+      if (stdout === '') {
+        deferred.resolve([]);
+      } else {
+        deferred.resolve(stdout.split('\n').map(function(changedPath) {
+          return path.resolve(dirPath, changedPath);
+        }));
+      }
     } else {
       deferred.reject(code + ': ' + stderr);
     }
@@ -197,12 +202,13 @@ utils.loadConfigFromFile(argv.config).done(function(config) {
       changedPathSets.forEach(function(pathSet) {
         changedPaths = changedPaths.concat(pathSet);
       });
-
-      console.log('changed path sets:', changedPathSets);
-
       return testRunner.findTestsRelatedTo(changedPaths);
     }).done(function(affectedTestPaths) {
-      _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|')));
+      if (affectedTestPaths.length > 0) {
+        _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|')));
+      } else {
+        console.log('No tests to run!');
+      }
     });
   } else {
     _runTestsOnPathPattern(pathPattern);
