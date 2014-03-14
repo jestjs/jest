@@ -2,10 +2,42 @@
 /* jshint node: true */
 "use strict";
 
+var child_process = require('child_process');
 var optimist = require('optimist');
 var path = require('path');
+var Q = require('q');
 var TestRunner = require('../src/TestRunner');
 var utils = require('../src/lib/utils');
+
+function _findChangedFiles(dirPath) {
+  var deferred = Q.defer();
+
+  var args =
+    ['diff', '--name-only', '--diff-filter=ACMR'];
+  var child = child_process.spawn('git', args, {cwd: dirPath});
+
+  var stdout = '';
+  child.stdout.on('data', function(data) {
+    stdout += data;
+  });
+
+  var stderr = '';
+  child.stderr.on('data', function(data) {
+    stderr += data;
+  });
+
+  child.on('close', function(code) {
+    if (code === 0) {
+      deferred.resolve(stdout.trim().split('\n').map(function(changedPath) {
+        return path.resolve(dirPath, changedPath);
+      }));
+    } else {
+      deferred.reject(code + ': ' + stderr);
+    }
+  });
+
+  return deferred.promise;
+}
 
 function _onRunComplete(completionData) {
   var numFailedTests = completionData.numFailedTests;
@@ -15,6 +47,18 @@ function _onRunComplete(completionData) {
 
   console.log(numFailedTests + '/' + numTotalTests + ' tests failed');
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+}
+
+function _verifyIsGitRepository(dirPath) {
+  var deferred = Q.defer();
+
+  child_process.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
+    .on('close', function(code) {
+      var isGitRepo = code === 0;
+      deferred.resolve(isGitRepo);
+    });
+
+  return deferred.promise;
 }
 
 /**
@@ -58,15 +102,6 @@ var argv = optimist
       ),
       type: 'boolean'
     },
-    runInBand: {
-      alias: 'i',
-      description: _wrapDesc(
-        'Run all tests serially in the current process (rather than creating ' +
-        'a worker pool of child processes that run tests). This is sometimes ' +
-        'useful for debugging, but such use cases are pretty rare.'
-      ),
-      type: 'boolean'
-    },
     maxWorkers: {
       alias: 'w',
       description: _wrapDesc(
@@ -76,6 +111,24 @@ var argv = optimist
         'default)'
       ),
       type: 'string' // no, optimist -- its a number.. :(
+    },
+    onlyChanged: {
+      alias: 'o',
+      description: _wrapDesc(
+        'Attempts to identify which tests to run based on which files have ' +
+        'changed in the current repository. Only works if you\'re running ' +
+        'tests in a git repository at the moment.'
+      ),
+      type: 'boolean'
+    },
+    runInBand: {
+      alias: 'i',
+      description: _wrapDesc(
+        'Run all tests serially in the current process (rather than creating ' +
+        'a worker pool of child processes that run tests). This is sometimes ' +
+        'useful for debugging, but such use cases are pretty rare.'
+      ),
+      type: 'boolean'
     }
   })
   .check(function(argv) {
@@ -83,6 +136,14 @@ var argv = optimist
       throw (
         "Both --runInBand and --maxWorkers were specified, but these two " +
         "options don't make sense together. Which is it?"
+      );
+    }
+
+    if (argv.onlyChanged && argv._.length > 0) {
+      throw (
+        "Both --onlyChanged and a path pattern were specified, but these two " +
+        "options don't make sense together. Which is it? Do you want to run " +
+        "tests for changed files? Or for a specific set of files?"
       );
     }
   })
@@ -105,10 +166,45 @@ utils.loadConfigFromFile(argv.config).done(function(config) {
 
   var testRunner = new TestRunner(config, testRunnerOpts);
 
-  if (argv.runInBand) {
-    console.log('Running tests serially in the current node process...');
-    testRunner.runAllInBand(pathPattern).done(_onRunComplete);
+  function _runTestsOnPathPattern(pathPattern) {
+    if (argv.runInBand) {
+      console.log('Running tests serially in the current node process...');
+      testRunner.runAllMatchingInBand(pathPattern).done(_onRunComplete);
+    } else {
+      testRunner.runAllMatchingParallel(pathPattern).done(_onRunComplete);
+    }
+  }
+
+  if (argv.onlyChanged) {
+    console.log('Looking for changed files...');
+
+    var testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
+    Q.all(testPathDirsAreGit).then(function(results) {
+      if (!results.every(function(result) { return result; })) {
+        console.error(
+          'It appears that one of your testPathDirs does not exist ' +
+          'with in a git repository. Currently --onlyChanged only works ' +
+          'with git projects.\n'
+        );
+        process.exit(1);
+      }
+
+      return Q.all(config.testPathDirs.map(_findChangedFiles));
+    }).then(function(changedPathSets) {
+      // Collapse changed files from each of the testPathDirs into a single list
+      // of changed file paths
+      var changedPaths = [];
+      changedPathSets.forEach(function(pathSet) {
+        changedPaths = changedPaths.concat(pathSet);
+      });
+
+      console.log('changed path sets:', changedPathSets);
+
+      return testRunner.findTestsRelatedTo(changedPaths);
+    }).done(function(affectedTestPaths) {
+      _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|')));
+    });
   } else {
-    testRunner.runAllParallel(pathPattern).done(_onRunComplete);
+    _runTestsOnPathPattern(pathPattern);
   }
 });

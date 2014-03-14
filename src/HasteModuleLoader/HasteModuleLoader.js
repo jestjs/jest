@@ -1,3 +1,13 @@
+"use strict";
+
+/**
+ * TODO: This file has grown into a monster. It really needs to be refactored
+ *       into smaller pieces. One of the best places to start would be to move a
+ *       bunch of the logic that exists here into node-haste.
+ *
+ *       Relatedly: It's time we vastly simplify node-haste.
+ */
+
 var codeCoverage = require('../lib/codeCoverage');
 var CoverageCollector = require('../CoverageCollector');
 var fs = require('fs');
@@ -68,9 +78,9 @@ function Loader(config, environment, resourceMap) {
   this._explicitlySetMocks = {};
   this._isCurrentlyExecutingManualMock = null;
   this._mockMetaDataCache = {};
-  // TODO: Init the following property as an object for consistent typing
   this._nodeModuleProjectConfigNameToResource = null;
   this._resourceMap = resourceMap;
+  this._reverseDependencyMap = null;
   this._shouldAutoMock = true;
   // TODO: Rename this variable, it's confusing...
   this._unmockListModuleNames = {};
@@ -208,6 +218,42 @@ Loader.prototype._execModule = function(moduleObj, isManualMock) {
   this._currentlyExecutingModulePath = lastExecutingModulePath;
 };
 
+Loader.prototype._generateMock = function(currPath, moduleName) {
+  var modulePath = this._moduleNameToPath(currPath, moduleName);
+
+  if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
+    // This allows us to handle circular dependencies while generating an
+    // automock
+    this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
+
+    // In order to avoid it being possible for automocking to potentially cause
+    // side-effects within the module environment, we need to execute the module
+    // in isolation. This accomplishes that by temporarily clearing out the
+    // module and mock registries while the module being analyzed is executed.
+    //
+    // An example scenario where this could cause issue is if the module being
+    // mocked has calls into side-effectful APIs on another module.
+    var origMockRegistry = this._mockRegistry;
+    var origModuleRegistry = this._moduleRegistry;
+    this._mockRegistry = {};
+    this._moduleRegistry = {};
+
+    var moduleExports = this.requireModule(currPath, moduleName);
+
+    // Restore the "real" module/mock registries
+    this._mockRegistry = origMockRegistry;
+    this._moduleRegistry = origModuleRegistry;
+
+    this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata(
+      moduleExports
+    );
+  }
+
+  return moduleMocker.generateFromMetadata(
+    this._mockMetaDataCache[modulePath]
+  );
+};
+
 Loader.prototype._getResource = function(resourceType, resourceName) {
   var resource = this._resourceMap.getResource(resourceType, resourceName);
 
@@ -274,6 +320,10 @@ Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
   }
 
   return [moduleType, realAbsPath, mockAbsPath].join(':');
+};
+
+Loader.prototype._getRealPathFromNormalizedModuleID = function(moduleID) {
+  return moduleID.split(':')[1];
 };
 
 /**
@@ -529,24 +579,56 @@ Loader.prototype.getCoverageForFilePath = function(filePath) {
 };
 
 /**
+ * Given the path to some find, find all other files that *directly* depend on
+ * it.
+ *
+ * @param {String} modulePath Absolute path to the module in question
+ * @return {Array<String>} List of paths to files that directly depend on the
+ *                         given module path.
+ */
+Loader.prototype.getDependentsFromPath = function(modulePath) {
+  if (this._reverseDependencyMap === null) {
+    var resourceMap = this._resourceMap;
+    var reverseDepMap = this._reverseDependencyMap = {};
+    var allResources = resourceMap.getAllResources();
+    for (var resourceID in allResources) {
+      var resource = allResources[resourceID];
+      if (resource.type === 'ProjectConfiguration'
+          || resource.type === 'Resource') {
+        continue;
+      }
+
+      for (var i = 0; i < resource.requiredModules.length; i++) {
+        var requiredModule = resource.requiredModules[i];
+
+        // *facepalm* node-haste is really clowny...
+        if (resource.getModuleIDByOrigin) {
+          requiredModule =
+            resource.getModuleIDByOrigin(requiredModule) || requiredModule;
+        }
+
+        var requiredModuleID = this._getRealPathFromNormalizedModuleID(
+          this._getNormalizedModuleID(resource.path, requiredModule)
+        );
+
+        if (!reverseDepMap.hasOwnProperty(requiredModuleID)) {
+          reverseDepMap[requiredModuleID] = {};
+        }
+
+        reverseDepMap[requiredModuleID][resource.path] = true;
+      }
+    }
+  }
+
+  var reverseDeps = this._reverseDependencyMap[modulePath];
+  return reverseDeps ? Object.keys(reverseDeps) : [];
+};
+
+/**
  * Given a module name, return the mock version of said module.
- * The steps for resolving/generating the "mock" version of a module is as
- * follows:
- *
- *   TODO: The following is just what I think this *should* do.
- *         We'll need to look at jstest's actual implementation and use that
- *         no matter how clowny it may seem or how much I disagree with it.
- *         (We can come back and address oddities later)
- *
- *   1) Look in `this._mockRegistry` to see if there is already a mock
- *      cached for this module. Note that this finds mocks explicitly set
- *      via `require('mock-modules').setMock()` as well
- *   2) Look for a manual mock (via the node-haste resource map)
- *   3) Look for a real module, pass it to the mocker utility (to create a
- *      mock), and return the resulting generated mock
  *
  * @param string currPath The path of the file that is attempting to
- *                            resolve the module
+ *                        resolve the module
  * @param string moduleName The name of the module to be resolved
  * @return object
  */
@@ -589,48 +671,12 @@ Loader.prototype.requireMock = function(currPath, moduleName) {
   return this._mockRegistry[modulePath];
 };
 
-Loader.prototype._generateMock = function(currPath, moduleName) {
-  var modulePath = this._moduleNameToPath(currPath, moduleName);
-
-  if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
-    // This allows us to handle circular dependencies while generating an
-    // automock
-    this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
-
-    // In order to avoid it being possible for automocking to potentially cause
-    // side-effects within the module environment, we need to execute the module
-    // in isolation. This accomplishes that by temporarily clearing out the
-    // module and mock registries while the module being analyzed is executed.
-    //
-    // An example scenario where this could cause issue is if the module being
-    // mocked has calls into side-effectful APIs on another module.
-    var origMockRegistry = this._mockRegistry;
-    var origModuleRegistry = this._moduleRegistry;
-    this._mockRegistry = {};
-    this._moduleRegistry = {};
-
-    var moduleExports = this.requireModule(currPath, moduleName);
-
-    // Restore the "real" module/mock registries
-    this._mockRegistry = origMockRegistry;
-    this._moduleRegistry = origModuleRegistry;
-
-    this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata(
-      moduleExports
-    );
-  }
-
-  return moduleMocker.generateFromMetadata(
-    this._mockMetaDataCache[modulePath]
-  );
-};
-
 /**
  * Given a module name, return the *real* (un-mocked) version of said
  * module.
  *
  * @param string currPath The path of the file that is attempting to
- *                            resolve the module
+ *                        resolve the module
  * @param string moduleName The name of the module to be resolved
  * @param bool bypassRegistryCache Whether we should read from/write to the
  *                                 module registry. Fuck this arg.
@@ -725,7 +771,7 @@ Loader.prototype.requireModule = function(currPath, moduleName,
  * the mocking state for the requested module).
  *
  * @param string currPath The path of the file that is attempting to
- *                            resolve the module
+ *                        resolve the module
  * @param string moduleName The name of the module to be resolved
  * @return object
  */

@@ -1,0 +1,93 @@
+require('mock-modules').autoMockOff();
+
+var Q = require('q');
+
+describe('TestRunner', function() {
+  var TestRunner;
+
+  beforeEach(function() {
+    require('mock-modules').dumpCache();
+    TestRunner = require('../TestRunner');
+  });
+
+  describe('findTestsRelatedToPaths', function() {
+    var fakeDepsFromPath;
+    var runner;
+
+    beforeEach(function() {
+      runner = new TestRunner({});
+
+      fakeDepsFromPath = {};
+      runner._constructModuleLoader = function() {
+        return Q({
+          getDependentsFromPath: function(modulePath) {
+            return fakeDepsFromPath[modulePath] || [];
+          }
+        });
+      };
+    });
+
+    pit('finds no tests when no tests depend on the path', function() {
+      var path = '/path/to/module/not/covered/by/any/tests.js';
+      fakeDepsFromPath[path] = [];
+
+      return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
+        expect(relatedTests).toEqual([]);
+      });
+    });
+
+    pit('finds tests that depend directly on the path', function() {
+      var path = '/path/to/module/covered/by/one/test.js';
+      var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
+      fakeDepsFromPath[path] = [dependentTestPath];
+
+      return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
+        expect(relatedTests).toEqual([dependentTestPath]);
+      });
+    });
+
+    pit('finds tests that depend indirectly on the path', function() {
+      var path = '/path/to/module/covered/by/module/covered/by/test.js';
+      var dependentModulePath = '/path/to/dependent/module.js';
+      var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
+      fakeDepsFromPath[path] = [dependentModulePath];
+      fakeDepsFromPath[dependentModulePath] = [dependentTestPath];
+
+      return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
+        expect(relatedTests).toEqual([dependentTestPath]);
+      });
+    });
+
+    pit('finds multiple tests that depend indirectly on the path', function() {
+      var path = '/path/to/module/covered/by/modules/covered/by/test.js';
+      var dependentModulePath1 = '/path/to/dependent/module1.js';
+      var dependentModulePath2 = '/path/to/dependent/module2.js';
+      var dependentTestPath1 = '/path/to/test1/__tests__/asdf1-test.js';
+      var dependentTestPath2 = '/path/to/test2/__tests__/asdf2-test.js';
+      fakeDepsFromPath[path] = [dependentModulePath1, dependentModulePath2];
+      fakeDepsFromPath[dependentModulePath1] = [dependentTestPath1];
+      fakeDepsFromPath[dependentModulePath2] = [dependentTestPath2];
+
+      return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
+        expect(relatedTests).toEqual([dependentTestPath1, dependentTestPath2]);
+      });
+    });
+
+    pit('flattens circular dependencies', function() {
+      var path = '/path/to/module/covered/by/modules/covered/by/test.js';
+      var directDependentModulePath = '/path/to/direct/dependent/module.js';
+      var indirectDependentModulePath = '/path/to/indirect/dependent/modules.js';
+      var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
+      fakeDepsFromPath[path] = [directDependentModulePath];
+      fakeDepsFromPath[directDependentModulePath] = [indirectDependentModulePath];
+      fakeDepsFromPath[indirectDependentModulePath] = [
+        directDependentModulePath,
+        dependentTestPath
+      ];
+
+      return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
+        expect(relatedTests).toEqual([dependentTestPath]);
+      });
+    });
+  });
+});

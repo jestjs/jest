@@ -75,8 +75,8 @@ function _serializeConsoleArguments(type, args) {
  * @param options See DEFAULT_OPTIONS for descriptions on the various options
  *                and their defaults.
  */
-function TestRunner(jestConfig, options) {
-  this._config = jestConfig;
+function TestRunner(config, options) {
+  this._config = config;
   this._configDeps = null;
   this._opts = Object.create(DEFAULT_OPTIONS);
   this._resourceMapPromise = null;
@@ -99,24 +99,109 @@ TestRunner.prototype._constructModuleLoader = function(environment) {
   });
 };
 
-TestRunner.prototype._findTestFilePaths = function(
-    config, pathPattern, onFind, onComplete) {
+TestRunner.prototype._loadConfigDependencies = function() {
+  var config = this._config;
+  if (this._configDeps === null) {
+    this._configDeps = {
+      ModuleLoader: require(config.moduleLoader),
+      environmentBuilder: require(config.environmentBuilder).bind(null),
+      testRunner: require(config.testRunner).bind(null)
+    };
+  }
+  return this._configDeps;
+};
+
+/**
+ * Given a list of paths to modules or tests, find all tests that are related to
+ * any of those paths. For a test to be considered "related" to a path, the test
+ * must depend on that path (either directly, or indirectly through one of its
+ * direct dependencies).
+ *
+ * @param {Array<String>} paths A list of path strings to find related tests for
+ * @return {Promise<Array<String>>} Fulfilled with a list of testPaths once the
+ *                                  search has completed.
+ */
+TestRunner.prototype.findTestsRelatedTo = function(paths) {
+  var config = this._config;
+  return this._constructModuleLoader().then(function(moduleLoader) {
+    var discoveredModules = {};
+    var modulesToSearch = [].concat(paths);
+    while (modulesToSearch.length > 0) {
+      var modulePath = modulesToSearch.shift();
+      var depPaths = moduleLoader.getDependentsFromPath(modulePath);
+      depPaths.forEach(function(depPath) {
+        if (!discoveredModules.hasOwnProperty(depPath)) {
+          discoveredModules[depPath] = true;
+          modulesToSearch.push(depPath);
+        }
+      });
+    }
+
+    // TODO: This is copypasta from this.findTestPathsMatching()
+    var testPathIgnorePattern =
+      config.testPathIgnores
+      ? new RegExp(config.testPathIgnores.join('|'))
+      : null;
+
+    return Object.keys(discoveredModules).filter(function(path) {
+      // TODO: This is copypasta from this.findTestPathsMatching()
+      return (
+        NODE_HASTE_TEST_PATH_RE.test(path)
+        && !HIDDEN_FILE_RE.test(path)
+        && (!testPathIgnorePattern || !testPathIgnorePattern.test(path))
+      );
+    });
+  });
+};
+
+/**
+ * Given a path pattern, find the absolute paths for all tests that match the
+ * pattern.
+ *
+ * @param {RegExp} pathPattern
+ * @param {Function} onTestFound Callback called immediately when a test is
+ *                               found.
+ *
+ *                               Ideally this function should return a
+ *                               stream, but I don't personally understand all
+ *                               the variations of "node streams" that exist in
+ *                               the world (and their various compatibilities
+ *                               with various node versions), so I've opted to
+ *                               forgo that for now.
+ * @return {Promise<Array<String>>} Fulfilled with a list of testPaths once the
+ *                                  search has completed.
+ */
+TestRunner.prototype.findTestPathsMatching = function(
+  pathPattern, onTestFound) {
+
+  var config = this._config;
+  var deferred = Q.defer();
 
   var testPathIgnorePattern =
     config.testPathIgnores
     ? new RegExp(config.testPathIgnores.join('|'))
     : null;
 
+  var foundPaths = [];
+  function _onMatcherMatch(pathStr) {
+    foundPaths.push(pathStr);
+    try {
+      onTestFound(pathStr);
+    } catch (e) {
+      deferred.reject(e);
+    }
+  }
+
   var numMatchers = config.testPathDirs.length;
   function _onMatcherEnd() {
     numMatchers--;
     if (numMatchers === 0) {
-      onComplete();
+      deferred.resolve(foundPaths);
     }
   }
 
-  function _onMatcherMatch(pathStr) {
-    onFind(pathStr);
+  function _onMatcherError(err) {
+    deferred.reject(err);
   }
 
   config.testPathDirs.forEach(function(scanDir) {
@@ -131,30 +216,21 @@ TestRunner.prototype._findTestFilePaths = function(
         );
       }
     });
+    finder.on('error', _onMatcherError);
     finder.on('match', _onMatcherMatch);
     finder.on('complete', _onMatcherEnd);
     finder.startSearch();
   });
-};
 
-TestRunner.prototype._loadConfigDependencies = function() {
-  var config = this._config;
-  if (this._configDeps === null) {
-    this._configDeps = {
-      ModuleLoader: require(config.moduleLoader),
-      environmentBuilder: require(config.environmentBuilder).bind(null),
-      testRunner: require(config.testRunner).bind(null)
-    };
-  }
-  return this._configDeps;
+  return deferred.promise;
 };
 
 /**
  * Run the given single test file path.
  * This just contains logic for running a single test given it's file path.
  *
- * @param {string} testFilePath
- * @return {Promise} Results of the test
+ * @param {String} testFilePath
+ * @return {Promise<Object>} Results of the test
  */
 TestRunner.prototype.runTest = function(testFilePath) {
   var config = this._config;
@@ -216,11 +292,11 @@ TestRunner.prototype.runTest = function(testFilePath) {
  * Run all tests (in parallel) matching the given path pattern RegExp.
  * Uses a worker pool of child processes to run tests in parallel.
  *
- * @param pathPattern A RegExp object that a given test path must match in
- *                    order to be run.
- * @return promise Fulfilled when all tests have finished running
+ * @param {RegExp} pathPattern A RegExp object that a given test path must match
+ *                             in order to be run.
+ * @return {Promise<Object>} Fulfilled when all tests have finished running
  */
-TestRunner.prototype.runAllParallel = function(pathPattern) {
+TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
   var startTime = Date.now();
   var config = this._config;
 
@@ -234,13 +310,9 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     ])
   );
 
-  var deferred = Q.defer();
   var failedTests = 0;
-  var numTests = 0;
   var self = this;
-
   function _onTestFound(pathStr) {
-    numTests++;
     workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
       var allTestsPassed = self._opts.testResultsHandler(config, results);
       if (!allTestsPassed) failedTests++
@@ -256,26 +328,19 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
     });
   }
 
-  function _onSearchComplete() {
-    workerPool.shutDown().done(function() {
+  var foundTestPaths = this.findTestPathsMatching(pathPattern, _onTestFound);
+
+  return foundTestPaths.then(function(allMatchingTestPaths) {
+    return workerPool.shutDown().then(function() {
       var endTime = Date.now();
-      deferred.resolve({
+      return {
         numFailedTests: failedTests,
-        numTotalTests: numTests,
+        numTotalTests: allMatchingTestPaths.length,
         startTime: startTime,
         endTime: endTime
-      });
-    }, deferred.reject);
-  }
-
-  this._findTestFilePaths(
-    config,
-    pathPattern,
-    _onTestFound,
-    _onSearchComplete
-  );
-
-  return deferred.promise;
+      };
+    });
+  });
 };
 
 /**
@@ -284,54 +349,43 @@ TestRunner.prototype.runAllParallel = function(pathPattern) {
  * processes). This is mostly useful for debugging issues with Jest or rare,
  * complicated issues with some tests.
  *
- * @param pathPattern A RegExp object that a given test path must match in order
- *                    to be run.
- * @return promise Fulfilled when all tests have finished running
+ * @param {RegExp} pathPattern A RegExp object that a given test path must match
+ *                             in order to be run.
+ * @return {Promise<Object>} Fulfilled when all tests have finished running
  */
-TestRunner.prototype.runAllInBand = function(pathPattern) {
+TestRunner.prototype.runAllMatchingInBand = function(pathPattern) {
   var startTime = Date.now();
   var config = this._config;
 
-  var deferred = Q.defer();
   var failedTests = 0;
-  var numTests = 0;
-
   var lastTest = Q();
-  var rejectDeferred = deferred.reject.bind(deferred);
   var self = this;
   function _onTestFound(pathStr) {
-    numTests++;
-    lastTest = lastTest.then(function() {
-      return self.runTest(pathStr).then(function(results) {
-        var allTestsPassed = self._opts.testResultsHandler(config, results);
-        if (!allTestsPassed) failedTests++;
-      }, function(err) {
+    var runThisTest = self.runTest.bind(self, pathStr);
+    lastTest = lastTest.then(runThisTest).then(function(results) {
+      var allTestsPassed = self._opts.testResultsHandler(config, results);
+      if (!allTestsPassed) {
         failedTests++;
-        throw err;
-      });
-    }, rejectDeferred);
+      }
+    }, function(err) {
+      failedTests++;
+      throw err;
+    });
   }
 
-  function _onSearchComplete() {
-    lastTest.then(function() {
+  var foundTestPaths = this.findTestPathsMatching(pathPattern, _onTestFound);
+
+  return foundTestPaths.then(function(allMatchingTestPaths) {
+    return lastTest.then(function() {
       var endTime = Date.now();
-      deferred.resolve({
+      return {
         numFailedTests: failedTests,
-        numTotalTests: numTests,
+        numTotalTests: allMatchingTestPaths.length,
         startTime: startTime,
         endTime: endTime
-      });
-    }, rejectDeferred);
-  }
-
-  this._findTestFilePaths(
-    this._config,
-    pathPattern,
-    _onTestFound.bind(this),
-    _onSearchComplete.bind(this)
-  );
-
-  return deferred.promise;
+      };
+    });
+  });
 };
 
 module.exports = TestRunner;

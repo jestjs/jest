@@ -2,10 +2,15 @@
   "projectName": "jest",
 
   "testPathDirs": [
-    "./src"
+    "."
+  ],
+
+  "moduleLoaderPathIgnores": [
+    "/node_modules/.+"
   ],
 
   "testPathIgnores": [
-    "/__tests__/[^/]*/.+"
+    "/__tests__/[^/]*/.+",
+    "/node_modules/.+"
   ]
 }
