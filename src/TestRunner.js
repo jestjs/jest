@@ -247,8 +247,24 @@ TestRunner.prototype.runTest = function(testFilePath) {
       consoleMessages.push(_serializeConsoleArguments('error', arguments));
     },
 
+    group: function() {
+      // TODO
+    },
+
+    groupCollapsed: function() {
+      // TODO
+    },
+
+    groupEnd: function() {
+      // TODO
+    },
+
     log: function() {
       consoleMessages.push(_serializeConsoleArguments('log', arguments));
+    },
+
+    table: function() {
+      // TODO
     },
 
     warn: function() {
