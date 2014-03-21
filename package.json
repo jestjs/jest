@@ -5,7 +5,7 @@
     "cover": "~0.2.8",
     "diff": "~1.0.4",
     "jasmine-pit": "~1.0.0",
-    "jsdom": "~0.8.10",
+    "jsdom": "^0.10.3",
     "node-find-files": "~0.0.2",
     "node-haste": "~1.2.1",
     "node-worker-pool": "~0.1.2",
