@@ -80,6 +80,7 @@ function TestRunner(config, options) {
   this._configDeps = null;
   this._opts = Object.create(DEFAULT_OPTIONS);
   this._resourceMapPromise = null;
+  this._testPathDirsRegExp = new RegExp(config.testPathDirs.join('|'));
 
   if (options) {
     for (var key in options) {
@@ -97,6 +98,20 @@ TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
   return this._resourceMapPromise.then(function(resourceMap) {
     return new ModuleLoader(config, environment, resourceMap);
   });
+};
+
+TestRunner.prototype._isTestFilePath = function(filePath) {
+  var testPathIgnorePattern =
+    this._config.testPathIgnores
+    ? new RegExp(this._config.testPathIgnores.join('|'))
+    : null;
+
+  return (
+    NODE_HASTE_TEST_PATH_RE.test(filePath)
+    && !HIDDEN_FILE_RE.test(filePath)
+    && (!testPathIgnorePattern || !testPathIgnorePattern.test(filePath))
+    && this._testPathDirsRegExp.test(filePath)
+  );
 };
 
 TestRunner.prototype._loadConfigDependencies = function() {
@@ -123,6 +138,7 @@ TestRunner.prototype._loadConfigDependencies = function() {
  */
 TestRunner.prototype.findTestsRelatedTo = function(paths) {
   var config = this._config;
+  var testRunner = this;
   return this._constructModuleLoader().then(function(moduleLoader) {
     var discoveredModules = {};
 
@@ -147,19 +163,9 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
       });
     }
 
-    // TODO: This is copypasta from this.findTestPathsMatching()
-    var testPathIgnorePattern =
-      config.testPathIgnores
-      ? new RegExp(config.testPathIgnores.join('|'))
-      : null;
-
+    var testPathDirPattern = new RegExp(config.testPathDirs.join('|'));
     return Object.keys(discoveredModules).filter(function(path) {
-      // TODO: This is copypasta from this.findTestPathsMatching()
-      return (
-        NODE_HASTE_TEST_PATH_RE.test(path)
-        && !HIDDEN_FILE_RE.test(path)
-        && (!testPathIgnorePattern || !testPathIgnorePattern.test(path))
-      );
+      return testRunner._isTestFilePath(path)
     });
   });
 };
@@ -187,11 +193,6 @@ TestRunner.prototype.findTestPathsMatching = function(
   var config = this._config;
   var deferred = Q.defer();
 
-  var testPathIgnorePattern =
-    config.testPathIgnores
-    ? new RegExp(config.testPathIgnores.join('|'))
-    : null;
-
   var foundPaths = [];
   function _onMatcherMatch(pathStr) {
     foundPaths.push(pathStr);
@@ -218,19 +219,14 @@ TestRunner.prototype.findTestPathsMatching = function(
     var finder = new FileFinder({
       rootFolder: scanDir,
       filterFunction: function(pathStr, stat) {
-        return (
-          NODE_HASTE_TEST_PATH_RE.test(pathStr)
-          && !HIDDEN_FILE_RE.test(pathStr)
-          && pathPattern.test(pathStr)
-          && (!testPathIgnorePattern || !testPathIgnorePattern.test(pathStr))
-        );
-      }
+        return this._isTestFilePath(pathStr) && pathPattern.test(pathStr);
+      }.bind(this)
     });
     finder.on('error', _onMatcherError);
     finder.on('match', _onMatcherMatch);
     finder.on('complete', _onMatcherEnd);
     finder.startSearch();
-  });
+  }, this);
 
   return deferred.promise;
 };

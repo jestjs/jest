@@ -10,12 +10,12 @@ describe('TestRunner', function() {
     TestRunner = require('../TestRunner');
   });
 
-  describe('findTestsRelatedToPaths', function() {
+  describe('findTestsRelatedTo', function() {
     var fakeDepsFromPath;
     var runner;
 
     beforeEach(function() {
-      runner = new TestRunner({});
+      runner = new TestRunner({testPathDirs: []});
 
       fakeDepsFromPath = {};
       runner._constructModuleLoader = function() {
