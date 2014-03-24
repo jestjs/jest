@@ -259,10 +259,10 @@ function loadConfigFromFile(filePath, relativeTo) {
   });
 }
 
-var contentCache = {};
+var _contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
-  if (contentCache.hasOwnProperty(filePath)) {
-    return contentCache[filePath];
+  if (_contentCache.hasOwnProperty(filePath)) {
+    return _contentCache[filePath];
   }
 
   var fileData = fs.readFileSync(filePath, 'utf8');
@@ -274,7 +274,7 @@ function readAndPreprocessFileContent(filePath, config) {
       throw e;
     }
   }
-  return contentCache[filePath] = fileData;
+  return _contentCache[filePath] = fileData;
 }
 
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,

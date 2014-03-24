@@ -14,7 +14,6 @@ if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
  *       Relatedly: It's time we vastly simplify node-haste.
  */
 
-var codeCoverage = require('../lib/codeCoverage');
 var CoverageCollector = require('../CoverageCollector');
 var fs = require('fs');
 var hasteLoaders = require('node-haste/lib/loaders');
@@ -168,21 +167,8 @@ Loader.loadResourceMap = function(config, options) {
 Loader.prototype._execModule = function(moduleObj, isManualMock) {
   var modulePath = moduleObj.__filename;
 
-  var moduleContent = _moduleContentCache[modulePath];
-  if (!moduleContent) {
-    moduleContent = utils.readAndPreprocessFileContent(
-      modulePath,
-      this._config
-    );
-
-    if (codeCoverage.needsCoverage(modulePath)) {
-      moduleContent = codeCoverage.transformScript(
-        moduleContent,
-        modulePath
-      );
-    }
-    _moduleContentCache[modulePath] = moduleContent;
-  }
+  var moduleContent =
+    utils.readAndPreprocessFileContent(modulePath, this._config);
 
   var boundModuleRequire = this.constructBoundRequire(modulePath);
 
@@ -195,16 +181,20 @@ Loader.prototype._execModule = function(moduleObj, isManualMock) {
     'global': this._environment.global
   };
 
-  if (this._config.collectCoverage) {
-    var coverageDataStore = moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] = {};
-    var coverageCollector = new CoverageCollector(
-      moduleContent,
-      coverageDataStore
-    );
-    this._coverageCollectors[modulePath] = coverageCollector;
-    moduleContent = coverageCollector.getInstrumentedSource(
-      COVERAGE_STORAGE_VAR_NAME
-    );
+  var onlyCollectFrom = this._config.collectCoverageOnlyFrom;
+  var shouldCollectCoverage =
+    this._config.collectCoverage === true && !onlyCollectFrom
+    || (onlyCollectFrom && onlyCollectFrom[modulePath] === true);
+
+  if (shouldCollectCoverage) {
+    if (!this._coverageCollectors.hasOwnProperty(modulePath)) {
+      this._coverageCollectors[modulePath] =
+        new CoverageCollector(moduleContent);
+    }
+    var collector = this._coverageCollectors[modulePath];
+    moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] =
+      collector.getCoverageDataStore();
+    moduleContent = collector.getInstrumentedSource(COVERAGE_STORAGE_VAR_NAME);
   }
 
   var lastExecutingModulePath = this._currentlyExecutingModulePath;
@@ -258,6 +248,24 @@ Loader.prototype._generateMock = function(currPath, moduleName) {
   return moduleMocker.generateFromMetadata(
     this._mockMetaDataCache[modulePath]
   );
+};
+
+Loader.prototype._getDependencyPathsFromResource = function(resource) {
+  var dependencyPaths = [];
+  for (var i = 0; i < resource.requiredModules.length; i++) {
+    var requiredModule = resource.requiredModules[i];
+
+    // *facepalm* node-haste is pretty clowny
+    if (resource.getModuleIDByOrigin) {
+      requiredModule =
+        resource.getModuleIDByOrigin(requiredModule) || requiredModule;
+    }
+
+    dependencyPaths.push(this._getRealPathFromNormalizedModuleID(
+      this._getNormalizedModuleID(resource.path, requiredModule)
+    ));
+  }
+  return dependencyPaths;
 };
 
 Loader.prototype._getResource = function(resourceType, resourceName) {
@@ -580,12 +588,36 @@ Loader.prototype.getCoverageForFilePath = function(filePath) {
   return (
     this._coverageCollectors.hasOwnProperty(filePath)
     ? this._coverageCollectors[filePath].extractRuntimeCoverageInfo()
-    : []
+    : null
   );
 };
 
 /**
- * Given the path to some find, find all other files that *directly* depend on
+ * Given the path to some file, find the path to all other files that it
+ * *directly* depends on.
+ *
+ * @param {String} modulePath Absolute path to the module in question
+ * @return {Array<String>} List of paths to files that the given module directly
+ *                         depends on.
+ */
+Loader.prototype.getDependenciesFromPath = function(modulePath) {
+  var resource = this._resourceMap.getResourceByPath(modulePath);
+  if (!resource) {
+    throw new Error('Unknown modulePath: ' + modulePath);
+  }
+
+  if (resource.type === 'ProjectConfiguration'
+      || resource.type === 'Resource') {
+    throw new Error(
+      'Could not extract dependency information from this type of file!'
+    );
+  }
+
+  return this._getDependencyPathsFromResource(resource);
+};
+
+/**
+ * Given the path to some module, find all other files that *directly* depend on
  * it.
  *
  * @param {String} modulePath Absolute path to the module in question
@@ -604,24 +636,13 @@ Loader.prototype.getDependentsFromPath = function(modulePath) {
         continue;
       }
 
-      for (var i = 0; i < resource.requiredModules.length; i++) {
-        var requiredModule = resource.requiredModules[i];
-
-        // *facepalm* node-haste is really clowny...
-        if (resource.getModuleIDByOrigin) {
-          requiredModule =
-            resource.getModuleIDByOrigin(requiredModule) || requiredModule;
+      var dependencyPaths = this._getDependencyPathsFromResource(resource);
+      for (var i = 0; i < dependencyPaths.length; i++) {
+        var requiredModulePath = dependencyPaths[i];
+        if (!reverseDepMap.hasOwnProperty(requiredModulePath)) {
+          reverseDepMap[requiredModulePath] = {};
         }
-
-        var requiredModuleID = this._getRealPathFromNormalizedModuleID(
-          this._getNormalizedModuleID(resource.path, requiredModule)
-        );
-
-        if (!reverseDepMap.hasOwnProperty(requiredModuleID)) {
-          reverseDepMap[requiredModuleID] = {};
-        }
-
-        reverseDepMap[requiredModuleID][resource.path] = true;
+        reverseDepMap[requiredModulePath][resource.path] = true;
       }
     }
   }

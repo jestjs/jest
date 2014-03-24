@@ -13,12 +13,16 @@ function _getCoverageTemplate() {
   return _memoizedCoverageTemplate;
 }
 
-function CoverageCollector(sourceText, coverageDataStore) {
-  this._coverageDataStore = coverageDataStore;
+function CoverageCollector(sourceText) {
+  this._coverageDataStore = {};
   this._instrumentedSourceText = null;
   this._instrumentor = new CoverageInstrumentor();
   this._origSourceText = sourceText;
 }
+
+CoverageCollector.prototype.getCoverageDataStore = function() {
+  return this._coverageDataStore;
+};
 
 CoverageCollector.prototype.getInstrumentedSource = function(storageVarName) {
   if (this._instrumentedSourceText === null) {

@@ -88,8 +88,8 @@ function TestRunner(config, options) {
   }
 }
 
-TestRunner.prototype._constructModuleLoader = function(environment) {
-  var config = this._config;
+TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
+  var config = customCfg || this._config;
   var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
   if (this._resourceMapPromise === null) {
     this._resourceMapPromise = ModuleLoader.loadResourceMap(this._config);
@@ -233,16 +233,19 @@ TestRunner.prototype.findTestPathsMatching = function(
  * @return {Promise<Object>} Results of the test
  */
 TestRunner.prototype.runTest = function(testFilePath) {
-  var config = this._config;
+  // Using Object.create() lets us adjust the config object locally without
+  // worrying about the external consequences of changing the config object for
+  // needs that are local to this particular function call
+  var config = Object.create(this._config);
   var configDeps = this._loadConfigDependencies();
 
-  var environment = configDeps.environmentBuilder();
+  var env = configDeps.environmentBuilder();
   var testRunner = configDeps.testRunner;
 
   // Capture and serialize console.{log|warning|error}s so they can be passed
   // around (such as through some channel back to a parent process)
   var consoleMessages = [];
-  environment.global.console = {
+  env.global.console = {
     error: function() {
       consoleMessages.push(_serializeConsoleArguments('error', arguments));
     },
@@ -272,10 +275,32 @@ TestRunner.prototype.runTest = function(testFilePath) {
     }
   };
 
-  return this._constructModuleLoader(environment).then(function(moduleLoader) {
+  return this._constructModuleLoader(env, config).then(function(moduleLoader) {
+    // This is a kind of janky way to ensure that we only collect coverage
+    // information on modules that are immediate dependencies of the test file.
+    //
+    // Collecting coverage info on more than that is often not useful as
+    // *usually*, when one is looking for coverage info, one is only looking
+    // for coverage info on the files under test. Since a test file is just a
+    // regular old module that can depend on whatever other modules it likes,
+    // it's usually pretty hard to tell which of those dependencies is/are the
+    // "module(s)" under test.
+    //
+    // I'm not super happy with having to inject stuff into the config object
+    // mid-stream here, but it gets the job done.
+    if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
+      config.collectCoverageOnlyFrom = {};
+      moduleLoader.getDependenciesFromPath(testFilePath).filter(function(depPath) {
+        // Skip over built-in and node modules
+        return /^\//.test(depPath);
+      }).forEach(function(depPath) {
+        config.collectCoverageOnlyFrom[depPath] = true;
+      });
+    }
+
     if (config.setupEnvScriptFile) {
       utils.runContentWithLocalBindings(
-        environment.runSourceText,
+        env.runSourceText,
         utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
         config.setupEnvScriptFile,
         {
@@ -289,7 +314,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
     }
 
     var testExecStats = {start: Date.now()};
-    return testRunner(config, environment, moduleLoader, testFilePath)
+    return testRunner(config, env, moduleLoader, testFilePath)
       .then(function(results) {
         testExecStats.end = Date.now();
         results.consoleMessages = consoleMessages;
@@ -298,7 +323,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
         results.coverage =
           config.collectCoverage
           ? moduleLoader.getAllCoverageInfo()
-          : [];
+          : {};
         return results;
       });
   });
