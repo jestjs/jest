@@ -125,6 +125,16 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
   var config = this._config;
   return this._constructModuleLoader().then(function(moduleLoader) {
     var discoveredModules = {};
+
+    // If a path to a test file is given, make sure we consider that test as
+    // related to itself...
+    //
+    // (If any of the supplied paths aren't tests, it's ok because we filter
+    //  non-tests out at the end)
+    paths.forEach(function(path) {
+      discoveredModules[path] = true;
+    });
+
     var modulesToSearch = [].concat(paths);
     while (modulesToSearch.length > 0) {
       var modulePath = modulesToSearch.shift();
