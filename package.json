@@ -1,5 +1,5 @@
 {
-  "name": "jest",
+  "name": "jest-cli",
   "version": "0.1.0",
   "dependencies": {
     "cover": "~0.2.8",
