@@ -4,7 +4,7 @@ var utils = require('./lib/utils');
 
 var FAIL_COLOR = colors.RED_BG;
 var PASS_COLOR = colors.GREEN_BG;
-var TEST_NAME_COLOR = colors.BOLD + colors.UNDERLINE;
+var TEST_NAME_COLOR = colors.BOLD;
 
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
