@@ -79,7 +79,7 @@ function TestRunner(config, options) {
   this._config = config;
   this._configDeps = null;
   this._opts = Object.create(DEFAULT_OPTIONS);
-  this._resourceMapPromise = null;
+  this._moduleLoaderResourceMap = null;
   this._testPathDirsRegExp = new RegExp(config.testPathDirs.join('|'));
 
   if (options) {
@@ -92,12 +92,22 @@ function TestRunner(config, options) {
 TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
   var config = customCfg || this._config;
   var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
-  if (this._resourceMapPromise === null) {
-    this._resourceMapPromise = ModuleLoader.loadResourceMap(this._config);
-  }
-  return this._resourceMapPromise.then(function(resourceMap) {
+  return this._getModuleLoaderResourceMap().then(function(resourceMap) {
     return new ModuleLoader(config, environment, resourceMap);
   });
+};
+
+TestRunner.prototype._getModuleLoaderResourceMap = function() {
+  var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
+  if (this._moduleLoaderResourceMap === null) {
+    if (this._opts.useCachedModuleLoaderResourceMap) {
+      this._moduleLoaderResourceMap =
+        ModuleLoader.loadResourceMapFromCacheFile(this._config);
+    } else {
+      this._moduleLoaderResourceMap = ModuleLoader.loadResourceMap(this._config);
+    }
+  }
+  return this._moduleLoaderResourceMap;
 };
 
 TestRunner.prototype._isTestFilePath = function(filePath) {
@@ -232,6 +242,35 @@ TestRunner.prototype.findTestPathsMatching = function(
 };
 
 /**
+ * For use by external users of TestRunner as a means of optimization.
+ *
+ * Imagine the following scenario executing in a child worker process:
+ *
+ * var runner = new TestRunner(config, {
+ *   moduleLoaderResourceMap: serializedResourceMap
+ * });
+ * someOtherAyncProcess.then(function() {
+ *   runner.runAllMatchingParallel();
+ * });
+ *
+ * Here we wouldn't start deserializing the resource map (passed to us from the
+ * parent) until runner.runAllMatchingParallel() is called. At the time of this
+ * writing, resource map deserialization is slow and a bottleneck on running the
+ * first test in a child.
+ *
+ * So this API gives scenarios such as the one above an optimization path to
+ * potentially start deserializing the resource map while we wait on the
+ * someOtherAsyncProcess to resolve (rather that doing it after it's resolved).
+ */
+TestRunner.prototype.preloadResourceMap = function() {
+  this._getModuleLoaderResourceMap().done();
+};
+
+TestRunner.prototype.preloadConfigDependencies = function() {
+  this._loadConfigDependencies();
+};
+
+/**
  * Run the given single test file path.
  * This just contains logic for running a single test given it's file path.
  *
@@ -347,6 +386,9 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
   var startTime = Date.now();
   var config = this._config;
 
+  // Build the resource map and serialize it to ship off to the child nodes
+  var failedTestCount = 0;
+  var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
   var workerPool = new WorkerPool(
     this._opts.maxWorkers,
     this._opts.nodePath,
@@ -357,37 +399,44 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
     ])
   );
 
-  var failedTests = 0;
-  var self = this;
-  function _onTestFound(pathStr) {
-    workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-      var allTestsPassed = self._opts.testResultsHandler(config, results);
-      if (!allTestsPassed) failedTests++
-    }, function(errMsg) {
-      failedTests++;
-      self._opts.testResultsHandler(config, {
-        testFilePath: pathStr,
-        testExecError: errMsg,
-        suites: {},
-        tests: {},
-        consoleMessages: []
+  return this._getModuleLoaderResourceMap()
+    .then(function(moduleLoaderResourceMap) {
+      // Tell all the workers that it's now safe to read the module loader
+      // resource map cache from disk.
+      workerPool.sendMessageToAllWorkers({
+        resourceMapWrittenToDisk: true
+      }).done();
+
+      var self = this;
+      function _onTestFound(pathStr) {
+        workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
+          var allTestsPassed = self._opts.testResultsHandler(config, results);
+          if (!allTestsPassed) failedTestCount++
+        }, function(errMsg) {
+          failedTestCount++;
+          self._opts.testResultsHandler(config, {
+            testFilePath: pathStr,
+            testExecError: errMsg,
+            suites: {},
+            tests: {},
+            consoleMessages: []
+          });
+        });
+      }
+
+      return this.findTestPathsMatching(pathPattern, _onTestFound);
+    }.bind(this))
+    .then(function(allFoundTestPaths) {
+      return workerPool.destroy().then(function() {
+        var endTime = Date.now();
+        return {
+          numFailedTests: failedTestCount,
+          numTotalTests: allFoundTestPaths.length,
+          startTime: startTime,
+          endTime: endTime
+        };
       });
     });
-  }
-
-  var foundTestPaths = this.findTestPathsMatching(pathPattern, _onTestFound);
-
-  return foundTestPaths.then(function(allMatchingTestPaths) {
-    return workerPool.destroy().then(function() {
-      var endTime = Date.now();
-      return {
-        numFailedTests: failedTests,
-        numTotalTests: allMatchingTestPaths.length,
-        startTime: startTime,
-        endTime: endTime
-      };
-    });
-  });
 };
 
 /**

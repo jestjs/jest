@@ -1,11 +1,5 @@
 "use strict";
 
-// Node always must be run with --harmony in order for this class to work since
-// it uses WeakMap
-if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
-  throw new Error('Please run node with the --harmony flag!');
-}
-
 /**
  * TODO: This file has grown into a monster. It really needs to be refactored
  *       into smaller pieces. One of the best places to start would be to move a
@@ -26,6 +20,7 @@ var path = require('path');
 var PathResolver = require('node-haste/lib/PathResolver');
 var Q = require('q');
 var resolve = require('resolve');
+var ResourceMapSerializer = require('node-haste/lib/ResourceMapSerializer');
 var utils = require('../lib/utils');
 
 var MAIN_DIR = path.resolve(__dirname + '/../');
@@ -71,8 +66,48 @@ var NODE_CORE_MODULES = {
   zlib: true
 };
 
-var _configUnmockListRegExpCache = new WeakMap();
+var _configUnmockListRegExpCache = null;
 var _moduleContentCache = {};
+
+function _buildLoadersList(config) {
+  return [
+    new hasteLoaders.ProjectConfigurationLoader(),
+    new hasteLoaders.JSTestLoader(config.setupJSTestLoaderOptions),
+    new hasteLoaders.JSMockLoader(config.setupJSMockLoaderOptions),
+    new hasteLoaders.JSLoader(config.setupJSLoaderOptions),
+    new hasteLoaders.ResourceLoader()
+  ];
+}
+
+function _calculateCacheFilePath(config) {
+  return CACHE_DIR_PATH + '/cache-' + config.projectName;
+}
+
+function _constructHasteInst(config, options) {
+  var HASTE_IGNORE_REGEX = new RegExp(
+    config.moduleLoaderPathIgnores
+    ? config.moduleLoaderPathIgnores.join('|')
+    : '__NOT_EXIST__'
+  );
+
+  if (!fs.existsSync(CACHE_DIR_PATH)) {
+    fs.mkdirSync(CACHE_DIR_PATH);
+  }
+
+  return new NodeHaste(
+    _buildLoadersList(config),
+    (config.testPathDirs || []),
+    {
+      ignorePaths: function(path) {
+        return path.match(HASTE_IGNORE_REGEX);
+      },
+      version: JSON.stringify(config),
+      useNativeFind: true,
+      maxProcesses: os.cpus().length,
+      maxOpenFiles: options.maxOpenFiles || 100
+    }
+  );
+}
 
 function Loader(config, environment, resourceMap) {
   this._config = config;
@@ -89,6 +124,16 @@ function Loader(config, environment, resourceMap) {
   this._shouldAutoMock = true;
   // TODO: Rename this variable, it's confusing...
   this._unmockListModuleNames = {};
+
+  if (_configUnmockListRegExpCache === null) {
+    // Node must have been run with --harmony in order for WeakMap to be
+    // available
+    if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
+      throw new Error('Please run node with the --harmony flag!');
+    }
+
+    _configUnmockListRegExpCache = new WeakMap();
+  }
 
   if (!config.unmockList || config.unmockList.length === 0) {
     this._unmockListRegExps = [];
@@ -108,52 +153,55 @@ function Loader(config, environment, resourceMap) {
 Loader.loadResourceMap = function(config, options) {
   options = options || {};
 
-  var CACHE_FILE_PATH = CACHE_DIR_PATH + '/cache-' + config.projectName;
-  var HASTE_IGNORE_REGEX = new RegExp(
-    config.moduleLoaderPathIgnores
-    ? config.moduleLoaderPathIgnores.join('|')
-    : '__NOT_EXIST__'
-  );
-
-  if (!fs.existsSync(CACHE_DIR_PATH)) {
-    fs.mkdirSync(CACHE_DIR_PATH);
-  }
-
-  var hasteInst = new NodeHaste(
-    [
-      new hasteLoaders.ProjectConfigurationLoader(),
-      new hasteLoaders.JSTestLoader(config.setupJSTestLoaderOptions),
-      new hasteLoaders.JSMockLoader(config.setupJSMockLoaderOptions),
-      new hasteLoaders.JSLoader(config.setupJSLoaderOptions),
-      new hasteLoaders.ResourceLoader()
-    ],
-    (config.testPathDirs || []),
-    {
-      ignorePaths: function(path) {
-        return path.match(HASTE_IGNORE_REGEX);
-      },
-      version: JSON.stringify(config),
-      useNativeFind: true,
-      // TODO: Hmm...what's node-haste doing with processes?
-      maxProcesses: os.cpus().length,
-      maxOpenFiles: options.maxOpenFiles || 100
-    }
-  );
-
   var deferred = Q.defer();
   try {
-    hasteInst.update(
-      CACHE_FILE_PATH,
+    _constructHasteInst(config, options).update(
+      _calculateCacheFilePath(config),
       function(resourceMap) {
         deferred.resolve(resourceMap);
-      },
-      {forceRescan: true}
+      }
     );
   } catch (e) {
     deferred.reject(e);
   }
+
   return deferred.promise;
-}
+};
+
+Loader.loadResourceMapFromCacheFile = function(config, options) {
+  options = options || {};
+
+  var deferred = Q.defer();
+  try {
+    var hasteInst = _constructHasteInst(config, options);
+    hasteInst.loadMap(_calculateCacheFilePath(config), function(err, map) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve(map);
+      }
+    });
+  } catch (e) {
+    deferred.reject(e);
+  }
+
+  return deferred.promise;
+};
+
+Loader.deserializeResourceMap = function(config, serializedResourceMap) {
+  var serializer = new ResourceMapSerializer(
+    _buildLoadersList(config),
+    {version: JSON.stringify(config)}
+  );
+  return serializer.fromObject(JSON.parse(serializedResourceMap));
+};
+
+Loader.serializeResourceMap = function(config, resourceMap) {
+  return JSON.stringify(new ResourceMapSerializer(
+    _buildLoadersList(config),
+    {version: JSON.stringify(config)}
+  ).toObject(resourceMap));
+};
 
 /**
  * Given the path to a module: Read it from disk (synchronously) and

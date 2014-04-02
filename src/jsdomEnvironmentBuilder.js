@@ -1,9 +1,15 @@
-var jsdom = require('./lib/jsdom-compat').jsdom;
 var mockTimers = require('./lib/mockTimers');
 var TestEnvironment = require('./TestEnvironment');
 var utils = require('./lib/utils');
 
 function jsdomEnvironmentBuilder() {
+  // We lazily require jsdom because it takes a good ~.5s to load.
+  //
+  // Since this file may be require'd at the top of other files that may/may not
+  // use it (depending on the context -- such as TestRunner.js when operating as
+  // a workerpool parent), this is the best way to ensure we only spend time
+  // require()ing this when necessary.
+  var jsdom = require('./lib/jsdom-compat').jsdom;
   var jsdomWindow = jsdom().parentWindow;
 
   // Stuff jsdom doesn't support out of the box

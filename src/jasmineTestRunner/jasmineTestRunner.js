@@ -1,11 +1,5 @@
 "use strict";
 
-// Node always must be run with --harmony in order for this class to work since
-// it uses WeakMap
-if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
-  throw new Error('Please run node with the --harmony flag!');
-}
-
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
@@ -35,6 +29,11 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   // Install jasmine-pit -- because it's amazing
   jasminePit.install(environment.global);
+
+  // Node must have been run with --harmony in order for WeakMap to be available
+  if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
+    throw new Error('Please run node with the --harmony flag!');
+  }
 
   // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to detect
   // cycles, but that doesn't work on frozen objects so we use a WeakMap instead.
