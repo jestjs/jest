@@ -378,7 +378,7 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
   var foundTestPaths = this.findTestPathsMatching(pathPattern, _onTestFound);
 
   return foundTestPaths.then(function(allMatchingTestPaths) {
-    return workerPool.shutDown().then(function() {
+    return workerPool.destroy().then(function() {
       var endTime = Date.now();
       return {
         numFailedTests: failedTests,
