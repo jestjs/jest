@@ -2,8 +2,12 @@ var mocks = require('./moduleMocker');
 
 var now;
 var timers;
+var ticks = [];
+var cancelledTicks = {};
 function reset() {
   timers = {};
+  ticks = [];
+  cancelledTicks = {};
   // Keep a fake timestamp
   // move on the time when runTimersToTime() is called
   now = 0;
@@ -96,7 +100,29 @@ function _runTimersToTime(delay) {
   }
 }
 
+var originalNextTick = process.nextTick.bind(process);
+function _nextTick(callback) {
+  var tickCancellationID = ticks.length;
+  ticks.push(callback);
+
+  originalNextTick(function() {
+    if (!cancelledTicks[tickCancellationID]) {
+      callback();
+    }
+  });
+}
+
+function _runTicksRepeatedly() {
+  var token;
+  for (var i = 0; i < ticks.length; i++) {
+    ticks[i]();
+    cancelledTicks[i] = true;
+  }
+}
+
 function _runTimersRepeatedly() {
+  _runTicksRepeatedly();
+
   // Only run a generous 1000 timers and then bail, since we may have entered
   // a loop if we have more than that.
   var max_timers = 1000;
@@ -141,6 +167,13 @@ var mockTimers = {
   clearTimeout: _clearTimeout,
   setInterval: _setInterval,
   clearInterval: _clearInterval,
+  nextTick: _nextTick,
+
+  /**
+   * Iteratively run nextTick() callbacks until there are no callbacks left to
+   * call.
+   */
+  runTicksRepeatedly: _runTicksRepeatedly,
 
   /**
    * Iteratively run callbacks in time order during the time from now to
@@ -160,8 +193,6 @@ var mockTimers = {
   /**
    * Iteratively run callbacks until there are no timers left to call. Will
    * stop after a maximum number of iterations to avoid infinite loop.
-   *
-   * @param maximum iterations (optional)
    */
   runTimersRepeatedly: _runTimersRepeatedly,
 
@@ -185,7 +216,8 @@ module.exports.installMockTimers = function(window) {
     setTimeout: window.setTimeout,
     clearTimeout: window.clearTimeout,
     setInterval: window.setInterval,
-    clearInterval: window.clearInterval
+    clearInterval: window.clearInterval,
+    nextTick: process.nextTick
   };
   window.setTimeout =
     mocks.getMockFunction().mockImplementation(mockTimers.setTimeout);
@@ -195,6 +227,8 @@ module.exports.installMockTimers = function(window) {
     mocks.getMockFunction().mockImplementation(mockTimers.setInterval);
   window.clearInterval =
     mocks.getMockFunction().mockImplementation(mockTimers.clearInterval);
+  window.mockRunTicksRepeatedly =
+    mocks.getMockFunction().mockImplementation(mockTimers.runTicksRepeatedly);
   window.mockRunTimersOnce =
     mocks.getMockFunction().mockImplementation(mockTimers.runTimersOnce);
   window.mockRunTimersToTime =
@@ -205,6 +239,12 @@ module.exports.installMockTimers = function(window) {
     mocks.getMockFunction().mockImplementation(mockTimers.clearTimers);
   window.mockGetTimersCount =
     mocks.getMockFunction().mockImplementation(mockTimers.getTimersCount);
+
+  if (typeof process === 'object' && typeof process.nextTick === 'function') {
+    window.process = Object.create(process);
+    window.process.nextTick =
+      mocks.getMockFunction().mockImplementation(mockTimers.nextTick);
+  }
 };
 
 module.exports.uninstallMockTimers = function(window) {
@@ -212,7 +252,10 @@ module.exports.uninstallMockTimers = function(window) {
   window.clearTimeout = window._originalTimeouts.clearTimeout;
   window.setInterval = window._originalTimeouts.setInterval;
   window.clearInterval = window._originalTimeouts.clearInterval;
+  window.process.nextTick = window._originalTimeouts.nextTick;
+
   window._originalTimeouts = undefined;
+  window.mockRunTicksRepeatedly = undefined;
   window.mockRunTimersOnce = undefined;
   window.mockRunTimersToTime = undefined;
   window.mockRunTimersRepeatedly = undefined;
