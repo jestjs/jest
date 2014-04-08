@@ -188,21 +188,6 @@ Loader.loadResourceMapFromCacheFile = function(config, options) {
   return deferred.promise;
 };
 
-Loader.deserializeResourceMap = function(config, serializedResourceMap) {
-  var serializer = new ResourceMapSerializer(
-    _buildLoadersList(config),
-    {version: JSON.stringify(config)}
-  );
-  return serializer.fromObject(JSON.parse(serializedResourceMap));
-};
-
-Loader.serializeResourceMap = function(config, resourceMap) {
-  return JSON.stringify(new ResourceMapSerializer(
-    _buildLoadersList(config),
-    {version: JSON.stringify(config)}
-  ).toObject(resourceMap));
-};
-
 /**
  * Given the path to a module: Read it from disk (synchronously) and
  * evaluate it's constructor function to generate the module and exports
