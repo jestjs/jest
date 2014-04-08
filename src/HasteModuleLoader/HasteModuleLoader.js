@@ -20,7 +20,6 @@ var path = require('path');
 var PathResolver = require('node-haste/lib/PathResolver');
 var Q = require('q');
 var resolve = require('resolve');
-var ResourceMapSerializer = require('node-haste/lib/ResourceMapSerializer');
 var utils = require('../lib/utils');
 
 var MAIN_DIR = path.resolve(__dirname + '/../');
