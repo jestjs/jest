@@ -10,7 +10,7 @@ var TEST_NAME_COLOR = colors.BOLD;
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
     path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'src', 'vendor', 'jasmine')
+    path.resolve(__dirname, '..', 'vendor', 'jasmine')
 ].join('|') + ')');
 
 function _printConsoleMessage(msg) {

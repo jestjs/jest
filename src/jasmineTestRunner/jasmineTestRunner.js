@@ -7,7 +7,7 @@ var mockTimers = require('../lib/mockTimers');
 var path = require('path');
 var utils = require('../lib/utils');
 
-var JASMINE_PATH = require.resolve('../vendor/jasmine/jasmine-1.3.0');
+var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
@@ -147,11 +147,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   var jasmine = environment.global.jasmine;
 
-  // Disable typechecks while doing toThrow tests
-  // TODO: (see jstest/support/jasmine.js)
-
-  // Add matcher for mock functions
-  // TODO: (see jstest/support/jasmine.js)
   jasmine.getEnv().beforeEach(function() {
     this.addMatchers({
       toBeCalled: function() {

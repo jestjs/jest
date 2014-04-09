@@ -1,6 +1,6 @@
 var colors = require('../lib/colors');
 var diff = require('diff');
-var jasmine = require('../vendor/jasmine/jasmine-1.3.0').jasmine;
+var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
 var Q = require('q');
 
 var colorize = colors.colorize;

@@ -121,8 +121,7 @@ function Loader(config, environment, resourceMap) {
   this._resourceMap = resourceMap;
   this._reverseDependencyMap = null;
   this._shouldAutoMock = true;
-  // TODO: Rename this variable, it's confusing...
-  this._unmockListModuleNames = {};
+  this._configShouldMockModuleNames = {};
 
   if (_configUnmockListRegExpCache === null) {
     // Node must have been run with --harmony in order for WeakMap to be
@@ -514,10 +513,10 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
 
     // See if the module is specified in the config as a module that should
     // never be mocked
-    if (this._unmockListModuleNames.hasOwnProperty(moduleName)) {
-      return this._unmockListModuleNames[moduleName];
+    if (this._configShouldMockModuleNames.hasOwnProperty(moduleName)) {
+      return this._configShouldMockModuleNames[moduleName];
     } else if (this._unmockListRegExps.length > 0) {
-      this._unmockListModuleNames[moduleName] = true;
+      this._configShouldMockModuleNames[moduleName] = true;
 
       var manualMockResource =
         this._getResource('JSMock', moduleName);
@@ -545,14 +544,14 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
       }
       var unmockRegExp;
 
-      this._unmockListModuleNames[moduleName] = true;
+      this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
         unmockRegExp = this._unmockListRegExps[i];
         if (unmockRegExp.test(modulePath)) {
-          return this._unmockListModuleNames[moduleName] = false;
+          return this._configShouldMockModuleNames[moduleName] = false;
         }
       }
-      return this._unmockListModuleNames[moduleName];
+      return this._configShouldMockModuleNames[moduleName];
     }
     return true;
   } else {
