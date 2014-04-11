@@ -3,6 +3,7 @@
 "use strict";
 
 var child_process = require('child_process');
+var defaultTestResultHandler = require('../src/defaultTestResultHandler');
 var optimist = require('optimist');
 var path = require('path');
 var Q = require('q');
@@ -42,6 +43,10 @@ function _findChangedFiles(dirPath) {
   });
 
   return deferred.promise;
+}
+
+function _onResultReady(config, result) {
+  return defaultTestResultHandler(config, result);
 }
 
 function _onRunComplete(completionData) {
@@ -174,9 +179,13 @@ utils.loadConfigFromFile(argv.config).done(function(config) {
   function _runTestsOnPathPattern(pathPattern) {
     if (argv.runInBand) {
       console.log('Running tests serially in the current node process...');
-      testRunner.runAllMatchingInBand(pathPattern).done(_onRunComplete);
+      testRunner
+        .runAllMatchingInBand(pathPattern, _onResultReady)
+        .done(_onRunComplete);
     } else {
-      testRunner.runAllMatchingParallel(pathPattern).done(_onRunComplete);
+      testRunner
+        .runAllMatchingParallel(pathPattern, _onResultReady)
+        .done(_onRunComplete);
     }
   }
 

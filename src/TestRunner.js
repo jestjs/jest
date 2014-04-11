@@ -5,7 +5,6 @@ var FileFinder = require('node-find-files');
 var os = require('os');
 var path = require('path');
 var Q = require('q');
-var stream = require('stream');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 
@@ -38,19 +37,7 @@ var DEFAULT_OPTIONS = {
     // Passing --debug off to child processes can screw with socket connections
     // of the parent process.
     return arg !== '--debug';
-  }),
-
-  /**
-   * Function for handling (usually printing) the results of a given test.
-   * This function will be called once for each test when the test is complete,
-   * and with the following arguments:
-   *
-   * @param {object} config The config object supplied to the TestRunner
-   * @param {object} testResult The results of the test
-   *
-   * TODO: Document + formalized the format of the results object
-   */
-  testResultsHandler: require('./defaultTestResultHandler')
+  })
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
@@ -382,7 +369,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
  *                             in order to be run.
  * @return {Promise<Object>} Fulfilled when all tests have finished running
  */
-TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
+TestRunner.prototype.runAllMatchingParallel = function(pathPattern, onResult) {
   var startTime = Date.now();
   var config = this._config;
 
@@ -410,11 +397,11 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
       var self = this;
       function _onTestFound(pathStr) {
         workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-          var allTestsPassed = self._opts.testResultsHandler(config, results);
+          var allTestsPassed = onResult(config, results);
           if (!allTestsPassed) failedTestCount++
         }, function(errMsg) {
           failedTestCount++;
-          self._opts.testResultsHandler(config, {
+          onResult(config, {
             testFilePath: pathStr,
             testExecError: errMsg,
             suites: {},
@@ -449,7 +436,7 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern) {
  *                             in order to be run.
  * @return {Promise<Object>} Fulfilled when all tests have finished running
  */
-TestRunner.prototype.runAllMatchingInBand = function(pathPattern) {
+TestRunner.prototype.runAllMatchingInBand = function(pathPattern, onResult) {
   var startTime = Date.now();
   var config = this._config;
 
@@ -459,7 +446,7 @@ TestRunner.prototype.runAllMatchingInBand = function(pathPattern) {
   function _onTestFound(pathStr) {
     var runThisTest = self.runTest.bind(self, pathStr);
     lastTest = lastTest.then(runThisTest).then(function(results) {
-      var allTestsPassed = self._opts.testResultsHandler(config, results);
+      var allTestsPassed = onResult(config, results);
       if (!allTestsPassed) {
         failedTests++;
       }
