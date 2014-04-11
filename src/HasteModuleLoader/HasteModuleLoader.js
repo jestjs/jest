@@ -201,12 +201,12 @@ Loader.prototype._execModule = function(moduleObj, isManualMock) {
   var moduleContent =
     utils.readAndPreprocessFileContent(modulePath, this._config);
 
-  var boundModuleRequire = this.constructBoundRequire(modulePath);
+  moduleObj.require = this.constructBoundRequire(modulePath);
 
   var moduleLocalBindings = {
     'module': moduleObj,
     'exports': moduleObj.exports,
-    'require': boundModuleRequire,
+    'require': moduleObj.require,
     '__dirname': path.dirname(modulePath),
     '__filename': modulePath,
     'global': this._environment.global
@@ -396,8 +396,13 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
   if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
     // Normalize the relative path to an absolute path
     var modulePath = path.resolve(currPath, '..', moduleName);
+    var modulePathExtName = path.extname(modulePath);
 
-    if (fs.existsSync(modulePath)) {
+    if (modulePathExtName !== '.js'
+        && fs.existsSync(modulePath + '.js')
+        && fs.statSync(modulePath + '.js').isFile()) {
+      return modulePath + '.js';
+    } else if (fs.existsSync(modulePath)) {
       if (fs.statSync(modulePath).isDirectory()) {
         if (fs.existsSync(modulePath + '.js')
             && fs.statSync(modulePath + '.js').isFile()) {
@@ -419,11 +424,6 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
         // The required path is a file, so return this path
         return modulePath;
       }
-    } else if (fs.existsSync(modulePath + '.js')
-               && fs.statSync(modulePath + '.js').isFile()) {
-      // The required path doesn't exist, but a .js file at that path does
-      // so use that.
-      return modulePath + '.js';
     } else if (fs.existsSync(modulePath + '.json')
                && fs.statSync(modulePath + '.json').isFile()) {
       // The required path doesn't exist, nor does a .js file at that path,
