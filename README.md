@@ -62,7 +62,7 @@ describe('sum', function() {
 });
 ```
 
-Now, if we're setup as described in the [Getting Started] section, we can run `npm test` and see the following:
+Now, if we're setup as described in the [Getting Started](#getting-started) section, we can run `npm test` and see the following:
 ```
 $ npm test
 
