@@ -38,8 +38,8 @@ module.exports = sum;
 ```
 __\__tests\_\_/sum-test.js__:
 ```js
-// By default jest will automatically generate mocks for all modules and
-// return the mock version from require().
+// By default jest will automatically generate mocks for all modules
+// (and require() will return these mocks rather than the real versions of the module)
 // 
 // Here, we tell jest not to mock the 'sum' module because we want test it.
 require('mock-modules').dontMock('sum');
