@@ -26,6 +26,8 @@ Getting started with jest is pretty simple. All you need to do is:
 
 ## Example Module + Test
 
+jest ships with support for jasmine out of the box:
+
 __sum.js__:
 ```js
 function sum(value1, value2) {
