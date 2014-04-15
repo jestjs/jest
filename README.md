@@ -23,3 +23,33 @@ Getting started with jest is pretty simple. All you need to do is:
   ...
 }
 ```
+
+## Example Module + Test
+
+__sum.js__:
+```js
+function sum(value1, value2) {
+  return value1 + value;
+}
+
+module.exports = sum;
+```
+__\__tests\_\_/sum-test.js__:
+```js
+describe('sum', function() {
+  var sum;
+  
+  beforeEach(function() {
+    sum = require('../sum');
+  });
+  
+  it('adds 1 + 1 to equal 2', function() {
+    expect(sum(1, 2)).toBe(2);
+  });
+  
+  // This test will fail!
+  it('adds a scalar number to an array', function() {
+    expect(sum(1, [1, 2])).toEqual([2, 3]);
+  });
+});
+```
