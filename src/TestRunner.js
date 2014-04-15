@@ -349,13 +349,15 @@ TestRunner.prototype.runTest = function(testFilePath) {
     return testRunner(config, env, moduleLoader, testFilePath)
       .then(function(results) {
         testExecStats.end = Date.now();
-        results.consoleMessages = consoleMessages;
-        results.stats = testExecStats;
+
+        results.logMessages = consoleMessages;
+        results.perfStats = testExecStats;
         results.testFilePath = testFilePath;
         results.coverage =
           config.collectCoverage
           ? moduleLoader.getAllCoverageInfo()
           : {};
+
         return results;
       });
   });
@@ -397,8 +399,10 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern, onResult) {
       var self = this;
       function _onTestFound(pathStr) {
         workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-          var allTestsPassed = onResult(config, results);
-          if (!allTestsPassed) failedTestCount++
+          if (results.numFailingTests > 0) {
+            failedTestCount++;
+          }
+          onResult(config, results);
         }, function(errMsg) {
           failedTestCount++;
           onResult(config, {
@@ -406,7 +410,7 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern, onResult) {
             testExecError: errMsg,
             suites: {},
             tests: {},
-            consoleMessages: []
+            logMessages: []
           });
         });
       }
@@ -440,18 +444,18 @@ TestRunner.prototype.runAllMatchingInBand = function(pathPattern, onResult) {
   var startTime = Date.now();
   var config = this._config;
 
-  var failedTests = 0;
+  var failedTestCount = 0;
   var lastTest = Q();
   var self = this;
   function _onTestFound(pathStr) {
     var runThisTest = self.runTest.bind(self, pathStr);
     lastTest = lastTest.then(runThisTest).then(function(results) {
-      var allTestsPassed = onResult(config, results);
-      if (!allTestsPassed) {
-        failedTests++;
+      if (results.numFailingTests > 0) {
+        failedTestCount++;
       }
+      onResult(config, results);
     }, function(err) {
-      failedTests++;
+      failedTestCount++;
       throw err;
     });
   }
@@ -462,7 +466,7 @@ TestRunner.prototype.runAllMatchingInBand = function(pathPattern, onResult) {
     return lastTest.then(function() {
       var endTime = Date.now();
       return {
-        numFailedTests: failedTests,
+        numFailedTests: failedTestCount,
         numTotalTests: allMatchingTestPaths.length,
         startTime: startTime,
         endTime: endTime

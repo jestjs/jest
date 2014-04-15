@@ -46,71 +46,6 @@ function _replaceRootDirTags(rootDir, config) {
   return config;
 }
 
-function filterPassingSuiteResults(suite) {
-  var suites = {};
-  var tests = {};
-
-  var hasFailingTests = false;
-
-  for (var testName in suite.tests) {
-    if (suite.tests[testName].failureMessages.length > 0) {
-      tests[testName] = suite.tests[testName];
-      hasFailingTests = true;
-    }
-  }
-
-  for (var suiteName in suite.suites) {
-    if (filterPassingSuiteResults(suite.suites[suiteName]) !== null) {
-      suites[suiteName] = suite.suites[suiteName];
-      hasFailingTests = true;
-    }
-  }
-
-  if (!hasFailingTests) {
-    return null;
-  } else {
-    return {
-      suites: suites,
-      tests: tests
-    };
-  }
-}
-
-function flattenSuiteResults(suite) {
-  var failingTests = {};
-  var numPassingTests = 0;
-
-  var testResults;
-  for (var testName in suite.tests) {
-    testResults = suite.tests[testName];
-
-    if (testResults.failureMessages.length > 0) {
-      failingTests['it ' + testName] = testResults.failureMessages;
-    }
-    numPassingTests += testResults.numPassingTests;
-  }
-
-  var suiteResults;
-  for (var suiteName in suite.suites) {
-    suiteResults = flattenSuiteResults(suite.suites[suiteName]);
-
-    if (Object.keys(suiteResults.failingTests).length > 0) {
-      var newTestName;
-      for (var testName in suiteResults.failingTests) {
-        newTestName =
-          colors.colorize(suiteName, colors.BOLD) + ' \u203A ' + testName;
-        failingTests[newTestName] = suiteResults.failingTests[testName];
-      }
-    }
-    numPassingTests += suiteResults.numPassingTests;
-  }
-
-  return {
-    failingTests: failingTests,
-    numPassingTests: numPassingTests
-  }
-}
-
 /**
  * Given the coverage info for a single file (as output by
  * CoverageCollector.js), return an array whose entries are bools indicating
@@ -379,8 +314,6 @@ function stringifySerializedConsoleArgValue(arg) {
   }
 }
 
-exports.filterPassingSuiteResults = filterPassingSuiteResults;
-exports.flattenSuiteResults = flattenSuiteResults;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
 exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;

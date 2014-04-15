@@ -71,12 +71,11 @@ function defaultTestResultHandler(config, testResult) {
     return false;
   }
 
-  var filteredResults = utils.filterPassingSuiteResults(testResult);
-  var allTestsPassed = filteredResults === null;
+  var allTestsPassed = testResult.numFailingTests === 0;
 
   var testRunTime =
-    testResult.stats
-    ? (testResult.stats.end - testResult.stats.start) / 1000
+    testResult.perfStats
+    ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
     : null;
 
   var testRunTimeString = '(' + testRunTime + 's)';
@@ -92,21 +91,27 @@ function defaultTestResultHandler(config, testResult) {
     testRunTimeString
   ]));
 
-  testResult.consoleMessages.forEach(_printConsoleMessage);
+  testResult.logMessages.forEach(_printConsoleMessage);
 
   if (!allTestsPassed) {
+    var ancestrySeparator = ' \u203A ';
     var descBullet = colors.colorize('\u25cf ', colors.BOLD);
     var msgBullet = '  - ';
     var msgIndent = msgBullet.replace(/./g, ' ');
 
-    var flattenedResults = utils.flattenSuiteResults(filteredResults);
+    testResult.testResults.forEach(function(result) {
+      if (result.failureMessages.length === 0) {
+        return;
+      }
 
-    var testErrors;
-    for (var testDesc in flattenedResults.failingTests) {
-      testErrors = flattenedResults.failingTests[testDesc];
+      var testTitleAncestry =
+        result.ancestorTitles.map(function(title) {
+          return colors.colorize(title, colors.BOLD);
+        }).join(ancestrySeparator) + ancestrySeparator;
 
-      console.log(descBullet + testDesc);
-      testErrors.forEach(function(errorMsg) {
+      console.log(descBullet + testTitleAncestry + result.title);
+
+      result.failureMessages.forEach(function(errorMsg) {
         // Filter out q and jasmine entries from the stack trace.
         // They're super noisy and unhelpful
         errorMsg = errorMsg.split('\n').filter(function(line) {
@@ -122,10 +127,8 @@ function defaultTestResultHandler(config, testResult) {
         }).join('\n');
         console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
       });
-    }
+    });
   }
-
-  return allTestsPassed;
 }
 
 module.exports = defaultTestResultHandler;

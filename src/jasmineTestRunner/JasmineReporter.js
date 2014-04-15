@@ -76,33 +76,37 @@ function _prettyPrint(obj, indent) {
   }
 }
 
-function _extractSuiteResults(container, suite) {
-  var suiteResults = {};
-  suite.suites().forEach(_extractSuiteResults.bind(null, suiteResults));
+function _extractSuiteResults(container, ancestorTitles, suite) {
+  ancestorTitles = ancestorTitles.concat([suite.description]);
 
-  var specResults = {};
-  suite.specs().forEach(_extractSpecResults.bind(null, specResults));
+  suite.specs().forEach(
+    _extractSpecResults.bind(null, container, ancestorTitles)
+  );
+  suite.suites().forEach(
+    _extractSuiteResults.bind(null, container, ancestorTitles)
+  );
+}
 
-  container[suite.description] = {
-    suites: suiteResults,
-    tests: specResults
+function _extractSpecResults(container, ancestorTitles, spec) {
+  var results = {
+    title: 'it ' + spec.description,
+    ancestorTitles: ancestorTitles,
+    failureMessages: [],
+    logMessages: [],
+    numPassingAsserts: 0
   };
-};
-
-function _extractSpecResults(container, spec) {
-  var failureMessages = [];
-  var logMessages = [];
-  var numPassingTests = 0;
 
   spec.results().getItems().forEach(function(result) {
     switch (result.type) {
       case 'log':
-        logMessages.push(result.toString());
+        results.logMessages.push(result.toString());
         break;
       case 'expect':
         if (result.passed()) {
-          numPassingTests++;
-        } else if (!result.matcherName && result.trace.stack) { // exception thrown
+          results.numPassingAsserts++;
+
+        // Exception thrown
+        } else if (!result.matcherName && result.trace.stack) {
           // jasmine doesn't give us access to the actual Error object, so we
           // have to regexp out the message from the stack string in order to
           // colorize the `message` value
@@ -111,7 +115,7 @@ function _extractSpecResults(container, spec) {
             colorize('$1', ERROR_TITLE_COLOR)
           );
 
-          failureMessages.push(result.trace.stack);
+          results.failureMessages.push(result.trace.stack);
         } else {
           var message;
           if (DIFFABLE_MATCHERS[result.matcherName]) {
@@ -141,19 +145,17 @@ function _extractSpecResults(container, spec) {
             }).join('\n');
           }
 
-          failureMessages.push(message);
+          results.failureMessages.push(message);
         }
         break;
       default:
-        throw new Error('Unexpected spec result type: ', result.type);
+        throw new Error(
+          'Unexpected jasmine spec result type: ', result.type
+        );
     }
   });
 
-  container[spec.description] = {
-    failureMessages: failureMessages,
-    logMessages: logMessages,
-    numPassingTests: numPassingTests
-  };
+  container.push(results);
 }
 
 function JasmineReporter(testName) {
@@ -165,16 +167,34 @@ JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
 
 // All describe() suites have finished
 JasmineReporter.prototype.reportRunnerResults = function(runner) {
-  var suites = {};
-  runner.suites().forEach(function(suite) {
-    if (suite.parentSuite === null) {
-      _extractSuiteResults(suites, suite);
+  var testResults = [];
+
+  // Find the top-level suite in order to flatten test results from there
+  if (runner.suites().length) {
+    var topLevelSuite;
+    runner.suites().forEach(function(suite) {
+      if (suite.parentSuite === null) {
+        topLevelSuite = suite;
+      }
+    });
+
+    _extractSuiteResults(testResults, [], topLevelSuite);
+  }
+
+  var numFailingTests = 0;;
+  var numPassingTests = 0;
+  testResults.forEach(function(testResult) {
+    if (testResult.failureMessages.length > 0) {
+      numFailingTests++;
+    } else {
+      numPassingTests++;
     }
   });
 
   this._resultsDeferred.resolve({
-    suites: suites,
-    tests: {}
+    numFailingTests: numFailingTests,
+    numPassingTests: numPassingTests,
+    testResults: testResults
   });
 };
 
