@@ -46,7 +46,7 @@ describe('sum', function() {
   });
   
   it('adds 1 + 1 to equal 2', function() {
-    expect(sum(1, 2)).toBe(2);
+    expect(sum(1, 2)).toBe(3);
   });
   
   // This test will fail!
@@ -54,4 +54,16 @@ describe('sum', function() {
     expect(sum(1, [1, 2])).toEqual([2, 3]);
   });
 });
+```
+
+Now, if we're setup as described in the [Getting Started] section, we can run `npm test` and see the following:
+```
+$ npm test
+
+> jest-cli@0.1.0 test /Users/jeffmo/Projects/SumExample
+> jest
+
+ PASS  /Users/jeffmo/Projects/SumExample/__tests__/sum-test.js (0.016s)
+0/1 tests failed
+Run time: 0.855s
 ```
