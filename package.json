@@ -15,13 +15,13 @@
     "underscore": "1.2.4"
   },
   "bin": {
-    "runTests": "./bin/runTests.js"
+    "jest": "./bin/jest.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "test": "node bin/runTests.js --config=testConfig.json"
+    "test": "node bin/jest.js --config=testConfig.json"
   }
 }
