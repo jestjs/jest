@@ -4,6 +4,7 @@
 
 var child_process = require('child_process');
 var defaultTestResultHandler = require('../src/defaultTestResultHandler');
+var fs = require('fs');
 var optimist = require('optimist');
 var path = require('path');
 var Q = require('q');
@@ -94,11 +95,11 @@ function _wrapDesc(desc) {
 }
 
 var argv = optimist
-  .usage('Usage: $0 --config=<pathToConfigFile> [TestPathRegExp]')
+  .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
   .options({
     config: {
       alias: 'c',
-      demand: true,
+      //demand: true,
       description: _wrapDesc(
         'The path to a jest config file specifying how to find and execute ' +
         'tests.'
@@ -159,7 +160,35 @@ var argv = optimist
   })
   .argv
 
-utils.loadConfigFromFile(argv.config).done(function(config) {
+var config;
+if (argv.config) {
+  config = utils.loadConfigFromFile(argv.config);
+} else {
+  var cwd = process.cwd();
+
+  var pkgJsonPath = path.join(cwd, 'package.json');
+  var pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
+  var testCfgPath = path.join(cwd, 'jestConfig.json');
+
+  // First look to see if there is a testConfig.json file here
+  if (fs.existsSync(testCfgPath)) {
+    config = Q(utils.normalizeConfig(require(testCfgPath), cwd));
+
+  // Next look to see if there's a package.json file here
+  } else if (pkgJson.jestConfig) {
+    config = Q(utils.normalizeConfig(pkgJson.jestConfig, cwd));
+
+  // Lastly, use a sane default config
+  } else {
+    config = Q(utils.normalizeConfig({
+      projectName: cwd.replace(/[/\\]/g, '_'),
+      testPathDirs: [cwd],
+      testPathIgnores: ['/node_modules/.+']
+    }, cwd));
+  }
+}
+
+config.done(function(config) {
   var pathPattern =
     argv._.length === 0
     ? /.*/

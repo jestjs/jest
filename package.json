@@ -22,6 +22,6 @@
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "test": "node bin/jest.js --config=testConfig.json"
+    "test": "jest"
   }
 }
