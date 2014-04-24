@@ -194,7 +194,7 @@ TestRunner.prototype.findTestPathsMatching = function(
   function _onMatcherMatch(pathStr) {
     foundPaths.push(pathStr);
     try {
-      onTestFound(pathStr);
+      onTestFound && onTestFound(pathStr);
     } catch (e) {
       deferred.reject(e);
     }
@@ -237,11 +237,11 @@ TestRunner.prototype.findTestPathsMatching = function(
  *   moduleLoaderResourceMap: serializedResourceMap
  * });
  * someOtherAyncProcess.then(function() {
- *   runner.runAllMatchingParallel();
+ *   runner.runTestsParallel();
  * });
  *
  * Here we wouldn't start deserializing the resource map (passed to us from the
- * parent) until runner.runAllMatchingParallel() is called. At the time of this
+ * parent) until runner.runTestsParallel() is called. At the time of this
  * writing, resource map deserialization is slow and a bottleneck on running the
  * first test in a child.
  *
@@ -364,20 +364,72 @@ TestRunner.prototype.runTest = function(testFilePath) {
 };
 
 /**
- * Run all tests (in parallel) matching the given path pattern RegExp.
- * Uses a worker pool of child processes to run tests in parallel.
+ * Run all given test paths serially (in the current process).
  *
- * @param {RegExp} pathPattern A RegExp object that a given test path must match
- *                             in order to be run.
- * @return {Promise<Object>} Fulfilled when all tests have finished running
+ * This is mostly useful for debugging issues with jest itself, but may also be
+ * useful for scenarios where you don't want jest to start up a worker pool of
+ * its own.
+ *
+ * @param {Array<String>} testPaths Array of paths to test files
+ * @param {Function} onResult Callback called once for each test result
+ * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
+ *                           about all tests that were run
  */
-TestRunner.prototype.runAllMatchingParallel = function(pathPattern, onResult) {
-  var startTime = Date.now();
+TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
   var config = this._config;
 
-  // Build the resource map and serialize it to ship off to the child nodes
-  var failedTestCount = 0;
-  var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
+  var aggregatedResults = {
+    numFailedTests: 0,
+    numTotalTests: testPaths.length,
+    startTime: Date.now(),
+    endTime: null
+  };
+
+  var testSequence = Q();
+  testPaths.forEach(function(testPath) {
+    testSequence = testSequence.then(this.runTest.bind(this, testPath))
+      .then(function(testResult) {
+        if (testResult.numFailingTests > 0) {
+          aggregatedResults.numFailedTests++;
+        }
+        onResult && onResult(config, testResult);
+      })
+      .catch(function(err) {
+        aggregatedResults.numFailedTests++;
+        onResult && onResult(config, {
+          testFilePath: pathStr,
+          testExecError: err,
+          suites: {},
+          tests: {},
+          logMessages: []
+        });
+      });
+  }, this);
+
+  return testSequence.then(function() {
+    aggregatedResults.endTime = Date.now();
+    return aggregatedResults;
+  });
+};
+
+/**
+ * Run all given test paths in parallel using a worker pool.
+ *
+ * @param {Array<String>} testPaths Array of paths to test files
+ * @param {Function} onResult Callback called once for each test result
+ * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
+ *                           about all tests that were run
+ */
+TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
+  var config = this._config;
+
+  var aggregatedResults = {
+    numFailedTests: 0,
+    numTotalTests: testPaths.length,
+    startTime: Date.now(),
+    endTime: null
+  };
+
   var workerPool = new WorkerPool(
     this._opts.maxWorkers,
     this._opts.nodePath,
@@ -389,90 +441,39 @@ TestRunner.prototype.runAllMatchingParallel = function(pathPattern, onResult) {
   );
 
   return this._getModuleLoaderResourceMap()
-    .then(function(moduleLoaderResourceMap) {
-      // Tell all the workers that it's now safe to read the module loader
-      // resource map cache from disk.
-      workerPool.sendMessageToAllWorkers({
+    .then(function() {
+      // Tell all workers that it's now safe to read the resource map from disk.
+      return workerPool.sendMessageToAllWorkers({
         resourceMapWrittenToDisk: true
-      }).done();
-
-      var self = this;
-      function _onTestFound(pathStr) {
-        workerPool.sendMessage({testFilePath: pathStr}).done(function(results) {
-          if (results.numFailingTests > 0) {
-            failedTestCount++;
-          }
-          onResult(config, results);
-        }, function(errMsg) {
-          failedTestCount++;
-          onResult(config, {
-            testFilePath: pathStr,
-            testExecError: errMsg,
-            suites: {},
-            tests: {},
-            logMessages: []
+      });
+    })
+    .then(function() {
+      return Q.all(testPaths.map(function(testPath) {
+        return workerPool.sendMessage({testFilePath: testPath})
+          .then(function(testResult) {
+            if (testResult.numFailingTests > 0) {
+              aggregatedResults.numFailedTests++;
+            }
+            onResult && onResult(config, testResult);
+          })
+          .catch(function(err) {
+            aggregatedResults.numFailedTests++;
+            onResult({
+              testFilePath: pathStr,
+              testExecError: err,
+              suites: {},
+              tests: {},
+              logMessages: []
+            });
           });
-        });
-      }
-
-      return this.findTestPathsMatching(pathPattern, _onTestFound);
-    }.bind(this))
-    .then(function(allFoundTestPaths) {
+      }));
+    })
+    .then(function() {
       return workerPool.destroy().then(function() {
-        var endTime = Date.now();
-        return {
-          numFailedTests: failedTestCount,
-          numTotalTests: allFoundTestPaths.length,
-          startTime: startTime,
-          endTime: endTime
-        };
+        aggregatedResults.endTime = Date.now();
+        return aggregatedResults;
       });
     });
-};
-
-/**
- * Run all tests (serially) matching the given path pattern RegExp.
- * This runs all tests serially and in the current process (i.e. no child
- * processes). This is mostly useful for debugging issues with Jest or rare,
- * complicated issues with some tests.
- *
- * @param {RegExp} pathPattern A RegExp object that a given test path must match
- *                             in order to be run.
- * @return {Promise<Object>} Fulfilled when all tests have finished running
- */
-TestRunner.prototype.runAllMatchingInBand = function(pathPattern, onResult) {
-  var startTime = Date.now();
-  var config = this._config;
-
-  var failedTestCount = 0;
-  var lastTest = Q();
-  var self = this;
-  function _onTestFound(pathStr) {
-    var runThisTest = self.runTest.bind(self, pathStr);
-    lastTest = lastTest.then(runThisTest).then(function(results) {
-      if (results.numFailingTests > 0) {
-        failedTestCount++;
-      }
-      onResult(config, results);
-    }, function(err) {
-      failedTestCount++;
-      throw err;
-    });
-  }
-
-  var foundTestPaths = this.findTestPathsMatching(pathPattern, _onTestFound);
-
-  return foundTestPaths.then(function(allMatchingTestPaths) {
-    return lastTest.then(function() {
-      var endTime = Date.now();
-      return {
-        numFailedTests: failedTestCount,
-        numTotalTests: allMatchingTestPaths.length,
-        startTime: startTime,
-        endTime: endTime
-      };
-    });
-  });
 };
 
 module.exports = TestRunner;

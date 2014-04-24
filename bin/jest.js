@@ -208,12 +208,22 @@ config.done(function(config) {
   function _runTestsOnPathPattern(pathPattern) {
     if (argv.runInBand) {
       console.log('Running tests serially in the current node process...');
-      testRunner
-        .runAllMatchingInBand(pathPattern, _onResultReady)
+      testRunner.findTestPathsMatching(pathPattern)
+        .then(function(matchingTestPaths) {
+          console.log(
+            'Found ' + matchingTestPaths.length + ' matching tests...'
+          );
+          return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
+        })
         .done(_onRunComplete);
     } else {
-      testRunner
-        .runAllMatchingParallel(pathPattern, _onResultReady)
+      testRunner.findTestPathsMatching(pathPattern)
+        .then(function(matchingTestPaths) {
+          console.log(
+            'Found ' + matchingTestPaths.length + ' matching tests...'
+          );
+          return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
+        })
         .done(_onRunComplete);
     }
   }
