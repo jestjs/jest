@@ -99,7 +99,6 @@ var argv = optimist
   .options({
     config: {
       alias: 'c',
-      //demand: true,
       description: _wrapDesc(
         'The path to a jest config file specifying how to find and execute ' +
         'tests.'

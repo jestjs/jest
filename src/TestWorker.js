@@ -3,8 +3,6 @@ var Q = require('q');
 var TestRunner = require('./TestRunner');
 var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 
-var workerID = Math.random().toString(36).slice(2);
-
 if (require.main === module) {
   try {
     var argv = optimist.demand(['config']).argv;
