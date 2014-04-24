@@ -397,7 +397,7 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
       .catch(function(err) {
         aggregatedResults.numFailedTests++;
         onResult && onResult(config, {
-          testFilePath: pathStr,
+          testFilePath: testPath,
           testExecError: err,
           suites: {},
           tests: {},

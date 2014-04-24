@@ -205,26 +205,16 @@ config.done(function(config) {
   var testRunner = new TestRunner(config, testRunnerOpts);
 
   function _runTestsOnPathPattern(pathPattern) {
-    if (argv.runInBand) {
-      console.log('Running tests serially in the current node process...');
-      testRunner.findTestPathsMatching(pathPattern)
-        .then(function(matchingTestPaths) {
-          console.log(
-            'Found ' + matchingTestPaths.length + ' matching tests...'
-          );
+    return testRunner.findTestPathsMatching(pathPattern)
+      .then(function(matchingTestPaths) {
+        console.log('Found ' + matchingTestPaths.length + ' matching tests...');
+        if (argv.runInBand) {
           return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
-        })
-        .done(_onRunComplete);
-    } else {
-      testRunner.findTestPathsMatching(pathPattern)
-        .then(function(matchingTestPaths) {
-          console.log(
-            'Found ' + matchingTestPaths.length + ' matching tests...'
-          );
+        } else {
           return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
-        })
-        .done(_onRunComplete);
-    }
+        }
+      })
+      .then(_onRunComplete);
   }
 
   if (argv.onlyChanged) {
@@ -252,12 +242,12 @@ config.done(function(config) {
       return testRunner.findTestsRelatedTo(changedPaths);
     }).done(function(affectedTestPaths) {
       if (affectedTestPaths.length > 0) {
-        _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|')));
+        _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|'))).done();
       } else {
         console.log('No tests to run!');
       }
     });
   } else {
-    _runTestsOnPathPattern(pathPattern);
+    _runTestsOnPathPattern(pathPattern).done();
   }
 });
