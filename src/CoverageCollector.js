@@ -1,3 +1,5 @@
+'use strict';
+
 var CoverageInstrumentor = require('cover/instrument').Instrumentor;
 var fs = require('fs');
 
@@ -43,13 +45,15 @@ CoverageCollector.prototype.extractRuntimeCoverageInfo = function() {
     sourceText: this._origSourceText
   };
 
+  var nodeIndex;
+
   // Find all covered spans
-  for (var nodeIndex in this._coverageDataStore.nodes) {
+  for (nodeIndex in this._coverageDataStore.nodes) {
     coverageInfo.coveredSpans.push(instrumentationInfo.nodes[nodeIndex].loc);
   }
 
   // Find all definitely uncovered spans
-  for (var nodeIndex in instrumentationInfo.nodes) {
+  for (nodeIndex in instrumentationInfo.nodes) {
     if (!this._coverageDataStore.nodes.hasOwnProperty(nodeIndex)) {
       coverageInfo.uncoveredSpans.push(
         instrumentationInfo.nodes[nodeIndex].loc

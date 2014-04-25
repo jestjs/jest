@@ -1,7 +1,9 @@
+'use strict';
+
 require('mock-modules').autoMockOff();
 
 var path = require('path');
-var Q = require('q');
+var q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
   var getMockFn;
@@ -10,7 +12,7 @@ describe('nodeHasteModuleLoader', function() {
   var resourceMap;
 
   var CONFIG = {
-    projectName: "nodeHasteModuleLoader-tests",
+    projectName: 'nodeHasteModuleLoader-tests',
     testPathDirs: [path.resolve(__dirname, 'test_root')]
   };
 
@@ -22,7 +24,7 @@ describe('nodeHasteModuleLoader', function() {
         return buildLoader(config);
       });
     } else {
-      return Q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
+      return q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
     }
   }
 
@@ -36,6 +38,7 @@ describe('nodeHasteModuleLoader', function() {
         mockClearTimers: getMockFn()
       },
       runSourceText: getMockFn().mockImplementation(function(codeStr) {
+        /* jshint evil:true */
         return (new Function('return ' + codeStr))();
       })
     };
@@ -51,7 +54,8 @@ describe('nodeHasteModuleLoader', function() {
 
     pit('doesnt mock modules when explicitly dontMock()ed', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'mock-modules').dontMock('RegularModule');
+        loader.requireModuleOrMock(null, 'mock-modules')
+          .dontMock('RegularModule');
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -60,8 +64,8 @@ describe('nodeHasteModuleLoader', function() {
     pit('doesnt mock modules when explicitly dontMock()ed via a different ' +
         'denormalized module name', function() {
       return buildLoader().then(function(loader) {
-        var mockModules = loader.requireModuleOrMock(__filename, 'mock-modules');
-        mockModules.dontMock('./test_root/RegularModule');
+        loader.requireModuleOrMock(__filename, 'mock-modules')
+          .dontMock('./test_root/RegularModule');
         var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -75,7 +79,7 @@ describe('nodeHasteModuleLoader', function() {
       });
     });
 
-    pit('uses manual mock when automocking is on and one is available', function() {
+    pit('uses manual mock when automocking on and mock is avail', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModuleOrMock(null, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);

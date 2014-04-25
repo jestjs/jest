@@ -1,3 +1,5 @@
+'use strict';
+
 var moduleStateValue = 'default';
 
 function setModuleStateValue(value) {

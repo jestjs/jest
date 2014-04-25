@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * This file contains various hacks and tweaks that were necessary at some
  * point to get jsdom to behave correctly.
@@ -138,9 +140,9 @@ if (elements && elements.HTMLSelectElement) {
   var proto = elements.HTMLSelectElement.prototype;
   var oldAttrModified = proto._attrModified;
   proto._attrModified = function(name, value) {
-    if (name === "multiple" && !value) {
+    if (name === 'multiple' && !value) {
       var leaveNextOptionSelected = true;
-      this.options._toArray().forEach(function(option, i) {
+      this.options._toArray().forEach(function(option) {
         if (option.selected) {
           if (leaveNextOptionSelected) {
             leaveNextOptionSelected = false;
@@ -152,7 +154,7 @@ if (elements && elements.HTMLSelectElement) {
     }
 
     return oldAttrModified.apply(this, arguments);
-  }
+  };
 }
 
 // Require this module if you want to require('jsdom'), to ensure the

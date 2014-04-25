@@ -1,6 +1,7 @@
 /**
  * @providesModule ModuleWithSideEffects
  */
+'use strict';
 
 var RegularModule = require('RegularModule');
 

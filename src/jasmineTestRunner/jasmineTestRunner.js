@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
@@ -36,51 +36,63 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   }
 
   // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to detect
-  // cycles, but that doesn't work on frozen objects so we use a WeakMap instead.
+  // cycles, but that doesn't work on frozen objects so we use a WeakMap
+  // instead.
   var _comparedObjects = new WeakMap();
   environment.global.jasmine.Env.prototype.compareObjects_ =
     function(a, b, mismatchKeys, mismatchValues) {
       if (_comparedObjects.get(a) === b && _comparedObjects.get(b) === a) {
         return true;
       }
-      var areArrays = environment.global.jasmine.isArray_(a) && environment.global.jasmine.isArray_(b);
+      var areArrays =
+        environment.global.jasmine.isArray_(a)
+        && environment.global.jasmine.isArray_(b);
 
       _comparedObjects.set(a, b);
       _comparedObjects.set(b, a);
 
       var hasKey = function(obj, keyName) {
-        return obj != null && obj[keyName] !== environment.global.jasmine.undefined;
+        return (
+          obj !== null
+          && obj !== undefined
+          && obj[keyName] !== environment.global.jasmine.undefined
+        );
       };
 
       for (var property in b) {
-        if (areArrays && typeof b[property] == 'function') {
+        if (areArrays && typeof b[property] === 'function') {
           continue;
         }
         if (!hasKey(a, property) && hasKey(b, property)) {
           mismatchKeys.push(
-            "expected has key '" + property + "', but missing from actual."
+            'expected has key \'' + property + '\', but missing from actual.'
           );
         }
       }
       for (property in a) {
-        if (areArrays && typeof a[property] == 'function') {
+        if (areArrays && typeof a[property] === 'function') {
           continue;
         }
         if (!hasKey(b, property) && hasKey(a, property)) {
           mismatchKeys.push(
-            "expected missing key '" + property + "', but present in actual."
+            'expected missing key \'' + property + '\', but present in actual.'
           );
         }
       }
       for (property in b) {
         // The only different implementation from the original jasmine
         if (areArrays &&
-            (typeof a[property] == 'function' ||
-             typeof b[property] == 'function')) {
+            (typeof a[property] === 'function' ||
+             typeof b[property] === 'function')) {
           continue;
         }
-        if (!this.equals_(a[property], b[property], mismatchKeys, mismatchValues))
-        {
+        var areEqual = this.equals_(
+          a[property],
+          b[property],
+          mismatchKeys,
+          mismatchValues
+        );
+        if (!areEqual) {
           var aprop;
           var bprop;
           if (!a[property]) {
@@ -104,21 +116,20 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           }
 
           mismatchValues.push(
-            "'" + property + "' was '" + bprop +
-            "' in expected, but was '" + aprop +
-            "' in actual."
+            '\'' + property + '\' was \'' + bprop +
+            '\' in expected, but was \'' + aprop +
+            '\' in actual.'
           );
         }
       }
 
-      if (areArrays &&
-          a.length != b.length) {
-        mismatchValues.push("arrays were not the same length");
+      if (areArrays && a.length !== b.length) {
+        mismatchValues.push('arrays were not the same length');
       }
 
       _comparedObjects.delete(a);
       _comparedObjects.delete(b);
-      return (mismatchKeys.length == 0 && mismatchValues.length == 0);
+      return (mismatchKeys.length === 0 && mismatchValues.length === 0);
     };
 
   if (config.setupTestFrameworkScriptFile) {

@@ -1,6 +1,6 @@
-require('mock-modules').autoMockOff();
+'use strict';
 
-var Q = require('q');
+require('mock-modules').autoMockOff();
 
 describe('nodeHasteModuleLoader', function() {
   var HasteModuleLoader;
@@ -41,6 +41,7 @@ describe('nodeHasteModuleLoader', function() {
         mockClearTimers: getMockFn()
       },
       runSourceText: getMockFn().mockImplementation(function(codeStr) {
+        /* jshint evil: true */
         return (new Function('return ' + codeStr))();
       })
     };

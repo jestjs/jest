@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * TODO: This file has grown into a monster. It really needs to be refactored
@@ -11,13 +11,10 @@
 var CoverageCollector = require('../CoverageCollector');
 var fs = require('fs');
 var hasteLoaders = require('node-haste/lib/loaders');
-var inherits = require('util').inherits;
-var JSResource = require('node-haste/lib/resource/JS');
 var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
-var PathResolver = require('node-haste/lib/PathResolver');
 var Q = require('q');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
@@ -31,7 +28,7 @@ var IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 var NODE_CORE_MODULES = {
   assert: true,
   buffer: true,
-  child_process: true,
+  child_process: true, // jshint ignore:line
   cluster: true,
   console: true,
   constants: true,
@@ -54,7 +51,7 @@ var NODE_CORE_MODULES = {
   repl: true,
   smalloc: true,
   stream: true,
-  string_decoder: true,
+  string_decoder: true, // jshint ignore:line
   sys: true,
   timers: true,
   tls: true,
@@ -66,7 +63,6 @@ var NODE_CORE_MODULES = {
 };
 
 var _configUnmockListRegExpCache = null;
-var _moduleContentCache = {};
 
 function _buildLoadersList(config) {
   return [
@@ -192,10 +188,9 @@ Loader.loadResourceMapFromCacheFile = function(config, options) {
  * objects.
  *
  * @param string modulePath
- * @param bool isManualMock = false
  * @return object
  */
-Loader.prototype._execModule = function(moduleObj, isManualMock) {
+Loader.prototype._execModule = function(moduleObj) {
   var modulePath = moduleObj.__filename;
 
   var moduleContent =
@@ -305,7 +300,10 @@ Loader.prototype._getResource = function(resourceType, resourceName) {
   // TODO: Fix this properly in node-haste, not here :(
   if (resource === undefined && resourceType === 'JS' && /\//.test(resourceName)
       && !/\.js$/.test(resourceName)) {
-    resource = this._resourceMap.getResource(resourceType, resourceName + '.js');
+    resource = this._resourceMap.getResource(
+      resourceType,
+      resourceName + '.js'
+    );
   }
 
   return resource;
@@ -691,7 +689,6 @@ Loader.prototype.getDependentsFromPath = function(modulePath) {
  * @return object
  */
 Loader.prototype.requireMock = function(currPath, moduleName) {
-  var modulePath;
   var moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
   if (this._explicitlySetMocks.hasOwnProperty(moduleID)) {
@@ -817,7 +814,7 @@ Loader.prototype.requireModule = function(currPath, moduleName,
       this._moduleRegistry[modulePath] = moduleObj;
     }
 
-    this._execModule(moduleObj, manualMockResource !== null);
+    this._execModule(moduleObj);
   }
 
   return moduleObj.exports;
@@ -952,12 +949,14 @@ Loader.prototype.resetModuleRegistry = function() {
           }.bind(this),
 
           useActualTimers: function() {
-            require('../lib/mockTimers').uninstallMockTimers(this._environment.global);
+            require('../lib/mockTimers')
+              .uninstallMockTimers(this._environment.global);
           }.bind(this),
 
           /**
-           * Load actual module without reading from or writing to module exports
-           * registry. This method's name is devastatingly misleading. :(
+           * Load actual module without reading from or writing to module
+           * exports registry. This method's name is devastatingly misleading.
+           * :(
            */
           loadActualModule: function(moduleName) {
             return this.requireModule(

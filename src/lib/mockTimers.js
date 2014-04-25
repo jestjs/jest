@@ -1,3 +1,5 @@
+'use strict';
+
 var mocks = require('./moduleMocker');
 
 var now;
@@ -17,7 +19,7 @@ reset();
 
 // add a timer of type either 'timeout' or 'interval'
 function _setTimer(type, callback, delay) {
-  if (delay == null) {
+  if (delay === null || delay === undefined) {
     delay = 0;
   }
   var token = null;
@@ -28,14 +30,14 @@ function _setTimer(type, callback, delay) {
     type: type,
     callback: callback,
     time: now + delay,
-    interval: (type == 'interval' ? delay : 0)
+    interval: (type === 'interval' ? delay : 0)
   };
   return token;
 }
 
 // clear a timer of type either 'timeout' or 'interval'
 function _clearTimer(type, token) {
-  if (timers[token] && timers[token].type == type) {
+  if (timers[token] && timers[token].type === type) {
     delete timers[token];
   }
 }
@@ -60,12 +62,12 @@ function _clearInterval(token) {
 function _runTimer(token) {
   // Skip non-existing token
   if (timers[token]) {
-    if (timers[token].type == 'timeout') {
+    if (timers[token].type === 'timeout') {
       // for 'timeout', run callback and delete the timer
       var callback = timers[token].callback;
       delete timers[token];
       callback();
-    } else if (timers[token].type == 'interval') {
+    } else if (timers[token].type === 'interval') {
       // for 'interval', run callback and set the next invoke time
       timers[token].time =
         now + timers[token].interval;
@@ -113,7 +115,6 @@ function _nextTick(callback) {
 }
 
 function _runTicksRepeatedly() {
-  var token;
   for (var i = 0; i < ticks.length; i++) {
     ticks[i]();
     cancelledTicks[i] = true;
@@ -125,10 +126,10 @@ function _runTimersRepeatedly() {
 
   // Only run a generous 1000 timers and then bail, since we may have entered
   // a loop if we have more than that.
-  var max_timers = 1000;
+  var maxTimers = 1000;
 
   var token;
-  for (var ii = 0; ii < max_timers; ii++) {
+  for (var ii = 0; ii < maxTimers; ii++) {
     token = _getNextTimerToken();
 
     if (!token) {
@@ -138,8 +139,8 @@ function _runTimersRepeatedly() {
     _runTimer(token);
   }
 
-  if (ii === max_timers) {
-    throw new Error("More timers still exist after " + max_timers + " timers!");
+  if (ii === maxTimers) {
+    throw new Error('More timers still exist after ' + maxTimers + ' timers!');
   }
 }
 

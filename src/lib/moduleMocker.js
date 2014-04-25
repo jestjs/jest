@@ -1,3 +1,6 @@
+// This module uses arguments.callee, so it can't currently run in strict mode
+/* jshint strict:false */
+
 function isA(typeName, value) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
@@ -56,13 +59,14 @@ function makeComponent(metadata) {
       var f = function() {
         instances.push(this);
         calls.push(Array.prototype.slice.call(arguments));
+        /* jshint noarg:false */
         if (this instanceof arguments.callee) {
           // This is probably being called as a constructor
           for (var slot in prototype) {
             // Copy prototype methods to the instance to make
             // it easier to interact with mock instance call and
             // return values
-            if (prototype[slot].type == 'function') {
+            if (prototype[slot].type === 'function') {
               var protoImpl = this[slot];
               this[slot] = generateFromMetadata(prototype[slot]);
               this[slot]._protoImpl = protoImpl;
@@ -159,8 +163,8 @@ function generateFromMetadata(_metadata) {
 
   function generateMock(metadata) {
     var mock = makeComponent(metadata);
-    if (metadata.ref_id != null) {
-      refs[metadata.ref_id] = mock;
+    if (metadata.refID !== null && metadata.refID !== undefined) {
+      refs[metadata.refID] = mock;
     }
 
     function getRefCallback(slot, ref) {
@@ -175,7 +179,7 @@ function generateFromMetadata(_metadata) {
 
     for (var slot in metadata.members) {
       var slotMetadata = metadata.members[slot];
-      if (slotMetadata.ref != null) {
+      if (slotMetadata.ref !== null && slotMetadata.ref !== undefined) {
         callbacks.push(getRefCallback(slot, slotMetadata.ref));
       } else {
         mock[slot] = generateMock(slotMetadata);
@@ -214,17 +218,17 @@ function _getMetadata(component, _refs) {
   }
 
   var metadata = {type : type};
-  if (type == 'constant') {
+  if (type === 'constant') {
     metadata.value = component;
     return metadata;
-  } else if (type == 'function') {
+  } else if (type === 'function') {
     metadata.__TCmeta = component.__TCmeta;
     if (component._isMockFunction) {
       metadata.mockImpl = component._getMockImplementation();
     }
   }
 
-  metadata.ref_id = refs.length;
+  metadata.refID = refs.length;
   refs.push(component);
 
   var members = null;
@@ -240,23 +244,24 @@ function _getMetadata(component, _refs) {
   }
 
   // Leave arrays alone
-  if (type != 'array') {
+  if (type !== 'array') {
     for (var slot in component) {
-      if (slot.charAt(0) == '_' ||
-          (type == 'function' && component._isMockFunction &&
+      if (slot.charAt(0) === '_' ||
+          (type === 'function' && component._isMockFunction &&
            slot.match(/^mock/))) {
         continue;
       }
 
       if (!component.hasOwnProperty && component[slot] !== undefined ||
           component.hasOwnProperty(slot) ||
-          (type == 'object' && component[slot] != Object.prototype[slot])) {
+          /* jshint eqeqeq:false */
+          (type === 'object' && component[slot] != Object.prototype[slot])) {
         addMember(slot, _getMetadata(component[slot], refs));
       }
     }
 
     // If component is native code function, prototype might be undefined
-    if (type == 'function' && component.prototype) {
+    if (type === 'function' && component.prototype) {
       var prototype = _getMetadata(component.prototype, refs);
       if (prototype && prototype.members) {
         addMember('prototype', prototype);
@@ -283,14 +288,14 @@ function removeUnusedRefs(metadata) {
 
   var usedRefs = {};
   visit(metadata, function(md) {
-    if (md.ref != null) {
+    if (md.ref !== null && md.ref !== undefined) {
       usedRefs[md.ref] = true;
     }
   });
 
   visit(metadata, function(md) {
-    if (!usedRefs[md.ref_id]) {
-      delete md.ref_id;
+    if (!usedRefs[md.refID]) {
+      delete md.refID;
     }
   });
 }
@@ -343,12 +348,12 @@ module.exports = {
    *
    * Metadata may also contain references to other objects defined within the
    * same metadata object. The metadata for the referent must be marked with
-   * 'ref_id' key and an arbitrary value. The referer must be marked with a
-   * 'ref' key that has the same value as object with ref_id that it refers to.
+   * 'refID' key and an arbitrary value. The referer must be marked with a
+   * 'ref' key that has the same value as object with refID that it refers to.
    * For instance, this metadata blob:
    * {
    *  type: 'object',
-   *  ref_id: 1,
+   *  refID: 1,
    *  members: {
    *    self: {ref: 1}
    *  }

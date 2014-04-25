@@ -1,5 +1,7 @@
+'use strict';
+
 var optimist = require('optimist');
-var Q = require('q');
+var q = require('q');
 var TestRunner = require('./TestRunner');
 var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 
@@ -9,6 +11,7 @@ if (require.main === module) {
     var config = JSON.parse(argv.config);
 
     var testRunner = null;
+    /* jshint -W082:true */
     function onMessage(message) {
       if (testRunner === null) {
         // Quick sanity-check assertion that the first message is just an
@@ -46,7 +49,7 @@ if (require.main === module) {
         testRunner.preloadResourceMap();
 
         // Dummy response
-        return Q({});
+        return q({});
       } else {
         return testRunner.runTest(message.testFilePath);
       }

@@ -1,7 +1,9 @@
 
 // Instrumentation Header
 {
-    var <%= instrumented.names.statement %>, <%= instrumented.names.expression %>, <%= instrumented.names.block %>;
+    var <%= instrumented.names.statement %>;
+    var <%= instrumented.names.expression %>;
+    var <%= instrumented.names.block %>;
     var nodes = <%= coverageStorageVar %>.nodes = {};
     var blocks = <%= coverageStorageVar %>.blocks = {};
 

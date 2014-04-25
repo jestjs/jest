@@ -1,6 +1,7 @@
+'use strict';
+
 var mockTimers = require('./lib/mockTimers');
 var TestEnvironment = require('./TestEnvironment');
-var utils = require('./lib/utils');
 
 function jsdomEnvironmentBuilder() {
   // We lazily require jsdom because it takes a good ~.5s to load.
@@ -13,7 +14,12 @@ function jsdomEnvironmentBuilder() {
   var jsdomWindow = jsdom().parentWindow;
 
   // Stuff jsdom doesn't support out of the box
-  jsdomWindow.location.host = jsdomWindow.location.hostname = '';
+  Object.defineProperty(jsdomWindow.location, 'hostname', {
+    value: ''
+  });
+  Object.defineProperty(jsdomWindow.location, 'host', {
+    value: ''
+  });
   jsdomWindow.navigator.onLine = true;
   jsdomWindow.ArrayBuffer = ArrayBuffer;
   jsdomWindow.Float32Array = Float32Array;
@@ -45,6 +51,7 @@ function jsdomEnvironmentBuilder() {
   // jsdom doesn't have support for window.Image, so we just replace it with a
   // dummy constructor
   try {
+    /* jshint nonew:false */
     new jsdomWindow.Image();
   } catch (e) {
     jsdomWindow.Image = function Image() {};

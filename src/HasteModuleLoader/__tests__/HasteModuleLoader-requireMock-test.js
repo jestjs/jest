@@ -1,7 +1,9 @@
+'use strict';
+
 require('mock-modules').autoMockOff();
 
 var path = require('path');
-var Q = require('q');
+var q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
   var getMockFn;
@@ -10,7 +12,7 @@ describe('nodeHasteModuleLoader', function() {
   var resourceMap;
 
   var CONFIG = {
-    projectName: "nodeHasteModuleLoader-tests",
+    projectName: 'nodeHasteModuleLoader-tests',
     testPathDirs: [path.resolve(__dirname, 'test_root')]
   };
 
@@ -22,7 +24,7 @@ describe('nodeHasteModuleLoader', function() {
         return buildLoader(config);
       });
     } else {
-      return Q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
+      return q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
     }
   }
 
@@ -36,6 +38,7 @@ describe('nodeHasteModuleLoader', function() {
         mockClearTimers: getMockFn()
       },
       runSourceText: getMockFn().mockImplementation(function(codeStr) {
+        /* jshint evil:true */
         return (new Function('return ' + codeStr))();
       })
     };

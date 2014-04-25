@@ -1,6 +1,8 @@
+'use strict';
+
 require('mock-modules').autoMockOff();
 
-var Q = require('q');
+var q = require('q');
 
 describe('TestRunner', function() {
   var TestRunner;
@@ -19,7 +21,7 @@ describe('TestRunner', function() {
 
       fakeDepsFromPath = {};
       runner._constructModuleLoader = function() {
-        return Q({
+        return q({
           getDependentsFromPath: function(modulePath) {
             return fakeDepsFromPath[modulePath] || [];
           }
@@ -76,10 +78,11 @@ describe('TestRunner', function() {
     pit('flattens circular dependencies', function() {
       var path = '/path/to/module/covered/by/modules/covered/by/test.js';
       var directDependentModulePath = '/path/to/direct/dependent/module.js';
-      var indirectDependentModulePath = '/path/to/indirect/dependent/modules.js';
+      var indirectDependentModulePath = '/path/to/indirect/dependent/module.js';
       var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
       fakeDepsFromPath[path] = [directDependentModulePath];
-      fakeDepsFromPath[directDependentModulePath] = [indirectDependentModulePath];
+      fakeDepsFromPath[directDependentModulePath] =
+        [indirectDependentModulePath];
       fakeDepsFromPath[indirectDependentModulePath] = [
         directDependentModulePath,
         dependentTestPath

@@ -1,15 +1,18 @@
+'use strict';
+
 require('mock-modules').autoMockOff();
 
 var path = require('path');
-var Q = require('q');
+var q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
   var getMockFn;
   var HasteModuleLoader;
+  var mockEnvironment;
   var resourceMap;
 
   var CONFIG = {
-    projectName: "nodeHasteModuleLoader-tests",
+    projectName: 'nodeHasteModuleLoader-tests',
     testPathDirs: [path.resolve(__dirname, 'test_root')]
   };
 
@@ -21,7 +24,7 @@ describe('nodeHasteModuleLoader', function() {
         return buildLoader(config);
       });
     } else {
-      return Q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
+      return q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
     }
   }
 
@@ -35,6 +38,7 @@ describe('nodeHasteModuleLoader', function() {
         mockClearTimers: getMockFn()
       },
       runSourceText: getMockFn().mockImplementation(function(codeStr) {
+        /* jshint evil:true */
         return (new Function('return ' + codeStr))();
       })
     };
@@ -146,7 +150,9 @@ describe('nodeHasteModuleLoader', function() {
       pit('doesnt override real modules with manual mocks when explicitly ' +
           'marked with .dontMock()', function() {
         return buildLoader().then(function(loader) {
-          loader.requireModule(__filename, 'mock-modules').dontMock('ManuallyMocked');
+          loader.requireModule(__filename, 'mock-modules')
+            .dontMock('ManuallyMocked');
+
           var exports = loader.requireModule(__filename, 'ManuallyMocked');
           expect(exports.isManualMockModule).toBe(false);
         });

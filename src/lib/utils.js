@@ -1,4 +1,5 @@
-var colors = require('./colors');
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 var Q = require('q');
@@ -284,7 +285,6 @@ function serializeConsoleArgValue(arg) {
         type: 'json',
         value: arg
       });
-      break;
 
     default:
       throw new Error('Unexpected console.XXX arg type!', typeof arg);

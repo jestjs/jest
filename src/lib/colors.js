@@ -1,3 +1,5 @@
+'use strict';
+
 var BOLD = '\u001b[1;1m';
 var GRAY = '\u001b[1;30m';
 var GREEN_BG = '\u001b[1;42m';

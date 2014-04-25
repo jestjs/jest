@@ -1,14 +1,11 @@
-"use strict";
+'use strict';
 
-var colors = require('./lib/colors');
 var FileFinder = require('node-find-files');
 var os = require('os');
 var path = require('path');
-var Q = require('q');
+var q = require('q');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
-
-var colorize = colors.colorize;
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -91,7 +88,8 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
       this._moduleLoaderResourceMap =
         ModuleLoader.loadResourceMapFromCacheFile(this._config);
     } else {
-      this._moduleLoaderResourceMap = ModuleLoader.loadResourceMap(this._config);
+      this._moduleLoaderResourceMap =
+        ModuleLoader.loadResourceMap(this._config);
     }
   }
   return this._moduleLoaderResourceMap;
@@ -134,7 +132,6 @@ TestRunner.prototype._loadConfigDependencies = function() {
  *                                  search has completed.
  */
 TestRunner.prototype.findTestsRelatedTo = function(paths) {
-  var config = this._config;
   var testRunner = this;
   return this._constructModuleLoader().then(function(moduleLoader) {
     var discoveredModules = {};
@@ -152,6 +149,8 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
     while (modulesToSearch.length > 0) {
       var modulePath = modulesToSearch.shift();
       var depPaths = moduleLoader.getDependentsFromPath(modulePath);
+
+      /* jshint loopfunc:true */
       depPaths.forEach(function(depPath) {
         if (!discoveredModules.hasOwnProperty(depPath)) {
           discoveredModules[depPath] = true;
@@ -160,9 +159,8 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
       });
     }
 
-    var testPathDirPattern = new RegExp(config.testPathDirs.join('|'));
     return Object.keys(discoveredModules).filter(function(path) {
-      return testRunner._isTestFilePath(path)
+      return testRunner._isTestFilePath(path);
     });
   });
 };
@@ -188,7 +186,7 @@ TestRunner.prototype.findTestPathsMatching = function(
   pathPattern, onTestFound) {
 
   var config = this._config;
-  var deferred = Q.defer();
+  var deferred = q.defer();
 
   var foundPaths = [];
   function _onMatcherMatch(pathStr) {
@@ -215,7 +213,7 @@ TestRunner.prototype.findTestPathsMatching = function(
   config.testPathDirs.forEach(function(scanDir) {
     var finder = new FileFinder({
       rootFolder: scanDir,
-      filterFunction: function(pathStr, stat) {
+      filterFunction: function(pathStr) {
         return this._isTestFilePath(pathStr) && pathPattern.test(pathStr);
       }.bind(this)
     });
@@ -322,12 +320,13 @@ TestRunner.prototype.runTest = function(testFilePath) {
     // mid-stream here, but it gets the job done.
     if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
       config.collectCoverageOnlyFrom = {};
-      moduleLoader.getDependenciesFromPath(testFilePath).filter(function(depPath) {
-        // Skip over built-in and node modules
-        return /^\//.test(depPath);
-      }).forEach(function(depPath) {
-        config.collectCoverageOnlyFrom[depPath] = true;
-      });
+      moduleLoader.getDependenciesFromPath(testFilePath)
+        .filter(function(depPath) {
+          // Skip over built-in and node modules
+          return /^\//.test(depPath);
+        }).forEach(function(depPath) {
+          config.collectCoverageOnlyFrom[depPath] = true;
+        });
     }
 
     if (config.setupEnvScriptFile) {
@@ -385,7 +384,7 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
     endTime: null
   };
 
-  var testSequence = Q();
+  var testSequence = q();
   testPaths.forEach(function(testPath) {
     testSequence = testSequence.then(this.runTest.bind(this, testPath))
       .then(function(testResult) {
@@ -448,7 +447,7 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
       });
     })
     .then(function() {
-      return Q.all(testPaths.map(function(testPath) {
+      return q.all(testPaths.map(function(testPath) {
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
             if (testResult.numFailingTests > 0) {
@@ -458,8 +457,8 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
           })
           .catch(function(err) {
             aggregatedResults.numFailedTests++;
-            onResult({
-              testFilePath: pathStr,
+            onResult(config, {
+              testFilePath: testPath,
               testExecError: err,
               suites: {},
               tests: {},

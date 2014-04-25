@@ -1,3 +1,5 @@
+'use strict';
+
 var colors = require('./lib/colors');
 var path = require('path');
 var utils = require('./lib/utils');
@@ -22,11 +24,13 @@ function _printConsoleMessage(msg) {
       //       cleanup.
       break;
 
+      /*
       console.error.apply(console, msg.args.map(function(arg) {
         arg = utils.stringifySerializedConsoleArgValue(arg);
         return colors.colorize(arg, colors.RED);
       }));
       break;
+      */
     case 'log':
       console.log.apply(console, msg.args.map(function(arg) {
         arg = utils.stringifySerializedConsoleArgValue(arg);
@@ -38,11 +42,14 @@ function _printConsoleMessage(msg) {
       //       Turning this on gets pretty noisy...but we should probably
       //       clean this up as warns are likely a sign of clownitude
       break;
+
+      /*
       console.warn.apply(console, msg.args.map(function(arg) {
         arg = utils.stringifySerializedConsoleArgValue(arg);
         return colors.colorize(arg, colors.RED);
       }));
       break;
+      */
     default:
       throw new Error('Unknown console message type!: ' + JSON.stringify(msg));
   }
@@ -83,9 +90,11 @@ function defaultTestResultHandler(config, testResult) {
     testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
   }
 
+  /*
   if (config.collectCoverage) {
     // TODO: Find a nice pretty way to print this out
   }
+  */
 
   console.log(_getResultHeader(allTestsPassed, pathStr, [
     testRunTimeString

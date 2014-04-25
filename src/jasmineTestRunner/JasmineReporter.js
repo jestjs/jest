@@ -1,3 +1,5 @@
+'use strict';
+
 var colors = require('../lib/colors');
 var diff = require('diff');
 var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
@@ -50,6 +52,7 @@ function _prettyPrint(obj, indent) {
       ')';
     }
 
+    /* jshint camelcase:false */
     if (obj.__jstest_pp_cycle__) {
       return '<circular reference>';
     }
@@ -158,7 +161,7 @@ function _extractSpecResults(container, ancestorTitles, spec) {
   container.push(results);
 }
 
-function JasmineReporter(testName) {
+function JasmineReporter() {
   jasmine.Reporter.call(this);
   this._logs = [];
   this._resultsDeferred = Q.defer();
@@ -181,7 +184,7 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
     _extractSuiteResults(testResults, [], topLevelSuite);
   }
 
-  var numFailingTests = 0;;
+  var numFailingTests = 0;
   var numPassingTests = 0;
   testResults.forEach(function(testResult) {
     if (testResult.failureMessages.length > 0) {
@@ -206,4 +209,4 @@ JasmineReporter.prototype.log = function(str) {
   console.log('logging: ', str);
 };
 
-module.exports = JasmineReporter
+module.exports = JasmineReporter;
