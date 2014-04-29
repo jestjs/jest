@@ -114,7 +114,7 @@ function sum(value1, value2) {
     if (typeof value2 === 'number') {
       return value1 + value2;
     } else {
-      // Yay! Simple, to-the-point ES6 arrow functions!
+      // Yay! ES6 arrow functions!
       return value2.map(item => item + value1);
     }
   } else if (typeof value2 === 'number') {
