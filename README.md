@@ -20,6 +20,11 @@ And some goodies:
 ## Basic Example
 
 ```js
+// XHR.js
+module.exports = window.XHR;
+```
+
+```js
 // MyClass.js
 var XHR = require('./XHR');
 
