@@ -190,5 +190,8 @@ describe('sum', function() {
 });
 ```
 
-So as you can see, when we `require()` the `throwInvariant` module, we don't get the real thing. We get a version of it that is a function with a `.mock` property on it. That `.mock` property has a bunch of interesting information about how the mock function was called during it's lifetime. Of specifically interesting use, it records every single call along with all the args passed in each call.
+So as you can see, when we `require()` the `throwInvariant` module, we don't get the real thing. We get a version of it that is a function with a `.mock` property on it. That `.mock` property has a bunch of interesting information about how the mock function was used during it's lifetime. Of specifically interesting use, it records every single call along with all the args passed in each call.
 
+This is pretty great, because it let's *us* decide where we want to draw the boundaries around the thing we're testing. If we didn't actually care that the `sum()` function specifically calls into `throwInvariant()` in order to throw errors, we could have either added a `.dontMock('../throwInvariant')` alongside our other `.dontMock('../sum')` to tell jest not to mock out the `throwInvariant` module. This would have made our invalid-parameter test actually throw an error (which we then might have tested for more directly).
+
+It's important to have options like this because __sometimes our dependencies are implementation details, and sometimes they are more than that__. If we don't care *how* `sum()` throws an error, we can specify that by explicitly stating this in the test. In this case, if we don't care how
