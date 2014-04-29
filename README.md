@@ -191,15 +191,15 @@ describe('sum', function() {
   
   // ...other tests we wrote above...
   
-  it('calls throwInvariant() when a string is passed', function() {
+  it('calls throwInvariant() when an object is passed', function() {
     var sum = require('../sum');
     var throwInvariant = require('../throwInvariant');
-    sum("invalid string", 42);
-    
+    sum({a: 42}, {b: 43});
+
     // throwInvariant() should have been called exactly once
     expect(throwInvariant.mock.calls.length).toBe(1);
-    
-    // The first argument passed to the call to throwInvariant() 
+
+    // The first argument passed to the call to throwInvariant()
     // should have been `false`
     var callArgs = throwInvariant.mock.calls[0];
     expect(callArgs[0]).toBe(false);
