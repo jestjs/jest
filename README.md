@@ -142,21 +142,22 @@ describe('sum', function() {
     var sum = require('../sum');
     expect(sum(1, 2)).toBe(3);
   });
-  
+
   it('adds a number to an array', function() {
     var sum = require('../sum');
     expect(sum(1, [2, 3])).toEqual([3, 4]);
   });
-  
+
   it('adds an array to a number', function() {
     var sum = require('../sum');
-    expect(sum([1, 2], 3)).toEqual([4, 6]);
+    expect(sum([1, 2], 3)).toEqual([4, 5]);
   });
-  
+
   it('adds two arrays', function() {
     var sum = require('../sum');
     expect(sum([1, 2], [3, 4])).toEqual([4, 6]);
   });
+
 });
 ```
 
@@ -174,6 +175,19 @@ Fortunately jest automatically (by default) mocks out all `require()`'d modules.
 require('mock-modules').dontMock('../sum');
 
 describe('sum', function() {
+
+  beforeEach(function() {
+  	// Reset all module caches before each test.
+    // 
+    // Normally in node, require() will only execute the module factory 
+    // the first time it is called for a given module. Every time it is 
+    // called for that module after that will just return the exports it 
+    // already has.
+    // 
+    // This poses a problem with tests because we don't want one test
+    // changing some module state before another test runs.
+    require('mock-modules').dumpCache();
+  });
   
   // ...other tests we wrote above...
   
