@@ -82,6 +82,10 @@ __sum.js__
 ```js
 var throwInvariant = require('./throwInvariant');
 
+/**
+ * Given two arrays, "zip" them together by adding each of the 
+ * corresponding elements.
+ */
 function _arraySum(arr1, arr2) {
   var sumArray = [];
   var maxIndex = Math.max(arr1.length, arr2.length);
