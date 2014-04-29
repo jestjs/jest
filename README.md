@@ -74,7 +74,7 @@ Run time: 0.797s
 
 ## Mocking
 
-One of the most useful features of jest is it's built-in mocking capabilities. By default, when a test (or any module) runs inside jest, `require()` always returns the an automatically generated mock version of the module that was requested (rather than the real version). This is really helpful because it makes easy to write tests that exercise only the code you wish -- nothing more, nothing less. Of course, you can (and probably should) customize this default behavior for your specific test.
+One of the most useful features of jest is it's built-in mocking capabilities. By default, when a test (or any module) runs inside jest, `require()` always returns an automatically generated mock version of the module (rather than the real version). This is really helpful because it makes easy to write tests that exercise only the code you wish -- nothing more, nothing less. Of course, you can (and probably should) customize this default behavior for your specific test.
 
 Let's look at a more comprehensive version of our previous example, where we have a `sum.js` file that provides a function that can sum two values together -- whether they're numbers or arrays.
 
