@@ -177,7 +177,7 @@ require('mock-modules').dontMock('../sum');
 describe('sum', function() {
 
   beforeEach(function() {
-  	// Reset all module caches before each test.
+  	// Clear out the module registry before each test.
     // 
     // Normally in node, require() will only execute the module factory 
     // the first time it is called for a given module. Every time it is 
