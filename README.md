@@ -194,4 +194,27 @@ So as you can see, when we `require()` the `throwInvariant` module, we don't get
 
 This is pretty great, because it let's *us* decide where we want to draw the boundaries around the thing we're testing. If we didn't actually care that the `sum()` function specifically calls into `throwInvariant()` in order to throw errors, we could have either added a `.dontMock('../throwInvariant')` alongside our other `.dontMock('../sum')` to tell jest not to mock out the `throwInvariant` module. This would have made our invalid-parameter test actually throw an error (which we then might have tested for more directly).
 
-It's important to have options like this because __sometimes our dependencies are implementation details, and sometimes they are more than that__. If we don't care *how* `sum()` throws an error, we can specify that by explicitly stating this in the test. In this case, if we don't care how
+It's important to have options like this because __sometimes our dependencies are implementation details, and sometimes they are more than that__. If we didn't care *how* `sum()` threw an error, we could specify that by turning off automatic mocking altogether (just for this test):
+
+```js
+// Turn off automatic mocking so that require() always returns the real module
+require('mock-modules').autoMockOff();
+
+describe('sum', function() {
+
+  // ...tests go here...
+  
+});
+```
+
+When you use `.autoMockOff()`, you can still explicitly specify specific modules that should be mocked:
+
+```js
+// Don't mock anything except ModuleA and ModuleB
+require('mock-modules')
+  .autoMockOff()
+  .mock('../ModuleA')
+  .mock('../ModuleB');
+  
+// ...
+```
