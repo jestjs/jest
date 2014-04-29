@@ -162,9 +162,9 @@ And we run it and...woohoo! Everything passes!
 But we did leave out testing of one aspect of the module: It's error checking.
 The `sum()` function will call `throwInvariant()` on its parameters to make sure they're types that are supported.
 
-Presumably the `throwInvariant.js` function already has it's own tests that ensure that if you pass false as the first parameter, it throws an error...so it would be fairly redundent to assert that again in this test. Instead, it would be nice to just assert that the `throwInvariant()` function was called with `true` as the first argument for our `sum()` tests.
+Presumably the `throwInvariant.js` module already has it's own tests that ensure that if you pass false as the first parameter, it throws an Error...so it would be fairly redundant to assert that again in this test. Instead, it would be nice to just assert that the `throwInvariant()` function was called with `true` as the first argument for our `sum()` tests.
 
-Fortunately jest automatically (by default) mocks out all `require()`'d modules. Mocks themselves record all calls that were made to them...so testing this should be really easy:
+Fortunately jest automatically (by default) mocks out all `require()`'d modules. Mocks record metadata about how they are used (including information about all calls that were made to them) so testing this should be really easy:
 
 ```js
 // Don't mock the 'sum' module, because we want to test it
