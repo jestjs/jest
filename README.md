@@ -2,7 +2,7 @@
 
 jest is a JavaScript testing library + CLI.
 
-Its goal is to make writing JavaScript unit tests as easy and frictionless as possible while running the tests as fast as possible. It currently only ships with jasmine support, but the longer-term roadmap includes more testing frameworks as well.
+Its goal is to make writing JavaScript unit tests as easy and frictionless as possible while running the tests as fast as possible. It currently only ships with jasmine support, but I hope to support more testing frameworks as well in the longer term.
 
 ## Getting Started
 
