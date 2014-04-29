@@ -28,7 +28,7 @@ module.exports = sum;
 ```
 
 ```js
-// __tests__/sum-test.js__:
+// __tests__/sum-test.js
 
 // By default, jest will automatically generate a mock version for any module when it is
 // require()'d. We tell jest not to mock out the 'sum' module so that we can test it.
