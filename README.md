@@ -62,8 +62,6 @@ describe('sum', function() {
 
 Then run `npm test` and see the following:
 ```
-$ npm test
-
 Found 1 matching tests...
  FAIL  /Users/jeffmo/Projects/example/__tests__/sum-test.js (0.017s)
 ● sum › it adds a scalar number to an array
