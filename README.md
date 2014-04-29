@@ -83,7 +83,7 @@ __sum.js__
 var throwInvariant = require('./throwInvariant');
 
 /**
- * Given two arrays, "zip" them together by adding each of the 
+ * Given two arrays, "zip" them together by adding each of the
  * corresponding elements.
  */
 function _arraySum(arr1, arr2) {
@@ -109,16 +109,19 @@ function sum(value1, value2) {
     || typeof value2 !== 'number' && !Array.isArray(value2),
     'Only numbers and arrays are currently supported!'
   );
-  
+
   if (typeof value1 === 'number') {
     if (typeof value2 === 'number') {
       return value1 + value2;
     } else {
-      // Yay! ES6 arrow functions!
-      return value2.map(item => item + value1);
+      return value2.map(function(item) {
+        return item + value1;
+      });
     }
   } else if (typeof value2 === 'number') {
-    return value1.map(item => item + value2);
+    return value1.map(function(item) {
+      return item + value2;
+    });
   } else {
     return _arraySum(value1, value2);
   }
