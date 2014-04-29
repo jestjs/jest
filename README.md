@@ -207,7 +207,7 @@ describe('sum', function() {
 });
 ```
 
-When you use `.autoMockOff()`, you can still explicitly specify specific modules that should be mocked:
+When you use `.autoMockOff()`, you can still explicitly specify modules that should still be mocked:
 
 ```js
 // Don't mock anything except ModuleA and ModuleB
