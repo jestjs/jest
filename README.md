@@ -14,9 +14,9 @@ And some goodies:
 
 - **Speed**. Because most the dependencies are mocked and tests run in parallel, test execution is incredibly fast.
 
-- **Using Jasmine**. Jest deals with dependencies and test execution, but Jasmine actually runs the tests.
+- **Using Jasmine**. jest deals with dependencies and test execution, but Jasmine actually runs the tests.
 
-- **Used extensively at Facebook**. Jest runs thousands of tests at Facebook and has proven itself stable and fast.
+- **Used extensively at Facebook**. jest runs thousands of tests at Facebook and has proven itself stable and fast.
 
 
 ## Basic Example
