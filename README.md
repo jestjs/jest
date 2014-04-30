@@ -12,7 +12,7 @@ Its goal is to make writing JavaScript unit tests as easy and frictionless as po
 
 And some goodies:
 
-- **Speed**. Because most the dependencies are mocked and tests run in parallel, test execution is incredibly fast.
+- **Speed**. Because most of the dependencies are mocked and tests run in parallel, test execution is incredibly fast.
 
 - **Using Jasmine**. jest deals with dependencies and test execution, but Jasmine actually runs the tests.
 
