@@ -18,6 +18,26 @@ And some goodies:
 
 - **Used extensively at Facebook**. jest runs thousands of tests at Facebook and has proven itself stable and fast.
 
+## Getting Started
+
+Getting started with jest is pretty simple. All you need to do is:
+
+* Write some (jasmine) tests in a `__tests__` directory
+* Add the following two things to your `package.json`
+* Run `npm test`:
+
+```js
+{
+  ...
+  "devDependencies": {
+    "jest-cli": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+  ...
+}
+```
 
 ## Basic Example
 
