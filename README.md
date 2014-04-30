@@ -8,7 +8,7 @@ Its goal is to make writing JavaScript unit tests as easy and frictionless as po
 
 - **Integrated with require()**. Easily control the output of `require()` within your test environment. You don't have to refactor your code to use injection (including DI) in order to make it testable.
 
-- **Uses `jsdom` to mock out DOM APIs for you**. Test node programs \*or\* browser programs using the same test runner!
+- **Uses `jsdom` to mock out DOM APIs for you**. Test node programs \*and\* browser programs using the same test runner!
 
 And some goodies:
 
