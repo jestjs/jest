@@ -47,7 +47,7 @@ require('mock-modules').dontMock('../MyClass');
 
 describe('MyClass', function() {
   it('should send a request to github', function() {
-    var sum = require('../MyClass');
+    var MyClass = require('../MyClass');
     var XHR = require('../XHR');
     
     new MyClass().doWork();
