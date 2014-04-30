@@ -4,17 +4,17 @@ jest is a JavaScript testing library + CLI.
 
 Its goal is to make writing JavaScript unit tests as easy and frictionless as possible while running the tests as fast as possible.
 
-- **All dependencies are mocked by default**. Test only the modules you intend to, but not the interations with modules you don't intend to. Don't do integration testing by mistake.
+- **All dependencies are mocked by default**. Test only the modules you intend to, nothing more. Don't do integration testing by mistake.
 
-- **Integrated with require()**. Control the output of `require()` within your test environment. You don't have to refactor your code to use DI to make it testable.
+- **Integrated with require()**. Easily control the output of `require()` within your test environment. You don't have to refactor your code to use DI in order to make it testable.
 
 And some goodies:
 
-- **Speed**. Because all the dependencies are mocked and tests run in parallel, tests are running much faster.
+- **Speed**. Because most the dependencies are mocked and tests run in parallel, test execution is incredibly fast.
 
-- **Using Jasmine**. Jest is dealing with dependencies and test execution, Jasmime actually runs the tests.
+- **Using Jasmine**. Jest deals with dependencies and test execution, but Jasmine actually runs the tests.
 
-- **Used at Facebook**. Thousands of tests are already running under Jest.
+- **Used extensively at Facebook**. Jest runs thousands of tests at Facebook and has proven itself stable and fast.
 
 
 ## Basic Example
