@@ -6,7 +6,7 @@ Its goal is to make writing JavaScript unit tests as easy and frictionless as po
 
 - **All dependencies are mocked by default**. Test only the modules you intend to, nothing more. Don't do integration testing by mistake.
 
-- **Integrated with require()**. Easily control the output of `require()` within your test environment. You don't have to refactor your code to use manual injection (including DI) in order to make it testable.
+- **Integrated with require()**. Easily control the output of `require()` within your test environment. You don't have to refactor your code to use injection (including DI) in order to make it testable.
 
 And some goodies:
 
