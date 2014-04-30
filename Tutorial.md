@@ -1,25 +1,3 @@
-
-## Getting Started
-
-Getting started with jest is pretty simple. All you need to do is:
-
-* Write some (jasmine) tests in a `__tests__` directory
-* Add the following two things to your `package.json`
-* Run `npm test`:
-
-```js
-{
-  ...
-  "devDependencies": {
-    "jest-cli": "*"
-  },
-  "scripts": {
-    "test": "jest"
-  }
-  ...
-}
-```
-
 ## Basic Example
 
 jest ships with support for jasmine out of the box, so here's an example of a simple module and a jasmine test for it:
