@@ -23,15 +23,13 @@ And some goodies:
 Getting started with jest is pretty simple. All you need to do is:
 
 * Write some (jasmine) tests in a `__tests__` directory
-* Add the following two things to your `package.json`
-* Run `npm test`:
+* Run `npm install jest-cli --save-dev`
+* Add the following to your `package.json`
+* Run `npm test`
 
 ```js
 {
   ...
-  "devDependencies": {
-    "jest-cli": "*"
-  },
   "scripts": {
     "test": "jest"
   }
