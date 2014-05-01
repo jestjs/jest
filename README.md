@@ -37,7 +37,7 @@ Getting started with jest is pretty simple. All you need to do is:
 }
 ```
 
-The `jest` command line tool will try to use the most sane and ismple defaults possible, but if you want to add more custom configuration, you can do so a `jestConfig.json` file at the root of your package.
+The `jest` command line tool will try to use the most sane and simple defaults possible, but if you want to add more custom configuration you can put them in a `jestConfig.json` file at the root of your package.
 (TODO: Link to the not-yet-written docs on what config options are available)
 
 ## Basic Example
