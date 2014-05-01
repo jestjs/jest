@@ -15,6 +15,7 @@
     "underscore": "1.2.4"
   },
   "devDependencies": {
+    "jest-cli": "~0.0.0",
     "jshint": "~2.5.0"
   },
   "bin": {
