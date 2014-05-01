@@ -126,10 +126,12 @@ function _extractSpecResults(container, ancestorTitles, spec) {
             var ppExpected = _prettyPrint(result.expected);
             var colorDiff = _highlightDifferences(ppActual, ppExpected);
 
+            var matcherName = (result.isNot ? 'NOT ' : '') + result.matcherName;
+
             message =
               colorize('Expected:', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.a +
-                ' ' + colorize(result.matcherName + ':', ERROR_TITLE_COLOR) +
+                ' ' + colorize(matcherName + ':', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.b;
           } else {
             message = colorize(result.message, ERROR_TITLE_COLOR);

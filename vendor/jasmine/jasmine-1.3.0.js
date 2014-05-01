@@ -110,6 +110,7 @@ jasmine.ExpectationResult = function(params) {
   this.expected = params.expected;
   this.actual = params.actual;
   this.message = this.passed_ ? 'Passed.' : params.message;
+  this.isNot = params.isNot;
 
   var trace = (params.trace || new Error(this.message));
   this.trace = this.passed_ ? '' : trace;
@@ -1100,7 +1101,7 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
     type: isSuite ? 'suite' : 'spec',
     children: []
   };
-  
+
   if (isSuite) {
     var children = suiteOrSpec.children();
     for (var i = 0; i < children.length; i++) {
@@ -1237,7 +1238,8 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       passed: result,
       expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
       actual: this.actual,
-      message: message
+      message: message,
+      isNot: this.isNot
     });
     this.spec.addMatcherResult(expectationResult);
     return jasmine.undefined;
@@ -1929,7 +1931,7 @@ jasmine.PrettyPrinter.prototype.iterateObject = function(obj, fn) {
   for (var property in obj) {
     if (!obj.hasOwnProperty(property)) continue;
     if (property == '__Jasmine_been_here_before__') continue;
-    fn(property, obj.__lookupGetter__ ? (obj.__lookupGetter__(property) !== jasmine.undefined && 
+    fn(property, obj.__lookupGetter__ ? (obj.__lookupGetter__(property) !== jasmine.undefined &&
                                          obj.__lookupGetter__(property) !== null) : false);
   }
 };
@@ -2061,7 +2063,7 @@ jasmine.Queue.prototype.next_ = function() {
 
   while (goAgain) {
     goAgain = false;
-    
+
     if (self.index < self.blocks.length && !(this.abort && !this.ensured[self.index])) {
       var calledSynchronously = true;
       var completedSynchronously = false;
@@ -2099,7 +2101,7 @@ jasmine.Queue.prototype.next_ = function() {
       if (completedSynchronously) {
         onComplete();
       }
-      
+
     } else {
       self.running = false;
       if (self.onComplete) {
