@@ -87,7 +87,7 @@ In this case, some sugar for methods that return ##this## is provided in the for
 
 ```
 var o = {
-  f : require('mocks').getMockFunction().mockReturnThis()
+  f: require('mocks').getMockFunction().mockReturnThis()
 };
 ```
 
@@ -95,7 +95,7 @@ and
 
 ```
 var o = {
-  f : require('mocks').getMockFunction().mockImplementation(function() {
+  f: require('mocks').getMockFunction().mockImplementation(function() {
     return this;
   })
 };
