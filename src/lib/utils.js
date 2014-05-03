@@ -240,7 +240,7 @@ function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
   }
 }
 
-function serializeConsoleArgValue(arg) {
+function serializeConsoleArgValue(arg, objWeakMap) {
   switch (typeof arg) {
     case 'function':
       return JSON.stringify({
@@ -256,16 +256,41 @@ function serializeConsoleArgValue(arg) {
         });
       }
 
+      if (!objWeakMap) {
+        if (typeof WeakMap !== 'function') {
+          throw new Error('Please run node with the --harmony flag!');
+        }
+        objWeakMap = new WeakMap();
+      }
+
       if (Array.isArray(arg)) {
+        if (objWeakMap.get(arg) === true) {
+          return JSON.stringify({
+            type: 'cycle',
+            value: 'Array'
+          });
+        }
+        objWeakMap.set(arg, true);
+
         return JSON.stringify({
           type: 'array',
-          value: arg.map(serializeConsoleArgValue)
+          value: arg.map(function(subValue) {
+            return serializeConsoleArgValue(subvalue, objWeakMap);
+          })
         });
       }
 
+      if (objWeakMap.get(arg) === true) {
+        return JSON.stringify({
+          type: 'cycle',
+          value: 'Object'
+        });
+      }
+      objWeakMap.set(arg, true);
+
       var retValue = {};
       for (var key in arg) {
-        retValue[key] = serializeConsoleArgValue(arg[key]);
+        retValue[key] = serializeConsoleArgValue(arg[key], objWeakMap);
       }
       return JSON.stringify({
         type: 'object',
@@ -294,6 +319,8 @@ function serializeConsoleArgValue(arg) {
 function stringifySerializedConsoleArgValue(arg) {
   var metadata = JSON.parse(arg);
   switch (metadata.type) {
+    case 'cycle':
+      return '[CyclicRef (' + metadata.value + ')]';
     case 'null':
       return 'null';
     case 'array':

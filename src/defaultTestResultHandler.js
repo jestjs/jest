@@ -33,8 +33,7 @@ function _printConsoleMessage(msg) {
       */
     case 'log':
       console.log.apply(console, msg.args.map(function(arg) {
-        arg = utils.stringifySerializedConsoleArgValue(arg);
-        return arg;
+        return utils.stringifySerializedConsoleArgValue(arg);
       }));
       break;
     case 'warn':

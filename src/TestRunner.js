@@ -43,10 +43,9 @@ var NODE_HASTE_TEST_PATH_RE = /\/__tests__\/.*\.js$/;
 function _serializeConsoleArguments(type, args) {
   return {
     type: type,
-    args: Array.prototype.map.call(
-      args,
-      utils.serializeConsoleArgValue
-    )
+    args: Array.prototype.map.call(args, function(arg) {
+      return utils.serializeConsoleArgValue(arg);
+    })
   };
 }
 
