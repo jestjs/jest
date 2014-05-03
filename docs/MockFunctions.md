@@ -3,7 +3,7 @@ Mock functions make it easy to test the links between functional code, both for 
 There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from 'jest-runtime':
 
 ```javascript
-var f = require('jest-runtime').genMockFn();
+var f = require('mocks').getMockFunction();
 f('1');
 f('a', 'b');
 console.log(f.mock.calls);
@@ -13,7 +13,7 @@ console.log(f.mock.calls);
 All mock functions have this special "mock" member, which is where data about how this function has been called is kept. The mock member also tracks the value of 'this' for each call, so
 
 ```javascript
-var f = require('jest-runtime').genMockFn();
+var f = require('mocks').getMockFunction();
 
 var a = new f();
 var b = {};
@@ -37,7 +37,7 @@ expect(someMockFunction.mock.instances[0].name).toEqual('test');
 Mock functions can also be used to inject values into your test.
 
 ```javascript
-var f = require('jest-runtime').genMockFn();
+var f = require('mocks').getMockFunction();
 console.log( f() );
 > undefined
 
@@ -54,7 +54,7 @@ Mock functions can be used most effectively in code that uses functional callbac
 ```javascript
 var Filter = require('Filter');
 
-var f = require('jest-runtime').genMockFn();
+var f = require('mocks').getMockFunction();
 // Filter constructor takes a "test" function
 var filter = new Filter(f);
 
@@ -74,7 +74,7 @@ Still, there are cases where it's useful to go beyond the ability to specify ret
 
 ```javascript
 var o = {
-  f: require('jest-runtime').genMockFn().mockImplementation(function() {
+  f: require('mocks').getMockFunction().mockImplementation(function() {
     // do something stateful
     return this;
   });
@@ -87,7 +87,7 @@ In this case, some sugar for methods that return `this` is provided in the form 
 
 ```javascript
 var o = {
-  f: require('jest-runtime').genMockFn().mockReturnThis()
+  f: require('mocks').getMockFunction().mockReturnThis()
 };
 ```
 
@@ -95,7 +95,7 @@ and
 
 ```javascript
 var o = {
-  f: require('jest-runtime').genMockFn().mockImplementation(function() {
+  f: require('mocks').getMockFunction().mockImplementation(function() {
     return this;
   })
 };
