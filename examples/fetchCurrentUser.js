@@ -10,7 +10,7 @@ function parseUserJson(userJson) {
 function fetchCurrentUser(callback) {
   function ajaxDone(userJson) {
     var user = parseUserJson(userJson);
-    callback(user); // if you comment this line, the test will break
+    callback(user);
   };
 
   return $.ajax({

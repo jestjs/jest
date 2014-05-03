@@ -1,7 +1,7 @@
 require('jest-runtime').dontMock('../fetchCurrentUser.js');
 
 describe('fetchCurrentUser', function() {
-  it('creates a parsed user', function(done) {
+  it('creates a parsed user', function() {
     var $ = require('jquery');
     var fetchCurrentUser = require('../fetchCurrentUser.js');
 
@@ -19,7 +19,7 @@ describe('fetchCurrentUser', function() {
     });
 
     // Simulate the response from $.ajax
-    $.ajax.mock.calls[0][0].done({
+    $.ajax.mock.calls[0/*first call*/][0/*first argument*/].done({
       firstName: 'Tomas',
       lastName: 'Jakobsen'
     });
