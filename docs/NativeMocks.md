@@ -25,7 +25,6 @@ expect(setTimeout.mock.calls[0][1]).toEqual(1000);
 ```
 
 Further, it provides you the ability to make fake time elapse in your code:
-
 ```javascript
 // This will run the timer callbacks within the next 2000 milliseconds 
 // iteratively. Note: 2000 is specifying a relative time from 'now' 
@@ -35,14 +34,12 @@ mockRunTimersToTime(2000);
 ```
 
 Or if the time elapse is not really important, you just need to run the timer callbacks once:
-
 ```javascript
 // Every timer function callback will be executed once
 mockRunTimersOnce();
 ```
 
 Or if you may have timers that may register other timers and don't want to manage the number of times to run or choose an arbitrary large length of time to run, you can run timers repeatedly:
-
 ```javascript
 // Every timer function callback will be executed in time order until there
 // are no more.
@@ -50,13 +47,11 @@ mockRunTimersRepeatedly();
 ```
 
 To clear all timers:
-
 ```javascript
 mockClearTimers();
 ```
 
 To get current timers count:
-
 ```javascript
 expect(mockGetTimersCount()).toEqual(4);
 ```
