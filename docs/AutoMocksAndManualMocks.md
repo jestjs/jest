@@ -69,7 +69,7 @@ PollerMock.prototype.setInterval.mockReturnThis()
 module.exports = PollerMock;
 ```
 
-Finally, it's often helpful to include a method that's intended to be called from a test that simulates behavior of mocked class, like `mockInform` in an hypothetical ##EventBus## API. By convention, these helper methods should be prefixed with the word "mock" to make them clearly distinguishable from public APIs (See Fakes, special mocks).
+Finally, it's often helpful to include a method that's intended to be called from a test that simulates behavior of mocked class, like `mockInform` in an hypothetical `EventBus` class. By convention, these helper methods should be prefixed with the word "mock" to make them clearly distinguishable from public APIs (See Fakes, special mocks).
 
 Testing mocks
 -------------
