@@ -70,7 +70,7 @@ console.log(f.mock.calls);
 
 Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. Avoid the temptation to implement logic inside of any function that's not directly under test.
 
-Still, there are cases where it's useful to go beyond the ability to specify return values and replace an implementation of a mock function. Many of the mocks for core components have simple implementations to make testing easier. This can be done with the ##mockImplementation## method on mock functions.
+Still, there are cases where it's useful to go beyond the ability to specify return values and replace an implementation of a mock function. Many of the mocks for core components have simple implementations to make testing easier. This can be done with the `mockImplementation` method on mock functions.
 
 ```javascript
 var o = {
@@ -83,7 +83,7 @@ var o = {
 o.f(1).f(2);
 ```
 
-In this case, some sugar for methods that return ##this## is provided in the form of ##mockReturnThis##. The following are equivalent:
+In this case, some sugar for methods that return `this` is provided in the form of `mockReturnThis`. The following are equivalent:
 
 ```javascript
 var o = {
