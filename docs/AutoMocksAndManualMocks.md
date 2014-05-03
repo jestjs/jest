@@ -44,7 +44,7 @@ Instead, we want the different instances to each have their own version of `setI
 
 
 Manual mocks
-============
+------------
 
 Although autogeneration of mocks is convenient, there are behaviors it misses, such as fluent interfaces. Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 
@@ -71,7 +71,8 @@ module.exports = PollerMock;
 
 Finally, it's often helpful to include a method that's intended to be called from a test that simulates behavior of mocked class, like `mockInform` in an hypothetical ##EventBus## API. By convention, these helper methods should be prefixed with the word "mock" to make them clearly distinguishable from public APIs (See Fakes, special mocks).
 
-== Testing mocks ==
+Testing mocks
+-------------
 
 It's generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the original module completely with tests and then whitelisting it, so that requiring it always provides the actual implementation, rather than the mock current list of whitelisted modules. 
 
