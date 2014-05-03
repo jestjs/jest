@@ -1,15 +1,16 @@
 'use strict';
 
-var BOLD = '\u001b[1;1m';
-var GRAY = '\u001b[1;30m';
-var GREEN_BG = '\u001b[1;42m';
-var MAGENTA_BG = '\u001b[1;45m';
-var RED = '\u001b[1;31m';
-var RED_BG = '\u001b[1;41m';
-var RESET = '\u001b[0m';
-var UNDERLINE = '\u001b[1;4m';
+var BOLD = '\x1B[1m';
+var GRAY = '\x1B[30m';
+var GREEN_BG = '\x1B[42m';
+var MAGENTA_BG = '\x1B[45m';
+var RED = '\x1B[31m';
+var RED_BG = '\x1B[41m';
+var RESET = '\x1B[0m';
+var UNDERLINE = '\x1B[4m';
 
 function colorize(str, color) {
+  //return str;
   return color + str.toString().split(RESET).join(RESET + color) + RESET;
 }
 

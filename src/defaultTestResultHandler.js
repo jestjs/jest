@@ -4,8 +4,8 @@ var colors = require('./lib/colors');
 var path = require('path');
 var utils = require('./lib/utils');
 
-var FAIL_COLOR = colors.RED_BG;
-var PASS_COLOR = colors.GREEN_BG;
+var FAIL_COLOR = colors.RED_BG + colors.BOLD;
+var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
 var TEST_NAME_COLOR = colors.BOLD;
 
 // A RegExp that matches paths that should not be included in error stack traces
