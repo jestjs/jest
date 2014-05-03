@@ -28,6 +28,9 @@ function fetchCurrentUser(callback) {
 module.exports = fetchCurrentUser;
 ```
 
+Writing the test
+----------------
+
 In order to test the function we first need to write a new file along with some boilerplate
 
 ```javascript
@@ -58,7 +61,7 @@ We want to make sure that the callback given to `fetchCurrentUser` is correctly 
     });
 ```
 
-In order to compute the result, `fetchCurrentUser` is calling to a dependency: `$.ajax`. To write a proper test we first need to make sure that it is calling that function with the proper arguments.
+In order to compute the result, `fetchCurrentUser` is calling to a dependency: `$.ajax`. To write a proper test, we first need to make sure that it is calling the dependency correctly.
 
 ```javascript
     expect($.ajax).toBeCalledWith({
@@ -68,7 +71,7 @@ In order to compute the result, `fetchCurrentUser` is calling to a dependency: `
     });
 ```
 
-and then return a mock value for this call
+and then provide a mock response for the dependency
 
 ```javascript
     $.ajax.mock.calls[0/*first call*/][0/*first argument*/].done({
