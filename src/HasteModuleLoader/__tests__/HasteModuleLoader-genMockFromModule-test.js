@@ -1,12 +1,12 @@
 'use strict';
 
-require('mock-modules').autoMockOff();
+require('jest-runtime').autoMockOff();
 
 var path = require('path');
 var q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
-  var getMockFn;
+  var genMockFn;
   var HasteModuleLoader;
   var mockEnvironment;
   var resourceMap;
@@ -29,22 +29,22 @@ describe('nodeHasteModuleLoader', function() {
   }
 
   beforeEach(function() {
-    getMockFn = require('mocks').getMockFunction;
+    genMockFn = require('jest-runtime').genMockFn;
     HasteModuleLoader = require('../HasteModuleLoader');
 
     mockEnvironment = {
       global: {
         console: {},
-        mockClearTimers: getMockFn()
+        mockClearTimers: genMockFn()
       },
-      runSourceText: getMockFn().mockImplementation(function(codeStr) {
+      runSourceText: genMockFn().mockImplementation(function(codeStr) {
         /* jshint evil:true */
         return (new Function('return ' + codeStr))();
       })
     };
   });
 
-  describe('generateMock', function() {
+  describe('genMockFromModule', function() {
     pit('does not cause side effects in the rest of the module system when ' +
         'generating a mock', function() {
       return buildLoader().then(function(loader) {
@@ -53,10 +53,10 @@ describe('nodeHasteModuleLoader', function() {
         var regularModule = testRequire('RegularModule');
         var origModuleStateValue = regularModule.getModuleStateValue();
 
-        testRequire('mock-modules').dontMock('RegularModule');
+        testRequire('jest-runtime').dontMock('RegularModule');
 
         // Generate a mock for a module with side effects
-        testRequire('mock-modules').generateMock('ModuleWithSideEffects');
+        testRequire('jest-runtime').genMockFromModule('ModuleWithSideEffects');
 
         expect(regularModule.getModuleStateValue()).toBe(origModuleStateValue);
       });

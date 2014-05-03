@@ -849,50 +849,55 @@ Loader.prototype.resetModuleRegistry = function() {
   this._mockRegistry = {};
   this._moduleRegistry = {};
   this._builtInModules = {
-    'node-haste': function() {
-      return {
+    'jest-runtime': function(currPath) {
+      var jestRuntime = {
         exports: {
-          // Keeping this interface deliberately incomplete, only offering
-          // what is actually needed by tests.
-          getResourceMap: function() {
-            return this._resourceMap;
-          }.bind(this)
-        }
-      };
-    }.bind(this),
-    'mocks': function() {
-      return {
-        exports: moduleMocker
-      };
-    },
-    'mock-modules': function(currPath) {
-      var mockModules = {
-        exports: {
+          autoMockOff: function() {
+            this._shouldAutoMock = false;
+            return jestRuntime.exports;
+          }.bind(this),
+
+          autoMockOn: function() {
+            this._shouldAutoMock = true;
+            return jestRuntime.exports;
+          }.bind(this),
+
           dontMock: function(moduleName) {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = false;
-            return mockModules.exports;
+            return jestRuntime.exports;
+          }.bind(this),
+
+          genMockFromModule: function(moduleName) {
+            return this._generateMock(
+              this._currentlyExecutingModulePath,
+              moduleName
+            );
+          }.bind(this),
+
+          genMockFn: function() {
+            return moduleMocker.getMockFunction();
+          },
+
+          /**
+           * Load actual module without reading from or writing to module
+           * exports registry.
+           */
+          loadAndExecuteModule: function(moduleName) {
+            return this.requireModule(
+              this._currentlyExecutingModulePath,
+              moduleName,
+              true // yay boolean args!
+            );
           }.bind(this),
 
           mock: function(moduleName) {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = true;
-            return mockModules.exports;
+            return jestRuntime.exports;
           }.bind(this),
 
-          autoMockOff: function() {
-            this._shouldAutoMock = false;
-            return mockModules.exports;
-          }.bind(this),
-
-          autoMockOn: function() {
-            this._shouldAutoMock = true;
-            return mockModules.exports;
-          }.bind(this),
-
-          // TODO: This is such a bad name, we should rename it to
-          //       `resetModuleRegistry()` -- or anything else, really
-          dumpCache: function() {
+          resetModuleRegistry: function() {
             var globalMock;
             for (var key in this._environment.global) {
               globalMock = this._environment.global[key];
@@ -908,14 +913,105 @@ Loader.prototype.resetModuleRegistry = function() {
 
             this.resetModuleRegistry();
 
-            return mockModules.exports;
+            return jestRuntime.exports;
           }.bind(this),
 
           setMock: function(moduleName, moduleExports) {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = true;
             this._explicitlySetMocks[moduleID] = moduleExports;
-            return mockModules.exports;
+            return jestRuntime.exports;
+          }.bind(this),
+
+          useActualTimers: function() {
+            require('../lib/mockTimers')
+              .uninstallMockTimers(this._environment.global);
+          }.bind(this)
+        }
+      };
+
+      return jestRuntime;
+    }.bind(this),
+
+    // This is a legacy API that will soon be deprecated.
+    // Don't use it for new stuff as it will go away soon!
+    'node-haste': function() {
+      return {
+        exports: {
+          // Do not use this API -- it is deprecated and will go away very soon!
+          getResourceMap: function() {
+            return this._resourceMap;
+          }.bind(this)
+        }
+      };
+    }.bind(this),
+
+    // This is a legacy API that will soon be deprecated.
+    // Don't use it for new stuff as it will go away soon!
+    'mocks': function(currPath) {
+      var mocks = {
+        exports: {
+          generateFromMetadata: moduleMocker.generateFromMetadata,
+          getMetadata: moduleMocker.getMetadata,
+          getMockFunction: function() {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).generateMockFn();
+          }.bind(this),
+        }
+      };
+      mocks.exports.getMockFn = mocks.exports.getMockFunction;
+      return mocks;
+    }.bind(this),
+
+    // This is a legacy API that will soon be deprecated.
+    // Don't use it for new stuff as it will go away soon!
+    'mock-modules': function(currPath) {
+      var mockModules = {
+        exports: {
+          dontMock: function(moduleName) {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).dontMock(moduleName);
+          }.bind(this),
+
+          mock: function(moduleName) {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).mock(moduleName);
+          }.bind(this),
+
+          autoMockOff: function() {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).autoMockOff();
+          }.bind(this),
+
+          autoMockOn: function() {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).autoMockOn();
+          }.bind(this),
+
+          // TODO: This is such a bad name, we should rename it to
+          //       `resetModuleRegistry()` -- or anything else, really
+          dumpCache: function() {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).resetModuleRegistry();
+          }.bind(this),
+
+          setMock: function(moduleName, moduleExports) {
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).setMock(moduleName, moduleExports);
           }.bind(this),
 
           // wtf is this shit?
@@ -942,15 +1038,17 @@ Loader.prototype.resetModuleRegistry = function() {
           }.bind(this),
 
           generateMock: function(moduleName) {
-            return this._generateMock(
-              this._currentlyExecutingModulePath,
-              moduleName
-            );
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).genMockFromModule(moduleName);
           }.bind(this),
 
           useActualTimers: function() {
-            require('../lib/mockTimers')
-              .uninstallMockTimers(this._environment.global);
+            return this.requireModule(
+              currPath,
+              'jest-runtime'
+            ).useActualTimers();
           }.bind(this),
 
           /**
@@ -960,10 +1058,9 @@ Loader.prototype.resetModuleRegistry = function() {
            */
           loadActualModule: function(moduleName) {
             return this.requireModule(
-              this._currentlyExecutingModulePath,
-              moduleName,
-              true // yay boolean args!
-            );
+              currPath,
+              'jest-runtime'
+            ).loadAndExecuteModule(moduleName);
           }.bind(this)
         }
       };

@@ -198,7 +198,10 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
-      moduleLoader.requireModule(__filename, 'mock-modules').dumpCache();
+      moduleLoader.requireModule(
+        __filename,
+        'jest-runtime'
+      ).resetModuleRegistry();
     }
   });
 

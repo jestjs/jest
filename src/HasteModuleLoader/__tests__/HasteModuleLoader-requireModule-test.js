@@ -1,12 +1,12 @@
 'use strict';
 
-require('mock-modules').autoMockOff();
+require('jest-runtime').autoMockOff();
 
 var path = require('path');
 var q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
-  var getMockFn;
+  var genMockFn;
   var HasteModuleLoader;
   var mockEnvironment;
   var resourceMap;
@@ -29,15 +29,15 @@ describe('nodeHasteModuleLoader', function() {
   }
 
   beforeEach(function() {
-    getMockFn = require('mocks').getMockFunction;
+    genMockFn = require('jest-runtime').genMockFn;
     HasteModuleLoader = require('../HasteModuleLoader');
 
     mockEnvironment = {
       global: {
         console: {},
-        mockClearTimers: getMockFn()
+        mockClearTimers: genMockFn()
       },
-      runSourceText: getMockFn().mockImplementation(function(codeStr) {
+      runSourceText: genMockFn().mockImplementation(function(codeStr) {
         /* jshint evil:true */
         return (new Function('return ' + codeStr))();
       })
@@ -150,7 +150,7 @@ describe('nodeHasteModuleLoader', function() {
       pit('doesnt override real modules with manual mocks when explicitly ' +
           'marked with .dontMock()', function() {
         return buildLoader().then(function(loader) {
-          loader.requireModule(__filename, 'mock-modules')
+          loader.requireModule(__filename, 'jest-runtime')
             .dontMock('ManuallyMocked');
 
           var exports = loader.requireModule(__filename, 'ManuallyMocked');

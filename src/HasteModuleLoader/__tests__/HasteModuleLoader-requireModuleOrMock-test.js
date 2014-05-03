@@ -1,12 +1,12 @@
 'use strict';
 
-require('mock-modules').autoMockOff();
+require('jest-runtime').autoMockOff();
 
 var path = require('path');
 var q = require('q');
 
 describe('nodeHasteModuleLoader', function() {
-  var getMockFn;
+  var genMockFn;
   var HasteModuleLoader;
   var mockEnvironment;
   var resourceMap;
@@ -29,15 +29,15 @@ describe('nodeHasteModuleLoader', function() {
   }
 
   beforeEach(function() {
-    getMockFn = require('mocks').getMockFunction;
+    genMockFn = require('jest-runtime').genMockFn;
     HasteModuleLoader = require('../HasteModuleLoader');
 
     mockEnvironment = {
       global: {
         console: {},
-        mockClearTimers: getMockFn()
+        mockClearTimers: genMockFn()
       },
-      runSourceText: getMockFn().mockImplementation(function(codeStr) {
+      runSourceText: genMockFn().mockImplementation(function(codeStr) {
         /* jshint evil:true */
         return (new Function('return ' + codeStr))();
       })
@@ -54,7 +54,7 @@ describe('nodeHasteModuleLoader', function() {
 
     pit('doesnt mock modules when explicitly dontMock()ed', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'mock-modules')
+        loader.requireModuleOrMock(null, 'jest-runtime')
           .dontMock('RegularModule');
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
@@ -64,7 +64,7 @@ describe('nodeHasteModuleLoader', function() {
     pit('doesnt mock modules when explicitly dontMock()ed via a different ' +
         'denormalized module name', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'mock-modules')
+        loader.requireModuleOrMock(__filename, 'jest-runtime')
           .dontMock('./test_root/RegularModule');
         var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
@@ -73,7 +73,7 @@ describe('nodeHasteModuleLoader', function() {
 
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'mock-modules').autoMockOff();
+        loader.requireModuleOrMock(null, 'jest-runtime').autoMockOff();
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -89,7 +89,7 @@ describe('nodeHasteModuleLoader', function() {
     pit('does not use manual mock when automocking is off and a real ' +
         'module is available', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'mock-modules').autoMockOff();
+        loader.requireModuleOrMock(__filename, 'jest-runtime').autoMockOff();
         var exports = loader.requireModuleOrMock(__filename, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(false);
       });

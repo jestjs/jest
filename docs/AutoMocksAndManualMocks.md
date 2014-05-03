@@ -1,7 +1,7 @@
 In order to isolate the code under test, required modules are mocked in unit tests. Mocks are generated automatically, unless an explicit mock is provided manually. For this reason, the first line in your unit test should be like:
 
 ```javascript
-require('mock-modules').dontMock('MyModule');
+require('jest-runtime').dontMock('MyModule');
 ```
 
 This tells the test dependency system to load the real implementation of `MyModule` when it is imported using `require()`
@@ -9,9 +9,10 @@ This tells the test dependency system to load the real implementation of `MyModu
 Automocks
 ---------
 
-The `mocks` CommonJS library provides convenient features for building mock module implementations. The main features of the library are mock functions and special handling to make it easier to work with function prototypes.
+The `jest-runtime` built-in module provides convenient features for building mock module implementations. The main features of the library are mock functions and special handling to make it easier to work with function prototypes.
 
-The test environment defines its own `require` function. As such, when you write `require('MyModule')` this function defers to the mocks module on whether to return the actual implementation of `MyModule` or a mock for it. If the system decides to return a mock, it will first look for a file in a `__mocks__/` directory which defines the module. If no file is found, it will attempt to autogenerate a mock for the module.
+The test environment defines its own `require` function. As such, when you write
+`require('MyModule')` this function defers to the `jest-runtime` module on whether to return the actual implementation of `MyModule` or a mock for it. If the system decides to return a mock, it will first look for a file in a `__mocks__/` directory which defines the module. If no file is found, it will attempt to autogenerate a mock for the module.
 
 Autogeneration is done as follows: the module is loaded in a new context. If the file can be evaluated, the mocking system recurses over the members of the module's `exports` and serializes it's type information. When a module that is being mocked requires another module, the system recursively generates a mock for it. If //that// file cannot be evaluated, an exception is thrown and the mock generation stack is printed.
 
@@ -76,4 +77,6 @@ Testing mocks
 
 It's generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the original module completely with tests and then whitelisting it, so that requiring it always provides the actual implementation, rather than the mock current list of whitelisted modules. 
 
-In cases where this kind of mock is unavoidable, it's best to write a test that ensures that the mock and the actual implementation are in sync. Luckily, this is relatively easy to do with the API provided by `mock-modules`, which allows you to explicitly require both the actual and mock implementations of the same module in a single test.
+In cases where this kind of mock is unavoidable, it's best to write a test that
+ensures that the mock and the actual implementation are in sync. Luckily, this
+is relatively easy to do with the API provided by `jest-runtime`, which allows you to explicitly require both the actual and mock implementations of the same module in a single test.

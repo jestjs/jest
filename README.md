@@ -67,7 +67,7 @@ module.exports = MyClass;
 
 // By default, jest will automatically generate a mock version for any module when it is
 // require()'d. We tell jest not to mock out the 'MyClass' module so that we can test it.
-require('mock-modules').dontMock('../MyClass');
+require('jest-runtime').dontMock('../MyClass');
 
 describe('MyClass', function() {
   it('should send a request to github', function() {

@@ -2,7 +2,7 @@
 // require()'d.
 //
 // Here, we tell jest not to mock out the 'sum' module so that we can test it.
-require('mock-modules').dontMock('../sum');
+require('jest-runtime').dontMock('../sum');
 
 describe('sum', function() {
   it('adds 1 + 1 to equal 2', function() {

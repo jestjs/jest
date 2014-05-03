@@ -1,6 +1,6 @@
 'use strict';
 
-require('mock-modules').autoMockOff();
+require('jest-runtime').autoMockOff();
 
 var q = require('q');
 
@@ -8,7 +8,6 @@ describe('TestRunner', function() {
   var TestRunner;
 
   beforeEach(function() {
-    require('mock-modules').dumpCache();
     TestRunner = require('../TestRunner');
   });
 
