@@ -971,47 +971,53 @@ Loader.prototype.resetModuleRegistry = function() {
       var mockModules = {
         exports: {
           dontMock: function(moduleName) {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).dontMock(moduleName);
+            return mockModules.exports;
           }.bind(this),
 
           mock: function(moduleName) {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).mock(moduleName);
+            return mockModules.exports;
           }.bind(this),
 
           autoMockOff: function() {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).autoMockOff();
+            return mockModules.exports;
           }.bind(this),
 
           autoMockOn: function() {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).autoMockOn();
+            return mockModules.exports;
           }.bind(this),
 
           // TODO: This is such a bad name, we should rename it to
           //       `resetModuleRegistry()` -- or anything else, really
           dumpCache: function() {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).resetModuleRegistry();
+            return mockModules.exports;
           }.bind(this),
 
           setMock: function(moduleName, moduleExports) {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).setMock(moduleName, moduleExports);
+            return mockModules.exports;
           }.bind(this),
 
           // wtf is this shit?
@@ -1045,7 +1051,7 @@ Loader.prototype.resetModuleRegistry = function() {
           }.bind(this),
 
           useActualTimers: function() {
-            return this.requireModule(
+            this.requireModule(
               currPath,
               'jest-runtime'
             ).useActualTimers();
