@@ -10,7 +10,6 @@ var RESET = '\x1B[0m';
 var UNDERLINE = '\x1B[4m';
 
 function colorize(str, color) {
-  //return str;
   return color + str.toString().split(RESET).join(RESET + color) + RESET;
 }
 
