@@ -11,7 +11,7 @@ Automocks
 
 The `mocks` CommonJS library provides convenient features for building mock module implementations. The main features of the library are mock functions and special handling to make it easier to work with function prototypes.
 
-The test environment defines its own `require` function. As such, when you write `require('MyModule')` this function defers to the mocks module on whether to return the actual implementation of ##MyModule## or a mock for it. If the system decides to return a mock, it will first look for a file in a `__mocks__` directory which defines the module. If no file is found, it will attempt to autogenerate a mock for the module.
+The test environment defines its own `require` function. As such, when you write `require('MyModule')` this function defers to the mocks module on whether to return the actual implementation of `MyModule` or a mock for it. If the system decides to return a mock, it will first look for a file in a `__mocks__/` directory which defines the module. If no file is found, it will attempt to autogenerate a mock for the module.
 
 Autogeneration is done as follows: the module is loaded in a new context. If the file can be evaluated, the mocking system recurses over the members of the module's `exports` and serializes it's type information. When a module that is being mocked requires another module, the system recursively generates a mock for it. If //that// file cannot be evaluated, an exception is thrown and the mock generation stack is printed.
 
@@ -48,7 +48,7 @@ Manual mocks
 
 Although autogeneration of mocks is convenient, there are behaviors it misses, such as fluent interfaces. Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 
-Mocks are defined by writing a module in a `__mocks__` subdirectory. The file name will be interpreted as the mocked module name. Although it's sometimes necessary to write a mock by hand to workaround missing DOM APIs, this should be avoided. If a module can't be mocked, the best fix is to implement the missing functionality in the test framework's DOM simulation.
+Mocks are defined by writing a module in a `__mocks__/` subdirectory. The file name will be interpreted as the mocked module name. Although it's sometimes necessary to write a mock by hand to workaround missing DOM APIs, this should be avoided. If a module can't be mocked, the best fix is to implement the missing functionality in the test framework's DOM simulation.
 
 Assuming that the module can be loaded by the automocker, it's best to build on the automocked API. This makes it harder for mock APIs to get out of sync with real ones. For instance, let's say we're working on an `Indicator` that uses a `Poller`.
 
