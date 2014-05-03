@@ -51,11 +51,10 @@ function _serializeConsoleArguments(type, args) {
 }
 
 /**
- * A class that takes a config and a test-path search pattern, finds all the
- * tests that match the pattern, runs them in the worker pool, and prints the
- * results to stdout.
+ * A class that takes a project's test config and provides various utilities for
+ * executing its tests.
  *
- * @param jestConfig The config object passed to each worker
+ * @param config The jest configuration
  * @param options See DEFAULT_OPTIONS for descriptions on the various options
  *                and their defaults.
  */
