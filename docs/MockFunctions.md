@@ -2,7 +2,7 @@ Mock functions make it easy to test the links between functional code, both for 
 
 There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from 'mocks':
 
-```
+```javascript
 var f = require('mocks').getMockFunction();
 f('1');
 f('a', 'b');
@@ -12,7 +12,7 @@ console.log(f.mock.calls);
 
 All mock functions have this special "mock" member, which is where data about how this function has been called is kept. The mock member also tracks the value of 'this' for each call, so
 
-```
+```javascript
 var f = require('mocks').getMockFunction();
 
 var a = new f();
@@ -26,7 +26,7 @@ console.log(f.mock.instances);
 
 These mock members are very useful in tests to assert how these functions get called, or instantiated:
 
-```
+```javascript
 expect(someMockFunction.mock.calls.length).toBe(1);
 expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
@@ -36,7 +36,7 @@ expect(someMockFunction.mock.instances[0].name).toEqual('test');
 
 Mock functions can also be used to inject values into your test.
 
-```
+```javascript
 var f = require('mocks').getMockFunction();
 console.log( f() );
 > undefined
@@ -51,7 +51,7 @@ console.log(f(), f(), f(), f());
 
 Mock functions can be used most effectively in code that uses functional callback or continuation passing style, rather than polymorphism and inheritance. Code written in this style eschews complicated stubs that recreate behavior of the real component they're standing in for in favor of injecting values directly into the test right before they're used.
 
-```
+```javascript
 var Filter = require('Filter');
 
 var f = require('mocks').getMockFunction();
@@ -72,7 +72,7 @@ Most real-world examples actually involve getting ahold of a mock function on a 
 
 Still, there are cases where it's useful to go beyond the ability to specify return values and replace an implementation of a mock function. Many of the mocks for core components have simple implementations to make testing easier. This can be done with the ##mockImplementation## method on mock functions.
 
-```
+```javascript
 var o = {
   f: require('mocks').getMockFunction().mockImplementation(function() {
     // do something stateful
@@ -85,7 +85,7 @@ o.f(1).f(2);
 
 In this case, some sugar for methods that return ##this## is provided in the form of ##mockReturnThis##. The following are equivalent:
 
-```
+```javascript
 var o = {
   f: require('mocks').getMockFunction().mockReturnThis()
 };
@@ -93,7 +93,7 @@ var o = {
 
 and 
 
-```
+```javascript
 var o = {
   f: require('mocks').getMockFunction().mockImplementation(function() {
     return this;
