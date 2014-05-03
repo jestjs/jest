@@ -6,7 +6,7 @@ describe('fetchCurrentUser', function() {
     var fetchCurrentUser = require('../fetchCurrentUser.js');
 
     // Setup the mock callback that we want the tested function to call
-    var fetchCallback = require('jest-runtime').getMockFunction();
+    var fetchCallback = require('mocks').getMockFunction();
 
     // Execute the tested function
     fetchCurrentUser(fetchCallback);

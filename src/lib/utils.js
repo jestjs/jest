@@ -275,7 +275,7 @@ function serializeConsoleArgValue(arg, objWeakMap) {
         return JSON.stringify({
           type: 'array',
           value: arg.map(function(subValue) {
-            return serializeConsoleArgValue(subvalue, objWeakMap);
+            return serializeConsoleArgValue(subValue, objWeakMap);
           })
         });
       }

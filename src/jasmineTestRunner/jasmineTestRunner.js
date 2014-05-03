@@ -11,9 +11,9 @@ var utils = require('../lib/utils');
 var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
-var JASMINE_ONLY_PATH = require.resolve('jasmine-only');
+var JASMINE_ONLY_PATH = require.resolve('jasmine-only/app/js/jasmine_only.coffee');
 var jasmineOnlyContent = coffeeScript.compile(fs.readFileSync(
-  require.resolve('jasmine-only/app/js/jasmine_only.coffee'),
+  JASMINE_ONLY_PATH,
   'utf8'
 ));
 
