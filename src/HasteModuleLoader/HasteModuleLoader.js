@@ -957,7 +957,7 @@ Loader.prototype.resetModuleRegistry = function() {
             return this.requireModule(
               currPath,
               'jest-runtime'
-            ).generateMockFn();
+            ).genMockFn();
           }.bind(this),
         }
       };
