@@ -34,7 +34,7 @@ function _printConsoleMessage(msg) {
     case 'log':
       console.log.apply(console, msg.args.map(function(arg) {
         arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colors.colorize(arg, colors.GRAY);
+        return arg;
       }));
       break;
     case 'warn':

@@ -1,7 +1,7 @@
 'use strict';
 
 var BOLD = '\x1B[1m';
-var GRAY = '\x1B[30m';
+var GRAY = '\x1B[90m';
 var GREEN_BG = '\x1B[42m';
 var MAGENTA_BG = '\x1B[45m';
 var RED = '\x1B[31m';
