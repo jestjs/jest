@@ -186,6 +186,10 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         }.bind(this));
       }
     });
+
+    if (!config.persistModuleRegistryBetweenSpecs) {
+      moduleLoader.requireModule(__filename, 'mock-modules').dumpCache();
+    }
   });
 
   var jasmineReporter = new JasmineReporter();
