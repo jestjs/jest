@@ -1,5 +1,6 @@
 'use strict';
 
+var coffeeScript = require('coffee-script');
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
@@ -9,6 +10,12 @@ var utils = require('../lib/utils');
 
 var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
+
+var JASMINE_ONLY_PATH = require.resolve('jasmine-only');
+var jasmineOnlyContent = coffeeScript.compile(fs.readFileSync(
+  require.resolve('jasmine-only/app/js/jasmine_only.coffee'),
+  'utf8'
+));
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   // Jasmine does stuff with timers that affect running the tests. However, we
@@ -29,6 +36,9 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   // Install jasmine-pit -- because it's amazing
   jasminePit.install(environment.global);
+
+  // Install jasmine-only
+  environment.runSourceText(jasmineOnlyContent);
 
   // Node must have been run with --harmony in order for WeakMap to be available
   if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
