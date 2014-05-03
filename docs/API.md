@@ -24,5 +24,13 @@
   - `.lastCalledWith(arg, um, ents)`
   
 
+Global variables
+----------------
 
-`it.only()`: executes only this test. Very useful when investigating a failure
+(Jasmine)
+ - `describe(name, fn)`
+ - `it(name, fn)`
+
+(Jest)
+ - `it.only(name, fn)` executes only this test in the suite. Very useful when investigating a failure
+ - `pit(name, fn)` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
