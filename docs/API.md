@@ -43,7 +43,6 @@ require('jest-runtime')
 
   - `getMockFunction()`
   - `dontMock(module)`
-
   - `autoMockOn()`
   - `autoMockOff()`
   - `mock(module)`
