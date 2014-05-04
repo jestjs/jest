@@ -28,9 +28,22 @@ Global variables
 ----------------
 
 (Jasmine)
- - `describe(name, fn)`
- - `it(name, fn)`
+  - `describe(name, fn)`
+  - `it(name, fn)`
+  - `beforeEach(fn)`
+  - `afterEach(fn)`
 
 (Jest)
- - `it.only(name, fn)` executes only this test in the suite. Very useful when investigating a failure
- - `pit(name, fn)` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
+  - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test in the suite. Very useful when investigating a failure
+  - `pit(name, fn)` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
+
+
+require('jest-runtime')
+-----------------------
+
+  - `getMockFunction()`
+  - `dontMock(module)`
+
+  - `autoMockOn()`
+  - `autoMockOff()`
+  - `mock(module)`
