@@ -50,9 +50,11 @@ Timers
   - \`.runTicksRepeatedly()\` used for Promises
   - \`.clearTimers()\`
 
+
 Global variables
 ----------------
 
+  - \`require(module)\`
   - \`describe(name, fn)\`
   - \`it(name, fn)\`
   - \`beforeEach(fn)\`
@@ -63,18 +65,19 @@ Global variables
   - \`it.only(name, fn)\` executes [only](https://github.com/davemo/jasmine-only) this test in the suite. Very useful when investigating a failure
   - \`pit(name, fn)\` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
 
-jestConfig.json
----------------
 
-<<<<<<< HEAD
-The \`jest\` object
------------------------
-=======
+Command line
+------------
+
+[TODO]
+
+package.json
+------------
+
 \`\`\`javascript
 {
   "projectName": "jest",
 \`\`\`
->>>>>>> pass at the doucmentation
 
 The directories where tests are
 \`\`\`javascript
