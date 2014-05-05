@@ -1,11 +1,11 @@
 ---
 id: mock-functions
-title: Mock Functions
+title: Mock functions
 layout: docs
-category: Guides
+category: Deep Dive
 permalink: mock-functions.html
-previous: api
-next: auto-mocks-and-manual-mocks
+previous: asynchronous-testing
+next: automatically-generated-mocks
 ---
 
 Mock functions make it easy to test the links between functional code, both for mocked components, and when testing an API that takes a callback. Mock functions capture parameters, constructor calls, and support configurable return values.

@@ -6,11 +6,11 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"MockFunctions.js","id":"mock-functions","title":"Mock Functions","layout":"docs","category":"Guides","permalink":"mock-functions.html","previous":"api","next":"auto-mocks-and-manual-mocks","href":"/jest/docs/mock-functions.html"}}, `---
+    return layout({metadata: {"filename":"MockFunctions.js","id":"mock-functions","title":"Mock functions","layout":"docs","category":"Deep Dive","permalink":"mock-functions.html","previous":"asynchronous-testing","next":"automatically-generated-mocks","href":"/jest/docs/mock-functions.html"}}, `---
 
 Mock functions make it easy to test the links between functional code, both for mocked components, and when testing an API that takes a callback. Mock functions capture parameters, constructor calls, and support configurable return values.
 
-There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from `jest.genMockFn()`:
+There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from the \`jest.genMockFn()\`:
 
 \`\`\`javascript
 var f = jest.genMockFn();

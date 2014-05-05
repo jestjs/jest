@@ -2,10 +2,10 @@
 id: asynchronous-testing
 title: Asynchronous Testing
 layout: docs
-category: Guides
+category: Quick Start
 permalink: asynchronous-testing.html
-previous: auto-mocks-and-manual-mocks
-next: native-mocks
+previous: tutorial
+next: mock-functions
 ---
 
 We want to test the following function (borrowed from [this great article on testing asynchronous functions](http://martinfowler.com/articles/asyncJS.html)). It does an ajax request to get the current user as JSON, transforms this JSON into a new object and pass it to the callback. Very typical code.

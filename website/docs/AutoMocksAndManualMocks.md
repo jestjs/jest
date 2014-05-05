@@ -1,11 +1,11 @@
 ---
-id: auto-mocks-and-manual-mocks
-title: Auto Mocks and Manual Mocks
+id: automatically-generated-mocks
+title: Automatically generated mocks
 layout: docs
-category: Guides
-permalink: auto-mocks-and-manual-mocks.html
+category: Deep Dive
+permalink: automatically-generated-mocks.html
 previous: mock-functions
-next: asynchronous-testing
+next: manual-mocks
 ---
 
 In order to isolate the code under test, required modules are mocked in unit tests. Mocks are generated automatically, unless an explicit mock is provided manually. For this reason, the first line in your unit test should be like:

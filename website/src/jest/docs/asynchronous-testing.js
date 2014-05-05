@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"AsynchronousTesting.js","id":"asynchronous-testing","title":"Asynchronous Testing","layout":"docs","category":"Guides","permalink":"asynchronous-testing.html","previous":"auto-mocks-and-manual-mocks","next":"native-mocks","href":"/jest/docs/asynchronous-testing.html"}}, `---
+    return layout({metadata: {"filename":"AsynchronousTesting.js","id":"asynchronous-testing","title":"Asynchronous Testing","layout":"docs","category":"Quick Start","permalink":"asynchronous-testing.html","previous":"tutorial","next":"mock-functions","href":"/jest/docs/asynchronous-testing.html"}}, `---
 
 We want to test the following function (borrowed from [this great article on testing asynchronous functions](http://martinfowler.com/articles/asyncJS.html)). It does an ajax request to get the current user as JSON, transforms this JSON into a new object and pass it to the callback. Very typical code.
 

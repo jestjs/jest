@@ -4,7 +4,7 @@ title: Tutorial
 layout: docs
 category: Quick Start
 permalink: tutorial.html
-next: mock-functions
+next: asynchronous-testing
 ---
 
 ## Basic Example

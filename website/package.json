@@ -12,5 +12,9 @@
     "glob": "*",
     "mkdirp": "*",
     "request": "*"
+  },
+
+  "jest": {
+
   }
 }

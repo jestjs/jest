@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"Tutorial.js","id":"tutorial","title":"Tutorial","layout":"docs","category":"Quick Start","permalink":"tutorial.html","next":"mock-functions","href":"/jest/docs/tutorial.html"}}, `---
+    return layout({metadata: {"filename":"Tutorial.js","id":"tutorial","title":"Tutorial","layout":"docs","category":"Quick Start","permalink":"tutorial.html","next":"asynchronous-testing","href":"/jest/docs/tutorial.html"}}, `---
 
 ## Basic Example
 

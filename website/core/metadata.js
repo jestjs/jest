@@ -10,8 +10,7 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "api.html",
-    "previous": "native-mocks",
-    "next": "jest-config",
+    "previous": "timer-mocks",
     "href": "/jest/docs/api.html"
   },
   {
@@ -19,44 +18,55 @@ module.exports = [
     "id": "asynchronous-testing",
     "title": "Asynchronous Testing",
     "layout": "docs",
-    "category": "Guides",
+    "category": "Quick Start",
     "permalink": "asynchronous-testing.html",
-    "previous": "auto-mocks-and-manual-mocks",
-    "next": "native-mocks",
+    "previous": "tutorial",
+    "next": "mock-functions",
     "href": "/jest/docs/asynchronous-testing.html"
   },
   {
     "filename": "AutoMocksAndManualMocks.js",
-    "id": "auto-mocks-and-manual-mocks",
-    "title": "Auto Mocks and Manual Mocks",
+    "id": "automatically-generated-mocks",
+    "title": "Automatically generated mocks",
     "layout": "docs",
-    "category": "Guides",
-    "permalink": "auto-mocks-and-manual-mocks.html",
+    "category": "Deep Dive",
+    "permalink": "automatically-generated-mocks.html",
     "previous": "mock-functions",
-    "next": "asynchronous-testing",
-    "href": "/jest/docs/auto-mocks-and-manual-mocks.html"
+    "next": "manual-mocks",
+    "href": "/jest/docs/automatically-generated-mocks.html"
+  },
+  {
+    "filename": "ManualMocks.js",
+    "id": "manual-mocks",
+    "title": "Manual mocks",
+    "layout": "docs",
+    "category": "Deep Dive",
+    "permalink": "manual-mocks.html",
+    "previous": "auto-mocks-and-manual-mocks",
+    "next": "timer-mocks",
+    "href": "/jest/docs/manual-mocks.html"
   },
   {
     "filename": "MockFunctions.js",
     "id": "mock-functions",
-    "title": "Mock Functions",
+    "title": "Mock functions",
     "layout": "docs",
-    "category": "Guides",
+    "category": "Deep Dive",
     "permalink": "mock-functions.html",
-    "previous": "api",
-    "next": "auto-mocks-and-manual-mocks",
+    "previous": "asynchronous-testing",
+    "next": "automatically-generated-mocks",
     "href": "/jest/docs/mock-functions.html"
   },
   {
-    "filename": "NativeMocks.js",
-    "id": "native-mocks",
-    "title": "Native Mocks",
+    "filename": "TimerMocks.js",
+    "id": "timer-mocks",
+    "title": "Timer mocks",
     "layout": "docs",
-    "category": "Guides",
-    "permalink": "native-mocks.html",
-    "previous": "mock-functions",
+    "category": "Deep Dive",
+    "permalink": "timer-mocks.html",
+    "previous": "manual-mocks",
     "next": "api",
-    "href": "/jest/docs/native-mocks.html"
+    "href": "/jest/docs/timer-mocks.html"
   },
   {
     "filename": "Tutorial.js",
@@ -65,17 +75,7 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial.html",
-    "next": "mock-functions",
+    "next": "asynchronous-testing",
     "href": "/jest/docs/tutorial.html"
-  },
-  {
-    "filename": "jestConfig.js",
-    "id": "jest-config",
-    "title": "Jest Config",
-    "layout": "docs",
-    "category": "Reference",
-    "permalink": "jest-config.html",
-    "previous": "api",
-    "href": "/jest/docs/jest-config.html"
   }
 ];

@@ -4,14 +4,11 @@ title: API
 layout: docs
 category: Reference
 permalink: api.html
-previous: native-mocks
-next: jest-config
+previous: timer-mocks
 ---
 
 `expect(value)`
 ------------
-
-[Jasmine](http://jasmine.github.io/1.3/introduction.html?spec=Included%20matchers%3A%20The%20%27toThrow%27%20matcher%20is%20for%20testing%20if%20a%20function%20throws%20an%20exception.#section-Included_Matchers)
 
   - `.not` inverse the next comparison
   - `.toThrow(?message)`
@@ -35,10 +32,25 @@ next: jest-config
   - `.lastCalledWith(arg, um, ents)`
 
 
+`jest`
+----
+
+  - `.genMockFunction()` with alias `.genMockFn()`
+  - `.dontMock(module)`
+  - `.mock(module)`
+  - `.autoMockOff()`
+  - `.autoMockOn()`
+  - `.genMockFromModule()`
+
+Timers
+
+  - `.runTimersRepeatedly()`
+  - `.runTimersOnce()`
+  - `.runTicksRepeatedly()` used for Promises
+  - `.clearTimers()`
+
 Global variables
 ----------------
-
-(Jasmine)
 
   - `describe(name, fn)`
   - `it(name, fn)`
@@ -50,12 +62,37 @@ Global variables
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test in the suite. Very useful when investigating a failure
   - `pit(name, fn)` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
 
+jestConfig.json
+---------------
 
+<<<<<<< HEAD
 The `jest` object
 -----------------------
+=======
+```javascript
+{
+  "projectName": "jest",
+```
+>>>>>>> pass at the doucmentation
 
-  - `.getMockFunction()`
-  - `.dontMock(module)`
-  - `.mock(module)`
-  - `.autoMockOff()`
-  - `.autoMockOn()`
+The directories where tests are
+```javascript
+  "testPathDirs": [
+    "."
+  ],
+```
+
+Regexes of test files to ignore
+```javascript
+  "testPathIgnores": [
+    "/node_modules/"
+  ],
+```
+
+Regexes of module files to ignore
+```javascript
+  "moduleLoaderPathIgnores": [
+    "/node_modules/"
+  ]
+}
+```
