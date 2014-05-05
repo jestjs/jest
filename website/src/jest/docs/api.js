@@ -37,6 +37,10 @@ module.exports = React.createClass({
 ----
 
   - \`.genMockFunction()\` with alias \`.genMockFn()\`
+    - \`.mockImplementation(fn)\`
+    - \`.mockReturnThis()\`
+    - \`.mockReturnValue(value)\`
+    - \`.mockReturnValueOnce(value)\`
   - \`.dontMock(module)\`
   - \`.mock(module)\`
   - \`.autoMockOff()\`
@@ -49,6 +53,10 @@ Timers
   - \`.runTimersOnce()\`
   - \`.runTicksRepeatedly()\` used for Promises
   - \`.clearTimers()\`
+
+
+\`jest.getMockFunction()\`
+------------------------
 
 
 Global variables
