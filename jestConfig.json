@@ -12,6 +12,7 @@
   "testPathIgnores": [
     "/__tests__/[^/]*/.+",
     "/node_modules/",
-    "/examples/"
+    "/examples/",
+    "/website/"
   ]
 }
