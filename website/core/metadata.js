@@ -25,7 +25,7 @@ module.exports = [
     "href": "/jest/docs/asynchronous-testing.html"
   },
   {
-    "filename": "AutoMocksAndManualMocks.js",
+    "filename": "AutomaticallyGeneratedMocks.js",
     "id": "automatically-generated-mocks",
     "title": "Automatically generated mocks",
     "layout": "docs",
