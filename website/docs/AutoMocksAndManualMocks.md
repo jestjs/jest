@@ -1,3 +1,13 @@
+---
+id: auto-mocks-and-manual-mocks
+title: Auto Mocks and Manual Mocks
+layout: docs
+category: Guides
+permalink: auto-mocks-and-manual-mocks.html
+previous: mock-functions
+next: asynchronous-testing
+---
+
 In order to isolate the code under test, required modules are mocked in unit tests. Mocks are generated automatically, unless an explicit mock is provided manually. For this reason, the first line in your unit test should be like:
 
 ```javascript
@@ -75,7 +85,7 @@ Finally, it's often helpful to include a method that's intended to be called fro
 Testing mocks
 -------------
 
-It's generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the original module completely with tests and then whitelisting it, so that requiring it always provides the actual implementation, rather than the mock current list of whitelisted modules. 
+It's generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the original module completely with tests and then whitelisting it, so that requiring it always provides the actual implementation, rather than the mock current list of whitelisted modules.
 
 In cases where this kind of mock is unavoidable, it's best to write a test that
 ensures that the mock and the actual implementation are in sync. Luckily, this

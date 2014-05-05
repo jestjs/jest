@@ -1,3 +1,12 @@
+---
+id: jest-config
+title: Jest Config
+layout: docs
+category: Reference
+permalink: jest-config.html
+previous: api
+---
+
 You can write a `jestConfig.js` file at the root of your project.
 
 

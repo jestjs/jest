@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "node server/server.js",
+    "build": "node server/build.js --execute"
+  },
+
+  "dependencies": {
+    "React": "git://github.com/facebook/react.git",
+    "optimist": "0.6.0",
+    "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
+    "connect": "2.8.3",
+    "glob": "*",
+    "mkdirp": "*"
+  }
+}

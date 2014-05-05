@@ -1,7 +1,16 @@
+/**
+ * @generated
+ * @jsx React.DOM
+ */
+var React = require("React");
+var layout = require("DocsLayout");
+module.exports = React.createClass({
+  render: function() {
+    return layout({metadata: {"filename":"AsynchronousTesting.js","id":"asynchronous-testing","title":"Asynchronous Testing","layout":"docs","category":"Guides","permalink":"asynchronous-testing.html","previous":"auto-mocks-and-manual-mocks","next":"native-mocks","href":"/jest/docs/asynchronous-testing.html"}}, `---
 
 We want to test the following function (borrowed from [this great article on testing asynchronous functions](http://martinfowler.com/articles/asyncJS.html)). It does an ajax request to get the current user as JSON, transforms this JSON into a new object and pass it to the callback. Very typical code.
 
-```javascript
+\`\`\`javascript
 // fetchCurrentUser.js
 var $ = require('jquery');
 
@@ -26,14 +35,14 @@ function fetchCurrentUser(callback) {
 };
 
 module.exports = fetchCurrentUser;
-```
+\`\`\`
 
 Writing the test
 ----------------
 
 In order to test the function we first need to write a new file along with some boilerplate
 
-```javascript
+\`\`\`javascript
 // __tests__/fetchCurrentUser-test.js
 require('jest-runtime').dontMock('../fetchCurrentUser.js');
 
@@ -45,39 +54,42 @@ describe('fetchCurrentUser', function() {
     // ... missing code ...
   });
 });
-```
+\`\`\`
 
-We want to make sure that the callback given to `fetchCurrentUser` is correctly executed. In order to do that, we're going to generate a mock function and make sure that it is called with the proper arguments.
+We want to make sure that the callback given to \`fetchCurrentUser\` is correctly executed. In order to do that, we're going to generate a mock function and make sure that it is called with the proper arguments.
 
-```javascript
+\`\`\`javascript
     var fetchCallback = require('mocks').getMockFunction();
     fetchCurrentUser(fetchCallback);
 
     // ... missing code ...
-    
+
     expect(fetchCallback).toBeCalledWith({
       loggedIn: true,
       fullName: 'Tomas Jakobsen'
     });
-```
+\`\`\`
 
-In order to compute the result, `fetchCurrentUser` is calling to a dependency: `$.ajax`. To write a proper test, we first need to make sure that it is calling the dependency correctly.
+In order to compute the result, \`fetchCurrentUser\` is calling to a dependency: \`$.ajax\`. To write a proper test, we first need to make sure that it is calling the dependency correctly.
 
-```javascript
+\`\`\`javascript
     expect($.ajax).toBeCalledWith({
       type: 'GET',
       url: 'http://example.com/currentUser',
       done: jasmine.any(Function)
     });
-```
+\`\`\`
 
 and then provide a mock response for the dependency
 
-```javascript
+\`\`\`javascript
     $.ajax.mock.calls[0/*first call*/][0/*first argument*/].done({
       firstName: 'Tomas',
       lastName: 'Jakobsen'
     });
-```
+\`\`\`
 
 Unlike most testing libraries, jest doesn't use a different mode for testing asynchronous functions versus synchronous ones. It gets away with it by mocking everything by default and providing a powerful mock function abstraction.
+`);
+  }
+});

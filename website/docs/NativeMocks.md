@@ -1,3 +1,13 @@
+---
+id: native-mocks
+title: Native Mocks
+layout: docs
+category: Guides
+permalink: native-mocks.html
+previous: mock-functions
+next: api
+---
+
 The test framework is built on node and the test scripts are running in an environment which has some redefined global objects and special mocked modules.
 
 Event
@@ -26,8 +36,8 @@ expect(setTimeout.mock.calls[0][1]).toEqual(1000);
 
 Further, it provides you the ability to make fake time elapse in your code:
 ```javascript
-// This will run the timer callbacks within the next 2000 milliseconds 
-// iteratively. Note: 2000 is specifying a relative time from 'now' 
+// This will run the timer callbacks within the next 2000 milliseconds
+// iteratively. Note: 2000 is specifying a relative time from 'now'
 // instead of from the time test start running
 mockRunTimersToTime(2000);
 // Assert the result of callback()

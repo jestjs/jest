@@ -1,3 +1,12 @@
+---
+id: tutorial
+title: Tutorial
+layout: docs
+category: Quick Start
+permalink: tutorial.html
+next: mock-functions
+---
+
 ## Basic Example
 
 jest ships with support for jasmine out of the box, so here's an example of a simple module and a jasmine test for it:
@@ -14,7 +23,7 @@ __\_\_tests\_\_/sum-test.js__:
 ```js
 // By default, jest will automatically generate a mock version for any module when it is
 // require()'d.
-// 
+//
 // Here, we tell jest not to mock out the 'sum' module so that we can test it.
 require('jest-runtime').dontMock('../sum');
 
@@ -23,7 +32,7 @@ describe('sum', function() {
     var sum = require('../sum');
     expect(sum(1, 2)).toBe(3);
   });
-  
+
   // This test will fail!
   it('adds a scalar number to an array', function() {
     var sum = require('../sum');
@@ -150,20 +159,20 @@ require('jest-runtime').dontMock('../sum');
 describe('sum', function() {
 
   beforeEach(function() {
-  	// Clear out the module registry before each test.
-    // 
-    // Normally in node, require() will only execute the module factory 
-    // the first time it is called for a given module. Every time it is 
-    // called for that module after that will just return the exports it 
+    // Clear out the module registry before each test.
+    //
+    // Normally in node, require() will only execute the module factory
+    // the first time it is called for a given module. Every time it is
+    // called for that module after that will just return the exports it
     // already has.
-    // 
+    //
     // This poses a problem with tests because we don't want one test
     // changing some module state before another test runs.
     require('jest-runtime').resetModuleRegistry();
   });
-  
+
   // ...other tests we wrote above...
-  
+
   it('calls throwInvariant() when an object is passed', function() {
     var sum = require('../sum');
     var throwInvariant = require('../throwInvariant');
@@ -193,7 +202,7 @@ require('jest-runtime').autoMockOff();
 describe('sum', function() {
 
   // ...tests go here...
-  
+
 });
 ```
 
@@ -205,6 +214,6 @@ require('jest-runtime')
   .autoMockOff()
   .mock('../ModuleA')
   .mock('../ModuleB');
-  
+
 // ...
 ```
