@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node server/server.js",
-    "build": "node server/build.js --execute"
+    "test": "node server/install.js"
   },
 
   "dependencies": {
@@ -10,6 +10,7 @@
     "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
     "connect": "2.8.3",
     "glob": "*",
-    "mkdirp": "*"
+    "mkdirp": "*",
+    "request": "*"
   }
 }
