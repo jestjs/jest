@@ -14,17 +14,6 @@ module.exports = [
     "href": "/jest/docs/api.html"
   },
   {
-    "filename": "AsynchronousTesting.js",
-    "id": "asynchronous-testing",
-    "title": "Asynchronous Testing",
-    "layout": "docs",
-    "category": "Quick Start",
-    "permalink": "asynchronous-testing.html",
-    "previous": "tutorial",
-    "next": "mock-functions",
-    "href": "/jest/docs/asynchronous-testing.html"
-  },
-  {
     "filename": "AutomaticallyGeneratedMocks.js",
     "id": "automatically-generated-mocks",
     "title": "Automatically generated mocks",
@@ -53,7 +42,7 @@ module.exports = [
     "layout": "docs",
     "category": "Deep Dive",
     "permalink": "mock-functions.html",
-    "previous": "asynchronous-testing",
+    "previous": "tutorial",
     "next": "automatically-generated-mocks",
     "href": "/jest/docs/mock-functions.html"
   },
@@ -75,7 +64,7 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial.html",
-    "next": "asynchronous-testing",
+    "next": "mock-functions",
     "href": "/jest/docs/tutorial.html"
   }
 ];

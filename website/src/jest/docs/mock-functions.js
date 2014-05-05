@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"MockFunctions.js","id":"mock-functions","title":"Mock functions","layout":"docs","category":"Deep Dive","permalink":"mock-functions.html","previous":"asynchronous-testing","next":"automatically-generated-mocks","href":"/jest/docs/mock-functions.html"}}, `---
+    return layout({metadata: {"filename":"MockFunctions.js","id":"mock-functions","title":"Mock functions","layout":"docs","category":"Deep Dive","permalink":"mock-functions.html","previous":"tutorial","next":"automatically-generated-mocks","href":"/jest/docs/mock-functions.html"}}, `---
 
 Mock functions make it easy to test the links between functional code, both for mocked components, and when testing an API that takes a callback. Mock functions capture parameters, constructor calls, and support configurable return values.
 

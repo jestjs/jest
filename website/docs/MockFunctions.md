@@ -4,7 +4,7 @@ title: Mock functions
 layout: docs
 category: Deep Dive
 permalink: mock-functions.html
-previous: asynchronous-testing
+previous: tutorial
 next: automatically-generated-mocks
 ---
 
