@@ -10,10 +10,10 @@ module.exports = React.createClass({
 
 Mock functions make it easy to test the links between functional code, both for mocked components, and when testing an API that takes a callback. Mock functions capture parameters, constructor calls, and support configurable return values.
 
-There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from 'jest-runtime':
+There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from `jest.genMockFn()`:
 
 \`\`\`javascript
-var f = require('mocks').getMockFunction();
+var f = jest.genMockFn();
 f('1');
 f('a', 'b');
 console.log(f.mock.calls);
@@ -23,7 +23,7 @@ console.log(f.mock.calls);
 All mock functions have this special "mock" member, which is where data about how this function has been called is kept. The mock member also tracks the value of 'this' for each call, so
 
 \`\`\`javascript
-var f = require('mocks').getMockFunction();
+var f = jest.genMockFn();
 
 var a = new f();
 var b = {};
@@ -47,7 +47,7 @@ expect(someMockFunction.mock.instances[0].name).toEqual('test');
 Mock functions can also be used to inject values into your test.
 
 \`\`\`javascript
-var f = require('mocks').getMockFunction();
+var f = jest.genMockFn();
 console.log( f() );
 > undefined
 
@@ -64,7 +64,7 @@ Mock functions can be used most effectively in code that uses functional callbac
 \`\`\`javascript
 var Filter = require('Filter');
 
-var f = require('mocks').getMockFunction();
+var f = jest.genMockFn();
 // Filter constructor takes a "test" function
 var filter = new Filter(f);
 
@@ -84,7 +84,7 @@ Still, there are cases where it's useful to go beyond the ability to specify ret
 
 \`\`\`javascript
 var o = {
-  f: require('mocks').getMockFunction().mockImplementation(function() {
+  f: jest.genMockFn().mockImplementation(function() {
     // do something stateful
     return this;
   });
@@ -97,7 +97,7 @@ In this case, some sugar for methods that return \`this\` is provided in the for
 
 \`\`\`javascript
 var o = {
-  f: require('mocks').getMockFunction().mockReturnThis()
+  f: jest.genMockFn().mockReturnThis()
 };
 \`\`\`
 
@@ -105,7 +105,7 @@ and
 
 \`\`\`javascript
 var o = {
-  f: require('mocks').getMockFunction().mockImplementation(function() {
+  f: jest.genMockFn().mockImplementation(function() {
     return this;
   })
 };

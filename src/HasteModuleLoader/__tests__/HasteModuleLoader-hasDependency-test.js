@@ -1,6 +1,6 @@
 'use strict';
 
-require('jest-runtime').autoMockOff();
+jest.autoMockOff();
 
 describe('nodeHasteModuleLoader', function() {
   var HasteModuleLoader;
@@ -34,13 +34,12 @@ describe('nodeHasteModuleLoader', function() {
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
 
-    var genMockFn = require('jest-runtime').genMockFn;
     mockEnvironment = {
       global: {
         console: {},
-        mockClearTimers: genMockFn()
+        mockClearTimers: jest.genMockFn()
       },
-      runSourceText: genMockFn().mockImplementation(function(codeStr) {
+      runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
         /* jshint evil: true */
         return (new Function('return ' + codeStr))();
       })

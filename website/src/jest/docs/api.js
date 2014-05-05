@@ -51,7 +51,7 @@ Global variables
   - \`pit(name, fn)\` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
 
 
-require('jest-runtime')
+The `jest` object
 -----------------------
 
   - \`.getMockFunction()\`

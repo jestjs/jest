@@ -25,7 +25,7 @@ __\_\_tests\_\_/sum-test.js__:
 // require()'d.
 //
 // Here, we tell jest not to mock out the 'sum' module so that we can test it.
-require('jest-runtime').dontMock('../sum');
+jest.dontMock('../sum');
 
 describe('sum', function() {
   it('adds 1 + 1 to equal 2', function() {
@@ -117,7 +117,7 @@ Great, now we want to write a test for it:
 __\_\_tests\_\_/sum-test.js__
 ```js
 // Don't mock the 'sum' module, because we want to test it
-require('jest-runtime').dontMock('../sum');
+jest.dontMock('../sum');
 
 describe('sum', function() {
   it('adds two numbers', function() {
@@ -154,7 +154,7 @@ Fortunately jest automatically (by default) mocks out all `require()`'d modules.
 
 ```js
 // Don't mock the 'sum' module, because we want to test it
-require('jest-runtime').dontMock('../sum');
+jest.dontMock('../sum');
 
 describe('sum', function() {
 
@@ -168,7 +168,7 @@ describe('sum', function() {
     //
     // This poses a problem with tests because we don't want one test
     // changing some module state before another test runs.
-    require('jest-runtime').resetModuleRegistry();
+    jest.resetModuleRegistry();
   });
 
   // ...other tests we wrote above...
@@ -197,7 +197,7 @@ It's important to have options like this because __sometimes our dependencies ar
 
 ```js
 // Turn off automatic mocking so that require() always returns the real module
-require('jest-runtime').autoMockOff();
+jest.autoMockOff();
 
 describe('sum', function() {
 
@@ -210,8 +210,7 @@ When you use `.autoMockOff()`, you can still explicitly specify modules that sho
 
 ```js
 // Don't mock anything except ModuleA and ModuleB
-require('jest-runtime')
-  .autoMockOff()
+jest.autoMockOff()
   .mock('../ModuleA')
   .mock('../ModuleB');
 

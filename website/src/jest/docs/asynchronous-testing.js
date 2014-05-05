@@ -44,7 +44,7 @@ In order to test the function we first need to write a new file along with some 
 
 \`\`\`javascript
 // __tests__/fetchCurrentUser-test.js
-require('jest-runtime').dontMock('../fetchCurrentUser.js');
+jest.dontMock('../fetchCurrentUser.js');
 
 describe('fetchCurrentUser', function() {
   it('creates a parsed user', function() {

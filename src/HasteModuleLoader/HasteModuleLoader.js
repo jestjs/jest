@@ -204,7 +204,8 @@ Loader.prototype._execModule = function(moduleObj) {
     'require': moduleObj.require,
     '__dirname': path.dirname(modulePath),
     '__filename': modulePath,
-    'global': this._environment.global
+    'global': this._environment.global,
+    'jest': this._builtInModules['jest-runtime'](modulePath).exports
   };
 
   var onlyCollectFrom = this._config.collectCoverageOnlyFrom;
