@@ -876,21 +876,9 @@ Loader.prototype.resetModuleRegistry = function() {
             );
           }.bind(this),
 
-          genMockFn: function() {
+          genMockFunction: function() {
             return moduleMocker.getMockFunction();
           },
-
-          /**
-           * Load actual module without reading from or writing to module
-           * exports registry.
-           */
-          loadAndExecuteModule: function(moduleName) {
-            return this.requireModule(
-              this._currentlyExecutingModulePath,
-              moduleName,
-              true // yay boolean args!
-            );
-          }.bind(this),
 
           mock: function(moduleName) {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
@@ -922,14 +910,13 @@ Loader.prototype.resetModuleRegistry = function() {
             this._explicitShouldMock[moduleID] = true;
             this._explicitlySetMocks[moduleID] = moduleExports;
             return jestRuntime.exports;
-          }.bind(this),
-
-          useActualTimers: function() {
-            require('../lib/mockTimers')
-              .uninstallMockTimers(this._environment.global);
           }.bind(this)
         }
       };
+
+      // This is a pretty common API to use in many tests, so this is just a
+      // shorter alias for it to make it less annoying to type out each time.
+      jestRuntime.exports.genMockFn = jestRuntime.exports.genMockFunction;
 
       return jestRuntime;
     }.bind(this),
