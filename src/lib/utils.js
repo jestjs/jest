@@ -257,6 +257,7 @@ function serializeConsoleArgValue(arg, objWeakMap) {
       }
 
       if (!objWeakMap) {
+        // Node 0.8 doesn't have WeakSet
         if (typeof WeakMap !== 'function') {
           throw new Error('Please run node with the --harmony flag!');
         }
@@ -264,6 +265,7 @@ function serializeConsoleArgValue(arg, objWeakMap) {
       }
 
       if (Array.isArray(arg)) {
+        // WeakMap in Node 0.8 doesn't have a .has() method
         if (objWeakMap.get(arg) === true) {
           return JSON.stringify({
             type: 'cycle',
@@ -280,6 +282,7 @@ function serializeConsoleArgValue(arg, objWeakMap) {
         });
       }
 
+      // WeakMap in Node 0.8 doesn't have a .has() method
       if (objWeakMap.get(arg) === true) {
         return JSON.stringify({
           type: 'cycle',
