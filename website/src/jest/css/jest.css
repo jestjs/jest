@@ -127,7 +127,7 @@ html * {
   font-size: 13px;
   line-height: 20px;
   border-left: 4px solid #C63D0F;
-  padding-left: 10px;
+  padding: 5px 10px;
   margin-left: 20px;
   background-color: rgba(226, 142, 50, 0.1);
 }

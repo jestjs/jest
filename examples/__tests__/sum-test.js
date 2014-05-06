@@ -9,10 +9,4 @@ describe('sum', function() {
     var sum = require('../sum');
     expect(sum(1, 2)).toBe(3);
   });
-
-  // This test will fail!
-  it('adds a scalar number to an array', function() {
-    var sum = require('../sum');
-    expect(sum(1, [1, 2])).toEqual([2, 3]);
-  });
 });
