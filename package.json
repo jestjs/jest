@@ -10,7 +10,7 @@
     "jsdom": "~0.10.3",
     "node-find-files": "~0.0.2",
     "node-haste": "~1.2.1",
-    "node-worker-pool": "~2.3.0",
+    "node-worker-pool": "~2.4.0",
     "optimist": "~0.6.0",
     "q": "~0.9.7",
     "resolve": "~0.6.1",
