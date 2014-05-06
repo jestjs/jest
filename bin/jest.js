@@ -167,17 +167,14 @@ if (argv.config) {
 
   var pkgJsonPath = path.join(cwd, 'package.json');
   var pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
-  var testCfgPath = path.join(cwd, 'jestConfig.json');
 
-  // First look to see if there is a testConfig.json file here
-  if (fs.existsSync(testCfgPath)) {
-    config = Q(utils.normalizeConfig(require(testCfgPath), cwd));
+  // First look to see if there is a package.json file with a jest config in it
+  if (pkgJson.jest) {
+    config = utils.normalizeConfig(pkgJson.jest, cwd);
+    config.projectName = pkgJson.name;
+    config = Q(config);
 
-  // Next look to see if there's a package.json file here
-  } else if (pkgJson.jestConfig) {
-    config = Q(utils.normalizeConfig(pkgJson.jestConfig, cwd));
-
-  // Lastly, use a sane default config
+  // If not, use a sane default config
   } else {
     config = Q(utils.normalizeConfig({
       projectName: cwd.replace(/[/\\]/g, '_'),

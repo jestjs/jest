@@ -30,5 +30,21 @@
   "scripts": {
     "prepublish": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src",
     "test": "jest"
+  },
+  "jest": {
+    "testPathDirs": [
+      "."
+    ],
+
+    "moduleLoaderPathIgnores": [
+      "/node_modules/.+"
+    ],
+
+    "testPathIgnores": [
+      "/__tests__/[^/]*/.+",
+      "/node_modules/",
+      "/examples/",
+      "/website/"
+    ]
   }
 }
