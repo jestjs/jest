@@ -4,7 +4,7 @@ title: API
 layout: docs
 category: Reference
 permalink: api.html
-previous: timer-mocks
+previous: dependency-injection
 ---
 
 `expect(value)`

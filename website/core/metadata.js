@@ -10,7 +10,7 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "api.html",
-    "previous": "timer-mocks",
+    "previous": "dependency-injection",
     "href": "/jest/docs/api.html"
   },
   {
@@ -23,6 +23,17 @@ module.exports = [
     "previous": "mock-functions",
     "next": "manual-mocks",
     "href": "/jest/docs/automatically-generated-mocks.html"
+  },
+  {
+    "filename": "DependencyInjection.js",
+    "id": "dependency-injection",
+    "title": "Dependency Injection",
+    "layout": "docs",
+    "category": "Deep Dive",
+    "permalink": "dependency-injection.html",
+    "previous": "timer-mocks",
+    "next": "api",
+    "href": "/jest/docs/dependency-injection.html"
   },
   {
     "filename": "ManualMocks.js",
@@ -54,7 +65,7 @@ module.exports = [
     "category": "Deep Dive",
     "permalink": "timer-mocks.html",
     "previous": "manual-mocks",
-    "next": "api",
+    "next": "dependency-injection",
     "href": "/jest/docs/timer-mocks.html"
   },
   {

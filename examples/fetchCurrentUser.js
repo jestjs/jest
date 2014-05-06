@@ -1,3 +1,4 @@
+// fetchCurrentUser.js
 var $ = require('jquery');
 
 function parseUserJson(userJson) {
@@ -8,15 +9,12 @@ function parseUserJson(userJson) {
 };
 
 function fetchCurrentUser(callback) {
-  function ajaxDone(userJson) {
-    var user = parseUserJson(userJson);
-    callback(user);
-  };
-
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    done: ajaxDone
+    done: function(userJson) {
+      callback(parseUserJson(userJson));
+    }
   });
 };
 

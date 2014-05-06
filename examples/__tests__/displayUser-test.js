@@ -11,11 +11,11 @@ describe('displayUser', function() {
       '  <button id="button" />' +
       '</div>';
 
-    var $ = require('jquery');
     // Include the function we are testing, which has side effects
     var displayUser = require('../displayUser.js');
 
     // Make sure that the dependency of displayUser is setup correctly
+    var $ = require('jquery');
     var fetchCurrentUser = require('../fetchCurrentUser.js');
     fetchCurrentUser.mockImplementation(function(cb) {
       cb({
