@@ -51,9 +51,9 @@ var f = jest.genMockFunction();
 console.log( f() );
 > undefined
 
-f.mockReturnValue(10);
- .mockReturnValue('x');
- .mockDefaultReturnValue(true);
+f.mockReturnValueOnce(10);
+ .mockReturnValueOnce('x');
+ .mockReturnValue(true);
 
 console.log(f(), f(), f(), f());
 > 10, 'x', true, true
@@ -68,7 +68,7 @@ var f = jest.genMockFunction();
 // Filter constructor takes a "test" function
 var filter = new Filter(f);
 
-f.mockReturnValue(true).mockReturnValue(false);
+f.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
 var result = filter.run([11,12]);
 
