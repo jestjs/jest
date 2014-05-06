@@ -1,8 +1,4 @@
-// By default, jest will automatically generate a mock version for any module when it is
-// require()'d.
-//
-// Here, we tell jest not to mock out the 'sum' module so that we can test it.
-require('jest-runtime').dontMock('../sum');
+jest.dontMock('../sum');
 
 describe('sum', function() {
   it('adds 1 + 1 to equal 2', function() {

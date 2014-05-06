@@ -1,4 +1,4 @@
-require('jest-runtime')
+jest
   .dontMock('jquery')
   .dontMock('../displayUser.js');
 

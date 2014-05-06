@@ -1,4 +1,4 @@
-require('jest-runtime').dontMock('../fetchCurrentUser.js');
+jest.dontMock('../fetchCurrentUser.js');
 
 describe('fetchCurrentUser', function() {
   it('creates a parsed user', function() {
@@ -6,7 +6,7 @@ describe('fetchCurrentUser', function() {
     var fetchCurrentUser = require('../fetchCurrentUser.js');
 
     // Setup the mock callback that we want the tested function to call
-    var fetchCallback = require('mocks').getMockFunction();
+    var fetchCallback = jest.getMockFunction();
 
     // Execute the tested function
     fetchCurrentUser(fetchCallback);
