@@ -62,7 +62,11 @@ function jsdomEnvironmentBuilder() {
   //       worker processes...
   jsdomWindow.process = process;
 
-  return new TestEnvironment(jsdomWindow, jsdomWindow.run);
+  return new TestEnvironment(
+    jsdomWindow,
+    jsdomWindow.run,
+    jsdomWindow.close.bind(jsdomWindow)
+  );
 }
 
 module.exports = jsdomEnvironmentBuilder;

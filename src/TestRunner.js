@@ -357,6 +357,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
 
         return results;
       });
+  }).finally(function() {
+    env.disposeFn();
   });
 };
 
