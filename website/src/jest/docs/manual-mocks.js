@@ -25,13 +25,11 @@ In the test for \`Indicator\`, instances will have undefined values for their \`
 
 \`\`\`javascript
 var PollerMock = mockModules.generateMock('Poller');
-
-PollerMock.prototype.setInterval.mockReturnThis()
-
+PollerMock.prototype.setInterval.mockReturnThis();
 module.exports = PollerMock;
 \`\`\`
 
-Finally, it's often helpful to include a method that's intended to be called from a test that simulates behavior of mocked class, like \`mockInform\` in an hypothetical \`EventBus\` class. By convention, these helper methods should be prefixed with the word "mock" to make them clearly distinguishable from public APIs (See Fakes, special mocks).
+Finally, it's often helpful to include a method that's intended to be called from a test that simulates behavior of mocked class, like \`mockInform\` in an hypothetical \`EventBus\` class. By convention, these helper methods should be prefixed with the word "mock" to make them clearly distinguishable from public APIs.
 
 Testing mocks
 -------------
