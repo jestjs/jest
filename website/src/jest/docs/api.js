@@ -48,7 +48,6 @@ module.exports = React.createClass({
   - \`.toBeCalledWith(arg, um, ents)\`
   - \`.lastCalledWith(arg, um, ents)\`
 
-
 #### Global variables
 
   - \`require(module)\`

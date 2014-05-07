@@ -23,7 +23,8 @@ var buildOptions = {
     return p.indexOf('__tests__') !== -1;
   },
   serverRender: true,
-  dev: argv.dev !== 'false'
+  dev: argv.dev !== 'false',
+  static: true
 };
 
 var app = connect()
