@@ -112,7 +112,7 @@ TestRunner.prototype._loadConfigDependencies = function() {
   if (this._configDeps === null) {
     this._configDeps = {
       ModuleLoader: require(config.moduleLoader),
-      environmentBuilder: require(config.environmentBuilder).bind(null),
+      testEnvironment: require(config.testEnvironment),
       testRunner: require(config.testRunner).bind(null)
     };
   }
@@ -267,7 +267,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
   var config = Object.create(this._config);
   var configDeps = this._loadConfigDependencies();
 
-  var env = configDeps.environmentBuilder();
+  var env = new configDeps.testEnvironment();
   var testRunner = configDeps.testRunner;
 
   // Capture and serialize console.{log|warning|error}s so they can be passed
@@ -358,7 +358,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
         return results;
       });
   }).finally(function() {
-    env.disposeFn();
+    env.dispose();
   });
 };
 

@@ -5,7 +5,7 @@ var path = require('path');
 var Q = require('q');
 
 var DEFAULT_CONFIG_VALUES = {
-  environmentBuilder: require.resolve('../jsdomEnvironmentBuilder'),
+  testEnvironment: require.resolve('../JSDomEnvironment'),
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
 };

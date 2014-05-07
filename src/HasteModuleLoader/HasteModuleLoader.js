@@ -231,7 +231,7 @@ Loader.prototype._execModule = function(moduleObj) {
   this._isCurrentlyExecutingManualMock = modulePath;
 
   utils.runContentWithLocalBindings(
-    this._environment.runSourceText,
+    this._environment.runSourceText.bind(this._environment),
     moduleContent,
     modulePath,
     moduleLocalBindings
@@ -915,7 +915,7 @@ Loader.prototype.resetModuleRegistry = function() {
       };
 
       // This is a pretty common API to use in many tests, so this is just a
-      // shorter alias for it to make it less annoying to type out each time.
+      // shorter alias to make it less annoying to type out each time.
       jestRuntime.exports.genMockFn = jestRuntime.exports.genMockFunction;
 
       return jestRuntime;

@@ -33,7 +33,7 @@ if (require.main === module) {
         //
         // Config dependencies are entries in the config that are require()d (in
         // order to be pluggable) such as 'moduleLoader' or
-        // 'environmentBuilder'.
+        // 'testEnvironment'.
         testRunner.preloadConfigDependencies();
 
         // Start deserializing the resource map to get a potential head-start on
