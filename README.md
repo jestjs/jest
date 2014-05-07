@@ -32,6 +32,7 @@ Getting started with jest is pretty simple. All you need to do is:
 
 ## API
 
+
 #### `jest`
 
   - `.genMockFunction()` with alias `.genMockFn()`
@@ -47,12 +48,9 @@ Getting started with jest is pretty simple. All you need to do is:
   - `.autoMockOff()`
   - `.autoMockOn()`
   - `.genMockFromModule()`
-
-Timers
-
   - `.runTimersRepeatedly()`
   - `.runTimersOnce()`
-  - `.runTicksRepeatedly()` used for Promises
+  - `.runTicksRepeatedly()` helper for promises
   - `.clearTimers()`
 
 #### `expect(value)`
@@ -71,9 +69,6 @@ Timers
   - `.toBeCloseTo(number, delta)`
   - `.toBeGreaterThan(number)`
   - `.toBeLessThan(number)`
-
-(Jest)
-
   - `.toBeCalled()`
   - `.toBeCalledWith(arg, um, ents)`
   - `.lastCalledWith(arg, um, ents)`
@@ -81,17 +76,13 @@ Timers
 
 #### Global variables
 
-
   - `require(module)`
   - `describe(name, fn)`
-  - `it(name, fn)`
   - `beforeEach(fn)`
   - `afterEach(fn)`
-
-(Jest)
-
-  - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test in the suite. Very useful when investigating a failure
-  - `pit(name, fn)` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
+  - `it(name, fn)`
+  - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
+  - `pit(name, fn)` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
 
 
 #### Command line
