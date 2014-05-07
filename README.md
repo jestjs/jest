@@ -11,11 +11,33 @@ Painless JavaScript Unit Testing
 
 ## Getting Started
 
-Getting started with jest is pretty simple. All you need to do is:
+Getting started with jest is pretty simple. If you want to test the following `sum.js` file,
 
-* Write some (jasmine) tests in a `__tests__/` directory
-* Run `npm install jest-cli --save-dev`
-* Add the following to your `package.json`
+```javascript
+// sum.js
+function sum(value1, value2) {
+  return value1 + value2;
+}
+module.exports = sum;
+```
+
+1) Create a directory `__tests__/` with a file `sum-test.js`
+
+```javascript
+// __tests__/sum-test.js
+jest.dontMock('../sum');
+
+describe('sum', function() {
+  it('adds 1 + 1 to equal 2', function() {
+    var sum = require('../sum');
+    expect(sum(1, 2)).toBe(3);
+  });
+});
+```
+
+2) Run `npm install jest-cli --save-dev`
+
+3) Add the following to your `package.json`
 
 ```js
 {
@@ -27,7 +49,11 @@ Getting started with jest is pretty simple. All you need to do is:
 }
 ```
 
-* Run `npm test`
+4) Run `npm test`
+
+```
+[PASS] __tests__/sum-test.js (0.015s)
+```
 
 
 ## API
@@ -73,7 +99,6 @@ Getting started with jest is pretty simple. All you need to do is:
   - `.toBeCalledWith(arg, um, ents)`
   - `.lastCalledWith(arg, um, ents)`
 
-
 #### Global variables
 
   - `require(module)`
@@ -83,11 +108,6 @@ Getting started with jest is pretty simple. All you need to do is:
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - `pit(name, fn)` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
-
-
-#### Command line
-
-[TODO]
 
 #### package.json
 
