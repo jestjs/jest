@@ -1,22 +1,13 @@
 # jest
 
-jest is a JavaScript testing library + CLI.
+Painless JavaScript Unit Testing
 
-Its goal is to make writing JavaScript unit tests as easy and frictionless as possible while running the tests as fast as possible.
+- **Familiar Approach**: Built on-top of the Jasmine test framework, keeping the learning curve low
 
-- **All dependencies are mocked by default**. Test only the modules you intend to, nothing more. Don't do integration testing by mistake.
+- **Isolated by Default**: Integrates with require() in order to automatically mock dependencies, making most existing code testable
 
-- **Integrated with require()**. Easily control the output of `require()` within your test environment. You don't have to refactor your code to use injection (including DI) in order to make it testable.
+- **Short Feedback Loop**: Tests run in parallel and DOM apis are mocked so you can run tests on the command line
 
-- **Uses `jsdom` to mock out DOM APIs for you**. Test node programs \*and\* browser programs using the same test runner!
-
-And some goodies:
-
-- **Speed**. Because most of the dependencies are mocked and tests run in parallel, test execution is incredibly fast.
-
-- **Using Jasmine**. jest deals with dependencies and test execution, but Jasmine actually runs the tests.
-
-- **Used extensively at Facebook**. jest runs thousands of tests at Facebook and has proven itself stable and fast.
 
 ## Getting Started
 
@@ -25,7 +16,6 @@ Getting started with jest is pretty simple. All you need to do is:
 * Write some (jasmine) tests in a `__tests__/` directory
 * Run `npm install jest-cli --save-dev`
 * Add the following to your `package.json`
-* Run `npm test`
 
 ```js
 {
@@ -37,51 +27,80 @@ Getting started with jest is pretty simple. All you need to do is:
 }
 ```
 
-The `jest` command line tool will try to use the most sane and simple defaults possible, but if you want to add more custom configuration you can put them in a `jestConfig.json` file at the root of your package.
+* Run `npm test`
 
-(TODO: Link to the not-yet-written docs on what config options are available)
 
-## Basic Example
+## API
 
-```js
-// XHR.js
-module.exports = window.XHR;
-```
+#### `jest`
 
-```js
-// MyClass.js
-var XHR = require('./XHR');
+  - `.genMockFunction()` with alias `.genMockFn()`
+    - `.mockImplementation(fn)`
+    - `.mockReturnThis()`
+    - `.mockReturnValue(value)`
+    - `.mockReturnValueOnce(value)`
+    - `.mock`
+      - `.instances`
+      - `.calls`
+  - `.dontMock(module)`
+  - `.mock(module)`
+  - `.autoMockOff()`
+  - `.autoMockOn()`
+  - `.genMockFromModule()`
 
-function MyClass() {
-  this.doWork = function() {
-    var xhr = new XHR();
-    xhr.open('GET', 'https://github.com/facebook/jest/', true);
-    xhr.send();
-  }
-}
-module.exports = MyClass;
-```
+Timers
 
-```js
-// __tests__/MyClass-test.js
+  - `.runTimersRepeatedly()`
+  - `.runTimersOnce()`
+  - `.runTicksRepeatedly()` used for Promises
+  - `.clearTimers()`
 
-// By default, jest will automatically generate a mock version for any module when it is
-// require()'d. We tell jest not to mock out the 'MyClass' module so that we can test it.
-require('jest-runtime').dontMock('../MyClass');
+#### `expect(value)`
 
-describe('MyClass', function() {
-  it('should send a request to github', function() {
-    var MyClass = require('../MyClass');
-    var XHR = require('../XHR');
-    
-    new MyClass().doWork();
-    
-    expect(XHR.mock.instances[0].open).toBeCalledWith(
-      'GET',
-      'https://github.com/facebook/jest/',
-      true
-    );
-    expect(XHR.mock.instances[0].send).toBeCalled();
-  });
-});
-```
+  - `.not` inverse the next comparison
+  - `.toThrow(?message)`
+  - `.toBe(value)` comparison using `===`
+  - `.toEqual(value)` deep comparison. Use [`jasmine.any(type)`](http://jasmine.github.io/1.3/introduction.html#section-Matching_Anything_with_<code>jasmine.any</code>) to be softer
+  - `.toBeFalsy()`
+  - `.toBeTruthy()`
+  - `.toBeNull()`
+  - `.toBeUndefined()`
+  - `.toBeDefined()`
+  - `.toMatch(regexp)`
+  - `.toContain(string)`
+  - `.toBeCloseTo(number, delta)`
+  - `.toBeGreaterThan(number)`
+  - `.toBeLessThan(number)`
+
+(Jest)
+
+  - `.toBeCalled()`
+  - `.toBeCalledWith(arg, um, ents)`
+  - `.lastCalledWith(arg, um, ents)`
+
+
+#### Global variables
+
+
+  - `require(module)`
+  - `describe(name, fn)`
+  - `it(name, fn)`
+  - `beforeEach(fn)`
+  - `afterEach(fn)`
+
+(Jest)
+
+  - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test in the suite. Very useful when investigating a failure
+  - `pit(name, fn)` helpers for [promises](https://www.npmjs.org/package/jasmine-pit)
+
+
+#### Command line
+
+[TODO]
+
+#### package.json
+
+ - `projectName`
+ - `testPathDirs`
+ - `testPathIgnores`
+ - `moduleLoaderPathIgnores`
