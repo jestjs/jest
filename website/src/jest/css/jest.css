@@ -519,8 +519,8 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 footer {
   font-size: 13px;
   font-weight: 600;
-  margin-top: 36px;
-  margin-bottom: 18px;
+  padding-top: 36px;
+  padding-bottom: 18px;
   overflow: auto;
 }
 

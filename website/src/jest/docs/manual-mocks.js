@@ -8,7 +8,7 @@ module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"ManualMocks.js","id":"manual-mocks","title":"Manual mocks","layout":"docs","category":"Deep Dive","permalink":"manual-mocks.html","previous":"auto-mocks-and-manual-mocks","next":"timer-mocks","href":"/jest/docs/manual-mocks.html"}}, `---
 
-Although autogeneration of mocks is convenient, there are behaviors it misses, such as fluent interfaces. Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
+Although autogeneration of mocks is convenient, there are behaviors it misses, such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html). Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 
 Mocks are defined by writing a module in a \`__mocks__/\` subdirectory. The file name will be interpreted as the mocked module name. Although it's sometimes necessary to write a mock by hand to workaround missing DOM APIs, this should be avoided. If a module can't be mocked, the best fix is to implement the missing functionality in the test framework's DOM simulation.
 

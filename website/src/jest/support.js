@@ -28,11 +28,11 @@ var support = React.createClass({
             <H2>Google Groups mailing list</H2>
             <p><a href="http://groups.google.com/group/jestjs" target="_blank">The <strong>jestjs</strong> Google Group</a> is also a good place to ask questions and find answers.</p>
             <H2>IRC</H2>
-            <p>Many developers and users idle on Freenode.net&#39;s IRC network in <strong><a href="irc://chat.freenode.net/jest">#jest on freenode</a></strong>.</p>
+            <p>Many developers and users idle on Freenode.net&#39;s IRC network in <strong><a href="irc://chat.freenode.net/jestjs">#jestjs on freenode</a></strong>.</p>
             <H2>Twitter</H2>
             <p><a href="https://twitter.com/search?q=%23jestjs"><strong>#jestjs</strong> hash tag on Twitter</a> is used to keep up with the latest React news.</p>
 
-            <p><center><a className="twitter-timeline" data-dnt="true" data-chrome="nofooter noheader transparent" href="https://twitter.com/search?q=%23jestjs" data-widget-id="342522405270470656"></a></center></p>
+            <p><center><a className="twitter-timeline" data-dnt="true" data-chrome="nofooter noheader transparent" href="https://twitter.com/search?q=%23jestjs" data-widget-id="464145350849085440"></a></center></p>
           </div>
         </section>
 
