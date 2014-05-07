@@ -44,8 +44,8 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-* IRC - [#reactjs on freenode](http://webchat.freenode.net/?channels=jest)
-* Mailing list - [reactjs on Google Groups](http://groups.google.com/group/jestjs)
+* IRC - [#jest on freenode](http://webchat.freenode.net/?channels=jest)
+* Mailing list - [jestjs on Google Groups](http://groups.google.com/group/jestjs)
 
 ## Coding Style
 
