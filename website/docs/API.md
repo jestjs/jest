@@ -47,7 +47,6 @@ previous: dependency-injection
   - `.toBeCalledWith(arg, um, ents)`
   - `.lastCalledWith(arg, um, ents)`
 
-
 #### Global variables
 
   - `require(module)`
