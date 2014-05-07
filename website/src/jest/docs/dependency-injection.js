@@ -8,13 +8,12 @@ module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"DependencyInjection.js","id":"dependency-injection","title":"Dependency Injection","layout":"docs","category":"Deep Dive","permalink":"dependency-injection.html","previous":"timer-mocks","next":"api","href":"/jest/docs/dependency-injection.html"}}, `---
 
-Dependency Injection was popularized in the JavaScript community by Angular.
-Jest implements this design pattern as well but in a very different way.
+Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach.
 
-What is Dependency Injection?
------------------------------
+What is the problem?
+--------------------
 
-In order to understand why we need to implement Dependency Injection in the context of testing, it is best to take a small example.
+The [example](https://docs.angularjs.org/guide/unit-testing#dependency-injection) that Angular documentation uses to justify Dependency Injection is the following:
 
 \`\`\`javascript
 function doWork() {
@@ -24,7 +23,7 @@ function doWork() {
 }
 \`\`\`
 
-This class has a dependency on the XHR class. To get a reference to XHR, it uses the global namespace. If we want to test it by mocking XHR, we have to monkey patch the global namespace.
+This function has a dependency on the \`XHR\` class and uses the global namespace in order to get a reference to \`XHR\`. In order to mock this dependency, we have to monkey patch the global object.
 
 \`\`\`javascript
 var oldXHR = XHR;
@@ -34,15 +33,12 @@ doWork();
 XHR = oldXHR; // if you forget this bad things will happen
 \`\`\`
 
-We just implemented two important concepts
+This small example shows two important concepts. We need a way to get a reference to \`XHR\` and a way to provide two implementations: one for the normal execution and one for testing.
 
-- **Service Locator**: how do I get a reference to XHR. Here, via the global object
-- **Injection**: how do I give a different XHR in the case of a test. Here, via monkey patching the global object
-
-This example is a valid implementation of Dependency Injection but isn't one we want to use as it modifies the global object.
+In this case, the solution to both concepts is to use the global object. It is working but not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
 
 
-How is Angular solving this problem?
+How does Angular solve this problem?
 ------------------------------------
 
 In Angular, you write your code by passing dependencies as arguments
@@ -55,7 +51,7 @@ function doWork(XHR) {
 }
 \`\`\`
 
-Then it makes it very easy to write a test, you just pass your mocked version as argument to your function
+It makes it very easy to write a test, you just pass your mocked version as argument to your function
 
 \`\`\`javascript
 var MockXHR = function() {};
@@ -63,7 +59,7 @@ doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 \`\`\`
 
-Since it is annoying to have to pass around the dependencies every time you call a function, Angular provides a helper that does it automatically for you.
+When this function is included in an Angular application, it is going to be automatically modified in the following way
 
 \`\`\`
 var injectedDoWork = injector.instantiate(doWork);
@@ -77,13 +73,15 @@ function injectedDoWork() {
 }
 \`\`\`
 
-When you use the \`injector\` library of Angular, it's going to introspect your function and see that it takes an argument called \`XHR\` and rewrite it as a call to \`injector.get('XHR')\`
+Angular is going to inspect the function and see that it has one argument called \`XHR\`. It is going to provide the value \`injector.get('XHR')\` for the variable \`XHR\`.
+
+In order to have a function to be testable by Angular, you have to write your code in this specific way and pass it through a function before being able to use it.
 
 
-How is Jest solving this problem?
+How does Jest solve this problem?
 ---------------------------------
 
-If you are writing a JavaScript program with node or using CommonJS, your code is going to look like
+If we were to implement the same example using node or any application using CommonJS, it would look like this:
 
 \`\`\`
 var XHR = require('XHR');
@@ -94,7 +92,7 @@ function doWork() {
 }
 \`\`\`
 
-What is interesting is that your code is already expressing dependencies via the \`require\` call. Jest is monkey patching the \`require\` function in the test script.
+The interesting aspect of this code is that \`XHR\` dependency is obtained via a call to \`require\`. The idea of Jest is to implement a special \`require\` in a testing environment.
 
 \`\`\`
 jest.mock('XHR');
@@ -104,7 +102,7 @@ jest.dontMock('XHR');
 require('XHR'); // returns the real XHR module
 \`\`\`
 
-This way, you can write your test
+This way, you can write your test like this
 
 \`\`\`
 jest.mock('XHR'); // note: this is done automatically
@@ -116,10 +114,7 @@ var MockXHR = require('XHR');
 Conclusion
 ----------
 
-Both Jest and Angular are implementing Dependency Injection. The main difference is that Jest is using existing \`require\` calls in order to implement dependency injection. Angular is using function arguments which requires your code to be changed to be compatible with the pattern.
-
-This means that if you have code using CommonJS \`require\`, you should be able to test your code using Jest without changing anything. If you have code written to be tested by Angular, you should also be able to use Jest in order to test your code.
-
+By using existing \`require\` calls, Jest can mock dependencies without having to refactor your code. The normal execution flow is also untouched. Wrapping every function to inject dependencies is not entierly free.
 `);
   }
 });
