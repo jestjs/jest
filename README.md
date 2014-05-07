@@ -27,7 +27,6 @@ Getting started with jest is pretty simple. All you need to do is:
 }
 ```
 
-<<<<<<< HEAD
 * Run `npm test`
 
 
