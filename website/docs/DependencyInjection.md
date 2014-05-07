@@ -42,7 +42,7 @@ We just implemented two important concepts
 This example is a valid implementation of Dependency Injection but isn't one we want to use as it modifies the global object.
 
 
-How is Angular solving this problem?
+How does Angular solve this problem?
 ------------------------------------
 
 In Angular, you write your code by passing dependencies as arguments
@@ -80,10 +80,10 @@ function injectedDoWork() {
 When you use the `injector` library of Angular, it's going to introspect your function and see that it takes an argument called `XHR` and rewrite it as a call to `injector.get('XHR')`
 
 
-How is Jest solving this problem?
+How does Jest solve this problem?
 ---------------------------------
 
-If you are writing a JavaScript program with node or using CommonJS, your code is going to look like
+If write a JavaScript program with node or using CommonJS, your code is going to look like
 
 ```
 var XHR = require('XHR');
@@ -94,7 +94,7 @@ function doWork() {
 }
 ```
 
-What is interesting is that your code is already expressing dependencies via the `require` call. Jest is monkey patching the `require` function in the test script.
+What is interesting is that your code is already expressing dependencies via the `require` call. Jest monkey patches the `require` function in the test script.
 
 ```
 jest.mock('XHR');
