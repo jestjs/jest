@@ -1,4 +1,4 @@
-# jest
+# [Jest](http://facebook.github.io/jest/)
 
 Painless JavaScript Unit Testing
 
@@ -8,6 +8,7 @@ Painless JavaScript Unit Testing
 
 - **Short Feedback Loop**: Tests run in parallel and DOM apis are mocked so you can run tests on the command line
 
+Take a look at the [website for more information](http://facebook.github.io/react/)
 
 ## Getting Started
 
