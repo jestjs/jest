@@ -8,6 +8,31 @@ module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"API.js","id":"api","title":"API","layout":"docs","category":"Reference","permalink":"api.html","previous":"dependency-injection","href":"/jest/docs/api.html"}}, `---
 
+
+\`jest\`
+----
+
+  - \`.genMockFunction()\` with alias \`.genMockFn()\`
+    - \`.mockImplementation(fn)\`
+    - \`.mockReturnThis()\`
+    - \`.mockReturnValue(value)\`
+    - \`.mockReturnValueOnce(value)\`
+    - \`.mock\`
+      - \`.instances\`
+      - \`.calls\`
+  - \`.dontMock(module)\`
+  - \`.mock(module)\`
+  - \`.autoMockOff()\`
+  - \`.autoMockOn()\`
+  - \`.genMockFromModule()\`
+
+Timers
+
+  - \`.runTimersRepeatedly()\`
+  - \`.runTimersOnce()\`
+  - \`.runTicksRepeatedly()\` used for Promises
+  - \`.clearTimers()\`
+
 \`expect(value)\`
 ------------
 
@@ -31,28 +56,6 @@ module.exports = React.createClass({
   - \`.toBeCalled()\`
   - \`.toBeCalledWith(arg, um, ents)\`
   - \`.lastCalledWith(arg, um, ents)\`
-
-
-\`jest\`
-----
-
-  - \`.genMockFunction()\` with alias \`.genMockFn()\`
-    - \`.mockImplementation(fn)\`
-    - \`.mockReturnThis()\`
-    - \`.mockReturnValue(value)\`
-    - \`.mockReturnValueOnce(value)\`
-  - \`.dontMock(module)\`
-  - \`.mock(module)\`
-  - \`.autoMockOff()\`
-  - \`.autoMockOn()\`
-  - \`.genMockFromModule()\`
-
-Timers
-
-  - \`.runTimersRepeatedly()\`
-  - \`.runTimersOnce()\`
-  - \`.runTicksRepeatedly()\` used for Promises
-  - \`.clearTimers()\`
 
 
 Global variables

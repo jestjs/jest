@@ -18,7 +18,7 @@ Assuming that the module can be loaded by the automocker, it's best to build on 
 var Poller = require('Poller');
 var Indicator = function() {
   this.poller = new Poller().setInterval(2000);
-}
+};
 ```
 
 In the test for `Indicator`, instances will have undefined values for their `poller` member unless we carefully `mockReturnThis` for `Poller.prototype.setInterval`. Let's make it easier for people to use our module by enhancing the mock for `Poller`
@@ -38,4 +38,4 @@ It's generally an anti-pattern to implement an elaborate, stateful mock for a mo
 
 In cases where this kind of mock is unavoidable, it's best to write a test that
 ensures that the mock and the actual implementation are in sync. Luckily, this
-is relatively easy to do with the API provided by `jest-runtime`, which allows you to explicitly require both the actual and mock implementations of the same module in a single test.
+is relatively easy to do with the API provided by `jest`, which allows you to explicitly require both the actual and mock implementations of the same module in a single test.
