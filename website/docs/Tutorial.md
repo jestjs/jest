@@ -4,6 +4,7 @@ title: Tutorial
 layout: docs
 category: Quick Start
 permalink: tutorial.html
+previous: getting-started
 next: mock-functions
 ---
 

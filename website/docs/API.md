@@ -7,7 +7,6 @@ permalink: api.html
 previous: dependency-injection
 ---
 
-
 #### `jest`
 
   - `.genMockFunction()` with alias `.genMockFn()`
@@ -58,11 +57,6 @@ previous: dependency-injection
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - `pit(name, fn)` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
-
-
-#### Command line
-
-[TODO]
 
 #### package.json
 

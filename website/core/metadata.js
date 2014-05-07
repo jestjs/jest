@@ -36,6 +36,16 @@ module.exports = [
     "href": "/jest/docs/dependency-injection.html"
   },
   {
+    "filename": "GettingStarted.js",
+    "id": "getting-started",
+    "title": "Getting Started",
+    "layout": "docs",
+    "category": "Quick Start",
+    "permalink": "getting-started.html",
+    "next": "tutorial",
+    "href": "/jest/docs/getting-started.html"
+  },
+  {
     "filename": "ManualMocks.js",
     "id": "manual-mocks",
     "title": "Manual mocks",
@@ -75,6 +85,7 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial.html",
+    "previous": "getting-started",
     "next": "mock-functions",
     "href": "/jest/docs/tutorial.html"
   }

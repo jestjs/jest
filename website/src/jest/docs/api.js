@@ -8,7 +8,6 @@ module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"API.js","id":"api","title":"API","layout":"docs","category":"Reference","permalink":"api.html","previous":"dependency-injection","href":"/jest/docs/api.html"}}, `---
 
-
 #### \`jest\`
 
   - \`.genMockFunction()\` with alias \`.genMockFn()\`
@@ -59,11 +58,6 @@ module.exports = React.createClass({
   - \`it(name, fn)\`
   - \`it.only(name, fn)\` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - \`pit(name, fn)\` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
-
-
-#### Command line
-
-[TODO]
 
 #### package.json
 
