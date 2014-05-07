@@ -10,6 +10,7 @@ Then, run the server via
 
 ```
 npm start
+Open http://localhost:8080/jest/index.html
 ```
 
 Anytime you change the file, just refresh the website and it's going to work
