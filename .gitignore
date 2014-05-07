@@ -4,3 +4,4 @@
 .haste_cache_dir
 node_modules
 npm-debug.log
+build
