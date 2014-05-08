@@ -60,10 +60,11 @@ module.exports = React.createClass({
 
 #### package.json
 
- - \`projectName\`
- - \`testPathDirs\`
- - \`testPathIgnores\`
- - \`moduleLoaderPathIgnores\`
+  - \`jest\`
+    - \`projectName\`
+    - \`testPathDirs\`
+    - \`testPathIgnores\`
+    - \`moduleLoaderPathIgnores\`
 `);
   }
 });
