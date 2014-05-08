@@ -3,6 +3,7 @@
 cd ../../jest-gh-pages && \
 git fetch && \
 git rebase && \
+rm -Rf * && \
 cd ../jest/website && \
 node server/generate.js && \
 cp -R build/jest/* ../../jest-gh-pages/ && \

@@ -21,7 +21,6 @@ function execute() {
     });
   });
 
-
   glob(MD_DIR + '**/*.md', function (er, files) {
     files.forEach(function(file) {
       var content = fs.readFileSync(file, {encoding: 'utf8'});
@@ -81,11 +80,6 @@ function execute() {
       'module.exports = ' + JSON.stringify(metadatas, null, 2) + ';'
     );
   });
-}
-
-if (argv.execute) {
-  execute();
-  console.log('Build success');
 }
 
 module.exports = execute;

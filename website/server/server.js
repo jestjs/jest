@@ -17,7 +17,6 @@ if (argv.$0 === 'node ./server/generate.js') {
   // and keeping the server up at the same time.
   port = 8079;
 }
-console.log(port);
 
 var buildOptions = {
   projectRoot: PROJECT_ROOT,

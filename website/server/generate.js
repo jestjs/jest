@@ -37,7 +37,6 @@ glob('src/**/*.*', function(er, files) {
 
   function done() {
     if (--count === 0) {
-      console.log('Check out the build/ folder!');
       server.close();
     }
   }
@@ -48,7 +47,6 @@ glob('src/**/*.*', function(er, files) {
     if (file.match(/\.js$/)) {
       targetFile = targetFile.replace(/\.js$/, '.html');
       queue.push(function(cb) {
-        console.log(targetFile);
         request('http://localhost:8079/' + targetFile.replace(/^build\//, ''), function(error, response, body) {
           mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
           fs.writeFileSync(targetFile, body);
@@ -58,7 +56,6 @@ glob('src/**/*.*', function(er, files) {
       });
     } else {
       queue.push(function(cb) {
-        console.log(targetFile);
         fs.readFile(file, function(err, file) {
           mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
           fs.writeFileSync(targetFile, file.toString());
