@@ -18,7 +18,7 @@ function sum(value1, value2) {
 module.exports = sum;
 \`\`\`
 
-1) Create a directory \`__tests__/\` with a file \`sum-test.js\`
+1 - Create a directory \`__tests__/\` with a file \`sum-test.js\`
 
 \`\`\`javascript
 // __tests__/sum-test.js
@@ -32,9 +32,9 @@ describe('sum', function() {
 });
 \`\`\`
 
-2) Run \`npm install jest-cli --save-dev\`
+2 - Run \`npm install jest-cli --save-dev\`
 
-3) Add the following to your \`package.json\`
+3 - Add the following to your \`package.json\`
 
 \`\`\`js
 {
@@ -46,7 +46,7 @@ describe('sum', function() {
 }
 \`\`\`
 
-4) Run \`npm test\`
+4 - Run \`npm test\`
 
 \`\`\`
 [PASS] __tests__/sum-test.js (0.015s)
