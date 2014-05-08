@@ -34,7 +34,9 @@ var index = React.createClass({
               <div className="marketing-col">
                 <h3>Mock by Default</h3>
                 <p>
-                  Automatically mocks CommonJS modules returned by `require()`, making most existing code testable.
+                  <Marked>
+                    Automatically mocks CommonJS modules returned by `require()`, making most existing code testable.
+                  </Marked>
                 </p>
               </div>
               <div className="marketing-col">
