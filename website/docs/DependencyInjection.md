@@ -59,7 +59,7 @@ doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 ```
 
-But it's a pain to thread these constructor arguments through a real application, so Angular includes an `injector`, that makes it easy to create instances that automatically acquire their dependencies.
+But it's a pain to thread these constructor arguments through a real application. So Angular includes an `injector`, that makes it easy to create instances that automatically acquire their dependencies.
 
 ```
 var injectedDoWork = injector.instantiate(doWork);
