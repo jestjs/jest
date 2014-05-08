@@ -80,7 +80,7 @@ function makeComponent(metadata) {
 
         var returnValue;
         // If return value is last set, either specific or default, i.e.
-        // mockReturnValue()/mockDefaultReturnValue() is called and no
+        // mockReturnValueOnce()/mockReturnValue() is called and no
         // mockImplementation() is called after that.
         // use the set return value.
         if (isReturnValueLastSet) {
@@ -116,14 +116,14 @@ function makeComponent(metadata) {
         instances.length = 0;
       };
 
-      f.mockReturnValue = function(value) {
+      f.mockReturnValueOnce = function(value) {
         // next function call will return this value or default return value
         isReturnValueLastSet = true;
         specificReturnValues.push(value);
         return f;
       };
 
-      f.mockDefaultReturnValue = function(value) {
+      f.mockReturnValue = function(value) {
         // next function call will return specified return value or this one
         isReturnValueLastSet = true;
         defaultReturnValue = value;
@@ -383,11 +383,11 @@ module.exports = {
    * each call to the function. This is useful for retrieving instances from a
    * constructor.
    *
-   * .mockReturnValue(value)
+   * .mockReturnValueOnce(value)
    * Pushes the given value onto a FIFO queue of return values for the
    * function.
    *
-   * .mockDefaultReturnValue(value)
+   * .mockReturnValue(value)
    * Sets the default return value for the function.
    *
    * .mockImplementation(function)
@@ -397,9 +397,9 @@ module.exports = {
    * Syntactic sugar for .mockImplementation(function() {return this;})
    *
    * In case both mockImplementation() and
-   * mockReturnValue()/mockDefaultReturnValue() are called. The priority of
+   * mockReturnValueOnce()/mockReturnValue() are called. The priority of
    * which to use is based on what is the last call:
-   * - if the last call is mockReturnValue() or mockDefaultReturnValue(),
+   * - if the last call is mockReturnValueOnce() or mockReturnValue(),
    *   use the specific return specific return value or default return value.
    *   If specific return values are used up or no default return value is set,
    *   fall back to try mockImplementation();

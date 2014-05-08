@@ -50,12 +50,22 @@ function FakeTimers(global) {
   global.mockRunTimersToTime = this.runTimersToTime.bind(this);
   global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
   global.mockClearTimers = this.clearAllTimers.bind(this);
+  global.mockGetTimersCount = function() {
+    return Object.keys(this._timers).length;
+  }.bind(this);
 }
 
 FakeTimers.prototype.clearAllTimers = function() {
   for (var uuid in this._timers) {
     delete this._timers[uuid];
   }
+};
+
+FakeTimers.prototype.reset = function() {
+  this._cancelledTicks = {};
+  this._now = 0;
+  this._ticks = [];
+  this._timers = {};
 };
 
 // Used to be called runTicksRepeatedly
@@ -112,6 +122,16 @@ FakeTimers.prototype.runAllTimers = function() {
   }
 };
 
+// Used to be called runTimersOnce
+FakeTimers.prototype.runCurrentlyPendingTimersOnly = function() {
+  var timers = this._timers;
+  Object.keys(timers)
+    .sort(function(left, right) {
+      return timers[left].expiry - timers[right].expiry;
+    })
+    .forEach(this._runTimerHandle, this);
+};
+
 // Use to be runTimersToTime
 FakeTimers.prototype.runTimersToTime = function(msToRun) {
   // Only run a generous number of timers and then bail.
@@ -145,23 +165,6 @@ FakeTimers.prototype.runTimersToTime = function(msToRun) {
       'we\'ve hit an infinite recursion and bailing out...'
     );
   }
-};
-
-FakeTimers.prototype.reset = function() {
-  this._cancelledTicks = {};
-  this._now = 0;
-  this._ticks = [];
-  this._timers = {};
-};
-
-// Used to be called runTimersOnce
-FakeTimers.prototype.runCurrentlyPendingTimersOnly = function() {
-  var timers = this._timers;
-  Object.keys(timers)
-    .sort(function(left, right) {
-      return timers[left].expiry - timers[right].expiry;
-    })
-    .forEach(this._runTimerHandle, this);
 };
 
 FakeTimers.prototype.runWithRealTimers = function(cb) {
