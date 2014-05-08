@@ -114,6 +114,6 @@ var MockXHR = require('XHR');
 Conclusion
 ----------
 
-By using existing `require` calls, Jest can mock dependencies without having to refactor your code.
+By using existing `require` calls, Jest can mock dependencies without having to refactor your code. This provides a way to incrementally test your code and accomodates third party libraries.
 
-Angular wraps every function in order to provide dependencies and incurs a cost at runtime in production. Jest moves that cost to the testing environment.
+Using Dependency Injection by wrapping every function in order to provide dependencies has a runtime cost. Jest moves this cost from production to the testing environment.
