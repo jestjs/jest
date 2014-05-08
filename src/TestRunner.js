@@ -329,7 +329,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
 
     if (config.setupEnvScriptFile) {
       utils.runContentWithLocalBindings(
-        env.runSourceText,
+        env.runSourceText.bind(env),
         utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
         config.setupEnvScriptFile,
         {
