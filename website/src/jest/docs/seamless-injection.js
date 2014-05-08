@@ -6,9 +6,9 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"DependencyInjection.js","id":"dependency-injection","title":"Dependency Injection","layout":"docs","category":"Deep Dive","permalink":"dependency-injection.html","previous":"timer-mocks","next":"api","href":"/jest/docs/dependency-injection.html"}}, `---
+    return layout({metadata: {"filename":"SeamlessInjection.js","id":"seamless-injection","title":"Seamless Injection","layout":"docs","category":"Deep Dive","permalink":"seamless-injection.html","previous":"timer-mocks","next":"api","href":"/jest/docs/seamless-injection.html"}}, `---
 
-Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach.
+Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach called Seamless Injection.
 
 What is the problem?
 --------------------
@@ -35,7 +35,7 @@ XHR = oldXHR; // if you forget this bad things will happen
 
 This small example shows two important concepts. We need a way to get a reference to \`XHR\` and a way to provide two implementations: one for the normal execution and one for testing.
 
-In this case, the solution to both concepts is to use the global object. It is working but not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
+In this case, the solution to both concepts is to use the global object. It works, but it's not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
 
 
 How does Angular solve this problem?
@@ -59,7 +59,7 @@ doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 \`\`\`
 
-When this function is included in an Angular application, it is going to be automatically modified in the following way
+But it's a pain to thread these constructor arguments through a real application. So Angular includes an \`injector\`, that makes it easy to create instances that automatically acquire their dependencies.
 
 \`\`\`
 var injectedDoWork = injector.instantiate(doWork);
@@ -73,7 +73,7 @@ function injectedDoWork() {
 }
 \`\`\`
 
-Angular is going to inspect the function and see that it has one argument called \`XHR\`. It is going to provide the value \`injector.get('XHR')\` for the variable \`XHR\`.
+Angular inspects the function and sees that it has one argument called \`XHR\`. It then provides the value \`injector.get('XHR')\` for the variable \`XHR\`.
 
 In order to have a function to be testable by Angular, you have to write your code in this specific way and pass it through a function before being able to use it.
 
@@ -81,7 +81,7 @@ In order to have a function to be testable by Angular, you have to write your co
 How does Jest solve this problem?
 ---------------------------------
 
-If we were to implement the same example using node or any application using CommonJS, it would look like this:
+The example given above is slightly unrealistic. Most large JavaScript applications use modules and the \`require\` function to break up dependencies. In a modular JavaScript app, the example above would really look like this:
 
 \`\`\`
 var XHR = require('XHR');
@@ -92,7 +92,7 @@ function doWork() {
 }
 \`\`\`
 
-The interesting aspect of this code is that \`XHR\` dependency is obtained via a call to \`require\`. The idea of Jest is to implement a special \`require\` in a testing environment.
+The interesting aspect of this code is that the dependency on \`XHR\` is already intermediated by \`require\`. The idea of Jest is to use this as a seam for inserting test doubles by implementing a special \`require\` in the testing environment.
 
 \`\`\`
 jest.mock('XHR');
@@ -114,7 +114,9 @@ var MockXHR = require('XHR');
 Conclusion
 ----------
 
-By using existing \`require\` calls, Jest can mock dependencies without having to refactor your code. The normal execution flow is also untouched, wrapping every function to inject dependencies incurs a runtime cost.
+By using existing \`require\` calls, Jest can mock dependencies without having to refactor your code.
+
+Angular wraps every function in order to provide dependencies and incurs a cost at runtime in production. Jest moves that cost to the testing environment.
 `);
   }
 });

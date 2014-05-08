@@ -4,7 +4,7 @@ title: API
 layout: docs
 category: Reference
 permalink: api.html
-previous: dependency-injection
+previous: seamless-injection
 ---
 
 #### `jest`

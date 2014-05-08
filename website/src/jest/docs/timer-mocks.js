@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"TimerMocks.js","id":"timer-mocks","title":"Timer mocks","layout":"docs","category":"Deep Dive","permalink":"timer-mocks.html","previous":"manual-mocks","next":"dependency-injection","href":"/jest/docs/timer-mocks.html"}}, `---
+    return layout({metadata: {"filename":"TimerMocks.js","id":"timer-mocks","title":"Timer mocks","layout":"docs","category":"Deep Dive","permalink":"timer-mocks.html","previous":"manual-mocks","next":"seamless-injection","href":"/jest/docs/timer-mocks.html"}}, `---
 
 The native timer functions, i.e., \`setTimeout\`, \`setInterval\`, \`clearTimeout\`, \`clearInterval\` are not suitable for the test environment since they depend on real time to elapse. Fake timer functions are provided to make assertions about behaviors with respect to these timers.
 

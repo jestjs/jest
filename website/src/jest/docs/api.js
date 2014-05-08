@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"API.js","id":"api","title":"API","layout":"docs","category":"Reference","permalink":"api.html","previous":"dependency-injection","href":"/jest/docs/api.html"}}, `---
+    return layout({metadata: {"filename":"API.js","id":"api","title":"API","layout":"docs","category":"Reference","permalink":"api.html","previous":"seamless-injection","href":"/jest/docs/api.html"}}, `---
 
 #### \`jest\`
 

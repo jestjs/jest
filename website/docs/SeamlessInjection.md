@@ -1,14 +1,14 @@
 ---
-id: dependency-injection
-title: Dependency Injection
+id: seamless-injection
+title: Seamless Injection
 layout: docs
 category: Deep Dive
-permalink: dependency-injection.html
+permalink: seamless-injection.html
 previous: timer-mocks
 next: api
 ---
 
-Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach.
+Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach called Seamless Injection.
 
 What is the problem?
 --------------------

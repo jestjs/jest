@@ -10,7 +10,7 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "api.html",
-    "previous": "dependency-injection",
+    "previous": "seamless-injection",
     "href": "/jest/docs/api.html"
   },
   {
@@ -23,17 +23,6 @@ module.exports = [
     "previous": "mock-functions",
     "next": "manual-mocks",
     "href": "/jest/docs/automatically-generated-mocks.html"
-  },
-  {
-    "filename": "DependencyInjection.js",
-    "id": "dependency-injection",
-    "title": "Dependency Injection",
-    "layout": "docs",
-    "category": "Deep Dive",
-    "permalink": "dependency-injection.html",
-    "previous": "timer-mocks",
-    "next": "api",
-    "href": "/jest/docs/dependency-injection.html"
   },
   {
     "filename": "GettingStarted.js",
@@ -68,6 +57,17 @@ module.exports = [
     "href": "/jest/docs/mock-functions.html"
   },
   {
+    "filename": "SeamlessInjection.js",
+    "id": "seamless-injection",
+    "title": "Seamless Injection",
+    "layout": "docs",
+    "category": "Deep Dive",
+    "permalink": "seamless-injection.html",
+    "previous": "timer-mocks",
+    "next": "api",
+    "href": "/jest/docs/seamless-injection.html"
+  },
+  {
     "filename": "TimerMocks.js",
     "id": "timer-mocks",
     "title": "Timer mocks",
@@ -75,7 +75,7 @@ module.exports = [
     "category": "Deep Dive",
     "permalink": "timer-mocks.html",
     "previous": "manual-mocks",
-    "next": "dependency-injection",
+    "next": "seamless-injection",
     "href": "/jest/docs/timer-mocks.html"
   },
   {
