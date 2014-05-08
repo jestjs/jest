@@ -1,6 +1,7 @@
 'use strict';
 
 var coffeeScript = require('coffee-script');
+var FakeTimers = require('../lib/FakeTimers');
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
