@@ -1,6 +1,6 @@
 'use strict';
 
-var mockTimers = require('./lib/mockTimers');
+var FakeTimers = require('./lib/FakeTimers');
 var TestEnvironment = require('./TestEnvironment');
 
 function JSDomEnvironment() {
@@ -40,9 +40,11 @@ function JSDomEnvironment() {
   // Pass node's Buffer object through
   this.global.Buffer = Buffer;
 
-  // Setup mocked timers
-  mockTimers.reset();
-  mockTimers.installMockTimers(this.global);
+  // Pass node's Process object through
+  this.global.process = process;
+
+  // Setup faked-out timers
+  this.fakeTimers = new FakeTimers(this.global);
 
   // I kinda wish tests just did this manually rather than relying on a
   // helper function to do it, but I'm keeping it for backward compat reasons
@@ -78,6 +80,10 @@ JSDomEnvironment.prototype.dispose = function() {
 
 JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
   return this.global.run(sourceText, fileName);
+};
+
+JSDomEnvironment.prototype.runWithRealTimers = function(cb) {
+  this._fakeTimers.runWithRealTimers(cb);
 };
 
 module.exports = JSDomEnvironment;
