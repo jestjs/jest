@@ -34,13 +34,13 @@ var index = React.createClass({
               <div className="marketing-col">
                 <h3>Mock by Default</h3>
                 <p>
-                  Automatically mocks CommonJS modules returned by `require()`, making most existing code testable
+                  Automatically mocks CommonJS modules returned by `require()`, making most existing code testable.
                 </p>
               </div>
               <div className="marketing-col">
                 <h3>Fast</h3>
                 <p>
-                  Tests run in parallel and DOM APIs are mocked
+                  Tests run in parallel, DOM APIs are mocked, and it's easy to run a subset of your tests.
                 </p>
               </div>
             </div>
