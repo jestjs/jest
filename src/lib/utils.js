@@ -195,6 +195,15 @@ function loadConfigFromFile(filePath, relativeTo) {
   });
 }
 
+function loadConfigFromPackageJson(filePath, relativeTo) {
+  return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
+    var packageJsonData = JSON.parse(fileData);
+    var config = packageJsonData.jest;
+    config.projectName = packageJsonData.name;
+    return normalizeConfig(config, relativeTo);
+  });
+}
+
 var _contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
   if (_contentCache.hasOwnProperty(filePath)) {
@@ -348,6 +357,7 @@ exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
 exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;
 exports.loadConfigFromFile = loadConfigFromFile;
+exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
 exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
 exports.runContentWithLocalBindings = runContentWithLocalBindings;
