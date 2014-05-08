@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"ManualMocks.js","id":"manual-mocks","title":"Manual mocks","layout":"docs","category":"Deep Dive","permalink":"manual-mocks.html","previous":"auto-mocks-and-manual-mocks","next":"timer-mocks","href":"/jest/docs/manual-mocks.html"}}, `---
+    return layout({metadata: {"filename":"ManualMocks.js","id":"manual-mocks","title":"Manual mocks","layout":"docs","category":"Reference","permalink":"manual-mocks.html","previous":"auto-mocks-and-manual-mocks","next":"timer-mocks","href":"/jest/docs/manual-mocks.html"}}, `---
 
 Although autogeneration of mocks is convenient, there are behaviors it misses, such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html). Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 

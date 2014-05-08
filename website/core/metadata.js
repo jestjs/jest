@@ -10,19 +10,19 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "api.html",
-    "previous": "seamless-injection",
+    "previous": "timer-mocks",
     "href": "/jest/docs/api.html"
   },
   {
-    "filename": "AutomaticallyGeneratedMocks.js",
-    "id": "automatically-generated-mocks",
-    "title": "Automatically generated mocks",
+    "filename": "AutoMocks.js",
+    "id": "auto-mocks",
+    "title": "AutoMocks",
     "layout": "docs",
-    "category": "Deep Dive",
-    "permalink": "automatically-generated-mocks.html",
-    "previous": "mock-functions",
-    "next": "manual-mocks",
-    "href": "/jest/docs/automatically-generated-mocks.html"
+    "category": "Core Concepts",
+    "permalink": "auto-mocks.html",
+    "previous": "seamless-dependency-injection",
+    "next": "mock-functions",
+    "href": "/jest/docs/auto-mocks.html"
   },
   {
     "filename": "GettingStarted.js",
@@ -39,7 +39,7 @@ module.exports = [
     "id": "manual-mocks",
     "title": "Manual mocks",
     "layout": "docs",
-    "category": "Deep Dive",
+    "category": "Reference",
     "permalink": "manual-mocks.html",
     "previous": "auto-mocks-and-manual-mocks",
     "next": "timer-mocks",
@@ -50,32 +50,32 @@ module.exports = [
     "id": "mock-functions",
     "title": "Mock functions",
     "layout": "docs",
-    "category": "Deep Dive",
+    "category": "Reference",
     "permalink": "mock-functions.html",
-    "previous": "tutorial",
-    "next": "automatically-generated-mocks",
+    "previous": "auto-mocks",
+    "next": "manual-mocks",
     "href": "/jest/docs/mock-functions.html"
   },
   {
-    "filename": "SeamlessInjection.js",
-    "id": "seamless-injection",
-    "title": "Seamless Injection",
+    "filename": "SeamlessDependencyInjection.js",
+    "id": "seamless-dependency-injection",
+    "title": "Seamless Dependency Injection",
     "layout": "docs",
-    "category": "Deep Dive",
-    "permalink": "seamless-injection.html",
-    "previous": "timer-mocks",
-    "next": "api",
-    "href": "/jest/docs/seamless-injection.html"
+    "category": "Core Concepts",
+    "permalink": "seamless-dependency-injection.html",
+    "previous": "tutorial",
+    "next": "auto-mocks",
+    "href": "/jest/docs/seamless-dependency-injection.html"
   },
   {
     "filename": "TimerMocks.js",
     "id": "timer-mocks",
     "title": "Timer mocks",
     "layout": "docs",
-    "category": "Deep Dive",
+    "category": "Reference",
     "permalink": "timer-mocks.html",
     "previous": "manual-mocks",
-    "next": "seamless-injection",
+    "next": "api",
     "href": "/jest/docs/timer-mocks.html"
   },
   {
@@ -86,7 +86,7 @@ module.exports = [
     "category": "Quick Start",
     "permalink": "tutorial.html",
     "previous": "getting-started",
-    "next": "mock-functions",
+    "next": "seamless-dependency-injection",
     "href": "/jest/docs/tutorial.html"
   }
 ];

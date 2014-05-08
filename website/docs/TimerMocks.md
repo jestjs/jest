@@ -2,10 +2,10 @@
 id: timer-mocks
 title: Timer mocks
 layout: docs
-category: Deep Dive
+category: Reference
 permalink: timer-mocks.html
 previous: manual-mocks
-next: seamless-injection
+next: api
 ---
 
 The native timer functions, i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval` are not suitable for the test environment since they depend on real time to elapse. Fake timer functions are provided to make assertions about behaviors with respect to these timers.

@@ -2,7 +2,7 @@
 id: manual-mocks
 title: Manual mocks
 layout: docs
-category: Deep Dive
+category: Reference
 permalink: manual-mocks.html
 previous: auto-mocks-and-manual-mocks
 next: timer-mocks

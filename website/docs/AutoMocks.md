@@ -1,11 +1,11 @@
 ---
-id: automatically-generated-mocks
-title: Automatically generated mocks
+id: auto-mocks
+title: AutoMocks
 layout: docs
-category: Deep Dive
-permalink: automatically-generated-mocks.html
-previous: mock-functions
-next: manual-mocks
+category: Core Concepts
+permalink: auto-mocks.html
+previous: seamless-dependency-injection
+next: mock-functions
 ---
 
 In order to isolate the code under test, required modules are mocked in unit tests. Mocks are generated automatically, unless an explicit mock is provided manually. For this reason, the first line in your unit test should be like:

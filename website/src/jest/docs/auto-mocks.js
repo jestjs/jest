@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"AutomaticallyGeneratedMocks.js","id":"automatically-generated-mocks","title":"Automatically generated mocks","layout":"docs","category":"Reference","permalink":"automatically-generated-mocks.html","previous":"mock-functions","next":"manual-mocks","href":"/jest/docs/automatically-generated-mocks.html"}}, `---
+    return layout({metadata: {"filename":"AutoMocks.js","id":"auto-mocks","title":"AutoMocks","layout":"docs","category":"Core Concepts","permalink":"auto-mocks.html","previous":"seamless-dependency-injection","next":"mock-functions","href":"/jest/docs/auto-mocks.html"}}, `---
 
 In order to isolate the code under test, required modules are mocked in unit tests. Mocks are generated automatically, unless an explicit mock is provided manually. For this reason, the first line in your unit test should be like:
 
