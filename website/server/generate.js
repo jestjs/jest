@@ -32,7 +32,7 @@ var queue = (function() {
   return {push: push};
 })();
 
-glob('src/**/*.*', function (er, files) {
+glob('src/**/*.*', function(er, files) {
   var count = files.length;
 
   function done() {
@@ -68,4 +68,4 @@ glob('src/**/*.*', function (er, files) {
       });
     }
   });
-})
+});

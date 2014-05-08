@@ -15,6 +15,13 @@ function execute() {
     }}
   ];
 
+  glob('src/jest/docs/*.*', function(er, files) {
+    files.forEach(function(file) {
+      fs.unlinkSync(file);
+    });
+  });
+
+
   glob(MD_DIR + '**/*.md', function (er, files) {
     files.forEach(function(file) {
       var content = fs.readFileSync(file, {encoding: 'utf8'});
