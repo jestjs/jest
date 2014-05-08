@@ -6,7 +6,7 @@ var MS_IN_A_YEAR = 31536000000;
 
 function FakeTimers(global) {
   this._global = global;
-  this._handleUUID = 0;
+  this._uuidCounter = 0;
 
   this.reset();
 
@@ -41,7 +41,22 @@ function FakeTimers(global) {
       this._fakeNextTick.bind(this)
     );
   }
+
+  // TODO: These globally-accessible function are now deprecated!
+  //       They will go away very soon, so do not use them!
+  //       Instead, use the versions available on the `jest` object
+  global.mockRunTicksRepeatedly = this.runAllTicks.bind(this);
+  global.mockRunTimersOnce = this.runCurrentlyPendingTimersOnly.bind(this);
+  global.mockRunTimersToTime = this.runTimersToTime.bind(this);
+  global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
+  global.mockClearTimers = this.clearAllTimers.bind(this);
 }
+
+FakeTimers.prototype.clearAllTimers = function() {
+  for (var uuid in this._timers) {
+    delete this._timers[uuid];
+  }
+};
 
 // Used to be called runTicksRepeatedly
 FakeTimers.prototype.runAllTicks = function() {
@@ -189,14 +204,14 @@ FakeTimers.prototype.runWithRealTimers = function(cb) {
   }
 };
 
-FakeTimers.prototype._fakeClearTimer = function(handleUUID) {
-  if (this._timers.hasOwnProperty(handleUUID)) {
-    delete this._timers[handleUUID];
+FakeTimers.prototype._fakeClearTimer = function(uuid) {
+  if (this._timers.hasOwnProperty(uuid)) {
+    delete this._timers[uuid];
   }
 };
 
 FakeTimers.prototype._fakeNextTick = function(callback) {
-  var uuid = this._handleUUID++;
+  var uuid = this._uuidCounter++;
   this._ticks.push({
     uuid: uuid,
     callback: callback
@@ -216,7 +231,7 @@ FakeTimers.prototype._fakeSetInterval = function(callback, intervalDelay) {
     intervalDelay = 0;
   }
 
-  var uuid = this._handleUUID++;
+  var uuid = this._uuidCounter++;
 
   this._timers[uuid] = {
     type: 'interval',
@@ -233,7 +248,7 @@ FakeTimers.prototype._fakeSetTimeout = function(callback, delay)  {
     delay = 0;
   }
 
-  var uuid = this._handleUUID++;
+  var uuid = this._uuidCounter++;
 
   this._timers[uuid] = {
     type: 'timeout',
@@ -247,15 +262,15 @@ FakeTimers.prototype._fakeSetTimeout = function(callback, delay)  {
 
 FakeTimers.prototype._getNextTimerHandle = function() {
   var nextTimerHandle = null;
-  var handleUUID;
+  var uuid;
   var soonestTime = MS_IN_A_YEAR;
 
   var timer;
-  for (handleUUID in this._timers) {
-    timer = this._timers[handleUUID];
+  for (uuid in this._timers) {
+    timer = this._timers[uuid];
     if (timer.expiry < soonestTime) {
       soonestTime = timer.expiry;
-      nextTimerHandle = handleUUID;
+      nextTimerHandle = uuid;
     }
   }
 

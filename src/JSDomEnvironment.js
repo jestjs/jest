@@ -46,6 +46,10 @@ function JSDomEnvironment() {
   // Setup faked-out timers
   this.fakeTimers = new FakeTimers(this.global);
 
+  // TODO: These globally-accessible functions are now deprecated!
+  //       They will go away very soon, so do not use them! Use the versions
+  //       exposed on the `jest` object instead
+
   // I kinda wish tests just did this manually rather than relying on a
   // helper function to do it, but I'm keeping it for backward compat reasons
   // while we get jest deployed internally. Then we can look into removing it.
