@@ -42,7 +42,7 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "getting-started.html",
-    "next": "tutorial",
+    "next": "tutorial-asynchronous",
     "href": "/jest/docs/getting-started.html"
   },
   {
@@ -79,14 +79,25 @@ module.exports = [
     "href": "/jest/docs/timer-mocks.html"
   },
   {
-    "filename": "Tutorial.js",
-    "id": "tutorial",
-    "title": "Tutorial",
+    "filename": "TutorialAsynchronous.js",
+    "id": "tutorial-asynchronous",
+    "title": "Tutorial - Asynchronous",
     "layout": "docs",
     "category": "Quick Start",
-    "permalink": "tutorial.html",
+    "permalink": "tutorial-asynchronous.html",
     "previous": "getting-started",
+    "next": "tutorial-jquery",
+    "href": "/jest/docs/tutorial-asynchronous.html"
+  },
+  {
+    "filename": "TutorialjQuery.js",
+    "id": "tutorial-jquery",
+    "title": "Tutorial - jQuery",
+    "layout": "docs",
+    "category": "Quick Start",
+    "permalink": "tutorial-jquery.html",
+    "previous": "tutorial-asynchronous",
     "next": "common-js-testing",
-    "href": "/jest/docs/tutorial.html"
+    "href": "/jest/docs/tutorial-jquery.html"
   }
 ];

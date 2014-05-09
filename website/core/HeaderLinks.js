@@ -5,7 +5,7 @@
 
 var HeaderLinks = React.createClass({
   links: [
-    {section: 'docs', href: '/jest/docs/tutorial.html', text: 'docs'},
+    {section: 'docs', href: '/jest/docs/tutorial-asynchronous.html', text: 'docs'},
     {section: 'support', href: '/jest/support.html', text: 'support'},
     {section: 'github', href: 'http://github.com/facebook/jest', text: 'github'},
   ],

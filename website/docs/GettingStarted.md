@@ -4,7 +4,7 @@ title: Getting Started
 layout: docs
 category: Quick Start
 permalink: getting-started.html
-next: tutorial
+next: tutorial-asynchronous
 ---
 
 Getting started with jest is pretty simple. If you want to test the following `sum.js` file,
