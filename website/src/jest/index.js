@@ -101,7 +101,7 @@ describe('sum', function() {
           <hr className="home-divider" />
           <section className="home-bottom-section">
             <div className="buttons-unit">
-              <a href="docs/tutorial.html" className="button">Check out Jest</a>
+              <a href="docs/tutorial-asynchronous.html" className="button">Check out Jest</a>
             </div>
           </section>
           <p></p>
