@@ -27,7 +27,7 @@ module.exports = [
   {
     "filename": "CommonJSTesting.js",
     "id": "common-js-testing",
-    "title": "Common JS Testing",
+    "title": "CommonJS Testing",
     "layout": "docs",
     "category": "Core Concepts",
     "permalink": "common-js-testing.html",
