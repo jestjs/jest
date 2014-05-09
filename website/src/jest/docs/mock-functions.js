@@ -21,7 +21,7 @@ or by explicitly requesting one from \`jest.genMockFunction()\` in your test:
 var myMock = jest.genMockFunction();
 myMock('1');
 myMock('a', 'b');
-console.log(f.mock.calls);
+console.log(myMock.mock.calls);
 > [ [1], ['a', 'b'] ]
 \`\`\`
 
@@ -32,9 +32,9 @@ value of \`this\` for each call, so it is possible to inspect this as well:
 \`\`\`javascript
 var myMock = jest.genMockFunction();
 
-var a = new f();
+var a = new myMock();
 var b = {};
-var bound = f.bind(b);
+var bound = myMock.bind(b);
 bound();
 
 console.log(myMock.mock.instances);
@@ -67,14 +67,14 @@ test:
 
 \`\`\`javascript
 var myMock = jest.genMockFunction();
-console.log( f() );
+console.log( myMock() );
 > undefined
 
-f.mockReturnValueOnce(10);
+myMock.mockReturnValueOnce(10);
  .mockReturnValueOnce('x');
  .mockReturnValue(true);
 
-console.log(f(), f(), f(), f());
+console.log(myMock(), myMock(), myMock(), myMock());
 > 10, 'x', true, true
 \`\`\`
 
