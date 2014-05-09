@@ -915,7 +915,7 @@ Loader.prototype.resetModuleRegistry = function() {
 
           runAllTimers: function() {
             this._environment.fakeTimers.runAllTimers();
-          },
+          }.bind(this),
 
           runOnlyPendingTimers: function() {
             this._environment.fakeTimers.runOnlyPendingTimers();
