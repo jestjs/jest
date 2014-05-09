@@ -1,6 +1,5 @@
 'use strict';
 
-var coffeeScript = require('coffee-script');
 var FakeTimers = require('../lib/FakeTimers');
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
@@ -11,11 +10,26 @@ var utils = require('../lib/utils');
 var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
-var JASMINE_ONLY_PATH = require.resolve('jasmine-only/app/js/jasmine_only.coffee');
-var jasmineOnlyContent = coffeeScript.compile(fs.readFileSync(
-  JASMINE_ONLY_PATH,
-  'utf8'
-));
+var JASMINE_ONLY_ROOT = path.dirname(require.resolve('jasmine-only'));
+var POTENTIALLY_PRECOMPILED_FILE = path.join(
+  JASMINE_ONLY_ROOT,
+  'app',
+  'js',
+  'jasmine_only.js'
+);
+var COFFEE_SCRIPT_FILE = path.join(
+  JASMINE_ONLY_ROOT,
+  'app',
+  'js',
+  'jasmine_only.coffee'
+);
+
+var jasmineOnlyContent =
+  fs.existsSync(POTENTIALLY_PRECOMPILED_FILE)
+  ? fs.readFileSync(POTENTIALLY_PRECOMPILED_FILE, 'utf8')
+  : require('coffee-script').compile(
+      fs.readFileSync(COFFEE_SCRIPT_FILE, 'utf8')
+    );
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   // Jasmine does stuff with timers that affect running the tests. However, we
