@@ -1,6 +1,7 @@
 'use strict';
 
 var FileFinder = require('node-find-files');
+var fs = require('fs');
 var os = require('os');
 var path = require('path');
 var q = require('q');
@@ -158,7 +159,7 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
     }
 
     return Object.keys(discoveredModules).filter(function(path) {
-      return testRunner._isTestFilePath(path);
+      return testRunner._isTestFilePath(path) && fs.existsSync(path);
     });
   });
 };
