@@ -137,7 +137,7 @@ jQuery
 ------
 
 Another class of functions that is usually considered hard to test is code that
-directly manipulates the DOM. Let see how we can test the following snippet of
+directly manipulates the DOM. Let's see how we can test the following snippet of
 jQuery code that listens to a click event, fetches some data asynchronously and
 sets the content of a span.
 
@@ -154,52 +154,54 @@ $('#button').click(function() {
 });
 ```
 
-Again, we start by creating a test file in the `__tests__/` folder and make sure that we don't mock the file we're about to test.
+Again, we create a test file in the `__tests__/` folder:
 
 ```javascript
 // __tests__/displayUser-test.js
 jest
   .dontMock('../displayUser.js')
-```
-
-This time, we don't want to test the interface between jQuery and the function but instead we want to let jQuery run as is and test the result directly in the DOM. In order to do that, we just need to tell Jest not to mock jQuery.
-
-```javascript
   .dontMock('jquery');
-```
 
-The function we are testing is adding an event listener on the `#button` DOM element, so we need to setup our DOM correctly for the test. Jest ships with `jsdom` which simulates a DOM environment as if you were in the browser.
-
-```javascript
 describe('displayUser', function() {
   it('displays a user after a click', function() {
+    // Set up our document body
     document.body.innerHTML =
       '<div>' +
       '  <span id="username" />' +
       '  <button id="button" />' +
       '</div>';
-```
 
-We now require all the dependencies and make sure that they correctly interact with the function we want to test. jQuery is not mocked so we don't need to do anything. `fetchCurrentUser` needs to call the callback it is given to with some fake user. We use `mockImplementation` in order to do that.
-
-```javascript
-    var displayUser = require('../displayUser.js');
+    var displayUser = require('../displayUser');
     var $ = require('jquery');
-    var fetchCurrentUser = require('../fetchCurrentUser.js');
+    var fetchCurrentUser = require('../fetchCurrentUser');
+
+    // Tell the fetchCurrentUser mock function to automatically it's
+    // callback with some data
     fetchCurrentUser.mockImplementation(function(cb) {
       cb({
         loggedIn: true,
-        fullName: 'Jeff Morrison'
+        fullName: 'Johnny Cash'
       });
     });
-```
 
-Finally, we simulate a click and make sure that the dependency is called and that the DOM has been correctly updated.
-
-```javascript
+    // Use jquery to emulate a click on our button
     $('#button').click();
+
+    // Assert that the fetchCurrentUser function was called, and that the 
+    // #username span's innter text was updated as we'd it expect.
     expect(fetchCurrentUser).toBeCalled();
-    expect($('#username').text()).toEqual('Jeff Morrison - Logged In');
+    expect($('#username').text()).toEqual('Johnny Cash - Logged In');
   });
 });
 ```
+
+The function under test adds an event listener on the `#button` DOM element, so 
+we need to setup our DOM correctly for the test. jest ships with `jsdom` which 
+simulates a DOM environment as if you were in the browser. This means that every
+DOM API that we call can be observed in the same way it would be observed in a
+browser!
+
+Since we are interested in testing that `displayUser.js` makes specific changes
+to the DOM, we tell jest not to mock our `jquery` dependency. This lets both
+`displayUser.js` actually mutate the DOM, and it gives us an easy means of
+querying the DOM in our test.
