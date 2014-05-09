@@ -1,7 +1,6 @@
 'use strict';
 
 var FakeTimers = require('./lib/FakeTimers');
-var TestEnvironment = require('./TestEnvironment');
 
 function JSDomEnvironment() {
   // We lazily require jsdom because it takes a good ~.5s to load.
