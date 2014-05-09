@@ -1052,9 +1052,10 @@ Loader.prototype.resetModuleRegistry = function() {
            */
           loadActualModule: function(moduleName) {
             return this.requireModule(
-              currPath,
-              'jest-runtime'
-            ).loadAndExecuteModule(moduleName);
+              this._currentlyExecutingModulePath,
+              moduleName,
+              true // yay boolean args!
+            );
           }.bind(this)
         }
       };
