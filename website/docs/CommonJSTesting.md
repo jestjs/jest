@@ -8,7 +8,9 @@ previous: tutorial
 next: auto-mocks
 ---
 
-Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach.
+Dependency Injection was popularized in the JavaScript community by Angular as a
+way to mock dependencies in order to make code testable. In this article, we're 
+going to see how Jest achieves the same result using a different approach.
 
 What is the problem?
 --------------------
@@ -23,7 +25,9 @@ function doWork() {
 }
 ```
 
-This function has a dependency on the `XHR` class and uses the global namespace in order to get a reference to `XHR`. In order to mock this dependency, we have to monkey patch the global object.
+This function has a dependency on the `XHR` class and uses the global namespace 
+in order to get a reference to `XHR`. In order to mock this dependency, we have 
+to monkey patch the global object.
 
 ```javascript
 var oldXHR = XHR;
@@ -33,15 +37,18 @@ doWork();
 XHR = oldXHR; // if you forget this bad things will happen
 ```
 
-This small example shows two important concepts. We need a way to get a reference to `XHR` and a way to provide two implementations: one for the normal execution and one for testing.
+This small example shows two important concepts. We need a way to get a 
+reference to `XHR` and a way to provide two implementations: one for the normal 
+execution and one for testing.
 
-In this case, the solution to both concepts is to use the global object. It works, but it's not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
+In this case, the solution to both concepts is to use the global object. It 
+works, but it's not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
 
 
 How does Angular solve this problem?
 ------------------------------------
 
-In Angular, you write your code by passing dependencies as arguments
+In Angular, you write your code by passing dependencies as arguments:
 
 ```javascript
 function doWork(XHR) {
@@ -51,7 +58,8 @@ function doWork(XHR) {
 }
 ```
 
-It makes it very easy to write a test, you just pass your mocked version as argument to your function
+It makes it very easy to write a test -- you just pass your mocked version as 
+argument to your function:
 
 ```javascript
 var MockXHR = function() {};
@@ -59,7 +67,9 @@ doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 ```
 
-But it's a pain to thread these constructor arguments through a real application. So Angular uses `injector` behind the scenes, that makes it easy to create instances that automatically acquire their dependencies.
+But it's a pain to thread these constructor arguments throughout a real 
+application. So Angular uses an `injector` behind the scenes. This makes it 
+easy to create instances that automatically acquire their dependencies:
 
 ```
 var injectedDoWork = injector.instantiate(doWork);
@@ -73,15 +83,20 @@ function injectedDoWork() {
 }
 ```
 
-Angular inspects the function and sees that it has one argument called `XHR`. It then provides the value `injector.get('XHR')` for the variable `XHR`.
+Angular inspects the function and sees that it has one argument called `XHR`. 
+It then provides the value `injector.get('XHR')` for the variable `XHR`.
 
-In order to have a function to be testable by Angular, you have to write your code in this specific way and pass it through a function before being able to use it.
+In order to have a testable function in Angular, you must conform to this
+specific pattern and pass it into Angular's DI framework before you can use it.
 
 
 How does Jest solve this problem?
 ---------------------------------
 
-Angular is using arguments as a way to model dependencies and has to implement its own module loader. Most large JavaScript applications already use a module loader with the `require` function. In a CommonJS JavaScript app, the example above would really look like this:
+Angular uses function arguments as a way to model dependencies and has to 
+implement its own module loader. Most large JavaScript applications already use 
+a module loader with the `require` function. In a CommonJS JavaScript app, the 
+example above would look more like this:
 
 ```
 var XHR = require('XHR');
@@ -92,7 +107,10 @@ function doWork() {
 }
 ```
 
-The interesting aspect of this code is that the dependency on `XHR` is already intermediated by `require`. The idea of Jest is to use this as a seam for inserting test doubles by implementing a special `require` in the testing environment.
+The interesting aspect of this code is that the dependency on `XHR` is
+marshalled by `require()`. The idea behind Jest is to use this as a seam for 
+inserting test doubles by implementing a special `require` in the testing 
+environment.
 
 ```
 jest.mock('XHR');
@@ -102,10 +120,10 @@ jest.dontMock('XHR');
 require('XHR'); // returns the real XHR module
 ```
 
-This way, you can write your test like this
+This allows you to write your tests like this:
 
 ```
-jest.mock('XHR'); // note: this is done automatically
+jest.mock('XHR'); // note: by default, this is done automatically in jest
 doWork();
 var MockXHR = require('XHR');
 // assert that MockXHR got called with the right arguments
@@ -114,8 +132,18 @@ var MockXHR = require('XHR');
 Conclusion
 ----------
 
-Dependency Injection is a very powerful tool that lets you swap the implementation of any module at any time. However, the vast majority of the time you just have one implementation for production and one for testing. Jest is optimized for this specific use case.
+Dependency Injection is a very powerful tool that lets you swap the 
+implementation of any module at any time. However, the vast majority of code
+only deals with one implementation for production and one for testing. Jest is 
+designed to make this common case much simpler to test.
 
-Jest provides the same ability to mock a dependency as Angular but instead of coming up with its custom module loader, it uses CommonJS. This enables you to test all the existing code that uses CommonJS out there without having to heavily refactor it to make it compatible with Angular's module system.
+jest allows for mocking dependencies in the same way that Angular doest, but 
+instead of building a proprietary module loader, it uses CommonJS. This enables 
+you to test any existing code that already uses CommonJS without having to 
+heavily refactor it to make it compatible with a another module system such as
+Angular's.
 
-The best part is that since Angular code has been designed to be tested without any specific testing environment, you can also test Angular code using Jest.
+Fortunately, because Angular code has been designed for testing in any
+environment, it is still possible test Angular code using Jest.
+
+
