@@ -51,7 +51,10 @@ var index = React.createClass({
           <section className="home-section home-getting-started">
 
             <h3>Getting Started</h3>
-            <Marked>{/*begin_getting_started*/`Getting started with jest is pretty simple. If you want to test the following \`sum.js\` file,
+            <Marked>{/*generated_getting_started*/``
+ping ping
+
+Getting started with jest is pretty simple. If you want to test the following \`sum.js\` file,
 
 \`\`\`javascript
 // sum.js
@@ -94,7 +97,7 @@ describe('sum', function() {
 \`\`\`
 [PASS] __tests__/sum-test.js (0.015s)
 \`\`\`
-`/*end_getting_started*/}</Marked>
+`/*generated_getting_started_end*/}</Marked>
 
           </section>
           <hr className="home-divider" />

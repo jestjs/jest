@@ -17,6 +17,10 @@ function splitHeader(content) {
   };
 }
 
+function backtickify(str) {
+  return '`' + str.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`';
+}
+
 function execute() {
   var MD_DIR = 'docs/';
 
@@ -32,6 +36,13 @@ function execute() {
       '<generated_getting_started>' + getting_started + '</generated_getting_started>'
     );
   fs.writeFileSync('../README.MD', readme);
+
+  var index = fs.readFileSync('src/jest/index.js', {encoding: 'utf8'}).toString()
+    .replace(
+      /\/[*]generated_getting_started[\s\S]*generated_getting_started_end[*]\//,
+      '/*generated_getting_started*/`' + backtickify(getting_started) + '/*generated_getting_started_end*/'
+    );
+  fs.writeFileSync('src/jest/index.js', index);
 
   glob('src/jest/docs/*.*', function(er, files) {
     files.forEach(function(file) {
@@ -83,7 +94,7 @@ function execute() {
             'var layout = require("' + layout + '");\n' +
             'module.exports = React.createClass({\n' +
             '  render: function() {\n' +
-            '    return layout({metadata: ' + JSON.stringify(metadata) + '}, `' + both.content.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`);\n' +
+            '    return layout({metadata: ' + JSON.stringify(metadata) + '}, ' + backtickify(both.content) + ');\n' +
             '  }\n' +
             '});\n'
           );
