@@ -58,7 +58,7 @@ doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 \`\`\`
 
-But it's a pain to thread these constructor arguments through a real application. So Angular includes an \`injector\`, that makes it easy to create instances that automatically acquire their dependencies.
+But it's a pain to thread these constructor arguments through a real application. So Angular uses \`injector\` behind the scenes, that makes it easy to create instances that automatically acquire their dependencies.
 
 \`\`\`
 var injectedDoWork = injector.instantiate(doWork);
@@ -80,7 +80,7 @@ In order to have a function to be testable by Angular, you have to write your co
 How does Jest solve this problem?
 ---------------------------------
 
-The example given above is slightly unrealistic. Most large JavaScript applications use modules and the \`require\` function to break up dependencies. In a modular JavaScript app, the example above would really look like this:
+Angular is using arguments as a way to model dependencies and has to implement its own module loader. Most large JavaScript applications already use a module loader with the \`require\` function. In a CommonJS JavaScript app, the example above would really look like this:
 
 \`\`\`
 var XHR = require('XHR');
@@ -113,9 +113,11 @@ var MockXHR = require('XHR');
 Conclusion
 ----------
 
-By using existing \`require\` calls, Jest can mock dependencies without having to refactor your code. This provides a way to incrementally test your code and accomodates third party libraries.
+Dependency Injection is a very powerful tool that lets you swap the implementation of any module at any time. However, the vast majority of the time you just have one implementation for production and one for testing. Jest is optimized for this specific use case.
 
-Using Dependency Injection by wrapping every function in order to provide dependencies has a runtime cost. Jest moves this cost from production to the testing environment.
+Jest provides the same ability to mock a dependency as Angular but instead of coming up with its custom module loader, it uses CommonJS. This enables you to test all the existing code that uses CommonJS out there without having to heavily refactor it to make it compatible with Angular's module system.
+
+The best part is that since Angular code has been designed to be tested without any specific testing environment, you can also test Angular code using Jest.
 `);
   }
 });

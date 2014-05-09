@@ -52,8 +52,6 @@ var index = React.createClass({
 
             <h3>Getting Started</h3>
             <Marked>{/*generated_getting_started*/``
-ping ping
-
 Getting started with jest is pretty simple. If you want to test the following \`sum.js\` file,
 
 \`\`\`javascript

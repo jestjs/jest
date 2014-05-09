@@ -8,7 +8,7 @@ previous: common-js-testing
 next: mock-functions
 ---
 
-In order to isolate the code under test, required modules are mocked in unit tests. Mocks are generated automatically, unless an explicit mock is provided manually. For this reason, the first line in your unit test should be like:
+In order to write an effective unit test, you want to test only the module and isolate it from its dependencies. Jest makes this best practice extremely easy by creating a mocked version of all the dependencies by default.
 
 ```javascript
 jest.dontMock('MyModule');
