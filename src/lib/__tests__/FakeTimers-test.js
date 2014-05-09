@@ -9,7 +9,7 @@ describe('FakeTimers', function() {
     FakeTimers = require('../FakeTimers');
   });
 
-  xdescribe('construction', function() {
+  describe('construction', function() {
     /* jshint nonew:false */
     it('installs setTimeout mock', function() {
       var global = {};
@@ -53,7 +53,7 @@ describe('FakeTimers', function() {
     });
   });
 
-  xdescribe('runAllTicks', function() {
+  describe('runAllTicks', function() {
     it('runs all ticks, in order', function() {
       var global = {
         process: {
@@ -186,7 +186,7 @@ describe('FakeTimers', function() {
     });
   });
 
-  xdescribe('runAllTimers', function() {
+  describe('runAllTimers', function() {
     it('runs all timers in order', function() {
       var global = {};
       var fakeTimers = new FakeTimers(global);
@@ -276,7 +276,7 @@ describe('FakeTimers', function() {
     });
   });
 
-  xdescribe('runTimersToTime', function() {
+  describe('runTimersToTime', function() {
     it('runs timers in order', function() {
       var global = {};
       var fakeTimers = new FakeTimers(global);
@@ -347,7 +347,7 @@ describe('FakeTimers', function() {
     });
   });
 
-  xdescribe('reset', function() {
+  describe('reset', function() {
     it('resets all pending setTimeouts', function() {
       var global = {};
       var fakeTimers = new FakeTimers(global);
@@ -404,7 +404,7 @@ describe('FakeTimers', function() {
     });
   });
 
-  xdescribe('runCurrentlyPendingTimersOnly', function() {
+  describe('runCurrentlyPendingTimersOnly', function() {
     it('runs all timers in order', function() {
       var global = {};
       var fakeTimers = new FakeTimers(global);
