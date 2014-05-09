@@ -40,7 +40,7 @@ function execute() {
   var index = fs.readFileSync('src/jest/index.js', {encoding: 'utf8'}).toString()
     .replace(
       /\/[*]generated_getting_started[\s\S]*generated_getting_started_end[*]\//,
-      '/*generated_getting_started*/`' + backtickify(getting_started) + '/*generated_getting_started_end*/'
+      '/*generated_getting_started*/' + backtickify(getting_started) + '/*generated_getting_started_end*/'
     );
   fs.writeFileSync('src/jest/index.js', index);
 

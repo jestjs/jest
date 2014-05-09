@@ -42,7 +42,7 @@ var index = React.createClass({
               <div className="marketing-col">
                 <h3>Fast</h3>
                 <p>
-                  Tests run in parallel, DOM APIs are mocked, and it's easy to run a subset of your tests.
+                  Tests run in parallel, DOM APIs are mocked, and it{"'"}s easy to run a subset of your tests.
                 </p>
               </div>
             </div>
@@ -51,7 +51,7 @@ var index = React.createClass({
           <section className="home-section home-getting-started">
 
             <h3>Getting Started</h3>
-            <Marked>{/*generated_getting_started*/``
+            <Marked>{/*generated_getting_started*/`
 Getting started with jest is pretty simple. If you want to test the following \`sum.js\` file,
 
 \`\`\`javascript

@@ -9,8 +9,6 @@ module.exports = React.createClass({
     return layout({metadata: {"filename":"AutoMocks.js","id":"auto-mocks","title":"AutoMocks","layout":"docs","category":"Core Concepts","permalink":"auto-mocks.html","previous":"common-js-testing","next":"mock-functions","href":"/jest/docs/auto-mocks.html"}}, `
 In order to write an effective unit test, you want to test only the module and isolate it from its dependencies. Jest makes this best practice extremely easy by creating a mocked version of all the dependencies by default.
 
-
-
 \`\`\`javascript
 jest.dontMock('MyModule');
 \`\`\`
