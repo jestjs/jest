@@ -16,7 +16,7 @@ module.exports = [
   {
     "filename": "AutoMocks.js",
     "id": "auto-mocks",
-    "title": "AutoMocks",
+    "title": "Automatic Mocking",
     "layout": "docs",
     "category": "Core Concepts",
     "permalink": "auto-mocks.html",
