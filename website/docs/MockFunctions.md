@@ -22,7 +22,7 @@ or by explicitly requesting one from `jest.genMockFunction()` in your test:
 var myMock = jest.genMockFunction();
 myMock('1');
 myMock('a', 'b');
-console.log(f.mock.calls);
+console.log(myMock.mock.calls);
 > [ [1], ['a', 'b'] ]
 ```
 
