@@ -704,7 +704,8 @@ InlineLexer.prototype.outputLink = function(cap, link) {
   if (cap[0][0] !== '!') {
     return React.DOM.a({
       href: this.sanitizeUrl(link.href),
-      title: link.title
+      title: link.title,
+      target: link.href.charAt(0) !== '/' ? '_blank' : ''
     }, this.output(cap[1]));
   } else {
     return React.DOM.img({
