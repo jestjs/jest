@@ -26,7 +26,7 @@ function JSDomEnvironment() {
   //       about it should just shim it themselves?)
   this.global.navigator.onLine = true;
 
-  // Pass node's TypedArray implementation through
+  // Pass through the node implementation of some needed APIs
   this.global.ArrayBuffer = ArrayBuffer;
   this.global.Float32Array = Float32Array;
   this.global.Int16Array = Int16Array;
@@ -36,14 +36,9 @@ function JSDomEnvironment() {
   this.global.Uint16Array = Uint16Array;
   this.global.Uint32Array = Uint32Array;
   this.global.DataView = DataView;
-
-  // Pass node's Buffer object through
   this.global.Buffer = Buffer;
-
-  // Pass node's Process object through
   this.global.process = process;
 
-  // Setup faked-out timers
   this.fakeTimers = new FakeTimers(this.global);
 
   // I kinda wish tests just did this manually rather than relying on a
