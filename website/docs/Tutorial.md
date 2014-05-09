@@ -9,7 +9,7 @@ next: common-js-testing
 ---
 
 
-We want to test the following function (borrowed from [this great article on testing asynchronous functions](http://martinfowler.com/articles/asyncJS.html)). It does an ajax request to get the current user as JSON, transforms this JSON into a new object and pass it to the callback. Very typical code.
+To begin, let's see how we might test the following function (borrowed from [this great article on testing asynchronous functions](http://martinfowler.com/articles/asyncJS.html)). It does an ajax request to get the current user as JSON, transforms this JSON into a new object and pass it to the callback. Very typical code.
 
 ```javascript
 // fetchCurrentUser.js
@@ -35,67 +35,102 @@ function fetchCurrentUser(callback) {
 module.exports = fetchCurrentUser;
 ```
 
-In order to test the function we need to create a `__tests__/` folder where the file `fetchCurrentUser.js` is. In this folder, we create a file called `fetchCurrentUser-test.js` and put some boilerplate code in.
+In order to write a test for this module, we need to create a `__tests__/`
+directory where the file `fetchCurrentUser.js` is. In this folder, we create a
+file called `fetchCurrentUser-test.js` and we write our test in it:
 
 ```javascript
 // __tests__/fetchCurrentUser-test.js
 jest.dontMock('../fetchCurrentUser.js');
 
 describe('fetchCurrentUser', function() {
-  it('creates a parsed user', function() {
+  it('calls into $.ajax with the correct params', function() {
     var $ = require('jquery');
-    var fetchCurrentUser = require('../fetchCurrentUser.js');
-```
+    var fetchCurrentUser = require('../fetchCurrentUser');
 
-The most important line is `jest.dontMock('../fetchCurrentUser.js');`. Jest by default automatically turns all the require calls into mocks, we want to make sure that we don't mock the file we are trying to test.
+    // Call into the function we want to test
+    function dummyCallback() {}
+    fetchCurrentUser(dummyCallback);
 
-We want to make sure that the callback given to `fetchCurrentUser` is correctly executed. In order to do that, we're going to generate a mock function and make sure that it is called with the proper arguments.
-
-```javascript
-    var fetchCallback = jest.genMockFunction();
-    fetchCurrentUser(fetchCallback);
-
-    // ... missing code ...
-
-    expect(fetchCallback).toBeCalledWith({
-      loggedIn: true,
-      fullName: 'Jeff Morrison'
+    // Now make sure that $.ajax was properly called during the previous
+    // 2 lines
+    expect($.ajax).toBeCalledwith({
+      type: 'GET',
+      url: 'http://example.com/currentUser',
+      done: jasmine.any(Function)
     });
   });
 });
 ```
 
-In order to compute the result, `fetchCurrentUser` is calling to a dependency: `$.ajax`. To write a complete test, we first need to make sure that it is calling the dependency correctly.
+The first line is very important: `jest.dontMock('../fetchCurrentUser.js');`.
+By default, jest automatically makes all calls to `require()` return a mocked
+version of the real module -- so we need to tell jest not to mock the file we 
+want to test.
+
+Moving along into our first test, we want to confirm that calling 
+`fetchCurrentUser()` properly incurs a call into `$.ajax()` with the parameters
+we expect. To do this, we just call `fetchCurrentUser()` with a dummy callback
+function, and then simply inspect the `$.ajax` mock to verify that it was called
+with the correct parameters.
+
+Woohoo! We've written our first test. But we're not quite done: We would still
+like to test that the callback we are passing in is indeed called back when the
+`$.ajax` request has completed. For this we do the following:
 
 ```javascript
-    expect($.ajax).toBeCalledWith({
-      type: 'GET',
-      url: 'http://example.com/currentUser',
-      done: jasmine.any(Function)
+  it('calls the callback when $.ajax requests are finished', function() {
+    var $ = require('jquery');
+    var fetchCurrentUser = require('../fetchCurrentUser');
+
+    // Create a mock function for our callback
+    var callback = jest.genMockFunction();
+    fetchCurrentUser(callback);
+
+    // Now we emulate the process by which `$.ajax` would execute its own
+    // callback
+    $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].done({
+      firstName: 'Bobby',
+      lastName: '");DROP TABLE Users;--'
     });
+
+    // And finally we assert that this emulated call by `$.ajax` incurred a 
+    // call back into the mock function we provided as a callback
+    expect(callback.mock.calls[0/*first call*/][0/*first arg*/]).toEqual({
+      firstName: 'Bobby',
+      lastName: '");DROP TABLE Users;--'
+    });
+  });
 ```
 
-In order to generate the mock for `$`, it requires the real jQuery file, inspects the result and converts all the functions into mocked functions. This way, `$.ajax` is a mocked function that you can manipulate.
+In order for `fetchCurrentUser` to compute the result to be passed in to the 
+callback, `fetchCurrentUser` will call in to one of it's dependencies: `$.ajax`.
+Since jest has mocked this dependency for us, it's very easy to inspect all of
+the interactions with `$.ajax` that occurred during our test.
 
-Now, we need to simulate a response for the ajax query.
+At this point, you might be wondering how jest was able to decide what the mock
+for the `jQuery` module should look like. The answer is plain and simple: jest
+secretly requires the real module, inspects what it looks like, and then builds 
+a mocked version of what it saw. This is how jest knew that there should be an
+`ajax` property, and that that property should be a mock function.
 
-```javascript
-    $.ajax.mock.calls[0/*first call*/][0/*first argument*/].done({
-      firstName: 'Jeff',
-      lastName: 'Morrison'
-    });
-```
+In jest, all mock functions have a `.mock` property that stores all the 
+interactions with the function. In the above case, we are reading from 
+`mock.calls`, which is an array that contains information about each time the 
+function was called, and what arguments each of those calls had. 
 
-Mock functions have a `.mock` property that stores all the interactions with the function. In this case, we are reading from `.calls` which contains the arguments it was called with. We can traverse this list in order to find the callback and call it.
-
-Now it is time to see if it worked
+Now it is time to see if it worked:
 
 ```
 > npm test
 [PASS] jest/examples/__tests__/fetchCurrentUser-test.js (0.075s)
 ```
 
-And that's it, we just tested this asynchronous function. One thing to notice is that the code we've written is very synchronous. This is one of the strength of mock functions, the code you write to test synchronous or asynchronous functions looks exactly the same.
+Woohoo! That's it, we just tested this asynchronous function. One thing to 
+notice is that the code we've written is entirely synchronous. This is one of 
+the strengths of using mock functions in this way: The code you write in tests 
+is always straightfoward and imperative, no matter if the code under test is
+synchronous or asynchronous.
 
 
 jQuery
