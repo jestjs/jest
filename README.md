@@ -11,7 +11,7 @@ Painless JavaScript Unit Testing
 Take a look at the [website for more information](http://facebook.github.io/react/)
 
 ## Getting Started
-<generated_getting_started_start>
+<generated_getting_started>
 Getting started with jest is pretty simple. If you want to test the following `sum.js` file,
 
 ```javascript
@@ -55,10 +55,11 @@ describe('sum', function() {
 ```
 [PASS] __tests__/sum-test.js (0.015s)
 ```
-<generated_getting_started_end>
+</generated_getting_started>
 
 ## API
-<generated_api_start>
+
+<generated_api>
 #### `jest`
 
   - `.genMockFunction()` with alias `.genMockFn()`
@@ -111,9 +112,9 @@ describe('sum', function() {
 
 #### package.json
 
-- `jest`
-  - `projectName`
-  - `testPathDirs`
-  - `testPathIgnores`
-  - `moduleLoaderPathIgnores`
-<generated_api_end>
+  - `jest`
+    - `projectName`
+    - `testPathDirs`
+    - `testPathIgnores`
+    - `moduleLoaderPathIgnores`
+</generated_api>

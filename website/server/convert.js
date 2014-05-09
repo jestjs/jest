@@ -21,14 +21,14 @@ function execute() {
   var MD_DIR = 'docs/';
 
   var api = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content;
-  var getting_started = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content;
+  var getting_started = splitHeader(fs.readFileSync(MD_DIR + 'GettingStarted.md', {encoding: 'utf8'}).toString()).content;
   var readme = fs.readFileSync('../README.md', {encoding: 'utf8'}).toString()
     .replace(
-      /<generated_api>.+<\/generated_api>/,
+      /<generated_api>[\s\S]*<\/generated_api>/,
       '<generated_api>' + api + '</generated_api>'
     )
     .replace(
-      /<generated_getting_started>.+<\/generated_getting_started>/,
+      /<generated_getting_started>[\s\S]*<\/generated_getting_started>/,
       '<generated_getting_started>' + getting_started + '</generated_getting_started>'
     );
   fs.writeFileSync('../README.MD', readme);
@@ -104,6 +104,11 @@ function execute() {
       'module.exports = ' + JSON.stringify(metadatas, null, 2) + ';'
     );
   });
+}
+
+if (argv.convert) {
+  console.log('convert!')
+  execute();
 }
 
 module.exports = execute;
