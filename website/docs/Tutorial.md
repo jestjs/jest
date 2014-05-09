@@ -5,7 +5,7 @@ layout: docs
 category: Quick Start
 permalink: tutorial.html
 previous: getting-started
-next: seamless-dependency-injection
+next: common-js-testing
 ---
 
 

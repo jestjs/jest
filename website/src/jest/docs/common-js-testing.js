@@ -6,9 +6,8 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"SeamlessDependencyInjection.js","id":"seamless-dependency-injection","title":"Seamless Dependency Injection","layout":"docs","category":"Core Concepts","permalink":"seamless-dependency-injection.html","previous":"tutorial","next":"auto-mocks","href":"/jest/docs/seamless-dependency-injection.html"}}, `---
-
-Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach called Seamless Injection.
+    return layout({metadata: {"filename":"CommonJSTesting.js","id":"common-js-testing","title":"Common JS Testing","layout":"docs","category":"Core Concepts","permalink":"common-js-testing.html","previous":"tutorial","next":"auto-mocks","href":"/jest/docs/common-js-testing.html"}}, `
+Dependency Injection was popularized in the JavaScript community by Angular as a way to mock dependencies in order to make code testable. In this article, we're going to see how Jest achieves the same result using a different approach.
 
 What is the problem?
 --------------------

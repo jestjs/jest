@@ -4,7 +4,7 @@ title: AutoMocks
 layout: docs
 category: Core Concepts
 permalink: auto-mocks.html
-previous: seamless-dependency-injection
+previous: common-js-testing
 next: mock-functions
 ---
 

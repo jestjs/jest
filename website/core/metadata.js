@@ -20,9 +20,20 @@ module.exports = [
     "layout": "docs",
     "category": "Core Concepts",
     "permalink": "auto-mocks.html",
-    "previous": "seamless-dependency-injection",
+    "previous": "common-js-testing",
     "next": "mock-functions",
     "href": "/jest/docs/auto-mocks.html"
+  },
+  {
+    "filename": "CommonJSTesting.js",
+    "id": "common-js-testing",
+    "title": "Common JS Testing",
+    "layout": "docs",
+    "category": "Core Concepts",
+    "permalink": "common-js-testing.html",
+    "previous": "tutorial",
+    "next": "auto-mocks",
+    "href": "/jest/docs/common-js-testing.html"
   },
   {
     "filename": "GettingStarted.js",
@@ -57,17 +68,6 @@ module.exports = [
     "href": "/jest/docs/mock-functions.html"
   },
   {
-    "filename": "SeamlessDependencyInjection.js",
-    "id": "seamless-dependency-injection",
-    "title": "Seamless Dependency Injection",
-    "layout": "docs",
-    "category": "Core Concepts",
-    "permalink": "seamless-dependency-injection.html",
-    "previous": "tutorial",
-    "next": "auto-mocks",
-    "href": "/jest/docs/seamless-dependency-injection.html"
-  },
-  {
     "filename": "TimerMocks.js",
     "id": "timer-mocks",
     "title": "Timer mocks",
@@ -86,7 +86,7 @@ module.exports = [
     "category": "Quick Start",
     "permalink": "tutorial.html",
     "previous": "getting-started",
-    "next": "seamless-dependency-injection",
+    "next": "common-js-testing",
     "href": "/jest/docs/tutorial.html"
   }
 ];

@@ -6,8 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"GettingStarted.js","id":"getting-started","title":"Getting Started","layout":"docs","category":"Quick Start","permalink":"getting-started.html","next":"tutorial","href":"/jest/docs/getting-started.html"}}, `---
-
+    return layout({metadata: {"filename":"GettingStarted.js","id":"getting-started","title":"Getting Started","layout":"docs","category":"Quick Start","permalink":"getting-started.html","next":"tutorial","href":"/jest/docs/getting-started.html"}}, `
 Getting started with jest is pretty simple. If you want to test the following \`sum.js\` file,
 
 \`\`\`javascript

@@ -4,16 +4,34 @@ var mkdirp = require('mkdirp');
 var optimist = require('optimist');
 var argv = optimist.argv;
 
+function splitHeader(content) {
+  var lines = content.split('\n');
+  for (var i = 1; i < lines.length - 1; ++i) {
+    if (lines[i] === '---') {
+      break;
+    }
+  }
+  return {
+    header: lines.slice(1, i + 1).join('\n'),
+    content: lines.slice(i + 1).join('\n')
+  };
+}
+
 function execute() {
   var MD_DIR = 'docs/';
 
-  var metadatas = [];
-
-  var generators = [
-    {path: new RegExp('.*'), action: function(metadata) {
-      return 'docs/' + metadata.id + '.js'
-    }}
-  ];
+  var api = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content;
+  var getting_started = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content;
+  var readme = fs.readFileSync('../README.md', {encoding: 'utf8'}).toString()
+    .replace(
+      /<generated_api>.+<\/generated_api>/,
+      '<generated_api>' + api + '</generated_api>'
+    )
+    .replace(
+      /<generated_getting_started>.+<\/generated_getting_started>/,
+      '<generated_getting_started>' + getting_started + '</generated_getting_started>'
+    );
+  fs.writeFileSync('../README.MD', readme);
 
   glob('src/jest/docs/*.*', function(er, files) {
     files.forEach(function(file) {
@@ -21,17 +39,24 @@ function execute() {
     });
   });
 
+
+  var metadatas = [];
+  var generators = [
+    {path: new RegExp('.*'), action: function(metadata) {
+      return 'docs/' + metadata.id + '.js'
+    }}
+  ];
+
   glob(MD_DIR + '**/*.md', function (er, files) {
     files.forEach(function(file) {
       var content = fs.readFileSync(file, {encoding: 'utf8'});
 
       // Extract markdown metadata header
       var metadata = { filename: file.substr(MD_DIR.length).replace(/\.md$/, '.js') };
-      var lines = content.split('\n');
-      for (var i = 1; i < lines.length - 1; ++i) {
-        if (lines[i] === '---') {
-          break;
-        }
+
+      var both = splitHeader(content);
+      var lines = both.header.split('\n');
+      for (var i = 0; i < lines.length - 1; ++i) {
         var keyvalue = lines[i].split(':');
         var key = keyvalue[0].trim();
         var value = keyvalue[1].trim();
@@ -40,7 +65,6 @@ function execute() {
         metadata[key] = value;
       }
       metadatas.push(metadata);
-      var body = lines.slice(i).join('\n');
 
       // Create a dummy .js version that just calls the associated layout
       for (var i = 0; i < generators.length; ++i) {
@@ -59,7 +83,7 @@ function execute() {
             'var layout = require("' + layout + '");\n' +
             'module.exports = React.createClass({\n' +
             '  render: function() {\n' +
-            '    return layout({metadata: ' + JSON.stringify(metadata) + '}, `' + body.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`);\n' +
+            '    return layout({metadata: ' + JSON.stringify(metadata) + '}, `' + both.content.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`);\n' +
             '  }\n' +
             '});\n'
           );
