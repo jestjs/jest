@@ -134,9 +134,9 @@ Conclusion
 
 A good goal to aim for when designing a system is to provide an API that is easy
 to use for 90% of the use cases, but still leaves the ability to accomplish the
-last 10% as well. In this case, automated mocking solves the rather
+last 10% as well. In the case of jest, automated mocking solves the rather
 uninteresting (but common) task of writing boilerplate to generate mocks for
-the unit you are testing. However, jest still makes it possible to have complete
+the unit you are testing. However, it is still possible to have complete
 control over what is mocked and what is not by providing `jest.mock()` and
 `jest.dontMock()` APIs for customization.
 
