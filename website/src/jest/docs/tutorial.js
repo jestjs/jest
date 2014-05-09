@@ -53,7 +53,7 @@ describe('fetchCurrentUser', function() {
 
     // Now make sure that $.ajax was properly called during the previous
     // 2 lines
-    expect($.ajax).toBeCalledwith({
+    expect($.ajax).toBeCalledWith({
       type: 'GET',
       url: 'http://example.com/currentUser',
       done: jasmine.any(Function)
@@ -96,8 +96,8 @@ like to test that the callback we are passing in is indeed called back when the
     // And finally we assert that this emulated call by \`$.ajax\` incurred a 
     // call back into the mock function we provided as a callback
     expect(callback.mock.calls[0/*first call*/][0/*first arg*/]).toEqual({
-      firstName: 'Bobby',
-      lastName: '");DROP TABLE Users;--'
+      loggedIn: true,
+      fullName: 'Bobby ");DROP TABLE Users;--'
     });
   });
 \`\`\`
@@ -135,7 +135,10 @@ synchronous or asynchronous.
 jQuery
 ------
 
-Another class of functions that is usually considered hard to test is code that contains DOM manipulations. Let see how we can test this jQuery snippet that listens to a click event, fetches some data asynchronously and sets the content of a span.
+Another class of functions that is usually considered hard to test is code that
+directly manipulates the DOM. Let see how we can test the following snippet of
+jQuery code that listens to a click event, fetches some data asynchronously and
+sets the content of a span.
 
 \`\`\`javascript
 // displayUser.js
