@@ -1,6 +1,8 @@
 'use strict';
 
-require('jest-runtime').autoMockOff();
+require('jest-runtime')
+  .autoMockOff()
+  .mock('fs');
 
 var q = require('q');
 
@@ -13,9 +15,11 @@ describe('TestRunner', function() {
 
   describe('findTestsRelatedTo', function() {
     var fakeDepsFromPath;
+    var fs;
     var runner;
 
     beforeEach(function() {
+      fs = require('fs');
       runner = new TestRunner({testPathDirs: []});
 
       fakeDepsFromPath = {};
@@ -32,6 +36,9 @@ describe('TestRunner', function() {
       var path = '/path/to/module/not/covered/by/any/tests.js';
       fakeDepsFromPath[path] = [];
 
+      // Mock out existsSync to return true, since our test path isn't real
+      fs.existsSync = function() { return true; }
+
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([]);
       });
@@ -41,6 +48,9 @@ describe('TestRunner', function() {
       var path = '/path/to/module/covered/by/one/test.js';
       var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
       fakeDepsFromPath[path] = [dependentTestPath];
+
+      // Mock out existsSync to return true, since our test path isn't real
+      fs.existsSync = function() { return true; }
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath]);
@@ -53,6 +63,9 @@ describe('TestRunner', function() {
       var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
       fakeDepsFromPath[path] = [dependentModulePath];
       fakeDepsFromPath[dependentModulePath] = [dependentTestPath];
+
+      // Mock out existsSync to return true, since our test path isn't real
+      fs.existsSync = function() { return true; }
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath]);
@@ -68,6 +81,9 @@ describe('TestRunner', function() {
       fakeDepsFromPath[path] = [dependentModulePath1, dependentModulePath2];
       fakeDepsFromPath[dependentModulePath1] = [dependentTestPath1];
       fakeDepsFromPath[dependentModulePath2] = [dependentTestPath2];
+
+      // Mock out existsSync to return true, since our test path isn't real
+      fs.existsSync = function() { return true; }
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath1, dependentTestPath2]);
@@ -87,8 +103,27 @@ describe('TestRunner', function() {
         dependentTestPath
       ];
 
+      // Mock out existsSync to return true, since our test path isn't real
+      fs.existsSync = function() { return true; }
+
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath]);
+      });
+    });
+
+    pit('filters test paths that don\'t exist on the filesystem', function() {
+      var path = '/path/to/module/covered/by/one/test.js';
+      var existingTestPath = '/path/to/test/__tests__/exists-test.js';
+      var nonExistantTestPath = '/path/to/test/__tests__/doesnt-exist-test.js';
+      fakeDepsFromPath[path] = [existingTestPath, nonExistantTestPath];
+
+      // Mock out existsSync to return true, since our test path isn't real
+      fs.existsSync = function(path) {
+        return path !== nonExistantTestPath;
+      };
+
+      return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
+        expect(relatedTests).toEqual([existingTestPath]);
       });
     });
   });
