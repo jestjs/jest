@@ -37,7 +37,7 @@ describe('TestRunner', function() {
       fakeDepsFromPath[path] = [];
 
       // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; }
+      fs.existsSync = function() { return true; };
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([]);
@@ -50,7 +50,7 @@ describe('TestRunner', function() {
       fakeDepsFromPath[path] = [dependentTestPath];
 
       // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; }
+      fs.existsSync = function() { return true; };
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath]);
@@ -65,7 +65,7 @@ describe('TestRunner', function() {
       fakeDepsFromPath[dependentModulePath] = [dependentTestPath];
 
       // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; }
+      fs.existsSync = function() { return true; };
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath]);
@@ -83,7 +83,7 @@ describe('TestRunner', function() {
       fakeDepsFromPath[dependentModulePath2] = [dependentTestPath2];
 
       // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; }
+      fs.existsSync = function() { return true; };
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath1, dependentTestPath2]);
@@ -104,7 +104,7 @@ describe('TestRunner', function() {
       ];
 
       // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; }
+      fs.existsSync = function() { return true; };
 
       return runner.findTestsRelatedTo([path]).then(function(relatedTests) {
         expect(relatedTests).toEqual([dependentTestPath]);

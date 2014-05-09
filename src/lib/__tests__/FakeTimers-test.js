@@ -298,7 +298,7 @@ describe('FakeTimers', function() {
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
       global.setTimeout(mock3, 0);
-      var intervalHandler = global.setInterval(function() {
+      global.setInterval(function() {
         mock4();
       }, 200);
 
@@ -404,7 +404,7 @@ describe('FakeTimers', function() {
     });
   });
 
-  describe('runCurrentlyPendingTimersOnly', function() {
+  describe('runOnlyPendingTimers', function() {
     it('runs all timers in order', function() {
       var global = {};
       var fakeTimers = new FakeTimers(global);
@@ -425,14 +425,14 @@ describe('FakeTimers', function() {
         runOrder.push('mock3');
       }, 200);
 
-      fakeTimers.runCurrentlyPendingTimersOnly();
+      fakeTimers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
         'mock2',
         'mock1',
         'mock3'
       ]);
 
-      fakeTimers.runCurrentlyPendingTimersOnly();
+      fakeTimers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
         'mock2',
         'mock1',

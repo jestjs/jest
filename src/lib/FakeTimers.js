@@ -46,7 +46,7 @@ function FakeTimers(global) {
   //       They will go away very soon, so do not use them!
   //       Instead, use the versions available on the `jest` object
   global.mockRunTicksRepeatedly = this.runAllTicks.bind(this);
-  global.mockRunTimersOnce = this.runCurrentlyPendingTimersOnly.bind(this);
+  global.mockRunTimersOnce = this.runOnlyPendingTimers.bind(this);
   global.mockRunTimersToTime = this.runTimersToTime.bind(this);
   global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
   global.mockClearTimers = this.clearAllTimers.bind(this);
@@ -123,7 +123,7 @@ FakeTimers.prototype.runAllTimers = function() {
 };
 
 // Used to be called runTimersOnce
-FakeTimers.prototype.runCurrentlyPendingTimersOnly = function() {
+FakeTimers.prototype.runOnlyPendingTimers = function() {
   var timers = this._timers;
   Object.keys(timers)
     .sort(function(left, right) {
@@ -201,6 +201,9 @@ FakeTimers.prototype.runWithRealTimers = function(cb) {
   this._global.setInterval = fakeSetInterval;
   this._global.clearTimeout = fakeClearTimeout;
   this._global.clearInterval = fakeClearInterval;
+  if (hasNextTick) {
+    this._global.process.nextTick = fakeNextTick;
+  }
 
   if (errThrown) {
     throw cbErr;

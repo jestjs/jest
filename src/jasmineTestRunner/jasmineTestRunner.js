@@ -1,6 +1,5 @@
 'use strict';
 
-var FakeTimers = require('../lib/FakeTimers');
 var fs = require('fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
@@ -8,7 +7,8 @@ var path = require('path');
 var utils = require('../lib/utils');
 
 var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
-var jasmineFileContent = fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
+var jasmineFileContent =
+  fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
 var JASMINE_ONLY_ROOT = path.dirname(require.resolve('jasmine-only'));
 var POTENTIALLY_PRECOMPILED_FILE = path.join(
@@ -93,7 +93,8 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           }
           if (!hasKey(b, property) && hasKey(a, property)) {
             mismatchKeys.push(
-              'expected missing key \'' + property + '\', but present in actual.'
+              'expected missing key \'' + property + '\', but present in ' +
+              'actual.'
             );
           }
         }

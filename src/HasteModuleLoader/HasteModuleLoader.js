@@ -863,6 +863,10 @@ Loader.prototype.resetModuleRegistry = function() {
             return jestRuntime.exports;
           }.bind(this),
 
+          clearAllTimers: function() {
+            this._environment.fakeTimers.clearAllTimers();
+          }.bind(this),
+
           dontMock: function(moduleName) {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = false;
@@ -903,6 +907,18 @@ Loader.prototype.resetModuleRegistry = function() {
             this.resetModuleRegistry();
 
             return jestRuntime.exports;
+          }.bind(this),
+
+          runAllTicks: function() {
+            this._environment.fakeTimers.runAllTicks();
+          }.bind(this),
+
+          runAllTimers: function() {
+            this._environment.fakeTimers.runAllTimers();
+          },
+
+          runOnlyPendingTimers: function() {
+            this._environment.fakeTimers.runOnlyPendingTimers();
           }.bind(this),
 
           setMock: function(moduleName, moduleExports) {
