@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"API.js","id":"api","title":"API","layout":"docs","category":"Reference","permalink":"api.html","previous":"timer-mocks","href":"/jest/docs/api.html"}}, `
+    return layout({metadata: {"filename":"API.js","id":"api","title":"API","layout":"docs","category":"Reference","permalink":"api.html","previous":"timer-mocks","next":"blog-post","href":"/jest/docs/api.html"}}, `
 #### \`jest\`
 
   - \`.genMockFunction()\` with alias \`.genMockFn()\`

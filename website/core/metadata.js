@@ -11,6 +11,7 @@ module.exports = [
     "category": "Reference",
     "permalink": "api.html",
     "previous": "timer-mocks",
+    "next": "blog-post",
     "href": "/jest/docs/api.html"
   },
   {
@@ -23,6 +24,16 @@ module.exports = [
     "previous": "common-js-testing",
     "next": "mock-functions",
     "href": "/jest/docs/auto-mocks.html"
+  },
+  {
+    "filename": "BlogPost.js",
+    "id": "blog-post",
+    "title": "Jest - Painless JavaScript Unit Testing",
+    "layout": "docs",
+    "category": "Blog Post",
+    "permalink": "blog-post.html",
+    "previous": "api",
+    "href": "/jest/docs/blog-post.html"
   },
   {
     "filename": "CommonJSTesting.js",
