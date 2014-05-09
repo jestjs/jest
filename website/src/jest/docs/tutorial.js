@@ -186,8 +186,8 @@ describe('displayUser', function() {
     // Use jquery to emulate a click on our button
     $('#button').click();
 
-    // Assert that the things that should have happened in the DOM actually
-    // happened
+    // Assert that the fetchCurrentUser function was called, and that the 
+    // #username span's innter text was updated as we'd it expect.
     expect(fetchCurrentUser).toBeCalled();
     expect($('#username').text()).toEqual('Johnny Cash - Logged In');
   });
@@ -201,7 +201,7 @@ DOM API that we call can be observed in the same way it would be observed in a
 browser!
 
 Since we are interested in testing that \`displayUser.js\` makes specific changes
-to the DOM, we tell jest not to mock our \`jquery\` dependency. This lets both
+to the DOM, we tell jest not to mock our \`jquery\` dependency. This lets
 \`displayUser.js\` actually mutate the DOM, and it gives us an easy means of
 querying the DOM in our test.
 `);
