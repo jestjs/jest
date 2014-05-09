@@ -8,46 +8,66 @@ previous: auto-mocks
 next: manual-mocks
 ---
 
-Mock functions make it easy to test the links between functional code, both for mocked components, and when testing an API that takes a callback. Mock functions capture parameters, constructor calls, and support configurable return values.
+Mock functions make it easy to test the links between code by erasing the actual
+implementation of a function, capturing calls to the function (and the
+parameters passed in those calls), capturing instances of constructor functions
+when instantiated with `new`, and allowing test-time configuration of return 
+values.
 
-There are two ways you get the mock functions. Either from a mocked component (See Automocks and manual mocks) or explicitly get one from the `jest.genMockFunction()`:
+There are two ways to get your hands on a mock functions: Either by
+`require()`ing a mocked component (See [Automatic Mocking](/jest/docs/auto-mocks.html))
+or by explicitly requesting one from `jest.genMockFunction()` in your test:
 
 ```javascript
-var f = jest.genMockFunction();
-f('1');
-f('a', 'b');
+var myMock = jest.genMockFunction();
+myMock('1');
+myMock('a', 'b');
 console.log(f.mock.calls);
 > [ [1], ['a', 'b'] ]
 ```
 
-All mock functions have this special "mock" member, which is where data about how this function has been called is kept. The mock member also tracks the value of 'this' for each call, so
+All mock functions have this special `.mock` property, which is where data about
+how the function has been called is kept. The `.mock` property also tracks the 
+value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
-var f = jest.genMockFunction();
+var myMock = jest.genMockFunction();
 
 var a = new f();
 var b = {};
 var bound = f.bind(b);
 bound();
 
-console.log(f.mock.instances);
+console.log(myMock.mock.instances);
 > [ <a>, <b> ]
 ```
 
-These mock members are very useful in tests to assert how these functions get called, or instantiated:
+These mock members are very useful in tests to assert how these functions get 
+called, or instantiated:
 
 ```javascript
+// The function was called exactly once
 expect(someMockFunction.mock.calls.length).toBe(1);
+
+// The first arg of the first call to the function was 'first arg'
 expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
+
+// The second arg of the first call to the function was 'second arg'
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
+
+// This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
+
+// The object returned by the first instantiation of this function 
+// had a `name` property whose value was set to 'test'
 expect(someMockFunction.mock.instances[0].name).toEqual('test');
 ```
 
-Mock functions can also be used to inject values into your test.
+Mock functions can also be used to inject test values into your code during a 
+test:
 
 ```javascript
-var f = jest.genMockFunction();
+var myMock = jest.genMockFunction();
 console.log( f() );
 > undefined
 
@@ -59,65 +79,101 @@ console.log(f(), f(), f(), f());
 > 10, 'x', true, true
 ```
 
-Mock functions can be used most effectively in code that uses functional callback or continuation passing style, rather than polymorphism and inheritance. Code written in this style eschews complicated stubs that recreate behavior of the real component they're standing in for in favor of injecting values directly into the test right before they're used.
+Mock functions are also very effective in code that uses functional 
+continuation passing style. Code written in this style helps avoid the need for 
+complicated stubs that recreate behavior of the real component they're standing 
+in for in favor of injecting values directly into the test right before they're 
+used.
 
 ```javascript
 var Filter = require('Filter');
 
-var f = jest.genMockFunction();
-// Filter constructor takes a "test" function
-var filter = new Filter(f);
+var filterTestFn = jest.genMockFunction();
 
-f.mockReturnValueOnce(true).mockReturnValueOnce(false);
+// Make the mock return `true` for the first call, 
+// and `false` for the second call
+filterTestFunction
+  .mockReturnValueOnce(true)
+  .mockReturnValueOnce(false);
 
-var result = filter.run([11,12]);
+var result = [11, 12].filter(filterTestFn);
 
 console.log(result);
 > [11]
-console.log(f.mock.calls);
-> [ [11] , [12] ]
+console.log(filterTestFn.mock.calls);
+> [ [11], [12] ]
 ```
 
-Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. Avoid the temptation to implement logic inside of any function that's not directly under test.
+Most real-world examples actually involve getting ahold of a mock function on a 
+dependent component and configuring that, but the technique is the same. In
+these cases, try to avoid the temptation to implement logic inside of any 
+function that's not directly under test.
 
-Still, there are cases where it's useful to go beyond the ability to specify return values and replace an implementation of a mock function. Many of the mocks for core components have simple implementations to make testing easier. This can be done with the `mockImplementation` method on mock functions.
+Still, there are cases where it's useful to go beyond the ability to specify 
+return values and full-on replace the implementation of a mock function. This 
+can be done with the `mockImplementation` method on mock functions:
 
 ```javascript
-var o = {
-  f: jest.genMockFunction().mockImplementation(function() {
+var myObj = {
+  myMethod: jest.genMockFunction().mockImplementation(function() {
     // do something stateful
     return this;
   });
 };
 
-o.f(1).f(2);
+myObj.myMethod(1).myMethod(2);
 ```
 
-In this case, some sugar for methods that return `this` is provided in the form of `mockReturnThis`. The following are equivalent:
+For cases where we have methods that are typically chained (and thus always need
+to return `this`), we have a sugary API to simplify this in the form of a
+`.mockReturnThis()` function that also sits on all mocks:
 
 ```javascript
-var o = {
-  f: jest.genMockFunction().mockReturnThis()
+var myObj = {
+  myMethod: jest.genMockFunction().mockReturnThis()
 };
-```
 
-and
+// is the same as
 
-```javascript
-var o = {
-  f: jest.genMockFunction().mockImplementation(function() {
+var myObj = {
+  myMethod = jest.genMockFunction().mockImplementation(function() {
     return this;
-  })
+  });
 };
+
 ```
 
-To assert how the mock functions get called, we added some custom matcher functions to jasmine
+Finally, in order to make it simpler to assert how mock functions have been 
+called, we've added some custom matcher functions to jasmine for you:
 
 ```javascript
+// The mock function was called at least once
 expect(mockFunc).toBeCalled();
-expect(mockFunc).toBeCalledWith(a, b);
-expect(mockFunc).lastCalledWith(a, b);
-// Or use the bare values
-expect(mockFunc.mock.calls.length).toBe(4);
-expect(mockFunc.mock.calls[3][0]).toEqual(a);
+
+// The mock function was called at least once with the specified args
+expect(mockFunc).toBeCalledWith(arg1, arg2);
+
+// The last call to the mock function was called with the specified args
+expect(mockFunc).lastCalledWith(arg1, arg2);
+```
+
+These matchers are really just sugar for common forms of inspecting the `.mock` 
+property. You can always do this manually yourself if that's more to your taste
+or if you need to do something more specific:
+
+```jasmine
+// The mock function was called at least once
+expect(mockFunc.mock.calls.length).toBeGreaterThan(0);
+
+// The mock function was called at least once with the specified args
+expect(mockFunc.mock.calls).toContain([arg1, arg2]);
+
+// The last call to the mock function was called with the specified args
+expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual(
+  [arg1, arg2]
+);
+
+// The first arg of the last call to the mock funciton was called with `42`
+// (note that there is no sugar helper for this specific of an assertion)
+expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 ```
