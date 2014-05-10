@@ -1,6 +1,6 @@
 ---
 id: api
-title: API
+title: APIs
 layout: docs
 category: Reference
 permalink: api.html
@@ -8,25 +8,28 @@ previous: timer-mocks
 next: blog-post
 ---
 
-#### `jest`
+## Runtime APIs
+-----
 
-  - `.genMockFunction()` with alias `.genMockFn()`
-    - `.mockImplementation(fn)`
-    - `.mockReturnThis()`
-    - `.mockReturnValue(value)`
-    - `.mockReturnValueOnce(value)`
-    - `.mock`
-      - `.instances`
-      - `.calls`
-  - `.dontMock(module)`
-  - `.mock(module)`
-  - `.autoMockOff()`
-  - `.autoMockOn()`
-  - `.genMockFromModule()`
-  - `.runTimersRepeatedly()`
-  - `.runTimersOnce()`
-  - `.runTicksRepeatedly()` helper for promises
-  - `.clearTimers()`
+#### The `jest` object
+
+  - [`jest.genMockFunction()`/`.genMockFn()`](#jest-genmockfunction)
+  - `jest.dontMock(module)`
+  - `jest.mock(module)`
+  - `jest.autoMockOff()`
+  - `jest.autoMockOn()`
+  - `jest.genMockFromModule()`
+  - `jest.runTimersRepeatedly()`
+  - `jest.runTimersOnce()`
+  - `jest.runTicksRepeatedly()` helper for promises
+  - `jest.clearTimers()`
+
+#### Mock function objects
+  - `.mockImplementation(fn)`
+  - `.mockReturnThis()`
+  - `.mockReturnValue(value)`
+  - `.mockReturnValueOnce(value)`
+  - `.mock`
 
 #### `expect(value)`
 
@@ -48,8 +51,9 @@ next: blog-post
   - `.toBeCalledWith(arg, um, ents)`
   - `.lastCalledWith(arg, um, ents)`
 
-#### Global variables
+#### Globally injected variables
 
+  - `jest`
   - `require(module)`
   - `describe(name, fn)`
   - `beforeEach(fn)`
@@ -65,3 +69,40 @@ next: blog-post
     - `testPathDirs`
     - `testPathIgnores`
     - `moduleLoaderPathIgnores`
+
+-----
+### `jest.autoMockOff()`
+<<TODO>>
+
+### `jest.autoMockOn()`
+<<TODO>>
+
+### `jest.clearAllTimers()`
+<<TODO>>
+
+### `jest.dontMock(moduleName)`
+<<TODO>>
+
+### `jest.genMockFromModule(moduleObj)`
+<<TODO>>
+
+### `jest.genMockFunction()`
+<<TODO>>
+
+### `jest.genMockFn()`
+<<TODO>>
+
+### `jest.mock(moduleName)`
+<<TODO>>
+
+### `jest.runAllTicks()`
+<<TODO>>
+
+### `jest.runAllTimers()`
+<<TODO>>
+
+### `jest.runOnlyPendingTimers()`
+<<TODO>>
+
+### `jest.setMock(moduleName, moduleExports)`
+<<TODO>>

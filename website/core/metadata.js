@@ -6,7 +6,7 @@ module.exports = [
   {
     "filename": "API.js",
     "id": "api",
-    "title": "API",
+    "title": "APIs",
     "layout": "docs",
     "category": "Reference",
     "permalink": "api.html",
