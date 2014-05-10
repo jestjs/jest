@@ -9,25 +9,72 @@ module.exports = React.createClass({
     return layout({metadata: {"filename":"BlogPost.js","id":"blog-post","title":"Jest - Painless JavaScript Unit Testing","layout":"docs","category":"Blog Post","permalink":"blog-post.html","previous":"api","href":"/jest/docs/blog-post.html"}}, `
 Testing is a crucial part of making a large scale application but is usually seen as a chore and difficult thing to do. Jest attempts to make it painless via two major innovations.
 
+
 ## CommonJS Modules
 
-A lot of time, in order to test some code, you need to heavily refactor its structure in order to please your testing environment. The reason is that you need to provide two implementations for your dependencies, one for production and one for testing.
+In order to be able to test code, you need to have a way to have two implementation for your dependencies: one for production and one for testing. Most solutions to this problem involve major refactoring of the code. For example, Angular's implementation of Dependency Injection is using arguments to express dependencies
 
-When looking at our codebase, we realized that all the dependencies for our modules were already expressed via the \`require\` call used by CommonJS module system. The natural next step is to write a custom \`require\` function when testing that is able to provide a different implementation.
+\`\`\`javascript
+function doWork(XHR) {
+  var xhr = new XHR();
+  xhr.open('POST', 'http://facebook.github.io/jest/');
+  xhr.send();
+}
+\`\`\`
 
-The end result is that you are able to test any code that is using CommonJS without any big refactoring. It also doesn't have any performance impact on production code.
+When looking at our codebase, we realized that all the dependencies for our modules were already expressed via \`require\` call from CommonJS module system.
+
+\`\`\`javascript
+var XHR = require('XHR');
+function doWork() {
+  var xhr = new XHR();
+  xhr.open('POST', 'http://facebook.github.io/jest/');
+  xhr.send();
+}
+\`\`\`
+
+The natural next step was to write a custom \`require\` function in the testing testing enviroment that is able to provide a different implementation.
+
+The end result is that you are able to test any code that is using CommonJS without any big refactoring. CommonJS \`require\` is the standard in node.js and rapidly getting adoption.
+
 
 ## Automatic Mocking
 
-Once you have the ability to swap out the implementation, you still need to provide a mocked version for all the dependencies. This is a very repetitive task that is not very rewarding and can be automated.
+In order to write an effective unit test, you want to be able to isolate a unit of code and test only that unit -- nothing else. Automated mocking solves the rather uninteresting (but common) task of writing boilerplate to generate mocks for the unit you are testing.
 
-Jest loads the real module, inspects its shape and gives a mocked module that has the same shape but where all the functions are replaced by mocked functions.
+Let's take a look at a concrete example
 
-Jest is automatically mocking all the dependencies, this way your tests are isolated from the rest of the environment and are less likely to break. Also, since they are mocked, they are faster to re-load and can be run in parallel.
+\`\`\`javascript
+// CurrentUser.js
+var userID = 0;
+module.exports = {
+  getID: function() {
+    return userID;
+  },
+  setID: function(id) {
+    userID = id;
+  }
+};
+
+// login.js
+var CurrentUser = require('./CurrentUser.js');
+\`\`\`
+
+If we run \`login.js\` with node, Jest will not become involved at all and the program will execute as you'd normally expect. However, if you run a unit test for the \`login.js\` file, jest takes over and modifies \`require()\` such that the code behaves in the following way:
+
+\`\`\`javascript
+var CurrentUser = {
+  getID: jest.genMockFunction(),
+  setID: jest.genMockFunction()
+};
+\`\`\`
+
+With this setup, you cannot accidentally rely on the implementation details of \`CurrentUser.js\` when testing \`login.js\` because all of the calls to the \`CurrentUser\` module are mocked. Additionally, testing becomes easier in practice because you don't have to write any boilerplate in your tests to setup mock objects for the dependencies you don't want to test.
+
 
 ## Conclusion
 
-Jest, like many things at Facebook, is the result of a couple engineers being frustrated by how painful it is to test and hacking the system to find a better solution.
+Jest, like many things at Facebook, is the result of a couple engineers being frustrated by how painful it is to test and hacked on a better solution.
 `);
   }
 });
