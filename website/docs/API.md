@@ -17,7 +17,7 @@ next: blog-post
   - [`jest.autoMockOn()`](#jestautomockon)
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.dontMock(module)`](#jestdontmockmodulename)
-  - [`jest.genMockFromModule(moduleObj)`(#jestgenmockfrommodulemoduleobj)
+  - [`jest.genMockFromModule(moduleObj)`](#jestgenmockfrommodulemoduleobj)
   - [`jest.genMockFunction()`](#jestgenmockfunction)
   - [`jest.genMockFn()`](#jestgenmockfn)
   - [`jest.mock(moduleName)`](#jestmockmodulename)
