@@ -42,6 +42,8 @@ describe('timerGame', function() {
 });
 ```
 
+## Run All Timers
+
 Another test we might want to write for this module is one that asserts that the
 callback is called after 1 second. To do this, we're going to use jest's timer
 control APIs to fastforward time right in the middle of the test:
@@ -64,6 +66,8 @@ control APIs to fastforward time right in the middle of the test:
     expect(callback.mock.calls.length).toBe(1);
   });
 ```
+
+## Run Pending Timers
 
 There are also scenarios where you might have a recursive timer -- that is a
 timer that sets a new timer in its own callback. For these, running all the

@@ -26,6 +26,8 @@ console.log(myMock.mock.calls);
 > [ [1], ['a', 'b'] ]
 ```
 
+## `.mock` property
+
 All mock functions have this special `.mock` property, which is where data about
 how the function has been called is kept. The `.mock` property also tracks the
 value of `this` for each call, so it is possible to inspect this as well:
@@ -62,6 +64,8 @@ expect(someMockFunction.mock.instances.length).toBe(2);
 // had a `name` property whose value was set to 'test'
 expect(someMockFunction.mock.instances[0].name).toEqual('test');
 ```
+
+## Mock Return Values
 
 Mock functions can also be used to inject test values into your code during a
 test:
@@ -109,6 +113,8 @@ dependent component and configuring that, but the technique is the same. In
 these cases, try to avoid the temptation to implement logic inside of any
 function that's not directly under test.
 
+## Mock Implementations
+
 Still, there are cases where it's useful to go beyond the ability to specify
 return values and full-on replace the implementation of a mock function. This
 can be done with the `mockImplementation` method on mock functions:
@@ -140,8 +146,9 @@ var myObj = {
     return this;
   });
 };
-
 ```
+
+## Custom Matchers
 
 Finally, in order to make it simpler to assert how mock functions have been
 called, we've added some custom matcher functions to jasmine for you:
