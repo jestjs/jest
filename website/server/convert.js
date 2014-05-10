@@ -24,7 +24,9 @@ function backtickify(str) {
 function execute() {
   var MD_DIR = 'docs/';
 
-  var api = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content;
+  var api = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content
+    .split('---')[0]
+    .replace(/\(#/g, '(http://facebook.github.io/jest/docs/api.html#');
   var getting_started = splitHeader(fs.readFileSync(MD_DIR + 'GettingStarted.md', {encoding: 'utf8'}).toString()).content;
   var readme = fs.readFileSync('../README.md', {encoding: 'utf8'}).toString()
     .replace(

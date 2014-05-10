@@ -7,9 +7,6 @@ var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"API.js","id":"api","title":"API Reference","layout":"docs","category":"Reference","permalink":"api.html","previous":"timer-mocks","next":"blog-post","href":"/jest/docs/api.html"}}, `
-## Runtime APIs
------
-
 #### The \`jest\` object
 
   - [\`jest.autoMockOff()\`](#jestautomockoff)
@@ -84,10 +81,10 @@ module.exports = React.createClass({
   - \`.toBeCalledWith(arg, um, ents)\`
   - \`.lastCalledWith(arg, um, ents)\`
 
-
 -----
+
 ### \`jest.autoMockOff()\`
-Disables automatic mocking in the module loader. 
+Disables automatic mocking in the module loader.
 
 After this method is called, all \`require()\`s will return the real versions of each module (rather than a mocked version)
 
@@ -96,12 +93,12 @@ This is usually useful when you have a scenario where the number of dependencies
 Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, class-builder libraries, etc)
 
 ### \`jest.autoMockOn()\`
-Re-enables automatic mocking in the module loader. 
+Re-enables automatic mocking in the module loader.
 
 It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changes (such as by previously calling [\`jest.autoMockOff()\`](#jestautomockoff))
 
 ### \`jest.clearAllTimers()\`
-Removes any pending timers from the timer system. 
+Removes any pending timers from the timer system.
 
 This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
 
@@ -148,12 +145,12 @@ This is useful for scenarios such as one where the module under test schedules a
 ### \`jest.setMock(moduleName, moduleExports)\`
 Explicitly supplies the mock object that the module system should return for the specified module.
 
-On occaison there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [Manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occaison, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test. 
+On occaison there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [Manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occaison, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these (again, extremely rare) scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
 ### \`mockFn.mock.calls\`
-An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call. 
+An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
 
 For example: A mock function that has been called twice, first with the arguments 'arg1', 'arg2', and then again with the arguments 'arg3', 'arg4' would have a \`mock.calls\` array that looks like this:
 
