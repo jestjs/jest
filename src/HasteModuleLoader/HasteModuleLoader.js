@@ -129,14 +129,16 @@ function Loader(config, environment, resourceMap) {
     _configUnmockListRegExpCache = new WeakMap();
   }
 
-  if (!config.unmockList || config.unmockList.length === 0) {
+  if (!config.unmockedModulePathPatterns
+      || config.unmockedModulePathPatterns.length === 0) {
     this._unmockListRegExps = [];
   } else {
     this._unmockListRegExps = _configUnmockListRegExpCache.get(config);
     if (!this._unmockListRegExps) {
-      this._unmockListRegExps = config.unmockList.map(function(unmockPathRe) {
-        return new RegExp(unmockPathRe);
-      });
+      this._unmockListRegExps = config.unmockedModulePathPatterns
+        .map(function(unmockPathRe) {
+          return new RegExp(unmockPathRe);
+        });
       _configUnmockListRegExpCache.set(config, this._unmockListRegExps);
     }
   }
