@@ -75,7 +75,7 @@ function _buildLoadersList(config) {
 }
 
 function _calculateCacheFilePath(config) {
-  return CACHE_DIR_PATH + '/cache-' + config.projectName;
+  return CACHE_DIR_PATH + '/cache-' + config.name;
 }
 
 function _constructHasteInst(config, options) {

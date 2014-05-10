@@ -199,7 +199,7 @@ function loadConfigFromPackageJson(filePath, relativeTo) {
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
-    config.projectName = packageJsonData.name;
+    config.name = packageJsonData.name;
     return normalizeConfig(config, relativeTo);
   });
 }

@@ -11,7 +11,7 @@ describe('nodeHasteModuleLoader', function() {
   var resourceMap;
 
   var CONFIG = {
-    projectName: 'nodeHasteModuleLoader-tests',
+    name: 'nodeHasteModuleLoader-tests',
     testPathDirs: [path.resolve(__dirname, 'test_root')]
   };
 

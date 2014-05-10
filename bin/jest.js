@@ -171,13 +171,13 @@ if (argv.config) {
   // First look to see if there is a package.json file with a jest config in it
   if (pkgJson.jest) {
     config = utils.normalizeConfig(pkgJson.jest, cwd);
-    config.projectName = pkgJson.name;
+    config.name = pkgJson.name;
     config = Q(config);
 
   // If not, use a sane default config
   } else {
     config = Q(utils.normalizeConfig({
-      projectName: cwd.replace(/[/\\]/g, '_'),
+      name: cwd.replace(/[/\\]/g, '_'),
       testPathDirs: [cwd],
       testPathIgnores: ['/node_modules/.+']
     }, cwd));
