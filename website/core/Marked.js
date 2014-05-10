@@ -9,6 +9,7 @@
 
 var React = require('React');
 var Prism = require('Prism');
+var Header = require('Header');
 
 /**
  * Block-Level Grammar
@@ -807,7 +808,8 @@ Parser.prototype.tok = function() {
       return React.DOM.hr(null, null);
     }
     case 'heading': {
-      return React.DOM['h' + this.token.depth](null,
+      return Header(
+        {level: this.token.depth},
         this.inline.output(this.token.text)
       );
     }

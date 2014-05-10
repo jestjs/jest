@@ -16,6 +16,8 @@ var Header = React.createClass({
     var without = "aaaaeeeeiiiioooouuuunc";
 
     return string
+      .toString()
+
       // Handle uppercase characters
       .toLowerCase()
 
