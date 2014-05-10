@@ -12,17 +12,18 @@ module.exports = React.createClass({
 
 #### The \`jest\` object
 
-  - [\`jest.autoMockOff()\`](#jest-automockoff)
-  - [\`jest.autoMockOn()\`](#jest-automockon)
-  - [\`jest.clearAllTimers()\`](#jest-clearalltimers)
-  - [\`jest.dontMock(module)\`](#jest-dontmock-modulename)
-  - [\`jest.genMockFromModule(moduleObj)\`](#jest-genmockfrommodule-moduleobj)
-  - [\`jest.genMockFunction()\`/\`.genMockFn()\`](#jest-genmockfunction)
-  - [\`jest.mock(moduleName)\`](#jest-mock-modulename)
-  - [\`jest.runAllTicks()\`](#jest-runallticks)
-  - [\`jest.runAllTimers()\`](#jest-runalltimers)
-  - [\`jest.runOnlyPendingTimers()\`](#jest-runonlypendingtimers)
-  - [\`jest.setMock(moduleName, moduleExports)\`](#jest-setmock-modulename-moduleexports)
+  - [\`jest.autoMockOff()\`](#jestautomockoff)
+  - [\`jest.autoMockOn()\`](#jestautomockon)
+  - [\`jest.clearAllTimers()\`](#jestclearalltimers)
+  - [\`jest.dontMock(module)\`](#jestdontmock-modulename)
+  - [\`jest.genMockFromModule(moduleObj)\`](#jestgenmockfrommodule-moduleobj)
+  - [\`jest.genMockFunction()\`](#jestgenmockfunction)
+  - [\`jest.genMockFn()\`](#jestgenmockfn)
+  - [\`jest.mock(moduleName)\`](#jestmock-modulename)
+  - [\`jest.runAllTicks()\`](#jestrunallticks)
+  - [\`jest.runAllTimers()\`](#jestrunalltimers)
+  - [\`jest.runOnlyPendingTimers()\`](#jestrunonlypendingtimers)
+  - [\`jest.setMock(moduleName, moduleExports)\`](#jestsetmock-modulename-moduleexports)
 
 #### Mock functions
 
@@ -97,7 +98,7 @@ Examples of dependencies that might be considered "implementation details" are t
 ### \`jest.autoMockOn()\`
 Re-enables automatic mocking in the module loader. 
 
-It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changes (such as by previously calling [\`jest.autoMockOff()\`](#jest-automockoff))
+It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changes (such as by previously calling [\`jest.autoMockOff()\`](#jestautomockoff))
 
 ### \`jest.clearAllTimers()\`
 Removes any pending timers from the timer system. 
@@ -118,12 +119,12 @@ This is useful when you have an object that the module system does not know abou
 Returns a freshly generated, unused [mock function](#mock-functions).
 
 ### \`jest.genMockFn()\`
-Shorthand alias for [\`jest.genMockFunction\`](#jest-genmockfunction)
+Shorthand alias for [\`jest.genMockFunction\`](#jestgenmockfunction)
 
 ### \`jest.mock(moduleName)\`
 Indicates that the module system should always return a mocked version of the specified module from \`require()\` (e.g. that it should never return the real module).
 
-This is normally useful under the circumstances where you have called [\`jest.autoMockOff()\`](#jest-automockoff), but still wish to specify that certain particular modules should be mocked by the module system.
+This is normally useful under the circumstances where you have called [\`jest.autoMockOff()\`](#jestautomockoff), but still wish to specify that certain particular modules should be mocked by the module system.
 
 ### \`jest.runAllTicks()\`
 Exhausts the micro-task queue (usually interfaced in node via \`process.nextTick\`).

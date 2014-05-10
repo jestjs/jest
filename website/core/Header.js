@@ -26,6 +26,9 @@ var Header = React.createClass({
         new RegExp('[' + accents + ']', 'g'),
         function (c) { return without.charAt(accents.indexOf(c)); })
 
+      // Trim dots
+      .replace(/\./g, '')
+
       // Dash special characters
       .replace(/[^a-z0-9]/g, '-')
 
