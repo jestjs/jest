@@ -34,7 +34,7 @@ var Site = React.createClass({
           <div className="container">
             <div className="nav-main">
               <div className="wrap">
-                <a className="nav-home" href="/jest/index.html">
+                <a className="nav-home" href="/jest/">
                   Jest
                 </a>
                 <HeaderLinks section={this.props.section} />
