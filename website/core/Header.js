@@ -26,11 +26,14 @@ var Header = React.createClass({
         new RegExp('[' + accents + ']', 'g'),
         function (c) { return without.charAt(accents.indexOf(c)); })
 
-      // Replace spaces with '-'
-      .replace(/ /g, '-')
+      // Dash special characters
+      .replace(/[^a-z0-9]/g, '-')
 
-      // Trim special characters
-      .replace(/[^a-z0-9-]/g, '');
+      // Compress multiple dash
+      .replace(/-+/g, '-')
+
+      // Trim dashes
+      .replace(/^-|-$/g, '');
   },
 
   render: function() {
@@ -48,4 +51,3 @@ var Header = React.createClass({
 });
 
 module.exports = Header;
-
