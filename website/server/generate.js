@@ -65,9 +65,9 @@ glob('src/**/*.*', function(er, files) {
       });
     }
   });
-});
 
-queue.push(function(cb) {
-  console.log('It is live at: http://facebook.github.io/jest/')
-  cb();
-})
+  queue.push(function(cb) {
+    console.log('It is live at: http://facebook.github.io/jest/')
+    cb();
+  });
+});

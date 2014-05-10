@@ -1,6 +1,8 @@
 #!/bin/sh
 
 cd ../../jest-gh-pages && \
+git checkout -- . && \
+git clean -dfx && \
 git fetch && \
 git rebase && \
 rm -Rf * && \
