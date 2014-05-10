@@ -16,47 +16,47 @@ next: blog-post
   - [`jest.autoMockOff()`](#jestautomockoff)
   - [`jest.autoMockOn()`](#jestautomockon)
   - [`jest.clearAllTimers()`](#jestclearalltimers)
-  - [`jest.dontMock(module)`](#jestdontmock-modulename)
-  - [`jest.genMockFromModule(moduleObj)`](#jestgenmockfrommodule-moduleobj)
+  - [`jest.dontMock(module)`](#jestdontmockmodulename)
+  - [`jest.genMockFromModule(moduleObj)`(#jestgenmockfrommodulemoduleobj)
   - [`jest.genMockFunction()`](#jestgenmockfunction)
   - [`jest.genMockFn()`](#jestgenmockfn)
-  - [`jest.mock(moduleName)`](#jestmock-modulename)
+  - [`jest.mock(moduleName)`](#jestmockmodulename)
   - [`jest.runAllTicks()`](#jestrunallticks)
   - [`jest.runAllTimers()`](#jestrunalltimers)
   - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
-  - [`jest.setMock(moduleName, moduleExports)`](#jestsetmock-modulename-moduleexports)
+  - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulenamemoduleexports)
 
 #### Mock functions
 
-  - [`mockFn.mock.calls`](#mockfn-mock-calls)
-  - [`mockFn.mock.instances`](#mockfn-mock-instances)
-  - [`mockFn.mockClear()`](#mockfn-mockclear)
-  - [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn)
-  - [`mockFn.mockImpl(fn)`](#mockfn-mockimpl-fn)
-  - [`mockFn.mockReturnThis()`](#mockfn-mockreturnthis)
-  - [`mockFn.mockReturnValue(value)`](#mockfn-mockreturnvalue-value)
-  - [`mockFn.mockReturnValueOnce(value)`](#mockfn-mockreturnvalueonce-value)
+  - [`mockFn.mock.calls`](#mockfnmockcalls)
+  - [`mockFn.mock.instances`](#mockfnmockinstances)
+  - [`mockFn.mockClear()`](#mockfnmockclear)
+  - [`mockFn.mockImplementation(fn)`](#mockfnmockimplementationfn)
+  - [`mockFn.mockImpl(fn)`](#mockfnmockimplfn)
+  - [`mockFn.mockReturnThis()`](#mockfnmockreturnthis)
+  - [`mockFn.mockReturnValue(value)`](#mockfnmockreturnvaluevalue)
+  - [`mockFn.mockReturnValueOnce(value)`](#mockfnmockreturnvalueoncevalue)
 
 #### Config options
 
-  - [`config.collectCoverage`](#config-collectcoverage)
-  - [`config.collectCoverageOnlyFrom`](#config-collectcoverageonlyfrom)
-  - [`config.moduleLoader`](#config-moduleloader)
-  - [`config.moduleLoaderPathIgnores`](#config-moduleloaderpathignores)
-  - [`config.name`](#config-name)
-  - [`config.rootDir`](#config-rootdir)
-  - [`config.scriptPreprocessor`](#config-scriptpreprocessor)
-  - [`config.setupEnvScriptFile`](#config-setupenvscriptfile)
-  - [`config.setupTestFrameworkScriptFile`](#config-setuptestframeworkscriptfile)
-  - [`config.testPathDirs`](#config-testpathdirs)
-  - [`config.testPathIgnores`](#config-testpathignores)
-  - [`config.testRunner`](#config-testrunner)
-  - [`config.testEnvironment`](#config-testenvironment)
-  - [`config.unmockList`](#config-unmocklist)
+  - [`config.collectCoverage`](#configcollectcoverage)
+  - [`config.collectCoverageOnlyFrom`](#configcollectcoverageonlyfrom)
+  - [`config.moduleLoader`](#configmoduleloader)
+  - [`config.moduleLoaderPathIgnores`](#configmoduleloaderpathignores)
+  - [`config.name`](#configname)
+  - [`config.rootDir`](#configrootdir)
+  - [`config.scriptPreprocessor`](#configscriptpreprocessor)
+  - [`config.setupEnvScriptFile`](#configsetupenvscriptfile)
+  - [`config.setupTestFrameworkScriptFile`](#configsetuptestframeworkscriptfile)
+  - [`config.testPathDirs`](#configtestpathdirs)
+  - [`config.testPathIgnores`](#configtestpathignores)
+  - [`config.testRunner`](#configtestrunner)
+  - [`config.testEnvironment`](#configtestenvironment)
+  - [`config.unmockList`](#configunmocklist)
 
 #### Globally injected variables
 
-  - [`jest`](#the-jest-object)
+  - [`jest`](#thejestobject)
   - `require(module)`
   - `describe(name, fn)`
   - `beforeEach(fn)`
@@ -117,7 +117,7 @@ Given a module exports object, use the automatic mocking system to generate a mo
 This is useful when you have an object that the module system does not know about, and you want to automatically generate a mock for it.
 
 ### `jest.genMockFunction()`
-Returns a freshly generated, unused [mock function](#mock-functions).
+Returns a freshly generated, unused [mock function](#mockfunctions).
 
 ### `jest.genMockFn()`
 Shorthand alias for [`jest.genMockFunction`](#jestgenmockfunction)
@@ -181,7 +181,7 @@ mockFn.mock.instances[1] === b; // true
 ```
 
 ### `mockFn.mockClear()`
-Resets all information stored in the `.mock.calls` and `.mock.instances` arrays.
+Resets all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances) arrays.
 
 Often this is useful when you want to clean up a mock's usage data between two assertions.
 
@@ -206,7 +206,7 @@ mockFn.mock.calls[1][0] === 1; // true
 ```
 
 ### `mockFn.mockImpl(fn)`
-Shorthand alias for [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn)
+Shorthand alias for [`mockFn.mockImplementation(fn)`](#mockfnmockimplementationfn)
 
 ### `mockFn.mockReturnThis()`
 Just a simple sugar function for:
