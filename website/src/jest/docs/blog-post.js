@@ -12,7 +12,7 @@ Testing is a crucial part of making a large scale application but is usually see
 
 ## CommonJS Modules
 
-In order to be able to test code, you need to have a way to have two implementation for your dependencies: one for production and one for testing. Most solutions to this problem involve major refactoring of the code. For example, Angular's implementation of Dependency Injection is using arguments to express dependencies
+In order to be able to test code, you need to have a way to have two implementation for your dependencies: one for production and one for testing. Most solutions to this problem involve major refactoring of the code. For example, Angular's implementation of Dependency Injection uses arguments to express dependencies.
 
 \`\`\`javascript
 function doWork(XHR) {
@@ -35,7 +35,7 @@ function doWork() {
 
 The natural next step was to write a custom \`require\` function in the testing testing enviroment that is able to provide a different implementation.
 
-The end result is that you are able to test any code that is using CommonJS without any big refactoring. CommonJS \`require\` is the standard in node.js and rapidly getting adoption.
+The end result is that you are able to test any code that uses CommonJS without any big refactoring. CommonJS \`require\` is the standard in node.js and rapidly getting adoption.
 
 
 ## Automatic Mocking
@@ -60,7 +60,7 @@ module.exports = {
 var CurrentUser = require('./CurrentUser.js');
 \`\`\`
 
-If we run \`login.js\` with node, Jest will not become involved at all and the program will execute as you'd normally expect. However, if you run a unit test for the \`login.js\` file, jest takes over and modifies \`require()\` such that the code behaves in the following way:
+If we run \`login.js\` with node, Jest will not become involved at all and the program will execute as you'd normally expect. However, if you run a unit test for the \`login.js\` file, Jest takes over and modifies \`require()\` such that the code behaves in the following way:
 
 \`\`\`javascript
 var CurrentUser = {
