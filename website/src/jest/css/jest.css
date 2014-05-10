@@ -216,12 +216,12 @@ h1 .anchor, h2 .anchor, h3 .anchor, h4 .anchor, h5 .anchor, h6 .anchor {
 }
 
 h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-link, h5:hover .hash-link, h6:hover .hash-link {
-  display: inline;
+  visibility: visible;
 }
 
 .hash-link {
   color: #aaa;
-  display: none;
+  visibility: hidden;
 }
 
 .nav-main {

@@ -37,7 +37,7 @@ var Header = React.createClass({
   },
 
   render: function() {
-    var slug = this.slug(this.props.children);
+    var slug = this.slug(this.props.toSlug || this.props.children);
     var h = React.DOM['h' + this.props.level];
 
     return this.transferPropsTo(

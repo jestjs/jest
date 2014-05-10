@@ -809,7 +809,7 @@ Parser.prototype.tok = function() {
     }
     case 'heading': {
       return Header(
-        {level: this.token.depth},
+        {level: this.token.depth, toSlug: this.token.text},
         this.inline.output(this.token.text)
       );
     }
