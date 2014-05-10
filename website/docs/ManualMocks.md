@@ -8,24 +8,20 @@ previous: auto-mocks-and-manual-mocks
 next: timer-mocks
 ---
 
-Although autogeneration of mocks is convenient, there are behaviors it misses, 
-such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html).
-Furthermore, providing useful helpers on mock versions of a module, especially a
-core module, promotes reuse and can help to hide implementation details.
+Although autogeneration of mocks is convenient, there are behaviors it misses, such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html). Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 
-Manual mocks are defined by writing a module in a `__mocks__/` subdirectory. 
+Manual mocks are defined by writing a module in a `__mocks__/` subdirectory.
 
 TODO: This doesn't work well for relative requires :( We need to make it
       possible to write manual mocks that only override references to local
       versions of the module. So algo would be:
-      
+
       require('foo') -> dir/foo.js --exists?--> dir/__mocks__/foo.js
 
       I (@jeffmo) stopped editing this doc here until we can get this issue
       worked out. I think this should block release.
 
-The file name will be interpreted as the mocked module name. Although it's 
-sometimes necessary to write a mock by hand to workaround missing DOM APIs, this should be avoided. If a module can't be mocked, the best fix is to implement the missing functionality in the test framework's DOM simulation.
+The file name will be interpreted as the mocked module name. Although it's sometimes necessary to write a mock by hand to workaround missing DOM APIs, this should be avoided. If a module can't be mocked, the best fix is to implement the missing functionality in the test framework's DOM simulation.
 
 Assuming that the module can be loaded by the automocker, it's best to build on the automocked API. This makes it harder for mock APIs to get out of sync with real ones. For instance, let's say we're working on an `Indicator` that uses a `Poller`.
 
