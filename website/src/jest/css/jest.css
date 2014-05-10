@@ -132,6 +132,10 @@ html * {
   background-color: rgba(226, 142, 50, 0.1);
 }
 
+.prism + .prism {
+  margin-top: 10px;
+}
+
 .token.keyword {
   color: #1990B8;
 }

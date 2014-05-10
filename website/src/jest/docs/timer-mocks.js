@@ -26,7 +26,6 @@ function timerGame(callback) {
 
 module.exports = timerGame;
 \`\`\`
-.
 \`\`\`javascript
 // __tests__/timerGame-test.js
 jest.dontMock('../timerGame');
@@ -89,7 +88,6 @@ function infiniteTimerGame(callback) {
 
 module.exports = infiniteTimerGame;
 \`\`\`
-.
 \`\`\`javascript
 // __tests__/infiniteTimerGame-test.js
 jest.dontMock('../infiniteTimerGame');
