@@ -15,15 +15,15 @@ module.exports = [
     "href": "/jest/docs/api.html"
   },
   {
-    "filename": "AutoMocks.js",
-    "id": "auto-mocks",
+    "filename": "AutomaticMocking.js",
+    "id": "automatic-mocking",
     "title": "Automatic Mocking",
     "layout": "docs",
     "category": "Core Concepts",
-    "permalink": "auto-mocks.html",
+    "permalink": "automatic-mocking.html",
     "previous": "common-js-testing",
     "next": "mock-functions",
-    "href": "/jest/docs/auto-mocks.html"
+    "href": "/jest/docs/automatic-mocking.html"
   },
   {
     "filename": "BlogPost.js",
@@ -43,7 +43,7 @@ module.exports = [
     "category": "Core Concepts",
     "permalink": "common-js-testing.html",
     "previous": "tutorial",
-    "next": "auto-mocks",
+    "next": "automatic-mocking",
     "href": "/jest/docs/common-js-testing.html"
   },
   {
@@ -74,7 +74,7 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "mock-functions.html",
-    "previous": "auto-mocks",
+    "previous": "automatic-mocking",
     "next": "manual-mocks",
     "href": "/jest/docs/mock-functions.html"
   },

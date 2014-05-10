@@ -6,11 +6,11 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"MockFunctions.js","id":"mock-functions","title":"Mock functions","layout":"docs","category":"Reference","permalink":"mock-functions.html","previous":"auto-mocks","next":"manual-mocks","href":"/jest/docs/mock-functions.html"}}, `
+    return layout({metadata: {"filename":"MockFunctions.js","id":"mock-functions","title":"Mock functions","layout":"docs","category":"Reference","permalink":"mock-functions.html","previous":"automatic-mocking","next":"manual-mocks","href":"/jest/docs/mock-functions.html"}}, `
 Mock functions make it easy to test the links between code by erasing the actual
 implementation of a function, capturing calls to the function (and the
 parameters passed in those calls), capturing instances of constructor functions
-when instantiated with \`new\`, and allowing test-time configuration of return 
+when instantiated with \`new\`, and allowing test-time configuration of return
 values.
 
 There are two ways to get your hands on a mock functions: Either by
@@ -26,7 +26,7 @@ console.log(myMock.mock.calls);
 \`\`\`
 
 All mock functions have this special \`.mock\` property, which is where data about
-how the function has been called is kept. The \`.mock\` property also tracks the 
+how the function has been called is kept. The \`.mock\` property also tracks the
 value of \`this\` for each call, so it is possible to inspect this as well:
 
 \`\`\`javascript
@@ -41,7 +41,7 @@ console.log(myMock.mock.instances);
 > [ <a>, <b> ]
 \`\`\`
 
-These mock members are very useful in tests to assert how these functions get 
+These mock members are very useful in tests to assert how these functions get
 called, or instantiated:
 
 \`\`\`javascript
@@ -57,12 +57,12 @@ expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
 // This function was instantiated exactly twice
 expect(someMockFunction.mock.instances.length).toBe(2);
 
-// The object returned by the first instantiation of this function 
+// The object returned by the first instantiation of this function
 // had a \`name\` property whose value was set to 'test'
 expect(someMockFunction.mock.instances[0].name).toEqual('test');
 \`\`\`
 
-Mock functions can also be used to inject test values into your code during a 
+Mock functions can also be used to inject test values into your code during a
 test:
 
 \`\`\`javascript
@@ -78,10 +78,10 @@ console.log(myMock(), myMock(), myMock(), myMock());
 > 10, 'x', true, true
 \`\`\`
 
-Mock functions are also very effective in code that uses functional 
-continuation passing style. Code written in this style helps avoid the need for 
-complicated stubs that recreate behavior of the real component they're standing 
-in for in favor of injecting values directly into the test right before they're 
+Mock functions are also very effective in code that uses functional
+continuation passing style. Code written in this style helps avoid the need for
+complicated stubs that recreate behavior of the real component they're standing
+in for in favor of injecting values directly into the test right before they're
 used.
 
 \`\`\`javascript
@@ -89,7 +89,7 @@ var Filter = require('Filter');
 
 var filterTestFn = jest.genMockFunction();
 
-// Make the mock return \`true\` for the first call, 
+// Make the mock return \`true\` for the first call,
 // and \`false\` for the second call
 filterTestFunction
   .mockReturnValueOnce(true)
@@ -103,13 +103,13 @@ console.log(filterTestFn.mock.calls);
 > [ [11], [12] ]
 \`\`\`
 
-Most real-world examples actually involve getting ahold of a mock function on a 
+Most real-world examples actually involve getting ahold of a mock function on a
 dependent component and configuring that, but the technique is the same. In
-these cases, try to avoid the temptation to implement logic inside of any 
+these cases, try to avoid the temptation to implement logic inside of any
 function that's not directly under test.
 
-Still, there are cases where it's useful to go beyond the ability to specify 
-return values and full-on replace the implementation of a mock function. This 
+Still, there are cases where it's useful to go beyond the ability to specify
+return values and full-on replace the implementation of a mock function. This
 can be done with the \`mockImplementation\` method on mock functions:
 
 \`\`\`javascript
@@ -142,7 +142,7 @@ var myObj = {
 
 \`\`\`
 
-Finally, in order to make it simpler to assert how mock functions have been 
+Finally, in order to make it simpler to assert how mock functions have been
 called, we've added some custom matcher functions to jasmine for you:
 
 \`\`\`javascript
@@ -156,7 +156,7 @@ expect(mockFunc).toBeCalledWith(arg1, arg2);
 expect(mockFunc).lastCalledWith(arg1, arg2);
 \`\`\`
 
-These matchers are really just sugar for common forms of inspecting the \`.mock\` 
+These matchers are really just sugar for common forms of inspecting the \`.mock\`
 property. You can always do this manually yourself if that's more to your taste
 or if you need to do something more specific:
 

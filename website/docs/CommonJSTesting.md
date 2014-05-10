@@ -5,11 +5,11 @@ layout: docs
 category: Core Concepts
 permalink: common-js-testing.html
 previous: tutorial
-next: auto-mocks
+next: automatic-mocking
 ---
 
 Dependency Injection was popularized in the JavaScript community by Angular as a
-way to mock dependencies in order to make code testable. In this article, we're 
+way to mock dependencies in order to make code testable. In this article, we're
 going to see how Jest achieves the same result using a different approach.
 
 What is the problem?
@@ -25,8 +25,8 @@ function doWork() {
 }
 ```
 
-This function has a dependency on the `XHR` class and uses the global namespace 
-in order to get a reference to `XHR`. In order to mock this dependency, we have 
+This function has a dependency on the `XHR` class and uses the global namespace
+in order to get a reference to `XHR`. In order to mock this dependency, we have
 to monkey patch the global object.
 
 ```javascript
@@ -37,11 +37,11 @@ doWork();
 XHR = oldXHR; // if you forget this bad things will happen
 ```
 
-This small example shows two important concepts. We need a way to get a 
-reference to `XHR` and a way to provide two implementations: one for the normal 
+This small example shows two important concepts. We need a way to get a
+reference to `XHR` and a way to provide two implementations: one for the normal
 execution and one for testing.
 
-In this case, the solution to both concepts is to use the global object. It 
+In this case, the solution to both concepts is to use the global object. It
 works, but it's not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
 
 
@@ -58,7 +58,7 @@ function doWork(XHR) {
 }
 ```
 
-It makes it very easy to write a test -- you just pass your mocked version as 
+It makes it very easy to write a test -- you just pass your mocked version as
 argument to your function:
 
 ```javascript
@@ -67,8 +67,8 @@ doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 ```
 
-But it's a pain to thread these constructor arguments throughout a real 
-application. So Angular uses an `injector` behind the scenes. This makes it 
+But it's a pain to thread these constructor arguments throughout a real
+application. So Angular uses an `injector` behind the scenes. This makes it
 easy to create instances that automatically acquire their dependencies:
 
 ```
@@ -83,7 +83,7 @@ function injectedDoWork() {
 }
 ```
 
-Angular inspects the function and sees that it has one argument called `XHR`. 
+Angular inspects the function and sees that it has one argument called `XHR`.
 It then provides the value `injector.get('XHR')` for the variable `XHR`.
 
 In order to have a testable function in Angular, you must conform to this
@@ -93,9 +93,9 @@ specific pattern and pass it into Angular's DI framework before you can use it.
 How does Jest solve this problem?
 ---------------------------------
 
-Angular uses function arguments as a way to model dependencies and has to 
-implement its own module loader. Most large JavaScript applications already use 
-a module loader with the `require` function. In a CommonJS JavaScript app, the 
+Angular uses function arguments as a way to model dependencies and has to
+implement its own module loader. Most large JavaScript applications already use
+a module loader with the `require` function. In a CommonJS JavaScript app, the
 example above would look more like this:
 
 ```
@@ -108,8 +108,8 @@ function doWork() {
 ```
 
 The interesting aspect of this code is that the dependency on `XHR` is
-marshalled by `require()`. The idea behind Jest is to use this as a seam for 
-inserting test doubles by implementing a special `require` in the testing 
+marshalled by `require()`. The idea behind Jest is to use this as a seam for
+inserting test doubles by implementing a special `require` in the testing
 environment.
 
 ```
@@ -132,14 +132,14 @@ var MockXHR = require('XHR');
 Conclusion
 ----------
 
-Dependency Injection is a very powerful tool that lets you swap the 
+Dependency Injection is a very powerful tool that lets you swap the
 implementation of any module at any time. However, the vast majority of code
-only deals with one implementation for production and one for testing. Jest is 
+only deals with one implementation for production and one for testing. Jest is
 designed to make this common case much simpler to test.
 
-jest allows for mocking dependencies in the same way that Angular doest, but 
-instead of building a proprietary module loader, it uses CommonJS. This enables 
-you to test any existing code that already uses CommonJS without having to 
+jest allows for mocking dependencies in the same way that Angular doest, but
+instead of building a proprietary module loader, it uses CommonJS. This enables
+you to test any existing code that already uses CommonJS without having to
 heavily refactor it to make it compatible with a another module system such as
 Angular's.
 
