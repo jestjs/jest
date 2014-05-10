@@ -26,8 +26,11 @@ var Header = React.createClass({
         new RegExp('[' + accents + ']', 'g'),
         function (c) { return without.charAt(accents.indexOf(c)); })
 
+      // Replace spaces with '-'
+      .replace(/ /g, '-')
+
       // Trim special characters
-      .replace(/[^a-z0-9]/g, '');
+      .replace(/[^a-z0-9-]/g, '');
   },
 
   render: function() {
