@@ -96,8 +96,8 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
 
 TestRunner.prototype._isTestFilePath = function(filePath) {
   var testPathIgnorePattern =
-    this._config.testPathIgnores
-    ? new RegExp(this._config.testPathIgnores.join('|'))
+    this._config.testPathIgnorePatterns
+    ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
     : null;
 
   return (

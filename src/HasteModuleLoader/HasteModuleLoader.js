@@ -80,8 +80,8 @@ function _calculateCacheFilePath(config) {
 
 function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
-    config.moduleLoaderPathIgnores
-    ? config.moduleLoaderPathIgnores.join('|')
+    config.modulePathIgnorePatterns
+    ? config.modulePathIgnorePatterns.join('|')
     : '__NOT_EXIST__'
   );
 

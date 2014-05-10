@@ -36,11 +36,11 @@
       "."
     ],
 
-    "moduleLoaderPathIgnores": [
+    "modulePathIgnorePatterns": [
       "/node_modules/.+"
     ],
 
-    "testPathIgnores": [
+    "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+",
       "/node_modules/",
       "/examples/",

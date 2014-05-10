@@ -154,8 +154,8 @@ function normalizeConfig(config, relativeTo) {
         });
         break;
 
-      case 'testPathIgnores':
-      case 'moduleLoaderPathIgnores':
+      case 'testPathIgnorePatterns':
+      case 'modulePathIgnorePatterns':
         // _replaceRootDirTags is specifically well-suited for substituting
         // <rootDir> in paths (it deals with properly interpreting relative path
         // separators, etc).
