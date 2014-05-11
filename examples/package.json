@@ -9,6 +9,7 @@
   },
   "jest": {
     "testPathIgnorePatterns": ["node_modules"],
+    "setupEnvScriptFile": "./environment.js",
     "scriptPreprocessor": "./jsxTransform.js",
     "unmockedModulePathPatterns": ["node_modules/react"]
   }
