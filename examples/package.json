@@ -8,9 +8,10 @@
     "test": "node ../bin/jest.js"
   },
   "jest": {
-    "testPathDirs": ["."],
-    "testPathIgnorePatterns": ["node_modules"],
-    "scriptPreprocessor": "/Users/vjeux/random_stuff/jest/examples/jsxTransform.js",
-    "unmockedModulePathPatterns": ["node_modules/react"]
+    "rootDir": ".",
+    "testPathDirs": ["<rootDir>"],
+    "testPathIgnorePatterns": ["<rootDir>/node_modules"],
+    "scriptPreprocessor": "<rootDir>/jsxTransform.js",
+    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
   }
 }
