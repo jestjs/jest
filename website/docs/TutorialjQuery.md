@@ -5,7 +5,7 @@ layout: docs
 category: Quick Start
 permalink: tutorial-jquery.html
 previous: tutorial-asynchronous
-next: common-js-testing
+next: tutorial-coffeescript
 ---
 
 Another class of functions that is usually considered hard to test is code that

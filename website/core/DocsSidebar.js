@@ -35,7 +35,12 @@ var DocsSidebar = React.createClass({
         }
       }
       currentCategory.links.push(metadata);
-      metadata = articles[metadata.next];
+      var nextMetadata = articles[metadata.next];
+      if (nextMetadata && nextMetadata.previous !== metadata.id) {
+        throw new Error(nextMetadata.title + ' previous metadata is incorrect! It should be' +
+          metadata.id + ' and not ' + nextMetadata.previous);
+      }
+      metadata = nextMetadata;
     }
     categories.push(currentCategory);
 
