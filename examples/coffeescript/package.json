@@ -7,6 +7,6 @@
   },
   "jest": {
     "scriptPreprocessor": "preprocessor.js",
-    "extensions": ["coffee", "js"]
+    "testExtensions": ["coffee", "js"]
   }
 }

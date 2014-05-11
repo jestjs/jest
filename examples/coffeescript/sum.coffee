@@ -1,4 +1,4 @@
-sum = (numbers...) ->
-  numbers.reduce ((a, b) -> a + b), 0
+sum = (a, b) ->
+  a + b
 
 module.exports = sum

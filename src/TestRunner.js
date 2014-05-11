@@ -62,7 +62,9 @@ function TestRunner(config, options) {
   this._configDeps = null;
   this._moduleLoaderResourceMap = null;
   this._testPathDirsRegExp = new RegExp(config.testPathDirs.join('|'));
-  this._nodeHasteTestRegExp = new RegExp('/__tests__/.*\\.(' + config.extensions.join('|') + ')$');
+  this._nodeHasteTestRegExp = new RegExp(
+    '/__tests__/.*\\.(' + config.testExtensions.join('|') + ')$'
+  );
 
   this._opts = Object.create(DEFAULT_OPTIONS);
   if (options) {

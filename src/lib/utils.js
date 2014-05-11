@@ -7,9 +7,9 @@ var Q = require('q');
 var DEFAULT_CONFIG_VALUES = {
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   testEnvironment: require.resolve('../JSDomEnvironment'),
+  testExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
-  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
-  extensions: ['js']
+  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
 };
 
 function _replaceRootDirTags(rootDir, config) {

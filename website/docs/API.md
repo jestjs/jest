@@ -38,12 +38,12 @@ next: blog-post
 
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
-  - [`config.extensions` [array<string>]](#config-extensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
   - [`config.setupEnvScriptFile` [string]](#config-setupenvscriptfile-string)
   - [`config.setupTestFrameworkScriptFile` [string]](#config-setuptestframeworkscriptfile-string)
+  - [`config.testExtensions` [array<string>]](#config-test-extensions-array-string)
   - [`config.testPathDirs` [array<string>]](#config-testpathdirs-array-string)
   - [`config.testPathIgnorePatterns` [array<string>]](#config-testpathignorepatterns-array-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](#config-unmockedmodulepathpatterns-array-string)
@@ -243,11 +243,6 @@ Indicates whether the coverage information should be collected while executing t
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
 
-### `config.extensions` [array<string>]
-(default: `['js']`)
-
-An array of test extensions to search for. If you are writting CoffeeScript using `.coffee` extension for example, you can use `['js', 'coffee']` in order to accept tests written in both languages.
-
 ### `config.modulePathIgnorePatterns` [array<string>]
 (default: `[]`)
 
@@ -278,6 +273,11 @@ It's worth noting that this code will execute *before* [`config.setupTestFramewo
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+
+### `config.testExtensions` [array<string>]
+(default: `['js']`)
+
+An array of test extensions to search for. If you are writting CoffeeScript using `.coffee` extension for example, you can use `['js', 'coffee']` in order to accept tests written in both languages.
 
 ### `config.testPathDirs` [array<string>]
 (default: The `pwd` the cli is being executed from)
