@@ -10,6 +10,7 @@
   "jest": {
     "testPathDirs": ["."],
     "testPathIgnorePatterns": ["node_modules"],
-    "scriptPreprocessor": "/Users/vjeux/random_stuff/jest/examples/jsxTransform.js"
+    "scriptPreprocessor": "/Users/vjeux/random_stuff/jest/examples/jsxTransform.js",
+    "unmockedModulePathPatterns": ["node_modules/react"]
   }
 }
