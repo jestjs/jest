@@ -1,8 +1,15 @@
 {
   "dependencies": {
-    "jquery": "*"
+    "jquery": "*",
+    "react": "*",
+    "react-tools": "*"
   },
   "scripts": {
     "test": "node ../bin/jest.js"
+  },
+  "jest": {
+    "testPathDirs": ["."],
+    "testPathIgnorePatterns": ["node_modules"],
+    "scriptPreprocessor": "/Users/vjeux/random_stuff/jest/examples/jsxTransform.js"
   }
 }
