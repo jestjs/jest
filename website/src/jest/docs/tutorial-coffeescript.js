@@ -6,12 +6,15 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"TutorialCoffeeScript.js","id":"tutorial-coffeescript","title":"Tutorial - CoffeeScript","layout":"docs","category":"Quick Start","permalink":"tutorial-coffeescript.html","next":"common-js-testing","href":"/jest/docs/tutorial-coffeescript.html"}}, `
+    return layout({metadata: {"filename":"TutorialCoffeeScript.js","id":"tutorial-coffeescript","title":"Tutorial - CoffeeScript","layout":"docs","category":"Quick Start","permalink":"tutorial-coffeescript.html","next":"tutorial-react","href":"/jest/docs/tutorial-coffeescript.html"}}, `
 Jest doesn't come with builtin support for CoffeeScript but can easily be configured in order to make it work. CoffeeScript differs from JavaScript on two aspects, file extensions are different and you need to compile your file from CoffeeScript to plain JavaScript. Here is how you set it up with Jest.
 
 
 \`\`\`javascript
 // package.json
+  "dependencies": {
+    "coffee-script": "*"
+  },
   "jest": {
     "scriptPreprocessor": "preprocessor.js",
     "testExtensions": ["coffee", "js"]
@@ -39,15 +42,12 @@ Once you have this, anything that you would have written in JavaScript, you can 
 // sum.coffee
 sum = (a, b) ->
   a + b
-
 module.exports = sum
 \`\`\`
 
 \`\`\`javascript
 // __tests__/sum-test.coffee
-jest
-  .dontMock '../sum.coffee'
-
+jest.dontMock '../sum.coffee'
 describe 'sum', ->
   it 'adds 1 + 2 to equal 3', ->
     sum = require '../sum.coffee'

@@ -140,7 +140,7 @@ html * {
   color: #1990B8;
 }
 
-.token.string {
+.token.string, .token.regex {
   color: #2F9C0A;
 }
 

@@ -99,8 +99,18 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial-coffeescript.html",
-    "next": "common-js-testing",
+    "next": "tutorial-react",
     "href": "/jest/docs/tutorial-coffeescript.html"
+  },
+  {
+    "filename": "TutorialReact.js",
+    "id": "tutorial-react",
+    "title": "Tutorial - React",
+    "layout": "docs",
+    "category": "Quick Start",
+    "permalink": "tutorial-react.html",
+    "next": "common-js-testing",
+    "href": "/jest/docs/tutorial-react.html"
   },
   {
     "filename": "TutorialjQuery.js",
