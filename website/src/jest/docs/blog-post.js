@@ -74,6 +74,8 @@ With this setup, you cannot accidentally rely on the implementation details of \
 
 ## Conclusion
 
+
+
 Jest, like many things at Facebook, is the result of a couple engineers being frustrated by how painful it is to test and hacked on a better solution.
 `);
   }

@@ -47,10 +47,11 @@ This means jest is going to give you an object with the same shape as the real m
 
 ```javascript
 // Single function
-automock(function() { /* ... */ }) -> jest.genMockFunction();
+jest.genMockFromModule(function() { /* ... */ })
+  -> jest.genMockFunction();
 
 // Object
-automock({
+jest.genMockFromModule({
   a: 1,
   b: function() { /* ... */ },
   c: {
