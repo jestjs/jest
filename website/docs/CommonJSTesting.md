@@ -4,7 +4,6 @@ title: CommonJS Testing
 layout: docs
 category: Core Concepts
 permalink: common-js-testing.html
-previous: tutorial-coffeescript
 next: automatic-mocking
 ---
 

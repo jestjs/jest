@@ -10,14 +10,28 @@ var DocsSidebar = React.createClass({
     var metadatas = Metadata;
 
     // Build a hashmap of article_id -> metadata
-    // Find the first metadata
-    var first = null;
     var articles = {}
     for (var i = 0; i < metadatas.length; ++i) {
       var metadata = metadatas[i];
       articles[metadata.id] = metadata;
-      if (!metadata.previous) {
+    }
+
+    // Build a hashmap of article_id -> previous_id
+    var previous = {};
+    for (var i = 0; i < metadatas.length; ++i) {
+      var metadata = metadatas[i];
+      if (metadata.next) {
+        previous[articles[metadata.next].id] = metadata.id;
+      }
+    }
+
+    // Find the first element which doesn't have any previous
+    var first = null;
+    for (var i = 0; i < metadatas.length; ++i) {
+      var metadata = metadatas[i];
+      if (!previous[metadata.id]) {
         first = metadata;
+        break;
       }
     }
 
@@ -35,12 +49,7 @@ var DocsSidebar = React.createClass({
         }
       }
       currentCategory.links.push(metadata);
-      var nextMetadata = articles[metadata.next];
-      if (nextMetadata && nextMetadata.previous !== metadata.id) {
-        throw new Error(nextMetadata.title + ' previous metadata is incorrect! It should be' +
-          metadata.id + ' and not ' + nextMetadata.previous);
-      }
-      metadata = nextMetadata;
+      metadata = articles[metadata.next];
     }
     categories.push(currentCategory);
 

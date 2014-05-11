@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"TutorialCoffeeScript.js","id":"tutorial-coffeescript","title":"Tutorial - CoffeeScript","layout":"docs","category":"Quick Start","permalink":"tutorial-coffeescript.html","previous":"tutorial-jquery","next":"common-js-testing","href":"/jest/docs/tutorial-coffeescript.html"}}, `
+    return layout({metadata: {"filename":"TutorialCoffeeScript.js","id":"tutorial-coffeescript","title":"Tutorial - CoffeeScript","layout":"docs","category":"Quick Start","permalink":"tutorial-coffeescript.html","next":"common-js-testing","href":"/jest/docs/tutorial-coffeescript.html"}}, `
 Jest doesn't come with builtin support for CoffeeScript but can easily be configured in order to make it work. CoffeeScript differs from JavaScript on two aspects, file extensions are different and you need to compile your file from CoffeeScript to plain JavaScript. Here is how you set it up with Jest.
 
 

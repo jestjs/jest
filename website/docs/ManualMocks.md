@@ -4,7 +4,6 @@ title: Manual mocks
 layout: docs
 category: Reference
 permalink: manual-mocks.html
-previous: mock-functions
 next: timer-mocks
 ---
 

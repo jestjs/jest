@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"TutorialjQuery.js","id":"tutorial-jquery","title":"Tutorial - jQuery","layout":"docs","category":"Quick Start","permalink":"tutorial-jquery.html","previous":"tutorial-asynchronous","next":"tutorial-coffeescript","href":"/jest/docs/tutorial-jquery.html"}}, `
+    return layout({metadata: {"filename":"TutorialjQuery.js","id":"tutorial-jquery","title":"Tutorial - jQuery","layout":"docs","category":"Quick Start","permalink":"tutorial-jquery.html","next":"tutorial-coffeescript","href":"/jest/docs/tutorial-jquery.html"}}, `
 Another class of functions that is usually considered hard to test is code that
 directly manipulates the DOM. Let's see how we can test the following snippet of
 jQuery code that listens to a click event, fetches some data asynchronously and

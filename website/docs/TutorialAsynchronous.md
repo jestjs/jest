@@ -4,7 +4,6 @@ title: Tutorial - Asynchronous
 layout: docs
 category: Quick Start
 permalink: tutorial-asynchronous.html
-previous: getting-started
 next: tutorial-jquery
 ---
 

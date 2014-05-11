@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"AutomaticMocking.js","id":"automatic-mocking","title":"Automatic Mocking","layout":"docs","category":"Core Concepts","permalink":"automatic-mocking.html","previous":"common-js-testing","next":"mock-functions","href":"/jest/docs/automatic-mocking.html"}}, `
+    return layout({metadata: {"filename":"AutomaticMocking.js","id":"automatic-mocking","title":"Automatic Mocking","layout":"docs","category":"Core Concepts","permalink":"automatic-mocking.html","next":"mock-functions","href":"/jest/docs/automatic-mocking.html"}}, `
 In order to write an effective unit test, you want to be able to isolate a unit of code and test only that unit -- nothing else. It is fairly common and good practice to consider a module such a unit, and this is where jest excels. jest makes isolating a module from it's dependencies extremely easy by automatically generating mocks for each of the module's depenedencies and providing those mocks (rather than the real dependency modules) by default.
 
 Let's look at a concrete example:

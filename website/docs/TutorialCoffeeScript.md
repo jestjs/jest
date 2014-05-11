@@ -4,7 +4,6 @@ title: Tutorial - CoffeeScript
 layout: docs
 category: Quick Start
 permalink: tutorial-coffeescript.html
-previous: tutorial-jquery
 next: common-js-testing
 ---
 

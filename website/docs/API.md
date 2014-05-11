@@ -4,7 +4,6 @@ title: API Reference
 layout: docs
 category: Reference
 permalink: api.html
-previous: timer-mocks
 next: blog-post
 ---
 

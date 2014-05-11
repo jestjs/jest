@@ -4,7 +4,6 @@ title: Mock functions
 layout: docs
 category: Reference
 permalink: mock-functions.html
-previous: automatic-mocking
 next: manual-mocks
 ---
 

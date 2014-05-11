@@ -4,7 +4,6 @@ title: Automatic Mocking
 layout: docs
 category: Core Concepts
 permalink: automatic-mocking.html
-previous: common-js-testing
 next: mock-functions
 ---
 

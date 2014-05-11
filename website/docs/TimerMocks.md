@@ -4,7 +4,6 @@ title: Timer mocks
 layout: docs
 category: Reference
 permalink: timer-mocks.html
-previous: manual-mocks
 next: api
 ---
 

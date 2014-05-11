@@ -4,7 +4,6 @@ title: Jest - Painless JavaScript Unit Testing
 layout: docs
 category: Blog Post
 permalink: blog-post.html
-previous: api
 ---
 
 Testing is a crucial part of making a large scale application but is usually seen as a chore and difficult thing to do. Jest attempts to make it painless via two major innovations.

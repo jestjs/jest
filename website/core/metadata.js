@@ -10,7 +10,6 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "api.html",
-    "previous": "timer-mocks",
     "next": "blog-post",
     "href": "/jest/docs/api.html"
   },
@@ -21,7 +20,6 @@ module.exports = [
     "layout": "docs",
     "category": "Core Concepts",
     "permalink": "automatic-mocking.html",
-    "previous": "common-js-testing",
     "next": "mock-functions",
     "href": "/jest/docs/automatic-mocking.html"
   },
@@ -32,7 +30,6 @@ module.exports = [
     "layout": "docs",
     "category": "Blog Post",
     "permalink": "blog-post.html",
-    "previous": "api",
     "href": "/jest/docs/blog-post.html"
   },
   {
@@ -42,7 +39,6 @@ module.exports = [
     "layout": "docs",
     "category": "Core Concepts",
     "permalink": "common-js-testing.html",
-    "previous": "tutorial-coffeescript",
     "next": "automatic-mocking",
     "href": "/jest/docs/common-js-testing.html"
   },
@@ -63,7 +59,6 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "manual-mocks.html",
-    "previous": "mock-functions",
     "next": "timer-mocks",
     "href": "/jest/docs/manual-mocks.html"
   },
@@ -74,7 +69,6 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "mock-functions.html",
-    "previous": "automatic-mocking",
     "next": "manual-mocks",
     "href": "/jest/docs/mock-functions.html"
   },
@@ -85,7 +79,6 @@ module.exports = [
     "layout": "docs",
     "category": "Reference",
     "permalink": "timer-mocks.html",
-    "previous": "manual-mocks",
     "next": "api",
     "href": "/jest/docs/timer-mocks.html"
   },
@@ -96,7 +89,6 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial-asynchronous.html",
-    "previous": "getting-started",
     "next": "tutorial-jquery",
     "href": "/jest/docs/tutorial-asynchronous.html"
   },
@@ -107,7 +99,6 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial-coffeescript.html",
-    "previous": "tutorial-jquery",
     "next": "common-js-testing",
     "href": "/jest/docs/tutorial-coffeescript.html"
   },
@@ -118,7 +109,6 @@ module.exports = [
     "layout": "docs",
     "category": "Quick Start",
     "permalink": "tutorial-jquery.html",
-    "previous": "tutorial-asynchronous",
     "next": "tutorial-coffeescript",
     "href": "/jest/docs/tutorial-jquery.html"
   }

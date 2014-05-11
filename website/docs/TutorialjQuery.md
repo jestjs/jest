@@ -4,7 +4,6 @@ title: Tutorial - jQuery
 layout: docs
 category: Quick Start
 permalink: tutorial-jquery.html
-previous: tutorial-asynchronous
 next: tutorial-coffeescript
 ---
 
