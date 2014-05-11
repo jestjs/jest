@@ -8,7 +8,6 @@
     "test": "node ../bin/jest.js"
   },
   "jest": {
-    "testPathDirs": ["."],
     "testPathIgnorePatterns": ["node_modules"],
     "scriptPreprocessor": "./jsxTransform.js",
     "unmockedModulePathPatterns": ["node_modules/react"]
