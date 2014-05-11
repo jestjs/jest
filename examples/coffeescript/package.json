@@ -6,6 +6,7 @@
     "test": "node ../../bin/jest.js"
   },
   "jest": {
-    "scriptPreprocessor": "preprocessor.js"
+    "scriptPreprocessor": "preprocessor.js",
+    "extensions": ["coffee", "js"]
   }
 }

@@ -37,6 +37,7 @@ module.exports = React.createClass({
 
   - [\`config.collectCoverage\` [boolean]](#config-collectcoverage-boolean)
   - [\`config.collectCoverageOnlyFrom\` [object]](#config-collectcoverageonlyfrom-object)
+  - [\`config.extensions\` [array<string>]](#config-extensions-array-string)
   - [\`config.modulePathIgnorePatterns\` [array<string>]](#config-modulepathignorepatterns-array-string)
   - [\`config.rootDir\` [string]](#config-rootdir-string)
   - [\`config.scriptPreprocessor\` [string]](#config-scriptpreprocessor-string)
@@ -241,6 +242,11 @@ Indicates whether the coverage information should be collected while executing t
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
 
+### \`config.extensions\` [array<string>]
+(default: \`['js']\`)
+
+An array of test extensions to search for. If you are writting CoffeeScript using \`.coffee\` extension for example, you can use \`['js', 'coffee']\` in order to accept tests written in both languages.
+
 ### \`config.modulePathIgnorePatterns\` [array<string>]
 (default: \`[]\`)
 
@@ -254,7 +260,7 @@ The root directory that jest should scan for tests and modules within. If you pu
 ### \`config.scriptPreprocessor\` [string]
 (default: \`undefined\`)
 
-The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 -> ES5 here. 
+The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 -> ES5 here.
 
 Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/facebook/recast), [regenerator](http://github.com/facebook/regenerator), and/or [traceur](https://github.com/google/traceur-compiler).
 

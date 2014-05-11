@@ -90,6 +90,7 @@ describe('sum', function() {
 
   - [`config.collectCoverage` [boolean]](http://facebook.github.io/jest/docs/api.html#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](http://facebook.github.io/jest/docs/api.html#config-collectcoverageonlyfrom-object)
+  - [`config.extensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-extensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
   - [`config.rootDir` [string]](http://facebook.github.io/jest/docs/api.html#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)

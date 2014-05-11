@@ -39,7 +39,6 @@ var DEFAULT_OPTIONS = {
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
-var NODE_HASTE_TEST_PATH_RE = /\/__tests__\/.*\.js$/;
 
 function _serializeConsoleArguments(type, args) {
   return {
@@ -61,10 +60,11 @@ function _serializeConsoleArguments(type, args) {
 function TestRunner(config, options) {
   this._config = config;
   this._configDeps = null;
-  this._opts = Object.create(DEFAULT_OPTIONS);
   this._moduleLoaderResourceMap = null;
   this._testPathDirsRegExp = new RegExp(config.testPathDirs.join('|'));
+  this._nodeHasteTestRegExp = new RegExp('/__tests__/.*\\.(' + config.extensions.join('|') + ')$');
 
+  this._opts = Object.create(DEFAULT_OPTIONS);
   if (options) {
     for (var key in options) {
       this._opts[key] = options[key];
@@ -101,7 +101,7 @@ TestRunner.prototype._isTestFilePath = function(filePath) {
     : null;
 
   return (
-    NODE_HASTE_TEST_PATH_RE.test(filePath)
+    this._nodeHasteTestRegExp.test(filePath)
     && !HIDDEN_FILE_RE.test(filePath)
     && (!testPathIgnorePattern || !testPathIgnorePattern.test(filePath))
     && this._testPathDirsRegExp.test(filePath)

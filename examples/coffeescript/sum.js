@@ -1,4 +1,5 @@
-sum = (numbers...) ->
-  numbers.reduce ((a, b) -> a + b), 0
+function sum(a, b) {
+  return a + b;
+}
 
-module.exports = sum
+module.exports = sum;

@@ -180,7 +180,8 @@ if (argv.config) {
     config = Q(utils.normalizeConfig({
       name: cwd.replace(/[/\\]/g, '_'),
       testPathDirs: [cwd],
-      testPathIgnorePatterns: ['/node_modules/.+']
+      testPathIgnorePatterns: ['/node_modules/.+'],
+      extensions: ['js']
     }, cwd));
   }
 }

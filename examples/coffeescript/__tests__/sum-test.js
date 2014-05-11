@@ -1,7 +1,15 @@
-jest.dontMock '../sum.js'
+jest
+  .dontMock('../sum.coffee')
+  .dontMock('../sum.js');
 
-describe 'sum', ->
-  it 'adds 1 + 1 to equal 2', ->
-    sum = require '../sum.js'
-    console.log sum
-    expect(sum 1, 2).toBe 3
+describe('sum', function() {
+  it('adds 1 + 2 to equal 3 in CoffeeScript', function() {
+    var sum = require('../sum.coffee');
+    expect(sum(1, 2)).toBe(3);
+  });
+
+  it('adds 1 + 2 to equal 3 in JavaScript', function() {
+    var sum = require('../sum.js');
+    expect(sum(1, 2)).toBe(3);
+  });
+});
