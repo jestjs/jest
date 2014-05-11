@@ -1,16 +1,15 @@
 {
   "dependencies": {
-    "jquery": "*",
     "react": "*",
     "react-tools": "*"
   },
   "scripts": {
-    "test": "node ../bin/jest.js"
+    "test": "node ../../bin/jest.js"
   },
   "jest": {
     "testPathIgnorePatterns": ["node_modules"],
-    "setupEnvScriptFile": "./environment.js",
-    "scriptPreprocessor": "./jsxTransform.js",
+    "setupEnvScriptFile": "environment.js",
+    "scriptPreprocessor": "preprocessor.js",
     "unmockedModulePathPatterns": ["node_modules/react"]
   }
 }

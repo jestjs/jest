@@ -1,4 +1,3 @@
-// fetchCurrentUser.js
 var $ = require('jquery');
 
 function parseUserJson(userJson) {

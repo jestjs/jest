@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "coffee-script": "*"
+  },
+  "scripts": {
+    "test": "node ../../bin/jest.js"
+  },
+  "jest": {
+    "scriptPreprocessor": "preprocessor.js"
+  }
+}
