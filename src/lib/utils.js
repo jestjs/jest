@@ -138,7 +138,7 @@ function normalizeConfig(config, relativeTo) {
 
   // Normalize rootDir into an absolute path
   newConfig.rootDir =
-    relativeTo
+    relativeTo && config.rootDir.substr(0, '<rootDir>'.length) !== '<rootdir'
     ? path.resolve(relativeTo, config.rootDir)
     : config.rootDir;
 
@@ -170,7 +170,10 @@ function normalizeConfig(config, relativeTo) {
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
-        value = path.resolve(relativeTo, config[key]);
+        value = path.resolve(
+          relativeTo,
+          _replaceRootDirTags(relativeTo, config[key])
+        );
         break;
 
       case 'testPathIgnorePatterns':

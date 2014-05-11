@@ -8,8 +8,8 @@
   },
   "jest": {
     "testPathIgnorePatterns": ["node_modules"],
-    "setupEnvScriptFile": "environment.js",
-    "scriptPreprocessor": "preprocessor.js",
+    "setupEnvScriptFile": "<rootDir>/environment.js",
+    "scriptPreprocessor": "<rootDir>/preprocessor.js",
     "unmockedModulePathPatterns": ["node_modules/react"]
   }
 }
