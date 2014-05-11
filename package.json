@@ -29,7 +29,7 @@
   },
   "scripts": {
     "prepublish": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && jest",
-    "test": "jest"
+    "test": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && jest"
   },
   "jest": {
     "testPathDirs": [

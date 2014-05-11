@@ -129,13 +129,16 @@ function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
 function normalizeConfig(config, relativeTo) {
   var newConfig = {};
 
-  // Normalize rootDir into an absolute path
-  if (config.rootDir) {
-    newConfig.rootDir =
-      relativeTo
-      ? path.resolve(relativeTo, config.rootDir)
-      : config.rootDir;
+  // Assert that there *is* a rootDir
+  if (!config.hasOwnProperty('rootDir')) {
+    throw new Error('No rootDir config value found!');
   }
+
+  // Normalize rootDir into an absolute path
+  newConfig.rootDir =
+    relativeTo
+    ? path.resolve(relativeTo, config.rootDir)
+    : config.rootDir;
 
   Object.keys(config).reduce(function(newConfig, key) {
     var value;
@@ -143,6 +146,14 @@ function normalizeConfig(config, relativeTo) {
       case 'rootDir':
         // Skip because we've already copied it above
         return newConfig;
+
+      case 'collectCoverageOnlyFrom':
+        value = Object.keys(config[key]).reduce(function(normObj, filePath) {
+          filePath = path.resolve(relativeTo, filePath);
+          normObj[filePath] = true;
+          return normObj;
+        }, {});
+        break;
 
       case 'testPathDirs':
         value = config[key].map(function(scanDir) {
@@ -152,6 +163,12 @@ function normalizeConfig(config, relativeTo) {
             : scanDir
           );
         });
+        break;
+
+      case 'scriptPreprocessor':
+      case 'setupEnvScriptFile':
+      case 'setupTestFrameworkScriptFile':
+        value = path.resolve(relativeTo, config[key]);
         break;
 
       case 'testPathIgnorePatterns':
@@ -184,22 +201,29 @@ function normalizeConfig(config, relativeTo) {
     return newConfig;
   }, newConfig);
 
-  return _replaceRootDirTags(newConfig.rootDir || '', newConfig);
+  return _replaceRootDirTags(newConfig.rootDir, newConfig);
 }
 
 function loadConfigFromFile(filePath, relativeTo) {
   relativeTo = relativeTo || path.dirname(filePath);
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
+    if (!config.hasOwnProperty('rootDir')) {
+      config.rootDir = relativeTo;
+    }
     return normalizeConfig(config, relativeTo);
   });
 }
 
 function loadConfigFromPackageJson(filePath, relativeTo) {
+  relativeTo = relativeTo || path.dirname(filePath);
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;
+    if (!config.hasOwnProperty('rootDir')) {
+      config.rootDir = relativeTo;
+    }
     return normalizeConfig(config, relativeTo);
   });
 }
