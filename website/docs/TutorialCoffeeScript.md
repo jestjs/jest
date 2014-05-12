@@ -54,3 +54,5 @@ describe 'sum', ->
     expect(sum 1, 2).toBe 3
 ```
 
+The code for this example is on [examples/coffeescript/](https://github.com/facebook/jest/tree/master/examples/coffeescript)
+

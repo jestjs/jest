@@ -130,6 +130,8 @@ notice is that the code we've written is entirely synchronous. This is one of
 the strengths of using mock functions in this way: The code you write in tests
 is always straightfoward and imperative, no matter if the code under test is
 synchronous or asynchronous.
+
+The code for this example is on [examples/asynchronous/](https://github.com/facebook/jest/tree/master/examples/asynchronous)
 `);
   }
 });

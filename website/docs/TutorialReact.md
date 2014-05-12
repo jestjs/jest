@@ -108,3 +108,5 @@ Finally, React has two modes, a development one with many warnings and assertion
 // environment.js
 __DEV__ = true;
 ```
+
+The code for this example is on [examples/react/](https://github.com/facebook/jest/tree/master/examples/react)
