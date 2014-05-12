@@ -170,8 +170,10 @@ if (argv.config) {
 
   // First look to see if there is a package.json file with a jest config in it
   if (pkgJson.jest) {
-    pkgJson.jest.rootDir = cwd;
-    config = utils.normalizeConfig(pkgJson.jest, cwd);
+    if (!pkgJson.jest.hasOwnProperty('rootDir')) {
+      pkgJson.jest.rootDir = cwd;
+    }
+    config = utils.normalizeConfig(pkgJson.jest);
     config.name = pkgJson.name;
     config = Q(config);
 

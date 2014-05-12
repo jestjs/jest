@@ -128,7 +128,7 @@ function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
   return numCoveredLines / numMeasuredLines;
 }
 
-function normalizeConfig(config, relativeTo) {
+function normalizeConfig(config) {
   var newConfig = {};
 
   // Assert that there *is* a rootDir
@@ -136,22 +136,20 @@ function normalizeConfig(config, relativeTo) {
     throw new Error('No rootDir config value found!');
   }
 
-  // Normalize rootDir into an absolute path
-  newConfig.rootDir =
-    relativeTo && config.rootDir.substr(0, '<rootDir>'.length) !== '<rootdir'
-    ? path.resolve(relativeTo, config.rootDir)
-    : config.rootDir;
+  // Assert that the rootDir is a valid directory
+  if (!fs.existsSync(config.rootDir)) {
+    throw new Error('Non-existant rootDir supplied: ' + config.rootDir);
+  }
 
   Object.keys(config).reduce(function(newConfig, key) {
     var value;
     switch (key) {
-      case 'rootDir':
-        // Skip because we've already copied it above
-        return newConfig;
-
       case 'collectCoverageOnlyFrom':
         value = Object.keys(config[key]).reduce(function(normObj, filePath) {
-          filePath = path.resolve(relativeTo, filePath);
+          filePath = path.resolve(
+            config.rootDir,
+            _replaceRootDirTags(config.rootDir, filePath)
+          );
           normObj[filePath] = true;
           return normObj;
         }, {});
@@ -159,10 +157,9 @@ function normalizeConfig(config, relativeTo) {
 
       case 'testPathDirs':
         value = config[key].map(function(scanDir) {
-          return (
-            /^\./.test(scanDir)
-            ? path.resolve(relativeTo, scanDir)
-            : scanDir
+          return path.resolve(
+            config.rootDir,
+            _replaceRootDirTags(config.rootDir, scanDir)
           );
         });
         break;
@@ -171,13 +168,14 @@ function normalizeConfig(config, relativeTo) {
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
         value = path.resolve(
-          relativeTo,
-          _replaceRootDirTags(relativeTo, config[key])
+          config.rootDir,
+          _replaceRootDirTags(config.rootDir, config[key])
         );
         break;
 
       case 'testPathIgnorePatterns':
       case 'modulePathIgnorePatterns':
+      case 'unmockedModulePathPatterns':
         // _replaceRootDirTags is specifically well-suited for substituting
         // <rootDir> in paths (it deals with properly interpreting relative path
         // separators, etc).
@@ -185,13 +183,21 @@ function normalizeConfig(config, relativeTo) {
         // For patterns, direct global substitution is far more ideal, so we
         // special case substitutions for patterns here.
         value = config[key].map(function(pattern) {
-          return pattern.replace(/<rootDir>/g, newConfig.rootDir);
+          return pattern.replace(/<rootDir>/g, config.rootDir);
         });
         break;
 
-      default:
+      case 'collectCoverage':
+      case 'name':
+      case 'persistModuleRegistryBetweenSpecs':
+      case 'rootDir':
+      case 'setupJSTestLoaderOptions':
+      case 'testExtensions':
         value = config[key];
         break;
+
+      default:
+        throw new Error('Unknown config option: ' + key);
     }
     newConfig[key] = value;
     return newConfig;
@@ -216,7 +222,7 @@ function loadConfigFromFile(filePath, relativeTo) {
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = relativeTo;
     }
-    return normalizeConfig(config, relativeTo);
+    return normalizeConfig(config);
   });
 }
 
@@ -229,7 +235,7 @@ function loadConfigFromPackageJson(filePath, relativeTo) {
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = relativeTo;
     }
-    return normalizeConfig(config, relativeTo);
+    return normalizeConfig(config);
   });
 }
 
