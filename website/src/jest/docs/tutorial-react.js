@@ -7,6 +7,8 @@ var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"TutorialReact.js","id":"tutorial-react","title":"Tutorial - React","layout":"docs","category":"Quick Start","permalink":"tutorial-react.html","next":"common-js-testing","href":"/jest/docs/tutorial-react.html"}}, `
+Jest is being used at Facebook to test [React](http://facebook.github.io/react/) applications. Let's implement a dummy checkbox which swpas between two labels.
+
 \`\`\`javascript
 // CheckboxWithLabel.js
 
@@ -34,6 +36,8 @@ var CheckboxWithLabel = React.createClass({
 });
 module.exports = CheckboxWithLabel;
 \`\`\`
+
+The test code is pretty straightforward, we use [TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to manipulate React components.
 
 \`\`\`javascript
 // __tests__/CheckboxWithLabel-test.js
@@ -66,7 +70,7 @@ describe('CheckboxWithLabel', function() {
 
 ## Setup
 
-Testing a application written in React requires a bit of setup.
+Since we are writing code using JSX and import React directly from source, a bit of one-time setup is required to make the test working. This is also a good introduction to all the jest configurations that are you are going to use in order to integrate it with your stack.
 
 \`\`\`javascript
 // package.json
