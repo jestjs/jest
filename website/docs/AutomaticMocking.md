@@ -114,4 +114,4 @@ Conclusion
 
 A good goal to aim for when designing a system is to provide an API that is easy to use for 90% of the use cases, but still leaves the ability to accomplish the last 10% as well. In the case of jest, automated mocking solves the rather uninteresting (but common) task of writing boilerplate to generate mocks for the unit you are testing. However, it is still possible to have complete control over what is mocked and what is not by providing `jest.mock()` and `jest.dontMock()` APIs for customization.
 
-Additionally, there are times where the automated mocking system isn't able to generate a mock that's sufficient enough for your needs. In these cases, you can manually write a mock that jest should use (rather than trying to infer one itself). You can read more about how to build a manual mock [here](/jest/docs/manual-mocks.html).
+Additionally, there are times where the automated mocking system isn't able to generate a mock that's sufficient enough for your needs. In these cases, you can [manually write a mock](/jest/docs/manual-mocks.html) that jest should use (rather than trying to infer one itself).

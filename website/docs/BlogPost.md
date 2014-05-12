@@ -73,6 +73,6 @@ With this setup, you cannot accidentally rely on the implementation details of `
 
 ## Conclusion
 
-
+Jest doesn't reinvent everything, it is a shell around existing open source projects. Jest uses [Jasmine](http://jasmine.github.io/1.3/introduction.html) as the test framework, [jsdom](https://github.com/tmpvar/jsdom) to emulate browser environment in [nodejs](http://nodejs.org/). Jest has hooks to plugin your language transform of choice such as [CoffeeScript](http://coffeescript.org/), [JSX](http://facebook.github.io/react/docs/jsx-in-depth.html) or [ES6](https://github.com/lukehoban/es6features).
 
 Jest, like many things at Facebook, is the result of a couple engineers being frustrated by how painful it is to test and hacked on a better solution.
