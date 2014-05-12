@@ -7,7 +7,7 @@ var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
     return layout({metadata: {"filename":"TutorialReact.js","id":"tutorial-react","title":"Tutorial - React","layout":"docs","category":"Quick Start","permalink":"tutorial-react.html","next":"common-js-testing","href":"/jest/docs/tutorial-react.html"}}, `
-Jest is being used at Facebook to test [React](http://facebook.github.io/react/) applications. Let's implement a dummy checkbox which swpas between two labels.
+Jest is being used at Facebook to test [React](http://facebook.github.io/react/) applications. Let's implement a dummy checkbox which swaps between two labels.
 
 \`\`\`javascript
 // CheckboxWithLabel.js
