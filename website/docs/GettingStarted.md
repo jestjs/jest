@@ -7,7 +7,7 @@ permalink: getting-started.html
 next: tutorial-asynchronous
 ---
 
-Getting started with jest is pretty simple. If you want to test the following `sum.js` file,
+Getting started with Jest is pretty simple. If you want to test the following `sum.js` file,
 
 ```javascript
 // sum.js

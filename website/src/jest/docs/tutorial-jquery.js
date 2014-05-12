@@ -67,13 +67,13 @@ describe('displayUser', function() {
 \`\`\`
 
 The function under test adds an event listener on the \`#button\` DOM element, so
-we need to setup our DOM correctly for the test. jest ships with \`jsdom\` which
+we need to setup our DOM correctly for the test. Jest ships with \`jsdom\` which
 simulates a DOM environment as if you were in the browser. This means that every
 DOM API that we call can be observed in the same way it would be observed in a
 browser!
 
 Since we are interested in testing that \`displayUser.js\` makes specific changes
-to the DOM, we tell jest not to mock our \`jquery\` dependency. This lets
+to the DOM, we tell Jest not to mock our \`jquery\` dependency. This lets
 \`displayUser.js\` actually mutate the DOM, and it gives us an easy means of
 querying the DOM in our test.
 `);

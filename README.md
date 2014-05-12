@@ -12,7 +12,7 @@ Take a look at the [website for more information](http://facebook.github.io/reac
 
 ## Getting Started
 <generated_getting_started>
-Getting started with jest is pretty simple. If you want to test the following `sum.js` file,
+Getting started with Jest is pretty simple. If you want to test the following `sum.js` file,
 
 ```javascript
 // sum.js

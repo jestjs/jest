@@ -63,8 +63,8 @@ describe('fetchCurrentUser', function() {
 \`\`\`
 
 The first line is very important: \`jest.dontMock('../fetchCurrentUser.js');\`.
-By default, jest automatically makes all calls to \`require()\` return a mocked
-version of the real module -- so we need to tell jest not to mock the file we
+By default, Jest automatically makes all calls to \`require()\` return a mocked
+version of the real module -- so we need to tell Jest not to mock the file we
 want to test.
 
 Moving along into our first test, we want to confirm that calling
@@ -104,16 +104,16 @@ like to test that the callback we are passing in is indeed called back when the
 
 In order for \`fetchCurrentUser\` to compute the result to be passed in to the
 callback, \`fetchCurrentUser\` will call in to one of it's dependencies: \`$.ajax\`.
-Since jest has mocked this dependency for us, it's very easy to inspect all of
+Since Jest has mocked this dependency for us, it's very easy to inspect all of
 the interactions with \`$.ajax\` that occurred during our test.
 
-At this point, you might be wondering how jest was able to decide what the mock
-for the \`jQuery\` module should look like. The answer is plain and simple: jest
+At this point, you might be wondering how Jest was able to decide what the mock
+for the \`jQuery\` module should look like. The answer is plain and simple: Jest
 secretly requires the real module, inspects what it looks like, and then builds
-a mocked version of what it saw. This is how jest knew that there should be an
+a mocked version of what it saw. This is how Jest knew that there should be an
 \`ajax\` property, and that that property should be a mock function.
 
-In jest, all mock functions have a \`.mock\` property that stores all the
+In Jest, all mock functions have a \`.mock\` property that stores all the
 interactions with the function. In the above case, we are reading from
 \`mock.calls\`, which is an array that contains information about each time the
 function was called, and what arguments each of those calls had.

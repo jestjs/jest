@@ -9,7 +9,7 @@ module.exports = React.createClass({
     return layout({metadata: {"filename":"TimerMocks.js","id":"timer-mocks","title":"Timer mocks","layout":"docs","category":"Reference","permalink":"timer-mocks.html","next":"api","href":"/jest/docs/timer-mocks.html"}}, `
 The native timer functions, i.e., \`setTimeout\`, \`setInterval\`, \`clearTimeout\`,
 \`clearInterval\` are less than ideal for a testing environment since they depend
-on real time to elapse. To resolve this issue, jest provides you with mocked
+on real time to elapse. To resolve this issue, Jest provides you with mocked
 timer functions and APIs that allow you to control the passage of time.
 [Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
 
@@ -44,7 +44,7 @@ describe('timerGame', function() {
 ## Run All Timers
 
 Another test we might want to write for this module is one that asserts that the
-callback is called after 1 second. To do this, we're going to use jest's timer
+callback is called after 1 second. To do this, we're going to use Jest's timer
 control APIs to fastforward time right in the middle of the test:
 
 \`\`\`javascript

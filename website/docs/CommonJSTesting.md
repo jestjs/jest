@@ -122,7 +122,7 @@ require('XHR'); // returns the real XHR module
 This allows you to write your tests like this:
 
 ```
-jest.mock('XHR'); // note: by default, this is done automatically in jest
+jest.mock('XHR'); // note: by default, this is done automatically in Jest
 doWork();
 var MockXHR = require('XHR');
 // assert that MockXHR got called with the right arguments
@@ -136,7 +136,7 @@ implementation of any module at any time. However, the vast majority of code
 only deals with one implementation for production and one for testing. Jest is
 designed to make this common case much simpler to test.
 
-jest allows for mocking dependencies in the same way that Angular doest, but
+Jest allows for mocking dependencies in the same way that Angular doest, but
 instead of building a proprietary module loader, it uses CommonJS. This enables
 you to test any existing code that already uses CommonJS without having to
 heavily refactor it to make it compatible with a another module system such as

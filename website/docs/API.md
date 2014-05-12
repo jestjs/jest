@@ -250,7 +250,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 ### `config.rootDir` [string]
 (default: The `pwd` the CLI is being executed from)
 
-The root directory that jest should scan for tests and modules within. If you put your jest config inside your `package.json` and want the root directory to be the root of your repo (the 99% common case), the value for this config param will default to the directory of the `package.json`.
+The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo (the 99% common case), the value for this config param will default to the directory of the `package.json`.
 
 ### `config.scriptPreprocessor` [string]
 (default: `undefined`)
@@ -271,7 +271,7 @@ It's worth noting that this code will execute *before* [`config.setupTestFramewo
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
-For example, jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
 ### `config.testExtensions` [array<string>]
 (default: `['js']`)
@@ -281,9 +281,9 @@ An array of test extensions to search for. If you are writting CoffeeScript usin
 ### `config.testPathDirs` [array<string>]
 (default: The `pwd` the cli is being executed from)
 
-A list of paths to directories that jest should use to search for tests in.
+A list of paths to directories that Jest should use to search for tests in.
 
-There are times where you only want jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
+There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
 
 ### `config.testPathIgnorePatterns` [array<string>]
 (default: `[]`)
