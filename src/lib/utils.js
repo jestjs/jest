@@ -136,11 +136,6 @@ function normalizeConfig(config) {
     throw new Error('No rootDir config value found!');
   }
 
-  // Assert that the rootDir is a valid directory
-  if (!fs.existsSync(config.rootDir)) {
-    throw new Error('Non-existant rootDir supplied: ' + config.rootDir);
-  }
-
   Object.keys(config).reduce(function(newConfig, key) {
     var value;
     switch (key) {
@@ -215,25 +210,23 @@ function normalizeConfig(config) {
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
 }
 
-function loadConfigFromFile(filePath, relativeTo) {
-  relativeTo = relativeTo || path.dirname(filePath);
+function loadConfigFromFile(filePath) {
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = relativeTo;
+      config.rootDir = path.dirname(filePath);
     }
     return normalizeConfig(config);
   });
 }
 
-function loadConfigFromPackageJson(filePath, relativeTo) {
-  relativeTo = relativeTo || path.dirname(filePath);
+function loadConfigFromPackageJson(filePath) {
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;
     if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = relativeTo;
+      config.rootDir = path.dirname(filePath);
     }
     return normalizeConfig(config);
   });

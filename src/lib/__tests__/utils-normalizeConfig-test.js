@@ -1,16 +1,12 @@
-jest
-  .autoMockOff()
-  .mock('fs');
+'use strict';
+
+jest.autoMockOff();
 
 describe('utils-normalizeConfig', function() {
-  var fs;
   var utils;
 
   beforeEach(function() {
-    fs = require('fs');
     utils = require('../utils');
-
-    fs.existsSync.mockReturnValue(true);
   });
 
   it('throws when an invalid config option is passed in', function() {
@@ -27,14 +23,6 @@ describe('utils-normalizeConfig', function() {
       expect(function() {
         utils.normalizeConfig({});
       }).toThrow('No rootDir config value found!');
-    });
-
-    it('throws if the rootDir doesn\'t exist', function() {
-      fs.existsSync.mockReturnValue(false);
-
-      expect(function() {
-        utils.normalizeConfig({rootDir: '/non/existant/rootDir'});
-      }).toThrow('Non-existant rootDir supplied: /non/existant/rootDir');
     });
   });
 
@@ -79,7 +67,7 @@ describe('utils-normalizeConfig', function() {
 
       expect(config.collectCoverageOnlyFrom).toEqual({
         '/root/path/foo/bar/baz': true
-      })
+      });
     });
   });
 
@@ -249,7 +237,7 @@ describe('utils-normalizeConfig', function() {
       expect(config.testPathIgnorePatterns).toEqual([
         'bar/baz',
         'qux/quux/'
-      ])
+      ]);
     });
 
     it('substitutes <rootDir> tokens', function() {
@@ -300,7 +288,7 @@ describe('utils-normalizeConfig', function() {
       expect(config.modulePathIgnorePatterns).toEqual([
         'bar/baz',
         'qux/quux/'
-      ])
+      ]);
     });
 
     it('substitutes <rootDir> tokens', function() {
