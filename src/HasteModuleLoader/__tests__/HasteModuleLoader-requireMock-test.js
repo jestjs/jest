@@ -117,5 +117,25 @@ describe('nodeHasteModuleLoader', function() {
         }).toThrow();
       });
     });
+
+    pit('uses the closest manual mock when duplicates exist', function() {
+      return buildLoader().then(function(loader) {
+        var exports1 = loader.requireMock(
+          __dirname,
+          path.resolve(__dirname, './test_root/subdir1/MyModule')
+        );
+        expect(exports1.modulePath).toEqual(
+          'subdir1/__mocks__/MyModule.js'
+        );
+
+        var exports2 = loader.requireMock(
+          __dirname,
+          path.resolve(__dirname, './test_root/subdir2/MyModule')
+        );
+        expect(exports2.modulePath).toEqual(
+          'subdir2/__mocks__/MyModule.js'
+        );
+      });
+    });
   });
 });

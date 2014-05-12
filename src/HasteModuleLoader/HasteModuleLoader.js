@@ -705,6 +705,30 @@ Loader.prototype.requireMock = function(currPath, moduleName) {
     modulePath = manualMockResource.path;
   } else {
     modulePath = this._moduleNameToPath(currPath, moduleName);
+
+    // If the actual module file has a __mocks__ dir sitting immediately next to
+    // it, look to see if there is a manual mock for this file in that dir.
+    //
+    // The reason why node-haste isn't good enough for this is because
+    // node-haste only handles manual mocks for @providesModules well. Otherwise
+    // it's not good enough to disambiguate something like the following
+    // scenario:
+    //
+    // subDir1/MyModule.js
+    // subDir1/__mocks__/MyModule.js
+    // subDir2/MyModule.js
+    // subDir2/__mocks__/MyModule.js
+    //
+    // Where some other module does a relative require into each of the
+    // respective subDir{1,2} directories and expects a manual mock
+    // corresponding to that particular MyModule.js file.
+    var moduleDir = path.dirname(modulePath);
+    var moduleFileName = path.basename(modulePath);
+    var potentialManualMock = path.join(moduleDir, '__mocks__', moduleFileName);
+    if (fs.existsSync(potentialManualMock)) {
+      manualMockResource = true;
+      modulePath = potentialManualMock;
+    }
   }
 
   if (this._mockRegistry.hasOwnProperty(modulePath)) {
