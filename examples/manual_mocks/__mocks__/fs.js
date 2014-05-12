@@ -21,7 +21,6 @@ function __setMockFiles(newMockFiles) {
 // A custom version of `readdirSync` that reads from the special mocked out
 // file list set via __setMockFiles
 function readdirSync(directoryPath) {
-  console.log('mock!');
   return _mockFiles[directoryPath] || [];
 };
 
