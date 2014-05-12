@@ -17,10 +17,15 @@ describe('TestRunner', function() {
     var fakeDepsFromPath;
     var fs;
     var runner;
+    var utils;
 
     beforeEach(function() {
       fs = require('fs');
-      runner = new TestRunner({testPathDirs: []});
+      utils = require('../lib/utils');
+      runner = new TestRunner(utils.normalizeConfig({
+        rootDir: '.',
+        testPathDirs: []
+      }));
 
       fakeDepsFromPath = {};
       runner._constructModuleLoader = function() {

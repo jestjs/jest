@@ -4,7 +4,5 @@
   },
   "scripts": {
     "test": "node ../../bin/jest.js"
-  },
-  "jest": {
   }
 }
