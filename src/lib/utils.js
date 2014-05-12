@@ -211,22 +211,28 @@ function normalizeConfig(config) {
 }
 
 function loadConfigFromFile(filePath) {
+  var fileDir = path.dirname(filePath);
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = path.dirname(filePath);
+      config.rootDir = fileDir;
+    } else {
+      config.rootDir = path.resolve(fileDir, config.rootDir);
     }
     return normalizeConfig(config);
   });
 }
 
 function loadConfigFromPackageJson(filePath) {
+  var pkgJsonDir = path.dirname(filePath);
   return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;
     if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = path.dirname(filePath);
+      config.rootDir = pkgJsonDir;
+    } else {
+      config.rootDir = path.resolve(pkgJsonDir, config.rootDir);
     }
     return normalizeConfig(config);
   });
