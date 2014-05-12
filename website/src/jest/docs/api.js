@@ -42,7 +42,7 @@ module.exports = React.createClass({
   - [\`config.scriptPreprocessor\` [string]](#config-scriptpreprocessor-string)
   - [\`config.setupEnvScriptFile\` [string]](#config-setupenvscriptfile-string)
   - [\`config.setupTestFrameworkScriptFile\` [string]](#config-setuptestframeworkscriptfile-string)
-  - [\`config.testExtensions\` [array<string>]](#config-test-extensions-array-string)
+  - [\`config.testFileExtensions\` [array<string>]](#config-testfileextensions-array-string)
   - [\`config.testPathDirs\` [array<string>]](#config-testpathdirs-array-string)
   - [\`config.testPathIgnorePatterns\` [array<string>]](#config-testpathignorepatterns-array-string)
   - [\`config.unmockedModulePathPatterns\` [array<string>]](#config-unmockedmodulepathpatterns-array-string)
@@ -273,10 +273,12 @@ The path to a module that runs some code to configure or set up the testing fram
 
 For example, Jest ships with several plug-ins to \`jasmine\` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
-### \`config.testExtensions\` [array<string>]
+### \`config.testFileExtensions\` [array<string>]
 (default: \`['js']\`)
 
-An array of test extensions to search for. If you are writting CoffeeScript using \`.coffee\` extension for example, you can use \`['js', 'coffee']\` in order to accept tests written in both languages.
+An array of file extensions that test files might have. Jest uses this when searching for tests.
+
+This is useful if, for example, you are writting test files using CoffeeScript with a \`.coffee\` file extension. In such a scenario, you can use \`['js', 'coffee']\` to make jest find files that end in both \`.js\` and \`.coffee\`. (Don't for get to set up a coffeescript pre-processor using [\`config.scriptPreprocessor\`](#config-scriptpreprocessor-string) too!)
 
 ### \`config.testPathDirs\` [array<string>]
 (default: The \`pwd\` the cli is being executed from)

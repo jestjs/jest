@@ -7,7 +7,7 @@ var Q = require('q');
 var DEFAULT_CONFIG_VALUES = {
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   testEnvironment: require.resolve('../JSDomEnvironment'),
-  testExtensions: ['js'],
+  testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
 };
@@ -187,7 +187,7 @@ function normalizeConfig(config) {
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
       case 'setupJSTestLoaderOptions':
-      case 'testExtensions':
+      case 'testFileExtensions':
         value = config[key];
         break;
 
