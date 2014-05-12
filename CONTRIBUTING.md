@@ -53,11 +53,11 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 * Commas last,
 * 2 spaces for indentation (no tabs)
 * Prefer `'` over `"`
-* `"use strict";`
+* `'use strict';`
 * 80 character line length
 * "Attractive"
 * Do not use the optional parameters of `setTimeout` and `setInterval`
 
 ## License
 
-By contributing to React, you agree that your contributions will be licensed under the [Apache License Version 2.0 (APLv2)](LICENSE).
+By contributing to Jest, you agree that your contributions will be licensed under its BSD license.
