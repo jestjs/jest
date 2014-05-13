@@ -51,6 +51,7 @@ module.exports = React.createClass({
 
   - [\`jest\`](#the-jest-object)
   - \`require(module)\`
+  - \`require.requireActual(module)\`
   - \`describe(name, fn)\`
   - \`beforeEach(fn)\`
   - \`afterEach(fn)\`

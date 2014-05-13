@@ -104,6 +104,7 @@ describe('sum', function() {
 
   - [`jest`](http://facebook.github.io/jest/docs/api.html#the-jest-object)
   - `require(module)`
+  - `require.requireActual(module)`
   - `describe(name, fn)`
   - `beforeEach(fn)`
   - `afterEach(fn)`
