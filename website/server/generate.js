@@ -1,7 +1,7 @@
 
 var request = require('request');
 var glob = require('glob');
-var fs = require('fs');
+var fs = require('fs.extra');
 var mkdirp = require('mkdirp');
 var server = require('./server.js');
 
@@ -35,12 +35,6 @@ var queue = (function() {
 glob('src/**/*.*', function(er, files) {
   var count = files.length;
 
-  function done() {
-    if (--count === 0) {
-      server.close();
-    }
-  }
-
   files.forEach(function(file) {
     var targetFile = file.replace(/^src/, 'build');
 
@@ -50,23 +44,19 @@ glob('src/**/*.*', function(er, files) {
         request('http://localhost:8079/' + targetFile.replace(/^build\//, ''), function(error, response, body) {
           mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
           fs.writeFileSync(targetFile, body);
-          done();
           cb();
         });
       });
     } else {
       queue.push(function(cb) {
-        fs.readFile(file, function(err, file) {
-          mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
-          fs.writeFileSync(targetFile, file.toString());
-          done();
-          cb();
-        });
+        mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
+        fs.copy(file, targetFile, cb);
       });
     }
   });
 
   queue.push(function(cb) {
+    server.close();
     console.log('It is live at: http://facebook.github.io/jest/')
     cb();
   });

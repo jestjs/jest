@@ -2,7 +2,6 @@
   "scripts": {
     "start": "node server/server.js"
   },
-
   "dependencies": {
     "React": "git://github.com/facebook/react.git",
     "optimist": "0.6.0",
@@ -10,10 +9,7 @@
     "connect": "2.8.3",
     "glob": "*",
     "mkdirp": "*",
-    "request": "*"
-  },
-
-  "jest": {
-
+    "request": "*",
+    "fs.extra": "*"
   }
 }
