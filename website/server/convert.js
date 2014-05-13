@@ -23,7 +23,7 @@ function backtickify(str) {
 }
 
 function execute() {
-  var MD_DIR = 'docs/';
+  var MD_DIR = '../docs/';
 
   glob('src/jest/docs/*.*', function(er, files) {
     files.forEach(function(file) {
