@@ -38,14 +38,16 @@
 
     "modulePathIgnorePatterns": [
       "/node_modules/",
-      "/examples/"
+      "/examples/",
+      "/docs/"
     ],
 
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+",
       "/node_modules/",
       "/examples/",
-      "/website/"
+      "/website/",
+      "/docs/"
     ]
   }
 }
