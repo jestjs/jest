@@ -32,22 +32,9 @@
     "test": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && jest"
   },
   "jest": {
-    "testPathDirs": [
-      "."
-    ],
-
-    "modulePathIgnorePatterns": [
-      "/node_modules/",
-      "/examples/",
-      "/docs/"
-    ],
-
+    "rootDir": "src",
     "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+",
-      "/node_modules/",
-      "/examples/",
-      "/website/",
-      "/docs/"
+      "/__tests__/[^/]*/.+"
     ]
   }
 }
