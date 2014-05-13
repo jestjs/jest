@@ -8,58 +8,13 @@ Painless JavaScript Unit Testing
 
 - **Short Feedback Loop**: Tests run in parallel and DOM apis are mocked so you can run tests on the command line
 
-Take a look at the [website for more information](http://facebook.github.io/react/)
-
 ## Getting Started
-<generated_getting_started>
-Getting started with Jest is pretty simple. If you want to test the following `sum.js` file,
 
-```javascript
-// sum.js
-function sum(value1, value2) {
-  return value1 + value2;
-}
-module.exports = sum;
-```
-
-1 - Create a directory `__tests__/` with a file `sum-test.js`
-
-```javascript
-// __tests__/sum-test.js
-jest.dontMock('../sum');
-
-describe('sum', function() {
-  it('adds 1 + 2 to equal 3', function() {
-    var sum = require('../sum');
-    expect(sum(1, 2)).toBe(3);
-  });
-});
-```
-
-2 - Run `npm install jest-cli --save-dev`
-
-3 - Add the following to your `package.json`
-
-```js
-{
-  ...
-  "scripts": {
-    "test": "jest"
-  }
-  ...
-}
-```
-
-4 - Run `npm test`
-
-```
-[PASS] __tests__/sum-test.js (0.015s)
-```
-</generated_getting_started>
+Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-started.html) tutorial. It's pretty simple!
 
 ## API
 
-<generated_api>
+<generated_api_start />
 #### The `jest` object
 
   - [`jest.autoMockOff()`](http://facebook.github.io/jest/docs/api.html#jest-automockoff)
@@ -132,4 +87,4 @@ describe('sum', function() {
   - `.toBeCalledWith(arg, um, ents)`
   - `.lastCalledWith(arg, um, ents)`
 
-</generated_api>
+<generated_api_end />

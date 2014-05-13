@@ -1,6 +1,6 @@
 {
   "name": "jest-cli",
-  "version": "0.0.3-pre",
+  "version": "0.0.9-pre",
   "dependencies": {
     "coffee-script": "1.7.1",
     "cover": "~0.2.8",
