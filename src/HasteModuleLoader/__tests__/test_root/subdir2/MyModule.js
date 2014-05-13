@@ -1,1 +1,1 @@
-exports.modulePath = 'subdir2/MyModule.js'
+exports.modulePath = 'subdir2/MyModule.js';

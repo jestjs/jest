@@ -2,10 +2,10 @@
   "name": "jest-cli",
   "version": "0.1.0",
   "dependencies": {
-    "coffee-script": "^1.7.1",
+    "coffee-script": "1.7.1",
     "cover": "~0.2.8",
     "diff": "~1.0.4",
-    "jasmine-only": "^0.1.0",
+    "jasmine-only": "0.1.0",
     "jasmine-pit": "~1.0.0",
     "jsdom": "~0.10.3",
     "node-find-files": "~0.0.2",
@@ -37,7 +37,8 @@
     ],
 
     "modulePathIgnorePatterns": [
-      "/node_modules/.+"
+      "/node_modules/",
+      "/examples/"
     ],
 
     "testPathIgnorePatterns": [

@@ -1,1 +1,1 @@
-exports.modulePath = 'subdir2/__mocks__/MyModule.js'
+exports.modulePath = 'subdir2/__mocks__/MyModule.js';
