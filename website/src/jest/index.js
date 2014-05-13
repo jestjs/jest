@@ -26,23 +26,21 @@ var index = React.createClass({
           <section className="light home-section">
             <div className="marketing-row">
               <div className="marketing-col">
-                <h3>Familiar</h3>
+                <h3>Familiar Approach</h3>
                 <p>
-                  Built on top of Jasmine test framework, a familiar BDD testing environment.
+                  Built on top of Jasmine test framework, a familiar BDD testing environment
                 </p>
               </div>
               <div className="marketing-col">
                 <h3>Mock by Default</h3>
                 <p>
-                  <Marked>
-                    Automatically mocks CommonJS modules returned by `require()`, making most existing code testable.
-                  </Marked>
+                  Automatically mocks CommonJS modules returned by require(), making most existing code testable
                 </p>
               </div>
               <div className="marketing-col">
-                <h3>Fast</h3>
+                <h3>Short Feedback Loop</h3>
                 <p>
-                  Tests run in parallel, DOM APIs are mocked, and it{"'"}s easy to run a subset of your tests.
+                  Tests run in parallel and DOM apis are mocked so you can run tests on the command line
                 </p>
               </div>
             </div>
