@@ -1,7 +1,7 @@
 ---
 id: blog-post
 title: Jest - Painless JavaScript Unit Testing
-layout: docs
+layout: page
 category: Blog Post
 permalink: blog-post.html
 ---

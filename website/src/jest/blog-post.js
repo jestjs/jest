@@ -3,10 +3,10 @@
  * @jsx React.DOM
  */
 var React = require("React");
-var layout = require("DocsLayout");
+var layout = require("PageLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"BlogPost.js","id":"blog-post","title":"Jest - Painless JavaScript Unit Testing","layout":"docs","category":"Blog Post","permalink":"blog-post.html","href":"/jest/docs/blog-post.html"}}, `
+    return layout({metadata: {"id":"blog-post","title":"Jest - Painless JavaScript Unit Testing","layout":"page","category":"Blog Post","permalink":"blog-post.html"}}, `
 Testing is a crucial part of making a large scale application but is usually seen as a chore and difficult thing to do. Jest attempts to make it painless via two major innovations.
 
 

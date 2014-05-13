@@ -3,7 +3,7 @@ id: automatic-mocking
 title: Automatic Mocking
 layout: docs
 category: Core Concepts
-permalink: automatic-mocking.html
+permalink: docs/automatic-mocking.html
 next: mock-functions
 ---
 

@@ -2,6 +2,7 @@ var fs = require('fs')
 var glob = require('glob');
 var mkdirp = require('mkdirp');
 var optimist = require('optimist');
+var path = require('path');
 var argv = optimist.argv;
 
 function splitHeader(content) {
@@ -24,87 +25,61 @@ function backtickify(str) {
 function execute() {
   var MD_DIR = 'docs/';
 
-  var api = splitHeader(fs.readFileSync(MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content
-    .split('---')[0]
-    .replace(/\(#/g, '(http://facebook.github.io/jest/docs/api.html#');
-  var getting_started = splitHeader(fs.readFileSync(MD_DIR + 'GettingStarted.md', {encoding: 'utf8'}).toString()).content;
-  var readme = fs.readFileSync('../README.md', {encoding: 'utf8'}).toString()
-    .replace(
-      /<generated_api>[\s\S]*<\/generated_api>/,
-      '<generated_api>' + api + '</generated_api>'
-    )
-    .replace(
-      /<generated_getting_started>[\s\S]*<\/generated_getting_started>/,
-      '<generated_getting_started>' + getting_started + '</generated_getting_started>'
-    );
-  fs.writeFileSync('../README.MD', readme);
-
-  var index = fs.readFileSync('src/jest/index.js', {encoding: 'utf8'}).toString()
-    .replace(
-      /\/[*]generated_getting_started[\s\S]*generated_getting_started_end[*]\//,
-      '/*generated_getting_started*/' + backtickify(getting_started) + '/*generated_getting_started_end*/'
-    );
-  fs.writeFileSync('src/jest/index.js', index);
-
   glob('src/jest/docs/*.*', function(er, files) {
     files.forEach(function(file) {
       fs.unlinkSync(file);
     });
   });
 
+  var metadatas = {
+    files: [],
+  };
 
-  var metadatas = [];
-  var generators = [
-    {path: new RegExp('.*'), action: function(metadata) {
-      return 'docs/' + metadata.id + '.js'
-    }}
-  ];
-
-  glob(MD_DIR + '**/*.md', function (er, files) {
+  glob(MD_DIR + '**/*.*', function (er, files) {
     files.forEach(function(file) {
-      var content = fs.readFileSync(file, {encoding: 'utf8'});
+      var extension = path.extname(file);
+      if (extension === '.md' || extension === '.markdown') {
+        var content = fs.readFileSync(file, {encoding: 'utf8'});
+        var metadata = {};
 
-      // Extract markdown metadata header
-      var metadata = { filename: file.substr(MD_DIR.length).replace(/\.md$/, '.js') };
-
-      var both = splitHeader(content);
-      var lines = both.header.split('\n');
-      for (var i = 0; i < lines.length - 1; ++i) {
-        var keyvalue = lines[i].split(':');
-        var key = keyvalue[0].trim();
-        var value = keyvalue[1].trim();
-        // Handle the case where you have "Community #10"
-        try { value = JSON.parse(value); } catch(e) { }
-        metadata[key] = value;
-      }
-      metadatas.push(metadata);
-
-      // Create a dummy .js version that just calls the associated layout
-      for (var i = 0; i < generators.length; ++i) {
-        var generator = generators[i];
-        if (metadata.filename.match(generator.path)) {
-          var name = generator.action(metadata);
-          metadata.href = '/jest/' + name.replace(/\.js$/, '.html');
-          var layout = metadata.layout[0].toUpperCase() + metadata.layout.substr(1) + 'Layout';
-
-          var content = (
-            '/**\n' +
-            ' * @generated\n' +
-            ' * @jsx React.DOM\n' +
-            ' */\n' +
-            'var React = require("React");\n' +
-            'var layout = require("' + layout + '");\n' +
-            'module.exports = React.createClass({\n' +
-            '  render: function() {\n' +
-            '    return layout({metadata: ' + JSON.stringify(metadata) + '}, ' + backtickify(both.content) + ');\n' +
-            '  }\n' +
-            '});\n'
-          );
-
-          var targetFile = 'src/jest/' + name;
-          mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
-          fs.writeFileSync(targetFile, content);
+        // Extract markdown metadata header
+        var both = splitHeader(content);
+        var lines = both.header.split('\n');
+        for (var i = 0; i < lines.length - 1; ++i) {
+          var keyvalue = lines[i].split(':');
+          var key = keyvalue[0].trim();
+          var value = keyvalue[1].trim();
+          // Handle the case where you have "Community #10"
+          try { value = JSON.parse(value); } catch(e) { }
+          metadata[key] = value;
         }
+        metadatas.files.push(metadata);
+
+        // Create a dummy .js version that just calls the associated layout
+        var layout = metadata.layout[0].toUpperCase() + metadata.layout.substr(1) + 'Layout';
+
+        var content = (
+          '/**\n' +
+          ' * @generated\n' +
+          ' * @jsx React.DOM\n' +
+          ' */\n' +
+          'var React = require("React");\n' +
+          'var layout = require("' + layout + '");\n' +
+          'module.exports = React.createClass({\n' +
+          '  render: function() {\n' +
+          '    return layout({metadata: ' + JSON.stringify(metadata) + '}, ' + backtickify(both.content) + ');\n' +
+          '  }\n' +
+          '});\n'
+        );
+
+        var targetFile = 'src/jest/' + metadata.permalink.replace(/\.html$/, '.js');
+        mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
+        fs.writeFileSync(targetFile, content);
+      }
+
+      if (extension === '.json') {
+        var content = fs.readFileSync(file, {encoding: 'utf8'});
+        metadatas[path.basename(file, '.json')] = JSON.parse(content);
       }
     });
 

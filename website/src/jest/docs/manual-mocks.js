@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"ManualMocks.js","id":"manual-mocks","title":"Manual mocks","layout":"docs","category":"Reference","permalink":"manual-mocks.html","next":"timer-mocks","href":"/jest/docs/manual-mocks.html"}}, `
+    return layout({metadata: {"id":"manual-mocks","title":"Manual mocks","layout":"docs","category":"Reference","permalink":"docs/manual-mocks.html","next":"timer-mocks"}}, `
 Although autogeneration of mocks is convenient, there are behaviors it misses, such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html). Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 
 Manual mocks are defined by writing a module in a \`__mocks__/\` subdirectory immediately adjacent to the module. When a manual mock exists for a given module, Jest's module system will just use that instead of trying to automatically generating a mock.
@@ -38,8 +38,8 @@ Since we'd like our tests to avoid actually hitting the disk (that's pretty slow
 // Get the real (not mocked) version of the 'path' module
 var path = require.requireActual('path');
 
-// This is a custom function that our tests can use during setup to specify 
-// what the files on the "mock" filesystem should look like when any of the 
+// This is a custom function that our tests can use during setup to specify
+// what the files on the "mock" filesystem should look like when any of the
 // \`fs\` APIs are used.
 var _mockFiles = {};
 function __setMockFiles(newMockFiles) {
@@ -55,7 +55,7 @@ function __setMockFiles(newMockFiles) {
   }
 };
 
-// A custom version of \`readdirSync\` that reads from the special mocked out 
+// A custom version of \`readdirSync\` that reads from the special mocked out
 // file list set via __setMockFiles
 function readdirSync(directoryPath) {
   return _mockFiles[directoryPath] || [];

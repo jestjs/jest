@@ -3,8 +3,7 @@ id: api
 title: API Reference
 layout: docs
 category: Reference
-permalink: api.html
-next: blog-post
+permalink: docs/api.html
 ---
 
 #### The `jest` object

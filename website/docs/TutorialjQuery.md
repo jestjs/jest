@@ -3,7 +3,7 @@ id: tutorial-jquery
 title: Tutorial - jQuery
 layout: docs
 category: Quick Start
-permalink: tutorial-jquery.html
+permalink: docs/tutorial-jquery.html
 next: tutorial-coffeescript
 ---
 

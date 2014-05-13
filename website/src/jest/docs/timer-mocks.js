@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"TimerMocks.js","id":"timer-mocks","title":"Timer mocks","layout":"docs","category":"Reference","permalink":"timer-mocks.html","next":"api","href":"/jest/docs/timer-mocks.html"}}, `
+    return layout({metadata: {"id":"timer-mocks","title":"Timer mocks","layout":"docs","category":"Reference","permalink":"docs/timer-mocks.html","next":"api"}}, `
 The native timer functions, i.e., \`setTimeout\`, \`setInterval\`, \`clearTimeout\`,
 \`clearInterval\` are less than ideal for a testing environment since they depend
 on real time to elapse. To resolve this issue, Jest provides you with mocked

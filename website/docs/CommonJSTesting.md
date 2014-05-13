@@ -3,7 +3,7 @@ id: common-js-testing
 title: CommonJS Testing
 layout: docs
 category: Core Concepts
-permalink: common-js-testing.html
+permalink: docs/common-js-testing.html
 next: automatic-mocking
 ---
 

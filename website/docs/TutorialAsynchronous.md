@@ -3,7 +3,7 @@ id: tutorial-asynchronous
 title: Tutorial - Asynchronous
 layout: docs
 category: Quick Start
-permalink: tutorial-asynchronous.html
+permalink: docs/tutorial-asynchronous.html
 next: tutorial-jquery
 ---
 

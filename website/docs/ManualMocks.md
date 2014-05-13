@@ -3,7 +3,7 @@ id: manual-mocks
 title: Manual mocks
 layout: docs
 category: Reference
-permalink: manual-mocks.html
+permalink: docs/manual-mocks.html
 next: timer-mocks
 ---
 
@@ -38,8 +38,8 @@ Since we'd like our tests to avoid actually hitting the disk (that's pretty slow
 // Get the real (not mocked) version of the 'path' module
 var path = require.requireActual('path');
 
-// This is a custom function that our tests can use during setup to specify 
-// what the files on the "mock" filesystem should look like when any of the 
+// This is a custom function that our tests can use during setup to specify
+// what the files on the "mock" filesystem should look like when any of the
 // `fs` APIs are used.
 var _mockFiles = {};
 function __setMockFiles(newMockFiles) {
@@ -55,7 +55,7 @@ function __setMockFiles(newMockFiles) {
   }
 };
 
-// A custom version of `readdirSync` that reads from the special mocked out 
+// A custom version of `readdirSync` that reads from the special mocked out
 // file list set via __setMockFiles
 function readdirSync(directoryPath) {
   return _mockFiles[directoryPath] || [];

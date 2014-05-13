@@ -6,7 +6,7 @@ var React = require("React");
 var layout = require("DocsLayout");
 module.exports = React.createClass({
   render: function() {
-    return layout({metadata: {"filename":"API.js","id":"api","title":"API Reference","layout":"docs","category":"Reference","permalink":"api.html","next":"blog-post","href":"/jest/docs/api.html"}}, `
+    return layout({metadata: {"id":"api","title":"API Reference","layout":"docs","category":"Reference","permalink":"docs/api.html"}}, `
 #### The \`jest\` object
 
   - [\`jest.autoMockOff()\`](#jest-automockoff)

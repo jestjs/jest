@@ -3,7 +3,7 @@ id: tutorial-react
 title: Tutorial - React
 layout: docs
 category: Quick Start
-permalink: tutorial-react.html
+permalink: docs/tutorial-react.html
 next: common-js-testing
 ---
 

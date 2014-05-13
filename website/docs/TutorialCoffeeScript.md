@@ -3,7 +3,7 @@ id: tutorial-coffeescript
 title: Tutorial - CoffeeScript
 layout: docs
 category: Quick Start
-permalink: tutorial-coffeescript.html
+permalink: docs/tutorial-coffeescript.html
 next: tutorial-react
 ---
 

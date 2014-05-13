@@ -3,7 +3,7 @@ id: getting-started
 title: Getting Started
 layout: docs
 category: Quick Start
-permalink: getting-started.html
+permalink: docs/getting-started.html
 next: tutorial-asynchronous
 ---
 

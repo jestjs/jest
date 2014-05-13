@@ -3,7 +3,7 @@ id: mock-functions
 title: Mock functions
 layout: docs
 category: Reference
-permalink: mock-functions.html
+permalink: docs/mock-functions.html
 next: manual-mocks
 ---
 

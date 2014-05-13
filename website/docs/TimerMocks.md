@@ -3,7 +3,7 @@ id: timer-mocks
 title: Timer mocks
 layout: docs
 category: Reference
-permalink: timer-mocks.html
+permalink: docs/timer-mocks.html
 next: api
 ---
 
