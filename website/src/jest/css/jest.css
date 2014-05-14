@@ -411,6 +411,10 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
   margin: 50px 0;
 }
 
+.home-section ol {
+  margin-left: 0;
+}
+
 .home-divider {
   border-top-color: #bbb;
   margin: 0 auto;
