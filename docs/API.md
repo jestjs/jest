@@ -41,6 +41,7 @@ permalink: docs/api.html
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
   - [`config.setupEnvScriptFile` [string]](#config-setupenvscriptfile-string)
   - [`config.setupTestFrameworkScriptFile` [string]](#config-setuptestframeworkscriptfile-string)
+  - [`config.testDirectoryName` [string](#config-testdirectoryname-string)
   - [`config.testFileExtensions` [array<string>]](#config-testfileextensions-array-string)
   - [`config.testPathDirs` [array<string>]](#config-testpathdirs-array-string)
   - [`config.testPathIgnorePatterns` [array<string>]](#config-testpathignorepatterns-array-string)
@@ -276,6 +277,13 @@ It's worth noting that this code will execute *before* [`config.setupTestFramewo
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+
+### `config.testDirectoryName` [string]
+(default: `'__tests__'`)
+
+The name of directories that Jest should expect to find tests in.
+
+For example, many node projects prefer to put their tests in a `tests` directory.
 
 ### `config.testFileExtensions` [array<string>]
 (default: `['js']`)

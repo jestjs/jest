@@ -14,6 +14,7 @@ var Q = require('q');
 var DEFAULT_CONFIG_VALUES = {
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: ['/node_modules/'],
+  testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
@@ -56,6 +57,10 @@ function _replaceRootDirTags(rootDir, config) {
       );
   }
   return config;
+}
+
+function escapeStrForRegex(str) {
+  return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 /**
@@ -196,6 +201,7 @@ function normalizeConfig(config) {
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
       case 'setupJSTestLoaderOptions':
+      case 'testDirectoryName':
       case 'testFileExtensions':
         value = config[key];
         break;
@@ -396,6 +402,7 @@ function stringifySerializedConsoleArgValue(arg) {
   }
 }
 
+exports.escapeStrForRegex = escapeStrForRegex;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
 exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;

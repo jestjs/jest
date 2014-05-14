@@ -71,12 +71,15 @@ function TestRunner(config, options) {
   this._testPathDirsRegExp = new RegExp(
     config.testPathDirs
       .map(function(dir) {
-        return dir.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        return utils.escapeStrForRegex(dir);
       })
       .join('|')
   );
   this._nodeHasteTestRegExp = new RegExp(
-    '/__tests__/.*\\.(' + config.testFileExtensions.join('|') + ')$'
+    '/' + utils.escapeStrForRegex(config.testDirectoryName) + '/' +
+    '.*\\.(' +
+      utils.escapeStrForRegex(config.testFileExtensions.join('|')) +
+    ')$'
   );
 
   this._opts = Object.create(DEFAULT_OPTIONS);
