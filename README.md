@@ -1,4 +1,4 @@
-# [Jest](http://facebook.github.io/jest/)
+# [Jest](http://facebook.github.io/jest/) [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest)
 
 Painless JavaScript Unit Testing
 
