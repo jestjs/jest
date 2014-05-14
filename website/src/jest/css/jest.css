@@ -874,9 +874,15 @@ div[data-twttr-id] iframe {
 }
 
 
-
+#content {
+  display: none;
+}
 
 @media only screen and (max-device-width : 1024px) {
+  #content {
+    display: inline;
+  }
+
   .container {
     min-width: 0;
     overflow: scroll;
