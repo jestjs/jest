@@ -30,7 +30,7 @@ var index = React.createClass({
               <div className="marketing-col">
                 <h3>Familiar Approach</h3>
                 <p>
-                  Built on top of Jasmine test framework, using familiar expect(value).toBe(other) assertions
+                  Built on top of the Jasmine test framework, using familiar expect(value).toBe(other) assertions
                 </p>
               </div>
               <div className="marketing-col">

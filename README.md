@@ -2,7 +2,7 @@
 
 Painless JavaScript Unit Testing
 
-- **Familiar Approach**: Built on top of Jasmine test framework, a familiar BDD testing environment
+- **Familiar Approach**: Built on top of the Jasmine test framework, using familiar expect(value).toBe(other) assertions
 
 - **Mock by Default**: Automatically mocks CommonJS modules returned by require(), making most existing code testable
 
