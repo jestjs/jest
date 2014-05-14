@@ -1,0 +1,40 @@
+{
+  "name": "jest-cli",
+  "version": "0.0.10-pre",
+  "dependencies": {
+    "coffee-script": "1.7.1",
+    "cover": "~0.2.8",
+    "diff": "~1.0.4",
+    "jasmine-only": "0.1.0",
+    "jasmine-pit": "~1.0.0",
+    "jsdom": "~0.10.3",
+    "node-find-files": "~0.0.2",
+    "node-haste": "~1.2.1",
+    "node-worker-pool": "~2.4.0",
+    "optimist": "~0.6.0",
+    "q": "~0.9.7",
+    "resolve": "~0.6.1",
+    "underscore": "1.2.4"
+  },
+  "devDependencies": {
+    "jest-cli": "~0.0.0",
+    "jshint": "~2.5.0"
+  },
+  "bin": {
+    "jest": "./bin/jest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest"
+  },
+  "scripts": {
+    "prepublish": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && jest",
+    "test": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && jest"
+  },
+  "jest": {
+    "rootDir": "src",
+    "testPathIgnorePatterns": [
+      "/__tests__/[^/]*/.+"
+    ]
+  }
+}
