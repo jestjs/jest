@@ -95,7 +95,7 @@ Examples of dependencies that might be considered "implementation details" are t
 ### `jest.autoMockOn()`
 Re-enables automatic mocking in the module loader.
 
-It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changes (such as by previously calling [`jest.autoMockOff()`](#jest-automockoff))
+It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changed (such as by previously calling [`jest.autoMockOff()`](#jest-automockoff))
 
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
