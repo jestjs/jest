@@ -13,13 +13,13 @@ var Site = React.createClass({
         <head>
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-          <title>Jest | A JavaScript Testing Library</title>
+          <title>Jest | Painless JavaScript Unit Testing</title>
           <meta name="viewport" content="width=device-width" />
-          <meta property="og:title" content="Jest | A JavaScript Testing Library" />
+          <meta property="og:title" content="Jest | Painless JavaScript Unit Testing" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="http://facebook.github.io/jest/index.html" />
           <meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png" />
-          <meta property="og:description" content="A JavaScript Testing Library" />
+          <meta property="og:description" content="Painless JavaScript Unit Testing" />
 
           <link rel="shortcut icon" href="/jest/img/favicon.png" />
           <link rel="stylesheet" href="/jest/css/jest.css" />
