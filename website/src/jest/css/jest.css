@@ -868,11 +868,32 @@ div[data-twttr-id] iframe {
   margin-left: 20px;
 }
 
+.home-why {
+  margin-top: 25px;
+}
+
+.home-why h3 {
+  text-align: center;
+}
+
+.home-why .blurb {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.home-why .list {
+  margin: 0 auto;
+  max-width: 460px;
+}
+
 .home-getting-started {
   width: 500px;
   margin: 20px auto 40px auto;
 }
 
+.home-getting-started h3 {
+  text-align: center;
+}
 
 #content {
   display: none;

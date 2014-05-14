@@ -48,6 +48,25 @@ var index = React.createClass({
             </div>
           </section>
           <hr className="home-divider" />
+          <section className="home-section home-why">
+            <h3>Why not just use vanilla jasmine?</h3>
+
+            <div className="blurb">
+              Jest provides you with multiple layers on top of jasmine:
+            </div>
+
+            <div className="list">
+              <ul>
+                <li>Automatically finds tests to execute in your repo</li>
+                <li><a href="/jest/docs/automatic-mocking.html">Automatically mocks dependencies for you when running your tests</a></li>
+                <li><a href="/jest/docs/timer-mocks.html">Allows you to test asynchronous code synchronously</a></li>
+                <li>Runs your tests with a fake DOM implementation (via <a href="https://github.com/tmpvar/jsdom" target="_blank">jsdom</a>) so that your tests can run on the command line</li>
+                <li>Runs tests in parallel processes so that they finish sooner</li>
+              </ul>
+            </div>
+
+          </section>
+          <hr className="home-divider" />
           <section className="home-section home-getting-started">
 
             <h3>Getting Started</h3>
