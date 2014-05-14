@@ -79,9 +79,9 @@ Since we are writing code using JSX, a bit of one-time setup is required to make
     "react-tools": "*"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/preprocessor.js",
-    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"],
-    "testPathIgnorePatterns": ["<rootDir>/node_modules"]
+    "scriptPreprocessor": "preprocessor.js",
+    "unmockedModulePathPatterns": ["^node_modules/react/"],
+    "testPathIgnorePatterns": ["^node_modules/"]
   }
 ```
 

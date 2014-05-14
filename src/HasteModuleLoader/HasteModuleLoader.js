@@ -89,7 +89,7 @@ function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
     config.modulePathIgnorePatterns
     ? config.modulePathIgnorePatterns.join('|')
-    : '__NOT_EXIST__'
+    : '$.'  // never matches
   );
 
   if (!fs.existsSync(CACHE_DIR_PATH)) {
@@ -100,8 +100,9 @@ function _constructHasteInst(config, options) {
     _buildLoadersList(config),
     (config.testPathDirs || []),
     {
-      ignorePaths: function(path) {
-        return path.match(HASTE_IGNORE_REGEX);
+      ignorePaths: function(modulePath) {
+        var relPath = path.relative(config.rootDir, modulePath);
+        return HASTE_IGNORE_REGEX.test(relPath);
       },
       version: JSON.stringify(config),
       useNativeFind: true,
@@ -529,7 +530,10 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
       var manualMockResource =
         this._getResource('JSMock', moduleName);
       try {
-        var modulePath = this._moduleNameToPath(currPath, moduleName);
+        var modulePath = path.relative(
+          this._config.rootDir,
+          this._moduleNameToPath(currPath, moduleName)
+        );
       } catch(e) {
         // If there isn't a real module, we don't have a path to match
         // against the unmockList regexps. If there is also not a manual

@@ -19,6 +19,7 @@ describe('nodeHasteModuleLoader', function() {
 
   var CONFIG = {
     name: 'nodeHasteModuleLoader-tests',
+    rootDir: __dirname,
     testPathDirs: [path.resolve(__dirname, 'test_root')]
   };
 

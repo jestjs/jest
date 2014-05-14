@@ -76,7 +76,7 @@ function TestRunner(config, options) {
       .join('|')
   );
   this._nodeHasteTestRegExp = new RegExp(
-    '/' + utils.escapeStrForRegex(config.testDirectoryName) + '/' +
+    '(?:^|/)' + utils.escapeStrForRegex(config.testDirectoryName) + '/' +
     '.*\\.(' +
       utils.escapeStrForRegex(config.testFileExtensions.join('|')) +
     ')$'
@@ -112,17 +112,18 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
   return this._moduleLoaderResourceMap;
 };
 
-TestRunner.prototype._isTestFilePath = function(filePath) {
+TestRunner.prototype._isTestFilePath = function(absPath) {
   var testPathIgnorePattern =
     this._config.testPathIgnorePatterns
     ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
     : null;
 
+  var relPath = path.relative(this._config.rootDir, absPath);
   return (
-    this._nodeHasteTestRegExp.test(filePath)
-    && !HIDDEN_FILE_RE.test(filePath)
-    && (!testPathIgnorePattern || !testPathIgnorePattern.test(filePath))
-    && this._testPathDirsRegExp.test(filePath)
+    this._nodeHasteTestRegExp.test(relPath)
+    && !HIDDEN_FILE_RE.test(relPath)
+    && (!testPathIgnorePattern || !testPathIgnorePattern.test(relPath))
+    && this._testPathDirsRegExp.test(absPath)
   );
 };
 
