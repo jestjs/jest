@@ -49,10 +49,10 @@ var index = React.createClass({
           </section>
           <hr className="home-divider" />
           <section className="home-section home-why">
-            <h3>Why not just use vanilla jasmine?</h3>
+            <h3>Why not just use vanilla Jasmine?</h3>
 
             <div className="blurb">
-              Jest provides you with multiple layers on top of jasmine:
+              Jest provides you with multiple layers on top of Jasmine:
             </div>
 
             <div className="list">
