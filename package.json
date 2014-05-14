@@ -1,5 +1,6 @@
 {
   "name": "jest-cli",
+  "description": "Painless JavaScript Unit Testing.",
   "version": "0.1.0",
   "dependencies": {
     "coffee-script": "1.7.1",
@@ -36,5 +37,18 @@
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
     ]
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/facebook/jest/issues"
+  },
+  "homepage": "http://facebook.github.io/jest/",
+  "keywords": [
+    "facebook",
+    "jest",
+    "test",
+    "unit",
+    "jasmine",
+    "mock"
+  ],
+  "license": "BSD"
 }
