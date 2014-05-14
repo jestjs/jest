@@ -48,15 +48,17 @@ permalink: docs/api.html
 
 #### Globally injected variables
 
-  - [`jest`](#the-jest-object)
-  - `require(module)`
-  - `require.requireActual(module)`
-  - `describe(name, fn)`
-  - `beforeEach(fn)`
   - `afterEach(fn)`
+  - `beforeEach(fn)`
+  - `describe(name, fn)`
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
+  - [`jest`](#the-jest-object)
   - `pit(name, fn)` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
+  - `require(module)`
+  - `require.requireActual(module)`
+  - `xdescribe(name, fn)`
+  - `xit(name, fn)`
 
 #### `expect(value)`
 

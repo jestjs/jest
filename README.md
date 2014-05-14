@@ -57,15 +57,17 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
 
 #### Globally injected variables
 
-  - [`jest`](http://facebook.github.io/jest/docs/api.html#the-jest-object)
-  - `require(module)`
-  - `require.requireActual(module)`
-  - `describe(name, fn)`
-  - `beforeEach(fn)`
   - `afterEach(fn)`
+  - `beforeEach(fn)`
+  - `describe(name, fn)`
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
+  - [`jest`](http://facebook.github.io/jest/docs/api.html#the-jest-object)
   - `pit(name, fn)` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
+  - `require(module)`
+  - `require.requireActual(module)`
+  - `xdescribe(name, fn)`
+  - `xit(name, fn)`
 
 #### `expect(value)`
 
