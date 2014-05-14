@@ -6,7 +6,7 @@ Painless JavaScript Unit Testing
 
 - **Mock by Default**: Automatically mocks CommonJS modules returned by require(), making most existing code testable
 
-- **Short Feedback Loop**: Tests run in parallel and DOM apis are mocked so you can run tests on the command line
+- **Short Feedback Loop**: DOM APIs are mocked and tests run in parallel via a small node.js command line utility
 
 ## Getting Started
 
