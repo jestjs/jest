@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "test": "node ../../bin/jest.js"
-  }
-}
