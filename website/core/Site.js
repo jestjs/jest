@@ -18,7 +18,7 @@ var Site = React.createClass({
           <meta property="og:title" content="Jest | A JavaScript Testing Library" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="http://facebook.github.io/jest/index.html" />
-          <meta property="og:image" content="http://facebook.github.io/jest/img/og.png" />
+          <meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png" />
           <meta property="og:description" content="A JavaScript Testing Library" />
 
           <link rel="shortcut icon" href="/jest/img/favicon.png" />
