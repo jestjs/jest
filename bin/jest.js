@@ -166,6 +166,11 @@ var argv = optimist
   })
   .argv
 
+if (argv.help) {
+  optimist.showHelp();
+  process.exit();
+}
+
 var config;
 if (argv.config) {
   config = utils.loadConfigFromFile(argv.config);
