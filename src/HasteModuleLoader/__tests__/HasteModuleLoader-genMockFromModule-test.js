@@ -11,26 +11,26 @@ jest.autoMockOff();
 
 var path = require('path');
 var q = require('q');
+var utils = require('../../lib/utils');
 
 describe('nodeHasteModuleLoader', function() {
   var HasteModuleLoader;
   var mockEnvironment;
   var resourceMap;
 
-  var CONFIG = {
+  var CONFIG = utils.normalizeConfig({
     name: 'nodeHasteModuleLoader-tests',
-    testPathDirs: [path.resolve(__dirname, 'test_root')]
-  };
+    rootDir: path.resolve(__dirname, 'test_root')
+  });
 
-  function buildLoader(config) {
-    config = config || CONFIG;
+  function buildLoader() {
     if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(config).then(function(map) {
+      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
         resourceMap = map;
-        return buildLoader(config);
+        return buildLoader(CONFIG);
       });
     } else {
-      return q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
+      return q(new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap));
     }
   }
 

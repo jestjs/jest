@@ -87,7 +87,7 @@ function _calculateCacheFilePath(config) {
 
 function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
-    config.modulePathIgnorePatterns
+    config.modulePathIgnorePatterns.length > 0
     ? config.modulePathIgnorePatterns.join('|')
     : '__NOT_EXIST__'
   );
@@ -336,7 +336,9 @@ Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
     // If this is a path-based module name, resolve it to an absolute path and
     // then see if there's a node-haste resource for it (so that we can extract
     // info from the resource, like whether its a mock, or a
-    if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
+    if (IS_PATH_BASED_MODULE_NAME.test(moduleName)
+        || (this._getResource('JS', moduleName) === undefined
+            && this._getResource('JSMock', moduleName) === undefined)) {
       var absolutePath = this._moduleNameToPath(currPath, moduleName);
       if (absolutePath === undefined) {
         throw new Error(

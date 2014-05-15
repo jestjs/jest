@@ -13,7 +13,7 @@ var Q = require('q');
 
 var DEFAULT_CONFIG_VALUES = {
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
-  modulePathIgnorePatterns: ['/node_modules/'],
+  modulePathIgnorePatterns: [],
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testFileExtensions: ['js'],
@@ -197,6 +197,7 @@ function normalizeConfig(config) {
         break;
 
       case 'collectCoverage':
+      case 'moduleLoader':
       case 'name':
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
