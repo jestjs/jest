@@ -65,6 +65,7 @@ function _onRunComplete(completionData) {
 
   console.log(numFailedTests + '/' + numTotalTests + ' tests failed');
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+  process.exit(numFailedTests ? 1 : 0);
 }
 
 function _verifyIsGitRepository(dirPath) {
