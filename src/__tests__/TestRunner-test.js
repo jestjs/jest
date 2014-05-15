@@ -33,29 +33,29 @@ describe('TestRunner', function() {
     });
 
     pit('supports ../ paths and unix separators', function() {
-      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js',
-        pathNormalized = runner.pathNormalize(path);
+      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+      var pathNormalized = runner.pathNormalize(path);
 
       return expect(pathNormalized).toEqual('/path/to/__tests__/test.js');
     });
 
     pit('supports ../ paths and windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js',
-        pathNormalized = runner.pathNormalize(path);
+      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
+      var pathNormalized = runner.pathNormalize(path);
 
       return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
     });
 
     pit('supports unix separators', function() {
-      var path = '/path/to/__tests__/test.js',
-        pathNormalized = runner.pathNormalize(path);
+      var path = '/path/to/__tests__/test.js';
+      var pathNormalized = runner.pathNormalize(path);
 
       return expect(pathNormalized).toEqual(path);
     });
 
     pit('supports windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\test.js',
-        pathNormalized = runner.pathNormalize(path);
+      var path = 'c:\\path\\to\\__tests__\\test.js';
+      var pathNormalized = runner.pathNormalize(path);
 
       return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
     });
@@ -74,29 +74,29 @@ describe('TestRunner', function() {
     });
 
     pit('supports ../ paths and unix separators', function() {
-      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js',
-        isTestFile = runner._isTestFilePath(path);
+      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+      var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
     pit('supports ../ paths and windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js',
-        isTestFile = runner._isTestFilePath(path);
+      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
+      var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
     pit('supports unix separators', function() {
-      var path = '/path/to/__tests__/test.js',
-        isTestFile = runner._isTestFilePath(path);
+      var path = '/path/to/__tests__/test.js';
+      var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
     pit('supports windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\test.js',
-        isTestFile = runner._isTestFilePath(path);
+      var path = 'c:\\path\\to\\__tests__\\test.js';
+      var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
