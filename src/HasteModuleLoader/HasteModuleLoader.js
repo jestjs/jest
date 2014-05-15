@@ -89,7 +89,7 @@ function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
     config.modulePathIgnorePatterns.length > 0
     ? config.modulePathIgnorePatterns.join('|')
-    : '__NOT_EXIST__'
+    : '$.'  // never matches
   );
 
   if (!fs.existsSync(CACHE_DIR_PATH)) {
