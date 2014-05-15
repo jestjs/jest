@@ -41,7 +41,7 @@ permalink: docs/api.html
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
   - [`config.setupEnvScriptFile` [string]](#config-setupenvscriptfile-string)
   - [`config.setupTestFrameworkScriptFile` [string]](#config-setuptestframeworkscriptfile-string)
-  - [`config.testDirectoryName` [string](#config-testdirectoryname-string)
+  - [`config.testDirectoryName` [string]](#config-testdirectoryname-string)
   - [`config.testFileExtensions` [array<string>]](#config-testfileextensions-array-string)
   - [`config.testPathDirs` [array<string>]](#config-testpathdirs-array-string)
   - [`config.testPathIgnorePatterns` [array<string>]](#config-testpathignorepatterns-array-string)
