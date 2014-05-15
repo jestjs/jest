@@ -65,13 +65,14 @@ function _serializeConsoleArguments(type, args) {
  *                and their defaults.
  */
 function TestRunner(config, options) {
+  var that = this;
   this._config = config;
   this._configDeps = null;
   this._moduleLoaderResourceMap = null;
   this._testPathDirsRegExp = new RegExp(
     config.testPathDirs
       .map(function(dir) {
-        return utils.escapeStrForRegex(dir);
+        return utils.escapeStrForRegex(that.pathNormalize(dir));
       })
       .join('|')
   );
@@ -92,6 +93,10 @@ function TestRunner(config, options) {
     }
   }
 }
+
+TestRunner.prototype.pathNormalize = function(dir) {
+  return path.normalize(dir).replace(/\\/g, '/');
+};
 
 TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
   var config = customCfg || this._config;
@@ -116,6 +121,7 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
 };
 
 TestRunner.prototype._isTestFilePath = function(filePath) {
+  filePath = this.pathNormalize(filePath);
   var testPathIgnorePattern =
     this._config.testPathIgnorePatterns
     ? new RegExp(this._config.testPathIgnorePatterns.join('|'))

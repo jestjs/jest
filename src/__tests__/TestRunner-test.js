@@ -20,6 +20,88 @@ describe('TestRunner', function() {
     TestRunner = require('../TestRunner');
   });
 
+  describe('pathNormalize', function() {
+    var runner;
+    var utils;
+
+    beforeEach(function() {
+      utils = require('../lib/utils');
+      runner = new TestRunner(utils.normalizeConfig({
+        rootDir: '.',
+        testPathDirs: []
+      }));
+    });
+
+    pit('supports ../ paths and unix separators', function() {
+      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js',
+        pathNormalized = runner.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual('/path/to/__tests__/test.js');
+    });
+
+    pit('supports ../ paths and windows separators', function() {
+      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js',
+        pathNormalized = runner.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
+    });
+
+    pit('supports unix separators', function() {
+      var path = '/path/to/__tests__/test.js',
+        pathNormalized = runner.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual(path);
+    });
+
+    pit('supports windows separators', function() {
+      var path = 'c:\\path\\to\\__tests__\\test.js',
+        pathNormalized = runner.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
+    });
+  });
+
+  describe('_isTestFilePath', function() {
+    var runner;
+    var utils;
+
+    beforeEach(function() {
+      utils = require('../lib/utils');
+      runner = new TestRunner(utils.normalizeConfig({
+        rootDir: '.',
+        testPathDirs: []
+      }));
+    });
+
+    pit('supports ../ paths and unix separators', function() {
+      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js',
+        isTestFile = runner._isTestFilePath(path);
+
+      return expect(isTestFile).toEqual(true);
+    });
+
+    pit('supports ../ paths and windows separators', function() {
+      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js',
+        isTestFile = runner._isTestFilePath(path);
+
+      return expect(isTestFile).toEqual(true);
+    });
+
+    pit('supports unix separators', function() {
+      var path = '/path/to/__tests__/test.js',
+        isTestFile = runner._isTestFilePath(path);
+
+      return expect(isTestFile).toEqual(true);
+    });
+
+    pit('supports windows separators', function() {
+      var path = 'c:\\path\\to\\__tests__\\test.js',
+        isTestFile = runner._isTestFilePath(path);
+
+      return expect(isTestFile).toEqual(true);
+    });
+  });
+
   describe('findTestsRelatedTo', function() {
     var fakeDepsFromPath;
     var fs;
