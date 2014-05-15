@@ -12,11 +12,13 @@ var path = require('path');
 var EXTRACT_DOCBLOCK_REGEX = /^\s*(\/\*\*?(?:.|\r?\n)*?\*\/)/;
 var IS_JSHINT_DOCBLOCK = /\/\*\*?\s*jshint\s+[a-zA-Z0-9]+\s*:\s*[a-zA-Z0-9]+/;
 
-var EXAMPLES_DIR = path.join(__dirname, 'examples');
-var COVERAGE_TEMPLATE_PATH = path.join(__dirname, 'src', 'coverageTemplate.js');
-var NODE_MODULES_DIR = path.join(__dirname, 'node_modules');
-var VENDOR_DIR = path.join(__dirname, 'vendor');
-var WEBSITE_DIR = path.join(__dirname, 'website');
+var ROOT_DIR = path.resolve(__dirname, '..');
+
+var EXAMPLES_DIR = path.join(ROOT_DIR, 'examples');
+var COVERAGE_TEMPLATE_PATH = path.join(ROOT_DIR, 'src', 'coverageTemplate.js');
+var NODE_MODULES_DIR = path.join(ROOT_DIR, 'node_modules');
+var VENDOR_DIR = path.join(ROOT_DIR, 'vendor');
+var WEBSITE_DIR = path.join(ROOT_DIR, 'website');
 
 var LICENSE_HEADER = [
   ' * Copyright (c) 2014, Facebook, Inc. All rights reserved.',
@@ -73,7 +75,7 @@ function addLicenseHeader(fileData) {
 
 function main() {
   var finder = new FileFinder({
-    rootFolder: __dirname,
+    rootFolder: ROOT_DIR,
     filterFunction: function(pathStr) {
       return (
         pathStr !== COVERAGE_TEMPLATE_PATH
