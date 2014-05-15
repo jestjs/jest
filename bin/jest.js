@@ -169,6 +169,9 @@ var argv = optimist
 var config;
 if (argv.config) {
   config = utils.loadConfigFromFile(argv.config);
+} else if (argv.help) {
+  optimist.showHelp();
+  process.exit(); 
 } else {
   var cwd = process.cwd();
 
