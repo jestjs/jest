@@ -10,7 +10,7 @@
     "jasmine-pit": "~1.0.0",
     "jsdom": "~0.10.3",
     "node-find-files": "~0.0.2",
-    "node-haste": "1.2.2",
+    "node-haste": "1.2.3",
     "node-worker-pool": "~2.4.0",
     "optimist": "~0.6.0",
     "q": "~0.9.7",
