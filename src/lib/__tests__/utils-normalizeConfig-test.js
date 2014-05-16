@@ -9,46 +9,58 @@
 
 jest.autoMockOff();
 
-  describe('utils-pathNormalize', function() {
-    var utils;
-
-    beforeEach(function() {
-      utils = require('../lib/utils');
-    });
-
-    it('supports ../ paths and unix separators', function() {
-      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      var pathNormalized = utils.pathNormalize(path);
-
-      return expect(pathNormalized).toEqual('/path/to/__tests__/test.js');
-    });
-
-    it('supports ../ paths and windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
-      var pathNormalized = utils.pathNormalize(path);
-
-      return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
-    });
-
-    it('supports unix separators', function() {
-      var path = '/path/to/__tests__/test.js';
-      var pathNormalized = utils.pathNormalize(path);
-
-      return expect(pathNormalized).toEqual(path);
-    });
-
-    it('supports windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\test.js';
-      var pathNormalized = utils.pathNormalize(path);
-
-      return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
-    });
-  });
-
-describe('utils-normalizeConfig', function() {
+describe('utils-pathNormalize', function() {
   var utils;
 
   beforeEach(function() {
+    utils = require('../lib/utils');
+  });
+
+  it('supports ../ paths and unix separators', function() {
+    var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+    var pathNormalized = utils.pathNormalize(path);
+
+    return expect(pathNormalized).toEqual('/path/to/__tests__/test.js');
+  });
+
+  it('supports ../ paths and windows separators', function() {
+    var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
+    var pathNormalized = utils.pathNormalize(path);
+
+    return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
+  });
+
+  it('supports unix separators', function() {
+    var path = '/path/to/__tests__/test.js';
+    var pathNormalized = utils.pathNormalize(path);
+
+    return expect(pathNormalized).toEqual(path);
+  });
+
+  it('supports windows separators', function() {
+    var path = 'c:\\path\\to\\__tests__\\test.js';
+    var pathNormalized = utils.pathNormalize(path);
+
+    return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
+  });
+});
+
+describe('utils-normalizeConfig', function() {
+  var path;
+  var root;
+  var utils;
+  var expectedPathFooBar;
+  var expectedPathFooQux;
+  var expectedPathAbs;
+  var expectedPathAbsAnother;
+
+  beforeEach(function() {
+    path = require('path');
+    root = path.resolve('/').replace(/[\\\/]/g, '');
+    expectedPathFooBar = root + '/root/path/foo/bar/baz';
+    expectedPathFooQux = root + '/root/path/foo/qux/quux';
+    expectedPathAbs = root + '/an/abs/path';
+    expectedPathAbsAnother = root + '/another/abs/path';
     utils = require('../utils');
   });
 
@@ -79,10 +91,11 @@ describe('utils-normalizeConfig', function() {
         }
       }, '/root/path');
 
-      expect(config.collectCoverageOnlyFrom).toEqual({
-        '/root/path/foo/bar/baz': true,
-        '/root/path/foo/qux/quux': true
-      });
+      var expected = {};
+      expected[expectedPathFooBar] = true;
+      expected[expectedPathFooQux] = true;
+
+      expect(config.collectCoverageOnlyFrom).toEqual(expected);
     });
 
     it('does not change absolute paths', function() {
@@ -94,10 +107,11 @@ describe('utils-normalizeConfig', function() {
         }
       });
 
-      expect(config.collectCoverageOnlyFrom).toEqual({
-        '/an/abs/path': true,
-        '/another/abs/path': true
-      });
+      var expected = {};
+      expected[expectedPathAbs] = true;
+      expected[expectedPathAbsAnother] = true;
+
+      expect(config.collectCoverageOnlyFrom).toEqual(expected);
     });
 
     it('substitutes <rootDir> tokens', function() {
@@ -108,9 +122,10 @@ describe('utils-normalizeConfig', function() {
         }
       });
 
-      expect(config.collectCoverageOnlyFrom).toEqual({
-        '/root/path/foo/bar/baz': true
-      });
+      var expected = {};
+      expected[expectedPathFooBar] = true;
+
+      expect(config.collectCoverageOnlyFrom).toEqual(expected);
     });
   });
 
@@ -125,8 +140,7 @@ describe('utils-normalizeConfig', function() {
       }, '/root/path');
 
       expect(config.testPathDirs).toEqual([
-        '/root/path/foo/bar/baz',
-        '/root/path/foo/qux/quux'
+        expectedPathFooBar, expectedPathFooQux
       ]);
     });
 
@@ -140,8 +154,7 @@ describe('utils-normalizeConfig', function() {
       });
 
       expect(config.testPathDirs).toEqual([
-        '/an/abs/path',
-        '/another/abs/path'
+        expectedPathAbs, expectedPathAbsAnother
       ]);
     });
 
@@ -153,7 +166,7 @@ describe('utils-normalizeConfig', function() {
         ]
       });
 
-      expect(config.testPathDirs).toEqual(['/root/path/foo/bar/baz']);
+      expect(config.testPathDirs).toEqual([expectedPathFooBar]);
     });
   });
 
@@ -164,7 +177,7 @@ describe('utils-normalizeConfig', function() {
         scriptPreprocessor: 'bar/baz'
       }, '/root/path');
 
-      expect(config.scriptPreprocessor).toEqual('/root/path/foo/bar/baz');
+      expect(config.scriptPreprocessor).toEqual(expectedPathFooBar);
     });
 
     it('does not change absolute paths', function() {
@@ -173,7 +186,7 @@ describe('utils-normalizeConfig', function() {
         scriptPreprocessor: '/an/abs/path'
       });
 
-      expect(config.scriptPreprocessor).toEqual('/an/abs/path');
+      expect(config.scriptPreprocessor).toEqual(expectedPathAbs);
     });
 
     it('substitutes <rootDir> tokens', function() {
@@ -182,7 +195,7 @@ describe('utils-normalizeConfig', function() {
         scriptPreprocessor: '<rootDir>/bar/baz'
       });
 
-      expect(config.scriptPreprocessor).toEqual('/root/path/foo/bar/baz');
+      expect(config.scriptPreprocessor).toEqual(expectedPathFooBar);
     });
   });
 
@@ -193,7 +206,7 @@ describe('utils-normalizeConfig', function() {
         setupEnvScriptFile: 'bar/baz'
       }, '/root/path');
 
-      expect(config.setupEnvScriptFile).toEqual('/root/path/foo/bar/baz');
+      expect(config.setupEnvScriptFile).toEqual(expectedPathFooBar);
     });
 
     it('does not change absolute paths', function() {
@@ -202,7 +215,7 @@ describe('utils-normalizeConfig', function() {
         setupEnvScriptFile: '/an/abs/path'
       });
 
-      expect(config.setupEnvScriptFile).toEqual('/an/abs/path');
+      expect(config.setupEnvScriptFile).toEqual(expectedPathAbs);
     });
 
     it('substitutes <rootDir> tokens', function() {
@@ -211,7 +224,7 @@ describe('utils-normalizeConfig', function() {
         setupEnvScriptFile: '<rootDir>/bar/baz'
       });
 
-      expect(config.setupEnvScriptFile).toEqual('/root/path/foo/bar/baz');
+      expect(config.setupEnvScriptFile).toEqual(expectedPathFooBar);
     });
   });
 
@@ -222,9 +235,7 @@ describe('utils-normalizeConfig', function() {
         setupTestFrameworkScriptFile: 'bar/baz'
       }, '/root/path');
 
-      expect(config.setupTestFrameworkScriptFile).toEqual(
-        '/root/path/foo/bar/baz'
-      );
+      expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
     });
 
     it('does not change absolute paths', function() {
@@ -233,7 +244,7 @@ describe('utils-normalizeConfig', function() {
         setupTestFrameworkScriptFile: '/an/abs/path'
       });
 
-      expect(config.setupTestFrameworkScriptFile).toEqual('/an/abs/path');
+      expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathAbs);
     });
 
     it('substitutes <rootDir> tokens', function() {
@@ -242,9 +253,7 @@ describe('utils-normalizeConfig', function() {
         setupTestFrameworkScriptFile: '<rootDir>/bar/baz'
       });
 
-      expect(config.setupTestFrameworkScriptFile).toEqual(
-        '/root/path/foo/bar/baz'
-      );
+      expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
     });
   });
 
