@@ -43,8 +43,8 @@ describe('displayUser', function() {
     var $ = require('jquery');
     var fetchCurrentUser = require('../fetchCurrentUser');
 
-    // Tell the fetchCurrentUser mock function to automatically it's
-    // callback with some data
+    // Tell the fetchCurrentUser mock function to automatically invoke
+    // its callback with some data
     fetchCurrentUser.mockImplementation(function(cb) {
       cb({
         loggedIn: true,
