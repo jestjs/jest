@@ -26,8 +26,6 @@ var Q = require('q');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
 
-var MAIN_DIR = path.resolve(__dirname + '/../');
-var CACHE_DIR_PATH = MAIN_DIR + '/.haste_cache_dir';
 var COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
 
 var IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
@@ -81,10 +79,6 @@ function _buildLoadersList(config) {
   ];
 }
 
-function _calculateCacheFilePath(config) {
-  return CACHE_DIR_PATH + '/cache-' + config.name;
-}
-
 function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
     config.modulePathIgnorePatterns.length > 0
@@ -92,8 +86,8 @@ function _constructHasteInst(config, options) {
     : '$.'  // never matches
   );
 
-  if (!fs.existsSync(CACHE_DIR_PATH)) {
-    fs.mkdirSync(CACHE_DIR_PATH);
+  if (!fs.existsSync(config.cacheDirectory)) {
+    fs.mkdirSync(config.cacheDirectory);
   }
 
   return new NodeHaste(
@@ -109,6 +103,10 @@ function _constructHasteInst(config, options) {
       maxOpenFiles: options.maxOpenFiles || 100
     }
   );
+}
+
+function _getCacheFilePath(config) {
+  return path.join(config.cacheDirectory, 'cache-' + config.name);
 }
 
 function Loader(config, environment, resourceMap) {
@@ -159,7 +157,7 @@ Loader.loadResourceMap = function(config, options) {
   var deferred = Q.defer();
   try {
     _constructHasteInst(config, options).update(
-      _calculateCacheFilePath(config),
+      _getCacheFilePath(config),
       function(resourceMap) {
         deferred.resolve(resourceMap);
       }
@@ -177,13 +175,16 @@ Loader.loadResourceMapFromCacheFile = function(config, options) {
   var deferred = Q.defer();
   try {
     var hasteInst = _constructHasteInst(config, options);
-    hasteInst.loadMap(_calculateCacheFilePath(config), function(err, map) {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        deferred.resolve(map);
+    hasteInst.loadMap(
+      _getCacheFilePath(config),
+      function(err, map) {
+        if (err) {
+          deferred.reject(err);
+        } else {
+          deferred.resolve(map);
+        }
       }
-    });
+    );
   } catch (e) {
     deferred.reject(e);
   }

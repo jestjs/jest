@@ -1,7 +1,7 @@
 *~
 *.swp
 .DS_STORE
-.haste_cache_dir
+.haste_cache
 node_modules
 npm-debug.log
 build

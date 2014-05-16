@@ -12,6 +12,7 @@ var path = require('path');
 var Q = require('q');
 
 var DEFAULT_CONFIG_VALUES = {
+  cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: [],
   testDirectoryName: '__tests__',
@@ -173,6 +174,7 @@ function normalizeConfig(config) {
         });
         break;
 
+      case 'cacheDirectory':
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
