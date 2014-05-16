@@ -25,8 +25,8 @@ $<span class="token punctuation">(</span><span class="token string">&#x27;#butto
     <span class="token keyword">var</span> $ <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">&#x27;jquery&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">var</span> fetchCurrentUser <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">&#x27;..&#x2f;fetchCurrentUser&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-   <span class="token comment" spellcheck="true"> &#x2f;&#x2f; Tell the fetchCurrentUser mock function to automatically it&#x27;s
-</span>   <span class="token comment" spellcheck="true"> &#x2f;&#x2f; callback with some data
+   <span class="token comment" spellcheck="true"> &#x2f;&#x2f; Tell the fetchCurrentUser mock function to automatically invoke
+</span>   <span class="token comment" spellcheck="true"> &#x2f;&#x2f; its callback with some data
 </span>    fetchCurrentUser<span class="token punctuation">.</span><span class="token function">mockImplementation<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span>cb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
       <span class="token function">cb<span class="token punctuation">(</span></span><span class="token punctuation">{</span>
         loggedIn<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
