@@ -251,11 +251,13 @@ An object that, when present, indicates a set of files for which coverage inform
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
 ### `config.rootDir` [string]
-(default: The `pwd` the CLI is being executed from)
+(default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
 
 The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo, the value for this config param will default to the directory of the `package.json`.
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
+
+Note also that you can use `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `'<rootDir>/env-setup.js'`.
 
 ### `config.scriptPreprocessor` [string]
 (default: `undefined`)
@@ -293,7 +295,7 @@ An array of file extensions that test files might have. Jest uses this when sear
 This is useful if, for example, you are writting test files using CoffeeScript with a `.coffee` file extension. In such a scenario, you can use `['js', 'coffee']` to make Jest find files that end in both `.js` and `.coffee`. (Don't for get to set up a coffeescript pre-processor using [`config.scriptPreprocessor`](#config-scriptpreprocessor-string) too!)
 
 ### `config.testPathDirs` [array<string>]
-(default: The `pwd` the cli is being executed from)
+(default: ['<rootDir>'])
 
 A list of paths to directories that Jest should use to search for tests in.
 
