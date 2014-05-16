@@ -27,7 +27,7 @@ easy to create instances that automatically acquire their dependencies:</p><div 
 &#x2f;&#x2f; is the equivalent of writing
 </span>
 <span class="token keyword">function</span> <span class="token function">injectedDoWork<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">var</span> XHR <span class="token operator">=</span> injector<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">&#x27;XHR&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">var</span> xhr <span class="token operator">=</span> injector<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">&#x27;XHR&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   xhr<span class="token punctuation">.</span><span class="token function">open<span class="token punctuation">(</span></span><span class="token string">&#x27;POST&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;http:&#x2f;&#x2f;facebook.github.io&#x2f;jest&#x2f;&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   xhr<span class="token punctuation">.</span><span class="token function">send<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></div><p>Angular inspects the function and sees that it has one argument called <code>XHR</code>.
