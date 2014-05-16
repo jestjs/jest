@@ -9,6 +9,42 @@
 
 jest.autoMockOff();
 
+  describe('utils-pathNormalize', function() {
+    var utils;
+
+    beforeEach(function() {
+      utils = require('../lib/utils');
+    });
+
+    it('supports ../ paths and unix separators', function() {
+      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+      var pathNormalized = utils.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual('/path/to/__tests__/test.js');
+    });
+
+    it('supports ../ paths and windows separators', function() {
+      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
+      var pathNormalized = utils.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
+    });
+
+    it('supports unix separators', function() {
+      var path = '/path/to/__tests__/test.js';
+      var pathNormalized = utils.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual(path);
+    });
+
+    it('supports windows separators', function() {
+      var path = 'c:\\path\\to\\__tests__\\test.js';
+      var pathNormalized = utils.pathNormalize(path);
+
+      return expect(pathNormalized).toEqual('c:/path/to/__tests__/test.js');
+    });
+  });
+
 describe('utils-normalizeConfig', function() {
   var utils;
 
