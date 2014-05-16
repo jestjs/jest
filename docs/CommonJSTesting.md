@@ -76,7 +76,7 @@ var injectedDoWork = injector.instantiate(doWork);
 // is the equivalent of writing
 
 function injectedDoWork() {
-  var XHR = injector.get('XHR');
+  var xhr = injector.get('XHR');
   xhr.open('POST', 'http://facebook.github.io/jest/');
   xhr.send();
 }
