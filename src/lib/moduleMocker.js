@@ -81,8 +81,7 @@ function makeComponent(metadata) {
           }
 
           // Run the mock constructor implementation
-          mockImpl && mockImpl.apply(this, arguments);
-          return;
+          return mockImpl && mockImpl.apply(this, arguments);
         }
 
         var returnValue;
