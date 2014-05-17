@@ -9,6 +9,7 @@
 
 var BOLD = '\x1B[1m';
 var GRAY = '\x1B[90m';
+var GREEN = '\x1B[32m';
 var GREEN_BG = '\x1B[42m';
 var MAGENTA_BG = '\x1B[45m';
 var RED = '\x1B[31m';
@@ -22,6 +23,7 @@ function colorize(str, color) {
 
 exports.BOLD = BOLD;
 exports.GRAY = GRAY;
+exports.GREEN = GREEN;
 exports.GREEN_BG = GREEN_BG;
 exports.MAGENTA_BG = MAGENTA_BG;
 exports.RED = RED;

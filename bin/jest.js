@@ -16,6 +16,7 @@ var optimist = require('optimist');
 var path = require('path');
 var Q = require('q');
 var TestRunner = require('../src/TestRunner');
+var colors = require('../src/lib/colors');
 var utils = require('../src/lib/utils');
 
 var _jestVersion = null;
@@ -69,10 +70,19 @@ function _onResultReady(config, result) {
 function _onRunComplete(completionData) {
   var numFailedTests = completionData.numFailedTests;
   var numTotalTests = completionData.numTotalTests;
+  var numPassedTests = numTotalTests - numFailedTests;
   var startTime = completionData.startTime;
   var endTime = completionData.endTime;
 
-  console.log(numFailedTests + '/' + numTotalTests + ' tests failed');
+  var results = '';
+  if (numFailedTests) {
+    results += colors.colorize(numFailedTests + ' tests failed', colors.RED + colors.BOLD) + ', ';
+  }
+  results +=
+    colors.colorize(numPassedTests + ' tests passed', colors.GREEN + colors.BOLD) +
+    ' (' + numTotalTests + ' total)';
+
+  console.log(results);
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
   process.exit(numFailedTests ? 1 : 0);
 }
