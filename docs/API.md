@@ -305,7 +305,7 @@ An array of file extensions that test files might have. Jest uses this when sear
 This is useful if, for example, you are writting test files using CoffeeScript with a `.coffee` file extension. In such a scenario, you can use `['js', 'coffee']` to make Jest find files that end in both `.js` and `.coffee`. (Don't for get to set up a coffeescript pre-processor using [`config.scriptPreprocessor`](#config-scriptpreprocessor-string) too!)
 
 ### `config.testPathDirs` [array<string>]
-(default: ['<rootDir>'])
+(default: `['<rootDir>']`)
 
 A list of paths to directories that Jest should use to search for tests in.
 
