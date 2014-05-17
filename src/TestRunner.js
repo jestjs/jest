@@ -354,6 +354,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
         {
           __dirname: path.dirname(config.setupEnvScriptFile),
           __filename: config.setupEnvScriptFile,
+          global: env.global,
           require: moduleLoader.constructBoundRequire(
             config.setupEnvScriptFile
           )
