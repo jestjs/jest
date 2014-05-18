@@ -11,9 +11,10 @@ var mocks = require('./moduleMocker');
 
 var MS_IN_A_YEAR = 31536000000;
 
-function FakeTimers(global) {
+function FakeTimers(global, maxLoops) {
   this._global = global;
   this._uuidCounter = 0;
+  this._maxLoops = maxLoops || 100000;
 
   this.reset();
 
@@ -79,9 +80,8 @@ FakeTimers.prototype.reset = function() {
 FakeTimers.prototype.runAllTicks = function() {
   // Only run a generous number of ticks and then bail.
   // This is just to help avoid recursive loops
-  var maxTicksToRun = 100000;
 
-  for (var i = 0; i < maxTicksToRun; i++) {
+  for (var i = 0; i < this._maxLoops; i++) {
     var tick = this._ticks.shift();
 
     if (tick === undefined) {
@@ -94,9 +94,9 @@ FakeTimers.prototype.runAllTicks = function() {
     }
   }
 
-  if (i === maxTicksToRun) {
+  if (i === this._maxLoops) {
     throw new Error(
-      'Ran ' + maxTicksToRun + ' ticks, and there are still more! Assuming ' +
+      'Ran ' + this._maxLoops + ' ticks, and there are still more! Assuming ' +
       'we\'ve hit an infinite recursion and bailing out...'
     );
   }
@@ -108,9 +108,8 @@ FakeTimers.prototype.runAllTimers = function() {
 
   // Only run a generous number of timers and then bail.
   // This is just to help avoid recursive loops
-  var maxTimersToRun = 100000;
 
-  for (var i = 0; i < maxTimersToRun; i++) {
+  for (var i = 0; i < this._maxLoops; i++) {
     var nextTimerHandle = this._getNextTimerHandle();
 
     // If there are no more timer handles, stop!
@@ -121,9 +120,9 @@ FakeTimers.prototype.runAllTimers = function() {
     this._runTimerHandle(nextTimerHandle);
   }
 
-  if (i === maxTimersToRun) {
+  if (i === this._maxLoops) {
     throw new Error(
-      'Ran ' + maxTimersToRun + ' timers, and there are still more! Assuming ' +
+      'Ran ' + this._maxLoops + ' timers, and there are still more! Assuming ' +
       'we\'ve hit an infinite recursion and bailing out...'
     );
   }
@@ -143,9 +142,8 @@ FakeTimers.prototype.runOnlyPendingTimers = function() {
 FakeTimers.prototype.runTimersToTime = function(msToRun) {
   // Only run a generous number of timers and then bail.
   // This is jsut to help avoid recursive loops
-  var maxTimersToRun = 100000;
 
-  for (var i = 0; i < maxTimersToRun; i++) {
+  for (var i = 0; i < this._maxLoops; i++) {
     var timerHandle = this._getNextTimerHandle();
 
     // If there are no more timer handles, stop!
@@ -166,9 +164,9 @@ FakeTimers.prototype.runTimersToTime = function(msToRun) {
     }
   }
 
-  if (i === maxTimersToRun) {
+  if (i === this._maxLoops) {
     throw new Error(
-      'Ran ' + maxTimersToRun + ' timers, and there are still more! Assuming ' +
+      'Ran ' + this._maxLoops + ' timers, and there are still more! Assuming ' +
       'we\'ve hit an infinite recursion and bailing out...'
     );
   }

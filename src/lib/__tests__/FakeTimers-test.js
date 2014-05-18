@@ -178,7 +178,7 @@ describe('FakeTimers', function() {
         }
       };
 
-      var fakeTimers = new FakeTimers(global);
+      var fakeTimers = new FakeTimers(global, 100);
 
       global.process.nextTick(function infinitelyRecursingCallback() {
         global.process.nextTick(infinitelyRecursingCallback);
@@ -187,7 +187,7 @@ describe('FakeTimers', function() {
       expect(function() {
         fakeTimers.runAllTicks();
       }).toThrow(
-        'Ran 100000 ticks, and there are still more! Assuming we\'ve hit an ' +
+        'Ran 100 ticks, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
       );
     });
@@ -268,7 +268,7 @@ describe('FakeTimers', function() {
 
     it('throws before allowing infinite recursion', function() {
       var global = {};
-      var fakeTimers = new FakeTimers(global);
+      var fakeTimers = new FakeTimers(global, 100);
 
       global.setTimeout(function infinitelyRecursingCallback() {
         global.setTimeout(infinitelyRecursingCallback, 0);
@@ -277,7 +277,7 @@ describe('FakeTimers', function() {
       expect(function() {
         fakeTimers.runAllTimers();
       }).toThrow(
-        'Ran 100000 timers, and there are still more! Assuming we\'ve hit an ' +
+        'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
       );
     });
@@ -339,7 +339,7 @@ describe('FakeTimers', function() {
 
     it('throws before allowing infinite recursion', function() {
       var global = {};
-      var fakeTimers = new FakeTimers(global);
+      var fakeTimers = new FakeTimers(global, 100);
 
       global.setTimeout(function infinitelyRecursingCallback() {
         global.setTimeout(infinitelyRecursingCallback, 0);
@@ -348,7 +348,7 @@ describe('FakeTimers', function() {
       expect(function() {
         fakeTimers.runTimersToTime(50);
       }).toThrow(
-        'Ran 100000 timers, and there are still more! Assuming we\'ve hit an ' +
+        'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
       );
     });
