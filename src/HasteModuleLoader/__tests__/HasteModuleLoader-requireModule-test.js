@@ -90,7 +90,7 @@ describe('HasteModuleLoader', function() {
         expect(function() {
           loader.requireModule(__filename, './DoesntExist');
         }).toThrow(
-          'Cannot find module \'./DoesntExist\' from \'' + __filename + '\''
+          'Cannot find module \'./DoesntExist\' from \'' + __dirname + '\''
         );
       });
     });
