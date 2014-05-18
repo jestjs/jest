@@ -401,106 +401,27 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
     return moduleName;
   }
 
-  // Relative-path CommonJS require()s such as `require('./otherModule')`
-  // need to be looked up with context of the module that's calling
-  // require().
-  if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
-    // Normalize the relative path to an absolute path
-    var modulePath = path.resolve(currPath, '..', moduleName);
-    var modulePathExtName = path.extname(modulePath);
+  // Built-in modules like 'path', 'fs', etc
+  if (resolve.core[moduleName]) {
+    return null;
+  }
 
-    if (modulePathExtName !== '.js'
-        && fs.existsSync(modulePath + '.js')
-        && fs.statSync(modulePath + '.js').isFile()) {
-      return modulePath + '.js';
-    } else if (fs.existsSync(modulePath)) {
-      if (fs.statSync(modulePath).isDirectory()) {
-        if (fs.existsSync(modulePath + '.js')
-            && fs.statSync(modulePath + '.js').isFile()) {
-          // The required path is a valid directory, but there's also a
-          // matching js file at the same path -- so the js file wins
-          return modulePath + '.js';
-        } else {
-          // The required path is a valid directory, but there's no matching
-          // js file at the same path. So look in the directory for an
-          // index.js file.
-          var indexPath = path.join(modulePath, 'index.js');
-          if (fs.existsSync(indexPath)) {
-            return indexPath;
-          } else {
-            throw new Error('Module(' + moduleName + ') does not exist!');
-          }
-        }
-      } else {
-        // The required path is a file, so return this path
-        return modulePath;
-      }
-    } else if (fs.existsSync(modulePath + '.json')
-               && fs.statSync(modulePath + '.json').isFile()) {
-      // The required path doesn't exist, nor does a .js file at that path,
-      // but a .json file does -- so use that
-      return modulePath + '.json';
-    }
-  } else {
+  // providesModule, etc
+  if (!IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
     var resource = this._getResource('JS', moduleName);
-    if (!resource) {
-      return this._nodeModuleNameToPath(
-        currPath,
-        moduleName
-      );
+    if (resource) {
+      return resource.path;
     }
-    return resource.path;
-  }
-};
-
-Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
-  // Handle module names like require('jest/lib/util')
-  var subModulePath = null;
-  var moduleProjectPart = moduleName;
-  if (/\//.test(moduleName)) {
-    var projectPathParts = moduleName.split('/');
-    moduleProjectPart = projectPathParts.shift();
-    subModulePath = projectPathParts.join('/');
   }
 
-  // Memoize the project name -> package.json resource lookup map
-  if (this._nodeModuleProjectConfigNameToResource === null) {
-    this._nodeModuleProjectConfigNameToResource = {};
-    var resources =
-      this._resourceMap.getAllResourcesByType('ProjectConfiguration');
-    resources.forEach(function(res) {
-      this._nodeModuleProjectConfigNameToResource[res.data.name] = res;
-    }.bind(this));
-  }
+  // Relative-path CommonJS require()s such as `require('./otherModule')` need
+  // to be looked up with context of the module that's calling require().
+  var resolvedPath = resolve.sync(moduleName, {
+    basedir: path.dirname(currPath),
+    extensions: ['.js', '.json']
+  });
 
-  // Get the resource for the package.json file
-  var resource = this._nodeModuleProjectConfigNameToResource[moduleProjectPart];
-  if (!resource) {
-    if (NODE_CORE_MODULES[moduleName]) {
-      return null;
-    }
-    return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
-  }
-
-  // Make sure the resource path is above the currPath in the fs path
-  // tree. If so, just use node's resolve
-  var resourceDirname = path.dirname(resource.path);
-  var currFileDirname = path.dirname(currPath);
-  if (resourceDirname.indexOf(currFileDirname) > 0) {
-    return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
-  }
-
-  if (subModulePath === null) {
-    subModulePath =
-      resource.data.hasOwnProperty('main')
-      ? resource.data.main
-      : 'index.js';
-  }
-
-  return this._moduleNameToPath(
-    resource.path,
-    './' + subModulePath
-  );
+  return resolvedPath;
 };
 
 /**
