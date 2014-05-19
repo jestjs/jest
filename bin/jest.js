@@ -310,17 +310,18 @@ function _main() {
     cwdPackageRoot = path.resolve(cwdPackageRoot, '..');
   }
 
+  // Is there a package.json at our cwdPackageRoot that indicates that there
+  // should be a version of Jest installed?
+  var cwdPkgJsonPath = path.join(cwdPackageRoot, 'package.json');
+
   // Is there a version of Jest installed at our cwdPackageRoot?
   var cwdJestBinPath = path.join(
     cwdPackageRoot,
     'node_modules',
-    '.bin',
-    'jest'
+    'jest-cli',
+    'bin',
+    'jest.js'
   );
-
-  // Is there a package.json at our cwdPackageRoot that indicates that there
-  // should be a version of Jest installed?
-  var cwdPkgJsonPath = path.join(cwdPackageRoot, 'package.json');
 
   // If a version of Jest was found installed in the CWD package, run using that
   if (fs.existsSync(cwdJestBinPath)) {
