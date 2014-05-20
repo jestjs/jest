@@ -23,6 +23,7 @@ var DEFAULT_CONFIG_VALUES = {
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
 };
 
+
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
     case 'object':

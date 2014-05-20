@@ -126,6 +126,10 @@ TestRunner.prototype._isTestFilePath = function(filePath) {
   );
 };
 
+TestRunner.prototype._isJsFile = function(filePath) {
+  return filePath.match(/\.(js|coffee|litcoffee|coffee.md)$/) ;
+};
+
 TestRunner.prototype._loadConfigDependencies = function() {
   var config = this._config;
   if (this._configDeps === null) {
@@ -200,7 +204,7 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
  *                                  search has completed.
  */
 TestRunner.prototype.findTestPathsMatching = function(
-  pathPattern, onTestFound) {
+  pathPattern, onTestFound, allFiles) {
 
   var config = this._config;
   var deferred = q.defer();
@@ -216,6 +220,7 @@ TestRunner.prototype.findTestPathsMatching = function(
   }
 
   var numMatchers = config.testPathDirs.length;
+
   function _onMatcherEnd() {
     numMatchers--;
     if (numMatchers === 0) {
@@ -231,6 +236,10 @@ TestRunner.prototype.findTestPathsMatching = function(
     var finder = new FileFinder({
       rootFolder: scanDir,
       filterFunction: function(pathStr) {
+        if (allFiles) {
+          return this._isJsFile(pathStr) && pathPattern.test(pathStr);
+        }
+
         return this._isTestFilePath(pathStr) && pathPattern.test(pathStr);
       }.bind(this)
     });

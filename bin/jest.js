@@ -98,8 +98,12 @@ function _onRunComplete(completionData) {
   console.log("\n\n");
   console.log(colors.colorize("Waiting for file changes...", colors.BOLD));
 
-  testRunner.findTestPathsMatching(pathPattern).then(function (files) {
+  if (isWatching) {
+    return;
+  }
 
+  testRunner.findTestPathsMatching(pathPattern, function () {}, true).then(function (files) {
+    isWatching = true;
     files.forEach(function (file) {
       fs.watch(file, function (curr, prev) {
         if (curr === 'change') {
@@ -190,6 +194,8 @@ function runCLI(argv, packageRoot) {
         testPathIgnorePatterns: ['/node_modules/.+']
       }));
     }
+
+
   }
 
   config.done(function(config) {
@@ -235,7 +241,9 @@ function runCLI(argv, packageRoot) {
         return testRunner.findTestsRelatedTo(changedPaths);
       }).done(function(affectedTestPaths) {
         if (affectedTestPaths.length > 0) {
-          _runTestsOnPathPattern(testRunner, argv.runInBand, new RegExp(affectedTestPaths.join('|'))).done();
+          _runTestsOnPathPattern(testRunner,
+                                 argv.runInBand,
+                                 new RegExp(affectedTestPaths.join('|'))).done();
         } else {
           console.log('No tests to run!');
         }
