@@ -463,6 +463,25 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
     subModulePath = projectPathParts.join('/');
   }
 
+  if (NODE_CORE_MODULES[moduleName]) {
+    return null;
+  }
+
+  var resolveError = null;
+  try {
+    return resolve.sync(moduleName, {
+      basedir: path.dirname(currPath),
+      extensions: ['.js', '.json']
+    });
+  } catch (e) {
+    // Facebook has clowny package.json resolution rules that don't apply to
+    // regular Node rules. Until we can make ModuleLoaders more pluggable
+    // (so that FB can have a custom ModuleLoader and all the normal people can
+    // have a normal ModuleLoader), we catch node-resolution exceptions and
+    // fall back to some custom resolution logic before throwing the error.
+    resolveError = e;
+  }
+
   // Memoize the project name -> package.json resource lookup map
   if (this._nodeModuleProjectConfigNameToResource === null) {
     this._nodeModuleProjectConfigNameToResource = {};
@@ -476,10 +495,7 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   // Get the resource for the package.json file
   var resource = this._nodeModuleProjectConfigNameToResource[moduleProjectPart];
   if (!resource) {
-    if (NODE_CORE_MODULES[moduleName]) {
-      return null;
-    }
-    return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
+    throw resolveError;
   }
 
   // Make sure the resource path is above the currPath in the fs path
@@ -487,7 +503,7 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   var resourceDirname = path.dirname(resource.path);
   var currFileDirname = path.dirname(currPath);
   if (resourceDirname.indexOf(currFileDirname) > 0) {
-    return resolve.sync(moduleName, {basedir: path.dirname(currPath)});
+    throw resolveError;
   }
 
   if (subModulePath === null) {
