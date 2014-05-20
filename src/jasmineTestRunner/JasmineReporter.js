@@ -183,14 +183,11 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
 
   // Find the top-level suite in order to flatten test results from there
   if (runner.suites().length) {
-    var topLevelSuite;
     runner.suites().forEach(function(suite) {
       if (suite.parentSuite === null) {
-        topLevelSuite = suite;
+        _extractSuiteResults(testResults, [], suite);
       }
     });
-
-    _extractSuiteResults(testResults, [], topLevelSuite);
   }
 
   var numFailingTests = 0;
