@@ -408,14 +408,8 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
     // Normalize the relative path to an absolute path
     var modulePath = path.resolve(currPath, '..', moduleName);
 
-    var extensions = [];
-    for (var ext in require.extensions) {
-      extensions.push(ext);
-    }
     if (!fs.existsSync(modulePath)) {
-      for (var i = 0; i < extensions.length; i++) {
-        ext = extensions[i];
-
+      for (var ext in require.extensions) {
         if (fs.existsSync(modulePath + ext)
             && fs.statSync(modulePath + ext).isFile()) {
           return modulePath + ext;
