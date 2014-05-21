@@ -80,8 +80,7 @@ Since we are writing code using JSX, a bit of one-time setup is required to make
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
-    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"],
-    "testPathIgnorePatterns": ["<rootDir>/node_modules"]
+    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
   }
 ```
 
@@ -98,7 +97,5 @@ module.exports = {
 ```
 
 React is designed to be tested without being mocked and ships with `TestUtils` to help. Therefore, we use `unmockedModulePathPatterns` to prevent React from being mocked.
-
-Finally, React has a lot of tests written in Jest. Since you probably don't want to run React tests in your application, you can blacklist all the tests from `node_modules` using `testPathIgnorePatterns`.
 
 The code for this example is available at [examples/react/](https://github.com/facebook/jest/tree/master/examples/react).

@@ -8,7 +8,6 @@
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
-    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"],
-    "testPathIgnorePatterns": ["<rootDir>/node_modules"]
+    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
   }
 }
