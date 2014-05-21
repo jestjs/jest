@@ -41,7 +41,7 @@ function _highlightDifferences(a, b) {
   return ret;
 }
 
-function _prettyPrint(obj, indent) {
+function _prettyPrint(obj, indent, cycleWeakMap) {
   if (!indent) {
     indent = '';
   }
@@ -60,10 +60,17 @@ function _prettyPrint(obj, indent) {
     }
 
     /* jshint camelcase:false */
-    if (obj.__jstest_pp_cycle__) {
+    if (!cycleWeakMap) {
+      if (typeof WeakMap === undefined) {
+        throw new Error('Please run node with the --harmony flag!');
+      }
+      cycleWeakMap = new WeakMap();
+    }
+
+    if (cycleWeakMap.get(obj) === true) {
       return '<circular reference>';
     }
-    obj.__jstest_pp_cycle__ = true;
+    cycleWeakMap.set(obj, true);
 
     var orderedKeys = Object.keys(obj).sort();
     var value;
@@ -76,7 +83,7 @@ function _prettyPrint(obj, indent) {
       value = obj[orderedKeys[i]];
       keysOutput.push(
         indent + keyIndent + orderedKeys[i] + ': ' +
-        _prettyPrint(value, indent + keyIndent)
+        _prettyPrint(value, indent + keyIndent, cycleWeakMap)
       );
     }
     delete obj.__jstest_pp_cycle__;
