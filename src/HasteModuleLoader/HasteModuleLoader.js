@@ -407,12 +407,20 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
   if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
     // Normalize the relative path to an absolute path
     var modulePath = path.resolve(currPath, '..', moduleName);
-    var modulePathExtName = path.extname(modulePath);
 
-    if (modulePathExtName !== '.js'
-        && fs.existsSync(modulePath + '.js')
-        && fs.statSync(modulePath + '.js').isFile()) {
-      return modulePath + '.js';
+    var extensions = [];
+    for (var ext in require.extensions) {
+      extensions.push(ext);
+    }
+    if (!fs.existsSync(modulePath)) {
+      for (var i = 0; i < extensions.length; i++) {
+        ext = extensions[i];
+
+        if (fs.existsSync(modulePath + ext)
+            && fs.statSync(modulePath + ext).isFile()) {
+          return modulePath + ext;
+        }
+      }
     } else if (fs.existsSync(modulePath)) {
       if (fs.statSync(modulePath).isDirectory()) {
         if (fs.existsSync(modulePath + '.js')
