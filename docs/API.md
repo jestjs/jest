@@ -295,7 +295,7 @@ Note also that you can use `'<rootDir>'` as a string token in any other path-bas
 
 The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 to ES5 here.
 
-Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/facebook/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
+Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/benjamn/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
 
 ### `config.setupEnvScriptFile` [string]
 (default: `undefined`)
