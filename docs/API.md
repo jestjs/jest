@@ -11,7 +11,7 @@ permalink: docs/api.html
   - [`jest.autoMockOff()`](#jest-automockoff)
   - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
-  - [`jest.dontMock(module)`](#jest-dontmock-modulename)
+  - [`jest.dontMock(moduleName)`](#jest-dontmock-modulename)
   - [`jest.genMockFromModule(moduleObj)`](#jest-genmockfrommodule-moduleobj)
   - [`jest.genMockFunction()`](#jest-genmockfunction)
   - [`jest.genMockFn()`](#jest-genmockfn)
