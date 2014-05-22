@@ -24,10 +24,12 @@ function JSDomEnvironment() {
 
   // Setup window.location
   Object.defineProperty(this.global.location, 'hostname', {
-    value: ''
+    value: '',
+    writable: true
   });
   Object.defineProperty(this.global.location, 'host', {
-    value: ''
+    value: '',
+    writable: true
   });
 
   // Setup defaults for navigator.onLine
