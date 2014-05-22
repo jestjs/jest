@@ -22,16 +22,6 @@ function JSDomEnvironment() {
   // see more than that when a test fails.
   this.global.Error.stackTraceLimit = 100;
 
-  // Setup window.location
-  Object.defineProperty(this.global.location, 'hostname', {
-    value: '',
-    writable: true
-  });
-  Object.defineProperty(this.global.location, 'host', {
-    value: '',
-    writable: true
-  });
-
   // Setup defaults for navigator.onLine
   // TODO: It's questionable as to whether this should go here
   //       It's a pretty rarely depended on feature, so maybe tests that care
