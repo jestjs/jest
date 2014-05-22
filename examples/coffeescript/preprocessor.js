@@ -1,8 +1,4 @@
 var coffee = require('coffee-script');
-// This will register all of the coffee extensions for use with require(). Even
-// though Jest doesn't use the default require much this is needed to populate
-// `require.extensions`.
-coffee.register()
 
 module.exports = {
   process: function(src, path) {
