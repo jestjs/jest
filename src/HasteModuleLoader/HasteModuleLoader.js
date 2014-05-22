@@ -439,11 +439,6 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
         // The required path is a file, so return this path
         return modulePath;
       }
-    } else if (fs.existsSync(modulePath + '.json')
-               && fs.statSync(modulePath + '.json').isFile()) {
-      // The required path doesn't exist, nor does a .js file at that path,
-      // but a .json file does -- so use that
-      return modulePath + '.json';
     }
   } else {
     var resource = this._getResource('JS', moduleName);
