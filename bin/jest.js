@@ -12,6 +12,7 @@
 var child_process = require('child_process');
 var defaultTestResultHandler = require('../src/defaultTestResultHandler');
 var fs = require('fs');
+var harmonize = require('harmonize');
 var optimist = require('optimist');
 var path = require('path');
 var Q = require('q');
@@ -368,5 +369,6 @@ function _main() {
 exports.runCLI = runCLI;
 
 if (require.main === module) {
+  harmonize();
   _main();
 }

@@ -6,6 +6,7 @@
     "coffee-script": "1.7.1",
     "cover": "~0.2.8",
     "diff": "~1.0.4",
+    "harmonize": "~1.33.7",
     "jasmine-only": "0.1.0",
     "jasmine-pit": "~1.0.0",
     "jsdom": "~0.10.3",
