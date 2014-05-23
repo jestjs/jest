@@ -13,7 +13,7 @@ var MS_IN_A_YEAR = 31536000000;
 
 function FakeTimers(global, maxLoops) {
   this._global = global;
-  this._uuidCounter = 0;
+  this._uuidCounter = 1;
   this._maxLoops = maxLoops || 100000;
 
   this.reset();
