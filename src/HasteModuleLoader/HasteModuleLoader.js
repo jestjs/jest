@@ -407,39 +407,48 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
   if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
     // Normalize the relative path to an absolute path
     var modulePath = path.resolve(currPath, '..', moduleName);
-    var modulePathExtName = path.extname(modulePath);
 
-    if (modulePathExtName !== '.js'
-        && fs.existsSync(modulePath + '.js')
-        && fs.statSync(modulePath + '.js').isFile()) {
-      return modulePath + '.js';
-    } else if (fs.existsSync(modulePath)) {
-      if (fs.statSync(modulePath).isDirectory()) {
-        if (fs.existsSync(modulePath + '.js')
-            && fs.statSync(modulePath + '.js').isFile()) {
-          // The required path is a valid directory, but there's also a
-          // matching js file at the same path -- so the js file wins
-          return modulePath + '.js';
-        } else {
-          // The required path is a valid directory, but there's no matching
-          // js file at the same path. So look in the directory for an
-          // index.js file.
-          var indexPath = path.join(modulePath, 'index.js');
-          if (fs.existsSync(indexPath)) {
-            return indexPath;
-          } else {
-            throw new Error('Module(' + moduleName + ') does not exist!');
-          }
-        }
-      } else {
-        // The required path is a file, so return this path
-        return modulePath;
+    var ext, i;
+    var extensions = this._config.moduleFileExtensions;
+
+    // http://nodejs.org/docs/v0.10.0/api/all.html#all_all_together
+    // LOAD_AS_FILE #1
+    if (fs.existsSync(modulePath) &&
+        fs.statSync(modulePath).isFile()) {
+      return modulePath;
+    }
+    // LOAD_AS_FILE #2+
+    for (i = 0; i < extensions.length; i++) {
+      ext = '.' + extensions[i];
+      if (fs.existsSync(modulePath + ext) &&
+          fs.statSync(modulePath + ext).isFile()) {
+        return modulePath + ext;
       }
-    } else if (fs.existsSync(modulePath + '.json')
-               && fs.statSync(modulePath + '.json').isFile()) {
-      // The required path doesn't exist, nor does a .js file at that path,
-      // but a .json file does -- so use that
-      return modulePath + '.json';
+    }
+    // LOAD_AS_DIRECTORY
+    if (fs.existsSync(modulePath) &&
+        fs.statSync(modulePath).isDirectory()) {
+
+      // LOAD_AS_DIRECTORY #1
+      var packagePath = path.join(modulePath, 'package.json');
+      if (fs.existsSync(packagePath)) {
+        var mainPath = path.join(modulePath, require(packagePath).main);
+        if (fs.existsSync(mainPath)) {
+          return mainPath;
+        }
+      }
+
+      // The required path is a valid directory, but there's no matching
+      // js file at the same path. So look in the directory for an
+      // index.js file.
+      var indexPath = path.join(modulePath, 'index');
+      for (i = 0; i < extensions.length; i++) {
+        ext = '.' + extensions[i];
+        if (fs.existsSync(indexPath + ext) &&
+            fs.statSync(indexPath + ext).isFile()) {
+          return indexPath + ext;
+        }
+      }
     }
   } else {
     var resource = this._getResource('JS', moduleName);
