@@ -289,7 +289,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
   var config = Object.create(this._config);
   var configDeps = this._loadConfigDependencies();
 
-  var env = new configDeps.testEnvironment();
+  var env = new configDeps.testEnvironment(config);
   var testRunner = configDeps.testRunner;
 
   // Capture and serialize console.{log|warning|error}s so they can be passed

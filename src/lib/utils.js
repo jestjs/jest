@@ -13,6 +13,7 @@ var Q = require('q');
 
 var DEFAULT_CONFIG_VALUES = {
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
+  globals: {},
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: [],
   testDirectoryName: '__tests__',
@@ -151,6 +152,7 @@ function normalizeConfig(config) {
     throw new Error('No rootDir config value found!');
   }
 
+  // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
     var value;
     switch (key) {
@@ -199,6 +201,7 @@ function normalizeConfig(config) {
         break;
 
       case 'collectCoverage':
+      case 'globals':
       case 'moduleLoader':
       case 'name':
       case 'persistModuleRegistryBetweenSpecs':

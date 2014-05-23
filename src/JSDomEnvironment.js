@@ -9,7 +9,20 @@
 
 var FakeTimers = require('./lib/FakeTimers');
 
-function JSDomEnvironment() {
+function _deepCopy(obj) {
+  var newObj = {};
+  var value;
+  for (var key in obj) {
+    value = obj[key];
+    if (typeof value === 'object' && value !== null) {
+      value = _deepCopy(value);
+    }
+    newObj[key] = value;
+  }
+  return newObj;
+}
+
+function JSDomEnvironment(config) {
   // We lazily require jsdom because it takes a good ~.5s to load.
   //
   // Since this file may be require'd at the top of other files that may/may not
@@ -69,6 +82,13 @@ function JSDomEnvironment() {
   // TODO: Consider locking this down somehow so tests can't do crazy stuff to
   //       worker processes...
   this.global.process = process;
+
+  // Apply any user-specified global vars
+  var globalValues = _deepCopy(config.globals);
+  for (var customGlobalKey in globalValues) {
+    // Always deep-copy objects so isolated test environments can't share memory
+    this.global[customGlobalKey] = globalValues[customGlobalKey];
+  }
 }
 
 JSDomEnvironment.prototype.dispose = function() {

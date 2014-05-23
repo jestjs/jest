@@ -37,6 +37,7 @@ permalink: docs/api.html
   - [`config.cacheDirectory` [string]](#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
+  - [`config.globals` [object]](#config-globals-object)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
@@ -254,6 +255,26 @@ Indicates whether the coverage information should be collected while executing t
 (default: `undefined`)
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
+
+### `config.globals` [object]
+(default: `{}`)
+
+A set of global variables that need to be available in all test environments. 
+
+For example, the following would create a global `__DEV__` variable set to `true` in all test environments:
+
+```javascript
+{
+  ...
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    }
+  }
+}
+```
+
+Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
 ### `config.modulePathIgnorePatterns` [array<string>]
 (default: `["/node_modules/"]`)
