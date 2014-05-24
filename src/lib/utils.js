@@ -266,6 +266,13 @@ function readAndPreprocessFileContent(filePath, config) {
   }
 
   var fileData = fs.readFileSync(filePath, 'utf8');
+
+  // If the file data starts with a shebang remove it (but leave the line empty
+  // to keep stack trace line numbers correct)
+  if (fileData.substr(0, 2) === '#!') {
+    fileData = fileData.replace(/^#!.*$/, '');
+  }
+
   if (config.scriptPreprocessor) {
     try {
       fileData = require(config.scriptPreprocessor).process(fileData, filePath);
