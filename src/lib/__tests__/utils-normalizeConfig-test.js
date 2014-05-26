@@ -13,7 +13,7 @@ describe('utils-pathNormalize', function() {
   var utils;
 
   beforeEach(function() {
-    utils = require('../lib/utils');
+    utils = require('../utils');
   });
 
   it('supports ../ paths and unix separators', function() {
