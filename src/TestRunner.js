@@ -71,7 +71,7 @@ function TestRunner(config, options) {
   this._testPathDirsRegExp = new RegExp(
     config.testPathDirs
       .map(function(dir) {
-        return utils.escapeStrForRegex(utils.pathNormalize(dir));
+        return utils.escapeStrForRegex(dir);
       })
       .join('|')
   );
