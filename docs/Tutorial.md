@@ -25,7 +25,7 @@ function fetchCurrentUser(callback) {
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    done: function(userJson) {
+    success: function(userJson) {
       callback(parseUserJson(userJson));
     }
   });
@@ -56,7 +56,7 @@ describe('fetchCurrentUser', function() {
     expect($.ajax).toBeCalledWith({
       type: 'GET',
       url: 'http://example.com/currentUser',
-      done: jasmine.any(Function)
+      success: jasmine.any(Function)
     });
   });
 });
@@ -90,7 +90,7 @@ like to test that the callback we are passing in is indeed called back when the
 
     // Now we emulate the process by which `$.ajax` would execute its own
     // callback
-    $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].done({
+    $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].success({
       firstName: 'Bobby',
       lastName: '");DROP TABLE Users;--'
     });
