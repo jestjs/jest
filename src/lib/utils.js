@@ -270,7 +270,7 @@ function readAndPreprocessFileContent(filePath, config) {
   // If the file data starts with a shebang remove it (but leave the line empty
   // to keep stack trace line numbers correct)
   if (fileData.substr(0, 2) === '#!') {
-    fileData = fileData.replace(/^#!.*$/, '');
+    fileData = fileData.replace(/^#!.*/, '');
   }
 
   if (config.scriptPreprocessor) {
