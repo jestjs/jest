@@ -19,6 +19,7 @@ var DEFAULT_CONFIG_VALUES = {
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testFileExtensions: ['js'],
+  moduleFileExtensions: ['js', 'json'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
@@ -209,6 +210,7 @@ function normalizeConfig(config) {
       case 'setupJSTestLoaderOptions':
       case 'testDirectoryName':
       case 'testFileExtensions':
+      case 'moduleFileExtensions':
         value = config[key];
         break;
 
