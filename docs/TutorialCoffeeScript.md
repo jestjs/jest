@@ -39,14 +39,14 @@ Once you have this, you can use CoffeeScript with Jest in any place you would ha
 
 
 ```javascript
-// sum.coffee
+# sum.coffee
 sum = (a, b) ->
   a + b
 module.exports = sum
 ```
 
 ```javascript
-// __tests__/sum-test.coffee
+# __tests__/sum-test.coffee
 jest.dontMock '../sum.coffee'
 describe 'sum', ->
   it 'adds 1 + 2 to equal 3', ->
