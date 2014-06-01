@@ -16,7 +16,7 @@
  */
 
 var CoverageCollector = require('../CoverageCollector');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var hasteLoaders = require('node-haste/lib/loaders');
 var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');

@@ -8,7 +8,7 @@
 'use strict';
 
 var CoverageInstrumentor = require('cover/instrument').Instrumentor;
-var fs = require('fs');
+var fs = require('graceful-fs');
 
 var COVERAGE_TEMPLATE_PATH = require.resolve('./coverageTemplate');
 
