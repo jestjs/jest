@@ -35,6 +35,14 @@ function getType(ref) {
     return 'constant';
   }
 
+  if (ref === undefined) {
+    return 'undefined';
+  }
+
+  if (ref === null) {
+    return 'null';
+  }
+
   return null;
 }
 
@@ -50,6 +58,8 @@ function makeComponent(metadata) {
       return new RegExp();
 
     case 'constant':
+    case 'null':
+    case 'undefined':
       return metadata.value;
 
     case 'function':
@@ -192,7 +202,9 @@ function generateFromMetadata(_metadata) {
       }
     }
 
-    if (mock.prototype) {
+    if (metadata.type !== 'undefined'
+        && metadata.type !== 'null'
+        && mock.prototype) {
       mock.prototype.constructor = mock;
     }
 
@@ -206,7 +218,6 @@ function generateFromMetadata(_metadata) {
 
   return mock;
 }
-
 
 function _getMetadata(component, _refs) {
   var refs = _refs || [];
@@ -224,7 +235,9 @@ function _getMetadata(component, _refs) {
   }
 
   var metadata = {type : type};
-  if (type === 'constant') {
+  if (type === 'constant'
+      || type === 'undefined'
+      || type === 'null') {
     metadata.value = component;
     return metadata;
   } else if (type === 'function') {
@@ -251,18 +264,20 @@ function _getMetadata(component, _refs) {
 
   // Leave arrays alone
   if (type !== 'array') {
-    for (var slot in component) {
-      if (slot.charAt(0) === '_' ||
-          (type === 'function' && component._isMockFunction &&
-           slot.match(/^mock/))) {
-        continue;
-      }
+    if (type !== 'undefined') {
+      for (var slot in component) {
+        if (slot.charAt(0) === '_' ||
+            (type === 'function' && component._isMockFunction &&
+             slot.match(/^mock/))) {
+          continue;
+        }
 
-      if (!component.hasOwnProperty && component[slot] !== undefined ||
-          component.hasOwnProperty(slot) ||
-          /* jshint eqeqeq:false */
-          (type === 'object' && component[slot] != Object.prototype[slot])) {
-        addMember(slot, _getMetadata(component[slot], refs));
+        if (!component.hasOwnProperty && component[slot] !== undefined ||
+            component.hasOwnProperty(slot) ||
+            /* jshint eqeqeq:false */
+            (type === 'object' && component[slot] != Object.prototype[slot])) {
+          addMember(slot, _getMetadata(component[slot], refs));
+        }
       }
     }
 
@@ -283,25 +298,25 @@ function _getMetadata(component, _refs) {
 }
 
 function removeUnusedRefs(metadata) {
-  function visit(md, f) {
-    f(md);
-    if (md.members) {
-      for (var slot in md.members) {
-        visit(md.members[slot], f);
+  function visit(metadata, f) {
+    f(metadata);
+    if (metadata.members) {
+      for (var slot in metadata.members) {
+        visit(metadata.members[slot], f);
       }
     }
   }
 
   var usedRefs = {};
-  visit(metadata, function(md) {
-    if (md.ref !== null && md.ref !== undefined) {
-      usedRefs[md.ref] = true;
+  visit(metadata, function(metadata) {
+    if (metadata.ref !== null && metadata.ref !== undefined) {
+      usedRefs[metadata.ref] = true;
     }
   });
 
-  visit(metadata, function(md) {
-    if (!usedRefs[md.refID]) {
-      delete md.refID;
+  visit(metadata, function(metadata) {
+    if (!usedRefs[metadata.refID]) {
+      delete metadata.refID;
     }
   });
 }
@@ -373,7 +388,9 @@ module.exports = {
     var metadata = _getMetadata(component);
     // to make it easier to work with mock metadata, only preserve references
     // that are actually used
-    removeUnusedRefs(metadata);
+    if (metadata !== null) {
+      removeUnusedRefs(metadata);
+    }
     return metadata;
   },
 
