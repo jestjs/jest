@@ -15,11 +15,11 @@ module<span class="token punctuation">.</span>exports <span class="token operato
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> src<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></div><p>Once you have this, you can use CoffeeScript with Jest in any place you would have written JavaScript. You can write all of your tests and code in CoffeeScript or mix and match, using CoffeeScript in some files and plain JavaScript in others.</p><div class="prism language-javascript"><span class="token comment" spellcheck="true">&#x2f;&#x2f; sum.coffee
-</span>sum <span class="token operator">=</span> <span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></div><p>Once you have this, you can use CoffeeScript with Jest in any place you would have written JavaScript. You can write all of your tests and code in CoffeeScript or mix and match, using CoffeeScript in some files and plain JavaScript in others.</p><div class="prism language-javascript"># sum<span class="token punctuation">.</span>coffee
+sum <span class="token operator">=</span> <span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
   a <span class="token operator">+</span> b
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> sum</div><div class="prism language-javascript"><span class="token comment" spellcheck="true">&#x2f;&#x2f; __tests__&#x2f;sum-test.coffee
-</span>jest<span class="token punctuation">.</span>dontMock <span class="token string">&#x27;..&#x2f;sum.coffee&#x27;</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> sum</div><div class="prism language-javascript"># __tests__<span class="token operator">&#x2f;</span>sum<span class="token operator">-</span>test<span class="token punctuation">.</span>coffee
+jest<span class="token punctuation">.</span>dontMock <span class="token string">&#x27;..&#x2f;sum.coffee&#x27;</span>
 describe <span class="token string">&#x27;sum&#x27;</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
   it <span class="token string">&#x27;adds 1 + 2 to equal 3&#x27;</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token operator">&gt;</span>
     sum <span class="token operator">=</span> require <span class="token string">&#x27;..&#x2f;sum.coffee&#x27;</span>
