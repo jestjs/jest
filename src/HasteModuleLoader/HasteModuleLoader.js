@@ -298,9 +298,17 @@ Loader.prototype._getDependencyPathsFromResource = function(resource) {
         resource.getModuleIDByOrigin(requiredModule) || requiredModule;
     }
 
-    dependencyPaths.push(this._getRealPathFromNormalizedModuleID(
-      this._getNormalizedModuleID(resource.path, requiredModule)
-    ));
+    try {
+      var moduleID = this._getNormalizedModuleID(resource.path, requiredModule);
+    } catch(e) {
+      console.warn(
+        'Could not find a `' + requiredModule + '` module while analyzing ' +
+        'dependencies of `' + resource.id + '`'
+      );
+      continue;
+    }
+
+    dependencyPaths.push(this._getRealPathFromNormalizedModuleID(moduleID));
   }
   return dependencyPaths;
 };
