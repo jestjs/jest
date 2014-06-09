@@ -2319,10 +2319,11 @@ jasmine.Spec.prototype.waitsFor = function(latchFunction, optional_timeoutMessag
 };
 
 jasmine.Spec.prototype.fail = function (e) {
+  var isError = e instanceof Error;
   var expectationResult = new jasmine.ExpectationResult({
     passed: false,
-    message: e ? jasmine.util.formatException(e) : 'Exception',
-    trace: { stack: e.stack }
+    message: isError ? jasmine.util.formatException(e) : 'Throws: ' + e,
+    trace: { stack: isError ? e.stack : null }
   });
   this.results_.addResult(expectationResult);
 };
