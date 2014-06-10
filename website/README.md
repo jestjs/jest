@@ -13,11 +13,11 @@ npm start
 Open http://localhost:8080/jest/index.html
 ```
 
-Anytime you change the a, just refresh the page and it's going to be updated
+Anytime you change the contents, just refresh the page and it's going to be updated
 
 # Publish the website
 
-First setup your environment by having two folders, one `jest` and one `jest-gh-pages`. The publish script expect those exact names.
+First setup your environment by having two folders, one `jest` and one `jest-gh-pages`. The publish script expects those exact names.
 
 ```
 cd ../../
