@@ -26,29 +26,32 @@ function FakeTimers(global, maxLoops) {
     clearInterval: global.clearInterval
   };
 
-  // Install mocked versions of the timer APIs
-  global.setTimeout = mocks.getMockFn().mockImpl(
-    this._fakeSetTimeout.bind(this)
-  );
-  global.clearTimeout = mocks.getMockFn().mockImpl(
-    this._fakeClearTimer.bind(this)
-  );
-  global.setInterval = mocks.getMockFn().mockImpl(
-    this._fakeSetInterval.bind(this)
-  );
-  global.clearInterval = mocks.getMockFn().mockImpl(
-    this._fakeClearTimer.bind(this)
-  );
+  this._fakeTimerAPIs = {
+    setTimeout: mocks.getMockFn().mockImpl(
+      this._fakeSetTimeout.bind(this)
+    ),
+    clearTimeout: mocks.getMockFn().mockImpl(
+      this._fakeClearTimer.bind(this)
+    ),
+    setInterval: mocks.getMockFn().mockImpl(
+      this._fakeSetInterval.bind(this)
+    ),
+    clearInterval: mocks.getMockFn().mockImpl(
+      this._fakeClearTimer.bind(this)
+    )
+  };
 
   // If there's a process.nextTick on the global, mock it out
   // (only applicable to node/node-emulating environments)
   if (typeof global.process === 'object'
       && typeof global.process.nextTick === 'function') {
     this._originalTimerAPIs.nextTick = global.process.nextTick;
-    global.process.nextTick = mocks.getMockFn().mockImpl(
+    this._fakeTimerAPIs.nextTick = mocks.getMockFn().mockImpl(
       this._fakeNextTick.bind(this)
     );
   }
+
+  this.useFakeTimers();
 
   // TODO: These globally-accessible function are now deprecated!
   //       They will go away very soon, so do not use them!
@@ -177,21 +180,15 @@ FakeTimers.prototype.runWithRealTimers = function(cb) {
     typeof this._global.process === 'object'
     && typeof this._global.process.nextTick === 'function';
 
-  var fakeSetTimeout = this._global.setTimeout;
-  var fakeSetInterval = this._global.setInterval;
-  var fakeClearTimeout = this._global.clearTimeout;
-  var fakeClearInterval = this._global.clearInterval;
+  var prevSetTimeout = this._global.setTimeout;
+  var prevSetInterval = this._global.setInterval;
+  var prevClearTimeout = this._global.clearTimeout;
+  var prevClearInterval = this._global.clearInterval;
   if (hasNextTick) {
-    var fakeNextTick = this._global.process.nextTick;
+    var prevNextTick = this._global.process.nextTick;
   }
 
-  this._global.setTimeout = this._originalTimerAPIs.setTimeout;
-  this._global.setInterval = this._originalTimerAPIs.setInterval;
-  this._global.clearTimeout = this._originalTimerAPIs.clearTimeout;
-  this._global.clearInterval = this._originalTimerAPIs.clearInterval;
-  if (hasNextTick) {
-    this._global.process.nextTick = this._originalTimerAPIs.nextTick;
-  }
+  this.useRealTimers();
 
   var cbErr = null;
   var errThrown = false;
@@ -202,16 +199,44 @@ FakeTimers.prototype.runWithRealTimers = function(cb) {
     cbErr = e;
   }
 
-  this._global.setTimeout = fakeSetTimeout;
-  this._global.setInterval = fakeSetInterval;
-  this._global.clearTimeout = fakeClearTimeout;
-  this._global.clearInterval = fakeClearInterval;
+  this._global.setTimeout = prevSetTimeout;
+  this._global.setInterval = prevSetInterval;
+  this._global.clearTimeout = prevClearTimeout;
+  this._global.clearInterval = prevClearInterval;
   if (hasNextTick) {
-    this._global.process.nextTick = fakeNextTick;
+    this._global.process.nextTick = prevNextTick;
   }
 
   if (errThrown) {
     throw cbErr;
+  }
+};
+
+FakeTimers.prototype.useRealTimers = function() {
+  var hasNextTick =
+    typeof this._global.process === 'object'
+    && typeof this._global.process.nextTick === 'function';
+
+  this._global.setTimeout = this._originalTimerAPIs.setTimeout;
+  this._global.setInterval = this._originalTimerAPIs.setInterval;
+  this._global.clearTimeout = this._originalTimerAPIs.clearTimeout;
+  this._global.clearInterval = this._originalTimerAPIs.clearInterval;
+  if (hasNextTick) {
+    this._global.process.nextTick = this._originalTimerAPIs.nextTick;
+  }
+};
+
+FakeTimers.prototype.useFakeTimers = function() {
+  var hasNextTick =
+    typeof this._global.process === 'object'
+    && typeof this._global.process.nextTick === 'function';
+
+  this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
+  this._global.setInterval = this._fakeTimerAPIs.setInterval;
+  this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
+  this._global.clearInterval = this._fakeTimerAPIs.clearInterval;
+  if (hasNextTick) {
+    this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
   }
 };
 

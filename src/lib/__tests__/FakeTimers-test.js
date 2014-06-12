@@ -453,107 +453,65 @@ describe('FakeTimers', function() {
   });
 
   describe('runWithRealTimers', function() {
-    it('executes callback with native setTimeout', function() {
-      var nativeSetTimeout = jest.genMockFn();
-      var global = {setTimeout: nativeSetTimeout};
-      var fakeTimers = new FakeTimers(global);
-
-      fakeTimers.runWithRealTimers(function() {
-        global.setTimeout();
-      });
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(0);
-    });
-
-    it('executes callback with native setInterval', function() {
-      var nativeSetInterval = jest.genMockFn();
-      var global = {setInterval: nativeSetInterval};
-      var fakeTimers = new FakeTimers(global);
-
-      fakeTimers.runWithRealTimers(function() {
-        global.setInterval();
-      });
-      expect(nativeSetInterval.mock.calls.length).toBe(1);
-      expect(global.setInterval.mock.calls.length).toBe(0);
-    });
-
-    it('executes callback with native clearTimeout', function() {
-      var nativeClearTimeout = jest.genMockFn();
-      var global = {clearTimeout: nativeClearTimeout};
-      var fakeTimers = new FakeTimers(global);
-
-      fakeTimers.runWithRealTimers(function() {
-        global.clearTimeout();
-      });
-      expect(nativeClearTimeout.mock.calls.length).toBe(1);
-      expect(global.clearTimeout.mock.calls.length).toBe(0);
-    });
-
-    it('executes callback with native clearInterval', function() {
+    it('executes callback with native timers', function() {
       var nativeClearInterval = jest.genMockFn();
-      var global = {clearInterval: nativeClearInterval};
+      var nativeClearTimeout = jest.genMockFn();
+      var nativeSetInterval = jest.genMockFn();
+      var nativeSetTimeout = jest.genMockFn();
+
+      var global = {
+        clearInterval: nativeClearInterval,
+        clearTimeout: nativeClearTimeout,
+        setInterval: nativeSetInterval,
+        setTimeout: nativeSetTimeout
+      };
       var fakeTimers = new FakeTimers(global);
 
+      // clearInterval()
       fakeTimers.runWithRealTimers(function() {
         global.clearInterval();
       });
       expect(nativeClearInterval.mock.calls.length).toBe(1);
       expect(global.clearInterval.mock.calls.length).toBe(0);
-    });
 
-    it('resets mock setTimeout after executing callback', function() {
-      var nativeSetTimeout = jest.genMockFn();
-      var global = {setTimeout: nativeSetTimeout};
-      var fakeTimers = new FakeTimers(global);
-
-      fakeTimers.runWithRealTimers(function() {
-        global.setTimeout();
-      });
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(0);
-
-      global.setTimeout();
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(1);
-    });
-
-    it('resets mock setInterval after executing callback', function() {
-      var nativeSetInterval = jest.genMockFn();
-      var global = {setInterval: nativeSetInterval};
-      var fakeTimers = new FakeTimers(global);
-
-      fakeTimers.runWithRealTimers(function() {
-        global.setInterval();
-      });
-      expect(nativeSetInterval.mock.calls.length).toBe(1);
-      expect(global.setInterval.mock.calls.length).toBe(0);
-
-      global.setInterval();
-      expect(nativeSetInterval.mock.calls.length).toBe(1);
-      expect(global.setInterval.mock.calls.length).toBe(1);
-    });
-
-    it('resets mock clearTimeout after executing callback', function() {
-      var nativeClearTimeout = jest.genMockFn();
-      var global = {clearTimeout: nativeClearTimeout};
-      var fakeTimers = new FakeTimers(global);
-
+      // clearTimeout()
       fakeTimers.runWithRealTimers(function() {
         global.clearTimeout();
       });
       expect(nativeClearTimeout.mock.calls.length).toBe(1);
       expect(global.clearTimeout.mock.calls.length).toBe(0);
 
-      global.clearTimeout();
-      expect(nativeClearTimeout.mock.calls.length).toBe(1);
-      expect(global.clearTimeout.mock.calls.length).toBe(1);
+      // setInterval()
+      fakeTimers.runWithRealTimers(function() {
+        global.setInterval();
+      });
+      expect(nativeSetInterval.mock.calls.length).toBe(1);
+      expect(global.setInterval.mock.calls.length).toBe(0);
+
+      // setTimeout()
+      fakeTimers.runWithRealTimers(function() {
+        global.setTimeout();
+      });
+      expect(nativeSetTimeout.mock.calls.length).toBe(1);
+      expect(global.setTimeout.mock.calls.length).toBe(0);
     });
 
-    it('resets mock clearInterval after executing callback', function() {
+    it('resets mock timers after executing callback', function() {
       var nativeClearInterval = jest.genMockFn();
-      var global = {clearInterval: nativeClearInterval};
+      var nativeClearTimeout = jest.genMockFn();
+      var nativeSetInterval = jest.genMockFn();
+      var nativeSetTimeout = jest.genMockFn();
+
+
+      var global = {
+        clearInterval: nativeClearInterval,
+        clearTimeout: nativeClearTimeout,
+        setInterval: nativeSetInterval,
+        setTimeout: nativeSetTimeout
+      };
       var fakeTimers = new FakeTimers(global);
 
+      // clearInterval()
       fakeTimers.runWithRealTimers(function() {
         global.clearInterval();
       });
@@ -563,6 +521,39 @@ describe('FakeTimers', function() {
       global.clearInterval();
       expect(nativeClearInterval.mock.calls.length).toBe(1);
       expect(global.clearInterval.mock.calls.length).toBe(1);
+
+      // clearTimeout()
+      fakeTimers.runWithRealTimers(function() {
+        global.clearTimeout();
+      });
+      expect(nativeClearTimeout.mock.calls.length).toBe(1);
+      expect(global.clearTimeout.mock.calls.length).toBe(0);
+
+      global.clearTimeout();
+      expect(nativeClearTimeout.mock.calls.length).toBe(1);
+      expect(global.clearTimeout.mock.calls.length).toBe(1);
+
+      // setInterval()
+      fakeTimers.runWithRealTimers(function() {
+        global.setInterval();
+      });
+      expect(nativeSetInterval.mock.calls.length).toBe(1);
+      expect(global.setInterval.mock.calls.length).toBe(0);
+
+      global.setInterval();
+      expect(nativeSetInterval.mock.calls.length).toBe(1);
+      expect(global.setInterval.mock.calls.length).toBe(1);
+
+      // setTimeout()
+      fakeTimers.runWithRealTimers(function() {
+        global.setTimeout();
+      });
+      expect(nativeSetTimeout.mock.calls.length).toBe(1);
+      expect(global.setTimeout.mock.calls.length).toBe(0);
+
+      global.setTimeout();
+      expect(nativeSetTimeout.mock.calls.length).toBe(1);
+      expect(global.setTimeout.mock.calls.length).toBe(1);
     });
 
     it('resets mock timer functions even if callback throws', function() {
@@ -582,6 +573,104 @@ describe('FakeTimers', function() {
       global.setTimeout();
       expect(nativeSetTimeout.mock.calls.length).toBe(1);
       expect(global.setTimeout.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe('useRealTimers', function() {
+    it('resets native timer APIs', function() {
+      var nativeSetTimeout = jest.genMockFn();
+      var nativeSetInterval = jest.genMockFn();
+      var nativeClearTimeout = jest.genMockFn();
+      var nativeClearInterval = jest.genMockFn();
+
+      var global = {
+        setTimeout: nativeSetTimeout,
+        setInterval: nativeSetInterval,
+        clearTimeout: nativeClearTimeout,
+        clearInterval: nativeClearInterval
+      };
+      var fakeTimers = new FakeTimers(global);
+
+      // Ensure that fakeTimers has overridden the native timer APIs
+      // (because if it didn't, this test might pass when it shouldn't)
+      expect(global.setTimeout).not.toBe(nativeSetTimeout);
+      expect(global.setInterval).not.toBe(nativeSetInterval);
+      expect(global.clearTimeout).not.toBe(nativeClearTimeout);
+      expect(global.clearInterval).not.toBe(nativeClearInterval);
+
+      fakeTimers.useRealTimers();
+
+      expect(global.setTimeout).toBe(nativeSetTimeout);
+      expect(global.setInterval).toBe(nativeSetInterval);
+      expect(global.clearTimeout).toBe(nativeClearTimeout);
+      expect(global.clearInterval).toBe(nativeClearInterval);
+    });
+
+    it('resets native process.nextTick when present', function() {
+      var nativeProcessNextTick = jest.genMockFn();
+
+      var global = {
+        process: {nextTick: nativeProcessNextTick}
+      };
+      var fakeTimers = new FakeTimers(global);
+
+      // Ensure that fakeTimers has overridden the native timer APIs
+      // (because if it didn't, this test might pass when it shouldn't)
+      expect(global.process.nextTick).not.toBe(nativeProcessNextTick);
+
+      fakeTimers.useRealTimers();
+
+      expect(global.process.nextTick).toBe(nativeProcessNextTick);
+    });
+  });
+
+  describe('useFakeTimers', function() {
+    it('resets mock timer APIs', function() {
+      var nativeSetTimeout = jest.genMockFn();
+      var nativeSetInterval = jest.genMockFn();
+      var nativeClearTimeout = jest.genMockFn();
+      var nativeClearInterval = jest.genMockFn();
+
+      var global = {
+        setTimeout: nativeSetTimeout,
+        setInterval: nativeSetInterval,
+        clearTimeout: nativeClearTimeout,
+        clearInterval: nativeClearInterval
+      };
+      var fakeTimers = new FakeTimers(global);
+      fakeTimers.useRealTimers();
+
+      // Ensure that the real timers are installed at this point
+      // (because if they aren't, this test might pass when it shouldn't)
+      expect(global.setTimeout).toBe(nativeSetTimeout);
+      expect(global.setInterval).toBe(nativeSetInterval);
+      expect(global.clearTimeout).toBe(nativeClearTimeout);
+      expect(global.clearInterval).toBe(nativeClearInterval);
+
+      fakeTimers.useFakeTimers();
+
+      expect(global.setTimeout).not.toBe(nativeSetTimeout);
+      expect(global.setInterval).not.toBe(nativeSetInterval);
+      expect(global.clearTimeout).not.toBe(nativeClearTimeout);
+      expect(global.clearInterval).not.toBe(nativeClearInterval);
+    });
+
+    it('resets mock process.nextTick when present', function() {
+      var nativeProcessNextTick = jest.genMockFn();
+
+      var global = {
+        process: {nextTick: nativeProcessNextTick}
+      };
+      var fakeTimers = new FakeTimers(global);
+      fakeTimers.useRealTimers();
+
+      // Ensure that the real timers are installed at this point
+      // (because if they aren't, this test might pass when it shouldn't)
+      expect(global.process.nextTick).toBe(nativeProcessNextTick);
+
+      fakeTimers.useFakeTimers();
+
+      expect(global.process.nextTick).not.toBe(nativeProcessNextTick);
     });
   });
 });

@@ -995,6 +995,14 @@ Loader.prototype.resetModuleRegistry = function() {
             this._explicitShouldMock[moduleID] = true;
             this._explicitlySetMocks[moduleID] = moduleExports;
             return jestRuntime.exports;
+          }.bind(this),
+
+          useFakeTimers: function() {
+            this._environment.fakeTimers.useFakeTimers();
+          }.bind(this),
+
+          useRealTimers: function() {
+            this._environment.fakeTimers.useRealTimers();
           }.bind(this)
         }
       };
