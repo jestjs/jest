@@ -9,7 +9,7 @@ next: timer-mocks
 
 Although autogeneration of mocks is convenient, there are behaviors it misses, such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html). Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.
 
-Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. When a manual mock exists for a given module, Jest's module system will just use that instead of trying to automatically generating a mock.
+Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. When a manual mock exists for a given module, Jest's module system will just use that instead of trying to automatically generate a mock.
 
 Here's a contrived example where we have a module that provides a summary of all the files in a given directory.
 
