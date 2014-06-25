@@ -54,10 +54,10 @@ function _replaceRootDirTags(rootDir, config) {
         return config;
       }
 
-      return path.resolve(
+      return pathNormalize(path.resolve(
         rootDir,
         './' + path.normalize(config.substr('<rootDir>'.length))
-      );
+      ));
   }
   return config;
 }
@@ -153,16 +153,18 @@ function normalizeConfig(config) {
     throw new Error('No rootDir config value found!');
   }
 
+  config.rootDir = pathNormalize(config.rootDir);
+
   // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
     var value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
         value = Object.keys(config[key]).reduce(function(normObj, filePath) {
-          filePath = path.resolve(
+          filePath = pathNormalize(path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, filePath)
-          );
+          ));
           normObj[filePath] = true;
           return normObj;
         }, {});
@@ -170,10 +172,10 @@ function normalizeConfig(config) {
 
       case 'testPathDirs':
         value = config[key].map(function(scanDir) {
-          return path.resolve(
+          return pathNormalize(path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, scanDir)
-          );
+          ));
         });
         break;
 
@@ -181,10 +183,10 @@ function normalizeConfig(config) {
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
-        value = path.resolve(
+        value = pathNormalize(path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key])
-        );
+        ));
         break;
 
       case 'testPathIgnorePatterns':
@@ -231,6 +233,10 @@ function normalizeConfig(config) {
   }, newConfig);
 
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
+}
+
+function pathNormalize(dir) {
+  return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
 }
 
 function loadConfigFromFile(filePath) {
@@ -424,6 +430,7 @@ exports.getLinePercentCoverageFromCoverageInfo =
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
+exports.pathNormalize = pathNormalize;
 exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
 exports.runContentWithLocalBindings = runContentWithLocalBindings;
 exports.serializeConsoleArgValue = serializeConsoleArgValue;
