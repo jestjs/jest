@@ -20,6 +20,12 @@ var TestRunner = require('../src/TestRunner');
 var colors = require('../src/lib/colors');
 var utils = require('../src/lib/utils');
 
+var shouldWatch = false;
+var testRunner = null;
+var isWatching = false;
+var runInBand = false;
+var pathPattern = '';
+
 var _jestVersion = null;
 function _getJestVersion() {
   if (_jestVersion === null) {
@@ -85,7 +91,28 @@ function _onRunComplete(completionData) {
 
   console.log(results);
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
-  process.exit(numFailedTests ? 1 : 0);
+
+  if (!shouldWatch) {
+    process.exit(numFailedTests ? 1 : 0);
+  }
+
+  console.log("\n\n");
+  console.log(colors.colorize("Waiting for file changes...", colors.BOLD));
+
+  if (isWatching) {
+    return;
+  }
+
+  testRunner.findTestPathsMatching(pathPattern, function () {}, true).then(function (files) {
+    isWatching = true;
+    files.forEach(function (file) {
+      fs.watch(file, function (curr, prev) {
+        if (curr === 'change') {
+          _runTestsOnPathPattern(testRunner, runInBand, pathPattern).done();
+        }
+      });
+    });
+  });
 }
 
 function _verifyIsGitRepository(dirPath) {
@@ -122,6 +149,19 @@ function _wrapDesc(desc) {
   }, ['']).join(indent);
 }
 
+function _runTestsOnPathPattern(testRunner, runInBand, pathPattern) {
+  return testRunner.findTestPathsMatching(pathPattern)
+    .then(function(matchingTestPaths) {
+      console.log('Found ' + matchingTestPaths.length + ' matching tests...');
+      if (runInBand) {
+        return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
+      } else {
+        return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
+      }
+    })
+    .then(_onRunComplete);
+}
+
 function runCLI(argv, packageRoot) {
   if (argv.version) {
     console.log('v' + _getJestVersion());
@@ -155,10 +195,12 @@ function runCLI(argv, packageRoot) {
         testPathIgnorePatterns: ['/node_modules/.+']
       }));
     }
+
+
   }
 
   config.done(function(config) {
-    var pathPattern =
+    pathPattern =
       argv._.length === 0
       ? /.*/
       : new RegExp(argv._.join('|'));
@@ -172,20 +214,8 @@ function runCLI(argv, packageRoot) {
       config.collectCoverage = true;
     }
 
-    var testRunner = new TestRunner(config, testRunnerOpts);
-
-    function _runTestsOnPathPattern(pathPattern) {
-      return testRunner.findTestPathsMatching(pathPattern)
-        .then(function(matchingTestPaths) {
-          console.log('Found ' + matchingTestPaths.length + ' matching tests...');
-          if (argv.runInBand) {
-            return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
-          } else {
-            return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
-          }
-        })
-        .then(_onRunComplete);
-    }
+    runInBand = argv.runInBand;
+    testRunner = new TestRunner(config, testRunnerOpts);
 
     if (argv.onlyChanged) {
       console.log('Looking for changed files...');
@@ -212,13 +242,15 @@ function runCLI(argv, packageRoot) {
         return testRunner.findTestsRelatedTo(changedPaths);
       }).done(function(affectedTestPaths) {
         if (affectedTestPaths.length > 0) {
-          _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|'))).done();
+          _runTestsOnPathPattern(testRunner,
+                                 argv.runInBand,
+                                 new RegExp(affectedTestPaths.join('|'))).done();
         } else {
           console.log('No tests to run!');
         }
       });
     } else {
-      _runTestsOnPathPattern(pathPattern).done();
+      _runTestsOnPathPattern(testRunner, argv.runInBand, pathPattern).done();
     }
   });
 }
@@ -274,6 +306,13 @@ function _main() {
         alias: 'v',
         description: _wrapDesc('Print the version and exit'),
         type: 'boolean'
+      },
+      watch: {
+        alias: 'w',
+        description: _wrapDesc('Watches files in the current directory (or ' +
+          'specified) for changes'
+        ),
+        type: 'boolean'
       }
     })
     .check(function(argv) {
@@ -297,6 +336,10 @@ function _main() {
   if (argv.help) {
     optimist.showHelp();
     process.exit(0);
+  }
+
+  if (argv.watch) {
+    shouldWatch = true;
   }
 
   var cwd = process.cwd();
