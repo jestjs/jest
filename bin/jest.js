@@ -194,12 +194,28 @@ function runCLI(argv, packageRoot, onComplete) {
     var testRunner = new TestRunner(config, testRunnerOpts);
 
     function _runTestsOnPathPattern(pathPattern) {
-      return testRunner.findTestPathsMatching(pathPattern)
+      var testPathStream = testRunner.streamTestPathsMatching(pathPattern);
+
+      var deferred = Q.defer();
+      var foundPaths = [];
+      testPathStream.on('data', function(pathStr) {
+        foundPaths.push(pathStr);
+      });
+      testPathStream.on('error', function(err) {
+        deferred.reject(err);
+      });
+      testPathStream.on('end', function() {
+        deferred.resolve(foundPaths);
+      });
+
+      return deferred.promise
         .then(function(matchingTestPaths) {
-		  var numMatchingTestPaths = matchingTestPaths.length;
+          var numMatching = matchingTestPaths.length;
+          var pluralizedTest = numMatching > 1 ? 'tests' : 'test';
+
           console.log(
-			['Found', numMatchingTestPaths, 'matching', (numMatchingTestPaths > 1 ? 'tests...' : 'test...')].join(' ')
-		  );
+            'Found ' + numMatching + ' matching ' + pluralizedTest + '...'
+          );
           if (argv.runInBand) {
             return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
           } else {
@@ -234,7 +250,23 @@ function runCLI(argv, packageRoot, onComplete) {
         changedPathSets.forEach(function(pathSet) {
           changedPaths = changedPaths.concat(pathSet);
         });
-        return testRunner.findTestsRelatedTo(changedPaths);
+
+        var deferred = Q.defer();
+        var affectedPathStream =
+          testRunner.streamTestPathsRelatedTo(changedPaths);
+
+        var affectedTestPaths = [];
+        affectedPathStream.on('data', function(pathStr) {
+          affectedTestPaths.push(pathStr);
+        });
+        affectedPathStream.on('error', function(err) {
+          deferred.reject(err);
+        });
+        affectedPathStream.on('end', function() {
+          deferred.resolve(affectedTestPaths);
+        });
+
+        return deferred.promise;
       }).done(function(affectedTestPaths) {
         if (affectedTestPaths.length > 0) {
           _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|'))).done();

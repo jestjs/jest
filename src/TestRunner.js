@@ -12,6 +12,7 @@ var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
 var q = require('q');
+var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 
@@ -149,12 +150,25 @@ TestRunner.prototype._loadConfigDependencies = function() {
  * direct dependencies).
  *
  * @param {Array<String>} paths A list of path strings to find related tests for
- * @return {Promise<Array<String>>} Fulfilled with a list of testPaths once the
- *                                  search has completed.
+ * @return {Stream<String>} Stream of testPath strings
  */
-TestRunner.prototype.findTestsRelatedTo = function(paths) {
+TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
+  var pathStream = through(
+    function write(data) {
+      if (data.isError) {
+        this.emit('error', data);
+        this.emit('end');
+      } else {
+        this.emit('data', data);
+      }
+    },
+    function end() {
+      this.emit('end');
+    }
+  );
+
   var testRunner = this;
-  return this._constructModuleLoader().then(function(moduleLoader) {
+  this._constructModuleLoader().done(function(moduleLoader) {
     var discoveredModules = {};
 
     // If a path to a test file is given, make sure we consider that test as
@@ -164,6 +178,9 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
     //  non-tests out at the end)
     paths.forEach(function(path) {
       discoveredModules[path] = true;
+      if (testRunner._isTestFilePath(path) && fs.existsSync(path)) {
+        pathStream.write(path);
+      }
     });
 
     var modulesToSearch = [].concat(paths);
@@ -176,19 +193,22 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
         if (!discoveredModules.hasOwnProperty(depPath)) {
           discoveredModules[depPath] = true;
           modulesToSearch.push(depPath);
+          if (testRunner._isTestFilePath(depPath) && fs.existsSync(depPath)) {
+            pathStream.write(depPath);
+          }
         }
       });
     }
 
-    return Object.keys(discoveredModules).filter(function(path) {
-      return testRunner._isTestFilePath(path) && fs.existsSync(path);
-    });
+    pathStream.end();
   });
+
+  return pathStream;
 };
 
 /**
- * Given a path pattern, find the absolute paths for all tests that match the
- * pattern.
+ * Given a path pattern, return a stream of absolute paths for all tests that
+ * match the pattern.
  *
  * @param {RegExp} pathPattern
  * @param {Function} onTestFound Callback called immediately when a test is
@@ -200,51 +220,53 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
  *                               the world (and their various compatibilities
  *                               with various node versions), so I've opted to
  *                               forgo that for now.
- * @return {Promise<Array<String>>} Fulfilled with a list of testPaths once the
- *                                  search has completed.
+ * @return {Stream<String>} Stream of test-path strings
  */
-TestRunner.prototype.findTestPathsMatching = function(
-  pathPattern, onTestFound) {
-
-  var config = this._config;
-  var deferred = q.defer();
-
-  var foundPaths = [];
-  function _onMatcherMatch(pathStr) {
-    foundPaths.push(pathStr);
-    try {
-      onTestFound && onTestFound(pathStr);
-    } catch (e) {
-      deferred.reject(e);
+TestRunner.prototype.streamTestPathsMatching = function(pathPattern) {
+  var pathStream = through(
+    function write(data) {
+      if (data.isError) {
+        this.emit('error', data);
+        this.emit('end');
+      } else {
+        this.emit('data', data);
+      }
+    },
+    function end() {
+      this.emit('end');
     }
-  }
+  );
 
-  var numMatchers = config.testPathDirs.length;
-  function _onMatcherEnd() {
+  var numMatchers = this._config.testPathDirs.length;
+  function _onMatcherComplete() {
     numMatchers--;
     if (numMatchers === 0) {
-      deferred.resolve(foundPaths);
+      pathStream.end();
     }
   }
 
   function _onMatcherError(err) {
-    deferred.reject(err);
+    pathStream.write({isError: err});
   }
 
-  config.testPathDirs.forEach(function(scanDir) {
+  function _onMatcherMatch(pathStr) {
+    pathStream.write(pathStr);
+  }
+
+  this._config.testPathDirs.forEach(function(dirPath) {
     var finder = new FileFinder({
-      rootFolder: scanDir,
+      rootFolder: dirPath,
       filterFunction: function(pathStr) {
         return this._isTestFilePath(pathStr) && pathPattern.test(pathStr);
       }.bind(this)
     });
+    finder.on('complete', _onMatcherComplete);
     finder.on('error', _onMatcherError);
     finder.on('match', _onMatcherMatch);
-    finder.on('complete', _onMatcherEnd);
     finder.startSearch();
   }, this);
 
-  return deferred.promise;
+  return pathStream;
 };
 
 /**
