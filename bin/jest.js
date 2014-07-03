@@ -85,7 +85,6 @@ function _onRunComplete(completionData) {
 
   console.log(results);
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
-  process.exit(numFailedTests ? 1 : 0);
 }
 
 function _verifyIsGitRepository(dirPath) {
@@ -122,10 +121,12 @@ function _wrapDesc(desc) {
   }, ['']).join(indent);
 }
 
-function runCLI(argv, packageRoot) {
+function runCLI(argv, packageRoot, onComplete) {
+  argv = argv || {};
+
   if (argv.version) {
     console.log('v' + _getJestVersion());
-    process.exit(0);
+    onComplete(true);
   }
 
   var config;
@@ -159,9 +160,8 @@ function runCLI(argv, packageRoot) {
 
   config.done(function(config) {
     var pathPattern =
-      argv._.length === 0
-      ? /.*/
-      : new RegExp(argv._.join('|'));
+      argv.testPathPattern ||
+      (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/);
 
     var testRunnerOpts = {};
     if (argv.maxWorkers) {
@@ -184,7 +184,10 @@ function runCLI(argv, packageRoot) {
             return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
           }
         })
-        .then(_onRunComplete);
+        .then(function(completionData) {
+          _onRunComplete(completionData);
+          onComplete(completionData.numFailedTests === 0);
+        });
     }
 
     if (argv.onlyChanged) {
@@ -198,7 +201,7 @@ function runCLI(argv, packageRoot) {
             'with in a git repository. Currently --onlyChanged only works ' +
             'with git projects.\n'
           );
-          process.exit(1);
+          onComplete(false);
         }
 
         return Q.all(config.testPathDirs.map(_findChangedFiles));
@@ -223,7 +226,7 @@ function runCLI(argv, packageRoot) {
   });
 }
 
-function _main() {
+function _main(onComplete) {
   var argv = optimist
     .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
     .options({
@@ -336,7 +339,7 @@ function _main() {
       process.exit(1);
     }
 
-    jestBinary.runCLI(argv, cwdPackageRoot);
+    jestBinary.runCLI(argv, cwdPackageRoot, onComplete);
     return;
   }
 
@@ -363,12 +366,14 @@ function _main() {
   if (!argv.version && cwdPackageRoot) {
     console.log('Using Jest CLI v' + _getJestVersion());
   }
-  runCLI(argv, cwdPackageRoot);
+  runCLI(argv, cwdPackageRoot, onComplete);
 }
 
 exports.runCLI = runCLI;
 
 if (require.main === module) {
   harmonize();
-  _main();
+  _main(function (success) {
+    process.exit(success ? 0 : 1);
+  });
 }
