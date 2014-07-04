@@ -77,11 +77,19 @@ function _onRunComplete(completionData) {
 
   var results = '';
   if (numFailedTests) {
-    results += colors.colorize(numFailedTests + ' tests failed', colors.RED + colors.BOLD) + ', ';
+    results +=
+	  colors.colorize(
+	    [numFailedTests, (numFailedTests > 1 ? 'tests' : 'test'), 'failed'].join(' '),
+	    colors.RED + colors.BOLD
+	  );
+	results += ', ';
   }
-  results +=
-    colors.colorize(numPassedTests + ' tests passed', colors.GREEN + colors.BOLD) +
-    ' (' + numTotalTests + ' total)';
+  results += 
+    colors.colorize(
+		[numPassedTests, (numPassedTests > 1 ? 'tests' : 'test'), 'passed'].join(' '),
+		colors.GREEN + colors.BOLD
+	);
+  results += ' (' + numTotalTests + ' total)';
 
   console.log(results);
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
@@ -177,7 +185,10 @@ function runCLI(argv, packageRoot, onComplete) {
     function _runTestsOnPathPattern(pathPattern) {
       return testRunner.findTestPathsMatching(pathPattern)
         .then(function(matchingTestPaths) {
-          console.log('Found ' + matchingTestPaths.length + ' matching tests...');
+		  var numMatchingTestPaths = matchingTestPaths.length;
+          console.log(
+			['Found', numMatchingTestPaths, 'matching', (numMatchingTestPaths > 1 ? 'tests...' : 'test...')].join(' ')
+		  );
           if (argv.runInBand) {
             return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
           } else {
