@@ -148,7 +148,7 @@ This is useful for scenarios such as one where the module being tested schedules
 ### `jest.setMock(moduleName, moduleExports)`
 Explicitly supplies the mock object that the module system should return for the specified module.
 
-On occaison there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
+On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
