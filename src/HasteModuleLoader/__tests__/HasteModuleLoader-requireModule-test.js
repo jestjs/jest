@@ -120,6 +120,22 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('requires a JSON file twice successfully', function() {
+      return buildLoader().then(function(loader) {
+        var exports1 = loader.requireModule(
+          __filename,
+          './test_root/JSONFile.json'
+        );
+        var exports2 = loader.requireModule(
+          __filename,
+          './test_root/JSONFile.json'
+        );
+        expect(exports1.isJSONModule).toBe(true);
+        expect(exports2.isJSONModule).toBe(true);
+        expect(exports1).toBe(exports2);
+      });
+    });
+
     describe('features I want to remove, but must exist for now', function() {
       /**
        * I'd like to kill this and make all tests use something more explicit

@@ -864,14 +864,6 @@ Loader.prototype.requireModule = function(currPath, moduleName,
     moduleObj = this._moduleRegistry[modulePath];
   }
   if (!moduleObj) {
-    // Good ole node...
-    if (path.extname(modulePath) === '.json') {
-      return this._moduleRegistry[modulePath] = JSON.parse(fs.readFileSync(
-        modulePath,
-        'utf8'
-      ));
-    }
-
     // We must register the pre-allocated module object first so that any
     // circular dependencies that may arise while evaluating the module can
     // be satisfied.
@@ -884,7 +876,15 @@ Loader.prototype.requireModule = function(currPath, moduleName,
       this._moduleRegistry[modulePath] = moduleObj;
     }
 
-    this._execModule(moduleObj);
+    // Good ole node...
+    if (path.extname(modulePath) === '.json') {
+      moduleObj.exports = JSON.parse(fs.readFileSync(
+        modulePath,
+        'utf8'
+      ));
+    } else {
+      this._execModule(moduleObj);
+    }
   }
 
   return moduleObj.exports;
