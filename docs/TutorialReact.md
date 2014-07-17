@@ -51,8 +51,9 @@ describe('CheckboxWithLabel', function() {
     var TestUtils = React.addons.TestUtils;
 
     // Render a checkbox with label in the document
-    var checkbox = <CheckboxWithLabel labelOn="On" labelOff="Off" />;
-    TestUtils.renderIntoDocument(checkbox);
+    var checkbox = TestUtils.renderIntoDocument(
+      <CheckboxWithLabel labelOn="On" labelOff="Off" />
+    );
 
     // Verify that it's Off by default
     var label = TestUtils.findRenderedDOMComponentWithTag(
