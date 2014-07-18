@@ -91,7 +91,7 @@ var DefaultTestResultHandler = function DefaultTestResultHandler(jestConfig, tes
  * @param  {Array}   columns  An array of items to append
  * @return {String}           The header
  */
-DefaultTestResultHandler.prototype._getResultHeader = function (passed, testName, columns) {
+DefaultTestResultHandler.getResultHeader = function (passed, testName, columns) {
    var passFailTag = passed ?
                      colors.colorize(' PASS ', PASS_COLOR) :
                      colors.colorize(' FAIL ', FAIL_COLOR);
@@ -110,7 +110,7 @@ DefaultTestResultHandler.prototype.displayResults = function () {
 
   // bail out instantly if the test couldn't be executed
   if (testResult.testExecError) {
-    console.log(this._getResultHeader(false, this.filePath));
+    console.log(DefaultTestResultHandler.getResultHeader(false, this.filePath));
     console.log(testResult.testExecError);
     return false;
   }
@@ -130,7 +130,7 @@ DefaultTestResultHandler.prototype.displayResults = function () {
   }
   */
 
-  console.log(this._getResultHeader(this.allTestsPassed, this.filePath, [
+  console.log(DefaultTestResultHandler.getResultHeader(this.allTestsPassed, this.filePath, [
     testRunTimeString
   ]));
 
@@ -160,7 +160,7 @@ DefaultTestResultHandler.prototype._displayDetailedResults = function () {
     // only display the ancestry, if it changed, not for each
     // test in the suite
     if (testTitleAncestry !== currentAncenstry) {
-      console.log("\n", textComponents.descBullet + testTitleAncestry);
+      console.log(currentAncenstry !== undefined ? "\n" : '', textComponents.descBullet + testTitleAncestry);
       currentAncenstry = testTitleAncestry;
     }
 
@@ -170,6 +170,9 @@ DefaultTestResultHandler.prototype._displayDetailedResults = function () {
     result.failureMessages.forEach(_printErrors);
 
   });
+
+  // add a newline after each test group
+  console.log('');
 };
 
 /**
