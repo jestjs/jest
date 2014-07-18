@@ -62,7 +62,7 @@ function _printConsoleMessage(msg) {
   }
 }
 
-var DefaultTestResultHandler = function DefaultTestResultHandler(jestConfig, testResult, options) {
+var TestResultHandler = function (jestConfig, testResult, options) {
   this.showDetailedInfo = options && options.showDetailedInfo === true;
   this.testResult = testResult;
   this.filePath = jestConfig.rootDir ?
@@ -80,7 +80,8 @@ var DefaultTestResultHandler = function DefaultTestResultHandler(jestConfig, tes
     msgBullet: '  - '
   };
 
-  this.textComponents.msgIndent = this.textComponents.msgBullet.replace(/./g, ' ');
+  var msgIndent = this.textComponents.msgBullet.replace(/./g, ' ');
+  this.textComponents.msgIndent = msgIndent;
 };
 
 /**
@@ -91,10 +92,10 @@ var DefaultTestResultHandler = function DefaultTestResultHandler(jestConfig, tes
  * @param  {Array}   columns  An array of items to append
  * @return {String}           The header
  */
-DefaultTestResultHandler.getResultHeader = function (passed, testName, columns) {
+TestResultHandler.getResultHeader = function (passed, testName, columns) {
    var passFailTag = passed ?
-                     colors.colorize(' PASS ', PASS_COLOR) :
-                     colors.colorize(' FAIL ', FAIL_COLOR);
+   colors.colorize(' PASS ', PASS_COLOR) :
+   colors.colorize(' FAIL ', FAIL_COLOR);
 
   return [
     passFailTag,
@@ -105,19 +106,19 @@ DefaultTestResultHandler.getResultHeader = function (passed, testName, columns) 
 /**
  * Kicks off rendering of the results
  */
-DefaultTestResultHandler.prototype.displayResults = function () {
+TestResultHandler.prototype.displayResults = function () {
   var testResult = this.testResult;
 
   // bail out instantly if the test couldn't be executed
   if (testResult.testExecError) {
-    console.log(DefaultTestResultHandler.getResultHeader(false, this.filePath));
+    console.log(TestResultHandler.getResultHeader(false, this.filePath));
     console.log(testResult.testExecError);
     return false;
   }
 
   var testRunTime = testResult.perfStats ?
-                    (testResult.perfStats.end - testResult.perfStats.start) / 1000 :
-                    null;
+  (testResult.perfStats.end - testResult.perfStats.start) / 1000 :
+  null;
 
   var testRunTimeString = '(' + testRunTime + 's)';
   if (testRunTime > 2.5) {
@@ -130,7 +131,8 @@ DefaultTestResultHandler.prototype.displayResults = function () {
   }
   */
 
-  console.log(DefaultTestResultHandler.getResultHeader(this.allTestsPassed, this.filePath, [
+  console.log(TestResultHandler.getResultHeader(
+    this.allTestsPassed, this.filePath, [
     testRunTimeString
   ]));
 
@@ -147,7 +149,7 @@ DefaultTestResultHandler.prototype.displayResults = function () {
 /**
  * Displays both failed and passed tests
  */
-DefaultTestResultHandler.prototype._displayDetailedResults = function () {
+TestResultHandler.prototype._displayDetailedResults = function () {
   var textComponents    = this.textComponents;
   var passedIcon        = textComponents.passedIcon;
   var failedIcon        = textComponents.failedIcon;
@@ -156,11 +158,13 @@ DefaultTestResultHandler.prototype._displayDetailedResults = function () {
 
   var currentAncenstry;
   this.testResult.testResults.forEach(function (result) {
-    var testTitleAncestry = DefaultTestResultHandler.getAncestorTitle(result, ancestrySeparator);
+    var testTitleAncestry = TestResultHandler
+                            .getAncestorTitle(result, ancestrySeparator);
     // only display the ancestry, if it changed, not for each
     // test in the suite
     if (testTitleAncestry !== currentAncenstry) {
-      console.log(currentAncenstry !== undefined ? "\n" : '', textComponents.descBullet + testTitleAncestry);
+      var maybeNewline = currentAncenstry !== undefined ? '\n' : '';
+      console.log(maybeNewline, textComponents.descBullet + testTitleAncestry);
       currentAncenstry = testTitleAncestry;
     }
 
@@ -178,7 +182,7 @@ DefaultTestResultHandler.prototype._displayDetailedResults = function () {
 /**
  * Displays failed tests
  */
-DefaultTestResultHandler.prototype._displayResults = function () {
+TestResultHandler.prototype._displayResults = function () {
   if (!this.allTestsPassed) {
 
     var textComponents    = this.textComponents;
@@ -190,7 +194,10 @@ DefaultTestResultHandler.prototype._displayResults = function () {
         return;
       }
 
-      var testTitleAncestry = DefaultTestResultHandler.getAncestorTitle(result, ancestrySeparator) + ancestrySeparator;
+      var testTitleAncestry = TestResultHandler
+                              .getAncestorTitle(result, ancestrySeparator);
+
+      testTitleAncestry = testTitleAncestry + ancestrySeparator;
       console.log(textComponents.descBullet + testTitleAncestry + result.title);
 
       // log all errors
@@ -204,7 +211,7 @@ DefaultTestResultHandler.prototype._displayResults = function () {
  * Logs the passed in error
  * @param  {Object} errorMsg The error to log
  */
-DefaultTestResultHandler.prototype._printErrors = function (errorMsg) {
+TestResultHandler.prototype._printErrors = function (errorMsg) {
   var textComponents  = this.textComponents;
   var msgBullet       = textComponents.msgBullet;
   var msgIndent       = textComponents.msgIndent;
@@ -225,10 +232,10 @@ DefaultTestResultHandler.prototype._printErrors = function (errorMsg) {
 };
 
 
-DefaultTestResultHandler.getAncestorTitle = function (result, separator) {
+TestResultHandler.getAncestorTitle = function (result, separator) {
   return result.ancestorTitles.map(function (title) {
     return colors.colorize(title, colors.BOLD);
   }).join(separator);
 };
 
-module.exports = DefaultTestResultHandler;
+module.exports = TestResultHandler;
