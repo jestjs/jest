@@ -8,12 +8,16 @@
 'use strict';
 
 var FileFinder = require('node-find-files');
+var WorkerPool = require('node-worker-pool');
+var EventEmitter = require('events').EventEmitter;
+
+var inherits = require('util').inherits;
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
 var q = require('q');
 var utils = require('./lib/utils');
-var WorkerPool = require('node-worker-pool');
+var sane = require('sane');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -65,6 +69,7 @@ function _serializeConsoleArguments(type, args) {
  *                and their defaults.
  */
 function TestRunner(config, options) {
+  EventEmitter.call(this);
   this._config = config;
   this._configDeps = null;
   this._moduleLoaderResourceMap = null;
@@ -91,7 +96,11 @@ function TestRunner(config, options) {
       this._opts[key] = options[key];
     }
   }
+
+  this._doneDeferred = q.defer();
 }
+
+inherits(TestRunner, EventEmitter);
 
 TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
   var config = customCfg || this._config;
@@ -142,6 +151,51 @@ TestRunner.prototype._loadConfigDependencies = function() {
   return this._configDeps;
 };
 
+TestRunner.prototype._startWatching = function() {
+  this._watchers = this._config.testPathDirs.map(function(dir) {
+    var handler = function (changedFilePath) {
+      this._runTestsRelatedTo([path.join(dir, changedFilePath)]);
+    }.bind(this);
+
+    var watcher = sane(dir);
+    watcher.on('add', handler);
+    watcher.on('delete', handler);
+    watcher.on('change', handler);
+    return watcher;
+  }, this);
+};
+
+TestRunner.prototype._onRunComplete = function(completionData) {
+  this.emit('run_complete', completionData);
+  if (this._opts.watch) {
+    if (!this._watchers) {
+      this._startWatching();
+    }
+  } else {
+    this._doneDeferred.resolve(completionData);
+  }
+};
+
+TestRunner.prototype._runTestsRelatedTo = function(changedFilePath) {
+  this.findTestsRelatedTo(changedFilePath)
+    .then(this._runTests.bind(this))
+    .done(this._onRunComplete.bind(this));
+};
+
+TestRunner.prototype._runTests = function(matchingTestPaths) {
+  var numMatchingTestPaths = matchingTestPaths.length;
+  console.log(
+    ['Found', numMatchingTestPaths, 'matching',
+    (numMatchingTestPaths > 1 ? 'tests...' : 'test...')].join(' ')
+  );
+  var onResult = this.emit.bind(this, 'result');
+  if (this._opts.runInBand) {
+    return this.runTestsInBand(matchingTestPaths, onResult);
+  } else {
+    return this.runTestsParallel(matchingTestPaths, onResult);
+  }
+};
+
 /**
  * Given a list of paths to modules or tests, find all tests that are related to
  * any of those paths. For a test to be considered "related" to a path, the test
@@ -170,7 +224,6 @@ TestRunner.prototype.findTestsRelatedTo = function(paths) {
     while (modulesToSearch.length > 0) {
       var modulePath = modulesToSearch.shift();
       var depPaths = moduleLoader.getDependentsFromPath(modulePath);
-
       /* jshint loopfunc:true */
       depPaths.forEach(function(depPath) {
         if (!discoveredModules.hasOwnProperty(depPath)) {
@@ -497,6 +550,29 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
         return aggregatedResults;
       });
     });
+};
+
+/**
+ * Starts the test runner. Whether that means running tests related to changed
+ * files only, just running the tests once, or finally, running the tests and
+ * then watch for changes to run the tests related to that change.
+ *
+ * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
+ *                           about the last run of tests.
+ */
+TestRunner.prototype.start = function() {
+  if (this._opts.onlyChangedPaths) {
+    this._runTestsRelatedTo(this._opts.onlyChangedPaths);
+  } else if (this._opts.skipFirstRun) {
+      this._startWatching();
+  } else {
+   this.findTestPathsMatching(this._opts.pathPattern)
+    .then(this._runTests.bind(this))
+    .then(this._onRunComplete.bind(this))
+    .done();
+  }
+
+  return this._doneDeferred.promise;
 };
 
 module.exports = TestRunner;

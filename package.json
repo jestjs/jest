@@ -18,7 +18,8 @@
     "optimist": "~0.6.0",
     "q": "~0.9.7",
     "resolve": "~0.6.1",
-    "underscore": "1.2.4"
+    "underscore": "1.2.4",
+    "sane": "~0.5.4"
   },
   "devDependencies": {
     "jshint": "~2.5.0"
