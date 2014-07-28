@@ -15,6 +15,7 @@ var DEFAULT_CONFIG_VALUES = {
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   globals: {},
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
+  preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
@@ -189,6 +190,7 @@ function normalizeConfig(config) {
         ));
         break;
 
+      case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'unmockedModulePathPatterns':
@@ -281,7 +283,10 @@ function readAndPreprocessFileContent(filePath, config) {
     fileData = fileData.replace(/^#!.*/, '');
   }
 
-  if (config.scriptPreprocessor) {
+  if (config.scriptPreprocessor &&
+      !config.preprocessorIgnorePatterns.some(function(pattern) {
+        return filePath.indexOf(pattern) >= 0;
+      })) {
     try {
       fileData = require(config.scriptPreprocessor).process(fileData, filePath);
     } catch (e) {
