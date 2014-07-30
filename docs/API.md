@@ -4,6 +4,7 @@ title: API Reference
 layout: docs
 category: Reference
 permalink: docs/api.html
+next: react
 ---
 
 #### The `jest` object
@@ -260,7 +261,7 @@ An object that, when present, indicates a set of files for which coverage inform
 ### `config.globals` [object]
 (default: `{}`)
 
-A set of global variables that need to be available in all test environments. 
+A set of global variables that need to be available in all test environments.
 
 For example, the following would create a global `__DEV__` variable set to `true` in all test environments:
 
