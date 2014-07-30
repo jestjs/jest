@@ -14,7 +14,7 @@ describe('fetchCurrentUser', function() {
     expect($.ajax).toBeCalledWith({
       type: 'GET',
       url: 'http://example.com/currentUser',
-      done: jasmine.any(Function)
+      success: jasmine.any(Function)
     });
   });
 
