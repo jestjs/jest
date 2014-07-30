@@ -910,7 +910,7 @@ div[data-twttr-id] iframe {
 
   .container {
     min-width: 0;
-    overflow: scroll;
+    overflow: auto;
   }
   .wrap {
     width: auto;
