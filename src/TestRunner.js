@@ -24,7 +24,7 @@ var DEFAULT_OPTIONS = {
    * It's probably good to keep this at something close to the number of cores
    * on the machine that's running the test.
    */
-  maxWorkers: os.cpus().length - 1,
+  maxWorkers: Math.max(os.cpus().length - 1, 1),
 
   /**
    * The path to the executable node binary.
