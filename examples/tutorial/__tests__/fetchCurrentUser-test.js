@@ -28,7 +28,7 @@ describe('fetchCurrentUser', function() {
 
     // Now we emulate the process by which `$.ajax` would execute its own
     // callback
-    $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].done({
+    $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].success({
       firstName: 'Bobby',
       lastName: '");DROP TABLE Users;--'
     });
