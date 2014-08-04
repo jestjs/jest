@@ -139,9 +139,9 @@ function runCLI(argv, packageRoot, onComplete) {
 
   var config;
   if (argv.config) {
-    if (argv.config instanceof String) {
+    if (typeof argv.config === 'string') {    
       config = utils.loadConfigFromFile(argv.config);
-    } else if (argv.config instanceof Object) {
+    } else if (typeof argv.config === 'object') {    
       config = Q(utils.normalizeConfig(argv.config));
     }
   } else {
