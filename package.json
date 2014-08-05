@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "main": "bin/jest.js",
   "dependencies": {
     "coffee-script": "1.7.1",
