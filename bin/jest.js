@@ -132,17 +132,23 @@ function _wrapDesc(desc) {
 function runCLI(argv, packageRoot, onComplete) {
   argv = argv || {};
 
+  // Old versions of the Jest CLI do not pass an onComplete callback, so it's
+  // important that we provide backward compatibility in the API
+  if (!onComplete) {
+    onComplete = function() {};
+  }
+
   if (argv.version) {
     console.log('v' + _getJestVersion());
-    onComplete && onComplete(true);
+    onComplete(true);
     return;
   }
 
   var config;
   if (argv.config) {
-    if (typeof argv.config === 'string') {    
+    if (typeof argv.config === 'string') {
       config = utils.loadConfigFromFile(argv.config);
-    } else if (typeof argv.config === 'object') {    
+    } else if (typeof argv.config === 'object') {
       config = Q(utils.normalizeConfig(argv.config));
     }
   } else {
@@ -202,7 +208,7 @@ function runCLI(argv, packageRoot, onComplete) {
         })
         .then(function(completionData) {
           _onRunComplete(completionData);
-          onComplete && onComplete(completionData.numFailedTests === 0);
+          onComplete(completionData.numFailedTests === 0);
         });
     }
 
