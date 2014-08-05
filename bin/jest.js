@@ -139,7 +139,11 @@ function runCLI(argv, packageRoot, onComplete) {
 
   var config;
   if (argv.config) {
-    config = utils.loadConfigFromFile(argv.config);
+    if (typeof argv.config === 'string') {    
+      config = utils.loadConfigFromFile(argv.config);
+    } else if (typeof argv.config === 'object') {    
+      config = Q(utils.normalizeConfig(argv.config));
+    }
   } else {
     var pkgJsonPath = path.join(packageRoot, 'package.json');
     var pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
