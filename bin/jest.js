@@ -84,7 +84,7 @@ function _onRunComplete(completionData) {
 	  );
 	results += ', ';
   }
-  results += 
+  results +=
     colors.colorize(
 		[numPassedTests, (numPassedTests > 1 ? 'tests' : 'test'), 'passed'].join(' '),
 		colors.GREEN + colors.BOLD
@@ -134,7 +134,8 @@ function runCLI(argv, packageRoot, onComplete) {
 
   if (argv.version) {
     console.log('v' + _getJestVersion());
-    onComplete(true);
+    onComplete && onComplete(true);
+    return;
   }
 
   var config;
@@ -201,7 +202,7 @@ function runCLI(argv, packageRoot, onComplete) {
         })
         .then(function(completionData) {
           _onRunComplete(completionData);
-          onComplete(completionData.numFailedTests === 0);
+          onComplete && onComplete(completionData.numFailedTests === 0);
         });
     }
 
