@@ -321,7 +321,9 @@ function _main(onComplete) {
 
   if (argv.help) {
     optimist.showHelp();
-    process.exit(0);
+    process.on('exit', function(){
+      process.exit(0);
+    });
   }
 
   var cwd = process.cwd();
@@ -358,7 +360,9 @@ function _main(onComplete) {
         'installed globally.\n' +
         'Please upgrade this project past Jest version 0.1.5'
       );
-      process.exit(1);
+      process.on('exit', function(){
+        process.exit(1);
+      });
     }
 
     jestBinary.runCLI(argv, cwdPackageRoot, onComplete);
@@ -381,7 +385,9 @@ function _main(onComplete) {
         'Please run `npm install` to use the version of Jest intended for ' +
         'this project.'
       );
-      process.exit(1);
+      process.on('exit', function(){
+        process.exit(1);
+      });
     }
   }
 
@@ -396,6 +402,8 @@ exports.runCLI = runCLI;
 if (require.main === module) {
   harmonize();
   _main(function (success) {
-    process.exit(success ? 0 : 1);
+    process.on('exit', function(){
+     process.exit(success ? 0 : 1);
+    });
   });
 }
