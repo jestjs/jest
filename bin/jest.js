@@ -212,6 +212,16 @@ function runCLI(argv, packageRoot, onComplete) {
         });
     }
 
+    function _runTestsOnFilePath (path) {
+      return Q.fcall(function() {
+        if (argv.runInBand) {
+          return testRunner.runTestsInBand([path], _onResultReady);
+        } else {
+          return testRunner.runTestsParallel([path], _onResultReady);
+        }
+      });
+    }
+
     if (argv.onlyChanged) {
       console.log('Looking for changed files...');
 
@@ -243,7 +253,11 @@ function runCLI(argv, packageRoot, onComplete) {
         }
       });
     } else {
-      _runTestsOnPathPattern(pathPattern).done();
+      if (config.filePath) {
+        _runTestsOnFilePath(config.filePath).done();
+      } else {
+        _runTestsOnPathPattern(pathPattern).done();
+      }
     }
   });
 }
