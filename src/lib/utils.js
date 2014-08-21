@@ -353,11 +353,18 @@ function serializeConsoleArgValue(arg, objWeakMap) {
         }
         objWeakMap.set(arg, true);
 
+        // Just a note in case there's any temptation to switch this back to a
+        // .map(): Arrays can have values of 'undefined', and that should be
+        // properly serialized, so be sure to consider that when looping over
+        // the array.
+        var argValue = [];
+        for (var i = 0; i < arg.length; i++) {
+          argValue[i] = serializeConsoleArgValue(arg[i], objWeakMap);
+        }
+
         return JSON.stringify({
           type: 'array',
-          value: arg.map(function(subValue) {
-            return serializeConsoleArgValue(subValue, objWeakMap);
-          })
+          value: argValue
         });
       }
 
@@ -414,7 +421,7 @@ function stringifySerializedConsoleArgValue(arg) {
       }
       return JSON.stringify(ret);
     case 'undefined':
-      return 'undefined';
+      return undefined;
     case 'function':
     case 'json':
       return metadata.value;
