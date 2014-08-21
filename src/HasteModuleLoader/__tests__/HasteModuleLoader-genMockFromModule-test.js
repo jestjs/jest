@@ -27,7 +27,7 @@ describe('nodeHasteModuleLoader', function() {
     if (!resourceMap) {
       return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
         resourceMap = map;
-        return buildLoader(CONFIG);
+        return buildLoader();
       });
     } else {
       return q(new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap));
