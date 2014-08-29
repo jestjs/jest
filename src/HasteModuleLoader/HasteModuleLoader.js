@@ -70,7 +70,6 @@ var NODE_CORE_MODULES = {
 var _configUnmockListRegExpCache = null;
 
 function _buildLoadersList(config) {
-  // debugger;
   return [
     new hasteLoaders.ProjectConfigurationLoader(),
     new hasteLoaders.JSTestLoader(config.setupJSTestLoaderOptions),
@@ -133,7 +132,6 @@ function Loader(config, environment, resourceMap) {
 
     _configUnmockListRegExpCache = new WeakMap();
   }
-  // debugger;
   if (!config.unmockedModulePathPatterns
       || config.unmockedModulePathPatterns.length === 0) {
     this._unmockListRegExps = [];
@@ -252,7 +250,6 @@ Loader.prototype._execModule = function(moduleObj) {
 };
 
 Loader.prototype._generateMock = function(currPath, moduleName) {
-  // debugger;
   var modulePath = this._moduleNameToPath(currPath, moduleName);
 
   if (!this._mockMetaDataCache.hasOwnProperty(modulePath)) {
@@ -311,7 +308,6 @@ Loader.prototype._getDependencyPathsFromResource = function(resource) {
 
     dependencyPaths.push(this._getRealPathFromNormalizedModuleID(moduleID));
   }
-  console.log(dependencyPaths);
   return dependencyPaths;
 };
 
@@ -473,7 +469,6 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
 
 Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   // Handle module names like require('jest/lib/util')
-  // debugger;
   var subModulePath = null;
   var moduleProjectPart = moduleName;
   if (/\//.test(moduleName)) {
@@ -597,7 +592,6 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
           return this._configShouldMockModuleNames[moduleName] = false;
         }
         if (modulePath === null){
-          // debugger;
           return this._configShouldMockModuleNames[moduleName] = false;
         }
 
@@ -908,7 +902,6 @@ Loader.prototype.requireModule = function(currPath, moduleName,
  * @return object
  */
 Loader.prototype.requireModuleOrMock = function(currPath, moduleName) {
-  // debugger;
   if (this._shouldMock(currPath, moduleName)) {
     return this.requireMock(currPath, moduleName);
   } else {
