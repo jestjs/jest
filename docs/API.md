@@ -4,7 +4,6 @@ title: API Reference
 layout: docs
 category: Reference
 permalink: docs/api.html
-next: react
 ---
 
 #### The `jest` object
