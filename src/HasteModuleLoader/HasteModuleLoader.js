@@ -588,10 +588,9 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
       this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
         unmockRegExp = this._unmockListRegExps[i];
-        if ((unmockRegExp.test(modulePath)) || (modulePath === null)) {
+        if (unmockRegExp.test(modulePath) || modulePath === null) {
           return this._configShouldMockModuleNames[moduleName] = false;
         }
-
       }
       return this._configShouldMockModuleNames[moduleName];
     }
