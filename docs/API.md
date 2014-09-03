@@ -12,7 +12,7 @@ permalink: docs/api.html
   - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
   - [`jest.dontMock(moduleName)`](#jest-dontmock-modulename)
-  - [`jest.genMockFromModule(moduleObj)`](#jest-genmockfrommodule-moduleobj)
+  - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
   - [`jest.genMockFunction()`](#jest-genmockfunction)
   - [`jest.genMockFn()`](#jest-genmockfn)
   - [`jest.mock(moduleName)`](#jest-mock-modulename)
@@ -110,10 +110,10 @@ Indicates that the module system should never return a mocked version of the spe
 
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
 
-### `jest.genMockFromModule(moduleObj)`
-Given a module exports object, use the automatic mocking system to generate a mocked version of the object for you.
+### `jest.genMockFromModule(moduleName)`
+Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you have an object that the module system does not know about, and you want to automatically generate a mock for it.
+This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
 
 ### `jest.genMockFunction()`
 Returns a freshly generated, unused [mock function](#mock-functions).
