@@ -21,7 +21,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`jest.autoMockOn()`](http://facebook.github.io/jest/docs/api.html#jest-automockon)
   - [`jest.clearAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
   - [`jest.dontMock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-dontmock-modulename)
-  - [`jest.genMockFromModule(moduleObj)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-moduleobj)
+  - [`jest.genMockFromModule(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
   - [`jest.genMockFunction()`](http://facebook.github.io/jest/docs/api.html#jest-genmockfunction)
   - [`jest.genMockFn()`](http://facebook.github.io/jest/docs/api.html#jest-genmockfn)
   - [`jest.mock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename)

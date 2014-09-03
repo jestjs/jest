@@ -11,6 +11,8 @@ Although autogeneration of mocks is convenient, there are behaviors it misses, s
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. When a manual mock exists for a given module, Jest's module system will just use that instead of trying to automatically generate a mock.
 
+Assuming that the module can be loaded by the automocker, it's best to build on the automocked API. This makes it harder for mock APIs to get out of sync with real ones.
+
 Here's a contrived example where we have a module that provides a summary of all the files in a given directory.
 
 ```javascript
@@ -30,13 +32,16 @@ function summarizeFilesInDirectorySync(directoryPath) {
 exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 ```
 
-Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module that implements custom versions of the `fs` APIs that we can build on for our tests:
+Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module by extending the automatic mock. Our manual mock will implement custom versions of the `fs` APIs that we can build on for our tests:
 
 ```javascript
 // __mocks__/fs.js
 
 // Get the real (not mocked) version of the 'path' module
 var path = require.requireActual('path');
+
+// Get the automatic mock for `fs`
+var fsMock = jest.genMockFromModule('fs');
 
 // This is a custom function that our tests can use during setup to specify
 // what the files on the "mock" filesystem should look like when any of the
@@ -61,8 +66,13 @@ function readdirSync(directoryPath) {
   return _mockFiles[directoryPath] || [];
 };
 
-exports.__setMockFiles = __setMockFiles;
-exports.readdirSync = readdirSync;
+// Override the default behavior of the `readdirSync` mock
+fsMock.readdirSync.mockImplementation(readdirSync);
+
+// Add a custom method to the mock
+fsMock.__setMockFiles = __setMockFiles;
+
+module.exports = fsMock;
 ```
 
 Now we write our test:
@@ -97,12 +107,14 @@ describe('FileSummarizer', function() {
 });
 ```
 
-As you can see, it's sometimes useful to do more than what the automatic mocker is capable of doing for us. Of course, one downside to manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use the automatic mocker when it works for your needs.
+As you can see, it's sometimes useful to do more than what the automatic mocker is capable of doing for us.
+
+The example mock shown here uses [`jest.genMockFromModule`](/jest/docs/api.html#jest-genmockfrommodule-modulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can simply export your own functions from the mock file. Of course, one downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
 
 
 Testing manual mocks
 -------------
 
-It's generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the real module completely with tests and then whitelisting it with [`config.unmockedModulePathPatterns`](/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string), so that any tests that `require()` it will always get the real implementation (rather than a complicated mock version).
+It's generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the real module completely with tests and then whitelisting it with [`config.unmockedModulePathPatterns`](/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string), so that any tests that `require()` it will always get the real implementation (rather than a complicated mock version). Of course, this does not work in some scenarios, such as when disk or network access is involved.
 
 In cases where this kind of elaborate mock is unavoidable, it's not necessarily a bad idea to write a test that ensures that the mock and the actual implementation are in sync. Luckily, this is relatively easy to do with the API provided by `jest`, which allows you to explicitly require both the real module (using `require.requireActual()`) and the manually mocked implementation of the module (using `require()`) in a single test!
