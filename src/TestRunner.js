@@ -452,6 +452,10 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
     startTime: Date.now(),
     endTime: null
   };
+  
+  if (config.reportTestsIndividually){
+    aggregatedResults.numTotalTests = 0;
+  }
 
   var workerPool = new WorkerPool(
     this._opts.maxWorkers,
@@ -476,6 +480,10 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
           .then(function(testResult) {
             if (testResult.numFailingTests > 0) {
               aggregatedResults.numFailedTests++;
+            }
+            if (config.reportTestsIndividually){
+              aggregatedResults.numTotalTests += testResult.numFailingTests;
+              aggregatedResults.numTotalTests += testResult.numPassingTests;
             }
             onResult && onResult(config, testResult);
           })
