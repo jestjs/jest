@@ -123,6 +123,7 @@ function Loader(config, environment, resourceMap) {
   this._reverseDependencyMap = null;
   this._shouldAutoMock = true;
   this._configShouldMockModuleNames = {};
+
   if (_configUnmockListRegExpCache === null) {
     // Node must have been run with --harmony in order for WeakMap to be
     // available
@@ -132,6 +133,7 @@ function Loader(config, environment, resourceMap) {
 
     _configUnmockListRegExpCache = new WeakMap();
   }
+
   if (!config.unmockedModulePathPatterns
       || config.unmockedModulePathPatterns.length === 0) {
     this._unmockListRegExps = [];
@@ -330,6 +332,7 @@ Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
   var moduleType;
   var mockAbsPath = null;
   var realAbsPath = null;
+
   if (this._builtInModules.hasOwnProperty(moduleName)) {
     moduleType = 'builtin';
     realAbsPath = moduleName;
@@ -684,6 +687,7 @@ Loader.prototype.getDependenciesFromPath = function(modulePath) {
       'Could not extract dependency information from this type of file!'
     );
   }
+
   return this._getDependencyPathsFromResource(resource);
 };
 
