@@ -453,7 +453,7 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
     endTime: null
   };
   
-  if (config.reportTestsIndividually){
+  if (config.reportTestsIndividually) {
     aggregatedResults.numTotalTests = 0;
   }
 
@@ -479,9 +479,9 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
             if (testResult.numFailingTests > 0) {
-              aggregatedResults.numFailedTests++;
+              aggregatedResults.numFailedTests += testResult.numFailingTests;
             }
-            if (config.reportTestsIndividually){
+            if (config.reportTestsIndividually) {
               aggregatedResults.numTotalTests += testResult.numFailingTests;
               aggregatedResults.numTotalTests += testResult.numPassingTests;
             }
