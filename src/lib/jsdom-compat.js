@@ -98,8 +98,149 @@ if (utilsId) {
   };
 }
 
+var define = require('jsdom/lib/jsdom/level2/html').define;
 var jsdom = require('jsdom');
 var elements = jsdom.defaultLevel;
+
+if (elements && !elements.HTMLMediaElement) {
+  function _getTimeRangeDummy() {
+    return {
+      length: 0,
+      start: function() { return 0; },
+      end: function() { return 0; }
+    };
+  }
+
+  define('HTMLMediaElement', {
+    _init: function() {
+      this._muted = this.defaultMuted;
+      this._volume = 1.0;
+      this.readyState = 0;
+    },
+    proto: {
+      // Implemented accoring to W3C Draft 22 August 2012
+      set defaultPlaybackRate(v) {
+        if (v === 0.0) {
+          throw new elements.DOMException(elements.NOT_SUPPORTED_ERR);
+        }
+        if (this._defaultPlaybackRate !== v) {
+          this._defaultPlaybackRate = v;
+          this._dispatchRateChange();
+        }
+      },
+      _dispatchRateChange: function() {
+        var ev = this._ownerDocument.createEvent('HTMLEvents');
+        ev.initEvent('ratechange', false, false);
+        this.dispatchEvent(ev);
+      },
+      get defaultPlaybackRate() {
+        if (this._defaultPlaybackRate === undefined) {
+          return 1.0;
+        }
+        return this._defaultPlaybackRate;
+      },
+      get playbackRate() {
+        if (this._playbackRate === undefined) {
+          return 1.0;
+        }
+        return this._playbackRate;
+      },
+      set playbackRate(v) {
+        if (v !== this._playbackRate) {
+          this._playbackRate = v;
+          this._dispatchRateChange();
+        }
+      },
+      get muted() {
+        return this._muted;
+      },
+      _dispatchVolumeChange: function() {
+        var ev = this._ownerDocument.createEvent('HTMLEvents');
+        ev.initEvent('volumechange', false, false);
+        this.dispatchEvent(ev);
+      },
+      set muted(v) {
+        if (v !== this._muted) {
+          this._muted = v;
+          this._dispatchVolumeChange();
+        }
+      },
+      get defaultMuted() {
+        return this.getAttribute('muted') !== null;
+      },
+      set defaultMuted(v) {
+        if (v) {
+          this.setAttribute('muted', v);
+        } else {
+          this.removeAttribute('muted');
+        }
+      },
+      get volume() {
+        return this._volume;
+      },
+      set volume(v) {
+        if (v < 0 || v > 1) {
+          throw new elements.DOMException(elements.INDEX_SIZE_ERR);
+        }
+        if (this._volume !== v) {
+          this._volume = v;
+          this._dispatchVolumeChange();
+        }
+      },
+
+      // Not (yet) implemented according to spec
+      // Should return sane default values
+      currentSrc: '',
+      buffered: _getTimeRangeDummy(),
+      networkState: 0,
+      load: function() {
+      },
+      canPlayType: function(type) {
+        return false;
+      },
+      seeking: false,
+      duration: 0,
+      startDate: NaN,
+      paused: true,
+      played: _getTimeRangeDummy(),
+      seekable: _getTimeRangeDummy(),
+      ended: false,
+      play: function() {
+      },
+      pause: function() {
+      },
+      audioTracks: [],
+      videoTracks: [],
+      textTracks: [],
+      addTextTrack: function() {
+      }
+    },
+    attributes: [
+      { prop: 'autoplay', type: 'boolean' },
+      { prop: 'controls', type: 'boolean' },
+      'crossOrigin',
+      'currentTime',
+      'preload',
+      { prop: 'loop', type: 'boolean' },
+      'mediaGroup',
+    ]
+  });
+}
+
+if (elements && !elements.HTMLVideoElement) {
+  define('HTMLVideoElement', {
+    tagName: 'VIDEO',
+    parentClass: elements.HTMLMediaElement,
+    attributes: [
+      { prop: 'height', type: 'long' },
+      'poster',
+      { prop: 'videoHeight', type: 'long' },
+      { prop: 'videoWidth', type: 'long' },
+      { prop: 'width', type: 'long' }
+    ]
+  });
+}
+
 if (elements && elements.HTMLInputElement) {
   var proto = elements.HTMLInputElement.prototype;
   var desc = Object.getOwnPropertyDescriptor(proto, 'checked');
