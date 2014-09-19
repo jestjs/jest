@@ -102,14 +102,15 @@ var define = require('jsdom/lib/jsdom/level2/html').define;
 var jsdom = require('jsdom');
 var elements = jsdom.defaultLevel;
 
+function _getTimeRangeDummy() {
+  return {
+    length: 0,
+    start: function() { return 0; },
+    end: function() { return 0; }
+  };
+}
+
 if (elements && !elements.HTMLMediaElement) {
-  function _getTimeRangeDummy() {
-    return {
-      length: 0,
-      start: function() { return 0; },
-      end: function() { return 0; }
-    };
-  }
 
   define('HTMLMediaElement', {
     _init: function() {
@@ -195,7 +196,7 @@ if (elements && !elements.HTMLMediaElement) {
       networkState: 0,
       load: function() {
       },
-      canPlayType: function(type) {
+      canPlayType: function() {
         return false;
       },
       seeking: false,
