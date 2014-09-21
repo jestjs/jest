@@ -10,9 +10,10 @@ next: common-js-testing
 At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications. Let's implement a simple checkbox which swaps between two labels:
 
 ```javascript
+/** @jsx React.DOM */
+
 // CheckboxWithLabel.js
 
-/** @jsx React.DOM */
 var React = require('react/addons');
 var CheckboxWithLabel = React.createClass({
   getInitialState: function() {
@@ -40,9 +41,10 @@ module.exports = CheckboxWithLabel;
 The test code is pretty straightforward; we use React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to manipulate React components.
 
 ```javascript
+/** @jsx React.DOM */
+
 // __tests__/CheckboxWithLabel-test.js
 
-/** @jsx React.DOM */
 jest.dontMock('../CheckboxWithLabel.js');
 describe('CheckboxWithLabel', function() {
   it('changes the text after click', function() {
