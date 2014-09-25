@@ -109,28 +109,6 @@ function _getFilePath(jestConfig, testResult) {
        testResult.testFilePath;
 }
 
-// var TestResultHandler = function (jestConfig, testResult, options) {
-//   this.showDetailedInfo = options && options.showDetailedInfo === true;
-//   this.testResult = testResult;
-//   this.filePath = jestConfig.rootDir ?
-//                   path.relative(jestConfig.rootDir, testResult.testFilePath) :
-//                   testResult.testFilePath;
-//
-//   this.allTestsPassed = testResult.numFailingTests === 0;
-//
-//   // define our text components all in one place
-//   this.textComponents = {
-//     passedIcon: colors.colorize(' \u221A ', colors.GREEN),
-//     failedIcon: colors.colorize(' x ', colors.RED),
-//     ancestrySeparator: ' \u203A ',
-//     descBullet: colors.colorize('\u25cf ', colors.BOLD),
-//     msgBullet: '  - '
-//   };
-//
-//   var msgIndent = this.textComponents.msgBullet.replace(/./g, ' ');
-//   this.textComponents.msgIndent = msgIndent;
-// };
-
 /**
  * Returns a colored string based on whether the
  * test failed or passed
