@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-/* jslint node:true */
 'use strict';
 
 var colors = require('./lib/colors');
@@ -22,6 +21,18 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
     path.resolve(__dirname, '..', 'node_modules', 'q'),
     path.resolve(__dirname, '..', 'vendor', 'jasmine')
 ].join('|') + ')');
+
+// define our text components all in one place
+var textComponents = {
+  passedIcon: colors.colorize(' \u221A ', colors.GREEN),
+  failedIcon: colors.colorize(' x ', colors.RED),
+  ancestrySeparator: ' \u203A ',
+  descBullet: colors.colorize('\u25cf ', colors.BOLD),
+  msgBullet: '  - '
+};
+
+var msgIndent = textComponents.msgBullet.replace(/./g, ' ');
+textComponents.msgIndent = msgIndent;
 
 function _printConsoleMessage(msg) {
   switch (msg.type) {
@@ -62,27 +73,63 @@ function _printConsoleMessage(msg) {
   }
 }
 
-var TestResultHandler = function (jestConfig, testResult, options) {
-  this.showDetailedInfo = options && options.showDetailedInfo === true;
-  this.testResult = testResult;
-  this.filePath = jestConfig.rootDir ?
-                  path.relative(jestConfig.rootDir, testResult.testFilePath) :
-                  testResult.testFilePath;
 
-  this.allTestsPassed = testResult.numFailingTests === 0;
+/**
+ * Logs the passed in error
+ * @param  {Object} errorMsg The error to log
+ */
+function _printErrors(errorMsg) {
+  var msgBullet       = textComponents.msgBullet;
+  var msgIndent       = textComponents.msgIndent;
+  // Filter out q and jasmine entries from the stack trace.
+  // They're super noisy and unhelpful
+  errorMsg = errorMsg.split('\n').filter(function (line) {
+    if (/^\s+at .*?/.test(line)) {
+      // Extract the file path from the trace line
+      var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
+      if (filePath
+          && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
+        return false;
+      }
+    }
+    return true;
+  }).join('\n');
+  console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
+}
 
-  // define our text components all in one place
-  this.textComponents = {
-    passedIcon: colors.colorize(' \u221A ', colors.GREEN),
-    failedIcon: colors.colorize(' x ', colors.RED),
-    ancestrySeparator: ' \u203A ',
-    descBullet: colors.colorize('\u25cf ', colors.BOLD),
-    msgBullet: '  - '
-  };
+function _getAncestorTitle(result, separator) {
+  return result.ancestorTitles.map(function (title) {
+    return colors.colorize(title, colors.BOLD);
+  }).join(separator);
+}
 
-  var msgIndent = this.textComponents.msgBullet.replace(/./g, ' ');
-  this.textComponents.msgIndent = msgIndent;
-};
+function _getFilePath(jestConfig, testResult) {
+  return jestConfig.rootDir ?
+         path.relative(jestConfig.rootDir, testResult.testFilePath) :
+       testResult.testFilePath;
+}
+
+// var TestResultHandler = function (jestConfig, testResult, options) {
+//   this.showDetailedInfo = options && options.showDetailedInfo === true;
+//   this.testResult = testResult;
+//   this.filePath = jestConfig.rootDir ?
+//                   path.relative(jestConfig.rootDir, testResult.testFilePath) :
+//                   testResult.testFilePath;
+//
+//   this.allTestsPassed = testResult.numFailingTests === 0;
+//
+//   // define our text components all in one place
+//   this.textComponents = {
+//     passedIcon: colors.colorize(' \u221A ', colors.GREEN),
+//     failedIcon: colors.colorize(' x ', colors.RED),
+//     ancestrySeparator: ' \u203A ',
+//     descBullet: colors.colorize('\u25cf ', colors.BOLD),
+//     msgBullet: '  - '
+//   };
+//
+//   var msgIndent = this.textComponents.msgBullet.replace(/./g, ' ');
+//   this.textComponents.msgIndent = msgIndent;
+// };
 
 /**
  * Returns a colored string based on whether the
@@ -92,7 +139,7 @@ var TestResultHandler = function (jestConfig, testResult, options) {
  * @param  {Array}   columns  An array of items to append
  * @return {String}           The header
  */
-TestResultHandler.getResultHeader = function (passed, testName, columns) {
+function _getResultHeader(passed, testName, columns) {
    var passFailTag = passed ?
    colors.colorize(' PASS ', PASS_COLOR) :
    colors.colorize(' FAIL ', FAIL_COLOR);
@@ -100,18 +147,18 @@ TestResultHandler.getResultHeader = function (passed, testName, columns) {
   return [
     passFailTag,
     colors.colorize(testName, TEST_NAME_COLOR)
-  ].concat(columns || []).join(' '); 
-};
+  ].concat(columns || []).join(' ');
+}
 
 /**
  * Kicks off rendering of the results
  */
-TestResultHandler.prototype.displayResults = function () {
-  var testResult = this.testResult;
+function _displayResults(jestConfig, testResult, showDetailed) {
+  var filePath = _getFilePath(jestConfig, testResult);
 
   // bail out instantly if the test couldn't be executed
   if (testResult.testExecError) {
-    console.log(TestResultHandler.getResultHeader(false, this.filePath));
+    console.log(_getResultHeader(false, filePath));
     console.log(testResult.testExecError);
     return false;
   }
@@ -131,35 +178,34 @@ TestResultHandler.prototype.displayResults = function () {
   }
   */
 
-  console.log(TestResultHandler.getResultHeader(
-    this.allTestsPassed, this.filePath, [
+  var allTestsPassed = testResult.numFailingTests === 0;
+
+  console.log(_getResultHeader(
+    allTestsPassed, filePath, [
     testRunTimeString
   ]));
 
   // log all caputured log messages
   testResult.logMessages.forEach(_printConsoleMessage);
 
-  if (this.showDetailedInfo) {
-    this._displayDetailedResults();
+  if (showDetailed) {
+    _displayDetailedResults(testResult);
   } else {
-    this._displayResults();
+    _displayConciseResults(testResult, allTestsPassed);
   }
-};
+}
 
 /**
  * Displays both failed and passed tests
  */
-TestResultHandler.prototype._displayDetailedResults = function () {
-  var textComponents    = this.textComponents;
+function _displayDetailedResults(testResult) {
   var passedIcon        = textComponents.passedIcon;
   var failedIcon        = textComponents.failedIcon;
   var ancestrySeparator = textComponents.ancestrySeparator;
-  var _printErrors      = this._printErrors.bind(this);
-
   var currentAncenstry;
-  this.testResult.testResults.forEach(function (result) {
-    var testTitleAncestry = TestResultHandler
-                            .getAncestorTitle(result, ancestrySeparator);
+
+  testResult.testResults.forEach(function (result) {
+    var testTitleAncestry = _getAncestorTitle(result, ancestrySeparator);
     // only display the ancestry, if it changed, not for each
     // test in the suite
     if (testTitleAncestry !== currentAncenstry) {
@@ -177,25 +223,21 @@ TestResultHandler.prototype._displayDetailedResults = function () {
 
   // add a newline after each test group
   console.log('');
-};
+}
 
 /**
  * Displays failed tests
  */
-TestResultHandler.prototype._displayResults = function () {
-  if (!this.allTestsPassed) {
-
-    var textComponents    = this.textComponents;
+function _displayConciseResults(testResult, allTestsPassed) {
+  if (!allTestsPassed) {
     var ancestrySeparator = textComponents.ancestrySeparator;
-    var _printErrors      = this._printErrors.bind(this);
 
-    this.testResult.testResults.forEach(function (result) {
+    testResult.testResults.forEach(function (result) {
       if (result.failureMessages.length === 0) {
         return;
       }
 
-      var testTitleAncestry = TestResultHandler
-                              .getAncestorTitle(result, ancestrySeparator);
+      var testTitleAncestry = _getAncestorTitle(result, ancestrySeparator);
 
       testTitleAncestry = testTitleAncestry + ancestrySeparator;
       console.log(textComponents.descBullet + testTitleAncestry + result.title);
@@ -205,37 +247,15 @@ TestResultHandler.prototype._displayResults = function () {
 
     });
   }
-};
+}
 
-/**
- * Logs the passed in error
- * @param  {Object} errorMsg The error to log
- */
-TestResultHandler.prototype._printErrors = function (errorMsg) {
-  var textComponents  = this.textComponents;
-  var msgBullet       = textComponents.msgBullet;
-  var msgIndent       = textComponents.msgIndent;
-  // Filter out q and jasmine entries from the stack trace.
-  // They're super noisy and unhelpful
-  errorMsg = errorMsg.split('\n').filter(function (line) {
-    if (/^\s+at .*?/.test(line)) {
-      // Extract the file path from the trace line
-      var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-      if (filePath
-          && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-        return false;
-      }
-    }
-    return true;
-  }).join('\n');
-  console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
-};
+function printConciseTestResult(jestConfig, testResult) {
+  _displayResults(jestConfig, testResult, false);
+}
 
+function printDetailedTestResult(jestConfig, testResult) {
+  _displayResults(jestConfig, testResult, true);
+}
 
-TestResultHandler.getAncestorTitle = function (result, separator) {
-  return result.ancestorTitles.map(function (title) {
-    return colors.colorize(title, colors.BOLD);
-  }).join(separator);
-};
-
-module.exports = TestResultHandler;
+module.exports.printConciseTestResult = printConciseTestResult;
+module.exports.printDetailedTestResult = printDetailedTestResult;

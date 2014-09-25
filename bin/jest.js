@@ -10,7 +10,7 @@
 "use strict";
 
 var child_process = require('child_process');
-var DefaultTestResultHandler = require('../src/DefaultTestResultHandler');
+var defaultTestResultHandler = require('../src/defaultTestResultHandler');
 var fs = require('fs');
 var harmonize = require('harmonize');
 var optimist = require('optimist');
@@ -65,9 +65,13 @@ function _findChangedFiles(dirPath) {
 }
 
 function _onResultReady(argv, config, result) {
-  return new DefaultTestResultHandler(config, result, {
-    showDetailedInfo: argv.detailInfo
-  }).displayResults();
+  if (argv.detailedResults) {
+    return defaultTestResultHandler
+    .printDetailedTestResult(config, result);
+  } else {
+    return defaultTestResultHandler
+    .printConciseTestResult(config, result);
+  }
 }
 
 function _onRunComplete(completionData) {
@@ -86,7 +90,7 @@ function _onRunComplete(completionData) {
 	  );
 	results += ', ';
   }
-  results += 
+  results +=
     colors.colorize(
 		[numPassedTests, (numPassedTests > 1 ? 'tests' : 'test'), 'passed'].join(' '),
 		colors.GREEN + colors.BOLD
@@ -192,9 +196,17 @@ function runCLI(argv, packageRoot, onComplete) {
 			['Found', numMatchingTestPaths, 'matching', (numMatchingTestPaths > 1 ? 'tests...' : 'test...')].join(' ')
 		  );
           if (argv.runInBand) {
-            return testRunner.runTestsInBand(matchingTestPaths, _onResultReady.bind(null, argv));
+            return testRunner
+            .runTestsInBand(
+              matchingTestPaths,
+              _onResultReady.bind(null, argv)
+            );
           } else {
-            return testRunner.runTestsParallel(matchingTestPaths, _onResultReady.bind(null, argv));
+            return testRunner
+            .runTestsParallel(
+              matchingTestPaths,
+              _onResultReady.bind(null, argv)
+            );
           }
         })
         .then(function(completionData) {
@@ -258,7 +270,7 @@ function _main(onComplete) {
         ),
         type: 'boolean'
       },
-      detailInfo: {
+      detailedResults: {
         description: _wrapDesc(
           'Specifies that the results should contain more verbose information'
         ),
