@@ -487,6 +487,7 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   }
 
   var resolveError = null;
+  var paths = [];
   try {
     if (NODE_PATH) {
       if (NODE_PATH.indexOf(process.cwd()) !== -1) {
