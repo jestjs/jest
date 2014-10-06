@@ -14,6 +14,8 @@ var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 
 if (require.main === module) {
   try {
+    process.on('uncaughtException', workerUtils.respondWithError(err));
+
     var argv = optimist.demand(['config']).argv;
     var config = JSON.parse(argv.config);
 
