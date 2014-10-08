@@ -7,7 +7,7 @@ permalink: docs/automatic-mocking.html
 next: mock-functions
 ---
 
-In order to write an effective unit test, you want to be able to isolate a unit of code and test only that unit – nothing else. It is fairly common and good practice to consider a module such a unit, and this is where Jest excels. Jest makes isolating a module from its dependencies extremely easy by automatically generating mocks for each of the module's depenedencies and providing those mocks (rather than the real dependency modules) by default.
+In order to write an effective unit test, you want to be able to isolate a unit of code and test only that unit – nothing else. It is fairly common and good practice to consider a module such a unit, and this is where Jest excels. Jest makes isolating a module from its dependencies extremely easy by automatically generating mocks for each of the module's dependencies and providing those mocks (rather than the real dependency modules) by default.
 
 Let's look at a concrete example:
 
