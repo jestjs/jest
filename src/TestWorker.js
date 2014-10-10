@@ -60,7 +60,10 @@ if (require.main === module) {
         // Dummy response
         return q({});
       } else {
-        return testRunner.runTest(message.testFilePath);
+        return testRunner.runTest(message.testFilePath)
+          .catch(function(err) {
+            throw (err.stack || err.message || err);
+          });
       }
     }
 

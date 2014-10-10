@@ -483,7 +483,7 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
             aggregatedResults.numFailedTests++;
             onResult(config, {
               testFilePath: testPath,
-              testExecError: err,
+              testExecError: err.stack || err.message || err,
               suites: {},
               tests: {},
               logMessages: []
