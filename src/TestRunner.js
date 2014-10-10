@@ -488,6 +488,32 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
               tests: {},
               logMessages: []
             });
+
+            // Jest uses regular worker messages to initialize workers, so
+            // there's no way for node-worker-pool to understand how to
+            // recover/re-initialize a child worker that needs to be restarted.
+            // (node-worker-pool can't distinguish between initialization
+            // messages and ephemeral "normal" messages in order to replay the
+            // initialization message upon booting the new, replacement worker
+            // process).
+            //
+            // This is mostly a limitation of node-worker-pool's initialization
+            // features, and ideally it would be possible to recover from a
+            // test that causes a worker process to exit unexpectedly. However,
+            // for now Jest will just fail hard if any child process exits
+            // unexpectedly.
+            //
+            // This will likely bite me in the ass as an unbreak now if we hit
+            // this issue again -- but I guess that's a faster failure than
+            // having Jest just hang forever without any indication as to why.
+            if (err.message
+                && /Worker process exited before /.test(err.message)) {
+              console.error(
+                'A worker process has quit unexpectedly! This is bad news, ' +
+                'shutting down now!'
+              );
+              process.exit(1);
+            }
           });
       }));
     })
