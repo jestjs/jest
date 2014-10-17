@@ -249,6 +249,19 @@ describe('FakeTimers', function() {
       expect(fn.mock.calls.length).toBe(1);
     });
 
+    it('runs callbacks with arguments after the interval', function() {
+      var global = {};
+      var fakeTimers = new FakeTimers(global);
+
+      var fn = jest.genMockFn();
+      global.setTimeout(fn, 0, 'mockArg1', 'mockArg2');
+
+      fakeTimers.runAllTimers();
+      expect(fn.mock.calls).toEqual([
+        ['mockArg1', 'mockArg2']
+      ]);
+    });
+
     it('doesnt pass the callback to native setTimeout', function() {
       var nativeSetTimeout = jest.genMockFn();
 

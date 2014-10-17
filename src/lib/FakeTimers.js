@@ -267,11 +267,18 @@ FakeTimers.prototype._fakeSetInterval = function(callback, intervalDelay) {
     intervalDelay = 0;
   }
 
+  var args = [];
+  for (var ii = 2, ll = arguments.length; ii < ll; ii++) {
+    args.push(arguments[ii]);
+  }
+
   var uuid = this._uuidCounter++;
 
   this._timers[uuid] = {
     type: 'interval',
-    callback: callback,
+    callback: function() {
+      return callback.apply(null, args);
+    },
     expiry: this._now + intervalDelay,
     interval: intervalDelay
   };
@@ -284,11 +291,18 @@ FakeTimers.prototype._fakeSetTimeout = function(callback, delay)  {
     delay = 0;
   }
 
+  var args = [];
+  for (var ii = 2, ll = arguments.length; ii < ll; ii++) {
+    args.push(arguments[ii]);
+  }
+
   var uuid = this._uuidCounter++;
 
   this._timers[uuid] = {
     type: 'timeout',
-    callback: callback,
+    callback: function() {
+      return callback.apply(null, args);
+    },
     expiry: this._now + delay,
     interval: null
   };
