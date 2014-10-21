@@ -210,8 +210,12 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         // Often toBeCalledWith is called on a mock that only has one call, so
         // we can give a better error message in this case.
         if (calls.length === 1) {
-          this.env.currentSpec.expect(calls[0]).toEqual(args);
-          return true;
+          var expect = this.env.currentSpec.expect(calls[0]);
+          if (this.isNot) {
+            expect = expect.not;
+          }
+          expect.toEqual(args);
+          return !this.isNot;
         }
 
         return calls.some(function(call) {
