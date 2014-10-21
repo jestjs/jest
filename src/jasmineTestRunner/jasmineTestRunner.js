@@ -196,17 +196,27 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         }
         var calls = this.actual.mock.calls;
         var args = Array.prototype.slice.call(arguments);
-        return this.env.equals_(calls[calls.length - 1], args);
+        this.env.currentSpec.expect(calls[calls.length - 1]).toEqual(args);
+        return true;
       },
 
       toBeCalledWith: function() {
         if (this.actual.mock === undefined) {
           throw Error('toBeCalledWith() should be used on a mock function');
         }
+        var calls = this.actual.mock.calls;
         var args = Array.prototype.slice.call(arguments);
-        return this.actual.mock.calls.some(function(call) {
+
+        // Often toBeCalledWith is called on a mock that only has one call, so
+        // we can give a better error message in this case.
+        if (calls.length === 1) {
+          this.env.currentSpec.expect(calls[0]).toEqual(args);
+          return true;
+        }
+
+        return calls.some(function(call) {
           return this.env.equals_(call, args);
-        }.bind(this));
+        }, this);
       }
     });
 
