@@ -55,7 +55,8 @@
     "it",
     "jest",
     "pit",
-    "expect"
+    "expect",
+    "-Promise"
   ],
   "proto": false,
   "prototypejs": false,

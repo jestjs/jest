@@ -16,8 +16,10 @@
     "node-haste": "^1.2.5",
     "node-worker-pool": "~2.4.2",
     "optimist": "~0.6.0",
-    "q": "~0.9.7",
+    "persistent-daemon": "0.0.0",
+    "q": "^1.0.1",
     "resolve": "~0.6.1",
+    "sane": "^0.8.0",
     "underscore": "1.2.4"
   },
   "devDependencies": {

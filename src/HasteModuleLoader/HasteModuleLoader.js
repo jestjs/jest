@@ -17,10 +17,8 @@
 
 var CoverageCollector = require('../CoverageCollector');
 var fs = require('graceful-fs');
-var hasteLoaders = require('node-haste/lib/loaders');
+var hasteUtils = require('./hasteUtils');
 var moduleMocker = require('../lib/moduleMocker');
-var NodeHaste = require('node-haste/lib/Haste');
-var os = require('os');
 var path = require('path');
 var Q = require('q');
 var resolve = require('resolve');
@@ -69,46 +67,6 @@ var NODE_CORE_MODULES = {
 
 var _configUnmockListRegExpCache = null;
 
-function _buildLoadersList(config) {
-  return [
-    new hasteLoaders.ProjectConfigurationLoader(),
-    new hasteLoaders.JSTestLoader(config.setupJSTestLoaderOptions),
-    new hasteLoaders.JSMockLoader(config.setupJSMockLoaderOptions),
-    new hasteLoaders.JSLoader(config.setupJSLoaderOptions),
-    new hasteLoaders.ResourceLoader()
-  ];
-}
-
-function _constructHasteInst(config, options) {
-  var HASTE_IGNORE_REGEX = new RegExp(
-    config.modulePathIgnorePatterns.length > 0
-    ? config.modulePathIgnorePatterns.join('|')
-    : '$.'  // never matches
-  );
-
-  if (!fs.existsSync(config.cacheDirectory)) {
-    fs.mkdirSync(config.cacheDirectory);
-  }
-
-  return new NodeHaste(
-    _buildLoadersList(config),
-    (config.testPathDirs || []),
-    {
-      ignorePaths: function(path) {
-        return path.match(HASTE_IGNORE_REGEX);
-      },
-      version: JSON.stringify(config),
-      useNativeFind: true,
-      maxProcesses: os.cpus().length,
-      maxOpenFiles: options.maxOpenFiles || 100
-    }
-  );
-}
-
-function _getCacheFilePath(config) {
-  return path.join(config.cacheDirectory, 'cache-' + config.name);
-}
-
 function Loader(config, environment, resourceMap) {
   this._config = config;
   this._coverageCollectors = {};
@@ -156,8 +114,8 @@ Loader.loadResourceMap = function(config, options) {
 
   var deferred = Q.defer();
   try {
-    _constructHasteInst(config, options).update(
-      _getCacheFilePath(config),
+    hasteUtils.constructHasteInst(config, options).update(
+      hasteUtils.getCacheFilePath(config),
       function(resourceMap) {
         deferred.resolve(resourceMap);
       }
@@ -174,9 +132,9 @@ Loader.loadResourceMapFromCacheFile = function(config, options) {
 
   var deferred = Q.defer();
   try {
-    var hasteInst = _constructHasteInst(config, options);
+    var hasteInst = hasteUtils.constructHasteInst(config, options);
     hasteInst.loadMap(
-      _getCacheFilePath(config),
+      hasteUtils.getCacheFilePath(config),
       function(err, map) {
         if (err) {
           deferred.reject(err);
