@@ -117,6 +117,13 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('multiple node core modules returns correct module', function() {
+      return buildLoader().then(function(loader) {
+        loader.requireMock(null, 'fs');
+        expect(loader.requireMock(null, 'events').EventEmitter).toBeDefined();
+      });
+    });
+	  
     pit('throws on non-existant @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
