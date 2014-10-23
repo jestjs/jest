@@ -178,11 +178,8 @@ function runCLI(argv, packageRoot, onComplete) {
   }
 
   config.done(function(config) {
-    var pathPattern =
-      argv.testPathPattern ||
-      (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/);
-
     var testRunnerOpts = {};
+
     if (argv.maxWorkers) {
       testRunnerOpts.maxWorkers = argv.maxWorkers;
     }
@@ -191,25 +188,12 @@ function runCLI(argv, packageRoot, onComplete) {
       config.collectCoverage = true;
     }
 
-    var testRunner = new TestRunner(config, testRunnerOpts);
+    if (argv.watch && !argv.onlyChanged) {
+      testRunnerOpts.watch = true;
+    }
 
-    function _runTestsOnPathPattern(pathPattern) {
-      return testRunner.findTestPathsMatching(pathPattern)
-        .then(function(matchingTestPaths) {
-		  var numMatchingTestPaths = matchingTestPaths.length;
-          console.log(
-			['Found', numMatchingTestPaths, 'matching', (numMatchingTestPaths > 1 ? 'tests...' : 'test...')].join(' ')
-		  );
-          if (argv.runInBand) {
-            return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
-          } else {
-            return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
-          }
-        })
-        .then(function(completionData) {
-          _onRunComplete(completionData);
-          onComplete(completionData.numFailedTests === 0);
-        });
+    if (argv.runInBand) {
+      testRunnerOpts.runInBand = true;
     }
 
     if (argv.onlyChanged) {
@@ -227,26 +211,33 @@ function runCLI(argv, packageRoot, onComplete) {
         }
 
         return Q.all(config.testPathDirs.map(_findChangedFiles));
-      }).then(function(changedPathSets) {
+      }).done(function(changedPathSets) {
         // Collapse changed files from each of the testPathDirs into a single list
         // of changed file paths
         var changedPaths = [];
         changedPathSets.forEach(function(pathSet) {
           changedPaths = changedPaths.concat(pathSet);
         });
-        return testRunner.findTestsRelatedTo(changedPaths);
-      }).done(function(affectedTestPaths) {
-        if (affectedTestPaths.length > 0) {
-          _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|'))).done();
-        } else {
-          console.log('No tests to run!');
-        }
+        testRunnerOpts.onlyChangedPaths = changedPaths;
+        startRunner(testRunnerOpts, config);
       });
     } else {
-      _runTestsOnPathPattern(pathPattern).done();
+      testRunnerOpts.pathPattern = argv.testPathPattern ||
+        (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/);
+      startRunner(testRunnerOpts, config);
     }
   });
+
+  function startRunner(testRunnerOpts, config) {
+    var testRunner = new TestRunner(config, testRunnerOpts);
+    testRunner.on('run_complete', _onRunComplete);
+    testRunner.on('result', _onResultReady);
+    testRunner.start().done(function(lastRunData) {
+      onComplete(lastRunData.numFailedTests === 0);
+    });
+  }
 }
+
 
 function _main(onComplete) {
   var argv = optimist
@@ -298,6 +289,15 @@ function _main(onComplete) {
       version: {
         alias: 'v',
         description: _wrapDesc('Print the version and exit'),
+        type: 'boolean'
+      },
+      watch: {
+        alias: 'w',
+        description: _wrapDesc(
+          'Run all tests and then watch files in your testPathDirs for ' +
+          'changes and then rerun tests related to changed files and ' +
+          'directories.'
+        ),
         type: 'boolean'
       }
     })
