@@ -480,10 +480,6 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
     subModulePath = projectPathParts.join('/');
   }
 
-  if (NODE_CORE_MODULES[moduleName]) {
-    return null;
-  }
-
   var resolveError = null;
   try {
     return resolve.sync(moduleName, {
@@ -844,11 +840,11 @@ Loader.prototype.requireModule = function(currPath, moduleName,
     modulePath = this._moduleNameToPath(currPath, moduleName);
   }
 
-  if (!modulePath) {
-    if (NODE_CORE_MODULES[moduleName]) {
-      return require(moduleName);
-    }
+  if (NODE_CORE_MODULES[moduleName]) {
+    return require(moduleName);
+  }
 
+  if (!modulePath) {
     throw new Error(
       'Cannot find module \'' + moduleName + '\' from \'' + currPath +
       '\''
