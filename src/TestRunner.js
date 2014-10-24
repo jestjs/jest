@@ -373,19 +373,22 @@ TestRunner.prototype.runTest = function(testFilePath) {
     }
 
     if (config.setupEnvScriptFile) {
-      utils.runContentWithLocalBindings(
-        env.runSourceText.bind(env),
-        utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
-        config.setupEnvScriptFile,
-        {
-          __dirname: path.dirname(config.setupEnvScriptFile),
-          __filename: config.setupEnvScriptFile,
-          global: env.global,
-          require: moduleLoader.constructBoundRequire(
-            config.setupEnvScriptFile
-          )
-        }
-      );
+      utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config)
+        .then(function(processedFileContent) {
+          utils.runContentWithLocalBindings(
+            env.runSourceText.bind(env),
+            processedFileContent,
+            config.setupEnvScriptFile,
+            {
+              __dirname: path.dirname(config.setupEnvScriptFile),
+              __filename: config.setupEnvScriptFile,
+              global: env.global,
+              require: moduleLoader.constructBoundRequire(
+                config.setupEnvScriptFile
+              )
+            }
+          );
+        });
     }
 
     var testExecStats = {start: Date.now()};

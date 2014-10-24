@@ -274,6 +274,7 @@ function readAndPreprocessFileContent(filePath, config) {
   }
 
   var fileData = fs.readFileSync(filePath, 'utf8');
+  var deferred = Q.defer();
 
   // If the file data starts with a shebang remove it (but leave the line empty
   // to keep stack trace line numbers correct)
@@ -283,13 +284,27 @@ function readAndPreprocessFileContent(filePath, config) {
 
   if (config.scriptPreprocessor) {
     try {
-      fileData = require(config.scriptPreprocessor).process(fileData, filePath);
+      var scriptPreprocessor = require(config.scriptPreprocessor).process;
+
+      // Without callback for compatibility
+      if (scriptPreprocessor.length <= 2) {
+        fileData = scriptPreprocessor(fileData, filePath);
+        _contentCache[filePath] = fileData;
+        deferred.resolve(fileData);
+      } else if(scriptPreprocessor.length === 3) {
+        scriptPreprocessor(fileData, filePath,
+          function(data) {
+            _contentCache[filePath] = fileData;
+            deferred.resolve(data);
+        });
+      }
     } catch (e) {
       e.message = config.scriptPreprocessor + ': ' + e.message;
-      throw e;
+      deferred.reject(e);
     }
   }
-  return _contentCache[filePath] = fileData;
+
+  return deferred.promise;
 }
 
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
