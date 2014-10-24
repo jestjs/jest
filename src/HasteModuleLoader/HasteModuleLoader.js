@@ -203,52 +203,54 @@ Loader.loadResourceMapFromCacheFile = function(config, options) {
 Loader.prototype._execModule = function(moduleObj) {
   var modulePath = moduleObj.__filename;
 
-  var moduleContent =
-    utils.readAndPreprocessFileContent(modulePath, this._config);
 
-  moduleObj.require = this.constructBoundRequire(modulePath);
+  utils.readAndPreprocessFileContent(modulePath, this._config)
+    .then(function(moduleContent) {
+       moduleObj.require = this.constructBoundRequire(modulePath);
 
-  var moduleLocalBindings = {
-    'module': moduleObj,
-    'exports': moduleObj.exports,
-    'require': moduleObj.require,
-    '__dirname': path.dirname(modulePath),
-    '__filename': modulePath,
-    'global': this._environment.global,
-    'jest': this._builtInModules['jest-runtime'](modulePath).exports
-  };
+      var moduleLocalBindings = {
+        'module': moduleObj,
+        'exports': moduleObj.exports,
+        'require': moduleObj.require,
+        '__dirname': path.dirname(modulePath),
+        '__filename': modulePath,
+        'global': this._environment.global,
+        'jest': this._builtInModules['jest-runtime'](modulePath).exports
+      };
 
-  var onlyCollectFrom = this._config.collectCoverageOnlyFrom;
-  var shouldCollectCoverage =
-    this._config.collectCoverage === true && !onlyCollectFrom
-    || (onlyCollectFrom && onlyCollectFrom[modulePath] === true);
+      var onlyCollectFrom = this._config.collectCoverageOnlyFrom;
+      var shouldCollectCoverage =
+        this._config.collectCoverage === true && !onlyCollectFrom
+        || (onlyCollectFrom && onlyCollectFrom[modulePath] === true);
 
-  if (shouldCollectCoverage) {
-    if (!this._coverageCollectors.hasOwnProperty(modulePath)) {
-      this._coverageCollectors[modulePath] =
-        new CoverageCollector(moduleContent);
-    }
-    var collector = this._coverageCollectors[modulePath];
-    moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] =
-      collector.getCoverageDataStore();
-    moduleContent = collector.getInstrumentedSource(COVERAGE_STORAGE_VAR_NAME);
-  }
+      if (shouldCollectCoverage) {
+        if (!this._coverageCollectors.hasOwnProperty(modulePath)) {
+          this._coverageCollectors[modulePath] =
+            new CoverageCollector(moduleContent);
+        }
+        var collector = this._coverageCollectors[modulePath];
+        moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] =
+          collector.getCoverageDataStore();
+        moduleContent = collector
+          .getInstrumentedSource(COVERAGE_STORAGE_VAR_NAME);
+      }
 
-  var lastExecutingModulePath = this._currentlyExecutingModulePath;
-  this._currentlyExecutingModulePath = modulePath;
+      var lastExecutingModulePath = this._currentlyExecutingModulePath;
+      this._currentlyExecutingModulePath = modulePath;
 
-  var origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
-  this._isCurrentlyExecutingManualMock = modulePath;
+      var origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
+      this._isCurrentlyExecutingManualMock = modulePath;
 
-  utils.runContentWithLocalBindings(
-    this._environment.runSourceText.bind(this._environment),
-    moduleContent,
-    modulePath,
-    moduleLocalBindings
-  );
+      utils.runContentWithLocalBindings(
+        this._environment.runSourceText.bind(this._environment),
+        moduleContent,
+        modulePath,
+        moduleLocalBindings
+      );
 
-  this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
-  this._currentlyExecutingModulePath = lastExecutingModulePath;
+      this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
+      this._currentlyExecutingModulePath = lastExecutingModulePath;
+  });
 };
 
 Loader.prototype._generateMock = function(currPath, moduleName) {

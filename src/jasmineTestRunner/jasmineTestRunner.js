@@ -159,23 +159,24 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
       };
 
     if (config.setupTestFrameworkScriptFile) {
-      var setupScriptContent = utils.readAndPreprocessFileContent(
+
+      utils.readAndPreprocessFileContent(
         config.setupTestFrameworkScriptFile,
         config
-      );
-
-      utils.runContentWithLocalBindings(
-        environment.runSourceText.bind(environment),
-        setupScriptContent,
-        config.setupTestFrameworkScriptFile,
-        {
-          __dirname: path.dirname(config.setupTestFrameworkScriptFile),
-          __filename: config.setupTestFrameworkScriptFile,
-          require: moduleLoader.constructBoundRequire(
-            config.setupTestFrameworkScriptFile
-          )
-        }
-      );
+      ).then(function(setupScriptContent) {
+        utils.runContentWithLocalBindings(
+          environment.runSourceText.bind(environment),
+          setupScriptContent,
+          config.setupTestFrameworkScriptFile,
+          {
+            __dirname: path.dirname(config.setupTestFrameworkScriptFile),
+            __filename: config.setupTestFrameworkScriptFile,
+            require: moduleLoader.constructBoundRequire(
+              config.setupTestFrameworkScriptFile
+            )
+          }
+        );
+      });
     }
   });
 
