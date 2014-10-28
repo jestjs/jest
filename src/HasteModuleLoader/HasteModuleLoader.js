@@ -484,7 +484,10 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   try {
     return resolve.sync(moduleName, {
       basedir: path.dirname(currPath),
-      extensions: ['.js', '.json']
+      extensions: this._config.moduleFileExtensions
+        .map(function(ext){ 
+          return '.' + ext; 
+        })
     });
   } catch (e) {
     // Facebook has clowny package.json resolution rules that don't apply to
