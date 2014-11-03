@@ -9,7 +9,6 @@
 
 var colors = require('./lib/colors');
 var path = require('path');
-var utils = require('./lib/utils');
 
 var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
@@ -24,28 +23,22 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
 
 function _printConsoleMessage(msg) {
   switch (msg.type) {
-    case 'error':
-      console.error.apply(console, msg.args.map(function(arg) {
-        arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colors.colorize(arg, colors.RED);
-      }));
-      break;
-
+    case 'dir':
     case 'log':
-      console.log.apply(console, msg.args.map(function(arg) {
-        return utils.stringifySerializedConsoleArgValue(arg);
-      }));
+      process.stdout.write(msg.data);
       break;
-
     case 'warn':
-      console.warn.apply(console, msg.args.map(function(arg) {
-        arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colors.colorize(arg, colors.YELLOW);
-      }));
+      process.stderr.write(
+        colors.colorize(msg.data, colors.YELLOW)
+      );
       break;
-
+    case 'error':
+      process.stderr.write(
+        colors.colorize(msg.data, colors.RED)
+      );
+      break;
     default:
-      throw new Error('Unknown console message type!: ' + JSON.stringify(msg));
+      throw new Error('Unknown console message type!: ' + msg.type);
   }
 }
 
