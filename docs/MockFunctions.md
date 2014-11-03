@@ -179,7 +179,7 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual(
   [arg1, arg2]
 );
 
-// The first arg of the last call to the mock funciton was called with `42`
+// The first arg of the last call to the mock function was `42`
 // (note that there is no sugar helper for this specific of an assertion)
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 ```
