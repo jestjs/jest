@@ -25,37 +25,25 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
 function _printConsoleMessage(msg) {
   switch (msg.type) {
     case 'error':
-      // TODO: jstest doesn't print console.error messages.
-      //       This is a big WAT, and we should come back to this -- but
-      //       right now the goal is jest/jstest feature parity, not test
-      //       cleanup.
-      break;
-
-      /*
       console.error.apply(console, msg.args.map(function(arg) {
         arg = utils.stringifySerializedConsoleArgValue(arg);
         return colors.colorize(arg, colors.RED);
       }));
       break;
-      */
+
     case 'log':
       console.log.apply(console, msg.args.map(function(arg) {
         return utils.stringifySerializedConsoleArgValue(arg);
       }));
       break;
-    case 'warn':
-      // TODO: jstest doesn't print console.warn messages.
-      //       Turning this on gets pretty noisy...but we should probably
-      //       clean this up as warns are likely a sign of clownitude
-      break;
 
-      /*
+    case 'warn':
       console.warn.apply(console, msg.args.map(function(arg) {
         arg = utils.stringifySerializedConsoleArgValue(arg);
-        return colors.colorize(arg, colors.RED);
+        return colors.colorize(arg, colors.YELLOW);
       }));
       break;
-      */
+
     default:
       throw new Error('Unknown console message type!: ' + JSON.stringify(msg));
   }

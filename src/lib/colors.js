@@ -16,6 +16,7 @@ var RED = '\x1B[31m';
 var RED_BG = '\x1B[41m';
 var RESET = '\x1B[0m';
 var UNDERLINE = '\x1B[4m';
+var YELLOW = '\x1B[33m';
 
 function colorize(str, color) {
   return color + str.toString().split(RESET).join(RESET + color) + RESET;
@@ -30,5 +31,6 @@ exports.RED = RED;
 exports.RED_BG = RED_BG;
 exports.RESET = RESET;
 exports.UNDERLINE = UNDERLINE;
+exports.YELLOW = YELLOW;
 
 exports.colorize = colorize;
