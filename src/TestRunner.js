@@ -15,6 +15,7 @@ var q = require('q');
 var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
+var Console = require('./Console');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -47,15 +48,6 @@ var DEFAULT_OPTIONS = {
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
-
-function _serializeConsoleArguments(type, args) {
-  return {
-    type: type,
-    args: Array.prototype.map.call(args, function(arg) {
-      return utils.serializeConsoleArgValue(arg);
-    })
-  };
-}
 
 /**
  * A class that takes a project's test config and provides various utilities for
@@ -318,35 +310,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
   // Capture and serialize console.{log|warning|error}s so they can be passed
   // around (such as through some channel back to a parent process)
   var consoleMessages = [];
-  env.global.console = {
-    error: function() {
-      consoleMessages.push(_serializeConsoleArguments('error', arguments));
-    },
-
-    group: function() {
-      // TODO
-    },
-
-    groupCollapsed: function() {
-      // TODO
-    },
-
-    groupEnd: function() {
-      // TODO
-    },
-
-    log: function() {
-      consoleMessages.push(_serializeConsoleArguments('log', arguments));
-    },
-
-    table: function() {
-      // TODO
-    },
-
-    warn: function() {
-      consoleMessages.push(_serializeConsoleArguments('warn', arguments));
-    }
-  };
+  env.global.console = new Console(consoleMessages);
 
   return this._constructModuleLoader(env, config).then(function(moduleLoader) {
     // This is a kind of janky way to ensure that we only collect coverage
