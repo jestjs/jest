@@ -1,10 +1,10 @@
-var coffee = require('coffee-script');
+var CoffeeScript = require('coffee-script');
 
 module.exports = {
   process: function(src, path) {
     // CoffeeScript files can be .coffee, .litcoffee, or .coffee.md
-    if (coffee.helpers.isCoffee(path)) {
-      return coffee.compile(src, {
+    if (CoffeeScript.helpers.isCoffee(path)) {
+      return CoffeeScript.compile(src, {
         'bare': true,
         'literate': CoffeeScript.helpers.isLiterate(path)
       });
