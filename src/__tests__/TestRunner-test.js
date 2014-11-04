@@ -32,28 +32,28 @@ describe('TestRunner', function() {
       }));
     });
 
-    pit('supports ../ paths and unix separators', function() {
+    it('supports ../ paths and unix separators', function() {
       var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
       var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
-    pit('supports ../ paths and windows separators', function() {
+    it('supports ../ paths and windows separators', function() {
       var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
       var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
-    pit('supports unix separators', function() {
+    it('supports unix separators', function() {
       var path = '/path/to/__tests__/test.js';
       var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
-    pit('supports windows separators', function() {
+    it('supports windows separators', function() {
       var path = 'c:\\path\\to\\__tests__\\test.js';
       var isTestFile = runner._isTestFilePath(path);
 
