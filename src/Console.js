@@ -43,6 +43,13 @@ function Console(messageQueue) {
     configurable: true
   });
 
+  Object.defineProperty(this, '_times', {
+    value: {},
+    writable: true,
+    enumerable: false,
+    configurable: true
+  });
+
   // bind the prototype functions to this Console instance
   var keys = Object.keys(Console.prototype);
   for (var v = 0; v < keys.length; v++) {
