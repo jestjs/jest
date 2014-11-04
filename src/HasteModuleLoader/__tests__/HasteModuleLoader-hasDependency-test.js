@@ -55,7 +55,7 @@ describe('nodeHasteModuleLoader', function() {
   });
 
   describe('hasDependency', function() {
-    pit('properly calculates direct 1-way dependencies', function() {
+    it('properly calculates direct 1-way dependencies', function() {
       resources.ModuleA = _generateResource('ModuleA', ['ModuleB']);
       resources.ModuleB = _generateResource('ModuleB');
 
@@ -65,7 +65,7 @@ describe('nodeHasteModuleLoader', function() {
       expect(mockModules.hasDependency('ModuleB', 'ModuleA')).toBe(false);
     });
 
-    pit('properly calculates direct cyclic dependencies', function() {
+    it('properly calculates direct cyclic dependencies', function() {
       resources.ModuleA = _generateResource('ModuleA', ['ModuleB']);
       resources.ModuleB = _generateResource('ModuleB', ['ModuleA']);
 
@@ -75,7 +75,7 @@ describe('nodeHasteModuleLoader', function() {
       expect(mockModules.hasDependency('ModuleB', 'ModuleA')).toBe(true);
     });
 
-    pit('properly calculates indirect 1-way dependencies', function() {
+    it('properly calculates indirect 1-way dependencies', function() {
       resources.ModuleA = _generateResource('ModuleA', ['ModuleB']);
       resources.ModuleB = _generateResource('ModuleB', ['ModuleC']);
       resources.ModuleC = _generateResource('ModuleC');
@@ -85,7 +85,7 @@ describe('nodeHasteModuleLoader', function() {
       expect(mockModules.hasDependency('ModuleA', 'ModuleC')).toBe(true);
     });
 
-    pit('properly calculates indirect cyclic dependencies', function() {
+    it('properly calculates indirect cyclic dependencies', function() {
       resources.ModuleA = _generateResource('ModuleA', ['ModuleB']);
       resources.ModuleB = _generateResource('ModuleB', ['ModuleC']);
       resources.ModuleC = _generateResource('ModuleC', ['ModuleA']);
