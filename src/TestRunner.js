@@ -7,7 +7,6 @@
  */
 'use strict';
 
-var FileFinder = require('node-find-files');
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
@@ -229,34 +228,26 @@ TestRunner.prototype.streamTestPathsMatching = function(pathPattern) {
     }
   );
 
-  var numMatchers = this._config.testPathDirs.length;
-  function _onMatcherComplete() {
-    numMatchers--;
-    if (numMatchers === 0) {
-      pathStream.end();
+  this._getModuleLoaderResourceMap().then(function(resourceMap) {
+    var resourcePathMap = resourceMap.resourcePathMap;
+    for (var i in resourcePathMap) {
+      // Sometimes the loader finds a path with no resource. This typically
+      // happens if a file is recently deleted.
+      if (!resourcePathMap[i]) {
+        continue;
+      }
+
+      var pathStr = resourcePathMap[i].path;
+      if (
+        this._isTestFilePath(pathStr) &&
+        pathPattern.test(pathStr)
+      ) {
+        pathStream.write(pathStr);
+      }
     }
-  }
+    pathStream.end();
+  }.bind(this));
 
-  function _onMatcherError(err) {
-    pathStream.write({isError: err});
-  }
-
-  function _onMatcherMatch(pathStr) {
-    pathStream.write(pathStr);
-  }
-
-  this._config.testPathDirs.forEach(function(dirPath) {
-    var finder = new FileFinder({
-      rootFolder: dirPath,
-      filterFunction: function(pathStr) {
-        return this._isTestFilePath(pathStr) && pathPattern.test(pathStr);
-      }.bind(this)
-    });
-    finder.on('complete', _onMatcherComplete);
-    finder.on('error', _onMatcherError);
-    finder.on('match', _onMatcherMatch);
-    finder.startSearch();
-  }, this);
 
   return pathStream;
 };
