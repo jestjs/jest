@@ -7,6 +7,7 @@
  */
 'use strict';
 
+var colors = require('./lib/colors');
 var FileFinder = require('node-find-files');
 var fs = require('graceful-fs');
 var os = require('os');
@@ -17,9 +18,18 @@ var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 var Console = require('./Console');
 
+var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
+var TEST_WARN_TIMEOUT = 5 * 1000;
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 var DEFAULT_OPTIONS = {
+  /**
+   * The function to use to print any INFO-level output. The function should
+   * adhere to the same API signature as console.log (because console.log is the
+   * default...)
+   */
+  infoLogger: console.log,
+
   /**
    * The maximum number of workers to run tests concurrently with.
    *
@@ -46,8 +56,6 @@ var DEFAULT_OPTIONS = {
     return arg !== '--debug';
   })
 };
-
-var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
 
 /**
  * A class that takes a project's test config and provides various utilities for
@@ -386,6 +394,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
  */
 TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
   var config = this._config;
+  var opts = this._opts;
 
   var aggregatedResults = {
     numFailedTests: 0,
@@ -394,9 +403,22 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
     endTime: null
   };
 
+  var testWarnTimeout;
   var testSequence = q();
   testPaths.forEach(function(testPath) {
-    testSequence = testSequence.then(this.runTest.bind(this, testPath))
+    testSequence = testSequence
+      .then(function() {
+        // Just before we start running the test, start a timer to help track
+        // (and give feedback on) long-running tests.
+        testWarnTimeout = setTimeout(function() {
+          opts.infoLogger(colors.colorize(
+            'Still waiting on `' + testPath +'` to finish...',
+            colors.YELLOW
+          ));
+        }, TEST_WARN_TIMEOUT);
+
+        return this.runTest(testPath);
+      }.bind(this))
       .then(function(testResult) {
         if (testResult.numFailingTests > 0) {
           aggregatedResults.numFailedTests++;
@@ -412,6 +434,9 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
           tests: {},
           logMessages: []
         });
+      })
+      .finally(function() {
+        clearTimeout(testWarnTimeout);
       });
   }, this);
 
@@ -431,6 +456,7 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
  */
 TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
   var config = this._config;
+  var opts = this._opts;
 
   var aggregatedResults = {
     numFailedTests: 0,
@@ -449,6 +475,28 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
     ])
   );
 
+  var pendingTestPaths = {};
+  var testWarnTimeout = null;
+  function setTestWarnTimeout() {
+    clearTimeout(testWarnTimeout);
+    testWarnTimeout = setTimeout(function() {
+      var pendingTestPathsArr = Object.keys(pendingTestPaths);
+      var numPendingTests = pendingTestPathsArr.length;
+      if (numPendingTests > 0) {
+        var pendingTests = '...';
+        if (numPendingTests <= 3) {
+          pendingTests = ':\n  ' + pendingTestPathsArr.join('\n  ');
+        }
+        opts.infoLogger(colors.colorize(
+          'Currently waiting on ' + numPendingTests + ' tests to finish' +
+          pendingTests,
+
+          colors.YELLOW
+        ));
+      }
+    }, TEST_WARN_TIMEOUT);
+  }
+
   return this._getModuleLoaderResourceMap()
     .then(function() {
       // Tell all workers that it's now safe to read the resource map from disk.
@@ -458,6 +506,9 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
     })
     .then(function() {
       return q.all(testPaths.map(function(testPath) {
+        pendingTestPaths[testPath] = true;
+        setTestWarnTimeout();
+
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
             if (testResult.numFailingTests > 0) {
@@ -500,6 +551,10 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
               );
               process.exit(1);
             }
+          })
+          .finally(function() {
+            delete pendingTestPaths[testPath];
+            setTestWarnTimeout();
           });
       }));
     })
