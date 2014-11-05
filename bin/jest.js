@@ -426,7 +426,9 @@ function _main(onComplete) {
 exports.runCLI = runCLI;
 
 if (require.main === module) {
-  harmonize();
+  if (process.execArgv.indexOf('--harmony') === -1) {
+    harmonize();
+  }
   _main(function (success) {
     process.exit(success ? 0 : 1);
   });
