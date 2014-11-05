@@ -7,7 +7,6 @@
  */
 'use strict';
 
-var FileFinder = require('node-find-files');
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
