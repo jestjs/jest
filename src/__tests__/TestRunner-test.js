@@ -8,8 +8,7 @@
 'use strict';
 
 require('jest-runtime')
-  .autoMockOff()
-  .mock('fs');
+  .autoMockOff();
 
 var q = require('q');
 
@@ -87,7 +86,7 @@ describe('TestRunner', function() {
     }
 
     beforeEach(function() {
-      fs = require('fs');
+      fs = require('graceful-fs');
       utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
         rootDir: '.',
