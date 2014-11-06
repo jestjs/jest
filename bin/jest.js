@@ -64,8 +64,14 @@ function _findChangedFiles(dirPath) {
   return deferred.promise;
 }
 
-function _onResultReady(config, result) {
-  return defaultTestResultHandler(config, result);
+function _onResultReady(argv, config, result) {
+  if (argv.detailedResults) {
+    return defaultTestResultHandler
+    .printDetailedTestResult(config, result);
+  } else {
+    return defaultTestResultHandler
+    .printConciseTestResult(config, result);
+  }
 }
 
 function _onRunComplete(completionData) {
@@ -217,9 +223,17 @@ function runCLI(argv, packageRoot, onComplete) {
             'Found ' + numMatching + ' matching ' + pluralizedTest + '...'
           );
           if (argv.runInBand) {
-            return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
+            return testRunner
+            .runTestsInBand(
+              matchingTestPaths,
+              _onResultReady.bind(null, argv)
+            );
           } else {
-            return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
+            return testRunner
+            .runTestsParallel(
+              matchingTestPaths,
+              _onResultReady.bind(null, argv)
+            );
           }
         })
         .then(function(completionData) {
@@ -296,6 +310,12 @@ function _main(onComplete) {
         description: _wrapDesc(
           'Indicates that test coverage information should be collected and ' +
           'reported in the output.'
+        ),
+        type: 'boolean'
+      },
+      detailedResults: {
+        description: _wrapDesc(
+          'Specifies that the results should contain more verbose information'
         ),
         type: 'boolean'
       },
