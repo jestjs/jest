@@ -64,37 +64,6 @@ function _findChangedFiles(dirPath) {
   return deferred.promise;
 }
 
-function _onResultReady(config, result) {
-  return defaultTestResultHandler(config, result);
-}
-
-function _onRunComplete(completionData) {
-  var numFailedTests = completionData.numFailedTests;
-  var numTotalTests = completionData.numTotalTests;
-  var numPassedTests = numTotalTests - numFailedTests;
-  var startTime = completionData.startTime;
-  var endTime = completionData.endTime;
-
-  var results = '';
-  if (numFailedTests) {
-    results +=
-	  colors.colorize(
-	    [numFailedTests, (numFailedTests > 1 ? 'tests' : 'test'), 'failed'].join(' '),
-	    colors.RED + colors.BOLD
-	  );
-	results += ', ';
-  }
-  results +=
-    colors.colorize(
-		[numPassedTests, (numPassedTests > 1 ? 'tests' : 'test'), 'passed'].join(' '),
-		colors.GREEN + colors.BOLD
-	);
-  results += ' (' + numTotalTests + ' total)';
-
-  console.log(results);
-  console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
-}
-
 function _verifyIsGitRepository(dirPath) {
   var deferred = Q.defer();
 
@@ -210,20 +179,13 @@ function runCLI(argv, packageRoot, onComplete) {
 
       return deferred.promise
         .then(function(matchingTestPaths) {
-          var numMatching = matchingTestPaths.length;
-          var pluralizedTest = numMatching > 1 ? 'tests' : 'test';
-
-          console.log(
-            'Found ' + numMatching + ' matching ' + pluralizedTest + '...'
-          );
           if (argv.runInBand) {
-            return testRunner.runTestsInBand(matchingTestPaths, _onResultReady);
+            return testRunner.runTestsInBand(matchingTestPaths, defaultTestResultHandler);
           } else {
-            return testRunner.runTestsParallel(matchingTestPaths, _onResultReady);
+            return testRunner.runTestsParallel(matchingTestPaths, defaultTestResultHandler);
           }
         })
         .then(function(completionData) {
-          _onRunComplete(completionData);
           onComplete(completionData.numFailedTests === 0);
         });
     }
