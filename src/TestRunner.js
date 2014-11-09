@@ -371,19 +371,22 @@ TestRunner.prototype.runTest = function(testFilePath) {
  * its own.
  *
  * @param {Array<String>} testPaths Array of paths to test files
- * @param {Function} onResult Callback called once for each test result
+ * @param {Object} reporter Collection of callbacks called on test events
  * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
  *                           about all tests that were run
  */
-TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
+TestRunner.prototype.runTestsInBand = function(testPaths, reporter) {
   var config = this._config;
 
   var aggregatedResults = {
     numFailedTests: 0,
+    numPassedTests: 0,
     numTotalTests: testPaths.length,
     startTime: Date.now(),
     endTime: null
   };
+
+  reporter.onRunStart(config, aggregatedResults);
 
   var testSequence = q();
   testPaths.forEach(function(testPath) {
@@ -391,23 +394,26 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
       .then(function(testResult) {
         if (testResult.numFailingTests > 0) {
           aggregatedResults.numFailedTests++;
+        } else {
+          aggregatedResults.numPassedTests++;
         }
-        onResult && onResult(config, testResult);
+        reporter.onTestResult(config, testResult, aggregatedResults);
       })
       .catch(function(err) {
         aggregatedResults.numFailedTests++;
-        onResult && onResult(config, {
+        reporter.onTestResult(config, {
           testFilePath: testPath,
           testExecError: err,
           suites: {},
           tests: {},
           logMessages: []
-        });
+        }, aggregatedResults);
       });
   }, this);
 
   return testSequence.then(function() {
     aggregatedResults.endTime = Date.now();
+    reporter.onRunComplete(config, aggregatedResults);
     return aggregatedResults;
   });
 };
@@ -416,19 +422,22 @@ TestRunner.prototype.runTestsInBand = function(testPaths, onResult) {
  * Run all given test paths in parallel using a worker pool.
  *
  * @param {Array<String>} testPaths Array of paths to test files
- * @param {Function} onResult Callback called once for each test result
+ * @param {Object} reporter Collection of callbacks called on test events
  * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
  *                           about all tests that were run
  */
-TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
+TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
   var config = this._config;
 
   var aggregatedResults = {
     numFailedTests: 0,
+    numPassedTests: 0,
     numTotalTests: testPaths.length,
     startTime: Date.now(),
     endTime: null
   };
+
+  reporter.onRunStart(config, aggregatedResults);
 
   var workerPool = new WorkerPool(
     this._opts.maxWorkers,
@@ -453,18 +462,20 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
           .then(function(testResult) {
             if (testResult.numFailingTests > 0) {
               aggregatedResults.numFailedTests++;
+            } else {
+              aggregatedResults.numPassedTests++;
             }
-            onResult && onResult(config, testResult);
+            reporter.onTestResult(config, testResult, aggregatedResults);
           })
           .catch(function(err) {
             aggregatedResults.numFailedTests++;
-            onResult(config, {
+            reporter.onTestResult(config, {
               testFilePath: testPath,
               testExecError: err.stack || err.message || err,
               suites: {},
               tests: {},
               logMessages: []
-            });
+            }, aggregatedResults);
 
             // Jest uses regular worker messages to initialize workers, so
             // there's no way for node-worker-pool to understand how to
@@ -497,6 +508,7 @@ TestRunner.prototype.runTestsParallel = function(testPaths, onResult) {
     .then(function() {
       return workerPool.destroy().then(function() {
         aggregatedResults.endTime = Date.now();
+        reporter.onRunComplete(config, aggregatedResults);
         return aggregatedResults;
       });
     });

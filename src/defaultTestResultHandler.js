@@ -53,7 +53,30 @@ function _getResultHeader(passed, testName, columns) {
   ].concat(columns || []).join(' ');
 }
 
-function defaultTestResultHandler(config, testResult) {
+function printWaitingOn(aggregatedResults) {
+  var numTests = aggregatedResults.numTotalTests -
+    aggregatedResults.numPassedTests -
+    aggregatedResults.numFailedTests;
+
+  process.stdout.write(
+    colors.colorize(
+      'Waiting on ' + numTests + ' test' + (numTests > 1 ? 's' : '') + '  ',
+      colors.GRAY + colors.BOLD
+    )
+  );
+}
+
+function clearWaitingOn() {
+  process.stdout.write('\r\x1B[K');
+}
+
+function onRunStart(config, aggregatedResults) {
+  printWaitingOn(aggregatedResults);
+}
+
+function onTestResult(config, testResult, aggregatedResults) {
+  clearWaitingOn();
+
   var pathStr =
     config.rootDir
     ? path.relative(config.rootDir, testResult.testFilePath)
@@ -125,6 +148,40 @@ function defaultTestResultHandler(config, testResult) {
       });
     });
   }
+
+  printWaitingOn(aggregatedResults);
 }
 
-module.exports = defaultTestResultHandler;
+function onRunComplete(config, aggregatedResults) {
+  clearWaitingOn();
+
+  var numFailedTests = aggregatedResults.numFailedTests;
+  var numTotalTests = aggregatedResults.numTotalTests;
+  var numPassedTests = numTotalTests - numFailedTests;
+  var startTime = aggregatedResults.startTime;
+  var endTime = aggregatedResults.endTime;
+
+  var results = '';
+  if (numFailedTests) {
+    results +=
+    colors.colorize(
+      [numFailedTests, (numFailedTests > 1 ? 'tests' : 'test'), 'failed'].join(' '),
+      colors.RED + colors.BOLD
+    );
+  results += ', ';
+  }
+  results +=
+    colors.colorize(
+    [numPassedTests, (numPassedTests > 1 ? 'tests' : 'test'), 'passed'].join(' '),
+    colors.GREEN + colors.BOLD
+  );
+  results += ' (' + numTotalTests + ' total)';
+
+  console.log(results);
+  console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+}
+
+
+exports.onRunStart = onRunStart;
+exports.onTestResult = onTestResult;
+exports.onRunComplete = onRunComplete;
