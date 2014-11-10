@@ -208,6 +208,7 @@ function normalizeConfig(config) {
       case 'moduleLoader':
       case 'name':
       case 'persistModuleRegistryBetweenSpecs':
+      case 'reportTestsIndividually':
       case 'rootDir':
       case 'setupJSTestLoaderOptions':
       case 'testDirectoryName':
