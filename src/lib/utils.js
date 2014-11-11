@@ -213,6 +213,7 @@ function normalizeConfig(config) {
       case 'testDirectoryName':
       case 'testFileExtensions':
       case 'moduleFileExtensions':
+      case 'filePath':
         value = config[key];
         break;
 
