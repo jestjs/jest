@@ -383,6 +383,7 @@ TestRunner.prototype.runTestsInBand = function(testPaths, reporter) {
 
   var aggregatedResults = {
     numFailedTests: 0,
+    numPassedTests: 0,
     numTotalTests: testPaths.length,
     startTime: Date.now(),
     endTime: null
@@ -397,6 +398,8 @@ TestRunner.prototype.runTestsInBand = function(testPaths, reporter) {
       .then(function(testResult) {
         if (testResult.numFailingTests > 0) {
           aggregatedResults.numFailedTests++;
+        } else {
+          aggregatedResults.numPassedTests++;
         }
         reporter.onTestResult &&
           reporter.onTestResult(config, testResult, aggregatedResults);
@@ -436,6 +439,7 @@ TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
 
   var aggregatedResults = {
     numFailedTests: 0,
+    numPassedTests: 0,
     numTotalTests: testPaths.length,
     startTime: Date.now(),
     endTime: null
@@ -466,6 +470,8 @@ TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
           .then(function(testResult) {
             if (testResult.numFailingTests > 0) {
               aggregatedResults.numFailedTests++;
+            } else {
+              aggregatedResults.numPassedTests++;
             }
             reporter.onTestResult &&
               reporter.onTestResult(config, testResult, aggregatedResults);
