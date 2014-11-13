@@ -53,7 +53,14 @@ function _getResultHeader(passed, testName, columns) {
   ].concat(columns || []).join(' ');
 }
 
-function defaultTestResultHandler(config, testResult) {
+function onRunStart(config, aggregatedResults) {
+  var numTests = aggregatedResults.numTotalTests;
+  console.log(
+    'Found ' + numTests + ' test' + (numTests > 1 ? 's' : '') + '...'
+  );
+}
+
+function onTestResult(config, testResult) {
   var pathStr =
     config.rootDir
     ? path.relative(config.rootDir, testResult.testFilePath)
@@ -127,4 +134,32 @@ function defaultTestResultHandler(config, testResult) {
   }
 }
 
-module.exports = defaultTestResultHandler;
+function onRunComplete(config, aggregatedResults) {
+  var numFailedTests = aggregatedResults.numFailedTests;
+  var numTotalTests = aggregatedResults.numTotalTests;
+  var numPassedTests = numTotalTests - numFailedTests;
+  var startTime = aggregatedResults.startTime;
+  var endTime = aggregatedResults.endTime;
+
+  var results = '';
+  if (numFailedTests) {
+    results += colors.colorize(
+      numFailedTests + ' test' + (numFailedTests === 1 ? '' : 's') + ' failed',
+      colors.RED + colors.BOLD
+    );
+    results += ', ';
+  }
+  results += colors.colorize(
+    numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
+    colors.GREEN + colors.BOLD
+  );
+  results += ' (' + numTotalTests + ' total)';
+
+  console.log(results);
+  console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+}
+
+
+exports.onRunStart = onRunStart;
+exports.onTestResult = onTestResult;
+exports.onRunComplete = onRunComplete;
