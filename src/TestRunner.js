@@ -426,7 +426,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
   return testRun.then(function() {
     aggregatedResults.endTime = Date.now();
     reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
-    return aggregatedResults;
+    return aggregatedResults.numFailedTests === 0;
   });
 };
 
