@@ -53,14 +53,33 @@ function _getResultHeader(passed, testName, columns) {
   ].concat(columns || []).join(' ');
 }
 
-function onRunStart(config, aggregatedResults) {
-  var numTests = aggregatedResults.numTotalTests;
-  console.log(
-    'Found ' + numTests + ' test' + (numTests > 1 ? 's' : '') + '...'
-  );
+function _printWaitingOn(aggregatedResults) {
+  var completedTests =
+    aggregatedResults.numPassedTests +
+    aggregatedResults.numFailedTests;
+  var remainingTests = aggregatedResults.numTotalTests - completedTests;
+  if (remainingTests > 0) {
+    var pluralTests = remainingTests === 1 ? 'test' : 'tests';
+    process.stdout.write(
+      colors.colorize(
+        'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
+        colors.GRAY + colors.BOLD
+      )
+    );
+  }
 }
 
-function onTestResult(config, testResult) {
+function _clearWaitingOn() {
+  process.stdout.write('\r\x1B[K');
+}
+
+function onRunStart(config, aggregatedResults) {
+  _printWaitingOn(aggregatedResults);
+}
+
+function onTestResult(config, testResult, aggregatedResults) {
+  _clearWaitingOn();
+
   var pathStr =
     config.rootDir
     ? path.relative(config.rootDir, testResult.testFilePath)
@@ -132,12 +151,14 @@ function onTestResult(config, testResult) {
       });
     });
   }
+
+  _printWaitingOn(aggregatedResults);
 }
 
 function onRunComplete(config, aggregatedResults) {
   var numFailedTests = aggregatedResults.numFailedTests;
+  var numPassedTests = aggregatedResults.numPassedTests;
   var numTotalTests = aggregatedResults.numTotalTests;
-  var numPassedTests = numTotalTests - numFailedTests;
   var startTime = aggregatedResults.startTime;
   var endTime = aggregatedResults.endTime;
 
