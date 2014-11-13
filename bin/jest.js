@@ -9,70 +9,10 @@
 /* jshint node: true */
 "use strict";
 
-var child_process = require('child_process');
 var fs = require('fs');
 var harmonize = require('harmonize');
 var optimist = require('optimist');
 var path = require('path');
-var Q = require('q');
-var TestRunner = require('../src/TestRunner');
-var utils = require('../src/lib/utils');
-
-var _jestVersion = null;
-function _getJestVersion() {
-  if (_jestVersion === null) {
-    var pkgJsonPath = path.resolve(__dirname, '..', 'package.json');
-    _jestVersion = require(pkgJsonPath).version;
-  }
-  return _jestVersion;
-}
-
-function _findChangedFiles(dirPath) {
-  var deferred = Q.defer();
-
-  var args =
-    ['diff', '--name-only', '--diff-filter=ACMR'];
-  var child = child_process.spawn('git', args, {cwd: dirPath});
-
-  var stdout = '';
-  child.stdout.on('data', function(data) {
-    stdout += data;
-  });
-
-  var stderr = '';
-  child.stderr.on('data', function(data) {
-    stderr += data;
-  });
-
-  child.on('close', function(code) {
-    if (code === 0) {
-      stdout = stdout.trim();
-      if (stdout === '') {
-        deferred.resolve([]);
-      } else {
-        deferred.resolve(stdout.split('\n').map(function(changedPath) {
-          return path.resolve(dirPath, changedPath);
-        }));
-      }
-    } else {
-      deferred.reject(code + ': ' + stderr);
-    }
-  });
-
-  return deferred.promise;
-}
-
-function _verifyIsGitRepository(dirPath) {
-  var deferred = Q.defer();
-
-  child_process.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
-    .on('close', function(code) {
-      var isGitRepo = code === 0;
-      deferred.resolve(isGitRepo);
-    });
-
-  return deferred.promise;
-}
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
@@ -96,267 +36,120 @@ function _wrapDesc(desc) {
   }, ['']).join(indent);
 }
 
-function runCLI(argv, packageRoot, onComplete) {
-  argv = argv || {};
+harmonize();
 
-  // Old versions of the Jest CLI do not pass an onComplete callback, so it's
-  // important that we provide backward compatibility in the API
-  if (!onComplete) {
-    onComplete = function() {};
-  }
-
-  if (argv.version) {
-    console.log('v' + _getJestVersion());
-    onComplete(true);
-    return;
-  }
-
-  var config;
-  if (argv.config) {
-    if (typeof argv.config === 'string') {
-      config = utils.loadConfigFromFile(argv.config);
-    } else if (typeof argv.config === 'object') {
-      config = Q(utils.normalizeConfig(argv.config));
+var argv = optimist
+  .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
+  .options({
+    config: {
+      alias: 'c',
+      description: _wrapDesc(
+        'The path to a jest config file specifying how to find and execute ' +
+        'tests.'
+      ),
+      type: 'string'
+    },
+    coverage: {
+      description: _wrapDesc(
+        'Indicates that test coverage information should be collected and ' +
+        'reported in the output.'
+      ),
+      type: 'boolean'
+    },
+    maxWorkers: {
+      alias: 'w',
+      description: _wrapDesc(
+        'Specifies the maximum number of workers the worker-pool will spawn ' +
+        'for running tests. This defaults to the number of the cores ' +
+        'available on your machine. (its usually best not to override this ' +
+        'default)'
+      ),
+      type: 'string' // no, optimist -- its a number.. :(
+    },
+    onlyChanged: {
+      alias: 'o',
+      description: _wrapDesc(
+        'Attempts to identify which tests to run based on which files have ' +
+        'changed in the current repository. Only works if you\'re running ' +
+        'tests in a git repository at the moment.'
+      ),
+      type: 'boolean'
+    },
+    runInBand: {
+      alias: 'i',
+      description: _wrapDesc(
+        'Run all tests serially in the current process (rather than creating ' +
+        'a worker pool of child processes that run tests). This is sometimes ' +
+        'useful for debugging, but such use cases are pretty rare.'
+      ),
+      type: 'boolean'
+    },
+    version: {
+      alias: 'v',
+      description: _wrapDesc('Print the version and exit'),
+      type: 'boolean'
     }
-  } else {
-    var pkgJsonPath = path.join(packageRoot, 'package.json');
-    var pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
-
-    // First look to see if there is a package.json file with a jest config in it
-    if (pkgJson.jest) {
-      if (!pkgJson.jest.hasOwnProperty('rootDir')) {
-        pkgJson.jest.rootDir = packageRoot;
-      } else {
-        pkgJson.jest.rootDir = path.resolve(packageRoot, pkgJson.jest.rootDir);
-      }
-      config = utils.normalizeConfig(pkgJson.jest);
-      config.name = pkgJson.name;
-      config = Q(config);
-
-    // If not, use a sane default config
-    } else {
-      config = Q(utils.normalizeConfig({
-        name: packageRoot.replace(/[/\\]/g, '_'),
-        rootDir: packageRoot,
-        testPathDirs: [packageRoot],
-        testPathIgnorePatterns: ['/node_modules/.+']
-      }));
-    }
-  }
-
-  config.done(function(config) {
-    var pathPattern =
-      argv.testPathPattern ||
-      (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/);
-
-    var testRunnerOpts = {};
-
-    if (argv.runInBand) {
-      testRunnerOpts.runInBand = argv.runInBand;
-    }
-
-    if (argv.maxWorkers) {
-      testRunnerOpts.maxWorkers = argv.maxWorkers;
-    }
-
-    if (argv.coverage) {
-      config.collectCoverage = true;
+  })
+  .check(function(argv) {
+    if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
+      throw (
+        'Both --runInBand and --maxWorkers were specified, but these two ' +
+        'options do not make sense together. Which is it?'
+      );
     }
 
-    var testRunner = new TestRunner(config, testRunnerOpts);
-
-    function _runTestsOnPathPattern(pathPattern) {
-      var testPathStream = testRunner.streamTestPathsMatching(pathPattern);
-
-      var deferred = Q.defer();
-      var foundPaths = [];
-      testPathStream.on('data', function(pathStr) {
-        foundPaths.push(pathStr);
-      });
-      testPathStream.on('error', function(err) {
-        deferred.reject(err);
-      });
-      testPathStream.on('end', function() {
-        deferred.resolve(foundPaths);
-      });
-
-      return deferred.promise
-        .then(function(matchingTestPaths) {
-          return testRunner.runTests(matchingTestPaths);
-        })
-        .then(function(completionData) {
-          onComplete(completionData.numFailedTests === 0);
-        });
+    if (argv.onlyChanged && argv._.length > 0) {
+      throw (
+        'Both --onlyChanged and a path pattern were specified, but these two ' +
+        'options do not make sense together. Which is it? Do you want to run ' +
+        'tests for changed files? Or for a specific set of files?'
+      );
     }
+  })
+  .argv
 
-    if (argv.onlyChanged) {
-      console.log('Looking for changed files...');
-
-      var testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
-      Q.all(testPathDirsAreGit).then(function(results) {
-        if (!results.every(function(result) { return result; })) {
-          console.error(
-            'It appears that one of your testPathDirs does not exist ' +
-            'with in a git repository. Currently --onlyChanged only works ' +
-            'with git projects.\n'
-          );
-          onComplete(false);
-        }
-
-        return Q.all(config.testPathDirs.map(_findChangedFiles));
-      }).then(function(changedPathSets) {
-        // Collapse changed files from each of the testPathDirs into a single list
-        // of changed file paths
-        var changedPaths = [];
-        changedPathSets.forEach(function(pathSet) {
-          changedPaths = changedPaths.concat(pathSet);
-        });
-
-        var deferred = Q.defer();
-        var affectedPathStream =
-          testRunner.streamTestPathsRelatedTo(changedPaths);
-
-        var affectedTestPaths = [];
-        affectedPathStream.on('data', function(pathStr) {
-          affectedTestPaths.push(pathStr);
-        });
-        affectedPathStream.on('error', function(err) {
-          deferred.reject(err);
-        });
-        affectedPathStream.on('end', function() {
-          deferred.resolve(affectedTestPaths);
-        });
-
-        return deferred.promise;
-      }).done(function(affectedTestPaths) {
-        if (affectedTestPaths.length > 0) {
-          _runTestsOnPathPattern(new RegExp(affectedTestPaths.join('|'))).done();
-        } else {
-          console.log('No tests to run!');
-        }
-      });
-    } else {
-      _runTestsOnPathPattern(pathPattern).done();
-    }
-  });
+if (argv.help) {
+  optimist.showHelp();
+  process.exit(0);
 }
 
-function _main(onComplete) {
-  var argv = optimist
-    .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
-    .options({
-      config: {
-        alias: 'c',
-        description: _wrapDesc(
-          'The path to a jest config file specifying how to find and execute ' +
-          'tests.'
-        ),
-        type: 'string'
-      },
-      coverage: {
-        description: _wrapDesc(
-          'Indicates that test coverage information should be collected and ' +
-          'reported in the output.'
-        ),
-        type: 'boolean'
-      },
-      maxWorkers: {
-        alias: 'w',
-        description: _wrapDesc(
-          'Specifies the maximum number of workers the worker-pool will spawn ' +
-          'for running tests. This defaults to the number of the cores ' +
-          'available on your machine. (its usually best not to override this ' +
-          'default)'
-        ),
-        type: 'string' // no, optimist -- its a number.. :(
-      },
-      onlyChanged: {
-        alias: 'o',
-        description: _wrapDesc(
-          'Attempts to identify which tests to run based on which files have ' +
-          'changed in the current repository. Only works if you\'re running ' +
-          'tests in a git repository at the moment.'
-        ),
-        type: 'boolean'
-      },
-      runInBand: {
-        alias: 'i',
-        description: _wrapDesc(
-          'Run all tests serially in the current process (rather than creating ' +
-          'a worker pool of child processes that run tests). This is sometimes ' +
-          'useful for debugging, but such use cases are pretty rare.'
-        ),
-        type: 'boolean'
-      },
-      version: {
-        alias: 'v',
-        description: _wrapDesc('Print the version and exit'),
-        type: 'boolean'
-      }
-    })
-    .check(function(argv) {
-      if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
-        throw (
-          "Both --runInBand and --maxWorkers were specified, but these two " +
-          "options don't make sense together. Which is it?"
-        );
-      }
+var cwd = process.cwd();
 
-      if (argv.onlyChanged && argv._.length > 0) {
-        throw (
-          "Both --onlyChanged and a path pattern were specified, but these two " +
-          "options don't make sense together. Which is it? Do you want to run " +
-          "tests for changed files? Or for a specific set of files?"
-        );
-      }
-    })
-    .argv
-
-  if (argv.help) {
-    optimist.showHelp();
-    process.exit(0);
+// Is the cwd somewhere within an npm package?
+var cwdPackageRoot = cwd;
+while (!fs.existsSync(path.join(cwdPackageRoot, 'package.json'))) {
+  if (cwdPackageRoot === '/') {
+    cwdPackageRoot = cwd;
+    break;
   }
+  cwdPackageRoot = path.resolve(cwdPackageRoot, '..');
+}
 
-  var cwd = process.cwd();
+// Is there a package.json at our cwdPackageRoot that indicates that there
+// should be a version of Jest installed?
+var cwdPkgJsonPath = path.join(cwdPackageRoot, 'package.json');
 
-  // Is the cwd somewhere within an npm package?
-  var cwdPackageRoot = cwd;
-  while (!fs.existsSync(path.join(cwdPackageRoot, 'package.json'))) {
-    if (cwdPackageRoot === '/') {
-      cwdPackageRoot = cwd;
-      break;
-    }
-    cwdPackageRoot = path.resolve(cwdPackageRoot, '..');
+// Is there a version of Jest installed at our cwdPackageRoot?
+var cwdJestBinPath = path.join(cwdPackageRoot, 'node_modules/jest-cli');
+
+// Get a jest instance
+var jest;
+
+if (fs.existsSync(cwdJestBinPath)) {
+  // If a version of Jest was found installed in the CWD package, use that.
+  jest = require(cwdJestBinPath);
+
+  if (!jest.runCLI) {
+    console.error(
+      'This project requires an older version of Jest than what you have ' +
+      'installed globally.\n' +
+      'Please upgrade this project past Jest version 0.1.5'
+    );
+    process.exit(1);
   }
-
-  // Is there a package.json at our cwdPackageRoot that indicates that there
-  // should be a version of Jest installed?
-  var cwdPkgJsonPath = path.join(cwdPackageRoot, 'package.json');
-
-  // Is there a version of Jest installed at our cwdPackageRoot?
-  var cwdJestBinPath = path.join(
-    cwdPackageRoot,
-    'node_modules',
-    'jest-cli',
-    'bin',
-    'jest.js'
-  );
-
-  // If a version of Jest was found installed in the CWD package, run using that
-  if (fs.existsSync(cwdJestBinPath)) {
-    var jestBinary = require(cwdJestBinPath);
-    if (!jestBinary.runCLI) {
-      console.error(
-        'This project requires an older version of Jest than what you have ' +
-        'installed globally.\n' +
-        'Please upgrade this project past Jest version 0.1.5'
-      );
-      process.exit(1);
-    }
-
-    jestBinary.runCLI(argv, cwdPackageRoot, onComplete);
-    return;
-  }
+} else {
+  // Otherwise, load this version of Jest.
+  jest = require('../');
 
   // If a package.json was found in the CWD package indicating a specific
   // version of Jest to be used, bail out and ask the user to `npm install`
@@ -365,8 +158,6 @@ function _main(onComplete) {
     var cwdPkgJson = require(cwdPkgJsonPath);
     var cwdPkgDeps = cwdPkgJson.dependencies;
     var cwdPkgDevDeps = cwdPkgJson.devDependencies;
-
-    var thisJestVersion = _getJestVersion();
 
     if (cwdPkgDeps && cwdPkgDeps['jest-cli']
         || cwdPkgDevDeps && cwdPkgDevDeps['jest-cli']) {
@@ -377,18 +168,12 @@ function _main(onComplete) {
       process.exit(1);
     }
   }
-
-  if (!argv.version && cwdPackageRoot) {
-    console.log('Using Jest CLI v' + _getJestVersion());
-  }
-  runCLI(argv, cwdPackageRoot, onComplete);
 }
 
-exports.runCLI = runCLI;
-
-if (require.main === module) {
-  harmonize();
-  _main(function (success) {
-    process.exit(success ? 0 : 1);
-  });
+if (!argv.version) {
+  console.log('Using Jest CLI v' + jest.getVersion());
 }
+
+jest.runCLI(argv, cwdPackageRoot, function (success) {
+  process.exit(success ? 0 : 1);
+});
