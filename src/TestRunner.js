@@ -19,6 +19,16 @@ var Console = require('./Console');
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 var DEFAULT_OPTIONS = {
+
+  /**
+   * When true, runs all tests serially in the current process, rather than
+   * creating a worker pool of child processes.
+   *
+   * This can be useful for debugging, or when the environment limits to a
+   * single process.
+   */
+  runInBand: false,
+
   /**
    * The maximum number of workers to run tests concurrently with.
    *
@@ -364,74 +374,14 @@ TestRunner.prototype.runTest = function(testFilePath) {
 };
 
 /**
- * Run all given test paths serially (in the current process).
- *
- * This is mostly useful for debugging issues with jest itself, but may also be
- * useful for scenarios where you don't want jest to start up a worker pool of
- * its own.
+ * Run all given test paths.
  *
  * @param {Array<String>} testPaths Array of paths to test files
  * @param {Object} reporter Collection of callbacks called on test events
  * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
  *                           about all tests that were run
  */
-TestRunner.prototype.runTestsInBand = function(testPaths, reporter) {
-  if (!reporter) {
-    reporter = require('./defaultTestReporter');
-  }
-  var config = this._config;
-
-  var aggregatedResults = {
-    numFailedTests: 0,
-    numPassedTests: 0,
-    numTotalTests: testPaths.length,
-    startTime: Date.now(),
-    endTime: null
-  };
-
-  reporter.onRunStart &&
-    reporter.onRunStart(config, aggregatedResults);
-
-  var testSequence = q();
-  testPaths.forEach(function(testPath) {
-    testSequence = testSequence.then(this.runTest.bind(this, testPath))
-      .then(function(testResult) {
-        if (testResult.numFailingTests > 0) {
-          aggregatedResults.numFailedTests++;
-        } else {
-          aggregatedResults.numPassedTests++;
-        }
-        reporter.onTestResult &&
-          reporter.onTestResult(config, testResult, aggregatedResults);
-      })
-      .catch(function(err) {
-        aggregatedResults.numFailedTests++;
-        reporter.onTestResult && reporter.onTestResult(config, {
-          testFilePath: testPath,
-          testExecError: err,
-          suites: {},
-          tests: {},
-          logMessages: []
-        }, aggregatedResults);
-      });
-  }, this);
-
-  return testSequence.then(function() {
-    aggregatedResults.endTime = Date.now();
-    reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
-    return aggregatedResults;
-  });
-};
-
-/**
- * Run all given test paths in parallel using a worker pool.
- *
- * @param {Array<String>} testPaths Array of paths to test files
- * @param {Object} reporter Collection of callbacks called on test events
- * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
- *                           about all tests that were run
- */
-TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
+TestRunner.prototype.runTests = function(testPaths, reporter) {
   if (!reporter) {
     reporter = require('./defaultTestReporter');
   }
@@ -447,13 +397,75 @@ TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
+  var onTestResult = function (testPath, testResult) {
+    if (testResult.numFailingTests > 0) {
+      aggregatedResults.numFailedTests++;
+    } else {
+      aggregatedResults.numPassedTests++;
+    }
+    reporter.onTestResult && reporter.onTestResult(
+      config,
+      testResult,
+      aggregatedResults
+    );
+  };
+
+  var onRunFailure = function (testPath, err) {
+    aggregatedResults.numFailedTests++;
+    reporter.onTestResult && reporter.onTestResult(config, {
+      testFilePath: testPath,
+      testExecError: err,
+      suites: {},
+      tests: {},
+      logMessages: []
+    }, aggregatedResults);
+  };
+
+  var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
+
+  return testRun.then(function() {
+    aggregatedResults.endTime = Date.now();
+    reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
+    return aggregatedResults;
+  });
+};
+
+TestRunner.prototype._createTestRun = function(
+  testPaths, onTestResult, onRunFailure
+) {
+  if (this._opts.runInBand) {
+    return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
+  } else {
+    return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
+  }
+};
+
+TestRunner.prototype._createInBandTestRun = function(
+  testPaths, onTestResult, onRunFailure
+) {
+  var testSequence = q();
+  testPaths.forEach(function(testPath) {
+    testSequence = testSequence.then(this.runTest.bind(this, testPath))
+      .then(function(testResult) {
+        onTestResult(testPath, testResult);
+      })
+      .catch(function(err) {
+        onRunFailure(testPath, err);
+      });
+  }, this);
+  return testSequence;
+};
+
+TestRunner.prototype._createParallelTestRun = function(
+  testPaths, onTestResult, onRunFailure
+) {
   var workerPool = new WorkerPool(
     this._opts.maxWorkers,
     this._opts.nodePath,
     this._opts.nodeArgv.concat([
       '--harmony',
       TEST_WORKER_PATH,
-      '--config=' + JSON.stringify(config)
+      '--config=' + JSON.stringify(this._config)
     ])
   );
 
@@ -468,23 +480,10 @@ TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
       return q.all(testPaths.map(function(testPath) {
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
-            if (testResult.numFailingTests > 0) {
-              aggregatedResults.numFailedTests++;
-            } else {
-              aggregatedResults.numPassedTests++;
-            }
-            reporter.onTestResult &&
-              reporter.onTestResult(config, testResult, aggregatedResults);
+            onTestResult(testPath, testResult);
           })
           .catch(function(err) {
-            aggregatedResults.numFailedTests++;
-            reporter.onTestResult && reporter.onTestResult(config, {
-              testFilePath: testPath,
-              testExecError: err.stack || err.message || err,
-              suites: {},
-              tests: {},
-              logMessages: []
-            }, aggregatedResults);
+            onRunFailure(testPath, err);
 
             // Jest uses regular worker messages to initialize workers, so
             // there's no way for node-worker-pool to understand how to
@@ -515,12 +514,7 @@ TestRunner.prototype.runTestsParallel = function(testPaths, reporter) {
       }));
     })
     .then(function() {
-      return workerPool.destroy().then(function() {
-        aggregatedResults.endTime = Date.now();
-        reporter.onRunComplete &&
-          reporter.onRunComplete(config, aggregatedResults);
-        return aggregatedResults;
-      });
+      return workerPool.destroy();
     });
 };
 

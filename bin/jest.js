@@ -150,6 +150,11 @@ function runCLI(argv, packageRoot, onComplete) {
       (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/);
 
     var testRunnerOpts = {};
+
+    if (argv.runInBand) {
+      testRunnerOpts.runInBand = argv.runInBand;
+    }
+
     if (argv.maxWorkers) {
       testRunnerOpts.maxWorkers = argv.maxWorkers;
     }
@@ -177,11 +182,7 @@ function runCLI(argv, packageRoot, onComplete) {
 
       return deferred.promise
         .then(function(matchingTestPaths) {
-          if (argv.runInBand) {
-            return testRunner.runTestsInBand(matchingTestPaths);
-          } else {
-            return testRunner.runTestsParallel(matchingTestPaths);
-          }
+          return testRunner.runTests(matchingTestPaths);
         })
         .then(function(completionData) {
           onComplete(completionData.numFailedTests === 0);
