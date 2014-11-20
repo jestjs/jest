@@ -9,6 +9,7 @@
     "diff": "~1.0.4",
     "graceful-fs": "^2.0.3",
     "harmonize": "~1.33.7",
+    "istanbul": "^0.3.2",
     "jasmine-only": "0.1.0",
     "jasmine-pit": "~2.0.0",
     "jsdom": "~0.10.3",

@@ -9,6 +9,9 @@
 
 var colors = require('./lib/colors');
 var path = require('path');
+var istanbul = require('istanbul');
+var collector = new istanbul.Collector();
+var reporter = new istanbul.Reporter();
 
 var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
@@ -103,11 +106,9 @@ function onTestResult(config, testResult, aggregatedResults) {
     testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
   }
 
-  /*
   if (config.collectCoverage) {
-    // TODO: Find a nice pretty way to print this out
+    collector.add(testResult.coverage);
   }
-  */
 
   console.log(_getResultHeader(allTestsPassed, pathStr, [
     testRunTimeString
@@ -178,6 +179,13 @@ function onRunComplete(config, aggregatedResults) {
 
   console.log(results);
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+
+  if (config.collectCoverage) {
+    reporter.addAll([ 'text', 'lcov', 'clover' ]);
+    reporter.write(collector, true, function () {
+        console.log('All reports generated');
+    });
+  }
 }
 
 
