@@ -181,7 +181,7 @@ function onRunComplete(config, aggregatedResults) {
   console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
 
   if (config.collectCoverage) {
-    reporter.addAll([ 'text', 'lcov', 'clover' ]);
+    reporter.addAll([ 'json', 'text', 'lcov', 'clover' ]);
     reporter.write(collector, true, function () {
         console.log('All reports generated');
     });
