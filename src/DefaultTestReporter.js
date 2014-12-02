@@ -8,18 +8,12 @@
 'use strict';
 
 var colors = require('./lib/colors');
+var formatFailureMessage = require('./lib/utils').formatFailureMessage;
 var path = require('path');
 
 var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
 var TEST_NAME_COLOR = colors.BOLD;
-
-// A RegExp that matches paths that should not be included in error stack traces
-// (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
-    path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'vendor', 'jasmine')
-].join('|') + ')');
 
 function _printConsoleMessage(process, msg) {
   switch (msg.type) {
@@ -128,40 +122,7 @@ function(config, testResult, aggregatedResults) {
   });
 
   if (!allTestsPassed) {
-    var ancestrySeparator = ' \u203A ';
-    var descBullet = colors.colorize('\u25cf ', colors.BOLD);
-    var msgBullet = '  - ';
-    var msgIndent = msgBullet.replace(/./g, ' ');
-
-    testResult.testResults.forEach(function(result) {
-      if (result.failureMessages.length === 0) {
-        return;
-      }
-
-      var testTitleAncestry =
-        result.ancestorTitles.map(function(title) {
-          return colors.colorize(title, colors.BOLD);
-        }).join(ancestrySeparator) + ancestrySeparator;
-
-      this.log(descBullet + testTitleAncestry + result.title);
-
-      result.failureMessages.forEach(function(errorMsg) {
-        // Filter out q and jasmine entries from the stack trace.
-        // They're super noisy and unhelpful
-        errorMsg = errorMsg.split('\n').filter(function(line) {
-          if (/^\s+at .*?/.test(line)) {
-            // Extract the file path from the trace line
-            var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-            if (filePath
-                && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-              return false;
-            }
-          }
-          return true;
-        }).join('\n');
-        this.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
-      });
-    });
+    this.log(formatFailureMessage(testResult, /*color*/true));
   }
 
   _printWaitingOn(this.process, aggregatedResults);
