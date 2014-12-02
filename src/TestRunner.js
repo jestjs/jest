@@ -458,7 +458,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 TestRunner.prototype._createTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
-  if (this._opts.runInBand) {
+  if (this._opts.runInBand || testPaths.length <= 1) {
     return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
   } else {
     return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
