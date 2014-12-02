@@ -402,7 +402,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
  */
 TestRunner.prototype.runTests = function(testPaths, reporter) {
   if (!reporter) {
-    reporter = require('./defaultTestReporter');
+    var DefaultTestReporter = require('./DefaultTestReporter');
+    reporter = new DefaultTestReporter();
   }
   var config = this._config;
 
