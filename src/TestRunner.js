@@ -151,7 +151,7 @@ TestRunner.prototype._loadConfigDependencies = function() {
  * direct dependencies).
  *
  * @param {Array<String>} paths A list of path strings to find related tests for
- * @return {Stream<String>} Stream of testPath strings
+ * @return {Stream<String>} Stream of absolute path strings
  */
 TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   var pathStream = through(
@@ -207,21 +207,24 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   return pathStream;
 };
 
+
 /**
- * Given a path pattern, return a stream of absolute paths for all tests that
- * match the pattern.
+ * Like `streamTestPathsRelatedTo`, but returns a Promise resolving an array of
+ * all paths.
+ *
+ * @param {Array<String>} paths A list of path strings to find related tests for
+ * @return {Promise<Array<String>>} Promise of array of absolute path strings
+ */
+TestRunner.prototype.promiseTestPathsRelatedTo = function(paths) {
+  return _pathStreamToPromise(this.streamTestPathsRelatedTo(paths));
+};
+
+/**
+ * Given a path pattern, find all absolute paths for all tests that match the
+ * pattern.
  *
  * @param {RegExp} pathPattern
- * @param {Function} onTestFound Callback called immediately when a test is
- *                               found.
- *
- *                               Ideally this function should return a
- *                               stream, but I don't personally understand all
- *                               the variations of "node streams" that exist in
- *                               the world (and their various compatibilities
- *                               with various node versions), so I've opted to
- *                               forgo that for now.
- * @return {Stream<String>} Stream of test-path strings
+ * @return {Stream<String>} Stream of absolute path strings
  */
 TestRunner.prototype.streamTestPathsMatching = function(pathPattern) {
   var pathStream = through(
@@ -260,6 +263,17 @@ TestRunner.prototype.streamTestPathsMatching = function(pathPattern) {
 
 
   return pathStream;
+};
+
+/**
+ * Like `streamTestPathsMatching`, but returns a Promise resolving an array of
+ * all paths
+ *
+ * @param {RegExp} pathPattern
+ * @return {Promise<Array<String>>} Promise of array of absolute path strings
+ */
+TestRunner.prototype.promiseTestPathsMatching = function(pathPattern) {
+  return _pathStreamToPromise(this.streamTestPathsMatching(pathPattern));
 };
 
 /**
@@ -527,5 +541,21 @@ TestRunner.prototype._createParallelTestRun = function(
       return workerPool.destroy();
     });
 };
+
+function _pathStreamToPromise(stream) {
+  var defer = q.defer();
+  var paths = [];
+  stream.on('data', function(path) {
+    paths.push(path);
+  });
+  stream.on('error', function(err) {
+    defer.reject(err);
+  });
+  stream.on('end', function() {
+    defer.resolve(paths);
+  });
+  return defer.promise;
+}
+
 
 module.exports = TestRunner;
