@@ -384,6 +384,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
  *   numTotalTests: total number of tests considered
  *   numPassedTests: number of tests run and passed
  *   numFailedTests: number of tests run and failed
+ *   failedTestResults: the jest result info for all failing tests
  */
 TestRunner.prototype.runTests = function(testPaths, reporter) {
   if (!reporter) {
@@ -395,6 +396,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     numFailedTests: 0,
     numPassedTests: 0,
     numTotalTests: testPaths.length,
+    failedTestResults: [],
     runTime: null,
     success: null,
   };
@@ -404,6 +406,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
   var onTestResult = function (testPath, testResult) {
     if (testResult.numFailingTests > 0) {
       aggregatedResults.numFailedTests++;
+      aggregatedResults.failedTestResults.push(testResult);
     } else {
       aggregatedResults.numPassedTests++;
     }
