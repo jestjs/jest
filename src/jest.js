@@ -193,8 +193,8 @@ function runCLI(argv, packageRoot, onComplete) {
     return testPaths.then(function (testPaths) {
       return testRunner.runTests(testPaths);
     });
-  }).then(function (didRunSucceed) {
-    onComplete && onComplete(didRunSucceed);
+  }).then(function (runResults) {
+    onComplete && onComplete(runResults.success);
   }).catch(function (error) {
     console.error('Failed with unexpected error.');
     process.nextTick(function () {

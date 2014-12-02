@@ -159,8 +159,7 @@ function onRunComplete(config, aggregatedResults) {
   var numFailedTests = aggregatedResults.numFailedTests;
   var numPassedTests = aggregatedResults.numPassedTests;
   var numTotalTests = aggregatedResults.numTotalTests;
-  var startTime = aggregatedResults.startTime;
-  var endTime = aggregatedResults.endTime;
+  var runTime = aggregatedResults.runTime;
 
   var results = '';
   if (numFailedTests) {
@@ -177,7 +176,7 @@ function onRunComplete(config, aggregatedResults) {
   results += ' (' + numTotalTests + ' total)';
 
   console.log(results);
-  console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+  console.log('Run time: ' + runTime + 's');
 }
 
 
