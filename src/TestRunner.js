@@ -398,7 +398,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
  *   numTotalTests: total number of tests considered
  *   numPassedTests: number of tests run and passed
  *   numFailedTests: number of tests run and failed
- *   failedTestResults: the jest result info for all failing tests
+ *   testResults: the jest result info for all tests run
  */
 TestRunner.prototype.runTests = function(testPaths, reporter) {
   if (!reporter) {
@@ -408,20 +408,20 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
   var config = this._config;
 
   var aggregatedResults = {
-    numFailedTests: 0,
-    numPassedTests: 0,
-    numTotalTests: testPaths.length,
-    failedTestResults: [],
-    runTime: null,
     success: null,
+    runTime: null,
+    numTotalTests: testPaths.length,
+    numPassedTests: 0,
+    numFailedTests: 0,
+    testResults: [],
   };
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
   var onTestResult = function (testPath, testResult) {
+    aggregatedResults.testResults.push(testResult);
     if (testResult.numFailingTests > 0) {
       aggregatedResults.numFailedTests++;
-      aggregatedResults.failedTestResults.push(testResult);
     } else {
       aggregatedResults.numPassedTests++;
     }
