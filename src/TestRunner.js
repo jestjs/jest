@@ -378,8 +378,12 @@ TestRunner.prototype.runTest = function(testFilePath) {
  *
  * @param {Array<String>} testPaths Array of paths to test files
  * @param {Object} reporter Collection of callbacks called on test events
- * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
- *                           about all tests that were run
+ * @return {Promise<Object>} Fulfilled with information about test run:
+ *   success: true if all tests passed
+ *   runTime: elapsed time in seconds to run all tests
+ *   numTotalTests: total number of tests considered
+ *   numPassedTests: number of tests run and passed
+ *   numFailedTests: number of tests run and failed
  */
 TestRunner.prototype.runTests = function(testPaths, reporter) {
   if (!reporter) {
@@ -391,8 +395,8 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     numFailedTests: 0,
     numPassedTests: 0,
     numTotalTests: testPaths.length,
-    startTime: Date.now(),
-    endTime: null
+    runTime: null,
+    success: null,
   };
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
@@ -423,10 +427,13 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
+  var startTime = Date.now();
+
   return testRun.then(function() {
-    aggregatedResults.endTime = Date.now();
+    aggregatedResults.runTime = (Date.now() - startTime) / 1000;
+    aggregatedResults.success = aggregatedResults.numFailedTests === 0;
     reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
-    return aggregatedResults.numFailedTests === 0;
+    return aggregatedResults;
   });
 };
 
