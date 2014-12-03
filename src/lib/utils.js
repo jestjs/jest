@@ -210,7 +210,9 @@ function normalizeConfig(config) {
       case 'name':
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
+      case 'setupJSLoaderOptions':
       case 'setupJSTestLoaderOptions':
+      case 'setupJSMockLoaderOptions':
       case 'testDirectoryName':
       case 'testFileExtensions':
       case 'moduleFileExtensions':
@@ -233,7 +235,46 @@ function normalizeConfig(config) {
     return newConfig;
   }, newConfig);
 
+  // Fill in some default values for node-haste config
+  newConfig.setupJSLoaderOptions = newConfig.setupJSLoaderOptions || {};
+  newConfig.setupJSTestLoaderOptions = newConfig.setupJSTestLoaderOptions || {};
+  newConfig.setupJSMockLoaderOptions = newConfig.setupJSMockLoaderOptions || {};
+
+  if (!newConfig.setupJSTestLoaderOptions.extensions) {
+    newConfig.setupJSTestLoaderOptions.extensions =
+      newConfig.testFileExtensions.map(_addDot);
+  }
+
+  if (!newConfig.setupJSLoaderOptions.extensions) {
+    newConfig.setupJSLoaderOptions.extensions = uniqueStrings(
+      newConfig.moduleFileExtensions.map(_addDot).concat(
+        newConfig.setupJSTestLoaderOptions.extensions
+      )
+    );
+  }
+
+  if (!newConfig.setupJSMockLoaderOptions.extensions) {
+    newConfig.setupJSMockLoaderOptions.extensions =
+      newConfig.setupJSLoaderOptions.extensions;
+  }
+
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
+}
+
+function _addDot(ext) {
+  return '.' + ext;
+}
+
+function uniqueStrings(set) {
+  var newSet = [];
+  var has = {};
+  set.forEach(function (item) {
+    if (!has[item]) {
+      has[item] = true;
+      newSet.push(item);
+    }
+  });
+  return newSet;
 }
 
 function pathNormalize(dir) {

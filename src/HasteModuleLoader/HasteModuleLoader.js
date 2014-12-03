@@ -67,6 +67,8 @@ var NODE_CORE_MODULES = {
   zlib: true
 };
 
+var VENDOR_PATH = path.resolve(__dirname, '../../vendor');
+
 var _configUnmockListRegExpCache = null;
 
 function _buildLoadersList(config) {
@@ -485,8 +487,8 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
     return resolve.sync(moduleName, {
       basedir: path.dirname(currPath),
       extensions: this._config.moduleFileExtensions
-        .map(function(ext){ 
-          return '.' + ext; 
+        .map(function(ext){
+          return '.' + ext;
         })
     });
   } catch (e) {
@@ -586,6 +588,11 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
         throw e;
       }
       var unmockRegExp;
+
+      // Never mock the jasmine environment.
+      if (modulePath.indexOf(VENDOR_PATH) === 0) {
+        return false;
+      }
 
       this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
@@ -845,6 +852,11 @@ Loader.prototype.requireModule = function(currPath, moduleName,
 
   if (NODE_CORE_MODULES[moduleName]) {
     return require(moduleName);
+  }
+
+  // Always natively require the jasmine runner.
+  if (modulePath.indexOf(VENDOR_PATH) === 0) {
+    return require(modulePath);
   }
 
   if (!modulePath) {
