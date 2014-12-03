@@ -93,6 +93,16 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('just falls back when loading a native module', function() {
+      return buildLoader().then(function(loader) {
+        var exports = loader.requireMock(
+          __filename,
+          './test_root/build/Release/modulename.node'
+        );
+        expect(exports).toBeDefined();
+      });
+    });
+
     pit('stores and re-uses automocked @providesModule exports', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireMock(null, 'RegularModule');

@@ -881,6 +881,10 @@ Loader.prototype.requireModule = function(currPath, moduleName,
         modulePath,
         'utf8'
       ));
+    } else if(path.extname(modulePath) === '.node') {
+      // Just do an actual require if it is a native node module
+      // We can't mock those...
+      moduleObj.exports = require(modulePath);
     } else {
       this._execModule(moduleObj);
     }
