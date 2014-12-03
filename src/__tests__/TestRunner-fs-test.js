@@ -72,7 +72,7 @@ describe('TestRunner-fs', function() {
         var relPaths = paths.map(function (absPath) {
           return path.relative(rootDir, absPath);
         });
-        expect(relPaths).toEqual([
+        expect(relPaths.sort()).toEqual([
           '__testtests__/test.js',
           '__testtests__/test.jsx',
         ]);
