@@ -135,6 +135,10 @@ function (config, aggregatedResults) {
   var numTotalTests = aggregatedResults.numTotalTests;
   var runTime = aggregatedResults.runTime;
 
+  if (numTotalTests === 0) {
+    return;
+  }
+
   var results = '';
   if (numFailedTests) {
     results += colors.colorize(
