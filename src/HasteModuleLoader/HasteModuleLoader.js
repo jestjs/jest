@@ -314,6 +314,7 @@ Loader.prototype._getDependencyPathsFromResource = function(resource) {
 };
 
 Loader.prototype._getResource = function(resourceType, resourceName) {
+  // console.error(this._resourceMap);
   var resource = this._resourceMap.getResource(resourceType, resourceName);
 
   // TODO: Fix this properly in node-haste, not here :(

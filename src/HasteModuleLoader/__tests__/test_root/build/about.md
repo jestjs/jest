@@ -1,1 +1,0 @@
-This is an extremely simple node module from (https://github.com/kkaefer/node-cpp-modules)[https://github.com/kkaefer/node-cpp-modules]
