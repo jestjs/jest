@@ -119,7 +119,7 @@ function(config, testResult, aggregatedResults) {
 
   testResult.logMessages.forEach(function (message) {
     _printConsoleMessage(this.process, message);
-  });
+  }, this);
 
   if (!allTestsPassed) {
     this.log(formatFailureMessage(testResult, /*color*/true));
