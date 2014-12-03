@@ -314,7 +314,6 @@ Loader.prototype._getDependencyPathsFromResource = function(resource) {
 };
 
 Loader.prototype._getResource = function(resourceType, resourceName) {
-  // console.error(this._resourceMap);
   var resource = this._resourceMap.getResource(resourceType, resourceName);
 
   // TODO: Fix this properly in node-haste, not here :(
@@ -883,8 +882,7 @@ Loader.prototype.requireModule = function(currPath, moduleName,
         'utf8'
       ));
     } else if(path.extname(modulePath) === '.node') {
-      // Just do an actual require if it is a native node module
-      // We can't mock those...
+      // Just do a require if it is a native node module
       moduleObj.exports = require(modulePath);
     } else {
       this._execModule(moduleObj);
