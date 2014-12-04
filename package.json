@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "main": "src/jest.js",
   "dependencies": {
-    "coffee-script": "1.7.1",
+    "coffee-script": "^1.8.0",
     "cover": "~0.2.8",
     "diff": "~1.0.4",
     "graceful-fs": "^2.0.3",
