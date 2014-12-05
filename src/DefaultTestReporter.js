@@ -8,6 +8,7 @@
 'use strict';
 
 var colors = require('./lib/colors');
+var formatFailureMessage = require('./lib/utils').formatFailureMessage;
 var path = require('path');
 var istanbul = require('istanbul');
 var collector = new istanbul.Collector();
@@ -17,14 +18,7 @@ var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
 var TEST_NAME_COLOR = colors.BOLD;
 
-// A RegExp that matches paths that should not be included in error stack traces
-// (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
-    path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'vendor', 'jasmine')
-].join('|') + ')');
-
-function _printConsoleMessage(msg) {
+function _printConsoleMessage(process, msg) {
   switch (msg.type) {
     case 'dir':
     case 'log':
@@ -56,7 +50,7 @@ function _getResultHeader(passed, testName, columns) {
   ].concat(columns || []).join(' ');
 }
 
-function _printWaitingOn(aggregatedResults) {
+function _printWaitingOn(process, aggregatedResults) {
   var completedTests =
     aggregatedResults.numPassedTests +
     aggregatedResults.numFailedTests;
@@ -72,16 +66,26 @@ function _printWaitingOn(aggregatedResults) {
   }
 }
 
-function _clearWaitingOn() {
+function _clearWaitingOn(process) {
   process.stdout.write('\r\x1B[K');
 }
 
-function onRunStart(config, aggregatedResults) {
-  _printWaitingOn(aggregatedResults);
+function DefaultTestReporter(customProcess) {
+  this.process = customProcess || process;
 }
 
-function onTestResult(config, testResult, aggregatedResults) {
-  _clearWaitingOn();
+DefaultTestReporter.prototype.log = function(str) {
+  this.process.stdout.write(str + '\n');
+};
+
+DefaultTestReporter.prototype.onRunStart =
+function(config, aggregatedResults) {
+  _printWaitingOn(this.process, aggregatedResults);
+};
+
+DefaultTestReporter.prototype.onTestResult =
+function(config, testResult, aggregatedResults) {
+  _clearWaitingOn(this.process);
 
   var pathStr =
     config.rootDir
@@ -89,8 +93,8 @@ function onTestResult(config, testResult, aggregatedResults) {
     : testResult.testFilePath;
 
   if (testResult.testExecError) {
-    console.log(_getResultHeader(false, pathStr));
-    console.log(testResult.testExecError);
+    this.log(_getResultHeader(false, pathStr));
+    this.log(testResult.testExecError);
     return false;
   }
 
@@ -110,58 +114,31 @@ function onTestResult(config, testResult, aggregatedResults) {
     collector.add(testResult.coverage);
   }
 
-  console.log(_getResultHeader(allTestsPassed, pathStr, [
+  this.log(_getResultHeader(allTestsPassed, pathStr, [
     testRunTimeString
   ]));
 
-  testResult.logMessages.forEach(_printConsoleMessage);
+  testResult.logMessages.forEach(function (message) {
+    _printConsoleMessage(this.process, message);
+  }, this);
 
   if (!allTestsPassed) {
-    var ancestrySeparator = ' \u203A ';
-    var descBullet = colors.colorize('\u25cf ', colors.BOLD);
-    var msgBullet = '  - ';
-    var msgIndent = msgBullet.replace(/./g, ' ');
-
-    testResult.testResults.forEach(function(result) {
-      if (result.failureMessages.length === 0) {
-        return;
-      }
-
-      var testTitleAncestry =
-        result.ancestorTitles.map(function(title) {
-          return colors.colorize(title, colors.BOLD);
-        }).join(ancestrySeparator) + ancestrySeparator;
-
-      console.log(descBullet + testTitleAncestry + result.title);
-
-      result.failureMessages.forEach(function(errorMsg) {
-        // Filter out q and jasmine entries from the stack trace.
-        // They're super noisy and unhelpful
-        errorMsg = errorMsg.split('\n').filter(function(line) {
-          if (/^\s+at .*?/.test(line)) {
-            // Extract the file path from the trace line
-            var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-            if (filePath
-                && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-              return false;
-            }
-          }
-          return true;
-        }).join('\n');
-        console.log(msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent));
-      });
-    });
+    this.log(formatFailureMessage(testResult, /*color*/true));
   }
 
-  _printWaitingOn(aggregatedResults);
-}
+  _printWaitingOn(this.process, aggregatedResults);
+};
 
-function onRunComplete(config, aggregatedResults) {
+DefaultTestReporter.prototype.onRunComplete =
+function (config, aggregatedResults) {
   var numFailedTests = aggregatedResults.numFailedTests;
   var numPassedTests = aggregatedResults.numPassedTests;
   var numTotalTests = aggregatedResults.numTotalTests;
-  var startTime = aggregatedResults.startTime;
-  var endTime = aggregatedResults.endTime;
+  var runTime = aggregatedResults.runTime;
+
+  if (numTotalTests === 0) {
+    return;
+  }
 
   var results = '';
   if (numFailedTests) {
@@ -177,8 +154,8 @@ function onRunComplete(config, aggregatedResults) {
   );
   results += ' (' + numTotalTests + ' total)';
 
-  console.log(results);
-  console.log('Run time: ' + ((endTime - startTime) / 1000) + 's');
+  this.log(results);
+  this.log('Run time: ' + runTime + 's');
 
   if (config.collectCoverage) {
     reporter.addAll([ 'json', 'text', 'lcov', 'clover' ]);
@@ -186,9 +163,6 @@ function onRunComplete(config, aggregatedResults) {
         console.log('All reports generated');
     });
   }
-}
+};
 
-
-exports.onRunStart = onRunStart;
-exports.onTestResult = onTestResult;
-exports.onRunComplete = onRunComplete;
+module.exports = DefaultTestReporter;

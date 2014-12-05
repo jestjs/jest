@@ -151,7 +151,7 @@ TestRunner.prototype._loadConfigDependencies = function() {
  * direct dependencies).
  *
  * @param {Array<String>} paths A list of path strings to find related tests for
- * @return {Stream<String>} Stream of testPath strings
+ * @return {Stream<String>} Stream of absolute path strings
  */
 TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   var pathStream = through(
@@ -207,21 +207,24 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   return pathStream;
 };
 
+
 /**
- * Given a path pattern, return a stream of absolute paths for all tests that
- * match the pattern.
+ * Like `streamTestPathsRelatedTo`, but returns a Promise resolving an array of
+ * all paths.
+ *
+ * @param {Array<String>} paths A list of path strings to find related tests for
+ * @return {Promise<Array<String>>} Promise of array of absolute path strings
+ */
+TestRunner.prototype.promiseTestPathsRelatedTo = function(paths) {
+  return _pathStreamToPromise(this.streamTestPathsRelatedTo(paths));
+};
+
+/**
+ * Given a path pattern, find all absolute paths for all tests that match the
+ * pattern.
  *
  * @param {RegExp} pathPattern
- * @param {Function} onTestFound Callback called immediately when a test is
- *                               found.
- *
- *                               Ideally this function should return a
- *                               stream, but I don't personally understand all
- *                               the variations of "node streams" that exist in
- *                               the world (and their various compatibilities
- *                               with various node versions), so I've opted to
- *                               forgo that for now.
- * @return {Stream<String>} Stream of test-path strings
+ * @return {Stream<String>} Stream of absolute path strings
  */
 TestRunner.prototype.streamTestPathsMatching = function(pathPattern) {
   var pathStream = through(
@@ -260,6 +263,17 @@ TestRunner.prototype.streamTestPathsMatching = function(pathPattern) {
 
 
   return pathStream;
+};
+
+/**
+ * Like `streamTestPathsMatching`, but returns a Promise resolving an array of
+ * all paths
+ *
+ * @param {RegExp} pathPattern
+ * @return {Promise<Array<String>>} Promise of array of absolute path strings
+ */
+TestRunner.prototype.promiseTestPathsMatching = function(pathPattern) {
+  return _pathStreamToPromise(this.streamTestPathsMatching(pathPattern));
 };
 
 /**
@@ -378,26 +392,34 @@ TestRunner.prototype.runTest = function(testFilePath) {
  *
  * @param {Array<String>} testPaths Array of paths to test files
  * @param {Object} reporter Collection of callbacks called on test events
- * @return {Promise<Object>} Fulfilled with aggregate pass/fail information
- *                           about all tests that were run
+ * @return {Promise<Object>} Fulfilled with information about test run:
+ *   success: true if all tests passed
+ *   runTime: elapsed time in seconds to run all tests
+ *   numTotalTests: total number of tests considered
+ *   numPassedTests: number of tests run and passed
+ *   numFailedTests: number of tests run and failed
+ *   testResults: the jest result info for all tests run
  */
 TestRunner.prototype.runTests = function(testPaths, reporter) {
   if (!reporter) {
-    reporter = require('./defaultTestReporter');
+    var DefaultTestReporter = require('./DefaultTestReporter');
+    reporter = new DefaultTestReporter();
   }
   var config = this._config;
 
   var aggregatedResults = {
-    numFailedTests: 0,
-    numPassedTests: 0,
+    success: null,
+    runTime: null,
     numTotalTests: testPaths.length,
-    startTime: Date.now(),
-    endTime: null
+    numPassedTests: 0,
+    numFailedTests: 0,
+    testResults: [],
   };
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
   var onTestResult = function (testPath, testResult) {
+    aggregatedResults.testResults.push(testResult);
     if (testResult.numFailingTests > 0) {
       aggregatedResults.numFailedTests++;
     } else {
@@ -423,17 +445,20 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
+  var startTime = Date.now();
+
   return testRun.then(function() {
-    aggregatedResults.endTime = Date.now();
+    aggregatedResults.runTime = (Date.now() - startTime) / 1000;
+    aggregatedResults.success = aggregatedResults.numFailedTests === 0;
     reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
-    return aggregatedResults.numFailedTests === 0;
+    return aggregatedResults;
   });
 };
 
 TestRunner.prototype._createTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
-  if (this._opts.runInBand) {
+  if (this._opts.runInBand || testPaths.length <= 1) {
     return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
   } else {
     return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
@@ -517,5 +542,21 @@ TestRunner.prototype._createParallelTestRun = function(
       return workerPool.destroy();
     });
 };
+
+function _pathStreamToPromise(stream) {
+  var defer = q.defer();
+  var paths = [];
+  stream.on('data', function(path) {
+    paths.push(path);
+  });
+  stream.on('error', function(err) {
+    defer.reject(err);
+  });
+  stream.on('end', function() {
+    defer.resolve(paths);
+  });
+  return defer.promise;
+}
+
 
 module.exports = TestRunner;

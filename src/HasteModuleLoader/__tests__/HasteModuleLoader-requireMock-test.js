@@ -93,6 +93,27 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('just falls back when loading a native module', function() {
+      return buildLoader().then(function(loader) {
+        var error;
+        // Okay so this is a really WAT way to test this, but we
+        // are going to require an empty .node file which should
+        // throw an error letting us know that the file is too
+        // short. If it does not (it gives another error) then we
+        // are not correctly falling back to 'native' require.
+        try {
+          loader.requireMock(
+            __filename,
+            './test_root/NativeModule.node'
+          );
+        } catch (e) {
+          error = e;
+        } finally {
+          expect(error.message).toContain('NativeModule.node: file too short');
+        }
+      });
+    });
+
     pit('stores and re-uses automocked @providesModule exports', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireMock(null, 'RegularModule');

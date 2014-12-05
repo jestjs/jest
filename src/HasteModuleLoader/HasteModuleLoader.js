@@ -67,6 +67,8 @@ var NODE_CORE_MODULES = {
   zlib: true
 };
 
+var VENDOR_PATH = path.resolve(__dirname, '../../vendor');
+
 var _configUnmockListRegExpCache = null;
 
 function _buildLoadersList(config) {
@@ -587,6 +589,11 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
       }
       var unmockRegExp;
 
+      // Never mock the jasmine environment.
+      if (modulePath.indexOf(VENDOR_PATH) === 0) {
+        return false;
+      }
+
       this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
         unmockRegExp = this._unmockListRegExps[i];
@@ -847,6 +854,11 @@ Loader.prototype.requireModule = function(currPath, moduleName,
     return require(moduleName);
   }
 
+  // Always natively require the jasmine runner.
+  if (modulePath.indexOf(VENDOR_PATH) === 0) {
+    return require(modulePath);
+  }
+
   if (!modulePath) {
     throw new Error(
       'Cannot find module \'' + moduleName + '\' from \'' + currPath +
@@ -881,6 +893,9 @@ Loader.prototype.requireModule = function(currPath, moduleName,
         modulePath,
         'utf8'
       ));
+    } else if(path.extname(modulePath) === '.node') {
+      // Just do a require if it is a native node module
+      moduleObj.exports = require(modulePath);
     } else {
       this._execModule(moduleObj);
     }

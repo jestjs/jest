@@ -123,30 +123,7 @@ function _promiseRawConfig(argv, packageRoot) {
   }));
 }
 
-function _promiseTestPaths(argv, testRunner, config) {
-  var testPathStreamPromise = argv.onlyChanged ?
-    _promiseStreamOnlyChangedTestPaths(testRunner, config) :
-    _promiseStreamPatternMatchingTestPaths(argv, testRunner);
-
-  return testPathStreamPromise.then(function (testPathStream) {
-    var testPaths = q.defer();
-
-    var foundPaths = [];
-    testPathStream.on('data', function(pathStr) {
-      foundPaths.push(pathStr);
-    });
-    testPathStream.on('error', function(err) {
-      testPaths.reject(err);
-    });
-    testPathStream.on('end', function() {
-      testPaths.resolve(foundPaths);
-    });
-
-    return testPaths.promise;
-  });
-}
-
-function _promiseStreamOnlyChangedTestPaths(testRunner, config) {
+function _promiseOnlyChangedTestPaths(testRunner, config) {
   var testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
   return q.all(testPathDirsAreGit)
     .then(function(results) {
@@ -157,7 +134,6 @@ function _promiseStreamOnlyChangedTestPaths(testRunner, config) {
           'with git projects.\n'
         );
       }
-
       return q.all(config.testPathDirs.map(_findChangedFiles));
     })
     .then(function(changedPathSets) {
@@ -167,15 +143,15 @@ function _promiseStreamOnlyChangedTestPaths(testRunner, config) {
       changedPathSets.forEach(function(pathSet) {
         changedPaths = changedPaths.concat(pathSet);
       });
-      return testRunner.streamTestPathsRelatedTo(changedPaths);
+      return testRunner.promiseTestPathsRelatedTo(changedPaths);
     });
 }
 
-function _promiseStreamPatternMatchingTestPaths(argv, testRunner) {
-  return q(testRunner.streamTestPathsMatching(
+function _promisePatternMatchingTestPaths(argv, testRunner) {
+  return testRunner.promiseTestPathsMatching(
     argv.testPathPattern ||
     (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/)
-  ));
+  );
 }
 
 function runCLI(argv, packageRoot, onComplete) {
@@ -189,12 +165,14 @@ function runCLI(argv, packageRoot, onComplete) {
 
   _promiseConfig(argv, packageRoot).then(function(config) {
     var testRunner = new TestRunner(config, _testRunnerOptions(argv));
-    var testPaths = _promiseTestPaths(argv, testRunner, config);
+    var testPaths = argv.onlyChanged ?
+      _promiseOnlyChangedTestPaths(testRunner, config) :
+      _promisePatternMatchingTestPaths(argv, testRunner);
     return testPaths.then(function (testPaths) {
       return testRunner.runTests(testPaths);
     });
-  }).then(function (didRunSucceed) {
-    onComplete && onComplete(didRunSucceed);
+  }).then(function (runResults) {
+    onComplete && onComplete(runResults.success);
   }).catch(function (error) {
     console.error('Failed with unexpected error.');
     process.nextTick(function () {

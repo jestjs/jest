@@ -1,10 +1,10 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.1.18",
+  "version": "0.2.0",
   "main": "src/jest.js",
   "dependencies": {
-    "coffee-script": "1.7.1",
+    "coffee-script": "^1.8.0",
     "cover": "~0.2.8",
     "diff": "~1.0.4",
     "graceful-fs": "^2.0.3",
@@ -14,7 +14,7 @@
     "jasmine-pit": "~2.0.0",
     "jsdom": "~0.10.3",
     "node-find-files": "~0.0.2",
-    "node-haste": "^1.2.5",
+    "node-haste": "^1.2.8",
     "node-worker-pool": "~2.4.2",
     "optimist": "~0.6.0",
     "q": "~0.9.7",
