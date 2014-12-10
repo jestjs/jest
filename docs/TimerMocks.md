@@ -123,4 +123,4 @@ describe('infiniteTimerGame', function() {
 });
 ```
 Lastly, it may occasionally be useful in some tests to be able to clear all of
-the pending timers. For this, we have `jest.clearTimers()`.
+the pending timers. For this, we have `jest.clearAllTimers()`.
