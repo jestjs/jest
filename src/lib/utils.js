@@ -24,6 +24,7 @@ var DEFAULT_CONFIG_VALUES = {
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  coverageFormats: ['text', 'json']
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -205,6 +206,7 @@ function normalizeConfig(config) {
         break;
 
       case 'collectCoverage':
+      case 'coverageFormats':
       case 'globals':
       case 'moduleLoader':
       case 'name':

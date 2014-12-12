@@ -552,6 +552,8 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
   var moduleID = this._getNormalizedModuleID(currPath, moduleName);
   if (this._builtInModules.hasOwnProperty(moduleName)) {
     return false;
+  } else if (NODE_CORE_MODULES[moduleName]) {
+    return false;
   } else if (this._explicitShouldMock.hasOwnProperty(moduleID)) {
     return this._explicitShouldMock[moduleID];
   } else if (this._shouldAutoMock) {
