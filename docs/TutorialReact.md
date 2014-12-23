@@ -73,7 +73,7 @@ describe('CheckboxWithLabel', function() {
 
 ## Setup
 
-Since we are writing code using JSX, a bit of one-time setup is required to make the test working:
+Since we are writing code using JSX, a bit of one-time setup is required to make the test work:
 
 ```javascript
 // package.json
