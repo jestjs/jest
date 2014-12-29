@@ -8,7 +8,7 @@
 'use strict';
 
 var optimist = require('optimist');
-var q = require('q');
+//var q = require('q');
 var TestRunner = require('./TestRunner');
 var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 
@@ -23,17 +23,6 @@ if (require.main === module) {
     /* jshint -W082:true */
     function onMessage(message) {
       if (testRunner === null) {
-        // Quick sanity-check assertion that the first message is just an
-        // indicator that the resourceMap is ready to be read from disk
-        // (and not a "run-test" instruction")
-        if (!message.hasOwnProperty('resourceMapWrittenToDisk')
-            || message.resourceMapWrittenToDisk !== true) {
-          throw new Error(
-            'Received an unexpected initialization message from worker ' +
-            'coordinator: ' + JSON.stringify(message)
-          );
-        }
-
         testRunner = new TestRunner(config, {
           useCachedModuleLoaderResourceMap: true,
         });
@@ -56,15 +45,12 @@ if (require.main === module) {
         // resource map is a bottleneck (which is the case at the time of this
         // writing).
         testRunner.preloadResourceMap();
-
-        // Dummy response
-        return q({});
-      } else {
-        return testRunner.runTest(message.testFilePath)
-          .catch(function(err) {
-            throw (err.stack || err.message || err);
-          });
       }
+
+      return testRunner.runTest(message.testFilePath)
+        .catch(function(err) {
+          throw (err.stack || err.message || err);
+        });
     }
 
     workerUtils.startWorker(null, onMessage);

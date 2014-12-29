@@ -496,12 +496,6 @@ TestRunner.prototype._createParallelTestRun = function(
 
   return this._getModuleLoaderResourceMap()
     .then(function() {
-      // Tell all workers that it's now safe to read the resource map from disk.
-      return workerPool.sendMessageToAllWorkers({
-        resourceMapWrittenToDisk: true
-      });
-    })
-    .then(function() {
       return q.all(testPaths.map(function(testPath) {
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
