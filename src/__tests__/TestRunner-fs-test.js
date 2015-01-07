@@ -27,7 +27,7 @@ describe('TestRunner-fs', function() {
         var relPaths = paths.map(function (absPath) {
           return path.relative(rootDir, absPath);
         });
-        expect(relPaths).toEqual(['__testtests__/test.js']);
+        expect(relPaths).toEqual([path.normalize('__testtests__/test.js')]);
       });
     });
 
@@ -42,7 +42,7 @@ describe('TestRunner-fs', function() {
         var relPaths = paths.map(function (absPath) {
           return path.relative(rootDir, absPath);
         });
-        expect(relPaths).toEqual(['__testtests__/test.jsx']);
+        expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
       });
     });
 
@@ -57,7 +57,7 @@ describe('TestRunner-fs', function() {
         var relPaths = paths.map(function (absPath) {
           return path.relative(rootDir, absPath);
         });
-        expect(relPaths).toEqual(['__testtests__/test.foobar']);
+        expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
       });
     });
 
@@ -73,8 +73,8 @@ describe('TestRunner-fs', function() {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths.sort()).toEqual([
-          '__testtests__/test.js',
-          '__testtests__/test.jsx',
+          path.normalize('__testtests__/test.js'),
+          path.normalize('__testtests__/test.jsx'),
         ]);
       });
     });
