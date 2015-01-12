@@ -125,6 +125,7 @@ function Loader(config, environment, resourceMap) {
   this._reverseDependencyMap = null;
   this._shouldAutoMock = true;
   this._configShouldMockModuleNames = {};
+  this._moduleDirectories = config.moduleDirectories;
 
   if (_configUnmockListRegExpCache === null) {
     // Node must have been run with --harmony in order for WeakMap to be
@@ -415,6 +416,8 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
   // need to be looked up with context of the module that's calling
   // require().
   if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
+    var moduleDirectories = this._moduleDirectories;
+
     // Normalize the relative path to an absolute path
     var modulePath = path.resolve(currPath, '..', moduleName);
 
@@ -426,6 +429,13 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
     if (fs.existsSync(modulePath) &&
         fs.statSync(modulePath).isFile()) {
       return modulePath;
+    }
+    for (i = 0; i < moduleDirectories.length; i++) {
+      var otherModulePath = path.resolve(moduleDirectories[i], moduleName);
+      if (fs.existsSync(otherModulePath) &&
+          fs.statSync(otherModulePath).isFile()) {
+        return otherModulePath;
+      }
     }
     // LOAD_AS_FILE #2+
     for (i = 0; i < extensions.length; i++) {
