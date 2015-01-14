@@ -17,7 +17,7 @@ Jest doesn't come with builtin support for CoffeeScript but can easily be config
   },
   "jest": {
     "scriptPreprocessor": "preprocessor.js",
-    "testFileExtensions": ["coffee", "js"]
+    "testFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"]
   }
 ```
 
@@ -27,7 +27,8 @@ var coffee = require('coffee-script');
 
 module.exports = {
   process: function(src, path) {
-    if (path.match(/\.coffee$/)) {
+    // CoffeeScript files can be .coffee, .litcoffee, or .coffee.md
+    if (coffee.helpers.isCoffee(path)) {
       return coffee.compile(src, {'bare': true});
     }
     return src;
