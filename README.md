@@ -58,6 +58,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.testPathDirs` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testpathdirs-array-string)
   - [`config.testPathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testpathignorepatterns-array-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
+  - [`config.moduleDirectories` [array<string>]](#)
 
 #### Globally injected variables
 

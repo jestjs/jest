@@ -290,6 +290,17 @@ describe('utils-normalizeConfig', function() {
       ]);
     });
 
+    describe('moduleDirectories', function() {
+      it('substitutes <rootDir> tokens', function() {
+        var config = utils.normalizeConfig({
+          rootDir: '/root/path/foo',
+          moduleDirectories: ['<rootDir>/bar/baz']
+        });
+
+        expect(config.moduleDirectories[0]).toEqual(expectedPathFooBar);
+      });
+    });
+
     it('does not normalize trailing slashes', function() {
       // This is a list of patterns, so we can't assume any of them are
       // directories
