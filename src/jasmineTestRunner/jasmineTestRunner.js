@@ -85,9 +85,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         };
 
         for (var property in b) {
-          if (areArrays && typeof b[property] === 'function') {
-            continue;
-          }
           if (!hasKey(a, property) && hasKey(b, property)) {
             mismatchKeys.push(
               'expected has key \'' + property + '\', but missing from actual.'
@@ -95,9 +92,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           }
         }
         for (property in a) {
-          if (areArrays && typeof a[property] === 'function') {
-            continue;
-          }
           if (!hasKey(b, property) && hasKey(a, property)) {
             mismatchKeys.push(
               'expected missing key \'' + property + '\', but present in ' +
@@ -106,12 +100,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           }
         }
         for (property in b) {
-          // The only different implementation from the original jasmine
-          if (areArrays &&
-              (typeof a[property] === 'function' ||
-               typeof b[property] === 'function')) {
-            continue;
-          }
           var areEqual = this.equals_(
             a[property],
             b[property],
