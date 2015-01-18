@@ -58,6 +58,21 @@ describe('FakeTimers', function() {
       new FakeTimers(global);
       expect(global.process).toBe(undefined);
     });
+
+    it('mocks setImmediate if on exists on global', function() {
+      var origSetImmediate = function() {};
+      var global = {
+        setImmediate: origSetImmediate
+      };
+      new FakeTimers(global);
+      expect(global.setImmediate).not.toBe(origSetImmediate);
+    });
+
+    it('doesn\'t mock setImmediate if real impl isnt present', function() {
+      var global = {};
+      new FakeTimers(global);
+      expect(global.setImmediate).toBe(undefined);
+    });
   });
 
   describe('runAllTicks', function() {
@@ -148,6 +163,26 @@ describe('FakeTimers', function() {
       expect(mock1.mock.calls.length).toBe(1);
     });
 
+    it('cancels a callback even from native setImmediate', function() {
+      var nativeSetImmediate = jest.genMockFn();
+
+      var global = {
+        setImmediate: nativeSetImmediate
+      };
+
+      var fakeTimers = new FakeTimers(global);
+
+      var mock1 = jest.genMockFn();
+      global.setImmediate(mock1);
+      fakeTimers.runAllTicks();
+      expect(mock1.mock.calls.length).toBe(1);
+      expect(nativeSetImmediate.mock.calls.length).toBe(1);
+
+      // ensure that native setImmediate doesn't try to run the callback again
+      nativeSetImmediate.mock.calls[0][0]();
+      expect(mock1.mock.calls.length).toBe(1);
+    });
+
     it('doesnt run a tick callback if native nextTick already did', function() {
       var nativeNextTick = jest.genMockFn();
 
@@ -164,6 +199,27 @@ describe('FakeTimers', function() {
 
       // Emulate native nextTick running...
       nativeNextTick.mock.calls[0][0]();
+      expect(mock1.mock.calls.length).toBe(1);
+
+      // Ensure runAllTicks() doesn't run the callback again
+      fakeTimers.runAllTicks();
+      expect(mock1.mock.calls.length).toBe(1);
+    });
+
+    it('doesnt run a tick if native setImmediate already did', function() {
+      var nativeSetImmediate = jest.genMockFn();
+
+      var global = {
+        setImmediate: nativeSetImmediate
+      };
+
+      var fakeTimers = new FakeTimers(global);
+
+      var mock1 = jest.genMockFn();
+      global.setImmediate(mock1);
+
+      // Emulate native setImmediate running...
+      nativeSetImmediate.mock.calls[0][0]();
       expect(mock1.mock.calls.length).toBe(1);
 
       // Ensure runAllTicks() doesn't run the callback again
@@ -394,6 +450,7 @@ describe('FakeTimers', function() {
 
     it('resets all pending ticks callbacks', function() {
       var global = {
+        setImmediate: function() {},
         process: {
           nextTick: function() {}
         }
@@ -402,6 +459,7 @@ describe('FakeTimers', function() {
 
       var mock1 = jest.genMockFn();
       global.process.nextTick(mock1);
+      global.setImmediate(mock1);
 
       fakeTimers.reset();
       fakeTimers.runAllTicks();
@@ -635,6 +693,23 @@ describe('FakeTimers', function() {
 
       expect(global.process.nextTick).toBe(nativeProcessNextTick);
     });
+
+    it('resets native setImmediate when present', function() {
+      var nativeSetImmediate = jest.genMockFn();
+
+      var global = {
+        setImmediate: nativeSetImmediate
+      };
+      var fakeTimers = new FakeTimers(global);
+
+      // Ensure that fakeTimers has overridden the native timer APIs
+      // (because if it didn't, this test might pass when it shouldn't)
+      expect(global.setImmediate).not.toBe(nativeSetImmediate);
+
+      fakeTimers.useRealTimers();
+
+      expect(global.setImmediate).toBe(nativeSetImmediate);
+    });
   });
 
   describe('useFakeTimers', function() {
@@ -684,6 +759,24 @@ describe('FakeTimers', function() {
       fakeTimers.useFakeTimers();
 
       expect(global.process.nextTick).not.toBe(nativeProcessNextTick);
+    });
+
+    it('resets mock setImmediate when present', function() {
+      var nativeSetImmediate = jest.genMockFn();
+
+      var global = {
+        setImmediate: nativeSetImmediate
+      };
+      var fakeTimers = new FakeTimers(global);
+      fakeTimers.useRealTimers();
+
+      // Ensure that the real timers are installed at this point
+      // (because if they aren't, this test might pass when it shouldn't)
+      expect(global.setImmediate).toBe(nativeSetImmediate);
+
+      fakeTimers.useFakeTimers();
+
+      expect(global.setImmediate).not.toBe(nativeSetImmediate);
     });
   });
 });
