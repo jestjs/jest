@@ -102,7 +102,8 @@ function _constructHasteInst(config, options) {
       version: JSON.stringify(config),
       useNativeFind: true,
       maxProcesses: os.cpus().length,
-      maxOpenFiles: options.maxOpenFiles || 100
+      maxOpenFiles: options.maxOpenFiles || 100,
+      followSymlinks: true
     }
   );
 }
