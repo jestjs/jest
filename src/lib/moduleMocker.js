@@ -266,9 +266,8 @@ function _getMetadata(component, _refs) {
   if (type !== 'array') {
     if (type !== 'undefined') {
       for (var slot in component) {
-        if (slot.charAt(0) === '_' ||
-            (type === 'function' && component._isMockFunction &&
-             slot.match(/^mock/))) {
+        if (type === 'function' && component._isMockFunction &&
+            slot.match(/^mock/)) {
           continue;
         }
 
