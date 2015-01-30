@@ -53,6 +53,8 @@ function JSDomEnvironment(config) {
   this.global.DataView = DataView;
   this.global.Buffer = Buffer;
   this.global.process = process;
+  this.global.setImmediate = setImmediate;
+  this.global.clearImmediate = clearImmediate;
 
   this.fakeTimers = new FakeTimers(this.global);
 

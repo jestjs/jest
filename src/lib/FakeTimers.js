@@ -51,6 +51,18 @@ function FakeTimers(global, maxLoops) {
     );
   }
 
+  // If there's a global.setImmediate, mock it out
+  if (typeof global.setImmediate === 'function') {
+    this._originalTimerAPIs.setImmediate = global.setImmediate;
+    this._fakeTimerAPIs.setImmediate = mocks.getMockFn().mockImpl(
+        this._fakeSetImmediate.bind(this)
+    );
+    this._originalTimerAPIs.clearImmediate = global.clearImmediate;
+    this._fakeTimerAPIs.clearImmediate = mocks.getMockFn().mockImpl(
+      this._fakeClearImmediate.bind(this)
+    );
+  }
+
   this.useFakeTimers();
 
   // TODO: These globally-accessible function are now deprecated!
@@ -74,8 +86,10 @@ FakeTimers.prototype.clearAllTimers = function() {
 
 FakeTimers.prototype.reset = function() {
   this._cancelledTicks = {};
+  this._cancelledImmediates = {};
   this._now = 0;
   this._ticks = [];
+  this._immediates = [];
   this._timers = {};
 };
 
@@ -105,9 +119,35 @@ FakeTimers.prototype.runAllTicks = function() {
   }
 };
 
+FakeTimers.prototype.runAllImmediates = function() {
+  // Only run a generous number of immediates and then bail.
+
+  for (var i = 0; i < this._maxLoops; i++) {
+    var immediate = this._immediates.shift();
+
+    if (immediate === undefined) {
+      break;
+    }
+
+    if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
+      immediate.callback();
+      this._cancelledImmediates[immediate.uuid] = true;
+    }
+  }
+
+  if (i === this._maxLoops) {
+    throw new Error(
+      'Ran ' + this._maxLoops +
+      ' immediates, and there are still more! Assuming ' +
+      'we\'ve hit an infinite recursion and bailing out...'
+    );
+  }
+};
+
 // Used to be called runTimersRepeatedly
 FakeTimers.prototype.runAllTimers = function() {
   this.runAllTicks();
+  this.runAllImmediates();
 
   // Only run a generous number of timers and then bail.
   // This is just to help avoid recursive loops
@@ -180,12 +220,18 @@ FakeTimers.prototype.runWithRealTimers = function(cb) {
     typeof this._global.process === 'object'
     && typeof this._global.process.nextTick === 'function';
 
+  var hasSetImmediate = typeof this._global.setImmediate === 'function';
+
   var prevSetTimeout = this._global.setTimeout;
   var prevSetInterval = this._global.setInterval;
   var prevClearTimeout = this._global.clearTimeout;
   var prevClearInterval = this._global.clearInterval;
   if (hasNextTick) {
     var prevNextTick = this._global.process.nextTick;
+  }
+  if (hasSetImmediate) {
+    var prevSetImmediate = this._global.setImmediate;
+    var prevClearImmediate = this._global.clearImmediate;
   }
 
   this.useRealTimers();
@@ -206,6 +252,10 @@ FakeTimers.prototype.runWithRealTimers = function(cb) {
   if (hasNextTick) {
     this._global.process.nextTick = prevNextTick;
   }
+  if (hasSetImmediate) {
+    this._global.setImmediate = prevSetImmediate;
+    this._global.clearImmediate = prevClearImmediate;
+  }
 
   if (errThrown) {
     throw cbErr;
@@ -217,12 +267,18 @@ FakeTimers.prototype.useRealTimers = function() {
     typeof this._global.process === 'object'
     && typeof this._global.process.nextTick === 'function';
 
+  var hasSetImmediate = typeof this._global.setImmediate === 'function';
+
   this._global.setTimeout = this._originalTimerAPIs.setTimeout;
   this._global.setInterval = this._originalTimerAPIs.setInterval;
   this._global.clearTimeout = this._originalTimerAPIs.clearTimeout;
   this._global.clearInterval = this._originalTimerAPIs.clearInterval;
   if (hasNextTick) {
     this._global.process.nextTick = this._originalTimerAPIs.nextTick;
+  }
+  if (hasSetImmediate) {
+    this._global.setImmediate = this._originalTimerAPIs.setImmediate;
+    this._global.clearImmediate = this._originalTimerAPIs.clearImmediate;
   }
 };
 
@@ -231,6 +287,8 @@ FakeTimers.prototype.useFakeTimers = function() {
     typeof this._global.process === 'object'
     && typeof this._global.process.nextTick === 'function';
 
+  var hasSetImmediate = typeof this._global.setImmediate === 'function';
+
   this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
   this._global.setInterval = this._fakeTimerAPIs.setInterval;
   this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
@@ -238,12 +296,20 @@ FakeTimers.prototype.useFakeTimers = function() {
   if (hasNextTick) {
     this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
   }
+  if (hasSetImmediate) {
+    this._global.setImmediate = this._fakeTimerAPIs.setImmediate;
+    this._global.clearImmediate = this._fakeTimerAPIs.clearImmediate;
+  }
 };
 
 FakeTimers.prototype._fakeClearTimer = function(uuid) {
   if (this._timers.hasOwnProperty(uuid)) {
     delete this._timers[uuid];
   }
+};
+
+FakeTimers.prototype._fakeClearImmediate = function(uuid) {
+  this._cancelledImmediates[uuid] = true;
 };
 
 FakeTimers.prototype._fakeNextTick = function(callback) {
@@ -260,6 +326,32 @@ FakeTimers.prototype._fakeNextTick = function(callback) {
       cancelledTicks[uuid] = true;
     }
   });
+};
+
+FakeTimers.prototype._fakeSetImmediate = function(callback) {
+  var args = [];
+  for (var ii = 1, ll = arguments.length; ii < ll; ii++) {
+    args.push(arguments[ii]);
+  }
+
+  var uuid = this._uuidCounter++;
+
+  this._immediates.push({
+    uuid: uuid,
+    callback: function() {
+      return callback.apply(null, args);
+    }
+  });
+
+  var cancelledImmediates = this._cancelledImmediates;
+  this._originalTimerAPIs.setImmediate(function() {
+    if (!cancelledImmediates.hasOwnProperty(uuid)) {
+      callback();
+      cancelledImmediates[uuid] = true;
+    }
+  });
+
+  return uuid;
 };
 
 FakeTimers.prototype._fakeSetInterval = function(callback, intervalDelay) {
