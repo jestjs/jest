@@ -85,6 +85,30 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('finds webpack alias modules without file extension', function() {
+      return buildLoader().then(function(loader) {
+        loader.webpackConfigResolveAlias =
+          {_alias: __filename.split('__tests__')[0] + '__tests__'};
+        var exports = loader.requireModule(
+          __filename,
+          '_alias/test_root/RegularModule'
+        );
+        expect(exports.isRealModule).toBe(true);
+      });
+    });
+
+    pit('finds webpack alias modules with file extension', function() {
+      return buildLoader().then(function(loader) {
+        loader.webpackConfigResolveAlias =
+          {_alias: __filename.split('__tests__')[0] + '__tests__'};
+        var exports = loader.requireModule(
+          __filename,
+          '_alias/test_root/RegularModule.js'
+        );
+        expect(exports.isRealModule).toBe(true);
+      });
+    });
+
     pit('throws on non-existant relative-path modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {

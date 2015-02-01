@@ -1,3 +1,5 @@
+Note about webpack alias support: Read below in the last part of [Getting Started](#getting-started)
+
 # [Jest](http://facebook.github.io/jest/) [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest)
 
 Painless JavaScript Unit Testing
@@ -11,6 +13,8 @@ Painless JavaScript Unit Testing
 ## Getting Started
 
 Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-started.html) tutorial. It's pretty simple!
+
+To support Webpack resolve.aliases, include in the root directory of your app, webpack.config.js. Visit [webpack](http://webpack.github.io/docs/configuration.html) for more info on how to configure it to support aliases
 
 ## API
 

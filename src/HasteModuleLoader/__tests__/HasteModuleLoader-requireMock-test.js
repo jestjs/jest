@@ -93,6 +93,30 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('automocks webpack alias modules without a file extension', function() {
+      return buildLoader().then(function(loader) {
+        loader.webpackConfigResolveAlias =
+          {_alias: __filename.split('__tests__')[0] + '__tests__'};
+        var exports = loader.requireMock(
+          __filename,
+          '_alias/test_root/RegularModule'
+        );
+        expect(exports.getModuleStateValue._isMockFunction).toBe(true);
+      });
+    });
+
+    pit('automocks webpack alias modules with a file extension', function() {
+      return buildLoader().then(function(loader) {
+        loader.webpackConfigResolveAlias =
+          {_alias: __filename.split('__tests__')[0] + '__tests__'};
+        var exports = loader.requireMock(
+          __filename,
+          '_alias/test_root/RegularModule.js'
+        );
+        expect(exports.getModuleStateValue._isMockFunction).toBe(true);
+      });
+    });
+
     pit('just falls back when loading a native module', function() {
       return buildLoader().then(function(loader) {
         var error;
