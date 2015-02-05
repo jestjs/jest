@@ -13,13 +13,13 @@ describe('CheckboxWithLabel', () => {
       <CheckboxWithLabel labelOn="On" labelOff="Off" />
     )
 
+    var checkboxNode = React.findDOMNode(checkbox)
+
     // Verify that it's Off by default
-    var label = TestUtils.findRenderedDOMComponentWithTag(checkbox, 'label')
-    expect(label.getDOMNode().textContent).toEqual('Off')
+    expect(checkboxNode.textContent).toEqual('Off')
 
     // Simulate a click and verify that it is now On
-    var input = TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
-    TestUtils.Simulate.change(input)
-    expect(label.getDOMNode().textContent).toEqual('On')
+    TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input'))
+    expect(checkboxNode.textContent).toEqual('On')
   })
 })
