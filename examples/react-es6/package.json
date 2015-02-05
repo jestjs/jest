@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "react": "0.13.0-beta.1",
+    "react-tools": "0.13.0-beta.1"
+  },
+  "devDependencies": {
+    "6to5-core": "*"
+  },
+  "scripts": {
+    "test": "node ../../bin/jest.js"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-tools"
+    ]
+  }
+}
