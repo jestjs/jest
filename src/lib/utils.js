@@ -25,8 +25,7 @@ var DEFAULT_CONFIG_VALUES = {
   moduleFileExtensions: ['js', 'json'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
-  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
-  coverageFormats: ['text', 'json']
+  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
 };
 
 function _replaceRootDirTags(rootDir, config) {
