@@ -15,7 +15,6 @@
  *       Relatedly: It's time we vastly simplify node-haste.
  */
 
-var CoverageCollector = require('../IstanbulCollector');
 var fs = require('graceful-fs');
 var hasteLoaders = require('node-haste/lib/loaders');
 var moduleMocker = require('../lib/moduleMocker');
@@ -113,6 +112,9 @@ function _getCacheFilePath(config) {
 
 function Loader(config, environment, resourceMap) {
   this._config = config;
+  this._CoverageCollector = require(
+    config.testCollector || '../CoverageCollector'
+  );
   this._coverageCollectors = {};
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
@@ -228,7 +230,7 @@ Loader.prototype._execModule = function(moduleObj) {
   if (shouldCollectCoverage) {
     if (!this._coverageCollectors.hasOwnProperty(modulePath)) {
       this._coverageCollectors[modulePath] =
-        new CoverageCollector(moduleContent, modulePath);
+        new this._CoverageCollector(moduleContent, modulePath);
     }
     var collector = this._coverageCollectors[modulePath];
     moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] =

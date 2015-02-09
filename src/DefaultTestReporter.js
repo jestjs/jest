@@ -10,9 +10,6 @@
 var colors = require('./lib/colors');
 var formatFailureMessage = require('./lib/utils').formatFailureMessage;
 var path = require('path');
-var istanbul = require('istanbul');
-var collector = new istanbul.Collector();
-var reporter = new istanbul.Reporter();
 
 var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
@@ -110,9 +107,11 @@ function(config, testResult, aggregatedResults) {
     testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
   }
 
+  /*
   if (config.collectCoverage) {
-    collector.add(testResult.coverage);
+    // TODO: Find a nice pretty way to print this out
   }
+  */
 
   this.log(_getResultHeader(allTestsPassed, pathStr, [
     testRunTimeString
@@ -156,13 +155,6 @@ function (config, aggregatedResults) {
 
   this.log(results);
   this.log('Run time: ' + runTime + 's');
-
-  if (config.collectCoverage) {
-    reporter.addAll(config.coverageFormats);
-    reporter.write(collector, true, function () {
-        console.log('All reports generated');
-    });
-  }
 };
 
 module.exports = DefaultTestReporter;

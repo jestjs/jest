@@ -17,9 +17,11 @@ var DEFAULT_CONFIG_VALUES = {
   globals: {},
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: [],
+  testCollector: require.resolve('../IstanbulCollector'),
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testFileExtensions: ['js'],
+  testReporter: require.resolve('../IstanbulTestReporter'),
   moduleFileExtensions: ['js', 'json'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
@@ -215,8 +217,10 @@ function normalizeConfig(config) {
       case 'setupJSLoaderOptions':
       case 'setupJSTestLoaderOptions':
       case 'setupJSMockLoaderOptions':
+      case 'testCollector':
       case 'testDirectoryName':
       case 'testFileExtensions':
+      case 'testReporter':
       case 'moduleFileExtensions':
         value = config[key];
         break;
