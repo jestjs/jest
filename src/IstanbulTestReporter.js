@@ -17,7 +17,7 @@ function(config, testResult, aggregatedResults) {
     this, config, testResult, aggregatedResults
   );
 
-  if (config.collectCoverage) {
+  if (config.collectCoverage && testResult.coverage) {
     collector.add(testResult.coverage);
   }
 };
