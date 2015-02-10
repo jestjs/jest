@@ -485,27 +485,18 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
   }
 
   var resolveError = null;
-  var paths = [];
   var exts = this._config.moduleFileExtensions
     .map(function(ext){
       return '.' + ext;
     });
   try {
     if (NODE_PATH) {
-      if (NODE_PATH.indexOf(process.cwd()) !== -1) {
-        paths.push(NODE_PATH);
-      }
-      else {
-        paths.push(process.cwd() + '/' + NODE_PATH);
-      }
-
       return resolve.sync(moduleName, {
-        paths: paths,
+        paths: NODE_PATH.split(path.delimiter),
         basedir: path.dirname(currPath),
         extensions: exts
-        });
-    }
-    else {
+      });
+    } else {
       return resolve.sync(moduleName, {
         basedir: path.dirname(currPath),
         extensions: exts
