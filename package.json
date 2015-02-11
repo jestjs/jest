@@ -28,7 +28,7 @@
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": "0.8.x || 0.10.x"
+    "node": "0.8.x || 0.10.x || 0.12.x"
   },
   "repository": {
     "type": "git",
