@@ -113,7 +113,7 @@ function _getCacheFilePath(config) {
 function Loader(config, environment, resourceMap) {
   this._config = config;
   this._CoverageCollector = require(
-    config.testCollector || '../CoverageCollector'
+    config.coverageCollector || '../CoverageCollector'
   );
   this._coverageCollectors = {};
   this._currentlyExecutingModulePath = '';

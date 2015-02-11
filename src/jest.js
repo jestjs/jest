@@ -168,9 +168,8 @@ function runCLI(argv, packageRoot, onComplete) {
     var testPaths = argv.onlyChanged ?
       _promiseOnlyChangedTestPaths(testRunner, config) :
       _promisePatternMatchingTestPaths(argv, testRunner);
-    var testReporter = new (require(config.testReporter))();
     return testPaths.then(function (testPaths) {
-      return testRunner.runTests(testPaths, testReporter);
+      return testRunner.runTests(testPaths);
     });
   }).then(function (runResults) {
     onComplete && onComplete(runResults.success);

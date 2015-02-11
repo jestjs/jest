@@ -17,7 +17,7 @@ var DEFAULT_CONFIG_VALUES = {
   globals: {},
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: [],
-  testCollector: require.resolve('../IstanbulCollector'),
+  coverageCollector: require.resolve('../IstanbulCollector'),
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testFileExtensions: ['js'],
@@ -207,7 +207,7 @@ function normalizeConfig(config) {
         break;
 
       case 'collectCoverage':
-      case 'coverageFormats':
+      case 'coverageCollector':
       case 'globals':
       case 'moduleLoader':
       case 'name':
@@ -216,7 +216,6 @@ function normalizeConfig(config) {
       case 'setupJSLoaderOptions':
       case 'setupJSTestLoaderOptions':
       case 'setupJSMockLoaderOptions':
-      case 'testCollector':
       case 'testDirectoryName':
       case 'testFileExtensions':
       case 'testReporter':

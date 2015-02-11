@@ -401,11 +401,11 @@ TestRunner.prototype.runTest = function(testFilePath) {
  *   testResults: the jest result info for all tests run
  */
 TestRunner.prototype.runTests = function(testPaths, reporter) {
-  if (!reporter) {
-    var DefaultTestReporter = require('./DefaultTestReporter');
-    reporter = new DefaultTestReporter();
-  }
   var config = this._config;
+  if (!reporter) {
+    var TestReporter = require(config.testReporter);
+    reporter = new TestReporter();
+  }
 
   var aggregatedResults = {
     success: null,
