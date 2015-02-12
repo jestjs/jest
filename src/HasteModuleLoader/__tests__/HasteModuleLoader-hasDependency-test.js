@@ -13,7 +13,9 @@ describe('nodeHasteModuleLoader', function() {
   var HasteModuleLoader;
   var mockEnvironment;
   var resources;
-  var config;
+  var mockConfig = {
+    coverageCollector: '../IstanbulCollector'
+  };
 
   var mockResourceMap = {
     getResource: function(type, name) {
@@ -53,9 +55,6 @@ describe('nodeHasteModuleLoader', function() {
       })
     };
     resources = {};
-    config = {
-      coverageCollector: ''
-    };
   });
 
   describe('hasDependency', function() {
@@ -63,7 +62,7 @@ describe('nodeHasteModuleLoader', function() {
       resources.ModuleA = _generateResource('ModuleA', ['ModuleB']);
       resources.ModuleB = _generateResource('ModuleB');
 
-      var loader = new HasteModuleLoader(config,
+      var loader = new HasteModuleLoader(mockConfig,
         mockEnvironment, mockResourceMap);
       var mockModules = loader.requireModule(__filename, 'mock-modules');
       expect(mockModules.hasDependency('ModuleA', 'ModuleB')).toBe(true);
@@ -74,7 +73,7 @@ describe('nodeHasteModuleLoader', function() {
       resources.ModuleA = _generateResource('ModuleA', ['ModuleB']);
       resources.ModuleB = _generateResource('ModuleB', ['ModuleA']);
 
-      var loader = new HasteModuleLoader(config,
+      var loader = new HasteModuleLoader(mockConfig,
         mockEnvironment, mockResourceMap);
       var mockModules = loader.requireModule(__filename, 'mock-modules');
       expect(mockModules.hasDependency('ModuleA', 'ModuleB')).toBe(true);
@@ -86,7 +85,7 @@ describe('nodeHasteModuleLoader', function() {
       resources.ModuleB = _generateResource('ModuleB', ['ModuleC']);
       resources.ModuleC = _generateResource('ModuleC');
 
-      var loader = new HasteModuleLoader(config,
+      var loader = new HasteModuleLoader(mockConfig,
         mockEnvironment, mockResourceMap);
       var mockModules = loader.requireModule(__filename, 'mock-modules');
       expect(mockModules.hasDependency('ModuleA', 'ModuleC')).toBe(true);
@@ -97,7 +96,7 @@ describe('nodeHasteModuleLoader', function() {
       resources.ModuleB = _generateResource('ModuleB', ['ModuleC']);
       resources.ModuleC = _generateResource('ModuleC', ['ModuleA']);
 
-      var loader = new HasteModuleLoader(config,
+      var loader = new HasteModuleLoader(mockConfig,
         mockEnvironment, mockResourceMap);
       var mockModules = loader.requireModule(__filename, 'mock-modules');
       expect(mockModules.hasDependency('ModuleA', 'ModuleC')).toBe(true);
