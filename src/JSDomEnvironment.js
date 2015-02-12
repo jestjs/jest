@@ -109,7 +109,7 @@ JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
 };
 
 JSDomEnvironment.prototype.runWithRealTimers = function(cb) {
-  this._fakeTimers.runWithRealTimers(cb);
+  this.fakeTimers.runWithRealTimers(cb);
 };
 
 module.exports = JSDomEnvironment;
