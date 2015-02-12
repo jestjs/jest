@@ -17,13 +17,15 @@ var DEFAULT_CONFIG_VALUES = {
   globals: {},
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: [],
+  coverageCollector: require.resolve('../IstanbulCollector'),
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testFileExtensions: ['js'],
+  testReporter: require.resolve('../IstanbulTestReporter'),
   moduleFileExtensions: ['js', 'json'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
-  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -205,6 +207,7 @@ function normalizeConfig(config) {
         break;
 
       case 'collectCoverage':
+      case 'coverageCollector':
       case 'globals':
       case 'moduleLoader':
       case 'name':
@@ -215,6 +218,7 @@ function normalizeConfig(config) {
       case 'setupJSMockLoaderOptions':
       case 'testDirectoryName':
       case 'testFileExtensions':
+      case 'testReporter':
       case 'moduleFileExtensions':
         value = config[key];
         break;
