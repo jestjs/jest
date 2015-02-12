@@ -311,8 +311,13 @@ function loadConfigFromPackageJson(filePath) {
 
 var _contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
+  var cacheRec;
+  var mtime = fs.statSync(filePath).mtime;
   if (_contentCache.hasOwnProperty(filePath)) {
-    return _contentCache[filePath];
+    cacheRec = _contentCache[filePath];
+    if (cacheRec.mtime === mtime) {
+      return cacheRec.content;
+    }
   }
 
   var fileData = fs.readFileSync(filePath, 'utf8');
@@ -331,7 +336,8 @@ function readAndPreprocessFileContent(filePath, config) {
       throw e;
     }
   }
-  return _contentCache[filePath] = fileData;
+  _contentCache[filePath] = cacheRec = {mtime: mtime, content: fileData};
+  return cacheRec.content;
 }
 
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
