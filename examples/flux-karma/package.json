@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "jsxhint . && karma start --single-run"
+  },
+  "dependencies": {
+    "bluebird": "latest",
+    "flux": "latest",
+    "immutable": "latest",
+    "object-assign": "latest",
+    "react": "latest",
+    "react-tools": "latest"
+  },
+  "devDependencies": {
+    "6to5-loader": "latest",
+    "json-loader": "latest",
+    "jsx-loader": "latest",
+    "jsxhint": "latest",
+    "karma": "latest",
+    "karma-chrome-launcher": "latest",
+    "karma-cli": "latest",
+    "karma-firefox-launcher": "latest",
+    "karma-jasmine": "latest",
+    "karma-mocha-reporter": "latest",
+    "karma-sourcemap-loader": "latest",
+    "karma-webpack": "latest",
+    "rewire": "latest",
+    "rewire-webpack": "latest"
+  }
+}
