@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server --no-info --inline --progress",
+    "test": "jsxhint . && jest"
+  },
+  "dependencies": {
+    "bluebird": "latest",
+    "flux": "latest",
+    "immutable": "latest",
+    "object-assign": "latest",
+    "react": "latest",
+    "react-tools": "latest"
+  },
+  "devDependencies": {
+    "6to5-core": "latest",
+    "6to5-loader": "latest",
+    "jest-cli": "latest",
+    "json-loader": "latest",
+    "jsx-loader": "latest",
+    "jsxhint": "latest",
+    "webpack-dev-server": "latest"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-tools",
+      "<rootDir>/node_modules/immutable"
+    ],
+    "moduleFileExtensions": ["js", "jsx", "json"]
+  }
+}
+
