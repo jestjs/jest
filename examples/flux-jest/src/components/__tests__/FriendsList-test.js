@@ -17,10 +17,12 @@ describe('FriendsList', () => {
       fetch() {}
     });
     jest.setMock('../../stores/FriendsStore', {
+      // here we just return the list of friends
+      // as if the data was fetched from the server
       getAllFriends() {
-        // here we just return the list of friends
-        // as if the data was fetched from the server
-        return Immutable.fromJS(friendsJson);
+        // FIXME: https://github.com/facebook/jest/issues/228
+        var j = JSON.parse(JSON.stringify(friendsJson));
+        return Immutable.fromJS(j);
       },
       subscribe() {},
       unsubscribe() {}
@@ -28,7 +30,7 @@ describe('FriendsList', () => {
     FriendsList = require('../FriendsList');
   });
 
-  xit('should render list of items', () => {
+  it('should render list of items', () => {
     var list = TestUtils.renderIntoDocument(
       <FriendsList />
     );

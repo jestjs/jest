@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react/addons';
 
 var FriendInfo = React.createClass({
   render() {
