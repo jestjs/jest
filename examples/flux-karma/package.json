@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "start": "webpack-dev-server --no-info --inline --progress",
     "test": "jsxhint . && karma start --single-run"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "karma-sourcemap-loader": "latest",
     "karma-webpack": "latest",
     "rewire": "latest",
-    "rewire-webpack": "latest"
+    "rewire-webpack": "latest",
+    "webpack-dev-server": "latest"
   }
 }

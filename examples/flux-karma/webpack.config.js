@@ -5,7 +5,10 @@ module.exports = {
   devtool: 'inline-source-map',
 
   entry: {
-    app: './main.jsx'
+    app: [
+      'webpack-dev-server/client?http://localhost:8080',
+      './main.jsx'
+    ]
   },
 
   output: {
