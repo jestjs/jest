@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --no-info --inline --progress",
-    "test": "jsxhint . && jest"
+    "test": "jsxhint . && node ../../bin/jest.js"
   },
   "dependencies": {
     "bluebird": "latest",
@@ -15,7 +15,6 @@
   "devDependencies": {
     "6to5-core": "latest",
     "6to5-loader": "latest",
-    "jest-cli": "latest",
     "json-loader": "latest",
     "jsx-loader": "latest",
     "jsxhint": "latest",

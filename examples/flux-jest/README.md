@@ -1,1 +1,1 @@
-An React example using Flux for managing data flow, tested with Karma and Jasmine.
+An React example using Flux for managing data flow, tested with Jest.
