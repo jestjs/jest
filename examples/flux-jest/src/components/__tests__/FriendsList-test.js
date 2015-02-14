@@ -1,17 +1,23 @@
 jest.dontMock('../FriendsList');
+jest.dontMock('../FriendsListItem');
 jest.dontMock('../fixture/friends');
 
-import React from 'react/addons';
 import Immutable from 'immutable';
 import friendsJson from '../fixture/friends';
 
-var {TestUtils} = React.addons;
-
 describe('FriendsList', () => {
 
-  let FriendsList;
+  let React, TestUtils, FriendsList;
 
   beforeEach(() => {
+    // FIXME: apparently Jest or React has a problem when
+    // requiring `react/addons` as two version of React
+    // are being loaded alongside.
+    // The workaround is to require React before each test.
+    // https://groups.google.com/d/msg/reactjs/zyZDhXvaqs4/e-PyEOyzvt0J
+    React = require('react/addons');
+    TestUtils = React.addons.TestUtils;
+
     // we have to do some manual mocking
     jest.setMock('../../actions/FriendsActions', {
       fetch() {}
