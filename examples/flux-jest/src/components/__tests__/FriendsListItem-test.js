@@ -17,8 +17,8 @@ describe('FriendsListItem', () => {
   it('should render friend information', () => {
     var info = TestUtils.findRenderedDOMComponentWithClass(item, 'friend-info');
     expect(info.getDOMNode().hasChildNodes('span')).toBe(true);
-    expect(info.getDOMNode().children[0].textContent).toEqual(friend.firstName + ' ' + friend.lastName);
-    expect(info.getDOMNode().children[1].textContent).toEqual('(age: ' + friend.age + ')');
+    expect(info.getDOMNode().children[0].textContent).toEqual(`${friend.firstName} ${friend.lastName}`);
+    expect(info.getDOMNode().children[1].textContent).toEqual(`(age: ${friend.age})`);
   });
 
   it('should render friend image', () => {
