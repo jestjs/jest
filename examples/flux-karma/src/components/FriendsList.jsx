@@ -1,30 +1,30 @@
-import React from 'react'
-import Immutable from 'immutable'
-import FriendsActions from '../actions/FriendsActions'
-import FriendsStore from '../stores/FriendsStore'
-import FriendsListItem from './FriendsListItem'
+import React from 'react';
+import Immutable from 'immutable';
+import FriendsActions from '../actions/FriendsActions';
+import FriendsStore from '../stores/FriendsStore';
+import FriendsListItem from './FriendsListItem';
 
 var FriendsList = React.createClass({
   // we don't actually need this in this case,
   // it's just to show how you would use Immutable
   // equality checks to improve rendering performance
   shouldComponentUpdate(nextProps, nextState) {
-    return !Immutable.is(this.state.friends, nextState.friends)
+    return !Immutable.is(this.state.friends, nextState.friends);
   },
   getInitialState() {
-    return {friends: FriendsStore.getAllFriends()}
+    return {friends: FriendsStore.getAllFriends()};
   },
   componentWillMount() {
-    FriendsActions.fetch()
+    FriendsActions.fetch();
   },
   componentDidMount() {
-    FriendsStore.subscribe(this.onChange)
+    FriendsStore.subscribe(this.onChange);
   },
   componentWillUnmount() {
-    FriendsStore.unsubscribe(this.onChange)
+    FriendsStore.unsubscribe(this.onChange);
   },
   onChange() {
-    this.setState(this.getInitialState())
+    this.setState(this.getInitialState());
   },
   render() {
     return (
@@ -36,4 +36,4 @@ var FriendsList = React.createClass({
   }
 })
 
-export default FriendsList
+export default FriendsList;

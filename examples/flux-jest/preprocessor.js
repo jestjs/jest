@@ -1,4 +1,4 @@
-var to5 = require('6to5-core')
+var to5 = require('6to5-core');
 
 module.exports = {
   process: function(src, filename) {

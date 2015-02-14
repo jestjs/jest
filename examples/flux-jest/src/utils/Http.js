@@ -1,5 +1,5 @@
-import Promise from 'bluebird'
-import friendsJson from '../components/fixture/friends'
+import Promise from 'bluebird';
+import friendsJson from '../components/fixture/friends';
 
 var Http = {
 
@@ -7,10 +7,10 @@ var Http = {
     // we don't want to make an actual request,
     // so we just return the fixture
     return new Promise((resolve, reject) => {
-      resolve(friendsJson)
-    })
+      resolve(friendsJson);
+    });
   }
 
 }
 
-export default Http
+export default Http;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 var FriendInfo = React.createClass({
   render() {
@@ -9,7 +9,7 @@ var FriendInfo = React.createClass({
       </div>
     )
   }
-})
+});
 
 var FriendsListItem = React.createClass({
   render() {
@@ -25,6 +25,6 @@ var FriendsListItem = React.createClass({
       </li>
     )
   }
-})
+});
 
-export default FriendsListItem
+export default FriendsListItem;
