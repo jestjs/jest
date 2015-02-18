@@ -56,7 +56,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
     // Node must have been run with --harmony in order for WeakMap to be
     // available
-    if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
+    if (typeof WeakMap === undefined) {
       throw new Error('Please run node with the --harmony flag!');
     }
 
