@@ -55,9 +55,12 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     environment.runSourceText(jasmineOnlyContent);
 
     // Node must have been run with --harmony in order for WeakMap to be
-    // available
-    if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
-      throw new Error('Please run node with the --harmony flag!');
+    // available prior to version 0.12
+    if (typeof WeakMap !== 'function') {
+      throw new Error(
+        'Please run node with the --harmony flag! jest requires WeakMap ' +
+        'which is only available with the --harmony flag in node < v0.12'
+      );
     }
 
     // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to
