@@ -458,10 +458,10 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 TestRunner.prototype._createTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
-  if (this._opts.runInBand || testPaths.length <= 1) {
+  if (this._opts.runInBand) {
     return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
   } else {
-    return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
+    return this._createPooledTestRun(testPaths, onTestResult, onRunFailure);
   }
 };
 
@@ -481,7 +481,7 @@ TestRunner.prototype._createInBandTestRun = function(
   return testSequence;
 };
 
-TestRunner.prototype._createParallelTestRun = function(
+TestRunner.prototype._createPooledTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
   var workerPool = new WorkerPool(
