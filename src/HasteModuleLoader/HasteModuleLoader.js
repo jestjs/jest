@@ -972,6 +972,17 @@ Loader.prototype.resetModuleRegistry = function() {
             return jestRuntime.exports;
           }.bind(this),
 
+          getTestEnvData: function() {
+            var frozenCopy = {};
+            // Make a shallow copy only because a deep copy seems like
+            // overkill..
+            Object.keys(this._config.testEnvData).forEach(function(key) {
+              frozenCopy[key] = this._config.testEnvData[key];
+            }, this);
+            Object.freeze(frozenCopy);
+            return frozenCopy;
+          }.bind(this),
+
           genMockFromModule: function(moduleName) {
             return this._generateMock(
               this._currentlyExecutingModulePath,

@@ -14,17 +14,18 @@ var Q = require('q');
 
 var DEFAULT_CONFIG_VALUES = {
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
+  coverageCollector: require.resolve('../IstanbulCollector'),
   globals: {},
+  moduleFileExtensions: ['js', 'json'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   modulePathIgnorePatterns: [],
-  coverageCollector: require.resolve('../IstanbulCollector'),
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
+  testEnvData: {},
   testFileExtensions: ['js'],
-  testReporter: require.resolve('../IstanbulTestReporter'),
-  moduleFileExtensions: ['js', 'json'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
+  testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
 };
 
@@ -217,6 +218,7 @@ function normalizeConfig(config) {
       case 'setupJSTestLoaderOptions':
       case 'setupJSMockLoaderOptions':
       case 'testDirectoryName':
+      case 'testEnvData':
       case 'testFileExtensions':
       case 'testReporter':
       case 'moduleFileExtensions':

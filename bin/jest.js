@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 /* jshint node: true */
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var harmonize = require('harmonize');
@@ -84,6 +84,13 @@ var argv = optimist
       ),
       type: 'boolean'
     },
+    testEnvData: {
+      description: _wrapDesc(
+        'A JSON object (string) that specifies data that will be made ' +
+        'available in the test environment (via jest.getEnvData())'
+      ),
+      type: 'string'
+    },
     version: {
       alias: 'v',
       description: _wrapDesc('Print the version and exit'),
@@ -105,8 +112,12 @@ var argv = optimist
         'tests for changed files? Or for a specific set of files?'
       );
     }
+
+    if (argv.testEnvData) {
+      argv.testEnvData = JSON.parse(argv.testEnvData);
+    }
   })
-  .argv
+  .argv;
 
 if (argv.help) {
   optimist.showHelp();
@@ -154,7 +165,7 @@ if (fs.existsSync(cwdJestBinPath)) {
     process.on('exit', function(){
        process.exit(1);
     });
-    
+
     return;
   }
 } else {

@@ -86,6 +86,11 @@ function _promiseConfig(argv, packageRoot) {
     if (argv.coverage) {
       config.collectCoverage = true;
     }
+
+    if (argv.testEnvData) {
+      config.testEnvData = argv.testEnvData;
+    }
+
     return config;
   });
 }
