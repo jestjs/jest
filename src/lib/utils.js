@@ -337,13 +337,12 @@ function readFile(filePath) {
 }
 
 function loadConfigFromFile(filePath) {
-  var fileDir = path.dirname(filePath);
   return readFile(filePath).then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = fileDir;
+      config.rootDir = process.cwd();
     } else {
-      config.rootDir = path.resolve(fileDir, config.rootDir);
+      config.rootDir = path.resolve(path.dirname(filePath), config.rootDir);
     }
     return normalizeConfig(config);
   });
