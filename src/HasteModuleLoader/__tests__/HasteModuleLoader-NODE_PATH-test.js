@@ -17,7 +17,7 @@ describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
   var mockEnvironment;
   var resourceMap;
-  
+
   var CONFIG = utils.normalizeConfig({
     name: 'HasteModuleLoader-tests',
     rootDir: path.resolve(__dirname, 'test_root')
@@ -50,7 +50,7 @@ describe('HasteModuleLoader', function() {
   }
 
   pit('uses NODE_PATH to find modules', function() {
-    var nodePath = process.cwd() + 
+    var nodePath = process.cwd() +
       '/src/HasteModuleLoader/__tests__/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
@@ -58,7 +58,7 @@ describe('HasteModuleLoader', function() {
       expect(exports).toBeDefined();
     });
   });
-  
+
   pit('finds modules in NODE_PATH containing multiple paths', function() {
     var cwd = process.cwd();
     var nodePath = cwd + '/some/other/path' + path.delimiter + cwd +
@@ -69,19 +69,19 @@ describe('HasteModuleLoader', function() {
       expect(exports).toBeDefined();
     });
   });
-  
+
   pit('doesnt find modules if NODE_PATH is relative', function() {
     var nodePath = process.cwd().substr(path.sep.length) +
       'src/HasteModuleLoader/__tests__/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
       try {
-         var exports = loader.requireModuleOrMock(null, 
+         var exports = loader.requireModuleOrMock(null,
              'RegularModuleInNodePath');
          expect(exports).toBeUndefined();
       } catch (e) {
         expect(
-          (e.message.indexOf('Cannot find module'))).toBeGreaterThan(-1);    
+          (e.message.indexOf('Cannot find module'))).toBeGreaterThan(-1);
       }
     });
   });
