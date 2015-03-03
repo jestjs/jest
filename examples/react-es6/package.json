@@ -4,13 +4,13 @@
     "react-tools": "0.13.0-beta.1"
   },
   "devDependencies": {
-    "6to5-core": "*"
+    "babel-jest": "*"
   },
   "scripts": {
     "test": "node ../../bin/jest.js"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-tools"
