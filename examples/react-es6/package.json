@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "react": "0.13.0-beta.1",
-    "react-tools": "0.13.0-beta.1"
+    "react": "0.13.0-rc2",
+    "react-tools": "0.13.0-rc2"
   },
   "devDependencies": {
     "babel-jest": "*"
