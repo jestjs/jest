@@ -27,7 +27,7 @@ module.exports = {
     noParse: [],
     loaders: [
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /(\.js|\.jsx)$/, loaders: ['6to5-loader', 'jsx-loader?harmony'], exclude: /node_modules/ }
+      { test: /(\.js|\.jsx)$/, loaders: ['babel-loader', 'jsx-loader?harmony'], exclude: /node_modules/ }
     ]
   },
 

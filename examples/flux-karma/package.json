@@ -5,28 +5,28 @@
     "test": "jsxhint . && karma start --single-run"
   },
   "dependencies": {
-    "bluebird": "latest",
-    "flux": "latest",
-    "immutable": "latest",
-    "object-assign": "latest",
-    "react": "latest",
-    "react-tools": "latest"
+    "bluebird": "2.9.x",
+    "flux": "2.0.x",
+    "immutable": "3.6.x",
+    "object-assign": "2.0.x",
+    "react": "0.12.x",
+    "react-tools": "0.12.x"
   },
   "devDependencies": {
-    "6to5-loader": "latest",
-    "json-loader": "latest",
-    "jsx-loader": "latest",
-    "jsxhint": "latest",
-    "karma": "latest",
-    "karma-chrome-launcher": "latest",
-    "karma-cli": "latest",
-    "karma-firefox-launcher": "latest",
-    "karma-jasmine": "latest",
-    "karma-mocha-reporter": "latest",
-    "karma-sourcemap-loader": "latest",
-    "karma-webpack": "latest",
-    "rewire": "latest",
-    "rewire-webpack": "latest",
-    "webpack-dev-server": "latest"
+    "babel-loader": "4.0.x",
+    "json-loader": "0.5.x",
+    "jsx-loader": "0.12.x",
+    "jsxhint": "0.12.x",
+    "karma": "0.12.x",
+    "karma-chrome-launcher": "0.1.x",
+    "karma-cli": "0.0.x",
+    "karma-firefox-launcher": "0.1.x",
+    "karma-jasmine": "0.3.x",
+    "karma-mocha-reporter": "1.0.x",
+    "karma-sourcemap-loader": "0.3.x",
+    "karma-webpack": "1.5.x",
+    "rewire": "2.3.x",
+    "rewire-webpack": "1.0.x",
+    "webpack-dev-server": "1.7.x"
   }
 }

@@ -5,20 +5,20 @@
     "test": "jsxhint . && node ../../bin/jest.js"
   },
   "dependencies": {
-    "bluebird": "latest",
-    "flux": "latest",
-    "immutable": "latest",
-    "object-assign": "latest",
-    "react": "latest",
-    "react-tools": "latest"
+    "bluebird": "2.9.x",
+    "flux": "2.0.x",
+    "immutable": "3.6.x",
+    "object-assign": "2.0.x",
+    "react": "0.12.x",
+    "react-tools": "0.12.x"
   },
   "devDependencies": {
-    "babel-jest": "latest",
-    "babel-loader": "latest",
-    "json-loader": "latest",
-    "jsx-loader": "latest",
-    "jsxhint": "latest",
-    "webpack-dev-server": "latest"
+    "babel-jest": "4.0.x",
+    "babel-loader": "4.0.x",
+    "json-loader": "0.5.x",
+    "jsx-loader": "0.12.x",
+    "jsxhint": "0.12.x",
+    "webpack-dev-server": "1.7.x"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
