@@ -13,15 +13,15 @@
     "react-tools": "latest"
   },
   "devDependencies": {
-    "6to5-core": "latest",
-    "6to5-loader": "latest",
+    "babel-jest": "latest",
+    "babel-loader": "latest",
     "json-loader": "latest",
     "jsx-loader": "latest",
     "jsxhint": "latest",
     "webpack-dev-server": "latest"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-tools",
