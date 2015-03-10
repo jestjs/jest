@@ -21,10 +21,20 @@ var DIFFABLE_MATCHERS = {
   toEqual: true,
   toNotEqual: true
 };
+var LINEBREAK_REGEX = /[\r\n]/;
 
 function _highlightDifferences(a, b) {
-  var changes = diff.diffChars(a, b);
-
+  var differ;
+  if (a.match(LINEBREAK_REGEX) || b.match(LINEBREAK_REGEX)) {
+    // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
+    // (where "d" is the edit distance) and can get very slow for large edit
+    // distances. Mitigate the cost by switching to a lower-resolution diff
+    // whenever linebreaks are involved.
+    differ = diff.diffLines;
+  } else {
+    differ = diff.diffChars;
+  }
+  var changes = differ(a, b);
   var ret = {a: '', b: ''};
   var change;
   for (var i = 0, il = changes.length; i < il; i++) {
