@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server --no-info --inline --progress",
+    "test": "jsxhint . && karma start --single-run"
+  },
+  "dependencies": {
+    "bluebird": "2.9.x",
+    "flux": "2.0.x",
+    "immutable": "3.6.x",
+    "object-assign": "2.0.x",
+    "react": "0.12.x",
+    "react-tools": "0.12.x"
+  },
+  "devDependencies": {
+    "babel-loader": "4.0.x",
+    "json-loader": "0.5.x",
+    "jsx-loader": "0.12.x",
+    "jsxhint": "0.12.x",
+    "karma": "0.12.x",
+    "karma-chrome-launcher": "0.1.x",
+    "karma-cli": "0.0.x",
+    "karma-firefox-launcher": "0.1.x",
+    "karma-jasmine": "0.3.x",
+    "karma-mocha-reporter": "1.0.x",
+    "karma-sourcemap-loader": "0.3.x",
+    "karma-webpack": "1.5.x",
+    "rewire": "2.3.x",
+    "rewire-webpack": "1.0.x",
+    "webpack-dev-server": "1.7.x"
+  }
+}

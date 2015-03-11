@@ -1,0 +1,41 @@
+{
+  "count": 5,
+  "total": 5,
+  "results": [
+    {
+      "id": "54d8f88872d43d0c80797c8c",
+      "firstName": "Boone",
+      "lastName": "Miles",
+      "picture": "http://placehold.it/32x32",
+      "age": 35
+    },
+    {
+      "id": "54d8f8881059aca70a802973",
+      "firstName": "Brandi",
+      "lastName": "Everett",
+      "picture": "http://placehold.it/32x32",
+      "age": 22
+    },
+    {
+      "id": "54d8f88889846191d24c42c1",
+      "firstName": "Jenifer",
+      "lastName": "Romero",
+      "picture": "http://placehold.it/32x32",
+      "age": 32
+    },
+    {
+      "id": "54d8f888e2a2a6840e6c918c",
+      "firstName": "Mills",
+      "lastName": "Kidd",
+      "picture": "http://placehold.it/32x32",
+      "age": 24
+    },
+    {
+      "id": "54d8f888335c4f37f6ab7fa2",
+      "firstName": "Kim",
+      "lastName": "Riddle",
+      "picture": "http://placehold.it/32x32",
+      "age": 34
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server --no-info --inline --progress",
+    "test": "jsxhint . && node ../../bin/jest.js"
+  },
+  "dependencies": {
+    "bluebird": "2.9.x",
+    "flux": "2.0.x",
+    "immutable": "3.6.x",
+    "object-assign": "2.0.x",
+    "react": "0.12.x",
+    "react-tools": "0.12.x"
+  },
+  "devDependencies": {
+    "babel-jest": "4.0.x",
+    "babel-loader": "4.0.x",
+    "json-loader": "0.5.x",
+    "jsx-loader": "0.12.x",
+    "jsxhint": "0.12.x",
+    "webpack-dev-server": "1.7.x"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-tools",
+      "<rootDir>/node_modules/immutable"
+    ],
+    "moduleFileExtensions": ["js", "jsx", "json"]
+  }
+}
+
