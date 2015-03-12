@@ -333,7 +333,7 @@ function readAndPreprocessFileContent(filePath, config) {
 
   if (config.scriptPreprocessor &&
       !config.preprocessorIgnorePatterns.some(function(pattern) {
-        return filePath.indexOf(pattern) >= 0;
+        return pattern.test(filePath);
       })) {
     try {
       fileData = require(config.scriptPreprocessor).process(fileData, filePath);
