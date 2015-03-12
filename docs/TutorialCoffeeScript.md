@@ -17,7 +17,8 @@ Jest doesn't come with built-in support for CoffeeScript but can easily be confi
   },
   "jest": {
     "scriptPreprocessor": "preprocessor.js",
-    "testFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"]
+    "testFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"],
+    "moduleFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"]
   }
 ```
 
