@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "react": "0.13.x",
+    "react-tools": "0.13.x"
+  },
+  "devDependencies": {
+    "babel-jest": "*"
+  },
+  "scripts": {
+    "test": "node ../../bin/jest.js"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-tools"
+    ]
+  }
+}
