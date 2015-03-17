@@ -107,6 +107,10 @@ function(config, testResult, aggregatedResults) {
     testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
   }
 
+  var totalTestsStr = '('
+    + (testResult.numFailingTests + testResult.numPassingTests)
+    + ' tests)';
+
   /*
   if (config.collectCoverage) {
     // TODO: Find a nice pretty way to print this out
@@ -114,7 +118,7 @@ function(config, testResult, aggregatedResults) {
   */
 
   this.log(_getResultHeader(allTestsPassed, pathStr, [
-    testRunTimeString
+    totalTestsStr, testRunTimeString
   ]));
 
   testResult.logMessages.forEach(function (message) {
