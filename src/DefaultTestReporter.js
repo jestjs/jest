@@ -130,9 +130,18 @@ function(config, testResult, aggregatedResults) {
 
 DefaultTestReporter.prototype.onRunComplete =
 function (config, aggregatedResults) {
-  var numFailedTests = aggregatedResults.numFailedTests;
-  var numPassedTests = aggregatedResults.numPassedTests;
-  var numTotalTests = aggregatedResults.numTotalTests;
+  var numFailedTests = 0;
+  var numPassedTests = 0;
+
+  aggregatedResults.testResults.forEach(
+    function (testResult) {
+      numFailedTests += testResult.numFailingTests;
+      numPassedTests += testResult.numPassingTests;
+    }
+  );
+
+  var numTotalTests = numFailedTests + numPassedTests;
+
   var runTime = aggregatedResults.runTime;
 
   if (numTotalTests === 0) {
