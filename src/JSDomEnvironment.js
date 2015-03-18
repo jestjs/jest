@@ -29,7 +29,8 @@ function JSDomEnvironment(config) {
   // use it (depending on the context -- such as TestRunner.js when operating as
   // a workerpool parent), this is the best way to ensure we only spend time
   // require()ing this when necessary.
-  this.global = require('./lib/jsdom-compat').jsdom().parentWindow;
+  // this.global = require('./lib/jsdom-compat').jsdom().parentWindow;
+  this.global = require('jsdom').jsdom().parentWindow;
 
   // Node's error-message stack size is limited at 10, but it's pretty useful to
   // see more than that when a test fails.
@@ -73,12 +74,12 @@ function JSDomEnvironment(config) {
 
   // jsdom doesn't have support for window.Image, so we just replace it with a
   // dummy constructor
-  try {
-    /* jshint nonew:false */
-    new this.global.Image();
-  } catch (e) {
-    this.global.Image = function Image() {};
-  }
+  // try {
+  //   /* jshint nonew:false */
+  //   new this.global.Image();
+  // } catch (e) {
+  //   this.global.Image = function Image() {};
+  // }
 
   // Pass through the node `process` global.
   // TODO: Consider locking this down somehow so tests can't do crazy stuff to

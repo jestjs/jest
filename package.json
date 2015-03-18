@@ -12,7 +12,7 @@
     "istanbul": "^0.3.2",
     "jasmine-only": "0.1.0",
     "jasmine-pit": "~2.0.0",
-    "jsdom": "~0.10.3",
+    "jsdom": "^3.0.1",
     "node-find-files": "~0.0.2",
     "node-haste": "^1.2.8",
     "node-worker-pool": "~2.4.2",
