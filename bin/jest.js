@@ -134,7 +134,7 @@ var cwd = process.cwd();
 // Is the cwd somewhere within an npm package?
 var cwdPackageRoot = cwd;
 while (!fs.existsSync(path.join(cwdPackageRoot, 'package.json'))) {
-  if (cwdPackageRoot === '/') {
+  if (cwdPackageRoot === '/' || cwdPackageRoot.match(/[A-Z]:\\/)) {
     cwdPackageRoot = cwd;
     break;
   }
