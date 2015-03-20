@@ -74,8 +74,8 @@ var myMock = jest.genMockFunction();
 console.log( myMock() );
 > undefined
 
-myMock.mockReturnValueOnce(10);
- .mockReturnValueOnce('x');
+myMock.mockReturnValueOnce(10)
+ .mockReturnValueOnce('x')
  .mockReturnValue(true);
 
 console.log(myMock(), myMock(), myMock(), myMock());
@@ -89,13 +89,11 @@ in for, in favor of injecting values directly into the test right before they're
 used.
 
 ```javascript
-var Filter = require('Filter');
-
 var filterTestFn = jest.genMockFunction();
 
 // Make the mock return `true` for the first call,
 // and `false` for the second call
-filterTestFunction
+filterTestFn
   .mockReturnValueOnce(true)
   .mockReturnValueOnce(false);
 
