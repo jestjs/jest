@@ -13,7 +13,6 @@
     "jasmine-only": "0.1.0",
     "jasmine-pit": "~2.0.0",
     "jsdom": "~0.10.3",
-    "node-find-files": "~0.0.2",
     "node-haste": "^1.2.8",
     "node-worker-pool": "~2.4.2",
     "optimist": "~0.6.0",
@@ -23,7 +22,8 @@
     "underscore": "1.2.4"
   },
   "devDependencies": {
-    "jshint": "~2.5.0"
+    "jshint": "~2.5.0",
+    "node-find-files": "0.0.2"
   },
   "bin": {
     "jest": "./bin/jest.js"
