@@ -156,7 +156,7 @@ function getDevDependencies(pkgJson) {
 
   devDependencies = Object.keys(devDependencies);
   devDependencies = devDependencies.filter(function isOnlyDev(pkgName) {
-    return !(dependencies[pkgName] || peerDependencies[pkgName])
+    return !(dependencies[pkgName] || peerDependencies[pkgName]);
   });
   devDependencies = devDependencies.map(function addNodeModules(pkgName) {
     return '/node_modules/' + pkgName + '/';
