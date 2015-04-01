@@ -114,6 +114,9 @@ function _promiseRawConfig(argv, packageRoot) {
     } else {
       pkgJson.jest.rootDir = path.resolve(packageRoot, pkgJson.jest.rootDir);
     }
+    var devDep = utils.getDevDependencies(pkgJson);
+    var ignorePatterns = pkgJson.jest.modulePathIgnorePatterns || [];
+    pkgJson.jest.modulePathIgnorePatterns = ignorePatterns.concat(devDep);
     var config = utils.normalizeConfig(pkgJson.jest);
     config.name = pkgJson.name;
     return q(config);
