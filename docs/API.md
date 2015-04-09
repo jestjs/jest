@@ -8,6 +8,7 @@ permalink: docs/api.html
 
 #### The `jest` object
 
+  - `jest.addMatchers(matchers)`
   - [`jest.autoMockOff()`](#jest-automockoff)
   - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
