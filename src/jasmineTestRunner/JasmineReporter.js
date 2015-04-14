@@ -8,8 +8,10 @@
 'use strict';
 
 var colors = require('../lib/colors');
+
 var diff = require('diff');
-var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
+var jasmineRequire = require('../../vendor/jasmine/jasmine-2.2.0');
+var jasmine = jasmineRequire.core(jasmineRequire);
 var Q = require('q');
 
 var colorize = colors.colorize;
@@ -96,113 +98,77 @@ function _prettyPrint(obj, indent, cycleWeakMap) {
   }
 }
 
-function _extractSuiteResults(container, ancestorTitles, suite) {
-  ancestorTitles = ancestorTitles.concat([suite.description]);
-
-  suite.specs().forEach(
-    _extractSpecResults.bind(null, container, ancestorTitles)
-  );
-  suite.suites().forEach(
-    _extractSuiteResults.bind(null, container, ancestorTitles)
-  );
+function _extractParent(spec) {
+  return spec.fullName.replace(spec.description, '').trim();
 }
 
-function _extractSpecResults(container, ancestorTitles, spec) {
+function _extractSpecResults(specResult) {
   var results = {
-    title: 'it ' + spec.description,
-    ancestorTitles: ancestorTitles,
+    title: 'it ' + specResult.description,
+    ancestorTitles: [_extractParent(specResult)], // TODO: is not fully done
     failureMessages: [],
-    logMessages: [],
-    numPassingAsserts: 0
+    logMessages: [], // There is no type in result in Jasmine 2.0
+    numPassingAsserts: 0 // TODO: it is not used over the code
   };
 
-  spec.results().getItems().forEach(function(result) {
-    switch (result.type) {
-      case 'log':
-        results.logMessages.push(result.toString());
-        break;
-      case 'expect':
-        if (result.passed()) {
-          results.numPassingAsserts++;
+  specResult.failedExpectations.forEach(function(failed) {
+    if (!failed.matcher) {
+      var errorMessage = failed.stack.replace(
+        /(^.*$(?=\n\s*at))/m,
+          colorize('$1', ERROR_TITLE_COLOR)
+      );
 
-        // Exception thrown
-        } else if (!result.matcherName && result.trace.stack) {
-          // jasmine doesn't give us access to the actual Error object, so we
-          // have to regexp out the message from the stack string in order to
-          // colorize the `message` value
-          result.trace.stack = result.trace.stack.replace(
-            /(^.*$(?=\n\s*at))/m,
-            colorize('$1', ERROR_TITLE_COLOR)
-          );
+      results.failureMessages.push(errorMessage);
+    } else {
+      var message;
+      if (DIFFABLE_MATCHERS[failed.matcherName]) {
+        var ppActual = _prettyPrint(failed.actual);
+        var ppExpected = _prettyPrint(failed.expected);
+        var colorDiff = _highlightDifferences(ppActual, ppExpected);
 
-          results.failureMessages.push(result.trace.stack);
-        } else {
-          var message;
-          if (DIFFABLE_MATCHERS[result.matcherName]) {
-            var ppActual = _prettyPrint(result.actual);
-            var ppExpected = _prettyPrint(result.expected);
-            var colorDiff = _highlightDifferences(ppActual, ppExpected);
-
-            var matcherName = (result.isNot ? 'NOT ' : '') + result.matcherName;
-
-            message =
+        message =
               colorize('Expected:', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.a +
-                ' ' + colorize(matcherName + ':', ERROR_TITLE_COLOR) +
+                ' ' + colorize(failed.matcherName + ':', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.b;
-          } else {
-            message = colorize(result.message, ERROR_TITLE_COLOR);
-          }
+      } else {
+        message = colorize(failed.message, ERROR_TITLE_COLOR);
+      }
 
-          if (result.trace.stack) {
-            // Replace the error message with a colorized version of the error
-            message = result.trace.stack.replace(result.trace.message, message);
+      if (failed.stack) {
+        // Replace the error message with a colorized version of the error
+        message = failed.stack.replace(failed.message, message);
 
-            // Remove the 'Error: ' prefix from the stack trace
-            message = message.replace(/^.*Error:\s*/, '');
+        // Remove the 'Error: ' prefix from the stack trace
+        message = message.replace(/^.*Error:\s*/, '');
 
-            // Remove jasmine jonx from the stack trace
-            message = message.split('\n').filter(function(line) {
-              return !/vendor\/jasmine\//.test(line);
-            }).join('\n');
-          }
+        // Remove jasmine jonx from the stack trace
+        message = message.split('\n').filter(function(line) {
+          return !/vendor\/jasmine\//.test(line);
+        }).join('\n');
+      }
 
-          results.failureMessages.push(message);
-        }
-        break;
-      default:
-        throw new Error(
-          'Unexpected jasmine spec result type: ', result.type
-        );
+      results.failureMessages.push(message);
     }
   });
 
-  container.push(results);
+  return results;
 }
 
 function JasmineReporter() {
-  jasmine.Reporter.call(this);
-  this._logs = [];
   this._resultsDeferred = Q.defer();
+  this._testResults = [];
 }
-JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
 
-// All describe() suites have finished
-JasmineReporter.prototype.reportRunnerResults = function(runner) {
-  var testResults = [];
+JasmineReporter.prototype.specDone = function(result) {
+  this._testResults.push(_extractSpecResults(result));
+};
 
-  // Find the top-level suite in order to flatten test results from there
-  if (runner.suites().length) {
-    runner.suites().forEach(function(suite) {
-      if (suite.parentSuite === null) {
-        _extractSuiteResults(testResults, [], suite);
-      }
-    });
-  }
-
+JasmineReporter.prototype.getResults = function() {
   var numFailingTests = 0;
   var numPassingTests = 0;
-  testResults.forEach(function(testResult) {
+
+  this._testResults.forEach(function(testResult) {
     if (testResult.failureMessages.length > 0) {
       numFailingTests++;
     } else {
@@ -213,11 +179,11 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
   this._resultsDeferred.resolve({
     numFailingTests: numFailingTests,
     numPassingTests: numPassingTests,
-    testResults: testResults
+    testResults: this._testResults
   });
-};
 
-JasmineReporter.prototype.getResults = function() {
+  this._testResults = []; // I'm not sure if we really need this
+
   return this._resultsDeferred.promise;
 };
 
