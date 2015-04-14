@@ -122,7 +122,7 @@ function _extractSpecResults(specResult) {
   };
 
   specResult.failedExpectations.forEach(function(failed) {
-    if (!failed.matcher) {
+    if (!failed.matcherName) {
       var errorMessage = failed.stack.replace(
         /(^.*$(?=\n\s*at))/m,
           colorize('$1', ERROR_TITLE_COLOR)
