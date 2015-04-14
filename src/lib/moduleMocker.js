@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-// This module uses arguments.callee, so it can't currently run in strict mode
+// This module uses the Function constructor, so it can't currently run
+// in strict mode
 /* jshint strict:false */
 
 function isA(typeName, value) {
@@ -73,11 +74,10 @@ function makeComponent(metadata) {
         (metadata.members && metadata.members.prototype &&
           metadata.members.prototype.members) || {};
 
-      var f = function() {
+      var mockConstructor = function() {
         instances.push(this);
         calls.push(Array.prototype.slice.call(arguments));
-        /* jshint noarg:false */
-        if (this instanceof arguments.callee) {
+        if (this instanceof f) {
           // This is probably being called as a constructor
           for (var slot in prototype) {
             // Copy prototype methods to the instance to make
@@ -113,18 +113,27 @@ function makeComponent(metadata) {
         }
 
         // Otherwise use prototype implementation
-        if (returnValue === undefined && arguments.callee._protoImpl) {
-          return arguments.callee._protoImpl.apply(this, arguments);
+        if (returnValue === undefined && f._protoImpl) {
+          return f._protoImpl.apply(this, arguments);
         }
 
         return returnValue;
       };
 
+      // Preserve `name` property of mocked function.
+      /* jshint evil:true */
+      var f = new Function(
+        'mockConstructor',
+        'return function ' + metadata.name + '(){' +
+          'return mockConstructor.apply(this,arguments);' +
+        '}'
+      )(mockConstructor);
+
       f._isMockFunction = true;
 
       f.mock = {
-        calls : calls,
-        instances : instances
+        calls: calls,
+        instances: instances
       };
 
       f.mockClear = function() {
@@ -241,6 +250,7 @@ function _getMetadata(component, _refs) {
     metadata.value = component;
     return metadata;
   } else if (type === 'function') {
+    metadata.name = component.name;
     metadata.__TCmeta = component.__TCmeta;
     if (component._isMockFunction) {
       metadata.mockImpl = component._getMockImplementation();

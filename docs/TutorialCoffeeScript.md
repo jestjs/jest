@@ -7,7 +7,7 @@ permalink: docs/tutorial-coffeescript.html
 next: tutorial-react
 ---
 
-Jest doesn't come with builtin support for CoffeeScript but can easily be configured in order to make it work. To use CoffeeScript, you need to tell Jest to look for `*.coffee` files and to run them through the CoffeeScript compiler when requiring them. Here's how to set it up with Jest:
+Jest doesn't come with built-in support for CoffeeScript but can easily be configured in order to make it work. To use CoffeeScript, you need to tell Jest to look for `*.coffee` files and to run them through the CoffeeScript compiler when requiring them. Here's how to set it up with Jest:
 
 
 ```javascript
@@ -17,7 +17,8 @@ Jest doesn't come with builtin support for CoffeeScript but can easily be config
   },
   "jest": {
     "scriptPreprocessor": "preprocessor.js",
-    "testFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"]
+    "testFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"],
+    "moduleFileExtensions": ["coffee", "litcoffee", "coffee.md", "js"]
   }
 ```
 
