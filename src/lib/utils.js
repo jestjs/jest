@@ -221,6 +221,7 @@ function normalizeConfig(config) {
       case 'testEnvData':
       case 'testFileExtensions':
       case 'testReporter':
+      case 'testRunner':
       case 'moduleFileExtensions':
         value = config[key];
         break;
