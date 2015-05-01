@@ -3,13 +3,14 @@
     "start": "node server/server.js"
   },
   "dependencies": {
-    "react": "~0.12.2",
-    "optimist": "0.6.0",
-    "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
     "connect": "2.8.3",
+    "fs.extra": "*",
     "glob": "*",
     "mkdirp": "*",
-    "request": "*",
-    "fs.extra": "*"
+    "object-assign": "^2.0.0",
+    "optimist": "0.6.0",
+    "react": "~0.13.2",
+    "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
+    "request": "*"
   }
 }

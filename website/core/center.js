@@ -5,10 +5,15 @@
 
 var React = require('React');
 
+var assign = require('object-assign');
+
 var center = React.createClass({
   render: function() {
-    return this.transferPropsTo(
-      <div style={{textAlign: 'center'}}>{this.props.children}</div>
+    var {style, ...props} = this.props;
+    style = assign({}, style, {textAlign: 'center'});
+
+    return (
+      <div {...props} style={style}>{this.props.children}</div>
     );
   }
 });
