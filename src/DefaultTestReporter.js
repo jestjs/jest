@@ -107,6 +107,10 @@ function(config, testResult, aggregatedResults) {
     testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
   }
 
+  var totalTestsStr = '('
+    + (testResult.numFailingTests + testResult.numPassingTests)
+    + ' tests)';
+
   /*
   if (config.collectCoverage) {
     // TODO: Find a nice pretty way to print this out
@@ -114,7 +118,7 @@ function(config, testResult, aggregatedResults) {
   */
 
   this.log(_getResultHeader(allTestsPassed, pathStr, [
-    testRunTimeString
+    totalTestsStr, testRunTimeString
   ]));
 
   testResult.logMessages.forEach(function (message) {
@@ -130,9 +134,18 @@ function(config, testResult, aggregatedResults) {
 
 DefaultTestReporter.prototype.onRunComplete =
 function (config, aggregatedResults) {
-  var numFailedTests = aggregatedResults.numFailedTests;
-  var numPassedTests = aggregatedResults.numPassedTests;
-  var numTotalTests = aggregatedResults.numTotalTests;
+  var numFailedTests = 0;
+  var numPassedTests = 0;
+
+  aggregatedResults.testResults.forEach(
+    function (testResult) {
+      numFailedTests += testResult.numFailingTests;
+      numPassedTests += testResult.numPassingTests;
+    }
+  );
+
+  var numTotalTests = numFailedTests + numPassedTests;
+
   var runTime = aggregatedResults.runTime;
 
   if (numTotalTests === 0) {
