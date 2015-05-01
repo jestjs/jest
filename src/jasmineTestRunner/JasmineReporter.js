@@ -12,7 +12,17 @@ var diff = require('diff');
 var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
 var Q = require('q');
 
-var colorize = colors.colorize;
+// Used in colorized mode.
+function _formatMsgColorized(msg, color) {
+  return colors.colorize(msg, color);
+}
+
+// Used in plain mode to output.
+function _formatMsgPlain(msg) {
+  return msg;
+}
+
+var _formatMsg;
 
 var ERROR_TITLE_COLOR = colors.RED + colors.BOLD + colors.UNDERLINE;
 var DIFFABLE_MATCHERS = {
@@ -40,9 +50,9 @@ function _highlightDifferences(a, b) {
   for (var i = 0, il = changes.length; i < il; i++) {
     change = changes[i];
     if (change.added) {
-      ret.b += colorize(change.value, colors.RED_BG);
+      ret.b += _formatMsg(change.value, colors.RED_BG);
     } else if (change.removed) {
-      ret.a += colorize(change.value, colors.RED_BG);
+      ret.a += _formatMsg(change.value, colors.RED_BG);
     } else {
       ret.a += change.value;
       ret.b += change.value;
@@ -88,7 +98,7 @@ function _prettyPrint(obj, indent, cycleWeakMap) {
     var orderedKeys = Object.keys(obj).sort();
     var value;
     var keysOutput = [];
-    var keyIndent = colorize('|', colors.GRAY) + ' ';
+    var keyIndent = _formatMsg('|', colors.GRAY) + ' ';
     for (var i = 0; i < orderedKeys.length; i++) {
       if (orderedKeys[i] === '__jstest_pp_cycle__') {
         continue;
@@ -142,7 +152,7 @@ function _extractSpecResults(container, ancestorTitles, spec) {
           // colorize the `message` value
           result.trace.stack = result.trace.stack.replace(
             /(^.*$(?=\n\s*at))/m,
-            colorize('$1', ERROR_TITLE_COLOR)
+            _formatMsg('$1', ERROR_TITLE_COLOR)
           );
 
           results.failureMessages.push(result.trace.stack);
@@ -156,12 +166,12 @@ function _extractSpecResults(container, ancestorTitles, spec) {
             var matcherName = (result.isNot ? 'NOT ' : '') + result.matcherName;
 
             message =
-              colorize('Expected:', ERROR_TITLE_COLOR) +
+              _formatMsg('Expected:', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.a +
-                ' ' + colorize(matcherName + ':', ERROR_TITLE_COLOR) +
+                ' ' + _formatMsg(matcherName + ':', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.b;
           } else {
-            message = colorize(result.message, ERROR_TITLE_COLOR);
+            message = _formatMsg(result.message, ERROR_TITLE_COLOR);
           }
 
           if (result.trace.stack) {
@@ -190,8 +200,9 @@ function _extractSpecResults(container, ancestorTitles, spec) {
   container.push(results);
 }
 
-function JasmineReporter() {
+function JasmineReporter(config) {
   jasmine.Reporter.call(this);
+  this._config = config || {};
   this._logs = [];
   this._resultsDeferred = Q.defer();
 }
@@ -200,6 +211,10 @@ JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
 // All describe() suites have finished
 JasmineReporter.prototype.reportRunnerResults = function(runner) {
   var testResults = [];
+
+  _formatMsg = this._config.noHighlight
+    ? _formatMsgPlain
+    : _formatMsgColorized;
 
   // Find the top-level suite in order to flatten test results from there
   if (runner.suites().length) {

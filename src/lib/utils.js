@@ -26,7 +26,8 @@ var DEFAULT_CONFIG_VALUES = {
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
   testReporter: require.resolve('../IstanbulTestReporter'),
-  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
+  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  noHighlight: false,
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -222,6 +223,7 @@ function normalizeConfig(config) {
       case 'testFileExtensions':
       case 'testReporter':
       case 'moduleFileExtensions':
+      case 'noHighlight':
         value = config[key];
         break;
 

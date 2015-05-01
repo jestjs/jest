@@ -15,6 +15,18 @@ var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
 var TEST_NAME_COLOR = colors.BOLD;
 
+// Used in colorized mode.
+function _formatMsgColorized(msg, color) {
+  return colors.colorize(msg, color);
+}
+
+// Used in plain mode to output.
+function _formatMsgPlain(msg) {
+  return msg;
+}
+
+var _formatMsg;
+
 function _printConsoleMessage(process, msg) {
   switch (msg.type) {
     case 'dir':
@@ -23,12 +35,12 @@ function _printConsoleMessage(process, msg) {
       break;
     case 'warn':
       process.stderr.write(
-        colors.colorize(msg.data, colors.YELLOW)
+        _formatMsg(msg.data, colors.YELLOW)
       );
       break;
     case 'error':
       process.stderr.write(
-        colors.colorize(msg.data, colors.RED)
+        _formatMsg(msg.data, colors.RED)
       );
       break;
     default:
@@ -38,12 +50,12 @@ function _printConsoleMessage(process, msg) {
 
 function _getResultHeader(passed, testName, columns) {
   var passFailTag = passed
-    ? colors.colorize(' PASS ', PASS_COLOR)
-    : colors.colorize(' FAIL ', FAIL_COLOR);
+    ? _formatMsg(' PASS ', PASS_COLOR)
+    : _formatMsg(' FAIL ', FAIL_COLOR);
 
   return [
     passFailTag,
-    colors.colorize(testName, TEST_NAME_COLOR)
+    _formatMsg(testName, TEST_NAME_COLOR)
   ].concat(columns || []).join(' ');
 }
 
@@ -55,7 +67,7 @@ function _printWaitingOn(process, aggregatedResults) {
   if (remainingTests > 0) {
     var pluralTests = remainingTests === 1 ? 'test' : 'tests';
     process.stdout.write(
-      colors.colorize(
+      _formatMsg(
         'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
         colors.GRAY + colors.BOLD
       )
@@ -63,8 +75,13 @@ function _printWaitingOn(process, aggregatedResults) {
   }
 }
 
-function _clearWaitingOn(process) {
-  process.stdout.write('\r\x1B[K');
+function _clearWaitingOn(process, config) {
+  // Don't write special chars in noHighlight mode
+  // to get clean output for logs.
+  var command = config.noHighlight
+    ? '\n'
+    : '\r\x1B[K';
+  process.stdout.write(command);
 }
 
 function DefaultTestReporter(customProcess) {
@@ -77,12 +94,16 @@ DefaultTestReporter.prototype.log = function(str) {
 
 DefaultTestReporter.prototype.onRunStart =
 function(config, aggregatedResults) {
+  _formatMsg = config.noHighlight
+    ? _formatMsgPlain
+    : _formatMsgColorized;
+
   _printWaitingOn(this.process, aggregatedResults);
 };
 
 DefaultTestReporter.prototype.onTestResult =
 function(config, testResult, aggregatedResults) {
-  _clearWaitingOn(this.process);
+  _clearWaitingOn(this.process, config);
 
   var pathStr =
     config.rootDir
@@ -104,7 +125,7 @@ function(config, testResult, aggregatedResults) {
 
   var testRunTimeString = '(' + testRunTime + 's)';
   if (testRunTime > 2.5) {
-    testRunTimeString = colors.colorize(testRunTimeString, FAIL_COLOR);
+    testRunTimeString = _formatMsg(testRunTimeString, FAIL_COLOR);
   }
 
   /*
@@ -122,7 +143,7 @@ function(config, testResult, aggregatedResults) {
   }, this);
 
   if (!allTestsPassed) {
-    this.log(formatFailureMessage(testResult, /*color*/true));
+    this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
   }
 
   _printWaitingOn(this.process, aggregatedResults);
@@ -141,13 +162,13 @@ function (config, aggregatedResults) {
 
   var results = '';
   if (numFailedTests) {
-    results += colors.colorize(
+    results += _formatMsg(
       numFailedTests + ' test' + (numFailedTests === 1 ? '' : 's') + ' failed',
       colors.RED + colors.BOLD
     );
     results += ', ';
   }
-  results += colors.colorize(
+  results += _formatMsg(
     numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
     colors.GREEN + colors.BOLD
   );

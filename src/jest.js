@@ -91,6 +91,10 @@ function _promiseConfig(argv, packageRoot) {
       config.testEnvData = argv.testEnvData;
     }
 
+    if (argv.noHighlight) {
+      config.noHighlight = argv.noHighlight;
+    }
+
     return config;
   });
 }
