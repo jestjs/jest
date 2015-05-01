@@ -149,6 +149,22 @@ function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
   return numCoveredLines / numMeasuredLines;
 }
 
+function getDevDependencies(pkgJson) {
+  var devDependencies = pkgJson.devDependencies || {};
+  var dependencies = pkgJson.dependencies || {};
+  var peerDependencies = pkgJson.peerDependencies || {};
+
+  devDependencies = Object.keys(devDependencies);
+  devDependencies = devDependencies.filter(function isOnlyDev(pkgName) {
+    return !(dependencies[pkgName] || peerDependencies[pkgName]);
+  });
+  devDependencies = devDependencies.map(function addNodeModules(pkgName) {
+    return '/node_modules/' + pkgName + '/';
+  });
+
+  return devDependencies;
+}
+
 function normalizeConfig(config) {
   var newConfig = {};
 
@@ -426,6 +442,7 @@ exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
+exports.getDevDependencies = getDevDependencies;
 exports.normalizeConfig = normalizeConfig;
 exports.pathNormalize = pathNormalize;
 exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
