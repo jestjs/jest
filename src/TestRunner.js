@@ -362,7 +362,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
           global: env.global,
           require: moduleLoader.constructBoundRequire(
             config.setupEnvScriptFile
-          )
+          ),
+          jest: moduleLoader.getJestRuntime(config.setupEnvScriptFile)
         }
       );
     }

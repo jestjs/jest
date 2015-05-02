@@ -938,6 +938,10 @@ Loader.prototype.requireModuleOrMock = function(currPath, moduleName) {
   }
 };
 
+Loader.prototype.getJestRuntime = function(dir) {
+    return this._builtInModules['jest-runtime'](dir).exports;
+};
+
 /**
  * Clears all cached module objects. This allows one to reset the state of
  * all modules in the system. It will reset (read: clear) the export objects
