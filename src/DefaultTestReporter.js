@@ -15,95 +15,23 @@ var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
 var TEST_NAME_COLOR = colors.BOLD;
 
-// Used in colorized mode.
-function _formatMsgColorized(msg, color) {
-  return colors.colorize(msg, color);
-}
-
-// Used in plain mode to output.
-function _formatMsgPlain(msg) {
-  return msg;
-}
-
-var _formatMsg;
-
-function _printConsoleMessage(process, msg) {
-  switch (msg.type) {
-    case 'dir':
-    case 'log':
-      process.stdout.write(msg.data);
-      break;
-    case 'warn':
-      process.stderr.write(
-        _formatMsg(msg.data, colors.YELLOW)
-      );
-      break;
-    case 'error':
-      process.stderr.write(
-        _formatMsg(msg.data, colors.RED)
-      );
-      break;
-    default:
-      throw new Error('Unknown console message type!: ' + msg.type);
-  }
-}
-
-function _getResultHeader(passed, testName, columns) {
-  var passFailTag = passed
-    ? _formatMsg(' PASS ', PASS_COLOR)
-    : _formatMsg(' FAIL ', FAIL_COLOR);
-
-  return [
-    passFailTag,
-    _formatMsg(testName, TEST_NAME_COLOR)
-  ].concat(columns || []).join(' ');
-}
-
-function _printWaitingOn(process, aggregatedResults) {
-  var completedTests =
-    aggregatedResults.numPassedTests +
-    aggregatedResults.numFailedTests;
-  var remainingTests = aggregatedResults.numTotalTests - completedTests;
-  if (remainingTests > 0) {
-    var pluralTests = remainingTests === 1 ? 'test' : 'tests';
-    process.stdout.write(
-      _formatMsg(
-        'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
-        colors.GRAY + colors.BOLD
-      )
-    );
-  }
-}
-
-function _clearWaitingOn(process, config) {
-  // Don't write special chars in noHighlight mode
-  // to get clean output for logs.
-  var command = config.noHighlight
-    ? '\n'
-    : '\r\x1B[K';
-  process.stdout.write(command);
-}
-
 function DefaultTestReporter(customProcess) {
-  this.process = customProcess || process;
+  this._process = customProcess || process;
 }
 
 DefaultTestReporter.prototype.log = function(str) {
-  this.process.stdout.write(str + '\n');
+  this._process.stdout.write(str + '\n');
 };
 
 DefaultTestReporter.prototype.onRunStart =
 function(config, aggregatedResults) {
-  _formatMsg = config.noHighlight
-    ? _formatMsgPlain
-    : _formatMsgColorized;
-
-  _printWaitingOn(this.process, aggregatedResults);
+  this._config = config;
+  this._printWaitingOn(aggregatedResults);
 };
 
 DefaultTestReporter.prototype.onTestResult =
 function(config, testResult, aggregatedResults) {
-  _clearWaitingOn(this.process, config);
+  this._clearWaitingOn();
 
   var pathStr =
     config.rootDir
@@ -111,7 +39,7 @@ function(config, testResult, aggregatedResults) {
     : testResult.testFilePath;
 
   if (testResult.testExecError) {
-    this.log(_getResultHeader(false, pathStr));
+    this.log(this._getResultHeader(false, pathStr));
     this.log(testResult.testExecError);
     return false;
   }
@@ -125,7 +53,7 @@ function(config, testResult, aggregatedResults) {
 
   var testRunTimeString = '(' + testRunTime + 's)';
   if (testRunTime > 2.5) {
-    testRunTimeString = _formatMsg(testRunTimeString, FAIL_COLOR);
+    testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
   }
 
   /*
@@ -134,19 +62,17 @@ function(config, testResult, aggregatedResults) {
   }
   */
 
-  this.log(_getResultHeader(allTestsPassed, pathStr, [
+  this.log(this._getResultHeader(allTestsPassed, pathStr, [
     testRunTimeString
   ]));
 
-  testResult.logMessages.forEach(function (message) {
-    _printConsoleMessage(this.process, message);
-  }, this);
+  testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
     this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
   }
 
-  _printWaitingOn(this.process, aggregatedResults);
+  this._printWaitingOn(aggregatedResults);
 };
 
 DefaultTestReporter.prototype.onRunComplete =
@@ -162,13 +88,13 @@ function (config, aggregatedResults) {
 
   var results = '';
   if (numFailedTests) {
-    results += _formatMsg(
+    results += this._formatMsg(
       numFailedTests + ' test' + (numFailedTests === 1 ? '' : 's') + ' failed',
       colors.RED + colors.BOLD
     );
     results += ', ';
   }
-  results += _formatMsg(
+  results += this._formatMsg(
     numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
     colors.GREEN + colors.BOLD
   );
@@ -176,6 +102,71 @@ function (config, aggregatedResults) {
 
   this.log(results);
   this.log('Run time: ' + runTime + 's');
+};
+
+DefaultTestReporter.prototype._printConsoleMessage = function(msg) {
+  switch (msg.type) {
+    case 'dir':
+    case 'log':
+      this._process.stdout.write(msg.data);
+      break;
+    case 'warn':
+      this._process.stderr.write(
+        this._formatMsg(msg.data, colors.YELLOW)
+      );
+      break;
+    case 'error':
+      this._process.stderr.write(
+        this._formatMsg(msg.data, colors.RED)
+      );
+      break;
+    default:
+      throw new Error('Unknown console message type!: ' + msg.type);
+  }
+};
+
+DefaultTestReporter.prototype._clearWaitingOn = function() {
+  // Don't write special chars in noHighlight mode
+  // to get clean output for logs.
+  var command = this._config.noHighlight
+    ? '\n'
+    : '\r\x1B[K';
+  this._process.stdout.write(command);
+};
+
+DefaultTestReporter.prototype._formatMsg = function(msg, color) {
+  if (this._config.noHighlight) {
+    return msg;
+  }
+  return colors.colorize(msg, color);
+};
+
+DefaultTestReporter.prototype._getResultHeader =
+function (passed, testName, columns) {
+  var passFailTag = passed
+    ? this._formatMsg(' PASS ', PASS_COLOR)
+    : this._formatMsg(' FAIL ', FAIL_COLOR);
+
+  return [
+    passFailTag,
+    this._formatMsg(testName, TEST_NAME_COLOR)
+  ].concat(columns || []).join(' ');
+};
+
+DefaultTestReporter.prototype._printWaitingOn = function(aggregatedResults) {
+  var completedTests =
+    aggregatedResults.numPassedTests +
+    aggregatedResults.numFailedTests;
+  var remainingTests = aggregatedResults.numTotalTests - completedTests;
+  if (remainingTests > 0) {
+    var pluralTests = remainingTests === 1 ? 'test' : 'tests';
+    this._process.stdout.write(
+      this._formatMsg(
+        'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
+        colors.GRAY + colors.BOLD
+      )
+    );
+  }
 };
 
 module.exports = DefaultTestReporter;
