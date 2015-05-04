@@ -95,7 +95,13 @@ var argv = optimist
       alias: 'v',
       description: _wrapDesc('Print the version and exit'),
       type: 'boolean'
-    }
+    },
+    noHighlight: {
+      description: _wrapDesc(
+        'Disables test results output highlighting'
+      ),
+      type: 'boolean'
+    },
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
