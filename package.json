@@ -19,7 +19,7 @@
     "q": "~0.9.7",
     "resolve": "~0.6.1",
     "through": "^2.3.4",
-    "underscore": "1.2.4"
+    "lodash.template": "^3.0.0"
   },
   "devDependencies": {
     "jshint": "~2.5.0",
