@@ -40,7 +40,8 @@ describe('HasteModuleLoader', function() {
     mockEnvironment = {
       global: {
         console: {},
-        mockClearTimers: jest.genMockFn()
+        mockClearTimers: jest.genMockFn(),
+        JSON: JSON
       },
       runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
         /* jshint evil:true */

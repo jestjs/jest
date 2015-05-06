@@ -905,7 +905,7 @@ Loader.prototype.requireModule = function(currPath, moduleName,
 
     // Good ole node...
     if (path.extname(modulePath) === '.json') {
-      moduleObj.exports = JSON.parse(fs.readFileSync(
+      moduleObj.exports = this._environment.global.JSON.parse(fs.readFileSync(
         modulePath,
         'utf8'
       ));
