@@ -319,6 +319,8 @@ The path to a module that runs some code to configure or set up the testing fram
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
+The currently executing test's file path is available as an injected global in this file as `_jestTestFilePath`.
+
 ### `config.testDirectoryName` [string]
 (default: `'__tests__'`)
 
