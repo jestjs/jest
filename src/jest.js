@@ -158,7 +158,7 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
 
 function _promisePatternMatchingTestPaths(argv, testRunner) {
   return testRunner.promiseTestPathsMatching(
-    argv.testPathPattern ||
+    (argv.testPathPattern ? new RegExp(argv.testPathPattern) : false ) ||
     (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/)
   );
 }
