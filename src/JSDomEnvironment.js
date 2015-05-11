@@ -9,7 +9,8 @@
 
 var FakeTimers = require('./lib/FakeTimers');
 var utils = require('./lib/utils');
-var vm = require('vm');
+
+var USE_JSDOM_EVAL = false;
 
 function JSDomEnvironment(config) {
   // We lazily require jsdom because it takes a good ~.5s to load.
@@ -19,7 +20,13 @@ function JSDomEnvironment(config) {
   // a workerpool parent), this is the best way to ensure we only spend time
   // require()ing this when necessary.
   var jsdom = require('./lib/jsdom-compat');
-  this.document = jsdom.jsdom();
+  this.document = jsdom.jsdom(/* markup */undefined, {
+    resourceLoader: this._fetchExternalResource.bind(this),
+    features: {
+      FetchExternalResources: ['script'],
+      ProcessExternalResources: ['script'],
+    },
+  });
   this.global = this.document.defaultView;
 
   // Node's error-message stack size is limited at 10, but it's pretty useful to
@@ -94,17 +101,40 @@ JSDomEnvironment.prototype.dispose = function() {
 };
 
 /**
- * Evaluates the given source text as if it were in a file with the given name
- * and returns the result.
+ * Evaluates the given source text as if it were in a file with the given name.
+ * This method returns nothing.
  */
 JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
-  // TODO: Stop using the private API and instead configure jsdom with a
-  // resource loader and insert <script src="${filename}"> in the document. The
-  // reason we use vm for now is because the script element technique is slow.
-  return vm.runInContext(sourceText, this.document._ownerDocument._global, {
-    filename: fileName,
-    displayErrors: false,
-  });
+  if (!USE_JSDOM_EVAL) {
+    var vm = require('vm');
+    vm.runInContext(sourceText, this.document._ownerDocument._global, {
+      filename: fileName,
+      displayErrors: false,
+    });
+    return;
+  }
+
+  // We evaluate code by inserting <script src="${filename}"> into the document
+  // and using jsdom's resource loader to simulate serving the source code.
+  this._scriptToServe = sourceText;
+
+  var scriptElement = this.document.createElement('script');
+  scriptElement.src = fileName;
+
+  this.document.head.appendChild(scriptElement);
+  this.document.head.removeChild(scriptElement);
+};
+
+JSDomEnvironment.prototype._fetchExternalResource = function(
+  resource,
+  callback
+) {
+  var content = this._scriptToServe;
+  delete this._scriptToServe;
+  if (content === null || content === undefined) {
+    var error = new Error('Unable to find source for ' + resource.url.href);
+  }
+  callback(error, content);
 };
 
 JSDomEnvironment.prototype.runWithRealTimers = function(cb) {

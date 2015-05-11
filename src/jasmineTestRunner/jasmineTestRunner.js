@@ -204,7 +204,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
       );
 
       utils.runContentWithLocalBindings(
-        environment.runSourceText.bind(environment),
+        environment,
         setupScriptContent,
         config.setupTestFrameworkScriptFile,
         {

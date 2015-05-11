@@ -234,7 +234,7 @@ Loader.prototype._execModule = function(moduleObj) {
   this._isCurrentlyExecutingManualMock = modulePath;
 
   utils.runContentWithLocalBindings(
-    this._environment.runSourceText.bind(this._environment),
+    this._environment,
     moduleContent,
     modulePath,
     moduleLocalBindings
