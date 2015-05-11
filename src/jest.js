@@ -157,12 +157,9 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
 }
 
 function _promisePatternMatchingTestPaths(argv, testRunner) {
-  var pattern;
-  if (argv.testPathPattern) {
-    pattern = argv.testPathPattern.replace(/\\/g, '\\');
-  } else {
-    pattern = (argv._ && argv._.length) ? argv._.join('|') : '.*';
-  }
+  var pattern = argv.testPathPattern ||
+    ( (argv._ && argv._.length) ? argv._.join('|') : '.*' );
+
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
 
