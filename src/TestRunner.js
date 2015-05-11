@@ -496,7 +496,6 @@ TestRunner.prototype._createParallelTestRun = function(
     this._opts.maxWorkers,
     this._opts.nodePath,
     this._opts.nodeArgv.concat([
-      '--harmony',
       TEST_WORKER_PATH,
       '--config=' + JSON.stringify(this._config)
     ])

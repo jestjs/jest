@@ -441,6 +441,19 @@ function formatMsg(msg, color, _config) {
   return colors.colorize(msg, color);
 }
 
+function deepCopy(obj) {
+  var newObj = {};
+  var value;
+  for (var key in obj) {
+    value = obj[key];
+    if (typeof value === 'object' && value !== null) {
+      value = deepCopy(value);
+    }
+    newObj[key] = value;
+  }
+  return newObj;
+}
+
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
@@ -450,6 +463,7 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
 ].join('|') + ')');
 
 
+exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatMsg = formatMsg;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;

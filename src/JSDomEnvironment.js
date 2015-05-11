@@ -8,19 +8,8 @@
 'use strict';
 
 var FakeTimers = require('./lib/FakeTimers');
-
-function _deepCopy(obj) {
-  var newObj = {};
-  var value;
-  for (var key in obj) {
-    value = obj[key];
-    if (typeof value === 'object' && value !== null) {
-      value = _deepCopy(value);
-    }
-    newObj[key] = value;
-  }
-  return newObj;
-}
+var utils = require('./lib/utils');
+var vm = require('vm');
 
 function JSDomEnvironment(config) {
   // We lazily require jsdom because it takes a good ~.5s to load.
@@ -29,7 +18,9 @@ function JSDomEnvironment(config) {
   // use it (depending on the context -- such as TestRunner.js when operating as
   // a workerpool parent), this is the best way to ensure we only spend time
   // require()ing this when necessary.
-  this.global = require('./lib/jsdom-compat').jsdom().parentWindow;
+  var jsdom = require('./lib/jsdom-compat');
+  this.document = jsdom.jsdom();
+  this.global = this.document.defaultView;
 
   // Node's error-message stack size is limited at 10, but it's pretty useful to
   // see more than that when a test fails.
@@ -83,13 +74,8 @@ function JSDomEnvironment(config) {
     this.global.Image = function Image() {};
   }
 
-  // Pass through the node `process` global.
-  // TODO: Consider locking this down somehow so tests can't do crazy stuff to
-  //       worker processes...
-  this.global.process = process;
-
   // Apply any user-specified global vars
-  var globalValues = _deepCopy(config.globals);
+  var globalValues = utils.deepCopy(config.globals);
   for (var customGlobalKey in globalValues) {
     // Always deep-copy objects so isolated test environments can't share memory
     this.global[customGlobalKey] = globalValues[customGlobalKey];
@@ -107,8 +93,18 @@ JSDomEnvironment.prototype.dispose = function() {
   //this.global.close();
 };
 
+/**
+ * Evaluates the given source text as if it were in a file with the given name
+ * and returns the result.
+ */
 JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
-  return this.global.run(sourceText, fileName);
+  // TODO: Stop using the private API and instead configure jsdom with a
+  // resource loader and insert <script src="${filename}"> in the document. The
+  // reason we use vm for now is because the script element technique is slow.
+  return vm.runInContext(sourceText, this.document._ownerDocument._global, {
+    filename: fileName,
+    displayErrors: false,
+  });
 };
 
 JSDomEnvironment.prototype.runWithRealTimers = function(cb) {
