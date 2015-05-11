@@ -45,7 +45,7 @@ var argv = optimist
       alias: 'c',
       description: _wrapDesc(
         'The path to a jest config file specifying how to find and execute ' +
-        'tests. If no rootDir is set in the config, the directory of the ' + 
+        'tests. If no rootDir is set in the config, the directory of the ' +
         'config file is assumed to be the rootDir for the project.'
       ),
       type: 'string'
@@ -89,6 +89,13 @@ var argv = optimist
       description: _wrapDesc(
         'A JSON object (string) that specifies data that will be made ' +
         'available in the test environment (via jest.getEnvData())'
+      ),
+      type: 'string'
+    },
+    testPathPattern: {
+      description: _wrapDesc(
+        'A regexp pattern string that is matched against all tests ' +
+        'paths before executing the test.'
       ),
       type: 'string'
     },

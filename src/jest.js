@@ -157,10 +157,10 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
 }
 
 function _promisePatternMatchingTestPaths(argv, testRunner) {
-  return testRunner.promiseTestPathsMatching(
-    argv.testPathPattern ||
-    (argv._ && argv._.length ? new RegExp(argv._.join('|')) : /.*/)
-  );
+  var pattern = argv.testPathPattern ||
+    ( (argv._ && argv._.length) ? argv._.join('|') : '.*' );
+
+  return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
 
 function runCLI(argv, packageRoot, onComplete) {
