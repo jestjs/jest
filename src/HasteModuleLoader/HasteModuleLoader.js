@@ -956,6 +956,12 @@ Loader.prototype.resetModuleRegistry = function() {
     'jest-runtime': function(currPath) {
       var jestRuntime = {
         exports: {
+          addMatchers: function(matchers) {
+            var jasmine = this._environment.global.jasmine;
+            var spec = jasmine.getEnv().currentSpec;
+            spec.addMatchers(matchers);
+          }.bind(this),
+
           autoMockOff: function() {
             this._shouldAutoMock = false;
             return jestRuntime.exports;
