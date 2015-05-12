@@ -91,9 +91,7 @@ function _promiseConfig(argv, packageRoot) {
       config.testEnvData = argv.testEnvData;
     }
 
-    if (argv.noHighlight) {
-      config.noHighlight = argv.noHighlight;
-    }
+    config.noHighlight = argv.noHighlight || !process.stdout.isTTY;
 
     return config;
   });
