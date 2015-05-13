@@ -7,6 +7,58 @@
  */
 'use strict';
 
+var colors = require('./colors');
+
+function VerboseLogger(config, customProcess){
+  this._process = customProcess || process;
+  this._config = config || {};
+}
+
+VerboseLogger.prototype.verboseLog = function(testResults){
+  var testTree = _createTestTree(testResults);
+  this.traverseTestResults(testTree);
+}
+
+
+VerboseLogger.prototype.traverseTestResults = function(node, indentation){
+  var indentationIncrement;
+  if (typeof node === 'undefined' || node === null){ return; }
+
+  indentationIncrement = '  ';
+  indentation = indentation || '';
+  if (Object.prototype.toString.call(node.testTitles) === '[object Array]'){
+    this.printTestTitles(node.testTitles, indentation);
+    this.traverseTestResults(node.childNodes, indentation);
+  } else {
+    for (var key in node){
+      this.log(indentation + key);
+      this.traverseTestResults(node[key], indentation + indentationIncrement);
+    }
+  }
+}
+
+VerboseLogger.prototype.printTestTitles = function(testTitles, indentation){
+  var outputColor;
+
+  for (var i = 0; i < testTitles.length; i++){
+    outputColor = testTitles[i].failureMessages.length === 0
+      ? colors.GREEN
+      : colors.RED;
+    this.log(this._formatMsg(indentation + testTitles[i].title, outputColor));
+  }
+}
+
+VerboseLogger.prototype.log = function(str){
+  this._process.stdout.write(str + '\n');
+}
+
+VerboseLogger.prototype._formatMsg = function(msg, color) {
+  if (this._config.noHighlight) {
+    return msg;
+  }
+  return colors.colorize(msg, color);
+}
+
 function _createTestNode(testResult, ancestorTitles, currentNode){
   currentNode = currentNode || { testTitles: [], childNodes: {} };
   if (ancestorTitles.length === 0) {
@@ -36,3 +88,5 @@ function _createTestTree(testResults){
 
   return tree;
 }
+
+module.exports = VerboseLogger;
