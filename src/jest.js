@@ -95,6 +95,10 @@ function _promiseConfig(argv, packageRoot) {
       config.noHighlight = argv.noHighlight;
     }
 
+    if (argv.verbose) {
+      config.verbose = argv.verbose;
+    }
+
     return config;
   });
 }
