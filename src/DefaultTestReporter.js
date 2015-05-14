@@ -78,7 +78,16 @@ function(config, testResult, aggregatedResults) {
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
-    this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
+    if(config.verbose){
+      aggregatedResults.postSuiteHeaders.push(
+        this._getResultHeader(allTestsPassed, pathStr, [
+          testRunTimeString
+        ]),
+        formatFailureMessage(testResult, /*color*/!config.noHighlight)
+      )
+    } else {
+      this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
+    }
   }
 
   this._printWaitingOn(aggregatedResults);
@@ -93,6 +102,10 @@ function (config, aggregatedResults) {
 
   if (numTotalTests === 0) {
     return;
+  }
+
+  if (config.verbose){
+    this.log(aggregatedResults.postSuiteHeaders.join('\n'))
   }
 
   var results = '';
