@@ -20,6 +20,24 @@ VerboseLogger.prototype.verboseLog = function(testResults){
 }
 
 
+/**
+ * Prints test titles and their Ancestry with correct indentation.
+ *
+ * If the node contains test titles, then the test titles must be printed
+ * before stepping lower into the hierarchy (`node.childNodes`). Otherwise
+ * a header has been reached and must be printed before stepping lower into
+ * the hierarchy.
+ *
+ * @param {Object} node - A test node with correct hierarchy for printing.
+ * @param {String} indentation - Indentation for a given level in the hierarchy.
+ *
+ * @note:
+ *   The amount of indentation is determined when stepping lower into the
+ *   hierarchy.
+ * @see{@link _createTestNode}
+ * @see{@link _createTestTree}
+ *
+ */
 VerboseLogger.prototype.traverseTestResults = function(node, indentation){
   var indentationIncrement;
   if (typeof node === 'undefined' || node === null){ return; }
@@ -59,6 +77,46 @@ VerboseLogger.prototype._formatMsg = function(msg, color) {
   return colors.colorize(msg, color);
 }
 
+/**
+ * Prepares the test hierarchy for a `test title` by mapping its ancestry.
+ *
+ * @example
+ * Test Structure A -
+ *  describe('HeaderOne', function(){
+ *    describe('HeaderTwo', function(){
+ *      it('quacks like a duck', function(){
+ *        expect(true).toBeTruthy();
+ *      });
+ *    });
+ *  });
+ *
+ * Produces Test Node A -
+ * {
+ *   testTitles: [],
+ *   childNodes: {
+ *     HeaderOne: {
+ *       testTitles: [],
+ *       childNodes: {
+ *         HeaderTwo: {
+ *           testTitles: ['it quacks like a duck'],
+ *           childNodes: {}
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * @param {Object} testResult - An object containing a test title and its
+ *                              pass/fail status.
+ * @param {Array} ancestorTitles - Ancestor/describe headers associated with the
+ *                                 given test title.
+ * @param {Object} currentNode - A parent in the test hierarchy. Contains:
+ *   1) Test titles associated with the current parent
+ *   2) The next parent in the hierarchy.
+ *
+ * @return {Object} A node mapping the hierarchy of `test titles` with common
+ *                  ancestors.
+ */
 function _createTestNode(testResult, ancestorTitles, currentNode){
   currentNode = currentNode || { testTitles: [], childNodes: {} };
   if (ancestorTitles.length === 0) {
@@ -80,6 +138,19 @@ function _createTestNode(testResult, ancestorTitles, currentNode){
   return currentNode;
 }
 
+/**
+ *
+ * Constructs a tree representing the hierarchy of a test run.
+ *
+ * @param {Array} testResults - Collection of tests.
+ * @return {Object} Complete test hierarchy for a test run.
+ *
+ * @note: Here, a test run refers to a jest file. A tree is used
+ *       to map all common ancestors (describe blocks) to individual
+ *       test titles (it blocks) without repetition.
+ * @see {@link _createTestNode}
+ *
+ */
 function _createTestTree(testResults){
   var tree;
   for (var i = 0; i < testResults.length; i++){
