@@ -9,11 +9,30 @@
 
 var colors = require('./colors');
 
+/**
+ * Creates a VerboseLogger object used to encapsulate verbose logging.
+ *
+ * @param {Object} config - configuration options for the test suite.
+ * @param {Object} customProcess - Optional process.
+ *
+ * NOTE: config is being passed in to preserve a users preferences when using
+ *       the CLI option. @example --noHighLight
+ */
 function VerboseLogger(config, customProcess){
   this._process = customProcess || process;
   this._config = config || {};
 }
 
+/**
+ * Kicks off the verbose logging by constructing a Test Hierarchy and then
+ * printing it with the correct formatting.
+ *
+ * @param {Array} testResults - All information about test results in a test
+ *                              run. Given as an Array of objects.
+ *
+ * @see {@link _createTestNode}
+ * @see {@link traverseTestResults}
+ */
 VerboseLogger.prototype.verboseLog = function(testResults){
   var testTree = _createTestTree(testResults);
   this.traverseTestResults(testTree);
@@ -55,6 +74,12 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation){
   }
 }
 
+/**
+ *
+ * Pretty print test results to note which are failing and passing.
+ * @param {object} testTitles - All information about test titles in a test run.
+ * @param {string} indentation - Indentation used for formatting.
+ */
 VerboseLogger.prototype.printTestTitles = function(testTitles, indentation){
   var outputColor;
 
