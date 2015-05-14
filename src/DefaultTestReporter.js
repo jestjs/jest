@@ -10,6 +10,7 @@
 var colors = require('./lib/colors');
 var formatFailureMessage = require('./lib/utils').formatFailureMessage;
 var path = require('path');
+var VerboseLogger = require('./lib/testLogger');
 
 var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
@@ -27,6 +28,10 @@ DefaultTestReporter.prototype.onRunStart =
 function(config, aggregatedResults) {
   this._config = config;
   this._printWaitingOn(aggregatedResults);
+  if(this._config.verbose){
+    var verboseLogger = new VerboseLogger(this._config, this._process)
+    this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
+  }
 };
 
 DefaultTestReporter.prototype.onTestResult =
@@ -62,9 +67,13 @@ function(config, testResult, aggregatedResults) {
   }
   */
 
-  this.log(this._getResultHeader(allTestsPassed, pathStr, [
-    testRunTimeString
-  ]));
+  if (config.verbose){
+    this.verboseLog(testResult.testResults);
+  } else {
+    this.log(this._getResultHeader(allTestsPassed, pathStr, [
+      testRunTimeString
+    ]));
+  }
 
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
