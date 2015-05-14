@@ -343,7 +343,13 @@ function readAndPreprocessFileContent(filePath, config) {
         return pattern.test(filePath);
       })) {
     try {
-      fileData = require(config.scriptPreprocessor).process(fileData, filePath);
+      fileData = require(config.scriptPreprocessor).process(
+        fileData,
+        filePath,
+        {}, // options
+        [], // excludes
+        config
+      );
     } catch (e) {
       e.message = config.scriptPreprocessor + ': ' + e.message;
       throw e;
