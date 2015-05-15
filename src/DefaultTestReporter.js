@@ -29,7 +29,7 @@ function(config, aggregatedResults) {
   this._config = config;
   this._printWaitingOn(aggregatedResults);
   if(this._config.verbose){
-    var verboseLogger = new VerboseLogger(this._config, this._process)
+    var verboseLogger = new VerboseLogger(this._config, this._process);
     this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
   }
 };
@@ -84,7 +84,7 @@ function(config, testResult, aggregatedResults) {
           testRunTimeString
         ]),
         formatFailureMessage(testResult, /*color*/!config.noHighlight)
-      )
+      );
     } else {
       this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
     }
@@ -105,7 +105,7 @@ function (config, aggregatedResults) {
   }
 
   if (config.verbose){
-    this.log(aggregatedResults.postSuiteHeaders.join('\n'))
+    this.log(aggregatedResults.postSuiteHeaders.join('\n'));
   }
 
   var results = '';

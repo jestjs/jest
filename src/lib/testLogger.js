@@ -36,7 +36,7 @@ function VerboseLogger(config, customProcess){
 VerboseLogger.prototype.verboseLog = function(testResults){
   var testTree = _createTestTree(testResults);
   this.traverseTestResults(testTree);
-}
+};
 
 
 /**
@@ -72,7 +72,7 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation){
       this.traverseTestResults(node[key], indentation + indentationIncrement);
     }
   }
-}
+};
 
 /**
  *
@@ -89,18 +89,18 @@ VerboseLogger.prototype.printTestTitles = function(testTitles, indentation){
       : colors.RED;
     this.log(this._formatMsg(indentation + testTitles[i].title, outputColor));
   }
-}
+};
 
 VerboseLogger.prototype.log = function(str){
   this._process.stdout.write(str + '\n');
-}
+};
 
 VerboseLogger.prototype._formatMsg = function(msg, color) {
   if (this._config.noHighlight) {
     return msg;
   }
   return colors.colorize(msg, color);
-}
+};
 
 /**
  * Prepares the test hierarchy for a `test title` by mapping its ancestry.
