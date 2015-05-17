@@ -7,6 +7,13 @@
  */
 'use strict';
 
+// This was generated with https://babeljs.io/repl/
+/* jshint ignore:start */
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+/* jshint ignore:end */
+/* global _classCallCheck, _createClass */
+
 jest.autoMockOff();
 
 describe('moduleMocker', function() {
@@ -52,6 +59,44 @@ describe('moduleMocker', function() {
 
       expect(foo.x()).toBe('Foo');
       expect(bar.x()).toBe('Bar');
+    });
+
+    it('mocks ES6 non-enumerable methods', function() {
+        // ES6: class ClassFoo { foo() { } }
+        // Converted with https://babeljs.io/repl/
+        var ClassFoo = (function () {
+          function ClassFoo() {
+            _classCallCheck(this, ClassFoo);
+          }
+
+          _createClass(ClassFoo, [{
+            key: 'foo',
+            value: function foo() {}
+          }, {
+            key: 'toString',
+            value: function toString() {
+              return 'Foo';
+            }
+          }]);
+
+          return ClassFoo;
+        })();
+        var ClassFooMock = moduleMocker.generateFromMetadata(
+            moduleMocker.getMetadata(ClassFoo)
+        );
+
+        var foo = new ClassFooMock();
+
+        var instanceFoo = new ClassFoo();
+        var instanceFooMock = moduleMocker.generateFromMetadata(
+            moduleMocker.getMetadata(instanceFoo)
+        );
+
+        expect(typeof foo.foo).toBe('function');
+        expect(typeof instanceFooMock.foo).toBe('function');
+        expect(instanceFooMock.foo.mock).not.toBeUndefined();
+
+        expect(instanceFooMock.toString.mock).not.toBeUndefined();
     });
   });
 });
