@@ -18,7 +18,7 @@ var colors = require('./colors');
  * NOTE: config is being passed in to preserve a users preferences when using
  *       the CLI option. @example --noHighLight
  */
-function VerboseLogger(config, customProcess){
+function VerboseLogger(config, customProcess) {
   this._process = customProcess || process;
   this._config = config || {};
 }
@@ -33,9 +33,8 @@ function VerboseLogger(config, customProcess){
  * @see {@link _createTestNode}
  * @see {@link traverseTestResults}
  */
-VerboseLogger.prototype.verboseLog = function(testResults){
-  var testTree = _createTestTree(testResults);
-  this.traverseTestResults(testTree);
+VerboseLogger.prototype.verboseLog = function(testResults) {
+  this.traverseTestResults(_createTestTree(testResults));
 };
 
 
@@ -57,17 +56,19 @@ VerboseLogger.prototype.verboseLog = function(testResults){
  * @see{@link _createTestTree}
  *
  */
-VerboseLogger.prototype.traverseTestResults = function(node, indentation){
+VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
   var indentationIncrement;
-  if (typeof node === 'undefined' || node === null){ return; }
+  if (typeof node === 'undefined' || node === null) {
+    return;
+  }
 
   indentationIncrement = '  ';
   indentation = indentation || '';
-  if (Object.prototype.toString.call(node.testTitles) === '[object Array]'){
+  if (Object.prototype.toString.call(node.testTitles) === '[object Array]') {
     this.printTestTitles(node.testTitles, indentation);
     this.traverseTestResults(node.childNodes, indentation);
   } else {
-    for (var key in node){
+    for (var key in node) {
       this.log(indentation + key);
       this.traverseTestResults(node[key], indentation + indentationIncrement);
     }
@@ -80,7 +81,7 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation){
  * @param {object} testTitles - All information about test titles in a test run.
  * @param {string} indentation - Indentation used for formatting.
  */
-VerboseLogger.prototype.printTestTitles = function(testTitles, indentation){
+VerboseLogger.prototype.printTestTitles = function(testTitles, indentation) {
   var outputColor;
 
   for (var i = 0; i < testTitles.length; i++){
@@ -91,7 +92,7 @@ VerboseLogger.prototype.printTestTitles = function(testTitles, indentation){
   }
 };
 
-VerboseLogger.prototype.log = function(str){
+VerboseLogger.prototype.log = function(str) {
   this._process.stdout.write(str + '\n');
 };
 
@@ -142,12 +143,12 @@ VerboseLogger.prototype._formatMsg = function(msg, color) {
  * @return {Object} A node mapping the hierarchy of `test titles` with common
  *                  ancestors.
  */
-function _createTestNode(testResult, ancestorTitles, currentNode){
+function _createTestNode(testResult, ancestorTitles, currentNode) {
   currentNode = currentNode || { testTitles: [], childNodes: {} };
   if (ancestorTitles.length === 0) {
     currentNode.testTitles.push(testResult);
   } else {
-    if(!currentNode.childNodes[ancestorTitles[0]]){
+    if (!currentNode.childNodes[ancestorTitles[0]]) {
       currentNode.childNodes[ancestorTitles[0]] = {
         testTitles: [],
         childNodes: {}
@@ -176,9 +177,9 @@ function _createTestNode(testResult, ancestorTitles, currentNode){
  * @see {@link _createTestNode}
  *
  */
-function _createTestTree(testResults){
+function _createTestTree(testResults) {
   var tree;
-  for (var i = 0; i < testResults.length; i++){
+  for (var i = 0; i < testResults.length; i++) {
     tree = _createTestNode(testResults[i], testResults[i].ancestorTitles, tree);
   }
 

@@ -28,7 +28,7 @@ DefaultTestReporter.prototype.onRunStart =
 function(config, aggregatedResults) {
   this._config = config;
   this._printWaitingOn(aggregatedResults);
-  if(this._config.verbose){
+  if (this._config.verbose) {
     var verboseLogger = new VerboseLogger(this._config, this._process);
     this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
   }
@@ -67,7 +67,7 @@ function(config, testResult, aggregatedResults) {
   }
   */
 
-  if (config.verbose){
+  if (config.verbose) {
     this.verboseLog(testResult.testResults);
   } else {
     this.log(this._getResultHeader(allTestsPassed, pathStr, [
@@ -78,7 +78,7 @@ function(config, testResult, aggregatedResults) {
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
-    if(config.verbose){
+    if (config.verbose) {
       aggregatedResults.postSuiteHeaders.push(
         this._getResultHeader(allTestsPassed, pathStr, [
           testRunTimeString
@@ -104,7 +104,7 @@ function (config, aggregatedResults) {
     return;
   }
 
-  if (config.verbose){
+  if (config.verbose) {
     this.log(aggregatedResults.postSuiteHeaders.join('\n'));
   }
 
