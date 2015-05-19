@@ -78,17 +78,26 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
 /**
  *
  * Pretty print test results to note which are failing and passing.
+ * Passing tests are prepended with PASS or a check. Failing tests are prepended
+ * with FAIL or an x.
  * @param {object} testTitles - All information about test titles in a test run.
  * @param {string} indentation - Indentation used for formatting.
  */
 VerboseLogger.prototype.printTestTitles = function(testTitles, indentation) {
-  var outputColor;
+  var prefixColor, statusPrefix;
 
   for (var i = 0; i < testTitles.length; i++){
-    outputColor = testTitles[i].failureMessages.length === 0
-      ? colors.GREEN
-      : colors.RED;
-    this.log(this._formatMsg(indentation + testTitles[i].title, outputColor));
+    if (testTitles[i].failureMessages.length === 0) {
+      prefixColor = colors.GREEN;
+      statusPrefix = this._config.noHighlight ? 'PASS - ' : '\u2713 ';
+    } else {
+      prefixColor = colors.RED;
+      statusPrefix = this._config.noHighlight ? 'FAIL - ' : '\u2715 ';
+    }
+    this.log(
+      this._formatMsg(indentation + statusPrefix, prefixColor)
+      + this._formatMsg(testTitles[i].title, colors.GRAY)
+    );
   }
 };
 
