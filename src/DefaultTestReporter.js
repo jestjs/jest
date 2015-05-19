@@ -9,6 +9,7 @@
 
 var colors = require('./lib/colors');
 var formatFailureMessage = require('./lib/utils').formatFailureMessage;
+var formatMsg = require('./lib/utils').formatMsg;
 var path = require('path');
 var VerboseLogger = require('./lib/testLogger');
 
@@ -157,10 +158,7 @@ DefaultTestReporter.prototype._clearWaitingOn = function() {
 };
 
 DefaultTestReporter.prototype._formatMsg = function(msg, color) {
-  if (this._config.noHighlight) {
-    return msg;
-  }
-  return colors.colorize(msg, color);
+  return formatMsg(msg, color, this._config);
 };
 
 DefaultTestReporter.prototype._getResultHeader =

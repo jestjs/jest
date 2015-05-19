@@ -8,6 +8,7 @@
 'use strict';
 
 var colors = require('./colors');
+var formatMsg = require('./utils').formatMsg;
 
 /**
  * Creates a VerboseLogger object used to encapsulate verbose logging.
@@ -25,7 +26,7 @@ function VerboseLogger(config, customProcess) {
 
 /**
  * Kicks off the verbose logging by constructing a Test Hierarchy and then
- * printing it with the correct formatting.
+ * printing it with the correct formatting and a trailing newline.
  *
  * @param {Array} testResults - All information about test results in a test
  *                              run. Given as an Array of objects.
@@ -35,6 +36,7 @@ function VerboseLogger(config, customProcess) {
  */
 VerboseLogger.prototype.verboseLog = function(testResults) {
   this.traverseTestResults(_createTestTree(testResults));
+  this.log('');
 };
 
 
@@ -106,10 +108,7 @@ VerboseLogger.prototype.log = function(str) {
 };
 
 VerboseLogger.prototype._formatMsg = function(msg, color) {
-  if (this._config.noHighlight) {
-    return msg;
-  }
-  return colors.colorize(msg, color);
+  return formatMsg(msg, color, this._config);
 };
 
 /**

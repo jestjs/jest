@@ -9,6 +9,7 @@
 
 var colors = require('../lib/colors');
 var diff = require('diff');
+var formatMsg = require('../lib/utils').formatMsg;
 var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
 var Q = require('q');
 
@@ -238,10 +239,7 @@ JasmineReporter.prototype._prettyPrint = function(obj, indent, cycleWeakMap) {
 };
 
 JasmineReporter.prototype._formatMsg = function(msg, color) {
-  if (this._config.noHighlight) {
-    return msg;
-  }
-  return colors.colorize(msg, color);
+  return formatMsg(msg, color, this._config);
 };
 
 module.exports = JasmineReporter;
