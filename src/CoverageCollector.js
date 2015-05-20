@@ -15,7 +15,7 @@ var COVERAGE_TEMPLATE_PATH = require.resolve('./coverageTemplate');
 var _memoizedCoverageTemplate = null;
 function _getCoverageTemplate() {
   if (_memoizedCoverageTemplate === null) {
-    _memoizedCoverageTemplate = require('underscore').template(
+    _memoizedCoverageTemplate = require('lodash.template')(
       fs.readFileSync(COVERAGE_TEMPLATE_PATH, 'utf8')
     );
   }

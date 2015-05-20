@@ -106,8 +106,9 @@ FakeTimers.prototype.runAllTicks = function() {
     }
 
     if (!this._cancelledTicks.hasOwnProperty(tick.uuid)) {
-      tick.callback();
+      // Callback may throw, so update the map prior calling.
       this._cancelledTicks[tick.uuid] = true;
+      tick.callback();
     }
   }
 
@@ -130,8 +131,9 @@ FakeTimers.prototype.runAllImmediates = function() {
     }
 
     if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
-      immediate.callback();
+      // Callback may throw, so update the map prior calling.
       this._cancelledImmediates[immediate.uuid] = true;
+      immediate.callback();
     }
   }
 
@@ -322,8 +324,9 @@ FakeTimers.prototype._fakeNextTick = function(callback) {
   var cancelledTicks = this._cancelledTicks;
   this._originalTimerAPIs.nextTick(function() {
     if (!cancelledTicks.hasOwnProperty(uuid)) {
-      callback();
+      // Callback may throw, so update the map prior calling.
       cancelledTicks[uuid] = true;
+      callback();
     }
   });
 };
@@ -346,8 +349,9 @@ FakeTimers.prototype._fakeSetImmediate = function(callback) {
   var cancelledImmediates = this._cancelledImmediates;
   this._originalTimerAPIs.setImmediate(function() {
     if (!cancelledImmediates.hasOwnProperty(uuid)) {
-      callback();
+      // Callback may throw, so update the map prior calling.
       cancelledImmediates[uuid] = true;
+      callback();
     }
   });
 

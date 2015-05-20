@@ -83,18 +83,18 @@ function execute() {
         var content = (
           '/**\n' +
           ' * @generated\n' +
-          ' * @jsx React.DOM\n' +
           ' */\n' +
           'var React = require("React");\n' +
-          'var layout = require("' + layout + '");\n' +
+          'var Layout = require("' + layout + '");\n' +
           'var content = ' + backtickify(both.content) + '\n' +
           'var Post = React.createClass({\n' +
+          '  statics: {\n' +
+          '    content: content\n' +
+          '  },\n' +
           '  render: function() {\n' +
-          '    return layout({metadata: ' + JSON.stringify(metadata) + '}, content);\n' +
+          '    return <Layout metadata={' + JSON.stringify(metadata) + '}>{content}</Layout>;\n' +
           '  }\n' +
           '});\n' +
-          // TODO: Use React statics after upgrading React
-          'Post.content = content;\n' +
           'module.exports = Post;\n'
         );
 

@@ -45,7 +45,8 @@ var argv = optimist
       alias: 'c',
       description: _wrapDesc(
         'The path to a jest config file specifying how to find and execute ' +
-        'tests.'
+        'tests. If no rootDir is set in the config, the directory of the ' +
+        'config file is assumed to be the rootDir for the project.'
       ),
       type: 'string'
     },
@@ -91,9 +92,28 @@ var argv = optimist
       ),
       type: 'string'
     },
+    testPathPattern: {
+      description: _wrapDesc(
+        'A regexp pattern string that is matched against all tests ' +
+        'paths before executing the test.'
+      ),
+      type: 'string'
+    },
     version: {
       alias: 'v',
       description: _wrapDesc('Print the version and exit'),
+      type: 'boolean'
+    },
+    noHighlight: {
+      description: _wrapDesc(
+        'Disables test results output highlighting'
+      ),
+      type: 'boolean'
+    },
+    verbose: {
+      description: _wrapDesc(
+        'Display individual test results with the test suite hierarchy.'
+      ),
       type: 'boolean'
     }
   })

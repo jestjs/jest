@@ -905,7 +905,7 @@ Loader.prototype.requireModule = function(currPath, moduleName,
 
     // Good ole node...
     if (path.extname(modulePath) === '.json') {
-      moduleObj.exports = JSON.parse(fs.readFileSync(
+      moduleObj.exports = this._environment.global.JSON.parse(fs.readFileSync(
         modulePath,
         'utf8'
       ));
@@ -938,6 +938,10 @@ Loader.prototype.requireModuleOrMock = function(currPath, moduleName) {
   }
 };
 
+Loader.prototype.getJestRuntime = function(dir) {
+    return this._builtInModules['jest-runtime'](dir).exports;
+};
+
 /**
  * Clears all cached module objects. This allows one to reset the state of
  * all modules in the system. It will reset (read: clear) the export objects
@@ -952,6 +956,12 @@ Loader.prototype.resetModuleRegistry = function() {
     'jest-runtime': function(currPath) {
       var jestRuntime = {
         exports: {
+          addMatchers: function(matchers) {
+            var jasmine = this._environment.global.jasmine;
+            var spec = jasmine.getEnv().currentSpec;
+            spec.addMatchers(matchers);
+          }.bind(this),
+
           autoMockOff: function() {
             this._shouldAutoMock = false;
             return jestRuntime.exports;

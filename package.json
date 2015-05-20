@@ -1,14 +1,14 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.4.0",
+  "version": "0.4.5",
   "main": "src/jest.js",
   "dependencies": {
     "coffee-script": "^1.8.0",
     "cover": "~0.2.8",
     "diff": "~1.0.4",
     "graceful-fs": "^2.0.3",
-    "harmonize": "1.4.0",
+    "harmonize": "1.4.2",
     "istanbul": "^0.3.2",
     "jasmine-only": "0.1.0",
     "jasmine-pit": "gagoman/jasmine-pit#jasmine_2_support",
@@ -19,7 +19,7 @@
     "q": "~0.9.7",
     "resolve": "~0.6.1",
     "through": "^2.3.4",
-    "underscore": "1.2.4"
+    "lodash.template": "^3.0.0"
   },
   "devDependencies": {
     "jshint": "~2.5.0",

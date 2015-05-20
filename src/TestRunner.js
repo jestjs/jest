@@ -35,7 +35,7 @@ var DEFAULT_OPTIONS = {
    * It's probably good to keep this at something close to the number of cores
    * on the machine that's running the test.
    */
-  maxWorkers: Math.max(os.cpus().length - 1, 1),
+  maxWorkers: Math.max(os.cpus().length, 1),
 
   /**
    * The path to the executable node binary.
@@ -362,7 +362,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
           global: env.global,
           require: moduleLoader.constructBoundRequire(
             config.setupEnvScriptFile
-          )
+          ),
+          jest: moduleLoader.getJestRuntime(config.setupEnvScriptFile)
         }
       );
     }
@@ -414,6 +415,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     numPassedTests: 0,
     numFailedTests: 0,
     testResults: [],
+    postSuiteHeaders: []
   };
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
