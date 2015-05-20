@@ -110,6 +110,12 @@ var argv = optimist
       ),
       type: 'boolean'
     },
+    verbose: {
+      description: _wrapDesc(
+        'Display individual test results with the test suite hierarchy.'
+      ),
+      type: 'boolean'
+    }
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {

@@ -93,6 +93,10 @@ function _promiseConfig(argv, packageRoot) {
 
     config.noHighlight = argv.noHighlight || !process.stdout.isTTY;
 
+    if (argv.verbose) {
+      config.verbose = argv.verbose;
+    }
+
     return config;
   });
 }

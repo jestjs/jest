@@ -9,7 +9,9 @@
 
 var colors = require('./lib/colors');
 var formatFailureMessage = require('./lib/utils').formatFailureMessage;
+var formatMsg = require('./lib/utils').formatMsg;
 var path = require('path');
+var VerboseLogger = require('./lib/testLogger');
 
 var FAIL_COLOR = colors.RED_BG + colors.BOLD;
 var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
@@ -27,6 +29,10 @@ DefaultTestReporter.prototype.onRunStart =
 function(config, aggregatedResults) {
   this._config = config;
   this._printWaitingOn(aggregatedResults);
+  if (this._config.verbose) {
+    var verboseLogger = new VerboseLogger(this._config, this._process);
+    this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
+  }
 };
 
 DefaultTestReporter.prototype.onTestResult =
@@ -62,14 +68,27 @@ function(config, testResult, aggregatedResults) {
   }
   */
 
-  this.log(this._getResultHeader(allTestsPassed, pathStr, [
-    testRunTimeString
-  ]));
+  if (config.verbose) {
+    this.verboseLog(testResult.testResults);
+  } else {
+    this.log(this._getResultHeader(allTestsPassed, pathStr, [
+      testRunTimeString
+    ]));
+  }
 
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
-    this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
+    if (config.verbose) {
+      aggregatedResults.postSuiteHeaders.push(
+        this._getResultHeader(allTestsPassed, pathStr, [
+          testRunTimeString
+        ]),
+        formatFailureMessage(testResult, /*color*/!config.noHighlight)
+      );
+    } else {
+      this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
+    }
   }
 
   this._printWaitingOn(aggregatedResults);
@@ -84,6 +103,10 @@ function (config, aggregatedResults) {
 
   if (numTotalTests === 0) {
     return;
+  }
+
+  if (config.verbose) {
+    this.log(aggregatedResults.postSuiteHeaders.join('\n'));
   }
 
   var results = '';
@@ -135,10 +158,7 @@ DefaultTestReporter.prototype._clearWaitingOn = function() {
 };
 
 DefaultTestReporter.prototype._formatMsg = function(msg, color) {
-  if (this._config.noHighlight) {
-    return msg;
-  }
-  return colors.colorize(msg, color);
+  return formatMsg(msg, color, this._config);
 };
 
 DefaultTestReporter.prototype._getResultHeader =

@@ -415,6 +415,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     numPassedTests: 0,
     numFailedTests: 0,
     testResults: [],
+    postSuiteHeaders: []
   };
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);

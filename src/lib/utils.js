@@ -431,6 +431,14 @@ function formatFailureMessage(testResult, color) {
   }).join('\n');
 }
 
+function formatMsg(msg, color, _config) {
+  _config = _config || {};
+  if (_config.noHighlight) {
+    return msg;
+  }
+  return colors.colorize(msg, color);
+}
+
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
@@ -440,6 +448,7 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
 
 
 exports.escapeStrForRegex = escapeStrForRegex;
+exports.formatMsg = formatMsg;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
 exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;
