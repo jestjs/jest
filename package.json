@@ -11,7 +11,7 @@
     "harmonize": "1.4.0",
     "istanbul": "^0.3.2",
     "jasmine-only": "0.1.0",
-    "jasmine-pit": "tomv564/jasmine-pit#jasmine_2_support",
+    "jasmine-pit": "gagoman/jasmine-pit#jasmine_2_support",
     "jsdom": "~0.10.3",
     "node-haste": "^1.2.8",
     "node-worker-pool": "~2.4.2",
