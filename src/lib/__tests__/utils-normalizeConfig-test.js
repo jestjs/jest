@@ -34,14 +34,14 @@ describe('utils-normalizeConfig', function() {
         rootDir: '/root/path/foo',
         thisIsAnInvalidConfigKey: 'with a value even!'
       });
-    }).toThrowError('Unknown config option: thisIsAnInvalidConfigKey');
+    }).toThrow('Unknown config option: thisIsAnInvalidConfigKey');
   });
 
   describe('rootDir', function() {
     it('throws if the config is missing a rootDir property', function() {
       expect(function() {
         utils.normalizeConfig({});
-      }).toThrowError('No rootDir config value found!');
+      }).toThrow('No rootDir config value found!');
     });
   });
 

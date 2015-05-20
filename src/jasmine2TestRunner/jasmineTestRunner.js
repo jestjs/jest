@@ -13,30 +13,14 @@ var JasmineReporter = require('./JasmineReporter');
 var path = require('path');
 var utils = require('../lib/utils');
 
-var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
+var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-2.2.0.js');
+// TODO: can be moved to project dir
+var JASMINE_BOOT_PATH =
+  require.resolve('../../vendor/jasmine/jasmine-2.x-boot.js');
 var jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
-
-var JASMINE_ONLY_ROOT = path.dirname(require.resolve('jasmine-only'));
-var POTENTIALLY_PRECOMPILED_FILE = path.join(
-  JASMINE_ONLY_ROOT,
-  'app',
-  'js',
-  'jasmine_only.js'
-);
-var COFFEE_SCRIPT_FILE = path.join(
-  JASMINE_ONLY_ROOT,
-  'app',
-  'js',
-  'jasmine_only.coffee'
-);
-
-var jasmineOnlyContent =
-  fs.existsSync(POTENTIALLY_PRECOMPILED_FILE)
-  ? fs.readFileSync(POTENTIALLY_PRECOMPILED_FILE, 'utf8')
-  : require('coffee-script').compile(
-      fs.readFileSync(COFFEE_SCRIPT_FILE, 'utf8')
-    );
+var jasmineBootFileContent =
+  fs.readFileSync(require.resolve(JASMINE_BOOT_PATH), 'utf8');
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   // Jasmine does stuff with timers that affect running the tests. However, we
@@ -47,12 +31,10 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   environment.fakeTimers.runWithRealTimers(function() {
     // Execute jasmine's main code
     environment.runSourceText(jasmineFileContent, JASMINE_PATH);
+    environment.runSourceText(jasmineBootFileContent, JASMINE_BOOT_PATH);
 
     // Install jasmine-pit -- because it's amazing
     jasminePit.install(environment.global);
-
-    // Install jasmine-only
-    environment.runSourceText(jasmineOnlyContent);
 
     // Node must have been run with --harmony in order for WeakMap to be
     // available prior to version 0.12
@@ -185,7 +167,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   var jasmine = environment.global.jasmine;
 
   jasmine.getEnv().beforeEach(function() {
-    this.addMatchers({
+    jasmine.addMatchers({
       toBeCalled: function() {
         if (this.actual.mock === undefined) {
           throw Error('toBeCalled() should be used on a mock function');

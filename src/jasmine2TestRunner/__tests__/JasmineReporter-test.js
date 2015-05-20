@@ -25,38 +25,19 @@ describe('JasmineReporter', function() {
   });
 
   describe('colorization', function() {
-    function getRunner(actualResult, expectedResult, passed) {
+    function getFailedResult(actualResult, expectedResult) {
+      var desc = 'comparing ' + actualResult + ' to ' + expectedResult;
       return {
-        suites: function() {
-          return [
-            {
-              parentSuite: null,
-              specs: function() {
-                return [
-                  {
-                    results: function() {
-                      return {
-                        getItems: function() {
-                          return [
-                            {
-                              actual: actualResult,
-                              expected: expectedResult,
-                              matcherName: 'toBe',
-                              passed: function() { return passed; },
-                              trace: {},
-                              type: 'expect',
-                            }
-                          ];
-                        },
-                      };
-                    },
-                  },
-                ];
-              },
-              suites: function() { return []; },
-            },
-          ];
-        },
+        fullName: desc,
+        description: desc,
+        failedExpectations: [
+          {
+            actual: actualResult,
+            expected: expectedResult,
+            matcherName: 'toBe',
+            passed: false
+          }
+        ]
       };
     }
 
@@ -69,8 +50,8 @@ describe('JasmineReporter', function() {
     }
 
     pit('colorizes single-line failures using a per-char diff', function() {
-      var runner = getRunner('foo', 'foobar', false);
-      reporter.reportRunnerResults(runner);
+      var result = getFailedResult('foo', 'foobar');
+      reporter.specDone(result);
 
       return reporter.getResults().then(function(result) {
         var message = result.testResults[0].failureMessages[0];
@@ -82,8 +63,8 @@ describe('JasmineReporter', function() {
     });
 
     pit('colorizes multi-line failures using a per-line diff', function() {
-      var runner = getRunner('foo\nbar\nbaz', 'foo\nxxx\nbaz', false);
-      reporter.reportRunnerResults(runner);
+      var result = getFailedResult('foo\nbar\nbaz', 'foo\nxxx\nbaz');
+      reporter.specDone(result);
 
       return reporter.getResults().then(function(result) {
         var message = result.testResults[0].failureMessages[0];
