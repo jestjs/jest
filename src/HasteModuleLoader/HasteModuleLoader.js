@@ -976,6 +976,10 @@ Loader.prototype.resetModuleRegistry = function() {
             this._environment.fakeTimers.clearAllTimers();
           }.bind(this),
 
+          currentTestPath: function() {
+            return this._environment.testFilePath;
+          }.bind(this),
+
           dontMock: function(moduleName) {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = false;

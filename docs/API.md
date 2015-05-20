@@ -12,6 +12,7 @@ permalink: docs/api.html
   - [`jest.autoMockOff()`](#jest-automockoff)
   - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
+  - [`jest.currentTestPath()`](#jest-currenttestpath)
   - [`jest.dontMock(moduleName)`](#jest-dontmock-modulename)
   - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
   - [`jest.genMockFunction()`](#jest-genmockfunction)
@@ -106,6 +107,9 @@ It's worth noting that automatic mocking is on by default, so this method is onl
 Removes any pending timers from the timer system.
 
 This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+
+### `jest.currentTestPath()`
+Returns the absolute path to the currently executing test file.
 
 ### `jest.dontMock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
