@@ -11,6 +11,7 @@ permalink: docs/api.html
   - [`jest.autoMockOff()`](#jest-automockoff)
   - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
+  - [`jest.currentTestPath()`](#jest-currenttestpath)
   - [`jest.dontMock(moduleName)`](#jest-dontmock-modulename)
   - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
   - [`jest.genMockFunction()`](#jest-genmockfunction)
@@ -104,6 +105,9 @@ It's worth noting that automatic mocking is on by default, so this method is onl
 Removes any pending timers from the timer system.
 
 This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+
+### `jest.currentTestPath()`
+Returns the absolute path to the currently executing test file.
 
 ### `jest.dontMock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
@@ -318,8 +322,6 @@ It's worth noting that this code will execute *before* [`config.setupTestFramewo
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
-
-The currently executing test's file path is available as an injected global in this file as `_jestTestFilePath`.
 
 ### `config.testDirectoryName` [string]
 (default: `'__tests__'`)

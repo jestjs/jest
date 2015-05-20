@@ -329,7 +329,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
 
   // Pass the testFilePath into the runner, so it can be used to e.g.
   // configure test reporter output.
-  env.global._jestTestFilePath = testFilePath;
+  env.testFilePath = testFilePath;
 
   return this._constructModuleLoader(env, config).then(function(moduleLoader) {
     // This is a kind of janky way to ensure that we only collect coverage
