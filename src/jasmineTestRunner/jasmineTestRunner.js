@@ -280,9 +280,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     }
   });
 
-  var jasmineReporter = new JasmineReporter({
-    noHighlight: config.noHighlight,
-  });
+  var jasmineReporter = new JasmineReporter();
   jasmine.getEnv().addReporter(jasmineReporter);
 
   // Run the test by require()ing it
