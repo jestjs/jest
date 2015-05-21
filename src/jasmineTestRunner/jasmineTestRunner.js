@@ -47,21 +47,23 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     );
   };
 
-  var checkMissingExpectedKeys = function(a, b, property, mismatchKeys) {
-    if (!hasKey(b, property) && hasKey(a, property)) {
-      mismatchKeys.push(
-        'expected missing key \'' + property + '\', but present in ' +
-        'actual.'
-      );
-    }
-  };
-  var checkMissingActualKeys = function(a, b, property, mismatchKeys) {
-    if (!hasKey(a, property) && hasKey(b, property)) {
-      mismatchKeys.push(
-        'expected has key \'' + property + '\', but missing from actual.'
-      );
-    }
-  };
+  var checkMissingExpectedKeys =
+    function(actual, expected, property, mismatchKeys) {
+      if (!hasKey(expected, property) && hasKey(actual, property)) {
+        mismatchKeys.push(
+          'expected missing key \'' + property + '\', but present in ' +
+          'actual.'
+        );
+      }
+    };
+  var checkMissingActualKeys =
+    function(actual, expected, property, mismatchKeys) {
+      if (!hasKey(actual, property) && hasKey(expected, property)) {
+        mismatchKeys.push(
+          'expected has key \'' + property + '\', but missing from actual.'
+        );
+      }
+    };
   var checkMismatchedValues = function(
     a,
     b,
@@ -149,16 +151,16 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         if (areArrays) {
           var largerLength = Math.max(a.length, b.length);
           for (index = 0; index < largerLength; index++) {
-            // check that all of b's keys match a's
+            // check that all expected keys match actual keys
             if (index < b.length && typeof b[index] !== 'function') {
-              checkMissingActualKeys(b, a, index, mismatchKeys);
+              checkMissingActualKeys(a, b, index, mismatchKeys);
             }
-            // check that all of a's keys match b's
+            // check that all actual keys match expected keys
             if (index < a.length && typeof a[index] !== 'function') {
               checkMissingExpectedKeys(a, b, index, mismatchKeys);
             }
 
-            // check that every value of b matches every value of a
+            // check that every expected value matches each actual value
             if (typeof a[index] !== 'function' &&
                 typeof b[index] !== 'function') {
               checkMismatchedValues.call(
@@ -172,16 +174,11 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
             }
           }
         } else {
-          // check that all of b's keys match a's
           for (property in b) {
-            checkMissingActualKeys(b, a, property, mismatchKeys);
-          }
-          // check that all of a's keys match b's
-          for (property in a) {
-            checkMissingExpectedKeys(a, b, property, mismatchKeys);
-          }
-          // check that every value of b matches every value of a
-          for (property in b) {
+            // check that all actual keys match expected keys
+            checkMissingActualKeys(a, b, property, mismatchKeys);
+
+            // check that every expected value matches each actual value
             checkMismatchedValues.call(
               this,
               a,
@@ -190,6 +187,10 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
               mismatchKeys,
               mismatchValues
             );
+          }
+          for (property in a) {
+            // check that all of b's keys match a's
+            checkMissingExpectedKeys(a, b, property, mismatchKeys);
           }
         }
 
@@ -217,7 +218,10 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           __filename: config.setupTestFrameworkScriptFile,
           require: moduleLoader.constructBoundRequire(
             config.setupTestFrameworkScriptFile
-          )
+          ),
+          jest: moduleLoader.getJestRuntime(
+            config.setupTestFrameworkScriptFile
+          ),
         }
       );
     }
@@ -276,7 +280,9 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     }
   });
 
-  var jasmineReporter = new JasmineReporter();
+  var jasmineReporter = new JasmineReporter({
+    noHighlight: config.noHighlight,
+  });
   jasmine.getEnv().addReporter(jasmineReporter);
 
   // Run the test by require()ing it
