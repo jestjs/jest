@@ -108,14 +108,10 @@ function _prettyPrint(obj, indent, cycleWeakMap) {
   }
 }
 
-function _extractParent(spec) {
-  return spec.fullName.replace(spec.description, '').trim();
-}
-
-function _extractSpecResults(specResult) {
+function _extractSpecResults(specResult, currentSuites) {
   var results = {
     title: 'it ' + specResult.description,
-    ancestorTitles: [_extractParent(specResult)], // TODO: is not fully done
+    ancestorTitles: currentSuites,
     failureMessages: [],
     logMessages: [], // There is no type in result in Jasmine 2.0
     numPassingAsserts: 0 // TODO: it is not used over the code
@@ -168,10 +164,19 @@ function _extractSpecResults(specResult) {
 function JasmineReporter() {
   this._resultsDeferred = Q.defer();
   this._testResults = [];
+  this._currentSuites = [];
 }
 
 JasmineReporter.prototype.specDone = function(result) {
-  this._testResults.push(_extractSpecResults(result));
+  this._testResults.push(_extractSpecResults(result, this._currentSuites.slice(0)));
+};
+
+JasmineReporter.prototype.suiteStarted = function(suite) {
+  this._currentSuites.push(suite);
+};
+
+JasmineReporter.prototype.suiteDone = function() {
+  this._currentSuites.pop();
 };
 
 JasmineReporter.prototype.getResults = function() {

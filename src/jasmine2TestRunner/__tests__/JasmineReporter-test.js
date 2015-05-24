@@ -9,7 +9,7 @@
 
 require('mock-modules').autoMockOff();
 
-describe('JasmineReporter', function() {
+describe('Jasmine2 Reporter', function() {
   // modules
   var JasmineReporter;
   var colors;
@@ -22,6 +22,36 @@ describe('JasmineReporter', function() {
     colors = require('../../lib/colors');
 
     reporter = new JasmineReporter();
+  });
+
+  describe('suites', function() {
+
+    pit('reports nested suites', function() {
+
+      var makeSpec = function(name) {
+        return { fullName: name,
+          description: 'description',
+          failedExpectations: []
+        };
+      };
+      reporter.suiteStarted('parent');
+      reporter.suiteStarted('child');
+      reporter.specDone(makeSpec('spec 1'));
+      reporter.suiteDone();
+      reporter.suiteStarted('child 2');
+      reporter.specDone(makeSpec('spec 2'));
+
+      return reporter.getResults().then(function(runResults) {
+
+        var firstResult = runResults.testResults[0];
+        expect(firstResult.ancestorTitles[0]).toBe('parent');
+        expect(firstResult.ancestorTitles[1]).toBe('child');
+        var secondResult = runResults.testResults[1];
+        expect(secondResult.ancestorTitles[1]).toBe('child 2');
+
+      });
+    });
+
   });
 
   describe('colorization', function() {
