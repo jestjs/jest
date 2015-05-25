@@ -44,7 +44,8 @@ JasmineReporter.prototype.suiteDone = function() {
   this._currentSuites.pop();
 };
 
-JasmineReporter.prototype.getResults = function() {
+JasmineReporter.prototype.jasmineDone = function() {
+
   var numFailingTests = 0;
   var numPassingTests = 0;
 
@@ -61,12 +62,11 @@ JasmineReporter.prototype.getResults = function() {
     numPassingTests: numPassingTests,
     testResults: this._testResults
   });
-
-  this._testResults = []; // I'm not sure if we really need this
-
-  return this._resultsDeferred.promise;
 };
 
+JasmineReporter.prototype.getResults = function() {
+  return this._resultsDeferred.promise;
+};
 
 JasmineReporter.prototype._extractSpecResults =
 function(specResult, currentSuites) {

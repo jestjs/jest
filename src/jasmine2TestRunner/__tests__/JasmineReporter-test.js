@@ -40,6 +40,7 @@ describe('Jasmine2 Reporter', function() {
       reporter.suiteDone();
       reporter.suiteStarted({description: 'child 2'});
       reporter.specDone(makeSpec('spec 2'));
+      reporter.jasmineDone();
 
       return reporter.getResults().then(function(runResults) {
 
@@ -82,6 +83,7 @@ describe('Jasmine2 Reporter', function() {
     pit('colorizes single-line failures using a per-char diff', function() {
       var result = getFailedResult('foo', 'foobar');
       reporter.specDone(result);
+      reporter.jasmineDone();
 
       return reporter.getResults().then(function(result) {
         var message = result.testResults[0].failureMessages[0];
@@ -95,6 +97,7 @@ describe('Jasmine2 Reporter', function() {
     pit('colorizes multi-line failures using a per-line diff', function() {
       var result = getFailedResult('foo\nbar\nbaz', 'foo\nxxx\nbaz');
       reporter.specDone(result);
+      reporter.jasmineDone();
 
       return reporter.getResults().then(function(result) {
         var message = result.testResults[0].failureMessages[0];

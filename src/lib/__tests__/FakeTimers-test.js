@@ -281,10 +281,9 @@ describe('FakeTimers', function() {
 
       expect(function() {
         fakeTimers.runAllTicks();
-      }).toThrow(
-        'Ran 100 ticks, and there are still more! Assuming we\'ve hit an ' +
-        'infinite recursion and bailing out...'
-      );
+      }).toThrow(new Error(
+          'Ran 100 ticks, and there are still more! Assuming we\'ve hit an ' +
+          'infinite recursion and bailing out...'));
     });
   });
 
@@ -352,9 +351,8 @@ describe('FakeTimers', function() {
       global.setTimeout(fn, 0, 'mockArg1', 'mockArg2');
 
       fakeTimers.runAllTimers();
-      expect(fn.mock.calls).toEqual([
-        ['mockArg1', 'mockArg2']
-      ]);
+      expect(fn.mock.calls[0][0]).toBe('mockArg1');
+      expect(fn.mock.calls[0][1]).toBe('mockArg2');
     });
 
     it('doesnt pass the callback to native setTimeout', function() {
@@ -384,10 +382,10 @@ describe('FakeTimers', function() {
 
       expect(function() {
         fakeTimers.runAllTimers();
-      }).toThrow(
+      }).toThrow(new Error(
         'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
-      );
+      ));
     });
   });
 
@@ -455,10 +453,10 @@ describe('FakeTimers', function() {
 
       expect(function() {
         fakeTimers.runTimersToTime(50);
-      }).toThrow(
+      }).toThrow(new Error(
         'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
-      );
+      ));
     });
   });
 
@@ -677,7 +675,7 @@ describe('FakeTimers', function() {
           global.setTimeout();
           throw new Error('test');
         });
-      }).toThrow('test');
+      }).toThrow(new Error('test'));
       expect(nativeSetTimeout.mock.calls.length).toBe(1);
       expect(global.setTimeout.mock.calls.length).toBe(0);
 
