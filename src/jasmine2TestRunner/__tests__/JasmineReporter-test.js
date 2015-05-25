@@ -34,11 +34,11 @@ describe('Jasmine2 Reporter', function() {
           failedExpectations: []
         };
       };
-      reporter.suiteStarted('parent');
-      reporter.suiteStarted('child');
+      reporter.suiteStarted({description: 'parent'});
+      reporter.suiteStarted({description: 'child'});
       reporter.specDone(makeSpec('spec 1'));
       reporter.suiteDone();
-      reporter.suiteStarted('child 2');
+      reporter.suiteStarted({description: 'child 2'});
       reporter.specDone(makeSpec('spec 2'));
 
       return reporter.getResults().then(function(runResults) {

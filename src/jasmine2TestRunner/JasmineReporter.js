@@ -37,7 +37,7 @@ JasmineReporter.prototype.specDone = function(result) {
 };
 
 JasmineReporter.prototype.suiteStarted = function(suite) {
-  this._currentSuites.push(suite);
+  this._currentSuites.push(suite.description);
 };
 
 JasmineReporter.prototype.suiteDone = function() {
