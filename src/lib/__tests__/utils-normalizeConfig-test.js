@@ -28,29 +28,22 @@ describe('utils-normalizeConfig', function() {
     utils = require('../utils');
   });
 
-  var expectError = function(expectation, error) {
-    /* global jasmine */
-    return jasmine.version ?
-      expectation.toThrowError(error) :
-      expectation.toThrow(error);
-  };
-
   it('throws when an invalid config option is passed in', function() {
 
-    expectError(expect(function() {
+    expect(function() {
       utils.normalizeConfig({
         rootDir: '/root/path/foo',
         thisIsAnInvalidConfigKey: 'with a value even!'
       });
-    }), 'Unknown config option: thisIsAnInvalidConfigKey');
+    }).toThrow(new Error('Unknown config option: thisIsAnInvalidConfigKey'));
 
   });
 
   describe('rootDir', function() {
     it('throws if the config is missing a rootDir property', function() {
-      expectError(expect(function() {
+      expect(function() {
         utils.normalizeConfig({});
-      }), 'No rootDir config value found!');
+      }).toThrow(new Error('No rootDir config value found!'));
     });
   });
 
