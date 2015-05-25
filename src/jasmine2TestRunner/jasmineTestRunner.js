@@ -169,44 +169,78 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   jasmine.getEnv().beforeEach(function() {
     jasmine.addMatchers({
-      toBeCalled: function() {
-        if (this.actual.mock === undefined) {
-          throw Error('toBeCalled() should be used on a mock function');
-        }
-        return this.actual.mock.calls.length !== 0;
-      },
 
-      lastCalledWith: function() {
-        if (this.actual.mock === undefined) {
-          throw Error('lastCalledWith() should be used on a mock function');
-        }
-        var calls = this.actual.mock.calls;
-        var args = Array.prototype.slice.call(arguments);
-        this.env.currentSpec.expect(calls[calls.length - 1]).toEqual(args);
-        return true;
-      },
+      toBeCalled: function(/* util, customEqualityTesters */) {
+        return {
+          compare: function(actual /*, expected */) {
 
-      toBeCalledWith: function() {
-        if (this.actual.mock === undefined) {
-          throw Error('toBeCalledWith() should be used on a mock function');
-        }
-        var calls = this.actual.mock.calls;
-        var args = Array.prototype.slice.call(arguments);
+            if (actual.mock === undefined) {
+              throw Error('toBeCalled() should be used on a mock function');
+            }
 
-        // Often toBeCalledWith is called on a mock that only has one call, so
-        // we can give a better error message in this case.
-        if (calls.length === 1) {
-          var expect = this.env.currentSpec.expect(calls[0]);
-          if (this.isNot) {
-            expect = expect.not;
+            return {
+              pass: actual.mock.calls.length !== 0,
+              message: ''
+            };
           }
-          expect.toEqual(args);
-          return !this.isNot;
-        }
+        };
+      },
 
-        return calls.some(function(call) {
-          return this.env.equals_(call, args);
-        }, this);
+      lastCalledWith: function(util /*, customEqualityTesters */) {
+        return {
+          compare: function(actual) {
+
+            if (actual.mock === undefined) {
+              throw Error('lastCalledWith() should be used on a mock function');
+            }
+
+            var calls = actual.mock.calls;
+            var args = Array.prototype.slice.call(arguments, 1);
+
+            return {
+              pass: util.equals(calls[calls.length - 1], args),
+              message: 'Actual: ' + jasmine.pp(calls[calls.length - 1])
+                       + ', expected: ' + jasmine.pp(args)
+            };
+
+          }
+        };
+      },
+
+      toBeCalledWith: function(util /*, customEqualityTesters */) {
+        return {
+          compare: function(actual) {
+            if (actual.mock === undefined) {
+              throw Error('toBeCalledWith() should be used on a mock function');
+            }
+
+            var calls = actual.mock.calls;
+            var args = Array.prototype.slice.call(arguments, 1);
+
+            // Often toBeCalledWith is called on a mock that only has one call,
+            // so we can give a better error message in this case.
+            if (calls.length === 1) {
+
+              return {
+                pass: util.equals(calls[0], args),
+                message: 'Actual: ' + jasmine.pp(calls[0])
+                       + ', expected: ' + jasmine.pp(args)
+              };
+
+            } else {
+
+              var passed = calls.some(function(call) {
+                return util.equals(call, args);
+              }, this);
+
+              return {
+                pass: passed,
+                message: ''
+              };
+
+            }
+          }
+        };
       }
     });
 
