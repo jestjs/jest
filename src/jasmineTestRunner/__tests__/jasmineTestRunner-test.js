@@ -11,20 +11,6 @@ require('mock-modules').autoMockOff();
 
 describe('jasmineTestRunner', function() {
 
-    //TODO: replace with actual unit tests?
-    //TODO: enormous stack traces with jasmine2!
-    // describe('failures', function() {
-
-    //     it('handles exceptions', function() {
-    //         throw new Error('surprise!');
-    //     });
-
-    //     it('handles match failures', function() {
-    //         expect(true).toBe(false);
-    //     });
-
-    // });
-
     describe('custom matchers', function() {
 
         it('has toBeCalled', function() {
