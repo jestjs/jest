@@ -9,7 +9,7 @@
 
 require('mock-modules').autoMockOff();
 
-describe('Jasmine2 Reporter', function() {
+describe('Jasmine2Reporter', function() {
   // modules
   var JasmineReporter;
   var colors;
@@ -18,7 +18,7 @@ describe('Jasmine2 Reporter', function() {
   var reporter;
 
   beforeEach(function() {
-    JasmineReporter = require('../JasmineReporter');
+    JasmineReporter = require('../Jasmine2Reporter');
     colors = require('../../lib/colors');
 
     reporter = new JasmineReporter();

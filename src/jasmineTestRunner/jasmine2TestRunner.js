@@ -9,7 +9,7 @@
 
 var fs = require('graceful-fs');
 var jasminePit = require('jasmine-pit');
-var JasmineReporter = require('./JasmineReporter');
+var JasmineReporter = require('./Jasmine2Reporter');
 var path = require('path');
 var utils = require('../lib/utils');
 
