@@ -16,6 +16,18 @@ var Q = require('q');
 
 var colorize = colors.colorize;
 
+// Used in colorized mode.
+function _formatMsgColorized(msg, color) {
+  return colors.colorize(msg, color);
+}
+
+// Used in plain mode to output.
+function _formatMsgPlain(msg) {
+  return msg;
+}
+
+var _formatMsg;
+
 var ERROR_TITLE_COLOR = colors.RED + colors.BOLD + colors.UNDERLINE;
 var DIFFABLE_MATCHERS = {
   toBe: true,
@@ -42,9 +54,9 @@ function _highlightDifferences(a, b) {
   for (var i = 0, il = changes.length; i < il; i++) {
     change = changes[i];
     if (change.added) {
-      ret.b += colorize(change.value, colors.RED_BG);
+      ret.b += _formatMsg(change.value, colors.RED_BG);
     } else if (change.removed) {
-      ret.a += colorize(change.value, colors.RED_BG);
+      ret.a += _formatMsg(change.value, colors.RED_BG);
     } else {
       ret.a += change.value;
       ret.b += change.value;
@@ -90,7 +102,7 @@ function _prettyPrint(obj, indent, cycleWeakMap) {
     var orderedKeys = Object.keys(obj).sort();
     var value;
     var keysOutput = [];
-    var keyIndent = colorize('|', colors.GRAY) + ' ';
+    var keyIndent = _formatMsg('|', colors.GRAY) + ' ';
     for (var i = 0; i < orderedKeys.length; i++) {
       if (orderedKeys[i] === '__jstest_pp_cycle__') {
         continue;
@@ -113,15 +125,15 @@ function _extractSpecResults(specResult, currentSuites) {
     title: 'it ' + specResult.description,
     ancestorTitles: currentSuites,
     failureMessages: [],
-    logMessages: [], // There is no type in result in Jasmine 2.0
-    numPassingAsserts: 0 // TODO: it is not used over the code
+    logMessages: [], // Jasmine 2 does not have a logging interface
+    numPassingAsserts: 0 // Jasmine 2 only returns an array of failed asserts.
   };
 
   specResult.failedExpectations.forEach(function(failed) {
     if (!failed.matcherName) {
       var errorMessage = failed.stack.replace(
         /(^.*$(?=\n\s*at))/m,
-          colorize('$1', ERROR_TITLE_COLOR)
+          _formatMsg('$1', ERROR_TITLE_COLOR)
       );
 
       results.failureMessages.push(errorMessage);
@@ -133,12 +145,12 @@ function _extractSpecResults(specResult, currentSuites) {
         var colorDiff = _highlightDifferences(ppActual, ppExpected);
 
         message =
-              colorize('Expected:', ERROR_TITLE_COLOR) +
+              _formatMsg('Expected:', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.a +
-                ' ' + colorize(failed.matcherName + ':', ERROR_TITLE_COLOR) +
+                ' ' + _formatMsg(failed.matcherName + ':', ERROR_TITLE_COLOR) +
                 ' ' + colorDiff.b;
       } else {
-        message = colorize(failed.message, ERROR_TITLE_COLOR);
+        message = _formatMsg(failed.message, ERROR_TITLE_COLOR);
       }
 
       if (failed.stack) {
@@ -161,14 +173,20 @@ function _extractSpecResults(specResult, currentSuites) {
   return results;
 }
 
-function JasmineReporter() {
+function JasmineReporter(config) {
+  this._config = config || {};
   this._resultsDeferred = Q.defer();
   this._testResults = [];
   this._currentSuites = [];
+
+  _formatMsg = this._config.noHighlight
+    ? _formatMsgPlain
+    : _formatMsgColorized;
 }
 
 JasmineReporter.prototype.specDone = function(result) {
-  this._testResults.push(_extractSpecResults(result, this._currentSuites.slice(0)));
+  this._testResults.push(_extractSpecResults(result,
+    this._currentSuites.slice(0)));
 };
 
 JasmineReporter.prototype.suiteStarted = function(suite) {
