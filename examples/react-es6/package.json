@@ -13,7 +13,8 @@
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/react-tools"
+      "<rootDir>/node_modules/react-tools",
+      "<rootDir>/CheckboxWithLabel.js"
     ]
   }
 }
