@@ -174,6 +174,8 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         {
           __dirname: path.dirname(config.setupTestFrameworkScriptFile),
           __filename: config.setupTestFrameworkScriptFile,
+          jest: moduleLoader._builtInModules['jest-runtime'](
+            config.setupTestFrameworkScriptFile).exports,
           require: moduleLoader.constructBoundRequire(
             config.setupTestFrameworkScriptFile
           )
