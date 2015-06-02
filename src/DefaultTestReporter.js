@@ -93,7 +93,7 @@ function(config, testResult, aggregatedResults) {
 
     if (config.bail){
       this.onRunComplete(config, aggregatedResults);
-      process.exit(0);
+      this._process.exit(0);
     }
   }
 
