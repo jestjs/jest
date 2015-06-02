@@ -452,10 +452,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
   aggregatedResults.startTime = Date.now()
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
-  var startTime = Date.now();
-
   return testRun.then(function() {
-    aggregatedResults.runTime = (Date.now() - startTime) / 1000;
     aggregatedResults.success = aggregatedResults.numFailedTests === 0;
     reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
     return aggregatedResults;

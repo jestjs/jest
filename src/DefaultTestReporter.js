@@ -62,6 +62,10 @@ function(config, testResult, aggregatedResults) {
     testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
   }
 
+  var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
+      testRunTimeString
+    ])
+
   /*
   if (config.collectCoverage) {
     // TODO: Find a nice pretty way to print this out
@@ -71,23 +75,20 @@ function(config, testResult, aggregatedResults) {
   if (config.verbose) {
     this.verboseLog(testResult.testResults);
   } else {
-    this.log(this._getResultHeader(allTestsPassed, pathStr, [
-      testRunTimeString
-    ]));
+    this.log(resultHeader);
   }
 
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
+    var failureMessage = formatFailureMessage(testResult, /*color*/!config.noHighlight)
     if (config.verbose) {
       aggregatedResults.postSuiteHeaders.push(
-        this._getResultHeader(allTestsPassed, pathStr, [
-          testRunTimeString
-        ]),
-        formatFailureMessage(testResult, /*color*/!config.noHighlight)
+        resultHeader,
+        failureMessage
       );
     } else {
-      this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
+      this.log(failureMessage);
     }
 
     if (config.failFast){
