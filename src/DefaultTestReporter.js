@@ -64,7 +64,7 @@ function(config, testResult, aggregatedResults) {
 
   var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
       testRunTimeString
-    ])
+    ]);
 
   /*
   if (config.collectCoverage) {
@@ -81,7 +81,7 @@ function(config, testResult, aggregatedResults) {
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
-    var failureMessage = formatFailureMessage(testResult, /*color*/!config.noHighlight)
+    var failureMessage = formatFailureMessage(testResult, !config.noHighlight);
     if (config.verbose) {
       aggregatedResults.postSuiteHeaders.push(
         resultHeader,
@@ -92,8 +92,8 @@ function(config, testResult, aggregatedResults) {
     }
 
     if (config.failFast){
-      this.onRunComplete(config, aggregatedResults)
-      process.exit(0)
+      this.onRunComplete(config, aggregatedResults);
+      process.exit(0);
     }
   }
 

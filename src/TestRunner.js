@@ -449,7 +449,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     }, aggregatedResults);
   };
 
-  aggregatedResults.startTime = Date.now()
+  aggregatedResults.startTime = Date.now();
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
   return testRun.then(function() {
