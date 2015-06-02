@@ -9,7 +9,7 @@
 
 require('mock-modules').autoMockOff();
 
-describe('JasmineReporter', function() {
+describe('Jasmine2Reporter', function() {
   // modules
   var JasmineReporter;
   var colors;
@@ -18,10 +18,41 @@ describe('JasmineReporter', function() {
   var reporter;
 
   beforeEach(function() {
-    JasmineReporter = require('../JasmineReporter');
+    JasmineReporter = require('../Jasmine2Reporter');
     colors = require('../../lib/colors');
 
     reporter = new JasmineReporter();
+  });
+
+  describe('suites', function() {
+
+    pit('reports nested suites', function() {
+
+      var makeSpec = function(name) {
+        return { fullName: name,
+          description: 'description',
+          failedExpectations: []
+        };
+      };
+      reporter.suiteStarted({description: 'parent'});
+      reporter.suiteStarted({description: 'child'});
+      reporter.specDone(makeSpec('spec 1'));
+      reporter.suiteDone();
+      reporter.suiteStarted({description: 'child 2'});
+      reporter.specDone(makeSpec('spec 2'));
+      reporter.jasmineDone();
+
+      return reporter.getResults().then(function(runResults) {
+
+        var firstResult = runResults.testResults[0];
+        expect(firstResult.ancestorTitles[0]).toBe('parent');
+        expect(firstResult.ancestorTitles[1]).toBe('child');
+        var secondResult = runResults.testResults[1];
+        expect(secondResult.ancestorTitles[1]).toBe('child 2');
+
+      });
+    });
+
   });
 
   describe('colorization', function() {
@@ -52,6 +83,7 @@ describe('JasmineReporter', function() {
     pit('colorizes single-line failures using a per-char diff', function() {
       var result = getFailedResult('foo', 'foobar');
       reporter.specDone(result);
+      reporter.jasmineDone();
 
       return reporter.getResults().then(function(result) {
         var message = result.testResults[0].failureMessages[0];
@@ -65,6 +97,7 @@ describe('JasmineReporter', function() {
     pit('colorizes multi-line failures using a per-line diff', function() {
       var result = getFailedResult('foo\nbar\nbaz', 'foo\nxxx\nbaz');
       reporter.specDone(result);
+      reporter.jasmineDone();
 
       return reporter.getResults().then(function(result) {
         var message = result.testResults[0].failureMessages[0];
