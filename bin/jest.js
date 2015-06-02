@@ -116,8 +116,8 @@ var argv = optimist
       ),
       type: 'boolean'
     },
-    failFast: {
-      alias: ['ff', 'f'],
+    bail: {
+      alias: 'b',
       description: _wrapDesc(
         'Exit the test suite immediately upon the first failing test.'
       ),

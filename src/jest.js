@@ -97,8 +97,8 @@ function _promiseConfig(argv, packageRoot) {
       config.verbose = argv.verbose;
     }
 
-    if (argv.failFast) {
-      config.failFast = argv.failFast;
+    if (argv.bail) {
+      config.bail = argv.bail;
     }
 
     return config;

@@ -91,7 +91,7 @@ function(config, testResult, aggregatedResults) {
       this.log(failureMessage);
     }
 
-    if (config.failFast){
+    if (config.bail){
       this.onRunComplete(config, aggregatedResults);
       process.exit(0);
     }
