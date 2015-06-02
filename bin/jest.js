@@ -115,6 +115,13 @@ var argv = optimist
         'Display individual test results with the test suite hierarchy.'
       ),
       type: 'boolean'
+    },
+    failFast: {
+      alias: 'ff',
+      description: _wrapDesc(
+        'Exit the test suite immediately upon the first failing test.'
+      ),
+      type: 'boolean'
     }
   })
   .check(function(argv) {
