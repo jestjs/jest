@@ -89,6 +89,11 @@ function(config, testResult, aggregatedResults) {
     } else {
       this.log(formatFailureMessage(testResult, /*color*/!config.noHighlight));
     }
+
+    if (config.failFast){
+      this.onRunComplete(config, aggregatedResults)
+      process.exit(0)
+    }
   }
 
   this._printWaitingOn(aggregatedResults);
@@ -99,7 +104,7 @@ function (config, aggregatedResults) {
   var numFailedTests = aggregatedResults.numFailedTests;
   var numPassedTests = aggregatedResults.numPassedTests;
   var numTotalTests = aggregatedResults.numTotalTests;
-  var runTime = aggregatedResults.runTime;
+  var runTime = (Date.now() - aggregatedResults.startTime) / 1000;
 
   if (numTotalTests === 0) {
     return;
