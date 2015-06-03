@@ -47,6 +47,29 @@ function getType(ref) {
   return null;
 }
 
+/**
+ * methods on ES6 classes are not enumerable, so they can't be found with a
+ * simple `for (var slot in ...) {` so that had to be replaced with getSlots()
+ */
+function getSlots(object) {
+  var slots = {};
+  if (!object) {
+    return [];
+  }
+  // Simply attempting to access any of these throws an error.
+  var forbiddenProps = [ 'caller', 'callee', 'arguments' ];
+  var collectProp = function(prop) {
+    if (forbiddenProps.indexOf(prop) === -1) {
+      slots[prop] = true;
+    }
+  };
+  do {
+    Object.getOwnPropertyNames(object).forEach(collectProp);
+    object = Object.getPrototypeOf(object);
+  } while (object && Object.getPrototypeOf(object) !== null);
+  return Object.keys(slots);
+}
+
 function makeComponent(metadata) {
   switch (metadata.type) {
     case 'object':
@@ -79,7 +102,7 @@ function makeComponent(metadata) {
         calls.push(Array.prototype.slice.call(arguments));
         if (this instanceof f) {
           // This is probably being called as a constructor
-          for (var slot in prototype) {
+          getSlots(prototype).forEach(function(slot) {
             // Copy prototype methods to the instance to make
             // it easier to interact with mock instance call and
             // return values
@@ -88,7 +111,7 @@ function makeComponent(metadata) {
               this[slot] = generateFromMetadata(prototype[slot]);
               this[slot]._protoImpl = protoImpl;
             }
-          }
+          }, this);
 
           // Run the mock constructor implementation
           return mockImpl && mockImpl.apply(this, arguments);
@@ -202,14 +225,14 @@ function generateFromMetadata(_metadata) {
       mock.__TCmeta = metadata.__TCmeta;
     }
 
-    for (var slot in metadata.members) {
+    getSlots(metadata.members).forEach(function(slot) {
       var slotMetadata = metadata.members[slot];
       if (slotMetadata.ref !== null && slotMetadata.ref !== undefined) {
         callbacks.push(getRefCallback(slot, slotMetadata.ref));
       } else {
         mock[slot] = generateMock(slotMetadata);
       }
-    }
+    });
 
     if (metadata.type !== 'undefined'
         && metadata.type !== 'null'
@@ -275,11 +298,11 @@ function _getMetadata(component, _refs) {
   // Leave arrays alone
   if (type !== 'array') {
     if (type !== 'undefined') {
-      for (var slot in component) {
+      getSlots(component).forEach(function(slot) {
         if (slot.charAt(0) === '_' ||
             (type === 'function' && component._isMockFunction &&
              slot.match(/^mock/))) {
-          continue;
+          return;
         }
 
         if (!component.hasOwnProperty && component[slot] !== undefined ||
@@ -288,7 +311,7 @@ function _getMetadata(component, _refs) {
             (type === 'object' && component[slot] != Object.prototype[slot])) {
           addMember(slot, _getMetadata(component[slot], refs));
         }
-      }
+      });
     }
 
     // If component is native code function, prototype might be undefined
@@ -311,9 +334,9 @@ function removeUnusedRefs(metadata) {
   function visit(metadata, f) {
     f(metadata);
     if (metadata.members) {
-      for (var slot in metadata.members) {
+      getSlots(metadata.members).forEach(function(slot) {
         visit(metadata.members[slot], f);
-      }
+      });
     }
   }
 

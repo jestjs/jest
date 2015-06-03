@@ -18,6 +18,7 @@ var DEFAULT_CONFIG_VALUES = {
   globals: {},
   moduleFileExtensions: ['js', 'json'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
+  preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
@@ -26,7 +27,8 @@ var DEFAULT_CONFIG_VALUES = {
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: ['/node_modules/'],
   testReporter: require.resolve('../IstanbulTestReporter'),
-  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner')
+  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  noHighlight: false,
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -193,6 +195,7 @@ function normalizeConfig(config) {
         ));
         break;
 
+      case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'unmockedModulePathPatterns':
@@ -222,6 +225,7 @@ function normalizeConfig(config) {
       case 'testFileExtensions':
       case 'testReporter':
       case 'moduleFileExtensions':
+      case 'noHighlight':
         value = config[key];
         break;
 
@@ -317,8 +321,13 @@ function loadConfigFromPackageJson(filePath) {
 
 var _contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
+  var cacheRec;
+  var mtime = fs.statSync(filePath).mtime;
   if (_contentCache.hasOwnProperty(filePath)) {
-    return _contentCache[filePath];
+    cacheRec = _contentCache[filePath];
+    if (cacheRec.mtime.getTime() === mtime.getTime()) {
+      return cacheRec.content;
+    }
   }
 
   var fileData = fs.readFileSync(filePath, 'utf8');
@@ -329,15 +338,25 @@ function readAndPreprocessFileContent(filePath, config) {
     fileData = fileData.replace(/^#!.*/, '');
   }
 
-  if (config.scriptPreprocessor) {
+  if (config.scriptPreprocessor &&
+      !config.preprocessorIgnorePatterns.some(function(pattern) {
+        return pattern.test(filePath);
+      })) {
     try {
-      fileData = require(config.scriptPreprocessor).process(fileData, filePath);
+      fileData = require(config.scriptPreprocessor).process(
+        fileData,
+        filePath,
+        {}, // options
+        [], // excludes
+        config
+      );
     } catch (e) {
       e.message = config.scriptPreprocessor + ': ' + e.message;
       throw e;
     }
   }
-  return _contentCache[filePath] = fileData;
+  _contentCache[filePath] = cacheRec = {mtime: mtime, content: fileData};
+  return cacheRec.content;
 }
 
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
@@ -412,6 +431,14 @@ function formatFailureMessage(testResult, color) {
   }).join('\n');
 }
 
+function formatMsg(msg, color, _config) {
+  _config = _config || {};
+  if (_config.noHighlight) {
+    return msg;
+  }
+  return colors.colorize(msg, color);
+}
+
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
@@ -421,6 +448,7 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
 
 
 exports.escapeStrForRegex = escapeStrForRegex;
+exports.formatMsg = formatMsg;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
 exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;

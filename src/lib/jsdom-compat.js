@@ -98,8 +98,8 @@ if (utilsId) {
   };
 }
 
-var define = require('jsdom/lib/jsdom/level2/html').define;
 var jsdom = require('jsdom');
+var define = require('jsdom/lib/jsdom/level2/html').define;
 var elements = jsdom.defaultLevel;
 
 function _getTimeRangeDummy() {
