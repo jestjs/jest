@@ -63,8 +63,8 @@ function(config, testResult, aggregatedResults) {
   }
 
   var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
-      testRunTimeString
-    ]);
+    testRunTimeString
+  ]);
 
   /*
   if (config.collectCoverage) {
@@ -91,7 +91,7 @@ function(config, testResult, aggregatedResults) {
       this.log(failureMessage);
     }
 
-    if (config.bail){
+    if (config.bail) {
       this.onRunComplete(config, aggregatedResults);
       this._process.exit(0);
     }
