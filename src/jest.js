@@ -97,6 +97,10 @@ function _promiseConfig(argv, packageRoot) {
       config.verbose = argv.verbose;
     }
 
+    if (argv.bail) {
+      config.bail = argv.bail;
+    }
+
     return config;
   });
 }

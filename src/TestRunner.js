@@ -414,7 +414,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 
   var aggregatedResults = {
     success: null,
-    runTime: null,
+    startTime: null,
     numTotalTests: testPaths.length,
     numPassedTests: 0,
     numFailedTests: 0,
@@ -449,12 +449,10 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     }, aggregatedResults);
   };
 
+  aggregatedResults.startTime = Date.now();
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
-  var startTime = Date.now();
-
   return testRun.then(function() {
-    aggregatedResults.runTime = (Date.now() - startTime) / 1000;
     aggregatedResults.success = aggregatedResults.numFailedTests === 0;
     reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
     return aggregatedResults;
