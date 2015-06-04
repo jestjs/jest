@@ -11,6 +11,7 @@ var diff = require('diff');
 var colors = require('../lib/colors');
 var formatMsg = require('../lib/utils').formatMsg;
 
+var KEEP_TRACE_LINES = 2;
 var ERROR_TITLE_COLOR = colors.RED + colors.BOLD + colors.UNDERLINE;
 var DIFFABLE_MATCHERS = {
   toBe: true,
@@ -55,8 +56,12 @@ JasmineFormatter.prototype.formatMatchFailure = function(result) {
   var message;
   if (DIFFABLE_MATCHERS[result.matcherName]) {
 
+    var isNot = 'isNot' in result ?
+                  result.isNot :
+                  /not to /.test(result.message);
+
     message = this.formatDiffable(result.matcherName,
-      result.isNot,
+      isNot,
       result.actual,
       result.expected);
 
@@ -82,10 +87,14 @@ JasmineFormatter.prototype.formatException = function(stackTrace) {
   // jasmine doesn't give us access to the actual Error object, so we
   // have to regexp out the message from the stack string in order to
   // colorize the `message` value
-  return stackTrace.replace(
+
+  stackTrace = stackTrace.replace(
             /(^.*$(?=\n\s*at))/m,
             this.formatFailure('$1')
           );
+
+  return this.cleanStackTrace(stackTrace);
+
 };
 
 JasmineFormatter.prototype.highlightDifferences = function (a, b) {
@@ -172,6 +181,23 @@ JasmineFormatter.prototype.prettyPrint = function(obj, indent, cycleWeakMap) {
 
 };
 
+JasmineFormatter.prototype.cleanStackTrace = function(stackTrace) {
+
+  // Remove jasmine jonx from the stack trace
+  var lines = 0;
+  var keepFirstLines = function() {
+      return (lines++ < KEEP_TRACE_LINES);
+  };
+
+  return stackTrace.split('\n').filter(function(line) {
+
+    return keepFirstLines() ||
+          !/jest\/(vendor|src|node_modules)\//.test(line);
+
+  }).join('\n');
+
+};
+
 JasmineFormatter.prototype.formatStackTrace =
 function(stackTrace, originalMessage, formattedMessage) {
 
@@ -181,12 +207,7 @@ function(stackTrace, originalMessage, formattedMessage) {
   // Remove the 'Error: ' prefix from the stack trace
   formatted = formatted.replace(/^.*Error:\s*/, '');
 
-  // Remove jasmine jonx from the stack trace
-  formatted = formatted.split('\n').filter(function(line) {
-    return !/vendor\/jasmine\//.test(line);
-  }).join('\n');
-
-  return formatted;
+  return this.cleanStackTrace(formatted);
 };
 
 module.exports = JasmineFormatter;
