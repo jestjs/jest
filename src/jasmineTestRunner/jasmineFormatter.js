@@ -192,7 +192,7 @@ JasmineFormatter.prototype.cleanStackTrace = function(stackTrace) {
   return stackTrace.split('\n').filter(function(line) {
 
     return keepFirstLines() ||
-          !/jest\/(vendor|src|node_modules)\//.test(line);
+          !/jest(-cli)?\/(vendor|src|node_modules)\//.test(line);
 
   }).join('\n');
 
