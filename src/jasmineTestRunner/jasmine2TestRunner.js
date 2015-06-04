@@ -77,8 +77,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
             return {
               pass: util.equals(calls[calls.length - 1], args),
-              message: 'Actual: ' + jasmine.pp(calls[calls.length - 1])
-                       + ', expected: ' + jasmine.pp(args)
             };
 
           }
@@ -100,9 +98,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
             if (calls.length === 1) {
 
               return {
-                pass: util.equals(calls[0], args),
-                message: 'Actual: ' + jasmine.pp(calls[0])
-                       + ', expected: ' + jasmine.pp(args)
+                pass: util.equals(calls[0], args)
               };
 
             } else {
