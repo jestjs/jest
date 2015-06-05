@@ -41,6 +41,8 @@ describe('JasmineReporter', function() {
                             {
                               actual: actualResult,
                               expected: expectedResult,
+                              message: '',
+                              isNot: false,
                               matcherName: 'toBe',
                               passed: function() { return passed; },
                               trace: {},

@@ -58,7 +58,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
             return {
               pass: actual.mock.calls.length !== 0,
-              message: ''
             };
           }
         };
@@ -77,8 +76,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
             return {
               pass: util.equals(calls[calls.length - 1], args),
-              message: 'Actual: ' + jasmine.pp(calls[calls.length - 1])
-                       + ', expected: ' + jasmine.pp(args)
             };
 
           }
@@ -95,28 +92,14 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
             var calls = actual.mock.calls;
             var args = Array.prototype.slice.call(arguments, 1);
 
-            // Often toBeCalledWith is called on a mock that only has one call,
-            // so we can give a better error message in this case.
-            if (calls.length === 1) {
+            var passed = calls.some(function(call) {
+              return util.equals(call, args);
+            }, this);
 
-              return {
-                pass: util.equals(calls[0], args),
-                message: 'Actual: ' + jasmine.pp(calls[0])
-                       + ', expected: ' + jasmine.pp(args)
-              };
+            return {
+              pass: passed,
+            };
 
-            } else {
-
-              var passed = calls.some(function(call) {
-                return util.equals(call, args);
-              }, this);
-
-              return {
-                pass: passed,
-                message: ''
-              };
-
-            }
           }
         };
       }
