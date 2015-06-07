@@ -61,6 +61,25 @@ describe('moduleMocker', function() {
       expect(bar.x()).toBe('Bar');
     });
 
+    it('does not mock non-enumerable getters', function() {
+      var foo = Object.defineProperties({}, {
+        nonEnumMethod: {
+          value: function() {}
+        },
+        nonEnumGetter: {
+          get: function() { throw 1; }
+        }
+      });
+      var fooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(foo)
+      );
+
+      expect(typeof foo.nonEnumMethod).toBe('function');
+
+      expect(fooMock.nonEnumMethod.mock).not.toBeUndefined();
+      expect(fooMock.nonEnumGetter).toBeUndefined();
+    });
+
     it('mocks ES6 non-enumerable methods', function() {
         // ES6: class ClassFoo { foo() { } }
         // Converted with https://babeljs.io/repl/

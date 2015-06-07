@@ -59,7 +59,10 @@ function getSlots(object) {
   // Simply attempting to access any of these throws an error.
   var forbiddenProps = [ 'caller', 'callee', 'arguments' ];
   var collectProp = function(prop) {
-    if (forbiddenProps.indexOf(prop) === -1) {
+    var propDesc = Object.getOwnPropertyDescriptor(object, prop);
+    if (forbiddenProps.indexOf(prop) === -1 &&
+        // Include only enumerable accessors.
+        (propDesc.enumerable || !propDesc.get)) {
       slots[prop] = true;
     }
   };
