@@ -39,6 +39,76 @@ var jasmineOnlyContent =
     );
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
+  var hasKey = function(obj, keyName) {
+    return (
+      obj !== null
+      && obj !== undefined
+      && obj[keyName] !== environment.global.jasmine.undefined
+    );
+  };
+
+  var checkMissingExpectedKeys =
+    function(actual, expected, property, mismatchKeys) {
+      if (!hasKey(expected, property) && hasKey(actual, property)) {
+        mismatchKeys.push(
+          'expected missing key \'' + property + '\', but present in ' +
+          'actual.'
+        );
+      }
+    };
+  var checkMissingActualKeys =
+    function(actual, expected, property, mismatchKeys) {
+      if (!hasKey(actual, property) && hasKey(expected, property)) {
+        mismatchKeys.push(
+          'expected has key \'' + property + '\', but missing from actual.'
+        );
+      }
+    };
+  var checkMismatchedValues = function(
+    a,
+    b,
+    property,
+    mismatchKeys,
+    mismatchValues
+  ) {
+    // The only different implementation from the original jasmine
+    var areEqual = this.equals_(
+      a[property],
+      b[property],
+      mismatchKeys,
+      mismatchValues
+    );
+    if (!areEqual) {
+      var aprop;
+      var bprop;
+      if (!a[property]) {
+        aprop = a[property];
+      } else if (a[property].toString) {
+        aprop = environment.global.jasmine.util.htmlEscape(
+          a[property].toString()
+        );
+      } else {
+        aprop = Object.prototype.toString.call(a[property]);
+      }
+
+      if (!b[property]) {
+        bprop = b[property];
+      } else if (b[property].toString) {
+        bprop = environment.global.jasmine.util.htmlEscape(
+          b[property].toString()
+        );
+      } else {
+        bprop = Object.prototype.toString.call(b[property]);
+      }
+
+      mismatchValues.push(
+        '\'' + property + '\' was \'' + bprop +
+        '\' in expected, but was \'' + aprop +
+        '\' in actual.'
+      );
+    }
+  };
+
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   //
@@ -55,12 +125,9 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     environment.runSourceText(jasmineOnlyContent);
 
     // Node must have been run with --harmony in order for WeakMap to be
-    // available prior to version 0.12
-    if (typeof WeakMap !== 'function') {
-      throw new Error(
-        'Please run node with the --harmony flag! jest requires WeakMap ' +
-        'which is only available with the --harmony flag in node < v0.12'
-      );
+    // available
+    if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
+      throw new Error('Please run node with the --harmony flag!');
     }
 
     // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to
@@ -79,76 +146,51 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         _comparedObjects.set(a, b);
         _comparedObjects.set(b, a);
 
-        var hasKey = function(obj, keyName) {
-          return (
-            obj !== null
-            && obj !== undefined
-            && obj[keyName] !== environment.global.jasmine.undefined
-          );
-        };
-
-        for (var property in b) {
-          if (areArrays && typeof b[property] === 'function') {
-            continue;
-          }
-          if (!hasKey(a, property) && hasKey(b, property)) {
-            mismatchKeys.push(
-              'expected has key \'' + property + '\', but missing from actual.'
-            );
-          }
-        }
-        for (property in a) {
-          if (areArrays && typeof a[property] === 'function') {
-            continue;
-          }
-          if (!hasKey(b, property) && hasKey(a, property)) {
-            mismatchKeys.push(
-              'expected missing key \'' + property + '\', but present in ' +
-              'actual.'
-            );
-          }
-        }
-        for (property in b) {
-          // The only different implementation from the original jasmine
-          if (areArrays &&
-              (typeof a[property] === 'function' ||
-               typeof b[property] === 'function')) {
-            continue;
-          }
-          var areEqual = this.equals_(
-            a[property],
-            b[property],
-            mismatchKeys,
-            mismatchValues
-          );
-          if (!areEqual) {
-            var aprop;
-            var bprop;
-            if (!a[property]) {
-              aprop = a[property];
-            } else if (a[property].toString) {
-              aprop = environment.global.jasmine.util.htmlEscape(
-                a[property].toString()
-              );
-            } else {
-              aprop = Object.prototype.toString.call(a[property]);
+        var property;
+        var index;
+        if (areArrays) {
+          var largerLength = Math.max(a.length, b.length);
+          for (index = 0; index < largerLength; index++) {
+            // check that all expected keys match actual keys
+            if (index < b.length && typeof b[index] !== 'function') {
+              checkMissingActualKeys(a, b, index, mismatchKeys);
+            }
+            // check that all actual keys match expected keys
+            if (index < a.length && typeof a[index] !== 'function') {
+              checkMissingExpectedKeys(a, b, index, mismatchKeys);
             }
 
-            if (!b[property]) {
-              bprop = b[property];
-            } else if (b[property].toString) {
-              bprop = environment.global.jasmine.util.htmlEscape(
-                b[property].toString()
+            // check that every expected value matches each actual value
+            if (typeof a[index] !== 'function' &&
+                typeof b[index] !== 'function') {
+              checkMismatchedValues.call(
+                this,
+                a,
+                b,
+                index,
+                mismatchKeys,
+                mismatchValues
               );
-            } else {
-              bprop = Object.prototype.toString.call(b[property]);
             }
+          }
+        } else {
+          for (property in b) {
+            // check that all actual keys match expected keys
+            checkMissingActualKeys(a, b, property, mismatchKeys);
 
-            mismatchValues.push(
-              '\'' + property + '\' was \'' + bprop +
-              '\' in expected, but was \'' + aprop +
-              '\' in actual.'
+            // check that every expected value matches each actual value
+            checkMismatchedValues.call(
+              this,
+              a,
+              b,
+              property,
+              mismatchKeys,
+              mismatchValues
             );
+          }
+          for (property in a) {
+            // check that all of b's keys match a's
+            checkMissingExpectedKeys(a, b, property, mismatchKeys);
           }
         }
 
@@ -177,7 +219,9 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           require: moduleLoader.constructBoundRequire(
             config.setupTestFrameworkScriptFile
           ),
-          jest: moduleLoader.getJestRuntime(config.setupTestFrameworkScriptFile)
+          jest: moduleLoader.getJestRuntime(
+            config.setupTestFrameworkScriptFile
+          ),
         }
       );
     }
