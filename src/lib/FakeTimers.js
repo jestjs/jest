@@ -167,6 +167,13 @@ FakeTimers.prototype.runAllTimers = function() {
     this._runTimerHandle(nextTimerHandle);
   }
 
+  // Some of the immediate calls could be enqueued
+  // during the previous handling of the timers, we should
+  // run them as well.
+  if (this._immediates.length) {
+    this.runAllImmediates();
+  }
+
   if (i === this._maxLoops) {
     throw new Error(
       'Ran ' + this._maxLoops + ' timers, and there are still more! Assuming ' +
