@@ -554,18 +554,18 @@ describe('FakeTimers', function() {
 
       fakeTimers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
+        'mock4',
         'mock2',
         'mock1',
         'mock3',
-        'mock4',
       ]);
 
       fakeTimers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
+        'mock4',
         'mock2',
         'mock1',
         'mock3',
-        'mock4',
 
         'mock2',
         'mock1',
