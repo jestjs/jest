@@ -524,7 +524,12 @@ describe('FakeTimers', function() {
 
   describe('runOnlyPendingTimers', function() {
     it('runs all timers in order', function() {
-      var global = {};
+      var nativeSetImmediate = jest.genMockFn();
+
+      var global = {
+        setImmediate: nativeSetImmediate
+      };
+
       var fakeTimers = new FakeTimers(global);
 
       var runOrder = [];
@@ -543,11 +548,16 @@ describe('FakeTimers', function() {
         runOrder.push('mock3');
       }, 200);
 
+      global.setImmediate(function() {
+        runOrder.push('mock4');
+      });
+
       fakeTimers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
         'mock2',
         'mock1',
-        'mock3'
+        'mock3',
+        'mock4',
       ]);
 
       fakeTimers.runOnlyPendingTimers();
@@ -555,6 +565,7 @@ describe('FakeTimers', function() {
         'mock2',
         'mock1',
         'mock3',
+        'mock4',
 
         'mock2',
         'mock1',
