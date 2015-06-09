@@ -125,16 +125,10 @@ FakeTimers.prototype.runAllImmediates = function() {
 
   for (var i = 0; i < this._maxLoops; i++) {
     var immediate = this._immediates.shift();
-
     if (immediate === undefined) {
       break;
     }
-
-    if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
-      // Callback may throw, so update the map prior calling.
-      this._cancelledImmediates[immediate.uuid] = true;
-      immediate.callback();
-    }
+    this._runImmediate(immediate);
   }
 
   if (i === this._maxLoops) {
@@ -143,6 +137,14 @@ FakeTimers.prototype.runAllImmediates = function() {
       ' immediates, and there are still more! Assuming ' +
       'we\'ve hit an infinite recursion and bailing out...'
     );
+  }
+};
+
+FakeTimers.prototype._runImmediate = function(immediate) {
+  if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
+    // Callback may throw, so update the map prior calling.
+    this._cancelledImmediates[immediate.uuid] = true;
+    immediate.callback();
   }
 };
 
@@ -181,6 +183,8 @@ FakeTimers.prototype.runOnlyPendingTimers = function() {
       return timers[left].expiry - timers[right].expiry;
     })
     .forEach(this._runTimerHandle, this);
+
+  this._immediates.forEach(this._runImmediate, this);
 };
 
 // Use to be runTimersToTime
