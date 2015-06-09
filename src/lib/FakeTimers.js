@@ -165,13 +165,13 @@ FakeTimers.prototype.runAllTimers = function() {
     }
 
     this._runTimerHandle(nextTimerHandle);
-  }
 
-  // Some of the immediate calls could be enqueued
-  // during the previous handling of the timers, we should
-  // run them as well.
-  if (this._immediates.length) {
-    this.runAllImmediates();
+    // Some of the immediate calls could be enqueued
+    // during the previous handling of the timers, we should
+    // run them as well.
+    if (this._immediates.length) {
+      this.runAllImmediates();
+    }
   }
 
   if (i === this._maxLoops) {
@@ -184,14 +184,13 @@ FakeTimers.prototype.runAllTimers = function() {
 
 // Used to be called runTimersOnce
 FakeTimers.prototype.runOnlyPendingTimers = function() {
+  this.runAllImmediates();
   var timers = this._timers;
   Object.keys(timers)
     .sort(function(left, right) {
       return timers[left].expiry - timers[right].expiry;
     })
     .forEach(this._runTimerHandle, this);
-
-  this._immediates.forEach(this._runImmediate, this);
 };
 
 // Use to be runTimersToTime
