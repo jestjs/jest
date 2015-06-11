@@ -79,6 +79,9 @@ function FakeTimers(global, maxLoops) {
 }
 
 FakeTimers.prototype.clearAllTimers = function() {
+  this._immediates.forEach(function(immediate) {
+    this._fakeClearImmediate(immediate.uuid);
+  }, this);
   for (var uuid in this._timers) {
     delete this._timers[uuid];
   }
