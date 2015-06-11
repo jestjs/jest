@@ -73,7 +73,7 @@ function(config, testResult, aggregatedResults) {
   */
 
   if (config.verbose) {
-    this.verboseLog(testResult.testResults);
+    this.verboseLog(testResult.testResults, resultHeader);
   } else {
     this.log(resultHeader);
   }

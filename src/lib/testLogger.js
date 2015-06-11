@@ -34,7 +34,8 @@ function VerboseLogger(config, customProcess) {
  * @see {@link _createTestNode}
  * @see {@link traverseTestResults}
  */
-VerboseLogger.prototype.verboseLog = function(testResults) {
+VerboseLogger.prototype.verboseLog = function(testResults, resultHeader) {
+  this.log(resultHeader);
   this.traverseTestResults(_createTestTree(testResults));
   this.log('');
 };
@@ -66,7 +67,7 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
 
   indentationIncrement = '  ';
   indentation = indentation || '';
-  if (Object.prototype.toString.call(node.testTitles) === '[object Array]') {
+  if (Array.isArray(node.testTitles)) {
     this.printTestTitles(node.testTitles, indentation);
     this.traverseTestResults(node.childNodes, indentation);
   } else {
