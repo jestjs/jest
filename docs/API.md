@@ -92,16 +92,16 @@ permalink: docs/api.html
 ### `jest.autoMockOff()`
 Disables automatic mocking in the module loader.
 
-After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version)
+After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, class-builder libraries, etc)
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, class-builder libraries, etc).
 
 ### `jest.autoMockOn()`
 Re-enables automatic mocking in the module loader.
 
-It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changed (such as by previously calling [`jest.autoMockOff()`](#jest-automockoff))
+It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changed (such as by previously calling [`jest.autoMockOff()`](#jest-automockoff)).
 
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
@@ -142,14 +142,14 @@ This is often useful for synchronously executing all pending promises in the sys
 ### `jest.runAllTimers()`
 Exhausts the macro-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
 
-When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exuasted until there are no more macro-tasks remaining in the queue.
+When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
 
 This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](/jest/docs/timer-mocks.html) doc for more information.
 
 ### `jest.runOnlyPendingTimers()`
 Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
 
-This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback scheduls another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
+This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
 
 ### `jest.setMock(moduleName, moduleExports)`
 Explicitly supplies the mock object that the module system should return for the specified module.
