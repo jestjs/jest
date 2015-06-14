@@ -187,7 +187,7 @@ FakeTimers.prototype.runAllTimers = function() {
 
 // Used to be called runTimersOnce
 FakeTimers.prototype.runOnlyPendingTimers = function() {
-  this.runAllImmediates();
+  this._immediates.forEach(this._runImmediate, this);
   var timers = this._timers;
   Object.keys(timers)
     .sort(function(left, right) {

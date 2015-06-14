@@ -114,7 +114,6 @@ function _getCacheFilePath(config) {
 
 function Loader(config, environment, resourceMap) {
   this._config = config;
-  this._CoverageCollector = require(config.coverageCollector);
   this._coverageCollectors = {};
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
@@ -127,6 +126,10 @@ function Loader(config, environment, resourceMap) {
   this._reverseDependencyMap = null;
   this._shouldAutoMock = true;
   this._configShouldMockModuleNames = {};
+
+  if (config.collectCoverage) {
+    this._CoverageCollector = require(config.coverageCollector);
+  }
 
   if (_configUnmockListRegExpCache === null) {
     // Node must have been run with --harmony in order for WeakMap to be
