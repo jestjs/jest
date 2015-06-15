@@ -450,9 +450,12 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
       // LOAD_AS_DIRECTORY #1
       var packagePath = path.join(modulePath, 'package.json');
       if (fs.existsSync(packagePath)) {
-        var mainPath = path.join(modulePath, require(packagePath).main);
-        if (fs.existsSync(mainPath)) {
-          return mainPath;
+        var packageData = require(packagePath);
+        if (packageData.main) {
+          var mainPath = path.join(modulePath, packageData.main);
+          if (fs.existsSync(mainPath)) {
+            return mainPath;
+          }
         }
       }
 
