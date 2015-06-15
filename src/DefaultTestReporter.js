@@ -111,7 +111,9 @@ function (config, aggregatedResults) {
   }
 
   if (config.verbose) {
-    this.log(aggregatedResults.postSuiteHeaders.join('\n'));
+    if (aggregatedResults.postSuiteHeaders.length > 0) {
+      this.log(aggregatedResults.postSuiteHeaders.join('\n'));
+    }
   }
 
   var results = '';
