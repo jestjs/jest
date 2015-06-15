@@ -72,10 +72,9 @@ function(config, testResult, aggregatedResults) {
   }
   */
 
+  this.log(resultHeader);
   if (config.verbose) {
     this.verboseLog(testResult.testResults, resultHeader);
-  } else {
-    this.log(resultHeader);
   }
 
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
