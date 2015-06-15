@@ -72,10 +72,9 @@ function(config, testResult, aggregatedResults) {
   }
   */
 
+  this.log(resultHeader);
   if (config.verbose) {
     this.verboseLog(testResult.testResults, resultHeader);
-  } else {
-    this.log(resultHeader);
   }
 
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
@@ -112,7 +111,9 @@ function (config, aggregatedResults) {
   }
 
   if (config.verbose) {
-    this.log(aggregatedResults.postSuiteHeaders.join('\n'));
+    if (aggregatedResults.postSuiteHeaders.length > 0) {
+      this.log(aggregatedResults.postSuiteHeaders.join('\n'));
+    }
   }
 
   var results = '';

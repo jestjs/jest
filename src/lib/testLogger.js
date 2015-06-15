@@ -34,8 +34,7 @@ function VerboseLogger(config, customProcess) {
  * @see {@link _createTestNode}
  * @see {@link traverseTestResults}
  */
-VerboseLogger.prototype.verboseLog = function(testResults, resultHeader) {
-  this.log(resultHeader);
+VerboseLogger.prototype.verboseLog = function(testResults) {
   this.traverseTestResults(_createTestTree(testResults));
   this.log('');
 };
