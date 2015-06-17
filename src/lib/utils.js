@@ -15,6 +15,7 @@ var Q = require('q');
 var DEFAULT_CONFIG_VALUES = {
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
+  coverageReporters: [ 'json', 'text', 'lcov', 'clover' ],
   globals: {},
   moduleFileExtensions: ['js', 'json'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
@@ -209,7 +210,7 @@ function normalizeConfig(config) {
           return pattern.replace(/<rootDir>/g, config.rootDir);
         });
         break;
-
+      case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':
       case 'globals':
