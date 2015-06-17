@@ -11,7 +11,7 @@ var colors = require('../lib/colors');
 var diff = require('diff');
 var formatMsg = require('../lib/utils').formatMsg;
 var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
-var Q = require('q');
+var Promise = require('bluebird');
 
 var ERROR_TITLE_COLOR = colors.RED + colors.BOLD + colors.UNDERLINE;
 var DIFFABLE_MATCHERS = {
@@ -26,7 +26,7 @@ function JasmineReporter(config) {
   jasmine.Reporter.call(this);
   this._config = config || {};
   this._logs = [];
-  this._resultsDeferred = Q.defer();
+  this._resultsDeferred = Promise.defer();
 }
 
 JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);

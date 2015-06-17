@@ -10,13 +10,17 @@
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
-var q = require('q');
+var Promise = require('bluebird');
 var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 var Console = require('./Console');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
+
+// To suppress warning caused by Bluebird, see:
+// https://github.com/petkaantonov/bluebird/issues/661
+process.setMaxListeners(0);
 
 var DEFAULT_OPTIONS = {
 
@@ -472,7 +476,7 @@ TestRunner.prototype._createTestRun = function(
 TestRunner.prototype._createInBandTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
-  var testSequence = q();
+  var testSequence = Promise.resolve();
   testPaths.forEach(function(testPath) {
     testSequence = testSequence.then(this.runTest.bind(this, testPath))
       .then(function(testResult) {
@@ -500,7 +504,7 @@ TestRunner.prototype._createParallelTestRun = function(
 
   return this._getModuleLoaderResourceMap()
     .then(function() {
-      return q.all(testPaths.map(function(testPath) {
+      return Promise.all(testPaths.map(function(testPath) {
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
             onTestResult(testPath, testResult);
@@ -542,18 +546,18 @@ TestRunner.prototype._createParallelTestRun = function(
 };
 
 function _pathStreamToPromise(stream) {
-  var defer = q.defer();
-  var paths = [];
-  stream.on('data', function(path) {
-    paths.push(path);
+  return new Promise(function(resolve, reject) {
+    var paths = [];
+    stream.on('data', function(path) {
+      paths.push(path);
+    });
+    stream.on('error', function(err) {
+      reject(err);
+    });
+    stream.on('end', function() {
+      resolve(paths);
+    });
   });
-  stream.on('error', function(err) {
-    defer.reject(err);
-  });
-  stream.on('end', function() {
-    defer.resolve(paths);
-  });
-  return defer.promise;
 }
 
 
