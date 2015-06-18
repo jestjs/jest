@@ -29,7 +29,7 @@ function (config, aggregatedResults) {
   );
 
   if (config.collectCoverage) {
-    reporter.addAll([ 'json', 'text', 'lcov', 'clover' ]);
+    reporter.addAll(config.coverageReporters);
     reporter.write(collector, true, function () {
         console.log('All reports generated');
     });
