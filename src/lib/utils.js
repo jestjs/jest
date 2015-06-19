@@ -10,7 +10,7 @@
 var colors = require('./colors');
 var fs = require('graceful-fs');
 var path = require('path');
-var Q = require('q');
+var Promise = require('bluebird');
 
 var DEFAULT_CONFIG_VALUES = {
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
@@ -292,9 +292,10 @@ function pathNormalize(dir) {
   return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
 }
 
+var readFile = Promise.promisify(fs.readFile);
 function loadConfigFromFile(filePath) {
   var fileDir = path.dirname(filePath);
-  return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = fileDir;
@@ -307,7 +308,7 @@ function loadConfigFromFile(filePath) {
 
 function loadConfigFromPackageJson(filePath) {
   var pkgJsonDir = path.dirname(filePath);
-  return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath, 'utf8').then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;
@@ -444,6 +445,7 @@ function formatMsg(msg, color, _config) {
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
     path.resolve(__dirname, '..', 'node_modules', 'q'),
+    path.resolve(__dirname, '..', 'node_modules', 'bluebird'),
     path.resolve(__dirname, '..', 'vendor', 'jasmine')
 ].join('|') + ')');
 

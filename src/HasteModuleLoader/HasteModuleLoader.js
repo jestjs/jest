@@ -21,7 +21,7 @@ var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
-var Q = require('q');
+var Promise = require('bluebird');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
 
@@ -162,44 +162,36 @@ function Loader(config, environment, resourceMap) {
 }
 
 Loader.loadResourceMap = function(config, options) {
-  options = options || {};
-
-  var deferred = Q.defer();
-  try {
-    _constructHasteInst(config, options).update(
-      _getCacheFilePath(config),
-      function(resourceMap) {
-        deferred.resolve(resourceMap);
-      }
-    );
-  } catch (e) {
-    deferred.reject(e);
-  }
-
-  return deferred.promise;
+  return new Promise(function(resolve, reject) {
+    try {
+      _constructHasteInst(config, options || {}).update(
+        _getCacheFilePath(config),
+        resolve
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 Loader.loadResourceMapFromCacheFile = function(config, options) {
-  options = options || {};
-
-  var deferred = Q.defer();
-  try {
-    var hasteInst = _constructHasteInst(config, options);
-    hasteInst.loadMap(
-      _getCacheFilePath(config),
-      function(err, map) {
-        if (err) {
-          deferred.reject(err);
-        } else {
-          deferred.resolve(map);
+  return new Promise(function(resolve, reject) {
+    try {
+      var hasteInst = _constructHasteInst(config, options || {});
+      hasteInst.loadMap(
+        _getCacheFilePath(config),
+        function(err, map) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(map);
+          }
         }
-      }
-    );
-  } catch (e) {
-    deferred.reject(e);
-  }
-
-  return deferred.promise;
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 /**

@@ -8,7 +8,6 @@
 'use strict';
 
 var optimist = require('optimist');
-//var q = require('q');
 var TestRunner = require('./TestRunner');
 var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 

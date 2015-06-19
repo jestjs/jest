@@ -10,7 +10,7 @@
 var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
-var q = require('q');
+var Promise = require('bluebird');
 var TestRunner = require('./TestRunner');
 var utils = require('./lib/utils');
 
@@ -24,50 +24,46 @@ function getVersion() {
 }
 
 function _findChangedFiles(dirPath) {
-  var deferred = q.defer();
+  return new Promise(function(resolve, reject) {
+    var args =
+      ['diff', '--name-only', '--diff-filter=ACMR'];
+    var child = childProcess.spawn('git', args, {cwd: dirPath});
 
-  var args =
-    ['diff', '--name-only', '--diff-filter=ACMR'];
-  var child = childProcess.spawn('git', args, {cwd: dirPath});
+    var stdout = '';
+    child.stdout.on('data', function(data) {
+      stdout += data;
+    });
 
-  var stdout = '';
-  child.stdout.on('data', function(data) {
-    stdout += data;
-  });
+    var stderr = '';
+    child.stderr.on('data', function(data) {
+      stderr += data;
+    });
 
-  var stderr = '';
-  child.stderr.on('data', function(data) {
-    stderr += data;
-  });
-
-  child.on('close', function(code) {
-    if (code === 0) {
-      stdout = stdout.trim();
-      if (stdout === '') {
-        deferred.resolve([]);
+    child.on('close', function(code) {
+      if (code === 0) {
+        stdout = stdout.trim();
+        if (stdout === '') {
+          resolve([]);
+        } else {
+          resolve(stdout.split('\n').map(function(changedPath) {
+            return path.resolve(dirPath, changedPath);
+          }));
+        }
       } else {
-        deferred.resolve(stdout.split('\n').map(function(changedPath) {
-          return path.resolve(dirPath, changedPath);
-        }));
+        reject(code + ': ' + stderr);
       }
-    } else {
-      deferred.reject(code + ': ' + stderr);
-    }
+    });
   });
-
-  return deferred.promise;
 }
 
 function _verifyIsGitRepository(dirPath) {
-  var deferred = q.defer();
-
-  childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
-    .on('close', function(code) {
-      var isGitRepo = code === 0;
-      deferred.resolve(isGitRepo);
-    });
-
-  return deferred.promise;
+  return new Promise(function(resolve) {
+    childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
+      .on('close', function(code) {
+        var isGitRepo = code === 0;
+        resolve(isGitRepo);
+      });
+  });
 }
 
 function _testRunnerOptions(argv) {
@@ -111,7 +107,7 @@ function _promiseRawConfig(argv, packageRoot) {
   }
 
   if (typeof argv.config === 'object') {
-    return q(utils.normalizeConfig(argv.config));
+    return Promise.resolve(utils.normalizeConfig(argv.config));
   }
 
   var pkgJsonPath = path.join(packageRoot, 'package.json');
@@ -126,11 +122,11 @@ function _promiseRawConfig(argv, packageRoot) {
     }
     var config = utils.normalizeConfig(pkgJson.jest);
     config.name = pkgJson.name;
-    return q(config);
+    return Promise.resolve(config);
   }
 
   // Sane default config
-  return q(utils.normalizeConfig({
+  return Promise.resolve(utils.normalizeConfig({
     name: packageRoot.replace(/[/\\]/g, '_'),
     rootDir: packageRoot,
     testPathDirs: [packageRoot],
@@ -140,7 +136,7 @@ function _promiseRawConfig(argv, packageRoot) {
 
 function _promiseOnlyChangedTestPaths(testRunner, config) {
   var testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
-  return q.all(testPathDirsAreGit)
+  return Promise.all(testPathDirsAreGit)
     .then(function(results) {
       if (!results.every(function(result) { return result; })) {
         throw (
@@ -149,7 +145,7 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
           'with git projects.\n'
         );
       }
-      return q.all(config.testPathDirs.map(_findChangedFiles));
+      return Promise.all(config.testPathDirs.map(_findChangedFiles));
     })
     .then(function(changedPathSets) {
       // Collapse changed files from each of the testPathDirs into a single list
