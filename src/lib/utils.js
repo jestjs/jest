@@ -32,6 +32,11 @@ var DEFAULT_CONFIG_VALUES = {
   noHighlight: false,
 };
 
+// This shows up in the stack trace when a test file throws an unhandled error
+// when evaluated. Node's require prints Object.<anonymous> when initializing
+// modules, so do the same here solely for visual consistency.
+var EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
     case 'object':
@@ -361,20 +366,25 @@ function readAndPreprocessFileContent(filePath, config) {
   return cacheRec.content;
 }
 
-function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
+function runContentWithLocalBindings(environment, scriptContent, scriptPath,
                                      bindings) {
   var boundIdents = Object.keys(bindings);
   try {
-    var wrapperFunc = contextRunner(
-      '(function(' + boundIdents.join(',') + '){' +
+    var wrapperScript = 'this["' + EVAL_RESULT_VARIABLE + '"] = ' +
+      'function (' + boundIdents.join(',') + ') {' +
       scriptContent +
-      '\n})',
+      '\n};';
+    environment.runSourceText(
+      wrapperScript,
       scriptPath
     );
   } catch (e) {
     e.message = scriptPath + ': ' + e.message;
     throw e;
   }
+
+  var wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
+  delete environment.global[EVAL_RESULT_VARIABLE];
 
   var bindingValues = boundIdents.map(function(ident) {
     return bindings[ident];
@@ -441,6 +451,19 @@ function formatMsg(msg, color, _config) {
   return colors.colorize(msg, color);
 }
 
+function deepCopy(obj) {
+  var newObj = {};
+  var value;
+  for (var key in obj) {
+    value = obj[key];
+    if (typeof value === 'object' && value !== null) {
+      value = deepCopy(value);
+    }
+    newObj[key] = value;
+  }
+  return newObj;
+}
+
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
@@ -450,6 +473,7 @@ var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
 ].join('|') + ')');
 
 
+exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatMsg = formatMsg;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;

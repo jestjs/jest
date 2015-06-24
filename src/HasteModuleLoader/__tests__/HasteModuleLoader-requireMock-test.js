@@ -8,6 +8,7 @@
 'use strict';
 
 jest.autoMockOff();
+jest.mock('../../JSDomEnvironment');
 
 var path = require('path');
 var Promise = require('bluebird');
@@ -15,7 +16,7 @@ var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
-  var mockEnvironment;
+  var JSDomEnvironment;
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
@@ -30,6 +31,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
+      var mockEnvironment = new JSDomEnvironment(CONFIG);
       return Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
@@ -38,17 +40,7 @@ describe('HasteModuleLoader', function() {
 
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
-
-    mockEnvironment = {
-      global: {
-        console: {},
-        mockClearTimers: jest.genMockFn()
-      },
-      runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
-        /* jshint evil:true */
-        return (new Function('return ' + codeStr))();
-      })
-    };
+    JSDomEnvironment = require('../../JSDomEnvironment');
   });
 
   describe('requireMock', function() {

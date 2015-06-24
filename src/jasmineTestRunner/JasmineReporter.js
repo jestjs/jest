@@ -201,14 +201,7 @@ JasmineReporter.prototype._prettyPrint = function(obj, indent, cycleWeakMap) {
       ')';
     }
 
-    /* jshint camelcase:false */
     if (!cycleWeakMap) {
-      if (typeof WeakMap !== 'function') {
-        throw new Error(
-          'Please run node with the --harmony flag! jest requires WeakMap ' +
-          'which is only available with the --harmony flag in node < v0.12'
-        );
-      }
       cycleWeakMap = new WeakMap();
     }
 
@@ -231,6 +224,7 @@ JasmineReporter.prototype._prettyPrint = function(obj, indent, cycleWeakMap) {
         this._prettyPrint(value, indent + keyIndent, cycleWeakMap)
       );
     }
+    /* jshint camelcase:false */
     delete obj.__jstest_pp_cycle__;
     return '{\n' + keysOutput.join(',\n') + '\n' + indent + '}';
   } else {

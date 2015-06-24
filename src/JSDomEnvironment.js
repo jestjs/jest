@@ -8,19 +8,9 @@
 'use strict';
 
 var FakeTimers = require('./lib/FakeTimers');
+var utils = require('./lib/utils');
 
-function _deepCopy(obj) {
-  var newObj = {};
-  var value;
-  for (var key in obj) {
-    value = obj[key];
-    if (typeof value === 'object' && value !== null) {
-      value = _deepCopy(value);
-    }
-    newObj[key] = value;
-  }
-  return newObj;
-}
+var USE_JSDOM_EVAL = false;
 
 function JSDomEnvironment(config) {
   // We lazily require jsdom because it takes a good ~.5s to load.
@@ -29,7 +19,15 @@ function JSDomEnvironment(config) {
   // use it (depending on the context -- such as TestRunner.js when operating as
   // a workerpool parent), this is the best way to ensure we only spend time
   // require()ing this when necessary.
-  this.global = require('./lib/jsdom-compat').jsdom().parentWindow;
+  var jsdom = require('./lib/jsdom-compat');
+  this.document = jsdom.jsdom(/* markup */undefined, {
+    resourceLoader: this._fetchExternalResource.bind(this),
+    features: {
+      FetchExternalResources: ['script'],
+      ProcessExternalResources: ['script'],
+    },
+  });
+  this.global = this.document.defaultView;
 
   // Node's error-message stack size is limited at 10, but it's pretty useful to
   // see more than that when a test fails.
@@ -83,13 +81,8 @@ function JSDomEnvironment(config) {
     this.global.Image = function Image() {};
   }
 
-  // Pass through the node `process` global.
-  // TODO: Consider locking this down somehow so tests can't do crazy stuff to
-  //       worker processes...
-  this.global.process = process;
-
   // Apply any user-specified global vars
-  var globalValues = _deepCopy(config.globals);
+  var globalValues = utils.deepCopy(config.globals);
   for (var customGlobalKey in globalValues) {
     // Always deep-copy objects so isolated test environments can't share memory
     this.global[customGlobalKey] = globalValues[customGlobalKey];
@@ -107,8 +100,41 @@ JSDomEnvironment.prototype.dispose = function() {
   //this.global.close();
 };
 
+/**
+ * Evaluates the given source text as if it were in a file with the given name.
+ * This method returns nothing.
+ */
 JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
-  return this.global.run(sourceText, fileName);
+  if (!USE_JSDOM_EVAL) {
+    var vm = require('vm');
+    vm.runInContext(sourceText, this.document._ownerDocument._global, {
+      filename: fileName,
+      displayErrors: false,
+    });
+    return;
+  }
+
+  // We evaluate code by inserting <script src="${filename}"> into the document
+  // and using jsdom's resource loader to simulate serving the source code.
+  this._scriptToServe = sourceText;
+
+  var scriptElement = this.document.createElement('script');
+  scriptElement.src = fileName;
+
+  this.document.head.appendChild(scriptElement);
+  this.document.head.removeChild(scriptElement);
+};
+
+JSDomEnvironment.prototype._fetchExternalResource = function(
+  resource,
+  callback
+) {
+  var content = this._scriptToServe;
+  delete this._scriptToServe;
+  if (content === null || content === undefined) {
+    var error = new Error('Unable to find source for ' + resource.url.href);
+  }
+  callback(error, content);
 };
 
 JSDomEnvironment.prototype.runWithRealTimers = function(cb) {
