@@ -106,7 +106,7 @@ function (container, ancestorTitles, spec) {
           // have to regexp out the message from the stack string in order to
           // colorize the `message` value
           result.trace.stack = result.trace.stack.replace(
-            /(^.*$(?=\n\s*at))/m,
+            /(^(.|\n)*?(?=\n\s*at\s))/,
             this._formatMsg('$1', ERROR_TITLE_COLOR)
           );
 

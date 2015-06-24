@@ -25,7 +25,7 @@ describe('JasmineReporter', function() {
   });
 
   describe('colorization', function() {
-    function getRunner(actualResult, expectedResult, passed) {
+    function getRunner(item) {
       return {
         suites: function() {
           return [
@@ -37,16 +37,7 @@ describe('JasmineReporter', function() {
                     results: function() {
                       return {
                         getItems: function() {
-                          return [
-                            {
-                              actual: actualResult,
-                              expected: expectedResult,
-                              matcherName: 'toBe',
-                              passed: function() { return passed; },
-                              trace: {},
-                              type: 'expect',
-                            }
-                          ];
+                          return [item];
                         },
                       };
                     },
@@ -60,6 +51,27 @@ describe('JasmineReporter', function() {
       };
     }
 
+    function getExpectedRunner(actualResult, expectedResult, passed) {
+      return getRunner({
+        actual: actualResult,
+        expected: expectedResult,
+        matcherName: 'toBe',
+        passed: function() { return passed; },
+        trace: {},
+        type: 'expect',
+      });
+    }
+
+    function getExceptionRunner(message, passed) {
+      return getRunner({
+        passed: function() { return passed; },
+        trace: {
+          stack: message,
+        },
+        type: 'expect',
+      });
+    }
+
     function errorize(str) {
       return colors.RED + colors.BOLD + colors.UNDERLINE + str + colors.RESET;
     }
@@ -69,7 +81,7 @@ describe('JasmineReporter', function() {
     }
 
     pit('colorizes single-line failures using a per-char diff', function() {
-      var runner = getRunner('foo', 'foobar', false);
+      var runner = getExpectedRunner('foo', 'foobar', false);
       reporter.reportRunnerResults(runner);
 
       return reporter.getResults().then(function(result) {
@@ -82,7 +94,7 @@ describe('JasmineReporter', function() {
     });
 
     pit('colorizes multi-line failures using a per-line diff', function() {
-      var runner = getRunner('foo\nbar\nbaz', 'foo\nxxx\nbaz', false);
+      var runner = getExpectedRunner('foo\nbar\nbaz', 'foo\nxxx\nbaz', false);
       reporter.reportRunnerResults(runner);
 
       return reporter.getResults().then(function(result) {
@@ -90,6 +102,30 @@ describe('JasmineReporter', function() {
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\n' + highlight('bar\n') + 'baz\' ' +
           errorize('toBe:') + ' \'foo\n' + highlight('xxx\n') + 'baz\''
+        );
+      });
+    });
+
+    pit('colorizes exception messages', function() {
+      var runner = getExceptionRunner(
+        'Error: foobar = {\n' +
+        '      attention: "bar"\n' +
+        '    }\n' +
+        '    at Error (<anonymous>)\n' +
+        '    at Baz.js (<anonymous>)',
+        false
+      );
+      reporter.reportRunnerResults(runner);
+
+      return reporter.getResults().then(function(result) {
+        var message = result.testResults[0].failureMessages[0];
+        expect(message).toBe(
+          errorize(
+            'Error: foobar = {\n' +
+            '      attention: "bar"\n' +
+            '    }'
+          ) + '\n    at Error (<anonymous>)\n' +
+          '    at Baz.js (<anonymous>)'
         );
       });
     });
