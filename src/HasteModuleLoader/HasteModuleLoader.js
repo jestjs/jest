@@ -132,15 +132,6 @@ function Loader(config, environment, resourceMap) {
   }
 
   if (_configUnmockListRegExpCache === null) {
-    // Node must have been run with --harmony in order for WeakMap to be
-    // available prior to version 0.12
-    if (typeof WeakMap !== 'function') {
-      throw new Error(
-        'Please run node with the --harmony flag! jest requires WeakMap ' +
-        'which is only available with the --harmony flag in node < v0.12'
-      );
-    }
-
     _configUnmockListRegExpCache = new WeakMap();
   }
 
@@ -243,7 +234,7 @@ Loader.prototype._execModule = function(moduleObj) {
   this._isCurrentlyExecutingManualMock = modulePath;
 
   utils.runContentWithLocalBindings(
-    this._environment.runSourceText.bind(this._environment),
+    this._environment,
     moduleContent,
     modulePath,
     moduleLocalBindings
@@ -860,12 +851,12 @@ Loader.prototype.requireModule = function(currPath, moduleName,
     modulePath = manualMockResource.path;
   }
 
-  if (!modulePath) {
-    modulePath = this._moduleNameToPath(currPath, moduleName);
-  }
-
   if (NODE_CORE_MODULES[moduleName]) {
     return require(moduleName);
+  }
+
+  if (!modulePath) {
+    modulePath = this._moduleNameToPath(currPath, moduleName);
   }
 
   // Always natively require the jasmine runner.
@@ -1033,6 +1024,10 @@ Loader.prototype.resetModuleRegistry = function() {
 
           runAllTicks: function() {
             this._environment.fakeTimers.runAllTicks();
+          }.bind(this),
+
+          runAllImmediates: function() {
+            this._environment.fakeTimers.runAllImmediates();
           }.bind(this),
 
           runAllTimers: function() {

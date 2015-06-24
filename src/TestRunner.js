@@ -361,7 +361,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
 
     if (config.setupEnvScriptFile) {
       utils.runContentWithLocalBindings(
-        env.runSourceText.bind(env),
+        env,
         utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
         config.setupEnvScriptFile,
         {
@@ -496,7 +496,6 @@ TestRunner.prototype._createParallelTestRun = function(
     this._opts.maxWorkers,
     this._opts.nodePath,
     this._opts.nodeArgv.concat([
-      '--harmony',
       TEST_WORKER_PATH,
       '--config=' + JSON.stringify(this._config)
     ])

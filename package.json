@@ -4,32 +4,31 @@
   "version": "0.4.13",
   "main": "src/jest.js",
   "dependencies": {
-    "coffee-script": "^1.8.0",
-    "cover": "~0.2.8",
-    "diff": "~1.0.4",
-    "graceful-fs": "^2.0.3",
-    "harmonize": "1.4.2",
-    "istanbul": "^0.3.2",
-    "jasmine-only": "0.1.0",
-    "jasmine-pit": "~2.0.0",
-    "jsdom": "~0.10.3",
+    "coffee-script": "jashkenas/coffeescript",
+    "cover": "^0.2.9",
+    "diff": "^1.4.0",
+    "graceful-fs": "^3.0.8",
+    "istanbul": "^0.3.15",
+    "jasmine-only": "^0.1.1",
+    "jasmine-pit": "^2.0.2",
+    "jsdom": "^5.4.3",
+    "lodash.template": "^3.6.1",
     "node-haste": "^1.2.8",
-    "node-worker-pool": "~2.4.2",
-    "optimist": "~0.6.0",
-    "bluebird": "~2.9.30",
-    "resolve": "~0.6.1",
-    "through": "^2.3.4",
-    "lodash.template": "^3.0.0"
+    "node-worker-pool": "^2.4.4",
+    "optimist": "^0.6.1",
+    "bluebird": "^2.9.30",
+    "resolve": "^1.1.6",
+    "through": "^2.3.7"
   },
   "devDependencies": {
-    "jshint": "~2.5.0",
-    "node-find-files": "0.0.2"
+    "jshint": "^2.8.0",
+    "node-find-files": "0.0.4"
   },
   "bin": {
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": "0.8.x || 0.10.x"
+    "node": ">= 1"
   },
   "repository": {
     "type": "git",

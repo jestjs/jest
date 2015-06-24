@@ -124,12 +124,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     // Install jasmine-only
     environment.runSourceText(jasmineOnlyContent);
 
-    // Node must have been run with --harmony in order for WeakMap to be
-    // available
-    if (!process.execArgv.some(function(arg) { return arg === '--harmony'; })) {
-      throw new Error('Please run node with the --harmony flag!');
-    }
-
     // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to
     // detect cycles, but that doesn't work on frozen objects so we use a
     // WeakMap instead.
@@ -210,7 +204,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
       );
 
       utils.runContentWithLocalBindings(
-        environment.runSourceText.bind(environment),
+        environment,
         setupScriptContent,
         config.setupTestFrameworkScriptFile,
         {

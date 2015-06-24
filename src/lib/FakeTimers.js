@@ -328,10 +328,18 @@ FakeTimers.prototype._fakeClearImmediate = function(uuid) {
 };
 
 FakeTimers.prototype._fakeNextTick = function(callback) {
+  var args = [];
+  for (var ii = 1, ll = arguments.length; ii < ll; ii++) {
+    args.push(arguments[ii]);
+  }
+
   var uuid = this._uuidCounter++;
+
   this._ticks.push({
     uuid: uuid,
-    callback: callback
+    callback: function() {
+      return callback.apply(null, args);
+    }
   });
 
   var cancelledTicks = this._cancelledTicks;
@@ -339,7 +347,7 @@ FakeTimers.prototype._fakeNextTick = function(callback) {
     if (!cancelledTicks.hasOwnProperty(uuid)) {
       // Callback may throw, so update the map prior calling.
       cancelledTicks[uuid] = true;
-      callback();
+      callback.apply(null, args);
     }
   });
 };
@@ -364,7 +372,7 @@ FakeTimers.prototype._fakeSetImmediate = function(callback) {
     if (!cancelledImmediates.hasOwnProperty(uuid)) {
       // Callback may throw, so update the map prior calling.
       cancelledImmediates[uuid] = true;
-      callback();
+      callback.apply(null, args);
     }
   });
 
