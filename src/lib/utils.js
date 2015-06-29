@@ -7,8 +7,10 @@
  */
 'use strict';
 
+var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
+var os = require('os');
 var path = require('path');
 var Promise = require('bluebird');
 
@@ -326,6 +328,23 @@ function loadConfigFromPackageJson(filePath) {
   });
 }
 
+function cleanupCacheFile(cachePath) {
+  try {
+    fs.unlinkSync(cachePath);
+  } catch (e) {
+    /*ignore errors*/
+  }
+}
+
+function storeCacheRecord(mtime, fileData, filePath) {
+  _contentCache[filePath] = {mtime: mtime, content: fileData};
+  return fileData;
+}
+
+// There are two layers of caching: in memory (always enabled),
+// and on disk (enabled by default, and managed by the
+// `preprocessCachingDisabled` option). The preprocessor script can also
+// provide hashing function for the cache key.
 var _contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
   var cacheRec;
@@ -350,20 +369,99 @@ function readAndPreprocessFileContent(filePath, config) {
         return pattern.test(filePath);
       })) {
     try {
-      fileData = require(config.scriptPreprocessor).process(
-        fileData,
-        filePath,
-        {}, // options
-        [], // excludes
-        config
-      );
+      var preprocessor = require(config.scriptPreprocessor);
+      if (typeof preprocessor.process !== 'function') {
+        throw new TypeError('Preprocessor should export `process` function.');
+      }
+      // On disk cache is enabled by default, unless explicitly disabled.
+      if (config.preprocessCachingDisabled !== true) {
+        var cacheDir = path.join(
+          os.tmpDir(),
+          'jest_preprocess_cache'
+        );
+
+        try {
+          fs.mkdirSync(cacheDir);
+        } catch(e) {
+          if (e.code !== 'EEXIST') {
+            throw e;
+          }
+        }
+
+        fs.chmodSync(cacheDir, '777');
+
+        var cacheKey;
+        // If preprocessor defines custom cache hashing and
+        // invalidating logic.
+        if (typeof preprocessor.getCacheKey === 'function') {
+          cacheKey = preprocessor.getCacheKey(
+            fileData,
+            filePath,
+            {}, // options
+            [], //excludes
+            config
+          );
+        } else {
+          // Default cache hashing.
+          cacheKey = crypto.createHash('md5')
+            .update(fileData)
+            .update(JSON.stringify(config))
+            .digest('hex');
+        }
+
+        var cachePath = path.join(
+          cacheDir,
+          cacheKey + '_' + path.basename(filePath)
+        );
+
+        if (fs.existsSync(cachePath)) {
+          try {
+            var cachedData = fs.readFileSync(cachePath, 'utf8');
+            if (cachedData) {
+              return storeCacheRecord(mtime, cachedData, filePath);
+            } else {
+              // In this case we must have somehow created the file but failed
+              // to write to it, lets just delete it and move on
+              cleanupCacheFile(cachePath);
+            }
+          } catch (e) {
+            e.message = 'Failed to read preprocess cache file: ' + cachePath;
+            cleanupCacheFile(cachePath);
+            throw e;
+          }
+        }
+
+        fileData = preprocessor.process(
+          fileData,
+          filePath,
+          {}, // options
+          [], // excludes
+          config
+        );
+
+        try {
+          fs.writeFileSync(cachePath, fileData);
+        } catch (e) {
+          e.message = 'Failed to cache preprocess results in: ' + cachePath;
+          cleanupCacheFile(cachePath);
+          throw e;
+        }
+
+      } else {
+        fileData = preprocessor.process(
+          fileData,
+          filePath,
+          {}, // options
+          [], // excludes
+          config
+        );
+      }
     } catch (e) {
       e.message = config.scriptPreprocessor + ': ' + e.message;
       throw e;
     }
   }
-  _contentCache[filePath] = cacheRec = {mtime: mtime, content: fileData};
-  return cacheRec.content;
+  return storeCacheRecord(mtime, fileData, filePath);
 }
 
 function runContentWithLocalBindings(environment, scriptContent, scriptPath,
