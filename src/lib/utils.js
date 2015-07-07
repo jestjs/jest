@@ -233,7 +233,8 @@ function normalizeConfig(config) {
       case 'noHighlight':
         value = config[key];
         break;
-
+      case 'verbose':
+        
       default:
         throw new Error('Unknown config option: ' + key);
     }
