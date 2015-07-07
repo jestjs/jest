@@ -231,9 +231,9 @@ function normalizeConfig(config) {
       case 'testReporter':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'verbose':
         value = config[key];
         break;
-      case 'verbose':
         
       default:
         throw new Error('Unknown config option: ' + key);
