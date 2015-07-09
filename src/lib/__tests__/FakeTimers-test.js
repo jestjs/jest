@@ -572,6 +572,20 @@ describe('FakeTimers', function() {
         'mock3'
       ]);
     });
+
+    it('does not run timers that were cleared in another timer', function() {
+      var global = {};
+      var fakeTimers = new FakeTimers(global);
+
+      var fn = jest.genMockFn();
+      var timer = global.setTimeout(fn, 10);
+      global.setTimeout(function() {
+        global.clearTimeout(timer);
+      }, 0);
+
+      fakeTimers.runOnlyPendingTimers();
+      expect(fn).not.toBeCalled();
+    });
   });
 
   describe('runWithRealTimers', function() {

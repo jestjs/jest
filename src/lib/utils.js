@@ -32,6 +32,7 @@ var DEFAULT_CONFIG_VALUES = {
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
   noHighlight: false,
+  preprocessCachingDisabled: false
 };
 
 // This shows up in the stack trace when a test file throws an unhandled error
@@ -217,6 +218,7 @@ function normalizeConfig(config) {
           return pattern.replace(/<rootDir>/g, config.rootDir);
         });
         break;
+      case 'preprocessCachingDisabled':
       case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':

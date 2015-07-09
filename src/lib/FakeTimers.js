@@ -447,6 +447,10 @@ FakeTimers.prototype._getNextTimerHandle = function() {
 FakeTimers.prototype._runTimerHandle = function(timerHandle) {
   var timer = this._timers[timerHandle];
 
+  if (!timer) {
+    return;
+  }
+
   switch (timer.type) {
     case 'timeout':
       var callback = timer.callback;
