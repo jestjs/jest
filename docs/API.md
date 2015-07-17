@@ -371,4 +371,4 @@ It is possible to override this setting in individual tests by explicitly callin
 ### `config.verbose` [boolean]
 (default: `false`)
 
-Indicates whether the tests should be printed into the console using `Mocha`-styled logs for determining if a specific test has failed or succeeded. Errors will still show on the bottom after execution.
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
