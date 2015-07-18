@@ -15,6 +15,7 @@
     "jsdom": "~0.10.3",
     "node-haste": "^1.2.8",
     "node-worker-pool": "~2.4.2",
+    "object-assign": "^3.0.0",
     "optimist": "~0.6.0",
     "bluebird": "~2.9.30",
     "resolve": "~0.6.1",
