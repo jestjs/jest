@@ -234,7 +234,7 @@ function normalizeConfig(config) {
       case 'verbose':
         value = config[key];
         break;
-        
+
       default:
         throw new Error('Unknown config option: ' + key);
     }
@@ -364,7 +364,7 @@ function readAndPreprocessFileContent(filePath, config) {
 
   if (config.scriptPreprocessor &&
       !config.preprocessorIgnorePatterns.some(function(pattern) {
-        return pattern.test(filePath);
+        return new RegExp(pattern).test(filePath);
       })) {
     try {
       var preprocessor = require(config.scriptPreprocessor);
