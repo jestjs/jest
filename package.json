@@ -57,5 +57,5 @@
     "jasmine",
     "mock"
   ],
-  "license": "BSD"
+  "license": "BSD-3-Clause"
 }
