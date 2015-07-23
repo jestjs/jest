@@ -11,6 +11,7 @@ var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
 var Promise = require('bluebird');
+var assign = require('object-assign');
 var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
@@ -91,12 +92,7 @@ function TestRunner(config, options) {
       .join('|') +
     ')$'
   );
-  this._opts = Object.create(DEFAULT_OPTIONS);
-  if (options) {
-    for (var key in options) {
-      this._opts[key] = options[key];
-    }
-  }
+  this._opts = assign({}, DEFAULT_OPTIONS, options);
 }
 
 TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
@@ -317,10 +313,10 @@ TestRunner.prototype.preloadConfigDependencies = function() {
  * @return {Promise<Object>} Results of the test
  */
 TestRunner.prototype.runTest = function(testFilePath) {
-  // Using Object.create() lets us adjust the config object locally without
+  // Shallow copying lets us adjust the config object locally without
   // worrying about the external consequences of changing the config object for
   // needs that are local to this particular function call
-  var config = Object.create(this._config);
+  var config = assign({}, this._config);
   var configDeps = this._loadConfigDependencies();
 
   var env = new configDeps.testEnvironment(config);

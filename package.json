@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.4.16",
+  "version": "0.4.17",
   "main": "src/jest.js",
   "dependencies": {
     "coffee-script": "jashkenas/coffeescript",
@@ -15,6 +15,7 @@
     "lodash.template": "^3.6.1",
     "node-haste": "^1.2.8",
     "node-worker-pool": "^2.4.4",
+    "object-assign": "^3.0.0",
     "optimist": "^0.6.1",
     "bluebird": "^2.9.30",
     "resolve": "^1.1.6",
