@@ -236,6 +236,7 @@ function normalizeConfig(config) {
       case 'testReporter':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'verbose':
         value = config[key];
         break;
 
@@ -368,7 +369,7 @@ function readAndPreprocessFileContent(filePath, config) {
 
   if (config.scriptPreprocessor &&
       !config.preprocessorIgnorePatterns.some(function(pattern) {
-        return pattern.test(filePath);
+        return new RegExp(pattern).test(filePath);
       })) {
     try {
       var preprocessor = require(config.scriptPreprocessor);

@@ -59,6 +59,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.testPathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testpathignorepatterns-array-string)
   - [`config.testPathPattern` [string]](http://facebook.github.io/jest/docs/api.html#config-testpathpattern-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
+  - [`config.verbose` [boolean]](http://facebook.github.io/jest/docs/api.html#config-verbose-boolean)
 
 #### Globally injected variables
 
