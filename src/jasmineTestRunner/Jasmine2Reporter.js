@@ -7,7 +7,7 @@
  */
 'use strict';
 
-var jasmineRequire = require('../../vendor/jasmine/jasmine-2.2.0');
+var jasmineRequire = require('../../vendor/jasmine/jasmine-2.3.4.js');
 var jasmine = jasmineRequire.core(jasmineRequire);
 var Q = require('q');
 var JasmineFormatter = require('./jasmineFormatter');
