@@ -13,7 +13,7 @@ var JasmineReporter = require('./Jasmine2Reporter');
 var envSetup = require('./environment.js');
 var path = require('path');
 
-var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-2.2.0.js');
+var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-2.3.4.js');
 var JASMINE_BOOT_PATH =
   require.resolve('../../vendor/jasmine/jasmine-2.x-boot.js');
 var jasmineFileContent =
