@@ -10,13 +10,18 @@
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
-var q = require('q');
+var Promise = require('bluebird');
+var assign = require('object-assign');
 var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 var Console = require('./Console');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
+
+// To suppress warning caused by Bluebird, see:
+// https://github.com/petkaantonov/bluebird/issues/661
+process.setMaxListeners(0);
 
 var DEFAULT_OPTIONS = {
 
@@ -87,12 +92,7 @@ function TestRunner(config, options) {
       .join('|') +
     ')$'
   );
-  this._opts = Object.create(DEFAULT_OPTIONS);
-  if (options) {
-    for (var key in options) {
-      this._opts[key] = options[key];
-    }
-  }
+  this._opts = assign({}, DEFAULT_OPTIONS, options);
 }
 
 TestRunner.prototype._constructModuleLoader = function(environment, customCfg) {
@@ -313,10 +313,10 @@ TestRunner.prototype.preloadConfigDependencies = function() {
  * @return {Promise<Object>} Results of the test
  */
 TestRunner.prototype.runTest = function(testFilePath) {
-  // Using Object.create() lets us adjust the config object locally without
+  // Shallow copying lets us adjust the config object locally without
   // worrying about the external consequences of changing the config object for
   // needs that are local to this particular function call
-  var config = Object.create(this._config);
+  var config = assign({}, this._config);
   var configDeps = this._loadConfigDependencies();
 
   var env = new configDeps.testEnvironment(config);
@@ -326,6 +326,10 @@ TestRunner.prototype.runTest = function(testFilePath) {
   // around (such as through some channel back to a parent process)
   var consoleMessages = [];
   env.global.console = new Console(consoleMessages);
+
+  // Pass the testFilePath into the runner, so it can be used to e.g.
+  // configure test reporter output.
+  env.testFilePath = testFilePath;
 
   return this._constructModuleLoader(env, config).then(function(moduleLoader) {
     // This is a kind of janky way to ensure that we only collect coverage
@@ -345,7 +349,7 @@ TestRunner.prototype.runTest = function(testFilePath) {
       moduleLoader.getDependenciesFromPath(testFilePath)
         .filter(function(depPath) {
           // Skip over built-in and node modules
-          return /^\//.test(depPath);
+          return /^\//.test(depPath) && !(/node_modules/.test(depPath));
         }).forEach(function(depPath) {
           config.collectCoverageOnlyFrom[depPath] = true;
         });
@@ -410,7 +414,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 
   var aggregatedResults = {
     success: null,
-    runTime: null,
+    startTime: null,
     numTotalTests: testPaths.length,
     numPassedTests: 0,
     numFailedTests: 0,
@@ -445,12 +449,10 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     }, aggregatedResults);
   };
 
+  aggregatedResults.startTime = Date.now();
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
-  var startTime = Date.now();
-
   return testRun.then(function() {
-    aggregatedResults.runTime = (Date.now() - startTime) / 1000;
     aggregatedResults.success = aggregatedResults.numFailedTests === 0;
     reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
     return aggregatedResults;
@@ -470,7 +472,7 @@ TestRunner.prototype._createTestRun = function(
 TestRunner.prototype._createInBandTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
-  var testSequence = q();
+  var testSequence = Promise.resolve();
   testPaths.forEach(function(testPath) {
     testSequence = testSequence.then(this.runTest.bind(this, testPath))
       .then(function(testResult) {
@@ -498,7 +500,7 @@ TestRunner.prototype._createParallelTestRun = function(
 
   return this._getModuleLoaderResourceMap()
     .then(function() {
-      return q.all(testPaths.map(function(testPath) {
+      return Promise.all(testPaths.map(function(testPath) {
         return workerPool.sendMessage({testFilePath: testPath})
           .then(function(testResult) {
             onTestResult(testPath, testResult);
@@ -540,18 +542,18 @@ TestRunner.prototype._createParallelTestRun = function(
 };
 
 function _pathStreamToPromise(stream) {
-  var defer = q.defer();
-  var paths = [];
-  stream.on('data', function(path) {
-    paths.push(path);
+  return new Promise(function(resolve, reject) {
+    var paths = [];
+    stream.on('data', function(path) {
+      paths.push(path);
+    });
+    stream.on('error', function(err) {
+      reject(err);
+    });
+    stream.on('end', function() {
+      resolve(paths);
+    });
   });
-  stream.on('error', function(err) {
-    defer.reject(err);
-  });
-  stream.on('end', function() {
-    defer.resolve(paths);
-  });
-  return defer.promise;
 }
 
 

@@ -8,7 +8,6 @@
 'use strict';
 
 var optimist = require('optimist');
-//var q = require('q');
 var TestRunner = require('./TestRunner');
 var workerUtils = require('node-worker-pool/nodeWorkerUtils');
 
@@ -20,8 +19,7 @@ if (require.main === module) {
     var config = JSON.parse(argv.config);
 
     var testRunner = null;
-    /* jshint -W082:true */
-    function onMessage(message) {
+    var onMessage = function(message) {
       if (testRunner === null) {
         testRunner = new TestRunner(config, {
           useCachedModuleLoaderResourceMap: true,
@@ -51,7 +49,7 @@ if (require.main === module) {
         .catch(function(err) {
           throw (err.stack || err.message || err);
         });
-    }
+    };
 
     workerUtils.startWorker(null, onMessage);
   } catch (e) {

@@ -8,15 +8,15 @@
 'use strict';
 
 var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
-var Q = require('q');
 var JasmineFormatter = require('./jasmineFormatter');
+var Promise = require('bluebird');
 
 function JasmineReporter(config) {
   jasmine.Reporter.call(this);
   this._formatter = new JasmineFormatter(jasmine, config);
   this._config = config || {};
   this._logs = [];
-  this._resultsDeferred = Q.defer();
+  this._resultsDeferred = Promise.defer();
 }
 
 JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);

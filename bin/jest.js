@@ -115,6 +115,13 @@ var argv = optimist
         'Display individual test results with the test suite hierarchy.'
       ),
       type: 'boolean'
+    },
+    bail: {
+      alias: 'b',
+      description: _wrapDesc(
+        'Exit the test suite immediately upon the first failing test.'
+      ),
+      type: 'boolean'
     }
   })
   .check(function(argv) {
@@ -215,6 +222,18 @@ if (fs.existsSync(cwdJestBinPath)) {
     }
   }
 }
+
+(function printLegacyNodeDeprecationMessage() {
+  if (!/^v0/.test(process.version)) {
+    return;
+  }
+
+  console.log('\n  == NOTICE: ==');
+  console.log('    Node and io.js will be merging. http://bit.ly/1dOjLVK');
+  console.log('    On August 1st, 2015, Jest v0.5.x will work only on io.js until the merger is complete');
+  console.log('    Legacy v0.4.x for Node 0.10.x will still be available on');
+  console.log('    on npm and from the "0.4.x" branch on GitHub.\n');
+})();
 
 if (!argv.version) {
   console.log('Using Jest CLI v' + jest.getVersion());

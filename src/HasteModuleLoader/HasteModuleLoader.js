@@ -21,7 +21,7 @@ var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
-var Q = require('q');
+var Promise = require('bluebird');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
 
@@ -114,7 +114,6 @@ function _getCacheFilePath(config) {
 
 function Loader(config, environment, resourceMap) {
   this._config = config;
-  this._CoverageCollector = require(config.coverageCollector);
   this._coverageCollectors = {};
   this._currentlyExecutingModulePath = '';
   this._environment = environment;
@@ -127,6 +126,10 @@ function Loader(config, environment, resourceMap) {
   this._reverseDependencyMap = null;
   this._shouldAutoMock = true;
   this._configShouldMockModuleNames = {};
+
+  if (config.collectCoverage) {
+    this._CoverageCollector = require(config.coverageCollector);
+  }
 
   if (_configUnmockListRegExpCache === null) {
     // Node must have been run with --harmony in order for WeakMap to be
@@ -159,44 +162,36 @@ function Loader(config, environment, resourceMap) {
 }
 
 Loader.loadResourceMap = function(config, options) {
-  options = options || {};
-
-  var deferred = Q.defer();
-  try {
-    _constructHasteInst(config, options).update(
-      _getCacheFilePath(config),
-      function(resourceMap) {
-        deferred.resolve(resourceMap);
-      }
-    );
-  } catch (e) {
-    deferred.reject(e);
-  }
-
-  return deferred.promise;
+  return new Promise(function(resolve, reject) {
+    try {
+      _constructHasteInst(config, options || {}).update(
+        _getCacheFilePath(config),
+        resolve
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 Loader.loadResourceMapFromCacheFile = function(config, options) {
-  options = options || {};
-
-  var deferred = Q.defer();
-  try {
-    var hasteInst = _constructHasteInst(config, options);
-    hasteInst.loadMap(
-      _getCacheFilePath(config),
-      function(err, map) {
-        if (err) {
-          deferred.reject(err);
-        } else {
-          deferred.resolve(map);
+  return new Promise(function(resolve, reject) {
+    try {
+      var hasteInst = _constructHasteInst(config, options || {});
+      hasteInst.loadMap(
+        _getCacheFilePath(config),
+        function(err, map) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(map);
+          }
         }
-      }
-    );
-  } catch (e) {
-    deferred.reject(e);
-  }
-
-  return deferred.promise;
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 /**
@@ -447,9 +442,12 @@ Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
       // LOAD_AS_DIRECTORY #1
       var packagePath = path.join(modulePath, 'package.json');
       if (fs.existsSync(packagePath)) {
-        var mainPath = path.join(modulePath, require(packagePath).main);
-        if (fs.existsSync(mainPath)) {
-          return mainPath;
+        var packageData = require(packagePath);
+        if (packageData.main) {
+          var mainPath = path.join(modulePath, packageData.main);
+          if (fs.existsSync(mainPath)) {
+            return mainPath;
+          }
         }
       }
 
@@ -974,6 +972,10 @@ Loader.prototype.resetModuleRegistry = function() {
 
           clearAllTimers: function() {
             this._environment.fakeTimers.clearAllTimers();
+          }.bind(this),
+
+          currentTestPath: function() {
+            return this._environment.testFilePath;
           }.bind(this),
 
           dontMock: function(moduleName) {

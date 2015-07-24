@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 var path = require('path');
-var q = require('q');
+var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
@@ -35,7 +35,9 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
-      return q(new HasteModuleLoader(config, mockEnvironment, resourceMap));
+      return Promise.resolve(
+        new HasteModuleLoader(config, mockEnvironment, resourceMap)
+      );
     }
   }
 

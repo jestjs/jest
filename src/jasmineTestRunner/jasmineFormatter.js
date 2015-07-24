@@ -89,7 +89,7 @@ JasmineFormatter.prototype.formatException = function(stackTrace) {
   // colorize the `message` value
 
   stackTrace = stackTrace.replace(
-            /(^.*$(?=\n\s*at))/m,
+            /(^(.|\n)*?(?=\n\s*at\s))/,
             this.formatFailure('$1')
           );
 

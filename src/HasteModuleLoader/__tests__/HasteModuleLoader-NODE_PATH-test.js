@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 var path = require('path');
-var q = require('q');
+var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
@@ -30,7 +30,9 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
-      return q(new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap));
+      return Promise.resolve(
+        new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
+      );
     }
   }
 
@@ -50,8 +52,7 @@ describe('HasteModuleLoader', function() {
   }
 
   pit('uses NODE_PATH to find modules', function() {
-    var nodePath = process.cwd() +
-      '/src/HasteModuleLoader/__tests__/NODE_PATH_dir';
+    var nodePath = __dirname + '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
       var exports = loader.requireModuleOrMock(null, 'RegularModuleInNodePath');
@@ -61,8 +62,8 @@ describe('HasteModuleLoader', function() {
 
   pit('finds modules in NODE_PATH containing multiple paths', function() {
     var cwd = process.cwd();
-    var nodePath = cwd + '/some/other/path' + path.delimiter + cwd +
-      '/src/HasteModuleLoader/__tests__/NODE_PATH_dir';
+    var nodePath = cwd + '/some/other/path' + path.delimiter + __dirname +
+      '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
       var exports = loader.requireModuleOrMock(null, 'RegularModuleInNodePath');

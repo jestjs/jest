@@ -9,13 +9,13 @@
 
 var jasmineRequire = require('../../vendor/jasmine/jasmine-2.3.4.js');
 var jasmine = jasmineRequire.core(jasmineRequire);
-var Q = require('q');
+var Promise = require('bluebird');
 var JasmineFormatter = require('./jasmineFormatter');
 
 function Jasmine2Reporter(config) {
   this._config = config || {};
   this._formatter = new JasmineFormatter(jasmine, config);
-  this._resultsDeferred = Q.defer();
+  this._resultsDeferred = Promise.defer();
   this._testResults = [];
   this._currentSuites = [];
 }
