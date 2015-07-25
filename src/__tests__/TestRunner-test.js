@@ -9,7 +9,7 @@
 
 jest.autoMockOff().mock('fs');
 
-var q = require('q');
+var Promise = require('bluebird');
 
 describe('TestRunner', function() {
   var TestRunner;
@@ -66,22 +66,21 @@ describe('TestRunner', function() {
     var utils;
 
     function pathStreamToPromise(pathStream) {
-      var deferred = q.defer();
+      return new Promise(function(resolve, reject) {
+        var paths = [];
+        pathStream.on('data', function(pathStr) {
+          paths.push(pathStr);
+        });
 
-      var paths = [];
-      pathStream.on('data', function(pathStr) {
-        paths.push(pathStr);
+        pathStream.on('error', function(err) {
+          reject(err);
+        });
+
+        pathStream.on('end', function() {
+          resolve(paths);
+        });
+
       });
-
-      pathStream.on('error', function(err) {
-        deferred.reject(err);
-      });
-
-      pathStream.on('end', function() {
-        deferred.resolve(paths);
-      });
-
-      return deferred.promise;
     }
 
     beforeEach(function() {
@@ -94,7 +93,7 @@ describe('TestRunner', function() {
 
       fakeDepsFromPath = {};
       runner._constructModuleLoader = function() {
-        return q({
+        return Promise.resolve({
           getDependentsFromPath: function(modulePath) {
             return fakeDepsFromPath[modulePath] || [];
           }

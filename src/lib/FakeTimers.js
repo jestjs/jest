@@ -79,6 +79,9 @@ function FakeTimers(global, maxLoops) {
 }
 
 FakeTimers.prototype.clearAllTimers = function() {
+  this._immediates.forEach(function(immediate) {
+    this._fakeClearImmediate(immediate.uuid);
+  }, this);
   for (var uuid in this._timers) {
     delete this._timers[uuid];
   }
@@ -125,16 +128,10 @@ FakeTimers.prototype.runAllImmediates = function() {
 
   for (var i = 0; i < this._maxLoops; i++) {
     var immediate = this._immediates.shift();
-
     if (immediate === undefined) {
       break;
     }
-
-    if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
-      // Callback may throw, so update the map prior calling.
-      this._cancelledImmediates[immediate.uuid] = true;
-      immediate.callback();
-    }
+    this._runImmediate(immediate);
   }
 
   if (i === this._maxLoops) {
@@ -143,6 +140,14 @@ FakeTimers.prototype.runAllImmediates = function() {
       ' immediates, and there are still more! Assuming ' +
       'we\'ve hit an infinite recursion and bailing out...'
     );
+  }
+};
+
+FakeTimers.prototype._runImmediate = function(immediate) {
+  if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
+    // Callback may throw, so update the map prior calling.
+    this._cancelledImmediates[immediate.uuid] = true;
+    immediate.callback();
   }
 };
 
@@ -163,6 +168,13 @@ FakeTimers.prototype.runAllTimers = function() {
     }
 
     this._runTimerHandle(nextTimerHandle);
+
+    // Some of the immediate calls could be enqueued
+    // during the previous handling of the timers, we should
+    // run them as well.
+    if (this._immediates.length) {
+      this.runAllImmediates();
+    }
   }
 
   if (i === this._maxLoops) {
@@ -175,6 +187,7 @@ FakeTimers.prototype.runAllTimers = function() {
 
 // Used to be called runTimersOnce
 FakeTimers.prototype.runOnlyPendingTimers = function() {
+  this._immediates.forEach(this._runImmediate, this);
   var timers = this._timers;
   Object.keys(timers)
     .sort(function(left, right) {
@@ -425,6 +438,10 @@ FakeTimers.prototype._getNextTimerHandle = function() {
 
 FakeTimers.prototype._runTimerHandle = function(timerHandle) {
   var timer = this._timers[timerHandle];
+
+  if (!timer) {
+    return;
+  }
 
   switch (timer.type) {
     case 'timeout':

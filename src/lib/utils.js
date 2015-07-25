@@ -7,14 +7,17 @@
  */
 'use strict';
 
+var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
+var os = require('os');
 var path = require('path');
-var Q = require('q');
+var Promise = require('bluebird');
 
 var DEFAULT_CONFIG_VALUES = {
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
+  coverageReporters: [ 'json', 'text', 'lcov', 'clover' ],
   globals: {},
   moduleFileExtensions: ['js', 'json'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
@@ -29,6 +32,7 @@ var DEFAULT_CONFIG_VALUES = {
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
   noHighlight: false,
+  preprocessCachingDisabled: false
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -209,7 +213,8 @@ function normalizeConfig(config) {
           return pattern.replace(/<rootDir>/g, config.rootDir);
         });
         break;
-
+      case 'preprocessCachingDisabled':
+      case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':
       case 'globals':
@@ -227,6 +232,7 @@ function normalizeConfig(config) {
       case 'testRunner':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'verbose':
         value = config[key];
         break;
 
@@ -292,9 +298,10 @@ function pathNormalize(dir) {
   return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
 }
 
+var readFile = Promise.promisify(fs.readFile);
 function loadConfigFromFile(filePath) {
   var fileDir = path.dirname(filePath);
-  return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath, 'utf8').then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = fileDir;
@@ -307,7 +314,7 @@ function loadConfigFromFile(filePath) {
 
 function loadConfigFromPackageJson(filePath) {
   var pkgJsonDir = path.dirname(filePath);
-  return Q.nfcall(fs.readFile, filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath, 'utf8').then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;
@@ -320,6 +327,23 @@ function loadConfigFromPackageJson(filePath) {
   });
 }
 
+function cleanupCacheFile(cachePath) {
+  try {
+    fs.unlinkSync(cachePath);
+  } catch (e) {
+    /*ignore errors*/
+  }
+}
+
+function storeCacheRecord(mtime, fileData, filePath) {
+  _contentCache[filePath] = {mtime: mtime, content: fileData};
+  return fileData;
+}
+
+// There are two layers of caching: in memory (always enabled),
+// and on disk (enabled by default, and managed by the
+// `preprocessCachingDisabled` option). The preprocessor script can also
+// provide hashing function for the cache key.
 var _contentCache = {};
 function readAndPreprocessFileContent(filePath, config) {
   var cacheRec;
@@ -341,23 +365,102 @@ function readAndPreprocessFileContent(filePath, config) {
 
   if (config.scriptPreprocessor &&
       !config.preprocessorIgnorePatterns.some(function(pattern) {
-        return pattern.test(filePath);
+        return new RegExp(pattern).test(filePath);
       })) {
     try {
-      fileData = require(config.scriptPreprocessor).process(
-        fileData,
-        filePath,
-        {}, // options
-        [], // excludes
-        config
-      );
+      var preprocessor = require(config.scriptPreprocessor);
+      if (typeof preprocessor.process !== 'function') {
+        throw new TypeError('Preprocessor should export `process` function.');
+      }
+      // On disk cache is enabled by default, unless explicitly disabled.
+      if (config.preprocessCachingDisabled !== true) {
+        var cacheDir = path.join(
+          os.tmpDir(),
+          'jest_preprocess_cache'
+        );
+
+        try {
+          fs.mkdirSync(cacheDir);
+        } catch(e) {
+          if (e.code !== 'EEXIST') {
+            throw e;
+          }
+        }
+
+        fs.chmodSync(cacheDir, '777');
+
+        var cacheKey;
+        // If preprocessor defines custom cache hashing and
+        // invalidating logic.
+        if (typeof preprocessor.getCacheKey === 'function') {
+          cacheKey = preprocessor.getCacheKey(
+            fileData,
+            filePath,
+            {}, // options
+            [], //excludes
+            config
+          );
+        } else {
+          // Default cache hashing.
+          cacheKey = crypto.createHash('md5')
+            .update(fileData)
+            .update(JSON.stringify(config))
+            .digest('hex');
+        }
+
+        var cachePath = path.join(
+          cacheDir,
+          cacheKey + '_' + path.basename(filePath)
+        );
+
+        if (fs.existsSync(cachePath)) {
+          try {
+            var cachedData = fs.readFileSync(cachePath, 'utf8');
+            if (cachedData) {
+              return storeCacheRecord(mtime, cachedData, filePath);
+            } else {
+              // In this case we must have somehow created the file but failed
+              // to write to it, lets just delete it and move on
+              cleanupCacheFile(cachePath);
+            }
+          } catch (e) {
+            e.message = 'Failed to read preprocess cache file: ' + cachePath;
+            cleanupCacheFile(cachePath);
+            throw e;
+          }
+        }
+
+        fileData = preprocessor.process(
+          fileData,
+          filePath,
+          {}, // options
+          [], // excludes
+          config
+        );
+
+        try {
+          fs.writeFileSync(cachePath, fileData);
+        } catch (e) {
+          e.message = 'Failed to cache preprocess results in: ' + cachePath;
+          cleanupCacheFile(cachePath);
+          throw e;
+        }
+
+      } else {
+        fileData = preprocessor.process(
+          fileData,
+          filePath,
+          {}, // options
+          [], // excludes
+          config
+        );
+      }
     } catch (e) {
       e.message = config.scriptPreprocessor + ': ' + e.message;
       throw e;
     }
   }
-  _contentCache[filePath] = cacheRec = {mtime: mtime, content: fileData};
-  return cacheRec.content;
+  return storeCacheRecord(mtime, fileData, filePath);
 }
 
 function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
@@ -444,6 +547,7 @@ function formatMsg(msg, color, _config) {
 // (mostly because these paths represent noisy/unhelpful libs)
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
     path.resolve(__dirname, '..', 'node_modules', 'q'),
+    path.resolve(__dirname, '..', 'node_modules', 'bluebird'),
     path.resolve(__dirname, '..', 'vendor', 'jasmine')
 ].join('|') + ')');
 

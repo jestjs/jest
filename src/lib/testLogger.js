@@ -66,7 +66,7 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
 
   indentationIncrement = '  ';
   indentation = indentation || '';
-  if (Object.prototype.toString.call(node.testTitles) === '[object Array]') {
+  if (Array.isArray(node.testTitles)) {
     this.printTestTitles(node.testTitles, indentation);
     this.traverseTestResults(node.childNodes, indentation);
   } else {

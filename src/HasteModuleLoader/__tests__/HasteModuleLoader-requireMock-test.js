@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 var path = require('path');
-var q = require('q');
+var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
@@ -30,7 +30,9 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
-      return q(new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap));
+      return Promise.resolve(
+        new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
+      );
     }
   }
 
@@ -144,7 +146,7 @@ describe('HasteModuleLoader', function() {
         expect(loader.requireMock(null, 'events').EventEmitter).toBeDefined();
       });
     });
-	  
+
     pit('throws on non-existant @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {

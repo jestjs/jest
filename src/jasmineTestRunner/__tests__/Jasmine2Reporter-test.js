@@ -56,6 +56,7 @@ describe('Jasmine2Reporter', function() {
   });
 
   describe('colorization', function() {
+
     function getFailedResult(actualResult, expectedResult) {
       var desc = 'comparing ' + actualResult + ' to ' + expectedResult;
       return {
@@ -66,6 +67,20 @@ describe('Jasmine2Reporter', function() {
             actual: actualResult,
             expected: expectedResult,
             matcherName: 'toBe',
+            passed: false
+          }
+        ]
+      };
+    }
+
+    function getExceptionResult(stack) {
+      return {
+        fullName: '',
+        description: '',
+        failedExpectations: [
+          {
+            matcherName: '',
+            stack: stack,
             passed: false
           }
         ]
@@ -107,5 +122,31 @@ describe('Jasmine2Reporter', function() {
         );
       });
     });
+
+    pit('colorizes exception messages', function() {
+      var result = getExceptionResult(
+        'Error: foobar = {\n' +
+        '      attention: "bar"\n' +
+        '    }\n' +
+        '    at Error (<anonymous>)\n' +
+        '    at Baz.js (<anonymous>)'
+      );
+      reporter.specDone(result);
+      reporter.jasmineDone();
+
+      return reporter.getResults().then(function(result) {
+        var message = result.testResults[0].failureMessages[0];
+        expect(message).toBe(
+          errorize(
+            'Error: foobar = {\n' +
+            '      attention: "bar"\n' +
+            '    }'
+          ) + '\n    at Error (<anonymous>)\n' +
+          '    at Baz.js (<anonymous>)'
+        );
+      });
+
+    });
+
   });
 });

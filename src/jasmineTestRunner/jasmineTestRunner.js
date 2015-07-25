@@ -39,6 +39,7 @@ var jasmineOnlyContent =
     );
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
+
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   //
@@ -57,6 +58,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
     // Installs a new compareObjects_ on jasmine.Env
     envSetup.replaceCompareObjects(environment);
+
 
     // Run the test setup script.
     envSetup.runSetupTestFrameworkScript(config, environment, moduleLoader);

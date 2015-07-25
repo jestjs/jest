@@ -51,15 +51,24 @@ function getType(ref) {
  * methods on ES6 classes are not enumerable, so they can't be found with a
  * simple `for (var slot in ...) {` so that had to be replaced with getSlots()
  */
+var forbiddenProps = Object.create(null, {
+  caller: {value: true},
+  callee: {value: true},
+  arguments: {value: true},
+});
+
 function getSlots(object) {
   var slots = {};
   if (!object) {
     return [];
   }
-  // Simply attempting to access any of these throws an error.
-  var forbiddenProps = [ 'caller', 'callee', 'arguments' ];
+  //
   var collectProp = function(prop) {
-    if (forbiddenProps.indexOf(prop) === -1) {
+    if (prop in forbiddenProps) {
+      return;
+    }
+    var propDesc = Object.getOwnPropertyDescriptor(object, prop);
+    if (!propDesc.get) {
       slots[prop] = true;
     }
   };
