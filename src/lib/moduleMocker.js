@@ -315,7 +315,7 @@ function _getMetadata(component, _refs) {
         }
 
         if (!component.hasOwnProperty && component[slot] !== undefined ||
-            component.hasOwnProperty(slot) ||
+            (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
             /* jshint eqeqeq:false */
             (type === 'object' && component[slot] != Object.prototype[slot])) {
           addMember(slot, _getMetadata(component[slot], refs));
