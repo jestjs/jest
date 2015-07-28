@@ -36,6 +36,7 @@ permalink: docs/api.html
 
 #### Config options
 
+  - [`config.baild` [boolean]](#config-bail-boolean)
   - [`config.cacheDirectory` [string]](#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
@@ -244,6 +245,11 @@ var valueReturned = false;
   }
 });
 ```
+
+### `config.bail` [boolean]
+(default: false)
+
+By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
 ### `config.cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
