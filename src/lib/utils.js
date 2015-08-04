@@ -15,6 +15,7 @@ var path = require('path');
 var Promise = require('bluebird');
 
 var DEFAULT_CONFIG_VALUES = {
+  bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
   coverageReporters: [ 'json', 'text', 'lcov', 'clover' ],
@@ -32,7 +33,8 @@ var DEFAULT_CONFIG_VALUES = {
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
   noHighlight: false,
-  preprocessCachingDisabled: false
+  preprocessCachingDisabled: false,
+  verbose: false
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -213,6 +215,7 @@ function normalizeConfig(config) {
           return pattern.replace(/<rootDir>/g, config.rootDir);
         });
         break;
+      case 'bail':
       case 'preprocessCachingDisabled':
       case 'coverageReporters':
       case 'collectCoverage':
