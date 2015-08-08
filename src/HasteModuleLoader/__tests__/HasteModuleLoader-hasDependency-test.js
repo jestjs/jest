@@ -8,6 +8,7 @@
 'use strict';
 
 jest.autoMockOff();
+jest.mock('../../JSDomEnvironment');
 
 describe('nodeHasteModuleLoader', function() {
   var HasteModuleLoader;
@@ -42,18 +43,10 @@ describe('nodeHasteModuleLoader', function() {
   }
 
   beforeEach(function() {
+    var JSDomEnvironment = require('../../JSDomEnvironment');
     HasteModuleLoader = require('../HasteModuleLoader');
 
-    mockEnvironment = {
-      global: {
-        console: {},
-        mockClearTimers: jest.genMockFn()
-      },
-      runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
-        /* jshint evil: true */
-        return (new Function('return ' + codeStr))();
-      })
-    };
+    mockEnvironment = new JSDomEnvironment(mockConfig);
     resources = {};
   });
 

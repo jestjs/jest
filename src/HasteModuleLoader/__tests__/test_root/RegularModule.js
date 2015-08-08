@@ -10,6 +10,10 @@
 
 'use strict';
 
+if (exports !== this) {
+  throw new Error('Invalid module context');
+}
+
 var moduleStateValue = 'default';
 
 function setModuleStateValue(value) {
