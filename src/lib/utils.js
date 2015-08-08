@@ -492,7 +492,9 @@ function runContentWithLocalBindings(environment, scriptContent, scriptPath,
   });
 
   try {
-    wrapperFunc.apply(null, bindingValues);
+    // Node modules are executed with the `exports` as context.
+    // If not a node module then this should be undefined.
+    wrapperFunc.apply(bindings.exports, bindingValues);
   } catch (e) {
     e.message = scriptPath + ': ' + e.message;
     throw e;
