@@ -10,7 +10,6 @@
 'use strict';
 
 var fs = require('fs');
-var harmonize = require('harmonize');
 var optimist = require('optimist');
 var path = require('path');
 
@@ -35,8 +34,6 @@ function _wrapDesc(desc) {
     return wrappedDesc;
   }, ['']).join(indent);
 }
-
-harmonize();
 
 var argv = optimist
   .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
