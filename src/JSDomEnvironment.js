@@ -19,7 +19,7 @@ function JSDomEnvironment(config) {
   // use it (depending on the context -- such as TestRunner.js when operating as
   // a workerpool parent), this is the best way to ensure we only spend time
   // require()ing this when necessary.
-  var jsdom = require('./lib/jsdom-compat');
+  var jsdom = require('jsdom');
   this.document = jsdom.jsdom(/* markup */undefined, {
     resourceLoader: this._fetchExternalResource.bind(this),
     features: {
