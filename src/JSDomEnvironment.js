@@ -33,24 +33,15 @@ function JSDomEnvironment(config) {
   // see more than that when a test fails.
   this.global.Error.stackTraceLimit = 100;
 
+  // Forward some APIs
+  this.global.Buffer = Buffer;
+  this.global.process = process;
+
   // Setup defaults for navigator.onLine
   // TODO: It's questionable as to whether this should go here
   //       It's a pretty rarely depended on feature, so maybe tests that care
   //       about it should just shim it themselves?)
   this.global.navigator.onLine = true;
-
-  // Pass through the node implementation of some needed APIs
-  this.global.ArrayBuffer = ArrayBuffer;
-  this.global.Float32Array = Float32Array;
-  this.global.Int16Array = Int16Array;
-  this.global.Int32Array = Int32Array;
-  this.global.Int8Array = Int8Array;
-  this.global.Uint8Array = Uint8Array;
-  this.global.Uint16Array = Uint16Array;
-  this.global.Uint32Array = Uint32Array;
-  this.global.DataView = DataView;
-  this.global.Buffer = Buffer;
-  this.global.process = process;
 
   if (typeof setImmediate === 'function') {
     this.global.setImmediate = setImmediate;
@@ -70,15 +61,6 @@ function JSDomEnvironment(config) {
         return value;
       });
     };
-  }
-
-  // jsdom doesn't have support for window.Image, so we just replace it with a
-  // dummy constructor
-  try {
-    /* jshint nonew:false */
-    new this.global.Image();
-  } catch (e) {
-    this.global.Image = function Image() {};
   }
 
   // Apply any user-specified global vars
