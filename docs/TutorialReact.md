@@ -75,22 +75,58 @@ Since we are writing code using JSX, a bit of one-time setup is required to make
 // package.json
   "dependencies": {
     "react": "*",
-    "react-tools": "*"
+    "babel-jest": "*",
+    "jest-cli": "*"
+  },
+  "scripts": {
+    "test": "jest"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
   }
 ```
 
-To enable the JSX transforms, we need to add a simple preprocessor file to run JSX over our source and test files using `react-tools` when they're required:
+**And you're good to go!**
+
+##### Using experimental stages
+
+By default, babel-jest will use Babel's default stage (stage 2).
+If you'd like to use one of the other stages, set the environment variable:
 
 ```javascript
-// preprocessor.js
-var ReactTools = require('react-tools');
+  "scripts": {
+    "test": "BABEL_JEST_STAGE=0 jest"
+  }
+```  
+
+
+#### Customizing Setup
+
+Instead of using babel-jest, here is an example of using babel to build your own preprocessor.
+
+```javascript
+var babel = require("babel-core");
+
 module.exports = {
-  process: function(src) {
-    return ReactTools.transform(src);
+  process: function (src, filename) {
+    // Allow the stage to be configured by an environment
+    // variable, but use Babel's default stage (2) if
+    // no environment variable is specified.
+    var stage = process.env.BABEL_JEST_STAGE || 2;
+
+    // Ignore all files within node_modules
+    // babel files can be .js, .es, .jsx or .es6
+    if (filename.indexOf("node_modules") === -1 && babel.canCompile(filename)) {
+      return babel.transform(src, {
+        filename: filename,
+        stage: stage,
+        retainLines: true,
+        auxiliaryCommentBefore: "istanbul ignore next"
+      }).code;
+    }
+
+    return src;
   }
 };
 ```
