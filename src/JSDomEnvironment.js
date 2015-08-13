@@ -72,14 +72,7 @@ function JSDomEnvironment(config) {
 }
 
 JSDomEnvironment.prototype.dispose = function() {
-  // TODO: In node 0.8.8 (at least), closing each jsdom context appears to
-  //       reproducibly cause a worker to segfault after a large number of tests
-  //       have run (repro cases had > 1200).
-  //
-  //       Disabling this to solve the problem for now -- but we should come
-  //       back and investigate this soon. There's a reasonable chance that not
-  //       closing out our contexts is eating an absurd amount of memory...
-  //this.global.close();
+  this.global.close();
 };
 
 /**
