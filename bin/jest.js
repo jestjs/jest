@@ -228,11 +228,10 @@ if (fs.existsSync(cwdJestBinPath)) {
     return;
   }
 
-  console.log('\n  == NOTICE: ==');
-  console.log('    Node and io.js will be merging. http://bit.ly/1dOjLVK');
-  console.log('    On August 1st, 2015, Jest v0.5.x will work only on io.js until the merger is complete');
-  console.log('    Legacy v0.4.x for Node 0.10.x will still be available on');
-  console.log('    on npm and from the "0.4.x" branch on GitHub.\n');
+  console.log('\n == UPGRADE NOTICE ==');
+  console.log(' Node and io.js will be merging. http://bit.ly/1dOjLVK');
+  console.log(' Please upgrade to Jest 0.5.x if you wish to use iojs.');
+  console.log(' Jest 0.4.x will continue to work on Node and receive bugfixes');
 })();
 
 if (!argv.version) {
