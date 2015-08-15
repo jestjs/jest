@@ -24,6 +24,17 @@ var path = require('path');
 var Promise = require('bluebird');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
+var appDirectoryPath = path.resolve(__dirname).split('/node_modules')[0];
+var webpackConfigPath = path.resolve(appDirectoryPath, 'webpack.config.js');
+var webpackConfig, hasWebpackAliases;
+try {
+  webpackConfig = require(webpackConfigPath);
+} catch (e) {
+  hasWebpackAliases = webpackConfig &&
+  webpackConfig.resolve &&
+  webpackConfig.resolve.alias &&
+  Object.keys(webpackConfig.resolve.alias).length > 0;
+}
 
 var COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
 
@@ -383,6 +394,45 @@ Loader.prototype._getRealPathFromNormalizedModuleID = function(moduleID) {
   return moduleID.split(':')[1];
 };
 
+// Define webpackConfigResolveAlias for convinient access to
+// webpack config's resolve.alias. Also used in test with stubbing
+if (hasWebpackAliases) {
+  Loader.prototype.webpackConfigResolveAlias = webpackConfig.resolve.alias;
+}
+
+/**
+ * Given a module name, returns the module path for said module with
+ * aliases resolved from webpack. The module path still needs extensions
+ * so you'll need to finish resolving the extensions to get the full
+ * absolute path. This won't behave 100% the way webpack resolves aliases
+ * but it will be close enough in most cases. Does not support $ for
+ * exact-matching
+ *
+ * @param string moduleName The name of the module to be resolved
+ * @returns {string|null} String is the module path; null means it could not
+ * resolve it, so find other means of resolving the moduleName
+ */
+
+Loader.prototype._resolveWebpackAlias = function(moduleName) {
+  if (!this.webpackConfigResolveAlias) {
+    return null;
+  }
+
+  var aliasesMap = this.webpackConfigResolveAlias;
+  var aliases = Object.keys(aliasesMap);
+  for (var i = 0; i < aliases.length; i++) {
+    var alias = aliases[i];
+    if (moduleName.indexOf(alias + '/') === 0) {
+      // Replace with absolute path
+      // This algorithm is a close aproximation
+      // to what webpack does based on observation
+      // throw new Error(moduleName.replace(alias, aliasesMap[alias]));
+      return moduleName.replace(alias, aliasesMap[alias]);
+    }
+  }
+  return null;
+};
+
 /**
  * Given a module name and the current file path, returns the normalized
  * (absolute) module path for said module. Relative-path CommonJS require()s
@@ -397,17 +447,28 @@ Loader.prototype._getRealPathFromNormalizedModuleID = function(moduleID) {
  * @param string moduleName The name of the module to be resolved
  * @return string
  */
+
 Loader.prototype._moduleNameToPath = function(currPath, moduleName) {
   if (this._builtInModules.hasOwnProperty(moduleName)) {
     return moduleName;
   }
 
+  // First check webpack resolve aliases for the absolute path. If fails (null)
+  // then continue with default path resolvers
+  var webpackAliasModulePath = this._resolveWebpackAlias(moduleName);
+
   // Relative-path CommonJS require()s such as `require('./otherModule')`
   // need to be looked up with context of the module that's calling
   // require().
-  if (IS_PATH_BASED_MODULE_NAME.test(moduleName)) {
+  if (IS_PATH_BASED_MODULE_NAME.test(moduleName) || webpackAliasModulePath) {
     // Normalize the relative path to an absolute path
-    var modulePath = path.resolve(currPath, '..', moduleName);
+    var modulePath;
+    if (webpackAliasModulePath !== null) {
+      modulePath = webpackAliasModulePath;
+    }
+    else {
+      modulePath = path.resolve(currPath, '..', moduleName);
+    }
 
     var ext, i;
     var extensions = this._config.moduleFileExtensions;
