@@ -68,6 +68,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - `afterEach(fn)`
   - `beforeEach(fn)`
   - `describe(name, fn)`
+  - [`expect(value)`](http://facebook.github.io/jest/docs/api.html#expect-value)
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - [`jest`](http://facebook.github.io/jest/docs/api.html#the-jest-object)
