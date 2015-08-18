@@ -60,6 +60,7 @@ permalink: docs/api.html
   - `afterEach(fn)`
   - `beforeEach(fn)`
   - `describe(name, fn)`
+  - [`expect(value)`](#expect-value)
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
