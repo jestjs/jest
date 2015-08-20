@@ -10,7 +10,6 @@
 var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
-var os = require('os');
 var path = require('path');
 var Promise = require('bluebird');
 
@@ -382,8 +381,8 @@ function readAndPreprocessFileContent(filePath, config) {
       // On disk cache is enabled by default, unless explicitly disabled.
       if (config.preprocessCachingDisabled !== true) {
         var cacheDir = path.join(
-          os.tmpDir(),
-          'jest_preprocess_cache'
+          config.cacheDirectory,
+          'preprocess-cache'
         );
 
         try {
@@ -415,9 +414,10 @@ function readAndPreprocessFileContent(filePath, config) {
             .digest('hex');
         }
 
+        var extension = path.extname(filePath);
         var cachePath = path.join(
           cacheDir,
-          cacheKey + '_' + path.basename(filePath)
+          path.basename(filePath, extension) + '_' + cacheKey + extension
         );
 
         if (fs.existsSync(cachePath)) {
