@@ -123,6 +123,13 @@ var argv = optimist
       ),
       type: 'boolean'
     },
+    skipFirstRun: {
+      alias: 's',
+      description: _wrapDesc(
+        'Skip first run which is useful when watch is enabled'
+      ),
+      type: 'boolean'
+    },
     bail: {
       alias: 'b',
       description: _wrapDesc(
@@ -245,6 +252,9 @@ function runJestCLI() {
 if (argv.watch) {
   var watcher = sane(cwdPackageRoot, { glob: ['**/*.js'] });
   watcher.on('all', runJestCLI);
+  if (!argv.skipFirstRun) {
+    runJestCLI();
+  }
+} else {
+  runJestCLI();
 }
-
-runJestCLI();
