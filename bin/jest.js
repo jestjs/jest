@@ -12,6 +12,7 @@
 var fs = require('fs');
 var optimist = require('optimist');
 var path = require('path');
+var sane = require('sane');
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
@@ -110,6 +111,15 @@ var argv = optimist
     verbose: {
       description: _wrapDesc(
         'Display individual test results with the test suite hierarchy.'
+      ),
+      type: 'boolean'
+    },
+    watch: {
+      alias: 'm',
+      description: _wrapDesc(
+        'Run all tests and then watch files in your testPathDirs for ' +
+        'changes and then rerun tests related to changed files and ' +
+        'directories.'
       ),
       type: 'boolean'
     },
@@ -224,8 +234,17 @@ if (!argv.version) {
   console.log('Using Jest CLI v' + jest.getVersion());
 }
 
-jest.runCLI(argv, cwdPackageRoot, function (success) {
-  process.on('exit', function(){
-    process.exit(success ? 0 : 1);
+function runJestCLI() {
+  jest.runCLI(argv, cwdPackageRoot, function (success) {
+    process.on('exit', function(){
+      process.exit(success ? 0 : 1);
+    });
   });
-});
+}
+
+if (argv.watch) {
+  var watcher = sane(cwdPackageRoot, { glob: ['**/*.js'] });
+  watcher.on('all', runJestCLI);
+}
+
+runJestCLI();
