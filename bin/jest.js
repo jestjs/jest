@@ -13,6 +13,9 @@ var fs = require('fs');
 var optimist = require('optimist');
 var path = require('path');
 var sane = require('sane');
+var which = require('which');
+
+var WATCHMAN_BIN = 'watchman';
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
@@ -249,12 +252,27 @@ function runJestCLI() {
   });
 }
 
+/**
+ * use watchman when possible
+ */
+function getWatcher(callback) {
+  which(WATCHMAN_BIN, function (err, resolvedPath) {
+    var useWatchman = !err && resolvedPath;
+    var watcher = sane(cwdPackageRoot, {
+      glob: ['**/*.js'],
+      watchman: useWatchman
+    });
+    callback(watcher);
+  });
+}
+
 if (argv.watch) {
-  var watcher = sane(cwdPackageRoot, { glob: ['**/*.js'] });
-  watcher.on('all', runJestCLI);
-  if (!argv.skipFirstRun) {
-    runJestCLI();
-  }
+  getWatcher(function (watcher) {
+    watcher.on('all', runJestCLI);
+    if (!argv.skipFirstRun) {
+      runJestCLI();
+    }
+  });
 } else {
   runJestCLI();
 }

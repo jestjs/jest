@@ -20,7 +20,8 @@
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
     "sane": "^1.1.3",
-    "through": "^2.3.7"
+    "through": "^2.3.7",
+    "which": "^1.1.1"
   },
   "devDependencies": {
     "jshint": "^2.8.0",
