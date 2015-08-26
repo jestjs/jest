@@ -32,6 +32,7 @@ var DEFAULT_CONFIG_VALUES = {
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
   noHighlight: false,
+  noStackTrace: false,
   preprocessCachingDisabled: false,
   verbose: false
 };
@@ -238,6 +239,7 @@ function normalizeConfig(config) {
       case 'testReporter':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'noStackTrace':
       case 'verbose':
         value = config[key];
         break;

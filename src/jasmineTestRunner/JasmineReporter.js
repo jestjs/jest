@@ -110,6 +110,10 @@ function (container, ancestorTitles, spec) {
             this._formatMsg('$1', ERROR_TITLE_COLOR)
           );
 
+          result.trace.stack = this._config.noStackTrace
+            ? result.trace.stack.split('\n').slice(0, 2).join('\n')
+            : result.trace.stack;
+
           results.failureMessages.push(result.trace.stack);
         } else {
           var message;
@@ -139,7 +143,9 @@ function (container, ancestorTitles, spec) {
             // Remove jasmine jonx from the stack trace
             message = message.split('\n').filter(function(line) {
               return !/vendor\/jasmine\//.test(line);
-            }).join('\n');
+            });
+            message = this._config.noStackTrace ? message.slice(0, 2) : message;
+            message = message.join('\n');
           }
 
           results.failureMessages.push(message);
