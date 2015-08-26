@@ -110,7 +110,7 @@ function (container, ancestorTitles, spec) {
             this._formatMsg('$1', ERROR_TITLE_COLOR)
           );
 
-          result.trace.stack = this._config['noStackTrace']
+          result.trace.stack = this._config.noStackTrace
             ? result.trace.stack.split('\n').slice(0,2).join('\n')
             : result.trace.stack;
 
@@ -144,7 +144,7 @@ function (container, ancestorTitles, spec) {
             message = message.split('\n').filter(function(line) {
               return !/vendor\/jasmine\//.test(line);
             });
-            message = this._config['noStackTrace'] ? message.slice(0,2) : message;
+            message = this._config.noStackTrace ? message.slice(0,2) : message;
             message = message.join('\n');
           }
 
