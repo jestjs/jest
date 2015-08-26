@@ -97,6 +97,8 @@ function _promiseConfig(argv, packageRoot) {
       config.bail = argv.bail;
     }
 
+    config.noStackTrace = argv.noStackTrace;
+
     return config;
   });
 }
