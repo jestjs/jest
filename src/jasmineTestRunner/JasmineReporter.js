@@ -144,7 +144,7 @@ function (container, ancestorTitles, spec) {
             message = message.split('\n').filter(function(line) {
               return !/vendor\/jasmine\//.test(line);
             });
-            message = this.__config['noStackTrace'] ? message.slice(0,2) : message;
+            message = this._config['noStackTrace'] ? message.slice(0,2) : message;
             message = message.join('\n');
           }
 
