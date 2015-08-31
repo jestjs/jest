@@ -276,6 +276,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   var jasmineReporter = new JasmineReporter({
     noHighlight: config.noHighlight,
+    noStackTrace: config.noStackTrace
   });
   jasmine.getEnv().addReporter(jasmineReporter);
 
