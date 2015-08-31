@@ -1,3 +1,8 @@
+## master
+
+* Fixed a bug when passed an empty `testPathIgnorePatterns`.
+* Moved preprocessor cache into the haste cache directory.
+
 ## 0.5.0
 
 * Jest now only works with iojs v2 and up. If you are still using node we

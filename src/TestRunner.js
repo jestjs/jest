@@ -120,7 +120,7 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
 TestRunner.prototype._isTestFilePath = function(filePath) {
   filePath = utils.pathNormalize(filePath);
   var testPathIgnorePattern =
-    this._config.testPathIgnorePatterns
+    this._config.testPathIgnorePatterns.length
     ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
     : null;
 
