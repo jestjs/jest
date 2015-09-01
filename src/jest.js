@@ -77,7 +77,7 @@ function _testRunnerOptions(argv) {
 }
 
 function _promiseConfig(argv, packageRoot) {
-  return _promiseRawConfig(argv, packageRoot).then(function (config) {
+  return _promiseRawConfig(argv, packageRoot).then(function(config) {
     if (argv.coverage) {
       config.collectCoverage = true;
     }
@@ -180,14 +180,14 @@ function runCLI(argv, packageRoot, onComplete) {
     var testPaths = argv.onlyChanged ?
       _promiseOnlyChangedTestPaths(testRunner, config) :
       _promisePatternMatchingTestPaths(argv, testRunner);
-    return testPaths.then(function (testPaths) {
+    return testPaths.then(function(testPaths) {
       return testRunner.runTests(testPaths);
     });
-  }).then(function (runResults) {
+  }).then(function(runResults) {
     onComplete && onComplete(runResults.success);
-  }).catch(function (error) {
+  }).catch(function(error) {
     console.error('Failed with unexpected error.');
-    process.nextTick(function () {
+    process.nextTick(function() {
       throw error;
     });
   });

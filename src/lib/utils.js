@@ -30,6 +30,7 @@ var DEFAULT_CONFIG_VALUES = {
   testPathIgnorePatterns: ['/node_modules/'],
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  testURL: 'about:blank',
   noHighlight: false,
   noStackTrace: false,
   preprocessCachingDisabled: false,
@@ -236,6 +237,7 @@ function normalizeConfig(config) {
       case 'testEnvData':
       case 'testFileExtensions':
       case 'testReporter':
+      case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':
       case 'noStackTrace':

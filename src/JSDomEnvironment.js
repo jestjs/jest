@@ -21,6 +21,7 @@ function JSDomEnvironment(config) {
   // require()ing this when necessary.
   var jsdom = require('jsdom');
   this.document = jsdom.jsdom(/* markup */undefined, {
+    url: config.testURL,
     resourceLoader: this._fetchExternalResource.bind(this),
     features: {
       FetchExternalResources: ['script'],
