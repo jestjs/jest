@@ -10,7 +10,6 @@
 var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
-var Promise = require('bluebird');
 var TestRunner = require('./TestRunner');
 var utils = require('./lib/utils');
 

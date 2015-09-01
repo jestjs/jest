@@ -1,5 +1,7 @@
 ## master
 
+* Updated all of jest's dependencies, now using jsdom 6.3.
+* jest now uses the native `Promise` object.
 * Fixed a bug when passed an empty `testPathIgnorePatterns`.
 * Moved preprocessor cache into the haste cache directory.
 

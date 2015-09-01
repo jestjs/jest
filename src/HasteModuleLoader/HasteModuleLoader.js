@@ -21,7 +21,6 @@ var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
-var Promise = require('bluebird');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
 

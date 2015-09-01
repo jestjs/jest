@@ -10,18 +10,14 @@
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
-var Promise = require('bluebird');
 var assign = require('object-assign');
+var promiseDone = require('./lib/promiseDone');
 var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 var Console = require('./Console');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
-
-// To suppress warning caused by Bluebird, see:
-// https://github.com/petkaantonov/bluebird/issues/661
-process.setMaxListeners(0);
 
 var DEFAULT_OPTIONS = {
 
@@ -169,7 +165,7 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   );
 
   var testRunner = this;
-  this._constructModuleLoader().done(function(moduleLoader) {
+  promiseDone(this._constructModuleLoader().then(function(moduleLoader) {
     var discoveredModules = {};
 
     // If a path to a test file is given, make sure we consider that test as
@@ -202,7 +198,7 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
     }
 
     pathStream.end();
-  });
+  }));
 
   return pathStream;
 };
@@ -298,7 +294,7 @@ TestRunner.prototype.promiseTestPathsMatching = function(pathPattern) {
  * someOtherAsyncProcess to resolve (rather that doing it after it's resolved).
  */
 TestRunner.prototype.preloadResourceMap = function() {
-  this._getModuleLoaderResourceMap().done();
+  promiseDone(this._getModuleLoaderResourceMap());
 };
 
 TestRunner.prototype.preloadConfigDependencies = function() {
@@ -387,7 +383,10 @@ TestRunner.prototype.runTest = function(testFilePath) {
 
         return results;
       });
-  }).finally(function() {
+  }).then(function(results) {
+    env.dispose();
+    return results;
+  }, function() {
     env.dispose();
   });
 };

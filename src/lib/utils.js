@@ -11,7 +11,6 @@ var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
 var path = require('path');
-var Promise = require('bluebird');
 
 var DEFAULT_CONFIG_VALUES = {
   bail: false,
@@ -306,10 +305,21 @@ function pathNormalize(dir) {
   return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
 }
 
-var readFile = Promise.promisify(fs.readFile);
+function readFile(filePath) {
+  return new Promise(function(resolve, reject) {
+    fs.readFile(filePath, 'utf8', function(err, data) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(data);
+    });
+  });
+}
+
 function loadConfigFromFile(filePath) {
   var fileDir = path.dirname(filePath);
-  return readFile(filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath).then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = fileDir;
@@ -322,7 +332,7 @@ function loadConfigFromFile(filePath) {
 
 function loadConfigFromPackageJson(filePath) {
   var pkgJsonDir = path.dirname(filePath);
-  return readFile(filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath).then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;

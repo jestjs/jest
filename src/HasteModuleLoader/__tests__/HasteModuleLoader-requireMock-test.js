@@ -11,7 +11,6 @@ jest.autoMockOff();
 jest.mock('../../JSDomEnvironment');
 
 var path = require('path');
-var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
