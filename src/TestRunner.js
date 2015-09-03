@@ -165,7 +165,7 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   );
 
   var testRunner = this;
-  promiseDone(this._constructModuleLoader().then(function(moduleLoader) {
+  this._constructModuleLoader().then(function(moduleLoader) {
     var discoveredModules = {};
 
     // If a path to a test file is given, make sure we consider that test as
@@ -198,7 +198,7 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
     }
 
     pathStream.end();
-  }));
+  }, promiseDone);
 
   return pathStream;
 };
@@ -294,7 +294,7 @@ TestRunner.prototype.promiseTestPathsMatching = function(pathPattern) {
  * someOtherAsyncProcess to resolve (rather that doing it after it's resolved).
  */
 TestRunner.prototype.preloadResourceMap = function() {
-  promiseDone(this._getModuleLoaderResourceMap());
+  this._getModuleLoaderResourceMap().then(null, promiseDone);
 };
 
 TestRunner.prototype.preloadConfigDependencies = function() {
@@ -423,7 +423,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
-  var onTestResult = function (testPath, testResult) {
+  var onTestResult = function(testPath, testResult) {
     aggregatedResults.testResults.push(testResult);
     if (testResult.numFailingTests > 0) {
       aggregatedResults.numFailedTests++;
@@ -437,7 +437,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     );
   };
 
-  var onRunFailure = function (testPath, err) {
+  var onRunFailure = function(testPath, err) {
     aggregatedResults.numFailedTests++;
     reporter.onTestResult && reporter.onTestResult(config, {
       testFilePath: testPath,

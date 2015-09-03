@@ -7,10 +7,8 @@
  */
 'use strict';
 
-module.exports = function promiseDone(promise) {
-  promise.then(null, function (err) {
-    setTimeout(function () {
-      throw err;
-    }, 0);
-  });
+module.exports = function(err) {
+  setTimeout(function() {
+    throw err;
+  }, 0);
 };

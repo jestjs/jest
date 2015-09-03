@@ -230,7 +230,7 @@ if (!argv.version) {
   console.log('Using Jest CLI v' + jest.getVersion());
 }
 
-jest.runCLI(argv, cwdPackageRoot, function (success) {
+jest.runCLI(argv, cwdPackageRoot, function(success) {
   process.on('exit', function(){
     process.exit(success ? 0 : 1);
   });
