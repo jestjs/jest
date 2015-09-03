@@ -1,4 +1,4 @@
-## master
+## 0.5.1
 
 * Upgraded node-worker-pool to 3.0.0, use the native `Promise` implementation.
 * `testURL` can be used to set the location of the jsdom environment.
