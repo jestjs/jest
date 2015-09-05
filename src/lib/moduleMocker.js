@@ -153,12 +153,22 @@ function makeComponent(metadata) {
       };
 
       // Preserve `name` property of mocked function.
+      var boundFunctionPrefix = 'bound ';
+      var functionName = metadata.name;
+      var isBound = functionName &&
+        functionName.startsWith(boundFunctionPrefix);
+      var bindCall = '';
+      if (isBound) {
+        functionName = functionName.substring(boundFunctionPrefix.length);
+        // Call bind() just to alter the function name.
+        bindCall = '.bind(null)';
+      }
       /* jshint evil:true */
       var f = new Function(
         'mockConstructor',
-        'return function ' + metadata.name + '(){' +
+        'return function ' + functionName + '(){' +
           'return mockConstructor.apply(this,arguments);' +
-        '}'
+        '}' + bindCall
       )(mockConstructor);
 
       f._isMockFunction = true;
