@@ -326,6 +326,9 @@ TestRunner.prototype.runTest = function(testFilePath) {
   // Pass the testFilePath into the runner, so it can be used to e.g.
   // configure test reporter output.
   env.testFilePath = testFilePath;
+  var dispose = function() {
+    env.dispose();
+  };
 
   return this._constructModuleLoader(env, config).then(function(moduleLoader) {
     // This is a kind of janky way to ensure that we only collect coverage
@@ -384,10 +387,13 @@ TestRunner.prototype.runTest = function(testFilePath) {
         return results;
       });
   }).then(function(results) {
-    env.dispose();
-    return results;
-  }, function() {
-    env.dispose();
+    return Promise.resolve(dispose).then(function() {
+      return results;
+    });
+  }, function(err) {
+    return Promise.resolve(dispose).then(function() {
+      throw err;
+    });
   });
 };
 
