@@ -307,7 +307,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 ### `config.preprocessCachingDisabled` [boolean]
 (default: `false`)
 
-While on disk caching is enabled by default, this options allows to explicitly disabled it. Turning caching off is helpful while developing preprocessor scripts, to avoid getting cached outputs.
+Disables caching for preprocessed files. The preprocess cache is a performance optimization and should not be disabled unless there are unresolvable issues with reading/writing files from the cache directory.
 
 ### `config.rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
