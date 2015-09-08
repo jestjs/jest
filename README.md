@@ -51,6 +51,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.globals` [object]](http://facebook.github.io/jest/docs/api.html#config-globals-object)
   - [`config.moduleFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
+  - [`config.preprocessCachingDisabled` [boolean]](http://facebook.github.io/jest/docs/api.html#config-preprocesscachingdisabled-boolean)
   - [`config.rootDir` [string]](http://facebook.github.io/jest/docs/api.html#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)
   - [`config.setupEnvScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setupenvscriptfile-string)
