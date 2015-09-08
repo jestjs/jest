@@ -1,3 +1,9 @@
+## 0.5.2
+
+* Fixed a bug with syntax errors in test files (#487).
+* Fixed chmod error for preprocess-cache (#491).
+* Support for the upcoming node 4.0 release (#490, #489).
+
 ## 0.5.1
 
 * Upgraded node-worker-pool to 3.0.0, use the native `Promise` implementation.
