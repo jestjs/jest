@@ -43,6 +43,7 @@ permalink: docs/api.html
   - [`config.globals` [object]](#config-globals-object)
   - [`config.moduleFileExtensions` [array<string>]](#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
+  - [`config.preprocessCachingDisabled` [boolean]](#config-preprocesscachingdisabled-boolean)
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
   - [`config.setupEnvScriptFile` [string]](#config-setupenvscriptfile-string)
@@ -302,6 +303,11 @@ If you are using CoffeeScript this should be `['js', 'json', 'coffee', 'litcoffe
 (default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
+
+### `config.preprocessCachingDisabled` [boolean]
+(default: `false`)
+
+Disables caching for preprocessed files. The preprocess cache is a performance optimization and should not be disabled unless there are unresolvable issues with reading/writing files from the cache directory.
 
 ### `config.rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
