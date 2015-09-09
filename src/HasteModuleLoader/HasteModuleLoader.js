@@ -21,7 +21,6 @@ var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
-var Promise = require('bluebird');
 var resolve = require('resolve');
 var utils = require('../lib/utils');
 
@@ -91,6 +90,7 @@ function _constructHasteInst(config, options) {
 
   if (!fs.existsSync(config.cacheDirectory)) {
     fs.mkdirSync(config.cacheDirectory);
+    fs.chmodSync(config.cacheDirectory, '777');
   }
 
   return new NodeHaste(

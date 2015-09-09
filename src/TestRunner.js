@@ -10,18 +10,14 @@
 var fs = require('graceful-fs');
 var os = require('os');
 var path = require('path');
-var Promise = require('bluebird');
 var assign = require('object-assign');
+var promiseDone = require('./lib/promiseDone');
 var through = require('through');
 var utils = require('./lib/utils');
 var WorkerPool = require('node-worker-pool');
 var Console = require('./Console');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
-
-// To suppress warning caused by Bluebird, see:
-// https://github.com/petkaantonov/bluebird/issues/661
-process.setMaxListeners(0);
 
 var DEFAULT_OPTIONS = {
 
@@ -120,7 +116,7 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
 TestRunner.prototype._isTestFilePath = function(filePath) {
   filePath = utils.pathNormalize(filePath);
   var testPathIgnorePattern =
-    this._config.testPathIgnorePatterns
+    this._config.testPathIgnorePatterns.length
     ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
     : null;
 
@@ -169,7 +165,7 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
   );
 
   var testRunner = this;
-  this._constructModuleLoader().done(function(moduleLoader) {
+  this._constructModuleLoader().then(function(moduleLoader) {
     var discoveredModules = {};
 
     // If a path to a test file is given, make sure we consider that test as
@@ -202,7 +198,7 @@ TestRunner.prototype.streamTestPathsRelatedTo = function(paths) {
     }
 
     pathStream.end();
-  });
+  }, promiseDone);
 
   return pathStream;
 };
@@ -298,7 +294,7 @@ TestRunner.prototype.promiseTestPathsMatching = function(pathPattern) {
  * someOtherAsyncProcess to resolve (rather that doing it after it's resolved).
  */
 TestRunner.prototype.preloadResourceMap = function() {
-  this._getModuleLoaderResourceMap().done();
+  this._getModuleLoaderResourceMap().then(null, promiseDone);
 };
 
 TestRunner.prototype.preloadConfigDependencies = function() {
@@ -330,6 +326,9 @@ TestRunner.prototype.runTest = function(testFilePath) {
   // Pass the testFilePath into the runner, so it can be used to e.g.
   // configure test reporter output.
   env.testFilePath = testFilePath;
+  var dispose = function() {
+    env.dispose();
+  };
 
   return this._constructModuleLoader(env, config).then(function(moduleLoader) {
     // This is a kind of janky way to ensure that we only collect coverage
@@ -387,8 +386,14 @@ TestRunner.prototype.runTest = function(testFilePath) {
 
         return results;
       });
-  }).finally(function() {
-    env.dispose();
+  }).then(function(results) {
+    return Promise.resolve(dispose).then(function() {
+      return results;
+    });
+  }, function(err) {
+    return Promise.resolve(dispose).then(function() {
+      throw err;
+    });
   });
 };
 
@@ -424,7 +429,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
 
   reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
-  var onTestResult = function (testPath, testResult) {
+  var onTestResult = function(testPath, testResult) {
     aggregatedResults.testResults.push(testResult);
     if (testResult.numFailingTests > 0) {
       aggregatedResults.numFailedTests++;
@@ -438,7 +443,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     );
   };
 
-  var onRunFailure = function (testPath, err) {
+  var onRunFailure = function(testPath, err) {
     aggregatedResults.numFailedTests++;
     reporter.onTestResult && reporter.onTestResult(config, {
       testFilePath: testPath,

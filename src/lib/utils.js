@@ -11,7 +11,6 @@ var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
 var path = require('path');
-var Promise = require('bluebird');
 
 var DEFAULT_CONFIG_VALUES = {
   bail: false,
@@ -31,7 +30,9 @@ var DEFAULT_CONFIG_VALUES = {
   testPathIgnorePatterns: ['/node_modules/'],
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  testURL: 'about:blank',
   noHighlight: false,
+  noStackTrace: false,
   preprocessCachingDisabled: false,
   verbose: false
 };
@@ -236,8 +237,10 @@ function normalizeConfig(config) {
       case 'testEnvData':
       case 'testFileExtensions':
       case 'testReporter':
+      case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'noStackTrace':
       case 'verbose':
         value = config[key];
         break;
@@ -304,10 +307,21 @@ function pathNormalize(dir) {
   return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
 }
 
-var readFile = Promise.promisify(fs.readFile);
+function readFile(filePath) {
+  return new Promise(function(resolve, reject) {
+    fs.readFile(filePath, 'utf8', function(err, data) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(data);
+    });
+  });
+}
+
 function loadConfigFromFile(filePath) {
   var fileDir = path.dirname(filePath);
-  return readFile(filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath).then(function(fileData) {
     var config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = fileDir;
@@ -320,7 +334,7 @@ function loadConfigFromFile(filePath) {
 
 function loadConfigFromPackageJson(filePath) {
   var pkgJsonDir = path.dirname(filePath);
-  return readFile(filePath, 'utf8').then(function(fileData) {
+  return readFile(filePath).then(function(fileData) {
     var packageJsonData = JSON.parse(fileData);
     var config = packageJsonData.jest;
     config.name = packageJsonData.name;
@@ -385,15 +399,10 @@ function readAndPreprocessFileContent(filePath, config) {
           'preprocess-cache'
         );
 
-        try {
+        if (!fs.existsSync(cacheDir)) {
           fs.mkdirSync(cacheDir);
-        } catch(e) {
-          if (e.code !== 'EEXIST') {
-            throw e;
-          }
+          fs.chmodSync(cacheDir, '777');
         }
-
-        fs.chmodSync(cacheDir, '777');
 
         var cacheKey;
         // If preprocessor defines custom cache hashing and

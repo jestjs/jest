@@ -464,7 +464,7 @@ FakeTimers.prototype._runTimerHandle = function(timerHandle) {
       break;
 
     default:
-      throw new Error('Unexepcted timer type: ' + timer.type);
+      throw new Error('Unexpected timer type: ' + timer.type);
   }
 };
 

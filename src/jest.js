@@ -10,7 +10,6 @@
 var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
-var Promise = require('bluebird');
 var TestRunner = require('./TestRunner');
 var utils = require('./lib/utils');
 
@@ -78,7 +77,7 @@ function _testRunnerOptions(argv) {
 }
 
 function _promiseConfig(argv, packageRoot) {
-  return _promiseRawConfig(argv, packageRoot).then(function (config) {
+  return _promiseRawConfig(argv, packageRoot).then(function(config) {
     if (argv.coverage) {
       config.collectCoverage = true;
     }
@@ -96,6 +95,8 @@ function _promiseConfig(argv, packageRoot) {
     if (argv.bail) {
       config.bail = argv.bail;
     }
+
+    config.noStackTrace = argv.noStackTrace;
 
     return config;
   });
@@ -179,14 +180,14 @@ function runCLI(argv, packageRoot, onComplete) {
     var testPaths = argv.onlyChanged ?
       _promiseOnlyChangedTestPaths(testRunner, config) :
       _promisePatternMatchingTestPaths(argv, testRunner);
-    return testPaths.then(function (testPaths) {
+    return testPaths.then(function(testPaths) {
       return testRunner.runTests(testPaths);
     });
-  }).then(function (runResults) {
+  }).then(function(runResults) {
     onComplete && onComplete(runResults.success);
-  }).catch(function (error) {
+  }).catch(function(error) {
     console.error('Failed with unexpected error.');
-    process.nextTick(function () {
+    process.nextTick(function() {
       throw error;
     });
   });

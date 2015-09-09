@@ -10,7 +10,6 @@
 jest.autoMockOff();
 
 var path = require('path');
-var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {

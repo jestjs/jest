@@ -9,8 +9,6 @@
 
 jest.autoMockOff().mock('fs');
 
-var Promise = require('bluebird');
-
 describe('TestRunner', function() {
   var TestRunner;
 

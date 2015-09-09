@@ -111,6 +111,12 @@ var argv = optimist
       ),
       type: 'boolean'
     },
+    noStackTrace: {
+      description: _wrapDesc(
+        'Disables stack trace in test results output'
+      ),
+      type: 'boolean'
+    },
     verbose: {
       description: _wrapDesc(
         'Display individual test results with the test suite hierarchy.'

@@ -87,7 +87,14 @@ function(config, testResult, aggregatedResults) {
         failureMessage
       );
     } else {
-      this.log(failureMessage);
+      // If we write more than one character at a time it is possible that iojs
+      // exits in the middle of printing the result.
+      // If you are reading this and you are from the future, this might not
+      // be true any more.
+      for (var i = 0; i < failureMessage.length; i++) {
+        this._process.stdout.write(failureMessage.charAt(i));
+      }
+      this._process.stdout.write('\n');
     }
 
     if (config.bail) {
