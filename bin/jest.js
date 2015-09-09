@@ -118,20 +118,12 @@ var argv = optimist
       type: 'boolean'
     },
     watch: {
-      alias: 'm',
       description: _wrapDesc(
         'Run all tests and then watch files in your testPathDirs for ' +
         'changes and then rerun tests related to changed files and ' +
-        'directories.'
+        'directories. use --watch=skip to skip the first test.'
       ),
-      type: 'boolean'
-    },
-    skipFirstRun: {
-      alias: 's',
-      description: _wrapDesc(
-        'Skip first run which is useful when watch is enabled'
-      ),
-      type: 'boolean'
+      type: 'string'
     },
     bail: {
       alias: 'b',
@@ -245,8 +237,8 @@ if (!argv.version) {
 }
 
 function runJestCLI() {
-  jest.runCLI(argv, cwdPackageRoot, function (success) {
-    process.on('exit', function(){
+  jest.runCLI(argv, cwdPackageRoot, function(success) {
+    process.on('exit', function() {
       process.exit(success ? 0 : 1);
     });
   });
@@ -256,7 +248,7 @@ function runJestCLI() {
  * use watchman when possible
  */
 function getWatcher(callback) {
-  which(WATCHMAN_BIN, function (err, resolvedPath) {
+  which(WATCHMAN_BIN, function(err, resolvedPath) {
     var useWatchman = !err && resolvedPath;
     var watcher = sane(cwdPackageRoot, {
       glob: ['**/*.js'],
@@ -266,10 +258,10 @@ function getWatcher(callback) {
   });
 }
 
-if (argv.watch) {
-  getWatcher(function (watcher) {
+if (argv.watch !== undefined) {
+  getWatcher(function(watcher) {
     watcher.on('all', runJestCLI);
-    if (!argv.skipFirstRun) {
+    if (argv.watch !== 'skip') {
       runJestCLI();
     }
   });
