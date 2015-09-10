@@ -399,10 +399,15 @@ function readAndPreprocessFileContent(filePath, config) {
           'preprocess-cache'
         );
 
-        if (!fs.existsSync(cacheDir)) {
+        try {
           fs.mkdirSync(cacheDir);
-          fs.chmodSync(cacheDir, '777');
+        } catch(e) {
+          if (e.code !== 'EEXIST') {
+            throw e;
+          }
         }
+
+        fs.chmodSync(cacheDir, '777');
 
         var cacheKey;
         // If preprocessor defines custom cache hashing and
