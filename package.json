@@ -6,19 +6,19 @@
   "dependencies": {
     "coffee-script": "^1.10.0",
     "cover": "^0.2.9",
-    "diff": "^2.1.0",
+    "diff": "^2.1.1",
     "graceful-fs": "^4.1.2",
-    "istanbul": "^0.3.15",
+    "istanbul": "^0.3.19",
     "jasmine-only": "^0.1.1",
     "jasmine-pit": "^2.0.2",
     "jsdom": "6.3.0",
-    "lodash.template": "^3.6.1",
+    "lodash.template": "^3.6.2",
     "node-haste": "^1.2.8",
-    "node-worker-pool": "^3.0.0",
+    "node-worker-pool": "^3.0.2",
     "object-assign": "^4.0.1",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
-    "through": "^2.3.7"
+    "through": "^2.3.8"
   },
   "devDependencies": {
     "jshint": "^2.8.0",
