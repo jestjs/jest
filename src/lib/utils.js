@@ -400,7 +400,14 @@ function readAndPreprocessFileContent(filePath, config) {
         );
 
         if (!fs.existsSync(cacheDir)) {
-          fs.mkdirSync(cacheDir);
+          try {
+            fs.mkdirSync(cacheDir);
+          } catch(e) {
+            if (e.code !== 'EEXIST') {
+              throw e;
+            }
+          }
+
           fs.chmodSync(cacheDir, '777');
         }
 
