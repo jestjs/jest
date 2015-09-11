@@ -12,6 +12,10 @@
 var fs = require('fs');
 var optimist = require('optimist');
 var path = require('path');
+var sane = require('sane');
+var which = require('which');
+
+var WATCHMAN_BIN = 'watchman';
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
@@ -118,6 +122,14 @@ var argv = optimist
         'Display individual test results with the test suite hierarchy.'
       ),
       type: 'boolean'
+    },
+    watch: {
+      description: _wrapDesc(
+        'Run all tests and then watch files in your testPathDirs for ' +
+        'changes and then rerun tests related to changed files and ' +
+        'directories. use --watch=skip to skip the first test.'
+      ),
+      type: 'string'
     },
     bail: {
       alias: 'b',
@@ -230,8 +242,35 @@ if (!argv.version) {
   console.log('Using Jest CLI v' + jest.getVersion());
 }
 
-jest.runCLI(argv, cwdPackageRoot, function(success) {
-  process.on('exit', function(){
-    process.exit(success ? 0 : 1);
+function runJestCLI() {
+  jest.runCLI(argv, cwdPackageRoot, function(success) {
+    process.on('exit', function() {
+      process.exit(success ? 0 : 1);
+    });
   });
-});
+}
+
+/**
+ * use watchman when possible
+ */
+function getWatcher(callback) {
+  which(WATCHMAN_BIN, function(err, resolvedPath) {
+    var useWatchman = !err && resolvedPath;
+    var watcher = sane(cwdPackageRoot, {
+      glob: ['**/*.js'],
+      watchman: useWatchman
+    });
+    callback(watcher);
+  });
+}
+
+if (argv.watch !== undefined) {
+  getWatcher(function(watcher) {
+    watcher.on('all', runJestCLI);
+    if (argv.watch !== 'skip') {
+      runJestCLI();
+    }
+  });
+} else {
+  runJestCLI();
+}
