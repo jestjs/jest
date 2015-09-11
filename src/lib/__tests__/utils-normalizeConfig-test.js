@@ -29,7 +29,7 @@ describe('utils-normalizeConfig', function() {
 
   beforeEach(function() {
     path = require('path');
-    root = path.resolve('/').replace(/[\\\/]/g, '');
+    root = path.resolve('/');
     expectedPathFooBar = path.join(root, 'root', 'path', 'foo', 'bar', 'baz');
     expectedPathFooQux = path.join(root, 'root', 'path', 'foo', 'qux', 'quux');
     expectedPathAbs = path.join(root, 'an', 'abs', 'path');
