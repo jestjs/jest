@@ -58,6 +58,9 @@ var DEFAULT_OPTIONS = {
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
+function optionPathToRegex(p) {
+  return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
+}
 
 /**
  * A class that takes a project's test config and provides various utilities for
@@ -74,13 +77,13 @@ function TestRunner(config, options) {
   this._testPathDirsRegExp = new RegExp(
     config.testPathDirs
       .map(function(dir) {
-        return utils.escapeStrForRegex(dir);
+        return optionPathToRegex(dir);
       })
       .join('|')
   );
 
   this._nodeHasteTestRegExp = new RegExp(
-    '/' + utils.escapeStrForRegex(config.testDirectoryName) + '/' +
+    optionPathToRegex(path.sep + config.testDirectoryName + path.sep) +
     '.*\\.(' +
       config.testFileExtensions.map(function(ext) {
         return utils.escapeStrForRegex(ext);
@@ -114,12 +117,13 @@ TestRunner.prototype._getModuleLoaderResourceMap = function() {
 };
 
 TestRunner.prototype._isTestFilePath = function(filePath) {
-  filePath = utils.pathNormalize(filePath);
+  // Normalize slashes/backslashes so the regexp works cross-platform
+  filePath = path.normalize(filePath);
+  
   var testPathIgnorePattern =
     this._config.testPathIgnorePatterns.length
     ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
     : null;
-
   return (
     this._nodeHasteTestRegExp.test(filePath)
     && !HIDDEN_FILE_RE.test(filePath)
@@ -347,8 +351,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
       config.collectCoverageOnlyFrom = {};
       moduleLoader.getDependenciesFromPath(testFilePath)
         .filter(function(depPath) {
-          // Skip over built-in and node modules
-          return /^\//.test(depPath) && !(/node_modules/.test(depPath));
+          // Skip over built-in (non-absolute paths) and node modules
+          return path.isAbsolute(depPath) && !(/node_modules/.test(depPath));
         }).forEach(function(depPath) {
           config.collectCoverageOnlyFrom[depPath] = true;
         });
