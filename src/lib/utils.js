@@ -236,6 +236,7 @@ function normalizeConfig(config) {
       case 'testDirectoryName':
       case 'testEnvData':
       case 'testFileExtensions':
+      case 'testPathPattern':
       case 'testReporter':
       case 'testURL':
       case 'moduleFileExtensions':
