@@ -526,11 +526,16 @@ function runContentWithLocalBindings(environment, scriptContent, scriptPath,
  * failures.
  *
  * @param {Object} testResult
- * @param {boolean} color true if message should include color flags
+ * @param {Object} config Containing the following keys:
+ *   `rootPath` - Root directory (for making stack trace paths relative).
+ *   `useColor` - True if message should include color flags.
  * @return {String}
  */
-function formatFailureMessage(testResult, color) {
-  var colorize = color ? colors.colorize : function (str) { return str; };
+function formatFailureMessage(testResult, config) {
+  var rootPath = config.rootPath;
+  var useColor = config.useColor;
+
+  var colorize = useColor ? colors.colorize : function (str) { return str; };
   var ancestrySeparator = ' \u203A ';
   var descBullet = colorize('\u25cf ', colors.BOLD);
   var msgBullet = '  - ';
@@ -544,19 +549,28 @@ function formatFailureMessage(testResult, color) {
   return testResult.testResults.filter(function (result) {
     return result.failureMessages.length !== 0;
   }).map(function(result) {
-    var failureMessages = result.failureMessages.map(function (errorMsg) {
-      // Filter out q and jasmine entries from the stack trace.
-      // They're super noisy and unhelpful
-      errorMsg = errorMsg.split('\n').filter(function(line) {
-        if (/^\s+at .*?/.test(line)) {
-          // Extract the file path from the trace line
-          var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-          if (filePath
-              && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-            return false;
+    var failureMessages = result.failureMessages.map(function(errorMsg) {
+      errorMsg = errorMsg.split('\n').map(function(line) {
+        // Extract the file path from the trace line.
+        var matches = line.match(/(^\s+at .*?\()([^()]+)(:[0-9]+:[0-9]+\).*$)/);
+        if (!matches) {
+          matches = line.match(/(^\s+at )([^()]+)(:[0-9]+:[0-9]+.*$)/);
+          if (!matches) {
+            return line;
           }
         }
-        return true;
+        var filePath = matches[2];
+        // Filter out noisy and unhelpful lines from the stack trace.
+        if (STACK_TRACE_LINE_IGNORE_RE.test(filePath)) {
+          return null;
+        }
+        return (
+          matches[1] +
+          path.relative(rootPath, filePath) +
+          matches[3]
+        );
+      }).filter(function(line) {
+        return line !== null;
       }).join('\n');
 
       return msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent);
@@ -594,12 +608,11 @@ function deepCopy(obj) {
 
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
-    path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'node_modules', 'bluebird'),
-    path.resolve(__dirname, '..', 'vendor', 'jasmine')
-].join('|') + ')');
-
+var STACK_TRACE_LINE_IGNORE_RE = new RegExp([
+  '^timers.js$',
+  '^' + path.resolve(__dirname, '..', 'lib', 'moduleMocker.js'),
+  '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine')
+].join('|'));
 
 exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
