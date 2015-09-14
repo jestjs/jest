@@ -52,15 +52,15 @@ We can get up and running with the following 4 steps:
   ```
   [PASS] __tests__/sum-test.js (0.015s)
   ```
-  
-you could also re-run given tests automatically by running
-```
-npm test -- --watch
-```
 
-Moreover, if you don't need to run tests immediately
-```
-npm test -- --watch=skip
-```
+5. Use the `--watch` option
 
-where `npm` should be v2 or above which supports passing arguments into `run-script`.
+  ```
+  npm test -- --watch
+  ```
+
+This runs all test initially. To skip the initial test, add `skip` as a value:
+
+  ```
+  npm test -- --watch=skip
+  ```
