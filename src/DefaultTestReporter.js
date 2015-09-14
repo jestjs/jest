@@ -80,7 +80,10 @@ function(config, testResult, aggregatedResults) {
   testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
 
   if (!allTestsPassed) {
-    var failureMessage = formatFailureMessage(testResult, !config.noHighlight);
+    var failureMessage = formatFailureMessage(testResult, {
+      rootPath: config.rootDir,
+      useColor: !config.noHighlight,
+    });
     if (config.verbose) {
       aggregatedResults.postSuiteHeaders.push(
         resultHeader,
