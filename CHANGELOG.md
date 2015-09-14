@@ -1,3 +1,8 @@
+## master
+
+* Fix syntax error reporting.
+* Add `--watch` option (#472).
+
 ## 0.5.2
 
 * Fixed a bug with syntax errors in test files (#487).
