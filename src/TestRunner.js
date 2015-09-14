@@ -453,7 +453,9 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     };
     aggregatedResults.testResults.push(testResult);
     aggregatedResults.numFailedTests++;
-    reporter.onTestResult && reporter.onTestResult(config, testResult, aggregatedResults);
+    if (reporter.onTestResult) {
+      reporter.onTestResult(config, testResult, aggregatedResults);
+    }
   };
 
   aggregatedResults.startTime = Date.now();
