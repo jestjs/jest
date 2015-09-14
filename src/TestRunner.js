@@ -444,14 +444,16 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
   };
 
   var onRunFailure = function(testPath, err) {
-    aggregatedResults.numFailedTests++;
-    reporter.onTestResult && reporter.onTestResult(config, {
+    var testResult = {
       testFilePath: testPath,
       testExecError: err,
       suites: {},
       tests: {},
       logMessages: []
-    }, aggregatedResults);
+    };
+    aggregatedResults.testResults.push(testResult);
+    aggregatedResults.numFailedTests++;
+    reporter.onTestResult && reporter.onTestResult(config, testResult, aggregatedResults);
   };
 
   aggregatedResults.startTime = Date.now();

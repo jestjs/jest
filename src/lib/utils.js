@@ -535,6 +535,11 @@ function formatFailureMessage(testResult, color) {
   var msgBullet = '  - ';
   var msgIndent = msgBullet.replace(/./g, ' ');
 
+  if (testResult.testExecError) {
+    var text = testResult.testExecError;
+    return descBullet + colorize('Runtime Error', colors.BOLD) + '\n' + text;
+  }
+
   return testResult.testResults.filter(function (result) {
     return result.failureMessages.length !== 0;
   }).map(function(result) {

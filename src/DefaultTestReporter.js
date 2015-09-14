@@ -43,23 +43,18 @@ function(config, testResult, aggregatedResults) {
     config.rootDir
     ? path.relative(config.rootDir, testResult.testFilePath)
     : testResult.testFilePath;
-
-  if (testResult.testExecError) {
-    this.log(this._getResultHeader(false, pathStr));
-    this.log(testResult.testExecError);
-    return false;
-  }
-
   var allTestsPassed = testResult.numFailingTests === 0;
-
   var testRunTime =
     testResult.perfStats
     ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
     : null;
 
-  var testRunTimeString = '(' + testRunTime + 's)';
-  if (testRunTime > 2.5) {
-    testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
+  var testRunTimeString;
+  if (testRunTime !== null) {
+    testRunTimeString = '(' + testRunTime + 's)';
+    if (testRunTime > 2.5) {
+      testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
+    }
   }
 
   var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
