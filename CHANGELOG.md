@@ -1,5 +1,6 @@
-## master
+## 0.5.5
 
+* Improve failure stack traces.
 * Fix syntax error reporting.
 * Add `--watch` option (#472).
 
