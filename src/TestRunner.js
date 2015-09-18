@@ -426,7 +426,9 @@ TestRunner.prototype._sortTests = function(testPaths) {
   var testPerformanceCache = this._testPerformanceCache;
   if (testPaths.length > this._opts.maxWorkers) {
     testPaths = testPaths
-      .map(path => [path, fs.statSync(path).size])
+      .map(function(path) {
+        return [path, fs.statSync(path).size];
+      })
       .sort(function(a, b) {
         const cacheA = testPerformanceCache && testPerformanceCache[a[0]];
         const cacheB = testPerformanceCache && testPerformanceCache[b[0]];
