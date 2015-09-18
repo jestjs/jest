@@ -1,3 +1,9 @@
+## 0.5.6
+
+* Cache test run performance and run slowest tests first to maximiz worker
+  utilization
+* Update to jsdom 6.5.0
+
 ## 0.5.5
 
 * Improve failure stack traces.
