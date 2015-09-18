@@ -88,6 +88,10 @@ function TestRunner(config, options) {
       .join('|') +
     ')$'
   );
+  // Map from testFilePath -> time it takes to run the test. Used to
+  // optimally schedule bigger test runs.
+  this._testPerformanceCache = null;
+
   this._opts = assign({}, DEFAULT_OPTIONS, options);
 }
 
@@ -397,6 +401,71 @@ TestRunner.prototype.runTest = function(testFilePath) {
   });
 };
 
+TestRunner.prototype._getTestPerformanceCachePath = function() {
+  return path.join(
+    this._config.cacheDirectory,
+    'perf-cache-' + this._config.name
+  );
+};
+
+TestRunner.prototype._sortTests = function(testPaths) {
+  // When running more tests than we have workers available, sort the tests
+  // by size - big test files usually take longer to complete, so we run
+  // them first in an effort to minimize worker idle time at the end of a
+  // long test run.
+  //
+  // After a test run we store the time it took to run a test and on
+  // subsequent runs we use that to run the slowest tests first, yielding the
+  // fastest results.
+  try {
+    this._testPerformanceCache = JSON.parse(fs.readFileSync(
+      this._getTestPerformanceCachePath()
+    ));
+  } catch (e) {}
+
+  var testPerformanceCache = this._testPerformanceCache;
+  if (testPaths.length > this._opts.maxWorkers) {
+    testPaths = testPaths
+      .map(path => [path, fs.statSync(path).size])
+      .sort(function(a, b) {
+        const cacheA = testPerformanceCache && testPerformanceCache[a[0]];
+        const cacheB = testPerformanceCache && testPerformanceCache[b[0]];
+        if (cacheA !== null && cacheB !== null) {
+          return cacheA < cacheB ? 1 : -1;
+        }
+        return a[1] < b[1] ? 1 : -1;
+      })
+      .map(function(p) {
+        return p[0];
+      });
+  }
+
+  return testPaths;
+};
+
+TestRunner.prototype._cacheTestResults = function(aggregatedResults) {
+  var performanceCacheFile = this._getTestPerformanceCachePath();
+  var testPerformanceCache = this._testPerformanceCache;
+  if (!testPerformanceCache) {
+    testPerformanceCache = this._testPerformanceCache = {};
+  }
+  aggregatedResults.testResults.forEach(function(test) {
+    const perf = test && test.perfStats;
+    if (perf && perf.end && perf.start) {
+      testPerformanceCache[test.testFilePath] = perf.end - perf.start;
+    }
+  });
+  return new Promise(function(resolve) {
+    fs.writeFile(
+      performanceCacheFile,
+      JSON.stringify(testPerformanceCache),
+      function() {
+        resolve(aggregatedResults);
+      }
+    );
+  });
+};
+
 /**
  * Run all given test paths.
  *
@@ -416,6 +485,8 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
     var TestReporter = require(config.testReporter);
     reporter = new TestReporter();
   }
+
+  testPaths = this._sortTests(testPaths);
 
   var aggregatedResults = {
     success: null,
@@ -461,11 +532,15 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
   aggregatedResults.startTime = Date.now();
   var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
-  return testRun.then(function() {
-    aggregatedResults.success = aggregatedResults.numFailedTests === 0;
-    reporter.onRunComplete && reporter.onRunComplete(config, aggregatedResults);
-    return aggregatedResults;
-  });
+  return testRun
+    .then(function() {
+      aggregatedResults.success = aggregatedResults.numFailedTests === 0;
+      if (reporter.onRunComplete) {
+        reporter.onRunComplete(config, aggregatedResults);
+      }
+      return aggregatedResults;
+    })
+    .then(this._cacheTestResults.bind(this));
 };
 
 TestRunner.prototype._createTestRun = function(
