@@ -194,7 +194,7 @@ DefaultTestReporter.prototype._printWaitingOn = function(aggregatedResults) {
     var pluralTests = remainingTests === 1 ? 'test' : 'tests';
     this._process.stdout.write(
       this._formatMsg(
-        'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
+        'Running ' + remainingTests + ' ' + pluralTests + '...',
         colors.GRAY + colors.BOLD
       )
     );
