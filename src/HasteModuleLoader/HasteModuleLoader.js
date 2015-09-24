@@ -614,31 +614,25 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
   }
 };
 
-Loader.prototype.constructBoundRequire = function(sourceModulePath) {
-  var boundModuleRequire = this.requireModuleOrMock.bind(
-    this,
-    sourceModulePath
-  );
+Loader.prototype.constructBoundRequire = function(unresolvedModulePath) {
+  var modulePath = fs.realpathSync(unresolvedModulePath);
+
+  var boundModuleRequire =
+    this.requireModuleOrMock.bind(this, modulePath);
 
   boundModuleRequire.resolve = function(moduleName) {
-    var ret = this._moduleNameToPath(sourceModulePath, moduleName);
+    var ret = this._moduleNameToPath(modulePath, moduleName);
     if (!ret) {
       throw new Error('Module(' + moduleName + ') not found!');
     }
     return ret;
   }.bind(this);
-  boundModuleRequire.generateMock = this._generateMock.bind(
-    this,
-    sourceModulePath
-  );
-  boundModuleRequire.requireMock = this.requireMock.bind(
-    this,
-    sourceModulePath
-  );
-  boundModuleRequire.requireActual = this.requireModule.bind(
-    this,
-    sourceModulePath
-  );
+  boundModuleRequire.generateMock =
+    this._generateMock.bind(this, modulePath);
+  boundModuleRequire.requireMock =
+    this.requireMock.bind(this, modulePath);
+  boundModuleRequire.requireActual =
+    this.requireModule.bind(this, modulePath);
 
   return boundModuleRequire;
 };
