@@ -522,6 +522,7 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
       testExecError: err,
       suites: {},
       tests: {},
+      testResults: {},
       logMessages: []
     };
     aggregatedResults.testResults.push(testResult);
