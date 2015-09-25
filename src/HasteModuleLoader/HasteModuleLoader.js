@@ -602,7 +602,7 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
       this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
         unmockRegExp = this._unmockListRegExps[i];
-        if (unmockRegExp.test(modulePath)) {
+        if (unmockRegExp.test(modulePath) || modulePath === null) {
           return this._configShouldMockModuleNames[moduleName] = false;
         }
       }
@@ -841,7 +841,8 @@ Loader.prototype.requireModule = function(currPath, moduleName,
   if (!moduleResource
       && manualMockResource
       && manualMockResource.path !== this._isCurrentlyExecutingManualMock
-      && this._explicitShouldMock[moduleID] !== false) {
+      && this._explicitShouldMock[moduleID] !== false
+      && !(moduleName in NODE_CORE_MODULES)) {
     modulePath = manualMockResource.path;
   }
 
