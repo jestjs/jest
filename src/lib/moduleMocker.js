@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
+
+/* jshint strict:false */
 
 function isA(typeName, value) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';

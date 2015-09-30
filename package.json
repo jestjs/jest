@@ -11,7 +11,7 @@
     "istanbul": "^0.3.19",
     "jasmine-only": "^0.1.1",
     "jasmine-pit": "^2.0.2",
-    "jsdom": "6.5.0",
+    "jsdom": "6.5.1",
     "lodash.template": "^3.6.2",
     "node-haste": "^1.2.8",
     "node-worker-pool": "^3.0.2",
