@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-// This module uses the Function constructor, so it can't currently run
-// in strict mode
-/* jshint strict:false */
+'use strict';
 
 function isA(typeName, value) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
