@@ -599,10 +599,12 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
         return false;
       }
 
+      var realPath = fs.realpathSync(modulePath);
       this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
         unmockRegExp = this._unmockListRegExps[i];
-        if (unmockRegExp.test(modulePath)) {
+        if (unmockRegExp.test(modulePath) ||
+            unmockRegExp.test(realPath)) {
           return this._configShouldMockModuleNames[moduleName] = false;
         }
       }
@@ -614,9 +616,7 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
   }
 };
 
-Loader.prototype.constructBoundRequire = function(unresolvedModulePath) {
-  var modulePath = fs.realpathSync(unresolvedModulePath);
-
+Loader.prototype.constructBoundRequire = function(modulePath) {
   var boundModuleRequire =
     this.requireModuleOrMock.bind(this, modulePath);
 
