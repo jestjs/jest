@@ -131,6 +131,12 @@ var argv = optimist
       ),
       type: 'string'
     },
+    watchExtensions: {
+      description: _wrapDesc(
+        'Comma separated list of file extensions to watch, defaults to js.'
+      ),
+      type: 'string'
+    },
     bail: {
       alias: 'b',
       description: _wrapDesc(
@@ -152,6 +158,12 @@ var argv = optimist
         'Both --onlyChanged and a path pattern were specified, but these two ' +
         'options do not make sense together. Which is it? Do you want to run ' +
         'tests for changed files? Or for a specific set of files?'
+      );
+    }
+
+    if (argv.watchExtensions && argv.watch === undefined) {
+      throw (
+        '--watchExtensions can only be specified together with --watch.'
       );
     }
 
@@ -256,8 +268,12 @@ function runJestCLI() {
 function getWatcher(callback) {
   which(WATCHMAN_BIN, function(err, resolvedPath) {
     var useWatchman = !err && resolvedPath;
+    var watchExtensions = argv.watchExtensions || 'js';
+    var globs = watchExtensions.split(',').map(function(extension) {
+      return '**/*' + extension;
+    });
     var watcher = sane(cwdPackageRoot, {
-      glob: ['**/*.js'],
+      glob: globs,
       watchman: useWatchman
     });
     callback(watcher);
