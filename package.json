@@ -13,13 +13,14 @@
     "jasmine-pit": "^2.0.2",
     "jsdom": "6.5.1",
     "lodash.template": "^3.6.2",
+    "mkdirp": "^0.5.1",
     "node-haste": "^1.2.8",
     "node-worker-pool": "^3.0.2",
     "object-assign": "^4.0.1",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
-    "through": "^2.3.8",
     "sane": "^1.2.0",
+    "through": "^2.3.8",
     "which": "^1.1.1"
   },
   "devDependencies": {

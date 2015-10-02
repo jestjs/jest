@@ -17,6 +17,7 @@
 
 var fs = require('graceful-fs');
 var hasteLoaders = require('node-haste/lib/loaders');
+var mkdirp = require('mkdirp');
 var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
@@ -88,9 +89,13 @@ function _constructHasteInst(config, options) {
     : '$.'  // never matches
   );
 
-  if (!fs.existsSync(config.cacheDirectory)) {
-    fs.mkdirSync(config.cacheDirectory);
-    fs.chmodSync(config.cacheDirectory, '777');
+  // Support npm package scopes that add an extra directory to the path
+  var scopedCacheDirectory = path.dirname(_getCacheFilePath(config));
+  if (!fs.existsSync(scopedCacheDirectory)) {
+    mkdirp.sync(scopedCacheDirectory, {
+      mode: '777',
+      fs: fs,
+    });
   }
 
   return new NodeHaste(
