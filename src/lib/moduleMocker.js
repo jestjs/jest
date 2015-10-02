@@ -6,337 +6,322 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* jshint strict:false */
+'use strict';
 
 function isA(typeName, value) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
 function getType(ref) {
-  if (isA('RegExp', ref)) {
-    return 'regexp';
-  }
-
-  if (isA('Array', ref)) {
-    return 'array';
-  }
-
   if (isA('Function', ref)) {
     return 'function';
-  }
-
-  if (isA('Object', ref)) {
+  } else if (Array.isArray(ref)) {
+    return 'array';
+  } else if (isA('Object', ref)) {
     return 'object';
-  }
-
-  // consider number and string fields to be constants that we want to
-  // pick up as they are
-  if (isA('Number', ref) || isA('String', ref)) {
+  } else if (isA('Number', ref) || isA('String', ref)) {
     return 'constant';
-  }
-
-  if (ref === undefined) {
+  } else if (isA('RegExp', ref)) {
+    return 'regexp';
+  } else if (ref === undefined) {
     return 'undefined';
-  }
-
-  if (ref === null) {
+  } else if (ref === null) {
     return 'null';
+  } else {
+    return null;
   }
-
-  return null;
 }
 
-/**
- * methods on ES6 classes are not enumerable, so they can't be found with a
- * simple `for (var slot in ...) {` so that had to be replaced with getSlots()
- */
-var forbiddenProps = Object.create(null, {
-  caller: {value: true},
-  callee: {value: true},
-  arguments: {value: true},
-});
+function isReadonlyProp(object, prop) {
+  return (
+    (
+      (
+        prop === 'arguments' ||
+        prop === 'caller' ||
+        prop === 'callee' ||
+        prop === 'name' ||
+        prop === 'length'
+      ) &&
+      isA('Function', object)
+    ) ||
+    (prop === 'source' && isA('RegExp', object))
+  );
+}
 
 function getSlots(object) {
-  var slots = {};
+  const slots = {};
   if (!object) {
     return [];
   }
-  //
-  var collectProp = function(prop) {
-    if (prop in forbiddenProps) {
-      return;
-    }
-    var propDesc = Object.getOwnPropertyDescriptor(object, prop);
-    if (!propDesc.get) {
-      slots[prop] = true;
-    }
-  };
+
+  let parent = Object.getPrototypeOf(object);
   do {
-    Object.getOwnPropertyNames(object).forEach(collectProp);
-    object = Object.getPrototypeOf(object);
-  } while (object && Object.getPrototypeOf(object) !== null);
+    if (object === Function.prototype) {
+      break;
+    }
+    const ownNames = Object.getOwnPropertyNames(object);
+    for (let i = 0; i < ownNames.length; i++) {
+      const prop = ownNames[i];
+      if (!isReadonlyProp(object, prop)) {
+        const propDesc = Object.getOwnPropertyDescriptor(object, prop);
+        if (!propDesc.get) {
+          slots[prop] = true;
+        }
+      }
+    }
+    object = parent;
+  } while (object && (parent = Object.getPrototypeOf(object)) !== null);
   return Object.keys(slots);
 }
 
-function makeComponent(metadata) {
-  switch (metadata.type) {
-    case 'object':
-      return {};
-
-    case 'array':
-      return [];
-
-    case 'regexp':
-      return new RegExp();
-
-    case 'constant':
-    case 'null':
-    case 'undefined':
-      return metadata.value;
-
-    case 'function':
-      var defaultReturnValue;
-      var specificReturnValues = [];
-      var mockImpl;
-      var isReturnValueLastSet = false;
-      var calls = [];
-      var instances = [];
-      var prototype =
-        (metadata.members && metadata.members.prototype &&
-          metadata.members.prototype.members) || {};
-
-      var mockConstructor = function() {
-        instances.push(this);
-        calls.push(Array.prototype.slice.call(arguments));
-        if (this instanceof f) {
-          // This is probably being called as a constructor
-          getSlots(prototype).forEach(function(slot) {
-            // Copy prototype methods to the instance to make
-            // it easier to interact with mock instance call and
-            // return values
-            if (prototype[slot].type === 'function') {
-              var protoImpl = this[slot];
-              this[slot] = generateFromMetadata(prototype[slot]);
-              this[slot]._protoImpl = protoImpl;
-            }
-          }, this);
-
-          // Run the mock constructor implementation
-          return mockImpl && mockImpl.apply(this, arguments);
-        }
-
-        var returnValue;
-        // If return value is last set, either specific or default, i.e.
-        // mockReturnValueOnce()/mockReturnValue() is called and no
-        // mockImplementation() is called after that.
-        // use the set return value.
-        if (isReturnValueLastSet) {
-          returnValue = specificReturnValues.shift();
-          if (returnValue === undefined) {
-            returnValue = defaultReturnValue;
-          }
-        }
-
-        // If mockImplementation() is last set, or specific return values
-        // are used up, use the mock implementation.
-        if (mockImpl && returnValue === undefined) {
-          return mockImpl.apply(this, arguments);
-        }
-
-        // Otherwise use prototype implementation
-        if (returnValue === undefined && f._protoImpl) {
-          return f._protoImpl.apply(this, arguments);
-        }
-
-        return returnValue;
-      };
-
-      // Preserve `name` property of mocked function.
-      var boundFunctionPrefix = 'bound ';
-      var functionName = metadata.name;
-      var isBound = functionName &&
-        functionName.startsWith(boundFunctionPrefix);
-      var bindCall = '';
-      if (isBound) {
-        functionName = functionName.substring(boundFunctionPrefix.length);
-        // Call bind() just to alter the function name.
-        bindCall = '.bind(null)';
-      }
-      /* jshint evil:true */
-      var f = new Function(
-        'mockConstructor',
-        'return function ' + functionName + '(){' +
-          'return mockConstructor.apply(this,arguments);' +
-        '}' + bindCall
-      )(mockConstructor);
-
-      f._isMockFunction = true;
-
-      f.mock = {
-        calls: calls,
-        instances: instances
-      };
-
-      f.mockClear = function() {
-        calls.length = 0;
-        instances.length = 0;
-      };
-
-      f.mockReturnValueOnce = function(value) {
-        // next function call will return this value or default return value
-        isReturnValueLastSet = true;
-        specificReturnValues.push(value);
-        return f;
-      };
-
-      f.mockReturnValue = function(value) {
-        // next function call will return specified return value or this one
-        isReturnValueLastSet = true;
-        defaultReturnValue = value;
-        return f;
-      };
-
-      f.mockImplementation = f.mockImpl = function(fn) {
-        // next function call will use mock implementation return value
-        isReturnValueLastSet = false;
-        mockImpl = fn;
-        return f;
-      };
-
-      f.mockReturnThis = function() {
-        return f.mockImplementation(function() {
-          return this;
-        });
-      };
-
-      f._getMockImplementation = function() {
-        return mockImpl;
-      };
-
-      if (metadata.mockImpl) {
-        f.mockImplementation(metadata.mockImpl);
-      }
-
-      return f;
+function createMockFunction(metadata, mockConstructor) {
+  let name = metadata.name;
+  if (!name) {
+    return mockConstructor;
   }
 
-  throw new Error('Unrecognized type ' + metadata.type);
+  // Preserve `name` property of mocked function.
+  const boundFunctionPrefix = 'bound ';
+  const isBound = name && name.startsWith(boundFunctionPrefix);
+  let bindCall = '';
+  if (isBound) {
+    name = name.substring(boundFunctionPrefix.length);
+    // Call bind() just to alter the function name.
+    bindCall = '.bind(null)';
+  }
+  /* jshint evil:true */
+  return new Function(
+    'mockConstructor',
+    'return function ' + name + '() {' +
+      'return mockConstructor.apply(this,arguments);' +
+    '}' + bindCall
+  )(mockConstructor);
 }
 
-function generateFromMetadata(_metadata) {
-  var callbacks = [];
-  var refs = {};
+function makeComponent(metadata) {
+  if (metadata.type === 'object') {
+    return {};
+  } else if (metadata.type === 'array') {
+    return [];
+  } else if (metadata.type === 'regexp') {
+    return new RegExp();
+  } else if (
+    metadata.type === 'constant' ||
+    metadata.type === 'null' ||
+    metadata.type === 'undefined'
+  ) {
+    return metadata.value;
+  } else if (metadata.type === 'function') {
+    let isReturnValueLastSet = false;
+    let defaultReturnValue;
+    let mockImpl;
+    let f;
+    const specificReturnValues = [];
+    const calls = [];
+    const instances = [];
+    const prototype = (
+      metadata.members &&
+      metadata.members.prototype &&
+      metadata.members.prototype.members
+    ) || {};
+    const prototypeSlots = getSlots(prototype);
+    let mockConstructor = function() {
+      instances.push(this);
+      calls.push(Array.prototype.slice.call(arguments));
+      if (this instanceof f) {
+        // This is probably being called as a constructor
+        prototypeSlots.forEach(slot => {
+          // Copy prototype methods to the instance to make
+          // it easier to interact with mock instance call and
+          // return values
+          if (prototype[slot].type === 'function') {
+            const protoImpl = this[slot];
+            this[slot] = generateFromMetadata(prototype[slot]);
+            this[slot]._protoImpl = protoImpl;
+          }
+        });
 
-  function generateMock(metadata) {
-    var mock = makeComponent(metadata);
-    if (metadata.refID !== null && metadata.refID !== undefined) {
-      refs[metadata.refID] = mock;
-    }
-
-    function getRefCallback(slot, ref) {
-      return function() {
-        mock[slot] = refs[ref];
-      };
-    }
-
-    if (metadata.__TCmeta) {
-      mock.__TCmeta = metadata.__TCmeta;
-    }
-
-    getSlots(metadata.members).forEach(function(slot) {
-      var slotMetadata = metadata.members[slot];
-      if (slotMetadata.ref !== null && slotMetadata.ref !== undefined) {
-        callbacks.push(getRefCallback(slot, slotMetadata.ref));
-      } else {
-        mock[slot] = generateMock(slotMetadata);
+        // Run the mock constructor implementation
+        return mockImpl && mockImpl.apply(this, arguments);
       }
-    });
 
-    if (metadata.type !== 'undefined'
-        && metadata.type !== 'null'
-        && mock.prototype) {
-      mock.prototype.constructor = mock;
+      let returnValue;
+      // If return value is last set, either specific or default, i.e.
+      // mockReturnValueOnce()/mockReturnValue() is called and no
+      // mockImplementation() is called after that.
+      // use the set return value.
+      if (isReturnValueLastSet) {
+        returnValue = specificReturnValues.shift();
+        if (returnValue === undefined) {
+          returnValue = defaultReturnValue;
+        }
+      }
+
+      // If mockImplementation() is last set, or specific return values
+      // are used up, use the mock implementation.
+      if (mockImpl && returnValue === undefined) {
+        return mockImpl.apply(this, arguments);
+      }
+
+      // Otherwise use prototype implementation
+      if (returnValue === undefined && f._protoImpl) {
+        return f._protoImpl.apply(this, arguments);
+      }
+
+      return returnValue;
+    };
+
+    f = createMockFunction(metadata, mockConstructor);
+    f._isMockFunction = true;
+    f._getMockImplementation = () => mockImpl;
+    f.mock = {calls, instances};
+
+    f.mockClear = () => {
+      calls.length = 0;
+      instances.length = 0;
+    };
+
+    f.mockReturnValueOnce = value => {
+      // next function call will return this value or default return value
+      isReturnValueLastSet = true;
+      specificReturnValues.push(value);
+      return f;
+    };
+
+    f.mockReturnValue = value => {
+      // next function call will return specified return value or this one
+      isReturnValueLastSet = true;
+      defaultReturnValue = value;
+      return f;
+    };
+
+    f.mockImplementation = f.mockImpl = fn => {
+      // next function call will use mock implementation return value
+      isReturnValueLastSet = false;
+      mockImpl = fn;
+      return f;
+    };
+
+    f.mockReturnThis = () =>
+      f.mockImplementation(function() {
+        return this;
+      });
+
+    if (metadata.mockImpl) {
+      f.mockImplementation(metadata.mockImpl);
     }
 
-    return mock;
+    return f;
+  } else {
+    throw new Error('Unrecognized type ' + metadata.type);
+  }
+}
+
+function generateMock(metadata, callbacks, refs) {
+  const mock = makeComponent(metadata);
+  if (metadata.refID != null) {
+    refs[metadata.refID] = mock;
   }
 
-  var mock = generateMock(_metadata);
-  callbacks.forEach(function(setter) {
-    setter();
+  getSlots(metadata.members).forEach(slot => {
+    const slotMetadata = metadata.members[slot];
+    if (slotMetadata.ref != null) {
+      callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
+    } else {
+      mock[slot] = generateMock(slotMetadata, callbacks, refs);
+    }
   });
+
+  if (
+    metadata.type !== 'undefined' &&
+    metadata.type !== 'null' &&
+    mock.prototype
+  ) {
+    mock.prototype.constructor = mock;
+  }
 
   return mock;
 }
 
-function _getMetadata(component, _refs) {
-  var refs = _refs || [];
+function generateFromMetadata(_metadata) {
+  const callbacks = [];
+  const refs = {};
+  const mock = generateMock(_metadata, callbacks, refs);
+  callbacks.forEach(setter => setter());
+  return mock;
+}
 
-  // This is a potential performance drain, since the whole list is scanned
-  // for every component
-  var ref = refs.indexOf(component);
-  if (ref > -1) {
-    return {ref: ref};
+function getMetadata(component, _refs) {
+  const refs = _refs || new Map();
+  const ref = refs.get(component);
+  if (ref != null) {
+    return {ref};
   }
 
-  var type = getType(component);
+  const type = getType(component);
   if (!type) {
     return null;
   }
 
-  var metadata = {type : type};
-  if (type === 'constant'
-      || type === 'undefined'
-      || type === 'null') {
+  const metadata = {type: type};
+  if (
+    type === 'constant' ||
+    type === 'undefined' ||
+    type === 'null'
+  ) {
     metadata.value = component;
     return metadata;
   } else if (type === 'function') {
     metadata.name = component.name;
-    metadata.__TCmeta = component.__TCmeta;
     if (component._isMockFunction) {
       metadata.mockImpl = component._getMockImplementation();
     }
   }
 
-  metadata.refID = refs.length;
-  refs.push(component);
+  metadata.refID = refs.size;
+  refs.set(component, metadata.refID);
 
-  var members = null;
-
-  function addMember(slot, data) {
-    if (!data) {
-      return;
-    }
-    if (!members) {
-      members = {};
-    }
-    members[slot] = data;
-  }
-
+  let members = null;
   // Leave arrays alone
   if (type !== 'array') {
     if (type !== 'undefined') {
-      getSlots(component).forEach(function(slot) {
-        if (slot.charAt(0) === '_' ||
-            (type === 'function' && component._isMockFunction &&
-             slot.match(/^mock/))) {
+      getSlots(component).forEach(slot => {
+        if (
+          slot.charAt(0) === '_' ||
+          (
+            type === 'function' &&
+            component._isMockFunction &&
+            slot.match(/^mock/)
+          )
+        ) {
           return;
         }
 
-        if (!component.hasOwnProperty && component[slot] !== undefined ||
-            (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-            /* jshint eqeqeq:false */
-            (type === 'object' && component[slot] != Object.prototype[slot])) {
-          addMember(slot, _getMetadata(component[slot], refs));
+        if (
+          (!component.hasOwnProperty && component[slot] !== undefined) ||
+          (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
+          /* jshint eqeqeq:false */
+          (type === 'object' && component[slot] != Object.prototype[slot])
+        ) {
+          let slotMetadata = getMetadata(component[slot], refs);
+          if (slotMetadata) {
+            if (!members) {
+              members = {};
+            }
+            members[slot] = slotMetadata;
+          }
         }
       });
     }
 
     // If component is native code function, prototype might be undefined
     if (type === 'function' && component.prototype) {
-      var prototype = _getMetadata(component.prototype, refs);
+      const prototype = getMetadata(component.prototype, refs);
       if (prototype && prototype.members) {
-        addMember('prototype', prototype);
+        if (!members) {
+          members = {};
+        }
+        members.prototype = prototype;
       }
     }
   }
@@ -346,30 +331,6 @@ function _getMetadata(component, _refs) {
   }
 
   return metadata;
-}
-
-function removeUnusedRefs(metadata) {
-  function visit(metadata, f) {
-    f(metadata);
-    if (metadata.members) {
-      getSlots(metadata.members).forEach(function(slot) {
-        visit(metadata.members[slot], f);
-      });
-    }
-  }
-
-  var usedRefs = {};
-  visit(metadata, function(metadata) {
-    if (metadata.ref !== null && metadata.ref !== undefined) {
-      usedRefs[metadata.ref] = true;
-    }
-  });
-
-  visit(metadata, function(metadata) {
-    if (!usedRefs[metadata.refID]) {
-      delete metadata.refID;
-    }
-  });
 }
 
 module.exports = {
@@ -388,7 +349,7 @@ module.exports = {
    * getMetadata method of this module.
    *
    */
-  generateFromMetadata: generateFromMetadata,
+  generateFromMetadata,
 
   /**
    * Inspects the argument and returns its schema in the following recursive
@@ -435,14 +396,8 @@ module.exports = {
    *
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata: function(component) {
-    var metadata = _getMetadata(component);
-    // to make it easier to work with mock metadata, only preserve references
-    // that are actually used
-    if (metadata !== null) {
-      removeUnusedRefs(metadata);
-    }
-    return metadata;
+  getMetadata(component) {
+    return getMetadata(component);
   },
 
   /**
@@ -480,12 +435,12 @@ module.exports = {
    * - if the last call is mockImplementation(), run the given implementation
    *   and return the result.
    */
-  getMockFunction: function() {
+  getMockFunction() {
     return makeComponent({type: 'function'});
   },
 
   // Just a short-hand alias
-  getMockFn: function() {
+  getMockFn() {
     return this.getMockFunction();
   }
 };

@@ -1,6 +1,4 @@
 language: node_js
 node_js:
-- "iojs-v2"
-- "iojs-v3"
 - "4"
 sudo: false

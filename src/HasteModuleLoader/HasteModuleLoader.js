@@ -202,13 +202,13 @@ Loader.prototype._execModule = function(moduleObj) {
   moduleObj.require = this.constructBoundRequire(modulePath);
 
   var moduleLocalBindings = {
-    'module': moduleObj,
-    'exports': moduleObj.exports,
-    'require': moduleObj.require,
-    '__dirname': path.dirname(modulePath),
-    '__filename': modulePath,
-    'global': this._environment.global,
-    'jest': this._builtInModules['jest-runtime'](modulePath).exports
+    module: moduleObj,
+    exports: moduleObj.exports,
+    require: moduleObj.require,
+    __dirname: path.dirname(modulePath),
+    __filename: modulePath,
+    global: this._environment.global,
+    jest: this._builtInModules['jest-runtime'](modulePath).exports
   };
 
   var onlyCollectFrom = this._config.collectCoverageOnlyFrom;
