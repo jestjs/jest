@@ -23,6 +23,7 @@ var DEFAULT_CONFIG_VALUES = {
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
+  moduleNameMapper: [],
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testEnvData: {},
@@ -205,6 +206,13 @@ function normalizeConfig(config) {
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key])
         ));
+        break;
+
+      case 'moduleNameMapper':
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          _replaceRootDirTags(config.rootDir, config[key][regex])
+        ]);
         break;
 
       case 'preprocessorIgnorePatterns':

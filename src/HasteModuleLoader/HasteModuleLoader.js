@@ -70,6 +70,8 @@ var NODE_CORE_MODULES = {
 
 var VENDOR_PATH = path.resolve(__dirname, '../../vendor');
 
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 var _configUnmockListRegExpCache = null;
 
 function _buildLoadersList(config) {
@@ -150,6 +152,15 @@ function Loader(config, environment, resourceMap) {
         });
       _configUnmockListRegExpCache.set(config, this._unmockListRegExps);
     }
+  }
+
+  // Workers communicate the config as JSON so we have to create a regex object
+  // in the module loader instance.
+  this._mappedModuleNames = Object.create(null);
+  if (this._config.moduleNameMapper.length) {
+    this._config.moduleNameMapper.forEach(
+      map => this._mappedModuleNames[map[1]] = new RegExp(map[0])
+    );
   }
 
   this.resetModuleRegistry();
@@ -319,6 +330,16 @@ Loader.prototype._getResource = function(resourceType, resourceName) {
       resourceType,
       resourceName + '.js'
     );
+  }
+
+  if (
+    resource === undefined &&
+    resourceType === 'JSMock'
+  ) {
+    var moduleName = this._resolveStubModuleName(resourceName);
+    if (moduleName) {
+      resource = this._resourceMap.getResource('JS', moduleName);
+    }
   }
 
   return resource;
@@ -556,17 +577,16 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
  */
 Loader.prototype._shouldMock = function(currPath, moduleName) {
   var moduleID = this._getNormalizedModuleID(currPath, moduleName);
-  if (this._builtInModules.hasOwnProperty(moduleName)) {
+  if (hasOwnProperty.call(this._builtInModules, moduleName)) {
     return false;
-  } else if (this._explicitShouldMock.hasOwnProperty(moduleID)) {
+  } else if (hasOwnProperty.call(this._explicitShouldMock, moduleID)) {
     return this._explicitShouldMock[moduleID];
   } else if (NODE_CORE_MODULES[moduleName]) {
     return false;
   } else if (this._shouldAutoMock) {
-
     // See if the module is specified in the config as a module that should
     // never be mocked
-    if (this._configShouldMockModuleNames.hasOwnProperty(moduleName)) {
+    if (hasOwnProperty.call(this._configShouldMockModuleNames, moduleName)) {
       return this._configShouldMockModuleNames[moduleName];
     } else if (this._unmockListRegExps.length > 0) {
       this._configShouldMockModuleNames[moduleName] = true;
@@ -904,6 +924,23 @@ Loader.prototype.requireModule = function(currPath, moduleName,
   }
 
   return moduleObj.exports;
+};
+
+/**
+ * If the moduleNameMapper config is set, go through all the mappings
+ * and resolve the module name.
+ *
+ * @param string moduleName
+ * @param string the resolved module name
+ */
+Loader.prototype._resolveStubModuleName = function(moduleName) {
+  var nameMapper = this._mappedModuleNames;
+  for (let mappedModuleName in nameMapper) {
+    var regex = nameMapper[mappedModuleName];
+    if (regex.test(moduleName)) {
+      return mappedModuleName;
+    }
+  }
 };
 
 /**
