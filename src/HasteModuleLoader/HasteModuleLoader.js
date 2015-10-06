@@ -84,9 +84,7 @@ function _buildLoadersList(config) {
 
 function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
-    config.modulePathIgnorePatterns.length > 0
-    ? config.modulePathIgnorePatterns.join('|')
-    : '$.'  // never matches
+    [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
   );
 
   // Support npm package scopes that add an extra directory to the path
