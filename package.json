@@ -16,7 +16,6 @@
     "lodash.template": "^3.6.2",
     "mkdirp": "^0.5.1",
     "node-haste": "^1.2.8",
-    "node-worker-pool": "^3.0.2",
     "object-assign": "^4.0.1",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
