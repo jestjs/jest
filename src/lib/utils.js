@@ -11,6 +11,7 @@ var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
 var path = require('path');
+var stringify = require('json-stable-stringify');
 
 var DEFAULT_CONFIG_VALUES = {
   bail: false,
@@ -361,6 +362,9 @@ function storeCacheRecord(mtime, fileData, filePath) {
   return fileData;
 }
 
+// To avoid stringifiying the config multiple times
+var configToJsonMap = new Map();
+
 // There are two layers of caching: in memory (always enabled),
 // and on disk (enabled by default, and managed by the
 // `preprocessCachingDisabled` option). The preprocessor script can also
@@ -424,10 +428,16 @@ function readAndPreprocessFileContent(filePath, config) {
             config
           );
         } else {
+          var configStr = configToJsonMap.get(config);
+          if (!configStr) {
+            configStr = stringify(config);
+            configToJsonMap.set(config, configStr);
+          }
+
           // Default cache hashing.
           cacheKey = crypto.createHash('md5')
             .update(fileData)
-            .update(JSON.stringify(config))
+            .update(configStr)
             .digest('hex');
         }
 
