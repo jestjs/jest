@@ -990,6 +990,8 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
     return this.compareRegExps_(a, b, mismatchKeys, mismatchValues);
   }
 
+  var className = Object.prototype.toString.call(a);
+  if (className != Object.prototype.toString.call(b)) { return false; }
   if (typeof a === "object" && typeof b === "object") {
     return this.compareObjects_(a, b, mismatchKeys, mismatchValues);
   }
