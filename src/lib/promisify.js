@@ -21,5 +21,5 @@ module.exports = function(fn) {
 
       fn.apply(this, args);
     });
-  }
+  };
 };
