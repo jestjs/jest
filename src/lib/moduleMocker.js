@@ -130,7 +130,7 @@ function makeComponent(metadata) {
       calls.push(Array.prototype.slice.call(arguments));
       if (this instanceof f) {
         // This is probably being called as a constructor
-        prototypeSlots.forEach(slot => {
+        prototypeSlots.forEach(function(slot) {
           // Copy prototype methods to the instance to make
           // it easier to interact with mock instance call and
           // return values
@@ -139,7 +139,7 @@ function makeComponent(metadata) {
             this[slot] = generateFromMetadata(prototype[slot]);
             this[slot]._protoImpl = protoImpl;
           }
-        });
+        }, this);
 
         // Run the mock constructor implementation
         return mockImpl && mockImpl.apply(this, arguments);
@@ -173,39 +173,40 @@ function makeComponent(metadata) {
 
     f = createMockFunction(metadata, mockConstructor);
     f._isMockFunction = true;
-    f._getMockImplementation = () => mockImpl;
+    f._getMockImplementation = mockImpl;
     f.mock = {calls, instances};
 
-    f.mockClear = () => {
+    f.mockClear = function() {
       calls.length = 0;
       instances.length = 0;
     };
 
-    f.mockReturnValueOnce = value => {
+    f.mockReturnValueOnce = function(value) {
       // next function call will return this value or default return value
       isReturnValueLastSet = true;
       specificReturnValues.push(value);
       return f;
     };
 
-    f.mockReturnValue = value => {
+    f.mockReturnValue = function(value) {
       // next function call will return specified return value or this one
       isReturnValueLastSet = true;
       defaultReturnValue = value;
       return f;
     };
 
-    f.mockImplementation = f.mockImpl = fn => {
+    f.mockImplementation = f.mockImpl = function(fn) {
       // next function call will use mock implementation return value
       isReturnValueLastSet = false;
       mockImpl = fn;
       return f;
     };
 
-    f.mockReturnThis = () =>
-      f.mockImplementation(function() {
+    f.mockReturnThis = function() {
+      return f.mockImplementation(function() {
         return this;
       });
+    };
 
     if (metadata.mockImpl) {
       f.mockImplementation(metadata.mockImpl);
@@ -223,10 +224,12 @@ function generateMock(metadata, callbacks, refs) {
     refs[metadata.refID] = mock;
   }
 
-  getSlots(metadata.members).forEach(slot => {
+  getSlots(metadata.members).forEach(function(slot) {
     const slotMetadata = metadata.members[slot];
     if (slotMetadata.ref != null) {
-      callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
+      callbacks.push(function() {
+        return mock[slot] = refs[slotMetadata.ref];
+      });
     } else {
       mock[slot] = generateMock(slotMetadata, callbacks, refs);
     }
@@ -247,7 +250,7 @@ function generateFromMetadata(_metadata) {
   const callbacks = [];
   const refs = {};
   const mock = generateMock(_metadata, callbacks, refs);
-  callbacks.forEach(setter => setter());
+  callbacks.forEach(function(setter) { setter(); });
   return mock;
 }
 
@@ -285,7 +288,7 @@ function getMetadata(component, _refs) {
   // Leave arrays alone
   if (type !== 'array') {
     if (type !== 'undefined') {
-      getSlots(component).forEach(slot => {
+      getSlots(component).forEach(function(slot) {
         if (
           slot.charAt(0) === '_' ||
           (
