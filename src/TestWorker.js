@@ -47,9 +47,9 @@ module.exports = function(data, callback) {
     testRunner.runTest(data.testFilePath)
       .then(
         result => callback(null, result),
-        err => callback(err)
+        err => callback(err.stack || err.message || err)
       );
   } catch (err) {
-    callback(err);
+    callback(err.stack || err.message || err);
   }
 };
