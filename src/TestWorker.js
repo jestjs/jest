@@ -8,6 +8,8 @@
 'use strict';
 
 // Make sure uncaught errors are logged before we exit.
+// Could be transient errors to do with loading and serializing the resouce
+// map.
 process.on('uncaughtException', (err) => {
   console.error(err.stack);
   process.exit(1);
@@ -47,6 +49,7 @@ module.exports = function(data, callback) {
     testRunner.runTest(data.testFilePath)
       .then(
         result => callback(null, result),
+        // TODO: move to error object passing (why limit to strings?).
         err => callback(err.stack || err.message || err)
       );
   } catch (err) {

@@ -323,10 +323,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
   var env = new configDeps.testEnvironment(config);
   var testRunner = configDeps.testRunner;
 
-  // Capture and serialize console.{log|warning|error}s so they can be passed
-  // around (such as through some channel back to a parent process)
-  var consoleMessages = [];
-  env.global.console = new Console(consoleMessages);
+  // Intercept console logs to colorize.
+  env.global.console = new Console(process.stdout, process.stderr);
 
   // Pass the testFilePath into the runner, so it can be used to e.g.
   // configure test reporter output.
@@ -381,7 +379,6 @@ TestRunner.prototype.runTest = function(testFilePath) {
       .then(function(results) {
         testExecStats.end = Date.now();
 
-        results.logMessages = consoleMessages;
         results.perfStats = testExecStats;
         results.testFilePath = testFilePath;
         results.coverage =
@@ -524,7 +521,6 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
       suites: {},
       tests: {},
       testResults: {},
-      logMessages: []
     };
     aggregatedResults.testResults.push(testResult);
     aggregatedResults.numFailedTests++;
@@ -578,6 +574,10 @@ TestRunner.prototype._createParallelTestRun = function(
 ) {
   var farm = workerFarm({
     maxConcurretCallsPerWorker: 1,
+
+    // We allow for a couple of transient errors. Say something to do
+    // with loading/serialization of the resourcemap (which I've seen
+    // happen).
     maxRetries: 2,
     maxConcurrentWorkers: this._opts.maxWorkers
   }, TEST_WORKER_PATH);
