@@ -107,7 +107,7 @@ function _constructHasteInst(config, options) {
       },
       version: JSON.stringify(config),
       useNativeFind: true,
-      maxProcesses: os.cpus().length,
+      maxProcesses: options.maxWorkers || os.cpus().length,
       maxOpenFiles: options.maxOpenFiles || 100
     }
   );
