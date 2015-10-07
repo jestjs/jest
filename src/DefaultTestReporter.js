@@ -72,8 +72,6 @@ function(config, testResult, aggregatedResults) {
     this.verboseLog(testResult.testResults, resultHeader);
   }
 
-  testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
-
   if (!allTestsPassed) {
     var failureMessage = formatFailureMessage(testResult, {
       rootPath: config.rootDir,
@@ -137,27 +135,6 @@ function (config, aggregatedResults) {
 
   this.log(results);
   this.log('Run time: ' + runTime + 's');
-};
-
-DefaultTestReporter.prototype._printConsoleMessage = function(msg) {
-  switch (msg.type) {
-    case 'dir':
-    case 'log':
-      this._process.stdout.write(msg.data);
-      break;
-    case 'warn':
-      this._process.stderr.write(
-        this._formatMsg(msg.data, colors.YELLOW)
-      );
-      break;
-    case 'error':
-      this._process.stderr.write(
-        this._formatMsg(msg.data, colors.RED)
-      );
-      break;
-    default:
-      throw new Error('Unknown console message type!: ' + msg.type);
-  }
 };
 
 DefaultTestReporter.prototype._clearWaitingOn = function() {

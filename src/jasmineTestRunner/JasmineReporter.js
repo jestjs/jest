@@ -86,15 +86,11 @@ function (container, ancestorTitles, spec) {
     title: 'it ' + spec.description,
     ancestorTitles: ancestorTitles,
     failureMessages: [],
-    logMessages: [],
     numPassingAsserts: 0
   };
 
   spec.results().getItems().forEach(function(result) {
     switch (result.type) {
-      case 'log':
-        results.logMessages.push(result.toString());
-        break;
       case 'expect':
         if (result.passed()) {
           results.numPassingAsserts++;

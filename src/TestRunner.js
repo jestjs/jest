@@ -14,8 +14,9 @@ var assign = require('object-assign');
 var promiseDone = require('./lib/promiseDone');
 var through = require('through');
 var utils = require('./lib/utils');
-var WorkerPool = require('node-worker-pool');
+var workerFarm = require('worker-farm');
 var Console = require('./Console');
+var promisify = require('./lib/promisify');
 
 var TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -322,10 +323,8 @@ TestRunner.prototype.runTest = function(testFilePath) {
   var env = new configDeps.testEnvironment(config);
   var testRunner = configDeps.testRunner;
 
-  // Capture and serialize console.{log|warning|error}s so they can be passed
-  // around (such as through some channel back to a parent process)
-  var consoleMessages = [];
-  env.global.console = new Console(consoleMessages);
+  // Intercept console logs to colorize.
+  env.global.console = new Console(process.stdout, process.stderr);
 
   // Pass the testFilePath into the runner, so it can be used to e.g.
   // configure test reporter output.
@@ -380,7 +379,6 @@ TestRunner.prototype.runTest = function(testFilePath) {
       .then(function(results) {
         testExecStats.end = Date.now();
 
-        results.logMessages = consoleMessages;
         results.perfStats = testExecStats;
         results.testFilePath = testFilePath;
         results.coverage =
@@ -523,7 +521,6 @@ TestRunner.prototype.runTests = function(testPaths, reporter) {
       suites: {},
       tests: {},
       testResults: {},
-      logMessages: []
     };
     aggregatedResults.testResults.push(testResult);
     aggregatedResults.numFailedTests++;
@@ -575,56 +572,35 @@ TestRunner.prototype._createInBandTestRun = function(
 TestRunner.prototype._createParallelTestRun = function(
   testPaths, onTestResult, onRunFailure
 ) {
-  var workerPool = new WorkerPool(
-    this._opts.maxWorkers,
-    this._opts.nodePath,
-    this._opts.nodeArgv.concat([
-      TEST_WORKER_PATH,
-      '--config=' + JSON.stringify(this._config)
-    ])
-  );
+  var farm = workerFarm({
+    maxConcurretCallsPerWorker: 1,
+
+    // We allow for a couple of transient errors. Say something to do
+    // with loading/serialization of the resourcemap (which I've seen
+    // happen).
+    maxRetries: 2,
+    maxConcurrentWorkers: this._opts.maxWorkers
+  }, TEST_WORKER_PATH);
+
+  var runTest = promisify(farm);
 
   return this._getModuleLoaderResourceMap()
-    .then(function() {
-      return Promise.all(testPaths.map(function(testPath) {
-        return workerPool.sendMessage({testFilePath: testPath})
-          .then(function(testResult) {
-            onTestResult(testPath, testResult);
-          })
-          .catch(function(err) {
-            onRunFailure(testPath, err);
+    .then(() => Promise.all(testPaths.map(
+      testPath => runTest({ config: this._config, testFilePath: testPath })
+        .then(testResult => onTestResult(testPath, testResult))
+        .catch(err => {
+          onRunFailure(testPath, err);
 
-            // Jest uses regular worker messages to initialize workers, so
-            // there's no way for node-worker-pool to understand how to
-            // recover/re-initialize a child worker that needs to be restarted.
-            // (node-worker-pool can't distinguish between initialization
-            // messages and ephemeral "normal" messages in order to replay the
-            // initialization message upon booting the new, replacement worker
-            // process).
-            //
-            // This is mostly a limitation of node-worker-pool's initialization
-            // features, and ideally it would be possible to recover from a
-            // test that causes a worker process to exit unexpectedly. However,
-            // for now Jest will just fail hard if any child process exits
-            // unexpectedly.
-            //
-            // This will likely bite me in the ass as an unbreak now if we hit
-            // this issue again -- but I guess that's a faster failure than
-            // having Jest just hang forever without any indication as to why.
-            if (err.message
-                && /Worker process exited before /.test(err.message)) {
-              console.error(
-                'A worker process has quit unexpectedly! This is bad news, ' +
-                'shutting down now!'
-              );
-              process.exit(1);
-            }
-          });
-      }));
-    })
-    .then(function() {
-      return workerPool.destroy();
-    });
+          if (err.type === 'ProcessTerminatedError') {
+            // Initialization error or some other uncaught error
+            console.error(
+              'A worker process has quit unexpectedly! ' +
+              'Most likely this an initialization error.'
+            );
+            process.exit(1);
+          }
+        })
+    ))).then(() => workerFarm.end(farm));
 };
 
 function _pathStreamToPromise(stream) {
