@@ -8,6 +8,57 @@
 
 'use strict';
 
+const RESERVED_KEYWORDS = [
+  'do',
+  'if',
+  'in',
+  'for',
+  'let',
+  'new',
+  'try',
+  'var',
+  'case',
+  'else',
+  'enum',
+  'eval',
+  'null',
+  'this',
+  'true',
+  'void',
+  'with',
+  'await',
+  'break',
+  'catch',
+  'class',
+  'const',
+  'false',
+  'super',
+  'throw',
+  'while',
+  'yield',
+  'delete',
+  'export',
+  'import',
+  'public',
+  'return',
+  'static',
+  'switch',
+  'typeof',
+  'default',
+  'extends',
+  'finally',
+  'package',
+  'private',
+  'continue',
+  'debugger',
+  'function',
+  'arguments',
+  'interface',
+  'protected',
+  'implements',
+  'instanceof',
+];
+
 function isA(typeName, value) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
@@ -89,6 +140,13 @@ function createMockFunction(metadata, mockConstructor) {
     // Call bind() just to alter the function name.
     bindCall = '.bind(null)';
   }
+
+  // It's a syntax error to define functions with a reserved keyword
+  // as name.
+  if (RESERVED_KEYWORDS.indexOf(name) !== -1) {
+    name = '$' + name;
+  }
+
   /* jshint evil:true */
   return new Function(
     'mockConstructor',
