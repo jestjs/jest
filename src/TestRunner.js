@@ -560,7 +560,7 @@ class TestRunner {
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     var farm = workerFarm({
-      maxConcurretCallsPerWorker: 1,
+      maxConcurrentCallsPerWorker: 1,
 
       // We allow for a couple of transient errors. Say something to do
       // with loading/serialization of the resourcemap (which I've seen
