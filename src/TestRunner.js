@@ -322,7 +322,10 @@ class TestRunner {
     var testRunner = configDeps.testRunner;
 
     // Intercept console logs to colorize.
-    env.global.console = new Console(process.stdout, process.stderr);
+    env.global.console = new Console(
+      this._config.useStderr ? process.stderr : process.stdout,
+      process.stderr
+    );
 
     // Pass the testFilePath into the runner, so it can be used to e.g.
     // configure test reporter output.
