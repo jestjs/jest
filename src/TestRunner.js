@@ -239,7 +239,7 @@ class TestRunner {
       }
     );
 
-    this._getModuleLoaderResourceMap().then(function(resourceMap) {
+    this._getModuleLoaderResourceMap().then(resourceMap => {
       var resourcePathMap = resourceMap.resourcePathMap;
       for (var i in resourcePathMap) {
         // Sometimes the loader finds a path with no resource. This typically
@@ -257,7 +257,7 @@ class TestRunner {
         }
       }
       pathStream.end();
-    }.bind(this));
+    });
 
 
     return pathStream;

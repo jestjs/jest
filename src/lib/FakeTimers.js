@@ -73,9 +73,7 @@ function FakeTimers(global, maxLoops) {
   global.mockRunTimersToTime = this.runTimersToTime.bind(this);
   global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
   global.mockClearTimers = this.clearAllTimers.bind(this);
-  global.mockGetTimersCount = function() {
-    return Object.keys(this._timers).length;
-  }.bind(this);
+  global.mockGetTimersCount = () => Object.keys(this._timers).length;
 }
 
 FakeTimers.prototype.clearAllTimers = function() {
