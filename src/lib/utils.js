@@ -36,7 +36,8 @@ var DEFAULT_CONFIG_VALUES = {
   noHighlight: false,
   noStackTrace: false,
   preprocessCachingDisabled: false,
-  verbose: false
+  verbose: false,
+  useStderr: false,
 };
 
 // This shows up in the stack trace when a test file throws an unhandled error

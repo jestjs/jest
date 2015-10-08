@@ -475,7 +475,16 @@ class TestRunner {
     var config = this._config;
     if (!reporter) {
       var TestReporter = require(config.testReporter);
-      reporter = new TestReporter();
+      if (config.useStderr) {
+        reporter = new TestReporter(
+          Object.create(
+            process,
+            { stdout: { value: process.stderr } }
+          )
+        );
+      } else {
+        reporter = new TestReporter();
+      }
     }
 
     testPaths = this._sortTests(testPaths);
