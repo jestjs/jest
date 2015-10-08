@@ -143,7 +143,13 @@ var argv = optimist
         'Exit the test suite immediately upon the first failing test.'
       ),
       type: 'boolean'
-    }
+    },
+    useStderr: {
+      description: _wrapDesc(
+        'Divert all output to stderr.'
+      ),
+      type: 'boolean',
+    },
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
