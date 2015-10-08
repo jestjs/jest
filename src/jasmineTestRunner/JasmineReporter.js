@@ -25,7 +25,7 @@ function JasmineReporter(config) {
   jasmine.Reporter.call(this);
   this._config = config || {};
   this._logs = [];
-  this._resultsDeferred = Promise.defer();
+  this._resultsPromise = new Promise((resolve) => { this._resolve = resolve; });
 }
 
 JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
@@ -53,7 +53,7 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
     }
   });
 
-  this._resultsDeferred.resolve({
+  this._resolve({
     numFailingTests: numFailingTests,
     numPassingTests: numPassingTests,
     testResults: testResults
@@ -61,7 +61,7 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
 };
 
 JasmineReporter.prototype.getResults = function() {
-  return this._resultsDeferred.promise;
+  return this._resultsPromise;
 };
 
 JasmineReporter.prototype.log = function(str) {
