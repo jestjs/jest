@@ -313,8 +313,8 @@ class TestRunner {
    */
   runTest(testFilePath) {
     // Shallow copying lets us adjust the config object locally without
-    // worrying about the external consequences of changing the config object for
-    // needs that are local to this particular function call
+    // worrying about the external consequences of changing the config object
+    // for needs that are local to this particular function call
     var config = assign({}, this._config);
     var configDeps = this._loadConfigDependencies();
 
@@ -334,9 +334,10 @@ class TestRunner {
       env.dispose();
     };
 
-    return this._constructModuleLoader(env, config).then(function(moduleLoader) {
+    return this._constructModuleLoader(env, config).then(moduleLoader => {
       // This is a kind of janky way to ensure that we only collect coverage
-      // information on modules that are immediate dependencies of the test file.
+      // information on modules that are immediate dependencies of the
+      // test file.
       //
       // Collecting coverage info on more than that is often not useful as
       // *usually*, when one is looking for coverage info, one is only looking
@@ -589,7 +590,7 @@ class TestRunner {
           })
       ))).then(() => workerFarm.end(farm));
   }
-};
+}
 
 function _pathStreamToPromise(stream) {
   return new Promise((resolve, reject) => {
