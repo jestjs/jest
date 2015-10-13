@@ -215,6 +215,28 @@ mockFn.mock.calls[0][0] === 0; // true
 mockFn.mock.calls[1][0] === 1; // true
 ```
 
+`mockImplementation` can also be used to mock class constructors:
+
+```
+// SomeClass.js
+module.exports = class SomeClass {
+  m(a, b) {}
+}
+
+// OtherModule.test.js
+let SomeClass = require("SomeClass")
+let mMock = jest.genMockFn()
+somaClass.mockImplementation(() => {
+  return {
+    m: mMock
+  }
+})
+
+let some = new SomeClass()
+some.m("a", "b")
+console.log("Calls to m: ", mMock.mock.calls)
+```
+
 ### `mockFn.mockImpl(fn)`
 Shorthand alias for [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn).
 
