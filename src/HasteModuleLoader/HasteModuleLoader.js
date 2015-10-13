@@ -308,10 +308,6 @@ Loader.prototype._getDependencyPathsFromResource = function(resource) {
     try {
       var moduleID = this._getNormalizedModuleID(resource.path, requiredModule);
     } catch(e) {
-      console.warn(
-        'Could not find a `' + requiredModule + '` module while analyzing ' +
-        'dependencies of `' + resource.id + '`'
-      );
       continue;
     }
 
