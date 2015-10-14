@@ -25,7 +25,7 @@ function JasmineReporter(config) {
   jasmine.Reporter.call(this);
   this._config = config || {};
   this._logs = [];
-  this._resultsPromise = new Promise((resolve) => { this._resolve = resolve; });
+  this._resultsPromise = new Promise(resolve => this._resolve = resolve);
 }
 
 JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
