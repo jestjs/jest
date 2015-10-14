@@ -1,3 +1,7 @@
+## 0.6.0
+
+* tbd
+
 ## 0.5.6
 
 * Cache test run performance and run slowest tests first to maximiz worker
