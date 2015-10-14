@@ -248,6 +248,7 @@ function normalizeConfig(config) {
       case 'testFileExtensions':
       case 'testPathPattern':
       case 'testReporter':
+      case 'testRunner':
       case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':
