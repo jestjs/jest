@@ -253,6 +253,7 @@ function normalizeConfig(config) {
       case 'moduleFileExtensions':
       case 'noHighlight':
       case 'noStackTrace':
+      case 'cache':
       case 'verbose':
         value = config[key];
         break;
@@ -408,7 +409,7 @@ function readAndPreprocessFileContent(filePath, config) {
         throw new TypeError('Preprocessor should export `process` function.');
       }
       // On disk cache is enabled by default, unless explicitly disabled.
-      if (config.preprocessCachingDisabled !== true) {
+      if (config.preprocessCachingDisabled !== true || config.cache === false) {
         var cacheDir = path.join(
           config.cacheDirectory,
           'preprocess-cache'

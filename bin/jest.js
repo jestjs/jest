@@ -150,6 +150,14 @@ var argv = optimist
       ),
       type: 'boolean',
     },
+    cache: {
+      default: true,
+      description: _wrapDesc(
+        'Whether to use the preprocessor cache. Disable the cache using ' +
+        '--no-cache.'
+      ),
+      type: 'boolean',
+    },
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
