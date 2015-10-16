@@ -12,6 +12,7 @@ var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
 var path = require('path');
 var utils = require('../lib/utils');
+var transform = require('../lib/transform');
 
 var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 var jasmineFileContent =
@@ -198,7 +199,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
       };
 
     if (config.setupTestFrameworkScriptFile) {
-      var setupScriptContent = utils.readAndPreprocessFileContent(
+      var setupScriptContent = transform(
         config.setupTestFrameworkScriptFile,
         config
       );

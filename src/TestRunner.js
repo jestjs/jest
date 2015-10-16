@@ -13,6 +13,7 @@ var path = require('path');
 var assign = require('object-assign');
 var promiseDone = require('./lib/promiseDone');
 var through = require('through');
+var transform = require('./lib/transform');
 var utils = require('./lib/utils');
 var workerFarm = require('worker-farm');
 var Console = require('./Console');
@@ -364,7 +365,7 @@ class TestRunner {
       if (config.setupEnvScriptFile) {
         utils.runContentWithLocalBindings(
           env,
-          utils.readAndPreprocessFileContent(config.setupEnvScriptFile, config),
+          transform(config.setupEnvScriptFile, config),
           config.setupEnvScriptFile,
           {
             __dirname: path.dirname(config.setupEnvScriptFile),

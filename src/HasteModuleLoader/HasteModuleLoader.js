@@ -23,6 +23,7 @@ var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
 var path = require('path');
 var resolve = require('resolve');
+var transform = require('../lib/transform');
 var utils = require('../lib/utils');
 
 var COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
@@ -210,8 +211,7 @@ Loader.loadResourceMapFromCacheFile = function(config, options) {
 Loader.prototype._execModule = function(moduleObj) {
   var modulePath = moduleObj.__filename;
 
-  var moduleContent =
-    utils.readAndPreprocessFileContent(modulePath, this._config);
+  var moduleContent = transform(modulePath, this._config);
 
   moduleObj.require = this.constructBoundRequire(modulePath);
 

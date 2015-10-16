@@ -1,5 +1,15 @@
 ## 0.6.0
 
+* Changed the preprocessor API. A preprocessor now receives the script, file and
+  config. The cache key function receives the script, file and stringified
+  config to be able to create consistent hashes.
+* Removed node-worker-pool in favor of node-worker-farm (#540).
+* `toEqual` now also checks the internal class name of an object. This fixes
+  invalid tests like `expect([]).toEqual({})` which were previously passing.
+* Added the option to provide map modules to stub modules by providing the
+  `moduleNameMapper` config option.
+* Allow to specify a custom `testRunner` in the configuration (#531).
+* Added a `--no-cache` option to make it easier to debug preprocessor scripts.
 * Fix code coverage on windows (#499).
 
 ## 0.5.6

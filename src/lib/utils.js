@@ -7,11 +7,9 @@
  */
 'use strict';
 
-var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
 var path = require('path');
-var stringify = require('json-stable-stringify');
 
 function replacePathSepForRegex(str) {
   if (path.sep === '\\') {
@@ -366,154 +364,6 @@ function loadConfigFromPackageJson(filePath) {
   });
 }
 
-function cleanupCacheFile(cachePath) {
-  try {
-    fs.unlinkSync(cachePath);
-  } catch (e) {
-    /*ignore errors*/
-  }
-}
-
-function storeCacheRecord(mtime, fileData, filePath) {
-  _contentCache[filePath] = {mtime: mtime, content: fileData};
-  return fileData;
-}
-
-// To avoid stringifiying the config multiple times
-var configToJsonMap = new Map();
-
-// There are two layers of caching: in memory (always enabled),
-// and on disk (enabled by default, and managed by the
-// `preprocessCachingDisabled` option). The preprocessor script can also
-// provide hashing function for the cache key.
-var _contentCache = {};
-function readAndPreprocessFileContent(filePath, config) {
-  var cacheRec;
-  var mtime = fs.statSync(filePath).mtime;
-  if (_contentCache.hasOwnProperty(filePath)) {
-    cacheRec = _contentCache[filePath];
-    if (cacheRec.mtime.getTime() === mtime.getTime()) {
-      return cacheRec.content;
-    }
-  }
-
-  var fileData = fs.readFileSync(filePath, 'utf8');
-
-  // If the file data starts with a shebang remove it (but leave the line empty
-  // to keep stack trace line numbers correct)
-  if (fileData.substr(0, 2) === '#!') {
-    fileData = fileData.replace(/^#!.*/, '');
-  }
-
-  if (config.scriptPreprocessor &&
-      !config.preprocessorIgnorePatterns.some(function(pattern) {
-        return new RegExp(pattern).test(filePath);
-      })) {
-    try {
-      var preprocessor = require(config.scriptPreprocessor);
-      if (typeof preprocessor.process !== 'function') {
-        throw new TypeError('Preprocessor should export `process` function.');
-      }
-      // On disk cache is enabled by default, unless explicitly disabled.
-      if (config.preprocessCachingDisabled !== true || config.cache === false) {
-        var cacheDir = path.join(
-          config.cacheDirectory,
-          'preprocess-cache'
-        );
-
-        if (!fs.existsSync(cacheDir)) {
-          try {
-            fs.mkdirSync(cacheDir);
-          } catch(e) {
-            if (e.code !== 'EEXIST') {
-              throw e;
-            }
-          }
-
-          fs.chmodSync(cacheDir, '777');
-        }
-
-        var cacheKey;
-        // If preprocessor defines custom cache hashing and
-        // invalidating logic.
-        if (typeof preprocessor.getCacheKey === 'function') {
-          cacheKey = preprocessor.getCacheKey(
-            fileData,
-            filePath,
-            {}, // options
-            [], //excludes
-            config
-          );
-        } else {
-          var configStr = configToJsonMap.get(config);
-          if (!configStr) {
-            configStr = stringify(config);
-            configToJsonMap.set(config, configStr);
-          }
-
-          // Default cache hashing.
-          cacheKey = crypto.createHash('md5')
-            .update(fileData)
-            .update(configStr)
-            .digest('hex');
-        }
-
-        var extension = path.extname(filePath);
-        var cachePath = path.join(
-          cacheDir,
-          path.basename(filePath, extension) + '_' + cacheKey + extension
-        );
-
-        if (fs.existsSync(cachePath)) {
-          try {
-            var cachedData = fs.readFileSync(cachePath, 'utf8');
-            if (cachedData) {
-              return storeCacheRecord(mtime, cachedData, filePath);
-            } else {
-              // In this case we must have somehow created the file but failed
-              // to write to it, lets just delete it and move on
-              cleanupCacheFile(cachePath);
-            }
-          } catch (e) {
-            e.message = 'Failed to read preprocess cache file: ' + cachePath;
-            cleanupCacheFile(cachePath);
-            throw e;
-          }
-        }
-
-        fileData = preprocessor.process(
-          fileData,
-          filePath,
-          {}, // options
-          [], // excludes
-          config
-        );
-
-        try {
-          fs.writeFileSync(cachePath, fileData);
-        } catch (e) {
-          e.message = 'Failed to cache preprocess results in: ' + cachePath;
-          cleanupCacheFile(cachePath);
-          throw e;
-        }
-
-      } else {
-        fileData = preprocessor.process(
-          fileData,
-          filePath,
-          {}, // options
-          [], // excludes
-          config
-        );
-      }
-    } catch (e) {
-      e.message = config.scriptPreprocessor + ': ' + e.message;
-      throw e;
-    }
-  }
-  return storeCacheRecord(mtime, fileData, filePath);
-}
-
 function runContentWithLocalBindings(environment, scriptContent, scriptPath,
                                      bindings) {
   var boundIdents = Object.keys(bindings);
@@ -650,6 +500,5 @@ exports.getLinePercentCoverageFromCoverageInfo =
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
-exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
 exports.runContentWithLocalBindings = runContentWithLocalBindings;
 exports.formatFailureMessage = formatFailureMessage;
