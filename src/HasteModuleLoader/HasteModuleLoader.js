@@ -17,6 +17,7 @@
 
 var fs = require('graceful-fs');
 var hasteLoaders = require('node-haste/lib/loaders');
+var mkdirp = require('mkdirp');
 var moduleMocker = require('../lib/moduleMocker');
 var NodeHaste = require('node-haste/lib/Haste');
 var os = require('os');
@@ -69,6 +70,8 @@ var NODE_CORE_MODULES = {
 
 var VENDOR_PATH = path.resolve(__dirname, '../../vendor');
 
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 var _configUnmockListRegExpCache = null;
 
 function _buildLoadersList(config) {
@@ -83,14 +86,16 @@ function _buildLoadersList(config) {
 
 function _constructHasteInst(config, options) {
   var HASTE_IGNORE_REGEX = new RegExp(
-    config.modulePathIgnorePatterns.length > 0
-    ? config.modulePathIgnorePatterns.join('|')
-    : '$.'  // never matches
+    [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
   );
 
-  if (!fs.existsSync(config.cacheDirectory)) {
-    fs.mkdirSync(config.cacheDirectory);
-    fs.chmodSync(config.cacheDirectory, '777');
+  // Support npm package scopes that add an extra directory to the path
+  var scopedCacheDirectory = path.dirname(_getCacheFilePath(config));
+  if (!fs.existsSync(scopedCacheDirectory)) {
+    mkdirp.sync(scopedCacheDirectory, {
+      mode: '777',
+      fs: fs,
+    });
   }
 
   return new NodeHaste(
@@ -102,7 +107,7 @@ function _constructHasteInst(config, options) {
       },
       version: JSON.stringify(config),
       useNativeFind: true,
-      maxProcesses: os.cpus().length,
+      maxProcesses: options.maxWorkers || os.cpus().length,
       maxOpenFiles: options.maxOpenFiles || 100
     }
   );
@@ -147,6 +152,15 @@ function Loader(config, environment, resourceMap) {
         });
       _configUnmockListRegExpCache.set(config, this._unmockListRegExps);
     }
+  }
+
+  // Workers communicate the config as JSON so we have to create a regex object
+  // in the module loader instance.
+  this._mappedModuleNames = Object.create(null);
+  if (this._config.moduleNameMapper.length) {
+    this._config.moduleNameMapper.forEach(
+      map => this._mappedModuleNames[map[1]] = new RegExp(map[0])
+    );
   }
 
   this.resetModuleRegistry();
@@ -202,13 +216,13 @@ Loader.prototype._execModule = function(moduleObj) {
   moduleObj.require = this.constructBoundRequire(modulePath);
 
   var moduleLocalBindings = {
-    'module': moduleObj,
-    'exports': moduleObj.exports,
-    'require': moduleObj.require,
-    '__dirname': path.dirname(modulePath),
-    '__filename': modulePath,
-    'global': this._environment.global,
-    'jest': this._builtInModules['jest-runtime'](modulePath).exports
+    module: moduleObj,
+    exports: moduleObj.exports,
+    require: moduleObj.require,
+    __dirname: path.dirname(modulePath),
+    __filename: modulePath,
+    global: this._environment.global,
+    jest: this._builtInModules['jest-runtime'](modulePath).exports
   };
 
   var onlyCollectFrom = this._config.collectCoverageOnlyFrom;
@@ -294,10 +308,6 @@ Loader.prototype._getDependencyPathsFromResource = function(resource) {
     try {
       var moduleID = this._getNormalizedModuleID(resource.path, requiredModule);
     } catch(e) {
-      console.warn(
-        'Could not find a `' + requiredModule + '` module while analyzing ' +
-        'dependencies of `' + resource.id + '`'
-      );
       continue;
     }
 
@@ -316,6 +326,16 @@ Loader.prototype._getResource = function(resourceType, resourceName) {
       resourceType,
       resourceName + '.js'
     );
+  }
+
+  if (
+    resource === undefined &&
+    resourceType === 'JSMock'
+  ) {
+    var moduleName = this._resolveStubModuleName(resourceName);
+    if (moduleName) {
+      resource = this._resourceMap.getResource('JS', moduleName);
+    }
   }
 
   return resource;
@@ -508,9 +528,9 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
     this._nodeModuleProjectConfigNameToResource = {};
     var resources =
       this._resourceMap.getAllResourcesByType('ProjectConfiguration');
-    resources.forEach(function(res) {
+    resources.forEach(res => {
       this._nodeModuleProjectConfigNameToResource[res.data.name] = res;
-    }.bind(this));
+    });
   }
 
   // Get the resource for the package.json file
@@ -553,17 +573,16 @@ Loader.prototype._nodeModuleNameToPath = function(currPath, moduleName) {
  */
 Loader.prototype._shouldMock = function(currPath, moduleName) {
   var moduleID = this._getNormalizedModuleID(currPath, moduleName);
-  if (this._builtInModules.hasOwnProperty(moduleName)) {
+  if (hasOwnProperty.call(this._builtInModules, moduleName)) {
     return false;
-  } else if (this._explicitShouldMock.hasOwnProperty(moduleID)) {
+  } else if (hasOwnProperty.call(this._explicitShouldMock, moduleID)) {
     return this._explicitShouldMock[moduleID];
   } else if (NODE_CORE_MODULES[moduleName]) {
     return false;
   } else if (this._shouldAutoMock) {
-
     // See if the module is specified in the config as a module that should
     // never be mocked
-    if (this._configShouldMockModuleNames.hasOwnProperty(moduleName)) {
+    if (hasOwnProperty.call(this._configShouldMockModuleNames, moduleName)) {
       return this._configShouldMockModuleNames[moduleName];
     } else if (this._unmockListRegExps.length > 0) {
       this._configShouldMockModuleNames[moduleName] = true;
@@ -599,10 +618,12 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
         return false;
       }
 
+      var realPath = fs.realpathSync(modulePath);
       this._configShouldMockModuleNames[moduleName] = true;
       for (var i = 0; i < this._unmockListRegExps.length; i++) {
         unmockRegExp = this._unmockListRegExps[i];
-        if (unmockRegExp.test(modulePath)) {
+        if (unmockRegExp.test(modulePath) ||
+            unmockRegExp.test(realPath)) {
           return this._configShouldMockModuleNames[moduleName] = false;
         }
       }
@@ -614,31 +635,23 @@ Loader.prototype._shouldMock = function(currPath, moduleName) {
   }
 };
 
-Loader.prototype.constructBoundRequire = function(sourceModulePath) {
-  var boundModuleRequire = this.requireModuleOrMock.bind(
-    this,
-    sourceModulePath
-  );
+Loader.prototype.constructBoundRequire = function(modulePath) {
+  var boundModuleRequire =
+    this.requireModuleOrMock.bind(this, modulePath);
 
-  boundModuleRequire.resolve = function(moduleName) {
-    var ret = this._moduleNameToPath(sourceModulePath, moduleName);
+  boundModuleRequire.resolve = moduleName => {
+    var ret = this._moduleNameToPath(modulePath, moduleName);
     if (!ret) {
       throw new Error('Module(' + moduleName + ') not found!');
     }
     return ret;
-  }.bind(this);
-  boundModuleRequire.generateMock = this._generateMock.bind(
-    this,
-    sourceModulePath
-  );
-  boundModuleRequire.requireMock = this.requireMock.bind(
-    this,
-    sourceModulePath
-  );
-  boundModuleRequire.requireActual = this.requireModule.bind(
-    this,
-    sourceModulePath
-  );
+  };
+  boundModuleRequire.generateMock =
+    this._generateMock.bind(this, modulePath);
+  boundModuleRequire.requireMock =
+    this.requireMock.bind(this, modulePath);
+  boundModuleRequire.requireActual =
+    this.requireModule.bind(this, modulePath);
 
   return boundModuleRequire;
 };
@@ -910,6 +923,23 @@ Loader.prototype.requireModule = function(currPath, moduleName,
 };
 
 /**
+ * If the moduleNameMapper config is set, go through all the mappings
+ * and resolve the module name.
+ *
+ * @param string moduleName
+ * @param string the resolved module name
+ */
+Loader.prototype._resolveStubModuleName = function(moduleName) {
+  var nameMapper = this._mappedModuleNames;
+  for (let mappedModuleName in nameMapper) {
+    var regex = nameMapper[mappedModuleName];
+    if (regex.test(moduleName)) {
+      return mappedModuleName;
+    }
+  }
+};
+
+/**
  * Given a module name, return either the real module or the mock version of
  * that module -- depending on the mocking state of the loader (and, perhaps
  * the mocking state for the requested module).
@@ -942,40 +972,38 @@ Loader.prototype.resetModuleRegistry = function() {
   this._mockRegistry = {};
   this._moduleRegistry = {};
   this._builtInModules = {
-    'jest-runtime': function(currPath) {
+    'jest-runtime': currPath => {
       var jestRuntime = {
         exports: {
-          addMatchers: function(matchers) {
+          addMatchers: matchers => {
             var jasmine = this._environment.global.jasmine;
             var spec = jasmine.getEnv().currentSpec;
             spec.addMatchers(matchers);
-          }.bind(this),
+          },
 
-          autoMockOff: function() {
+          autoMockOff: () => {
             this._shouldAutoMock = false;
             return jestRuntime.exports;
-          }.bind(this),
+          },
 
-          autoMockOn: function() {
+          autoMockOn: () => {
             this._shouldAutoMock = true;
             return jestRuntime.exports;
-          }.bind(this),
+          },
 
-          clearAllTimers: function() {
+          clearAllTimers: () => {
             this._environment.fakeTimers.clearAllTimers();
-          }.bind(this),
+          },
 
-          currentTestPath: function() {
-            return this._environment.testFilePath;
-          }.bind(this),
+          currentTestPath: () => this._environment.testFilePath,
 
-          dontMock: function(moduleName) {
+          dontMock: moduleName => {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = false;
             return jestRuntime.exports;
-          }.bind(this),
+          },
 
-          getTestEnvData: function() {
+          getTestEnvData: () => {
             var frozenCopy = {};
             // Make a shallow copy only because a deep copy seems like
             // overkill..
@@ -984,26 +1012,24 @@ Loader.prototype.resetModuleRegistry = function() {
             }, this);
             Object.freeze(frozenCopy);
             return frozenCopy;
-          }.bind(this),
+          },
 
-          genMockFromModule: function(moduleName) {
-            return this._generateMock(
-              this._currentlyExecutingModulePath,
-              moduleName
-            );
-          }.bind(this),
+          genMockFromModule: moduleName => this._generateMock(
+            this._currentlyExecutingModulePath,
+            moduleName
+          ),
 
           genMockFunction: function() {
             return moduleMocker.getMockFunction();
           },
 
-          mock: function(moduleName) {
+          mock: moduleName => {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = true;
             return jestRuntime.exports;
-          }.bind(this),
+          },
 
-          resetModuleRegistry: function() {
+          resetModuleRegistry: () => {
             var globalMock;
             for (var key in this._environment.global) {
               globalMock = this._environment.global[key];
@@ -1020,38 +1046,38 @@ Loader.prototype.resetModuleRegistry = function() {
             this.resetModuleRegistry();
 
             return jestRuntime.exports;
-          }.bind(this),
+          },
 
-          runAllTicks: function() {
+          runAllTicks: () => {
             this._environment.fakeTimers.runAllTicks();
-          }.bind(this),
+          },
 
-          runAllImmediates: function() {
+          runAllImmediates: () => {
             this._environment.fakeTimers.runAllImmediates();
-          }.bind(this),
+          },
 
-          runAllTimers: function() {
+          runAllTimers: () => {
             this._environment.fakeTimers.runAllTimers();
-          }.bind(this),
+          },
 
-          runOnlyPendingTimers: function() {
+          runOnlyPendingTimers: () => {
             this._environment.fakeTimers.runOnlyPendingTimers();
-          }.bind(this),
+          },
 
-          setMock: function(moduleName, moduleExports) {
+          setMock: (moduleName, moduleExports) => {
             var moduleID = this._getNormalizedModuleID(currPath, moduleName);
             this._explicitShouldMock[moduleID] = true;
             this._explicitlySetMocks[moduleID] = moduleExports;
             return jestRuntime.exports;
-          }.bind(this),
+          },
 
-          useFakeTimers: function() {
+          useFakeTimers: () => {
             this._environment.fakeTimers.useFakeTimers();
-          }.bind(this),
+          },
 
-          useRealTimers: function() {
+          useRealTimers: () => {
             this._environment.fakeTimers.useRealTimers();
-          }.bind(this)
+          }
         }
       };
 
@@ -1060,97 +1086,91 @@ Loader.prototype.resetModuleRegistry = function() {
       jestRuntime.exports.genMockFn = jestRuntime.exports.genMockFunction;
 
       return jestRuntime;
-    }.bind(this),
+    },
 
     // This is a legacy API that will soon be deprecated.
     // Don't use it for new stuff as it will go away soon!
-    'node-haste': function() {
-      return {
-        exports: {
-          // Do not use this API -- it is deprecated and will go away very soon!
-          getResourceMap: function() {
-            return this._resourceMap;
-          }.bind(this)
-        }
-      };
-    }.bind(this),
+    'node-haste': () => ({
+      exports: {
+        // Do not use this API -- it is deprecated and will go away very soon!
+        getResourceMap: () => this._resourceMap
+      }
+    }),
 
     // This is a legacy API that will soon be deprecated.
     // Don't use it for new stuff as it will go away soon!
-    'mocks': function(currPath) {
+    'mocks': currPath => {
       var mocks = {
         exports: {
           generateFromMetadata: moduleMocker.generateFromMetadata,
           getMetadata: moduleMocker.getMetadata,
-          getMockFunction: function() {
-            return this.requireModule(
-              currPath,
-              'jest-runtime'
-            ).genMockFn();
-          }.bind(this),
+          getMockFunction: () => this.requireModule(
+            currPath,
+            'jest-runtime'
+          ).genMockFn(),
         }
       };
       mocks.exports.getMockFn = mocks.exports.getMockFunction;
       return mocks;
-    }.bind(this),
+    },
 
     // This is a legacy API that will soon be deprecated.
     // Don't use it for new stuff as it will go away soon!
-    'mock-modules': function(currPath) {
+    'mock-modules': currPath => {
       var mockModules = {
         exports: {
-          dontMock: function(moduleName) {
+          dontMock: moduleName => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).dontMock(moduleName);
             return mockModules.exports;
-          }.bind(this),
+          },
 
-          mock: function(moduleName) {
+          mock: moduleName => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).mock(moduleName);
             return mockModules.exports;
-          }.bind(this),
+          },
 
-          autoMockOff: function() {
+          autoMockOff: () => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).autoMockOff();
             return mockModules.exports;
-          }.bind(this),
+          },
 
-          autoMockOn: function() {
+          autoMockOn: () => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).autoMockOn();
             return mockModules.exports;
-          }.bind(this),
+          },
 
           // TODO: This is such a bad name, we should rename it to
           //       `resetModuleRegistry()` -- or anything else, really
-          dumpCache: function() {
+          dumpCache: () => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).resetModuleRegistry();
             return mockModules.exports;
-          }.bind(this),
+          },
 
-          setMock: function(moduleName, moduleExports) {
+          setMock: (moduleName, moduleExports) => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).setMock(moduleName, moduleExports);
             return mockModules.exports;
-          }.bind(this),
+          },
 
           // wtf is this shit?
-          hasDependency: function(moduleAName, moduleBName) {
+          hasDependency: (moduleAName, moduleBName) => {
             var traversedModules = {};
 
             var self = this;
@@ -1170,38 +1190,34 @@ Loader.prototype.resetModuleRegistry = function() {
             }
 
             return _recurse(moduleAName, moduleBName);
-          }.bind(this),
+          },
 
-          generateMock: function(moduleName) {
-            return this.requireModule(
-              currPath,
-              'jest-runtime'
-            ).genMockFromModule(moduleName);
-          }.bind(this),
+          generateMock: moduleName => this.requireModule(
+            currPath,
+            'jest-runtime'
+          ).genMockFromModule(moduleName),
 
-          useActualTimers: function() {
+          useActualTimers: () => {
             this.requireModule(
               currPath,
               'jest-runtime'
             ).useActualTimers();
-          }.bind(this),
+          },
 
           /**
            * Load actual module without reading from or writing to module
            * exports registry. This method's name is devastatingly misleading.
            * :(
            */
-          loadActualModule: function(moduleName) {
-            return this.requireModule(
-              this._currentlyExecutingModulePath,
-              moduleName,
-              true // yay boolean args!
-            );
-          }.bind(this)
+          loadActualModule: moduleName => this.requireModule(
+            this._currentlyExecutingModulePath,
+            moduleName,
+            true // yay boolean args!
+          )
         }
       };
       return mockModules;
-    }.bind(this)
+    }
   };
 };
 

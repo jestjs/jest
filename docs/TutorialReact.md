@@ -12,7 +12,7 @@ At Facebook, we use Jest to test [React](http://facebook.github.io/react/) appli
 ```javascript
 // CheckboxWithLabel.js
 
-var React = require('react/addons');
+var React = require('react');
 var CheckboxWithLabel = React.createClass({
   getInitialState: function() {
     return { isChecked: false };
@@ -44,9 +44,10 @@ The test code is pretty straightforward; we use React's [TestUtils](http://faceb
 jest.dontMock('../CheckboxWithLabel.js');
 describe('CheckboxWithLabel', function() {
   it('changes the text after click', function() {
-    var React = require('react/addons');
+    var TestUtils = require('react-addons-test-utils');
+    var ReactDOM = require('react-dom');
+    var React = require('react');
     var CheckboxWithLabel = require('../CheckboxWithLabel.js');
-    var TestUtils = React.addons.TestUtils;
 
     // Render a checkbox with label in the document
     var checkbox = TestUtils.renderIntoDocument(
@@ -56,13 +57,13 @@ describe('CheckboxWithLabel', function() {
     // Verify that it's Off by default
     var label = TestUtils.findRenderedDOMComponentWithTag(
       checkbox, 'label');
-    expect(React.findDOMNode(label).textContent).toEqual('Off');
+    expect(ReactDOM.findDOMNode(label).textContent).toEqual('Off');
 
     // Simulate a click and verify that it is now On
     var input = TestUtils.findRenderedDOMComponentWithTag(
       checkbox, 'input');
     TestUtils.Simulate.change(input);
-    expect(React.findDOMNode(label).textContent).toEqual('On');
+    expect(ReactDOM.findDOMNode(label).textContent).toEqual('On');
   });
 });
 ```
@@ -75,6 +76,8 @@ Since we are writing code using JSX, a bit of one-time setup is required to make
 // package.json
   "dependencies": {
     "react": "*",
+    "react-dom": "*",
+    "react-addons-test-utils": "*",
     "babel-jest": "*",
     "jest-cli": "*"
   },
@@ -83,7 +86,11 @@ Since we are writing code using JSX, a bit of one-time setup is required to make
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "unmockedModulePathPatterns": ["<rootDir>/node_modules/react"]
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-addons-test-utils"
+    ]
   }
 ```
 

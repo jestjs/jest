@@ -12,7 +12,7 @@
   "devel": true,
   "dojo": false,
   "eqeqeq": true,
-  "eqnull": false,
+  "eqnull": true,
   "esnext": true,
   "evil": false,
   "expr": true,

@@ -96,6 +96,14 @@ function _promiseConfig(argv, packageRoot) {
       config.bail = argv.bail;
     }
 
+    if (argv.cache !== null) {
+      config.cache = argv.cache;
+    }
+
+    if (argv.useStderr) {
+      config.useStderr = argv.useStderr;
+    }
+
     config.noStackTrace = argv.noStackTrace;
 
     return config;

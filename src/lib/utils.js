@@ -11,6 +11,7 @@ var crypto = require('crypto');
 var colors = require('./colors');
 var fs = require('graceful-fs');
 var path = require('path');
+var stringify = require('json-stable-stringify');
 
 function replacePathSepForRegex(str) {
   if (path.sep === '\\') {
@@ -29,6 +30,7 @@ var DEFAULT_CONFIG_VALUES = {
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
+  moduleNameMapper: [],
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
   testEnvData: {},
@@ -41,7 +43,8 @@ var DEFAULT_CONFIG_VALUES = {
   noHighlight: false,
   noStackTrace: false,
   preprocessCachingDisabled: false,
-  verbose: false
+  verbose: false,
+  useStderr: false,
 };
 
 // This shows up in the stack trace when a test file throws an unhandled error
@@ -214,6 +217,13 @@ function normalizeConfig(config) {
         );
         break;
 
+      case 'moduleNameMapper':
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          _replaceRootDirTags(config.rootDir, config[key][regex])
+        ]);
+        break;
+
       case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -246,11 +256,14 @@ function normalizeConfig(config) {
       case 'testDirectoryName':
       case 'testEnvData':
       case 'testFileExtensions':
+      case 'testPathPattern':
       case 'testReporter':
+      case 'testRunner':
       case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':
       case 'noStackTrace':
+      case 'cache':
       case 'verbose':
         value = config[key];
         break;
@@ -366,6 +379,9 @@ function storeCacheRecord(mtime, fileData, filePath) {
   return fileData;
 }
 
+// To avoid stringifiying the config multiple times
+var configToJsonMap = new Map();
+
 // There are two layers of caching: in memory (always enabled),
 // and on disk (enabled by default, and managed by the
 // `preprocessCachingDisabled` option). The preprocessor script can also
@@ -399,7 +415,7 @@ function readAndPreprocessFileContent(filePath, config) {
         throw new TypeError('Preprocessor should export `process` function.');
       }
       // On disk cache is enabled by default, unless explicitly disabled.
-      if (config.preprocessCachingDisabled !== true) {
+      if (config.preprocessCachingDisabled !== true || config.cache === false) {
         var cacheDir = path.join(
           config.cacheDirectory,
           'preprocess-cache'
@@ -429,10 +445,16 @@ function readAndPreprocessFileContent(filePath, config) {
             config
           );
         } else {
+          var configStr = configToJsonMap.get(config);
+          if (!configStr) {
+            configStr = stringify(config);
+            configToJsonMap.set(config, configStr);
+          }
+
           // Default cache hashing.
           cacheKey = crypto.createHash('md5')
             .update(fileData)
-            .update(JSON.stringify(config))
+            .update(configStr)
             .digest('hex');
         }
 
@@ -531,32 +553,51 @@ function runContentWithLocalBindings(environment, scriptContent, scriptPath,
  * failures.
  *
  * @param {Object} testResult
- * @param {boolean} color true if message should include color flags
+ * @param {Object} config Containing the following keys:
+ *   `rootPath` - Root directory (for making stack trace paths relative).
+ *   `useColor` - True if message should include color flags.
  * @return {String}
  */
-function formatFailureMessage(testResult, color) {
-  var colorize = color ? colors.colorize : function (str) { return str; };
+function formatFailureMessage(testResult, config) {
+  var rootPath = config.rootPath;
+  var useColor = config.useColor;
+
+  var colorize = useColor ? colors.colorize : function (str) { return str; };
   var ancestrySeparator = ' \u203A ';
   var descBullet = colorize('\u25cf ', colors.BOLD);
   var msgBullet = '  - ';
   var msgIndent = msgBullet.replace(/./g, ' ');
 
+  if (testResult.testExecError) {
+    var text = testResult.testExecError;
+    return descBullet + colorize('Runtime Error', colors.BOLD) + '\n' + text;
+  }
+
   return testResult.testResults.filter(function (result) {
     return result.failureMessages.length !== 0;
   }).map(function(result) {
-    var failureMessages = result.failureMessages.map(function (errorMsg) {
-      // Filter out q and jasmine entries from the stack trace.
-      // They're super noisy and unhelpful
-      errorMsg = errorMsg.split('\n').filter(function(line) {
-        if (/^\s+at .*?/.test(line)) {
-          // Extract the file path from the trace line
-          var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-          if (filePath
-              && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-            return false;
+    var failureMessages = result.failureMessages.map(function(errorMsg) {
+      errorMsg = errorMsg.split('\n').map(function(line) {
+        // Extract the file path from the trace line.
+        var matches = line.match(/(^\s+at .*?\()([^()]+)(:[0-9]+:[0-9]+\).*$)/);
+        if (!matches) {
+          matches = line.match(/(^\s+at )([^()]+)(:[0-9]+:[0-9]+.*$)/);
+          if (!matches) {
+            return line;
           }
         }
-        return true;
+        var filePath = matches[2];
+        // Filter out noisy and unhelpful lines from the stack trace.
+        if (STACK_TRACE_LINE_IGNORE_RE.test(filePath)) {
+          return null;
+        }
+        return (
+          matches[1] +
+          path.relative(rootPath, filePath) +
+          matches[3]
+        );
+      }).filter(function(line) {
+        return line !== null;
       }).join('\n');
 
       return msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent);
@@ -594,12 +635,11 @@ function deepCopy(obj) {
 
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
-    path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'node_modules', 'bluebird'),
-    path.resolve(__dirname, '..', 'vendor', 'jasmine')
-].join('|') + ')');
-
+var STACK_TRACE_LINE_IGNORE_RE = new RegExp([
+  '^timers.js$',
+  '^' + path.resolve(__dirname, '..', 'lib', 'moduleMocker.js'),
+  '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine')
+].join('|'));
 
 exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;

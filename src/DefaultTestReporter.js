@@ -43,23 +43,18 @@ function(config, testResult, aggregatedResults) {
     config.rootDir
     ? path.relative(config.rootDir, testResult.testFilePath)
     : testResult.testFilePath;
-
-  if (testResult.testExecError) {
-    this.log(this._getResultHeader(false, pathStr));
-    this.log(testResult.testExecError);
-    return false;
-  }
-
   var allTestsPassed = testResult.numFailingTests === 0;
-
   var testRunTime =
     testResult.perfStats
     ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
     : null;
 
-  var testRunTimeString = '(' + testRunTime + 's)';
-  if (testRunTime > 2.5) {
-    testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
+  var testRunTimeString;
+  if (testRunTime !== null) {
+    testRunTimeString = '(' + testRunTime + 's)';
+    if (testRunTime > 2.5) {
+      testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
+    }
   }
 
   var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
@@ -77,10 +72,11 @@ function(config, testResult, aggregatedResults) {
     this.verboseLog(testResult.testResults, resultHeader);
   }
 
-  testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
-
   if (!allTestsPassed) {
-    var failureMessage = formatFailureMessage(testResult, !config.noHighlight);
+    var failureMessage = formatFailureMessage(testResult, {
+      rootPath: config.rootDir,
+      useColor: !config.noHighlight,
+    });
     if (config.verbose) {
       aggregatedResults.postSuiteHeaders.push(
         resultHeader,
@@ -141,27 +137,6 @@ function (config, aggregatedResults) {
   this.log('Run time: ' + runTime + 's');
 };
 
-DefaultTestReporter.prototype._printConsoleMessage = function(msg) {
-  switch (msg.type) {
-    case 'dir':
-    case 'log':
-      this._process.stdout.write(msg.data);
-      break;
-    case 'warn':
-      this._process.stderr.write(
-        this._formatMsg(msg.data, colors.YELLOW)
-      );
-      break;
-    case 'error':
-      this._process.stderr.write(
-        this._formatMsg(msg.data, colors.RED)
-      );
-      break;
-    default:
-      throw new Error('Unknown console message type!: ' + msg.type);
-  }
-};
-
 DefaultTestReporter.prototype._clearWaitingOn = function() {
   // Don't write special chars in noHighlight mode
   // to get clean output for logs.
@@ -196,7 +171,7 @@ DefaultTestReporter.prototype._printWaitingOn = function(aggregatedResults) {
     var pluralTests = remainingTests === 1 ? 'test' : 'tests';
     this._process.stdout.write(
       this._formatMsg(
-        'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
+        'Running ' + remainingTests + ' ' + pluralTests + '...',
         colors.GRAY + colors.BOLD
       )
     );

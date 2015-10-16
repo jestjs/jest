@@ -20,7 +20,11 @@ describe('HasteModuleLoader', function() {
 
   var CONFIG = utils.normalizeConfig({
     name: 'HasteModuleLoader-tests',
-    rootDir: path.resolve(__dirname, 'test_root')
+    rootDir: path.resolve(__dirname, 'test_root'),
+    moduleNameMapper: {
+      '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+      '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
+    },
   });
 
   function buildLoader() {
@@ -90,6 +94,21 @@ describe('HasteModuleLoader', function() {
         loader.requireModuleOrMock(__filename, 'jest-runtime').autoMockOff();
         var exports = loader.requireModuleOrMock(__filename, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(false);
+      });
+    });
+
+    pit('resolves mapped module names and unmocks them by default', function() {
+      return buildLoader().then(function(loader) {
+        loader.requireModuleOrMock(__filename, 'jest-runtime');
+        var exports =
+          loader.requireModuleOrMock(__filename, 'image!not-really-a-module');
+        expect(exports.isGlobalImageStub).toBe(true);
+
+        exports = loader.requireModuleOrMock(__filename, 'cat.png');
+        expect(exports.isRelativeImageStub).toBe(true);
+
+        exports = loader.requireModuleOrMock(__filename, 'dog.png');
+        expect(exports.isRelativeImageStub).toBe(true);
       });
     });
   });

@@ -15,7 +15,8 @@ describe('nodeHasteModuleLoader', function() {
   var mockEnvironment;
   var resources;
   var mockConfig = {
-    coverageCollector: '../IstanbulCollector'
+    coverageCollector: '../IstanbulCollector',
+    moduleNameMapper: [],
   };
 
   var mockResourceMap = {
