@@ -13,6 +13,13 @@ var fs = require('graceful-fs');
 var path = require('path');
 var stringify = require('json-stable-stringify');
 
+function replacePathSepForRegex(str) {
+  if (path.sep === '\\') {
+    return str.replace(/(\/|\\)/g,'\\\\');
+  }
+  return str;
+}
+
 var DEFAULT_CONFIG_VALUES = {
   bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
@@ -29,7 +36,7 @@ var DEFAULT_CONFIG_VALUES = {
   testEnvData: {},
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
-  testPathIgnorePatterns: ['/node_modules/'],
+  testPathIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
   testURL: 'about:blank',
@@ -74,10 +81,10 @@ function _replaceRootDirTags(rootDir, config) {
         return config;
       }
 
-      return pathNormalize(path.resolve(
+      return path.resolve(
         rootDir,
         './' + path.normalize(config.substr('<rootDir>'.length))
-      ));
+      );
   }
   return config;
 }
@@ -85,6 +92,7 @@ function _replaceRootDirTags(rootDir, config) {
 function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
+
 
 /**
  * Given the coverage info for a single file (as output by
@@ -173,7 +181,7 @@ function normalizeConfig(config) {
     throw new Error('No rootDir config value found!');
   }
 
-  config.rootDir = pathNormalize(config.rootDir);
+  config.rootDir = path.normalize(config.rootDir);
 
   // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
@@ -181,10 +189,10 @@ function normalizeConfig(config) {
     switch (key) {
       case 'collectCoverageOnlyFrom':
         value = Object.keys(config[key]).reduce(function(normObj, filePath) {
-          filePath = pathNormalize(path.resolve(
+          filePath = path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, filePath)
-          ));
+          );
           normObj[filePath] = true;
           return normObj;
         }, {});
@@ -192,10 +200,10 @@ function normalizeConfig(config) {
 
       case 'testPathDirs':
         value = config[key].map(function(scanDir) {
-          return pathNormalize(path.resolve(
+          return path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, scanDir)
-          ));
+          );
         });
         break;
 
@@ -203,10 +211,10 @@ function normalizeConfig(config) {
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
-        value = pathNormalize(path.resolve(
+        value = path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key])
-        ));
+        );
         break;
 
       case 'moduleNameMapper':
@@ -227,7 +235,9 @@ function normalizeConfig(config) {
         // For patterns, direct global substitution is far more ideal, so we
         // special case substitutions for patterns here.
         value = config[key].map(function(pattern) {
-          return pattern.replace(/<rootDir>/g, config.rootDir);
+          return replacePathSepForRegex(
+            pattern.replace(/<rootDir>/g, config.rootDir)
+          );
         });
         break;
       case 'bail':
@@ -314,10 +324,6 @@ function uniqueStrings(set) {
     }
   });
   return newSet;
-}
-
-function pathNormalize(dir) {
-  return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
 }
 
 function readFile(filePath) {
@@ -644,7 +650,6 @@ exports.getLinePercentCoverageFromCoverageInfo =
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
-exports.pathNormalize = pathNormalize;
 exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
 exports.runContentWithLocalBindings = runContentWithLocalBindings;
 exports.formatFailureMessage = formatFailureMessage;

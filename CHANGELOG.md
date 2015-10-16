@@ -1,3 +1,7 @@
+## 0.6.0
+
+* Fix code coverage on windows (#499).
+
 ## 0.5.6
 
 * Cache test run performance and run slowest tests first to maximiz worker

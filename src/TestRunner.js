@@ -57,6 +57,9 @@ var DEFAULT_OPTIONS = {
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
+function optionPathToRegex(p) {
+  return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
+}
 
 /**
  * A class that takes a project's test config and provides various utilities for
@@ -66,6 +69,7 @@ var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
  * @param options See DEFAULT_OPTIONS for descriptions on the various options
  *                and their defaults.
  */
+
 class TestRunner {
 
   constructor(config, options) {
@@ -74,12 +78,12 @@ class TestRunner {
     this._moduleLoaderResourceMap = null;
     this._testPathDirsRegExp = new RegExp(
       config.testPathDirs
-        .map(dir => utils.escapeStrForRegex(dir))
+        .map(dir => optionPathToRegex(dir))
         .join('|')
     );
 
     this._nodeHasteTestRegExp = new RegExp(
-      '/' + utils.escapeStrForRegex(config.testDirectoryName) + '/' +
+      optionPathToRegex(path.sep + config.testDirectoryName + path.sep) +
       '.*\\.(' +
         config.testFileExtensions
           .map(ext => utils.escapeStrForRegex(ext))
@@ -116,7 +120,8 @@ class TestRunner {
   }
 
   _isTestFilePath(filePath) {
-    filePath = utils.pathNormalize(filePath);
+    // get filePath into OS-appropriate format before testing patterns
+    filePath = path.normalize(filePath);
     var testPathIgnorePattern =
       this._config.testPathIgnorePatterns.length
       ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
@@ -351,9 +356,9 @@ class TestRunner {
       if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
         config.collectCoverageOnlyFrom = {};
         moduleLoader.getDependenciesFromPath(testFilePath)
-          // Skip over built-in and node modules
-          .filter(path => /^\//.test(path) && !(/node_modules/.test(path)))
-          .forEach(path => config.collectCoverageOnlyFrom[path] = true);
+          // Skip over built-in (non-absolute paths) and node modules
+          .filter(p => path.isAbsolute(p) && !(/node_modules/.test(p)))
+          .forEach(p => config.collectCoverageOnlyFrom[p] = true);
       }
 
       if (config.setupEnvScriptFile) {

@@ -396,11 +396,11 @@ Loader.prototype._getNormalizedModuleID = function(currPath, moduleName) {
     }
   }
 
-  return [moduleType, realAbsPath, mockAbsPath].join(':');
+  return [moduleType, realAbsPath, mockAbsPath].join(path.delimiter);
 };
 
 Loader.prototype._getRealPathFromNormalizedModuleID = function(moduleID) {
-  return moduleID.split(':')[1];
+  return moduleID.split(path.delimiter)[1];
 };
 
 /**

@@ -102,7 +102,9 @@ describe('HasteModuleLoader', function() {
         } catch (e) {
           error = e;
         } finally {
-          expect(error.message).toContain('NativeModule.node: file too short');
+          expect(error.message).toMatch(
+            /NativeModule.node\: file too short|not a valid Win\d+ application/
+          );
         }
       });
     });

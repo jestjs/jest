@@ -18,13 +18,22 @@ describe('utils-normalizeConfig', function() {
   var expectedPathAbs;
   var expectedPathAbsAnother;
 
+  // Windows uses backslashes for path separators, which need to be escaped in
+  // regular expressions. This little helper function helps us generate the
+  // expected strings for checking path patterns.
+  function joinForPattern() {
+    return Array.prototype.join.call(
+      arguments,utils.escapeStrForRegex(path.sep)
+    );
+  }
+
   beforeEach(function() {
     path = require('path');
-    root = path.resolve('/').replace(/[\\\/]/g, '');
-    expectedPathFooBar = root + '/root/path/foo/bar/baz';
-    expectedPathFooQux = root + '/root/path/foo/qux/quux';
-    expectedPathAbs = root + '/an/abs/path';
-    expectedPathAbsAnother = root + '/another/abs/path';
+    root = path.resolve('/');
+    expectedPathFooBar = path.join(root, 'root', 'path', 'foo', 'bar', 'baz');
+    expectedPathFooQux = path.join(root, 'root', 'path', 'foo', 'qux', 'quux');
+    expectedPathAbs = path.join(root, 'an', 'abs', 'path');
+    expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
     utils = require('../utils');
   });
 
@@ -234,8 +243,8 @@ describe('utils-normalizeConfig', function() {
       }, '/root/path');
 
       expect(config.testPathIgnorePatterns).toEqual([
-        'bar/baz',
-        'qux/quux'
+        joinForPattern('bar','baz'),
+        joinForPattern('qux','quux')
       ]);
     });
 
@@ -251,8 +260,8 @@ describe('utils-normalizeConfig', function() {
       });
 
       expect(config.testPathIgnorePatterns).toEqual([
-        'bar/baz',
-        'qux/quux/'
+        joinForPattern('bar','baz'),
+        joinForPattern('qux','quux','')
       ]);
     });
 
@@ -267,7 +276,7 @@ describe('utils-normalizeConfig', function() {
 
       expect(config.testPathIgnorePatterns).toEqual([
         'hasNoToken',
-        '/root/path/foo/hasAToken'
+        joinForPattern('','root','path','foo','hasAToken')
       ]);
     });
   });
@@ -285,8 +294,8 @@ describe('utils-normalizeConfig', function() {
       }, '/root/path');
 
       expect(config.modulePathIgnorePatterns).toEqual([
-        'bar/baz',
-        'qux/quux'
+        joinForPattern('bar','baz'),
+        joinForPattern('qux','quux')
       ]);
     });
 
@@ -302,8 +311,8 @@ describe('utils-normalizeConfig', function() {
       });
 
       expect(config.modulePathIgnorePatterns).toEqual([
-        'bar/baz',
-        'qux/quux/'
+        joinForPattern('bar','baz'),
+        joinForPattern('qux','quux','')
       ]);
     });
 
@@ -318,7 +327,7 @@ describe('utils-normalizeConfig', function() {
 
       expect(config.modulePathIgnorePatterns).toEqual([
         'hasNoToken',
-        '/root/path/foo/hasAToken'
+        joinForPattern('','root','path','foo','hasAToken')
       ]);
     });
   });

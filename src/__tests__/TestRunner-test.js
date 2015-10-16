@@ -35,13 +35,6 @@ describe('TestRunner', function() {
       return expect(isTestFile).toEqual(true);
     });
 
-    it('supports ../ paths and windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
-      var isTestFile = runner._isTestFilePath(path);
-
-      return expect(isTestFile).toEqual(true);
-    });
-
     it('supports unix separators', function() {
       var path = '/path/to/__tests__/test.js';
       var isTestFile = runner._isTestFilePath(path);
@@ -49,12 +42,6 @@ describe('TestRunner', function() {
       return expect(isTestFile).toEqual(true);
     });
 
-    it('supports windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\test.js';
-      var isTestFile = runner._isTestFilePath(path);
-
-      return expect(isTestFile).toEqual(true);
-    });
   });
 
   describe('streamTestPathsRelatedTo', function() {
