@@ -473,7 +473,10 @@ class TestRunner {
    * @return {Promise<Object>} Fulfilled with information about test run:
    *   success: true if all tests passed
    *   runTime: elapsed time in seconds to run all tests
-   *   numTotalTests: total number of tests considered
+   *   numTotalTestSuites: total number of test suites considered
+   *   numPassedTestSuites: number of test suites run and passed
+   *   numFailedTestSuites: number of test suites run and failed
+   *   numTotalTests: total number of tests executed
    *   numPassedTests: number of tests run and passed
    *   numFailedTests: number of tests run and failed
    *   testResults: the jest result info for all tests run
@@ -499,7 +502,10 @@ class TestRunner {
     var aggregatedResults = {
       success: null,
       startTime: null,
-      numTotalTests: testPaths.length,
+      numTotalTestSuites: testPaths.length,
+      numPassedTestSuites: 0,
+      numFailedTestSuites: 0,
+      numTotalTests: 0,
       numPassedTests: 0,
       numFailedTests: 0,
       testResults: [],
@@ -510,10 +516,15 @@ class TestRunner {
 
     var onTestResult = function(testPath, testResult) {
       aggregatedResults.testResults.push(testResult);
+      aggregatedResults.numTotalTests +=
+        testResult.numPassingTests +
+        testResult.numFailingTests;
+      aggregatedResults.numFailedTests += testResult.numFailingTests;
+      aggregatedResults.numPassedTests += testResult.numPassingTests;
       if (testResult.numFailingTests > 0) {
-        aggregatedResults.numFailedTests++;
+        aggregatedResults.numFailedTestSuites++;
       } else {
-        aggregatedResults.numPassedTests++;
+        aggregatedResults.numFailedTestSuites++;
       }
       reporter.onTestResult && reporter.onTestResult(
         config,
@@ -531,7 +542,7 @@ class TestRunner {
         testResults: {},
       };
       aggregatedResults.testResults.push(testResult);
-      aggregatedResults.numFailedTests++;
+      aggregatedResults.numFailedTestSuites++;
       if (reporter.onTestResult) {
         reporter.onTestResult(config, testResult, aggregatedResults);
       }
