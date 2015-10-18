@@ -543,6 +543,18 @@ class TestRunner {
     return testRun
       .then(function() {
         aggregatedResults.success = aggregatedResults.numFailedTests === 0;
+        aggregatedResults.success = aggregatedResults.testResults.reduce(
+          (sum, curr) => {
+            const results = (
+              Object
+                .keys(curr.coverage)
+                .map(x => curr.coverage[x])
+                .reduce((_, x) => Object.keys(x.branchMap).length === 0, true)
+            );
+            return results;
+          },
+          aggregatedResults.success
+        );
         if (reporter.onRunComplete) {
           reporter.onRunComplete(config, aggregatedResults);
         }
