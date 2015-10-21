@@ -43,6 +43,7 @@ permalink: docs/api.html
   - [`config.globals` [object]](#config-globals-object)
   - [`config.moduleFileExtensions` [array<string>]](#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
+  - [`config.moduleNameMapper` [object<string, string>]](#config-modulenamemapper-object-string-string)
   - [`config.preprocessCachingDisabled` [boolean]](#config-preprocesscachingdisabled-boolean)
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
@@ -326,6 +327,19 @@ If you are using CoffeeScript this should be `['js', 'json', 'coffee', 'litcoffe
 (default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
+
+### `config.moduleNameMapper` [object<string, string>]
+(default: `null`)
+
+A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
+
+Example:
+```javascript
+"moduleNameMapper": {
+  "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
+  "^[./a-zA-Z0-9$_-]+\.png$": "RelativeImageStub"
+}
+```
 
 ### `config.preprocessCachingDisabled` [boolean]
 (default: `false`)
