@@ -32,7 +32,7 @@ const removeFile = path => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
-}
+};
 
 const getCacheKey = (preprocessor, fileData, filePath, config) => {
   let configStr = configToJsonMap.get(config);
@@ -139,4 +139,4 @@ module.exports = (filePath, config) => {
 
   cache.set(mapCacheKey, fileData);
   return fileData;
-}
+};

@@ -131,7 +131,14 @@ function (config, aggregatedResults) {
     numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
     colors.GREEN + colors.BOLD
   );
-  results += ' (' + numTotalTests + ' total)';
+
+  var pluralTestSuites =
+      aggregatedResults.numTotalTestSuites === 1 ?
+      'test suite' : 'test suites';
+
+  results += ' (' + numTotalTests + ' total in ' +
+    aggregatedResults.numTotalTestSuites + ' ' +
+    pluralTestSuites + ')';
 
   this.log(results);
   this.log('Run time: ' + runTime + 's');
@@ -163,15 +170,18 @@ function (passed, testName, columns) {
 };
 
 DefaultTestReporter.prototype._printWaitingOn = function(aggregatedResults) {
-  var completedTests =
-    aggregatedResults.numPassedTests +
-    aggregatedResults.numFailedTests;
-  var remainingTests = aggregatedResults.numTotalTests - completedTests;
-  if (remainingTests > 0) {
-    var pluralTests = remainingTests === 1 ? 'test' : 'tests';
+  var completedTestSuites =
+    aggregatedResults.numPassedTestSuites +
+    aggregatedResults.numFailedTestSuites;
+  var remainingTestSuites =
+    aggregatedResults.numTotalTestSuites -
+    completedTestSuites;
+  if (remainingTestSuites > 0) {
+    var pluralTestSuites =
+      remainingTestSuites === 1 ? 'test suite' : 'test suites';
     this._process.stdout.write(
       this._formatMsg(
-        'Running ' + remainingTests + ' ' + pluralTests + '...',
+        'Running ' + remainingTestSuites + ' ' + pluralTestSuites + '...',
         colors.GRAY + colors.BOLD
       )
     );
