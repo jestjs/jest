@@ -1,5 +1,7 @@
 ## 0.6.0
 
+* jest now reports the number of tests that were run instead of the number of test files.
+* Added a `--json` option to print test results as JSON.
 * Changed the preprocessor API. A preprocessor now receives the script, file and
   config. The cache key function receives the script, file and stringified
   config to be able to create consistent hashes.
