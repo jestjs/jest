@@ -138,10 +138,9 @@ function (config, aggregatedResults) {
 
   results += ' (' + numTotalTests + ' total in ' +
     aggregatedResults.numTotalTestSuites + ' ' +
-    pluralTestSuites + ')';
+    pluralTestSuites + ', run time ' + runTime + 's)';
 
   this.log(results);
-  this.log('Run time: ' + runTime + 's');
 };
 
 DefaultTestReporter.prototype._clearWaitingOn = function() {
