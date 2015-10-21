@@ -11,6 +11,7 @@ var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
 var TestRunner = require('./TestRunner');
+var formatTestResults = require('./lib/formatTestResults');
 var utils = require('./lib/utils');
 
 var _jestVersion = null;
@@ -104,6 +105,10 @@ function _promiseConfig(argv, packageRoot) {
       config.useStderr = argv.useStderr;
     }
 
+    if (argv.json) {
+      config.useStderr = true;
+    }
+
     config.noStackTrace = argv.noStackTrace;
 
     return config;
@@ -169,7 +174,7 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
 
 function _promisePatternMatchingTestPaths(argv, testRunner) {
   var pattern = argv.testPathPattern ||
-    ( (argv._ && argv._.length) ? argv._.join('|') : '.*' );
+    ((argv._ && argv._.length) ? argv._.join('|') : '.*');
 
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
@@ -183,6 +188,9 @@ function runCLI(argv, packageRoot, onComplete) {
     return;
   }
 
+  var pipe = argv.json ? process.stderr : process.stdout;
+  pipe.write('Using Jest CLI v' + getVersion() + '\n');
+
   _promiseConfig(argv, packageRoot).then(function(config) {
     var testRunner = new TestRunner(config, _testRunnerOptions(argv));
     var testPaths = argv.onlyChanged ?
@@ -191,6 +199,11 @@ function runCLI(argv, packageRoot, onComplete) {
     return testPaths.then(function(testPaths) {
       return testRunner.runTests(testPaths);
     });
+  }).then(function(runResults) {
+    if (argv.json) {
+      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+    }
+    return runResults;
   }).then(function(runResults) {
     onComplete && onComplete(runResults.success);
   }).catch(function(error) {

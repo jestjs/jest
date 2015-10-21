@@ -158,6 +158,13 @@ var argv = optimist
       ),
       type: 'boolean',
     },
+    json: {
+      description: _wrapDesc(
+        'Prints the test results in JSON. This mode will send all ' +
+        'other test output and user messages to stderr.'
+      ),
+      type: 'boolean',
+    }
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
@@ -262,10 +269,6 @@ if (fs.existsSync(cwdJestBinPath)) {
       return;
     }
   }
-}
-
-if (!argv.version) {
-  console.log('Using Jest CLI v' + jest.getVersion());
 }
 
 function runJestCLI() {
