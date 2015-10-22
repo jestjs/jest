@@ -1,8 +1,10 @@
 jest.dontMock('../CheckboxWithLabel');
 
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
+
 const CheckboxWithLabel = require('../CheckboxWithLabel');
-var TestUtils = React.addons.TestUtils;
 
 describe('CheckboxWithLabel', () => {
 
@@ -13,7 +15,7 @@ describe('CheckboxWithLabel', () => {
       <CheckboxWithLabel labelOn="On" labelOff="Off" />
     );
 
-    var checkboxNode = React.findDOMNode(checkbox);
+    var checkboxNode = ReactDOM.findDOMNode(checkbox);
 
     // Verify that it's Off by default
     expect(checkboxNode.textContent).toEqual('Off');

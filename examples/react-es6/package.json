@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "react": "0.13.x",
-    "react-tools": "0.13.x"
+    "react": "~0.14.0",
+    "react-dom": "~0.14.0",
+    "react-addons-test-utils": "~0.14.0"
   },
   "devDependencies": {
     "babel-jest": "*"
@@ -13,7 +14,9 @@
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/react-tools"
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-addons-test-utils",
+      "<rootDir>/node_modules/fbjs"
     ]
   }
 }
