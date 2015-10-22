@@ -35,6 +35,9 @@ We can get up and running with the following 4 steps:
 
 2. Run `npm install jest-cli --save-dev`
 
+    Jest uses ES2015 features and requires a Node.js version of at least 4.0.0
+    to run.
+
 3. Add the following to your `package.json`
 
   ```js
