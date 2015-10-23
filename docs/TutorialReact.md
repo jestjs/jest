@@ -7,20 +7,27 @@ permalink: docs/tutorial-react.html
 next: common-js-testing
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications. Let's implement a simple checkbox which swaps between two labels:
+At Facebook, we use Jest to test [React](http://facebook.github.io/react/)
+applications. Let's implement a simple checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
+import React from 'react';
 
-var React = require('react');
-var CheckboxWithLabel = React.createClass({
-  getInitialState: function() {
-    return { isChecked: false };
-  },
-  onChange: function() {
+class CheckboxWithLabel extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {isChecked: false};
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange() {
     this.setState({isChecked: !this.state.isChecked});
-  },
-  render: function() {
+  }
+
+  render() {
     return (
       <label>
         <input
@@ -32,54 +39,65 @@ var CheckboxWithLabel = React.createClass({
       </label>
     );
   }
-});
-module.exports = CheckboxWithLabel;
+}
+
+export default CheckboxWithLabel;
 ```
 
-The test code is pretty straightforward; we use React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to manipulate React components.
+The test code is pretty straightforward; we use React's
+[TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to
+manipulate React components.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
+jest.dontMock('../CheckboxWithLabel');
 
-jest.dontMock('../CheckboxWithLabel.js');
-describe('CheckboxWithLabel', function() {
-  it('changes the text after click', function() {
-    var TestUtils = require('react-addons-test-utils');
-    var ReactDOM = require('react-dom');
-    var React = require('react');
-    var CheckboxWithLabel = require('../CheckboxWithLabel.js');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
+
+const CheckboxWithLabel = require('../CheckboxWithLabel');
+
+describe('CheckboxWithLabel', () => {
+
+  it('changes the text after click', () => {
 
     // Render a checkbox with label in the document
     var checkbox = TestUtils.renderIntoDocument(
       <CheckboxWithLabel labelOn="On" labelOff="Off" />
     );
 
+    var checkboxNode = ReactDOM.findDOMNode(checkbox);
+
     // Verify that it's Off by default
-    var label = TestUtils.findRenderedDOMComponentWithTag(
-      checkbox, 'label');
-    expect(ReactDOM.findDOMNode(label).textContent).toEqual('Off');
+    expect(checkboxNode.textContent).toEqual('Off');
 
     // Simulate a click and verify that it is now On
-    var input = TestUtils.findRenderedDOMComponentWithTag(
-      checkbox, 'input');
-    TestUtils.Simulate.change(input);
-    expect(ReactDOM.findDOMNode(label).textContent).toEqual('On');
+    TestUtils.Simulate.change(
+      TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
+    );
+    expect(checkboxNode.textContent).toEqual('On');
   });
+
 });
 ```
 
 ## Setup
 
-Since we are writing code using JSX, a bit of one-time setup is required to make the test work:
+Since we are writing code using JSX, a bit of one-time setup is required to make
+the test work. We are going to use the babel-jest package as a preprocessor for
+jest.
 
 ```javascript
 // package.json
   "dependencies": {
-    "react": "*",
-    "react-dom": "*",
-    "react-addons-test-utils": "*",
+    "react": "~0.14.0",
+    "react-dom": "~0.14.0"
+  },
+  "devDependencies": {
     "babel-jest": "*",
-    "jest-cli": "*"
+    "jest-cli": "*",
+    "react-addons-test-utils": "~0.14.0"
   },
   "scripts": {
     "test": "jest"
@@ -89,14 +107,23 @@ Since we are writing code using JSX, a bit of one-time setup is required to make
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",
-      "<rootDir>/node_modules/react-addons-test-utils"
+      "<rootDir>/node_modules/react-addons-test-utils",
+      "<rootDir>/node_modules/fbjs"
     ]
   }
 ```
 
 **And you're good to go!**
 
-##### Using experimental stages
+React is designed to be tested without being mocked and ships with `TestUtils`
+to help. Therefore, we use `unmockedModulePathPatterns` to prevent React from
+being mocked.
+
+The code for this example is available at
+[examples/react/](https://github.com/facebook/jest/tree/master/examples/react).
+
+
+### Using experimental stages with babel-jest
 
 By default, babel-jest will use Babel's default stage (stage 2).
 If you'd like to use one of the other stages, set the environment variable:
@@ -107,10 +134,10 @@ If you'd like to use one of the other stages, set the environment variable:
   }
 ```  
 
+### Rolling your own preprocessor
 
-#### Customizing Setup
-
-Instead of using babel-jest, here is an example of using babel to build your own preprocessor.
+Instead of using babel-jest, here is an example of using babel to build your own
+preprocessor.
 
 ```javascript
 var babel = require("babel-core");
@@ -138,6 +165,4 @@ module.exports = {
 };
 ```
 
-React is designed to be tested without being mocked and ships with `TestUtils` to help. Therefore, we use `unmockedModulePathPatterns` to prevent React from being mocked.
-
-The code for this example is available at [examples/react/](https://github.com/facebook/jest/tree/master/examples/react).
+Don't forget to install the babel-core package for this example to work.
