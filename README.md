@@ -18,9 +18,11 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
 <generated_api_start />
 #### The `jest` object
 
+  - `jest.addMatchers(matchers)`
   - [`jest.autoMockOff()`](http://facebook.github.io/jest/docs/api.html#jest-automockoff)
   - [`jest.autoMockOn()`](http://facebook.github.io/jest/docs/api.html#jest-automockon)
   - [`jest.clearAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
+  - [`jest.currentTestPath()`](http://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
   - [`jest.dontMock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-dontmock-modulename)
   - [`jest.genMockFromModule(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
   - [`jest.genMockFunction()`](http://facebook.github.io/jest/docs/api.html#jest-genmockfunction)
@@ -55,6 +57,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.preprocessCachingDisabled` [boolean]](http://facebook.github.io/jest/docs/api.html#config-preprocesscachingdisabled-boolean)
   - [`config.rootDir` [string]](http://facebook.github.io/jest/docs/api.html#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)
+  - [`config.preprocessorIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string)
   - [`config.setupEnvScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setupenvscriptfile-string)
   - [`config.setupTestFrameworkScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string)
   - [`config.testDirectoryName` [string]](http://facebook.github.io/jest/docs/api.html#config-testdirectoryname-string)
