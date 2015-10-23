@@ -36,7 +36,7 @@ permalink: docs/api.html
 
 #### Config options
 
-  - [`config.baild` [boolean]](#config-bail-boolean)
+  - [`config.bail` [boolean]](#config-bail-boolean)
   - [`config.cacheDirectory` [string]](#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
