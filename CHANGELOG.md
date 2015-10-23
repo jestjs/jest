@@ -1,5 +1,10 @@
 ## 0.6.1
 
+* Updated jsdom to 7.0.2.
+* Use the current working directory as root when passing a jest config from
+  the command line.
+* Updated the React examples and getting started guide
+* Set `modulePathIgnorePatterns` to `node_modules` by default.
 * Modules now receive a `module.parent` field so unmocked modules don't assume
   they are run directly any longer.
 
