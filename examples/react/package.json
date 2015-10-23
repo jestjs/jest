@@ -1,11 +1,12 @@
 {
   "dependencies": {
     "react": "~0.14.0",
-    "react-dom": "~0.14.0",
-    "react-addons-test-utils": "~0.14.0"
+    "react-dom": "~0.14.0"
   },
   "devDependencies": {
-    "babel-jest": "*"
+    "react-addons-test-utils": "~0.14.0",
+    "babel-jest": "*",
+    "jest-cli": "*"
   },
   "scripts": {
     "test": "node ../../bin/jest.js"
