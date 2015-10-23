@@ -50,6 +50,16 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('provides `module.parent` to modules', function() {
+      return buildLoader().then(function(loader) {
+        var exports = loader.requireModule(null, 'RegularModule');
+        expect(exports.parent).toEqual({
+          id: 'mockParent',
+          exports: {},
+        });
+      });
+    });
+
     pit('throws on non-existant @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {

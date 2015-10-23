@@ -15,24 +15,24 @@
  *       Relatedly: It's time we vastly simplify node-haste.
  */
 
-var fs = require('graceful-fs');
-var hasteLoaders = require('node-haste/lib/loaders');
-var mkdirp = require('mkdirp');
-var moduleMocker = require('../lib/moduleMocker');
-var NodeHaste = require('node-haste/lib/Haste');
-var os = require('os');
-var path = require('path');
-var resolve = require('resolve');
-var transform = require('../lib/transform');
-var utils = require('../lib/utils');
+const fs = require('graceful-fs');
+const hasteLoaders = require('node-haste/lib/loaders');
+const mkdirp = require('mkdirp');
+const moduleMocker = require('../lib/moduleMocker');
+const NodeHaste = require('node-haste/lib/Haste');
+const os = require('os');
+const path = require('path');
+const resolve = require('resolve');
+const transform = require('../lib/transform');
+const utils = require('../lib/utils');
 
-var COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
+const COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
 
-var NODE_PATH = process.env.NODE_PATH;
+const NODE_PATH = process.env.NODE_PATH;
 
-var IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
+const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
-var NODE_CORE_MODULES = {
+const NODE_CORE_MODULES = {
   assert: true,
   buffer: true,
   child_process: true, // jshint ignore:line
@@ -69,11 +69,16 @@ var NODE_CORE_MODULES = {
   zlib: true
 };
 
-var VENDOR_PATH = path.resolve(__dirname, '../../vendor');
+const VENDOR_PATH = path.resolve(__dirname, '../../vendor');
+
+const mockParentModule = {
+  id: 'mockParent',
+  exports: {},
+};
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-var _configUnmockListRegExpCache = null;
+let _configUnmockListRegExpCache = null;
 
 function _buildLoadersList(config) {
   return [
@@ -213,6 +218,9 @@ Loader.prototype._execModule = function(moduleObj) {
 
   var moduleContent = transform(modulePath, this._config);
 
+  // Every module, if loaded for jest, should have a parent
+  // so they don't think they are run standalone
+  moduleObj.parent = mockParentModule;
   moduleObj.require = this.constructBoundRequire(modulePath);
 
   var moduleLocalBindings = {

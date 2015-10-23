@@ -1,6 +1,12 @@
+## 0.6.1
+
+* Modules now receive a `module.parent` field so unmocked modules don't assume
+  they are run directly any longer.
+
 ## 0.6.0
 
-* jest now reports the number of tests that were run instead of the number of test files.
+* jest now reports the number of tests that were run instead of the number of
+  test files.
 * Added a `--json` option to print test results as JSON.
 * Changed the preprocessor API. A preprocessor now receives the script, file and
   config. The cache key function receives the script, file and stringified
@@ -16,7 +22,7 @@
 
 ## 0.5.6
 
-* Cache test run performance and run slowest tests first to maximiz worker
+* Cache test run performance and run slowest tests first to maximize worker
   utilization
 * Update to jsdom 6.5.0
 
