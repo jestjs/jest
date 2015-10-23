@@ -324,7 +324,7 @@ An array of file extensions your modules use. If you require modules without spe
 If you are using CoffeeScript this should be `['js', 'json', 'coffee', 'litcoffee', 'coffee.md']`
 
 ### `config.modulePathIgnorePatterns` [array<string>]
-(default: `["/node_modules/"]`)
+(default: `[]`)
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 

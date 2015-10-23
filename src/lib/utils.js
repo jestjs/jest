@@ -27,7 +27,7 @@ var DEFAULT_CONFIG_VALUES = {
   moduleFileExtensions: ['js', 'json'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   preprocessorIgnorePatterns: [],
-  modulePathIgnorePatterns: ['/node_modules/'],
+  modulePathIgnorePatterns: [],
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
   testEnvironment: require.resolve('../JSDomEnvironment'),
