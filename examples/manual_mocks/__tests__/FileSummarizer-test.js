@@ -1,3 +1,4 @@
+jest.mock('fs');
 jest.dontMock('../FileSummarizer');
 
 describe('FileSummarizer', function() {
