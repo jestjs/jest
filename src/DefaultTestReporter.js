@@ -132,6 +132,16 @@ function (config, aggregatedResults) {
     colors.GREEN + colors.BOLD
   );
 
+  if (aggregatedResults.numFailedToRunTestSuites) {
+    results += ', ';
+    results += this._formatMsg(
+      aggregatedResults.numFailedToRunTestSuites + ' test suit' +
+        (aggregatedResults.numFailedToRunTestSuites === 1 ? '' : 's') +
+        ' failed to run',
+      colors.RED + colors.BOLD
+    );
+  }
+
   var pluralTestSuites =
       aggregatedResults.numTotalTestSuites === 1 ?
       'test suite' : 'test suites';
@@ -171,7 +181,8 @@ function (passed, testName, columns) {
 DefaultTestReporter.prototype._printWaitingOn = function(aggregatedResults) {
   var completedTestSuites =
     aggregatedResults.numPassedTestSuites +
-    aggregatedResults.numFailedTestSuites;
+    aggregatedResults.numFailedTestSuites +
+    aggregatedResults.numFailedToRunTestSuites;
   var remainingTestSuites =
     aggregatedResults.numTotalTestSuites -
     completedTestSuites;
