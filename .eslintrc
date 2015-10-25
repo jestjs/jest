@@ -1,0 +1,5 @@
+---
+parser: babel-eslint
+
+extends:
+  - ./node_modules/fbjs-scripts/eslint/.eslintrc
