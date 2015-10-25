@@ -23,7 +23,7 @@ function FakeTimers(global, maxLoops) {
     setTimeout: global.setTimeout,
     clearTimeout: global.clearTimeout,
     setInterval: global.setInterval,
-    clearInterval: global.clearInterval
+    clearInterval: global.clearInterval,
   };
 
   this._fakeTimerAPIs = {
@@ -38,7 +38,7 @@ function FakeTimers(global, maxLoops) {
     ),
     clearInterval: mocks.getMockFn().mockImpl(
       this._fakeClearTimer.bind(this)
-    )
+    ),
   };
 
   // If there's a process.nextTick on the global, mock it out
@@ -337,7 +337,7 @@ FakeTimers.prototype._fakeNextTick = function(callback) {
     uuid: uuid,
     callback: function() {
       return callback.apply(null, args);
-    }
+    },
   });
 
   var cancelledTicks = this._cancelledTicks;
@@ -362,7 +362,7 @@ FakeTimers.prototype._fakeSetImmediate = function(callback) {
     uuid: uuid,
     callback: function() {
       return callback.apply(null, args);
-    }
+    },
   });
 
   var cancelledImmediates = this._cancelledImmediates;
@@ -395,7 +395,7 @@ FakeTimers.prototype._fakeSetInterval = function(callback, intervalDelay) {
       return callback.apply(null, args);
     },
     expiry: this._now + intervalDelay,
-    interval: intervalDelay
+    interval: intervalDelay,
   };
 
   return uuid;
@@ -419,7 +419,7 @@ FakeTimers.prototype._fakeSetTimeout = function(callback, delay)  {
       return callback.apply(null, args);
     },
     expiry: this._now + delay,
-    interval: null
+    interval: null,
   };
 
   return uuid;

@@ -19,7 +19,7 @@ const createDirectory = path => {
   if (!fs.existsSync(path)) {
     try {
       fs.mkdirSync(path);
-    } catch(e) {
+    } catch (e) {
       if (e.code !== 'EEXIST') {
         throw e;
       }

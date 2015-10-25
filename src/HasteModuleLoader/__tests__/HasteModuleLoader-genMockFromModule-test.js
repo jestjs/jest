@@ -20,7 +20,7 @@ describe('nodeHasteModuleLoader', function() {
 
   var CONFIG = utils.normalizeConfig({
     name: 'nodeHasteModuleLoader-tests',
-    rootDir: path.resolve(__dirname, 'test_root')
+    rootDir: path.resolve(__dirname, 'test_root'),
   });
 
   function buildLoader() {
@@ -43,21 +43,28 @@ describe('nodeHasteModuleLoader', function() {
   });
 
   describe('genMockFromModule', function() {
-    pit('does not cause side effects in the rest of the module system when ' +
-        'generating a mock', function() {
-      return buildLoader().then(function(loader) {
-        var testRequire = loader.requireModule.bind(loader, __filename);
+    pit(
+      'does not cause side effects in the rest of the module system when ' +
+      'generating a mock',
+      function() {
+        return buildLoader().then(function(loader) {
+          var testRequire = loader.requireModule.bind(loader, __filename);
 
-        var regularModule = testRequire('RegularModule');
-        var origModuleStateValue = regularModule.getModuleStateValue();
+          var regularModule = testRequire('RegularModule');
+          var origModuleStateValue = regularModule.getModuleStateValue();
 
-        testRequire('jest-runtime').dontMock('RegularModule');
+          testRequire('jest-runtime').dontMock('RegularModule');
 
-        // Generate a mock for a module with side effects
-        testRequire('jest-runtime').genMockFromModule('ModuleWithSideEffects');
+          // Generate a mock for a module with side effects
+          testRequire('jest-runtime').genMockFromModule(
+            'ModuleWithSideEffects'
+          );
 
-        expect(regularModule.getModuleStateValue()).toBe(origModuleStateValue);
-      });
-    });
+          expect(regularModule.getModuleStateValue()).toBe(
+            origModuleStateValue
+          );
+        });
+      }
+    );
   });
 });

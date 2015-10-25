@@ -25,7 +25,7 @@ describe('nodeHasteModuleLoader', function() {
         return undefined;
       }
       return resources[name];
-    }
+    },
   };
 
   function _generateResource(name, deps) {
@@ -35,7 +35,7 @@ describe('nodeHasteModuleLoader', function() {
       id: name,
       _requiredModuleMap: deps.reduce(function(prev, next) {
         return prev[next] = true;
-      }, {})
+      }, {}),
     };
     if (deps.length) {
       resource.requiredModules = deps;

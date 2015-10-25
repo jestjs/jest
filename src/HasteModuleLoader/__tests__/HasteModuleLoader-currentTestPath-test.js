@@ -10,9 +10,9 @@
 jest.autoMockOff();
 
 describe('nodeHasteModuleLoader', function() {
-    describe('currentTestPath', function() {
-        it('makes the current test path available', function() {
-            expect(jest.currentTestPath()).toMatch(/currentTestPath-test/);
-        });
+  describe('currentTestPath', function() {
+    it('makes the current test path available', function() {
+      expect(jest.currentTestPath()).toMatch(/currentTestPath-test/);
     });
+  });
 });
