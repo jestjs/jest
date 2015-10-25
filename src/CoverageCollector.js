@@ -38,7 +38,7 @@ CoverageCollector.prototype.getInstrumentedSource = function(storageVarName) {
     this._instrumentedSourceText = _getCoverageTemplate()({
       instrumented: this._instrumentor,
       coverageStorageVar: storageVarName,
-      source: this._instrumentor.instrument(this._origSourceText)
+      source: this._instrumentor.instrument(this._origSourceText),
     });
   }
   return this._instrumentedSourceText;
@@ -49,7 +49,7 @@ CoverageCollector.prototype.extractRuntimeCoverageInfo = function() {
   var coverageInfo = {
     coveredSpans: [],
     uncoveredSpans: [],
-    sourceText: this._origSourceText
+    sourceText: this._origSourceText,
   };
 
   var nodeIndex;

@@ -147,6 +147,7 @@ function createMockFunction(metadata, mockConstructor) {
     name = '$' + name;
   }
 
+  /* eslint-disable no-new-func */
   /* jshint evil:true */
   return new Function(
     'mockConstructor',
@@ -154,6 +155,8 @@ function createMockFunction(metadata, mockConstructor) {
       'return mockConstructor.apply(this,arguments);' +
     '}' + bindCall
   )(mockConstructor);
+  /* eslint-enable no-new-func */
+  /* jshint evil:false */
 }
 
 function makeComponent(metadata) {
@@ -183,7 +186,7 @@ function makeComponent(metadata) {
       metadata.members.prototype.members
     ) || {};
     const prototypeSlots = getSlots(prototype);
-    let mockConstructor = function() {
+    const mockConstructor = function() {
       instances.push(this);
       calls.push(Array.prototype.slice.call(arguments));
       if (this instanceof f) {
@@ -361,7 +364,7 @@ function getMetadata(component, _refs) {
           /* jshint eqeqeq:false */
           (type === 'object' && component[slot] != Object.prototype[slot])
         ) {
-          let slotMetadata = getMetadata(component[slot], refs);
+          const slotMetadata = getMetadata(component[slot], refs);
           if (slotMetadata) {
             if (!members) {
               members = {};
@@ -500,5 +503,5 @@ module.exports = {
   // Just a short-hand alias
   getMockFn() {
     return this.getMockFunction();
-  }
+  },
 };

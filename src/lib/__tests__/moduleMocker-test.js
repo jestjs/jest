@@ -18,7 +18,7 @@ describe('moduleMocker', function() {
 
   describe('getMetadata', function() {
     it('returns the function `name` property', function() {
-      function x(){}
+      function x() {}
       var metadata = moduleMocker.getMetadata(x);
       expect(x.name).toBe('x');
       expect(metadata.name).toBe('x');
@@ -27,7 +27,7 @@ describe('moduleMocker', function() {
 
   describe('generateFromMetadata', function() {
     it('forwards the function name property', function() {
-      function foo(){}
+      function foo() {}
       var fooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo)
       );
@@ -57,11 +57,11 @@ describe('moduleMocker', function() {
     it('does not mock non-enumerable getters', function() {
       var foo = Object.defineProperties({}, {
         nonEnumMethod: {
-          value: function() {}
+          value: function() {},
         },
         nonEnumGetter: {
-          get: function() { throw 1; }
-        }
+          get: function() { throw new Error(); },
+        },
       });
       var fooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo)

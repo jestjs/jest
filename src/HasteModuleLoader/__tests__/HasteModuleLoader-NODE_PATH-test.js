@@ -20,7 +20,7 @@ describe('HasteModuleLoader', function() {
 
   var CONFIG = utils.normalizeConfig({
     name: 'HasteModuleLoader-tests',
-    rootDir: path.resolve(__dirname, 'test_root')
+    rootDir: path.resolve(__dirname, 'test_root'),
   });
 
   function buildLoader() {
@@ -69,12 +69,15 @@ describe('HasteModuleLoader', function() {
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
       try {
-         var exports = loader.requireModuleOrMock(null,
-             'RegularModuleInNodePath');
-         expect(exports).toBeUndefined();
+        var exports = loader.requireModuleOrMock(
+          null,
+          'RegularModuleInNodePath'
+        );
+        expect(exports).toBeUndefined();
       } catch (e) {
         expect(
-          (e.message.indexOf('Cannot find module'))).toBeGreaterThan(-1);
+          (e.message.indexOf('Cannot find module'))
+        ).toBeGreaterThan(-1);
       }
     });
   });

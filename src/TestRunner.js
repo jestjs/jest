@@ -54,7 +54,7 @@ var DEFAULT_OPTIONS = {
    * Passing --debug off to child processes can screw with socket connections
    * of the parent process.
    */
-  nodeArgv: process.execArgv.filter(arg => arg !== '--debug')
+  nodeArgv: process.execArgv.filter(arg => arg !== '--debug'),
 };
 
 var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
@@ -142,7 +142,7 @@ class TestRunner {
       this._configDeps = {
         ModuleLoader: require(config.moduleLoader),
         testEnvironment: require(config.testEnvironment),
-        testRunner: require(config.testRunner).bind(null)
+        testRunner: require(config.testRunner).bind(null),
       };
     }
     return this._configDeps;
@@ -374,7 +374,7 @@ class TestRunner {
             require: moduleLoader.constructBoundRequire(
               config.setupEnvScriptFile
             ),
-            jest: moduleLoader.getJestRuntime(config.setupEnvScriptFile)
+            jest: moduleLoader.getJestRuntime(config.setupEnvScriptFile),
           }
         );
       }
@@ -509,7 +509,7 @@ class TestRunner {
       numPassedTests: 0,
       numFailedTests: 0,
       testResults: [],
-      postSuiteHeaders: []
+      postSuiteHeaders: [],
     };
 
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
@@ -593,7 +593,7 @@ class TestRunner {
       // with loading/serialization of the resourcemap (which I've seen
       // happen).
       maxRetries: 2,
-      maxConcurrentWorkers: this._opts.maxWorkers
+      maxConcurrentWorkers: this._opts.maxWorkers,
     }, TEST_WORKER_PATH);
 
     var runTest = promisify(farm);

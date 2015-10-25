@@ -1,4 +1,3 @@
-
 // Instrumentation Header
 {
     var <%= instrumented.names.statement %>;

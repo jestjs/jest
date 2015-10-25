@@ -264,7 +264,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         return calls.some(function(call) {
           return this.env.equals_(call, args);
         }, this);
-      }
+      },
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
@@ -277,7 +277,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   var jasmineReporter = new JasmineReporter({
     noHighlight: config.noHighlight,
-    noStackTrace: config.noStackTrace
+    noStackTrace: config.noStackTrace,
   });
   jasmine.getEnv().addReporter(jasmineReporter);
 

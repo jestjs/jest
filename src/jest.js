@@ -144,7 +144,7 @@ function _promiseRawConfig(argv, packageRoot) {
     name: packageRoot.replace(/[/\\]/g, '_'),
     rootDir: packageRoot,
     testPathDirs: [packageRoot],
-    testPathIgnorePatterns: ['/node_modules/.+']
+    testPathIgnorePatterns: ['/node_modules/.+'],
   }));
 }
 
@@ -153,11 +153,13 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
   return Promise.all(testPathDirsAreGit)
     .then(function(results) {
       if (!results.every(function(result) { return result; })) {
+        /* eslint-disable no-throw-literal */
         throw (
           'It appears that one of your testPathDirs does not exist ' +
           'with in a git repository. Currently --onlyChanged only works ' +
           'with git projects.\n'
         );
+        /* eslint-enable no-throw-literal */
       }
       return Promise.all(config.testPathDirs.map(_findChangedFiles));
     })

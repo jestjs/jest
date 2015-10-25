@@ -24,7 +24,7 @@ describe('TestRunner-fs', function() {
         testDirectoryName: '__testtests__',
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function (absPath) {
+        var relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths).toEqual([path.normalize('__testtests__/test.js')]);
@@ -39,7 +39,7 @@ describe('TestRunner-fs', function() {
         testFileExtensions: ['jsx'],
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function (absPath) {
+        var relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
@@ -54,7 +54,7 @@ describe('TestRunner-fs', function() {
         testFileExtensions: ['foobar'],
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function (absPath) {
+        var relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
@@ -69,7 +69,7 @@ describe('TestRunner-fs', function() {
         testFileExtensions: ['js', 'jsx'],
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function (absPath) {
+        var relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths.sort()).toEqual([
