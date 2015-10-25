@@ -24,7 +24,7 @@ describe('TestRunner', function() {
       utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
         rootDir: '.',
-        testPathDirs: []
+        testPathDirs: [],
       }));
     });
 
@@ -73,7 +73,7 @@ describe('TestRunner', function() {
       utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
         rootDir: '.',
-        testPathDirs: []
+        testPathDirs: [],
       }));
 
       fakeDepsFromPath = {};
@@ -81,7 +81,7 @@ describe('TestRunner', function() {
         return Promise.resolve({
           getDependentsFromPath: function(modulePath) {
             return fakeDepsFromPath[modulePath] || [];
-          }
+          },
         });
       };
     });
@@ -146,7 +146,7 @@ describe('TestRunner', function() {
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([
             dependentTestPath1,
-            dependentTestPath2
+            dependentTestPath2,
           ]);
         });
     });
@@ -161,7 +161,7 @@ describe('TestRunner', function() {
         [indirectDependentModulePath];
       fakeDepsFromPath[indirectDependentModulePath] = [
         directDependentModulePath,
-        dependentTestPath
+        dependentTestPath,
       ];
 
       // Mock out existsSync to return true, since our test path isn't real

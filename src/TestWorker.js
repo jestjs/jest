@@ -22,7 +22,7 @@ var testRunner;
 module.exports = function(data, callback) {
   if (!testRunner) {
     testRunner = new TestRunner(data.config, {
-      useCachedModuleLoaderResourceMap: true
+      useCachedModuleLoaderResourceMap: true,
     });
 
     // Start require()ing config dependencies now.

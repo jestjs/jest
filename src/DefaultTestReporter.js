@@ -58,7 +58,7 @@ function(config, testResult, aggregatedResults) {
   }
 
   var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
-    testRunTimeString
+    testRunTimeString,
   ]);
 
   /*
@@ -103,7 +103,7 @@ function(config, testResult, aggregatedResults) {
 };
 
 DefaultTestReporter.prototype.onRunComplete =
-function (config, aggregatedResults) {
+function(config, aggregatedResults) {
   var numFailedTests = aggregatedResults.numFailedTests;
   var numPassedTests = aggregatedResults.numPassedTests;
   var numTotalTests = aggregatedResults.numTotalTests;
@@ -157,14 +157,14 @@ DefaultTestReporter.prototype._formatMsg = function(msg, color) {
 };
 
 DefaultTestReporter.prototype._getResultHeader =
-function (passed, testName, columns) {
+function(passed, testName, columns) {
   var passFailTag = passed
     ? this._formatMsg(' PASS ', PASS_COLOR)
     : this._formatMsg(' FAIL ', FAIL_COLOR);
 
   return [
     passFailTag,
-    this._formatMsg(testName, TEST_NAME_COLOR)
+    this._formatMsg(testName, TEST_NAME_COLOR),
   ].concat(columns || []).join(' ');
 };
 

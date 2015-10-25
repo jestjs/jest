@@ -88,7 +88,7 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
 VerboseLogger.prototype.printTestTitles = function(testTitles, indentation) {
   var prefixColor, statusPrefix;
 
-  for (var i = 0; i < testTitles.length; i++){
+  for (var i = 0; i < testTitles.length; i++) {
     if (testTitles[i].failureMessages.length === 0) {
       prefixColor = colors.GREEN;
       statusPrefix = this._config.noHighlight ? 'PASS - ' : '\u2713 ';
@@ -159,12 +159,12 @@ function _createTestNode(testResult, ancestorTitles, currentNode) {
     if (!currentNode.childNodes[ancestorTitles[0]]) {
       currentNode.childNodes[ancestorTitles[0]] = {
         testTitles: [],
-        childNodes: {}
+        childNodes: {},
       };
     }
     _createTestNode(
       testResult,
-      ancestorTitles.slice(1,ancestorTitles.length),
+      ancestorTitles.slice(1, ancestorTitles.length),
       currentNode.childNodes[ancestorTitles[0]]
     );
   }

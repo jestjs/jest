@@ -17,7 +17,7 @@ var DIFFABLE_MATCHERS = {
   toBe: true,
   toNotBe: true,
   toEqual: true,
-  toNotEqual: true
+  toNotEqual: true,
 };
 var LINEBREAK_REGEX = /[\r\n]/;
 
@@ -56,7 +56,7 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
   this._resolve({
     numFailingTests: numFailingTests,
     numPassingTests: numPassingTests,
-    testResults: testResults
+    testResults: testResults,
   });
 };
 
@@ -69,7 +69,7 @@ JasmineReporter.prototype.log = function(str) {
 };
 
 JasmineReporter.prototype._extractSuiteResults =
-function (container, ancestorTitles, suite) {
+function(container, ancestorTitles, suite) {
   ancestorTitles = ancestorTitles.concat([suite.description]);
 
   suite.specs().forEach(
@@ -81,12 +81,12 @@ function (container, ancestorTitles, suite) {
 };
 
 JasmineReporter.prototype._extractSpecResults =
-function (container, ancestorTitles, spec) {
+function(container, ancestorTitles, spec) {
   var results = {
     title: 'it ' + spec.description,
     ancestorTitles: ancestorTitles,
     failureMessages: [],
-    numPassingAsserts: 0
+    numPassingAsserts: 0,
   };
 
   spec.results().getItems().forEach(function(result) {
@@ -156,7 +156,7 @@ function (container, ancestorTitles, spec) {
   container.push(results);
 };
 
-JasmineReporter.prototype._highlightDifferences = function (a, b) {
+JasmineReporter.prototype._highlightDifferences = function(a, b) {
   var differ;
   if (a.match(LINEBREAK_REGEX) || b.match(LINEBREAK_REGEX)) {
     // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time

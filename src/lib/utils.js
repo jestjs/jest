@@ -13,7 +13,7 @@ var path = require('path');
 
 function replacePathSepForRegex(str) {
   if (path.sep === '\\') {
-    return str.replace(/(\/|\\)/g,'\\\\');
+    return str.replace(/(\/|\\)/g, '\\\\');
   }
   return str;
 }
@@ -22,7 +22,7 @@ var DEFAULT_CONFIG_VALUES = {
   bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
-  coverageReporters: [ 'json', 'text', 'lcov', 'clover' ],
+  coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
   moduleFileExtensions: ['js', 'json'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
@@ -218,7 +218,7 @@ function normalizeConfig(config) {
       case 'moduleNameMapper':
         value = Object.keys(config[key]).map(regex => [
           regex,
-          _replaceRootDirTags(config.rootDir, config[key][regex])
+          _replaceRootDirTags(config.rootDir, config[key][regex]),
         ]);
         break;
 
@@ -315,7 +315,7 @@ function _addDot(ext) {
 function uniqueStrings(set) {
   var newSet = [];
   var has = {};
-  set.forEach(function (item) {
+  set.forEach(function(item) {
     if (!has[item]) {
       has[item] = true;
       newSet.push(item);
@@ -411,7 +411,7 @@ function formatFailureMessage(testResult, config) {
   var rootPath = config.rootPath;
   var useColor = config.useColor;
 
-  var colorize = useColor ? colors.colorize : function (str) { return str; };
+  var colorize = useColor ? colors.colorize : function(str) { return str; };
   var ancestrySeparator = ' \u203A ';
   var descBullet = colorize('\u25cf ', colors.BOLD);
   var msgBullet = '  - ';
@@ -422,7 +422,7 @@ function formatFailureMessage(testResult, config) {
     return descBullet + colorize('Runtime Error', colors.BOLD) + '\n' + text;
   }
 
-  return testResult.testResults.filter(function (result) {
+  return testResult.testResults.filter(function(result) {
     return result.failureMessages.length !== 0;
   }).map(function(result) {
     var failureMessages = result.failureMessages.map(function(errorMsg) {
@@ -487,7 +487,7 @@ function deepCopy(obj) {
 var STACK_TRACE_LINE_IGNORE_RE = new RegExp([
   '^timers.js$',
   '^' + path.resolve(__dirname, '..', 'lib', 'moduleMocker.js'),
-  '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine')
+  '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine'),
 ].join('|'));
 
 exports.deepCopy = deepCopy;

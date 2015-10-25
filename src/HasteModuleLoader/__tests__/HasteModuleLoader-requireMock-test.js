@@ -20,7 +20,7 @@ describe('HasteModuleLoader', function() {
 
   var CONFIG = utils.normalizeConfig({
     name: 'HasteModuleLoader-tests',
-    rootDir: path.resolve(__dirname, 'test_root')
+    rootDir: path.resolve(__dirname, 'test_root'),
   });
 
   function buildLoader() {

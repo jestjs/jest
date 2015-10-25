@@ -63,15 +63,18 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit('doesnt mock modules when explicitly dontMock()ed via a different ' +
-        'denormalized module name', function() {
-      return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'jest-runtime')
+    pit(
+      'doesnt mock modules when explicitly dontMock()ed via a different ' +
+      'denormalized module name',
+      function() {
+        return buildLoader().then(function(loader) {
+          loader.requireModuleOrMock(__filename, 'jest-runtime')
           .dontMock('./test_root/RegularModule');
-        var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
-        expect(exports.isRealModule).toBe(true);
-      });
-    });
+          var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
+          expect(exports.isRealModule).toBe(true);
+        });
+      }
+    );
 
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
@@ -88,14 +91,20 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit('does not use manual mock when automocking is off and a real ' +
-        'module is available', function() {
-      return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'jest-runtime').autoMockOff();
-        var exports = loader.requireModuleOrMock(__filename, 'ManuallyMocked');
-        expect(exports.isManualMockModule).toBe(false);
-      });
-    });
+    pit(
+      'does not use manual mock when automocking is off and a real module is ' +
+      'available',
+      function() {
+        return buildLoader().then(function(loader) {
+          loader.requireModuleOrMock(__filename, 'jest-runtime').autoMockOff();
+          var exports = loader.requireModuleOrMock(
+            __filename,
+            'ManuallyMocked'
+          );
+          expect(exports.isManualMockModule).toBe(false);
+        });
+      }
+    );
 
     pit('resolves mapped module names and unmocks them by default', function() {
       return buildLoader().then(function(loader) {

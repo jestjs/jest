@@ -26,7 +26,7 @@ describe('promisify', () => {
     });
   });
 
-   pit('should resolve with args', () => {
+  pit('should resolve with args', () => {
     var foo = promisify((a, b, callback) => {
       callback(null, a + b);
     });
@@ -36,7 +36,7 @@ describe('promisify', () => {
     });
   });
 
-   pit('should reject with args', () => {
+  pit('should reject with args', () => {
     var foo = promisify((a, b, callback) => {
       callback(new Error('lol'));
     });
