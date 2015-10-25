@@ -142,13 +142,14 @@ function (config, aggregatedResults) {
     );
   }
 
-  var pluralTestSuites =
-      aggregatedResults.numTotalTestSuites === 1 ?
-      'test suite' : 'test suites';
+  var numTestSuitesExecuted =
+    aggregatedResults.numTotalTestSuites -
+    aggregatedResults.numFailedToRunTestSuites;
 
   results += ' (' + numTotalTests + ' total in ' +
-    aggregatedResults.numTotalTestSuites + ' ' +
-    pluralTestSuites + ', run time ' + runTime + 's)';
+    numTestSuitesExecuted + ' ' +
+    'test suite' + (numTestSuitesExecuted === 1 ? '' : 's') +
+    ', run time ' + runTime + 's)';
 
   this.log(results);
 };
