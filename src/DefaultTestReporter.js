@@ -135,7 +135,7 @@ function (config, aggregatedResults) {
   if (aggregatedResults.numFailedToRunTestSuites) {
     results += ', ';
     results += this._formatMsg(
-      aggregatedResults.numFailedToRunTestSuites + ' test suit' +
+      aggregatedResults.numFailedToRunTestSuites + ' test suite' +
         (aggregatedResults.numFailedToRunTestSuites === 1 ? '' : 's') +
         ' failed to run',
       colors.RED + colors.BOLD
