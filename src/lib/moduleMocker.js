@@ -148,7 +148,6 @@ function createMockFunction(metadata, mockConstructor) {
   }
 
   /* eslint-disable no-new-func */
-  /* jshint evil:true */
   return new Function(
     'mockConstructor',
     'return function ' + name + '() {' +
@@ -156,7 +155,6 @@ function createMockFunction(metadata, mockConstructor) {
     '}' + bindCall
   )(mockConstructor);
   /* eslint-enable no-new-func */
-  /* jshint evil:false */
 }
 
 function makeComponent(metadata) {
@@ -361,7 +359,6 @@ function getMetadata(component, _refs) {
         if (
           (!component.hasOwnProperty && component[slot] !== undefined) ||
           (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-          /* jshint eqeqeq:false */
           (type === 'object' && component[slot] != Object.prototype[slot])
         ) {
           const slotMetadata = getMetadata(component[slot], refs);

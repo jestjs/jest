@@ -35,7 +35,7 @@ const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 const NODE_CORE_MODULES = {
   assert: true,
   buffer: true,
-  child_process: true, // jshint ignore:line
+  child_process: true,
   cluster: true,
   console: true,
   constants: true,
@@ -58,7 +58,7 @@ const NODE_CORE_MODULES = {
   repl: true,
   smalloc: true,
   stream: true,
-  string_decoder: true, // jshint ignore:line
+  string_decoder: true,
   sys: true,
   timers: true,
   tls: true,

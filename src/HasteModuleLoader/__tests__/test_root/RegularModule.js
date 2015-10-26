@@ -11,11 +11,9 @@
 'use strict';
 
 // For some reason thinks it's a strict violation.
-/* jshint ignore:start */
 if (exports !== this) {
   throw new Error('Invalid module context');
 }
-/* jshint ignore:end */
 
 var moduleStateValue = 'default';
 
