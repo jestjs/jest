@@ -46,8 +46,8 @@ var argv = optimist
       alias: 'c',
       description: _wrapDesc(
         'The path to a jest config file specifying how to find and execute ' +
-        'tests. If no rootDir is set in the config, the directory of the ' +
-        'config file is assumed to be the rootDir for the project.'
+        'tests. If no rootDir is set in the config, the current directory ' +
+        'is assumed to be the rootDir for the project.'
       ),
       type: 'string'
     },
