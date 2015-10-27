@@ -7,10 +7,10 @@
  */
 'use strict';
 
-var FakeTimers = require('./lib/FakeTimers');
-var utils = require('./lib/utils');
+const FakeTimers = require('./lib/FakeTimers');
+const utils = require('./lib/utils');
 
-var USE_JSDOM_EVAL = false;
+const USE_JSDOM_EVAL = false;
 
 function JSDomEnvironment(config) {
   // We lazily require jsdom because it takes a good ~.5s to load.
@@ -19,7 +19,7 @@ function JSDomEnvironment(config) {
   // use it (depending on the context -- such as TestRunner.js when operating as
   // a workerpool parent), this is the best way to ensure we only spend time
   // require()ing this when necessary.
-  var jsdom = require('jsdom');
+  const jsdom = require('jsdom');
   this.document = jsdom.jsdom(/* markup */undefined, {
     url: config.testURL,
     resourceLoader: this._fetchExternalResource.bind(this),
@@ -65,8 +65,8 @@ function JSDomEnvironment(config) {
   }
 
   // Apply any user-specified global vars
-  var globalValues = utils.deepCopy(config.globals);
-  for (var customGlobalKey in globalValues) {
+  const globalValues = utils.deepCopy(config.globals);
+  for (const customGlobalKey in globalValues) {
     // Always deep-copy objects so isolated test environments can't share memory
     this.global[customGlobalKey] = globalValues[customGlobalKey];
   }
@@ -82,7 +82,7 @@ JSDomEnvironment.prototype.dispose = function() {
  */
 JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
   if (!USE_JSDOM_EVAL) {
-    var vm = require('vm');
+    const vm = require('vm');
     vm.runInContext(sourceText, this.document._ownerDocument._global, {
       filename: fileName,
       displayErrors: false,
@@ -94,7 +94,7 @@ JSDomEnvironment.prototype.runSourceText = function(sourceText, fileName) {
   // and using jsdom's resource loader to simulate serving the source code.
   this._scriptToServe = sourceText;
 
-  var scriptElement = this.document.createElement('script');
+  const scriptElement = this.document.createElement('script');
   scriptElement.src = fileName;
 
   this.document.head.appendChild(scriptElement);
@@ -105,10 +105,11 @@ JSDomEnvironment.prototype._fetchExternalResource = function(
   resource,
   callback
 ) {
-  var content = this._scriptToServe;
+  const content = this._scriptToServe;
+  let error;
   delete this._scriptToServe;
   if (content === null || content === undefined) {
-    var error = new Error('Unable to find source for ' + resource.url.href);
+    error = new Error('Unable to find source for ' + resource.url.href);
   }
   callback(error, content);
 };

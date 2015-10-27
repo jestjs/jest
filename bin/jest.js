@@ -6,28 +6,28 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-/* jshint node: true */
+
 'use strict';
 
-var fs = require('fs');
-var optimist = require('optimist');
-var path = require('path');
-var sane = require('sane');
-var which = require('which');
+const fs = require('fs');
+const optimist = require('optimist');
+const path = require('path');
+const sane = require('sane');
+const which = require('which');
 
-var WATCHMAN_BIN = 'watchman';
+const WATCHMAN_BIN = 'watchman';
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
  * sure it wraps without exceeding 80chars
  */
 function _wrapDesc(desc) {
-  var indent = '\n      ';
+  const indent = '\n      ';
   return indent + desc.split(' ').reduce(function(wrappedDesc, word) {
-    var lastLineIdx = wrappedDesc.length - 1;
-    var lastLine = wrappedDesc[lastLineIdx];
+    const lastLineIdx = wrappedDesc.length - 1;
+    const lastLine = wrappedDesc[lastLineIdx];
 
-    var appendedLastLine = lastLine === '' ? word : (lastLine + ' ' + word);
+    const appendedLastLine = lastLine === '' ? word : (lastLine + ' ' + word);
 
     if (appendedLastLine.length > 80) {
       wrappedDesc.push(word);
@@ -39,7 +39,7 @@ function _wrapDesc(desc) {
   }, ['']).join(indent);
 }
 
-var argv = optimist
+const argv = optimist
   .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
   .options({
     config: {
@@ -49,14 +49,14 @@ var argv = optimist
         'tests. If no rootDir is set in the config, the current directory ' +
         'is assumed to be the rootDir for the project.'
       ),
-      type: 'string'
+      type: 'string',
     },
     coverage: {
       description: _wrapDesc(
         'Indicates that test coverage information should be collected and ' +
         'reported in the output.'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     maxWorkers: {
       alias: 'w',
@@ -66,7 +66,7 @@ var argv = optimist
         'available on your machine. (its usually best not to override this ' +
         'default)'
       ),
-      type: 'string' // no, optimist -- its a number.. :(
+      type: 'string', // no, optimist -- its a number.. :(
     },
     onlyChanged: {
       alias: 'o',
@@ -75,7 +75,7 @@ var argv = optimist
         'changed in the current repository. Only works if you\'re running ' +
         'tests in a git repository at the moment.'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     runInBand: {
       alias: 'i',
@@ -84,44 +84,44 @@ var argv = optimist
         'a worker pool of child processes that run tests). This is sometimes ' +
         'useful for debugging, but such use cases are pretty rare.'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     testEnvData: {
       description: _wrapDesc(
         'A JSON object (string) that specifies data that will be made ' +
         'available in the test environment (via jest.getEnvData())'
       ),
-      type: 'string'
+      type: 'string',
     },
     testPathPattern: {
       description: _wrapDesc(
         'A regexp pattern string that is matched against all tests ' +
         'paths before executing the test.'
       ),
-      type: 'string'
+      type: 'string',
     },
     version: {
       alias: 'v',
       description: _wrapDesc('Print the version and exit'),
-      type: 'boolean'
+      type: 'boolean',
     },
     noHighlight: {
       description: _wrapDesc(
         'Disables test results output highlighting'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     noStackTrace: {
       description: _wrapDesc(
         'Disables stack trace in test results output'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     verbose: {
       description: _wrapDesc(
         'Display individual test results with the test suite hierarchy.'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     watch: {
       description: _wrapDesc(
@@ -129,20 +129,20 @@ var argv = optimist
         'changes and then rerun tests related to changed files and ' +
         'directories. use --watch=skip to skip the first test.'
       ),
-      type: 'string'
+      type: 'string',
     },
     watchExtensions: {
       description: _wrapDesc(
         'Comma separated list of file extensions to watch, defaults to js.'
       ),
-      type: 'string'
+      type: 'string',
     },
     bail: {
       alias: 'b',
       description: _wrapDesc(
         'Exit the test suite immediately upon the first failing test.'
       ),
-      type: 'boolean'
+      type: 'boolean',
     },
     useStderr: {
       description: _wrapDesc(
@@ -164,18 +164,18 @@ var argv = optimist
         'other test output and user messages to stderr.'
       ),
       type: 'boolean',
-    }
+    },
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
-      throw (
+      throw new Error(
         'Both --runInBand and --maxWorkers were specified, but these two ' +
         'options do not make sense together. Which is it?'
       );
     }
 
     if (argv.onlyChanged && argv._.length > 0) {
-      throw (
+      throw new Error(
         'Both --onlyChanged and a path pattern were specified, but these two ' +
         'options do not make sense together. Which is it? Do you want to run ' +
         'tests for changed files? Or for a specific set of files?'
@@ -183,7 +183,7 @@ var argv = optimist
     }
 
     if (argv.watchExtensions && argv.watch === undefined) {
-      throw (
+      throw new Error(
         '--watchExtensions can only be specified together with --watch.'
       );
     }
@@ -194,116 +194,118 @@ var argv = optimist
   })
   .argv;
 
-if (argv.help) {
-  optimist.showHelp();
+function runJest() {
+  if (argv.help) {
+    optimist.showHelp();
 
-  process.on('exit', function(){
-    process.exit(1);
-  });
-
-  return;
-}
-
-var cwd = process.cwd();
-
-// Is the cwd somewhere within an npm package?
-var cwdPackageRoot = cwd;
-while (!fs.existsSync(path.join(cwdPackageRoot, 'package.json'))) {
-  if (cwdPackageRoot === '/' || cwdPackageRoot.match(/^[A-Z]:\\/)) {
-    cwdPackageRoot = cwd;
-    break;
-  }
-  cwdPackageRoot = path.resolve(cwdPackageRoot, '..');
-}
-
-// Is there a package.json at our cwdPackageRoot that indicates that there
-// should be a version of Jest installed?
-var cwdPkgJsonPath = path.join(cwdPackageRoot, 'package.json');
-
-// Is there a version of Jest installed at our cwdPackageRoot?
-var cwdJestBinPath = path.join(cwdPackageRoot, 'node_modules/jest-cli');
-
-// Get a jest instance
-var jest;
-
-if (fs.existsSync(cwdJestBinPath)) {
-  // If a version of Jest was found installed in the CWD package, use that.
-  jest = require(cwdJestBinPath);
-
-  if (!jest.runCLI) {
-    console.error(
-      'This project requires an older version of Jest than what you have ' +
-      'installed globally.\n' +
-      'Please upgrade this project past Jest version 0.1.5'
-    );
-
-    process.on('exit', function(){
-       process.exit(1);
+    process.on('exit', function() {
+      process.exit(1);
     });
 
     return;
   }
-} else {
-  // Otherwise, load this version of Jest.
-  jest = require('../');
 
-  // If a package.json was found in the CWD package indicating a specific
-  // version of Jest to be used, bail out and ask the user to `npm install`
-  // first
-  if (fs.existsSync(cwdPkgJsonPath)) {
-    var cwdPkgJson = require(cwdPkgJsonPath);
-    var cwdPkgDeps = cwdPkgJson.dependencies;
-    var cwdPkgDevDeps = cwdPkgJson.devDependencies;
+  const cwd = process.cwd();
 
-    if (cwdPkgDeps && cwdPkgDeps['jest-cli']
-        || cwdPkgDevDeps && cwdPkgDevDeps['jest-cli']) {
+  // Is the cwd somewhere within an npm package?
+  let cwdPackageRoot = cwd;
+  while (!fs.existsSync(path.join(cwdPackageRoot, 'package.json'))) {
+    if (cwdPackageRoot === '/' || cwdPackageRoot.match(/^[A-Z]:\\/)) {
+      cwdPackageRoot = cwd;
+      break;
+    }
+    cwdPackageRoot = path.resolve(cwdPackageRoot, '..');
+  }
+
+  // Is there a package.json at our cwdPackageRoot that indicates that there
+  // should be a version of Jest installed?
+  const cwdPkgJsonPath = path.join(cwdPackageRoot, 'package.json');
+
+  // Is there a version of Jest installed at our cwdPackageRoot?
+  const cwdJestBinPath = path.join(cwdPackageRoot, 'node_modules/jest-cli');
+
+  // Get a jest instance
+  let jest;
+
+  if (fs.existsSync(cwdJestBinPath)) {
+    // If a version of Jest was found installed in the CWD package, use that.
+    jest = require(cwdJestBinPath);
+
+    if (!jest.runCLI) {
       console.error(
-        'Please run `npm install` to use the version of Jest intended for ' +
-        'this project.'
+        'This project requires an older version of Jest than what you have ' +
+        'installed globally.\n' +
+        'Please upgrade this project past Jest version 0.1.5'
       );
 
-      process.on('exit', function(){
+      process.on('exit', function() {
         process.exit(1);
       });
 
       return;
     }
-  }
-}
+  } else {
+    // Otherwise, load this version of Jest.
+    jest = require('../');
 
-function runJestCLI() {
-  jest.runCLI(argv, cwdPackageRoot, function(success) {
-    process.on('exit', function() {
-      process.exit(success ? 0 : 1);
-    });
-  });
-}
+    // If a package.json was found in the CWD package indicating a specific
+    // version of Jest to be used, bail out and ask the user to `npm install`
+    // first
+    if (fs.existsSync(cwdPkgJsonPath)) {
+      const cwdPkgJson = require(cwdPkgJsonPath);
+      const cwdPkgDeps = cwdPkgJson.dependencies;
+      const cwdPkgDevDeps = cwdPkgJson.devDependencies;
 
-/**
- * use watchman when possible
- */
-function getWatcher(callback) {
-  which(WATCHMAN_BIN, function(err, resolvedPath) {
-    var useWatchman = !err && resolvedPath;
-    var watchExtensions = argv.watchExtensions || 'js';
-    var globs = watchExtensions.split(',').map(function(extension) {
-      return '**/*' + extension;
-    });
-    var watcher = sane(cwdPackageRoot, {
-      glob: globs,
-      watchman: useWatchman
-    });
-    callback(watcher);
-  });
-}
+      if (cwdPkgDeps && cwdPkgDeps['jest-cli']
+          || cwdPkgDevDeps && cwdPkgDevDeps['jest-cli']) {
+        console.error(
+          'Please run `npm install` to use the version of Jest intended for ' +
+          'this project.'
+        );
 
-if (argv.watch !== undefined) {
-  getWatcher(function(watcher) {
-    watcher.on('all', runJestCLI);
-    if (argv.watch !== 'skip') {
-      runJestCLI();
+        process.on('exit', function() {
+          process.exit(1);
+        });
+
+        return;
+      }
     }
-  });
-} else {
-  runJestCLI();
+  }
+
+  function runJestCLI() {
+    jest.runCLI(argv, cwdPackageRoot, function(success) {
+      process.on('exit', function() {
+        process.exit(success ? 0 : 1);
+      });
+    });
+  }
+
+  /**
+   * use watchman when possible
+   */
+  function getWatcher(callback) {
+    which(WATCHMAN_BIN, function(err, resolvedPath) {
+      const watchman = !err && resolvedPath;
+      const watchExtensions = argv.watchExtensions || 'js';
+      const glob = watchExtensions.split(',').map(function(extension) {
+        return '**/*' + extension;
+      });
+      const watcher = sane(cwdPackageRoot, {glob, watchman});
+      callback(watcher);
+    });
+  }
+
+  if (argv.watch !== undefined) {
+    getWatcher(function(watcher) {
+      watcher.on('all', runJestCLI);
+      if (argv.watch !== 'skip') {
+        runJestCLI();
+      }
+    });
+  } else {
+    runJestCLI();
+  }
+
 }
+
+runJest();

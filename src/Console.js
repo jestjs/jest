@@ -29,9 +29,9 @@
 
 'use strict';
 
-var util = require('util');
-var Console = require('console').Console;
-var colors = require('./lib/colors');
+const util = require('util');
+const Console = require('console').Console;
+const colors = require('./lib/colors');
 
 class CustomConsole extends Console {
   warn() {

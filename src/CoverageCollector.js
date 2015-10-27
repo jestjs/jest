@@ -7,13 +7,14 @@
  */
 'use strict';
 
-var CoverageInstrumentor = require('cover/instrument').Instrumentor;
-var fs = require('graceful-fs');
-var path = require('path');
+const CoverageInstrumentor = require('cover/instrument').Instrumentor;
+const fs = require('graceful-fs');
+const path = require('path');
 
-var COVERAGE_TEMPLATE_PATH = path.join(__dirname, 'coverage.template');
+const COVERAGE_TEMPLATE_PATH = path.join(__dirname, 'coverage.template');
 
-var _memoizedCoverageTemplate = null;
+let _memoizedCoverageTemplate = null;
+
 function _getCoverageTemplate() {
   if (_memoizedCoverageTemplate === null) {
     _memoizedCoverageTemplate = require('lodash.template')(
@@ -46,14 +47,14 @@ CoverageCollector.prototype.getInstrumentedSource = function(storageVarName) {
 };
 
 CoverageCollector.prototype.extractRuntimeCoverageInfo = function() {
-  var instrumentationInfo = this._instrumentor.objectify();
-  var coverageInfo = {
+  const instrumentationInfo = this._instrumentor.objectify();
+  const coverageInfo = {
     coveredSpans: [],
     uncoveredSpans: [],
     sourceText: this._origSourceText,
   };
 
-  var nodeIndex;
+  let nodeIndex;
 
   // Find all covered spans
   for (nodeIndex in this._coverageDataStore.nodes) {

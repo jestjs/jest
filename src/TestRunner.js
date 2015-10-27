@@ -7,21 +7,21 @@
  */
 'use strict';
 
-var fs = require('graceful-fs');
-var os = require('os');
-var path = require('path');
-var assign = require('object-assign');
-var promiseDone = require('./lib/promiseDone');
-var through = require('through');
-var transform = require('./lib/transform');
-var utils = require('./lib/utils');
-var workerFarm = require('worker-farm');
-var Console = require('./Console');
-var promisify = require('./lib/promisify');
+const fs = require('graceful-fs');
+const os = require('os');
+const path = require('path');
+const assign = require('object-assign');
+const promiseDone = require('./lib/promiseDone');
+const through = require('through');
+const transform = require('./lib/transform');
+const utils = require('./lib/utils');
+const workerFarm = require('worker-farm');
+const Console = require('./Console');
+const promisify = require('./lib/promisify');
 
-var TEST_WORKER_PATH = require.resolve('./TestWorker');
+const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
-var DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS = {
 
   /**
    * When true, runs all tests serially in the current process, rather than
@@ -57,7 +57,7 @@ var DEFAULT_OPTIONS = {
   nodeArgv: process.execArgv.filter(arg => arg !== '--debug'),
 };
 
-var HIDDEN_FILE_RE = /\/\.[^\/]*$/;
+const HIDDEN_FILE_RE = /\/\.[^\/]*$/;
 function optionPathToRegex(p) {
   return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
 }
@@ -99,15 +99,15 @@ class TestRunner {
   }
 
   _constructModuleLoader(environment, customCfg) {
-    var config = customCfg || this._config;
-    var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
+    const config = customCfg || this._config;
+    const ModuleLoader = this._loadConfigDependencies().ModuleLoader;
     return this._getModuleLoaderResourceMap().then(function(resourceMap) {
       return new ModuleLoader(config, environment, resourceMap);
     });
   }
 
   _getModuleLoaderResourceMap() {
-    var ModuleLoader = this._loadConfigDependencies().ModuleLoader;
+    const ModuleLoader = this._loadConfigDependencies().ModuleLoader;
     if (this._moduleLoaderResourceMap === null) {
       if (this._opts.useCachedModuleLoaderResourceMap) {
         this._moduleLoaderResourceMap =
@@ -123,7 +123,7 @@ class TestRunner {
   _isTestFilePath(filePath) {
     // get filePath into OS-appropriate format before testing patterns
     filePath = path.normalize(filePath);
-    var testPathIgnorePattern =
+    const testPathIgnorePattern =
       this._config.testPathIgnorePatterns.length
       ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
       : null;
@@ -137,7 +137,7 @@ class TestRunner {
   }
 
   _loadConfigDependencies() {
-    var config = this._config;
+    const config = this._config;
     if (this._configDeps === null) {
       this._configDeps = {
         ModuleLoader: require(config.moduleLoader),
@@ -158,7 +158,7 @@ class TestRunner {
    * @return Stream<string> Stream of absolute path strings
    */
   streamTestPathsRelatedTo(paths) {
-    var pathStream = through(
+    const pathStream = through(
       function write(data) {
         if (data.isError) {
           this.emit('error', data);
@@ -172,9 +172,8 @@ class TestRunner {
       }
     );
 
-    var testRunner = this;
     this._constructModuleLoader().then(moduleLoader => {
-      var discoveredModules = {};
+      const discoveredModules = {};
 
       // If a path to a test file is given, make sure we consider that test as
       // related to itself...
@@ -183,21 +182,21 @@ class TestRunner {
       //  non-tests out at the end)
       paths.forEach(path => {
         discoveredModules[path] = true;
-        if (testRunner._isTestFilePath(path) && fs.existsSync(path)) {
+        if (this._isTestFilePath(path) && fs.existsSync(path)) {
           pathStream.write(path);
         }
       });
 
-      var modulesToSearch = [].concat(paths);
+      const modulesToSearch = [].concat(paths);
       while (modulesToSearch.length > 0) {
-        var modulePath = modulesToSearch.shift();
-        var depPaths = moduleLoader.getDependentsFromPath(modulePath);
+        const modulePath = modulesToSearch.shift();
+        const depPaths = moduleLoader.getDependentsFromPath(modulePath);
 
         depPaths.forEach(depPath => {
           if (!discoveredModules.hasOwnProperty(depPath)) {
             discoveredModules[depPath] = true;
             modulesToSearch.push(depPath);
-            if (testRunner._isTestFilePath(depPath) && fs.existsSync(depPath)) {
+            if (this._isTestFilePath(depPath) && fs.existsSync(depPath)) {
               pathStream.write(depPath);
             }
           }
@@ -230,7 +229,7 @@ class TestRunner {
    * @return Stream<string> Stream of absolute path strings
    */
   streamTestPathsMatching(pathPattern) {
-    var pathStream = through(
+    const pathStream = through(
       function write(data) {
         if (data.isError) {
           this.emit('error', data);
@@ -245,15 +244,15 @@ class TestRunner {
     );
 
     this._getModuleLoaderResourceMap().then(resourceMap => {
-      var resourcePathMap = resourceMap.resourcePathMap;
-      for (var i in resourcePathMap) {
+      const resourcePathMap = resourceMap.resourcePathMap;
+      for (const i in resourcePathMap) {
         // Sometimes the loader finds a path with no resource. This typically
         // happens if a file is recently deleted.
         if (!resourcePathMap[i]) {
           continue;
         }
 
-        var pathStr = resourcePathMap[i].path;
+        const pathStr = resourcePathMap[i].path;
         if (
           this._isTestFilePath(pathStr) &&
           pathPattern.test(pathStr)
@@ -320,11 +319,11 @@ class TestRunner {
     // Shallow copying lets us adjust the config object locally without
     // worrying about the external consequences of changing the config object
     // for needs that are local to this particular function call
-    var config = assign({}, this._config);
-    var configDeps = this._loadConfigDependencies();
+    const config = assign({}, this._config);
+    const configDeps = this._loadConfigDependencies();
 
-    var env = new configDeps.testEnvironment(config);
-    var testRunner = configDeps.testRunner;
+    const env = new configDeps.testEnvironment(config);
+    const testRunner = configDeps.testRunner;
 
     // Intercept console logs to colorize.
     env.global.console = new Console(
@@ -335,7 +334,7 @@ class TestRunner {
     // Pass the testFilePath into the runner, so it can be used to e.g.
     // configure test reporter output.
     env.testFilePath = testFilePath;
-    var dispose = function() {
+    const dispose = function() {
       env.dispose();
     };
 
@@ -378,7 +377,7 @@ class TestRunner {
         );
       }
 
-      var testExecStats = {start: Date.now()};
+      const testExecStats = {start: Date.now()};
       return testRunner(config, env, moduleLoader, testFilePath)
         .then(function(results) {
           testExecStats.end = Date.now();
@@ -425,7 +424,7 @@ class TestRunner {
       ));
     } catch (e) {}
 
-    var testPerformanceCache = this._testPerformanceCache;
+    const testPerformanceCache = this._testPerformanceCache;
     if (testPaths.length > this._opts.maxWorkers) {
       testPaths = testPaths
         .map(path => [path, fs.statSync(path).size])
@@ -444,8 +443,8 @@ class TestRunner {
   }
 
   _cacheTestResults(aggregatedResults) {
-    var performanceCacheFile = this._getTestPerformanceCachePath();
-    var testPerformanceCache = this._testPerformanceCache;
+    const performanceCacheFile = this._getTestPerformanceCachePath();
+    let testPerformanceCache = this._testPerformanceCache;
     if (!testPerformanceCache) {
       testPerformanceCache = this._testPerformanceCache = {};
     }
@@ -482,16 +481,18 @@ class TestRunner {
    *   testResults: the jest result info for all tests run
    */
   runTests(testPaths, reporter) {
-    var config = this._config;
+    const config = this._config;
     if (!reporter) {
-      var TestReporter = require(config.testReporter);
+      const TestReporter = require(config.testReporter);
       if (config.useStderr) {
+        /* eslint-disable fb-www/object-create-only-one-param */
         reporter = new TestReporter(
           Object.create(
             process,
             { stdout: { value: process.stderr } }
           )
         );
+        /* eslint-enable fb-www/object-create-only-one-param */
       } else {
         reporter = new TestReporter();
       }
@@ -499,7 +500,7 @@ class TestRunner {
 
     testPaths = this._sortTests(testPaths);
 
-    var aggregatedResults = {
+    const aggregatedResults = {
       success: null,
       startTime: null,
       numTotalTestSuites: testPaths.length,
@@ -515,7 +516,7 @@ class TestRunner {
 
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
-    var onTestResult = function(testPath, testResult) {
+    const onTestResult = function(testPath, testResult) {
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
@@ -534,8 +535,8 @@ class TestRunner {
       );
     };
 
-    var onRunFailure = function(testPath, err) {
-      var testResult = {
+    const onRunFailure = function(testPath, err) {
+      const testResult = {
         testFilePath: testPath,
         testExecError: err,
         suites: {},
@@ -550,7 +551,7 @@ class TestRunner {
     };
 
     aggregatedResults.startTime = Date.now();
-    var testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
+    const testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
     return testRun
       .then(function() {
@@ -578,7 +579,7 @@ class TestRunner {
   _createInBandTestRun(
     testPaths, onTestResult, onRunFailure
   ) {
-    var testSequence = Promise.resolve();
+    let testSequence = Promise.resolve();
     testPaths.forEach(testPath =>
       testSequence = testSequence
         .then(this.runTest.bind(this, testPath))
@@ -589,7 +590,7 @@ class TestRunner {
   }
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
-    var farm = workerFarm({
+    const farm = workerFarm({
       maxConcurrentCallsPerWorker: 1,
 
       // We allow for a couple of transient errors. Say something to do
@@ -599,7 +600,7 @@ class TestRunner {
       maxConcurrentWorkers: this._opts.maxWorkers,
     }, TEST_WORKER_PATH);
 
-    var runTest = promisify(farm);
+    const runTest = promisify(farm);
 
     return this._getModuleLoaderResourceMap()
       .then(() => Promise.all(testPaths.map(
@@ -623,7 +624,7 @@ class TestRunner {
 
 function _pathStreamToPromise(stream) {
   return new Promise((resolve, reject) => {
-    var paths = [];
+    const paths = [];
     stream.on('data', path => paths.push(path));
     stream.on('error', err => reject(err));
     stream.on('end', () => resolve(paths));

@@ -7,15 +7,15 @@
  */
 'use strict';
 
-var colors = require('./lib/colors');
-var formatFailureMessage = require('./lib/utils').formatFailureMessage;
-var formatMsg = require('./lib/utils').formatMsg;
-var path = require('path');
-var VerboseLogger = require('./lib/testLogger');
+const colors = require('./lib/colors');
+const formatFailureMessage = require('./lib/utils').formatFailureMessage;
+const formatMsg = require('./lib/utils').formatMsg;
+const path = require('path');
+const VerboseLogger = require('./lib/testLogger');
 
-var FAIL_COLOR = colors.RED_BG + colors.BOLD;
-var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
-var TEST_NAME_COLOR = colors.BOLD;
+const FAIL_COLOR = colors.RED_BG + colors.BOLD;
+const PASS_COLOR = colors.GREEN_BG + colors.BOLD;
+const TEST_NAME_COLOR = colors.BOLD;
 
 class DefaultTestReporter {
 
@@ -31,7 +31,7 @@ class DefaultTestReporter {
     this._config = config;
     this._printWaitingOn(aggregatedResults);
     if (this._config.verbose) {
-      var verboseLogger = new VerboseLogger(this._config, this._process);
+      const verboseLogger = new VerboseLogger(this._config, this._process);
       this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
     }
   }
@@ -39,17 +39,17 @@ class DefaultTestReporter {
   onTestResult(config, testResult, aggregatedResults) {
     this._clearWaitingOn();
 
-    var pathStr =
+    const pathStr =
       config.rootDir
       ? path.relative(config.rootDir, testResult.testFilePath)
       : testResult.testFilePath;
-    var allTestsPassed = testResult.numFailingTests === 0;
-    var testRunTime =
+    const allTestsPassed = testResult.numFailingTests === 0;
+    const testRunTime =
       testResult.perfStats
       ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
       : null;
 
-    var testRunTimeString;
+    let testRunTimeString;
     if (testRunTime !== null) {
       testRunTimeString = '(' + testRunTime + 's)';
       if (testRunTime > 2.5) {
@@ -57,7 +57,7 @@ class DefaultTestReporter {
       }
     }
 
-    var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
+    const resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
       testRunTimeString,
     ]);
 
@@ -73,7 +73,7 @@ class DefaultTestReporter {
     }
 
     if (!allTestsPassed) {
-      var failureMessage = formatFailureMessage(testResult, {
+      const failureMessage = formatFailureMessage(testResult, {
         rootPath: config.rootDir,
         useColor: !config.noHighlight,
       });
@@ -87,7 +87,7 @@ class DefaultTestReporter {
         // node exits in the middle of printing the result.
         // If you are reading this and you are from the future, this might not
         // be true any more.
-        for (var i = 0; i < failureMessage.length; i++) {
+        for (let i = 0; i < failureMessage.length; i++) {
           this._process.stdout.write(failureMessage.charAt(i));
         }
         this._process.stdout.write('\n');
@@ -103,10 +103,10 @@ class DefaultTestReporter {
   }
 
   onRunComplete(config, aggregatedResults) {
-    var numFailedTests = aggregatedResults.numFailedTests;
-    var numPassedTests = aggregatedResults.numPassedTests;
-    var numTotalTests = aggregatedResults.numTotalTests;
-    var runTime = (Date.now() - aggregatedResults.startTime) / 1000;
+    const numFailedTests = aggregatedResults.numFailedTests;
+    const numPassedTests = aggregatedResults.numPassedTests;
+    const numTotalTests = aggregatedResults.numTotalTests;
+    const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
 
     if (numTotalTests === 0) {
       return;
@@ -118,7 +118,7 @@ class DefaultTestReporter {
       }
     }
 
-    var results = '';
+    let results = '';
     if (numFailedTests) {
       results += this._formatMsg(
         numFailedTests + ' test' +
@@ -143,7 +143,7 @@ class DefaultTestReporter {
       colors.GREEN + colors.BOLD
     );
 
-    var numTestSuitesExecuted =
+    const numTestSuitesExecuted =
       aggregatedResults.numTotalTestSuites -
       aggregatedResults.numRuntimeErrorTestSuites;
 
@@ -158,7 +158,7 @@ class DefaultTestReporter {
   _clearWaitingOn() {
     // Don't write special chars in noHighlight mode
     // to get clean output for logs.
-    var command = this._config.noHighlight
+    const command = this._config.noHighlight
       ? '\n'
       : '\r\x1B[K';
     this._process.stdout.write(command);
@@ -169,7 +169,7 @@ class DefaultTestReporter {
   }
 
   _getResultHeader(passed, testName, columns) {
-    var passFailTag = passed
+    const passFailTag = passed
       ? this._formatMsg(' PASS ', PASS_COLOR)
       : this._formatMsg(' FAIL ', FAIL_COLOR);
 
@@ -180,15 +180,15 @@ class DefaultTestReporter {
   }
 
   _printWaitingOn(aggregatedResults) {
-    var completedTestSuites =
+    const completedTestSuites =
       aggregatedResults.numPassedTestSuites +
       aggregatedResults.numFailedTestSuites +
       aggregatedResults.numRuntimeErrorTestSuites;
-    var remainingTestSuites =
+    const remainingTestSuites =
       aggregatedResults.numTotalTestSuites -
       completedTestSuites;
     if (remainingTestSuites > 0) {
-      var pluralTestSuites =
+      const pluralTestSuites =
         remainingTestSuites === 1 ? 'test suite' : 'test suites';
       this._process.stdout.write(
         this._formatMsg(

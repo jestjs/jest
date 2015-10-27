@@ -19,7 +19,7 @@ var TestRunner = require('./TestRunner');
 
 var testRunner;
 
-module.exports = function(data, callback) {
+module.exports = function testWorker(data, callback) {
   if (!testRunner) {
     testRunner = new TestRunner(data.config, {
       useCachedModuleLoaderResourceMap: true,
