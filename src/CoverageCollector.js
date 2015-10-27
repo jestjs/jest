@@ -9,8 +9,9 @@
 
 var CoverageInstrumentor = require('cover/instrument').Instrumentor;
 var fs = require('graceful-fs');
+var path = require('path');
 
-var COVERAGE_TEMPLATE_PATH = require.resolve('./coverageTemplate');
+var COVERAGE_TEMPLATE_PATH = path.join(__dirname, 'coverage.template');
 
 var _memoizedCoverageTemplate = null;
 function _getCoverageTemplate() {
