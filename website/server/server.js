@@ -12,7 +12,7 @@ var PROJECT_ROOT = path.resolve(__dirname, '..');
 var FILE_SERVE_ROOT = path.join(PROJECT_ROOT, 'src');
 
 var port = argv.port;
-if (argv.$0 === 'node ./server/generate.js') {
+if (argv.$0.indexOf('node ./server/generate.js') !== -1) {
   // Using a different port so that you can publish the website
   // and keeping the server up at the same time.
   port = 8079;
