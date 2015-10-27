@@ -1,3 +1,5 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 'use strict';
 
 var utils = require.requireActual('../lib/utils');
