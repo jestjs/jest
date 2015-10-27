@@ -476,7 +476,7 @@ class TestRunner {
    *   numTotalTestSuites: total number of test suites considered
    *   numPassedTestSuites: number of test suites run and passed
    *   numFailedTestSuites: number of test suites run and failed
-   *   numFailedToRunTestSuites: number of test suites failed to run
+   *   numRuntimeErrorTestSuites: number of test suites failed to run
    *   numTotalTests: total number of tests executed
    *   numPassedTests: number of tests run and passed
    *   numFailedTests: number of tests run and failed
@@ -506,7 +506,7 @@ class TestRunner {
       numTotalTestSuites: testPaths.length,
       numPassedTestSuites: 0,
       numFailedTestSuites: 0,
-      numFailedToRunTestSuites: 0,
+      numRuntimeErrorTestSuites: 0,
       numTotalTests: 0,
       numPassedTests: 0,
       numFailedTests: 0,
@@ -544,7 +544,7 @@ class TestRunner {
         testResults: {},
       };
       aggregatedResults.testResults.push(testResult);
-      aggregatedResults.numFailedToRunTestSuites++;
+      aggregatedResults.numRuntimeErrorTestSuites++;
       if (reporter.onTestResult) {
         reporter.onTestResult(config, testResult, aggregatedResults);
       }
@@ -557,7 +557,7 @@ class TestRunner {
       .then(function() {
         aggregatedResults.success =
           aggregatedResults.numFailedTests === 0 &&
-          aggregatedResults.numFailedToRunTestSuites === 0;
+          aggregatedResults.numRuntimeErrorTestSuites === 0;
         if (reporter.onRunComplete) {
           reporter.onRunComplete(config, aggregatedResults);
         }

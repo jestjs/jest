@@ -55,6 +55,7 @@ module.exports = (results, codeCoverageFormatter) => {
     startTime: results.startTime,
     numTotalTests: results.numTotalTests,
     numTotalTestSuites: results.numTotalTestSuites,
+    numRuntimeErrorTestSuites: results.numRuntimeErrorTestSuites,
     numPassedTests: results.numPassedTests,
     numFailedTests: results.numFailedTests,
     testResults,
