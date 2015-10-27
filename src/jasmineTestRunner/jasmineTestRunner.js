@@ -14,30 +14,12 @@ var path = require('path');
 var utils = require('../lib/utils');
 var transform = require('../lib/transform');
 
-var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
-var jasmineFileContent =
-  fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
+const JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
+const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
 
-var JASMINE_ONLY_ROOT = path.dirname(require.resolve('jasmine-only'));
-var POTENTIALLY_PRECOMPILED_FILE = path.join(
-  JASMINE_ONLY_ROOT,
-  'app',
-  'js',
-  'jasmine_only.js'
-);
-var COFFEE_SCRIPT_FILE = path.join(
-  JASMINE_ONLY_ROOT,
-  'app',
-  'js',
-  'jasmine_only.coffee'
-);
-
-var jasmineOnlyContent =
-  fs.existsSync(POTENTIALLY_PRECOMPILED_FILE)
-  ? fs.readFileSync(POTENTIALLY_PRECOMPILED_FILE, 'utf8')
-  : require('coffee-script').compile(
-      fs.readFileSync(COFFEE_SCRIPT_FILE, 'utf8')
-    );
+const JASMINE_ONLY_PATH = 
+  require.resolve('../../vendor/jasmine-only/jasmine-only.js');
+const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   var hasKey = function(obj, keyName) {
