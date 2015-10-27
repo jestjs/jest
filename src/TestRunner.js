@@ -193,7 +193,6 @@ class TestRunner {
         var modulePath = modulesToSearch.shift();
         var depPaths = moduleLoader.getDependentsFromPath(modulePath);
 
-        /* jshint loopfunc:true */
         depPaths.forEach(depPath => {
           if (!discoveredModules.hasOwnProperty(depPath)) {
             discoveredModules[depPath] = true;

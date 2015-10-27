@@ -26,7 +26,6 @@
     "babel-eslint": "^4.1.3",
     "eslint": "^1.7.3",
     "fbjs-scripts": "^0.3.0",
-    "jshint": "^2.8.0",
     "node-find-files": "0.0.4"
   },
   "bin": {
@@ -40,8 +39,9 @@
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "prepublish": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && node bin/jest.js",
-    "test": "jshint --config=.jshintrc --exclude=src/coverageTemplate.js src && node bin/jest.js"
+    "lint": "eslint .",
+    "prepublish": "npm run lint && node bin/jest.js",
+    "test": "npm run lint && node bin/jest.js"
   },
   "jest": {
     "rootDir": "src",

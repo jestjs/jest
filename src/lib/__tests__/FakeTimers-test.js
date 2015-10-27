@@ -18,7 +18,6 @@ describe('FakeTimers', function() {
 
   describe('construction', function() {
     /* eslint-disable no-new */
-    /* jshint nonew:false */
     it('installs setTimeout mock', function() {
       var global = {};
       new FakeTimers(global);

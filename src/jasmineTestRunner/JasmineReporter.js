@@ -225,7 +225,6 @@ JasmineReporter.prototype._prettyPrint = function(obj, indent, cycleWeakMap) {
         this._prettyPrint(value, indent + keyIndent, cycleWeakMap)
       );
     }
-    /* jshint camelcase:false */
     delete obj.__jstest_pp_cycle__;
     return '{\n' + keysOutput.join(',\n') + '\n' + indent + '}';
   } else {
