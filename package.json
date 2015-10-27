@@ -41,8 +41,9 @@
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "prepublish": "eslint src && node bin/jest.js",
-    "test": "eslint src && node bin/jest.js"
+    "lint": "eslint .",
+    "prepublish": "npm run lint && node bin/jest.js",
+    "test": "npm run lint && node bin/jest.js"
   },
   "jest": {
     "rootDir": "src",
