@@ -7,10 +7,10 @@
 */
 'use strict';
 
-var DefaultTestReporter = require('./DefaultTestReporter');
-var istanbul = require('istanbul');
-var collector = new istanbul.Collector();
-var reporter = new istanbul.Reporter();
+const DefaultTestReporter = require('./DefaultTestReporter');
+const istanbul = require('istanbul');
+const collector = new istanbul.Collector();
+const reporter = new istanbul.Reporter();
 
 class IstanbulTestReporter extends DefaultTestReporter {
   onTestResult(config, testResult, aggregatedResults) {

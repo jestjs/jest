@@ -7,7 +7,7 @@
  */
 'use strict';
 
-module.exports = function(err) {
+module.exports = function done(err) {
   setTimeout(function() {
     throw err;
   }, 0);

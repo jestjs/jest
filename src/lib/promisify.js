@@ -7,7 +7,7 @@
  */
 'use strict';
 
-module.exports = function(fn) {
+module.exports = function promisify(fn) {
   return function() {
     var args = Array.prototype.slice.call(arguments);
     return new Promise((resolve, reject) => {

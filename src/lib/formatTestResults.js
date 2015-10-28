@@ -7,7 +7,7 @@
  */
 'use strict';
 
-var utils = require('./utils');
+const utils = require('./utils');
 
 const formatResult = (testResult, codeCoverageFormatter) => {
   const output = {

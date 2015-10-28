@@ -15,9 +15,9 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-var TestRunner = require('./TestRunner');
+const TestRunner = require('./TestRunner');
 
-var testRunner;
+let testRunner;
 
 module.exports = function testWorker(data, callback) {
   if (!testRunner) {

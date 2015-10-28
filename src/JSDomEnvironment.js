@@ -41,9 +41,6 @@ class JSDomEnvironment {
     this.global.process = process;
 
     // Setup defaults for navigator.onLine
-    // TODO: It's questionable as to whether this should go here
-    //       It's a pretty rarely depended on feature, so maybe tests that care
-    //       about it should just shim it themselves?)
     this.global.navigator.onLine = true;
 
     if (typeof setImmediate === 'function') {

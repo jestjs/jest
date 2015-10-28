@@ -7,9 +7,9 @@
  */
 'use strict';
 
-var colors = require('./colors');
-var fs = require('graceful-fs');
-var path = require('path');
+const colors = require('./colors');
+const fs = require('graceful-fs');
+const path = require('path');
 
 function replacePathSepForRegex(str) {
   if (path.sep === '\\') {
@@ -18,7 +18,7 @@ function replacePathSepForRegex(str) {
   return str;
 }
 
-var DEFAULT_CONFIG_VALUES = {
+const DEFAULT_CONFIG_VALUES = {
   bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
@@ -48,7 +48,7 @@ var DEFAULT_CONFIG_VALUES = {
 // This shows up in the stack trace when a test file throws an unhandled error
 // when evaluated. Node's require prints Object.<anonymous> when initializing
 // modules, so do the same here solely for visual consistency.
-var EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
@@ -64,8 +64,8 @@ function _replaceRootDirTags(rootDir, config) {
       }
 
       if (config !== null) {
-        var newConfig = {};
-        for (var configKey in config) {
+        const newConfig = {};
+        for (const configKey in config) {
           newConfig[configKey] =
             configKey === 'rootDir'
             ? config[configKey]
@@ -110,25 +110,25 @@ function escapeStrForRegex(str) {
  * [true, null, true, false]
  */
 function getLineCoverageFromCoverageInfo(coverageInfo) {
-  var coveredLines = {};
+  const coveredLines = {};
   coverageInfo.coveredSpans.forEach(function(coveredSpan) {
-    var startLine = coveredSpan.start.line;
-    var endLine = coveredSpan.end.line;
-    for (var i = startLine - 1; i < endLine; i++) {
+    const startLine = coveredSpan.start.line;
+    const endLine = coveredSpan.end.line;
+    for (let i = startLine - 1; i < endLine; i++) {
       coveredLines[i] = true;
     }
   });
 
-  var uncoveredLines = {};
+  const uncoveredLines = {};
   coverageInfo.uncoveredSpans.forEach(function(uncoveredSpan) {
-    var startLine = uncoveredSpan.start.line;
-    var endLine = uncoveredSpan.end.line;
-    for (var i = startLine - 1; i < endLine; i++) {
+    const startLine = uncoveredSpan.start.line;
+    const endLine = uncoveredSpan.end.line;
+    for (let i = startLine - 1; i < endLine; i++) {
       uncoveredLines[i] = true;
     }
   });
 
-  var sourceLines = coverageInfo.sourceText.trim().split('\n');
+  const sourceLines = coverageInfo.sourceText.trim().split('\n');
 
   return sourceLines.map(function(line, lineIndex) {
     if (uncoveredLines[lineIndex] === true) {
@@ -156,9 +156,9 @@ function getLineCoverageFromCoverageInfo(coverageInfo) {
  * You'd get: 2/3 = 0.666666
  */
 function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
-  var lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
-  var numMeasuredLines = 0;
-  var numCoveredLines = lineCoverage.reduce(function(counter, lineIsCovered) {
+  const lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
+  let numMeasuredLines = 0;
+  const numCoveredLines = lineCoverage.reduce(function(counter, lineIsCovered) {
     if (lineIsCovered !== null) {
       numMeasuredLines++;
       if (lineIsCovered === true) {
@@ -172,7 +172,7 @@ function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
 }
 
 function normalizeConfig(config) {
-  var newConfig = {};
+  const newConfig = {};
 
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
@@ -183,7 +183,7 @@ function normalizeConfig(config) {
 
   // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
-    var value;
+    let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
         value = Object.keys(config[key]).reduce(function(normObj, filePath) {
@@ -313,8 +313,8 @@ function _addDot(ext) {
 }
 
 function uniqueStrings(set) {
-  var newSet = [];
-  var has = {};
+  const newSet = [];
+  const has = {};
   set.forEach(function(item) {
     if (!has[item]) {
       has[item] = true;
@@ -338,7 +338,7 @@ function readFile(filePath) {
 
 function loadConfigFromFile(filePath) {
   return readFile(filePath).then(function(fileData) {
-    var config = JSON.parse(fileData);
+    const config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = process.cwd();
     } else {
@@ -349,10 +349,10 @@ function loadConfigFromFile(filePath) {
 }
 
 function loadConfigFromPackageJson(filePath) {
-  var pkgJsonDir = path.dirname(filePath);
+  const pkgJsonDir = path.dirname(filePath);
   return readFile(filePath).then(function(fileData) {
-    var packageJsonData = JSON.parse(fileData);
-    var config = packageJsonData.jest;
+    const packageJsonData = JSON.parse(fileData);
+    const config = packageJsonData.jest;
     config.name = packageJsonData.name;
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = pkgJsonDir;
@@ -365,9 +365,9 @@ function loadConfigFromPackageJson(filePath) {
 
 function runContentWithLocalBindings(environment, scriptContent, scriptPath,
                                      bindings) {
-  var boundIdents = Object.keys(bindings);
+  const boundIdents = Object.keys(bindings);
   try {
-    var wrapperScript = 'this["' + EVAL_RESULT_VARIABLE + '"] = ' +
+    const wrapperScript = 'this["' + EVAL_RESULT_VARIABLE + '"] = ' +
       'function (' + boundIdents.join(',') + ') {' +
       scriptContent +
       '\n};';
@@ -380,10 +380,10 @@ function runContentWithLocalBindings(environment, scriptContent, scriptPath,
     throw e;
   }
 
-  var wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
+  const wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
   delete environment.global[EVAL_RESULT_VARIABLE];
 
-  var bindingValues = boundIdents.map(function(ident) {
+  const bindingValues = boundIdents.map(function(ident) {
     return bindings[ident];
   });
 
@@ -408,27 +408,27 @@ function runContentWithLocalBindings(environment, scriptContent, scriptPath,
  * @return {String}
  */
 function formatFailureMessage(testResult, config) {
-  var rootPath = config.rootPath;
-  var useColor = config.useColor;
+  const rootPath = config.rootPath;
+  const useColor = config.useColor;
 
-  var colorize = useColor ? colors.colorize : function(str) { return str; };
-  var ancestrySeparator = ' \u203A ';
-  var descBullet = colorize('\u25cf ', colors.BOLD);
-  var msgBullet = '  - ';
-  var msgIndent = msgBullet.replace(/./g, ' ');
+  const colorize = useColor ? colors.colorize : function(str) { return str; };
+  const ancestrySeparator = ' \u203A ';
+  const descBullet = colorize('\u25cf ', colors.BOLD);
+  const msgBullet = '  - ';
+  const msgIndent = msgBullet.replace(/./g, ' ');
 
   if (testResult.testExecError) {
-    var text = testResult.testExecError;
+    const text = testResult.testExecError;
     return descBullet + colorize('Runtime Error', colors.BOLD) + '\n' + text;
   }
 
   return testResult.testResults.filter(function(result) {
     return result.failureMessages.length !== 0;
   }).map(function(result) {
-    var failureMessages = result.failureMessages.map(function(errorMsg) {
+    const failureMessages = result.failureMessages.map(function(errorMsg) {
       errorMsg = errorMsg.split('\n').map(function(line) {
         // Extract the file path from the trace line.
-        var matches = line.match(/(^\s+at .*?\()([^()]+)(:[0-9]+:[0-9]+\).*$)/);
+        let matches = line.match(/(^\s+at .*?\()([^()]+)(:[0-9]+:[0-9]+\).*$)/);
         if (!matches) {
           matches = line.match(/(^\s+at )([^()]+)(:[0-9]+:[0-9]+.*$)/);
           if (!matches) {
@@ -452,7 +452,7 @@ function formatFailureMessage(testResult, config) {
       return msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent);
     }).join('\n');
 
-    var testTitleAncestry = result.ancestorTitles.map(function(title) {
+    const testTitleAncestry = result.ancestorTitles.map(function(title) {
       return colorize(title, colors.BOLD);
     }).join(ancestrySeparator) + ancestrySeparator;
 
@@ -470,9 +470,9 @@ function formatMsg(msg, color, _config) {
 }
 
 function deepCopy(obj) {
-  var newObj = {};
-  var value;
-  for (var key in obj) {
+  const newObj = {};
+  let value;
+  for (const key in obj) {
     value = obj[key];
     if (typeof value === 'object' && value !== null) {
       value = deepCopy(value);
@@ -484,7 +484,7 @@ function deepCopy(obj) {
 
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp([
+const STACK_TRACE_LINE_IGNORE_RE = new RegExp([
   '^timers.js$',
   '^' + path.resolve(__dirname, '..', 'lib', 'moduleMocker.js'),
   '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine'),
