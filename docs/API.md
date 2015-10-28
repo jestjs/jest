@@ -227,7 +227,7 @@ module.exports = class SomeClass {
 // OtherModule.test.js
 let SomeClass = require("SomeClass")
 let mMock = jest.genMockFn()
-somaClass.mockImplementation(() => {
+SomeClass.mockImplementation(() => {
   return {
     m: mMock
   }
