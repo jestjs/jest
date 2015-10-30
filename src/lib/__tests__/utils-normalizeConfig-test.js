@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -23,7 +25,7 @@ describe('utils-normalizeConfig', function() {
   // expected strings for checking path patterns.
   function joinForPattern() {
     return Array.prototype.join.call(
-      arguments, 
+      arguments,
       utils.escapeStrForRegex(path.sep)
     );
   }

@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -42,14 +44,14 @@ describe('HasteModuleLoader', function() {
 
   pit('passes config data through to jest.envData', function() {
     return buildLoader().then(function(loader) {
-      var envData = loader.requireModule(null, 'jest-runtime').getTestEnvData();
+      var envData = loader.getJestRuntime().getTestEnvData();
       expect(envData).toEqual(config.testEnvData);
     });
   });
 
   pit('freezes jest.envData object', function() {
     return buildLoader().then(function(loader) {
-      var envData = loader.requireModule(null, 'jest-runtime').getTestEnvData();
+      var envData = loader.getJestRuntime().getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);
     });
   });

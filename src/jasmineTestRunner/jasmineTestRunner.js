@@ -17,7 +17,7 @@ var transform = require('../lib/transform');
 const JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
 
-const JASMINE_ONLY_PATH = 
+const JASMINE_ONLY_PATH =
   require.resolve('../../vendor/jasmine-only/jasmine-only.js');
 const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
 
@@ -250,10 +250,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
-      moduleLoader.requireModule(
-        __filename,
-        'jest-runtime'
-      ).resetModuleRegistry();
+      moduleLoader.getJestRuntime().resetModuleRegistry();
     }
   });
 

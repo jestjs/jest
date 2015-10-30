@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -56,8 +58,7 @@ describe('HasteModuleLoader', function() {
 
     pit('doesnt mock modules when explicitly dontMock()ed', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'jest-runtime')
-          .dontMock('RegularModule');
+        loader.getJestRuntime().dontMock('RegularModule');
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -68,8 +69,8 @@ describe('HasteModuleLoader', function() {
       'denormalized module name',
       function() {
         return buildLoader().then(function(loader) {
-          loader.requireModuleOrMock(__filename, 'jest-runtime')
-          .dontMock('./test_root/RegularModule');
+          loader.getJestRuntime(__filename)
+            .dontMock('./test_root/RegularModule');
           var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
           expect(exports.isRealModule).toBe(true);
         });
@@ -78,7 +79,7 @@ describe('HasteModuleLoader', function() {
 
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'jest-runtime').autoMockOff();
+        loader.getJestRuntime().autoMockOff();
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -96,7 +97,7 @@ describe('HasteModuleLoader', function() {
       'available',
       function() {
         return buildLoader().then(function(loader) {
-          loader.requireModuleOrMock(__filename, 'jest-runtime').autoMockOff();
+          loader.getJestRuntime(__filename).autoMockOff();
           var exports = loader.requireModuleOrMock(
             __filename,
             'ManuallyMocked'
@@ -108,7 +109,7 @@ describe('HasteModuleLoader', function() {
 
     pit('resolves mapped module names and unmocks them by default', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'jest-runtime');
+        loader.getJestRuntime(__filename);
         var exports =
           loader.requireModuleOrMock(__filename, 'image!not-really-a-module');
         expect(exports.isGlobalImageStub).toBe(true);

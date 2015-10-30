@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -53,10 +55,10 @@ describe('nodeHasteModuleLoader', function() {
           var regularModule = testRequire('RegularModule');
           var origModuleStateValue = regularModule.getModuleStateValue();
 
-          testRequire('jest-runtime').dontMock('RegularModule');
+          loader.getJestRuntime().dontMock('RegularModule');
 
           // Generate a mock for a module with side effects
-          testRequire('jest-runtime').genMockFromModule(
+          loader.getJestRuntime().genMockFromModule(
             'ModuleWithSideEffects'
           );
 

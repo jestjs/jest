@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -176,9 +178,7 @@ describe('HasteModuleLoader', function() {
           'marked with .dontMock()',
           function() {
             return buildLoader().then(function(loader) {
-              loader.requireModule(__filename, 'jest-runtime')
-              .dontMock('ManuallyMocked');
-
+              loader.getJestRuntime(__filename).dontMock('ManuallyMocked');
               var exports = loader.requireModule(__filename, 'ManuallyMocked');
               expect(exports.isManualMockModule).toBe(false);
             });

@@ -1,3 +1,12 @@
+## 0.7.0
+
+* Removed `mock-modules`, `node-haste` and `mocks` virtual modules. This is a
+  breaking change of undocumented public API. Usage of this API can safely be
+  automatically updated through an automated codemod:
+ * Example: http://astexplorer.net/#/zrybZ6UvRA
+ * Codemod: https://github.com/cpojer/js-codemod/blob/master/transforms/jest-update.js
+ * jscodeshift: https://github.com/facebook/jscodeshift
+
 ## 0.6.1
 
 * Updated jsdom to 7.0.2.
