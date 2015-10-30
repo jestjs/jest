@@ -7,7 +7,7 @@
  */
 'use strict';
 
-require('mock-modules').autoMockOff();
+jest.autoMockOff();
 
 describe('FakeTimers', function() {
   var FakeTimers;
