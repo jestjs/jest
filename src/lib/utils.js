@@ -81,7 +81,7 @@ function _replaceRootDirTags(rootDir, config) {
 
       return path.resolve(
         rootDir,
-        './' + path.normalize(config.substr('<rootDir>'.length))
+        path.normalize('./' + config.substr('<rootDir>'.length))
       );
   }
   return config;

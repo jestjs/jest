@@ -47,7 +47,10 @@
     "rootDir": "src",
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
-    ]
+    ],
+    "globals": {
+      "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"
+    }
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"

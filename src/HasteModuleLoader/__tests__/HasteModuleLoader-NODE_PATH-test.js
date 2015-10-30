@@ -21,7 +21,8 @@ describe('HasteModuleLoader', function() {
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
-    name: 'HasteModuleLoader-tests',
+    cacheDirectory: global.CACHE_DIRECTORY,
+    name: 'HasteModuleLoader-NODE_PATH-tests',
     rootDir: path.resolve(__dirname, 'test_root'),
   });
 

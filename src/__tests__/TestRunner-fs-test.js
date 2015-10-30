@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -13,6 +15,8 @@ var path = require('path');
 var TestRunner = require('../TestRunner');
 var utils = require('../lib/utils');
 
+var name = 'TestRunner-fs';
+
 describe('TestRunner-fs', function() {
 
   describe('testPathsMatching', function() {
@@ -20,7 +24,9 @@ describe('TestRunner-fs', function() {
     pit('finds tests with default file extensions', function() {
       var rootDir = path.resolve(__dirname, 'test_root');
       var runner = new TestRunner(utils.normalizeConfig({
-        rootDir: rootDir,
+        cacheDirectory: global.CACHE_DIRECTORY,
+        name,
+        rootDir,
         testDirectoryName: '__testtests__',
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
@@ -34,7 +40,9 @@ describe('TestRunner-fs', function() {
     pit('finds tests with similar but custom file extensions', function() {
       var rootDir = path.resolve(__dirname, 'test_root');
       var runner = new TestRunner(utils.normalizeConfig({
-        rootDir: rootDir,
+        cacheDirectory: global.CACHE_DIRECTORY,
+        name,
+        rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['jsx'],
       }));
@@ -49,7 +57,9 @@ describe('TestRunner-fs', function() {
     pit('finds tests with totally custom foobar file extensions', function() {
       var rootDir = path.resolve(__dirname, 'test_root');
       var runner = new TestRunner(utils.normalizeConfig({
-        rootDir: rootDir,
+        cacheDirectory: global.CACHE_DIRECTORY,
+        name,
+        rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['foobar'],
       }));
@@ -64,7 +74,9 @@ describe('TestRunner-fs', function() {
     pit('finds tests with many kinds of file extensions', function() {
       var rootDir = path.resolve(__dirname, 'test_root');
       var runner = new TestRunner(utils.normalizeConfig({
-        rootDir: rootDir,
+        cacheDirectory: global.CACHE_DIRECTORY,
+        name,
+        rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx'],
       }));

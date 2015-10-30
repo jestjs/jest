@@ -21,7 +21,8 @@ describe('nodeHasteModuleLoader', function() {
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
-    name: 'nodeHasteModuleLoader-tests',
+    cacheDirectory: global.CACHE_DIRECTORY,
+    name: 'nodeHasteModuleLoader-genMockFromModule-tests',
     rootDir: path.resolve(__dirname, 'test_root'),
   });
 

@@ -23,7 +23,8 @@ describe('HasteModuleLoader', function() {
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
     config = utils.normalizeConfig({
-      name: 'HasteModuleLoader-tests',
+      cacheDirectory: global.CACHE_DIRECTORY,
+      name: 'HasteModuleLoader-getTestEnvData-tests',
       rootDir: path.resolve(__dirname, 'test_root'),
       testEnvData: {someTestData: 42},
     });
