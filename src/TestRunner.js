@@ -101,9 +101,9 @@ class TestRunner {
   _constructModuleLoader(environment, customCfg) {
     const config = customCfg || this._config;
     const ModuleLoader = this._loadConfigDependencies().ModuleLoader;
-    return this._getModuleLoaderResourceMap().then(function(resourceMap) {
-      return new ModuleLoader(config, environment, resourceMap);
-    });
+    return this._getModuleLoaderResourceMap().then(
+      resourceMap => new ModuleLoader(config, environment, resourceMap)
+    );
   }
 
   _getModuleLoaderResourceMap() {
@@ -334,10 +334,6 @@ class TestRunner {
     // Pass the testFilePath into the runner, so it can be used to e.g.
     // configure test reporter output.
     env.testFilePath = testFilePath;
-    const dispose = function() {
-      env.dispose();
-    };
-
     return this._constructModuleLoader(env, config).then(moduleLoader => {
       // This is a kind of janky way to ensure that we only collect coverage
       // information on modules that are immediate dependencies of the
@@ -379,7 +375,7 @@ class TestRunner {
 
       const testExecStats = {start: Date.now()};
       return testRunner(config, env, moduleLoader, testFilePath)
-        .then(function(results) {
+        .then(results => {
           testExecStats.end = Date.now();
 
           results.perfStats = testExecStats;
@@ -391,15 +387,16 @@ class TestRunner {
 
           return results;
         });
-    }).then(function(results) {
-      return Promise.resolve(dispose).then(function() {
+    }).then(
+      results => Promise.resolve().then(() => {
+        env.dispose();
         return results;
-      });
-    }, function(err) {
-      return Promise.resolve(dispose).then(function() {
+      }),
+      err => Promise.resolve().then(() => {
+        env.dispose();
         throw err;
-      });
-    });
+      })
+    );
   }
 
   _getTestPerformanceCachePath() {
@@ -516,7 +513,7 @@ class TestRunner {
 
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
-    const onTestResult = function(testPath, testResult) {
+    const onTestResult = (testPath, testResult) => {
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
@@ -535,7 +532,7 @@ class TestRunner {
       );
     };
 
-    const onRunFailure = function(testPath, err) {
+    const onRunFailure = (testPath, err) => {
       const testResult = {
         testFilePath: testPath,
         testExecError: err,
@@ -554,7 +551,7 @@ class TestRunner {
     const testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
     return testRun
-      .then(function() {
+      .then(() => {
         aggregatedResults.success =
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
