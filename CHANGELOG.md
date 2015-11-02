@@ -6,6 +6,9 @@
  * Example: http://astexplorer.net/#/zrybZ6UvRA
  * Codemod: https://github.com/cpojer/js-codemod/blob/master/transforms/jest-update.js
  * jscodeshift: https://github.com/facebook/jscodeshift
+* Removed `navigator.onLine` and `mockSetReadOnlyProperty` from the global jsdom
+  environment. Use `window.navigator.onLine = true;` in your test setup and
+  `Object.defineProperty` instead.
 
 ## 0.6.1
 
