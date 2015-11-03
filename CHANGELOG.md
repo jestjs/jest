@@ -1,5 +1,9 @@
 ## 0.7.0
 
+* Fixed a memory leak with test contexts. Jest now properly cleans up
+  test environments after each test. Added `--logHeapUsage` to log memory
+  usage after each test. Note: this is option is meant for debugging memory
+  leaks and might significantly slow down your test run.
 * Removed `mock-modules`, `node-haste` and `mocks` virtual modules. This is a
   breaking change of undocumented public API. Usage of this API can safely be
   automatically updated through an automated codemod:

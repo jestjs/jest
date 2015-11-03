@@ -261,6 +261,7 @@ function normalizeConfig(config) {
       case 'moduleFileExtensions':
       case 'noHighlight':
       case 'noStackTrace':
+      case 'logHeapUsage':
       case 'cache':
       case 'verbose':
         value = config[key];

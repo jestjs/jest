@@ -165,6 +165,13 @@ const argv = optimist
       ),
       type: 'boolean',
     },
+    logHeapUsage: {
+      description: _wrapDesc(
+        'Logs the heap usage after every test. Useful to debug memory ' +
+        'leaks. Use together with `--runInBand` and `--expose-gc` in node.'
+      ),
+      type: 'boolean',
+    },
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {

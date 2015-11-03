@@ -26,7 +26,9 @@ class JSDomEnvironment {
 
     // Forward some APIs
     this.global.Buffer = Buffer;
-    this.global.process = process;
+    // `this.global.process` is mutated in FakeTimers. Make a copy of the
+    // object for the jsdom environment to prevent memory leaks.
+    this.global.process = Object.assign({}, process);
     this.global.setImmediate = setImmediate;
     this.global.clearImmediate = clearImmediate;
 

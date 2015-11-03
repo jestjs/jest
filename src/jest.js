@@ -109,6 +109,10 @@ function _promiseConfig(argv, packageRoot) {
       config.useStderr = true;
     }
 
+    if (argv.logHeapUsage) {
+      config.logHeapUsage = argv.logHeapUsage;
+    }
+
     config.noStackTrace = argv.noStackTrace;
 
     return config;

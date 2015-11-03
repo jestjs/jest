@@ -49,16 +49,25 @@ class DefaultTestReporter {
       ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
       : null;
 
-    let testRunTimeString;
+    let testDetail = [];
     if (testRunTime !== null) {
-      testRunTimeString = '(' + testRunTime + 's)';
-      if (testRunTime > 2.5) {
-        testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
-      }
+      testDetail.push(
+        testRunTime > 2.5
+          ? this._formatMsg(testRunTime + 's', FAIL_COLOR)
+          : testRunTime + 's'
+      );
+    }
+
+    if (testResult.memoryUsage) {
+      const toMB = bytes => Math.floor(bytes / 1024 / 1024);
+      testDetail.push(
+        `${toMB(testResult.memoryUsage)} MB current`,
+        `${toMB(testResult.maxMemoryUsage)} MB max`
+      );
     }
 
     const resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
-      testRunTimeString,
+      (testDetail.length ? '(' + testDetail.join(', ') + ')' : null),
     ]);
 
     /*

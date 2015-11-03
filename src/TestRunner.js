@@ -70,13 +70,14 @@ function optionPathToRegex(p) {
  * @param options See DEFAULT_OPTIONS for descriptions on the various options
  *                and their defaults.
  */
-
 class TestRunner {
 
   constructor(config, options) {
     this._config = config;
     this._configDeps = null;
     this._moduleLoaderResourceMap = null;
+    // Maximum memory usage if `logHeapUsage` is enabled.
+    this._maxMemoryUsage = 0;
     this._testPathDirsRegExp = new RegExp(
       config.testPathDirs
         .map(dir => optionPathToRegex(dir))
@@ -91,6 +92,7 @@ class TestRunner {
           .join('|') +
       ')$'
     );
+
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
@@ -375,22 +377,27 @@ class TestRunner {
 
       const testExecStats = {start: Date.now()};
       return testRunner(config, env, moduleLoader, testFilePath)
-        .then(results => {
+        .then(result => {
           testExecStats.end = Date.now();
 
-          results.perfStats = testExecStats;
-          results.testFilePath = testFilePath;
-          results.coverage =
+          result.perfStats = testExecStats;
+          result.testFilePath = testFilePath;
+          result.coverage =
             config.collectCoverage
             ? moduleLoader.getAllCoverageInfo()
             : {};
 
-          return results;
+          return result;
         });
     }).then(
-      results => Promise.resolve().then(() => {
+      result => Promise.resolve().then(() => {
         env.dispose();
-        return results;
+
+        if (config.logHeapUsage) {
+          this._addMemoryUsage(result);
+        }
+
+        return result;
       }),
       err => Promise.resolve().then(() => {
         env.dispose();
@@ -483,12 +490,10 @@ class TestRunner {
       const TestReporter = require(config.testReporter);
       if (config.useStderr) {
         /* eslint-disable fb-www/object-create-only-one-param */
-        reporter = new TestReporter(
-          Object.create(
-            process,
-            { stdout: { value: process.stderr } }
-          )
-        );
+        reporter = new TestReporter(Object.create(
+          process,
+          {stdout: {value: process.stderr}}
+        ));
         /* eslint-enable fb-www/object-create-only-one-param */
       } else {
         reporter = new TestReporter();
@@ -563,9 +568,7 @@ class TestRunner {
       .then(this._cacheTestResults.bind(this));
   }
 
-  _createTestRun(
-    testPaths, onTestResult, onRunFailure
-  ) {
+  _createTestRun(testPaths, onTestResult, onRunFailure) {
     if (this._opts.runInBand || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
     } else {
@@ -573,9 +576,7 @@ class TestRunner {
     }
   }
 
-  _createInBandTestRun(
-    testPaths, onTestResult, onRunFailure
-  ) {
+  _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
     let testSequence = Promise.resolve();
     testPaths.forEach(testPath =>
       testSequence = testSequence
@@ -616,6 +617,16 @@ class TestRunner {
             }
           })
       ))).then(() => workerFarm.end(farm));
+  }
+
+  _addMemoryUsage(result) {
+    if (global.gc) {
+      global.gc();
+    }
+    const memoryUsage = process.memoryUsage().heapUsed;
+    this._maxMemoryUsage = Math.max(this._maxMemoryUsage, memoryUsage);
+    result.maxMemoryUsage = this._maxMemoryUsage;
+    result.memoryUsage = memoryUsage;
   }
 }
 
