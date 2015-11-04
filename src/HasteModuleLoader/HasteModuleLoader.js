@@ -340,6 +340,7 @@ class Loader {
       realAbsPath = moduleName;
     } else {
       moduleType = 'user';
+      realAbsPath = this._moduleNameToPath(currPath, moduleName);
       if (
         IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
         (
