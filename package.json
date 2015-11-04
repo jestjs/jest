@@ -48,6 +48,7 @@
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
     ],
+    "testEnvironment_EXPERIMENTAL": "<rootDir>/environments/NodeEnvironment",
     "globals": {
       "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"
     }

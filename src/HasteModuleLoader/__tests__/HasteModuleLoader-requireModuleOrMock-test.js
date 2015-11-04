@@ -10,14 +10,14 @@
 'use strict';
 
 jest.autoMockOff();
-jest.mock('../../JSDomEnvironment');
+jest.mock('../../environments/JSDOMEnvironment');
 
 var path = require('path');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
-  var JSDomEnvironment;
+  var JSDOMEnvironment;
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
@@ -37,7 +37,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
-      var mockEnvironment = new JSDomEnvironment(CONFIG);
+      var mockEnvironment = new JSDOMEnvironment(CONFIG);
       return Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
@@ -46,7 +46,7 @@ describe('HasteModuleLoader', function() {
 
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
-    JSDomEnvironment = require('../../JSDomEnvironment');
+    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
 
   describe('requireModuleOrMock', function() {

@@ -7,11 +7,11 @@
  */
 'use strict';
 
-const FakeTimers = require('./lib/FakeTimers');
-const utils = require('./lib/utils');
+const FakeTimers = require('../lib/FakeTimers');
+const installCommonGlobals = require('./installCommonGlobals');
 const vm = require('vm');
 
-class JSDomEnvironment {
+class JSDOMEnvironment {
 
   constructor(config) {
     // lazy require
@@ -19,39 +19,37 @@ class JSDomEnvironment {
       url: config.testURL,
     });
     this.global = this.document.defaultView;
-
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-
-    // Forward some APIs
-    this.global.Buffer = Buffer;
-    // `this.global.process` is mutated in FakeTimers. Make a copy of the
-    // object for the jsdom environment to prevent memory leaks.
-    this.global.process = Object.assign({}, process);
-    this.global.setImmediate = setImmediate;
-    this.global.clearImmediate = clearImmediate;
-
+    installCommonGlobals(this.global, config.globals);
     this.fakeTimers = new FakeTimers(this.global);
-
-    Object.assign(this.global, utils.deepCopy(config.globals));
+    this._disposed = false;
   }
 
   dispose() {
     this.global.close();
+    this.global = null;
+    this.document = null;
+    this.fakeTimers = null;
+    this._disposed = true;
   }
 
   runSourceText(sourceText, filename) {
-    vm.runInContext(sourceText, this.document._ownerDocument._global, {
-      filename,
-      displayErrors: false,
-    });
+    if (!this._disposed) {
+      vm.runInContext(sourceText, this.document._ownerDocument._global, {
+        filename,
+        displayErrors: false,
+      });
+    }
   }
 
   runWithRealTimers(cb) {
-    this.fakeTimers.runWithRealTimers(cb);
+    if (!this._disposed) {
+      this.fakeTimers.runWithRealTimers(cb);
+    }
   }
 
 }
 
-module.exports = JSDomEnvironment;
+module.exports = JSDOMEnvironment;

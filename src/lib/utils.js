@@ -30,7 +30,7 @@ const DEFAULT_CONFIG_VALUES = {
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
-  testEnvironment: require.resolve('../JSDomEnvironment'),
+  testEnvironment: require.resolve('../environments/JSDOMEnvironment'),
   testEnvData: {},
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
@@ -238,6 +238,9 @@ function normalizeConfig(config) {
           );
         });
         break;
+      case 'testEnvironment_EXPERIMENTAL':
+        newConfig.testEnvironment = config[key];
+        return newConfig;
       case 'bail':
       case 'preprocessCachingDisabled':
       case 'coverageReporters':
