@@ -13,7 +13,6 @@ const path = require('path');
 const assign = require('object-assign');
 const promiseDone = require('./lib/promiseDone');
 const through = require('through');
-const transform = require('./lib/transform');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
 const Console = require('./Console');
@@ -359,20 +358,7 @@ class TestRunner {
       }
 
       if (config.setupEnvScriptFile) {
-        utils.runContentWithLocalBindings(
-          env,
-          transform(config.setupEnvScriptFile, config),
-          config.setupEnvScriptFile,
-          {
-            __dirname: path.dirname(config.setupEnvScriptFile),
-            __filename: config.setupEnvScriptFile,
-            global: env.global,
-            require: moduleLoader.constructBoundRequire(
-              config.setupEnvScriptFile
-            ),
-            jest: moduleLoader.getJestRuntime(config.setupEnvScriptFile),
-          }
-        );
+        moduleLoader.requireModule(null, config.setupEnvScriptFile);
       }
 
       const testExecStats = {start: Date.now()};

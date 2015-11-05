@@ -1,3 +1,9 @@
+## Unreleased
+
+* `node` was added to the defaults in `moduleFileExtensions`.
+* Updated the list of node core modules that are properly being recognized by
+  the module loader.
+
 ## 0.7.1
 
 * Correctly map `process.on` into jsdom environments, fixes a bug introduced in

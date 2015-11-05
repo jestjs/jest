@@ -317,7 +317,7 @@ For example, the following would create a global `__DEV__` variable set to `true
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
 ### `config.moduleFileExtensions` [array<string>]
-(default: `['js', 'json']`)
+(default: `['js', 'json', 'node']`)
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 

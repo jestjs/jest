@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "main": "src/jest.js",
   "dependencies": {
     "cover": "^0.2.9",

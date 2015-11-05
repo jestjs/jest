@@ -24,7 +24,7 @@ const DEFAULT_CONFIG_VALUES = {
   coverageCollector: require.resolve('../IstanbulCollector'),
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
-  moduleFileExtensions: ['js', 'json'],
+  moduleFileExtensions: ['js', 'json', 'node'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],

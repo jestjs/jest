@@ -12,7 +12,6 @@ var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
 var path = require('path');
 var utils = require('../lib/utils');
-var transform = require('../lib/transform');
 
 const JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
@@ -181,26 +180,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
       };
 
     if (config.setupTestFrameworkScriptFile) {
-      var setupScriptContent = transform(
-        config.setupTestFrameworkScriptFile,
-        config
-      );
-
-      utils.runContentWithLocalBindings(
-        environment,
-        setupScriptContent,
-        config.setupTestFrameworkScriptFile,
-        {
-          __dirname: path.dirname(config.setupTestFrameworkScriptFile),
-          __filename: config.setupTestFrameworkScriptFile,
-          require: moduleLoader.constructBoundRequire(
-            config.setupTestFrameworkScriptFile
-          ),
-          jest: moduleLoader.getJestRuntime(
-            config.setupTestFrameworkScriptFile
-          ),
-        }
-      );
+      moduleLoader.requireModule(null, config.setupTestFrameworkScriptFile);
     }
   });
 
