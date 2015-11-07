@@ -692,7 +692,7 @@ class Loader {
    * Given a module name, return the *real* (un-mocked) version of said
    * module.
    */
-  requireModule(currPath, moduleName, bypassRegistryCache) {
+  requireModule(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
     let modulePath;
 
@@ -744,9 +744,7 @@ class Loader {
     }
 
     let moduleObj;
-    if (!bypassRegistryCache) {
-      moduleObj = this._moduleRegistry[modulePath];
-    }
+    moduleObj = this._moduleRegistry[modulePath];
     if (!moduleObj) {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
@@ -756,10 +754,7 @@ class Loader {
         exports: {},
       };
 
-      if (!bypassRegistryCache) {
-        this._moduleRegistry[modulePath] = moduleObj;
-      }
-
+      this._moduleRegistry[modulePath] = moduleObj;
       if (path.extname(modulePath) === '.json') {
         moduleObj.exports = this._environment.global.JSON.parse(
           fs.readFileSync(modulePath, 'utf8')
