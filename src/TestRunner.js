@@ -207,36 +207,6 @@ class TestRunner {
   }
 
   /**
-   * For use by external users of TestRunner as a means of optimization.
-   *
-   * Imagine the following scenario executing in a child worker process:
-   *
-   * var runner = new TestRunner(config, {
-   *   moduleLoaderResourceMap: serializedResourceMap
-   * });
-   * someOtherAyncProcess.then(function() {
-   *   runner.runTestsParallel();
-   * });
-   *
-   * Here we wouldn't start deserializing the resource map (passed to us from
-   * the parent) until runner.runTestsParallel() is called. At the time of this
-   * writing, resource map deserialization is slow and a bottleneck on running
-   * the first test in a child.
-   *
-   * So this API gives scenarios such as the one above an optimization path to
-   * potentially start deserializing the resource map while we wait on the
-   * someOtherAsyncProcess to resolve (rather that doing it after it's
-   * resolved).
-   */
-  preloadResourceMap() {
-    this._getModuleLoaderResourceMap().then(null, promiseDone);
-  }
-
-  preloadConfigDependencies() {
-    this._loadConfigDependencies();
-  }
-
-  /**
    * Run the given single test file path.
    * This just contains logic for running a single test given it's file path.
    *
