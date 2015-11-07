@@ -56,10 +56,10 @@ describe('nodeHasteModuleLoader', function() {
           var regularModule = testRequire('RegularModule');
           var origModuleStateValue = regularModule.getModuleStateValue();
 
-          loader.getJestRuntime().dontMock('RegularModule');
+          loader.__getJestRuntimeForTest().dontMock('RegularModule');
 
           // Generate a mock for a module with side effects
-          loader.getJestRuntime().genMockFromModule(
+          loader.__getJestRuntimeForTest().genMockFromModule(
             'ModuleWithSideEffects'
           );
 

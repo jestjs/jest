@@ -179,7 +179,8 @@ describe('HasteModuleLoader', function() {
           'marked with .dontMock()',
           function() {
             return buildLoader().then(function(loader) {
-              loader.getJestRuntime(__filename).dontMock('ManuallyMocked');
+              loader.__getJestRuntimeForTest(__filename)
+                .dontMock('ManuallyMocked');
               var exports = loader.requireModule(__filename, 'ManuallyMocked');
               expect(exports.isManualMockModule).toBe(false);
             });

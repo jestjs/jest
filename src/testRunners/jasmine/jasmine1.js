@@ -220,7 +220,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
-      moduleLoader.getJestRuntime().resetModuleRegistry();
+      moduleLoader.resetModuleRegistry();
     }
   });
 

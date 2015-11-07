@@ -45,14 +45,14 @@ describe('HasteModuleLoader', function() {
 
   pit('passes config data through to jest.envData', function() {
     return buildLoader().then(function(loader) {
-      var envData = loader.getJestRuntime().getTestEnvData();
+      var envData = loader.__getJestRuntimeForTest().getTestEnvData();
       expect(envData).toEqual(config.testEnvData);
     });
   });
 
   pit('freezes jest.envData object', function() {
     return buildLoader().then(function(loader) {
-      var envData = loader.getJestRuntime().getTestEnvData();
+      var envData = loader.__getJestRuntimeForTest().getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);
     });
   });

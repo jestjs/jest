@@ -796,10 +796,6 @@ class Loader {
     }
   }
 
-  getJestRuntime(dir) {
-    return this._createRuntimeFor(dir);
-  }
-
   _createRuntimeFor(currPath) {
     const runtime = {
       addMatchers: matchers => {
@@ -852,23 +848,7 @@ class Loader {
       },
 
       resetModuleRegistry: () => {
-        var envGlobal = this._environment.global;
-        Object.keys(envGlobal).forEach(key => {
-          const globalMock = envGlobal[key];
-          if (
-            (typeof globalMock === 'object' && globalMock !== null) ||
-            typeof globalMock === 'function'
-          ) {
-            globalMock._isMockFunction && globalMock.mockClear();
-          }
-        });
-
-        if (envGlobal.mockClearTimers) {
-          envGlobal.mockClearTimers();
-        }
-
         this.resetModuleRegistry();
-
         return runtime;
       },
 
@@ -894,6 +874,27 @@ class Loader {
   resetModuleRegistry() {
     this._mockRegistry = {};
     this._moduleRegistry = {};
+
+    if (this._environment && this._environment.global) {
+      var envGlobal = this._environment.global;
+      Object.keys(envGlobal).forEach(key => {
+        const globalMock = envGlobal[key];
+        if (
+          (typeof globalMock === 'object' && globalMock !== null) ||
+          typeof globalMock === 'function'
+        ) {
+          globalMock._isMockFunction && globalMock.mockClear();
+        }
+      });
+
+      if (envGlobal.mockClearTimers) {
+        envGlobal.mockClearTimers();
+      }
+    }
+  }
+
+  __getJestRuntimeForTest(dir) {
+    return this._createRuntimeFor(dir);
   }
 }
 
