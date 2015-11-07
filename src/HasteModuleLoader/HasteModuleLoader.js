@@ -175,12 +175,6 @@ class Loader {
     const filename = moduleObj.__filename;
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-
-    // Every module receives a mock parent so they don't assume they are run
-    // standalone.
-    moduleObj.parent = mockParentModule;
-    moduleObj.require = this.constructBoundRequire(filename);
-
     const onlyCollectFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage =
       (this._config.collectCoverage === true && !onlyCollectFrom) ||
@@ -201,6 +195,11 @@ class Loader {
     this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
+
+    // Every module receives a mock parent so they don't assume they are run
+    // standalone.
+    moduleObj.parent = mockParentModule;
+    moduleObj.require = this.constructBoundRequire(filename);
 
     // Use this name for the module wrapper for consistency with node.
     const evalResultVariable = 'Object.<anonymous>';
