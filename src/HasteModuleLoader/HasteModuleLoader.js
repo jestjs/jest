@@ -18,9 +18,7 @@ const os = require('os');
 const path = require('path');
 const resolve = require('resolve');
 const transform = require('../lib/transform');
-const utils = require('../lib/utils');
 
-const COVERAGE_STORAGE_VAR_NAME = '____JEST_COVERAGE_DATA____';
 const NODE_PATH =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
@@ -168,52 +166,58 @@ class Loader {
    * objects.
    */
   _execModule(moduleObj) {
-    const modulePath = moduleObj.__filename;
-    let moduleContent = transform(modulePath, this._config);
+    // If the environment was disposed, prevent this module from
+    // being executed.
+    if (!this._environment.global) {
+      return;
+    }
 
-    // Every module, if loaded for jest, should have a parent
-    // so they don't think they are run standalone
+    const filename = moduleObj.__filename;
+    let moduleContent = transform(filename, this._config);
+    let collectorStore;
+
+    // Every module receives a mock parent so they don't assume they are run
+    // standalone.
     moduleObj.parent = mockParentModule;
-    moduleObj.require = this.constructBoundRequire(modulePath);
-
-    const moduleLocalBindings = {
-      module: moduleObj,
-      exports: moduleObj.exports,
-      require: moduleObj.require,
-      __dirname: path.dirname(modulePath),
-      __filename: modulePath,
-      global: this._environment.global,
-      jest: this._createRuntimeFor(modulePath),
-    };
+    moduleObj.require = this.constructBoundRequire(filename);
 
     const onlyCollectFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage =
-      this._config.collectCoverage === true && !onlyCollectFrom
-      || (onlyCollectFrom && onlyCollectFrom[modulePath] === true);
+      (this._config.collectCoverage === true && !onlyCollectFrom) ||
+      (onlyCollectFrom && onlyCollectFrom[filename] === true);
 
     if (shouldCollectCoverage) {
-      if (!hasOwnProperty.call(this._coverageCollectors, modulePath)) {
-        this._coverageCollectors[modulePath] =
-          new this._CoverageCollector(moduleContent, modulePath);
+      if (!hasOwnProperty.call(this._coverageCollectors, filename)) {
+        this._coverageCollectors[filename] =
+          new this._CoverageCollector(moduleContent, filename);
       }
-      const collector = this._coverageCollectors[modulePath];
-      moduleLocalBindings[COVERAGE_STORAGE_VAR_NAME] =
-        collector.getCoverageDataStore();
+      const collector = this._coverageCollectors[filename];
+      collectorStore = collector.getCoverageDataStore();
       moduleContent =
-        collector.getInstrumentedSource(COVERAGE_STORAGE_VAR_NAME);
+        collector.getInstrumentedSource('____JEST_COVERAGE_DATA____');
     }
 
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
-    this._currentlyExecutingModulePath = modulePath;
-
+    this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
-    this._isCurrentlyExecutingManualMock = modulePath;
+    this._isCurrentlyExecutingManualMock = filename;
 
-    utils.runContentWithLocalBindings(
-      this._environment,
-      moduleContent,
-      modulePath,
-      moduleLocalBindings
+    // Use this name for the module wrapper for consistency with node.
+    const evalResultVariable = 'Object.<anonymous>';
+    const wrapper = 'this["' + evalResultVariable + '"] = function(module, exports, require, __dirname, __filename, global, jest, ____JEST_COVERAGE_DATA____) {' + moduleContent + '\n};';
+    this._environment.runSourceText(wrapper, filename);
+    const wrapperFunc = this._environment.global[evalResultVariable];
+    delete this._environment.global[evalResultVariable];
+    wrapperFunc.call(
+      moduleObj.exports, // module context
+      moduleObj,
+      moduleObj.exports,
+      moduleObj.require,
+      path.dirname(filename),
+      filename,
+      this._environment.global,
+      this._createRuntimeFor(filename),
+      collectorStore
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
