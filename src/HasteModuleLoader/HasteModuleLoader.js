@@ -6,7 +6,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
- /* eslint-disable fb-www/require-args */
+/* eslint-disable fb-www/require-args */
 'use strict';
 
 const fs = require('graceful-fs');
