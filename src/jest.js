@@ -77,6 +77,18 @@ function _testRunnerOptions(argv) {
   return options;
 }
 
+function _getTestPathPattern(config, argv) {
+    // multiple test patterns might have been specified in multiple places
+    // the best user experience is to run them all
+    return [config.testPathPattern, argv.testPathPattern, argv._].reduce(
+        (array, patterns) => {
+            if (patterns && patterns.length) {
+                array = array.concat(patterns);
+            }
+            return array;
+        }, []);
+}
+
 function _promiseConfig(argv, packageRoot) {
   return _promiseRawConfig(argv, packageRoot).then(function(config) {
     if (argv.coverage) {
@@ -112,6 +124,8 @@ function _promiseConfig(argv, packageRoot) {
     if (argv.logHeapUsage) {
       config.logHeapUsage = argv.logHeapUsage;
     }
+
+    config.testPathPattern = _getTestPathPattern(config, argv);
 
     config.noStackTrace = argv.noStackTrace;
 
@@ -178,9 +192,9 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
     });
 }
 
-function _promisePatternMatchingTestPaths(argv, testRunner) {
-  const pattern = argv.testPathPattern ||
-    ((argv._ && argv._.length) ? argv._.join('|') : '.*');
+function _promisePatternMatchingTestPaths(config, testRunner) {
+  const array = config.testPathPattern;
+  const pattern = (array && array.length) ? array.join('|') : '.*';
 
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
@@ -201,7 +215,7 @@ function runCLI(argv, packageRoot, onComplete) {
     const testRunner = new TestRunner(config, _testRunnerOptions(argv));
     const testPaths = argv.onlyChanged ?
       _promiseOnlyChangedTestPaths(testRunner, config) :
-      _promisePatternMatchingTestPaths(argv, testRunner);
+      _promisePatternMatchingTestPaths(config, testRunner);
     return testPaths.then(function(testPaths) {
       return testRunner.runTests(testPaths);
     });
