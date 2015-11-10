@@ -91,7 +91,6 @@ class Loader {
     this._explicitlySetMocks = {};
     this._isCurrentlyExecutingManualMock = null;
     this._mockMetaDataCache = {};
-    this._nodeModuleProjectConfigNameToResource = null;
     this._resourceMap = resourceMap;
     this._reverseDependencyMap = null;
     this._shouldAutoMock = true;
@@ -239,7 +238,7 @@ class Loader {
   }
 
   _generateMock(currPath, moduleName) {
-    const modulePath = this._moduleNameToPath(currPath, moduleName);
+    const modulePath = this._resolveModuleName(currPath, moduleName);
 
     if (!hasOwnProperty.call(this._mockMetaDataCache, modulePath)) {
       // This allows us to handle circular dependencies while generating an
@@ -345,7 +344,7 @@ class Loader {
           this._getResource('JSMock', moduleName) === undefined
         )
       ) {
-        const absolutePath = this._moduleNameToPath(currPath, moduleName);
+        const absolutePath = this._resolveModuleName(currPath, moduleName);
         if (absolutePath === undefined) {
           throw new Error(
             `Cannot find module '${moduleName}' from '${currPath || '.'}'`
@@ -412,7 +411,7 @@ class Loader {
       .then(() => this);
   }
 
-  _moduleNameToPath(currPath, moduleName) {
+  _resolveModuleName(currPath, moduleName) {
     // Check if the resolver knows about this module
     if (
       this._resolvedModules[currPath] &&
@@ -421,28 +420,12 @@ class Loader {
       return this._resolvedModules[currPath][moduleName].path;
     } else {
       // Otherwise it is likely a node_module.
-      return this._nodeModuleNameToPath(currPath, moduleName);
+      return this._resolveNodeModule(currPath, moduleName);
     }
-
-    const resource = this._getResource('JS', moduleName);
-    if (!resource) {
-      return this._nodeModuleNameToPath(currPath, moduleName);
-    }
-    return resource.path;
   }
 
-  _nodeModuleNameToPath(currPath, moduleName) {
-    // Handle module names like require('jest/lib/util')
-    let subModulePath = null;
-    let moduleProjectPart = moduleName;
+  _resolveNodeModule(currPath, moduleName) {
     const basedir = path.dirname(currPath);
-    if (/\//.test(moduleName)) {
-      const projectPathParts = moduleName.split('/');
-      moduleProjectPart = projectPathParts.shift();
-      subModulePath = projectPathParts.join('/');
-    }
-
-    let resolveError = null;
     try {
       return resolve.sync(moduleName, {
         basedir,
@@ -455,42 +438,10 @@ class Loader {
       // resolve.sync uses the basedir instead of currPath and therefore
       // doesn't throw an accurate error message.
       const relativePath = path.relative(basedir, currPath);
-      resolveError = new Error(
+      throw new Error(
         `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
       );
     }
-
-    // Memoize the project name -> package.json resource lookup map
-    if (this._nodeModuleProjectConfigNameToResource === null) {
-      this._nodeModuleProjectConfigNameToResource = {};
-      const resources =
-        this._resourceMap.getAllResourcesByType('ProjectConfiguration');
-      resources.forEach(
-        res => this._nodeModuleProjectConfigNameToResource[res.data.name] = res
-      );
-    }
-
-    // Get the resource for the package.json file
-    const resource =
-      this._nodeModuleProjectConfigNameToResource[moduleProjectPart];
-    if (!resource) {
-      throw resolveError;
-    }
-
-    // Make sure the resource path is above the currPath in the fs path
-    // tree. If so, just use node's resolve
-    const resourceDirname = path.dirname(resource.path);
-    if (resourceDirname.indexOf(basedir) > 0) {
-      throw resolveError;
-    }
-
-    if (subModulePath === null) {
-      subModulePath = hasOwnProperty.call(resource.data, 'main')
-        ? resource.data.main
-        : 'index.js';
-    }
-
-    return this._moduleNameToPath(resource.path, './' + subModulePath);
   }
 
   /**
@@ -516,7 +467,7 @@ class Loader {
         const manualMockResource = this._getResource('JSMock', moduleName);
         let modulePath;
         try {
-          modulePath = this._moduleNameToPath(currPath, moduleName);
+          modulePath = this._resolveModuleName(currPath, moduleName);
         } catch (e) {
           // If there isn't a real module, we don't have a path to match
           // against the unmockList regexps. If there is also not a manual
@@ -565,7 +516,7 @@ class Loader {
     const moduleRequire = this.requireModuleOrMock.bind(this, modulePath);
 
     moduleRequire.resolve = moduleName => {
-      const ret = this._moduleNameToPath(modulePath, moduleName);
+      const ret = this._resolveModuleName(modulePath, moduleName);
       if (!ret) {
         throw new Error(`Module(${moduleName}) not found!`);
       }
@@ -687,7 +638,7 @@ class Loader {
     if (manualMockResource) {
       modulePath = manualMockResource.path;
     } else {
-      modulePath = this._moduleNameToPath(currPath, moduleName);
+      modulePath = this._resolveModuleName(currPath, moduleName);
 
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file in that dir.
@@ -780,7 +731,7 @@ class Loader {
     }
 
     if (!modulePath) {
-      modulePath = this._moduleNameToPath(currPath, moduleName);
+      modulePath = this._resolveModuleName(currPath, moduleName);
     }
 
     // Always natively require the jasmine runner.
