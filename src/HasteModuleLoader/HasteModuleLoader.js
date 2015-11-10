@@ -889,9 +889,6 @@ class Loader {
     }
   }
 
-  __getJestRuntimeForTest(dir) {
-    return this._createRuntimeFor(dir);
-  }
 }
 
 module.exports = Loader;

@@ -10,49 +10,59 @@
 'use strict';
 
 jest.autoMockOff();
+jest.mock('../../environments/JSDOMEnvironment');
 
 var path = require('path');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
-  var mockEnvironment;
+  var JSDOMEnvironment;
   var resourceMap;
 
   var config;
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   beforeEach(function() {
+    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
     HasteModuleLoader = require('../HasteModuleLoader');
     config = utils.normalizeConfig({
       cacheDirectory: global.CACHE_DIRECTORY,
       name: 'HasteModuleLoader-getTestEnvData-tests',
-      rootDir: path.resolve(__dirname, 'test_root'),
+      rootDir,
       testEnvData: {someTestData: 42},
     });
   });
 
   function buildLoader() {
+    let promise;
     if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(config).then(function(map) {
+      promise = HasteModuleLoader.loadResourceMap(config).then(function(map) {
         resourceMap = map;
         return buildLoader();
       });
     } else {
-      return Promise.resolve(
+      var mockEnvironment = new JSDOMEnvironment({});
+      promise = Promise.resolve(
         new HasteModuleLoader(config, mockEnvironment, resourceMap)
       );
     }
+
+    return promise.then(loader => loader.resolveDependencies('./root.js'));
   }
 
   pit('passes config data through to jest.envData', function() {
     return buildLoader().then(function(loader) {
-      var envData = loader.__getJestRuntimeForTest().getTestEnvData();
+      const root = loader.requireModule(rootDir, rootPath)
+      var envData = root.jest.getTestEnvData();
       expect(envData).toEqual(config.testEnvData);
     });
   });
 
   pit('freezes jest.envData object', function() {
     return buildLoader().then(function(loader) {
-      var envData = loader.__getJestRuntimeForTest().getTestEnvData();
+      const root = loader.requireModule(rootDir, rootPath)
+      var envData = root.jest.getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);
     });
   });

@@ -20,18 +20,18 @@ describe('HasteModuleLoader', function() {
   var JSDOMEnvironment;
   var resourceMap;
 
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   var CONFIG = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModuleOrMock-tests',
-    rootDir: path.resolve(__dirname, 'test_root'),
+    rootDir,
     moduleNameMapper: {
       '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
     },
   });
 
-  const rootDir = path.join(__dirname, 'test_root');
-  const rootPath = path.join(rootDir, 'root.js');
   function buildLoader() {
     let promise;
     if (!resourceMap) {
@@ -64,7 +64,8 @@ describe('HasteModuleLoader', function() {
 
     pit('doesnt mock modules when explicitly dontMock()ed', function() {
       return buildLoader().then(function(loader) {
-        loader.__getJestRuntimeForTest().dontMock('RegularModule');
+        const root = loader.requireModule(rootDir, rootPath);
+        root.jest.dontMock('RegularModule');
         var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -75,8 +76,8 @@ describe('HasteModuleLoader', function() {
       'denormalized module name',
       function() {
         return buildLoader().then(function(loader) {
-          loader.__getJestRuntimeForTest(rootPath)
-            .dontMock('./RegularModule');
+          const root = loader.requireModule(rootDir, rootPath);
+          root.jest.dontMock('./RegularModule');
           var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
           expect(exports.isRealModule).toBe(true);
         });
@@ -85,7 +86,8 @@ describe('HasteModuleLoader', function() {
 
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
-        loader.__getJestRuntimeForTest().autoMockOff();
+        const root = loader.requireModule(rootDir, rootPath);
+        root.jest.autoMockOff();
         var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -103,7 +105,8 @@ describe('HasteModuleLoader', function() {
       'available',
       function() {
         return buildLoader().then(function(loader) {
-          loader.__getJestRuntimeForTest().autoMockOff();
+          const root = loader.requireModule(rootDir, rootPath);
+          root.jest.autoMockOff();
           var exports = loader.requireModuleOrMock(
             rootPath,
             'ManuallyMocked'

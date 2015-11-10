@@ -25,7 +25,7 @@ describe('HasteModuleLoader', function() {
   var CONFIG = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireMock-tests',
-    rootDir: path.resolve(__dirname, 'test_root'),
+    rootDir,
   });
 
   function buildLoader() {
