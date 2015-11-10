@@ -232,61 +232,64 @@ class TestRunner {
     // Pass the testFilePath into the runner, so it can be used to e.g.
     // configure test reporter output.
     env.testFilePath = testFilePath;
-    return this._constructModuleLoader(env, config).then(moduleLoader => {
-      // This is a kind of janky way to ensure that we only collect coverage
-      // information on modules that are immediate dependencies of the
-      // test file.
-      //
-      // Collecting coverage info on more than that is often not useful as
-      // *usually*, when one is looking for coverage info, one is only looking
-      // for coverage info on the files under test. Since a test file is just a
-      // regular old module that can depend on whatever other modules it likes,
-      // it's usually pretty hard to tell which of those dependencies is/are the
-      // "module(s)" under test.
-      //
-      // I'm not super happy with having to inject stuff into the config object
-      // mid-stream here, but it gets the job done.
-      if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
-        config.collectCoverageOnlyFrom = {};
-        moduleLoader.getDependenciesFromPath(testFilePath)
-          // Skip over built-in (non-absolute paths) and node modules
-          .filter(p => path.isAbsolute(p) && !(/node_modules/.test(p)))
-          .forEach(p => config.collectCoverageOnlyFrom[p] = true);
-      }
-
-      if (config.setupEnvScriptFile) {
-        moduleLoader.requireModule(null, config.setupEnvScriptFile);
-      }
-
-      const testExecStats = {start: Date.now()};
-      return testRunner(config, env, moduleLoader, testFilePath)
-        .then(result => {
-          testExecStats.end = Date.now();
-
-          result.perfStats = testExecStats;
-          result.testFilePath = testFilePath;
-          result.coverage =
-            config.collectCoverage
-            ? moduleLoader.getAllCoverageInfo()
-            : {};
-
-          return result;
-        });
-    }).then(
-      result => Promise.resolve().then(() => {
-        env.dispose();
-
-        if (config.logHeapUsage) {
-          this._addMemoryUsage(result);
+    return this._constructModuleLoader(env, config)
+      .then(moduleLoader => moduleLoader.resolveDependencies(testFilePath))
+      .then(moduleLoader => {
+        // This is a kind of janky way to ensure that we only collect coverage
+        // information on modules that are immediate dependencies of the
+        // test file.
+        //
+        // Collecting coverage info on more than that is often not useful as
+        // *usually*, when one is looking for coverage info, one is only looking
+        // for coverage info on the files under test. Since a test file is just a
+        // regular old module that can depend on whatever other modules it likes,
+        // it's usually pretty hard to tell which of those dependencies is/are the
+        // "module(s)" under test.
+        //
+        // I'm not super happy with having to inject stuff into the config object
+        // mid-stream here, but it gets the job done.
+        if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
+          config.collectCoverageOnlyFrom = {};
+          moduleLoader.getDependenciesFromPath(testFilePath)
+            // Skip over built-in (non-absolute paths) and node modules
+            .filter(p => path.isAbsolute(p) && !(/node_modules/.test(p)))
+            .forEach(p => config.collectCoverageOnlyFrom[p] = true);
         }
 
-        return result;
-      }),
-      err => Promise.resolve().then(() => {
-        env.dispose();
-        throw err;
+        if (config.setupEnvScriptFile) {
+          moduleLoader.requireModule(null, config.setupEnvScriptFile);
+        }
+
+        const testExecStats = {start: Date.now()};
+        return testRunner(config, env, moduleLoader, testFilePath)
+          .then(result => {
+            testExecStats.end = Date.now();
+
+            result.perfStats = testExecStats;
+            result.testFilePath = testFilePath;
+            result.coverage =
+              config.collectCoverage
+              ? moduleLoader.getAllCoverageInfo()
+              : {};
+
+            return result;
+          });
       })
-    );
+      .then(
+        result => Promise.resolve().then(() => {
+          env.dispose();
+
+          if (config.logHeapUsage) {
+            this._addMemoryUsage(result);
+          }
+
+          return result;
+        }),
+        err => Promise.resolve().then(() => {
+          env.dispose();
+          throw err;
+        })
+      );
   }
 
   _getTestPerformanceCachePath() {

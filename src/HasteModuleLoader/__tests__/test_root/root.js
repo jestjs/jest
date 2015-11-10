@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule ModuleWithSideEffects
+ * @providesModule root
  */
 
-'use strict';
+require('GlobalImageStub');
 
-var RegularModule = require('RegularModule');
-
-RegularModule.setModuleStateValue('Side effect value');
-
-exports.fn = () => '42';
+require('ManuallyMocked');
+require('ModuleWithSideEffects');
+require('RegularModule');
+require('RelativeImageStub');
+exports.jest = jest;

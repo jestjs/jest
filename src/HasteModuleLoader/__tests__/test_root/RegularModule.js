@@ -25,7 +25,14 @@ function getModuleStateValue() {
   return moduleStateValue;
 }
 
+function dontCallMe() {
+  // Make sure ModuleWithSideEffects is part of the module map for
+  // RegularModule.
+  require('ModuleWithSideEffects');
+}
+
 exports.getModuleStateValue = getModuleStateValue;
 exports.isRealModule = true;
 exports.setModuleStateValue = setModuleStateValue;
 exports.parent = module.parent;
+exports.jest = jest;

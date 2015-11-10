@@ -14,6 +14,7 @@ const hasteLoaders = require('node-haste/lib/loaders');
 const mkdirp = require('mkdirp');
 const moduleMocker = require('../lib/moduleMocker');
 const NodeHaste = require('node-haste/lib/Haste');
+const DependencyGraph = require('node-haste2/lib/DependencyGraph');
 const os = require('os');
 const path = require('path');
 const resolve = require('resolve');
@@ -81,6 +82,7 @@ function _getCacheFilePath(config) {
 
 class Loader {
   constructor(config, environment, resourceMap) {
+    /* eslint-disable fb-www/object-create-only-one-param */
     this._config = config;
     this._coverageCollectors = {};
     this._currentlyExecutingModulePath = '';
@@ -95,6 +97,22 @@ class Loader {
     this._shouldAutoMock = true;
     this._configShouldMockModuleNames = {};
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
+
+    this._depGraph = new DependencyGraph({
+      roots: [config.rootDir],
+      cache: {
+        get: (a, b, cb) => Promise.resolve(cb()),
+        invalidate: () => {},
+      },
+      fileWatcher: {
+        on: function() {
+          return this;
+        },
+        isWatchman: () => Promise.resolve(false),
+      },
+    });
+    this._resolvedModules = Object.create(null);
+    /* eslint-enable fb-www/object-create-only-one-param */
 
     if (config.collectCoverage) {
       this._CoverageCollector = require(config.coverageCollector);
@@ -370,8 +388,42 @@ class Loader {
     return moduleID.split(path.delimiter)[1];
   }
 
+  resolveDependencies(path) {
+    // TODO make sure this works
+    if (this._resolvedModules[path]) {
+      return Promise.resolve(this);
+    }
+
+    return this._depGraph.load()
+      .then(() => this._depGraph.getDependencies(path))
+      .then(response => {
+        return response.finalize().then(() => {
+          response.dependencies.forEach(module => {
+            if (!this._resolvedModules[module.path]) {
+              this._resolvedModules[module.path] = {};
+            }
+
+            response.getResolvedDependencyPairs(module).forEach((pair) =>
+              this._resolvedModules[module.path][pair[0]] = pair[1]
+            )
+          });
+        });
+      })
+      .then(() => this);
+  }
 
   _moduleNameToPath(currPath, moduleName) {
+    // Check if the resolver knows about this module
+    if (
+      this._resolvedModules[currPath] &&
+      this._resolvedModules[currPath][moduleName]
+    ) {
+      return this._resolvedModules[currPath][moduleName].path;
+    } else {
+      // Otherwise it is likely a node_module.
+      return this._nodeModuleNameToPath(currPath, moduleName);
+    }
+
     const resource = this._getResource('JS', moduleName);
     if (!resource) {
       return this._nodeModuleNameToPath(currPath, moduleName);
@@ -402,8 +454,9 @@ class Loader {
     } catch (e) {
       // resolve.sync uses the basedir instead of currPath and therefore
       // doesn't throw an accurate error message.
+      const relativePath = path.relative(basedir, currPath);
       resolveError = new Error(
-        `Cannot find module '${moduleName}' from '${currPath || '.'}'`
+        `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
       );
     }
 
@@ -829,11 +882,7 @@ class Loader {
         return frozenCopy;
       },
 
-      genMockFromModule: moduleName => this._generateMock(
-        this._currentlyExecutingModulePath,
-        moduleName
-      ),
-
+      genMockFromModule: moduleName => this._generateMock(currPath, moduleName),
       genMockFunction: moduleMocker.getMockFunction,
       genMockFn: moduleMocker.getMockFunction,
 

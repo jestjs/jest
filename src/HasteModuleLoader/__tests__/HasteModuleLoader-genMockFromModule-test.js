@@ -20,10 +20,11 @@ describe('nodeHasteModuleLoader', function() {
   var JSDOMEnvironment;
   var resourceMap;
 
+  var rootDir = path.resolve(__dirname, 'test_root');
   var CONFIG = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'nodeHasteModuleLoader-genMockFromModule-tests',
-    rootDir: path.resolve(__dirname, 'test_root'),
+    rootDir,
   });
 
   function buildLoader() {
@@ -50,23 +51,35 @@ describe('nodeHasteModuleLoader', function() {
       'does not cause side effects in the rest of the module system when ' +
       'generating a mock',
       function() {
-        return buildLoader().then(function(loader) {
-          var testRequire = loader.requireModule.bind(loader, __filename);
+        return buildLoader()
+          .then(
+            loader => Promise.all([
+              loader.resolveDependencies('./root.js'),
+              loader.resolveDependencies('./RegularModule.js'),
+            ]).then(() => loader)
+          )
+          .then(loader => {
+            const rootPath = path.join(rootDir, 'root.js');
+            const testRequire = loader.requireModule.bind(
+              loader,
+              rootPath
+            );
 
-          var regularModule = testRequire('RegularModule');
-          var origModuleStateValue = regularModule.getModuleStateValue();
+            const regularModule = testRequire('RegularModule');
+            const origModuleStateValue = regularModule.getModuleStateValue();
 
-          loader.__getJestRuntimeForTest().dontMock('RegularModule');
+            expect(origModuleStateValue).toBe('default');
 
-          // Generate a mock for a module with side effects
-          loader.__getJestRuntimeForTest().genMockFromModule(
-            'ModuleWithSideEffects'
-          );
+            // Generate a mock for a module with side effects
+            const mock = regularModule.jest.genMockFromModule('ModuleWithSideEffects');
 
-          expect(regularModule.getModuleStateValue()).toBe(
-            origModuleStateValue
-          );
-        });
+            // Make sure we get a mock.
+            expect(mock.fn()).toBe(undefined);
+
+            expect(regularModule.getModuleStateValue()).toBe(
+              origModuleStateValue
+            );
+          });
       }
     );
   });

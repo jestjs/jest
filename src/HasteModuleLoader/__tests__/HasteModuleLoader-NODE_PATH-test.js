@@ -20,6 +20,8 @@ describe('HasteModuleLoader', function() {
   var JSDOMEnvironment;
   var resourceMap;
 
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   var CONFIG = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-NODE_PATH-tests',
@@ -27,17 +29,20 @@ describe('HasteModuleLoader', function() {
   });
 
   function buildLoader() {
+    let promise;
     if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
+      promise = HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
         resourceMap = map;
         return buildLoader();
       });
     } else {
       var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      return Promise.resolve(
+      promise = Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
     }
+
+    return promise.then(loader => loader.resolveDependencies('./root.js'));
   }
 
   function initHasteModuleLoader(nodePath) {
@@ -50,7 +55,7 @@ describe('HasteModuleLoader', function() {
     var nodePath = __dirname + '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
-      var exports = loader.requireModuleOrMock(null, 'RegularModuleInNodePath');
+      var exports = loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
       expect(exports).toBeDefined();
     });
   });
@@ -61,7 +66,7 @@ describe('HasteModuleLoader', function() {
       '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
-      var exports = loader.requireModuleOrMock(null, 'RegularModuleInNodePath');
+      var exports = loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
       expect(exports).toBeDefined();
     });
   });
@@ -71,17 +76,14 @@ describe('HasteModuleLoader', function() {
       'src/HasteModuleLoader/__tests__/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
-      try {
+      expect(() => {
         var exports = loader.requireModuleOrMock(
-          null,
+          rootPath,
           'RegularModuleInNodePath'
         );
-        expect(exports).toBeUndefined();
-      } catch (e) {
-        expect(
-          (e.message.indexOf('Cannot find module'))
-        ).toBeGreaterThan(-1);
-      }
+      }).toThrow(
+        new Error(`Cannot find module 'RegularModuleInNodePath' from 'root.js'`)
+      );
     });
   });
 

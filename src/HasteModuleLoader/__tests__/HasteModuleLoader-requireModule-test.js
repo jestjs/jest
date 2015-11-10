@@ -20,24 +20,29 @@ describe('HasteModuleLoader', function() {
   var JSDOMEnvironment;
   var resourceMap;
 
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   var CONFIG = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModule-tests',
-    rootDir: path.join(__dirname, 'test_root'),
+    rootDir,
   });
 
   function buildLoader() {
+    let promise;
     if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
+      promise = HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
         resourceMap = map;
         return buildLoader();
       });
     } else {
       var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      return Promise.resolve(
+      promise = Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
     }
+
+    return promise.then(loader => loader.resolveDependencies('./root.js'));
   }
 
   beforeEach(function() {
@@ -48,14 +53,14 @@ describe('HasteModuleLoader', function() {
   describe('requireModule', function() {
     pit('finds @providesModule modules', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(null, 'RegularModule');
+        var exports = loader.requireModule(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
     pit('provides `module.parent` to modules', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(null, 'RegularModule');
+        var exports = loader.requireModule(rootPath, 'RegularModule');
         expect(exports.parent).toEqual({
           id: 'mockParent',
           exports: {},
@@ -66,16 +71,16 @@ describe('HasteModuleLoader', function() {
     pit('throws on non-existant @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
-          loader.requireModule(null, 'DoesntExist');
-        }).toThrow(new Error('Cannot find module \'DoesntExist\' from \'.\''));
+          loader.requireModule(rootPath, 'DoesntExist');
+        }).toThrow('Cannot find module \'DoesntExist\' from \'root.js\'');
       });
     });
 
     pit('finds relative-path modules without file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(
-          __filename,
-          './test_root/RegularModule'
+          rootPath,
+          './RegularModule'
         );
         expect(exports.isRealModule).toBe(true);
       });
@@ -84,8 +89,8 @@ describe('HasteModuleLoader', function() {
     pit('finds relative-path modules with file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(
-          __filename,
-          './test_root/RegularModule.js'
+          rootPath,
+          './RegularModule.js'
         );
         expect(exports.isRealModule).toBe(true);
       });
@@ -94,24 +99,24 @@ describe('HasteModuleLoader', function() {
     pit('throws on non-existant relative-path modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
-          loader.requireModule(__filename, './DoesntExist');
-        }).toThrow(new Error(
-          'Cannot find module \'./DoesntExist\' from \'' + __filename + '\''
-        ));
+          loader.requireModule(rootPath, './DoesntExist');
+        }).toThrow(
+          'Cannot find module \'./DoesntExist\' from \'root.js\''
+        );
       });
     });
 
     pit('finds node core built-in modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
-          loader.requireModule(null, 'fs');
+          loader.requireModule(rootPath, 'fs');
         }).not.toThrow();
       });
     });
 
     pit('finds and loads JSON files without file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(__filename, './test_root/JSONFile');
+        var exports = loader.requireModule(rootPath, './JSONFile');
         expect(exports.isJSONModule).toBe(true);
       });
     });
@@ -119,8 +124,8 @@ describe('HasteModuleLoader', function() {
     pit('finds and loads JSON files with file extension', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(
-          __filename,
-          './test_root/JSONFile.json'
+          rootPath,
+          './JSONFile.json'
         );
         expect(exports.isJSONModule).toBe(true);
       });
@@ -129,12 +134,12 @@ describe('HasteModuleLoader', function() {
     pit('requires a JSON file twice successfully', function() {
       return buildLoader().then(function(loader) {
         var exports1 = loader.requireModule(
-          __filename,
-          './test_root/JSONFile.json'
+          rootPath,
+          './JSONFile.json'
         );
         var exports2 = loader.requireModule(
-          __filename,
-          './test_root/JSONFile.json'
+          rootPath,
+          './JSONFile.json'
         );
         expect(exports1.isJSONModule).toBe(true);
         expect(exports2.isJSONModule).toBe(true);
@@ -160,7 +165,7 @@ describe('HasteModuleLoader', function() {
       pit('provides manual mock when real module doesnt exist', function() {
         return buildLoader().then(function(loader) {
           var exports = loader.requireModule(
-            __filename,
+            rootPath,
             'ExclusivelyManualMock'
           );
           expect(exports.isExclusivelyManualMockModule).toBe(true);
@@ -179,9 +184,10 @@ describe('HasteModuleLoader', function() {
           'marked with .dontMock()',
           function() {
             return buildLoader().then(function(loader) {
-              loader.__getJestRuntimeForTest(__filename)
-                .dontMock('ManuallyMocked');
-              var exports = loader.requireModule(__filename, 'ManuallyMocked');
+              const root = loader.requireModule(rootPath, './root.js');
+              root.jest.resetModuleRegistry();
+              root.jest.dontMock('ManuallyMocked');
+              var exports = loader.requireModule(rootPath, 'ManuallyMocked');
               expect(exports.isManualMockModule).toBe(false);
             });
           }

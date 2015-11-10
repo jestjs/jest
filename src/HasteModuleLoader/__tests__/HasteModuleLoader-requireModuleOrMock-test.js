@@ -30,18 +30,23 @@ describe('HasteModuleLoader', function() {
     },
   });
 
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   function buildLoader() {
+    let promise;
     if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
+      promise = HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
         resourceMap = map;
         return buildLoader();
       });
     } else {
       var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      return Promise.resolve(
+      promise = Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
     }
+
+    return promise.then(loader => loader.resolveDependencies('./root.js'));
   }
 
   beforeEach(function() {
@@ -52,7 +57,7 @@ describe('HasteModuleLoader', function() {
   describe('requireModuleOrMock', function() {
     pit('mocks modules by default', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModuleOrMock(null, 'RegularModule');
+        var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.setModuleStateValue._isMockFunction).toBe(true);
       });
     });
@@ -60,7 +65,7 @@ describe('HasteModuleLoader', function() {
     pit('doesnt mock modules when explicitly dontMock()ed', function() {
       return buildLoader().then(function(loader) {
         loader.__getJestRuntimeForTest().dontMock('RegularModule');
-        var exports = loader.requireModuleOrMock(null, 'RegularModule');
+        var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
@@ -70,9 +75,9 @@ describe('HasteModuleLoader', function() {
       'denormalized module name',
       function() {
         return buildLoader().then(function(loader) {
-          loader.__getJestRuntimeForTest(__filename)
-            .dontMock('./test_root/RegularModule');
-          var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
+          loader.__getJestRuntimeForTest(rootPath)
+            .dontMock('./RegularModule');
+          var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
           expect(exports.isRealModule).toBe(true);
         });
       }
@@ -81,14 +86,14 @@ describe('HasteModuleLoader', function() {
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
         loader.__getJestRuntimeForTest().autoMockOff();
-        var exports = loader.requireModuleOrMock(null, 'RegularModule');
+        var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
     pit('uses manual mock when automocking on and mock is avail', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModuleOrMock(null, 'ManuallyMocked');
+        var exports = loader.requireModuleOrMock(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);
       });
     });
@@ -100,7 +105,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader().then(function(loader) {
           loader.__getJestRuntimeForTest().autoMockOff();
           var exports = loader.requireModuleOrMock(
-            __filename,
+            rootPath,
             'ManuallyMocked'
           );
           expect(exports.isManualMockModule).toBe(false);
@@ -111,13 +116,13 @@ describe('HasteModuleLoader', function() {
     pit('resolves mapped module names and unmocks them by default', function() {
       return buildLoader().then(function(loader) {
         var exports =
-          loader.requireModuleOrMock(__filename, 'image!not-really-a-module');
+          loader.requireModuleOrMock(rootPath, 'image!not-really-a-module');
         expect(exports.isGlobalImageStub).toBe(true);
 
-        exports = loader.requireModuleOrMock(__filename, 'cat.png');
+        exports = loader.requireModuleOrMock(rootPath, 'cat.png');
         expect(exports.isRelativeImageStub).toBe(true);
 
-        exports = loader.requireModuleOrMock(__filename, 'dog.png');
+        exports = loader.requireModuleOrMock(rootPath, 'dog.png');
         expect(exports.isRelativeImageStub).toBe(true);
       });
     });

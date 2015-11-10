@@ -20,6 +20,8 @@ describe('HasteModuleLoader', function() {
   var JSDOMEnvironment;
   var resourceMap;
 
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   var CONFIG = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireMock-tests',
@@ -27,17 +29,20 @@ describe('HasteModuleLoader', function() {
   });
 
   function buildLoader() {
+    let promise;
     if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
+      promise = HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
         resourceMap = map;
         return buildLoader();
       });
     } else {
       var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      return Promise.resolve(
+      promise = Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
     }
+
+    return promise.then(loader => loader.resolveDependencies('./root.js'));
   }
 
   beforeEach(function() {
@@ -48,23 +53,23 @@ describe('HasteModuleLoader', function() {
   describe('requireMock', function() {
     pit('uses manual mocks before attempting to automock', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'ManuallyMocked');
+        var exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);
       });
     });
 
     pit('stores and re-uses manual mock exports', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'ManuallyMocked');
+        var exports = loader.requireMock(rootPath, 'ManuallyMocked');
         exports.setModuleStateValue('test value');
-        exports = loader.requireMock(null, 'ManuallyMocked');
+        exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(exports.getModuleStateValue()).toBe('test value');
       });
     });
 
     pit('automocks @providesModule modules without a manual mock', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'RegularModule');
+        var exports = loader.requireMock(rootPath, 'RegularModule');
         expect(exports.getModuleStateValue._isMockFunction).toBe(true);
       });
     });
@@ -114,9 +119,9 @@ describe('HasteModuleLoader', function() {
 
     pit('stores and re-uses automocked @providesModule exports', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(null, 'RegularModule');
+        var exports = loader.requireMock(rootPath, 'RegularModule');
         exports.externalMutation = 'test value';
-        exports = loader.requireMock(null, 'RegularModule');
+        exports = loader.requireMock(rootPath, 'RegularModule');
         expect(exports.externalMutation).toBe('test value');
       });
     });
@@ -138,15 +143,15 @@ describe('HasteModuleLoader', function() {
 
     pit('multiple node core modules returns correct module', function() {
       return buildLoader().then(function(loader) {
-        loader.requireMock(null, 'fs');
-        expect(loader.requireMock(null, 'events').EventEmitter).toBeDefined();
+        loader.requireMock(rootPath, 'fs');
+        expect(loader.requireMock(rootPath, 'events').EventEmitter).toBeDefined();
       });
     });
 
     pit('throws on non-existant @providesModule modules', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
-          loader.requireMock(null, 'DoesntExist');
+          loader.requireMock(rootPath, 'DoesntExist');
         }).toThrow();
       });
     });
