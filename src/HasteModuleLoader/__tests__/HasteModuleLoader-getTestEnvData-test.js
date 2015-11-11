@@ -37,7 +37,7 @@ describe('HasteModuleLoader', function() {
   function buildLoader() {
     let promise;
     if (!resourceMap) {
-      promise = HasteModuleLoader.loadResourceMap(config).then(function(map) {
+      return HasteModuleLoader.loadResourceMap(config).then(function(map) {
         resourceMap = map;
         return buildLoader();
       });
