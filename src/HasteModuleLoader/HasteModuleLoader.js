@@ -355,23 +355,17 @@ class Loader {
           this._getMockModule(moduleName) === undefined
         )
       ) {
-        const absolutePath = this._resolveModuleName(currPath, moduleName);
-        if (absolutePath === undefined) {
+        realAbsPath = this._resolveModuleName(currPath, moduleName);
+        if (realAbsPath == null) {
           throw new Error(
             `Cannot find module '${moduleName}' from '${currPath || '.'}'`
           );
         }
 
-        // See if node-haste is already aware of this resource. If so, we need
-        // to look up if it has an associated manual mock.
-        const resource = this._resourceMap.getResourceByPath(absolutePath);
-        if (resource) {
-          if (resource.type === 'JS') {
-            realAbsPath = absolutePath;
-          } else if (resource.type === 'JSMock') {
-            mockAbsPath = absolutePath;
-          }
-          moduleName = resource.id;
+        // Look up if this module has an associated manual mock.
+        const mockModule = this._getMockModule(moduleName);
+        if (mockModule) {
+          mockAbsPath = mockModule.path;
         }
       }
 
