@@ -4,7 +4,7 @@ title: Tutorial – React
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-react.html
-next: common-js-testing
+next: tutorial-webpack-integration
 ---
 
 At Facebook, we use Jest to test [React](http://facebook.github.io/react/)
