@@ -13,7 +13,7 @@
     "json-stable-stringify": "^1.0.0",
     "mkdirp": "^0.5.1",
     "node-haste": "^1.2.8",
-    "node-haste2": "https://github.com/facebook/node-haste.git#f8930ecc06d1a0536e9ba8ad2bb51aa33b37ee74",
+    "node-haste2": "https://github.com/facebook/node-haste.git#a3f47ebc634e4c60df8a5f3b42e1bd1815e69ad7",
     "object-assign": "^4.0.1",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",

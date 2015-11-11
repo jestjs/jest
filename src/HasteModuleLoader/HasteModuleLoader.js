@@ -321,19 +321,19 @@ class Loader {
     return dependencyPaths;
   }
 
-  _getResource(resourceType, resourceName) {
-    if (resourceType == 'JS') {
-      return this._resources[resourceName];
-    } else if (resourceType === 'JSMock') {
-      if (this._mocks[resourceName]) {
-        return {
-          path: this._mocks[resourceName],
-        };
-      } else {
-        const moduleName = this._resolveStubModuleName(resourceName);
-        if (moduleName) {
-          return this._resources[moduleName];
-        }
+  _getModule(resourceName) {
+    return this._resources[resourceName];
+  }
+
+  _getMockModule(resourceName) {
+    if (this._mocks[resourceName]) {
+      return {
+        path: this._mocks[resourceName],
+      };
+    } else {
+      const moduleName = this._resolveStubModuleName(resourceName);
+      if (moduleName) {
+        return this._getModule(moduleName);
       }
     }
   }
@@ -351,8 +351,8 @@ class Loader {
       if (
         IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
         (
-          this._getResource('JS', moduleName) === undefined &&
-          this._getResource('JSMock', moduleName) === undefined
+          this._getModule(moduleName) === undefined &&
+          this._getMockModule(moduleName) === undefined
         )
       ) {
         const absolutePath = this._resolveModuleName(currPath, moduleName);
@@ -376,14 +376,14 @@ class Loader {
       }
 
       if (realAbsPath === null) {
-        const moduleResource = this._getResource('JS', moduleName);
+        const moduleResource = this._getModule(moduleName);
         if (moduleResource) {
           realAbsPath = moduleResource.path;
         }
       }
 
       if (mockAbsPath === null) {
-        const mockResource = this._getResource('JSMock', moduleName);
+        const mockResource = this._getMockModule(moduleName);
         if (mockResource) {
           mockAbsPath = mockResource.path;
         }
@@ -479,7 +479,7 @@ class Loader {
       } else if (this._unmockListRegExps.length > 0) {
         this._configShouldMockModuleNames[moduleName] = true;
 
-        const manualMockResource = this._getResource('JSMock', moduleName);
+        const manualMockResource = this._getMockModule(moduleName);
         let modulePath;
         try {
           modulePath = this._resolveModuleName(currPath, moduleName);
@@ -648,7 +648,7 @@ class Loader {
     }
 
     // Look in the node-haste resource map
-    let manualMockResource = this._getResource('JSMock', moduleName);
+    let manualMockResource = this._getMockModule(moduleName);
     let modulePath;
     if (manualMockResource) {
       modulePath = manualMockResource.path;
@@ -730,8 +730,8 @@ class Loader {
     // up at some point in the future.
     let manualMockResource = null;
     let moduleResource = null;
-    moduleResource = this._getResource('JS', moduleName);
-    manualMockResource = this._getResource('JSMock', moduleName);
+    moduleResource = this._getModule(moduleName);
+    manualMockResource = this._getMockModule(moduleName);
     if (
       !moduleResource &&
       manualMockResource &&
