@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "react-addons-test-utils": "~0.14.0",
-    "babel-jest": "*",
+    "babel-jest": "^5.2.1",
     "jest-cli": "*"
   },
   "scripts": {
