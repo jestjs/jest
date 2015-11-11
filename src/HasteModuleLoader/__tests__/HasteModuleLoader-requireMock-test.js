@@ -58,6 +58,15 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('can resolve modules that are only referenced from mocks', function() {
+      return buildLoader().then(function(loader) {
+        var exports = loader.requireMock(rootPath, 'ManuallyMocked');
+        expect(
+          exports.onlyRequiredFromMockModuleValue
+        ).toBe('banana banana banana');
+      });
+    });
+
     pit('stores and re-uses manual mock exports', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireMock(rootPath, 'ManuallyMocked');

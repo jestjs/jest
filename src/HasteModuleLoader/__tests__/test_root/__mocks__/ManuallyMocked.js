@@ -7,6 +7,17 @@
  */
 'use strict';
 
+let OnlyRequiredFromMock;
+try {
+  OnlyRequiredFromMock = require.requireActual('OnlyRequiredFromMock');
+} catch (e) {
+  // If the module cannot be loaded, use a dummy value. There is one test
+  // that specifically tests for the correct value which ensures this feature
+  // works. If the feature is broken, it doesn't cause additional log-spew in
+  // surrounding tests.
+  OnlyRequiredFromMock = {value: 'module OnlyRequiredFromMock not found'};
+}
+
 var moduleStateValue = 'default';
 
 function setModuleStateValue(value) {
@@ -17,6 +28,7 @@ function getModuleStateValue() {
   return moduleStateValue;
 }
 
+exports.onlyRequiredFromMockModuleValue = OnlyRequiredFromMock.value;
 exports.getModuleStateValue = getModuleStateValue;
 exports.isManualMockModule = true;
 exports.setModuleStateValue = setModuleStateValue;
