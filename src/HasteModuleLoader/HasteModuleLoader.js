@@ -15,6 +15,7 @@ const mkdirp = require('mkdirp');
 const moduleMocker = require('../lib/moduleMocker');
 const NodeHaste = require('node-haste/lib/Haste');
 const DependencyGraph = require('node-haste2/lib/DependencyGraph');
+const extractRequires = require('node-haste2/lib/lib/extractRequires');
 const os = require('os');
 const path = require('path');
 const resolve = require('resolve');
@@ -24,6 +25,8 @@ const NODE_PATH =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 const VENDOR_PATH = path.resolve(__dirname, '../../vendor');
+const MOCKS_PATTERN = /(?:[\\/]|^)__mocks__[\\/]([^\/]+)\.js$/;
+const REQUIRE_EXTENSIONS_PATTERN = /(\brequire\s*?\.\s*?(?:requireActual|requireMock)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
 const mockParentModule = {
   id: 'mockParent',
@@ -97,8 +100,12 @@ class Loader {
     this._configShouldMockModuleNames = {};
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
+    const ignoreFilePattern = new RegExp(
+      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
+    );
     this._depGraph = new DependencyGraph({
       roots: [config.rootDir],
+      ignoreFilePath: path => path.match(ignoreFilePattern),
       cache: {
         get: (a, b, cb) => Promise.resolve(cb()),
         invalidate: () => {},
@@ -109,8 +116,23 @@ class Loader {
         },
         isWatchman: () => Promise.resolve(false),
       },
+      mocksPattern: MOCKS_PATTERN,
+      extractRequires: code => {
+        const data = extractRequires(code);
+        data.code = data.code.replace(
+          REQUIRE_EXTENSIONS_PATTERN,
+          (match, pre, quot, dep, post) => {
+            data.deps.sync.push(dep);
+            return match;
+          }
+        );
+        return data;
+      }
     });
     this._resolvedModules = Object.create(null);
+    this._resources = Object.create(null);
+    this._resolveDependencyPromises = Object.create(null);
+    this._mocks = Object.create(null);
     /* eslint-enable fb-www/object-create-only-one-param */
 
     if (config.collectCoverage) {
@@ -300,31 +322,20 @@ class Loader {
   }
 
   _getResource(resourceType, resourceName) {
-    let resource = this._resourceMap.getResource(resourceType, resourceName);
-
-    if (
-      resource === undefined &&
-      resourceType === 'JS' &&
-      /\//.test(resourceName) &&
-      !/\.js$/.test(resourceName)
-    ) {
-      resource = this._resourceMap.getResource(
-        resourceType,
-        resourceName + '.js'
-      );
-    }
-
-    if (
-      resource === undefined &&
-      resourceType === 'JSMock'
-    ) {
-      const moduleName = this._resolveStubModuleName(resourceName);
-      if (moduleName) {
-        resource = this._resourceMap.getResource('JS', moduleName);
+    if (resourceType == 'JS') {
+      return this._resources[resourceName];
+    } else if (resourceType === 'JSMock') {
+      if (this._mocks[resourceName]) {
+        return {
+          path: this._mocks[resourceName],
+        };
+      } else {
+        const moduleName = this._resolveStubModuleName(resourceName);
+        if (moduleName) {
+          return this._resources[moduleName];
+        }
       }
     }
-
-    return resource;
   }
 
   _getNormalizedModuleID(currPath, moduleName) {
@@ -388,24 +399,28 @@ class Loader {
   }
 
   resolveDependencies(path) {
-    // TODO make sure this works
-    if (this._resolvedModules[path]) {
-      return Promise.resolve(this);
+    if (this._resolveDependencyPromises[path]) {
+      return this._resolveDependencyPromises[path];
     }
 
-    return this._depGraph.load()
+    return this._resolveDependencyPromises[path] = this._depGraph.load()
+      .then(() => this._depGraph.getAllMocks())
+      .then(mocks => Object.assign(this._mocks, mocks))
       .then(() => this._depGraph.getDependencies(path))
       .then(response => {
         return response.finalize().then(() => {
-          response.dependencies.forEach(module => {
+          return Promise.all(response.dependencies.map(module => {
             if (!this._resolvedModules[module.path]) {
               this._resolvedModules[module.path] = {};
             }
-
             response.getResolvedDependencyPairs(module).forEach((pair) =>
               this._resolvedModules[module.path][pair[0]] = pair[1]
-            )
-          });
+            );
+
+            return module.getName().then(
+              name => this._resources[name] = module
+            );
+          }));
         });
       })
       .then(() => this);
