@@ -72,7 +72,6 @@ class TestRunner {
   constructor(config, options) {
     this._config = config;
     this._configDeps = null;
-    this._moduleLoaderResourceMap = null;
     // Maximum memory usage if `logHeapUsage` is enabled.
     this._maxMemoryUsage = 0;
     this._testPathDirsRegExp = new RegExp(
@@ -100,23 +99,7 @@ class TestRunner {
   _constructModuleLoader(environment, customCfg) {
     const config = customCfg || this._config;
     const ModuleLoader = this._loadConfigDependencies().ModuleLoader;
-    return this._getModuleLoaderResourceMap().then(
-      resourceMap => new ModuleLoader(config, environment, resourceMap)
-    );
-  }
-
-  _getModuleLoaderResourceMap() {
-    const ModuleLoader = this._loadConfigDependencies().ModuleLoader;
-    if (this._moduleLoaderResourceMap === null) {
-      if (this._opts.useCachedModuleLoaderResourceMap) {
-        this._moduleLoaderResourceMap =
-          ModuleLoader.loadResourceMapFromCacheFile(this._config, this._opts);
-      } else {
-        this._moduleLoaderResourceMap =
-          ModuleLoader.loadResourceMap(this._config, this._opts);
-      }
-    }
-    return this._moduleLoaderResourceMap;
+    return Promise.resolve(new ModuleLoader(config, environment));
   }
 
   _isTestFilePath(filePath) {
@@ -183,27 +166,14 @@ class TestRunner {
   }
 
   promiseTestPathsMatching(pathPattern) {
-    return this._getModuleLoaderResourceMap()
-      .then(resourceMap => {
-        const matchingPaths = [];
-        const resourcePathMap = resourceMap.resourcePathMap;
-        for (const i in resourcePathMap) {
-          // Sometimes the loader finds a path with no resource. This typically
-          // happens if a file is recently deleted.
-          if (!resourcePathMap[i]) {
-            continue;
-          }
-
-          const pathStr = resourcePathMap[i].path;
-          if (
-            this._isTestFilePath(pathStr) &&
-            pathPattern.test(pathStr)
-          ) {
-            matchingPaths.push(pathStr);
-          }
-        }
-        return matchingPaths;
-      });
+    return this._constructModuleLoader()
+      .then(moduleLoader => moduleLoader.getAllTestPaths())
+      .then(testPaths => testPaths.filter(
+        path => (
+          this._isTestFilePath(path) &&
+          pathPattern.test(path)
+        )
+      ));
   }
 
   /**
@@ -481,33 +451,27 @@ class TestRunner {
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const farm = workerFarm({
       maxConcurrentCallsPerWorker: 1,
-
-      // We allow for a couple of transient errors. Say something to do
-      // with loading/serialization of the resourcemap (which I've seen
-      // happen).
-      maxRetries: 2,
+      maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._opts.maxWorkers,
     }, TEST_WORKER_PATH);
 
     const runTest = promisify(farm);
+    return Promise.all(testPaths.map(
+      testFilePath => runTest({config: this._config, testFilePath})
+        .then(testResult => onTestResult(testFilePath, testResult))
+        .catch(err => {
+          onRunFailure(testFilePath, err);
 
-    return this._getModuleLoaderResourceMap()
-      .then(() => Promise.all(testPaths.map(
-        testFilePath => runTest({config: this._config, testFilePath})
-          .then(testResult => onTestResult(testFilePath, testResult))
-          .catch(err => {
-            onRunFailure(testFilePath, err);
-
-            if (err.type === 'ProcessTerminatedError') {
-              // Initialization error or some other uncaught error
-              console.error(
-                'A worker process has quit unexpectedly! ' +
-                'Most likely this an initialization error.'
-              );
-              process.exit(1);
-            }
-          })
-      ))).then(() => workerFarm.end(farm));
+          if (err.type === 'ProcessTerminatedError') {
+            // Initialization error or some other uncaught error
+            console.error(
+              'A worker process has quit unexpectedly! ' +
+              'Most likely this an initialization error.'
+            );
+            process.exit(1);
+          }
+        })
+    )).then(() => workerFarm.end(farm));
   }
 
   _addMemoryUsage(result) {

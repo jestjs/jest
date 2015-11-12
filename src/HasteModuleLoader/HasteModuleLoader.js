@@ -10,12 +10,10 @@
 'use strict';
 
 const fs = require('graceful-fs');
-const hasteLoaders = require('node-haste/lib/loaders');
 const mkdirp = require('mkdirp');
 const moduleMocker = require('../lib/moduleMocker');
-const NodeHaste = require('node-haste/lib/Haste');
-const DependencyGraph = require('node-haste2/lib/DependencyGraph');
-const extractRequires = require('node-haste2/lib/lib/extractRequires');
+const DependencyGraph = require('node-haste/lib/DependencyGraph');
+const extractRequires = require('node-haste/lib/lib/extractRequires');
 const os = require('os');
 const path = require('path');
 const resolve = require('resolve');
@@ -49,42 +47,8 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 let _configUnmockListRegExpCache = null;
 
-function _buildLoadersList(config) {
-  return [
-    new hasteLoaders.ProjectConfigurationLoader(),
-    new hasteLoaders.JSTestLoader(config.setupJSTestLoaderOptions),
-    new hasteLoaders.JSMockLoader(config.setupJSMockLoaderOptions),
-    new hasteLoaders.JSLoader(config.setupJSLoaderOptions),
-    new hasteLoaders.ResourceLoader(),
-  ];
-}
-
-function _constructHasteInst(config, options) {
-  const HASTE_IGNORE_REGEX = new RegExp(
-    [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
-  );
-
-  // Support npm package scopes that add an extra directory to the path
-  const scopedCacheDirectory = path.dirname(_getCacheFilePath(config));
-  if (!fs.existsSync(scopedCacheDirectory)) {
-    mkdirp.sync(scopedCacheDirectory, {mode: '777', fs});
-  }
-
-  return new NodeHaste(_buildLoadersList(config), (config.testPathDirs || []), {
-    ignorePaths: path => path.match(HASTE_IGNORE_REGEX),
-    version: JSON.stringify(config),
-    useNativeFind: true,
-    maxProcesses: options.maxWorkers || os.cpus().length,
-    maxOpenFiles: options.maxOpenFiles || 100,
-  });
-}
-
-function _getCacheFilePath(config) {
-  return path.join(config.cacheDirectory, 'cache-' + config.name);
-}
-
 class Loader {
-  constructor(config, environment, resourceMap) {
+  constructor(config, environment) {
     /* eslint-disable fb-www/object-create-only-one-param */
     this._config = config;
     this._coverageCollectors = {};
@@ -94,7 +58,6 @@ class Loader {
     this._explicitlySetMocks = {};
     this._isCurrentlyExecutingManualMock = null;
     this._mockMetaDataCache = {};
-    this._resourceMap = resourceMap;
     this._shouldAutoMock = true;
     this._configShouldMockModuleNames = {};
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
@@ -115,6 +78,7 @@ class Loader {
         },
         isWatchman: () => Promise.resolve(false),
       },
+      extensions: this._extensions.concat(this._config.testFileExtensions),
       mocksPattern: MOCKS_PATTERN,
       extractRequires: code => {
         const data = extractRequires(code);
@@ -168,34 +132,8 @@ class Loader {
     this.resetModuleRegistry();
   }
 
-  static loadResourceMap(config, options) {
-    return new Promise((resolve, reject) => {
-      try {
-        _constructHasteInst(config, options || {}).update(
-          _getCacheFilePath(config),
-          resolve
-        );
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  static loadResourceMapFromCacheFile(config, options) {
-    return new Promise((resolve, reject) => {
-      try {
-        const hasteInst = _constructHasteInst(config, options || {});
-        hasteInst.loadMap(_getCacheFilePath(config), (err, map) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(map);
-          }
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+  getAllTestPaths() {
+    return this._depGraph.matchFilesByPattern(this._config.testDirectoryName);
   }
 
   /**

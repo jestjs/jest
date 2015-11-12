@@ -20,25 +20,16 @@ describe('nodeHasteModuleLoader', function() {
   var JSDOMEnvironment;
   var resourceMap;
 
-  var rootDir = path.resolve(__dirname, 'test_root');
-  var CONFIG = utils.normalizeConfig({
+  const rootDir = path.resolve(__dirname, 'test_root');
+  const config = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'nodeHasteModuleLoader-genMockFromModule-tests',
     rootDir,
   });
 
   function buildLoader() {
-    if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
-        resourceMap = map;
-        return buildLoader();
-      });
-    } else {
-      var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      return Promise.resolve(
-        new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
-      );
-    }
+    return (new HasteModuleLoader(config, new JSDOMEnvironment(config)))
+      .resolveDependencies('./root.js');
   }
 
   beforeEach(function() {

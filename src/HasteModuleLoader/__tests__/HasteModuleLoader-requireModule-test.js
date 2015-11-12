@@ -22,27 +22,15 @@ describe('HasteModuleLoader', function() {
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
-  var CONFIG = utils.normalizeConfig({
+  const config = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModule-tests',
     rootDir,
   });
 
   function buildLoader() {
-    let promise;
-    if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
-        resourceMap = map;
-        return buildLoader();
-      });
-    } else {
-      var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      promise = Promise.resolve(
-        new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
-      );
-    }
-
-    return promise.then(loader => loader.resolveDependencies('./root.js'));
+    return (new HasteModuleLoader(config, new JSDOMEnvironment(config)))
+      .resolveDependencies('./root.js');
   }
 
   beforeEach(function() {

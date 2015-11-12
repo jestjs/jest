@@ -35,20 +35,8 @@ describe('HasteModuleLoader', function() {
   });
 
   function buildLoader() {
-    let promise;
-    if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(config).then(function(map) {
-        resourceMap = map;
-        return buildLoader();
-      });
-    } else {
-      var mockEnvironment = new JSDOMEnvironment({});
-      promise = Promise.resolve(
-        new HasteModuleLoader(config, mockEnvironment, resourceMap)
-      );
-    }
-
-    return promise.then(loader => loader.resolveDependencies('./root.js'));
+    return (new HasteModuleLoader(config, new JSDOMEnvironment(config)))
+      .resolveDependencies('./root.js');
   }
 
   pit('passes config data through to jest.envData', function() {
