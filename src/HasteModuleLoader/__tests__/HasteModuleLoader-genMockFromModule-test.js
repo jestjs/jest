@@ -41,35 +41,28 @@ describe('nodeHasteModuleLoader', function() {
       'does not cause side effects in the rest of the module system when ' +
       'generating a mock',
       function() {
-        return buildLoader()
-          .then(
-            loader => Promise.all([
-              loader.resolveDependencies('./root.js'),
-              loader.resolveDependencies('./RegularModule.js'),
-            ]).then(() => loader)
-          )
-          .then(loader => {
-            const rootPath = path.join(rootDir, 'root.js');
-            const testRequire = loader.requireModule.bind(
-              loader,
-              rootPath
-            );
+        return buildLoader().then(loader => {
+          const rootPath = path.join(rootDir, 'root.js');
+          const testRequire = loader.requireModule.bind(
+            loader,
+            rootPath
+          );
 
-            const regularModule = testRequire('RegularModule');
-            const origModuleStateValue = regularModule.getModuleStateValue();
+          const regularModule = testRequire('RegularModule');
+          const origModuleStateValue = regularModule.getModuleStateValue();
 
-            expect(origModuleStateValue).toBe('default');
+          expect(origModuleStateValue).toBe('default');
 
-            // Generate a mock for a module with side effects
-            const mock = regularModule.jest.genMockFromModule('ModuleWithSideEffects');
+          // Generate a mock for a module with side effects
+          const mock = regularModule.jest.genMockFromModule('ModuleWithSideEffects');
 
-            // Make sure we get a mock.
-            expect(mock.fn()).toBe(undefined);
+          // Make sure we get a mock.
+          expect(mock.fn()).toBe(undefined);
 
-            expect(regularModule.getModuleStateValue()).toBe(
-              origModuleStateValue
-            );
-          });
+          expect(regularModule.getModuleStateValue()).toBe(
+            origModuleStateValue
+          );
+        });
       }
     );
   });

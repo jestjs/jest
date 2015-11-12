@@ -6,13 +6,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* eslint-disable fb-www/require-args */
+/* eslint-disable fb-www/require-args, fb-www/object-create-only-one-param */
 'use strict';
 
 const fs = require('graceful-fs');
 const moduleMocker = require('../lib/moduleMocker');
-const DependencyGraph = require('node-haste/lib/DependencyGraph');
-const extractRequires = require('node-haste/lib/lib/extractRequires');
+const HasteResolver = require('../resolvers/HasteResolver');
 const path = require('path');
 const resolve = require('resolve');
 const transform = require('../lib/transform');
@@ -21,8 +20,6 @@ const NODE_PATH =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 const VENDOR_PATH = path.resolve(__dirname, '../../vendor');
-const MOCKS_PATTERN = /(?:[\\/]|^)__mocks__[\\/]([^\/]+)\.js$/;
-const REQUIRE_EXTENSIONS_PATTERN = /(\brequire\s*?\.\s*?(?:requireActual|requireMock)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
 const mockParentModule = {
   id: 'mockParent',
@@ -47,7 +44,6 @@ let _configUnmockListRegExpCache = null;
 
 class Loader {
   constructor(config, environment) {
-    /* eslint-disable fb-www/object-create-only-one-param */
     this._config = config;
     this._coverageCollectors = {};
     this._currentlyExecutingModulePath = '';
@@ -60,41 +56,17 @@ class Loader {
     this._configShouldMockModuleNames = {};
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
-    const ignoreFilePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
+    this._resolver = HasteResolver.get(
+      [config.rootDir],
+      {
+        extensions: this._extensions.concat(this._config.testFileExtensions),
+        ignoreFilePattern: [config.cacheDirectory]
+          .concat(config.modulePathIgnorePatterns).join('|'),
+      }
     );
-    this._depGraph = new DependencyGraph({
-      roots: [config.rootDir],
-      ignoreFilePath: path => path.match(ignoreFilePattern),
-      cache: {
-        get: (a, b, cb) => Promise.resolve(cb()),
-        invalidate: () => {},
-      },
-      fileWatcher: {
-        on: function() {
-          return this;
-        },
-        isWatchman: () => Promise.resolve(false),
-      },
-      extensions: this._extensions.concat(this._config.testFileExtensions),
-      mocksPattern: MOCKS_PATTERN,
-      extractRequires: code => {
-        const data = extractRequires(code);
-        data.code = data.code.replace(
-          REQUIRE_EXTENSIONS_PATTERN,
-          (match, pre, quot, dep, post) => {
-            data.deps.sync.push(dep);
-            return match;
-          }
-        );
-        return data;
-      },
-    });
     this._resolvedModules = Object.create(null);
     this._resources = Object.create(null);
-    this._resolveDependencyPromises = Object.create(null);
     this._mocks = Object.create(null);
-    /* eslint-enable fb-www/object-create-only-one-param */
 
     if (config.collectCoverage) {
       this._CoverageCollector = require(config.coverageCollector);
@@ -131,7 +103,7 @@ class Loader {
   }
 
   getAllTestPaths() {
-    return this._depGraph.matchFilesByPattern(this._config.testDirectoryName);
+    return this._resolver.matchFilesByPattern(this._config.testDirectoryName);
   }
 
   /**
@@ -301,28 +273,11 @@ class Loader {
   }
 
   resolveDependencies(path) {
-    if (this._resolveDependencyPromises[path]) {
-      return this._resolveDependencyPromises[path];
-    }
-
-    return this._resolveDependencyPromises[path] = this._depGraph.load()
-      .then(() => this._depGraph.getDependencies(path))
+    return this._resolver.getDependencies(path)
       .then(response => {
-        return response.finalize().then(() => {
-          this._mocks = response.mocks;
-          return Promise.all(response.dependencies.map(module => {
-            if (!this._resolvedModules[module.path]) {
-              this._resolvedModules[module.path] = {};
-            }
-            response.getResolvedDependencyPairs(module).forEach((pair) =>
-              this._resolvedModules[module.path][pair[0]] = pair[1]
-            );
-
-            return module.getName().then(
-              name => this._resources[name] = module
-            );
-          }));
-        });
+        this._mocks = response.mocks;
+        this._resolvedModules = response.resolvedModules;
+        this._resources = response.resources;
       })
       .then(() => this);
   }
@@ -485,8 +440,7 @@ class Loader {
 
   resolveDirectDependencies(path) {
     // TODO this should only resolve direct dependencies
-    return this._depGraph.load()
-      .then(() => this._depGraph.getDependencies(path))
+    return this._resolver.getDependencies(path)
       .then(response => response.dependencies.map(dep => dep.path));
   }
 
