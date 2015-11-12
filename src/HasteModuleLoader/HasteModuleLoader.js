@@ -306,11 +306,10 @@ class Loader {
     }
 
     return this._resolveDependencyPromises[path] = this._depGraph.load()
-      .then(() => this._depGraph.getAllMocks())
-      .then(mocks => Object.assign(this._mocks, mocks))
       .then(() => this._depGraph.getDependencies(path))
       .then(response => {
         return response.finalize().then(() => {
+          this._mocks = response.mocks;
           return Promise.all(response.dependencies.map(module => {
             if (!this._resolvedModules[module.path]) {
               this._resolvedModules[module.path] = {};
