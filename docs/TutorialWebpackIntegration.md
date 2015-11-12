@@ -17,7 +17,7 @@ npm install --save-dev jest-webpack-alias
 Next, you'll need to set up a preprocessor.
 
 ```javascript
-// __tests__/preprocessor.js
+// jest/preprocessor.js
 var babelJest = require('babel-jest');
 var webpackAlias = require('jest-webpack-alias');
 
@@ -39,7 +39,7 @@ Finally, you'll need to configure `package.json` to tell Jest where to find the 
   ...
   "jest": {
     ...
-    "scriptPreprocessor": "<rootDir>/__tests__/preprocessor.js",
+    "scriptPreprocessor": "<rootDir>/jest/preprocessor.js",
   }
 }
 ```
