@@ -12,13 +12,12 @@
 jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
@@ -40,32 +39,34 @@ describe('HasteModuleLoader', function() {
   }
 
   pit('uses NODE_PATH to find modules', function() {
-    var nodePath = __dirname + '/NODE_PATH_dir';
+    const nodePath = __dirname + '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
-      var exports = loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
+      const exports =
+        loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
       expect(exports).toBeDefined();
     });
   });
 
   pit('finds modules in NODE_PATH containing multiple paths', function() {
-    var cwd = process.cwd();
-    var nodePath = cwd + '/some/other/path' + path.delimiter + __dirname +
+    const cwd = process.cwd();
+    const nodePath = cwd + '/some/other/path' + path.delimiter + __dirname +
       '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
-      var exports = loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
+      const exports =
+        loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
       expect(exports).toBeDefined();
     });
   });
 
   pit('doesnt find modules if NODE_PATH is relative', function() {
-    var nodePath = process.cwd().substr(path.sep.length) +
+    const nodePath = process.cwd().substr(path.sep.length) +
       'src/HasteModuleLoader/__tests__/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
       expect(() => {
-        var exports = loader.requireModuleOrMock(
+        loader.requireModuleOrMock(
           rootPath,
           'RegularModuleInNodePath'
         );

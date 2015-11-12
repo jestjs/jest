@@ -12,13 +12,12 @@
 jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
@@ -41,14 +40,14 @@ describe('HasteModuleLoader', function() {
   describe('requireModule', function() {
     pit('finds @providesModule modules', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(rootPath, 'RegularModule');
+        const exports = loader.requireModule(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
     pit('provides `module.parent` to modules', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(rootPath, 'RegularModule');
+        const exports = loader.requireModule(rootPath, 'RegularModule');
         expect(exports.parent).toEqual({
           id: 'mockParent',
           exports: {},
@@ -66,7 +65,7 @@ describe('HasteModuleLoader', function() {
 
     pit('finds relative-path modules without file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(
+        const exports = loader.requireModule(
           rootPath,
           './RegularModule'
         );
@@ -76,7 +75,7 @@ describe('HasteModuleLoader', function() {
 
     pit('finds relative-path modules with file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(
+        const exports = loader.requireModule(
           rootPath,
           './RegularModule.js'
         );
@@ -104,14 +103,14 @@ describe('HasteModuleLoader', function() {
 
     pit('finds and loads JSON files without file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(rootPath, './JSONFile');
+        const exports = loader.requireModule(rootPath, './JSONFile');
         expect(exports.isJSONModule).toBe(true);
       });
     });
 
     pit('finds and loads JSON files with file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModule(
+        const exports = loader.requireModule(
           rootPath,
           './JSONFile.json'
         );
@@ -121,11 +120,11 @@ describe('HasteModuleLoader', function() {
 
     pit('requires a JSON file twice successfully', function() {
       return buildLoader().then(function(loader) {
-        var exports1 = loader.requireModule(
+        const exports1 = loader.requireModule(
           rootPath,
           './JSONFile.json'
         );
-        var exports2 = loader.requireModule(
+        const exports2 = loader.requireModule(
           rootPath,
           './JSONFile.json'
         );
@@ -141,18 +140,18 @@ describe('HasteModuleLoader', function() {
        * when they want a manual mock, like:
        *
        *   require.mock('MyManualMock');
-       *   var ManuallyMocked = require('ManuallyMocked');
+       *   const ManuallyMocked = require('ManuallyMocked');
        *
        *   --or--
        *
-       *   var ManuallyMocked = require.manualMock('ManuallyMocked');
+       *   const ManuallyMocked = require.manualMock('ManuallyMocked');
        *
        * For now, however, this is built-in and many tests rely on it, so we
        * must support it until we can do some cleanup.
        */
       pit('provides manual mock when real module doesnt exist', function() {
         return buildLoader().then(function(loader) {
-          var exports = loader.requireModule(
+          const exports = loader.requireModule(
             rootPath,
             'ExclusivelyManualMock'
           );
@@ -175,7 +174,7 @@ describe('HasteModuleLoader', function() {
               const root = loader.requireModule(rootPath, './root.js');
               root.jest.resetModuleRegistry();
               root.jest.dontMock('ManuallyMocked');
-              var exports = loader.requireModule(rootPath, 'ManuallyMocked');
+              const exports = loader.requireModule(rootPath, 'ManuallyMocked');
               expect(exports.isManualMockModule).toBe(false);
             });
           }

@@ -341,7 +341,7 @@ class FakeTimers {
     const uuid = this._uuidCounter++;
 
     this._ticks.push({
-      uuid: uuid,
+      uuid,
       callback: function() {
         return callback.apply(null, args);
       },
@@ -366,7 +366,7 @@ class FakeTimers {
     const uuid = this._uuidCounter++;
 
     this._immediates.push({
-      uuid: uuid,
+      uuid,
       callback: function() {
         return callback.apply(null, args);
       },

@@ -10,11 +10,9 @@
 'use strict';
 
 const fs = require('graceful-fs');
-const mkdirp = require('mkdirp');
 const moduleMocker = require('../lib/moduleMocker');
 const DependencyGraph = require('node-haste/lib/DependencyGraph');
 const extractRequires = require('node-haste/lib/lib/extractRequires');
-const os = require('os');
 const path = require('path');
 const resolve = require('resolve');
 const transform = require('../lib/transform');
@@ -90,7 +88,7 @@ class Loader {
           }
         );
         return data;
-      }
+      },
     });
     this._resolvedModules = Object.create(null);
     this._resources = Object.create(null);
@@ -522,7 +520,7 @@ class Loader {
         dependencyPaths.push(_getRealPathFromNormalizedModuleID(moduleID));
       }
       return dependencyPaths;
-    }
+    };
 
     // TODO
     if (this._reverseDependencyMap == null) {

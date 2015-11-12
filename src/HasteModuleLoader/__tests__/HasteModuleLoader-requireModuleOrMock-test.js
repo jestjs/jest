@@ -12,13 +12,12 @@
 jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
@@ -45,7 +44,7 @@ describe('HasteModuleLoader', function() {
   describe('requireModuleOrMock', function() {
     pit('mocks modules by default', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
+        const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.setModuleStateValue._isMockFunction).toBe(true);
       });
     });
@@ -54,7 +53,7 @@ describe('HasteModuleLoader', function() {
       return buildLoader().then(function(loader) {
         const root = loader.requireModule(rootDir, rootPath);
         root.jest.dontMock('RegularModule');
-        var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
+        const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
@@ -66,7 +65,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader().then(function(loader) {
           const root = loader.requireModule(rootDir, rootPath);
           root.jest.dontMock('./RegularModule');
-          var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
+          const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
           expect(exports.isRealModule).toBe(true);
         });
       }
@@ -76,14 +75,14 @@ describe('HasteModuleLoader', function() {
       return buildLoader().then(function(loader) {
         const root = loader.requireModule(rootDir, rootPath);
         root.jest.autoMockOff();
-        var exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
+        const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
     pit('uses manual mock when automocking on and mock is avail', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireModuleOrMock(rootPath, 'ManuallyMocked');
+        const exports = loader.requireModuleOrMock(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);
       });
     });
@@ -95,7 +94,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader().then(function(loader) {
           const root = loader.requireModule(rootDir, rootPath);
           root.jest.autoMockOff();
-          var exports = loader.requireModuleOrMock(
+          const exports = loader.requireModuleOrMock(
             rootPath,
             'ManuallyMocked'
           );
@@ -106,7 +105,7 @@ describe('HasteModuleLoader', function() {
 
     pit('resolves mapped module names and unmocks them by default', function() {
       return buildLoader().then(function(loader) {
-        var exports =
+        let exports =
           loader.requireModuleOrMock(rootPath, 'image!not-really-a-module');
         expect(exports.isGlobalImageStub).toBe(true);
 

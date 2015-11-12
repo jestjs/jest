@@ -12,26 +12,24 @@
 jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let JSDOMEnvironment;
 
-  var config;
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
+  const config = utils.normalizeConfig({
+    cacheDirectory: global.CACHE_DIRECTORY,
+    name: 'HasteModuleLoader-getTestEnvData-tests',
+    rootDir,
+    testEnvData: {someTestData: 42},
+  });
   beforeEach(function() {
     JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
     HasteModuleLoader = require('../HasteModuleLoader');
-    config = utils.normalizeConfig({
-      cacheDirectory: global.CACHE_DIRECTORY,
-      name: 'HasteModuleLoader-getTestEnvData-tests',
-      rootDir,
-      testEnvData: {someTestData: 42},
-    });
   });
 
   function buildLoader() {
@@ -41,16 +39,16 @@ describe('HasteModuleLoader', function() {
 
   pit('passes config data through to jest.envData', function() {
     return buildLoader().then(function(loader) {
-      const root = loader.requireModule(rootDir, rootPath)
-      var envData = root.jest.getTestEnvData();
+      const root = loader.requireModule(rootDir, rootPath);
+      const envData = root.jest.getTestEnvData();
       expect(envData).toEqual(config.testEnvData);
     });
   });
 
   pit('freezes jest.envData object', function() {
     return buildLoader().then(function(loader) {
-      const root = loader.requireModule(rootDir, rootPath)
-      var envData = root.jest.getTestEnvData();
+      const root = loader.requireModule(rootDir, rootPath);
+      const envData = root.jest.getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);
     });
   });

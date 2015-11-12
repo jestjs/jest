@@ -12,13 +12,12 @@
 jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('nodeHasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let JSDOMEnvironment;
 
   const rootDir = path.resolve(__dirname, 'test_root');
   const config = utils.normalizeConfig({

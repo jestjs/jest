@@ -12,13 +12,12 @@
 jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
@@ -41,14 +40,14 @@ describe('HasteModuleLoader', function() {
   describe('requireMock', function() {
     pit('uses manual mocks before attempting to automock', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(rootPath, 'ManuallyMocked');
+        const exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);
       });
     });
 
     pit('can resolve modules that are only referenced from mocks', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(rootPath, 'ManuallyMocked');
+        const exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(
           exports.onlyRequiredFromMockModuleValue
         ).toBe('banana banana banana');
@@ -57,7 +56,7 @@ describe('HasteModuleLoader', function() {
 
     pit('stores and re-uses manual mock exports', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(rootPath, 'ManuallyMocked');
+        let exports = loader.requireMock(rootPath, 'ManuallyMocked');
         exports.setModuleStateValue('test value');
         exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(exports.getModuleStateValue()).toBe('test value');
@@ -66,14 +65,14 @@ describe('HasteModuleLoader', function() {
 
     pit('automocks @providesModule modules without a manual mock', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(rootPath, 'RegularModule');
+        const exports = loader.requireMock(rootPath, 'RegularModule');
         expect(exports.getModuleStateValue._isMockFunction).toBe(true);
       });
     });
 
     pit('automocks relative-path modules without a file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(
+        const exports = loader.requireMock(
           __filename,
           './test_root/RegularModule'
         );
@@ -83,7 +82,7 @@ describe('HasteModuleLoader', function() {
 
     pit('automocks relative-path modules with a file extension', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(
+        const exports = loader.requireMock(
           __filename,
           './test_root/RegularModule.js'
         );
@@ -93,7 +92,7 @@ describe('HasteModuleLoader', function() {
 
     pit('just falls back when loading a native module', function() {
       return buildLoader().then(function(loader) {
-        var error;
+        let error;
         // Okay so this is a really WAT way to test this, but we
         // are going to require an empty .node file which should
         // throw an error letting us know that the file is too
@@ -116,7 +115,7 @@ describe('HasteModuleLoader', function() {
 
     pit('stores and re-uses automocked @providesModule exports', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(rootPath, 'RegularModule');
+        let exports = loader.requireMock(rootPath, 'RegularModule');
         exports.externalMutation = 'test value';
         exports = loader.requireMock(rootPath, 'RegularModule');
         expect(exports.externalMutation).toBe('test value');
@@ -125,7 +124,7 @@ describe('HasteModuleLoader', function() {
 
     pit('stores and re-uses automocked relative-path modules', function() {
       return buildLoader().then(function(loader) {
-        var exports = loader.requireMock(
+        let exports = loader.requireMock(
           __filename,
           './test_root/RegularModule'
         );
@@ -155,7 +154,7 @@ describe('HasteModuleLoader', function() {
 
     pit('uses the closest manual mock when duplicates exist', function() {
       return buildLoader().then(function(loader) {
-        var exports1 = loader.requireMock(
+        const exports1 = loader.requireMock(
           __dirname,
           path.resolve(__dirname, './test_root/subdir1/MyModule')
         );
@@ -163,7 +162,7 @@ describe('HasteModuleLoader', function() {
           'subdir1/__mocks__/MyModule.js'
         );
 
-        var exports2 = loader.requireMock(
+        const exports2 = loader.requireMock(
           __dirname,
           path.resolve(__dirname, './test_root/subdir2/MyModule')
         );
