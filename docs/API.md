@@ -423,6 +423,8 @@ This is useful for some commonly used 'utility' modules that are almost always u
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
 
+**Note:** If you are using `npm 3.x`, you may need to specify modules that are not direct dependencies of your project in `config.unmockedModulePathPatterns` or prevent mocking using `jest.dontMock()`. This is a known limitation and will be addressed ([#554](https://github.com/facebook/jest/issues/554)).
+
 ### `config.verbose` [boolean]
 (default: `false`)
 
