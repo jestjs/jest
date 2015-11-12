@@ -38,22 +38,20 @@ const isFile = file => {
   return stat.isFile() || stat.isFIFO();
 };
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-
 let _configUnmockListRegExpCache = null;
 
 class Loader {
   constructor(config, environment) {
     this._config = config;
-    this._coverageCollectors = {};
+    this._coverageCollectors = Object.create(null);
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
-    this._explicitShouldMock = {};
-    this._explicitlySetMocks = {};
+    this._explicitShouldMock = Object.create(null);
+    this._explicitlySetMocks = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
-    this._mockMetaDataCache = {};
+    this._mockMetaDataCache = Object.create(null);
     this._shouldAutoMock = true;
-    this._configShouldMockModuleNames = {};
+    this._configShouldMockModuleNames = Object.create(null);
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
     this._resolver = HasteResolver.get(
@@ -127,7 +125,7 @@ class Loader {
       (onlyCollectFrom && onlyCollectFrom[filename] === true);
 
     if (shouldCollectCoverage) {
-      if (!hasOwnProperty.call(this._coverageCollectors, filename)) {
+      if (!this._coverageCollectors[filename]) {
         this._coverageCollectors[filename] =
           new this._CoverageCollector(moduleContent, filename);
       }
@@ -169,7 +167,7 @@ class Loader {
   _generateMock(currPath, moduleName) {
     const modulePath = this._resolveModuleName(currPath, moduleName);
 
-    if (!hasOwnProperty.call(this._mockMetaDataCache, modulePath)) {
+    if (!this._mockMetaDataCache[modulePath]) {
       // This allows us to handle circular dependencies while generating an
       // automock
       this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
@@ -184,8 +182,8 @@ class Loader {
       // mocked has calls into side-effectful APIs on another module.
       const origMockRegistry = this._mockRegistry;
       const origModuleRegistry = this._moduleRegistry;
-      this._mockRegistry = {};
-      this._moduleRegistry = {};
+      this._mockRegistry = Object.create(null);
+      this._moduleRegistry = Object.create(null);
 
       const moduleExports = this.requireModule(currPath, moduleName);
 
@@ -323,14 +321,14 @@ class Loader {
    */
   _shouldMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-    if (hasOwnProperty.call(this._explicitShouldMock, moduleID)) {
+    if (moduleID in this._explicitShouldMock) {
       return this._explicitShouldMock[moduleID];
     } else if (resolve.isCore(moduleName)) {
       return false;
     } else if (this._shouldAutoMock) {
       // See if the module is specified in the config as a module that should
       // never be mocked
-      if (hasOwnProperty.call(this._configShouldMockModuleNames, moduleName)) {
+      if (this._configShouldMockModuleNames[moduleName]) {
         return this._configShouldMockModuleNames[moduleName];
       } else if (this._unmockListRegExps.length > 0) {
         this._configShouldMockModuleNames[moduleName] = true;
@@ -415,7 +413,7 @@ class Loader {
       );
     }
 
-    const coverageInfo = {};
+    const coverageInfo = Object.create(null);
     for (const filePath in this._coverageCollectors) {
       coverageInfo[filePath] =
         this._coverageCollectors[filePath].extractRuntimeCoverageInfo();
@@ -432,7 +430,7 @@ class Loader {
     }
 
     return (
-      hasOwnProperty.call(this._coverageCollectors, filePath)
+      this._coverageCollectors[filePath]
       ? this._coverageCollectors[filePath].extractRuntimeCoverageInfo()
       : null
     );
@@ -477,7 +475,7 @@ class Loader {
 
     // TODO
     if (this._reverseDependencyMap == null) {
-      const reverseDepMap = this._reverseDependencyMap = {};
+      const reverseDepMap = this._reverseDependencyMap = Object.create(null);
       const allResources = [];
       Object.keys(allResources).forEach(resourceID => {
         const resource = allResources[resourceID];
@@ -491,8 +489,8 @@ class Loader {
         const dependencyPaths = _getDependencyPathsFromResource(resource);
         for (let i = 0; i < dependencyPaths.length; i++) {
           const requiredModulePath = dependencyPaths[i];
-          if (!hasOwnProperty.call(reverseDepMap, requiredModulePath)) {
-            reverseDepMap[requiredModulePath] = {};
+          if (!reverseDepMap[requiredModulePath]) {
+            reverseDepMap[requiredModulePath] = Object.create(null);
           }
           reverseDepMap[requiredModulePath][resource.path] = true;
         }
@@ -509,7 +507,7 @@ class Loader {
   requireMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-    if (hasOwnProperty.call(this._explicitlySetMocks, moduleID)) {
+    if (this._explicitlySetMocks[moduleID]) {
       return this._explicitlySetMocks[moduleID];
     }
 
@@ -547,7 +545,7 @@ class Loader {
       }
     }
 
-    if (hasOwnProperty.call(this._mockRegistry, modulePath)) {
+    if (this._mockRegistry[modulePath]) {
       return this._mockRegistry[modulePath];
     }
 
@@ -749,8 +747,8 @@ class Loader {
   }
 
   resetModuleRegistry() {
-    this._mockRegistry = {};
-    this._moduleRegistry = {};
+    this._mockRegistry = Object.create(null);
+    this._moduleRegistry = Object.create(null);
 
     if (this._environment && this._environment.global) {
       var envGlobal = this._environment.global;
