@@ -4,7 +4,7 @@ title: Tutorial – CoffeeScript
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-coffeescript.html
-next: tutorial-react
+next: common-js-testing
 ---
 
 Jest doesn't come with built-in support for CoffeeScript but can easily be configured in order to make it work. To use CoffeeScript, you need to tell Jest to look for `*.coffee` files and to run them through the CoffeeScript compiler when requiring them. Here's how to set it up with Jest:
