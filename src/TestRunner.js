@@ -250,12 +250,19 @@ class TestRunner {
         // mid-stream here, but it gets the job done.
         if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
           config.collectCoverageOnlyFrom = {};
-          moduleLoader.getDependenciesFromPath(testFilePath)
-            // Skip over built-in (non-absolute paths) and node modules
-            .filter(p => path.isAbsolute(p) && !(/node_modules/.test(p)))
-            .forEach(p => config.collectCoverageOnlyFrom[p] = true);
+          return moduleLoader.resolveDirectDependencies(testFilePath)
+            .then(deps =>
+              deps
+                // Skip over built-in (non-absolute paths) and node modules
+                .filter(p => path.isAbsolute(p) && !(/node_modules/.test(p)))
+                .forEach(p => config.collectCoverageOnlyFrom[p] = true)
+            )
+            .then(() => moduleLoader);
+        } else {
+          return Promise.resolve(moduleLoader);
         }
-
+      })
+      .then(moduleLoader => {
         if (config.setupEnvScriptFile) {
           moduleLoader.requireModule(null, config.setupEnvScriptFile);
         }

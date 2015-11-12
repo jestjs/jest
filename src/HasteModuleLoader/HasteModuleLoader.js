@@ -95,7 +95,6 @@ class Loader {
     this._isCurrentlyExecutingManualMock = null;
     this._mockMetaDataCache = {};
     this._resourceMap = resourceMap;
-    this._reverseDependencyMap = null;
     this._shouldAutoMock = true;
     this._configShouldMockModuleNames = {};
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
@@ -298,29 +297,6 @@ class Loader {
     );
   }
 
-  _getDependencyPathsFromResource(resource) {
-    const dependencyPaths = [];
-    for (let i = 0; i < resource.requiredModules.length; i++) {
-      let requiredModule = resource.requiredModules[i];
-
-      // *facepalm* node-haste is pretty clowny
-      if (resource.getModuleIDByOrigin) {
-        requiredModule =
-          resource.getModuleIDByOrigin(requiredModule) || requiredModule;
-      }
-
-      let moduleID;
-      try {
-        moduleID = this._getNormalizedModuleID(resource.path, requiredModule);
-      } catch (e) {
-        continue;
-      }
-
-      dependencyPaths.push(this._getRealPathFromNormalizedModuleID(moduleID));
-    }
-    return dependencyPaths;
-  }
-
   _getModule(resourceName) {
     return this._resources[resourceName];
   }
@@ -386,10 +362,6 @@ class Loader {
 
     const delimiter = path.delimiter;
     return moduleType + delimiter + realAbsPath + delimiter + mockAbsPath;
-  }
-
-  _getRealPathFromNormalizedModuleID(moduleID) {
-    return moduleID.split(path.delimiter)[1];
   }
 
   resolveDependencies(path) {
@@ -576,26 +548,11 @@ class Loader {
     );
   }
 
-  /**
-   * Given the path to some file, find the path to all other files that it
-   * *directly* depends on.
-   */
-  getDependenciesFromPath(modulePath) {
-    const resource = this._resourceMap.getResourceByPath(modulePath);
-    if (!resource) {
-      throw new Error(`Unknown modulePath: ${modulePath}`);
-    }
-
-    if (
-      resource.type === 'ProjectConfiguration' ||
-      resource.type === 'Resource'
-    ) {
-      throw new Error(
-        `Could not extract dependency information from this type of file!`
-      );
-    }
-
-    return this._getDependencyPathsFromResource(resource);
+  resolveDirectDependencies(path) {
+    // TODO this should only resolve direct dependencies
+    return this._depGraph.load()
+      .then(() => this._depGraph.getDependencies(path))
+      .then(response => response.dependencies.map(dep => dep.path));
   }
 
   /**
@@ -603,10 +560,36 @@ class Loader {
    * on it.
    */
   getDependentsFromPath(modulePath) {
-    if (this._reverseDependencyMap === null) {
-      const resourceMap = this._resourceMap;
+    const _getRealPathFromNormalizedModuleID = moduleID => {
+      return moduleID.split(path.delimiter)[1];
+    };
+    const _getDependencyPathsFromResource = resource => {
+      const dependencyPaths = [];
+      for (let i = 0; i < resource.requiredModules.length; i++) {
+        let requiredModule = resource.requiredModules[i];
+
+        // *facepalm* node-haste is pretty clowny
+        if (resource.getModuleIDByOrigin) {
+          requiredModule =
+            resource.getModuleIDByOrigin(requiredModule) || requiredModule;
+        }
+
+        let moduleID;
+        try {
+          moduleID = this._getNormalizedModuleID(resource.path, requiredModule);
+        } catch (e) {
+          continue;
+        }
+
+        dependencyPaths.push(_getRealPathFromNormalizedModuleID(moduleID));
+      }
+      return dependencyPaths;
+    }
+
+    // TODO
+    if (this._reverseDependencyMap == null) {
       const reverseDepMap = this._reverseDependencyMap = {};
-      const allResources = resourceMap.getAllResources();
+      const allResources = [];
       Object.keys(allResources).forEach(resourceID => {
         const resource = allResources[resourceID];
         if (
@@ -616,7 +599,7 @@ class Loader {
           return;
         }
 
-        const dependencyPaths = this._getDependencyPathsFromResource(resource);
+        const dependencyPaths = _getDependencyPathsFromResource(resource);
         for (let i = 0; i < dependencyPaths.length; i++) {
           const requiredModulePath = dependencyPaths[i];
           if (!hasOwnProperty.call(reverseDepMap, requiredModulePath)) {
