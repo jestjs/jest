@@ -11,20 +11,19 @@
 
 jest.autoMockOff().mock('fs');
 
-var name = 'TestRunner';
-describe('TestRunner', function() {
-  var TestRunner;
+const name = 'TestRunner';
+describe('TestRunner', () => {
+  let TestRunner;
 
-  beforeEach(function() {
+  beforeEach(() => {
     TestRunner = require('../TestRunner');
   });
 
-  describe('_isTestFilePath', function() {
-    var runner;
-    var utils;
+  describe('_isTestFilePath', () => {
+    let runner;
 
-    beforeEach(function() {
-      utils = require('../lib/utils');
+    beforeEach(() => {
+      const utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
@@ -33,31 +32,37 @@ describe('TestRunner', function() {
       }));
     });
 
-    it('supports ../ paths and unix separators', function() {
-      var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      var isTestFile = runner._isTestFilePath(path);
+    it('supports ../ paths and unix separators', () => {
+      const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+      const isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
-    it('supports unix separators', function() {
-      var path = '/path/to/__tests__/test.js';
-      var isTestFile = runner._isTestFilePath(path);
+    it('supports unix separators', () => {
+      const path = '/path/to/__tests__/test.js';
+      const isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
     });
 
   });
 
-  describe('promiseTestPathsRelatedTo', function() {
-    var fakeDepsFromPath;
-    var fs;
-    var runner;
-    var utils;
+  describe('promiseTestPathsRelatedTo', () => {
+    const allTests = [
+      '__tests__/a.js',
+      '__tests__/b.js',
+    ];
+    const dependencyGraph = {
+      '__tests__/a.js': {resources: {}},
+      '__tests__/b.js': {resources: {
+        'b.js': {},
+      }},
+    };
+    let runner;
 
-    beforeEach(function() {
-      fs = require('graceful-fs');
-      utils = require('../lib/utils');
+    beforeEach(() => {
+      const utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
@@ -65,117 +70,34 @@ describe('TestRunner', function() {
         testPathDirs: [],
       }));
 
-      fakeDepsFromPath = {};
-      runner._constructModuleLoader = function() {
+      runner._isTestFilePath = () => true;
+      runner._constructModuleLoader = () => {
         return Promise.resolve({
-          getDependentsFromPath: function(modulePath) {
-            return fakeDepsFromPath[modulePath] || [];
+          getAllTestPaths:
+            modulePath => Promise.resolve(allTests),
+          _resolver: {
+            getDependencies: path => {
+              return Promise.resolve(dependencyGraph[path]);
+            },
           },
         });
       };
     });
 
-    pit('finds no tests when no tests depend on the path', function() {
-      var path = '/path/to/module/not/covered/by/any/tests.js';
-      fakeDepsFromPath[path] = [];
+    pit('finds no tests when no tests depend on the path', () => {
+      const path = 'a.js';
 
-      // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; };
-
-      return runner.promiseTestPathsRelatedTo([path])
-        .then(function(relatedTests) {
+      return runner.promiseTestPathsRelatedTo(new Set([path]))
+        .then(relatedTests => {
           expect(relatedTests).toEqual([]);
         });
     });
 
-    pit('finds tests that depend directly on the path', function() {
-      var path = '/path/to/module/covered/by/one/test.js';
-      var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
-      fakeDepsFromPath[path] = [dependentTestPath];
-
-      // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; };
-
-      return runner.promiseTestPathsRelatedTo([path])
-        .then(function(relatedTests) {
-          expect(relatedTests).toEqual([dependentTestPath]);
-        });
-    });
-
-    pit('finds tests that depend indirectly on the path', function() {
-      var path = '/path/to/module/covered/by/module/covered/by/test.js';
-      var dependentModulePath = '/path/to/dependent/module.js';
-      var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
-      fakeDepsFromPath[path] = [dependentModulePath];
-      fakeDepsFromPath[dependentModulePath] = [dependentTestPath];
-
-      // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; };
-
-      return runner.promiseTestPathsRelatedTo([path])
-        .then(function(relatedTests) {
-          expect(relatedTests).toEqual([dependentTestPath]);
-        });
-    });
-
-    pit('finds multiple tests that depend indirectly on the path', function() {
-      var path = '/path/to/module/covered/by/modules/covered/by/test.js';
-      var dependentModulePath1 = '/path/to/dependent/module1.js';
-      var dependentModulePath2 = '/path/to/dependent/module2.js';
-      var dependentTestPath1 = '/path/to/test1/__tests__/asdf1-test.js';
-      var dependentTestPath2 = '/path/to/test2/__tests__/asdf2-test.js';
-      fakeDepsFromPath[path] = [dependentModulePath1, dependentModulePath2];
-      fakeDepsFromPath[dependentModulePath1] = [dependentTestPath1];
-      fakeDepsFromPath[dependentModulePath2] = [dependentTestPath2];
-
-      // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; };
-
-      return runner.promiseTestPathsRelatedTo([path])
-        .then(function(relatedTests) {
-          expect(relatedTests).toEqual([
-            dependentTestPath1,
-            dependentTestPath2,
-          ]);
-        });
-    });
-
-    pit('flattens circular dependencies', function() {
-      var path = '/path/to/module/covered/by/modules/covered/by/test.js';
-      var directDependentModulePath = '/path/to/direct/dependent/module.js';
-      var indirectDependentModulePath = '/path/to/indirect/dependent/module.js';
-      var dependentTestPath = '/path/to/test/__tests__/asdf-test.js';
-      fakeDepsFromPath[path] = [directDependentModulePath];
-      fakeDepsFromPath[directDependentModulePath] =
-        [indirectDependentModulePath];
-      fakeDepsFromPath[indirectDependentModulePath] = [
-        directDependentModulePath,
-        dependentTestPath,
-      ];
-
-      // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function() { return true; };
-
-      return runner.promiseTestPathsRelatedTo([path])
-        .then(function(relatedTests) {
-          expect(relatedTests).toEqual([dependentTestPath]);
-        });
-    });
-
-    pit('filters test paths that don\'t exist on the filesystem', function() {
-      var path = '/path/to/module/covered/by/one/test.js';
-      var existingTestPath = '/path/to/test/__tests__/exists-test.js';
-      var nonExistantTestPath = '/path/to/test/__tests__/doesnt-exist-test.js';
-      fakeDepsFromPath[path] = [existingTestPath, nonExistantTestPath];
-
-      // Mock out existsSync to return true, since our test path isn't real
-      fs.existsSync = function(path) {
-        return path !== nonExistantTestPath;
-      };
-
-      return runner.promiseTestPathsRelatedTo([path])
-        .then(function(relatedTests) {
-          expect(relatedTests).toEqual([existingTestPath]);
+    pit('finds tests that depend directly on the path', () => {
+      const path = 'b.js';
+      return runner.promiseTestPathsRelatedTo(new Set([path]))
+        .then(relatedTests => {
+          expect(relatedTests).toEqual(['__tests__/b.js']);
         });
     });
   });

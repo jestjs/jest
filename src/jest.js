@@ -30,10 +30,10 @@ function getVersion() {
   return jestVersion;
 }
 
-function findChangedFiles(dirPath) {
+function findChangedFiles(cwd) {
   return new Promise((resolve, reject) => {
     const args = ['diff', '--name-only', '--diff-filter=ACMR', '--relative'];
-    const child = childProcess.spawn('git', args, {cwd: dirPath});
+    const child = childProcess.spawn('git', args, {cwd});
 
     let stdout = '';
     let stderr = '';
@@ -46,7 +46,7 @@ function findChangedFiles(dirPath) {
           resolve([]);
         } else {
           resolve(stdout.split('\n').map(
-            changedPath => path.resolve(dirPath, changedPath)
+            changedPath => path.resolve(cwd, changedPath)
           ));
         }
       } else {
@@ -56,14 +56,15 @@ function findChangedFiles(dirPath) {
   });
 }
 
-function verifyIsGitRepository(dirPath) {
-  return new Promise(resolve =>
-    childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
-      .on('close', code => {
-        const isGitRepo = code === 0;
-        resolve(isGitRepo);
-      })
-  );
+function isGitRepository(cwd) {
+  return new Promise(resolve => {
+    let stdout = '';
+    const child = childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd});
+    child.stdout.on('data', data => stdout += data);
+    child.on('close',
+      code =>  resolve(code === 0 ? path.dirname(stdout.trim()) : null)
+    );
+  });
 }
 
 function testRunnerOptions(argv) {
@@ -165,29 +166,20 @@ function readRawConfig(argv, packageRoot) {
 }
 
 function findOnlyChangedTestPaths(testRunner, config) {
-  const testPathDirsAreGit = config.testPathDirs.map(verifyIsGitRepository);
-  return Promise.all(testPathDirsAreGit)
-    .then(results => {
-      if (!results.every(result => !!result)) {
-        /* eslint-disable no-throw-literal */
-        throw (
+  return Promise.all(config.testPathDirs.map(isGitRepository))
+    .then(repos => {
+      if (!repos.every(result => !!result)) {
+        throw new Error(
           'It appears that one of your testPathDirs does not exist ' +
           'with in a git repository. Currently --onlyChanged only works ' +
           'with git projects.\n'
         );
-        /* eslint-enable no-throw-literal */
       }
-      return Promise.all(config.testPathDirs.map(findChangedFiles));
+      return Promise.all(Array.from(repos).map(findChangedFiles));
     })
-    .then(changedPathSets => {
-      // Collapse changed files from each of the testPathDirs into a single list
-      // of changed file paths
-      let changedPaths = [];
-      changedPathSets.forEach(
-        pathSet => changedPaths = changedPaths.concat(pathSet)
-      );
-      return testRunner.promiseTestPathsRelatedTo(changedPaths);
-    });
+    .then(changedPathSets => testRunner.promiseTestPathsRelatedTo(
+      new Set(Array.prototype.concat.apply([], changedPathSets))
+    ));
 }
 
 function buildTestPathPatternInfo(argv) {

@@ -129,49 +129,37 @@ class TestRunner {
     return this._configDeps;
   }
 
-  promiseTestPathsRelatedTo(paths) {
-    paths = Array.from(paths);
+  promiseTestPathsRelatedTo(changedPaths) {
+    // TODO switch this to use HasteResolver instead of a ModuleLoader instance.
     return this._constructModuleLoader()
-      .then(moduleLoader => {
-        const relatedPaths = [];
-        const discoveredModules = {};
-
-        // If a path to a test file is given, make sure we consider that test as
-        // related to itself. Non-tests will be filtered at the end.
-        paths.forEach(path => {
-          discoveredModules[path] = true;
-          if (this._isTestFilePath(path) && fs.existsSync(path)) {
-            relatedPaths.push(path);
-          }
-        });
-
-        const modulesToSearch = [].concat(paths);
-        while (modulesToSearch.length > 0) {
-          const modulePath = modulesToSearch.shift();
-          const depPaths = moduleLoader.getDependentsFromPath(modulePath);
-
-          depPaths.forEach(depPath => {
-            if (!discoveredModules.hasOwnProperty(depPath)) {
-              discoveredModules[depPath] = true;
-              modulesToSearch.push(depPath);
-              if (this._isTestFilePath(depPath) && fs.existsSync(depPath)) {
-                relatedPaths.push(depPath);
+      .then(moduleLoader => moduleLoader.getAllTestPaths().then(paths => {
+        const allTests = {};
+        return Promise.all(
+          paths.map(path => moduleLoader._resolver.getDependencies(path)
+            .then(deps => allTests[path] = deps)
+          )
+        ).then(() => {
+          const relatedPaths = new Set();
+          for (const path in allTests) {
+            if (this._isTestFilePath(path)) {
+              for (const resourcePath in allTests[path].resources) {
+                if (changedPaths.has(resourcePath)) {
+                  relatedPaths.add(path);
+                }
               }
             }
-          });
-        }
-        return relatedPaths;
-      });
+          }
+          return Array.from(relatedPaths);
+        });
+      }));
   }
 
   promiseTestPathsMatching(pathPattern) {
+    // TODO switch this to use HasteResolver instead of a ModuleLoader instance.
     return this._constructModuleLoader()
       .then(moduleLoader => moduleLoader.getAllTestPaths())
       .then(testPaths => testPaths.filter(
-        path => (
-          this._isTestFilePath(path) &&
-          pathPattern.test(path)
-        )
+        path => this._isTestFilePath(path) && pathPattern.test(path)
       ));
   }
 

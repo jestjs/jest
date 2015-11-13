@@ -311,61 +311,6 @@ class Loader {
     return collector ? collector.extractRuntimeCoverageInfo() : null;
   }
 
-  getDependentsFromPath(modulePath) {
-    const _getRealPathFromNormalizedModuleID = moduleID => {
-      return moduleID.split(path.delimiter)[1];
-    };
-    const _getDependencyPathsFromResource = resource => {
-      const dependencyPaths = [];
-      for (let i = 0; i < resource.requiredModules.length; i++) {
-        let requiredModule = resource.requiredModules[i];
-
-        // *facepalm* node-haste is pretty clowny
-        if (resource.getModuleIDByOrigin) {
-          requiredModule =
-            resource.getModuleIDByOrigin(requiredModule) || requiredModule;
-        }
-
-        let moduleID;
-        try {
-          moduleID = this._getNormalizedModuleID(resource.path, requiredModule);
-        } catch (e) {
-          continue;
-        }
-
-        dependencyPaths.push(_getRealPathFromNormalizedModuleID(moduleID));
-      }
-      return dependencyPaths;
-    };
-
-    // TODO
-    if (this._reverseDependencyMap == null) {
-      const reverseDepMap = this._reverseDependencyMap = Object.create(null);
-      const allResources = [];
-      Object.keys(allResources).forEach(resourceID => {
-        const resource = allResources[resourceID];
-        if (
-          resource.type === 'ProjectConfiguration' ||
-          resource.type === 'Resource'
-        ) {
-          return;
-        }
-
-        const dependencyPaths = _getDependencyPathsFromResource(resource);
-        for (let i = 0; i < dependencyPaths.length; i++) {
-          const requiredModulePath = dependencyPaths[i];
-          if (!reverseDepMap[requiredModulePath]) {
-            reverseDepMap[requiredModulePath] = Object.create(null);
-          }
-          reverseDepMap[requiredModulePath][resource.path] = true;
-        }
-      });
-    }
-
-    const reverseDeps = this._reverseDependencyMap[modulePath];
-    return reverseDeps ? Object.keys(reverseDeps) : [];
-  }
-
   _execModule(moduleObj) {
     // If the environment was disposed, prevent this module from
     // being executed.
