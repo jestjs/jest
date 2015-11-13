@@ -72,6 +72,8 @@ function getType(ref) {
     return 'object';
   } else if (isA('Number', ref) || isA('String', ref)) {
     return 'constant';
+  } else if (isA('Map', ref) || isA('Set', ref)) {
+    return 'collection';
   } else if (isA('RegExp', ref)) {
     return 'regexp';
   } else if (ref === undefined) {
@@ -166,6 +168,7 @@ function makeComponent(metadata) {
     return new RegExp();
   } else if (
     metadata.type === 'constant' ||
+    metadata.type === 'collection' ||
     metadata.type === 'null' ||
     metadata.type === 'undefined'
   ) {
@@ -325,6 +328,7 @@ function getMetadata(component, _refs) {
   const metadata = {type: type};
   if (
     type === 'constant' ||
+    type === 'collection' ||
     type === 'undefined' ||
     type === 'null'
   ) {

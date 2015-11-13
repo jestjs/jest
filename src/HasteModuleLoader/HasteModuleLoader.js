@@ -247,9 +247,11 @@ class Loader {
       this._mockRegistry = origMockRegistry;
       this._moduleRegistry = origModuleRegistry;
 
-      this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata(
-        moduleExports
-      );
+      const mockMetadata = moduleMocker.getMetadata(moduleExports);
+      if (mockMetadata === null) {
+        throw new Error('Failed to get mock metadata: ' + modulePath);
+      }
+      this._mockMetaDataCache[modulePath] = mockMetadata;
     }
 
     return moduleMocker.generateFromMetadata(
