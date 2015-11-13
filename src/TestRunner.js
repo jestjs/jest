@@ -10,7 +10,6 @@
 const fs = require('graceful-fs');
 const os = require('os');
 const path = require('path');
-const assign = require('object-assign');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
 const Console = require('./Console');
@@ -70,7 +69,7 @@ function optionPathToRegex(p) {
 class TestRunner {
 
   constructor(config, options) {
-    this._config = config;
+    this._config = Object.freeze(config);
     this._configDeps = null;
     // Maximum memory usage if `logHeapUsage` is enabled.
     this._maxMemoryUsage = 0;
@@ -93,7 +92,7 @@ class TestRunner {
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
 
-    this._opts = assign({}, DEFAULT_OPTIONS, options);
+    this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
   }
 
   _constructModuleLoader(environment, customCfg) {
@@ -184,10 +183,7 @@ class TestRunner {
    * @return {Promise<Object>} Results of the test
    */
   runTest(testFilePath) {
-    // Shallow copying lets us adjust the config object locally without
-    // worrying about the external consequences of changing the config object
-    // for needs that are local to this particular function call
-    const config = assign({}, this._config);
+    const config = this._config;
     const configDeps = this._loadConfigDependencies();
 
     const env = new configDeps.testEnvironment(config);
