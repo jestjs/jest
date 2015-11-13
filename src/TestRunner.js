@@ -205,34 +205,6 @@ class TestRunner {
     return this._constructModuleLoader(env, config)
       .then(moduleLoader => moduleLoader.resolveDependencies(testFilePath))
       .then(moduleLoader => {
-        // This is a kind of janky way to ensure that we only collect coverage
-        // information on modules that are immediate dependencies of the
-        // test file.
-        //
-        // Collecting coverage info on more than that is often not useful as
-        // *usually*, when one is looking for coverage info, one is only looking
-        // for coverage info on the files under test. Since a test file is just a
-        // regular old module that can depend on whatever other modules it likes,
-        // it's usually pretty hard to tell which of those dependencies is/are the
-        // "module(s)" under test.
-        //
-        // I'm not super happy with having to inject stuff into the config object
-        // mid-stream here, but it gets the job done.
-        if (config.collectCoverage && !config.collectCoverageOnlyFrom) {
-          config.collectCoverageOnlyFrom = {};
-          return moduleLoader.resolveDirectDependencies(testFilePath)
-            .then(deps =>
-              deps
-                // Skip over built-in (non-absolute paths) and node modules
-                .filter(p => path.isAbsolute(p) && !(/node_modules/.test(p)))
-                .forEach(p => config.collectCoverageOnlyFrom[p] = true)
-            )
-            .then(() => moduleLoader);
-        } else {
-          return Promise.resolve(moduleLoader);
-        }
-      })
-      .then(moduleLoader => {
         if (config.setupEnvScriptFile) {
           moduleLoader.requireModule(null, config.setupEnvScriptFile);
         }
