@@ -1,5 +1,10 @@
 ## master
 
+## 0.9.0
+
+* New implementation of node-haste and rewrite of internal module loading and
+  resolution.
+
 ## 0.8.2
 
 * Performance improvements.

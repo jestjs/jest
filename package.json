@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "main": "src/jest.js",
   "dependencies": {
     "chalk": "^1.1.1",
@@ -12,7 +12,7 @@
     "jsdom": "^7.2.0",
     "json-stable-stringify": "^1.0.0",
     "lodash.template": "^3.6.2",
-    "node-haste": "https://github.com/facebook/node-haste.git#5e7a8768611c1912c2428833b25e0b6f61af2a35",
+    "node-haste": "2.0.0-alpha2",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
     "sane": "^1.2.0",
