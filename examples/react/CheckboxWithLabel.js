@@ -1,13 +1,22 @@
-var React = require('react/addons');
+import React from 'react';
 
-var CheckboxWithLabel = React.createClass({
-  getInitialState: function() {
-    return { isChecked: false };
-  },
-  onChange: function() {
+class CheckboxWithLabel extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {isChecked: false};
+
+    // since auto-binding is disabled for React's class model
+    // we can prebind methods here
+    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange() {
     this.setState({isChecked: !this.state.isChecked});
-  },
-  render: function() {
+  }
+
+  render() {
     return (
       <label>
         <input
@@ -19,6 +28,6 @@ var CheckboxWithLabel = React.createClass({
       </label>
     );
   }
-});
+}
 
-module.exports = CheckboxWithLabel;
+export default CheckboxWithLabel;

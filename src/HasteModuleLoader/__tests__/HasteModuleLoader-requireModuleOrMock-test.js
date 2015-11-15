@@ -4,23 +4,30 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
 jest.autoMockOff();
+jest.mock('../../environments/JSDOMEnvironment');
 
 var path = require('path');
-var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
-  var mockEnvironment;
+  var JSDOMEnvironment;
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
-    name: 'HasteModuleLoader-tests',
-    rootDir: path.resolve(__dirname, 'test_root')
+    cacheDirectory: global.CACHE_DIRECTORY,
+    name: 'HasteModuleLoader-requireModuleOrMock-tests',
+    rootDir: path.resolve(__dirname, 'test_root'),
+    moduleNameMapper: {
+      '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+      '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
+    },
   });
 
   function buildLoader() {
@@ -30,6 +37,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
+      var mockEnvironment = new JSDOMEnvironment(CONFIG);
       return Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
@@ -38,17 +46,7 @@ describe('HasteModuleLoader', function() {
 
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
-
-    mockEnvironment = {
-      global: {
-        console: {},
-        mockClearTimers: jest.genMockFn()
-      },
-      runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
-        /* jshint evil:true */
-        return (new Function('return ' + codeStr))();
-      })
-    };
+    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
 
   describe('requireModuleOrMock', function() {
@@ -61,26 +59,28 @@ describe('HasteModuleLoader', function() {
 
     pit('doesnt mock modules when explicitly dontMock()ed', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'jest-runtime')
-          .dontMock('RegularModule');
+        loader.getJestRuntime().dontMock('RegularModule');
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
-    pit('doesnt mock modules when explicitly dontMock()ed via a different ' +
-        'denormalized module name', function() {
-      return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'jest-runtime')
-          .dontMock('./test_root/RegularModule');
-        var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
-        expect(exports.isRealModule).toBe(true);
-      });
-    });
+    pit(
+      'doesnt mock modules when explicitly dontMock()ed via a different ' +
+      'denormalized module name',
+      function() {
+        return buildLoader().then(function(loader) {
+          loader.getJestRuntime(__filename)
+            .dontMock('./test_root/RegularModule');
+          var exports = loader.requireModuleOrMock(__filename, 'RegularModule');
+          expect(exports.isRealModule).toBe(true);
+        });
+      }
+    );
 
     pit('doesnt mock modules when autoMockOff() has been called', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(null, 'jest-runtime').autoMockOff();
+        loader.getJestRuntime().autoMockOff();
         var exports = loader.requireModuleOrMock(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -93,12 +93,33 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit('does not use manual mock when automocking is off and a real ' +
-        'module is available', function() {
+    pit(
+      'does not use manual mock when automocking is off and a real module is ' +
+      'available',
+      function() {
+        return buildLoader().then(function(loader) {
+          loader.getJestRuntime(__filename).autoMockOff();
+          var exports = loader.requireModuleOrMock(
+            __filename,
+            'ManuallyMocked'
+          );
+          expect(exports.isManualMockModule).toBe(false);
+        });
+      }
+    );
+
+    pit('resolves mapped module names and unmocks them by default', function() {
       return buildLoader().then(function(loader) {
-        loader.requireModuleOrMock(__filename, 'jest-runtime').autoMockOff();
-        var exports = loader.requireModuleOrMock(__filename, 'ManuallyMocked');
-        expect(exports.isManualMockModule).toBe(false);
+        loader.getJestRuntime(__filename);
+        var exports =
+          loader.requireModuleOrMock(__filename, 'image!not-really-a-module');
+        expect(exports.isGlobalImageStub).toBe(true);
+
+        exports = loader.requireModuleOrMock(__filename, 'cat.png');
+        expect(exports.isRelativeImageStub).toBe(true);
+
+        exports = loader.requireModuleOrMock(__filename, 'dog.png');
+        expect(exports.isRelativeImageStub).toBe(true);
       });
     });
   });

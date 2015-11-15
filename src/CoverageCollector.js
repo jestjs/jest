@@ -7,12 +7,14 @@
  */
 'use strict';
 
-var CoverageInstrumentor = require('cover/instrument').Instrumentor;
-var fs = require('graceful-fs');
+const CoverageInstrumentor = require('cover/instrument').Instrumentor;
+const fs = require('graceful-fs');
+const path = require('path');
 
-var COVERAGE_TEMPLATE_PATH = require.resolve('./coverageTemplate');
+const COVERAGE_TEMPLATE_PATH = path.join(__dirname, 'coverage.template');
 
-var _memoizedCoverageTemplate = null;
+let _memoizedCoverageTemplate = null;
+
 function _getCoverageTemplate() {
   if (_memoizedCoverageTemplate === null) {
     _memoizedCoverageTemplate = require('lodash.template')(
@@ -22,53 +24,57 @@ function _getCoverageTemplate() {
   return _memoizedCoverageTemplate;
 }
 
-function CoverageCollector(sourceText) {
-  this._coverageDataStore = {};
-  this._instrumentedSourceText = null;
-  this._instrumentor = new CoverageInstrumentor();
-  this._origSourceText = sourceText;
-}
+class CoverageCollector {
 
-CoverageCollector.prototype.getCoverageDataStore = function() {
-  return this._coverageDataStore;
-};
-
-CoverageCollector.prototype.getInstrumentedSource = function(storageVarName) {
-  if (this._instrumentedSourceText === null) {
-    this._instrumentedSourceText = _getCoverageTemplate()({
-      instrumented: this._instrumentor,
-      coverageStorageVar: storageVarName,
-      source: this._instrumentor.instrument(this._origSourceText)
-    });
-  }
-  return this._instrumentedSourceText;
-};
-
-CoverageCollector.prototype.extractRuntimeCoverageInfo = function() {
-  var instrumentationInfo = this._instrumentor.objectify();
-  var coverageInfo = {
-    coveredSpans: [],
-    uncoveredSpans: [],
-    sourceText: this._origSourceText
-  };
-
-  var nodeIndex;
-
-  // Find all covered spans
-  for (nodeIndex in this._coverageDataStore.nodes) {
-    coverageInfo.coveredSpans.push(instrumentationInfo.nodes[nodeIndex].loc);
+  constructor(sourceText) {
+    this._coverageDataStore = {};
+    this._instrumentedSourceText = null;
+    this._instrumentor = new CoverageInstrumentor();
+    this._origSourceText = sourceText;
   }
 
-  // Find all definitely uncovered spans
-  for (nodeIndex in instrumentationInfo.nodes) {
-    if (!this._coverageDataStore.nodes.hasOwnProperty(nodeIndex)) {
-      coverageInfo.uncoveredSpans.push(
-        instrumentationInfo.nodes[nodeIndex].loc
-      );
+  getCoverageDataStore() {
+    return this._coverageDataStore;
+  }
+
+  getInstrumentedSource(storageVarName) {
+    if (this._instrumentedSourceText === null) {
+      this._instrumentedSourceText = _getCoverageTemplate()({
+        instrumented: this._instrumentor,
+        coverageStorageVar: storageVarName,
+        source: this._instrumentor.instrument(this._origSourceText),
+      });
     }
+    return this._instrumentedSourceText;
   }
 
-  return coverageInfo;
-};
+  extractRuntimeCoverageInfo() {
+    const instrumentationInfo = this._instrumentor.objectify();
+    const coverageInfo = {
+      coveredSpans: [],
+      uncoveredSpans: [],
+      sourceText: this._origSourceText,
+    };
+
+    let nodeIndex;
+
+    // Find all covered spans
+    for (nodeIndex in this._coverageDataStore.nodes) {
+      coverageInfo.coveredSpans.push(instrumentationInfo.nodes[nodeIndex].loc);
+    }
+
+    // Find all definitely uncovered spans
+    for (nodeIndex in instrumentationInfo.nodes) {
+      if (!this._coverageDataStore.nodes.hasOwnProperty(nodeIndex)) {
+        coverageInfo.uncoveredSpans.push(
+          instrumentationInfo.nodes[nodeIndex].loc
+        );
+      }
+    }
+
+    return coverageInfo;
+  }
+
+}
 
 module.exports = CoverageCollector;

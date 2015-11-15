@@ -4,23 +4,26 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
 jest.autoMockOff();
+jest.mock('../../environments/JSDOMEnvironment');
 
 var path = require('path');
-var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
-  var mockEnvironment;
+  var JSDOMEnvironment;
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
-    name: 'HasteModuleLoader-tests',
-    rootDir: path.resolve(__dirname, 'test_root')
+    cacheDirectory: global.CACHE_DIRECTORY,
+    name: 'HasteModuleLoader-NODE_PATH-tests',
+    rootDir: path.resolve(__dirname, 'test_root'),
   });
 
   function buildLoader() {
@@ -30,6 +33,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
+      var mockEnvironment = new JSDOMEnvironment(CONFIG);
       return Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
@@ -39,16 +43,7 @@ describe('HasteModuleLoader', function() {
   function initHasteModuleLoader(nodePath) {
     process.env.NODE_PATH = nodePath;
     HasteModuleLoader = require('../HasteModuleLoader');
-    mockEnvironment = {
-      global: {
-        console: {},
-        mockClearTimers: jest.genMockFn()
-      },
-      runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
-        /* jshint evil:true */
-        return (new Function('return ' + codeStr))();
-      })
-    };
+    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   }
 
   pit('uses NODE_PATH to find modules', function() {
@@ -77,12 +72,15 @@ describe('HasteModuleLoader', function() {
     initHasteModuleLoader(nodePath);
     return buildLoader().then(function(loader) {
       try {
-         var exports = loader.requireModuleOrMock(null,
-             'RegularModuleInNodePath');
-         expect(exports).toBeUndefined();
+        var exports = loader.requireModuleOrMock(
+          null,
+          'RegularModuleInNodePath'
+        );
+        expect(exports).toBeUndefined();
       } catch (e) {
         expect(
-          (e.message.indexOf('Cannot find module'))).toBeGreaterThan(-1);
+          (e.message.indexOf('Cannot find module'))
+        ).toBeGreaterThan(-1);
       }
     });
   });

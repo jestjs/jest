@@ -36,14 +36,18 @@ permalink: docs/api.html
 
 #### Config options
 
+  - [`config.bail` [boolean]](#config-bail-boolean)
   - [`config.cacheDirectory` [string]](#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
   - [`config.globals` [object]](#config-globals-object)
   - [`config.moduleFileExtensions` [array<string>]](#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
+  - [`config.moduleNameMapper` [object<string, string>]](#config-modulenamemapper-object-string-string)
+  - [`config.preprocessCachingDisabled` [boolean]](#config-preprocesscachingdisabled-boolean)
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
+  - [`config.preprocessorIgnorePatterns` [array<string>]](#config-preprocessorignorepatterns-array-string)
   - [`config.setupEnvScriptFile` [string]](#config-setupenvscriptfile-string)
   - [`config.setupTestFrameworkScriptFile` [string]](#config-setuptestframeworkscriptfile-string)
   - [`config.testDirectoryName` [string]](#config-testdirectoryname-string)
@@ -60,6 +64,7 @@ permalink: docs/api.html
   - `afterEach(fn)`
   - `beforeEach(fn)`
   - `describe(name, fn)`
+  - [`expect(value)`](#expect-value)
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
@@ -212,6 +217,28 @@ mockFn.mock.calls[0][0] === 0; // true
 mockFn.mock.calls[1][0] === 1; // true
 ```
 
+`mockImplementation` can also be used to mock class constructors:
+
+```
+// SomeClass.js
+module.exports = class SomeClass {
+  m(a, b) {}
+}
+
+// OtherModule.test.js
+let SomeClass = require("SomeClass")
+let mMock = jest.genMockFn()
+SomeClass.mockImplementation(() => {
+  return {
+    m: mMock
+  }
+})
+
+let some = new SomeClass()
+some.m("a", "b")
+console.log("Calls to m: ", mMock.mock.calls)
+```
+
 ### `mockFn.mockImpl(fn)`
 Shorthand alias for [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn).
 
@@ -245,6 +272,11 @@ var valueReturned = false;
   }
 });
 ```
+
+### `config.bail` [boolean]
+(default: false)
+
+By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
 ### `config.cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
@@ -286,16 +318,34 @@ For example, the following would create a global `__DEV__` variable set to `true
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
 ### `config.moduleFileExtensions` [array<string>]
-(default: `['js', 'json']`)
+(default: `['js', 'json', 'node']`)
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
 If you are using CoffeeScript this should be `['js', 'json', 'coffee', 'litcoffee', 'coffee.md']`
 
 ### `config.modulePathIgnorePatterns` [array<string>]
-(default: `["/node_modules/"]`)
+(default: `[]`)
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
+
+### `config.moduleNameMapper` [object<string, string>]
+(default: `null`)
+
+A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
+
+Example:
+```javascript
+"moduleNameMapper": {
+  "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
+  "^[./a-zA-Z0-9$_-]+\.png$": "RelativeImageStub"
+}
+```
+
+### `config.preprocessCachingDisabled` [boolean]
+(default: `false`)
+
+Disables caching for preprocessed files. The preprocess cache is a performance optimization and should not be disabled unless there are unresolvable issues with reading/writing files from the cache directory.
 
 ### `config.rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
@@ -312,6 +362,11 @@ Note also that you can use `'<rootDir>'` as a string token in any other path-bas
 The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 to ES5 here.
 
 Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/benjamn/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
+
+### `config.preprocessorIgnorePatterns` [array<string>]
+(default: `[]`)
+
+An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
 
 ### `config.setupEnvScriptFile` [string]
 (default: `undefined`)
@@ -373,6 +428,8 @@ An array of regexp pattern strings that are matched against all modules before t
 This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lo-dash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.dontMock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
+
+**Note:** If you are using `npm 3.x`, you may need to specify modules that are not direct dependencies of your project in `config.unmockedModulePathPatterns` or prevent mocking using `jest.dontMock()`. This is a known limitation and will be addressed ([#554](https://github.com/facebook/jest/issues/554)).
 
 ### `config.verbose` [boolean]
 (default: `false`)

@@ -10,35 +10,85 @@
 var fs = require('graceful-fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
-var envSetup = require('./environment.js');
 var path = require('path');
 
-var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
-var jasmineFileContent =
-  fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
+const JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
+const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
 
-var JASMINE_ONLY_ROOT = path.dirname(require.resolve('jasmine-only'));
-var POTENTIALLY_PRECOMPILED_FILE = path.join(
-  JASMINE_ONLY_ROOT,
-  'app',
-  'js',
-  'jasmine_only.js'
-);
-var COFFEE_SCRIPT_FILE = path.join(
-  JASMINE_ONLY_ROOT,
-  'app',
-  'js',
-  'jasmine_only.coffee'
-);
-
-var jasmineOnlyContent =
-  fs.existsSync(POTENTIALLY_PRECOMPILED_FILE)
-  ? fs.readFileSync(POTENTIALLY_PRECOMPILED_FILE, 'utf8')
-  : require('coffee-script').compile(
-      fs.readFileSync(COFFEE_SCRIPT_FILE, 'utf8')
-    );
+const JASMINE_ONLY_PATH =
+  require.resolve('../../vendor/jasmine-only/jasmine-only.js');
+const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
 
 function jasmineTestRunner(config, environment, moduleLoader, testPath) {
+  var hasKey = function(obj, keyName) {
+    return (
+      obj !== null
+      && obj !== undefined
+      && obj[keyName] !== environment.global.jasmine.undefined
+    );
+  };
+
+  var checkMissingExpectedKeys =
+    function(actual, expected, property, mismatchKeys) {
+      if (!hasKey(expected, property) && hasKey(actual, property)) {
+        mismatchKeys.push(
+          'expected missing key \'' + property + '\', but present in ' +
+          'actual.'
+        );
+      }
+    };
+  var checkMissingActualKeys =
+    function(actual, expected, property, mismatchKeys) {
+      if (!hasKey(actual, property) && hasKey(expected, property)) {
+        mismatchKeys.push(
+          'expected has key \'' + property + '\', but missing from actual.'
+        );
+      }
+    };
+  var checkMismatchedValues = function(
+    a,
+    b,
+    property,
+    mismatchKeys,
+    mismatchValues
+  ) {
+    // The only different implementation from the original jasmine
+    var areEqual = this.equals_(
+      a[property],
+      b[property],
+      mismatchKeys,
+      mismatchValues
+    );
+    if (!areEqual) {
+      var aprop;
+      var bprop;
+      if (!a[property]) {
+        aprop = a[property];
+      } else if (a[property].toString) {
+        aprop = environment.global.jasmine.util.htmlEscape(
+          a[property].toString()
+        );
+      } else {
+        aprop = Object.prototype.toString.call(a[property]);
+      }
+
+      if (!b[property]) {
+        bprop = b[property];
+      } else if (b[property].toString) {
+        bprop = environment.global.jasmine.util.htmlEscape(
+          b[property].toString()
+        );
+      } else {
+        bprop = Object.prototype.toString.call(b[property]);
+      }
+
+      mismatchValues.push(
+        '\'' + property + '\' was \'' + bprop +
+        '\' in expected, but was \'' + aprop +
+        '\' in actual.'
+      );
+    }
+  };
 
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
@@ -56,13 +106,83 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     // Install jasmine-only
     environment.runSourceText(jasmineOnlyContent);
 
-    // Installs a new compareObjects_ on jasmine.Env
-    envSetup.replaceCompareObjects(environment);
+    // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to
+    // detect cycles, but that doesn't work on frozen objects so we use a
+    // WeakMap instead.
+    var _comparedObjects = new WeakMap();
+    environment.global.jasmine.Env.prototype.compareObjects_ =
+      function(a, b, mismatchKeys, mismatchValues) {
+        if (_comparedObjects.get(a) === b && _comparedObjects.get(b) === a) {
+          return true;
+        }
+        var areArrays =
+          environment.global.jasmine.isArray_(a)
+          && environment.global.jasmine.isArray_(b);
+
+        _comparedObjects.set(a, b);
+        _comparedObjects.set(b, a);
+
+        var property;
+        var index;
+        if (areArrays) {
+          var largerLength = Math.max(a.length, b.length);
+          for (index = 0; index < largerLength; index++) {
+            // check that all expected keys match actual keys
+            if (index < b.length && typeof b[index] !== 'function') {
+              checkMissingActualKeys(a, b, index, mismatchKeys);
+            }
+            // check that all actual keys match expected keys
+            if (index < a.length && typeof a[index] !== 'function') {
+              checkMissingExpectedKeys(a, b, index, mismatchKeys);
+            }
+
+            // check that every expected value matches each actual value
+            if (typeof a[index] !== 'function' &&
+                typeof b[index] !== 'function') {
+              checkMismatchedValues.call(
+                this,
+                a,
+                b,
+                index,
+                mismatchKeys,
+                mismatchValues
+              );
+            }
+          }
+        } else {
+          for (property in b) {
+            // check that all actual keys match expected keys
+            checkMissingActualKeys(a, b, property, mismatchKeys);
+
+            // check that every expected value matches each actual value
+            checkMismatchedValues.call(
+              this,
+              a,
+              b,
+              property,
+              mismatchKeys,
+              mismatchValues
+            );
+          }
+          for (property in a) {
+            // check that all of b's keys match a's
+            checkMissingExpectedKeys(a, b, property, mismatchKeys);
+          }
+        }
 
 
-    // Run the test setup script.
-    envSetup.runSetupTestFrameworkScript(config, environment, moduleLoader);
+        if (areArrays && a.length !== b.length) {
+          mismatchValues.push('arrays were not the same length');
+        }
 
+        _comparedObjects.delete(a);
+        _comparedObjects.delete(b);
+        return (mismatchKeys.length === 0 && mismatchValues.length === 0);
+      };
+
+    if (config.setupTestFrameworkScriptFile) {
+      moduleLoader.requireModule(null, config.setupTestFrameworkScriptFile);
+    }
   });
 
   var jasmine = environment.global.jasmine;
@@ -107,19 +227,17 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         return calls.some(function(call) {
           return this.env.equals_(call, args);
         }, this);
-      }
+      },
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
-      moduleLoader.requireModule(
-        __filename,
-        'jest-runtime'
-      ).resetModuleRegistry();
+      moduleLoader.getJestRuntime().resetModuleRegistry();
     }
   });
 
   var jasmineReporter = new JasmineReporter({
     noHighlight: config.noHighlight,
+    noStackTrace: config.noStackTrace,
   });
   jasmine.getEnv().addReporter(jasmineReporter);
 

@@ -4,7 +4,7 @@ title: Tutorial
 layout: docs
 category: Quick Start
 permalink: docs/tutorial.html
-next: tutorial-jquery
+next: tutorial-react
 ---
 
 

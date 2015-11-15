@@ -7,27 +7,31 @@
 */
 'use strict';
 
-var istanbul = require('istanbul');
+const istanbul = require('istanbul');
 
-function IstanbulCollector(sourceText, filename) {
-  var instr = new istanbul.Instrumenter();
-  this._coverageDataStore = {};
-  this._instrumentor = instr;
-  this._origSourceText = sourceText;
-  this._instrumentedSourceText = instr.instrumentSync(sourceText, filename);
+class IstanbulCollector {
+
+  constructor(sourceText, filename) {
+    const instr = new istanbul.Instrumenter();
+    this._coverageDataStore = {};
+    this._instrumentor = instr;
+    this._origSourceText = sourceText;
+    this._instrumentedSourceText = instr.instrumentSync(sourceText, filename);
+  }
+
+  getCoverageDataStore() {
+    return this._coverageDataStore;
+  }
+
+  getInstrumentedSource(storageVarName) {
+    return this._instrumentedSourceText + storageVarName + '.coverState=' +
+           this._instrumentor.currentState.trackerVar + ';';
+  }
+
+  extractRuntimeCoverageInfo() {
+    return this._coverageDataStore.coverState;
+  }
+
 }
-
-IstanbulCollector.prototype.getCoverageDataStore = function() {
-  return this._coverageDataStore;
-};
-
-IstanbulCollector.prototype.getInstrumentedSource = function(storageVarName) {
-  return this._instrumentedSourceText + storageVarName + '.coverState=' +
-         this._instrumentor.currentState.trackerVar + ';';
-};
-
-IstanbulCollector.prototype.extractRuntimeCoverageInfo = function() {
-  return this._coverageDataStore.coverState;
-};
 
 module.exports = IstanbulCollector;

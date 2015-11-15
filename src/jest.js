@@ -7,17 +7,17 @@
  */
 'use strict';
 
-var childProcess = require('child_process');
-var fs = require('fs');
-var path = require('path');
-var Promise = require('bluebird');
-var TestRunner = require('./TestRunner');
-var utils = require('./lib/utils');
+const childProcess = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const TestRunner = require('./TestRunner');
+const formatTestResults = require('./lib/formatTestResults');
+const utils = require('./lib/utils');
 
-var _jestVersion = null;
+let _jestVersion = null;
 function getVersion() {
   if (_jestVersion === null) {
-    var pkgJsonPath = path.resolve(__dirname, '..', 'package.json');
+    const pkgJsonPath = path.resolve(__dirname, '..', 'package.json');
     _jestVersion = require(pkgJsonPath).version;
   }
   return _jestVersion;
@@ -25,16 +25,16 @@ function getVersion() {
 
 function _findChangedFiles(dirPath) {
   return new Promise(function(resolve, reject) {
-    var args =
+    const args =
       ['diff', '--name-only', '--diff-filter=ACMR'];
-    var child = childProcess.spawn('git', args, {cwd: dirPath});
+    const child = childProcess.spawn('git', args, {cwd: dirPath});
 
-    var stdout = '';
+    let stdout = '';
     child.stdout.on('data', function(data) {
       stdout += data;
     });
 
-    var stderr = '';
+    let stderr = '';
     child.stderr.on('data', function(data) {
       stderr += data;
     });
@@ -60,14 +60,14 @@ function _verifyIsGitRepository(dirPath) {
   return new Promise(function(resolve) {
     childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
       .on('close', function(code) {
-        var isGitRepo = code === 0;
+        const isGitRepo = code === 0;
         resolve(isGitRepo);
       });
   });
 }
 
 function _testRunnerOptions(argv) {
-  var options = {};
+  const options = {};
   if (argv.runInBand) {
     options.runInBand = argv.runInBand;
   }
@@ -78,7 +78,7 @@ function _testRunnerOptions(argv) {
 }
 
 function _promiseConfig(argv, packageRoot) {
-  return _promiseRawConfig(argv, packageRoot).then(function (config) {
+  return _promiseRawConfig(argv, packageRoot).then(function(config) {
     if (argv.coverage) {
       config.collectCoverage = true;
     }
@@ -97,6 +97,24 @@ function _promiseConfig(argv, packageRoot) {
       config.bail = argv.bail;
     }
 
+    if (argv.cache !== null) {
+      config.cache = argv.cache;
+    }
+
+    if (argv.useStderr) {
+      config.useStderr = argv.useStderr;
+    }
+
+    if (argv.json) {
+      config.useStderr = true;
+    }
+
+    if (argv.logHeapUsage) {
+      config.logHeapUsage = argv.logHeapUsage;
+    }
+
+    config.noStackTrace = argv.noStackTrace;
+
     return config;
   });
 }
@@ -110,8 +128,8 @@ function _promiseRawConfig(argv, packageRoot) {
     return Promise.resolve(utils.normalizeConfig(argv.config));
   }
 
-  var pkgJsonPath = path.join(packageRoot, 'package.json');
-  var pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
+  const pkgJsonPath = path.join(packageRoot, 'package.json');
+  const pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
 
   // Look to see if there is a package.json file with a jest config in it
   if (pkgJson.jest) {
@@ -120,7 +138,7 @@ function _promiseRawConfig(argv, packageRoot) {
     } else {
       pkgJson.jest.rootDir = path.resolve(packageRoot, pkgJson.jest.rootDir);
     }
-    var config = utils.normalizeConfig(pkgJson.jest);
+    const config = utils.normalizeConfig(pkgJson.jest);
     config.name = pkgJson.name;
     return Promise.resolve(config);
   }
@@ -130,27 +148,29 @@ function _promiseRawConfig(argv, packageRoot) {
     name: packageRoot.replace(/[/\\]/g, '_'),
     rootDir: packageRoot,
     testPathDirs: [packageRoot],
-    testPathIgnorePatterns: ['/node_modules/.+']
+    testPathIgnorePatterns: ['/node_modules/.+'],
   }));
 }
 
 function _promiseOnlyChangedTestPaths(testRunner, config) {
-  var testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
+  const testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
   return Promise.all(testPathDirsAreGit)
     .then(function(results) {
       if (!results.every(function(result) { return result; })) {
+        /* eslint-disable no-throw-literal */
         throw (
           'It appears that one of your testPathDirs does not exist ' +
           'with in a git repository. Currently --onlyChanged only works ' +
           'with git projects.\n'
         );
+        /* eslint-enable no-throw-literal */
       }
       return Promise.all(config.testPathDirs.map(_findChangedFiles));
     })
     .then(function(changedPathSets) {
       // Collapse changed files from each of the testPathDirs into a single list
       // of changed file paths
-      var changedPaths = [];
+      let changedPaths = [];
       changedPathSets.forEach(function(pathSet) {
         changedPaths = changedPaths.concat(pathSet);
       });
@@ -159,8 +179,8 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
 }
 
 function _promisePatternMatchingTestPaths(argv, testRunner) {
-  var pattern = argv.testPathPattern ||
-    ( (argv._ && argv._.length) ? argv._.join('|') : '.*' );
+  const pattern = argv.testPathPattern ||
+    ((argv._ && argv._.length) ? argv._.join('|') : '.*');
 
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
@@ -174,19 +194,27 @@ function runCLI(argv, packageRoot, onComplete) {
     return;
   }
 
+  const pipe = argv.json ? process.stderr : process.stdout;
+  pipe.write('Using Jest CLI v' + getVersion() + '\n');
+
   _promiseConfig(argv, packageRoot).then(function(config) {
-    var testRunner = new TestRunner(config, _testRunnerOptions(argv));
-    var testPaths = argv.onlyChanged ?
+    const testRunner = new TestRunner(config, _testRunnerOptions(argv));
+    const testPaths = argv.onlyChanged ?
       _promiseOnlyChangedTestPaths(testRunner, config) :
       _promisePatternMatchingTestPaths(argv, testRunner);
-    return testPaths.then(function (testPaths) {
+    return testPaths.then(function(testPaths) {
       return testRunner.runTests(testPaths);
     });
-  }).then(function (runResults) {
+  }).then(function(runResults) {
+    if (argv.json) {
+      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+    }
+    return runResults;
+  }).then(function(runResults) {
     onComplete && onComplete(runResults.success);
-  }).catch(function (error) {
+  }).catch(function(error) {
     console.error('Failed with unexpected error.');
-    process.nextTick(function () {
+    process.nextTick(function() {
       throw error;
     });
   });

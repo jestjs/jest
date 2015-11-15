@@ -7,33 +7,48 @@
  */
 'use strict';
 
-var crypto = require('crypto');
-var colors = require('./colors');
-var fs = require('graceful-fs');
-var os = require('os');
-var path = require('path');
-var Promise = require('bluebird');
+const colors = require('./colors');
+const fs = require('graceful-fs');
+const path = require('path');
 
-var DEFAULT_CONFIG_VALUES = {
+function replacePathSepForRegex(str) {
+  if (path.sep === '\\') {
+    return str.replace(/(\/|\\)/g, '\\\\');
+  }
+  return str;
+}
+
+const DEFAULT_CONFIG_VALUES = {
+  bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
-  coverageReporters: [ 'json', 'text', 'lcov', 'clover' ],
+  coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
-  moduleFileExtensions: ['js', 'json'],
+  moduleFileExtensions: ['js', 'json', 'node'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
+  moduleNameMapper: [],
   testDirectoryName: '__tests__',
-  testEnvironment: require.resolve('../JSDomEnvironment'),
+  testEnvironment: require.resolve('../environments/JSDOMEnvironment'),
   testEnvData: {},
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
-  testPathIgnorePatterns: ['/node_modules/'],
+  testPathIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
   testReporter: require.resolve('../IstanbulTestReporter'),
   testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  testURL: 'about:blank',
   noHighlight: false,
-  preprocessCachingDisabled: false
+  noStackTrace: false,
+  preprocessCachingDisabled: false,
+  verbose: false,
+  useStderr: false,
 };
+
+// This shows up in the stack trace when a test file throws an unhandled error
+// when evaluated. Node's require prints Object.<anonymous> when initializing
+// modules, so do the same here solely for visual consistency.
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
@@ -49,8 +64,8 @@ function _replaceRootDirTags(rootDir, config) {
       }
 
       if (config !== null) {
-        var newConfig = {};
-        for (var configKey in config) {
+        const newConfig = {};
+        for (const configKey in config) {
           newConfig[configKey] =
             configKey === 'rootDir'
             ? config[configKey]
@@ -64,10 +79,10 @@ function _replaceRootDirTags(rootDir, config) {
         return config;
       }
 
-      return pathNormalize(path.resolve(
+      return path.resolve(
         rootDir,
-        './' + path.normalize(config.substr('<rootDir>'.length))
-      ));
+        path.normalize('./' + config.substr('<rootDir>'.length))
+      );
   }
   return config;
 }
@@ -75,6 +90,7 @@ function _replaceRootDirTags(rootDir, config) {
 function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
+
 
 /**
  * Given the coverage info for a single file (as output by
@@ -94,25 +110,25 @@ function escapeStrForRegex(str) {
  * [true, null, true, false]
  */
 function getLineCoverageFromCoverageInfo(coverageInfo) {
-  var coveredLines = {};
+  const coveredLines = {};
   coverageInfo.coveredSpans.forEach(function(coveredSpan) {
-    var startLine = coveredSpan.start.line;
-    var endLine = coveredSpan.end.line;
-    for (var i = startLine - 1; i < endLine; i++) {
+    const startLine = coveredSpan.start.line;
+    const endLine = coveredSpan.end.line;
+    for (let i = startLine - 1; i < endLine; i++) {
       coveredLines[i] = true;
     }
   });
 
-  var uncoveredLines = {};
+  const uncoveredLines = {};
   coverageInfo.uncoveredSpans.forEach(function(uncoveredSpan) {
-    var startLine = uncoveredSpan.start.line;
-    var endLine = uncoveredSpan.end.line;
-    for (var i = startLine - 1; i < endLine; i++) {
+    const startLine = uncoveredSpan.start.line;
+    const endLine = uncoveredSpan.end.line;
+    for (let i = startLine - 1; i < endLine; i++) {
       uncoveredLines[i] = true;
     }
   });
 
-  var sourceLines = coverageInfo.sourceText.trim().split('\n');
+  const sourceLines = coverageInfo.sourceText.trim().split('\n');
 
   return sourceLines.map(function(line, lineIndex) {
     if (uncoveredLines[lineIndex] === true) {
@@ -140,9 +156,9 @@ function getLineCoverageFromCoverageInfo(coverageInfo) {
  * You'd get: 2/3 = 0.666666
  */
 function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
-  var lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
-  var numMeasuredLines = 0;
-  var numCoveredLines = lineCoverage.reduce(function(counter, lineIsCovered) {
+  const lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
+  let numMeasuredLines = 0;
+  const numCoveredLines = lineCoverage.reduce(function(counter, lineIsCovered) {
     if (lineIsCovered !== null) {
       numMeasuredLines++;
       if (lineIsCovered === true) {
@@ -156,25 +172,25 @@ function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
 }
 
 function normalizeConfig(config) {
-  var newConfig = {};
+  const newConfig = {};
 
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
     throw new Error('No rootDir config value found!');
   }
 
-  config.rootDir = pathNormalize(config.rootDir);
+  config.rootDir = path.normalize(config.rootDir);
 
   // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
-    var value;
+    let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
         value = Object.keys(config[key]).reduce(function(normObj, filePath) {
-          filePath = pathNormalize(path.resolve(
+          filePath = path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, filePath)
-          ));
+          );
           normObj[filePath] = true;
           return normObj;
         }, {});
@@ -182,10 +198,10 @@ function normalizeConfig(config) {
 
       case 'testPathDirs':
         value = config[key].map(function(scanDir) {
-          return pathNormalize(path.resolve(
+          return path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, scanDir)
-          ));
+          );
         });
         break;
 
@@ -193,10 +209,17 @@ function normalizeConfig(config) {
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
-        value = pathNormalize(path.resolve(
+        value = path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key])
-        ));
+        );
+        break;
+
+      case 'moduleNameMapper':
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          _replaceRootDirTags(config.rootDir, config[key][regex]),
+        ]);
         break;
 
       case 'preprocessorIgnorePatterns':
@@ -210,9 +233,15 @@ function normalizeConfig(config) {
         // For patterns, direct global substitution is far more ideal, so we
         // special case substitutions for patterns here.
         value = config[key].map(function(pattern) {
-          return pattern.replace(/<rootDir>/g, config.rootDir);
+          return replacePathSepForRegex(
+            pattern.replace(/<rootDir>/g, config.rootDir)
+          );
         });
         break;
+      case 'testEnvironment_EXPERIMENTAL':
+        newConfig.testEnvironment = config[key];
+        return newConfig;
+      case 'bail':
       case 'preprocessCachingDisabled':
       case 'coverageReporters':
       case 'collectCoverage':
@@ -228,10 +257,15 @@ function normalizeConfig(config) {
       case 'testDirectoryName':
       case 'testEnvData':
       case 'testFileExtensions':
+      case 'testPathPattern':
       case 'testReporter':
       case 'testRunner':
+      case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'noStackTrace':
+      case 'logHeapUsage':
+      case 'cache':
       case 'verbose':
         value = config[key];
         break;
@@ -283,9 +317,9 @@ function _addDot(ext) {
 }
 
 function uniqueStrings(set) {
-  var newSet = [];
-  var has = {};
-  set.forEach(function (item) {
+  const newSet = [];
+  const has = {};
+  set.forEach(function(item) {
     if (!has[item]) {
       has[item] = true;
       newSet.push(item);
@@ -294,29 +328,35 @@ function uniqueStrings(set) {
   return newSet;
 }
 
-function pathNormalize(dir) {
-  return path.normalize(dir.replace(/\\/g, '/')).replace(/\\/g, '/');
+function readFile(filePath) {
+  return new Promise(function(resolve, reject) {
+    fs.readFile(filePath, 'utf8', function(err, data) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(data);
+    });
+  });
 }
 
-var readFile = Promise.promisify(fs.readFile);
 function loadConfigFromFile(filePath) {
-  var fileDir = path.dirname(filePath);
-  return readFile(filePath, 'utf8').then(function(fileData) {
-    var config = JSON.parse(fileData);
+  return readFile(filePath).then(function(fileData) {
+    const config = JSON.parse(fileData);
     if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = fileDir;
+      config.rootDir = process.cwd();
     } else {
-      config.rootDir = path.resolve(fileDir, config.rootDir);
+      config.rootDir = path.resolve(path.dirname(filePath), config.rootDir);
     }
     return normalizeConfig(config);
   });
 }
 
 function loadConfigFromPackageJson(filePath) {
-  var pkgJsonDir = path.dirname(filePath);
-  return readFile(filePath, 'utf8').then(function(fileData) {
-    var packageJsonData = JSON.parse(fileData);
-    var config = packageJsonData.jest;
+  const pkgJsonDir = path.dirname(filePath);
+  return readFile(filePath).then(function(fileData) {
+    const packageJsonData = JSON.parse(fileData);
+    const config = packageJsonData.jest;
     config.name = packageJsonData.name;
     if (!config.hasOwnProperty('rootDir')) {
       config.rootDir = pkgJsonDir;
@@ -327,150 +367,16 @@ function loadConfigFromPackageJson(filePath) {
   });
 }
 
-function cleanupCacheFile(cachePath) {
-  try {
-    fs.unlinkSync(cachePath);
-  } catch (e) {
-    /*ignore errors*/
-  }
-}
-
-function storeCacheRecord(mtime, fileData, filePath) {
-  _contentCache[filePath] = {mtime: mtime, content: fileData};
-  return fileData;
-}
-
-// There are two layers of caching: in memory (always enabled),
-// and on disk (enabled by default, and managed by the
-// `preprocessCachingDisabled` option). The preprocessor script can also
-// provide hashing function for the cache key.
-var _contentCache = {};
-function readAndPreprocessFileContent(filePath, config) {
-  var cacheRec;
-  var mtime = fs.statSync(filePath).mtime;
-  if (_contentCache.hasOwnProperty(filePath)) {
-    cacheRec = _contentCache[filePath];
-    if (cacheRec.mtime.getTime() === mtime.getTime()) {
-      return cacheRec.content;
-    }
-  }
-
-  var fileData = fs.readFileSync(filePath, 'utf8');
-
-  // If the file data starts with a shebang remove it (but leave the line empty
-  // to keep stack trace line numbers correct)
-  if (fileData.substr(0, 2) === '#!') {
-    fileData = fileData.replace(/^#!.*/, '');
-  }
-
-  if (config.scriptPreprocessor &&
-      !config.preprocessorIgnorePatterns.some(function(pattern) {
-        return new RegExp(pattern).test(filePath);
-      })) {
-    try {
-      var preprocessor = require(config.scriptPreprocessor);
-      if (typeof preprocessor.process !== 'function') {
-        throw new TypeError('Preprocessor should export `process` function.');
-      }
-      // On disk cache is enabled by default, unless explicitly disabled.
-      if (config.preprocessCachingDisabled !== true) {
-        var cacheDir = path.join(
-          os.tmpDir(),
-          'jest_preprocess_cache'
-        );
-
-        try {
-          fs.mkdirSync(cacheDir);
-        } catch(e) {
-          if (e.code !== 'EEXIST') {
-            throw e;
-          }
-        }
-
-        fs.chmodSync(cacheDir, '777');
-
-        var cacheKey;
-        // If preprocessor defines custom cache hashing and
-        // invalidating logic.
-        if (typeof preprocessor.getCacheKey === 'function') {
-          cacheKey = preprocessor.getCacheKey(
-            fileData,
-            filePath,
-            {}, // options
-            [], //excludes
-            config
-          );
-        } else {
-          // Default cache hashing.
-          cacheKey = crypto.createHash('md5')
-            .update(fileData)
-            .update(JSON.stringify(config))
-            .digest('hex');
-        }
-
-        var cachePath = path.join(
-          cacheDir,
-          cacheKey + '_' + path.basename(filePath)
-        );
-
-        if (fs.existsSync(cachePath)) {
-          try {
-            var cachedData = fs.readFileSync(cachePath, 'utf8');
-            if (cachedData) {
-              return storeCacheRecord(mtime, cachedData, filePath);
-            } else {
-              // In this case we must have somehow created the file but failed
-              // to write to it, lets just delete it and move on
-              cleanupCacheFile(cachePath);
-            }
-          } catch (e) {
-            e.message = 'Failed to read preprocess cache file: ' + cachePath;
-            cleanupCacheFile(cachePath);
-            throw e;
-          }
-        }
-
-        fileData = preprocessor.process(
-          fileData,
-          filePath,
-          {}, // options
-          [], // excludes
-          config
-        );
-
-        try {
-          fs.writeFileSync(cachePath, fileData);
-        } catch (e) {
-          e.message = 'Failed to cache preprocess results in: ' + cachePath;
-          cleanupCacheFile(cachePath);
-          throw e;
-        }
-
-      } else {
-        fileData = preprocessor.process(
-          fileData,
-          filePath,
-          {}, // options
-          [], // excludes
-          config
-        );
-      }
-    } catch (e) {
-      e.message = config.scriptPreprocessor + ': ' + e.message;
-      throw e;
-    }
-  }
-  return storeCacheRecord(mtime, fileData, filePath);
-}
-
-function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
+function runContentWithLocalBindings(environment, scriptContent, scriptPath,
                                      bindings) {
-  var boundIdents = Object.keys(bindings);
+  const boundIdents = Object.keys(bindings);
   try {
-    var wrapperFunc = contextRunner(
-      '(function(' + boundIdents.join(',') + '){' +
+    const wrapperScript = 'this["' + EVAL_RESULT_VARIABLE + '"] = ' +
+      'function (' + boundIdents.join(',') + ') {' +
       scriptContent +
-      '\n})',
+      '\n};';
+    environment.runSourceText(
+      wrapperScript,
       scriptPath
     );
   } catch (e) {
@@ -478,12 +384,17 @@ function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
     throw e;
   }
 
-  var bindingValues = boundIdents.map(function(ident) {
+  const wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
+  delete environment.global[EVAL_RESULT_VARIABLE];
+
+  const bindingValues = boundIdents.map(function(ident) {
     return bindings[ident];
   });
 
   try {
-    wrapperFunc.apply(null, bindingValues);
+    // Node modules are executed with the `exports` as context.
+    // If not a node module then this should be undefined.
+    wrapperFunc.apply(bindings.exports, bindingValues);
   } catch (e) {
     e.message = scriptPath + ': ' + e.message;
     throw e;
@@ -495,38 +406,57 @@ function runContentWithLocalBindings(contextRunner, scriptContent, scriptPath,
  * failures.
  *
  * @param {Object} testResult
- * @param {boolean} color true if message should include color flags
+ * @param {Object} config Containing the following keys:
+ *   `rootPath` - Root directory (for making stack trace paths relative).
+ *   `useColor` - True if message should include color flags.
  * @return {String}
  */
-function formatFailureMessage(testResult, color) {
-  var colorize = color ? colors.colorize : function (str) { return str; };
-  var ancestrySeparator = ' \u203A ';
-  var descBullet = colorize('\u25cf ', colors.BOLD);
-  var msgBullet = '  - ';
-  var msgIndent = msgBullet.replace(/./g, ' ');
+function formatFailureMessage(testResult, config) {
+  const rootPath = config.rootPath;
+  const useColor = config.useColor;
 
-  return testResult.testResults.filter(function (result) {
+  const colorize = useColor ? colors.colorize : function(str) { return str; };
+  const ancestrySeparator = ' \u203A ';
+  const descBullet = colorize('\u25cf ', colors.BOLD);
+  const msgBullet = '  - ';
+  const msgIndent = msgBullet.replace(/./g, ' ');
+
+  if (testResult.testExecError) {
+    const text = testResult.testExecError;
+    return descBullet + colorize('Runtime Error', colors.BOLD) + '\n' + text;
+  }
+
+  return testResult.testResults.filter(function(result) {
     return result.failureMessages.length !== 0;
   }).map(function(result) {
-    var failureMessages = result.failureMessages.map(function (errorMsg) {
-      // Filter out q and jasmine entries from the stack trace.
-      // They're super noisy and unhelpful
-      errorMsg = errorMsg.split('\n').filter(function(line) {
-        if (/^\s+at .*?/.test(line)) {
-          // Extract the file path from the trace line
-          var filePath = line.match(/(?:\(|at (?=\/))(.*):[0-9]+:[0-9]+\)?$/);
-          if (filePath
-              && STACK_TRACE_LINE_IGNORE_RE.test(filePath[1])) {
-            return false;
+    const failureMessages = result.failureMessages.map(function(errorMsg) {
+      errorMsg = errorMsg.split('\n').map(function(line) {
+        // Extract the file path from the trace line.
+        let matches = line.match(/(^\s+at .*?\()([^()]+)(:[0-9]+:[0-9]+\).*$)/);
+        if (!matches) {
+          matches = line.match(/(^\s+at )([^()]+)(:[0-9]+:[0-9]+.*$)/);
+          if (!matches) {
+            return line;
           }
         }
-        return true;
+        var filePath = matches[2];
+        // Filter out noisy and unhelpful lines from the stack trace.
+        if (STACK_TRACE_LINE_IGNORE_RE.test(filePath)) {
+          return null;
+        }
+        return (
+          matches[1] +
+          path.relative(rootPath, filePath) +
+          matches[3]
+        );
+      }).filter(function(line) {
+        return line !== null;
       }).join('\n');
 
       return msgBullet + errorMsg.replace(/\n/g, '\n' + msgIndent);
     }).join('\n');
 
-    var testTitleAncestry = result.ancestorTitles.map(function(title) {
+    const testTitleAncestry = result.ancestorTitles.map(function(title) {
       return colorize(title, colors.BOLD);
     }).join(ancestrySeparator) + ancestrySeparator;
 
@@ -543,15 +473,28 @@ function formatMsg(msg, color, _config) {
   return colors.colorize(msg, color);
 }
 
+function deepCopy(obj) {
+  const newObj = {};
+  let value;
+  for (const key in obj) {
+    value = obj[key];
+    if (typeof value === 'object' && value !== null) {
+      value = deepCopy(value);
+    }
+    newObj[key] = value;
+  }
+  return newObj;
+}
+
 // A RegExp that matches paths that should not be included in error stack traces
 // (mostly because these paths represent noisy/unhelpful libs)
-var STACK_TRACE_LINE_IGNORE_RE = new RegExp('^(?:' + [
-    path.resolve(__dirname, '..', 'node_modules', 'q'),
-    path.resolve(__dirname, '..', 'node_modules', 'bluebird'),
-    path.resolve(__dirname, '..', 'vendor', 'jasmine')
-].join('|') + ')');
+const STACK_TRACE_LINE_IGNORE_RE = new RegExp([
+  '^timers.js$',
+  '^' + path.resolve(__dirname, '..', 'lib', 'moduleMocker.js'),
+  '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine'),
+].join('|'));
 
-
+exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatMsg = formatMsg;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
@@ -560,7 +503,5 @@ exports.getLinePercentCoverageFromCoverageInfo =
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
-exports.pathNormalize = pathNormalize;
-exports.readAndPreprocessFileContent = readAndPreprocessFileContent;
 exports.runContentWithLocalBindings = runContentWithLocalBindings;
 exports.formatFailureMessage = formatFailureMessage;

@@ -7,48 +7,38 @@
  */
 'use strict';
 
-require('mock-modules').autoMockOff();
+jest.autoMockOff();
 
 describe('jasmineTestRunner', function() {
+  describe('custom matchers', function() {
+    it('has toBeCalled', function() {
+      var mockFn = jest.genMockFunction();
 
-    describe('custom matchers', function() {
+      mockFn();
 
-        it('has toBeCalled', function() {
-
-            var mockFn = jest.genMockFunction();
-
-            mockFn();
-
-            expect(mockFn).toBeCalled();
-
-        });
-
-        it('has toBeCalledWith', function() {
-
-            var mockFn = jest.genMockFunction();
-
-            mockFn('foo', 'bar');
-            expect(mockFn).toBeCalledWith('foo', 'bar');
-
-            mockFn('baz');
-            expect(mockFn).toBeCalledWith('foo', 'bar');
-            expect(mockFn).toBeCalledWith('baz');
-
-        });
-
-        it('has lastCalledWith', function() {
-
-            var mockFn = jest.genMockFunction();
-
-            mockFn('foo', 'bar');
-            expect(mockFn).lastCalledWith('foo', 'bar');
-
-            mockFn('another', 'bar');
-            expect(mockFn).lastCalledWith('another', 'bar');
-
-        });
-
-
+      expect(mockFn).toBeCalled();
     });
 
+    it('has toBeCalledWith', function() {
+      var mockFn = jest.genMockFunction();
+
+      mockFn('foo', 'bar');
+      expect(mockFn).toBeCalledWith('foo', 'bar');
+
+      mockFn('baz');
+      expect(mockFn).toBeCalledWith('foo', 'bar');
+      expect(mockFn).toBeCalledWith('baz');
+    });
+
+    it('has lastCalledWith', function() {
+      var mockFn = jest.genMockFunction();
+
+      mockFn('foo', 'bar');
+      expect(mockFn).lastCalledWith('foo', 'bar');
+
+      mockFn('another', 'bar');
+      expect(mockFn).lastCalledWith('another', 'bar');
+
+    });
+  });
 });

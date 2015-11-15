@@ -1,4 +1,5 @@
-# [Jest](http://facebook.github.io/jest/) [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest)
+# [Jest](http://facebook.github.io/jest/) [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![npm version](https://badge.fury.io/js/jest-cli.svg)](http://badge.fury.io/js/jest-cli)
+
 
 Painless JavaScript Unit Testing
 
@@ -17,9 +18,11 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
 <generated_api_start />
 #### The `jest` object
 
+  - `jest.addMatchers(matchers)`
   - [`jest.autoMockOff()`](http://facebook.github.io/jest/docs/api.html#jest-automockoff)
   - [`jest.autoMockOn()`](http://facebook.github.io/jest/docs/api.html#jest-automockon)
   - [`jest.clearAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
+  - [`jest.currentTestPath()`](http://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
   - [`jest.dontMock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-dontmock-modulename)
   - [`jest.genMockFromModule(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
   - [`jest.genMockFunction()`](http://facebook.github.io/jest/docs/api.html#jest-genmockfunction)
@@ -43,14 +46,18 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
 
 #### Config options
 
+  - [`config.bail` [boolean]](http://facebook.github.io/jest/docs/api.html#config-bail-boolean)
   - [`config.cacheDirectory` [string]](http://facebook.github.io/jest/docs/api.html#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](http://facebook.github.io/jest/docs/api.html#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](http://facebook.github.io/jest/docs/api.html#config-collectcoverageonlyfrom-object)
   - [`config.globals` [object]](http://facebook.github.io/jest/docs/api.html#config-globals-object)
   - [`config.moduleFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
+  - [`config.moduleNameMapper` [object<string, string>]](http://facebook.github.io/jest/docs/api.html#config-modulenamemapper-object-string-string)
+  - [`config.preprocessCachingDisabled` [boolean]](http://facebook.github.io/jest/docs/api.html#config-preprocesscachingdisabled-boolean)
   - [`config.rootDir` [string]](http://facebook.github.io/jest/docs/api.html#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)
+  - [`config.preprocessorIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string)
   - [`config.setupEnvScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setupenvscriptfile-string)
   - [`config.setupTestFrameworkScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string)
   - [`config.testDirectoryName` [string]](http://facebook.github.io/jest/docs/api.html#config-testdirectoryname-string)
@@ -67,6 +74,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - `afterEach(fn)`
   - `beforeEach(fn)`
   - `describe(name, fn)`
+  - [`expect(value)`](http://facebook.github.io/jest/docs/api.html#expect-value)
   - `it(name, fn)`
   - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
   - [`jest`](http://facebook.github.io/jest/docs/api.html#the-jest-object)

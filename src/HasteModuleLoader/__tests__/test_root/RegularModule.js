@@ -10,6 +10,11 @@
 
 'use strict';
 
+// For some reason thinks it's a strict violation.
+if (exports !== this) {
+  throw new Error('Invalid module context');
+}
+
 var moduleStateValue = 'default';
 
 function setModuleStateValue(value) {
@@ -23,3 +28,4 @@ function getModuleStateValue() {
 exports.getModuleStateValue = getModuleStateValue;
 exports.isRealModule = true;
 exports.setModuleStateValue = setModuleStateValue;
+exports.parent = module.parent;

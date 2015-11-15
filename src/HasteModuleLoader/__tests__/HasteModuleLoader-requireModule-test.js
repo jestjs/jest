@@ -4,23 +4,26 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
 jest.autoMockOff();
+jest.mock('../../environments/JSDOMEnvironment');
 
 var path = require('path');
-var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   var HasteModuleLoader;
-  var mockEnvironment;
+  var JSDOMEnvironment;
   var resourceMap;
 
   var CONFIG = utils.normalizeConfig({
-    name: 'HasteModuleLoader-tests',
-    rootDir: path.join(__dirname, 'test_root')
+    cacheDirectory: global.CACHE_DIRECTORY,
+    name: 'HasteModuleLoader-requireModule-tests',
+    rootDir: path.join(__dirname, 'test_root'),
   });
 
   function buildLoader() {
@@ -30,6 +33,7 @@ describe('HasteModuleLoader', function() {
         return buildLoader();
       });
     } else {
+      var mockEnvironment = new JSDOMEnvironment(CONFIG);
       return Promise.resolve(
         new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
       );
@@ -38,18 +42,7 @@ describe('HasteModuleLoader', function() {
 
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
-
-    mockEnvironment = {
-      global: {
-        console: {},
-        mockClearTimers: jest.genMockFn(),
-        JSON: JSON
-      },
-      runSourceText: jest.genMockFn().mockImplementation(function(codeStr) {
-        /* jshint evil:true */
-        return (new Function('return ' + codeStr))();
-      })
-    };
+    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
 
   describe('requireModule', function() {
@@ -57,6 +50,16 @@ describe('HasteModuleLoader', function() {
       return buildLoader().then(function(loader) {
         var exports = loader.requireModule(null, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
+      });
+    });
+
+    pit('provides `module.parent` to modules', function() {
+      return buildLoader().then(function(loader) {
+        var exports = loader.requireModule(null, 'RegularModule');
+        expect(exports.parent).toEqual({
+          id: 'mockParent',
+          exports: {},
+        });
       });
     });
 
@@ -171,16 +174,17 @@ describe('HasteModuleLoader', function() {
        * See the 'overrides real modules with manual mock when one exists' test
        * for more info on why I want to kill this feature.
        */
-      pit('doesnt override real modules with manual mocks when explicitly ' +
-          'marked with .dontMock()', function() {
-        return buildLoader().then(function(loader) {
-          loader.requireModule(__filename, 'jest-runtime')
-            .dontMock('ManuallyMocked');
-
-          var exports = loader.requireModule(__filename, 'ManuallyMocked');
-          expect(exports.isManualMockModule).toBe(false);
-        });
-      });
+      pit(
+        'doesnt override real modules with manual mocks when explicitly ' +
+          'marked with .dontMock()',
+          function() {
+            return buildLoader().then(function(loader) {
+              loader.getJestRuntime(__filename).dontMock('ManuallyMocked');
+              var exports = loader.requireModule(__filename, 'ManuallyMocked');
+              expect(exports.isManualMockModule).toBe(false);
+            });
+          }
+      );
 
       /**
        * This test is only in this section because it seems sketchy to be able
@@ -188,43 +192,47 @@ describe('HasteModuleLoader', function() {
        * more investigation to understand the reasoning behind this before I
        * declare it unnecessary and condemn it.
        */
-      pit('doesnt read from the module registry when bypassModuleRegistry is ' +
-          'set', function() {
-        return buildLoader().then(function(loader) {
-          var registryExports = loader.requireModule(
-            __filename,
-            'RegularModule'
-          );
-          registryExports.setModuleStateValue('registry');
+      pit(
+        'doesnt read from the module registry when bypassModuleRegistry is set',
+        function() {
+          return buildLoader().then(function(loader) {
+            var registryExports = loader.requireModule(
+              __filename,
+              'RegularModule'
+            );
+            registryExports.setModuleStateValue('registry');
 
-          var bypassedExports = loader.requireModule(
-            __filename,
-            'RegularModule',
-            true
-          );
-          expect(bypassedExports.getModuleStateValue()).not.toBe('registry');
-        });
-      });
+            var bypassedExports = loader.requireModule(
+              __filename,
+              'RegularModule',
+              true
+            );
+            expect(bypassedExports.getModuleStateValue()).not.toBe('registry');
+          });
+        }
+      );
 
-      pit('doesnt write to the module registry when bypassModuleRegistry is ' +
-          'set', function() {
-        return buildLoader().then(function(loader) {
-          var registryExports = loader.requireModule(
-            __filename,
-            'RegularModule'
-          );
-          registryExports.setModuleStateValue('registry');
+      pit(
+        'doesnt write to the module registry when bypassModuleRegistry is set',
+        function() {
+          return buildLoader().then(function(loader) {
+            var registryExports = loader.requireModule(
+              __filename,
+              'RegularModule'
+            );
+            registryExports.setModuleStateValue('registry');
 
-          var bypassedExports = loader.requireModule(
-            __filename,
-            'RegularModule',
-            true
-          );
-          bypassedExports.setModuleStateValue('bypassed');
+            var bypassedExports = loader.requireModule(
+              __filename,
+              'RegularModule',
+              true
+            );
+            bypassedExports.setModuleStateValue('bypassed');
 
-          expect(registryExports.getModuleStateValue()).toBe('registry');
-        });
-      });
+            expect(registryExports.getModuleStateValue()).toBe('registry');
+          });
+        }
+      );
     });
   });
 });

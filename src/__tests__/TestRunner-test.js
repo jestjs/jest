@@ -4,13 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
 
 jest.autoMockOff().mock('fs');
 
-var Promise = require('bluebird');
-
+var name = 'TestRunner';
 describe('TestRunner', function() {
   var TestRunner;
 
@@ -25,20 +26,15 @@ describe('TestRunner', function() {
     beforeEach(function() {
       utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
+        cacheDirectory: global.CACHE_DIRECTORY,
+        name,
         rootDir: '.',
-        testPathDirs: []
+        testPathDirs: [],
       }));
     });
 
     it('supports ../ paths and unix separators', function() {
       var path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      var isTestFile = runner._isTestFilePath(path);
-
-      return expect(isTestFile).toEqual(true);
-    });
-
-    it('supports ../ paths and windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\foo\\bar\\baz\\..\\..\\..\\test.js';
       var isTestFile = runner._isTestFilePath(path);
 
       return expect(isTestFile).toEqual(true);
@@ -51,12 +47,6 @@ describe('TestRunner', function() {
       return expect(isTestFile).toEqual(true);
     });
 
-    it('supports windows separators', function() {
-      var path = 'c:\\path\\to\\__tests__\\test.js';
-      var isTestFile = runner._isTestFilePath(path);
-
-      return expect(isTestFile).toEqual(true);
-    });
   });
 
   describe('streamTestPathsRelatedTo', function() {
@@ -87,8 +77,10 @@ describe('TestRunner', function() {
       fs = require('graceful-fs');
       utils = require('../lib/utils');
       runner = new TestRunner(utils.normalizeConfig({
+        cacheDirectory: global.CACHE_DIRECTORY,
+        name,
         rootDir: '.',
-        testPathDirs: []
+        testPathDirs: [],
       }));
 
       fakeDepsFromPath = {};
@@ -96,7 +88,7 @@ describe('TestRunner', function() {
         return Promise.resolve({
           getDependentsFromPath: function(modulePath) {
             return fakeDepsFromPath[modulePath] || [];
-          }
+          },
         });
       };
     });
@@ -161,7 +153,7 @@ describe('TestRunner', function() {
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([
             dependentTestPath1,
-            dependentTestPath2
+            dependentTestPath2,
           ]);
         });
     });
@@ -176,7 +168,7 @@ describe('TestRunner', function() {
         [indirectDependentModulePath];
       fakeDepsFromPath[indirectDependentModulePath] = [
         directDependentModulePath,
-        dependentTestPath
+        dependentTestPath,
       ];
 
       // Mock out existsSync to return true, since our test path isn't real

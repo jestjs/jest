@@ -9,14 +9,13 @@
 
 var jasmine = require('../../vendor/jasmine/jasmine-1.3.0').jasmine;
 var JasmineFormatter = require('./jasmineFormatter');
-var Promise = require('bluebird');
 
 function JasmineReporter(config) {
   jasmine.Reporter.call(this);
   this._formatter = new JasmineFormatter(jasmine, config);
   this._config = config || {};
   this._logs = [];
-  this._resultsDeferred = Promise.defer();
+  this._resultsPromise = new Promise(resolve => this._resolve = resolve);
 }
 
 JasmineReporter.prototype = Object.create(jasmine.Reporter.prototype);
@@ -44,15 +43,15 @@ JasmineReporter.prototype.reportRunnerResults = function(runner) {
     }
   });
 
-  this._resultsDeferred.resolve({
+  this._resolve({
     numFailingTests: numFailingTests,
     numPassingTests: numPassingTests,
-    testResults: testResults
+    testResults: testResults,
   });
 };
 
 JasmineReporter.prototype.getResults = function() {
-  return this._resultsDeferred.promise;
+  return this._resultsPromise;
 };
 
 JasmineReporter.prototype.log = function(str) {
@@ -60,7 +59,7 @@ JasmineReporter.prototype.log = function(str) {
 };
 
 JasmineReporter.prototype._extractSuiteResults =
-function (container, ancestorTitles, suite) {
+function(container, ancestorTitles, suite) {
   ancestorTitles = ancestorTitles.concat([suite.description]);
 
   suite.specs().forEach(
@@ -72,20 +71,16 @@ function (container, ancestorTitles, suite) {
 };
 
 JasmineReporter.prototype._extractSpecResults =
-function (container, ancestorTitles, spec) {
+function(container, ancestorTitles, spec) {
   var results = {
     title: 'it ' + spec.description,
     ancestorTitles: ancestorTitles,
     failureMessages: [],
-    logMessages: [],
-    numPassingAsserts: 0
+    numPassingAsserts: 0,
   };
 
   spec.results().getItems().forEach(function(result) {
     switch (result.type) {
-      case 'log':
-        results.logMessages.push(result.toString());
-        break;
       case 'expect':
         if (result.passed()) {
 

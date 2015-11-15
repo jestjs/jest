@@ -7,52 +7,52 @@
  */
 'use strict';
 
-var optimist = require('optimist');
-var TestRunner = require('./TestRunner');
-var workerUtils = require('node-worker-pool/nodeWorkerUtils');
+// Make sure uncaught errors are logged before we exit.
+// Could be transient errors to do with loading and serializing the resouce
+// map.
+process.on('uncaughtException', (err) => {
+  console.error(err.stack);
+  process.exit(1);
+});
 
-if (require.main === module) {
-  try {
-    process.on('uncaughtException', workerUtils.respondWithError);
+const TestRunner = require('./TestRunner');
 
-    var argv = optimist.demand(['config']).argv;
-    var config = JSON.parse(argv.config);
+let testRunner;
 
-    var testRunner = null;
-    var onMessage = function(message) {
-      if (testRunner === null) {
-        testRunner = new TestRunner(config, {
-          useCachedModuleLoaderResourceMap: true,
-        });
+module.exports = function testWorker(data, callback) {
+  if (!testRunner) {
+    testRunner = new TestRunner(data.config, {
+      useCachedModuleLoaderResourceMap: true,
+    });
 
-        // Start require()ing config dependencies now.
-        //
-        // Config dependencies are entries in the config that are require()d (in
-        // order to be pluggable) such as 'moduleLoader' or
-        // 'testEnvironment'.
-        testRunner.preloadConfigDependencies();
+    // Start require()ing config dependencies now.
+    //
+    // Config dependencies are entries in the config that are require()d (in
+    // order to be pluggable) such as 'moduleLoader' or
+    // 'testEnvironment'.
+    testRunner.preloadConfigDependencies();
 
-        // Start deserializing the resource map to get a potential head-start on
-        // that work before the first "run-test" message comes in.
-        //
-        // This is just a perf optimization -- and it is only an optimization
-        // some of the time (when the there is any significant idle time between
-        // this first initialization message and the first "run-rest" message).
-        //
-        // It is also only an optimization so long as deserialization of the
-        // resource map is a bottleneck (which is the case at the time of this
-        // writing).
-        testRunner.preloadResourceMap();
-      }
-
-      return testRunner.runTest(message.testFilePath)
-        .catch(function(err) {
-          throw (err.stack || err.message || err);
-        });
-    };
-
-    workerUtils.startWorker(null, onMessage);
-  } catch (e) {
-    workerUtils.respondWithError(e);
+    // Start deserializing the resource map to get a potential head-start on
+    // that work before the first "run-test" message comes in.
+    //
+    // This is just a perf optimization -- and it is only an optimization
+    // some of the time (when the there is any significant idle time between
+    // this first initialization message and the first "run-rest" message).
+    //
+    // It is also only an optimization so long as deserialization of the
+    // resource map is a bottleneck (which is the case at the time of this
+    // writing).
+    testRunner.preloadResourceMap();
   }
-}
+
+  try {
+    testRunner.runTest(data.testFilePath)
+      .then(
+        result => callback(null, result),
+        // TODO: move to error object passing (why limit to strings?).
+        err => callback(err.stack || err.message || err)
+      );
+  } catch (err) {
+    callback(err.stack || err.message || err);
+  }
+};

@@ -17,7 +17,7 @@ var DIFFABLE_MATCHERS = {
   toBe: true,
   toNotBe: true,
   toEqual: true,
-  toNotEqual: true
+  toNotEqual: true,
 };
 var LINEBREAK_REGEX = /[\r\n]/;
 
@@ -97,7 +97,7 @@ JasmineFormatter.prototype.formatException = function(stackTrace) {
 
 };
 
-JasmineFormatter.prototype.highlightDifferences = function (a, b) {
+JasmineFormatter.prototype.highlightDifferences = function(a, b) {
   var differ;
   if (a.match(LINEBREAK_REGEX) || b.match(LINEBREAK_REGEX)) {
     // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
@@ -186,7 +186,7 @@ JasmineFormatter.prototype.cleanStackTrace = function(stackTrace) {
   // Remove jasmine jonx from the stack trace
   var lines = 0;
   var keepFirstLines = function() {
-      return (lines++ < KEEP_TRACE_LINES);
+    return (lines++ < KEEP_TRACE_LINES);
   };
 
   return stackTrace.split('\n').filter(function(line) {

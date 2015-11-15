@@ -7,193 +7,207 @@
  */
 'use strict';
 
-var colors = require('./lib/colors');
-var formatFailureMessage = require('./lib/utils').formatFailureMessage;
-var formatMsg = require('./lib/utils').formatMsg;
-var path = require('path');
-var VerboseLogger = require('./lib/testLogger');
+const colors = require('./lib/colors');
+const formatFailureMessage = require('./lib/utils').formatFailureMessage;
+const formatMsg = require('./lib/utils').formatMsg;
+const path = require('path');
+const VerboseLogger = require('./lib/testLogger');
 
-var FAIL_COLOR = colors.RED_BG + colors.BOLD;
-var PASS_COLOR = colors.GREEN_BG + colors.BOLD;
-var TEST_NAME_COLOR = colors.BOLD;
+const FAIL_COLOR = colors.RED_BG + colors.BOLD;
+const PASS_COLOR = colors.GREEN_BG + colors.BOLD;
+const TEST_NAME_COLOR = colors.BOLD;
 
-function DefaultTestReporter(customProcess) {
-  this._process = customProcess || process;
-}
+class DefaultTestReporter {
 
-DefaultTestReporter.prototype.log = function(str) {
-  this._process.stdout.write(str + '\n');
-};
-
-DefaultTestReporter.prototype.onRunStart =
-function(config, aggregatedResults) {
-  this._config = config;
-  this._printWaitingOn(aggregatedResults);
-  if (this._config.verbose) {
-    var verboseLogger = new VerboseLogger(this._config, this._process);
-    this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
-  }
-};
-
-DefaultTestReporter.prototype.onTestResult =
-function(config, testResult, aggregatedResults) {
-  this._clearWaitingOn();
-
-  var pathStr =
-    config.rootDir
-    ? path.relative(config.rootDir, testResult.testFilePath)
-    : testResult.testFilePath;
-
-  if (testResult.testExecError) {
-    this.log(this._getResultHeader(false, pathStr));
-    this.log(testResult.testExecError);
-    return false;
+  constructor(customProcess) {
+    this._process = customProcess || process;
   }
 
-  var allTestsPassed = testResult.numFailingTests === 0;
-
-  var testRunTime =
-    testResult.perfStats
-    ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
-    : null;
-
-  var testRunTimeString = '(' + testRunTime + 's)';
-  if (testRunTime > 2.5) {
-    testRunTimeString = this._formatMsg(testRunTimeString, FAIL_COLOR);
+  log(str) {
+    this._process.stdout.write(str + '\n');
   }
 
-  var resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
-    testRunTimeString
-  ]);
-
-  /*
-  if (config.collectCoverage) {
-    // TODO: Find a nice pretty way to print this out
-  }
-  */
-
-  this.log(resultHeader);
-  if (config.verbose) {
-    this.verboseLog(testResult.testResults, resultHeader);
+  onRunStart(config, aggregatedResults) {
+    this._config = config;
+    this._printWaitingOn(aggregatedResults);
+    if (this._config.verbose) {
+      const verboseLogger = new VerboseLogger(this._config, this._process);
+      this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
+    }
   }
 
-  testResult.logMessages.forEach(this._printConsoleMessage.bind(this));
+  onTestResult(config, testResult, aggregatedResults) {
+    this._clearWaitingOn();
 
-  if (!allTestsPassed) {
-    var failureMessage = formatFailureMessage(testResult, !config.noHighlight);
+    const pathStr =
+      config.rootDir
+      ? path.relative(config.rootDir, testResult.testFilePath)
+      : testResult.testFilePath;
+    const allTestsPassed = testResult.numFailingTests === 0;
+    const testRunTime =
+      testResult.perfStats
+      ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
+      : null;
+
+    const testDetail = [];
+    if (testRunTime !== null) {
+      testDetail.push(
+        testRunTime > 2.5
+          ? this._formatMsg(testRunTime + 's', FAIL_COLOR)
+          : testRunTime + 's'
+      );
+    }
+
+    if (testResult.memoryUsage) {
+      const toMB = bytes => Math.floor(bytes / 1024 / 1024);
+      testDetail.push(
+        `${toMB(testResult.memoryUsage)} MB current`,
+        `${toMB(testResult.maxMemoryUsage)} MB max`
+      );
+    }
+
+    const resultHeader = this._getResultHeader(allTestsPassed, pathStr, [
+      (testDetail.length ? '(' + testDetail.join(', ') + ')' : null),
+    ]);
+
+    /*
+    if (config.collectCoverage) {
+      // TODO: Find a nice pretty way to print this out
+    }
+    */
+
+    this.log(resultHeader);
     if (config.verbose) {
-      aggregatedResults.postSuiteHeaders.push(
-        resultHeader,
-        failureMessage
+      this.verboseLog(testResult.testResults, resultHeader);
+    }
+
+    if (!allTestsPassed) {
+      const failureMessage = formatFailureMessage(testResult, {
+        rootPath: config.rootDir,
+        useColor: !config.noHighlight,
+      });
+      if (config.verbose) {
+        aggregatedResults.postSuiteHeaders.push(
+          resultHeader,
+          failureMessage
+        );
+      } else {
+        // If we write more than one character at a time it is possible that
+        // node exits in the middle of printing the result.
+        // If you are reading this and you are from the future, this might not
+        // be true any more.
+        for (let i = 0; i < failureMessage.length; i++) {
+          this._process.stdout.write(failureMessage.charAt(i));
+        }
+        this._process.stdout.write('\n');
+      }
+
+      if (config.bail) {
+        this.onRunComplete(config, aggregatedResults);
+        this._process.exit(0);
+      }
+    }
+
+    this._printWaitingOn(aggregatedResults);
+  }
+
+  onRunComplete(config, aggregatedResults) {
+    const numFailedTests = aggregatedResults.numFailedTests;
+    const numPassedTests = aggregatedResults.numPassedTests;
+    const numTotalTests = aggregatedResults.numTotalTests;
+    const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
+
+    if (numTotalTests === 0) {
+      return;
+    }
+
+    if (config.verbose) {
+      if (aggregatedResults.postSuiteHeaders.length > 0) {
+        this.log(aggregatedResults.postSuiteHeaders.join('\n'));
+      }
+    }
+
+    let results = '';
+    if (numFailedTests) {
+      results += this._formatMsg(
+        numFailedTests + ' test' +
+        (numFailedTests === 1 ? '' : 's') + ' failed',
+        colors.RED + colors.BOLD
       );
-    } else {
-      this.log(failureMessage);
+      results += ', ';
     }
 
-    if (config.bail) {
-      this.onRunComplete(config, aggregatedResults);
-      this._process.exit(0);
+    if (aggregatedResults.numRuntimeErrorTestSuites) {
+      results += this._formatMsg(
+        aggregatedResults.numRuntimeErrorTestSuites + ' test suite' +
+          (aggregatedResults.numRuntimeErrorTestSuites === 1 ? '' : 's') +
+          ' failed',
+        colors.RED + colors.BOLD
+      );
+      results += ', ';
     }
-  }
 
-  this._printWaitingOn(aggregatedResults);
-};
-
-DefaultTestReporter.prototype.onRunComplete =
-function (config, aggregatedResults) {
-  var numFailedTests = aggregatedResults.numFailedTests;
-  var numPassedTests = aggregatedResults.numPassedTests;
-  var numTotalTests = aggregatedResults.numTotalTests;
-  var runTime = (Date.now() - aggregatedResults.startTime) / 1000;
-
-  if (numTotalTests === 0) {
-    return;
-  }
-
-  if (config.verbose) {
-    if (aggregatedResults.postSuiteHeaders.length > 0) {
-      this.log(aggregatedResults.postSuiteHeaders.join('\n'));
-    }
-  }
-
-  var results = '';
-  if (numFailedTests) {
     results += this._formatMsg(
-      numFailedTests + ' test' + (numFailedTests === 1 ? '' : 's') + ' failed',
-      colors.RED + colors.BOLD
+      numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
+      colors.GREEN + colors.BOLD
     );
-    results += ', ';
+
+    const numTestSuitesExecuted =
+      aggregatedResults.numTotalTestSuites -
+      aggregatedResults.numRuntimeErrorTestSuites;
+
+    results += ' (' + numTotalTests + ' total in ' +
+      numTestSuitesExecuted + ' ' +
+      'test suite' + (numTestSuitesExecuted === 1 ? '' : 's') +
+      ', run time ' + runTime + 's)';
+
+    this.log(results);
   }
-  results += this._formatMsg(
-    numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
-    colors.GREEN + colors.BOLD
-  );
-  results += ' (' + numTotalTests + ' total)';
 
-  this.log(results);
-  this.log('Run time: ' + runTime + 's');
-};
+  _clearWaitingOn() {
+    // Don't write special chars in noHighlight mode
+    // to get clean output for logs.
+    const command = this._config.noHighlight
+      ? '\n'
+      : '\r\x1B[K';
+    this._process.stdout.write(command);
+  }
 
-DefaultTestReporter.prototype._printConsoleMessage = function(msg) {
-  switch (msg.type) {
-    case 'dir':
-    case 'log':
-      this._process.stdout.write(msg.data);
-      break;
-    case 'warn':
-      this._process.stderr.write(
-        this._formatMsg(msg.data, colors.YELLOW)
+  _formatMsg(msg, color) {
+    return formatMsg(msg, color, this._config);
+  }
+
+  _getResultHeader(passed, testName, columns) {
+    const passFailTag = passed
+      ? this._formatMsg(' PASS ', PASS_COLOR)
+      : this._formatMsg(' FAIL ', FAIL_COLOR);
+
+    return [
+      passFailTag,
+      this._formatMsg(testName, TEST_NAME_COLOR),
+    ].concat(columns || []).join(' ');
+  }
+
+  _printWaitingOn(aggregatedResults) {
+    const completedTestSuites =
+      aggregatedResults.numPassedTestSuites +
+      aggregatedResults.numFailedTestSuites +
+      aggregatedResults.numRuntimeErrorTestSuites;
+    const remainingTestSuites =
+      aggregatedResults.numTotalTestSuites -
+      completedTestSuites;
+    if (remainingTestSuites > 0) {
+      const pluralTestSuites =
+        remainingTestSuites === 1 ? 'test suite' : 'test suites';
+      this._process.stdout.write(
+        this._formatMsg(
+          'Running ' + remainingTestSuites + ' ' + pluralTestSuites + '...',
+          colors.GRAY + colors.BOLD
+        )
       );
-      break;
-    case 'error':
-      this._process.stderr.write(
-        this._formatMsg(msg.data, colors.RED)
-      );
-      break;
-    default:
-      throw new Error('Unknown console message type!: ' + msg.type);
+    }
   }
-};
 
-DefaultTestReporter.prototype._clearWaitingOn = function() {
-  // Don't write special chars in noHighlight mode
-  // to get clean output for logs.
-  var command = this._config.noHighlight
-    ? '\n'
-    : '\r\x1B[K';
-  this._process.stdout.write(command);
-};
-
-DefaultTestReporter.prototype._formatMsg = function(msg, color) {
-  return formatMsg(msg, color, this._config);
-};
-
-DefaultTestReporter.prototype._getResultHeader =
-function (passed, testName, columns) {
-  var passFailTag = passed
-    ? this._formatMsg(' PASS ', PASS_COLOR)
-    : this._formatMsg(' FAIL ', FAIL_COLOR);
-
-  return [
-    passFailTag,
-    this._formatMsg(testName, TEST_NAME_COLOR)
-  ].concat(columns || []).join(' ');
-};
-
-DefaultTestReporter.prototype._printWaitingOn = function(aggregatedResults) {
-  var completedTests =
-    aggregatedResults.numPassedTests +
-    aggregatedResults.numFailedTests;
-  var remainingTests = aggregatedResults.numTotalTests - completedTests;
-  if (remainingTests > 0) {
-    var pluralTests = remainingTests === 1 ? 'test' : 'tests';
-    this._process.stdout.write(
-      this._formatMsg(
-        'Waiting on ' + remainingTests + ' ' + pluralTests + '...',
-        colors.GRAY + colors.BOLD
-      )
-    );
-  }
-};
+}
 
 module.exports = DefaultTestReporter;

@@ -9,7 +9,6 @@
 
 var jasmineRequire = require('../../vendor/jasmine/jasmine-2.3.4.js');
 var jasmine = jasmineRequire.core(jasmineRequire);
-var Promise = require('bluebird');
 var JasmineFormatter = require('./jasmineFormatter');
 
 function Jasmine2Reporter(config) {
@@ -49,7 +48,7 @@ Jasmine2Reporter.prototype.jasmineDone = function() {
   this._resultsDeferred.resolve({
     numFailingTests: numFailingTests,
     numPassingTests: numPassingTests,
-    testResults: this._testResults
+    testResults: this._testResults,
   });
 };
 
@@ -64,7 +63,7 @@ function(specResult, currentSuites) {
     ancestorTitles: currentSuites,
     failureMessages: [],
     logMessages: [], // Jasmine 2 does not have a logging interface
-    numPassingAsserts: 0 // Jasmine 2 only returns an array of failed asserts.
+    numPassingAsserts: 0, // Jasmine 2 only returns an array of failed asserts.
   };
 
   specResult.failedExpectations.forEach(function(failed) {

@@ -27,106 +27,24 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-/*jshint strict:false*/
+'use strict';
 
-var util = require('util');
+const util = require('util');
+const Console = require('console').Console;
+const colors = require('./lib/colors');
 
-function Console(messageQueue) {
-  if (!(this instanceof Console)) {
-    return new Console(messageQueue);
+class CustomConsole extends Console {
+  warn() {
+    return super.warn(
+      colors.colorize(util.format.apply(this, arguments), colors.YELLOW)
+    );
   }
 
-  Object.defineProperty(this, '_messageQueue', {
-    value: messageQueue,
-    writable: true,
-    enumerable: false,
-    configurable: true
-  });
-
-  Object.defineProperty(this, '_times', {
-    value: {},
-    writable: true,
-    enumerable: false,
-    configurable: true
-  });
-
-  // bind the prototype functions to this Console instance
-  var keys = Object.keys(Console.prototype);
-  for (var v = 0; v < keys.length; v++) {
-    var k = keys[v];
-    this[k] = this[k].bind(this);
+  error() {
+    return super.error(
+      colors.colorize(util.format.apply(this, arguments), colors.RED)
+    );
   }
 }
 
-Console.prototype.log = function() {
-  this._messageQueue.push({
-    type: 'log',
-    data: util.format.apply(this, arguments) + '\n'
-  });
-};
-
-
-Console.prototype.info = Console.prototype.log;
-
-
-Console.prototype.warn = function() {
-  this._messageQueue.push({
-    type: 'warn',
-    data: util.format.apply(this, arguments) + '\n'
-  });
-};
-
-
-Console.prototype.error = function() {
-  this._messageQueue.push({
-    type: 'error',
-    data: util.format.apply(this, arguments) + '\n'
-  });
-};
-
-
-Console.prototype.dir = function(object, options) {
-  this._messageQueue.push({
-    type: 'dir',
-    data: util.inspect(object, util._extend({
-            customInspect: false
-          }, options)) + '\n'
-  });
-};
-
-
-Console.prototype.time = function(label) {
-  this._times[label] = Date.now();
-};
-
-
-Console.prototype.timeEnd = function(label) {
-  var time = this._times[label];
-  if (!time) {
-    throw new Error('No such label: ' + label);
-  }
-  var duration = Date.now() - time;
-  this.log('%s: %dms', label, duration);
-};
-
-
-Console.prototype.trace = function() {
-  // TODO probably can to do this better with V8's debug object once that is
-  // exposed.
-  var err = new Error();
-  err.name = 'Trace';
-  err.message = util.format.apply(this, arguments);
-  /*jshint noarg:false*/
-  Error.captureStackTrace(err, arguments.callee);
-  this.error(err.stack);
-};
-
-
-Console.prototype.assert = function(expression) {
-  if (!expression) {
-    var arr = Array.prototype.slice.call(arguments, 1);
-    require('assert').ok(false, util.format.apply(this, arr));
-  }
-};
-
-module.exports = Console;
+module.exports = CustomConsole;

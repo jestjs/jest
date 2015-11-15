@@ -10,7 +10,6 @@
 var fs = require('graceful-fs');
 var jasminePit = require('jasmine-pit');
 var JasmineReporter = require('./Jasmine2Reporter');
-var envSetup = require('./environment.js');
 var path = require('path');
 
 var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-2.3.4.js');
@@ -37,10 +36,6 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
     // compareobjects with WeakMap override not needed for jasmine2,
     // see: https://github.com/jasmine/jasmine/issues/508
-
-     // Run the test setup script.
-    envSetup.runSetupTestFrameworkScript(config, environment, moduleLoader);
-
   });
 
   var jasmine = environment.global.jasmine;
@@ -50,7 +45,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
       toBeCalled: function(/* util, customEqualityTesters */) {
         return {
-          compare: function(actual /*, expected */) {
+          compare: function(actual/*, expected */) {
 
             if (actual.mock === undefined) {
               throw Error('toBeCalled() should be used on a mock function');
@@ -59,11 +54,11 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
             return {
               pass: actual.mock.calls.length !== 0,
             };
-          }
+          },
         };
       },
 
-      lastCalledWith: function(util /*, customEqualityTesters */) {
+      lastCalledWith: function(util/*, customEqualityTesters */) {
         return {
           compare: function(actual) {
 
@@ -78,11 +73,11 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
               pass: util.equals(calls[calls.length - 1], args),
             };
 
-          }
+          },
         };
       },
 
-      toBeCalledWith: function(util /*, customEqualityTesters */) {
+      toBeCalledWith: function(util/*, customEqualityTesters */) {
         return {
           compare: function(actual) {
             if (actual.mock === undefined) {
@@ -99,22 +94,19 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
             return {
               pass: passed,
             };
-
-          }
+          },
         };
-      }
+      },
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
-      moduleLoader.requireModule(
-        __filename,
-        'jest-runtime'
-      ).resetModuleRegistry();
+      moduleLoader.getJestRuntime().resetModuleRegistry();
     }
   });
 
   var jasmineReporter = new JasmineReporter({
     noHighlight: config.noHighlight,
+    noStackTrace: config.noStackTrace,
   });
   jasmine.getEnv().addReporter(jasmineReporter);
 

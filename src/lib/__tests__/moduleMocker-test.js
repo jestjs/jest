@@ -4,15 +4,10 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
  */
 'use strict';
-
-// This was generated with https://babeljs.io/repl/
-/* jshint ignore:start */
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-/* jshint ignore:end */
-/* global _classCallCheck, _createClass */
 
 jest.autoMockOff();
 
@@ -25,7 +20,7 @@ describe('moduleMocker', function() {
 
   describe('getMetadata', function() {
     it('returns the function `name` property', function() {
-      function x(){}
+      function x() {}
       var metadata = moduleMocker.getMetadata(x);
       expect(x.name).toBe('x');
       expect(metadata.name).toBe('x');
@@ -34,9 +29,9 @@ describe('moduleMocker', function() {
 
   describe('generateFromMetadata', function() {
     it('forwards the function name property', function() {
-      function foo(){}
+      function foo() {}
       var fooMock = moduleMocker.generateFromMetadata(
-      moduleMocker.getMetadata(foo)
+        moduleMocker.getMetadata(foo)
       );
       expect(fooMock.name).toBe('foo');
     });
@@ -64,11 +59,11 @@ describe('moduleMocker', function() {
     it('does not mock non-enumerable getters', function() {
       var foo = Object.defineProperties({}, {
         nonEnumMethod: {
-          value: function() {}
+          value: function() {},
         },
         nonEnumGetter: {
-          get: function() { throw 1; }
-        }
+          get: function() { throw new Error(); },
+        },
       });
       var fooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo)
@@ -80,42 +75,29 @@ describe('moduleMocker', function() {
       expect(fooMock.nonEnumGetter).toBeUndefined();
     });
 
-    it('mocks ES6 non-enumerable methods', function() {
-        // ES6: class ClassFoo { foo() { } }
-        // Converted with https://babeljs.io/repl/
-        var ClassFoo = (function () {
-          function ClassFoo() {
-            _classCallCheck(this, ClassFoo);
-          }
+    it('mocks ES2015 non-enumerable methods', function() {
+      class ClassFoo {
+        foo() {}
+        toString() {
+          return 'Foo';
+        }
+      }
 
-          _createClass(ClassFoo, [{
-            key: 'foo',
-            value: function foo() {}
-          }, {
-            key: 'toString',
-            value: function toString() {
-              return 'Foo';
-            }
-          }]);
+      var ClassFooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(ClassFoo)
+      );
+      var foo = new ClassFooMock();
 
-          return ClassFoo;
-        })();
-        var ClassFooMock = moduleMocker.generateFromMetadata(
-            moduleMocker.getMetadata(ClassFoo)
-        );
+      var instanceFoo = new ClassFoo();
+      var instanceFooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(instanceFoo)
+      );
 
-        var foo = new ClassFooMock();
+      expect(typeof foo.foo).toBe('function');
+      expect(typeof instanceFooMock.foo).toBe('function');
+      expect(instanceFooMock.foo.mock).not.toBeUndefined();
 
-        var instanceFoo = new ClassFoo();
-        var instanceFooMock = moduleMocker.generateFromMetadata(
-            moduleMocker.getMetadata(instanceFoo)
-        );
-
-        expect(typeof foo.foo).toBe('function');
-        expect(typeof instanceFooMock.foo).toBe('function');
-        expect(instanceFooMock.foo.mock).not.toBeUndefined();
-
-        expect(instanceFooMock.toString.mock).not.toBeUndefined();
+      expect(instanceFooMock.toString.mock).not.toBeUndefined();
     });
   });
 });

@@ -7,7 +7,7 @@
  */
 'use strict';
 
-require('mock-modules').autoMockOff();
+jest.autoMockOff();
 
 describe('Jasmine2Reporter', function() {
   // modules
@@ -31,7 +31,7 @@ describe('Jasmine2Reporter', function() {
       var makeSpec = function(name) {
         return { fullName: name,
           description: 'description',
-          failedExpectations: []
+          failedExpectations: [],
         };
       };
       reporter.suiteStarted({description: 'parent'});
@@ -67,9 +67,9 @@ describe('Jasmine2Reporter', function() {
             actual: actualResult,
             expected: expectedResult,
             matcherName: 'toBe',
-            passed: false
-          }
-        ]
+            passed: false,
+          },
+        ],
       };
     }
 
@@ -81,9 +81,9 @@ describe('Jasmine2Reporter', function() {
           {
             matcherName: '',
             stack: stack,
-            passed: false
-          }
-        ]
+            passed: false,
+          },
+        ],
       };
     }
 

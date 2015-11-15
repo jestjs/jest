@@ -7,8 +7,8 @@
  */
 'use strict';
 
-var colors = require('./colors');
-var formatMsg = require('./utils').formatMsg;
+const colors = require('./colors');
+const formatMsg = require('./utils').formatMsg;
 
 /**
  * Creates a VerboseLogger object used to encapsulate verbose logging.
@@ -59,7 +59,7 @@ VerboseLogger.prototype.verboseLog = function(testResults) {
  *
  */
 VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
-  var indentationIncrement;
+  let indentationIncrement;
   if (typeof node === 'undefined' || node === null) {
     return;
   }
@@ -70,7 +70,7 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
     this.printTestTitles(node.testTitles, indentation);
     this.traverseTestResults(node.childNodes, indentation);
   } else {
-    for (var key in node) {
+    for (const key in node) {
       this.log(indentation + key);
       this.traverseTestResults(node[key], indentation + indentationIncrement);
     }
@@ -86,9 +86,9 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
  * @param {string} indentation - Indentation used for formatting.
  */
 VerboseLogger.prototype.printTestTitles = function(testTitles, indentation) {
-  var prefixColor, statusPrefix;
+  let prefixColor, statusPrefix;
 
-  for (var i = 0; i < testTitles.length; i++){
+  for (let i = 0; i < testTitles.length; i++) {
     if (testTitles[i].failureMessages.length === 0) {
       prefixColor = colors.GREEN;
       statusPrefix = this._config.noHighlight ? 'PASS - ' : '\u2713 ';
@@ -159,12 +159,12 @@ function _createTestNode(testResult, ancestorTitles, currentNode) {
     if (!currentNode.childNodes[ancestorTitles[0]]) {
       currentNode.childNodes[ancestorTitles[0]] = {
         testTitles: [],
-        childNodes: {}
+        childNodes: {},
       };
     }
     _createTestNode(
       testResult,
-      ancestorTitles.slice(1,ancestorTitles.length),
+      ancestorTitles.slice(1, ancestorTitles.length),
       currentNode.childNodes[ancestorTitles[0]]
     );
   }
@@ -186,8 +186,8 @@ function _createTestNode(testResult, ancestorTitles, currentNode) {
  *
  */
 function _createTestTree(testResults) {
-  var tree;
-  for (var i = 0; i < testResults.length; i++) {
+  let tree;
+  for (let i = 0; i < testResults.length; i++) {
     tree = _createTestNode(testResults[i], testResults[i].ancestorTitles, tree);
   }
 
