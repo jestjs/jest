@@ -30,4 +30,4 @@ class CheckboxWithLabel extends React.Component {
   }
 }
 
-export default CheckboxWithLabel;
+module.exports = CheckboxWithLabel;
