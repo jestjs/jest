@@ -74,7 +74,7 @@ class HasteResolver {
           return Promise.all(
             response.dependencies.map(module => {
               if (!deps.resolvedModules[module.path]) {
-                deps.resolvedModules[module.path] = {};
+                deps.resolvedModules[module.path] = Object.create(null);
               }
               response.getResolvedDependencyPairs(module).forEach((pair) =>
                 deps.resolvedModules[module.path][pair[0]] = pair[1]
