@@ -41,19 +41,21 @@ describe('utils-normalizeConfig', function() {
   });
 
   it('throws when an invalid config option is passed in', function() {
+
     expect(function() {
       utils.normalizeConfig({
         rootDir: '/root/path/foo',
         thisIsAnInvalidConfigKey: 'with a value even!',
       });
-    }).toThrow('Unknown config option: thisIsAnInvalidConfigKey');
+    }).toThrow(new Error('Unknown config option: thisIsAnInvalidConfigKey'));
+
   });
 
   describe('rootDir', function() {
     it('throws if the config is missing a rootDir property', function() {
       expect(function() {
         utils.normalizeConfig({});
-      }).toThrow('No rootDir config value found!');
+      }).toThrow(new Error('No rootDir config value found!'));
     });
   });
 

@@ -82,7 +82,7 @@ class FakeTimers {
     this._immediates.forEach(function(immediate) {
       this._fakeClearImmediate(immediate.uuid);
     }, this);
-    for (let uuid in this._timers) {
+    for (const uuid in this._timers) {
       delete this._timers[uuid];
     }
   }

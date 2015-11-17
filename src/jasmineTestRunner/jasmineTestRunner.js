@@ -11,7 +11,6 @@ var fs = require('graceful-fs');
 var jasminePit = require('../../vendor/jasmine-pit/jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
 var path = require('path');
-var utils = require('../lib/utils');
 
 const JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
 const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
@@ -97,6 +96,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
   // To account for this conflict, we set up jasmine in an environment with real
   // timers (instead of mock timers).
   environment.fakeTimers.runWithRealTimers(function() {
+
     // Execute jasmine's main code
     environment.runSourceText(jasmineFileContent, JASMINE_PATH);
 
@@ -169,6 +169,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
             checkMissingExpectedKeys(a, b, property, mismatchKeys);
           }
         }
+
 
         if (areArrays && a.length !== b.length) {
           mismatchValues.push('arrays were not the same length');

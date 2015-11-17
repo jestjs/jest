@@ -55,6 +55,7 @@ permalink: docs/api.html
   - [`config.testPathDirs` [array<string>]](#config-testpathdirs-array-string)
   - [`config.testPathIgnorePatterns` [array<string>]](#config-testpathignorepatterns-array-string)
   - [`config.testPathPattern` [string]](http://facebook.github.io/jest/docs/api.html#config-testpathpattern-string)
+  - [`config.testRunner` [string]](http://facebook.github.io/jest/docs/api.html#config-testrunner-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](#config-unmockedmodulepathpatterns-array-string)
   - [`config.verbose` [boolean]](#config-verbose-boolean)
 
@@ -413,6 +414,11 @@ An array of regexp pattern strings that are matched against all test paths befor
 A regexp pattern string that is matched against all test paths before executing the test. If the test path does not match the pattern, it will be skipped.
 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
+
+### `config.testRunner` [string]
+(default: `./jasmineTestRunner/jasmineTestRunner`)
+
+Allows overriding the default jasmine test runner with the bundled jasmine 2.2 test runner: `./jasmineTestRunner/jasmine2TestRunner`.
 
 ### `config.unmockedModulePathPatterns` [array<string>]
 (default: `[]`)

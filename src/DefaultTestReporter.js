@@ -49,7 +49,7 @@ class DefaultTestReporter {
       ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
       : null;
 
-    let testDetail = [];
+    const testDetail = [];
     if (testRunTime !== null) {
       testDetail.push(
         testRunTime > 2.5
