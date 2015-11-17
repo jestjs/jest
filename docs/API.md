@@ -41,6 +41,7 @@ permalink: docs/api.html
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
   - [`config.globals` [object]](#config-globals-object)
+  - [`config.mocksPattern` [string]](#config-mockspattern-string)
   - [`config.moduleFileExtensions` [array<string>]](#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
   - [`config.moduleNameMapper` [object<string, string>]](#config-modulenamemapper-object-string-string)
@@ -316,6 +317,11 @@ For example, the following would create a global `__DEV__` variable set to `true
 ```
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
+
+### `config.mocksPattern` [string]
+(default: `(?:[\\/]|^)__mocks__[\\/]`)
+
+A pattern that is matched against file paths to determine which folder contains manual mocks.
 
 ### `config.moduleFileExtensions` [array<string>]
 (default: `['js', 'json', 'node']`)

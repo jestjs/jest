@@ -13,7 +13,6 @@
 const DependencyGraph = require('node-haste/lib/DependencyGraph');
 const extractRequires = require('node-haste/lib/lib/extractRequires');
 
-const MOCKS_PATTERN = /(?:[\\/]|^)__mocks__[\\/]([^\/]+)\.js$/;
 const REQUIRE_EXTENSIONS_PATTERN = /(\brequire\s*?\.\s*?(?:requireActual|requireMock)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
 const resolvers = Object.create(null);
@@ -37,7 +36,7 @@ class HasteResolver {
         isWatchman: () => Promise.resolve(false),
       },
       extensions: options.extensions,
-      mocksPattern: MOCKS_PATTERN,
+      mocksPattern: new RegExp(options.mocksPattern),
       extractRequires: code => {
         const data = extractRequires(code);
         data.code = data.code.replace(
@@ -93,7 +92,8 @@ class HasteResolver {
     const key =
       roots.sort().join(':') +
       '$' + options.extensions.sort().join(':') +
-      '$' + options.ignoreFilePattern;
+      '$' + options.ignoreFilePattern +
+      '$' + options.mocksPattern;
     if (!resolvers[key]) {
       resolvers[key] = new HasteResolver(roots, options);
     }

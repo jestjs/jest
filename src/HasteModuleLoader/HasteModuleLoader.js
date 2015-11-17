@@ -57,9 +57,10 @@ class Loader {
     this._resolver = HasteResolver.get(
       [config.rootDir],
       {
-        extensions: this._extensions.concat(this._config.testFileExtensions),
+        extensions: this._extensions.concat(config.testFileExtensions),
         ignoreFilePattern: [config.cacheDirectory]
           .concat(config.modulePathIgnorePatterns).join('|'),
+        mocksPattern: config.mocksPattern,
       }
     );
     this._resolvedModules = Object.create(null);

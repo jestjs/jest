@@ -30,6 +30,7 @@ const DEFAULT_CONFIG_VALUES = {
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
+  mocksPattern: '(?:[\\/]|^)__mocks__[\\/]',
   testEnvironment: require.resolve('../environments/JSDOMEnvironment'),
   testEnvData: {},
   testFileExtensions: ['js'],
@@ -163,6 +164,7 @@ function normalizeConfig(config) {
       case 'collectCoverage':
       case 'coverageCollector':
       case 'globals':
+      case 'mocksPattern':
       case 'moduleLoader':
       case 'name':
       case 'persistModuleRegistryBetweenSpecs':
