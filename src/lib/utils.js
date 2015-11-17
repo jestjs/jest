@@ -384,14 +384,14 @@ function runContentWithLocalBindings(environment, scriptContent, scriptPath,
     throw e;
   }
 
-  const wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
-  delete environment.global[EVAL_RESULT_VARIABLE];
-
-  const bindingValues = boundIdents.map(function(ident) {
-    return bindings[ident];
-  });
-
   try {
+    const wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
+    delete environment.global[EVAL_RESULT_VARIABLE];
+
+    const bindingValues = boundIdents.map(function(ident) {
+      return bindings[ident];
+    });
+
     // Node modules are executed with the `exports` as context.
     // If not a node module then this should be undefined.
     wrapperFunc.apply(bindings.exports, bindingValues);

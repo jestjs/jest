@@ -8,7 +8,7 @@
 'use strict';
 
 var fs = require('graceful-fs');
-var jasminePit = require('jasmine-pit');
+var jasminePit = require('../../vendor/jasmine-pit/jasmine-pit');
 var JasmineReporter = require('./JasmineReporter');
 var path = require('path');
 var utils = require('../lib/utils');
