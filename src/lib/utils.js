@@ -243,6 +243,7 @@ function normalizeConfig(config) {
         return newConfig;
       case 'bail':
       case 'preprocessCachingDisabled':
+      case 'preprocessorOptions':
       case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':
