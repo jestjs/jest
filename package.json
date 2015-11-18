@@ -10,7 +10,6 @@
     "istanbul": "^0.3.19",
     "jsdom": "7.0.2",
     "json-stable-stringify": "^1.0.0",
-    "lodash.template": "^3.6.2",
     "mkdirp": "^0.5.1",
     "node-haste": "^1.2.8",
     "object-assign": "^4.0.1",

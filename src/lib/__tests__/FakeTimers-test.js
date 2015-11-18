@@ -283,10 +283,10 @@ describe('FakeTimers', function() {
 
       expect(function() {
         fakeTimers.runAllTicks();
-      }).toThrow(
+      }).toThrow(new Error(
         'Ran 100 ticks, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
-      );
+      ));
     });
   });
 
@@ -386,10 +386,10 @@ describe('FakeTimers', function() {
 
       expect(function() {
         fakeTimers.runAllTimers();
-      }).toThrow(
+      }).toThrow(new Error(
         'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
-      );
+      ));
     });
   });
 
@@ -457,10 +457,10 @@ describe('FakeTimers', function() {
 
       expect(function() {
         fakeTimers.runTimersToTime(50);
-      }).toThrow(
+      }).toThrow(new Error(
         'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
         'infinite recursion and bailing out...'
-      );
+      ));
     });
   });
 
@@ -704,7 +704,7 @@ describe('FakeTimers', function() {
           global.setTimeout();
           throw new Error('test');
         });
-      }).toThrow('test');
+      }).toThrow(new Error('test'));
       expect(nativeSetTimeout.mock.calls.length).toBe(1);
       expect(global.setTimeout.mock.calls.length).toBe(0);
 
