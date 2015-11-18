@@ -112,6 +112,7 @@ class DefaultTestReporter {
   }
 
   onRunComplete(config, aggregatedResults) {
+    const numTotalTestSuites = aggregatedResults.numTotalTestSuites;
     const numFailedTests = aggregatedResults.numFailedTests;
     const numPassedTests = aggregatedResults.numPassedTests;
     const numTotalTests = aggregatedResults.numTotalTests;
@@ -152,13 +153,9 @@ class DefaultTestReporter {
       colors.GREEN + colors.BOLD
     );
 
-    const numTestSuitesExecuted =
-      aggregatedResults.numTotalTestSuites -
-      aggregatedResults.numRuntimeErrorTestSuites;
-
     results += ' (' + numTotalTests + ' total in ' +
-      numTestSuitesExecuted + ' ' +
-      'test suite' + (numTestSuitesExecuted === 1 ? '' : 's') +
+      numTotalTestSuites + ' ' +
+      'test suite' + (numTotalTestSuites === 1 ? '' : 's') +
       ', run time ' + runTime + 's)';
 
     this.log(results);
