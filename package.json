@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "main": "src/jest.js",
   "dependencies": {
     "cover": "^0.2.9",
@@ -40,7 +40,7 @@
     "prepublish": "npm run lint && node bin/jest.js",
     "test": "npm run lint && npm run jasmine1 && npm run jasmine2",
     "jasmine1": "node bin/jest.js --testRunner='<rootDir>/testRunners/jasmine/jasmine1.js'",
-    "jasmine2": "node bin/jest.js --testRunner='<rootDir>src/testRunners/jasmine/jasmine2.js'"
+    "jasmine2": "node bin/jest.js --testRunner='<rootDir>/testRunners/jasmine/jasmine2.js'"
   },
   "jest": {
     "rootDir": "src",
