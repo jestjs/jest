@@ -7,29 +7,28 @@
  */
 'use strict';
 
-var fs = require('graceful-fs');
-var jasminePit = require('../../vendor/jasmine-pit/jasmine-pit');
-var JasmineReporter = require('./JasmineReporter');
-var path = require('path');
-
-const JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-1.3.0');
-const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
-
+const VENDOR_PATH = '../../../vendor/';
+const JASMINE_PATH = require.resolve(VENDOR_PATH + '/jasmine/jasmine-1.3.0');
 const JASMINE_ONLY_PATH =
-  require.resolve('../../vendor/jasmine-only/jasmine-only.js');
+  require.resolve(VENDOR_PATH + '/jasmine-only/jasmine-only.js');
+
+const fs = require('graceful-fs');
+const jasminePit = require(VENDOR_PATH + '/jasmine-pit/jasmine-pit');
+const JasmineReporter = require('./JasmineReporter');
+const path = require('path');
+
+const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
 const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
 
-function jasmineTestRunner(config, environment, moduleLoader, testPath) {
-  var hasKey = function(obj, keyName) {
-    return (
-      obj !== null
-      && obj !== undefined
-      && obj[keyName] !== environment.global.jasmine.undefined
-    );
-  };
+function jasmine1(config, environment, moduleLoader, testPath) {
+  const hasKey = (obj, keyName) => (
+    obj !== null
+    && obj !== undefined
+    && obj[keyName] !== environment.global.jasmine.undefined
+  );
 
-  var checkMissingExpectedKeys =
-    function(actual, expected, property, mismatchKeys) {
+  const checkMissingExpectedKeys =
+    (actual, expected, property, mismatchKeys) => {
       if (!hasKey(expected, property) && hasKey(actual, property)) {
         mismatchKeys.push(
           'expected missing key \'' + property + '\', but present in ' +
@@ -37,15 +36,17 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         );
       }
     };
-  var checkMissingActualKeys =
-    function(actual, expected, property, mismatchKeys) {
+
+  const checkMissingActualKeys =
+    (actual, expected, property, mismatchKeys) => {
       if (!hasKey(actual, property) && hasKey(expected, property)) {
         mismatchKeys.push(
           'expected has key \'' + property + '\', but missing from actual.'
         );
       }
     };
-  var checkMismatchedValues = function(
+
+  const checkMismatchedValues = function(
     a,
     b,
     property,
@@ -53,15 +54,15 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     mismatchValues
   ) {
     // The only different implementation from the original jasmine
-    var areEqual = this.equals_(
+    const areEqual = this.equals_(
       a[property],
       b[property],
       mismatchKeys,
       mismatchValues
     );
     if (!areEqual) {
-      var aprop;
-      var bprop;
+      let aprop;
+      let bprop;
       if (!a[property]) {
         aprop = a[property];
       } else if (a[property].toString) {
@@ -92,40 +93,30 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
 
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
-  //
   // To account for this conflict, we set up jasmine in an environment with real
   // timers (instead of mock timers).
-  environment.fakeTimers.runWithRealTimers(function() {
-
-    // Execute jasmine's main code
+  environment.fakeTimers.runWithRealTimers(() => {
     environment.runSourceText(jasmineFileContent, JASMINE_PATH);
-
-    // Install jasmine-pit -- because it's amazing
     jasminePit.install(environment.global);
-
-    // Install jasmine-only
     environment.runSourceText(jasmineOnlyContent);
 
-    // Mainline Jasmine sets __Jasmine_been_here_before__ on each object to
-    // detect cycles, but that doesn't work on frozen objects so we use a
-    // WeakMap instead.
-    var _comparedObjects = new WeakMap();
+    const _comparedObjects = new WeakMap();
     environment.global.jasmine.Env.prototype.compareObjects_ =
       function(a, b, mismatchKeys, mismatchValues) {
         if (_comparedObjects.get(a) === b && _comparedObjects.get(b) === a) {
           return true;
         }
-        var areArrays =
+        const areArrays =
           environment.global.jasmine.isArray_(a)
           && environment.global.jasmine.isArray_(b);
 
         _comparedObjects.set(a, b);
         _comparedObjects.set(b, a);
 
-        var property;
-        var index;
+        let property;
+        let index;
         if (areArrays) {
-          var largerLength = Math.max(a.length, b.length);
+          const largerLength = Math.max(a.length, b.length);
           for (index = 0; index < largerLength; index++) {
             // check that all expected keys match actual keys
             if (index < b.length && typeof b[index] !== 'function') {
@@ -185,7 +176,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     }
   });
 
-  var jasmine = environment.global.jasmine;
+  const jasmine = environment.global.jasmine;
 
   jasmine.getEnv().beforeEach(function() {
     this.addMatchers({
@@ -200,8 +191,8 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         if (this.actual.mock === undefined) {
           throw Error('lastCalledWith() should be used on a mock function');
         }
-        var calls = this.actual.mock.calls;
-        var args = Array.prototype.slice.call(arguments);
+        const calls = this.actual.mock.calls;
+        const args = Array.prototype.slice.call(arguments);
         this.env.currentSpec.expect(calls[calls.length - 1]).toEqual(args);
         return true;
       },
@@ -210,13 +201,13 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         if (this.actual.mock === undefined) {
           throw Error('toBeCalledWith() should be used on a mock function');
         }
-        var calls = this.actual.mock.calls;
-        var args = Array.prototype.slice.call(arguments);
+        const calls = this.actual.mock.calls;
+        const args = Array.prototype.slice.call(arguments);
 
         // Often toBeCalledWith is called on a mock that only has one call, so
         // we can give a better error message in this case.
         if (calls.length === 1) {
-          var expect = this.env.currentSpec.expect(calls[0]);
+          let expect = this.env.currentSpec.expect(calls[0]);
           if (this.isNot) {
             expect = expect.not;
           }
@@ -224,9 +215,7 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
           return !this.isNot;
         }
 
-        return calls.some(function(call) {
-          return this.env.equals_(call, args);
-        }, this);
+        return calls.some(call => this.env.equals_(call, args));
       },
     });
 
@@ -235,17 +224,15 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     }
   });
 
-  var jasmineReporter = new JasmineReporter({
+  const reporter = new JasmineReporter({
     noHighlight: config.noHighlight,
     noStackTrace: config.noStackTrace,
   });
-  jasmine.getEnv().addReporter(jasmineReporter);
-
+  jasmine.getEnv().addReporter(reporter);
   // Run the test by require()ing it
   moduleLoader.requireModule(testPath, './' + path.basename(testPath));
-
   jasmine.getEnv().execute();
-  return jasmineReporter.getResults();
+  return reporter.getResults();
 }
 
-module.exports = jasmineTestRunner;
+module.exports = jasmine1;

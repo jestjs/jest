@@ -36,7 +36,7 @@ const DEFAULT_CONFIG_VALUES = {
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
   testReporter: require.resolve('../IstanbulTestReporter'),
-  testRunner: require.resolve('../jasmineTestRunner/jasmineTestRunner'),
+  testRunner: require.resolve('../testRunners/jasmine/jasmine1'),
   testURL: 'about:blank',
   noHighlight: false,
   noStackTrace: false,
@@ -206,6 +206,7 @@ function normalizeConfig(config) {
         break;
 
       case 'cacheDirectory':
+      case 'testRunner':
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
@@ -259,7 +260,6 @@ function normalizeConfig(config) {
       case 'testFileExtensions':
       case 'testPathPattern':
       case 'testReporter':
-      case 'testRunner':
       case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':

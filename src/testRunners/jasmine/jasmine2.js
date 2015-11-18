@@ -7,50 +7,46 @@
  */
 'use strict';
 
-var fs = require('graceful-fs');
-var jasminePit = require('../../vendor/jasmine-pit/jasmine-pit');
-var JasmineReporter = require('./Jasmine2Reporter');
-var path = require('path');
+const VENDOR_PATH = '../../../vendor/';
+const JASMINE_PATH = require.resolve(VENDOR_PATH + '/jasmine/jasmine-2.3.4.js');
 
-var JASMINE_PATH = require.resolve('../../vendor/jasmine/jasmine-2.3.4.js');
-var JASMINE_BOOT_PATH =
-  require.resolve('../../vendor/jasmine/jasmine-2.x-boot.js');
-var jasmineFileContent =
+const fs = require('graceful-fs');
+const jasminePit = require(VENDOR_PATH + '/jasmine-pit/jasmine-pit');
+const JasmineReporter = require('./Jasmine2Reporter');
+const path = require('path');
+
+const jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
-var jasmineBootFileContent =
-  fs.readFileSync(require.resolve(JASMINE_BOOT_PATH), 'utf8');
 
-function jasmineTestRunner(config, environment, moduleLoader, testPath) {
+function jasmine2(config, environment, moduleLoader, testPath) {
+  let env;
+  let jasmine;
+
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
-  //
   // To account for this conflict, we set up jasmine in an environment with real
   // timers (instead of mock timers).
-  environment.fakeTimers.runWithRealTimers(function() {
-    // Execute jasmine's main code
+  environment.fakeTimers.runWithRealTimers(() => {
     environment.runSourceText(jasmineFileContent, JASMINE_PATH);
-    environment.runSourceText(jasmineBootFileContent, JASMINE_BOOT_PATH);
 
-    // Install jasmine-pit -- because it's amazing
+    const requireJasmine = environment.global.jasmineRequire;
+    jasmine = requireJasmine.core(requireJasmine);
+    env = jasmine.getEnv();
+    const jasmineInterface = requireJasmine.interface(jasmine, env);
+    Object.assign(environment.global, jasmineInterface);
+    env.addReporter(jasmineInterface.jsApiReporter);
+
     jasminePit.install(environment.global);
-
-    // compareobjects with WeakMap override not needed for jasmine2,
-    // see: https://github.com/jasmine/jasmine/issues/508
   });
 
-  var jasmine = environment.global.jasmine;
-
-  jasmine.getEnv().beforeEach(function() {
+  env.beforeEach(() => {
     jasmine.addMatchers({
-
-      toBeCalled: function(/* util, customEqualityTesters */) {
+      toBeCalled: (/* util, customEqualityTesters */) => {
         return {
-          compare: function(actual/*, expected */) {
-
+          compare: (actual/*, expected */) => {
             if (actual.mock === undefined) {
               throw Error('toBeCalled() should be used on a mock function');
             }
-
             return {
               pass: actual.mock.calls.length !== 0,
             };
@@ -58,17 +54,14 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         };
       },
 
-      lastCalledWith: function(util/*, customEqualityTesters */) {
+      lastCalledWith: (util/*, customEqualityTesters */) => {
         return {
           compare: function(actual) {
-
             if (actual.mock === undefined) {
               throw Error('lastCalledWith() should be used on a mock function');
             }
-
-            var calls = actual.mock.calls;
-            var args = Array.prototype.slice.call(arguments, 1);
-
+            const calls = actual.mock.calls;
+            const args = Array.prototype.slice.call(arguments, 1);
             return {
               pass: util.equals(calls[calls.length - 1], args),
             };
@@ -77,23 +70,16 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
         };
       },
 
-      toBeCalledWith: function(util/*, customEqualityTesters */) {
+      toBeCalledWith: (util/*, customEqualityTesters */) => {
         return {
           compare: function(actual) {
             if (actual.mock === undefined) {
               throw Error('toBeCalledWith() should be used on a mock function');
             }
-
-            var calls = actual.mock.calls;
-            var args = Array.prototype.slice.call(arguments, 1);
-
-            var passed = calls.some(function(call) {
-              return util.equals(call, args);
-            }, this);
-
-            return {
-              pass: passed,
-            };
+            const calls = actual.mock.calls;
+            const args = Array.prototype.slice.call(arguments, 1);
+            const pass = calls.some(call => util.equals(call, args));
+            return {pass};
           },
         };
       },
@@ -104,17 +90,15 @@ function jasmineTestRunner(config, environment, moduleLoader, testPath) {
     }
   });
 
-  var jasmineReporter = new JasmineReporter({
+  const reporter = new JasmineReporter({
     noHighlight: config.noHighlight,
     noStackTrace: config.noStackTrace,
   });
-  jasmine.getEnv().addReporter(jasmineReporter);
-
+  env.addReporter(reporter);
   // Run the test by require()ing it
   moduleLoader.requireModule(testPath, './' + path.basename(testPath));
-
-  jasmine.getEnv().execute();
-  return jasmineReporter.getResults();
+  env.execute();
+  return reporter.getResults();
 }
 
-module.exports = jasmineTestRunner;
+module.exports = jasmine2;

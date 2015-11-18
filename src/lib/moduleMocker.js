@@ -72,7 +72,7 @@ function getType(ref) {
     return 'object';
   } else if (isA('Number', ref) || isA('String', ref)) {
     return 'constant';
-  } else if (isA('Map', ref) || isA('Set', ref)) {
+  } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
     return 'collection';
   } else if (isA('RegExp', ref)) {
     return 'regexp';

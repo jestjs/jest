@@ -109,6 +109,18 @@ function _promiseConfig(argv, packageRoot) {
       config.useStderr = true;
     }
 
+    if (argv.testRunner) {
+      try {
+        config.testRunner = require.resolve(
+          argv.testRunner.replace(/<rootDir>/g, config.rootDir)
+        );
+      } catch (e) {
+        throw new Error(
+          `jest: testRunner path "${argv.testRunner}" is not a valid path.`
+        );
+      }
+    }
+
     if (argv.logHeapUsage) {
       config.logHeapUsage = argv.logHeapUsage;
     }
@@ -195,10 +207,12 @@ function runCLI(argv, packageRoot, onComplete) {
   }
 
   const pipe = argv.json ? process.stderr : process.stdout;
-  pipe.write('Using Jest CLI v' + getVersion() + '\n');
 
   _promiseConfig(argv, packageRoot).then(function(config) {
     const testRunner = new TestRunner(config, _testRunnerOptions(argv));
+    const testFramework = require(config.testRunner);
+    pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
+
     const testPaths = argv.onlyChanged ?
       _promiseOnlyChangedTestPaths(testRunner, config) :
       _promisePatternMatchingTestPaths(argv, testRunner);

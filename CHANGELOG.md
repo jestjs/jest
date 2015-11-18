@@ -1,5 +1,9 @@
-## Unreleased
+## master
 
+## 0.8.0
+
+* Added optional support for jasmine2 through the `testRunner` config option.
+* Fixed mocking support for Map, WeakMap and Set.
 * `node` was added to the defaults in `moduleFileExtensions`.
 * Updated the list of node core modules that are properly being recognized by
   the module loader.

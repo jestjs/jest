@@ -38,7 +38,9 @@
   "scripts": {
     "lint": "eslint .",
     "prepublish": "npm run lint && node bin/jest.js",
-    "test": "npm run lint && node bin/jest.js"
+    "test": "npm run lint && npm run jasmine1 && npm run jasmine2",
+    "jasmine1": "node bin/jest.js --testRunner='<rootDir>/testRunners/jasmine/jasmine1.js'",
+    "jasmine2": "node bin/jest.js --testRunner='<rootDir>src/testRunners/jasmine/jasmine2.js'"
   },
   "jest": {
     "rootDir": "src",

@@ -416,9 +416,9 @@ A regexp pattern string that is matched against all test paths before executing 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `config.testRunner` [string]
-(default: `./jasmineTestRunner/jasmineTestRunner`)
+(default: `./testRunners/jasmine/jasmine1.js`)
 
-Allows overriding the default jasmine test runner with the bundled jasmine 2.2 test runner: `./jasmineTestRunner/jasmine2TestRunner`.
+This option allows use of a custom test runner. The default is jasmine1. Jest also ships with jasmine2 to which it will default to in the future. jasmine2 can be enabled by setting this option to `<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js`.
 
 ### `config.unmockedModulePathPatterns` [array<string>]
 (default: `[]`)

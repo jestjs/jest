@@ -165,6 +165,14 @@ const argv = optimist
       ),
       type: 'boolean',
     },
+    testRunner: {
+      description: _wrapDesc(
+        'Allows to specify a custom test runner. Jest ships with jasmine2 ' +
+        'which can be enabled by setting this option to ' +
+        '`<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js`'
+      ),
+      type: 'string',
+    },
     logHeapUsage: {
       description: _wrapDesc(
         'Logs the heap usage after every test. Useful to debug memory ' +
