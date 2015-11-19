@@ -54,8 +54,8 @@ permalink: docs/api.html
   - [`config.testFileExtensions` [array<string>]](#config-testfileextensions-array-string)
   - [`config.testPathDirs` [array<string>]](#config-testpathdirs-array-string)
   - [`config.testPathIgnorePatterns` [array<string>]](#config-testpathignorepatterns-array-string)
-  - [`config.testPathPattern` [string]](http://facebook.github.io/jest/docs/api.html#config-testpathpattern-string)
-  - [`config.testRunner` [string]](http://facebook.github.io/jest/docs/api.html#config-testrunner-string)
+  - [`config.testPathPattern` [string]](#config-testpathpattern-string)
+  - [`config.testRunner` [string]](#config-testrunner-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](#config-unmockedmodulepathpatterns-array-string)
   - [`config.verbose` [boolean]](#config-verbose-boolean)
 
