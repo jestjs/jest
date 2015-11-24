@@ -56,7 +56,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
-const CheckboxWithLabel = require('../CheckboxWithLabel');
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 describe('CheckboxWithLabel', () => {
 
