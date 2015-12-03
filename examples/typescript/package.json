@@ -1,18 +1,17 @@
 {
   "dependencies": {
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
-    "jest-cli": "^0.8.0",
-    "react-addons-test-utils": "^0.14.3",
-    "typescript": "^1.6.2"
+    "jest-cli": "*",
+    "react-addons-test-utils": "*",
+    "typescript": ">=1.6.2"
   },
   "scripts": {
     "test": "jest"
   },
   "jest": {
-    "preprocessCachingDisabled": true,
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
     "testFileExtensions": [
       "ts",

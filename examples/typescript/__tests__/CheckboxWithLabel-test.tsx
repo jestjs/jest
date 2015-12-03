@@ -1,15 +1,3 @@
-/// <reference path="../typings/react/react.d.ts" />
-/// <reference path="../typings/react/react-dom.d.ts" />
-/// <reference path="../typings/jest/jest.d.ts" />
-
-//declare var jest:any;
-/*
-tsc -w -t ES5 --jsx react  -m commonjs --outDir __built\__test__ .\__tests__\CheckboxWithLabel-test.tsx
-
-*/
-
-//import * as jest from 'jest-cli'; never import jest
-
 jest.dontMock('../CheckboxWithLabel')
 
 import * as React from 'react';

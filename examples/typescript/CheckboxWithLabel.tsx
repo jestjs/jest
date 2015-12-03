@@ -7,8 +7,8 @@ interface CheckboxWithLabelProps extends React.Props<any> {
   labelOn:string;
 }
 
-var CheckboxWithLabel = React.createClass<CheckboxWithLabelProps, any>({
-  getInitialState:function(){
+var CheckboxWithLabel = React.createClass<CheckboxWithLabelProps, any>( {
+  getInitialState:function() {
     return {isChecked: false}
   },
   onChange:function() {
