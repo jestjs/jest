@@ -20,6 +20,9 @@ class CheckboxWithLabel extends React.Component {
     super(props);
     this.state = {isChecked: false};
 
+    // since auto-binding is disabled for React's class model
+    // we can prebind methods here
+    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
 
@@ -41,7 +44,7 @@ class CheckboxWithLabel extends React.Component {
   }
 }
 
-export default CheckboxWithLabel;
+module.exports = CheckboxWithLabel;
 ```
 
 The test code is pretty straightforward; we use React's
@@ -73,9 +76,7 @@ describe('CheckboxWithLabel', () => {
     expect(checkboxNode.textContent).toEqual('Off');
 
     // Simulate a click and verify that it is now On
-    TestUtils.Simulate.change(
-      TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
-    );
+    TestUtils.Simulate.change(TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input'));
     expect(checkboxNode.textContent).toEqual('On');
   });
 
@@ -96,6 +97,8 @@ jest.
   },
   "devDependencies": {
     "babel-jest": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
     "jest-cli": "*",
     "react-addons-test-utils": "~0.14.0"
   },
@@ -109,8 +112,19 @@ jest.
       "<rootDir>/node_modules/react-dom",
       "<rootDir>/node_modules/react-addons-test-utils",
       "<rootDir>/node_modules/fbjs"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/node_modules/"
     ]
   }
+```
+
+You'll also need to add a `.babelrc` file:
+
+```
+{
+  "presets": ["es2015", "react"]
+}
 ```
 
 **And you're good to go!**
