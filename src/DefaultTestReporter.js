@@ -104,7 +104,7 @@ class DefaultTestReporter {
 
       if (config.bail) {
         this.onRunComplete(config, aggregatedResults);
-        this._process.exit(0);
+        this._process.exit(1);
       }
     }
 
