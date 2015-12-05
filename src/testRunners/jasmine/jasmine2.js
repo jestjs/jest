@@ -37,6 +37,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     env.addReporter(jasmineInterface.jsApiReporter);
 
     jasminePit.install(environment.global);
+
+    if (config.setupTestFrameworkScriptFile) {
+      moduleLoader.requireModule(null, config.setupTestFrameworkScriptFile);
+    }
   });
 
   env.beforeEach(() => {
