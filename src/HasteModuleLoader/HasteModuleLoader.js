@@ -521,6 +521,10 @@ class Loader {
     moduleRequire.requireMock = this.requireMock.bind(this, modulePath);
     moduleRequire.requireActual = this.requireModule.bind(this, modulePath);
 
+    // Compatibility with modules using enumerable keys of "require"
+    moduleRequire.cache = Object.create(null);
+    moduleRequire.extensions = Object.create(null);
+
     return moduleRequire;
   }
 
