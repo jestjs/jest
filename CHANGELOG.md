@@ -1,5 +1,11 @@
 ## master
 
+## 0.8.1
+
+* `--bail` now reports with the proper error code.
+* Fixed loading of the setup file when using jasmine2.
+* Updated jsdom to 7.2.0.
+
 ## 0.8.0
 
 * Added optional support for jasmine2 through the `testRunner` config option.
