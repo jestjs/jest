@@ -59,7 +59,9 @@ describe('HasteModuleLoader', function() {
       return buildLoader().then(function(loader) {
         expect(function() {
           loader.requireModule(rootPath, 'DoesntExist');
-        }).toThrow('Cannot find module \'DoesntExist\' from \'root.js\'');
+        }).toThrow(
+          new Error('Cannot find module \'DoesntExist\' from \'root.js\'')
+        );
       });
     });
 
@@ -88,7 +90,7 @@ describe('HasteModuleLoader', function() {
         expect(function() {
           loader.requireModule(rootPath, './DoesntExist');
         }).toThrow(
-          'Cannot find module \'./DoesntExist\' from \'root.js\''
+          new Error('Cannot find module \'./DoesntExist\' from \'root.js\'')
         );
       });
     });
