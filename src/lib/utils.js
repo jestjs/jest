@@ -45,11 +45,6 @@ const DEFAULT_CONFIG_VALUES = {
   useStderr: false,
 };
 
-// This shows up in the stack trace when a test file throws an unhandled error
-// when evaluated. Node's require prints Object.<anonymous> when initializing
-// modules, so do the same here solely for visual consistency.
-const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
-
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
     case 'object':
@@ -367,40 +362,6 @@ function loadConfigFromPackageJson(filePath) {
   });
 }
 
-function runContentWithLocalBindings(environment, scriptContent, scriptPath,
-                                     bindings) {
-  const boundIdents = Object.keys(bindings);
-  try {
-    const wrapperScript = 'this["' + EVAL_RESULT_VARIABLE + '"] = ' +
-      'function (' + boundIdents.join(',') + ') {' +
-      scriptContent +
-      '\n};';
-    environment.runSourceText(
-      wrapperScript,
-      scriptPath
-    );
-  } catch (e) {
-    e.message = scriptPath + ': ' + e.message;
-    throw e;
-  }
-
-  try {
-    const wrapperFunc = environment.global[EVAL_RESULT_VARIABLE];
-    delete environment.global[EVAL_RESULT_VARIABLE];
-
-    const bindingValues = boundIdents.map(function(ident) {
-      return bindings[ident];
-    });
-
-    // Node modules are executed with the `exports` as context.
-    // If not a node module then this should be undefined.
-    wrapperFunc.apply(bindings.exports, bindingValues);
-  } catch (e) {
-    e.message = scriptPath + ': ' + e.message;
-    throw e;
-  }
-}
-
 /**
  * Given a test result, return a human readable string representing the
  * failures.
@@ -503,5 +464,4 @@ exports.getLinePercentCoverageFromCoverageInfo =
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
-exports.runContentWithLocalBindings = runContentWithLocalBindings;
 exports.formatFailureMessage = formatFailureMessage;

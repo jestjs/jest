@@ -11,7 +11,7 @@ JSDOMEnvironment.mockImplementation(function(config) {
   this.global = {
     console: {},
     mockClearTimers: jest.genMockFn(),
-    JSON: JSON,
+    JSON,
   };
 
   const globalValues = utils.deepCopy(config.globals);
@@ -21,9 +21,9 @@ JSDOMEnvironment.mockImplementation(function(config) {
 });
 
 JSDOMEnvironment.prototype.runSourceText.mockImplementation(
-  function(codeStr, fileName) {
-    vm.runInNewContext(codeStr, this.global, {
-      filename: fileName,
+  function(sourceText, filename) {
+    vm.runInNewContext(sourceText, this.global, {
+      filename,
       displayErrors: false,
     });
   }
