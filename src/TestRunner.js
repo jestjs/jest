@@ -11,7 +11,6 @@ const fs = require('graceful-fs');
 const os = require('os');
 const path = require('path');
 const assign = require('object-assign');
-const promiseDone = require('./lib/promiseDone');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
 const Console = require('./Console');
