@@ -33,7 +33,7 @@ class JSDOMEnvironment {
   }
 
   runSourceText(sourceText, filename) {
-    this.global.eval(sourceText + '\n//# sourceURL=' + filename);
+    return this.global.eval(sourceText + '\n//# sourceURL=' + filename);
   }
 
   runWithRealTimers(cb) {

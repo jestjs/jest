@@ -142,6 +142,19 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    pit('emulates a node stack trace during module load', function() {
+      return buildLoader().then(function(loader) {
+        try {
+          loader.requireModule(
+            __filename,
+            './test_root/throwing.js'
+          );
+        } catch (err) {
+          expect(err.stack).toMatch(/Error: throwing\s+at Object.<anonymous>/);
+        }
+      });
+    });
+
     describe('features I want to remove, but must exist for now', function() {
       /**
        * I'd like to kill this and make all tests use something more explicit
