@@ -9,7 +9,7 @@
 
 const utils = require('./utils');
 
-const formatResult = (testResult, codeCoverageFormatter) => {
+const formatResult = (testResult, codeCoverageFormatter, reporter) => {
   const output = {
     name: testResult.testFilePath,
     summary: '', // TODO
@@ -28,7 +28,7 @@ const formatResult = (testResult, codeCoverageFormatter) => {
     output.status = allTestsPassed ? 'passed' : 'failed';
     output.startTime = testResult.perfStats.start;
     output.endTime = testResult.perfStats.end;
-    output.coverage = codeCoverageFormatter(testResult.coverage);
+    output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
 
     if (!allTestsPassed) {
       output.message = utils.formatFailureMessage(testResult, {
@@ -41,13 +41,34 @@ const formatResult = (testResult, codeCoverageFormatter) => {
   return output;
 };
 
-module.exports = (results, codeCoverageFormatter) => {
+/**
+ * @callback codeCoverageFormatter
+ * @param {*} results
+ * @param {*} reporter - an instance of the testReporter
+ */
+
+/**
+ * Formats the test results.
+ * @param {*} results - a results hash determined by the reporter
+ * @param {codeCoverageFormatter} codeCoverageFormatter
+ * @param {*} reporter - an instance of the testReporter
+ * @returns {{success: *, startTime: (*|number|Number),
+ *  numTotalTests: *,
+ *  numTotalTestSuites: *,
+ *  numRuntimeErrorTestSuites: *,
+ *  numPassedTests: *,
+ *  numFailedTests: *,
+ *  testResults: (*|{}|Array),
+ *  postSuiteHeaders: *}}
+ */
+
+function formatTestResults(results, codeCoverageFormatter, reporter) {
   if (!codeCoverageFormatter) {
     codeCoverageFormatter = coverage => coverage;
   }
 
   const testResults = results.testResults.map(
-    testResult => formatResult(testResult, codeCoverageFormatter)
+    testResult => formatResult(testResult, codeCoverageFormatter, reporter)
   );
 
   return {
@@ -61,4 +82,6 @@ module.exports = (results, codeCoverageFormatter) => {
     testResults,
     postSuiteHeaders: results.postSuiteHeaders,
   };
-};
+}
+
+module.exports = formatTestResults;
