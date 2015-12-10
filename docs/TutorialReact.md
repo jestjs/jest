@@ -97,7 +97,9 @@ jest.
   "devDependencies": {
     "babel-jest": "*",
     "jest-cli": "*",
-    "react-addons-test-utils": "~0.14.0"
+    "react-addons-test-utils": "~0.14.0",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*"
   },
   "scripts": {
     "test": "jest"
@@ -112,6 +114,14 @@ jest.
     ]
   }
 ```
+
+```javascript
+// .babelrc
+{
+  presets: ['es2015', 'react']
+}
+```
+Run ```npm install```.
 
 **And you're good to go!**
 
