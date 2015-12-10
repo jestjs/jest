@@ -49,29 +49,11 @@ describe('TestRunner', function() {
 
   });
 
-  describe('streamTestPathsRelatedTo', function() {
+  describe('promiseTestPathsRelatedTo', function() {
     var fakeDepsFromPath;
     var fs;
     var runner;
     var utils;
-
-    function pathStreamToPromise(pathStream) {
-      return new Promise(function(resolve, reject) {
-        var paths = [];
-        pathStream.on('data', function(pathStr) {
-          paths.push(pathStr);
-        });
-
-        pathStream.on('error', function(err) {
-          reject(err);
-        });
-
-        pathStream.on('end', function() {
-          resolve(paths);
-        });
-
-      });
-    }
 
     beforeEach(function() {
       fs = require('graceful-fs');
@@ -100,7 +82,7 @@ describe('TestRunner', function() {
       // Mock out existsSync to return true, since our test path isn't real
       fs.existsSync = function() { return true; };
 
-      return pathStreamToPromise(runner.streamTestPathsRelatedTo([path]))
+      return runner.promiseTestPathsRelatedTo([path])
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([]);
         });
@@ -114,7 +96,7 @@ describe('TestRunner', function() {
       // Mock out existsSync to return true, since our test path isn't real
       fs.existsSync = function() { return true; };
 
-      return pathStreamToPromise(runner.streamTestPathsRelatedTo([path]))
+      return runner.promiseTestPathsRelatedTo([path])
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([dependentTestPath]);
         });
@@ -130,7 +112,7 @@ describe('TestRunner', function() {
       // Mock out existsSync to return true, since our test path isn't real
       fs.existsSync = function() { return true; };
 
-      return pathStreamToPromise(runner.streamTestPathsRelatedTo([path]))
+      return runner.promiseTestPathsRelatedTo([path])
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([dependentTestPath]);
         });
@@ -149,7 +131,7 @@ describe('TestRunner', function() {
       // Mock out existsSync to return true, since our test path isn't real
       fs.existsSync = function() { return true; };
 
-      return pathStreamToPromise(runner.streamTestPathsRelatedTo([path]))
+      return runner.promiseTestPathsRelatedTo([path])
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([
             dependentTestPath1,
@@ -174,7 +156,7 @@ describe('TestRunner', function() {
       // Mock out existsSync to return true, since our test path isn't real
       fs.existsSync = function() { return true; };
 
-      return pathStreamToPromise(runner.streamTestPathsRelatedTo([path]))
+      return runner.promiseTestPathsRelatedTo([path])
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([dependentTestPath]);
         });
@@ -191,7 +173,7 @@ describe('TestRunner', function() {
         return path !== nonExistantTestPath;
       };
 
-      return pathStreamToPromise(runner.streamTestPathsRelatedTo([path]))
+      return runner.promiseTestPathsRelatedTo([path])
         .then(function(relatedTests) {
           expect(relatedTests).toEqual([existingTestPath]);
         });

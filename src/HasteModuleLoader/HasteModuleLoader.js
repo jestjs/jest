@@ -6,7 +6,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
- /* eslint-disable fb-www/require-args */
+/* eslint-disable fb-www/require-args */
 'use strict';
 
 const fs = require('graceful-fs');
@@ -175,12 +175,6 @@ class Loader {
     const filename = moduleObj.__filename;
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-
-    // Every module receives a mock parent so they don't assume they are run
-    // standalone.
-    moduleObj.parent = mockParentModule;
-    moduleObj.require = this.constructBoundRequire(filename);
-
     const onlyCollectFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage =
       (this._config.collectCoverage === true && !onlyCollectFrom) ||
@@ -201,6 +195,11 @@ class Loader {
     this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
+
+    // Every module receives a mock parent so they don't assume they are run
+    // standalone.
+    moduleObj.parent = mockParentModule;
+    moduleObj.require = this.constructBoundRequire(filename);
 
     // Use this name for the module wrapper for consistency with node.
     const evalResultVariable = 'Object.<anonymous>';
@@ -692,7 +691,7 @@ class Loader {
    * Given a module name, return the *real* (un-mocked) version of said
    * module.
    */
-  requireModule(currPath, moduleName, bypassRegistryCache) {
+  requireModule(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
     let modulePath;
 
@@ -744,9 +743,7 @@ class Loader {
     }
 
     let moduleObj;
-    if (!bypassRegistryCache) {
-      moduleObj = this._moduleRegistry[modulePath];
-    }
+    moduleObj = this._moduleRegistry[modulePath];
     if (!moduleObj) {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
@@ -756,10 +753,7 @@ class Loader {
         exports: {},
       };
 
-      if (!bypassRegistryCache) {
-        this._moduleRegistry[modulePath] = moduleObj;
-      }
-
+      this._moduleRegistry[modulePath] = moduleObj;
       if (path.extname(modulePath) === '.json') {
         moduleObj.exports = this._environment.global.JSON.parse(
           fs.readFileSync(modulePath, 'utf8')
@@ -799,10 +793,6 @@ class Loader {
     } else {
       return this.requireModule(currPath, moduleName);
     }
-  }
-
-  getJestRuntime(dir) {
-    return this._createRuntimeFor(dir);
   }
 
   _createRuntimeFor(currPath) {
@@ -857,23 +847,7 @@ class Loader {
       },
 
       resetModuleRegistry: () => {
-        var envGlobal = this._environment.global;
-        Object.keys(envGlobal).forEach(key => {
-          const globalMock = envGlobal[key];
-          if (
-            (typeof globalMock === 'object' && globalMock !== null) ||
-            typeof globalMock === 'function'
-          ) {
-            globalMock._isMockFunction && globalMock.mockClear();
-          }
-        });
-
-        if (envGlobal.mockClearTimers) {
-          envGlobal.mockClearTimers();
-        }
-
         this.resetModuleRegistry();
-
         return runtime;
       },
 
@@ -899,6 +873,27 @@ class Loader {
   resetModuleRegistry() {
     this._mockRegistry = {};
     this._moduleRegistry = {};
+
+    if (this._environment && this._environment.global) {
+      var envGlobal = this._environment.global;
+      Object.keys(envGlobal).forEach(key => {
+        const globalMock = envGlobal[key];
+        if (
+          (typeof globalMock === 'object' && globalMock !== null) ||
+          typeof globalMock === 'function'
+        ) {
+          globalMock._isMockFunction && globalMock.mockClear();
+        }
+      });
+
+      if (envGlobal.mockClearTimers) {
+        envGlobal.mockClearTimers();
+      }
+    }
+  }
+
+  __getJestRuntimeForTest(dir) {
+    return this._createRuntimeFor(dir);
   }
 }
 

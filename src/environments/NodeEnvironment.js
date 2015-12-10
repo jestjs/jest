@@ -24,7 +24,6 @@ class NodeEnvironment {
     this.global.JSON = JSON;
     installCommonGlobals(this.global, config.globals);
     this.fakeTimers = new FakeTimers(this.global);
-    this._disposed = false;
   }
 
   dispose() {
@@ -33,16 +32,14 @@ class NodeEnvironment {
   }
 
   runSourceText(sourceText, filename) {
-    if (!this._disposed) {
-      vm.runInContext(sourceText, this.global, {
-        filename,
-        displayErrors: false,
-      });
-    }
+    vm.runInContext(sourceText, this.global, {
+      filename,
+      displayErrors: false,
+    });
   }
 
   runWithRealTimers(callback) {
-    if (!this._disposed) {
+    if (this.global) {
       this.fakeTimers.runWithRealTimers(callback);
     }
   }

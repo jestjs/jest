@@ -11,8 +11,6 @@ const fs = require('graceful-fs');
 const os = require('os');
 const path = require('path');
 const assign = require('object-assign');
-const promiseDone = require('./lib/promiseDone');
-const through = require('through');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
 const Console = require('./Console');
@@ -149,164 +147,62 @@ class TestRunner {
     return this._configDeps;
   }
 
-  /**
-   * Given a list of paths to modules or tests, find all tests that are related
-   * to any of those paths. For a test to be considered "related" to a path,
-   * the test must depend on that path (either directly, or indirectly through
-   * one of its direct dependencies).
-   *
-   * @param Array<string> paths A list of path strings to find related tests for
-   * @return Stream<string> Stream of absolute path strings
-   */
-  streamTestPathsRelatedTo(paths) {
-    const pathStream = through(
-      function write(data) {
-        if (data.isError) {
-          this.emit('error', data);
-          this.emit('end');
-        } else {
-          this.emit('data', data);
-        }
-      },
-      function end() {
-        this.emit('end');
-      }
-    );
+  promiseTestPathsRelatedTo(paths) {
+    return this._constructModuleLoader()
+      .then(moduleLoader => {
+        const relatedPaths = [];
+        const discoveredModules = {};
 
-    this._constructModuleLoader().then(moduleLoader => {
-      const discoveredModules = {};
-
-      // If a path to a test file is given, make sure we consider that test as
-      // related to itself...
-      //
-      // (If any of the supplied paths aren't tests, it's ok because we filter
-      //  non-tests out at the end)
-      paths.forEach(path => {
-        discoveredModules[path] = true;
-        if (this._isTestFilePath(path) && fs.existsSync(path)) {
-          pathStream.write(path);
-        }
-      });
-
-      const modulesToSearch = [].concat(paths);
-      while (modulesToSearch.length > 0) {
-        const modulePath = modulesToSearch.shift();
-        const depPaths = moduleLoader.getDependentsFromPath(modulePath);
-
-        depPaths.forEach(depPath => {
-          if (!discoveredModules.hasOwnProperty(depPath)) {
-            discoveredModules[depPath] = true;
-            modulesToSearch.push(depPath);
-            if (this._isTestFilePath(depPath) && fs.existsSync(depPath)) {
-              pathStream.write(depPath);
-            }
+        // If a path to a test file is given, make sure we consider that test as
+        // related to itself. Non-tests will be filtered at the end.
+        paths.forEach(path => {
+          discoveredModules[path] = true;
+          if (this._isTestFilePath(path) && fs.existsSync(path)) {
+            relatedPaths.push(path);
           }
         });
-      }
 
-      pathStream.end();
-    }, promiseDone);
+        const modulesToSearch = [].concat(paths);
+        while (modulesToSearch.length > 0) {
+          const modulePath = modulesToSearch.shift();
+          const depPaths = moduleLoader.getDependentsFromPath(modulePath);
 
-    return pathStream;
+          depPaths.forEach(depPath => {
+            if (!discoveredModules.hasOwnProperty(depPath)) {
+              discoveredModules[depPath] = true;
+              modulesToSearch.push(depPath);
+              if (this._isTestFilePath(depPath) && fs.existsSync(depPath)) {
+                relatedPaths.push(depPath);
+              }
+            }
+          });
+        }
+        return relatedPaths;
+      });
   }
 
-
-  /**
-   * Like `streamTestPathsRelatedTo`, but returns a Promise resolving an array
-   * of all paths.
-   *
-   * @param Array<string> paths A list of path strings to find related tests for
-   * @return Promise<Array<string>> Promise of array of absolute path strings
-   */
-  promiseTestPathsRelatedTo(paths) {
-    return _pathStreamToPromise(this.streamTestPathsRelatedTo(paths));
-  }
-
-  /**
-   * Given a path pattern, find all absolute paths for all tests that match the
-   * pattern.
-   *
-   * @param RegExp pathPattern
-   * @return Stream<string> Stream of absolute path strings
-   */
-  streamTestPathsMatching(pathPattern) {
-    const pathStream = through(
-      function write(data) {
-        if (data.isError) {
-          this.emit('error', data);
-          this.emit('end');
-        } else {
-          this.emit('data', data);
-        }
-      },
-      function end() {
-        this.emit('end');
-      }
-    );
-
-    this._getModuleLoaderResourceMap().then(resourceMap => {
-      const resourcePathMap = resourceMap.resourcePathMap;
-      for (const i in resourcePathMap) {
-        // Sometimes the loader finds a path with no resource. This typically
-        // happens if a file is recently deleted.
-        if (!resourcePathMap[i]) {
-          continue;
-        }
-
-        const pathStr = resourcePathMap[i].path;
-        if (
-          this._isTestFilePath(pathStr) &&
-          pathPattern.test(pathStr)
-        ) {
-          pathStream.write(pathStr);
-        }
-      }
-      pathStream.end();
-    });
-
-
-    return pathStream;
-  }
-
-  /**
-   * Like `streamTestPathsMatching`, but returns a Promise resolving an array of
-   * all paths
-   *
-   * @param {RegExp} pathPattern
-   * @return {Promise<Array<String>>} Promise of array of absolute path strings
-   */
   promiseTestPathsMatching(pathPattern) {
-    return _pathStreamToPromise(this.streamTestPathsMatching(pathPattern));
-  }
+    return this._getModuleLoaderResourceMap()
+      .then(resourceMap => {
+        const matchingPaths = [];
+        const resourcePathMap = resourceMap.resourcePathMap;
+        for (const i in resourcePathMap) {
+          // Sometimes the loader finds a path with no resource. This typically
+          // happens if a file is recently deleted.
+          if (!resourcePathMap[i]) {
+            continue;
+          }
 
-  /**
-   * For use by external users of TestRunner as a means of optimization.
-   *
-   * Imagine the following scenario executing in a child worker process:
-   *
-   * var runner = new TestRunner(config, {
-   *   moduleLoaderResourceMap: serializedResourceMap
-   * });
-   * someOtherAyncProcess.then(function() {
-   *   runner.runTestsParallel();
-   * });
-   *
-   * Here we wouldn't start deserializing the resource map (passed to us from
-   * the parent) until runner.runTestsParallel() is called. At the time of this
-   * writing, resource map deserialization is slow and a bottleneck on running
-   * the first test in a child.
-   *
-   * So this API gives scenarios such as the one above an optimization path to
-   * potentially start deserializing the resource map while we wait on the
-   * someOtherAsyncProcess to resolve (rather that doing it after it's
-   * resolved).
-   */
-  preloadResourceMap() {
-    this._getModuleLoaderResourceMap().then(null, promiseDone);
-  }
-
-  preloadConfigDependencies() {
-    this._loadConfigDependencies();
+          const pathStr = resourcePathMap[i].path;
+          if (
+            this._isTestFilePath(pathStr) &&
+            pathPattern.test(pathStr)
+          ) {
+            matchingPaths.push(pathStr);
+          }
+        }
+        return matchingPaths;
+      });
   }
 
   /**
@@ -614,15 +510,6 @@ class TestRunner {
     result.maxMemoryUsage = this._maxMemoryUsage;
     result.memoryUsage = memoryUsage;
   }
-}
-
-function _pathStreamToPromise(stream) {
-  return new Promise((resolve, reject) => {
-    const paths = [];
-    stream.on('data', path => paths.push(path));
-    stream.on('error', err => reject(err));
-    stream.on('end', () => resolve(paths));
-  });
 }
 
 module.exports = TestRunner;

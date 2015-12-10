@@ -14,40 +14,33 @@ const TestRunner = require('./TestRunner');
 const formatTestResults = require('./lib/formatTestResults');
 const utils = require('./lib/utils');
 
-let _jestVersion = null;
+let jestVersion = null;
 function getVersion() {
-  if (_jestVersion === null) {
-    const pkgJsonPath = path.resolve(__dirname, '..', 'package.json');
-    _jestVersion = require(pkgJsonPath).version;
+  if (jestVersion === null) {
+    const packageJSON = path.resolve(__dirname, '..', 'package.json');
+    jestVersion = require(packageJSON).version;
   }
-  return _jestVersion;
+  return jestVersion;
 }
 
-function _findChangedFiles(dirPath) {
-  return new Promise(function(resolve, reject) {
-    const args =
-      ['diff', '--name-only', '--diff-filter=ACMR'];
+function findChangedFiles(dirPath) {
+  return new Promise((resolve, reject) => {
+    const args = ['diff', '--name-only', '--diff-filter=ACMR'];
     const child = childProcess.spawn('git', args, {cwd: dirPath});
 
     let stdout = '';
-    child.stdout.on('data', function(data) {
-      stdout += data;
-    });
-
     let stderr = '';
-    child.stderr.on('data', function(data) {
-      stderr += data;
-    });
-
-    child.on('close', function(code) {
+    child.stdout.on('data', data => stdout += data);
+    child.stderr.on('data', data => stderr += data);
+    child.on('close', code => {
       if (code === 0) {
         stdout = stdout.trim();
         if (stdout === '') {
           resolve([]);
         } else {
-          resolve(stdout.split('\n').map(function(changedPath) {
-            return path.resolve(dirPath, changedPath);
-          }));
+          resolve(stdout.split('\n').map(
+            changedPath => path.resolve(dirPath, changedPath)
+          ));
         }
       } else {
         reject(code + ': ' + stderr);
@@ -56,17 +49,17 @@ function _findChangedFiles(dirPath) {
   });
 }
 
-function _verifyIsGitRepository(dirPath) {
-  return new Promise(function(resolve) {
+function verifyIsGitRepository(dirPath) {
+  return new Promise(resolve =>
     childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd: dirPath})
-      .on('close', function(code) {
+      .on('close', code => {
         const isGitRepo = code === 0;
         resolve(isGitRepo);
-      });
-  });
+      })
+  );
 }
 
-function _testRunnerOptions(argv) {
+function testRunnerOptions(argv) {
   const options = {};
   if (argv.runInBand) {
     options.runInBand = argv.runInBand;
@@ -77,8 +70,8 @@ function _testRunnerOptions(argv) {
   return options;
 }
 
-function _promiseConfig(argv, packageRoot) {
-  return _promiseRawConfig(argv, packageRoot).then(function(config) {
+function readConfig(argv, packageRoot) {
+  return readRawConfig(argv, packageRoot).then(config => {
     if (argv.coverage) {
       config.collectCoverage = true;
     }
@@ -131,7 +124,7 @@ function _promiseConfig(argv, packageRoot) {
   });
 }
 
-function _promiseRawConfig(argv, packageRoot) {
+function readRawConfig(argv, packageRoot) {
   if (typeof argv.config === 'string') {
     return utils.loadConfigFromFile(argv.config);
   }
@@ -164,11 +157,11 @@ function _promiseRawConfig(argv, packageRoot) {
   }));
 }
 
-function _promiseOnlyChangedTestPaths(testRunner, config) {
-  const testPathDirsAreGit = config.testPathDirs.map(_verifyIsGitRepository);
+function findOnlyChangedTestPaths(testRunner, config) {
+  const testPathDirsAreGit = config.testPathDirs.map(verifyIsGitRepository);
   return Promise.all(testPathDirsAreGit)
-    .then(function(results) {
-      if (!results.every(function(result) { return result; })) {
+    .then(results => {
+      if (!results.every(result => !!result)) {
         /* eslint-disable no-throw-literal */
         throw (
           'It appears that one of your testPathDirs does not exist ' +
@@ -177,20 +170,20 @@ function _promiseOnlyChangedTestPaths(testRunner, config) {
         );
         /* eslint-enable no-throw-literal */
       }
-      return Promise.all(config.testPathDirs.map(_findChangedFiles));
+      return Promise.all(config.testPathDirs.map(findChangedFiles));
     })
-    .then(function(changedPathSets) {
+    .then(changedPathSets => {
       // Collapse changed files from each of the testPathDirs into a single list
       // of changed file paths
       let changedPaths = [];
-      changedPathSets.forEach(function(pathSet) {
-        changedPaths = changedPaths.concat(pathSet);
-      });
+      changedPathSets.forEach(
+        pathSet => changedPaths = changedPaths.concat(pathSet)
+      );
       return testRunner.promiseTestPathsRelatedTo(changedPaths);
     });
 }
 
-function _promisePatternMatchingTestPaths(argv, testRunner) {
+function findMatchingTestPaths(argv, testRunner) {
   const pattern = argv.testPathPattern ||
     ((argv._ && argv._.length) ? argv._.join('|') : '.*');
 
@@ -207,31 +200,30 @@ function runCLI(argv, packageRoot, onComplete) {
   }
 
   const pipe = argv.json ? process.stderr : process.stdout;
+  readConfig(argv, packageRoot)
+    .then(config => {
+      const testRunner = new TestRunner(config, testRunnerOptions(argv));
+      const testFramework = require(config.testRunner);
+      pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
 
-  _promiseConfig(argv, packageRoot).then(function(config) {
-    const testRunner = new TestRunner(config, _testRunnerOptions(argv));
-    const testFramework = require(config.testRunner);
-    pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
-
-    const testPaths = argv.onlyChanged ?
-      _promiseOnlyChangedTestPaths(testRunner, config) :
-      _promisePatternMatchingTestPaths(argv, testRunner);
-    return testPaths.then(function(testPaths) {
-      return testRunner.runTests(testPaths);
+      const testPaths = argv.onlyChanged ?
+        findOnlyChangedTestPaths(testRunner, config) :
+        findMatchingTestPaths(argv, testRunner);
+      return testPaths.then(testPaths => testRunner.runTests(testPaths));
+    })
+    .then(runResults => {
+      if (argv.json) {
+        process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+      }
+      return runResults;
+    })
+    .then(runResults => onComplete && onComplete(runResults.success))
+    .catch(error => {
+      console.error('Failed with unexpected error.');
+      process.nextTick(() => {
+        throw error;
+      });
     });
-  }).then(function(runResults) {
-    if (argv.json) {
-      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
-    }
-    return runResults;
-  }).then(function(runResults) {
-    onComplete && onComplete(runResults.success);
-  }).catch(function(error) {
-    console.error('Failed with unexpected error.');
-    process.nextTick(function() {
-      throw error;
-    });
-  });
 }
 
 exports.TestRunner = TestRunner;
