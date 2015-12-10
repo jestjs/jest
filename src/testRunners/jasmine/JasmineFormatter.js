@@ -9,11 +9,10 @@
 'use strict';
 
 const diff = require('diff');
-const colors = require('../../lib/colors');
-const formatMsg = require('../../lib/utils').formatMsg;
+const chalk = require('chalk');
 
+const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 const KEEP_TRACE_LINES = 2;
-const ERROR_TITLE_COLOR = colors.RED + colors.BOLD + colors.UNDERLINE;
 const DIFFABLE_MATCHERS = Object.assign(Object.create(null), {
   toBe: true,
   toNotBe: true,
@@ -30,24 +29,16 @@ class JasmineFormatter {
     this._jasmine = jasmine;
   }
 
-  formatMsg(msg, color) {
-    return formatMsg(msg, color, this._config);
-  }
-
-  formatFailure(msg) {
-    return this.formatMsg(msg, ERROR_TITLE_COLOR);
-  }
-
   formatDiffable(matcherName, isNot, actual, expected) {
     const ppActual = this.prettyPrint(actual);
     const ppExpected = this.prettyPrint(expected);
     const colorDiff = this.highlightDifferences(ppActual, ppExpected);
     matcherName = (isNot ? 'NOT ' : '') + matcherName;
 
-    return this.formatMsg('Expected:', ERROR_TITLE_COLOR) +
-      ' ' + colorDiff.a +
-      ' ' + this.formatMsg(matcherName + ':', ERROR_TITLE_COLOR) +
-      ' ' + colorDiff.b;
+    return (
+      ERROR_TITLE_COLOR('Expected:') + ' ' + colorDiff.a + ' ' +
+      ERROR_TITLE_COLOR(matcherName + ':') + ' ' + colorDiff.b
+    );
   }
 
   formatMatchFailure(result) {
@@ -62,7 +53,7 @@ class JasmineFormatter {
         result.expected
       );
     } else {
-      message = this.formatFailure(result.message);
+      message = ERROR_TITLE_COLOR(result.message);
     }
 
     // error message & stack live on 'trace' field in jasmine 1.3
@@ -80,7 +71,7 @@ class JasmineFormatter {
     // colorize the `message` value
     return this.cleanStackTrace(stackTrace.replace(
       /(^(.|\n)*?(?=\n\s*at\s))/,
-      this.formatFailure('$1')
+      ERROR_TITLE_COLOR('$1')
     ));
   }
 
@@ -100,9 +91,9 @@ class JasmineFormatter {
     for (let i = 0, il = changes.length; i < il; i++) {
       const change = changes[i];
       if (change.added) {
-        ret.b += this.formatMsg(change.value, colors.RED_BG);
+        ret.b += chalk.bgRed(change.value);
       } else if (change.removed) {
-        ret.a += this.formatMsg(change.value, colors.RED_BG);
+        ret.a += chalk.bgRed(change.value);
       } else {
         ret.a += change.value;
         ret.b += change.value;
@@ -141,7 +132,7 @@ class JasmineFormatter {
       const orderedKeys = Object.keys(obj).sort();
       let value;
       const keysOutput = [];
-      const keyIndent = this.formatMsg('|', colors.GRAY) + ' ';
+      const keyIndent = chalk.gray('|') + ' ';
       for (let i = 0; i < orderedKeys.length; i++) {
         value = obj[orderedKeys[i]];
         keysOutput.push(

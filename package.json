@@ -4,6 +4,7 @@
   "version": "0.8.1",
   "main": "src/jest.js",
   "dependencies": {
+    "chalk": "^1.1.1",
     "cover": "^0.2.9",
     "diff": "^2.1.1",
     "graceful-fs": "^4.1.2",

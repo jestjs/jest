@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const colors = require('./colors');
+const chalk = require('chalk');
 const fs = require('graceful-fs');
 const path = require('path');
 
@@ -376,15 +376,15 @@ function formatFailureMessage(testResult, config) {
   const rootPath = config.rootPath;
   const useColor = config.useColor;
 
-  const colorize = useColor ? colors.colorize : function(str) { return str; };
+  const localChalk = new chalk.constructor({enabled: !!useColor});
   const ancestrySeparator = ' \u203A ';
-  const descBullet = colorize('\u25cf ', colors.BOLD);
+  const descBullet = localChalk.bold('\u25cf ');
   const msgBullet = '  - ';
   const msgIndent = msgBullet.replace(/./g, ' ');
 
   if (testResult.testExecError) {
     const text = testResult.testExecError;
-    return descBullet + colorize('Runtime Error', colors.BOLD) + '\n' + text;
+    return descBullet + localChalk.bold('Runtime Error') + '\n' + text;
   }
 
   return testResult.testResults.filter(function(result) {
@@ -418,20 +418,12 @@ function formatFailureMessage(testResult, config) {
     }).join('\n');
 
     const testTitleAncestry = result.ancestorTitles.map(function(title) {
-      return colorize(title, colors.BOLD);
+      return localChalk.bold(title);
     }).join(ancestrySeparator) + ancestrySeparator;
 
     return descBullet + testTitleAncestry + result.title + '\n' +
       failureMessages;
   }).join('\n');
-}
-
-function formatMsg(msg, color, _config) {
-  _config = _config || {};
-  if (_config.noHighlight) {
-    return msg;
-  }
-  return colors.colorize(msg, color);
 }
 
 function deepCopy(obj) {
@@ -457,7 +449,6 @@ const STACK_TRACE_LINE_IGNORE_RE = new RegExp([
 
 exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
-exports.formatMsg = formatMsg;
 exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
 exports.getLinePercentCoverageFromCoverageInfo =
   getLinePercentCoverageFromCoverageInfo;
