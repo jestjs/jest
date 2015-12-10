@@ -13,8 +13,8 @@ const formatMsg = require('./lib/utils').formatMsg;
 const path = require('path');
 const VerboseLogger = require('./lib/testLogger');
 
-const FAIL_COLOR = colors.RED_BG + colors.BOLD;
-const PASS_COLOR = colors.GREEN_BG + colors.BOLD;
+const FAIL_COLOR = colors.RESET + colors.RED_BG + colors.BOLD;
+const PASS_COLOR = colors.RESET + colors.GREEN_BG + colors.BOLD;
 const TEST_NAME_COLOR = colors.BOLD;
 
 class DefaultTestReporter {
