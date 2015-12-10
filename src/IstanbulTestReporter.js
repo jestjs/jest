@@ -26,16 +26,10 @@ class IstanbulTestReporter extends DefaultTestReporter {
 
     if (config.collectCoverage) {
       reporter.addAll(config.coverageReporters);
-      reporter.write(collector, true, () => {});
+      reporter.write(collector, true, function() {
+        console.log('All reports generated');
+      });
     }
-  }
-
-  static getReporter() {
-    return reporter;
-  }
-
-  static getCollector() {
-    return collector;
   }
 }
 

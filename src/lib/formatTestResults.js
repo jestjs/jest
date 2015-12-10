@@ -9,7 +9,7 @@
 
 const utils = require('./utils');
 
-const formatResult = (testResult, codeCoverageFormatter, reporter) => {
+const formatResult = (testResult, codeCoverageFormatter) => {
   const output = {
     name: testResult.testFilePath,
     summary: '', // TODO
@@ -28,7 +28,7 @@ const formatResult = (testResult, codeCoverageFormatter, reporter) => {
     output.status = allTestsPassed ? 'passed' : 'failed';
     output.startTime = testResult.perfStats.start;
     output.endTime = testResult.perfStats.end;
-    output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
+    output.coverage = codeCoverageFormatter(testResult.coverage);
 
     if (!allTestsPassed) {
       output.message = utils.formatFailureMessage(testResult, {
@@ -41,34 +41,13 @@ const formatResult = (testResult, codeCoverageFormatter, reporter) => {
   return output;
 };
 
-/**
- * @callback codeCoverageFormatter
- * @param {*} results
- * @param {*} reporter - an instance of the testReporter
- */
-
-/**
- * Formats the test results.
- * @param {*} results - a results hash determined by the reporter
- * @param {codeCoverageFormatter} codeCoverageFormatter
- * @param {*} reporter - an instance of the testReporter
- * @returns {{success: *, startTime: (*|number|Number),
- *  numTotalTests: *,
- *  numTotalTestSuites: *,
- *  numRuntimeErrorTestSuites: *,
- *  numPassedTests: *,
- *  numFailedTests: *,
- *  testResults: (*|{}|Array),
- *  postSuiteHeaders: *}}
- */
-
-function formatTestResults(results, codeCoverageFormatter, reporter) {
+module.exports = (results, codeCoverageFormatter) => {
   if (!codeCoverageFormatter) {
     codeCoverageFormatter = coverage => coverage;
   }
 
   const testResults = results.testResults.map(
-    testResult => formatResult(testResult, codeCoverageFormatter, reporter)
+    testResult => formatResult(testResult, codeCoverageFormatter)
   );
 
   return {
@@ -82,6 +61,4 @@ function formatTestResults(results, codeCoverageFormatter, reporter) {
     testResults,
     postSuiteHeaders: results.postSuiteHeaders,
   };
-}
-
-module.exports = formatTestResults;
+};

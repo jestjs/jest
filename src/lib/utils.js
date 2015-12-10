@@ -86,6 +86,86 @@ function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
+
+/**
+ * Given the coverage info for a single file (as output by
+ * CoverageCollector.js), return an array whose entries are bools indicating
+ * whether anything on the line could have been covered and was, or null if the
+ * line wasn't measurable (like empty lines, declaration keywords, etc).
+ *
+ * For example, for the following coverage info:
+ *
+ * COVERED:     var a = [];
+ * NO CODE:
+ * COVERED:     for (var i = 0; i < a.length; i++)
+ * NOT COVERED:   console.log('hai!');
+ *
+ * You'd get an array that looks like this:
+ *
+ * [true, null, true, false]
+ */
+function getLineCoverageFromCoverageInfo(coverageInfo) {
+  const coveredLines = {};
+  coverageInfo.coveredSpans.forEach(function(coveredSpan) {
+    const startLine = coveredSpan.start.line;
+    const endLine = coveredSpan.end.line;
+    for (let i = startLine - 1; i < endLine; i++) {
+      coveredLines[i] = true;
+    }
+  });
+
+  const uncoveredLines = {};
+  coverageInfo.uncoveredSpans.forEach(function(uncoveredSpan) {
+    const startLine = uncoveredSpan.start.line;
+    const endLine = uncoveredSpan.end.line;
+    for (let i = startLine - 1; i < endLine; i++) {
+      uncoveredLines[i] = true;
+    }
+  });
+
+  const sourceLines = coverageInfo.sourceText.trim().split('\n');
+
+  return sourceLines.map(function(line, lineIndex) {
+    if (uncoveredLines[lineIndex] === true) {
+      return false;
+    } else if (coveredLines[lineIndex] === true) {
+      return true;
+    } else {
+      return null;
+    }
+  });
+}
+
+/**
+ * Given the coverage info for a single file (as output by
+ * CoverageCollector.js), return the decimal percentage of lines in the file
+ * that had any coverage info.
+ *
+ * For example, for the following coverage info:
+ *
+ * COVERED:     var a = [];
+ * NO CODE:
+ * COVERED:     for (var i = 0; i < a.length; i++)
+ * NOT COVERED:   console.log('hai');
+ *
+ * You'd get: 2/3 = 0.666666
+ */
+function getLinePercentCoverageFromCoverageInfo(coverageInfo) {
+  const lineCoverage = getLineCoverageFromCoverageInfo(coverageInfo);
+  let numMeasuredLines = 0;
+  const numCoveredLines = lineCoverage.reduce(function(counter, lineIsCovered) {
+    if (lineIsCovered !== null) {
+      numMeasuredLines++;
+      if (lineIsCovered === true) {
+        counter++;
+      }
+    }
+    return counter;
+  }, 0);
+
+  return numCoveredLines / numMeasuredLines;
+}
+
 function normalizeConfig(config) {
   const newConfig = {};
 
@@ -378,6 +458,9 @@ const STACK_TRACE_LINE_IGNORE_RE = new RegExp([
 exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatMsg = formatMsg;
+exports.getLineCoverageFromCoverageInfo = getLineCoverageFromCoverageInfo;
+exports.getLinePercentCoverageFromCoverageInfo =
+  getLinePercentCoverageFromCoverageInfo;
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
