@@ -202,9 +202,8 @@ class Loader {
     moduleObj.require = this.constructBoundRequire(filename);
 
     // Use this name for the module wrapper for consistency with node.
-    const evalResultVariable = 'Object.<anonymous>';
-    const wrapper = '({ "' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, ____JEST_COVERAGE_DATA____) {' + moduleContent + '\n}});';
-    const wrapperFunc = this._environment.runSourceText(wrapper, filename)[evalResultVariable];
+    const wrapper = '(function(){return function(module, exports, require, __dirname, __filename, global, jest, ____JEST_COVERAGE_DATA____) {' + moduleContent + '\n}}());';
+    const wrapperFunc = this._environment.runSourceText(wrapper, filename);
     wrapperFunc.call(
       moduleObj.exports, // module context
       moduleObj,
