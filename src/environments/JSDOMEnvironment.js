@@ -9,7 +9,6 @@
 
 const FakeTimers = require('../lib/FakeTimers');
 const installCommonGlobals = require('./installCommonGlobals');
-const vm = require('vm');
 
 class JSDOMEnvironment {
 
@@ -34,10 +33,7 @@ class JSDOMEnvironment {
   }
 
   runSourceText(sourceText, filename) {
-    vm.runInContext(sourceText, this.document._ownerDocument._global, {
-      filename,
-      displayErrors: false,
-    });
+    return this.global.eval(sourceText + '\n//# sourceURL=' + filename);
   }
 
   runWithRealTimers(cb) {

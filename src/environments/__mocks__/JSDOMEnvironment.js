@@ -22,7 +22,7 @@ JSDOMEnvironment.mockImplementation(function(config) {
 
 JSDOMEnvironment.prototype.runSourceText.mockImplementation(
   function(sourceText, filename) {
-    vm.runInNewContext(sourceText, this.global, {
+    return vm.runInNewContext(sourceText, this.global, {
       filename,
       displayErrors: false,
     });
