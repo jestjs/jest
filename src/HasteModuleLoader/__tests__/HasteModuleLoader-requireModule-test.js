@@ -144,14 +144,35 @@ describe('HasteModuleLoader', function() {
 
     pit('emulates a node stack trace during module load', function() {
       return buildLoader().then(function(loader) {
+        let hasThrown = false;
         try {
           loader.requireModule(
             __filename,
             './test_root/throwing.js'
           );
         } catch (err) {
-          expect(err.stack).toMatch(/Error: throwing\s+at Object.<anonymous>/);
+          hasThrown = true;
+          expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
         }
+        expect(hasThrown).toBe(true);
+      });
+    });
+
+    pit('emulates a node stack trace during function execution', function() {
+      return buildLoader().then(function(loader) {
+        let hasThrown = false;
+        try {
+          const sum = loader.requireModule(
+            __filename,
+            './test_root/throwing-fn.js'
+          );
+          sum(1, 2);
+        } catch (err) {
+          hasThrown = true;
+          expect(err.stack)
+          .toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\/__tests__\/test_root\/throwing-fn.js:4:9/);
+        }
+        expect(hasThrown).toBe(true);
       });
     });
 
