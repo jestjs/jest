@@ -32,7 +32,7 @@ class NodeEnvironment {
   }
 
   runSourceText(sourceText, filename) {
-    vm.runInContext(sourceText, this.global, {
+    return vm.runInContext(sourceText, this.global, {
       filename,
       displayErrors: false,
     });
