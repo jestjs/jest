@@ -13,6 +13,7 @@ const path = require('path');
 const TestRunner = require('./TestRunner');
 const formatTestResults = require('./lib/formatTestResults');
 const utils = require('./lib/utils');
+const chalk = require('chalk');
 
 let jestVersion = null;
 function getVersion() {
@@ -202,6 +203,11 @@ function runCLI(argv, packageRoot, onComplete) {
   const pipe = argv.json ? process.stderr : process.stdout;
   readConfig(argv, packageRoot)
     .then(config => {
+      // Disable colorization
+      if (config.noHighlight) {
+        chalk.enabled = false;
+      }
+
       const testRunner = new TestRunner(config, testRunnerOptions(argv));
       const testFramework = require(config.testRunner);
       pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);

@@ -7,15 +7,22 @@
  */
 'use strict';
 
-const colors = require('./lib/colors');
+const chalk = require('chalk');
 const formatFailureMessage = require('./lib/utils').formatFailureMessage;
-const formatMsg = require('./lib/utils').formatMsg;
 const path = require('path');
 const VerboseLogger = require('./lib/testLogger');
 
-const FAIL_COLOR = colors.RESET + colors.RED_BG + colors.BOLD;
-const PASS_COLOR = colors.RESET + colors.GREEN_BG + colors.BOLD;
-const TEST_NAME_COLOR = colors.BOLD;
+// Explicitly reset for these messages since they can get written out in the
+// middle of error logging (should have listened to Spengler and not crossed the
+// streams).
+const FAIL_COLOR = chalk.reset.bold.bgRed;
+const PASS_COLOR = chalk.reset.bold.bgGreen;
+
+const FAIL_RESULTS_COLOR = chalk.bold.red;
+const PASS_RESULTS_COLOR = chalk.bold.green;
+const RUNNING_TEST_COLOR = chalk.bold.gray;
+const TEST_NAME_COLOR = chalk.bold;
+const LONG_TEST_COLOR = FAIL_COLOR;
 
 class DefaultTestReporter {
 
@@ -53,7 +60,7 @@ class DefaultTestReporter {
     if (testRunTime !== null) {
       testDetail.push(
         testRunTime > 2.5
-          ? this._formatMsg(testRunTime + 's', FAIL_COLOR)
+          ? LONG_TEST_COLOR(testRunTime + 's')
           : testRunTime + 's'
       );
     }
@@ -130,27 +137,24 @@ class DefaultTestReporter {
 
     let results = '';
     if (numFailedTests) {
-      results += this._formatMsg(
+      results += FAIL_RESULTS_COLOR(
         numFailedTests + ' test' +
-        (numFailedTests === 1 ? '' : 's') + ' failed',
-        colors.RED + colors.BOLD
+        (numFailedTests === 1 ? '' : 's') + ' failed'
       );
       results += ', ';
     }
 
     if (aggregatedResults.numRuntimeErrorTestSuites) {
-      results += this._formatMsg(
+      results += FAIL_RESULTS_COLOR(
         aggregatedResults.numRuntimeErrorTestSuites + ' test suite' +
-          (aggregatedResults.numRuntimeErrorTestSuites === 1 ? '' : 's') +
-          ' failed',
-        colors.RED + colors.BOLD
+        (aggregatedResults.numRuntimeErrorTestSuites === 1 ? '' : 's') +
+        ' failed'
       );
       results += ', ';
     }
 
-    results += this._formatMsg(
-      numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed',
-      colors.GREEN + colors.BOLD
+    results += PASS_RESULTS_COLOR(
+      numPassedTests + ' test' + (numPassedTests === 1 ? '' : 's') + ' passed'
     );
 
     results += ' (' + numTotalTests + ' total in ' +
@@ -170,18 +174,12 @@ class DefaultTestReporter {
     this._process.stdout.write(command);
   }
 
-  _formatMsg(msg, color) {
-    return formatMsg(msg, color, this._config);
-  }
-
   _getResultHeader(passed, testName, columns) {
-    const passFailTag = passed
-      ? this._formatMsg(' PASS ', PASS_COLOR)
-      : this._formatMsg(' FAIL ', FAIL_COLOR);
+    const passFailTag = passed ? PASS_COLOR(' PASS ') : FAIL_COLOR(' FAIL ');
 
     return [
       passFailTag,
-      this._formatMsg(testName, TEST_NAME_COLOR),
+      TEST_NAME_COLOR(testName),
     ].concat(columns || []).join(' ');
   }
 
@@ -197,9 +195,8 @@ class DefaultTestReporter {
       const pluralTestSuites =
         remainingTestSuites === 1 ? 'test suite' : 'test suites';
       this._process.stdout.write(
-        this._formatMsg(
-          'Running ' + remainingTestSuites + ' ' + pluralTestSuites + '...',
-          colors.GRAY + colors.BOLD
+        RUNNING_TEST_COLOR(
+          'Running ' + remainingTestSuites + ' ' + pluralTestSuites + '...'
         )
       );
     }

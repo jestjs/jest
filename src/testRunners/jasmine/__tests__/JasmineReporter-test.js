@@ -14,14 +14,14 @@ jest.autoMockOff();
 describe('JasmineReporter', function() {
   // modules
   var JasmineReporter;
-  var colors;
+  var chalk;
 
   // other variables
   var reporter;
 
   beforeEach(function() {
     JasmineReporter = require('../JasmineReporter');
-    colors = require('../../../lib/colors');
+    chalk = require('chalk');
 
     reporter = new JasmineReporter();
   });
@@ -77,11 +77,11 @@ describe('JasmineReporter', function() {
     }
 
     function errorize(str) {
-      return colors.RED + colors.BOLD + colors.UNDERLINE + str + colors.RESET;
+      return chalk.bold.underline.red(str);
     }
 
     function highlight(str) {
-      return colors.RED_BG + str + colors.RESET;
+      return chalk.bgRed(str);
     }
 
     pit('colorizes single-line failures using a per-char diff', function() {

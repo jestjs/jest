@@ -7,8 +7,7 @@
  */
 'use strict';
 
-const colors = require('./colors');
-const formatMsg = require('./utils').formatMsg;
+const chalk = require('chalk');
 
 /**
  * Creates a VerboseLogger object used to encapsulate verbose logging.
@@ -86,29 +85,20 @@ VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
  * @param {string} indentation - Indentation used for formatting.
  */
 VerboseLogger.prototype.printTestTitles = function(testTitles, indentation) {
-  let prefixColor, statusPrefix;
+  let statusPrefix;
 
   for (let i = 0; i < testTitles.length; i++) {
     if (testTitles[i].failureMessages.length === 0) {
-      prefixColor = colors.GREEN;
-      statusPrefix = this._config.noHighlight ? 'PASS - ' : '\u2713 ';
+      statusPrefix = chalk.green('\u2713 ');
     } else {
-      prefixColor = colors.RED;
-      statusPrefix = this._config.noHighlight ? 'FAIL - ' : '\u2715 ';
+      statusPrefix = chalk.red('\u2715 ');
     }
-    this.log(
-      this._formatMsg(indentation + statusPrefix, prefixColor)
-      + this._formatMsg(testTitles[i].title, colors.GRAY)
-    );
+    this.log(indentation + statusPrefix + chalk.gray(testTitles[i].title));
   }
 };
 
 VerboseLogger.prototype.log = function(str) {
   this._process.stdout.write(str + '\n');
-};
-
-VerboseLogger.prototype._formatMsg = function(msg, color) {
-  return formatMsg(msg, color, this._config);
 };
 
 /**

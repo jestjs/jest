@@ -31,18 +31,18 @@
 
 const util = require('util');
 const Console = require('console').Console;
-const colors = require('./lib/colors');
+const chalk = require('chalk');
 
 class CustomConsole extends Console {
   warn() {
     return super.warn(
-      colors.colorize(util.format.apply(this, arguments), colors.YELLOW)
+      chalk.yellow(util.format.apply(this, arguments))
     );
   }
 
   error() {
     return super.error(
-      colors.colorize(util.format.apply(this, arguments), colors.RED)
+      chalk.red(util.format.apply(this, arguments))
     );
   }
 }
