@@ -10,6 +10,7 @@
 const DefaultTestReporter = require('./DefaultTestReporter');
 const istanbul = require('istanbul');
 const collector = new istanbul.Collector();
+const testCollectors = Object.create(null);
 const reporter = new istanbul.Reporter();
 
 class IstanbulTestReporter extends DefaultTestReporter {
@@ -17,7 +18,10 @@ class IstanbulTestReporter extends DefaultTestReporter {
     super.onTestResult(config, testResult, aggregatedResults);
 
     if (config.collectCoverage && testResult.coverage) {
-      collector.add(testResult.coverage);
+      if (!testCollectors[testResult.testFilePath]) {
+        testCollectors[testResult.testFilePath] = new istanbul.Collector();
+      }
+      testCollectors[testResult.testFilePath].add(testResult.coverage);
     }
   }
 
@@ -26,10 +30,20 @@ class IstanbulTestReporter extends DefaultTestReporter {
 
     if (config.collectCoverage) {
       reporter.addAll(config.coverageReporters);
-      reporter.write(collector, true, function() {
-        console.log('All reports generated');
-      });
+      reporter.write(collector, true, () => {});
     }
+  }
+
+  static getReporter() {
+    return reporter;
+  }
+
+  static getCollector() {
+    return collector;
+  }
+
+  static getTestCollectors() {
+    return testCollectors;
   }
 }
 
