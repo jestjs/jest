@@ -1,5 +1,10 @@
 ## master
 
+## 0.8.2
+
+* Performance improvements.
+* jest now uses `chalk` instead of its own colors implementation.
+
 ## 0.8.1
 
 * `--bail` now reports with the proper error code.
