@@ -51,7 +51,7 @@ const DEFAULT_OPTIONS = {
    * Passing --debug off to child processes can screw with socket connections
    * of the parent process.
    */
-  nodeArgv: process.execArgv.filter(arg => arg !== '--debug'),
+  nodeArgv: process.execArgv.filter(arg => arg.indexOf('--debug') == -1),
 };
 
 const HIDDEN_FILE_RE = /\/\.[^\/]*$/;
