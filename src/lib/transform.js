@@ -122,7 +122,8 @@ module.exports = (filePath, config) => {
         cacheDir,
         path.basename(filePath, path.extname(filePath)) + '_' + cacheKey
       );
-
+      
+      createDirectory(config.cacheDirectory);
       createDirectory(baseCacheDir);
       createDirectory(cacheDir);
       const cachedData = readCacheFile(filePath, cachePath);
