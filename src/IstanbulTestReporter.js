@@ -18,6 +18,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
     super.onTestResult(config, testResult, aggregatedResults);
 
     if (config.collectCoverage && testResult.coverage) {
+      collector.add(testResult.coverage);
       if (!testCollectors[testResult.testFilePath]) {
         testCollectors[testResult.testFilePath] = new istanbul.Collector();
       }
