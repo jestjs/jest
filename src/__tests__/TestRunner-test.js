@@ -71,16 +71,11 @@ describe('TestRunner', () => {
       }));
 
       runner._isTestFilePath = () => true;
-      runner._constructModuleLoader = () => {
-        return Promise.resolve({
-          getAllTestPaths:
-            modulePath => Promise.resolve(allTests),
-          _resolver: {
-            getDependencies: path => {
-              return Promise.resolve(dependencyGraph[path]);
-            },
-          },
-        });
+      runner._getAllTestPaths = modulePath => Promise.resolve(allTests);
+      runner._resolver = {
+        getDependencies: path => {
+          return Promise.resolve(dependencyGraph[path]);
+        },
       };
     });
 

@@ -17,6 +17,7 @@ const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   let HasteModuleLoader;
+  let HasteResolver;
   let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
@@ -28,12 +29,17 @@ describe('HasteModuleLoader', function() {
   });
 
   function buildLoader() {
-    return (new HasteModuleLoader(config, new JSDOMEnvironment(config)))
-      .resolveDependencies('./root.js');
+    const loader = new HasteModuleLoader(
+      config,
+      new HasteResolver(config),
+      new JSDOMEnvironment(config)
+    );
+    return loader.resolveDependencies('./root.js');
   }
 
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
+    HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
 

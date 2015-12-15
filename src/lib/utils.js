@@ -26,6 +26,7 @@ const DEFAULT_CONFIG_VALUES = {
   globals: {},
   moduleFileExtensions: ['js', 'json', 'node'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
+  moduleResolver: require.resolve('../resolvers/HasteResolver'),
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],

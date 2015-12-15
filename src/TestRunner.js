@@ -69,8 +69,11 @@ function optionPathToRegex(p) {
 class TestRunner {
 
   constructor(config, options) {
+    this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
     this._config = Object.freeze(config);
-    this._configDeps = null;
+    const Resolver = require(config.moduleResolver);
+    this._resolver = new Resolver(config);
+
     // Maximum memory usage if `logHeapUsage` is enabled.
     this._maxMemoryUsage = 0;
     this._testPathDirsRegExp = new RegExp(
@@ -91,14 +94,10 @@ class TestRunner {
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
-
-    this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
   }
 
-  _constructModuleLoader(environment, customCfg) {
-    const config = customCfg || this._config;
-    const ModuleLoader = this._loadConfigDependencies().ModuleLoader;
-    return Promise.resolve(new ModuleLoader(config, environment));
+  _getAllTestPaths() {
+    return this._resolver.matchFilesByPattern(this._config.testDirectoryName);
   }
 
   _isTestFilePath(filePath) {
@@ -117,25 +116,13 @@ class TestRunner {
     );
   }
 
-  _loadConfigDependencies() {
-    const config = this._config;
-    if (this._configDeps === null) {
-      this._configDeps = {
-        ModuleLoader: require(config.moduleLoader),
-        testEnvironment: require(config.testEnvironment),
-        testRunner: require(config.testRunner).bind(null),
-      };
-    }
-    return this._configDeps;
-  }
-
   promiseTestPathsRelatedTo(changedPaths) {
     // TODO switch this to use HasteResolver instead of a ModuleLoader instance.
-    return this._constructModuleLoader()
-      .then(moduleLoader => moduleLoader.getAllTestPaths().then(paths => {
+    return this._getAllTestPaths()
+      .then(paths => {
         const allTests = {};
         return Promise.all(
-          paths.map(path => moduleLoader._resolver.getDependencies(path)
+          paths.map(path => this._resolver.getDependencies(path)
             .then(deps => allTests[path] = deps)
           )
         ).then(() => {
@@ -151,13 +138,12 @@ class TestRunner {
           }
           return Array.from(relatedPaths);
         });
-      }));
+      });
   }
 
   promiseTestPathsMatching(pathPattern) {
     // TODO switch this to use HasteResolver instead of a ModuleLoader instance.
-    return this._constructModuleLoader()
-      .then(moduleLoader => moduleLoader.getAllTestPaths())
+    return this._getAllTestPaths()
       .then(testPaths => testPaths.filter(
         path => this._isTestFilePath(path) && pathPattern.test(path)
       ));
@@ -172,10 +158,9 @@ class TestRunner {
    */
   runTest(testFilePath) {
     const config = this._config;
-    const configDeps = this._loadConfigDependencies();
-
-    const env = new configDeps.testEnvironment(config);
-    const testRunner = configDeps.testRunner;
+    const TestEnvironment = require(config.testEnvironment);
+    const TestRunner = require(config.testRunner);
+    const env = new TestEnvironment(config);
 
     // Intercept console logs to colorize.
     env.global.console = new Console(
@@ -186,15 +171,16 @@ class TestRunner {
     // Pass the testFilePath into the runner, so it can be used to e.g.
     // configure test reporter output.
     env.testFilePath = testFilePath;
-    return this._constructModuleLoader(env, config)
-      .then(moduleLoader => moduleLoader.resolveDependencies(testFilePath))
-      .then(moduleLoader => {
+    const ModuleLoader = require(config.moduleLoader);
+    const moduleLoader = new ModuleLoader(config, this._resolver, env);
+    return moduleLoader.resolveDependencies(testFilePath)
+      .then(() => {
         if (config.setupEnvScriptFile) {
           moduleLoader.requireModule(null, config.setupEnvScriptFile);
         }
 
         const testExecStats = {start: Date.now()};
-        return testRunner(config, env, moduleLoader, testFilePath)
+        return TestRunner(config, env, moduleLoader, testFilePath)
           .then(result => {
             testExecStats.end = Date.now();
 

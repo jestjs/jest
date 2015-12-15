@@ -10,33 +10,36 @@
 
 'use strict';
 
-const DependencyGraph = require('node-haste/lib/DependencyGraph');
+const Cache = require('node-haste/lib/Cache');
+const DependencyGraph = require('node-haste');
+
 const extractRequires = require('node-haste/lib/lib/extractRequires');
 
 const REQUIRE_EXTENSIONS_PATTERN = /(\brequire\s*?\.\s*?(?:requireActual|requireMock)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
-const resolvers = Object.create(null);
-
 class HasteResolver {
 
-  constructor(roots, options) {
-    const ignoreFilePattern = new RegExp(options.ignoreFilePattern);
+  constructor(config) {
+    const extensions = config.moduleFileExtensions.map(ext => '.' + ext);
+    const ignoreFilePattern = new RegExp(
+      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
+    );
+
     this._resolvePromises = Object.create(null);
     this._depGraph = new DependencyGraph({
-      roots,
+      roots: [config.rootDir],
       ignoreFilePath: path => path.match(ignoreFilePattern),
-      cache: {
-        get: (a, b, cb) => Promise.resolve(cb()),
-        invalidate: () => {},
-      },
+      cache: new Cache({
+        cacheKey: 'foo',
+      }),
       fileWatcher: {
         on: function() {
           return this;
         },
         isWatchman: () => Promise.resolve(false),
       },
-      extensions: options.extensions,
-      mocksPattern: new RegExp(options.mocksPattern),
+      extensions: extensions.concat(config.testFileExtensions),
+      mocksPattern: new RegExp(config.mocksPattern),
       extractRequires: code => {
         const data = extractRequires(code);
         data.code = data.code.replace(
@@ -86,19 +89,6 @@ class HasteResolver {
           ).then(() => deps);
         })
       ));
-  }
-
-  static get(roots, options) {
-    const key =
-      roots.sort().join(':') +
-      '$' + options.extensions.sort().join(':') +
-      '$' + options.ignoreFilePattern +
-      '$' + options.mocksPattern;
-    if (!resolvers[key]) {
-      resolvers[key] = new HasteResolver(roots, options);
-    }
-
-    return resolvers[key];
   }
 
 }

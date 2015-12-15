@@ -17,6 +17,7 @@ const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
   let HasteModuleLoader;
+  let HasteResolver;
   let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
@@ -27,15 +28,21 @@ describe('HasteModuleLoader', function() {
     rootDir,
     testEnvData: {someTestData: 42},
   });
-  beforeEach(function() {
-    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
-    HasteModuleLoader = require('../HasteModuleLoader');
-  });
 
   function buildLoader() {
-    return (new HasteModuleLoader(config, new JSDOMEnvironment(config)))
-      .resolveDependencies('./root.js');
+    const loader = new HasteModuleLoader(
+      config,
+      new HasteResolver(config),
+      new JSDOMEnvironment(config)
+    );
+    return loader.resolveDependencies('./root.js');
   }
+
+  beforeEach(function() {
+    HasteModuleLoader = require('../HasteModuleLoader');
+    HasteResolver = require('../../resolvers/HasteResolver');
+    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
+  });
 
   pit('passes config data through to jest.envData', function() {
     return buildLoader().then(function(loader) {

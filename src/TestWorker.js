@@ -19,9 +19,7 @@ let testRunner;
 
 module.exports = (data, callback) => {
   if (!testRunner) {
-    testRunner = new TestRunner(data.config, {
-      useCachedModuleLoaderResourceMap: true,
-    });
+    testRunner = new TestRunner(data.config);
   }
 
   try {

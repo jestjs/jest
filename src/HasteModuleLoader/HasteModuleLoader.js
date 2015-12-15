@@ -11,7 +11,6 @@
 
 const fs = require('graceful-fs');
 const moduleMocker = require('../lib/moduleMocker');
-const HasteResolver = require('../resolvers/HasteResolver');
 const path = require('path');
 const resolve = require('resolve');
 const transform = require('../lib/transform');
@@ -41,10 +40,11 @@ const isFile = file => {
 let _configUnmockListRegExpCache = null;
 
 class Loader {
-  constructor(config, environment) {
+  constructor(config, resolver, environment) {
     this._config = config;
     this._coverageCollectors = Object.create(null);
     this._currentlyExecutingModulePath = '';
+    this._resolver = resolver;
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
     this._explicitlySetMocks = Object.create(null);
@@ -53,16 +53,6 @@ class Loader {
     this._shouldAutoMock = true;
     this._configShouldMockModuleNames = Object.create(null);
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
-
-    this._resolver = HasteResolver.get(
-      [config.rootDir],
-      {
-        extensions: this._extensions.concat(config.testFileExtensions),
-        ignoreFilePattern: [config.cacheDirectory]
-          .concat(config.modulePathIgnorePatterns).join('|'),
-        mocksPattern: config.mocksPattern,
-      }
-    );
     this._resolvedModules = Object.create(null);
     this._resources = Object.create(null);
     this._mocks = Object.create(null);
@@ -107,8 +97,8 @@ class Loader {
         this._mocks = response.mocks;
         this._resolvedModules = response.resolvedModules;
         this._resources = response.resources;
-      })
-      .then(() => this);
+        return this;
+      });
   }
 
   requireModule(currPath, moduleName) {
@@ -278,10 +268,6 @@ class Loader {
         envGlobal.mockClearTimers();
       }
     }
-  }
-
-  getAllTestPaths() {
-    return this._resolver.matchFilesByPattern(this._config.testDirectoryName);
   }
 
   getAllCoverageInfo() {
