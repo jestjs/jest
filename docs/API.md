@@ -140,14 +140,14 @@ Indicates that the module system should always return a mocked version of the sp
 This is normally useful under the circumstances where you have called [`jest.autoMockOff()`](#jest-automockoff), but still wish to specify that certain particular modules should be mocked by the module system.
 
 ### `jest.runAllTicks()`
-Exhausts the micro-task queue (usually interfaced in node via `process.nextTick`).
+Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
 
 When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
 
 This is often useful for synchronously executing all pending promises in the system.
 
 ### `jest.runAllTimers()`
-Exhausts the macro-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
+Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
 
 When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
 
