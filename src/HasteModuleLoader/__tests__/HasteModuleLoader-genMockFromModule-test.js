@@ -28,12 +28,10 @@ describe('nodeHasteModuleLoader', function() {
   });
 
   function buildLoader() {
-    const loader = new HasteModuleLoader(
-      config,
-      new HasteResolver(config),
-      new JSDOMEnvironment(config)
+    const environment = new JSDOMEnvironment(config);
+    return new HasteResolver(config).getDependencies('./root.js').then(
+      response => new HasteModuleLoader(config, environment, response)
     );
-    return loader.resolveDependencies('./root.js');
   }
 
   beforeEach(function() {

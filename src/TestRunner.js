@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+
+ /* eslint-disable fb-www/object-create-only-one-param */
 'use strict';
 
 const fs = require('graceful-fs');
@@ -58,14 +60,6 @@ function optionPathToRegex(p) {
   return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
 }
 
-/**
- * A class that takes a project's test config and provides various utilities for
- * executing its tests.
- *
- * @param config The jest configuration
- * @param options See DEFAULT_OPTIONS for descriptions on the various options
- *                and their defaults.
- */
 class TestRunner {
 
   constructor(config, options) {
@@ -117,10 +111,9 @@ class TestRunner {
   }
 
   promiseTestPathsRelatedTo(changedPaths) {
-    // TODO switch this to use HasteResolver instead of a ModuleLoader instance.
     return this._getAllTestPaths()
       .then(paths => {
-        const allTests = {};
+        const allTests = Object.create(null);
         return Promise.all(
           paths.map(path => this._resolver.getDependencies(path)
             .then(deps => allTests[path] = deps)
@@ -142,66 +135,62 @@ class TestRunner {
   }
 
   promiseTestPathsMatching(pathPattern) {
-    // TODO switch this to use HasteResolver instead of a ModuleLoader instance.
     return this._getAllTestPaths()
       .then(testPaths => testPaths.filter(
         path => this._isTestFilePath(path) && pathPattern.test(path)
       ));
   }
 
-  /**
-   * Run the given single test file path.
-   * This just contains logic for running a single test given it's file path.
-   *
-   * @param {String} testFilePath
-   * @return {Promise<Object>} Results of the test
-   */
-  runTest(testFilePath) {
+  runTest(path) {
     const config = this._config;
     const TestEnvironment = require(config.testEnvironment);
     const TestRunner = require(config.testRunner);
-    const env = new TestEnvironment(config);
+    const ModuleLoader = require(config.moduleLoader);
+    const paths = [path];
+    if (config.setupEnvScriptFile) {
+      paths.push(config.setupEnvScriptFile);
+    }
+    if (config.setupTestFrameworkScriptFile) {
+      paths.push(config.setupTestFrameworkScriptFile);
+    }
 
-    // Intercept console logs to colorize.
+    const env = new TestEnvironment(config);
     env.global.console = new Console(
       this._config.useStderr ? process.stderr : process.stdout,
       process.stderr
     );
+    env.testFilePath = path;
+    return Promise.all(paths.map(p => this._resolver.getDependencies(p)))
+      .then(moduleMaps => {
+        const moduleMap = Object.create(null);
+        moduleMap.mocks = Object.create(null);
+        moduleMap.resolvedModules = Object.create(null);
+        moduleMap.resources = Object.create(null);
+        moduleMaps.forEach(map => {
+          Object.assign(moduleMap.mocks, map.mocks);
+          Object.assign(moduleMap.resolvedModules, map.resolvedModules);
+          Object.assign(moduleMap.resources, map.resources);
+        });
 
-    // Pass the testFilePath into the runner, so it can be used to e.g.
-    // configure test reporter output.
-    env.testFilePath = testFilePath;
-    const ModuleLoader = require(config.moduleLoader);
-    const moduleLoader = new ModuleLoader(config, this._resolver, env);
-    return moduleLoader.resolveDependencies(testFilePath)
-      .then(() => {
+        const moduleLoader = new ModuleLoader(config, env, moduleMap);
         if (config.setupEnvScriptFile) {
           moduleLoader.requireModule(null, config.setupEnvScriptFile);
         }
-
-        const testExecStats = {start: Date.now()};
-        return TestRunner(config, env, moduleLoader, testFilePath)
+        const start = Date.now();
+        return TestRunner(config, env, moduleLoader, path)
           .then(result => {
-            testExecStats.end = Date.now();
-
-            result.perfStats = testExecStats;
-            result.testFilePath = testFilePath;
-            result.coverage =
-              config.collectCoverage
-              ? moduleLoader.getAllCoverageInfo()
-              : {};
-
+            result.perfStats = {start, end: Date.now()};
+            result.testFilePath = path;
+            result.coverage = moduleLoader.getAllCoverageInfo();
             return result;
           });
       })
       .then(
         result => Promise.resolve().then(() => {
           env.dispose();
-
           if (config.logHeapUsage) {
             this._addMemoryUsage(result);
           }
-
           return result;
         }),
         err => Promise.resolve().then(() => {
@@ -212,10 +201,8 @@ class TestRunner {
   }
 
   _getTestPerformanceCachePath() {
-    return path.join(
-      this._config.cacheDirectory,
-      'perf-cache-' + this._config.name
-    );
+    const config = this._config;
+    return path.join(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
   _sortTests(testPaths) {
@@ -272,34 +259,15 @@ class TestRunner {
     );
   }
 
-  /**
-   * Run all given test paths.
-   *
-   * @param {Array<String>} testPaths Array of paths to test files
-   * @param {Object} reporter Collection of callbacks called on test events
-   * @return {Promise<Object>} Fulfilled with information about test run:
-   *   success: true if all tests passed
-   *   runTime: elapsed time in seconds to run all tests
-   *   numTotalTestSuites: total number of test suites considered
-   *   numPassedTestSuites: number of test suites run and passed
-   *   numFailedTestSuites: number of test suites run and failed
-   *   numRuntimeErrorTestSuites: number of test suites failed to run
-   *   numTotalTests: total number of tests executed
-   *   numPassedTests: number of tests run and passed
-   *   numFailedTests: number of tests run and failed
-   *   testResults: the jest result info for all tests run
-   */
   runTests(testPaths, reporter) {
     const config = this._config;
     if (!reporter) {
       const TestReporter = require(config.testReporter);
       if (config.useStderr) {
-        /* eslint-disable fb-www/object-create-only-one-param */
         reporter = new TestReporter(Object.create(
           process,
           {stdout: {value: process.stderr}}
         ));
-        /* eslint-enable fb-www/object-create-only-one-param */
       } else {
         reporter = new TestReporter();
       }
@@ -399,10 +367,10 @@ class TestRunner {
 
     const runTest = promisify(farm);
     return Promise.all(testPaths.map(
-      testFilePath => runTest({config: this._config, testFilePath})
-        .then(testResult => onTestResult(testFilePath, testResult))
+      path => runTest({config: this._config, path})
+        .then(testResult => onTestResult(path, testResult))
         .catch(err => {
-          onRunFailure(testFilePath, err);
+          onRunFailure(path, err);
 
           if (err.type === 'ProcessTerminatedError') {
             // Initialization error or some other uncaught error

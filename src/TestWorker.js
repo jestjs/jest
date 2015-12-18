@@ -23,7 +23,7 @@ module.exports = (data, callback) => {
   }
 
   try {
-    testRunner.runTest(data.testFilePath)
+    testRunner.runTest(data.path)
       .then(
         result => callback(null, result),
         // TODO: move to error object passing (why limit to strings?).

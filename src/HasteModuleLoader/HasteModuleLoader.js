@@ -40,11 +40,10 @@ const isFile = file => {
 let _configUnmockListRegExpCache = null;
 
 class Loader {
-  constructor(config, resolver, environment) {
+  constructor(config, environment, moduleMap) {
     this._config = config;
     this._coverageCollectors = Object.create(null);
     this._currentlyExecutingModulePath = '';
-    this._resolver = resolver;
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
     this._explicitlySetMocks = Object.create(null);
@@ -53,9 +52,9 @@ class Loader {
     this._shouldAutoMock = true;
     this._configShouldMockModuleNames = Object.create(null);
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
-    this._resolvedModules = Object.create(null);
-    this._resources = Object.create(null);
-    this._mocks = Object.create(null);
+    this._resolvedModules = moduleMap.resolvedModules;
+    this._resources = moduleMap.resources;
+    this._mocks = moduleMap.mocks;
 
     if (config.collectCoverage) {
       this._CoverageCollector = require(config.coverageCollector);
@@ -89,16 +88,6 @@ class Loader {
     }
 
     this.resetModuleRegistry();
-  }
-
-  resolveDependencies(path) {
-    return this._resolver.getDependencies(path)
-      .then(response => {
-        this._mocks = response.mocks;
-        this._resolvedModules = response.resolvedModules;
-        this._resources = response.resources;
-        return this;
-      });
   }
 
   requireModule(currPath, moduleName) {
@@ -271,31 +260,14 @@ class Loader {
   }
 
   getAllCoverageInfo() {
-    if (!this._config.collectCoverage) {
-      throw new Error(
-        'config.collectCoverage was not set, so no coverage info has been ' +
-        '(or will be) collected!'
-      );
-    }
-
     const coverage = Object.create(null);
-    const collectors = this._coverageCollectors;
-    for (const filePath in collectors) {
-      coverage[filePath] = collectors[filePath].extractRuntimeCoverageInfo();
+    if (this._config.collectCoverage) {
+      const collectors = this._coverageCollectors;
+      for (const filePath in collectors) {
+        coverage[filePath] = collectors[filePath].extractRuntimeCoverageInfo();
+      }
     }
     return coverage;
-  }
-
-  getCoverageForFilePath(filePath) {
-    if (!this._config.collectCoverage) {
-      throw new Error(
-        'config.collectCoverage was not set, so no coverage info has been ' +
-        '(or will be) collected!'
-      );
-    }
-
-    const collector = this._coverageCollectors[filePath];
-    return collector ? collector.extractRuntimeCoverageInfo() : null;
   }
 
   _execModule(moduleObj) {
