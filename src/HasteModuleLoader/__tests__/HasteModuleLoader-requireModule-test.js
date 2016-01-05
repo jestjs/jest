@@ -142,40 +142,6 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit('emulates a node stack trace during module load', function() {
-      return buildLoader().then(function(loader) {
-        let hasThrown = false;
-        try {
-          loader.requireModule(
-            __filename,
-            './test_root/throwing.js'
-          );
-        } catch (err) {
-          hasThrown = true;
-          expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
-        }
-        expect(hasThrown).toBe(true);
-      });
-    });
-
-    pit('emulates a node stack trace during function execution', function() {
-      return buildLoader().then(function(loader) {
-        let hasThrown = false;
-        const sum = loader.requireModule(
-          __filename,
-          './test_root/throwing-fn.js'
-        );
-
-        try {
-          sum();
-        } catch (err) {
-          hasThrown = true;
-          expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\/__tests__\/test_root\/throwing-fn.js:12:9/);
-        }
-        expect(hasThrown).toBe(true);
-      });
-    });
-
     describe('features I want to remove, but must exist for now', function() {
       /**
        * I'd like to kill this and make all tests use something more explicit

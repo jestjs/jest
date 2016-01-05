@@ -201,8 +201,9 @@ class Loader {
     moduleObj.parent = mockParentModule;
     moduleObj.require = this.constructBoundRequire(filename);
 
-    const wrapper = '(function(){return function(module, exports, require, __dirname, __filename, global, jest, ____JEST_COVERAGE_DATA____) {' + moduleContent + '\n}}());';
-    const wrapperFunc = this._environment.runSourceText(wrapper, filename);
+    const evalResultVariable = 'Object.<anonymous>';
+    const wrapper = '({ "' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, ____JEST_COVERAGE_DATA____) {' + moduleContent + '\n}});';
+    const wrapperFunc = this._environment.runSourceText(wrapper, filename)[evalResultVariable];
     wrapperFunc.call(
       moduleObj.exports, // module context
       moduleObj,
