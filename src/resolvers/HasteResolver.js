@@ -12,33 +12,44 @@
 
 const Cache = require('node-haste/lib/Cache');
 const DependencyGraph = require('node-haste');
+const FileWatcher = require('node-haste/lib/FileWatcher');
 
 const extractRequires = require('node-haste/lib/lib/extractRequires');
 
-const REQUIRE_EXTENSIONS_PATTERN = /(\brequire\s*?\.\s*?(?:requireActual|requireMock)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
+const REQUIRE_EXTENSIONS_PATTERN = /(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
 class HasteResolver {
 
   constructor(config) {
-    const extensions = config.moduleFileExtensions.map(ext => '.' + ext);
+    const extensions = config.moduleFileExtensions
+      .concat(config.testFileExtensions);
     const ignoreFilePattern = new RegExp(
       [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
     );
 
+    this._defaultPlatform = config.haste.defaultPlatform;
     this._resolvePromises = Object.create(null);
-    this._depGraph = new DependencyGraph({
+
+    this._cache = new Cache({
+      cacheDirectory: config.cacheDirectory,
+      cacheKey: [
+        'jest',
+        config.name,
+        config.rootDir,
+        ignoreFilePattern.toString(),
+      ].concat(extensions).join('$'),
+    });
+
+    this._fileWatcher = new FileWatcher([{
+      dir: config.rootDir,
+    }]);
+
+    this._depGraph = new DependencyGraph(Object.assign({}, config.haste, {
       roots: [config.rootDir],
       ignoreFilePath: path => path.match(ignoreFilePattern),
-      cache: new Cache({
-        cacheKey: 'foo',
-      }),
-      fileWatcher: {
-        on: function() {
-          return this;
-        },
-        isWatchman: () => Promise.resolve(false),
-      },
-      extensions: extensions.concat(config.testFileExtensions),
+      cache: this._cache,
+      fileWatcher: this._fileWatcher,
+      extensions,
       mocksPattern: new RegExp(config.mocksPattern),
       extractRequires: code => {
         const data = extractRequires(code);
@@ -51,7 +62,8 @@ class HasteResolver {
         );
         return data;
       },
-    });
+      shouldThrowOnUnresolvedErrors: () => false,
+    }));
 
     // warm-up
     this._depGraph.load();
@@ -61,13 +73,23 @@ class HasteResolver {
     return this._depGraph.matchFilesByPattern(pattern);
   }
 
+  end() {
+    return Promise.all([
+      this._fileWatcher.end(),
+      this._cache.end(),
+    ]);
+  }
+
   getDependencies(path) {
     if (this._resolvePromises[path]) {
       return this._resolvePromises[path];
     }
 
     return this._resolvePromises[path] = this._depGraph.load().then(
-      () => this._depGraph.getDependencies(path).then(response =>
+      () => this._depGraph.getDependencies(
+        path,
+        this._defaultPlatform
+      ).then(response =>
         response.finalize().then(() => {
           var deps = {
             mocks: response.mocks,

@@ -27,6 +27,9 @@ const DEFAULT_CONFIG_VALUES = {
   moduleFileExtensions: ['js', 'json', 'node'],
   moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
   moduleResolver: require.resolve('../resolvers/HasteResolver'),
+  haste: {
+    providesModuleNodeModules: [],
+  },
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
@@ -165,6 +168,7 @@ function normalizeConfig(config) {
       case 'collectCoverage':
       case 'coverageCollector':
       case 'globals':
+      case 'haste':
       case 'mocksPattern':
       case 'moduleLoader':
       case 'name':

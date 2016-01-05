@@ -239,7 +239,7 @@ class TestRunner {
   }
 
   _cacheTestResults(aggregatedResults) {
-    const performanceCacheFile = this._getTestPerformanceCachePath();
+    const cacheFile = this._getTestPerformanceCachePath();
     let testPerformanceCache = this._testPerformanceCache;
     if (!testPerformanceCache) {
       testPerformanceCache = this._testPerformanceCache = {};
@@ -250,13 +250,8 @@ class TestRunner {
         testPerformanceCache[test.testFilePath] = perf.end - perf.start;
       }
     });
-    return new Promise(resolve =>
-      fs.writeFile(
-        performanceCacheFile,
-        JSON.stringify(testPerformanceCache),
-        () => resolve(aggregatedResults)
-      )
-    );
+    const cache = JSON.stringify(testPerformanceCache);
+    return new Promise(resolve => fs.writeFile(cacheFile, cache, resolve));
   }
 
   runTests(testPaths, reporter) {
@@ -336,7 +331,10 @@ class TestRunner {
         }
         return aggregatedResults;
       })
-      .then(this._cacheTestResults.bind(this));
+      .then(results => Promise.all([
+        this._cacheTestResults(results),
+        this._resolver.end(),
+      ]).then(() => results));
   }
 
   _createTestRun(testPaths, onTestResult, onRunFailure) {

@@ -12,7 +12,7 @@
     "jsdom": "^7.2.0",
     "json-stable-stringify": "^1.0.0",
     "lodash.template": "^3.6.2",
-    "node-haste": "2.0.0-alpha2",
+    "node-haste": "2.0.0-alpha5",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
     "sane": "^1.2.0",
