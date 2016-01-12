@@ -184,11 +184,46 @@ function findOnlyChangedTestPaths(testRunner, config) {
     });
 }
 
-function findMatchingTestPaths(argv, testRunner) {
-  const pattern = argv.testPathPattern ||
-    ((argv._ && argv._.length) ? argv._.join('|') : '.*');
+function buildTestPathPatternInfo(argv) {
+  if (argv.testPathPattern) {
+    return {
+      input: argv.testPathPattern,
+      pattern: argv.testPathPattern,
+      shouldTreatInputAsPattern: true,
+    };
+  }
+  if (argv._ && argv._.length) {
+    return {
+      input: argv._.join(' '),
+      pattern: argv._.join('|'),
+      shouldTreatInputAsPattern: false,
+    };
+  }
+  return {
+    input: '',
+    pattern: '.*',
+    shouldTreatInputAsPattern: false,
+  };
+}
 
+function findMatchingTestPaths(pattern, testRunner) {
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
+}
+
+function getNoTestsFoundMessage(patternInfo) {
+  const pattern = patternInfo.pattern;
+  const input = patternInfo.input;
+  const shouldTreatInputAsPattern = patternInfo.shouldTreatInputAsPattern;
+
+  const formattedPattern = `/${pattern}/`;
+  const formattedInput = shouldTreatInputAsPattern ?
+    `/${input}/` :
+    `"${input}"`;
+
+  const message = `No tests found for ${formattedInput}.`;
+  return input === pattern ?
+    message :
+    `${message} Regex used while searching: ${formattedPattern}.`;
 }
 
 function runCLI(argv, packageRoot, onComplete) {
@@ -212,9 +247,20 @@ function runCLI(argv, packageRoot, onComplete) {
       const testFramework = require(config.testRunner);
       pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
 
-      const testPaths = argv.onlyChanged ?
-        findOnlyChangedTestPaths(testRunner, config) :
-        findMatchingTestPaths(argv, testRunner);
+      let testPaths;
+      if (argv.onlyChanged) {
+        testPaths = findOnlyChangedTestPaths(testRunner, config);
+      } else {
+        const patternInfo = buildTestPathPatternInfo(argv);
+        testPaths = findMatchingTestPaths(patternInfo.pattern, testRunner)
+          .then(testPaths => {
+            if (!testPaths.length) {
+              pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+            }
+            return testPaths;
+          });
+      }
+
       return testPaths.then(testPaths => testRunner.runTests(testPaths));
     })
     .then(runResults => {
