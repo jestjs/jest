@@ -11,36 +11,31 @@
 
 jest.autoMockOff();
 
-var path = require('path');
-var utils = require('../../lib/utils');
+const path = require('path');
+const utils = require('../../lib/utils');
 
 describe('HasteModuleLoader', function() {
-  var HasteModuleLoader;
-  var JSDOMEnvironment;
-  var resourceMap;
+  let HasteModuleLoader;
+  let HasteResolver;
+  let JSDOMEnvironment;
 
-  var CONFIG = utils.normalizeConfig({
+  const rootDir = path.join(__dirname, 'test_root');
+  const config = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-jsdom-env-tests',
-    rootDir: path.join(__dirname, 'test_root'),
+    rootDir,
   });
 
   function buildLoader() {
-    if (!resourceMap) {
-      return HasteModuleLoader.loadResourceMap(CONFIG).then(function(map) {
-        resourceMap = map;
-        return buildLoader();
-      });
-    } else {
-      var mockEnvironment = new JSDOMEnvironment(CONFIG);
-      return Promise.resolve(
-        new HasteModuleLoader(CONFIG, mockEnvironment, resourceMap)
-      );
-    }
+    const environment = new JSDOMEnvironment(config);
+    return new HasteResolver(config).getDependencies('./root.js').then(
+      response => new HasteModuleLoader(config, environment, response)
+    );
   }
 
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
+    HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
 
