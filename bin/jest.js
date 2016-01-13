@@ -16,6 +16,7 @@ const sane = require('sane');
 const which = require('which');
 
 const WATCHMAN_BIN = 'watchman';
+const WATCHER_DEBOUNCE = 200;
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
@@ -312,7 +313,14 @@ function runJest() {
 
   if (argv.watch !== undefined) {
     getWatcher(function(watcher) {
-      watcher.on('all', runJestCLI);
+      let tid;
+      watcher.on('all', () => {
+        if (tid) {
+          clearTimeout(tid);
+          tid = null;
+        }
+        tid = setTimeout(runJestCLI, WATCHER_DEBOUNCE);
+      });
       if (argv.watch !== 'skip') {
         runJestCLI();
       }
