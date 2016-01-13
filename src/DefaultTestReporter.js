@@ -75,7 +75,7 @@ class DefaultTestReporter {
 
     const resultHeader =
        `${allTestsPassed ? PASS : FAIL} ${TEST_NAME_COLOR(pathStr)}` +
-       (testDetail.length ? `(${testDetail.join(', ')})` : '');
+       (testDetail.length ? ` (${testDetail.join(', ')})` : '');
 
     /*
     if (config.collectCoverage) {
