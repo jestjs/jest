@@ -44,6 +44,13 @@ class HasteResolver {
       dir: config.rootDir,
     }]);
 
+    this._mappedModuleNames = Object.create(null);
+    if (config.moduleNameMapper.length) {
+      config.moduleNameMapper.forEach(
+        map => this._mappedModuleNames[map[1]] = new RegExp(map[0])
+      );
+    }
+
     this._depGraph = new DependencyGraph(Object.assign({}, config.haste, {
       roots: [config.rootDir],
       ignoreFilePath: path => path.match(ignoreFilePattern),
@@ -60,7 +67,8 @@ class HasteResolver {
             return match;
           }
         );
-        return data;
+
+        return this._updateModuleMappings(data);
       },
       shouldThrowOnUnresolvedErrors: () => false,
     }));
@@ -111,6 +119,22 @@ class HasteResolver {
           ).then(() => deps);
         })
       ));
+  }
+
+  _updateModuleMappings(data) {
+    const nameMapper = this._mappedModuleNames;
+    const updateMapping = (moduleName, index, array) => {
+      for (const mappedModuleName in nameMapper) {
+        const regex = nameMapper[mappedModuleName];
+        if (regex.test(moduleName)) {
+          array[index] = mappedModuleName;
+          return;
+        }
+      }
+    };
+    data.deps.sync.forEach(updateMapping);
+    data.deps.async.forEach(updateMapping);
+    return data;
   }
 
 }
