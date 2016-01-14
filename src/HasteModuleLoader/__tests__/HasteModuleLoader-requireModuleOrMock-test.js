@@ -34,8 +34,11 @@ describe('HasteModuleLoader', function() {
 
   function buildLoader() {
     const environment = new JSDOMEnvironment(config);
-    return new HasteResolver(config).getDependencies('./root.js').then(
-      response => new HasteModuleLoader(config, environment, response)
+    const resolver = new HasteResolver(config);
+    return resolver.getDependencies('./root.js').then(
+      response => resolver.end().then(() =>
+        new HasteModuleLoader(config, environment, response)
+      )
     );
   }
 

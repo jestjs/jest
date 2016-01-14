@@ -9,7 +9,9 @@
  */
 'use strict';
 
-jest.autoMockOff().mock('fs');
+jest.autoMockOff()
+  .mock('fs')
+  .mock('../resolvers/HasteResolver');
 
 const name = 'TestRunner';
 describe('TestRunner', () => {

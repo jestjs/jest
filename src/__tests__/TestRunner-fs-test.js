@@ -11,35 +11,36 @@
 
 jest.autoMockOff();
 
-var path = require('path');
-var TestRunner = require('../TestRunner');
-var utils = require('../lib/utils');
+const path = require('path');
+const utils = require('../lib/utils');
+const TestRunner = require('../TestRunner');
 
-var name = 'TestRunner-fs';
+const name = 'TestRunner-fs';
 
 describe('TestRunner-fs', function() {
 
   describe('testPathsMatching', function() {
 
     pit('finds tests with default file extensions', function() {
-      var rootDir = path.resolve(__dirname, 'test_root');
-      var runner = new TestRunner(utils.normalizeConfig({
+      const rootDir = path.resolve(__dirname, 'test_root');
+      const runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testDirectoryName: '__testtests__',
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function(absPath) {
+        const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths).toEqual([path.normalize('__testtests__/test.js')]);
+        return runner._resolver.end();
       });
     });
 
     pit('finds tests with similar but custom file extensions', function() {
-      var rootDir = path.resolve(__dirname, 'test_root');
-      var runner = new TestRunner(utils.normalizeConfig({
+      const rootDir = path.resolve(__dirname, 'test_root');
+      const runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
@@ -47,16 +48,17 @@ describe('TestRunner-fs', function() {
         testFileExtensions: ['jsx'],
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function(absPath) {
+        const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
+        return runner._resolver.end();
       });
     });
 
     pit('finds tests with totally custom foobar file extensions', function() {
-      var rootDir = path.resolve(__dirname, 'test_root');
-      var runner = new TestRunner(utils.normalizeConfig({
+      const rootDir = path.resolve(__dirname, 'test_root');
+      const runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
@@ -64,16 +66,17 @@ describe('TestRunner-fs', function() {
         testFileExtensions: ['foobar'],
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function(absPath) {
+        const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
+        return runner._resolver.end();
       });
     });
 
     pit('finds tests with many kinds of file extensions', function() {
-      var rootDir = path.resolve(__dirname, 'test_root');
-      var runner = new TestRunner(utils.normalizeConfig({
+      const rootDir = path.resolve(__dirname, 'test_root');
+      const runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
@@ -81,13 +84,14 @@ describe('TestRunner-fs', function() {
         testFileExtensions: ['js', 'jsx'],
       }));
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
-        var relPaths = paths.map(function(absPath) {
+        const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
         });
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
+        return runner._resolver.end();
       });
     });
 
