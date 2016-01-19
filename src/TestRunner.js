@@ -423,9 +423,7 @@ class TestRunner {
       const testResult = {
         testFilePath: testPath,
         testExecError: err,
-        suites: {},
-        tests: {},
-        testResults: {},
+        testResults: [],
       };
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numRuntimeErrorTestSuites++;
