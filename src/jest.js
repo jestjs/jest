@@ -26,7 +26,7 @@ function getVersion() {
 
 function findChangedFiles(dirPath) {
   return new Promise((resolve, reject) => {
-    const args = ['diff', '--name-only', '--diff-filter=ACMR'];
+    const args = ['diff', '--name-only', '--diff-filter=ACMR', '--relative'];
     const child = childProcess.spawn('git', args, {cwd: dirPath});
 
     let stdout = '';
