@@ -40,8 +40,7 @@ class DefaultTestReporter {
     this._config = config;
     this._printWaitingOn(results);
     if (this._config.verbose) {
-      const verboseLogger = new VerboseLogger(this._config, this._process);
-      this.verboseLog = verboseLogger.verboseLog.bind(verboseLogger);
+      this.verboseLogger = new VerboseLogger(this._process);
     }
   }
 
@@ -85,7 +84,7 @@ class DefaultTestReporter {
 
     this.log(resultHeader);
     if (config.verbose) {
-      this.verboseLog(testResult.testResults, resultHeader);
+      this.verboseLogger.logTestResults(testResult.testResults);
     }
 
     if (!allTestsPassed) {

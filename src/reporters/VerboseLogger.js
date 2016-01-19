@@ -9,179 +9,70 @@
 
 const chalk = require('chalk');
 
-/**
- * Creates a VerboseLogger object used to encapsulate verbose logging.
- *
- * @param {Object} config - configuration options for the test suite.
- * @param {Object} customProcess - Optional process.
- *
- * NOTE: config is being passed in to preserve a users preferences when using
- *       the CLI option. @example --noHighLight
- */
-function VerboseLogger(config, customProcess) {
-  this._process = customProcess || process;
-  this._config = config || {};
-}
-
-/**
- * Kicks off the verbose logging by constructing a Test Hierarchy and then
- * printing it with the correct formatting and a trailing newline.
- *
- * @param {Array} testResults - All information about test results in a test
- *                              run. Given as an Array of objects.
- *
- * @see {@link _createTestNode}
- * @see {@link traverseTestResults}
- */
-VerboseLogger.prototype.verboseLog = function(testResults) {
-  this.traverseTestResults(_createTestTree(testResults));
-  this.log('');
-};
-
-
-/**
- * Prints test titles and their Ancestry with correct indentation.
- *
- * If the node contains test titles, then the test titles must be printed
- * before stepping lower into the hierarchy (`node.childNodes`). Otherwise
- * a header has been reached and must be printed before stepping lower into
- * the hierarchy.
- *
- * @param {Object} node - A test node with correct hierarchy for printing.
- * @param {String} indentation - Indentation for a given level in the hierarchy.
- *
- * @note:
- *   The amount of indentation is determined when stepping lower into the
- *   hierarchy.
- * @see{@link _createTestNode}
- * @see{@link _createTestTree}
- *
- */
-VerboseLogger.prototype.traverseTestResults = function(node, indentation) {
-  let indentationIncrement;
-  if (typeof node === 'undefined' || node === null) {
-    return;
+class VerboseLogger {
+  constructor(customProcess) {
+    this._process = customProcess || process;
   }
 
-  indentationIncrement = '  ';
-  indentation = indentation || '';
-  if (Array.isArray(node.testTitles)) {
-    this.printTestTitles(node.testTitles, indentation);
-    this.traverseTestResults(node.childNodes, indentation);
-  } else {
-    for (const key in node) {
-      this.log(indentation + key);
-      this.traverseTestResults(node[key], indentation + indentationIncrement);
-    }
+  logTestResults(testResults) {
+    groupTestsBySuites(testResults).forEach(suite =>
+      this._logSuite(suite, 0)
+    );
+
+    this._logLine();
   }
-};
 
-/**
- *
- * Pretty print test results to note which are failing and passing.
- * Passing tests are prepended with PASS or a check. Failing tests are prepended
- * with FAIL or an x.
- * @param {object} testTitles - All information about test titles in a test run.
- * @param {string} indentation - Indentation used for formatting.
- */
-VerboseLogger.prototype.printTestTitles = function(testTitles, indentation) {
-  let statusPrefix;
+  _logSuite(suite, indentLevel) {
+    this._logLine(suite.title, indentLevel);
 
-  for (let i = 0; i < testTitles.length; i++) {
-    if (testTitles[i].failureMessages.length === 0) {
-      statusPrefix = chalk.green('\u2713 ');
-    } else {
-      statusPrefix = chalk.red('\u2715 ');
-    }
-    this.log(indentation + statusPrefix + chalk.gray(testTitles[i].title));
-  }
-};
+    suite.tests.forEach(test =>
+      this._logTest(test, indentLevel + 1)
+    );
 
-VerboseLogger.prototype.log = function(str) {
-  this._process.stdout.write(str + '\n');
-};
-
-/**
- * Prepares the test hierarchy for a `test title` by mapping its ancestry.
- *
- * @example
- * Test Structure A -
- *  describe('HeaderOne', function(){
- *    describe('HeaderTwo', function(){
- *      it('quacks like a duck', function(){
- *        expect(true).toBeTruthy();
- *      });
- *    });
- *  });
- *
- * Produces Test Node A -
- * {
- *   testTitles: [],
- *   childNodes: {
- *     HeaderOne: {
- *       testTitles: [],
- *       childNodes: {
- *         HeaderTwo: {
- *           testTitles: ['it quacks like a duck'],
- *           childNodes: {}
- *         }
- *       }
- *     }
- *   }
- * }
- *
- * @param {Object} testResult - An object containing a test title and its
- *                              pass/fail status.
- * @param {Array} ancestorTitles - Ancestor/describe headers associated with the
- *                                 given test title.
- * @param {Object} currentNode - A parent in the test hierarchy. Contains:
- *   1) Test titles associated with the current parent
- *   2) The next parent in the hierarchy.
- *
- * @return {Object} A node mapping the hierarchy of `test titles` with common
- *                  ancestors.
- */
-function _createTestNode(testResult, ancestorTitles, currentNode) {
-  currentNode = currentNode || { testTitles: [], childNodes: {} };
-  if (ancestorTitles.length === 0) {
-    currentNode.testTitles.push(testResult);
-  } else {
-    if (!currentNode.childNodes[ancestorTitles[0]]) {
-      currentNode.childNodes[ancestorTitles[0]] = {
-        testTitles: [],
-        childNodes: {},
-      };
-    }
-    _createTestNode(
-      testResult,
-      ancestorTitles.slice(1, ancestorTitles.length),
-      currentNode.childNodes[ancestorTitles[0]]
+    suite.suites.forEach(childSuite =>
+      this._logSuite(childSuite, indentLevel + 1)
     );
   }
 
-  return currentNode;
-}
+  _logTest(test, indentLevel) {
+    const status = test.failureMessages.length > 0 ?
+      chalk.red('\u2715') :
+      chalk.green('\u2713');
 
-/**
- *
- * Constructs a tree representing the hierarchy of a test run.
- *
- * @param {Array} testResults - Collection of tests.
- * @return {Object} Complete test hierarchy for a test run.
- *
- * @note: Here, a test run refers to a jest file. A tree is used
- *       to map all common ancestors (describe blocks) to individual
- *       test titles (it blocks) without repetition.
- * @see {@link _createTestNode}
- *
- */
-function _createTestTree(testResults) {
-  let tree;
-  for (let i = 0; i < testResults.length; i++) {
-    tree = _createTestNode(testResults[i], testResults[i].ancestorTitles, tree);
+    this._logLine(`${status} ${chalk.gray(test.title)}`, indentLevel);
   }
 
-  return tree;
+  _logLine(str, indentLevel) {
+    str = str || '';
+    indentLevel = indentLevel || 0;
+
+    const indentation = '  '.repeat(indentLevel);
+    this._process.stdout.write(`${indentation}${str}\n`);
+  }
 }
 
+function groupTestsBySuites(testResults) {
+  let root = { suites: [] };
+
+  testResults.forEach(testResult => {
+    let targetSuite = root;
+
+    // Find the target suite for this test,
+    // creating nested suites as necessary.
+    for (let title of testResult.ancestorTitles) {
+      let matchingSuite = targetSuite.suites.find(s => s.title === title);
+      if (!matchingSuite) {
+        matchingSuite = { title, suites: [], tests: [] };
+        targetSuite.suites.push(matchingSuite);
+      }
+      targetSuite = matchingSuite;
+    }
+
+    targetSuite.tests.push(testResult);
+  });
+
+  return root.suites;
+}
+
+VerboseLogger.groupTestsBySuites = groupTestsBySuites;
 module.exports = VerboseLogger;
