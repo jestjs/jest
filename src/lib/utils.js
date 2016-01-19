@@ -35,7 +35,7 @@ const DEFAULT_CONFIG_VALUES = {
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
-  testReporter: require.resolve('../IstanbulTestReporter'),
+  testReporter: require.resolve('../reporters/IstanbulTestReporter'),
   testRunner: require.resolve('../testRunners/jasmine/jasmine1'),
   testURL: 'about:blank',
   noHighlight: false,

@@ -8,9 +8,9 @@
 'use strict';
 
 const chalk = require('chalk');
-const formatFailureMessage = require('./lib/utils').formatFailureMessage;
+const formatFailureMessage = require('../lib/utils').formatFailureMessage;
 const path = require('path');
-const VerboseLogger = require('./lib/testLogger');
+const VerboseLogger = require('./VerboseLogger');
 
 // Explicitly reset for these messages since they can get written out in the
 // middle of error logging (should have listened to Spengler and not crossed the
