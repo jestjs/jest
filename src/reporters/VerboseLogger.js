@@ -52,14 +52,14 @@ class VerboseLogger {
 }
 
 function groupTestsBySuites(testResults) {
-  let root = { suites: [] };
+  const root = { suites: [] };
 
   testResults.forEach(testResult => {
     let targetSuite = root;
 
     // Find the target suite for this test,
     // creating nested suites as necessary.
-    for (let title of testResult.ancestorTitles) {
+    for (const title of testResult.ancestorTitles) {
       let matchingSuite = targetSuite.suites.find(s => s.title === title);
       if (!matchingSuite) {
         matchingSuite = { title, suites: [], tests: [] };
