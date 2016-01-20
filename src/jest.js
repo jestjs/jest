@@ -14,6 +14,12 @@ const TestRunner = require('./TestRunner');
 const formatTestResults = require('./lib/formatTestResults');
 const utils = require('./lib/utils');
 const chalk = require('chalk');
+const sane = require('sane');
+const which = require('which');
+
+const DEFAULT_WATCH_EXTENSIONS = 'js';
+const WATCHER_DEBOUNCE = 200;
+const WATCHMAN_BIN = 'watchman';
 
 let jestVersion = null;
 function getVersion() {
@@ -210,6 +216,7 @@ function findMatchingTestPaths(pattern, testRunner) {
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
 
+
 function getNoTestsFoundMessage(patternInfo) {
   const pattern = patternInfo.pattern;
   const input = patternInfo.input;
@@ -226,6 +233,21 @@ function getNoTestsFoundMessage(patternInfo) {
     `${message} Regex used while searching: ${formattedPattern}.`;
 }
 
+/**
+ * use watchman when possible
+ */
+function getWatcher(argv, packageRoot, callback) {
+  which(WATCHMAN_BIN, function(err, resolvedPath) {
+    const watchman = !err && resolvedPath;
+    const watchExtensions = argv.watchExtensions || DEFAULT_WATCH_EXTENSIONS;
+    const glob = watchExtensions.split(',').map(function(extension) {
+      return '**/*' + extension;
+    });
+    const watcher = sane(packageRoot, {glob, watchman});
+    callback(watcher);
+  });
+}
+
 function runCLI(argv, packageRoot, onComplete) {
   argv = argv || {};
 
@@ -236,46 +258,75 @@ function runCLI(argv, packageRoot, onComplete) {
   }
 
   const pipe = argv.json ? process.stderr : process.stdout;
-  readConfig(argv, packageRoot)
-    .then(config => {
-      // Disable colorization
-      if (config.noHighlight) {
-        chalk.enabled = false;
-      }
 
-      const testRunner = new TestRunner(config, testRunnerOptions(argv));
-      const testFramework = require(config.testRunner);
-      pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
+  function _runCLI(filePath) {
+    readConfig(argv, packageRoot)
+      .then(config => {
+        // Disable colorization
+        if (config.noHighlight) {
+          chalk.enabled = false;
+        }
 
-      let testPaths;
-      if (argv.onlyChanged) {
-        testPaths = findOnlyChangedTestPaths(testRunner, config);
-      } else {
-        const patternInfo = buildTestPathPatternInfo(argv);
-        testPaths = findMatchingTestPaths(patternInfo.pattern, testRunner)
-          .then(testPaths => {
-            if (!testPaths.length) {
-              pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
-            }
-            return testPaths;
+        const testRunner = new TestRunner(config, testRunnerOptions(argv));
+        const testFramework = require(config.testRunner);
+        pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
+
+        let testPaths;
+        if (argv.onlyChanged) {
+          testPaths = findOnlyChangedTestPaths(testRunner, config);
+        } else {
+          const patternInfo = buildTestPathPatternInfo(argv);
+          testPaths = findMatchingTestPaths(patternInfo.pattern, testRunner)
+            .then(testPaths => {
+              if (!testPaths.length) {
+                pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+              }
+              return testPaths;
+            });
+        }
+
+        return testPaths.then(testPaths => {
+          const shouldTest = !filePath || testPaths.some(testPath => {
+            return testPath.indexOf(filePath) !== -1;
           });
-      }
-
-      return testPaths.then(testPaths => testRunner.runTests(testPaths));
-    })
-    .then(runResults => {
-      if (argv.json) {
-        process.stdout.write(JSON.stringify(formatTestResults(runResults)));
-      }
-      return runResults;
-    })
-    .then(runResults => onComplete && onComplete(runResults.success))
-    .catch(error => {
-      console.error('Failed with unexpected error.');
-      process.nextTick(() => {
-        throw error;
+          const tests = shouldTest ? testPaths : [];
+          return testRunner.runTests(tests);
+        });
+      })
+      .then(runResults => {
+        if (argv.json) {
+          process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+        }
+        return runResults;
+      })
+      .then(runResults => onComplete && onComplete(runResults.success))
+      .catch(error => {
+        console.error('Failed with unexpected error.');
+        process.nextTick(() => {
+          throw error;
+        });
       });
+  }
+
+  if (argv.watch !== undefined) {
+    getWatcher(argv, packageRoot, watcher => {
+      let tid;
+      watcher.on('all', (_, filePath) => {
+        if (tid) {
+          clearTimeout(tid);
+          tid = null;
+        }
+        tid = setTimeout(() => {
+          _runCLI(filePath);
+        }, WATCHER_DEBOUNCE);
+      });
+      if (argv.watch !== 'skip') {
+        _runCLI();
+      }
     });
+  } else {
+    _runCLI();
+  }
 }
 
 exports.TestRunner = TestRunner;

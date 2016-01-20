@@ -12,11 +12,6 @@
 const fs = require('fs');
 const optimist = require('optimist');
 const path = require('path');
-const sane = require('sane');
-const which = require('which');
-
-const WATCHMAN_BIN = 'watchman';
-const WATCHER_DEBOUNCE = 200;
 
 /**
  * Takes a description string, puts it on the next line, indents it, and makes
@@ -288,47 +283,11 @@ function runJest() {
     }
   }
 
-  function runJestCLI() {
-    jest.runCLI(argv, cwdPackageRoot, function(success) {
-      process.on('exit', function() {
-        process.exit(success ? 0 : 1);
-      });
+  jest.runCLI(argv, cwdPackageRoot, function(success) {
+    process.on('exit', function() {
+      process.exit(success ? 0 : 1);
     });
-  }
-
-  /**
-   * use watchman when possible
-   */
-  function getWatcher(callback) {
-    which(WATCHMAN_BIN, function(err, resolvedPath) {
-      const watchman = !err && resolvedPath;
-      const watchExtensions = argv.watchExtensions || 'js';
-      const glob = watchExtensions.split(',').map(function(extension) {
-        return '**/*' + extension;
-      });
-      const watcher = sane(cwdPackageRoot, {glob, watchman});
-      callback(watcher);
-    });
-  }
-
-  if (argv.watch !== undefined) {
-    getWatcher(function(watcher) {
-      let tid;
-      watcher.on('all', () => {
-        if (tid) {
-          clearTimeout(tid);
-          tid = null;
-        }
-        tid = setTimeout(runJestCLI, WATCHER_DEBOUNCE);
-      });
-      if (argv.watch !== 'skip') {
-        runJestCLI();
-      }
-    });
-  } else {
-    runJestCLI();
-  }
-
+  });
 }
 
 runJest();
