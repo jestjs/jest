@@ -66,7 +66,9 @@ class TestRunner {
     this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
     this._config = Object.freeze(config);
     const Resolver = require(config.moduleResolver);
-    this._resolver = new Resolver(config);
+    if (!this._opts.isWorker) {
+      this._resolver = new Resolver(config);
+    }
 
     // Maximum memory usage if `logHeapUsage` is enabled.
     this._maxMemoryUsage = 0;
@@ -141,18 +143,11 @@ class TestRunner {
       ));
   }
 
-  runTest(path) {
+  runTest(path, moduleMap) {
     const config = this._config;
     const TestEnvironment = require(config.testEnvironment);
     const TestRunner = require(config.testRunner);
     const ModuleLoader = require(config.moduleLoader);
-    const paths = [path];
-    if (config.setupEnvScriptFile) {
-      paths.push(config.setupEnvScriptFile);
-    }
-    if (config.setupTestFrameworkScriptFile) {
-      paths.push(config.setupTestFrameworkScriptFile);
-    }
 
     const env = new TestEnvironment(config);
     env.global.console = new Console(
@@ -160,30 +155,17 @@ class TestRunner {
       process.stderr
     );
     env.testFilePath = path;
-    return Promise.all(paths.map(p => this._resolver.getDependencies(p)))
-      .then(moduleMaps => {
-        const moduleMap = Object.create(null);
-        moduleMap.mocks = Object.create(null);
-        moduleMap.resolvedModules = Object.create(null);
-        moduleMap.resources = Object.create(null);
-        moduleMaps.forEach(map => {
-          Object.assign(moduleMap.mocks, map.mocks);
-          Object.assign(moduleMap.resolvedModules, map.resolvedModules);
-          Object.assign(moduleMap.resources, map.resources);
-        });
-
-        const moduleLoader = new ModuleLoader(config, env, moduleMap);
-        if (config.setupEnvScriptFile) {
-          moduleLoader.requireModule(null, config.setupEnvScriptFile);
-        }
-        const start = Date.now();
-        return TestRunner(config, env, moduleLoader, path)
-          .then(result => {
-            result.perfStats = {start, end: Date.now()};
-            result.testFilePath = path;
-            result.coverage = moduleLoader.getAllCoverageInfo();
-            return result;
-          });
+    const moduleLoader = new ModuleLoader(config, env, moduleMap);
+    if (config.setupEnvScriptFile) {
+      moduleLoader.requireModule(null, config.setupEnvScriptFile);
+    }
+    const start = Date.now();
+    return TestRunner(config, env, moduleLoader, path)
+      .then(result => {
+        result.perfStats = {start, end: Date.now()};
+        result.testFilePath = path;
+        result.coverage = moduleLoader.getAllCoverageInfo();
+        return result;
       })
       .then(
         result => Promise.resolve().then(() => {
@@ -357,6 +339,7 @@ class TestRunner {
   }
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
+    const config = this._config;
     const farm = workerFarm({
       maxConcurrentCallsPerWorker: 1,
       maxRetries: 2, // Allow for a couple of transient errors.
@@ -365,20 +348,43 @@ class TestRunner {
 
     const runTest = promisify(farm);
     return Promise.all(testPaths.map(
-      path => runTest({config: this._config, path})
-        .then(testResult => onTestResult(path, testResult))
-        .catch(err => {
-          onRunFailure(path, err);
+      path => {
+        const paths = [path];
+        if (config.setupEnvScriptFile) {
+          paths.push(config.setupEnvScriptFile);
+        }
+        if (config.setupTestFrameworkScriptFile) {
+          paths.push(config.setupTestFrameworkScriptFile);
+        }
 
-          if (err.type === 'ProcessTerminatedError') {
-            // Initialization error or some other uncaught error
-            console.error(
-              'A worker process has quit unexpectedly! ' +
-              'Most likely this an initialization error.'
-            );
-            process.exit(1);
-          }
-        })
+        return Promise.all(paths.map(p => this._resolver.getDependencies(p)))
+          .then(moduleMaps => {
+            const moduleMap = Object.create(null);
+            moduleMap.mocks = Object.create(null);
+            moduleMap.resolvedModules = Object.create(null);
+            moduleMap.resources = Object.create(null);
+            moduleMaps.forEach(map => {
+              Object.assign(moduleMap.mocks, map.mocks);
+              Object.assign(moduleMap.resolvedModules, map.resolvedModules);
+              Object.assign(moduleMap.resources, map.resources);
+            });
+            return moduleMap;
+          })
+          .then(moduleMap => runTest({config: this._config, path, moduleMap}))
+          .then(testResult => onTestResult(path, testResult))
+          .catch(err => {
+            onRunFailure(path, err);
+
+            if (err.type === 'ProcessTerminatedError') {
+              // Initialization error or some other uncaught error
+              console.error(
+                'A worker process has quit unexpectedly! ' +
+                'Most likely this an initialization error.'
+              );
+              process.exit(1);
+            }
+          });
+      }
     )).then(() => workerFarm.end(farm));
   }
 

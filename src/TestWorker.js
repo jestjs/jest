@@ -19,11 +19,13 @@ let testRunner;
 
 module.exports = (data, callback) => {
   if (!testRunner) {
-    testRunner = new TestRunner(data.config);
+    testRunner = new TestRunner(data.config, {
+      isWorker: true,
+    });
   }
 
   try {
-    testRunner.runTest(data.path)
+    testRunner.runTest(data.path, data.moduleMap)
       .then(
         result => callback(null, result),
         // TODO: move to error object passing (why limit to strings?).

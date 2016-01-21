@@ -118,10 +118,10 @@ class Loader {
     if (
       !moduleResource &&
       manualMockResource &&
-      manualMockResource.path !== this._isCurrentlyExecutingManualMock &&
+      manualMockResource !== this._isCurrentlyExecutingManualMock &&
       this._explicitShouldMock[moduleID] !== false
     ) {
-      modulePath = manualMockResource.path;
+      modulePath = manualMockResource;
     }
 
     if (resolve.isCore(moduleName)) {
@@ -177,7 +177,7 @@ class Loader {
     let manualMockResource = this._getMockModule(moduleName);
     let modulePath;
     if (manualMockResource) {
-      modulePath = manualMockResource.path;
+      modulePath = manualMockResource;
     } else {
       modulePath = this._resolveModuleName(currPath, moduleName);
 
@@ -370,7 +370,7 @@ class Loader {
       this._resolvedModules[currPath] &&
       this._resolvedModules[currPath][moduleName]
     ) {
-      return this._resolvedModules[currPath][moduleName].path;
+      return this._resolvedModules[currPath][moduleName];
     } else {
       // Otherwise it is likely a node_module.
       return this._resolveNodeModule(currPath, moduleName);
@@ -403,9 +403,7 @@ class Loader {
 
   _getMockModule(resourceName) {
     if (this._mocks[resourceName]) {
-      return {
-        path: this._mocks[resourceName],
-      };
+      return this._mocks[resourceName];
     } else {
       const moduleName = this._resolveStubModuleName(resourceName);
       if (moduleName) {
@@ -441,21 +439,21 @@ class Loader {
         // Look up if this module has an associated manual mock.
         const mockModule = this._getMockModule(moduleName);
         if (mockModule) {
-          mockAbsPath = mockModule.path;
+          mockAbsPath = mockModule;
         }
       }
 
       if (realAbsPath === null) {
         const moduleResource = this._getModule(moduleName);
         if (moduleResource) {
-          realAbsPath = moduleResource.path;
+          realAbsPath = moduleResource;
         }
       }
 
       if (mockAbsPath === null) {
         const mockResource = this._getMockModule(moduleName);
         if (mockResource) {
-          mockAbsPath = mockResource.path;
+          mockAbsPath = mockResource;
         }
       }
     }

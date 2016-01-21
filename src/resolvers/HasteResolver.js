@@ -110,10 +110,10 @@ class HasteResolver {
                 deps.resolvedModules[module.path] = Object.create(null);
               }
               response.getResolvedDependencyPairs(module).forEach((pair) =>
-                deps.resolvedModules[module.path][pair[0]] = pair[1]
+                deps.resolvedModules[module.path][pair[0]] = pair[1].path
               );
               return module.getName().then(
-                name => deps.resources[name] = module
+                name => deps.resources[name] = module.path
               );
             })
           ).then(() => deps);
