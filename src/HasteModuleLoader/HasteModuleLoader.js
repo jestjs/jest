@@ -170,7 +170,7 @@ class Loader {
   requireMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-    if (this._explicitlySetMocks[moduleID]) {
+    if (moduleID in this._explicitlySetMocks) {
       return this._explicitlySetMocks[moduleID];
     }
 
@@ -207,7 +207,7 @@ class Loader {
       }
     }
 
-    if (this._mockRegistry[modulePath]) {
+    if (modulePath in this._mockRegistry) {
       return this._mockRegistry[modulePath];
     }
 
@@ -328,7 +328,7 @@ class Loader {
   _generateMock(currPath, moduleName) {
     const modulePath = this._resolveModuleName(currPath, moduleName);
 
-    if (!this._mockMetaDataCache[modulePath]) {
+    if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
       this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
@@ -473,7 +473,7 @@ class Loader {
     } else if (this._shouldAutoMock) {
       // See if the module is specified in the config as a module that should
       // never be mocked
-      if (this._configShouldMockModuleNames[moduleName]) {
+      if (moduleName in this._configShouldMockModuleNames) {
         return this._configShouldMockModuleNames[moduleName];
       } else if (this._unmockListRegExps.length > 0) {
         this._configShouldMockModuleNames[moduleName] = true;
