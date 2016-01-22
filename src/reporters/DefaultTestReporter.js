@@ -66,10 +66,7 @@ class DefaultTestReporter {
 
     if (testResult.memoryUsage) {
       const toMB = bytes => Math.floor(bytes / 1024 / 1024);
-      testDetail.push(
-        `${toMB(testResult.memoryUsage)} MB current`,
-        `${toMB(testResult.maxMemoryUsage)} MB max`
-      );
+      testDetail.push(`${toMB(testResult.memoryUsage)} MB heap size`);
     }
 
     const resultHeader =

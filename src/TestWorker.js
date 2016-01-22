@@ -13,19 +13,12 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-const TestRunner = require('./TestRunner');
-
-let testRunner;
+const Test = require('./Test');
 
 module.exports = (data, callback) => {
-  if (!testRunner) {
-    testRunner = new TestRunner(data.config, {
-      isWorker: true,
-    });
-  }
-
   try {
-    testRunner.runTest(data.path, data.moduleMap)
+    new Test(data.path, data.moduleMap, data.config)
+      .run()
       .then(
         result => callback(null, result),
         // TODO: move to error object passing (why limit to strings?).

@@ -9,15 +9,23 @@
  /* eslint-disable fb-www/object-create-only-one-param */
 'use strict';
 
+const Test = require('./Test');
+
 const fs = require('graceful-fs');
 const os = require('os');
 const path = require('path');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
-const Console = require('./Console');
 const promisify = require('./lib/promisify');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
+
+const mergeModuleMap = (a, b) => {
+  Object.assign(a.mocks, b.mocks);
+  Object.assign(a.resolvedModules, b.resolvedModules);
+  Object.assign(a.resources, b.resources);
+  return a;
+};
 
 const DEFAULT_OPTIONS = {
 
@@ -70,8 +78,6 @@ class TestRunner {
       this._resolver = new Resolver(config);
     }
 
-    // Maximum memory usage if `logHeapUsage` is enabled.
-    this._maxMemoryUsage = 0;
     this._testPathDirsRegExp = new RegExp(
       config.testPathDirs
         .map(dir => optionPathToRegex(dir))
@@ -141,45 +147,6 @@ class TestRunner {
       .then(testPaths => testPaths.filter(
         path => this._isTestFilePath(path) && pathPattern.test(path)
       ));
-  }
-
-  runTest(path, moduleMap) {
-    const config = this._config;
-    const TestEnvironment = require(config.testEnvironment);
-    const TestRunner = require(config.testRunner);
-    const ModuleLoader = require(config.moduleLoader);
-
-    const env = new TestEnvironment(config);
-    env.global.console = new Console(
-      this._config.useStderr ? process.stderr : process.stdout,
-      process.stderr
-    );
-    env.testFilePath = path;
-    const moduleLoader = new ModuleLoader(config, env, moduleMap);
-    if (config.setupEnvScriptFile) {
-      moduleLoader.requireModule(null, config.setupEnvScriptFile);
-    }
-    const start = Date.now();
-    return TestRunner(config, env, moduleLoader, path)
-      .then(result => {
-        result.perfStats = {start, end: Date.now()};
-        result.testFilePath = path;
-        result.coverage = moduleLoader.getAllCoverageInfo();
-        return result;
-      })
-      .then(
-        result => Promise.resolve().then(() => {
-          env.dispose();
-          if (config.logHeapUsage) {
-            this._addMemoryUsage(result);
-          }
-          return result;
-        }),
-        err => Promise.resolve().then(() => {
-          env.dispose();
-          throw err;
-        })
-      );
   }
 
   _getTestPerformanceCachePath() {
@@ -328,12 +295,14 @@ class TestRunner {
   }
 
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
+    const config = this._config;
     let testSequence = Promise.resolve();
-    testPaths.forEach(testPath =>
+    testPaths.forEach(path =>
       testSequence = testSequence
-        .then(this.runTest.bind(this, testPath))
-        .then(testResult => onTestResult(testPath, testResult))
-        .catch(err => onRunFailure(testPath, err))
+        .then(() => this._resolveDependencies(path))
+        .then(moduleMap => new Test(path, moduleMap, config).run())
+        .then(result => onTestResult(path, result))
+        .catch(err => onRunFailure(path, err))
     );
     return testSequence;
   }
@@ -341,62 +310,71 @@ class TestRunner {
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
     const farm = workerFarm({
+      autoStart: true,
       maxConcurrentCallsPerWorker: 1,
       maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._opts.maxWorkers,
     }, TEST_WORKER_PATH);
-
     const runTest = promisify(farm);
+
     return Promise.all(testPaths.map(
-      path => {
-        const paths = [path];
-        if (config.setupEnvScriptFile) {
-          paths.push(config.setupEnvScriptFile);
-        }
-        if (config.setupTestFrameworkScriptFile) {
-          paths.push(config.setupTestFrameworkScriptFile);
-        }
+      path => this._resolveDependencies(path)
+        .then(moduleMap => runTest({path, moduleMap, config}))
+        .then(testResult => onTestResult(path, testResult))
+        .catch(err => {
+          onRunFailure(path, err);
 
-        return Promise.all(paths.map(p => this._resolver.getDependencies(p)))
-          .then(moduleMaps => {
-            const moduleMap = Object.create(null);
-            moduleMap.mocks = Object.create(null);
-            moduleMap.resolvedModules = Object.create(null);
-            moduleMap.resources = Object.create(null);
-            moduleMaps.forEach(map => {
-              Object.assign(moduleMap.mocks, map.mocks);
-              Object.assign(moduleMap.resolvedModules, map.resolvedModules);
-              Object.assign(moduleMap.resources, map.resources);
-            });
-            return moduleMap;
-          })
-          .then(moduleMap => runTest({config: this._config, path, moduleMap}))
-          .then(testResult => onTestResult(path, testResult))
-          .catch(err => {
-            onRunFailure(path, err);
-
-            if (err.type === 'ProcessTerminatedError') {
-              // Initialization error or some other uncaught error
-              console.error(
-                'A worker process has quit unexpectedly! ' +
-                'Most likely this an initialization error.'
-              );
-              process.exit(1);
-            }
-          });
-      }
+          if (err.type === 'ProcessTerminatedError') {
+            // Initialization error or some other uncaught error
+            console.error(
+              'A worker process has quit unexpectedly! ' +
+              'Most likely this an initialization error.'
+            );
+            process.exit(1);
+          }
+        })
     )).then(() => workerFarm.end(farm));
   }
 
-  _addMemoryUsage(result) {
-    if (global.gc) {
-      global.gc();
+  _resolveSetupFiles() {
+    if (this._setupFilePromise) {
+      return this._setupFilePromise;
     }
-    const memoryUsage = process.memoryUsage().heapUsed;
-    this._maxMemoryUsage = Math.max(this._maxMemoryUsage, memoryUsage);
-    result.maxMemoryUsage = this._maxMemoryUsage;
-    result.memoryUsage = memoryUsage;
+
+    const config = this._config;
+    const paths = [];
+    const moduleMap = {
+      mocks: Object.create(null),
+      resolvedModules: Object.create(null),
+      resources: Object.create(null),
+    };
+    if (config.setupEnvScriptFile) {
+      paths.push(config.setupEnvScriptFile);
+    }
+    if (config.setupTestFrameworkScriptFile) {
+      paths.push(config.setupTestFrameworkScriptFile);
+    }
+    if (paths.length) {
+      return this._setupFilePromise = Promise.all(
+        paths.map(p => this._resolver.getDependencies(p))
+      ).then(moduleMaps => {
+        moduleMaps.forEach(map => mergeModuleMap(moduleMap, map));
+        return moduleMap;
+      });
+    } else {
+      return this._setupFilePromise = Promise.resolve(moduleMap);
+    }
   }
+
+  _resolveDependencies(path) {
+    return Promise.all([
+      this._resolveSetupFiles(),
+      this._resolver.getDependencies(path),
+    ]).then(
+      moduleMaps => mergeModuleMap(moduleMaps[1], moduleMaps[0])
+    );
+  }
+
 }
 
 module.exports = TestRunner;
