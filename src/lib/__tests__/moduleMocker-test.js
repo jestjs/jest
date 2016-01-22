@@ -75,6 +75,21 @@ describe('moduleMocker', function() {
       expect(fooMock.nonEnumGetter).toBeUndefined();
     });
 
+    it('does not mock __esModule special property (babel6)', function () {
+      var ClassFoo = function() {};
+
+      var fooModule = {
+        __esModule: true,
+        default: ClassFoo
+      };
+
+      var fooModuleMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(fooModule)
+      );
+
+      expect(fooModuleMock.__esModule).toEqual(fooModule.__esModule);
+    });
+
     it('mocks ES2015 non-enumerable methods', function() {
       class ClassFoo {
         foo() {}
