@@ -287,6 +287,12 @@ function generateMock(metadata, callbacks, refs) {
 
   getSlots(metadata.members).forEach(slot => {
     const slotMetadata = metadata.members[slot];
+    // special slot used by babel 6
+    if (slot === '__esModule') {
+      mock[slot] =  slotMetadata;
+      return;
+    }
+
     if (slotMetadata.ref != null) {
       callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
     } else {
@@ -349,6 +355,13 @@ function getMetadata(component, _refs) {
   if (type !== 'array') {
     if (type !== 'undefined') {
       getSlots(component).forEach(slot => {
+        // special slot used by babel 6
+        if (slot === '__esModule')  {
+          members = members || {};
+          members[slot] = component[slot];
+          return;
+        }
+
         if (
           slot.charAt(0) === '_' ||
           (
