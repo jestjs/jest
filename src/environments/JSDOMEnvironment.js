@@ -33,7 +33,13 @@ class JSDOMEnvironment {
   }
 
   runSourceText(sourceText, filename) {
-    return this.global.eval(sourceText + '\n//# sourceURL=' + filename);
+    let evalResult;
+    try {
+      evalResult = this.global.eval(sourceText + '\n//# sourceURL=' + filename);
+    } catch (e) {
+      throw new Error("Eval error " + filename + " " + e.toString());
+    }
+    return evalResult;
   }
 
   runWithRealTimers(cb) {
