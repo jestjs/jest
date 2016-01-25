@@ -99,5 +99,21 @@ describe('moduleMocker', function() {
 
       expect(instanceFooMock.toString.mock).not.toBeUndefined();
     });
+
+    it('does not mock __esModule special property (babel6)', function() {
+      var ClassFoo = function() {};
+
+      var fooModule = {
+        __esModule: true,
+        default: ClassFoo,
+      };
+
+      var fooModuleMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(fooModule)
+      );
+
+      expect(fooModuleMock.__esModule).toEqual(fooModule.__esModule);
+    });
+
   });
 });
