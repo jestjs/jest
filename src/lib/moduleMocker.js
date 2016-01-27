@@ -135,9 +135,8 @@ function createMockFunction(metadata, mockConstructor) {
 
   // Preserve `name` property of mocked function.
   const boundFunctionPrefix = 'bound ';
-  const isBound = name && name.startsWith(boundFunctionPrefix);
   let bindCall = '';
-  if (isBound) {
+  while (name && name.startsWith(boundFunctionPrefix)) {
     name = name.substring(boundFunctionPrefix.length);
     // Call bind() just to alter the function name.
     bindCall = '.bind(null)';

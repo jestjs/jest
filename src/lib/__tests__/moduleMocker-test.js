@@ -99,5 +99,16 @@ describe('moduleMocker', function() {
 
       expect(instanceFooMock.toString.mock).not.toBeUndefined();
     });
+
+    it('mocks methods that are bound multiple times', function() {
+      var func = function func() {};
+      var multipleBoundFunc = func.bind(null).bind(null);
+
+      var multipleBoundFuncMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(multipleBoundFunc)
+      );
+
+      expect(typeof multipleBoundFuncMock).toBe('function');
+    });
   });
 });
