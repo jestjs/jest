@@ -74,9 +74,9 @@ class TestRunner {
     this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
     this._config = Object.freeze(config);
     const Resolver = require(config.moduleResolver);
-    if (!this._opts.isWorker) {
-      this._resolver = new Resolver(config);
-    }
+    this._resolver = new Resolver(config, {
+      resetCache: !config.cache,
+    });
 
     this._testPathDirsRegExp = new RegExp(
       config.testPathDirs

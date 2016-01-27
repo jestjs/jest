@@ -20,6 +20,7 @@ describe('HasteModuleLoader', function() {
   let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   const config = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-jsdom-env-tests',
@@ -28,8 +29,8 @@ describe('HasteModuleLoader', function() {
 
   function buildLoader() {
     const environment = new JSDOMEnvironment(config);
-    const resolver = new HasteResolver(config);
-    return resolver.getDependencies('./root.js').then(
+    const resolver = new HasteResolver(config, {resetCache: false});
+    return resolver.getDependencies(rootPath).then(
       response => resolver.end().then(() =>
         new HasteModuleLoader(config, environment, response)
       )

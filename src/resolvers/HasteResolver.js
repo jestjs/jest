@@ -16,11 +16,14 @@ const FileWatcher = require('node-haste/lib/FileWatcher');
 
 const extractRequires = require('node-haste/lib/lib/extractRequires');
 
+const version = require('../../package').version;
 const REQUIRE_EXTENSIONS_PATTERN = /(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
+
+const cacheFlag = Promise.resolve(1);
 
 class HasteResolver {
 
-  constructor(config) {
+  constructor(config, options) {
     const extensions = config.moduleFileExtensions
       .concat(config.testFileExtensions);
     const ignoreFilePattern = new RegExp(
@@ -31,9 +34,11 @@ class HasteResolver {
     this._resolvePromises = Object.create(null);
 
     this._cache = new Cache({
+      resetCache: options.resetCache,
       cacheDirectory: config.cacheDirectory,
       cacheKey: [
         'jest',
+        version,
         config.name,
         config.rootDir,
         ignoreFilePattern.toString(),
@@ -92,18 +97,50 @@ class HasteResolver {
     if (this._resolvePromises[path]) {
       return this._resolvePromises[path];
     }
-
-    return this._resolvePromises[path] = this._depGraph.load().then(
-      () => this._depGraph.getDependencies(
+    let isCached = true;
+    return this._resolvePromises[path] = this._depGraph.load()
+      .then(() => this._cache.get(
         path,
-        this._defaultPlatform
-      ).then(response =>
+        'jestModuleMap',
+        () => {
+          isCached = false;
+          return this._resolveDependencies(path);
+        }
+      ).then(
+        moduleMap => {
+          if (
+            !isCached || (
+              this._validateCache(moduleMap.mocks) &&
+              this._validateCache(moduleMap.resources)
+            )
+          ) {
+            return moduleMap;
+          }
+
+          // If the cache was not generated *right now* or one of the
+          // recursive dependencies has changed, invalidate the cache
+          // and re-resolve the path.
+          this._cache.invalidate(path, 'jestModuleMap');
+          delete this._resolvePromises[path];
+          return this.getDependencies(path);
+        }
+      )
+    );
+  }
+
+  _resolveDependencies(path) {
+    return this._depGraph.getDependencies(path, this._defaultPlatform)
+      .then(response =>
         response.finalize().then(() => {
-          var deps = {
+          const deps = {
             mocks: response.mocks,
             resolvedModules: Object.create(null),
             resources: Object.create(null),
           };
+          for (const resource in response.mocks) {
+            const resourcePath = response.mocks[resource];
+            this._cache.set(resourcePath, 'jestCacheFlag', cacheFlag);
+          }
           return Promise.all(
             response.dependencies.map(module => {
               if (!deps.resolvedModules[module.path]) {
@@ -112,13 +149,24 @@ class HasteResolver {
               response.getResolvedDependencyPairs(module).forEach((pair) =>
                 deps.resolvedModules[module.path][pair[0]] = pair[1].path
               );
+              this._cache.set(module.path, 'jestCacheFlag', cacheFlag);
               return module.getName().then(
                 name => deps.resources[name] = module.path
               );
             })
           ).then(() => deps);
         })
-      ));
+      );
+  }
+
+  _validateCache(resources) {
+    for (const resource in resources) {
+      const path = resources[resource];
+      if (!this._cache.has(path, 'jestCacheFlag')) {
+        return false;
+      }
+    }
+    return true;
   }
 
   _updateModuleMappings(data) {

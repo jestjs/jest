@@ -21,6 +21,7 @@ describe('nodeHasteModuleLoader', function() {
   let JSDOMEnvironment;
 
   const rootDir = path.resolve(__dirname, 'test_root');
+  const rootPath = path.resolve(rootDir, 'root.js');
   const config = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'nodeHasteModuleLoader-genMockFromModule-tests',
@@ -29,8 +30,8 @@ describe('nodeHasteModuleLoader', function() {
 
   function buildLoader() {
     const environment = new JSDOMEnvironment(config);
-    const resolver = new HasteResolver(config);
-    return resolver.getDependencies('./root.js').then(
+    const resolver = new HasteResolver(config, {resetCache: false});
+    return resolver.getDependencies(rootPath).then(
       response => resolver.end().then(() =>
         new HasteModuleLoader(config, environment, response)
       )
@@ -49,11 +50,7 @@ describe('nodeHasteModuleLoader', function() {
       'generating a mock',
       function() {
         return buildLoader().then(loader => {
-          const rootPath = path.join(rootDir, 'root.js');
-          const testRequire = loader.requireModule.bind(
-            loader,
-            rootPath
-          );
+          const testRequire = loader.requireModule.bind(loader, rootPath);
 
           const regularModule = testRequire('RegularModule');
           const origModuleStateValue = regularModule.getModuleStateValue();
