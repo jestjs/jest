@@ -99,54 +99,81 @@ class TestRunner {
   }
 
   _getAllTestPaths() {
-    return this._resolver.matchFilesByPattern(this._config.testDirectoryName);
+    return this._resolver
+      .matchFilesByPattern(this._config.testDirectoryName)
+      .then(paths => paths.filter(path => this._isTestFilePath(path)));
   }
 
-  _isTestFilePath(filePath) {
-    // get filePath into OS-appropriate format before testing patterns
-    filePath = path.normalize(filePath);
+  _isTestFilePath(path) {
     const testPathIgnorePattern =
       this._config.testPathIgnorePatterns.length
       ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
       : null;
 
     return (
-      this._nodeHasteTestRegExp.test(filePath)
-      && !HIDDEN_FILE_RE.test(filePath)
-      && (!testPathIgnorePattern || !testPathIgnorePattern.test(filePath))
-      && this._testPathDirsRegExp.test(filePath)
+      this._nodeHasteTestRegExp.test(path)
+      && !HIDDEN_FILE_RE.test(path)
+      && (!testPathIgnorePattern || !testPathIgnorePattern.test(path))
+      && this._testPathDirsRegExp.test(path)
     );
   }
 
   promiseTestPathsRelatedTo(changedPaths) {
-    return this._getAllTestPaths()
-      .then(paths => {
-        const allTests = Object.create(null);
-        return Promise.all(
-          paths.map(path => this._resolver.getDependencies(path)
-            .then(deps => allTests[path] = deps)
-          )
-        ).then(() => {
-          const relatedPaths = new Set();
-          for (const path in allTests) {
-            if (this._isTestFilePath(path)) {
-              for (const resourcePath in allTests[path].resources) {
-                if (changedPaths.has(resourcePath)) {
-                  relatedPaths.add(path);
-                }
-              }
+    const relatedPaths = new Set();
+    const collect = (moduleMap, changed) => {
+      const visitedModules = new Set();
+      let isInitial = true;
+      while (changed.size) {
+        changed = new Set(moduleMap.filter(item => {
+          const module = item.module;
+          if (visitedModules.has(module.path)) {
+            return false;
+          }
+          return item.dependencies.some(dep => dep && changed.has(dep.path));
+        }).map(item => {
+          const path = item.module.path;
+          if (this._isTestFilePath(path)) {
+            relatedPaths.add(path);
+          }
+          return path;
+        }));
+
+        if (!isInitial) {
+          for (const path of changed) {
+            visitedModules.add(path);
+          }
+        }
+        isInitial = false;
+      }
+      return relatedPaths;
+    };
+
+    return this._resolver.getAllModules().then(allModules => {
+      const changed = new Set();
+      for (const path of changedPaths) {
+        if (this._resolver.getFS().fileExists(path)) {
+          const module = this._resolver.getModuleForPath(path);
+          if (module) {
+            changed.add(module.path);
+            if (this._isTestFilePath(module.path)) {
+              relatedPaths.add(module.path);
             }
           }
-          return Array.from(relatedPaths);
-        });
-      });
+        }
+      }
+      return Promise.all(Object.keys(allModules).map(path =>
+        this._resolver.getShallowDependencies(path)
+          .then(response => ({
+            module: allModules[path],
+            dependencies: response.dependencies,
+          }))
+      )).then(moduleMap => Array.from(collect(moduleMap, changed)));
+    });
   }
 
   promiseTestPathsMatching(pathPattern) {
     return this._getAllTestPaths()
-      .then(testPaths => testPaths.filter(
-        path => this._isTestFilePath(path) && pathPattern.test(path)
-      ));
+      .then(paths => paths.filter(path => pathPattern.test(path)));
   }
 
   _getTestPerformanceCachePath() {
@@ -282,8 +309,12 @@ class TestRunner {
       })
       .then(results => Promise.all([
         this._cacheTestResults(results),
-        this._resolver.end(),
+        this.end(),
       ]).then(() => results));
+  }
+
+  end() {
+    return this._resolver.end();
   }
 
   _createTestRun(testPaths, onTestResult, onRunFailure) {

@@ -86,11 +86,12 @@ class HasteResolver {
     return this._depGraph.matchFilesByPattern(pattern);
   }
 
-  end() {
-    return Promise.all([
-      this._fileWatcher.end(),
-      this._cache.end(),
-    ]);
+  getAllModules() {
+    return this._depGraph.getAllModules();
+  }
+
+  getModuleForPath(path) {
+    return this._depGraph.getModuleForPath(path);
   }
 
   getDependencies(path) {
@@ -126,6 +127,20 @@ class HasteResolver {
         }
       )
     );
+  }
+
+  getShallowDependencies(path) {
+    return this._depGraph.getDependencies(path, this._defaultPlatform, false);
+  }
+
+  getFS() {
+    return this._depGraph.getFS();
+  }
+
+  end() {
+    // Make sure the graph is loaded before we end it.
+    return this._depGraph.load()
+      .then(() => Promise.all([this._fileWatcher.end(), this._cache.end()]));
   }
 
   _resolveDependencies(path) {

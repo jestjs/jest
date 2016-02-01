@@ -9,20 +9,21 @@
  */
 'use strict';
 
-jest.autoMockOff()
-  .mock('fs')
-  .mock('../resolvers/HasteResolver');
+jest.autoMockOff();
 
-const name = 'TestRunner';
+const path = require('path');
+const utils = require('../lib/utils');
+
 describe('TestRunner', () => {
+  const name = 'TestRunner';
   let TestRunner;
+  let runner;
 
   beforeEach(() => {
     TestRunner = require('../TestRunner');
   });
 
   describe('_isTestFilePath', () => {
-    let runner;
 
     beforeEach(() => {
       const utils = require('../lib/utils');
@@ -34,68 +35,64 @@ describe('TestRunner', () => {
       }));
     });
 
-    it('supports ../ paths and unix separators', () => {
+    pit('supports ../ paths and unix separators', () => {
       const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      const isTestFile = runner._isTestFilePath(path);
-
-      return expect(isTestFile).toEqual(true);
+      expect(runner._isTestFilePath(path)).toEqual(true);
+      return runner.end();
     });
 
-    it('supports unix separators', () => {
+    pit('supports unix separators', () => {
       const path = '/path/to/__tests__/test.js';
-      const isTestFile = runner._isTestFilePath(path);
-
-      return expect(isTestFile).toEqual(true);
+      expect(runner._isTestFilePath(path)).toEqual(true);
+      return runner.end();
     });
 
   });
 
   describe('promiseTestPathsRelatedTo', () => {
-    const allTests = [
-      '__tests__/a.js',
-      '__tests__/b.js',
-    ];
-    const dependencyGraph = {
-      '__tests__/a.js': {resources: {}},
-      '__tests__/b.js': {resources: {
-        'b.js': {},
-      }},
-    };
-    let runner;
-
-    beforeEach(() => {
-      const utils = require('../lib/utils');
-      runner = new TestRunner(utils.normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
-        name,
-        rootDir: '.',
-        testPathDirs: [],
-      }));
-
-      runner._isTestFilePath = () => true;
-      runner._getAllTestPaths = modulePath => Promise.resolve(allTests);
-      runner._resolver = {
-        getDependencies: path => {
-          return Promise.resolve(dependencyGraph[path]);
-        },
-      };
+    const rootDir = path.join(
+      __dirname,
+      '..',
+      'HasteModuleLoader',
+      '__tests__',
+      'test_root'
+    );
+    const rootPath = path.join(rootDir, 'root.js');
+    const config = utils.normalizeConfig({
+      cacheDirectory: global.CACHE_DIRECTORY,
+      name: 'TestRunner-promiseTestPathsRelatedTo-tests',
+      rootDir,
+      // In order to test the reverse-dependency-resolution we assume
+      // every file is a test file in the test directory.
+      testPathPattern: '',
     });
 
-    pit('finds no tests when no tests depend on the path', () => {
-      const path = 'a.js';
+    beforeEach(() => {
+      runner = new TestRunner(config);
+    });
+
+    pit('makes sure a file is related to itself', () => {
+      const path = rootPath;
 
       return runner.promiseTestPathsRelatedTo(new Set([path]))
         .then(relatedTests => {
-          expect(relatedTests).toEqual([]);
-        });
+          expect(Array.from(relatedTests)).toEqual([rootPath]);
+        })
+        .then(() => runner.end());
     });
 
     pit('finds tests that depend directly on the path', () => {
-      const path = 'b.js';
-      return runner.promiseTestPathsRelatedTo(new Set([path]))
+      const filePath = path.join(rootDir, 'RegularModule.js');
+      const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
+      return runner.promiseTestPathsRelatedTo(new Set([filePath]))
         .then(relatedTests => {
-          expect(relatedTests).toEqual(['__tests__/b.js']);
-        });
+          expect(Array.from(relatedTests)).toEqual([
+            filePath,
+            rootPath,
+            parentDep,
+          ]);
+        })
+        .then(() => runner.end());
     });
   });
 });
