@@ -40,14 +40,14 @@ class HasteResolver {
         'jest',
         version,
         config.name,
-        config.rootDir,
+        config.testPathDirs.join(';'),
         ignoreFilePattern.toString(),
       ].concat(extensions).join('$'),
     });
 
-    this._fileWatcher = new FileWatcher([{
-      dir: config.rootDir,
-    }]);
+    this._fileWatcher = new FileWatcher(
+      config.testPathDirs.map(dir => ({dir}))
+    );
 
     this._mappedModuleNames = Object.create(null);
     if (config.moduleNameMapper.length) {
@@ -57,7 +57,7 @@ class HasteResolver {
     }
 
     this._depGraph = new DependencyGraph(Object.assign({}, config.haste, {
-      roots: [config.rootDir],
+      roots: config.testPathDirs,
       ignoreFilePath: path => path.match(ignoreFilePattern),
       cache: this._cache,
       fileWatcher: this._fileWatcher,

@@ -27,6 +27,7 @@ describe('TestRunner', () => {
 
     beforeEach(() => {
       const utils = require('../lib/utils');
+      jest.mock('../resolvers/HasteResolver');
       runner = new TestRunner(utils.normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
@@ -35,16 +36,14 @@ describe('TestRunner', () => {
       }));
     });
 
-    pit('supports ../ paths and unix separators', () => {
+    it('supports ../ paths and unix separators', () => {
       const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
       expect(runner._isTestFilePath(path)).toEqual(true);
-      return runner.end();
     });
 
-    pit('supports unix separators', () => {
+    it('supports unix separators', () => {
       const path = '/path/to/__tests__/test.js';
       expect(runner._isTestFilePath(path)).toEqual(true);
-      return runner.end();
     });
 
   });
@@ -68,6 +67,7 @@ describe('TestRunner', () => {
     });
 
     beforeEach(() => {
+      jest.dontMock('../resolvers/HasteResolver');
       runner = new TestRunner(config);
     });
 

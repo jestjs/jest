@@ -259,10 +259,10 @@ function runCLI(argv, packageRoot, onComplete) {
           chalk.enabled = false;
         }
 
-        const testRunner = new TestRunner(config, testRunnerOptions(argv));
         const testFramework = require(config.testRunner);
         pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
 
+        const testRunner = new TestRunner(config, testRunnerOptions(argv));
         let testPaths;
         if (argv.onlyChanged) {
           testPaths = findOnlyChangedTestPaths(testRunner, config);
@@ -293,10 +293,20 @@ function runCLI(argv, packageRoot, onComplete) {
       })
       .then(runResults => onComplete && onComplete(runResults.success))
       .catch(error => {
-        console.error('Failed with unexpected error.');
-        process.nextTick(() => {
-          throw error;
-        });
+        if (error.type == 'DependencyGraphError') {
+          console.error([
+            '\nError: ' + error.message + '\n\n',
+            'This is most likely a setup ',
+            'or configuration issue. To resolve a module name collision, ',
+            'change or blacklist one of the offending modules. See ',
+            'http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string',
+          ].join(''));
+        } else {
+          console.error(
+            '\nUnexpected Error: ' + error.message + '\n\n' + error.stack
+          );
+        }
+        process.exit(1);
       });
   }
 
