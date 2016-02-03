@@ -310,8 +310,11 @@ function formatFailureMessage(testResult, config) {
   const msgIndent = msgBullet.replace(/./g, ' ');
 
   if (testResult.testExecError) {
-    const text = testResult.testExecError;
-    return descBullet + localChalk.bold('Runtime Error') + '\n' + text;
+    const error = testResult.testExecError;
+    return (
+      descBullet + localChalk.bold('Runtime Error') + '\n' +
+      error.message + '\n' + error.stack
+    );
   }
 
   return testResult.testResults.filter(function(result) {

@@ -326,16 +326,14 @@ class TestRunner {
   }
 
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
-    const config = this._config;
-    let testSequence = Promise.resolve();
-    testPaths.forEach(path =>
-      testSequence = testSequence
+    return testPaths.reduce((promise, path) =>
+      promise
         .then(() => this._resolveDependencies(path))
-        .then(moduleMap => new Test(path, moduleMap, config).run())
+        .then(moduleMap => new Test(path, moduleMap, this._config).run())
         .then(result => onTestResult(path, result))
-        .catch(err => onRunFailure(path, err))
+        .catch(err => onRunFailure(path, err)),
+      Promise.resolve()
     );
-    return testSequence;
   }
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
@@ -347,24 +345,49 @@ class TestRunner {
       maxConcurrentWorkers: this._opts.maxWorkers,
     }, TEST_WORKER_PATH);
     const runTest = promisify(farm);
+    const deferreds = testPaths.map(path => {
+      let resolve;
+      const promise = new Promise(_resolve => resolve = _resolve);
+      return {resolve, promise};
+    });
+    let i = 0;
+    const nextResolution = () => {
+      if (i >= testPaths.length) {
+        return;
+      }
 
-    return Promise.all(testPaths.map(
-      path => this._resolveDependencies(path)
-        .then(moduleMap => runTest({path, moduleMap, config}))
+      const path = testPaths[i];
+      const deferred = deferreds[i];
+      const promise = this._resolveDependencies(path);
+      i++;
+
+      const start = Date.now();
+      console.log('resolving', path);
+      promise
+        .then(moduleMap => {
+          console.log((Date.now() - start) + 'ms', Object.keys(moduleMap.resources).length + 'res', 'running', path);
+          nextResolution();
+          return runTest({path, moduleMap, config});
+        })
         .then(testResult => onTestResult(path, testResult))
         .catch(err => {
           onRunFailure(path, err);
-
           if (err.type === 'ProcessTerminatedError') {
-            // Initialization error or some other uncaught error
             console.error(
               'A worker process has quit unexpectedly! ' +
               'Most likely this an initialization error.'
             );
             process.exit(1);
           }
-        })
-    )).then(() => workerFarm.end(farm));
+        }).
+        then(() => deferred.resolve());
+    };
+
+    for (let i = 0; i < this._opts.maxWorkers; i++) {
+      nextResolution();
+    }
+    return Promise.all(deferreds.map(deferred => deferred.promise))
+      .then(() => workerFarm.end(farm));
   }
 
   _resolveSetupFiles() {
