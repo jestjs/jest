@@ -12,20 +12,16 @@
 const Test = require('./Test');
 
 const fs = require('graceful-fs');
+const getCacheFilePath = require('node-haste/lib/Cache/lib/getCacheFilePath');
+const getCacheKey = require('./lib/getCacheKey');
+const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
+const promisify = require('./lib/promisify');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
-const promisify = require('./lib/promisify');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
-
-const mergeModuleMap = (a, b) => {
-  Object.assign(a.mocks, b.mocks);
-  Object.assign(a.resolvedModules, b.resolvedModules);
-  Object.assign(a.resources, b.resources);
-  return a;
-};
 
 const DEFAULT_OPTIONS = {
 
@@ -73,6 +69,15 @@ class TestRunner {
   constructor(config, options) {
     this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
     this._config = Object.freeze(config);
+
+    try {
+      mkdirp.sync(this._config.cacheDirectory, '777');
+    } catch (e) {
+      if (e.code !== 'EEXIST') {
+        throw e;
+      }
+    }
+
     const Resolver = require(config.moduleResolver);
     this._resolver = new Resolver(config, {
       resetCache: !config.cache,
@@ -216,18 +221,17 @@ class TestRunner {
 
   _cacheTestResults(aggregatedResults) {
     const cacheFile = this._getTestPerformanceCachePath();
-    let testPerformanceCache = this._testPerformanceCache;
-    if (!testPerformanceCache) {
-      testPerformanceCache = this._testPerformanceCache = {};
+    let cache = this._testPerformanceCache;
+    if (!cache) {
+      cache = this._testPerformanceCache = {};
     }
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
       if (perf && perf.end && perf.start) {
-        testPerformanceCache[test.testFilePath] = perf.end - perf.start;
+        cache[test.testFilePath] = perf.end - perf.start;
       }
     });
-    const cache = JSON.stringify(testPerformanceCache);
-    return new Promise(resolve => fs.writeFile(cacheFile, cache, resolve));
+    return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
 
   runTests(testPaths, reporter) {
@@ -328,105 +332,50 @@ class TestRunner {
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
     return testPaths.reduce((promise, path) =>
       promise
-        .then(() => this._resolveDependencies(path))
-        .then(moduleMap => new Test(path, moduleMap, this._config).run())
+        .then(() => this._resolver.getHasteMap())
+        .then(moduleMap => new Test(path, this._config, moduleMap).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
       Promise.resolve()
     );
   }
 
+  _persistModuleMap(moduleMap) {
+    const cacheFile = getCacheFilePath(
+      this._config.cacheDirectory,
+      getCacheKey('jest-module-map', this._config)
+    );
+    return promisify(fs.writeFile)(cacheFile, JSON.stringify(moduleMap));
+  }
+
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
-    const farm = workerFarm({
-      autoStart: true,
-      maxConcurrentCallsPerWorker: 1,
-      maxRetries: 2, // Allow for a couple of transient errors.
-      maxConcurrentWorkers: this._opts.maxWorkers,
-    }, TEST_WORKER_PATH);
-    const runTest = promisify(farm);
-    const deferreds = testPaths.map(path => {
-      let resolve;
-      const promise = new Promise(_resolve => resolve = _resolve);
-      return {resolve, promise};
-    });
-    let i = 0;
-    const nextResolution = () => {
-      if (i >= testPaths.length) {
-        return;
-      }
-
-      const path = testPaths[i];
-      const deferred = deferreds[i];
-      const promise = this._resolveDependencies(path);
-      i++;
-
-      const start = Date.now();
-      console.log('resolving', path);
-      promise
-        .then(moduleMap => {
-          console.log((Date.now() - start) + 'ms', Object.keys(moduleMap.resources).length + 'res', 'running', path);
-          nextResolution();
-          return runTest({path, moduleMap, config});
-        })
-        .then(testResult => onTestResult(path, testResult))
-        .catch(err => {
-          onRunFailure(path, err);
-          if (err.type === 'ProcessTerminatedError') {
-            console.error(
-              'A worker process has quit unexpectedly! ' +
-              'Most likely this an initialization error.'
-            );
-            process.exit(1);
-          }
-        }).
-        then(() => deferred.resolve());
-    };
-
-    for (let i = 0; i < this._opts.maxWorkers; i++) {
-      nextResolution();
-    }
-    return Promise.all(deferreds.map(deferred => deferred.promise))
-      .then(() => workerFarm.end(farm));
-  }
-
-  _resolveSetupFiles() {
-    if (this._setupFilePromise) {
-      return this._setupFilePromise;
-    }
-
-    const config = this._config;
-    const paths = [];
-    const moduleMap = {
-      mocks: Object.create(null),
-      resolvedModules: Object.create(null),
-      resources: Object.create(null),
-    };
-    if (config.setupEnvScriptFile) {
-      paths.push(config.setupEnvScriptFile);
-    }
-    if (config.setupTestFrameworkScriptFile) {
-      paths.push(config.setupTestFrameworkScriptFile);
-    }
-    if (paths.length) {
-      return this._setupFilePromise = Promise.all(
-        paths.map(p => this._resolver.getDependencies(p))
-      ).then(moduleMaps => {
-        moduleMaps.forEach(map => mergeModuleMap(moduleMap, map));
-        return moduleMap;
+    return this._resolver.getHasteMap()
+      .then(moduleMap => this._persistModuleMap(moduleMap))
+      .then(() => {
+        const farm = workerFarm({
+          autoStart: true,
+          maxConcurrentCallsPerWorker: 1,
+          maxRetries: 2, // Allow for a couple of transient errors.
+          maxConcurrentWorkers: this._opts.maxWorkers,
+        }, TEST_WORKER_PATH);
+        const runTest = promisify(farm);
+        return Promise.all(testPaths.map(
+          path => runTest({path, config})
+            .then(testResult => onTestResult(path, testResult))
+            .catch(err => {
+              onRunFailure(path, err);
+              if (err.type === 'ProcessTerminatedError') {
+                console.error(
+                  'A worker process has quit unexpectedly! ' +
+                  'Most likely this an initialization error.'
+                );
+                process.exit(1);
+              }
+            }))
+        )
+        .then(() => workerFarm.end(farm));
       });
-    } else {
-      return this._setupFilePromise = Promise.resolve(moduleMap);
-    }
-  }
-
-  _resolveDependencies(path) {
-    return Promise.all([
-      this._resolveSetupFiles(),
-      this._resolver.getDependencies(path),
-    ]).then(
-      moduleMaps => mergeModuleMap(moduleMaps[1], moduleMaps[0])
-    );
   }
 
 }

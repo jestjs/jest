@@ -15,16 +15,29 @@ process.on('uncaughtException', err => {
 
 const Test = require('./Test');
 
+const fs = require('graceful-fs');
+const getCacheFilePath = require('node-haste/lib/Cache/lib/getCacheFilePath');
+const getCacheKey = require('./lib/getCacheKey');
+
+let moduleMap;
+
 module.exports = (data, callback) => {
   try {
-    new Test(data.path, data.moduleMap, data.config)
+    if (!moduleMap) {
+      const cacheFile = getCacheFilePath(
+        data.config.cacheDirectory,
+        getCacheKey('jest-module-map', data.config)
+      );
+      moduleMap = JSON.parse(fs.readFileSync(cacheFile));
+    }
+
+    new Test(data.path, data.config, moduleMap)
       .run()
       .then(
         result => callback(null, result),
-        // TODO: move to error object passing (why limit to strings?).
-        err => callback(err.stack || err.message || err)
+        err => callback(err)
       );
   } catch (err) {
-    callback(err.stack || err.message || err);
+    callback(err);
   }
 };

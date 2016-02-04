@@ -289,6 +289,17 @@ function loadConfigFromPackageJson(filePath) {
   });
 }
 
+const KEEP_TRACE_LINES = 2;
+function cleanStackTrace(stackTrace) {
+  // Remove jasmine jonx from the stack trace
+  let lines = 0;
+  const keepFirstLines = () => (lines++ < KEEP_TRACE_LINES);
+  return stackTrace.split('\n').filter(line => (
+    keepFirstLines() ||
+    !/jest(-cli)?\/(vendor|src|node_modules)\//.test(line)
+  )).join('\n');
+}
+
 /**
  * Given a test result, return a human readable string representing the
  * failures.
@@ -313,7 +324,7 @@ function formatFailureMessage(testResult, config) {
     const error = testResult.testExecError;
     return (
       descBullet + localChalk.bold('Runtime Error') + '\n' +
-      error.message + '\n' + error.stack
+      error.message + (error.stack ? '\n' + cleanStackTrace(error.stack) : '')
     );
   }
 
@@ -382,4 +393,5 @@ exports.escapeStrForRegex = escapeStrForRegex;
 exports.loadConfigFromFile = loadConfigFromFile;
 exports.loadConfigFromPackageJson = loadConfigFromPackageJson;
 exports.normalizeConfig = normalizeConfig;
+exports.cleanStackTrace = cleanStackTrace;
 exports.formatFailureMessage = formatFailureMessage;

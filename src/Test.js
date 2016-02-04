@@ -11,16 +11,16 @@ const Console = require('./Console');
 
 class Test {
 
-  constructor(path, moduleMap, config) {
+  constructor(path, config, moduleMap) {
     this._path = path;
-    this._moduleMap = moduleMap;
     this._config = config;
+    this._moduleMap = moduleMap;
   }
 
   run() {
     const path = this._path;
-    const moduleMap = this._moduleMap;
     const config = this._config;
+    const moduleMap = this._moduleMap;
     const TestEnvironment = require(config.testEnvironment);
     const TestRunner = require(config.testRunner);
     const ModuleLoader = require(config.moduleLoader);

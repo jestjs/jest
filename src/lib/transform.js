@@ -11,22 +11,10 @@ const crypto = require('crypto');
 const fs = require('graceful-fs');
 const path = require('path');
 const stableStringify = require('json-stable-stringify');
+const mkdirp = require('mkdirp');
 
 const cache = new Map();
 const configToJsonMap = new Map();
-
-const createDirectory = path => {
-  if (!fs.existsSync(path)) {
-    try {
-      fs.mkdirSync(path);
-    } catch (e) {
-      if (e.code !== 'EEXIST') {
-        throw e;
-      }
-    }
-    fs.chmodSync(path, '777');
-  }
-};
 
 const removeFile = path => {
   try {
@@ -122,10 +110,15 @@ module.exports = (filePath, config) => {
         cacheDir,
         path.basename(filePath, path.extname(filePath)) + '_' + cacheKey
       );
-      
-      createDirectory(config.cacheDirectory);
-      createDirectory(baseCacheDir);
-      createDirectory(cacheDir);
+
+      try {
+        mkdirp.sync(cacheDir, '777');
+      } catch (e) {
+        if (e.code !== 'EEXIST') {
+          throw e;
+        }
+      }
+
       const cachedData = readCacheFile(filePath, cachePath);
       if (cachedData) {
         fileData = cachedData;

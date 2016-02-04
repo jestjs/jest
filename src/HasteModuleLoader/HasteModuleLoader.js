@@ -25,6 +25,9 @@ const mockParentModule = {
   exports: {},
 };
 
+const normalizedIDCache = Object.create(null);
+const moduleNameCache = Object.create(null);
+
 const isFile = file => {
   let stat;
   try {
@@ -52,8 +55,8 @@ class Loader {
     this._shouldAutoMock = true;
     this._configShouldMockModuleNames = Object.create(null);
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
-    this._resolvedModules = moduleMap.resolvedModules;
-    this._resources = moduleMap.resources;
+
+    this._modules = moduleMap.modules;
     this._mocks = moduleMap.mocks;
 
     if (config.collectCoverage) {
@@ -366,14 +369,16 @@ class Loader {
 
   _resolveModuleName(currPath, moduleName) {
     // Check if the resolver knows about this module
-    if (
-      this._resolvedModules[currPath] &&
-      this._resolvedModules[currPath][moduleName]
-    ) {
-      return this._resolvedModules[currPath][moduleName];
+    if (this._modules[moduleName]) {
+      return this._modules[moduleName];
     } else {
       // Otherwise it is likely a node_module.
-      return this._resolveNodeModule(currPath, moduleName);
+      const key = currPath + ' : ' + moduleName;
+      if (moduleNameCache[key]) {
+        return moduleNameCache[key];
+      }
+      moduleNameCache[key] = this._resolveNodeModule(currPath, moduleName);
+      return moduleNameCache[key];
     }
   }
 
@@ -388,6 +393,17 @@ class Loader {
         readFileSync: fs.readFileSync,
       });
     } catch (e) {
+      const parts = moduleName.split('/');
+      const nodeModuleName = parts.shift();
+      const module = this._getModule(nodeModuleName);
+      if (module) {
+        try {
+          return require.resolve(
+            path.join.apply(path, [path.dirname(module)].concat(parts))
+          );
+        } catch (ignoredError) {}
+      }
+
       // resolve.sync uses the basedir instead of currPath and therefore
       // doesn't throw an accurate error message.
       const relativePath = path.relative(basedir, currPath);
@@ -398,7 +414,7 @@ class Loader {
   }
 
   _getModule(resourceName) {
-    return this._resources[resourceName];
+    return this._modules[resourceName];
   }
 
   _getMockModule(resourceName) {
@@ -413,6 +429,11 @@ class Loader {
   }
 
   _getNormalizedModuleID(currPath, moduleName) {
+    const key = currPath + ' : ' + moduleName;
+    if (normalizedIDCache[key]) {
+      return normalizedIDCache[key];
+    }
+
     let moduleType;
     let mockAbsPath = null;
     let realAbsPath = null;
@@ -459,7 +480,9 @@ class Loader {
     }
 
     const delimiter = path.delimiter;
-    return moduleType + delimiter + realAbsPath + delimiter + mockAbsPath;
+    const id = moduleType + delimiter + realAbsPath + delimiter + mockAbsPath;
+    normalizedIDCache[key] = id;
+    return id;
   }
 
   _shouldMock(currPath, moduleName) {

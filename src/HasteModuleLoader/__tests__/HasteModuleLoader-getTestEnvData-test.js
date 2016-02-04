@@ -32,7 +32,7 @@ describe('HasteModuleLoader', function() {
   function buildLoader() {
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
-    return resolver.getDependencies(rootPath).then(
+    return resolver.getHasteMap().then(
       response => resolver.end().then(() =>
         new HasteModuleLoader(config, environment, response)
       )
