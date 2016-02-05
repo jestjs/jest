@@ -123,36 +123,26 @@ class TestRunner {
     );
   }
 
+  collectChangedModules(relatedPaths, moduleMap, changed) {
+    const visitedModules = new Set();
+    while (changed.size) {
+      changed = new Set(moduleMap.filter(module => (
+        !visitedModules.has(module.path) &&
+        module.dependencies.some(dep => dep && changed.has(dep))
+      )).map(module => {
+        const path = module.path;
+        if (this._isTestFilePath(path)) {
+          relatedPaths.add(path);
+        }
+        visitedModules.add(path);
+        return module.name;
+      }));
+    }
+    return relatedPaths;
+  }
+
   promiseTestPathsRelatedTo(changedPaths) {
     const relatedPaths = new Set();
-    const collect = (moduleMap, changed) => {
-      const visitedModules = new Set();
-      let isInitial = true;
-      while (changed.size) {
-        changed = new Set(moduleMap.filter(item => {
-          const module = item.module;
-          if (visitedModules.has(module.path)) {
-            return false;
-          }
-          return item.dependencies.some(dep => dep && changed.has(dep.path));
-        }).map(item => {
-          const path = item.module.path;
-          if (this._isTestFilePath(path)) {
-            relatedPaths.add(path);
-          }
-          return path;
-        }));
-
-        if (!isInitial) {
-          for (const path of changed) {
-            visitedModules.add(path);
-          }
-        }
-        isInitial = false;
-      }
-      return relatedPaths;
-    };
-
     return this._resolver.getAllModules().then(allModules => {
       const changed = new Set();
       for (const path of changedPaths) {
@@ -169,10 +159,79 @@ class TestRunner {
       return Promise.all(Object.keys(allModules).map(path =>
         this._resolver.getShallowDependencies(path)
           .then(response => ({
-            module: allModules[path],
+            name: path,
+            path,
             dependencies: response.dependencies,
           }))
-      )).then(moduleMap => Array.from(collect(moduleMap, changed)));
+      )).then(moduleMap => Array.from(this.collectChangedModules(
+        relatedPaths,
+        moduleMap,
+        changed
+      )));
+    });
+  }
+
+  promiseHasteTestPathsRelatedTo(changedPaths) {
+    return Promise.all([
+      this._getAllTestPaths(),
+      this._resolver.getHasteMap(),
+    ]).then(response => {
+      const testPaths = response[0];
+      const hasteMap = response[1];
+      const relatedPaths = new Set();
+      const changed = new Set();
+      const moduleMap = testPaths.map(path => ({
+        name: path,
+        path,
+        dependencies: null,
+      }));
+      const collectModules = list => {
+        for (const name in list) {
+          const path = list[name];
+          if (changedPaths.has(path)) {
+            changed.add(name);
+            if (this._isTestFilePath(path)) {
+              relatedPaths.add(path);
+            }
+          }
+          moduleMap.push({name, path, dependencies: null});
+        }
+      };
+      collectModules(hasteMap.modules);
+      collectModules(hasteMap.mocks);
+
+      const deferreds = moduleMap.map(() => {
+        let resolve;
+        const promise = new Promise(_resolve => resolve = _resolve);
+        return {resolve, promise};
+      });
+      let i = 0;
+      const nextResolution = () => {
+        if (i >= moduleMap.length) {
+          return;
+        }
+
+        const currentIndex = i;
+        const module = moduleMap[currentIndex];
+        const deferred = deferreds[currentIndex];
+        i++;
+        this._resolver.getModuleForPath(module.path).getDependencies()
+          .then(dependencies => {
+            nextResolution();
+            moduleMap[currentIndex].dependencies = dependencies;
+          })
+          .then(() => deferred.resolve());
+      };
+
+      for (let i = 0; i < 20; i++) {
+        nextResolution();
+      }
+      return Promise.all(deferreds.map(deferred => deferred.promise))
+        .then(() => Array.from(this.collectChangedModules(
+          relatedPaths,
+          moduleMap,
+          changed
+        )));
     });
   }
 

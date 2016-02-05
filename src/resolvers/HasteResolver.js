@@ -93,12 +93,10 @@ class HasteResolver {
       return this._hasteMapPromise;
     }
 
-    return this._hasteMapPromise = this._depGraph.load().then(() => {
-      return {
-        modules: this._getAllModules(),
-        mocks: this._getAllMocks(),
-      };
-    });
+    return this._hasteMapPromise = this._depGraph.load().then(() => ({
+      modules: this._getAllModules(),
+      mocks: this._getAllMocks(),
+    }));
   }
 
   getShallowDependencies(path) {
