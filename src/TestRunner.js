@@ -148,6 +148,7 @@ class TestRunner {
   }
 
   promiseTestPathsRelatedTo(paths) {
+    paths = Array.from(paths);
     return this._constructModuleLoader()
       .then(moduleLoader => {
         const relatedPaths = [];
