@@ -161,7 +161,7 @@ class TestRunner {
           .then(response => ({
             name: path,
             path,
-            dependencies: response.dependencies,
+            dependencies: response.dependencies.map(dep => dep.path),
           }))
       )).then(moduleMap => Array.from(this.collectChangedModules(
         relatedPaths,

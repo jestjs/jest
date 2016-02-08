@@ -52,7 +52,8 @@ class HasteResolver {
 
     this._depGraph = new DependencyGraph(Object.assign({}, config.haste, {
       roots: config.testPathDirs,
-      ignoreFilePath: path => path.match(ignoreFilePattern),
+      ignoreFilePath: path => ignoreFilePattern.test(path),
+      enableAssetMap: false,
       cache: this._cache,
       fileWatcher: this._fileWatcher,
       extensions,
@@ -93,8 +94,8 @@ class HasteResolver {
       return this._hasteMapPromise;
     }
 
-    return this._hasteMapPromise = this._depGraph.load().then(() => ({
-      modules: this._getAllModules(),
+    return this._hasteMapPromise = this._depGraph.load().then(map => ({
+      modules: this._getAllModules(map),
       mocks: this._getAllMocks(),
     }));
   }
@@ -113,8 +114,7 @@ class HasteResolver {
       .then(() => Promise.all([this._fileWatcher.end(), this._cache.end()]));
   }
 
-  _getAllModules() {
-    const map = this._depGraph._hasteMap._map;
+  _getAllModules(map) {
     const modules = Object.create(null);
     for (const name in map) {
       const module = map[name][this._defaultPlatform] || map[name].generic;

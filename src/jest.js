@@ -7,6 +7,8 @@
  */
 'use strict';
 
+require('fast-path').replace();
+
 const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
