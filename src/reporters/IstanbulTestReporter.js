@@ -30,8 +30,10 @@ class IstanbulTestReporter extends DefaultTestReporter {
     super.onRunComplete(config, aggregatedResults);
 
     if (config.collectCoverage) {
-      reporter.addAll(config.coverageReporters);
-      reporter.write(collector, true, () => {});
+      try {
+        reporter.addAll(config.coverageReporters);
+        reporter.write(collector, true, () => {});
+      } catch (e) {}
     }
   }
 
