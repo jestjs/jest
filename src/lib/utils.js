@@ -324,7 +324,7 @@ function formatFailureMessage(testResult, config) {
     const error = testResult.testExecError;
     return (
       descBullet + localChalk.bold('Runtime Error') + '\n' +
-      error.message + (error.stack ? '\n' + cleanStackTrace(error.stack) : '')
+      (error.stack ? cleanStackTrace(error.stack) : error.message)
     );
   }
 

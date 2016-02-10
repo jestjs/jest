@@ -19,6 +19,22 @@ const fs = require('graceful-fs');
 const getCacheFilePath = require('node-haste/lib/Cache/lib/getCacheFilePath');
 const getCacheKey = require('./lib/getCacheKey');
 
+const formatError = error => {
+  if (typeof error === 'string') {
+    return {
+      stack: null,
+      message: error,
+      type: 'Error',
+    };
+  }
+
+  return {
+    stack: error.stack,
+    message: error.message,
+    type: error.type,
+  };
+};
+
 let moduleMap;
 
 module.exports = (data, callback) => {
@@ -35,9 +51,9 @@ module.exports = (data, callback) => {
       .run()
       .then(
         result => callback(null, result),
-        err => callback(err)
+        err => callback(formatError(err))
       );
   } catch (err) {
-    callback(err);
+    callback(formatError(err));
   }
 };
