@@ -76,7 +76,7 @@ describe('TestRunner', () => {
 
       return runner.promiseTestPathsRelatedTo(new Set([path]))
         .then(relatedTests => {
-          expect(Array.from(relatedTests)).toEqual([rootPath]);
+          expect(relatedTests).toEqual([rootPath]);
         })
         .then(() => runner.end());
     });
@@ -86,10 +86,10 @@ describe('TestRunner', () => {
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       return runner.promiseTestPathsRelatedTo(new Set([filePath]))
         .then(relatedTests => {
-          expect(Array.from(relatedTests)).toEqual([
+          expect(relatedTests.sort()).toEqual([
+            parentDep,
             filePath,
             rootPath,
-            parentDep,
           ]);
         })
         .then(() => runner.end());
