@@ -176,9 +176,12 @@ class Loader {
     let moduleContent = transform(filename, this._config);
     let collectorStore;
     const onlyCollectFrom = this._config.collectCoverageOnlyFrom;
+    const hasOnlyCollectFrom =
+      typeof onlyCollectFrom === 'object' &&
+      Object.keys(onlyCollectFrom).length !== 0;
     const shouldCollectCoverage =
-      (this._config.collectCoverage === true && !onlyCollectFrom) ||
-      (onlyCollectFrom && onlyCollectFrom[filename] === true);
+      (this._config.collectCoverage === true && !hasOnlyCollectFrom) ||
+      (hasOnlyCollectFrom && onlyCollectFrom[filename] === true);
 
     if (shouldCollectCoverage) {
       if (!hasOwnProperty.call(this._coverageCollectors, filename)) {
