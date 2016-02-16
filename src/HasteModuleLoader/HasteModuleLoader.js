@@ -282,12 +282,14 @@ class Loader {
 
     const filename = moduleObj.__filename;
     const collectors = this._coverageCollectors;
+    const collectOnlyFrom = this._config.collectCoverageOnlyFrom;
+    const shouldCollectCoverage = (
+      (this._config.collectCoverage && !collectOnlyFrom) ||
+      (collectOnlyFrom && collectOnlyFrom[filename])
+    );
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-    if (
-      this._config.collectCoverage &&
-      !filename.includes('/node_modules/')
-    ) {
+    if (shouldCollectCoverage && !filename.includes('/node_modules/')) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,

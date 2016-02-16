@@ -188,6 +188,7 @@ function normalizeConfig(config) {
       case 'noStackTrace':
       case 'logHeapUsage':
       case 'cache':
+      case 'watchman':
       case 'verbose':
         value = config[key];
         break;

@@ -40,7 +40,10 @@ class HasteResolver {
     });
 
     this._fileWatcher = new FileWatcher(
-      config.testPathDirs.map(dir => ({dir}))
+      config.testPathDirs.map(dir => ({dir})),
+      {
+        useWatchman: config.watchman,
+      }
     );
 
     this._mappedModuleNames = Object.create(null);

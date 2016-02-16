@@ -176,6 +176,14 @@ const argv = optimist
       ),
       type: 'boolean',
     },
+    watchman: {
+      default: true,
+      description: _wrapDesc(
+        'Whether to use watchman for file crawling. Disable using ' +
+        '--no-watchman.'
+      ),
+      type: 'boolean',
+    },
   })
   .check(function(argv) {
     if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {

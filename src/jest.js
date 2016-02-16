@@ -107,6 +107,10 @@ function readConfig(argv, packageRoot) {
       config.cache = argv.cache;
     }
 
+    if (argv.watchman !== null) {
+      config.watchman = argv.watchman;
+    }
+
     if (argv.useStderr) {
       config.useStderr = argv.useStderr;
     }
