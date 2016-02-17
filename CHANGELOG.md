@@ -3,7 +3,14 @@
 ## 0.9.0
 
 * New implementation of node-haste and rewrite of internal module loading and
-  resolution.
+  resolution. Fixed both startup and runtime performance.
+  [#599](https://github.com/facebook/jest/pull/599)
+* Improved verbose logger output
+* Fixed and improved `--onlyChanged` option.
+* Added a "no tests found" message if no tests can be found.
+* Debounce `--watch` re-runs to not trigger test runs during a
+  branch switch in version control.
+* Fixed test runtime error reporting and stack traces
 
 ## 0.8.2
 
