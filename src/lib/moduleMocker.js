@@ -135,12 +135,14 @@ function createMockFunction(metadata, mockConstructor) {
 
   // Preserve `name` property of mocked function.
   const boundFunctionPrefix = 'bound ';
-  const isBound = name && name.startsWith(boundFunctionPrefix);
   let bindCall = '';
-  if (isBound) {
-    name = name.substring(boundFunctionPrefix.length);
-    // Call bind() just to alter the function name.
-    bindCall = '.bind(null)';
+  // if-do-while for perf reasons. The common case is for the if to fail.
+  if (name && name.startsWith(boundFunctionPrefix)) {
+    do {
+      name = name.substring(boundFunctionPrefix.length);
+      // Call bind() just to alter the function name.
+      bindCall = '.bind(null)';
+    } while (name && name.startsWith(boundFunctionPrefix));
   }
 
   // It's a syntax error to define functions with a reserved keyword
