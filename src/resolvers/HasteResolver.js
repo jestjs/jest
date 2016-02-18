@@ -10,11 +10,11 @@
 
 'use strict';
 
-const Cache = require('node-haste/lib/Cache');
 const DependencyGraph = require('node-haste');
-const FileWatcher = require('node-haste/lib/FileWatcher');
 
-const extractRequires = require('node-haste/lib/lib/extractRequires');
+const Cache = DependencyGraph.Cache;
+const FileWatcher = DependencyGraph.FileWatcher;
+
 const getCacheKey = require('../lib/getCacheKey');
 const path = require('path');
 
@@ -62,7 +62,7 @@ class HasteResolver {
       extensions,
       mocksPattern: new RegExp(config.mocksPattern),
       extractRequires: code => {
-        const data = extractRequires(code);
+        const data = DependencyGraph.extractRequires(code);
         data.code = data.code.replace(
           REQUIRE_EXTENSIONS_PATTERN,
           (match, pre, quot, dep, post) => {
@@ -148,7 +148,6 @@ class HasteResolver {
       }
     };
     data.deps.sync.forEach(updateMapping);
-    data.deps.async.forEach(updateMapping);
     return data;
   }
 

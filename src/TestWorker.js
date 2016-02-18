@@ -16,7 +16,7 @@ process.on('uncaughtException', err => {
 const Test = require('./Test');
 
 const fs = require('graceful-fs');
-const getCacheFilePath = require('node-haste/lib/Cache/lib/getCacheFilePath');
+const getCacheFilePath = require('node-haste').Cache.getCacheFilePath;
 const getCacheKey = require('./lib/getCacheKey');
 
 const formatError = error => {
