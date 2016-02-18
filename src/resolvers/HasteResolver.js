@@ -103,8 +103,12 @@ class HasteResolver {
     }));
   }
 
-  getShallowDependencies(path) {
-    return this._depGraph.getDependencies(path, this._defaultPlatform, false);
+  getShallowDependencies(entryPath) {
+    return this._depGraph.getDependencies({
+      entryPath,
+      platform: this._defaultPlatform,
+      recursive: false,
+    });
   }
 
   getFS() {
