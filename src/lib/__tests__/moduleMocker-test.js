@@ -11,44 +11,50 @@
 
 jest.autoMockOff();
 
-describe('moduleMocker', function() {
-  var moduleMocker;
+describe('moduleMocker', () => {
+  let moduleMocker;
 
-  beforeEach(function() {
+  beforeEach(() => {
     moduleMocker = require('../moduleMocker');
   });
 
-  describe('getMetadata', function() {
-    it('returns the function `name` property', function() {
+  describe('getMetadata', () => {
+    it('returns the function `name` property', () => {
       function x() {}
-      var metadata = moduleMocker.getMetadata(x);
+      const metadata = moduleMocker.getMetadata(x);
       expect(x.name).toBe('x');
       expect(metadata.name).toBe('x');
     });
+
+    it('mocks constant values', () => {
+      expect(moduleMocker.getMetadata('banana').value).toEqual('banana');
+      expect(moduleMocker.getMetadata(27).value).toEqual(27);
+      expect(moduleMocker.getMetadata(false).value).toEqual(false);
+    });
   });
 
-  describe('generateFromMetadata', function() {
-    it('forwards the function name property', function() {
+  describe('generateFromMetadata', () => {
+    it('forwards the function name property', () => {
       function foo() {}
-      var fooMock = moduleMocker.generateFromMetadata(
+      const fooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo)
       );
       expect(fooMock.name).toBe('foo');
     });
 
-    it('wont interfere with previous mocks on a shared prototype', function() {
-      var ClassFoo = function() {};
-      ClassFoo.prototype.x = function() {};
-      var ClassFooMock = moduleMocker.generateFromMetadata(
+    it('wont interfere with previous mocks on a shared prototype', () => {
+      const ClassFoo = function() {};
+      ClassFoo.prototype.x = () => {};
+      const ClassFooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(ClassFoo)
       );
-      var foo = new ClassFooMock();
-      var bar = new ClassFooMock();
+      const foo = new ClassFooMock();
+      const bar = new ClassFooMock();
 
-      foo.x.mockImplementation(function() {
+      foo.x.mockImplementation(() => {
         return 'Foo';
       });
-      bar.x.mockImplementation(function() {
+      bar.x.mockImplementation(() => {
         return 'Bar';
       });
 
@@ -56,16 +62,16 @@ describe('moduleMocker', function() {
       expect(bar.x()).toBe('Bar');
     });
 
-    it('does not mock non-enumerable getters', function() {
-      var foo = Object.defineProperties({}, {
+    it('does not mock non-enumerable getters', () => {
+      const foo = Object.defineProperties({}, {
         nonEnumMethod: {
-          value: function() {},
+          value: () => {},
         },
         nonEnumGetter: {
-          get: function() { throw new Error(); },
+          get: () => { throw new Error(); },
         },
       });
-      var fooMock = moduleMocker.generateFromMetadata(
+      const fooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo)
       );
 
@@ -75,7 +81,7 @@ describe('moduleMocker', function() {
       expect(fooMock.nonEnumGetter).toBeUndefined();
     });
 
-    it('mocks ES2015 non-enumerable methods', function() {
+    it('mocks ES2015 non-enumerable methods', () => {
       class ClassFoo {
         foo() {}
         toString() {
@@ -83,13 +89,13 @@ describe('moduleMocker', function() {
         }
       }
 
-      var ClassFooMock = moduleMocker.generateFromMetadata(
+      const ClassFooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(ClassFoo)
       );
-      var foo = new ClassFooMock();
+      const foo = new ClassFooMock();
 
-      var instanceFoo = new ClassFoo();
-      var instanceFooMock = moduleMocker.generateFromMetadata(
+      const instanceFoo = new ClassFoo();
+      const instanceFooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(instanceFoo)
       );
 
@@ -100,15 +106,21 @@ describe('moduleMocker', function() {
       expect(instanceFooMock.toString.mock).not.toBeUndefined();
     });
 
-    it('mocks methods that are bound multiple times', function() {
-      var func = function func() {};
-      var multipleBoundFunc = func.bind(null).bind(null);
+    it('mocks methods that are bound multiple times', () => {
+      const func = function func() {};
+      const multipleBoundFunc = func.bind(null).bind(null);
 
-      var multipleBoundFuncMock = moduleMocker.generateFromMetadata(
+      const multipleBoundFuncMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(multipleBoundFunc)
       );
 
       expect(typeof multipleBoundFuncMock).toBe('function');
+    });
+
+    it('mocks regexp instances', () => {
+      expect(
+        () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/))
+      ).not.toThrow();
     });
   });
 });

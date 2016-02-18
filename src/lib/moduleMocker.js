@@ -70,7 +70,7 @@ function getType(ref) {
     return 'array';
   } else if (isA('Object', ref)) {
     return 'object';
-  } else if (isA('Number', ref) || isA('String', ref)) {
+  } else if (isA('Number', ref) || isA('String', ref) || isA('Boolean', ref)) {
     return 'constant';
   } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
     return 'collection';
@@ -97,7 +97,15 @@ function isReadonlyProp(object, prop) {
       ) &&
       isA('Function', object)
     ) ||
-    (prop === 'source' && isA('RegExp', object))
+    (
+      (
+        prop === 'source' ||
+        prop === 'global' ||
+        prop === 'ignoreCase' ||
+        prop === 'multiline'
+      ) &&
+      isA('RegExp', object)
+    )
   );
 }
 
