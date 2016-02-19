@@ -111,8 +111,8 @@ class JasmineFormatter {
       if (this._jasmine.isDomNode(obj)) {
         let attrStr = '';
         Array.prototype.forEach.call(obj.attributes, attr => {
-          const attrName = attr.nodeName.trim();
-          const attrValue = attr.nodeValue.trim();
+          const attrName = attr.name.trim();
+          const attrValue = attr.value.trim();
           attrStr += ' ' + attrName + '="' + attrValue + '"';
         });
         return (
