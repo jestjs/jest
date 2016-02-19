@@ -17,8 +17,8 @@ const transform = require('../lib/transform');
 
 const NODE_PATH =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
+const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
-const VENDOR_PATH = path.resolve(__dirname, '../../vendor');
 
 const mockParentModule = {
   id: 'mockParent',
@@ -27,20 +27,9 @@ const mockParentModule = {
 
 const normalizedIDCache = Object.create(null);
 const moduleNameCache = Object.create(null);
+const shouldMockModuleCache = Object.create(null);
 
-const isFile = file => {
-  let stat;
-  try {
-    stat = fs.statSync(file);
-  } catch (err) {
-    if (err && err.code === 'ENOENT') {
-      return false;
-    }
-  }
-  return stat.isFile() || stat.isFIFO();
-};
-
-let _configUnmockListRegExpCache = null;
+const unmockRegExpCache = new WeakMap();
 
 class Loader {
   constructor(config, environment, moduleMap) {
@@ -53,7 +42,6 @@ class Loader {
     this._isCurrentlyExecutingManualMock = null;
     this._mockMetaDataCache = Object.create(null);
     this._shouldAutoMock = true;
-    this._configShouldMockModuleNames = Object.create(null);
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
     this._modules = moduleMap.modules;
@@ -63,22 +51,11 @@ class Loader {
       this._CoverageCollector = require(config.coverageCollector);
     }
 
-    if (_configUnmockListRegExpCache === null) {
-      _configUnmockListRegExpCache = new WeakMap();
-    }
-
-    if (
-      !config.unmockedModulePathPatterns ||
-      config.unmockedModulePathPatterns.length === 0
-    ) {
-      this._unmockListRegExps = [];
-    } else {
-      this._unmockListRegExps = _configUnmockListRegExpCache.get(config);
-      if (!this._unmockListRegExps) {
-        this._unmockListRegExps = config.unmockedModulePathPatterns
-          .map(unmockPathRe => new RegExp(unmockPathRe));
-        _configUnmockListRegExpCache.set(config, this._unmockListRegExps);
-      }
+    this._unmockedList = unmockRegExpCache.get(config);
+    if (!this._unmockedList && config.unmockedModulePathPatterns) {
+      this._unmockedList =
+        new RegExp(config.unmockedModulePathPatterns.join('|'));
+      unmockRegExpCache.set(config, this._unmockedList);
     }
 
     // Workers communicate the config as JSON so we have to create a regex
@@ -133,11 +110,6 @@ class Loader {
 
     if (!modulePath) {
       modulePath = this._resolveModuleName(currPath, moduleName);
-    }
-
-    // Always natively require the jasmine runner.
-    if (modulePath.indexOf(VENDOR_PATH) === 0) {
-      return require(modulePath);
     }
 
     if (!modulePath) {
@@ -289,7 +261,7 @@ class Loader {
     );
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-    if (shouldCollectCoverage && !filename.includes('/node_modules/')) {
+    if (shouldCollectCoverage && !filename.includes(NODE_MODULES)) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,
@@ -373,15 +345,15 @@ class Loader {
     // Check if the resolver knows about this module
     if (this._modules[moduleName]) {
       return this._modules[moduleName];
-    } else {
-      // Otherwise it is likely a node_module.
-      const key = currPath + ' : ' + moduleName;
-      if (moduleNameCache[key]) {
-        return moduleNameCache[key];
-      }
-      moduleNameCache[key] = this._resolveNodeModule(currPath, moduleName);
+    }
+
+    // Otherwise it is likely a node_module.
+    const key = currPath + ' : ' + moduleName;
+    if (moduleNameCache[key]) {
       return moduleNameCache[key];
     }
+    moduleNameCache[key] = this._resolveNodeModule(currPath, moduleName);
+    return moduleNameCache[key];
   }
 
   _resolveNodeModule(currPath, moduleName) {
@@ -390,9 +362,7 @@ class Loader {
       return resolve.sync(moduleName, {
         basedir,
         extensions: this._extensions,
-        isFile,
         paths: NODE_PATH,
-        readFileSync: fs.readFileSync,
       });
     } catch (e) {
       const parts = moduleName.split('/');
@@ -447,10 +417,7 @@ class Loader {
       moduleType = 'user';
       if (
         IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
-        (
-          this._getModule(moduleName) === undefined &&
-          this._getMockModule(moduleName) === undefined
-        )
+        (!this._getModule(moduleName) && !this._getMockModule(moduleName))
       ) {
         realAbsPath = this._resolveModuleName(currPath, moduleName);
         if (realAbsPath == null) {
@@ -491,16 +458,18 @@ class Loader {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
     if (moduleID in this._explicitShouldMock) {
       return this._explicitShouldMock[moduleID];
-    } else if (resolve.isCore(moduleName)) {
+    }
+
+    if (resolve.isCore(moduleName)) {
       return false;
-    } else if (this._shouldAutoMock) {
+    }
+
+    if (this._shouldAutoMock) {
       // See if the module is specified in the config as a module that should
       // never be mocked
-      if (moduleName in this._configShouldMockModuleNames) {
-        return this._configShouldMockModuleNames[moduleName];
-      } else if (this._unmockListRegExps.length > 0) {
-        this._configShouldMockModuleNames[moduleName] = true;
-
+      if (moduleName in shouldMockModuleCache) {
+        return shouldMockModuleCache[moduleName];
+      } else if (this._unmockedList) {
         const manualMockResource = this._getMockModule(moduleName);
         let modulePath;
         try {
@@ -521,27 +490,33 @@ class Loader {
           // all module environments are complete (meaning you can't just
           // write a manual mock as a substitute for a real module).
           if (manualMockResource) {
+            shouldMockModuleCache[moduleName] = true;
             return true;
           }
           throw e;
         }
-        let unmockRegExp;
-
-        // Never mock the jasmine environment.
-        if (modulePath.indexOf(VENDOR_PATH) === 0) {
-          return false;
-        }
 
         const realPath = fs.realpathSync(modulePath);
-        this._configShouldMockModuleNames[moduleName] = true;
-        for (let i = 0; i < this._unmockListRegExps.length; i++) {
-          unmockRegExp = this._unmockListRegExps[i];
-          if (unmockRegExp.test(modulePath) ||
-              unmockRegExp.test(realPath)) {
-            return this._configShouldMockModuleNames[moduleName] = false;
-          }
+        if (this._unmockedList.test(realPath)) {
+          shouldMockModuleCache[moduleName] = false;
+        } else if (
+          currPath.includes(NODE_MODULES) &&
+          realPath.includes(NODE_MODULES) &&
+          (
+            !shouldMockModuleCache[moduleName] ||
+            this._unmockedList.test(currPath)
+          )
+        ) {
+          // If the dependency should normally be mocked but the parent
+          // module is a node module that is not being mocked, the target module
+          // should be unmocked too. This transitive behavior is useful for flat
+          // package managers, like npm3.
+          return false;
+        } else {
+          shouldMockModuleCache[moduleName] = true;
         }
-        return this._configShouldMockModuleNames[moduleName];
+
+        return shouldMockModuleCache[moduleName];
       }
       return true;
     } else {

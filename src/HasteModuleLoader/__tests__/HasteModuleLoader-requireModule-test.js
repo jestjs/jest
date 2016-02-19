@@ -26,6 +26,7 @@ describe('HasteModuleLoader', function() {
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModule-tests',
     rootDir,
+    unmockedModulePathPatterns: ['npm3-main-dep'],
   });
 
   function buildLoader() {
@@ -143,51 +144,38 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    describe('features I want to remove, but must exist for now', function() {
-      /**
-       * I'd like to kill this and make all tests use something more explicit
-       * when they want a manual mock, like:
-       *
-       *   require.mock('MyManualMock');
-       *   const ManuallyMocked = require('ManuallyMocked');
-       *
-       *   --or--
-       *
-       *   const ManuallyMocked = require.manualMock('ManuallyMocked');
-       *
-       * For now, however, this is built-in and many tests rely on it, so we
-       * must support it until we can do some cleanup.
-       */
-      pit('provides manual mock when real module doesnt exist', function() {
-        return buildLoader().then(function(loader) {
-          const exports = loader.requireModule(
-            rootPath,
-            'ExclusivelyManualMock'
-          );
-          expect(exports.isExclusivelyManualMockModule).toBe(true);
+    pit('provides manual mock when real module doesnt exist', function() {
+      return buildLoader().then(function(loader) {
+        const exports = loader.requireModule(
+          rootPath,
+          'ExclusivelyManualMock'
+        );
+        expect(exports.isExclusivelyManualMockModule).toBe(true);
+      });
+    });
+
+    pit(
+      'doesnt override real modules with manual mocks when explicitly ' +
+        'marked with .dontMock()',
+        function() {
+          return buildLoader().then(function(loader) {
+            const root = loader.requireModule(rootPath, './root.js');
+            root.jest.resetModuleRegistry();
+            root.jest.dontMock('ManuallyMocked');
+            const exports = loader.requireModule(rootPath, 'ManuallyMocked');
+            expect(exports.isManualMockModule).toBe(false);
+          });
+        }
+    );
+
+    pit('unmocks transitive dependencies in node_modules by default', () => {
+      return buildLoader().then(loader => {
+        const nodeModule = loader.requireModule(rootPath, 'npm3-main-dep');
+        expect(nodeModule()).toEqual({
+          isMocked: false,
+          transitiveNPM3Dep: 'npm3-transitive-dep',
         });
       });
-
-      /**
-       * requireModule() should *always* return the real module. Mocks should
-       * only be returned by requireMock().
-       *
-       * See the 'overrides real modules with manual mock when one exists' test
-       * for more info on why I want to kill this feature.
-       */
-      pit(
-        'doesnt override real modules with manual mocks when explicitly ' +
-          'marked with .dontMock()',
-          function() {
-            return buildLoader().then(function(loader) {
-              const root = loader.requireModule(rootPath, './root.js');
-              root.jest.resetModuleRegistry();
-              root.jest.dontMock('ManuallyMocked');
-              const exports = loader.requireModule(rootPath, 'ManuallyMocked');
-              expect(exports.isManualMockModule).toBe(false);
-            });
-          }
-      );
     });
   });
 });

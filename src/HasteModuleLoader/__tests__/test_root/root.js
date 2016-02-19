@@ -8,6 +8,8 @@
  * @providesModule root
  */
 
+'use strict';
+
 require('ManuallyMocked');
 require('ModuleWithSideEffects');
 require('RegularModule');
