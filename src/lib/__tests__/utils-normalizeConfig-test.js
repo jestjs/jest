@@ -11,6 +11,8 @@
 
 jest.autoMockOff();
 
+const normalizeConfig = require('./../../config/normalize');
+
 describe('utils-normalizeConfig', function() {
   var path;
   var root;
@@ -37,13 +39,13 @@ describe('utils-normalizeConfig', function() {
     expectedPathFooQux = path.join(root, 'root', 'path', 'foo', 'qux', 'quux');
     expectedPathAbs = path.join(root, 'an', 'abs', 'path');
     expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
-    utils = require('../utils');
+    utils = require('jest-util');
   });
 
   it('throws when an invalid config option is passed in', function() {
 
     expect(function() {
-      utils.normalizeConfig({
+      normalizeConfig({
         rootDir: '/root/path/foo',
         thisIsAnInvalidConfigKey: 'with a value even!',
       });
@@ -54,14 +56,14 @@ describe('utils-normalizeConfig', function() {
   describe('rootDir', function() {
     it('throws if the config is missing a rootDir property', function() {
       expect(function() {
-        utils.normalizeConfig({});
+        normalizeConfig({});
       }).toThrow(new Error('No rootDir config value found!'));
     });
   });
 
   describe('collectCoverageOnlyFrom', function() {
     it('normalizes all paths relative to rootDir', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo/',
         collectCoverageOnlyFrom: {
           'bar/baz': true,
@@ -77,7 +79,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('does not change absolute paths', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '/an/abs/path': true,
@@ -93,7 +95,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '<rootDir>/bar/baz': true,
@@ -109,7 +111,7 @@ describe('utils-normalizeConfig', function() {
 
   describe('testPathDirs', function() {
     it('normalizes all paths relative to rootDir', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         testPathDirs: [
           'bar/baz',
@@ -123,7 +125,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('does not change absolute paths', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         testPathDirs: [
           '/an/abs/path',
@@ -137,7 +139,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         testPathDirs: [
           '<rootDir>/bar/baz',
@@ -150,7 +152,7 @@ describe('utils-normalizeConfig', function() {
 
   describe('scriptPreprocessor', function() {
     it('normalizes the path according to rootDir', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         scriptPreprocessor: 'bar/baz',
       }, '/root/path');
@@ -159,7 +161,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('does not change absolute paths', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         scriptPreprocessor: '/an/abs/path',
       });
@@ -168,7 +170,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         scriptPreprocessor: '<rootDir>/bar/baz',
       });
@@ -179,7 +181,7 @@ describe('utils-normalizeConfig', function() {
 
   describe('setupEnvScriptFile', function() {
     it('normalizes the path according to rootDir', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         setupEnvScriptFile: 'bar/baz',
       }, '/root/path');
@@ -188,7 +190,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('does not change absolute paths', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         setupEnvScriptFile: '/an/abs/path',
       });
@@ -197,7 +199,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         setupEnvScriptFile: '<rootDir>/bar/baz',
       });
@@ -208,7 +210,7 @@ describe('utils-normalizeConfig', function() {
 
   describe('setupTestFrameworkScriptFile', function() {
     it('normalizes the path according to rootDir', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: 'bar/baz',
       }, '/root/path');
@@ -217,7 +219,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('does not change absolute paths', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: '/an/abs/path',
       });
@@ -226,7 +228,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
       });
@@ -239,7 +241,7 @@ describe('utils-normalizeConfig', function() {
     it('does not normalize paths relative to rootDir', function() {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: [
           'bar/baz',
@@ -256,7 +258,7 @@ describe('utils-normalizeConfig', function() {
     it('does not normalize trailing slashes', function() {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: [
           'bar/baz',
@@ -271,7 +273,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: [
           'hasNoToken',
@@ -290,7 +292,7 @@ describe('utils-normalizeConfig', function() {
     it('does not normalize paths relative to rootDir', function() {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
@@ -307,7 +309,7 @@ describe('utils-normalizeConfig', function() {
     it('does not normalize trailing slashes', function() {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
@@ -322,7 +324,7 @@ describe('utils-normalizeConfig', function() {
     });
 
     it('substitutes <rootDir> tokens', function() {
-      var config = utils.normalizeConfig({
+      var config = normalizeConfig({
         rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'hasNoToken',

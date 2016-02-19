@@ -18,7 +18,7 @@ const mkdirp = require('mkdirp');
 const os = require('os');
 const path = require('path');
 const promisify = require('./lib/promisify');
-const utils = require('./lib/utils');
+const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
