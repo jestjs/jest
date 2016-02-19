@@ -12,7 +12,7 @@
 jest.autoMockOff();
 
 const path = require('path');
-const utils = require('../lib/utils');
+const normalizeConfig = require('./../config/normalize');
 
 describe('TestRunner', () => {
   const name = 'TestRunner';
@@ -26,9 +26,9 @@ describe('TestRunner', () => {
   describe('_isTestFilePath', () => {
 
     beforeEach(() => {
-      const utils = require('../lib/utils');
+      const utils = require('jest-util');
       jest.mock('../resolvers/HasteResolver');
-      runner = new TestRunner(utils.normalizeConfig({
+      runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir: '.',
@@ -67,7 +67,7 @@ describe('TestRunner', () => {
       'test_root'
     );
     const rootPath = path.join(rootDir, 'root.js');
-    const config = utils.normalizeConfig({
+    const config = normalizeConfig({
       cacheDirectory: global.CACHE_DIRECTORY,
       name: 'TestRunner-promiseTestPathsRelatedTo-tests',
       rootDir,

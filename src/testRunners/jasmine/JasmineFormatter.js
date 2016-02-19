@@ -10,7 +10,7 @@
 
 const diff = require('diff');
 const chalk = require('chalk');
-const utils = require('../../lib/utils');
+const utils = require('jest-util');
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 const DIFFABLE_MATCHERS = Object.assign(Object.create(null), {

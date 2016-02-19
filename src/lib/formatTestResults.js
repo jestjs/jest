@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const utils = require('./utils');
+const utils = require('jest-util');
 
 const formatResult = (testResult, codeCoverageFormatter, reporter) => {
   const output = {
