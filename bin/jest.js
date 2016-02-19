@@ -224,7 +224,7 @@ function runJest() {
     return;
   }
 
-  const cwd = process.cwd();
+  const cwd = process.cwd().toLowerCase();
 
   // Is the cwd somewhere within an npm package?
   let cwdPackageRoot = cwd;
