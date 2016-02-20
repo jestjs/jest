@@ -34,7 +34,7 @@ const DEFAULT_CONFIG_VALUES = {
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
-  mocksPattern: '(?:[\\/]|^)__mocks__[\\/]',
+  mocksPattern: '__mocks__',
   testEnvironment: require.resolve('../environments/JSDOMEnvironment'),
   testEnvData: {},
   testFileExtensions: ['js'],

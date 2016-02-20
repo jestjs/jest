@@ -37,15 +37,25 @@ describe('TestRunner', () => {
     });
 
     it('supports ../ paths and unix separators', () => {
-      const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-      expect(runner._isTestFilePath(path)).toEqual(true);
+      if (process.platform !== 'win32') {
+        const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+        expect(runner._isTestFilePath(path)).toEqual(true);
+      }
     });
 
     it('supports unix separators', () => {
-      const path = '/path/to/__tests__/test.js';
-      expect(runner._isTestFilePath(path)).toEqual(true);
+      if (process.platform !== 'win32') {
+        const path = '/path/to/__tests__/test.js';
+        expect(runner._isTestFilePath(path)).toEqual(true);
+      }
     });
 
+    it('supports win32 separators', () => {
+      if (process.platform === 'win32') {
+        const path = '\\path\\to\\__tests__\\test.js';
+        expect(runner._isTestFilePath(path)).toEqual(true);
+      }
+    });
   });
 
   describe('promiseTestPathsRelatedTo', () => {
