@@ -22,7 +22,7 @@ describe('HasteModuleLoader', function() {
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
-  const config = utils.normalizeConfig({
+  const baseConfig = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModuleOrMock-tests',
     rootDir,
@@ -32,7 +32,8 @@ describe('HasteModuleLoader', function() {
     },
   });
 
-  function buildLoader() {
+  function buildLoader(config) {
+    config = Object.assign({}, baseConfig, config);
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
@@ -56,29 +57,25 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit('doesnt mock modules when explicitly dontMock()ed', function() {
+    pit(`doesn't mock modules when explicitly unmocked`, function() {
       return buildLoader().then(function(loader) {
         const root = loader.requireModule(rootDir, rootPath);
-        root.jest.dontMock('RegularModule');
+        root.jest.unmock('RegularModule');
         const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
-    pit(
-      'doesnt mock modules when explicitly dontMock()ed via a different ' +
-      'denormalized module name',
-      function() {
-        return buildLoader().then(function(loader) {
-          const root = loader.requireModule(rootDir, rootPath);
-          root.jest.dontMock('./RegularModule');
-          const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
-          expect(exports.isRealModule).toBe(true);
-        });
-      }
-    );
+    pit(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () => {
+      return buildLoader().then(function(loader) {
+        const root = loader.requireModule(rootDir, rootPath);
+        root.jest.unmock('./RegularModule');
+        const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
+        expect(exports.isRealModule).toBe(true);
+      });
+    });
 
-    pit('doesnt mock modules when autoMockOff() has been called', function() {
+    pit(`doesn't mock modules when autoMockOff() has been called`, function() {
       return buildLoader().then(function(loader) {
         const root = loader.requireModule(rootDir, rootPath);
         root.jest.autoMockOff();
@@ -121,6 +118,41 @@ describe('HasteModuleLoader', function() {
 
         exports = loader.requireModuleOrMock(rootPath, 'dog.png');
         expect(exports.isRelativeImageStub).toBe(true);
+      });
+    });
+
+    describe('transitive dependencies', () => {
+      const expectUnmocked = nodeModule => {
+        const moduleData = nodeModule();
+        expect(moduleData.isUnmocked()).toBe(true);
+        expect(moduleData.transitiveNPM3Dep).toEqual('npm3-transitive-dep');
+        expect(moduleData.internalImplementation())
+          .toEqual('internal-module-code');
+      };
+
+      pit('unmocks transitive dependencies in node_modules by default', () => {
+        return buildLoader({
+          unmockedModulePathPatterns: ['npm3-main-dep'],
+        }).then(loader => {
+          const root = loader.requireModule(rootPath, './root.js');
+          expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+
+          // Test twice to make sure HasteModuleLoader caching works properly
+          root.jest.resetModuleRegistry();
+          expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+        });
+      });
+
+      pit('unmocks transitive dependencies in node_modules when using unmock', () => {
+        return buildLoader().then(loader => {
+          const root = loader.requireModule(rootPath, './root.js');
+          root.jest.unmock('npm3-main-dep');
+          expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+
+          // Test twice to make sure HasteModuleLoader caching works properly
+          root.jest.resetModuleRegistry();
+          expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+        });
       });
     });
   });

@@ -27,8 +27,10 @@ const mockParentModule = {
 
 const normalizedIDCache = Object.create(null);
 const moduleNameCache = Object.create(null);
+const mockMetaDataCache = Object.create(null);
 const shouldMockModuleCache = Object.create(null);
-
+const transitiveShouldMock = Object.create(null);
+const shouldUnmockTransitiveDependenciesCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
 
 class Loader {
@@ -40,7 +42,7 @@ class Loader {
     this._explicitShouldMock = Object.create(null);
     this._explicitlySetMocks = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
-    this._mockMetaDataCache = Object.create(null);
+
     this._shouldAutoMock = true;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
@@ -51,11 +53,11 @@ class Loader {
       this._CoverageCollector = require(config.coverageCollector);
     }
 
-    this._unmockedList = unmockRegExpCache.get(config);
-    if (!this._unmockedList && config.unmockedModulePathPatterns) {
-      this._unmockedList =
+    this._unmockList = unmockRegExpCache.get(config);
+    if (!this._unmockList && config.unmockedModulePathPatterns) {
+      this._unmockList =
         new RegExp(config.unmockedModulePathPatterns.join('|'));
-      unmockRegExpCache.set(config, this._unmockedList);
+      unmockRegExpCache.set(config, this._unmockList);
     }
 
     // Workers communicate the config as JSON so we have to create a regex
@@ -305,10 +307,10 @@ class Loader {
   _generateMock(currPath, moduleName) {
     const modulePath = this._resolveModuleName(currPath, moduleName);
 
-    if (!(modulePath in this._mockMetaDataCache)) {
+    if (!(modulePath in mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
+      mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute
@@ -333,12 +335,9 @@ class Loader {
       if (mockMetadata === null) {
         throw new Error('Failed to get mock metadata: ' + modulePath);
       }
-      this._mockMetaDataCache[modulePath] = mockMetadata;
+      mockMetaDataCache[modulePath] = mockMetadata;
     }
-
-    return moduleMocker.generateFromMetadata(
-      this._mockMetaDataCache[modulePath]
-    );
+    return moduleMocker.generateFromMetadata(mockMetaDataCache[modulePath]);
   }
 
   _resolveModuleName(currPath, moduleName) {
@@ -348,7 +347,7 @@ class Loader {
     }
 
     // Otherwise it is likely a node_module.
-    const key = currPath + ' : ' + moduleName;
+    const key = currPath + path.delimiter + moduleName;
     if (moduleNameCache[key]) {
       return moduleNameCache[key];
     }
@@ -357,6 +356,9 @@ class Loader {
   }
 
   _resolveNodeModule(currPath, moduleName) {
+    if (!moduleName) {
+      return currPath;
+    }
     const basedir = path.dirname(currPath);
     try {
       return resolve.sync(moduleName, {
@@ -401,127 +403,109 @@ class Loader {
   }
 
   _getNormalizedModuleID(currPath, moduleName) {
-    const key = currPath + ' : ' + moduleName;
+    const key = currPath + path.delimiter + moduleName;
     if (normalizedIDCache[key]) {
       return normalizedIDCache[key];
     }
 
     let moduleType;
-    let mockAbsPath = null;
-    let realAbsPath = null;
+    let mockPath = null;
+    let absolutePath = null;
 
     if (resolve.isCore(moduleName)) {
       moduleType = 'node';
-      realAbsPath = moduleName;
+      absolutePath = moduleName;
     } else {
       moduleType = 'user';
       if (
         IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
         (!this._getModule(moduleName) && !this._getMockModule(moduleName))
       ) {
-        realAbsPath = this._resolveModuleName(currPath, moduleName);
-        if (realAbsPath == null) {
-          throw new Error(
-            `Cannot find module '${moduleName}' from '${currPath || '.'}'`
-          );
-        }
-
+        absolutePath = this._resolveModuleName(currPath, moduleName);
         // Look up if this module has an associated manual mock.
         const mockModule = this._getMockModule(moduleName);
         if (mockModule) {
-          mockAbsPath = mockModule;
+          mockPath = mockModule;
         }
       }
 
-      if (realAbsPath === null) {
+      if (absolutePath === null) {
         const moduleResource = this._getModule(moduleName);
         if (moduleResource) {
-          realAbsPath = moduleResource;
+          absolutePath = moduleResource;
         }
       }
 
-      if (mockAbsPath === null) {
+      if (mockPath === null) {
         const mockResource = this._getMockModule(moduleName);
         if (mockResource) {
-          mockAbsPath = mockResource;
+          mockPath = mockResource;
         }
       }
     }
 
     const delimiter = path.delimiter;
-    const id = moduleType + delimiter + realAbsPath + delimiter + mockAbsPath;
+    const id = moduleType + delimiter + absolutePath + delimiter + mockPath;
     normalizedIDCache[key] = id;
     return id;
   }
 
   _shouldMock(currPath, moduleName) {
+    const explicitShouldMock = this._explicitShouldMock;
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-    if (moduleID in this._explicitShouldMock) {
-      return this._explicitShouldMock[moduleID];
+    const key = currPath + path.delimiter + moduleID;
+
+    if (moduleID in explicitShouldMock) {
+      return explicitShouldMock[moduleID];
     }
 
-    if (resolve.isCore(moduleName)) {
+    if (
+      !this._shouldAutoMock ||
+      resolve.isCore(moduleName) ||
+      shouldUnmockTransitiveDependenciesCache[key]
+    ) {
       return false;
     }
 
-    if (this._shouldAutoMock) {
-      // See if the module is specified in the config as a module that should
-      // never be mocked
-      if (moduleName in shouldMockModuleCache) {
-        return shouldMockModuleCache[moduleName];
-      } else if (this._unmockedList) {
-        const manualMockResource = this._getMockModule(moduleName);
-        let modulePath;
-        try {
-          modulePath = this._resolveModuleName(currPath, moduleName);
-        } catch (e) {
-          // If there isn't a real module, we don't have a path to match
-          // against the unmockList regexps. If there is also not a manual
-          // mock, then we throw because this module doesn't exist anywhere.
-          //
-          // However, it's possible that someone has a manual mock for a
-          // non-existent real module. In this case, we should mock the module
-          // (because we technically can).
-          //
-          // Ideally this should never happen, but we have some odd
-          // pre-existing edge-cases that rely on it so we need it for now.
-          //
-          // I'd like to eliminate this behavior in favor of requiring that
-          // all module environments are complete (meaning you can't just
-          // write a manual mock as a substitute for a real module).
-          if (manualMockResource) {
-            shouldMockModuleCache[moduleName] = true;
-            return true;
-          }
-          throw e;
-        }
+    if (moduleName in shouldMockModuleCache) {
+      return shouldMockModuleCache[moduleName];
+    }
 
-        const realPath = fs.realpathSync(modulePath);
-        if (this._unmockedList.test(realPath)) {
-          shouldMockModuleCache[moduleName] = false;
-        } else if (
-          currPath.includes(NODE_MODULES) &&
-          realPath.includes(NODE_MODULES) &&
-          (
-            !shouldMockModuleCache[moduleName] ||
-            this._unmockedList.test(currPath)
-          )
-        ) {
-          // If the dependency should normally be mocked but the parent
-          // module is a node module that is not being mocked, the target module
-          // should be unmocked too. This transitive behavior is useful for flat
-          // package managers, like npm3.
-          return false;
-        } else {
-          shouldMockModuleCache[moduleName] = true;
-        }
-
-        return shouldMockModuleCache[moduleName];
+    const manualMockResource = this._getMockModule(moduleName);
+    let modulePath;
+    try {
+      modulePath = this._resolveModuleName(currPath, moduleName);
+    } catch (e) {
+      if (manualMockResource) {
+        shouldMockModuleCache[moduleName] = true;
+        return true;
       }
-      return true;
-    } else {
+      throw e;
+    }
+
+    const realPath = fs.realpathSync(modulePath);
+    if (this._unmockList && this._unmockList.test(realPath)) {
+      shouldMockModuleCache[moduleName] = false;
       return false;
     }
+
+    // transitive unmocking for package managers that store flat packages (npm3)
+    const currentModuleID = this._getNormalizedModuleID(currPath);
+    if (
+      currPath.includes(NODE_MODULES) &&
+      realPath.includes(NODE_MODULES) &&
+      (
+        (this._unmockList && this._unmockList.test(currPath)) ||
+        explicitShouldMock[currentModuleID] === false ||
+        transitiveShouldMock[currentModuleID] === false
+      )
+    ) {
+      transitiveShouldMock[moduleID] = false;
+      shouldUnmockTransitiveDependenciesCache[key] = true;
+      return false;
+    }
+
+    return shouldMockModuleCache[moduleName] = true;
   }
 
   _resolveStubModuleName(moduleName) {
@@ -551,6 +535,11 @@ class Loader {
   }
 
   _createRuntimeFor(currPath) {
+    const unmock = moduleName => {
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = false;
+      return runtime;
+    };
     const runtime = {
       addMatchers: matchers => {
         const jasmine = this._environment.global.jasmine;
@@ -570,11 +559,8 @@ class Loader {
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
       currentTestPath: () => this._environment.testFilePath,
 
-      dontMock: moduleName => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = false;
-        return runtime;
-      },
+      dontMock: unmock,
+      unmock,
 
       getTestEnvData: () => {
         const frozenCopy = {};

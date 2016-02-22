@@ -154,27 +154,13 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit(
-      'doesnt override real modules with manual mocks when explicitly ' +
-        'marked with .dontMock()',
-        function() {
-          return buildLoader().then(function(loader) {
-            const root = loader.requireModule(rootPath, './root.js');
-            root.jest.resetModuleRegistry();
-            root.jest.dontMock('ManuallyMocked');
-            const exports = loader.requireModule(rootPath, 'ManuallyMocked');
-            expect(exports.isManualMockModule).toBe(false);
-          });
-        }
-    );
-
-    pit('unmocks transitive dependencies in node_modules by default', () => {
-      return buildLoader().then(loader => {
-        const nodeModule = loader.requireModule(rootPath, 'npm3-main-dep');
-        expect(nodeModule()).toEqual({
-          isMocked: false,
-          transitiveNPM3Dep: 'npm3-transitive-dep',
-        });
+    pit(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () => {
+      return buildLoader().then(function(loader) {
+        const root = loader.requireModule(rootPath, './root.js');
+        root.jest.resetModuleRegistry();
+        root.jest.unmock('ManuallyMocked');
+        const exports = loader.requireModule(rootPath, 'ManuallyMocked');
+        expect(exports.isManualMockModule).toBe(false);
       });
     });
   });
