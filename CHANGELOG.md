@@ -10,7 +10,9 @@
 * Added a "no tests found" message if no tests can be found.
 * Debounce `--watch` re-runs to not trigger test runs during a
   branch switch in version control.
-* Fixed test runtime error reporting and stack traces
+* Fixed mocking of boolean values.
+* Fixed unmocking behavior with npm3.
+* Fixed test runtime error reporting and stack traces.
 
 ## 0.8.2
 
