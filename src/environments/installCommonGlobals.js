@@ -8,6 +8,7 @@
 'use strict';
 
 const utils = require('../lib/utils');
+const EventEmitter = require('events').EventEmitter;
 
 module.exports = (global, globals) => {
   // Forward some APIs
@@ -15,7 +16,16 @@ module.exports = (global, globals) => {
   // `global.process` is mutated by FakeTimers. Make a copy of the
   // object for the jsdom environment to prevent memory leaks.
   global.process = Object.assign({}, process);
-  global.process.on = process.on.bind(process);
+
+  // Correctly bind all event functions
+  for (var func in EventEmitter.prototype)
+  {
+    if (typeof EventEmitter.prototype[func] == 'function')
+    {
+      global.process[func] = process[func].bind(process);
+    }
+  }
+
   global.setImmediate = setImmediate;
   global.clearImmediate = clearImmediate;
   Object.assign(global, utils.deepCopy(globals));
