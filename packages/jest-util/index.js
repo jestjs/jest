@@ -73,26 +73,18 @@ function round(num, places) {
 
 exports.formatTime = formatTime;
 
+function deepCopy(obj) {
+  const newObj = {};
+  let value;
+  for (const key in obj) {
+    value = obj[key];
+    if (typeof value === 'object' && value !== null) {
+      value = deepCopy(value);
+    }
+    newObj[key] = value;
+  }
+  return newObj;
+}
 // lodash exports
 
-const _ = require('lodash');
-
-exports.deepCopy = _.cloneDeep;
-
-function isDefined(o) {
-  return !_.isUndefined(o);
-}
-
-exports._ = _;
-exports.isEmpty = _.isEmpty;
-exports.isDefined = isDefined;
-exports.isUndefined = _.isUndefined;
-exports.isFunction = _.isFunction;
-exports.isString = _.isString;
-exports.isObject = _.isObject;
-exports.isArray = _.isArray;
-exports.defaults = _.defaults;
-exports.uniqWith = _.uniqWith;
-exports.uniq = _.uniq;
-exports.flatten = _.flatten;
-exports.isEqual = _.isEqual;
+exports.deepCopy = deepCopy;
