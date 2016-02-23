@@ -543,7 +543,9 @@ class Loader {
     const runtime = {
       addMatchers: matchers => {
         const jasmine = this._environment.global.jasmine;
-        jasmine.getEnv().currentSpec.addMatchers(matchers);
+        const addMatchers =
+          jasmine.addMatchers || jasmine.getEnv().currentSpec.addMatchers;
+        addMatchers(matchers);
       },
 
       autoMockOff: () => {

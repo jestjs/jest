@@ -140,6 +140,11 @@ describe('HasteModuleLoader', function() {
           // Test twice to make sure HasteModuleLoader caching works properly
           root.jest.resetModuleRegistry();
           expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+
+          // Directly requiring the transitive dependency will mock it
+          const transitiveDep =
+            loader.requireModuleOrMock(rootPath, 'npm3-transitive-dep');
+          expect(transitiveDep()).toEqual(undefined);
         });
       });
 
@@ -152,6 +157,30 @@ describe('HasteModuleLoader', function() {
           // Test twice to make sure HasteModuleLoader caching works properly
           root.jest.resetModuleRegistry();
           expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+
+          // Directly requiring the transitive dependency will mock it
+          const transitiveDep =
+            loader.requireModuleOrMock(rootPath, 'npm3-transitive-dep');
+          expect(transitiveDep()).toEqual(undefined);
+        });
+      });
+
+      pit('unmocks transitive dependencies in node_modules by default when using both patterns and unmock', () => {
+        return buildLoader({
+          unmockedModulePathPatterns: ['banana-module'],
+        }).then(loader => {
+          const root = loader.requireModule(rootPath, './root.js');
+          root.jest.unmock('npm3-main-dep');
+          expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+
+          // Test twice to make sure HasteModuleLoader caching works properly
+          root.jest.resetModuleRegistry();
+          expectUnmocked(loader.requireModuleOrMock(rootPath, 'npm3-main-dep'));
+
+          // Directly requiring the transitive dependency will mock it
+          const transitiveDep =
+            loader.requireModuleOrMock(rootPath, 'npm3-transitive-dep');
+          expect(transitiveDep()).toEqual(undefined);
         });
       });
     });
