@@ -615,6 +615,14 @@ class Loader {
         return runtime;
       },
 
+      setStub: (moduleName, moduleExports) => {
+        this._modules[moduleName] = moduleExports;
+        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+        this._explicitShouldMock[moduleID] = true;
+        this._explicitlySetMocks[moduleID] = moduleExports;
+        return runtime;
+      },
+
       useFakeTimers: () => this._environment.fakeTimers.useFakeTimers(),
       useRealTimers: () => this._environment.fakeTimers.useRealTimers(),
     };
