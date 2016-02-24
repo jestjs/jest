@@ -11,6 +11,7 @@
 * Debounce `--watch` re-runs to not trigger test runs during a
   branch switch in version control.
 * Fixed mocking of boolean values.
+* Fixed mocking of fields that start with an underscore ("private fields").
 * Fixed unmocking behavior with npm3.
 * Fixed test runtime error reporting and stack traces.
 

@@ -360,12 +360,9 @@ function getMetadata(component, _refs) {
     if (type !== 'undefined') {
       getSlots(component).forEach(slot => {
         if (
-          slot.charAt(0) === '_' ||
-          (
-            type === 'function' &&
-            component._isMockFunction &&
-            slot.match(/^mock/)
-          )
+          type === 'function' &&
+          component._isMockFunction &&
+          slot.match(/^mock/)
         ) {
           return;
         }
