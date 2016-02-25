@@ -4,3 +4,4 @@ examples/
 node_modules/
 vendor/
 website/
+packages/**/node_modules/
