@@ -1,9 +1,9 @@
 var $ = require('jquery');
 
-function parseUserJson(userJson) {
+function parseJSON(user) {
   return {
     loggedIn: true,
-    fullName: userJson.firstName + ' ' + userJson.lastName
+    fullName: user.firstName + ' ' + user.lastName,
   };
 }
 
@@ -11,9 +11,7 @@ function fetchCurrentUser(callback) {
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    success: function(userJson) {
-      callback(parseUserJson(userJson));
-    }
+    success: user => callback(parseJSON(user)),
   });
 }
 

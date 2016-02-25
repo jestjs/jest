@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
@@ -360,12 +360,9 @@ function getMetadata(component, _refs) {
     if (type !== 'undefined') {
       getSlots(component).forEach(slot => {
         if (
-          slot.charAt(0) === '_' ||
-          (
-            type === 'function' &&
-            component._isMockFunction &&
-            slot.match(/^mock/)
-          )
+          type === 'function' &&
+          component._isMockFunction &&
+          slot.match(/^mock/)
         ) {
           return;
         }

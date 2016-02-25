@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
@@ -20,6 +20,14 @@ const path = require('path');
 
 const REQUIRE_EXTENSIONS_PATTERN = /(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
 
+const createWatcher = config => {
+  if (config.watchman && FileWatcher.canUseWatchman()) {
+    return new FileWatcher(config.testPathDirs.map(dir => ({dir})));
+  }
+
+  return FileWatcher.createDummyWatcher();
+};
+
 class HasteResolver {
 
   constructor(config, options) {
@@ -39,12 +47,7 @@ class HasteResolver {
       cacheKey: getCacheKey('jest-haste-map', config),
     });
 
-    this._fileWatcher = new FileWatcher(
-      config.testPathDirs.map(dir => ({dir})),
-      {
-        useWatchman: config.watchman,
-      }
-    );
+    this._fileWatcher = createWatcher(config);
 
     this._mappedModuleNames = Object.create(null);
     if (config.moduleNameMapper.length) {
@@ -103,8 +106,12 @@ class HasteResolver {
     }));
   }
 
-  getShallowDependencies(path) {
-    return this._depGraph.getDependencies(path, this._defaultPlatform, false);
+  getShallowDependencies(entryPath) {
+    return this._depGraph.getDependencies({
+      entryPath,
+      platform: this._defaultPlatform,
+      recursive: false,
+    });
   }
 
   getFS() {

@@ -2,7 +2,9 @@
 *.swp
 .DS_STORE
 .haste_cache
-node_modules
+/node_modules
+/examples/**/node_modules/
+/website/node_modules
 npm-debug.log
 build
 website/core/metadata.js

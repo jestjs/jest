@@ -10,7 +10,11 @@
 * Added a "no tests found" message if no tests can be found.
 * Debounce `--watch` re-runs to not trigger test runs during a
   branch switch in version control.
-* Fixed test runtime error reporting and stack traces
+* Fixed mocking of boolean values.
+* Fixed mocking of fields that start with an underscore ("private fields").
+* Fixed unmocking behavior with npm3.
+* Fixed test runtime error reporting and stack traces.
+* Jest sets `process.NODE_ENV` to `test` unless otherwise specified.
 
 ## 0.8.2
 

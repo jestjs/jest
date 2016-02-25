@@ -7,12 +7,12 @@ module.exports = {
         src,
         {
           module: tsc.ModuleKind.CommonJS,
-          jsx: tsc.JsxEmit.React
+          jsx: tsc.JsxEmit.React,
         },
         path,
         []
       );
     }
     return src;
-  }
+  },
 };

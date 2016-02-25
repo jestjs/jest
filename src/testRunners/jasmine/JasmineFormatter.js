@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
@@ -111,8 +111,8 @@ class JasmineFormatter {
       if (this._jasmine.isDomNode(obj)) {
         let attrStr = '';
         Array.prototype.forEach.call(obj.attributes, attr => {
-          const attrName = attr.nodeName.trim();
-          const attrValue = attr.nodeValue.trim();
+          const attrName = attr.name.trim();
+          const attrValue = attr.value.trim();
           attrStr += ' ' + attrName + '="' + attrValue + '"';
         });
         return (
