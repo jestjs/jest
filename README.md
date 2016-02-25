@@ -51,6 +51,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.collectCoverage` [boolean]](http://facebook.github.io/jest/docs/api.html#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](http://facebook.github.io/jest/docs/api.html#config-collectcoverageonlyfrom-object)
   - [`config.globals` [object]](http://facebook.github.io/jest/docs/api.html#config-globals-object)
+  - [`config.jsdomModulePath` [string]](http://facebook.github.io/jest/docs/api.html#config-jsdommodulepath-string)
   - [`config.moduleFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
   - [`config.moduleNameMapper` [object<string, string>]](http://facebook.github.io/jest/docs/api.html#config-modulenamemapper-object-string-string)

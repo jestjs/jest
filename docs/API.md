@@ -41,6 +41,7 @@ permalink: docs/api.html
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
   - [`config.globals` [object]](#config-globals-object)
+  - [`config.jsdomModulePath` [string]](#config-jsdommodulepath-string)
   - [`config.mocksPattern` [string]](#config-mockspattern-string)
   - [`config.moduleFileExtensions` [array<string>]](#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
@@ -317,6 +318,11 @@ For example, the following would create a global `__DEV__` variable set to `true
 ```
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
+
+### `config.jsdomModulePath` [string]
+(default: `undefined`)
+
+The path to a specific version of the JSDOM module to be used in the test runner. There may be some lag time between JSDOM releases and updating the internally-used version in Jest, thus an alternate version can be provided if necessary.
 
 ### `config.mocksPattern` [string]
 (default: `(?:[\\/]|^)__mocks__[\\/]`)

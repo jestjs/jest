@@ -14,7 +14,7 @@ class JSDOMEnvironment {
 
   constructor(config) {
     // lazy require
-    this.document = require('jsdom').jsdom(/* markup */undefined, {
+    this.document = require(config.jsdomModulePath || 'jsdom').jsdom(/* markup */undefined, {
       url: config.testURL,
     });
     this.global = this.document.defaultView;

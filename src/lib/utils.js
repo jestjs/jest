@@ -126,6 +126,7 @@ function normalizeConfig(config) {
         break;
 
       case 'cacheDirectory':
+      case 'jsdomModulePath':
       case 'testRunner':
       case 'scriptPreprocessor':
       case 'setupEnvScriptFile':
