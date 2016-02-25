@@ -1,20 +1,20 @@
-var $ = require('jquery');
+'use strict';
 
-function parseUserJson(userJson) {
+const $ = require('jquery');
+
+function parseJSON(user) {
   return {
     loggedIn: true,
-    fullName: userJson.firstName + ' ' + userJson.lastName
+    fullName: user.firstName + ' ' + user.lastName,
   };
-};
+}
 
 function fetchCurrentUser(callback) {
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    done: function(userJson) {
-      callback(parseUserJson(userJson));
-    }
+    done: user => callback(parseJSON(user)),
   });
-};
+}
 
 module.exports = fetchCurrentUser;

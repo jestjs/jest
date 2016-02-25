@@ -1,9 +1,11 @@
-jest.dontMock('../infiniteTimerGame');
+'use strict';
 
-describe('infiniteTimerGame', function() {
-  it('schedules a 10-second timer after 1 second', function() {
-    var infiniteTimerGame = require('../infiniteTimerGame');
-    var callback = jest.genMockFunction();
+jest.unmock('../infiniteTimerGame');
+
+describe('infiniteTimerGame', () => {
+  it('schedules a 10-second timer after 1 second', () => {
+    const infiniteTimerGame = require('../infiniteTimerGame');
+    const callback = jest.genMockFunction();
 
     infiniteTimerGame(callback);
 

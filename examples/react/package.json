@@ -7,6 +7,7 @@
     "babel-jest": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
+    "babel-preset-jest": "*",
     "jest-cli": "*",
     "react-addons-test-utils": "~0.14.0"
   },
@@ -18,11 +19,7 @@
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",
-      "<rootDir>/node_modules/react-addons-test-utils",
-      "<rootDir>/node_modules/fbjs"
-    ],
-    "modulePathIgnorePatterns": [
-      "<rootDir>/node_modules/"
+      "<rootDir>/node_modules/react-addons-test-utils"
     ]
   }
 }
