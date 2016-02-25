@@ -5,3 +5,4 @@ node_modules/
 packages/**/node_modules/
 vendor/
 website/
+packages/**/node_modules/
