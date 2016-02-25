@@ -28,5 +28,14 @@ describe('HasteModuleLoader', () => {
       jest.setMock(stubPath, {stub: true}, {virtual: true});
       expect(require(stubPath).stub).toBe(true);
     });
+
+    it('should work correctly with a multiple virtual modules', () => {
+      const anotherStubPath = './some/other/path/to/module';
+      jest.setMock(stubPath, {stub: true}, {virtual: true});
+      jest.setMock(anotherStubPath, {stub: true}, {virtual: true});
+
+      expect(require(stubPath).stub).toBe(true);
+      expect(require(anotherStubPath).stub).toBe(true);
+    });
   });
 });
