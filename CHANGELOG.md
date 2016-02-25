@@ -15,14 +15,6 @@
 * Fixed unmocking behavior with npm3.
 * Fixed test runtime error reporting and stack traces.
 * Jest sets `process.NODE_ENV` to `test` unless otherwise specified.
-* Added `babel-plugin-jest-unmock`, `babel-jest-preset` and `babel-jest`
-  as packages. `babel-jest` is now being auto-detected.
-* Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for
-  `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
-* Jasmine 2 is now the default test runner. To keep using Jasmine 1, put
-  `testRunner: "jasmine1"` into your configuration.
-* Added an `automock` option to turn off automocking globally.
-* Added a `testEnvironment` option to customize the sandbox environment.
 
 ## 0.8.2
 

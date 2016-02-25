@@ -1,4 +1,6 @@
-var $ = require('jquery');
+'use strict';
+
+const $ = require('jquery');
 
 function parseJSON(user) {
   return {
@@ -11,7 +13,7 @@ function fetchCurrentUser(callback) {
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    success: user => callback(parseJSON(user)),
+    done: user => callback(parseJSON(user)),
   });
 }
 
