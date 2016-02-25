@@ -44,6 +44,7 @@ class Loader {
     this._shouldAutoMock = true;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
+    this._virtualModules = {};
     this._modules = moduleMap.modules;
     this._mocks = moduleMap.mocks;
 
@@ -347,6 +348,11 @@ class Loader {
       return this._modules[moduleName];
     }
 
+    // Check if it's a virtual module
+    if (this._virtualModules[moduleName]) {
+      return this._virtualModules[moduleName];
+    }
+
     // Otherwise it is likely a node_module.
     const key = currPath + ' : ' + moduleName;
     if (moduleNameCache[key]) {
@@ -392,6 +398,8 @@ class Loader {
   _getMockModule(resourceName) {
     if (this._mocks[resourceName]) {
       return this._mocks[resourceName];
+    } else if (this._virtualModules[resourceName]) {
+      return this._virtualModules[resourceName];
     } else {
       const moduleName = this._resolveStubModuleName(resourceName);
       if (moduleName) {
@@ -608,15 +616,10 @@ class Loader {
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
-      setMock: (moduleName, moduleExports) => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        this._explicitlySetMocks[moduleID] = moduleExports;
-        return runtime;
-      },
-
-      setStub: (moduleName, moduleExports) => {
-        this._modules[moduleName] = moduleExports;
+      setMock: (moduleName, moduleExports, options) => {
+        if (options && options.virtual) {
+          this._virtualModules[moduleName] = moduleExports;
+        }
         const moduleID = this._getNormalizedModuleID(currPath, moduleName);
         this._explicitShouldMock[moduleID] = true;
         this._explicitlySetMocks[moduleID] = moduleExports;
