@@ -1,0 +1,23 @@
+{
+  "name": "babel-plugin-jest-unmock",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "BSD-3-Clause",
+  "main": "src/index.js",
+  "devDependencies": {
+    "react": "^0.14.0",
+    "jest-cli": "^0.9.0-fb3"
+  },
+  "jest": {
+    "scriptPreprocessor": "node_modules/babel-jest",
+    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js",
+    "testEnvironment_EXPERIMENTAL": "<rootDir>/node_modules/jest-cli/src/environments/NodeEnvironment"
+  },
+  "scripts": {
+    "prepublish": "npm test",
+    "test": "jest"
+  }
+}

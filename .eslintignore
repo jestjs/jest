@@ -1,6 +1,7 @@
 bin/
 docs/
+examples/**/node_modules/
 node_modules/
+packages/**/node_modules/
 vendor/
 website/
-examples/**/node_modules/
