@@ -1,3 +1,5 @@
+'use strict';
+
 function infiniteTimerGame(callback) {
   console.log('Ready....go!');
 
@@ -14,4 +16,3 @@ function infiniteTimerGame(callback) {
 }
 
 module.exports = infiniteTimerGame;
-

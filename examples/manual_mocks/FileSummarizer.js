@@ -1,13 +1,12 @@
-var fs = require('fs');
+'use strict';
 
-function summarizeFilesInDirectorySync(directoryPath) {
-  return fs.readdirSync(directoryPath).map(function(fileName) {
-    return {
-      fileName: fileName,
-      directory: directoryPath
-    };
-  });
-  return directoryFileSummary;
+const fs = require('fs');
+
+function summarizeFilesInDirectorySync(directory) {
+  return fs.readdirSync(directory).map(fileName => ({
+    fileName,
+    directory,
+  }));
 }
 
 exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;

@@ -4,27 +4,20 @@
     "react-dom": "*"
   },
   "devDependencies": {
-    "jest-cli": "*",
     "react-addons-test-utils": "*",
     "typescript": ">=1.6.2"
   },
   "scripts": {
-    "test": "jest"
+    "test": "node ../../bin/jest.js"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
-    "testFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
+    "testFileExtensions": ["ts", "tsx", "js"],
+    "moduleFileExtensions": ["ts", "tsx", "js"],
     "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/*"
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-addons-test-utils"
     ]
   }
 }
