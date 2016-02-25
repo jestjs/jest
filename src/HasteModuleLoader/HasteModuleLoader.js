@@ -44,7 +44,7 @@ class Loader {
     this._shouldAutoMock = true;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
-    this._virtualModules = {};
+    this._virtualModules = Object.create(null);
     this._modules = moduleMap.modules;
     this._mocks = moduleMap.mocks;
 
