@@ -44,7 +44,6 @@ class Loader {
     this._shouldAutoMock = true;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
-    this._virtualModules = Object.create(null);
     this._modules = moduleMap.modules;
     this._mocks = moduleMap.mocks;
 
@@ -342,15 +341,16 @@ class Loader {
     );
   }
 
-  _resolveModuleName(currPath, moduleName) {
+  _resolveModuleName(currPath, moduleName, options) {
     // Check if the resolver knows about this module
     if (this._modules[moduleName]) {
       return this._modules[moduleName];
     }
 
     // Check if it's a virtual module
-    if (this._virtualModules[moduleName]) {
-      return this._virtualModules[moduleName];
+    if (options && options.virtual) {
+      const basedir = path.dirname(currPath);
+      return path.join(basedir, moduleName);
     }
 
     // Otherwise it is likely a node_module.
@@ -398,8 +398,6 @@ class Loader {
   _getMockModule(resourceName) {
     if (this._mocks[resourceName]) {
       return this._mocks[resourceName];
-    } else if (this._virtualModules[resourceName]) {
-      return this._virtualModules[resourceName];
     } else {
       const moduleName = this._resolveStubModuleName(resourceName);
       if (moduleName) {
@@ -408,7 +406,7 @@ class Loader {
     }
   }
 
-  _getNormalizedModuleID(currPath, moduleName) {
+  _getNormalizedModuleID(currPath, moduleName, options) {
     const key = currPath + ' : ' + moduleName;
     if (normalizedIDCache[key]) {
       return normalizedIDCache[key];
@@ -427,7 +425,7 @@ class Loader {
         IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
         (!this._getModule(moduleName) && !this._getMockModule(moduleName))
       ) {
-        realAbsPath = this._resolveModuleName(currPath, moduleName);
+        realAbsPath = this._resolveModuleName(currPath, moduleName, options);
         if (realAbsPath == null) {
           throw new Error(
             `Cannot find module '${moduleName}' from '${currPath || '.'}'`
@@ -617,10 +615,7 @@ class Loader {
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
       setMock: (moduleName, moduleExports, options) => {
-        if (options && options.virtual) {
-          this._virtualModules[moduleName] = moduleExports;
-        }
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+        const moduleID = this._getNormalizedModuleID(currPath, moduleName, options);
         this._explicitShouldMock[moduleID] = true;
         this._explicitlySetMocks[moduleID] = moduleExports;
         return runtime;
