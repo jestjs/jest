@@ -52,9 +52,6 @@ Since we'd like our tests to avoid actually hitting the disk (that's pretty slow
 // Get the real (not mocked) version of the 'path' module
 var path = require.requireActual('path');
 
-// Get the automatic mock for `fs`
-var fsMock = jest.genMockFromModule('fs');
-
 // This is a custom function that our tests can use during setup to specify
 // what the files on the "mock" filesystem should look like when any of the
 // `fs` APIs are used.
@@ -78,18 +75,14 @@ function readdirSync(directoryPath) {
   return _mockFiles[directoryPath] || [];
 };
 
-// Override the default behavior of the `readdirSync` mock
-fsMock.readdirSync.mockImplementation(readdirSync);
-
-// Add a custom method to the mock
-fsMock.__setMockFiles = __setMockFiles;
-
-module.exports = fsMock;
+exports.__setMockFiles = __setMockFiles;
+exports.readdirSync = readdirSync;
 ```
 
 Now we write our test:
 
 ```javascript
+jest.mock('fs');
 jest.dontMock('../FileSummarizer');
 
 describe('FileSummarizer', function() {
