@@ -14,12 +14,14 @@ applications. Let's implement a simple checkbox which swaps between two labels:
 // CheckboxWithLabel.js
 import React from 'react';
 
-class CheckboxWithLabel extends React.Component {
+export default class CheckboxWithLabel extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {isChecked: false};
 
+    // bind manually because React class components don't auto-bind
+    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
 
@@ -40,8 +42,6 @@ class CheckboxWithLabel extends React.Component {
     );
   }
 }
-
-export default CheckboxWithLabel;
 ```
 
 The test code is pretty straightforward; we use React's
@@ -50,24 +50,24 @@ manipulate React components.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
-jest.dontMock('../CheckboxWithLabel');
+/* eslint-disable no-unused-vars */
+
+jest.unmock('../CheckboxWithLabel');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
-
-const CheckboxWithLabel = require('../CheckboxWithLabel');
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 describe('CheckboxWithLabel', () => {
 
   it('changes the text after click', () => {
-
     // Render a checkbox with label in the document
-    var checkbox = TestUtils.renderIntoDocument(
+    const checkbox = TestUtils.renderIntoDocument(
       <CheckboxWithLabel labelOn="On" labelOff="Off" />
     );
 
-    var checkboxNode = ReactDOM.findDOMNode(checkbox);
+    const checkboxNode = ReactDOM.findDOMNode(checkbox);
 
     // Verify that it's Off by default
     expect(checkboxNode.textContent).toEqual('Off');
@@ -96,10 +96,11 @@ jest.
   },
   "devDependencies": {
     "babel-jest": "*",
-    "jest-cli": "*",
-    "react-addons-test-utils": "~0.14.0",
     "babel-preset-es2015": "*",
-    "babel-preset-react": "*"
+    "babel-preset-react": "*",
+    "babel-preset-jest": "*",
+    "jest-cli": "*",
+    "react-addons-test-utils": "~0.14.0"
   },
   "scripts": {
     "test": "jest"
@@ -109,8 +110,7 @@ jest.
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",
-      "<rootDir>/node_modules/react-addons-test-utils",
-      "<rootDir>/node_modules/fbjs"
+      "<rootDir>/node_modules/react-addons-test-utils"
     ]
   }
 ```
@@ -118,7 +118,12 @@ jest.
 ```javascript
 // .babelrc
 {
-  presets: ['es2015', 'react']
+  "presets": ["es2015", "react"],
+  "env": {
+    "test": {
+      "presets": ["jest"]
+    }
+  }
 }
 ```
 Run ```npm install```.
