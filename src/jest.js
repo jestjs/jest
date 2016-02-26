@@ -7,7 +7,7 @@
  */
 'use strict';
 
-require('fast-path').replace();
+require('node-haste/lib/fastpath').replace();
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
