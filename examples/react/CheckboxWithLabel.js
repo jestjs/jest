@@ -6,7 +6,7 @@ export default class CheckboxWithLabel extends React.Component {
     super(props);
     this.state = {isChecked: false};
 
-    // bin manually because React class components don't auto-bind
+    // bind manually because React class components don't auto-bind
     // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
