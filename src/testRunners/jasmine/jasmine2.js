@@ -51,8 +51,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             if (actual.mock === undefined) {
               throw Error('toBeCalled() should be used on a mock function');
             }
+
             return {
               pass: actual.mock.calls.length !== 0,
+              message: 'function expected to be called at least once',
             };
           },
         };
@@ -65,9 +67,20 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               throw Error('lastCalledWith() should be used on a mock function');
             }
             const calls = actual.mock.calls;
-            const args = Array.prototype.slice.call(arguments, 1);
+            const expected = Array.prototype.slice.call(arguments, 1);
+            const actualValues = calls[calls.length - 1];
+            const pass = util.equals(actualValues, expected);
+            const message = [
+              'function wasn\'t called with the expected values.',
+              'Expected:',
+              JSON.stringify(expected),
+              'Actual:',
+              JSON.stringify(actualValues),
+            ].join('\n');
+
             return {
-              pass: util.equals(calls[calls.length - 1], args),
+              pass,
+              message,
             };
 
           },
@@ -81,9 +94,18 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               throw Error('toBeCalledWith() should be used on a mock function');
             }
             const calls = actual.mock.calls;
-            const args = Array.prototype.slice.call(arguments, 1);
-            const pass = calls.some(call => util.equals(call, args));
-            return {pass};
+            const expected = Array.prototype.slice.call(arguments, 1);
+            const pass = calls.some(call => util.equals(call, expected));
+            const message = [
+              'function was never called with the expected values.',
+              'Expected:',
+              JSON.stringify(expected),
+            ].join('\n');
+
+            return {
+              pass,
+              message,
+            };
           },
         };
       },
