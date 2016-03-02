@@ -43,6 +43,7 @@ class Loader {
     this._explicitShouldMock = Object.create(null);
     this._explicitlySetMocks = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
+    this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
     this._shouldAutoMock = true;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
@@ -277,7 +278,11 @@ class Loader {
     );
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-    if (shouldCollectCoverage && !filename.includes(NODE_MODULES)) {
+    if (
+      shouldCollectCoverage &&
+      !filename.includes(this._testDirectoryName) &&
+      !filename.includes(NODE_MODULES)
+    ) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,
