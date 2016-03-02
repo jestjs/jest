@@ -17,6 +17,8 @@
 * Jest sets `process.NODE_ENV` to `test` unless otherwise specified.
 * Added `babel-plugin-jest-unmock`, `babel-jest-preset` and `babel-jest`
   as packages. `babel-jest` is now being auto-detected.
+* Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for
+  `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
 
 ## 0.8.2
 
