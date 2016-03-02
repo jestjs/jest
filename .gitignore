@@ -8,5 +8,6 @@
 /website/node_modules
 npm-debug.log
 build
-website/core/metadata.js
+website/core/metadata*.js
 website/src/jest/docs
+website/src/jest/blog/2*
