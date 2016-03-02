@@ -51,10 +51,15 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             if (actual.mock === undefined) {
               throw Error('toBeCalled() should be used on a mock function');
             }
-
+            const pass = actual.mock.calls.length !== 0;
+            const message = (
+              pass ?
+              'function expected not to be called was called' :
+              'function expected to be called at least once'
+            );
             return {
-              pass: actual.mock.calls.length !== 0,
-              message: 'function expected to be called at least once',
+              pass,
+              message,
             };
           },
         };
@@ -70,17 +75,30 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             const expected = Array.prototype.slice.call(arguments, 1);
             const actualValues = calls[calls.length - 1];
             const pass = util.equals(actualValues, expected);
-            const message = [
-              'function wasn\'t called with the expected values.',
-              'Expected:',
-              JSON.stringify(expected),
-              'Actual:',
-              JSON.stringify(actualValues),
-            ].join('\n');
+
+            if (!pass) {
+              return {
+                pass,
+                get message() {
+                  return (
+                    'function wasn\'t called with the expected values.\n' +
+                    'Expected:\n' +
+                    JSON.stringify(expected) +
+                    '\nActual:\n' +
+                    JSON.stringify(actualValues)
+                  );
+                },
+              };
+            }
 
             return {
               pass,
-              message,
+              get message() {
+                return (
+                  'function shouldn\'t have called with\n' +
+                  JSON.stringify(expected)
+                );
+              },
             };
 
           },
@@ -96,15 +114,29 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             const calls = actual.mock.calls;
             const expected = Array.prototype.slice.call(arguments, 1);
             const pass = calls.some(call => util.equals(call, expected));
-            const message = [
-              'function was never called with the expected values.',
-              'Expected:',
-              JSON.stringify(expected),
-            ].join('\n');
+
+
+            if (!pass) {
+              return {
+                pass,
+                get message() {
+                  return (
+                    'function was never called with the expected values.\n' +
+                    'Expected:\n' +
+                    JSON.stringify(expected)
+                  );
+                },
+              };
+            }
 
             return {
               pass,
-              message,
+              get message() {
+                return (
+                  'function shouldn\'t have called with\n' +
+                  JSON.stringify(expected)
+                );
+              },
             };
           },
         };
