@@ -53,7 +53,7 @@ describe('jasmine', () => {
 
   describe('when using a getter for a custom matcher message', () => {
 
-    it('should not get message if test pass', () => {
+    it('doesn\'t access message if test passes', () => {
       if (jasmine.addMatchers) {
         let actual = false;
         jasmine.addMatchers({
@@ -62,7 +62,7 @@ describe('jasmine', () => {
               pass: true,
               get message() {
                 actual = true;
-                return 'should be never called';
+                return 'should never be called';
               },
             }),
           }),
@@ -78,7 +78,7 @@ describe('jasmine', () => {
       }
     });
 
-    it('should get the message if test fails', () => {
+    it('accesses the message when the test fails', () => {
       if (jasmine.addMatchers) {
         const SHOULD_BE_CALLED = 'should be called';
         let actual = false;
@@ -109,11 +109,11 @@ describe('jasmine', () => {
 
 });
 
-describe('TestRunner Jasmine custom matchers', () => {
+describe('Jest custom matchers in Jasmine 2', () => {
 
   describe('toBeCalled', () => {
 
-    it('should show a custom message when failing', () => {
+    it('shows a custom message when the test fails', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(false);
@@ -123,7 +123,7 @@ describe('TestRunner Jasmine custom matchers', () => {
       expectation.toBeCalled();
     });
 
-    it('should show a different custom message when failing a not expression', () => {
+    it('shows another message for failing a "not" expression', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(false);
@@ -134,7 +134,7 @@ describe('TestRunner Jasmine custom matchers', () => {
       expectation.not.toBeCalled();
     });
 
-    it('should not show any message when succeding', () => {
+    it('doesn\'t show any message when succeding', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(true);
@@ -149,7 +149,7 @@ describe('TestRunner Jasmine custom matchers', () => {
 
   describe('lastCalledWith', () => {
 
-    it('should not show any message when succeding', () => {
+    it('doesn\'t show any message when succeding', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(true);
@@ -160,7 +160,7 @@ describe('TestRunner Jasmine custom matchers', () => {
       expectation.lastCalledWith(1, {}, '');
     });
 
-    it('should show a different custom message when failing a not expression', () => {
+    it('shows another message for failing a "not" expression', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(false);
@@ -171,7 +171,7 @@ describe('TestRunner Jasmine custom matchers', () => {
       expectation.not.lastCalledWith(1, {}, '');
     });
 
-    it('should show a message when failing', () => {
+    it('shows a custom message when the test fails', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(false);
@@ -187,7 +187,7 @@ describe('TestRunner Jasmine custom matchers', () => {
 
   describe('toBeCalledWith', () => {
 
-    it('should not show any message when succeding', () => {
+    it('doesn\'t show any message when succeding', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(true);
@@ -198,7 +198,7 @@ describe('TestRunner Jasmine custom matchers', () => {
       expectation.toBeCalledWith(1, {}, '');
     });
 
-    it('should show a different custom message when failing a not expression', () => {
+    it('shows another message for failing a "not" expression', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(false);
@@ -209,7 +209,7 @@ describe('TestRunner Jasmine custom matchers', () => {
       expectation.not.toBeCalledWith(1, {}, '');
     });
 
-    it('should show a message when failing', () => {
+    it('shows a custom message when the test fails', () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(false);
