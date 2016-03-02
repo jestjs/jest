@@ -592,6 +592,13 @@ class Loader {
       genMockFromModule: moduleName => this._generateMock(currPath, moduleName),
       genMockFunction: moduleMocker.getMockFunction,
       genMockFn: moduleMocker.getMockFunction,
+      fn: function() {
+        const fn = moduleMocker.getMockFunction();
+        if (arguments.length > 0) {
+          return fn.mockImplementation(arguments[0]);
+        }
+        return fn;
+      },
 
       mock: moduleName => {
         const moduleID = this._getNormalizedModuleID(currPath, moduleName);

@@ -131,7 +131,7 @@ function normalizeConfig(config) {
           config.rootDir,
           _replaceRootDirTags(config.rootDir, filePath)
         ));
-          break;
+        break;
 
       case 'cacheDirectory':
       case 'testRunner':
