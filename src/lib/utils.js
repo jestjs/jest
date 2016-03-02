@@ -30,6 +30,7 @@ const DEFAULT_CONFIG_VALUES = {
   haste: {
     providesModuleNodeModules: [],
   },
+  setupFiles: [],
   preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
@@ -101,6 +102,14 @@ function normalizeConfig(config) {
 
   config.rootDir = path.normalize(config.rootDir);
 
+  if (config.setupEnvScriptFile) {
+    if (!config.setupFiles) {
+      config.setupFiles = [];
+    }
+    config.setupFiles.push(config.setupEnvScriptFile);
+    delete config.setupEnvScriptFile;
+  }
+
   // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
     let value;
@@ -116,19 +125,17 @@ function normalizeConfig(config) {
         }, {});
         break;
 
+      case 'setupFiles':
       case 'testPathDirs':
-        value = config[key].map(function(scanDir) {
-          return path.resolve(
-            config.rootDir,
-            _replaceRootDirTags(config.rootDir, scanDir)
-          );
-        });
-        break;
+        value = config[key].map(filePath => path.resolve(
+          config.rootDir,
+          _replaceRootDirTags(config.rootDir, filePath)
+        ));
+          break;
 
       case 'cacheDirectory':
       case 'testRunner':
       case 'scriptPreprocessor':
-      case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
         value = path.resolve(
           config.rootDir,
