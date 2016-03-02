@@ -1,6 +1,6 @@
 # babel-plugin-jest-unmock
 
-Babel plugin to hoist `jest.unmock` calls above `import` statements.
+Babel plugin to hoist `jest.unmock` calls above `import` statements. This plugin is automatically included when using [babel-jest](https://github.com/facebook/jest/tree/master/packages/babel-jest).
 
 ## Installation
 

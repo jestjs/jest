@@ -32,6 +32,7 @@ const shouldMockModuleCache = Object.create(null);
 const transitiveShouldMock = Object.create(null);
 const shouldUnmockTransitiveDependenciesCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
+const unmockCacheInitialized = new WeakMap();
 
 class Loader {
   constructor(config, environment, moduleMap) {
@@ -58,6 +59,19 @@ class Loader {
       this._unmockList =
         new RegExp(config.unmockedModulePathPatterns.join('|'));
       unmockRegExpCache.set(config, this._unmockList);
+    }
+
+    if (!unmockCacheInitialized.get(config)) {
+      const unmockPath = filePath => {
+        if (filePath && filePath.includes(NODE_MODULES)) {
+          const moduleID = this._getNormalizedModuleID(filePath);
+          transitiveShouldMock[moduleID] = false;
+        }
+      };
+
+      unmockPath(config.setupEnvScriptFile);
+      config.setupFiles.forEach(unmockPath);
+      unmockCacheInitialized.set(config, true);
     }
 
     // Workers communicate the config as JSON so we have to create a regex

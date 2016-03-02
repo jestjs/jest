@@ -4,10 +4,9 @@
     "react-dom": "~0.14.0"
   },
   "devDependencies": {
-    "babel-jest": "*",
+    "babel-jest": "^9.0.0",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
-    "babel-preset-jest": "*",
     "jest-cli": "*",
     "react-addons-test-utils": "~0.14.0"
   },
@@ -15,7 +14,6 @@
     "test": "jest"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",

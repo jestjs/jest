@@ -13,13 +13,15 @@ const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
-const childProcess = require('child_process');
-const path = require('path');
 const TestRunner = require('./TestRunner');
-const formatTestResults = require('./lib/formatTestResults');
-const utils = require('./lib/utils');
+
 const chalk = require('chalk');
+const childProcess = require('child_process');
+const formatTestResults = require('./lib/formatTestResults');
+const path = require('path');
+const resolve = require('resolve');
 const sane = require('sane');
+const utils = require('./lib/utils');
 const which = require('which');
 
 const DEFAULT_WATCH_EXTENSIONS = 'js';
@@ -249,6 +251,29 @@ function getWatcher(argv, packageRoot, callback) {
   });
 }
 
+function getBabelPlugin(pluginName, config) {
+  try {
+    return resolve.sync('babel-jest', {
+      basedir: config.rootDir,
+    });
+  } catch (e) {}
+  return null;
+}
+
+function configureBabel(config) {
+  if (!config.scriptPreprocessor) {
+    const scriptPreprocessor = getBabelPlugin('babel-jest', config);
+    if (scriptPreprocessor) {
+      const polyfillPlugin = getBabelPlugin('babel-polyfill', config);
+      return {
+        scriptPreprocessor,
+        polyfillPlugin,
+      };
+    }
+  }
+  return null;
+}
+
 function runCLI(argv, packageRoot, onComplete) {
   argv = argv || {};
 
@@ -269,7 +294,17 @@ function runCLI(argv, packageRoot, onComplete) {
         }
 
         const testFramework = require(config.testRunner);
-        pipe.write(`Using Jest CLI v${getVersion()}, ${testFramework.name}\n`);
+        const info = ['v' + getVersion(), testFramework.name];
+        const babelConfig = configureBabel(config);
+        if (babelConfig) {
+          config.scriptPreprocessor = babelConfig.scriptPreprocessor;
+          if (babelConfig.polyfillPlugin) {
+            config.setupFiles.unshift(babelConfig.polyfillPlugin);
+          }
+          info.push('babel-jest');
+        }
+
+        pipe.write(`Using Jest CLI ${info.join(', ')}\n`);
 
         const testRunner = new TestRunner(config, testRunnerOptions(argv));
         let testPaths;

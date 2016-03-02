@@ -49,7 +49,7 @@ permalink: docs/api.html
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
   - [`config.preprocessorIgnorePatterns` [array<string>]](#config-preprocessorignorepatterns-array-string)
-  - [`config.setupEnvScriptFile` [string]](#config-setupenvscriptfile-string)
+  - [`config.setupFiles` [array]](#config-setupfiles-array)
   - [`config.setupTestFrameworkScriptFile` [string]](#config-setuptestframeworkscriptfile-string)
   - [`config.testDirectoryName` [string]](#config-testdirectoryname-string)
   - [`config.testFileExtensions` [array<string>]](#config-testfileextensions-array-string)
@@ -360,7 +360,7 @@ The root directory that Jest should scan for tests and modules within. If you pu
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
-Note also that you can use `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `'<rootDir>/env-setup.js'`.
+Note also that you can use `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupFiles`](#config-setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.
 
 ### `config.scriptPreprocessor` [string]
 (default: `undefined`)
@@ -374,17 +374,17 @@ Examples of such compilers include [jstransform](http://github.com/facebook/jstr
 
 An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
 
-### `config.setupEnvScriptFile` [string]
-(default: `undefined`)
+### `config.setupFiles` [array]
+(default: `[]`)
 
-The path to a module that runs some code to configure or set up the testing environment before each test. Since every test runs in it's own environment, this script will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in it's own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
 It's worth noting that this code will execute *before* [`config.setupTestFrameworkScriptFile`](#config-setuptestframeworkscriptfile-string).
 
 ### `config.setupTestFrameworkScriptFile` [string]
 (default: `undefined`)
 
-The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupEnvScriptFile`](#config-setupenvscriptfile-string) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupFiles`](#config-setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
