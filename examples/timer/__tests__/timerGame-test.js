@@ -13,7 +13,7 @@ describe('timerGame', () => {
 
   it('calls the callback after 1 second', () => {
     const timerGame = require('../timerGame');
-    const callback = jest.genMockFunction();
+    const callback = jest.fn();
 
     timerGame(callback);
 

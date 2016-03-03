@@ -12,12 +12,14 @@ To begin, let's see how we might test the following function (borrowed from [thi
 
 ```javascript
 // fetchCurrentUser.js
-var $ = require('jquery');
+'use strict';
 
-function parseUserJson(userJson) {
+const $ = require('jquery');
+
+function parseJSON(user) {
   return {
     loggedIn: true,
-    fullName: userJson.firstName + ' ' + userJson.lastName
+    fullName: user.firstName + ' ' + user.lastName,
   };
 }
 
@@ -25,9 +27,7 @@ function fetchCurrentUser(callback) {
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    success: function(userJson) {
-      callback(parseUserJson(userJson));
-    }
+    done: user => callback(parseJSON(user)),
   });
 }
 
@@ -40,15 +40,17 @@ file called `fetchCurrentUser-test.js` and we write our test in it:
 
 ```javascript
 // __tests__/fetchCurrentUser-test.js
-jest.dontMock('../fetchCurrentUser.js');
+'use strict';
 
-describe('fetchCurrentUser', function() {
-  it('calls into $.ajax with the correct params', function() {
-    var $ = require('jquery');
-    var fetchCurrentUser = require('../fetchCurrentUser');
+jest.unmock('../fetchCurrentUser.js');
+
+describe('fetchCurrentUser', () => {
+  it('calls into $.ajax with the correct params', () => {
+    const $ = require('jquery');
+    const fetchCurrentUser = require('../fetchCurrentUser');
 
     // Call into the function we want to test
-    function dummyCallback() {}
+    const dummyCallback = () => {};
     fetchCurrentUser(dummyCallback);
 
     // Now make sure that $.ajax was properly called during the previous
@@ -56,15 +58,16 @@ describe('fetchCurrentUser', function() {
     expect($.ajax).toBeCalledWith({
       type: 'GET',
       url: 'http://example.com/currentUser',
-      success: jasmine.any(Function)
+      success: jasmine.any(Function),
     });
   });
 });
 ```
 
-When Jest runs, it runs any tests found in `__tests__` directories within the source tree.
+When Jest runs, it runs any tests found in `__tests__` directories within the
+source tree.
 
-The first line is very important: `jest.dontMock('../fetchCurrentUser.js');`.
+The first line is very important: `jest.unmock('../fetchCurrentUser.js');`.
 By default, Jest automatically makes all calls to `require()` return a mocked
 version of the real module – so we need to tell Jest not to mock the file we
 want to test or else `require('../fetchCurrentUser')` will return a mock.
@@ -80,26 +83,26 @@ like to test that the callback we are passing in is indeed called back when the
 `$.ajax` request has completed. To test this, we can do the following:
 
 ```javascript
-  it('calls the callback when $.ajax requests are finished', function() {
-    var $ = require('jquery');
-    var fetchCurrentUser = require('../fetchCurrentUser');
+  it('calls the callback when $.ajax requests are finished', () => {
+    const $ = require('jquery');
+    const fetchCurrentUser = require('../fetchCurrentUser');
 
     // Create a mock function for our callback
-    var callback = jest.genMockFunction();
+    const callback = jest.fn();
     fetchCurrentUser(callback);
 
     // Now we emulate the process by which `$.ajax` would execute its own
     // callback
-    $.ajax.mock.calls[0 /*first call*/][0 /*first argument*/].success({
+    $.ajax.mock.calls[0/*first call*/][0/*first argument*/].success({
       firstName: 'Bobby',
-      lastName: '");DROP TABLE Users;--'
+      lastName: '");DROP TABLE Users;--',
     });
 
     // And finally we assert that this emulated call by `$.ajax` incurred a
     // call back into the mock function we provided as a callback
     expect(callback.mock.calls[0/*first call*/][0/*first arg*/]).toEqual({
       loggedIn: true,
-      fullName: 'Bobby ");DROP TABLE Users;--'
+      fullName: 'Bobby ");DROP TABLE Users;--',
     });
   });
 ```
@@ -109,7 +112,11 @@ callback, `fetchCurrentUser` will call in to one of it's dependencies: `$.ajax`.
 Since Jest has mocked this dependency for us, it's easy to inspect all of the
 interactions with `$.ajax` that occurred during our test.
 
-At this point, you might be wondering how Jest was able to decide what the mock for the `jQuery` module should look like. The answer is simple: Jest secretly requires the real module, inspects what it looks like, and then builds a mocked version of what it saw. This is how Jest knew that there should be a `$.ajax` property, and that that property should be a mock function.
+At this point, you might be wondering how Jest was able to decide what the mock
+for the `jQuery` module should look like. The answer is simple: Jest secretly
+requires the real module, inspects what it looks like, and then builds a mocked
+version of what it saw. This is how Jest knew that there should be a `$.ajax`
+property, and that that property should be a mock function.
 
 In Jest, all mock functions have a `.mock` property that stores all the
 interactions with the function. In the above case, we are reading from

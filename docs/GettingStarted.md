@@ -7,63 +7,187 @@ permalink: docs/getting-started.html
 next: tutorial
 ---
 
-Consider a scenario where you want to test the following `sum.js` file:
+Let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
-// sum.js
-function sum(value1, value2) {
-  return value1 + value2;
+function sum(a, b) {
+  return a + b;
 }
 module.exports = sum;
 ```
 
-We can get up and running with the following 4 steps:
+Create a directory `__tests__/` with a file `sum-test.js`:
 
-1. Create a directory `__tests__/` with a file `sum-test.js`
+```javascript
+jest.unmock('../sum'); // unmock to use the actual implementation of sum
 
-  ```javascript
-  // __tests__/sum-test.js
-  jest.dontMock('../sum');
-
-  describe('sum', function() {
-    it('adds 1 + 2 to equal 3', function() {
-      var sum = require('../sum');
-      expect(sum(1, 2)).toBe(3);
-    });
+describe('sum', () => {
+  it('adds 1 + 2 to equal 3', () => {
+    const sum = require('../sum');
+    expect(sum(1, 2)).toBe(3);
   });
-  ```
+});
+```
 
-2. Run `npm install jest-cli --save-dev`
+Run `npm install --save-dev jest-cli`.
 
-    Jest uses ES2015 features and requires a Node.js version of at least 4.0.0
-    to run.
+Add the following to your `package.json`:
 
-3. Add the following to your `package.json`
+```js
+"scripts": {
+  "test": "jest"
+}
+```
 
-  ```js
-  {
-    ...
-    "scripts": {
-      "test": "jest"
+Run `npm test`:
+
+```
+[PASS] __tests__/sum-test.js (0.010s)
+```
+
+The code for this example is available at
+[examples/getting_started](https://github.com/facebook/jest/tree/master/examples/getting_started).
+
+**And you are ready to enjoy working with Jest!**
+
+### Babel Integration
+
+If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled:
+
+```
+npm install --save-dev babel-jest
+```
+
+Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file
+in your project's root folder. For example, if you are using ES2015 and
+[React.js](https://facebook.github.io/react/) with the
+[`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and
+[`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
+
+```js
+{
+  "presets": ["es2015", "react"]
+}
+```
+
+You are now set up to use all ES2015 features and React specific syntax,
+for example:
+
+```js
+jest.unmock('../CheckboxWithLabel');
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
+import CheckboxWithLabel from '../CheckboxWithLabel';
+
+describe('CheckboxWithLabel', () => {
+  it('changes the text after click', () => {
+    // Render a checkbox with label in the document
+    const checkbox = TestUtils.renderIntoDocument(
+      <CheckboxWithLabel labelOn="On" labelOff="Off" />
+    );
+
+    const checkboxNode = ReactDOM.findDOMNode(checkbox);
+
+    // Verify that it's Off by default
+    expect(checkboxNode.textContent).toEqual('Off');
+
+    // ...
+  });
+});
+```
+
+Check out the [React tutorial](docs/tutorial-react.html) for more.
+
+**And you are good to go!** The next time you run Jest it will print something
+like
+
+ ```
+ Using Jest CLI v<version>, jasmine2, babel-jest
+ ```
+
+The
+[React](https://github.com/facebook/react/tree/master/src/renderers/shared/reconciler/__tests__),
+[Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and
+[react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
+repositories have excellent examples of tests written by Facebook engineers.
+
+### Advanced Features
+
+#### Only run test files related to changes with `jest -o`
+
+On large projects and applications it is often not feasible to run thousands of
+tests when a single file changes. Jest uses static analysis to look up
+dependency trees in reverse starting from changed JavaScript files only. During
+development, it is recommended to use `jest -o` or `jest --onlyChanged` which
+will find tests related to changed JavaScript files and only run relevant tests.
+
+#### Install Jest globally
+
+Jest can be installed globally: `npm install -g jest-cli` which will make a
+global `jest` command available that can be invoked from anywhere within your
+project.
+
+#### Automated Mocking and Sandboxing
+
+Jest isolates test files into their own environment and isolates module
+execution between test runs. Jest swaps out `require()` to inject mocks that
+were either [created manually](/jest/docs/manual-mocks.html)
+by the user or [automatic mocks](/jest/docs/automatic-mocking.html) through the
+automocking feature.
+
+#### Use the `--watch` option to automatically re-run tests
+
+Jest can automatically re-run tests when files change:
+
+```
+jest --watch
+
+jest --watch=skip # to skip the initial full test run
+```
+
+#### Use `--bail` to abort after the first failed test.
+
+If you don't want to wait until a full test run completes `--bail` can
+be used to abort the test run after the first error.
+
+#### Use `--coverage` to generate a code coverage report
+
+The code
+
+```
+-----------------------|----------|----------|----------|----------|
+File                   |  % Stmts | % Branch |  % Funcs |  % Lines |
+-----------------------|----------|----------|----------|----------|
+ react/                |     91.3 |    60.61 |      100 |      100 |
+  CheckboxWithLabel.js |     91.3 |    60.61 |      100 |      100 |
+-----------------------|----------|----------|----------|----------|
+```
+
+#### Use `--json` for CI integrations
+
+Jest can be integrated into Continuous Integration test runs and wrapped with
+other scripts to further analyze test results.
+
+Example Output:
+
+```js
+{
+  "success": true,
+  "startTime": 1456983486661,
+  "numTotalTests": 1,
+  "numTotalTestSuites": 1,
+  "numRuntimeErrorTestSuites": 0,
+  "numPassedTests": 1,
+  "numFailedTests": 0,
+  "testResults":[
+    {
+      "name": "react/__tests__/CheckboxWithLabel-test.js",
+      "status": "passed",
+      "startTime": 1456983488908,
+      "endTime": 1456983493037
     }
-    ...
-  }
-  ```
-
-4. Run `npm test`
-
-  ```
-  [PASS] __tests__/sum-test.js (0.015s)
-  ```
-
-5. Use the `--watch` option
-
-  ```
-  npm test -- --watch
-  ```
-
-This runs all test initially. To skip the initial test, add `skip` as a value:
-
-  ```
-  npm test -- --watch=skip
-  ```
+  ]
+}
+```

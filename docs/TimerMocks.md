@@ -15,24 +15,28 @@ timer functions and APIs that allow you to control the passage of time.
 
 ```javascript
 // timerGame.js
+'use strict';
+
 function timerGame(callback) {
   console.log('Ready....go!');
-
   setTimeout(function() {
-    console.log("Time's up -- stop!");
+    console.log('Times up -- stop!');
     callback && callback();
   }, 1000);
 }
 
 module.exports = timerGame;
 ```
+
 ```javascript
 // __tests__/timerGame-test.js
-jest.dontMock('../timerGame');
+'use strict';
 
-describe('timerGame', function() {
-  it('waits 1 second before ending the game', function() {
-    var timerGame = require('../timerGame');
+jest.unmock('../timerGame');
+
+describe('timerGame', () => {
+  it('waits 1 second before ending the game', () => {
+    const timerGame = require('../timerGame');
     timerGame();
 
     expect(setTimeout.mock.calls.length).toBe(1);
@@ -48,9 +52,9 @@ callback is called after 1 second. To do this, we're going to use Jest's timer
 control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
-  it('calls the callback after 1 second', function() {
-    var timerGame = require('../timerGame');
-    var callback = jest.genMockFunction();
+  it('calls the callback after 1 second', () => {
+    const timerGame = require('../timerGame');
+    const callback = jest.fn();
 
     timerGame(callback);
 
@@ -61,7 +65,7 @@ control APIs to fast-forward time right in the middle of the test:
     jest.runAllTimers();
 
     // Now our callback should have been called!
-    expect(callback).toBeCalled()
+    expect(callback).toBeCalled();
     expect(callback.mock.calls.length).toBe(1);
   });
 ```
@@ -75,6 +79,8 @@ desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
 
 ```javascript
 // infiniteTimerGame.js
+'use strict';
+
 function infiniteTimerGame(callback) {
   console.log('Ready....go!');
 
@@ -92,14 +98,17 @@ function infiniteTimerGame(callback) {
 
 module.exports = infiniteTimerGame;
 ```
+
 ```javascript
 // __tests__/infiniteTimerGame-test.js
-jest.dontMock('../infiniteTimerGame');
+'use strict';
 
-describe('infiniteTimerGame', function() {
-  it('schedules a 10-second timer after 1 second', function() {
-    var infiniteTimerGame = require('../infiniteTimerGame');
-    var callback = jest.genMockFunction();
+jest.unmock('../infiniteTimerGame');
+
+describe('infiniteTimerGame', () => {
+  it('schedules a 10-second timer after 1 second', () => {
+    const infiniteTimerGame = require('../infiniteTimerGame');
+    const callback = jest.fn();
 
     infiniteTimerGame(callback);
 
@@ -124,3 +133,6 @@ describe('infiniteTimerGame', function() {
 ```
 Lastly, it may occasionally be useful in some tests to be able to clear all of
 the pending timers. For this, we have `jest.clearAllTimers()`.
+
+The code for this example is available at
+[examples/timer/](https://github.com/facebook/jest/tree/master/examples/timer).

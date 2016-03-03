@@ -1,13 +1,12 @@
 html {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-family: proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
   color: #484848;
-  line-height: 1.28;
+  line-height: 1.375; /* 16/22 */
 }
 
 body {
-  background-color: #fefaf6;
+  background-color: #fafafa;
 }
 
 p {
@@ -96,7 +95,7 @@ li {
   line-height: 20px;
 }
 
-a {
+a, p a code {
   color: #C63D0F;
   text-decoration: none;
 }
@@ -128,12 +127,12 @@ html * {
   line-height: 20px;
   border-left: 4px solid #C63D0F;
   padding: 5px 10px;
-  margin-left: 20px;
-  background-color: rgba(226, 142, 50, 0.1);
+  margin: 14px 0 14px 20px;
+  background-color: rgba(226, 142, 50, 0.06);
 }
 
 .prism + .prism {
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .token.keyword {
@@ -285,6 +284,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 
 .nav-main .nav-home {
   font-size: 24px;
+  font-weight: 300;
   line-height: 50px;
 }
 
@@ -326,7 +326,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 }
 
 .buttons-unit {
-  margin-top: 60px;
+  margin-top: 40px;
   text-align: center;
 }
 
@@ -441,7 +441,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
   width: 280px;
 }
 
-.marketing-col h3 {
+.marketing-col h3, .home-why h3, .home-getting-started h3 {
   color: #2d2d2d;
   font-size: 24px;
   font-weight: normal;
@@ -688,7 +688,7 @@ figure {
   margin-top: 60px;
 }
 
-small code, li code, p code {
+small code, li code, p code, h1 code, h2 code, h3 code, h4 code {
   color: #555;
   background-color: rgba(0, 0, 0, 0.04);
   padding: 1px 3px;
@@ -880,27 +880,36 @@ div[data-twttr-id] iframe {
   text-align: center;
 }
 
-.home-why .blurb {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .home-why .list {
   margin: 0 auto;
-  max-width: 460px;
+  max-width: 700px;
 }
 
 .home-getting-started {
-  width: 500px;
   margin: 20px auto 40px auto;
+  max-width: 700px;
 }
 
 .home-getting-started h3 {
+  margin: 20px 0;
   text-align: center;
 }
 
 #content {
   display: none;
+}
+
+.edit-page-link {
+  float: right;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 20px;
+  opacity: 0.6;
+  transition: opacity 0.5s;
+}
+
+.edit-page-link:hover {
+  opacity: 1;
 }
 
 @media only screen and (max-device-width : 1024px) {

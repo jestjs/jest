@@ -5,7 +5,7 @@ jest.unmock('../infiniteTimerGame');
 describe('infiniteTimerGame', () => {
   it('schedules a 10-second timer after 1 second', () => {
     const infiniteTimerGame = require('../infiniteTimerGame');
-    const callback = jest.genMockFunction();
+    const callback = jest.fn();
 
     infiniteTimerGame(callback);
 
@@ -27,4 +27,3 @@ describe('infiniteTimerGame', () => {
     expect(setTimeout.mock.calls[1][1]).toBe(10000);
   });
 });
-

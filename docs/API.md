@@ -4,6 +4,7 @@ title: API Reference
 layout: docs
 category: Reference
 permalink: docs/api.html
+next: troubleshooting
 ---
 
 #### The `jest` object
@@ -13,30 +14,37 @@ permalink: docs/api.html
   - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
   - [`jest.currentTestPath()`](#jest-currenttestpath)
-  - [`jest.dontMock(moduleName)`](#jest-dontmock-modulename)
+  - [`jest.fn(implementation?)`](#jest-fn-implementation)
   - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
-  - [`jest.genMockFunction()`](#jest-genmockfunction)
-  - [`jest.genMockFn()`](#jest-genmockfn)
   - [`jest.mock(moduleName)`](#jest-mock-modulename)
   - [`jest.runAllTicks()`](#jest-runallticks)
   - [`jest.runAllTimers()`](#jest-runalltimers)
   - [`jest.runOnlyPendingTimers()`](#jest-runonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](#jest-setmock-modulename-moduleexports)
+  - [`jest.unmock(moduleName)`](#jest-unmock-modulename)
 
 #### Mock functions
+
+Mock functions can be created using `jest.fn()`.
 
   - [`mockFn.mock.calls`](#mockfn-mock-calls)
   - [`mockFn.mock.instances`](#mockfn-mock-instances)
   - [`mockFn.mockClear()`](#mockfn-mockclear)
   - [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn)
-  - [`mockFn.mockImpl(fn)`](#mockfn-mockimpl-fn)
   - [`mockFn.mockReturnThis()`](#mockfn-mockreturnthis)
   - [`mockFn.mockReturnValue(value)`](#mockfn-mockreturnvalue-value)
   - [`mockFn.mockReturnValueOnce(value)`](#mockfn-mockreturnvalueonce-value)
 
+#### require extensions
+
+  - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
+  - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
+
 #### Config options
 
+  - [`config.automock` [boolean]](#config-automock-boolean)
   - [`config.bail` [boolean]](#config-bail-boolean)
+  - [`config.cache` [boolean]](#config-cache-boolean)
   - [`config.cacheDirectory` [string]](#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](#config-collectcoverageonlyfrom-object)
@@ -59,6 +67,7 @@ permalink: docs/api.html
   - [`config.testRunner` [string]](#config-testrunner-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](#config-unmockedmodulepathpatterns-array-string)
   - [`config.verbose` [boolean]](#config-verbose-boolean)
+  - [`config.watchman` [boolean]](#config-watchman-boolean)
 
 #### Globally injected variables
 
@@ -97,6 +106,8 @@ permalink: docs/api.html
 
 -----
 
+## Jest API
+
 ### `jest.autoMockOff()`
 Disables automatic mocking in the module loader.
 
@@ -119,7 +130,21 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 ### `jest.currentTestPath()`
 Returns the absolute path to the currently executing test file.
 
-### `jest.dontMock(moduleName)`
+### `jest.fn(implementation?)`
+Returns a new, unused [mock function](#mock-functions). Optionally takes a mock
+implementation.
+
+```js
+  const mockFn = jest.fn();
+  mockFn();
+  expect(mockFn).toBeCalled();
+
+  // With a mock implementation:
+  const returnsTrue = jest.fn(() => true);
+  console.log(returnsTrue()) // true;
+```
+
+### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
 
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
@@ -128,12 +153,6 @@ The most common use of this API is for specifying the module a given test intend
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
 This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
-
-### `jest.genMockFunction()`
-Returns a freshly generated, unused [mock function](#mock-functions).
-
-### `jest.genMockFn()`
-Shorthand alias for [`jest.genMockFunction`](#jest-genmockfunction).
 
 ### `jest.mock(moduleName)`
 Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
@@ -166,12 +185,14 @@ On occasion there are times where the automatically generated mock the module sy
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
+## Mock API
+
 ### `mockFn.mock.calls`
 An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
 
 For example: A mock function `f` that has been called twice, with the arguments `f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')` would have a `mock.calls` array that looks like this:
 
-```javascript
+```js
 [
   ['arg1', 'arg2'],
   ['arg3', 'arg4']
@@ -183,8 +204,8 @@ An array that contains all the object instances that have been instantiated from
 
 For example: A mock function that has been instantiated twice would have the following `mock.instances` array:
 
-```javascript
-var mockFn = jest.genMockFunction();
+```js
+var mockFn = jest.fn();
 
 var a = new mockFn();
 var b = new mockFn();
@@ -201,15 +222,16 @@ Often this is useful when you want to clean up a mock's usage data between two a
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
+Note: `jest.fn(implementation)` is a shorthand for `mockImplementation`.
+
 For example:
 
-```javascript
-var mockFn = jest.genMockFunction().mockImplementation(function(scalar) {
-  return 42 + scalar;
-});
+```js
+const mockFn = jest.fn().mockImplementation(scalar => 42 + scalar);
+// or: jest.fn(scalar => 42 + scalar);
 
-var a = mockFn(0);
-var b = mockFn(1);
+const a = mockFn(0);
+const b = mockFn(1);
 
 a === 42; // true
 b === 43; // true
@@ -227,46 +249,46 @@ module.exports = class SomeClass {
 }
 
 // OtherModule.test.js
-let SomeClass = require("SomeClass")
-let mMock = jest.genMockFn()
+const SomeClass = require('SomeClass')
+const mMock = jest.fn()
 SomeClass.mockImplementation(() => {
   return {
     m: mMock
   }
 })
 
-let some = new SomeClass()
-some.m("a", "b")
-console.log("Calls to m: ", mMock.mock.calls)
+const some = new SomeClass()
+some.m('a', 'b')
+console.log('Calls to m: ', mMock.mock.calls)
 ```
-
-### `mockFn.mockImpl(fn)`
-Shorthand alias for [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn).
 
 ### `mockFn.mockReturnThis()`
 Just a simple sugar function for:
 
-```javascript
-.mockImplementation(function() {
+```js
+jest.fn(function() {
   return this;
 });
 ```
 
 ### `mockFn.mockReturnValue(value)`
-Just a simple sugar function for:
 
-```javascript
-.mockImplementation(function() {
-  return value;
-});
+Deprecated: Use `jest.fn(() => value)` instead.
+
+```js
+const mockNumberFn = jest.fn(() => 42);
+mockNumberFn(); // 42
+
+// Deprecated behavior:
+jest.genMockFunction().mockImplementation(() => value);
 ```
 
 ### `mockFn.mockReturnValueOnce(value)`
 Just a simple sugar function for:
 
-```javascript
-var valueReturned = false;
-.mockImplementation(function() {
+```js
+const valueReturned = false;
+jest.fn(() => {
   if (!valueReturned) {
     valueReturned = true;
     return value;
@@ -274,10 +296,39 @@ var valueReturned = false;
 });
 ```
 
+## `require` Extensions
+
+### `require.requireActual(moduleName)`
+
+Returns the actual module instead of a mock, bypassing all checks on whether the
+module should receive a mock implementation or not.
+
+### `require.requireMock(moduleName)`
+
+Returns a mock module instead of the actual module, bypassing all checks on
+whether the module should be required normally or not.
+
+## Configuration
+
+### `config.automock` [boolean]
+(default: true)
+
+By default, Jest mocks every module automatically. If you are building a small
+JavaScript library and would like to use Jest, you may not want to use
+automocking. You can disable this option and create manual mocks or explicitly
+mock modules using `jest.mock(moduleName)`.
+
 ### `config.bail` [boolean]
 (default: false)
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
+
+### `config.cache` [boolean]
+(default: true)
+
+By default, Jest caches heavily to speed up subsequent test runs. Sometimes this
+may not be desirable and can be turned off. *Note: it is generally better
+not to disable this feature, but rather run Jest with `--no-cache` once.*
 
 ### `config.cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
@@ -305,7 +356,7 @@ A set of global variables that need to be available in all test environments.
 
 For example, the following would create a global `__DEV__` variable set to `true` in all test environments:
 
-```javascript
+```js
 {
   ...
   "jest": {
@@ -328,7 +379,7 @@ A pattern that is matched against file paths to determine which folder contains 
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
-If you are using CoffeeScript this should be `['js', 'json', 'coffee', 'litcoffee', 'coffee.md']`
+If you are using TypeScript this should be `['js', 'json', 'ts']`
 
 ### `config.modulePathIgnorePatterns` [array<string>]
 (default: `[]`)
@@ -341,11 +392,11 @@ An array of regexp pattern strings that are matched against all module paths bef
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
 Example:
-```javascript
-"moduleNameMapper": {
-  "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
-  "^[./a-zA-Z0-9$_-]+\.png$": "RelativeImageStub"
-}
+```js
+  "moduleNameMapper": {
+    "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
+    "^[./a-zA-Z0-9$_-]+\.png$": "RelativeImageStub"
+  }
 ```
 
 ### `config.preprocessCachingDisabled` [boolean]
@@ -400,7 +451,7 @@ For example, many node projects prefer to put their tests in a `tests` directory
 
 An array of file extensions that test files might have. Jest uses this when searching for tests to run.
 
-This is useful if, for example, you are writting test files using CoffeeScript with a `.coffee` file extension. In such a scenario, you can use `['js', 'coffee']` to make Jest find files that end in both `.js` and `.coffee`. (Don't forget to set up a coffeescript pre-processor using [`config.scriptPreprocessor`](#config-scriptpreprocessor-string) too!)
+This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, you can use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`config.scriptPreprocessor`](#config-scriptpreprocessor-string) too!)
 
 ### `config.testPathDirs` [array<string>]
 (default: `['<rootDir>']`)
@@ -422,22 +473,27 @@ A regexp pattern string that is matched against all test paths before executing 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `config.testRunner` [string]
-(default: `./testRunners/jasmine/jasmine1.js`)
+(default: `jasmine2`)
 
-This option allows use of a custom test runner. The default is jasmine1. Jest also ships with jasmine2 to which it will default to in the future. jasmine2 can be enabled by setting this option to `<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js`.
+This option allows use of a custom test runner. The default is jasmine2. Jest also ships with jasmine1 which can enabled by setting this option to `jasmine1`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 ### `config.unmockedModulePathPatterns` [array<string>]
 (default: `[]`)
 
 An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them. If a module's path matches any of the patterns in this list, it will not be automatically mocked by the module loader.
 
-This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lo-dash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.dontMock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
+This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lo-dash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
-
-**Note:** If you are using `npm 3.x`, you may need to specify modules that are not direct dependencies of your project in `config.unmockedModulePathPatterns` or prevent mocking using `jest.dontMock()`. This is a known limitation and will be addressed ([#554](https://github.com/facebook/jest/issues/554)).
 
 ### `config.verbose` [boolean]
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+### `config.watchman` [boolean]
+(default: `true`)
+
+[Watchman](https://facebook.github.io/watchman/) monitors the file system for
+changes and is used by Jest for crawling for files. Disable this if you cannot
+use watchman or use the `--no-watchman` flag.

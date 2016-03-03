@@ -1,24 +1,26 @@
 ---
 id: common-js-testing
-title: CommonJS Testing
+title: Module Testing
 layout: docs
 category: Core Concepts
 permalink: docs/common-js-testing.html
 next: automatic-mocking
 ---
 
-Dependency Injection was popularized in the JavaScript community by Angular as a
-way to mock dependencies in order to make code testable. In this article, we're
-going to see how Jest achieves the same result using a different approach.
+Dependency Injection is a way to mock dependencies in order to make code
+testable. In this article, we're going to see how Jest achieves the same result
+using a different approach.
 
 What is the problem?
 --------------------
 
-The [example](https://docs.angularjs.org/guide/unit-testing#dependency-injection) that Angular documentation uses to justify Dependency Injection is the following:
+The [example](https://docs.angularjs.org/guide/unit-testing#dependency-injection)
+that Angular documentation uses to justify Dependency Injection is the
+following:
 
 ```javascript
 function doWork() {
-  var xhr = new XHR();
+  const xhr = new XHR();
   xhr.open('POST', 'http://facebook.github.io/jest/');
   xhr.send();
 }
@@ -29,7 +31,7 @@ in order to get a reference to `XHR`. In order to mock this dependency, we have
 to monkey patch the global object.
 
 ```javascript
-var oldXHR = XHR;
+let oldXHR = XHR;
 XHR = function MockXHR() {};
 doWork();
 // assert that MockXHR got called with the right arguments
@@ -41,7 +43,8 @@ reference to `XHR` and a way to provide two implementations: one for the normal
 execution and one for testing.
 
 In this case, the solution to both concepts is to use the global object. It
-works, but it's not ideal for reasons outlined in this article: [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
+works, but it's not ideal for reasons outlined in this article:
+[Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
 
 
 How does Angular solve this problem?
@@ -51,7 +54,7 @@ In Angular, you write your code by passing dependencies as arguments:
 
 ```javascript
 function doWork(XHR) {
-  var xhr = new XHR();
+  const xhr = new XHR();
   xhr.open('POST', 'http://facebook.github.io/jest/');
   xhr.send();
 }
@@ -61,7 +64,7 @@ It makes it very easy to write a test – you just pass your mocked version as
 argument to your function:
 
 ```javascript
-var MockXHR = function() {};
+const MockXHR = function() {};
 doWork(MockXHR);
 // assert that MockXHR got called with the right arguments
 ```
@@ -71,12 +74,12 @@ application. So Angular uses an `injector` behind the scenes. This makes it
 easy to create instances that automatically acquire their dependencies:
 
 ```
-var injectedDoWork = injector.instantiate(doWork);
+const injectedDoWork = injector.instantiate(doWork);
 
 // is the equivalent of writing
 
 function injectedDoWork() {
-  var xhr = injector.get('XHR');
+  const xhr = injector.get('XHR');
   xhr.open('POST', 'http://facebook.github.io/jest/');
   xhr.send();
 }
@@ -98,9 +101,9 @@ a module loader with the `require` function. In a CommonJS JavaScript app, the
 example above would look more like this:
 
 ```
-var XHR = require('XHR');
+const XHR = require('XHR');
 function doWork() {
-  var xhr = new XHR();
+  const xhr = new XHR();
   xhr.open('POST', 'http://facebook.github.io/jest/');
   xhr.send();
 }
@@ -115,7 +118,7 @@ environment.
 jest.mock('XHR');
 require('XHR'); // returns a mocked version of XHR
 
-jest.dontMock('XHR');
+jest.unmock('XHR');
 require('XHR'); // returns the real XHR module
 ```
 
@@ -124,7 +127,7 @@ This allows you to write your tests like this:
 ```
 jest.mock('XHR'); // note: by default, this is done automatically in Jest
 doWork();
-var MockXHR = require('XHR');
+const MockXHR = require('XHR');
 // assert that MockXHR got called with the right arguments
 ```
 

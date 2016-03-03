@@ -352,7 +352,10 @@ class Loader {
 
       const mockMetadata = moduleMocker.getMetadata(moduleExports);
       if (mockMetadata === null) {
-        throw new Error('Failed to get mock metadata: ' + modulePath);
+        throw new Error(
+          `Failed to get mock metadata: ${modulePath}\n\n` +
+          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`
+        );
       }
       mockMetaDataCache[modulePath] = mockMetadata;
     }
