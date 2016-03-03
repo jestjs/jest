@@ -23,7 +23,7 @@ describe('fetchCurrentUser', () => {
     const fetchCurrentUser = require('../fetchCurrentUser');
 
     // Create a mock function for our callback
-    const callback = jest.genMockFunction();
+    const callback = jest.fn();
     fetchCurrentUser(callback);
 
     // Now we emulate the process by which `$.ajax` would execute its own

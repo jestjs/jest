@@ -113,6 +113,7 @@ function execute() {
         var res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
         var metadata = res.metadata;
         var rawContent = res.rawContent;
+        metadata.source = path.basename(file);
         metadatas.files.push(metadata);
 
         if (metadata.permalink.match(/^https?:/)) {

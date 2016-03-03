@@ -4,7 +4,7 @@ title: Tutorial – React
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-react.html
-next: tutorial-webpack-integration
+next: tutorial-jquery
 ---
 
 At Facebook, we use Jest to test [React](http://facebook.github.io/react/)
@@ -12,6 +12,8 @@ applications. Let's implement a simple checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
+'use strict';
+
 import React from 'react';
 
 export default class CheckboxWithLabel extends React.Component {
@@ -50,7 +52,7 @@ manipulate React components.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
-/* eslint-disable no-unused-vars */
+'use strict';
 
 jest.unmock('../CheckboxWithLabel');
 
@@ -85,20 +87,19 @@ describe('CheckboxWithLabel', () => {
 ## Setup
 
 Since we are writing code using JSX, a bit of one-time setup is required to make
-the test work. We are going to use the babel-jest package as a preprocessor for
-jest.
+the test work. We are going to use the `babel-jest` package as a preprocessor
+for Jest. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
 
 ```javascript
 // package.json
-  "dependencies": {
+    "dependencies": {
     "react": "~0.14.0",
     "react-dom": "~0.14.0"
   },
   "devDependencies": {
-    "babel-jest": "*",
+    "babel-jest": "^9.0.0",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
-    "babel-preset-jest": "*",
     "jest-cli": "*",
     "react-addons-test-utils": "~0.14.0"
   },
@@ -106,7 +107,6 @@ jest.
     "test": "jest"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",
@@ -118,14 +118,10 @@ jest.
 ```javascript
 // .babelrc
 {
-  "presets": ["es2015", "react"],
-  "env": {
-    "test": {
-      "presets": ["jest"]
-    }
-  }
+  "presets": ["es2015", "react"]
 }
 ```
+
 Run ```npm install```.
 
 **And you're good to go!**
@@ -137,47 +133,37 @@ being mocked.
 The code for this example is available at
 [examples/react/](https://github.com/facebook/jest/tree/master/examples/react).
 
-
-### Using experimental stages with babel-jest
-
-By default, babel-jest will use Babel's default stage (stage 2).
-If you'd like to use one of the other stages, set the environment variable:
-
-```javascript
-  "scripts": {
-    "test": "BABEL_JEST_STAGE=0 jest"
-  }
-```  
-
 ### Rolling your own preprocessor
 
 Instead of using babel-jest, here is an example of using babel to build your own
-preprocessor.
+preprocessor:
 
 ```javascript
-var babel = require("babel-core");
+'use strict';
+
+const babel = require('babel-core');
+const jestPreset = require('babel-preset-jest');
+const path = require('path');
+
+const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 
 module.exports = {
-  process: function (src, filename) {
-    // Allow the stage to be configured by an environment
-    // variable, but use Babel's default stage (2) if
-    // no environment variable is specified.
-    var stage = process.env.BABEL_JEST_STAGE || 2;
-
-    // Ignore all files within node_modules
-    // babel files can be .js, .es, .jsx or .es6
-    if (filename.indexOf("node_modules") === -1 && babel.canCompile(filename)) {
+  process(src, filename) {
+    if (!filename.includes(NODE_MODULES) && babel.util.canCompile(filename)) {
       return babel.transform(src, {
-        filename: filename,
-        stage: stage,
+        filename,
+        presets: [jestPreset],
         retainLines: true,
-        auxiliaryCommentBefore: "istanbul ignore next"
       }).code;
     }
-
     return src;
-  }
+  },
 };
+
 ```
 
-Don't forget to install the babel-core package for this example to work.
+In fact, this is the entire [source code](https://github.com/facebook/jest/blob/master/packages/babel-jest/src/index.js)
+of `babel-jest`!
+
+*Note: Don't forget to install the `babel-core` and `babel-preset-jest` packages
+for this example to work!*
