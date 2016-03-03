@@ -19,6 +19,10 @@
   as packages. `babel-jest` is now being auto-detected.
 * Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for
   `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
+* Jasmine 2 is now the default test runner. To keep using Jasmine 1, put
+  `testRunner: "jasmine1"` into your configuration.
+* Added an `automock` option to turn off automocking globally.
+* Added a `testEnvironment` option to customize the sandbox environment.
 
 ## 0.8.2
 

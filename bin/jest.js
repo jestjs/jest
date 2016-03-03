@@ -163,9 +163,10 @@ const argv = optimist
     },
     testRunner: {
       description: _wrapDesc(
-        'Allows to specify a custom test runner. Jest ships with jasmine2 ' +
-        'which can be enabled by setting this option to ' +
-        '`<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js`'
+        'Allows to specify a custom test runner. Jest ships with Jasmine ' +
+        '1 and 2 which can be enabled by setting this option to ' +
+        '`jasmine1` or `jasmine2`. The default is `jasmine2`. A path to a ' +
+        'custom test runner can be provided: `<rootDir>/path/to/testRunner.js`.'
       ),
       type: 'string',
     },
