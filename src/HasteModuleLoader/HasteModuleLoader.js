@@ -45,7 +45,7 @@ class Loader {
     this._isCurrentlyExecutingManualMock = null;
     this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
-    this._shouldAutoMock = true;
+    this._shouldAutoMock = config.automock;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
     this._modules = moduleMap.modules;

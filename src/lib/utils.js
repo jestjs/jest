@@ -19,6 +19,7 @@ function replacePathSepForRegex(str) {
 }
 
 const DEFAULT_CONFIG_VALUES = {
+  automock: true,
   bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
@@ -42,7 +43,6 @@ const DEFAULT_CONFIG_VALUES = {
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
   testReporter: require.resolve('../reporters/IstanbulTestReporter'),
-  testRunner: require.resolve('../testRunners/jasmine/jasmine1'),
   testURL: 'about:blank',
   noHighlight: false,
   noStackTrace: false,
@@ -92,7 +92,10 @@ function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-function normalizeConfig(config) {
+function normalizeConfig(config, argv) {
+  if (!argv) {
+    argv = {};
+  }
   const newConfig = {};
 
   // Assert that there *is* a rootDir
@@ -108,6 +111,26 @@ function normalizeConfig(config) {
     }
     config.setupFiles.push(config.setupEnvScriptFile);
     delete config.setupEnvScriptFile;
+  }
+
+  if (argv.testRunner) {
+    config.testRunner = argv.testRunner;
+  }
+
+  if (config.testRunner === 'jasmine1') {
+    config.testRunner = require.resolve('../testRunners/jasmine/jasmine1');
+  } else if (!config.testRunner || config.testRunner === 'jasmine2') {
+    config.testRunner = require.resolve('../testRunners/jasmine/jasmine2');
+  } else {
+    try {
+      config.testRunner = path.resolve(
+        config.testRunner.replace(/<rootDir>/g, config.rootDir)
+      );
+    } catch (e) {
+      throw new Error(
+        `Jest: Invalid testRunner path: ${config.testRunner}`
+      );
+    }
   }
 
   // Normalize user-supplied config options
@@ -166,9 +189,6 @@ function normalizeConfig(config) {
           );
         });
         break;
-      case 'testEnvironment_EXPERIMENTAL':
-        newConfig.testEnvironment = config[key];
-        return newConfig;
       case 'bail':
       case 'preprocessCachingDisabled':
       case 'coverageReporters':
@@ -197,11 +217,17 @@ function normalizeConfig(config) {
       case 'cache':
       case 'watchman':
       case 'verbose':
+      case 'automock':
+      case 'testEnvironment':
         value = config[key];
         break;
 
       default:
-        throw new Error('Unknown config option: ' + key);
+        console.error(
+          `Error: Unknown config option "${key}" with value ` +
+          `"${config[key]}". This is either a typing error or another user ` +
+          `mistake and fixing it will remove this message.`
+        );
     }
     newConfig[key] = value;
     return newConfig;

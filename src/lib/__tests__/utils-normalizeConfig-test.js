@@ -40,15 +40,21 @@ describe('utils-normalizeConfig', () => {
     utils = require('../utils');
   });
 
-  it('throws when an invalid config option is passed in', () => {
+  it('errors when an invalid config option is passed in', () => {
+    const error = console.error;
+    console.error = jest.fn();
+    utils.normalizeConfig({
+      rootDir: '/root/path/foo',
+      thisIsAnInvalidConfigKey: 'with a value even!',
+    });
 
-    expect(() => {
-      utils.normalizeConfig({
-        rootDir: '/root/path/foo',
-        thisIsAnInvalidConfigKey: 'with a value even!',
-      });
-    }).toThrow(new Error('Unknown config option: thisIsAnInvalidConfigKey'));
+    expect(console.error).toBeCalledWith(
+      'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
+      '"with a value even!". This is either a typing error or another user ' +
+      'mistake and fixing it will remove this message.'
+    );
 
+    console.error = error;
   });
 
   describe('rootDir', () => {
@@ -334,6 +340,38 @@ describe('utils-normalizeConfig', () => {
         'hasNoToken',
         joinForPattern('', 'root', 'path', 'foo', 'hasAToken'),
       ]);
+    });
+  });
+
+  describe('testRunner', () => {
+    it('defaults to Jasmine 2', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root/path/foo',
+      });
+
+      expect(config.testRunner.endsWith('jasmine2.js')).toBe(true);
+    });
+
+    it('can be changed to jasmine1', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root/path/foo',
+        testRunner: 'jasmine1',
+      });
+
+      expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
+    });
+
+    it('is overwritten by argv', () => {
+      const config = utils.normalizeConfig(
+        {
+          rootDir: '/root/path/foo',
+        },
+        {
+          testRunner: 'jasmine1',
+        }
+      );
+
+      expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
     });
   });
 });
