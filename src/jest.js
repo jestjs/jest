@@ -240,7 +240,7 @@ function getWatcher(argv, packageRoot, callback) {
 
 function getBabelPlugin(pluginName, config) {
   try {
-    return resolve.sync('babel-jest', {
+    return resolve.sync(pluginName, {
       basedir: config.rootDir,
     });
   } catch (e) {}
@@ -250,13 +250,9 @@ function getBabelPlugin(pluginName, config) {
 function configureBabel(config) {
   if (!config.scriptPreprocessor) {
     const scriptPreprocessor = getBabelPlugin('babel-jest', config);
-    if (scriptPreprocessor) {
-      const polyfillPlugin = getBabelPlugin('babel-polyfill', config);
-      return {
-        scriptPreprocessor,
-        polyfillPlugin,
-      };
-    }
+    const polyfillPlugin =
+      scriptPreprocessor && getBabelPlugin('babel-polyfill', config);
+    return {scriptPreprocessor, polyfillPlugin};
   }
   return null;
 }

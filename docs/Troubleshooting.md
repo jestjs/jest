@@ -14,8 +14,9 @@ Consider using `jest.unmock('moduleName')` or add the path to the node module
 to the [unmockedModulePathPatterns](/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
 config option.
 
-You can also provide a [manual mock](/jest/docs/manual-mocks.html) by creating a `moduleName.js` file in a
-`__mocks__` folder in the root level of your project.
+You can also provide a [manual mock](/jest/docs/manual-mocks.html) by creating
+a `moduleName.js` file in a `__mocks__` folder in the root level of your
+project.
 
 ### Caching Issues
 
@@ -40,6 +41,13 @@ Most commonly this is being caused by conflicting Promise implementations.
 Consider replacing the global promise implementation with your own, for example
 `global.Promise = require.requireActual('promise');` and/or consolidate the
 used Promise libraries to a single one.
+
+If your test is long running, you may want to consider to increase the timeout
+specified in `jasmine.DEFAULT_TIMEOUT_INTERVAL`.
+
+```
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // 10 second timeout
+```
 
 ### Watchman Issues
 
