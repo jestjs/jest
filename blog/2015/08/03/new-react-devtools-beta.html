@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Jest | Painless JavaScript Unit Testing</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="Jest | Painless JavaScript Unit Testing"><meta property="og:type" content="website"><meta property="og:url" content="http://facebook.github.io/jest/index.html"><meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png"><meta property="og:description" content="Painless JavaScript Unit Testing"><link rel="shortcut icon" href="/jest/img/favicon.png"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="stylesheet" href="/jest/css/jest.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/jest/"><img src="/jest/img/jest_logo_nav.png">Jest</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/tutorial.html#content" class="">docs</a></li><li><a href="/jest/support.html" class="">support</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="https://github.com/facebook/jest" class="">GitHub</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Recent Posts</h3><ul></ul></div></div><div class="inner-content"><h1>New React Devtools Beta</h1><p class="meta">October 3, 2015 by jaredly</p><hr><div><p>We&#x27;ve made an entirely new version of the devtools, and we want you to try it
+out!</p><p><img src="/react/img/blog/devtools-full.gif" alt="The full devtools gif"></p><h2><a class="anchor" name="why-entirely-new"></a>Why entirely new? <a class="hash-link" href="#why-entirely-new">#</a></h2><p>Perhaps the biggest reason was to create a defined API for dealing with
+internals, so that other tools could benefit as well and not have to depend on
+implementation details. This gives us more freedom to refactor things
+internally without worrying about breaking tooling.</p><p>The current version of the devtools is a fork of Blink&#x27;s &quot;Elements&quot; pane, and
+is imperative, mutation-driven, and tightly integrated with Chrome-specific
+APIs. The new devtools are much less coupled to Chrome, and easier to reason
+about thanks to React.</p><h2><a class="anchor" name="what-are-the-benefits"></a>What are the benefits? <a class="hash-link" href="#what-are-the-benefits">#</a></h2><ul><li>100% React</li><li>Firefox compatible</li><li>React Native compatible</li><li>more extensible &amp; hackable</li></ul><h2><a class="anchor" name="are-there-any-new-features"></a>Are there any new features? <a class="hash-link" href="#are-there-any-new-features">#</a></h2><p>Yeah!</p><h3><a class="anchor" name="the-tree-view"></a>The Tree View <a class="hash-link" href="#the-tree-view">#</a></h3><p><img src="/react/img/blog/devtools-tree-view.png" alt="The new tree view of the devtools"></p><ul><li>Much richer view of your props, including the contents of objects and arrays</li><li>Custom components are emphasized, native components are de-emphasized</li><li>Stateful components have a red collapser</li><li>Improved keyboard navigation (hjkl or arrow keys)</li><li>Selected component is available in the console as <code>$r</code></li><li>Props that change highlight in green</li><li><p>Right-click menu</p><ul><li>Scroll node into view</li><li>Show the source for a component in the &quot;Sources&quot; pane</li><li>Show the element in the &quot;Elements&quot; pane</li></ul></li></ul><h3><a class="anchor" name="searching"></a>Searching <a class="hash-link" href="#searching">#</a></h3><p>Select the search bar (or press &quot;/&quot;), and start searching for a component by
+name.</p><p><img src="/react/img/blog/devtools-search.gif" alt=""></p><h3><a class="anchor" name="the-side-pane"></a>The Side Pane <a class="hash-link" href="#the-side-pane">#</a></h3><ul><li>Now shows the <code>context</code> for a component</li><li>Right-click to store a prop/state value as a global variable</li></ul><p><img src="/react/img/blog/devtools-side-pane.gif" alt=""></p><h2><a class="anchor" name="how-do-i-install-it"></a>How do I install it? <a class="hash-link" href="#how-do-i-install-it">#</a></h2><p>First, disable the Chrome web store version, or it will break things. Then
+<a href="https://github.com/facebook/react-devtools/releases" target="_blank">download the .crx</a> and
+drag it into your <code>chrome://extensions</code> page. If it&#x27;s not working to drag it
+from the downloads bar, try opening your downloads folder and drag it from
+there.</p><p>Once we&#x27;ve determined that there aren&#x27;t any major regressions, we&#x27;ll update
+the official web store version, and everyone will be automatically upgraded.</p><h3><a class="anchor" name="also-firefox"></a>Also Firefox! <a class="hash-link" href="#also-firefox">#</a></h3><p>We also have an initial version of the devtools for Firefox, which you can
+download from the same <a href="https://github.com/facebook/react-devtools/releases" target="_blank">release page</a>.</p><h2><a class="anchor" name="feedback-welcome"></a>Feedback welcome <a class="hash-link" href="#feedback-welcome">#</a></h2><p>Let us know what issues you run into
+<a href="https://github.com/facebook/react-devtools/issues" target="_blank">on GitHub</a>, and check out
+<a href="https://github.com/facebook/react-devtools/tree/devtools-next" target="_blank">the README</a>
+for more info.</p><h2><a class="anchor" name="update"></a>Update <a class="hash-link" href="#update">#</a></h2><p><em>August 12, 2015</em></p><p>A second beta is out, with a number of bugfixes. It is also listed on the
+<a href="https://github.com/facebook/react-devtools/releases" target="_blank">releases page</a>.</p></div></div></section><footer class="wrap"><div class="right">© 2016 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-387204-10', 'facebook.github.io');
+            ga('send', 'pageview');
+
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)
+            ){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
+            docsearch({
+              apiKey: '833906d7486e4059359fa58823c4ef56',
+              indexName: 'jest',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>

@@ -1,90 +1,114 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Jest | Painless JavaScript Unit Testing</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="Jest | Painless JavaScript Unit Testing"><meta property="og:type" content="website"><meta property="og:url" content="http://facebook.github.io/jest/index.html"><meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png"><meta property="og:description" content="Painless JavaScript Unit Testing"><link rel="shortcut icon" href="/jest/img/favicon.png"><link rel="stylesheet" href="/jest/css/jest.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/jest/"><img src="/jest/img/jest_logo_nav.png">Jest</a><ul class="nav-site"><li><a href="/jest/docs/tutorial.html#content" class="active">docs</a></li><li><a href="/jest/support.html" class="">support</a></li><li><a href="http://github.com/facebook/jest" class="">github</a></li></ul></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="" href="/jest/docs/getting-started.html#content">Getting Started</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial.html#content">Tutorial</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial-react.html#content">Tutorial – React</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial-webpack-integration.html#content">Tutorial – Webpack Integration</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial-jquery.html#content">Tutorial – jQuery</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial-coffeescript.html#content">Tutorial – CoffeeScript</a></li></ul></div><div class="nav-docs-section"><h3>Core Concepts</h3><ul><li><a style="margin-left:0;" class="" href="/jest/docs/common-js-testing.html#content">CommonJS Testing</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/automatic-mocking.html#content">Automatic Mocking</a></li></ul></div><div class="nav-docs-section"><h3>Reference</h3><ul><li><a style="margin-left:0;" class="" href="/jest/docs/mock-functions.html#content">Mock functions</a></li><li><a style="margin-left:0;" class="active" href="/jest/docs/manual-mocks.html#content">Manual mocks</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/timer-mocks.html#content">Timer mocks</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/api.html#content">API Reference</a></li></ul></div></div><div class="inner-content"><a id="content"></a><h1>Manual mocks</h1><div><p>Although autogeneration of mocks is convenient, there are behaviors it misses, such as <a href="http://martinfowler.com/bliki/FluentInterface.html" target="_blank">fluent interfaces</a>. Furthermore, providing useful helpers on mock versions of a module, especially a core module, promotes reuse and can help to hide implementation details.</p><p>Manual mocks are defined by writing a module in a <code>__mocks__/</code> subdirectory immediately adjacent to the module. For example, to mock a module called <code>user</code> in a the <code>models</code> directory, create a file called <code>user.js</code> and put it in the <code>models/__mocks__</code> directory. If the module you are mocking is a node module, the mock should be placed in the same parent directory as the <code>node_modules</code> folder. Eg:</p><div><pre>
-..
-node_modules
-__mocks__
-__tests__
-views
-config
-..
-</pre>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Jest | Painless JavaScript Unit Testing</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="Jest | Painless JavaScript Unit Testing"><meta property="og:type" content="website"><meta property="og:url" content="http://facebook.github.io/jest/index.html"><meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png"><meta property="og:description" content="Painless JavaScript Unit Testing"><link rel="shortcut icon" href="/jest/img/favicon.png"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="stylesheet" href="/jest/css/jest.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/jest/"><img src="/jest/img/jest_logo_nav.png">Jest</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/tutorial.html#content" class="active">docs</a></li><li><a href="/jest/support.html" class="">support</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="https://github.com/facebook/jest" class="">GitHub</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Quick Start</h3><ul><li><a style="margin-left:0;" class="" href="/jest/docs/getting-started.html#content">Getting Started</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial.html#content">Tutorial</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial-react.html#content">Tutorial – React</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/tutorial-jquery.html#content">Tutorial – jQuery</a></li></ul></div><div class="nav-docs-section"><h3>Core Concepts</h3><ul><li><a style="margin-left:0;" class="" href="/jest/docs/common-js-testing.html#content">Module Testing</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/automatic-mocking.html#content">Automatic Mocking</a></li></ul></div><div class="nav-docs-section"><h3>Reference</h3><ul><li><a style="margin-left:0;" class="" href="/jest/docs/mock-functions.html#content">Mock functions</a></li><li><a style="margin-left:0;" class="active" href="/jest/docs/manual-mocks.html#content">Manual mocks</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/timer-mocks.html#content">Timer mocks</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/api.html#content">API Reference</a></li><li><a style="margin-left:0;" class="" href="/jest/docs/troubleshooting.html#content">Troubleshooting</a></li></ul></div></div><div class="inner-content"><a id="content"></a><a class="edit-page-link" href="https://github.com/facebook/jest/blob/master/docs/ManualMocks.md" target="_blank">Edit on GitHub</a><h1>Manual mocks</h1><div><p>Although autogeneration of mocks is convenient, there are behaviors it misses,
+such as <a href="http://martinfowler.com/bliki/FluentInterface.html" target="_blank">fluent interfaces</a>.
+Furthermore, providing useful helpers on mock versions of a module, especially a
+core module, promotes reuse and can help to hide implementation details.</p><p>Manual mocks are defined by writing a module in a <code>__mocks__/</code> subdirectory
+immediately adjacent to the module. For example, to mock a module called
+<code>user</code> in a the <code>models</code> directory, create a file called <code>user.js</code> and
+put it in the <code>models/__mocks__</code> directory. If the module you are mocking is
+a node module, the mock should be placed in the same parent directory as the
+<code>node_modules</code> folder. Eg:</p><pre class="prism language-javascript">
+  node_modules
+  __mocks__
+  __tests__
+  views
+  config</pre><p>When a manual mock exists for a given module, Jest&#x27;s module system will just
+use that instead of trying to automatically generate a mock.</p><p>Assuming that the module can be loaded by the automocker, it&#x27;s best to build on
+the automocked API. This makes it harder for mock APIs to get out of sync with
+real ones.</p><p>Here&#x27;s a contrived example where we have a module that provides a summary of
+all the files in a given directory.</p><pre class="prism language-javascript">
+<span spellcheck="true" class="token comment">// FileSummarizer.js</span>
+<span class="token string">&#x27;use strict&#x27;</span><span class="token punctuation">;</span>
 
-</div><p>When a manual mock exists for a given module, Jest&#x27;s module system will just use that instead of trying to automatically generate a mock.</p><p>Assuming that the module can be loaded by the automocker, it&#x27;s best to build on the automocked API. This makes it harder for mock APIs to get out of sync with real ones.</p><p>Here&#x27;s a contrived example where we have a module that provides a summary of all the files in a given directory.</p><div class="prism language-javascript"><span class="token comment" spellcheck="true">// FileSummarizer.js
-</span><span class="token keyword">var</span> fs <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">&#x27;fs&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;fs&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token keyword">function</span> <span class="token function">summarizeFilesInDirectorySync<span class="token punctuation">(</span></span>directoryPath<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> fs<span class="token punctuation">.</span><span class="token function">readdirSync<span class="token punctuation">(</span></span>directoryPath<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-      fileName<span class="token punctuation">:</span> fileName<span class="token punctuation">,</span>
-      directory<span class="token punctuation">:</span> directoryPath
-    <span class="token punctuation">}</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token keyword">return</span> directoryFileSummary<span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">summarizeFilesInDirectorySync</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> fs<span class="token punctuation">.</span><span class="token function">readdirSync</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>fileName <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+    fileName<span class="token punctuation">,</span>
+    directory<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 
-exports<span class="token punctuation">.</span>summarizeFilesInDirectorySync <span class="token operator">=</span> summarizeFilesInDirectorySync<span class="token punctuation">;</span></div><p>Since we&#x27;d like our tests to avoid actually hitting the disk (that&#x27;s pretty slow and fragile), we create a manual mock for the <code>fs</code> module by extending the automatic mock. Our manual mock will implement custom versions of the <code>fs</code> APIs that we can build on for our tests:</p><div class="prism language-javascript"><span class="token comment" spellcheck="true">// __mocks__/fs.js
-</span><span class="token comment" spellcheck="true">
-// Get the real (not mocked) version of the &#x27;path&#x27; module
-</span><span class="token keyword">var</span> path <span class="token operator">=</span> require<span class="token punctuation">.</span><span class="token function">requireActual<span class="token punctuation">(</span></span><span class="token string">&#x27;path&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">
-// Get the automatic mock for `fs`
-</span><span class="token keyword">var</span> fsMock <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">genMockFromModule<span class="token punctuation">(</span></span><span class="token string">&#x27;fs&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">
-// This is a custom function that our tests can use during setup to specify
-</span><span class="token comment" spellcheck="true">// what the files on the &quot;mock&quot; filesystem should look like when any of the
-</span><span class="token comment" spellcheck="true">// `fs` APIs are used.
-</span><span class="token keyword">var</span> _mockFiles <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
-<span class="token keyword">function</span> <span class="token function">__setMockFiles<span class="token punctuation">(</span></span>newMockFiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  _mockFiles <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> file <span class="token keyword">in</span> newMockFiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">var</span> dir <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">dirname<span class="token punctuation">(</span></span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+exports<span class="token punctuation">.</span>summarizeFilesInDirectorySync <span class="token operator">=</span> summarizeFilesInDirectorySync<span class="token punctuation">;</span></pre><p>Since we&#x27;d like our tests to avoid actually hitting the disk (that&#x27;s pretty
+slow and fragile), we create a manual mock for the <code>fs</code> module by extending the
+automatic mock. Our manual mock will implement custom versions of the <code>fs</code> APIs
+that we can build on for our tests:</p><pre class="prism language-javascript">
+<span spellcheck="true" class="token comment">// __mocks__/fs.js</span>
+<span class="token string">&#x27;use strict&#x27;</span><span class="token punctuation">;</span>
 
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>_mockFiles<span class="token punctuation">[</span>dir<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      _mockFiles<span class="token punctuation">[</span>dir<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;path&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span spellcheck="true" class="token comment">// This is a custom function that our tests can use during setup to specify</span>
+<span spellcheck="true" class="token comment">// what the files on the &quot;mock&quot; filesystem should look like when any of the</span>
+<span spellcheck="true" class="token comment">// `fs` APIs are used.</span>
+<span class="token keyword">let</span> mockFiles <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">__setMockFiles</span><span class="token punctuation">(</span>newMockFiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  mockFiles <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> file <span class="token keyword">in</span> newMockFiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> dir <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">dirname</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mockFiles<span class="token punctuation">[</span>dir<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      mockFiles<span class="token punctuation">[</span>dir<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
-
-    _mockFiles<span class="token punctuation">[</span>dir<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>path<span class="token punctuation">.</span><span class="token function">basename<span class="token punctuation">(</span></span>file<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    mockFiles<span class="token punctuation">[</span>dir<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">basename</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">
-// A custom version of `readdirSync` that reads from the special mocked out
-</span><span class="token comment" spellcheck="true">// file list set via __setMockFiles
-</span><span class="token keyword">function</span> <span class="token function">readdirSync<span class="token punctuation">(</span></span>directoryPath<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> _mockFiles<span class="token punctuation">[</span>directoryPath<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">
-// Override the default behavior of the `readdirSync` mock
-</span>fsMock<span class="token punctuation">.</span>readdirSync<span class="token punctuation">.</span><span class="token function">mockImplementation<span class="token punctuation">(</span></span>readdirSync<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">
-// Add a custom method to the mock
-</span>fsMock<span class="token punctuation">.</span>__setMockFiles <span class="token operator">=</span> __setMockFiles<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> fsMock<span class="token punctuation">;</span></div><p>Now we write our test:</p><div class="prism language-javascript">jest<span class="token punctuation">.</span><span class="token function">dontMock<span class="token punctuation">(</span></span><span class="token string">&#x27;../FileSummarizer&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span spellcheck="true" class="token comment">// A custom version of `readdirSync` that reads from the special mocked out</span>
+<span spellcheck="true" class="token comment">// file list set via __setMockFiles</span>
+<span class="token keyword">function</span> <span class="token function">readdirSync</span><span class="token punctuation">(</span>directoryPath<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> mockFiles<span class="token punctuation">[</span>directoryPath<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-<span class="token function">describe<span class="token punctuation">(</span></span><span class="token string">&#x27;FileSummarizer&#x27;</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">describe<span class="token punctuation">(</span></span><span class="token string">&#x27;listFilesInDirectorySync&#x27;</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">var</span> MOCK_FILE_INFO <span class="token operator">=</span> <span class="token punctuation">{</span>
-      <span class="token string">&#x27;/path/to/file1.js&#x27;</span><span class="token punctuation">:</span>
-        <span class="token string">&#x27;console.log(&quot;file1 contents&quot;);&#x27;</span><span class="token punctuation">,</span>
+exports<span class="token punctuation">.</span>__setMockFiles <span class="token operator">=</span> __setMockFiles<span class="token punctuation">;</span>
+exports<span class="token punctuation">.</span>readdirSync <span class="token operator">=</span> readdirSync<span class="token punctuation">;</span></pre><p>Now we write our test:</p><pre class="prism language-javascript">
+<span spellcheck="true" class="token comment">// __tests__/FileSummarizer-test.js</span>
+<span class="token string">&#x27;use strict&#x27;</span><span class="token punctuation">;</span>
 
-      <span class="token string">&#x27;/path/to/file2.txt&#x27;</span><span class="token punctuation">:</span>
-        <span class="token string">&quot;file2 contents&quot;</span>
+jest<span class="token punctuation">.</span><span class="token function">mock</span><span class="token punctuation">(</span><span class="token string">&#x27;fs&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+jest<span class="token punctuation">.</span><span class="token function">unmock</span><span class="token punctuation">(</span><span class="token string">&#x27;../FileSummarizer&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">describe</span><span class="token punctuation">(</span><span class="token string">&#x27;FileSummarizer&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token function">describe</span><span class="token punctuation">(</span><span class="token string">&#x27;listFilesInDirectorySync&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> MOCK_FILE_INFO <span class="token operator">=</span> <span class="token punctuation">{</span>
+      <span class="token string">&#x27;/path/to/file1.js&#x27;</span><span class="token punctuation">:</span> <span class="token string">&#x27;console.log(&quot;file1 contents&quot;);&#x27;</span><span class="token punctuation">,</span>
+      <span class="token string">&#x27;/path/to/file2.txt&#x27;</span><span class="token punctuation">:</span> <span class="token string">&#x27;file2 contents&#x27;</span><span class="token punctuation">,</span>
     <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-    <span class="token function">beforeEach<span class="token punctuation">(</span></span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-     <span class="token comment" spellcheck="true"> // Set up some mocked out file info before each test
-</span>      <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">&#x27;fs&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">__setMockFiles<span class="token punctuation">(</span></span>MOCK_FILE_INFO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">beforeEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span spellcheck="true" class="token comment">// Set up some mocked out file info before each test</span>
+      <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;fs&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">__setMockFiles</span><span class="token punctuation">(</span>MOCK_FILE_INFO<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="token function">it<span class="token punctuation">(</span></span><span class="token string">&#x27;includes all files in the directory in the summary&#x27;</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">var</span> FileSummarizer <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">&#x27;../FileSummarizer&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">var</span> fileSummary <span class="token operator">=</span> FileSummarizer<span class="token punctuation">.</span><span class="token function">summarizeFilesInDirectorySync<span class="token punctuation">(</span></span>
+    <span class="token function">it</span><span class="token punctuation">(</span><span class="token string">&#x27;includes all files in the directory in the summary&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> FileSummarizer <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;../FileSummarizer&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">const</span> fileSummary <span class="token operator">=</span> FileSummarizer<span class="token punctuation">.</span><span class="token function">summarizeFilesInDirectorySync</span><span class="token punctuation">(</span>
         <span class="token string">&#x27;/path/to&#x27;</span>
       <span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-      <span class="token function">expect<span class="token punctuation">(</span></span>fileSummary<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe<span class="token punctuation">(</span></span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">expect</span><span class="token punctuation">(</span>fileSummary<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div><p>As you can see, it&#x27;s sometimes useful to do more than what the automatic mocker is capable of doing for us.</p><p>The example mock shown here uses <a href="/jest/docs/api.html#jest-genmockfrommodule-modulename" target=""><code>jest.genMockFromModule</code></a> to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can simply export your own functions from the mock file. Of course, one downside to fully manual mocks is that they&#x27;re manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it&#x27;s best to use or extend the automatic mock when it works for your needs.</p><h2><a class="anchor" name="testing-manual-mocks"></a>Testing manual mocks <a class="hash-link" href="#testing-manual-mocks">#</a></h2><p>It&#x27;s generally an anti-pattern to implement an elaborate, stateful mock for a module. Before going down this route, consider covering the real module completely with tests and then whitelisting it with <a href="/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string" target=""><code>config.unmockedModulePathPatterns</code></a>, so that any tests that <code>require()</code> it will always get the real implementation (rather than a complicated mock version). Of course, this does not work in some scenarios, such as when disk or network access is involved.</p><p>In cases where this kind of elaborate mock is unavoidable, it&#x27;s not necessarily a bad idea to write a test that ensures that the mock and the actual implementation are in sync. Luckily, this is relatively easy to do with the API provided by <code>jest</code>, which allows you to explicitly require both the real module (using <code>require.requireActual()</code>) and the manually mocked implementation of the module (using <code>require()</code>) in a single test!</p></div><div class="docs-prevnext"><a class="docs-next" href="timer-mocks.html#content">Next →</a></div></div></section><footer class="wrap"><div class="right">© 2015 Facebook Inc.</div></footer></div><div id="fb-root"></div><script>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>As you can see, it&#x27;s sometimes useful to do more than what the automatic mocker
+is capable of doing for us.</p><p>The example mock shown here uses <a href="/jest/docs/api.html#jest-genmockfrommodule-modulename" target=""><code>jest.genMockFromModule</code></a>
+to generate an automatic mock, and overrides its default behavior. This is the
+recommended approach, but is completely optional. If you do not want to use the
+automatic mock at all, you can simply export your own functions from the mock
+file. Of course, one downside to fully manual mocks is that they&#x27;re manual –
+meaning you have to manually update them any time the module they are mocking
+changes. Because of this, it&#x27;s best to use or extend the automatic mock when it
+works for your needs.</p><p>The code for this example is available at
+<a href="https://github.com/facebook/jest/tree/master/examples/manual_mocks" target="_blank">examples/manual_mocks/</a>.</p><h2><a class="anchor" name="testing-manual-mocks"></a>Testing manual mocks <a class="hash-link" href="#testing-manual-mocks">#</a></h2><p>It&#x27;s generally an anti-pattern to implement an elaborate, stateful mock for a
+module. Before going down this route, consider covering the real module
+completely with tests and then whitelisting it with
+<a href="/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string" target=""><code>config.unmockedModulePathPatterns</code></a>,
+so that any tests that <code>require()</code> it will always get the real implementation
+(rather than a complicated mock version). Of course, this does not work in some
+scenarios, such as when disk or network access is involved.</p><p>In cases where this kind of elaborate mock is unavoidable, it&#x27;s not necessarily
+a bad idea to write a test that ensures that the mock and the actual
+implementation are in sync. Luckily, this is relatively easy to do with the API
+provided by <code>jest</code>, which allows you to explicitly require both the real module
+(using <code>require.requireActual()</code>) and the manually mocked implementation of the
+module (using <code>require()</code>) in a single test!</p></div><div class="docs-prevnext"><a class="docs-next" href="timer-mocks.html#content">Next →</a></div></div></section><footer class="wrap"><div class="right">© 2016 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -95,4 +119,10 @@ module<span class="token punctuation">.</span>exports <span class="token operato
             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)
             ){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";
             fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
+            docsearch({
+              apiKey: '833906d7486e4059359fa58823c4ef56',
+              indexName: 'jest',
+              inputSelector: '#algolia-doc-search'
+            });
           </script></body></html>

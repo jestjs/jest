@@ -1,0 +1,45 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Jest | Painless JavaScript Unit Testing</title><meta name="viewport" content="width=device-width"><meta property="og:title" content="Jest | Painless JavaScript Unit Testing"><meta property="og:type" content="website"><meta property="og:url" content="http://facebook.github.io/jest/index.html"><meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png"><meta property="og:description" content="Painless JavaScript Unit Testing"><link rel="shortcut icon" href="/jest/img/favicon.png"><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"><link rel="stylesheet" href="/jest/css/jest.css"><script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script><script type="text/javascript">try{Typekit.load();}catch(e){}</script></head><body><div class="container"><div class="nav-main"><div class="wrap"><a class="nav-home" href="/jest/"><img src="/jest/img/jest_logo_nav.png">Jest</a><div class="nav-site-wrapper"><ul class="nav-site nav-site-internal"><li><a href="/jest/docs/tutorial.html#content" class="">docs</a></li><li><a href="/jest/support.html" class="">support</a></li></ul><div class="algolia-search-wrapper"><input id="algolia-doc-search" type="text" placeholder="Search docs..."></div><ul class="nav-site nav-site-external"><li><a href="https://github.com/facebook/jest" class="">GitHub</a></li></ul></div></div></div><section class="content wrap documentationContent"><div class="nav-docs"><div class="nav-docs-section"><h3>Recent Posts</h3><ul></ul></div></div><div class="inner-content"><h1>New in React v0.4: Prop Validation and Default Values</h1><p class="meta">September 11, 2013 by zpao</p><hr><div><p>Many of the questions we got following the public launch of React revolved around <code>props</code>, specifically that people wanted to do validation and to make sure their components had sensible defaults.</p><h2><a class="anchor" name="validation"></a>Validation <a class="hash-link" href="#validation">#</a></h2><p>Oftentimes you want to validate your <code>props</code> before you use them. Perhaps you want to ensure they are a specific type. Or maybe you want to restrict your prop to specific values. Or maybe you want to make a specific prop required. This was always possible — you could have written validations in your <code>render</code> or <code>componentWillReceiveProps</code> functions, but that gets clunky fast.</p><p>React v0.4 will provide a nice easy way for you to use built-in validators, or to even write your own.</p><pre class="prism language-javascript">
+React<span class="token punctuation">.</span><span class="token function">createClass</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  propTypes<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span spellcheck="true" class="token comment">// An optional string prop named &quot;description&quot;.</span>
+    description<span class="token punctuation">:</span> React<span class="token punctuation">.</span>PropTypes<span class="token punctuation">.</span>string<span class="token punctuation">,</span>
+
+    <span spellcheck="true" class="token comment">// A required enum prop named &quot;category&quot;.</span>
+    category<span class="token punctuation">:</span> React<span class="token punctuation">.</span>PropTypes<span class="token punctuation">.</span><span class="token function">oneOf</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">&#x27;News&#x27;</span><span class="token punctuation">,</span><span class="token string">&#x27;Photos&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>isRequired<span class="token punctuation">,</span>
+
+    <span spellcheck="true" class="token comment">// A prop named &quot;dialog&quot; that requires an instance of Dialog.</span>
+    dialog<span class="token punctuation">:</span> React<span class="token punctuation">.</span>PropTypes<span class="token punctuation">.</span><span class="token function">instanceOf</span><span class="token punctuation">(</span>Dialog<span class="token punctuation">)</span><span class="token punctuation">.</span>isRequired
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><h2><a class="anchor" name="default-values"></a>Default Values <a class="hash-link" href="#default-values">#</a></h2><p>One common pattern we&#x27;ve seen with our React code is to do something like this:</p><pre class="prism language-javascript">
+React<span class="token punctuation">.</span><span class="token function">createClass</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  render<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> value <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>value <span class="token operator">||</span> <span class="token string">&#x27;default value&#x27;</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span><span class="token punctuation">{</span>value<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>Do this for a few <code>props</code> across a few components and now you have a lot of redundant code. Starting with React v0.4, you can provide default values in a declarative way:</p><pre class="prism language-javascript">
+React<span class="token punctuation">.</span><span class="token function">createClass</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  getDefaultProps<span class="token punctuation">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      value<span class="token punctuation">:</span> <span class="token string">&#x27;default value&#x27;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>We will use the cached result of this function before each <code>render</code>. We also perform all validations before each <code>render</code> to ensure that you have all of the data you need in the right form before you try to use it.</p><hr><p>Both of these features are entirely optional. We&#x27;ve found them to be increasingly valuable at Facebook as our applications grow and evolve, and we hope others find them useful as well.</p></div></div></section><footer class="wrap"><div class="right">© 2016 Facebook Inc.</div></footer></div><div id="fb-root"></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-387204-10', 'facebook.github.io');
+            ga('send', 'pageview');
+
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)
+            ){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
+            docsearch({
+              apiKey: '833906d7486e4059359fa58823c4ef56',
+              indexName: 'jest',
+              inputSelector: '#algolia-doc-search'
+            });
+          </script></body></html>
