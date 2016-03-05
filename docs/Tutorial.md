@@ -64,6 +64,9 @@ describe('fetchCurrentUser', () => {
 });
 ```
 
+Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
+[here](http://jasmine.github.io/2.0/introduction.html).
+
 When Jest runs, it runs any tests found in `__tests__` directories within the
 source tree.
 
