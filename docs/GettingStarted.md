@@ -55,7 +55,7 @@ The code for this example is available at
 If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled:
 
 ```
-npm install --save-dev babel-jest
+npm install --save-dev babel-jest babel-polyfill
 ```
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file
@@ -128,6 +128,38 @@ will find tests related to changed JavaScript files and only run relevant tests.
 Jest can be installed globally: `npm install -g jest-cli` which will make a
 global `jest` command available that can be invoked from anywhere within your
 project.
+
+#### Async testing
+
+Promises and even async/await can be tested easily. Jest provides a helper
+called `pit` for any kind of async interaction.
+
+Assume a `user.getUserName` function that returns a promise, now consider this
+async test with Babel and
+[`babel-plugin-transform-async-to-generator`](http://babeljs.io/docs/plugins/transform-async-to-generator/) or
+[`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/):
+
+```js
+jest.unmock('../user');
+
+import * as user from '../user';
+
+describe('async tests', () => {
+  // Use `pit` instead of `it` for testing promises.
+  // The promise that is being tested should be returned.
+  pit('works with promises', () => {
+    return user.getUserName(5)
+      .then(name => expect(name).toEqual('Paul'));
+  });
+
+  pit('works with async/await', async () => {
+    const userName = await user.getUserName(4);
+    expect(userName).toEqual('Mark');
+  });
+});
+```
+
+Check out the [Async tutorial](docs/tutorial-async.html) for more.
 
 #### Automated Mocking and Sandboxing
 

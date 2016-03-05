@@ -144,11 +144,6 @@ implementation.
   console.log(returnsTrue()) // true;
 ```
 
-### `jest.unmock(moduleName)`
-Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
-
-The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
-
 ### `jest.genMockFromModule(moduleName)`
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
@@ -184,6 +179,13 @@ Explicitly supplies the mock object that the module system should return for the
 On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
+
+### `jest.unmock(moduleName)`
+Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
+
+The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
+
+*Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. You can use `dontMock` if you want to explicitly avoid this behavior.*
 
 ## Mock API
 

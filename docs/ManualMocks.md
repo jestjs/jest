@@ -136,7 +136,7 @@ changes. Because of this, it's best to use or extend the automatic mock when it
 works for your needs.
 
 The code for this example is available at
-[examples/manual_mocks/](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
+[examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
 
 
 Testing manual mocks

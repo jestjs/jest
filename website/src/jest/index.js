@@ -62,7 +62,7 @@ var index = React.createClass({
                 <li>Runs your tests with a fake DOM implementation (via <a href="https://github.com/tmpvar/jsdom" target="_blank">jsdom</a>) on the command line.</li>
                 <li>Runs tests in parallel processes to minimize test runtime.</li>
                 <li>Works with any compile-to-JS language and integrates seamlessly with <a href="http://babeljs.io" target="_blank">Babel</a>.</li>
-                <li>Supports testing asynchronous code, like Promises.</li>
+                <li>Supports testing asynchronous code, like Promises or async/await.</li>
                 <li>Creates coverage reports.</li>
               </ul>
             </div>

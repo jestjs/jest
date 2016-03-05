@@ -135,4 +135,4 @@ Lastly, it may occasionally be useful in some tests to be able to clear all of
 the pending timers. For this, we have `jest.clearAllTimers()`.
 
 The code for this example is available at
-[examples/timer/](https://github.com/facebook/jest/tree/master/examples/timer).
+[examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).

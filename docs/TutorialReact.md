@@ -4,7 +4,7 @@ title: Tutorial – React
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-react.html
-next: tutorial-jquery
+next: tutorial-async
 ---
 
 At Facebook, we use Jest to test [React](http://facebook.github.io/react/)
@@ -131,9 +131,9 @@ to help. Therefore, we use `unmockedModulePathPatterns` to prevent React from
 being mocked.
 
 The code for this example is available at
-[examples/react/](https://github.com/facebook/jest/tree/master/examples/react).
+[examples/react](https://github.com/facebook/jest/tree/master/examples/react).
 
-### Rolling your own preprocessor
+### Building your own preprocessor
 
 Instead of using babel-jest, here is an example of using babel to build your own
 preprocessor:
