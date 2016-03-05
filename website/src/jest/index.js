@@ -56,13 +56,12 @@ var index = React.createClass({
                 <li>Automatically finds tests to execute in your repo.</li>
                 <li>Sandboxes test files and resets state automatically for every test.</li>
                 <li><a href="/jest/docs/automatic-mocking.html">Automatically mocks</a> dependencies for you when running your tests.</li>
-                <li>Allows you to <a href="/jest/docs/timer-mocks.html">test asynchronous code synchronously</a>.</li>
+                <li>Allows you to <a href="/jest/docs/timer-mocks.html">test asynchronous code synchronously</a> as well as <a href="/jest/docs/tutorial-async.html">Promises and async/await.</a></li>
                 <li>Uses static analysis to find and only run relevant test files during local development.</li>
                 <li>Provides a <a href="/jest/docs/mock-functions.html">manual mocking library</a>.</li>
                 <li>Runs your tests with a fake DOM implementation (via <a href="https://github.com/tmpvar/jsdom" target="_blank">jsdom</a>) on the command line.</li>
                 <li>Runs tests in parallel processes to minimize test runtime.</li>
                 <li>Works with any compile-to-JS language and integrates seamlessly with <a href="http://babeljs.io" target="_blank">Babel</a>.</li>
-                <li>Supports testing asynchronous code, like Promises or async/await.</li>
                 <li>Creates coverage reports.</li>
               </ul>
             </div>
