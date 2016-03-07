@@ -26,7 +26,6 @@ describe('HasteModuleLoader', function() {
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModule-tests',
     rootDir,
-    unmockedModulePathPatterns: ['npm3-main-dep'],
   });
 
   function buildLoader() {

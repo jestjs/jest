@@ -57,7 +57,10 @@ function uniqueStrings(set) {
   return newSet;
 }
 
-function normalize(config) {
+function normalize(config, argv) {
+  if (!argv) {
+    argv = {};
+  }
   const newConfig = {};
 
   // Assert that there *is* a rootDir
@@ -66,6 +69,34 @@ function normalize(config) {
   }
 
   config.rootDir = path.normalize(config.rootDir);
+
+  if (config.setupEnvScriptFile) {
+    if (!config.setupFiles) {
+      config.setupFiles = [];
+    }
+    config.setupFiles.push(config.setupEnvScriptFile);
+    delete config.setupEnvScriptFile;
+  }
+
+  if (argv.testRunner) {
+    config.testRunner = argv.testRunner;
+  }
+
+  if (config.testRunner === 'jasmine1') {
+    config.testRunner = require.resolve('../testRunners/jasmine/jasmine1');
+  } else if (!config.testRunner || config.testRunner === 'jasmine2') {
+    config.testRunner = require.resolve('../testRunners/jasmine/jasmine2');
+  } else {
+    try {
+      config.testRunner = path.resolve(
+        config.testRunner.replace(/<rootDir>/g, config.rootDir)
+      );
+    } catch (e) {
+      throw new Error(
+        `Jest: Invalid testRunner path: ${config.testRunner}`
+      );
+    }
+  }
 
   // Normalize user-supplied config options
   Object.keys(config).reduce(function(newConfig, key) {
@@ -82,19 +113,17 @@ function normalize(config) {
         }, {});
         break;
 
+      case 'setupFiles':
       case 'testPathDirs':
-        value = config[key].map(function(scanDir) {
-          return path.resolve(
-            config.rootDir,
-            replaceRootDirTags(config.rootDir, scanDir)
-          );
-        });
+        value = config[key].map(filePath => path.resolve(
+          config.rootDir,
+          replaceRootDirTags(config.rootDir, filePath)
+        ));
         break;
 
       case 'cacheDirectory':
       case 'testRunner':
       case 'scriptPreprocessor':
-      case 'setupEnvScriptFile':
       case 'setupTestFrameworkScriptFile':
         value = path.resolve(
           config.rootDir,
@@ -125,9 +154,6 @@ function normalize(config) {
           );
         });
         break;
-      case 'testEnvironment_EXPERIMENTAL':
-        newConfig.testEnvironment = config[key];
-        return newConfig;
       case 'bail':
       case 'preprocessCachingDisabled':
       case 'coverageReporters':
@@ -156,11 +182,17 @@ function normalize(config) {
       case 'cache':
       case 'watchman':
       case 'verbose':
+      case 'automock':
+      case 'testEnvironment':
         value = config[key];
         break;
 
       default:
-        throw new Error('Unknown config option: ' + key);
+        console.error(
+          `Error: Unknown config option "${key}" with value ` +
+          `"${config[key]}". This is either a typing error or another user ` +
+          `mistake and fixing it will remove this message.`
+        );
     }
     newConfig[key] = value;
     return newConfig;

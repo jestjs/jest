@@ -26,7 +26,6 @@ describe('TestRunner', () => {
   describe('_isTestFilePath', () => {
 
     beforeEach(() => {
-      const utils = require('jest-util');
       jest.mock('../resolvers/HasteResolver');
       runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,

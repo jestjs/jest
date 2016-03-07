@@ -121,6 +121,17 @@ describe('HasteModuleLoader', function() {
       });
     });
 
+    describe('automocking behavior', () => {
+      it('can be disabled by default', () => {
+        return buildLoader({
+          automock: false,
+        }).then(loader => {
+          const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
+          expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
+        });
+      });
+    });
+
     describe('transitive dependencies', () => {
       const expectUnmocked = nodeModule => {
         const moduleData = nodeModule();

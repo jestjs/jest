@@ -69,10 +69,11 @@ function formatFailureMessage(testResult, config) {
         if (STACK_TRACE_LINE_IGNORE_RE.test(filePath)) {
           return null;
         }
-
-        return matches[1] +
+        return (
+          matches[1] +
           path.relative(rootPath, filePath) +
-          matches[3];
+          matches[3]
+        );
       }).filter(function(line) {
         return line !== null;
       }).join('\n');
@@ -81,8 +82,8 @@ function formatFailureMessage(testResult, config) {
     }).join('\n');
 
     const testTitleAncestry = result.ancestorTitles.map(function(title) {
-        return localChalk.bold(title);
-      }).join(ancestrySeparator) + ancestrySeparator;
+      return localChalk.bold(title);
+    }).join(ancestrySeparator) + ancestrySeparator;
 
     return descBullet + testTitleAncestry + result.title + '\n' +
       failureMessages;
