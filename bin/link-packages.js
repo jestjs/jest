@@ -47,6 +47,6 @@ function checkLinks(packageRoot, nodeModuleRoot) {
   });
 }
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV !== 'production') {
   checkLinks(PACKAGE_ROOT, NODE_MODULE_ROOT);
 }
