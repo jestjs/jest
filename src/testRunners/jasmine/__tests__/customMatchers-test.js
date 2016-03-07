@@ -10,20 +10,20 @@
 'use strict';
 
 jest.autoMockOff();
-
+const formatter = new (require('../JasmineFormatter'))(jasmine);
 const CALLED_AT_LEAST_ONCE = 'function expected to be called at least once';
 const SHOULD_NOT_BE_CALLED = 'function expected not to be called was called';
 const NOT_EXPECTED_VALUES = (
   'function was never called with the expected values.\n' +
-  'Expected:\n[1,{},"Error"]'
+  `Expected:\n${formatter.prettyPrint([1, {}, 'Error'])}`
 );
 const NOT_EXPECTED_VALUES_LAST_TIME = (
   'function wasn\'t called with the expected values.\n' +
-  'Expected:\n[1,{},"Error"]\n' +
-  'Actual:\n[1,{},""]'
+  `Expected:\n${formatter.prettyPrint([1, {}, 'Error'])}\n` +
+  `Actual:\n${formatter.prettyPrint([1, {}, ''])}`
 );
 const SHOULD_NOT_HAVE_CALLED_WITH = (
-  'function shouldn\'t have called with\n[1,{},""]'
+  `function shouldn\'t have called with\n${formatter.prettyPrint([1, {}, ''])}`
 );
 
 const getMockedFunctionWithExpectationResult = (expectationResult) => {

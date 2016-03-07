@@ -21,7 +21,10 @@ const jasmineFileContent =
 function jasmine2(config, environment, moduleLoader, testPath) {
   let env;
   let jasmine;
-
+  const reporter = new JasmineReporter({
+    noHighlight: config.noHighlight,
+    noStackTrace: config.noStackTrace,
+  });
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   // To account for this conflict, we set up jasmine in an environment with real
@@ -83,9 +86,9 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                   return (
                     'function wasn\'t called with the expected values.\n' +
                     'Expected:\n' +
-                    JSON.stringify(expected) +
+                    reporter._formatter.prettyPrint(expected) +
                     '\nActual:\n' +
-                    JSON.stringify(actualValues)
+                    reporter._formatter.prettyPrint(actualValues)
                   );
                 },
               };
@@ -96,7 +99,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               get message() {
                 return (
                   'function shouldn\'t have called with\n' +
-                  JSON.stringify(expected)
+                  reporter._formatter.prettyPrint(expected)
                 );
               },
             };
@@ -123,7 +126,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                   return (
                     'function was never called with the expected values.\n' +
                     'Expected:\n' +
-                    JSON.stringify(expected)
+                    reporter._formatter.prettyPrint(expected)
                   );
                 },
               };
@@ -134,7 +137,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               get message() {
                 return (
                   'function shouldn\'t have called with\n' +
-                  JSON.stringify(expected)
+                  reporter._formatter.prettyPrint(expected)
                 );
               },
             };
@@ -148,10 +151,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     }
   });
 
-  const reporter = new JasmineReporter({
-    noHighlight: config.noHighlight,
-    noStackTrace: config.noStackTrace,
-  });
   env.addReporter(reporter);
   // Run the test by require()ing it
   moduleLoader.requireModule(testPath, './' + path.basename(testPath));
