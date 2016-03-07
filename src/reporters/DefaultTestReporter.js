@@ -8,7 +8,7 @@
 'use strict';
 
 const chalk = require('chalk');
-const formatFailureMessage = require('../lib/utils').formatFailureMessage;
+const formatFailureMessage = require('jest-util').formatFailureMessage;
 const path = require('path');
 const VerboseLogger = require('./VerboseLogger');
 
