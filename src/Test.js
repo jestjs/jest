@@ -32,9 +32,12 @@ class Test {
     );
     env.testFilePath = path;
     const moduleLoader = new ModuleLoader(config, env, moduleMap);
-    if (config.setupEnvScriptFile) {
-      moduleLoader.requireModule(null, config.setupEnvScriptFile);
+    if (config.setupFiles.length) {
+      for (let i = 0; i < config.setupFiles.length; i++) {
+        moduleLoader.requireModule(null, config.setupFiles[i]);
+      }
     }
+
     const start = Date.now();
     return TestRunner(config, env, moduleLoader, path)
       .then(result => {

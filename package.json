@@ -1,20 +1,19 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "0.9.0-fb3",
+  "version": "0.9.0",
   "main": "src/jest.js",
   "dependencies": {
     "chalk": "^1.1.1",
     "cover": "^0.2.9",
     "diff": "^2.1.1",
-    "fast-path": "^1.1.0",
     "graceful-fs": "^4.1.3",
     "istanbul": "^0.4.2",
     "jsdom": "^7.2.0",
     "json-stable-stringify": "^1.0.0",
     "lodash.template": "^3.6.2",
     "mkdirp": "^0.5.1",
-    "node-haste": "^2.2.0",
+    "node-haste": "^2.5.0",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
     "sane": "^1.2.0",
@@ -40,18 +39,15 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "prepublish": "npm run check-links && npm test",
+    "prepublish": "npm test",
     "test": "npm run lint && node bin/jest.js && npm run jasmine1",
-    "jasmine1": "node bin/jest.js --testRunner='<rootDir>/testRunners/jasmine/jasmine1.js'",
-    "check-links": "node bin/link-packages.js"
+    "check-links": "node bin/link-packages.js",
+    "jasmine1": "node bin/jest.js --testRunner=jasmine1"
   },
   "jest": {
     "rootDir": "src",
-    "testRunner": "<rootDir>/testRunners/jasmine/jasmine2.js",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ],
-    "testEnvironment_EXPERIMENTAL": "<rootDir>/environments/NodeEnvironment",
+    "testPathIgnorePatterns": ["/__tests__/[^/]*/.+"],
+    "testEnvironment": "<rootDir>/environments/NodeEnvironment",
     "globals": {
       "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"
     }

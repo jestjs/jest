@@ -13,6 +13,20 @@ function getPackages(packageRoot) {
   });
 }
 
+function removeFolder(target) {
+  if (fs.existsSync(target)) {
+    fs.readdirSync(target).forEach((file) => {
+      const curPath = path.join(target, file);
+      if (fs.lstatSync(curPath).isDirectory()) {
+        removeFolder(curPath);
+      } else {
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(target);
+  }
+}
+
 function checkLinks(packageRoot, nodeModuleRoot) {
   const packages = getPackages(packageRoot);
   packages.forEach((dir) => {
@@ -24,7 +38,7 @@ function checkLinks(packageRoot, nodeModuleRoot) {
         fs.symlinkSync(from, target);
       } else {
         if (fs.lstatSync(target).isDirectory()) {
-          fs.rmdirSync(target);
+          removeFolder(target);
           fs.symlinkSync(from, target);
         }
       }

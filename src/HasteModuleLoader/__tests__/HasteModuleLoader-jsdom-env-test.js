@@ -71,7 +71,12 @@ describe('HasteModuleLoader', function() {
           sum();
         } catch (err) {
           hasThrown = true;
-          expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\/__tests__\/test_root\/throwing-fn.js:12:9/);
+
+          if (process.platform === 'win32') {
+            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\\__tests__\\test_root\\throwing-fn.js:12:9/);
+          } else {
+            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\/__tests__\/test_root\/throwing-fn.js:12:9/);
+          }
         }
         expect(hasThrown).toBe(true);
       });

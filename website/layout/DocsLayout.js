@@ -17,6 +17,7 @@ var DocsLayout = React.createClass({
           <DocsSidebar metadata={metadata} />
           <div className="inner-content">
             <a id="content" />
+            <a className="edit-page-link" href={'https://github.com/facebook/jest/blob/master/docs/' + metadata.source} target="_blank">Edit on GitHub</a>
             <h1>{metadata.title}</h1>
             <Marked>{content}</Marked>
             <div className="docs-prevnext">

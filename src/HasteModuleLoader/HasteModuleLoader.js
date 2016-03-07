@@ -32,6 +32,7 @@ const shouldMockModuleCache = Object.create(null);
 const transitiveShouldMock = Object.create(null);
 const shouldUnmockTransitiveDependenciesCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
+const unmockCacheInitialized = new WeakMap();
 
 class Loader {
   constructor(config, environment, moduleMap) {
@@ -42,8 +43,9 @@ class Loader {
     this._explicitShouldMock = Object.create(null);
     this._explicitlySetMocks = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
+    this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
-    this._shouldAutoMock = true;
+    this._shouldAutoMock = config.automock;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
     this._modules = moduleMap.modules;
@@ -58,6 +60,19 @@ class Loader {
       this._unmockList =
         new RegExp(config.unmockedModulePathPatterns.join('|'));
       unmockRegExpCache.set(config, this._unmockList);
+    }
+
+    if (!unmockCacheInitialized.get(config)) {
+      const unmockPath = filePath => {
+        if (filePath && filePath.includes(NODE_MODULES)) {
+          const moduleID = this._getNormalizedModuleID(filePath);
+          transitiveShouldMock[moduleID] = false;
+        }
+      };
+
+      unmockPath(config.setupEnvScriptFile);
+      config.setupFiles.forEach(unmockPath);
+      unmockCacheInitialized.set(config, true);
     }
 
     // Workers communicate the config as JSON so we have to create a regex
@@ -263,7 +278,11 @@ class Loader {
     );
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-    if (shouldCollectCoverage && !filename.includes(NODE_MODULES)) {
+    if (
+      shouldCollectCoverage &&
+      !filename.includes(this._testDirectoryName) &&
+      !filename.includes(NODE_MODULES)
+    ) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,
@@ -333,7 +352,10 @@ class Loader {
 
       const mockMetadata = moduleMocker.getMetadata(moduleExports);
       if (mockMetadata === null) {
-        throw new Error('Failed to get mock metadata: ' + modulePath);
+        throw new Error(
+          `Failed to get mock metadata: ${modulePath}\n\n` +
+          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`
+        );
       }
       mockMetaDataCache[modulePath] = mockMetadata;
     }
@@ -578,6 +600,13 @@ class Loader {
       genMockFromModule: moduleName => this._generateMock(currPath, moduleName),
       genMockFunction: moduleMocker.getMockFunction,
       genMockFn: moduleMocker.getMockFunction,
+      fn: function() {
+        const fn = moduleMocker.getMockFunction();
+        if (arguments.length > 0) {
+          return fn.mockImplementation(arguments[0]);
+        }
+        return fn;
+      },
 
       mock: moduleName => {
         const moduleID = this._getNormalizedModuleID(currPath, moduleName);

@@ -7,15 +7,17 @@
  */
 'use strict';
 
-require('fast-path').replace();
+require('node-haste/lib/fastpath').replace();
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
 const TestRunner = require('./TestRunner');
-const formatTestResults = require('./lib/formatTestResults');
+
 const chalk = require('chalk');
+const formatTestResults = require('./lib/formatTestResults');
+const resolve = require('resolve');
 const sane = require('sane');
 const which = require('which');
 const constant = require('jest-constants');
@@ -111,6 +113,25 @@ function getWatcher(argv, packageRoot, callback) {
   });
 }
 
+function getBabelPlugin(pluginName, config) {
+  try {
+    return resolve.sync(pluginName, {
+      basedir: config.rootDir,
+    });
+  } catch (e) {}
+  return null;
+}
+
+function configureBabel(config) {
+  if (!config.scriptPreprocessor) {
+    const scriptPreprocessor = getBabelPlugin('babel-jest', config);
+    const polyfillPlugin =
+      scriptPreprocessor && getBabelPlugin('babel-polyfill', config);
+    return {scriptPreprocessor, polyfillPlugin};
+  }
+  return null;
+}
+
 function runCLI(argv, packageRoot, onComplete) {
   argv = argv || {};
 
@@ -131,7 +152,17 @@ function runCLI(argv, packageRoot, onComplete) {
         }
 
         const testFramework = require(config.testRunner);
-        pipe.write(`Using Jest CLI v${constant.VERSION}, ${testFramework.name}\n`);
+        const info = [`v${constant.VERSION}`, testFramework.name];
+        const babelConfig = configureBabel(config);
+        if (babelConfig) {
+          config.scriptPreprocessor = babelConfig.scriptPreprocessor;
+          if (babelConfig.polyfillPlugin) {
+            config.setupFiles.unshift(babelConfig.polyfillPlugin);
+          }
+          info.push('babel-jest');
+        }
+
+        pipe.write(`Using Jest CLI ${info.join(', ')}\n`);
 
         const testRunner = new TestRunner(config, testRunnerOptions(argv));
         let testPaths;

@@ -41,18 +41,6 @@ function readConfig(argv, packageRoot) {
       config.useStderr = true;
     }
 
-    if (argv.testRunner) {
-      try {
-        config.testRunner = require.resolve(
-          argv.testRunner.replace(/<rootDir>/g, config.rootDir)
-        );
-      } catch (e) {
-        throw new Error(
-          `jest: testRunner path "${argv.testRunner}" is not a valid path.`
-        );
-      }
-    }
-
     if (argv.logHeapUsage) {
       config.logHeapUsage = argv.logHeapUsage;
     }
@@ -82,7 +70,7 @@ function readRawConfig(argv, packageRoot) {
     } else {
       pkgJson.jest.rootDir = path.resolve(packageRoot, pkgJson.jest.rootDir);
     }
-    const config = normalizeConfig(pkgJson.jest);
+    const config = normalizeConfig(pkgJson.jest, argv);
     config.name = pkgJson.name;
     return Promise.resolve(config);
   }
@@ -91,9 +79,8 @@ function readRawConfig(argv, packageRoot) {
   return Promise.resolve(normalizeConfig({
     name: packageRoot.replace(/[/\\]/g, '_'),
     rootDir: packageRoot,
-    testPathDirs: [packageRoot],
     testPathIgnorePatterns: ['/node_modules/.+'],
-  }));
+  }, argv));
 }
 
 module.exports = readConfig;

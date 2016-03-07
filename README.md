@@ -23,34 +23,42 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`jest.autoMockOn()`](http://facebook.github.io/jest/docs/api.html#jest-automockon)
   - [`jest.clearAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
   - [`jest.currentTestPath()`](http://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
-  - [`jest.dontMock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-dontmock-modulename)
+  - [`jest.fn(implementation?)`](http://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
   - [`jest.genMockFromModule(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
-  - [`jest.genMockFunction()`](http://facebook.github.io/jest/docs/api.html#jest-genmockfunction)
-  - [`jest.genMockFn()`](http://facebook.github.io/jest/docs/api.html#jest-genmockfn)
   - [`jest.mock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename)
   - [`jest.runAllTicks()`](http://facebook.github.io/jest/docs/api.html#jest-runallticks)
   - [`jest.runAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-runalltimers)
   - [`jest.runOnlyPendingTimers()`](http://facebook.github.io/jest/docs/api.html#jest-runonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](http://facebook.github.io/jest/docs/api.html#jest-setmock-modulename-moduleexports)
+  - [`jest.unmock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-unmock-modulename)
 
 #### Mock functions
+
+Mock functions can be created using `jest.fn()`.
 
   - [`mockFn.mock.calls`](http://facebook.github.io/jest/docs/api.html#mockfn-mock-calls)
   - [`mockFn.mock.instances`](http://facebook.github.io/jest/docs/api.html#mockfn-mock-instances)
   - [`mockFn.mockClear()`](http://facebook.github.io/jest/docs/api.html#mockfn-mockclear)
   - [`mockFn.mockImplementation(fn)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockimplementation-fn)
-  - [`mockFn.mockImpl(fn)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockimpl-fn)
   - [`mockFn.mockReturnThis()`](http://facebook.github.io/jest/docs/api.html#mockfn-mockreturnthis)
   - [`mockFn.mockReturnValue(value)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalue-value)
   - [`mockFn.mockReturnValueOnce(value)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalueonce-value)
 
+#### require extensions
+
+  - [`require.requireActual(moduleName)`](http://facebook.github.io/jest/docs/api.html#require-requireactual-modulename)
+  - [`require.requireMock(moduleName)`](http://facebook.github.io/jest/docs/api.html#require-requiremock-modulename)
+
 #### Config options
 
+  - [`config.automock` [boolean]](http://facebook.github.io/jest/docs/api.html#config-automock-boolean)
   - [`config.bail` [boolean]](http://facebook.github.io/jest/docs/api.html#config-bail-boolean)
+  - [`config.cache` [boolean]](http://facebook.github.io/jest/docs/api.html#config-cache-boolean)
   - [`config.cacheDirectory` [string]](http://facebook.github.io/jest/docs/api.html#config-cachedirectory-string)
   - [`config.collectCoverage` [boolean]](http://facebook.github.io/jest/docs/api.html#config-collectcoverage-boolean)
   - [`config.collectCoverageOnlyFrom` [object]](http://facebook.github.io/jest/docs/api.html#config-collectcoverageonlyfrom-object)
   - [`config.globals` [object]](http://facebook.github.io/jest/docs/api.html#config-globals-object)
+  - [`config.mocksPattern` [string]](http://facebook.github.io/jest/docs/api.html#config-mockspattern-string)
   - [`config.moduleFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulefileextensions-array-string)
   - [`config.modulePathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
   - [`config.moduleNameMapper` [object<string, string>]](http://facebook.github.io/jest/docs/api.html#config-modulenamemapper-object-string-string)
@@ -58,7 +66,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.rootDir` [string]](http://facebook.github.io/jest/docs/api.html#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)
   - [`config.preprocessorIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string)
-  - [`config.setupEnvScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setupenvscriptfile-string)
+  - [`config.setupFiles` [array]](http://facebook.github.io/jest/docs/api.html#config-setupfiles-array)
   - [`config.setupTestFrameworkScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string)
   - [`config.testDirectoryName` [string]](http://facebook.github.io/jest/docs/api.html#config-testdirectoryname-string)
   - [`config.testFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testfileextensions-array-string)
@@ -68,6 +76,7 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
   - [`config.testRunner` [string]](http://facebook.github.io/jest/docs/api.html#config-testrunner-string)
   - [`config.unmockedModulePathPatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
   - [`config.verbose` [boolean]](http://facebook.github.io/jest/docs/api.html#config-verbose-boolean)
+  - [`config.watchman` [boolean]](http://facebook.github.io/jest/docs/api.html#config-watchman-boolean)
 
 #### Globally injected variables
 

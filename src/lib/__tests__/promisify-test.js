@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.dontMock('../promisify');
+jest.unmock('../promisify');
 
 describe('promisify', () => {
   var promisify;
