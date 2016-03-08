@@ -175,8 +175,6 @@ Jest can automatically re-run tests when files change:
 
 ```
 jest --watch
-
-jest --watch=skip # to skip the initial full test run
 ```
 
 #### Use `--bail` to abort after the first failed test.

@@ -1,5 +1,9 @@
 ## master
 
+## 0.9.1
+
+* Fixed `--watch`.
+
 ## 0.9.0
 
 * New implementation of node-haste and rewrite of internal module loading and

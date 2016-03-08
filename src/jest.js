@@ -206,7 +206,6 @@ function findMatchingTestPaths(pattern, testRunner) {
   return testRunner.promiseTestPathsMatching(new RegExp(pattern));
 }
 
-
 function getNoTestsFoundMessage(patternInfo) {
   const pattern = patternInfo.pattern;
   const input = patternInfo.input;
@@ -223,16 +222,11 @@ function getNoTestsFoundMessage(patternInfo) {
     `${message} Regex used while searching: ${formattedPattern}.`;
 }
 
-/**
- * use watchman when possible
- */
 function getWatcher(argv, packageRoot, callback) {
-  which(WATCHMAN_BIN, function(err, resolvedPath) {
+  which(WATCHMAN_BIN, (err, resolvedPath) => {
     const watchman = !err && resolvedPath;
-    const watchExtensions = argv.watchExtensions || DEFAULT_WATCH_EXTENSIONS;
-    const glob = watchExtensions.split(',').map(function(extension) {
-      return '**/*' + extension;
-    });
+    const extensions = argv.watchExtensions || DEFAULT_WATCH_EXTENSIONS;
+    const glob = extensions.split(',').map(extension => '**/*' + extension);
     const watcher = sane(packageRoot, {glob, watchman});
     callback(watcher);
   });
@@ -257,105 +251,106 @@ function configureBabel(config) {
   return null;
 }
 
-function runCLI(argv, packageRoot, onComplete) {
-  argv = argv || {};
+function runJest(config, argv, pipe, onComplete) {
+  const testRunner = new TestRunner(config, testRunnerOptions(argv));
+  let testPaths;
+  if (argv.onlyChanged) {
+    testPaths = findOnlyChangedTestPaths(testRunner, config);
+  } else {
+    const patternInfo = buildTestPathPatternInfo(argv);
+    testPaths = findMatchingTestPaths(patternInfo.pattern, testRunner)
+      .then(testPaths => {
+        if (!testPaths.length) {
+          pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+        }
+        return testPaths;
+      });
+  }
 
+  return testPaths.then(testPaths => testRunner.runTests(testPaths))
+    .then(runResults => {
+      if (argv.json) {
+        process.stdout.write(
+          JSON.stringify(formatTestResults(runResults))
+        );
+      }
+      return runResults;
+    })
+    .then(runResults => onComplete && onComplete(runResults.success))
+    .catch(error => {
+      if (error.type == 'DependencyGraphError') {
+        console.error([
+          '\nError: ' + error.message + '\n\n',
+          'This is most likely a setup ',
+          'or configuration issue. To resolve a module name collision, ',
+          'change or blacklist one of the offending modules. See ',
+          'http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string',
+        ].join(''));
+      } else {
+        console.error(
+          '\nUnexpected Error: ' + error.message + '\n\n' + error.stack
+        );
+      }
+      process.exit(1);
+    });
+}
+
+function runCLI(argv, root, onComplete) {
+  const pipe = argv.json ? process.stderr : process.stdout;
+
+  argv = argv || {};
   if (argv.version) {
-    console.log('v' + getVersion());
+    pipe.write(`v${getVersion()}\n`);
     onComplete && onComplete(true);
     return;
   }
 
-  const pipe = argv.json ? process.stderr : process.stdout;
+  readConfig(argv, root)
+    .then(config => {
+      // Disable colorization
+      if (config.noHighlight) {
+        chalk.enabled = false;
+      }
 
-  function _runCLI(filePath) {
-    readConfig(argv, packageRoot)
-      .then(config => {
-        // Disable colorization
-        if (config.noHighlight) {
-          chalk.enabled = false;
+      const testFramework = require(config.testRunner);
+      const info = ['v' + getVersion(), testFramework.name];
+      const babelConfig = configureBabel(config);
+      if (babelConfig) {
+        config.scriptPreprocessor = babelConfig.scriptPreprocessor;
+        if (babelConfig.polyfillPlugin) {
+          config.setupFiles.unshift(babelConfig.polyfillPlugin);
         }
+        info.push('babel-jest');
+      }
 
-        const testFramework = require(config.testRunner);
-        const info = ['v' + getVersion(), testFramework.name];
-        const babelConfig = configureBabel(config);
-        if (babelConfig) {
-          config.scriptPreprocessor = babelConfig.scriptPreprocessor;
-          if (babelConfig.polyfillPlugin) {
-            config.setupFiles.unshift(babelConfig.polyfillPlugin);
-          }
-          info.push('babel-jest');
-        }
-
-        pipe.write(`Using Jest CLI ${info.join(', ')}\n`);
-
-        const testRunner = new TestRunner(config, testRunnerOptions(argv));
-        let testPaths;
-        if (argv.onlyChanged) {
-          testPaths = findOnlyChangedTestPaths(testRunner, config);
-        } else {
-          const patternInfo = buildTestPathPatternInfo(argv);
-          testPaths = findMatchingTestPaths(patternInfo.pattern, testRunner)
-            .then(testPaths => {
-              if (!testPaths.length) {
-                pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+      const prefix = argv.watch ? 'Watch using' : 'Using';
+      pipe.write(`${prefix} Jest CLI ${info.join(', ')}\n`);
+      if (argv.watch) {
+        getWatcher(argv, root, watcher => {
+          let timer, isRunning;
+          watcher.on('all', (_, filePath) => {
+            filePath = path.join(root, filePath);
+            const isValidPath =
+              config.testPathDirs.some(dir => filePath.startsWith(dir));
+            if (!isRunning && isValidPath) {
+              if (timer) {
+                clearTimeout(timer);
+                timer = null;
               }
-              return testPaths;
-            });
-        }
-
-        return testPaths.then(testPaths => {
-          const shouldTest = !filePath || testPaths.some(testPath => {
-            return testPath.indexOf(filePath) !== -1;
+              timer = setTimeout(
+                () => {
+                  isRunning = true;
+                  runJest(config, argv, pipe, () => isRunning = false);
+                },
+                WATCHER_DEBOUNCE
+              );
+            }
           });
-          const tests = shouldTest ? testPaths : [];
-          return testRunner.runTests(tests);
         });
-      })
-      .then(runResults => {
-        if (argv.json) {
-          process.stdout.write(JSON.stringify(formatTestResults(runResults)));
-        }
-        return runResults;
-      })
-      .then(runResults => onComplete && onComplete(runResults.success))
-      .catch(error => {
-        if (error.type == 'DependencyGraphError') {
-          console.error([
-            '\nError: ' + error.message + '\n\n',
-            'This is most likely a setup ',
-            'or configuration issue. To resolve a module name collision, ',
-            'change or blacklist one of the offending modules. See ',
-            'http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string',
-          ].join(''));
-        } else {
-          console.error(
-            '\nUnexpected Error: ' + error.message + '\n\n' + error.stack
-          );
-        }
-        process.exit(1);
-      });
-  }
-
-  if (argv.watch !== undefined) {
-    getWatcher(argv, packageRoot, watcher => {
-      let tid;
-      watcher.on('all', (_, filePath) => {
-        if (tid) {
-          clearTimeout(tid);
-          tid = null;
-        }
-        tid = setTimeout(() => {
-          _runCLI(filePath);
-        }, WATCHER_DEBOUNCE);
-      });
-      if (argv.watch !== 'skip') {
-        _runCLI();
+      } else {
+        runJest(config, argv, pipe, onComplete);
       }
     });
-  } else {
-    _runCLI();
-  }
 }
 
 exports.TestRunner = TestRunner;
