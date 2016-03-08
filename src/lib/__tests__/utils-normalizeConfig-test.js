@@ -9,7 +9,8 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.unmock('../utils')
+  .unmock('chalk');
 
 describe('utils-normalizeConfig', () => {
   let path;
@@ -372,6 +373,65 @@ describe('utils-normalizeConfig', () => {
       );
 
       expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
+    });
+  });
+
+  describe('babel-jest', () => {
+    let resolveNodeModule;
+    beforeEach(() => {
+      resolveNodeModule = require('../resolveNodeModule');
+      resolveNodeModule.mockImplementation(name => 'node_modules/' + name);
+    });
+
+    it('correctly identifies and uses babel-jest', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+
+      expect(config.usesBabelJest).toBe(true);
+      expect(config.scriptPreprocessor)
+        .toEqual('/root/node_modules/babel-jest');
+      expect(config.setupFiles).toEqual(['/root/node_modules/babel-polyfill']);
+    });
+
+    it(`doesn't use babel-jest if its not available`, () => {
+      resolveNodeModule.mockImplementation(() => null);
+
+      const config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+
+      expect(config.usesBabelJest).toEqual(undefined);
+      expect(config.scriptPreprocessor).toEqual(undefined);
+      expect(config.setupFiles).toEqual([]);
+    });
+
+    it('uses polyfills if babel-jest is explicitly specified', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root',
+        scriptPreprocessor: '<rootDir>/' + resolveNodeModule('babel-jest'),
+      });
+
+      expect(config.usesBabelJest).toBe(true);
+      expect(config.setupFiles).toEqual(['/root/node_modules/babel-polyfill']);
+    });
+
+    it('correctly identifies react-native', () => {
+      // The default resolveNodeModule fn finds `react-native`.
+      let config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+      expect(config.preprocessorIgnorePatterns).toEqual([]);
+
+      // This version doesn't find react native and sets the default to
+      // /node_modules/
+      resolveNodeModule.mockImplementation(() => null);
+      config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+
+      expect(config.preprocessorIgnorePatterns)
+        .toEqual([path.sep + 'node_modules' + path.sep]);
     });
   });
 });

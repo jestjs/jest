@@ -3,6 +3,7 @@
 ## 0.9.1
 
 * Fixed `--watch`.
+* Improved `babel-jest` integration and `react-native` testing.
 
 ## 0.9.0
 
