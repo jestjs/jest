@@ -19,7 +19,7 @@ module.exports = sum;
 Create a directory `__tests__/` with a file `sum-test.js`:
 
 ```javascript
-jest.unmock('../sum'); // unmock to use the actual implementation of sum
+jest.dontMock('../sum'); // unmock to use the actual implementation of sum
 
 describe('sum', () => {
   it('adds 1 + 2 to equal 3', () => {
@@ -74,7 +74,7 @@ You are now set up to use all ES2015 features and React specific syntax,
 for example:
 
 ```js
-jest.unmock('../CheckboxWithLabel');
+jest.dontMock('../CheckboxWithLabel');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -140,7 +140,7 @@ async test with Babel and
 [`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/):
 
 ```js
-jest.unmock('../user');
+jest.dontMock('../user');
 
 import * as user from '../user';
 
