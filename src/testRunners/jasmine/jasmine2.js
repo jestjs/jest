@@ -57,8 +57,8 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             const pass = actual.mock.calls.length !== 0;
             const message = (
               pass ?
-              'function expected not to be called was called' :
-              'function expected to be called at least once'
+              'Expected not to be called' :
+              'Expected to be called at least once'
             );
             return {
               pass,
@@ -84,11 +84,11 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 pass,
                 get message() {
                   return (
-                    'function wasn\'t called with the expected values.\n' +
+                    `Wasn't called with the expected values.\n` +
                     'Expected:\n' +
-                    reporter._formatter.prettyPrint(expected) +
+                    reporter.getFormatter().prettyPrint(expected) +
                     '\nActual:\n' +
-                    reporter._formatter.prettyPrint(actualValues)
+                    reporter.getFormatter().prettyPrint(actualValues)
                   );
                 },
               };
@@ -98,8 +98,8 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               pass,
               get message() {
                 return (
-                  'function shouldn\'t have called with\n' +
-                  reporter._formatter.prettyPrint(expected)
+                  `Shouldn't have been called with\n` +
+                  reporter.getFormatter().prettyPrint(expected)
                 );
               },
             };
@@ -124,9 +124,9 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 pass,
                 get message() {
                   return (
-                    'function was never called with the expected values.\n' +
+                    'Was never called with the expected values.\n' +
                     'Expected:\n' +
-                    reporter._formatter.prettyPrint(expected)
+                    reporter.getFormatter().prettyPrint(expected)
                   );
                 },
               };
@@ -136,8 +136,8 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               pass,
               get message() {
                 return (
-                  'function shouldn\'t have called with\n' +
-                  reporter._formatter.prettyPrint(expected)
+                  `Shouldn't have been called with\n` +
+                  reporter.getFormatter().prettyPrint(expected)
                 );
               },
             };

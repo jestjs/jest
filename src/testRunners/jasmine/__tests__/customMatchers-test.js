@@ -11,19 +11,19 @@
 
 jest.autoMockOff();
 const formatter = new (require('../JasmineFormatter'))(jasmine);
-const CALLED_AT_LEAST_ONCE = 'function expected to be called at least once';
-const SHOULD_NOT_BE_CALLED = 'function expected not to be called was called';
+const CALLED_AT_LEAST_ONCE = 'Expected to be called at least once';
+const SHOULD_NOT_BE_CALLED = 'Expected not to be called';
 const NOT_EXPECTED_VALUES = (
-  'function was never called with the expected values.\n' +
+  'Was never called with the expected values.\n' +
   `Expected:\n${formatter.prettyPrint([1, {}, 'Error'])}`
 );
 const NOT_EXPECTED_VALUES_LAST_TIME = (
-  'function wasn\'t called with the expected values.\n' +
+  `Wasn't called with the expected values.\n` +
   `Expected:\n${formatter.prettyPrint([1, {}, 'Error'])}\n` +
   `Actual:\n${formatter.prettyPrint([1, {}, ''])}`
 );
 const SHOULD_NOT_HAVE_CALLED_WITH = (
-  `function shouldn\'t have called with\n${formatter.prettyPrint([1, {}, ''])}`
+  `Shouldn't have been called with\n${formatter.prettyPrint([1, {}, ''])}`
 );
 
 const getMockedFunctionWithExpectationResult = (expectationResult) => {
@@ -53,7 +53,7 @@ describe('jasmine', () => {
 
   describe('when using a getter for a custom matcher message', () => {
 
-    it('doesn\'t access message if test passes', () => {
+    it(`doesn't access message if test passes`, () => {
       if (jasmine.addMatchers) {
         let actual = false;
         jasmine.addMatchers({
@@ -134,7 +134,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
       expectation.not.toBeCalled();
     });
 
-    it('doesn\'t show any message when succeding', () => {
+    it(`doesn't show any message when succeding`, () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(true);
@@ -149,7 +149,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
 
   describe('lastCalledWith', () => {
 
-    it('doesn\'t show any message when succeding', () => {
+    it(`doesn't show any message when succeding`, () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(true);
@@ -187,7 +187,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
 
   describe('toBeCalledWith', () => {
 
-    it('doesn\'t show any message when succeding', () => {
+    it(`doesn't show any message when succeding`, () => {
       const expectation = getMockedFunctionWithExpectationResult(
         (passed, result) => {
           expect(passed).toBe(true);
