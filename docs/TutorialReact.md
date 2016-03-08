@@ -162,7 +162,7 @@ module.exports = {
 
 ```
 
-In fact, this is the entire [source code](https://github.com/facebook/jest/blob/master/packages/babel-jest/src/index.js)
+In fact, this is almost the entire [source code](https://github.com/facebook/jest/blob/master/packages/babel-jest/src/index.js)
 of `babel-jest`!
 
 *Note: Don't forget to install the `babel-core` and `babel-preset-jest` packages
