@@ -1,6 +1,6 @@
 {
   "name": "babel-jest",
-  "version": "9.0.1",
+  "version": "9.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,6 +9,7 @@
   "main": "src/index.js",
   "dependencies": {
     "babel-core": "^6.0.0",
-    "babel-preset-jest": "^1.0.0"
+    "babel-preset-jest": "^1.0.0",
+    "resolve": "^1.1.6"
   }
 }
