@@ -15,11 +15,22 @@ const mkdirp = require('mkdirp');
 
 const cache = new Map();
 const configToJsonMap = new Map();
+const preprocessorRegExpCache = new WeakMap();
 
 const removeFile = path => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
+};
+
+const createDirectory = path => {
+  try {
+    mkdirp.sync(path, '777');
+  } catch (e) {
+    if (e.code !== 'EEXIST') {
+      throw e;
+    }
+  }
 };
 
 const getCacheKey = (preprocessor, fileData, filePath, config) => {
@@ -87,16 +98,23 @@ module.exports = (filePath, config) => {
     fileData = fileData.replace(/^#!.*/, '');
   }
 
+  if (!preprocessorRegExpCache.has(config)) {
+    preprocessorRegExpCache.set(
+      config,
+      new RegExp(config.preprocessorIgnorePatterns.join('|'))
+    );
+  }
+  const regex = preprocessorRegExpCache.get(config);
   if (
     config.scriptPreprocessor &&
-    !config.preprocessorIgnorePatterns.some(
-      pattern => new RegExp(pattern).test(filePath)
+    (
+      !config.preprocessorIgnorePatterns.length || !regex.test(filePath)
     )
   ) {
     const preprocessor = require(config.scriptPreprocessor);
     if (typeof preprocessor.process !== 'function') {
       throw new TypeError(
-        'jest: a preprocessor must export a `process` function.'
+        'Jest: a preprocessor must export a `process` function.'
       );
     }
 
@@ -110,15 +128,7 @@ module.exports = (filePath, config) => {
         cacheDir,
         path.basename(filePath, path.extname(filePath)) + '_' + cacheKey
       );
-
-      try {
-        mkdirp.sync(cacheDir, '777');
-      } catch (e) {
-        if (e.code !== 'EEXIST') {
-          throw e;
-        }
-      }
-
+      createDirectory(cacheDir);
       const cachedData = readCacheFile(filePath, cachePath);
       if (cachedData) {
         fileData = cachedData;

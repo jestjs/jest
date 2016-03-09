@@ -19,7 +19,6 @@ const chalk = require('chalk');
 const childProcess = require('child_process');
 const formatTestResults = require('./lib/formatTestResults');
 const path = require('path');
-const resolve = require('resolve');
 const sane = require('sane');
 const utils = require('./lib/utils');
 const which = require('which');
@@ -232,25 +231,6 @@ function getWatcher(argv, packageRoot, callback) {
   });
 }
 
-function getBabelPlugin(pluginName, config) {
-  try {
-    return resolve.sync(pluginName, {
-      basedir: config.rootDir,
-    });
-  } catch (e) {}
-  return null;
-}
-
-function configureBabel(config) {
-  if (!config.scriptPreprocessor) {
-    const scriptPreprocessor = getBabelPlugin('babel-jest', config);
-    const polyfillPlugin =
-      scriptPreprocessor && getBabelPlugin('babel-polyfill', config);
-    return {scriptPreprocessor, polyfillPlugin};
-  }
-  return null;
-}
-
 function runJest(config, argv, pipe, onComplete) {
   const testRunner = new TestRunner(config, testRunnerOptions(argv));
   let testPaths;
@@ -314,12 +294,7 @@ function runCLI(argv, root, onComplete) {
 
       const testFramework = require(config.testRunner);
       const info = ['v' + getVersion(), testFramework.name];
-      const babelConfig = configureBabel(config);
-      if (babelConfig) {
-        config.scriptPreprocessor = babelConfig.scriptPreprocessor;
-        if (babelConfig.polyfillPlugin) {
-          config.setupFiles.unshift(babelConfig.polyfillPlugin);
-        }
+      if (config.usesBabelJest) {
         info.push('babel-jest');
       }
 

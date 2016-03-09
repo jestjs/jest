@@ -6,17 +6,15 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* eslint-disable fb-www/require-args, fb-www/object-create-only-one-param */
 'use strict';
 
 const fs = require('graceful-fs');
 const moduleMocker = require('../lib/moduleMocker');
 const path = require('path');
 const resolve = require('resolve');
+const resolveNodeModule = require('../lib/resolveNodeModule');
 const transform = require('../lib/transform');
 
-const NODE_PATH =
-  (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
@@ -382,31 +380,28 @@ class Loader {
       return currPath;
     }
     const basedir = path.dirname(currPath);
-    try {
-      return resolve.sync(moduleName, {
-        basedir,
-        extensions: this._extensions,
-        paths: NODE_PATH,
-      });
-    } catch (e) {
-      const parts = moduleName.split('/');
-      const nodeModuleName = parts.shift();
-      const module = this._getModule(nodeModuleName);
-      if (module) {
-        try {
-          return require.resolve(
-            path.join.apply(path, [path.dirname(module)].concat(parts))
-          );
-        } catch (ignoredError) {}
-      }
-
-      // resolve.sync uses the basedir instead of currPath and therefore
-      // doesn't throw an accurate error message.
-      const relativePath = path.relative(basedir, currPath);
-      throw new Error(
-        `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
-      );
+    const filePath = resolveNodeModule(moduleName, basedir, this._extensions);
+    if (filePath) {
+      return filePath;
     }
+
+    const parts = moduleName.split('/');
+    const nodeModuleName = parts.shift();
+    const module = this._getModule(nodeModuleName);
+    if (module) {
+      try {
+        return require.resolve(
+          path.join.apply(path, [path.dirname(module)].concat(parts))
+        );
+      } catch (ignoredError) {}
+    }
+
+    // resolveNodeModule and resolve.sync use the basedir instead of currPath
+    // and therefore can't throw an accurate error message.
+    const relativePath = path.relative(basedir, currPath);
+    throw new Error(
+      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
+    );
   }
 
   _getModule(resourceName) {

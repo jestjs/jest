@@ -422,9 +422,11 @@ The path to a module that provides a synchronous function from pre-processing so
 Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/benjamn/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
 
 ### `config.preprocessorIgnorePatterns` [array<string>]
-(default: `[]`)
+(default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
+
+*Note: if this option is not specified by the user and Jest detects the project as a [react-native](https://github.com/facebook/react-native) project, it will ignore the default and process every file. It is common on react-native projects to ship npm modules without pre-compiling JavaScript.*
 
 ### `config.setupFiles` [array]
 (default: `[]`)
