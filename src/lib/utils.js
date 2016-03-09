@@ -264,7 +264,7 @@ function normalizeConfig(config, argv) {
   // If any config entries weren't specified but have default values, apply the
   // default values
   Object.keys(DEFAULT_CONFIG_VALUES).reduce((newConfig, key) => {
-    if (!newConfig[key]) {
+    if (!(key in newConfig)) {
       newConfig[key] = DEFAULT_CONFIG_VALUES[key];
     }
     return newConfig;

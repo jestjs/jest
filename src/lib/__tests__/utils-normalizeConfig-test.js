@@ -66,6 +66,17 @@ describe('utils-normalizeConfig', () => {
     });
   });
 
+  describe('automock', () => {
+    it('falsy automock is not overwritten', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root/path/foo',
+        automock: false,
+      });
+
+      expect(config.automock).toBe(false);
+    });
+  });
+
   describe('collectCoverageOnlyFrom', () => {
     it('normalizes all paths relative to rootDir', () => {
       const config = utils.normalizeConfig({
