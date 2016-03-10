@@ -17,6 +17,8 @@ module.exports = {
       return babel.transform(src, {
         filename,
         presets: [jestPreset],
+        auxiliaryCommentBefore: 'istanbul ignore next',
+        plugins: ['transform-runtime'],
         retainLines: true,
       }).code;
     }
