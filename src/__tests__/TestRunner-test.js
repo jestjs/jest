@@ -33,7 +33,7 @@ describe('TestRunner', () => {
         name,
         rootDir: '.',
         testPathDirs: [],
-      }));
+      }), {});
     });
 
     it('supports ../ paths and unix separators', () => {
@@ -78,7 +78,7 @@ describe('TestRunner', () => {
 
     beforeEach(() => {
       jest.dontMock('../resolvers/HasteResolver');
-      runner = new TestRunner(config);
+      runner = new TestRunner(config, {});
     });
 
     pit('makes sure a file is related to itself', () => {

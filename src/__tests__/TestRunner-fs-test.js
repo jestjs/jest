@@ -28,7 +28,7 @@ describe('TestRunner-fs', function() {
         name,
         rootDir,
         testDirectoryName: '__testtests__',
-      }));
+      }), {});
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
         const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
@@ -46,7 +46,7 @@ describe('TestRunner-fs', function() {
         rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['jsx'],
-      }));
+      }), {});
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
         const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
@@ -64,7 +64,7 @@ describe('TestRunner-fs', function() {
         rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['foobar'],
-      }));
+      }), {});
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
         const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);
@@ -82,7 +82,7 @@ describe('TestRunner-fs', function() {
         rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx'],
-      }));
+      }), {});
       return runner.promiseTestPathsMatching(/.*/).then(function(paths) {
         const relPaths = paths.map(function(absPath) {
           return path.relative(rootDir, absPath);

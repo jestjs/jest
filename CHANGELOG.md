@@ -1,5 +1,11 @@
 ## master
 
+## jest-cli 0.9.2, babel-jest 9.0.3
+
+* Improved responsiveness of the system while using `--watch`.
+* Fixed `jest -o` issue when no files were changed.
+* Improved code coverage reporting when using `babel-jest`.
+
 ## 0.9.1
 
 * Fixed `--watch`.
