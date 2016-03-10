@@ -20,6 +20,7 @@ const childProcess = require('child_process');
 const formatTestResults = require('./lib/formatTestResults');
 const path = require('path');
 const sane = require('sane');
+const os = require('os');
 const utils = require('./lib/utils');
 const which = require('which');
 
@@ -80,6 +81,9 @@ function testRunnerOptions(argv) {
   }
   if (argv.maxWorkers) {
     options.maxWorkers = argv.maxWorkers;
+  } else {
+    const cpus = Math.max(os.cpus().length, 1);
+    options.maxWorkers = argv.watch ? Math.floor(cpus / 2) : cpus - 1;
   }
   return options;
 }
@@ -162,13 +166,21 @@ function readRawConfig(argv, packageRoot) {
   }, argv));
 }
 
+function getTestPaths(testRunner, config, patternInfo) {
+  if (patternInfo.onlyChanged) {
+    return findOnlyChangedTestPaths(testRunner, config);
+  } else {
+    return testRunner.promiseTestPathsMatching(new RegExp(patternInfo.pattern));
+  }
+}
+
 function findOnlyChangedTestPaths(testRunner, config) {
   return Promise.all(config.testPathDirs.map(isGitRepository))
     .then(repos => {
       if (!repos.every(result => !!result)) {
         throw new Error(
           'It appears that one of your testPathDirs does not exist ' +
-          'with in a git repository. Currently --onlyChanged only works ' +
+          'within a git repository. Currently --onlyChanged only works ' +
           'with git projects.\n'
         );
       }
@@ -180,6 +192,11 @@ function findOnlyChangedTestPaths(testRunner, config) {
 }
 
 function buildTestPathPatternInfo(argv) {
+  if (argv.onlyChanged) {
+    return {
+      onlyChanged: true,
+    };
+  }
   if (argv.testPathPattern) {
     return {
       input: argv.testPathPattern,
@@ -201,11 +218,10 @@ function buildTestPathPatternInfo(argv) {
   };
 }
 
-function findMatchingTestPaths(pattern, testRunner) {
-  return testRunner.promiseTestPathsMatching(new RegExp(pattern));
-}
-
 function getNoTestsFoundMessage(patternInfo) {
+  if (patternInfo.onlyChanged) {
+    return 'No tests found related to changed and uncommitted files.';
+  }
   const pattern = patternInfo.pattern;
   const input = patternInfo.input;
   const shouldTreatInputAsPattern = patternInfo.shouldTreatInputAsPattern;
@@ -233,21 +249,15 @@ function getWatcher(argv, packageRoot, callback) {
 
 function runJest(config, argv, pipe, onComplete) {
   const testRunner = new TestRunner(config, testRunnerOptions(argv));
-  let testPaths;
-  if (argv.onlyChanged) {
-    testPaths = findOnlyChangedTestPaths(testRunner, config);
-  } else {
-    const patternInfo = buildTestPathPatternInfo(argv);
-    testPaths = findMatchingTestPaths(patternInfo.pattern, testRunner)
-      .then(testPaths => {
-        if (!testPaths.length) {
-          pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
-        }
-        return testPaths;
-      });
-  }
-
-  return testPaths.then(testPaths => testRunner.runTests(testPaths))
+  const patternInfo = buildTestPathPatternInfo(argv);
+  return getTestPaths(testRunner, config, patternInfo)
+    .then(testPaths => {
+      if (!testPaths.length) {
+        pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+      }
+      return testPaths;
+    })
+    .then(testPaths => testRunner.runTests(testPaths))
     .then(runResults => {
       if (argv.json) {
         process.stdout.write(
