@@ -41,6 +41,7 @@ describe('DefaultTestReporter', function() {
         numRuntimeErrorTestSuites: 0,
         numTotalTests: 1,
         numPassedTests: 0,
+        numPendingTests: 0,
         numFailedTests: 1,
         testResults: [],
         postSuiteHeaders: [],
