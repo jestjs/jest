@@ -8,18 +8,20 @@ var HeaderLinks = require('HeaderLinks');
 
 var Site = React.createClass({
   render: function() {
+    var title = 'Jest | ' + (this.props.title || 'Painless JavaScript Unit Testing');
+    var description = this.props.description || 'Painless JavaScript Unit Testing';
     return (
       <html>
         <head>
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-          <title>Jest | Painless JavaScript Unit Testing</title>
+          <title>{title}</title>
           <meta name="viewport" content="width=device-width" />
-          <meta property="og:title" content="Jest | Painless JavaScript Unit Testing" />
+          <meta property="og:title" content={title} />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="http://facebook.github.io/jest/index.html" />
           <meta property="og:image" content="http://facebook.github.io/jest/img/opengraph.png" />
-          <meta property="og:description" content="Painless JavaScript Unit Testing" />
+          <meta property="og:description" content={description} />
 
           <link rel="shortcut icon" href="/jest/img/favicon.png" />
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" />
