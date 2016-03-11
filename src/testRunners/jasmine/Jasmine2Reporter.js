@@ -39,10 +39,13 @@ class Jasmine2Reporter {
   jasmineDone() {
     let numFailingTests = 0;
     let numPassingTests = 0;
+    let numPendingTests = 0;
     const testResults = this._testResults;
     testResults.forEach(testResult => {
-      if (testResult.failureMessages.length > 0) {
+      if (testResult.status === 'failed') {
         numFailingTests++;
+      } else if (testResult.status === 'pending') {
+        numPendingTests++;
       } else {
         numPassingTests++;
       }
@@ -50,6 +53,7 @@ class Jasmine2Reporter {
     this._resolve({
       numFailingTests,
       numPassingTests,
+      numPendingTests,
       testResults,
     });
   }
@@ -58,9 +62,15 @@ class Jasmine2Reporter {
     return this._resultsPromise;
   }
 
+  _formatStatus(status) {
+    if (status === 'disabled') { status = 'pending'; }
+    return status;
+  }
+
   _extractSpecResults(specResult, currentSuites) {
     const results = {
       title: 'it ' + specResult.description,
+      status: this._formatStatus(specResult.status),
       ancestorTitles: currentSuites,
       failureMessages: [],
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.

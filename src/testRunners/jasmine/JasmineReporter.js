@@ -32,6 +32,7 @@ class JasmineReporter extends jasmine.Reporter {
     }
     let numFailingTests = 0;
     let numPassingTests = 0;
+    const numPendingTests = 0;
     testResults.forEach(testResult => {
       if (testResult.failureMessages.length > 0) {
         numFailingTests++;
@@ -39,7 +40,12 @@ class JasmineReporter extends jasmine.Reporter {
         numPassingTests++;
       }
     });
-    this._resolve({numFailingTests, numPassingTests, testResults});
+    this._resolve({
+      numFailingTests,
+      numPassingTests,
+      numPendingTests,
+      testResults,
+    });
   }
 
   getResults() {

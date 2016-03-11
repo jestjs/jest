@@ -34,10 +34,18 @@ class VerboseLogger {
     );
   }
 
+  _iconFromStatus(status) {
+    if (status === 'failed') {
+      return chalk.red('\u2715');
+    } else if (status === 'pending') {
+      return chalk.yellow('\u25CB');
+    } else {
+      return chalk.green('\u2713');
+    }
+  }
+
   _logTest(test, indentLevel) {
-    const status = test.failureMessages.length > 0 ?
-      chalk.red('\u2715') :
-      chalk.green('\u2713');
+    const status = this._iconFromStatus(test.status);
 
     this._logLine(`${status} ${chalk.gray(test.title)}`, indentLevel);
   }

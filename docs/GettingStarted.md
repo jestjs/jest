@@ -211,6 +211,7 @@ Example Output:
   "numRuntimeErrorTestSuites": 0,
   "numPassedTests": 1,
   "numFailedTests": 0,
+  "numPendingTests": 0,
   "testResults":[
     {
       "name": "react/__tests__/CheckboxWithLabel-test.js",
