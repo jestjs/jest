@@ -294,6 +294,7 @@ class TestRunner {
       numTotalTests: 0,
       numPassedTests: 0,
       numFailedTests: 0,
+      numPendingTests: 0,
       testResults: [],
       postSuiteHeaders: [],
     };
@@ -304,9 +305,11 @@ class TestRunner {
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
-        testResult.numFailingTests;
+        testResult.numFailingTests +
+        testResult.numPendingTests;
       aggregatedResults.numFailedTests += testResult.numFailingTests;
       aggregatedResults.numPassedTests += testResult.numPassingTests;
+      aggregatedResults.numPendingTests += testResult.numPendingTests;
       if (testResult.numFailingTests > 0) {
         aggregatedResults.numFailedTestSuites++;
       } else {

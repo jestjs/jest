@@ -58,6 +58,7 @@ const formatResult = (testResult, codeCoverageFormatter, reporter) => {
  *  numRuntimeErrorTestSuites: *,
  *  numPassedTests: *,
  *  numFailedTests: *,
+ *  numPendingTests: *,
  *  testResults: (*|{}|Array),
  *  postSuiteHeaders: *}}
  */
@@ -79,6 +80,7 @@ function formatTestResults(results, codeCoverageFormatter, reporter) {
     numRuntimeErrorTestSuites: results.numRuntimeErrorTestSuites,
     numPassedTests: results.numPassedTests,
     numFailedTests: results.numFailedTests,
+    numPendingTests: results.numPendingTests,
     testResults,
     postSuiteHeaders: results.postSuiteHeaders,
   };
