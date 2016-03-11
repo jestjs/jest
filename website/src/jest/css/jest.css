@@ -921,12 +921,14 @@ div[data-twttr-id] iframe {
 }
 
 /** Blog Images **/
+
 img[alt="perf-basic-scheduling"], img[alt="perf-improved-scheduling"] {
   border: 2px solid #f2f2f2;
   border-radius: 4px;
   display: block;
   margin: 12px auto;
   width: 530px;
+  max-width: 100%;
 }
 
 /** Algolia Doc Search **/
