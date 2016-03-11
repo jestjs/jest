@@ -73,34 +73,23 @@ class DefaultTestReporter {
        `${allTestsPassed ? PASS : FAIL} ${TEST_NAME_COLOR(pathStr)}` +
        (testDetail.length ? ` (${testDetail.join(', ')})` : '');
 
-    /*
-    if (config.collectCoverage) {
-      // TODO: Find a nice pretty way to print this out
-    }
-    */
-
     this.log(resultHeader);
-    if (config.verbose) {
-      this.verboseLogger.logTestResults(testResult.testResults);
+    if (config.verbose && !testResult.testExecError) {
+      this.verboseLogger.logTestResults(
+        testResult.testResults
+      );
     }
 
     if (!allTestsPassed) {
-      const failureMessage = formatFailureMessage(testResult, {
-        rootPath: config.rootDir,
-        useColor: !config.noHighlight,
-      });
-      if (config.verbose) {
-        results.postSuiteHeaders.push(resultHeader, failureMessage);
-      } else {
-        // If we write more than one character at a time it is possible that
-        // node exits in the middle of printing the result.
-        // If you are reading this and you are from the future, this might not
-        // be true any more.
-        for (let i = 0; i < failureMessage.length; i++) {
-          this._process.stdout.write(failureMessage.charAt(i));
-        }
-        this._process.stdout.write('\n');
+      const failureMessage = formatFailureMessage(testResult, config);
+      // If we write more than one character at a time it is possible that
+      // node exits in the middle of printing the result.
+      // If you are reading this and you are from the future, this might not
+      // be true any more.
+      for (let i = 0; i < failureMessage.length; i++) {
+        this._process.stdout.write(failureMessage.charAt(i));
       }
+      this._process.stdout.write('\n');
 
       if (config.bail) {
         this.onRunComplete(config, results);

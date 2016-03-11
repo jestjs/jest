@@ -6,8 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* eslint-disable fb-www/object-create-only-one-param */
-
 'use strict';
 
 const DependencyGraph = require('node-haste');
