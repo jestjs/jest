@@ -6,6 +6,7 @@
 * Fixed `jest -o` issue when no files were changed.
 * Improved code coverage reporting when using `babel-jest`.
 * Improved error reporting when a syntax error occurs.
+* Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
 
 ## 0.9.1
 

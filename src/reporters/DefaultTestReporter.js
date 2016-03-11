@@ -20,6 +20,7 @@ const PASS = chalk.reset.bold.bgGreen(' PASS ');
 
 const FAIL_COLOR = chalk.bold.red;
 const PASS_COLOR = chalk.bold.green;
+const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 const TEST_NAME_COLOR = chalk.bold;
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
@@ -104,6 +105,7 @@ class DefaultTestReporter {
     const totalTestSuites = aggregatedResults.numTotalTestSuites;
     const failedTests = aggregatedResults.numFailedTests;
     const passedTests = aggregatedResults.numPassedTests;
+    const pendingTests = aggregatedResults.numPendingTests;
     const totalTests = aggregatedResults.numTotalTests;
     const totalErrors = aggregatedResults.numRuntimeErrorTestSuites;
     const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
@@ -127,6 +129,11 @@ class DefaultTestReporter {
         `${FAIL_COLOR(`${print('test suite', totalErrors)} failed`)}, `;
     }
 
+    if (pendingTests) {
+      results +=
+        `${PENDING_COLOR(`${print('test', pendingTests)} pending`)}, `;
+    }
+
     results +=
       `${PASS_COLOR(`${print('test', passedTests)} passed`)} ` +
       `(${totalTests} total in ${print('test suite', totalTestSuites)}, ` +
@@ -143,6 +150,7 @@ class DefaultTestReporter {
     const remaining = results.numTotalTestSuites -
       results.numPassedTestSuites -
       results.numFailedTestSuites -
+      results.numPendingTestSuites -
       results.numRuntimeErrorTestSuites;
     if (!this._config.noHighlight && remaining > 0) {
       this._process.stdout.write(RUNNING_TEST_COLOR(

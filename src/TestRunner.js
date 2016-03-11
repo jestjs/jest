@@ -147,6 +147,7 @@ class TestRunner {
     if (!changedPaths.size) {
       return Promise.resolve([]);
     }
+
     return Promise.all([
       this._getAllTestPaths(),
       this._resolver.getHasteMap(),
@@ -155,11 +156,13 @@ class TestRunner {
       const hasteMap = response[1];
       const relatedPaths = new Set();
       const changed = new Set();
-      const moduleMap = testPaths.map(path => ({
-        name: path,
-        path,
-        dependencies: null,
-      }));
+      const moduleMap = [];
+      testPaths.forEach(path => {
+        if (changedPaths.has(path) && this._isTestFilePath(path)) {
+          relatedPaths.add(path);
+        }
+        moduleMap.push({name: path, path, dependencies: null});
+      });
       const collectModules = list => {
         for (const name in list) {
           const path = list[name];
@@ -294,6 +297,7 @@ class TestRunner {
       numTotalTests: 0,
       numPassedTests: 0,
       numFailedTests: 0,
+      numPendingTests: 0,
       testResults: [],
       postSuiteHeaders: [],
     };
@@ -304,9 +308,12 @@ class TestRunner {
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
-        testResult.numFailingTests;
+        testResult.numFailingTests +
+        testResult.numPendingTests;
+
       aggregatedResults.numFailedTests += testResult.numFailingTests;
       aggregatedResults.numPassedTests += testResult.numPassingTests;
+      aggregatedResults.numPendingTests += testResult.numPendingTests;
       if (testResult.numFailingTests > 0) {
         aggregatedResults.numFailedTestSuites++;
       } else {
