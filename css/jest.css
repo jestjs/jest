@@ -920,6 +920,15 @@ div[data-twttr-id] iframe {
   opacity: 1;
 }
 
+/** Blog Images **/
+img[alt="perf-basic-scheduling"], img[alt="perf-improved-scheduling"] {
+  border: 2px solid #f2f2f2;
+  border-radius: 4px;
+  display: block;
+  margin: 12px auto;
+  width: 530px;
+}
+
 /** Algolia Doc Search **/
 
 div.algolia-search-wrapper {
