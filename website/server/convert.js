@@ -60,24 +60,26 @@ function extractMetadata(content) {
   return {metadata: metadata, rawContent: both.content};
 }
 
-function buildFile(layout, rawContent, metadata) {
-  return (
-    '/**\n' +
-    ' * @generated\n' +
-    ' */\n' +
-    'var React = require("React");\n' +
-    'var Layout = require("' + layout + '");\n' +
-    'var content = ' + backtickify(rawContent) + '\n' +
-    'var Post = React.createClass({\n' +
-    '  statics: {\n' +
-    '    content: content\n' +
-    '  },\n' +
-    '  render: function() {\n' +
-    '    return <Layout metadata={' + JSON.stringify(metadata) + '}>{content}</Layout>;\n' +
-    '  }\n' +
-    '});\n' +
-    'module.exports = Post;\n'
-  );
+function buildFile(layout, metadata, rawContent) {
+  return [
+    '/**',
+    ' * @generated',
+    ' */',
+    'var React = require("React");',
+    'var Layout = require("' + layout + '");',
+    rawContent && 'var content = ' + backtickify(rawContent) + ';',
+    'var Post = React.createClass({',
+    rawContent && '  statics: { content: content },',
+    '  render: function() {',
+    '    return (',
+    '      <Layout metadata={' + JSON.stringify(metadata) + '}>',
+    rawContent && '        {content}',
+    '      </Layout>',
+    '    );',
+    '  }',
+    '});',
+    'module.exports = Post;'
+  ].filter(e => e).join('\n');
 }
 
 function writeFileAndCreateFolder(file, content) {
@@ -125,7 +127,7 @@ function execute() {
 
         writeFileAndCreateFolder(
           'src/jest/' + metadata.permalink.replace(/\.html$/, '.js'),
-          buildFile(layout, rawContent, metadata)
+          buildFile(layout, metadata, rawContent)
         );
       }
 
@@ -164,16 +166,24 @@ function execute() {
         .replace(/\-md$/, '.html');
 
       var res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
-      var metadata = Object.assign({path: filePath}, res.metadata);
       var rawContent = res.rawContent;
+      var metadata = Object.assign({path: filePath, content: rawContent}, res.metadata);
 
       metadatas.files.push(metadata);
 
       writeFileAndCreateFolder(
         'src/jest/blog/' + filePath.replace(/\.html$/, '.js'),
-        buildFile('BlogPostLayout', rawContent, metadata)
+        buildFile('BlogPostLayout', metadata, rawContent)
       );
     });
+
+    var perPage = 5;
+    for (var page = 0; page < Math.ceil(metadatas.files.length / perPage); ++page) {
+      writeFileAndCreateFolder(
+        'src/jest/blog' + (page > 0 ? '/page' + (page + 1) : '') + '/index.js',
+        buildFile('BlogPageLayout', { page: page, perPage: perPage })
+      );
+    }
 
     fs.writeFileSync(
       'core/metadata-blog.js',

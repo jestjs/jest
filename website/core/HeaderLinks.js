@@ -11,9 +11,9 @@ var React = require('React');
 var HeaderLinks = React.createClass({
   linksInternal: [
     {section: 'docs', href: '/jest/docs/tutorial.html#content', text: 'docs'},
-    {section: 'support', href: '/jest/support.html', text: 'support'},
-    MetadataBlog.files.length > 0 && {section: 'blog', href: '/jest/blog/' + MetadataBlog.files[0].path, text: 'blog'},
-  ].filter(function(e) { return e; }),
+    {section: 'support', href: '/jest/support.html#content', text: 'support'},
+    {section: 'blog', href: '/jest/blog/#content', text: 'blog'},
+  ],
   linksExternal: [
     {section: 'github', href: 'https://github.com/facebook/jest', text: 'GitHub'},
   ],
