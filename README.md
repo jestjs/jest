@@ -18,7 +18,6 @@ Check out the [Getting Started](http://facebook.github.io/jest/docs/getting-star
 <generated_api_start />
 #### The `jest` object
 
-  - `jest.addMatchers(matchers)`
   - [`jest.autoMockOff()`](http://facebook.github.io/jest/docs/api.html#jest-automockoff)
   - [`jest.autoMockOn()`](http://facebook.github.io/jest/docs/api.html#jest-automockon)
   - [`jest.clearAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
