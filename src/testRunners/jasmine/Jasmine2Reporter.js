@@ -46,8 +46,6 @@ class Jasmine2Reporter {
         numFailingTests++;
       } else if (testResult.status === 'pending') {
         numPendingTests++;
-      } else if (testResult.status === 'disabled') {
-        numPendingTests++;
       } else {
         numPassingTests++;
       }
@@ -64,10 +62,15 @@ class Jasmine2Reporter {
     return this._resultsPromise;
   }
 
+  _formatStatus(status) {
+    if (status === 'disabled') { status = 'pending'; }
+    return status;
+  }
+
   _extractSpecResults(specResult, currentSuites) {
     const results = {
       title: 'it ' + specResult.description,
-      status: specResult.status,
+      status: this._formatStatus(specResult.status),
       ancestorTitles: currentSuites,
       failureMessages: [],
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
