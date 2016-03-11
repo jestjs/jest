@@ -19,7 +19,7 @@ var BlogPost = React.createClass({
     var month = [
       'January', 'February', 'March', 'April', 'May', 'June', 'July',
       'August', 'September', 'October', 'November', 'December'
-    ][parseInt(match[2], 10) + 1];
+    ][parseInt(match[2], 10) - 1];
     var day = parseInt(match[3], 10);
 
     return (

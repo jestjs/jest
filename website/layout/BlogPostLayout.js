@@ -15,7 +15,10 @@ var Site = require('Site');
 var BlogPostLayout = React.createClass({
   render: function() {
     return (
-      <Site section="blog">
+      <Site
+        section="blog"
+        title={this.props.metadata.title}
+        description={this.props.children.trim().split('\n')[0]}>
         <section className="content wrap documentationContent">
           <BlogSidebar title={this.props.metadata.title} />
           <div className="inner-content">
