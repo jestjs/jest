@@ -302,9 +302,7 @@ class Loader {
     moduleObj.parent = mockParentModule;
     moduleObj.require = this._createRequireImplementation(filename);
 
-    const evalResultVariable = 'Object.<anonymous>';
-    const wrapper = '({ "' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST_COVERAGE_DATA) {' + moduleContent + '\n}});';
-    const wrapperFunc = this._environment.runSourceText(wrapper, filename)[evalResultVariable];
+    const wrapperFunc = this._runSourceText(moduleContent, filename);
     wrapperFunc.call(
       moduleObj.exports, // module context
       moduleObj, // module object
@@ -319,6 +317,37 @@ class Loader {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  _runSourceText(moduleContent, filename) {
+    const config = this._config;
+    const relative = filePath => path.relative(config.rootDir, filePath);
+    const env = this._environment;
+    const evalResultVariable = 'Object.<anonymous>';
+    const wrapper = '({ "' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST_COVERAGE_DATA) {' + moduleContent + '\n}});';
+    try {
+      return env.runSourceText(wrapper, filename)[evalResultVariable];
+    } catch (e) {
+      if (e.constructor.name === 'SyntaxError') {
+        const hasPreprocessor = config.scriptPreprocessor;
+        const preprocessorInfo = hasPreprocessor
+          ? relative(config.scriptPreprocessor)
+          : `No preprocessor specified, consider installing 'babel-jest'`;
+        const babelInfo = config.usesBabelJest
+          ? `Make sure your '.babelrc' is set up correctly, ` +
+            `for example it should include the 'es2015' preset.\n`
+          : '';
+        throw new SyntaxError(
+          `${e.message} in file '${relative(filename)}'.\n\n` +
+          `Make sure your preprocessor is set up correctly and ensure ` +
+          `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string\n` +
+          'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
+          `Preprocessor: ${preprocessorInfo}.\n${babelInfo}` +
+          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`
+        );
+      }
+      throw e;
+    }
   }
 
   _generateMock(currPath, moduleName) {

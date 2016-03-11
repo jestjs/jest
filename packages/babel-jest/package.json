@@ -9,7 +9,6 @@
   "main": "src/index.js",
   "dependencies": {
     "babel-core": "^6.0.0",
-    "babel-plugin-transform-runtime": "^6.0.0",
     "babel-preset-jest": "^1.0.0"
   }
 }

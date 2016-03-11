@@ -5,6 +5,7 @@
 * Improved responsiveness of the system while using `--watch`.
 * Fixed `jest -o` issue when no files were changed.
 * Improved code coverage reporting when using `babel-jest`.
+* Improved error reporting when a syntax error occurs.
 
 ## 0.9.1
 
