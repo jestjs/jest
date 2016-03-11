@@ -1,13 +1,16 @@
-var fs = require('fs')
-var glob = require('glob');
-var mkdirp = require('mkdirp');
-var optimist = require('optimist');
-var path = require('path');
-var argv = optimist.argv;
+'use strict';
+
+const fs = require('fs')
+const glob = require('glob');
+const mkdirp = require('mkdirp');
+const optimist = require('optimist');
+const path = require('path');
+const argv = optimist.argv;
 
 function splitHeader(content) {
-  var lines = content.split('\n');
-  for (var i = 1; i < lines.length - 1; ++i) {
+  const lines = content.split('\n');
+  let i = 1;
+  for (; i < lines.length - 1; ++i) {
     if (lines[i] === '---') {
       break;
     }
@@ -19,7 +22,7 @@ function splitHeader(content) {
 }
 
 function globEach(pattern, cb) {
-  glob(pattern, function(err, files) {
+  glob(pattern, (err, files) => {
     if (err) {
       console.error(err);
       return;
@@ -37,7 +40,7 @@ function rmFile(file) {
 }
 
 function backtickify(str) {
-  var escaped = '`' + str.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`';
+  const escaped = '`' + str.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`';
   // Replace require( with require\( so node-haste doesn't replace example
   // require calls in the docs
   return escaped.replace(/require\(/g, 'require\\(');
@@ -46,13 +49,13 @@ function backtickify(str) {
 
 // Extract markdown metadata header
 function extractMetadata(content) {
-  var metadata = {};
-  var both = splitHeader(content);
-  var lines = both.header.split('\n');
-  for (var i = 0; i < lines.length - 1; ++i) {
-    var keyvalue = lines[i].split(':');
-    var key = keyvalue[0].trim();
-    var value = keyvalue.slice(1).join(':').trim();
+  const metadata = {};
+  const both = splitHeader(content);
+  const lines = both.header.split('\n');
+  for (let i = 0; i < lines.length - 1; ++i) {
+    const keyvalue = lines[i].split(':');
+    const key = keyvalue[0].trim();
+    const value = keyvalue.slice(1).join(':').trim();
     // Handle the case where you have "Community #10"
     try { value = JSON.parse(value); } catch(e) { }
     metadata[key] = value;
@@ -88,33 +91,41 @@ function writeFileAndCreateFolder(file, content) {
 }
 
 function execute() {
-  var DOCS_MD_DIR = '../docs/';
-  var BLOG_MD_DIR = '../blog/';
+  const DOCS_MD_DIR = '../docs/';
+  const BLOG_MD_DIR = '../blog/';
 
   globEach('src/jest/docs/*.*', rmFile);
   globEach('src/jest/blog/*.*', rmFile);
 
-  var api = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'API.md', {encoding: 'utf8'}).toString()).content
-    .split('---')[0]
+  const gettingStarted = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'GettingStarted.md', 'utf8')).content
+    .replace(/\(\/jest\//g, '(http://facebook.github.io/jest/');
+  const api = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'API.md', 'utf8')).content
+    .replace(/\(\/jest\//g, '(http://facebook.github.io/jest/')
     .replace(/\(#/g, '(http://facebook.github.io/jest/docs/api.html#');
-  var readme = fs.readFileSync('../README.md', {encoding: 'utf8'}).toString()
+
+  const readme = fs.readFileSync('../README.md', 'utf8')
     .replace(
-      /<generated_api_start \/>[\s\S]*<generated_api_end \/>/,
+      /<generated_api_start \/>(?:.|\s)*?<generated_api_end \/>/,
       '<generated_api_start />' + api + '<generated_api_end />'
+    )
+    .replace(
+      /<generated_getting_started_start \/>(?:.|\s)*?<generated_getting_started_end \/>/,
+      '<generated_getting_started_start />' + gettingStarted + '<generated_getting_started_end />'
     );
+
   fs.writeFileSync('../README.md', readme);
 
-  glob(DOCS_MD_DIR + '**/*.*', function(er, files) {
-    var metadatas = {
+  glob(DOCS_MD_DIR + '**/*.*', (er, files) => {
+    const metadatas = {
       files: [],
     };
 
-    files.forEach(function(file) {
-      var extension = path.extname(file);
+    files.forEach(file => {
+      const extension = path.extname(file);
       if (extension === '.md' || extension === '.markdown') {
-        var res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
-        var metadata = res.metadata;
-        var rawContent = res.rawContent;
+        const res = extractMetadata(fs.readFileSync(file, 'utf8'));
+        const metadata = res.metadata;
+        const rawContent = res.rawContent;
         metadata.source = path.basename(file);
         metadatas.files.push(metadata);
 
@@ -123,7 +134,7 @@ function execute() {
         }
 
         // Create a dummy .js version that just calls the associated layout
-        var layout = metadata.layout[0].toUpperCase() + metadata.layout.substr(1) + 'Layout';
+        const layout = metadata.layout[0].toUpperCase() + metadata.layout.substr(1) + 'Layout';
 
         writeFileAndCreateFolder(
           'src/jest/' + metadata.permalink.replace(/\.html$/, '.js'),
@@ -132,7 +143,7 @@ function execute() {
       }
 
       if (extension === '.json') {
-        var content = fs.readFileSync(file, {encoding: 'utf8'});
+        const content = fs.readFileSync(file, 'utf8');
         metadatas[path.basename(file, '.json')] = JSON.parse(content);
       }
     });
@@ -147,17 +158,17 @@ function execute() {
     );
   });
 
-  glob(BLOG_MD_DIR + '**/*.*', function(er, files) {
-    var metadatas = {
+  glob(BLOG_MD_DIR + '**/*.*', (er, files) => {
+    const metadatas = {
       files: [],
     };
 
-    files.sort().reverse().forEach(function(file) {
+    files.sort().reverse().forEach(file => {
       // Transform
       //   2015-08-13-blog-post-name-0.5.md
       // into
       //   2015/08/13/blog-post-name-0-5.html
-      var filePath = path.basename(file)
+      const filePath = path.basename(file)
         .replace('-', '/')
         .replace('-', '/')
         .replace('-', '/')
@@ -165,9 +176,9 @@ function execute() {
         .replace(/\./g, '-')
         .replace(/\-md$/, '.html');
 
-      var res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
-      var rawContent = res.rawContent;
-      var metadata = Object.assign({path: filePath, content: rawContent}, res.metadata);
+      const res = extractMetadata(fs.readFileSync(file, {encoding: 'utf8'}));
+      const rawContent = res.rawContent;
+      const metadata = Object.assign({path: filePath, content: rawContent}, res.metadata);
 
       metadatas.files.push(metadata);
 
@@ -177,8 +188,8 @@ function execute() {
       );
     });
 
-    var perPage = 5;
-    for (var page = 0; page < Math.ceil(metadatas.files.length / perPage); ++page) {
+    const perPage = 5;
+    for (let page = 0; page < Math.ceil(metadatas.files.length / perPage); ++page) {
       writeFileAndCreateFolder(
         'src/jest/blog' + (page > 0 ? '/page' + (page + 1) : '') + '/index.js',
         buildFile('BlogPageLayout', { page: page, perPage: perPage })

@@ -184,7 +184,7 @@ be used to abort the test run after the first error.
 
 #### Use `--coverage` to generate a code coverage report
 
-The code
+Code coverage can be generated easily with `--coverage`.
 
 ```
 -----------------------|----------|----------|----------|----------|
