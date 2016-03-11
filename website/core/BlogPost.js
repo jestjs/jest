@@ -25,7 +25,10 @@ var BlogPost = React.createClass({
     return (
       <div>
         <h1>{post.title}</h1>
-        <p className="meta">{month} {day}, {year} by {post.author}</p>
+        <p className="meta">
+          {month} {day}, {year} by{' '}
+          <a href={post.authorURL} target="_blank">{post.author}</a>
+        </p>
         <hr />
         <Marked>{content}</Marked>
       </div>
