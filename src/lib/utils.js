@@ -10,6 +10,7 @@
 const chalk = require('chalk');
 const fs = require('graceful-fs');
 const path = require('path');
+const resolveNodeModule = require('./resolveNodeModule');
 
 function replacePathSepForRegex(str) {
   if (path.sep === '\\') {
@@ -18,7 +19,9 @@ function replacePathSepForRegex(str) {
   return str;
 }
 
+const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const DEFAULT_CONFIG_VALUES = {
+  automock: true,
   bail: false,
   cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
@@ -30,8 +33,6 @@ const DEFAULT_CONFIG_VALUES = {
   haste: {
     providesModuleNodeModules: [],
   },
-  setupFiles: [],
-  preprocessorIgnorePatterns: [],
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
@@ -40,9 +41,8 @@ const DEFAULT_CONFIG_VALUES = {
   testEnvData: {},
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
-  testPathIgnorePatterns: [replacePathSepForRegex('/node_modules/')],
+  testPathIgnorePatterns: [replacePathSepForRegex(NODE_MODULES)],
   testReporter: require.resolve('../reporters/IstanbulTestReporter'),
-  testRunner: require.resolve('../testRunners/jasmine/jasmine1'),
   testURL: 'about:blank',
   noHighlight: false,
   noStackTrace: false,
@@ -92,7 +92,10 @@ function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-function normalizeConfig(config) {
+function normalizeConfig(config, argv) {
+  if (!argv) {
+    argv = {};
+  }
   const newConfig = {};
 
   // Assert that there *is* a rootDir
@@ -102,20 +105,69 @@ function normalizeConfig(config) {
 
   config.rootDir = path.normalize(config.rootDir);
 
+  if (!config.setupFiles) {
+    config.setupFiles = [];
+  }
+
   if (config.setupEnvScriptFile) {
-    if (!config.setupFiles) {
-      config.setupFiles = [];
-    }
     config.setupFiles.push(config.setupEnvScriptFile);
     delete config.setupEnvScriptFile;
   }
 
-  // Normalize user-supplied config options
-  Object.keys(config).reduce(function(newConfig, key) {
+  if (argv.testRunner) {
+    config.testRunner = argv.testRunner;
+  }
+
+  if (config.testRunner === 'jasmine1') {
+    config.testRunner = require.resolve('../testRunners/jasmine/jasmine1');
+  } else if (!config.testRunner || config.testRunner === 'jasmine2') {
+    config.testRunner = require.resolve('../testRunners/jasmine/jasmine2');
+  } else {
+    try {
+      config.testRunner = path.resolve(
+        config.testRunner.replace(/<rootDir>/g, config.rootDir)
+      );
+    } catch (e) {
+      throw new Error(
+        `Jest: Invalid testRunner path: ${config.testRunner}`
+      );
+    }
+  }
+
+  let babelJest;
+  if (config.scriptPreprocessor) {
+    config.scriptPreprocessor =
+      _replaceRootDirTags(config.rootDir, config.scriptPreprocessor);
+    if (config.scriptPreprocessor.includes(NODE_MODULES + 'babel-jest')) {
+      babelJest = config.scriptPreprocessor;
+    }
+  } else {
+    babelJest = resolveNodeModule('babel-jest', config.rootDir);
+    if (babelJest) {
+      config.scriptPreprocessor = babelJest;
+    }
+  }
+
+  if (babelJest) {
+    const polyfillPath = resolveNodeModule('babel-polyfill', config.rootDir);
+    if (polyfillPath) {
+      config.setupFiles.unshift(polyfillPath);
+    }
+    config.usesBabelJest = true;
+  }
+
+  if (!('preprocessorIgnorePatterns' in config)) {
+    const isRNProject = !!resolveNodeModule('react-native', config.rootDir);
+    config.preprocessorIgnorePatterns = isRNProject ? [] : [NODE_MODULES];
+  } else if (!config.preprocessorIgnorePatterns) {
+    config.preprocessorIgnorePatterns = [];
+  }
+
+  Object.keys(config).reduce((newConfig, key) => {
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
-        value = Object.keys(config[key]).reduce(function(normObj, filePath) {
+        value = Object.keys(config[key]).reduce((normObj, filePath) => {
           filePath = path.resolve(
             config.rootDir,
             _replaceRootDirTags(config.rootDir, filePath)
@@ -131,7 +183,7 @@ function normalizeConfig(config) {
           config.rootDir,
           _replaceRootDirTags(config.rootDir, filePath)
         ));
-          break;
+        break;
 
       case 'cacheDirectory':
       case 'testRunner':
@@ -160,15 +212,10 @@ function normalizeConfig(config) {
         //
         // For patterns, direct global substitution is far more ideal, so we
         // special case substitutions for patterns here.
-        value = config[key].map(function(pattern) {
-          return replacePathSepForRegex(
-            pattern.replace(/<rootDir>/g, config.rootDir)
-          );
-        });
+        value = config[key].map(pattern =>
+          replacePathSepForRegex(pattern.replace(/<rootDir>/g, config.rootDir))
+        );
         break;
-      case 'testEnvironment_EXPERIMENTAL':
-        newConfig.testEnvironment = config[key];
-        return newConfig;
       case 'bail':
       case 'preprocessCachingDisabled':
       case 'coverageReporters':
@@ -197,11 +244,18 @@ function normalizeConfig(config) {
       case 'cache':
       case 'watchman':
       case 'verbose':
+      case 'automock':
+      case 'usesBabelJest':
+      case 'testEnvironment':
         value = config[key];
         break;
 
       default:
-        throw new Error('Unknown config option: ' + key);
+        console.error(
+          `Error: Unknown config option "${key}" with value ` +
+          `"${config[key]}". This is either a typing error or another user ` +
+          `mistake and fixing it will remove this message.`
+        );
     }
     newConfig[key] = value;
     return newConfig;
@@ -209,53 +263,14 @@ function normalizeConfig(config) {
 
   // If any config entries weren't specified but have default values, apply the
   // default values
-  Object.keys(DEFAULT_CONFIG_VALUES).reduce(function(newConfig, key) {
-    if (!newConfig[key]) {
+  Object.keys(DEFAULT_CONFIG_VALUES).reduce((newConfig, key) => {
+    if (!(key in newConfig)) {
       newConfig[key] = DEFAULT_CONFIG_VALUES[key];
     }
     return newConfig;
   }, newConfig);
 
-  // Fill in some default values for node-haste config
-  newConfig.setupJSLoaderOptions = newConfig.setupJSLoaderOptions || {};
-  newConfig.setupJSTestLoaderOptions = newConfig.setupJSTestLoaderOptions || {};
-  newConfig.setupJSMockLoaderOptions = newConfig.setupJSMockLoaderOptions || {};
-
-  if (!newConfig.setupJSTestLoaderOptions.extensions) {
-    newConfig.setupJSTestLoaderOptions.extensions =
-      newConfig.testFileExtensions.map(_addDot);
-  }
-
-  if (!newConfig.setupJSLoaderOptions.extensions) {
-    newConfig.setupJSLoaderOptions.extensions = uniqueStrings(
-      newConfig.moduleFileExtensions.map(_addDot).concat(
-        newConfig.setupJSTestLoaderOptions.extensions
-      )
-    );
-  }
-
-  if (!newConfig.setupJSMockLoaderOptions.extensions) {
-    newConfig.setupJSMockLoaderOptions.extensions =
-      newConfig.setupJSLoaderOptions.extensions;
-  }
-
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
-}
-
-function _addDot(ext) {
-  return '.' + ext;
-}
-
-function uniqueStrings(set) {
-  const newSet = [];
-  const has = {};
-  set.forEach(function(item) {
-    if (!has[item]) {
-      has[item] = true;
-      newSet.push(item);
-    }
-  });
-  return newSet;
 }
 
 function readFile(filePath) {

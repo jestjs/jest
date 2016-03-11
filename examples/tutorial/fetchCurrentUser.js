@@ -1,4 +1,6 @@
-var $ = require('jquery');
+'use strict';
+
+const $ = require('jquery');
 
 function parseJSON(user) {
   return {

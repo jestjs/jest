@@ -1,5 +1,16 @@
 ## master
 
+## jest-cli 0.9.2, babel-jest 9.0.3
+
+* Improved responsiveness of the system while using `--watch`.
+* Fixed `jest -o` issue when no files were changed.
+* Improved code coverage reporting when using `babel-jest`.
+
+## 0.9.1
+
+* Fixed `--watch`.
+* Improved `babel-jest` integration and `react-native` testing.
+
 ## 0.9.0
 
 * New implementation of node-haste and rewrite of internal module loading and
@@ -17,6 +28,12 @@
 * Jest sets `process.NODE_ENV` to `test` unless otherwise specified.
 * Added `babel-plugin-jest-unmock`, `babel-jest-preset` and `babel-jest`
   as packages. `babel-jest` is now being auto-detected.
+* Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for
+  `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
+* Jasmine 2 is now the default test runner. To keep using Jasmine 1, put
+  `testRunner: "jasmine1"` into your configuration.
+* Added an `automock` option to turn off automocking globally.
+* Added a `testEnvironment` option to customize the sandbox environment.
 
 ## 0.8.2
 

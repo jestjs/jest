@@ -9,7 +9,8 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.unmock('../utils')
+  .unmock('chalk');
 
 describe('utils-normalizeConfig', () => {
   let path;
@@ -40,15 +41,21 @@ describe('utils-normalizeConfig', () => {
     utils = require('../utils');
   });
 
-  it('throws when an invalid config option is passed in', () => {
+  it('errors when an invalid config option is passed in', () => {
+    const error = console.error;
+    console.error = jest.fn();
+    utils.normalizeConfig({
+      rootDir: '/root/path/foo',
+      thisIsAnInvalidConfigKey: 'with a value even!',
+    });
 
-    expect(() => {
-      utils.normalizeConfig({
-        rootDir: '/root/path/foo',
-        thisIsAnInvalidConfigKey: 'with a value even!',
-      });
-    }).toThrow(new Error('Unknown config option: thisIsAnInvalidConfigKey'));
+    expect(console.error).toBeCalledWith(
+      'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
+      '"with a value even!". This is either a typing error or another user ' +
+      'mistake and fixing it will remove this message.'
+    );
 
+    console.error = error;
   });
 
   describe('rootDir', () => {
@@ -56,6 +63,17 @@ describe('utils-normalizeConfig', () => {
       expect(() => {
         utils.normalizeConfig({});
       }).toThrow(new Error('No rootDir config value found!'));
+    });
+  });
+
+  describe('automock', () => {
+    it('falsy automock is not overwritten', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root/path/foo',
+        automock: false,
+      });
+
+      expect(config.automock).toBe(false);
     });
   });
 
@@ -334,6 +352,97 @@ describe('utils-normalizeConfig', () => {
         'hasNoToken',
         joinForPattern('', 'root', 'path', 'foo', 'hasAToken'),
       ]);
+    });
+  });
+
+  describe('testRunner', () => {
+    it('defaults to Jasmine 2', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root/path/foo',
+      });
+
+      expect(config.testRunner.endsWith('jasmine2.js')).toBe(true);
+    });
+
+    it('can be changed to jasmine1', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root/path/foo',
+        testRunner: 'jasmine1',
+      });
+
+      expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
+    });
+
+    it('is overwritten by argv', () => {
+      const config = utils.normalizeConfig(
+        {
+          rootDir: '/root/path/foo',
+        },
+        {
+          testRunner: 'jasmine1',
+        }
+      );
+
+      expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
+    });
+  });
+
+  describe('babel-jest', () => {
+    let resolveNodeModule;
+    beforeEach(() => {
+      resolveNodeModule = require('../resolveNodeModule');
+      resolveNodeModule.mockImplementation(name => 'node_modules/' + name);
+    });
+
+    it('correctly identifies and uses babel-jest', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+
+      expect(config.usesBabelJest).toBe(true);
+      expect(config.scriptPreprocessor)
+        .toEqual('/root/node_modules/babel-jest');
+      expect(config.setupFiles).toEqual(['/root/node_modules/babel-polyfill']);
+    });
+
+    it(`doesn't use babel-jest if its not available`, () => {
+      resolveNodeModule.mockImplementation(() => null);
+
+      const config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+
+      expect(config.usesBabelJest).toEqual(undefined);
+      expect(config.scriptPreprocessor).toEqual(undefined);
+      expect(config.setupFiles).toEqual([]);
+    });
+
+    it('uses polyfills if babel-jest is explicitly specified', () => {
+      const config = utils.normalizeConfig({
+        rootDir: '/root',
+        scriptPreprocessor: '<rootDir>/' + resolveNodeModule('babel-jest'),
+      });
+
+      expect(config.usesBabelJest).toBe(true);
+      expect(config.setupFiles).toEqual(['/root/node_modules/babel-polyfill']);
+    });
+
+    it('correctly identifies react-native', () => {
+      // The default resolveNodeModule fn finds `react-native`.
+      let config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+      expect(config.preprocessorIgnorePatterns).toEqual([]);
+
+      // This version doesn't find react native and sets the default to
+      // /node_modules/
+      resolveNodeModule.mockImplementation(() => null);
+      config = utils.normalizeConfig({
+        rootDir: '/root',
+      });
+
+      expect(config.preprocessorIgnorePatterns)
+        .toEqual([path.sep + 'node_modules' + path.sep]);
     });
   });
 });

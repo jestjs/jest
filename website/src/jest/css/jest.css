@@ -1,13 +1,12 @@
 html {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-family: proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
   color: #484848;
-  line-height: 1.28;
+  line-height: 1.375; /* 16/22 */
 }
 
 body {
-  background-color: #fefaf6;
+  background-color: #fafafa;
 }
 
 p {
@@ -96,7 +95,7 @@ li {
   line-height: 20px;
 }
 
-a {
+a, p a code {
   color: #C63D0F;
   text-decoration: none;
 }
@@ -128,12 +127,12 @@ html * {
   line-height: 20px;
   border-left: 4px solid #C63D0F;
   padding: 5px 10px;
-  margin-left: 20px;
-  background-color: rgba(226, 142, 50, 0.1);
+  margin: 14px 0 14px 20px;
+  background-color: rgba(226, 142, 50, 0.06);
 }
 
 .prism + .prism {
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .token.keyword {
@@ -254,7 +253,15 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
   text-decoration: none;
 }
 
-.nav-main .nav-site {
+.nav-main .nav-site-wrapper {
+  display: inline;
+}
+
+.nav-main .nav-site-internal {
+  margin: 0 0 0 20px;
+}
+
+.nav-main .nav-site-external {
   float: right;
   margin: 0;
 }
@@ -269,7 +276,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
   letter-spacing: 1px;
   line-height: 50px;
   display: inline-block;
-  height: 50px;
+  height: 48px;
   color: #aaa;
 }
 
@@ -285,6 +292,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 
 .nav-main .nav-home {
   font-size: 24px;
+  font-weight: 300;
   line-height: 50px;
 }
 
@@ -326,7 +334,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
 }
 
 .buttons-unit {
-  margin-top: 60px;
+  margin-top: 40px;
   text-align: center;
 }
 
@@ -441,7 +449,7 @@ h1:hover .hash-link, h2:hover .hash-link, h3:hover .hash-link, h4:hover .hash-li
   width: 280px;
 }
 
-.marketing-col h3 {
+.marketing-col h3, .home-why h3, .home-getting-started h3 {
   color: #2d2d2d;
   font-size: 24px;
   font-weight: normal;
@@ -688,7 +696,7 @@ figure {
   margin-top: 60px;
 }
 
-small code, li code, p code {
+small code, li code, p code, h1 code, h2 code, h3 code, h4 code {
   color: #555;
   background-color: rgba(0, 0, 0, 0.04);
   padding: 1px 3px;
@@ -880,27 +888,123 @@ div[data-twttr-id] iframe {
   text-align: center;
 }
 
-.home-why .blurb {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .home-why .list {
   margin: 0 auto;
-  max-width: 460px;
+  max-width: 700px;
 }
 
 .home-getting-started {
-  width: 500px;
   margin: 20px auto 40px auto;
+  max-width: 700px;
 }
 
 .home-getting-started h3 {
+  margin: 20px 0;
   text-align: center;
 }
 
 #content {
   display: none;
+}
+
+.edit-page-link {
+  float: right;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 20px;
+  opacity: 0.6;
+  transition: opacity 0.5s;
+}
+
+.edit-page-link:hover {
+  opacity: 1;
+}
+
+/** Algolia Doc Search **/
+
+div.algolia-search-wrapper {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 15px;
+}
+
+@media screen and (max-width: 960px) {
+  div.algolia-search-wrapper {
+    display: none;
+  }
+}
+
+input#algolia-doc-search {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  background: transparent url('/jest/img/search.png') no-repeat left center;
+  background-size: 16px 16px;
+
+  padding-left: 30px;
+  font-size: 16px;
+  line-height: 20px;
+  border-bottom: solid 3px transparent;
+  color: white;
+  outline: none;
+  width: 130px;
+  height: 53px;
+
+  transition: border-color .2s ease, width .2s ease;
+  -webkit-transition: border-color .2s ease, width .2s ease;
+  -moz-transition: border-color .2s ease, width .2s ease;
+  -o-transition: border-color .2s ease, width .2s ease;
+}
+
+input#algolia-doc-search:focus {
+  border-color: #C63D0F;
+  width: 240px;
+}
+
+@media screen and (max-width: 1085px) {
+  input#algolia-doc-search:focus {
+    width: 178px;
+  }
+}
+
+.algolia-autocomplete {
+  vertical-align: top;
+  height: 53px;
+
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Bottom border of each suggestion */
+.algolia-docsearch-suggestion {
+  border-bottom-color: #C63D0F;
+}
+/* Main category headers */
+.algolia-docsearch-suggestion--category-header {
+  background-color: #982F0B;
+}
+/* Highlighted search terms */
+.algolia-docsearch-suggestion--highlight {
+  color: #C63D0F;
+}
+/* Highligted search terms in the main category headers */
+.algolia-docsearch-suggestion--category-header .algolia-docsearch-suggestion--highlight  {
+  background-color: #C63D0F;
+}
+/* Currently selected suggestion */
+.aa-cursor .algolia-docsearch-suggestion--content {
+  color: #C63D0F;
+}
+.aa-cursor .algolia-docsearch-suggestion {
+  background: #fafafa;
+}
+
+/* For bigger screens, when displaying results in two columns */
+@media (min-width: 768px) {
+  .algolia-docsearch-suggestion--subcategory-column {
+    background-color: #fafafa;
+    color: #3B3738;
+  }
 }
 
 @media only screen and (max-device-width : 1024px) {
@@ -969,3 +1073,4 @@ div[data-twttr-id] iframe {
     margin: 0;
   }
 }
+

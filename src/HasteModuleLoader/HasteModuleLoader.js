@@ -6,17 +6,15 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* eslint-disable fb-www/require-args, fb-www/object-create-only-one-param */
 'use strict';
 
 const fs = require('graceful-fs');
 const moduleMocker = require('../lib/moduleMocker');
 const path = require('path');
 const resolve = require('resolve');
+const resolveNodeModule = require('../lib/resolveNodeModule');
 const transform = require('../lib/transform');
 
-const NODE_PATH =
-  (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
@@ -43,8 +41,9 @@ class Loader {
     this._explicitShouldMock = Object.create(null);
     this._explicitlySetMocks = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
+    this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
-    this._shouldAutoMock = true;
+    this._shouldAutoMock = config.automock;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
     this._modules = moduleMap.modules;
@@ -277,7 +276,11 @@ class Loader {
     );
     let moduleContent = transform(filename, this._config);
     let collectorStore;
-    if (shouldCollectCoverage && !filename.includes(NODE_MODULES)) {
+    if (
+      shouldCollectCoverage &&
+      !filename.includes(this._testDirectoryName) &&
+      !filename.includes(NODE_MODULES)
+    ) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,
@@ -347,7 +350,10 @@ class Loader {
 
       const mockMetadata = moduleMocker.getMetadata(moduleExports);
       if (mockMetadata === null) {
-        throw new Error('Failed to get mock metadata: ' + modulePath);
+        throw new Error(
+          `Failed to get mock metadata: ${modulePath}\n\n` +
+          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`
+        );
       }
       mockMetaDataCache[modulePath] = mockMetadata;
     }
@@ -374,31 +380,28 @@ class Loader {
       return currPath;
     }
     const basedir = path.dirname(currPath);
-    try {
-      return resolve.sync(moduleName, {
-        basedir,
-        extensions: this._extensions,
-        paths: NODE_PATH,
-      });
-    } catch (e) {
-      const parts = moduleName.split('/');
-      const nodeModuleName = parts.shift();
-      const module = this._getModule(nodeModuleName);
-      if (module) {
-        try {
-          return require.resolve(
-            path.join.apply(path, [path.dirname(module)].concat(parts))
-          );
-        } catch (ignoredError) {}
-      }
-
-      // resolve.sync uses the basedir instead of currPath and therefore
-      // doesn't throw an accurate error message.
-      const relativePath = path.relative(basedir, currPath);
-      throw new Error(
-        `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
-      );
+    const filePath = resolveNodeModule(moduleName, basedir, this._extensions);
+    if (filePath) {
+      return filePath;
     }
+
+    const parts = moduleName.split('/');
+    const nodeModuleName = parts.shift();
+    const module = this._getModule(nodeModuleName);
+    if (module) {
+      try {
+        return require.resolve(
+          path.join.apply(path, [path.dirname(module)].concat(parts))
+        );
+      } catch (ignoredError) {}
+    }
+
+    // resolveNodeModule and resolve.sync use the basedir instead of currPath
+    // and therefore can't throw an accurate error message.
+    const relativePath = path.relative(basedir, currPath);
+    throw new Error(
+      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
+    );
   }
 
   _getModule(resourceName) {
@@ -592,6 +595,13 @@ class Loader {
       genMockFromModule: moduleName => this._generateMock(currPath, moduleName),
       genMockFunction: moduleMocker.getMockFunction,
       genMockFn: moduleMocker.getMockFunction,
+      fn: function() {
+        const fn = moduleMocker.getMockFunction();
+        if (arguments.length > 0) {
+          return fn.mockImplementation(arguments[0]);
+        }
+        return fn;
+      },
 
       mock: moduleName => {
         const moduleID = this._getNormalizedModuleID(currPath, moduleName);

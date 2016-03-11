@@ -6,7 +6,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
- /* eslint-disable fb-www/object-create-only-one-param */
 'use strict';
 
 const Test = require('./Test');
@@ -15,51 +14,14 @@ const fs = require('graceful-fs');
 const getCacheFilePath = require('node-haste').Cache.getCacheFilePath;
 const getCacheKey = require('./lib/getCacheKey');
 const mkdirp = require('mkdirp');
-const os = require('os');
 const path = require('path');
 const promisify = require('./lib/promisify');
 const utils = require('./lib/utils');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
-
-const DEFAULT_OPTIONS = {
-
-  /**
-   * When true, runs all tests serially in the current process, rather than
-   * creating a worker pool of child processes.
-   *
-   * This can be useful for debugging, or when the environment limits to a
-   * single process.
-   */
-  runInBand: false,
-
-  /**
-   * The maximum number of workers to run tests concurrently with.
-   *
-   * It's probably good to keep this at something close to the number of cores
-   * on the machine that's running the test.
-   */
-  maxWorkers: Math.max(os.cpus().length, 1),
-
-  /**
-   * The path to the executable node binary.
-   *
-   * This is used in the process of booting each of the workers.
-   */
-  nodePath: process.execPath,
-
-  /**
-   * The args to be passed to the node binary executable.
-   *
-   * This is used in the process of booting each of the workers.
-   * Passing --debug off to child processes can screw with socket connections
-   * of the parent process.
-   */
-  nodeArgv: process.execArgv.filter(arg => arg.indexOf('--debug') == -1),
-};
-
 const HIDDEN_FILE_RE = /\/\.[^\/]*$/;
+
 function optionPathToRegex(p) {
   return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
 }
@@ -67,7 +29,14 @@ function optionPathToRegex(p) {
 class TestRunner {
 
   constructor(config, options) {
-    this._opts = Object.assign({}, DEFAULT_OPTIONS, options);
+    this._opts = Object.assign(
+      {
+        // When true, runs all tests serially in the current process, rather
+        // than parallelizing test runs.
+        runInBand: options.maxWorkers <= 1,
+      },
+      options
+    );
     this._config = Object.freeze(config);
 
     try {
@@ -142,6 +111,9 @@ class TestRunner {
   }
 
   promiseTestPathsRelatedTo(changedPaths) {
+    if (!changedPaths.size) {
+      return Promise.resolve([]);
+    }
     const relatedPaths = new Set();
     return this._resolver.getAllModules().then(allModules => {
       const changed = new Set();
@@ -172,6 +144,9 @@ class TestRunner {
   }
 
   promiseHasteTestPathsRelatedTo(changedPaths) {
+    if (!changedPaths.size) {
+      return Promise.resolve([]);
+    }
     return Promise.all([
       this._getAllTestPaths(),
       this._resolver.getHasteMap(),

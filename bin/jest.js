@@ -121,11 +121,11 @@ const argv = optimist
     },
     watch: {
       description: _wrapDesc(
-        'Run all tests and then watch files in your testPathDirs for ' +
-        'changes and then rerun tests related to changed files and ' +
-        'directories. use --watch=skip to skip the first test.'
+        'Watch files for changes and rerun tests related to changed files ' +
+        'and directories. Works with `--onlyChanged` to only run the ' +
+        'affected tests.'
       ),
-      type: 'string',
+      type: 'boolean',
     },
     watchExtensions: {
       description: _wrapDesc(
@@ -163,9 +163,10 @@ const argv = optimist
     },
     testRunner: {
       description: _wrapDesc(
-        'Allows to specify a custom test runner. Jest ships with jasmine2 ' +
-        'which can be enabled by setting this option to ' +
-        '`<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js`'
+        'Allows to specify a custom test runner. Jest ships with Jasmine ' +
+        '1 and 2 which can be enabled by setting this option to ' +
+        '`jasmine1` or `jasmine2`. The default is `jasmine2`. A path to a ' +
+        'custom test runner can be provided: `<rootDir>/path/to/testRunner.js`.'
       ),
       type: 'string',
     },

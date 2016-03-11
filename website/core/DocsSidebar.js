@@ -1,9 +1,12 @@
 /**
+ * Copyright 2004-present Facebook. All Rights Reserved.
+ *
  * @providesModule DocsSidebar
  * @jsx React.DOM
  */
 
 var Metadata = require('Metadata');
+var React = require('React');
 
 var DocsSidebar = React.createClass({
   getCategories: function() {

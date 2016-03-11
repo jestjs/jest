@@ -22,6 +22,9 @@ var support = React.createClass({
               and available for questions.
             </p>
 
+            <H2>Troubleshooting</H2>
+            Check out the <a href="/jest/docs/troubleshooting.html">Troubleshooting</a> documentation entry.
+
             <H2>Stack Overflow</H2>
             <p>Many members of the community use Stack Overflow to ask questions. Read through the <a href="http://stackoverflow.com/questions/tagged/jestjs">existing questions</a> tagged with <strong>jestjs</strong> or <a href="http://stackoverflow.com/questions/ask">ask your own</a>!</p>
             <H2>Discord</H2>

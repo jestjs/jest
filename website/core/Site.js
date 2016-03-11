@@ -22,6 +22,7 @@ var Site = React.createClass({
           <meta property="og:description" content="Painless JavaScript Unit Testing" />
 
           <link rel="shortcut icon" href="/jest/img/favicon.png" />
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" />
           <link rel="stylesheet" href="/jest/css/jest.css" />
 
           <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
@@ -48,6 +49,7 @@ var Site = React.createClass({
           </div>
 
           <div id="fb-root" />
+          <script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
           <script dangerouslySetInnerHTML={{__html: `
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -59,6 +61,12 @@ var Site = React.createClass({
             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)
             ){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";
             fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
+            docsearch({
+              apiKey: '833906d7486e4059359fa58823c4ef56',
+              indexName: 'jest',
+              inputSelector: '#algolia-doc-search'
+            });
           `}} />
         </body>
       </html>
