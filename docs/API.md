@@ -34,6 +34,11 @@ Mock functions can be created using `jest.fn()`.
   - [`mockFn.mockReturnValue(value)`](#mockfn-mockreturnvalue-value)
   - [`mockFn.mockReturnValueOnce(value)`](#mockfn-mockreturnvalueonce-value)
 
+#### Jasmine API
+
+Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
+[here](http://jasmine.github.io/2.0/introduction.html).
+
 #### require extensions
 
   - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
@@ -75,9 +80,9 @@ Mock functions can be created using `jest.fn()`.
   - `describe(name, fn)`
   - [`expect(value)`](#expect-value)
   - `it(name, fn)`
-  - `it.only(name, fn)` executes [only](https://github.com/davemo/jasmine-only) this test. Useful when investigating a failure
+  - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
-  - `pit(name, fn)` [helper](https://www.npmjs.org/package/jasmine-pit) for promises
+  - `pit(name, fn)` [async helper](/jest/docs/tutorial-async.html) for promises
   - `require(module)`
   - `require.requireActual(module)`
   - `xdescribe(name, fn)`
@@ -100,8 +105,8 @@ Mock functions can be created using `jest.fn()`.
   - `.toBeGreaterThan(number)`
   - `.toBeLessThan(number)`
   - `.toBeCalled()`
-  - `.toBeCalledWith(arg, um, ents)`
-  - `.lastCalledWith(arg, um, ents)`
+  - `.toBeCalledWith(arg1, arg2, ...)`
+  - `.lastCalledWith(arg1, arg2, ...)`
 
 -----
 

@@ -42,7 +42,7 @@ var index = React.createClass({
               <div className="marketing-col">
                 <h3>Mock by Default</h3>
                 <p>
-                  Jest <a href="/jest/docs/automatic-mocking.html#content">Automatically mocks</a> JavaScript <a href="/jest/docs/common-js-testing.html#content">modules</a>, making most existing code testable.
+                  Jest <a href="/jest/docs/automatic-mocking.html#content">automatically mocks</a> JavaScript <a href="/jest/docs/common-js-testing.html#content">modules</a>, making most existing code testable.
                 </p>
               </div>
             </div>

@@ -4,7 +4,7 @@ title: Automatic Mocking
 layout: docs
 category: Core Concepts
 permalink: docs/automatic-mocking.html
-next: mock-functions
+next: api
 ---
 
 In order to write an effective unit test, you want to be able to isolate a unit
