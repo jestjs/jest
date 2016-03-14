@@ -12,8 +12,7 @@ const chalk = require('chalk');
 const path = require('path');
 
 function isExternalStackEntry(entry) {
-  return (entry ? true : false) &&
-    !/^\s+at.*?jest(-cli)?\/(vendor|src|node_modules)\//.test(entry);
+  return (entry ? true : false);
 }
 
 function getRelevantStackFrom(stack) {
@@ -99,7 +98,7 @@ function formatFailureMessage(testResult, config) {
     return (
       descBullet +
       (config.verbose ? 'Runtime Error' : chalk.bold('Runtime Error')) + '\n' +
-      formatFailedStep(error)
+      chalk.red(formatFailedStep(error))
     );
   }
 
