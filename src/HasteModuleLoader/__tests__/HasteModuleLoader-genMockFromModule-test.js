@@ -13,7 +13,7 @@ jest.autoMockOff();
 jest.mock('../../environments/JSDOMEnvironment');
 
 const path = require('path');
-const utils = require('../../lib/utils');
+const normalizeConfig = require('../../config/normalize');
 
 describe('nodeHasteModuleLoader', function() {
   let HasteModuleLoader;
@@ -22,7 +22,7 @@ describe('nodeHasteModuleLoader', function() {
 
   const rootDir = path.resolve(__dirname, 'test_root');
   const rootPath = path.resolve(rootDir, 'root.js');
-  const config = utils.normalizeConfig({
+  const config = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'nodeHasteModuleLoader-genMockFromModule-tests',
     rootDir,

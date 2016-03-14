@@ -12,7 +12,7 @@
 jest.autoMockOff();
 
 const path = require('path');
-const utils = require('../lib/utils');
+const normalizeConfig = require('../config/normalize');
 const TestRunner = require('../TestRunner');
 
 const name = 'TestRunner-fs';
@@ -23,7 +23,7 @@ describe('TestRunner-fs', function() {
 
     pit('finds tests with default file extensions', function() {
       const rootDir = path.resolve(__dirname, 'test_root');
-      const runner = new TestRunner(utils.normalizeConfig({
+      const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
@@ -40,7 +40,7 @@ describe('TestRunner-fs', function() {
 
     pit('finds tests with similar but custom file extensions', function() {
       const rootDir = path.resolve(__dirname, 'test_root');
-      const runner = new TestRunner(utils.normalizeConfig({
+      const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
@@ -58,7 +58,7 @@ describe('TestRunner-fs', function() {
 
     pit('finds tests with totally custom foobar file extensions', function() {
       const rootDir = path.resolve(__dirname, 'test_root');
-      const runner = new TestRunner(utils.normalizeConfig({
+      const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
@@ -76,7 +76,7 @@ describe('TestRunner-fs', function() {
 
     pit('finds tests with many kinds of file extensions', function() {
       const rootDir = path.resolve(__dirname, 'test_root');
-      const runner = new TestRunner(utils.normalizeConfig({
+      const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
