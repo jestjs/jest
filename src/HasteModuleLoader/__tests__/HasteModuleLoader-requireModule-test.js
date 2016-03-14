@@ -22,13 +22,14 @@ describe('HasteModuleLoader', function() {
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
-  const config = utils.normalizeConfig({
+  const baseConfig = utils.normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'HasteModuleLoader-requireModule-tests',
     rootDir,
   });
 
-  function buildLoader() {
+  function buildLoader(config) {
+    config = Object.assign({}, baseConfig, config);
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
@@ -160,6 +161,29 @@ describe('HasteModuleLoader', function() {
         root.jest.unmock('ManuallyMocked');
         const exports = loader.requireModule(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(false);
+      });
+    });
+
+    pit('resolves haste packages properly', () => {
+      return buildLoader().then(function(loader) {
+        const hastePackage = loader
+          .requireModule(rootPath, 'haste-package/core/module');
+        expect(hastePackage.isHastePackage).toBe(true);
+      });
+    });
+
+    pit('resolves node modules properly when crawling node_modules', () => {
+      // While we are crawling a node module, we shouldn't put package.json
+      // files of node modules to resolve to `package.json` but rather resolve
+      // to whatever the package.json's `main` field says.
+      return buildLoader({
+        haste: {
+          providesModuleNodeModules: ['not-a-haste-package'],
+        },
+      }).then(function(loader) {
+        const hastePackage = loader
+          .requireModule(rootPath, 'not-a-haste-package');
+        expect(hastePackage.isNodeModule).toBe(true);
       });
     });
   });

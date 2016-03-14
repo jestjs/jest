@@ -47,6 +47,7 @@ class Loader {
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
 
     this._modules = moduleMap.modules;
+    this._packages = moduleMap.packages;
     this._mocks = moduleMap.mocks;
 
     if (config.collectCoverage) {
@@ -414,9 +415,10 @@ class Loader {
       return filePath;
     }
 
+    // haste packages are `package.json` files outside of node_modules folders.
     const parts = moduleName.split('/');
-    const nodeModuleName = parts.shift();
-    const module = this._getModule(nodeModuleName);
+    const hastePackageName = parts.shift();
+    const module = this._getHastePackage(hastePackageName);
     if (module) {
       try {
         return require.resolve(
@@ -433,19 +435,23 @@ class Loader {
     );
   }
 
-  _getModule(resourceName) {
-    return this._modules[resourceName];
+  _getModule(name) {
+    return this._modules[name];
   }
 
-  _getMockModule(resourceName) {
-    if (this._mocks[resourceName]) {
-      return this._mocks[resourceName];
+  _getMockModule(name) {
+    if (this._mocks[name]) {
+      return this._mocks[name];
     } else {
-      const moduleName = this._resolveStubModuleName(resourceName);
+      const moduleName = this._resolveStubModuleName(name);
       if (moduleName) {
         return this._getModule(moduleName);
       }
     }
+  }
+
+  _getHastePackage(name) {
+    return this._packages[name];
   }
 
   _getNormalizedModuleID(currPath, moduleName) {

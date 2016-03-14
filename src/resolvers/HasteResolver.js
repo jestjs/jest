@@ -98,10 +98,8 @@ class HasteResolver {
       return this._hasteMapPromise;
     }
 
-    return this._hasteMapPromise = this._depGraph.load().then(map => ({
-      modules: this._getAllModules(map),
-      mocks: this._getAllMocks(),
-    }));
+    return this._hasteMapPromise = this._depGraph.load()
+      .then(map => this._getModuleMap(map, this._getAllMocks()));
   }
 
   getShallowDependencies(entryPath) {
@@ -122,15 +120,20 @@ class HasteResolver {
       .then(() => Promise.all([this._fileWatcher.end(), this._cache.end()]));
   }
 
-  _getAllModules(map) {
+  _getModuleMap(map, mocks) {
     const modules = Object.create(null);
+    const packages = Object.create(null);
     for (const name in map) {
       const module = map[name][this._defaultPlatform] || map[name].generic;
       if (module) {
-        modules[name] = module.path;
+        if (module.type == 'Package') {
+          packages[name] = module.path;
+        } else {
+          modules[name] = module.path;
+        }
       }
     }
-    return modules;
+    return {modules, mocks, packages};
   }
 
   _getAllMocks() {
