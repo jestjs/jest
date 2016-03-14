@@ -27,6 +27,7 @@ describe('HasteModuleLoader', function() {
     name: 'HasteModuleLoader-requireModuleOrMock-tests',
     rootDir,
     moduleNameMapper: {
+      '^css![a-zA-Z0-9$_-]+$': 'subdir3/GlobalCSSStub',
       '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
     },
@@ -192,6 +193,14 @@ describe('HasteModuleLoader', function() {
           const transitiveDep =
             loader.requireModuleOrMock(rootPath, 'npm3-transitive-dep');
           expect(transitiveDep()).toEqual(undefined);
+        });
+      });
+
+      pit('resolves a module with relative @providesModule', function() {
+        return buildLoader().then(function(loader) {
+          const exports =
+            loader.requireModuleOrMock(rootPath, 'css!stylesheet');
+          expect(exports.isGlobalCSSStub).toBe(true);
         });
       });
     });
