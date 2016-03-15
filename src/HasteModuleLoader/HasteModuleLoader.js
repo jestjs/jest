@@ -445,7 +445,7 @@ class Loader {
     } else {
       const moduleName = this._resolveStubModuleName(name);
       if (moduleName) {
-        return this._getModule(moduleName);
+        return this._getModule(moduleName) || moduleName;
       }
     }
   }

@@ -29,6 +29,7 @@ describe('HasteModuleLoader', function() {
     moduleNameMapper: {
       '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
+      'mappedToPath': '<rootDir>/GlobalImageStub.js'
     },
   });
 
@@ -111,6 +112,9 @@ describe('HasteModuleLoader', function() {
       return buildLoader().then(function(loader) {
         let exports =
           loader.requireModuleOrMock(rootPath, 'image!not-really-a-module');
+        expect(exports.isGlobalImageStub).toBe(true);
+
+        exports = loader.requireModuleOrMock(rootPath, 'mappedToPath');
         expect(exports.isGlobalImageStub).toBe(true);
 
         exports = loader.requireModuleOrMock(rootPath, 'cat.png');

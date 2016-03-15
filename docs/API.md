@@ -397,11 +397,13 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
+You can use `<rootDir>` string token to refer to [`config.rootDir`](#config-rootdir-string) value if you want to use file paths.
+
 Example:
 ```js
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
-    "^[./a-zA-Z0-9$_-]+\.png$": "RelativeImageStub"
+    "^[./a-zA-Z0-9$_-]+\.png$": "<rootDir>/RelativeImageStub.js",
   }
 ```
 
