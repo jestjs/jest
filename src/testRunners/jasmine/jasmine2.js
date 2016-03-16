@@ -21,7 +21,10 @@ const jasmineFileContent =
 function jasmine2(config, environment, moduleLoader, testPath) {
   let env;
   let jasmine;
-
+  const reporter = new JasmineReporter({
+    noHighlight: config.noHighlight,
+    noStackTrace: config.noStackTrace,
+  });
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   // To account for this conflict, we set up jasmine in an environment with real
@@ -51,8 +54,15 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             if (actual.mock === undefined) {
               throw Error('toBeCalled() should be used on a mock function');
             }
+            const pass = actual.mock.calls.length !== 0;
+            const message = (
+              pass ?
+              'Expected not to be called' :
+              'Expected to be called at least once'
+            );
             return {
-              pass: actual.mock.calls.length !== 0,
+              pass,
+              message,
             };
           },
         };
@@ -65,9 +75,33 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               throw Error('lastCalledWith() should be used on a mock function');
             }
             const calls = actual.mock.calls;
-            const args = Array.prototype.slice.call(arguments, 1);
+            const expected = Array.prototype.slice.call(arguments, 1);
+            const actualValues = calls[calls.length - 1];
+            const pass = util.equals(actualValues, expected);
+
+            if (!pass) {
+              return {
+                pass,
+                get message() {
+                  return (
+                    `Wasn't called with the expected values.\n` +
+                    'Expected:\n' +
+                    reporter.getFormatter().prettyPrint(expected) +
+                    '\nActual:\n' +
+                    reporter.getFormatter().prettyPrint(actualValues)
+                  );
+                },
+              };
+            }
+
             return {
-              pass: util.equals(calls[calls.length - 1], args),
+              pass,
+              get message() {
+                return (
+                  `Shouldn't have been called with\n` +
+                  reporter.getFormatter().prettyPrint(expected)
+                );
+              },
             };
 
           },
@@ -81,9 +115,32 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               throw Error('toBeCalledWith() should be used on a mock function');
             }
             const calls = actual.mock.calls;
-            const args = Array.prototype.slice.call(arguments, 1);
-            const pass = calls.some(call => util.equals(call, args));
-            return {pass};
+            const expected = Array.prototype.slice.call(arguments, 1);
+            const pass = calls.some(call => util.equals(call, expected));
+
+
+            if (!pass) {
+              return {
+                pass,
+                get message() {
+                  return (
+                    'Was never called with the expected values.\n' +
+                    'Expected:\n' +
+                    reporter.getFormatter().prettyPrint(expected)
+                  );
+                },
+              };
+            }
+
+            return {
+              pass,
+              get message() {
+                return (
+                  `Shouldn't have been called with\n` +
+                  reporter.getFormatter().prettyPrint(expected)
+                );
+              },
+            };
           },
         };
       },
@@ -94,10 +151,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     }
   });
 
-  const reporter = new JasmineReporter({
-    noHighlight: config.noHighlight,
-    noStackTrace: config.noStackTrace,
-  });
   env.addReporter(reporter);
   // Run the test by require()ing it
   moduleLoader.requireModule(testPath, './' + path.basename(testPath));

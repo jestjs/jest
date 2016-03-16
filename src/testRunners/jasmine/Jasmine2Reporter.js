@@ -58,6 +58,10 @@ class Jasmine2Reporter {
     });
   }
 
+  getFormatter() {
+    return this._formatter;
+  }
+
   getResults() {
     return this._resultsPromise;
   }
