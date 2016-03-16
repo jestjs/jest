@@ -8,15 +8,13 @@
 
 'use strict';
 
+const constants = require('../constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('../lib/moduleMocker');
 const path = require('path');
 const resolve = require('resolve');
 const resolveNodeModule = require('../lib/resolveNodeModule');
 const transform = require('../lib/transform');
-
-const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
 const mockParentModule = {
   id: 'mockParent',
@@ -63,7 +61,7 @@ class Loader {
 
     if (!unmockCacheInitialized.get(config)) {
       const unmockPath = filePath => {
-        if (filePath && filePath.includes(NODE_MODULES)) {
+        if (filePath && filePath.includes(constants.NODE_MODULES)) {
           const moduleID = this._getNormalizedModuleID(filePath);
           transitiveShouldMock[moduleID] = false;
         }
@@ -280,7 +278,7 @@ class Loader {
     if (
       shouldCollectCoverage &&
       !filename.includes(this._testDirectoryName) &&
-      !filename.includes(NODE_MODULES)
+      !filename.includes(constants.NODE_MODULES)
     ) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
@@ -415,7 +413,8 @@ class Loader {
       return filePath;
     }
 
-    // haste packages are `package.json` files outside of node_modules folders.
+    // haste packages are `package.json` files outside of `node_modules`
+    // folders.
     const parts = moduleName.split('/');
     const hastePackageName = parts.shift();
     const module = this._getHastePackage(hastePackageName);
@@ -470,7 +469,7 @@ class Loader {
     } else {
       moduleType = 'user';
       if (
-        IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
+        constants.IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
         (!this._getModule(moduleName) && !this._getMockModule(moduleName))
       ) {
         absolutePath = this._resolveModuleName(currPath, moduleName);
@@ -544,8 +543,8 @@ class Loader {
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = this._getNormalizedModuleID(currPath);
     if (
-      currPath.includes(NODE_MODULES) &&
-      realPath.includes(NODE_MODULES) &&
+      currPath.includes(constants.NODE_MODULES) &&
+      realPath.includes(constants.NODE_MODULES) &&
       (
         (this._unmockList && this._unmockList.test(currPath)) ||
         explicitShouldMock[currentModuleID] === false ||

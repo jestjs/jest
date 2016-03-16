@@ -2,7 +2,7 @@
 
 'use strict';
 
-const utils = require.requireActual('../../lib/utils');
+const utils = require.requireActual('jest-util');
 const vm = require.requireActual('vm');
 
 const JSDOMEnvironment = jest.genMockFromModule('../JSDOMEnvironment');

@@ -16,63 +16,18 @@ fs.gracefulify(realFs);
 const TestRunner = require('./TestRunner');
 
 const chalk = require('chalk');
-const childProcess = require('child_process');
+const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
-const path = require('path');
-const sane = require('sane');
+const git = require('./lib/git');
 const os = require('os');
-const utils = require('./lib/utils');
+const path = require('path');
+const readConfig = require('./config/read');
+const sane = require('sane');
 const which = require('which');
 
 const DEFAULT_WATCH_EXTENSIONS = 'js';
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
-
-let jestVersion = null;
-function getVersion() {
-  if (jestVersion === null) {
-    const packageJSON = path.resolve(__dirname, '..', 'package.json');
-    jestVersion = require(packageJSON).version;
-  }
-  return jestVersion;
-}
-
-function findChangedFiles(cwd) {
-  return new Promise((resolve, reject) => {
-    const args = ['diff', '--name-only', '--diff-filter=ACMR', '--relative'];
-    const child = childProcess.spawn('git', args, {cwd});
-
-    let stdout = '';
-    let stderr = '';
-    child.stdout.on('data', data => stdout += data);
-    child.stderr.on('data', data => stderr += data);
-    child.on('close', code => {
-      if (code === 0) {
-        stdout = stdout.trim();
-        if (stdout === '') {
-          resolve([]);
-        } else {
-          resolve(stdout.split('\n').map(
-            changedPath => path.resolve(cwd, changedPath)
-          ));
-        }
-      } else {
-        reject(code + ': ' + stderr);
-      }
-    });
-  });
-}
-
-function isGitRepository(cwd) {
-  return new Promise(resolve => {
-    let stdout = '';
-    const child = childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd});
-    child.stdout.on('data', data => stdout += data);
-    child.on('close',
-      code =>  resolve(code === 0 ? path.dirname(stdout.trim()) : null)
-    );
-  });
-}
 
 function testRunnerOptions(argv) {
   const options = {};
@@ -88,84 +43,6 @@ function testRunnerOptions(argv) {
   return options;
 }
 
-function readConfig(argv, packageRoot) {
-  return readRawConfig(argv, packageRoot).then(config => {
-    if (argv.coverage) {
-      config.collectCoverage = true;
-    }
-
-    if (argv.testEnvData) {
-      config.testEnvData = argv.testEnvData;
-    }
-
-    config.noHighlight = argv.noHighlight || !process.stdout.isTTY;
-
-    if (argv.verbose) {
-      config.verbose = argv.verbose;
-    }
-
-    if (argv.bail) {
-      config.bail = argv.bail;
-    }
-
-    if (argv.cache !== null) {
-      config.cache = argv.cache;
-    }
-
-    if (argv.watchman !== null) {
-      config.watchman = argv.watchman;
-    }
-
-    if (argv.useStderr) {
-      config.useStderr = argv.useStderr;
-    }
-
-    if (argv.json) {
-      config.useStderr = true;
-    }
-
-    if (argv.logHeapUsage) {
-      config.logHeapUsage = argv.logHeapUsage;
-    }
-
-    config.noStackTrace = argv.noStackTrace;
-
-    return config;
-  });
-}
-
-function readRawConfig(argv, packageRoot) {
-  if (typeof argv.config === 'string') {
-    return utils.loadConfigFromFile(argv.config);
-  }
-
-  if (typeof argv.config === 'object') {
-    return Promise.resolve(utils.normalizeConfig(argv.config, argv));
-  }
-
-  const pkgJsonPath = path.join(packageRoot, 'package.json');
-  const pkgJson = fs.existsSync(pkgJsonPath) ? require(pkgJsonPath) : {};
-
-  // Look to see if there is a package.json file with a jest config in it
-  if (pkgJson.jest) {
-    if (!pkgJson.jest.hasOwnProperty('rootDir')) {
-      pkgJson.jest.rootDir = packageRoot;
-    } else {
-      pkgJson.jest.rootDir = path.resolve(packageRoot, pkgJson.jest.rootDir);
-    }
-    const config = utils.normalizeConfig(pkgJson.jest, argv);
-    config.name = pkgJson.name;
-    return Promise.resolve(config);
-  }
-
-  // Sane default config
-  return Promise.resolve(utils.normalizeConfig({
-    name: packageRoot.replace(/[/\\]/g, '_'),
-    rootDir: packageRoot,
-    testPathIgnorePatterns: ['/node_modules/.+'],
-  }, argv));
-}
-
 function getTestPaths(testRunner, config, patternInfo) {
   if (patternInfo.onlyChanged) {
     return findOnlyChangedTestPaths(testRunner, config);
@@ -175,7 +52,7 @@ function getTestPaths(testRunner, config, patternInfo) {
 }
 
 function findOnlyChangedTestPaths(testRunner, config) {
-  return Promise.all(config.testPathDirs.map(isGitRepository))
+  return Promise.all(config.testPathDirs.map(git.isGitRepository))
     .then(repos => {
       if (!repos.every(result => !!result)) {
         throw new Error(
@@ -184,7 +61,7 @@ function findOnlyChangedTestPaths(testRunner, config) {
           'with git projects.\n'
         );
       }
-      return Promise.all(Array.from(repos).map(findChangedFiles));
+      return Promise.all(Array.from(repos).map(git.findChangedFiles));
     })
     .then(changedPathSets => testRunner.promiseTestPathsRelatedTo(
       new Set(Array.prototype.concat.apply([], changedPathSets))
@@ -290,7 +167,7 @@ function runCLI(argv, root, onComplete) {
 
   argv = argv || {};
   if (argv.version) {
-    pipe.write(`v${getVersion()}\n`);
+    pipe.write(`v${constants.VERSION}\n`);
     onComplete && onComplete(true);
     return;
   }
@@ -303,7 +180,7 @@ function runCLI(argv, root, onComplete) {
       }
 
       const testFramework = require(config.testRunner);
-      const info = ['v' + getVersion(), testFramework.name];
+      const info = [`v${constants.VERSION}`, testFramework.name];
       if (config.usesBabelJest) {
         info.push('babel-jest');
       }
@@ -312,7 +189,9 @@ function runCLI(argv, root, onComplete) {
       pipe.write(`${prefix} Jest CLI ${info.join(', ')}\n`);
       if (argv.watch) {
         getWatcher(argv, root, watcher => {
-          let timer, isRunning;
+          let timer;
+          let isRunning;
+
           watcher.on('all', (_, filePath) => {
             filePath = path.join(root, filePath);
             const isValidPath =
@@ -339,5 +218,5 @@ function runCLI(argv, root, onComplete) {
 }
 
 exports.TestRunner = TestRunner;
-exports.getVersion = getVersion;
+exports.getVersion = () => constants.VERSION;
 exports.runCLI = runCLI;

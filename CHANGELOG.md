@@ -1,5 +1,9 @@
 ## master
 
+## jest-cli 0.9.3
+
+* Added `jest-util`.
+
 ## jest-cli 0.9.2, babel-jest 9.0.3
 
 * Improved responsiveness of the system while using `--watch`.
