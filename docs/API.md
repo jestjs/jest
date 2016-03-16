@@ -9,10 +9,10 @@ next: troubleshooting
 
 #### The `jest` object
 
-  - [`jest.autoMockOff()`](#jest-automockoff)
-  - [`jest.autoMockOn()`](#jest-automockon)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
   - [`jest.currentTestPath()`](#jest-currenttestpath)
+  - [`jest.disableAutomock()`](#jest-disableautomock)
+  - [`jest.enableAutomock()`](#jest-enableautomock)
   - [`jest.fn(implementation?)`](#jest-fn-implementation)
   - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
   - [`jest.mock(moduleName)`](#jest-mock-modulename)
@@ -55,12 +55,12 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`config.globals` [object]](#config-globals-object)
   - [`config.mocksPattern` [string]](#config-mockspattern-string)
   - [`config.moduleFileExtensions` [array<string>]](#config-modulefileextensions-array-string)
-  - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
   - [`config.moduleNameMapper` [object<string, string>]](#config-modulenamemapper-object-string-string)
+  - [`config.modulePathIgnorePatterns` [array<string>]](#config-modulepathignorepatterns-array-string)
   - [`config.preprocessCachingDisabled` [boolean]](#config-preprocesscachingdisabled-boolean)
+  - [`config.preprocessorIgnorePatterns` [array<string>]](#config-preprocessorignorepatterns-array-string)
   - [`config.rootDir` [string]](#config-rootdir-string)
   - [`config.scriptPreprocessor` [string]](#config-scriptpreprocessor-string)
-  - [`config.preprocessorIgnorePatterns` [array<string>]](#config-preprocessorignorepatterns-array-string)
   - [`config.setupFiles` [array]](#config-setupfiles-array)
   - [`config.setupTestFrameworkScriptFile` [string]](#config-setuptestframeworkscriptfile-string)
   - [`config.testDirectoryName` [string]](#config-testdirectoryname-string)
@@ -112,20 +112,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 
 ## Jest API
 
-### `jest.autoMockOff()`
-Disables automatic mocking in the module loader.
-
-After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
-
-This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
-
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, class-builder libraries, etc).
-
-### `jest.autoMockOn()`
-Re-enables automatic mocking in the module loader.
-
-It's worth noting that automatic mocking is on by default, so this method is only useful if that default has been changed (such as by previously calling [`jest.autoMockOff()`](#jest-automockoff)).
-
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
 
@@ -133,6 +119,22 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 
 ### `jest.currentTestPath()`
 Returns the absolute path to the currently executing test file.
+
+### `jest.disableAutomock()`
+Disables automatic mocking in the module loader.
+
+After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
+
+This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
+
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.
+
+*Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.*
+
+### `jest.enableAutomock()`
+Re-enables automatic mocking in the module loader.
+
+*Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
 ### `jest.fn(implementation?)`
 Returns a new, unused [mock function](#mock-functions). Optionally takes a mock
@@ -189,7 +191,7 @@ Indicates that the module system should never return a mocked version of the spe
 
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
 
-*Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. You can use `dontMock` if you want to explicitly avoid this behavior.*
+*Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
 
 ## Mock API
 
@@ -228,7 +230,7 @@ Often this is useful when you want to clean up a mock's usage data between two a
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-Note: `jest.fn(implementation)` is a shorthand for `mockImplementation`.
+*Note: `jest.fn(implementation)` is a shorthand for `mockImplementation`.*
 
 For example:
 
@@ -397,7 +399,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
-You can use `<rootDir>` string token to refer to [`config.rootDir`](#config-rootdir-string) value if you want to use file paths.
+Use `<rootDir>` string token to refer to [`config.rootDir`](#config-rootdir-string) value if you want to use file paths.
 
 Example:
 ```js
@@ -419,7 +421,7 @@ The root directory that Jest should scan for tests and modules within. If you pu
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
-Note also that you can use `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupFiles`](#config-setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.
+*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupFiles`](#config-setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
 
 ### `config.scriptPreprocessor` [string]
 (default: `undefined`)
@@ -461,7 +463,7 @@ For example, many node projects prefer to put their tests in a `tests` directory
 
 An array of file extensions that test files might have. Jest uses this when searching for tests to run.
 
-This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, you can use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`config.scriptPreprocessor`](#config-scriptpreprocessor-string) too!)
+This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`config.scriptPreprocessor`](#config-scriptpreprocessor-string) too!)
 
 ### `config.testPathDirs` [array<string>]
 (default: `['<rootDir>']`)

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 jest.mock('../../environments/JSDOMEnvironment');
 
 const path = require('path');

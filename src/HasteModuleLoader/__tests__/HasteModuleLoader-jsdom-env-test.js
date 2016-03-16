@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 

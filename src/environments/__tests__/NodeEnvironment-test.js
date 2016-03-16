@@ -2,7 +2,7 @@
 
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 
 const NodeEnvironment = require.requireActual('../NodeEnvironment');
 
