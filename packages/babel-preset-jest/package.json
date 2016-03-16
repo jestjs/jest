@@ -8,6 +8,6 @@
   "license": "BSD-3-Clause",
   "main": "index.js",
   "dependencies": {
-    "babel-plugin-jest-unmock": "^1.0.0"
+    "babel-plugin-jest-hoist": "^1.0.0"
   }
 }

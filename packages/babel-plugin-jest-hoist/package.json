@@ -1,5 +1,5 @@
 {
-  "name": "babel-plugin-jest-unmock",
+  "name": "babel-plugin-jest-hoist",
   "version": "1.0.0",
   "repository": {
     "type": "git",
