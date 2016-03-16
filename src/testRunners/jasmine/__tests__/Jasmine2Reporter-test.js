@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 
 describe('Jasmine2Reporter', function() {
   var JasmineReporter;

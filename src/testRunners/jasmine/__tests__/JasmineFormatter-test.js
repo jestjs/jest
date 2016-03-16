@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 
 const path = require('path');
 const VENDOR_PATH = path.resolve(__dirname, '../../../../vendor');

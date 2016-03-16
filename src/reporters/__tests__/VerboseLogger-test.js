@@ -7,7 +7,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 
 describe('VerboseLogger', () => {
   let groupTestsBySuites;

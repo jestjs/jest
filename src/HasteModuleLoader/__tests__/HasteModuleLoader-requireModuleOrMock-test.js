@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 jest.mock('../../environments/JSDOMEnvironment');
 
 const path = require('path');
@@ -29,7 +29,7 @@ describe('HasteModuleLoader', function() {
     moduleNameMapper: {
       '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
-      'mappedToPath': '<rootDir>/GlobalImageStub.js'
+      'mappedToPath': '<rootDir>/GlobalImageStub.js',
     },
   });
 
@@ -76,10 +76,10 @@ describe('HasteModuleLoader', function() {
       });
     });
 
-    pit(`doesn't mock modules when autoMockOff() has been called`, function() {
+    pit(`doesn't mock modules when disableAutomock() has been called`, function() {
       return buildLoader().then(function(loader) {
         const root = loader.requireModule(rootDir, rootPath);
-        root.jest.autoMockOff();
+        root.jest.disableAutomock();
         const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
@@ -98,7 +98,7 @@ describe('HasteModuleLoader', function() {
       function() {
         return buildLoader().then(function(loader) {
           const root = loader.requireModule(rootDir, rootPath);
-          root.jest.autoMockOff();
+          root.jest.disableAutomock();
           const exports = loader.requireModuleOrMock(
             rootPath,
             'ManuallyMocked'

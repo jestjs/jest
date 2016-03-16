@@ -9,7 +9,8 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
+
 const formatter = new (require('../JasmineFormatter'))(jasmine);
 const CALLED_AT_LEAST_ONCE = 'Expected to be called at least once';
 const SHOULD_NOT_BE_CALLED = 'Expected not to be called';

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-jest.autoMockOff();
+jest.disableAutomock();
 
 describe('nodeHasteModuleLoader', function() {
   describe('currentTestPath', function() {

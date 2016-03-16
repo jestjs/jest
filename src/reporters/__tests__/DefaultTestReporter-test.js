@@ -7,7 +7,7 @@
  */
 'use strict';
 
-jest.autoMockOff().mock('fs');
+jest.disableAutomock().mock('fs');
 
 describe('DefaultTestReporter', function() {
   let DefaultTestReporter;
