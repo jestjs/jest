@@ -8,6 +8,6 @@
 
 module.exports = {
   plugins: [
-    require('babel-plugin-jest-unmock'),
+    require('babel-plugin-jest-hoist'),
   ],
 };

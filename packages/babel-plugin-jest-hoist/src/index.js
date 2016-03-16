@@ -9,31 +9,45 @@
 'use strict';
 
 const JEST_GLOBAL = {name: 'jest'};
-const UNMOCK_FN = {name: 'unmock'};
+
+const FUNCTIONS = {
+  mock: {
+    checkArgs: args => args.length === 1 && args[0].isStringLiteral(),
+  },
+  unmock: {
+    checkArgs: args => args.length === 1 && args[0].isStringLiteral(),
+  },
+  disableAutomock: {
+    checkArgs: args => args.length === 0,
+  },
+  enableAutomock: {
+    checkArgs: args => args.length === 0,
+  },
+};
 
 module.exports = babel => {
-  const t = babel.types;
-  const isUnmockCall = expr => {
+  const shouldHoistExpression = expr => {
     if (!expr.isCallExpression()) {
       return false;
     }
 
     const callee = expr.get('callee');
     const object = callee.get('object');
+    const property = callee.get('property');
     return (
-      callee.get('property').isIdentifier(UNMOCK_FN) &&
+      property.isIdentifier() &&
+      FUNCTIONS[property.node.name] &&
+      FUNCTIONS[property.node.name].checkArgs(expr.get('arguments')) &&
       (
         object.isIdentifier(JEST_GLOBAL) ||
-        (callee.isMemberExpression() && isUnmockCall(object))
-      ) &&
-      expr.get('arguments').length === 1 &&
-      t.isStringLiteral(expr.get('arguments')[0])
+        (callee.isMemberExpression() && shouldHoistExpression(object))
+      )
     );
   };
   return {
     visitor: {
       ExpressionStatement(path) {
-        if (isUnmockCall(path.get('expression'))) {
+        if (shouldHoistExpression(path.get('expression'))) {
           path.node._blockHoist = Infinity;
         }
       },
