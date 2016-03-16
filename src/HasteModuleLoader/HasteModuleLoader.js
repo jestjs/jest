@@ -8,6 +8,7 @@
 
 'use strict';
 
+const constant = require('jest-constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('../lib/moduleMocker');
 const path = require('path');
@@ -15,7 +16,7 @@ const resolve = require('resolve');
 const resolveNodeModule = require('../lib/resolveNodeModule');
 const transform = require('../lib/transform');
 
-const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+const NODE_MODULES = constant.NODE_MODULES;
 const IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;
 
 const mockParentModule = {

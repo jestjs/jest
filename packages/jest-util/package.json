@@ -1,0 +1,9 @@
+{
+  "name": "jest-util",
+  "version": "0.0.3",
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "graceful-fs": "^4.1.3"
+  }
+}
