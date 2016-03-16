@@ -586,11 +586,20 @@ class Loader {
   }
 
   _createRuntimeFor(currPath) {
+    const disableAutomock = () => {
+      this._shouldAutoMock = false;
+      return runtime;
+    };
+    const enableAutomock = () => {
+      this._shouldAutoMock = true;
+      return runtime;
+    };
     const unmock = moduleName => {
       const moduleID = this._getNormalizedModuleID(currPath, moduleName);
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
+
     const runtime = {
       addMatchers: matchers => {
         const jasmine = this._environment.global.jasmine;
@@ -599,15 +608,11 @@ class Loader {
         addMatchers(matchers);
       },
 
-      autoMockOff: () => {
-        this._shouldAutoMock = false;
-        return runtime;
-      },
+      autoMockOff: disableAutomock,
+      disableAutomock,
 
-      autoMockOn: () => {
-        this._shouldAutoMock = true;
-        return runtime;
-      },
+      autoMockOn: enableAutomock,
+      enableAutomock,
 
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
       currentTestPath: () => this._environment.testFilePath,
