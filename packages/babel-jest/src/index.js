@@ -15,7 +15,7 @@ module.exports = {
   process(src, filename) {
     if (babel.util.canCompile(filename)) {
       return babel.transform(src, {
-        auxiliaryCommentBefore: 'istanbul ignore next',
+        auxiliaryCommentBefore: ' istanbul ignore next ',
         filename,
         presets: [jestPreset],
         retainLines: true,
