@@ -7,6 +7,7 @@
   new `jest.enableAutomock` and `jest.disableAutomock` API.
 * Fixed `moduleNameMapper` config option when used with paths.
 * Added `jest-util`, general code cleanup.
+* Fixed an error with Jasmine 2 and tests that `throw 'string errors'`.
 
 ## jest-cli 0.9.2, babel-jest 9.0.3
 
