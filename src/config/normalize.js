@@ -202,6 +202,7 @@ function normalize(config, argv) {
       case 'testURL':
       case 'moduleFileExtensions':
       case 'noHighlight':
+      case 'colors':
       case 'noStackTrace':
       case 'logHeapUsage':
       case 'cache':

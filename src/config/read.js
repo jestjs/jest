@@ -23,7 +23,7 @@ function readConfig(argv, packageRoot) {
       config.testEnvData = argv.testEnvData;
     }
 
-    config.noHighlight = argv.noHighlight || !process.stdout.isTTY;
+    config.noHighlight = argv.noHighlight || (!argv.colors && !process.stdout.isTTY);
 
     if (argv.verbose) {
       config.verbose = argv.verbose;

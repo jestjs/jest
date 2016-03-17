@@ -39,6 +39,7 @@ module.exports = {
   testReporter: require.resolve('../reporters/IstanbulTestReporter'),
   testURL: 'about:blank',
   noHighlight: false,
+  colors: false,
   noStackTrace: false,
   preprocessCachingDisabled: false,
   verbose: false,

@@ -102,6 +102,12 @@ function processArgs() {
         ),
         type: 'boolean',
       },
+      colors: {
+        description: _wrapDesc(
+          'Forces test results output highlighting (even if stdout is not a TTY)'
+        ),
+        type: 'boolean',
+      },
       noStackTrace: {
         description: _wrapDesc(
           'Disables stack trace in test results output'
