@@ -15,7 +15,7 @@ describe('moduleMocker', () => {
   let moduleMocker;
 
   beforeEach(() => {
-    moduleMocker = require('../moduleMocker');
+    moduleMocker = require('../');
   });
 
   describe('getMetadata', () => {
