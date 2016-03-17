@@ -212,8 +212,11 @@ function runCLI(argv, root, onComplete) {
           });
         });
       } else {
-        runJest(config, argv, pipe, onComplete);
+        return runJest(config, argv, pipe, onComplete);
       }
+    }, error => {
+      console.error(error.stack);
+      process.exit(1);
     });
 }
 

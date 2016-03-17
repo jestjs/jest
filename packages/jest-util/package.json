@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
     "chalk": "^1.1.1",
