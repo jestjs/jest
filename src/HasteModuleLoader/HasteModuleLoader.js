@@ -10,7 +10,7 @@
 
 const constants = require('../constants');
 const fs = require('graceful-fs');
-const moduleMocker = require('../lib/moduleMocker');
+const moduleMocker = require('jest-mock');
 const path = require('path');
 const resolve = require('resolve');
 const resolveNodeModule = require('../lib/resolveNodeModule');
