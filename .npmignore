@@ -3,3 +3,4 @@ examples
 packages
 website
 __tests__
+.haste_cache
