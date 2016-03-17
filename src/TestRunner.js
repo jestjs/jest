@@ -285,9 +285,7 @@ class TestRunner {
       }
     }
 
-    if (testPaths.length > 1) {
-      testPaths = this._sortTests(testPaths);
-    }
+    testPaths = this._sortTests(testPaths);
 
     const aggregatedResults = {
       success: null,

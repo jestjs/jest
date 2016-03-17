@@ -50,9 +50,9 @@ function getTestPaths(testRunner, config, patternInfo) {
     return new Promise((resolve, reject) => {
       fs.access(patternInfo.pattern, (err) => {
         resolve(
-          err?
-          testRunner.promiseTestPathsMatching(new RegExp(patternInfo.pattern)):
-          patternInfo.pattern
+          err ?
+          testRunner.promiseTestPathsMatching(new RegExp(patternInfo.pattern)) :
+          [patternInfo.pattern]
         );
       });
     });
