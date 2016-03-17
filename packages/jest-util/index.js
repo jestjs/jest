@@ -8,21 +8,8 @@
 
 'use strict';
 
-const fs = require('graceful-fs');
 const formatMessages = require('./lib/formatMessages');
 const path = require('path');
-
-function readFile(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(data);
-    });
-  });
-}
 
 function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -52,5 +39,4 @@ exports.cleanStackTrace = formatMessages.cleanStackTrace;
 exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatFailureMessage = formatMessages.formatFailureMessage;
-exports.readFile = readFile;
 exports.replacePathSepForRegex = replacePathSepForRegex;

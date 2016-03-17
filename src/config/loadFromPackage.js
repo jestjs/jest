@@ -5,33 +5,27 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+
 'use strict';
 
-const path = require('path');
+const fs = require('fs');
 const normalize = require('./normalize');
-const utils = require('jest-util');
+const path = require('path');
+const promisify = require('../lib/promisify');
 
 function loadFromPackage(filePath, argv) {
-  const root = path.dirname(filePath);
-  return utils.readFile(filePath).then(fileData => {
-    const packageJsonData = JSON.parse(fileData);
-    const config = packageJsonData.jest;
-    if (config) {
-      config.name = packageJsonData.name;
-      if (!config.hasOwnProperty('rootDir')) {
-        config.rootDir = root;
-      } else {
-        config.rootDir = path.resolve(root, config.rootDir);
-      }
+  return promisify(fs.access)(filePath, fs.R_OK).then(
+    () => {
+      const packageData = require(filePath);
+      const config = packageData.jest || {};
+      const root = path.dirname(filePath);
+      config.name = packageData.name || root.replace(/[/\\]|\s/g, '-');
+      config.rootDir =
+        config.rootDir ? path.resolve(root, config.rootDir) : root;
       return normalize(config, argv);
-    }
-
-    // Default config
-    return normalize({
-      name: root.replace(/[/\\]/g, '_'),
-      rootDir: root,
-    }, argv);
-  });
+    },
+    () => null
+  );
 }
 
 module.exports = loadFromPackage;

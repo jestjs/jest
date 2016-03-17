@@ -23,7 +23,8 @@ function readConfig(argv, packageRoot) {
       config.testEnvData = argv.testEnvData;
     }
 
-    config.noHighlight = argv.noHighlight || (!argv.colors && !process.stdout.isTTY);
+    config.noHighlight =
+      argv.noHighlight || (!argv.colors && !process.stdout.isTTY);
 
     if (argv.verbose) {
       config.verbose = argv.verbose;
@@ -59,19 +60,22 @@ function readConfig(argv, packageRoot) {
   });
 }
 
-function readRawConfig(argv, packageRoot) {
+function readRawConfig(argv, root) {
   if (typeof argv.config === 'string') {
-    return loadFromFile(argv.config);
+    return loadFromFile(path.resolve(process.cwd(), argv.config));
   }
 
   if (typeof argv.config === 'object') {
     return Promise.resolve(normalize(argv.config, argv));
   }
 
-  return loadFromPackage(
-    path.join(packageRoot, 'package.json'),
-    argv
-  );
+  return loadFromPackage(path.join(root, 'package.json'), argv)
+    .then(
+      config => config || normalize({
+        name: root.replace(/[/\\]|\s/g, '-'),
+        rootDir: root,
+      }, argv)
+    );
 }
 
 module.exports = readConfig;

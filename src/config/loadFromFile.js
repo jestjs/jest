@@ -8,18 +8,25 @@
 
 'use strict';
 
-const path = require('path');
+const fs = require('fs');
 const normalize = require('./normalize');
-const utils = require('jest-util');
+const path = require('path');
+const promisify = require('../lib/promisify');
 
 function loadFromFile(filePath, argv) {
-  return utils.readFile(filePath).then(fileData => {
-    const config = JSON.parse(fileData);
-    if (!config.hasOwnProperty('rootDir')) {
-      config.rootDir = process.cwd();
-    } else {
-      config.rootDir = path.resolve(path.dirname(filePath), config.rootDir);
-    }
+  return promisify(fs.readFile)(filePath).then(data => {
+    const parse = () => {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        throw new Error(`Jest: Failed to parse config file ${filePath}.`);
+      }
+    };
+
+    const config = parse();
+    config.rootDir = config.rootDir
+      ? path.resolve(path.dirname(filePath), config.rootDir)
+      : process.cwd();
     return normalize(config, argv);
   });
 }
