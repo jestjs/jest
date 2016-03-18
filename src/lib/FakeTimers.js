@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const mocks = require('./moduleMocker');
+const mocks = require('jest-mock');
 
 const MS_IN_A_YEAR = 31536000000;
 
