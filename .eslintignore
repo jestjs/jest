@@ -1,5 +1,5 @@
 bin/
 docs/
 **/node_modules/**
-vendor/
+**/vendor/**
 website/

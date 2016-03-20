@@ -6,13 +6,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
-
-const VENDOR_PATH = '../../../vendor/';
-const JASMINE_PATH = require.resolve(VENDOR_PATH + '/jasmine/jasmine-2.3.4.js');
+const JASMINE_PATH = require.resolve('../vendor/jasmine-2.3.4.js');
 
 const fs = require('graceful-fs');
-const jasminePit = require(VENDOR_PATH + '/jasmine-pit/jasmine-pit');
-const JasmineReporter = require('./Jasmine2Reporter');
+const jasminePit = require('jest-util/lib/jasmine-pit');
+const JasmineReporter = require('./reporter');
 const path = require('path');
 
 const jasmineFileContent =
