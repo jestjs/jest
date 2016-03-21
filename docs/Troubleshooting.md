@@ -102,6 +102,12 @@ Jasmine [upgrade guide](http://jasmine.github.io/2.0/introduction.html).
 If you would like to continue using Jasmine 1, set the `testRunner` config
 option to `jasmine1` or pass `--testRunner=jasmine1` as a command line option.
 
+### Compatibility issues
+
+Jest takes advantage of new features added to Node 4. We recommend that you
+upgrade to the latest stable release of Node. The minimum supported version is
+`v4.0.0`. Versions `0.x.x` are not supported.
+
 ### Still unresolved?
 
 See [Support](/jest/support.html).
