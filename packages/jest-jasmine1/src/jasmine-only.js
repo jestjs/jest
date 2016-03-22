@@ -3,9 +3,8 @@
  * https://github.com/davemo/jasmine-only
  */
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
+  var __hasProp = {}.hasOwnProperty;
+  var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; }; // eslint-disable-line
   (function(jasmine) {
     var describeOnly, env, itOnly, root;
     root = (1, eval)('this');
@@ -47,7 +46,7 @@
         declarationError = e;
       }
       if (declarationError) {
-        this.it("encountered a declaration exception", function() {
+        this.it('encountered a declaration exception', function() {
           throw declarationError;
         });
       }
