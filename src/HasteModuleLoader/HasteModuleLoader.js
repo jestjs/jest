@@ -534,8 +534,7 @@ class Loader {
       throw e;
     }
 
-    const realPath = fs.realpathSync(modulePath);
-    if (this._unmockList && this._unmockList.test(realPath)) {
+    if (this._unmockList && this._unmockList.test(modulePath)) {
       shouldMockModuleCache[moduleName] = false;
       return false;
     }
@@ -544,7 +543,7 @@ class Loader {
     const currentModuleID = this._getNormalizedModuleID(currPath);
     if (
       currPath.includes(constants.NODE_MODULES) &&
-      realPath.includes(constants.NODE_MODULES) &&
+      modulePath.includes(constants.NODE_MODULES) &&
       (
         (this._unmockList && this._unmockList.test(currPath)) ||
         explicitShouldMock[currentModuleID] === false ||
