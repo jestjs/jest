@@ -17,6 +17,7 @@ import a from '../__test_modules__/a';
 import b from '../__test_modules__/b';
 import c from '../__test_modules__/c';
 import d from '../__test_modules__/d';
+import e from '../__test_modules__/e';
 
 // These will all be hoisted above imports
 jest.unmock('react');
@@ -24,6 +25,10 @@ jest.unmock('../__test_modules__/Unmocked');
 jest
   .unmock('../__test_modules__/c')
   .unmock('../__test_modules__/d');
+jest.mock('../__test_modules__/e', {
+  _isMock: true,
+  fn: () => { let a; a; },
+});
 
 // These will not be hoisted
 jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');
@@ -31,7 +36,7 @@ jest.unmock('../__test_modules__/' + 'c');
 jest.dontMock('../__test_modules__/Mocked');
 
 
-describe('babel-plugin-jest-unmock', () => {
+describe('babel-plugin-jest-hoist', () => {
   it('hoists react unmock call before imports', () => {
     expect(typeof React).toEqual('object');
     expect(React.isValidElement.mock).toBe(undefined);
@@ -46,6 +51,10 @@ describe('babel-plugin-jest-unmock', () => {
 
     expect(d._isMockFunction).toBe(undefined);
     expect(d()).toEqual('unmocked');
+  });
+
+  it('hoists mock call with 2 arguments', () => {
+    expect(e._isMock).toBe(true);
   });
 
   it('does not hoist dontMock calls before imports', () => {

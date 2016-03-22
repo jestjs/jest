@@ -598,6 +598,12 @@ class Loader {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
+    const setMock = (moduleName, moduleExports) => {
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = true;
+      this._explicitlySetMocks[moduleID] = moduleExports;
+      return runtime;
+    };
 
     const runtime = {
       addMatchers: matchers => {
@@ -641,7 +647,11 @@ class Loader {
         return fn;
       },
 
-      mock: moduleName => {
+      mock: (moduleName, moduleExports) => {
+        if (moduleExports !== undefined) {
+          return setMock(moduleName, moduleExports);
+        }
+
         const moduleID = this._getNormalizedModuleID(currPath, moduleName);
         this._explicitShouldMock[moduleID] = true;
         return runtime;
@@ -658,12 +668,7 @@ class Loader {
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
-      setMock: (moduleName, moduleExports) => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        this._explicitlySetMocks[moduleID] = moduleExports;
-        return runtime;
-      },
+      setMock,
 
       useFakeTimers: () => this._environment.fakeTimers.useFakeTimers(),
       useRealTimers: () => this._environment.fakeTimers.useRealTimers(),

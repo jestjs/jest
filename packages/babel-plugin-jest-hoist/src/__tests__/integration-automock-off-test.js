@@ -17,7 +17,7 @@ import b from '../__test_modules__/b';
 jest.disableAutomock();
 jest.mock('../__test_modules__/b');
 
-describe('babel-plugin-jest-unmock', () => {
+describe('babel-plugin-jest-hoist', () => {
   it('hoists disableAutomock call before imports', () => {
     expect(a._isMockFunction).toBe(undefined);
   });

@@ -10,9 +10,48 @@
 
 const JEST_GLOBAL = {name: 'jest'};
 
+const idVisitor = {
+  ReferencedIdentifier(path) {
+    this.ids.add(path);
+  },
+};
+
 const FUNCTIONS = {
   mock: {
-    checkArgs: args => args.length === 1 && args[0].isStringLiteral(),
+    checkArgs: args => {
+      if (args.length === 1) {
+        return args[0].isStringLiteral();
+      } else if (args.length === 2) {
+        const ids = new Set();
+        args[1].traverse(idVisitor, {ids});
+
+        const outerScope = args[1].parentPath.scope;
+
+        for (let id of ids) {
+          let found = false;
+          let scope = id.scope;
+
+          while (scope !== outerScope) {
+            if (scope.bindings[id.node.name]) {
+              found = true;
+              break;
+            }
+
+            scope = scope.parent;
+          }
+
+          if (!found) {
+            throw new Error(
+              'babel-plugin-jest-hoist: The second argument of `jest.mock()` ' +
+              'is not allowed to reference any outside variables.'
+            );
+          }
+        }
+
+        return true;
+      }
+      return false;
+    },
   },
   unmock: {
     checkArgs: args => args.length === 1 && args[0].isStringLiteral(),
