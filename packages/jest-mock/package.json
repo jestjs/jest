@@ -7,5 +7,7 @@
   },
   "license": "BSD-3-Clause",
   "main": "src/index.js",
-  "dependencies": {}
+  "scripts": {
+    "test": "../../bin/jest.js"
+  }
 }
