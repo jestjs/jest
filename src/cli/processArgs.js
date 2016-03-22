@@ -80,7 +80,7 @@ function processArgs() {
       testEnvData: {
         description: _wrapDesc(
           'A JSON object (string) that specifies data that will be made ' +
-          'available in the test environment (via jest.getEnvData())'
+          'available in the test environment (via jest.getTestEnvData())'
         ),
         type: 'string',
       },
