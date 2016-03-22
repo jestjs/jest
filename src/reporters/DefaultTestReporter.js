@@ -131,7 +131,7 @@ class DefaultTestReporter {
 
     if (pendingTests) {
       results +=
-        `${PENDING_COLOR(`${print('test', pendingTests)} pending`)}, `;
+        `${PENDING_COLOR(`${print('test', pendingTests)} skipped`)}, `;
     }
 
     results +=
@@ -150,7 +150,6 @@ class DefaultTestReporter {
     const remaining = results.numTotalTestSuites -
       results.numPassedTestSuites -
       results.numFailedTestSuites -
-      results.numPendingTestSuites -
       results.numRuntimeErrorTestSuites;
     if (!this._config.noHighlight && remaining > 0) {
       this._process.stdout.write(RUNNING_TEST_COLOR(
