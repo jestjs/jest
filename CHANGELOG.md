@@ -9,6 +9,9 @@
 * Added `jest-util`, general code cleanup.
 * Fixed an error with Jasmine 2 and tests that `throw 'string errors'`.
 * Fixed issues with unmocking symlinked module names.
+* Clear the terminal window when using `--watch`.
+* By default, `--watch` will now only runs tests related to changed files.
+  `--watch=all` can be used to run all tests on file system changes.
 
 ## jest-cli 0.9.2, babel-jest 9.0.3
 

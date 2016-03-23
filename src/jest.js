@@ -25,7 +25,7 @@ const readConfig = require('./config/read');
 const sane = require('sane');
 const which = require('which');
 
-const DEFAULT_WATCH_EXTENSIONS = 'js';
+const CLEAR = '\x1B[2J\x1B[H';
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
 
@@ -114,11 +114,12 @@ function getNoTestsFoundMessage(patternInfo) {
     `${message} Regex used while searching: ${formattedPattern}.`;
 }
 
-function getWatcher(argv, packageRoot, callback) {
+function getWatcher(config, packageRoot, callback) {
   which(WATCHMAN_BIN, (err, resolvedPath) => {
     const watchman = !err && resolvedPath;
-    const extensions = argv.watchExtensions || DEFAULT_WATCH_EXTENSIONS;
-    const glob = extensions.split(',').map(extension => '**/*' + extension);
+    const glob = config.moduleFileExtensions
+      .concat(config.testFileExtensions)
+      .map(extension => '**/*' + extension);
     const watcher = sane(packageRoot, {glob, watchman});
     callback(watcher);
   });
@@ -186,13 +187,19 @@ function runCLI(argv, root, onComplete) {
       }
 
       const prefix = argv.watch ? 'Watch using' : 'Using';
-      pipe.write(`${prefix} Jest CLI ${info.join(', ')}\n`);
-      if (argv.watch) {
-        getWatcher(argv, root, watcher => {
+      const header = `${prefix} Jest CLI ${info.join(', ')}\n`;
+      if (argv.watch !== undefined) {
+        if (argv.watch !== 'all') {
+          argv.onlyChanged = true;
+        }
+
+        getWatcher(config, root, watcher => {
           let timer;
           let isRunning;
 
+          pipe.write(CLEAR + header);
           watcher.on('all', (_, filePath) => {
+            pipe.write(CLEAR + header);
             filePath = path.join(root, filePath);
             const isValidPath =
               config.testPathDirs.some(dir => filePath.startsWith(dir));
@@ -212,6 +219,7 @@ function runCLI(argv, root, onComplete) {
           });
         });
       } else {
+        pipe.write(header);
         return runJest(config, argv, pipe, onComplete);
       }
     }, error => {
