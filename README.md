@@ -735,3 +735,10 @@ Indicates whether each individual test should be reported during the run. All er
 changes and is used by Jest for crawling for files. Disable this if you cannot
 use watchman or use the `--no-watchman` flag.
 <generated_api_end />
+
+## Local Development
+
+For local development the `setup.sh` file is run to link all packages together.
+On most platforms this will be run automatically after `npm install`, however if
+you find that Jest does not set up the development environment correctly, this
+script can also be run manually.

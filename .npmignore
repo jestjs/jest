@@ -1,6 +1,7 @@
+.haste_cache
+__tests__
 docs
 examples
 packages
+setup.sh
 website
-__tests__
-.haste_cache
