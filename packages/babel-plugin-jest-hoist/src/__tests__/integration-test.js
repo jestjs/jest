@@ -25,10 +25,10 @@ jest.unmock('../__test_modules__/Unmocked');
 jest
   .unmock('../__test_modules__/c')
   .unmock('../__test_modules__/d');
-jest.mock('../__test_modules__/e', {
+jest.mock('../__test_modules__/e', () => ({
   _isMock: true,
   fn: () => { let a; a; },
-});
+}));
 
 // These will not be hoisted
 jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');

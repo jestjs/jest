@@ -37,7 +37,7 @@ class Loader {
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
-    this._explicitlySetMocks = Object.create(null);
+    this._explicitlySetMockFactories = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
@@ -159,8 +159,8 @@ class Loader {
   requireMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-    if (moduleID in this._explicitlySetMocks) {
-      return this._explicitlySetMocks[moduleID];
+    if (moduleID in this._explicitlySetMockFactories) {
+      return this._explicitlySetMockFactories[moduleID]();
     }
 
     let manualMockResource = this._getMockModule(moduleName);
@@ -598,10 +598,10 @@ class Loader {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
-    const setMock = (moduleName, moduleExports) => {
+    const setMockFactory = (moduleName, mockFactory) => {
       const moduleID = this._getNormalizedModuleID(currPath, moduleName);
       this._explicitShouldMock[moduleID] = true;
-      this._explicitlySetMocks[moduleID] = moduleExports;
+      this._explicitlySetMockFactories[moduleID] = mockFactory;
       return runtime;
     };
 
@@ -647,9 +647,9 @@ class Loader {
         return fn;
       },
 
-      mock: (moduleName, moduleExports) => {
-        if (moduleExports !== undefined) {
-          return setMock(moduleName, moduleExports);
+      mock: (moduleName, mockFactory) => {
+        if (mockFactory !== undefined) {
+          return setMockFactory(moduleName, mockFactory);
         }
 
         const moduleID = this._getNormalizedModuleID(currPath, moduleName);
@@ -668,7 +668,7 @@ class Loader {
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
-      setMock,
+      setMock: mock => setMockFactory(() => mock),
 
       useFakeTimers: () => this._environment.fakeTimers.useFakeTimers(),
       useRealTimers: () => this._environment.fakeTimers.useRealTimers(),
