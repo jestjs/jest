@@ -27,7 +27,7 @@ function fetchCurrentUser(callback) {
   return $.ajax({
     type: 'GET',
     url: 'http://example.com/currentUser',
-    done: user => callback(parseJSON(user)),
+    success: user => callback(parseJSON(user)),
   });
 }
 
@@ -76,9 +76,9 @@ version of the real module – so we need to tell Jest not to mock the file we
 want to test or else `require('../fetchCurrentUser')` will return a mock.
 
 In our first test, we want to confirm that calling `fetchCurrentUser()`
-properly incurs a call into `$.ajax()` with the parameters we expect. To do
-this, we just call `fetchCurrentUser()` with a dummy callback function, and
-then simply inspect the `$.ajax` mock to verify that it was called with the
+properly invokes `$.ajax()` with the parameters we expect. To do
+this, we call `fetchCurrentUser()` with a dummy callback function, and
+then inspect the `$.ajax` mock to verify that it was called with the
 correct parameters.
 
 Woohoo! We've written our first test. But we're not quite done: We would still
