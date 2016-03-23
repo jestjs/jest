@@ -122,15 +122,9 @@ function processArgs() {
       },
       watch: {
         description: _wrapDesc(
-          'Watch files for changes and rerun tests related to changed files ' +
-          'and directories. Works with `--onlyChanged` to only run the ' +
-          'affected tests.'
-        ),
-        type: 'boolean',
-      },
-      watchExtensions: {
-        description: _wrapDesc(
-          'Comma separated list of file extensions to watch, defaults to js.'
+          'Watch files for changes and rerun tests related to changed files. ' +
+          'If you want to re-run all tests when a file has changed, you can ' +
+          'call Jest using `--watch=all`.'
         ),
         type: 'string',
       },
@@ -188,7 +182,7 @@ function processArgs() {
         type: 'boolean',
       },
     })
-    .check(function(argv) {
+    .check(argv => {
       if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
         throw new Error(
           'Both --runInBand and --maxWorkers were specified, but these two ' +
