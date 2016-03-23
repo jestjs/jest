@@ -14,10 +14,6 @@ using a different approach.
 What is the problem?
 --------------------
 
-The [example](https://docs.angularjs.org/guide/unit-testing#dependency-injection)
-that Angular documentation uses to justify Dependency Injection is the
-following:
-
 ```javascript
 function doWork() {
   const xhr = new XHR();
@@ -42,7 +38,7 @@ This small example shows two important concepts. We need a way to get a
 reference to `XHR` and a way to provide two implementations: one for the normal
 execution and one for testing.
 
-In this case, the solution to both concepts is to use the global object. It
+In this case, the solution swaps implementations on the global object. It
 works, but it's not ideal for reasons outlined in this article:
 [Brittle Global State & Singletons](http://misko.hevery.com/code-reviewers-guide/flaw-brittle-global-state-singletons/).
 
@@ -60,7 +56,7 @@ function doWork(XHR) {
 }
 ```
 
-It makes it very easy to write a test – you just pass your mocked version as
+It makes it very easy to write a test – you pass your mocked version as
 argument to your function:
 
 ```javascript
