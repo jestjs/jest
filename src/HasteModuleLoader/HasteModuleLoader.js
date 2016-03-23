@@ -598,6 +598,15 @@ class Loader {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
+    const mock = (moduleName, mockFactory) => {
+      if (mockFactory !== undefined) {
+        return setMockFactory(moduleName, mockFactory);
+      }
+
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = true;
+      return runtime;
+    };
     const setMockFactory = (moduleName, mockFactory) => {
       const moduleID = this._getNormalizedModuleID(currPath, moduleName);
       this._explicitShouldMock[moduleID] = true;
@@ -647,15 +656,8 @@ class Loader {
         return fn;
       },
 
-      mock: (moduleName, mockFactory) => {
-        if (mockFactory !== undefined) {
-          return setMockFactory(moduleName, mockFactory);
-        }
-
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        return runtime;
-      },
+      doMock: mock,
+      mock,
 
       resetModuleRegistry: () => {
         this.resetModuleRegistry();
