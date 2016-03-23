@@ -214,8 +214,14 @@ class TestRunner {
   }
 
   promiseTestPathsMatching(pathPattern) {
-    return this._getAllTestPaths()
-      .then(paths => paths.filter(path => pathPattern.test(path)));
+    try {
+      const maybeFile = path.resolve(process.cwd(), pathPattern);
+      fs.accessSync(maybeFile);
+      return Promise.resolve([pathPattern]);
+    } catch (e) {
+      return this._getAllTestPaths()
+        .then(paths => paths.filter(path => new RegExp(pathPattern).test(path)));
+    }
   }
 
   _getTestPerformanceCachePath() {
