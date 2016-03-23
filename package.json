@@ -41,7 +41,7 @@
   "scripts": {
     "jasmine1": "node bin/jest.js --testRunner=jasmine1",
     "lint": "eslint .",
-    "postinstall": "[ \"$NODE_ENV\" != production ] && ./setup.sh",
+    "postinstall": "node postinstall.js",
     "prepublish": "npm test",
     "test": "npm run lint && node bin/jest.js && npm run jasmine1"
   },

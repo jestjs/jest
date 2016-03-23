@@ -34,6 +34,12 @@ describe('utils-normalizeConfig', () => {
     );
   }
 
+  // this helper takes a path starting from root and normalize it to unix style
+  function uniformPath(pathToUniform) {
+    const resolved = path.resolve(pathToUniform);
+    return '/' + resolved.replace(root, '').split(path.sep).join('/');
+  }
+
   beforeEach(() => {
     path = require('path');
     root = path.resolve('/');
@@ -399,14 +405,15 @@ describe('utils-normalizeConfig', () => {
     });
 
     it('correctly identifies and uses babel-jest', () => {
+
       const config = normalizeConfig({
         rootDir: '/root',
       });
 
       expect(config.usesBabelJest).toBe(true);
-      expect(config.scriptPreprocessor)
-        .toEqual('/root/node_modules/babel-jest');
-      expect(config.setupFiles).toEqual(['/root/node_modules/babel-polyfill']);
+      const preprocessorPath = uniformPath(config.scriptPreprocessor);
+      expect(preprocessorPath).toEqual('/root/node_modules/babel-jest');
+      expect(config.setupFiles.map(uniformPath)).toEqual(['/root/node_modules/babel-polyfill']);
     });
 
     it(`doesn't use babel-jest if its not available`, () => {
@@ -428,7 +435,8 @@ describe('utils-normalizeConfig', () => {
       });
 
       expect(config.usesBabelJest).toBe(true);
-      expect(config.setupFiles).toEqual(['/root/node_modules/babel-polyfill']);
+      expect(config.setupFiles.map(uniformPath))
+        .toEqual(['/root/node_modules/babel-polyfill']);
     });
 
     it('correctly identifies react-native', () => {
@@ -445,8 +453,8 @@ describe('utils-normalizeConfig', () => {
         rootDir: '/root',
       });
 
-      expect(config.preprocessorIgnorePatterns)
-        .toEqual([path.sep + 'node_modules' + path.sep]);
+      expect(config.preprocessorIgnorePatterns.map(uniformPath))
+        .toEqual(['/node_modules']);
     });
   });
 });
