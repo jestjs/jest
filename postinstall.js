@@ -14,9 +14,5 @@ if (
     executable = 'setup.bat';
   }
   const spawn = require('child_process').spawn;
-  var child = spawn(executable, []);
-  child.stdout.setEncoding('utf8');
-  child.stderr.setEncoding('utf8');
-  child.stdout.pipe(process.stdout);
-  child.stderr.pipe(process.stdout);
+  spawn(executable, [], {stdio:'inherit'});
 }
