@@ -37,7 +37,7 @@ class Loader {
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
-    this._explicitlySetMocks = Object.create(null);
+    this._explicitlySetMockFactories = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
@@ -159,8 +159,8 @@ class Loader {
   requireMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-    if (moduleID in this._explicitlySetMocks) {
-      return this._explicitlySetMocks[moduleID];
+    if (moduleID in this._explicitlySetMockFactories) {
+      return this._explicitlySetMockFactories[moduleID]();
     }
 
     let manualMockResource = this._getMockModule(moduleName);
@@ -598,6 +598,21 @@ class Loader {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
+    const mock = (moduleName, mockFactory) => {
+      if (mockFactory !== undefined) {
+        return setMockFactory(moduleName, mockFactory);
+      }
+
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = true;
+      return runtime;
+    };
+    const setMockFactory = (moduleName, mockFactory) => {
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = true;
+      this._explicitlySetMockFactories[moduleID] = mockFactory;
+      return runtime;
+    };
 
     const runtime = {
       addMatchers: matchers => {
@@ -641,11 +656,8 @@ class Loader {
         return fn;
       },
 
-      mock: moduleName => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        return runtime;
-      },
+      doMock: mock,
+      mock,
 
       resetModuleRegistry: () => {
         this.resetModuleRegistry();
@@ -658,12 +670,7 @@ class Loader {
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
-      setMock: (moduleName, moduleExports) => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        this._explicitlySetMocks[moduleID] = moduleExports;
-        return runtime;
-      },
+      setMock: mock => setMockFactory(() => mock),
 
       useFakeTimers: () => this._environment.fakeTimers.useFakeTimers(),
       useRealTimers: () => this._environment.fakeTimers.useRealTimers(),
