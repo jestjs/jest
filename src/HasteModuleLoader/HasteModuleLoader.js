@@ -37,7 +37,7 @@ class Loader {
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
-    this._explicitlySetMocks = Object.create(null);
+    this._mockFactories = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
@@ -159,8 +159,12 @@ class Loader {
   requireMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-    if (moduleID in this._explicitlySetMocks) {
-      return this._explicitlySetMocks[moduleID];
+    if (moduleID in this._mockRegistry) {
+      return this._mockRegistry[moduleID];
+    }
+
+    if (moduleID in this._mockFactories) {
+      return this._mockRegistry[moduleID] = this._mockFactories[moduleID]();
     }
 
     let manualMockResource = this._getMockModule(moduleName);
@@ -196,26 +200,22 @@ class Loader {
       }
     }
 
-    if (modulePath in this._mockRegistry) {
-      return this._mockRegistry[modulePath];
-    }
-
     if (manualMockResource) {
       const moduleObj = {
         exports: {},
         __filename: modulePath,
       };
       this._execModule(moduleObj);
-      this._mockRegistry[modulePath] = moduleObj.exports;
+      this._mockRegistry[moduleID] = moduleObj.exports;
     } else {
       // Look for a real module to generate an automock from
-      this._mockRegistry[modulePath] = this._generateMock(
+      this._mockRegistry[moduleID] = this._generateMock(
         currPath,
         moduleName
       );
     }
 
-    return this._mockRegistry[modulePath];
+    return this._mockRegistry[moduleID];
   }
 
   requireModuleOrMock(currPath, moduleName) {
@@ -598,6 +598,21 @@ class Loader {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
+    const mock = (moduleName, mockFactory) => {
+      if (mockFactory !== undefined) {
+        return setMockFactory(moduleName, mockFactory);
+      }
+
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = true;
+      return runtime;
+    };
+    const setMockFactory = (moduleName, mockFactory) => {
+      const moduleID = this._getNormalizedModuleID(currPath, moduleName);
+      this._explicitShouldMock[moduleID] = true;
+      this._mockFactories[moduleID] = mockFactory;
+      return runtime;
+    };
 
     const runtime = {
       addMatchers: matchers => {
@@ -641,11 +656,8 @@ class Loader {
         return fn;
       },
 
-      mock: moduleName => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        return runtime;
-      },
+      doMock: mock,
+      mock,
 
       resetModuleRegistry: () => {
         this.resetModuleRegistry();
@@ -658,12 +670,7 @@ class Loader {
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
-      setMock: (moduleName, moduleExports) => {
-        const moduleID = this._getNormalizedModuleID(currPath, moduleName);
-        this._explicitShouldMock[moduleID] = true;
-        this._explicitlySetMocks[moduleID] = moduleExports;
-        return runtime;
-      },
+      setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
 
       useFakeTimers: () => this._environment.fakeTimers.useFakeTimers(),
       useRealTimers: () => this._environment.fakeTimers.useRealTimers(),

@@ -12,6 +12,9 @@
 * Clear the terminal window when using `--watch`.
 * By default, `--watch` will now only runs tests related to changed files.
   `--watch=all` can be used to run all tests on file system changes.
+* Added the `jest.mock('moduleName', moduleFactory)` feature. `jest.mock` now
+  gets hoisted by default. `jest.doMock` was added to explicitly mock a module
+  without the hoisting feature of `babel-jest`.
 
 ## jest-cli 0.9.2, babel-jest 9.0.3
 

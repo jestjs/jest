@@ -13,9 +13,9 @@ next: troubleshooting
   - [`jest.currentTestPath()`](#jest-currenttestpath)
   - [`jest.disableAutomock()`](#jest-disableautomock)
   - [`jest.enableAutomock()`](#jest-enableautomock)
-  - [`jest.fn(implementation?)`](#jest-fn-implementation)
+  - [`jest.fn(?implementation)`](#jest-fn-implementation)
   - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
-  - [`jest.mock(moduleName)`](#jest-mock-modulename)
+  - [`jest.mock(moduleName, ?factory)`](#jest-mock-modulename-factory)
   - [`jest.runAllTicks()`](#jest-runallticks)
   - [`jest.runAllTimers()`](#jest-runalltimers)
   - [`jest.runOnlyPendingTimers()`](#jest-runonlypendingtimers)
@@ -136,7 +136,7 @@ Re-enables automatic mocking in the module loader.
 
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
-### `jest.fn(implementation?)`
+### `jest.fn(?implementation)`
 Returns a new, unused [mock function](#mock-functions). Optionally takes a mock
 implementation.
 
@@ -155,10 +155,27 @@ Given the name of a module, use the automatic mocking system to generate a mocke
 
 This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
 
-### `jest.mock(moduleName)`
+### `jest.mock(moduleName, ?factory)`
 Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
 
-This is normally useful under the circumstances where you have called [`jest.autoMockOff()`](#jest-automockoff), but still wish to specify that certain particular modules should be mocked by the module system.
+```js
+  jest.mock('moduleName');
+
+  const moduleName = require('moduleName'); // moduleName will be explicitly mocked
+```
+
+The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
+
+```js
+  jest.mock('moduleName', () => {
+    return jest.fn(() => 42);
+  });
+
+  const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
+  moduleName(); // Will return "42";
+```
+
+*Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
 
 ### `jest.runAllTicks()`
 Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
@@ -185,6 +202,8 @@ Explicitly supplies the mock object that the module system should return for the
 On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
+
+*Note It is recommended to use [`jest.mock()`](#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
 ### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
