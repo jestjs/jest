@@ -7,14 +7,12 @@
  */
 'use strict';
 
-const VENDOR_PATH = '../../../vendor/';
-const JASMINE_PATH = require.resolve(VENDOR_PATH + '/jasmine/jasmine-2.3.4.js');
-
 const fs = require('graceful-fs');
-const jasminePit = require(VENDOR_PATH + '/jasmine-pit/jasmine-pit');
-const JasmineReporter = require('./Jasmine2Reporter');
+const jasminePit = require('jest-util/lib/jasmine-pit');
+const JasmineReporter = require('./reporter');
 const path = require('path');
 
+const JASMINE_PATH = require.resolve('../vendor/jasmine-2.3.4.js');
 const jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 

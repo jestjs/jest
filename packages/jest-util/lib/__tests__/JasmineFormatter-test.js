@@ -11,11 +11,8 @@
 
 jest.disableAutomock();
 
-const path = require('path');
-const VENDOR_PATH = path.resolve(__dirname, '../../../../vendor');
-
-const jasmine = require(`${VENDOR_PATH}/jasmine/jasmine-1.3.0`).jasmine;
-const jasmine2Require = require(`${VENDOR_PATH}/jasmine/jasmine-2.3.4.js`);
+const jasmine = require('jest-jasmine1/vendor/jasmine-1.3.0').jasmine;
+const jasmine2Require = require('jest-jasmine2/vendor/jasmine-2.3.4.js');
 const jasmine2 = jasmine2Require.core(jasmine2Require);
 
 const JasmineFormatter = require('../JasmineFormatter');

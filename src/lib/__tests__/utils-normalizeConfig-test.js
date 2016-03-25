@@ -371,7 +371,7 @@ describe('utils-normalizeConfig', () => {
         rootDir: '/root/path/foo',
       });
 
-      expect(config.testRunner.endsWith('jasmine2.js')).toBe(true);
+      expect(config.testRunner).toMatch('jasmine2');
     });
 
     it('can be changed to jasmine1', () => {
@@ -380,7 +380,7 @@ describe('utils-normalizeConfig', () => {
         testRunner: 'jasmine1',
       });
 
-      expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
+      expect(config.testRunner).toMatch('jasmine1');
     });
 
     it('is overwritten by argv', () => {
@@ -393,7 +393,7 @@ describe('utils-normalizeConfig', () => {
         }
       );
 
-      expect(config.testRunner.endsWith('jasmine1.js')).toBe(true);
+      expect(config.testRunner).toMatch('jasmine1');
     });
   });
 

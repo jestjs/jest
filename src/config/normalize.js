@@ -77,9 +77,9 @@ function normalize(config, argv) {
   }
 
   if (config.testRunner === 'jasmine1') {
-    config.testRunner = require.resolve('../testRunners/jasmine/jasmine1');
+    config.testRunner = require.resolve('jest-jasmine1');
   } else if (!config.testRunner || config.testRunner === 'jasmine2') {
-    config.testRunner = require.resolve('../testRunners/jasmine/jasmine2');
+    config.testRunner = require.resolve('jest-jasmine2');
   } else {
     try {
       config.testRunner = path.resolve(
