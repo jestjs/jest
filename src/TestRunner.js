@@ -217,7 +217,7 @@ class TestRunner {
     try {
       const maybeFile = path.resolve(process.cwd(), pathPattern);
       fs.accessSync(maybeFile);
-      return Promise.resolve([pathPattern]);
+      return Promise.resolve([pathPattern].filter(this._isTestFilePath));
     } catch (e) {
       return this._getAllTestPaths()
         .then(paths => paths.filter(path => new RegExp(pathPattern).test(path)));
