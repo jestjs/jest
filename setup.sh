@@ -1,6 +1,11 @@
 #!/bin/bash
 
 echo "Setting up Jest's development environment..."
+# Needed for hoist until 0.9.3 is released
+NODE_ENV=production npm link
+(cd packages/babel-plugin-jest-hoist && npm link jest-cli)
+##########################################
+
 node_modules/.bin/lerna bootstrap
 
 (cd packages/jest-jasmine1 && npm link)
