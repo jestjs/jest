@@ -1,5 +1,8 @@
 {
+  "devDependencies": {
+    "jest-cli": "*"
+  },
   "scripts": {
-    "test": "node ../../bin/jest.js"
+    "test": "jest"
   }
 }

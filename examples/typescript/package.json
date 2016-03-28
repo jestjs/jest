@@ -4,11 +4,12 @@
     "react-dom": "*"
   },
   "devDependencies": {
+    "jest-cli": "*",
     "react-addons-test-utils": "*",
     "typescript": ">=1.6.2"
   },
   "scripts": {
-    "test": "node ../../bin/jest.js"
+    "test": "jest"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",

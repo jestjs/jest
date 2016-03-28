@@ -1,8 +1,11 @@
 {
+  "devDependencies": {
+    "jest-cli": "*"
+  },
   "dependencies": {
     "jquery": "*"
   },
   "scripts": {
-    "test": "node ../../bin/jest.js"
+    "test": "jest"
   }
 }

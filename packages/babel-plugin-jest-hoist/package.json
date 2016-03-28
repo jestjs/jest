@@ -10,14 +10,13 @@
   "devDependencies": {
     "babel-jest": "*",
     "babel-preset-es2015": "*",
-    "jest-cli": "*",
     "react": "^0.14.0"
   },
   "jest": {
-    "testEnvironment": "<rootDir>/node_modules/jest-cli/src/environments/NodeEnvironment"
+    "testEnvironment": "<rootDir>/../../src/environments/NodeEnvironment"
   },
   "scripts": {
     "prepublish": "npm test",
-    "test": "jest"
+    "test": "../../bin/jest.js"
   }
 }

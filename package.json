@@ -45,7 +45,7 @@
     "lint": "eslint .",
     "postinstall": "node postinstall.js",
     "prepublish": "npm test",
-    "test": "npm run lint && node bin/jest.js && npm run jasmine1"
+    "test": "npm run lint && node bin/jest.js && npm run jasmine1 && npm link --ignore-scripts && node ./run_tests.js"
   },
   "jest": {
     "rootDir": "src",
