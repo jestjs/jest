@@ -30,6 +30,7 @@ describe('HasteModuleLoader', function() {
       '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
       'mappedToPath': '<rootDir>/GlobalImageStub.js',
+      'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
     },
   });
 
@@ -122,6 +123,9 @@ describe('HasteModuleLoader', function() {
 
         exports = loader.requireModuleOrMock(rootPath, 'dog.png');
         expect(exports.isRelativeImageStub).toBe(true);
+
+        exports = loader.requireModuleOrMock(rootPath, 'module/name/test');
+        expect(exports).toBe('mapped_module');
       });
     });
 

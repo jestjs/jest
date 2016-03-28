@@ -420,11 +420,14 @@ A map from regular expressions to module names that allow to stub out resources,
 
 Use `<rootDir>` string token to refer to [`config.rootDir`](#config-rootdir-string) value if you want to use file paths.
 
+Additionally, you can substitute captured regex groups using numbered backreferences.
+
 Example:
 ```js
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\.png$": "<rootDir>/RelativeImageStub.js",
+    "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
 ```
 

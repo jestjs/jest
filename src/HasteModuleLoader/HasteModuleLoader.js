@@ -563,7 +563,7 @@ class Loader {
     for (const mappedModuleName in nameMapper) {
       const regex = nameMapper[mappedModuleName];
       if (regex.test(moduleName)) {
-        return mappedModuleName;
+        return moduleName.replace(regex, mappedModuleName);
       }
     }
   }
