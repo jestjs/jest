@@ -238,9 +238,9 @@ Example Output:
   - [`jest.currentTestPath()`](http://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
   - [`jest.disableAutomock()`](http://facebook.github.io/jest/docs/api.html#jest-disableautomock)
   - [`jest.enableAutomock()`](http://facebook.github.io/jest/docs/api.html#jest-enableautomock)
-  - [`jest.fn(implementation?)`](http://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
+  - [`jest.fn(?implementation)`](http://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
   - [`jest.genMockFromModule(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
-  - [`jest.mock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename)
+  - [`jest.mock(moduleName, ?factory)`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory)
   - [`jest.runAllTicks()`](http://facebook.github.io/jest/docs/api.html#jest-runallticks)
   - [`jest.runAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-runalltimers)
   - [`jest.runOnlyPendingTimers()`](http://facebook.github.io/jest/docs/api.html#jest-runonlypendingtimers)
@@ -361,7 +361,7 @@ Re-enables automatic mocking in the module loader.
 
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
-### `jest.fn(implementation?)`
+### `jest.fn(?implementation)`
 Returns a new, unused [mock function](http://facebook.github.io/jest/docs/api.html#mock-functions). Optionally takes a mock
 implementation.
 
@@ -380,10 +380,27 @@ Given the name of a module, use the automatic mocking system to generate a mocke
 
 This is useful when you want to create a [manual mock](http://facebook.github.io/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
 
-### `jest.mock(moduleName)`
+### `jest.mock(moduleName, ?factory)`
 Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
 
-This is normally useful under the circumstances where you have called [`jest.autoMockOff()`](http://facebook.github.io/jest/docs/api.html#jest-automockoff), but still wish to specify that certain particular modules should be mocked by the module system.
+```js
+  jest.mock('moduleName');
+
+  const moduleName = require('moduleName'); // moduleName will be explicitly mocked
+```
+
+The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
+
+```js
+  jest.mock('moduleName', () => {
+    return jest.fn(() => 42);
+  });
+
+  const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
+  moduleName(); // Will return "42";
+```
+
+*Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
 
 ### `jest.runAllTicks()`
 Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
@@ -410,6 +427,8 @@ Explicitly supplies the mock object that the module system should return for the
 On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](http://facebook.github.io/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
+
+*Note It is recommended to use [`jest.mock()`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
 ### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
@@ -626,11 +645,14 @@ A map from regular expressions to module names that allow to stub out resources,
 
 Use `<rootDir>` string token to refer to [`config.rootDir`](http://facebook.github.io/jest/docs/api.html#config-rootdir-string) value if you want to use file paths.
 
+Additionally, you can substitute captured regex groups using numbered backreferences.
+
 Example:
 ```js
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\.png$": "<rootDir>/RelativeImageStub.js",
+    "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
 ```
 
@@ -654,6 +676,8 @@ Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to wher
 The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 to ES5 here.
 
 Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/benjamn/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
+
+*Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](/jest/docs/troubleshooting.html#caching-issues).*
 
 ### `config.preprocessorIgnorePatterns` [array<string>]
 (default: `["/node_modules/"]`)
