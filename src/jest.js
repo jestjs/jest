@@ -47,7 +47,7 @@ function getTestPaths(testRunner, config, patternInfo) {
   if (patternInfo.onlyChanged) {
     return findOnlyChangedTestPaths(testRunner, config);
   } else {
-    return testRunner.promiseTestPathsMatching(new RegExp(patternInfo.pattern));
+    return testRunner.promiseTestPathsMatching(patternInfo.pattern);
   }
 }
 
