@@ -16,4 +16,3 @@ const pkg = require('../package.json');
 exports.VERSION = pkg.version;
 exports.MAX_WORKERS = os.cpus().length;
 exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.IS_PATH_BASED_MODULE_NAME = /^(?:\.\.?\/|\/)/;

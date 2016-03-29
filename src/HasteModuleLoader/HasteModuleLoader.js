@@ -468,10 +468,7 @@ class Loader {
       absolutePath = moduleName;
     } else {
       moduleType = 'user';
-      if (
-        constants.IS_PATH_BASED_MODULE_NAME.test(moduleName) ||
-        (!this._getModule(moduleName) && !this._getMockModule(moduleName))
-      ) {
+      if (!this._getModule(moduleName) && !this._getMockModule(moduleName)) {
         absolutePath = this._resolveModuleName(currPath, moduleName);
         // Look up if this module has an associated manual mock.
         const mockModule = this._getMockModule(moduleName);
