@@ -13,19 +13,16 @@ const path = require('path');
 
 const KEEP_TRACE_LINES = 2;
 // filter for noisy stack trace lines
-const STACK_TRACE_LINE_IGNORE_RE = new RegExp([
-  '^timers.js$',
-  '^' + path.resolve(__dirname, '..', 'lib', 'moduleMocker.js'),
-  '^' + path.resolve(__dirname, '..', '..', 'vendor', 'jasmine'),
-].join('|'));
+const STACK_TRACE_LINE_IGNORE_RE =
+  /^\s+at.*?jest(-cli)?\/(vendor|src|node_modules|packages)\//;
 
 function cleanStackTrace(stackTrace) {
   let lines = 0;
-  const keepFirstLines = () => (lines++ < KEEP_TRACE_LINES);
-  return stackTrace.split('\n').filter(line => (
-    keepFirstLines() ||
-    !/^\s+at.*?jest(-cli)?\/(vendor|src|node_modules)\//.test(line)
-  )).join('\n');
+  return stackTrace.split('\n')
+    .filter(line =>
+      (lines++ < KEEP_TRACE_LINES) || !STACK_TRACE_LINE_IGNORE_RE.test(line)
+    )
+    .join('\n');
 }
 
 function formatFailureMessage(testResult, config) {
@@ -60,11 +57,12 @@ function formatFailureMessage(testResult, config) {
                 return line;
               }
             }
-            var filePath = matches[2];
             // Filter out noisy and unhelpful lines from the stack trace.
-            if (STACK_TRACE_LINE_IGNORE_RE.test(filePath)) {
+            if (STACK_TRACE_LINE_IGNORE_RE.test(line)) {
               return null;
             }
+
+            const filePath = matches[2];
             return (
               matches[1] +
               path.relative(rootDir, filePath) +

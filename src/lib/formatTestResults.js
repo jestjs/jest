@@ -12,7 +12,7 @@ const utils = require('jest-util');
 const formatResult = (testResult, codeCoverageFormatter, reporter) => {
   const output = {
     name: testResult.testFilePath,
-    summary: '', // TODO
+    summary: '',
     message: '',
   };
 
@@ -32,36 +32,13 @@ const formatResult = (testResult, codeCoverageFormatter, reporter) => {
 
     if (!allTestsPassed) {
       output.message = utils.formatFailureMessage(testResult, {
-        rootPath: '',
-        useColor: false,
+        rootDir: '',
       });
     }
   }
 
   return output;
 };
-
-/**
- * @callback codeCoverageFormatter
- * @param {*} results
- * @param {*} reporter - an instance of the testReporter
- */
-
-/**
- * Formats the test results.
- * @param {*} results - a results hash determined by the reporter
- * @param {codeCoverageFormatter} codeCoverageFormatter
- * @param {*} reporter - an instance of the testReporter
- * @returns {{success: *, startTime: (*|number|Number),
- *  numTotalTests: *,
- *  numTotalTestSuites: *,
- *  numRuntimeErrorTestSuites: *,
- *  numPassedTests: *,
- *  numFailedTests: *,
- *  numPendingTests: *,
- *  testResults: (*|{}|Array),
- *  postSuiteHeaders: *}}
- */
 
 function formatTestResults(results, codeCoverageFormatter, reporter) {
   if (!codeCoverageFormatter) {
