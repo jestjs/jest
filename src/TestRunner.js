@@ -226,7 +226,7 @@ class TestRunner {
 
   _getTestPerformanceCachePath() {
     const config = this._config;
-    return path.join(config.cacheDirectory, 'perf-cache-' + config.name);
+    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
   _sortTests(testPaths) {
