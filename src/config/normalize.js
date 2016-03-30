@@ -150,6 +150,7 @@ function normalize(config, argv) {
       case 'testRunner':
       case 'scriptPreprocessor':
       case 'setupTestFrameworkScriptFile':
+      case 'testResultsProcessor':
         value = path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key])

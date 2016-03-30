@@ -137,6 +137,10 @@ function runJest(config, argv, pipe, onComplete) {
     })
     .then(testPaths => testRunner.runTests(testPaths))
     .then(runResults => {
+      if (config.testResultsProcessor) {
+        const processor = require(config.testResultsProcessor);
+        processor(runResults);
+      }
       if (argv.json) {
         process.stdout.write(
           JSON.stringify(formatTestResults(runResults))
