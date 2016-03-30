@@ -103,7 +103,7 @@ describe('CheckboxWithLabel', () => {
 });
 ```
 
-Check out the [React tutorial](docs/tutorial-react.html) for more.
+Check out the [React tutorial](http://facebook.github.io/jest/docs/tutorial-react.html) for more.
 
 **And you are good to go!** The next time you run Jest it will print something
 like
@@ -164,7 +164,7 @@ describe('async tests', () => {
 });
 ```
 
-Check out the [Async tutorial](docs/tutorial-async.html) for more.
+Check out the [Async tutorial](http://facebook.github.io/jest/docs/tutorial-async.html) for more.
 
 #### Automated Mocking and Sandboxing
 
