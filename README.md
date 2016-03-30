@@ -677,7 +677,7 @@ The path to a module that provides a synchronous function from pre-processing so
 
 Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/benjamn/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
 
-*Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](/jest/docs/troubleshooting.html#caching-issues).*
+*Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](http://facebook.github.io/jest/docs/troubleshooting.html#caching-issues).*
 
 ### `config.preprocessorIgnorePatterns` [array<string>]
 (default: `["/node_modules/"]`)
