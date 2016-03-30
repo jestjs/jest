@@ -222,7 +222,8 @@ function runCLI(argv, root, onComplete) {
         pipe.write(header);
         return runJest(config, argv, pipe, onComplete);
       }
-    }, error => {
+    })
+    .catch(error => {
       console.error(error.stack);
       process.exit(1);
     });
