@@ -1,12 +1,12 @@
 ## master
 
-## jest-cli 0.9.3, babel-jest 9.0.4
+## jest-cli 0.10.0, babel-jest 10.0.0
 
 * Improved `toBeCalled` Jasmine 2 custom matcher messages.
 * Added `babel-plugin-jest-hoist` which now also hoists `jest.mock` and the
   new `jest.enableAutomock` and `jest.disableAutomock` API.
 * Fixed `moduleNameMapper` config option when used with paths.
-* Added `jest-util`, general code cleanup.
+* Added `jest-util`, `jest-mock`, `jest-jasmine1`, `jest-jasmine2` packages.
 * Fixed an error with Jasmine 2 and tests that `throw 'string errors'`.
 * Fixed issues with unmocking symlinked module names.
 * Clear the terminal window when using `--watch`.
