@@ -15,7 +15,7 @@
   <span class="token keyword">return</span> $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
     type<span class="token punctuation">:</span> <span class="token string">&#x27;GET&#x27;</span><span class="token punctuation">,</span>
     url<span class="token punctuation">:</span> <span class="token string">&#x27;http://example.com/currentUser&#x27;</span><span class="token punctuation">,</span>
-    done<span class="token punctuation">:</span> user <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">callback</span><span class="token punctuation">(</span><span class="token function">parseJSON</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    success<span class="token punctuation">:</span> user <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">callback</span><span class="token punctuation">(</span><span class="token function">parseJSON</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 
@@ -50,9 +50,9 @@ source tree.</p><p>The first line is very important: <code>jest.unmock(&#x27;../
 By default, Jest automatically makes all calls to <code>require()</code> return a mocked
 version of the real module – so we need to tell Jest not to mock the file we
 want to test or else <code>require(&#x27;../fetchCurrentUser&#x27;)</code> will return a mock.</p><p>In our first test, we want to confirm that calling <code>fetchCurrentUser()</code>
-properly incurs a call into <code>$.ajax()</code> with the parameters we expect. To do
-this, we just call <code>fetchCurrentUser()</code> with a dummy callback function, and
-then simply inspect the <code>$.ajax</code> mock to verify that it was called with the
+properly invokes <code>$.ajax()</code> with the parameters we expect. To do
+this, we call <code>fetchCurrentUser()</code> with a dummy callback function, and
+then inspect the <code>$.ajax</code> mock to verify that it was called with the
 correct parameters.</p><p>Woohoo! We&#x27;ve written our first test. But we&#x27;re not quite done: We would still
 like to test that the callback we are passing in is indeed called back when the
 <code>$.ajax</code> request has completed. To test this, we can do the following:</p><pre class="prism language-javascript">
