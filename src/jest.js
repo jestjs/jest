@@ -97,7 +97,10 @@ function buildTestPathPatternInfo(argv) {
 
 function getNoTestsFoundMessage(patternInfo) {
   if (patternInfo.onlyChanged) {
-    return 'No tests found related to changed and uncommitted files.';
+    return 'No tests found related to changed and uncommitted files.\n'+
+    'If you are using dynamic require calls or no test files related\n'+
+    'to your changed files can be found, consider starting Jest with\n'+
+    'jest --watch=all';
   }
   const pattern = patternInfo.pattern;
   const input = patternInfo.input;
