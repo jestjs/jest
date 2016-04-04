@@ -18,6 +18,7 @@ const execSync = require('child_process').execSync;
 const mkdirp = require('mkdirp');
 const PACKAGES_DIR = './packages';
 const EXAMPLES_DIR = './examples';
+const rimraf = require('rimraf');
 
 const packages = fs.readdirSync(PACKAGES_DIR)
   .map(file => path.resolve(PACKAGES_DIR, file))
@@ -49,26 +50,41 @@ examples.forEach(cwd => {
 
   runCommands([
     'npm update',
-    process.platform !== 'win32' ?
-      'rm -rf ./node_modules/jest-cli' :
-      'del /F /Q node_modules\jest-cli',
   ], cwd);
-  mkdirp('./node_modules/jest-cli');
-  mkdirp('./node_modules/.bin');
+  rimraf.sync(path.resolve(cwd, './node_modules/jest-cli'));
+  mkdirp.sync(path.resolve(cwd, './node_modules/jest-cli'));
+  mkdirp.sync(path.resolve(cwd, './node_modules/.bin'));
 
-
+  const currentJest = path.resolve(__dirname, './bin/jest.js');
   // Using `npm link jest-cli` can create problems with module resolution,
   // so instead of this we'll create an `index.js` file that will export the
   // local `jest-cli` package.
   fs.writeFileSync(
     path.resolve(cwd, './node_modules/jest-cli/index.js'),
-    `module.exports = require('../../../../');\n`, // link to the local jest
+    `module.exports = require('${__dirname.replace(/\\/g,'\\\\')}');\n`, // link to the local jest
     'utf8'
   );
 
   // overwrite the jest link and point it to the local jest-cli
-  if (process.platform !== 'win32') { // mklink requires sysAdmin also it will not work anyway
+  if (process.platform !== 'win32') {
     runCommands(['ln -sf ../../bin/jest.js ./node_modules/.bin/jest'], cwd);
+  } else {
+    fs.writeFile(
+      '.\node_modules\.bin\jest.cmd',
+      `@IF EXIST "%~dp0\node.exe" (
+        "%~dp0\node.exe"  "${currentJest}" %*
+      ) ELSE (
+        @SETLOCAL
+        @SET PATHEXT=%PATHEXT:;.JS;=;%
+        node  "${currentJest}" %*
+      )`,
+      function(err) {
+        if (err) {
+          throw err;
+        }
+      }
+    );
+
   }
   runCommands(['npm test'], cwd);
 
