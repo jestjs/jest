@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+const fs = jest.genMockFromModule('fs');
+
 // This is a custom function that our tests can use during setup to specify
 // what the files on the "mock" filesystem should look like when any of the
 // `fs` APIs are used.
@@ -24,6 +26,7 @@ function readdirSync(directoryPath) {
   return mockFiles[directoryPath] || [];
 }
 
-exports.__setMockFiles = __setMockFiles;
-exports.readdirSync = readdirSync;
+fs.__setMockFiles = __setMockFiles;
+fs.readdirSync = readdirSync;
 
+module.exports = fs;
