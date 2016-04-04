@@ -15,7 +15,7 @@ const fs = require('graceful-fs');
 const path = require('path');
 const chalk = require('chalk');
 const execSync = require('child_process').execSync;
-
+const mkdirp = require('mkdirp');
 const PACKAGES_DIR = './packages';
 const EXAMPLES_DIR = './examples';
 
@@ -49,10 +49,13 @@ examples.forEach(cwd => {
 
   runCommands([
     'npm update',
-    'rm -rf ./node_modules/jest-cli',
-    'mkdir -p ./node_modules/jest-cli',
-    'mkdir -p ./node_modules/.bin',
+    process.platform !== 'win32' ?
+      'rm -rf ./node_modules/jest-cli' :
+      'del /F /Q node_modules\jest-cli',
   ], cwd);
+  mkdirp('./node_modules/jest-cli');
+  mkdirp('./node_modules/.bin');
+
 
   // Using `npm link jest-cli` can create problems with module resolution,
   // so instead of this we'll create an `index.js` file that will export the
@@ -64,8 +67,9 @@ examples.forEach(cwd => {
   );
 
   // overwrite the jest link and point it to the local jest-cli
-  runCommands(
-    ['ln -sf ../../bin/jest.js ./node_modules/.bin/jest', 'npm test'],
-    cwd
-  );
+  if (process.platform !== 'win32') { // mklink requires sysAdmin also it will not work anyway
+    runCommands(['ln -sf ../../bin/jest.js ./node_modules/.bin/jest'], cwd);
+  }
+  runCommands(['npm test'], cwd);
+
 });

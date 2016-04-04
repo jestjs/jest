@@ -19,16 +19,11 @@ try {
 
 const spawnSync = require('child_process').spawnSync;
 
-const execute = (cmd, env) => {
+const execute = (cmd) => {
   const options = {
     stdio: 'inherit',
     cwd: path.resolve(__dirname, cmd[0]),
   };
-
-  if (env) {
-    options.env = env;
-  }
-
   spawnSync(cmd[1], cmd[2].split(' '), options);
 };
 
@@ -37,17 +32,18 @@ if (
   process.env.NODE_ENV !== 'production'
 ) {
   console.log(`Setting up Jest's development environment...`);
-
+  var npm = (process.platform === 'win32' ? 'npm.cmd' : 'npm');
+  var lerna = (process.platform === 'win32' ? 'lerna.cmd' : 'lerna');
   const cmds = [
-    ['.', 'node_modules/.bin/lerna', 'bootstrap'],
-    ['packages/jest-jasmine1', 'npm', 'link'],
-    ['packages/jest-jasmine2', 'npm', 'link'],
-    ['packages/jest-mock', 'npm', 'link'],
-    ['packages/jest-util', 'npm', 'link'],
-    ['.', 'npm', 'link jest-jasmine1'],
-    ['.', 'npm', 'link jest-jasmine2'],
-    ['.', 'npm', 'link jest-mock'],
-    ['.', 'npm', 'link jest-util'],
+    ['.', path.resolve(__dirname, './node_modules/.bin/' + lerna), 'bootstrap'],
+    ['packages/jest-jasmine1', npm, 'link'],
+    ['packages/jest-jasmine2', npm, 'link'],
+    ['packages/jest-mock', npm, 'link'],
+    ['packages/jest-util', npm, 'link'],
+    ['.', npm, 'link jest-jasmine1'],
+    ['.', npm, 'link jest-jasmine2'],
+    ['.', npm, 'link jest-mock'],
+    ['.', npm, 'link jest-util'],
   ];
   cmds.forEach(execute);
 }
