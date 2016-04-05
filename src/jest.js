@@ -72,6 +72,7 @@ function buildTestPathPatternInfo(argv) {
   if (argv.onlyChanged) {
     return {
       onlyChanged: true,
+      watch: argv.watch !== undefined,
     };
   }
   if (argv.testPathPattern) {
@@ -97,7 +98,12 @@ function buildTestPathPatternInfo(argv) {
 
 function getNoTestsFoundMessage(patternInfo) {
   if (patternInfo.onlyChanged) {
-    return 'No tests found related to changed and uncommitted files.';
+    const guide = patternInfo.watch
+      ? 'starting Jest with `jest --watch=all`'
+      : 'running Jest without `-o`';
+    return 'No tests found related to changed and uncommitted files.\n' +
+    'Note: If you are using dynamic `require`-calls or no tests related ' +
+    'to your changed files can be found, consider ' + guide + '.';
   }
   const pattern = patternInfo.pattern;
   const input = patternInfo.input;
