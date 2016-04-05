@@ -189,6 +189,7 @@ function makeComponent(metadata) {
     let mockImpl;
     let f;
     const specificReturnValues = [];
+    const specificMockImpls = [];
     const calls = [];
     const instances = [];
     const prototype = (
@@ -220,7 +221,7 @@ function makeComponent(metadata) {
       let returnValue;
       // If return value is last set, either specific or default, i.e.
       // mockReturnValueOnce()/mockReturnValue() is called and no
-      // mockImplementation() is called after that.
+      // mockImplementationOnce()/mockImplementation() is called after that.
       // use the set return value.
       if (isReturnValueLastSet) {
         returnValue = specificReturnValues.shift();
@@ -229,10 +230,17 @@ function makeComponent(metadata) {
         }
       }
 
-      // If mockImplementation() is last set, or specific return values
-      // are used up, use the mock implementation.
-      if (mockImpl && returnValue === undefined) {
-        return mockImpl.apply(this, arguments);
+      // If mockImplementationOnce()/mockImplementation() is last set,
+      // or specific return values are used up, use the mock implementation.
+      let specificMockImpl;
+      if (returnValue === undefined) {
+        specificMockImpl = specificMockImpls.shift();
+        if (specificMockImpl === undefined) {
+          specificMockImpl = mockImpl;
+        }
+        if (specificMockImpl) {
+          return specificMockImpl.apply(this, arguments);
+        }
       }
 
       // Otherwise use prototype implementation
@@ -264,6 +272,14 @@ function makeComponent(metadata) {
       // next function call will return specified return value or this one
       isReturnValueLastSet = true;
       defaultReturnValue = value;
+      return f;
+    };
+
+    f.mockImplementationOnce = fn => {
+      // next function call will use this mock implementation return value
+      // or default mock implementation return value
+      isReturnValueLastSet = false;
+      specificMockImpls.push(fn);
       return f;
     };
 

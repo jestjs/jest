@@ -90,9 +90,14 @@ function.
 
 Sets the default return value for the function.
 
+##### `.mockImplementationOnce(function)`
+
+Pushes the given mock implementation onto a FIFO queue of mock
+implementations for the function.
+
 ##### `.mockImplementation(function)`
 
-Sets a mock implementation for the function.
+Sets the default mock implementation for the function.
 
 ##### `.mockReturnThis()`
 
@@ -100,12 +105,13 @@ Syntactic sugar for .mockImplementation(function() {return this;})
 
 
 
-In case both `mockImplementation()` and
+In case both `mockImplementationOnce()/mockImplementation()` and
 `mockReturnValueOnce()/mockReturnValue()` are called. The priority of which to
 use is based on what is the last call:
 - if the last call is mockReturnValueOnce() or mockReturnValue(),
-  use the specific return specific return value or default return value.
+  use the specific return value or default return value.
   If specific return values are used up or no default return value is set,
   fall back to try mockImplementation();
-- if the last call is mockImplementation(), run the given implementation
-  and return the result.
+- if the last call is mockImplementationOnce() or mockImplementation(),
+  run the specific implementation and return the result or run default
+  implementation and return the result.

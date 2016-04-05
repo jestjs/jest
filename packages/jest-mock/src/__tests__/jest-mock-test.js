@@ -123,4 +123,37 @@ describe('moduleMocker', () => {
       ).not.toThrow();
     });
   });
+
+  describe('mockImplementationOnce', () => {
+     it('should mock single call to a mock function', () => {
+      const mockFn = moduleMocker.getMockFunction();
+
+      mockFn.mockImplementationOnce(() => {
+        return 'Foo';
+      }).mockImplementationOnce(() => {
+        return 'Bar';
+      });
+
+      expect(mockFn()).toBe('Foo');
+      expect(mockFn()).toBe('Bar');
+      expect(mockFn()).toBeUndefined();
+    });
+
+    it('should fallback to default mock function when no specific mock is available', () => {
+      const mockFn = moduleMocker.getMockFunction();
+
+      mockFn.mockImplementationOnce(() => {
+        return 'Foo';
+      }).mockImplementationOnce(() => {
+        return 'Bar';
+      }).mockImplementation(() => {
+        return 'Default';
+      });
+
+      expect(mockFn()).toBe('Foo');
+      expect(mockFn()).toBe('Bar');
+      expect(mockFn()).toBe('Default');
+      expect(mockFn()).toBe('Default');
+    });
+  });
 });

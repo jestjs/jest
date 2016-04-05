@@ -114,12 +114,16 @@ function that's not directly being tested.
 
 Still, there are cases where it's useful to go beyond the ability to specify
 return values and full-on replace the implementation of a mock function. This
-can be done with the `mockImplementation` method on mock functions:
+can be done with `mockImplementation` or `mockImplementationOnce` methods
+on mock functions:
 
 ```javascript
 var myObj = {
-  myMethod: jest.genMockFunction().mockImplementation(function() {
+  myMethod: jest.genMockFunction().mockImplementationOnce(function() {
     // do something stateful
+    return this;
+  }).mockImplementation(function() {
+    // do something else stateful
     return this;
   });
 };
