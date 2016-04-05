@@ -46,44 +46,46 @@ packages.forEach(cwd => {
   runCommands('npm test', cwd);
 });
 
-examples.forEach(cwd => {
-  console.log(chalk.bold(chalk.cyan('Testing example: ') + cwd));
+if (!isWindows) {
+  examples.forEach(cwd => {
+    console.log(chalk.bold(chalk.cyan('Testing example: ') + cwd));
 
-  runCommands('npm update', cwd);
-  rimraf.sync(path.resolve(cwd, './node_modules/jest-cli'));
-  mkdirp.sync(path.resolve(cwd, './node_modules/jest-cli'));
-  mkdirp.sync(path.resolve(cwd, './node_modules/.bin'));
+    runCommands('npm update', cwd);
+    rimraf.sync(path.resolve(cwd, './node_modules/jest-cli'));
+    mkdirp.sync(path.resolve(cwd, './node_modules/jest-cli'));
+    mkdirp.sync(path.resolve(cwd, './node_modules/.bin'));
 
-  // Using `npm link jest-cli` can create problems with module resolution,
-  // so instead of this we'll create an `index.js` file that will export the
-  // local `jest-cli` package.
-  fs.writeFileSync(
-    path.resolve(cwd, './node_modules/jest-cli/index.js'),
-    `module.exports = require('../../../../');\n`, // link to the local jest
-    'utf8'
-  );
-
-  // overwrite the jest link and point it to the local jest-cli
-  if (!isWindows) {
-    runCommands('ln -sf ../../bin/jest.js ./node_modules/.bin/jest', cwd);
-  } else {
-    const currentJest = path.resolve(__dirname, './bin/jest.js');
-    fs.writeFile(
-      `.\node_modules\.bin\jest.cmd`,
-      `@IF EXIST "%~dp0\node.exe" (
-        "%~dp0\node.exe"  "${currentJest}" %*
-      ) ELSE (
-        @SETLOCAL
-        @SET PATHEXT=%PATHEXT:;.JS;=;%
-        node  "${currentJest}" %*
-      )`,
-      function(err) {
-        if (err) {
-          throw err;
-        }
-      }
+    // Using `npm link jest-cli` can create problems with module resolution,
+    // so instead of this we'll create an `index.js` file that will export the
+    // local `jest-cli` package.
+    fs.writeFileSync(
+      path.resolve(cwd, './node_modules/jest-cli/index.js'),
+      `module.exports = require('../../../../');\n`, // link to the local jest
+      'utf8'
     );
 
-  }
-  runCommands('npm test', cwd);
-});
+    // overwrite the jest link and point it to the local jest-cli
+    if (!isWindows) {
+      runCommands('ln -sf ../../bin/jest.js ./node_modules/.bin/jest', cwd);
+    } else {
+      const currentJest = path.resolve(__dirname, './bin/jest.js');
+      fs.writeFile(
+        `.\node_modules\.bin\jest.cmd`,
+        `@IF EXIST "%~dp0\node.exe" (
+          "%~dp0\node.exe"  "${currentJest}" %*
+        ) ELSE (
+          @SETLOCAL
+          @SET PATHEXT=%PATHEXT:;.JS;=;%
+          node  "${currentJest}" %*
+        )`,
+        function(err) {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+
+    }
+    runCommands('npm test', cwd);
+  });
+}
