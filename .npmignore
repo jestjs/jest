@@ -3,5 +3,5 @@ __tests__
 docs
 examples
 packages
-setup.sh
+setup.js
 website
