@@ -13,7 +13,7 @@ const childProcess = require('child_process');
 
 function findChangedFiles(cwd) {
   return new Promise((resolve, reject) => {
-    const args = ['diff', '--name-only', '--diff-filter=ACMR', '--relative'];
+    const args = ['ls-files', '--other', '--modified', '--exclude-standard'];
     const child = childProcess.spawn('git', args, {cwd});
 
     let stdout = '';
