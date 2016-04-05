@@ -40,10 +40,14 @@ function findChangedFiles(cwd) {
 function isGitRepository(cwd) {
   return new Promise(resolve => {
     let stdout = '';
-    const child = childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd});
+    const child = childProcess.spawn(
+      'git',
+      ['rev-parse', '--show-toplevel'],
+      {cwd}
+    );
     child.stdout.on('data', data => stdout += data);
     child.on('close',
-      code =>  resolve(code === 0 ? path.dirname(stdout.trim()) : null)
+      code => resolve(code === 0 ? stdout.trim() : null)
     );
   });
 }
