@@ -37,13 +37,21 @@ function findChangedFiles(cwd) {
   });
 }
 
+function pathForGitDir(dir) {
+  if (dir.match(/\.git\/modules/)) {
+    return dir.replace('/.git/modules', '');
+  } else {
+    return path.dirname(dir);
+  }
+}
+
 function isGitRepository(cwd) {
   return new Promise(resolve => {
     let stdout = '';
     const child = childProcess.spawn('git', ['rev-parse', '--git-dir'], {cwd});
     child.stdout.on('data', data => stdout += data);
     child.on('close',
-      code =>  resolve(code === 0 ? path.dirname(stdout.trim()) : null)
+      code =>  resolve(code === 0 ? pathForGitDir(stdout.trim()) : null)
     );
   });
 }
