@@ -20,7 +20,7 @@ module.exports = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
   moduleFileExtensions: ['js', 'json', 'node'],
-  moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
+  moduleLoader: require.resolve('../Runtime/Runtime'),
   moduleResolver: require.resolve('../resolvers/HasteResolver'),
   haste: {
     providesModuleNodeModules: [],

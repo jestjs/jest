@@ -16,15 +16,15 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('HasteModuleLoader', function() {
-  let HasteModuleLoader;
+describe('Runtime', function() {
+  let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
   const config = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'HasteModuleLoader-jsdom-env-tests',
+    name: 'Runtime-jsdom-env-tests',
     rootDir,
   });
 
@@ -33,13 +33,13 @@ describe('HasteModuleLoader', function() {
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
       response => resolver.end().then(() =>
-        new HasteModuleLoader(config, environment, response)
+        new Runtime(config, environment, response)
       )
     );
   }
 
   beforeEach(function() {
-    HasteModuleLoader = require('../HasteModuleLoader');
+    Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
@@ -75,9 +75,9 @@ describe('HasteModuleLoader', function() {
           hasThrown = true;
 
           if (process.platform === 'win32') {
-            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\\__tests__\\test_root\\throwing-fn.js:12:9/);
+            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+Runtime\\__tests__\\test_root\\throwing-fn.js:12:9/);
           } else {
-            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+HasteModuleLoader\/__tests__\/test_root\/throwing-fn.js:12:9/);
+            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+Runtime\/__tests__\/test_root\/throwing-fn.js:12:9/);
           }
         }
         expect(hasThrown).toBe(true);
