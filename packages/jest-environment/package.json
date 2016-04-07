@@ -1,0 +1,9 @@
+{
+  "name": "jest-environment",
+  "main": "index.js",
+  "dependencies": {
+    "jest-util": "^9.0.4",
+    "jest-mock": "^9.0.4"
+  },
+  "version": "9.0.6-0"
+}

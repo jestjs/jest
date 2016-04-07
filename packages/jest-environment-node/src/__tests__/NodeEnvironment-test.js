@@ -4,7 +4,7 @@
 
 jest.disableAutomock();
 
-const NodeEnvironment = require.requireActual('../NodeEnvironment');
+const NodeEnvironment = require.requireActual('../index');
 
 describe('NodeEnvironment', () => {
 

@@ -13,10 +13,13 @@
     "react": "^0.14.0"
   },
   "jest": {
-    "testEnvironment": "<rootDir>/../../src/environments/NodeEnvironment"
+    "testEnvironment": "jest-environment-node"
   },
   "scripts": {
     "prepublish": "npm test",
     "test": "../../bin/jest.js"
+  },
+  "dependencies": {
+    "jest-environment-node": "^9.0.5"
   }
 }
