@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const utils = require('jest-util');
+const utils = require('./../');
 
 module.exports = (global, globals) => {
   // Forward some APIs

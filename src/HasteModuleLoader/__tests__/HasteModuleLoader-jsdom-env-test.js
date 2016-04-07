@@ -41,7 +41,7 @@ describe('HasteModuleLoader', function() {
   beforeEach(function() {
     HasteModuleLoader = require('../HasteModuleLoader');
     HasteResolver = require('../../resolvers/HasteResolver');
-    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
+    JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
   describe('requireModule', function() {

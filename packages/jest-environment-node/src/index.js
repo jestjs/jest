@@ -7,8 +7,9 @@
  */
 'use strict';
 
-const FakeTimers = require('../lib/FakeTimers');
-const installCommonGlobals = require('./installCommonGlobals');
+const FakeTimers = require('jest-environment/src/FakeTimers');
+const installCommonGlobals =
+  require('jest-environment/src/installCommonGlobals');
 const vm = require('vm');
 
 class NodeEnvironment {

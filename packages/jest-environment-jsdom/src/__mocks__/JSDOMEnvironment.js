@@ -5,7 +5,7 @@
 const utils = require.requireActual('jest-util');
 const vm = require.requireActual('vm');
 
-const JSDOMEnvironment = jest.genMockFromModule('../JSDOMEnvironment');
+const JSDOMEnvironment = jest.genMockFromModule('../index');
 
 JSDOMEnvironment.mockImplementation(function(config) {
   this.global = {
