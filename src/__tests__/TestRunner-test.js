@@ -61,7 +61,7 @@ describe('TestRunner', () => {
     const rootDir = path.join(
       __dirname,
       '..',
-      'HasteModuleLoader',
+      'Runtime',
       '__tests__',
       'test_root'
     );

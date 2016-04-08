@@ -15,8 +15,8 @@ jest.mock('../../environments/JSDOMEnvironment');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('HasteModuleLoader', () => {
-  let HasteModuleLoader;
+describe('Runtime', function() {
+  let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
 
@@ -24,8 +24,9 @@ describe('HasteModuleLoader', () => {
   const rootPath = path.join(rootDir, 'root.js');
   const config = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'HasteModuleLoader-jest-fn-tests',
+    name: 'Runtime-getTestEnvData-tests',
     rootDir,
+    testEnvData: {someTestData: 42},
   });
 
   function buildLoader() {
@@ -33,37 +34,30 @@ describe('HasteModuleLoader', () => {
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
       response => resolver.end().then(() =>
-        new HasteModuleLoader(config, environment, response)
+        new Runtime(config, environment, response)
       )
     );
   }
 
-  beforeEach(() => {
-    HasteModuleLoader = require('../HasteModuleLoader');
+  beforeEach(function() {
+    Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
 
-  describe('jest.fn', () => {
-    pit('creates mock functions', () => {
-      return buildLoader().then(loader => {
-        const root = loader.requireModule(null, rootPath);
-        const mock = root.jest.fn();
-        expect(mock._isMockFunction).toBe(true);
-        mock();
-        expect(mock).toBeCalled();
-      });
+  pit('passes config data through to jest.envData', function() {
+    return buildLoader().then(function(loader) {
+      const root = loader.requireModule(rootDir, rootPath);
+      const envData = root.jest.getTestEnvData();
+      expect(envData).toEqual(config.testEnvData);
     });
+  });
 
-    pit('creates mock functions with mock implementations', () => {
-      return buildLoader().then(loader => {
-        const root = loader.requireModule(null, rootPath);
-        const mock = root.jest.fn(string => string + ' implementation');
-        expect(mock._isMockFunction).toBe(true);
-        const value = mock('mock');
-        expect(value).toEqual('mock implementation');
-        expect(mock).toBeCalled();
-      });
+  pit('freezes jest.envData object', function() {
+    return buildLoader().then(function(loader) {
+      const root = loader.requireModule(rootDir, rootPath);
+      const envData = root.jest.getTestEnvData();
+      expect(Object.isFrozen(envData)).toBe(true);
     });
   });
 });

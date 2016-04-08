@@ -11,7 +11,7 @@
 
 jest.disableAutomock();
 
-describe('nodeHasteModuleLoader', function() {
+describe('nodeRuntime', function() {
   describe('currentTestPath', function() {
     it('makes the current test path available', function() {
       expect(jest.currentTestPath()).toMatch(/currentTestPath-test/);

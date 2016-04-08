@@ -15,8 +15,8 @@ jest.mock('../../environments/JSDOMEnvironment');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('HasteModuleLoader', () => {
-  let HasteModuleLoader;
+describe('Runtime', () => {
+  let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
 
@@ -24,7 +24,7 @@ describe('HasteModuleLoader', () => {
   const rootPath = path.join(rootDir, 'root.js');
   const config = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'HasteModuleLoader-mock-tests',
+    name: 'Runtime-mock-tests',
     rootDir,
   });
 
@@ -33,13 +33,13 @@ describe('HasteModuleLoader', () => {
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
       response => resolver.end().then(() =>
-        new HasteModuleLoader(config, environment, response)
+        new Runtime(config, environment, response)
       )
     );
   }
 
   beforeEach(() => {
-    HasteModuleLoader = require('../HasteModuleLoader');
+    Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
   });
