@@ -6,17 +6,13 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
-
+let executable = './setup.sh';
 if (
-  process.platform !== 'win32' &&
   process.env.NODE_ENV !== 'production'
 ) {
-  const exec = require('child_process').exec;
-  exec('./setup.sh', (err, stdout, stderr) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(stdout);
-  });
+  if (process.platform === 'win32') {
+    executable = 'setup.bat';
+  }
+  const spawn = require('child_process').spawn;
+  spawn(executable, [], {stdio:'inherit'});
 }
