@@ -98,10 +98,10 @@ function execute() {
   globEach('src/jest/blog/*.*', rmFile);
 
   const gettingStarted = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'GettingStarted.md', 'utf8')).content
-    .replace(/\(\/jest\//g, '(http://facebook.github.io/jest/');
+    .replace(/\(\/jest\//g, '(https://facebook.github.io/jest/');
   const api = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'API.md', 'utf8')).content
-    .replace(/\(\/jest\//g, '(http://facebook.github.io/jest/')
-    .replace(/\(#/g, '(http://facebook.github.io/jest/docs/api.html#');
+    .replace(/\(\/jest\//g, '(https://facebook.github.io/jest/')
+    .replace(/\(#/g, '(https://facebook.github.io/jest/docs/api.html#');
 
   const readme = fs.readFileSync('../README.md', 'utf8')
     .replace(
