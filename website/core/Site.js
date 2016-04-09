@@ -9,8 +9,8 @@ var HeaderLinks = require('HeaderLinks');
 var Site = React.createClass({
   render: function() {
     var title = this.props.title
-      ? this.props.title + ' | Jest'
-      : 'Jest | Painless JavaScript Unit Testing';
+      ? this.props.title + ' · Jest'
+      : 'Jest · Painless JavaScript Unit Testing';
     var description = this.props.description || 'Painless JavaScript Unit Testing';
     return (
       <html>
