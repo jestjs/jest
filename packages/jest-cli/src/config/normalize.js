@@ -219,6 +219,7 @@ function normalize(config, argv) {
       case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':
+      case 'coverageThreshold':
       case 'globals':
       case 'haste':
       case 'mocksPattern':
