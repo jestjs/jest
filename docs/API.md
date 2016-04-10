@@ -338,6 +338,10 @@ whether the module should be required normally or not.
 
 ## Configuration
 
+Configuration can be defined via the jest block within [`packages.json`](https://github.com/facebook/jest/blob/master/examples/react/package.json)
+or passed as command line arguments as follows:
+`jest --testRunner 'jasmine1'`
+
 ### `config.automock` [boolean]
 (default: true)
 
