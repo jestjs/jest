@@ -103,7 +103,7 @@ describe('CheckboxWithLabel', () => {
 });
 ```
 
-Check out the [React tutorial](http://facebook.github.io/jest/docs/tutorial-react.html) for more.
+Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more.
 
 **And you are good to go!** The next time you run Jest it will print something
 like
@@ -164,14 +164,14 @@ describe('async tests', () => {
 });
 ```
 
-Check out the [Async tutorial](http://facebook.github.io/jest/docs/tutorial-async.html) for more.
+Check out the [Async tutorial](https://facebook.github.io/jest/docs/tutorial-async.html) for more.
 
 #### Automated Mocking and Sandboxing
 
 Jest isolates test files into their own environment and isolates module
 execution between test runs. Jest swaps out `require()` to inject mocks that
-were either [created manually](http://facebook.github.io/jest/docs/manual-mocks.html)
-by the user or [automatic mocks](http://facebook.github.io/jest/docs/automatic-mocking.html) through the
+were either [created manually](https://facebook.github.io/jest/docs/manual-mocks.html)
+by the user or [automatic mocks](https://facebook.github.io/jest/docs/automatic-mocking.html) through the
 automocking feature.
 
 #### Use the `--watch` option to automatically re-run tests
@@ -234,30 +234,30 @@ Example Output:
 <generated_api_start />
 #### The `jest` object
 
-  - [`jest.clearAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
-  - [`jest.currentTestPath()`](http://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
-  - [`jest.disableAutomock()`](http://facebook.github.io/jest/docs/api.html#jest-disableautomock)
-  - [`jest.enableAutomock()`](http://facebook.github.io/jest/docs/api.html#jest-enableautomock)
-  - [`jest.fn(?implementation)`](http://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
-  - [`jest.genMockFromModule(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
-  - [`jest.mock(moduleName, ?factory)`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory)
-  - [`jest.runAllTicks()`](http://facebook.github.io/jest/docs/api.html#jest-runallticks)
-  - [`jest.runAllTimers()`](http://facebook.github.io/jest/docs/api.html#jest-runalltimers)
-  - [`jest.runOnlyPendingTimers()`](http://facebook.github.io/jest/docs/api.html#jest-runonlypendingtimers)
-  - [`jest.setMock(moduleName, moduleExports)`](http://facebook.github.io/jest/docs/api.html#jest-setmock-modulename-moduleexports)
-  - [`jest.unmock(moduleName)`](http://facebook.github.io/jest/docs/api.html#jest-unmock-modulename)
+  - [`jest.clearAllTimers()`](https://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
+  - [`jest.currentTestPath()`](https://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
+  - [`jest.disableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-disableautomock)
+  - [`jest.enableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-enableautomock)
+  - [`jest.fn(?implementation)`](https://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
+  - [`jest.genMockFromModule(moduleName)`](https://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
+  - [`jest.mock(moduleName, ?factory)`](https://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory)
+  - [`jest.runAllTicks()`](https://facebook.github.io/jest/docs/api.html#jest-runallticks)
+  - [`jest.runAllTimers()`](https://facebook.github.io/jest/docs/api.html#jest-runalltimers)
+  - [`jest.runOnlyPendingTimers()`](https://facebook.github.io/jest/docs/api.html#jest-runonlypendingtimers)
+  - [`jest.setMock(moduleName, moduleExports)`](https://facebook.github.io/jest/docs/api.html#jest-setmock-modulename-moduleexports)
+  - [`jest.unmock(moduleName)`](https://facebook.github.io/jest/docs/api.html#jest-unmock-modulename)
 
 #### Mock functions
 
 Mock functions can be created using `jest.fn()`.
 
-  - [`mockFn.mock.calls`](http://facebook.github.io/jest/docs/api.html#mockfn-mock-calls)
-  - [`mockFn.mock.instances`](http://facebook.github.io/jest/docs/api.html#mockfn-mock-instances)
-  - [`mockFn.mockClear()`](http://facebook.github.io/jest/docs/api.html#mockfn-mockclear)
-  - [`mockFn.mockImplementation(fn)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockimplementation-fn)
-  - [`mockFn.mockReturnThis()`](http://facebook.github.io/jest/docs/api.html#mockfn-mockreturnthis)
-  - [`mockFn.mockReturnValue(value)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalue-value)
-  - [`mockFn.mockReturnValueOnce(value)`](http://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalueonce-value)
+  - [`mockFn.mock.calls`](https://facebook.github.io/jest/docs/api.html#mockfn-mock-calls)
+  - [`mockFn.mock.instances`](https://facebook.github.io/jest/docs/api.html#mockfn-mock-instances)
+  - [`mockFn.mockClear()`](https://facebook.github.io/jest/docs/api.html#mockfn-mockclear)
+  - [`mockFn.mockImplementation(fn)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockimplementation-fn)
+  - [`mockFn.mockReturnThis()`](https://facebook.github.io/jest/docs/api.html#mockfn-mockreturnthis)
+  - [`mockFn.mockReturnValue(value)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalue-value)
+  - [`mockFn.mockReturnValueOnce(value)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalueonce-value)
 
 #### Jasmine API
 
@@ -266,48 +266,49 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 
 #### require extensions
 
-  - [`require.requireActual(moduleName)`](http://facebook.github.io/jest/docs/api.html#require-requireactual-modulename)
-  - [`require.requireMock(moduleName)`](http://facebook.github.io/jest/docs/api.html#require-requiremock-modulename)
+  - [`require.requireActual(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requireactual-modulename)
+  - [`require.requireMock(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requiremock-modulename)
 
 #### Config options
 
-  - [`config.automock` [boolean]](http://facebook.github.io/jest/docs/api.html#config-automock-boolean)
-  - [`config.bail` [boolean]](http://facebook.github.io/jest/docs/api.html#config-bail-boolean)
-  - [`config.cache` [boolean]](http://facebook.github.io/jest/docs/api.html#config-cache-boolean)
-  - [`config.cacheDirectory` [string]](http://facebook.github.io/jest/docs/api.html#config-cachedirectory-string)
-  - [`config.collectCoverage` [boolean]](http://facebook.github.io/jest/docs/api.html#config-collectcoverage-boolean)
-  - [`config.collectCoverageOnlyFrom` [object]](http://facebook.github.io/jest/docs/api.html#config-collectcoverageonlyfrom-object)
-  - [`config.globals` [object]](http://facebook.github.io/jest/docs/api.html#config-globals-object)
-  - [`config.mocksPattern` [string]](http://facebook.github.io/jest/docs/api.html#config-mockspattern-string)
-  - [`config.moduleFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulefileextensions-array-string)
-  - [`config.moduleNameMapper` [object<string, string>]](http://facebook.github.io/jest/docs/api.html#config-modulenamemapper-object-string-string)
-  - [`config.modulePathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
-  - [`config.preprocessCachingDisabled` [boolean]](http://facebook.github.io/jest/docs/api.html#config-preprocesscachingdisabled-boolean)
-  - [`config.preprocessorIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string)
-  - [`config.rootDir` [string]](http://facebook.github.io/jest/docs/api.html#config-rootdir-string)
-  - [`config.scriptPreprocessor` [string]](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)
-  - [`config.setupFiles` [array]](http://facebook.github.io/jest/docs/api.html#config-setupfiles-array)
-  - [`config.setupTestFrameworkScriptFile` [string]](http://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string)
-  - [`config.testDirectoryName` [string]](http://facebook.github.io/jest/docs/api.html#config-testdirectoryname-string)
-  - [`config.testFileExtensions` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testfileextensions-array-string)
-  - [`config.testPathDirs` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testpathdirs-array-string)
-  - [`config.testPathIgnorePatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-testpathignorepatterns-array-string)
-  - [`config.testPathPattern` [string]](http://facebook.github.io/jest/docs/api.html#config-testpathpattern-string)
-  - [`config.testRunner` [string]](http://facebook.github.io/jest/docs/api.html#config-testrunner-string)
-  - [`config.unmockedModulePathPatterns` [array<string>]](http://facebook.github.io/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
-  - [`config.verbose` [boolean]](http://facebook.github.io/jest/docs/api.html#config-verbose-boolean)
-  - [`config.watchman` [boolean]](http://facebook.github.io/jest/docs/api.html#config-watchman-boolean)
+  - [`config.automock` [boolean]](https://facebook.github.io/jest/docs/api.html#config-automock-boolean)
+  - [`config.bail` [boolean]](https://facebook.github.io/jest/docs/api.html#config-bail-boolean)
+  - [`config.cache` [boolean]](https://facebook.github.io/jest/docs/api.html#config-cache-boolean)
+  - [`config.cacheDirectory` [string]](https://facebook.github.io/jest/docs/api.html#config-cachedirectory-string)
+  - [`config.collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#config-collectcoverage-boolean)
+  - [`config.collectCoverageOnlyFrom` [object]](https://facebook.github.io/jest/docs/api.html#config-collectcoverageonlyfrom-object)
+  - [`config.globals` [object]](https://facebook.github.io/jest/docs/api.html#config-globals-object)
+  - [`config.mocksPattern` [string]](https://facebook.github.io/jest/docs/api.html#config-mockspattern-string)
+  - [`config.moduleFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-modulefileextensions-array-string)
+  - [`config.moduleNameMapper` [object<string, string>]](https://facebook.github.io/jest/docs/api.html#config-modulenamemapper-object-string-string)
+  - [`config.modulePathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string)
+  - [`config.preprocessCachingDisabled` [boolean]](https://facebook.github.io/jest/docs/api.html#config-preprocesscachingdisabled-boolean)
+  - [`config.preprocessorIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string)
+  - [`config.rootDir` [string]](https://facebook.github.io/jest/docs/api.html#config-rootdir-string)
+  - [`config.scriptPreprocessor` [string]](https://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string)
+  - [`config.setupFiles` [array]](https://facebook.github.io/jest/docs/api.html#config-setupfiles-array)
+  - [`config.setupTestFrameworkScriptFile` [string]](https://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string)
+  - [`config.testDirectoryName` [string]](https://facebook.github.io/jest/docs/api.html#config-testdirectoryname-string)
+  - [`config.testFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-testfileextensions-array-string)
+  - [`config.testPathDirs` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-testpathdirs-array-string)
+  - [`config.testPathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-testpathignorepatterns-array-string)
+  - [`config.testPathPattern` [string]](https://facebook.github.io/jest/docs/api.html#config-testpathpattern-string)
+  - [`config.testResultsProcessor` [string]](https://facebook.github.io/jest/docs/api.html#config-testresultsprocessor-string)
+  - [`config.testRunner` [string]](https://facebook.github.io/jest/docs/api.html#config-testrunner-string)
+  - [`config.unmockedModulePathPatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
+  - [`config.verbose` [boolean]](https://facebook.github.io/jest/docs/api.html#config-verbose-boolean)
+  - [`config.watchman` [boolean]](https://facebook.github.io/jest/docs/api.html#config-watchman-boolean)
 
 #### Globally injected variables
 
   - `afterEach(fn)`
   - `beforeEach(fn)`
   - `describe(name, fn)`
-  - [`expect(value)`](http://facebook.github.io/jest/docs/api.html#expect-value)
+  - [`expect(value)`](https://facebook.github.io/jest/docs/api.html#expect-value)
   - `it(name, fn)`
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
-  - [`jest`](http://facebook.github.io/jest/docs/api.html#the-jest-object)
-  - `pit(name, fn)` [async helper](http://facebook.github.io/jest/docs/tutorial-async.html) for promises
+  - [`jest`](https://facebook.github.io/jest/docs/api.html#the-jest-object)
+  - `pit(name, fn)` [async helper](https://facebook.github.io/jest/docs/tutorial-async.html) for promises
   - `require(module)`
   - `require.requireActual(module)`
   - `xdescribe(name, fn)`
@@ -362,7 +363,7 @@ Re-enables automatic mocking in the module loader.
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
 ### `jest.fn(?implementation)`
-Returns a new, unused [mock function](http://facebook.github.io/jest/docs/api.html#mock-functions). Optionally takes a mock
+Returns a new, unused [mock function](https://facebook.github.io/jest/docs/api.html#mock-functions). Optionally takes a mock
 implementation.
 
 ```js
@@ -378,7 +379,7 @@ implementation.
 ### `jest.genMockFromModule(moduleName)`
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
-This is useful when you want to create a [manual mock](http://facebook.github.io/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
+This is useful when you want to create a [manual mock](https://facebook.github.io/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
 
 ### `jest.mock(moduleName, ?factory)`
 Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
@@ -414,7 +415,7 @@ Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()` and 
 
 When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
 
-This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](http://facebook.github.io/jest/docs/timer-mocks.html) doc for more information.
+This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](https://facebook.github.io/jest/docs/timer-mocks.html) doc for more information.
 
 ### `jest.runOnlyPendingTimers()`
 Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
@@ -424,11 +425,11 @@ This is useful for scenarios such as one where the module being tested schedules
 ### `jest.setMock(moduleName, moduleExports)`
 Explicitly supplies the mock object that the module system should return for the specified module.
 
-On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](http://facebook.github.io/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
+On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](https://facebook.github.io/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
-*Note It is recommended to use [`jest.mock()`](http://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
+*Note It is recommended to use [`jest.mock()`](https://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
 ### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
@@ -467,7 +468,7 @@ mockFn.mock.instances[1] === b; // true
 ```
 
 ### `mockFn.mockClear()`
-Resets all information stored in the [`mockFn.mock.calls`](http://facebook.github.io/jest/docs/api.html#mockfn-mock-calls) and [`mockFn.mock.instances`](http://facebook.github.io/jest/docs/api.html#mockfn-mock-instances) arrays.
+Resets all information stored in the [`mockFn.mock.calls`](https://facebook.github.io/jest/docs/api.html#mockfn-mock-calls) and [`mockFn.mock.instances`](https://facebook.github.io/jest/docs/api.html#mockfn-mock-instances) arrays.
 
 Often this is useful when you want to clean up a mock's usage data between two assertions.
 
@@ -643,7 +644,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
-Use `<rootDir>` string token to refer to [`config.rootDir`](http://facebook.github.io/jest/docs/api.html#config-rootdir-string) value if you want to use file paths.
+Use `<rootDir>` string token to refer to [`config.rootDir`](https://facebook.github.io/jest/docs/api.html#config-rootdir-string) value if you want to use file paths.
 
 Additionally, you can substitute captured regex groups using numbered backreferences.
 
@@ -668,7 +669,7 @@ The root directory that Jest should scan for tests and modules within. If you pu
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
-*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupFiles`](http://facebook.github.io/jest/docs/api.html#config-setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
+*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupFiles`](https://facebook.github.io/jest/docs/api.html#config-setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
 
 ### `config.scriptPreprocessor` [string]
 (default: `undefined`)
@@ -677,7 +678,7 @@ The path to a module that provides a synchronous function from pre-processing so
 
 Examples of such compilers include [jstransform](http://github.com/facebook/jstransform), [recast](http://github.com/benjamn/recast), [regenerator](http://github.com/facebook/regenerator), and [traceur](https://github.com/google/traceur-compiler).
 
-*Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](http://facebook.github.io/jest/docs/troubleshooting.html#caching-issues).*
+*Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](https://facebook.github.io/jest/docs/troubleshooting.html#caching-issues).*
 
 ### `config.preprocessorIgnorePatterns` [array<string>]
 (default: `["/node_modules/"]`)
@@ -691,12 +692,12 @@ An array of regexp pattern strings that are matched against all source file path
 
 The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in it's own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's worth noting that this code will execute *before* [`config.setupTestFrameworkScriptFile`](http://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string).
+It's worth noting that this code will execute *before* [`config.setupTestFrameworkScriptFile`](https://facebook.github.io/jest/docs/api.html#config-setuptestframeworkscriptfile-string).
 
 ### `config.setupTestFrameworkScriptFile` [string]
 (default: `undefined`)
 
-The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupFiles`](http://facebook.github.io/jest/docs/api.html#config-setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupFiles`](https://facebook.github.io/jest/docs/api.html#config-setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
@@ -712,7 +713,7 @@ For example, many node projects prefer to put their tests in a `tests` directory
 
 An array of file extensions that test files might have. Jest uses this when searching for tests to run.
 
-This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`config.scriptPreprocessor`](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string) too!)
+This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`config.scriptPreprocessor`](https://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string) too!)
 
 ### `config.testPathDirs` [array<string>]
 (default: `['<rootDir>']`)
@@ -732,6 +733,48 @@ An array of regexp pattern strings that are matched against all test paths befor
 A regexp pattern string that is matched against all test paths before executing the test. If the test path does not match the pattern, it will be skipped.
 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
+
+### `config.testResultsProcessor` [string]
+(default: `undefined`)
+
+This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument:
+
+```
+{
+  "success": bool,
+  "startTime": epoch,
+  "numTotalTestSuites": number,
+  "numPassedTestSuites": number,
+  "numFailedTestSuites": number,
+  "numRuntimeErrorTestSuites": number,
+  "numTotalTests": number,
+  "numPassedTests": number,
+  "numFailedTests": number,
+  "numPendingTests": number,
+  "testResults": [{
+    "numFailingTests": number,
+    "numPassingTests": number,
+    "numPendingTests": number,
+    "testResults": [{
+      "title": string (message in it block),
+      "status": "failed" | "pending" | "passed",
+      "ancestorTitles": [string (message in describe blocks)],
+      "failureMessages": [string],
+      "numPassingAsserts": number
+    },
+    ...
+    ],
+    "perfStats": {
+      "start": epoch,
+      "end": epoch
+    },
+    "testFilePath": absolute path to test file,
+    "coverage": {}
+  },
+  ...
+  ]
+}
+```
 
 ### `config.testRunner` [string]
 (default: `jasmine2`)

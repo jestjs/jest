@@ -57,7 +57,7 @@ glob('src/**/*.*', function(er, files) {
 
   queue.push(function(cb) {
     server.close();
-    console.log('It is live at: http://facebook.github.io/jest/')
+    console.log('It is live at: https://facebook.github.io/jest/')
     cb();
   });
 });
