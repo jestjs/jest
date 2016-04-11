@@ -1,5 +1,6 @@
 .haste_cache
 __tests__
+blog
 docs
 examples
 packages

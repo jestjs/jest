@@ -26,7 +26,7 @@ var support = React.createClass({
             Check out the <a href="/jest/docs/troubleshooting.html">Troubleshooting</a> documentation entry.
 
             <H2>Stack Overflow</H2>
-            <p>Many members of the community use Stack Overflow to ask questions. Read through the <a href="http://stackoverflow.com/questions/tagged/jestjs">existing questions</a> tagged with <strong>jestjs</strong> or <a href="http://stackoverflow.com/questions/ask">ask your own</a>!</p>
+            <p>Many members of the community use Stack Overflow to ask questions. Read through the <a href="https://stackoverflow.com/questions/tagged/jestjs">existing questions</a> tagged with <strong>jestjs</strong> or <a href="https://stackoverflow.com/questions/ask">ask your own</a>!</p>
             <H2>Discord</H2>
             <p>Join <a href="https://discordapp.com/channels/102860784329052160/103622435865104384" target="_blank">the <strong>#jest</strong> channel</a> on <a href="http://www.reactiflux.com/">Reactiflux</a> to ask questions and find answers.</p>
           </div>

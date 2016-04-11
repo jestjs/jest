@@ -10,13 +10,13 @@
 'use strict';
 
 jest.disableAutomock();
-jest.mock('../../environments/JSDOMEnvironment');
+jest.mock('jest-environment-jsdom');
 
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('nodeHasteModuleLoader', function() {
-  let HasteModuleLoader;
+describe('nodeRuntime', function() {
+  let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
 
@@ -24,7 +24,7 @@ describe('nodeHasteModuleLoader', function() {
   const rootPath = path.resolve(rootDir, 'root.js');
   const config = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'nodeHasteModuleLoader-genMockFromModule-tests',
+    name: 'nodeRuntime-genMockFromModule-tests',
     rootDir,
   });
 
@@ -33,15 +33,15 @@ describe('nodeHasteModuleLoader', function() {
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
       response => resolver.end().then(() =>
-        new HasteModuleLoader(config, environment, response)
+        new Runtime(config, environment, response)
       )
     );
   }
 
   beforeEach(function() {
-    HasteModuleLoader = require('../HasteModuleLoader');
+    Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
-    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
+    JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
   describe('genMockFromModule', function() {

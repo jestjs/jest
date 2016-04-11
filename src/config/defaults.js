@@ -20,7 +20,7 @@ module.exports = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
   moduleFileExtensions: ['js', 'json', 'node'],
-  moduleLoader: require.resolve('../HasteModuleLoader/HasteModuleLoader'),
+  moduleLoader: require.resolve('../Runtime/Runtime'),
   moduleResolver: require.resolve('../resolvers/HasteResolver'),
   haste: {
     providesModuleNodeModules: [],
@@ -29,7 +29,7 @@ module.exports = {
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
   mocksPattern: '__mocks__',
-  testEnvironment: require.resolve('../environments/JSDOMEnvironment'),
+  testEnvironment: 'jest-environment-jsdom',
   testEnvData: {},
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],

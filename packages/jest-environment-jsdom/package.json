@@ -1,13 +1,14 @@
 {
-  "name": "babel-preset-jest",
+  "name": "jest-environment-jsdom",
   "version": "10.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
-  "main": "index.js",
+  "main": "src/index.js",
   "dependencies": {
-    "babel-plugin-jest-hoist": "^10.0.2"
+    "jsdom": "^8.3.1",
+    "jest-util": "^10.0.2"
   }
 }
