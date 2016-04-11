@@ -44,7 +44,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     }
   });
   function isSpyLike(test) {
-    return !! (test.calls && test.calls.all);
+    return test.calls && test.calls.all !== undefined;
   }
   function isMockLike(test) {
     return test.mock !== undefined;
@@ -59,14 +59,11 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 'toBeCalled() does not accept parameters, use toBeCalledWith instead'
               );
             }
-            if (!isMockLike(actual) && !isSpyLike(actual)) {
+            const isSpy = isSpyLike(actual);
+            if (!isSpy && !isMockLike(actual)) {
               throw Error('toBeCalled() should be used on a mock function or a jasmine spy');
             }
-            let calls = actual.mock.calls;
-            if (isSpyLike(actual)) {
-              calls = actual.calls.all().map(x => x.args);
-            }
-
+            const calls = isSpy ? actual.calls.all().map(x => x.args) : actual.mock.calls;
             const pass = calls.length !== 0;
             const message = (
               pass ?
@@ -84,18 +81,14 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       lastCalledWith: (util/*, customEqualityTesters */) => {
         return {
           compare: function(actual) {
-            if (!isMockLike(actual) && !isSpyLike(actual)) {
+            const isSpy = isSpyLike(actual);
+            if (!isSpy && !isMockLike(actual)) {
               throw Error('lastCalledWith() should be used on a mock function or a jasmine spy');
             }
-            let calls = actual.mock.calls;
-            if (isSpyLike(actual)) {
-              calls = actual.calls.all().map(x => x.args);
-            }
-
+            const calls = isSpy ? actual.calls.all().map(x => x.args) : actual.mock.calls;
             const expected = Array.prototype.slice.call(arguments, 1);
             const actualValues = calls[calls.length - 1];
             const pass = util.equals(actualValues, expected);
-
             if (!pass) {
               return {
                 pass,
@@ -110,7 +103,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 },
               };
             }
-
             return {
               pass,
               get message() {
@@ -128,20 +120,14 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       toBeCalledWith: (util/*, customEqualityTesters */) => {
         return {
           compare: function(actual) {
-            if (!isMockLike(actual) && !isSpyLike(actual)) {
+            const isSpy = isSpyLike(actual);
+            if (!isMockLike(actual) && !isSpy) {
               throw Error('toBeCalledWith() should be used on a mock function or a jasmine spy');
             }
-            let calls = actual.mock.calls;
+            const calls = isSpy ? actual.calls.all().map(x => x.args) : actual.mock.calls;
             const expected = Array.prototype.slice.call(arguments, 1);
-
-            if (isSpyLike(actual)) {
-              calls = actual.calls.all().map(x => x.args);
-            }
-
             const pass = calls.some(call => util.equals(call, expected));
-
             if (!pass) {
-
               return {
                 pass,
                 get message() {
@@ -153,7 +139,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 },
               };
             }
-
             return {
               pass,
               get message() {

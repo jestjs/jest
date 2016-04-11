@@ -19,7 +19,7 @@ const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
 const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
 
 function isSpyLike(test) {
-  return test.calls;
+  return test.calls !== undefined;
 }
 function isMockLike(test) {
   return test.mock !== undefined;
@@ -191,29 +191,31 @@ function jasmine1(config, environment, moduleLoader, testPath) {
             'toBeCalled() does not accept parameters, use toBeCalledWith instead'
           );
         }
-
-        if (!isMockLike(this.actual) && !isSpyLike(this.actual)) {
+        const isSpy = isSpyLike(this.actual);
+        if (!isSpy && !isMockLike(this.actual)) {
           throw Error('lastCalledWith() should be used on a mock function or a jasmine spy');
         }
-        const calls = this.actual.mock ? this.actual.mock.calls : this.actual.calls.map(x => x.args);
+        const calls = isSpy ? this.actual.calls.map(x => x.args) : this.actual.mock.calls;
         return calls.length !== 0;
       },
 
       lastCalledWith: function() {
-        if (!isMockLike(this.actual) && !isSpyLike(this.actual)) {
+        const isSpy = isSpyLike(this.actual);
+        if (!isSpy && !isMockLike(this.actual)) {
           throw Error('lastCalledWith() should be used on a mock function or a jasmine spy');
         }
-        const calls = this.actual.mock ? this.actual.mock.calls : this.actual.calls.map(x => x.args);
+        const calls = isSpy ? this.actual.calls.map(x => x.args) : this.actual.mock.calls;
         const args = Array.prototype.slice.call(arguments);
         this.env.currentSpec.expect(calls[calls.length - 1]).toEqual(args);
         return true;
       },
 
       toBeCalledWith: function() {
-        if (!isMockLike(this.actual) && !isSpyLike(this.actual)) {
+        const isSpy = isSpyLike(this.actual);
+        if (!isSpy && !isMockLike(this.actual)) {
           throw Error('toBeCalledWith() should be used on a mock function or a jasmine spy');
         }
-        const calls = this.actual.mock ? this.actual.mock.calls : this.actual.calls.map(x => x.args);
+        const calls = isSpy ? this.actual.calls.map(x => x.args) : this.actual.mock.calls;
 
         const args = Array.prototype.slice.call(arguments);
 
