@@ -64,6 +64,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`setupFiles` [array]](#setupfiles-array)
   - [`setupTestFrameworkScriptFile` [string]](#setuptestframeworkscriptfile-string)
   - [`testDirectoryName` [string]](#testdirectoryname-string)
+  - [`testEnvironment` [string]](#testEnvironment-string)
   - [`testFileExtensions` [array<string>]](#testfileextensions-array-string)
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
@@ -505,6 +506,11 @@ For example, Jest ships with several plug-ins to `jasmine` that work by monkey-p
 The name of directories that Jest should expect to find tests in.
 
 For example, many node projects prefer to put their tests in a `tests` directory.
+
+### `testEnvironment` [string]
+(default: `'jsdom'`)
+
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
 
 ### `testFileExtensions` [array<string>]
 (default: `['js']`)
