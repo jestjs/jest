@@ -49,6 +49,13 @@ jest.unmock('../__test_modules__/' + 'c');
 jest.dontMock('../__test_modules__/Mocked');
 
 describe('babel-plugin-jest-hoist', () => {
+
+  it('does not throw during transform', () => {
+    const object = {};
+    object.__defineGetter__('foo', () => 'bar');
+    expect(object.foo).toEqual('bar');
+  });
+
   it('hoists react unmock call before imports', () => {
     expect(typeof React).toEqual('object');
     expect(React.isValidElement.mock).toBe(undefined);

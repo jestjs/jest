@@ -46,7 +46,7 @@ class FakeTimers {
     // If there's a process.nextTick on the global, mock it out
     // (only applicable to node/node-emulating environments)
     if (typeof global.process === 'object'
-        && typeof global.process.nextTick === 'function') {
+      && typeof global.process.nextTick === 'function') {
       this._originalTimerAPIs.nextTick = global.process.nextTick;
       this._fakeTimerAPIs.nextTick = mocks.getMockFn().mockImpl(
         this._fakeNextTick.bind(this)
@@ -57,7 +57,7 @@ class FakeTimers {
     if (typeof global.setImmediate === 'function') {
       this._originalTimerAPIs.setImmediate = global.setImmediate;
       this._fakeTimerAPIs.setImmediate = mocks.getMockFn().mockImpl(
-          this._fakeSetImmediate.bind(this)
+        this._fakeSetImmediate.bind(this)
       );
       this._originalTimerAPIs.clearImmediate = global.clearImmediate;
       this._fakeTimerAPIs.clearImmediate = mocks.getMockFn().mockImpl(

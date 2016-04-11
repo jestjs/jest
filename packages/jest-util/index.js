@@ -22,21 +22,7 @@ function replacePathSepForRegex(str) {
   return str;
 }
 
-function deepCopy(obj) {
-  const newObj = {};
-  let value;
-  for (const key in obj) {
-    value = obj[key];
-    if (typeof value === 'object' && value !== null) {
-      value = deepCopy(value);
-    }
-    newObj[key] = value;
-  }
-  return newObj;
-}
-
 exports.cleanStackTrace = formatMessages.cleanStackTrace;
-exports.deepCopy = deepCopy;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatFailureMessage = formatMessages.formatFailureMessage;
 exports.replacePathSepForRegex = replacePathSepForRegex;

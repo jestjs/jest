@@ -11,10 +11,10 @@
 
 jest.unmock('jest-util')
   .unmock('../../constants')
-  .unmock('../../config/normalize')
+  .unmock('../normalize')
   .unmock('chalk');
 
-describe('utils-normalizeConfig', () => {
+describe('normalize', () => {
   let path;
   let root;
   let utils;
@@ -48,7 +48,7 @@ describe('utils-normalizeConfig', () => {
     expectedPathAbs = path.join(root, 'an', 'abs', 'path');
     expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
     utils = require('jest-util');
-    normalizeConfig = require('../../config/normalize');
+    normalizeConfig = require('../normalize');
   });
 
   it('errors when an invalid config option is passed in', () => {
@@ -397,15 +397,47 @@ describe('utils-normalizeConfig', () => {
     });
   });
 
+  describe('testEnvironment', () => {
+    let resolveNodeModule;
+    beforeEach(() => {
+      resolveNodeModule = require('../../lib/resolveNodeModule');
+      resolveNodeModule.mockImplementation(name => {
+        if (name === 'jsdom') {
+          return 'node_modules/jest-environment-jsdom';
+        } else if (name === 'phantom') {
+          return null;
+        }
+      });
+    });
+
+    it('correctly resolves to an environment', () => {
+      const config = normalizeConfig({
+        rootDir: '/root',
+        testEnvironment: 'jsdom',
+      });
+
+      expect(config.testEnvironment).toEqual('node_modules/jest-environment-jsdom');
+    });
+
+    it('throws on invalid environment names', () => {
+      expect(() => normalizeConfig({
+        rootDir: '/root',
+        testEnvironment: 'phantom',
+      })).toThrow(new Error(
+        `Jest: test environment "phantom" cannot be found. Make sure the ` +
+        `"testEnvironment" configuration option points to an existing node module.`
+      ));
+    });
+  });
+
   describe('babel-jest', () => {
     let resolveNodeModule;
     beforeEach(() => {
-      resolveNodeModule = require('../resolveNodeModule');
+      resolveNodeModule = require('../../lib/resolveNodeModule');
       resolveNodeModule.mockImplementation(name => 'node_modules/' + name);
     });
 
     it('correctly identifies and uses babel-jest', () => {
-
       const config = normalizeConfig({
         rootDir: '/root',
       });

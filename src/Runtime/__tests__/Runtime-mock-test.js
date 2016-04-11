@@ -10,7 +10,7 @@
 'use strict';
 
 jest.disableAutomock();
-jest.mock('../../environments/JSDOMEnvironment');
+jest.mock('jest-environment-jsdom');
 
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
@@ -41,7 +41,7 @@ describe('Runtime', () => {
   beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
-    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
+    JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
   describe('jest.mock', () => {
