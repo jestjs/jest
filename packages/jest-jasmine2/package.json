@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "10.0.1",
+  "version": "10.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,12 +9,12 @@
   "main": "src/index.js",
   "dependencies": {
     "graceful-fs": "^4.1.3",
-    "jest-util": "^10.0.1"
+    "jest-util": "^10.0.2"
   },
   "scripts": {
     "test": "../../bin/jest.js"
   },
   "jest": {
-    "testEnvironment": "<rootDir>/../../src/environments/NodeEnvironment"
+    "testEnvironment": "node"
   }
 }

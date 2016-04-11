@@ -7,7 +7,8 @@
   [#599](https://github.com/facebook/jest/pull/599)
 * Jasmine 2 is now the default test runner. To keep using Jasmine 1, put
   `testRunner: "jasmine1"` into your configuration.
-* Added `jest-util`, `jest-mock`, `jest-jasmine1`, `jest-jasmine2` packages.
+* Added `jest-util`, `jest-mock`, `jest-jasmine1`, `jest-jasmine2`,
+  `jest-environment-node`, `jest-environment-jsdom` packages.
 * Added `babel-jest-preset` and `babel-jest` as packages. `babel-jest` is now
   being auto-detected.
 * Added `babel-plugin-jest-hoist` which hoists `jest.unmock`, `jest.mock` and
@@ -41,6 +42,7 @@
 * Improved `toBeCalled` Jasmine 2 custom matcher messages.
 * Improved error reporting when a syntax error occurs.
 * Renamed HasteModuleLoader to Runtime.
+* Updated jsdom to 8.3.x.
 * Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
 * Added a `testEnvironment` option to customize the sandbox environment.
 * Added support for `@scoped/name` npm packages.

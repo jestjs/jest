@@ -10,7 +10,7 @@
 'use strict';
 
 jest.disableAutomock();
-jest.mock('../../environments/JSDOMEnvironment');
+jest.mock('jest-environment-jsdom');
 
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
@@ -42,7 +42,7 @@ describe('Runtime', function() {
     process.env.NODE_PATH = nodePath;
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
-    JSDOMEnvironment = require('../../environments/JSDOMEnvironment');
+    JSDOMEnvironment = require('jest-environment-jsdom');
   }
 
   pit('uses NODE_PATH to find modules', function() {

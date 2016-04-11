@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-jest-hoist",
-  "version": "10.0.1",
+  "version": "10.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -13,7 +13,7 @@
   },
   "jest": {
     "scriptPreprocessor": "../babel-jest",
-    "testEnvironment": "<rootDir>/../../src/environments/NodeEnvironment"
+    "testEnvironment": "../jest-environment-node"
   },
   "scripts": {
     "prepublish": "npm test",

@@ -50,6 +50,32 @@ function _replaceRootDirTags(rootDir, config) {
   return config;
 }
 
+function getTestEnvironment(config) {
+  const env = config.testEnvironment;
+  let module = resolveNodeModule(env, config.rootDir);
+  if (module) {
+    return module;
+  }
+
+  module = resolveNodeModule(`jest-environment-${env}`, config.rootDir);
+  if (module) {
+    return module;
+  }
+
+  try {
+    return require.resolve(env);
+  } catch (e) {}
+
+  try {
+    return require.resolve(`jest-environment-${env}`);
+  } catch (e) {}
+
+  throw new Error(
+    `Jest: test environment "${env}" cannot be found. Make sure the ` +
+    `"testEnvironment" configuration option points to an existing node module.`
+  );
+}
+
 function normalize(config, argv) {
   if (!argv) {
     argv = {};
@@ -90,6 +116,10 @@ function normalize(config, argv) {
         `Jest: Invalid testRunner path: ${config.testRunner}`
       );
     }
+  }
+
+  if (config.testEnvironment) {
+    config.testEnvironment = getTestEnvironment(config);
   }
 
   let babelJest;

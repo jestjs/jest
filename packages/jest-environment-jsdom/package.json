@@ -1,5 +1,5 @@
 {
-  "name": "jest-mock",
+  "name": "jest-environment-jsdom",
   "version": "10.0.2",
   "repository": {
     "type": "git",
@@ -7,10 +7,8 @@
   },
   "license": "BSD-3-Clause",
   "main": "src/index.js",
-  "scripts": {
-    "test": "../../bin/jest.js"
-  },
-  "jest": {
-    "testEnvironment": "node"
+  "dependencies": {
+    "jsdom": "^8.3.1",
+    "jest-util": "^10.0.2"
   }
 }

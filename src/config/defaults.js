@@ -29,7 +29,7 @@ module.exports = {
   moduleNameMapper: [],
   testDirectoryName: '__tests__',
   mocksPattern: '__mocks__',
-  testEnvironment: require.resolve('../environments/JSDOMEnvironment'),
+  testEnvironment: 'jest-environment-jsdom',
   testEnvData: {},
   testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
