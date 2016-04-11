@@ -1,57 +1,51 @@
 ## master
 
-## jest-cli 0.10.0, babel-jest 10.0.0
-
-* Improved `toBeCalled` Jasmine 2 custom matcher messages.
-* Added `babel-plugin-jest-hoist` which now also hoists `jest.mock` and the
-  new `jest.enableAutomock` and `jest.disableAutomock` API.
-* Fixed `moduleNameMapper` config option when used with paths.
-* Added `jest-util`, `jest-mock`, `jest-jasmine1`, `jest-jasmine2` packages.
-* Fixed an error with Jasmine 2 and tests that `throw 'string errors'`.
-* Fixed issues with unmocking symlinked module names.
-* Clear the terminal window when using `--watch`.
-* By default, `--watch` will now only runs tests related to changed files.
-  `--watch=all` can be used to run all tests on file system changes.
-* Added the `jest.mock('moduleName', moduleFactory)` feature. `jest.mock` now
-  gets hoisted by default. `jest.doMock` was added to explicitly mock a module
-  without the hoisting feature of `babel-jest`.
-
-## jest-cli 0.9.2, babel-jest 9.0.3
-
-* Improved responsiveness of the system while using `--watch`.
-* Fixed `jest -o` issue when no files were changed.
-* Improved code coverage reporting when using `babel-jest`.
-* Improved error reporting when a syntax error occurs.
-* Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
-
-## 0.9.1
-
-* Fixed `--watch`.
-* Improved `babel-jest` integration and `react-native` testing.
-
-## 0.9.0
+## jest-cli 11.0.0, babel-jest 11.0.0 (pre-releases 0.9 to 0.10)
 
 * New implementation of node-haste and rewrite of internal module loading and
   resolution. Fixed both startup and runtime performance.
   [#599](https://github.com/facebook/jest/pull/599)
-* Improved verbose logger output
-* Fixed and improved `--onlyChanged` option.
-* Added a "no tests found" message if no tests can be found.
+* Jasmine 2 is now the default test runner. To keep using Jasmine 1, put
+  `testRunner: "jasmine1"` into your configuration.
+* Added `jest-util`, `jest-mock`, `jest-jasmine1`, `jest-jasmine2` packages.
+* Added `babel-jest-preset` and `babel-jest` as packages. `babel-jest` is now
+  being auto-detected.
+* Added `babel-plugin-jest-hoist` which hoists `jest.unmock`, `jest.mock` and
+  the new `jest.enableAutomock` and `jest.disableAutomock` API.
+* Improved `babel-jest` integration and `react-native` testing.
+* Improved code coverage reporting when using `babel-jest`.
+* Added the `jest.mock('moduleName', moduleFactory)` feature. `jest.mock` now
+  gets hoisted by default. `jest.doMock` was added to explicitly mock a module
+  without the hoisting feature of `babel-jest`.
+* Improved responsiveness of the system while using `--watch`.
+* Clear the terminal window when using `--watch`.
+* By default, `--watch` will now only runs tests related to changed files.
+  `--watch=all` can be used to run all tests on file system changes.
 * Debounce `--watch` re-runs to not trigger test runs during a
   branch switch in version control.
+* Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for
+  `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
+* Added an `automock` option to turn off automocking globally.
+* Added a "no tests found" message if no tests can be found.
+* Jest sets `process.NODE_ENV` to `test` unless otherwise specified.
+* Fixed `moduleNameMapper` config option when used with paths.
+* Fixed an error with Jasmine 2 and tests that `throw 'string errors'`.
+* Fixed issues with unmocking symlinked module names.
 * Fixed mocking of boolean values.
 * Fixed mocking of fields that start with an underscore ("private fields").
 * Fixed unmocking behavior with npm3.
+* Fixed and improved `--onlyChanged` option.
+* Fixed support for running Jest as a git submodule.
+* Improved verbose logger output
 * Fixed test runtime error reporting and stack traces.
-* Jest sets `process.NODE_ENV` to `test` unless otherwise specified.
-* Added `babel-plugin-jest-unmock`, `babel-jest-preset` and `babel-jest`
-  as packages. `babel-jest` is now being auto-detected.
-* Added `jest.fn()` and `jest.fn(implementation)` as convenient shorcuts for
-  `jest.genMockFunction()` and `jest.genMockFunction().mockImplementation()`.
-* Jasmine 2 is now the default test runner. To keep using Jasmine 1, put
-  `testRunner: "jasmine1"` into your configuration.
-* Added an `automock` option to turn off automocking globally.
+* Improved `toBeCalled` Jasmine 2 custom matcher messages.
+* Improved error reporting when a syntax error occurs.
+* Renamed HasteModuleLoader to Runtime.
+* Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
 * Added a `testEnvironment` option to customize the sandbox environment.
+* Added support for `@scoped/name` npm packages.
+* Added an integration test runner for Jest that runs all tests for examples
+  and packages.
 
 ## 0.8.2
 

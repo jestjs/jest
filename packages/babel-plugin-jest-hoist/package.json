@@ -8,11 +8,11 @@
   "license": "BSD-3-Clause",
   "main": "src/index.js",
   "devDependencies": {
-    "babel-jest": "*",
     "babel-preset-es2015": "*",
     "react": "^0.14.0"
   },
   "jest": {
+    "scriptPreprocessor": "../babel-jest",
     "testEnvironment": "<rootDir>/../../src/environments/NodeEnvironment"
   },
   "scripts": {
