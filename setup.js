@@ -17,10 +17,14 @@ const lerna = (isWindows ? 'lerna.cmd' : 'lerna');
 
 const cmds = [
   ['.', path.resolve(__dirname, './node_modules/.bin/' + lerna), 'bootstrap'],
+  ['packages/jest-environment-jsdom', npm, 'link'],
+  ['packages/jest-environment-node', npm, 'link'],
   ['packages/jest-jasmine1', npm, 'link'],
   ['packages/jest-jasmine2', npm, 'link'],
   ['packages/jest-mock', npm, 'link'],
   ['packages/jest-util', npm, 'link'],
+  ['.', npm, 'link jest-environment-jsdom'],
+  ['.', npm, 'link jest-environment-node'],
   ['.', npm, 'link jest-jasmine1'],
   ['.', npm, 'link jest-jasmine2'],
   ['.', npm, 'link jest-mock'],

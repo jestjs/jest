@@ -78,7 +78,7 @@ if (!isWindows) {
           @SET PATHEXT=%PATHEXT:;.JS;=;%
           node  "${currentJest}" %*
         )`,
-        function(err) {
+        (err) => {
           if (err) {
             throw err;
           }

@@ -6,22 +6,22 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
-const path = require('path');
-const fs = require('fs');
-
-let notNPM = true;
-const setup_file = path.resolve(__dirname, './setup.js');
-try {
-  fs.accessSync(setup_file);
-} catch (e) {
-  notNPM = false;
-}
 
 const execute = require('./execute');
+const fs = require('fs');
+const path = require('path');
 
-if (
-  notNPM ||
-  process.env.NODE_ENV === 'production'
-) {
-  execute('.', 'node', setup_file);
+const getSetupFile = () => {
+  try {
+    const setupFile = path.resolve(__dirname, './setup.js');
+    fs.accessSync(setupFile, fs.R_OK);
+    return setupFile;
+  } catch (e) {
+    return null;
+  }
+};
+
+const setupFile = getSetupFile();
+if (setupFile) {
+  execute('.', 'node', setupFile);
 }
