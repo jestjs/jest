@@ -10,4 +10,4 @@ If you are already using `jest-cli`, just add `babel-jest` and it will automatic
 npm install --save babel-jest
 ```
 
-If you would like to write your own preprocessor, uninstall and delete babel-jest and set the [config.scriptPreprocessor](http://facebook.github.io/jest/docs/api.html#config-scriptpreprocessor-string) option to your preprocessor.
+If you would like to write your own preprocessor, uninstall and delete babel-jest and set the [config.scriptPreprocessor](http://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string) option to your preprocessor.
