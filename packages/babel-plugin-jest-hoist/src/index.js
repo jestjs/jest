@@ -73,54 +73,56 @@ const IDVisitor = {
   },
 };
 
-const FUNCTIONS = {
-  mock: args => {
-    if (args.length === 1) {
-      return args[0].isStringLiteral();
-    } else if (args.length === 2) {
-      const moduleFactory = args[1];
-      invariant(
-        moduleFactory.isFunction(),
-        'The second argument of `jest.mock` must be a function.'
-      );
+const FUNCTIONS = Object.create(null);
+FUNCTIONS.mock = args => {
+  if (args.length === 1) {
+    return args[0].isStringLiteral();
+  } else if (args.length === 2) {
+    const moduleFactory = args[1];
+    invariant(
+      moduleFactory.isFunction(),
+      'The second argument of `jest.mock` must be a function.'
+    );
 
-      const ids = new Set();
-      const parentScope = moduleFactory.parentPath.scope;
-      moduleFactory.traverse(IDVisitor, {ids});
-      for (const id of ids) {
-        const name = id.node.name;
-        let found = false;
-        let scope = id.scope;
+    const ids = new Set();
+    const parentScope = moduleFactory.parentPath.scope;
+    moduleFactory.traverse(IDVisitor, {ids});
+    for (const id of ids) {
+      const name = id.node.name;
+      let found = false;
+      let scope = id.scope;
 
-        while (scope !== parentScope) {
-          if (scope.bindings[name]) {
-            found = true;
-            break;
-          }
-
-          scope = scope.parent;
+      while (scope !== parentScope) {
+        if (scope.bindings[name]) {
+          found = true;
+          break;
         }
 
-        if (!found) {
-          invariant(
-            scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name],
-            'The second argument of `jest.mock()` is not allowed to ' +
-            'reference any outside variables.\n' +
-            'Invalid variable access: ' + name + '\n' +
-            'Whitelisted objects: ' +
-            Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.'
-          );
-        }
+        scope = scope.parent;
       }
 
-      return true;
+      if (!found) {
+        invariant(
+          scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name],
+          'The second argument of `jest.mock()` is not allowed to ' +
+          'reference any outside variables.\n' +
+          'Invalid variable access: ' + name + '\n' +
+          'Whitelisted objects: ' +
+          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.'
+        );
+      }
     }
-    return false;
-  },
-  unmock: args => args.length === 1 && args[0].isStringLiteral(),
-  disableAutomock: args => args.length === 0,
-  enableAutomock: args => args.length === 0,
+
+    return true;
+  }
+  return false;
 };
+
+FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
+
+FUNCTIONS.disableAutomock =
+  FUNCTIONS.enableAutomock =
+    args => args.length === 0;
 
 module.exports = babel => {
   const shouldHoistExpression = expr => {
