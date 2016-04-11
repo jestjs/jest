@@ -44,7 +44,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
   - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
 
-#### Config options
+#### Configuration
 
   - [`config.automock` [boolean]](#config-automock-boolean)
   - [`config.bail` [boolean]](#config-bail-boolean)
@@ -338,9 +338,28 @@ whether the module should be required normally or not.
 
 ## Configuration
 
-Configuration can be defined via the jest block within [`packages.json`](https://github.com/facebook/jest/blob/master/examples/react/package.json)
-or passed as command line arguments as follows:
-`jest --testRunner 'jasmine1'`
+Jest's configuration can be defined in the `package.json` file of your project
+or through the `--config <path/to/config.json>` option. If you'd like to use
+your `package.json` to store Jest's config, the "jest" key should be used on the
+top level so Jest will know how to find your settings:
+
+```js
+{
+  "name": "my-project",
+  "jest": {
+    "verbose": true
+  }
+}
+```
+
+When using the --config option, the JSON file must not contain a "jest" key:
+
+```js
+{
+  "bail": true,
+  "verbose": true
+}
+```
 
 ### `config.automock` [boolean]
 (default: true)
