@@ -162,7 +162,7 @@ function runJest(config, argv, pipe, onComplete) {
           'This is most likely a setup ',
           'or configuration issue. To resolve a module name collision, ',
           'change or blacklist one of the offending modules. See ',
-          'http://facebook.github.io/jest/docs/api.html#config-modulepathignorepatterns-array-string',
+          'http://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string',
         ].join(''));
       } else {
         console.error(
