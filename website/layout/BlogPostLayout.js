@@ -7,8 +7,6 @@
 
 var BlogPost = require('BlogPost');
 var BlogSidebar = require('BlogSidebar');
-var Marked = require('Marked');
-var MetadataBlog = require('MetadataBlog');
 var React = require('React');
 var Site = require('Site');
 
@@ -17,6 +15,7 @@ var BlogPostLayout = React.createClass({
     return (
       <Site
         section="blog"
+        url={'blog/' + this.props.metadata.path}
         title={this.props.metadata.title}
         description={this.props.children.trim().split('\n')[0]}>
         <section className="content wrap documentationContent">
