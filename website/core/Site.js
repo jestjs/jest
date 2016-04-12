@@ -13,6 +13,9 @@ var Site = React.createClass({
       ? this.props.title + ' · Jest'
       : 'Jest · ' + tagline;
     var description = this.props.description || tagline;
+    var url =
+      'https://facebook.github.io/jest/' + (this.props.url || 'index.html');
+
     return (
       <html>
         <head>
@@ -22,7 +25,7 @@ var Site = React.createClass({
           <meta name="viewport" content="width=device-width" />
           <meta property="og:title" content={title} />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://facebook.github.io/jest/index.html" />
+          <meta property="og:url" content={url} />
           <meta property="og:image" content="https://facebook.github.io/jest/img/opengraph.png" />
           <meta property="og:description" content={description} />
 
