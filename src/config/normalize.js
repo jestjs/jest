@@ -211,7 +211,6 @@ function normalize(config, argv) {
         );
         break;
       case 'bail':
-      case 'preprocessCachingDisabled':
       case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':

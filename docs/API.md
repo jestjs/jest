@@ -57,14 +57,13 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
   - [`moduleNameMapper` [object<string, string>]](#modulenamemapper-object-string-string)
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
-  - [`preprocessCachingDisabled` [boolean]](#preprocesscachingdisabled-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
   - [`rootDir` [string]](#rootdir-string)
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
   - [`setupFiles` [array]](#setupfiles-array)
   - [`setupTestFrameworkScriptFile` [string]](#setuptestframeworkscriptfile-string)
   - [`testDirectoryName` [string]](#testdirectoryname-string)
-  - [`testEnvironment` [string]](#testEnvironment-string)
+  - [`testEnvironment` [string]](#testenvironment-string)
   - [`testFileExtensions` [array<string>]](#testfileextensions-array-string)
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
@@ -455,11 +454,6 @@ Example:
     "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
 ```
-
-### `preprocessCachingDisabled` [boolean]
-(default: `false`)
-
-Disables caching for preprocessed files. The preprocess cache is a performance optimization and should not be disabled unless there are unresolvable issues with reading/writing files from the cache directory.
 
 ### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)

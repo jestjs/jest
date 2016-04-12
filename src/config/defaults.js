@@ -41,7 +41,6 @@ module.exports = {
   noHighlight: false,
   colors: false,
   noStackTrace: false,
-  preprocessCachingDisabled: false,
   verbose: false,
   useStderr: false,
 };

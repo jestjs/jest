@@ -75,9 +75,13 @@ describe('Runtime', function() {
           hasThrown = true;
 
           if (process.platform === 'win32') {
-            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+Runtime\\__tests__\\test_root\\throwing-fn.js:12:9/);
+            expect(err.stack).toMatch(
+              /^Error: throwing fn\s+at sum.+Runtime\\__tests__\\test_root\\throwing-fn.js:12:9/
+            );
           } else {
-            expect(err.stack).toMatch(/^Error: throwing fn\s+at sum.+Runtime\/__tests__\/test_root\/throwing-fn.js:12:9/);
+            expect(err.stack).toMatch(
+              /^Error: throwing fn\s+at sum.+Runtime\/__tests__\/test_root\/throwing-fn.js:12:9/
+            );
           }
         }
         expect(hasThrown).toBe(true);

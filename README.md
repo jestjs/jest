@@ -269,35 +269,35 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`require.requireActual(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requireactual-modulename)
   - [`require.requireMock(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requiremock-modulename)
 
-#### Config options
+#### [Configuration Options](https://facebook.github.io/jest/docs/api.html#configuration)
 
-  - [`config.automock` [boolean]](https://facebook.github.io/jest/docs/api.html#automock-boolean)
-  - [`config.bail` [boolean]](https://facebook.github.io/jest/docs/api.html#bail-boolean)
-  - [`config.cache` [boolean]](https://facebook.github.io/jest/docs/api.html#cache-boolean)
-  - [`config.cacheDirectory` [string]](https://facebook.github.io/jest/docs/api.html#cachedirectory-string)
-  - [`config.collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#collectcoverage-boolean)
-  - [`config.collectCoverageOnlyFrom` [object]](https://facebook.github.io/jest/docs/api.html#collectcoverageonlyfrom-object)
-  - [`config.globals` [object]](https://facebook.github.io/jest/docs/api.html#globals-object)
-  - [`config.mocksPattern` [string]](https://facebook.github.io/jest/docs/api.html#mockspattern-string)
-  - [`config.moduleFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulefileextensions-array-string)
-  - [`config.moduleNameMapper` [object<string, string>]](https://facebook.github.io/jest/docs/api.html#modulenamemapper-object-string-string)
-  - [`config.modulePathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string)
-  - [`config.preprocessCachingDisabled` [boolean]](https://facebook.github.io/jest/docs/api.html#preprocesscachingdisabled-boolean)
-  - [`config.preprocessorIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string)
-  - [`config.rootDir` [string]](https://facebook.github.io/jest/docs/api.html#rootdir-string)
-  - [`config.scriptPreprocessor` [string]](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string)
-  - [`config.setupFiles` [array]](https://facebook.github.io/jest/docs/api.html#setupfiles-array)
-  - [`config.setupTestFrameworkScriptFile` [string]](https://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string)
-  - [`config.testDirectoryName` [string]](https://facebook.github.io/jest/docs/api.html#testdirectoryname-string)
-  - [`config.testFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#testfileextensions-array-string)
-  - [`config.testPathDirs` [array<string>]](https://facebook.github.io/jest/docs/api.html#testpathdirs-array-string)
-  - [`config.testPathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#testpathignorepatterns-array-string)
-  - [`config.testPathPattern` [string]](https://facebook.github.io/jest/docs/api.html#testpathpattern-string)
-  - [`config.testResultsProcessor` [string]](https://facebook.github.io/jest/docs/api.html#testresultsprocessor-string)
-  - [`config.testRunner` [string]](https://facebook.github.io/jest/docs/api.html#testrunner-string)
-  - [`config.unmockedModulePathPatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#unmockedmodulepathpatterns-array-string)
-  - [`config.verbose` [boolean]](https://facebook.github.io/jest/docs/api.html#verbose-boolean)
-  - [`config.watchman` [boolean]](https://facebook.github.io/jest/docs/api.html#watchman-boolean)
+  - [`automock` [boolean]](https://facebook.github.io/jest/docs/api.html#automock-boolean)
+  - [`bail` [boolean]](https://facebook.github.io/jest/docs/api.html#bail-boolean)
+  - [`cache` [boolean]](https://facebook.github.io/jest/docs/api.html#cache-boolean)
+  - [`cacheDirectory` [string]](https://facebook.github.io/jest/docs/api.html#cachedirectory-string)
+  - [`collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#collectcoverage-boolean)
+  - [`collectCoverageOnlyFrom` [object]](https://facebook.github.io/jest/docs/api.html#collectcoverageonlyfrom-object)
+  - [`globals` [object]](https://facebook.github.io/jest/docs/api.html#globals-object)
+  - [`mocksPattern` [string]](https://facebook.github.io/jest/docs/api.html#mockspattern-string)
+  - [`moduleFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulefileextensions-array-string)
+  - [`moduleNameMapper` [object<string, string>]](https://facebook.github.io/jest/docs/api.html#modulenamemapper-object-string-string)
+  - [`modulePathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string)
+  - [`preprocessorIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string)
+  - [`rootDir` [string]](https://facebook.github.io/jest/docs/api.html#rootdir-string)
+  - [`scriptPreprocessor` [string]](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string)
+  - [`setupFiles` [array]](https://facebook.github.io/jest/docs/api.html#setupfiles-array)
+  - [`setupTestFrameworkScriptFile` [string]](https://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string)
+  - [`testDirectoryName` [string]](https://facebook.github.io/jest/docs/api.html#testdirectoryname-string)
+  - [`testEnvironment` [string]](https://facebook.github.io/jest/docs/api.html#testenvironment-string)
+  - [`testFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#testfileextensions-array-string)
+  - [`testPathDirs` [array<string>]](https://facebook.github.io/jest/docs/api.html#testpathdirs-array-string)
+  - [`testPathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#testpathignorepatterns-array-string)
+  - [`testPathPattern` [string]](https://facebook.github.io/jest/docs/api.html#testpathpattern-string)
+  - [`testResultsProcessor` [string]](https://facebook.github.io/jest/docs/api.html#testresultsprocessor-string)
+  - [`testRunner` [string]](https://facebook.github.io/jest/docs/api.html#testrunner-string)
+  - [`unmockedModulePathPatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#unmockedmodulepathpatterns-array-string)
+  - [`verbose` [boolean]](https://facebook.github.io/jest/docs/api.html#verbose-boolean)
+  - [`watchman` [boolean]](https://facebook.github.io/jest/docs/api.html#watchman-boolean)
 
 #### Globally injected variables
 
@@ -563,7 +563,30 @@ whether the module should be required normally or not.
 
 ## Configuration
 
-### `config.automock` [boolean]
+Jest's configuration can be defined in the `package.json` file of your project
+or through the `--config <path/to/json>` option. If you'd like to use
+your `package.json` to store Jest's config, the "jest" key should be used on the
+top level so Jest will know how to find your settings:
+
+```js
+{
+  "name": "my-project",
+  "jest": {
+    "verbose": true
+  }
+}
+```
+
+When using the --config option, the JSON file must not contain a "jest" key:
+
+```js
+{
+  "bail": true,
+  "verbose": true
+}
+```
+
+### `automock` [boolean]
 (default: true)
 
 By default, Jest mocks every module automatically. If you are building a small
@@ -571,19 +594,19 @@ JavaScript library and would like to use Jest, you may not want to use
 automocking. You can disable this option and create manual mocks or explicitly
 mock modules using `jest.mock(moduleName)`.
 
-### `config.bail` [boolean]
+### `bail` [boolean]
 (default: false)
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
-### `config.cache` [boolean]
+### `cache` [boolean]
 (default: true)
 
 By default, Jest caches heavily to speed up subsequent test runs. Sometimes this
 may not be desirable and can be turned off. *Note: it is generally better
 not to disable this feature, but rather run Jest with `--no-cache` once.*
 
-### `config.cacheDirectory` [string]
+### `cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
 
 The directory where Jest should store it's cached dependency information.
@@ -592,17 +615,17 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 
 By default, it will be stored in a .haste_cache directory that sits in the jest-cli directory. This intentionally doesn't default to somewhere in your repo to spare the common case from having to add this to your .gitignore/.hgignore/etc.
 
-### `config.collectCoverage` [boolean]
+### `collectCoverage` [boolean]
 (default: `false`)
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-### `config.collectCoverageOnlyFrom` [object]
+### `collectCoverageOnlyFrom` [object]
 (default: `undefined`)
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
 
-### `config.globals` [object]
+### `globals` [object]
 (default: `{}`)
 
 A set of global variables that need to be available in all test environments.
@@ -622,29 +645,29 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
-### `config.mocksPattern` [string]
+### `mocksPattern` [string]
 (default: `(?:[\\/]|^)__mocks__[\\/]`)
 
 A pattern that is matched against file paths to determine which folder contains manual mocks.
 
-### `config.moduleFileExtensions` [array<string>]
+### `moduleFileExtensions` [array<string>]
 (default: `['js', 'json', 'node']`)
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
 If you are using TypeScript this should be `['js', 'json', 'ts']`
 
-### `config.modulePathIgnorePatterns` [array<string>]
+### `modulePathIgnorePatterns` [array<string>]
 (default: `[]`)
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
-### `config.moduleNameMapper` [object<string, string>]
+### `moduleNameMapper` [object<string, string>]
 (default: `null`)
 
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
-Use `<rootDir>` string token to refer to [`config.rootDir`](https://facebook.github.io/jest/docs/api.html#rootdir-string) value if you want to use file paths.
+Use `<rootDir>` string token to refer to [`rootDir`](https://facebook.github.io/jest/docs/api.html#rootdir-string) value if you want to use file paths.
 
 Additionally, you can substitute captured regex groups using numbered backreferences.
 
@@ -657,21 +680,16 @@ Example:
   }
 ```
 
-### `config.preprocessCachingDisabled` [boolean]
-(default: `false`)
-
-Disables caching for preprocessed files. The preprocess cache is a performance optimization and should not be disabled unless there are unresolvable issues with reading/writing files from the cache directory.
-
-### `config.rootDir` [string]
+### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
 
 The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo, the value for this config param will default to the directory of the `package.json`.
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
-*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`config.setupFiles`](https://facebook.github.io/jest/docs/api.html#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
+*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`setupFiles`](https://facebook.github.io/jest/docs/api.html#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
 
-### `config.scriptPreprocessor` [string]
+### `scriptPreprocessor` [string]
 (default: `undefined`)
 
 The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 to ES5 here.
@@ -680,61 +698,66 @@ Examples of such compilers include [jstransform](http://github.com/facebook/jstr
 
 *Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](https://facebook.github.io/jest/docs/troubleshooting.html#caching-issues).*
 
-### `config.preprocessorIgnorePatterns` [array<string>]
+### `preprocessorIgnorePatterns` [array<string>]
 (default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
 
 *Note: if this option is not specified by the user and Jest detects the project as a [react-native](https://github.com/facebook/react-native) project, it will ignore the default and process every file. It is common on react-native projects to ship npm modules without pre-compiling JavaScript.*
 
-### `config.setupFiles` [array]
+### `setupFiles` [array]
 (default: `[]`)
 
 The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in it's own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's worth noting that this code will execute *before* [`config.setupTestFrameworkScriptFile`](https://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string).
+It's worth noting that this code will execute *before* [`setupTestFrameworkScriptFile`](https://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string).
 
-### `config.setupTestFrameworkScriptFile` [string]
+### `setupTestFrameworkScriptFile` [string]
 (default: `undefined`)
 
-The path to a module that runs some code to configure or set up the testing framework before each test. Since [`config.setupFiles`](https://facebook.github.io/jest/docs/api.html#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](https://facebook.github.io/jest/docs/api.html#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
-### `config.testDirectoryName` [string]
+### `testDirectoryName` [string]
 (default: `'__tests__'`)
 
 The name of directories that Jest should expect to find tests in.
 
 For example, many node projects prefer to put their tests in a `tests` directory.
 
-### `config.testFileExtensions` [array<string>]
+### `testEnvironment` [string]
+(default: `'jsdom'`)
+
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
+
+### `testFileExtensions` [array<string>]
 (default: `['js']`)
 
 An array of file extensions that test files might have. Jest uses this when searching for tests to run.
 
-This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`config.scriptPreprocessor`](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string) too!)
+This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`scriptPreprocessor`](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string) too!)
 
-### `config.testPathDirs` [array<string>]
+### `testPathDirs` [array<string>]
 (default: `['<rootDir>']`)
 
 A list of paths to directories that Jest should use to search for tests in.
 
 There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
 
-### `config.testPathIgnorePatterns` [array<string>]
+### `testPathIgnorePatterns` [array<string>]
 (default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.
 
-### `config.testPathPattern` [string]
+### `testPathPattern` [string]
 (default: `/.*/`) - See notes below for more details on the default setting.
 
 A regexp pattern string that is matched against all test paths before executing the test. If the test path does not match the pattern, it will be skipped.
 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
-### `config.testResultsProcessor` [string]
+### `testResultsProcessor` [string]
 (default: `undefined`)
 
 This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument:
@@ -776,12 +799,12 @@ This option allows the use of a custom results processor. This processor must be
 }
 ```
 
-### `config.testRunner` [string]
+### `testRunner` [string]
 (default: `jasmine2`)
 
 This option allows use of a custom test runner. The default is jasmine2. Jest also ships with jasmine1 which can enabled by setting this option to `jasmine1`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
-### `config.unmockedModulePathPatterns` [array<string>]
+### `unmockedModulePathPatterns` [array<string>]
 (default: `[]`)
 
 An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them. If a module's path matches any of the patterns in this list, it will not be automatically mocked by the module loader.
@@ -790,12 +813,12 @@ This is useful for some commonly used 'utility' modules that are almost always u
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
 
-### `config.verbose` [boolean]
+### `verbose` [boolean]
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
 
-### `config.watchman` [boolean]
+### `watchman` [boolean]
 (default: `true`)
 
 [Watchman](https://facebook.github.io/watchman/) monitors the file system for
