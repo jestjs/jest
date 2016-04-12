@@ -34,11 +34,24 @@ const createDirectory = path => {
 };
 
 const getCacheKey = (preprocessor, fileData, filePath, config) => {
-  let configStr = configToJsonMap.get(config);
-  if (!configStr) {
-    configStr = stableStringify(config);
-    configToJsonMap.set(config, configStr);
+  if (!configToJsonMap.has(config)) {
+    // We only need this set of config options that can likely influence
+    // cached output instead of all config options.
+    configToJsonMap.set(config, stableStringify({
+      cacheDirectory: config.cacheDirectory,
+      haste: config.haste,
+      mocksPattern: config.mocksPattern,
+      moduleFileExtensions: config.moduleFileExtensions,
+      moduleNameMapper: config.moduleNameMapper,
+      modulePathIgnorePatterns: config.modulePathIgnorePatterns,
+      rootDir: config.rootDir,
+      testDirectoryName: config.testDirectoryName,
+      testFileExtensions: config.testFileExtensions,
+      testPathDirs: config.testPathDirs,
+      testPathIgnorePatterns: config.testPathIgnorePatterns,
+    }));
   }
+  const configStr = configToJsonMap.get(config);
   if (typeof preprocessor.getCacheKey === 'function') {
     return preprocessor.getCacheKey(fileData, filePath, configStr);
   } else {
@@ -84,8 +97,6 @@ const readCacheFile = (filePath, cachePath) => {
 module.exports = (filePath, config) => {
   const mtime = fs.statSync(filePath).mtime;
   const mapCacheKey = filePath + '_' + mtime.getTime();
-  const shouldCache =
-    config.preprocessCachingDisabled === false && config.cache === true;
 
   if (cache.has(mapCacheKey)) {
     return cache.get(mapCacheKey);
@@ -118,7 +129,7 @@ module.exports = (filePath, config) => {
       );
     }
 
-    if (shouldCache) {
+    if (config.cache === true) {
       const baseCacheDir = path.join(config.cacheDirectory, 'preprocess-cache');
       const cacheKey = getCacheKey(preprocessor, fileData, filePath, config);
       // Create sub folders based on the cacheKey to avoid creating one

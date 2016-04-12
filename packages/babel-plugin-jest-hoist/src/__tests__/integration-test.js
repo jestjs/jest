@@ -8,6 +8,8 @@
  * @emails oncall+jsinfra
  */
 
+/* eslint-disable no-useless-concat */
+
 'use strict';
 
 import React from 'react';

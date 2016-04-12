@@ -296,9 +296,9 @@ class Loader {
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
 
-    // Every module receives a mock parent so they don't assume they are run
-    // standalone.
+    moduleObj.children = [];
     moduleObj.parent = mockParentModule;
+    moduleObj.paths = [];
     moduleObj.require = this._createRequireImplementation(filename);
 
     const wrapperFunc = this._runSourceText(moduleContent, filename);
@@ -319,6 +319,7 @@ class Loader {
   }
 
   _runSourceText(moduleContent, filename) {
+    /* eslint-disable max-len */
     const config = this._config;
     const relative = filePath => path.relative(config.rootDir, filePath);
     const env = this._environment;
@@ -347,6 +348,7 @@ class Loader {
       }
       throw e;
     }
+    /* eslint-enable max-len */
   }
 
   _generateMock(currPath, moduleName) {

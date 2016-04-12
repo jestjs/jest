@@ -16,7 +16,9 @@ const FileWatcher = DependencyGraph.FileWatcher;
 const getCacheKey = require('../lib/getCacheKey');
 const path = require('path');
 
+/* eslint-disable max-len */
 const REQUIRE_EXTENSIONS_PATTERN = /(\b(?:require\s*?\.\s*?(?:requireActual|requireMock)|jest\s*?\.\s*?genMockFromModule)\s*?\(\s*?)(['"])([^'"]+)(\2\s*?\))/g;
+/* eslint-enable max-len */
 
 const createWatcher = config => {
   if (config.watchman && FileWatcher.canUseWatchman()) {
@@ -75,6 +77,9 @@ class HasteResolver {
         return this._updateModuleMappings(data);
       },
       shouldThrowOnUnresolvedErrors: () => false,
+      moduleOptions: {
+        cacheTransformResults: false,
+      },
     }));
 
     // warm-up

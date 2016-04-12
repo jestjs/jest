@@ -18,6 +18,7 @@
 * Added the `jest.mock('moduleName', moduleFactory)` feature. `jest.mock` now
   gets hoisted by default. `jest.doMock` was added to explicitly mock a module
   without the hoisting feature of `babel-jest`.
+* Updated jsdom to 8.3.x.
 * Improved responsiveness of the system while using `--watch`.
 * Clear the terminal window when using `--watch`.
 * By default, `--watch` will now only runs tests related to changed files.
@@ -42,8 +43,8 @@
 * Improved `toBeCalled` Jasmine 2 custom matcher messages.
 * Improved error reporting when a syntax error occurs.
 * Renamed HasteModuleLoader to Runtime.
-* Updated jsdom to 8.3.x.
 * Jest now properly reports pending tests disabled with `xit` and `xdescribe`.
+* Removed `preprocessCachingDisabled` config option.
 * Added a `testEnvironment` option to customize the sandbox environment.
 * Added support for `@scoped/name` npm packages.
 * Added an integration test runner for Jest that runs all tests for examples

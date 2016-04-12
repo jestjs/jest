@@ -1,5 +1,5 @@
 ---
-title: "JavaScript Unit Testing Performance"
+title: JavaScript Unit Testing Performance
 author: Christoph Pojer
 authorURL: http://twitter.com/cpojer
 ---
