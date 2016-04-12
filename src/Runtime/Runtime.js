@@ -339,7 +339,7 @@ class Loader {
         throw new SyntaxError(
           `${e.message} in file '${relative(filename)}'.\n\n` +
           `Make sure your preprocessor is set up correctly and ensure ` +
-          `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#config-preprocessorignorepatterns-array-string\n` +
+          `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string\n` +
           'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
           `Preprocessor: ${preprocessorInfo}.\n${babelInfo}` +
           `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`
