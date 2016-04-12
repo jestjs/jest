@@ -115,20 +115,64 @@ function that's not directly being tested.
 Still, there are cases where it's useful to go beyond the ability to specify
 return values and full-on replace the implementation of a mock function. This
 can be done with `mockImplementation` or `mockImplementationOnce` methods
-on mock functions:
+on mock functions.
+
+The `mockImplementation` method is useful when you need define the default
+implementation of your function:
 
 ```javascript
-var myObj = {
-  myMethod: jest.genMockFunction().mockImplementationOnce(function() {
-    // do something stateful
-    return this;
-  }).mockImplementation(function() {
-    // do something else stateful
-    return this;
-  });
-};
+var myMockFn = jest.genMockFunction().mockImplementation(function(cb) {
+  cb(null, true);
+});
 
-myObj.myMethod(1).myMethod(2);
+myMockFn(function(err, val) {
+  console.log(val);
+});
+> true
+
+myMockFn(function(err, val) {
+  console.log(val);
+});
+> true
+```
+
+When you need to recreate a complex behavior of a mock function such that
+multiple function calls produce different results, use the `mockImplementationOnce`
+method:
+
+```javascript
+var myMockFn = jest.genMockFunction().mockImplementationOnce(function(cb) {
+  cb(null, true);
+}).mockImplementationOnce(function(cb) {
+  cb(null, false);
+});
+
+myMockFn(function(err, val) {
+  console.log(val);
+});
+> true
+
+myMockFn(function(err, val) {
+  console.log(val);
+});
+> false
+```
+
+When the mocked function runs out of implementations defined with
+`mockImplementationOnce`, it will execute the default implementation
+set with `mockImplementation` if it is available:
+
+```javascript
+var myMockFn = jest.genMockFunction().mockImplementation(function() {
+  return 'default';
+}).mockImplementationOnce(function() {
+  return 'first call';
+}).mockImplementationOnce(function() {
+  return 'second call';
+});
+
+console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+> 'first call', 'second call', 'default', 'default'
 ```
 
 For cases where we have methods that are typically chained (and thus always need
