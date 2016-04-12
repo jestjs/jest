@@ -7,21 +7,13 @@
  */
 'use strict';
 
-const execute = require('./execute');
-const fs = require('fs');
 const path = require('path');
+const spawnSync = require('child_process').spawnSync;
 
-const getSetupFile = () => {
-  try {
-    const setupFile = path.resolve(__dirname, './setup.js');
-    fs.accessSync(setupFile, fs.R_OK);
-    return setupFile;
-  } catch (e) {
-    return null;
-  }
+module.exports = (relativeCWD, executable, params) => {
+  const options = {
+    stdio: 'inherit',
+    cwd: path.resolve(__dirname, relativeCWD),
+  };
+  spawnSync(executable, params.split(' '), options);
 };
-
-const setupFile = getSetupFile();
-if (setupFile) {
-  execute('.', 'node', setupFile);
-}

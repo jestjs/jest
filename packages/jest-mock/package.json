@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "src/index.js",
   "scripts": {
-    "test": "../../bin/jest.js"
+    "test": "node -e \"const spawn = require('child_process').spawn, path=require('path'); spawn('node', [path.resolve('../../bin/jest.js')], {stdio:'inherit'})\""
   },
   "jest": {
     "testEnvironment": "node"

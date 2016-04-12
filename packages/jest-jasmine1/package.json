@@ -12,7 +12,7 @@
     "jest-util": "^10.0.2"
   },
   "scripts": {
-    "test": "../../bin/jest.js"
+    "test": "node -e \"const spawn = require('child_process').spawn, path=require('path'); spawn('node', [path.resolve('../../bin/jest.js')], {stdio:'inherit'})\""
   },
   "jest": {
     "testEnvironment": "node"
