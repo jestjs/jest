@@ -16,6 +16,13 @@ const JASMINE_PATH = require.resolve('../vendor/jasmine-2.3.4.js');
 const jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
+function isSpyLike(test) {
+  return test.calls && test.calls.all !== undefined;
+}
+function isMockLike(test) {
+  return test.mock !== undefined;
+}
+
 function jasmine2(config, environment, moduleLoader, testPath) {
   let env;
   let jasmine;
@@ -43,16 +50,28 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       moduleLoader.requireModule(null, config.setupTestFrameworkScriptFile);
     }
   });
-
   env.beforeEach(() => {
     jasmine.addMatchers({
       toBeCalled: (/* util, customEqualityTesters */) => {
         return {
-          compare: (actual/*, expected */) => {
-            if (actual.mock === undefined) {
-              throw Error('toBeCalled() should be used on a mock function');
+          compare: (actual, expected) => {
+            if (expected) {
+              throw Error(
+                'toBeCalled() does not accept parameters, use ' +
+                'toBeCalledWith instead'
+              );
             }
-            const pass = actual.mock.calls.length !== 0;
+            const isSpy = isSpyLike(actual);
+            if (!isSpy && !isMockLike(actual)) {
+              throw Error(
+                'toBeCalled() should be used on a mock function or ' +
+                'a jasmine spy'
+              );
+            }
+            const calls = isSpy
+              ? actual.calls.all().map(x => x.args)
+              : actual.mock.calls;
+            const pass = calls.length !== 0;
             const message = (
               pass ?
               'Expected not to be called' :
@@ -69,14 +88,19 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       lastCalledWith: (util/*, customEqualityTesters */) => {
         return {
           compare: function(actual) {
-            if (actual.mock === undefined) {
-              throw Error('lastCalledWith() should be used on a mock function');
+            const isSpy = isSpyLike(actual);
+            if (!isSpy && !isMockLike(actual)) {
+              throw Error(
+                'lastCalledWith() should be used on a mock function or ' +
+                'a jasmine spy'
+              );
             }
-            const calls = actual.mock.calls;
+            const calls = isSpy
+              ? actual.calls.all().map(x => x.args)
+              : actual.mock.calls;
             const expected = Array.prototype.slice.call(arguments, 1);
             const actualValues = calls[calls.length - 1];
             const pass = util.equals(actualValues, expected);
-
             if (!pass) {
               return {
                 pass,
@@ -91,7 +115,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 },
               };
             }
-
             return {
               pass,
               get message() {
@@ -109,14 +132,18 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       toBeCalledWith: (util/*, customEqualityTesters */) => {
         return {
           compare: function(actual) {
-            if (actual.mock === undefined) {
-              throw Error('toBeCalledWith() should be used on a mock function');
+            const isSpy = isSpyLike(actual);
+            if (!isMockLike(actual) && !isSpy) {
+              throw Error(
+                'toBeCalledWith() should be used on a mock function or ' +
+                'a jasmine spy'
+              );
             }
-            const calls = actual.mock.calls;
+            const calls = isSpy
+              ? actual.calls.all().map(x => x.args)
+              : actual.mock.calls;
             const expected = Array.prototype.slice.call(arguments, 1);
             const pass = calls.some(call => util.equals(call, expected));
-
-
             if (!pass) {
               return {
                 pass,
@@ -129,7 +156,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 },
               };
             }
-
             return {
               pass,
               get message() {

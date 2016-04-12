@@ -18,6 +18,13 @@ const JASMINE_ONLY_PATH = require.resolve('./jasmine-only.js');
 const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
 const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
 
+function isSpyLike(test) {
+  return test.calls !== undefined;
+}
+function isMockLike(test) {
+  return test.mock !== undefined;
+}
+
 function jasmine1(config, environment, moduleLoader, testPath) {
   const hasKey = (obj, keyName) => (
     obj !== null
@@ -179,27 +186,53 @@ function jasmine1(config, environment, moduleLoader, testPath) {
   jasmine.getEnv().beforeEach(function() {
     this.addMatchers({
       toBeCalled: function() {
-        if (this.actual.mock === undefined) {
-          throw Error('toBeCalled() should be used on a mock function');
+        if (arguments.length > 0) {
+          throw Error(
+            'toBeCalled() does not accept parameters, ' +
+            'use toBeCalledWith instead'
+          );
         }
-        return this.actual.mock.calls.length !== 0;
+        const isSpy = isSpyLike(this.actual);
+        if (!isSpy && !isMockLike(this.actual)) {
+          throw Error(
+            'lastCalledWith() should be used on a mock function or ' +
+            'a jasmine spy'
+          );
+        }
+        const calls = isSpy
+          ? this.actual.calls.map(x => x.args)
+          : this.actual.mock.calls;
+        return calls.length !== 0;
       },
 
       lastCalledWith: function() {
-        if (this.actual.mock === undefined) {
-          throw Error('lastCalledWith() should be used on a mock function');
+        const isSpy = isSpyLike(this.actual);
+        if (!isSpy && !isMockLike(this.actual)) {
+          throw Error(
+            'lastCalledWith() should be used on a mock function or ' +
+            'a jasmine spy'
+          );
         }
-        const calls = this.actual.mock.calls;
+        const calls = isSpy
+          ? this.actual.calls.map(x => x.args)
+          : this.actual.mock.calls;
         const args = Array.prototype.slice.call(arguments);
         this.env.currentSpec.expect(calls[calls.length - 1]).toEqual(args);
         return true;
       },
 
       toBeCalledWith: function() {
-        if (this.actual.mock === undefined) {
-          throw Error('toBeCalledWith() should be used on a mock function');
+        const isSpy = isSpyLike(this.actual);
+        if (!isSpy && !isMockLike(this.actual)) {
+          throw Error(
+            'toBeCalledWith() should be used on a mock function or ' +
+            'a jasmine spy'
+          );
         }
-        const calls = this.actual.mock.calls;
+        const calls = isSpy
+          ? this.actual.calls.map(x => x.args)
+          : this.actual.mock.calls;
+
         const args = Array.prototype.slice.call(arguments);
 
         // Often toBeCalledWith is called on a mock that only has one call, so
