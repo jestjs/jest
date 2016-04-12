@@ -117,7 +117,7 @@ return values and full-on replace the implementation of a mock function. This
 can be done with `mockImplementation` or `mockImplementationOnce` methods
 on mock functions.
 
-The `mockImplementation` method is useful when you need define the default
+The `mockImplementation` method is useful when you need to define the default
 implementation of your function:
 
 ```javascript
@@ -160,7 +160,7 @@ myMockFn(function(err, val) {
 
 When the mocked function runs out of implementations defined with
 `mockImplementationOnce`, it will execute the default implementation
-set with `mockImplementation` if it is available:
+set with `mockImplementation` (if it is defined):
 
 ```javascript
 var myMockFn = jest.genMockFunction().mockImplementation(function() {
