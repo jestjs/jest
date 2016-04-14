@@ -19,6 +19,7 @@ const chalk = require('chalk');
 const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
 const git = require('./lib/git');
+const hg = require('./lib/hg');
 const os = require('os');
 const path = require('path');
 const readConfig = require('./config/read');
@@ -52,20 +53,31 @@ function getTestPaths(testRunner, config, patternInfo) {
 }
 
 function findOnlyChangedTestPaths(testRunner, config) {
-  return Promise.all(config.testPathDirs.map(git.isGitRepository))
+  return Promise.all(config.testPathDirs.map(determineSCM))
     .then(repos => {
-      if (!repos.every(result => !!result)) {
+      if (!repos.every(result => result[0] || result[1])) {
         throw new Error(
           'It appears that one of your testPathDirs does not exist ' +
-          'within a git repository. Currently --onlyChanged only works ' +
-          'with git projects.\n'
+          'within a git or hg repository. Currently --onlyChanged only works ' +
+          'with git or hg projects.\n'
         );
       }
-      return Promise.all(Array.from(repos).map(git.findChangedFiles));
+      return Promise.all(Array.from(repos).map(repo => {
+        return repo[0]
+          ? git.findChangedFiles(repo[0])
+          : hg.findChangedFiles(repo[1]);
+      }));
     })
     .then(changedPathSets => testRunner.promiseTestPathsRelatedTo(
       new Set(Array.prototype.concat.apply([], changedPathSets))
     ));
+}
+
+function determineSCM(path) {
+  return Promise.all([
+    git.isGitRepository(path),
+    hg.isHGRepository(path),
+  ]);
 }
 
 function buildTestPathPatternInfo(argv) {

@@ -1,5 +1,8 @@
 ## master
 
+* Added support for mercurial repositories when using `jest -o`
+* Added `mockImplementationOnce` API to `jest.fn()`.
+
 ## jest-cli 11.0.0, babel-jest 11.0.0 (pre-releases 0.9 to 0.10)
 
 * New implementation of node-haste and rewrite of internal module loading and
