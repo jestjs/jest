@@ -9,7 +9,7 @@
 
 module.exports = function promisify(fn) {
   return function() {
-    var args = Array.prototype.slice.call(arguments);
+    const args = Array.prototype.slice.call(arguments);
     return new Promise((resolve, reject) => {
       args.push((err, res) => {
         if (err) {

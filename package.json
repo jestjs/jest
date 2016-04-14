@@ -28,6 +28,7 @@
   "devDependencies": {
     "babel-eslint": "^6.0.2",
     "eslint": "^1.10.3",
+    "eslint-plugin-babel": "^3.2.0",
     "fbjs-scripts": "^0.6.0",
     "lerna": "^1.1.2",
     "rimraf": "^2.4.4"
@@ -51,7 +52,9 @@
   },
   "jest": {
     "rootDir": "src",
-    "testPathIgnorePatterns": ["/__tests__/[^/]*/.+"],
+    "testPathIgnorePatterns": [
+      "/__tests__/[^/]*/.+"
+    ],
     "testEnvironment": "jest-environment-node",
     "globals": {
       "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"

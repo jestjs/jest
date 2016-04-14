@@ -79,9 +79,9 @@ class FakeTimers {
   }
 
   clearAllTimers() {
-    this._immediates.forEach(function(immediate) {
-      this._fakeClearImmediate(immediate.uuid);
-    }, this);
+    this._immediates.forEach(
+      immediate => this._fakeClearImmediate(immediate.uuid)
+    );
     for (const uuid in this._timers) {
       delete this._timers[uuid];
     }
@@ -190,9 +190,7 @@ class FakeTimers {
     this._immediates.forEach(this._runImmediate, this);
     const timers = this._timers;
     Object.keys(timers)
-      .sort(function(left, right) {
-        return timers[left].expiry - timers[right].expiry;
-      })
+      .sort((left, right) => timers[left].expiry - timers[right].expiry)
       .forEach(this._runTimerHandle, this);
   }
 
@@ -342,13 +340,11 @@ class FakeTimers {
 
     this._ticks.push({
       uuid,
-      callback: function() {
-        return callback.apply(null, args);
-      },
+      callback: () => callback.apply(null, args),
     });
 
     const cancelledTicks = this._cancelledTicks;
-    this._originalTimerAPIs.nextTick(function() {
+    this._originalTimerAPIs.nextTick(() => {
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
@@ -367,13 +363,11 @@ class FakeTimers {
 
     this._immediates.push({
       uuid,
-      callback: function() {
-        return callback.apply(null, args);
-      },
+      callback: () => callback.apply(null, args),
     });
 
     const cancelledImmediates = this._cancelledImmediates;
-    this._originalTimerAPIs.setImmediate(function() {
+    this._originalTimerAPIs.setImmediate(() => {
       if (!cancelledImmediates.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledImmediates[uuid] = true;
@@ -398,9 +392,7 @@ class FakeTimers {
 
     this._timers[uuid] = {
       type: 'interval',
-      callback: function() {
-        return callback.apply(null, args);
-      },
+      callback: () => callback.apply(null, args),
       expiry: this._now + intervalDelay,
       interval: intervalDelay,
     };
@@ -422,9 +414,7 @@ class FakeTimers {
 
     this._timers[uuid] = {
       type: 'timeout',
-      callback: function() {
-        return callback.apply(null, args);
-      },
+      callback: () => callback.apply(null, args),
       expiry: this._now + delay,
       interval: null,
     };

@@ -15,7 +15,7 @@ jest.mock('jest-environment-jsdom');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('Runtime', function() {
+describe('Runtime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -39,22 +39,22 @@ describe('Runtime', function() {
     );
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  pit('passes config data through to jest.envData', function() {
-    return buildLoader().then(function(loader) {
+  pit('passes config data through to jest.envData', () => {
+    return buildLoader().then(loader => {
       const root = loader.requireModule(rootDir, rootPath);
       const envData = root.jest.getTestEnvData();
       expect(envData).toEqual(config.testEnvData);
     });
   });
 
-  pit('freezes jest.envData object', function() {
-    return buildLoader().then(function(loader) {
+  pit('freezes jest.envData object', () => {
+    return buildLoader().then(loader => {
       const root = loader.requireModule(rootDir, rootPath);
       const envData = root.jest.getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);

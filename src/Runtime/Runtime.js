@@ -231,7 +231,7 @@ class Runtime {
     this._moduleRegistry = Object.create(null);
 
     if (this._environment && this._environment.global) {
-      var envGlobal = this._environment.global;
+      const envGlobal = this._environment.global;
       Object.keys(envGlobal).forEach(key => {
         const globalMock = envGlobal[key];
         if (
@@ -647,7 +647,7 @@ class Runtime {
       genMockFromModule: moduleName => this._generateMock(currPath, moduleName),
       genMockFunction: moduleMocker.getMockFunction,
       genMockFn: moduleMocker.getMockFunction,
-      fn: function() {
+      fn() {
         const fn = moduleMocker.getMockFunction();
         if (arguments.length > 0) {
           return fn.mockImplementation(arguments[0]);

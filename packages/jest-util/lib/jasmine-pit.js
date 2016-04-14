@@ -44,8 +44,8 @@ function wrapForJasmine1(env, promiseFn) {
 
 function wrapForJasmine2(promiseFn) {
   return done => {
-    var promise = promiseFn();
-    var fail = done.fail ? done.fail : err => { throw err; };
+    const promise = promiseFn();
+    const fail = done.fail ? done.fail : err => { throw err; };
 
     try {
       assertPromise(promise);

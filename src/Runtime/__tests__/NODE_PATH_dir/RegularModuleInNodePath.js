@@ -8,7 +8,7 @@
 
 'use strict';
 
-var moduleStateValue = 'default';
+let moduleStateValue = 'default';
 
 function setModuleStateValue(value) {
   moduleStateValue = value;

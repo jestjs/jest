@@ -351,7 +351,7 @@ function getMetadata(component, _refs) {
     return null;
   }
 
-  const metadata = {type: type};
+  const metadata = {type};
   if (
     type === 'constant' ||
     type === 'collection' ||

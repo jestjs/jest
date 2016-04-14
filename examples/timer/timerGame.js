@@ -2,7 +2,7 @@
 
 function timerGame(callback) {
   console.log('Ready....go!');
-  setTimeout(function() {
+  setTimeout(() => {
     console.log('Times up -- stop!');
     callback && callback();
   }, 1000);
