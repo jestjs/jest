@@ -31,6 +31,7 @@ describe('Runtime', function() {
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
       'mappedToPath': '<rootDir>/GlobalImageStub.js',
       'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
+      '^#\b?': '<rootDir>/mapped_dir_test',
     },
   });
 
@@ -126,6 +127,10 @@ describe('Runtime', function() {
 
         exports = loader.requireModuleOrMock(rootPath, 'module/name/test');
         expect(exports).toBe('mapped_module');
+
+        exports = loader.requireModuleOrMock(rootPath, 'module/name/dir_test');
+        expect(exports.root).toBe('mapped_dir_module_default_exports');
+        expect(exports.other).toBe('mapped_dir_module_other_exports');
       });
     });
 
