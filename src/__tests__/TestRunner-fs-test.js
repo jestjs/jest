@@ -32,7 +32,6 @@ describe('TestRunner-fs', () => {
       return runner.promiseTestPathsMatching(/.*/).then(paths => {
         const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([path.normalize('__testtests__/test.js')]);
-        return runner._resolver.end();
       });
     });
 
@@ -48,7 +47,6 @@ describe('TestRunner-fs', () => {
       return runner.promiseTestPathsMatching(/.*/).then(paths => {
         const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
-        return runner._resolver.end();
       });
     });
 
@@ -64,7 +62,6 @@ describe('TestRunner-fs', () => {
       return runner.promiseTestPathsMatching(/.*/).then(paths => {
         const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
-        return runner._resolver.end();
       });
     });
 
@@ -83,7 +80,6 @@ describe('TestRunner-fs', () => {
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);
-        return runner._resolver.end();
       });
     });
 

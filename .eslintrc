@@ -9,7 +9,6 @@
     "arrow-spacing": [2],
     "babel/arrow-parens": [2, "as-needed"],
     "brace-style": [2, "1tbs", {"allowSingleLine": true}],
-    "camelcase": [2, {"properties": "always"}],
     "comma-dangle": [2, "always-multiline"],
     "comma-spacing": [2],
     "comma-style": [2, "last"],
