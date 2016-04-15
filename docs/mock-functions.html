@@ -70,15 +70,51 @@ dependent component and configuring that, but the technique is the same. In
 these cases, try to avoid the temptation to implement logic inside of any
 function that&#x27;s not directly being tested.</p><h2><a class="anchor" name="mock-implementations"></a>Mock Implementations <a class="hash-link" href="#mock-implementations">#</a></h2><p>Still, there are cases where it&#x27;s useful to go beyond the ability to specify
 return values and full-on replace the implementation of a mock function. This
-can be done with the <code>mockImplementation</code> method on mock functions:</p><pre class="prism language-javascript">
-<span class="token keyword">var</span> myObj <span class="token operator">=</span> <span class="token punctuation">{</span>
-  myMethod<span class="token punctuation">:</span> jest<span class="token punctuation">.</span><span class="token function">genMockFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementation</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span spellcheck="true" class="token comment">// do something stateful</span>
-    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+can be done with <code>mockImplementation</code> or <code>mockImplementationOnce</code> methods
+on mock functions.</p><p>The <code>mockImplementation</code> method is useful when you need to define the default
+implementation of your function:</p><pre class="prism language-javascript">
+<span class="token keyword">var</span> myMockFn <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">genMockFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementation</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>cb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">cb</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-myObj<span class="token punctuation">.</span><span class="token function">myMethod</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">myMethod</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre><p>For cases where we have methods that are typically chained (and thus always need
+<span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&gt;</span> <span class="token keyword">true</span>
+
+<span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&gt;</span> <span class="token keyword">true</span></pre><p>When you need to recreate a complex behavior of a mock function such that
+multiple function calls produce different results, use the <code>mockImplementationOnce</code>
+method:</p><pre class="prism language-javascript">
+<span class="token keyword">var</span> myMockFn <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">genMockFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementationOnce</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>cb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">cb</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementationOnce</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>cb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">cb</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token keyword">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&gt;</span> <span class="token keyword">true</span>
+
+<span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&gt;</span> <span class="token keyword">false</span></pre><p>When the mocked function runs out of implementations defined with
+<code>mockImplementationOnce</code>, it will execute the default implementation
+set with <code>mockImplementation</code> (if it is defined):</p><pre class="prism language-javascript">
+<span class="token keyword">var</span> myMockFn <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">genMockFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementation</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token string">&#x27;default&#x27;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementationOnce</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token string">&#x27;first call&#x27;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementationOnce</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token string">&#x27;second call&#x27;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">myMockFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&gt;</span> <span class="token string">&#x27;first call&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;second call&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;default&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;default&#x27;</span></pre><p>For cases where we have methods that are typically chained (and thus always need
 to return <code>this</code>), we have a sugary API to simplify this in the form of a
 <code>.mockReturnThis()</code> function that also sits on all mocks:</p><pre class="prism language-javascript">
 <span class="token keyword">var</span> myObj <span class="token operator">=</span> <span class="token punctuation">{</span>
