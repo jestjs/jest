@@ -15,9 +15,7 @@ process.on('uncaughtException', err => {
 
 const Test = require('./Test');
 
-const fs = require('graceful-fs');
-const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
-const getCacheKey = require('./lib/getCacheKey');
+const createHasteMap = require('./lib/createHasteMap');
 
 const formatError = error => {
   if (typeof error === 'string') {
@@ -40,20 +38,16 @@ let moduleMap;
 module.exports = (data, callback) => {
   try {
     if (!moduleMap) {
-      const cacheFile = getCacheFilePath(
-        data.config.cacheDirectory,
-        getCacheKey('jest-module-map', data.config)
-      );
-      moduleMap = JSON.parse(fs.readFileSync(cacheFile));
+      moduleMap = createHasteMap(data.config).read();
     }
 
     new Test(data.path, data.config, moduleMap)
       .run()
       .then(
         result => callback(null, result),
-        err => callback(formatError(err))
+        error => callback(formatError(error))
       );
-  } catch (err) {
-    callback(formatError(err));
+  } catch (error) {
+    callback(formatError(error));
   }
 };

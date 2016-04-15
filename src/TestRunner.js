@@ -12,7 +12,6 @@ const Test = require('./Test');
 
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
-const getCacheKey = require('./lib/getCacheKey');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const promisify = require('./lib/promisify');
@@ -402,18 +401,9 @@ class TestRunner {
     );
   }
 
-  _persistModuleMap(moduleMap) {
-    const cacheFile = getCacheFilePath(
-      this._config.cacheDirectory,
-      getCacheKey('jest-module-map', this._config)
-    );
-    return promisify(fs.writeFile)(cacheFile, JSON.stringify(moduleMap));
-  }
-
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
     return this._resolver.getHasteMap()
-      .then(moduleMap => this._persistModuleMap(moduleMap))
       .then(() => {
         const farm = workerFarm({
           autoStart: true,

@@ -8,8 +8,7 @@
 
 'use strict';
 
-const HasteMap = require('jest-haste-map');
-
+const createHasteMap = require('../lib/createHasteMap');
 const path = require('path');
 
 /* eslint-disable max-len */
@@ -19,16 +18,9 @@ const REQUIRE_EXTENSIONS_PATTERN = /(\b(?:require\s*?\.\s*?(?:requireActual|requ
 class HasteResolver {
 
   constructor(config, options) {
-    const extensions = Array.from(new Set(
-      config.moduleFileExtensions.concat(config.testFileExtensions)
-    ));
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
-    );
-
+    this._map = createHasteMap(config, options);
     this._defaultPlatform = config.haste.defaultPlatform;
     this._mocksPattern = new RegExp(config.mocksPattern);
-
     this._mappedModuleNames = Object.create(null);
     if (config.moduleNameMapper.length) {
       config.moduleNameMapper.forEach(
@@ -36,19 +28,13 @@ class HasteResolver {
       );
     }
 
-    this._map = new HasteMap({
-      cacheDirectory: options.cacheDirectory,
-      extensions,
-      ignorePattern,
-      providesModuleNodeModules: config.haste.providesModuleNodeModules,
-      platforms: config.haste.platforms || ['ios', 'android'],
-      resetCache: options.resetCache,
-      roots: config.testPathDirs,
-      useWatchman: config.watchman,
-    });
-
-    // warm-up
-    this._map.build();
+    // warm-up and cache mocks
+    this._hasteMapPromise = this._map.build().then(data =>
+      this._getAllMocks().then(mocks => {
+        data.mocks = mocks;
+        return this._map.persist(data);
+      })
+    );
 
     /*extractRequires: code => {
       const data = HasteMap.extractRequires(code);
@@ -84,32 +70,7 @@ class HasteResolver {
   }
 
   getHasteMap() {
-    if (this._mapPromise) {
-      return this._mapPromise;
-    }
-
-    return this._mapPromise = Promise.all([
-      this._map.build(),
-      this._getAllMocks(),
-    ]).then(data => this._getModuleMap(data[0].map, data[1]));
-  }
-
-  _getModuleMap(map, mocks) {
-    const modules = Object.create(null);
-    const packages = Object.create(null);
-    for (const name in map) {
-      const module =
-        map[name][this._defaultPlatform] ||
-        map[name][HasteMap.GENERIC_PLATFORM];
-      if (module) {
-        if (module.type == 'package') {
-          packages[name] = module.path;
-        } else {
-          modules[name] = module.path;
-        }
-      }
-    }
-    return {modules, mocks, packages};
+    return this._hasteMapPromise;
   }
 
   _getAllMocks() {

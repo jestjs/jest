@@ -8,6 +8,8 @@
 
 'use strict';
 
+const HasteMap = require('jest-haste-map');
+
 const constants = require('../constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
@@ -57,9 +59,9 @@ class Runtime {
 
     this._shouldAutoMock = config.automock;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
+    this._defaultPlatform = config.haste.defaultPlatform;
 
-    this._modules = moduleMap.modules;
-    this._packages = moduleMap.packages;
+    this._modules = moduleMap.map;
     this._mocks = moduleMap.mocks;
 
     if (config.collectCoverage) {
@@ -452,12 +454,25 @@ class Runtime {
     );
   }
 
-  _getModule(name) {
-    return this._modules[name];
+  _getModule(name, type) {
+    if (!type) {
+      type = 'module';
+    }
+
+    const map = this._modules[name];
+    if (map) {
+      const module =
+        map[this._defaultPlatform] || map[HasteMap.GENERIC_PLATFORM];
+      if (module && module.type == type) {
+        return module.path;
+      }
+    }
+
+    return null;
   }
 
   _getPackage(name) {
-    return this._packages[name];
+    return this._getModule(name, 'package');
   }
 
   _getMockModule(name) {

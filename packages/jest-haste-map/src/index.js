@@ -73,10 +73,17 @@ class HasteMap {
   build() {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
-        .then(data => this._buildHasteMap(data))
-        .then(data => this._persist(data));
+        .then(data => this._buildHasteMap(data));
     }
     return this._buildPromise;
+  }
+
+  persist(data) {
+    return writeFile(this._cachePath, JSON.stringify(data)).then(() => data);
+  }
+
+  read() {
+    return this._parse(fs.readFileSync(this._cachePath, 'utf-8'));
   }
 
   matchFiles(pattern) {
@@ -95,11 +102,10 @@ class HasteMap {
   }
 
   _buildFileMap() {
-    const dataPromise = this._options.resetCache
-      ? Promise.resolve(this._createEmptyMap())
-      : readFile(this._cachePath, 'utf-8').then(data => this._parse(data));
+    const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
-    return dataPromise
+    return Promise.resolve()
+      .then(() => read.call(this))
       .catch(() => this._createEmptyMap())
       .then(data => this._crawl(data));
   }
@@ -159,15 +165,10 @@ class HasteMap {
 
   _parse(data) {
     data = JSON.parse(data);
-    Object.setPrototypeOf(data.clocks, null);
-    Object.setPrototypeOf(data.files, null);
-    Object.setPrototypeOf(data.map, null);
+    for (const key in data) {
+      Object.setPrototypeOf(data[key], null);
+    }
     return data;
-  }
-
-  _persist(data) {
-    return writeFile(this._cachePath, JSON.stringify(data))
-      .then(() => data);
   }
 
   _crawl(data) {
