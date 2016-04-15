@@ -11,7 +11,7 @@
 const Test = require('./Test');
 
 const fs = require('graceful-fs');
-const getCacheFilePath = require('node-haste').Cache.getCacheFilePath;
+const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const getCacheKey = require('./lib/getCacheKey');
 const mkdirp = require('mkdirp');
 const path = require('path');
@@ -24,6 +24,14 @@ const HIDDEN_FILE_RE = /\/\.[^\/]*$/;
 
 function optionPathToRegex(p) {
   return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
+}
+
+function fileExists(filePath) {
+  try {
+    fs.accessSync(filePath, fs.R_OK);
+    return true;
+  } catch (e) {}
+  return false;
 }
 
 class TestRunner {
@@ -74,7 +82,7 @@ class TestRunner {
 
   _getAllTestPaths() {
     return this._resolver
-      .matchFilesByPattern(this._config.testDirectoryName)
+      .matchFiles(this._config.testDirectoryName)
       .then(paths => paths.filter(path => this.isTestFilePath(path)));
   }
 
@@ -118,7 +126,7 @@ class TestRunner {
     return this._resolver.getAllModules().then(allModules => {
       const changed = new Set();
       for (const path of changedPaths) {
-        if (this._resolver.getFS().fileExists(path)) {
+        if (fileExists(path)) {
           const module = this._resolver.getModuleForPath(path);
           if (module) {
             changed.add(module.path);
@@ -213,6 +221,7 @@ class TestRunner {
     });
   }
 
+<<<<<<< b46a656a708ebcb95c95f246a0dd658b389dc610
   promiseTestPathsMatching(pathPattern) {
     try {
       const maybeFile = path.resolve(process.cwd(), pathPattern);
@@ -221,7 +230,20 @@ class TestRunner {
     } catch (e) {
       return this._getAllTestPaths()
         .then(paths => paths.filter(path => new RegExp(pathPattern).test(path)));
+=======
+  promiseTestPathsMatching(pattern) {
+    if (pattern && !(pattern instanceof RegExp)) {
+      const maybeFile = path.resolve(process.cwd(), pattern);
+      if (fileExists(maybeFile)) {
+        return Promise.resolve([pattern].filter(this._isTestFilePath));
+      }
+>>>>>>> Implement `jest-haste-map` instead of `node-haste`
     }
+
+    const paths = this._getAllTestPaths();
+    return pattern
+      ? paths.then(list => list.filter(path => new RegExp(pattern).test(path)))
+      : paths;
   }
 
   _getTestPerformanceCachePath() {
@@ -358,14 +380,7 @@ class TestRunner {
         }
         return aggregatedResults;
       })
-      .then(results => Promise.all([
-        this._cacheTestResults(results),
-        this.end(),
-      ]).then(() => results));
-  }
-
-  end() {
-    return this._resolver.end();
+      .then(results => this._cacheTestResults(results).then(() => results));
   }
 
   _createTestRun(testPaths, onTestResult, onRunFailure) {

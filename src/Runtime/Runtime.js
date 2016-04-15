@@ -407,8 +407,9 @@ class Runtime {
 
   _resolveModuleName(currPath, moduleName) {
     // Check if the resolver knows about this module
-    if (this._modules[moduleName]) {
-      return this._modules[moduleName];
+    const module = this._getModule(moduleName);
+    if (module) {
+      return module;
     }
 
     // Otherwise it is likely a node_module.
@@ -434,7 +435,7 @@ class Runtime {
     // folders.
     const parts = moduleName.split('/');
     const hastePackageName = parts.shift();
-    const module = this._getHastePackage(hastePackageName);
+    const module = this._getPackage(hastePackageName);
     if (module) {
       try {
         return require.resolve(
@@ -455,6 +456,10 @@ class Runtime {
     return this._modules[name];
   }
 
+  _getPackage(name) {
+    return this._packages[name];
+  }
+
   _getMockModule(name) {
     if (this._mocks[name]) {
       return this._mocks[name];
@@ -464,10 +469,6 @@ class Runtime {
         return this._getModule(moduleName) || moduleName;
       }
     }
-  }
-
-  _getHastePackage(name) {
-    return this._packages[name];
   }
 
   _getNormalizedModuleID(currPath, moduleName) {

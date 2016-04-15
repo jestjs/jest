@@ -32,9 +32,7 @@ describe('Runtime', () => {
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
-      response => resolver.end().then(() =>
-        new Runtime(config, environment, response)
-      )
+      response => new Runtime(config, environment, response)
     );
   }
 
