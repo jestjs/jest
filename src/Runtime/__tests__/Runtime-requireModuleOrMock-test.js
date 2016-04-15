@@ -31,7 +31,7 @@ describe('Runtime', function() {
       '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
       'mappedToPath': '<rootDir>/GlobalImageStub.js',
       'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
-      '^#\b?': '<rootDir>/mapped_dir_test',
+      '^#(/|$)': '<rootDir>/mapped_dir_test$1',
     },
   });
 
