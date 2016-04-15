@@ -15,7 +15,7 @@ jest.mock('jest-environment-jsdom');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('Runtime', function() {
+describe('Runtime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -45,22 +45,22 @@ describe('Runtime', function() {
     );
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  describe('requireModuleOrMock', function() {
-    pit('mocks modules by default', function() {
-      return buildLoader().then(function(loader) {
+  describe('requireModuleOrMock', () => {
+    pit('mocks modules by default', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
         expect(exports.setModuleStateValue._isMockFunction).toBe(true);
       });
     });
 
-    pit(`doesn't mock modules when explicitly unmocked`, function() {
-      return buildLoader().then(function(loader) {
+    pit(`doesn't mock modules when explicitly unmocked`, () => {
+      return buildLoader().then(loader => {
         const root = loader.requireModule(rootDir, rootPath);
         root.jest.unmock('RegularModule');
         const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
@@ -69,7 +69,7 @@ describe('Runtime', function() {
     });
 
     pit(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () => {
-      return buildLoader().then(function(loader) {
+      return buildLoader().then(loader => {
         const root = loader.requireModule(rootDir, rootPath);
         root.jest.unmock('./RegularModule');
         const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
@@ -77,8 +77,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit(`doesn't mock modules when disableAutomock() has been called`, function() {
-      return buildLoader().then(function(loader) {
+    pit(`doesn't mock modules when disableAutomock() has been called`, () => {
+      return buildLoader().then(loader => {
         const root = loader.requireModule(rootDir, rootPath);
         root.jest.disableAutomock();
         const exports = loader.requireModuleOrMock(rootPath, 'RegularModule');
@@ -86,8 +86,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('uses manual mock when automocking on and mock is avail', function() {
-      return buildLoader().then(function(loader) {
+    pit('uses manual mock when automocking on and mock is avail', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModuleOrMock(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);
       });
@@ -96,8 +96,8 @@ describe('Runtime', function() {
     pit(
       'does not use manual mock when automocking is off and a real module is ' +
       'available',
-      function() {
-        return buildLoader().then(function(loader) {
+      () => {
+        return buildLoader().then(loader => {
           const root = loader.requireModule(rootDir, rootPath);
           root.jest.disableAutomock();
           const exports = loader.requireModuleOrMock(
@@ -109,8 +109,8 @@ describe('Runtime', function() {
       }
     );
 
-    pit('resolves mapped module names and unmocks them by default', function() {
-      return buildLoader().then(function(loader) {
+    pit('resolves mapped module names and unmocks them by default', () => {
+      return buildLoader().then(loader => {
         let exports =
           loader.requireModuleOrMock(rootPath, 'image!not-really-a-module');
         expect(exports.isGlobalImageStub).toBe(true);

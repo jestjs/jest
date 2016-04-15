@@ -1,5 +1,31 @@
----
-parser: babel-eslint
-
-extends:
-  - ./node_modules/fbjs-scripts/eslint/.eslintrc.js
+{
+  "extends": "./node_modules/fbjs-scripts/eslint/.eslintrc.js",
+  "parser": "babel-eslint",
+  "plugins": [
+    "babel"
+  ],
+  "rules": {
+    "array-bracket-spacing": [2, "never"],
+    "arrow-spacing": [2],
+    "babel/arrow-parens": [2, "as-needed"],
+    "brace-style": [2, "1tbs", {"allowSingleLine": true}],
+    "camelcase": [2, {"properties": "always"}],
+    "comma-dangle": [2, "always-multiline"],
+    "comma-spacing": [2],
+    "comma-style": [2, "last"],
+    "computed-property-spacing": [2, "never"],
+    "eol-last": [2],
+    "no-const-assign": [2],
+    "no-extra-parens": [2],
+    "no-irregular-whitespace": [2],
+    "no-this-before-super": [2],
+    "no-var": [2],
+    "object-curly-spacing": [2, "never"],
+    "object-shorthand": [2],
+    "prefer-arrow-callback": [2],
+    "prefer-const": [2],
+    "space-before-blocks": [2],
+    "space-before-function-paren": [2, "never"],
+    "space-in-parens": [2, "never"]
+  }
+}

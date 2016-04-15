@@ -1,7 +1,12 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 /* jasmine-only - 0.1.1
  * Exclusivity spec helpers for jasmine: `describe.only` and `it.only`
  * https://github.com/davemo/jasmine-only
  */
+
+ /* eslint-disable */
+
 (function() {
   var __hasProp = {}.hasOwnProperty;
   var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; }; // eslint-disable-line

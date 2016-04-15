@@ -1,3 +1,5 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 'use strict';
 
 jest
@@ -21,7 +23,7 @@ describe('displayUser', () => {
 
     // Tell the fetchCurrentUser mock function to automatically invoke
     // its callback with some data
-    fetchCurrentUser.mockImplementation((cb) =>  {
+    fetchCurrentUser.mockImplementation(cb =>  {
       cb({
         loggedIn: true,
         fullName: 'Johnny Cash',

@@ -15,7 +15,7 @@ jest.mock('jest-environment-jsdom');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('Runtime', function() {
+describe('Runtime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -39,22 +39,22 @@ describe('Runtime', function() {
     );
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  describe('requireModule', function() {
-    pit('finds @providesModule modules', function() {
-      return buildLoader().then(function(loader) {
+  describe('requireModule', () => {
+    pit('finds @providesModule modules', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(rootPath, 'RegularModule');
         expect(exports.isRealModule).toBe(true);
       });
     });
 
-    pit('provides `module.parent` to modules', function() {
-      return buildLoader().then(function(loader) {
+    pit('provides `module.parent` to modules', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(rootPath, 'RegularModule');
         expect(exports.parent).toEqual({
           id: 'mockParent',
@@ -63,9 +63,9 @@ describe('Runtime', function() {
       });
     });
 
-    pit('throws on non-existant @providesModule modules', function() {
-      return buildLoader().then(function(loader) {
-        expect(function() {
+    pit('throws on non-existent @providesModule modules', () => {
+      return buildLoader().then(loader => {
+        expect(() => {
           loader.requireModule(rootPath, 'DoesntExist');
         }).toThrow(
           new Error('Cannot find module \'DoesntExist\' from \'root.js\'')
@@ -73,8 +73,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('finds relative-path modules without file extension', function() {
-      return buildLoader().then(function(loader) {
+    pit('finds relative-path modules without file extension', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(
           rootPath,
           './RegularModule'
@@ -83,8 +83,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('finds relative-path modules with file extension', function() {
-      return buildLoader().then(function(loader) {
+    pit('finds relative-path modules with file extension', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(
           rootPath,
           './RegularModule.js'
@@ -93,9 +93,9 @@ describe('Runtime', function() {
       });
     });
 
-    pit('throws on non-existant relative-path modules', function() {
-      return buildLoader().then(function(loader) {
-        expect(function() {
+    pit('throws on non-existent relative-path modules', () => {
+      return buildLoader().then(loader => {
+        expect(() => {
           loader.requireModule(rootPath, './DoesntExist');
         }).toThrow(
           new Error('Cannot find module \'./DoesntExist\' from \'root.js\'')
@@ -103,23 +103,23 @@ describe('Runtime', function() {
       });
     });
 
-    pit('finds node core built-in modules', function() {
-      return buildLoader().then(function(loader) {
-        expect(function() {
+    pit('finds node core built-in modules', () => {
+      return buildLoader().then(loader => {
+        expect(() => {
           loader.requireModule(rootPath, 'fs');
         }).not.toThrow();
       });
     });
 
-    pit('finds and loads JSON files without file extension', function() {
-      return buildLoader().then(function(loader) {
+    pit('finds and loads JSON files without file extension', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(rootPath, './JSONFile');
         expect(exports.isJSONModule).toBe(true);
       });
     });
 
-    pit('finds and loads JSON files with file extension', function() {
-      return buildLoader().then(function(loader) {
+    pit('finds and loads JSON files with file extension', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(
           rootPath,
           './JSONFile.json'
@@ -128,8 +128,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('requires a JSON file twice successfully', function() {
-      return buildLoader().then(function(loader) {
+    pit('requires a JSON file twice successfully', () => {
+      return buildLoader().then(loader => {
         const exports1 = loader.requireModule(
           rootPath,
           './JSONFile.json'
@@ -144,8 +144,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('provides manual mock when real module doesnt exist', function() {
-      return buildLoader().then(function(loader) {
+    pit('provides manual mock when real module doesnt exist', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireModule(
           rootPath,
           'ExclusivelyManualMock'
@@ -155,7 +155,7 @@ describe('Runtime', function() {
     });
 
     pit(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () => {
-      return buildLoader().then(function(loader) {
+      return buildLoader().then(loader => {
         const root = loader.requireModule(rootPath, './root.js');
         root.jest.resetModuleRegistry();
         root.jest.unmock('ManuallyMocked');
@@ -165,7 +165,7 @@ describe('Runtime', function() {
     });
 
     pit('resolves haste packages properly', () => {
-      return buildLoader().then(function(loader) {
+      return buildLoader().then(loader => {
         const hastePackage = loader
           .requireModule(rootPath, 'haste-package/core/module');
         expect(hastePackage.isHastePackage).toBe(true);
@@ -180,7 +180,7 @@ describe('Runtime', function() {
         haste: {
           providesModuleNodeModules: ['not-a-haste-package'],
         },
-      }).then(function(loader) {
+      }).then(loader => {
         const hastePackage = loader
           .requireModule(rootPath, 'not-a-haste-package');
         expect(hastePackage.isNodeModule).toBe(true);

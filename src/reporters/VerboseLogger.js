@@ -59,7 +59,7 @@ class VerboseLogger {
 }
 
 function groupTestsBySuites(testResults) {
-  const root = { suites: [] };
+  const root = {suites: []};
 
   testResults.forEach(testResult => {
     let targetSuite = root;
@@ -69,7 +69,7 @@ function groupTestsBySuites(testResults) {
     for (const title of testResult.ancestorTitles) {
       let matchingSuite = targetSuite.suites.find(s => s.title === title);
       if (!matchingSuite) {
-        matchingSuite = { title, suites: [], tests: [] };
+        matchingSuite = {title, suites: [], tests: []};
         targetSuite.suites.push(matchingSuite);
       }
       targetSuite = matchingSuite;

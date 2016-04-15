@@ -15,7 +15,7 @@ jest.mock('jest-environment-jsdom');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('Runtime', function() {
+describe('Runtime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -38,22 +38,22 @@ describe('Runtime', function() {
     );
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  describe('requireMock', function() {
-    pit('uses manual mocks before attempting to automock', function() {
-      return buildLoader().then(function(loader) {
+  describe('requireMock', () => {
+    pit('uses manual mocks before attempting to automock', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(exports.isManualMockModule).toBe(true);
       });
     });
 
-    pit('can resolve modules that are only referenced from mocks', function() {
-      return buildLoader().then(function(loader) {
+    pit('can resolve modules that are only referenced from mocks', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireMock(rootPath, 'ManuallyMocked');
         expect(
           exports.onlyRequiredFromMockModuleValue
@@ -61,8 +61,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('stores and re-uses manual mock exports', function() {
-      return buildLoader().then(function(loader) {
+    pit('stores and re-uses manual mock exports', () => {
+      return buildLoader().then(loader => {
         let exports = loader.requireMock(rootPath, 'ManuallyMocked');
         exports.setModuleStateValue('test value');
         exports = loader.requireMock(rootPath, 'ManuallyMocked');
@@ -70,15 +70,15 @@ describe('Runtime', function() {
       });
     });
 
-    pit('automocks @providesModule modules without a manual mock', function() {
-      return buildLoader().then(function(loader) {
+    pit('automocks @providesModule modules without a manual mock', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireMock(rootPath, 'RegularModule');
         expect(exports.getModuleStateValue._isMockFunction).toBe(true);
       });
     });
 
-    pit('automocks relative-path modules without a file extension', function() {
-      return buildLoader().then(function(loader) {
+    pit('automocks relative-path modules without a file extension', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireMock(
           __filename,
           './test_root/RegularModule'
@@ -87,8 +87,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('automocks relative-path modules with a file extension', function() {
-      return buildLoader().then(function(loader) {
+    pit('automocks relative-path modules with a file extension', () => {
+      return buildLoader().then(loader => {
         const exports = loader.requireMock(
           __filename,
           './test_root/RegularModule.js'
@@ -97,8 +97,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('just falls back when loading a native module', function() {
-      return buildLoader().then(function(loader) {
+    pit('just falls back when loading a native module', () => {
+      return buildLoader().then(loader => {
         let error;
         // Okay so this is a really WAT way to test this, but we
         // are going to require an empty .node file which should
@@ -120,8 +120,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('stores and re-uses automocked @providesModule exports', function() {
-      return buildLoader().then(function(loader) {
+    pit('stores and re-uses automocked @providesModule exports', () => {
+      return buildLoader().then(loader => {
         let exports = loader.requireMock(rootPath, 'RegularModule');
         exports.externalMutation = 'test value';
         exports = loader.requireMock(rootPath, 'RegularModule');
@@ -129,8 +129,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('stores and re-uses automocked relative-path modules', function() {
-      return buildLoader().then(function(loader) {
+    pit('stores and re-uses automocked relative-path modules', () => {
+      return buildLoader().then(loader => {
         let exports = loader.requireMock(
           __filename,
           './test_root/RegularModule'
@@ -144,23 +144,23 @@ describe('Runtime', function() {
       });
     });
 
-    pit('multiple node core modules returns correct module', function() {
-      return buildLoader().then(function(loader) {
+    pit('multiple node core modules returns correct module', () => {
+      return buildLoader().then(loader => {
         loader.requireMock(rootPath, 'fs');
         expect(loader.requireMock(rootPath, 'events').EventEmitter).toBeDefined();
       });
     });
 
-    pit('throws on non-existant @providesModule modules', function() {
-      return buildLoader().then(function(loader) {
-        expect(function() {
+    pit('throws on non-existent @providesModule modules', () => {
+      return buildLoader().then(loader => {
+        expect(() => {
           loader.requireMock(rootPath, 'DoesntExist');
         }).toThrow();
       });
     });
 
-    pit('uses the closest manual mock when duplicates exist', function() {
-      return buildLoader().then(function(loader) {
+    pit('uses the closest manual mock when duplicates exist', () => {
+      return buildLoader().then(loader => {
         const exports1 = loader.requireMock(
           __dirname,
           path.resolve(__dirname, './test_root/subdir1/MyModule')

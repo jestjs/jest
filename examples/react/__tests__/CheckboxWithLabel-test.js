@@ -1,3 +1,5 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 /* eslint-disable no-unused-vars */
 'use strict';
 

@@ -15,14 +15,14 @@ describe('jasmineTestRunner', () => {
   describe('custom matchers', () => {
 
     it('has toBeCalled', () => {
-      var mockFn = jest.fn();
+      const mockFn = jest.fn();
 
       mockFn();
       expect(mockFn).toBeCalled();
     });
 
     it('error when parameters get passed to toBeCalled', () => {
-      var mockFn = jest.fn();
+      const mockFn = jest.fn();
       mockFn();
       let hasThrown = false;
       try {
@@ -34,7 +34,7 @@ describe('jasmineTestRunner', () => {
     });
 
     it('has toBeCalledWith', () => {
-      var mockFn = jest.fn();
+      const mockFn = jest.fn();
 
       mockFn('foo', 'bar');
       expect(mockFn).toBeCalledWith('foo', 'bar');
@@ -45,7 +45,7 @@ describe('jasmineTestRunner', () => {
     });
 
     it('has lastCalledWith', () => {
-      var mockFn = jest.fn();
+      const mockFn = jest.fn();
 
       mockFn('foo', 'bar');
       expect(mockFn).lastCalledWith('foo', 'bar');

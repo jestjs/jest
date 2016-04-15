@@ -12,14 +12,14 @@
 jest.unmock('../promisify');
 
 describe('promisify', () => {
-  var promisify;
+  let promisify;
 
   beforeEach(() => {
     promisify = require('../promisify');
   });
 
   pit('should resolve', () => {
-    var foo = promisify(callback => {
+    const foo = promisify(callback => {
       callback(null, 1);
     });
 
@@ -29,7 +29,7 @@ describe('promisify', () => {
   });
 
   pit('should resolve with args', () => {
-    var foo = promisify((a, b, callback) => {
+    const foo = promisify((a, b, callback) => {
       callback(null, a + b);
     });
 
@@ -39,7 +39,7 @@ describe('promisify', () => {
   });
 
   pit('should reject with args', () => {
-    var foo = promisify((a, b, callback) => {
+    const foo = promisify((a, b, callback) => {
       callback(new Error('lol'));
     });
 

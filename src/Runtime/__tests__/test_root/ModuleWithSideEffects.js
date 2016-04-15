@@ -10,7 +10,7 @@
 
 'use strict';
 
-var RegularModule = require('RegularModule');
+const RegularModule = require('RegularModule');
 
 RegularModule.setModuleStateValue('Side effect value');
 

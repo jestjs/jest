@@ -15,7 +15,7 @@ if (exports !== this) {
   throw new Error('Invalid module context');
 }
 
-var moduleStateValue = 'default';
+let moduleStateValue = 'default';
 
 function setModuleStateValue(value) {
   moduleStateValue = value;

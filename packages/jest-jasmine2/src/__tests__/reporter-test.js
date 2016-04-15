@@ -11,28 +11,26 @@
 
 jest.disableAutomock();
 
-describe('Jasmine2Reporter', function() {
-  var JasmineReporter;
-  var chalk;
-  var reporter;
+describe('Jasmine2Reporter', () => {
+  let JasmineReporter;
+  let chalk;
+  let reporter;
 
-  beforeEach(function() {
+  beforeEach(() => {
     JasmineReporter = require('../reporter');
     chalk = require('chalk');
 
     reporter = new JasmineReporter();
   });
 
-  describe('suites', function() {
+  describe('suites', () => {
 
-    pit('reports nested suites', function() {
-      var makeSpec = function(name) {
-        return {
-          fullName: name,
-          description: 'description',
-          failedExpectations: [],
-        };
-      };
+    pit('reports nested suites', () => {
+      const makeSpec = name => ({
+        fullName: name,
+        description: 'description',
+        failedExpectations: [],
+      });
       reporter.suiteStarted({description: 'parent'});
       reporter.suiteStarted({description: 'child'});
       reporter.specDone(makeSpec('spec 1'));
@@ -41,23 +39,21 @@ describe('Jasmine2Reporter', function() {
       reporter.specDone(makeSpec('spec 2'));
       reporter.jasmineDone();
 
-      return reporter.getResults().then(function(runResults) {
-
-        var firstResult = runResults.testResults[0];
+      return reporter.getResults().then(runResults => {
+        const firstResult = runResults.testResults[0];
         expect(firstResult.ancestorTitles[0]).toBe('parent');
         expect(firstResult.ancestorTitles[1]).toBe('child');
-        var secondResult = runResults.testResults[1];
+        const secondResult = runResults.testResults[1];
         expect(secondResult.ancestorTitles[1]).toBe('child 2');
-
       });
     });
 
   });
 
-  describe('colorization', function() {
+  describe('colorization', () => {
 
     function getFailedResult(actualResult, expectedResult) {
-      var desc = 'comparing ' + actualResult + ' to ' + expectedResult;
+      const desc = 'comparing ' + actualResult + ' to ' + expectedResult;
       return {
         fullName: desc,
         description: desc,
@@ -79,7 +75,7 @@ describe('Jasmine2Reporter', function() {
         failedExpectations: [
           {
             matcherName: '',
-            stack: stack,
+            stack,
             passed: false,
           },
         ],
@@ -94,13 +90,13 @@ describe('Jasmine2Reporter', function() {
       return chalk.bgRed(str);
     }
 
-    pit('colorizes single-line failures using a per-char diff', function() {
-      var result = getFailedResult('foo', 'foobar');
+    pit('colorizes single-line failures using a per-char diff', () => {
+      const result = getFailedResult('foo', 'foobar');
       reporter.specDone(result);
       reporter.jasmineDone();
 
-      return reporter.getResults().then(function(result) {
-        var message = result.testResults[0].failureMessages[0];
+      return reporter.getResults().then(result => {
+        const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\' ' +
           errorize('toBe:') + ' \'foo' + highlight('bar') + '\''
@@ -108,13 +104,13 @@ describe('Jasmine2Reporter', function() {
       });
     });
 
-    pit('colorizes multi-line failures using a per-line diff', function() {
-      var result = getFailedResult('foo\nbar\nbaz', 'foo\nxxx\nbaz');
+    pit('colorizes multi-line failures using a per-line diff', () => {
+      const result = getFailedResult('foo\nbar\nbaz', 'foo\nxxx\nbaz');
       reporter.specDone(result);
       reporter.jasmineDone();
 
-      return reporter.getResults().then(function(result) {
-        var message = result.testResults[0].failureMessages[0];
+      return reporter.getResults().then(result => {
+        const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\n' + highlight('bar\n') + 'baz\' ' +
           errorize('toBe:') + ' \'foo\n' + highlight('xxx\n') + 'baz\''
@@ -122,8 +118,8 @@ describe('Jasmine2Reporter', function() {
       });
     });
 
-    pit('colorizes exception messages', function() {
-      var result = getExceptionResult(
+    pit('colorizes exception messages', () => {
+      const result = getExceptionResult(
         'Error: foobar = {\n' +
         '      attention: "bar"\n' +
         '    }\n' +
@@ -133,8 +129,8 @@ describe('Jasmine2Reporter', function() {
       reporter.specDone(result);
       reporter.jasmineDone();
 
-      return reporter.getResults().then(function(result) {
-        var message = result.testResults[0].failureMessages[0];
+      return reporter.getResults().then(result => {
+        const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize(
             'Error: foobar = {\n' +

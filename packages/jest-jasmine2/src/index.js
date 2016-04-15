@@ -52,122 +52,116 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   });
   env.beforeEach(() => {
     jasmine.addMatchers({
-      toBeCalled: (/* util, customEqualityTesters */) => {
-        return {
-          compare: (actual, expected) => {
-            if (expected) {
-              throw Error(
-                'toBeCalled() does not accept parameters, use ' +
-                'toBeCalledWith instead'
-              );
-            }
-            const isSpy = isSpyLike(actual);
-            if (!isSpy && !isMockLike(actual)) {
-              throw Error(
-                'toBeCalled() should be used on a mock function or ' +
-                'a jasmine spy'
-              );
-            }
-            const calls = isSpy
-              ? actual.calls.all().map(x => x.args)
-              : actual.mock.calls;
-            const pass = calls.length !== 0;
-            const message = (
-              pass ?
-              'Expected not to be called' :
-              'Expected to be called at least once'
+      toBeCalled: () => ({
+        compare: (actual, expected) => {
+          if (expected) {
+            throw Error(
+              'toBeCalled() does not accept parameters, use ' +
+              'toBeCalledWith instead'
             );
-            return {
-              pass,
-              message,
-            };
-          },
-        };
-      },
+          }
+          const isSpy = isSpyLike(actual);
+          if (!isSpy && !isMockLike(actual)) {
+            throw Error(
+              'toBeCalled() should be used on a mock function or ' +
+              'a jasmine spy'
+            );
+          }
+          const calls = isSpy
+            ? actual.calls.all().map(x => x.args)
+            : actual.mock.calls;
+          const pass = calls.length !== 0;
+          const message = (
+            pass ?
+            'Expected not to be called' :
+            'Expected to be called at least once'
+          );
+          return {
+            pass,
+            message,
+          };
+        },
+      }),
 
-      lastCalledWith: (util/*, customEqualityTesters */) => {
-        return {
-          compare: function(actual) {
-            const isSpy = isSpyLike(actual);
-            if (!isSpy && !isMockLike(actual)) {
-              throw Error(
-                'lastCalledWith() should be used on a mock function or ' +
-                'a jasmine spy'
-              );
-            }
-            const calls = isSpy
-              ? actual.calls.all().map(x => x.args)
-              : actual.mock.calls;
-            const expected = Array.prototype.slice.call(arguments, 1);
-            const actualValues = calls[calls.length - 1];
-            const pass = util.equals(actualValues, expected);
-            if (!pass) {
-              return {
-                pass,
-                get message() {
-                  return (
-                    `Wasn't called with the expected values.\n` +
-                    'Expected:\n' +
-                    reporter.getFormatter().prettyPrint(expected) +
-                    '\nActual:\n' +
-                    reporter.getFormatter().prettyPrint(actualValues)
-                  );
-                },
-              };
-            }
-            return {
-              pass,
-              get message() {
-                return (
-                  `Shouldn't have been called with\n` +
-                  reporter.getFormatter().prettyPrint(expected)
-                );
-              },
-            };
-
-          },
-        };
-      },
-
-      toBeCalledWith: (util/*, customEqualityTesters */) => {
-        return {
-          compare: function(actual) {
-            const isSpy = isSpyLike(actual);
-            if (!isMockLike(actual) && !isSpy) {
-              throw Error(
-                'toBeCalledWith() should be used on a mock function or ' +
-                'a jasmine spy'
-              );
-            }
-            const calls = isSpy
-              ? actual.calls.all().map(x => x.args)
-              : actual.mock.calls;
-            const expected = Array.prototype.slice.call(arguments, 1);
-            const pass = calls.some(call => util.equals(call, expected));
-            if (!pass) {
-              return {
-                pass,
-                get message() {
-                  return (
-                    'Was never called with the expected values.\n' +
-                    'Expected:\n' +
-                    reporter.getFormatter().prettyPrint(expected)
-                  );
-                },
-              };
-            }
+      lastCalledWith: util => ({
+        compare(actual) {
+          const isSpy = isSpyLike(actual);
+          if (!isSpy && !isMockLike(actual)) {
+            throw Error(
+              'lastCalledWith() should be used on a mock function or ' +
+              'a jasmine spy'
+            );
+          }
+          const calls = isSpy
+            ? actual.calls.all().map(x => x.args)
+            : actual.mock.calls;
+          const expected = Array.prototype.slice.call(arguments, 1);
+          const actualValues = calls[calls.length - 1];
+          const pass = util.equals(actualValues, expected);
+          if (!pass) {
             return {
               pass,
               get message() {
                 return (
-                  `Shouldn't have been called with\n` +
+                  `Wasn't called with the expected values.\n` +
+                  'Expected:\n' +
+                  reporter.getFormatter().prettyPrint(expected) +
+                  '\nActual:\n' +
+                  reporter.getFormatter().prettyPrint(actualValues)
+                );
+              },
+            };
+          }
+          return {
+            pass,
+            get message() {
+              return (
+                `Shouldn't have been called with\n` +
+                reporter.getFormatter().prettyPrint(expected)
+              );
+            },
+          };
+
+        },
+      }),
+
+      toBeCalledWith: util => ({
+        compare(actual) {
+          const isSpy = isSpyLike(actual);
+          if (!isMockLike(actual) && !isSpy) {
+            throw Error(
+              'toBeCalledWith() should be used on a mock function or ' +
+              'a jasmine spy'
+            );
+          }
+          const calls = isSpy
+            ? actual.calls.all().map(x => x.args)
+            : actual.mock.calls;
+          const expected = Array.prototype.slice.call(arguments, 1);
+          const pass = calls.some(call => util.equals(call, expected));
+          if (!pass) {
+            return {
+              pass,
+              get message() {
+                return (
+                  'Was never called with the expected values.\n' +
+                  'Expected:\n' +
                   reporter.getFormatter().prettyPrint(expected)
                 );
               },
             };
-          },
-        };
-      },
+          }
+          return {
+            pass,
+            get message() {
+              return (
+                `Shouldn't have been called with\n` +
+                reporter.getFormatter().prettyPrint(expected)
+              );
+            },
+          };
+        },
+      }),
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {

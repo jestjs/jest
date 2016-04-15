@@ -1,3 +1,5 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 const $ = require('jquery');
 const fetchCurrentUser = require('./fetchCurrentUser.js');
 

@@ -9,29 +9,29 @@
 
 jest.disableAutomock().mock('fs');
 
-describe('DefaultTestReporter', function() {
+describe('DefaultTestReporter', () => {
   let DefaultTestReporter;
 
-  beforeEach(function() {
+  beforeEach(() => {
     DefaultTestReporter = require('../DefaultTestReporter');
   });
 
-  describe('onTestResult', function() {
+  describe('onTestResult', () => {
 
     let testReporter;
     let fakeProcess;
 
-    beforeEach(function() {
+    beforeEach(() => {
       fakeProcess = {
-        exit: jest.genMockFunction(),
+        exit: jest.fn(),
         stdout: {
-          write: jest.genMockFunction(),
+          write: jest.fn(),
         },
       };
       testReporter = new DefaultTestReporter(fakeProcess);
     });
 
-    it('Exits with proper error code on bail.', function() {
+    it('Exits with proper error code on bail.', () => {
       const mockAggResults = {
         success: false,
         startTime: 0,
