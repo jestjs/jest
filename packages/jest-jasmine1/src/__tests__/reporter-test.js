@@ -11,34 +11,34 @@
 
 jest.disableAutomock();
 
-describe('JasmineReporter', function() {
+describe('JasmineReporter', () => {
   // modules
-  var JasmineReporter;
-  var chalk;
+  let JasmineReporter;
+  let chalk;
 
   // other variables
-  var reporter;
+  let reporter;
 
-  beforeEach(function() {
+  beforeEach(() => {
     JasmineReporter = require('../reporter');
     chalk = require('chalk');
 
     reporter = new JasmineReporter();
   });
 
-  describe('colorization', function() {
+  describe('colorization', () => {
     function getRunner(item) {
       return {
-        suites: function() {
+        suites: () => {
           return [
             {
               parentSuite: null,
-              specs: function() {
+              specs: () => {
                 return [
                   {
-                    results: function() {
+                    results: () => {
                       return {
-                        getItems: function() {
+                        getItems: () => {
                           return [item];
                         },
                       };
@@ -46,7 +46,7 @@ describe('JasmineReporter', function() {
                   },
                 ];
               },
-              suites: function() { return []; },
+              suites: () => { return []; },
             },
           ];
         },
@@ -60,7 +60,7 @@ describe('JasmineReporter', function() {
         message: '',
         isNot: false,
         matcherName: 'toBe',
-        passed: function() { return passed; },
+        passed: () => { return passed; },
         trace: {},
         type: 'expect',
       });
@@ -68,7 +68,7 @@ describe('JasmineReporter', function() {
 
     function getExceptionRunner(message, passed) {
       return getRunner({
-        passed: function() { return passed; },
+        passed: () => { return passed; },
         trace: {
           stack: message,
         },
@@ -84,12 +84,12 @@ describe('JasmineReporter', function() {
       return chalk.bgRed(str);
     }
 
-    pit('colorizes single-line failures using a per-char diff', function() {
-      var runner = getExpectedRunner('foo', 'foobar', false);
+    pit('colorizes single-line failures using a per-char diff', () => {
+      const runner = getExpectedRunner('foo', 'foobar', false);
       reporter.reportRunnerResults(runner);
 
-      return reporter.getResults().then(function(result) {
-        var message = result.testResults[0].failureMessages[0];
+      return reporter.getResults().then(result => {
+        const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\' ' +
           errorize('toBe:') + ' \'foo' + highlight('bar') + '\''
@@ -97,12 +97,12 @@ describe('JasmineReporter', function() {
       });
     });
 
-    pit('colorizes multi-line failures using a per-line diff', function() {
-      var runner = getExpectedRunner('foo\nbar\nbaz', 'foo\nxxx\nbaz', false);
+    pit('colorizes multi-line failures using a per-line diff', () => {
+      const runner = getExpectedRunner('foo\nbar\nbaz', 'foo\nxxx\nbaz', false);
       reporter.reportRunnerResults(runner);
 
-      return reporter.getResults().then(function(result) {
-        var message = result.testResults[0].failureMessages[0];
+      return reporter.getResults().then(result => {
+        const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\n' + highlight('bar\n') + 'baz\' ' +
           errorize('toBe:') + ' \'foo\n' + highlight('xxx\n') + 'baz\''
@@ -110,8 +110,8 @@ describe('JasmineReporter', function() {
       });
     });
 
-    pit('colorizes exception messages', function() {
-      var runner = getExceptionRunner(
+    pit('colorizes exception messages', () => {
+      const runner = getExceptionRunner(
         'Error: foobar = {\n' +
         '      attention: "bar"\n' +
         '    }\n' +
@@ -121,8 +121,8 @@ describe('JasmineReporter', function() {
       );
       reporter.reportRunnerResults(runner);
 
-      return reporter.getResults().then(function(result) {
-        var message = result.testResults[0].failureMessages[0];
+      return reporter.getResults().then(result => {
+        const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize(
             'Error: foobar = {\n' +

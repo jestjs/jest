@@ -11,6 +11,7 @@
     "istanbul": "^0.4.2",
     "jest-environment-jsdom": "^11.0.0",
     "jest-environment-node": "^11.0.0",
+    "jest-haste-map": "^11.0.0",
     "jest-jasmine1": "^11.0.0",
     "jest-jasmine2": "^11.0.0",
     "jest-mock": "^11.0.0",
@@ -18,7 +19,6 @@
     "json-stable-stringify": "^1.0.0",
     "lodash.template": "^4.2.4",
     "mkdirp": "^0.5.1",
-    "node-haste": "^2.5.0",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
     "sane": "^1.2.0",
@@ -28,6 +28,7 @@
   "devDependencies": {
     "babel-eslint": "^6.0.2",
     "eslint": "^1.10.3",
+    "eslint-plugin-babel": "^3.2.0",
     "fbjs-scripts": "^0.6.0",
     "lerna": "^1.1.2",
     "rimraf": "^2.4.4"
@@ -51,7 +52,9 @@
   },
   "jest": {
     "rootDir": "src",
-    "testPathIgnorePatterns": ["/__tests__/[^/]*/.+"],
+    "testPathIgnorePatterns": [
+      "/__tests__/[^/]*/.+"
+    ],
     "testEnvironment": "jest-environment-node",
     "globals": {
       "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"

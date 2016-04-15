@@ -15,7 +15,7 @@ jest.mock('jest-environment-jsdom');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('nodeRuntime', function() {
+describe('nodeRuntime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -32,23 +32,21 @@ describe('nodeRuntime', function() {
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
-      response => resolver.end().then(() =>
-        new Runtime(config, environment, response)
-      )
+      response => new Runtime(config, environment, response)
     );
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  describe('genMockFromModule', function() {
+  describe('genMockFromModule', () => {
     pit(
       'does not cause side effects in the rest of the module system when ' +
       'generating a mock',
-      function() {
+      () => {
         return buildLoader().then(loader => {
           const testRequire = loader.requireModule.bind(loader, rootPath);
 

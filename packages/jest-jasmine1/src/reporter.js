@@ -65,7 +65,7 @@ class JasmineReporter extends jasmine.Reporter {
   _extractSpecResults(container, ancestorTitles, spec) {
     const results = {
       title: 'it ' + spec.description,
-      ancestorTitles: ancestorTitles,
+      ancestorTitles,
       failureMessages: [],
       numPassingAsserts: 0,
     };

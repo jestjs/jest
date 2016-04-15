@@ -11,7 +11,7 @@
 const Test = require('./Test');
 
 const fs = require('graceful-fs');
-const getCacheFilePath = require('node-haste').Cache.getCacheFilePath;
+const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const getCacheKey = require('./lib/getCacheKey');
 const mkdirp = require('mkdirp');
 const path = require('path');
@@ -74,7 +74,7 @@ class TestRunner {
 
   _getAllTestPaths() {
     return this._resolver
-      .matchFilesByPattern(this._config.testDirectoryName)
+      .matchFiles(this._config.testDirectoryName)
       .then(paths => paths.filter(path => this._isTestFilePath(path)));
   }
 
@@ -358,14 +358,7 @@ class TestRunner {
         }
         return aggregatedResults;
       })
-      .then(results => Promise.all([
-        this._cacheTestResults(results),
-        this.end(),
-      ]).then(() => results));
-  }
-
-  end() {
-    return this._resolver.end();
+      .then(results => this._cacheTestResults(results).then(() => results));
   }
 
   _createTestRun(testPaths, onTestResult, onRunFailure) {

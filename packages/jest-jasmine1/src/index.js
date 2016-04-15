@@ -185,7 +185,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
 
   jasmine.getEnv().beforeEach(function() {
     this.addMatchers({
-      toBeCalled: function() {
+      toBeCalled() {
         if (arguments.length > 0) {
           throw Error(
             'toBeCalled() does not accept parameters, ' +
@@ -205,7 +205,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         return calls.length !== 0;
       },
 
-      lastCalledWith: function() {
+      lastCalledWith() {
         const isSpy = isSpyLike(this.actual);
         if (!isSpy && !isMockLike(this.actual)) {
           throw Error(
@@ -221,7 +221,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         return true;
       },
 
-      toBeCalledWith: function() {
+      toBeCalledWith() {
         const isSpy = isSpyLike(this.actual);
         if (!isSpy && !isMockLike(this.actual)) {
           throw Error(

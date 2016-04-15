@@ -27,8 +27,8 @@ const SHOULD_NOT_HAVE_CALLED_WITH = (
   `Shouldn't have been called with\n${formatter.prettyPrint([1, {}, ''])}`
 );
 
-const getMockedFunctionWithExpectationResult = (expectationResult) => {
-  const mockedFunction = jest.genMockFunction();
+const getMockedFunctionWithExpectationResult = expectationResult => {
+  const mockedFunction = jest.fn();
   const expectation = expect(mockedFunction);
   if (expectation.addExpectationResult) {
     expectation.addExpectationResult = expectation.not.addExpectationResult = expectationResult;

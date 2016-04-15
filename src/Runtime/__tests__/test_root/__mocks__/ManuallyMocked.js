@@ -9,6 +9,8 @@
 'use strict';
 
 let OnlyRequiredFromMock;
+let moduleStateValue = 'default';
+
 try {
   OnlyRequiredFromMock = require.requireActual('OnlyRequiredFromMock');
 } catch (e) {
@@ -18,8 +20,6 @@ try {
   // surrounding tests.
   OnlyRequiredFromMock = {value: 'module OnlyRequiredFromMock not found'};
 }
-
-var moduleStateValue = 'default';
 
 function setModuleStateValue(value) {
   moduleStateValue = value;

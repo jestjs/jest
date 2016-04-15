@@ -16,7 +16,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('Runtime', function() {
+describe('Runtime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -32,21 +32,19 @@ describe('Runtime', function() {
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
-      response => resolver.end().then(() =>
-        new Runtime(config, environment, response)
-      )
+      response => new Runtime(config, environment, response)
     );
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     Runtime = require('../Runtime');
     HasteResolver = require('../../resolvers/HasteResolver');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  describe('requireModule', function() {
-    pit('emulates a node stack trace during module load', function() {
-      return buildLoader().then(function(loader) {
+  describe('requireModule', () => {
+    pit('emulates a node stack trace during module load', () => {
+      return buildLoader().then(loader => {
         let hasThrown = false;
         try {
           loader.requireModule(
@@ -61,8 +59,8 @@ describe('Runtime', function() {
       });
     });
 
-    pit('emulates a node stack trace during function execution', function() {
-      return buildLoader().then(function(loader) {
+    pit('emulates a node stack trace during function execution', () => {
+      return buildLoader().then(loader => {
         let hasThrown = false;
         const sum = loader.requireModule(
           __filename,

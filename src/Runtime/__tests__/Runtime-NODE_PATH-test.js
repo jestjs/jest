@@ -15,7 +15,7 @@ jest.mock('jest-environment-jsdom');
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('Runtime', function() {
+describe('Runtime', () => {
   let Runtime;
   let HasteResolver;
   let JSDOMEnvironment;
@@ -32,9 +32,7 @@ describe('Runtime', function() {
     const environment = new JSDOMEnvironment(config);
     const resolver = new HasteResolver(config, {resetCache: false});
     return resolver.getHasteMap().then(
-      response => resolver.end().then(() =>
-        new Runtime(config, environment, response)
-      )
+      response => new Runtime(config, environment, response)
     );
   }
 
@@ -45,33 +43,33 @@ describe('Runtime', function() {
     JSDOMEnvironment = require('jest-environment-jsdom');
   }
 
-  pit('uses NODE_PATH to find modules', function() {
+  pit('uses NODE_PATH to find modules', () => {
     const nodePath = __dirname + '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
-    return buildLoader().then(function(loader) {
+    return buildLoader().then(loader => {
       const exports =
         loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
       expect(exports).toBeDefined();
     });
   });
 
-  pit('finds modules in NODE_PATH containing multiple paths', function() {
+  pit('finds modules in NODE_PATH containing multiple paths', () => {
     const cwd = process.cwd();
     const nodePath = cwd + '/some/other/path' + path.delimiter + __dirname +
       '/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
-    return buildLoader().then(function(loader) {
+    return buildLoader().then(loader => {
       const exports =
         loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
       expect(exports).toBeDefined();
     });
   });
 
-  pit('doesnt find modules if NODE_PATH is relative', function() {
+  pit('doesnt find modules if NODE_PATH is relative', () => {
     const nodePath = process.cwd().substr(path.sep.length) +
       'src/Runtime/__tests__/NODE_PATH_dir';
     initHasteModuleLoader(nodePath);
-    return buildLoader().then(function(loader) {
+    return buildLoader().then(loader => {
       expect(() => {
         loader.requireModuleOrMock(
           rootPath,
