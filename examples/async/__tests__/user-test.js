@@ -18,4 +18,23 @@ describe('async tests', () => {
     const userName = await user.getUserName(4);
     expect(userName).toEqual('Mark');
   });
+
+  // Async error test do not use traditional jasmine toThrow().
+  // Instead, they can be processed with standard javascript style.
+  pit('tests error with promises', () => {
+    return user.getUserName(3)
+      .catch(e => expect(e).toEqual({
+        error: 'Do not have userID 3',
+      }));
+  });
+
+  pit('tests error with async/await', async () => {
+    try {
+      await user.getUserName(2);
+    } catch (e) {
+      expect(e).toEqual({
+        error: 'Do not have userID 2',
+      });
+    }
+  });
 });
