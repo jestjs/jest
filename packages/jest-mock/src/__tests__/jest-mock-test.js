@@ -125,7 +125,7 @@ describe('moduleMocker', () => {
   });
 
   describe('mockImplementationOnce', () => {
-     it('should mock single call to a mock function', () => {
+    it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.getMockFunction();
 
       mockFn.mockImplementationOnce(() => {
