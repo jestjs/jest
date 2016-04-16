@@ -1,0 +1,8 @@
+dependencies:
+  override:
+    - echo "dependencies are installed separately for each node version"
+
+test:
+  override:
+    - nvm use 4 && rm -rf ./node_modules && npm i -g npm && npm i --ignore-scripts && npm run postinstall && npm test
+    - nvm use 5 && rm -rf ./node_modules && npm i -g npm && npm i --ignore-scripts && npm run postinstall && npm test
