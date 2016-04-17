@@ -177,6 +177,7 @@ function normalize(config, argv) {
         break;
 
       case 'cacheDirectory':
+      case 'coverageDirectory':
       case 'testRunner':
       case 'scriptPreprocessor':
       case 'setupTestFrameworkScriptFile':
