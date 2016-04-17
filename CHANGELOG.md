@@ -1,8 +1,13 @@
 ## master
 
+## jest-cli 11.0.2
+
+* Fixed `jest -o` error when Mercurial isn't installed on the system
+* Fixed Jasmine failure message when expected values were mutated after tests.
+
 ## jest-cli 11.0.1, babel-jest 11.0.1
 
-* Added support for mercurial repositories when using `jest -o`
+* Added support for Mercurial repositories when using `jest -o`
 * Added `mockImplementationOnce` API to `jest.fn()`.
 
 ## jest-cli 11.0.0, babel-jest 11.0.0 (pre-releases 0.9 to 0.10)
