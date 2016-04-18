@@ -9,75 +9,120 @@
 
 'use strict';
 
-const denodeify = require('denodeify');
-const fs = require('graceful-fs');
-const path = require('../fastpath');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const spawn = require('child_process').spawn;
 
-const statFile = denodeify(fs.stat);
-const readDir = denodeify(fs.readdir);
+function find(roots, extensions, ignorePattern, callback) {
+  const result = [];
+  let activeCalls = 0;
 
-function nodeCrawl(roots, extensions, ignorePattern, data) {
-  const extensionsPattern = new RegExp('\.(' + extensions.join('|') + ')$');
-  const files = Object.create(null);
-  const queue = roots.slice();
+  function search(curDir) {
+    activeCalls++;
+    fs.readdir(curDir, (err, names) => {
+      activeCalls--;
 
-  function search() {
-    const root = queue.shift();
-    if (!root) {
-      return Promise.resolve();
-    }
+      for (let i = 0; i < names.length; i++) {
+        names[i] = path.join(curDir, names[i]);
+      }
 
-    return readDir(root)
-      .then(files => files.map(f => path.join(root, f)))
-      .then(files => Promise.all(
-        files.map(
-          f => statFile(f).catch(handleBrokenLink).then(stat => [f, stat])
-        )
-      ))
-      .then(list => {
-        list.forEach((fileData, i) => {
-          const name = fileData[0];
-          const stat = fileData[1];
-          // Ignore broken links.
-          if (!stat || ignorePattern.test(name)) {
-            return;
-          }
+      names.forEach(file => {
+        if (ignorePattern.test(file)) {
+          return;
+        }
+        activeCalls++;
 
-          if (stat.isDirectory()) {
-            queue.push(name);
-            return;
-          }
+        fs.lstat(file, (err, stat) => {
+          activeCalls--;
 
-          if (extensionsPattern.test(name)) {
-            const mtime = stat.mtime.getTime();
-            const existingFile = data.files[name];
-            if (existingFile && existingFile.mtime === mtime) {
-              //console.log('exists', name);
-              files[name] = existingFile;
+          if (!err && stat && !stat.isSymbolicLink()) {
+            if (stat.isDirectory()) {
+              search(file);
             } else {
-              //console.log('add', name);
-              files[name] = {
-                id: null,
-                mtime,
-                visited: false,
-              };
+              const ext = path.extname(file).substr(1);
+              if (extensions.indexOf(ext) !== -1) {
+                result.push([file, stat.mtime.getTime()]);
+              }
             }
           }
+          if (activeCalls === 0) {
+            callback(result);
+          }
         });
-
-        return search();
       });
+
+      if (activeCalls === 0) {
+        callback(result);
+      }
+    });
   }
 
-  return search().then(() => {
-    data.files = files;
-    return data;
+  roots.forEach(search);
+}
+
+function findNative(roots, extensions, ignorePattern, callback) {
+  const args = [].concat(roots);
+  args.push('-type', 'f');
+  extensions.forEach((ext, index) => {
+    if (index) {
+      args.push('-o');
+    }
+    args.push('-iname');
+    args.push('*' + ext);
+  });
+
+  const child = spawn('find', args);
+  let stdout = '';
+  child.stdout.setEncoding('utf-8');
+  child.stdout.on('data', data => stdout += data);
+
+  child.stdout.on('close', code => {
+    const lines = stdout.trim()
+      .split('\n')
+      .filter(x => !ignorePattern.test(x));
+    const result = [];
+    let count = lines.length;
+    lines.forEach(path => {
+      fs.stat(path, (err, stat) => {
+        if (stat && !stat.isDirectory()) {
+          result.push([path, stat.mtime.getTime()]);
+        }
+        if (--count === 0) {
+          callback(result);
+        }
+      });
+    });
   });
 }
 
-function handleBrokenLink(e) {
-  console.warn('WARNING: error stating, possibly broken symlink', e.message);
-  return Promise.resolve();
-}
+module.exports = function nodeCrawl(roots, extensions, ignorePattern, data) {
+  return new Promise(resolve => {
+    const callback = list => {
+      const files = Object.create(null);
+      list.forEach(fileData => {
+        const name = fileData[0];
+        const mtime = fileData[1];
+        const existingFile = data.files[name];
+        if (existingFile && existingFile.mtime === mtime) {
+          //console.log('exists', name);
+          files[name] = existingFile;
+        } else {
+          //console.log('add', name);
+          files[name] = {
+            mtime,
+            visited: false,
+          };
+        }
+      });
+      data.files = files;
+      resolve(data);
+    };
 
-module.exports = nodeCrawl;
+    if (os.platform() == 'win32') {
+      find(roots, extensions, ignorePattern, callback);
+    } else {
+      findNative(roots, extensions, ignorePattern, callback);
+    }
+  });
+};

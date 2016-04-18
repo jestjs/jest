@@ -14,12 +14,6 @@ const path = require('./fastpath');
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
-// Make sure uncaught errors are logged before we exit.
-process.on('uncaughtException', err => {
-  console.error(err.stack);
-  process.exit(1);
-});
-
 const formatError = error => {
   if (typeof error === 'string') {
     return {
