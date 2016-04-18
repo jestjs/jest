@@ -9,32 +9,20 @@
 
 'use strict';
 
-const docblockRe = /^\s*(\/\*\*(.|\r?\n)*?\*\/)/;
-
-const ltrimRe = /^\s*/;
-/**
- * @param {String} contents
- * @return {String}
- */
-function extract(contents) {
-  const match = contents.match(docblockRe);
-  if (match) {
-    return match[0].replace(ltrimRe, '') || '';
-  }
-  return '';
-}
-
-const commentStartRe = /^\/\*\*/;
 const commentEndRe = /\*\/$/;
-const wsRe = /[\t ]+/g;
-const stringStartRe = /(\r?\n|^) *\*/g;
+const commentStartRe = /^\/\*\*/;
+const docblockRe = /^\s*(\/\*\*(.|\r?\n)*?\*\/)/;
+const ltrimRe = /^\s*/;
 const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
+const stringStartRe = /(\r?\n|^) *\*/g;
+const wsRe = /[\t ]+/g;
 
-/**
- * @param {String} contents
- * @return {Array}
- */
+function extract(contents) {
+  const match = contents.match(docblockRe);
+  return match ? match[0].replace(ltrimRe, '') || '' : '';
+}
+
 function parse(docblock) {
   docblock = docblock
     .replace(commentStartRe, '')
@@ -50,32 +38,13 @@ function parse(docblock) {
   }
   docblock = docblock.trim();
 
-  const result = [];
+  const result = Object.create(null);
   let match;
   while ((match = propertyRe.exec(docblock))) {
-    result.push([match[1], match[2]]);
-  }
-
-  return result;
-}
-
-/**
- * Same as parse but returns an object of prop: value instead of array of paris
- * If a property appers more than once the last one will be returned
- *
- * @param {String} contents
- * @return {Object}
- */
-function parseAsObject(docblock) {
-  const pairs = parse(docblock);
-  const result = {};
-  for (let i = 0; i < pairs.length; i++) {
-    result[pairs[i][0]] = pairs[i][1];
+    result[match[1]] = match[2];
   }
   return result;
 }
-
 
 exports.extract = extract;
 exports.parse = parse;
-exports.parseAsObject = parseAsObject;

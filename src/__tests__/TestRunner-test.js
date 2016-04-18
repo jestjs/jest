@@ -32,7 +32,9 @@ describe('TestRunner', () => {
         name,
         rootDir: '.',
         testPathDirs: [],
-      }), {});
+      }), {
+        maxWorkers: 1,
+      });
     });
 
     it('supports ../ paths and unix separators', () => {

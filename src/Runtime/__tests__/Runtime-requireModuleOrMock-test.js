@@ -37,7 +37,10 @@ describe('Runtime', () => {
   function buildLoader(config) {
     config = Object.assign({}, baseConfig, config);
     const environment = new JSDOMEnvironment(config);
-    const resolver = new HasteResolver(config, {resetCache: false});
+    const resolver = new HasteResolver(config, {
+      resetCache: false,
+      maxWorkers: 1,
+    });
     return resolver.getHasteMap().then(
       response => new Runtime(config, environment, response)
     );

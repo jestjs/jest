@@ -10,7 +10,6 @@
 
 const crypto = require('crypto');
 const denodeify = require('denodeify');
-const docblock = require('./lib/docblock');
 const execSync = require('child_process').execSync;
 const fs = require('graceful-fs');
 const getPlatformExtension = require('./lib/getPlatformExtension');
@@ -18,14 +17,12 @@ const nodeCrawl = require('./crawlers/node');
 const os = require('os');
 const path = require('./fastpath');
 const watchmanCrawl = require('./crawlers/watchman');
+const worker = require('./worker');
+const workerFarm = require('worker-farm');
 
-const GENERIC_PLATFORM = 'generic';
+const GENERIC_PLATFORM = 'g';
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
-const PACKAGE_JSON = path.sep + 'package.json';
 const VERSION = require('../package.json').version;
-
-const readFile = denodeify(fs.readFile);
-const writeFile = denodeify(fs.writeFile);
 
 const canUseWatchman = (() => {
   try {
@@ -42,6 +39,9 @@ class HasteMap {
       cacheDirectory: options.cacheDirectory || os.tmpDir(),
       extensions: options.extensions,
       ignorePattern: options.ignorePattern,
+      maxWorkers: options.maxWorkers,
+      mocksPattern:
+        options.mocksPattern ? new RegExp(options.mocksPattern) : null,
       platforms: options.platforms,
       resetCache: options.resetCache,
       roots: options.roots,
@@ -54,14 +54,17 @@ class HasteMap {
       ? new RegExp('(.+?)' + NODE_MODULES + '(' + list.join('|') + ')(?!' + NODE_MODULES + ')')
       : null;
 
-    this._buildPromise = null;
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       VERSION,
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
-      this._options.platforms.join(':')
+      this._options.platforms.join(':'),
+      options.mocksPattern
     );
+    this._buildPromise = null;
+    this._workerPromise = null;
+    this._workerFarm = null;
   }
 
   static getCacheFilePath(tmpdir) {
@@ -73,13 +76,10 @@ class HasteMap {
   build() {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
-        .then(data => this._buildHasteMap(data));
+        .then(data => this._buildHasteMap(data))
+        .then(data => this._persist(data));
     }
     return this._buildPromise;
-  }
-
-  persist(data) {
-    return writeFile(this._cachePath, JSON.stringify(data)).then(() => data);
   }
 
   read() {
@@ -101,6 +101,11 @@ class HasteMap {
     });
   }
 
+  _persist(data) {
+    fs.writeFileSync(this._cachePath, JSON.stringify(data), 'utf-8');
+    return data;
+  }
+
   _buildFileMap() {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
@@ -112,6 +117,9 @@ class HasteMap {
 
   _buildHasteMap(data) {
     const map = Object.create(null);
+    const mocks = Object.create(null);
+    const mocksPattern = this._options.mocksPattern;
+    const promises = [];
     const setModule = module => {
       if (!map[module.id]) {
         map[module.id] = Object.create(null);
@@ -129,13 +137,14 @@ class HasteMap {
         );
       }
 
-      const fileData = data.files[module.path];
-      fileData.id = module.id;
       moduleMap[platform] = module;
     };
 
-    const promises = [];
     for (const filePath in data.files) {
+      if (mocksPattern && mocksPattern.test(filePath)) {
+        mocks[path.basename(filePath, path.extname(filePath))] = filePath;
+      }
+
       if (!this._isNodeModulesDir(filePath)) {
         const fileData = data.files[filePath];
         const moduleData = data.map[fileData.id];
@@ -148,19 +157,60 @@ class HasteMap {
           }
         }
 
-        fileData.visited = true;
-        if (filePath.endsWith(PACKAGE_JSON)) {
-          promises.push(this._processHastePackage(filePath, setModule));
-        } else {
-          promises.push(this._processHasteModule(filePath, setModule));
-        }
+        promises.push(
+          this._getWorker()({filePath}).then(data => {
+            fileData.visited = true;
+            if (data.module) {
+              fileData.id = data.module.id;
+              setModule(data.module);
+            }
+            if (data.dependencies) {
+              fileData.dependencies = data.dependencies;
+            }
+          })
+        );
       }
     }
 
-    return Promise.all(promises).then(() => {
-      data.map = map;
-      return data;
-    });
+    return Promise.all(promises)
+      .then(() => {
+        if (this._workerFarm) {
+          workerFarm.end(this._workerFarm);
+        }
+        this._workerFarm = null;
+        this._workerPromise = null;
+      })
+      .then(() => {
+        data.map = map;
+        data.mocks = mocks;
+        return data;
+      });
+  }
+
+  _getWorker() {
+    if (!this._workerPromise) {
+      if (this._options.maxWorkers === 1) {
+        this._workerPromise = data => new Promise(
+          (resolve, reject) => worker(data, (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(data);
+            }
+          })
+        );
+      } else {
+        this._workerFarm = workerFarm(
+          {
+            maxConcurrentWorkers: this._options.maxWorkers,
+          },
+          require.resolve('./worker')
+        );
+        this._workerPromise = denodeify(this._workerFarm);
+      }
+    }
+
+    return this._workerPromise;
   }
 
   _parse(data) {
@@ -201,37 +251,8 @@ class HasteMap {
       clocks: Object.create(null),
       files: Object.create(null),
       map: Object.create(null),
+      mocks: Object.create(null),
     };
-  }
-
-  _processHastePackage(filePath, setModule) {
-    return readFile(filePath, 'utf-8')
-      .then(data => {
-        data = JSON.parse(data);
-        if (data.name) {
-          setModule({
-            id: data.name,
-            path: filePath,
-            type: 'package',
-          });
-        }
-      });
-  }
-
-  _processHasteModule(filePath, setModule) {
-    return readFile(filePath, 'utf-8')
-      .then(data => {
-        const doc = docblock.parseAsObject(data);
-        const id = doc.providesModule || doc.provides;
-
-        if (id) {
-          setModule({
-            id,
-            path: filePath,
-            type: 'module',
-          });
-        }
-      });
   }
 
 }

@@ -56,6 +56,7 @@ class TestRunner {
 
     const Resolver = require(config.moduleResolver);
     this._resolver = new Resolver(config, {
+      maxWorkers: options.runInBand ? 1 : this._opts.maxWorkers,
       resetCache: !config.cache,
     });
 
@@ -220,23 +221,12 @@ class TestRunner {
     });
   }
 
-<<<<<<< b46a656a708ebcb95c95f246a0dd658b389dc610
-  promiseTestPathsMatching(pathPattern) {
-    try {
-      const maybeFile = path.resolve(process.cwd(), pathPattern);
-      fs.accessSync(maybeFile);
-      return Promise.resolve([pathPattern].filter(this.isTestFilePath));
-    } catch (e) {
-      return this._getAllTestPaths()
-        .then(paths => paths.filter(path => new RegExp(pathPattern).test(path)));
-=======
   promiseTestPathsMatching(pattern) {
     if (pattern && !(pattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), pattern);
       if (fileExists(maybeFile)) {
-        return Promise.resolve([pattern].filter(this._isTestFilePath));
+        return Promise.resolve([pattern].filter(this.isTestFilePath));
       }
->>>>>>> Implement `jest-haste-map` instead of `node-haste`
     }
 
     const paths = this._getAllTestPaths();
