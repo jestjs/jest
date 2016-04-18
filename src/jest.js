@@ -58,8 +58,8 @@ function findOnlyChangedTestPaths(testRunner, config) {
       if (!repos.every(result => result[0] || result[1])) {
         throw new Error(
           'It appears that one of your testPathDirs does not exist ' +
-          'within a git or hg repository. Currently --onlyChanged only works ' +
-          'with git or hg projects.\n'
+          'within a git or hg repository. Currently `--onlyChanged` ' +
+          'only works with git or hg projects.'
         );
       }
       return Promise.all(Array.from(repos).map(repo => {
@@ -169,7 +169,7 @@ function runJest(config, argv, pipe, onComplete) {
     .then(runResults => onComplete && onComplete(runResults.success))
     .catch(error => {
       if (error.type == 'DependencyGraphError') {
-        console.error([
+        throw new Error([
           '\nError: ' + error.message + '\n\n',
           'This is most likely a setup ',
           'or configuration issue. To resolve a module name collision, ',
@@ -177,11 +177,8 @@ function runJest(config, argv, pipe, onComplete) {
           'http://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string',
         ].join(''));
       } else {
-        console.error(
-          '\nUnexpected Error: ' + error.message + '\n\n' + error.stack
-        );
+        throw error;
       }
-      process.exit(1);
     });
 }
 
