@@ -63,6 +63,16 @@ describe('Runtime', () => {
       });
     });
 
+    pit('provides `module.paths` to modules', () => {
+      return buildLoader().then(loader => {
+        const exports = loader.requireModule(rootPath, 'RegularModule');
+        expect(exports.paths.length).toBeGreaterThan(0);
+        exports.paths.forEach(path => {
+          expect(path.endsWith('node_modules')).toBe(true);
+        });
+      });
+    });
+
     pit('throws on non-existent @providesModule modules', () => {
       return buildLoader().then(loader => {
         expect(() => {

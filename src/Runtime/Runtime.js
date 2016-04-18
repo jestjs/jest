@@ -11,6 +11,7 @@
 const constants = require('../constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
+const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
 const resolveNodeModule = require('../lib/resolveNodeModule');
@@ -21,14 +22,27 @@ const mockParentModule = {
   exports: {},
 };
 
-const normalizedIDCache = Object.create(null);
-const moduleNameCache = Object.create(null);
 const mockMetaDataCache = Object.create(null);
+const moduleNameCache = Object.create(null);
+const modulePathCache = Object.create(null);
+const normalizedIDCache = Object.create(null);
 const shouldMockModuleCache = Object.create(null);
-const transitiveShouldMock = Object.create(null);
 const shouldUnmockTransitiveDependenciesCache = Object.create(null);
-const unmockRegExpCache = new WeakMap();
+const transitiveShouldMock = Object.create(null);
 const unmockCacheInitialized = new WeakMap();
+const unmockRegExpCache = new WeakMap();
+
+const getModulePaths = from => {
+  if (!modulePathCache[from]) {
+    const paths = nodeModulesPaths(from, {});
+    if (paths[paths.length - 1] === undefined) {
+      // circumvent node-resolve bug that adds `undefined` as last item.
+      paths.pop();
+    }
+    modulePathCache[from] = paths;
+  }
+  return modulePathCache[from];
+};
 
 class Runtime {
   constructor(config, environment, moduleMap) {
@@ -296,9 +310,10 @@ class Runtime {
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
 
+    const dirname = path.dirname(filename);
     moduleObj.children = [];
     moduleObj.parent = mockParentModule;
-    moduleObj.paths = [];
+    moduleObj.paths = getModulePaths(dirname);
     moduleObj.require = this._createRequireImplementation(filename);
 
     const wrapperFunc = this._runSourceText(moduleContent, filename);
@@ -307,7 +322,7 @@ class Runtime {
       moduleObj, // module object
       moduleObj.exports, // module exports
       moduleObj.require, // require implementation
-      path.dirname(filename), // __dirname
+      dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
       this._createRuntimeFor(filename), // jest object
