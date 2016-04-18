@@ -21,7 +21,6 @@ module.exports = {
   globals: {},
   moduleFileExtensions: ['js', 'json', 'node'],
   moduleLoader: require.resolve('../Runtime/Runtime'),
-  moduleResolver: require.resolve('../resolvers/HasteResolver'),
   haste: {
     providesModuleNodeModules: [],
   },

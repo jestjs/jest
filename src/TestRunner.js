@@ -10,6 +10,7 @@
 
 const Test = require('./Test');
 
+const createHasteMap = require('./lib/createHasteMap');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const mkdirp = require('mkdirp');
@@ -54,11 +55,13 @@ class TestRunner {
       }
     }
 
-    const Resolver = require(config.moduleResolver);
-    this._resolver = new Resolver(config, {
+    this._resolver = createHasteMap(config, {
       maxWorkers: options.runInBand ? 1 : this._opts.maxWorkers,
       resetCache: !config.cache,
     });
+
+    // warm-up and cache mocks
+    this._resolver.build():
 
     this._testPathDirsRegExp = new RegExp(
       config.testPathDirs
@@ -158,7 +161,7 @@ class TestRunner {
 
     return Promise.all([
       this._getAllTestPaths(),
-      this._resolver.getHasteMap(),
+      this._resolver.build(),
     ]).then(response => {
       const testPaths = response[0];
       const hasteMap = response[1];
@@ -383,7 +386,7 @@ class TestRunner {
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
     return testPaths.reduce((promise, path) =>
       promise
-        .then(() => this._resolver.getHasteMap())
+        .then(() => this._resolver.build())
         .then(moduleMap => new Test(path, this._config, moduleMap).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
@@ -393,7 +396,7 @@ class TestRunner {
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
-    return this._resolver.getHasteMap()
+    return this._resolver.build()
       .then(() => {
         const farm = workerFarm({
           autoStart: true,
