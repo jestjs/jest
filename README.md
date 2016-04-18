@@ -275,6 +275,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`bail` [boolean]](https://facebook.github.io/jest/docs/api.html#bail-boolean)
   - [`cache` [boolean]](https://facebook.github.io/jest/docs/api.html#cache-boolean)
   - [`cacheDirectory` [string]](https://facebook.github.io/jest/docs/api.html#cachedirectory-string)
+  - [`coverageDirectory` [string]](https://facebook.github.io/jest/docs/api.html#coveragedirectory-string)
   - [`collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](https://facebook.github.io/jest/docs/api.html#collectcoverageonlyfrom-object)
   - [`globals` [object]](https://facebook.github.io/jest/docs/api.html#globals-object)

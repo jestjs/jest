@@ -50,6 +50,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`bail` [boolean]](#bail-boolean)
   - [`cache` [boolean]](#cache-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
+  - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
   - [`globals` [object]](#globals-object)
@@ -389,6 +390,11 @@ The directory where Jest should store it's cached dependency information.
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
 By default, it will be stored in a .haste_cache directory that sits in the jest-cli directory. This intentionally doesn't default to somewhere in your repo to spare the common case from having to add this to your .gitignore/.hgignore/etc.
+
+### `coverageDirectory` [string]
+(default: `undefined`)
+
+The directory where Jest should output its coverage files.
 
 ### `collectCoverage` [boolean]
 (default: `false`)
