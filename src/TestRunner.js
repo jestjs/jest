@@ -75,10 +75,10 @@ class TestRunner {
   _getAllTestPaths() {
     return this._resolver
       .matchFilesByPattern(this._config.testDirectoryName)
-      .then(paths => paths.filter(path => this._isTestFilePath(path)));
+      .then(paths => paths.filter(path => this.isTestFilePath(path)));
   }
 
-  _isTestFilePath(path) {
+  isTestFilePath(path) {
     const testPathIgnorePattern =
       this._config.testPathIgnorePatterns.length
       ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
@@ -100,7 +100,7 @@ class TestRunner {
         module.dependencies.some(dep => dep && changed.has(dep))
       )).map(module => {
         const path = module.path;
-        if (this._isTestFilePath(path)) {
+        if (this.isTestFilePath(path)) {
           relatedPaths.add(path);
         }
         visitedModules.add(path);
@@ -122,7 +122,7 @@ class TestRunner {
           const module = this._resolver.getModuleForPath(path);
           if (module) {
             changed.add(module.path);
-            if (this._isTestFilePath(module.path)) {
+            if (this.isTestFilePath(module.path)) {
               relatedPaths.add(module.path);
             }
           }
@@ -158,7 +158,7 @@ class TestRunner {
       const changed = new Set();
       const moduleMap = [];
       testPaths.forEach(path => {
-        if (changedPaths.has(path) && this._isTestFilePath(path)) {
+        if (changedPaths.has(path) && this.isTestFilePath(path)) {
           relatedPaths.add(path);
         }
         moduleMap.push({name: path, path, dependencies: null});
@@ -168,7 +168,7 @@ class TestRunner {
           const path = list[name];
           if (changedPaths.has(path)) {
             changed.add(name);
-            if (this._isTestFilePath(path)) {
+            if (this.isTestFilePath(path)) {
               relatedPaths.add(path);
             }
           }
@@ -217,7 +217,7 @@ class TestRunner {
     try {
       const maybeFile = path.resolve(process.cwd(), pathPattern);
       fs.accessSync(maybeFile);
-      return Promise.resolve([pathPattern].filter(this._isTestFilePath));
+      return Promise.resolve([pathPattern].filter(this.isTestFilePath));
     } catch (e) {
       return this._getAllTestPaths()
         .then(paths => paths.filter(path => new RegExp(pathPattern).test(path)));
