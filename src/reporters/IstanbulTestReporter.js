@@ -31,6 +31,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
 
     if (config.collectCoverage) {
       try {
+        reporter.dir = config.coverageDirectory || reporter.dir;
         reporter.addAll(config.coverageReporters);
         reporter.write(collector, true, () => {});
       } catch (e) {}
