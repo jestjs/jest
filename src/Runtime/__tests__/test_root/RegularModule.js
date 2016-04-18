@@ -35,4 +35,5 @@ exports.getModuleStateValue = getModuleStateValue;
 exports.isRealModule = true;
 exports.setModuleStateValue = setModuleStateValue;
 exports.parent = module.parent;
+exports.paths = module.paths;
 exports.jest = jest;
