@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine1",
-  "version": "11.0.1",
+  "version": "11.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,7 +9,7 @@
   "main": "src/index.js",
   "dependencies": {
     "graceful-fs": "^4.1.3",
-    "jest-util": "^11.0.1"
+    "jest-util": "^11.0.2"
   },
   "scripts": {
     "test": "node -e \"const spawn = require('child_process').spawn, path=require('path'); spawn('node', [path.resolve('../../bin/jest.js')], {stdio:'inherit'})\""
