@@ -157,6 +157,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             ? actual.calls.all().map(x => x.args)
             : actual.mock.calls;
           const expected = Array.prototype.slice.call(arguments, 1);
+          const actualValues = calls[calls.length - 1];
           const pass = calls.some(call => util.equals(call, expected));
           if (!pass) {
             return {
@@ -165,7 +166,9 @@ function jasmine2(config, environment, moduleLoader, testPath) {
                 return (
                   'Was never called with the expected values.\n' +
                   'Expected:\n' +
-                  reporter.getFormatter().prettyPrint(expected)
+                  reporter.getFormatter().prettyPrint(expected) +
+                  '\nActual:\n' +
+                  reporter.getFormatter().prettyPrint(actualValues)
                 );
               },
             };
