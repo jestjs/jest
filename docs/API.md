@@ -385,7 +385,7 @@ not to disable this feature, but rather run Jest with `--no-cache` once.*
 ### `cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
 
-The directory where Jest should store it's cached dependency information.
+The directory where Jest should store its cached dependency information.
 
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
@@ -489,7 +489,7 @@ An array of regexp pattern strings that are matched against all source file path
 ### `setupFiles` [array]
 (default: `[]`)
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in it's own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
 It's worth noting that this code will execute *before* [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
