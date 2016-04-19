@@ -7,6 +7,8 @@
  */
 'use strict';
 
+const H = require('./constants');
+
 const docblock = require('./lib/docblock');
 const extractRequires = require('./lib/extractRequires');
 const fs = require('graceful-fs');
@@ -40,22 +42,14 @@ module.exports = (data, callback) => {
     if (filePath.endsWith(PACKAGE_JSON)) {
       const fileData = JSON.parse(content);
       if (fileData.name) {
-        module = {
-          id: fileData.name,
-          path: filePath,
-          type: 'package',
-        };
+        module = [fileData.name, filePath, H.PACKAGE];
       }
     } else {
       const doc = docblock.parse(docblock.extract(content));
       const id = doc.providesModule || doc.provides;
       dependencies = extractRequires(content);
       if (id) {
-        module = {
-          id,
-          path: filePath,
-          type: 'module',
-        };
+        module = [id, filePath, H.MODULE];
       }
     }
     callback(null, {module, dependencies});

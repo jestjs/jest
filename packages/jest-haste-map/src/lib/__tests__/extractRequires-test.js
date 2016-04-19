@@ -8,46 +8,42 @@
  */
 'use strict';
 
-jest.dontMock('../extractRequires');
+jest.unmock('../extractRequires');
 
-const extractRequires = require('../extractRequires');
+let extractRequires;
 
 describe('extractRequires', () => {
-  it('should extract both requires and imports from code', () => {
+
+  beforeEach(() => {
+    extractRequires = require('../extractRequires');
+  });
+
+  it('extracts both requires and imports from code', () => {
     const code = `
       import module1 from 'module1';
       const module2 = require('module2');
     `;
 
-    expect(extractRequires(code)).toEqual({
-      code,
-      deps: {sync: ['module1', 'module2']},
-    });
+    expect(extractRequires(code)).toEqual(['module1', 'module2']);
   });
 
-  it('should extract requires in order', () => {
+  it('extracts requires in order', () => {
     const code = `
       const module1 = require('module1');
       const module2 = require('module2');
       const module3 = require('module3');
     `;
 
-    expect(extractRequires(code)).toEqual({
-      code,
-      deps: {sync: ['module1', 'module2', 'module3']},
-    });
+    expect(extractRequires(code)).toEqual(['module1', 'module2', 'module3']);
   });
 
-  it('should strip out comments from code', () => {
-    const code = '// comment';
+  it('strips out comments from code', () => {
+    const code = `// comment const module2 = require('module2');`;
 
-    expect(extractRequires(code)).toEqual({
-      code: '',
-      deps: {sync: []},
-    });
+    expect(extractRequires(code)).toEqual([]);
   });
 
-  it('should ignore requires in comments', () => {
+  it('ignores requires in comments', () => {
     const code = [
       '// const module1 = require("module1");',
       '/**',
@@ -55,13 +51,10 @@ describe('extractRequires', () => {
       ' */',
     ].join('\n');
 
-    expect(extractRequires(code)).toEqual({
-      code: '\n',
-      deps: {sync: []},
-    });
+    expect(extractRequires(code)).toEqual([]);
   });
 
-  it('should ignore requires in comments with Windows line endings', () => {
+  it('ignores requires in comments with Windows line endings', () => {
     const code = [
       '// const module1 = require("module1");',
       '/**',
@@ -69,13 +62,10 @@ describe('extractRequires', () => {
       ' */',
     ].join('\r\n');
 
-    expect(extractRequires(code)).toEqual({
-      code: '\r\n',
-      deps: {sync: []},
-    });
+    expect(extractRequires(code)).toEqual([]);
   });
 
-  it('should ignore requires in comments with unicode line endings', () => {
+  it('ignores requires in comments with unicode line endings', () => {
     const code = [
       '// const module1 = require("module1");\u2028',
       '// const module1 = require("module2");\u2029',
@@ -84,21 +74,15 @@ describe('extractRequires', () => {
       ' */',
     ].join('');
 
-    expect(extractRequires(code)).toEqual({
-      code: '\u2028\u2029',
-      deps: {sync: []},
-    });
+    expect(extractRequires(code)).toEqual([]);
   });
 
-  it('should dedup duplicated requires', () => {
+  it('does not contain duplicates', () => {
     const code = `
       const module1 = require('module1');
       const module1Dup = require('module1');
     `;
 
-    expect(extractRequires(code)).toEqual({
-      code,
-      deps: {sync: ['module1']},
-    });
+    expect(extractRequires(code)).toEqual(['module1']);
   });
 });

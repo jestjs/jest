@@ -8,7 +8,7 @@
 
 'use strict';
 
-const HasteMap = require('jest-haste-map');
+const H = require('jest-haste-map/src/constants');
 
 const constants = require('../constants');
 const fs = require('graceful-fs');
@@ -456,15 +456,14 @@ class Runtime {
 
   _getModule(name, type) {
     if (!type) {
-      type = 'module';
+      type = H.MODULE;
     }
 
     const map = this._modules[name];
     if (map) {
-      const module =
-        map[this._defaultPlatform] || map[HasteMap.GENERIC_PLATFORM];
-      if (module && module.type == type) {
-        return module.path;
+      const module = map[this._defaultPlatform] || map[H.GENERIC_PLATFORM];
+      if (module && module[H.TYPE] == type) {
+        return module[H.PATH];
       }
     }
 
@@ -472,7 +471,7 @@ class Runtime {
   }
 
   _getPackage(name) {
-    return this._getModule(name, 'package');
+    return this._getModule(name, H.PACKAGE);
   }
 
   _getMockModule(name) {

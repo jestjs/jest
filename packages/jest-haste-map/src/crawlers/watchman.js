@@ -9,6 +9,8 @@
 
 'use strict';
 
+const H = require('../constants');
+
 const denodeify = require('denodeify');
 const path = require('../fastpath');
 const watchman = require('fb-watchman');
@@ -29,7 +31,7 @@ function WatchmanError(error) {
 module.exports = function watchmanCrawl(
   roots,
   extensions,
-  ignorePattern,
+  ignore,
   data
 ) {
   const files = data.files;
@@ -78,18 +80,12 @@ module.exports = function watchmanCrawl(
           response.files.forEach(fileData => {
             const name = root + path.sep + fileData.name;
             if (!fileData.exists) {
-              //console.log('remove', name);
               delete files[name];
-            } else if (!ignorePattern.test(name)) {
-              //console.log('add', name);
+            } else if (!ignore(name)) {
               const mtime = fileData.mtime_ms.toNumber();
-              const isNew = !files[name] || files[name].mtime !== mtime;
+              const isNew = !files[name] || files[name][H.MTIME] !== mtime;
               if (isNew) {
-                files[name] = {
-                  id: null,
-                  mtime,
-                  visited: false,
-                };
+                files[name] = [0, mtime, 0, []];
               }
             }
           });

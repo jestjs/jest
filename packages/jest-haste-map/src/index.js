@@ -8,6 +8,8 @@
  */
 'use strict';
 
+const H = require('./constants');
+
 const crypto = require('crypto');
 const denodeify = require('denodeify');
 const execSync = require('child_process').execSync;
@@ -20,7 +22,6 @@ const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
 
-const GENERIC_PLATFORM = 'g';
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
 
@@ -42,6 +43,7 @@ class HasteMap {
       maxWorkers: options.maxWorkers,
       mocksPattern:
         options.mocksPattern ? new RegExp(options.mocksPattern) : null,
+      name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
       roots: options.roots,
@@ -57,6 +59,7 @@ class HasteMap {
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       VERSION,
+      this._options.name,
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
@@ -121,17 +124,19 @@ class HasteMap {
     const mocksPattern = this._options.mocksPattern;
     const promises = [];
     const setModule = module => {
-      if (!map[module.id]) {
-        map[module.id] = Object.create(null);
+      if (!map[module[H.ID]]) {
+        map[module[H.ID]] = Object.create(null);
       }
-      const moduleMap = map[module.id];
-      const platform = getPlatformExtension(module.path) || GENERIC_PLATFORM;
+      const moduleMap = map[module[H.ID]];
+      const platform =
+        getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
-      if (existingModule && existingModule.path !== module.path) {
+      if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
         console.warn(
           `@providesModule naming collision:\n` +
           `  Duplicate module name: ${module.id}\n` +
-          `  Paths: ${module.path} collides with ${existingModule.path}\n\n` +
+          `  Paths: ${module[H.PATH]} collides with ` +
+          `${existingModule[H.PATH]}\n\n` +
           `This warning is caused by a @providesModule declaration ` +
           `with the same name accross two different files.`
         );
@@ -145,31 +150,27 @@ class HasteMap {
         mocks[path.basename(filePath, path.extname(filePath))] = filePath;
       }
 
-      if (!this._isNodeModulesDir(filePath)) {
-        const fileData = data.files[filePath];
-        const moduleData = data.map[fileData.id];
-        if (fileData.visited) {
-          if (!fileData.id) {
-            continue;
-          } else if (fileData.id && moduleData) {
-            map[fileData.id] = moduleData;
-            continue;
-          }
+      const fileData = data.files[filePath];
+      const moduleData = data.map[fileData[H.ID]];
+      if (fileData[H.VISITED]) {
+        if (!fileData[H.ID]) {
+          continue;
+        } else if (fileData[H.ID] && moduleData) {
+          map[fileData[H.ID]] = moduleData;
+          continue;
         }
-
-        promises.push(
-          this._getWorker()({filePath}).then(data => {
-            fileData.visited = true;
-            if (data.module) {
-              fileData.id = data.module.id;
-              setModule(data.module);
-            }
-            if (data.dependencies) {
-              fileData.dependencies = data.dependencies;
-            }
-          })
-        );
       }
+
+      promises.push(
+        this._getWorker()({filePath}).then(data => {
+          fileData[H.VISITED] = 1;
+          if (data.module) {
+            fileData[H.ID] = data.module[H.ID];
+            setModule(data.module);
+          }
+          fileData[H.DEPENDENCIES] = data.dependencies || [];
+        })
+      );
     }
 
     return Promise.all(promises)
@@ -228,8 +229,15 @@ class HasteMap {
     return crawl(
       this._options.roots,
       this._options.extensions,
-      this._options.ignorePattern,
+      this._ignore.bind(this),
       data
+    );
+  }
+
+  _ignore(filePath) {
+    return (
+      this._options.ignorePattern.test(filePath) ||
+      this._isNodeModulesDir(filePath)
     );
   }
 
@@ -256,7 +264,5 @@ class HasteMap {
   }
 
 }
-
-HasteMap.GENERIC_PLATFORM = GENERIC_PLATFORM;
 
 module.exports = HasteMap;

@@ -8,11 +8,16 @@
  */
 'use strict';
 
-jest.dontMock('../getPlatformExtension');
+jest.unmock('../getPlatformExtension');
 
-const getPlatformExtension = require('../getPlatformExtension');
+let getPlatformExtension;
 
 describe('getPlatformExtension', () => {
+
+  beforeEach(() => {
+    getPlatformExtension = require('../getPlatformExtension');
+  });
+
   it('should get platform ext', () => {
     expect(getPlatformExtension('a.ios.js')).toBe('ios');
     expect(getPlatformExtension('a.android.js')).toBe('android');

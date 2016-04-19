@@ -24,6 +24,7 @@ module.exports = function createHasteMap(config, options) {
     ignorePattern,
     maxWorkers: options && options.maxWorkers,
     mocksPattern: config.mocksPattern,
+    name: config.name,
     platforms: config.haste.platforms || ['ios', 'android'],
     providesModuleNodeModules: config.haste.providesModuleNodeModules,
     resetCache: options && options.resetCache,

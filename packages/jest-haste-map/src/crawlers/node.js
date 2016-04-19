@@ -9,12 +9,14 @@
 
 'use strict';
 
+const H = require('../constants');
+
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const spawn = require('child_process').spawn;
 
-function find(roots, extensions, ignorePattern, callback) {
+function find(roots, extensions, ignore, callback) {
   const result = [];
   let activeCalls = 0;
 
@@ -28,7 +30,7 @@ function find(roots, extensions, ignorePattern, callback) {
       }
 
       names.forEach(file => {
-        if (ignorePattern.test(file)) {
+        if (ignore(file)) {
           return;
         }
         activeCalls++;
@@ -61,7 +63,7 @@ function find(roots, extensions, ignorePattern, callback) {
   roots.forEach(search);
 }
 
-function findNative(roots, extensions, ignorePattern, callback) {
+function findNative(roots, extensions, ignore, callback) {
   const args = [].concat(roots);
   args.push('-type', 'f');
   extensions.forEach((ext, index) => {
@@ -80,7 +82,7 @@ function findNative(roots, extensions, ignorePattern, callback) {
   child.stdout.on('close', code => {
     const lines = stdout.trim()
       .split('\n')
-      .filter(x => !ignorePattern.test(x));
+      .filter(x => !ignore(x));
     const result = [];
     let count = lines.length;
     lines.forEach(path => {
@@ -96,7 +98,7 @@ function findNative(roots, extensions, ignorePattern, callback) {
   });
 }
 
-module.exports = function nodeCrawl(roots, extensions, ignorePattern, data) {
+module.exports = function nodeCrawl(roots, extensions, ignore, data) {
   return new Promise(resolve => {
     const callback = list => {
       const files = Object.create(null);
@@ -104,15 +106,10 @@ module.exports = function nodeCrawl(roots, extensions, ignorePattern, data) {
         const name = fileData[0];
         const mtime = fileData[1];
         const existingFile = data.files[name];
-        if (existingFile && existingFile.mtime === mtime) {
-          //console.log('exists', name);
+        if (existingFile && existingFile[H.MTIME] === mtime) {
           files[name] = existingFile;
         } else {
-          //console.log('add', name);
-          files[name] = {
-            mtime,
-            visited: false,
-          };
+          files[name] = [0, mtime, 0, []];
         }
       });
       data.files = files;
@@ -120,9 +117,9 @@ module.exports = function nodeCrawl(roots, extensions, ignorePattern, data) {
     };
 
     if (os.platform() == 'win32') {
-      find(roots, extensions, ignorePattern, callback);
+      find(roots, extensions, ignore, callback);
     } else {
-      findNative(roots, extensions, ignorePattern, callback);
+      findNative(roots, extensions, ignore, callback);
     }
   });
 };

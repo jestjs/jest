@@ -26,7 +26,6 @@ describe('TestRunner', () => {
   describe('isTestFilePath', () => {
 
     beforeEach(() => {
-      jest.mock('../resolvers/HasteResolver');
       runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
@@ -78,18 +77,16 @@ describe('TestRunner', () => {
     });
 
     beforeEach(() => {
-      jest.dontMock('../resolvers/HasteResolver');
-      runner = new TestRunner(config, {});
+      runner = new TestRunner(config, {
+        maxWorkers: 1,
+      });
     });
 
     pit('makes sure a file is related to itself', () => {
-      const path = rootPath;
-
-      return runner.promiseTestPathsRelatedTo(new Set([path]))
+      return runner.promiseTestPathsRelatedTo(new Set([rootPath]))
         .then(relatedTests => {
           expect(relatedTests).toEqual([rootPath]);
-        })
-        .then(() => runner.end());
+        });
     });
 
     pit('finds tests that depend directly on the path', () => {
@@ -102,8 +99,7 @@ describe('TestRunner', () => {
             filePath,
             rootPath,
           ]);
-        })
-        .then(() => runner.end());
+        });
     });
   });
 });
