@@ -8,6 +8,7 @@
 'use strict';
 
 const Console = require('./Console');
+const NullConsole = require('./NullConsole');
 
 class Test {
 
@@ -26,7 +27,8 @@ class Test {
     const ModuleLoader = require(config.moduleLoader);
 
     const env = new TestEnvironment(config);
-    env.global.console = new Console(
+    const TestConsole = config.silent ? NullConsole : Console;
+    env.global.console = new TestConsole(
       config.useStderr ? process.stderr : process.stdout,
       process.stderr
     );

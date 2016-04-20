@@ -144,6 +144,9 @@ function getWatcher(config, packageRoot, callback) {
 }
 
 function runJest(config, argv, pipe, onComplete) {
+  if (argv.silent) {
+    config.silent = true;
+  }
   const testRunner = new TestRunner(config, testRunnerOptions(argv));
   const patternInfo = buildTestPathPatternInfo(argv);
   return getTestPaths(testRunner, config, patternInfo)

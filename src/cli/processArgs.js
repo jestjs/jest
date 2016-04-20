@@ -181,6 +181,13 @@ function processArgs() {
         ),
         type: 'boolean',
       },
+      silent: {
+        default: false,
+        description: _wrapDesc(
+          'Prevent tests from printing messages through the console.'
+        ),
+        type: 'boolean',
+      },
     })
     .check(argv => {
       if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
