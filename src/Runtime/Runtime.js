@@ -8,7 +8,7 @@
 
 'use strict';
 
-const H = require('jest-haste-map/src/constants');
+const H = require('jest-haste-map').H;
 
 const constants = require('../constants');
 const fs = require('graceful-fs');

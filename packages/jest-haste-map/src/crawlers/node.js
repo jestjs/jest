@@ -12,7 +12,6 @@
 const H = require('../constants');
 
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 const spawn = require('child_process').spawn;
 
@@ -20,16 +19,13 @@ function find(roots, extensions, ignore, callback) {
   const result = [];
   let activeCalls = 0;
 
-  function search(curDir) {
+  function search(directory) {
     activeCalls++;
-    fs.readdir(curDir, (err, names) => {
+    fs.readdir(directory, (err, names) => {
       activeCalls--;
 
-      for (let i = 0; i < names.length; i++) {
-        names[i] = path.join(curDir, names[i]);
-      }
-
       names.forEach(file => {
+        file = path.join(directory, file);
         if (ignore(file)) {
           return;
         }
@@ -66,20 +62,26 @@ function find(roots, extensions, ignore, callback) {
 function findNative(roots, extensions, ignore, callback) {
   const args = [].concat(roots);
   args.push('-type', 'f');
+  if (extensions.length) {
+    args.push('\(');
+  }
   extensions.forEach((ext, index) => {
     if (index) {
       args.push('-o');
     }
     args.push('-iname');
-    args.push('*' + ext);
+    args.push('*.' + ext);
   });
+  if (extensions.length) {
+    args.push('\)');
+  }
 
   const child = spawn('find', args);
   let stdout = '';
   child.stdout.setEncoding('utf-8');
   child.stdout.on('data', data => stdout += data);
 
-  child.stdout.on('close', code => {
+  child.stdout.on('close', () => {
     const lines = stdout.trim()
       .split('\n')
       .filter(x => !ignore(x));
@@ -87,7 +89,7 @@ function findNative(roots, extensions, ignore, callback) {
     let count = lines.length;
     lines.forEach(path => {
       fs.stat(path, (err, stat) => {
-        if (stat && !stat.isDirectory()) {
+        if (!err && stat) {
           result.push([path, stat.mtime.getTime()]);
         }
         if (--count === 0) {
@@ -109,14 +111,15 @@ module.exports = function nodeCrawl(roots, extensions, ignore, data) {
         if (existingFile && existingFile[H.MTIME] === mtime) {
           files[name] = existingFile;
         } else {
-          files[name] = [0, mtime, 0, []];
+          // See ../constants.js
+          files[name] = ['', mtime, 0, []];
         }
       });
       data.files = files;
       resolve(data);
     };
 
-    if (os.platform() == 'win32') {
+    if (process.platform === 'win32') {
       find(roots, extensions, ignore, callback);
     } else {
       findNative(roots, extensions, ignore, callback);

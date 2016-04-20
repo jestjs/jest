@@ -8,7 +8,7 @@
 
 'use strict';
 
-const H = require('jest-haste-map/src/constants');
+const H = require('jest-haste-map').H;
 const Test = require('./Test');
 
 const createHasteMap = require('./lib/createHasteMap');
@@ -62,14 +62,6 @@ class TestRunner {
       resetCache: !config.cache,
     });
 
-    // warm-up and cache mocks
-    console.time('build');
-    this._hasteMap.build().then(data => {
-      console.timeEnd('build');
-      console.log('files', Object.keys(data.files).length);
-      console.log('modules', Object.keys(data.map).length);
-    });
-
     this._testPathDirsRegExp = new RegExp(
       config.testPathDirs
         .map(dir => optionPathToRegex(dir))
@@ -88,6 +80,9 @@ class TestRunner {
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
+
+    // warm-up the haste map
+    this._hasteMap.build();
   }
 
   _getAllTestPaths() {
@@ -163,6 +158,7 @@ class TestRunner {
             } else if (!this._opts.skipNodeResolution) {
               return resolveNodeModule(dep, path.dirname(file), extensions);
             }
+            return null;
           })
           .filter(dep => !!dep);
 

@@ -34,11 +34,12 @@ module.exports = function watchmanCrawl(
   ignore,
   data
 ) {
-  const files = data.files;
-  const clocks = data.clocks;
-
   const client = new watchman.Client();
   const cmd = denodeify(client.command.bind(client));
+  const clocks = data.clocks;
+  let files = data.files;
+  let reset = false;
+
   return Promise.all(roots.map(root => cmd(['watch-project', root])))
     .then(responses => {
       const watchmanRoots = Array.from(
@@ -76,6 +77,13 @@ module.exports = function watchmanCrawl(
             console.warn('watchman warning: ', response.warning);
           }
 
+          // Reset the file map if watchman was restarted and sends us a list of
+          // files.
+          if (!reset && response.is_fresh_instance) {
+            reset = true;
+            files = Object.create(null);
+          }
+
           clocks[root] = response.clock;
           response.files.forEach(fileData => {
             const name = root + path.sep + fileData.name;
@@ -83,9 +91,13 @@ module.exports = function watchmanCrawl(
               delete files[name];
             } else if (!ignore(name)) {
               const mtime = fileData.mtime_ms.toNumber();
-              const isNew = !files[name] || files[name][H.MTIME] !== mtime;
+              const isNew =
+                !data.files[name] || data.files[name][H.MTIME] !== mtime;
               if (isNew) {
-                files[name] = [0, mtime, 0, []];
+                // See ../constants.js
+                files[name] = ['', mtime, 0, []];
+              } else {
+                files[name] = data.files[name];
               }
             }
           });
@@ -94,6 +106,7 @@ module.exports = function watchmanCrawl(
     })
     .then(() => {
       client.end();
+      data.files = files;
       return data;
     })
     .catch(error => {

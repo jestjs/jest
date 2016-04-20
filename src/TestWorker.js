@@ -29,7 +29,7 @@ const formatError = error => {
   return {
     stack: error.stack,
     message: error.message,
-    type: error.type,
+    type: error.type || 'Error',
   };
 };
 

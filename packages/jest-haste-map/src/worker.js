@@ -14,7 +14,8 @@ const extractRequires = require('./lib/extractRequires');
 const fs = require('graceful-fs');
 const path = require('./fastpath');
 
-const PACKAGE_JSON = path.sep + 'package.json';
+const JSON_EXTENSION = '.json';
+const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 
 const formatError = error => {
   if (typeof error === 'string') {
@@ -28,7 +29,7 @@ const formatError = error => {
   return {
     stack: error.stack,
     message: error.message,
-    type: error.type,
+    type: error.type || 'Error',
   };
 };
 
@@ -37,22 +38,25 @@ module.exports = (data, callback) => {
     const filePath = data.filePath;
     const content = fs.readFileSync(filePath, 'utf-8');
     let module;
+    let id;
     let dependencies;
 
     if (filePath.endsWith(PACKAGE_JSON)) {
       const fileData = JSON.parse(content);
       if (fileData.name) {
-        module = [fileData.name, filePath, H.PACKAGE];
+        id = fileData.name;
+        module = [filePath, H.PACKAGE];
       }
-    } else {
+    } else if (!filePath.endsWith(JSON_EXTENSION)) {
       const doc = docblock.parse(docblock.extract(content));
-      const id = doc.providesModule || doc.provides;
+      id = doc.providesModule || doc.provides;
       dependencies = extractRequires(content);
       if (id) {
-        module = [id, filePath, H.MODULE];
+        module = [filePath, H.MODULE];
       }
     }
-    callback(null, {module, dependencies});
+
+    callback(null, {id, module, dependencies});
   } catch (error) {
     callback(formatError(error));
   }

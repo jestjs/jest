@@ -1,3 +1,16 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
+ *
+ * original author: dead_horse <dead_horse@qq.com>
+ * ported by: yaycmyk <evan@yaycmyk.com>
+ */
+
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19,10 +32,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-/*
- * original author: dead_horse <dead_horse@qq.com>
- * ported by: yaycmyk <evan@yaycmyk.com>
- */
+/* eslint-disable fb-www/soft-max-len */
 'use strict';
 
 jest.unmock('../fastpath');

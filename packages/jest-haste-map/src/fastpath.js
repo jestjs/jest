@@ -1,3 +1,13 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
+ */
+
 /*!
  * fast-path - index.js
  * MIT License
@@ -602,8 +612,12 @@ exports.dirname = function _dirname(filename) {
   }
 
   if (lastSep <= start) {
-    if (device) { return device; }
-    if (filename[0] === '/' || filename[0] === exports.sep) { return filename[0]; }
+    if (device) {
+      return device;
+    }
+    if (filename[0] === '/' || filename[0] === exports.sep) {
+      return filename[0];
+    }
 
     return '.';
   }

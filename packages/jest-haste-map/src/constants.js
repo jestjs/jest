@@ -15,17 +15,15 @@
  * a custom serialization library.
  */
 module.exports = {
-  /* shared in file map and module map */
-  ID: 0,
-
   /* file map attributes */
+  ID: 0,
   MTIME: 1,
   VISITED: 2,
   DEPENDENCIES: 3,
 
   /* module map attributes */
-  PATH: 1,
-  TYPE: 2,
+  PATH: 0,
+  TYPE: 1,
 
   /* module types */
   MODULE: 0,
