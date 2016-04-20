@@ -12,7 +12,7 @@ const jasminePit = require('jest-util/lib/jasmine-pit');
 const JasmineReporter = require('./reporter');
 const path = require('path');
 
-const JASMINE_PATH = require.resolve('../vendor/jasmine-2.3.4.js');
+const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
 const jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
