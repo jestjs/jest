@@ -425,7 +425,9 @@ class Runtime {
       return currPath;
     }
     const basedir = path.dirname(currPath);
-    const filePath = resolveNodeModule(moduleName, basedir, this._extensions);
+    const filePath = resolveNodeModule(
+        this._resolveStubModuleName(moduleName) || moduleName,
+        basedir, this._extensions);
     if (filePath) {
       return filePath;
     }
@@ -461,7 +463,7 @@ class Runtime {
     } else {
       const moduleName = this._resolveStubModuleName(name);
       if (moduleName) {
-        return this._getModule(moduleName) || moduleName;
+        return this._getModule(moduleName);
       }
     }
   }
