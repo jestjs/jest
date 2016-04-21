@@ -131,8 +131,8 @@ class HasteMap {
 
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
-      VERSION,
       this._options.name,
+      VERSION,
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
@@ -143,10 +143,10 @@ class HasteMap {
     this._workerFarm = null;
   }
 
-  static getCacheFilePath(tmpdir) {
+  static getCacheFilePath(tmpdir, name) {
     const hash = crypto.createHash('md5');
-    Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
-    return path.join(tmpdir, hash.digest('hex'));
+    Array.from(arguments).slice(2).forEach(arg => hash.update(arg));
+    return path.join(tmpdir, name + '-' + hash.digest('hex'));
   }
 
   build() {
