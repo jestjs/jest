@@ -70,15 +70,15 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     }
   });
 
-  const hasIterator = object => !!(object !== null && object[Symbol.iterator]);
-  const jestCustomEqualityTesters = [];
+  const hasIterator = object => !!(object != null && object[Symbol.iterator]);
   const iterableEquality = (a, b) => {
     if (
       typeof a !== 'object' ||
       typeof b !== 'object' ||
       Array.isArray(a) ||
       Array.isArray(b) ||
-      ![a, b].every(hasIterator)
+      !hasIterator(a) ||
+      !hasIterator(b)
     ) {
       return undefined;
     }
@@ -94,7 +94,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
         !jasmine.matchersUtil.equals(
           aValue,
           nextB.value,
-          jestCustomEqualityTesters
+          [iterableEquality]
         )
       ) {
         return false;
@@ -105,12 +105,9 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     }
     return true;
   };
-  jestCustomEqualityTesters.push(iterableEquality);
 
   env.beforeEach(() => {
-    jestCustomEqualityTesters.forEach(
-      tester => jasmine.addCustomEqualityTester(tester)
-    );
+    jasmine.addCustomEqualityTester(iterableEquality);
 
     jasmine.addMatchers({
       toBeCalled: () => ({
