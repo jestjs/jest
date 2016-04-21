@@ -69,7 +69,32 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       moduleLoader.requireModule(null, config.setupTestFrameworkScriptFile);
     }
   });
+
+  const iterableEquality = (left, right) => {
+    let result; // result needs to be `undefined` if not an iterator
+    if (left && right && left[Symbol.iterator] && right[Symbol.iterator]) {
+      const leftIterator = left[Symbol.iterator]();
+      const rightIterator = right[Symbol.iterator]();
+      let nextLeft = leftIterator.next();
+      let nextRight = rightIterator.next();
+
+      result = true;
+      while (result && !nextLeft.done) {
+        result = jasmine.matchersUtil.equals(nextLeft, nextRight);
+        nextLeft = leftIterator.next();
+        nextRight = rightIterator.next();
+      }
+
+      if (!nextRight.done) {
+        result = false;
+      }
+    }
+
+    return result;
+  };
+
   env.beforeEach(() => {
+    jasmine.addCustomEqualityTester(iterableEquality);
     jasmine.addMatchers({
       toBeCalled: () => ({
         compare: (actual, expected) => {
