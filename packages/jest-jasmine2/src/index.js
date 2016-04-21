@@ -70,31 +70,48 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     }
   });
 
-  const iterableEquality = (left, right) => {
-    let result; // result needs to be `undefined` if not an iterator
-    if (left && right && left[Symbol.iterator] && right[Symbol.iterator]) {
-      const leftIterator = left[Symbol.iterator]();
-      const rightIterator = right[Symbol.iterator]();
-      let nextLeft = leftIterator.next();
-      let nextRight = rightIterator.next();
+  const hasIterator = object => !!(object !== null && object[Symbol.iterator]);
+  const jestCustomEqualityTesters = [];
+  const iterableEquality = (a, b) => {
+    if (
+      typeof a !== 'object' ||
+      typeof b !== 'object' ||
+      Array.isArray(a) ||
+      Array.isArray(b) ||
+      ![a, b].every(hasIterator)
+    ) {
+      return undefined;
+    }
+    if (a.constructor !== b.constructor) {
+      return false;
+    }
+    const bIterator = b[Symbol.iterator]();
 
-      result = true;
-      while (result && !nextLeft.done) {
-        result = jasmine.matchersUtil.equals(nextLeft, nextRight);
-        nextLeft = leftIterator.next();
-        nextRight = rightIterator.next();
-      }
-
-      if (!nextRight.done) {
-        result = false;
+    for (const aValue of a) {
+      const nextB = bIterator.next();
+      if (
+        nextB.done ||
+        !jasmine.matchersUtil.equals(
+          aValue,
+          nextB.value,
+          jestCustomEqualityTesters
+        )
+      ) {
+        return false;
       }
     }
-
-    return result;
+    if (!bIterator.next().done) {
+      return false;
+    }
+    return true;
   };
+  jestCustomEqualityTesters.push(iterableEquality);
 
   env.beforeEach(() => {
-    jasmine.addCustomEqualityTester(iterableEquality);
+    jestCustomEqualityTesters.forEach(
+      tester => jasmine.addCustomEqualityTester(tester)
+    );
+
     jasmine.addMatchers({
       toBeCalled: () => ({
         compare: (actual, expected) => {
