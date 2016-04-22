@@ -17,7 +17,7 @@ const normalizeConfig = require('../../config/normalize');
 
 describe('Runtime', () => {
   let Runtime;
-  let HasteResolver;
+  let createHasteMap;
   let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
@@ -31,17 +31,14 @@ describe('Runtime', () => {
   function buildLoader(config) {
     config = Object.assign({}, baseConfig, config);
     const environment = new JSDOMEnvironment(config);
-    const resolver = new HasteResolver(config, {resetCache: false});
-    return resolver.getHasteMap().then(
-      response => resolver.end().then(() =>
-        new Runtime(config, environment, response)
-      )
-    );
+    return createHasteMap(config, {resetCache: false, maxWorkers: 1})
+      .build()
+      .then(response => new Runtime(config, environment, response));
   }
 
   beforeEach(() => {
     Runtime = require('../Runtime');
-    HasteResolver = require('../../resolvers/HasteResolver');
+    createHasteMap = require('../../lib/createHasteMap');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 

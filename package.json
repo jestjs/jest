@@ -11,6 +11,7 @@
     "istanbul": "^0.4.2",
     "jest-environment-jsdom": "^11.0.2",
     "jest-environment-node": "^11.0.2",
+    "jest-haste-map": "^11.0.2",
     "jest-jasmine1": "^11.0.2",
     "jest-jasmine2": "^11.0.2",
     "jest-mock": "^11.0.2",
@@ -18,7 +19,6 @@
     "json-stable-stringify": "^1.0.0",
     "lodash.template": "^4.2.4",
     "mkdirp": "^0.5.1",
-    "node-haste": "^2.5.0",
     "optimist": "^0.6.1",
     "resolve": "^1.1.6",
     "sane": "^1.2.0",
@@ -44,11 +44,19 @@
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "jasmine1": "node bin/jest.js --testRunner=jasmine1",
+    "jest-cache": "node bin/jest.js",
+    "jest-heap-usage": "node bin/jest.js --runInBand --logHeapUsage",
+    "jest-in-band": "node bin/jest.js --runInBand",
+    "jest-jasmine1": "node bin/jest.js --testRunner=jasmine1",
+    "jest-json": "node bin/jest.js --json",
+    "jest-no-cache": "node bin/jest.js --no-cache",
+    "jest-node-cache": "node bin/jest.js --no-watchman",
+    "jest-node-no-cache": "node bin/jest.js --no-watchman --no-cache",
+    "jest-verbose": "node bin/jest.js --verbose",
     "lint": "eslint .",
     "postinstall": "node postinstall.js",
     "prepublish": "npm test",
-    "test": "npm run lint && node bin/jest.js && npm run jasmine1 && npm link --ignore-scripts && node ./run_tests.js"
+    "test": "npm run lint && npm run jest-no-cache && npm run jest-cache && npm run jest-node-no-cache && npm run jest-node-cache && npm run jest-jasmine1 && npm run jest-in-band && npm run jest-heap-usage && npm run jest-json && npm run jest-verbose && npm link --ignore-scripts && node ./run_tests.js"
   },
   "jest": {
     "rootDir": "src",

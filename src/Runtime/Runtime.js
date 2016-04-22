@@ -8,6 +8,8 @@
 
 'use strict';
 
+const H = require('jest-haste-map').H;
+
 const constants = require('../constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
@@ -57,9 +59,9 @@ class Runtime {
 
     this._shouldAutoMock = config.automock;
     this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
+    this._defaultPlatform = config.haste.defaultPlatform;
 
-    this._modules = moduleMap.modules;
-    this._packages = moduleMap.packages;
+    this._modules = moduleMap.map;
     this._mocks = moduleMap.mocks;
 
     if (config.collectCoverage) {
@@ -407,8 +409,9 @@ class Runtime {
 
   _resolveModuleName(currPath, moduleName) {
     // Check if the resolver knows about this module
-    if (this._modules[moduleName]) {
-      return this._modules[moduleName];
+    const module = this._getModule(moduleName);
+    if (module) {
+      return module;
     }
 
     // Otherwise it is likely a node_module.
@@ -434,7 +437,7 @@ class Runtime {
     // folders.
     const parts = moduleName.split('/');
     const hastePackageName = parts.shift();
-    const module = this._getHastePackage(hastePackageName);
+    const module = this._getPackage(hastePackageName);
     if (module) {
       try {
         return require.resolve(
@@ -451,8 +454,24 @@ class Runtime {
     );
   }
 
-  _getModule(name) {
-    return this._modules[name];
+  _getModule(name, type) {
+    if (!type) {
+      type = H.MODULE;
+    }
+
+    const map = this._modules[name];
+    if (map) {
+      const module = map[this._defaultPlatform] || map[H.GENERIC_PLATFORM];
+      if (module && module[H.TYPE] == type) {
+        return module[H.PATH];
+      }
+    }
+
+    return null;
+  }
+
+  _getPackage(name) {
+    return this._getModule(name, H.PACKAGE);
   }
 
   _getMockModule(name) {
@@ -464,10 +483,6 @@ class Runtime {
         return this._getModule(moduleName) || moduleName;
       }
     }
-  }
-
-  _getHastePackage(name) {
-    return this._packages[name];
   }
 
   _getNormalizedModuleID(currPath, moduleName) {

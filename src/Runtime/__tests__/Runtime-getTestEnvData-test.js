@@ -17,31 +17,29 @@ const normalizeConfig = require('../../config/normalize');
 
 describe('Runtime', () => {
   let Runtime;
-  let HasteResolver;
+  let createHasteMap;
   let JSDOMEnvironment;
 
   const rootDir = path.join(__dirname, 'test_root');
   const rootPath = path.join(rootDir, 'root.js');
-  const config = normalizeConfig({
+  const baseConfig = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
     name: 'Runtime-getTestEnvData-tests',
     rootDir,
     testEnvData: {someTestData: 42},
   });
 
-  function buildLoader() {
+  function buildLoader(config) {
+    config = Object.assign({}, baseConfig, config);
     const environment = new JSDOMEnvironment(config);
-    const resolver = new HasteResolver(config, {resetCache: false});
-    return resolver.getHasteMap().then(
-      response => resolver.end().then(() =>
-        new Runtime(config, environment, response)
-      )
-    );
+    return createHasteMap(config, {resetCache: false, maxWorkers: 1})
+      .build()
+      .then(response => new Runtime(config, environment, response));
   }
 
   beforeEach(() => {
     Runtime = require('../Runtime');
-    HasteResolver = require('../../resolvers/HasteResolver');
+    createHasteMap = require('../../lib/createHasteMap');
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
@@ -49,7 +47,7 @@ describe('Runtime', () => {
     return buildLoader().then(loader => {
       const root = loader.requireModule(rootDir, rootPath);
       const envData = root.jest.getTestEnvData();
-      expect(envData).toEqual(config.testEnvData);
+      expect(envData).toEqual(baseConfig.testEnvData);
     });
   });
 
