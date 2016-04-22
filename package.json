@@ -56,7 +56,7 @@
     "lint": "eslint .",
     "postinstall": "node postinstall.js",
     "prepublish": "npm test",
-    "test": "npm run lint && npm run jest-no-cache && npm run jest-cache && npm run jest-node-no-cache && npm run jest-node-cache && npm run jest-jasmine1 && npm run jest-in-band && npm run jest-heap-usage && npm run jest-json && npm run jest-verbose && npm link --ignore-scripts && node ./run_tests.js"
+    "test": "npm run lint && npm run jest-no-cache && npm run jest-cache && npm run jest-node-no-cache && npm run jest-node-cache && npm run jest-jasmine1 && npm run jest-in-band && npm run jest-heap-usage && npm run jest-json && npm run jest-verbose && npm link --ignore-scripts && node ./runTests.js"
   },
   "jest": {
     "rootDir": "src",
