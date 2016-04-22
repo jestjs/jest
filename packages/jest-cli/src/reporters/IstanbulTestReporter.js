@@ -7,8 +7,8 @@
 */
 'use strict';
 
-const chalk = require('chalk');
 const DefaultTestReporter = require('./DefaultTestReporter');
+const chalk = require('chalk');
 const istanbul = require('istanbul');
 const collector = new istanbul.Collector();
 const testCollectors = Object.create(null);
@@ -57,12 +57,16 @@ class IstanbulTestReporter extends DefaultTestReporter {
 
             if (threshold < 0) {
               if (threshold * -1 < actualUncovered) {
-                errors.push(`Uncovered count for ${key} (${actualUncovered})` +
-                  `exceeds ${name} threshold (${-1 * threshold})`);
+                errors.push(
+                  `Uncovered count for ${key} (${actualUncovered})` +
+                  `exceeds ${name} threshold (${-1 * threshold})`
+                );
               }
             } else if (actual < threshold) {
-              errors.push(`Coverage for ${key} (${actual}` +
-                `%) does not meet ${name} threshold (${threshold}%)`);
+              errors.push(
+                `Coverage for ${key} (${actual}` +
+                `%) does not meet ${name} threshold (${threshold}%)`
+              );
             }
             return errors;
           }, []);
@@ -70,7 +74,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
         const errors = check('global', config.coverageThreshold.global, globalResults);
         
         if (errors.length > 0) {
-          console.error(`${FAIL_COLOR(errors.join('\n'))}`);
+          this.log(`${FAIL_COLOR(errors.join('\n'))}`);
           aggregatedResults.success = false;
         }
       }
