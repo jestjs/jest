@@ -271,4 +271,58 @@ describe('watchman watch', () => {
     });
   });
 
+  pit('properly resets the file map when only one watcher is reset', () => {
+    mockResponse = {
+      '/fruits': {
+        version: '4.5.0',
+        clock: 'c:fake-clock:3',
+        is_fresh_instance: false,
+        files: [
+          {
+            name: 'kiwi.js',
+            exists: true,
+            mtime_ms: {toNumber: () => 42},
+          },
+        ],
+      },
+      '/vegetables': {
+        version: '4.5.0',
+        clock: 'c:fake-clock:4',
+        is_fresh_instance: true,
+        files: [
+          {
+            name: 'melon.json',
+            exists: true,
+            mtime_ms: {toNumber: () => 33},
+          },
+        ],
+      },
+    };
+
+    const clocks = Object.assign(Object.create(null), {
+      '/fruits': 'c:fake-clock:1',
+      '/vegetables': 'c:fake-clock:2',
+    });
+
+    return watchmanCrawl(
+      ['/fruits', '/vegetables'],
+      ['js', 'json'],
+      pearMatcher,
+      {
+        clocks,
+        files: mockFiles,
+      }
+    ).then(data => {
+      expect(data.clocks).toEqual({
+        '/fruits': 'c:fake-clock:3',
+        '/vegetables': 'c:fake-clock:4',
+      });
+
+      expect(data.files).toEqual({
+        '/fruits/kiwi.js': ['', 42, 0, []],
+        '/vegetables/melon.json': ['', 33, 0, []],
+      });
+    });
+  });
+
 });

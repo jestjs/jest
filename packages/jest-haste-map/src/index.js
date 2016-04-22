@@ -245,6 +245,7 @@ class HasteMap {
       promises.push(
         this._getWorker()({filePath}).then(
           metadata => {
+            // `1` for truthy values instead of `true` to save cache space.
             fileMetadata[H.VISITED] = 1;
             if (metadata.id) {
               fileMetadata[H.ID] = metadata.id;
