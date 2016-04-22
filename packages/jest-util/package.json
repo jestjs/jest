@@ -15,10 +15,10 @@
   "devDependencies": {
     "jsdom": "^8.3.1"
   },
-  "scripts": {
-    "test": "../../bin/jest.js"
-  },
   "jest": {
     "testEnvironment": "node"
+  },
+  "scripts": {
+    "test": "../../bin/jest.js"
   }
 }

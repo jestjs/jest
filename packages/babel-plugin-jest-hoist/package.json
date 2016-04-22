@@ -13,10 +13,9 @@
   },
   "jest": {
     "scriptPreprocessor": "../babel-jest",
-    "testEnvironment": "../jest-environment-node"
+    "testEnvironment": "node"
   },
   "scripts": {
-    "prepublish": "npm test",
-    "test": "node -e \"const spawn = require('child_process').spawn, path=require('path'); spawn('node', [path.resolve('../../bin/jest.js')], {stdio:'inherit'})\""
+    "test": "../../bin/jest.js"
   }
 }
