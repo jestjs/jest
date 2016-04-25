@@ -24,13 +24,10 @@ const mockParentModule = {
   exports: {},
 };
 
-const mockMetaDataCache = Object.create(null);
 const moduleNameCache = Object.create(null);
 const modulePathCache = Object.create(null);
 const normalizedIDCache = Object.create(null);
-const shouldMockModuleCache = Object.create(null);
-const shouldUnmockTransitiveDependenciesCache = Object.create(null);
-const transitiveShouldMock = Object.create(null);
+
 const unmockCacheInitialized = new WeakMap();
 const unmockRegExpCache = new WeakMap();
 
@@ -79,7 +76,7 @@ class Runtime {
       const unmockPath = filePath => {
         if (filePath && filePath.includes(constants.NODE_MODULES)) {
           const moduleID = this._getNormalizedModuleID(filePath);
-          transitiveShouldMock[moduleID] = false;
+          this._transitiveShouldMock[moduleID] = false;
         }
       };
 
@@ -87,6 +84,11 @@ class Runtime {
       config.setupFiles.forEach(unmockPath);
       unmockCacheInitialized.set(config, true);
     }
+
+    this._mockMetaDataCache = Object.create(null);
+    this._shouldMockModuleCache = Object.create(null);
+    this._shouldUnmockTransitiveDependenciesCache = Object.create(null);
+    this._transitiveShouldMock = Object.create(null);
 
     // Workers communicate the config as JSON so we have to create a regex
     // object in the module loader instance.
@@ -371,10 +373,10 @@ class Runtime {
   _generateMock(currPath, moduleName) {
     const modulePath = this._resolveModuleName(currPath, moduleName);
 
-    if (!(modulePath in mockMetaDataCache)) {
+    if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
+      this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute
@@ -402,9 +404,11 @@ class Runtime {
           `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`
         );
       }
-      mockMetaDataCache[modulePath] = mockMetadata;
+      this._mockMetaDataCache[modulePath] = mockMetadata;
     }
-    return moduleMocker.generateFromMetadata(mockMetaDataCache[modulePath]);
+    return moduleMocker.generateFromMetadata(
+      this._mockMetaDataCache[modulePath]
+    );
   }
 
   _resolveModuleName(currPath, moduleName) {
@@ -542,13 +546,13 @@ class Runtime {
     if (
       !this._shouldAutoMock ||
       resolve.isCore(moduleName) ||
-      shouldUnmockTransitiveDependenciesCache[key]
+      this._shouldUnmockTransitiveDependenciesCache[key]
     ) {
       return false;
     }
 
-    if (moduleName in shouldMockModuleCache) {
-      return shouldMockModuleCache[moduleName];
+    if (moduleName in this._shouldMockModuleCache) {
+      return this._shouldMockModuleCache[moduleName];
     }
 
     const manualMockResource = this._getMockModule(moduleName);
@@ -557,14 +561,14 @@ class Runtime {
       modulePath = this._resolveModuleName(currPath, moduleName);
     } catch (e) {
       if (manualMockResource) {
-        shouldMockModuleCache[moduleName] = true;
+        this._shouldMockModuleCache[moduleName] = true;
         return true;
       }
       throw e;
     }
 
     if (this._unmockList && this._unmockList.test(modulePath)) {
-      shouldMockModuleCache[moduleName] = false;
+      this._shouldMockModuleCache[moduleName] = false;
       return false;
     }
 
@@ -576,15 +580,15 @@ class Runtime {
       (
         (this._unmockList && this._unmockList.test(currPath)) ||
         explicitShouldMock[currentModuleID] === false ||
-        transitiveShouldMock[currentModuleID] === false
+        this._transitiveShouldMock[currentModuleID] === false
       )
     ) {
-      transitiveShouldMock[moduleID] = false;
-      shouldUnmockTransitiveDependenciesCache[key] = true;
+      this._transitiveShouldMock[moduleID] = false;
+      this._shouldUnmockTransitiveDependenciesCache[key] = true;
       return false;
     }
 
-    return shouldMockModuleCache[moduleName] = true;
+    return this._shouldMockModuleCache[moduleName] = true;
   }
 
   _resolveStubModuleName(moduleName) {
