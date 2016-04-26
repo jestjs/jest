@@ -26,11 +26,11 @@ module.exports = {
   },
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
-  testDirectoryName: '__tests__',
+  testDirectoryName: 'src',
   mocksPattern: '__mocks__',
   testEnvironment: 'jest-environment-jsdom',
   testEnvData: {},
-  testFileExtensions: ['js'],
+  testFileExtensions: ['spec.js'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [
     utils.replacePathSepForRegex(constants.NODE_MODULES),

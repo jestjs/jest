@@ -291,11 +291,15 @@ class Runtime {
       (this._config.collectCoverage && !collectOnlyFrom) ||
       (collectOnlyFrom && collectOnlyFrom[filename])
     );
+    const testFileExtensions = this._config.testFileExtensions;
+    const hasOneOfFileExtensions = testFileExtensions.some(extension => {
+        return filename.includes(extension);
+    });
     let moduleContent = transform(filename, this._config);
     let collectorStore;
     if (
       shouldCollectCoverage &&
-      !filename.includes(this._testDirectoryName) &&
+      !hasOneOfFileExtensions &&
       !filename.includes(constants.NODE_MODULES)
     ) {
       if (!collectors[filename]) {
