@@ -41,6 +41,17 @@ let fp;
 
 describe('fast-path', () => {
 
+  if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
+    it('exports path directly', () => {
+      const path = require('path');
+      fp = require('../fastpath');
+      Object.keys(path).forEach(name => {
+        expect(path[name]).toBe(fp[name]);
+      });
+    });
+    return;
+  }
+
   const actualPlatform = process.platform;
   const invalidInputTests = [
     true,

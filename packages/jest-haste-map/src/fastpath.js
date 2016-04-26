@@ -45,7 +45,12 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const all = Object.keys(exports).filter(name => name !== 'replace');
+// fastpath is only useful on older versions of nodejs.
+if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
+  module.exports = Object.assign({replace: () => {}}, path);
+  return;
+}
+
 const IS_WINDOWS = process.platform === 'win32';
 
 function isString(arg) {
@@ -625,11 +630,8 @@ exports.dirname = function _dirname(filename) {
   return device + filename.slice(start, lastSep);
 };
 
-exports.replace = function(props) {
-  if (!props) { props = all; }
-  if (!Array.isArray(props)) { props = [props]; }
-
-  props.forEach(name => {
-    if (exports[name]) { path[name] = exports[name]; }
-  });
+exports.replace = function() {
+  Object.keys(exports)
+    .filter(name => name !== 'replace')
+    .forEach(name => path[name] = exports[name]);
 };

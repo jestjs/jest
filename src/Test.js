@@ -36,7 +36,7 @@ class Test {
     const moduleLoader = new ModuleLoader(config, env, moduleMap);
     if (config.setupFiles.length) {
       for (let i = 0; i < config.setupFiles.length; i++) {
-        moduleLoader.requireModule(null, config.setupFiles[i]);
+        moduleLoader.requireModule(config.setupFiles[i]);
       }
     }
 

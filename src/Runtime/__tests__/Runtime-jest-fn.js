@@ -45,7 +45,7 @@ describe('Runtime', () => {
   describe('jest.fn', () => {
     pit('creates mock functions', () => {
       return buildLoader().then(loader => {
-        const root = loader.requireModule(null, rootPath);
+        const root = loader.requireModule(rootPath);
         const mock = root.jest.fn();
         expect(mock._isMockFunction).toBe(true);
         mock();
@@ -55,7 +55,7 @@ describe('Runtime', () => {
 
     pit('creates mock functions with mock implementations', () => {
       return buildLoader().then(loader => {
-        const root = loader.requireModule(null, rootPath);
+        const root = loader.requireModule(rootPath);
         const mock = root.jest.fn(string => string + ' implementation');
         expect(mock._isMockFunction).toBe(true);
         const value = mock('mock');

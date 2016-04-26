@@ -61,6 +61,11 @@ class Runtime {
     this._modules = moduleMap.map;
     this._mocks = moduleMap.mocks;
 
+    this._mockMetaDataCache = Object.create(null);
+    this._shouldMockModuleCache = Object.create(null);
+    this._shouldUnmockTransitiveDependenciesCache = Object.create(null);
+    this._transitiveShouldMock = Object.create(null);
+
     if (config.collectCoverage) {
       this._CoverageCollector = require(config.coverageCollector);
     }
@@ -84,11 +89,6 @@ class Runtime {
       config.setupFiles.forEach(unmockPath);
       unmockCacheInitialized.set(config, true);
     }
-
-    this._mockMetaDataCache = Object.create(null);
-    this._shouldMockModuleCache = Object.create(null);
-    this._shouldUnmockTransitiveDependenciesCache = Object.create(null);
-    this._transitiveShouldMock = Object.create(null);
 
     // Workers communicate the config as JSON so we have to create a regex
     // object in the module loader instance.
@@ -431,6 +431,7 @@ class Runtime {
     if (!moduleName) {
       return currPath;
     }
+
     const basedir = path.dirname(currPath);
     const filePath = resolveNodeModule(moduleName, basedir, this._extensions);
     if (filePath) {
