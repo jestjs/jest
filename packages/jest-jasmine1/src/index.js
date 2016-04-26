@@ -10,7 +10,6 @@
 const fs = require('graceful-fs');
 const jasminePit = require('jest-util/lib/jasmine-pit');
 const JasmineReporter = require('./reporter');
-const path = require('path');
 
 const JASMINE_PATH = require.resolve('../vendor/jasmine-1.3.0');
 const JASMINE_ONLY_PATH = require.resolve('./jasmine-only.js');
@@ -177,7 +176,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
       };
 
     if (config.setupTestFrameworkScriptFile) {
-      moduleLoader.requireModule(null, config.setupTestFrameworkScriptFile);
+      moduleLoader.requireModule(config.setupTestFrameworkScriptFile);
     }
   });
 
@@ -261,7 +260,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
   });
   jasmine.getEnv().addReporter(reporter);
   // Run the test by require()ing it
-  moduleLoader.requireModule(testPath, './' + path.basename(testPath));
+  moduleLoader.requireModule(testPath);
   jasmine.getEnv().execute();
   return reporter.getResults();
 }

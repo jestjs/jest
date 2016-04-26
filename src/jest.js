@@ -7,7 +7,7 @@
  */
 'use strict';
 
-require('jest-haste-map/').fastpath.replace();
+require('jest-haste-map').fastpath.replace();
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
