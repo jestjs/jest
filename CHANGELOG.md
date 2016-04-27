@@ -1,5 +1,10 @@
 ## master
 
+## jest-cli 12.0.1
+
+* Added custom equality matchers for Map/Set and iterables.
+* Bug fixes
+
 ## jest-cli 12.0.0
 
 * Reimplemented `node-haste` as `jest-haste-map`:
