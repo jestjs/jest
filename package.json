@@ -44,19 +44,10 @@
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "jest-cache": "node bin/jest.js",
-    "jest-heap-usage": "node bin/jest.js --runInBand --logHeapUsage",
-    "jest-in-band": "node bin/jest.js --runInBand",
-    "jest-jasmine1": "node bin/jest.js --testRunner=jasmine1",
-    "jest-json": "node bin/jest.js --json",
-    "jest-no-cache": "node bin/jest.js --no-cache",
-    "jest-node-cache": "node bin/jest.js --no-watchman",
-    "jest-node-no-cache": "node bin/jest.js --no-watchman --no-cache",
-    "jest-verbose": "node bin/jest.js --verbose",
     "lint": "eslint .",
     "postinstall": "node postinstall.js",
     "prepublish": "npm test",
-    "test": "npm run lint && npm run jest-no-cache && npm run jest-cache && npm run jest-node-no-cache && npm run jest-node-cache && npm run jest-jasmine1 && npm run jest-in-band && npm run jest-heap-usage && npm run jest-json && npm run jest-verbose && npm link --ignore-scripts && node ./runTests.js"
+    "test": "node ./runTests.js"
   },
   "jest": {
     "rootDir": "src",

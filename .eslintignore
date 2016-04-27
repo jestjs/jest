@@ -3,3 +3,4 @@ docs/
 **/node_modules/**
 **/vendor/**
 website/
+**/coverage/**
