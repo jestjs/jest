@@ -1,5 +1,17 @@
 ## master
 
+## jest-cli 12.0.0
+
+* Reimplemented `node-haste` as `jest-haste-map`:
+  https://github.com/facebook/jest/pull/896
+* Fixes for the upcoming release of nodejs 6.
+* Removed global mock caching which caused negative side-effects on test runs.
+* Updated Jasmine from 2.3.4 to 2.4.1.
+* Fixed our Jasmine fork to work better with `Object.create(null)`.
+* Added a `--silent` flag to silence console messages during a test run.
+* Run a test file directly if a path is passed as an argument to Jest.
+* Added support for the undocumented nodejs feature `module.paths`.
+
 ## jest-cli 11.0.2
 
 * Fixed `jest -o` error when Mercurial isn't installed on the system
