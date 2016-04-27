@@ -24,14 +24,13 @@ module.exports = {
   haste: {
     providesModuleNodeModules: [],
   },
-  modulePathIgnorePatterns: [],
-  moduleNameMapper: [],
   moduleDirectories: ['node_modules'],
-  testDirectoryName: '__tests__',
+  moduleNameMapper: [],
+  modulePathIgnorePatterns: [],
+  testRegex: '__tests__/.*\.js$',
   mocksPattern: '__mocks__',
   testEnvironment: 'jest-environment-jsdom',
   testEnvData: {},
-  testFileExtensions: ['js'],
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [
     utils.replacePathSepForRegex(constants.NODE_MODULES),
