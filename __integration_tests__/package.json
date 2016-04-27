@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "testPathIgnorePatterns": [
+        "__integration_tests__/(?!__tests__).*"
+      ]
+  }
+}
