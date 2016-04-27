@@ -10,7 +10,10 @@
 'use strict';
 
 jest.disableAutomock();
-jest.mock('jest-environment-jsdom');
+jest.mock(
+  'jest-environment-jsdom',
+  () => require('../../../__mocks__/jest-environment-jsdom')
+);
 
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');

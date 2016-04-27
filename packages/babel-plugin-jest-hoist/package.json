@@ -9,6 +9,7 @@
   "main": "src/index.js",
   "devDependencies": {
     "babel-preset-es2015": "*",
+    "jest-util": "12.0.1",
     "react": "^0.14.0"
   },
   "jest": {
@@ -16,6 +17,6 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "test": "../../bin/jest.js"
+    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }

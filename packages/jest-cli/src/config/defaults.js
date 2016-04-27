@@ -15,7 +15,7 @@ const utils = require('jest-util');
 module.exports = {
   automock: true,
   bail: false,
-  cacheDirectory: path.resolve(__dirname, '..', '..', '.haste_cache'),
+  cacheDirectory: path.resolve(__dirname, '../..', '.haste_cache'),
   coverageCollector: require.resolve('../IstanbulCollector'),
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},

@@ -5,4 +5,3 @@ node_js:
   - "6"
 sudo: false
 before_install: npm i -g npm@latest
-install: npm i --ignore-scripts && npm run postinstall

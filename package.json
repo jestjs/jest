@@ -1,30 +1,5 @@
 {
-  "name": "jest-cli",
-  "description": "Painless JavaScript Unit Testing.",
-  "version": "12.0.2",
-  "main": "src/jest.js",
-  "dependencies": {
-    "chalk": "^1.1.1",
-    "cover": "^0.2.9",
-    "diff": "^2.1.1",
-    "graceful-fs": "^4.1.3",
-    "istanbul": "^0.4.2",
-    "jest-environment-jsdom": "^12.0.2",
-    "jest-environment-node": "^12.0.2",
-    "jest-haste-map": "^12.0.2",
-    "jest-jasmine1": "^12.0.2",
-    "jest-jasmine2": "^12.0.2",
-    "jest-mock": "^12.0.2",
-    "jest-util": "^12.0.2",
-    "json-stable-stringify": "^1.0.0",
-    "lodash.template": "^4.2.4",
-    "mkdirp": "^0.5.1",
-    "optimist": "^0.6.1",
-    "resolve": "^1.1.6",
-    "sane": "^1.2.0",
-    "which": "^1.1.1",
-    "worker-farm": "^1.3.1"
-  },
+  "private": true,
   "devDependencies": {
     "babel-eslint": "^6.0.4",
     "eslint": "^1.10.3",
@@ -33,43 +8,9 @@
     "lerna": "^2.0.0-beta.6",
     "rimraf": "^2.4.4"
   },
-  "bin": {
-    "jest": "./bin/jest.js"
-  },
-  "engines": {
-    "node": ">= 4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/facebook/jest"
-  },
   "scripts": {
     "lint": "eslint .",
     "postinstall": "node postinstall.js",
-    "prepublish": "npm test",
-    "test": "node ./runTests.js"
-  },
-  "jest": {
-    "rootDir": "src",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ],
-    "testEnvironment": "jest-environment-node",
-    "globals": {
-      "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"
-    }
-  },
-  "bugs": {
-    "url": "https://github.com/facebook/jest/issues"
-  },
-  "homepage": "http://facebook.github.io/jest/",
-  "keywords": [
-    "facebook",
-    "jest",
-    "test",
-    "unit",
-    "jasmine",
-    "mock"
-  ],
-  "license": "BSD-3-Clause"
+    "test": "npm run lint && node ./runTests.js"
+  }
 }

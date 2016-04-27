@@ -15,6 +15,6 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "test": "../../bin/jest.js"
+    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }
