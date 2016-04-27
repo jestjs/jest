@@ -39,12 +39,16 @@ function findChangedFiles(cwd) {
 
 function isGitRepository(cwd) {
   return new Promise(resolve => {
-    let stdout = '';
-    const options = ['rev-parse', '--show-toplevel'];
-    const child = childProcess.spawn('git', options, {cwd});
-    child.stdout.on('data', data => stdout += data);
-    child.on('error', () => resolve(null));
-    child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
+    try {
+      let stdout = '';
+      const options = ['rev-parse', '--show-toplevel'];
+      const child = childProcess.spawn('git', options, {cwd});
+      child.stdout.on('data', data => stdout += data);
+      child.on('error', () => resolve(null));
+      child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
+    } catch (e) {
+      resolve(null);
+    }
   });
 }
 

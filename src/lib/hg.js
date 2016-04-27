@@ -39,11 +39,15 @@ function findChangedFiles(cwd) {
 
 function isHGRepository(cwd) {
   return new Promise(resolve => {
-    let stdout = '';
-    const child = childProcess.spawn('hg', ['root'], {cwd});
-    child.stdout.on('data', data => stdout += data);
-    child.on('error', () => resolve(null));
-    child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
+    try {
+      let stdout = '';
+      const child = childProcess.spawn('hg', ['root'], {cwd});
+      child.stdout.on('data', data => stdout += data);
+      child.on('error', () => resolve(null));
+      child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
+    } catch (e) {
+      resolve(null);
+    }
   });
 }
 
