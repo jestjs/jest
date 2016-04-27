@@ -27,8 +27,6 @@ const mockParentModule = {
 const moduleNameCache = Object.create(null);
 const modulePathCache = Object.create(null);
 const normalizedIDCache = Object.create(null);
-
-const unmockCacheInitialized = new WeakMap();
 const unmockRegExpCache = new WeakMap();
 
 const getModulePaths = from => {
@@ -77,19 +75,15 @@ class Runtime {
       unmockRegExpCache.set(config, this._unmockList);
     }
 
-    if (!unmockCacheInitialized.get(config)) {
-      const unmockPath = filePath => {
-        if (filePath && filePath.includes(constants.NODE_MODULES)) {
-          const moduleID = this._getNormalizedModuleID(filePath);
-          this._transitiveShouldMock[moduleID] = false;
-        }
-      };
+    const unmockPath = filePath => {
+      if (filePath && filePath.includes(constants.NODE_MODULES)) {
+        const moduleID = this._getNormalizedModuleID(filePath);
+        this._transitiveShouldMock[moduleID] = false;
+      }
+    };
 
-      unmockPath(config.setupEnvScriptFile);
-      config.setupFiles.forEach(unmockPath);
-      unmockCacheInitialized.set(config, true);
-    }
-
+    unmockPath(config.setupEnvScriptFile);
+    config.setupFiles.forEach(unmockPath);
     // Workers communicate the config as JSON so we have to create a regex
     // object in the module loader instance.
     this._mappedModuleNames = Object.create(null);
