@@ -101,21 +101,22 @@ class JasmineFormatter {
     return ret;
   }
 
-  prettyPrint(obj, indent, cycleWeakMap) {
+  prettyPrint(object, indent, cycleWeakMap) {
     if (!indent) {
       indent = '';
     }
 
-    if (typeof obj === 'object' && obj !== null) {
-      if (this._jasmine.isDomNode(obj)) {
+    if (typeof object === 'object' && object !== null) {
+
+      if (this._jasmine.isDomNode(object)) {
         let attrStr = '';
-        Array.prototype.forEach.call(obj.attributes, attr => {
+        Array.prototype.forEach.call(object.attributes, attr => {
           const attrName = attr.name.trim();
           const attrValue = attr.value.trim();
           attrStr += ' ' + attrName + '="' + attrValue + '"';
         });
         return (
-          'HTMLNode(<' + obj.tagName + attrStr + '>{...}</' + obj.tagName + '>)'
+          `HTMLNode(<${object.tagName + attrStr}>{...}</${object.tagName}>)`
         );
       }
 
@@ -123,17 +124,45 @@ class JasmineFormatter {
         cycleWeakMap = new WeakMap();
       }
 
-      if (cycleWeakMap.get(obj) === true) {
+      if (cycleWeakMap.get(object) === true) {
         return '<circular reference>';
       }
-      cycleWeakMap.set(obj, true);
+      cycleWeakMap.set(object, true);
 
-      const orderedKeys = Object.keys(obj).sort();
+      const type = Object.prototype.toString.call(object);
+      const output = [];
+      if (type === '[object Map]') {
+        indent = chalk.gray('|') + ' ' + indent;
+        for (const value of object) {
+          output.push(
+            indent + value[0] + ': ' + this.prettyPrint(
+              value[1],
+              indent,
+              cycleWeakMap
+            )
+          );
+        }
+        return `Map {\n${output.join(',')}\n}`;
+      }
+      if (type === '[object Set]') {
+        for (const value of object) {
+          output.push(
+            this.prettyPrint(
+              value,
+              chalk.gray('|') + ' ' + indent,
+              cycleWeakMap
+            )
+          );
+        }
+        return `Set [\n${indent}${output.join(', ')}\n${indent}]`;
+      }
+
+      const orderedKeys = Object.keys(object).sort();
       let value;
       const keysOutput = [];
       const keyIndent = chalk.gray('|') + ' ';
       for (let i = 0; i < orderedKeys.length; i++) {
-        value = obj[orderedKeys[i]];
+        value = object[orderedKeys[i]];
         keysOutput.push(
           indent + keyIndent + orderedKeys[i] + ': ' +
           this.prettyPrint(value, indent + keyIndent, cycleWeakMap)
@@ -141,7 +170,7 @@ class JasmineFormatter {
       }
       return '{\n' + keysOutput.join(',\n') + '\n' + indent + '}';
     } else {
-      return this._jasmine.pp(obj);
+      return this._jasmine.pp(object);
     }
   }
 
