@@ -11,16 +11,13 @@
 const HasteMap = require('jest-haste-map');
 
 module.exports = function createHasteMap(config, options) {
-  const extensions = Array.from(new Set(
-    config.moduleFileExtensions.concat(config.testFileExtensions)
-  ));
   const ignorePattern = new RegExp(
     [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
   );
 
   return new HasteMap({
     cacheDirectory: config.cacheDirectory,
-    extensions,
+    extensions: config.moduleFileExtensions,
     ignorePattern,
     maxWorkers: options && options.maxWorkers,
     mocksPattern: config.mocksPattern,
