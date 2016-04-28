@@ -176,7 +176,9 @@ class TestRunner {
     if (pattern && !(pattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), pattern);
       if (fileExists(maybeFile)) {
-        return Promise.resolve([pattern].filter(this.isTestFilePath));
+        return Promise.resolve(
+          [pattern].filter(this.isTestFilePath.bind(this))
+        );
       }
     }
 
