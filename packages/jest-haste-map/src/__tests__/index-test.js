@@ -289,7 +289,7 @@ describe('HasteMap', () => {
         .toEqual('/fruits/strawberry.js');
 
       expect(console.warn).toBeCalledWith([
-        '@providesModule naming collision:',
+        'jest-haste-map: @providesModule naming collision:',
         '  Duplicate module name: Strawberry',
         '  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js',
         '',
@@ -475,6 +475,84 @@ describe('HasteMap', () => {
 
       expect(workerFarm.end).toBeCalledWith(workerFarmMock);
     });
+  });
+
+  pit('tries to crawl using node as a fallback', () => {
+    const watchman = require('../crawlers/watchman');
+    const node = require('../crawlers/node');
+
+    watchman.mockImplementation(() => {
+      throw new Error('watchman error');
+    });
+    node.mockImplementation((roots, extensions, ignore, data) => {
+      data.files = object({
+        '/fruits/banana.js': ['', 32, 0, []],
+      });
+      return Promise.resolve(data);
+    });
+
+    return new HasteMap(defaultConfig).build().then(data => {
+      expect(watchman).toBeCalled();
+      expect(node).toBeCalled();
+
+      expect(data.files).toEqual({
+        '/fruits/banana.js': ['Banana', 32, 1, ['Strawberry']],
+      });
+
+      expect(console.warn).toBeCalledWith(
+        'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
+        'crawler.\n  Error: watchman error'
+      );
+    });
+  });
+
+  pit('tries to crawl using node as a fallback when promise fails once', () => {
+    const watchman = require('../crawlers/watchman');
+    const node = require('../crawlers/node');
+
+    watchman.mockImplementation(() => {
+      return Promise.reject(new Error('watchman error'));
+    });
+    node.mockImplementation((roots, extensions, ignore, data) => {
+      data.files = object({
+        '/fruits/banana.js': ['', 32, 0, []],
+      });
+      return Promise.resolve(data);
+    });
+
+    return new HasteMap(defaultConfig).build().then(data => {
+      expect(watchman).toBeCalled();
+      expect(node).toBeCalled();
+
+      expect(data.files).toEqual({
+        '/fruits/banana.js': ['Banana', 32, 1, ['Strawberry']],
+      });
+    });
+  });
+
+  pit('stops crawling when both crawlers fail', () => {
+    const watchman = require('../crawlers/watchman');
+    const node = require('../crawlers/node');
+
+    watchman.mockImplementation(() => {
+      return Promise.reject(new Error('watchman error'));
+    });
+
+    node.mockImplementation((roots, extensions, ignore, data) => {
+      return Promise.reject(new Error('node error'));
+    });
+
+    return new HasteMap(defaultConfig).build()
+      .then(
+        () => expect(() => {}).toThrow(),
+        error => {
+          expect(error.message).toEqual(
+            'Crawler retry failed:\n' +
+            '  Original error: watchman error\n' +
+            '  Retry error: node error\n'
+          );
+        }
+      );
   });
 
 });

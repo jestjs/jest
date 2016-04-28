@@ -22,6 +22,7 @@ jest.mock('fb-watchman', () => {
     }
     jest.runAllTimers();
   });
+  Client.prototype.on = jest.fn();
   Client.prototype.end = jest.fn();
   return {Client};
 });
@@ -99,6 +100,9 @@ describe('watchman watch', () => {
     ).then(data => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
+
+      expect(client.on).toBeCalled();
+      expect(client.on).toBeCalledWith('error', jasmine.any(Function));
 
       // Call 0 and 1 are for ['watch-project']
       expect(calls[0][0][0]).toEqual('watch-project');

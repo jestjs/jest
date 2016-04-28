@@ -48,7 +48,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 
   - [`automock` [boolean]](#automock-boolean)
   - [`bail` [boolean]](#bail-boolean)
-  - [`cache` [boolean]](#cache-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
@@ -73,7 +72,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`testRunner` [string]](#testrunner-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
-  - [`watchman` [boolean]](#watchman-boolean)
 
 #### Globally injected variables
 
@@ -375,13 +373,6 @@ mock modules using `jest.mock(moduleName)`.
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
-### `cache` [boolean]
-(default: true)
-
-By default, Jest caches heavily to speed up subsequent test runs. Sometimes this
-may not be desirable and can be turned off. *Note: it is generally better
-not to disable this feature, but rather run Jest with `--no-cache` once.*
-
 ### `cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
 
@@ -598,10 +589,3 @@ It is possible to override this setting in individual tests by explicitly callin
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
-
-### `watchman` [boolean]
-(default: `true`)
-
-[Watchman](https://facebook.github.io/watchman/) monitors the file system for
-changes and is used by Jest for crawling for files. Disable this if you cannot
-use watchman or use the `--no-watchman` flag.

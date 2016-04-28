@@ -11,7 +11,6 @@
 
 const H = require('../constants');
 
-const denodeify = require('denodeify');
 const path = require('../fastpath');
 const watchman = require('fb-watchman');
 
@@ -30,7 +29,17 @@ function WatchmanError(error) {
 
 module.exports = function watchmanCrawl(roots, extensions, ignore, data) {
   const client = new watchman.Client();
-  const cmd = denodeify(client.command.bind(client));
+  const cmd = args => new Promise((resolve, reject) => {
+    client.on('error', error => reject(error));
+    client.command(args, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
   const clocks = data.clocks;
   let files = data.files;
 
