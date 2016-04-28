@@ -164,6 +164,20 @@ describe('HasteMap', () => {
     expect(HasteMap.H).toBe(require('../constants'));
   });
 
+  it('creates valid cache file paths', () => {
+    jest.resetModuleRegistry();
+    HasteMap = require('../');
+
+    expect(HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'))
+      .toMatch(/^\/-scoped-package-(.*)$/);
+
+    expect(
+      HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value')
+    ).not.toEqual(
+      HasteMap.getCacheFilePath('/', '-scoped-package', 'random-value')
+    );
+  });
+
   pit('matches files against a pattern', () => {
     const hasteMap = new HasteMap(defaultConfig);
 

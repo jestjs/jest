@@ -145,8 +145,11 @@ class HasteMap {
 
   static getCacheFilePath(tmpdir, name) {
     const hash = crypto.createHash('md5');
-    Array.from(arguments).slice(2).forEach(arg => hash.update(arg));
-    return path.join(tmpdir, name + '-' + hash.digest('hex'));
+    Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
+    return path.join(
+      tmpdir,
+      name.replace(/\W/g, '-') + '-' + hash.digest('hex')
+    );
   }
 
   build() {
