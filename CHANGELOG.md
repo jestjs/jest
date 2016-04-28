@@ -1,5 +1,9 @@
 ## master
 
+## jest-cli 12.0.2
+
+* Bug fixes when running a single test file and for scoped package names.
+
 ## jest-cli 12.0.1
 
 * Added custom equality matchers for Map/Set and iterables.
