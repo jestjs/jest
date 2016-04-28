@@ -11,9 +11,12 @@
 const path = require('path');
 const childProcess = require('child_process');
 
-function findChangedFiles(cwd) {
+function findChangedFiles(cwd, options) {
   return new Promise((resolve, reject) => {
-    const args = ['status', '-amn'];
+    const args = ['status', '--root-relative', '-amn'];
+    if (options && options.withAncestor) {
+      args.push('--rev', 'ancestor(.^)');
+    }
     const child = childProcess.spawn('hg', args, {cwd});
 
     let stdout = '';
