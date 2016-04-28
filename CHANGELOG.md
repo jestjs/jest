@@ -1,5 +1,9 @@
 ## master
 
+## jest-cli 12.0.3
+
+* Added a fallback to the watchman crawler.
+
 ## jest-cli 12.0.2
 
 * Bug fixes when running a single test file and for scoped package names.

@@ -11,7 +11,6 @@
 const H = require('./constants');
 
 const crypto = require('crypto');
-const denodeify = require('denodeify');
 const execSync = require('child_process').execSync;
 const fs = require('graceful-fs');
 const getPlatformExtension = require('./lib/getPlatformExtension');
@@ -216,7 +215,7 @@ class HasteMap {
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
         console.warn(
-          `@providesModule naming collision:\n` +
+          `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\n` +
@@ -293,16 +292,9 @@ class HasteMap {
    */
   _getWorker() {
     if (!this._workerPromise) {
+      let workerFn;
       if (this._options.maxWorkers === 1) {
-        this._workerPromise = message => new Promise(
-          (resolve, reject) => worker(message, (error, metadata) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(metadata);
-            }
-          })
-        );
+        workerFn = worker;
       } else {
         this._workerFarm = workerFarm(
           {
@@ -310,8 +302,18 @@ class HasteMap {
           },
           require.resolve('./worker')
         );
-        this._workerPromise = denodeify(this._workerFarm);
+        workerFn = this._workerFarm;
       }
+
+      this._workerPromise = message => new Promise(
+        (resolve, reject) => workerFn(message, (error, metadata) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(metadata);
+          }
+        })
+      );
     }
 
     return this._workerPromise;
@@ -326,15 +328,36 @@ class HasteMap {
   }
 
   _crawl(hasteMap) {
+    const options = this._options;
+    const ignore = this._ignore.bind(this);
     const crawl =
       (canUseWatchman && this._options.useWatchman) ? watchmanCrawl : nodeCrawl;
 
-    return crawl(
-      this._options.roots,
-      this._options.extensions,
-      this._ignore.bind(this),
-      hasteMap
-    );
+    const retry = error => {
+      if (crawl === watchmanCrawl) {
+        console.warn(
+          `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
+          `crawler.\n  ${error}`
+        );
+        return nodeCrawl(options.roots, options.extensions, ignore, hasteMap)
+          .catch(e => {
+            throw new Error(
+              `Crawler retry failed:\n` +
+              `  Original error: ${error.message}\n` +
+              `  Retry error: ${e.message}\n`
+            );
+          });
+      }
+
+      throw error;
+    };
+
+    try {
+      return crawl(options.roots, options.extensions, ignore, hasteMap)
+        .catch(retry);
+    } catch (error) {
+      return retry(error);
+    }
   }
 
   _ignore(filePath) {
