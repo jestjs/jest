@@ -12,7 +12,13 @@ Painless JavaScript Unit Testing
 ## Getting Started
 
 <generated_getting_started_start />
-Let's get started by writing a test for a hypothetical `sum.js` file:
+First install Jest with npm by running:
+
+```
+npm install --save-dev jest-cli
+```
+
+Great! Now let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
 function sum(a, b) {
@@ -33,8 +39,6 @@ describe('sum', () => {
   });
 });
 ```
-
-Run `npm install --save-dev jest-cli`.
 
 Add the following to your `package.json`:
 
@@ -273,7 +277,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 
   - [`automock` [boolean]](https://facebook.github.io/jest/docs/api.html#automock-boolean)
   - [`bail` [boolean]](https://facebook.github.io/jest/docs/api.html#bail-boolean)
-  - [`cache` [boolean]](https://facebook.github.io/jest/docs/api.html#cache-boolean)
   - [`cacheDirectory` [string]](https://facebook.github.io/jest/docs/api.html#cachedirectory-string)
   - [`coverageDirectory` [string]](https://facebook.github.io/jest/docs/api.html#coveragedirectory-string)
   - [`collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#collectcoverage-boolean)
@@ -298,7 +301,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`testRunner` [string]](https://facebook.github.io/jest/docs/api.html#testrunner-string)
   - [`unmockedModulePathPatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](https://facebook.github.io/jest/docs/api.html#verbose-boolean)
-  - [`watchman` [boolean]](https://facebook.github.io/jest/docs/api.html#watchman-boolean)
 
 #### Globally injected variables
 
@@ -600,21 +602,19 @@ mock modules using `jest.mock(moduleName)`.
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
-### `cache` [boolean]
-(default: true)
-
-By default, Jest caches heavily to speed up subsequent test runs. Sometimes this
-may not be desirable and can be turned off. *Note: it is generally better
-not to disable this feature, but rather run Jest with `--no-cache` once.*
-
 ### `cacheDirectory` [string]
 (default: 'jest-cli/.haste_cache')
 
-The directory where Jest should store it's cached dependency information.
+The directory where Jest should store its cached dependency information.
 
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
 By default, it will be stored in a .haste_cache directory that sits in the jest-cli directory. This intentionally doesn't default to somewhere in your repo to spare the common case from having to add this to your .gitignore/.hgignore/etc.
+
+### `coverageDirectory` [string]
+(default: `undefined`)
+
+The directory where Jest should output its coverage files.
 
 ### `collectCoverage` [boolean]
 (default: `false`)
@@ -709,7 +709,7 @@ An array of regexp pattern strings that are matched against all source file path
 ### `setupFiles` [array]
 (default: `[]`)
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in it's own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
 It's worth noting that this code will execute *before* [`setupTestFrameworkScriptFile`](https://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string).
 
@@ -818,13 +818,6 @@ It is possible to override this setting in individual tests by explicitly callin
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
-
-### `watchman` [boolean]
-(default: `true`)
-
-[Watchman](https://facebook.github.io/watchman/) monitors the file system for
-changes and is used by Jest for crawling for files. Disable this if you cannot
-use watchman or use the `--no-watchman` flag.
 <generated_api_end />
 
 ## Local Development
