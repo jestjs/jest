@@ -12,7 +12,6 @@ applications. Let's implement a simple checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
-'use strict';
 
 import React from 'react';
 
@@ -52,7 +51,6 @@ manipulate React components.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
-'use strict';
 
 jest.unmock('../CheckboxWithLabel');
 
