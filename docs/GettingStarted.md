@@ -7,7 +7,13 @@ permalink: docs/getting-started.html
 next: tutorial
 ---
 
-Let's get started by writing a test for a hypothetical `sum.js` file:
+First install Jest with npm by running:
+
+```
+npm install --save-dev jest-cli
+```
+
+Great! Now let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
 function sum(a, b) {
@@ -28,8 +34,6 @@ describe('sum', () => {
   });
 });
 ```
-
-Run `npm install --save-dev jest-cli`.
 
 Add the following to your `package.json`:
 
