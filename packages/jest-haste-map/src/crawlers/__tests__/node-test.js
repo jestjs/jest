@@ -79,7 +79,7 @@ describe('node crawler', () => {
     ].join('\n');
   });
 
-  pit('crawls for files based on patterns', () => {
+  it('crawls for files based on patterns', () => {
     process.platform = 'linux';
 
     childProcess = require('child_process');
@@ -128,7 +128,7 @@ describe('node crawler', () => {
     return promise;
   });
 
-  pit('updates only changed files', () => {
+  it('updates only changed files', () => {
     process.platform = 'linux';
 
     nodeCrawl = require('../node');
@@ -156,7 +156,7 @@ describe('node crawler', () => {
     return promise;
   });
 
-  pit('uses node fs APIs on windows', () => {
+  it('uses node fs APIs on windows', () => {
     process.platform = 'win32';
 
     nodeCrawl = require('../node');

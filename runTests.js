@@ -91,6 +91,7 @@ function runExampleTests(exampleDirectory) {
 
 
 packages.forEach(runPackageTests);
+
 if (packagesOnly) {
   return;
 }

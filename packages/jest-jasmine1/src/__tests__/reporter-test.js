@@ -74,7 +74,7 @@ describe('JasmineReporter', () => {
       return chalk.bgRed(str);
     }
 
-    pit('colorizes single-line failures using a per-char diff', () => {
+    it('colorizes single-line failures using a per-char diff', () => {
       const runner = getExpectedRunner('foo', 'foobar', false);
       reporter.reportRunnerResults(runner);
 
@@ -87,7 +87,7 @@ describe('JasmineReporter', () => {
       });
     });
 
-    pit('colorizes multi-line failures using a per-line diff', () => {
+    it('colorizes multi-line failures using a per-line diff', () => {
       const runner = getExpectedRunner('foo\nbar\nbaz', 'foo\nxxx\nbaz', false);
       reporter.reportRunnerResults(runner);
 
@@ -99,6 +99,5 @@ describe('JasmineReporter', () => {
         );
       });
     });
-
   });
 });
