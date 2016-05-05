@@ -18,14 +18,12 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const promisify = require('./lib/promisify');
 const resolveNodeModule = require('./lib/resolveNodeModule');
-const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
-const HIDDEN_FILE_RE = /\/\.[^\/]*$/;
 
-function optionPathToRegex(p) {
-  return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
+function pathToRegex(p) {
+  return p.replace(/\//g, path.sep);
 }
 
 function fileExists(filePath) {
@@ -63,20 +61,13 @@ class TestRunner {
     });
 
     this._testPathDirsRegExp = new RegExp(
-      config.testPathDirs
-        .map(dir => optionPathToRegex(dir))
-        .join('|')
+      config.testPathDirs.map(dir => pathToRegex(dir)).join('|')
     );
 
-    this._nodeHasteTestRegExp = new RegExp(
-      optionPathToRegex(path.sep + config.testDirectoryName + path.sep) +
-      '.*\\.(' +
-        config.testFileExtensions
-          .map(ext => utils.escapeStrForRegex(ext))
-          .join('|') +
-      ')$'
-    );
-
+    this._testsPattern = new RegExp(pathToRegex(config.testsPattern));
+    const ignorePattern = this._config.testPathIgnorePatterns;
+    this._testIgnorePattern =
+      ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
@@ -87,21 +78,15 @@ class TestRunner {
 
   _getAllTestPaths() {
     return this._hasteMap
-      .matchFiles(this._config.testDirectoryName)
+      .matchFiles(this._testsPattern)
       .then(paths => paths.filter(path => this.isTestFilePath(path)));
   }
 
   isTestFilePath(path) {
-    const testPathIgnorePattern =
-      this._config.testPathIgnorePatterns.length
-      ? new RegExp(this._config.testPathIgnorePatterns.join('|'))
-      : null;
-
     return (
-      this._nodeHasteTestRegExp.test(path)
-      && !HIDDEN_FILE_RE.test(path)
-      && (!testPathIgnorePattern || !testPathIgnorePattern.test(path))
-      && this._testPathDirsRegExp.test(path)
+      this._testsPattern.test(path) &&
+      (!this._testIgnorePattern || !this._testIgnorePattern.test(path)) &&
+      this._testPathDirsRegExp.test(path)
     );
   }
 
