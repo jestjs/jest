@@ -66,6 +66,8 @@ function readRawConfig(argv, root) {
   }
 
   if (typeof argv.config === 'object') {
+    argv.config.name = argv.config.name || root.replace(/[/\\]|\s/g, '-');
+    argv.config.rootDir = argv.config.rootDir || root;
     return Promise.resolve(normalize(argv.config, argv));
   }
 
