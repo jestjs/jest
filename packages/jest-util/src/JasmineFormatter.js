@@ -177,4 +177,6 @@ class JasmineFormatter {
 
 }
 
+JasmineFormatter.DIFFABLE_MATCHERS = DIFFABLE_MATCHERS;
+
 module.exports = JasmineFormatter;
