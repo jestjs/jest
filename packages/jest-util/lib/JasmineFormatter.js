@@ -9,7 +9,7 @@
 
 const diff = require('diff');
 const chalk = require('chalk');
-const utils = require('../index');
+const cleanStackTrace = require('./formatMessages').cleanStackTrace;
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 const DIFFABLE_MATCHERS = Object.assign(Object.create(null), {
@@ -68,7 +68,7 @@ class JasmineFormatter {
     // jasmine doesn't give us access to the actual Error object, so we
     // have to regexp out the message from the stack string in order to
     // colorize the `message` value
-    return utils.cleanStackTrace(stackTrace.replace(
+    return cleanStackTrace(stackTrace.replace(
       /(^(.|\n)*?(?=\n\s*at\s))/,
       ERROR_TITLE_COLOR('$1')
     ));
@@ -175,7 +175,7 @@ class JasmineFormatter {
   }
 
   formatStackTrace(stackTrace, originalMessage, formattedMessage) {
-    return utils.cleanStackTrace(
+    return cleanStackTrace(
       stackTrace
         .replace(originalMessage, formattedMessage)
         .replace(/^.*Error:\s*/, '')

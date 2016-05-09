@@ -10,22 +10,27 @@
 'use strict';
 
 jest.disableAutomock();
-jest.mock('jest-environment-jsdom');
+jest.mock(
+  'jest-environment-jsdom',
+  () => require('../../../__mocks__/jest-environment-jsdom')
+);
+
 
 const path = require('path');
 const normalizeConfig = require('../../config/normalize');
 
-describe('nodeRuntime', () => {
+describe('Runtime', () => {
   let Runtime;
   let createHasteMap;
   let JSDOMEnvironment;
 
-  const rootDir = path.resolve(__dirname, 'test_root');
-  const rootPath = path.resolve(rootDir, 'root.js');
+  const rootDir = path.join(__dirname, 'test_root');
+  const rootPath = path.join(rootDir, 'root.js');
   const baseConfig = normalizeConfig({
     cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'nodeRuntime-genMockFromModule-tests',
+    name: 'Runtime-getTestEnvData-tests',
     rootDir,
+    testEnvData: {someTestData: 42},
   });
 
   function buildLoader(config) {
@@ -42,30 +47,19 @@ describe('nodeRuntime', () => {
     JSDOMEnvironment = require('jest-environment-jsdom');
   });
 
-  describe('genMockFromModule', () => {
-    pit(
-      'does not cause side effects in the rest of the module system when ' +
-      'generating a mock',
-      () => {
-        return buildLoader().then(loader => {
-          const testRequire = loader.requireModule.bind(loader, rootPath);
+  pit('passes config data through to jest.envData', () => {
+    return buildLoader().then(loader => {
+      const root = loader.requireModule(rootDir, rootPath);
+      const envData = root.jest.getTestEnvData();
+      expect(envData).toEqual(baseConfig.testEnvData);
+    });
+  });
 
-          const regularModule = testRequire('RegularModule');
-          const origModuleStateValue = regularModule.getModuleStateValue();
-
-          expect(origModuleStateValue).toBe('default');
-
-          // Generate a mock for a module with side effects
-          const mock = regularModule.jest.genMockFromModule('ModuleWithSideEffects');
-
-          // Make sure we get a mock.
-          expect(mock.fn()).toBe(undefined);
-
-          expect(regularModule.getModuleStateValue()).toBe(
-            origModuleStateValue
-          );
-        });
-      }
-    );
+  pit('freezes jest.envData object', () => {
+    return buildLoader().then(loader => {
+      const root = loader.requireModule(rootDir, rootPath);
+      const envData = root.jest.getTestEnvData();
+      expect(Object.isFrozen(envData)).toBe(true);
+    });
   });
 });

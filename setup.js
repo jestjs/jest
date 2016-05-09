@@ -12,27 +12,8 @@ const path = require('path');
 const isWindows = process.platform === 'win32';
 
 console.log(`Setting up Jest's development environment...`);
-const npm = (isWindows ? 'npm.cmd' : 'npm');
 const lerna = (isWindows ? 'lerna.cmd' : 'lerna');
 
-const cmds = [
-  ['.', path.resolve(__dirname, './node_modules/.bin/' + lerna), 'bootstrap'],
-  ['packages/jest-environment-jsdom', npm, 'link'],
-  ['packages/jest-environment-node', npm, 'link'],
-  ['packages/jest-haste-map', npm, 'link'],
-  ['packages/jest-jasmine1', npm, 'link'],
-  ['packages/jest-jasmine2', npm, 'link'],
-  ['packages/jest-mock', npm, 'link'],
-  ['packages/jest-util', npm, 'link'],
-  ['.', npm, 'link jest-environment-jsdom'],
-  ['.', npm, 'link jest-environment-node'],
-  ['.', npm, 'link jest-haste-map'],
-  ['.', npm, 'link jest-jasmine1'],
-  ['.', npm, 'link jest-jasmine2'],
-  ['.', npm, 'link jest-mock'],
-  ['.', npm, 'link jest-util'],
-];
-
-cmds.forEach(commands => {
-  execute.apply(null, commands);
-});
+execute(
+  '.', path.resolve(__dirname, './node_modules/.bin/' + lerna), 'bootstrap'
+);

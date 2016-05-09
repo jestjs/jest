@@ -3,8 +3,8 @@
 .DS_STORE
 .haste_cache
 /node_modules
-/examples/**/node_modules/
-/packages/**/node_modules/
+/examples/*/node_modules/
+/packages/*/node_modules/
 /website/node_modules
 npm-debug.log
 build

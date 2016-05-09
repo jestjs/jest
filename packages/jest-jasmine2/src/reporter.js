@@ -9,7 +9,7 @@
 
 const jasmineRequire = require('../vendor/jasmine-2.4.1.js');
 const jasmine = jasmineRequire.core(jasmineRequire);
-const JasmineFormatter = require('jest-util/lib/JasmineFormatter');
+const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 class Jasmine2Reporter {
 

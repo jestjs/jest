@@ -12,8 +12,8 @@
 jest.disableAutomock();
 
 const chalk = require('chalk');
-const jasmine = require('jest-jasmine1/vendor/jasmine-1.3.0').jasmine;
-const jasmine2Require = require('jest-jasmine2/vendor/jasmine-2.4.1.js');
+const jasmine = require('../../../jest-jasmine1/vendor/jasmine-1.3.0').jasmine;
+const jasmine2Require = require('../../../jest-jasmine2/vendor/jasmine-2.4.1.js');
 const jasmine2 = jasmine2Require.core(jasmine2Require);
 
 const JasmineFormatter = require('../JasmineFormatter');

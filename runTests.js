@@ -21,6 +21,7 @@ const rimraf = require('rimraf');
 const PACKAGES_DIR = path.resolve(__dirname, 'packages');
 const EXAMPLES_DIR = path.resolve(__dirname, 'examples');
 const INTEGRATION_TESTS_DIR = path.resolve(__dirname, '__integration_tests__');
+const JEST_CLI_PATH = path.resolve(__dirname, 'packages/jest-cli');
 
 const packages = fs.readdirSync(PACKAGES_DIR)
   .map(file => path.resolve(PACKAGES_DIR, file))
@@ -36,8 +37,15 @@ function runCommands(commands, cwd) {
   }
 
   [].concat(commands).forEach(cmd => {
-    console.log(chalk.green('-> ') + chalk.underline.bold('running:') +
-      ' ' + chalk.bold.cyan(cmd));
+    let msg = chalk.green('-> ') + chalk.underline.bold('running:') +
+      ' ' + chalk.bold.cyan(cmd);
+
+    if (cwd) {
+      msg += ' cwd: ' + chalk.underline.bold(cwd);
+    }
+
+    console.log(msg);
+
     execSync(cmd, {
       cwd,
       stdio: [0, 1, 2],
@@ -63,13 +71,13 @@ function runTestsForExample(exampleDirectory) {
   // local `jest-cli` package.
   fs.writeFileSync(
     path.resolve(exampleDirectory, './node_modules/jest-cli/index.js'),
-    `module.exports = require('../../../../');\n`, // link to the local jest
+    `module.exports = require('${JEST_CLI_PATH}');\n`, // link to the local jest
     'utf8'
   );
 
   // overwrite the jest link and point it to the local jest-cli
   runCommands(
-    'ln -sf ../../bin/jest.js ./node_modules/.bin/jest',
+    `ln -sf ${JEST_CLI_PATH}/bin/jest.js ./node_modules/.bin/jest`,
     exampleDirectory
   );
 
@@ -78,17 +86,15 @@ function runTestsForExample(exampleDirectory) {
 
 
 // Run all tests, these are order dependent.
-runCommands('node bin/jest.js --no-cache');
-runCommands('node bin/jest.js');
-runCommands('node bin/jest.js --no-watchman --no-cache');
-runCommands('node bin/jest.js --no-watchman');
-runCommands('node bin/jest.js --testRunner=jasmine1');
-runCommands('node bin/jest.js --runInBand');
-runCommands('node bin/jest.js --runInBand --logHeapUsage');
-runCommands('node bin/jest.js --json');
-runCommands('node bin/jest.js --verbose');
-
-runCommands('npm link --ignore-scripts');
+runCommands('node bin/jest.js --no-cache', 'packages/jest-cli');
+runCommands('node bin/jest.js', 'packages/jest-cli');
+runCommands('node bin/jest.js --no-watchman --no-cache', 'packages/jest-cli');
+runCommands('node bin/jest.js --no-watchman', 'packages/jest-cli');
+runCommands('node bin/jest.js --testRunner=jasmine1', 'packages/jest-cli');
+runCommands('node bin/jest.js --runInBand', 'packages/jest-cli');
+runCommands('node bin/jest.js --runInBand --logHeapUsage', 'packages/jest-cli');
+runCommands('node bin/jest.js --json', 'packages/jest-cli');
+runCommands('node bin/jest.js --verbose', 'packages/jest-cli');
 
 if (process.platform === 'win32') {
   console.error(
@@ -101,4 +107,4 @@ packages.forEach(runTestsForPackage);
 examples.forEach(runTestsForExample);
 
 console.log(chalk.bold(chalk.cyan('Running integration tests:')));
-runCommands('jest', INTEGRATION_TESTS_DIR);
+runCommands('../packages/jest-cli/bin/jest.js', INTEGRATION_TESTS_DIR);

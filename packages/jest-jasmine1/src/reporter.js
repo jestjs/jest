@@ -8,7 +8,7 @@
 'use strict';
 
 const jasmine = require('../vendor/jasmine-1.3.0').jasmine;
-const JasmineFormatter = require('jest-util/lib/JasmineFormatter');
+const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 class JasmineReporter extends jasmine.Reporter {
 

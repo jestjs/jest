@@ -9,10 +9,8 @@
  */
 'use strict';
 
-jest.unmock('jest-util')
-  .unmock('../../constants')
-  .unmock('../normalize')
-  .unmock('chalk');
+jest.disableAutomock();
+jest.mock('../../lib/resolveNodeModule');
 
 describe('normalize', () => {
   let path;

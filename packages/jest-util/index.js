@@ -24,5 +24,9 @@ function replacePathSepForRegex(str) {
 
 exports.cleanStackTrace = formatMessages.cleanStackTrace;
 exports.escapeStrForRegex = escapeStrForRegex;
+exports.FakeTimers = require('./lib/FakeTimers');
 exports.formatFailureMessage = formatMessages.formatFailureMessage;
+exports.jasminePit = require('./lib/jasmine-pit');
+exports.JasmineFormatter = require('./lib/JasmineFormatter');
+exports.installCommonGlobals = require('./lib/installCommonGlobals');
 exports.replacePathSepForRegex = replacePathSepForRegex;

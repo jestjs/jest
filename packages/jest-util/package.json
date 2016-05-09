@@ -9,8 +9,9 @@
   "main": "index.js",
   "dependencies": {
     "chalk": "^1.1.1",
+    "diff": "^2.1.1",
     "graceful-fs": "^4.1.3",
-    "jest-mock": "11.0.0"
+    "jest-mock": "12.0.1"
   },
   "devDependencies": {
     "jsdom": "^8.3.1"
@@ -19,6 +20,6 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "test": "../../bin/jest.js"
+    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }
