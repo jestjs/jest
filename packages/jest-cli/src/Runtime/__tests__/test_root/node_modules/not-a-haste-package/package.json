@@ -1,0 +1,4 @@
+{
+  "name": "not-a-haste-package",
+  "main": "./core.js"
+}
