@@ -293,7 +293,7 @@ class HasteMap {
   _getWorker() {
     if (!this._workerPromise) {
       let workerFn;
-      if (this._options.maxWorkers === 1) {
+      if (this._options.maxWorkers <= 1) {
         workerFn = worker;
       } else {
         this._workerFarm = workerFarm(
