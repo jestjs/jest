@@ -8,6 +8,7 @@
 
 'use strict';
 
+
 const formatMessages = require('./lib/formatMessages');
 const path = require('path');
 
