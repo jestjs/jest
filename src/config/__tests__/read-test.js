@@ -10,25 +10,21 @@
 'use strict';
 
 jest.unmock('../read')
-  .unmock('jest-util')
+  .unmock('jest-util');
+
+let readConfig;
+let normalizeConfig;
+let rootDir;
 
 describe('readConfig', () => {
-  let readConfig;
-  let normalizeConfig;
-  let rootDir;
-
   beforeEach(() => {
     readConfig = require('../read');
     normalizeConfig = require('../normalize');
     normalizeConfig.mockImplementation(config => config);
-    rootDir = '/root/path/foo'
+    rootDir = '/root/path/foo';
   });
 
   describe('config object', () => {
-    beforeEach(() => {
-
-    });
-
     pit('defaults the name and rootDir', () => {
       return readConfig({
         config: {},
