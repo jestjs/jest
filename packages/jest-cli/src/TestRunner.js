@@ -39,14 +39,7 @@ function fileExists(filePath) {
 class TestRunner {
 
   constructor(config, options) {
-    this._opts = Object.assign(
-      {
-        // When true, runs all tests serially in the current process, rather
-        // than parallelizing test runs.
-        runInBand: options.maxWorkers <= 1,
-      },
-      options
-    );
+    this._opts = options;
     this._config = Object.freeze(config);
 
     try {
@@ -58,7 +51,7 @@ class TestRunner {
     }
 
     this._hasteMap = createHasteMap(config, {
-      maxWorkers: options.runInBand ? 1 : this._opts.maxWorkers,
+      maxWorkers: this._opts.maxWorkers,
       resetCache: !config.cache,
     });
 
@@ -326,7 +319,7 @@ class TestRunner {
   }
 
   _createTestRun(testPaths, onTestResult, onRunFailure) {
-    if (this._opts.runInBand || testPaths.length <= 1) {
+    if (this._opts.maxWorkers <= 1 || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
     } else {
       return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);

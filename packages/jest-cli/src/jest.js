@@ -30,18 +30,15 @@ const CLEAR = '\x1B[2J\x1B[H';
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
 
-function testRunnerOptions(argv) {
-  const options = {};
+function getMaxWorkers(argv) {
   if (argv.runInBand) {
-    options.runInBand = argv.runInBand;
-  }
-  if (argv.maxWorkers) {
-    options.maxWorkers = argv.maxWorkers;
+    return 1;
+  } else if (argv.maxWorkers) {
+    return argv.maxWorkers;
   } else {
-    const cpus = Math.max(os.cpus().length, 1);
-    options.maxWorkers = argv.watch ? Math.floor(cpus / 2) : cpus - 1;
+    const cpus = os.cpus().length;
+    return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
   }
-  return options;
 }
 
 function getTestPaths(testRunner, config, patternInfo) {
@@ -147,7 +144,9 @@ function runJest(config, argv, pipe, onComplete) {
   if (argv.silent) {
     config.silent = true;
   }
-  const testRunner = new TestRunner(config, testRunnerOptions(argv));
+  const testRunner = new TestRunner(config, {
+    maxWorkers: getMaxWorkers(argv),
+  });
   const patternInfo = buildTestPathPatternInfo(argv);
   return getTestPaths(testRunner, config, patternInfo)
     .then(testPaths => {
