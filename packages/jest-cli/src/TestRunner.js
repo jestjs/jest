@@ -244,7 +244,7 @@ class TestRunner {
   runTests(testPaths, reporter) {
     const config = this._config;
     if (!reporter) {
-      const TestReporter = require(config.testReporter);
+      const TestReporter = require(path.resolve(config.testReporter));
       if (config.useStderr) {
         reporter = new TestReporter(Object.create(
           process,
