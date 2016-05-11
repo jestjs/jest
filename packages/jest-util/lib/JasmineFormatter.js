@@ -12,13 +12,6 @@ const chalk = require('chalk');
 const cleanStackTrace = require('./formatMessages').cleanStackTrace;
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
-const DIFFABLE_MATCHERS = Object.assign(Object.create(null), {
-  toBe: true,
-  toNotBe: true,
-  toEqual: true,
-  toNotEqual: true,
-});
-
 const LINEBREAK_REGEX = /[\r\n]/;
 
 class JasmineFormatter {
@@ -26,6 +19,16 @@ class JasmineFormatter {
   constructor(jasmine, config) {
     this._config = config;
     this._jasmine = jasmine;
+    this._diffableMatchers = Object.assign(Object.create(null), {
+      toBe: true,
+      toNotBe: true,
+      toEqual: true,
+      toNotEqual: true,
+    });
+  }
+
+  addDiffableMatcher(matcherName) {
+    this._diffableMatchers[matcherName] = true;
   }
 
   formatDiffable(matcherName, isNot, actual, expected) {
@@ -42,7 +45,7 @@ class JasmineFormatter {
 
   formatMatchFailure(result) {
     let message;
-    if (DIFFABLE_MATCHERS[result.matcherName]) {
+    if (this._diffableMatchers[result.matcherName]) {
       const isNot =
         'isNot' in result ? result.isNot : /not to /.test(result.message);
       message = this.formatDiffable(
