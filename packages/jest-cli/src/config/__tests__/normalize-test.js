@@ -16,7 +16,7 @@ describe('normalize', () => {
   let path;
   let root;
   let utils;
-  let normalizeConfig;
+  let normalize;
   let expectedPathFooBar;
   let expectedPathFooQux;
   let expectedPathAbs;
@@ -46,13 +46,13 @@ describe('normalize', () => {
     expectedPathAbs = path.join(root, 'an', 'abs', 'path');
     expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
     utils = require('jest-util');
-    normalizeConfig = require('../normalize');
+    normalize = require('../normalize');
   });
 
   it('errors when an invalid config option is passed in', () => {
     const error = console.error;
     console.error = jest.fn();
-    normalizeConfig({
+    normalize({
       rootDir: '/root/path/foo',
       thisIsAnInvalidConfigKey: 'with a value even!',
     });
@@ -66,17 +66,30 @@ describe('normalize', () => {
     console.error = error;
   });
 
+  it('picks a name based on the rootDir', () => {
+    expect(normalize({
+      rootDir: '/root/path/foo',
+    }).name).toBe('-root-path-foo');
+  });
+
+  it('keeps custom names based on the rootDir', () => {
+    expect(normalize({
+      name: 'custom-name',
+      rootDir: '/root/path/foo',
+    }).name).toBe('custom-name');
+  });
+
   describe('rootDir', () => {
     it('throws if the config is missing a rootDir property', () => {
       expect(() => {
-        normalizeConfig({});
+        normalize({});
       }).toThrow(new Error('No rootDir config value found!'));
     });
   });
 
   describe('automock', () => {
     it('falsy automock is not overwritten', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         automock: false,
       });
@@ -87,7 +100,7 @@ describe('normalize', () => {
 
   describe('collectCoverageOnlyFrom', () => {
     it('normalizes all paths relative to rootDir', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo/',
         collectCoverageOnlyFrom: {
           'bar/baz': true,
@@ -103,7 +116,7 @@ describe('normalize', () => {
     });
 
     it('does not change absolute paths', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '/an/abs/path': true,
@@ -119,7 +132,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '<rootDir>/bar/baz': true,
@@ -135,7 +148,7 @@ describe('normalize', () => {
 
   describe('testPathDirs', () => {
     it('normalizes all paths relative to rootDir', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testPathDirs: [
           'bar/baz',
@@ -149,7 +162,7 @@ describe('normalize', () => {
     });
 
     it('does not change absolute paths', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testPathDirs: [
           '/an/abs/path',
@@ -163,7 +176,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testPathDirs: [
           '<rootDir>/bar/baz',
@@ -176,7 +189,7 @@ describe('normalize', () => {
 
   describe('scriptPreprocessor', () => {
     it('normalizes the path according to rootDir', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         scriptPreprocessor: 'bar/baz',
       }, '/root/path');
@@ -185,7 +198,7 @@ describe('normalize', () => {
     });
 
     it('does not change absolute paths', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         scriptPreprocessor: '/an/abs/path',
       });
@@ -194,7 +207,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         scriptPreprocessor: '<rootDir>/bar/baz',
       });
@@ -205,7 +218,7 @@ describe('normalize', () => {
 
   describe('setupTestFrameworkScriptFile', () => {
     it('normalizes the path according to rootDir', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: 'bar/baz',
       }, '/root/path');
@@ -214,7 +227,7 @@ describe('normalize', () => {
     });
 
     it('does not change absolute paths', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: '/an/abs/path',
       });
@@ -223,7 +236,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
       });
@@ -234,7 +247,7 @@ describe('normalize', () => {
 
   describe('setupTestFrameworkScriptFile', () => {
     it('normalizes the path according to rootDir', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: 'bar/baz',
       }, '/root/path');
@@ -243,7 +256,7 @@ describe('normalize', () => {
     });
 
     it('does not change absolute paths', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: '/an/abs/path',
       });
@@ -252,7 +265,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
       });
@@ -265,7 +278,7 @@ describe('normalize', () => {
     it('does not normalize paths relative to rootDir', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: [
           'bar/baz',
@@ -282,7 +295,7 @@ describe('normalize', () => {
     it('does not normalize trailing slashes', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: [
           'bar/baz',
@@ -297,7 +310,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: [
           'hasNoToken',
@@ -316,7 +329,7 @@ describe('normalize', () => {
     it('does not normalize paths relative to rootDir', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
@@ -333,7 +346,7 @@ describe('normalize', () => {
     it('does not normalize trailing slashes', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
@@ -348,7 +361,7 @@ describe('normalize', () => {
     });
 
     it('substitutes <rootDir> tokens', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'hasNoToken',
@@ -365,7 +378,7 @@ describe('normalize', () => {
 
   describe('testRunner', () => {
     it('defaults to Jasmine 2', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
       });
 
@@ -373,7 +386,7 @@ describe('normalize', () => {
     });
 
     it('can be changed to jasmine1', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root/path/foo',
         testRunner: 'jasmine1',
       });
@@ -382,7 +395,7 @@ describe('normalize', () => {
     });
 
     it('is overwritten by argv', () => {
-      const config = normalizeConfig(
+      const config = normalize(
         {
           rootDir: '/root/path/foo',
         },
@@ -409,7 +422,7 @@ describe('normalize', () => {
     });
 
     it('correctly resolves to an environment', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root',
         testEnvironment: 'jsdom',
       });
@@ -418,7 +431,7 @@ describe('normalize', () => {
     });
 
     it('throws on invalid environment names', () => {
-      expect(() => normalizeConfig({
+      expect(() => normalize({
         rootDir: '/root',
         testEnvironment: 'phantom',
       })).toThrow(new Error(
@@ -436,7 +449,7 @@ describe('normalize', () => {
     });
 
     it('correctly identifies and uses babel-jest', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root',
       });
 
@@ -449,7 +462,7 @@ describe('normalize', () => {
     it(`doesn't use babel-jest if its not available`, () => {
       resolveNodeModule.mockImplementation(() => null);
 
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root',
       });
 
@@ -459,7 +472,7 @@ describe('normalize', () => {
     });
 
     it('uses polyfills if babel-jest is explicitly specified', () => {
-      const config = normalizeConfig({
+      const config = normalize({
         rootDir: '/root',
         scriptPreprocessor: '<rootDir>/' + resolveNodeModule('babel-jest'),
       });
@@ -471,7 +484,7 @@ describe('normalize', () => {
 
     it('correctly identifies react-native', () => {
       // The default resolveNodeModule fn finds `react-native`.
-      let config = normalizeConfig({
+      let config = normalize({
         rootDir: '/root',
       });
       expect(config.preprocessorIgnorePatterns).toEqual([]);
@@ -479,7 +492,7 @@ describe('normalize', () => {
       // This version doesn't find react native and sets the default to
       // /node_modules/
       resolveNodeModule.mockImplementation(() => null);
-      config = normalizeConfig({
+      config = normalize({
         rootDir: '/root',
       });
 

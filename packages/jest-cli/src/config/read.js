@@ -66,16 +66,13 @@ function readRawConfig(argv, root) {
   }
 
   if (typeof argv.config === 'object') {
-    return Promise.resolve(normalize(argv.config, argv));
+    const config = Object.assign({}, argv.config);
+    config.rootDir = config.rootDir || root;
+    return Promise.resolve(normalize(config, argv));
   }
 
   return loadFromPackage(path.join(root, 'package.json'), argv)
-    .then(
-      config => config || normalize({
-        name: root.replace(/[/\\]|\s/g, '-'),
-        rootDir: root,
-      }, argv)
-    );
+    .then(config => config || normalize({rootDir: root}, argv));
 }
 
 module.exports = readConfig;

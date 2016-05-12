@@ -89,6 +89,10 @@ function normalize(config, argv) {
 
   config.rootDir = path.normalize(config.rootDir);
 
+  if (!config.name) {
+    config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
+  }
+
   if (!config.setupFiles) {
     config.setupFiles = [];
   }
