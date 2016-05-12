@@ -23,7 +23,7 @@ describe('Stack Trace', () => {
       /ReferenceError: thisIsARuntimeError is not defined/
     );
     expect(stdout).toMatch(
-      /\s+at\s(?:.+?)\s\(__integration_tests__\/runtime-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/
     );
   });
 
@@ -43,7 +43,7 @@ describe('Stack Trace', () => {
       /ReferenceError: thisIsARuntimeError is not defined/
     );
     expect(stdout).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__integration_tests__\/runtime-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/
     );
   });
 
@@ -55,7 +55,7 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stdout).toMatch(
-      /\s+at\s(?:.+?)\s\(__integration_tests__\/stack-trace-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/
     );
   });
 
@@ -70,7 +70,7 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stdout).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__integration_tests__\/stack-trace-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/
     );
   });
 
@@ -85,7 +85,7 @@ describe('Stack Trace', () => {
     expect(stdout).toMatch(/this is a string\. thrown/);
 
     expect(stdout).toMatch(
-      /\s+at\s(?:.+?)\s\(__integration_tests__\/test-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
     );
 
     // Make sure we show Jest's Runtime.js as part of the stack trace
@@ -108,7 +108,7 @@ describe('Stack Trace', () => {
     expect(result.status).toBe(1);
 
     expect(stdout).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__integration_tests__\/test-error-test\.js/
+      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
     );
   });
 
