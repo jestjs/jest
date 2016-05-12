@@ -58,7 +58,7 @@ class TestRunner {
     }
 
     this._hasteMap = createHasteMap(config, {
-      maxWorkers: options.runInBand ? 1 : this._opts.maxWorkers,
+      maxWorkers: this._opts.runInBand ? 1 : this._opts.maxWorkers,
       resetCache: !config.cache,
     });
 
