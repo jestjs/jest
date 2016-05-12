@@ -20,7 +20,7 @@ const rimraf = require('rimraf');
 
 const PACKAGES_DIR = path.resolve(__dirname, 'packages');
 const EXAMPLES_DIR = path.resolve(__dirname, 'examples');
-const INTEGRATION_TESTS_DIR = path.resolve(__dirname, '__integration_tests__');
+const INTEGRATION_TESTS_DIR = path.resolve(__dirname, 'integration_tests');
 const JEST_CLI_PATH = path.resolve(__dirname, 'packages/jest-cli');
 
 const packages = fs.readdirSync(PACKAGES_DIR)
