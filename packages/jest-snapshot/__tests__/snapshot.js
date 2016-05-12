@@ -8,7 +8,7 @@
 'use strict';
 
 jest
-  .unmock('React');
+  .unmock('react');
 
 const fs = require('fs');
 const path = require('path');
@@ -17,7 +17,7 @@ let React;
 describe('snapshot', () => {
 
   beforeEach(() => {
-    React = require('React');
+    React = require('react');
   });
 
   it('works with plain objects', () => {
