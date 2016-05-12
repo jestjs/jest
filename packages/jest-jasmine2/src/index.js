@@ -11,6 +11,8 @@ const fs = require('graceful-fs');
 const jasminePit = require('jest-util').jasminePit;
 const JasmineReporter = require('./reporter');
 
+const CALL_PRINT_LIMIT = 3;
+const LAST_CALL_PRINT_LIMIT = 1;
 const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
 const jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
@@ -18,8 +20,22 @@ const jasmineFileContent =
 function isSpyLike(test) {
   return test.calls && test.calls.all !== undefined;
 }
+
 function isMockLike(test) {
   return test.mock !== undefined;
+}
+
+function getActualCalls(reporter, calls, limit) {
+  const count = calls.length - limit;
+  return (
+    `\nActual call${calls.length === 1 ? '' : 's'}:\n` +
+    calls.slice(-limit).map(
+      call => reporter.getFormatter().prettyPrint(call)
+    ).reverse().join(',\n') +
+    (count > 0
+      ? `\nand ${count} other call${count === 1 ? '' : 's'}.` : ''
+    )
+  );
 }
 
 function jasmine2(config, environment, moduleLoader, testPath) {
@@ -43,13 +59,12 @@ function jasmine2(config, environment, moduleLoader, testPath) {
 
     // https://github.com/facebook/jest/issues/429
     jasmine.buildExpectationResult = function(options) {
-
       if (!options.passed) {
         function shallowCopy(obj) {
-          return typeof obj !== 'object' || obj === null
-            ? obj : jasmine.util.clone(obj);
+          return (typeof obj !== 'object' || obj === null)
+            ? obj
+            : jasmine.util.clone(obj);
         }
-
         options.expected = shallowCopy(options.expected);
         options.actual = shallowCopy(options.actual);
       }
@@ -114,14 +129,14 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (expected) {
             throw Error(
               'toBeCalled() does not accept parameters, use ' +
-              'toBeCalledWith instead'
+              'toBeCalledWith instead.'
             );
           }
           const isSpy = isSpyLike(actual);
           if (!isSpy && !isMockLike(actual)) {
             throw Error(
               'toBeCalled() should be used on a mock function or ' +
-              'a jasmine spy'
+              'a jasmine spy.'
             );
           }
           const calls = isSpy
@@ -146,25 +161,23 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (!isSpy && !isMockLike(actual)) {
             throw Error(
               'lastCalledWith() should be used on a mock function or ' +
-              'a jasmine spy'
+              'a jasmine spy.'
             );
           }
           const calls = isSpy
             ? actual.calls.all().map(x => x.args)
             : actual.mock.calls;
           const expected = Array.prototype.slice.call(arguments, 1);
-          const actualValues = calls[calls.length - 1];
-          const pass = util.equals(actualValues, expected);
+          const pass = util.equals(calls[calls.length - 1], expected);
           if (!pass) {
             return {
               pass,
               get message() {
                 return (
-                  `Wasn't called with the expected values.\n` +
-                  'Expected:\n' +
+                  `Wasn't last called with the expected values.\n` +
+                  'Expected call:\n' +
                   reporter.getFormatter().prettyPrint(expected) +
-                  '\nActual:\n' +
-                  reporter.getFormatter().prettyPrint(actualValues)
+                  getActualCalls(reporter, calls, LAST_CALL_PRINT_LIMIT)
                 );
               },
             };
@@ -173,7 +186,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
             pass,
             get message() {
               return (
-                `Shouldn't have been called with\n` +
+                `Shouldn't have been last called with\n` +
                 reporter.getFormatter().prettyPrint(expected)
               );
             },
@@ -188,7 +201,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (!isMockLike(actual) && !isSpy) {
             throw Error(
               'toBeCalledWith() should be used on a mock function or ' +
-              'a jasmine spy'
+              'a jasmine spy.'
             );
           }
           const calls = isSpy
@@ -201,9 +214,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
               pass,
               get message() {
                 return (
-                  'Was never called with the expected values.\n' +
-                  'Expected:\n' +
-                  reporter.getFormatter().prettyPrint(expected)
+                  'Was not called with the expected values.\n' +
+                  'Expected call:\n' +
+                  reporter.getFormatter().prettyPrint(expected) +
+                  getActualCalls(reporter, calls, CALL_PRINT_LIMIT)
                 );
               },
             };
@@ -227,7 +241,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   });
 
   env.addReporter(reporter);
-  // Run the test by require()ing it
   moduleLoader.requireModule(testPath);
   env.execute();
   return reporter.getResults();

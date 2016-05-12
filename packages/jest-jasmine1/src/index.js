@@ -259,7 +259,6 @@ function jasmine1(config, environment, moduleLoader, testPath) {
     noStackTrace: config.noStackTrace,
   });
   jasmine.getEnv().addReporter(reporter);
-  // Run the test by require()ing it
   moduleLoader.requireModule(testPath);
   jasmine.getEnv().execute();
   return reporter.getResults();
