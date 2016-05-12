@@ -7,11 +7,9 @@
  */
 'use strict';
 
-jest.unmock('../runJest');
-
 const runJest = require('../runJest');
 
-describe('coverage_report', () => {
+describe('JSON Reporter', () => {
   it('outputs coverage report', () => {
     const result = runJest('json_reporter', ['--json']);
     const stdout = result.stdout.toString();

@@ -163,7 +163,7 @@ function runJest(config, argv, pipe, onComplete) {
       }
       if (argv.json) {
         process.stdout.write(
-          JSON.stringify(formatTestResults(runResults))
+          JSON.stringify(formatTestResults(runResults, config))
         );
       }
       return runResults;

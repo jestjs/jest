@@ -80,7 +80,7 @@ class Jasmine2Reporter {
     specResult.failedExpectations.forEach(failed => {
       let message;
       if (!failed.matcherName && failed.stack) {
-        message = this._formatter.formatException(failed.stack);
+        message = failed.stack;
       } else {
         message = this._formatter.formatMatchFailure(failed);
       }

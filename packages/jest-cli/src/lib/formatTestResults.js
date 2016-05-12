@@ -9,7 +9,7 @@
 
 const utils = require('jest-util');
 
-const formatResult = (testResult, codeCoverageFormatter, reporter) => {
+const formatResult = (testResult, config, codeCoverageFormatter, reporter) => {
   const output = {
     name: testResult.testFilePath,
     summary: '',
@@ -32,7 +32,9 @@ const formatResult = (testResult, codeCoverageFormatter, reporter) => {
 
     if (!allTestsPassed) {
       output.message = utils.formatFailureMessage(testResult, {
-        rootDir: '',
+        noStackTrace: config.noStackTrace,
+        rootDir: config.rootDir,
+        verbose: false,
       });
     }
   }
@@ -40,14 +42,17 @@ const formatResult = (testResult, codeCoverageFormatter, reporter) => {
   return output;
 };
 
-function formatTestResults(results, codeCoverageFormatter, reporter) {
+function formatTestResults(results, config, codeCoverageFormatter, reporter) {
   if (!codeCoverageFormatter) {
     codeCoverageFormatter = coverage => coverage;
   }
 
-  const testResults = results.testResults.map(
-    testResult => formatResult(testResult, codeCoverageFormatter, reporter)
-  );
+  const testResults = results.testResults.map(testResult => formatResult(
+    testResult,
+    config,
+    codeCoverageFormatter,
+    reporter
+  ));
 
   return {
     success: results.success,

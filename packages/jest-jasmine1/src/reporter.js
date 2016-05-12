@@ -76,9 +76,7 @@ class JasmineReporter extends jasmine.Reporter {
           if (result.passed()) {
             results.numPassingAsserts++;
           } else if (!result.matcherName && result.trace.stack) {
-            results.failureMessages.push(
-              this._formatter.formatException(result.trace.stack)
-            );
+            results.failureMessages.push(result.trace.stack);
           } else {
             results.failureMessages.push(
               this._formatter.formatMatchFailure(result)

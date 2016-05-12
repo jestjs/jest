@@ -9,7 +9,6 @@
 
 const diff = require('diff');
 const chalk = require('chalk');
-const cleanStackTrace = require('./formatMessages').cleanStackTrace;
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 const LINEBREAK_REGEX = /[\r\n]/;
@@ -60,21 +59,12 @@ class JasmineFormatter {
 
     // error message & stack live on 'trace' field in jasmine 1.3
     const error = result.trace ? result.trace : result;
-    if (error.stack) {
-      message = this.formatStackTrace(error.stack, error.message, message);
+    if (!this._config.noStackTrace && error.stack) {
+      message = error.stack
+        .replace(message, error.message)
+        .replace(/^.*Error:\s*/, '');
     }
     return message;
-  }
-
-
-  formatException(stackTrace) {
-    // jasmine doesn't give us access to the actual Error object, so we
-    // have to regexp out the message from the stack string in order to
-    // colorize the `message` value
-    return cleanStackTrace(stackTrace.replace(
-      /(^(.|\n)*?(?=\n\s*at\s))/,
-      ERROR_TITLE_COLOR('$1')
-    ));
   }
 
   highlightDifferences(a, b) {
@@ -177,13 +167,6 @@ class JasmineFormatter {
     }
   }
 
-  formatStackTrace(stackTrace, originalMessage, formattedMessage) {
-    return cleanStackTrace(
-      stackTrace
-        .replace(originalMessage, formattedMessage)
-        .replace(/^.*Error:\s*/, '')
-    );
-  }
 }
 
 module.exports = JasmineFormatter;

@@ -9,13 +9,11 @@
  */
 'use strict';
 
-jest.unmock('../runJest');
-
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
 
-describe('coverage_report', () => {
+describe('Coverage Report', () => {
   it('outputs coverage report', () => {
     const result = runJest('coverage_report', ['--coverage']);
     const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
