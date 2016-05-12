@@ -195,6 +195,13 @@ function processArgs() {
         ),
         type: 'boolean',
       },
+      overwriteSnapshot: {
+        default: false,
+        description: _wrapDesc(
+          'Use this flag to reset your snapshot.'
+        ),
+        type: 'boolean',
+      },
     })
     .check(argv => {
       if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {

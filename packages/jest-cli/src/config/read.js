@@ -58,6 +58,9 @@ function readConfig(argv, packageRoot) {
       config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
     }
 
+    if (argv.overwriteSnapshot) {
+      config.overwriteSnapshot = argv.overwriteSnapshot;
+    }
     config.noStackTrace = argv.noStackTrace;
 
     return config;

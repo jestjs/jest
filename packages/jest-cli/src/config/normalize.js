@@ -269,6 +269,7 @@ function normalize(config, argv) {
       case 'noStackTrace':
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
+      case 'overwriteSnapshot':
       case 'testEnvData':
       case 'testEnvironment':
       case 'testPathPattern':
