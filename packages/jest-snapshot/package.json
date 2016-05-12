@@ -13,7 +13,7 @@
     "react-dom": "^15.0.2"
   },
   "scripts": {
-    "test": "../../bin/jest.js"
+    "test": "../jest-cli/bin/jest.js"
   },
   "jest": {
     "testEnvironment": "node",
