@@ -169,6 +169,10 @@ function normalize(config, argv) {
     }
   }
 
+  try {
+    config.snapshot = resolveNodeModule('jest-snapshot', config.rootDir);
+  } catch (e) {}
+
   if (babelJest) {
     const polyfillPath =
       Resolver.findNodeModule('babel-polyfill', {basedir: config.rootDir});
