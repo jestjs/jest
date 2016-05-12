@@ -20,7 +20,7 @@ describe('Jasmine2Reporter', () => {
     JasmineReporter = require('../reporter');
     chalk = require('chalk');
 
-    reporter = new JasmineReporter();
+    reporter = new JasmineReporter({});
   });
 
   describe('suites', () => {
@@ -116,31 +116,6 @@ describe('Jasmine2Reporter', () => {
           errorize('toBe:') + ' \'foo\n' + highlight('xxx\n') + 'baz\''
         );
       });
-    });
-
-    pit('colorizes exception messages', () => {
-      const result = getExceptionResult(
-        'Error: foobar = {\n' +
-        '      attention: "bar"\n' +
-        '    }\n' +
-        '    at Error (<anonymous>)\n' +
-        '    at Baz.js (<anonymous>)'
-      );
-      reporter.specDone(result);
-      reporter.jasmineDone();
-
-      return reporter.getResults().then(result => {
-        const message = result.testResults[0].failureMessages[0];
-        expect(message).toBe(
-          errorize(
-            'Error: foobar = {\n' +
-            '      attention: "bar"\n' +
-            '    }'
-          ) + '\n    at Error (<anonymous>)\n' +
-          '    at Baz.js (<anonymous>)'
-        );
-      });
-
     });
 
   });

@@ -16,4 +16,8 @@ describe('error stack trace', () => {
   it('fails strings', () => {
     throw 'this is a string.';
   });
+
+  it('tests', () => {
+    jest.unmock('this-module-does-not-exist');
+  });
 });

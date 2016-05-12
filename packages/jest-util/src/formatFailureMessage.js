@@ -18,6 +18,7 @@ const STACK_TRACE_LINE_IGNORE_RE =
 const formatStackTrace = (stackTrace, config) => {
   const msgBullet = '  - ';
   const msgIndent = msgBullet.replace(/./g, ' ');
+  let stackTraceLines = 0;
   return msgBullet + stackTrace
     // jasmine doesn't give us access to the actual Error object, so we
     // have to regexp out the message from the stack string in order to
@@ -33,8 +34,14 @@ const formatStackTrace = (stackTrace, config) => {
           return line;
         }
       }
+
       // Filter out noisy and unhelpful lines from the stack trace.
-      if (config.noStackTrace || STACK_TRACE_LINE_IGNORE_RE.test(line)) {
+      // Always keep the first stack trace line, even if it comes from Jest.
+      stackTraceLines++;
+      if (
+        config.noStackTrace ||
+        (STACK_TRACE_LINE_IGNORE_RE.test(line) && stackTraceLines > 1)
+      ) {
         return null;
       }
 
@@ -75,4 +82,4 @@ function formatFailureMessage(testResult, config) {
     .join('\n');
 }
 
-exports.formatFailureMessage = formatFailureMessage;
+module.exports = formatFailureMessage;

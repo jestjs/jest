@@ -23,7 +23,7 @@ describe('JasmineReporter', () => {
     JasmineReporter = require('../reporter');
     chalk = require('chalk');
 
-    reporter = new JasmineReporter();
+    reporter = new JasmineReporter({});
   });
 
   describe('colorization', () => {
@@ -66,16 +66,6 @@ describe('JasmineReporter', () => {
       });
     }
 
-    function getExceptionRunner(message, passed) {
-      return getRunner({
-        passed: () => { return passed; },
-        trace: {
-          stack: message,
-        },
-        type: 'expect',
-      });
-    }
-
     function errorize(str) {
       return chalk.bold.underline.red(str);
     }
@@ -110,28 +100,5 @@ describe('JasmineReporter', () => {
       });
     });
 
-    pit('colorizes exception messages', () => {
-      const runner = getExceptionRunner(
-        'Error: foobar = {\n' +
-        '      attention: "bar"\n' +
-        '    }\n' +
-        '    at Error (<anonymous>)\n' +
-        '    at Baz.js (<anonymous>)',
-        false
-      );
-      reporter.reportRunnerResults(runner);
-
-      return reporter.getResults().then(result => {
-        const message = result.testResults[0].failureMessages[0];
-        expect(message).toBe(
-          errorize(
-            'Error: foobar = {\n' +
-            '      attention: "bar"\n' +
-            '    }'
-          ) + '\n    at Error (<anonymous>)\n' +
-          '    at Baz.js (<anonymous>)'
-        );
-      });
-    });
   });
 });
