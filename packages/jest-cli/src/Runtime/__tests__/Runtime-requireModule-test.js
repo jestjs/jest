@@ -63,6 +63,15 @@ describe('Runtime', () => {
       });
     });
 
+    pit('provides `module.filename` to modules', () => {
+      return buildLoader().then(loader => {
+        const exports = loader.requireModule(rootPath, 'RegularModule');
+        expect(exports.filename.endsWith(
+          'test_root' + path.sep + 'RegularModule.js'
+        )).toBe(true);
+      });
+    });
+
     pit('provides `module.paths` to modules', () => {
       return buildLoader().then(loader => {
         const exports = loader.requireModule(rootPath, 'RegularModule');
