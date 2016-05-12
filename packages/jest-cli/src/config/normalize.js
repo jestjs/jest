@@ -170,7 +170,7 @@ function normalize(config, argv) {
   }
 
   try {
-    config.snapshot = resolveNodeModule('jest-snapshot', config.rootDir);
+    config.snapshot = require.resolve('jest-snapshot');
   } catch (e) {}
 
   if (babelJest) {

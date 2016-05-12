@@ -8,7 +8,7 @@
 'use strict';
 
 const common = Object.create(null);
-const JasmineFormatter = require('jest-util/lib/JasmineFormatter');
+const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 const paths = Object.create(null);
 let lastJasmine;
