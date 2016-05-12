@@ -82,7 +82,12 @@ class DefaultTestReporter {
     }
 
     if (!allTestsPassed) {
-      const failureMessage = formatFailureMessage(testResult, config);
+      const failureMessage = formatFailureMessage(testResult, {
+        noStackTrace: config.noStackTrace,
+        rootDir: config.rootDir,
+        verbose: config.verbose,
+      });
+
       // If we write more than one character at a time it is possible that
       // node exits in the middle of printing the result.
       // If you are reading this and you are from the future, this might not
@@ -110,7 +115,7 @@ class DefaultTestReporter {
     const totalErrors = aggregatedResults.numRuntimeErrorTestSuites;
     const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
 
-    if (totalTests === 0) {
+    if (totalTests === 0 && totalErrors === 0) {
       return;
     }
 
