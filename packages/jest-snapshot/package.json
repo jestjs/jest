@@ -1,0 +1,22 @@
+{
+  "name": "jest-snapshot",
+  "version": "11.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "BSD-3-Clause",
+  "main": "index.js",
+  "dependencies": {
+    "jest-util": "^11.0.2",
+    "react": "^15.0.2",
+    "react-dom": "^15.0.2"
+  },
+  "scripts": {
+    "test": "../../bin/jest.js"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "scriptPreprocessor": "../babel-jest"
+  }
+}
