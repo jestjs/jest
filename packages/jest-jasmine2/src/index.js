@@ -41,6 +41,12 @@ function getActualCalls(reporter, calls, limit) {
 function jasmine2(config, environment, moduleLoader, testPath) {
   let env;
   let jasmine;
+  let snapshot;
+
+  try {
+    snapshot = require(config.snapshot);
+  } catch (e) {}
+
   const reporter = new JasmineReporter({
     noHighlight: config.noHighlight,
     noStackTrace: config.noStackTrace,
@@ -54,6 +60,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
 
     const requireJasmine = environment.global.jasmineRequire;
     jasmine = requireJasmine.core(requireJasmine);
+
+    if (snapshot) {
+      snapshot.initialize(jasmine, testPath);
+    }
 
     const jasmineBuildExpectationResult = jasmine.buildExpectationResult;
 
@@ -130,6 +140,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
 
   env.beforeEach(() => {
     jasmine.addCustomEqualityTester(iterableEquality);
+
+    if (snapshot) {
+      jasmine.addMatchers(snapshot.getMatchers(testPath, config));
+    }
 
     jasmine.addMatchers({
       toBeCalled: () => ({
