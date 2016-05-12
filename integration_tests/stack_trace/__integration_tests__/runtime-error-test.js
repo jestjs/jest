@@ -7,4 +7,5 @@
  */
 'use strict';
 
+/* eslint-disable no-undef */
 thisIsARuntimeError();

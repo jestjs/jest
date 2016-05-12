@@ -78,7 +78,7 @@ describe('Stack Trace', () => {
     const result = runJest('stack_trace', ['test-error-test.js']);
     const stdout = result.stdout.toString();
 
-    expect(stdout).toMatch(/2 tests failed, 0 tests passed/);
+    expect(stdout).toMatch(/3 tests failed, 0 tests passed/);
     expect(result.status).toBe(1);
 
     expect(stdout).toMatch(/Error: this is unexpected\./);
@@ -86,6 +86,14 @@ describe('Stack Trace', () => {
 
     expect(stdout).toMatch(
       /\s+at\s(?:.+?)\s\(__integration_tests__\/test-error-test\.js/
+    );
+
+    // Make sure we show Jest's Runtime.js as part of the stack trace
+    expect(stdout).toMatch(
+      /Error: Cannot find module 'this-module-does-not-exist' from 'test-error-test\.js'/
+    );
+    expect(stdout).toMatch(
+      /\s+at\s(?:.+?)\s\((?:.+?)Runtime\/Runtime\.js/
     );
   });
 
@@ -96,7 +104,7 @@ describe('Stack Trace', () => {
     ]);
     const stdout = result.stdout.toString();
 
-    expect(stdout).toMatch(/2 tests failed, 0 tests passed/);
+    expect(stdout).toMatch(/3 tests failed, 0 tests passed/);
     expect(result.status).toBe(1);
 
     expect(stdout).not.toMatch(

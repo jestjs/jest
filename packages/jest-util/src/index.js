@@ -8,8 +8,13 @@
 
 'use strict';
 
-const formatMessages = require('./lib/formatMessages');
+const FakeTimers = require('./FakeTimers');
+const JasmineFormatter = require('./JasmineFormatter');
+
+const installCommonGlobals = require('./installCommonGlobals');
+const formatFailureMessage = require('./formatFailureMessage');
 const path = require('path');
+const pit = require('./jasmine-pit');
 
 function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -22,11 +27,10 @@ function replacePathSepForRegex(str) {
   return str;
 }
 
-exports.cleanStackTrace = formatMessages.cleanStackTrace;
 exports.escapeStrForRegex = escapeStrForRegex;
-exports.FakeTimers = require('./lib/FakeTimers');
-exports.formatFailureMessage = formatMessages.formatFailureMessage;
-exports.jasminePit = require('./lib/jasmine-pit');
-exports.JasmineFormatter = require('./lib/JasmineFormatter');
-exports.installCommonGlobals = require('./lib/installCommonGlobals');
+exports.FakeTimers = FakeTimers;
+exports.formatFailureMessage = formatFailureMessage;
+exports.jasminePit = pit;
+exports.JasmineFormatter = JasmineFormatter;
+exports.installCommonGlobals = installCommonGlobals;
 exports.replacePathSepForRegex = replacePathSepForRegex;
