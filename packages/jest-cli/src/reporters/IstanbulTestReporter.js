@@ -51,9 +51,9 @@ class IstanbulTestReporter extends DefaultTestReporter {
             'lines',
             'functions',
           ].reduce((errors, key) => {
-            const actual = actuals[key].pct,
-                actualUncovered = actuals[key].total - actuals[key].covered,
-                threshold = thresholds[key];
+            const actual = actuals[key].pct;
+            const actualUncovered = actuals[key].total - actuals[key].covered;
+            const threshold = thresholds[key];
 
             if (threshold < 0) {
               if (threshold * -1 < actualUncovered) {
