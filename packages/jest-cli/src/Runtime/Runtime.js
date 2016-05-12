@@ -142,36 +142,33 @@ class Runtime {
       throw new Error(`Cannot find module '${moduleName}' from '${currPath}'`);
     }
 
-    let moduleObj;
-    moduleObj = this._moduleRegistry[modulePath];
-    if (!moduleObj) {
+    if (!this._moduleRegistry[modulePath]) {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
-      moduleObj = {
-        __filename: modulePath,
+      const localModule = {
+        filename: modulePath,
         exports: {},
       };
 
-      this._moduleRegistry[modulePath] = moduleObj;
+      this._moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
-        moduleObj.exports = this._environment.global.JSON.parse(
+        localModule.exports = this._environment.global.JSON.parse(
           fs.readFileSync(modulePath, 'utf8')
         );
       } else if (path.extname(modulePath) === '.node') {
-        moduleObj.exports = require(modulePath);
+        localModule.exports = require(modulePath);
       } else {
-        this._execModule(moduleObj);
+        this._execModule(localModule);
       }
     }
-
-    return moduleObj.exports;
+    return this._moduleRegistry[modulePath].exports;
   }
 
   requireMock(currPath, moduleName) {
     const moduleID = this._getNormalizedModuleID(currPath, moduleName);
 
-    if (moduleID in this._mockRegistry) {
+    if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
@@ -213,12 +210,12 @@ class Runtime {
     }
 
     if (manualMockResource) {
-      const moduleObj = {
+      const localModule = {
         exports: {},
-        __filename: modulePath,
+        filename: modulePath,
       };
-      this._execModule(moduleObj);
-      this._mockRegistry[moduleID] = moduleObj.exports;
+      this._execModule(localModule);
+      this._mockRegistry[moduleID] = localModule.exports;
     } else {
       // Look for a real module to generate an automock from
       this._mockRegistry[moduleID] = this._generateMock(
@@ -271,14 +268,14 @@ class Runtime {
     return coverage;
   }
 
-  _execModule(moduleObj) {
+  _execModule(localModule) {
     // If the environment was disposed, prevent this module from
     // being executed.
     if (!this._environment.global) {
       return;
     }
 
-    const filename = moduleObj.__filename;
+    const filename = localModule.filename;
     const collectors = this._coverageCollectors;
     const collectOnlyFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage = (
@@ -309,17 +306,17 @@ class Runtime {
     this._isCurrentlyExecutingManualMock = filename;
 
     const dirname = path.dirname(filename);
-    moduleObj.children = [];
-    moduleObj.parent = mockParentModule;
-    moduleObj.paths = getModulePaths(dirname);
-    moduleObj.require = this._createRequireImplementation(filename);
+    localModule.children = [];
+    localModule.parent = mockParentModule;
+    localModule.paths = getModulePaths(dirname);
+    localModule.require = this._createRequireImplementation(filename);
 
     const wrapperFunc = this._runSourceText(moduleContent, filename);
     wrapperFunc.call(
-      moduleObj.exports, // module context
-      moduleObj, // module object
-      moduleObj.exports, // module exports
-      moduleObj.require, // require implementation
+      localModule.exports, // module context
+      localModule, // module object
+      localModule.exports, // module exports
+      localModule.require, // require implementation
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
