@@ -9,7 +9,6 @@
   "main": "src/index.js",
   "devDependencies": {
     "babel-preset-es2015": "*",
-    "jest-util": "12.0.1",
     "react": "^0.14.0"
   },
   "jest": {
