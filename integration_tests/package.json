@@ -1,5 +1,8 @@
 {
   "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/(?:.+?)/__tests__/"
+    ],
     "unmockedModulePathPatterns": [
       "<rootDir>/runJest.js$"
     ]

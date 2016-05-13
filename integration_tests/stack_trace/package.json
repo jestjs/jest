@@ -1,5 +1,1 @@
-{
-  "jest": {
-    "testDirectoryName": "__integration_tests__"
-  }
-}
+{}

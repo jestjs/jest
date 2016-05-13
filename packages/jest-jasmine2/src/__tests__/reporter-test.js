@@ -68,20 +68,6 @@ describe('Jasmine2Reporter', () => {
       };
     }
 
-    function getExceptionResult(stack) {
-      return {
-        fullName: '',
-        description: '',
-        failedExpectations: [
-          {
-            matcherName: '',
-            stack,
-            passed: false,
-          },
-        ],
-      };
-    }
-
     function errorize(str) {
       return chalk.bold.underline.red(str);
     }

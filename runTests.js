@@ -7,9 +7,14 @@
  */
 'use strict';
 
-/**
- * This script runs tests for all jest packages, examples, etc...
- */
+if (process.platform === 'win32') {
+  console.error('Tests are skipped on Windows.');
+  return;
+}
+
+const packagesOnly =
+  process.argv.indexOf('-p') !== -1 ||
+  process.argv.indexOf('--packages-only') !== -1;
 
 const fs = require('graceful-fs');
 const path = require('path');
@@ -53,12 +58,12 @@ function runCommands(commands, cwd) {
   });
 }
 
-function runTestsForPackage(packageDirectory) {
+function runPackageTests(packageDirectory) {
   console.log(chalk.bold(chalk.cyan('Testing package: ') + packageDirectory));
   runCommands('npm test', packageDirectory);
 }
 
-function runTestsForExample(exampleDirectory) {
+function runExampleTests(exampleDirectory) {
   console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleDirectory));
 
   runCommands('npm update', exampleDirectory);
@@ -85,6 +90,11 @@ function runTestsForExample(exampleDirectory) {
 }
 
 
+packages.forEach(runPackageTests);
+if (packagesOnly) {
+  return;
+}
+
 // Run all tests, these are order dependent.
 runCommands('node bin/jest.js --no-cache', 'packages/jest-cli');
 runCommands('node bin/jest.js', 'packages/jest-cli');
@@ -96,15 +106,7 @@ runCommands('node bin/jest.js --runInBand --logHeapUsage', 'packages/jest-cli');
 runCommands('node bin/jest.js --json', 'packages/jest-cli');
 runCommands('node bin/jest.js --verbose', 'packages/jest-cli');
 
-if (process.platform === 'win32') {
-  console.error(
-    'Integration tests, tests for examples and packages are skipped on Windows.'
-  );
-  return;
-}
-
-packages.forEach(runTestsForPackage);
-examples.forEach(runTestsForExample);
+examples.forEach(runExampleTests);
 
 console.log(chalk.bold(chalk.cyan('Running integration tests:')));
 runCommands('../packages/jest-cli/bin/jest.js', INTEGRATION_TESTS_DIR);
