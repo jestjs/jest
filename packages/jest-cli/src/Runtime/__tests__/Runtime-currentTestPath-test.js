@@ -11,7 +11,7 @@
 
 jest.disableAutomock();
 
-describe('nodeRuntime', () => {
+describe('Runtime', () => {
   describe('currentTestPath', () => {
     it('makes the current test path available', () => {
       expect(jest.currentTestPath()).toMatch(/currentTestPath-test/);

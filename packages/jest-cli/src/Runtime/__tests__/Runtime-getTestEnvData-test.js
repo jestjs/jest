@@ -15,51 +15,33 @@ jest.mock(
   () => require('../../../__mocks__/jest-environment-jsdom')
 );
 
+const config = {
+  testEnvData: {
+    someTestData: 42,
+  },
+};
 
-const path = require('path');
-const normalizeConfig = require('../../config/normalize');
+let createRuntime;
 
 describe('Runtime', () => {
-  let Runtime;
-  let createHasteMap;
-  let JSDOMEnvironment;
-
-  const rootDir = path.join(__dirname, 'test_root');
-  const rootPath = path.join(rootDir, 'root.js');
-  const baseConfig = normalizeConfig({
-    cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'Runtime-getTestEnvData-tests',
-    rootDir,
-    testEnvData: {someTestData: 42},
-  });
-
-  function buildLoader(config) {
-    config = Object.assign({}, baseConfig, config);
-    const environment = new JSDOMEnvironment(config);
-    return createHasteMap(config, {resetCache: false, maxWorkers: 1})
-      .build()
-      .then(response => new Runtime(config, environment, response));
-  }
 
   beforeEach(() => {
-    Runtime = require('../Runtime');
-    createHasteMap = require('../../lib/createHasteMap');
-    JSDOMEnvironment = require('jest-environment-jsdom');
+    createRuntime = require('createRuntime');
   });
 
-  pit('passes config data through to jest.envData', () => {
-    return buildLoader().then(loader => {
-      const root = loader.requireModule(rootDir, rootPath);
+  pit('passes config data through to jest.envData', () =>
+    createRuntime(__filename, config).then(runtime => {
+      const root = runtime.requireModule(runtime.__mockRootPath);
       const envData = root.jest.getTestEnvData();
-      expect(envData).toEqual(baseConfig.testEnvData);
-    });
-  });
+      expect(envData).toEqual(config.testEnvData);
+    })
+  );
 
-  pit('freezes jest.envData object', () => {
-    return buildLoader().then(loader => {
-      const root = loader.requireModule(rootDir, rootPath);
+  pit('freezes jest.envData object', () =>
+    createRuntime(__filename, config).then(runtime => {
+      const root = runtime.requireModule(runtime.__mockRootPath);
       const envData = root.jest.getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);
-    });
-  });
+    })
+  );
 });
