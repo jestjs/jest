@@ -9,14 +9,15 @@
 'use strict';
 
 const H = require('jest-haste-map').H;
+const Resolver = require('jest-resolve');
 const Test = require('./Test');
 
 const createHasteMap = require('./lib/createHasteMap');
+const createResolver = require('./lib/createResolver');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
 const promisify = require('./lib/promisify');
-const resolveNodeModule = require('./lib/resolveNodeModule');
 const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
@@ -142,7 +143,11 @@ class TestRunner {
               const module = map[platform] || map[H.GENERIC_PLATFORM];
               return module && module[H.PATH];
             } else if (!this._opts.skipNodeResolution) {
-              return resolveNodeModule(dep, path.dirname(file), extensions);
+              return Resolver.findNodeModule(
+                dep,
+                path.dirname(file),
+                extensions
+              );
             }
             return null;
           })
@@ -323,7 +328,11 @@ class TestRunner {
     return testPaths.reduce((promise, path) =>
       promise
         .then(() => this._hasteMap.build())
-        .then(moduleMap => new Test(path, this._config, moduleMap).run())
+        .then(moduleMap => new Test(
+          path,
+          this._config,
+          createResolver(this._config, moduleMap)
+        ).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
       Promise.resolve()

@@ -8,15 +8,10 @@
 
 'use strict';
 
-const H = require('jest-haste-map').H;
-
 const constants = require('../constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
-const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
-const resolve = require('resolve');
-const resolveNodeModule = require('../lib/resolveNodeModule');
 const transform = require('../lib/transform');
 
 const mockParentModule = {
@@ -24,40 +19,23 @@ const mockParentModule = {
   exports: {},
 };
 
-const moduleNameCache = Object.create(null);
-const modulePathCache = Object.create(null);
 const normalizedIDCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
 
-const getModulePaths = from => {
-  if (!modulePathCache[from]) {
-    const paths = nodeModulesPaths(from, {});
-    if (paths[paths.length - 1] === undefined) {
-      // circumvent node-resolve bug that adds `undefined` as last item.
-      paths.pop();
-    }
-    modulePathCache[from] = paths;
-  }
-  return modulePathCache[from];
-};
-
 class Runtime {
-  constructor(config, environment, moduleMap) {
+  constructor(config, environment, resolver) {
     this._config = config;
+    this._environment = environment;
+    this._resolver = resolver;
+
     this._coverageCollectors = Object.create(null);
     this._currentlyExecutingModulePath = '';
-    this._environment = environment;
-    this._explicitShouldMock = Object.create(null);
-    this._mockFactories = Object.create(null);
-    this._isCurrentlyExecutingManualMock = null;
-    this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
-
-    this._shouldAutoMock = config.automock;
-    this._extensions = config.moduleFileExtensions.map(ext => '.' + ext);
     this._defaultPlatform = config.haste.defaultPlatform;
-
-    this._modules = moduleMap.map;
-    this._mocks = moduleMap.mocks;
+    this._explicitShouldMock = Object.create(null);
+    this._isCurrentlyExecutingManualMock = null;
+    this._mockFactories = Object.create(null);
+    this._shouldAutoMock = config.automock;
+    this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
@@ -84,14 +62,6 @@ class Runtime {
 
     unmockPath(config.setupEnvScriptFile);
     config.setupFiles.forEach(unmockPath);
-    // Workers communicate the config as JSON so we have to create a regex
-    // object in the module loader instance.
-    this._mappedModuleNames = Object.create(null);
-    if (this._config.moduleNameMapper.length) {
-      this._config.moduleNameMapper.forEach(
-        map => this._mappedModuleNames[map[1]] = new RegExp(map[0])
-      );
-    }
 
     this.resetModuleRegistry();
   }
@@ -119,8 +89,8 @@ class Runtime {
     // up at some point in the future.
     let manualMockResource = null;
     let moduleResource = null;
-    moduleResource = this._getModule(moduleName);
-    manualMockResource = this._getMockModule(moduleName);
+    moduleResource = this._resolver.getModule(moduleName);
+    manualMockResource = this._resolver.getMockModule(moduleName);
     if (
       !moduleResource &&
       manualMockResource &&
@@ -130,12 +100,12 @@ class Runtime {
       modulePath = manualMockResource;
     }
 
-    if (resolve.isCore(moduleName)) {
+    if (this._resolver.isCoreModule(moduleName)) {
       return require(moduleName);
     }
 
     if (!modulePath) {
-      modulePath = this._resolveModuleName(currPath, moduleName);
+      modulePath = this._resolver.resolveModule(currPath, moduleName);
     }
 
     if (!modulePath) {
@@ -176,12 +146,12 @@ class Runtime {
       return this._mockRegistry[moduleID] = this._mockFactories[moduleID]();
     }
 
-    let manualMockResource = this._getMockModule(moduleName);
+    let manualMockResource = this._resolver.getMockModule(moduleName);
     let modulePath;
     if (manualMockResource) {
       modulePath = manualMockResource;
     } else {
-      modulePath = this._resolveModuleName(currPath, moduleName);
+      modulePath = this._resolver.resolveModule(currPath, moduleName);
 
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file in that dir.
@@ -308,7 +278,7 @@ class Runtime {
     const dirname = path.dirname(filename);
     localModule.children = [];
     localModule.parent = mockParentModule;
-    localModule.paths = getModulePaths(dirname);
+    localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename);
 
     const wrapperFunc = this._runSourceText(moduleContent, filename);
@@ -362,7 +332,7 @@ class Runtime {
   }
 
   _generateMock(currPath, moduleName) {
-    const modulePath = this._resolveModuleName(currPath, moduleName);
+    const modulePath = this._resolver.resolveModule(currPath, moduleName);
 
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
@@ -402,85 +372,6 @@ class Runtime {
     );
   }
 
-  _resolveModuleName(currPath, moduleName) {
-    // Check if the resolver knows about this module
-    const module = this._getModule(moduleName);
-    if (module) {
-      return module;
-    }
-
-    // Otherwise it is likely a node_module.
-    const key = currPath + path.delimiter + moduleName;
-    if (moduleNameCache[key]) {
-      return moduleNameCache[key];
-    }
-    moduleNameCache[key] = this._resolveNodeModule(currPath, moduleName);
-    return moduleNameCache[key];
-  }
-
-  _resolveNodeModule(currPath, moduleName) {
-    if (!moduleName) {
-      return currPath;
-    }
-
-    const basedir = path.dirname(currPath);
-    const filePath = resolveNodeModule(moduleName, basedir, this._extensions);
-    if (filePath) {
-      return filePath;
-    }
-
-    // haste packages are `package.json` files outside of `node_modules`
-    // folders.
-    const parts = moduleName.split('/');
-    const hastePackageName = parts.shift();
-    const module = this._getPackage(hastePackageName);
-    if (module) {
-      try {
-        return require.resolve(
-          path.join.apply(path, [path.dirname(module)].concat(parts))
-        );
-      } catch (ignoredError) {}
-    }
-
-    // resolveNodeModule and resolve.sync use the basedir instead of currPath
-    // and therefore can't throw an accurate error message.
-    const relativePath = path.relative(basedir, currPath);
-    throw new Error(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
-    );
-  }
-
-  _getModule(name, type) {
-    if (!type) {
-      type = H.MODULE;
-    }
-
-    const map = this._modules[name];
-    if (map) {
-      const module = map[this._defaultPlatform] || map[H.GENERIC_PLATFORM];
-      if (module && module[H.TYPE] == type) {
-        return module[H.PATH];
-      }
-    }
-
-    return null;
-  }
-
-  _getPackage(name) {
-    return this._getModule(name, H.PACKAGE);
-  }
-
-  _getMockModule(name) {
-    if (this._mocks[name]) {
-      return this._mocks[name];
-    } else {
-      const moduleName = this._resolveStubModuleName(name);
-      if (moduleName) {
-        return this._getModule(moduleName) || moduleName;
-      }
-    }
-  }
-
   _getNormalizedModuleID(currPath, moduleName) {
     const key = currPath + path.delimiter + moduleName;
     if (normalizedIDCache[key]) {
@@ -491,29 +382,32 @@ class Runtime {
     let mockPath = null;
     let absolutePath = null;
 
-    if (resolve.isCore(moduleName)) {
+    if (this._resolver.isCoreModule(moduleName)) {
       moduleType = 'node';
       absolutePath = moduleName;
     } else {
       moduleType = 'user';
-      if (!this._getModule(moduleName) && !this._getMockModule(moduleName)) {
-        absolutePath = this._resolveModuleName(currPath, moduleName);
+      if (
+        !this._resolver.getModule(moduleName) &&
+        !this._resolver.getMockModule(moduleName)
+      ) {
+        absolutePath = this._resolver.resolveModule(currPath, moduleName);
         // Look up if this module has an associated manual mock.
-        const mockModule = this._getMockModule(moduleName);
+        const mockModule = this._resolver.getMockModule(moduleName);
         if (mockModule) {
           mockPath = mockModule;
         }
       }
 
       if (absolutePath === null) {
-        const moduleResource = this._getModule(moduleName);
+        const moduleResource = this._resolver.getModule(moduleName);
         if (moduleResource) {
           absolutePath = moduleResource;
         }
       }
 
       if (mockPath === null) {
-        const mockResource = this._getMockModule(moduleName);
+        const mockResource = this._resolver.getMockModule(moduleName);
         if (mockResource) {
           mockPath = mockResource;
         }
@@ -537,7 +431,7 @@ class Runtime {
 
     if (
       !this._shouldAutoMock ||
-      resolve.isCore(moduleName) ||
+      this._resolver.isCoreModule(moduleName) ||
       this._shouldUnmockTransitiveDependenciesCache[key]
     ) {
       return false;
@@ -547,10 +441,10 @@ class Runtime {
       return this._shouldMockModuleCache[moduleName];
     }
 
-    const manualMockResource = this._getMockModule(moduleName);
+    const manualMockResource = this._resolver.getMockModule(moduleName);
     let modulePath;
     try {
-      modulePath = this._resolveModuleName(currPath, moduleName);
+      modulePath = this._resolver.resolveModule(currPath, moduleName);
     } catch (e) {
       if (manualMockResource) {
         this._shouldMockModuleCache[moduleName] = true;
@@ -583,22 +477,12 @@ class Runtime {
     return this._shouldMockModuleCache[moduleName] = true;
   }
 
-  _resolveStubModuleName(moduleName) {
-    const nameMapper = this._mappedModuleNames;
-    for (const mappedModuleName in nameMapper) {
-      const regex = nameMapper[mappedModuleName];
-      if (regex.test(moduleName)) {
-        return moduleName.replace(regex, mappedModuleName);
-      }
-    }
-  }
-
   _createRequireImplementation(path) {
     const moduleRequire = this.requireModuleOrMock.bind(this, path);
     moduleRequire.requireMock = this.requireMock.bind(this, path);
     moduleRequire.requireActual = this.requireModule.bind(this, path);
     moduleRequire.resolve = moduleName => {
-      const ret = this._resolveModuleName(path, moduleName);
+      const ret = this._resolver.resolveModule(path, moduleName);
       if (!ret) {
         throw new Error(`Module(${moduleName}) not found!`);
       }
