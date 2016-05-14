@@ -32,5 +32,6 @@ module.exports = function createResolver(config, moduleMap) {
     hasCoreModules: true,
     moduleDirectories: config.moduleDirectories,
     moduleNameMapper: getModuleNameMapper(config),
+    platforms: config.haste.platforms,
   });
 };

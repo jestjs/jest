@@ -14,6 +14,8 @@ const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
 
+const NATIVE_PLATFORM = 'native';
+
 const paths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 
@@ -29,6 +31,8 @@ class Resolver {
       moduleNameMapper: options.moduleNameMapper,
     };
 
+    this._supportsNativePlatform =
+      (options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
     this._moduleMap = moduleMap;
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
@@ -94,16 +98,18 @@ class Resolver {
     if (!type) {
       type = H.MODULE;
     }
-
     const map = this._moduleMap.map[name];
     if (map) {
-      const module =
-        map[this._options.defaultPlatform] || map[H.GENERIC_PLATFORM];
+      let module = map[this._options.defaultPlatform];
+      if (!module && map[NATIVE_PLATFORM] && this._supportsNativePlatform) {
+        module = map[NATIVE_PLATFORM];
+      } else if (!module) {
+        module = map[H.GENERIC_PLATFORM];
+      }
       if (module && module[H.TYPE] === type) {
         return module[H.PATH];
       }
     }
-
     return null;
   }
 
