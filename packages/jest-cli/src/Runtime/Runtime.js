@@ -30,7 +30,6 @@ class Runtime {
 
     this._coverageCollectors = Object.create(null);
     this._currentlyExecutingModulePath = '';
-    this._defaultPlatform = config.haste.defaultPlatform;
     this._explicitShouldMock = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);

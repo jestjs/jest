@@ -21,6 +21,7 @@ class Resolver {
 
   constructor(moduleMap, options) {
     this._options = {
+      defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
         options.hasCoreModules === undefined ? true : options.hasCoreModules,
@@ -40,50 +41,46 @@ class Resolver {
     return null;
   }
 
-  resolveModule(currPath, moduleName) {
-    // Check if the resolver knows about this module
-    const module = this.getModule(moduleName);
-    if (module) {
-      return module;
-    }
+  resolveModule(from, moduleName) {
+    const dirname = path.dirname(from);
+    const extensions = this._options.extensions;
+    const key = dirname + path.delimiter + moduleName;
 
-    // Otherwise it is likely a node_module.
-    const key = currPath + path.delimiter + moduleName;
+    // 0. If we have already resolved this module for this directory name,
+    //    return a value from the cache.
     if (this._moduleNameCache[key]) {
       return this._moduleNameCache[key];
     }
-    this._moduleNameCache[key] = this._resolveNodeModule(currPath, moduleName);
-    return this._moduleNameCache[key];
-  }
 
-  _resolveNodeModule(currPath, moduleName) {
-    if (!moduleName) {
-      return currPath;
+    // 1. Check if the module is a haste module.
+    let module = this.getModule(moduleName);
+    if (module) {
+      return this._moduleNameCache[key] = module;
     }
 
-    const basedir = path.dirname(currPath);
-    const filePath =
-      Resolver.findNodeModule(moduleName, basedir, this._options.extensions);
-    if (filePath) {
-      return filePath;
+    // 2. Check if the module is a node module and resolve it based on
+    //    the node module resolution algorithm.
+    module = Resolver.findNodeModule(moduleName, dirname, extensions);
+    if (module) {
+      return this._moduleNameCache[key] = module;
     }
 
-    // haste packages are `package.json` files outside of `node_modules`
-    // folders.
+    // 3. Resolve "haste packages" which are `package.json` files outside of
+    // `node_modules` folders anywhere in the file system.
     const parts = moduleName.split('/');
-    const hastePackageName = parts.shift();
-    const module = this.getPackage(hastePackageName);
+    module = this.getPackage(parts.shift());
     if (module) {
       try {
-        return require.resolve(
+        return this._moduleNameCache[key] = require.resolve(
           path.join.apply(path, [path.dirname(module)].concat(parts))
         );
       } catch (ignoredError) {}
     }
 
-    // resolveNodeModule and resolve.sync use the basedir instead of currPath
-    // and therefore can't throw an accurate error message.
-    const relativePath = path.relative(basedir, currPath);
+    // 4. Throw an error if the module could not be found. `resolve.sync`
+    //    only produces an error based on the dirname but we have the actual
+    //    current module name available.
+    const relativePath = path.relative(dirname, from);
     throw new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
     );
@@ -100,8 +97,9 @@ class Resolver {
 
     const map = this._moduleMap.map[name];
     if (map) {
-      const module = map[this._defaultPlatform] || map[H.GENERIC_PLATFORM];
-      if (module && module[H.TYPE] == type) {
+      const module =
+        map[this._options.defaultPlatform] || map[H.GENERIC_PLATFORM];
+      if (module && module[H.TYPE] === type) {
         return module[H.PATH];
       }
     }

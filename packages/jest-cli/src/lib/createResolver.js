@@ -27,6 +27,7 @@ module.exports = function createResolver(config, moduleMap) {
   )).map(extension => '.' + extension);
 
   return new Resolver(moduleMap, {
+    defaultPlatform: config.haste.defaultPlatform,
     extensions,
     hasCoreModules: true,
     moduleDirectories: config.moduleDirectories,
