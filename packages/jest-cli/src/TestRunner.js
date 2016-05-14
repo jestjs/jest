@@ -163,7 +163,7 @@ class TestRunner {
       const maybeFile = path.resolve(process.cwd(), pattern);
       if (fileExists(maybeFile)) {
         return Promise.resolve(
-          [pattern].filter(this.isTestFilePath.bind(this))
+          this.isTestFilePath(maybeFile) ? [maybeFile] : []
         );
       }
     }
