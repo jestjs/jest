@@ -10,6 +10,7 @@
 
 const H = require('jest-haste-map').H;
 
+const fs = require('fs');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
@@ -45,7 +46,15 @@ class Resolver {
     return null;
   }
 
-  resolveModule(from, moduleName) {
+  static fileExists(filePath) {
+    try {
+      fs.accessSync(filePath, fs.R_OK);
+      return true;
+    } catch (e) {}
+    return false;
+  }
+
+  resolveModule(from, moduleName, options) {
     const dirname = path.dirname(from);
     const extensions = this._options.extensions;
     const key = dirname + path.delimiter + moduleName;
@@ -64,9 +73,11 @@ class Resolver {
 
     // 2. Check if the module is a node module and resolve it based on
     //    the node module resolution algorithm.
-    module = Resolver.findNodeModule(moduleName, dirname, extensions);
-    if (module) {
-      return this._moduleNameCache[key] = module;
+    if (!options || !options.skipNodeResolution) {
+      module = Resolver.findNodeModule(moduleName, dirname, extensions);
+      if (module) {
+        return this._moduleNameCache[key] = module;
+      }
     }
 
     // 3. Resolve "haste packages" which are `package.json` files outside of
@@ -138,6 +149,71 @@ class Resolver {
       this._modulePathCache[from] = paths;
     }
     return this._modulePathCache[from];
+  }
+
+  resolveDependencies(file, options) {
+    if (!this._moduleMap.files[file]) {
+      return [];
+    }
+
+    return this._moduleMap.files[file][H.DEPENDENCIES]
+      .map(dependency => {
+        if (this.isCoreModule(dependency)) {
+          return null;
+        }
+        try {
+          return this.resolveModule(file, dependency, options);
+        } catch (e) {}
+        return this.getMockModule(dependency) || null;
+      })
+      .filter(dependency => !!dependency);
+  }
+
+  resolveInverseDependencies(paths, filter, options) {
+    const collectModules = (relatedPaths, moduleMap, changed) => {
+      const visitedModules = new Set();
+      while (changed.size) {
+        changed = new Set(moduleMap.filter(module => (
+          !visitedModules.has(module.file) &&
+          module.dependencies.some(dep => dep && changed.has(dep))
+        )).map(module => {
+          const file = module.file;
+          if (filter(file)) {
+            relatedPaths.add(file);
+          }
+          visitedModules.add(file);
+          return module.file;
+        }));
+      }
+      return relatedPaths;
+    };
+
+    if (!paths.size) {
+      return Promise.resolve([]);
+    }
+
+    const relatedPaths = new Set();
+    const changed = new Set();
+    for (const path of paths) {
+      if (Resolver.fileExists(path)) {
+        const module = this._moduleMap.files[path];
+        if (module) {
+          changed.add(path);
+          if (filter(path)) {
+            relatedPaths.add(path);
+          }
+        }
+      }
+    }
+
+    const modules = [];
+    for (const file in this._moduleMap.files) {
+      modules.push({
+        file,
+        dependencies: this.resolveDependencies(file, options),
+      });
+    }
+    return Array.from(collectModules(relatedPaths, modules, changed));
   }
 
   _resolveStubModuleName(moduleName) {
