@@ -18,13 +18,15 @@ const TestRunner = require('./TestRunner');
 const chalk = require('chalk');
 const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
-const git = require('./lib/git');
-const hg = require('./lib/hg');
 const os = require('os');
 const path = require('path');
 const readConfig = require('./config/read');
 const sane = require('sane');
 const which = require('which');
+const changedFiles = require('jest-changed-files');
+
+const git = changedFiles.git;
+const hg = changedFiles.hg;
 
 const CLEAR = '\x1B[2J\x1B[H';
 const WATCHER_DEBOUNCE = 200;
