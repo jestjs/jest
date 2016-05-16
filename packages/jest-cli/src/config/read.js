@@ -18,6 +18,10 @@ function readConfig(argv, packageRoot) {
     if (argv.coverage) {
       config.collectCoverage = true;
     }
+    
+    if (config.coverageThreshold) {
+      config.collectCoverage = true;
+    }
 
     if (argv.testEnvData) {
       config.testEnvData = argv.testEnvData;
