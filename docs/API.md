@@ -52,6 +52,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
+  - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
   - [`mocksPattern` [string]](#mockspattern-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
@@ -396,6 +397,29 @@ Indicates whether the coverage information should be collected while executing t
 (default: `undefined`)
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
+
+### `coverageThreshold` [object]
+(default: `undefined`)
+
+This will be used to configure minimum threshold enforcement for coverage results. If the thresholds are not met, jest will return failure. Thresholds, when specified as a positive number are taken to be the minimum percentage required. When a threshold is specified as a negative number it represents the maximum number of uncovered entities allowed.
+
+For example, statements: 90 implies minimum statement coverage is 90%. statements: -10 implies that no more than 10 uncovered statements are allowed.
+
+```js
+{
+  ...
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 50,
+        "functions": 50,
+        "lines": 50,
+        "statements": 50
+      }
+    }
+  }
+}
+```
 
 ### `globals` [object]
 (default: `{}`)

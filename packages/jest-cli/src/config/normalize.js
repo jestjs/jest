@@ -93,6 +93,10 @@ function normalize(config, argv) {
     config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
   }
 
+  if (config.coverageThreshold) {
+    config.collectCoverage = true;
+  }
+
   if (!config.setupFiles) {
     config.setupFiles = [];
   }
@@ -219,6 +223,7 @@ function normalize(config, argv) {
       case 'coverageReporters':
       case 'collectCoverage':
       case 'coverageCollector':
+      case 'coverageThreshold':
       case 'globals':
       case 'haste':
       case 'mocksPattern':
