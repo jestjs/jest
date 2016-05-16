@@ -7,11 +7,11 @@
  */
 'use strict';
 
+const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
 const fs = require('graceful-fs');
 const path = require('path');
 const stableStringify = require('json-stable-stringify');
-const mkdirp = require('mkdirp');
 
 const cache = new Map();
 const configToJsonMap = new Map();
@@ -21,16 +21,6 @@ const removeFile = path => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
-};
-
-const createDirectory = path => {
-  try {
-    mkdirp.sync(path, '777');
-  } catch (e) {
-    if (e.code !== 'EEXIST') {
-      throw e;
-    }
-  }
 };
 
 const getCacheKey = (preprocessor, fileData, filePath, config) => {

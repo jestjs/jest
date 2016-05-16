@@ -11,8 +11,9 @@
 const FakeTimers = require('./FakeTimers');
 const JasmineFormatter = require('./JasmineFormatter');
 
-const installCommonGlobals = require('./installCommonGlobals');
 const formatFailureMessage = require('./formatFailureMessage');
+const installCommonGlobals = require('./installCommonGlobals');
+const mkdirp = require('mkdirp');
 const path = require('path');
 const pit = require('./jasmine-pit');
 
@@ -27,6 +28,17 @@ function replacePathSepForRegex(str) {
   return str;
 }
 
+const createDirectory = path => {
+  try {
+    mkdirp.sync(path, '777');
+  } catch (e) {
+    if (e.code !== 'EEXIST') {
+      throw e;
+    }
+  }
+};
+
+exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.FakeTimers = FakeTimers;
 exports.formatFailureMessage = formatFailureMessage;
