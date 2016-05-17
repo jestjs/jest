@@ -44,7 +44,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   const reporter = new JasmineReporter({
     noHighlight: config.noHighlight,
     noStackTrace: config.noStackTrace,
-  });
+  }, environment);
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   // To account for this conflict, we set up jasmine in an environment with real
@@ -60,10 +60,18 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     // https://github.com/facebook/jest/issues/429
     jasmine.buildExpectationResult = function(options) {
       if (!options.passed) {
-        function shallowCopy(obj) {
-          return (typeof obj !== 'object' || obj === null)
-            ? obj
-            : jasmine.util.clone(obj);
+        function shallowCopy(object) {
+          if (
+            typeof object !== 'object' ||
+            object === null || (
+              environment.global.Node &&
+              object instanceof environment.global.Node &&
+              object.nodeType > 0
+            )
+          ) {
+            return object;
+          }
+          return jasmine.util.clone(object);
         }
         options.expected = shallowCopy(options.expected);
         options.actual = shallowCopy(options.actual);

@@ -13,9 +13,9 @@ const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 class Jasmine2Reporter {
 
-  constructor(config) {
+  constructor(config, environment) {
     this._config = config || {};
-    this._formatter = new JasmineFormatter(jasmine, config);
+    this._formatter = new JasmineFormatter(jasmine, environment, config);
     this._testResults = [];
     this._currentSuites = [];
     this._resolve = null;

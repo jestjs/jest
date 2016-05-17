@@ -15,9 +15,10 @@ const LINEBREAK_REGEX = /[\r\n]/;
 
 class JasmineFormatter {
 
-  constructor(jasmine, config) {
+  constructor(jasmine, environment, config) {
     this._config = config;
     this._jasmine = jasmine;
+    this._environment = environment;
     this._diffableMatchers = Object.assign(Object.create(null), {
       toBe: true,
       toNotBe: true,
@@ -100,17 +101,24 @@ class JasmineFormatter {
     }
 
     if (typeof object === 'object' && object !== null) {
-
-      if (this._jasmine.isDomNode(object)) {
+      if (
+        this._environment.global.Node &&
+        object instanceof this._environment.global.Node &&
+        object.nodeType > 0
+      ) {
         let attrStr = '';
-        Array.prototype.forEach.call(object.attributes, attr => {
-          const attrName = attr.name.trim();
-          const attrValue = attr.value.trim();
-          attrStr += ' ' + attrName + '="' + attrValue + '"';
-        });
-        return (
-          `HTMLNode(<${object.tagName + attrStr}>{...}</${object.tagName}>)`
-        );
+        if (object.attributes && object.tagName) {
+          Array.from(object.attributes).forEach(attr => {
+            const attrName = attr.name.trim();
+            const attrValue = attr.value.trim();
+            attrStr += ' ' + attrName + '="' + attrValue + '"';
+          });
+          return (
+            `HTMLNode(<${object.tagName + attrStr}>{...}</${object.tagName}>)`
+          );
+        } else {
+          return `HTMLNode(<${object.constructor.name} />)`;
+        }
       }
 
       if (!cycleWeakMap) {

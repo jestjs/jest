@@ -12,9 +12,9 @@ const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 class JasmineReporter extends jasmine.Reporter {
 
-  constructor(config) {
+  constructor(config, environment) {
     super();
-    this._formatter = new JasmineFormatter(jasmine, config);
+    this._formatter = new JasmineFormatter(jasmine, environment, config);
     this._config = config || {};
     this._resolve = null;
     this._resultsPromise = new Promise(resolve => this._resolve = resolve);

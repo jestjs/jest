@@ -257,7 +257,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
   const reporter = new JasmineReporter({
     noHighlight: config.noHighlight,
     noStackTrace: config.noStackTrace,
-  });
+  }, environment);
   jasmine.getEnv().addReporter(reporter);
   moduleLoader.requireModule(testPath);
   jasmine.getEnv().execute();
