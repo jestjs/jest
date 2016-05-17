@@ -82,7 +82,7 @@ describe('watchman watch', () => {
     });
   });
 
-  pit('returns a list of all files when there are no clocks', () => {
+  it('returns a list of all files when there are no clocks', () => {
     const watchman = require('fb-watchman');
 
     const path = require('../../fastpath');
@@ -146,7 +146,7 @@ describe('watchman watch', () => {
     });
   });
 
-  pit('updates the file object when the clock is given', () => {
+  it('updates the file object when the clock is given', () => {
     mockResponse = {
       '/fruits': {
         version: '4.5.0',
@@ -202,7 +202,7 @@ describe('watchman watch', () => {
     });
   });
 
-  pit('resets the file object when watchman is restarted', () => {
+  it('resets the file object when watchman is restarted', () => {
     mockResponse = {
       '/fruits': {
         version: '4.5.0',
@@ -275,7 +275,7 @@ describe('watchman watch', () => {
     });
   });
 
-  pit('properly resets the file map when only one watcher is reset', () => {
+  it('properly resets the file map when only one watcher is reset', () => {
     mockResponse = {
       '/fruits': {
         version: '4.5.0',

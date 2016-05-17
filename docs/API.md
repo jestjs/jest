@@ -83,7 +83,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - `it(name, fn)`
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
-  - `pit(name, fn)` [async helper](/jest/docs/tutorial-async.html) for promises
   - `require(module)`
   - `require.requireActual(module)`
   - `xdescribe(name, fn)`

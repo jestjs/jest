@@ -69,8 +69,7 @@ export default function request(url) {
 }
 ```
 
-Now let's write a test for our async functionality. Jest provides the `pit`
-wrapper to test Promise based code or async/await:
+Now let's write a test for our async functionality.
 ```js
 // __tests__/user-test.js
 jest.unmock('../user');
@@ -78,27 +77,26 @@ jest.unmock('../user');
 import * as user from '../user';
 
 describe('async tests', () => {
-  // Use `pit` instead of `it` for testing promises.
   // The promise that is being tested should be returned.
-  pit('works with promises', () => {
+  it('works with promises', () => {
     return user.getUserName(5)
       .then(name => expect(name).toEqual('Paul'));
   });
 });
 ```
 
-`pit` expects the return value to be a Promise that is going to be resolved.
+`it` expects the return value to be a Promise that is going to be resolved.
 You can chain as many Promises as you like and call `expect` at any time, as
 long as you return a Promise at the end.
 
 ### `async`/`await`
 
-Writing tests using the `async`/`await` syntax is easy with `pit`. Here is
+Writing tests using the `async`/`await` syntax is easy. Here is
 how you'd write the same example from before:
 
 ```js
   // async/await can also be used.
-  pit('works with async/await', async () => {
+  it('works with async/await', async () => {
     const userName = await user.getUserName(4);
     expect(userName).toEqual('Mark');
   });
@@ -117,7 +115,7 @@ if a Promise throws and the error is not handled, the test will fail.
 
 ```js
   // Testing for async errors can be done using `catch`.
-  pit('tests error with promises', () => {
+  it('tests error with promises', () => {
     return user.getUserName(3)
       .catch(e => expect(e).toEqual({
         error: 'User with 3 not found.',
@@ -125,7 +123,7 @@ if a Promise throws and the error is not handled, the test will fail.
   });
 
   // Or try-catch.
-  pit('tests error with async/await', async () => {
+  it('tests error with async/await', async () => {
     try {
       await user.getUserName(2);
     } catch (object) {

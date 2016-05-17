@@ -15,7 +15,6 @@ const formatFailureMessage = require('./formatFailureMessage');
 const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
-const pit = require('./jasmine-pit');
 
 function escapeStrForRegex(str) {
   return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -42,7 +41,6 @@ exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.FakeTimers = FakeTimers;
 exports.formatFailureMessage = formatFailureMessage;
-exports.jasminePit = pit;
 exports.JasmineFormatter = JasmineFormatter;
 exports.installCommonGlobals = installCommonGlobals;
 exports.replacePathSepForRegex = replacePathSepForRegex;

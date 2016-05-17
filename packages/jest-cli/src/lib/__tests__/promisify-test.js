@@ -18,7 +18,7 @@ describe('promisify', () => {
     promisify = require('../promisify');
   });
 
-  pit('should resolve', () => {
+  it('should resolve', () => {
     const foo = promisify(callback => {
       callback(null, 1);
     });
@@ -28,7 +28,7 @@ describe('promisify', () => {
     });
   });
 
-  pit('should resolve with args', () => {
+  it('should resolve with args', () => {
     const foo = promisify((a, b, callback) => {
       callback(null, a + b);
     });
@@ -38,7 +38,7 @@ describe('promisify', () => {
     });
   });
 
-  pit('should reject with args', () => {
+  it('should reject with args', () => {
     const foo = promisify((a, b, callback) => {
       callback(new Error('lol'));
     });

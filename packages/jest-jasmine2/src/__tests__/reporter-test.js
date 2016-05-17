@@ -25,7 +25,7 @@ describe('Jasmine2Reporter', () => {
 
   describe('suites', () => {
 
-    pit('reports nested suites', () => {
+    it('reports nested suites', () => {
       const makeSpec = name => ({
         fullName: name,
         description: 'description',
@@ -76,7 +76,7 @@ describe('Jasmine2Reporter', () => {
       return chalk.bgRed(str);
     }
 
-    pit('colorizes single-line failures using a per-char diff', () => {
+    it('colorizes single-line failures using a per-char diff', () => {
       const result = getFailedResult('foo', 'foobar');
       reporter.specDone(result);
       reporter.jasmineDone();
@@ -90,7 +90,7 @@ describe('Jasmine2Reporter', () => {
       });
     });
 
-    pit('colorizes multi-line failures using a per-line diff', () => {
+    it('colorizes multi-line failures using a per-line diff', () => {
       const result = getFailedResult('foo\nbar\nbaz', 'foo\nxxx\nbaz');
       reporter.specDone(result);
       reporter.jasmineDone();
@@ -103,6 +103,5 @@ describe('Jasmine2Reporter', () => {
         );
       });
     });
-
   });
 });

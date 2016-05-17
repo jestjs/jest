@@ -8,7 +8,7 @@
 'use strict';
 
 const fs = require('graceful-fs');
-const jasminePit = require('jest-util').jasminePit;
+const jasminePit = require('./jasmine-pit');
 const JasmineReporter = require('./reporter');
 
 const JASMINE_PATH = require.resolve('../vendor/jasmine-1.3.0');

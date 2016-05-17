@@ -21,7 +21,7 @@ describe('TestRunner-fs', () => {
 
   describe('testPathsMatching', () => {
 
-    pit('finds tests with default file extensions', () => {
+    it('finds tests with default file extensions', () => {
       const rootDir = path.resolve(__dirname, 'test_root');
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
@@ -37,7 +37,7 @@ describe('TestRunner-fs', () => {
       });
     });
 
-    pit('finds tests with similar but custom file extensions', () => {
+    it('finds tests with similar but custom file extensions', () => {
       const rootDir = path.resolve(__dirname, 'test_root');
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
@@ -54,7 +54,7 @@ describe('TestRunner-fs', () => {
       });
     });
 
-    pit('finds tests with totally custom foobar file extensions', () => {
+    it('finds tests with totally custom foobar file extensions', () => {
       const rootDir = path.resolve(__dirname, 'test_root');
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
@@ -71,7 +71,7 @@ describe('TestRunner-fs', () => {
       });
     });
 
-    pit('finds tests with many kinds of file extensions', () => {
+    it('finds tests with many kinds of file extensions', () => {
       const rootDir = path.resolve(__dirname, 'test_root');
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
