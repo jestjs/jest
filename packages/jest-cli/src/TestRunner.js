@@ -14,7 +14,6 @@ const Test = require('./Test');
 const createHasteMap = require('./lib/createHasteMap');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
-const mkdirp = require('mkdirp');
 const path = require('path');
 const promisify = require('./lib/promisify');
 const resolveNodeModule = require('./lib/resolveNodeModule');
@@ -42,13 +41,7 @@ class TestRunner {
     this._opts = options;
     this._config = Object.freeze(config);
 
-    try {
-      mkdirp.sync(this._config.cacheDirectory, '777');
-    } catch (e) {
-      if (e.code !== 'EEXIST') {
-        throw e;
-      }
-    }
+    utils.createDirectory(this._config.cacheDirectory);
 
     this._hasteMap = createHasteMap(config, {
       maxWorkers: this._opts.maxWorkers,
