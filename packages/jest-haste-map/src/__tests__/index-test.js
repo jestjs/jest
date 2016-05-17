@@ -178,7 +178,7 @@ describe('HasteMap', () => {
     );
   });
 
-  pit('matches files against a pattern', () => {
+  it('matches files against a pattern', () => {
     const hasteMap = new HasteMap(defaultConfig);
 
     return hasteMap.matchFiles(/fruits/).then(files => {
@@ -197,7 +197,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('builds a haste map on a fresh cache', () => {
+  it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
     mockFs['/fruits/node_modules/react/react.js'] = [
       '/**',
@@ -275,7 +275,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('warns on duplicate module ids', () => {
+  it('warns on duplicate module ids', () => {
     // Raspberry thinks it is a Strawberry
     mockFs['/fruits/raspberry.js'] = [
       '/**',
@@ -299,7 +299,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('splits up modules by platform', () => {
+  it('splits up modules by platform', () => {
     mockFs = Object.create(null);
     mockFs['/fruits/strawberry.js'] = [
       '/**',
@@ -339,7 +339,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('does not access the file system on a warm cache with no changes', () => {
+  it('does not access the file system on a warm cache with no changes', () => {
     return new HasteMap(defaultConfig).build().then(initialData => {
       // The first run should access the file system once for the (empty) cache
       // file and five times for the files in the system.
@@ -367,7 +367,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('only does minimal file system access when files change', () => {
+  it('only does minimal file system access when files change', () => {
     return new HasteMap(defaultConfig).build().then(initialData => {
       fs.readFileSync.mockClear();
 
@@ -409,7 +409,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('correctly handles file deletions', () => {
+  it('correctly handles file deletions', () => {
     return new HasteMap(defaultConfig).build().then(initialData => {
       fs.readFileSync.mockClear();
 
@@ -437,7 +437,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('ignores files that do not exist', () => {
+  it('ignores files that do not exist', () => {
     const watchman = require('../crawlers/watchman');
     // getMockImplementation should be a public method.
     const mockImpl = watchman._getMockImplementation();
@@ -456,7 +456,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('distributes work across workers', () => {
+  it('distributes work across workers', () => {
     const workerFarm = require('worker-farm');
     return new HasteMap(Object.assign({}, defaultConfig, {
       maxWorkers: 4,
@@ -477,7 +477,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('tries to crawl using node as a fallback', () => {
+  it('tries to crawl using node as a fallback', () => {
     const watchman = require('../crawlers/watchman');
     const node = require('../crawlers/node');
 
@@ -506,7 +506,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('tries to crawl using node as a fallback when promise fails once', () => {
+  it('tries to crawl using node as a fallback when promise fails once', () => {
     const watchman = require('../crawlers/watchman');
     const node = require('../crawlers/node');
 
@@ -530,7 +530,7 @@ describe('HasteMap', () => {
     });
   });
 
-  pit('stops crawling when both crawlers fail', () => {
+  it('stops crawling when both crawlers fail', () => {
     const watchman = require('../crawlers/watchman');
     const node = require('../crawlers/node');
 

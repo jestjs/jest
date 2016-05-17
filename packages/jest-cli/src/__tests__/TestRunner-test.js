@@ -82,14 +82,14 @@ describe('TestRunner', () => {
       });
     });
 
-    pit('makes sure a file is related to itself', () => {
+    it('makes sure a file is related to itself', () => {
       return runner.promiseTestPathsRelatedTo(new Set([rootPath]))
         .then(relatedTests => {
           expect(relatedTests).toEqual([rootPath]);
         });
     });
 
-    pit('finds tests that depend directly on the path', () => {
+    it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       return runner.promiseTestPathsRelatedTo(new Set([filePath]))

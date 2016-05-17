@@ -9,19 +9,19 @@ import * as user from '../user';
 describe('async tests', () => {
   // Use `pit` instead of `it` for testing promises.
   // The promise that is being tested should be returned.
-  pit('works with promises', () => {
+  it('works with promises', () => {
     return user.getUserName(5)
       .then(name => expect(name).toEqual('Paul'));
   });
 
   // async/await can also be used.
-  pit('works with async/await', async () => {
+  it('works with async/await', async () => {
     const userName = await user.getUserName(4);
     expect(userName).toEqual('Mark');
   });
 
   // Testing for async errors can be done using `catch`.
-  pit('tests error with promises', () => {
+  it('tests error with promises', () => {
     return user.getUserName(3)
       .catch(e => expect(e).toEqual({
         error: 'User with 3 not found.',
@@ -29,7 +29,7 @@ describe('async tests', () => {
   });
 
   // Or try-catch.
-  pit('tests error with async/await', async () => {
+  it('tests error with async/await', async () => {
     try {
       await user.getUserName(2);
     } catch (object) {

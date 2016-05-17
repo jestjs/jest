@@ -20,7 +20,11 @@ function isPromise(obj) {
 // return a wrapping function: `env.fit = promisifyIt(env.it, env)`
 function promisifyIt(originalFn, env) {
   return function(specName, fn) {
-    const isAsync = !!fn.length; // `done` was passed
+    if (!fn) {
+      return;
+    }
+
+    const isAsync = fn.length; // `done` was passed
 
     if (isAsync) {
       return originalFn.call(env, specName, fn); // jasmine will handle it
@@ -47,13 +51,8 @@ function promisifyIt(originalFn, env) {
 function install(global) {
   const jasmine = global.jasmine;
 
-  if (jasmine.version_ && jasmine.version_.major === 1) {
-    return require('./jasmine1-pit.js').install(global);
-  }
-
   const env = jasmine.getEnv();
-  // env.xit will not run anyways so we don't have to worry about it
-  env.pit = env.it = promisifyIt(env.it, env);
+  global.pit = env.it = promisifyIt(env.it, env);
   env.fit = promisifyIt(env.fit, env);
 }
 
