@@ -1,0 +1,4 @@
+__tests__
+__mocks__
+.haste_cache
+setup.js
