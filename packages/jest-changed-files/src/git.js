@@ -52,5 +52,7 @@ function isGitRepository(cwd) {
   });
 }
 
-exports.isGitRepository = isGitRepository;
-exports.findChangedFiles = findChangedFiles;
+module.exports = {
+  isGitRepository,
+  findChangedFiles,
+};
