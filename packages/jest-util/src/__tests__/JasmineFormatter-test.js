@@ -26,11 +26,11 @@ let formatter;
 describe('JasmineFormatter', () => {
   describe('pretty printer', () => {
     beforeEach(() => {
-      formatter = new JasmineFormatter(jasmine2);
+      formatter = new JasmineFormatter(jasmine2, {global: {}});
     });
 
     it('should handle JSDOM nodes with Jasmine 1.x', () => {
-      formatter = new JasmineFormatter(jasmine);
+      formatter = new JasmineFormatter(jasmine, {global: {}});
 
       expect(() => formatter.prettyPrint(jsdom(fixture).body)).not.toThrow();
     });
