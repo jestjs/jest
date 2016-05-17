@@ -18,7 +18,7 @@ class JasmineFormatter {
   constructor(jasmine, environment, config) {
     this._config = config;
     this._jasmine = jasmine;
-    this._environment = environment;
+    this._environment = environment? environment : {global:{}};
     this._diffableMatchers = Object.assign(Object.create(null), {
       toBe: true,
       toNotBe: true,
