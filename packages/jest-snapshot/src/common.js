@@ -7,24 +7,28 @@
  */
 'use strict';
 
-const common = Object.create(null);
 const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 const paths = Object.create(null);
 let lastJasmine;
 
-common.setLastTest = (description, filePath) => {
+const setLastTest = (description, filePath) => {
   paths[filePath] = paths[filePath] || {};
   paths[filePath].lastTest = description;
 };
 
-common.getLastTest = filePath => paths[filePath].lastTest;
+const getLastTest = filePath => paths[filePath].lastTest;
 
-common.setJasmine = jasmineInstance => {
+const setJasmine = jasmineInstance => {
   // doesn't matter which jasmine we are using as it's only needed by formatter
   lastJasmine = jasmineInstance;
 };
 
-common.getFormatter = () => new JasmineFormatter(lastJasmine, {});
+const getFormatter = () => new JasmineFormatter(lastJasmine, {});
 
-module.exports = common;
+module.exports = {
+  setLastTest,
+  getLastTest,
+  setJasmine,
+  getFormatter,
+};

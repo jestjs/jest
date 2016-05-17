@@ -195,10 +195,11 @@ function processArgs() {
         ),
         type: 'boolean',
       },
-      overwriteSnapshot: {
+      updateSnapshot: {
+        alias: 'u',
         default: false,
         description: _wrapDesc(
-          'Use this flag to reset your snapshot.'
+          'Use this flag to re-record snapshots.'
         ),
         type: 'boolean',
       },

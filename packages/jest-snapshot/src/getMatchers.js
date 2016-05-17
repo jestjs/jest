@@ -11,12 +11,14 @@ const common = require('./common');
 const fs = require('fs');
 const path = require('path');
 const serializer = require('./serializer');
-const Snapshot = require('./Snapshot');
+const TestSnapshot = require('./TestSnapshot');
 
-const testsByPath =  {};
+const SNAPSHOT_EXTENSION = '.snap';
+const testsByPath =  Object.create(null);
+
 const getNextIndexFor = (test, filePath) => {
   const tests = testsByPath[filePath] || (testsByPath[filePath] = {});
-  if (test in tests) {
+  if (tests[test] != null) {
     return ++tests[test];
   }
   return tests[test] = 0;
@@ -38,25 +40,24 @@ module.exports = (filePath, options) => ({
         } catch (e) {
           fs.mkdirSync(snapshotsPath);
         }
-        // the extension has to be not a jest test one.
-        const snapshotsName = path.join(
+
+        const snapshotFilename = path.join(
           snapshotsPath,
-          path.basename(filePath) + '.snap'
+          path.basename(filePath) + SNAPSHOT_EXTENSION
         );
 
-
         if (expected !== undefined) {
-          throw Error('toMatchSnapshot() doesn\' t take parameters (yet)');
+          throw new Error('toMatchSnapshot() does not accepts parameters.');
         }
-        const snapshot = new Snapshot(snapshotsName);
+        const snapshot = new TestSnapshot(snapshotFilename);
 
         const lastTestIndex = getNextIndexFor(lastTest, filePath);
         let pass = false;
         let message;
         let res = {};
         const rendered = serializer.serialize(actual);
-        const key = lastTest + ' #' + lastTestIndex;
-        if (!snapshot.exists()) {
+        const key = lastTest + ' ' + lastTestIndex;
+        if (!snapshot.fileExists()) {
           snapshot.save({
             [key]: rendered,
           });
@@ -66,11 +67,11 @@ module.exports = (filePath, options) => ({
             snapshot.add(key, rendered);
             pass = true;
           } else {
-            if (options.overwriteSnapshot) {
+            if (options.updateSnapshot) {
               snapshot.replace(key, rendered);
               pass = true;
             } else {
-              pass = snapshot.is(key, rendered);
+              pass = snapshot.matches(key, rendered);
               if (!pass) {
                 const matcherName = 'toMatchSnapshot';
                 res = {

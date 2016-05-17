@@ -34,13 +34,7 @@ describe('snapshot', () => {
       './__snapshots__/',
       path.basename(__filename) + '.snap'
     );
-    let ok = true;
-    try {
-      fs.accessSync(expectedPath, fs.F_OK);
-    } catch (e) {
-      ok = false;
-    }
-    expect(ok).toBe(true);
+    expect(() => fs.accessSync(expectedPath, fs.F_OK)).not.toThrow();
 
     // check if the snapshot has the correct key
     const snapshot = JSON.parse('' + fs.readFileSync(expectedPath));
@@ -48,7 +42,7 @@ describe('snapshot', () => {
       '{\n\u001b[90m|\u001b[39m a: 1,\n\u001b[90m|\u001b' +
       `[39m b: '2',\n\u001b[90m|\u001b[39m c: 'three'\n}`
     );
-    expect(snapshot['snapshot works with plain objects #0'])
+    expect(snapshot['snapshot works with plain objects 0'])
       .toBe(prettyPrinted);
   });
 
@@ -62,13 +56,7 @@ describe('snapshot', () => {
       './__snapshots__/',
       path.basename(__filename) + '.snap'
     );
-    let ok = true;
-    try {
-      fs.accessSync(expectedPath, fs.F_OK);
-    } catch (e) {
-      ok = false;
-    }
-    expect(ok).toBe(true);
+    expect(() => fs.accessSync(expectedPath, fs.F_OK)).not.toThrow();
 
     // check if the snapshot has the correct key
     const snapshot = JSON.parse('' + fs.readFileSync(expectedPath));
@@ -76,7 +64,7 @@ describe('snapshot', () => {
       '<li data-reactroot="" data-reactid="1"' +
       ' data-react-checksum="616174366">Text Content</li>'
     );
-    expect(snapshot['snapshot works with react elements #0'])
+    expect(snapshot['snapshot works with react elements 0'])
       .toBe(prettyPrinted);
   });
 });

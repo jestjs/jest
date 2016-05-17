@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 
-class Snapshot {
+class TestSnapshot {
 
   constructor(filename) {
     this._filename = filename;
@@ -28,8 +28,14 @@ class Snapshot {
     return this._loaded;
   }
 
-  exists() {
-    return fs.existsSync(this._filename);
+  fileExists() {
+    let exists = true;
+    try {
+      fs.accessSync(this._filename, fs.F_OK);
+    } catch(e) {
+      exists = false;
+    }
+    return exists;
   }
 
   save(object) {
@@ -38,14 +44,14 @@ class Snapshot {
   }
 
   has(key) {
-    return this.exists() && key in this._getLoaded();
+    return this.fileExists() && key in this._getLoaded();
   }
 
   get(key) {
     return this.has(key) && this._getLoaded()[key];
   }
 
-  is(key, value) {
+  matches(key, value) {
     return this._getLoaded()[key] === value;
   }
 
@@ -56,8 +62,7 @@ class Snapshot {
   }
 
   add(key, value) {
-    const check = this.get(key);
-    if (check === false) {
+    if (!this.has(key)) {
       const obj = this.load();
       obj[key] = value;
       this.save(obj);
@@ -67,4 +72,4 @@ class Snapshot {
   }
 }
 
-module.exports = Snapshot;
+module.exports = TestSnapshot;
