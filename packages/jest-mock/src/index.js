@@ -430,9 +430,7 @@ module.exports = {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata(component) {
-    return getMetadata(component);
-  },
+  getMetadata,
 
   /**
    * @see README.md

@@ -10,6 +10,7 @@
     "istanbul": "^0.4.2",
     "jest-environment-jsdom": "^12.0.2",
     "jest-environment-node": "^12.0.2",
+    "jest-changed-files": "^12.0.2",
     "jest-haste-map": "^12.0.2",
     "jest-jasmine1": "^12.0.2",
     "jest-jasmine2": "^12.0.2",

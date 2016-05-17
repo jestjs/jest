@@ -54,5 +54,7 @@ function isHGRepository(cwd) {
   });
 }
 
-exports.isHGRepository = isHGRepository;
-exports.findChangedFiles = findChangedFiles;
+module.exports = {
+  isHGRepository,
+  findChangedFiles,
+};
