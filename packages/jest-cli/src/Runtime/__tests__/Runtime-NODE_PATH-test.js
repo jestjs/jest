@@ -16,66 +16,51 @@ jest.mock(
 );
 
 const path = require('path');
-const normalizeConfig = require('../../config/normalize');
+
+const cwd = process.cwd();
+
+let createLocalRuntime;
 
 describe('Runtime', () => {
-  let Runtime;
-  let createHasteMap;
-  let JSDOMEnvironment;
 
-  const rootDir = path.join(__dirname, 'test_root');
-  const rootPath = path.join(rootDir, 'root.js');
-  const baseConfig = normalizeConfig({
-    cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'Runtime-NODE_PATH-tests',
-    rootDir: path.resolve(__dirname, 'test_root'),
+  beforeEach(() => {
+    createLocalRuntime = (nodePath, config) => {
+      process.env.NODE_PATH = nodePath;
+      const createRuntime = require('createRuntime');
+      return createRuntime(__filename, config);
+    };
   });
-
-  function buildLoader(config) {
-    config = Object.assign({}, baseConfig, config);
-    const environment = new JSDOMEnvironment(config);
-    return createHasteMap(config, {resetCache: false, maxWorkers: 1})
-      .build()
-      .then(response => new Runtime(config, environment, response));
-  }
-
-  function initHasteModuleLoader(nodePath) {
-    process.env.NODE_PATH = nodePath;
-    Runtime = require('../Runtime');
-    createHasteMap = require('../../lib/createHasteMap');
-    JSDOMEnvironment = require('jest-environment-jsdom');
-  }
 
   pit('uses NODE_PATH to find modules', () => {
     const nodePath = __dirname + '/NODE_PATH_dir';
-    initHasteModuleLoader(nodePath);
-    return buildLoader().then(loader => {
-      const exports =
-        loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
+    return createLocalRuntime(nodePath).then(runtime => {
+      const exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'RegularModuleInNodePath'
+      );
       expect(exports).toBeDefined();
     });
   });
 
   pit('finds modules in NODE_PATH containing multiple paths', () => {
-    const cwd = process.cwd();
-    const nodePath = cwd + '/some/other/path' + path.delimiter + __dirname +
-      '/NODE_PATH_dir';
-    initHasteModuleLoader(nodePath);
-    return buildLoader().then(loader => {
-      const exports =
-        loader.requireModuleOrMock(rootPath, 'RegularModuleInNodePath');
+    const nodePath =
+      cwd + '/some/other/path' + path.delimiter + __dirname + '/NODE_PATH_dir';
+    return createLocalRuntime(nodePath).then(runtime => {
+      const exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'RegularModuleInNodePath'
+      );
       expect(exports).toBeDefined();
     });
   });
 
-  pit('doesnt find modules if NODE_PATH is relative', () => {
-    const nodePath = process.cwd().substr(path.sep.length) +
-      'src/Runtime/__tests__/NODE_PATH_dir';
-    initHasteModuleLoader(nodePath);
-    return buildLoader().then(loader => {
+  pit('does not find modules if NODE_PATH is relative', () => {
+    const nodePath =
+      cwd.substr(path.sep.length) + 'src/Runtime/__tests__/NODE_PATH_dir';
+    return createLocalRuntime(nodePath).then(runtime => {
       expect(() => {
-        loader.requireModuleOrMock(
-          rootPath,
+        runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
           'RegularModuleInNodePath'
         );
       }).toThrow(

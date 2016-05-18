@@ -9,10 +9,10 @@
 'use strict';
 
 const DEFAULT_CONFIG_VALUES = require('./defaults');
+const Resolver = require('jest-resolve');
 
 const constants = require('../constants');
 const path = require('path');
-const resolveNodeModule = require('./../lib/resolveNodeModule');
 const utils = require('jest-util');
 
 function _replaceRootDirTags(rootDir, config) {
@@ -52,12 +52,12 @@ function _replaceRootDirTags(rootDir, config) {
 
 function getTestEnvironment(config) {
   const env = config.testEnvironment;
-  let module = resolveNodeModule(env, config.rootDir);
+  let module = Resolver.findNodeModule(env, config.rootDir);
   if (module) {
     return module;
   }
 
-  module = resolveNodeModule(`jest-environment-${env}`, config.rootDir);
+  module = Resolver.findNodeModule(`jest-environment-${env}`, config.rootDir);
   if (module) {
     return module;
   }
@@ -140,14 +140,15 @@ function normalize(config, argv) {
       babelJest = config.scriptPreprocessor;
     }
   } else {
-    babelJest = resolveNodeModule('babel-jest', config.rootDir);
+    babelJest = Resolver.findNodeModule('babel-jest', config.rootDir);
     if (babelJest) {
       config.scriptPreprocessor = babelJest;
     }
   }
 
   if (babelJest) {
-    const polyfillPath = resolveNodeModule('babel-polyfill', config.rootDir);
+    const polyfillPath =
+      Resolver.findNodeModule('babel-polyfill', config.rootDir);
     if (polyfillPath) {
       config.setupFiles.unshift(polyfillPath);
     }
@@ -155,7 +156,8 @@ function normalize(config, argv) {
   }
 
   if (!('preprocessorIgnorePatterns' in config)) {
-    const isRNProject = !!resolveNodeModule('react-native', config.rootDir);
+    const isRNProject =
+      !!Resolver.findNodeModule('react-native', config.rootDir);
     config.preprocessorIgnorePatterns =
       isRNProject ? [] : [constants.NODE_MODULES];
   } else if (!config.preprocessorIgnorePatterns) {

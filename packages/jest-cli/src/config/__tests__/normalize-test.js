@@ -10,7 +10,7 @@
 'use strict';
 
 jest.disableAutomock();
-jest.mock('../../lib/resolveNodeModule');
+jest.mock('jest-resolve');
 
 describe('normalize', () => {
   let path;
@@ -409,15 +409,14 @@ describe('normalize', () => {
   });
 
   describe('testEnvironment', () => {
-    let resolveNodeModule;
+    let Resolver;
     beforeEach(() => {
-      resolveNodeModule = require('../../lib/resolveNodeModule');
-      resolveNodeModule.mockImplementation(name => {
+      Resolver = require('jest-resolve');
+      Resolver.findNodeModule = jest.fn(name => {
         if (name === 'jsdom') {
           return 'node_modules/jest-environment-jsdom';
-        } else if (name === 'phantom') {
-          return null;
         }
+        return null;
       });
     });
 
@@ -442,10 +441,10 @@ describe('normalize', () => {
   });
 
   describe('babel-jest', () => {
-    let resolveNodeModule;
+    let Resolver;
     beforeEach(() => {
-      resolveNodeModule = require('../../lib/resolveNodeModule');
-      resolveNodeModule.mockImplementation(name => 'node_modules/' + name);
+      Resolver = require('jest-resolve');
+      Resolver.findNodeModule = jest.fn(name => 'node_modules/' + name);
     });
 
     it('correctly identifies and uses babel-jest', () => {
@@ -460,7 +459,7 @@ describe('normalize', () => {
     });
 
     it(`doesn't use babel-jest if its not available`, () => {
-      resolveNodeModule.mockImplementation(() => null);
+      Resolver.findNodeModule.mockImplementation(() => null);
 
       const config = normalize({
         rootDir: '/root',
@@ -474,7 +473,8 @@ describe('normalize', () => {
     it('uses polyfills if babel-jest is explicitly specified', () => {
       const config = normalize({
         rootDir: '/root',
-        scriptPreprocessor: '<rootDir>/' + resolveNodeModule('babel-jest'),
+        scriptPreprocessor:
+          '<rootDir>/' + Resolver.findNodeModule('babel-jest'),
       });
 
       expect(config.usesBabelJest).toBe(true);
@@ -483,7 +483,7 @@ describe('normalize', () => {
     });
 
     it('correctly identifies react-native', () => {
-      // The default resolveNodeModule fn finds `react-native`.
+      // The default Resolver.findNodeModule fn finds `react-native`.
       let config = normalize({
         rootDir: '/root',
       });
@@ -491,7 +491,7 @@ describe('normalize', () => {
 
       // This version doesn't find react native and sets the default to
       // /node_modules/
-      resolveNodeModule.mockImplementation(() => null);
+      Resolver.findNodeModule.mockImplementation(() => null);
       config = normalize({
         rootDir: '/root',
       });

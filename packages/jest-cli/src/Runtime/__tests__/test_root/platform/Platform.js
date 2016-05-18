@@ -5,16 +5,9 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
+ * @providesModule Platform
  */
+
 'use strict';
 
-jest.disableAutomock();
-
-describe('Runtime', () => {
-  describe('currentTestPath', () => {
-    it('makes the current test path available', () => {
-      expect(jest.currentTestPath()).toMatch(/currentTestPath-test/);
-    });
-  });
-});
+exports.platform = 'default';

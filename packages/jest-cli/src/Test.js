@@ -12,16 +12,16 @@ const NullConsole = require('./NullConsole');
 
 class Test {
 
-  constructor(path, config, moduleMap) {
+  constructor(path, config, resolver) {
     this._path = path;
     this._config = config;
-    this._moduleMap = moduleMap;
+    this._resolver = resolver;
   }
 
   run() {
     const path = this._path;
     const config = this._config;
-    const moduleMap = this._moduleMap;
+    const resolver = this._resolver;
     const TestEnvironment = require(config.testEnvironment);
     const TestRunner = require(config.testRunner);
     const ModuleLoader = require(config.moduleLoader);
@@ -33,7 +33,7 @@ class Test {
       process.stderr
     );
     env.testFilePath = path;
-    const moduleLoader = new ModuleLoader(config, env, moduleMap);
+    const moduleLoader = new ModuleLoader(config, env, resolver);
     if (config.setupFiles.length) {
       for (let i = 0; i < config.setupFiles.length; i++) {
         moduleLoader.requireModule(config.setupFiles[i]);
