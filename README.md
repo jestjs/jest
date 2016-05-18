@@ -140,8 +140,7 @@ project.
 
 #### Async testing
 
-Promises and even async/await can be tested easily. Jest provides a helper
-called `pit` for any kind of async interaction.
+Promises and even async/await can be tested easily.
 
 Assume a `user.getUserName` function that returns a promise, now consider this
 async test with Babel and
@@ -154,14 +153,13 @@ jest.unmock('../user');
 import * as user from '../user';
 
 describe('async tests', () => {
-  // Use `pit` instead of `it` for testing promises.
   // The promise that is being tested should be returned.
-  pit('works with promises', () => {
+  it('works with promises', () => {
     return user.getUserName(5)
       .then(name => expect(name).toEqual('Paul'));
   });
 
-  pit('works with async/await', async () => {
+  it('works with async/await', async () => {
     const userName = await user.getUserName(4);
     expect(userName).toEqual('Mark');
   });
@@ -281,6 +279,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`coverageDirectory` [string]](https://facebook.github.io/jest/docs/api.html#coveragedirectory-string)
   - [`collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](https://facebook.github.io/jest/docs/api.html#collectcoverageonlyfrom-object)
+  - [`coverageThreshold` [object]](https://facebook.github.io/jest/docs/api.html#coveragethreshold-object)
   - [`globals` [object]](https://facebook.github.io/jest/docs/api.html#globals-object)
   - [`mocksPattern` [string]](https://facebook.github.io/jest/docs/api.html#mockspattern-string)
   - [`moduleFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulefileextensions-array-string)
@@ -311,7 +310,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - `it(name, fn)`
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](https://facebook.github.io/jest/docs/api.html#the-jest-object)
-  - `pit(name, fn)` [async helper](https://facebook.github.io/jest/docs/tutorial-async.html) for promises
   - `require(module)`
   - `require.requireActual(module)`
   - `xdescribe(name, fn)`
@@ -625,6 +623,29 @@ Indicates whether the coverage information should be collected while executing t
 (default: `undefined`)
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
+
+### `coverageThreshold` [object]
+(default: `undefined`)
+
+This will be used to configure minimum threshold enforcement for coverage results. If the thresholds are not met, jest will return failure. Thresholds, when specified as a positive number are taken to be the minimum percentage required. When a threshold is specified as a negative number it represents the maximum number of uncovered entities allowed.
+
+For example, statements: 90 implies minimum statement coverage is 90%. statements: -10 implies that no more than 10 uncovered statements are allowed.
+
+```js
+{
+  ...
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 50,
+        "functions": 50,
+        "lines": 50,
+        "statements": 50
+      }
+    }
+  }
+}
+```
 
 ### `globals` [object]
 (default: `{}`)
