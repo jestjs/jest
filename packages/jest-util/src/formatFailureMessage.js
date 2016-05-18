@@ -12,7 +12,8 @@ const path = require('path');
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 // filter for noisy stack trace lines
-const STACK_TRACE_LINE_IGNORE_RE =
+const JASMINE_IGNORE = /^\s+at.*?vendor\/jasmine\-/;
+const STACK_TRACE_IGNORE =
   /^\s+at.*?jest(-cli)?\/(vendor|src|node_modules|packages)\//;
 
 const formatStackTrace = (stackTrace, config) => {
@@ -36,11 +37,12 @@ const formatStackTrace = (stackTrace, config) => {
       }
 
       // Filter out noisy and unhelpful lines from the stack trace.
-      // Always keep the first stack trace line, even if it comes from Jest.
-      stackTraceLines++;
+      // Always keep the first stack trace line (except Jasmine),
+      // even if it comes from Jest.
       if (
         config.noStackTrace ||
-        (STACK_TRACE_LINE_IGNORE_RE.test(line) && stackTraceLines > 1)
+        JASMINE_IGNORE.test(line) ||
+        (STACK_TRACE_IGNORE.test(line) && ++stackTraceLines > 1)
       ) {
         return null;
       }
