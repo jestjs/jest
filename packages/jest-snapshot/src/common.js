@@ -7,10 +7,7 @@
  */
 'use strict';
 
-const JasmineFormatter = require('jest-util').JasmineFormatter;
-
 const paths = Object.create(null);
-let lastJasmine;
 
 const setLastTest = (description, filePath) => {
   paths[filePath] = paths[filePath] || {};
@@ -19,16 +16,7 @@ const setLastTest = (description, filePath) => {
 
 const getLastTest = filePath => paths[filePath].lastTest;
 
-const setJasmine = jasmineInstance => {
-  // doesn't matter which jasmine we are using as it's only needed by formatter
-  lastJasmine = jasmineInstance;
-};
-
-const getFormatter = () => new JasmineFormatter(lastJasmine, {});
-
 module.exports = {
   setLastTest,
   getLastTest,
-  setJasmine,
-  getFormatter,
 };

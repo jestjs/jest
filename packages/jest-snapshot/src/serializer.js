@@ -15,8 +15,6 @@ module.exports = {
     if (object && object.$$typeof === Symbol.for('react.element')) {
       return server.renderToString(object);
     }
-
-    const formatter = common.getFormatter();
-    return formatter.prettyPrint(object);
+    return '' + object;
   },
 };

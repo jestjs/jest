@@ -26,7 +26,7 @@ describe('snapshot', () => {
       b: '2',
       c: 'three',
     };
-    expect(test).toMatchSnapshot();
+    expect(JSON.stringify(test)).toMatchSnapshot();
 
     // check if the file has been created correctly
     const expectedPath = path.resolve(
@@ -38,10 +38,7 @@ describe('snapshot', () => {
 
     // check if the snapshot has the correct key
     const snapshot = JSON.parse('' + fs.readFileSync(expectedPath));
-    const prettyPrinted = (
-      '{\n\u001b[90m|\u001b[39m a: 1,\n\u001b[90m|\u001b' +
-      `[39m b: '2',\n\u001b[90m|\u001b[39m c: 'three'\n}`
-    );
+    const prettyPrinted = '{"a":1,"b":"2","c":"three"}';
     expect(snapshot['snapshot works with plain objects 0'])
       .toBe(prettyPrinted);
   });

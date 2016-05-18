@@ -142,7 +142,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     jasmine.addCustomEqualityTester(iterableEquality);
 
     if (snapshot) {
-      jasmine.addMatchers(snapshot.getMatchers(testPath, config));
+      jasmine.addMatchers(snapshot.getMatchers(testPath, config, jasmine));
     }
 
     jasmine.addMatchers({

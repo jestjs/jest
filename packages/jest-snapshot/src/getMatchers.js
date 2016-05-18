@@ -24,7 +24,7 @@ const getNextIndexFor = (test, filePath) => {
   return tests[test] = 0;
 };
 
-module.exports = (filePath, options) => ({
+module.exports = (filePath, options, jasmine) => ({
   toMatchSnapshot: (util, customEquality) => {
     return {
       compare(actual, expected) {
@@ -80,7 +80,9 @@ module.exports = (filePath, options) => ({
                   actual: rendered,
                 };
 
-                const formatter = common.getFormatter();
+                const JasmineFormatter = require('jest-util').JasmineFormatter;
+
+                const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
                 formatter.addDiffableMatcher('toMatchSnapshot');
                 message = formatter.formatMatchFailure(res).replace(
                   'toMatchSnapshot:',

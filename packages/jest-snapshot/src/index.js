@@ -39,7 +39,6 @@ const patchJasmine = (jasmine, filePath) => {
 module.exports = {
   getMatchers: require('./getMatchers'),
   initialize: (jasmine, filePath) => {
-    patchJasmine(jasmine, filePath);
-    common.setJasmine(jasmine);
+    patchJasmine(jasmine, filePath);    
   },
 };
