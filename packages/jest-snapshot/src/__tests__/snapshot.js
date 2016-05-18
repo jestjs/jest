@@ -27,41 +27,10 @@ describe('snapshot', () => {
       c: 'three',
     };
     expect(JSON.stringify(test)).toMatchSnapshot();
-
-    // check if the file has been created correctly
-    const expectedPath = path.resolve(
-      __dirname,
-      './__snapshots__/',
-      path.basename(__filename) + '.snap'
-    );
-    expect(() => fs.accessSync(expectedPath, fs.F_OK)).not.toThrow();
-
-    // check if the snapshot has the correct key
-    const snapshot = JSON.parse('' + fs.readFileSync(expectedPath));
-    const prettyPrinted = '{"a":1,"b":"2","c":"three"}';
-    expect(snapshot['snapshot works with plain objects 0'])
-      .toBe(prettyPrinted);
   });
 
   it('works with react elements', () => {
     const test = React.createElement('li', null, 'Text Content');
     expect(test).toMatchSnapshot();
-
-    // check if the file has been created correctly
-    const expectedPath = path.resolve(
-      __dirname,
-      './__snapshots__/',
-      path.basename(__filename) + '.snap'
-    );
-    expect(() => fs.accessSync(expectedPath, fs.F_OK)).not.toThrow();
-
-    // check if the snapshot has the correct key
-    const snapshot = JSON.parse('' + fs.readFileSync(expectedPath));
-    const prettyPrinted = (
-      '<li data-reactroot="" data-reactid="1"' +
-      ' data-react-checksum="616174366">Text Content</li>'
-    );
-    expect(snapshot['snapshot works with react elements 0'])
-      .toBe(prettyPrinted);
   });
 });
