@@ -10,8 +10,6 @@
 jest
   .unmock('react');
 
-const fs = require('fs');
-const path = require('path');
 let React;
 
 describe('snapshot', () => {
@@ -26,6 +24,8 @@ describe('snapshot', () => {
       b: '2',
       c: 'three',
     };
+    expect(JSON.stringify(test)).toMatchSnapshot();
+    test.d = '4';
     expect(JSON.stringify(test)).toMatchSnapshot();
   });
 
