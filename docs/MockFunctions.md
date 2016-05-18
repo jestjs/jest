@@ -15,10 +15,10 @@ values.
 
 There are two ways to get your hands on a mock functions: Either by
 `require()`ing a mocked component (See [Automatic Mocking](/jest/docs/automatic-mocking.html))
-or by explicitly requesting one from `jest.genMockFunction()` in your test:
+or by explicitly requesting one from `jest.fn()` in your test:
 
 ```javascript
-var myMock = jest.genMockFunction();
+var myMock = jest.fn();
 myMock('1');
 myMock('a', 'b');
 console.log(myMock.mock.calls);
@@ -32,7 +32,7 @@ how the function has been called is kept. The `.mock` property also tracks the
 value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
-var myMock = jest.genMockFunction();
+var myMock = jest.fn();
 
 var a = new myMock();
 var b = {};
@@ -70,7 +70,7 @@ Mock functions can also be used to inject test values into your code during a
 test:
 
 ```javascript
-var myMock = jest.genMockFunction();
+var myMock = jest.fn();
 console.log( myMock() );
 > undefined
 
@@ -89,7 +89,7 @@ in for, in favor of injecting values directly into the test right before they're
 used.
 
 ```javascript
-var filterTestFn = jest.genMockFunction();
+var filterTestFn = jest.fn();
 
 // Make the mock return `true` for the first call,
 // and `false` for the second call
@@ -114,62 +114,63 @@ function that's not directly being tested.
 
 Still, there are cases where it's useful to go beyond the ability to specify
 return values and full-on replace the implementation of a mock function. This
-can be done with `mockImplementation` or `mockImplementationOnce` methods
+can be done with `jest.fn` or the `mockImplementationOnce` method
 on mock functions.
 
-The `mockImplementation` method is useful when you need to define the default
-implementation of your function:
-
 ```javascript
-var myMockFn = jest.genMockFunction().mockImplementation(function(cb) {
-  cb(null, true);
-});
+var myMockFn = jest.fn(cb => cb(null, true));
 
-myMockFn(function(err, val) {
-  console.log(val);
-});
+myMockFn((err, val) => console.log(val));
 > true
 
-myMockFn(function(err, val) {
-  console.log(val);
-});
+myMockFn((err, val) => console.log(val));
 > true
 ```
 
+The `mockImplementation` method is useful when you need to define the default
+implementation of a mock function that is created from another module:
+
+```js
+// foo.js
+module.exports = function() {
+  // some implementation;
+};
+
+// test.js
+jest.mock('./foo'); // this happens automatically with automocking
+const foo = require('../foo');
+
+// foo is a mock function
+foo.mockImplementation(() => 42);
+foo();
+> 42
+```
+
+
 When you need to recreate a complex behavior of a mock function such that
-multiple function calls produce different results, use the `mockImplementationOnce`
-method:
+multiple function calls produce different results, use the
+`mockImplementationOnce` method:
 
 ```javascript
-var myMockFn = jest.genMockFunction().mockImplementationOnce(function(cb) {
-  cb(null, true);
-}).mockImplementationOnce(function(cb) {
-  cb(null, false);
-});
+var myMockFn = jest.fn()
+  .mockImplementationOnce(cb => cb(null, true))
+  .mockImplementationOnce(cb => cb(null, false));
 
-myMockFn(function(err, val) {
-  console.log(val);
-});
+myMockFn((err, val) => console.log(val));
 > true
 
-myMockFn(function(err, val) {
-  console.log(val);
-});
+myMockFn((err, val) => console.log(val));
 > false
 ```
 
 When the mocked function runs out of implementations defined with
 `mockImplementationOnce`, it will execute the default implementation
-set with `mockImplementation` (if it is defined):
+set with `jest.fn` (if it is defined):
 
 ```javascript
-var myMockFn = jest.genMockFunction().mockImplementation(function() {
-  return 'default';
-}).mockImplementationOnce(function() {
-  return 'first call';
-}).mockImplementationOnce(function() {
-  return 'second call';
-});
+var myMockFn = jest.fn(() => 'default')
+  .mockImplementationOnce(() => 'first call')
+  .mockImplementationOnce(() => 'second call');
 
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 > 'first call', 'second call', 'default', 'default'
@@ -181,13 +182,13 @@ to return `this`), we have a sugary API to simplify this in the form of a
 
 ```javascript
 var myObj = {
-  myMethod: jest.genMockFunction().mockReturnThis()
+  myMethod: jest.fn().mockReturnThis()
 };
 
 // is the same as
 
 var myObj = {
-  myMethod = jest.genMockFunction().mockImplementation(function() {
+  myMethod = jest.fn(function() {
     return this;
   });
 };
