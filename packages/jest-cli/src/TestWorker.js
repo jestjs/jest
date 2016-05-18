@@ -16,6 +16,7 @@ process.on('uncaughtException', err => {
 const Test = require('./Test');
 
 const createHasteMap = require('./lib/createHasteMap');
+const createResolver = require('./lib/createResolver');
 
 const formatError = error => {
   if (typeof error === 'string') {
@@ -33,15 +34,19 @@ const formatError = error => {
   };
 };
 
-let moduleMap;
+const resolvers = Object.create(null);
 
 module.exports = (data, callback) => {
   try {
-    if (!moduleMap) {
-      moduleMap = createHasteMap(data.config).read();
+    const name = data.config.name;
+    if (!resolvers[name]) {
+      resolvers[name] = createResolver(
+        data.config,
+        createHasteMap(data.config).read()
+      );
     }
 
-    new Test(data.path, data.config, moduleMap)
+    new Test(data.path, data.config, resolvers[name])
       .run()
       .then(
         result => callback(null, result),

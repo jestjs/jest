@@ -15,41 +15,19 @@ jest.mock(
   () => require('../../../__mocks__/jest-environment-jsdom')
 );
 
-const path = require('path');
-const normalizeConfig = require('../../config/normalize');
+let createRuntime;
 
 describe('Runtime', () => {
-  let Runtime;
-  let createHasteMap;
-  let JSDOMEnvironment;
-
-  const rootDir = path.join(__dirname, 'test_root');
-  const rootPath = path.join(rootDir, 'root.js');
-  const baseConfig = normalizeConfig({
-    cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'Runtime-mock-tests',
-    rootDir,
-  });
-
-  function buildLoader(config) {
-    config = Object.assign({}, baseConfig, config);
-    const environment = new JSDOMEnvironment(config);
-    return createHasteMap(config, {resetCache: false, maxWorkers: 1})
-      .build()
-      .then(response => new Runtime(config, environment, response));
-  }
 
   beforeEach(() => {
-    Runtime = require('../Runtime');
-    createHasteMap = require('../../lib/createHasteMap');
-    JSDOMEnvironment = require('jest-environment-jsdom');
+    createRuntime = require('createRuntime');
   });
 
   describe('jest.mock', () => {
-    pit('uses uses explicitly set mocks instead of automocking', () => {
-      return buildLoader().then(loader => {
+    pit('uses uses explicitly set mocks instead of automocking', () =>
+      createRuntime(__filename).then(runtime => {
         const mockReference = {isMock: true};
-        const root = loader.requireModule(rootPath, './root.js');
+        const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
         // Erase module registry because root.js requires most other modules.
         root.jest.resetModuleRegistry();
 
@@ -57,21 +35,21 @@ describe('Runtime', () => {
         root.jest.mock('ManuallyMocked', () => mockReference);
 
         expect(
-          loader.requireModuleOrMock(rootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
         ).toEqual(mockReference);
 
         expect(
-          loader.requireModuleOrMock(rootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
         ).toEqual(mockReference);
-      });
-    });
+      })
+    );
   });
 
   describe('jest.setMock', () => {
-    pit('uses uses explicitly set mocks instead of automocking', () => {
-      return buildLoader().then(loader => {
+    pit('uses uses explicitly set mocks instead of automocking', () =>
+      createRuntime(__filename).then(runtime => {
         const mockReference = {isMock: true};
-        const root = loader.requireModule(rootPath, './root.js');
+        const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
         // Erase module registry because root.js requires most other modules.
         root.jest.resetModuleRegistry();
 
@@ -79,13 +57,13 @@ describe('Runtime', () => {
         root.jest.setMock('ManuallyMocked', mockReference);
 
         expect(
-          loader.requireModuleOrMock(rootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
         ).toBe(mockReference);
 
         expect(
-          loader.requireModuleOrMock(rootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
         ).toBe(mockReference);
-      });
-    });
+      })
+    );
   });
 });

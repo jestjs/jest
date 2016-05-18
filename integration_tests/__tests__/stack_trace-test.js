@@ -88,12 +88,12 @@ describe('Stack Trace', () => {
       /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
     );
 
-    // Make sure we show Jest's Runtime.js as part of the stack trace
+    // Make sure we show Jest's jest-resolve as part of the stack trace
     expect(stdout).toMatch(
       /Error: Cannot find module 'this-module-does-not-exist' from 'test-error-test\.js'/
     );
     expect(stdout).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)Runtime\/Runtime\.js/
+      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/src\/index\.js/
     );
   });
 

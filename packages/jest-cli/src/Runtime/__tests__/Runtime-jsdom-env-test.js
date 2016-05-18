@@ -13,58 +13,33 @@ jest.disableAutomock();
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
-const path = require('path');
-const normalizeConfig = require('../../config/normalize');
+let createRuntime;
 
 describe('Runtime', () => {
-  let Runtime;
-  let createHasteMap;
-  let JSDOMEnvironment;
-
-  const rootDir = path.join(__dirname, 'test_root');
-  const baseConfig = normalizeConfig({
-    cacheDirectory: global.CACHE_DIRECTORY,
-    name: 'Runtime-jsdom-env-tests',
-    rootDir,
-  });
-
-  function buildLoader(config) {
-    config = Object.assign({}, baseConfig, config);
-    const environment = new JSDOMEnvironment(config);
-    return createHasteMap(config, {resetCache: false, maxWorkers: 1})
-      .build()
-      .then(response => new Runtime(config, environment, response));
-  }
-
   beforeEach(() => {
-    Runtime = require('../Runtime');
-    createHasteMap = require('../../lib/createHasteMap');
-    JSDOMEnvironment = require('jest-environment-jsdom');
+    createRuntime = require('createRuntime');
   });
 
   describe('requireModule', () => {
-    pit('emulates a node stack trace during module load', () => {
-      return buildLoader().then(loader => {
+    pit('emulates a node stack trace during module load', () =>
+      createRuntime(__filename).then(runtime => {
         let hasThrown = false;
         try {
-          loader.requireModule(
-            __filename,
-            './test_root/throwing.js'
-          );
+          runtime.requireModule(runtime.__mockRootPath, './throwing.js');
         } catch (err) {
           hasThrown = true;
           expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
         }
         expect(hasThrown).toBe(true);
-      });
-    });
+      })
+    );
 
-    pit('emulates a node stack trace during function execution', () => {
-      return buildLoader().then(loader => {
+    pit('emulates a node stack trace during function execution', () =>
+      createRuntime(__filename).then(runtime => {
         let hasThrown = false;
-        const sum = loader.requireModule(
-          __filename,
-          './test_root/throwing-fn.js'
+        const sum = runtime.requireModule(
+          runtime.__mockRootPath,
+          './throwing-fn.js'
         );
 
         try {
@@ -83,7 +58,7 @@ describe('Runtime', () => {
           }
         }
         expect(hasThrown).toBe(true);
-      });
-    });
+      })
+    );
   });
 });

@@ -8,15 +8,15 @@
 
 'use strict';
 
-const H = require('jest-haste-map').H;
+const Resolver = require('jest-resolve');
 const Test = require('./Test');
 
 const createHasteMap = require('./lib/createHasteMap');
+const createResolver = require('./lib/createResolver');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
 const promisify = require('./lib/promisify');
-const resolveNodeModule = require('./lib/resolveNodeModule');
 const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
@@ -27,24 +27,16 @@ function optionPathToRegex(p) {
   return utils.escapeStrForRegex(p.replace(/\//g, path.sep));
 }
 
-function fileExists(filePath) {
-  try {
-    fs.accessSync(filePath, fs.R_OK);
-    return true;
-  } catch (e) {}
-  return false;
-}
-
 class TestRunner {
 
   constructor(config, options) {
-    this._opts = options;
+    this._options = options;
     this._config = Object.freeze(config);
 
     utils.createDirectory(this._config.cacheDirectory);
 
     this._hasteMap = createHasteMap(config, {
-      maxWorkers: this._opts.maxWorkers,
+      maxWorkers: this._options.maxWorkers,
       resetCache: !config.cache,
     });
 
@@ -68,7 +60,20 @@ class TestRunner {
     this._testPerformanceCache = null;
 
     // warm-up the haste map
-    this._hasteMap.build();
+    this._buildPromise = null;
+    this._buildHasteMap();
+  }
+
+  _buildHasteMap() {
+    if (!this._buildPromise) {
+      this._buildPromise = this._hasteMap.build().then(
+        moduleMap => ({
+          moduleMap,
+          resolver: createResolver(this._config, moduleMap),
+        })
+      );
+    }
+    return this._buildPromise;
   }
 
   _getAllTestPaths() {
@@ -91,79 +96,24 @@ class TestRunner {
     );
   }
 
-  promiseTestPathsRelatedTo(changedPaths) {
-    const collectChangedModules = (relatedPaths, moduleMap, changed) => {
-      const visitedModules = new Set();
-      while (changed.size) {
-        changed = new Set(moduleMap.filter(module => (
-          !visitedModules.has(module.file) &&
-          module.dependencies.some(dep => dep && changed.has(dep))
-        )).map(module => {
-          const file = module.file;
-          if (this.isTestFilePath(file)) {
-            relatedPaths.add(file);
-          }
-          visitedModules.add(file);
-          return module.file;
-        }));
-      }
-      return relatedPaths;
-    };
-
-    if (!changedPaths.size) {
-      return Promise.resolve([]);
-    }
-
-    const relatedPaths = new Set();
-    return this._hasteMap.build().then(data => {
-      const changed = new Set();
-      for (const path of changedPaths) {
-        if (fileExists(path)) {
-          const module = data.files[path];
-          if (module) {
-            changed.add(path);
-            if (this.isTestFilePath(path)) {
-              relatedPaths.add(path);
-            }
-          }
+  promiseTestPathsRelatedTo(paths) {
+    return this._buildHasteMap().then(
+      data => data.resolver.resolveInverseDependencies(
+        paths,
+        this.isTestFilePath.bind(this),
+        {
+          skipNodeResolution: this._options.skipNodeResolution,
         }
-      }
-
-      const config = this._config;
-      const platform = config.haste.defaultPlatform;
-      const extensions = config.moduleFileExtensions.map(ext => '.' + ext);
-      const moduleMap = [];
-      for (const file in data.files) {
-        const fileData = data.files[file];
-        const dependencies = fileData[H.DEPENDENCIES]
-          .map(dep => {
-            const map = data.map[dep];
-            if (data.map[dep]) {
-              const module = map[platform] || map[H.GENERIC_PLATFORM];
-              return module && module[H.PATH];
-            } else if (!this._opts.skipNodeResolution) {
-              return resolveNodeModule(dep, path.dirname(file), extensions);
-            }
-            return null;
-          })
-          .filter(dep => !!dep);
-
-        moduleMap.push({file, dependencies});
-      }
-      return Array.from(collectChangedModules(
-        relatedPaths,
-        moduleMap,
-        changed
-      ));
-    });
+      )
+    );
   }
 
   promiseTestPathsMatching(pattern) {
     if (pattern && !(pattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), pattern);
-      if (fileExists(maybeFile)) {
+      if (Resolver.fileExists(maybeFile)) {
         return Promise.resolve(
-          [pattern].filter(this.isTestFilePath.bind(this))
+          this.isTestFilePath(maybeFile) ? [maybeFile] : []
         );
       }
     }
@@ -195,7 +145,7 @@ class TestRunner {
     } catch (e) {}
 
     const testPerformanceCache = this._testPerformanceCache;
-    if (testPaths.length > this._opts.maxWorkers) {
+    if (testPaths.length > this._options.maxWorkers) {
       testPaths = testPaths
         .map(path => [path, fs.statSync(path).size])
         .sort((a, b) => {
@@ -312,7 +262,7 @@ class TestRunner {
   }
 
   _createTestRun(testPaths, onTestResult, onRunFailure) {
-    if (this._opts.maxWorkers <= 1 || testPaths.length <= 1) {
+    if (this._options.maxWorkers <= 1 || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
     } else {
       return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
@@ -322,8 +272,8 @@ class TestRunner {
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
     return testPaths.reduce((promise, path) =>
       promise
-        .then(() => this._hasteMap.build())
-        .then(moduleMap => new Test(path, this._config, moduleMap).run())
+        .then(() => this._buildHasteMap())
+        .then(data => new Test(path, this._config, data.resolver).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
       Promise.resolve()
@@ -332,13 +282,13 @@ class TestRunner {
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
-    return this._hasteMap.build()
+    return this._buildHasteMap()
       .then(() => {
         const farm = workerFarm({
           autoStart: true,
           maxConcurrentCallsPerWorker: 1,
           maxRetries: 2, // Allow for a couple of transient errors.
-          maxConcurrentWorkers: this._opts.maxWorkers,
+          maxConcurrentWorkers: this._options.maxWorkers,
         }, TEST_WORKER_PATH);
         const runTest = promisify(farm);
         return Promise.all(testPaths.map(

@@ -11,6 +11,7 @@
 const SUPPORTED_PLATFORM_EXTS = {
   android: true,
   ios: true,
+  native: true,
   web: true,
 };
 
