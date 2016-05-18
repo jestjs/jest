@@ -7,60 +7,32 @@
  */
 'use strict';
 
-const common = require('./common');
-const fs = require('fs');
-const path = require('path');
 const serializer = require('./serializer');
-const TestSnapshot = require('./TestSnapshot');
 
-const SNAPSHOT_EXTENSION = '.snap';
-const testsByPath =  Object.create(null);
-
-const getNextIndexFor = (test, filePath) => {
-  const tests = testsByPath[filePath] || (testsByPath[filePath] = {});
-  if (tests[test] != null) {
-    return ++tests[test];
-  }
-  return tests[test] = 0;
-};
-
-module.exports = (filePath, options, jasmine) => ({
+module.exports = (filePath, options, jasmine, snapshotState) => ({
   toMatchSnapshot: (util, customEquality) => {
     return {
       compare(actual, expected) {
-        // Retrieving last test asap to avoid race condition
-        const lastTest = common.getLastTest(filePath);
 
-        const snapshotsPath = path.join(path.dirname(filePath), '__snapshots__');
-        try {
-          const folder = fs.statSync(snapshotsPath);
-          if (!folder.isDirectory()) {
-            fs.mkdirSync(snapshotsPath);
-          }
-        } catch (e) {
-          fs.mkdirSync(snapshotsPath);
-        }
-
-        const snapshotFilename = path.join(
-          snapshotsPath,
-          path.basename(filePath) + SNAPSHOT_EXTENSION
-        );
+        const specRunningFullName = snapshotState.specRunningFullName;
 
         if (expected !== undefined) {
           throw new Error('toMatchSnapshot() does not accepts parameters.');
         }
-        const snapshot = new TestSnapshot(snapshotFilename);
 
-        const lastTestIndex = getNextIndexFor(lastTest, filePath);
+        const snapshot = snapshotState.snapshot;
+        const specRunningCallCounter = (
+            snapshotState.specsCallCounter[specRunningFullName]++
+        );
+
         let pass = false;
         let message;
         let res = {};
         const rendered = serializer.serialize(actual);
-        const key = lastTest + ' ' + lastTestIndex;
+        const key = specRunningFullName + ' ' + specRunningCallCounter;
+
         if (!snapshot.fileExists()) {
-          snapshot.save({
-            [key]: rendered,
-          });
+          snapshot.replace(key, rendered);
           pass = true;
         } else {
           if (!snapshot.has(key)) {
@@ -86,7 +58,7 @@ module.exports = (filePath, options, jasmine) => ({
                 formatter.addDiffableMatcher('toMatchSnapshot');
                 message = formatter.formatMatchFailure(res).replace(
                   'toMatchSnapshot:',
-                  'toMatchSnapshot #' + lastTestIndex + ':'
+                  'toMatchSnapshot #' + specRunningCallCounter + ':'
                 );
               }
             }

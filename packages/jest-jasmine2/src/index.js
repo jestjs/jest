@@ -61,10 +61,6 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     const requireJasmine = environment.global.jasmineRequire;
     jasmine = requireJasmine.core(requireJasmine);
 
-    if (snapshot) {
-      snapshot.initialize(jasmine, testPath);
-    }
-
     const jasmineBuildExpectationResult = jasmine.buildExpectationResult;
 
     // https://github.com/facebook/jest/issues/429
@@ -91,6 +87,11 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     };
 
     env = jasmine.getEnv();
+
+    if (snapshot) {
+      env.snapshotState = snapshot.getSnapshotState(jasmine, testPath);
+    }
+
     const jasmineInterface = requireJasmine.interface(jasmine, env);
     Object.assign(environment.global, jasmineInterface);
     env.addReporter(jasmineInterface.jsApiReporter);
@@ -138,11 +139,13 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     return true;
   };
 
+
   env.beforeEach(() => {
+
     jasmine.addCustomEqualityTester(iterableEquality);
 
     if (snapshot) {
-      jasmine.addMatchers(snapshot.getMatchers(testPath, config, jasmine));
+      jasmine.addMatchers(snapshot.getMatchers(testPath, config, jasmine, env.snapshotState));
     }
 
     jasmine.addMatchers({
@@ -265,6 +268,9 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   env.addReporter(reporter);
   moduleLoader.requireModule(testPath);
   env.execute();
+  if (env.snapshotState) {
+    env.snapshotState.snapshot.save();
+  }
   return reporter.getResults();
 }
 

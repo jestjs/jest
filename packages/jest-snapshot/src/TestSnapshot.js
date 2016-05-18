@@ -8,68 +8,70 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
+const createDirectory = require('jest-util').createDirectory;
+
+const ensureDirectoryExists = filePath => {
+  try {
+    createDirectory(path.join(path.dirname(filePath)));
+  } catch (e) {}
+};
+const fileExists = path => {
+  let exists = true;
+  try {
+    fs.accessSync(path, fs.F_OK);
+  } catch (e) {
+    exists = false;
+  }
+  return exists;
+};
 
 class TestSnapshot {
 
   constructor(filename) {
     this._filename = filename;
-    this._loaded = null;
-  }
-
-  _getLoaded() {
-    if (this._loaded) {
-      return this._loaded;
+    if (this.fileExists(filename)) {
+      this._content = JSON.parse(fs.readFileSync(filename));
+    } else {
+      this._content = {};
     }
-    return this.load();
-  }
 
-  load() {
-    this._loaded = JSON.parse(fs.readFileSync(this._filename));
     return this._loaded;
   }
 
   fileExists() {
-    let exists = true;
-    try {
-      fs.accessSync(this._filename, fs.F_OK);
-    } catch(e) {
-      exists = false;
-    }
-    return exists;
+    return fileExists(this._filename);
   }
 
-  save(object) {
-    fs.writeFileSync(this._filename, JSON.stringify(object));
-    this._loaded = null;
+  save() {
+    ensureDirectoryExists(this._filename);
+    fs.writeFileSync(this._filename, JSON.stringify(this._content));
   }
 
   has(key) {
-    return this.fileExists() && key in this._getLoaded();
+    return this._content[key] !== undefined;
   }
 
   get(key) {
-    return this.has(key) && this._getLoaded()[key];
+    return this._content[key];
   }
 
   matches(key, value) {
-    return this._getLoaded()[key] === value;
+    return this.get(key) === value;
   }
 
   replace(key, value) {
-    const obj = this.load();
-    obj[key] = value;
-    this.save(obj);
+    this._content[key] = value;
   }
 
   add(key, value) {
     if (!this.has(key)) {
-      const obj = this.load();
-      obj[key] = value;
-      this.save(obj);
+      this.replace(key, value);
     } else {
       throw new Error('Trying to add a snapshot that already exists');
     }
   }
+
 }
 
 module.exports = TestSnapshot;

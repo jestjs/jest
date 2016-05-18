@@ -7,23 +7,28 @@
  */
 'use strict';
 
-const common = require('./common');
+const path = require('path');
+const TestSnapshot = require('./TestSnapshot');
 
-const patchAttr = (attr, filePath) => {
+const SNAPSHOT_EXTENSION = '.snap';
+const patchAttr = (attr, state) => {
   attr.onStart = function(onStart) {
     return function(context) {
+      const specRunning = context.getFullName();
+      state.specsCallCounter[specRunning] = 0;
+      
+      state.specRunningFullName = specRunning;
       if (onStart) {
         onStart(context);
       }
-      common.setLastTest(context.getFullName(), filePath);
     };
   }(attr.onStart);
 };
 
-const patchJasmine = (jasmine, filePath) => {
+const patchJasmine = (jasmine, state) => {
   jasmine.Spec = (realSpec => {
     const Spec = function Spec(attr) {
-      patchAttr(attr, filePath);
+      patchAttr(attr, state);
       realSpec.call(this, attr);
     };
     Spec.prototype = realSpec.prototype;
@@ -38,7 +43,19 @@ const patchJasmine = (jasmine, filePath) => {
 
 module.exports = {
   getMatchers: require('./getMatchers'),
-  initialize: (jasmine, filePath) => {
-    patchJasmine(jasmine, filePath);    
+  getSnapshotState: (jasmine, filePath) => {
+    const state = Object.create(null);
+    state.specsCallCounter = Object.create(null);
+    patchJasmine(jasmine, state);
+
+    const snapshotsPath = path.join(path.dirname(filePath), '__snapshots__');
+
+    const snapshotFilename = path.join(
+      snapshotsPath,
+      path.basename(filePath) + SNAPSHOT_EXTENSION
+    );
+
+    state.snapshot = new TestSnapshot(snapshotFilename);
+    return state;
   },
 };

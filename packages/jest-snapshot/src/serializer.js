@@ -7,7 +7,6 @@
  */
 'use strict';
 
-const common = require('./common');
 const server = require('react-dom/server');
 
 module.exports = {
