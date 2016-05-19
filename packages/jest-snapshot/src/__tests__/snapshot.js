@@ -29,8 +29,4 @@ describe('snapshot', () => {
     expect(JSON.stringify(test)).toMatchSnapshot();
   });
 
-  it('works with react elements', () => {
-    const test = React.createElement('li', null, 'Text Content');
-    expect(test).toMatchSnapshot();
-  });
 });

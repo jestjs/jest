@@ -8,11 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "src/index.js",
   "dependencies": {
-    "jest-util": "^12.0.2",
-    "react-dom": "^15.0.2"
-  },
-  "devDependencies": {
-    "react": "^15.0.2"
+    "jest-util": "^12.0.2"
   },
   "scripts": {
     "test": "../jest-cli/bin/jest.js"

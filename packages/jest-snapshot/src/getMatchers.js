@@ -12,12 +12,15 @@ const serializer = require('./serializer');
 module.exports = (filePath, options, jasmine, snapshotState) => ({
   toMatchSnapshot: (util, customEquality) => {
     return {
-      compare(actual, expected) {
+      compare(rendered, expected) {
 
         const specRunningFullName = snapshotState.specRunningFullName;
 
         if (expected !== undefined) {
           throw new Error('toMatchSnapshot() does not accepts parameters.');
+        }
+        if (typeof rendered !== 'string') {
+          throw new Error('toMatchSnapshot() only works with Strings.');
         }
 
         const snapshot = snapshotState.snapshot;
@@ -29,7 +32,6 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
         let pass = false;
         let message;
         let res = {};
-        const rendered = serializer.serialize(actual);
         const key = specRunningFullName + ' ' + specRunningCallCounter;
 
         if (!snapshot.fileExists()) {
