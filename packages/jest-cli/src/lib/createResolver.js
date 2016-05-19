@@ -30,6 +30,7 @@ module.exports = function createResolver(config, moduleMap) {
     defaultPlatform: config.haste.defaultPlatform,
     extensions,
     hasCoreModules: true,
+    modulePaths: config.modulePaths,
     moduleDirectories: config.moduleDirectories,
     moduleNameMapper: getModuleNameMapper(config),
     platforms: config.haste.platforms,

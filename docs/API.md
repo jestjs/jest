@@ -55,8 +55,10 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
   - [`mocksPattern` [string]](#mockspattern-string)
+  - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
   - [`moduleNameMapper` [object<string, string>]](#modulenamemapper-object-string-string)
+  - [`modulePaths` [array<string>]](#modulepaths-array-string)
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
   - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
   - [`rootDir` [string]](#rootdir-string)
@@ -456,6 +458,19 @@ If you are using TypeScript this should be `['js', 'json', 'ts']`
 (default: `[]`)
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
+
+### `modulePaths` [array<string>]
+(default: `[]`)
+
+An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to
+additional locations to search when resolving modules.
+
+### `moduleDirectories` [array<string>]
+(default: `['node_modules']`)
+
+An array of directory names to be searched recursively up from the requiring module's location. Setting this option
+will _override_ the default, if you wish to still search `node_modules` for packages include it
+along with any other options: `['node_modules', 'bower_components']`
 
 ### `moduleNameMapper` [object<string, string>]
 (default: `null`)
