@@ -26,6 +26,7 @@ module.exports = {
   },
   modulePathIgnorePatterns: [],
   moduleNameMapper: [],
+  moduleDirectories: ['node_modules'],
   testDirectoryName: '__tests__',
   mocksPattern: '__mocks__',
   testEnvironment: 'jest-environment-jsdom',
