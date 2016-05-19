@@ -9,6 +9,7 @@
 
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
+const snapshot = require('jest-snapshot');
 const JasmineReporter = require('./reporter');
 
 const CALL_PRINT_LIMIT = 3;
@@ -41,11 +42,6 @@ function getActualCalls(reporter, calls, limit) {
 function jasmine2(config, environment, moduleLoader, testPath) {
   let env;
   let jasmine;
-  let snapshot;
-
-  try {
-    snapshot = require(config.snapshot);
-  } catch (e) {}
 
   const reporter = new JasmineReporter({
     noHighlight: config.noHighlight,
@@ -87,10 +83,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     };
 
     env = jasmine.getEnv();
-
-    if (snapshot) {
-      env.snapshotState = snapshot.getSnapshotState(jasmine, testPath);
-    }
+    env.snapshotState = snapshot.getSnapshotState(jasmine, testPath);
 
     const jasmineInterface = requireJasmine.interface(jasmine, env);
     Object.assign(environment.global, jasmineInterface);
@@ -141,10 +134,14 @@ function jasmine2(config, environment, moduleLoader, testPath) {
 
   env.beforeEach(() => {
     jasmine.addCustomEqualityTester(iterableEquality);
-
-    if (snapshot) {
-      jasmine.addMatchers(snapshot.getMatchers(testPath, config, jasmine, env.snapshotState));
-    }
+    jasmine.addMatchers(
+      snapshot.getMatchers(
+        testPath,
+        config,
+        jasmine,
+        env.snapshotState
+      )
+    );
 
     jasmine.addMatchers({
       toBeCalled: () => ({
@@ -266,9 +263,8 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   env.addReporter(reporter);
   moduleLoader.requireModule(testPath);
   env.execute();
-  if (env.snapshotState) {
-    env.snapshotState.snapshot.save();
-  }
+  env.snapshotState.snapshot.save();
+
   return reporter.getResults();
 }
 
