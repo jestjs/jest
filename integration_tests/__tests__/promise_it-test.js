@@ -34,16 +34,6 @@ describe('promise it', () => {
     expect(json.numPendingTests).toBe(1);
   });
 
-  it('throws when not a promise is returned', () => {
-    const result = runJest.json('promise_it', ['returning_values-test.js']);
-    const json = result.json;
-
-    expect(json.numTotalTests).toBe(11);
-    expect(json.numPassedTests).toBe(0);
-    expect(json.numFailedTests).toBe(11);
-    expect(json.numPendingTests).toBe(0);
-  });
-
   it('tests async promise code', () => {
     const result = runJest.json('promise_it', ['promise_it-test.js']);
     const json = result.json;
