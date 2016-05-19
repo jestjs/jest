@@ -139,9 +139,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     return true;
   };
 
-
   env.beforeEach(() => {
-
     jasmine.addCustomEqualityTester(iterableEquality);
 
     if (snapshot) {

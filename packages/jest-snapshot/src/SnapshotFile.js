@@ -11,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const createDirectory = require('jest-util').createDirectory;
 
+const SNAPSHOT_EXTENSION = '.snap';
 const ensureDirectoryExists = filePath => {
   try {
     createDirectory(path.join(path.dirname(filePath)));
@@ -26,7 +27,7 @@ const fileExists = path => {
   return exists;
 };
 
-class TestSnapshot {
+class SnapshotFile {
 
   constructor(filename) {
     this._filename = filename;
@@ -74,4 +75,16 @@ class TestSnapshot {
 
 }
 
-module.exports = TestSnapshot;
+module.exports = {
+  forFile(testPath) {
+
+    const snapshotsPath = path.join(path.dirname(testPath), '__snapshots__');
+
+    const snapshotFilename = path.join(
+      snapshotsPath,
+      path.basename(testPath) + SNAPSHOT_EXTENSION
+    );
+
+    return new SnapshotFile(snapshotFilename);
+  }
+};

@@ -7,10 +7,8 @@
  */
 'use strict';
 
-const path = require('path');
-const TestSnapshot = require('./TestSnapshot');
+const SnapshotFile = require('./SnapshotFile');
 
-const SNAPSHOT_EXTENSION = '.snap';
 const patchAttr = (attr, state) => {
   attr.onStart = function(onStart) {
     return function(context) {
@@ -50,15 +48,7 @@ module.exports = {
     const state = Object.create(null);
     state.specsNextCallCounter = Object.create(null);
     patchJasmine(jasmine, state);
-
-    const snapshotsPath = path.join(path.dirname(filePath), '__snapshots__');
-
-    const snapshotFilename = path.join(
-      snapshotsPath,
-      path.basename(filePath) + SNAPSHOT_EXTENSION
-    );
-
-    state.snapshot = new TestSnapshot(snapshotFilename);
+    state.snapshot = SnapshotFile.forFile(filePath)
     return state;
   },
 };
