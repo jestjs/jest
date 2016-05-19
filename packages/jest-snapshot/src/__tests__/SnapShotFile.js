@@ -20,10 +20,12 @@ jest
   })
   .mock('fs', () => ({
     accessSync : jest.fn(() => {
-      if (accessShouldThrow) throw new Error();
+      if (accessShouldThrow) {
+        throw new Error();
+      }
       return true;
     }),
-    readFileSync : jest.fn((fileName) => {
+    readFileSync : jest.fn(fileName => {
       const EXPECTED_FILE_NAME = '/foo/__tests__/__snapshots__/baz.js.snap';
       expect(fileName).toBe(EXPECTED_FILE_NAME);
       return '{}';
@@ -80,7 +82,7 @@ describe('SnapshotFile', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
     expect(snapshotFile.matches(SNAPSHOT, SNAPSHOT_VALUE)).toBe(true);
-    snapshotFile.replace(SNAPSHOT, NEW_VALUE)
+    snapshotFile.replace(SNAPSHOT, NEW_VALUE);
     expect(snapshotFile.matches(SNAPSHOT, NEW_VALUE)).toBe(true);
   });
 
@@ -96,6 +98,6 @@ describe('SnapshotFile', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
     expect(snapshotFile.get(SNAPSHOT)).toBe(SNAPSHOT_VALUE);
-    snapshotFile.save()
+    snapshotFile.save();
   });
 });
