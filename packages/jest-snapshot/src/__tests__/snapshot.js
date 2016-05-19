@@ -7,16 +7,7 @@
  */
 'use strict';
 
-jest
-  .unmock('react');
-
-let React;
-
 describe('snapshot', () => {
-
-  beforeEach(() => {
-    React = require('react');
-  });
 
   it('works with plain objects', () => {
     const test = {

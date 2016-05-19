@@ -7,8 +7,6 @@
  */
 'use strict';
 
-const serializer = require('./serializer');
-
 module.exports = (filePath, options, jasmine, snapshotState) => ({
   toMatchSnapshot: (util, customEquality) => {
     return {

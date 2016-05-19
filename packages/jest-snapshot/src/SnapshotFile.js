@@ -77,7 +77,6 @@ class SnapshotFile {
 
 module.exports = {
   forFile(testPath) {
-
     const snapshotsPath = path.join(path.dirname(testPath), '__snapshots__');
 
     const snapshotFilename = path.join(
@@ -86,5 +85,5 @@ module.exports = {
     );
 
     return new SnapshotFile(snapshotFilename);
-  }
+  },
 };

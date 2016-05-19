@@ -15,8 +15,8 @@ const patchAttr = (attr, state) => {
       const specRunning = context.getFullName();
       let index = 0;
       Object.defineProperty(state.specsNextCallCounter, specRunning, {
-        get() {return index++},
-        enumerable: true
+        get() {return index++;},
+        enumerable: true,
       });
       state.specRunningFullName = specRunning;
       if (onStart) {
@@ -48,7 +48,7 @@ module.exports = {
     const state = Object.create(null);
     state.specsNextCallCounter = Object.create(null);
     patchJasmine(jasmine, state);
-    state.snapshot = SnapshotFile.forFile(filePath)
+    state.snapshot = SnapshotFile.forFile(filePath);
     return state;
   },
 };
