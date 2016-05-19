@@ -21,7 +21,7 @@ function isPromise(obj) {
 function promisifyIt(originalFn, env) {
   return function(specName, fn) {
     if (!fn) {
-      return;
+      return null;
     }
 
     const isAsync = fn.length; // `done` was passed
