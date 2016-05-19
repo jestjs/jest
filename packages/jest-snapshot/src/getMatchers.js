@@ -61,7 +61,7 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
                 formatter.addDiffableMatcher('toMatchSnapshot');
                 message = formatter.formatMatchFailure(res).replace(
                   'toMatchSnapshot:',
-                  'toMatchSnapshot #' + specRunningCallCounter + ':'
+                  'toMatchSnapshot #' + (specRunningCallCounter + 1) + ':'
                 );
               }
             }
