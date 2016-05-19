@@ -21,8 +21,9 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
         }
 
         const snapshot = snapshotState.snapshot;
+
         const specRunningCallCounter = (
-            snapshotState.specsCallCounter[specRunningFullName]++
+            snapshotState.specsNextCallCounter[specRunningFullName]
         );
 
         let pass = false;

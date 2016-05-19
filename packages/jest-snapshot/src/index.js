@@ -15,8 +15,11 @@ const patchAttr = (attr, state) => {
   attr.onStart = function(onStart) {
     return function(context) {
       const specRunning = context.getFullName();
-      state.specsCallCounter[specRunning] = 0;
-      
+      let index = 0;
+      Object.defineProperty(state.specsNextCallCounter, specRunning, {
+        get() {return index++},
+        enumerable: true
+      });
       state.specRunningFullName = specRunning;
       if (onStart) {
         onStart(context);
@@ -45,7 +48,7 @@ module.exports = {
   getMatchers: require('./getMatchers'),
   getSnapshotState: (jasmine, filePath) => {
     const state = Object.create(null);
-    state.specsCallCounter = Object.create(null);
+    state.specsNextCallCounter = Object.create(null);
     patchJasmine(jasmine, state);
 
     const snapshotsPath = path.join(path.dirname(filePath), '__snapshots__');
