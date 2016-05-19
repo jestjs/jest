@@ -45,8 +45,11 @@ class SnapshotFile {
   }
 
   save() {
-    ensureDirectoryExists(this._filename);
-    fs.writeFileSync(this._filename, JSON.stringify(this._content));
+    const serialized = JSON.stringify(this._content);
+    if (serialized !== '{}') {
+      ensureDirectoryExists(this._filename);
+      fs.writeFileSync(this._filename, serialized);
+    }
   }
 
   has(key) {
