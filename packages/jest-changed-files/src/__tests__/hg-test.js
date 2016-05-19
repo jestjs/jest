@@ -32,13 +32,13 @@ describe('hgChecker', () => {
 
   describe('isHGRepository', () => {
 
-    pit('returns null for non hg repo folder', () => {
-      return hg.isHGRepository(tmpdir).then(res => {
+    it('returns null for non hg repo folder', () =>
+      hg.isHGRepository(tmpdir).then(res => {
         expect(res).toBeNull();
-      });
-    });
+      })
+    );
 
-    pit('returns dirname for hg repo folder', () => {
+    it('returns dirname for hg repo folder', () => {
       childProcess.spawnSync('hg', ['init', tmpdir]);
 
       return hg.isHGRepository(tmpdir).then(res => {
@@ -53,13 +53,13 @@ describe('hgChecker', () => {
       childProcess.spawnSync('hg', ['init', tmpdir]);
     });
 
-    pit('returns an empty array for hg repo folder without modified files', () => {
-      return hg.findChangedFiles(tmpdir).then(res => {
+    it('returns an empty array for hg repo folder without modified files', () =>
+      hg.findChangedFiles(tmpdir).then(res => {
         expect(res).toEqual([]);
-      });
-    });
+      })
+    );
 
-    pit('returns an array of modified files for hg repo folder', () => {
+    it('returns an array of modified files for hg repo folder', () => {
       fs.writeFileSync(tmpfile);
       fs.writeFileSync(tmpfileNested);
       childProcess.spawnSync('hg', ['add'], {cwd: tmpdir});
