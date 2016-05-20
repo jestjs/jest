@@ -108,6 +108,25 @@ function normalize(config, argv) {
     delete config.setupEnvScriptFile;
   }
 
+  // Deprecated. We'll start warning about this in the future.
+  if (config.testDirectoryName || config.testFileExtensions) {
+    if (!config.moduleFileExtensions) {
+      config.moduleFileExtensions = DEFAULT_CONFIG_VALUES.moduleFileExtensions;
+    }
+    const extensions = Array.from(
+      new Set((config.testFileExtensions || [])
+        .concat(config.moduleFileExtensions)
+    ));
+
+    config.moduleFileExtensions = extensions;
+    config.testRegex =
+      path.sep + (config.testDirectoryName || '__tests__') + path.sep +
+      '.*\\.(' + extensions.join('|') + ')$';
+
+    delete config.testDirectoryName;
+    delete config.testFileExtensions;
+  }
+
   if (argv.testRunner) {
     config.testRunner = argv.testRunner;
   }
@@ -192,10 +211,10 @@ function normalize(config, argv) {
 
       case 'cacheDirectory':
       case 'coverageDirectory':
-      case 'testRunner':
       case 'scriptPreprocessor':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
+      case 'testRunner':
         value = path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key])
@@ -209,9 +228,9 @@ function normalize(config, argv) {
         ]);
         break;
 
+      case 'modulePathIgnorePatterns':
       case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
-      case 'modulePathIgnorePatterns':
       case 'unmockedModulePathPatterns':
         // _replaceRootDirTags is specifically well-suited for substituting
         // <rootDir> in paths (it deals with properly interpreting relative path
@@ -225,40 +244,36 @@ function normalize(config, argv) {
           )
         );
         break;
+      case 'automock':
       case 'bail':
-      case 'coverageReporters':
+      case 'cache':
       case 'collectCoverage':
+      case 'colors':
       case 'coverageCollector':
+      case 'coverageReporters':
       case 'coverageThreshold':
       case 'globals':
       case 'haste':
+      case 'logHeapUsage':
       case 'mocksPattern':
+      case 'moduleDirectories':
+      case 'moduleFileExtensions':
       case 'moduleLoader':
+      case 'modulePaths':
       case 'name':
+      case 'noHighlight':
+      case 'noStackTrace':
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
-      case 'setupJSLoaderOptions':
-      case 'setupJSTestLoaderOptions':
-      case 'setupJSMockLoaderOptions':
-      case 'testDirectoryName':
       case 'testEnvData':
-      case 'testFileExtensions':
+      case 'testEnvironment':
       case 'testPathPattern':
+      case 'testRegex':
       case 'testReporter':
       case 'testURL':
-      case 'moduleFileExtensions':
-      case 'moduleDirectories':
-      case 'modulePaths':
-      case 'noHighlight':
-      case 'colors':
-      case 'noStackTrace':
-      case 'logHeapUsage':
-      case 'cache':
-      case 'watchman':
-      case 'verbose':
-      case 'automock':
       case 'usesBabelJest':
-      case 'testEnvironment':
+      case 'verbose':
+      case 'watchman':
         value = config[key];
         break;
 

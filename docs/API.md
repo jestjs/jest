@@ -67,7 +67,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`setupTestFrameworkScriptFile` [string]](#setuptestframeworkscriptfile-string)
   - [`testDirectoryName` [string]](#testdirectoryname-string)
   - [`testEnvironment` [string]](#testenvironment-string)
-  - [`testFileExtensions` [array<string>]](#testfileextensions-array-string)
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
   - [`testPathPattern` [string]](#testpathpattern-string)
@@ -540,13 +539,6 @@ For example, many node projects prefer to put their tests in a `tests` directory
 (default: `'jsdom'`)
 
 The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
-
-### `testFileExtensions` [array<string>]
-(default: `['js']`)
-
-An array of file extensions that test files might have. Jest uses this when searching for tests to run.
-
-This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`scriptPreprocessor`](#scriptpreprocessor-string) too!)
 
 ### `testPathDirs` [array<string>]
 (default: `['<rootDir>']`)

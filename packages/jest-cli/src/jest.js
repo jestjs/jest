@@ -134,9 +134,7 @@ function getNoTestsFoundMessage(patternInfo) {
 function getWatcher(config, packageRoot, callback) {
   which(WATCHMAN_BIN, (err, resolvedPath) => {
     const watchman = !err && resolvedPath;
-    const glob = config.moduleFileExtensions
-      .concat(config.testFileExtensions)
-      .map(extension => '**/*' + extension);
+    const glob = config.moduleFileExtensions.map(ext => '**/*' + ext);
     const watcher = sane(packageRoot, {glob, watchman});
     callback(watcher);
   });

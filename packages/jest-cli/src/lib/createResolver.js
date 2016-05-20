@@ -22,13 +22,9 @@ const getModuleNameMapper = config => {
 };
 
 module.exports = function createResolver(config, moduleMap) {
-  const extensions = Array.from(new Set(
-    config.moduleFileExtensions.concat(config.testFileExtensions)
-  )).map(extension => '.' + extension);
-
   return new Resolver(moduleMap, {
     defaultPlatform: config.haste.defaultPlatform,
-    extensions,
+    extensions: config.moduleFileExtensions.map(extension => '.' + extension),
     hasCoreModules: true,
     moduleDirectories: config.moduleDirectories,
     moduleNameMapper: getModuleNameMapper(config),
