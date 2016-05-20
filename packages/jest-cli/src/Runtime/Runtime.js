@@ -35,6 +35,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
+    this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
@@ -363,7 +364,17 @@ class Runtime {
         !this._resolver.getModule(moduleName) &&
         !this._resolver.getMockModule(moduleName)
       ) {
-        absolutePath = this._resolveModule(from, moduleName);
+        if (moduleName) {
+          const virtualMockPath = this._getVirtualMockPath(from, moduleName);
+          if (virtualMockPath in this._virtualMocks) {
+            absolutePath = virtualMockPath;
+          }
+        }
+
+        if (absolutePath === null) {
+          absolutePath = this._resolveModule(from, moduleName);
+        }
+
         // Look up if this module has an associated manual mock.
         const mockModule = this._resolver.getMockModule(moduleName);
         if (mockModule) {
@@ -392,7 +403,19 @@ class Runtime {
     return id;
   }
 
+  _getVirtualMockPath(from, moduleName) {
+    if (moduleName[0] !== '.' && moduleName[0] !== '/') {
+      return moduleName;
+    }
+    return path.normalize(path.dirname(from) + '/' + moduleName);
+  }
+
   _shouldMock(from, moduleName) {
+    const mockPath = this._getVirtualMockPath(from, moduleName);
+    if (mockPath in this._virtualMocks) {
+      return true;
+    }
+
     const explicitShouldMock = this._explicitShouldMock;
     const moduleID = this._getNormalizedModuleID(from, moduleName);
     const key = from + path.delimiter + moduleID;
@@ -473,16 +496,20 @@ class Runtime {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
-    const mock = (moduleName, mockFactory) => {
+    const mock = (moduleName, mockFactory, options) => {
       if (mockFactory !== undefined) {
-        return setMockFactory(moduleName, mockFactory);
+        return setMockFactory(moduleName, mockFactory, options);
       }
 
       const moduleID = this._getNormalizedModuleID(from, moduleName);
       this._explicitShouldMock[moduleID] = true;
       return runtime;
     };
-    const setMockFactory = (moduleName, mockFactory) => {
+    const setMockFactory = (moduleName, mockFactory, options) => {
+      if (options && options.virtual) {
+        const mockPath = this._getVirtualMockPath(from, moduleName);
+        this._virtualMocks[mockPath] = true;
+      }
       const moduleID = this._getNormalizedModuleID(from, moduleName);
       this._explicitShouldMock[moduleID] = true;
       this._mockFactories[moduleID] = mockFactory;

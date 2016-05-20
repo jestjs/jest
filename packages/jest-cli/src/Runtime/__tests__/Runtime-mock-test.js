@@ -24,7 +24,7 @@ describe('Runtime', () => {
   });
 
   describe('jest.mock', () => {
-    pit('uses uses explicitly set mocks instead of automocking', () =>
+    it('uses uses explicitly set mocks instead of automocking', () =>
       createRuntime(__filename).then(runtime => {
         const mockReference = {isMock: true};
         const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
@@ -43,10 +43,30 @@ describe('Runtime', () => {
         ).toEqual(mockReference);
       })
     );
+
+    it('sets virtual mock for non-exciting module', () =>
+      createRuntime(__filename).then(runtime => {
+        const mockReference = {isVirtualMock: true};
+        const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
+        // Erase module registry because root.js requires most other modules.
+        root.jest.resetModuleRegistry();
+
+        root.jest.mock('NotInstalledModule', () => mockReference, {virtual: true});
+        root.jest.mock('../ManuallyMocked', () => mockReference, {virtual: true});
+
+        expect(
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'NotInstalledModule')
+        ).toEqual(mockReference);
+
+        expect(
+          runtime.requireModuleOrMock(runtime.__mockRootPath, '../ManuallyMocked')
+        ).toEqual(mockReference);
+      })
+    );
   });
 
   describe('jest.setMock', () => {
-    pit('uses uses explicitly set mocks instead of automocking', () =>
+    it('uses uses explicitly set mocks instead of automocking', () =>
       createRuntime(__filename).then(runtime => {
         const mockReference = {isMock: true};
         const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
