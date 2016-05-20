@@ -42,6 +42,17 @@ describe('Runtime', () => {
     });
   });
 
+  pit('uses modulePaths to find modules', () => {
+    const nodePath = __dirname + '/NODE_PATH_dir';
+    return createLocalRuntime(null, {modulePaths: nodePath}).then(runtime => {
+      const exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'RegularModuleInNodePath'
+      );
+      expect(exports).toBeDefined();
+    });
+  });
+
   pit('finds modules in NODE_PATH containing multiple paths', () => {
     const nodePath =
       cwd + '/some/other/path' + path.delimiter + __dirname + '/NODE_PATH_dir';

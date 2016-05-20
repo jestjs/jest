@@ -17,7 +17,7 @@ const resolve = require('resolve');
 
 const NATIVE_PLATFORM = 'native';
 
-const paths =
+const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 
 class Resolver {
@@ -30,6 +30,7 @@ class Resolver {
         options.hasCoreModules === undefined ? true : options.hasCoreModules,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
+      modulePaths: options.modulePaths,
     };
 
     this._supportsNativePlatform =
@@ -39,9 +40,18 @@ class Resolver {
     this._modulePathCache = Object.create(null);
   }
 
-  static findNodeModule(path, basedir, extensions) {
+  static findNodeModule(path, options) {
+    const paths = options.paths;
     try {
-      return resolve.sync(path, {basedir, paths, extensions});
+      return resolve.sync(
+        path,
+        {
+          basedir: options.basedir,
+          extensions: options.extensions,
+          moduleDirectory: options.moduleDirectory,
+          paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
+        }
+      );
     } catch (e) {}
     return null;
   }
@@ -56,7 +66,9 @@ class Resolver {
 
   resolveModule(from, moduleName, options) {
     const dirname = path.dirname(from);
+    const paths = this._options.modulePaths;
     const extensions = this._options.extensions;
+    const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
 
     // 0. If we have already resolved this module for this directory name,
@@ -74,7 +86,13 @@ class Resolver {
     // 2. Check if the module is a node module and resolve it based on
     //    the node module resolution algorithm.
     if (!options || !options.skipNodeResolution) {
-      module = Resolver.findNodeModule(moduleName, dirname, extensions);
+      module = Resolver.findNodeModule(moduleName, {
+        basedir: dirname,
+        extensions,
+        moduleDirectory,
+        paths,
+      });
+
       if (module) {
         return this._moduleNameCache[key] = module;
       }
@@ -142,7 +160,8 @@ class Resolver {
 
   getModulePaths(from) {
     if (!this._modulePathCache[from]) {
-      const paths = nodeModulesPaths(from, {});
+      const moduleDirectory = this._options.moduleDirectories;
+      const paths = nodeModulesPaths(from, {moduleDirectory});
       if (paths[paths.length - 1] === undefined) {
         // circumvent node-resolve bug that adds `undefined` as last item.
         paths.pop();
