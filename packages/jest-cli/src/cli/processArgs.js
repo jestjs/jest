@@ -8,7 +8,7 @@
 
 'use strict';
 
-const optimist = require('optimist');
+const yargs = require('yargs');
 
 function _wrapDesc(desc) {
   const indent = '\n      ';
@@ -54,7 +54,7 @@ function processArgs() {
         'available on your machine. (its usually best not to override this ' +
         'default)'
       ),
-      type: 'string', // no, optimist -- its a number.. :(
+      type: 'string', // no, yargs -- its a number.. :(
     },
     onlyChanged: {
       alias: 'o',
@@ -195,7 +195,7 @@ function processArgs() {
     },
   };
 
-  const argv = optimist
+  const argv = yargs
     .usage('Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]')
     .options(options)
     .check(argv => {
@@ -224,12 +224,12 @@ function processArgs() {
         argv.testEnvData = JSON.parse(argv.testEnvData);
       }
 
-      const optimistSpecialOptions = ['$0', '_'];
+      const yargsSpecialOptions = ['$0', '_'];
       const allowedOptions = Object.keys(options).reduce((acc, option) => {
         return acc
           .add(option)
           .add(options[option].alias);
-      }, new Set(optimistSpecialOptions));
+      }, new Set(yargsSpecialOptions));
       const unrecognizedOptions = Object.keys(argv).filter(arg => {
         return !allowedOptions.has(arg);
       });
@@ -238,6 +238,7 @@ function processArgs() {
           'Unrecognized options: ' + unrecognizedOptions.join(', ')
         );
       }
+      return true;
     })
     .argv;
 
