@@ -1,0 +1,20 @@
+{
+  "name": "jest",
+  "description": "Painless JavaScript Unit Testing.",
+  "version": "12.1.1",
+  "main": "src/jest.js",
+  "dependencies": {
+    "jest-cli": "^12.1.0"
+  },
+  "bin": {
+    "jest": "./bin/jest.js"
+  },
+  "engines": {
+    "node": ">= 4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest"
+  },
+  "license": "BSD-3-Clause"
+}
