@@ -17,14 +17,12 @@ const ensureDirectoryExists = filePath => {
     createDirectory(path.join(path.dirname(filePath)));
   } catch (e) {}
 };
-const fileExists = path => {
-  let exists = true;
+const fileExists = filePath => {
   try {
-    fs.accessSync(path, fs.F_OK);
-  } catch (e) {
-    exists = false;
-  }
-  return exists;
+    fs.accessSync(filePath, fs.R_OK);
+    return true;
+  } catch (e) {}
+  return false;
 };
 
 class SnapshotFile {
@@ -64,16 +62,8 @@ class SnapshotFile {
     return this.get(key) === value;
   }
 
-  replace(key, value) {
-    this._content[key] = value;
-  }
-
   add(key, value) {
-    if (!this.has(key)) {
-      this.replace(key, value);
-    } else {
-      throw new Error('Trying to add a snapshot that already exists');
-    }
+    this._content[key] = value;
   }
 
 }

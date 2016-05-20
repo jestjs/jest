@@ -22,14 +22,18 @@ describe('getMatchers', () => {
       const toMatchSnapshot = getMatchers().toMatchSnapshot();
       const rendered = null;
       const expected = {};
-      expect(() => {toMatchSnapshot.compare(rendered, expected);}).toThrow();
+      expect(
+        () => toMatchSnapshot.compare(rendered, expected)
+      ).toThrow();
     });
 
     it('only accepts strings', () => {
       const toMatchSnapshot = getMatchers().toMatchSnapshot();
       const rendered = {};
       const expected = undefined;
-      expect(() => {toMatchSnapshot.compare(rendered, expected);}).toThrow();
+      expect(
+        () => toMatchSnapshot.compare(rendered, expected)
+      ).toThrow();
     });
   });
 });

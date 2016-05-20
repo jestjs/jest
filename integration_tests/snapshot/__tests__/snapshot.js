@@ -22,4 +22,13 @@ describe('snapshot', () => {
     expect(JSON.stringify(test)).toMatchSnapshot();
   });
 
+  it('is not influenced by previous counter', () => {
+    const test = {
+      a:43,
+      b:'43',
+      c:'fourtythree',
+    };
+    expect(JSON.stringify(test)).toMatchSnapshot();
+  });
+
 });

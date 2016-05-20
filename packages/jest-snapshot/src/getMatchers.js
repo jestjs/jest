@@ -12,7 +12,7 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
     return {
       compare(rendered, expected) {
 
-        const specRunningFullName = snapshotState.specRunningFullName;
+        const currentSpecName = snapshotState.currentSpecName;
 
         if (expected !== undefined) {
           throw new Error('toMatchSnapshot() does not accepts parameters.');
@@ -23,46 +23,37 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
 
         const snapshot = snapshotState.snapshot;
 
-        const specRunningCallCounter = (
-            snapshotState.specsNextCallCounter[specRunningFullName]
-        );
+        const callCount = snapshotState.getCounter();
+        snapshotState.incrementCounter();
 
         let pass = false;
         let message;
-        let res = {};
-        const key = specRunningFullName + ' ' + specRunningCallCounter;
-
-        if (!snapshot.fileExists()) {
-          snapshot.replace(key, rendered);
+        const key = currentSpecName + ' ' + callCount;
+        if (
+          !snapshot.fileExists() ||
+          (snapshot.has(key) && options.updateSnapshot) ||
+          !snapshot.has(key)
+        ) {
+          snapshot.add(key, rendered);
           pass = true;
         } else {
-          if (!snapshot.has(key)) {
-            snapshot.add(key, rendered);
-            pass = true;
-          } else {
-            if (options.updateSnapshot) {
-              snapshot.replace(key, rendered);
-              pass = true;
-            } else {
-              pass = snapshot.matches(key, rendered);
-              if (!pass) {
-                const matcherName = 'toMatchSnapshot';
-                res = {
-                  matcherName,
-                  expected: snapshot.get(key),
-                  actual: rendered,
-                };
+          pass = snapshot.matches(key, rendered);
+          if (!pass) {
+            const matcherName = 'toMatchSnapshot';
+            const res = {
+              matcherName,
+              expected: snapshot.get(key),
+              actual: rendered,
+            };
 
-                const JasmineFormatter = require('jest-util').JasmineFormatter;
+            const JasmineFormatter = require('jest-util').JasmineFormatter;
 
-                const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
-                formatter.addDiffableMatcher('toMatchSnapshot');
-                message = formatter.formatMatchFailure(res).replace(
-                  'toMatchSnapshot:',
-                  'toMatchSnapshot #' + (specRunningCallCounter + 1) + ':'
-                );
-              }
-            }
+            const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
+            formatter.addDiffableMatcher('toMatchSnapshot');
+            message = formatter.formatMatchFailure(res).replace(
+              'toMatchSnapshot:',
+              'toMatchSnapshot #' + (callCount + 1) + ':'
+            );
           }
         }
 

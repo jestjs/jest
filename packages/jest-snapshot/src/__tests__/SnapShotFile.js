@@ -12,25 +12,21 @@
 let accessShouldThrow = false;
 
 jest
-  .autoMockOff()
-  .mock('mkdirp', () => {
-    return {
-      sync: jest.fn(),
-    };
-  })
+  .disableAutomock()
+  .mock('mkdirp', () => ({sync: jest.fn()}))
   .mock('fs', () => ({
-    accessSync : jest.fn(() => {
+    accessSync: jest.fn(() => {
       if (accessShouldThrow) {
         throw new Error();
       }
       return true;
     }),
-    readFileSync : jest.fn(fileName => {
+    readFileSync: jest.fn(fileName => {
       const EXPECTED_FILE_NAME = '/foo/__tests__/__snapshots__/baz.js.snap';
       expect(fileName).toBe(EXPECTED_FILE_NAME);
       return '{}';
     }),
-    writeFileSync : jest.fn((path, content) => {
+    writeFileSync: jest.fn((path, content) => {
       expect(content).toBe('{"foo":"bar"}');
     }),
   }));
@@ -82,16 +78,16 @@ describe('SnapshotFile', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
     expect(snapshotFile.matches(SNAPSHOT, SNAPSHOT_VALUE)).toBe(true);
-    snapshotFile.replace(SNAPSHOT, NEW_VALUE);
+    snapshotFile.add(SNAPSHOT, NEW_VALUE);
     expect(snapshotFile.matches(SNAPSHOT, NEW_VALUE)).toBe(true);
   });
 
-  it('cannot add the same key twice', () => {
+  it('can add the same key twice', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
-    expect(() => {
-      snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
-    }).toThrow();
+    expect(
+      () => snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE)
+    ).not.toThrow();
   });
 
   it('loads and saves file correctly', () => {

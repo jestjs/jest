@@ -14,11 +14,9 @@ const patchAttr = (attr, state) => {
     return function(context) {
       const specRunning = context.getFullName();
       let index = 0;
-      Object.defineProperty(state.specsNextCallCounter, specRunning, {
-        get() {return index++;},
-        enumerable: true,
-      });
-      state.specRunningFullName = specRunning;
+      state.getCounter = () => index;
+      state.incrementCounter = () => index++;
+      state.currentSpecName = specRunning;
       if (onStart) {
         onStart(context);
       }
@@ -34,7 +32,7 @@ const patchJasmine = (jasmine, state) => {
     };
     Spec.prototype = realSpec.prototype;
     for (const statics in realSpec) {
-      if (realSpec.hasOwnProperty(statics)) {
+      if (Object.prototype.hasOwnProperty.call(realSpec, statics)) {
         Spec[statics] = realSpec[statics];
       }
     }
@@ -46,9 +44,11 @@ module.exports = {
   getMatchers: require('./getMatchers'),
   getSnapshotState: (jasmine, filePath) => {
     const state = Object.create(null);
-    state.specsNextCallCounter = Object.create(null);
-    patchJasmine(jasmine, state);
+    state.currentSpecName = null;
+    state.getCounter = null;
+    state.incrementCounter = null;
     state.snapshot = SnapshotFile.forFile(filePath);
+    patchJasmine(jasmine, state);
     return state;
   },
 };
