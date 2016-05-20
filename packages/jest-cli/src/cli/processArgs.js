@@ -156,6 +156,13 @@ function processArgs() {
         ),
         type: 'boolean',
       },
+      setupTestFrameworkScriptFile: {
+        description: _wrapDesc(
+          'The path to a module that runs some code to configure or set up ' +
+          'the testing framework before each test.'
+        ),
+        type: 'string',
+      },
       testRunner: {
         description: _wrapDesc(
           'Allows to specify a custom test runner. Jest ships with Jasmine ' +
