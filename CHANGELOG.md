@@ -2,6 +2,7 @@
 
 ## jest-cli 12.1.0
 
+* Jest is now also published in the `jest` package on npm.
 * Added `testRegex` to match for tests outside of specific folders. Deprecated
   both `testDirectoryName` and `testFileExtensions`.
 * `it` can now return a Promise for async testing. `pit` was deprecated.
