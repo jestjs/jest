@@ -54,6 +54,10 @@ function readConfig(argv, packageRoot) {
       config.logHeapUsage = argv.logHeapUsage;
     }
 
+    if (argv.setupTestFrameworkScriptFile) {
+      config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
+    }
+
     config.noStackTrace = argv.noStackTrace;
 
     return config;
