@@ -1,8 +1,23 @@
 ## master
 
-## jest-cli 12.0.3
+## jest-cli 12.1.0
 
-* Added a fallback to the watchman crawler.
+* Added `testRegex` to match for tests outside of specific folders. Deprecated
+  both `testDirectoryName` and `testFileExtensions`.
+* `it` can now return a Promise for async testing. `pit` was deprecated.
+* Added `jest-resolve` as a standalone package based on the Facebook module
+  resolution algorithm.
+* Added `jest-changed-files` as a standalone package to detect changed files
+  in a git or hg repo.
+* Added support for coverage thresholds. See http://facebook.github.io/jest/docs/api.html#coveragethreshold-object.
+* Updated to jsdom 9.0.
+* Updated and improved stack trace reporting.
+* Added `module.filename` and removed the invalid `module.__filename` field.
+* Further improved the `lastCalledWith` and `toBeCalledWith` custom matchers.
+  They now print the most recent calls.
+* Fixed jest-haste-map on continuous integration systems.
+* Fixes for hg/git integration.
+* Added a re-try for the watchman crawler.
 
 ## jest-cli 12.0.2
 
