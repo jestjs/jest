@@ -12,6 +12,7 @@ const FakeTimers = require('./FakeTimers');
 const JasmineFormatter = require('./JasmineFormatter');
 
 const formatFailureMessage = require('./formatFailureMessage');
+const fs = require('fs');
 const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
@@ -37,9 +38,18 @@ const createDirectory = path => {
   }
 };
 
+const fileExists = filePath => {
+  try {
+    fs.accessSync(filePath, fs.R_OK);
+    return true;
+  } catch (e) {}
+  return false;
+};
+
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.FakeTimers = FakeTimers;
+exports.fileExists = fileExists;
 exports.formatFailureMessage = formatFailureMessage;
 exports.JasmineFormatter = JasmineFormatter;
 exports.installCommonGlobals = installCommonGlobals;

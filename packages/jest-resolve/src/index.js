@@ -10,7 +10,7 @@
 
 const H = require('jest-haste-map').H;
 
-const fs = require('fs');
+const fileExists = require('jest-util').fileExists;
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
@@ -54,14 +54,6 @@ class Resolver {
       );
     } catch (e) {}
     return null;
-  }
-
-  static fileExists(filePath) {
-    try {
-      fs.accessSync(filePath, fs.R_OK);
-      return true;
-    } catch (e) {}
-    return false;
   }
 
   resolveModule(from, moduleName, options) {
@@ -215,7 +207,7 @@ class Resolver {
     const relatedPaths = new Set();
     const changed = new Set();
     for (const path of paths) {
-      if (Resolver.fileExists(path)) {
+      if (fileExists(path)) {
         const module = this._moduleMap.files[path];
         if (module) {
           changed.add(path);

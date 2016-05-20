@@ -96,7 +96,7 @@ class TestRunner {
   promiseTestPathsMatching(pattern) {
     if (pattern && !(pattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), pattern);
-      if (Resolver.fileExists(maybeFile)) {
+      if (utils.fileExists(maybeFile)) {
         return Promise.resolve(
           this.isTestFilePath(maybeFile) ? [maybeFile] : []
         );
