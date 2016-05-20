@@ -9,6 +9,7 @@
   resolution algorithm.
 * Added `jest-changed-files` as a standalone package to detect changed files
   in a git or hg repo.
+* Added `--setupTestFrameworkFile` to cli.
 * Added support for coverage thresholds. See http://facebook.github.io/jest/docs/api.html#coveragethreshold-object.
 * Updated to jsdom 9.0.
 * Updated and improved stack trace reporting.
