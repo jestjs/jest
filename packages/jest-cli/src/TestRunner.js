@@ -17,6 +17,7 @@ const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
 const promisify = require('./lib/promisify');
+const throat = require('throat');
 const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
@@ -217,10 +218,10 @@ class TestRunner {
       );
     };
 
-    const onRunFailure = (testPath, err) => {
+    const onRunFailure = (testPath, error) => {
       const testResult = {
         testFilePath: testPath,
-        testExecError: err,
+        testExecError: error,
         testResults: [],
       };
       aggregatedResults.testResults.push(testResult);
@@ -266,31 +267,46 @@ class TestRunner {
   }
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
-    const config = this._config;
+    let farm;
+    let runTest;
+    const stopFarm = () => {
+      if (farm) {
+        workerFarm.end(farm);
+      }
+    };
+    const createFarm = () => {
+      stopFarm();
+      farm = workerFarm({
+        autoStart: true,
+        maxConcurrentCallsPerWorker: 1,
+        maxRetries: 2,
+        maxConcurrentWorkers: this._options.maxWorkers,
+      }, TEST_WORKER_PATH);
+      runTest = promisify(farm);
+    }
     return this._buildHasteMap()
       .then(() => {
-        const farm = workerFarm({
-          autoStart: true,
-          maxConcurrentCallsPerWorker: 1,
-          maxRetries: 2, // Allow for a couple of transient errors.
-          maxConcurrentWorkers: this._options.maxWorkers,
-        }, TEST_WORKER_PATH);
-        const runTest = promisify(farm);
-        return Promise.all(testPaths.map(
-          path => runTest({path, config})
+        createFarm();
+        return Promise.all(testPaths.map(throat(
+          this._options.maxWorkers,
+          path => runTest({path, config: this._config})
             .then(testResult => onTestResult(path, testResult))
-            .catch(err => {
-              onRunFailure(path, err);
-              if (err.type === 'ProcessTerminatedError') {
-                console.error(
-                  'A worker process has quit unexpectedly! ' +
-                  'Most likely this an initialization error.'
+            .catch(error => {
+              if (error.type === 'ProcessTerminatedError') {
+                error = new Error(
+                  `Jest: process was terminated unexpectedly.\n` +
+                  `Original Error: ${error.message}\n` +
+                  `This is likely a problem with your test, for example an ` +
+                  `infinite loop or other bad behavior that makes the ` +
+                  `process crash. Try to run the test directly and in ` +
+                  `isolation.`
                 );
-                process.exit(1);
               }
-            }))
-        )
-        .then(() => workerFarm.end(farm));
+              onRunFailure(path, error);
+              createFarm();
+            })
+        )))
+        .then(stopFarm);
       });
   }
 

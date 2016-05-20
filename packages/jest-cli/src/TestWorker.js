@@ -7,18 +7,16 @@
  */
 'use strict';
 
-// Make sure uncaught errors are logged before we exit.
-process.on('uncaughtException', err => {
-  console.error(err.stack);
-  process.exit(1);
-});
-
 const Test = require('./Test');
 
 const createHasteMap = require('./lib/createHasteMap');
 const createResolver = require('./lib/createResolver');
 
 const formatError = error => {
+  if (!error) {
+    return null;
+  }
+
   if (typeof error === 'string') {
     return {
       stack: null,
@@ -37,6 +35,15 @@ const formatError = error => {
 const resolvers = Object.create(null);
 
 module.exports = (data, callback) => {
+  const exceptionListener = err => {
+    localCallback(err);
+    process.exit(1);
+  };
+  process.on('uncaughtException', exceptionListener);
+  const localCallback = (error, data) => {
+    process.removeListener('uncaughtException', exceptionListener);
+    callback(formatError(error), data);
+  };
   try {
     const name = data.config.name;
     if (!resolvers[name]) {
@@ -49,10 +56,10 @@ module.exports = (data, callback) => {
     new Test(data.path, data.config, resolvers[name])
       .run()
       .then(
-        result => callback(null, result),
-        error => callback(formatError(error))
+        result => localCallback(null, result),
+        error => localCallback(error)
       );
   } catch (error) {
-    callback(formatError(error));
+    localCallback(error);
   }
 };
