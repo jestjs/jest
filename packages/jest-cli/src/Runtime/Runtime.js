@@ -34,7 +34,7 @@ class Runtime {
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
     this._shouldAutoMock = config.automock;
-    this._testDirectoryName = path.sep + config.testDirectoryName + path.sep;
+    this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
@@ -232,8 +232,8 @@ class Runtime {
     let collectorStore;
     if (
       shouldCollectCoverage &&
-      !filename.includes(this._testDirectoryName) &&
-      !filename.includes(constants.NODE_MODULES)
+      !filename.includes(constants.NODE_MODULES) &&
+      !this._testRegex.test(filename)
     ) {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
