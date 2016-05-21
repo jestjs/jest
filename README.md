@@ -282,8 +282,10 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`coverageThreshold` [object]](https://facebook.github.io/jest/docs/api.html#coveragethreshold-object)
   - [`globals` [object]](https://facebook.github.io/jest/docs/api.html#globals-object)
   - [`mocksPattern` [string]](https://facebook.github.io/jest/docs/api.html#mockspattern-string)
+  - [`moduleDirectories` [array<string>]](https://facebook.github.io/jest/docs/api.html#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulefileextensions-array-string)
   - [`moduleNameMapper` [object<string, string>]](https://facebook.github.io/jest/docs/api.html#modulenamemapper-object-string-string)
+  - [`modulePaths` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulepaths-array-string)
   - [`modulePathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string)
   - [`preprocessorIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string)
   - [`rootDir` [string]](https://facebook.github.io/jest/docs/api.html#rootdir-string)
@@ -292,7 +294,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`setupTestFrameworkScriptFile` [string]](https://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string)
   - [`testDirectoryName` [string]](https://facebook.github.io/jest/docs/api.html#testdirectoryname-string)
   - [`testEnvironment` [string]](https://facebook.github.io/jest/docs/api.html#testenvironment-string)
-  - [`testFileExtensions` [array<string>]](https://facebook.github.io/jest/docs/api.html#testfileextensions-array-string)
   - [`testPathDirs` [array<string>]](https://facebook.github.io/jest/docs/api.html#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#testpathignorepatterns-array-string)
   - [`testPathPattern` [string]](https://facebook.github.io/jest/docs/api.html#testpathpattern-string)
@@ -684,6 +685,19 @@ If you are using TypeScript this should be `['js', 'json', 'ts']`
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
+### `modulePaths` [array<string>]
+(default: `[]`)
+
+An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to
+additional locations to search when resolving modules.
+
+### `moduleDirectories` [array<string>]
+(default: `['node_modules']`)
+
+An array of directory names to be searched recursively up from the requiring module's location. Setting this option
+will _override_ the default, if you wish to still search `node_modules` for packages include it
+along with any other options: `['node_modules', 'bower_components']`
+
 ### `moduleNameMapper` [object<string, string>]
 (default: `null`)
 
@@ -752,13 +766,6 @@ For example, many node projects prefer to put their tests in a `tests` directory
 (default: `'jsdom'`)
 
 The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
-
-### `testFileExtensions` [array<string>]
-(default: `['js']`)
-
-An array of file extensions that test files might have. Jest uses this when searching for tests to run.
-
-This is useful if, for example, you are writting test files using TypeScript with a `.ts` file extension. In such a scenario, Use `['js', 'ts']` to make Jest find files that end in both `.js` and `.ts`. (Don't forget to set up a TypeScript pre-processor using [`scriptPreprocessor`](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string) too!)
 
 ### `testPathDirs` [array<string>]
 (default: `['<rootDir>']`)
