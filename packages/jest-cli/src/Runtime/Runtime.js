@@ -129,7 +129,7 @@ class Runtime {
     let manualMockResource = this._resolver.getMockModule(moduleName);
     let modulePath;
     if (manualMockResource) {
-      modulePath = manualMockResource;
+      modulePath = this._resolveModule(from, manualMockResource);
     } else {
       modulePath = this._resolveModule(from, moduleName);
 

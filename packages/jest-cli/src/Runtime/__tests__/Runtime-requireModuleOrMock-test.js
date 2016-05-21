@@ -22,6 +22,7 @@ describe('Runtime', () => {
     '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
     '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
     'mappedToPath': '<rootDir>/GlobalImageStub.js',
+    'mappedToDirectory': '<rootDir>/MyDirectoryModule',
     'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
   };
 
@@ -111,6 +112,12 @@ describe('Runtime', () => {
           'mappedToPath'
         );
         expect(exports.isGlobalImageStub).toBe(true);
+
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'mappedToDirectory'
+        );
+        expect(exports.isIndex).toBe(true);
 
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
