@@ -23,10 +23,7 @@ const workerFarm = require('worker-farm');
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 function pathToRegex(p) {
-  if (path.sep === '\\') {
-    return p.replace(/(\/|\\)/g, '\\\\');
-  }
-  return p;
+	return utils.replacePathSepForRegex(p);
 }
 
 class TestRunner {
