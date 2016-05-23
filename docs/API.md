@@ -65,11 +65,11 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
   - [`setupFiles` [array]](#setupfiles-array)
   - [`setupTestFrameworkScriptFile` [string]](#setuptestframeworkscriptfile-string)
-  - [`testDirectoryName` [string]](#testdirectoryname-string)
   - [`testEnvironment` [string]](#testenvironment-string)
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
   - [`testPathPattern` [string]](#testpathpattern-string)
+  - [`testRegex` [string]](#testregex-string)
   - [`testResultsProcessor` [string]](#testresultsprocessor-string)
   - [`testRunner` [string]](#testrunner-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
@@ -528,13 +528,6 @@ The path to a module that runs some code to configure or set up the testing fram
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
 
-### `testDirectoryName` [string]
-(default: `'__tests__'`)
-
-The name of directories that Jest should expect to find tests in.
-
-For example, many node projects prefer to put their tests in a `tests` directory.
-
 ### `testEnvironment` [string]
 (default: `'jsdom'`)
 
@@ -558,6 +551,12 @@ An array of regexp pattern strings that are matched against all test paths befor
 A regexp pattern string that is matched against all test paths before executing the test. If the test path does not match the pattern, it will be skipped.
 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
+
+### `testRegex` [string]
+(default: `'__tests__/.*\.js$'`)
+
+The pattern Jest uses to detect test files. By default it looks for `.js` files
+inside of `__tests__` folders.
 
 ### `testResultsProcessor` [string]
 (default: `undefined`)
