@@ -21,6 +21,8 @@ next: troubleshooting
   - [`jest.runOnlyPendingTimers()`](#jest-runonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](#jest-setmock-modulename-moduleexports)
   - [`jest.unmock(moduleName)`](#jest-unmock-modulename)
+  - [`jest.useFakeTimers()`](#jest-usefaketimers)
+  - [`jest.useRealTimers()`](#jest-userealtimers)
 
 #### Mock functions
 
@@ -212,6 +214,12 @@ Indicates that the module system should never return a mocked version of the spe
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
 
 *Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
+
+### `jest.useFakeTimers()`
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`). Fake timers are used by default.
+
+### `jest.useRealTimers()`
+Instructs Jest to use the real versions of the standard timer functions.
 
 ## Mock API
 
