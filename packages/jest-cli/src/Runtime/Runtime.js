@@ -488,6 +488,14 @@ class Runtime {
       this._mockFactories[moduleID] = mockFactory;
       return runtime;
     };
+    const useFakeTimers = () => {
+      this._environment.fakeTimers.useFakeTimers();
+      return runtime;
+    };
+    const useRealTimers = () => {
+      this._environment.fakeTimers.useRealTimers();
+      return runtime;
+    };
 
     const runtime = {
       addMatchers: matchers => {
@@ -547,8 +555,8 @@ class Runtime {
 
       setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
 
-      useFakeTimers: () => this._environment.fakeTimers.useFakeTimers(),
-      useRealTimers: () => this._environment.fakeTimers.useRealTimers(),
+      useFakeTimers,
+      useRealTimers,
     };
     return runtime;
   }
