@@ -267,7 +267,6 @@ function normalize(config, argv) {
       case 'rootDir':
       case 'testEnvData':
       case 'testEnvironment':
-      case 'testPathPattern':
       case 'testRegex':
       case 'testReporter':
       case 'testURL':
