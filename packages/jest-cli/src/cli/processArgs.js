@@ -234,7 +234,7 @@ function processArgs() {
         !allowedOptions.has(arg)
       ));
       if (unrecognizedOptions.length) {
-        throw new Error(
+        console.warn(
           'Unrecognized options: ' + unrecognizedOptions.join(', ')
         );
       }
