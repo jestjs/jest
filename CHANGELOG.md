@@ -1,5 +1,11 @@
 ## master
 
+## jest-cli 12.1.1
+
+* Windows stability fixes.
+* Mock module resolution fixes.
+* Remove test files from code coverage.
+
 ## jest-cli 12.1.0
 
 * Jest is now also published in the `jest` package on npm.

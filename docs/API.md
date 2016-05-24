@@ -175,7 +175,7 @@ The second argument can be used to specify an explicit module factory that is be
   });
 
   const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
-  moduleName(); // Will return "42";
+  moduleName(); // Will return '42';
 ```
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
@@ -516,7 +516,7 @@ Examples of such compilers include [jstransform](http://github.com/facebook/jstr
 *Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](/jest/docs/troubleshooting.html#caching-issues).*
 
 ### `preprocessorIgnorePatterns` [array<string>]
-(default: `["/node_modules/"]`)
+(default: `['/node_modules/']`)
 
 An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
 
@@ -549,7 +549,7 @@ A list of paths to directories that Jest should use to search for tests in.
 There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
 
 ### `testPathIgnorePatterns` [array<string>]
-(default: `["/node_modules/"]`)
+(default: `['/node_modules/']`)
 
 An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.
 

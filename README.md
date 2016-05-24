@@ -248,6 +248,8 @@ Example Output:
   - [`jest.runOnlyPendingTimers()`](https://facebook.github.io/jest/docs/api.html#jest-runonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](https://facebook.github.io/jest/docs/api.html#jest-setmock-modulename-moduleexports)
   - [`jest.unmock(moduleName)`](https://facebook.github.io/jest/docs/api.html#jest-unmock-modulename)
+  - [`jest.useFakeTimers()`](https://facebook.github.io/jest/docs/api.html#jest-usefaketimers)
+  - [`jest.useRealTimers()`](https://facebook.github.io/jest/docs/api.html#jest-userealtimers)
 
 #### Mock functions
 
@@ -400,7 +402,7 @@ The second argument can be used to specify an explicit module factory that is be
   });
 
   const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
-  moduleName(); // Will return "42";
+  moduleName(); // Will return '42';
 ```
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
@@ -439,6 +441,12 @@ Indicates that the module system should never return a mocked version of the spe
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
 
 *Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
+
+### `jest.useFakeTimers()`
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`). Fake timers are used by default.
+
+### `jest.useRealTimers()`
+Instructs Jest to use the real versions of the standard timer functions.
 
 ## Mock API
 
@@ -735,7 +743,7 @@ Examples of such compilers include [jstransform](http://github.com/facebook/jstr
 *Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](https://facebook.github.io/jest/docs/troubleshooting.html#caching-issues).*
 
 ### `preprocessorIgnorePatterns` [array<string>]
-(default: `["/node_modules/"]`)
+(default: `['/node_modules/']`)
 
 An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
 
@@ -768,7 +776,7 @@ A list of paths to directories that Jest should use to search for tests in.
 There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
 
 ### `testPathIgnorePatterns` [array<string>]
-(default: `["/node_modules/"]`)
+(default: `['/node_modules/']`)
 
 An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.
 
@@ -780,7 +788,7 @@ A regexp pattern string that is matched against all test paths before executing 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `testRegex` [string]
-(default: `'__tests__/.*\.js
+(default: `'__tests__/.*\.js`)
 
 The pattern Jest uses to detect test files. By default it looks for `.js` files
 inside of `__tests__` folders.

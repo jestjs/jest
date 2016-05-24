@@ -4,7 +4,7 @@
   "version": "12.1.1",
   "main": "src/jest.js",
   "dependencies": {
-    "jest-cli": "^12.1.0"
+    "jest-cli": "^12.1.1"
   },
   "bin": {
     "jest": "./bin/jest.js"
