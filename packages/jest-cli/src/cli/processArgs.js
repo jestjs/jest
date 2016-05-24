@@ -225,14 +225,14 @@ function processArgs() {
       }
 
       const yargsSpecialOptions = ['$0', '_'];
-      const allowedOptions = Object.keys(options).reduce((acc, option) => {
-        return acc
+      const allowedOptions = Object.keys(options).reduce((acc, option) => (
+        acc
           .add(option)
-          .add(options[option].alias);
-      }, new Set(yargsSpecialOptions));
-      const unrecognizedOptions = Object.keys(argv).filter(arg => {
-        return !allowedOptions.has(arg);
-      });
+          .add(options[option].alias)
+      ), new Set(yargsSpecialOptions));
+      const unrecognizedOptions = Object.keys(argv).filter(arg => (
+        !allowedOptions.has(arg)
+      ));
       if (unrecognizedOptions.length) {
         throw new Error(
           'Unrecognized options: ' + unrecognizedOptions.join(', ')
