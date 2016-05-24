@@ -114,9 +114,11 @@ class Resolver {
     //    only produces an error based on the dirname but we have the actual
     //    current module name available.
     const relativePath = path.relative(dirname, from);
-    throw new Error(
+    const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
     );
+    err.code = 'MODULE_NOT_FOUND';
+    throw err;
   }
 
   isCoreModule(moduleName) {
