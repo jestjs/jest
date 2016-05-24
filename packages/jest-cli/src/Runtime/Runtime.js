@@ -409,8 +409,8 @@ class Runtime {
       return false;
     }
 
-    if (moduleName in this._shouldMockModuleCache) {
-      return this._shouldMockModuleCache[moduleName];
+    if (moduleID in this._shouldMockModuleCache) {
+      return this._shouldMockModuleCache[moduleID];
     }
 
     const manualMockResource = this._resolver.getMockModule(moduleName);
@@ -419,14 +419,14 @@ class Runtime {
       modulePath = this._resolveModule(from, moduleName);
     } catch (e) {
       if (manualMockResource) {
-        this._shouldMockModuleCache[moduleName] = true;
+        this._shouldMockModuleCache[moduleID] = true;
         return true;
       }
       throw e;
     }
 
     if (this._unmockList && this._unmockList.test(modulePath)) {
-      this._shouldMockModuleCache[moduleName] = false;
+      this._shouldMockModuleCache[moduleID] = false;
       return false;
     }
 
@@ -446,7 +446,7 @@ class Runtime {
       return false;
     }
 
-    return this._shouldMockModuleCache[moduleName] = true;
+    return this._shouldMockModuleCache[moduleID] = true;
   }
 
   _createRequireImplementation(from) {
