@@ -9,8 +9,9 @@
     "mkdirp": "*",
     "object-assign": "^2.0.0",
     "optimist": "0.6.0",
-    "react": "~0.13.2",
+    "react": "~15.0.2",
     "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
+    "classnames": "2.2.4",
     "request": "*"
   }
 }
