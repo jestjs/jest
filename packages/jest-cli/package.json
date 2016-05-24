@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "12.1.0",
+  "version": "12.1.1",
   "main": "src/jest.js",
   "dependencies": {
     "chalk": "^1.1.1",
@@ -15,7 +15,7 @@
     "jest-jasmine1": "^12.1.0",
     "jest-jasmine2": "^12.1.0",
     "jest-mock": "^12.1.0",
-    "jest-resolve": "^12.1.0",
+    "jest-resolve": "^12.1.1",
     "jest-util": "^12.1.0",
     "json-stable-stringify": "^1.0.0",
     "lodash.template": "^4.2.4",
