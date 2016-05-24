@@ -7,6 +7,8 @@
 
 var Metadata = require('Metadata');
 var React = require('React');
+var Container = require('Container');
+var SideNav = require('SideNav');
 
 var DocsSidebar = React.createClass({
   getCategories: function() {
@@ -64,34 +66,17 @@ var DocsSidebar = React.createClass({
     return categories;
   },
 
-  getLink: function(metadata) {
-    if (metadata.permalink.match(/^https?:/)) {
-      return metadata.permalink;
-    }
-    return '/jest/' + metadata.permalink + '#content';
-  },
-
   render: function() {
-    return <div className="nav-docs">
-      {this.getCategories().map((category) =>
-        <div className="nav-docs-section" key={category.name}>
-          <h3>{category.name}</h3>
-          <ul>
-            {category.links.map((metadata) =>
-              <li key={metadata.id}>
-                <a
-                  target={metadata.permalink.match(/^https?:/) && '_blank'}
-                  style={{marginLeft: metadata.indent ? 20 : 0}}
-                  className={metadata.id === this.props.metadata.id ? 'active' : ''}
-                  href={this.getLink(metadata)}>
-                  {metadata.title}
-                </a>
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-    </div>;
+    return (
+      <Container className="docsNavContainer" id="docsNav" wrapper={false}>
+        <SideNav
+          root="/jest/docs/"
+          title="Docs"
+          contents={this.getCategories()}
+          current={this.props.metadata}
+        />
+      </Container>
+    );
   }
 });
 
