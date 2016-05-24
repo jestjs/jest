@@ -16,7 +16,9 @@ var BlogSidebar = React.createClass({
       name: "Recent Posts",
       links: MetadataBlog.files,
     }];
+    const title = this.props.current && this.props.current.title;
     var current = {
+      id: title || '',
       category: "Recent Posts",
     };
     return (

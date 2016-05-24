@@ -106,12 +106,8 @@ article p img {
 }
 
 a {
-  border-bottom: 1px dotted #0971B2;
-  color: #1485CC;
-	font-weight: 800;
+  color: #ca461a;
   text-decoration: none;
-  -webkit-transition: background 0.3s, color 0.3s;
-  transition: background 0.3s, color 0.3s;
 }
 
 a.hash-link {
@@ -238,9 +234,11 @@ h1, h2, h3, h4 {
   margin: 12px 0;
   padding: 0;
 }
+.mainContainer .wrapper a, .mainContainer .wrapper a:focus {
+  text-decoration: underline;
+}
 .mainContainer .wrapper a:hover, .mainContainer .wrapper a:focus {
-  background: #ca461a;
-  color: #fff;
+  text-decoration: none;
 }
 .mainContainer .wrapper em, .mainContainer .wrapper i {
   font-style: italic;
@@ -311,9 +309,6 @@ h1, h2, h3, h4 {
 .mainContainer .wrapper .post.basicPost {
   margin-top: 30px;
 }
-.mainContainer .wrapper .post a:hover, .mainContainer .wrapper .post a:focus {
-  color: #fff;
-}
 .mainContainer .wrapper .post h2 {
   border-bottom: 4px solid #ca461a;
   font-size: 130%;
@@ -337,7 +332,6 @@ h1, h2, h3, h4 {
   border: none;
 }
 .mainContainer .wrapper .post .postHeader .post-meta {
-  color: #ca461a;
   text-align: center;
 }
 .mainContainer .wrapper .post .postSocialPlugins {
@@ -536,6 +530,8 @@ input[type="search"] {
 .navSearchWrapper {
   align-self: center;
   position: relative;
+  height: 34px;
+  line-height: 34px;
 }
 .navSearchWrapper::before {
   border: 3px solid #f2c4b2;
@@ -546,7 +542,7 @@ input[type="search"] {
   left: 15px;
   width: 6px;
   position: absolute;
-  top: 4px;
+  top: 10px;
   z-index: 1;
 }
 .navSearchWrapper::after {
@@ -556,7 +552,7 @@ input[type="search"] {
   left: 24px;
   position: absolute;
   transform: rotate(-45deg);
-  top: 12px;
+  top: 18px;
   width: 3px;
   z-index: 1;
 }
@@ -593,16 +589,27 @@ input#search_input_react {
   border-radius: 20px;
   background-color: rgba(242, 196, 178, 0.25);
   border: none;
-  color: rgba(242, 196, 178, 0);
+  color: #fff;
   outline: none;
   position: relative;
   transition: background-color 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), width 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), color 0.2s ease;
-  width: 60px;
+  width: 240px;
 }
 input#search_input_react:focus, input#search_input_react:active {
-  background-color: #f9f9f9;
-  color: #393939;
+  color: #fff;
   width: 240px;
+}
+
+input::-webkit-input-placeholder {
+  color: #f2c4b2;
+}
+
+input::-moz-placeholder {
+  color: #f2c4b2;
+}
+
+input::placeholder {
+  color: #f2c4b2;
 }
 
 code {
@@ -612,51 +619,36 @@ code {
 	font-weight: 300;
 }
 .prism {
-  color: #5e9f24;
-  font: 300 12px/1.5em Hack, monospace;
-  max-width: 100%;
+  white-space: pre-wrap;
+  font-family: 'source-code-pro', Menlo, 'Courier New', Consolas, monospace;
+  font-size: 13px;
+  line-height: 20px;
+  border-left: 4px solid #C63D0F;
+  padding: 5px 10px;
+  margin: 14px 0 14px 20px;
+  background-color: rgba(226, 142, 50, 0.06);
 }
-.prism {
-  border-radius: 3px;
-  margin: 10px 0;
-  padding: 20px;
-  overflow-x: scroll;
-  -webkit-overflow-scrolling: touch;
+
+.prism + .prism {
+  margin-top: 14px;
 }
-.prism {
-  background-color: #002b36;
-  color: #93a1a1;
+
+.token.keyword {
+  color: #1990B8;
 }
-.prism .token {
-	color: #93a1a1;
+
+.token.string, .token.regex {
+  color: #2F9C0A;
 }
-.prism .keyword {
-  color: #859900;
+
+.token.boolean, .token.number {
+  color: #C92C2C;
 }
-.prism .punctuation {
-  color: #93a1a1;
+
+.token.comment {
+  color: #7D8B99;
 }
-.prism .operator {
-  color: #859900;
-}
-.prism .comment {
-  color: #586e75;
-}
-.prism .function {
-  color: #268bd2;
-}
-.prism .string {
-  color: #2aa198;
-}
-.prism .number {
-  color: #2aa198;
-}
-.prism .class-name {
-  color: #268bd2;
-}
-.prism .error {
-  color: #93a1a1;
-}
+
 .prism table {
   background: none;
   border: none;
@@ -679,13 +671,6 @@ code {
 }
 .highlighter-rouge .prism table tbody tr td.gutter pre {
   max-width: 20px;
-}
-
-a code {
-	color: inherit;
-}
-a:hover code {
-  color: white;
 }
 
 .promoSection {
@@ -735,6 +720,7 @@ a:hover code {
 .homeContainer .button {
   border-color: #fff;
   border-width: 1px;
+  margin-right: 4px;
   color: #fff;
 }
 .homeContainer .button:hover {
@@ -747,15 +733,11 @@ a:hover code {
 }
 
 .edit-page-link {
-  font-size: 14px;
+  float: right;
+  font-size: 12px;
   font-weight: normal;
-  line-height: 20px;
-  opacity: 0.6;
-  transition: opacity 0.5s;
-}
-
-.edit-page-link:hover {
-  opacity: 1;
+  margin-top: 30px;
+  text-decoration: none;
 }
 
 .gridBlock {
@@ -971,6 +953,7 @@ a:hover code {
   line-height: 1.2em;
 }
 .footerContainer .footerWrapper .footerSection .footerLink {
+  font-weight: bold;
   padding-right: 20px;
 }
 .footerContainer .footerWrapper .fbOpenSourceFooter {
@@ -1211,6 +1194,9 @@ a:hover code {
 	  padding: 0 10px;
 	  display: block;
 	}
+  .navigationSlider ul li.navSearchWrapper {
+    padding: 6px 0 6px 10px;
+  }
 	.navigationSlider .slidingNav ul li a {
 	  border: 0;
 	  color: #f2c4b2;
@@ -1356,7 +1342,6 @@ nav.toc .toggleNav .navGroup ul {
 nav.toc .toggleNav .navGroup h3 {
   background: #adadad;
   color: #393939;
-  cursor: pointer;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2em;
@@ -1547,17 +1532,21 @@ table tr th {
 .blogContainer .posts .post {
   border: 1px solid #e0e0e0;
   border-radius: 3px;
-  padding: 10px 20px 20px;
+  padding: 0 10px 10px;
 }
 .blogContainer .lonePost {
   margin-top: 60px;
 }
-.blogContainer .lonePost .post {
-  padding: 10px 0px 0px;
-}
 .blogContainer .postHeader h1 {
   text-align: center;
 }
+.blogContainer .postHeader a {
+  text-decoration: none;
+}
+.blogContainer .postHeader p.post-meta {
+  padding: 0;
+}
+
 .blogContainer .postHeader .post-authorName {
   color: rgba(57, 57, 57, 0.7);
   font-size: 14px;

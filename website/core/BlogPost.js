@@ -37,12 +37,9 @@ var BlogPost = React.createClass({
   },
   renderTitle: function() {
     var post = this.props.post;
-    if (this.props.truncate) {
-      return (
-        <h1><a href={"/jest/blog/"+post.path}>{post.title}</a></h1>
-      );
-    }
-    return <h1>{post.title}</h1>;
+    return (
+      <h1><a href={"/jest/blog/"+post.path}>{post.title}</a></h1>
+    );
   },
   render: function() {
     var post = this.props.post;

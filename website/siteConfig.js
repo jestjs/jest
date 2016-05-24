@@ -3,14 +3,14 @@ var Button = require('Button');
 var siteConfig = {
   title: "Jest",
   tagline: "Painless JavaScript Unit Testing",
-  description: "Jest is a unit testing framework for JavaScript, used by Facebook to test React applications.",
+  description: "Jest is a JavaScript unit testing framework, used by Facebook to test services and React applications.",
   url: "https://facebook.github.io",
   baseUrl: "/jest/",
   repo: "facebook/jest",
   homepagePromos: [
     <div className="pluginRowBlock">
       <Button href="/jest/docs/getting-started.html#content">Get Started</Button>
-      <Button href="/jest/docs/getting-started.html#content">Tutorial</Button>
+      <Button href="/jest/docs/api.html#content">API Reference</Button>
     </div>,
   ],
   features: [
