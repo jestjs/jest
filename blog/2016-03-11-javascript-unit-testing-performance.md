@@ -2,11 +2,14 @@
 title: JavaScript Unit Testing Performance
 author: Christoph Pojer
 authorURL: http://twitter.com/cpojer
+authorFBID: 100000023028168
 ---
 
 Jest is running thousands of tests at Facebook at all times, either through continuous integration or invoked by engineers manually during development. This worked well for years even as the people working on Jest moved on to other projects within Facebook.
 
 As engineers added more and more tests though, we noticed the performance of Jest wasn't going to scale. Additionally, in the last year the JavaScript ecosystem has changed dramatically with the introduction of things like npm3 and Babel, which we hadn't anticipated. We formed a new Jest team to address all of these issues and we'll be sharing our progress and plans on this blog from now on.
+
+<!--truncate-->
 
 Jest is a bit different from most test runners. We designed it to work well in the context of Facebook's infrastructure:
 
