@@ -294,7 +294,7 @@ describe('HasteMap', () => {
         '  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js',
         '',
         'This warning is caused by a @providesModule declaration with the ' +
-        'same name accross two different files.',
+        'same name across two different files.',
       ].join('\n'));
     });
   });
