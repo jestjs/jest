@@ -4,7 +4,6 @@
  */
 
 var React = require('React');
-var HeaderLinks = require('HeaderLinks');
 
 class HeaderNav extends React.Component {
   constructor() {
@@ -57,7 +56,7 @@ class HeaderNav extends React.Component {
             {this.props.linksInternal.map(this.makeLinks, this)}
             {this.props.linksExternal.map(this.makeLinks, this)}
             <li className="navSearchWrapper reactNavSearchWrapper">
-              <input id="search_input_react" type="text" placeholder="Search docs..." />
+              <input id="search_input_react" type="text" placeholder="Search" />
             </li>
           </ul>
         </nav>

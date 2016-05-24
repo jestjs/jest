@@ -25,7 +25,7 @@ var Footer = React.createClass({
               <a className="footerLink" href="https://twitter.com/fbOpenSource" target="_blank">Twitter</a>
             </div>
             <div className="footerSection rightAlign">
-              <a className="footerLink" href={repo} target="_blank">Contribute to this project on GitHub</a>
+              <a className="footerLink" href={repo} target="_blank">Contribute on GitHub</a>
             </div>
           </div>
         </div>

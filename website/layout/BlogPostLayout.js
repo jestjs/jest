@@ -21,7 +21,7 @@ var BlogPostLayout = React.createClass({
         title={this.props.metadata.title}
         description={this.props.children.trim().split('\n')[0]}>
         <div className="docMainWrapper wrapper">
-          <BlogSidebar />
+          <BlogSidebar current={this.props.metadata} />
           <Container className="mainContainer documentContainer postContainer blogContainer">
             <div className="lonePost">
               <BlogPost post={this.props.metadata} content={this.props.children} />
