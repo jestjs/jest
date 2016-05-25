@@ -187,7 +187,7 @@ function makeComponent(metadata) {
     let isReturnValueLastSet = false;
     let defaultReturnValue;
     let mockImpl;
-    let f;
+    let f; // eslint-disable-line
     const specificReturnValues = [];
     const specificMockImpls = [];
     const calls = [];
