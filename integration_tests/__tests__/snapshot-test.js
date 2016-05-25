@@ -8,11 +8,22 @@
  * @emails oncall+jsinfra
  */
 'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const runJest = require('../runJest');
 
+const snapshotDir =
+  path.resolve(__dirname, '../snapshot/__tests__/__snapshots__');
+const snapshotFile = path.resolve(snapshotDir, 'snapshot.js.snap');
+
 describe('Snapshot', () => {
+
+  afterEach(() => {
+    fs.unlinkSync(snapshotFile);
+    fs.rmdirSync(snapshotDir)
+  });
+
   it('works as expected', () => {
     const result = runJest.json('snapshot', []);
     const json = result.json;
@@ -23,17 +34,11 @@ describe('Snapshot', () => {
     expect(json.numPendingTests).toBe(0);
     expect(result.status).toBe(0);
 
-    const content = fs.readFileSync(
-      path.resolve(
-        __dirname,
-        '../snapshot/__tests__/__snapshots__/snapshot.js.snap'
-      )
-    );
+    const content = fs.readFileSync(snapshotFile);
 
     const output = JSON.parse(content);
     expect(
       output['snapshot is not influenced by previous counter 0']
     ).not.toBe(undefined);
-
   });
 });
