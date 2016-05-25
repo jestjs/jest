@@ -10,6 +10,11 @@
 module.exports = (filePath, options, jasmine, snapshotState) => ({
   toMatchSnapshot: (util, customEquality) => {
     return {
+      negativeCompare() {
+        throw new Error(
+          'Jest: `.not` can not be used with `.toMatchSnapshot()`.'
+        );
+      },
       compare(rendered, expected) {
 
         const currentSpecName = snapshotState.currentSpecName;
