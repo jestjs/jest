@@ -19,14 +19,15 @@ const FAIL = chalk.reset.bold.bgRed(' FAIL ');
 const PASS = chalk.reset.bold.bgGreen(' PASS ');
 
 const FAIL_COLOR = chalk.bold.red;
+const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 const PASS_COLOR = chalk.bold.green;
 const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
+const SNAPSHOT_SUMMARY = chalk.bold.green;
 const TEST_NAME_COLOR = chalk.bold;
-const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 
 const print = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
-
+const pluralizeSnapshot = num => 'snapshot' + (num > 1 ? 's' : '');
 class DefaultTestReporter {
 
   constructor(customProcess) {
@@ -137,6 +138,37 @@ class DefaultTestReporter {
     if (pendingTests) {
       results +=
         `${PENDING_COLOR(`${print('test', pendingTests)} skipped`)}, `;
+    }
+
+    let snapshotsAdded = 0;
+    let snapshotsFiles = 0;
+    let snapshotsMatched = 0;
+    let snapshotsRemoved = 0;
+    aggregatedResults.testResults.forEach(result => {
+      if (result.snapshotsAdded) {
+        snapshotsFiles++;
+      }
+      snapshotsAdded += result.snapshotsAdded;
+      snapshotsMatched += result.snapshotsMatched;
+      snapshotsRemoved += result.snapshotsRemoved;
+    });
+    if (snapshotsAdded || snapshotsMatched) {
+      results += `${SNAPSHOT_SUMMARY('Snapshot Summary')}\n`;
+      if (snapshotsAdded) {
+        results +=
+          `* ${snapshotsAdded} ${pluralizeSnapshot(snapshotsAdded)} written ` +
+          `in ${snapshotsFiles} test file${snapshotsFiles > 1 ? 's' :''}\n`;
+      }
+      if (snapshotsRemoved) {
+        results +=
+          `* ${snapshotsRemoved} ${pluralizeSnapshot(snapshotsRemoved)} `+
+          `deleted\n`;
+      }
+      if (snapshotsMatched) {
+        results +=
+          `* ${snapshotsMatched} ${pluralizeSnapshot(snapshotsMatched)} `+
+          `were unchanged\n`;
+      }
     }
 
     results +=
