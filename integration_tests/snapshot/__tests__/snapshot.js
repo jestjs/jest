@@ -31,4 +31,7 @@ describe('snapshot', () => {
     expect(JSON.stringify(test)).toMatchSnapshot();
   });
 
+  it('cannot be used chained with .not', () => {
+    expect(() => expect('').not.toMatchSnapshot()).toThrow();
+  });
 });
