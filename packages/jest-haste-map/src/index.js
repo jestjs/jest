@@ -125,7 +125,7 @@ class HasteMap {
 
     const list = options.providesModuleNodeModules;
     this._whitelist = (list && list.length)
-      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + '))', 'g')
+      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + ')(?=$|' + path.sep + '))', 'g')
       : null;
 
     this._cachePath = HasteMap.getCacheFilePath(
