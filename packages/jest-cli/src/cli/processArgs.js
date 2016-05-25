@@ -195,6 +195,14 @@ function processArgs() {
         ),
         type: 'boolean',
       },
+      updateSnapshot: {
+        alias: 'u',
+        default: false,
+        description: _wrapDesc(
+          'Use this flag to re-record snapshots.'
+        ),
+        type: 'boolean',
+      },
     })
     .check(argv => {
       if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
