@@ -768,8 +768,16 @@ code {
 	display: flex;
 	flex-flow: row wrap;
 }
+.blockImage {
+	max-width: 150px;
+	width: 50%;
+}
 .imageAlignTop .blockImage {
 	margin-bottom: 20px;
+}
+.imageAlignTop.alignCenter .blockImage {
+	margin-left: auto;
+	margin-right: auto;
 }
 .imageAlignSide .blockImage {
 	flex: 0 1 100px;

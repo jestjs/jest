@@ -15,17 +15,17 @@ var siteConfig = {
   ],
   features: [
     {
-      image: "/jest/img/content/adaptable.png",
+      image: "/jest/img/content/adaptable.svg",
       title: "Adaptable",
       content: "Jest uses Jasmine assertions by default and Jest is modular, extendible and configurable."
     },
     {
-      image: "/jest/img/content/sandboxed.png",
+      image: "/jest/img/content/sandboxed.svg",
       title: "Sandboxed and Fast",
       content: "Jest virtualizes JavaScript environments, provides browser mocks and runs tests in parallel across workers."
     },
     {
-      image: "/jest/img/content/automatic_mocks.png",
+      image: "/jest/img/content/automatic_mocks.svg",
       title: "Mock by Default",
       content: "Jest [automatically mocks](/jest/docs/automatic-mocking.html#content) JavaScript [modules](/jest/docs/common-js-testing.html#content), making most existing code testable."
     },
