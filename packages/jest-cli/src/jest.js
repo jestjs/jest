@@ -241,7 +241,7 @@ function runCLI(argv, root, onComplete) {
         });
       } else {
         pipe.write(header);
-        return runJest(config, argv, pipe, onComplete);
+        runJest(config, argv, pipe, onComplete);
       }
     })
     .catch(error => {

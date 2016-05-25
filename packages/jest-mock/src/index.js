@@ -187,7 +187,9 @@ function makeComponent(metadata) {
     let isReturnValueLastSet = false;
     let defaultReturnValue;
     let mockImpl;
+    /* eslint-disable prefer-const */
     let f;
+    /* eslint-enable perfer-const */
     const specificReturnValues = [];
     const specificMockImpls = [];
     const calls = [];
