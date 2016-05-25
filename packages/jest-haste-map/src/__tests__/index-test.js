@@ -223,6 +223,12 @@ describe('HasteMap', () => {
       ' */',
       'const Test = require("Test");',
     ].join('\n');
+    mockFs['/fruits/node_modules/fbjs2/index.js'] = [
+      '/**',
+      ' * @providesModule fbjs2',
+      ' */',
+    ].join('\n');
+
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
       mocksPattern: '/__mocks__/',
