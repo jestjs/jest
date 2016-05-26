@@ -48,9 +48,9 @@ module.exports = {
     state.getCounter = null;
     state.incrementCounter = null;
     state.snapshot = SnapshotFile.forFile(filePath);
-    state.snapshotsAdded = 0;
-    state.snapshotsRemoved = 0;
-    state.snapshotsMatched = 0;
+    state.added = 0;
+    state.removed = 0;
+    state.matched = 0;
 
     patchJasmine(jasmine, state);
     return state;

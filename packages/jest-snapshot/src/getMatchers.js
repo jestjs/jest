@@ -35,10 +35,10 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
           !snapshot.has(key)
         ) {
           if (options.updateSnapshot && snapshot.has(key)) {
-            snapshotState.snapshotsRemoved++;
+            snapshotState.removed++;
           }
           snapshot.add(key, rendered);
-          snapshotState.snapshotsAdded++;
+          snapshotState.added++;
           pass = true;
         } else {
           pass = snapshot.matches(key, rendered);
@@ -59,7 +59,7 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
               'toMatchSnapshot #' + (callCount + 1) + ':'
             );
           } else {
-            snapshotState.snapshotsMatched++;
+            snapshotState.matched++;
           }
         }
 
