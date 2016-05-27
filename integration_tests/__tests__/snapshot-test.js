@@ -21,7 +21,7 @@ describe('Snapshot', () => {
 
   afterEach(() => {
     fs.unlinkSync(snapshotFile);
-    fs.rmdirSync(snapshotDir)
+    fs.rmdirSync(snapshotDir);
   });
 
   it('works as expected', () => {
