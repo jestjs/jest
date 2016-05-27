@@ -60,6 +60,12 @@ function readConfig(argv, packageRoot) {
 
     config.noStackTrace = argv.noStackTrace;
 
+    config.testcheckOptions = {
+      times: argv.testcheckTimes,
+      maxSize: argv.testcheckMaxSize,
+      seed: argv.testcheckSeed,
+    };
+
     return config;
   });
 }

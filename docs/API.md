@@ -81,8 +81,10 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 
   - `afterEach(fn)`
   - `beforeEach(fn)`
+  - [`check`](#property-testing)
   - `describe(name, fn)`
   - [`expect(value)`](#expect-value)
+  - [`gen`](#property-testing)
   - `it(name, fn)`
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
@@ -343,6 +345,49 @@ module should receive a mock implementation or not.
 
 Returns a mock module instead of the actual module, bypassing all checks on
 whether the module should be required normally or not.
+
+## Property testing
+
+Jest supports property testing with the
+[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
+the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
+
+### `check.it(name, [options], generators, fn)`
+Creates a property test. Test cases will be created by the given `generators`
+and passed as arguments to `fn`. If any test case fails, a shrunken failing
+value will be given in the test output. For example:
+
+```js
+check.it('can recover encoded URIs',
+  [gen.string],
+  s => expect(s).toBe(decodeURI(encodeURI(s))));
+```
+
+If `options` are provided, they override the corresponding command-line options.
+The possible options are:
+
+```
+{
+  times: number;   // The number of test cases to run. Default: 100.
+  maxSize: number; // The maximum size of sized data such as numbers
+                   // (their magnitude) or arrays (their length). This can be
+                   // overridden with `gen.resize`. Default: 200.
+  seed: number;    // The random number seed. Defaults to a random value.
+}
+```
+
+### `check.fit(name, [options], generators, fn)`
+
+Executes this test and skips all others. Like `fit`, but for property tests.
+
+### `check.xit(name, [options], generators, fn)`
+
+Skips this test. Like `xit`, but for property tests.
+
+### `gen`
+
+A library of generators for property tests. See the
+[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
 
 ## Configuration
 
