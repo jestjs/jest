@@ -47,7 +47,7 @@ function getTestPaths(testRunner, config, patternInfo) {
   if (patternInfo.onlyChanged) {
     return findOnlyChangedTestPaths(testRunner, config);
   } else {
-    return testRunner.promiseTestPathsMatching(patternInfo.pattern);
+    return testRunner.promiseTestPathsMatching();
   }
 }
 
@@ -89,25 +89,27 @@ function buildTestPathPatternInfo(argv) {
   if (argv.testPathPattern) {
     return {
       input: argv.testPathPattern,
-      pattern: argv.testPathPattern,
+      testPathPattern: argv.testPathPattern,
       shouldTreatInputAsPattern: true,
     };
   }
   if (argv._ && argv._.length) {
     return {
       input: argv._.join(' '),
-      pattern: argv._.join('|'),
+      testPathPattern: argv._.join('|'),
       shouldTreatInputAsPattern: false,
     };
   }
   return {
     input: '',
-    pattern: '',
+    testPathPattern: '',
     shouldTreatInputAsPattern: false,
   };
 }
 
-function getNoTestsFoundMessage(patternInfo) {
+const pluralize = (word, count, ending) => `${count} ${word}${count === 1 ? '' : ending}`;
+
+function getNoTestsFoundMessage(patternInfo, config, data) {
   if (patternInfo.onlyChanged) {
     const guide = patternInfo.watch
       ? 'starting Jest with `jest --watch=all`'
@@ -116,19 +118,23 @@ function getNoTestsFoundMessage(patternInfo) {
     'Note: If you are using dynamic `require`-calls or no tests related ' +
     'to your changed files can be found, consider ' + guide + '.';
   }
-  const pattern = patternInfo.pattern;
+
+  const pattern = patternInfo.testPathPattern;
   const input = patternInfo.input;
   const shouldTreatInputAsPattern = patternInfo.shouldTreatInputAsPattern;
 
   const formattedPattern = `/${pattern}/`;
-  const formattedInput = shouldTreatInputAsPattern ?
-    `/${input}/` :
-    `"${input}"`;
+  const formattedInput = shouldTreatInputAsPattern ? `/${input}/` : `"${input}"`;
+  const testPathPattern = input === pattern ? formattedInput : formattedPattern;
 
-  const message = `No tests found for ${formattedInput}.`;
-  return input === pattern ?
-    message :
-    `${message} Regex used while searching: ${formattedPattern}.`;
+  const statsMessage = Object.keys(data.stats).map(key => {
+    const value = key === 'testPathPattern' ? testPathPattern : config[key];
+    if (value) {
+      return `  ${key}: ${chalk.yellow(value)} - ${pluralize('match', data.stats[key], 'es')}`;
+    }
+  }).filter(line => line).join('\n');
+
+  return `${chalk.bold.red('NO TESTS FOUND')}. ${pluralize('file', data.total, 's')} checked.\n${statsMessage}`;
 }
 
 function getWatcher(config, packageRoot, callback) {
@@ -144,16 +150,17 @@ function runJest(config, argv, pipe, onComplete) {
   if (argv.silent) {
     config.silent = true;
   }
+  const patternInfo = buildTestPathPatternInfo(argv);
+  config.testPathPattern = patternInfo.testPathPattern;
   const testRunner = new TestRunner(config, {
     maxWorkers: getMaxWorkers(argv),
   });
-  const patternInfo = buildTestPathPatternInfo(argv);
   return getTestPaths(testRunner, config, patternInfo)
-    .then(testPaths => {
-      if (!testPaths.length) {
-        pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+    .then(data => {
+      if (!data.paths.length) {
+        pipe.write(`${getNoTestsFoundMessage(patternInfo, config, data)}\n`);
       }
-      return testPaths;
+      return data.paths;
     })
     .then(testPaths => testRunner.runTests(testPaths))
     .then(runResults => {

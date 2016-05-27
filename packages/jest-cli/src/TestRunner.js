@@ -46,6 +46,14 @@ class TestRunner {
     this._testIgnorePattern =
       ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
 
+    this._testPathPattern = this._config.testPathPattern;
+    this._testPathCases = {
+      testPathDirs: path => this._testPathDirPattern.test(path),
+      testRegex: path => this._testRegex.test(path),
+      testPathIgnorePatterns: path => (!this._testIgnorePattern || !this._testIgnorePattern.test(path)),
+      testPathPattern: path => (!this._testPathPattern || new RegExp(this._testPathPattern).test(path)),
+    };
+
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
@@ -67,18 +75,40 @@ class TestRunner {
     return this._buildPromise;
   }
 
-  _getAllTestPaths() {
-    return this._hasteMap
-      .matchFiles(this._testRegex)
-      .then(paths => paths.filter(path => this.isTestFilePath(path)));
+  _filterTestPathsWithStats(allPaths, options) {
+    const data = {
+      total: allPaths.length,
+      stats: {},
+    };
+
+    const testCases = options && options.checkTestPathPattern
+      ? Object.keys(this._testPathCases)
+      : Object.keys(this._testPathCases).slice(0, -1);
+
+    const paths = allPaths.filter(path => {
+      return testCases.reduce((flag, key) => {
+        if (this._testPathCases[key](path)) {
+          data.stats[key] = ++data.stats[key] || 1;
+          return flag && true;
+        }
+        data.stats[key] = data.stats[key] || 0;
+        return false;
+      }, true);
+    });
+
+    data.paths = paths;
+    return data;
+  }
+
+  _getAllTestPaths(options) {
+    return this._hasteMap.build()
+      .then(hasteMap => this._filterTestPathsWithStats(Object.keys(hasteMap.files), options));
   }
 
   isTestFilePath(path) {
-    return (
-      this._testPathDirPattern.test(path) &&
-      this._testRegex.test(path) &&
-      (!this._testIgnorePattern || !this._testIgnorePattern.test(path))
-    );
+    return Object.keys(this._testPathCases).slice(0, -1).every(key => (
+      this._testPathCases[key](path)
+    ));
   }
 
   promiseTestPathsRelatedTo(paths) {
@@ -93,20 +123,17 @@ class TestRunner {
     );
   }
 
-  promiseTestPathsMatching(pattern) {
-    if (pattern && !(pattern instanceof RegExp)) {
-      const maybeFile = path.resolve(process.cwd(), pattern);
+  promiseTestPathsMatching() {
+    if (this._testPathPattern && !(this._testPathPattern instanceof RegExp)) {
+      const maybeFile = path.resolve(process.cwd(), this._testPathPattern);
       if (Resolver.fileExists(maybeFile)) {
         return Promise.resolve(
-          this.isTestFilePath(maybeFile) ? [maybeFile] : []
+          this._filterTestPathsWithStats([maybeFile])
         );
       }
     }
 
-    const paths = this._getAllTestPaths();
-    return pattern
-      ? paths.then(list => list.filter(path => new RegExp(pattern).test(path)))
-      : paths;
+    return this._getAllTestPaths({checkTestPathPattern: true});
   }
 
   _getTestPerformanceCachePath() {

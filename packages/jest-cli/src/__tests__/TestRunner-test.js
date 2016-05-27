@@ -15,6 +15,7 @@ const path = require('path');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
+const testPathPattern = /.*/;
 
 let normalizeConfig;
 
@@ -64,36 +65,38 @@ describe('TestRunner', () => {
   });
 
   describe('testPathsMatching', () => {
-    pit('finds tests matching a pattern', () => {
+    it('finds tests matching a pattern', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
+        testPathPattern,
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         testRegex: 'not-really-a-test',
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([
           path.normalize('__testtests__/not-really-a-test.txt'),
         ]);
       });
     });
 
-    pit('finds tests matching a JS pattern', () => {
+    it('finds tests matching a JS pattern', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
+        testPathPattern,
         moduleFileExtensions: ['js', 'jsx'],
         testRegex: 'test\.jsx?',
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -101,71 +104,75 @@ describe('TestRunner', () => {
       });
     });
 
-    pit('finds tests with default file extensions', () => {
+    it('finds tests with default file extensions', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
+        testPathPattern,
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([
           path.normalize('__testtests__/test.js'),
         ]);
       });
     });
 
-    pit('finds tests with similar but custom file extensions', () => {
+    it('finds tests with similar but custom file extensions', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
+        testPathPattern,
         moduleFileExtensions: ['jsx'],
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([
           path.normalize('__testtests__/test.jsx'),
         ]);
       });
     });
 
-    pit('finds tests with totally custom foobar file extensions', () => {
+    it('finds tests with totally custom foobar file extensions', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
+        testPathPattern,
         moduleFileExtensions: ['foobar'],
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([
           path.normalize('__testtests__/test.foobar'),
         ]);
       });
     });
 
-    pit('finds tests with many kinds of file extensions', () => {
+    it('finds tests with many kinds of file extensions', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
+        testPathPattern,
         moduleFileExtensions: ['js', 'jsx'],
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -173,34 +180,36 @@ describe('TestRunner', () => {
       });
     });
 
-    pit('supports legacy APIs', () => {
+    it('supports legacy APIs', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
+        testPathPattern,
         testDirectoryName: '__testtests__',
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths).toEqual([
           path.normalize('__testtests__/test.js'),
         ]);
       });
     });
 
-    pit('supports legacy APIs', () => {
+    it('supports legacy APIs', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
+        testPathPattern,
         testFileExtensions: ['js', 'jsx'],
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -209,18 +218,19 @@ describe('TestRunner', () => {
       });
     });
 
-    pit('supports legacy APIs', () => {
+    it('supports legacy APIs', () => {
       const runner = new TestRunner(normalizeConfig({
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
+        testPathPattern,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx', 'foobar'],
       }), {
         maxWorkers: 1,
       });
-      return runner.promiseTestPathsMatching(/.*/).then(paths => {
-        const relPaths = paths.map(absPath => path.relative(rootDir, absPath));
+      return runner.promiseTestPathsMatching().then(data => {
+        const relPaths = data.paths.map(absPath => path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.foobar'),
           path.normalize('__testtests__/test.js'),
