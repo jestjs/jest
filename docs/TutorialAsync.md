@@ -4,7 +4,7 @@ title: Tutorial – Async
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-async.html
-next: tutorial-jquery
+next: tutorial-webpack
 ---
 
 *Note: make sure to install `babel-jest` and the async/await feature for this

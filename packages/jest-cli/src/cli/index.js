@@ -12,7 +12,7 @@ const fs = require('fs');
 const getJest = require('./getJest');
 const path = require('path');
 const processArgs = require('./processArgs');
-const optimist = require('optimist');
+const yargs = require('yargs');
 
 function getPackageRoot() {
   const cwd = process.cwd();
@@ -34,7 +34,7 @@ function Run() {
   const argv = processArgs();
 
   if (argv.help) {
-    optimist.showHelp();
+    yargs.showHelp();
     process.on('exit', () => process.exit(1));
     return;
   }

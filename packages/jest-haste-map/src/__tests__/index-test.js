@@ -223,6 +223,12 @@ describe('HasteMap', () => {
       ' */',
       'const Test = require("Test");',
     ].join('\n');
+    mockFs['/fruits/node_modules/fbjs2/index.js'] = [
+      '/**',
+      ' * @providesModule fbjs2',
+      ' */',
+    ].join('\n');
+
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
       mocksPattern: '/__mocks__/',
@@ -294,7 +300,7 @@ describe('HasteMap', () => {
         '  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js',
         '',
         'This warning is caused by a @providesModule declaration with the ' +
-        'same name accross two different files.',
+        'same name across two different files.',
       ].join('\n'));
     });
   });

@@ -693,6 +693,8 @@ If you are using TypeScript this should be `['js', 'json', 'ts']`
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/']`.
+
 ### `modulePaths` [array<string>]
 (default: `[]`)
 
@@ -747,6 +749,8 @@ Examples of such compilers include [jstransform](http://github.com/facebook/jstr
 
 An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
 
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/bower_components/', '<rootDir>/node_modules/']`.
+
 *Note: if this option is not specified by the user and Jest detects the project as a [react-native](https://github.com/facebook/react-native) project, it will ignore the default and process every file. It is common on react-native projects to ship npm modules without pre-compiling JavaScript.*
 
 ### `setupFiles` [array]
@@ -780,6 +784,8 @@ There are times where you only want Jest to search in a single sub-directory (su
 
 An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.
 
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
+
 ### `testPathPattern` [string]
 (default: `/.*/`) - See notes below for more details on the default setting.
 
@@ -788,7 +794,7 @@ A regexp pattern string that is matched against all test paths before executing 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `testRegex` [string]
-(default: `'__tests__/.*\.js`)
+(default: `'__tests__/.*\.js$'`)
 
 The pattern Jest uses to detect test files. By default it looks for `.js` files
 inside of `__tests__` folders.

@@ -125,7 +125,7 @@ class HasteMap {
 
     const list = options.providesModuleNodeModules;
     this._whitelist = (list && list.length)
-      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + '))', 'g')
+      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + ')(?=$|' + path.sep + '))', 'g')
       : null;
 
     this._cachePath = HasteMap.getCacheFilePath(
@@ -220,7 +220,7 @@ class HasteMap {
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\n` +
           `This warning is caused by a @providesModule declaration ` +
-          `with the same name accross two different files.`
+          `with the same name across two different files.`
         );
         return;
       }
