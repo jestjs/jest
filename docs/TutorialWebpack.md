@@ -10,7 +10,7 @@ next: tutorial-jquery
 Jest can be used in projects that use Webpack to manage assets, styles, and compilation.
 Webpack _does_ offers some unique challenges over other tools because it
 integrates directly with your application to allow managing stylesheets,
-assets like images and fonts, along with he expansive ecosystem of compile-to-JavaScript
+assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript
 languages and tools.
 
 Let's start with a common sort of Webpack config file and translate it to a Jest setup.
