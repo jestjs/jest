@@ -19,7 +19,7 @@ function isPromise(obj) {
 
 // return a wrapping function: `env.fit = promisifyIt(env.it, env)`
 function promisifyIt(originalFn, env) {
-  return function(specName, fn) {
+  return function(specName, fn, timeout) {
     if (!fn) {
       return null;
     }
@@ -27,7 +27,7 @@ function promisifyIt(originalFn, env) {
     const isAsync = fn.length; // `done` was passed
 
     if (isAsync) {
-      return originalFn.call(env, specName, fn); // jasmine will handle it
+      return originalFn.call(env, specName, fn, timeout); // jasmine will handle it
     } else {
       // we make *all* tests async and run `done` right away if they
       // didn't return a promise.
@@ -43,7 +43,7 @@ function promisifyIt(originalFn, env) {
             'Jest: `it` must return either a Promise or undefined.'
           ));
         }
-      });
+      }, timeout);
     }
   };
 }
