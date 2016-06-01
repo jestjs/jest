@@ -139,4 +139,4 @@ the strengths of using mock functions in this way: the code you write in tests
 is always straightfoward and imperative, no matter if the code being tested is
 synchronous or asynchronous.
 
-The code for this example is available at [examples/tutorial](https://github.com/facebook/jest/tree/master/examples/tutorial).
+The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/master/examples/jquery).
