@@ -27,10 +27,10 @@ describe('testcheck', () => {
     const result = runJest.json('testcheck', ['testcheck-fit-test.js']);
     const json = result.json;
 
-    expect(json.numTotalTests).toBe(2);
+    expect(json.numTotalTests).toBe(3);
     expect(json.numPassedTests).toBe(1);
     expect(json.numFailedTests).toBe(0);
-    expect(json.numPendingTests).toBe(1);
+    expect(json.numPendingTests).toBe(2);
   });
 
   it('merges in testcheck options', () => {
