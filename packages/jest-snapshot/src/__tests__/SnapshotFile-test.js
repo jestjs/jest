@@ -9,18 +9,11 @@
  */
 'use strict';
 
-let accessShouldThrow = false;
-
 jest
   .disableAutomock()
   .mock('mkdirp', () => ({sync: jest.fn()}))
   .mock('fs', () => ({
-    accessSync: jest.fn(() => {
-      if (accessShouldThrow) {
-        throw new Error();
-      }
-      return true;
-    }),
+    statSync: jest.fn(() => ({isFile: () => true})),
     readFileSync: jest.fn(fileName => {
       const EXPECTED_FILE_NAME = '/foo/__tests__/__snapshots__/baz.js.snap';
       expect(fileName).toBe(EXPECTED_FILE_NAME);
@@ -39,15 +32,16 @@ let SnapshotFile;
 
 describe('SnapshotFile', () => {
   beforeEach(() => {
-    accessShouldThrow = false;
     SnapshotFile = require('../SnapshotFile');
   });
 
   it('can tell if a snapshot file exists or not', () => {
+    const fs = require('fs');
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
-    accessShouldThrow = false;
     expect(snapshotFile.fileExists()).toBe(true);
-    accessShouldThrow = true;
+    fs.statSync.mockImplementation(() => {
+      throw new Error();
+    });
     expect(snapshotFile.fileExists()).toBe(false);
   });
 

@@ -67,7 +67,7 @@ const check = argv => {
     );
   }
   return true;
-}
+};
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
 

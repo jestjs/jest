@@ -58,8 +58,7 @@ class Resolver {
 
   static fileExists(filePath) {
     try {
-      fs.accessSync(filePath, fs.R_OK);
-      return true;
+      return fs.statSync(filePath).isFile();
     } catch (e) {}
     return false;
   }
