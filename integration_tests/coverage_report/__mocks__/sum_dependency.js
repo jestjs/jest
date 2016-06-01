@@ -7,8 +7,4 @@
  */
 'use strict';
 
-require('./sum_dependency.js');
-
-module.exports = function(a, b) {
-  return a + b;
-};
+// This is mock that does nothing but used for coverage integration test

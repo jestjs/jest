@@ -8,6 +8,7 @@
 'use strict';
 
 jest.unmock('../sum');
+jest.mock('../sum_dependency.js'); // call mock explicitly
 
 const sum = require('../sum');
 

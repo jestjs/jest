@@ -7,8 +7,4 @@
  */
 'use strict';
 
-require('./sum_dependency.js');
-
-module.exports = function(a, b) {
-  return a + b;
-};
+// This module exports nothing, It will be mocked later in test
