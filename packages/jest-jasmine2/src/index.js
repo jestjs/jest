@@ -95,6 +95,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     // testcheck is compiled Clojurescript and is very delicate.
     environment.global.jasmine.testcheckOptions = config.testcheckOptions;
     moduleLoader.requireModule(require.resolve('./jasmine-check-install'));
+    delete environment.global.jasmine.testcheckOptions;
 
     if (config.setupTestFrameworkScriptFile) {
       moduleLoader.requireModule(config.setupTestFrameworkScriptFile);

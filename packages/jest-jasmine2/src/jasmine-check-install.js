@@ -4,14 +4,14 @@ require('jasmine-check').install();
 
 // Replace the 'check' functions with ones that default to options from
 // the jest configuration:
-(function() {
+(() => {
   const configOptions = jasmine.testcheckOptions;
   function makeMergeOptions(object, methodName) {
     const original = object[methodName];
-    object[methodName] = function(specName, options, argGens, propertyFn) {
+    object[methodName] = function(specName, options, gens, propertyFn) {
       if (!propertyFn) {
-        propertyFn = argGens;
-        argGens = options;
+        propertyFn = gens;
+        gens = options;
         options = {};
       }
       const mergedOptions = Object.assign({}, configOptions, options);
@@ -25,5 +25,3 @@ require('jasmine-check').install();
   makeMergeOptions(check, 'fit');
   makeMergeOptions(check, 'xit');
 })();
-
-jasmine.testcheckOptions = undefined;
