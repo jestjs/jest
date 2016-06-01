@@ -234,6 +234,7 @@ class Runtime {
     if (
       shouldCollectCoverage &&
       !filename.includes(constants.NODE_MODULES) &&
+      !filename.includes(this._config.mocksPattern) &&
       !this._testRegex.test(filename)
     ) {
       if (!collectors[filename]) {
