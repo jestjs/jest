@@ -1,3 +1,12 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+'use strict';
+
 // Initialize jasmine-check within the vm context:
 jest.unmock('jasmine-check');
 require('jasmine-check').install();
@@ -5,10 +14,11 @@ require('jasmine-check').install();
 // Replace the 'check' functions with ones that default to options from
 // the jest configuration:
 (() => {
-  const configOptions = jasmine.testcheckOptions;
-  function makeMergeOptions(object, methodName) {
+  const configOptions = global.jasmine.testcheckOptions;
+  const check = global.check;
+  const makeMergeOptions = (object, methodName) => {
     const original = object[methodName];
-    object[methodName] = function(specName, options, gens, propertyFn) {
+    object[methodName] = (specName, options, gens, propertyFn) => {
       if (!propertyFn) {
         propertyFn = gens;
         gens = options;
@@ -17,7 +27,7 @@ require('jasmine-check').install();
       const mergedOptions = Object.assign({}, configOptions, options);
       return original(specName, mergedOptions, gens, propertyFn);
     };
-  }
+  };
 
   makeMergeOptions(check, 'it');
   makeMergeOptions(check, 'iit');

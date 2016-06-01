@@ -84,4 +84,4 @@ to the DOM, we tell Jest not to mock our `jquery` dependency. This lets
 `displayUser.js` actually mutate the DOM, and it gives us an easy means of
 querying the DOM in our test.
 
-The code for this example is available at [examples/tutorial](https://github.com/facebook/jest/tree/master/examples/jquery).
+The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/master/examples/jquery).
