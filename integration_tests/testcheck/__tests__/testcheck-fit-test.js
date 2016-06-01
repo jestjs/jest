@@ -19,5 +19,5 @@ describe('testcheck-fit', () => {
 
   it('should not run this test either', () => {
     expect(true).toBe(false);
-  })
+  });
 });

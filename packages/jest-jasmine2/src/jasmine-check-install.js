@@ -15,7 +15,7 @@ require('jasmine-check').install();
         options = {};
       }
       const mergedOptions = Object.assign({}, configOptions, options);
-      return original(specName, mergedOptions, argGens, propertyFn);
+      return original(specName, mergedOptions, gens, propertyFn);
     };
   }
 
