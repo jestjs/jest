@@ -102,6 +102,22 @@ class Runtime {
         exports: {},
       };
 
+      if (this._config.moduleCaseCollisionWarning) {
+        const lowerCase = modulePath.toLowerCase();
+        const set = this._moduleLowercaseRegistry[lowerCase] || new Set();
+        this._moduleLowercaseRegistry[lowerCase] = set;
+        set.add(modulePath);
+        if (set.size > 1) {
+          const entries = Array.from(set.values());
+          console.warn(
+            `Module at path:\n` +
+            `  ${modulePath}\n` +
+            `already required using different case:\n  ` +
+            `${entries.join(',\n  ')}.`
+          );
+        }
+      }
+
       this._moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
@@ -181,6 +197,9 @@ class Runtime {
   resetModuleRegistry() {
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
+    if (this._config.moduleCaseCollisionWarning) {
+      this._moduleLowercaseRegistry = Object.create(null);
+    }
 
     if (this._environment && this._environment.global) {
       const envGlobal = this._environment.global;

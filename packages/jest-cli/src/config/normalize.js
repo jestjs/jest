@@ -256,6 +256,7 @@ function normalize(config, argv) {
       case 'haste':
       case 'logHeapUsage':
       case 'mocksPattern':
+      case 'moduleCaseCollisionWarning':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'moduleLoader':
