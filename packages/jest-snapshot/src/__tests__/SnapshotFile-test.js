@@ -24,10 +24,10 @@ jest
     readFileSync: jest.fn(fileName => {
       const EXPECTED_FILE_NAME = '/foo/__tests__/__snapshots__/baz.js.snap';
       expect(fileName).toBe(EXPECTED_FILE_NAME);
-      return '{}';
+      return null;
     }),
     writeFileSync: jest.fn((path, content) => {
-      expect(content).toBe('{"foo":"bar"}');
+      expect(content).toBe('exports[`foo`] = `"bar"`;\n');
     }),
   }));
 
@@ -54,7 +54,7 @@ describe('SnapshotFile', () => {
   it('stores and retrieves snapshots', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
-    expect(snapshotFile.get(SNAPSHOT)).toBe(SNAPSHOT_VALUE);
+    expect(snapshotFile.get(SNAPSHOT)).toBe('"' + SNAPSHOT_VALUE + '"');
   });
 
   it('can tell if a snapshot file has a snapshot', () => {
@@ -69,17 +69,17 @@ describe('SnapshotFile', () => {
     const INCORRECT_VALUE = 'baz';
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
-    expect(snapshotFile.matches(SNAPSHOT, SNAPSHOT_VALUE)).toBe(true);
-    expect(snapshotFile.matches(SNAPSHOT, INCORRECT_VALUE)).toBe(false);
+    expect(snapshotFile.matches(SNAPSHOT, SNAPSHOT_VALUE).pass).toBe(true);
+    expect(snapshotFile.matches(SNAPSHOT, INCORRECT_VALUE).pass).toBe(false);
   });
 
   it('can replace snapshot values', () => {
     const NEW_VALUE = 'baz';
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
-    expect(snapshotFile.matches(SNAPSHOT, SNAPSHOT_VALUE)).toBe(true);
+    expect(snapshotFile.matches(SNAPSHOT, SNAPSHOT_VALUE).pass).toBe(true);
     snapshotFile.add(SNAPSHOT, NEW_VALUE);
-    expect(snapshotFile.matches(SNAPSHOT, NEW_VALUE)).toBe(true);
+    expect(snapshotFile.matches(SNAPSHOT, NEW_VALUE).pass).toBe(true);
   });
 
   it('can add the same key twice', () => {
@@ -93,7 +93,7 @@ describe('SnapshotFile', () => {
   it('loads and saves file correctly', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
-    expect(snapshotFile.get(SNAPSHOT)).toBe(SNAPSHOT_VALUE);
+    expect(snapshotFile.get(SNAPSHOT)).toBe('"' + SNAPSHOT_VALUE + '"');
     snapshotFile.save();
   });
 });
