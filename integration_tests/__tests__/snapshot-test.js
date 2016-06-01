@@ -20,6 +20,14 @@ const secondSnapshotFile = path.resolve(
   snapshotDir,
   'second-snapshot-test.js.snap'
 );
+const snapshotCopy = path.resolve(snapshotDir, 'snapshot_copy.js.snap');
+const fileExists = filePath => {
+  try {
+    fs.accessSync(filePath, fs.R_OK);
+    return true;
+  } catch (e) {}
+  return false;
+};
 
 describe('Snapshot', () => {
 
@@ -44,4 +52,74 @@ describe('Snapshot', () => {
       content['snapshot is not influenced by previous counter 0']
     ).not.toBe(undefined);
   });
+
+  describe('validates existance of snapshots correctly', () => {
+    const pathToOriginal = path.resolve(
+      __dirname,
+      '../snapshot/__tests__/snapshot.js'
+    );
+    const originalContent = String(fs.readFileSync(pathToOriginal));
+    const pathToCopy = pathToOriginal.replace('.js', '_copy.js');
+
+    it('delete the snapshot if the test file has been removed', () => {
+      fs.writeFileSync(pathToCopy, originalContent);
+      const firstRun = runJest.json('snapshot', []);
+      fs.unlinkSync(pathToCopy);
+
+      const secondRun = runJest.json('snapshot', []);
+
+      expect(firstRun.json.numTotalTests).toBe(6);
+      expect(secondRun.json.numTotalTests).toBe(3);
+      expect(fileExists(snapshotCopy)).toBe(false);
+    });
+
+    it('delete the snapshot when a test does removes all the snapshots', () => {
+      fs.writeFileSync(pathToCopy, originalContent);
+      const firstRun = runJest.json('snapshot', []);
+      fs.unlinkSync(pathToCopy);
+
+      fs.writeFileSync(pathToCopy, '');
+      const secondRun = runJest.json('snapshot', []);
+      fs.unlinkSync(pathToCopy);
+
+      expect(firstRun.json.numTotalTests).toBe(6);
+      expect(secondRun.json.numTotalTests).toBe(3);
+      expect(fileExists(snapshotCopy)).toBe(false);
+    });
+
+    it('updates the snapshot when a test removes some snapshots', () => {
+      fs.writeFileSync(pathToCopy, originalContent);
+      const firstRun = runJest.json('snapshot', []);
+      fs.unlinkSync(pathToCopy);
+
+      const beforeRemovingSnapshot = JSON.parse(fs.readFileSync(snapshotCopy));
+      const changedContent = originalContent.replace(
+        '.toMatchSnapshot()',
+        '.not.toBe(undefined)'
+      );
+      fs.writeFileSync(pathToCopy, changedContent);
+      const secondRun = runJest.json('snapshot', []);
+      fs.unlinkSync(pathToCopy);
+
+      expect(firstRun.json.numTotalTests).toBe(6);
+      expect(secondRun.json.numTotalTests).toBe(6);
+      expect(fileExists(snapshotCopy)).toBe(true);
+
+      const afterRemovingSnapshot = JSON.parse(fs.readFileSync(snapshotCopy));
+      fs.unlinkSync(snapshotCopy);
+
+      expect(
+        Object.keys(beforeRemovingSnapshot).length
+      ).toBe(
+        Object.keys(afterRemovingSnapshot).length + 1
+      );
+      expect(
+        beforeRemovingSnapshot['snapshot works with plain objects 1']
+      ).not.toBe(undefined);
+      expect(
+        afterRemovingSnapshot['snapshot works with plain objects 1']
+      ).toBe(undefined);
+    });
+  });
+
 });

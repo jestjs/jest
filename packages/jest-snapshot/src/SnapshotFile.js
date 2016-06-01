@@ -41,8 +41,7 @@ class SnapshotFile {
         Object.assign(this._content, require(filename));
       } catch (e) {}
     }
-
-    return this._loaded;
+    this._uncheckedKeys = new Set(Object.keys(this._content));
   }
 
   fileExists() {
@@ -54,7 +53,13 @@ class SnapshotFile {
   }
 
   save() {
-    if (this._dirty) {
+    const operationResult = {
+      deleted: false,
+      saved: false,
+    };
+
+    this._uncheckedKeys.forEach(key => delete this._content[key]);
+    if (this._dirty || this._uncheckedKeys.length) {
       const snapshots = [];
       for (const key in this._content) {
         const item = this._content[key];
@@ -65,7 +70,13 @@ class SnapshotFile {
 
       ensureDirectoryExists(this._filename);
       fs.writeFileSync(this._filename, snapshots.join('\n\n') + '\n');
+      operationResult.saved = true;
+    } else if (this.fileExists()) {
+      fs.unlinkSync(this._filename);
+      operationResult.deleted = true;
     }
+
+    return operationResult;
   }
 
   has(key) {
@@ -77,6 +88,7 @@ class SnapshotFile {
   }
 
   matches(key, value) {
+    this._uncheckedKeys.delete(key);
     const actual = this.serialize(value);
     const expected = this.get(key);
     return {
@@ -88,6 +100,7 @@ class SnapshotFile {
 
   add(key, value) {
     this._dirty = true;
+    this._uncheckedKeys.delete(key);
     this._content[key] = this.serialize(value);
   }
 

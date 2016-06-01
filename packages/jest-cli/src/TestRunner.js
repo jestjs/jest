@@ -17,12 +17,40 @@ const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
+const fileExists = filePath => {
+  try {
+    fs.accessSync(filePath, fs.R_OK);
+    return true;
+  } catch (e) {}
+  return false;
+};
+
+function pathToRegex(p) {
+  return utils.replacePathSepForRegex(p);
+}
+
 class TestRunner {
 
   constructor(hasteMap, config, options) {
     this._hasteMap = hasteMap;
     this._config = config;
     this._options = options;
+    this._config = Object.freeze(config);
+
+    utils.createDirectory(this._config.cacheDirectory);
+
+    config.moduleFileExtensions.push('snap');
+    this._hasteMap = createHasteMap(config, {
+      maxWorkers: this._options.maxWorkers,
+      resetCache: !config.cache,
+    });
+
+    this._testPathDirPattern =
+      new RegExp(config.testPathDirs.map(dir => pathToRegex(dir)).join('|'));
+    this._testRegex = new RegExp(pathToRegex(config.testRegex));
+    const ignorePattern = this._config.testPathIgnorePatterns;
+    this._testIgnorePattern =
+      ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
 
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
@@ -157,10 +185,22 @@ class TestRunner {
         aggregatedResults.success =
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
-        if (reporter.onRunComplete) {
-          reporter.onRunComplete(config, aggregatedResults);
-        }
-        return aggregatedResults;
+
+        return this._hasteMap.matchFiles(/\.snap/).then(res => {
+          aggregatedResults.snapshotsUnlinked = 0;
+          res.forEach(snapFile => {
+            const parts = snapFile.split('__snapshots__/');
+            const testFile = parts[0] + parts[1].slice(0, -5);
+            if (!fileExists(testFile)) {
+              fs.unlinkSync(snapFile);
+              aggregatedResults.snapshotsUnlinked++;
+            }
+          });
+          if (reporter.onRunComplete) {
+            reporter.onRunComplete(config, aggregatedResults);
+          }
+          return aggregatedResults;
+        });
       })
       .then(results => this._cacheTestResults(results).then(() => results));
   }

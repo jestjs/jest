@@ -157,12 +157,16 @@ class DefaultTestReporter {
     let filesUpdated = 0;
     let matched = 0;
     let updated = 0;
+    let snapshotsUnlinked = aggregatedResults.snapshotsUnlinked;
     aggregatedResults.testResults.forEach(result => {
       if (result.snapshotsAdded) {
         filesAdded++;
       }
       if (result.snapshotsUpdated) {
         filesUpdated++;
+      }
+      if (result.snapshotsUnlinked) {
+        snapshotsUnlinked++;
       }
       added += result.snapshotsAdded;
       matched += result.snapshotsMatched;
@@ -172,13 +176,14 @@ class DefaultTestReporter {
       added,
       filesAdded,
       filesUpdated,
+      filesRemoved: snapshotsUnlinked,
       matched,
       updated,
     }
   }
 
   _printSnapshotSummary(snapshots) {
-    if (snapshots.added || snapshots.updated) {
+    if (snapshots.added || snapshots.updated || snapshots.filesRemoved) {
       this.log(`${SNAPSHOT_SUMMARY('Snapshot Summary')}.`);
       if (snapshots.added) {
         this.log(
@@ -193,6 +198,12 @@ class DefaultTestReporter {
           `${SNAPSHOT_UPDATED(pluralize('snapshot', snapshots.updated))} ` +
           `updated in ${pluralize('test file', snapshots.filesUpdated)}.`
         );
+      }
+      if (snapshots.filesRemoved) {
+        results +=
+        `\u203A ` +
+        `${SNAPSHOT_REMOVED(pluralize('snapshot file', snapshots.filesRemoved))} ` +
+        `removed.\n`;
       }
     }
   }
