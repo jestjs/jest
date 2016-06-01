@@ -38,11 +38,16 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
           (snapshot.has(key) && options.updateSnapshot) ||
           !snapshot.has(key)
         ) {
-          if (options.updateSnapshot && snapshot.has(key)) {
-            snapshotState.removed++;
-          }
-          snapshot.add(key, actual);
-          snapshotState.added++;
+          if (options.updateSnapshot) {
+            if (!snapshot.matches(key, rendered)) {
+              snapshotState.removed++;
+              snapshotState.added++;
+              snapshot.add(key, rendered);
+            }
+          } else {
+            snapshot.add(key, rendered);
+            snapshotState.added++;
+          } 
           pass = true;
         } else {
           actual = snapshot.serialize(actual);
