@@ -44,7 +44,6 @@ describe('DefaultTestReporter', () => {
         numPendingTests: 0,
         numFailedTests: 1,
         testResults: [],
-        postSuiteHeaders: [],
         testFilePath: 'foo',
       };
       testReporter.onRunStart({
@@ -60,5 +59,3 @@ describe('DefaultTestReporter', () => {
 
   });
 });
-
-

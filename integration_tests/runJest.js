@@ -22,7 +22,7 @@ function runJest(dir, args) {
 // Runs `jest` with `--json` option and adds `json` property to the result obj.
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
-//   'numPendingTests', 'testResults', 'postSuiteHeaders'
+//   'numPendingTests', 'testResults'
 runJest.json = function(dir, args) {
   args = Array.prototype.concat(args || [], '--json');
   const result = runJest(dir, args);

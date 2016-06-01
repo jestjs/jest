@@ -64,7 +64,6 @@ function formatTestResults(results, config, codeCoverageFormatter, reporter) {
     numFailedTests: results.numFailedTests,
     numPendingTests: results.numPendingTests,
     testResults,
-    postSuiteHeaders: results.postSuiteHeaders,
   };
 }
 

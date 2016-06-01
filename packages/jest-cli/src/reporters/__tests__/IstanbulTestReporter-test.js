@@ -60,7 +60,6 @@ describe('InstanbulTestReporter', () => {
         numPendingTests: 0,
         numFailedTests: 0,
         testResults: [],
-        postSuiteHeaders: [],
         testFilePath: 'foo',
       };
       const fakeProcess = {
