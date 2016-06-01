@@ -33,6 +33,7 @@ class Runtime {
     this._explicitShouldMock = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
+    this._mocksPattern = config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
     this._virtualMocks = Object.create(null);
@@ -234,7 +235,7 @@ class Runtime {
     if (
       shouldCollectCoverage &&
       !filename.includes(constants.NODE_MODULES) &&
-      !filename.includes(this._config.mocksPattern) &&
+      !(this._mocksPattern && this._mocksPattern.test(filename)) &&
       !this._testRegex.test(filename)
     ) {
       if (!collectors[filename]) {
