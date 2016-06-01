@@ -1,5 +1,7 @@
 ## master
 
+* Add support for property testing via testcheck-js.
+
 ## jest-cli 12.1.1
 
 * Windows stability fixes.

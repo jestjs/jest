@@ -15,4 +15,11 @@ describe('sum', () => {
   it('adds numbers', () => {
     expect(sum(1, 2)).toEqual(3);
   });
+  // Required for test coverage of jasmine-check-install.js:
+  check.it('generates numbers', {times: 1}, [gen.posInt], i => {
+    expect(i).toBeGreaterThan(-1);
+  });
+  check.it('generates numbers', [gen.posInt], i => {
+    expect(i).toBeGreaterThan(-1);
+  });
 });

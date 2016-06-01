@@ -201,6 +201,35 @@ function processArgs() {
       ),
       type: 'boolean',
     },
+    testcheckTimes: {
+      default: 100,
+      description: _wrapDesc(
+        'The number of test cases to generate for each testcheck test. ' +
+        'May be overridden for individual test cases using the options ' +
+        'argument of check.it.'
+      ),
+      type: 'number',
+    },
+    testcheckMaxSize: {
+      default: 200,
+      description: _wrapDesc(
+        'The maximum size of sized types, such as arrays and ints, to be ' +
+        'generated for testcheck tests. ' +
+        'May be overridden for individual test cases using the options ' +
+        'argument of check.it. ' +
+        'Generators can also be sized using gen.resize(n, anotherGenerator).'
+      ),
+      type: 'number',
+    },
+    testcheckSeed: {
+      default: undefined,
+      description: _wrapDesc(
+        'The seed for generating testcheck test cases. Defaults to random. ' +
+        'May be overridden for individual test cases using the options ' +
+        'argument of check.it.'
+      ),
+      type: 'number',
+    },
   };
 
   const argv = yargs
