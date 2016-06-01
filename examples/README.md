@@ -9,7 +9,7 @@ npm install
 #### 2. Move to example
 
 ```
-cd examples/jquery
+cd examples/tutorial
 ```
 
 #### 3. Install example
