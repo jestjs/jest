@@ -21,6 +21,7 @@ describe('Coverage Report', () => {
     const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
     expect(stdout).toMatch(/All files.*100.*100.*100.*100/);
     expect(stdout).not.toMatch(/^.+__tests__.+\|.+\|.+\|.+\|/gm);
+    expect(stdout).not.toMatch(/^.+__mocks__.+\|.+\|.+\|.+\|/gm);
     // this will throw if the coverage directory is not there
     fs.accessSync(coverageDir, fs.F_OK);
     expect(result.status).toBe(0);
