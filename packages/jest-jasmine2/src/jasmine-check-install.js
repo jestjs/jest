@@ -7,7 +7,6 @@
  */
 'use strict';
 
-// Initialize jasmine-check within the vm context:
 jest.unmock('jasmine-check');
 require('jasmine-check').install();
 
