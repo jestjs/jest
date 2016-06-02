@@ -11,15 +11,15 @@
 
 describe('snapshot', () => {
 
-  it('works with plain objects', () => {
+  it('works with plain objects and the title has `escape` characters', () => {
     const test = {
       a: 1,
       b: '2',
-      c: 'three',
+      c: 'three`',
     };
-    expect(JSON.stringify(test)).toMatchSnapshot();
+    expect(test).toMatchSnapshot();
     test.d = '4';
-    expect(JSON.stringify(test)).toMatchSnapshot();
+    expect(test).toMatchSnapshot();
   });
 
   it('is not influenced by previous counter', () => {
@@ -28,7 +28,7 @@ describe('snapshot', () => {
       b:'43',
       c:'fourtythree',
     };
-    expect(JSON.stringify(test)).toMatchSnapshot();
+    expect(test).toMatchSnapshot();
   });
 
   it('cannot be used with .not', () => {

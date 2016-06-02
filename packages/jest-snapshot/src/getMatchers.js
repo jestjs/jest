@@ -7,6 +7,8 @@
  */
 'use strict';
 
+const JasmineFormatter = require('jest-util').JasmineFormatter;
+
 module.exports = (filePath, options, jasmine, snapshotState) => ({
   toMatchSnapshot: (util, customEquality) => {
     return {
@@ -15,17 +17,14 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
           'Jest: `.not` can not be used with `.toMatchSnapshot()`.'
         );
       },
-      compare(rendered, expected) {
+      compare(actual, expected) {
+        if (expected !== undefined) {
+          throw new Error(
+            'Jest: toMatchSnapshot() does not accept parameters.'
+          );
+        }
 
         const currentSpecName = snapshotState.currentSpecName;
-
-        if (expected !== undefined) {
-          throw new Error('toMatchSnapshot() does not accepts parameters.');
-        }
-        if (typeof rendered !== 'string') {
-          throw new Error('toMatchSnapshot() only works with Strings.');
-        }
-
         const snapshot = snapshotState.snapshot;
 
         const callCount = snapshotState.getCounter();
@@ -42,27 +41,23 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
           if (options.updateSnapshot && snapshot.has(key)) {
             snapshotState.removed++;
           }
-          snapshot.add(key, rendered);
+          snapshot.add(key, actual);
           snapshotState.added++;
           pass = true;
         } else {
-          pass = snapshot.matches(key, rendered);
+          actual = snapshot.serialize(actual);
+          const matches = snapshot.matches(key, actual);
+          pass = matches.pass;
           if (!pass) {
             const matcherName = 'toMatchSnapshot';
-            const res = {
-              matcherName,
-              expected: snapshot.get(key),
-              actual: rendered,
-            };
-
-            const JasmineFormatter = require('jest-util').JasmineFormatter;
-
             const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
-            formatter.addDiffableMatcher('toMatchSnapshot');
-            message = formatter.formatMatchFailure(res).replace(
-              'toMatchSnapshot:',
-              'toMatchSnapshot #' + (callCount + 1) + ':'
-            );
+            formatter.addDiffableMatcher(matcherName);
+            message = formatter
+              .formatMatchFailure(Object.assign({matcherName}, matches))
+              .replace(
+                'toMatchSnapshot:',
+                'toMatchSnapshot #' + (callCount + 1) + ':'
+              );
           } else {
             snapshotState.matched++;
           }

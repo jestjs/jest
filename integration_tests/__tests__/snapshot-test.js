@@ -34,11 +34,9 @@ describe('Snapshot', () => {
     expect(json.numPendingTests).toBe(0);
     expect(result.status).toBe(0);
 
-    const content = fs.readFileSync(snapshotFile);
-
-    const output = JSON.parse(content);
+    const content = require(snapshotFile);
     expect(
-      output['snapshot is not influenced by previous counter 0']
+      content['snapshot is not influenced by previous counter 0']
     ).not.toBe(undefined);
   });
 });
