@@ -273,7 +273,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
 
   return reporter.getResults().then(results => {
     results.snapshotsAdded = env.snapshotState.added;
-    results.snapshotsRemoved = env.snapshotState.removed;
+    results.snapshotsUpdated = env.snapshotState.updated;
     results.snapshotsMatched = env.snapshotState.matched;
     return results;
   });

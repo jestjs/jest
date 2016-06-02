@@ -190,7 +190,6 @@ class TestRunner {
       numFailedTests: 0,
       numPendingTests: 0,
       testResults: [],
-      postSuiteHeaders: [],
     };
 
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
