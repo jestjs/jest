@@ -8,10 +8,10 @@
 
 'use strict';
 
+const args = require('./args');
 const fs = require('fs');
 const getJest = require('./getJest');
 const path = require('path');
-const processArgs = require('./processArgs');
 const yargs = require('yargs');
 
 function getPackageRoot() {
@@ -31,7 +31,11 @@ function getPackageRoot() {
 }
 
 function Run() {
-  const argv = processArgs();
+  const argv = yargs
+    .usage(args.usage)
+    .options(args.options)
+    .check(args.check)
+    .argv;
 
   if (argv.help) {
     yargs.showHelp();
