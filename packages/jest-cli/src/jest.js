@@ -36,7 +36,7 @@ function getMaxWorkers(argv) {
   if (argv.runInBand) {
     return 1;
   } else if (argv.maxWorkers) {
-    return argv.maxWorkers;
+    return parseInt(argv.maxWorkers, 10);
   } else {
     const cpus = os.cpus().length;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
