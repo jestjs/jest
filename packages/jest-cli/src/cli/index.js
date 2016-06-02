@@ -37,6 +37,8 @@ function Run() {
     .check(args.check)
     .argv;
 
+  args.warnOfUnrecognizedOptions(argv, args.options);
+
   if (argv.help) {
     yargs.showHelp();
     process.on('exit', () => process.exit(1));
