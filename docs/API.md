@@ -187,8 +187,6 @@ Exhausts the **micro**-task queue (usually interfaced in node via `process.nextT
 
 When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
 
-This is often useful for synchronously executing all pending promises in the system.
-
 ### `jest.runAllTimers()`
 Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
 
