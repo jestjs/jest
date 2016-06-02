@@ -55,7 +55,7 @@ const check = argv => {
   return true;
 };
 
-const warnOfUnrecognizedOptions = (argv, options) => {
+const warnAboutUnrecognizedOptions = (argv, options) => {
   const yargsSpecialOptions = ['$0', '_'];
   const allowedOptions = Object.keys(options).reduce((acc, option) => (
     acc
@@ -70,7 +70,7 @@ const warnOfUnrecognizedOptions = (argv, options) => {
       'Unrecognized options: ' + unrecognizedOptions.join(', ')
     );
   }
-}
+};
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
 
@@ -282,5 +282,5 @@ module.exports = {
   check,
   usage,
   options,
-  warnOfUnrecognizedOptions,
+  warnAboutUnrecognizedOptions,
 };

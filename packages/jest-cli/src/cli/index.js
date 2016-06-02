@@ -37,7 +37,7 @@ function Run() {
     .check(args.check)
     .argv;
 
-  args.warnOfUnrecognizedOptions(argv, args.options);
+  args.warnAboutUnrecognizedOptions(argv, args.options);
 
   if (argv.help) {
     yargs.showHelp();
