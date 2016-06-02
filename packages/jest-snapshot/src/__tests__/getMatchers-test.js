@@ -8,7 +8,9 @@
  * @emails oncall+jsinfra
  */
 'use strict';
-jest.unmock('../getMatchers');
+
+jest.disableAutomock();
+
 const getMatchers = require('../getMatchers');
 
 describe('getMatchers', () => {
