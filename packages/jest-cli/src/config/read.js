@@ -15,9 +15,8 @@ const path = require('path');
 const setFromArgv = require('./setFromArgv');
 
 function readConfig(argv, packageRoot) {
-  return readRawConfig(argv, packageRoot).then(config => {
-    return setFromArgv(config, argv);
-  });
+  return readRawConfig(argv, packageRoot)
+    .then(config => setFromArgv(config, argv));
 }
 
 function readRawConfig(argv, root) {
