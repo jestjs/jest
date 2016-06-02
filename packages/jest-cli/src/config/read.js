@@ -12,65 +12,11 @@ const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
 const path = require('path');
+const setFromArgv = require('./setFromArgv');
 
 function readConfig(argv, packageRoot) {
-  return readRawConfig(argv, packageRoot).then(config => {
-    if (argv.coverage) {
-      config.collectCoverage = true;
-    }
-
-    if (argv.testEnvData) {
-      config.testEnvData = argv.testEnvData;
-    }
-
-    config.noHighlight =
-      argv.noHighlight || (!argv.colors && !process.stdout.isTTY);
-
-    if (argv.verbose) {
-      config.verbose = argv.verbose;
-    }
-
-    if (argv.bail) {
-      config.bail = argv.bail;
-    }
-
-    if (argv.cache !== null) {
-      config.cache = argv.cache;
-    }
-
-    if (argv.watchman !== null) {
-      config.watchman = argv.watchman;
-    }
-
-    if (argv.useStderr) {
-      config.useStderr = argv.useStderr;
-    }
-
-    if (argv.json) {
-      config.useStderr = true;
-    }
-
-    if (argv.logHeapUsage) {
-      config.logHeapUsage = argv.logHeapUsage;
-    }
-
-    if (argv.setupTestFrameworkScriptFile) {
-      config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
-    }
-
-    if (argv.updateSnapshot) {
-      config.updateSnapshot = argv.updateSnapshot;
-    }
-    config.noStackTrace = argv.noStackTrace;
-
-    config.testcheckOptions = {
-      times: argv.testcheckTimes,
-      maxSize: argv.testcheckMaxSize,
-      seed: argv.testcheckSeed,
-    };
-
-    return config;
-  });
+  return readRawConfig(argv, packageRoot)
+    .then(config => setFromArgv(config, argv));
 }
 
 function readRawConfig(argv, root) {
