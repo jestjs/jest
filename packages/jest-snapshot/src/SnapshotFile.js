@@ -59,7 +59,8 @@ class SnapshotFile {
     };
 
     this._uncheckedKeys.forEach(key => delete this._content[key]);
-    if (this._dirty || this._uncheckedKeys.length) {
+    const isEmpty = Object.keys(this._content).length === 0;
+    if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
       const snapshots = [];
       for (const key in this._content) {
         const item = this._content[key];
@@ -71,7 +72,9 @@ class SnapshotFile {
       ensureDirectoryExists(this._filename);
       fs.writeFileSync(this._filename, snapshots.join('\n\n') + '\n');
       operationResult.saved = true;
-    } else if (this.fileExists()) {
+    }
+
+    if (isEmpty && this.fileExists()) {
       fs.unlinkSync(this._filename);
       operationResult.deleted = true;
     }

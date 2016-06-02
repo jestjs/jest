@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const runJest = require('../runJest');
 
+const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir =
   path.resolve(__dirname, '../snapshot/__tests__/__snapshots__');
 const snapshotFile = path.resolve(snapshotDir, 'snapshot-test.js.snap');
@@ -27,6 +28,12 @@ const fileExists = filePath => {
     return true;
   } catch (e) {}
   return false;
+};
+const getSnapshotCopy = () => {
+  const exports = Object.create(null);
+  // eslint-disable-next-line no-eval
+  eval(fs.readFileSync(snapshotCopy));  
+  return exports;
 };
 
 describe('Snapshot', () => {
@@ -53,7 +60,7 @@ describe('Snapshot', () => {
     ).not.toBe(undefined);
   });
 
-  describe('validates existance of snapshots correctly', () => {
+  describe('Validation', () => {
     const pathToOriginal = path.resolve(
       __dirname,
       '../snapshot/__tests__/snapshot.js'
@@ -66,11 +73,14 @@ describe('Snapshot', () => {
       const firstRun = runJest.json('snapshot', []);
       fs.unlinkSync(pathToCopy);
 
+      const content = require(snapshotFile);
+      expect(content).not.toBe(undefined);
       const secondRun = runJest.json('snapshot', []);
 
       expect(firstRun.json.numTotalTests).toBe(6);
       expect(secondRun.json.numTotalTests).toBe(3);
       expect(fileExists(snapshotCopy)).toBe(false);
+
     });
 
     it('delete the snapshot when a test does removes all the snapshots', () => {
@@ -78,12 +88,12 @@ describe('Snapshot', () => {
       const firstRun = runJest.json('snapshot', []);
       fs.unlinkSync(pathToCopy);
 
-      fs.writeFileSync(pathToCopy, '');
+      fs.writeFileSync(pathToCopy, emptyTest);
       const secondRun = runJest.json('snapshot', []);
       fs.unlinkSync(pathToCopy);
 
       expect(firstRun.json.numTotalTests).toBe(6);
-      expect(secondRun.json.numTotalTests).toBe(3);
+      expect(secondRun.json.numTotalTests).toBe(4);
       expect(fileExists(snapshotCopy)).toBe(false);
     });
 
@@ -91,8 +101,8 @@ describe('Snapshot', () => {
       fs.writeFileSync(pathToCopy, originalContent);
       const firstRun = runJest.json('snapshot', []);
       fs.unlinkSync(pathToCopy);
+      const beforeRemovingSnapshot = getSnapshotCopy();
 
-      const beforeRemovingSnapshot = JSON.parse(fs.readFileSync(snapshotCopy));
       const changedContent = originalContent.replace(
         '.toMatchSnapshot()',
         '.not.toBe(undefined)'
@@ -104,21 +114,22 @@ describe('Snapshot', () => {
       expect(firstRun.json.numTotalTests).toBe(6);
       expect(secondRun.json.numTotalTests).toBe(6);
       expect(fileExists(snapshotCopy)).toBe(true);
-
-      const afterRemovingSnapshot = JSON.parse(fs.readFileSync(snapshotCopy));
-      fs.unlinkSync(snapshotCopy);
+      const afterRemovingSnapshot = getSnapshotCopy();
 
       expect(
         Object.keys(beforeRemovingSnapshot).length
       ).toBe(
         Object.keys(afterRemovingSnapshot).length + 1
       );
+      const keyToCheck = `snapshot works with plain objects and the title has \`escape\` characters 1`;
       expect(
-        beforeRemovingSnapshot['snapshot works with plain objects 1']
+        beforeRemovingSnapshot[keyToCheck]
       ).not.toBe(undefined);
       expect(
-        afterRemovingSnapshot['snapshot works with plain objects 1']
+        afterRemovingSnapshot[keyToCheck]
       ).toBe(undefined);
+
+      fs.unlinkSync(snapshotCopy);
     });
   });
 
