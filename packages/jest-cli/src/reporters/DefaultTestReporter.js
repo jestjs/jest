@@ -24,7 +24,7 @@ const PASS_COLOR = chalk.bold.green;
 const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 const SNAPSHOT_ADDED = chalk.bold.yellow;
-const SNAPSHOT_REMOVED = chalk.bold.red;
+const SNAPSHOT_UPDATED = chalk.bold.yellow;
 const SNAPSHOT_SUMMARY = chalk.bold.green;
 const TEST_NAME_COLOR = chalk.bold;
 
@@ -140,16 +140,20 @@ class DefaultTestReporter {
     let snapshotsAdded = 0;
     let snapshotsFiles = 0;
     let snapshotsMatched = 0;
-    let snapshotsRemoved = 0;
+    let snapshotsUpdated = 0;
     aggregatedResults.testResults.forEach(result => {
-      if (result.snapshotsAdded) {
+      if (
+        result.snapshotsAdded ||
+        result.snapshotsMatched ||
+        result.snapshotsUpdated
+      ) {
         snapshotsFiles++;
       }
       snapshotsAdded += result.snapshotsAdded;
       snapshotsMatched += result.snapshotsMatched;
-      snapshotsRemoved += result.snapshotsRemoved;
+      snapshotsUpdated += result.snapshotsUpdated;
     });
-    if (snapshotsAdded || snapshotsRemoved) {
+    if (snapshotsAdded || snapshotsUpdated) {
       results += `${SNAPSHOT_SUMMARY('Snapshot Summary')}.\n`;
       if (snapshotsAdded) {
         results +=
@@ -157,14 +161,15 @@ class DefaultTestReporter {
           `${SNAPSHOT_ADDED(pluralize('snapshot', snapshotsAdded))} ` +
           `written in ${pluralize('test file', snapshotsFiles)}.\n`;
       }
-      if (snapshotsRemoved) {
+      if (snapshotsUpdated) {
         results +=
           `\u203A ` +
-          `${SNAPSHOT_REMOVED(pluralize('snapshot', snapshotsRemoved))} ` +
-          `deleted.\n`;
+          `${SNAPSHOT_UPDATED(pluralize('snapshot', snapshotsUpdated))} ` +
+          `updated.\n`;
       }
     }
-    const totalSnaphots = snapshotsMatched + snapshotsAdded;
+
+    const totalSnaphots = snapshotsMatched + snapshotsAdded + snapshotsUpdated;
 
     results +=
       `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} ` +

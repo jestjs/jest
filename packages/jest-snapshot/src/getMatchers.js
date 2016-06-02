@@ -38,14 +38,19 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
           (snapshot.has(key) && options.updateSnapshot) ||
           !snapshot.has(key)
         ) {
-          if (options.updateSnapshot && snapshot.has(key)) {
-            snapshotState.removed++;
+          if (options.updateSnapshot) {
+            if (!snapshot.matches(key, actual).pass) {
+              snapshotState.updated++;
+              snapshot.add(key, actual);
+            } else {
+              snapshotState.matched++;
+            }
+          } else {
+            snapshot.add(key, actual);
+            snapshotState.added++;
           }
-          snapshot.add(key, actual);
-          snapshotState.added++;
           pass = true;
         } else {
-          actual = snapshot.serialize(actual);
           const matches = snapshot.matches(key, actual);
           pass = matches.pass;
           if (!pass) {
