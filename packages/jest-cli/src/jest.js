@@ -16,10 +16,9 @@ fs.gracefulify(realFs);
 const TestRunner = require('./TestRunner');
 const SearchSource = require('./SearchSource');
 
+const buildHasteMap = require('./lib/buildHasteMap');
 const chalk = require('chalk');
 const constants = require('./constants');
-const createResolver = require('./lib/createResolver');
-const createHasteMap = require('./lib/createHasteMap');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
@@ -89,17 +88,22 @@ function getNoTestsFoundMessage(patternInfo, config, data) {
   const shouldTreatInputAsPattern = patternInfo.shouldTreatInputAsPattern;
 
   const formattedPattern = `/${pattern}/`;
-  const formattedInput = shouldTreatInputAsPattern ? `/${input}/` : `"${input}"`;
+  const formattedInput = shouldTreatInputAsPattern
+    ? `/${input}/`
+    : `"${input}"`;
   const testPathPattern = input === pattern ? formattedInput : formattedPattern;
 
   const statsMessage = Object.keys(data.stats).map(key => {
     const value = key === 'testPathPattern' ? testPathPattern : config[key];
     if (value) {
-      return `  ${key}: ${chalk.yellow(value)} - ${pluralize('match', data.stats[key], 'es')}`;
+      const matches = pluralize('match', data.stats[key], 'es');
+      return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
     }
+    return null;
   }).filter(line => line).join('\n');
 
-  return `${chalk.bold.red('NO TESTS FOUND')}. ${pluralize('file', data.total, 's')} checked.\n${statsMessage}`;
+  return `${chalk.bold.red('NO TESTS FOUND')}. ` +
+    `${pluralize('file', data.total, 's')} checked.\n${statsMessage}`;
 }
 
 function getWatcher(config, packageRoot, callback) {
@@ -111,27 +115,15 @@ function getWatcher(config, packageRoot, callback) {
   });
 }
 
-function buildHastePromise(config, maxWorkers) {
-  const hasteMap = createHasteMap(config, {
-    resetCache: !config.cache,
-    maxWorkers,
-  });
-
-  return hasteMap.build().then(moduleMap => ({
-    moduleMap,
-    resolver: createResolver(config, moduleMap),
-  }));
-}
-
 function runJest(config, argv, pipe, onComplete) {
   if (argv.silent) {
     config.silent = true;
   }
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
-  const hasteMapPromise = buildHastePromise(config, maxWorkers);
+  const hasteMap = buildHasteMap(config, maxWorkers);
 
-  const source = new SearchSource(hasteMapPromise, config);
+  const source = new SearchSource(hasteMap, config);
   return source.getTestPaths(patternInfo)
     .then(data => {
       if (!data.paths.length) {
@@ -140,7 +132,7 @@ function runJest(config, argv, pipe, onComplete) {
       return data.paths;
     })
     .then(testPaths => {
-      const testRunner = new TestRunner(hasteMapPromise, config, {maxWorkers});
+      const testRunner = new TestRunner(hasteMap, config, {maxWorkers});
       return testRunner.runTests(testPaths);
     })
     .then(runResults => {

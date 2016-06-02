@@ -20,8 +20,8 @@ const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
 
-  constructor(hasteMapPromise, config, options) {
-    this._hasteMapPromise = hasteMapPromise;
+  constructor(hasteMap, config, options) {
+    this._hasteMap = hasteMap;
     this._options = options;
     this._config = Object.freeze(config);
 
@@ -179,7 +179,7 @@ class TestRunner {
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
     return testPaths.reduce((promise, path) =>
       promise
-        .then(() => this._hasteMapPromise)
+        .then(() => this._hasteMap)
         .then(data => new Test(path, this._config, data.resolver).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
@@ -189,7 +189,7 @@ class TestRunner {
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
-    return this._hasteMapPromise
+    return this._hasteMap
       .then(() => {
         const farm = workerFarm({
           autoStart: true,

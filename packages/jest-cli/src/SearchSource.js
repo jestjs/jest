@@ -30,8 +30,8 @@ function determineSCM(path) {
 
 class SearchSource {
 
-  constructor(hasteMapPromise, config, options) {
-    this._hasteMapPromise = hasteMapPromise;
+  constructor(hasteMap, config, options) {
+    this._hasteMap = hasteMap;
     this._config = Object.freeze(config);
     this._options = options || {};
 
@@ -76,7 +76,7 @@ class SearchSource {
   }
 
   _getAllTestPaths(testPathPattern) {
-    return this._hasteMapPromise.then(data => (
+    return this._hasteMap.then(data => (
       this._filterTestPathsWithStats(Object.keys(data.moduleMap.files), testPathPattern)
     ));
   }
@@ -101,7 +101,7 @@ class SearchSource {
   }
 
   promiseTestPathsRelatedTo(allPaths) {
-    return this._hasteMapPromise.then(data => {
+    return this._hasteMap.then(data => {
       const paths = data.resolver.resolveInverseDependencies(
         allPaths,
         this.isTestFilePath.bind(this),
