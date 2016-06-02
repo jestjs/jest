@@ -25,6 +25,7 @@ const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 const SNAPSHOT_ADDED = chalk.bold.yellow;
 const SNAPSHOT_UPDATED = chalk.bold.yellow;
+const SNAPSHOT_SUMMARY = chalk.bold;
 const TEST_NAME_COLOR = chalk.bold;
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -178,7 +179,7 @@ class DefaultTestReporter {
 
   _printSnapshotSummary(snapshots) {
     if (snapshots.added || snapshots.updated) {
-      this.log(`${chalk.bold('Snapshot Summary')}.`);
+      this.log(`${SNAPSHOT_SUMMARY('Snapshot Summary')}.`);
       if (snapshots.added) {
         this.log(
           `\u203A ` +
