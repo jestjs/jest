@@ -15,7 +15,6 @@ const path = require('path');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
-const testPathPattern = /.*/;
 
 let normalizeConfig;
 
@@ -70,7 +69,6 @@ describe('TestRunner', () => {
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
-        testPathPattern,
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         testRegex: 'not-really-a-test',
       }), {
@@ -89,7 +87,6 @@ describe('TestRunner', () => {
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
-        testPathPattern,
         moduleFileExtensions: ['js', 'jsx'],
         testRegex: 'test\.jsx?',
       }), {
@@ -110,7 +107,6 @@ describe('TestRunner', () => {
         name,
         rootDir,
         testRegex,
-        testPathPattern,
       }), {
         maxWorkers: 1,
       });
@@ -128,7 +124,6 @@ describe('TestRunner', () => {
         name,
         rootDir,
         testRegex,
-        testPathPattern,
         moduleFileExtensions: ['jsx'],
       }), {
         maxWorkers: 1,
@@ -147,7 +142,6 @@ describe('TestRunner', () => {
         name,
         rootDir,
         testRegex,
-        testPathPattern,
         moduleFileExtensions: ['foobar'],
       }), {
         maxWorkers: 1,
@@ -166,7 +160,6 @@ describe('TestRunner', () => {
         name,
         rootDir,
         testRegex,
-        testPathPattern,
         moduleFileExtensions: ['js', 'jsx'],
       }), {
         maxWorkers: 1,
@@ -185,7 +178,6 @@ describe('TestRunner', () => {
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
-        testPathPattern,
         testDirectoryName: '__testtests__',
       }), {
         maxWorkers: 1,
@@ -203,7 +195,6 @@ describe('TestRunner', () => {
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
-        testPathPattern,
         testFileExtensions: ['js', 'jsx'],
       }), {
         maxWorkers: 1,
@@ -223,7 +214,6 @@ describe('TestRunner', () => {
         cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
-        testPathPattern,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx', 'foobar'],
       }), {

@@ -268,7 +268,6 @@ function normalize(config, argv) {
       case 'updateSnapshot':
       case 'testEnvData':
       case 'testEnvironment':
-      case 'testPathPattern':
       case 'testRegex':
       case 'testReporter':
       case 'testURL':

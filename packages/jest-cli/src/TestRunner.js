@@ -8,132 +8,28 @@
 
 'use strict';
 
-const Resolver = require('jest-resolve');
 const Test = require('./Test');
 
-const createHasteMap = require('./lib/createHasteMap');
-const createResolver = require('./lib/createResolver');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
-const path = require('path');
 const promisify = require('./lib/promisify');
 const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
-function pathToRegex(p) {
-  return utils.replacePathSepForRegex(p);
-}
-
 class TestRunner {
 
-  constructor(config, options) {
+  constructor(hasteMapPromise, config, options) {
+    this._hasteMapPromise = hasteMapPromise;
     this._options = options;
     this._config = Object.freeze(config);
 
     utils.createDirectory(this._config.cacheDirectory);
 
-    this._hasteMap = createHasteMap(config, {
-      maxWorkers: this._options.maxWorkers,
-      resetCache: !config.cache,
-    });
-
-    this._testPathDirPattern =
-      new RegExp(config.testPathDirs.map(dir => pathToRegex(dir)).join('|'));
-    this._testRegex = new RegExp(pathToRegex(config.testRegex));
-    const ignorePattern = this._config.testPathIgnorePatterns;
-    this._testIgnorePattern =
-      ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
-
-    this._testPathPattern = this._config.testPathPattern;
-    this._testPathCases = {
-      testPathDirs: path => this._testPathDirPattern.test(path),
-      testRegex: path => this._testRegex.test(path),
-      testPathIgnorePatterns: path => (!this._testIgnorePattern || !this._testIgnorePattern.test(path)),
-      testPathPattern: path => (!this._testPathPattern || new RegExp(this._testPathPattern).test(path)),
-    };
-
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
-
-    // warm-up the haste map
-    this._buildPromise = null;
-    this._buildHasteMap();
-  }
-
-  _buildHasteMap() {
-    if (!this._buildPromise) {
-      this._buildPromise = this._hasteMap.build().then(
-        moduleMap => ({
-          moduleMap,
-          resolver: createResolver(this._config, moduleMap),
-        })
-      );
-    }
-    return this._buildPromise;
-  }
-
-  _filterTestPathsWithStats(allPaths, options) {
-    const data = {
-      total: allPaths.length,
-      stats: {},
-    };
-
-    const testCases = options && options.checkTestPathPattern
-      ? Object.keys(this._testPathCases)
-      : Object.keys(this._testPathCases).slice(0, -1);
-
-    const paths = allPaths.filter(path => {
-      return testCases.reduce((flag, key) => {
-        if (this._testPathCases[key](path)) {
-          data.stats[key] = ++data.stats[key] || 1;
-          return flag && true;
-        }
-        data.stats[key] = data.stats[key] || 0;
-        return false;
-      }, true);
-    });
-
-    data.paths = paths;
-    return data;
-  }
-
-  _getAllTestPaths(options) {
-    return this._hasteMap.build()
-      .then(hasteMap => this._filterTestPathsWithStats(Object.keys(hasteMap.files), options));
-  }
-
-  isTestFilePath(path) {
-    return Object.keys(this._testPathCases).slice(0, -1).every(key => (
-      this._testPathCases[key](path)
-    ));
-  }
-
-  promiseTestPathsRelatedTo(paths) {
-    return this._buildHasteMap().then(
-      data => data.resolver.resolveInverseDependencies(
-        paths,
-        this.isTestFilePath.bind(this),
-        {
-          skipNodeResolution: this._options.skipNodeResolution,
-        }
-      )
-    );
-  }
-
-  promiseTestPathsMatching() {
-    if (this._testPathPattern && !(this._testPathPattern instanceof RegExp)) {
-      const maybeFile = path.resolve(process.cwd(), this._testPathPattern);
-      if (Resolver.fileExists(maybeFile)) {
-        return Promise.resolve(
-          this._filterTestPathsWithStats([maybeFile])
-        );
-      }
-    }
-
-    return this._getAllTestPaths({checkTestPathPattern: true});
   }
 
   _getTestPerformanceCachePath() {
@@ -283,7 +179,7 @@ class TestRunner {
   _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
     return testPaths.reduce((promise, path) =>
       promise
-        .then(() => this._buildHasteMap())
+        .then(() => this._hasteMapPromise)
         .then(data => new Test(path, this._config, data.resolver).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
@@ -293,7 +189,7 @@ class TestRunner {
 
   _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
     const config = this._config;
-    return this._buildHasteMap()
+    return this._hasteMapPromise
       .then(() => {
         const farm = workerFarm({
           autoStart: true,

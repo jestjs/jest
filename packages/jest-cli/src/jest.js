@@ -14,19 +14,18 @@ const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
 const TestRunner = require('./TestRunner');
+const SearchSource = require('./SearchSource');
 
 const chalk = require('chalk');
 const constants = require('./constants');
+const createResolver = require('./lib/createResolver');
+const createHasteMap = require('./lib/createHasteMap');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
 const readConfig = require('./config/read');
 const sane = require('sane');
 const which = require('which');
-const changedFiles = require('jest-changed-files');
-
-const git = changedFiles.git;
-const hg = changedFiles.hg;
 
 const CLEAR = '\x1B[2J\x1B[H';
 const WATCHER_DEBOUNCE = 200;
@@ -41,42 +40,6 @@ function getMaxWorkers(argv) {
     const cpus = os.cpus().length;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
   }
-}
-
-function getTestPaths(testRunner, config, patternInfo) {
-  if (patternInfo.onlyChanged) {
-    return findOnlyChangedTestPaths(testRunner, config);
-  } else {
-    return testRunner.promiseTestPathsMatching();
-  }
-}
-
-function findOnlyChangedTestPaths(testRunner, config) {
-  return Promise.all(config.testPathDirs.map(determineSCM))
-    .then(repos => {
-      if (!repos.every(result => result[0] || result[1])) {
-        throw new Error(
-          'It appears that one of your testPathDirs does not exist ' +
-          'within a git or hg repository. Currently `--onlyChanged` ' +
-          'only works with git or hg projects.'
-        );
-      }
-      return Promise.all(Array.from(repos).map(repo => {
-        return repo[0]
-          ? git.findChangedFiles(repo[0])
-          : hg.findChangedFiles(repo[1]);
-      }));
-    })
-    .then(changedPathSets => testRunner.promiseTestPathsRelatedTo(
-      new Set(Array.prototype.concat.apply([], changedPathSets))
-    ));
-}
-
-function determineSCM(path) {
-  return Promise.all([
-    git.isGitRepository(path),
-    hg.isHGRepository(path),
-  ]);
 }
 
 function buildTestPathPatternInfo(argv) {
@@ -107,7 +70,9 @@ function buildTestPathPatternInfo(argv) {
   };
 }
 
-const pluralize = (word, count, ending) => `${count} ${word}${count === 1 ? '' : ending}`;
+function pluralize(word, count, ending) {
+  return `${count} ${word}${count === 1 ? '' : ending}`;
+}
 
 function getNoTestsFoundMessage(patternInfo, config, data) {
   if (patternInfo.onlyChanged) {
@@ -146,23 +111,38 @@ function getWatcher(config, packageRoot, callback) {
   });
 }
 
+function buildHastePromise(config, maxWorkers) {
+  const hasteMap = createHasteMap(config, {
+    resetCache: !config.cache,
+    maxWorkers,
+  });
+
+  return hasteMap.build().then(moduleMap => ({
+    moduleMap,
+    resolver: createResolver(config, moduleMap),
+  }));
+}
+
 function runJest(config, argv, pipe, onComplete) {
   if (argv.silent) {
     config.silent = true;
   }
   const patternInfo = buildTestPathPatternInfo(argv);
-  config.testPathPattern = patternInfo.testPathPattern;
-  const testRunner = new TestRunner(config, {
-    maxWorkers: getMaxWorkers(argv),
-  });
-  return getTestPaths(testRunner, config, patternInfo)
+  const maxWorkers = getMaxWorkers(argv);
+  const hasteMapPromise = buildHastePromise(config, maxWorkers);
+
+  const source = new SearchSource(hasteMapPromise, config);
+  return source.getTestPaths(patternInfo)
     .then(data => {
       if (!data.paths.length) {
         pipe.write(`${getNoTestsFoundMessage(patternInfo, config, data)}\n`);
       }
       return data.paths;
     })
-    .then(testPaths => testRunner.runTests(testPaths))
+    .then(testPaths => {
+      const testRunner = new TestRunner(hasteMapPromise, config, {maxWorkers});
+      return testRunner.runTests(testPaths);
+    })
     .then(runResults => {
       if (config.testResultsProcessor) {
         const processor = require(config.testResultsProcessor);
@@ -257,6 +237,8 @@ function runCLI(argv, root, onComplete) {
     });
 }
 
-exports.TestRunner = TestRunner;
-exports.getVersion = () => constants.VERSION;
-exports.runCLI = runCLI;
+module.exports = {
+  TestRunner,
+  getVersion: () => constants.VERSION,
+  runCLI,
+};
