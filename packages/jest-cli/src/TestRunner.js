@@ -13,7 +13,6 @@ const Test = require('./Test');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const promisify = require('./lib/promisify');
-const utils = require('jest-util');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
@@ -24,8 +23,6 @@ class TestRunner {
     this._hasteMap = hasteMap;
     this._options = options;
     this._config = Object.freeze(config);
-
-    utils.createDirectory(this._config.cacheDirectory);
 
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.

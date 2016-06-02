@@ -8,10 +8,12 @@
 
 'use strict';
 
+const utils = require('jest-util');
 const createResolver = require('./createResolver');
 const createHasteMap = require('./createHasteMap');
 
 module.exports = function buildHasteMap(config, maxWorkers) {
+  utils.createDirectory(config.cacheDirectory);
   const hasteMap = createHasteMap(config, {
     resetCache: !config.cache,
     maxWorkers,
