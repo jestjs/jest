@@ -121,10 +121,6 @@ class DefaultTestReporter {
       return;
     }
 
-    if (config.verbose && aggregatedResults.postSuiteHeaders.length > 0) {
-      this.log(aggregatedResults.postSuiteHeaders.join('\n'));
-    }
-
     let results = '';
     if (failedTests) {
       results +=
