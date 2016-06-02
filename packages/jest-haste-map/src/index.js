@@ -20,6 +20,7 @@ const path = require('./fastpath');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
+const utils = require('jest-util');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
@@ -31,6 +32,7 @@ const canUseWatchman = (() => {
   } catch (e) {}
   return false;
 })();
+
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -125,7 +127,7 @@ class HasteMap {
 
     const list = options.providesModuleNodeModules;
     this._whitelist = (list && list.length)
-      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + ')(?=$|' + path.sep + '))', 'g')
+      ? new RegExp(utils.replacePathSepForRegex('(' + NODE_MODULES + '(?:' + list.join('|') + ')(?=$|' + path.sep + '))'), 'g' )
       : null;
 
     this._cachePath = HasteMap.getCacheFilePath(
