@@ -14,7 +14,9 @@ const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
 const TestRunner = require('./TestRunner');
+const SearchSource = require('./SearchSource');
 
+const buildHasteMap = require('./lib/buildHasteMap');
 const chalk = require('chalk');
 const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
@@ -23,10 +25,6 @@ const path = require('path');
 const readConfig = require('./config/read');
 const sane = require('sane');
 const which = require('which');
-const changedFiles = require('jest-changed-files');
-
-const git = changedFiles.git;
-const hg = changedFiles.hg;
 
 const CLEAR = '\x1B[2J\x1B[H';
 const WATCHER_DEBOUNCE = 200;
@@ -43,42 +41,6 @@ function getMaxWorkers(argv) {
   }
 }
 
-function getTestPaths(testRunner, config, patternInfo) {
-  if (patternInfo.onlyChanged) {
-    return findOnlyChangedTestPaths(testRunner, config);
-  } else {
-    return testRunner.promiseTestPathsMatching(patternInfo.pattern);
-  }
-}
-
-function findOnlyChangedTestPaths(testRunner, config) {
-  return Promise.all(config.testPathDirs.map(determineSCM))
-    .then(repos => {
-      if (!repos.every(result => result[0] || result[1])) {
-        throw new Error(
-          'It appears that one of your testPathDirs does not exist ' +
-          'within a git or hg repository. Currently `--onlyChanged` ' +
-          'only works with git or hg projects.'
-        );
-      }
-      return Promise.all(Array.from(repos).map(repo => {
-        return repo[0]
-          ? git.findChangedFiles(repo[0])
-          : hg.findChangedFiles(repo[1]);
-      }));
-    })
-    .then(changedPathSets => testRunner.promiseTestPathsRelatedTo(
-      new Set(Array.prototype.concat.apply([], changedPathSets))
-    ));
-}
-
-function determineSCM(path) {
-  return Promise.all([
-    git.isGitRepository(path),
-    hg.isHGRepository(path),
-  ]);
-}
-
 function buildTestPathPatternInfo(argv) {
   if (argv.onlyChanged) {
     return {
@@ -89,25 +51,29 @@ function buildTestPathPatternInfo(argv) {
   if (argv.testPathPattern) {
     return {
       input: argv.testPathPattern,
-      pattern: argv.testPathPattern,
+      testPathPattern: argv.testPathPattern,
       shouldTreatInputAsPattern: true,
     };
   }
   if (argv._ && argv._.length) {
     return {
       input: argv._.join(' '),
-      pattern: argv._.join('|'),
+      testPathPattern: argv._.join('|'),
       shouldTreatInputAsPattern: false,
     };
   }
   return {
     input: '',
-    pattern: '',
+    testPathPattern: '',
     shouldTreatInputAsPattern: false,
   };
 }
 
-function getNoTestsFoundMessage(patternInfo) {
+function pluralize(word, count, ending) {
+  return `${count} ${word}${count === 1 ? '' : ending}`;
+}
+
+function getNoTestsFoundMessage(patternInfo, config, data) {
   if (patternInfo.onlyChanged) {
     const guide = patternInfo.watch
       ? 'starting Jest with `jest --watch=all`'
@@ -116,19 +82,28 @@ function getNoTestsFoundMessage(patternInfo) {
     'Note: If you are using dynamic `require`-calls or no tests related ' +
     'to your changed files can be found, consider ' + guide + '.';
   }
-  const pattern = patternInfo.pattern;
+
+  const pattern = patternInfo.testPathPattern;
   const input = patternInfo.input;
   const shouldTreatInputAsPattern = patternInfo.shouldTreatInputAsPattern;
 
   const formattedPattern = `/${pattern}/`;
-  const formattedInput = shouldTreatInputAsPattern ?
-    `/${input}/` :
-    `"${input}"`;
+  const formattedInput = shouldTreatInputAsPattern
+    ? `/${input}/`
+    : `"${input}"`;
+  const testPathPattern = input === pattern ? formattedInput : formattedPattern;
 
-  const message = `No tests found for ${formattedInput}.`;
-  return input === pattern ?
-    message :
-    `${message} Regex used while searching: ${formattedPattern}.`;
+  const statsMessage = Object.keys(data.stats).map(key => {
+    const value = key === 'testPathPattern' ? testPathPattern : config[key];
+    if (value) {
+      const matches = pluralize('match', data.stats[key], 'es');
+      return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
+    }
+    return null;
+  }).filter(line => line).join('\n');
+
+  return `${chalk.bold.red('NO TESTS FOUND')}. ` +
+    `${pluralize('file', data.total, 's')} checked.\n${statsMessage}`;
 }
 
 function getWatcher(config, packageRoot, callback) {
@@ -144,18 +119,22 @@ function runJest(config, argv, pipe, onComplete) {
   if (argv.silent) {
     config.silent = true;
   }
-  const testRunner = new TestRunner(config, {
-    maxWorkers: getMaxWorkers(argv),
-  });
   const patternInfo = buildTestPathPatternInfo(argv);
-  return getTestPaths(testRunner, config, patternInfo)
-    .then(testPaths => {
-      if (!testPaths.length) {
-        pipe.write(`${getNoTestsFoundMessage(patternInfo)}\n`);
+  const maxWorkers = getMaxWorkers(argv);
+  const hasteMap = buildHasteMap(config, maxWorkers);
+
+  const source = new SearchSource(hasteMap, config);
+  return source.getTestPaths(patternInfo)
+    .then(data => {
+      if (!data.paths.length) {
+        pipe.write(`${getNoTestsFoundMessage(patternInfo, config, data)}\n`);
       }
-      return testPaths;
+      return data.paths;
     })
-    .then(testPaths => testRunner.runTests(testPaths))
+    .then(testPaths => {
+      const testRunner = new TestRunner(hasteMap, config, {maxWorkers});
+      return testRunner.runTests(testPaths);
+    })
     .then(runResults => {
       if (config.testResultsProcessor) {
         const processor = require(config.testResultsProcessor);
@@ -250,6 +229,8 @@ function runCLI(argv, root, onComplete) {
     });
 }
 
-exports.TestRunner = TestRunner;
-exports.getVersion = () => constants.VERSION;
-exports.runCLI = runCLI;
+module.exports = {
+  TestRunner,
+  getVersion: () => constants.VERSION,
+  runCLI,
+};
