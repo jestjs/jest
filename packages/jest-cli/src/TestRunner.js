@@ -115,6 +115,11 @@ class TestRunner {
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
     const onTestResult = (testPath, testResult) => {
+      if (testResult.testResults.length === 0) {
+        const EmptySuiteError = require('jest-util').EmptySuiteError;
+        throw new EmptySuiteError();
+      }
+
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
