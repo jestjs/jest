@@ -25,18 +25,19 @@ const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 const SNAPSHOT_ADDED = chalk.bold.yellow;
 const SNAPSHOT_UPDATED = chalk.bold.yellow;
-const SNAPSHOT_SUMMARY = chalk.bold.green;
 const TEST_NAME_COLOR = chalk.bold;
+const TEST_SUMMARY_THRESHOLD = 20;
 
 const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
+
 class DefaultTestReporter {
 
   constructor(customProcess) {
     this._process = customProcess || process;
   }
 
-  log(str) {
-    this._process.stdout.write(str + '\n');
+  log(string) {
+    this._process.stdout.write(string + '\n');
   }
 
   onRunStart(config, results) {
@@ -63,7 +64,7 @@ class DefaultTestReporter {
     const testDetail = [];
     if (runTime !== null) {
       testDetail.push(
-        runTime > 2.5 ? LONG_TEST_COLOR(runTime + 's') : runTime + 's'
+        runTime > 5 ? LONG_TEST_COLOR(runTime + 's') : runTime + 's'
       );
     }
 
@@ -90,14 +91,8 @@ class DefaultTestReporter {
         verbose: config.verbose,
       });
 
-      // If we write more than one character at a time it is possible that
-      // node exits in the middle of printing the result.
-      // If you are reading this and you are from the future, this might not
-      // be true any more.
-      for (let i = 0; i < failureMessage.length; i++) {
-        this._process.stdout.write(failureMessage.charAt(i));
-      }
-      this._process.stdout.write('\n');
+      this._write(failureMessage);
+      testResult.message = resultHeader + '\n' + failureMessage + '\n';
 
       if (config.bail) {
         this.onRunComplete(config, results);
@@ -137,51 +132,103 @@ class DefaultTestReporter {
         `${PENDING_COLOR(`${pluralize('test', pendingTests)} skipped`)}, `;
     }
 
-    let snapshotsAdded = 0;
-    let snapshotsFiles = 0;
-    let snapshotsMatched = 0;
-    let snapshotsUpdated = 0;
-    aggregatedResults.testResults.forEach(result => {
-      if (
-        result.snapshotsAdded ||
-        result.snapshotsMatched ||
-        result.snapshotsUpdated
-      ) {
-        snapshotsFiles++;
-      }
-      snapshotsAdded += result.snapshotsAdded;
-      snapshotsMatched += result.snapshotsMatched;
-      snapshotsUpdated += result.snapshotsUpdated;
-    });
-    if (snapshotsAdded || snapshotsUpdated) {
-      results += `${SNAPSHOT_SUMMARY('Snapshot Summary')}.\n`;
-      if (snapshotsAdded) {
-        results +=
-          `\u203A ` +
-          `${SNAPSHOT_ADDED(pluralize('snapshot', snapshotsAdded))} ` +
-          `written in ${pluralize('test file', snapshotsFiles)}.\n`;
-      }
-      if (snapshotsUpdated) {
-        results +=
-          `\u203A ` +
-          `${SNAPSHOT_UPDATED(pluralize('snapshot', snapshotsUpdated))} ` +
-          `updated.\n`;
-      }
-    }
+    const snapshots = this._getSnapshotSummary(aggregatedResults);
+    this._printSnapshotSummary(snapshots);
 
-    const totalSnaphots = snapshotsMatched + snapshotsAdded + snapshotsUpdated;
+    const totalSnaphots =
+      snapshots.matched +
+      snapshots.added +
+      snapshots.updated;
 
     results +=
       `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} ` +
-      `(${totalTests} total in ${pluralize('test suite', totalTestSuites)}, `;
+      `(${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
+      (totalSnaphots ? pluralize('snapshot', totalSnaphots) + ', ' : '') +
+      `run time ${runTime}s)`;
 
-    if (totalSnaphots) {
-      results += `${pluralize('snapshot', totalSnaphots)}, `;
-    }
-
-    results +=  `run time ${runTime}s)`;
-
+    this._printSummary(aggregatedResults);
     this.log(results);
+  }
+
+  _getSnapshotSummary(aggregatedResults) {
+    let added = 0;
+    let filesAdded = 0;
+    let filesUpdated = 0;
+    let matched = 0;
+    let updated = 0;
+    aggregatedResults.testResults.forEach(result => {
+      if (result.snapshotsAdded) {
+        filesAdded++;
+      }
+      if (result.snapshotsUpdated) {
+        filesUpdated++;
+      }
+      added += result.snapshotsAdded;
+      matched += result.snapshotsMatched;
+      updated += result.snapshotsUpdated;
+    });
+    return {
+      added,
+      filesAdded,
+      filesUpdated,
+      matched,
+      updated,
+    }
+  }
+
+  _printSnapshotSummary(snapshots) {
+    if (snapshots.added || snapshots.updated) {
+      this.log(`${chalk.bold('Snapshot Summary')}.`);
+      if (snapshots.added) {
+        this.log(
+          `\u203A ` +
+          `${SNAPSHOT_ADDED(pluralize('snapshot', snapshots.added))} ` +
+          `written in ${pluralize('test file', snapshots.filesAdded)}.`
+        );
+      }
+      if (snapshots.updated) {
+        this.log(
+          `\u203A ` +
+          `${SNAPSHOT_UPDATED(pluralize('snapshot', snapshots.updated))} ` +
+          `updated in ${pluralize('test file', snapshots.filesUpdated)}.`
+        );
+      }
+    }
+  }
+
+  _printSummary(aggregatedResults) {
+    // If there were any failing tests and there was a large number of tests
+    // executed, re-print the failing results at the end of execution output.
+    const failedTests = aggregatedResults.numFailedTests;
+    const runtimeErrors = aggregatedResults.numRuntimeErrorTestSuites;
+    if (
+      failedTests + runtimeErrors > 0 &&
+      aggregatedResults.numTotalTestSuites > TEST_SUMMARY_THRESHOLD
+    ) {
+      this.log(chalk.bold('\nSummary of all failing tests'));
+      aggregatedResults.testResults.forEach(testResult => {
+        if (
+          testResult.message &&
+          (
+            testResult.numFailingTests > 0 ||
+            testResult.testExecError
+          )
+        ) {
+          this._write(testResult.message);
+        }
+      });
+    }
+  }
+
+  _write(string) {
+    // If we write more than one character at a time it is possible that
+    // node exits in the middle of printing the result.
+    // If you are reading this and you are from the future, this might not
+    // be true any more.
+    for (let i = 0; i < string.length; i++) {
+      this._process.stdout.write(string.charAt(i));
+    }
+    this._process.stdout.write('\n');
   }
 
   _clearWaitingOn() {

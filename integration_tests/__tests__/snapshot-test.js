@@ -15,12 +15,17 @@ const runJest = require('../runJest');
 
 const snapshotDir =
   path.resolve(__dirname, '../snapshot/__tests__/__snapshots__');
-const snapshotFile = path.resolve(snapshotDir, 'snapshot.js.snap');
+const snapshotFile = path.resolve(snapshotDir, 'snapshot-test.js.snap');
+const secondSnapshotFile = path.resolve(
+  snapshotDir,
+  'second-snapshot-test.js.snap'
+);
 
 describe('Snapshot', () => {
 
   afterEach(() => {
     fs.unlinkSync(snapshotFile);
+    fs.unlinkSync(secondSnapshotFile);
     fs.rmdirSync(snapshotDir);
   });
 
@@ -28,8 +33,8 @@ describe('Snapshot', () => {
     const result = runJest.json('snapshot', []);
     const json = result.json;
 
-    expect(json.numTotalTests).toBe(3);
-    expect(json.numPassedTests).toBe(3);
+    expect(json.numTotalTests).toBe(4);
+    expect(json.numPassedTests).toBe(4);
     expect(json.numFailedTests).toBe(0);
     expect(json.numPendingTests).toBe(0);
     expect(result.status).toBe(0);
