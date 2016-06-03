@@ -17,6 +17,7 @@ const getPlatformExtension = require('./lib/getPlatformExtension');
 const nodeCrawl = require('./crawlers/node');
 const os = require('os');
 const path = require('./fastpath');
+const utils = require('jest-util');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
@@ -123,9 +124,11 @@ class HasteMap {
         options.useWatchman === undefined ? true : options.useWatchman,
     };
 
+    const nodeModules = utils.replacePathSepForRegex(NODE_MODULES);
+    const pathSep = utils.replacePathSepForRegex(path.sep);
     const list = options.providesModuleNodeModules;
     this._whitelist = (list && list.length)
-      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + ')(?=$|' + path.sep + '))', 'g')
+      ? new RegExp('(' + nodeModules + '(?:' + list.join('|') + ')(?=$|' + pathSep + '))', 'g')
       : null;
 
     this._cachePath = HasteMap.getCacheFilePath(

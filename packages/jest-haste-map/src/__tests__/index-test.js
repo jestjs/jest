@@ -15,7 +15,8 @@ jest.unmock('../constants')
   .unmock('../lib/getPlatformExtension')
   .unmock('../worker')
   .unmock('../fastpath')
-  .unmock('../');
+  .unmock('../')
+  .unmock('jest-util');
 
 jest.mock('child_process', () => ({
   // If this does not throw, we'll use the (mocked) watchman crawler
