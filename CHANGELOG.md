@@ -1,6 +1,7 @@
 ## master
 
 * Add support for property testing via testcheck-js.
+* Fail test suite if it does not contain any tests.
 
 ## jest-cli 12.1.1
 
