@@ -48,6 +48,10 @@ function setFromArgv(config, argv) {
     config.logHeapUsage = argv.logHeapUsage;
   }
 
+  if (argv.silent) {
+    config.silent = true;
+  }
+
   if (argv.setupTestFrameworkScriptFile) {
     config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
   }

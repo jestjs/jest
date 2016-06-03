@@ -16,7 +16,7 @@ const setFromArgv = require('./setFromArgv');
 
 function readConfig(argv, packageRoot) {
   return readRawConfig(argv, packageRoot)
-    .then(config => setFromArgv(config, argv));
+    .then(config => Object.freeze(setFromArgv(config, argv)));
 }
 
 function readRawConfig(argv, root) {
