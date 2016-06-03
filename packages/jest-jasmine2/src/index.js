@@ -280,10 +280,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
     results.snapshotsAdded = env.snapshotState.added;
     results.snapshotsUpdated = env.snapshotState.updated;
     results.snapshotsMatched = env.snapshotState.matched;
-    results.snapshotFilesDeleted = 0;    
+    results.snapshotFileDeleted = 0;
     results.hasUncheckedKeys = currentSnapshot.hasUncheckedKeys();
     if (status.deleted) {
-      results.snapshotFilesDeleted++;
+      results.snapshotFileDeleted++;
     }
     return results;
   });

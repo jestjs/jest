@@ -161,7 +161,7 @@ class TestRunner {
         return this._hasteMap.then(
           hasteMap => snapshot.cleanup(hasteMap)
         ).then(deletedSnapshot => {
-          aggregatedResults.snapshotFilesDeleted = deletedSnapshot.count;
+          aggregatedResults.snapshotFilesDeleted = deletedSnapshot.size;
           if (reporter.onRunComplete) {
             reporter.onRunComplete(config, aggregatedResults);
           }

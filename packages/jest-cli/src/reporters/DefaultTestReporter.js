@@ -162,7 +162,7 @@ class DefaultTestReporter {
       if (result.snapshotsUpdated) {
         filesUpdated++;
       }
-      if (result.snapshotFilesDeleted) {
+      if (result.snapshotFileDeleted) {
         snapshotFilesDeleted++;
       }
       if (result.hasUncheckedKeys) {
