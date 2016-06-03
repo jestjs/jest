@@ -180,7 +180,7 @@ class DefaultTestReporter {
       filesRemoved: snapshotsUnlinked,
       matched,
       updated,
-    }
+    };
   }
 
   _printSnapshotSummary(snapshots) {
@@ -201,10 +201,11 @@ class DefaultTestReporter {
         );
       }
       if (snapshots.filesRemoved) {
-        results +=
-        `\u203A ` +
-        `${SNAPSHOT_REMOVED(pluralize('snapshot file', snapshots.filesRemoved))} ` +
-        `removed.\n`;
+        this.log(
+          `\u203A ` +
+          `${SNAPSHOT_REMOVED(pluralize('snapshot file', snapshots.filesRemoved))} ` +
+          `removed.\n`
+        );
       }
     }
   }

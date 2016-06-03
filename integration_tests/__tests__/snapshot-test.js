@@ -21,7 +21,7 @@ const secondSnapshotFile = path.resolve(
   snapshotDir,
   'second-snapshot-test.js.snap'
 );
-const snapshotCopy = path.resolve(snapshotDir, 'snapshot_copy.js.snap');
+const snapshotCopy = path.resolve(snapshotDir, 'snapshot-test_copy.js.snap');
 const fileExists = filePath => {
   try {
     fs.accessSync(filePath, fs.R_OK);
@@ -32,7 +32,7 @@ const fileExists = filePath => {
 const getSnapshotCopy = () => {
   const exports = Object.create(null);
   // eslint-disable-next-line no-eval
-  eval(fs.readFileSync(snapshotCopy));  
+  eval(fs.readFileSync(snapshotCopy, 'utf-8'));
   return exports;
 };
 
@@ -63,7 +63,7 @@ describe('Snapshot', () => {
   describe('Validation', () => {
     const pathToOriginal = path.resolve(
       __dirname,
-      '../snapshot/__tests__/snapshot.js'
+      '../snapshot/__tests__/snapshot-test.js'
     );
     const originalContent = String(fs.readFileSync(pathToOriginal));
     const pathToCopy = pathToOriginal.replace('.js', '_copy.js');
@@ -77,8 +77,8 @@ describe('Snapshot', () => {
       expect(content).not.toBe(undefined);
       const secondRun = runJest.json('snapshot', []);
 
-      expect(firstRun.json.numTotalTests).toBe(6);
-      expect(secondRun.json.numTotalTests).toBe(3);
+      expect(firstRun.json.numTotalTests).toBe(7);
+      expect(secondRun.json.numTotalTests).toBe(4);
       expect(fileExists(snapshotCopy)).toBe(false);
 
     });
@@ -92,8 +92,8 @@ describe('Snapshot', () => {
       const secondRun = runJest.json('snapshot', []);
       fs.unlinkSync(pathToCopy);
 
-      expect(firstRun.json.numTotalTests).toBe(6);
-      expect(secondRun.json.numTotalTests).toBe(4);
+      expect(firstRun.json.numTotalTests).toBe(7);
+      expect(secondRun.json.numTotalTests).toBe(5);
       expect(fileExists(snapshotCopy)).toBe(false);
     });
 
@@ -111,8 +111,8 @@ describe('Snapshot', () => {
       const secondRun = runJest.json('snapshot', []);
       fs.unlinkSync(pathToCopy);
 
-      expect(firstRun.json.numTotalTests).toBe(6);
-      expect(secondRun.json.numTotalTests).toBe(6);
+      expect(firstRun.json.numTotalTests).toBe(7);
+      expect(secondRun.json.numTotalTests).toBe(7);
       expect(fileExists(snapshotCopy)).toBe(true);
       const afterRemovingSnapshot = getSnapshotCopy();
 

@@ -81,6 +81,7 @@ function getWatcher(config, packageRoot, callback) {
 function runJest(config, argv, pipe, onComplete) {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
+  config.moduleFileExtensions.push('snap');
   const hasteMap = buildHasteMap(config, {maxWorkers});
 
   const source = new SearchSource(hasteMap, config);
