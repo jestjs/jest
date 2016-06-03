@@ -25,6 +25,8 @@ const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 const SNAPSHOT_ADDED = chalk.bold.yellow;
 const SNAPSHOT_UPDATED = chalk.bold.yellow;
+const SNAPSHOT_REMOVED = chalk.bold.red;
+const SNAPSHOT_SUMMARY = chalk.bold;
 const TEST_NAME_COLOR = chalk.bold;
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -135,15 +137,10 @@ class DefaultTestReporter {
     const snapshots = this._getSnapshotSummary(aggregatedResults);
     this._printSnapshotSummary(snapshots);
 
-    const totalSnaphots =
-      snapshots.matched +
-      snapshots.added +
-      snapshots.updated;
-
     results +=
       `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} ` +
       `(${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
-      (totalSnaphots ? pluralize('snapshot', totalSnaphots) + ', ' : '') +
+      (snapshots.total ? pluralize('snapshot', snapshots.total) + ', ' : '') +
       `run time ${runTime}s)`;
 
     this._printSummary(aggregatedResults);
@@ -156,12 +153,20 @@ class DefaultTestReporter {
     let filesUpdated = 0;
     let matched = 0;
     let updated = 0;
+    let snapshotFilesDeleted = aggregatedResults.snapshotFilesDeleted;
+    let warnUpdate = false;
     aggregatedResults.testResults.forEach(result => {
       if (result.snapshotsAdded) {
         filesAdded++;
       }
       if (result.snapshotsUpdated) {
         filesUpdated++;
+      }
+      if (result.snapshotFileDeleted) {
+        snapshotFilesDeleted++;
+      }
+      if (result.hasUncheckedKeys) {
+        warnUpdate = true;
       }
       added += result.snapshotsAdded;
       matched += result.snapshotsMatched;
@@ -171,14 +176,17 @@ class DefaultTestReporter {
       added,
       filesAdded,
       filesUpdated,
+      filesRemoved: snapshotFilesDeleted,
       matched,
       updated,
-    }
+      total: matched + added + updated,
+      warnUpdate,
+    };
   }
 
   _printSnapshotSummary(snapshots) {
-    if (snapshots.added || snapshots.updated) {
-      this.log(`${chalk.bold('Snapshot Summary')}.`);
+    if (snapshots.added || snapshots.updated || snapshots.filesRemoved) {
+      this.log(`${SNAPSHOT_SUMMARY('Snapshot Summary')}.`);
       if (snapshots.added) {
         this.log(
           `\u203A ` +
@@ -193,6 +201,18 @@ class DefaultTestReporter {
           `updated in ${pluralize('test file', snapshots.filesUpdated)}.`
         );
       }
+      if (snapshots.filesRemoved) {
+        this.log(
+          `\u203A ` +
+          `${SNAPSHOT_REMOVED(pluralize('snapshot file', snapshots.filesRemoved))} ` +
+          `removed.\n`
+        );
+      }
+    }
+    if (snapshots.warnUpdate) {
+      this.log(
+        'Some of the snapshot are obsolete, run with -u to remove them.\n'
+      );
     }
   }
 

@@ -269,12 +269,22 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   env.addReporter(reporter);
   moduleLoader.requireModule(testPath);
   env.execute();
-  env.snapshotState.snapshot.save();
+  const currentSnapshot = env.snapshotState.snapshot;
+  const updateSnapshot = config.updateSnapshot;
+  if (updateSnapshot) {
+    currentSnapshot.removeUncheckedKeys();
+  }
+  const status = currentSnapshot.save(updateSnapshot);
 
   return reporter.getResults().then(results => {
     results.snapshotsAdded = env.snapshotState.added;
     results.snapshotsUpdated = env.snapshotState.updated;
     results.snapshotsMatched = env.snapshotState.matched;
+    results.snapshotFileDeleted = 0;
+    results.hasUncheckedKeys = currentSnapshot.hasUncheckedKeys();
+    if (status.deleted) {
+      results.snapshotFileDeleted++;
+    }
     return results;
   });
 }
