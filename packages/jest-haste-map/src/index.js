@@ -32,6 +32,20 @@ const canUseWatchman = (() => {
   return false;
 })();
 
+const escapePathSeparator =
+  string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
+
+const getWhiteList = list => {
+  if (list && list.length) {
+    return new RegExp(
+      '(' + escapePathSeparator(NODE_MODULES) +
+      '(?:' + list.join('|') + ')(?=$|' + escapePathSeparator(path.sep) + '))',
+      'g'
+    );
+  }
+  return null;
+};
+
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
  *
@@ -123,11 +137,6 @@ class HasteMap {
         options.useWatchman === undefined ? true : options.useWatchman,
     };
 
-    const list = options.providesModuleNodeModules;
-    this._whitelist = (list && list.length)
-      ? new RegExp('(' + NODE_MODULES + '(?:' + list.join('|') + ')(?=$|' + path.sep + '))', 'g')
-      : null;
-
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       this._options.name,
@@ -137,6 +146,7 @@ class HasteMap {
       this._options.platforms.join(':'),
       options.mocksPattern
     );
+    this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
     this._workerPromise = null;
     this._workerFarm = null;
