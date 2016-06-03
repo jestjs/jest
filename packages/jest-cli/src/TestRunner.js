@@ -13,17 +13,10 @@ const Test = require('./Test');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const promisify = require('./lib/promisify');
+const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
-
-const fileExists = filePath => {
-  try {
-    fs.accessSync(filePath, fs.R_OK);
-    return true;
-  } catch (e) {}
-  return false;
-};
 
 class TestRunner {
 
@@ -166,22 +159,14 @@ class TestRunner {
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
         return this._hasteMap.then(
-          hasteMap => hasteMap.instance.matchFiles(/\.snap/).then(res => {
-            aggregatedResults.snapshotsUnlinked = 0;
-            res.forEach(snapFile => {
-              const parts = snapFile.split('__snapshots__/');
-              const testFile = parts[0] + parts[1].slice(0, -5);
-              if (!fileExists(testFile)) {
-                fs.unlinkSync(snapFile);
-                aggregatedResults.snapshotsUnlinked++;
-              }
-            });
-            if (reporter.onRunComplete) {
-              reporter.onRunComplete(config, aggregatedResults);
-            }
-            return aggregatedResults;
-          })
-        );
+          hasteMap => snapshot.cleanup(hasteMap)
+        ).then(deletedSnapshot => {
+          aggregatedResults.snapshotFilesDeleted = deletedSnapshot.count;
+          if (reporter.onRunComplete) {
+            reporter.onRunComplete(config, aggregatedResults);
+          }
+          return aggregatedResults;
+        });
 
       })
       .then(results => this._cacheTestResults(results).then(() => results));

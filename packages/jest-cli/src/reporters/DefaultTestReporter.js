@@ -137,15 +137,10 @@ class DefaultTestReporter {
     const snapshots = this._getSnapshotSummary(aggregatedResults);
     this._printSnapshotSummary(snapshots);
 
-    const totalSnaphots =
-      snapshots.matched +
-      snapshots.added +
-      snapshots.updated;
-
     results +=
       `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} ` +
       `(${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
-      (totalSnaphots ? pluralize('snapshot', totalSnaphots) + ', ' : '') +
+      (snapshots.total ? pluralize('snapshot', snapshots.total) + ', ' : '') +
       `run time ${runTime}s)`;
 
     this._printSummary(aggregatedResults);
@@ -158,7 +153,8 @@ class DefaultTestReporter {
     let filesUpdated = 0;
     let matched = 0;
     let updated = 0;
-    let snapshotsUnlinked = aggregatedResults.snapshotsUnlinked;
+    let snapshotFilesDeleted = aggregatedResults.snapshotFilesDeleted;
+    let warnUpdate = false;
     aggregatedResults.testResults.forEach(result => {
       if (result.snapshotsAdded) {
         filesAdded++;
@@ -166,8 +162,11 @@ class DefaultTestReporter {
       if (result.snapshotsUpdated) {
         filesUpdated++;
       }
-      if (result.snapshotsUnlinked) {
-        snapshotsUnlinked++;
+      if (result.snapshotFilesDeleted) {
+        snapshotFilesDeleted++;
+      }
+      if (result.hasUncheckedKeys) {
+        warnUpdate = true;
       }
       added += result.snapshotsAdded;
       matched += result.snapshotsMatched;
@@ -177,9 +176,11 @@ class DefaultTestReporter {
       added,
       filesAdded,
       filesUpdated,
-      filesRemoved: snapshotsUnlinked,
+      filesRemoved: snapshotFilesDeleted,
       matched,
       updated,
+      total: matched + added + updated,
+      warnUpdate,
     };
   }
 
@@ -207,6 +208,11 @@ class DefaultTestReporter {
           `removed.\n`
         );
       }
+    }
+    if (snapshots.warnUpdate) {
+      this.log(
+        'Some of the snapshot are obsolete, run with -u to remove them.\n'
+      );
     }
   }
 
