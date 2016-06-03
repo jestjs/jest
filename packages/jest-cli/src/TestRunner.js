@@ -13,6 +13,7 @@ const Test = require('./Test');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const promisify = require('./lib/promisify');
+const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
@@ -157,10 +158,18 @@ class TestRunner {
         aggregatedResults.success =
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
-        if (reporter.onRunComplete) {
-          reporter.onRunComplete(config, aggregatedResults);
-        }
-        return aggregatedResults;
+        return this._hasteMap
+          .then(hasteMap => snapshot.cleanup(hasteMap, config.updateSnapshot))
+          .then(status => {
+            aggregatedResults.snapshotFilesRemoved = status.filesRemoved;
+            aggregatedResults.didUpdate = config.updateSnapshot;
+            if (reporter.onRunComplete) {
+              aggregatedResults.success =
+                reporter.onRunComplete(config, aggregatedResults);
+            }
+            return aggregatedResults;
+          });
+
       })
       .then(results => this._cacheTestResults(results).then(() => results));
   }

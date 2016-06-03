@@ -30,17 +30,23 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
         const callCount = snapshotState.getCounter();
         snapshotState.incrementCounter();
 
+        const key = currentSpecName + ' ' + callCount;
+        const hasSnapshot = snapshot.has(key);
         let pass = false;
         let message;
-        const key = currentSpecName + ' ' + callCount;
+
         if (
           !snapshot.fileExists() ||
-          (snapshot.has(key) && options.updateSnapshot) ||
-          !snapshot.has(key)
+          (hasSnapshot && options.updateSnapshot) ||
+          !hasSnapshot
         ) {
           if (options.updateSnapshot) {
             if (!snapshot.matches(key, actual).pass) {
-              snapshotState.updated++;
+              if (hasSnapshot) {
+                snapshotState.updated++;
+              } else {
+                snapshotState.added++;
+              }
               snapshot.add(key, actual);
             } else {
               snapshotState.matched++;
@@ -54,6 +60,7 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
           const matches = snapshot.matches(key, actual);
           pass = matches.pass;
           if (!pass) {
+            snapshotState.unmatched++;
             const matcherName = 'toMatchSnapshot';
             const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
             formatter.addDiffableMatcher(matcherName);

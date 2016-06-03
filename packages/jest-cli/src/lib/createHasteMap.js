@@ -9,6 +9,7 @@
 'use strict';
 
 const HasteMap = require('jest-haste-map');
+const SNAPSHOT_EXTENSION = require('jest-snapshot').EXTENSION;
 
 module.exports = function createHasteMap(config, options) {
   const ignorePattern = new RegExp(
@@ -17,7 +18,7 @@ module.exports = function createHasteMap(config, options) {
 
   return new HasteMap({
     cacheDirectory: config.cacheDirectory,
-    extensions: config.moduleFileExtensions,
+    extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
     ignorePattern,
     maxWorkers: options && options.maxWorkers,
     mocksPattern: config.mocksPattern,

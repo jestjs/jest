@@ -23,8 +23,10 @@ const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 const PASS_COLOR = chalk.bold.green;
 const PENDING_COLOR = chalk.bold.yellow;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
-const SNAPSHOT_ADDED = chalk.bold.yellow;
-const SNAPSHOT_UPDATED = chalk.bold.yellow;
+const SNAPSHOT_ADDED = chalk.bold.green;
+const SNAPSHOT_UPDATED = chalk.bold.green;
+const SNAPSHOT_REMOVED = chalk.bold.red;
+const SNAPSHOT_SUMMARY = chalk.bold;
 const TEST_NAME_COLOR = chalk.bold;
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -113,86 +115,153 @@ class DefaultTestReporter {
     const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
 
     if (totalTests === 0 && totalErrors === 0) {
-      return;
+      return true;
     }
 
+    const snapshots = this._getSnapshotSummary(aggregatedResults);
+    const snapshotFailure = !!(!snapshots.didUpdate && (
+      snapshots.unchecked ||
+      snapshots.unmatched ||
+      snapshots.filesRemoved
+    ));
+    this._printSnapshotSummary(snapshots);
+
     let results = '';
+
+    if (snapshotFailure) {
+      results += FAIL_COLOR('snapshot failure') + ', ';
+    }
+
     if (failedTests) {
       results +=
-        `${FAIL_COLOR(`${pluralize('test', failedTests)} failed`)}, `;
+        FAIL_COLOR(`${pluralize('test', failedTests)} failed`) + ', ';
     }
 
     if (totalErrors) {
       results +=
-        `${FAIL_COLOR(`${pluralize('test suite', totalErrors)} failed`)}, `;
+        FAIL_COLOR(`${pluralize('test suite', totalErrors)} failed`) + ', ';
     }
 
     if (pendingTests) {
       results +=
-        `${PENDING_COLOR(`${pluralize('test', pendingTests)} skipped`)}, `;
+        PENDING_COLOR(`${pluralize('test', pendingTests)} skipped`) + ', ';
     }
-
-    const snapshots = this._getSnapshotSummary(aggregatedResults);
-    this._printSnapshotSummary(snapshots);
-
-    const totalSnaphots =
-      snapshots.matched +
-      snapshots.added +
-      snapshots.updated;
 
     results +=
       `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} ` +
       `(${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
-      (totalSnaphots ? pluralize('snapshot', totalSnaphots) + ', ' : '') +
+      (snapshots.total ? pluralize('snapshot', snapshots.total) + ', ' : '') +
       `run time ${runTime}s)`;
 
     this._printSummary(aggregatedResults);
     this.log(results);
+    return snapshotFailure ? false : aggregatedResults.success;
   }
 
   _getSnapshotSummary(aggregatedResults) {
     let added = 0;
     let filesAdded = 0;
+    let filesRemoved = aggregatedResults.snapshotFilesRemoved;
+    let filesUnmatched = 0;
     let filesUpdated = 0;
     let matched = 0;
+    let unchecked = 0;
+    let unmatched = 0;
     let updated = 0;
     aggregatedResults.testResults.forEach(result => {
       if (result.snapshotsAdded) {
         filesAdded++;
       }
+      if (result.snapshotFileDeleted) {
+        filesRemoved++;
+      }
+      if (result.snapshotsUnmatched) {
+        filesUnmatched++;
+      }
       if (result.snapshotsUpdated) {
         filesUpdated++;
       }
+      if (result.hasUncheckedKeys) {
+        unchecked++;
+      }
       added += result.snapshotsAdded;
       matched += result.snapshotsMatched;
+      unmatched += result.snapshotsUnmatched;
       updated += result.snapshotsUpdated;
     });
     return {
       added,
+      didUpdate: aggregatedResults.didUpdate,
       filesAdded,
+      filesRemoved,
+      filesUnmatched,
       filesUpdated,
       matched,
+      total: matched + added + updated,
+      unchecked,
+      unmatched,
       updated,
-    }
+    };
   }
 
   _printSnapshotSummary(snapshots) {
-    if (snapshots.added || snapshots.updated) {
-      this.log(`${chalk.bold('Snapshot Summary')}.`);
+    if (
+      snapshots.added ||
+      snapshots.filesRemoved ||
+      snapshots.unchecked ||
+      snapshots.unmatched ||
+      snapshots.updated
+    ) {
+      this.log('\n' + SNAPSHOT_SUMMARY('Snapshot Summary'));
       if (snapshots.added) {
         this.log(
-          `\u203A ` +
-          `${SNAPSHOT_ADDED(pluralize('snapshot', snapshots.added))} ` +
-          `written in ${pluralize('test file', snapshots.filesAdded)}.`
+          '\u203A ' +
+          SNAPSHOT_ADDED(pluralize('snapshot', snapshots.added)) +
+          ` written in ${pluralize('test file', snapshots.filesAdded)}.`
         );
       }
+
+      if (snapshots.unmatched) {
+        this.log(
+          '\u203A ' +
+          FAIL_COLOR(pluralize('snapshot test', snapshots.unmatched)) +
+          ` failed in ${pluralize('test file', snapshots.filesUnmatched)}. ` +
+          'Inspect your code changes or re-run with `-u` to update them.'
+        );
+      }
+
       if (snapshots.updated) {
         this.log(
-          `\u203A ` +
-          `${SNAPSHOT_UPDATED(pluralize('snapshot', snapshots.updated))} ` +
-          `updated in ${pluralize('test file', snapshots.filesUpdated)}.`
+          '\u203A ' +
+          SNAPSHOT_UPDATED(pluralize('snapshot', snapshots.updated)) +
+          ` updated in ${pluralize('test file', snapshots.filesUpdated)}.`
         );
       }
+
+      if (snapshots.filesRemoved) {
+        this.log(
+          '\u203A ' +
+          SNAPSHOT_REMOVED(pluralize(
+            'snapshot file',
+            snapshots.filesRemoved
+          )) +
+          (snapshots.didUpdate
+            ? ' removed.'
+            : ' found, re-run with `-u` to remove them.')
+        );
+      }
+
+      if (snapshots.unchecked) {
+        this.log(
+          '\u203A ' +
+          FAIL_COLOR(pluralize('obsolete snapshot', snapshots.unchecked)) +
+          (snapshots.didUpdate
+            ? ' removed.'
+            : ' found, re-run with `-u` to remove them.')
+        );
+      }
+
+      this.log(''); // print empty line
     }
   }
 
@@ -217,6 +286,7 @@ class DefaultTestReporter {
           this._write(testResult.message);
         }
       });
+      this.log(''); // print empty line
     }
   }
 

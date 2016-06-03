@@ -9,6 +9,10 @@
 
 const SnapshotFile = require('./SnapshotFile');
 
+const fs = require('fs');
+const path = require('path');
+
+const EXTENSION = SnapshotFile.SNAPSHOT_EXTENSION;
 const patchAttr = (attr, state) => {
   attr.onStart = function(onStart) {
     return function(context) {
@@ -40,7 +44,32 @@ const patchJasmine = (jasmine, state) => {
   })(jasmine.Spec);
 };
 
+const fileExists = filePath => {
+  try {
+    return fs.statSync(filePath).isFile();
+  } catch (e) {}
+  return false;
+};
+
 module.exports = {
+  EXTENSION,
+  cleanup(hasteMap, update) {
+    const extension = new RegExp('\\.' + EXTENSION);
+    return hasteMap.instance.matchFiles(extension).then(files => {
+      const filesRemoved = files
+        .filter(snapshotFile => !fileExists(path.resolve(
+          path.dirname(snapshotFile),
+          '..',
+          path.basename(snapshotFile, '.' + EXTENSION)
+        )))
+        .map(snapshotFile => update && fs.unlinkSync(snapshotFile))
+        .length;
+
+      return {
+        filesRemoved,
+      };
+    });
+  },
   getMatchers: require('./getMatchers'),
   getSnapshotState: (jasmine, filePath) => {
     const state = Object.create(null);
@@ -51,6 +80,7 @@ module.exports = {
     state.added = 0;
     state.updated = 0;
     state.matched = 0;
+    state.unmatched = 0;
 
     patchJasmine(jasmine, state);
     return state;

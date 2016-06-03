@@ -30,7 +30,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
   }
 
   onRunComplete(config, aggregatedResults) {
-    super.onRunComplete(config, aggregatedResults);
+    aggregatedResults.success = super.onRunComplete(config, aggregatedResults);
 
     if (config.collectCoverage) {
       try {
@@ -81,10 +81,11 @@ class IstanbulTestReporter extends DefaultTestReporter {
 
         if (errors.length > 0) {
           this.log(`${FAIL_COLOR(errors.join('\n'))}`);
-          aggregatedResults.success = false;
+          return false;
         }
       }
     }
+    return aggregatedResults.success;
   }
 
   static getReporter() {

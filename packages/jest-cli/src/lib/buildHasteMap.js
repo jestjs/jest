@@ -14,10 +14,12 @@ const utils = require('jest-util');
 
 module.exports = (config, options) => {
   utils.createDirectory(config.cacheDirectory);
-  return createHasteMap(config, {
+  const instance = createHasteMap(config, {
     resetCache: !config.cache,
     maxWorkers: options.maxWorkers,
-  }).build().then(moduleMap => ({
+  });
+  return instance.build().then(moduleMap => ({
+    instance,
     moduleMap,
     resolver: createResolver(config, moduleMap),
   }));
