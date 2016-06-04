@@ -7,6 +7,9 @@
  */
 'use strict';
 
+const runCommands = require('./_runCommands');
+const getPackages = require('./_getPackages');
+
 if (process.platform === 'win32') {
   console.error('Tests are skipped on Windows.');
   return;
@@ -19,44 +22,17 @@ const packagesOnly =
 const fs = require('graceful-fs');
 const path = require('path');
 const chalk = require('chalk');
-const execSync = require('child_process').execSync;
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 
-const PACKAGES_DIR = path.resolve(__dirname, 'packages');
-const EXAMPLES_DIR = path.resolve(__dirname, 'examples');
-const INTEGRATION_TESTS_DIR = path.resolve(__dirname, 'integration_tests');
-const JEST_CLI_PATH = path.resolve(__dirname, 'packages/jest-cli');
+const EXAMPLES_DIR = path.resolve(__dirname, '../examples');
+const INTEGRATION_TESTS_DIR = path.resolve(__dirname, '../integration_tests');
+const JEST_CLI_PATH = path.resolve(__dirname, '../packages/jest-cli');
 
-const packages = fs.readdirSync(PACKAGES_DIR)
-  .map(file => path.resolve(PACKAGES_DIR, file))
-  .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
 
 const examples = fs.readdirSync(EXAMPLES_DIR)
   .map(file => path.resolve(EXAMPLES_DIR, file))
   .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
-
-function runCommands(commands, cwd) {
-  if (!cwd) {
-    cwd = __dirname;
-  }
-
-  [].concat(commands).forEach(cmd => {
-    let msg = chalk.green('-> ') + chalk.underline.bold('running:') +
-      ' ' + chalk.bold.cyan(cmd);
-
-    if (cwd) {
-      msg += ' cwd: ' + chalk.underline.bold(cwd);
-    }
-
-    console.log(msg);
-
-    execSync(cmd, {
-      cwd,
-      stdio: [0, 1, 2],
-    });
-  });
-}
 
 function runPackageTests(packageDirectory) {
   console.log(chalk.bold(chalk.cyan('Testing package: ') + packageDirectory));
@@ -90,7 +66,7 @@ function runExampleTests(exampleDirectory) {
 }
 
 
-packages.forEach(runPackageTests);
+getPackages().forEach(runPackageTests);
 
 if (packagesOnly) {
   return;

@@ -4,3 +4,4 @@ docs/
 **/vendor/**
 website/
 **/coverage/**
+packages/*/build/**

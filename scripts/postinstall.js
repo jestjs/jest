@@ -7,13 +7,15 @@
  */
 'use strict';
 
-const execute = require('./execute');
 const path = require('path');
 const isWindows = process.platform === 'win32';
+const runCommands = require('./_runCommands');
 
 console.log(`Setting up Jest's development environment...`);
-const lerna = (isWindows ? 'lerna.cmd' : 'lerna');
-
-execute(
-  '.', path.resolve(__dirname, './node_modules/.bin/' + lerna), 'bootstrap'
+const lerna = isWindows ? 'lerna.cmd' : 'lerna';
+const lernaCmd = path.resolve(
+  __dirname,
+  '../node_modules/.bin/' + lerna + ' bootstrap'
 );
+
+runCommands(lernaCmd, path.resolve(__dirname, '..'));
