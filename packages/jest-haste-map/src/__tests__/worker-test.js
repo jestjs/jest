@@ -32,7 +32,7 @@ describe('worker', () => {
         ' * @providesModule Pear',
         ' */',
         'const Banana = require("Banana");',
-        'const Strawberry = require("Strawberry");',
+        'const Strawberry = require(`Strawberry`);',
       ].join('\n'),
       '/fruits/banana.js': [
         '/**',
