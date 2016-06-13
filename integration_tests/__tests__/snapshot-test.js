@@ -71,6 +71,11 @@ describe('Snapshot', () => {
     expect(
       content['snapshot is not influenced by previous counter 0']
     ).not.toBe(undefined);
+
+    const info = result.stderr.toString();
+    expect(info).toMatch('4 snapshots written in 2 test files');
+    expect(info).toMatch('4 tests passed');
+    expect(info).toMatch('4 total in 2 test suites, 4 snapshots');
   });
 
   describe('Validation', () => {
@@ -91,6 +96,14 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(4);
       expect(fileExists(snapshotOfCopy)).toBe(false);
 
+      const infoFR = firstRun.stderr.toString();
+      const infoSR = secondRun.stderr.toString();
+      expect(infoFR).toMatch('7 snapshots written in 3 test files');
+      expect(infoFR).toMatch('7 tests passed');
+      expect(infoFR).toMatch('7 total in 3 test suites');
+      expect(infoSR).toMatch('1 snapshot file removed');
+      expect(infoSR).toMatch('4 tests passed');
+      expect(infoSR).toMatch('4 total in 2 test suites');
     });
 
     it('deletes the snapshot when a test does removes all the snapshots', () => {
@@ -102,7 +115,16 @@ describe('Snapshot', () => {
 
       expect(firstRun.json.numTotalTests).toBe(7);
       expect(secondRun.json.numTotalTests).toBe(5);
+
       expect(fileExists(snapshotOfCopy)).toBe(false);
+      const infoFR = firstRun.stderr.toString();
+      const infoSR = secondRun.stderr.toString();
+      expect(infoFR).toMatch('7 snapshots written in 3 test files');
+      expect(infoFR).toMatch('7 tests passed');
+      expect(infoFR).toMatch('7 total in 3 test suites');
+      expect(infoSR).toMatch('1 snapshot file removed');
+      expect(infoSR).toMatch('5 tests passed');
+      expect(infoSR).toMatch('5 total in 3 test suites, 4 snapshots');
     });
 
     it('updates the snapshot when a test removes some snapshots', () => {
@@ -136,6 +158,16 @@ describe('Snapshot', () => {
       expect(
         afterRemovingSnapshot[keyToCheck]
       ).toBe(undefined);
+
+      const infoFR = firstRun.stderr.toString();
+      const infoSR = secondRun.stderr.toString();
+      expect(infoFR).toMatch('7 snapshots written in 3 test files');
+      expect(infoFR).toMatch('7 tests passed');
+      expect(infoFR).toMatch('7 total in 3 test suites, 7 snapshots');
+      expect(infoSR).toMatch('1 snapshot updated in 1 test file');
+      expect(infoSR).toMatch('1 obsolete snapshot removed');
+      expect(infoSR).toMatch('7 tests passed');
+      expect(infoSR).toMatch('7 total in 3 test suites, 6 snapshots');
     });
   });
 
