@@ -12,7 +12,7 @@ const path = require('path');
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at.*?vendor\/jasmine\-/;
+const JASMINE_IGNORE = /^\s+at.*?vendor\/|\\jasmine\-/;
 const STACK_TRACE_IGNORE =
   /^\s+at.*?jest(-cli)?\/(vendor|src|node_modules|packages)\//;
 
