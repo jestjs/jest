@@ -1,16 +1,20 @@
 {
   "private": true,
   "devDependencies": {
+    "babel-core": "^6.9.1",
     "babel-eslint": "^6.0.4",
+    "babel-plugin-transform-flow-strip-types": "^6.8.0",
     "eslint": "^2.10.2",
     "eslint-plugin-babel": "^3.2.0",
     "fbjs-scripts": "^0.7.0",
+    "glob": "^7.0.3",
     "lerna": "2.0.0-beta.10",
+    "minimatch": "^3.0.0",
     "rimraf": "^2.4.4"
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "node postinstall.js",
-    "test": "npm run lint && node ./runTests.js"
+    "postinstall": "node ./scripts/postinstall.js",
+    "test": "npm run lint && node ./scripts/test.js"
   }
 }
