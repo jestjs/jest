@@ -11,6 +11,12 @@
 
 import type {Config} from 'types/Config';
 import type {Environment} from 'types/Environment';
+import type {
+  AssertionResult,
+  FailedAssertion,
+  Status,
+  TestResult,
+} from 'types/TestResult';
 
 const jasmineRequire = require('../vendor/jasmine-2.4.1.js');
 const jasmine = jasmineRequire.core(jasmineRequire);
@@ -20,31 +26,18 @@ type Suite = {
   description: string,
 };
 
-type FailedExpectation = {
-  matcherName: string,
-  stack: any,
-};
-
 type SpecResult = {
   description: string,
-  failedExpectations: Array<FailedExpectation>,
-  status: string,
-};
-
-type ExtractedSpecResult = {
-  ancestorTitles: Array<string>,
-  failureMessages: Array<string>,
-  numPassingAsserts: number,
-  status: string,
-  title: string,
+  failedExpectations: Array<FailedAssertion>,
+  status: Status,
 };
 
 class Jasmine2Reporter {
   _formatter: JasmineFormatter;
-  _testResults: Array<ExtractedSpecResult>;
+  _testResults: Array<AssertionResult>;
   _currentSuites: Array<string>;
   _resolve: any;
-  _resultsPromise: Promise;
+  _resultsPromise: Promise<TestResult>;
 
   constructor(config: Config, environment: Environment) {
     this._formatter = new JasmineFormatter(jasmine, environment, config);
@@ -94,14 +87,14 @@ class Jasmine2Reporter {
     return this._formatter;
   }
 
-  getResults(): Promise {
+  getResults(): Promise<TestResult> {
     return this._resultsPromise;
   }
 
   _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
-  ): ExtractedSpecResult {
+  ): AssertionResult {
     const status =
       (specResult.status === 'disabled') ? 'pending' : specResult.status;
     const results = {
