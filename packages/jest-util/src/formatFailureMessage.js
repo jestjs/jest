@@ -9,8 +9,8 @@
  */
 'use strict';
 
-import type {Config} from '../../../types/Config';
-import type {TestResult} from '../../../types/TestResult';
+import type {Config} from 'types/Config';
+import type {TestResult} from 'types/TestResult';
 
 const chalk = require('chalk');
 const path = require('path');

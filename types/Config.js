@@ -17,6 +17,8 @@ export type HasteConfig = {
   platforms: Array<string>,
 };
 
+export type ConfigGlobals = Object;
+
 export type Config = {
   automock: boolean,
   bail: boolean,
@@ -24,7 +26,7 @@ export type Config = {
   colors: boolean,
   coverageCollector: Path,
   coverageReporters: Array<string>,
-  globals: Object,
+  globals: ConfigGlobals,
   haste: HasteConfig,
   mocksPattern: string,
   moduleDirectories: Array<string>,
