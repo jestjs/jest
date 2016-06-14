@@ -10,11 +10,11 @@ const path = require('path');
 
 module.exports = function createRuntime(filename, config) {
   const JSDOMEnvironment = require('jest-environment-jsdom');
-  const Runtime = require('../Runtime');
+  const Runtime = require('../');
 
-  const createHasteMap = require('../../lib/createHasteMap');
-  const createResolver = require('../../lib/createResolver');
-  const normalizeConfig = require('../../config/normalize');
+  const createHasteMap = require('../lib/createHasteMap');
+  const createResolver = require('../lib/createResolver');
+  const normalizeConfig = require('jest-config').normalize;
 
   config = normalizeConfig(Object.assign({
     cacheDirectory: global.CACHE_DIRECTORY,
@@ -31,6 +31,7 @@ module.exports = function createRuntime(filename, config) {
         environment,
         createResolver(config, moduleMap)
       );
+
       runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
       return runtime;
     });

@@ -8,16 +8,16 @@
 
 'use strict';
 
-const constants = require('../constants');
+const constants = require('./constants');
 const path = require('path');
 const utils = require('jest-util');
 
 module.exports = {
   automock: true,
   bail: false,
-  cacheDirectory: path.resolve(__dirname, '../..', '.haste_cache'),
+  cacheDirectory: path.resolve(__dirname, '../../jest-runtime', '.haste_cache'),
   colors: false,
-  coverageCollector: require.resolve('../IstanbulCollector'),
+  coverageCollector: require.resolve('./IstanbulCollector'),
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
   haste: {
@@ -26,7 +26,7 @@ module.exports = {
   mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'node'],
-  moduleLoader: require.resolve('../Runtime/Runtime'),
+  moduleLoader: require.resolve('jest-runtime'),
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noHighlight: false,
@@ -38,7 +38,7 @@ module.exports = {
     utils.replacePathSepForRegex(constants.NODE_MODULES),
   ],
   testRegex: '__tests__/.*\.js$',
-  testReporter: require.resolve('../reporters/IstanbulTestReporter'),
+  testReporter: require.resolve('./reporters/IstanbulTestReporter'),
   testURL: 'about:blank',
   useStderr: false,
   verbose: false,

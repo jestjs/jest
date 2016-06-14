@@ -15,8 +15,8 @@ process.on('uncaughtException', err => {
 
 const Test = require('./Test');
 
-const createHasteMap = require('./lib/createHasteMap');
-const createResolver = require('./lib/createResolver');
+const createHasteMap = require('../../jest-runtime/src/lib/createHasteMap');
+const createResolver = require('../../jest-runtime/src/lib/createResolver');
 
 const formatError = error => {
   if (typeof error === 'string') {

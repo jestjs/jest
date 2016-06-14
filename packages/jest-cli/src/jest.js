@@ -22,7 +22,7 @@ const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
-const readConfig = require('./config/read');
+const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
 

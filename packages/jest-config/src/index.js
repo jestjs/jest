@@ -34,4 +34,7 @@ function readRawConfig(argv, root) {
     .then(config => config || normalize({rootDir: root}, argv));
 }
 
-module.exports = readConfig;
+module.exports = {
+  normalize: require('./normalize'),
+  readConfig,
+};

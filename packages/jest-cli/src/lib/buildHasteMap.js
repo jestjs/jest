@@ -8,8 +8,8 @@
 
 'use strict';
 
-const createHasteMap = require('./createHasteMap');
-const createResolver = require('./createResolver');
+const createHasteMap = require('../../../jest-runtime/src/lib/createHasteMap');
+const createResolver = require('../../../jest-runtime/src/lib/createResolver');
 const utils = require('jest-util');
 
 module.exports = (config, options) => {

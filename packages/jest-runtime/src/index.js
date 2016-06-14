@@ -8,11 +8,11 @@
 
 'use strict';
 
-const constants = require('../constants');
+const constants = require('./constants');
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
-const transform = require('../lib/transform');
+const transform = require('./lib/transform');
 
 const mockParentModule = {
   id: 'mockParent',
@@ -590,7 +590,6 @@ class Runtime {
     };
     return runtime;
   }
-
 }
 
 module.exports = Runtime;

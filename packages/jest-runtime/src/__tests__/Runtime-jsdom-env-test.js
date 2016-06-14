@@ -46,18 +46,7 @@ describe('Runtime', () => {
           sum();
         } catch (err) {
           hasThrown = true;
-
-          /* eslint-disable max-len */
-          if (process.platform === 'win32') {
-            expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+Runtime\\__tests__\\test_root\\throwing-fn.js:12:9/
-            );
-          } else {
-            expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+Runtime\/__tests__\/test_root\/throwing-fn.js:12:9/
-            );
-          }
-          /* eslint-enable max-len */
+          expect(err.stack).toMatch('throwing-fn.js');
         }
         expect(hasThrown).toBe(true);
       })
