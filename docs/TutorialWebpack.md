@@ -70,7 +70,7 @@ Alternatively, you can use an [ES6 Proxy](https://github.com/keyanzhang/identity
 lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`).
 
 Notice that Proxy is enabled in Node.js `v6.*` by default; if you are not on Node `v6.*` yet,
-make sure you invoke jest using `node --harmony_proxies node_modules/.bin/jest`.
+make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
 ```js
 // test/styleMock.js
