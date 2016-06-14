@@ -2,7 +2,7 @@
   "name": "jest",
   "description": "Painless JavaScript Unit Testing.",
   "version": "12.1.1",
-  "main": "src/jest.js",
+  "main": "build/jest.js",
   "dependencies": {
     "jest-cli": "^12.1.1"
   },
