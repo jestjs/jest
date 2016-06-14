@@ -39,13 +39,14 @@ class NodeEnvironment {
     this.fakeTimers = null;
   }
 
-  runSourceText(sourceText: string, filename: string) {
+  runSourceText(sourceText: string, filename: string): ?any {
     if (this.global) {
       return vm.runInContext(sourceText, this.global, {
         filename,
         displayErrors: false,
       });
     }
+    return null;
   }
 
   runWithRealTimers(callback: Function) {

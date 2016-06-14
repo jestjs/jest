@@ -53,7 +53,10 @@ function buildPackage(p) {
   jsFiles.forEach(file => {
     const destPath = path.resolve(buildDir, path.relative(srcDir, file));
     const transformed = babel.transformFileSync(file, {
-      plugins: 'transform-flow-strip-types',
+      plugins: [
+        'syntax-trailing-function-commas',
+        'transform-flow-strip-types',
+      ],
       retainLines: true,
       babelrc: false,
     }).code;
