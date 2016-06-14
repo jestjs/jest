@@ -11,6 +11,7 @@
 
 const JasmineFormatter = require('jest-util').JasmineFormatter;
 
+import type {FailedAssertion} from 'types/TestResult';
 import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
@@ -24,7 +25,7 @@ module.exports = (
   filePath: Path,
   options: Object,
   jasmine: Jasmine,
-  snapshotState: SnapshotState
+  snapshotState: SnapshotState,
 ) => ({
   toMatchSnapshot: (util: any, customEquality: any) => {
     return {
@@ -81,10 +82,11 @@ module.exports = (
             const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
             formatter.addDiffableMatcher(matcherName);
 
-            const failure: Object = {matcherName};
-
             message = formatter
-              .formatMatchFailure(Object.assign(failure, matches))
+              .formatMatchFailure(Object.assign(
+                ({matcherName}: FailedAssertion),
+                matches
+              ))
               .replace(
                 'toMatchSnapshot:',
                 'toMatchSnapshot #' + (callCount + 1) + ':'

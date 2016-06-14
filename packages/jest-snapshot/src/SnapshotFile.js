@@ -19,15 +19,15 @@ import type {Path} from 'types/Config';
 
 export type SnapshotFileT = SnapshotFile;
 
-type SaveStatus = {
-  deleted: boolean,
-  saved: boolean,
-};
-
-type MatchResult = {
+export type MatchResult = {
   actual: string,
   expected: string,
   pass: boolean,
+};
+
+type SaveStatus = {
+  deleted: boolean,
+  saved: boolean,
 };
 
 const ensureDirectoryExists = (filePath: Path) => {
@@ -59,8 +59,7 @@ class SnapshotFile {
     this._content = Object.create(null);
     if (this.fileExists(filename)) {
       try {
-        /* $FlowFixMe - argument to require must be string literal */
-        Object.assign(this._content, require(filename));
+        Object.assign(this._content, require.call(null, filename));
       } catch (e) {}
     }
     this._uncheckedKeys = new Set(Object.keys(this._content));
@@ -82,7 +81,7 @@ class SnapshotFile {
     }
   }
 
-  serialize(data: Object): string {
+  serialize(data: any): string {
     return prettyFormat(data);
   }
 
