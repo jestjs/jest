@@ -40,7 +40,7 @@ function buildPackage(p) {
         '\n'
       );
       return false;
-    };
+    }
 
     return true;
   });
