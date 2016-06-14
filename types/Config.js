@@ -36,7 +36,10 @@ export type Config = {
   modulePathIgnorePatterns: Array<string>,
   noHighlight: boolean,
   noStackTrace: boolean,
+  persistModuleRegistryBetweenSpecs: boolean,
   rootDir: Path,
+  setupTestFrameworkScriptFile: Path,
+  testcheckOptions: {},
   testEnvData: {},
   testEnvironment: string,
   testPathDirs: Array<Path>,
@@ -44,6 +47,7 @@ export type Config = {
   testRegex: string,
   testReporter: Path,
   testURL: string,
+  updateSnapshot: {},
   useStderr: boolean,
   verbose: boolean,
 };

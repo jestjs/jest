@@ -11,6 +11,7 @@
 module.name_mapper='^types/Config$' -> '<PROJECT_ROOT>/types/Config.js'
 module.name_mapper='^types/Environment$' -> '<PROJECT_ROOT>/types/Environment.js'
 module.name_mapper='^types/Global$' -> '<PROJECT_ROOT>/types/Global.js'
+module.name_mapper='^types/ModuleLoader$' -> '<PROJECT_ROOT>/types/ModuleLoader.js'
 module.name_mapper='^types/TestResult$' -> '<PROJECT_ROOT>/types/TestResult.js'
 
 suppress_type=$FlowFixMe

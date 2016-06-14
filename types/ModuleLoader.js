@@ -9,15 +9,7 @@
  */
 'use strict';
 
-import type {Config} from './Config';
-import type {Global} from './Global';
-
-export type Environment = {
-  constructor(config: Config): void;
-  dispose(): void;
-  runSourceText(sourceText: string, filename: string): any;
-  global: Global;
-  fakeTimers: {
-    runWithRealTimers(callback: any): void;
-  };
+export type ModuleLoader = {
+  requireModule: (from: string, moduleName?: string) => any,
+  resetModuleRegistry: () => void,
 };

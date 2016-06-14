@@ -4,8 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {Environment} from 'types/Environment';
+import type {ModuleLoader} from 'types/ModuleLoader';
 
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
@@ -39,7 +45,12 @@ function getActualCalls(reporter, calls, limit) {
   );
 }
 
-function jasmine2(config, environment, moduleLoader, testPath) {
+function jasmine2(
+  config: Config,
+  environment: Environment,
+  moduleLoader: ModuleLoader,
+  testPath: string
+) {
   let env;
   let jasmine;
 
@@ -101,6 +112,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       moduleLoader.requireModule(config.setupTestFrameworkScriptFile);
     }
   });
+
+  if (!jasmine || !env) {
+    throw new Error('jasmine2 could not be initialized by Jest');
+  }
 
   const hasIterator = object => !!(object != null && object[Symbol.iterator]);
   const iterableEquality = (a, b) => {
@@ -198,6 +213,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (!pass) {
             return {
               pass,
+              // $FlowFixMe - get/set properties not yet supported
               get message() {
                 return (
                   `Wasn't last called with the expected values.\n` +
@@ -210,6 +226,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           }
           return {
             pass,
+            // $FlowFixMe - get/set properties not yet supported
             get message() {
               return (
                 `Shouldn't have been last called with\n` +
@@ -238,6 +255,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (!pass) {
             return {
               pass,
+              // $FlowFixMe - get/set properties not yet supported
               get message() {
                 return (
                   'Was not called with the expected values.\n' +
@@ -250,6 +268,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           }
           return {
             pass,
+            // $FlowFixMe - get/set properties not yet supported
             get message() {
               return (
                 `Shouldn't have been called with\n` +
