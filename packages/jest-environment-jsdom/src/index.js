@@ -11,12 +11,8 @@
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
 
+import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
-
-type Config = {
-  globals: Object,
-  testURL: string,
-};
 
 class JSDOMEnvironment {
 
