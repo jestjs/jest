@@ -12,6 +12,7 @@ module.name_mapper='^types/Config$' -> '<PROJECT_ROOT>/types/Config.js'
 module.name_mapper='^types/Environment$' -> '<PROJECT_ROOT>/types/Environment.js'
 module.name_mapper='^types/Global$' -> '<PROJECT_ROOT>/types/Global.js'
 module.name_mapper='^types/TestResult$' -> '<PROJECT_ROOT>/types/TestResult.js'
+module.name_mapper='^types/Jasmine$' -> '<PROJECT_ROOT>/types/Jasmine.js'
 
 suppress_type=$FlowFixMe
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-7]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*www[a-z,_]*\\)?)\\)

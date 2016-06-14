@@ -20,8 +20,9 @@ export type FailedAssertion = {
   matcherName: string,
   message: string,
   trace?: Error,
-  actual: any,
-  expected: any,
+  actual?: any,
+  pass?: boolean,
+  expected?: any,
   isNot: boolean,
 };
 
