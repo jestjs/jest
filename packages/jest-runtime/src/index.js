@@ -13,6 +13,12 @@
 import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 
+const constants = require('./constants');
+const fs = require('graceful-fs');
+const moduleMocker = require('jest-mock');
+const path = require('path');
+const transform = require('./lib/transform');
+
 type Module = {
   exports: Object,
   filename: string,
@@ -21,12 +27,6 @@ type Module = {
   paths?: Array<string>,
   require?: Function,
 };
-
-const constants = require('../constants');
-const fs = require('graceful-fs');
-const moduleMocker = require('jest-mock');
-const path = require('path');
-const transform = require('../lib/transform');
 
 const mockParentModule = {
   id: 'mockParent',

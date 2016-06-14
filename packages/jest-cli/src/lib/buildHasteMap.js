@@ -15,8 +15,8 @@ import type {HasteMap as HasteMapObject} from 'types/HasteMap';
 import type HasteMap from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
 
-const createHasteMap = require('./createHasteMap');
-const createResolver = require('./createResolver');
+const createHasteMap = require('../../../jest-runtime/src/lib/createHasteMap');
+const createResolver = require('../../../jest-runtime/src/lib/createResolver');
 const utils = require('jest-util');
 
 type HasteResolverContext = {

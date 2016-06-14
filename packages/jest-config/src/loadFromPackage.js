@@ -11,7 +11,7 @@
 const fs = require('fs');
 const normalize = require('./normalize');
 const path = require('path');
-const promisify = require('../lib/promisify');
+const promisify = require('./lib/promisify');
 
 function loadFromPackage(filePath, argv) {
   return promisify(fs.access)(filePath, fs.R_OK).then(

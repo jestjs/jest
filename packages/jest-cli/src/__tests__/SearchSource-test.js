@@ -29,7 +29,7 @@ describe('SearchSource', () => {
   beforeEach(() => {
     buildHasteMap = require('../lib/buildHasteMap');
     SearchSource = require('../SearchSource');
-    normalizeConfig = require('../config/normalize');
+    normalizeConfig = require('jest-config').normalize;
   });
 
   describe('isTestFilePath', () => {
@@ -257,10 +257,14 @@ describe('SearchSource', () => {
     const rootDir = path.join(
       __dirname,
       '..',
-      'Runtime',
+      '..',
+      '..',
+      'jest-runtime',
+      'src',
       '__tests__',
       'test_root'
     );
+    console.log(rootDir);
     const rootPath = path.join(rootDir, 'root.js');
 
     beforeEach(() => {
