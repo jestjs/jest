@@ -96,7 +96,7 @@ describe('Stack Trace', () => {
     /* eslint-enable max-len */
 
     expect(stdout).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/src\/index\.js/
+      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/
     );
   });
 
