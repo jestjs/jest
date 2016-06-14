@@ -11,6 +11,7 @@
     "rimraf": "^2.5.2"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {

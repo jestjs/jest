@@ -15,6 +15,7 @@
     "test": "../jest-cli/bin/jest.js"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   }
 }

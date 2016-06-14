@@ -2,7 +2,7 @@
   "name": "jest-cli",
   "description": "Painless JavaScript Unit Testing.",
   "version": "12.1.1",
-  "main": "src/jest.js",
+  "main": "build/jest.js",
   "dependencies": {
     "chalk": "^1.1.1",
     "cover": "^0.2.9",
@@ -49,7 +49,7 @@
     "test": "./bin/jest.js"
   },
   "jest": {
-    "rootDir": "./src",
+    "rootDir": "./build",
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
     ],

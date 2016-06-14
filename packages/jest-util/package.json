@@ -18,6 +18,7 @@
     "jsdom": "^8.3.1"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {
