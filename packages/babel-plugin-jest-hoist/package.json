@@ -12,7 +12,8 @@
     "react": "^0.14.0"
   },
   "jest": {
-    "scriptPreprocessor": "../babel-jest",
+    "rootDir": "./build",
+    "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {

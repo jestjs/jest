@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "src/index.js",
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {

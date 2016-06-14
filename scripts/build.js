@@ -20,20 +20,37 @@ const spawnSync = require('child_process').spawnSync;
 const BUILD_DIR = 'build';
 const SRC_DIR = 'src';
 const JS_FILES_PATTERN = '**/*.js';
-const IGNORE_PATTERN = '**/__@(tests|mocks|test_modules)__/**/*';
+const IGNORE_PATTERN = '';
 
 function buildPackage(p) {
   const srcDir = path.resolve(p, SRC_DIR);
-  const pattern = path.resolve(srcDir, JS_FILES_PATTERN);
-  const files = glob.sync(pattern).filter(f => !minimatch(f, IGNORE_PATTERN));
   const buildDir = path.resolve(p, BUILD_DIR);
+  const pattern = path.resolve(srcDir, '**/*');
+  const files = glob.sync(pattern, {nodir: true});
+  const jsFiles = files.filter(f => {
+    if (minimatch(f, IGNORE_PATTERN) || !minimatch(f, JS_FILES_PATTERN)) {
+      const destPath = path.resolve(buildDir, path.relative(srcDir, f));
+      spawnSync('mkdir', ['-p', path.dirname(destPath)]);
+      fs.createReadStream(f).pipe(fs.createWriteStream(destPath));
+      process.stdout.write(
+        chalk.red('  \u2022 ') +
+        path.relative(p, f) +
+        chalk.red(' \u21D2 ') +
+        path.relative(p, destPath) +
+        '\n'
+      );
+      return false;
+    };
+
+    return true;
+  });
   spawnSync('mkdir', ['-p', buildDir]);
 
   process.stdout.write(
     chalk.inverse(`Building package: ${path.basename(p)}\n`)
   );
 
-  files.forEach(file => {
+  jsFiles.forEach(file => {
     const destPath = path.resolve(buildDir, path.relative(srcDir, file));
     const transformed = babel.transformFileSync(file, {
       plugins: 'transform-flow-strip-types',

@@ -12,6 +12,7 @@
     "jest-util": "^12.1.0"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {
