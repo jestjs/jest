@@ -29,7 +29,7 @@ describe('Runtime', () => {
     createRuntime = require('createRuntime');
   });
 
-  pit('uses configured moduleDirectories', () =>
+  it('uses configured moduleDirectories', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -39,7 +39,7 @@ describe('Runtime', () => {
     })
   );
 
-  pit('resolves packages', () =>
+  it('resolves packages', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -49,7 +49,7 @@ describe('Runtime', () => {
     })
   );
 
-  pit('finds closest module from moduleDirectories', () =>
+  it('finds closest module from moduleDirectories', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         path.join(rootDir, 'subdir2', 'MyModule.js'),
@@ -60,7 +60,7 @@ describe('Runtime', () => {
     })
   );
 
-  pit('only checks the configured directories', () =>
+  it('only checks the configured directories', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'not-a-haste-package');

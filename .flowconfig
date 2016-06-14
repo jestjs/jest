@@ -1,0 +1,10 @@
+[ignore]
+.*/packages/babel-plugin-jest-hoist/node_modules/fbjs/.*
+.*/examples/.*
+.*/website/.*
+
+[include]
+
+[libs]
+
+[options]

@@ -26,10 +26,13 @@ describe('promise it', () => {
     done();
   });
 
-  it('is bount to context object', () => {
+  it('is bound to context object', () => {
     return new Promise(resolve => {
       if (this.someContextValue !== 'value') {
-        throw new Error('expected this.someContextValue to be set', this.someContextValue);
+        throw new Error(
+          'expected this.someContextValue to be set: ' +
+          this.someContextValue
+        );
       }
       resolve();
     });

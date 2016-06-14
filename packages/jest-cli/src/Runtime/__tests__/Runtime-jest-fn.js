@@ -24,7 +24,7 @@ describe('Runtime', () => {
   });
 
   describe('jest.fn', () => {
-    pit('creates mock functions', () =>
+    it('creates mock functions', () =>
       createRuntime(__filename).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         const mock = root.jest.fn();
@@ -34,7 +34,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('creates mock functions with mock implementations', () =>
+    it('creates mock functions with mock implementations', () =>
       createRuntime(__filename).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         const mock = root.jest.fn(string => string + ' implementation');

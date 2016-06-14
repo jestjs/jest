@@ -4,14 +4,15 @@
     "babel-core": "^6.9.1",
     "babel-eslint": "^6.0.4",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
-    "eslint": "^2.10.2",
+    "eslint": "^2.12.0",
     "eslint-plugin-babel": "^3.2.0",
-    "fbjs-scripts": "^0.7.0",
+    "fbjs-scripts": "^0.7.1",
+    "flow-bin": "^0.27.0",
     "glob": "^7.0.3",
-    "lerna": "2.0.0-beta.10",
+    "lerna": "2.0.0-beta.19",
     "minimatch": "^3.0.0",
     "progress": "^1.1.8",
-    "rimraf": "^2.4.4"
+    "rimraf": "^2.5.2"
   },
   "scripts": {
     "lint": "eslint .",

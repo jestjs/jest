@@ -18,6 +18,7 @@
     "comma-style": [2, "last"],
     "computed-property-spacing": [2, "never"],
     "eol-last": [2],
+    "max-len": [2, {"code": 80, "ignoreUrls": true, "ignorePattern": "^(\\s*const\\s.+=\\s*require\\s*\\(|\\s*it\\()"}],
     "no-const-assign": [2],
     "no-extra-parens": [2],
     "no-irregular-whitespace": [2],
@@ -28,6 +29,7 @@
     "prefer-arrow-callback": [2],
     "prefer-const": [2],
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
+    "semi": [2, "always"],
     "space-before-blocks": [2],
     "space-before-function-paren": [2, "never"],
     "space-in-parens": [2, "never"]

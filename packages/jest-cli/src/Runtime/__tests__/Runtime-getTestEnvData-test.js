@@ -29,7 +29,7 @@ describe('Runtime', () => {
     createRuntime = require('createRuntime');
   });
 
-  pit('passes config data through to jest.envData', () =>
+  it('passes config data through to jest.envData', () =>
     createRuntime(__filename, config).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath);
       const envData = root.jest.getTestEnvData();
@@ -37,7 +37,7 @@ describe('Runtime', () => {
     })
   );
 
-  pit('freezes jest.envData object', () =>
+  it('freezes jest.envData object', () =>
     createRuntime(__filename, config).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath);
       const envData = root.jest.getTestEnvData();

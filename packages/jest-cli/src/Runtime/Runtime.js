@@ -33,7 +33,8 @@ class Runtime {
     this._explicitShouldMock = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
-    this._mocksPattern = config.mocksPattern ? new RegExp(config.mocksPattern) : null;
+    this._mocksPattern =
+      config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
     this._virtualMocks = Object.create(null);

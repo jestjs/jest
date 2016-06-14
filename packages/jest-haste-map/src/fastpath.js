@@ -198,7 +198,8 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
         }
 
         // Convert slashes to backslashes when `resolvedDevice` points to an UNC
-        // root. Also squash multiple slashes into a single one where appropriate.
+        // root. Also squash multiple slashes into a single one where
+        // appropriate.
         if (isUnc) {
           resolvedDevice = normalizeUNCRoot(resolvedDevice);
         }
@@ -360,7 +361,8 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
       }
 
       // At this point the path should be resolved to a full absolute path, but
-      // handle relative paths to be safe (might happen when process.cwd() fails)
+      // handle relative paths to be safe (might happen when process.cwd()
+      // fails)
 
       // Normalize the path
       resolvedPath = normalizeArray(

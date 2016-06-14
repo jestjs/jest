@@ -24,7 +24,7 @@ describe('Runtime', () => {
   });
 
   describe('genMockFromModule', () => {
-    pit('does not cause side effects in the rest of the module system when generating a mock', () =>
+    it('does not cause side effects in the rest of the module system when generating a mock', () =>
       createRuntime(__filename).then(runtime => {
         const testRequire = runtime.requireModule.bind(
           runtime,

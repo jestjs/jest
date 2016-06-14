@@ -21,7 +21,7 @@ describe('Runtime', () => {
   });
 
   describe('requireModule', () => {
-    pit('emulates a node stack trace during module load', () =>
+    it('emulates a node stack trace during module load', () =>
       createRuntime(__filename).then(runtime => {
         let hasThrown = false;
         try {
@@ -34,7 +34,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('emulates a node stack trace during function execution', () =>
+    it('emulates a node stack trace during function execution', () =>
       createRuntime(__filename).then(runtime => {
         let hasThrown = false;
         const sum = runtime.requireModule(
@@ -47,6 +47,7 @@ describe('Runtime', () => {
         } catch (err) {
           hasThrown = true;
 
+          /* eslint-disable max-len */
           if (process.platform === 'win32') {
             expect(err.stack).toMatch(
               /^Error: throwing fn\s+at sum.+Runtime\\__tests__\\test_root\\throwing-fn.js:12:9/
@@ -56,6 +57,7 @@ describe('Runtime', () => {
               /^Error: throwing fn\s+at sum.+Runtime\/__tests__\/test_root\/throwing-fn.js:12:9/
             );
           }
+          /* eslint-enable max-len */
         }
         expect(hasThrown).toBe(true);
       })
