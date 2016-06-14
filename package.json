@@ -15,7 +15,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "node ./scripts/postinstall.js",
+    "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js",
     "test": "npm run lint && node ./scripts/test.js"
   }
 }
