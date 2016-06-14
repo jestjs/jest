@@ -25,9 +25,11 @@ export type FailedAssertion = {
   isNot: boolean,
 };
 
+export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
+
 export type AssertionResult = {
   title: string,
-  status: 'passed' | 'failed' | 'skipped',
+  status: Status,
   ancestorTitles: Array<string>,
   failureMessages: Array<string>,
   numPassingAsserts: number,
