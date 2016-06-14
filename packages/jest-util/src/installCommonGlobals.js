@@ -4,8 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {ConfigGlobals} from 'types/Config';
+import type {Global} from 'types/Global';
 
 function deepCopy(obj) {
   const newObj = {};
@@ -20,7 +25,7 @@ function deepCopy(obj) {
   return newObj;
 }
 
-module.exports = (global, globals) => {
+module.exports = (global: Global, globals: ConfigGlobals) => {
   // Forward some APIs
   global.Buffer = Buffer;
 
@@ -28,6 +33,7 @@ module.exports = (global, globals) => {
   // object for the jsdom environment to prevent memory leaks.
   global.process = Object.assign({}, process);
   global.process.setMaxListeners = process.setMaxListeners.bind(process);
+  /* $FlowFixMe https://github.com/facebook/flow/pull/1942 */
   global.process.getMaxListeners = process.getMaxListeners.bind(process);
   global.process.emit = process.emit.bind(process);
   global.process.addListener = process.addListener.bind(process);

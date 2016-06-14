@@ -11,6 +11,20 @@
 
 export type Coverage = Object;
 
+type Error = {
+  message: string,
+  stack: string,
+};
+
+export type FailedAssertion = {
+  matcherName: string,
+  message: string,
+  trace?: Error,
+  actual: any,
+  expected: any,
+  isNot: boolean,
+};
+
 export type AssertionResult = {
   title: string,
   status: 'passed' | 'failed' | 'skipped',
@@ -34,10 +48,7 @@ export type TestResult = {
   snapshotsMatched: number,
   snapshotsUnmatched: number,
   snapshotsUpdated: number,
-  testExecError: {
-    message: string,
-    stack: string,
-  },
+  testExecError: Error,
   testFilePath: string,
   testResults: Array<AssertionResult>,
 };
