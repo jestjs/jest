@@ -426,7 +426,8 @@ describe('normalize', () => {
         testEnvironment: 'jsdom',
       });
 
-      expect(config.testEnvironment).toEqual('node_modules/jest-environment-jsdom');
+      expect(config.testEnvironment)
+        .toEqual('node_modules/jest-environment-jsdom');
     });
 
     it('throws on invalid environment names', () => {
@@ -435,7 +436,8 @@ describe('normalize', () => {
         testEnvironment: 'phantom',
       })).toThrow(new Error(
         `Jest: test environment "phantom" cannot be found. Make sure the ` +
-        `"testEnvironment" configuration option points to an existing node module.`
+        `"testEnvironment" configuration option points to an existing node ` +
+        `module.`
       ));
     });
   });
@@ -455,7 +457,8 @@ describe('normalize', () => {
       expect(config.usesBabelJest).toBe(true);
       const preprocessorPath = uniformPath(config.scriptPreprocessor);
       expect(preprocessorPath).toEqual('/root/node_modules/babel-jest');
-      expect(config.setupFiles.map(uniformPath)).toEqual(['/root/node_modules/babel-polyfill']);
+      expect(config.setupFiles.map(uniformPath))
+        .toEqual(['/root/node_modules/babel-polyfill']);
     });
 
     it(`doesn't use babel-jest if its not available`, () => {

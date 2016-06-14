@@ -31,7 +31,7 @@ describe('Runtime', () => {
     };
   });
 
-  pit('uses NODE_PATH to find modules', () => {
+  it('uses NODE_PATH to find modules', () => {
     const nodePath = __dirname + '/NODE_PATH_dir';
     return createLocalRuntime(nodePath).then(runtime => {
       const exports = runtime.requireModuleOrMock(
@@ -42,7 +42,7 @@ describe('Runtime', () => {
     });
   });
 
-  pit('uses modulePaths to find modules', () => {
+  it('uses modulePaths to find modules', () => {
     const nodePath = __dirname + '/NODE_PATH_dir';
     return createLocalRuntime(null, {modulePaths: nodePath}).then(runtime => {
       const exports = runtime.requireModuleOrMock(
@@ -53,7 +53,7 @@ describe('Runtime', () => {
     });
   });
 
-  pit('finds modules in NODE_PATH containing multiple paths', () => {
+  it('finds modules in NODE_PATH containing multiple paths', () => {
     const nodePath =
       cwd + '/some/other/path' + path.delimiter + __dirname + '/NODE_PATH_dir';
     return createLocalRuntime(nodePath).then(runtime => {
@@ -65,7 +65,7 @@ describe('Runtime', () => {
     });
   });
 
-  pit('does not find modules if NODE_PATH is relative', () => {
+  it('does not find modules if NODE_PATH is relative', () => {
     const nodePath =
       cwd.substr(path.sep.length) + 'src/Runtime/__tests__/NODE_PATH_dir';
     return createLocalRuntime(nodePath).then(runtime => {

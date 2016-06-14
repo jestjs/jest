@@ -24,7 +24,7 @@ describe('Runtime', () => {
   });
 
   describe('requireMock', () => {
-    pit('uses manual mocks before attempting to automock', () =>
+    it('uses manual mocks before attempting to automock', () =>
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -34,7 +34,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('can resolve modules that are only referenced from mocks', () =>
+    it('can resolve modules that are only referenced from mocks', () =>
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -46,7 +46,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('stores and re-uses manual mock exports', () =>
+    it('stores and re-uses manual mock exports', () =>
       createRuntime(__filename).then(runtime => {
         let exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -58,7 +58,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('automocks @providesModule modules without a manual mock', () =>
+    it('automocks @providesModule modules without a manual mock', () =>
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -68,7 +68,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('automocks relative-path modules without a file extension', () =>
+    it('automocks relative-path modules without a file extension', () =>
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireMock(
           __filename,
@@ -78,7 +78,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('automocks relative-path modules with a file extension', () =>
+    it('automocks relative-path modules with a file extension', () =>
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireMock(
           __filename,
@@ -88,7 +88,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('just falls back when loading a native module', () =>
+    it('just falls back when loading a native module', () =>
       createRuntime(__filename).then(runtime => {
         let error;
         // Okay so this is a really WAT way to test this, but we
@@ -111,7 +111,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('stores and re-uses automocked @providesModule exports', () =>
+    it('stores and re-uses automocked @providesModule exports', () =>
       createRuntime(__filename).then(runtime => {
         let exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -123,7 +123,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('stores and re-uses automocked relative-path modules', () =>
+    it('stores and re-uses automocked relative-path modules', () =>
       createRuntime(__filename).then(runtime => {
         let exports = runtime.requireMock(
           __filename,
@@ -138,7 +138,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('multiple node core modules returns correct module', () =>
+    it('multiple node core modules returns correct module', () =>
       createRuntime(__filename).then(runtime => {
         runtime.requireMock(runtime.__mockRootPath, 'fs');
         expect(
@@ -147,7 +147,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('throws on non-existent @providesModule modules', () =>
+    it('throws on non-existent @providesModule modules', () =>
       createRuntime(__filename).then(runtime => {
         expect(() => {
           runtime.requireMock(runtime.__mockRootPath, 'DoesntExist');
@@ -155,7 +155,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('uses the closest manual mock when duplicates exist', () =>
+    it('uses the closest manual mock when duplicates exist', () =>
       createRuntime(__filename).then(runtime => {
         const exports1 = runtime.requireMock(
           runtime.__mockRootPath,

@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -16,18 +18,17 @@ const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
-function escapeStrForRegex(str) {
-  return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
+const escapeStrForRegex =
+  (string: string) => string.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
-function replacePathSepForRegex(str) {
+const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
-    return str.replace(/(\/|\\)/g, '\\\\');
+    return string.replace(/(\/|\\)/g, '\\\\');
   }
-  return str;
-}
+  return string;
+};
 
-const createDirectory = path => {
+const createDirectory = (path: string) => {
   try {
     mkdirp.sync(path, '777');
   } catch (e) {

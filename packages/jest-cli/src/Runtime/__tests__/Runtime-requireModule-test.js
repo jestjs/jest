@@ -24,7 +24,7 @@ describe('Runtime requireModule', () => {
     createRuntime = require('createRuntime');
   });
 
-  pit('finds @providesModule modules', () =>
+  it('finds @providesModule modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -34,7 +34,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('provides `module.parent` to modules', () =>
+  it('provides `module.parent` to modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -47,7 +47,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('provides `module.filename` to modules', () =>
+  it('provides `module.filename` to modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -59,7 +59,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('provides `module.paths` to modules', () => {
+  it('provides `module.paths` to modules', () => {
     const altModuleDir = 'bower_components';
     const moduleDirectories = ['node_modules', altModuleDir];
 
@@ -77,7 +77,7 @@ describe('Runtime requireModule', () => {
     });
   });
 
-  pit('throws on non-existent @providesModule modules', () =>
+  it('throws on non-existent @providesModule modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'DoesntExist');
@@ -87,7 +87,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('finds relative-path modules without file extension', () =>
+  it('finds relative-path modules without file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -97,7 +97,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('finds relative-path modules with file extension', () =>
+  it('finds relative-path modules with file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -107,7 +107,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('throws on non-existent relative-path modules', () =>
+  it('throws on non-existent relative-path modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, './DoesntExist');
@@ -117,7 +117,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('finds node core built-in modules', () =>
+  it('finds node core built-in modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'fs');
@@ -125,7 +125,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('finds and loads JSON files without file extension', () =>
+  it('finds and loads JSON files without file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -135,7 +135,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('finds and loads JSON files with file extension', () =>
+  it('finds and loads JSON files with file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -145,7 +145,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('requires a JSON file twice successfully', () =>
+  it('requires a JSON file twice successfully', () =>
     createRuntime(__filename).then(runtime => {
       const exports1 = runtime.requireModule(
         runtime.__mockRootPath,
@@ -161,7 +161,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('provides manual mock when real module doesnt exist', () =>
+  it('provides manual mock when real module doesnt exist', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -171,7 +171,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () =>
+  it(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () =>
     createRuntime(__filename).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
       root.jest.resetModuleRegistry();
@@ -184,7 +184,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('resolves haste packages properly', () =>
+  it('resolves haste packages properly', () =>
     createRuntime(__filename).then(runtime => {
       const hastePackage = runtime.requireModule(
         runtime.__mockRootPath,
@@ -194,7 +194,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('resolves node modules properly when crawling node_modules', () =>
+  it('resolves node modules properly when crawling node_modules', () =>
     // While we are crawling a node module, we shouldn't put package.json
     // files of node modules to resolve to `package.json` but rather resolve
     // to whatever the package.json's `main` field says.
@@ -211,7 +211,7 @@ describe('Runtime requireModule', () => {
     })
   );
 
-  pit('resolves platform extensions based on the default platform', () =>
+  it('resolves platform extensions based on the default platform', () =>
     Promise.all([
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireModule(

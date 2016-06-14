@@ -31,7 +31,7 @@ describe('Runtime', () => {
   });
 
   describe('requireModuleOrMock', () => {
-    pit('mocks modules by default', () =>
+    it('mocks modules by default', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
@@ -41,7 +41,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit(`doesn't mock modules when explicitly unmocked`, () =>
+    it(`doesn't mock modules when explicitly unmocked`, () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         root.jest.unmock('RegularModule');
@@ -53,7 +53,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () =>
+    it(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         root.jest.unmock('./RegularModule');
@@ -65,7 +65,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit(`doesn't mock modules when disableAutomock() has been called`, () =>
+    it(`doesn't mock modules when disableAutomock() has been called`, () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         root.jest.disableAutomock();
@@ -77,7 +77,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('uses manual mock when automocking on and mock is avail', () =>
+    it('uses manual mock when automocking on and mock is avail', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
@@ -87,7 +87,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('does not use manual mock when automocking is off and a real module is available', () =>
+    it('does not use manual mock when automocking is off and a real module is available', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         root.jest.disableAutomock();
@@ -99,7 +99,7 @@ describe('Runtime', () => {
       })
     );
 
-    pit('resolves mapped module names and unmocks them by default', () =>
+    it('resolves mapped module names and unmocks them by default', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         let exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
@@ -161,7 +161,7 @@ describe('Runtime', () => {
           .toEqual('internal-module-code');
       };
 
-      pit('unmocks transitive dependencies in node_modules by default', () =>
+      it('unmocks transitive dependencies in node_modules by default', () =>
         createRuntime(__filename, {
           moduleNameMapper,
           unmockedModulePathPatterns: ['npm3-main-dep'],
@@ -191,7 +191,7 @@ describe('Runtime', () => {
         })
       );
 
-      pit('unmocks transitive dependencies in node_modules when using unmock', () =>
+      it('unmocks transitive dependencies in node_modules when using unmock', () =>
         createRuntime(__filename, {moduleNameMapper}).then(runtime => {
           const root = runtime.requireModule(runtime.__mockRootPath);
           root.jest.unmock('npm3-main-dep');
@@ -216,7 +216,7 @@ describe('Runtime', () => {
         })
       );
 
-      pit('unmocks transitive dependencies in node_modules by default when using both patterns and unmock', () =>
+      it('unmocks transitive dependencies in node_modules by default when using both patterns and unmock', () =>
         createRuntime(__filename, {
           moduleNameMapper,
           unmockedModulePathPatterns: ['banana-module'],

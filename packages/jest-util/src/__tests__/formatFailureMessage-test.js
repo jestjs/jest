@@ -15,11 +15,11 @@ const formatFailureMessage = require('../formatFailureMessage');
 
 const windowsStackTrace =
 `  at stack (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1580:17)
-  at Object.buildExpectationResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1550:14)
-  at jasmine.buildExpectationResult (..\\jest-jasmine2\\src\\index.js:82:44)
-  at Spec.Env.expectationResultFactory (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:641:18)
-  at Spec.addExpectationResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:333:34)
-  at Expectation.addExpectationResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:591:21)
+  at Object.addResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1550:14)
+  at jasmine.addResult (..\\jest-jasmine2\\src\\index.js:82:44)
+  at Spec.Env.factory (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:641:18)
+  at Spec.addResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:333:34)
+  at Expectation.addResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:591:21)
   at Expectation.toBe (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1504:12)
   at Object.it (src\\__tests__\\formatFailureMessage-test.js:45:41)
   at Object.<anonymous> (..\\jest-jasmine2\\src\\jasmine-pit.js:35:32)

@@ -54,7 +54,9 @@ module.exports = function runCommands(commands, cwd, options) {
         result.stderr && console.log(chalk.red(result.stderr.toString()));
       }
 
-      console.log(chalk.red(`-> failed running: ${cmd + ' ' + args.join(' ')}`));
+      console.log(chalk.red(
+        `-> failed running: ${cmd + ' ' + args.join(' ')}`
+      ));
       process.exit(1);
     }
   });

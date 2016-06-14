@@ -106,7 +106,7 @@ describe('Snapshot', () => {
       expect(infoSR).toMatch('4 total in 2 test suites');
     });
 
-    it('deletes the snapshot when a test does removes all the snapshots', () => {
+    it('deletes a snapshot when a test does removes all the snapshots', () => {
       const firstRun = runJest.json('snapshot', []);
 
       fs.writeFileSync(copyOfTestPath, emptyTest);
