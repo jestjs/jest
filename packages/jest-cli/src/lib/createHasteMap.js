@@ -8,10 +8,20 @@
 
 'use strict';
 
+import type {Config} from 'types/Config';
+
 const HasteMap = require('jest-haste-map');
 const SNAPSHOT_EXTENSION = require('jest-snapshot').EXTENSION;
 
-module.exports = function createHasteMap(config, options) {
+export type Options = {
+  maxWorkers: number,
+  resetCache: number,
+};
+
+module.exports = function createHasteMap(
+  config: Config,
+  options: Options = undefined,
+): HasteMap {
   const ignorePattern = new RegExp(
     [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
   );

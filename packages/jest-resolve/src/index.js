@@ -20,6 +20,18 @@ const NATIVE_PLATFORM = 'native';
 const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 
+export type MockedModuleContext = {
+  mocks: {[moduleName: string]: mixed},
+  files: {[filePath: string]: FileMetaData},
+  map: ModuleMap,
+};
+
+export type HasteResolverContext = {
+  instance: HasteMap,
+  moduleMap: MockedModuleContext,
+  resolver: Resolver,
+};
+
 class Resolver {
 
   constructor(moduleMap, options) {
