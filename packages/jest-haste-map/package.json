@@ -6,7 +6,7 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "dependencies": {
     "fb-watchman": "^1.9.0",
     "graceful-fs": "^4.1.3",
