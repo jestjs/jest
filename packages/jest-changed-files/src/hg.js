@@ -4,9 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+
+import type {Path} from 'types/Config';
 
 const path = require('path');
 const childProcess = require('child_process');
@@ -15,7 +19,11 @@ const env = Object.assign({}, process.env, {
   HGPLAIN: 1,
 });
 
-function findChangedFiles(cwd, options) {
+type Options = {
+  withAncestor?: boolean,
+};
+
+function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {
     const args = ['status', '-amn'];
     if (options && options.withAncestor) {
@@ -44,7 +52,7 @@ function findChangedFiles(cwd, options) {
   });
 }
 
-function isHGRepository(cwd) {
+function isHGRepository(cwd: string): Promise<?string> {
   return new Promise(resolve => {
     try {
       let stdout = '';
