@@ -4,14 +4,18 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
+import type {Path} from 'types/Config';
+
 const path = require('path');
 const childProcess = require('child_process');
 
-function findChangedFiles(cwd) {
+function findChangedFiles(cwd: string): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {
     const args = ['ls-files', '--other', '--modified', '--exclude-standard'];
     const child = childProcess.spawn('git', args, {cwd});
@@ -38,7 +42,7 @@ function findChangedFiles(cwd) {
   });
 }
 
-function isGitRepository(cwd) {
+function isGitRepository(cwd: string): Promise<?string> {
   return new Promise(resolve => {
     try {
       let stdout = '';
