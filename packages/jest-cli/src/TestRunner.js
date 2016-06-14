@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -16,11 +18,72 @@ const promisify = require('./lib/promisify');
 const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
+import type HasteMap from 'jest-haste-map';
+
+type AggregatedResults = {
+  didUpdate?: boolean,
+  snapshotFilesRemoved?: Array<string>,
+  startTime: null | number,
+  success: null | boolean,
+  testResults: Array<TestResult>,
+};
+
+type Config = {
+  cacheDirectory: string,
+  name: string,
+  testReporter: string,
+  updateSnapshot: boolean,
+};
+
+type Options = {
+  maxWorkers: number,
+};
+
+type TestReporter = {
+  onTestResult?: (
+    cfg: Config,
+    result: TestResult,
+    aggResults: AggregatedResults
+  ) => void,
+};
+
+type TestResult = {
+  numPassingTests?: number,
+  numFailingTests?: number,
+  numPendingTests?: number,
+  perfStats?: {start: number, end: number},
+  testFilePath: string,
+  testExecError: mixed,
+};
+
+type OnRunFailure = (
+  path: string,
+  err: mixed,
+) => void;
+
+type OnTestResult = (
+  path: string,
+  result: TestResult & {
+    numPassingTests: number,
+    numFailingTests: number,
+    numPendingTests: number,
+  },
+) => void;
+
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
 
-  constructor(hasteMap, config, options) {
+  _hasteMap: Promise<HasteMap>;
+  _config: Config;
+  _options: Options;
+  _testPerformanceCache: Object | null;
+
+  constructor(
+    hasteMap: Promise<HasteMap>,
+    config: Config,
+    options: Options
+  ) {
     this._hasteMap = hasteMap;
     this._config = config;
     this._options = options;
@@ -35,7 +98,7 @@ class TestRunner {
     return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
-  _sortTests(testPaths) {
+  _sortTests(testPaths: Array<string>) {
     // When running more tests than we have workers available, sort the tests
     // by size - big test files usually take longer to complete, so we run
     // them first in an effort to minimize worker idle time at the end of a
@@ -68,12 +131,10 @@ class TestRunner {
     return testPaths;
   }
 
-  _cacheTestResults(aggregatedResults) {
+  _cacheTestResults(aggregatedResults: AggregatedResults) {
     const cacheFile = this._getTestPerformanceCachePath();
-    let cache = this._testPerformanceCache;
-    if (!cache) {
-      cache = this._testPerformanceCache = {};
-    }
+    const cache =
+      this._testPerformanceCache || (this._testPerformanceCache = {});
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
       if (perf && perf.end && perf.start) {
@@ -83,18 +144,24 @@ class TestRunner {
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
 
-  runTests(testPaths, reporter) {
+  runTests(testPaths: Array<string>, maybeReporter?: TestReporter) {
     const config = this._config;
-    if (!reporter) {
+    if (!maybeReporter) {
       const TestReporter = require(config.testReporter);
       if (config.useStderr) {
-        reporter = new TestReporter(Object.create(
+        maybeReporter = new TestReporter(Object.create(
           process,
           {stdout: {value: process.stderr}}
         ));
       } else {
-        reporter = new TestReporter();
+        maybeReporter = new TestReporter();
       }
+    }
+
+    // Prove that `reporter` exists to Flow
+    const reporter = maybeReporter;
+    if (!reporter) {
+      throw new Error('No reporter specified!');
     }
 
     testPaths = this._sortTests(testPaths);
@@ -174,7 +241,11 @@ class TestRunner {
       .then(results => this._cacheTestResults(results).then(() => results));
   }
 
-  _createTestRun(testPaths, onTestResult, onRunFailure) {
+  _createTestRun(
+    testPaths: Array<string>,
+    onTestResult: OnTestResult,
+    onRunFailure: (path: string, err: mixed) => void,
+  ) {
     if (this._options.maxWorkers <= 1 || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
     } else {
@@ -182,7 +253,11 @@ class TestRunner {
     }
   }
 
-  _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
+  _createInBandTestRun(
+    testPaths: Array<string>,
+    onTestResult: OnTestResult,
+    onRunFailure: OnRunFailure
+  ) {
     return testPaths.reduce((promise, path) =>
       promise
         .then(() => this._hasteMap)
@@ -193,7 +268,11 @@ class TestRunner {
     );
   }
 
-  _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
+  _createParallelTestRun(
+    testPaths: Array<string>,
+    onTestResult: OnTestResult,
+    onRunFailure: OnRunFailure,
+  ) {
     const config = this._config;
     return this._hasteMap
       .then(() => {
