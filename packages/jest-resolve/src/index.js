@@ -8,6 +8,8 @@
 
 'use strict';
 
+import type {FileMetaData, ModuleMap} from 'types/HasteMap';
+
 const H = require('jest-haste-map').H;
 
 const fs = require('fs');
