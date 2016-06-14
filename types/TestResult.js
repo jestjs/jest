@@ -18,11 +18,12 @@ type Error = {
 
 export type FailedAssertion = {
   matcherName: string,
-  message: string,
+  message?: string,
   trace?: Error,
-  actual: any,
-  expected: any,
-  isNot: boolean,
+  actual?: any,
+  pass?: boolean,
+  expected?: any,
+  isNot?: boolean,
 };
 
 export type Status = 'passed' | 'failed' | 'skipped' | 'pending';

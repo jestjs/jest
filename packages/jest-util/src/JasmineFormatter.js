@@ -63,8 +63,10 @@ class JasmineFormatter {
   formatMatchFailure(result: FailedAssertion) {
     let message;
     if (this._diffableMatchers[result.matcherName]) {
-      const isNot =
-        'isNot' in result ? result.isNot : /not to /.test(result.message);
+      const isNot = !!('isNot' in result
+        ? result.isNot
+        : /not to /.test(result.message || '')
+      );
       message = this.formatDiffable(
         result.matcherName,
         isNot,
@@ -78,8 +80,9 @@ class JasmineFormatter {
     // error message & stack live on 'trace' field in jasmine 1.3
     const error = result.trace ? result.trace : result;
     if (!this._config.noStackTrace && error.stack) {
+      const errorMessage = error.message || '';
       message = error.stack
-        .replace(message, error.message)
+        .replace(message, errorMessage)
         .replace(/^.*Error:\s*/, '');
     }
     return message;
