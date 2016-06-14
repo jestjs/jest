@@ -65,6 +65,22 @@ And the mock file's themselves:
 module.exports = {};
 ```
 
+Alternatively, you can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
+(`npm install --save-dev identity-obj-proxy` or create your own) to mock [CSS Modules](https://github.com/css-modules/css-modules); then all your className
+lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`).
+
+Notice that Proxy is enabled in Node.js `v6.*` by default; if you are not on Node `v6.*` yet,
+make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
+
+```js
+// test/styleMock.js
+
+// Return a Proxy to emulate css modules (if you are using them)
+
+var idObj = require('identity-obj-proxy');
+module.exports = idObj;
+```
+
 ```js
 // test/fileMock.js
 
@@ -91,7 +107,7 @@ For Webpack's `moduleDirectories`, and `extensions` options there are direct ana
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
     "moduleNameMapper": {
-      "^.+\\.(css|less)$": "<rootDir>/test/stylMockjs",    
+      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
       "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js",
     }
   }
