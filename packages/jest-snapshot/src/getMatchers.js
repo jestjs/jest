@@ -4,20 +4,36 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
 
 const JasmineFormatter = require('jest-util').JasmineFormatter;
 
-module.exports = (filePath, options, jasmine, snapshotState) => ({
-  toMatchSnapshot: (util, customEquality) => {
+import type {Jasmine} from 'types/Jasmine';
+import type {Path} from 'types/Config';
+import type {SnapshotState} from './SnapshotState';
+
+type CompareResult = {
+  pass: boolean,
+  message: ?string,
+};
+
+module.exports = (
+  filePath: Path,
+  options: Object,
+  jasmine: Jasmine,
+  snapshotState: SnapshotState
+) => ({
+  toMatchSnapshot: (util: any, customEquality: any) => {
     return {
       negativeCompare() {
         throw new Error(
           'Jest: `.not` can not be used with `.toMatchSnapshot()`.'
         );
       },
-      compare(actual, expected) {
+      compare(actual: any, expected: any): CompareResult {
         if (expected !== undefined) {
           throw new Error(
             'Jest: toMatchSnapshot() does not accept parameters.'
@@ -64,8 +80,11 @@ module.exports = (filePath, options, jasmine, snapshotState) => ({
             const matcherName = 'toMatchSnapshot';
             const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
             formatter.addDiffableMatcher(matcherName);
+
+            const failure: Object = {matcherName};
+
             message = formatter
-              .formatMatchFailure(Object.assign({matcherName}, matches))
+              .formatMatchFailure(Object.assign(failure, matches))
               .replace(
                 'toMatchSnapshot:',
                 'toMatchSnapshot #' + (callCount + 1) + ':'
