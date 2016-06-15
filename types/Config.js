@@ -53,5 +53,5 @@ export type Config = {
   updateSnapshot: {},
   useStderr: boolean,
   verbose: boolean,
-  watchman: mixed,
+  watchman: boolean,
 };
