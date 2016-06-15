@@ -619,6 +619,7 @@ class Runtime {
         }
         return fn;
       },
+      isMockFunction: moduleMocker.isMockFunction,
 
       doMock: mock,
       mock,

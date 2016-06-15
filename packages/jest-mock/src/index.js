@@ -444,6 +444,10 @@ function getMetadata(
   return metadata;
 }
 
+function isMockFunction(fn: any): boolean {
+  return !!fn._isMockFunction;
+}
+
 module.exports = {
   /**
    * @see README.md
@@ -469,4 +473,6 @@ module.exports = {
   getMockFn(): () => any {
     return this.getMockFunction();
   },
+
+  isMockFunction,
 };

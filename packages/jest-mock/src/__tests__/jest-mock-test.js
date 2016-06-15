@@ -156,4 +156,11 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Default');
     });
   });
+
+  it('should recognize a mocked function', () => {
+    const mockFn = moduleMocker.getMockFunction();
+
+    expect(moduleMocker.isMockFunction(() => {})).toBe(false);
+    expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
+  });
 });
