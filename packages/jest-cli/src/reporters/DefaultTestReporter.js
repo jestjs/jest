@@ -4,13 +4,33 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {Config} from 'types/Config';
+import type {Process} from 'types/Process';
 
 const chalk = require('chalk');
 const formatFailureMessage = require('jest-util').formatFailureMessage;
 const path = require('path');
 const VerboseLogger = require('./VerboseLogger');
+
+type SnapshotSummary = {
+  added: number,
+  didUpdate: boolean,
+  filesAdded: number,
+  filesRemoved: number,
+  filesUnmatched: number,
+  filesUpdated: number,
+  matched: number,
+  total: number,
+  unchecked: number,
+  unmatched: number,
+  updated: number,
+};
 
 // Explicitly reset for these messages since they can get written out in the
 // middle of error logging (should have listened to Spengler and not crossed the
@@ -34,15 +54,19 @@ const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
 class DefaultTestReporter {
 
-  constructor(customProcess) {
+  _config: Config;
+  _process: Process;
+  verboseLogger: VerboseLogger;
+
+  constructor(customProcess: Process) {
     this._process = customProcess || process;
   }
 
-  log(string) {
-    this._process.stdout.write(string + '\n');
+  log(message: string) {
+    this._process.stdout.write(message + '\n');
   }
 
-  onRunStart(config, results) {
+  onRunStart(config: Config, results: AggregatedResult) {
     this._config = config;
     this._printWaitingOn(results);
     if (this._config.verbose) {
@@ -50,7 +74,11 @@ class DefaultTestReporter {
     }
   }
 
-  onTestResult(config, testResult, results) {
+  onTestResult(
+    config: Config,
+    testResult: TestResult,
+    results: AggregatedResult,
+  ) {
     this._clearWaitingOn();
 
     const pathStr =
@@ -105,7 +133,7 @@ class DefaultTestReporter {
     this._printWaitingOn(results);
   }
 
-  onRunComplete(config, aggregatedResults) {
+  onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
     const totalTestSuites = aggregatedResults.numTotalTestSuites;
     const failedTests = aggregatedResults.numFailedTests;
     const passedTests = aggregatedResults.numPassedTests;
@@ -158,7 +186,7 @@ class DefaultTestReporter {
     return snapshotFailure ? false : aggregatedResults.success;
   }
 
-  _getSnapshotSummary(aggregatedResults) {
+  _getSnapshotSummary(aggregatedResults: AggregatedResult): SnapshotSummary {
     let added = 0;
     let filesAdded = 0;
     let filesRemoved = aggregatedResults.snapshotFilesRemoved;
@@ -204,7 +232,7 @@ class DefaultTestReporter {
     };
   }
 
-  _printSnapshotSummary(snapshots) {
+  _printSnapshotSummary(snapshots: SnapshotSummary) {
     if (
       snapshots.added ||
       snapshots.filesRemoved ||
@@ -265,7 +293,7 @@ class DefaultTestReporter {
     }
   }
 
-  _printSummary(aggregatedResults) {
+  _printSummary(aggregatedResults: AggregatedResult) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
     const failedTests = aggregatedResults.numFailedTests;
@@ -305,7 +333,7 @@ class DefaultTestReporter {
     this._process.stdout.write(this._config.noHighlight ? '' : '\r\x1B[K');
   }
 
-  _printWaitingOn(results) {
+  _printWaitingOn(results: AggregatedResult) {
     const remaining = results.numTotalTestSuites -
       results.numPassedTestSuites -
       results.numFailedTestSuites -

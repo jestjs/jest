@@ -26,6 +26,11 @@ export type Config = {
   colors: boolean,
   coverageCollector: Path,
   coverageReporters: Array<string>,
+  coverageThreshold: {
+    global: {
+      [key: string]: number,
+    },
+  },
   globals: ConfigGlobals,
   haste: HasteConfig,
   mocksPattern: string,

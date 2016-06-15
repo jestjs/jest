@@ -25,6 +25,8 @@ export type MatchResult = {
   pass: boolean,
 };
 
+type SnapshotData = {[key: string]: string};
+
 type SaveStatus = {
   deleted: boolean,
   saved: boolean,
@@ -47,7 +49,7 @@ const fileExists = (filePath: Path): boolean => {
 
 class SnapshotFile {
 
-  _content: {[key: string]: any};
+  _content: SnapshotData;
   _dirty: boolean;
   _filename: Path;
   _uncheckedKeys: Set;
@@ -59,7 +61,9 @@ class SnapshotFile {
     this._content = Object.create(null);
     if (this.fileExists(filename)) {
       try {
+        /* eslint-disable no-useless-call */
         Object.assign(this._content, require.call(null, filename));
+        /* eslint-enable no-useless-call */
       } catch (e) {}
     }
     this._uncheckedKeys = new Set(Object.keys(this._content));
