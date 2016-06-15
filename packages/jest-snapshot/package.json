@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-util": "^12.1.0",
-    "pretty-format": "^2.1.0"
+    "pretty-format": "^3.3.0"
   },
   "scripts": {
     "test": "../jest-cli/bin/jest.js"
