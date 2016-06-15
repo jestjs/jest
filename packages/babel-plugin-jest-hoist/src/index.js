@@ -120,8 +120,6 @@ FUNCTIONS.mock = args => {
 
 FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
 
-FUNCTIONS.isMockFunction = args => args.length === 1 && args[0].isFunction();
-
 FUNCTIONS.disableAutomock =
   FUNCTIONS.enableAutomock =
     args => args.length === 0;

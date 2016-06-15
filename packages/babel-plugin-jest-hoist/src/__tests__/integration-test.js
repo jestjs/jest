@@ -105,9 +105,4 @@ describe('babel-plugin-jest-hoist', () => {
     expect(b._isMockFunction).toBe(true);
     expect(b()).toEqual(undefined);
   });
-
-  it('hoists isMockFunction call', () => {
-    expect(jest.isMockFunction(Unmocked)).toBe(false);
-    expect(jest.isMockFunction(a)).toBe(true);
-  });
 });
