@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -30,7 +32,7 @@
 'use strict';
 
 const util = require('util');
-const Console = require('console').Console;
+const Console = console.Console;
 const chalk = require('chalk');
 
 class CustomConsole extends Console {
