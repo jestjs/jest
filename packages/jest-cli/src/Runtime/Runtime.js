@@ -4,9 +4,23 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+
+import type {Config, Path} from 'types/Config';
+import type {Environment} from 'types/Environment';
+
+type Module = {
+  exports: Object,
+  filename: string,
+  children?: Array<any>,
+  parent?: Object,
+  paths?: Array<string>,
+  require?: Function,
+};
 
 const constants = require('../constants');
 const fs = require('graceful-fs');
@@ -23,7 +37,34 @@ const normalizedIDCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
-  constructor(config, environment, resolver) {
+  _config: Config;
+  _CoverageCollector: any;
+  _coverageCollectors: Object;
+  _currentlyExecutingModulePath: string;
+  _environment: Environment;
+  _explicitShouldMock: Object;
+  _isCurrentlyExecutingManualMock: ?string;
+  _mockFactories: Object;
+  _mockMetaDataCache: Object;
+  _mockRegistry: Object;
+  _mocksPattern: ?RegExp;
+  _moduleRegistry: Object;
+  _resolver: Object;
+  _shouldAutoMock: boolean;
+  _shouldMockModuleCache: Object;
+  _shouldUnmockTransitiveDependenciesCache: Object;
+  _testRegex: RegExp;
+  _transitiveShouldMock: Object;
+  _unmockList: ?RegExp;
+  _virtualMocks: Object;
+
+  constructor(
+    config: Config,
+    environment: Environment,
+    resolver: Object,
+  ) {
+    this._moduleRegistry = Object.create(null);
+    this._mockRegistry = Object.create(null);
     this._config = config;
     this._environment = environment;
     this._resolver = resolver;
@@ -45,6 +86,7 @@ class Runtime {
     this._transitiveShouldMock = Object.create(null);
 
     if (config.collectCoverage) {
+      // $FlowFixMe flow doesn't allow dynamic requires
       this._CoverageCollector = require(config.coverageCollector);
     }
 
@@ -62,13 +104,12 @@ class Runtime {
       }
     };
 
-    unmockPath(config.setupEnvScriptFile);
     config.setupFiles.forEach(unmockPath);
 
     this.resetModuleRegistry();
   }
 
-  requireModule(from, moduleName) {
+  requireModule(from: Path, moduleName: string) {
     const moduleID = this._getNormalizedModuleID(from, moduleName);
     let modulePath;
 
@@ -88,6 +129,7 @@ class Runtime {
     }
 
     if (this._resolver.isCoreModule(moduleName)) {
+      // $FlowFixMe
       return require(moduleName);
     }
 
@@ -110,6 +152,7 @@ class Runtime {
           fs.readFileSync(modulePath, 'utf8')
         );
       } else if (path.extname(modulePath) === '.node') {
+        // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
         this._execModule(localModule);
@@ -118,7 +161,7 @@ class Runtime {
     return this._moduleRegistry[modulePath].exports;
   }
 
-  requireMock(from, moduleName) {
+  requireMock(from: Path, moduleName: string) {
     const moduleID = this._getNormalizedModuleID(from, moduleName);
 
     if (this._mockRegistry[moduleID]) {
@@ -172,7 +215,7 @@ class Runtime {
     return this._mockRegistry[moduleID];
   }
 
-  requireModuleOrMock(from, moduleName) {
+  requireModuleOrMock(from: Path, moduleName: string) {
     if (this._shouldMock(from, moduleName)) {
       return this.requireMock(from, moduleName);
     } else {
@@ -213,11 +256,11 @@ class Runtime {
     return coverage;
   }
 
-  _resolveModule(from, to) {
+  _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _execModule(localModule) {
+  _execModule(localModule: Module) {
     // If the environment was disposed, prevent this module from
     // being executed.
     if (!this._environment.global) {
@@ -278,7 +321,7 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  _runSourceText(moduleContent, filename) {
+  _runSourceText(moduleContent: string, filename: string) {
     /* eslint-disable max-len */
     const config = this._config;
     const relative = filePath => path.relative(config.rootDir, filePath);
@@ -311,7 +354,7 @@ class Runtime {
     /* eslint-enable max-len */
   }
 
-  _generateMock(from, moduleName) {
+  _generateMock(from: Path, moduleName: string) {
     const modulePath = this._resolveModule(from, moduleName);
 
     if (!(modulePath in this._mockMetaDataCache)) {
@@ -348,8 +391,8 @@ class Runtime {
     );
   }
 
-  _getNormalizedModuleID(from, moduleName) {
-    const key = from + path.delimiter + moduleName;
+  _getNormalizedModuleID(from: Path, moduleName?: ?string) {
+    const key = from + path.delimiter + (moduleName || '');
     if (normalizedIDCache[key]) {
       return normalizedIDCache[key];
     }
@@ -401,19 +444,20 @@ class Runtime {
     }
 
     const delimiter = path.delimiter;
-    const id = moduleType + delimiter + absolutePath + delimiter + mockPath;
+    const id = moduleType + delimiter + (absolutePath || '') +
+      delimiter + (mockPath || '');
     normalizedIDCache[key] = id;
     return id;
   }
 
-  _getVirtualMockPath(from, moduleName) {
+  _getVirtualMockPath(from: Path, moduleName: string) {
     if (moduleName[0] !== '.' && moduleName[0] !== '/') {
       return moduleName;
     }
     return path.normalize(path.dirname(from) + '/' + moduleName);
   }
 
-  _shouldMock(from, moduleName) {
+  _shouldMock(from: Path, moduleName: string) {
     const mockPath = this._getVirtualMockPath(from, moduleName);
     if (mockPath in this._virtualMocks) {
       return true;
@@ -475,7 +519,7 @@ class Runtime {
     return this._shouldMockModuleCache[moduleID] = true;
   }
 
-  _createRequireImplementation(from) {
+  _createRequireImplementation(from: Path) {
     const moduleRequire = this.requireModuleOrMock.bind(this, from);
     moduleRequire.requireMock = this.requireMock.bind(this, from);
     moduleRequire.requireActual = this.requireModule.bind(this, from);
@@ -485,7 +529,7 @@ class Runtime {
     return moduleRequire;
   }
 
-  _createRuntimeFor(from) {
+  _createRuntimeFor(from: Path) {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return runtime;
@@ -494,12 +538,16 @@ class Runtime {
       this._shouldAutoMock = true;
       return runtime;
     };
-    const unmock = moduleName => {
+    const unmock = (moduleName: string) => {
       const moduleID = this._getNormalizedModuleID(from, moduleName);
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
-    const mock = (moduleName, mockFactory, options) => {
+    const mock = (
+      moduleName: string,
+      mockFactory: Object,
+      options: {virtual: boolean}
+    ) => {
       if (mockFactory !== undefined) {
         return setMockFactory(moduleName, mockFactory, options);
       }
@@ -528,7 +576,7 @@ class Runtime {
     };
 
     const runtime = {
-      addMatchers: matchers => {
+      addMatchers: (matchers: Object) => {
         const jasmine = this._environment.global.jasmine;
         const addMatchers =
           jasmine.addMatchers || jasmine.getEnv().currentSpec.addMatchers;
@@ -558,7 +606,9 @@ class Runtime {
         return frozenCopy;
       },
 
-      genMockFromModule: moduleName => this._generateMock(from, moduleName),
+      genMockFromModule: (moduleName: string) => {
+        return this._generateMock(from, moduleName);
+      },
       genMockFunction: moduleMocker.getMockFunction,
       genMockFn: moduleMocker.getMockFunction,
       fn() {
@@ -583,14 +633,14 @@ class Runtime {
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
-      setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
+      setMock: (moduleName: string, mock: Object) =>
+        setMockFactory(moduleName, () => mock),
 
       useFakeTimers,
       useRealTimers,
     };
     return runtime;
   }
-
 }
 
 module.exports = Runtime;
