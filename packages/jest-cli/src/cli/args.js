@@ -4,11 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
-function wrap(desc) {
+function wrap(desc: string) {
   const indent = '\n      ';
   return indent + desc.split(' ').reduce((wrappedDesc, word) => {
     const lastLineIdx = wrappedDesc.length - 1;
@@ -26,7 +28,7 @@ function wrap(desc) {
   }, ['']).join(indent);
 }
 
-const check = argv => {
+const check = (argv: Object) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
@@ -55,7 +57,10 @@ const check = argv => {
   return true;
 };
 
-const warnAboutUnrecognizedOptions = (argv, options) => {
+const warnAboutUnrecognizedOptions = (
+  argv: Object,
+  options: Object,
+) => {
   const yargsSpecialOptions = ['$0', '_'];
   const allowedOptions = Object.keys(options).reduce((acc, option) => (
     acc

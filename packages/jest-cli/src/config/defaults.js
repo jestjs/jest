@@ -4,15 +4,19 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+
+import type {Config} from '../../../../types/Config';
 
 const constants = require('../constants');
 const path = require('path');
 const utils = require('jest-util');
 
-module.exports = {
+const defaultConfig: Config = {
   automock: true,
   bail: false,
   cacheDirectory: path.resolve(__dirname, '../..', '.haste_cache'),
@@ -43,3 +47,5 @@ module.exports = {
   useStderr: false,
   verbose: false,
 };
+
+module.exports = defaultConfig;

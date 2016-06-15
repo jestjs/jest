@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -13,9 +15,10 @@ const normalize = require('./normalize');
 const path = require('path');
 const promisify = require('../lib/promisify');
 
-function loadFromPackage(filePath, argv) {
+function loadFromPackage(filePath: string, argv: Object) {
   return promisify(fs.access)(filePath, fs.R_OK).then(
     () => {
+      // $FlowFixMe
       const packageData = require(filePath);
       const config = packageData.jest || {};
       const root = path.dirname(filePath);

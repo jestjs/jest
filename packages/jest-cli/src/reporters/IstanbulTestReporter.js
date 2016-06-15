@@ -84,7 +84,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
         }
         const errors = check(
           'global',
-          config.coverageThreshold.global,
+          (config.coverageThreshold || {}).global,
           globalResults
         );
 
