@@ -48,7 +48,7 @@ type FindNodeModuleConfig = {
   moduleDirectory: string | Array<string>,
 };
 
-type ResolveModuleConfig = ?{skipNodeResolution?: boolean};
+export type ResolveModuleConfig = ?{skipNodeResolution?: boolean};
 
 const NATIVE_PLATFORM = 'native';
 
