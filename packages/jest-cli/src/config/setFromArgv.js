@@ -4,11 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+import type {Config} from 'types/Config';
 
-function setFromArgv(config, argv) {
+function setFromArgv(config: Config, argv: Object) {
   if (argv.coverage) {
     config.collectCoverage = true;
   }
@@ -18,6 +21,7 @@ function setFromArgv(config, argv) {
   }
 
   config.noHighlight =
+    // $FlowFixMe https://github.com/facebook/flow/issues/1825
     argv.noHighlight || (!argv.colors && !process.stdout.isTTY);
 
   if (argv.verbose) {

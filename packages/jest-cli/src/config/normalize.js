@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -15,7 +17,10 @@ const constants = require('../constants');
 const path = require('path');
 const utils = require('jest-util');
 
-function _replaceRootDirTags(rootDir, config) {
+function _replaceRootDirTags(
+  rootDir: string,
+  config: Object | string
+) {
   switch (typeof config) {
     case 'object':
       if (config instanceof RegExp) {
@@ -78,7 +83,7 @@ function getTestEnvironment(config) {
   );
 }
 
-function normalize(config, argv) {
+function normalize(config: Object, argv: ?Object) {
   if (!argv) {
     argv = {};
   }
@@ -89,7 +94,7 @@ function normalize(config, argv) {
     throw new Error('No rootDir config value found!');
   }
 
-  config.rootDir = path.normalize(config.rootDir);
+  config.rootDir = path.normalize(config.rootDir || '');
 
   if (!config.name) {
     config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
@@ -172,7 +177,7 @@ function normalize(config, argv) {
   if (babelJest) {
     const polyfillPath =
       Resolver.findNodeModule('babel-polyfill', {basedir: config.rootDir});
-    if (polyfillPath) {
+    if (polyfillPath && config.setupFiles) {
       config.setupFiles.unshift(polyfillPath);
     }
     config.usesBabelJest = true;
@@ -187,14 +192,16 @@ function normalize(config, argv) {
     config.preprocessorIgnorePatterns = [];
   }
 
+  const rootDir = config.rootDir || '';
+
   Object.keys(config).reduce((newConfig, key) => {
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
         value = Object.keys(config[key]).reduce((normObj, filePath) => {
           filePath = path.resolve(
-            config.rootDir,
-            _replaceRootDirTags(config.rootDir, filePath)
+            config.rootDir || '',
+            _replaceRootDirTags(rootDir, filePath).toString()
           );
           normObj[filePath] = true;
           return normObj;
@@ -204,8 +211,8 @@ function normalize(config, argv) {
       case 'setupFiles':
       case 'testPathDirs':
         value = config[key].map(filePath => path.resolve(
-          config.rootDir,
-          _replaceRootDirTags(config.rootDir, filePath)
+          rootDir,
+          _replaceRootDirTags(rootDir, filePath).toString()
         ));
         break;
 
@@ -216,15 +223,15 @@ function normalize(config, argv) {
       case 'testResultsProcessor':
       case 'testRunner':
         value = path.resolve(
-          config.rootDir,
-          _replaceRootDirTags(config.rootDir, config[key])
+          rootDir,
+          _replaceRootDirTags(rootDir, config[key]).toString()
         );
         break;
 
       case 'moduleNameMapper':
         value = Object.keys(config[key]).map(regex => [
           regex,
-          _replaceRootDirTags(config.rootDir, config[key][regex]),
+          _replaceRootDirTags(rootDir, config[key][regex]),
         ]);
         break;
 
@@ -297,7 +304,7 @@ function normalize(config, argv) {
     return newConfig;
   }, newConfig);
 
-  return _replaceRootDirTags(newConfig.rootDir, newConfig);
+  return _replaceRootDirTags(rootDir, newConfig);
 }
 
 module.exports = normalize;

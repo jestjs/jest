@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -13,7 +15,7 @@ const normalize = require('./normalize');
 const path = require('path');
 const promisify = require('../lib/promisify');
 
-function loadFromFile(filePath, argv) {
+function loadFromFile(filePath: string, argv?: Object) {
   return promisify(fs.readFile)(filePath).then(data => {
     const parse = () => {
       try {

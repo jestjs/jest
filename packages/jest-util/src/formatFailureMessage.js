@@ -53,7 +53,8 @@ const formatStackTrace = (stackTrace: string, config) => {
       }
 
       const filePath = matches[2];
-      return matches[1] + path.relative(config.rootDir, filePath) + matches[3];
+      return matches[1] + path.relative(config.rootDir || '', filePath)
+        + matches[3];
     })
     .filter(line => line !== null)
     .join('\n' + msgIndent);
