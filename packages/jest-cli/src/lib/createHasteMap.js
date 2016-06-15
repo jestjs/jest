@@ -4,14 +4,26 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
+import type {Config} from 'types/Config';
+
 const HasteMap = require('jest-haste-map');
 const SNAPSHOT_EXTENSION = require('jest-snapshot').EXTENSION;
 
-module.exports = function createHasteMap(config, options) {
+export type Options = {
+  maxWorkers: number,
+  resetCache: boolean,
+};
+
+module.exports = function createHasteMap(
+  config: Config,
+  options?: ?Options,
+): HasteMap {
   const ignorePattern = new RegExp(
     [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
   );
