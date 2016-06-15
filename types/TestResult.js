@@ -78,3 +78,31 @@ export type TestResult = {
   testFilePath: string,
   testResults: Array<AssertionResult>,
 };
+
+export type AggregatedTestResults = {
+  success: ?boolean,
+  startTime: Date,
+  numTotalTestSuites: number,
+  numPassedTestSuites: number,
+  numFailedTestSuites: number,
+  numRuntimeErrorTestSuites: number,
+  numTotalTests: number,
+  numPassedTests: number,
+  numFailedTests: number,
+  numPendingTests: number,
+  testResults: Array<TestResult>,
+};
+
+export type CodeCoverageResult = {
+  coveredSpans: Array<Object>,
+  uncoveredSpans: Array<Object>,
+  sourceText: string,
+};
+
+// I don't know how this should be typed
+export type CodeCoverageReporter = any;
+
+export type CodeCoverageFormatter = (
+  coverage: ?CodeCoverageResult,
+  reporter: CodeCoverageReporter,
+) => ?Object;
