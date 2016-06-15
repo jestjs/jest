@@ -253,6 +253,7 @@ function normalize(config, argv) {
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'globals':
+      case 'growl':
       case 'haste':
       case 'logHeapUsage':
       case 'mocksPattern':
@@ -273,7 +274,6 @@ function normalize(config, argv) {
       case 'testURL':
       case 'usesBabelJest':
       case 'verbose':
-      case 'growl':
       case 'watchman':
         value = config[key];
         break;

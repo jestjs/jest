@@ -56,6 +56,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
+  - [`growl` [boolean]](#growl-boolean)
   - [`mocksPattern` [string]](#mockspattern-string)
   - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
@@ -76,7 +77,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`testRunner` [string]](#testrunner-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
-  - [`growl` [boolean]](#growl-boolean)
 
 #### Globally injected variables
 
@@ -491,6 +491,11 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
+### `growl` [boolean]
+(default: `false`)
+
+Activates Growl notifications for test results.
+
 ### `mocksPattern` [string]
 (default: `(?:[\\/]|^)__mocks__[\\/]`)
 
@@ -674,8 +679,3 @@ It is possible to override this setting in individual tests by explicitly callin
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
-
-### `growl` [boolean]
-(default: `false`)
-
-Actives Growl notifications for test results.

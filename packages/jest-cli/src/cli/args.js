@@ -165,7 +165,7 @@ const options = {
   },
   growl: {
     description: wrap(
-      'Actives Growl notifications for test results.'
+      'Activates Growl notifications for test results.'
     ),
     type: 'boolean',
   },

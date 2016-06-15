@@ -24,6 +24,7 @@ module.exports = ({
   coverageCollector: require.resolve('./IstanbulCollector'),
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
+  growl: false,
   haste: {
     providesModuleNodeModules: [],
   },
@@ -46,5 +47,4 @@ module.exports = ({
   testURL: 'about:blank',
   useStderr: false,
   verbose: false,
-  growl: false,
 }: DefaultConfig);

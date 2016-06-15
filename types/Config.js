@@ -27,6 +27,7 @@ type BaseConfig = {
   coverageReporters: Array<string>,
   globals: ConfigGlobals,
   haste: HasteConfig,
+  growl: boolean,
   mocksPattern: string,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
@@ -43,7 +44,6 @@ type BaseConfig = {
   testURL: string,
   useStderr: boolean,
   verbose: boolean,
-  growl: boolean,
 };
 
 export type DefaultConfig = BaseConfig & {
@@ -73,5 +73,4 @@ export type Config = BaseConfig & {
   testDirectoryName: string,
   updateSnapshot: {},
   watchman: boolean,
-  growl: boolean,
 };
