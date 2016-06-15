@@ -1,6 +1,8 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
+ * @flow
+ *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -41,24 +43,35 @@
 
 'use strict';
 
+import typeof PathType from 'path';
+
+type ReplaceType = { replace: () => void };
+
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
 // fastpath is only useful on older versions of nodejs.
-if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
-  module.exports = Object.assign({replace: () => {}}, path);
+if (
+  process.versions.node &&
+  parseInt(process.versions.node.split('.')[0], 10) >= 5
+) {
+  module.exports = (Object.assign(
+    {},
+    {replace: () => {}},
+    path,
+  ): PathType & ReplaceType);
 } else {
   const IS_WINDOWS = process.platform === 'win32';
 
-  function isString(arg) {
+  function isString(arg: mixed): boolean {
     return typeof arg === 'string';
   }
 
   const splitDeviceRe =
         /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/;
 
-  function getDevice(filename) {
+  function getDevice(filename: string): string {
     const result = splitDeviceRe.exec(filename);
 
     return (result[1] || '') + (result[2] || '');
@@ -68,7 +81,10 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
   // must be no slashes, or device names (c:\) in the array
   // (so also no leading and trailing slashes - it does not distinguish
   // relative and absolute paths)
-  function normalizeArray(parts, allowAboveRoot) {
+  function normalizeArray(
+    parts: Array<string>,
+    allowAboveRoot: ?boolean,
+  ): Array<string> {
     const nonEmptyParts = [];
     let nonBack = true;
 
@@ -115,7 +131,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     return res.reverse();
   }
 
-  function trim(arr) {
+  function trim(arr: Array<string>): Array<string> {
     let start = 0;
 
     for (; start < arr.length; start++) {
@@ -131,17 +147,19 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     return start <= end ? arr.slice(start, end + 1) : [];
   }
 
-  function normalizeUNCRoot(device) {
+  function normalizeUNCRoot(device: string): string {
     return '\\\\' + device.replace(/^[\\\/]+/, '').replace(/[\\\/]+/g, '\\');
   }
 
-  exports.sep = IS_WINDOWS ? '\\' : '/';
+  const sep = IS_WINDOWS ? '\\' : '/';
+
+  exports.sep = sep;
   exports.delimiter = IS_WINDOWS ? ';' : ':';
 
   if (IS_WINDOWS) {
     // path.resolve([from ...], to)
     // windows version
-    exports.resolve = function resolveWIN32() {
+    exports.resolve = function resolveWIN32(): string {
       let resolvedDevice = '';
       let resolvedTail = '';
       let resolvedAbsolute = false;
@@ -224,7 +242,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     };
 
     // windows version
-    exports.normalize = function normalizeWIN32(path) {
+    exports.normalize = function normalizeWIN32(path: string): string {
       const result = splitDeviceRe.exec(path);
       let device = result[1] || '';
       const isUnc = device && device.charAt(1) !== ':';
@@ -252,7 +270,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     };
 
     // windows version
-    exports.isAbsolute = function isAbsoluteWIN32(path) {
+    exports.isAbsolute = function isAbsoluteWIN32(path: string): boolean {
       const result = splitDeviceRe.exec(path);
       const device = result[1] || '';
       const isUnc = !!device && device.charAt(1) !== ':';
@@ -262,7 +280,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     };
 
     // windows version
-    exports.join = function joinWIN32() {
+    exports.join = function joinWIN32(): string {
       function f(p) {
         if (!isString(p)) {
           throw new TypeError('Arguments to path.join must be strings');
@@ -300,7 +318,10 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     // to = 'C:\\orandea\\impl\\bbb'
     // The output of the function should be: '..\\..\\impl\\bbb'
     // windows version
-    exports.relative = function relativeWIN32(from, to) {
+    exports.relative = function relativeWIN32(
+      from: string,
+      to: string,
+    ): string {
       from = exports.resolve(from);
       to = exports.resolve(to);
 
@@ -342,7 +363,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
 
     // path.resolve([from ...], to)
     // posix version
-    exports.resolve = function resolvePOSIX() {
+    exports.resolve = function resolvePOSIX(): string {
       let resolvedPath = '';
       let resolvedAbsolute = false;
 
@@ -375,7 +396,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
 
     // path.normalize(path)
     // posix version
-    exports.normalize = function normalizePOSIX(path) {
+    exports.normalize = function normalizePOSIX(path: string): string {
       const isAbsolute = exports.isAbsolute(path);
       const trailingSlash = path[path.length - 1] === '/';
 
@@ -393,12 +414,12 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     };
 
     // posix version
-    exports.isAbsolute = function isAbsolutePOSIX(path) {
+    exports.isAbsolute = function isAbsolutePOSIX(path: string): boolean {
       return path.charAt(0) === '/';
     };
 
     // posix version
-    exports.join = function joinPOSIX() {
+    exports.join = function joinPOSIX(): string {
       let path = '';
 
       for (let i = 0; i < arguments.length; i++) {
@@ -418,7 +439,10 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
 
     // path.relative(from, to)
     // posix version
-    exports.relative = function relativePOSIX(from, to) {
+    exports.relative = function relativePOSIX(
+      from: string,
+      to: string,
+    ): string {
       from = exports.resolve(from).substr(1);
       to = exports.resolve(to).substr(1);
 
@@ -447,18 +471,18 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     };
   }
 
-  exports.exists = util.deprecate(
+  exports.exists = (util.deprecate(
     (path, callback) => fs.exists(path, callback),
     'path.exists is now called `fs.exists`.'
-  );
+  ): (path: string, callback: (exists: boolean) => void) => void);
 
-  exports.existsSync = util.deprecate(
+  exports.existsSync = (util.deprecate(
     path => fs.existsSync(path),
     'path.existsSync is now called `fs.existsSync`.'
-  );
+  ): (path: string) => boolean);
 
   if (IS_WINDOWS) {
-    exports._makeLong = function _makeLongWIN32(path) {
+    exports._makeLong = function _makeLongWIN32(path: string): string {
       // Note: this will *probably* throw somewhere.
       if (!isString(path)) { return path; }
       if (!path) { return ''; }
@@ -479,19 +503,19 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     };
 
   } else {
-    exports._makeLong = function _makeLongPOSIX(path) {
+    exports._makeLong = function _makeLongPOSIX(path: string): string {
       return path;
     };
   }
 
-  exports.extname = function _extname(filename) {
+  exports.extname = function _extname(filename: ?string): string {
     if (!filename) { return ''; }
 
     // /a.js///
     let end = filename.length;
     let c = filename[end - 1];
 
-    while (c === exports.sep || c === '/') {
+    while (c === sep || c === '/') {
       end--;
       c = filename[end - 1];
     }
@@ -529,20 +553,23 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
 
       const pre = filename[lastDot - 2];
       // [//\/]..
-      if (pre === '/' || pre === exports.sep) { return ''; }
+      if (pre === '/' || pre === sep) { return ''; }
     }
 
     return extname;
   };
 
-  exports.basename = function _basename(filename, ext) {
+  exports.basename = function _basename(
+    filename: ?string,
+    ext?: string,
+  ): string {
     if (!filename) { return ''; }
 
     // /a.js///
     let end = filename.length;
     let c = filename[end - 1];
 
-    while (c === exports.sep || c === '/') {
+    while (c === sep || c === '/') {
       end--;
       c = filename[end - 1];
     }
@@ -578,7 +605,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     return basename;
   };
 
-  exports.dirname = function _dirname(filename) {
+  exports.dirname = function _dirname(filename: ?string): string {
     if (!filename) { return '.'; }
 
     let start = 0;
@@ -595,7 +622,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     let end = filename.length;
     let c = filename[end - 1];
 
-    while (end >= start && c === exports.sep || c === '/') {
+    while (end >= start && c === sep || c === '/') {
       end--;
       c = filename[end - 1];
     }
@@ -620,7 +647,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
       if (device) {
         return device;
       }
-      if (filename[0] === '/' || filename[0] === exports.sep) {
+      if (filename[0] === '/' || filename[0] === sep) {
         return filename[0];
       }
 
@@ -630,7 +657,7 @@ if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     return device + filename.slice(start, lastSep);
   };
 
-  exports.replace = function() {
+  exports.replace = function(): void {
     Object.keys(exports)
       .filter(name => name !== 'replace')
       .forEach(name => path[name] = exports[name]);
