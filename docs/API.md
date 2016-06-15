@@ -76,6 +76,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`testRunner` [string]](#testrunner-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
+  - [`growl` [boolean]](#growl-boolean)
 
 #### Globally injected variables
 
@@ -673,3 +674,8 @@ It is possible to override this setting in individual tests by explicitly callin
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+### `growl` [boolean]
+(default: `false`)
+
+Actives Growl notifications for test results.

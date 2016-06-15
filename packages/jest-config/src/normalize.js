@@ -273,6 +273,7 @@ function normalize(config, argv) {
       case 'testURL':
       case 'usesBabelJest':
       case 'verbose':
+      case 'growl':
       case 'watchman':
         value = config[key];
         break;

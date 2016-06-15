@@ -16,7 +16,8 @@
     "minimatch": "^3.0.0",
     "mkdirp": "^0.5.1",
     "progress": "^1.1.8",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "growl": "^1.9.2"
   },
   "scripts": {
     "lint": "eslint .",

@@ -43,6 +43,7 @@ type BaseConfig = {
   testURL: string,
   useStderr: boolean,
   verbose: boolean,
+  growl: boolean,
 };
 
 export type DefaultConfig = BaseConfig & {
@@ -72,4 +73,5 @@ export type Config = BaseConfig & {
   testDirectoryName: string,
   updateSnapshot: {},
   watchman: boolean,
+  growl: boolean,
 };

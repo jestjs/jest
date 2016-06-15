@@ -46,4 +46,5 @@ module.exports = ({
   testURL: 'about:blank',
   useStderr: false,
   verbose: false,
+  growl: false,
 }: DefaultConfig);
