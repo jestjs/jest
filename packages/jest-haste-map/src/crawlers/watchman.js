@@ -68,24 +68,21 @@ module.exports = function watchmanCrawl(
               dirExpr.push(['dirname', path.relative(root, subRoot)]);
             }
           });
-          const query = {
-            expression: [
-              'allof',
-              ['type', 'f'],
-              ['anyof'].concat(extensions.map(
-                extension => ['suffix', extension]
-              )),
-              dirExpr,
-            ],
-            fields: ['name', 'exists', 'mtime_ms'],
-          };
-          if (clocks[root]) {
+          const expression = [
+            'allof',
+            ['type', 'f'],
+            ['anyof'].concat(extensions.map(
+              extension => ['suffix', extension]
+            )),
+            dirExpr,
+          ];
+          const fields = ['name', 'exists', 'mtime_ms'];
+
+          const query = clocks[root]
             // Use the `since` generator if we have a clock available
-            (query: any).since = clocks[root];
-          } else {
+            ? {expression, fields, since: clocks[root]}
             // Otherwise use the `suffix` generator
-            (query: any).suffix = extensions;
-          }
+            : {expression, fields, suffix: extensions};
           return cmd(['query', root, query]).then(response => ({
             root,
             response,

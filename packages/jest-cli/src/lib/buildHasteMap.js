@@ -11,11 +11,19 @@
 'use strict';
 
 import type {Config} from 'types/Config';
-import type {HasteResolverContext} from 'jest-resolve';
+import type {HasteMap as HasteMapObject} from 'types/HasteMap';
+import type HasteMap from 'jest-haste-map';
+import type Resolver from 'jest-resolve';
 
 const createHasteMap = require('./createHasteMap');
 const createResolver = require('./createResolver');
 const utils = require('jest-util');
+
+type HasteResolverContext = {
+  instance: HasteMap,
+  moduleMap: HasteMapObject,
+  resolver: Resolver,
+};
 
 export type Options = {
   maxWorkers: number,

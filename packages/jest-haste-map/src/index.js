@@ -15,6 +15,8 @@ import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
 import typeof FastpathType from './fastpath';
 
+type Path = string;
+
 const H = require('./constants');
 
 const crypto = require('crypto');
@@ -142,7 +144,7 @@ type InternalOptions = {
 
 class HasteMap {
   _options: InternalOptions;
-  _cachePath: string;
+  _cachePath: Path;
   _whitelist: ?RegExp;
   _buildPromise: ?Promise<HasteMapStruct>;
   _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
@@ -179,7 +181,7 @@ class HasteMap {
     this._workerFarm = null;
   }
 
-  static getCacheFilePath(tmpdir: string, name: string): string {
+  static getCacheFilePath(tmpdir: Path, name: string): string {
     const hash = crypto.createHash('md5');
     Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
     return path.join(
@@ -204,12 +206,12 @@ class HasteMap {
     if (!(pattern instanceof RegExp)) {
       pattern = new RegExp(pattern);
     }
-    const refPattern = pattern; // Makes flow happy
-
+    // flow
+    const filePattern = pattern;
     return this.build().then(hasteMap => {
       const files = [];
       for (const file in hasteMap.files) {
-        if (refPattern.test(file)) {
+        if (filePattern.test(file)) {
           files.push(file);
         }
       }
@@ -401,14 +403,14 @@ class HasteMap {
     }
   }
 
-  _ignore(filePath: string): boolean {
+  _ignore(filePath: Path): boolean {
     return (
       this._options.ignorePattern.test(filePath) ||
       this._isNodeModulesDir(filePath)
     );
   }
 
-  _isNodeModulesDir(filePath: string): boolean {
+  _isNodeModulesDir(filePath: Path): boolean {
     if (!filePath.includes(NODE_MODULES)) {
       return false;
     }

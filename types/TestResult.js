@@ -99,7 +99,6 @@ export type CodeCoverageResult = {
   sourceText: string,
 };
 
-// I don't know how this should be typed
 export type CodeCoverageReporter = any;
 
 export type CodeCoverageFormatter = (
