@@ -4,8 +4,12 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
 
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
@@ -17,13 +21,22 @@ const cache = new Map();
 const configToJsonMap = new Map();
 const preprocessorRegExpCache = new WeakMap();
 
+export type Processor = {
+  process: (sourceText: string, sourcePath: string) => string,
+};
+
 const removeFile = path => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
 };
 
-const getCacheKey = (preprocessor, fileData, filePath, config) => {
+const getCacheKey = (
+  preprocessor: Processor,
+  fileData: string,
+  filePath: string,
+  config: Config,
+): string => {
   if (!configToJsonMap.has(config)) {
     // We only need this set of config options that can likely influence
     // cached output instead of all config options.
@@ -52,7 +65,7 @@ const getCacheKey = (preprocessor, fileData, filePath, config) => {
   }
 };
 
-const writeCacheFile = (cachePath, fileData) => {
+const writeCacheFile = (cachePath: string, fileData: string) => {
   try {
     fs.writeFileSync(cachePath, fileData);
   } catch (e) {
@@ -62,7 +75,7 @@ const writeCacheFile = (cachePath, fileData) => {
   }
 };
 
-const readCacheFile = (filePath, cachePath) => {
+const readCacheFile = (filePath: string, cachePath: string): ?string => {
   if (!fs.existsSync(cachePath)) {
     return null;
   }
@@ -84,7 +97,7 @@ const readCacheFile = (filePath, cachePath) => {
   return fileData;
 };
 
-module.exports = (filePath, config) => {
+module.exports = (filePath: string, config: Config): mixed => {
   const mtime = fs.statSync(filePath).mtime;
   const mapCacheKey = filePath + '_' + mtime.getTime();
 
@@ -112,6 +125,7 @@ module.exports = (filePath, config) => {
       !config.preprocessorIgnorePatterns.length || !regex.test(filePath)
     )
   ) {
+    // $FlowFixMe
     const preprocessor = require(config.scriptPreprocessor);
     if (typeof preprocessor.process !== 'function') {
       throw new TypeError(
