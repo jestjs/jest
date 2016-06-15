@@ -24,12 +24,6 @@ const path = require('./fastpath');
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 
-type ErrorType = {
-  stack: ?string,
-  message: string,
-  type: string,
-};
-
 const formatError = (error: string|Error): Error => {
   if (typeof error === 'string') {
     return (({

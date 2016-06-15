@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {Config, Path} from 'types/Config';
 
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
@@ -25,7 +25,7 @@ export type Processor = {
   process: (sourceText: string, sourcePath: string) => string,
 };
 
-const removeFile = path => {
+const removeFile = (path: Path) => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
@@ -34,7 +34,7 @@ const removeFile = path => {
 const getCacheKey = (
   preprocessor: Processor,
   fileData: string,
-  filePath: string,
+  filePath: Path,
   config: Config,
 ): string => {
   if (!configToJsonMap.has(config)) {
@@ -97,12 +97,12 @@ const readCacheFile = (filePath: string, cachePath: string): ?string => {
   return fileData;
 };
 
-module.exports = (filePath: string, config: Config): mixed => {
+module.exports = (filePath: Path, config: Config): string => {
   const mtime = fs.statSync(filePath).mtime;
   const mapCacheKey = filePath + '_' + mtime.getTime();
 
   if (cache.has(mapCacheKey)) {
-    return cache.get(mapCacheKey);
+    return cache.get(mapCacheKey) || '';
   }
 
   let fileData = fs.readFileSync(filePath, 'utf8');

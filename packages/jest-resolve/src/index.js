@@ -10,20 +10,25 @@
 
 'use strict';
 
-import type {FileMetaData, ModuleMap, HTypeValue} from 'types/HasteMap';
-import type HasteMap from 'jest-haste-map';
+import type {
+  FileMetaData,
+  HasteMap,
+  ModuleMap,
+  HTypeValue,
+} from 'types/HasteMap';
 import type {Path} from 'types/Config';
+
+const H = require('jest-haste-map').H;
+
+const fs = require('fs');
+const nodeModulesPaths = require('resolve/lib/node-modules-paths');
+const path = require('path');
+const resolve = require('resolve');
 
 export type MockedModuleContext = {
   mocks: {[moduleName: string]: mixed},
   files: {[filePath: string]: FileMetaData},
   map: ModuleMap,
-};
-
-export type HasteResolverContext = {
-  instance: HasteMap,
-  moduleMap: MockedModuleContext,
-  resolver: Resolver,
 };
 
 type ResolverConfig = {
@@ -43,14 +48,7 @@ type FindNodeModuleConfig = {
   moduleDirectory: string | Array<string>,
 };
 
-type ResolveModuleConfig = ?{ skipNodeResolution?: boolean };
-
-const H = require('jest-haste-map').H;
-
-const fs = require('fs');
-const nodeModulesPaths = require('resolve/lib/node-modules-paths');
-const path = require('path');
-const resolve = require('resolve');
+type ResolveModuleConfig = ?{skipNodeResolution?: boolean};
 
 const NATIVE_PLATFORM = 'native';
 
@@ -159,10 +157,10 @@ class Resolver {
     //    only produces an error based on the dirname but we have the actual
     //    current module name available.
     const relativePath = path.relative(dirname, from);
-    const err = (new Error(
+    const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
-    ): Object);
-    err.code = 'MODULE_NOT_FOUND';
+    );
+    (err: any).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 
