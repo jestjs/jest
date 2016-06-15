@@ -2,12 +2,17 @@
  * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.
  *
+ * @flow
+ *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 'use strict';
+
+import type {HasteMap} from 'types/HasteMap';
+import type {IgnoreMatcher} from '../types';
 
 const H = require('../constants');
 
@@ -16,18 +21,23 @@ const watchman = require('fb-watchman');
 
 const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting.html';
 
-function isDescendant(root, child) {
+function isDescendant(root: string, child: string): boolean {
   return child.startsWith(root);
 }
 
-function WatchmanError(error) {
+function WatchmanError(error: Error): Error {
   return new Error(
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
     `is running for this project. See ${watchmanURL}.`
   );
 }
 
-module.exports = function watchmanCrawl(roots, extensions, ignore, data) {
+module.exports = function watchmanCrawl(
+  roots: Array<string>,
+  extensions: Array<string>,
+  ignore: IgnoreMatcher,
+  data: HasteMap,
+): Promise<HasteMap> {
   return new Promise((resolve, reject) => {
     const client = new watchman.Client();
     client.on('error', error => reject(error));
@@ -52,7 +62,7 @@ module.exports = function watchmanCrawl(roots, extensions, ignore, data) {
         );
         return Promise.all(watchmanRoots.map(root => {
           // Build up an expression to filter the output by the relevant roots.
-          const dirExpr = ['anyof'];
+          const dirExpr = (['anyof']: Array<string|Array<string>>);
           roots.forEach(subRoot => {
             if (isDescendant(root, subRoot)) {
               dirExpr.push(['dirname', path.relative(root, subRoot)]);
@@ -71,10 +81,10 @@ module.exports = function watchmanCrawl(roots, extensions, ignore, data) {
           };
           if (clocks[root]) {
             // Use the `since` generator if we have a clock available
-            query.since = clocks[root];
+            (query: any).since = clocks[root];
           } else {
             // Otherwise use the `suffix` generator
-            query.suffix = extensions;
+            (query: any).suffix = extensions;
           }
           return cmd(['query', root, query]).then(response => ({
             root,

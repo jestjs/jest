@@ -22,18 +22,26 @@ export type ConfigGlobals = Object;
 export type Config = {
   automock: boolean,
   bail: boolean,
+  cache: boolean,
   cacheDirectory: Path,
   colors: boolean,
   coverageCollector: Path,
   coverageReporters: Array<string>,
+  coverageThreshold: {
+    global: {
+      [key: string]: number,
+    },
+  },
   globals: ConfigGlobals,
   haste: HasteConfig,
   mocksPattern: string,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   moduleLoader: Path,
-  moduleNameMapper: {[key: string]: string},
+  moduleNameMapper: Array<string>,
   modulePathIgnorePatterns: Array<string>,
+  modulePaths: Array<string>,
+  name: string,
   noHighlight: boolean,
   noStackTrace: boolean,
   persistModuleRegistryBetweenSpecs: boolean,
@@ -50,4 +58,5 @@ export type Config = {
   updateSnapshot: {},
   useStderr: boolean,
   verbose: boolean,
+  watchman: boolean,
 };

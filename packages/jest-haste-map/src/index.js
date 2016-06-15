@@ -2,11 +2,18 @@
  * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.
  *
+ * @flow
+ *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
+
+import type {HasteMap as HasteMapStruct, Options} from 'types/HasteMap';
+import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
+import typeof HType from './constants';
+import typeof FastpathType from './fastpath';
 
 const H = require('./constants');
 
@@ -24,9 +31,9 @@ const workerFarm = require('worker-farm');
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
 
-const canUseWatchman = (() => {
+const canUseWatchman = ((): boolean => {
   try {
-    execSync('watchman version', {stdio: 'ignore'});
+    execSync('watchman version', {stdio: ['ignore']});
     return true;
   } catch (e) {}
   return false;
@@ -35,7 +42,7 @@ const canUseWatchman = (() => {
 const escapePathSeparator =
   string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
 
-const getWhiteList = list => {
+const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
     return new RegExp(
       '(' + escapePathSeparator(NODE_MODULES) +
@@ -119,11 +126,31 @@ const getWhiteList = list => {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-class HasteMap {
 
-  constructor(options) {
+type InternalOptions = {
+  cacheDirectory: string;
+  extensions: Array<string>;
+  ignorePattern: RegExp;
+  maxWorkers: number;
+  mocksPattern: ?RegExp;
+  name: string;
+  platforms: Array<string>;
+  resetCache: ?boolean;
+  roots: Array<string>;
+  useWatchman: boolean;
+};
+
+class HasteMap {
+  _options: InternalOptions;
+  _cachePath: string;
+  _whitelist: ?RegExp;
+  _buildPromise: ?Promise<HasteMapStruct>;
+  _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
+  _workerFarm: ?(data: WorkerMessage, callback: WorkerCallback) => void;
+
+  constructor(options: Options) {
     this._options = {
-      cacheDirectory: options.cacheDirectory || os.tmpDir(),
+      cacheDirectory: options.cacheDirectory || (os: any).tmpDir(),
       extensions: options.extensions,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
@@ -134,7 +161,7 @@ class HasteMap {
       resetCache: options.resetCache,
       roots: options.roots,
       useWatchman:
-        options.useWatchman === undefined ? true : options.useWatchman,
+        options.useWatchman == null ? true : options.useWatchman,
     };
 
     this._cachePath = HasteMap.getCacheFilePath(
@@ -152,7 +179,7 @@ class HasteMap {
     this._workerFarm = null;
   }
 
-  static getCacheFilePath(tmpdir, name) {
+  static getCacheFilePath(tmpdir: string, name: string): string {
     const hash = crypto.createHash('md5');
     Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
     return path.join(
@@ -161,7 +188,7 @@ class HasteMap {
     );
   }
 
-  build() {
+  build(): Promise<HasteMapStruct> {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
         .then(fileMap => this._buildHasteMap(fileMap))
@@ -173,14 +200,16 @@ class HasteMap {
   /**
    * Matches all files against a pattern.
    */
-  matchFiles(pattern) {
+  matchFiles(pattern: RegExp|string): Promise<Array<string>> {
     if (!(pattern instanceof RegExp)) {
       pattern = new RegExp(pattern);
     }
+    const refPattern = pattern; // Makes flow happy
+
     return this.build().then(hasteMap => {
       const files = [];
       for (const file in hasteMap.files) {
-        if (pattern.test(file)) {
+        if (refPattern.test(file)) {
           files.push(file);
         }
       }
@@ -191,14 +220,14 @@ class HasteMap {
   /**
    * 1. read data from the cache or create an empty structure.
    */
-  read() {
+  read(): HasteMapStruct {
     return this._parse(fs.readFileSync(this._cachePath, 'utf-8'));
   }
 
   /**
    * 2. crawl the file system.
    */
-  _buildFileMap() {
+  _buildFileMap(): Promise<HasteMapStruct> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
     return Promise.resolve()
@@ -210,12 +239,12 @@ class HasteMap {
   /**
    * 3. parse and extract metadata from changed files.
    */
-  _buildHasteMap(hasteMap) {
+  _buildHasteMap(hasteMap: HasteMapStruct): Promise<HasteMapStruct> {
     const map = Object.create(null);
     const mocks = Object.create(null);
     const mocksPattern = this._options.mocksPattern;
     const promises = [];
-    const setModule = (id, module) => {
+    const setModule = (id: string, module: [string, number]) => {
       if (!map[id]) {
         map[id] = Object.create(null);
       }
@@ -259,9 +288,11 @@ class HasteMap {
           metadata => {
             // `1` for truthy values instead of `true` to save cache space.
             fileMetadata[H.VISITED] = 1;
-            if (metadata.id) {
-              fileMetadata[H.ID] = metadata.id;
-              setModule(metadata.id, metadata.module);
+            const metadataId = metadata.id;
+            const metadataModule = metadata.module;
+            if (metadataId && metadataModule) {
+              fileMetadata[H.ID] = metadataId;
+              setModule(metadataId, metadataModule);
             }
             fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
           },
@@ -292,7 +323,7 @@ class HasteMap {
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
-  _persist(hasteMap) {
+  _persist(hasteMap: HasteMapStruct): HasteMapStruct {
     fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf-8');
     return hasteMap;
   }
@@ -300,7 +331,7 @@ class HasteMap {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  _getWorker() {
+  _getWorker(): (message: WorkerMessage) => Promise<WorkerMetadata> {
     if (!this._workerPromise) {
       let workerFn;
       if (this._options.maxWorkers <= 1) {
@@ -315,9 +346,9 @@ class HasteMap {
         workerFn = this._workerFarm;
       }
 
-      this._workerPromise = message => new Promise(
+      this._workerPromise = (message: WorkerMessage) => new Promise(
         (resolve, reject) => workerFn(message, (error, metadata) => {
-          if (error) {
+          if (error || !metadata) {
             reject(error);
           } else {
             resolve(metadata);
@@ -329,7 +360,7 @@ class HasteMap {
     return this._workerPromise;
   }
 
-  _parse(hasteMap) {
+  _parse(hasteMap: string): HasteMapStruct {
     hasteMap = JSON.parse(hasteMap);
     for (const key in hasteMap) {
       Object.setPrototypeOf(hasteMap[key], null);
@@ -337,7 +368,7 @@ class HasteMap {
     return hasteMap;
   }
 
-  _crawl(hasteMap) {
+  _crawl(hasteMap: HasteMapStruct): Promise<HasteMapStruct> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl =
@@ -370,14 +401,14 @@ class HasteMap {
     }
   }
 
-  _ignore(filePath) {
+  _ignore(filePath: string): boolean {
     return (
       this._options.ignorePattern.test(filePath) ||
       this._isNodeModulesDir(filePath)
     );
   }
 
-  _isNodeModulesDir(filePath) {
+  _isNodeModulesDir(filePath: string): boolean {
     if (!filePath.includes(NODE_MODULES)) {
       return false;
     }
@@ -390,7 +421,7 @@ class HasteMap {
     return true;
   }
 
-  _createEmptyMap() {
+  _createEmptyMap(): HasteMapStruct {
     return {
       clocks: Object.create(null),
       files: Object.create(null),
@@ -399,6 +430,8 @@ class HasteMap {
     };
   }
 
+  static H: HType;
+  static fastpath: FastpathType;
 }
 
 HasteMap.H = H;

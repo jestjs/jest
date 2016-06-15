@@ -36,9 +36,32 @@ export type AssertionResult = {
   numPassingAsserts: number,
 };
 
+export type AggregatedResult = {
+  didUpdate: boolean,
+  numFailedTests: number,
+  numFailedTestSuites: number,
+  numPassedTests: number,
+  numPassedTestSuites: number,
+  numPendingTests: number,
+  numRuntimeErrorTestSuites: number,
+  numTotalTests: number,
+  numTotalTestSuites: number,
+  snapshotFilesRemoved: number,
+  startTime: number,
+  success: boolean,
+  testResults: Array<TestResult>,
+};
+
+export type Suite = {
+  title: string,
+  suites: Array<Suite>,
+  tests: Array<AssertionResult>,
+};
+
 export type TestResult = {
   coverage: ?Coverage,
   hasUncheckedKeys: boolean,
+  message: string,
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,

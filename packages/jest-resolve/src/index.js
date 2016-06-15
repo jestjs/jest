@@ -10,8 +10,21 @@
 
 'use strict';
 
+import type {FileMetaData, ModuleMap, HTypeValue} from 'types/HasteMap';
+import type HasteMap from 'jest-haste-map';
 import type {Path} from 'types/Config';
-import type {ModuleMap, HTypeValue} from 'types/HasteMap';
+
+export type MockedModuleContext = {
+  mocks: {[moduleName: string]: mixed},
+  files: {[filePath: string]: FileMetaData},
+  map: ModuleMap,
+};
+
+export type HasteResolverContext = {
+  instance: HasteMap,
+  moduleMap: MockedModuleContext,
+  resolver: Resolver,
+};
 
 type ResolverConfig = {
   defaultPlatform: string,
@@ -47,11 +60,11 @@ const nodePaths =
 class Resolver {
   _options: ResolverConfig;
   _supportsNativePlatform: boolean;
-  _moduleMap: ModuleMap;
+  _moduleMap: HasteMap;
   _moduleNameCache: {[name: string]: string};
   _modulePathCache: {[path: string]: Array<Path>};
 
-  constructor(moduleMap: ModuleMap, options: ResolverConfig) {
+  constructor(moduleMap: HasteMap, options: ResolverConfig) {
     this._options = {
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,

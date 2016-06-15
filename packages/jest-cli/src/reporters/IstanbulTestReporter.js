@@ -4,6 +4,8 @@
 * This source code is licensed under the BSD-style license found in the
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
+*
+* @flow
 */
 'use strict';
 
@@ -16,8 +18,15 @@ const reporter = new istanbul.Reporter();
 
 const FAIL_COLOR = chalk.bold.red;
 
+import type {Config} from 'types/Config';
+import type {AggregatedResult, TestResult} from 'types/TestResult';
+
 class IstanbulTestReporter extends DefaultTestReporter {
-  onTestResult(config, testResult, aggregatedResults) {
+  onTestResult(
+    config: Config,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
+  ) {
     super.onTestResult(config, testResult, aggregatedResults);
 
     if (config.collectCoverage && testResult.coverage) {
@@ -29,7 +38,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
     }
   }
 
-  onRunComplete(config, aggregatedResults) {
+  onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
     aggregatedResults.success = super.onRunComplete(config, aggregatedResults);
 
     if (config.collectCoverage) {

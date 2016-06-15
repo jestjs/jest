@@ -4,9 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {MockedModuleContext} from 'jest-resolve';
 
 const Resolver = require('jest-resolve');
 
@@ -21,7 +26,10 @@ const getModuleNameMapper = config => {
   return null;
 };
 
-module.exports = function createResolver(config, moduleMap) {
+module.exports = function createResolver(
+  config: Config,
+  moduleMap: MockedModuleContext,
+): Resolver {
   return new Resolver(moduleMap, {
     defaultPlatform: config.haste.defaultPlatform,
     extensions: config.moduleFileExtensions.map(extension => '.' + extension),
