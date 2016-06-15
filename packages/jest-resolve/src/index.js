@@ -48,7 +48,7 @@ type FindNodeModuleConfig = {
   moduleDirectory: string | Array<string>,
 };
 
-type ResolveModuleConfig = ?{skipNodeResolution?: boolean};
+export type ResolveModuleConfig = {skipNodeResolution?: boolean};
 
 const NATIVE_PLATFORM = 'native';
 
@@ -264,10 +264,10 @@ class Resolver {
   }
 
   resolveInverseDependencies(
-    paths: Array<Path>,
-    filter: (file: string) => boolean,
+    paths: Set<Path>,
+    filter: (file: Path) => boolean,
     options?: ResolveModuleConfig
-  ): Promise<Array<string>> | Array<Path> {
+  ): Array<Path> {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();
       while (changed.size) {
@@ -287,7 +287,7 @@ class Resolver {
     };
 
     if (!paths.size) {
-      return Promise.resolve([]);
+      return [];
     }
 
     const relatedPaths = new Set();

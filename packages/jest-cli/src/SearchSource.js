@@ -4,9 +4,15 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+
+import type {HasteResolverContext} from './types';
+import type {Path} from 'types/Config';
+import type {ResolveModuleConfig} from '../../jest-resolve/src';
 
 const Resolver = require('jest-resolve');
 
@@ -14,6 +20,27 @@ const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
 const path = require('path');
 const utils = require('jest-util');
+
+type SearchSourceConfig = {
+  testPathDirs: Array<Path>,
+  testRegex: RegExp,
+  testPathIgnorePatterns: Array<RegExp>,
+};
+
+type DataInfo = {
+  paths: Array<Path>,
+  stats: {[key: string]: number},
+  total: number,
+};
+
+type StrOrRegExpPattern = RegExp | string;
+
+type PatternInfo = {
+  onlyChanged: boolean,
+  testPathPattern: string,
+  input: string,
+  shouldTreatInputAsPattern: string,
+};
 
 const git = changedFiles.git;
 const hg = changedFiles.hg;
@@ -27,8 +54,23 @@ const pluralize =
   (word, count, ending) => `${count} ${word}${count === 1 ? '' : ending}`;
 
 class SearchSource {
+  _hasteMap: Promise<HasteResolverContext>;
+  _config: SearchSourceConfig;
+  _options: ResolveModuleConfig;
+  _testPathDirPattern: RegExp;
+  _testRegex: RegExp;
+  _testIgnorePattern: ?RegExp;
+  _testPathCases: {
+    testPathDirs: (path: Path) => boolean,
+    testRegex: (path: Path) => boolean,
+    testPathIgnorePatterns: (path: Path) => boolean,
+  };
 
-  constructor(hasteMap, config, options) {
+  constructor(
+    hasteMap: Promise<HasteResolverContext>,
+    config: SearchSourceConfig,
+    options?: ResolveModuleConfig,
+  ) {
     this._hasteMap = hasteMap;
     this._config = config;
     this._options = options || {};
@@ -50,7 +92,10 @@ class SearchSource {
     };
   }
 
-  _filterTestPathsWithStats(allPaths, testPathPattern) {
+  _filterTestPathsWithStats(
+    allPaths: Array<Path>,
+    testPathPattern?: StrOrRegExpPattern,
+  ): DataInfo {
     const data = {
       paths: [],
       stats: {},
@@ -59,8 +104,9 @@ class SearchSource {
 
     const testCases = Object.assign({}, this._testPathCases);
     if (testPathPattern) {
+      const regex = new RegExp(testPathPattern);
       testCases.testPathPattern =
-        path => new RegExp(testPathPattern).test(path);
+        path => regex.test(path);
     }
 
     data.paths = allPaths.filter(path => {
@@ -77,7 +123,9 @@ class SearchSource {
     return data;
   }
 
-  _getAllTestPaths(testPathPattern) {
+  _getAllTestPaths(
+    testPathPattern: StrOrRegExpPattern
+  ): Promise<DataInfo> {
     return this._hasteMap.then(data => (
       this._filterTestPathsWithStats(
         Object.keys(data.moduleMap.files),
@@ -86,13 +134,15 @@ class SearchSource {
     ));
   }
 
-  isTestFilePath(path) {
+  isTestFilePath(path: Path): boolean {
     return Object.keys(this._testPathCases).every(key => (
       this._testPathCases[key](path)
     ));
   }
 
-  findMatchingTests(testPathPattern) {
+  findMatchingTests(
+    testPathPattern: StrOrRegExpPattern
+  ): Promise<DataInfo> {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
       if (Resolver.fileExists(maybeFile)) {
@@ -105,20 +155,20 @@ class SearchSource {
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(allPaths) {
-    return this._hasteMap.then(data => {
-      const paths = data.resolver.resolveInverseDependencies(
-        allPaths,
-        this.isTestFilePath.bind(this),
-        {
-          skipNodeResolution: this._options.skipNodeResolution,
-        }
-      );
-      return {paths};
-    });
+  findRelatedTests(allPaths: Set<Path>): Promise<{paths: Array<Path>}> {
+    return this._hasteMap
+      .then(data => ({
+        paths: data.resolver.resolveInverseDependencies(
+          allPaths,
+          this.isTestFilePath.bind(this),
+          {
+            skipNodeResolution: this._options.skipNodeResolution,
+          }
+        ),
+      }));
   }
 
-  findOnlyChangedTestPaths(testRunner, config) {
+  findOnlyChangedTestPaths(): Promise<{paths: Array<Path>}> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
@@ -139,7 +189,11 @@ class SearchSource {
       ));
   }
 
-  getNoTestsFoundMessage(patternInfo, config, data) {
+  getNoTestsFoundMessage(
+    patternInfo: PatternInfo,
+    config: {[key: string]: string},
+    data: DataInfo,
+  ): string {
     if (patternInfo.onlyChanged) {
       const guide = patternInfo.watch
         ? 'starting Jest with `jest --watch=all`'
@@ -175,7 +229,7 @@ class SearchSource {
     );
   }
 
-  getTestPaths(patternInfo) {
+  getTestPaths(patternInfo: PatternInfo): Promise<{paths: Array<Path>}> {
     if (patternInfo.onlyChanged) {
       return this.findOnlyChangedTestPaths();
     } else {
