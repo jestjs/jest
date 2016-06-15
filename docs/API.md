@@ -14,6 +14,7 @@ next: troubleshooting
   - [`jest.disableAutomock()`](#jest-disableautomock)
   - [`jest.enableAutomock()`](#jest-enableautomock)
   - [`jest.fn(?implementation)`](#jest-fn-implementation)
+  - [`jest.isMockFunction(fn)`](#jest-ismockfunction-implementation)
   - [`jest.genMockFromModule(moduleName)`](#jest-genmockfrommodule-modulename)
   - [`jest.mock(moduleName, ?factory)`](#jest-mock-modulename-factory)
   - [`jest.runAllTicks()`](#jest-runallticks)
@@ -154,6 +155,9 @@ implementation.
   const returnsTrue = jest.fn(() => true);
   console.log(returnsTrue()) // true;
 ```
+
+### `jest.isMockFunction(fn)`
+Determines if the given function is a mocked function.
 
 ### `jest.genMockFromModule(moduleName)`
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
