@@ -1,7 +1,8 @@
-bin/
-docs/
+**/coverage/**
 **/node_modules/**
 **/vendor/**
-website/
-**/coverage/**
+bin/
+docs/
 packages/*/build/**
+types/**
+website/

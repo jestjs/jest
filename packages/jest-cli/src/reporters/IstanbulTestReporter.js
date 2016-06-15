@@ -18,11 +18,15 @@ const reporter = new istanbul.Reporter();
 
 const FAIL_COLOR = chalk.bold.red;
 
-import type {Config} from '../../../../types/Config';
-import type {AggregatedResult, TestResult} from '../../../../types/TestResult';
+import type {Config} from 'types/Config';
+import type {AggregatedResult, TestResult} from 'types/TestResult';
 
 class IstanbulTestReporter extends DefaultTestReporter {
-  onTestResult(config: Config, testResult: TestResult, aggregatedResults: AggregatedResult) {
+  onTestResult(
+    config: Config,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
+  ) {
     super.onTestResult(config, testResult, aggregatedResults);
 
     if (config.collectCoverage && testResult.coverage) {

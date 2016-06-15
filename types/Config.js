@@ -28,8 +28,8 @@ export type Config = {
   coverageReporters: Array<string>,
   coverageThreshold: {
     global: {
-      [key: string]: number
-    }
+      [key: string]: number,
+    },
   },
   globals: ConfigGlobals,
   haste: HasteConfig,

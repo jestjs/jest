@@ -9,9 +9,9 @@
  */
 'use strict';
 
-import type {AggregatedResult, TestResult} from '../../../../types/TestResult';
-import type {Config} from '../../../../types/Config';
-import type {Process} from '../../../../interfaces/Process';
+import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {Config} from 'types/Config';
+import type {Process} from 'types/Process';
 
 const chalk = require('chalk');
 const formatFailureMessage = require('jest-util').formatFailureMessage;
@@ -62,8 +62,8 @@ class DefaultTestReporter {
     this._process = customProcess || process;
   }
 
-  log(str: string) {
-    this._process.stdout.write(str + '\n');
+  log(message: string) {
+    this._process.stdout.write(message + '\n');
   }
 
   onRunStart(config: Config, results: AggregatedResult) {
@@ -77,7 +77,7 @@ class DefaultTestReporter {
   onTestResult(
     config: Config,
     testResult: TestResult,
-    results: AggregatedResult
+    results: AggregatedResult,
   ) {
     this._clearWaitingOn();
 
@@ -146,7 +146,7 @@ class DefaultTestReporter {
       return true;
     }
 
-    const snapshots: SnapshotSummary = this._getSnapshotSummary(aggregatedResults);
+    const snapshots = this._getSnapshotSummary(aggregatedResults);
     const snapshotFailure = !!(!snapshots.didUpdate && (
       snapshots.unchecked ||
       snapshots.unmatched ||
@@ -186,7 +186,7 @@ class DefaultTestReporter {
     return snapshotFailure ? false : aggregatedResults.success;
   }
 
-  _getSnapshotSummary(aggregatedResults: AggregatedResult) {
+  _getSnapshotSummary(aggregatedResults: AggregatedResult): SnapshotSummary {
     let added = 0;
     let filesAdded = 0;
     let filesRemoved = aggregatedResults.snapshotFilesRemoved;

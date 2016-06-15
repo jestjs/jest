@@ -10,17 +10,19 @@
 'use strict';
 
 import type {
-  AggregatedResult,
   AssertionResult,
   Suite,
-  TestResult,
-} from '../../../../types/TestResult';
-import type {Process} from '../../../../interfaces/Process';
+} from 'types/TestResult';
+import type {Process} from 'types/Process';
 
 const chalk = require('chalk');
 
 class VerboseLogger {
   _process: Process;
+
+  constructor(customProcess?: ?Process) {
+    this._process = customProcess || process;
+  }
 
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
     const root: Suite = {
@@ -47,10 +49,6 @@ class VerboseLogger {
     });
 
     return root.suites;
-  };
-
-  constructor(customProcess: Process) {
-    this._process = customProcess || process;
   }
 
   logTestResults(testResults: Array<AssertionResult>) {
