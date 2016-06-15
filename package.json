@@ -24,6 +24,7 @@
     "test": "npm run typecheck && npm run lint && node ./scripts/build.js && node ./scripts/test.js",
     "typecheck": "flow check",
     "watch": "node ./scripts/watch.js",
-    "build": "node ./scripts/build.js"
+    "build": "node ./scripts/build.js",
+    "build_clear": "rm -rf ./packages/*/build"
   }
 }
