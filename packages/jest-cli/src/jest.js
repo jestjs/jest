@@ -82,7 +82,6 @@ function runJest(config, argv, pipe, onComplete) {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
   const hasteMap = buildHasteMap(config, {maxWorkers});
-
   const source = new SearchSource(hasteMap, config);
   return source.getTestPaths(patternInfo)
     .then(data => {

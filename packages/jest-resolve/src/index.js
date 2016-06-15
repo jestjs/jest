@@ -91,7 +91,7 @@ class Resolver {
     this._modulePathCache = Object.create(null);
   }
 
-  static createResolver(
+  static create(
     config: Config,
     moduleMap: MockedModuleContext,
   ): Resolver {

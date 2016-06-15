@@ -49,10 +49,7 @@
   },
   "jest": {
     "rootDir": "./build",
-    "testEnvironment": "jest-environment-node",
-    "globals": {
-      "CACHE_DIRECTORY": "<rootDir>/../../jest-runtime/.haste_cache"
-    }
+    "testEnvironment": "jest-environment-node"
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"

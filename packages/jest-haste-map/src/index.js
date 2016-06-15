@@ -158,7 +158,7 @@ class HasteMap {
 
   constructor(options: Options) {
     this._options = {
-      cacheDirectory: options.cacheDirectory || (os: any).tmpDir(),
+      cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,

@@ -12,12 +12,11 @@ module.exports = function createRuntime(filename, config) {
   const JSDOMEnvironment = require('jest-environment-jsdom');
   const Runtime = require('../');
 
-  const createHasteMap = require('../').create;
+  const createHasteMap = require('jest-haste-map').create;
   const createResolver = require('jest-resolve').create;
   const normalizeConfig = require('jest-config').normalize;
 
   config = normalizeConfig(Object.assign({
-    cacheDirectory: global.CACHE_DIRECTORY,
     name: 'Runtime-' + filename.replace(/\W/, '-') + '-tests',
     rootDir: path.resolve(path.dirname(filename), 'test_root'),
   }, config));

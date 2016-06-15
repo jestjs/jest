@@ -38,9 +38,14 @@ module.exports = function buildHasteMap(
     resetCache: !config.cache,
     maxWorkers: options.maxWorkers,
   });
-  return instance.build().then(moduleMap => ({
-    instance,
-    moduleMap,
-    resolver: createResolver(config, moduleMap),
-  }));
+  return instance.build().then(
+    moduleMap => ({
+      instance,
+      moduleMap,
+      resolver: createResolver(config, moduleMap),
+    }),
+    error => {
+      throw error;
+    }
+  );
 };

@@ -14,37 +14,53 @@ export type Path = string;
 export type HasteConfig = {
   providesModuleNodeModules: Array<string>,
   defaultPlatform?: ?string,
-  platforms: Array<string>,
+  platforms?: Array<string>,
 };
 
 export type ConfigGlobals = Object;
 
-export type Config = {
+type BaseConfig = {
   automock: boolean,
   bail: boolean,
-  cache: boolean,
   cacheDirectory: Path,
-  collectCoverageOnlyFrom: {[key: string]: Path},
-  colors: boolean,
   coverageCollector: Path,
   coverageReporters: Array<string>,
-  coverageThreshold: {
-    global: {
-      [key: string]: number,
-    },
-  },
   globals: ConfigGlobals,
   haste: HasteConfig,
   mocksPattern: string,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   moduleLoader: Path,
-  moduleNameMapper: Array<string>,
   modulePathIgnorePatterns: Array<string>,
-  modulePaths: Array<string>,
-  name: string,
   noHighlight: boolean,
   noStackTrace: boolean,
+  testEnvData: {},
+  testEnvironment: string,
+  testPathDirs: Array<Path>,
+  testPathIgnorePatterns: Array<string>,
+  testRegex: string,
+  testReporter: Path,
+  testURL: string,
+  useStderr: boolean,
+  verbose: boolean,
+};
+
+export type DefaultConfig = BaseConfig & {
+  moduleNameMapper: {},
+};
+
+export type Config = BaseConfig & {
+  cache: boolean,
+  collectCoverageOnlyFrom: {[key: string]: Path},
+  colors: boolean,
+  coverageThreshold: {
+    global: {
+      [key: string]: number,
+    },
+  },
+  moduleNameMapper: Array<string>,
+  modulePaths: Array<string>,
+  name: string,
   persistModuleRegistryBetweenSpecs: boolean,
   preprocessorIgnorePatterns: Array<string>,
   rootDir: Path,
@@ -52,17 +68,8 @@ export type Config = {
   setupTestFrameworkScriptFile: Path,
   setupFiles: Array<Path>,
   testcheckOptions: {},
-  testDirectoryName: string,
-  testEnvData: {},
-  testEnvironment: string,
   testFileExtensions: Array<string>,
-  testPathDirs: Array<Path>,
-  testPathIgnorePatterns: Array<string>,
-  testRegex: string,
-  testReporter: Path,
-  testURL: string,
+  testDirectoryName: string,
   updateSnapshot: {},
-  useStderr: boolean,
-  verbose: boolean,
   watchman: boolean,
 };

@@ -25,10 +25,7 @@
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
     ],
-    "testEnvironment": "jest-environment-node",
-    "globals": {
-      "CACHE_DIRECTORY": "<rootDir>/../.haste_cache"
-    }
+    "testEnvironment": "jest-environment-node"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
