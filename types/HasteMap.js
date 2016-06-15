@@ -18,16 +18,29 @@ export type HasteMap = {
 
 export type WatchmanClocks = {[filepath: string]: string};
 
-export type FileMetaData = {
-  id: ?string,
-  mtime: number,
-  visited: boolean,
-  dependencies: Array<string>,
-};
+export type FileMetaData = [
+  /* id */ string,
+  /* mtime */ number,
+  /* visited */ 0|1,
+  /* dependencies */ Array<string>,
+];
 
 export type ModuleMap = {[platform: string]: ModuleMetaData};
+export type ModuleMetaData = [
+  /* path */ string,
+  /* type */ string,
+];
 
-export type ModuleMetaData = {
-  path: string,
-  type: string,
+export type Options = {
+  cacheDirectory?: string;
+  extensions: Array<string>;
+  ignorePattern: RegExp,
+  maxWorkers: number;
+  mocksPattern?: string;
+  name: string;
+  platforms: Array<string>;
+  providesModuleNodeModules?: Array<string>;
+  resetCache?: boolean;
+  roots: Array<string>;
+  useWatchman?: boolean;
 };

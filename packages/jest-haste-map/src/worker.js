@@ -1,11 +1,18 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
+ * @flow
+ *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 'use strict';
+
+import type {
+  WorkerMessage,
+  WorkerCallback,
+} from './types';
 
 const H = require('./constants');
 
@@ -17,23 +24,29 @@ const path = require('./fastpath');
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 
-const formatError = error => {
+type ErrorType = {
+  stack: ?string,
+  message: string,
+  type: string,
+};
+
+const formatError = (error: string|Error): Error => {
   if (typeof error === 'string') {
-    return {
+    return (({
       stack: null,
       message: error,
       type: 'Error',
-    };
+    }: any): Error);
   }
 
-  return {
+  return (({
     stack: error.stack,
     message: error.message,
     type: error.type || 'Error',
-  };
+  }: any): Error);
 };
 
-module.exports = (data, callback) => {
+module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
   try {
     const filePath = data.filePath;
     const content = fs.readFileSync(filePath, 'utf-8');
