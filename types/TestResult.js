@@ -11,9 +11,10 @@
 
 export type Coverage = Object;
 
-type Error = {
+export type Error = {
   message: string,
-  stack: string,
+  stack: ?string,
+  type?: ?string,
 };
 
 export type FailedAssertion = {

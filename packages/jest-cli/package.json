@@ -49,9 +49,6 @@
   },
   "jest": {
     "rootDir": "./build",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ],
     "testEnvironment": "jest-environment-node",
     "globals": {
       "CACHE_DIRECTORY": "<rootDir>/../../jest-runtime/.haste_cache"

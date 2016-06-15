@@ -12,8 +12,8 @@ module.exports = function createRuntime(filename, config) {
   const JSDOMEnvironment = require('jest-environment-jsdom');
   const Runtime = require('../');
 
-  const createHasteMap = require('../lib/createHasteMap');
-  const createResolver = require('../lib/createResolver');
+  const createHasteMap = require('../').create;
+  const createResolver = require('jest-resolve').create;
   const normalizeConfig = require('jest-config').normalize;
 
   config = normalizeConfig(Object.assign({

@@ -264,7 +264,6 @@ describe('SearchSource', () => {
       '__tests__',
       'test_root'
     );
-    console.log(rootDir);
     const rootPath = path.join(rootDir, 'root.js');
 
     beforeEach(() => {

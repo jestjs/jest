@@ -9,7 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^1.1.1",
-    "graceful-fs": "^4.1.3",
     "istanbul": "^0.4.2",
     "jest-environment-jsdom": "^12.1.0",
     "jest-environment-node": "^12.1.0",
@@ -23,9 +22,6 @@
   },
   "jest": {
     "rootDir": "./build",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ],
     "testEnvironment": "jest-environment-node"
   },
   "scripts": {
