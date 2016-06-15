@@ -459,12 +459,13 @@ class Runtime {
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = this._getNormalizedModuleID(from);
     if (
-      from.includes(constants.NODE_MODULES) &&
-      modulePath.includes(constants.NODE_MODULES) &&
-      (
-        (this._unmockList && this._unmockList.test(from)) ||
-        explicitShouldMock[currentModuleID] === false ||
-        this._transitiveShouldMock[currentModuleID] === false
+      this._transitiveShouldMock[currentModuleID] === false || (
+        from.includes(constants.NODE_MODULES) &&
+        modulePath.includes(constants.NODE_MODULES) &&
+        (
+          (this._unmockList && this._unmockList.test(from)) ||
+          explicitShouldMock[currentModuleID] === false
+        )
       )
     ) {
       this._transitiveShouldMock[moduleID] = false;
@@ -497,6 +498,12 @@ class Runtime {
     const unmock = moduleName => {
       const moduleID = this._getNormalizedModuleID(from, moduleName);
       this._explicitShouldMock[moduleID] = false;
+      return runtime;
+    };
+    const deepUnmock = moduleName => {
+      const moduleID = this._getNormalizedModuleID(from, moduleName);
+      this._explicitShouldMock[moduleID] = false;
+      this._transitiveShouldMock[moduleID] = false;
       return runtime;
     };
     const mock = (moduleName, mockFactory, options) => {
@@ -584,6 +591,8 @@ class Runtime {
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
       setMock: (moduleName, mock) => setMockFactory(moduleName, () => mock),
+
+      deepUnmock,
 
       useFakeTimers,
       useRealTimers,

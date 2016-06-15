@@ -243,6 +243,52 @@ describe('Runtime', () => {
           expect(transitiveDep()).toEqual(undefined);
         })
       );
+
+      it('unmocks transitive dependencies when using deepUnmock', () =>
+        createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+          const root = runtime.requireModule(
+            runtime.__mockRootPath,
+            './root.js',
+          );
+          root.jest.enableAutomock();
+          root.jest.deepUnmock('FooContainer.react');
+          const FooRenderUtil = runtime.requireModule(
+            runtime.__mockRootPath,
+            'FooRenderUtil',
+          );
+          expect(FooRenderUtil.getBodyHeight()).toBe(undefined);
+
+          const FooContainer = runtime.requireModule(
+            runtime.__mockRootPath,
+            'FooContainer.react',
+          );
+          console.log(FooContainer);
+          console.log(FooContainer.isRealModule);
+          console.log(new FooContainer().render());
+
+          expect(new FooContainer().render().indexOf('5')).not.toBe(-1);
+
+          return;
+          expectUnmocked(runtime.requireModuleOrMock(
+            runtime.__mockRootPath,
+            'npm3-main-dep'
+          ));
+
+          // Test twice to make sure Runtime caching works properly
+          root.jest.resetModuleRegistry();
+          expectUnmocked(runtime.requireModuleOrMock(
+            runtime.__mockRootPath,
+            'npm3-main-dep')
+          );
+
+          // Directly requiring the transitive dependency will mock it
+          const transitiveDep = runtime.requireModuleOrMock(
+            runtime.__mockRootPath,
+            'npm3-transitive-dep'
+          );
+          expect(transitiveDep()).toEqual(undefined);
+        })
+      );
     });
   });
 });
