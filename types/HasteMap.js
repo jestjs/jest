@@ -31,3 +31,17 @@ export type ModuleMetaData = {
   path: string,
   type: string,
 };
+
+export type HType = {
+  ID: 0,
+  MTIME: 1,
+  VISITED: 2,
+  DEPENDENCIES: 3,
+  PATH: 0,
+  TYPE: 1,
+  MODULE: 0,
+  PACKAGE: 1,
+  GENERIC_PLATFORM: 'g',
+};
+
+export type HTypeValue = 0 | 1 | 2 | 3 | 'g';
