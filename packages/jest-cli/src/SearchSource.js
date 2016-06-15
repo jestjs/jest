@@ -10,8 +10,16 @@
 
 'use strict';
 
+import type {HasteResolverContext} from './types';
 import type {Path} from 'types/Config';
-import type {HasteResolverContext, ResolveModuleConfig} from 'jest-resolve';
+import type {ResolveModuleConfig} from '../../jest-resolve/src';
+
+const Resolver = require('jest-resolve');
+
+const chalk = require('chalk');
+const changedFiles = require('jest-changed-files');
+const path = require('path');
+const utils = require('jest-util');
 
 type SearchSourceConfig = {
   testPathDirs: Array<Path>,
@@ -33,13 +41,6 @@ type PatternInfo = {
   input: string,
   shouldTreatInputAsPattern: string,
 };
-
-const Resolver = require('jest-resolve');
-
-const chalk = require('chalk');
-const changedFiles = require('jest-changed-files');
-const path = require('path');
-const utils = require('jest-util');
 
 const git = changedFiles.git;
 const hg = changedFiles.hg;
@@ -154,17 +155,17 @@ class SearchSource {
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(allPaths: Iterable<Path>): Promise<{paths: Array<Path>}> {
-    return this._hasteMap.then(data => {
-      const paths = data.resolver.resolveInverseDependencies(
-        allPaths,
-        this.isTestFilePath.bind(this),
-        {
-          skipNodeResolution: this._options.skipNodeResolution,
-        }
-      );
-      return ({paths});
-    });
+  findRelatedTests(allPaths: Set<Path>): Promise<{paths: Array<Path>}> {
+    return this._hasteMap
+      .then(data => ({
+        paths: data.resolver.resolveInverseDependencies(
+          allPaths,
+          this.isTestFilePath.bind(this),
+          {
+            skipNodeResolution: this._options.skipNodeResolution,
+          }
+        ),
+      }));
   }
 
   findOnlyChangedTestPaths(): Promise<{paths: Array<Path>}> {
