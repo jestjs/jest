@@ -13,6 +13,7 @@ const createDirectory = require('jest-util').createDirectory;
 const fs = require('fs');
 const path = require('path');
 const prettyFormat = require('pretty-format');
+const jsxLikeExtension = require('pretty-format/plugins/ReactTestComponent');
 const SNAPSHOT_EXTENSION = 'snap';
 
 import type {Path} from 'types/Config';
@@ -86,7 +87,9 @@ class SnapshotFile {
   }
 
   serialize(data: any): string {
-    return prettyFormat(data);
+    return prettyFormat(data, {
+      plugins: [jsxLikeExtension],
+    });
   }
 
   save(update: boolean): SaveStatus {
