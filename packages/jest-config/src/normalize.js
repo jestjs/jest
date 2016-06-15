@@ -11,7 +11,7 @@
 const DEFAULT_CONFIG_VALUES = require('./defaults');
 const Resolver = require('jest-resolve');
 
-const constants = require('../constants');
+const constants = require('./constants');
 const path = require('path');
 const utils = require('jest-util');
 

@@ -22,7 +22,7 @@ const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
-const readConfig = require('./config/read');
+const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
 
@@ -82,7 +82,6 @@ function runJest(config, argv, pipe, onComplete) {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
   const hasteMap = buildHasteMap(config, {maxWorkers});
-
   const source = new SearchSource(hasteMap, config);
   return source.getTestPaths(patternInfo)
     .then(data => {

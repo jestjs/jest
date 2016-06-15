@@ -15,8 +15,8 @@ import type {HasteMap as HasteMapObject} from 'types/HasteMap';
 import type HasteMap from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
 
-const createHasteMap = require('./createHasteMap');
-const createResolver = require('./createResolver');
+const createHasteMap = require('jest-haste-map').create;
+const createResolver = require('jest-resolve').create;
 const utils = require('jest-util');
 
 type HasteResolverContext = {
@@ -38,9 +38,14 @@ module.exports = function buildHasteMap(
     resetCache: !config.cache,
     maxWorkers: options.maxWorkers,
   });
-  return instance.build().then(moduleMap => ({
-    instance,
-    moduleMap,
-    resolver: createResolver(config, moduleMap),
-  }));
+  return instance.build().then(
+    moduleMap => ({
+      instance,
+      moduleMap,
+      resolver: createResolver(config, moduleMap),
+    }),
+    error => {
+      throw error;
+    }
+  );
 };

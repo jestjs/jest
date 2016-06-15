@@ -229,6 +229,50 @@ Example Output:
   ]
 }
 ```
+
+#### Remote debugging with Web Inspector
+
+Web Inspector can be used to debug both the application code and the testing
+code. To set this up, first verify that you have both `node-inspector` and
+`node-debug` installed.
+
+```
+which node-inspector
+which node-debug
+```
+
+Install packages that you are missing.
+
+```
+npm install -g node-inspector node-debug
+```
+
+Run `node-debug` with the Jest binary as the target.
+
+```
+node-debug node_modules/jest-cli/bin/jest.js -i
+```
+
+You should see that Node Inspector has been started in the prompt.
+
+```
+Node Inspector
+Visit http://127.0.0.1:8080/?port=5858 to start debugging.
+Debugging `node_modules/jest-cli/bin/jest.js`
+
+Debugger listening on port 5858
+```
+
+A new Chrome window should open and subsequently open a page to localhost on
+port 5858. If this does not happen, you can go to the debugging URL directly
+in a Chrome browser tab. The program should stop in the `jest.js` file in
+the first line of code. Press the play button in the inspector window to
+continue execution.
+
+To stop the code at an arbitrary point, set a `debugger` expression in the
+code where you would like the program to stop. Stop (`ctrl-c`) and restart
+`node-debug` in the command line to catch at the debugger expression you
+just added.
 <generated_getting_started_end />
 
 ## API
@@ -653,13 +697,11 @@ mock modules using `jest.mock(moduleName)`.
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
 ### `cacheDirectory` [string]
-(default: 'jest-cli/.haste_cache')
+(default: '/tmp/<path>')
 
 The directory where Jest should store its cached dependency information.
 
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
-
-By default, it will be stored in a .haste_cache directory that sits in the jest-cli directory. This intentionally doesn't default to somewhere in your repo to spare the common case from having to add this to your .gitignore/.hgignore/etc.
 
 ### `coverageDirectory` [string]
 (default: `undefined`)

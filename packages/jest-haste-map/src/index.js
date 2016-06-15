@@ -11,6 +11,7 @@
 'use strict';
 
 import type {HasteMap as HasteMapStruct, Options} from 'types/HasteMap';
+import type {Config} from 'types/Config';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
 import typeof FastpathType from './fastpath';
@@ -30,8 +31,27 @@ const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
 
+type InternalOptions = {
+  cacheDirectory: string;
+  extensions: Array<string>;
+  ignorePattern: RegExp;
+  maxWorkers: number;
+  mocksPattern: ?RegExp;
+  name: string;
+  platforms: Array<string>;
+  resetCache: ?boolean;
+  roots: Array<string>;
+  useWatchman: boolean;
+};
+
+type HasteMapOptions = {
+  maxWorkers: number,
+  resetCache: boolean,
+}
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
+const SNAPSHOT_EXTENSION = 'snap';
 
 const canUseWatchman = ((): boolean => {
   try {
@@ -128,20 +148,6 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-
-type InternalOptions = {
-  cacheDirectory: string;
-  extensions: Array<string>;
-  ignorePattern: RegExp;
-  maxWorkers: number;
-  mocksPattern: ?RegExp;
-  name: string;
-  platforms: Array<string>;
-  resetCache: ?boolean;
-  roots: Array<string>;
-  useWatchman: boolean;
-};
-
 class HasteMap {
   _options: InternalOptions;
   _cachePath: Path;
@@ -152,7 +158,7 @@ class HasteMap {
 
   constructor(options: Options) {
     this._options = {
-      cacheDirectory: options.cacheDirectory || (os: any).tmpDir(),
+      cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
@@ -179,6 +185,29 @@ class HasteMap {
     this._buildPromise = null;
     this._workerPromise = null;
     this._workerFarm = null;
+  }
+
+  static create(
+    config: Config,
+    options?: HasteMapOptions,
+  ): HasteMap {
+    const ignorePattern = new RegExp(
+      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
+    );
+
+    return new HasteMap({
+      cacheDirectory: config.cacheDirectory,
+      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      ignorePattern,
+      maxWorkers: (options && options.maxWorkers) || 1,
+      mocksPattern: config.mocksPattern,
+      name: config.name,
+      platforms: config.haste.platforms || ['ios', 'android'],
+      providesModuleNodeModules: config.haste.providesModuleNodeModules,
+      resetCache: options && options.resetCache,
+      roots: config.testPathDirs,
+      useWatchman: config.watchman,
+    });
   }
 
   static getCacheFilePath(tmpdir: Path, name: string): string {

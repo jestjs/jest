@@ -20,4 +20,4 @@ export type WorkerMetadata = {
   module: ?[string, number],
   dependencies: ?Array<string>,
 };
-export type WorkerCallback = (err: ?Error, metaData: ?WorkerMetadata) => void;
+export type WorkerCallback = (error: ?Error, metaData: ?WorkerMetadata) => void;

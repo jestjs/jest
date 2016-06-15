@@ -24,7 +24,7 @@ project.
 The preprocessor script was changed or babel was updated and the changes aren't
 being recognized by Jest?
 
-Retry with `--no-cache` or `rm -rf node_modules/jest-cli/.haste_cache`.
+Retry with `--no-cache`.
 
 Explanation: Jest caches transformed module files to speed up test execution.
 If you are using your own custom preprocessor, consider adding a `getCacheKey`

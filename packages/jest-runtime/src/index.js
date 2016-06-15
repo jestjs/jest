@@ -13,6 +13,11 @@
 import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 
+const fs = require('graceful-fs');
+const moduleMocker = require('jest-mock');
+const path = require('path');
+const transform = require('./lib/transform');
+
 type Module = {
   exports: Object,
   filename: string,
@@ -22,11 +27,7 @@ type Module = {
   require?: Function,
 };
 
-const constants = require('../constants');
-const fs = require('graceful-fs');
-const moduleMocker = require('jest-mock');
-const path = require('path');
-const transform = require('../lib/transform');
+const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 
 const mockParentModule = {
   id: 'mockParent',
@@ -98,7 +99,7 @@ class Runtime {
     }
 
     const unmockPath = filePath => {
-      if (filePath && filePath.includes(constants.NODE_MODULES)) {
+      if (filePath && filePath.includes(NODE_MODULES)) {
         const moduleID = this._getNormalizedModuleID(filePath);
         this._transitiveShouldMock[moduleID] = false;
       }
@@ -278,7 +279,7 @@ class Runtime {
     let collectorStore;
     if (
       shouldCollectCoverage &&
-      !filename.includes(constants.NODE_MODULES) &&
+      !filename.includes(NODE_MODULES) &&
       !(this._mocksPattern && this._mocksPattern.test(filename)) &&
       !this._testRegex.test(filename)
     ) {
@@ -503,8 +504,8 @@ class Runtime {
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = this._getNormalizedModuleID(from);
     if (
-      from.includes(constants.NODE_MODULES) &&
-      modulePath.includes(constants.NODE_MODULES) &&
+      from.includes(NODE_MODULES) &&
+      modulePath.includes(NODE_MODULES) &&
       (
         (this._unmockList && this._unmockList.test(from)) ||
         explicitShouldMock[currentModuleID] === false ||
