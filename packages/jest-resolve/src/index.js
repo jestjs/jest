@@ -33,6 +33,7 @@ type ResolverConfig = {
   moduleNameMapper: ?{[key: string]: RegExp},
   modulePaths: Array<Path>,
   platforms?: Array<string>,
+  browser: boolean,
 };
 
 type FindNodeModuleConfig = {
@@ -40,6 +41,7 @@ type FindNodeModuleConfig = {
   extensions: Array<string>,
   paths?: Array<Path>,
   moduleDirectory: Array<string>,
+  browser: boolean,
 };
 
 export type ResolveModuleConfig = {skipNodeResolution?: boolean};
@@ -87,6 +89,7 @@ class Resolver {
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
+      browser: options.browser,
     };
 
     this._supportsNativePlatform =
@@ -108,13 +111,15 @@ class Resolver {
       moduleNameMapper: getModuleNameMapper(config),
       modulePaths: config.modulePaths,
       platforms: config.haste.platforms,
+      browser: config.browser,
     });
   }
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const paths = options.paths;
     try {
-      return browserResolve.sync(
+      const resv = options.browser ? browserResolve : resolve;
+      return resv.sync(
         path,
         {
           basedir: options.basedir,
@@ -165,6 +170,7 @@ class Resolver {
         extensions,
         moduleDirectory,
         paths,
+        browser: this._options.browser,
       });
 
       if (module) {

@@ -52,13 +52,17 @@ function _replaceRootDirTags(rootDir, config) {
 
 function getTestEnvironment(config) {
   const env = config.testEnvironment;
-  let module = Resolver.findNodeModule(env, {basedir: config.rootDir});
+  let module = Resolver.findNodeModule(env, {
+    basedir: config.rootDir,
+    browser: config.browser,
+  });
   if (module) {
     return module;
   }
 
   module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
+    browser: config.browser,
   });
   if (module) {
     return module;
@@ -163,6 +167,7 @@ function normalize(config, argv) {
   } else {
     babelJest = Resolver.findNodeModule('babel-jest', {
       basedir: config.rootDir,
+      browser: config.browser,
     });
     if (babelJest) {
       config.scriptPreprocessor = babelJest;
@@ -171,7 +176,10 @@ function normalize(config, argv) {
 
   if (babelJest) {
     const polyfillPath =
-      Resolver.findNodeModule('babel-polyfill', {basedir: config.rootDir});
+      Resolver.findNodeModule('babel-polyfill', {
+        basedir: config.rootDir,
+        browser: config.browser,
+      });
     if (polyfillPath) {
       config.setupFiles.unshift(polyfillPath);
     }
@@ -180,7 +188,10 @@ function normalize(config, argv) {
 
   if (!('preprocessorIgnorePatterns' in config)) {
     const isRNProject =
-      !!Resolver.findNodeModule('react-native', {basedir: config.rootDir});
+      !!Resolver.findNodeModule('react-native', {
+        basedir: config.rootDir,
+        browser: config.browser,
+      });
     config.preprocessorIgnorePatterns =
       isRNProject ? [] : [constants.NODE_MODULES];
   } else if (!config.preprocessorIgnorePatterns) {
@@ -246,6 +257,7 @@ function normalize(config, argv) {
         break;
       case 'automock':
       case 'bail':
+      case 'browser':
       case 'cache':
       case 'collectCoverage':
       case 'colors':

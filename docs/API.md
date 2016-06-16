@@ -50,6 +50,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 #### [Configuration Options](#configuration)
 
   - [`automock` [boolean]](#automock-boolean)
+  - [`browser` [boolean]](#browser-boolean)
   - [`bail` [boolean]](#bail-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
@@ -424,6 +425,11 @@ By default, Jest mocks every module automatically. If you are building a small
 JavaScript library and would like to use Jest, you may not want to use
 automocking. You can disable this option and create manual mocks or explicitly
 mock modules using `jest.mock(moduleName)`.
+
+### `browser` [boolean]
+(default: false)
+
+Respect the Browserify's [`"browser"`](https://github.com/substack/browserify-handbook#browser-field) field in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `bail` [boolean]
 (default: false)
