@@ -63,6 +63,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`moduleNameMapper` [object<string, string>]](#modulenamemapper-object-string-string)
   - [`modulePaths` [array<string>]](#modulepaths-array-string)
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
+  - [`notify` [boolean]](#notify-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
   - [`rootDir` [string]](#rootdir-string)
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
@@ -543,6 +544,11 @@ Example:
     "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
 ```
+
+### `notify` [boolean]
+(default: `false`)
+
+Activates notifications for test results.
 
 ### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)

@@ -165,6 +165,12 @@ const options = {
     ),
     type: 'boolean',
   },
+  notify: {
+    description: wrap(
+      'Activates notifications for test results.'
+    ),
+    type: 'boolean',
+  },
   watch: {
     description: wrap(
       'Watch files for changes and rerun tests related to changed files. ' +

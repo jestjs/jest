@@ -34,6 +34,7 @@ type BaseConfig = {
   modulePathIgnorePatterns: Array<string>,
   noHighlight: boolean,
   noStackTrace: boolean,
+  notify: boolean,
   testEnvData: {},
   testEnvironment: string,
   testPathDirs: Array<Path>,

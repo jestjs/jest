@@ -18,7 +18,8 @@
     "jest-resolve": "^12.1.0",
     "jest-runtime": "^12.1.0",
     "jest-util": "^12.1.0",
-    "json-stable-stringify": "^1.0.0"
+    "json-stable-stringify": "^1.0.0",
+    "node-notifier": "^4.6.0"
   },
   "jest": {
     "rootDir": "./build",

@@ -35,6 +35,7 @@ module.exports = ({
   modulePathIgnorePatterns: [],
   noHighlight: false,
   noStackTrace: false,
+  notify: false,
   testEnvData: {},
   testEnvironment: 'jest-environment-jsdom',
   testPathDirs: ['<rootDir>'],

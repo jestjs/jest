@@ -82,6 +82,7 @@ runCommands('node bin/jest.js --runInBand', 'packages/jest-cli');
 runCommands('node bin/jest.js --runInBand --logHeapUsage', 'packages/jest-cli');
 runCommands('node bin/jest.js --json', 'packages/jest-cli');
 runCommands('node bin/jest.js --verbose', 'packages/jest-cli');
+runCommands('node bin/jest.js --notify', 'packages/jest-cli');
 
 examples.forEach(runExampleTests);
 

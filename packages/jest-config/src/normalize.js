@@ -263,6 +263,7 @@ function normalize(config, argv) {
       case 'name':
       case 'noHighlight':
       case 'noStackTrace':
+      case 'notify':
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
       case 'updateSnapshot':
