@@ -21,12 +21,12 @@ const ICON = '/assets/jest_logo.png';
 const NOTIFICATIONS = {
   success: {
     title: '%d%% Passed',
-    message: (isDarwin ? '✅ ' : '') + '%d tests passed',
+    message: (isDarwin ? '\u2705 ' : '') + '%d tests passed',
     icon: ICON,
   },
   failure: {
     title: '%d%% Failed',
-    message: (isDarwin ? '⛔️ ' : '') + '%d of %d tests failed',
+    message: (isDarwin ? '\u26D4\uFE0F ' : '') + '%d of %d tests failed',
     icon: ICON,
   },
 };
@@ -45,11 +45,11 @@ class Notifier {
     let message;
 
     if (result.success) {
-      info = NOTIFICATIONS['success'];
+      info = NOTIFICATIONS.success;
       title = util.format(info.title, 100);
       message = util.format(info.message, result.numPassedTests);
     } else {
-      info = NOTIFICATIONS['failure'];
+      info = NOTIFICATIONS.failure;
       title = util.format(info.title, Math.ceil(
         (result.numFailedTests / result.numTotalTests) * 100,
       ));
