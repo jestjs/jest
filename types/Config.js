@@ -70,6 +70,6 @@ export type Config = BaseConfig & {
   testcheckOptions: {},
   testFileExtensions: Array<string>,
   testDirectoryName: string,
-  updateSnapshot: {},
+  updateSnapshot: boolean,
   watchman: boolean,
 };

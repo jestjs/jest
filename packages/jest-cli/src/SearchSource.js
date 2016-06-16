@@ -27,19 +27,20 @@ type SearchSourceConfig = {
   testPathIgnorePatterns: Array<RegExp>,
 };
 
-type DataInfo = {
+type SearchResult = {
   paths: Array<Path>,
-  stats: {[key: string]: number},
-  total: number,
+  stats?: {[key: string]: number},
+  total?: number,
 };
 
 type StrOrRegExpPattern = RegExp | string;
 
 type PatternInfo = {
-  onlyChanged: boolean,
-  testPathPattern: string,
-  input: string,
-  shouldTreatInputAsPattern: string,
+  onlyChanged?: boolean,
+  watch?: boolean,
+  testPathPattern?: string,
+  input?: string,
+  shouldTreatInputAsPattern?: boolean,
 };
 
 const git = changedFiles.git;
@@ -95,7 +96,7 @@ class SearchSource {
   _filterTestPathsWithStats(
     allPaths: Array<Path>,
     testPathPattern?: StrOrRegExpPattern,
-  ): DataInfo {
+  ): SearchResult {
     const data = {
       paths: [],
       stats: {},
@@ -125,7 +126,7 @@ class SearchSource {
 
   _getAllTestPaths(
     testPathPattern: StrOrRegExpPattern
-  ): Promise<DataInfo> {
+  ): Promise<SearchResult> {
     return this._hasteMap.then(data => (
       this._filterTestPathsWithStats(
         Object.keys(data.moduleMap.files),
@@ -142,7 +143,7 @@ class SearchSource {
 
   findMatchingTests(
     testPathPattern: StrOrRegExpPattern
-  ): Promise<DataInfo> {
+  ): Promise<SearchResult> {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
       if (Resolver.fileExists(maybeFile)) {
@@ -155,7 +156,7 @@ class SearchSource {
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(allPaths: Set<Path>): Promise<{paths: Array<Path>}> {
+  findRelatedTests(allPaths: Set<Path>): Promise<SearchResult> {
     return this._hasteMap
       .then(data => ({
         paths: data.resolver.resolveInverseDependencies(
@@ -168,7 +169,7 @@ class SearchSource {
       }));
   }
 
-  findOnlyChangedTestPaths(): Promise<{paths: Array<Path>}> {
+  findOnlyChangedTestPaths(): Promise<SearchResult> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
@@ -192,32 +193,31 @@ class SearchSource {
   getNoTestsFoundMessage(
     patternInfo: PatternInfo,
     config: {[key: string]: string},
-    data: DataInfo,
+    data: SearchResult,
   ): string {
     if (patternInfo.onlyChanged) {
       const guide = patternInfo.watch
         ? 'starting Jest with `jest --watch=all`'
         : 'running Jest without `-o`';
       return 'No tests found related to changed and uncommitted files.\n' +
-      'Note: If you are using dynamic `require`-calls or no tests related ' +
-      'to your changed files can be found, consider ' + guide + '.';
+        'Note: If you are using dynamic `require`-calls or no tests related ' +
+        'to your changed files can be found, consider ' + guide + '.';
     }
 
     const pattern = patternInfo.testPathPattern;
     const input = patternInfo.input;
-    const shouldTreatInputAsPattern = patternInfo.shouldTreatInputAsPattern;
-
     const formattedPattern = `/${pattern}/`;
-    const formattedInput = shouldTreatInputAsPattern
+    const formattedInput = patternInfo.shouldTreatInputAsPattern
       ? `/${input}/`
       : `"${input}"`;
     const testPathPattern =
       (input === pattern) ? formattedInput : formattedPattern;
 
-    const statsMessage = Object.keys(data.stats).map(key => {
+    const stats = data.stats || {};
+    const statsMessage = Object.keys(stats).map(key => {
       const value = key === 'testPathPattern' ? testPathPattern : config[key];
       if (value) {
-        const matches = pluralize('match', data.stats[key], 'es');
+        const matches = pluralize('match', stats[key], 'es');
         return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
       }
       return null;
@@ -229,11 +229,13 @@ class SearchSource {
     );
   }
 
-  getTestPaths(patternInfo: PatternInfo): Promise<{paths: Array<Path>}> {
+  getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
       return this.findOnlyChangedTestPaths();
-    } else {
+    } else if (patternInfo.testPathPattern != null) {
       return this.findMatchingTests(patternInfo.testPathPattern);
+    } else {
+      return Promise.resolve({paths: []});
     }
   }
 
