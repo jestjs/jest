@@ -117,7 +117,7 @@ like
  ```
 
 The
-[React](https://github.com/facebook/react/tree/master/src/renderers/shared/reconciler/__tests__),
+[React](https://github.com/facebook/react/tree/master/src/renderers/shared/stack/reconciler/__tests__),
 [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and
 [react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
 repositories have excellent examples of tests written by Facebook engineers.
@@ -285,6 +285,7 @@ just added.
   - [`jest.disableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-disableautomock)
   - [`jest.enableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-enableautomock)
   - [`jest.fn(?implementation)`](https://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
+  - [`jest.isMockFunction(fn)`](https://facebook.github.io/jest/docs/api.html#jest-ismockfunction-implementation)
   - [`jest.genMockFromModule(moduleName)`](https://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
   - [`jest.mock(moduleName, ?factory)`](https://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory)
   - [`jest.runAllTicks()`](https://facebook.github.io/jest/docs/api.html#jest-runallticks)
@@ -425,6 +426,9 @@ implementation.
   const returnsTrue = jest.fn(() => true);
   console.log(returnsTrue()) // true;
 ```
+
+### `jest.isMockFunction(fn)`
+Determines if the given function is a mocked function.
 
 ### `jest.genMockFromModule(moduleName)`
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.

@@ -112,7 +112,7 @@ like
  ```
 
 The
-[React](https://github.com/facebook/react/tree/master/src/renderers/shared/reconciler/__tests__),
+[React](https://github.com/facebook/react/tree/master/src/renderers/shared/stack/reconciler/__tests__),
 [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and
 [react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
 repositories have excellent examples of tests written by Facebook engineers.
