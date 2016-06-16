@@ -24,8 +24,8 @@ function setFromArgv(config, argv) {
     config.verbose = argv.verbose;
   }
 
-  if (argv.growl) {
-    config.growl = argv.growl;
+  if (argv.notify) {
+    config.notify = argv.notify;
   }
 
   if (argv.bail) {

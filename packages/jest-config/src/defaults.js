@@ -24,7 +24,6 @@ module.exports = ({
   coverageCollector: require.resolve('./IstanbulCollector'),
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
-  growl: false,
   haste: {
     providesModuleNodeModules: [],
   },
@@ -36,6 +35,7 @@ module.exports = ({
   modulePathIgnorePatterns: [],
   noHighlight: false,
   noStackTrace: false,
+  notify: false,
   testEnvData: {},
   testEnvironment: 'jest-environment-jsdom',
   testPathDirs: ['<rootDir>'],

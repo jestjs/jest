@@ -9,7 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^1.1.1",
-    "growl": "^1.9.2",
     "istanbul": "^0.4.2",
     "jest-environment-jsdom": "^12.1.0",
     "jest-environment-node": "^12.1.0",
@@ -19,7 +18,8 @@
     "jest-resolve": "^12.1.0",
     "jest-runtime": "^12.1.0",
     "jest-util": "^12.1.0",
-    "json-stable-stringify": "^1.0.0"
+    "json-stable-stringify": "^1.0.0",
+    "node-notifier": "^4.6.0"
   },
   "jest": {
     "rootDir": "./build",

@@ -253,7 +253,6 @@ function normalize(config, argv) {
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'globals':
-      case 'growl':
       case 'haste':
       case 'logHeapUsage':
       case 'mocksPattern':
@@ -264,6 +263,7 @@ function normalize(config, argv) {
       case 'name':
       case 'noHighlight':
       case 'noStackTrace':
+      case 'notify':
       case 'persistModuleRegistryBetweenSpecs':
       case 'rootDir':
       case 'updateSnapshot':

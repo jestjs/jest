@@ -56,13 +56,13 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
-  - [`growl` [boolean]](#growl-boolean)
   - [`mocksPattern` [string]](#mockspattern-string)
   - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
   - [`moduleNameMapper` [object<string, string>]](#modulenamemapper-object-string-string)
   - [`modulePaths` [array<string>]](#modulepaths-array-string)
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
+  - [`notify` [boolean]](#notify-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
   - [`rootDir` [string]](#rootdir-string)
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
@@ -491,11 +491,6 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
-### `growl` [boolean]
-(default: `false`)
-
-Activates Growl notifications for test results.
-
 ### `mocksPattern` [string]
 (default: `(?:[\\/]|^)__mocks__[\\/]`)
 
@@ -545,6 +540,11 @@ Example:
     "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
 ```
+
+### `notify` [boolean]
+(default: `false`)
+
+Activates notifications for test results.
 
 ### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)

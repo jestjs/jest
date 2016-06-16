@@ -15,7 +15,7 @@ import type {Process} from 'types/Process';
 
 const chalk = require('chalk');
 const formatFailureMessage = require('jest-util').formatFailureMessage;
-const Growler = require('../Growler');
+const Notifier = require('../Notifier');
 const path = require('path');
 const VerboseLogger = require('./VerboseLogger');
 
@@ -185,8 +185,8 @@ class DefaultTestReporter {
     this._printSummary(aggregatedResults);
     this.log(results);
 
-    if (config.growl) {
-      Growler.onTestResults(aggregatedResults);
+    if (config.notify) {
+      Notifier.onTestResults(aggregatedResults);
     }
 
     return snapshotFailure ? false : aggregatedResults.success;
