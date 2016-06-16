@@ -61,17 +61,15 @@ const formatResult = (
 function formatTestResults(
   results: AggregatedTestResults,
   config: Config,
-  codeCoverageFormatter: CodeCoverageFormatter,
-  reporter: CodeCoverageReporter,
+  codeCoverageFormatter?: CodeCoverageFormatter,
+  reporter?: CodeCoverageReporter,
 ): Object {
-  if (!codeCoverageFormatter) {
-    codeCoverageFormatter = coverage => coverage;
-  }
+  const formatter = codeCoverageFormatter || (coverage => coverage);
 
   const testResults = results.testResults.map(testResult => formatResult(
     testResult,
     config,
-    codeCoverageFormatter,
+    formatter,
     reporter
   ));
 

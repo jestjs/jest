@@ -4,8 +4,12 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Path} from 'types/Config';
 
 require('jest-haste-map').fastpath.replace();
 
@@ -97,6 +101,7 @@ function runJest(config, argv, pipe, onComplete) {
     )
     .then(runResults => {
       if (config.testResultsProcessor) {
+        /* $FlowFixMe */
         const processor = require(config.testResultsProcessor);
         processor(runResults);
       }
@@ -123,7 +128,7 @@ function runJest(config, argv, pipe, onComplete) {
     });
 }
 
-function runCLI(argv, root, onComplete) {
+function runCLI(argv: Object, root: Path, onComplete: () => void) {
   const pipe = argv.json ? process.stderr : process.stdout;
 
   argv = argv || {};
@@ -140,6 +145,7 @@ function runCLI(argv, root, onComplete) {
         chalk.enabled = false;
       }
 
+      /* $FlowFixMe */
       const testFramework = require(config.testRunner);
       const info = [`v${constants.VERSION}`, testFramework.name];
       if (config.usesBabelJest) {

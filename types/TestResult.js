@@ -104,5 +104,5 @@ export type CodeCoverageReporter = any;
 
 export type CodeCoverageFormatter = (
   coverage: ?CodeCoverageResult,
-  reporter: CodeCoverageReporter,
+  reporter?: CodeCoverageReporter,
 ) => ?Object;

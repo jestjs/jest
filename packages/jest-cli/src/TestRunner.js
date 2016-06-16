@@ -7,8 +7,10 @@
  *
  * @flow
  */
-
 'use strict';
+
+import type {Config, Path} from 'types/Config';
+import type {HasteResolverContext} from './types';
 
 const Test = require('./Test');
 
@@ -18,21 +20,12 @@ const promisify = require('./lib/promisify');
 const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
-import type HasteMap from 'jest-haste-map';
-
 type AggregatedResults = {
   didUpdate?: boolean,
   snapshotFilesRemoved?: Array<string>,
   startTime: null | number,
   success: null | boolean,
   testResults: Array<TestResult>,
-};
-
-type Config = {
-  cacheDirectory: string,
-  name: string,
-  testReporter: string,
-  updateSnapshot: boolean,
 };
 
 type Options = {
@@ -74,13 +67,13 @@ const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
 
-  _hasteMap: Promise<HasteMap>;
+  _hasteMap: Promise<HasteResolverContext>;
   _config: Config;
   _options: Options;
   _testPerformanceCache: Object | null;
 
   constructor(
-    hasteMap: Promise<HasteMap>,
+    hasteMap: Promise<HasteResolverContext>,
     config: Config,
     options: Options
   ) {
@@ -242,9 +235,9 @@ class TestRunner {
   }
 
   _createTestRun(
-    testPaths: Array<string>,
+    testPaths: Array<Path>,
     onTestResult: OnTestResult,
-    onRunFailure: (path: string, err: mixed) => void,
+    onRunFailure: (path: Path, err: mixed) => void,
   ) {
     if (this._options.maxWorkers <= 1 || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
@@ -254,7 +247,7 @@ class TestRunner {
   }
 
   _createInBandTestRun(
-    testPaths: Array<string>,
+    testPaths: Array<Path>,
     onTestResult: OnTestResult,
     onRunFailure: OnRunFailure
   ) {
@@ -269,7 +262,7 @@ class TestRunner {
   }
 
   _createParallelTestRun(
-    testPaths: Array<string>,
+    testPaths: Array<Path>,
     onTestResult: OnTestResult,
     onRunFailure: OnRunFailure,
   ) {
