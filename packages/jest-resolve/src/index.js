@@ -23,6 +23,7 @@ const fs = require('fs');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
+const browserResolve = require('browser-resolve');
 
 type ResolverConfig = {
   defaultPlatform: ?string,
@@ -113,7 +114,7 @@ class Resolver {
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const paths = options.paths;
     try {
-      return resolve.sync(
+      return browserResolve.sync(
         path,
         {
           basedir: options.basedir,
