@@ -10,11 +10,6 @@
 
 'use strict';
 
-const FakeTimers = require('./FakeTimers');
-const JasmineFormatter = require('./JasmineFormatter');
-
-const formatFailureMessage = require('./formatFailureMessage');
-const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
@@ -38,10 +33,12 @@ const createDirectory = (path: string) => {
   }
 };
 
+exports.Console = require('./Console');
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
-exports.FakeTimers = FakeTimers;
-exports.formatFailureMessage = formatFailureMessage;
-exports.JasmineFormatter = JasmineFormatter;
-exports.installCommonGlobals = installCommonGlobals;
+exports.FakeTimers = require('./FakeTimers');
+exports.formatFailureMessage = require('./formatFailureMessage');
+exports.installCommonGlobals = require('./installCommonGlobals');
+exports.JasmineFormatter = require('./JasmineFormatter');
+exports.NullConsole = require('./NullConsole');
 exports.replacePathSepForRegex = replacePathSepForRegex;

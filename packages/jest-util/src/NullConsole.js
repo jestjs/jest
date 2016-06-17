@@ -10,7 +10,7 @@
 
 'use strict';
 
-const Console = console.Console;
+const Console = require('console').Console;
 
 class NullConsole extends Console {
   assert() {}

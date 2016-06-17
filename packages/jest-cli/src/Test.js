@@ -12,8 +12,8 @@
 import type {Path, Config} from 'types/Config';
 import type Resolver from '../../jest-resolve/src';
 
-const Console = require('./Console');
-const NullConsole = require('./NullConsole');
+const Console = require('jest-util').Console;
+const NullConsole = require('jest-util').NullConsole;
 
 class Test {
 
