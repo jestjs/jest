@@ -36,7 +36,7 @@ class Test {
     /* $FlowFixMe */
     const TestRunner = require(config.testRunner);
     /* $FlowFixMe */
-    const ModuleLoader = require(config.moduleLoader);
+    const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
 
     const env = new TestEnvironment(config);
     const TestConsole = config.silent ? NullConsole : Console;

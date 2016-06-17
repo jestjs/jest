@@ -13,13 +13,14 @@
 import type {DefaultConfig} from 'types/Config';
 
 const constants = require('./constants');
+const os = require('os');
 const path = require('path');
 const utils = require('jest-util');
 
 module.exports = ({
   automock: true,
   bail: false,
-  cacheDirectory: path.resolve(__dirname, '../../jest-runtime', '.haste_cache'),
+  cacheDirectory: os.tmpdir(),
   colors: false,
   coverageCollector: require.resolve('./IstanbulCollector'),
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
@@ -30,7 +31,6 @@ module.exports = ({
   mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'node'],
-  moduleLoader: require.resolve('jest-runtime'),
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noHighlight: false,
