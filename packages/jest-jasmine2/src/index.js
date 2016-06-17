@@ -12,6 +12,7 @@
 import type {Config} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {ModuleLoader} from 'types/ModuleLoader';
+import type {TestResult} from 'types/TestResult';
 
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
@@ -50,7 +51,7 @@ function jasmine2(
   environment: Environment,
   moduleLoader: ModuleLoader,
   testPath: string
-) {
+): Promise<TestResult> {
   let env;
   let jasmine;
 

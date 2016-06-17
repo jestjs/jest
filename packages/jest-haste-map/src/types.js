@@ -9,6 +9,8 @@
  */
 'use strict';
 
+import type {Error} from 'types/TestResult';
+
 export type IgnoreMatcher = (item: string) => boolean;
 
 export type WorkerMessage = {

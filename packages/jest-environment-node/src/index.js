@@ -9,8 +9,8 @@
  */
 'use strict';
 
-import type {Config} from '../../../types/Config';
-import type {Global} from '../../../types/Global';
+import type {Config} from 'types/Config';
+import type {Global} from 'types/Global';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;

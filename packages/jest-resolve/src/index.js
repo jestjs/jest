@@ -11,31 +11,24 @@
 'use strict';
 
 import type {
-  FileMetaData,
-  ModuleMap,
+  HasteMap,
+  HType,
   HTypeValue,
 } from 'types/HasteMap';
-import type HasteMap from '../../jest-haste-map';
 import type {Config, Path} from 'types/Config';
 
-const H = require('jest-haste-map').H;
+const H: HType = require('jest-haste-map').H;
 
 const fs = require('fs');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
 
-export type MockedModuleContext = {
-  mocks: {[moduleName: string]: mixed},
-  files: {[filePath: string]: FileMetaData},
-  map: ModuleMap,
-};
-
 type ResolverConfig = {
   defaultPlatform: ?string,
   extensions: Array<string>,
   hasCoreModules: boolean,
-  moduleDirectories: string | Array<string>,
+  moduleDirectories: Array<string>,
   moduleNameMapper: ?{[key: string]: RegExp},
   modulePaths: Array<Path>,
   platforms?: Array<string>,
@@ -45,7 +38,7 @@ type FindNodeModuleConfig = {
   basedir: Path,
   extensions: Array<string>,
   paths?: Array<Path>,
-  moduleDirectory: string | Array<string>,
+  moduleDirectory: Array<string>,
 };
 
 export type ResolveModuleConfig = {skipNodeResolution?: boolean};
@@ -54,6 +47,17 @@ const NATIVE_PLATFORM = 'native';
 
 const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
+
+function compact(array: Array<?Path>): Array<Path> {
+  const result = [];
+  for (let i = 0; i < array.length; ++i) {
+    const element = array[i];
+    if (element != null) {
+      result.push(element);
+    }
+  }
+  return result;
+}
 
 const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
@@ -70,8 +74,8 @@ class Resolver {
   _options: ResolverConfig;
   _supportsNativePlatform: boolean;
   _moduleMap: HasteMap;
-  _moduleNameCache: {[name: string]: string};
-  _modulePathCache: {[path: string]: Array<Path>};
+  _moduleNameCache: {[name: string]: Path};
+  _modulePathCache: {[path: Path]: Array<Path>};
 
   constructor(moduleMap: HasteMap, options: ResolverConfig) {
     this._options = {
@@ -93,7 +97,7 @@ class Resolver {
 
   static create(
     config: Config,
-    moduleMap: MockedModuleContext,
+    moduleMap: HasteMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,
@@ -133,7 +137,7 @@ class Resolver {
     from: Path,
     moduleName: string,
     options?: ResolveModuleConfig
-  ): string {
+  ): Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
     const extensions = this._options.extensions;
@@ -194,13 +198,14 @@ class Resolver {
     return this._options.hasCoreModules && resolve.isCore(moduleName);
   }
 
-  getModule(name: string, type?: HTypeValue): ?string {
+  getModule(name: string, type?: HTypeValue): ?Path {
     if (!type) {
       type = H.MODULE;
     }
     const map = this._moduleMap.map[name];
     if (map) {
-      let module = map[this._options.defaultPlatform];
+      const platform = this._options.defaultPlatform;
+      let module = platform && map[platform];
       if (!module && map[NATIVE_PLATFORM] && this._supportsNativePlatform) {
         module = map[NATIVE_PLATFORM];
       } else if (!module) {
@@ -213,11 +218,11 @@ class Resolver {
     return null;
   }
 
-  getPackage(name: string): ?string {
+  getPackage(name: string): ?Path {
     return this.getModule(name, H.PACKAGE);
   }
 
-  getMockModule(name: string): ?string {
+  getMockModule(name: string): ?Path {
     if (this._moduleMap.mocks[name]) {
       return this._moduleMap.mocks[name];
     } else {
@@ -243,14 +248,14 @@ class Resolver {
   }
 
   resolveDependencies(
-    file: string,
+    file: Path,
     options?: ResolveModuleConfig
-  ): Array<string> {
+  ): Array<Path> {
     if (!this._moduleMap.files[file]) {
       return [];
     }
 
-    return this._moduleMap.files[file][H.DEPENDENCIES]
+    return compact(this._moduleMap.files[file][H.DEPENDENCIES]
       .map(dependency => {
         if (this.isCoreModule(dependency)) {
           return null;
@@ -259,8 +264,7 @@ class Resolver {
           return this.resolveModule(file, dependency, options);
         } catch (e) {}
         return this.getMockModule(dependency) || null;
-      })
-      .filter(dependency => !!dependency);
+      }));
   }
 
   resolveInverseDependencies(
@@ -314,7 +318,7 @@ class Resolver {
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 
-  _resolveStubModuleName(moduleName: string): ?string {
+  _resolveStubModuleName(moduleName: string): ?Path {
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper) {
       for (const mappedModuleName in moduleNameMapper) {

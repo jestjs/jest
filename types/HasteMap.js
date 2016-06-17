@@ -31,20 +31,6 @@ export type ModuleMetaData = [
   /* type */ string,
 ];
 
-export type Options = {
-  cacheDirectory?: string;
-  extensions: Array<string>;
-  ignorePattern: RegExp,
-  maxWorkers: number;
-  mocksPattern?: string;
-  name: string;
-  platforms: Array<string>;
-  providesModuleNodeModules?: Array<string>;
-  resetCache?: boolean;
-  roots: Array<string>;
-  useWatchman?: boolean;
-};
-
 export type HType = {
   ID: 0,
   MTIME: 1,
