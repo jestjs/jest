@@ -14,7 +14,6 @@ import type {DefaultConfig} from 'types/Config';
 
 const constants = require('./constants');
 const os = require('os');
-const path = require('path');
 const utils = require('jest-util');
 
 module.exports = ({

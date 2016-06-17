@@ -1,6 +1,19 @@
-## master
+## jest 14.0.0
 
-* Add support for property testing via testcheck-js.
+* Split up `jest-cli` into `jest-runtime` and `jest-config`.
+* Added a notification plugin that shows a test run notification
+  using `--notify`.
+* Refactored `TestRunner` into `SearchSource` and improved the
+  "no tests found" message.
+* Added `jest.isMockFunction(jest.fn())` to test for mock functions.
+* Improved test reporter printing and added a test failure summary when
+  running many tests.
+  * Add support for property testing via testcheck-js.
+* Added a webpack tutorial.
+* Added support for virtual mocks through
+  `jest.mock('Module', implementation, {virtual: true})`.
+* Added snapshot functionality through `toMatchSnapshot()`.
+* Redesigned website.
 
 ## jest-cli 12.1.1
 

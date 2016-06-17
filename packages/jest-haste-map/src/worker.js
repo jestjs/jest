@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Error} from 'types/TestResult';
 import type {
   WorkerMessage,
   WorkerCallback,
@@ -26,18 +27,18 @@ const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 
 const formatError = (error: string|Error): Error => {
   if (typeof error === 'string') {
-    return (({
+    return {
       stack: null,
       message: error,
       type: 'Error',
-    }: any): Error);
+    };
   }
 
-  return (({
+  return {
     stack: error.stack,
     message: error.message,
     type: error.type || 'Error',
-  }: any): Error);
+  };
 };
 
 module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {HasteMap as HasteMapStruct, Options} from 'types/HasteMap';
+import type {HasteMap as HasteMapObject} from 'types/HasteMap';
 import type {Config} from 'types/Config';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
@@ -29,6 +29,20 @@ const path = require('./fastpath');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
+
+type Options = {
+  cacheDirectory?: string;
+  extensions: Array<string>;
+  ignorePattern: RegExp,
+  maxWorkers: number;
+  mocksPattern?: string;
+  name: string;
+  platforms: Array<string>;
+  providesModuleNodeModules?: Array<string>;
+  resetCache?: boolean;
+  roots: Array<string>;
+  useWatchman?: boolean;
+};
 
 type InternalOptions = {
   cacheDirectory: string;
@@ -151,7 +165,7 @@ class HasteMap {
   _options: InternalOptions;
   _cachePath: Path;
   _whitelist: ?RegExp;
-  _buildPromise: ?Promise<HasteMapStruct>;
+  _buildPromise: ?Promise<HasteMapObject>;
   _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
   _workerFarm: ?(data: WorkerMessage, callback: WorkerCallback) => void;
 
@@ -218,7 +232,7 @@ class HasteMap {
     );
   }
 
-  build(): Promise<HasteMapStruct> {
+  build(): Promise<HasteMapObject> {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
         .then(fileMap => this._buildHasteMap(fileMap))
@@ -250,14 +264,14 @@ class HasteMap {
   /**
    * 1. read data from the cache or create an empty structure.
    */
-  read(): HasteMapStruct {
+  read(): HasteMapObject {
     return this._parse(fs.readFileSync(this._cachePath, 'utf-8'));
   }
 
   /**
    * 2. crawl the file system.
    */
-  _buildFileMap(): Promise<HasteMapStruct> {
+  _buildFileMap(): Promise<HasteMapObject> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
     return Promise.resolve()
@@ -269,7 +283,7 @@ class HasteMap {
   /**
    * 3. parse and extract metadata from changed files.
    */
-  _buildHasteMap(hasteMap: HasteMapStruct): Promise<HasteMapStruct> {
+  _buildHasteMap(hasteMap: HasteMapObject): Promise<HasteMapObject> {
     const map = Object.create(null);
     const mocks = Object.create(null);
     const mocksPattern = this._options.mocksPattern;
@@ -353,7 +367,7 @@ class HasteMap {
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
-  _persist(hasteMap: HasteMapStruct): HasteMapStruct {
+  _persist(hasteMap: HasteMapObject): HasteMapObject {
     fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf-8');
     return hasteMap;
   }
@@ -390,15 +404,15 @@ class HasteMap {
     return this._workerPromise;
   }
 
-  _parse(hasteMap: string): HasteMapStruct {
-    hasteMap = JSON.parse(hasteMap);
+  _parse(hasteMapPath: string): HasteMapObject {
+    const hasteMap = (JSON.parse(hasteMapPath): HasteMapObject);
     for (const key in hasteMap) {
       Object.setPrototypeOf(hasteMap[key], null);
     }
     return hasteMap;
   }
 
-  _crawl(hasteMap: HasteMapStruct): Promise<HasteMapStruct> {
+  _crawl(hasteMap: HasteMapObject): Promise<HasteMapObject> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl =
@@ -451,7 +465,7 @@ class HasteMap {
     return true;
   }
 
-  _createEmptyMap(): HasteMapStruct {
+  _createEmptyMap(): HasteMapObject {
     return {
       clocks: Object.create(null),
       files: Object.create(null),

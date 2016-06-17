@@ -60,9 +60,9 @@ export type Suite = {
 };
 
 export type TestResult = {
-  coverage: ?Coverage,
+  coverage?: Coverage,
   hasUncheckedKeys: boolean,
-  message: string,
+  message?: string,
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
