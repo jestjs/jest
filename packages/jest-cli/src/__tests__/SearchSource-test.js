@@ -29,7 +29,7 @@ describe('SearchSource', () => {
   beforeEach(() => {
     buildHasteMap = require('../lib/buildHasteMap');
     SearchSource = require('../SearchSource');
-    normalizeConfig = require('../config/normalize');
+    normalizeConfig = require('jest-config').normalize;
   });
 
   describe('isTestFilePath', () => {
@@ -37,7 +37,6 @@ describe('SearchSource', () => {
 
     beforeEach(() => {
       config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir: '.',
         testPathDirs: [],
@@ -71,7 +70,6 @@ describe('SearchSource', () => {
   describe('testPathsMatching', () => {
     it('finds tests matching a pattern', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         moduleFileExtensions: ['js', 'jsx', 'txt'],
@@ -91,7 +89,6 @@ describe('SearchSource', () => {
 
     it('finds tests matching a JS pattern', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         moduleFileExtensions: ['js', 'jsx'],
@@ -112,7 +109,6 @@ describe('SearchSource', () => {
 
     it('finds tests with default file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
@@ -131,7 +127,6 @@ describe('SearchSource', () => {
 
     it('finds tests with similar but custom file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
@@ -151,7 +146,6 @@ describe('SearchSource', () => {
 
     it('finds tests with totally custom foobar file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
@@ -171,7 +165,6 @@ describe('SearchSource', () => {
 
     it('finds tests with many kinds of file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
@@ -192,7 +185,6 @@ describe('SearchSource', () => {
 
     it('supports legacy APIs', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testDirectoryName: '__testtests__',
@@ -211,7 +203,6 @@ describe('SearchSource', () => {
 
     it('supports legacy APIs', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testFileExtensions: ['js', 'jsx'],
@@ -232,7 +223,6 @@ describe('SearchSource', () => {
 
     it('supports legacy APIs', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testDirectoryName: '__testtests__',
@@ -257,7 +247,10 @@ describe('SearchSource', () => {
     const rootDir = path.join(
       __dirname,
       '..',
-      'Runtime',
+      '..',
+      '..',
+      'jest-runtime',
+      'src',
       '__tests__',
       'test_root'
     );
@@ -265,7 +258,6 @@ describe('SearchSource', () => {
 
     beforeEach(() => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });

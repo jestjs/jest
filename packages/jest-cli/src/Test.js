@@ -4,15 +4,24 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Path, Config} from 'types/Config';
+import type Resolver from '../../jest-resolve/src';
 
 const Console = require('./Console');
 const NullConsole = require('./NullConsole');
 
 class Test {
 
-  constructor(path, config, resolver) {
+  _path: Path;
+  _config: Config;
+  _resolver: Resolver;
+
+  constructor(path: Path, config: Config, resolver: Resolver) {
     this._path = path;
     this._config = config;
     this._resolver = resolver;
@@ -22,9 +31,12 @@ class Test {
     const path = this._path;
     const config = this._config;
     const resolver = this._resolver;
+    /* $FlowFixMe */
     const TestEnvironment = require(config.testEnvironment);
+    /* $FlowFixMe */
     const TestRunner = require(config.testRunner);
-    const ModuleLoader = require(config.moduleLoader);
+    /* $FlowFixMe */
+    const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
 
     const env = new TestEnvironment(config);
     const TestConsole = config.silent ? NullConsole : Console;

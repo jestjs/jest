@@ -4,11 +4,24 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
-const RESERVED_KEYWORDS = [
+type Mock = any;
+type MockFunctionMetadata = {
+  ref?: any,
+  members?: Object,
+  mockImpl?: () => any,
+  name?: string,
+  refID?: string|number,
+  type?: string,
+  value?: any,
+};
+
+const RESERVED_KEYWORDS:Array<string> = [
   'do',
   'if',
   'in',
@@ -59,11 +72,11 @@ const RESERVED_KEYWORDS = [
   'instanceof',
 ];
 
-function isA(typeName, value) {
+function isA(typeName: string, value: any): boolean {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
-function getType(ref) {
+function getType(ref?: any): string|null {
   if (isA('Function', ref)) {
     return 'function';
   } else if (Array.isArray(ref)) {
@@ -85,7 +98,7 @@ function getType(ref) {
   }
 }
 
-function isReadonlyProp(object, prop) {
+function isReadonlyProp(object: any, prop: string): boolean {
   return (
     (
       (
@@ -109,7 +122,7 @@ function isReadonlyProp(object, prop) {
   );
 }
 
-function getSlots(object) {
+function getSlots(object?: Object): Array<string> {
   const slots = {};
   if (!object) {
     return [];
@@ -117,7 +130,7 @@ function getSlots(object) {
 
   let parent = Object.getPrototypeOf(object);
   do {
-    if (object === Function.prototype) {
+    if (object === Object.getPrototypeOf(Function)) {
       break;
     }
     const ownNames = Object.getOwnPropertyNames(object);
@@ -135,7 +148,10 @@ function getSlots(object) {
   return Object.keys(slots);
 }
 
-function createMockFunction(metadata, mockConstructor) {
+function createMockFunction(
+  metadata: MockFunctionMetadata,
+  mockConstructor: () => any
+): any {
   let name = metadata.name;
   if (!name) {
     return mockConstructor;
@@ -169,13 +185,13 @@ function createMockFunction(metadata, mockConstructor) {
   /* eslint-enable no-new-func */
 }
 
-function makeComponent(metadata) {
+function makeComponent(metadata: MockFunctionMetadata): Mock {
   if (metadata.type === 'object') {
     return {};
   } else if (metadata.type === 'array') {
     return [];
   } else if (metadata.type === 'regexp') {
-    return new RegExp();
+    return new RegExp('');
   } else if (
     metadata.type === 'constant' ||
     metadata.type === 'collection' ||
@@ -303,18 +319,23 @@ function makeComponent(metadata) {
 
     return f;
   } else {
-    throw new Error('Unrecognized type ' + metadata.type);
+    const unknownType = metadata.type || 'undefined type';
+    throw new Error('Unrecognized type ' + unknownType);
   }
 }
 
-function generateMock(metadata, callbacks, refs) {
+function generateMock(
+  metadata: MockFunctionMetadata,
+  callbacks: Array<() => any>,
+  refs: Object
+): Mock {
   const mock = makeComponent(metadata);
   if (metadata.refID != null) {
     refs[metadata.refID] = mock;
   }
 
   getSlots(metadata.members).forEach(slot => {
-    const slotMetadata = metadata.members[slot];
+    const slotMetadata = metadata.members && metadata.members[slot] || {};
     if (slotMetadata.ref != null) {
       callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
     } else {
@@ -333,7 +354,7 @@ function generateMock(metadata, callbacks, refs) {
   return mock;
 }
 
-function generateFromMetadata(_metadata) {
+function generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
   const callbacks = [];
   const refs = {};
   const mock = generateMock(_metadata, callbacks, refs);
@@ -341,7 +362,10 @@ function generateFromMetadata(_metadata) {
   return mock;
 }
 
-function getMetadata(component, _refs) {
+function getMetadata(
+  component: any,
+  _refs?: Map
+): ?MockFunctionMetadata {
   const refs = _refs || new Map();
   const ref = refs.get(component);
   if (ref != null) {
@@ -353,7 +377,7 @@ function getMetadata(component, _refs) {
     return null;
   }
 
-  const metadata = {type};
+  const metadata: MockFunctionMetadata = {type};
   if (
     type === 'constant' ||
     type === 'collection' ||
@@ -420,6 +444,10 @@ function getMetadata(component, _refs) {
   return metadata;
 }
 
+function isMockFunction(fn: any): boolean {
+  return !!fn._isMockFunction;
+}
+
 module.exports = {
   /**
    * @see README.md
@@ -437,12 +465,14 @@ module.exports = {
   /**
    * @see README.md
    */
-  getMockFunction() {
+  getMockFunction(): () => any {
     return makeComponent({type: 'function'});
   },
 
   // Just a short-hand alias
-  getMockFn() {
+  getMockFn(): () => any {
     return this.getMockFunction();
   },
+
+  isMockFunction,
 };

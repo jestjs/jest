@@ -4,17 +4,33 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
+
 'use strict';
 
 const utils = require('jest-util');
 
-const formatResult = (testResult, config, codeCoverageFormatter, reporter) => {
-  const output = {
+import type {
+  AggregatedTestResults,
+  CodeCoverageFormatter,
+  CodeCoverageReporter,
+  TestResult,
+} from 'types/TestResult';
+import type {Config} from 'types/Config';
+
+const formatResult = (
+  testResult: TestResult,
+  config: Config,
+  codeCoverageFormatter: CodeCoverageFormatter,
+  reporter: CodeCoverageReporter,
+): Object => {
+  const output = ({
     name: testResult.testFilePath,
     summary: '',
     message: '',
-  };
+  }: any);
 
   if (testResult.testExecError) {
     const currTime = Date.now();
@@ -42,15 +58,18 @@ const formatResult = (testResult, config, codeCoverageFormatter, reporter) => {
   return output;
 };
 
-function formatTestResults(results, config, codeCoverageFormatter, reporter) {
-  if (!codeCoverageFormatter) {
-    codeCoverageFormatter = coverage => coverage;
-  }
+function formatTestResults(
+  results: AggregatedTestResults,
+  config: Config,
+  codeCoverageFormatter?: CodeCoverageFormatter,
+  reporter?: CodeCoverageReporter,
+): Object {
+  const formatter = codeCoverageFormatter || (coverage => coverage);
 
   const testResults = results.testResults.map(testResult => formatResult(
     testResult,
     config,
-    codeCoverageFormatter,
+    formatter,
     reporter
   ));
 

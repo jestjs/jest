@@ -7,8 +7,15 @@
  *
  * @flow
  */
-
 'use strict';
+
+import type {
+  AggregatedResult,
+  Error as TestError,
+  TestResult,
+} from 'types/TestResult';
+import type {Config, Path} from 'types/Config';
+import type {HasteResolverContext} from './types';
 
 const Test = require('./Test');
 
@@ -18,69 +25,39 @@ const promisify = require('./lib/promisify');
 const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
-import type HasteMap from 'jest-haste-map';
-
-type AggregatedResults = {
-  didUpdate?: boolean,
-  snapshotFilesRemoved?: Array<string>,
-  startTime: null | number,
-  success: null | boolean,
-  testResults: Array<TestResult>,
-};
-
-type Config = {
-  cacheDirectory: string,
-  name: string,
-  testReporter: string,
-  updateSnapshot: boolean,
-};
-
 type Options = {
   maxWorkers: number,
 };
 
 type TestReporter = {
   onTestResult?: (
-    cfg: Config,
+    config: Config,
     result: TestResult,
-    aggResults: AggregatedResults
+    aggregatedResults: AggregatedResult
   ) => void,
-};
-
-type TestResult = {
-  numPassingTests?: number,
-  numFailingTests?: number,
-  numPendingTests?: number,
-  perfStats?: {start: number, end: number},
-  testFilePath: string,
-  testExecError: mixed,
 };
 
 type OnRunFailure = (
   path: string,
-  err: mixed,
+  err: TestError,
 ) => void;
 
 type OnTestResult = (
   path: string,
-  result: TestResult & {
-    numPassingTests: number,
-    numFailingTests: number,
-    numPendingTests: number,
-  },
+  result: TestResult,
 ) => void;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
 
-  _hasteMap: Promise<HasteMap>;
+  _hasteMap: Promise<HasteResolverContext>;
   _config: Config;
   _options: Options;
   _testPerformanceCache: Object | null;
 
   constructor(
-    hasteMap: Promise<HasteMap>,
+    hasteMap: Promise<HasteResolverContext>,
     config: Config,
     options: Options
   ) {
@@ -131,7 +108,7 @@ class TestRunner {
     return testPaths;
   }
 
-  _cacheTestResults(aggregatedResults: AggregatedResults) {
+  _cacheTestResults(aggregatedResults: AggregatedResult) {
     const cacheFile = this._getTestPerformanceCachePath();
     const cache =
       this._testPerformanceCache || (this._testPerformanceCache = {});
@@ -167,22 +144,24 @@ class TestRunner {
     testPaths = this._sortTests(testPaths);
 
     const aggregatedResults = {
-      success: null,
-      startTime: null,
-      numTotalTestSuites: testPaths.length,
-      numPassedTestSuites: 0,
+      didUpdate: false,
+      numFailedTests: 0,
       numFailedTestSuites: 0,
+      numPassedTests: 0,
+      numPassedTestSuites: 0,
+      numPendingTests: 0,
       numRuntimeErrorTestSuites: 0,
       numTotalTests: 0,
-      numPassedTests: 0,
-      numFailedTests: 0,
-      numPendingTests: 0,
+      numTotalTestSuites: testPaths.length,
+      snapshotFilesRemoved: 0,
+      startTime: Date.now(),
+      success: false,
       testResults: [],
     };
 
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
-    const onTestResult = (testPath, testResult) => {
+    const onTestResult = (testPath: Path, testResult: TestResult) => {
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
@@ -204,10 +183,23 @@ class TestRunner {
       );
     };
 
-    const onRunFailure = (testPath, err) => {
+    const onRunFailure = (testPath: Path, err: TestError) => {
       const testResult = {
-        testFilePath: testPath,
+        hasUncheckedKeys: false,
+        numFailingTests: 1,
+        numPassingTests: 0,
+        numPendingTests: 0,
+        perfStats: {
+          end: 0,
+          start: 0,
+        },
+        snapshotFileDeleted: false,
+        snapshotsAdded: 0,
+        snapshotsMatched: 0,
+        snapshotsUnmatched: 0,
+        snapshotsUpdated: 0,
         testExecError: err,
+        testFilePath: testPath,
         testResults: [],
       };
       aggregatedResults.testResults.push(testResult);
@@ -217,7 +209,6 @@ class TestRunner {
       }
     };
 
-    aggregatedResults.startTime = Date.now();
     const testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
     return testRun
@@ -242,9 +233,9 @@ class TestRunner {
   }
 
   _createTestRun(
-    testPaths: Array<string>,
+    testPaths: Array<Path>,
     onTestResult: OnTestResult,
-    onRunFailure: (path: string, err: mixed) => void,
+    onRunFailure: (path: Path, err: TestError) => void,
   ) {
     if (this._options.maxWorkers <= 1 || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
@@ -254,7 +245,7 @@ class TestRunner {
   }
 
   _createInBandTestRun(
-    testPaths: Array<string>,
+    testPaths: Array<Path>,
     onTestResult: OnTestResult,
     onRunFailure: OnRunFailure
   ) {
@@ -269,7 +260,7 @@ class TestRunner {
   }
 
   _createParallelTestRun(
-    testPaths: Array<string>,
+    testPaths: Array<Path>,
     onTestResult: OnTestResult,
     onRunFailure: OnRunFailure,
   ) {

@@ -18,6 +18,14 @@ export type Environment = {
   runSourceText(sourceText: string, filename: string): any;
   global: Global;
   fakeTimers: {
+    clearAllTimers(): void;
+    runAllImmediates(): void;
+    runAllTicks(): void;
+    runAllTimers(): void;
+    runOnlyPendingTimers(): void;
     runWithRealTimers(callback: any): void;
+    useFakeTimers(): void;
+    useRealTimers(): void;
   };
+  testFilePath: string;
 };

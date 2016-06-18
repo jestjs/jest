@@ -4,25 +4,80 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
-const H = require('jest-haste-map').H;
+import type {
+  HasteMap,
+  HType,
+  HTypeValue,
+} from 'types/HasteMap';
+import type {Config, Path} from 'types/Config';
+
+const H: HType = require('jest-haste-map').H;
 
 const fs = require('fs');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
 
+type ResolverConfig = {
+  defaultPlatform: ?string,
+  extensions: Array<string>,
+  hasCoreModules: boolean,
+  moduleDirectories: Array<string>,
+  moduleNameMapper: ?{[key: string]: RegExp},
+  modulePaths: Array<Path>,
+  platforms?: Array<string>,
+};
+
+type FindNodeModuleConfig = {
+  basedir: Path,
+  extensions: Array<string>,
+  paths?: Array<Path>,
+  moduleDirectory: Array<string>,
+};
+
+export type ResolveModuleConfig = {skipNodeResolution?: boolean};
+
 const NATIVE_PLATFORM = 'native';
 
 const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 
-class Resolver {
+function compact(array: Array<?Path>): Array<Path> {
+  const result = [];
+  for (let i = 0; i < array.length; ++i) {
+    const element = array[i];
+    if (element != null) {
+      result.push(element);
+    }
+  }
+  return result;
+}
 
-  constructor(moduleMap, options) {
+const getModuleNameMapper = (config: Config) => {
+  if (config.moduleNameMapper.length) {
+    const moduleNameMapper = Object.create(null);
+    config.moduleNameMapper.forEach(
+      map => moduleNameMapper[map[1]] = new RegExp(map[0])
+    );
+    return moduleNameMapper;
+  }
+  return null;
+};
+
+class Resolver {
+  _options: ResolverConfig;
+  _supportsNativePlatform: boolean;
+  _moduleMap: HasteMap;
+  _moduleNameCache: {[name: string]: Path};
+  _modulePathCache: {[path: Path]: Array<Path>};
+
+  constructor(moduleMap: HasteMap, options: ResolverConfig) {
     this._options = {
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
@@ -40,7 +95,22 @@ class Resolver {
     this._modulePathCache = Object.create(null);
   }
 
-  static findNodeModule(path, options) {
+  static create(
+    config: Config,
+    moduleMap: HasteMap,
+  ): Resolver {
+    return new Resolver(moduleMap, {
+      defaultPlatform: config.haste.defaultPlatform,
+      extensions: config.moduleFileExtensions.map(extension => '.' + extension),
+      hasCoreModules: true,
+      moduleDirectories: config.moduleDirectories,
+      moduleNameMapper: getModuleNameMapper(config),
+      modulePaths: config.modulePaths,
+      platforms: config.haste.platforms,
+    });
+  }
+
+  static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const paths = options.paths;
     try {
       return resolve.sync(
@@ -56,14 +126,18 @@ class Resolver {
     return null;
   }
 
-  static fileExists(filePath) {
+  static fileExists(filePath: Path): boolean {
     try {
       return fs.statSync(filePath).isFile();
     } catch (e) {}
     return false;
   }
 
-  resolveModule(from, moduleName, options) {
+  resolveModule(
+    from: Path,
+    moduleName: string,
+    options?: ResolveModuleConfig
+  ): Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
     const extensions = this._options.extensions;
@@ -116,21 +190,22 @@ class Resolver {
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
     );
-    err.code = 'MODULE_NOT_FOUND';
+    (err: any).code = 'MODULE_NOT_FOUND';
     throw err;
   }
 
-  isCoreModule(moduleName) {
+  isCoreModule(moduleName: string): boolean {
     return this._options.hasCoreModules && resolve.isCore(moduleName);
   }
 
-  getModule(name, type) {
+  getModule(name: string, type?: HTypeValue): ?Path {
     if (!type) {
       type = H.MODULE;
     }
     const map = this._moduleMap.map[name];
     if (map) {
-      let module = map[this._options.defaultPlatform];
+      const platform = this._options.defaultPlatform;
+      let module = platform && map[platform];
       if (!module && map[NATIVE_PLATFORM] && this._supportsNativePlatform) {
         module = map[NATIVE_PLATFORM];
       } else if (!module) {
@@ -143,11 +218,11 @@ class Resolver {
     return null;
   }
 
-  getPackage(name) {
+  getPackage(name: string): ?Path {
     return this.getModule(name, H.PACKAGE);
   }
 
-  getMockModule(name) {
+  getMockModule(name: string): ?Path {
     if (this._moduleMap.mocks[name]) {
       return this._moduleMap.mocks[name];
     } else {
@@ -159,7 +234,7 @@ class Resolver {
     return null;
   }
 
-  getModulePaths(from) {
+  getModulePaths(from: Path): Array<Path> {
     if (!this._modulePathCache[from]) {
       const moduleDirectory = this._options.moduleDirectories;
       const paths = nodeModulesPaths(from, {moduleDirectory});
@@ -172,12 +247,15 @@ class Resolver {
     return this._modulePathCache[from];
   }
 
-  resolveDependencies(file, options) {
+  resolveDependencies(
+    file: Path,
+    options?: ResolveModuleConfig
+  ): Array<Path> {
     if (!this._moduleMap.files[file]) {
       return [];
     }
 
-    return this._moduleMap.files[file][H.DEPENDENCIES]
+    return compact(this._moduleMap.files[file][H.DEPENDENCIES]
       .map(dependency => {
         if (this.isCoreModule(dependency)) {
           return null;
@@ -186,11 +264,14 @@ class Resolver {
           return this.resolveModule(file, dependency, options);
         } catch (e) {}
         return this.getMockModule(dependency) || null;
-      })
-      .filter(dependency => !!dependency);
+      }));
   }
 
-  resolveInverseDependencies(paths, filter, options) {
+  resolveInverseDependencies(
+    paths: Set<Path>,
+    filter: (file: Path) => boolean,
+    options?: ResolveModuleConfig
+  ): Array<Path> {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();
       while (changed.size) {
@@ -210,7 +291,7 @@ class Resolver {
     };
 
     if (!paths.size) {
-      return Promise.resolve([]);
+      return [];
     }
 
     const relatedPaths = new Set();
@@ -237,7 +318,7 @@ class Resolver {
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 
-  _resolveStubModuleName(moduleName) {
+  _resolveStubModuleName(moduleName: string): ?Path {
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper) {
       for (const mappedModuleName in moduleNameMapper) {

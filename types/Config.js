@@ -14,16 +14,15 @@ export type Path = string;
 export type HasteConfig = {
   providesModuleNodeModules: Array<string>,
   defaultPlatform?: ?string,
-  platforms: Array<string>,
+  platforms?: Array<string>,
 };
 
 export type ConfigGlobals = Object;
 
-export type Config = {
+type BaseConfig = {
   automock: boolean,
   bail: boolean,
   cacheDirectory: Path,
-  colors: boolean,
   coverageCollector: Path,
   coverageReporters: Array<string>,
   globals: ConfigGlobals,
@@ -31,15 +30,10 @@ export type Config = {
   mocksPattern: string,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
-  moduleLoader: Path,
-  moduleNameMapper: {[key: string]: string},
   modulePathIgnorePatterns: Array<string>,
   noHighlight: boolean,
   noStackTrace: boolean,
-  persistModuleRegistryBetweenSpecs: boolean,
-  rootDir: Path,
-  setupTestFrameworkScriptFile: Path,
-  testcheckOptions: {},
+  notify: boolean,
   testEnvData: {},
   testEnvironment: string,
   testPathDirs: Array<Path>,
@@ -47,7 +41,36 @@ export type Config = {
   testRegex: string,
   testReporter: Path,
   testURL: string,
-  updateSnapshot: {},
   useStderr: boolean,
   verbose: boolean,
+};
+
+export type DefaultConfig = BaseConfig & {
+  moduleNameMapper: {},
+};
+
+export type Config = BaseConfig & {
+  cache: boolean,
+  collectCoverageOnlyFrom: {[key: string]: Path},
+  colors: boolean,
+  coverageThreshold: {
+    global: {
+      [key: string]: number,
+    },
+  },
+  moduleLoader: Path,
+  moduleNameMapper: Array<string>,
+  modulePaths: Array<string>,
+  name: string,
+  persistModuleRegistryBetweenSpecs: boolean,
+  preprocessorIgnorePatterns: Array<string>,
+  rootDir: Path,
+  scriptPreprocessor: Path,
+  setupTestFrameworkScriptFile: Path,
+  setupFiles: Array<Path>,
+  testcheckOptions: {},
+  testFileExtensions: Array<string>,
+  testDirectoryName: string,
+  updateSnapshot: boolean,
+  watchman: boolean,
 };

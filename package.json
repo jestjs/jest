@@ -10,9 +10,9 @@
     "eslint-plugin-babel": "^3.2.0",
     "fbjs-scripts": "^0.7.1",
     "flow-bin": "^0.27.0",
-    "glob": "^7.0.3",
+    "glob": "^7.0.4",
     "graceful-fs": "^4.1.4",
-    "lerna": "2.0.0-beta.19",
+    "lerna": "2.0.0-beta.20",
     "minimatch": "^3.0.0",
     "mkdirp": "^0.5.1",
     "progress": "^1.1.8",
@@ -24,6 +24,7 @@
     "test": "npm run typecheck && npm run lint && node ./scripts/build.js && node ./scripts/test.js",
     "typecheck": "flow check",
     "watch": "node ./scripts/watch.js",
-    "build": "node ./scripts/build.js"
+    "build": "node ./scripts/build.js",
+    "build_clear": "rm -rf ./packages/*/build"
   }
 }
