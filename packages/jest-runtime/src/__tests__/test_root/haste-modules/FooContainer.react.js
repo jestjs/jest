@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FooRenderUtil
+ * @providesModule FooContainer.react
  */
 
 'use strict';
 
-exports = {
-  getHeaderHeight(): number {
-    return 5;
-  },
+const Foo = require('Foo.react');
 
-  getBodyHeight(): number {
-    return 5;
-  },
-};
+class FooContainer {
+  render() {
+    return `<div>${new Foo().render()}</div>`;
+  }
+}
+
+module.exports = FooContainer;

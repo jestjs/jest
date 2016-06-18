@@ -23,4 +23,4 @@ class Foo {
   }
 }
 
-exports = Foo;
+module.exports = Foo;
