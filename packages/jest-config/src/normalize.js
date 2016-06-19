@@ -120,7 +120,7 @@ function normalize(config, argv) {
 
     config.moduleFileExtensions = extensions;
     config.testRegex =
-      path.sep + (config.testDirectoryName || '__tests__') + path.sep +
+      '/' + (config.testDirectoryName || '__tests__') + '/' +
       '.*\\.(' + extensions.join('|') + ')$';
 
     delete config.testDirectoryName;
