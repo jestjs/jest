@@ -96,7 +96,7 @@ export default Home;
 ```
 And it's corresponding test:
 
-```
+```js
 // ./src/__tests__/Home-test.js
 'use strict';
 
