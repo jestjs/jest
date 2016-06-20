@@ -22,8 +22,8 @@ const Runtime = require('../');
 
 const VERSION = require('../../package.json').version;
 
-function Run() {
-  const argv = yargs
+function Run(cliArgs: Array<string>) {
+  const argv = yargs(cliArgs || process.argv)
   .usage(args.usage)
   .options(args.options)
   .argv;
