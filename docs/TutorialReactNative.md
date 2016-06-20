@@ -120,4 +120,4 @@ describe("<Home />", () => {
   });
 });
 ```
-And voila! You have a working Jest test! This was tested against ReactNative version ```0.27.2```. You can find a [passing build example on GitHub here](/jest/docs/getting-started.html).
+And voila! You have a working Jest test! This was tested against ReactNative version ```0.27.2```. You can find a [passing build example on GitHub here](http://www.github.com/ethemes/react-native-jest).
