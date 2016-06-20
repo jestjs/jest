@@ -10,6 +10,7 @@
 
 'use strict';
 
+const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
@@ -33,11 +34,28 @@ const createDirectory = (path: string) => {
   }
 };
 
+const getPackageRoot = () => {
+  const cwd = process.cwd();
+
+  // Is the cwd somewhere within an npm package?
+  let root = cwd;
+  while (!fs.existsSync(path.join(root, 'package.json'))) {
+    if (root === '/' || root.match(/^[A-Z]:\\/)) {
+      root = cwd;
+      break;
+    }
+    root = path.resolve(root, '..');
+  }
+
+  return root;
+};
+
 exports.Console = require('./Console');
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.FakeTimers = require('./FakeTimers');
 exports.formatFailureMessage = require('./formatFailureMessage');
+exports.getPackageRoot = getPackageRoot;
 exports.installCommonGlobals = require('./installCommonGlobals');
 exports.JasmineFormatter = require('./JasmineFormatter');
 exports.NullConsole = require('./NullConsole');

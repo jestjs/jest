@@ -12,11 +12,19 @@
 
 import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
+import type {HasteResolverContext} from './types';
 
+export type BuildHasteMapOptions = {
+  maxWorkers: number,
+};
+
+const createHasteMap = require('jest-haste-map').create;
+const createResolver = require('jest-resolve').create;
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
 const transform = require('./lib/transform');
+const utils = require('jest-util');
 
 type Module = {
   exports: Object,
@@ -110,7 +118,28 @@ class Runtime {
     this.resetModuleRegistry();
   }
 
-  requireModule(from: Path, moduleName: string) {
+  static buildHasteMap(
+    config: Config,
+    options: BuildHasteMapOptions
+  ): Promise<HasteResolverContext> {
+    utils.createDirectory(config.cacheDirectory);
+    const instance = createHasteMap(config, {
+      resetCache: !config.cache,
+      maxWorkers: options.maxWorkers,
+    });
+    return instance.build().then(
+      moduleMap => ({
+        instance,
+        moduleMap,
+        resolver: createResolver(config, moduleMap),
+      }),
+      error => {
+        throw error;
+      }
+    );
+  }
+
+  requireModule(from: Path, moduleName?: string) {
     const moduleID = this._getNormalizedModuleID(from, moduleName);
     let modulePath;
 

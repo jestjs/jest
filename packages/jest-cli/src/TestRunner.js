@@ -15,7 +15,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
-import type {HasteResolverContext} from './types';
+import type {HasteResolverContext} from '../../jest-runtime/src/types';
 
 const Test = require('./Test');
 

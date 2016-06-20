@@ -15,22 +15,7 @@ const fs = require('fs');
 const getJest = require('./getJest');
 const path = require('path');
 const yargs = require('yargs');
-
-function getPackageRoot() {
-  const cwd = process.cwd();
-
-  // Is the cwd somewhere within an npm package?
-  let root = cwd;
-  while (!fs.existsSync(path.join(root, 'package.json'))) {
-    if (root === '/' || root.match(/^[A-Z]:\\/)) {
-      root = cwd;
-      break;
-    }
-    root = path.resolve(root, '..');
-  }
-
-  return root;
-}
+const getPackageRoot = require('jest-util').getPackageRoot;
 
 function Run() {
   const argv = yargs

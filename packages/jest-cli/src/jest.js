@@ -20,7 +20,7 @@ fs.gracefulify(realFs);
 const TestRunner = require('./TestRunner');
 const SearchSource = require('./SearchSource');
 
-const buildHasteMap = require('./lib/buildHasteMap');
+const Runtime = require('jest-runtime');
 const chalk = require('chalk');
 const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
@@ -85,7 +85,7 @@ function getWatcher(config, packageRoot, callback) {
 function runJest(config, argv, pipe, onComplete) {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
-  const hasteMap = buildHasteMap(config, {maxWorkers});
+  const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
   const source = new SearchSource(hasteMap, config);
   return source.getTestPaths(patternInfo)
     .then(data => {
@@ -196,7 +196,6 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 }
 
 module.exports = {
-  buildHasteMap,
   getVersion: () => constants.VERSION,
   runCLI,
   SearchSource,
