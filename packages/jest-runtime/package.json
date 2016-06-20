@@ -26,12 +26,12 @@
     "jest-config": "^12.1.0"
   },
   "jest": {
+    "automock": false,
     "rootDir": "./build",
+    "testEnvironment": "jest-environment-node",
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
-    ],
-    "testEnvironment": "jest-environment-node",
-    "automock": false
+    ]
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"

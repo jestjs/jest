@@ -10,23 +10,7 @@
 
 'use strict';
 
-function wrap(desccription: string) {
-  const indent = '\n      ';
-  return indent + desccription.split(' ').reduce((wrappedDesc, word) => {
-    const lastLineIdx = wrappedDesc.length - 1;
-    const lastLine = wrappedDesc[lastLineIdx];
-
-    const appendedLastLine = lastLine === '' ? word : (lastLine + ' ' + word);
-
-    if (appendedLastLine.length > 80) {
-      wrappedDesc.push(word);
-    } else {
-      wrappedDesc[lastLineIdx] = appendedLastLine;
-    }
-
-    return wrappedDesc;
-  }, ['']).join(indent);
-}
+const wrap = require('jest-util').wrap;
 
 const check = (argv: Object) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
@@ -55,23 +39,6 @@ const check = (argv: Object) => {
   }
 
   return true;
-};
-
-const warnAboutUnrecognizedOptions = (argv: Object, options: Object) => {
-  const yargsSpecialOptions = ['$0', '_'];
-  const allowedOptions = Object.keys(options).reduce((acc, option) => (
-    acc
-      .add(option)
-      .add(options[option].alias)
-  ), new Set(yargsSpecialOptions));
-  const unrecognizedOptions = Object.keys(argv).filter(arg => (
-    !allowedOptions.has(arg)
-  ));
-  if (unrecognizedOptions.length) {
-    console.warn(
-      'Unrecognized options: ' + unrecognizedOptions.join(', ')
-    );
-  }
 };
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
@@ -286,9 +253,7 @@ const options = {
 };
 
 module.exports = {
-  wrap,
   check,
-  usage,
   options,
-  warnAboutUnrecognizedOptions,
+  usage,
 };

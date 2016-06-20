@@ -51,12 +51,17 @@ const getPackageRoot = () => {
 };
 
 exports.Console = require('./Console');
+exports.FakeTimers = require('./FakeTimers');
+exports.JasmineFormatter = require('./JasmineFormatter');
+exports.NullConsole = require('./NullConsole');
+
+
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
-exports.FakeTimers = require('./FakeTimers');
 exports.formatFailureMessage = require('./formatFailureMessage');
 exports.getPackageRoot = getPackageRoot;
 exports.installCommonGlobals = require('./installCommonGlobals');
-exports.JasmineFormatter = require('./JasmineFormatter');
-exports.NullConsole = require('./NullConsole');
 exports.replacePathSepForRegex = replacePathSepForRegex;
+exports.warnAboutUnrecognizedOptions =
+  require('./args').warnAboutUnrecognizedOptions;
+exports.wrap = require('./args').wrap;

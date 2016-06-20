@@ -14,10 +14,6 @@ import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {HasteResolverContext} from './types';
 
-export type BuildHasteMapOptions = {
-  maxWorkers: number,
-};
-
 const createHasteMap = require('jest-haste-map').create;
 const createResolver = require('jest-resolve').create;
 const fs = require('graceful-fs');
@@ -33,6 +29,10 @@ type Module = {
   parent?: Object,
   paths?: Array<string>,
   require?: Function,
+};
+
+export type BuildHasteMapOptions = {
+  maxWorkers: number,
 };
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;

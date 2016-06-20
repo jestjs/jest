@@ -17,6 +17,7 @@ const yargs = require('yargs');
 
 const Console = require('jest-util').Console;
 const getPackageRoot = require('jest-util').getPackageRoot;
+const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
 const readConfig = require('jest-config').readConfig;
 const Runtime = require('../');
 
@@ -29,7 +30,7 @@ function Run() {
   .options(args.options)
   .argv;
 
-  args.warnAboutUnrecognizedOptions(argv, args.options);
+  warnAboutUnrecognizedOptions(argv, args.options);
 
   if (argv.help) {
     yargs.showHelp();
@@ -65,6 +66,7 @@ function Run() {
         })
         .catch(e => {
           console.error(e);
+          process.on('exit', () => process.exit(1));
         });
     });
 }

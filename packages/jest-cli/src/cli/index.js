@@ -13,9 +13,10 @@
 const args = require('./args');
 const fs = require('fs');
 const getJest = require('./getJest');
-const path = require('path');
-const yargs = require('yargs');
 const getPackageRoot = require('jest-util').getPackageRoot;
+const path = require('path');
+const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
+const yargs = require('yargs');
 
 function Run() {
   const argv = yargs
@@ -24,7 +25,7 @@ function Run() {
     .check(args.check)
     .argv;
 
-  args.warnAboutUnrecognizedOptions(argv, args.options);
+  warnAboutUnrecognizedOptions(argv, args.options);
 
   if (argv.help) {
     yargs.showHelp();
