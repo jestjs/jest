@@ -139,6 +139,10 @@ class Runtime {
     );
   }
 
+  static runCLI(args?: Object, info?: Array<string>) {
+    return require('./cli').run(args, info);
+  }
+
   requireModule(from: Path, moduleName?: string) {
     const moduleID = this._getNormalizedModuleID(from, moduleName);
     let modulePath;

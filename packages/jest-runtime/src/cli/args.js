@@ -17,11 +17,7 @@ const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
 const options = {
   config: {
     alias: 'c',
-    description: wrap(
-      'The path to a jest config file specifying how to find and execute ' +
-      'tests. If no rootDir is set in the config, the current directory ' +
-      'is assumed to be the rootDir for the project.'
-    ),
+    description: wrap('The path to a Jest config file.'),
     type: 'string',
   },
   version: {

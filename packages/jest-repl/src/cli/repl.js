@@ -11,71 +11,68 @@
 
 'use strict';
 
+declare var jestConfig: Object;
+declare var jest: Object;
+
+jest.disableAutomock();
+
+const chalk = require('chalk');
+const path = require('path');
 const repl = require('repl');
 const vm = require('vm');
 
-/* global jestConfig */
-declare var jestConfig: Object;
-/* global jest */
-declare var jest: Object;
-
 let preprocessor;
 
-function evalCommand(cmd, context, filename, callback, config) {
+const evalCommand = (cmd, context, filename, callback, config) => {
   let result;
   try {
     if (preprocessor) {
       cmd = preprocessor.process(
         cmd,
-        jestConfig.replname || 'default.js',
+        jestConfig.replname || 'jest.js',
         jestConfig
       );
     }
     result = vm.runInThisContext(cmd);
   } catch (e) {
-    if (isRecoverableError(e)) {
-      return callback(new repl.Recoverable(e));
-    }
-    return callback(e);
+    return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);
 }
 
-function isRecoverableError(e) {
-  if (e && e.name === 'SyntaxError') {
-    const message = e.message;
-    const exceptions = [
+const isRecoverableError = error => {
+  if (error && error.name === 'SyntaxError') {
+    return [
       'Unterminated template',
       'Missing } in template expression',
       'Unexpected end of input',
       'missing ) after argument list',
       'Unexpected token',
-    ];
-
-    return exceptions.some(exception => message.indexOf(exception) !== -1);
+    ].some(exception => error.message.includes(exception));
   }
   return false;
 }
 
-(() => {
-  jest.disableAutomock();
-
-  if (jestConfig.scriptPreprocessor) {
-    // $FlowFixMe
-    preprocessor = require(jestConfig.scriptPreprocessor);
-    if (typeof preprocessor.process !== 'function') {
-      throw new TypeError(
-        'Jest: a preprocessor must export a `process` function.'
-      );
-    }
+if (jestConfig.scriptPreprocessor) {
+  /* $FlowFixMe */
+  preprocessor = require(jestConfig.scriptPreprocessor);
+  if (typeof preprocessor.process !== 'function') {
+    throw new TypeError(
+      'Jest: a preprocessor must export a `process` function.'
+    );
   }
+}
 
-  const replInstance = repl.start({
-    prompt: '> ',
-    useGlobal: true,
-    eval: evalCommand,
-  });
+const replInstance = repl.start({
+  prompt: chalk.green('\u203A') + ' ',
+  useGlobal: true,
+  eval: evalCommand,
+});
 
-  // Use jest's module resolution within scripts
-  replInstance.context.require = require;
-})();
+replInstance.context.require = moduleName => {
+  if (/(\/|\\|\.)/.test(moduleName)) {
+    moduleName = path.resolve(process.cwd(), moduleName);
+  }
+  /* $FlowFixMe */
+  return require(moduleName);
+};
