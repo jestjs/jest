@@ -8,9 +8,9 @@
  * @flow
  */
 
-import type {HasteMap as HasteMapObject} from 'types/HasteMap';
-import type HasteMap from '../../jest-haste-map/src';
-import type HasteResolver from '../../jest-resolve/src';
+import type {HasteMap as HasteMapObject} from './HasteMap';
+import type HasteMap from '../packages/jest-haste-map/src';
+import type HasteResolver from '../packages/jest-resolve/src';
 
 export type HasteResolverContext = {
   instance: HasteMap,

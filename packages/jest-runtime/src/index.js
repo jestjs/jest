@@ -12,7 +12,7 @@
 
 import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
-import type {HasteResolverContext} from './types';
+import type {HasteResolverContext} from 'types/Runtime';
 
 const createHasteMap = require('jest-haste-map').create;
 const createResolver = require('jest-resolve').create;
