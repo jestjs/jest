@@ -37,14 +37,6 @@ const createDirectory = path => {
   }
 };
 
-class EmptySuiteError extends Error {
-  constructor() {
-    super();
-    this.name = 'EmptySuiteError';
-    this.message = 'Your test suite must contain at least one test';
-  }
-}
-
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.FakeTimers = FakeTimers;
@@ -52,4 +44,3 @@ exports.formatFailureMessage = formatFailureMessage;
 exports.JasmineFormatter = JasmineFormatter;
 exports.installCommonGlobals = installCommonGlobals;
 exports.replacePathSepForRegex = replacePathSepForRegex;
-exports.EmptySuiteError = EmptySuiteError;

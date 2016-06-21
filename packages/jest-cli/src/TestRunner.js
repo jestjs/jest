@@ -8,6 +8,7 @@
 
 'use strict';
 
+const EmptySuiteError = require('./EmptySuiteError');
 const Test = require('./Test');
 
 const fs = require('graceful-fs');
@@ -116,8 +117,8 @@ class TestRunner {
 
     const onTestResult = (testPath, testResult) => {
       if (testResult.testResults.length === 0) {
-        const EmptySuiteError = require('jest-util').EmptySuiteError;
-        throw new EmptySuiteError();
+        onRunFailure(testPath, new EmptySuiteError());
+        return;
       }
 
       aggregatedResults.testResults.push(testResult);
