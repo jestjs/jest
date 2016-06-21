@@ -11,10 +11,8 @@
 'use strict';
 
 const args = require('./args');
-const fs = require('fs');
 const getJest = require('./getJest');
 const getPackageRoot = require('jest-util').getPackageRoot;
-const path = require('path');
 const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
 const yargs = require('yargs');
 

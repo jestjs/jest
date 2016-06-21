@@ -29,7 +29,7 @@ getPackages().forEach(p => {
   try {
     fs.accessSync(srcDir, fs.F_OK);
     fs.watch(path.resolve(p, 'src'), {recursive: true}, (event, filename) => {
-      if (['change', 'rename'].indexOf(event) !== -1) {
+      if (event === 'change') {
         console.log(chalk.green('->'), `${event}: ${filename}`);
         rebuild(path.resolve(srcDir, filename));
       }
@@ -43,7 +43,9 @@ setInterval(() => {
   const files = Array.from(filesToBuild.keys());
   if (files.length) {
     filesToBuild = new Map();
-    execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});
+    try {
+      execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});
+    } catch (e) {}
   }
 }, 100);
 

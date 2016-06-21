@@ -7,14 +7,8 @@
  *
  * @flow
  */
-
 'use strict';
 
-const path = require('path');
-const os = require('os');
-
-const pkg = require('../package.json');
-
-exports.VERSION = pkg.version;
-exports.MAX_WORKERS = os.cpus().length;
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
+declare module "console" {
+  declare var Console: any;
+}

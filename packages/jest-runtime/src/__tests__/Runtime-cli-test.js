@@ -22,7 +22,7 @@ describe('Runtime', () => {
       const expectedOutput =
         'Please provide a path to a script. (See --help for details)';
       const output = spawnSync(JEST_RUNTIME, [], {
-        encoding : 'utf8',
+        encoding: 'utf8',
         cwd: process.cwd(),
         env: process.env,
       });
@@ -32,7 +32,7 @@ describe('Runtime', () => {
     it('displays script output', () => {
       const scriptPath = path.resolve(__dirname, './test_root/logging.js');
       const output = spawnSync(JEST_RUNTIME, [scriptPath], {
-        encoding : 'utf8',
+        encoding: 'utf8',
         cwd: process.cwd(),
         env: process.env,
       });
@@ -42,7 +42,7 @@ describe('Runtime', () => {
     it('throws script errors', () => {
       const scriptPath = path.resolve(__dirname, './test_root/throwing.js');
       const output = spawnSync(JEST_RUNTIME, [scriptPath], {
-        encoding : 'utf8',
+        encoding: 'utf8',
         cwd: process.cwd(),
         env: process.env,
       });

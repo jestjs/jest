@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jsdom": "^9.0.0",
+    "jsdom": "^9.2.1",
     "jest-util": "^12.1.0"
   }
 }
