@@ -17,7 +17,6 @@ import type {
 import type {Config, Path} from 'types/Config';
 import type {HasteResolverContext} from 'types/Runtime';
 
-const EmptySuiteError = require('./EmptySuiteError');
 const Test = require('./Test');
 
 const fs = require('graceful-fs');
