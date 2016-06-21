@@ -8,7 +8,9 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "chalk": "^1.1.1",
     "jest-runtime": "^12.1.0",
+    "jest-util": "^12.1.0",
     "repl": "^0.1.3",
     "yargs": "^4.7.1"
   },

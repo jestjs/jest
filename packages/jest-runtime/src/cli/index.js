@@ -22,7 +22,7 @@ const Runtime = require('../');
 
 const VERSION = require('../../package.json').version;
 
-function Run(cliArgv: Object) {
+function run(cliArgv?: Object, cliInfo?: Array<string>) {
   let argv;
   if (cliArgv) {
     argv = cliArgv;
@@ -54,6 +54,10 @@ function Run(cliArgv: Object) {
 
   const root = getPackageRoot();
   const testFilePath = path.resolve(process.cwd(), argv._[0]);
+  const info = cliInfo ? cliInfo.join(', ') : '';
+
+  console.log(`Using Jest Runtime v${VERSION}, ${info}`);
+
   readConfig(argv, root)
     .then(config => {
       Runtime.buildHasteMap(config, {maxWorkers: 1})
@@ -75,4 +79,4 @@ function Run(cliArgv: Object) {
     });
 }
 
-exports.Run = Run;
+exports.run = run;

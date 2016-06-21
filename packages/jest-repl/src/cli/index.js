@@ -5,16 +5,20 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
 
+const Runtime = require('jest-runtime');
+
 const args = require('./args');
 const path = require('path');
-const RuntimeCLI = require('../../../jest-runtime/build/cli');
 const yargs = require('yargs');
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
+const VERSION = require('../../package.json').version;
 
 module.exports = function() {
   const argv = yargs
@@ -24,5 +28,5 @@ module.exports = function() {
 
   argv._ = [REPL_SCRIPT];
 
-  RuntimeCLI.Run(argv);
+  Runtime.runCLI(argv, [`Jest REPL v${VERSION}`]);
 };

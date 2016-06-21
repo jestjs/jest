@@ -16,7 +16,7 @@ const getPackageRoot = require('jest-util').getPackageRoot;
 const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
 const yargs = require('yargs');
 
-function Run() {
+function run() {
   const argv = yargs
     .usage(args.usage)
     .options(args.options)
@@ -37,4 +37,4 @@ function Run() {
   });
 }
 
-exports.Run = Run;
+exports.run = run;
