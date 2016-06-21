@@ -38,7 +38,7 @@ const evalCommand = (cmd, context, filename, callback, config) => {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);
-}
+};
 
 const isRecoverableError = error => {
   if (error && error.name === 'SyntaxError') {
@@ -51,7 +51,7 @@ const isRecoverableError = error => {
     ].some(exception => error.message.includes(exception));
   }
   return false;
-}
+};
 
 if (jestConfig.scriptPreprocessor) {
   /* $FlowFixMe */

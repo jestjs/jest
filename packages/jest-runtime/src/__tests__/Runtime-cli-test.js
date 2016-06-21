@@ -36,7 +36,7 @@ describe('Runtime', () => {
         cwd: process.cwd(),
         env: process.env,
       });
-      expect(output.stdout.trim()).toBe('Hello, world!');
+      expect(output.stdout.trim()).toMatch('Hello, world!');
     });
 
     it('throws script errors', () => {
