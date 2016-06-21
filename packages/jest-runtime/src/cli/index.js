@@ -22,13 +22,18 @@ const Runtime = require('../');
 
 const VERSION = require('../../package.json').version;
 
-function Run() {
-  const argv = yargs
-  .usage(args.usage)
-  .options(args.options)
-  .argv;
+function Run(cliArgv: Object) {
+  let argv;
+  if (cliArgv) {
+    argv = cliArgv;
+  } else {
+    argv = yargs
+      .usage(args.usage)
+      .options(args.options)
+      .argv;
 
-  warnAboutUnrecognizedOptions(argv, args.options);
+    warnAboutUnrecognizedOptions(argv, args.options);
+  }
 
   if (argv.help) {
     yargs.showHelp();
@@ -58,6 +63,7 @@ function Run() {
 
           const env = new TestEnvironment(config);
           env.global.console = new Console(process.stdout, process.stderr);
+          env.global.jestConfig = config;
 
           const moduleLoader = new Runtime(config, env, hasteMap.resolver);
           moduleLoader.requireModule(testFilePath);
