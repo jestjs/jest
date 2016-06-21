@@ -34,8 +34,10 @@ describe('resolve', () => {
     })
   );
 
-  it('doesn\'t resolve "browser" dependency by default', () =>
-    createRuntime(__filename, {}).then(runtime => {
+  it(`doesn't resolve "browser" dependency by default`, () =>
+    createRuntime(__filename, {}, {
+      browser: false,
+    }).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
         'jest-resolve-test'

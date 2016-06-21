@@ -26,6 +26,7 @@ const resolve = require('resolve');
 const browserResolve = require('browser-resolve');
 
 type ResolverConfig = {
+  browser?: boolean,
   defaultPlatform: ?string,
   extensions: Array<string>,
   hasCoreModules: boolean,
@@ -33,15 +34,14 @@ type ResolverConfig = {
   moduleNameMapper: ?{[key: string]: RegExp},
   modulePaths: Array<Path>,
   platforms?: Array<string>,
-  browser: boolean,
 };
 
 type FindNodeModuleConfig = {
   basedir: Path,
+  browser?: boolean,
   extensions: Array<string>,
-  paths?: Array<Path>,
   moduleDirectory: Array<string>,
-  browser: boolean,
+  paths?: Array<Path>,
 };
 
 export type ResolveModuleConfig = {skipNodeResolution?: boolean};
@@ -104,6 +104,7 @@ class Resolver {
     moduleMap: HasteMap,
   ): Resolver {
     return new Resolver(moduleMap, {
+      browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
       hasCoreModules: true,
@@ -111,7 +112,6 @@ class Resolver {
       moduleNameMapper: getModuleNameMapper(config),
       modulePaths: config.modulePaths,
       platforms: config.haste.platforms,
-      browser: config.browser,
     });
   }
 
@@ -167,10 +167,10 @@ class Resolver {
     if (!options || !options.skipNodeResolution) {
       module = Resolver.findNodeModule(moduleName, {
         basedir: dirname,
+        browser: this._options.browser,
         extensions,
         moduleDirectory,
         paths,
-        browser: this._options.browser,
       });
 
       if (module) {

@@ -19,9 +19,9 @@
     "rimraf": "^2.5.2"
   },
   "scripts": {
-    "build-clean": "rm -rf ./packages/*/node_modules",
+    "build-clean": "rm -rf ./packages/*/build",
     "build": "node ./scripts/build.js",
-    "clean": "rm -rf ./packages/*/build; npm run build-clean",
+    "clean": "rm -rf ./packages/*/node_modules; npm run build-clean",
     "lint": "eslint .",
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js",
     "t": "node ./scripts/test.js",
