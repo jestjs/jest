@@ -21,13 +21,13 @@ let normalizeConfig;
 
 describe('SearchSource', () => {
   const name = 'SearchSource';
-  let buildHasteMap;
+  let Runtime;
   let hasteMap;
   let SearchSource;
   let searchSource;
 
   beforeEach(() => {
-    buildHasteMap = require('../lib/buildHasteMap');
+    Runtime = require('jest-runtime');
     SearchSource = require('../SearchSource');
     normalizeConfig = require('jest-config').normalize;
   });
@@ -41,7 +41,7 @@ describe('SearchSource', () => {
         rootDir: '.',
         testPathDirs: [],
       });
-      hasteMap = buildHasteMap(config, {maxWorkers});
+      hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       searchSource = new SearchSource(hasteMap, config);
     });
 
@@ -75,7 +75,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         testRegex: 'not-really-a-test',
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -94,7 +94,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx'],
         testRegex: 'test\.jsx?',
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -113,7 +113,7 @@ describe('SearchSource', () => {
         rootDir,
         testRegex,
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -132,7 +132,7 @@ describe('SearchSource', () => {
         testRegex,
         moduleFileExtensions: ['jsx'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -151,7 +151,7 @@ describe('SearchSource', () => {
         testRegex,
         moduleFileExtensions: ['foobar'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -170,7 +170,7 @@ describe('SearchSource', () => {
         testRegex,
         moduleFileExtensions: ['js', 'jsx'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -189,7 +189,7 @@ describe('SearchSource', () => {
         rootDir,
         testDirectoryName: '__testtests__',
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -207,7 +207,7 @@ describe('SearchSource', () => {
         rootDir,
         testFileExtensions: ['js', 'jsx'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -228,7 +228,7 @@ describe('SearchSource', () => {
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx', 'foobar'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -261,7 +261,7 @@ describe('SearchSource', () => {
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
-      hasteMap = buildHasteMap(config, {maxWorkers});
+      hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       searchSource = new SearchSource(hasteMap, config);
     });
 

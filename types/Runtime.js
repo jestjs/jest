@@ -8,20 +8,12 @@
  * @flow
  */
 
-'use strict';
+import type {HasteMap as HasteMapObject} from './HasteMap';
+import type HasteMap from '../packages/jest-haste-map/src';
+import type HasteResolver from '../packages/jest-resolve/src';
 
-const Console = console.Console;
-
-class NullConsole extends Console {
-  assert() {}
-  dir() {}
-  error() {}
-  info() {}
-  log() {}
-  time() {}
-  timeEnd() {}
-  trace() {}
-  warn() {}
-}
-
-module.exports = NullConsole;
+export type HasteResolverContext = {
+  instance: HasteMap,
+  moduleMap: HasteMapObject,
+  resolver: HasteResolver,
+};

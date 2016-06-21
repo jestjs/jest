@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {HasteResolverContext} from './types';
+import type {HasteResolverContext} from 'types/Runtime';
 import type {Path} from 'types/Config';
 import type {ResolveModuleConfig} from '../../jest-resolve/src';
 

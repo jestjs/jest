@@ -10,11 +10,7 @@
 
 'use strict';
 
-const FakeTimers = require('./FakeTimers');
-const JasmineFormatter = require('./JasmineFormatter');
-
-const formatFailureMessage = require('./formatFailureMessage');
-const installCommonGlobals = require('./installCommonGlobals');
+const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
@@ -38,10 +34,34 @@ const createDirectory = (path: string) => {
   }
 };
 
+const getPackageRoot = () => {
+  const cwd = process.cwd();
+
+  // Is the cwd somewhere within an npm package?
+  let root = cwd;
+  while (!fs.existsSync(path.join(root, 'package.json'))) {
+    if (root === '/' || root.match(/^[A-Z]:\\/)) {
+      root = cwd;
+      break;
+    }
+    root = path.resolve(root, '..');
+  }
+
+  return root;
+};
+
+exports.Console = require('./Console');
+exports.FakeTimers = require('./FakeTimers');
+exports.JasmineFormatter = require('./JasmineFormatter');
+exports.NullConsole = require('./NullConsole');
+
+
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
-exports.FakeTimers = FakeTimers;
-exports.formatFailureMessage = formatFailureMessage;
-exports.JasmineFormatter = JasmineFormatter;
-exports.installCommonGlobals = installCommonGlobals;
+exports.formatFailureMessage = require('./formatFailureMessage');
+exports.getPackageRoot = getPackageRoot;
+exports.installCommonGlobals = require('./installCommonGlobals');
 exports.replacePathSepForRegex = replacePathSepForRegex;
+exports.warnAboutUnrecognizedOptions =
+  require('./args').warnAboutUnrecognizedOptions;
+exports.wrap = require('./args').wrap;

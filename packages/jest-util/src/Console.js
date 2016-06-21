@@ -32,7 +32,7 @@
 'use strict';
 
 const util = require('util');
-const Console = console.Console;
+const Console = require('console').Console;
 const chalk = require('chalk');
 
 class CustomConsole extends Console {

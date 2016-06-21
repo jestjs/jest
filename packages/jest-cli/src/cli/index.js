@@ -13,24 +13,10 @@
 const args = require('./args');
 const fs = require('fs');
 const getJest = require('./getJest');
+const getPackageRoot = require('jest-util').getPackageRoot;
 const path = require('path');
+const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
 const yargs = require('yargs');
-
-function getPackageRoot() {
-  const cwd = process.cwd();
-
-  // Is the cwd somewhere within an npm package?
-  let root = cwd;
-  while (!fs.existsSync(path.join(root, 'package.json'))) {
-    if (root === '/' || root.match(/^[A-Z]:\\/)) {
-      root = cwd;
-      break;
-    }
-    root = path.resolve(root, '..');
-  }
-
-  return root;
-}
 
 function Run() {
   const argv = yargs
@@ -39,7 +25,7 @@ function Run() {
     .check(args.check)
     .argv;
 
-  args.warnAboutUnrecognizedOptions(argv, args.options);
+  warnAboutUnrecognizedOptions(argv, args.options);
 
   if (argv.help) {
     yargs.showHelp();
