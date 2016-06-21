@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "browser-resolve": "^1.11.2",
     "jest-haste-map": "^12.1.0",
     "resolve": "^1.1.6"
   },

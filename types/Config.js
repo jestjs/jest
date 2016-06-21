@@ -22,6 +22,7 @@ export type ConfigGlobals = Object;
 type BaseConfig = {
   automock: boolean,
   bail: boolean,
+  browser: boolean,
   cacheDirectory: Path,
   coverageCollector: Path,
   coverageReporters: Array<string>,

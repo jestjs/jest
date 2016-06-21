@@ -98,6 +98,17 @@ describe('normalize', () => {
     });
   });
 
+  describe('browser', () => {
+    it('falsy browser is not overwritten', () => {
+      const config = normalize({
+        rootDir: '/root/path/foo',
+        browser: true,
+      });
+
+      expect(config.browser).toBe(true);
+    });
+  });
+
   describe('collectCoverageOnlyFrom', () => {
     it('normalizes all paths relative to rootDir', () => {
       const config = normalize({
