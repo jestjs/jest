@@ -58,7 +58,7 @@ function getTestEnvironment(config) {
   }
 
   module = Resolver.findNodeModule(`jest-environment-${env}`, {
-    basedir: config.rootDir
+    basedir: config.rootDir,
   });
   if (module) {
     return module;
