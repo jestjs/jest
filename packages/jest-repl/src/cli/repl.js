@@ -16,6 +16,8 @@ const vm = require('vm');
 
 /* global jestConfig */
 declare var jestConfig: Object;
+/* global jest */
+declare var jest: Object;
 
 let preprocessor;
 
@@ -23,7 +25,11 @@ function evalCommand(cmd, context, filename, callback, config) {
   let result;
   try {
     if (preprocessor) {
-      cmd = preprocessor.process(cmd, '', jestConfig);
+      cmd = preprocessor.process(
+        cmd,
+        jestConfig.replname || 'default.js',
+        jestConfig
+      );
     }
     result = vm.runInThisContext(cmd);
   } catch (e) {
@@ -52,6 +58,8 @@ function isRecoverableError(e) {
 }
 
 (() => {
+  jest.disableAutomock();
+
   if (jestConfig.scriptPreprocessor) {
     // $FlowFixMe
     preprocessor = require(jestConfig.scriptPreprocessor);

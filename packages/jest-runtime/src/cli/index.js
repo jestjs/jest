@@ -22,13 +22,18 @@ const Runtime = require('../');
 
 const VERSION = require('../../package.json').version;
 
-function Run(cliArgs: string) {
-  const argumentBuilder = yargs
-    .usage(args.usage)
-    .options(args.options);
-  const argv = cliArgs ? argumentBuilder.parse(cliArgs) : argumentBuilder.argv;
+function Run(cliArgv: Object) {
+  let argv;
+  if (cliArgv) {
+    argv = cliArgv;
+  } else {
+    argv = yargs
+      .usage(args.usage)
+      .options(args.options)
+      .argv;
 
-  warnAboutUnrecognizedOptions(argv, args.options);
+    warnAboutUnrecognizedOptions(argv, args.options);
+  }
 
   if (argv.help) {
     yargs.showHelp();

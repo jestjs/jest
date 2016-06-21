@@ -52,6 +52,10 @@ function setFromArgv(config, argv) {
     config.logHeapUsage = argv.logHeapUsage;
   }
 
+  if (argv.replname) {
+    config.replname = argv.replname;
+  }
+
   if (argv.silent) {
     config.silent = true;
   }

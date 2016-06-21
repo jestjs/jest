@@ -265,6 +265,7 @@ function normalize(config, argv) {
       case 'noStackTrace':
       case 'notify':
       case 'persistModuleRegistryBetweenSpecs':
+      case 'replname':
       case 'rootDir':
       case 'updateSnapshot':
       case 'testEnvData':
