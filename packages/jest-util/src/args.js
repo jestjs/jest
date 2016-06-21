@@ -39,9 +39,7 @@ const warnAboutUnrecognizedOptions = (argv: Object, options: Object) => {
     !allowedOptions.has(arg)
   ));
   if (unrecognizedOptions.length) {
-    console.warn(
-      'Unrecognized options: ' + unrecognizedOptions.join(', ')
-    );
+    console.warn('Unrecognized options: ' + unrecognizedOptions.join(', '));
   }
 };
 

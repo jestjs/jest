@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 let createRuntime;
@@ -35,10 +35,10 @@ describe('Runtime', () => {
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModule'
+          'RegularModule',
         );
         expect(exports.setModuleStateValue._isMockFunction).toBe(true);
-      })
+      }),
     );
 
     it(`doesn't mock modules when explicitly unmocked`, () =>
@@ -47,10 +47,10 @@ describe('Runtime', () => {
         root.jest.unmock('RegularModule');
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModule'
+          'RegularModule',
         );
         expect(exports.isRealModule).toBe(true);
-      })
+      }),
     );
 
     it(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () =>
@@ -59,10 +59,10 @@ describe('Runtime', () => {
         root.jest.unmock('./RegularModule');
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModule'
+          'RegularModule',
         );
         expect(exports.isRealModule).toBe(true);
-      })
+      }),
     );
 
     it(`doesn't mock modules when disableAutomock() has been called`, () =>
@@ -71,20 +71,20 @@ describe('Runtime', () => {
         root.jest.disableAutomock();
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModule'
+          'RegularModule',
         );
         expect(exports.isRealModule).toBe(true);
-      })
+      }),
     );
 
     it('uses manual mock when automocking on and mock is avail', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'ManuallyMocked'
+          'ManuallyMocked',
         );
         expect(exports.isManualMockModule).toBe(true);
-      })
+      }),
     );
 
     it('does not use manual mock when automocking is off and a real module is available', () =>
@@ -93,50 +93,50 @@ describe('Runtime', () => {
         root.jest.disableAutomock();
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'ManuallyMocked'
+          'ManuallyMocked',
         );
         expect(exports.isManualMockModule).toBe(false);
-      })
+      }),
     );
 
     it('resolves mapped module names and unmocks them by default', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         let exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'image!not-really-a-module'
+          'image!not-really-a-module',
         );
         expect(exports.isGlobalImageStub).toBe(true);
 
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'mappedToPath'
+          'mappedToPath',
         );
         expect(exports.isGlobalImageStub).toBe(true);
 
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'mappedToDirectory'
+          'mappedToDirectory',
         );
         expect(exports.isIndex).toBe(true);
 
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'cat.png'
+          'cat.png',
         );
         expect(exports.isRelativeImageStub).toBe(true);
 
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          '../photos/dog.png'
+          '../photos/dog.png',
         );
         expect(exports.isRelativeImageStub).toBe(true);
 
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'module/name/test'
+          'module/name/test',
         );
         expect(exports).toBe('mapped_module');
-      })
+      }),
     );
 
     it('automocking be disabled by default', () =>
@@ -146,10 +146,10 @@ describe('Runtime', () => {
       }).then(runtime => {
         const exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModule'
+          'RegularModule',
         );
         expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
-      })
+      }),
     );
 
     describe('transitive dependencies', () => {
@@ -168,27 +168,27 @@ describe('Runtime', () => {
         }).then(runtime => {
           const root = runtime.requireModule(
             runtime.__mockRootPath,
-            './root.js'
+            './root.js',
           );
           expectUnmocked(runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-main-dep'
+            'npm3-main-dep',
           ));
 
           // Test twice to make sure Runtime caching works properly
           root.jest.resetModuleRegistry();
           expectUnmocked(runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-main-dep')
-          );
+            'npm3-main-dep',
+          ));
 
           // Directly requiring the transitive dependency will mock it
           const transitiveDep = runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-transitive-dep'
+            'npm3-transitive-dep',
           );
           expect(transitiveDep()).toEqual(undefined);
-        })
+        }),
       );
 
       it('unmocks transitive dependencies in node_modules when using unmock', () =>
@@ -197,23 +197,23 @@ describe('Runtime', () => {
           root.jest.unmock('npm3-main-dep');
           expectUnmocked(runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-main-dep'
+            'npm3-main-dep',
           ));
 
           // Test twice to make sure Runtime caching works properly
           root.jest.resetModuleRegistry();
           expectUnmocked(runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-main-dep'
+            'npm3-main-dep',
           ));
 
           // Directly requiring the transitive dependency will mock it
           const transitiveDep = runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-transitive-dep'
+            'npm3-transitive-dep',
           );
           expect(transitiveDep()).toEqual(undefined);
-        })
+        }),
       );
 
       it('unmocks transitive dependencies in node_modules by default when using both patterns and unmock', () =>
@@ -225,23 +225,23 @@ describe('Runtime', () => {
           root.jest.unmock('npm3-main-dep');
           expectUnmocked(runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-main-dep'
+            'npm3-main-dep',
           ));
 
           // Test twice to make sure Runtime caching works properly
           root.jest.resetModuleRegistry();
           expectUnmocked(runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-main-dep'
+            'npm3-main-dep',
           ));
 
           // Directly requiring the transitive dependency will mock it
           const transitiveDep = runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'npm3-transitive-dep'
+            'npm3-transitive-dep',
           );
           expect(transitiveDep()).toEqual(undefined);
-        })
+        }),
       );
     });
   });

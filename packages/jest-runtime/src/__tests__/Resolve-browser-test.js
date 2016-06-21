@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 let createRuntime;
@@ -28,10 +28,10 @@ describe('resolve', () => {
     }).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'jest-resolve-test'
+        'jest-resolve-test',
       );
       expect(exports.isBrowser).toBe(true);
-    })
+    }),
   );
 
   it(`doesn't resolve "browser" dependency by default`, () =>
@@ -40,9 +40,9 @@ describe('resolve', () => {
     }).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'jest-resolve-test'
+        'jest-resolve-test',
       );
       expect(exports.isBrowser).toBe(false);
-    })
+    }),
   );
 });

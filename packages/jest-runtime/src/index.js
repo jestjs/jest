@@ -120,7 +120,7 @@ class Runtime {
 
   static buildHasteMap(
     config: Config,
-    options: BuildHasteMapOptions
+    options: BuildHasteMapOptions,
   ): Promise<HasteResolverContext> {
     utils.createDirectory(config.cacheDirectory);
     const instance = createHasteMap(config, {
@@ -135,7 +135,7 @@ class Runtime {
       }),
       error => {
         throw error;
-      }
+      },
     );
   }
 
@@ -183,7 +183,7 @@ class Runtime {
       this._moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
-          fs.readFileSync(modulePath, 'utf8')
+          fs.readFileSync(modulePath, 'utf8'),
         );
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
@@ -319,7 +319,7 @@ class Runtime {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,
-          filename
+          filename,
         );
       }
       const collector = collectors[filename];
@@ -348,7 +348,7 @@ class Runtime {
       filename, // __filename
       this._environment.global, // global object
       this._createRuntimeFor(filename), // jest object
-      collectorStore // the coverage object
+      collectorStore, // the coverage object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -380,7 +380,7 @@ class Runtime {
           `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string\n` +
           'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
           `Preprocessor: ${preprocessorInfo}.\n${babelInfo}` +
-          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`
+          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`,
         );
       }
       throw e;
@@ -415,13 +415,13 @@ class Runtime {
       if (mockMetadata === null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`
+          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
         );
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;
     }
     return moduleMocker.generateFromMetadata(
-      this._mockMetaDataCache[modulePath]
+      this._mockMetaDataCache[modulePath],
     );
   }
 
@@ -634,7 +634,7 @@ class Runtime {
         // Make a shallow copy only because a deep copy seems like
         // overkill..
         Object.keys(this._config.testEnvData).forEach(
-          key => frozenCopy[key] = this._config.testEnvData[key]
+          key => frozenCopy[key] = this._config.testEnvData[key],
         );
         Object.freeze(frozenCopy);
         return frozenCopy;

@@ -150,7 +150,7 @@ function getSlots(object?: Object): Array<string> {
 
 function createMockFunction(
   metadata: MockFunctionMetadata,
-  mockConstructor: () => any
+  mockConstructor: () => any,
 ): any {
   let name = metadata.name;
   if (!name) {
@@ -180,7 +180,7 @@ function createMockFunction(
     'mockConstructor',
     'return function ' + name + '() {' +
       'return mockConstructor.apply(this,arguments);' +
-    '}' + bindCall
+    '}' + bindCall,
   )(mockConstructor);
   /* eslint-enable no-new-func */
 }
@@ -327,7 +327,7 @@ function makeComponent(metadata: MockFunctionMetadata): Mock {
 function generateMock(
   metadata: MockFunctionMetadata,
   callbacks: Array<() => any>,
-  refs: Object
+  refs: Object,
 ): Mock {
   const mock = makeComponent(metadata);
   if (metadata.refID != null) {
@@ -364,7 +364,7 @@ function generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
 
 function getMetadata(
   component: any,
-  _refs?: Map
+  _refs?: Map,
 ): ?MockFunctionMetadata {
   const refs = _refs || new Map();
   const ref = refs.get(component);

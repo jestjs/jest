@@ -30,13 +30,13 @@ type Timer = {
 };
 
 type TimerAPI = {
-  clearImmediate(timeoutId?: any): void;
-  clearInterval(intervalId?: number): void;
-  clearTimeout(timeoutId?: any): void;
-  nextTick?: (callback: Callback) => void;
-  setImmediate(callback: any, ms?: number, ...args: Array<any>): number;
-  setInterval(callback: any, ms?: number, ...args: Array<any>): number;
-  setTimeout(callback: any, ms?: number, ...args: Array<any>): number;
+  clearImmediate(timeoutId?: any): void,
+  clearInterval(intervalId?: number): void,
+  clearTimeout(timeoutId?: any): void,
+  nextTick?: (callback: Callback) => void,
+  setImmediate(callback: any, ms?: number, ...args: Array<any>): number,
+  setInterval(callback: any, ms?: number, ...args: Array<any>): number,
+  setTimeout(callback: any, ms?: number, ...args: Array<any>): number,
 }
 
 const MS_IN_A_YEAR = 31536000000;
@@ -75,22 +75,22 @@ class FakeTimers {
 
     this._fakeTimerAPIs = {
       setTimeout: mocks.getMockFn().mockImpl(
-        this._fakeSetTimeout.bind(this)
+        this._fakeSetTimeout.bind(this),
       ),
       clearTimeout: mocks.getMockFn().mockImpl(
-        this._fakeClearTimer.bind(this)
+        this._fakeClearTimer.bind(this),
       ),
       setInterval: mocks.getMockFn().mockImpl(
-        this._fakeSetInterval.bind(this)
+        this._fakeSetInterval.bind(this),
       ),
       clearInterval: mocks.getMockFn().mockImpl(
-        this._fakeClearTimer.bind(this)
+        this._fakeClearTimer.bind(this),
       ),
       setImmediate: mocks.getMockFn().mockImpl(
-        this._fakeSetImmediate.bind(this)
+        this._fakeSetImmediate.bind(this),
       ),
       clearImmediate: mocks.getMockFn().mockImpl(
-        this._fakeClearImmediate.bind(this)
+        this._fakeClearImmediate.bind(this),
       ),
     };
 
@@ -100,7 +100,7 @@ class FakeTimers {
       && typeof global.process.nextTick === 'function') {
       this._originalTimerAPIs.nextTick = global.process.nextTick;
       this._fakeTimerAPIs.nextTick = mocks.getMockFn().mockImpl(
-        this._fakeNextTick.bind(this)
+        this._fakeNextTick.bind(this),
       );
     }
 
@@ -119,7 +119,7 @@ class FakeTimers {
 
   clearAllTimers() {
     this._immediates.forEach(
-      immediate => this._fakeClearImmediate(immediate.uuid)
+      immediate => this._fakeClearImmediate(immediate.uuid),
     );
     for (const uuid in this._timers) {
       delete this._timers[uuid];
@@ -157,7 +157,7 @@ class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' + this._maxLoops + ' ticks, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...'
+        'Assuming we\'ve hit an infinite recursion and bailing out...',
       );
     }
   }
@@ -177,7 +177,7 @@ class FakeTimers {
       throw new Error(
         'Ran ' + this._maxLoops +
         ' immediates, and there are still more! Assuming ' +
-        'we\'ve hit an infinite recursion and bailing out...'
+        'we\'ve hit an infinite recursion and bailing out...',
       );
     }
   }
@@ -219,7 +219,7 @@ class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' + this._maxLoops + ' timers, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...'
+        'Assuming we\'ve hit an infinite recursion and bailing out...',
       );
     }
   }
@@ -262,7 +262,7 @@ class FakeTimers {
     if (i === this._maxLoops) {
       throw new Error(
         'Ran ' + this._maxLoops + ' timers, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...'
+        'Assuming we\'ve hit an infinite recursion and bailing out...',
       );
     }
   }

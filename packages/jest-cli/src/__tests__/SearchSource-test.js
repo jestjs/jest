@@ -252,7 +252,7 @@ describe('SearchSource', () => {
       'jest-runtime',
       'src',
       '__tests__',
-      'test_root'
+      'test_root',
     );
     const rootPath = path.join(rootDir, 'root.js');
 

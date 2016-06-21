@@ -66,7 +66,7 @@ const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
     const moduleNameMapper = Object.create(null);
     config.moduleNameMapper.forEach(
-      map => moduleNameMapper[map[1]] = new RegExp(map[0])
+      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
     );
     return moduleNameMapper;
   }
@@ -126,7 +126,7 @@ class Resolver {
           extensions: options.extensions,
           moduleDirectory: options.moduleDirectory,
           paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
-        }
+        },
       );
     } catch (e) {}
     return null;
@@ -142,7 +142,7 @@ class Resolver {
   resolveModule(
     from: Path,
     moduleName: string,
-    options?: ResolveModuleConfig
+    options?: ResolveModuleConfig,
   ): Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
@@ -185,7 +185,7 @@ class Resolver {
     if (module) {
       try {
         return this._moduleNameCache[key] = require.resolve(
-          path.join.apply(path, [path.dirname(module)].concat(parts))
+          path.join.apply(path, [path.dirname(module)].concat(parts)),
         );
       } catch (ignoredError) {}
     }
@@ -195,7 +195,7 @@ class Resolver {
     //    current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
+      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
     (err: any).code = 'MODULE_NOT_FOUND';
     throw err;
@@ -256,7 +256,7 @@ class Resolver {
 
   resolveDependencies(
     file: Path,
-    options?: ResolveModuleConfig
+    options?: ResolveModuleConfig,
   ): Array<Path> {
     if (!this._moduleMap.files[file]) {
       return [];
@@ -277,7 +277,7 @@ class Resolver {
   resolveInverseDependencies(
     paths: Set<Path>,
     filter: (file: Path) => boolean,
-    options?: ResolveModuleConfig
+    options?: ResolveModuleConfig,
   ): Array<Path> {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();

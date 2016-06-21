@@ -125,12 +125,12 @@ class SearchSource {
   }
 
   _getAllTestPaths(
-    testPathPattern: StrOrRegExpPattern
+    testPathPattern: StrOrRegExpPattern,
   ): Promise<SearchResult> {
     return this._hasteMap.then(data => (
       this._filterTestPathsWithStats(
         Object.keys(data.moduleMap.files),
-        testPathPattern
+        testPathPattern,
       )
     ));
   }
@@ -142,13 +142,13 @@ class SearchSource {
   }
 
   findMatchingTests(
-    testPathPattern: StrOrRegExpPattern
+    testPathPattern: StrOrRegExpPattern,
   ): Promise<SearchResult> {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
       if (Resolver.fileExists(maybeFile)) {
         return Promise.resolve(
-          this._filterTestPathsWithStats([maybeFile])
+          this._filterTestPathsWithStats([maybeFile]),
         );
       }
     }
@@ -164,7 +164,7 @@ class SearchSource {
           this.isTestFilePath.bind(this),
           {
             skipNodeResolution: this._options.skipNodeResolution,
-          }
+          },
         ),
       }));
   }
@@ -176,7 +176,7 @@ class SearchSource {
           throw new Error(
             'It appears that one of your testPathDirs does not exist ' +
             'within a git or hg repository. Currently `--onlyChanged` ' +
-            'only works with git or hg projects.'
+            'only works with git or hg projects.',
           );
         }
         return Promise.all(Array.from(repos).map(repo => {
@@ -186,7 +186,7 @@ class SearchSource {
         }));
       })
       .then(changedPathSets => this.findRelatedTests(
-        new Set(Array.prototype.concat.apply([], changedPathSets))
+        new Set(Array.prototype.concat.apply([], changedPathSets)),
       ));
   }
 

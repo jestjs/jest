@@ -91,13 +91,13 @@ function runJest(config, argv, pipe, onComplete) {
     .then(data => {
       if (!data.paths.length) {
         pipe.write(
-          source.getNoTestsFoundMessage(patternInfo, config, data) + '\n'
+          source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
         );
       }
       return data.paths;
     })
     .then(testPaths =>
-      new TestRunner(hasteMap, config, {maxWorkers}).runTests(testPaths)
+      new TestRunner(hasteMap, config, {maxWorkers}).runTests(testPaths),
     )
     .then(runResults => {
       if (config.testResultsProcessor) {
@@ -107,7 +107,7 @@ function runJest(config, argv, pipe, onComplete) {
       }
       if (argv.json) {
         process.stdout.write(
-          JSON.stringify(formatTestResults(runResults, config))
+          JSON.stringify(formatTestResults(runResults, config)),
         );
       }
       return runResults;
@@ -181,10 +181,10 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
                     runJest(config, argv, pipe, () => isRunning = false)
                       .then(
                         resolve,
-                        error => console.error(chalk.red(error))
+                        error => console.error(chalk.red(error)),
                       );
                   },
-                  WATCHER_DEBOUNCE
+                  WATCHER_DEBOUNCE,
                 );
               }
             });

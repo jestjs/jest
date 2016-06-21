@@ -69,13 +69,13 @@ class IstanbulTestReporter extends DefaultTestReporter {
                 if (threshold * -1 < actualUncovered) {
                   errors.push(
                     `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                    `exceeds ${name} threshold (${-1 * threshold})`
+                    `exceeds ${name} threshold (${-1 * threshold})`,
                   );
                 }
               } else if (actual < threshold) {
                 errors.push(
                   `Jest: Coverage for ${key} (${actual}` +
-                  `%) does not meet ${name} threshold (${threshold}%)`
+                  `%) does not meet ${name} threshold (${threshold}%)`,
                 );
               }
             }
@@ -85,7 +85,7 @@ class IstanbulTestReporter extends DefaultTestReporter {
         const errors = check(
           'global',
           config.coverageThreshold.global,
-          globalResults
+          globalResults,
         );
 
         if (errors.length > 0) {

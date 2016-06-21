@@ -59,7 +59,7 @@ class TestRunner {
   constructor(
     hasteMap: Promise<HasteResolverContext>,
     config: Config,
-    options: Options
+    options: Options,
   ) {
     this._hasteMap = hasteMap;
     this._config = config;
@@ -86,7 +86,7 @@ class TestRunner {
     // fastest results.
     try {
       this._testPerformanceCache = JSON.parse(fs.readFileSync(
-        this._getTestPerformanceCachePath()
+        this._getTestPerformanceCachePath(),
       ));
     } catch (e) {}
 
@@ -128,7 +128,7 @@ class TestRunner {
       if (config.useStderr) {
         maybeReporter = new TestReporter(Object.create(
           process,
-          {stdout: {value: process.stderr}}
+          {stdout: {value: process.stderr}},
         ));
       } else {
         maybeReporter = new TestReporter();
@@ -179,7 +179,7 @@ class TestRunner {
       reporter.onTestResult && reporter.onTestResult(
         config,
         testResult,
-        aggregatedResults
+        aggregatedResults,
       );
     };
 
@@ -247,7 +247,7 @@ class TestRunner {
   _createInBandTestRun(
     testPaths: Array<Path>,
     onTestResult: OnTestResult,
-    onRunFailure: OnRunFailure
+    onRunFailure: OnRunFailure,
   ) {
     return testPaths.reduce((promise, path) =>
       promise
@@ -255,7 +255,7 @@ class TestRunner {
         .then(data => new Test(path, this._config, data.resolver).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
-      Promise.resolve()
+      Promise.resolve(),
     );
   }
 
@@ -282,11 +282,11 @@ class TestRunner {
               if (err.type === 'ProcessTerminatedError') {
                 console.error(
                   'A worker process has quit unexpectedly! ' +
-                  'Most likely this an initialization error.'
+                  'Most likely this an initialization error.',
                 );
                 process.exit(1);
               }
-            }))
+            })),
         )
         .then(() => workerFarm.end(farm));
       });

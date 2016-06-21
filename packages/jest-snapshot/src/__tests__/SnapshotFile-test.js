@@ -87,7 +87,7 @@ describe('SnapshotFile', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
     expect(
-      () => snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE)
+      () => snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE),
     ).not.toThrow();
   });
 

@@ -54,7 +54,7 @@ module.exports = (data: WorkerData, callback: WorkerCallback) => {
     if (!resolvers[name]) {
       resolvers[name] = createResolver(
         data.config,
-        createHasteMap(data.config).read()
+        createHasteMap(data.config).read(),
       );
     }
 
@@ -62,7 +62,7 @@ module.exports = (data: WorkerData, callback: WorkerCallback) => {
       .run()
       .then(
         result => callback(null, result),
-        error => callback(formatError(error))
+        error => callback(formatError(error)),
       );
   } catch (error) {
     callback(formatError(error));

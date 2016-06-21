@@ -25,8 +25,8 @@ jest.mock('child_process', () => ({
 jest.mock('worker-farm', () => {
   const mock = jest.fn(
     (options, worker) => workerFarmMock = jest.fn(
-      (data, callback) => require(worker)(data, callback)
-    )
+      (data, callback) => require(worker)(data, callback),
+    ),
   );
   mock.end = jest.fn();
   return mock;
@@ -48,7 +48,7 @@ jest.mock('../crawlers/watchman', () =>
     }
 
     return Promise.resolve(data);
-  })
+  }),
 );
 
 const cacheFilePath = '/cache-file';
@@ -172,9 +172,9 @@ describe('HasteMap', () => {
       .toMatch(/^\/-scoped-package-(.*)$/);
 
     expect(
-      HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value')
+      HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
     ).not.toEqual(
-      HasteMap.getCacheFilePath('/', '-scoped-package', 'random-value')
+      HasteMap.getCacheFilePath('/', '-scoped-package', 'random-value'),
     );
   });
 
@@ -507,7 +507,7 @@ describe('HasteMap', () => {
 
       expect(console.warn).toBeCalledWith(
         'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
-        'crawler.\n  Error: watchman error'
+        'crawler.\n  Error: watchman error',
       );
     });
   });
@@ -555,9 +555,9 @@ describe('HasteMap', () => {
           expect(error.message).toEqual(
             'Crawler retry failed:\n' +
             '  Original error: watchman error\n' +
-            '  Retry error: node error\n'
+            '  Retry error: node error\n',
           );
-        }
+        },
       );
   });
 

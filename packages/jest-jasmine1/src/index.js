@@ -36,7 +36,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
       if (!hasKey(expected, property) && hasKey(actual, property)) {
         mismatchKeys.push(
           'expected missing key \'' + property + '\', but present in ' +
-          'actual.'
+          'actual.',
         );
       }
     };
@@ -45,7 +45,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
     (actual, expected, property, mismatchKeys) => {
       if (!hasKey(actual, property) && hasKey(expected, property)) {
         mismatchKeys.push(
-          'expected has key \'' + property + '\', but missing from actual.'
+          'expected has key \'' + property + '\', but missing from actual.',
         );
       }
     };
@@ -55,14 +55,14 @@ function jasmine1(config, environment, moduleLoader, testPath) {
     b,
     property,
     mismatchKeys,
-    mismatchValues
+    mismatchValues,
   ) {
     // The only different implementation from the original jasmine
     const areEqual = this.equals_(
       a[property],
       b[property],
       mismatchKeys,
-      mismatchValues
+      mismatchValues,
     );
     if (!areEqual) {
       let aprop;
@@ -71,7 +71,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         aprop = a[property];
       } else if (a[property].toString) {
         aprop = environment.global.jasmine.util.htmlEscape(
-          a[property].toString()
+          a[property].toString(),
         );
       } else {
         aprop = Object.prototype.toString.call(a[property]);
@@ -81,7 +81,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         bprop = b[property];
       } else if (b[property].toString) {
         bprop = environment.global.jasmine.util.htmlEscape(
-          b[property].toString()
+          b[property].toString(),
         );
       } else {
         bprop = Object.prototype.toString.call(b[property]);
@@ -90,7 +90,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
       mismatchValues.push(
         '\'' + property + '\' was \'' + bprop +
         '\' in expected, but was \'' + aprop +
-        '\' in actual.'
+        '\' in actual.',
       );
     }
   };
@@ -140,7 +140,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
                 b,
                 index,
                 mismatchKeys,
-                mismatchValues
+                mismatchValues,
               );
             }
           }
@@ -156,7 +156,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
               b,
               property,
               mismatchKeys,
-              mismatchValues
+              mismatchValues,
             );
           }
           for (property in a) {
@@ -188,14 +188,14 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         if (arguments.length > 0) {
           throw Error(
             'toBeCalled() does not accept parameters, ' +
-            'use toBeCalledWith instead'
+            'use toBeCalledWith instead',
           );
         }
         const isSpy = isSpyLike(this.actual);
         if (!isSpy && !isMockLike(this.actual)) {
           throw Error(
             'lastCalledWith() should be used on a mock function or ' +
-            'a jasmine spy'
+            'a jasmine spy',
           );
         }
         const calls = isSpy
@@ -209,7 +209,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         if (!isSpy && !isMockLike(this.actual)) {
           throw Error(
             'lastCalledWith() should be used on a mock function or ' +
-            'a jasmine spy'
+            'a jasmine spy',
           );
         }
         const calls = isSpy
@@ -225,7 +225,7 @@ function jasmine1(config, environment, moduleLoader, testPath) {
         if (!isSpy && !isMockLike(this.actual)) {
           throw Error(
             'toBeCalledWith() should be used on a mock function or ' +
-            'a jasmine spy'
+            'a jasmine spy',
           );
         }
         const calls = isSpy

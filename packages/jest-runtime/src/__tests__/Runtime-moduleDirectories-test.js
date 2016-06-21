@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 const path = require('path');
@@ -33,40 +33,40 @@ describe('Runtime', () => {
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'moduleDirModule'
+        'moduleDirModule',
       );
       expect(exports).toBeDefined();
-    })
+    }),
   );
 
   it('resolves packages', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'my-module'
+        'my-module',
       );
       expect(exports.isNodeModule).toEqual(true);
-    })
+    }),
   );
 
   it('finds closest module from moduleDirectories', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         path.join(rootDir, 'subdir2', 'MyModule.js'),
-        'moduleDirModule'
+        'moduleDirModule',
       );
       expect(exports.modulePath)
         .toEqual('subdir2/module_dir/moduleDirModule.js');
-    })
+    }),
   );
 
   it('only checks the configured directories', () =>
     createRuntime(__filename, {moduleDirectories}).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'not-a-haste-package');
-      }).toThrow(
-        new Error('Cannot find module \'not-a-haste-package\' from \'root.js\'')
-      );
-    })
+      }).toThrow(new Error(
+        'Cannot find module \'not-a-haste-package\' from \'root.js\'',
+      ));
+    }),
   );
 });

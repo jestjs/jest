@@ -70,7 +70,7 @@ function formatTestResults(
     testResult,
     config,
     formatter,
-    reporter
+    reporter,
   ));
 
   return {

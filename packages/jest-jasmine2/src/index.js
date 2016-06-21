@@ -38,7 +38,7 @@ function getActualCalls(reporter, calls, limit) {
   return (
     `\nActual call${calls.length === 1 ? '' : 's'}:\n` +
     calls.slice(-limit).map(
-      call => reporter.getFormatter().prettyPrint(call)
+      call => reporter.getFormatter().prettyPrint(call),
     ).reverse().join(',\n') +
     (count > 0
       ? `\nand ${count} other call${count === 1 ? '' : 's'}.` : ''
@@ -50,7 +50,7 @@ function jasmine2(
   config: Config,
   environment: Environment,
   moduleLoader: ModuleLoader,
-  testPath: string
+  testPath: string,
 ): Promise<TestResult> {
   let env;
   let jasmine;
@@ -139,7 +139,7 @@ function jasmine2(
         !jasmine.matchersUtil.equals(
           aValue,
           nextB.value,
-          [iterableEquality]
+          [iterableEquality],
         )
       ) {
         return false;
@@ -158,8 +158,8 @@ function jasmine2(
         testPath,
         config,
         jasmine,
-        env.snapshotState
-      )
+        env.snapshotState,
+      ),
     );
 
     jasmine.addMatchers({
@@ -168,14 +168,14 @@ function jasmine2(
           if (expected) {
             throw Error(
               'toBeCalled() does not accept parameters, use ' +
-              'toBeCalledWith instead.'
+              'toBeCalledWith instead.',
             );
           }
           const isSpy = isSpyLike(actual);
           if (!isSpy && !isMockLike(actual)) {
             throw Error(
               'toBeCalled() should be used on a mock function or ' +
-              'a jasmine spy.'
+              'a jasmine spy.',
             );
           }
           const calls = isSpy
@@ -200,7 +200,7 @@ function jasmine2(
           if (!isSpy && !isMockLike(actual)) {
             throw Error(
               'lastCalledWith() should be used on a mock function or ' +
-              'a jasmine spy.'
+              'a jasmine spy.',
             );
           }
           const calls = isSpy
@@ -242,7 +242,7 @@ function jasmine2(
           if (!isMockLike(actual) && !isSpy) {
             throw Error(
               'toBeCalledWith() should be used on a mock function or ' +
-              'a jasmine spy.'
+              'a jasmine spy.',
             );
           }
           const calls = isSpy

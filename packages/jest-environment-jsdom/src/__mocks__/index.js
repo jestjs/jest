@@ -30,7 +30,7 @@ JSDOMEnvironment.prototype.runSourceText.mockImplementation(
       filename,
       displayErrors: false,
     });
-  }
+  },
 );
 
 module.exports = JSDOMEnvironment;

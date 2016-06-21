@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 let createRuntime;
@@ -31,7 +31,7 @@ describe('Runtime', () => {
         expect(mock._isMockFunction).toBe(true);
         mock();
         expect(mock).toBeCalled();
-      })
+      }),
     );
 
     it('creates mock functions with mock implementations', () =>
@@ -42,7 +42,7 @@ describe('Runtime', () => {
         const value = mock('mock');
         expect(value).toEqual('mock implementation');
         expect(mock).toBeCalled();
-      })
+      }),
     );
   });
 
@@ -53,7 +53,7 @@ describe('Runtime', () => {
         const mock = root.jest.fn();
         expect(root.jest.isMockFunction(() => {})).toBe(false);
         expect(root.jest.isMockFunction(mock)).toBe(true);
-      })
+      }),
     );
   });
 });
