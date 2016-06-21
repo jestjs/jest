@@ -6,13 +6,14 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "devDependencies": {
     "babel-preset-es2015": "*",
     "react": "^0.14.0"
   },
   "jest": {
-    "scriptPreprocessor": "../babel-jest",
+    "rootDir": "./build",
+    "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {

@@ -6,12 +6,13 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "dependencies": {
     "graceful-fs": "^4.1.3",
     "jest-util": "^12.1.0"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {

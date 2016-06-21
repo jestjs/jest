@@ -4,9 +4,18 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
-
 'use strict';
+
+import type {
+  AggregatedResult,
+  Error as TestError,
+  TestResult,
+} from 'types/TestResult';
+import type {Config, Path} from 'types/Config';
+import type {HasteResolverContext} from 'types/Runtime';
 
 const EmptySuiteError = require('./EmptySuiteError');
 const Test = require('./Test');
@@ -14,13 +23,45 @@ const Test = require('./Test');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const promisify = require('./lib/promisify');
+const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
+
+type Options = {
+  maxWorkers: number,
+};
+
+type TestReporter = {
+  onTestResult?: (
+    config: Config,
+    result: TestResult,
+    aggregatedResults: AggregatedResult
+  ) => void,
+};
+
+type OnRunFailure = (
+  path: string,
+  err: TestError,
+) => void;
+
+type OnTestResult = (
+  path: string,
+  result: TestResult,
+) => void;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
 
-  constructor(hasteMap, config, options) {
+  _hasteMap: Promise<HasteResolverContext>;
+  _config: Config;
+  _options: Options;
+  _testPerformanceCache: Object | null;
+
+  constructor(
+    hasteMap: Promise<HasteResolverContext>,
+    config: Config,
+    options: Options
+  ) {
     this._hasteMap = hasteMap;
     this._config = config;
     this._options = options;
@@ -35,7 +76,7 @@ class TestRunner {
     return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
-  _sortTests(testPaths) {
+  _sortTests(testPaths: Array<string>) {
     // When running more tests than we have workers available, sort the tests
     // by size - big test files usually take longer to complete, so we run
     // them first in an effort to minimize worker idle time at the end of a
@@ -68,12 +109,10 @@ class TestRunner {
     return testPaths;
   }
 
-  _cacheTestResults(aggregatedResults) {
+  _cacheTestResults(aggregatedResults: AggregatedResult) {
     const cacheFile = this._getTestPerformanceCachePath();
-    let cache = this._testPerformanceCache;
-    if (!cache) {
-      cache = this._testPerformanceCache = {};
-    }
+    const cache =
+      this._testPerformanceCache || (this._testPerformanceCache = {});
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
       if (perf && perf.end && perf.start) {
@@ -83,39 +122,47 @@ class TestRunner {
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
 
-  runTests(testPaths, reporter) {
+  runTests(testPaths: Array<string>, maybeReporter?: TestReporter) {
     const config = this._config;
-    if (!reporter) {
+    if (!maybeReporter) {
       const TestReporter = require(config.testReporter);
       if (config.useStderr) {
-        reporter = new TestReporter(Object.create(
+        maybeReporter = new TestReporter(Object.create(
           process,
           {stdout: {value: process.stderr}}
         ));
       } else {
-        reporter = new TestReporter();
+        maybeReporter = new TestReporter();
       }
+    }
+
+    // Prove that `reporter` exists to Flow
+    const reporter = maybeReporter;
+    if (!reporter) {
+      throw new Error('No reporter specified!');
     }
 
     testPaths = this._sortTests(testPaths);
 
     const aggregatedResults = {
-      success: null,
-      startTime: null,
-      numTotalTestSuites: testPaths.length,
-      numPassedTestSuites: 0,
+      didUpdate: false,
+      numFailedTests: 0,
       numFailedTestSuites: 0,
+      numPassedTests: 0,
+      numPassedTestSuites: 0,
+      numPendingTests: 0,
       numRuntimeErrorTestSuites: 0,
       numTotalTests: 0,
-      numPassedTests: 0,
-      numFailedTests: 0,
-      numPendingTests: 0,
+      numTotalTestSuites: testPaths.length,
+      snapshotFilesRemoved: 0,
+      startTime: Date.now(),
+      success: false,
       testResults: [],
     };
 
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
-    const onTestResult = (testPath, testResult) => {
+    const onTestResult = (testPath: Path, testResult: TestResult) => {
       if (testResult.testResults.length === 0) {
         onRunFailure(testPath, new EmptySuiteError());
         return;
@@ -142,10 +189,23 @@ class TestRunner {
       );
     };
 
-    const onRunFailure = (testPath, err) => {
+    const onRunFailure = (testPath: Path, err: TestError) => {
       const testResult = {
-        testFilePath: testPath,
+        hasUncheckedKeys: false,
+        numFailingTests: 1,
+        numPassingTests: 0,
+        numPendingTests: 0,
+        perfStats: {
+          end: 0,
+          start: 0,
+        },
+        snapshotFileDeleted: false,
+        snapshotsAdded: 0,
+        snapshotsMatched: 0,
+        snapshotsUnmatched: 0,
+        snapshotsUpdated: 0,
         testExecError: err,
+        testFilePath: testPath,
         testResults: [],
       };
       aggregatedResults.testResults.push(testResult);
@@ -155,7 +215,6 @@ class TestRunner {
       }
     };
 
-    aggregatedResults.startTime = Date.now();
     const testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
     return testRun
@@ -163,15 +222,27 @@ class TestRunner {
         aggregatedResults.success =
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
-        if (reporter.onRunComplete) {
-          reporter.onRunComplete(config, aggregatedResults);
-        }
-        return aggregatedResults;
+        return this._hasteMap
+          .then(hasteMap => snapshot.cleanup(hasteMap, config.updateSnapshot))
+          .then(status => {
+            aggregatedResults.snapshotFilesRemoved = status.filesRemoved;
+            aggregatedResults.didUpdate = config.updateSnapshot;
+            if (reporter.onRunComplete) {
+              aggregatedResults.success =
+                reporter.onRunComplete(config, aggregatedResults);
+            }
+            return aggregatedResults;
+          });
+
       })
       .then(results => this._cacheTestResults(results).then(() => results));
   }
 
-  _createTestRun(testPaths, onTestResult, onRunFailure) {
+  _createTestRun(
+    testPaths: Array<Path>,
+    onTestResult: OnTestResult,
+    onRunFailure: (path: Path, err: TestError) => void,
+  ) {
     if (this._options.maxWorkers <= 1 || testPaths.length <= 1) {
       return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
     } else {
@@ -179,7 +250,11 @@ class TestRunner {
     }
   }
 
-  _createInBandTestRun(testPaths, onTestResult, onRunFailure) {
+  _createInBandTestRun(
+    testPaths: Array<Path>,
+    onTestResult: OnTestResult,
+    onRunFailure: OnRunFailure
+  ) {
     return testPaths.reduce((promise, path) =>
       promise
         .then(() => this._hasteMap)
@@ -190,7 +265,11 @@ class TestRunner {
     );
   }
 
-  _createParallelTestRun(testPaths, onTestResult, onRunFailure) {
+  _createParallelTestRun(
+    testPaths: Array<Path>,
+    onTestResult: OnTestResult,
+    onRunFailure: OnRunFailure,
+  ) {
     const config = this._config;
     return this._hasteMap
       .then(() => {

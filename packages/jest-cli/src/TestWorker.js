@@ -4,8 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config, Path} from 'types/Config';
+import type {Error, TestResult} from 'types/TestResult';
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -15,8 +20,15 @@ process.on('uncaughtException', err => {
 
 const Test = require('./Test');
 
-const createHasteMap = require('./lib/createHasteMap');
-const createResolver = require('./lib/createResolver');
+const createHasteMap = require('jest-haste-map').create;
+const createResolver = require('jest-resolve').create;
+
+type WorkerData = {
+  config: Config,
+  path: Path,
+};
+
+type WorkerCallback = (error: ?Error, result?: TestResult) => void;
 
 const formatError = error => {
   if (typeof error === 'string') {
@@ -36,7 +48,7 @@ const formatError = error => {
 
 const resolvers = Object.create(null);
 
-module.exports = (data, callback) => {
+module.exports = (data: WorkerData, callback: WorkerCallback) => {
   try {
     const name = data.config.name;
     if (!resolvers[name]) {

@@ -1,0 +1,30 @@
+{
+  "name": "jest-config",
+  "version": "12.1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "BSD-3-Clause",
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "istanbul": "^0.4.2",
+    "jest-environment-jsdom": "^12.1.0",
+    "jest-environment-node": "^12.1.0",
+    "jest-jasmine1": "^12.1.0",
+    "jest-jasmine2": "^12.1.0",
+    "jest-mock": "^12.1.0",
+    "jest-resolve": "^12.1.0",
+    "jest-util": "^12.1.0",
+    "json-stable-stringify": "^1.0.0",
+    "node-notifier": "^4.6.0"
+  },
+  "jest": {
+    "rootDir": "./build",
+    "testEnvironment": "jest-environment-node"
+  },
+  "scripts": {
+    "test": "../../packages/jest-cli/bin/jest.js"
+  }
+}

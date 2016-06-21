@@ -6,11 +6,12 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "devDependencies": {
     "rimraf": "^2.5.2"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {

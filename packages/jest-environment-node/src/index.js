@@ -4,8 +4,13 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {Global} from 'types/Global';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
@@ -13,17 +18,20 @@ const vm = require('vm');
 
 class NodeEnvironment {
 
-  constructor(config) {
-    this.global = {};
+  fakeTimers: ?FakeTimers;
+  global: ?Global;
+
+  constructor(config: Config) {
+    const global = this.global = {};
     vm.createContext(this.global);
-    this.global.setTimeout = setTimeout;
-    this.global.clearTimeout = clearTimeout;
-    this.global.setInterval = setInterval;
-    this.global.clearInterval = clearInterval;
-    this.global.Promise = Promise;
-    this.global.JSON = JSON;
-    installCommonGlobals(this.global, config.globals);
-    this.fakeTimers = new FakeTimers(this.global);
+    global.setTimeout = setTimeout;
+    global.clearTimeout = clearTimeout;
+    global.setInterval = setInterval;
+    global.clearInterval = clearInterval;
+    global.Promise = Promise;
+    global.JSON = JSON;
+    installCommonGlobals(global, config.globals);
+    this.fakeTimers = new FakeTimers(global);
   }
 
   dispose() {
@@ -31,15 +39,18 @@ class NodeEnvironment {
     this.fakeTimers = null;
   }
 
-  runSourceText(sourceText, filename) {
-    return vm.runInContext(sourceText, this.global, {
-      filename,
-      displayErrors: false,
-    });
+  runSourceText(sourceText: string, filename: string): ?any {
+    if (this.global) {
+      return vm.runInContext(sourceText, this.global, {
+        filename,
+        displayErrors: false,
+      });
+    }
+    return null;
   }
 
-  runWithRealTimers(callback) {
-    if (this.global) {
+  runWithRealTimers(callback: Function) {
+    if (this.global && this.fakeTimers) {
       this.fakeTimers.runWithRealTimers(callback);
     }
   }

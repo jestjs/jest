@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
  /**
@@ -12,6 +14,8 @@
  */
 
 'use strict';
+
+import type {Global} from 'types/Global';
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function';
@@ -27,7 +31,8 @@ function promisifyIt(originalFn, env) {
     const isAsync = fn.length; // `done` was passed
 
     if (isAsync) {
-      return originalFn.call(env, specName, fn, timeout); // jasmine will handle it
+      // jasmine will handle it
+      return originalFn.call(env, specName, fn, timeout);
     } else {
       // we make *all* tests async and run `done` right away if they
       // didn't return a promise.
@@ -48,7 +53,7 @@ function promisifyIt(originalFn, env) {
   };
 }
 
-function install(global) {
+function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();

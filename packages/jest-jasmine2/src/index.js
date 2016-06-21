@@ -4,8 +4,15 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {Environment} from 'types/Environment';
+import type {ModuleLoader} from 'types/ModuleLoader';
+import type {TestResult} from 'types/TestResult';
 
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
@@ -39,14 +46,16 @@ function getActualCalls(reporter, calls, limit) {
   );
 }
 
-function jasmine2(config, environment, moduleLoader, testPath) {
+function jasmine2(
+  config: Config,
+  environment: Environment,
+  moduleLoader: ModuleLoader,
+  testPath: string
+): Promise<TestResult> {
   let env;
   let jasmine;
 
-  const reporter = new JasmineReporter({
-    noHighlight: config.noHighlight,
-    noStackTrace: config.noStackTrace,
-  }, environment);
+  const reporter = new JasmineReporter(config, environment);
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   // To account for this conflict, we set up jasmine in an environment with real
@@ -101,6 +110,10 @@ function jasmine2(config, environment, moduleLoader, testPath) {
       moduleLoader.requireModule(config.setupTestFrameworkScriptFile);
     }
   });
+
+  if (!jasmine || !env) {
+    throw new Error('jasmine2 could not be initialized by Jest');
+  }
 
   const hasIterator = object => !!(object != null && object[Symbol.iterator]);
   const iterableEquality = (a, b) => {
@@ -198,6 +211,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (!pass) {
             return {
               pass,
+              // $FlowFixMe - get/set properties not yet supported
               get message() {
                 return (
                   `Wasn't last called with the expected values.\n` +
@@ -210,6 +224,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           }
           return {
             pass,
+            // $FlowFixMe - get/set properties not yet supported
             get message() {
               return (
                 `Shouldn't have been last called with\n` +
@@ -238,6 +253,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           if (!pass) {
             return {
               pass,
+              // $FlowFixMe - get/set properties not yet supported
               get message() {
                 return (
                   'Was not called with the expected values.\n' +
@@ -250,6 +266,7 @@ function jasmine2(config, environment, moduleLoader, testPath) {
           }
           return {
             pass,
+            // $FlowFixMe - get/set properties not yet supported
             get message() {
               return (
                 `Shouldn't have been called with\n` +
@@ -269,12 +286,21 @@ function jasmine2(config, environment, moduleLoader, testPath) {
   env.addReporter(reporter);
   moduleLoader.requireModule(testPath);
   env.execute();
-  env.snapshotState.snapshot.save();
-
   return reporter.getResults().then(results => {
+    const currentSnapshot = env.snapshotState.snapshot;
+    const updateSnapshot = config.updateSnapshot;
+    const hasUncheckedKeys = currentSnapshot.hasUncheckedKeys();
+    if (updateSnapshot) {
+      currentSnapshot.removeUncheckedKeys();
+    }
+    const status = currentSnapshot.save(updateSnapshot);
+
+    results.hasUncheckedKeys = !status.deleted && hasUncheckedKeys;
+    results.snapshotFileDeleted = status.deleted;
     results.snapshotsAdded = env.snapshotState.added;
-    results.snapshotsUpdated = env.snapshotState.updated;
     results.snapshotsMatched = env.snapshotState.matched;
+    results.snapshotsUnmatched = env.snapshotState.unmatched;
+    results.snapshotsUpdated = env.snapshotState.updated;
     return results;
   });
 }

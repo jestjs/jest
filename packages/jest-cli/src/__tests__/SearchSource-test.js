@@ -21,15 +21,15 @@ let normalizeConfig;
 
 describe('SearchSource', () => {
   const name = 'SearchSource';
-  let buildHasteMap;
+  let Runtime;
   let hasteMap;
   let SearchSource;
   let searchSource;
 
   beforeEach(() => {
-    buildHasteMap = require('../lib/buildHasteMap');
+    Runtime = require('jest-runtime');
     SearchSource = require('../SearchSource');
-    normalizeConfig = require('../config/normalize');
+    normalizeConfig = require('jest-config').normalize;
   });
 
   describe('isTestFilePath', () => {
@@ -37,12 +37,11 @@ describe('SearchSource', () => {
 
     beforeEach(() => {
       config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir: '.',
         testPathDirs: [],
       });
-      hasteMap = buildHasteMap(config, {maxWorkers});
+      hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       searchSource = new SearchSource(hasteMap, config);
     });
 
@@ -71,13 +70,12 @@ describe('SearchSource', () => {
   describe('testPathsMatching', () => {
     it('finds tests matching a pattern', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         testRegex: 'not-really-a-test',
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -91,13 +89,12 @@ describe('SearchSource', () => {
 
     it('finds tests matching a JS pattern', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         moduleFileExtensions: ['js', 'jsx'],
         testRegex: 'test\.jsx?',
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -112,12 +109,11 @@ describe('SearchSource', () => {
 
     it('finds tests with default file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -131,13 +127,12 @@ describe('SearchSource', () => {
 
     it('finds tests with similar but custom file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
         moduleFileExtensions: ['jsx'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -151,13 +146,12 @@ describe('SearchSource', () => {
 
     it('finds tests with totally custom foobar file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
         moduleFileExtensions: ['foobar'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -171,13 +165,12 @@ describe('SearchSource', () => {
 
     it('finds tests with many kinds of file extensions', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testRegex,
         moduleFileExtensions: ['js', 'jsx'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -192,12 +185,11 @@ describe('SearchSource', () => {
 
     it('supports legacy APIs', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testDirectoryName: '__testtests__',
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -211,12 +203,11 @@ describe('SearchSource', () => {
 
     it('supports legacy APIs', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testFileExtensions: ['js', 'jsx'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -232,13 +223,12 @@ describe('SearchSource', () => {
 
     it('supports legacy APIs', () => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name,
         rootDir,
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx', 'foobar'],
       });
-      const hasteMap = buildHasteMap(config, {maxWorkers});
+      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       const searchSource = new SearchSource(hasteMap, config);
       return searchSource.findMatchingTests().then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -257,7 +247,10 @@ describe('SearchSource', () => {
     const rootDir = path.join(
       __dirname,
       '..',
-      'Runtime',
+      '..',
+      '..',
+      'jest-runtime',
+      'src',
       '__tests__',
       'test_root'
     );
@@ -265,11 +258,10 @@ describe('SearchSource', () => {
 
     beforeEach(() => {
       const config = normalizeConfig({
-        cacheDirectory: global.CACHE_DIRECTORY,
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
-      hasteMap = buildHasteMap(config, {maxWorkers});
+      hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
       searchSource = new SearchSource(hasteMap, config);
     });
 

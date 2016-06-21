@@ -4,19 +4,24 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {TestResult} from 'types/TestResult';
 
 const chalk = require('chalk');
 const path = require('path');
 
 const ERROR_TITLE_COLOR = chalk.bold.underline.red;
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at.*?vendor\/jasmine\-/;
+const JASMINE_IGNORE = /^\s+at.*?vendor\/|\\jasmine\-/;
 const STACK_TRACE_IGNORE =
   /^\s+at.*?jest(-cli)?\/(vendor|src|node_modules|packages)\//;
 
-const formatStackTrace = (stackTrace, config) => {
+const formatStackTrace = (stackTrace: string, config) => {
   const msgBullet = '  - ';
   const msgIndent = msgBullet.replace(/./g, ' ');
   let stackTraceLines = 0;
@@ -54,7 +59,7 @@ const formatStackTrace = (stackTrace, config) => {
     .join('\n' + msgIndent);
 };
 
-function formatFailureMessage(testResult, config) {
+const formatFailureMessage = (testResult: TestResult, config: Config) => {
   const ancestrySeparator = ' \u203A ';
   const descBullet = config.verbose ? '' : chalk.bold('\u25cf ');
 
@@ -82,6 +87,6 @@ function formatFailureMessage(testResult, config) {
         '\n' + failureMessages;
     })
     .join('\n');
-}
+};
 
 module.exports = formatFailureMessage;

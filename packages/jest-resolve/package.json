@@ -6,12 +6,13 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "dependencies": {
     "jest-haste-map": "^12.1.0",
     "resolve": "^1.1.6"
   },
   "jest": {
+    "rootDir": "./build",
     "testEnvironment": "node"
   },
   "scripts": {

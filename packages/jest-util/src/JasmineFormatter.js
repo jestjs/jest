@@ -4,8 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {Environment} from 'types/Environment';
+import type {FailedAssertion} from 'types/TestResult';
 
 const diff = require('diff');
 const chalk = require('chalk');
@@ -15,10 +21,16 @@ const LINEBREAK_REGEX = /[\r\n]/;
 
 class JasmineFormatter {
 
-  constructor(jasmine, environment, config) {
+  _config: Config;
+  _environment: Environment;
+  _jasmine: Object;
+  _diffableMatchers: {[key: string]: boolean};
+
+  constructor(jasmine: Object, environment: Environment, config: Config) {
     this._config = config;
     this._jasmine = jasmine;
     this._environment = environment;
+    /* $FlowFixMe */
     this._diffableMatchers = Object.assign(Object.create(null), {
       toBe: true,
       toNotBe: true,
@@ -27,11 +39,16 @@ class JasmineFormatter {
     });
   }
 
-  addDiffableMatcher(matcherName) {
+  addDiffableMatcher(matcherName: string) {
     this._diffableMatchers[matcherName] = true;
   }
 
-  formatDiffable(matcherName, isNot, actual, expected) {
+  formatDiffable(
+    matcherName: string,
+    isNot: boolean,
+    actual: any,
+    expected: any
+  ) {
     const ppActual = this.prettyPrint(actual);
     const ppExpected = this.prettyPrint(expected);
     const colorDiff = this.highlightDifferences(ppActual, ppExpected);
@@ -43,11 +60,13 @@ class JasmineFormatter {
     );
   }
 
-  formatMatchFailure(result) {
+  formatMatchFailure(result: FailedAssertion) {
     let message;
     if (this._diffableMatchers[result.matcherName]) {
-      const isNot =
-        'isNot' in result ? result.isNot : /not to /.test(result.message);
+      const isNot = !!('isNot' in result
+        ? result.isNot
+        : /not to /.test(result.message || '')
+      );
       message = this.formatDiffable(
         result.matcherName,
         isNot,
@@ -61,14 +80,15 @@ class JasmineFormatter {
     // error message & stack live on 'trace' field in jasmine 1.3
     const error = result.trace ? result.trace : result;
     if (!this._config.noStackTrace && error.stack) {
+      const errorMessage = error.message || '';
       message = error.stack
-        .replace(message, error.message)
+        .replace(message, errorMessage)
         .replace(/^.*Error:\s*/, '');
     }
     return message;
   }
 
-  highlightDifferences(a, b) {
+  highlightDifferences(a: any, b: any) {
     let differ;
     if (a.match(LINEBREAK_REGEX) || b.match(LINEBREAK_REGEX)) {
       // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
@@ -95,7 +115,11 @@ class JasmineFormatter {
     return ret;
   }
 
-  prettyPrint(object, indent, cycleWeakMap) {
+  prettyPrint(
+    object: any,
+    indent?: string,
+    cycleWeakMap?: WeakMap<any, boolean>
+  ) {
     if (!indent) {
       indent = '';
     }

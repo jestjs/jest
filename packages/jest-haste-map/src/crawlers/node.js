@@ -1,13 +1,16 @@
- /**
- * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
-
 'use strict';
+
+import type {HasteMap} from 'types/HasteMap';
+import type {IgnoreMatcher} from '../types';
 
 const H = require('../constants');
 
@@ -15,11 +18,18 @@ const fs = require('fs');
 const path = require('path');
 const spawn = require('child_process').spawn;
 
-function find(roots, extensions, ignore, callback) {
+type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
+
+function find(
+  roots: Array<string>,
+  extensions: Array<string>,
+  ignore: IgnoreMatcher,
+  callback: Callback,
+): void {
   const result = [];
   let activeCalls = 0;
 
-  function search(directory) {
+  function search(directory: string): void {
     activeCalls++;
     fs.readdir(directory, (err, names) => {
       activeCalls--;
@@ -59,7 +69,12 @@ function find(roots, extensions, ignore, callback) {
   roots.forEach(search);
 }
 
-function findNative(roots, extensions, ignore, callback) {
+function findNative(
+  roots: Array<string>,
+  extensions: Array<string>,
+  ignore: IgnoreMatcher,
+  callback: Callback,
+): void {
   const args = [].concat(roots);
   args.push('-type', 'f');
   if (extensions.length) {
@@ -100,7 +115,12 @@ function findNative(roots, extensions, ignore, callback) {
   });
 }
 
-module.exports = function nodeCrawl(roots, extensions, ignore, data) {
+module.exports = function nodeCrawl(
+  roots: Array<string>,
+  extensions: Array<string>,
+  ignore: IgnoreMatcher,
+  data: HasteMap,
+): Promise<HasteMap> {
   return new Promise(resolve => {
     const callback = list => {
       const files = Object.create(null);

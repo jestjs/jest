@@ -4,15 +4,23 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ * @flow
  */
 'use strict';
+
+import type {Config} from 'types/Config';
+import type {Global} from 'types/Global';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
 
 class JSDOMEnvironment {
 
-  constructor(config) {
+  document: ?Object;
+  fakeTimers: ?FakeTimers;
+  global: ?Global;
+
+  constructor(config: Config): void {
     // lazy require
     this.document = require('jsdom').jsdom(/* markup */undefined, {
       url: config.testURL,
@@ -25,19 +33,24 @@ class JSDOMEnvironment {
     this.fakeTimers = new FakeTimers(this.global);
   }
 
-  dispose() {
-    this.global.close();
+  dispose(): void {
+    if (this.global) {
+      this.global.close();
+    }
     this.global = null;
     this.document = null;
     this.fakeTimers = null;
   }
 
-  runSourceText(sourceText, filename) {
-    return this.global.eval(sourceText + '\n//# sourceURL=' + filename);
+  runSourceText(sourceText: string, filename: string): ?any {
+    if (this.global) {
+      return this.global.eval(sourceText + '\n//# sourceURL=' + filename);
+    }
+    return null;
   }
 
-  runWithRealTimers(cb) {
-    if (this.global) {
+  runWithRealTimers(cb: Function): void {
+    if (this.global && this.fakeTimers) {
       this.fakeTimers.runWithRealTimers(cb);
     }
   }

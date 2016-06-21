@@ -1,13 +1,12 @@
 *~
 *.swp
 .DS_STORE
-.haste_cache
 /node_modules
 /examples/*/node_modules/
 /packages/*/node_modules/
+/packages/*/build/
 /website/node_modules
 npm-debug.log
-build
 website/core/metadata*.js
 website/src/jest/docs
 website/src/jest/blog

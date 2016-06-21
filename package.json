@@ -1,16 +1,30 @@
 {
   "private": true,
   "devDependencies": {
+    "babel-core": "^6.9.1",
     "babel-eslint": "^6.0.4",
-    "eslint": "^2.10.2",
+    "babel-plugin-syntax-trailing-function-commas": "^6.8.0",
+    "babel-plugin-transform-flow-strip-types": "^6.8.0",
+    "chalk": "^1.1.3",
+    "eslint": "^2.12.0",
     "eslint-plugin-babel": "^3.2.0",
-    "fbjs-scripts": "^0.7.0",
-    "lerna": "2.0.0-beta.10",
-    "rimraf": "^2.4.4"
+    "fbjs-scripts": "^0.7.1",
+    "flow-bin": "^0.27.0",
+    "glob": "^7.0.4",
+    "graceful-fs": "^4.1.4",
+    "lerna": "2.0.0-beta.20",
+    "minimatch": "^3.0.0",
+    "mkdirp": "^0.5.1",
+    "progress": "^1.1.8",
+    "rimraf": "^2.5.2"
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "node postinstall.js",
-    "test": "npm run lint && node ./runTests.js"
+    "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js",
+    "test": "npm run typecheck && npm run lint && node ./scripts/build.js && node ./scripts/test.js",
+    "typecheck": "flow check",
+    "watch": "node ./scripts/watch.js",
+    "build": "node ./scripts/build.js",
+    "build_clear": "rm -rf ./packages/*/build"
   }
 }

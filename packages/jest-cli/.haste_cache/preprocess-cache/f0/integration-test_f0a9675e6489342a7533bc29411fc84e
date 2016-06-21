@@ -1,0 +1,106 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
+ */
+
+/* eslint-disable no-useless-concat */
+
+'use strict';
+
+
+
+
+
+
+
+
+
+
+// These will all be hoisted above imports
+jest.unmock('react');
+jest.unmock('../__test_modules__/Unmocked');
+jest.
+unmock('../__test_modules__/c').
+unmock('../__test_modules__/d');
+jest.mock('../__test_modules__/e', function () {
+  if (!global.CALLS) {
+    global.CALLS = 0;}
+
+  global.CALLS++;
+
+  return { 
+    _isMock: true, 
+    fn: function /* istanbul ignore next */fn() {
+      // The `jest.mock` transform will allow require, built-ins and globals.
+      var path = require('path');
+      var array = new Array(3);
+      array[0] = path.sep;
+      return jest.fn(function () /* istanbul ignore next */{return array;});} };});
+
+
+
+
+// These will not be hoisted
+/* istanbul ignore next */var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {return typeof obj;} : function (obj) {return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;};var /* istanbul ignore next */_react = require('react'); /* istanbul ignore next */var _react2 = _interopRequireDefault(_react);var /* istanbul ignore next */_Unmocked = require('../__test_modules__/Unmocked'); /* istanbul ignore next */var _Unmocked2 = _interopRequireDefault(_Unmocked);var /* istanbul ignore next */_Mocked = require('../__test_modules__/Mocked'); /* istanbul ignore next */var _Mocked2 = _interopRequireDefault(_Mocked);var /* istanbul ignore next */_a = require('../__test_modules__/a'); /* istanbul ignore next */var _a2 = _interopRequireDefault(_a);var /* istanbul ignore next */_b = require('../__test_modules__/b'); /* istanbul ignore next */var _b2 = _interopRequireDefault(_b);var /* istanbul ignore next */_c = require('../__test_modules__/c'); /* istanbul ignore next */var _c2 = _interopRequireDefault(_c);var /* istanbul ignore next */_d = require('../__test_modules__/d'); /* istanbul ignore next */var _d2 = _interopRequireDefault(_d);var /* istanbul ignore next */_e = require('../__test_modules__/e'); /* istanbul ignore next */var _e2 = _interopRequireDefault(_e);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');
+jest.unmock('../__test_modules__/' + 'c');
+jest.dontMock('../__test_modules__/Mocked');
+
+describe('babel-plugin-jest-hoist', function () {
+
+  it('does not throw during transform', function () {
+    var object = {};
+    object.__defineGetter__('foo', function () /* istanbul ignore next */{return 'bar';});
+    expect(object.foo).toEqual('bar');});
+
+
+  it('hoists react unmock call before imports', function () {
+    expect( /* istanbul ignore next */typeof _react2.default === 'undefined' ? 'undefined' : _typeof(_react2.default)).toEqual('object');
+    expect( /* istanbul ignore next */_react2.default.isValidElement.mock).toBe(undefined);});
+
+
+  it('hoists unmocked modules before imports', function () {
+    expect( /* istanbul ignore next */_Unmocked2.default._isMockFunction).toBe(undefined);
+    expect(new /* istanbul ignore next */_Unmocked2.default().isUnmocked).toEqual(true);
+
+    expect( /* istanbul ignore next */_c2.default._isMockFunction).toBe(undefined);
+    expect( /* istanbul ignore next */(0, _c2.default)()).toEqual('unmocked');
+
+    expect( /* istanbul ignore next */_d2.default._isMockFunction).toBe(undefined);
+    expect( /* istanbul ignore next */(0, _d2.default)()).toEqual('unmocked');});
+
+
+  it('hoists mock call with 2 arguments', function () {
+    var path = require('path');
+
+    expect( /* istanbul ignore next */_e2.default._isMock).toBe(true);
+
+    var mockFn = /* istanbul ignore next */_e2.default.fn();
+    expect(mockFn()).toEqual([path.sep, undefined, undefined]);});
+
+
+  it('only executes the module factories once', function () {
+    global.CALLS = 0;
+
+    require('../__test_modules__/e');
+    expect(global.CALLS).toEqual(1);
+
+    require('../__test_modules__/e');
+    expect(global.CALLS).toEqual(1);
+
+    delete global.CALLS;});
+
+
+  it('does not hoist dontMock calls before imports', function () {
+    expect( /* istanbul ignore next */_Mocked2.default._isMockFunction).toBe(true);
+    expect(new /* istanbul ignore next */_Mocked2.default().isMocked).toEqual(undefined);
+
+    expect( /* istanbul ignore next */_a2.default._isMockFunction).toBe(true);
+    expect( /* istanbul ignore next */(0, _a2.default)()).toEqual(undefined);
+
+    expect( /* istanbul ignore next */_b2.default._isMockFunction).toBe(true);
+    expect( /* istanbul ignore next */(0, _b2.default)()).toEqual(undefined);});});

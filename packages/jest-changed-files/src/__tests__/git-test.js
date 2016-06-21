@@ -32,13 +32,13 @@ describe('gitChecker', () => {
 
   describe('isGitRepository', () => {
 
-    pit('returns null for non git repo folder', () => {
+    it('returns null for non git repo folder', () => {
       return git.isGitRepository(tmpdir).then(res => {
         expect(res).toBeNull();
       });
     });
 
-    pit('returns dirname for git repo folder', () => {
+    it('returns dirname for git repo folder', () => {
       childProcess.spawnSync('git', ['init', tmpdir]);
 
       return git.isGitRepository(tmpdir).then(res => {
@@ -53,13 +53,13 @@ describe('gitChecker', () => {
       childProcess.spawnSync('git', ['init', tmpdir]);
     });
 
-    pit('returns an empty array for git repo folder without modified files', () => {
+    it('returns an empty array for git repo folder without modified files', () => {
       return git.findChangedFiles(tmpdir).then(res => {
         expect(res).toEqual([]);
       });
     });
 
-    pit('returns an array of modified files for git repo folder', () => {
+    it('returns an array of modified files for git repo folder', () => {
       fs.writeFileSync(tmpfile);
       fs.writeFileSync(tmpfileNested);
 

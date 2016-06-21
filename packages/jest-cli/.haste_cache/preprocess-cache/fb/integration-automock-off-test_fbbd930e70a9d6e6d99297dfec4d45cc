@@ -1,0 +1,26 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails oncall+jsinfra
+ */
+
+'use strict';
+
+
+
+
+// These will all be hoisted above imports
+jest.disableAutomock();
+jest.mock('../__test_modules__/b');var /* istanbul ignore next */_a = require('../__test_modules__/a'); /* istanbul ignore next */var _a2 = _interopRequireDefault(_a);var /* istanbul ignore next */_b = require('../__test_modules__/b'); /* istanbul ignore next */var _b2 = _interopRequireDefault(_b);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+describe('babel-plugin-jest-hoist', function () {
+  it('hoists disableAutomock call before imports', function () {
+    expect( /* istanbul ignore next */_a2.default._isMockFunction).toBe(undefined);});
+
+
+  it('hoists mock call before imports', function () {
+    expect( /* istanbul ignore next */_b2.default._isMockFunction).toBe(true);});});

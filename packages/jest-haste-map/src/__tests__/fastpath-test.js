@@ -65,14 +65,6 @@ describe('fast-path', () => {
     () => {},
   ];
 
-  const getErrorMessage = (fnName, test, expected, actual) => {
-    return [
-      `fp.${fnName}('${test}')`,
-      `expect=${JSON.stringify(expected)}`,
-      `actual=${JSON.stringify(actual)}`,
-    ].join('\n');
-  };
-
   beforeEach(() => {
     process.platform = 'linux';
   });
@@ -242,9 +234,12 @@ describe('fast-path', () => {
       expect(fp.dirname('\\\\unc\\share')).toEqual('\\\\unc\\share');
       expect(fp.dirname('\\\\unc\\share\\foo')).toEqual('\\\\unc\\share\\');
       expect(fp.dirname('\\\\unc\\share\\foo\\')).toEqual('\\\\unc\\share\\');
-      expect(fp.dirname('\\\\unc\\share\\foo\\bar')).toEqual('\\\\unc\\share\\foo');
-      expect(fp.dirname('\\\\unc\\share\\foo\\bar\\')).toEqual('\\\\unc\\share\\foo');
-      expect(fp.dirname('\\\\unc\\share\\foo\\bar\\baz')).toEqual('\\\\unc\\share\\foo\\bar');
+      expect(fp.dirname('\\\\unc\\share\\foo\\bar'))
+        .toEqual('\\\\unc\\share\\foo');
+      expect(fp.dirname('\\\\unc\\share\\foo\\bar\\'))
+        .toEqual('\\\\unc\\share\\foo');
+      expect(fp.dirname('\\\\unc\\share\\foo\\bar\\baz'))
+        .toEqual('\\\\unc\\share\\foo\\bar');
     });
   });
 
@@ -354,11 +349,7 @@ describe('fast-path', () => {
         const actual = fp.join.apply(fp, test[0]);
         const expected = test[1];
 
-        expect(actual).toEqual(expected, getErrorMessage('join',
-          test[0].map(JSON.stringify).join(','),
-          expected,
-          actual
-        ));
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -370,11 +361,7 @@ describe('fast-path', () => {
         const actual = fp.join.apply(fp, test[0]);
         const expected = test[1].replace(/\//g, '\\');
 
-        expect(actual).toEqual(expected, getErrorMessage('join',
-          test[0].map(JSON.stringify).join(','),
-          expected,
-          actual
-        ));
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -391,7 +378,8 @@ describe('fast-path', () => {
     it('should return a valid path (posix)', () => {
       fp = require('../fastpath');
 
-      expect(fp.normalize('./fixtures///b/../b/c.js')).toEqual('fixtures/b/c.js');
+      expect(fp.normalize('./fixtures///b/../b/c.js'))
+        .toEqual('fixtures/b/c.js');
       expect(fp.normalize('/foo/../../../bar')).toEqual('/bar');
       expect(fp.normalize('a//b//../b')).toEqual('a/b');
       expect(fp.normalize('a//b//./c')).toEqual('a/b/c');
@@ -402,12 +390,14 @@ describe('fast-path', () => {
       process.platform = 'win32';
 
       fp = require('../fastpath');
-      expect(fp.normalize('./fixtures///b/../b/c.js')).toEqual('fixtures\\b\\c.js');
+      expect(fp.normalize('./fixtures///b/../b/c.js'))
+        .toEqual('fixtures\\b\\c.js');
       expect(fp.normalize('/foo/../../../bar')).toEqual('\\bar');
       expect(fp.normalize('a//b//../b')).toEqual('a\\b');
       expect(fp.normalize('a//b//./c')).toEqual('a\\b\\c');
       expect(fp.normalize('a//b//.')).toEqual('a\\b');
-      expect(fp.normalize('//server/share/dir/file.ext')).toEqual('\\\\server\\share\\dir\\file.ext');
+      expect(fp.normalize('//server/share/dir/file.ext'))
+        .toEqual('\\\\server\\share\\dir\\file.ext');
     });
   });
 
@@ -441,7 +431,7 @@ describe('fast-path', () => {
       const actual = fp.resolve('.');
       const expected = process.cwd();
 
-      expect(actual).toEqual(expected, getErrorMessage('resolve', '.', expected, actual));
+      expect(actual).toEqual(expected);
     });
 
     it('should resolve paths (posix)', () => {
@@ -451,7 +441,7 @@ describe('fast-path', () => {
         const actual = fp.resolve.apply(fp, test[0]);
         const expected = test[1];
 
-        expect(actual).toEqual(expected, getErrorMessage('resolve', test, expected, actual));
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -463,7 +453,7 @@ describe('fast-path', () => {
         const actual = fp.resolve.apply(fp, test[0]);
         const expected = test[1];
 
-        expect(actual).toEqual(expected, getErrorMessage('resolve', test, expected, actual));
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -531,11 +521,7 @@ describe('fast-path', () => {
         const actual = fp.relative(test[0], test[1]);
         const expected = test[2];
 
-        expect(actual).toEqual(expected, getErrorMessage('relative',
-          test.slice(0, 2).map(JSON.stringify).join(','),
-          expected,
-          actual
-        ));
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -547,11 +533,7 @@ describe('fast-path', () => {
         const actual = fp.relative(test[0], test[1]);
         const expected = test[2];
 
-        expect(actual).toEqual(expected, getErrorMessage('relative',
-          test.slice(0, 2).map(JSON.stringify).join(','),
-          expected,
-          actual
-        ));
+        expect(actual).toEqual(expected);
       });
     });
   });

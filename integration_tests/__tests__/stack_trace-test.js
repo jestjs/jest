@@ -89,11 +89,14 @@ describe('Stack Trace', () => {
     );
 
     // Make sure we show Jest's jest-resolve as part of the stack trace
+    /* eslint-disable max-len */
     expect(stdout).toMatch(
       /Error: Cannot find module 'this-module-does-not-exist' from 'test-error-test\.js'/
     );
+    /* eslint-enable max-len */
+
     expect(stdout).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/src\/index\.js/
+      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/
     );
   });
 

@@ -1,6 +1,9 @@
-bin/
-docs/
+**/coverage/**
 **/node_modules/**
 **/vendor/**
+bin/
+docs/
+flowlibs/**
+packages/*/build/**
+types/**
 website/
-**/coverage/**

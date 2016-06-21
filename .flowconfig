@@ -1,0 +1,15 @@
+[ignore]
+.*/packages/babel-plugin-jest-hoist/node_modules/fbjs/.*
+.*/examples/.*
+.*/website/.*
+
+[include]
+
+[libs]
+flowlibs
+
+[options]
+module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'
+
+suppress_type=$FlowFixMe
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-7]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*www[a-z,_]*\\)?)\\)
