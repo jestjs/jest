@@ -14,9 +14,17 @@
 const repl = require('repl');
 const vm = require('vm');
 
-function evalCommand(cmd, context, filename, callback) {
+/* global jestConfig */
+declare var jestConfig: Object;
+
+let preprocessor;
+
+function evalCommand(cmd, context, filename, callback, config) {
   let result;
   try {
+    if (preprocessor) {
+      cmd = preprocessor.process(cmd, '', jestConfig);
+    }
     result = vm.runInThisContext(cmd);
   } catch (e) {
     if (isRecoverableError(e)) {
@@ -44,13 +52,22 @@ function isRecoverableError(e) {
 }
 
 (() => {
-  // Force module initialization before starting the repl, otherwise the first
-  // command feels sluggish.
+  if (jestConfig.scriptPreprocessor) {
+    // $FlowFixMe
+    preprocessor = require(jestConfig.scriptPreprocessor);
+    if (typeof preprocessor.process !== 'function') {
+      throw new TypeError(
+        'Jest: a preprocessor must export a `process` function.'
+      );
+    }
+  }
+
   const replInstance = repl.start({
     prompt: '> ',
     useGlobal: true,
     eval: evalCommand,
   });
+
   // Use jest's module resolution within scripts
   replInstance.context.require = require;
 })();

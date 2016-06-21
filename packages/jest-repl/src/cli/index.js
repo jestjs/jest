@@ -9,8 +9,11 @@
 
 'use strict';
 
-if (process.env.NODE_ENV == null) {
-  process.env.NODE_ENV = 'test';
-}
+const path = require('path');
+const RuntimeCLI = require('../../../jest-runtime/build/cli');
 
-require('../build/cli')();
+const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
+
+module.exports = function () {
+  RuntimeCLI.Run(REPL_SCRIPT);
+}

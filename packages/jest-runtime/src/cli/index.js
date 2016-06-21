@@ -58,6 +58,7 @@ function Run(cliArgs: string) {
 
           const env = new TestEnvironment(config);
           env.global.console = new Console(process.stdout, process.stderr);
+          env.global.jestConfig = config;
 
           const moduleLoader = new Runtime(config, env, hasteMap.resolver);
           moduleLoader.requireModule(testFilePath);
