@@ -11,18 +11,12 @@
 
 'use strict';
 
-const babel = require.call(null, 'babel-core');
 const repl = require('repl');
 const vm = require('vm');
 
-const babelOptions = {
-  // presets: ['react-native'],
-};
-
 function evalCommand(cmd, context, filename, callback) {
-  var result;
+  let result;
   try {
-    cmd = babel.transform(cmd, babelOptions).code;
     result = vm.runInThisContext(cmd);
   } catch (e) {
     if (isRecoverableError(e)) {
@@ -30,12 +24,12 @@ function evalCommand(cmd, context, filename, callback) {
     }
     return callback(e);
   }
-  callback(null, result);
+  return callback(null, result);
 }
 
 function isRecoverableError(e) {
   if (e && e.name === 'SyntaxError') {
-    var message = e.message;
+    const message = e.message;
     const exceptions = [
       'Unterminated template',
       'Missing } in template expression',
@@ -52,7 +46,6 @@ function isRecoverableError(e) {
 (() => {
   // Force module initialization before starting the repl, otherwise the first
   // command feels sluggish.
-  babel.transform('', babelOptions);
   const replInstance = repl.start({
     prompt: '> ',
     useGlobal: true,

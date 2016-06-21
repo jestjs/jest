@@ -22,11 +22,11 @@ const Runtime = require('../');
 
 const VERSION = require('../../package.json').version;
 
-function Run(cliArgs: Array<string>) {
-  const argv = yargs(cliArgs || process.argv)
-  .usage(args.usage)
-  .options(args.options)
-  .argv;
+function Run(cliArgs: string) {
+  const argumentBuilder = yargs
+    .usage(args.usage)
+    .options(args.options);
+  const argv = cliArgs ? argumentBuilder.parse(cliArgs) : argumentBuilder.argv;
 
   warnAboutUnrecognizedOptions(argv, args.options);
 

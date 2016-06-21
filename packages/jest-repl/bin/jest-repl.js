@@ -12,6 +12,6 @@
 const path = require('path');
 const RuntimeCLI = require('../../jest-runtime/build/cli');
 
-const REPL_SCRIPT = path.resolve(__dirname, '../src/index.js');
+const REPL_SCRIPT = path.resolve(__dirname, '../build/index.js');
 
-RuntimeCLI.Run([REPL_SCRIPT]);
+RuntimeCLI.Run(REPL_SCRIPT);
