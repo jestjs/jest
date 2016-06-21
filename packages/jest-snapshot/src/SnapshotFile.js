@@ -41,6 +41,11 @@ const ensureDirectoryExists = (filePath: Path) => {
 
 const escape = string => string.replace(/\`/g, '\\`');
 
+// Extra line breaks at the beginning and at the end of the snapshot are useful
+// to make the content of the snapshot easier to read
+const addExtraLineBreaks = string => string.indexOf('\n') > -1
+  ? `\n${string}\n` : string;
+
 const fileExists = (filePath: Path): boolean => {
   try {
     return fs.statSync(filePath).isFile();
@@ -87,9 +92,9 @@ class SnapshotFile {
   }
 
   serialize(data: any): string {
-    return prettyFormat(data, {
+    return addExtraLineBreaks(prettyFormat(data, {
       plugins: [jsxLikeExtension],
-    });
+    }));
   }
 
   save(update: boolean): SaveStatus {
