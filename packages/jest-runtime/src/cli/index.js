@@ -11,7 +11,6 @@
 'use strict';
 
 const args = require('./args');
-const fs = require('fs');
 const path = require('path');
 const yargs = require('yargs');
 
@@ -21,8 +20,7 @@ const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedO
 const readConfig = require('jest-config').readConfig;
 const Runtime = require('../');
 
-const pkg = require('../../package.json');
-const VERSION = pkg.version;
+const VERSION = require('../../package.json').version;
 
 function Run() {
   const argv = yargs

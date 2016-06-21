@@ -22,7 +22,6 @@ const SearchSource = require('./SearchSource');
 
 const Runtime = require('jest-runtime');
 const chalk = require('chalk');
-const constants = require('./constants');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
@@ -31,6 +30,7 @@ const sane = require('sane');
 const which = require('which');
 
 const CLEAR = '\x1B[2J\x1B[H';
+const VERSION = require('../package.json').version;
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
 
@@ -133,7 +133,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 
   argv = argv || {};
   if (argv.version) {
-    pipe.write(`v${constants.VERSION}\n`);
+    pipe.write(`v${VERSION}\n`);
     onComplete && onComplete(true);
     return;
   }
@@ -147,7 +147,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 
       /* $FlowFixMe */
       const testFramework = require(config.testRunner);
-      const info = [`v${constants.VERSION}`, testFramework.name];
+      const info = [`v${VERSION}`, testFramework.name];
       if (config.usesBabelJest) {
         info.push('babel-jest');
       }
@@ -159,34 +159,40 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
           argv.onlyChanged = true;
         }
 
-        getWatcher(config, root, watcher => {
-          let timer;
-          let isRunning;
+        return new Promise(resolve => {
+          getWatcher(config, root, watcher => {
+            let timer;
+            let isRunning;
 
-          pipe.write(CLEAR + header);
-          watcher.on('all', (_, filePath) => {
             pipe.write(CLEAR + header);
-            filePath = path.join(root, filePath);
-            const isValidPath =
-              config.testPathDirs.some(dir => filePath.startsWith(dir));
-            if (!isRunning && isValidPath) {
-              if (timer) {
-                clearTimeout(timer);
-                timer = null;
+            watcher.on('all', (_, filePath) => {
+              pipe.write(CLEAR + header);
+              filePath = path.join(root, filePath);
+              const isValidPath =
+                config.testPathDirs.some(dir => filePath.startsWith(dir));
+              if (!isRunning && isValidPath) {
+                if (timer) {
+                  clearTimeout(timer);
+                  timer = null;
+                }
+                timer = setTimeout(
+                  () => {
+                    isRunning = true;
+                    runJest(config, argv, pipe, () => isRunning = false)
+                      .then(
+                        resolve,
+                        error => console.error(chalk.red(error))
+                      );
+                  },
+                  WATCHER_DEBOUNCE
+                );
               }
-              timer = setTimeout(
-                () => {
-                  isRunning = true;
-                  runJest(config, argv, pipe, () => isRunning = false);
-                },
-                WATCHER_DEBOUNCE
-              );
-            }
+            });
           });
         });
       } else {
         pipe.write(header);
-        runJest(config, argv, pipe, onComplete);
+        return runJest(config, argv, pipe, onComplete);
       }
     })
     .catch(error => {
@@ -196,7 +202,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 }
 
 module.exports = {
-  getVersion: () => constants.VERSION,
+  getVersion: () => VERSION,
   runCLI,
   SearchSource,
   TestRunner,

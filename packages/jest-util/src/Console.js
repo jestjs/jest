@@ -37,15 +37,11 @@ const chalk = require('chalk');
 
 class CustomConsole extends Console {
   warn() {
-    return super.warn(
-      chalk.yellow(util.format.apply(this, arguments))
-    );
+    return super.warn(chalk.yellow(util.format.apply(this, arguments)));
   }
 
   error() {
-    return super.error(
-      chalk.red(util.format.apply(this, arguments))
-    );
+    return super.error(chalk.red(util.format.apply(this, arguments)));
   }
 }
 
