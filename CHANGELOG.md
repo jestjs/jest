@@ -1,5 +1,9 @@
-## jest 14.0.0
+## jest 13.0.0
 
+* Added duration of individual tests in verbose mode.
+* Added a `browser` config option to properly resolve npm packages with a
+  browser field in `package.json` if you are writing tests for client side apps
+* Added `jest-repl`.
 * Split up `jest-cli` into `jest-runtime` and `jest-config`.
 * Added a notification plugin that shows a test run notification
   using `--notify`.

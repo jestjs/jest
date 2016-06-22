@@ -153,7 +153,6 @@ class DefaultTestReporter {
       snapshots.unmatched ||
       snapshots.filesRemoved
     ));
-    this._printSnapshotSummary(snapshots);
 
     let results = '';
 
@@ -183,6 +182,7 @@ class DefaultTestReporter {
       `run time ${runTime}s)`;
 
     this._printSummary(aggregatedResults);
+    this._printSnapshotSummary(snapshots);
     this.log(results);
 
     if (config.notify) {
