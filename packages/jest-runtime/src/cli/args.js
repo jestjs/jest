@@ -15,6 +15,14 @@ const wrap = require('jest-util').wrap;
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
 
 const options = {
+  cache: {
+    default: true,
+    description: wrap(
+      'Whether to use the preprocessor cache. Disable the cache using ' +
+      '--no-cache.',
+    ),
+    type: 'boolean',
+  },
   config: {
     alias: 'c',
     description: wrap('The path to a Jest config file.'),
@@ -23,6 +31,14 @@ const options = {
   version: {
     alias: 'v',
     description: wrap('Print the version and exit'),
+    type: 'boolean',
+  },
+  watchman: {
+    default: true,
+    description: wrap(
+      'Whether to use watchman for file crawling. Disable using ' +
+      '--no-watchman.',
+    ),
     type: 'boolean',
   },
 };

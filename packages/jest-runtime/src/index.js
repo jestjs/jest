@@ -116,16 +116,22 @@ class Runtime {
     config.setupFiles.forEach(unmockPath);
 
     this.resetModuleRegistry();
+
+    if (config.setupFiles.length) {
+      for (let i = 0; i < config.setupFiles.length; i++) {
+        this.requireModule(config.setupFiles[i]);
+      }
+    }
   }
 
   static buildHasteMap(
     config: Config,
-    options: BuildHasteMapOptions,
+    options: {maxWorkers: number},
   ): Promise<HasteResolverContext> {
     utils.createDirectory(config.cacheDirectory);
     const instance = createHasteMap(config, {
-      resetCache: !config.cache,
       maxWorkers: options.maxWorkers,
+      resetCache: !config.cache,
     });
     return instance.build().then(
       moduleMap => ({
@@ -141,6 +147,10 @@ class Runtime {
 
   static runCLI(args?: Object, info?: Array<string>) {
     return require('./cli').run(args, info);
+  }
+
+  static getCLIOptions() {
+    return require('./cli/args').options;
   }
 
   requireModule(from: Path, moduleName?: string) {

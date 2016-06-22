@@ -16,7 +16,6 @@ declare var jest: Object;
 
 jest.disableAutomock();
 
-const chalk = require('chalk');
 const path = require('path');
 const repl = require('repl');
 const vm = require('vm');
@@ -64,7 +63,7 @@ if (jestConfig.scriptPreprocessor) {
 }
 
 const replInstance = repl.start({
-  prompt: chalk.green('\u203A') + ' ',
+  prompt: '\u203A ',
   useGlobal: true,
   eval: evalCommand,
 });

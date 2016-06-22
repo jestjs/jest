@@ -11,6 +11,7 @@
 'use strict';
 
 const args = require('./args');
+const os = require('os');
 const path = require('path');
 const yargs = require('yargs');
 
@@ -54,13 +55,14 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
 
   const root = getPackageRoot();
   const testFilePath = path.resolve(process.cwd(), argv._[0]);
-  const info = cliInfo ? cliInfo.join(', ') : '';
+  const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
 
-  console.log(`Using Jest Runtime v${VERSION}, ${info}`);
-
+  console.log(`Using Jest Runtime v${VERSION}${info}`);
   readConfig(argv, root)
     .then(config => {
-      Runtime.buildHasteMap(config, {maxWorkers: 1})
+      Runtime.buildHasteMap(config, {
+        maxWorkers: os.cpus().length - 1,
+      })
         .then(hasteMap => {
           /* $FlowFixMe */
           const TestEnvironment = require(config.testEnvironment);
@@ -69,8 +71,8 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
           env.global.console = new Console(process.stdout, process.stderr);
           env.global.jestConfig = config;
 
-          const moduleLoader = new Runtime(config, env, hasteMap.resolver);
-          moduleLoader.requireModule(testFilePath);
+          const runtime = new Runtime(config, env, hasteMap.resolver);
+          runtime.requireModule(testFilePath);
         })
         .catch(e => {
           console.error(e);
