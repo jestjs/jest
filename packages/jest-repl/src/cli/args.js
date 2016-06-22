@@ -10,16 +10,13 @@
 
 'use strict';
 
+const Runtime = require('jest-runtime');
+
 const wrap = require('jest-util').wrap;
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
 
-const options = {
-  config: {
-    alias: 'c',
-    description: wrap('The path to a Jest config file.'),
-    type: 'string',
-  },
+const options = Object.assign({}, Runtime.getCLIOptions(), {
   replname: {
     alias: 'r',
     description: wrap(
@@ -28,12 +25,7 @@ const options = {
     ),
     type: 'string',
   },
-  version: {
-    alias: 'v',
-    description: wrap('Print the version and exit'),
-    type: 'boolean',
-  },
-};
+});
 
 module.exports = {
   options,
