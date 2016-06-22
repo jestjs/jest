@@ -20,7 +20,7 @@ to the <a href="/jest/docs/api.html#config-unmockedmodulepathpatterns-array-stri
 config option.</p><p>You can also provide a <a href="/jest/docs/manual-mocks.html" target="">manual mock</a> by creating
 a <code>moduleName.js</code> file in a <code>__mocks__</code> folder in the root level of your
 project.</p><h3><a class="anchor" name="caching-issues"></a>Caching Issues <a class="hash-link" href="#caching-issues">#</a></h3><p>The preprocessor script was changed or babel was updated and the changes aren&#x27;t
-being recognized by Jest?</p><p>Retry with <code>--no-cache</code> or <code>rm -rf node_modules/jest-cli/.haste_cache</code>.</p><p>Explanation: Jest caches transformed module files to speed up test execution.
+being recognized by Jest?</p><p>Retry with <code>--no-cache</code>.</p><p>Explanation: Jest caches transformed module files to speed up test execution.
 If you are using your own custom preprocessor, consider adding a <code>getCacheKey</code>
 function to it: <a href="https://github.com/facebook/relay/blob/master/scripts/jest/preprocessor.js#L63-L67" target="_blank">getCacheKey in Relay</a>.</p><h3><a class="anchor" name="unresolved-promises"></a>Unresolved Promises <a class="hash-link" href="#unresolved-promises">#</a></h3><p>If a promise doesn&#x27;t resolve at all, this error might be thrown:</p><pre class="prism language-javascript">
 <span class="token operator">-</span> Error<span class="token punctuation">:</span> Timeout <span class="token operator">-</span> Async callback was not invoked within timeout specified by jasmine<span class="token punctuation">.</span>DEFAULT_TIMEOUT_INTERVAL<span class="token punctuation">.</span>`</pre><p>Most commonly this is being caused by conflicting Promise implementations.

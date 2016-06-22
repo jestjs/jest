@@ -54,7 +54,16 @@ Since these files aren&#x27;t particularly useful in tests anyway we can safely 
 <span spellcheck="true" class="token comment">// test/styleMock.js</span>
 
 <span spellcheck="true" class="token comment">// Return an object to emulate css modules (if you are using them)</span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span></pre><pre class="prism language-javascript">
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>Alternatively, you can use an <a href="https://github.com/keyanzhang/identity-obj-proxy" target="_blank">ES6 Proxy</a>
+(<code>npm install --save-dev identity-obj-proxy</code> or create your own) to mock <a href="https://github.com/css-modules/css-modules" target="_blank">CSS Modules</a>; then all your className
+lookups on the styles object will be returned as-is (e.g., <code>styles.foobar === &#x27;foobar&#x27;</code>).</p><p>Notice that Proxy is enabled in Node.js <code>v6.*</code> by default; if you are not on Node <code>v6.*</code> yet,
+make sure you invoke Jest using <code>node --harmony_proxies node_modules/.bin/jest</code>.</p><pre class="prism language-javascript">
+<span spellcheck="true" class="token comment">// test/styleMock.js</span>
+
+<span spellcheck="true" class="token comment">// Return a Proxy to emulate css modules (if you are using them)</span>
+
+<span class="token keyword">var</span> idObj <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;identity-obj-proxy&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> idObj<span class="token punctuation">;</span></pre><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// test/fileMock.js</span>
 
 <span spellcheck="true" class="token comment">// Return an empty string or other mock path to emulate the url that</span>
@@ -70,7 +79,7 @@ For Webpack&#x27;s <code>moduleDirectories</code>, and <code>extensions</code> o
     <span class="token string">&quot;moduleDirectories&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;bower_components&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;shared&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
 
     <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/stylMockjs&quot;</span><span class="token punctuation">,</span>    
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span><span class="token punctuation">,</span>    
       <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span><span class="token punctuation">,</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
