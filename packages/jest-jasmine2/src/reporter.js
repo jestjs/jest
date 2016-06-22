@@ -33,7 +33,7 @@ type SpecResult = {
   description: string,
   failedExpectations: Array<FailedAssertion>,
   status: Status,
-  timeTaken?: Milliseconds,
+  duration?: Milliseconds,
 };
 
 type Microseconds = number;
@@ -108,7 +108,7 @@ class Jasmine2Reporter {
     ancestorTitles: Array<string>,
   ): AssertionResult {
     const start = this._startTimes.get(specResult.id);
-    const timeTaken = start ? (microtime.now() - start) / 1000 : undefined;
+    const duration = start ? (microtime.now() - start) / 1000 : undefined;
     const status =
       (specResult.status === 'disabled') ? 'pending' : specResult.status;
     const results = {
@@ -117,7 +117,7 @@ class Jasmine2Reporter {
       ancestorTitles,
       failureMessages: [],
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
-      timeTaken,
+      duration,
     };
 
     specResult.failedExpectations.forEach(failed => {

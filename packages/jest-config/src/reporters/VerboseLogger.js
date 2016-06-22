@@ -83,8 +83,8 @@ class VerboseLogger {
 
   _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    const time = test.timeTaken
-      ? ` (${test.timeTaken.toFixed(0)} ms)`
+    const time = test.duration
+      ? ` (${test.duration.toFixed(0)} ms)`
       : '';
     this._logLine(status + ' ' + chalk.gray(test.title + time), indentLevel);
   }
