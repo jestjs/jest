@@ -29,12 +29,16 @@ export type FailedAssertion = {
 
 export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
 
+export type Bytes = number;
+export type Milliseconds = number;
+
 export type AssertionResult = {
   title: string,
   status: Status,
   ancestorTitles: Array<string>,
   failureMessages: Array<string>,
   numPassingAsserts: number,
+  duration?: Milliseconds,
 };
 
 export type AggregatedResult = {
@@ -62,13 +66,14 @@ export type Suite = {
 export type TestResult = {
   coverage?: Coverage,
   hasUncheckedKeys: boolean,
+  memoryUsage?: Bytes,
   message?: string,
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
   perfStats: {
-    end: number,
-    start: number,
+    end: Milliseconds,
+    start: Milliseconds,
   },
   snapshotFileDeleted: boolean,
   snapshotsAdded: number,
