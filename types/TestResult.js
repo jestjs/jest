@@ -38,7 +38,7 @@ export type AssertionResult = {
   ancestorTitles: Array<string>,
   failureMessages: Array<string>,
   numPassingAsserts: number,
-  duration?: number, // milliseconds
+  duration?: Milliseconds,
 };
 
 export type AggregatedResult = {
