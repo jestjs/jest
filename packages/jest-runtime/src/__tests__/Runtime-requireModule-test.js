@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 const path = require('path');
@@ -28,35 +28,35 @@ describe('Runtime requireModule', () => {
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'RegularModule'
+        'RegularModule',
       );
       expect(exports.isRealModule).toBe(true);
-    })
+    }),
   );
 
   it('provides `module.parent` to modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'RegularModule'
+        'RegularModule',
       );
       expect(exports.parent).toEqual({
         id: 'mockParent',
         exports: {},
       });
-    })
+    }),
   );
 
   it('provides `module.filename` to modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'RegularModule'
+        'RegularModule',
       );
       expect(exports.filename.endsWith(
-        'test_root' + path.sep + 'RegularModule.js'
+        'test_root' + path.sep + 'RegularModule.js',
       )).toBe(true);
-    })
+    }),
   );
 
   it('provides `module.paths` to modules', () => {
@@ -66,12 +66,12 @@ describe('Runtime requireModule', () => {
     return createRuntime(__filename, {moduleDirectories}).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'RegularModule'
+        'RegularModule',
       );
       expect(exports.paths.length).toBeGreaterThan(0);
       exports.paths.forEach(path => {
         expect(
-          moduleDirectories.some(dir => path.endsWith(dir))
+          moduleDirectories.some(dir => path.endsWith(dir)),
         ).toBe(true);
       });
     });
@@ -82,29 +82,29 @@ describe('Runtime requireModule', () => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'DoesntExist');
       }).toThrow(
-        new Error('Cannot find module \'DoesntExist\' from \'root.js\'')
+        new Error('Cannot find module \'DoesntExist\' from \'root.js\''),
       );
-    })
+    }),
   );
 
   it('finds relative-path modules without file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        './RegularModule'
+        './RegularModule',
       );
       expect(exports.isRealModule).toBe(true);
-    })
+    }),
   );
 
   it('finds relative-path modules with file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        './RegularModule.js'
+        './RegularModule.js',
       );
       expect(exports.isRealModule).toBe(true);
-    })
+    }),
   );
 
   it('throws on non-existent relative-path modules', () =>
@@ -112,9 +112,9 @@ describe('Runtime requireModule', () => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, './DoesntExist');
       }).toThrow(
-        new Error('Cannot find module \'./DoesntExist\' from \'root.js\'')
+        new Error('Cannot find module \'./DoesntExist\' from \'root.js\''),
       );
-    })
+    }),
   );
 
   it('finds node core built-in modules', () =>
@@ -122,53 +122,53 @@ describe('Runtime requireModule', () => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'fs');
       }).not.toThrow();
-    })
+    }),
   );
 
   it('finds and loads JSON files without file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        './JSONFile'
+        './JSONFile',
       );
       expect(exports.isJSONModule).toBe(true);
-    })
+    }),
   );
 
   it('finds and loads JSON files with file extension', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        './JSONFile.json'
+        './JSONFile.json',
       );
       expect(exports.isJSONModule).toBe(true);
-    })
+    }),
   );
 
   it('requires a JSON file twice successfully', () =>
     createRuntime(__filename).then(runtime => {
       const exports1 = runtime.requireModule(
         runtime.__mockRootPath,
-        './JSONFile.json'
+        './JSONFile.json',
       );
       const exports2 = runtime.requireModule(
         runtime.__mockRootPath,
-        './JSONFile.json'
+        './JSONFile.json',
       );
       expect(exports1.isJSONModule).toBe(true);
       expect(exports2.isJSONModule).toBe(true);
       expect(exports1).toBe(exports2);
-    })
+    }),
   );
 
   it('provides manual mock when real module doesnt exist', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'ExclusivelyManualMock'
+        'ExclusivelyManualMock',
       );
       expect(exports.isExclusivelyManualMockModule).toBe(true);
-    })
+    }),
   );
 
   it(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () =>
@@ -178,20 +178,20 @@ describe('Runtime requireModule', () => {
       root.jest.unmock('ManuallyMocked');
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
-        'ManuallyMocked'
+        'ManuallyMocked',
       );
       expect(exports.isManualMockModule).toBe(false);
-    })
+    }),
   );
 
   it('resolves haste packages properly', () =>
     createRuntime(__filename).then(runtime => {
       const hastePackage = runtime.requireModule(
         runtime.__mockRootPath,
-        'haste-package/core/module'
+        'haste-package/core/module',
       );
       expect(hastePackage.isHastePackage).toBe(true);
-    })
+    }),
   );
 
   it('resolves node modules properly when crawling node_modules', () =>
@@ -205,10 +205,10 @@ describe('Runtime requireModule', () => {
     }).then(runtime => {
       const hastePackage = runtime.requireModule(
         runtime.__mockRootPath,
-        'not-a-haste-package'
+        'not-a-haste-package',
       );
       expect(hastePackage.isNodeModule).toBe(true);
-    })
+    }),
   );
 
   it('resolves platform extensions based on the default platform', () =>
@@ -216,7 +216,7 @@ describe('Runtime requireModule', () => {
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireModule(
           runtime.__mockRootPath,
-          'Platform'
+          'Platform',
         );
 
         expect(exports.platform).toBe('default');
@@ -229,7 +229,7 @@ describe('Runtime requireModule', () => {
       }).then(runtime => {
         const exports = runtime.requireModule(
           runtime.__mockRootPath,
-          'Platform'
+          'Platform',
         );
 
         expect(exports.platform).toBe('ios');
@@ -241,7 +241,7 @@ describe('Runtime requireModule', () => {
       }).then(runtime => {
         const exports = runtime.requireModule(
           runtime.__mockRootPath,
-          'Platform'
+          'Platform',
         );
 
         expect(exports.platform).toBe('default');
@@ -254,7 +254,7 @@ describe('Runtime requireModule', () => {
       }).then(runtime => {
         const exports = runtime.requireModule(
           runtime.__mockRootPath,
-          'Platform'
+          'Platform',
         );
 
         expect(exports.platform).toBe('android');
@@ -267,14 +267,14 @@ describe('Runtime requireModule', () => {
       }).then(runtime => {
         const exports = runtime.requireModule(
           runtime.__mockRootPath,
-          'Platform'
+          'Platform',
         );
 
         // We prefer `native` over the default module if the default one
         // cannot be found.
         expect(exports.platform).toBe('native');
       }),
-    ])
+    ]),
   );
 
 });

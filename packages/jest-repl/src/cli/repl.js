@@ -30,7 +30,7 @@ const evalCommand = (cmd, context, filename, callback, config) => {
       cmd = preprocessor.process(
         cmd,
         jestConfig.replname || 'jest.js',
-        jestConfig
+        jestConfig,
       );
     }
     result = vm.runInThisContext(cmd);
@@ -58,7 +58,7 @@ if (jestConfig.scriptPreprocessor) {
   preprocessor = require(jestConfig.scriptPreprocessor);
   if (typeof preprocessor.process !== 'function') {
     throw new TypeError(
-      'Jest: a preprocessor must export a `process` function.'
+      'Jest: a preprocessor must export a `process` function.',
     );
   }
 }

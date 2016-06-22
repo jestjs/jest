@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 let createRuntime;
@@ -28,7 +28,7 @@ describe('Runtime', () => {
       createRuntime(__filename).then(runtime => {
         const testRequire = runtime.requireModule.bind(
           runtime,
-          runtime.__mockRootPath
+          runtime.__mockRootPath,
         );
 
         const module = testRequire('RegularModule');
@@ -42,7 +42,7 @@ describe('Runtime', () => {
         // Make sure we get a mock.
         expect(mock.fn()).toBe(undefined);
         expect(module.getModuleStateValue()).toBe(origModuleStateValue);
-      })
+      }),
     );
   });
 });

@@ -81,7 +81,7 @@ FUNCTIONS.mock = args => {
     const moduleFactory = args[1];
     invariant(
       moduleFactory.isFunction(),
-      'The second argument of `jest.mock` must be a function.'
+      'The second argument of `jest.mock` must be a function.',
     );
 
     const ids = new Set();
@@ -108,7 +108,7 @@ FUNCTIONS.mock = args => {
           'reference any outside variables.\n' +
           'Invalid variable access: ' + name + '\n' +
           'Whitelisted objects: ' +
-          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.'
+          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.',
         );
       }
     }

@@ -82,7 +82,7 @@ describe('JasmineReporter', () => {
         const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\' ' +
-          errorize('toBe:') + ' \'foo' + highlight('bar') + '\''
+          errorize('toBe:') + ' \'foo' + highlight('bar') + '\'',
         );
       });
     });
@@ -95,7 +95,7 @@ describe('JasmineReporter', () => {
         const message = result.testResults[0].failureMessages[0];
         expect(message).toBe(
           errorize('Expected:') + ' \'foo\n' + highlight('bar\n') + 'baz\' ' +
-          errorize('toBe:') + ' \'foo\n' + highlight('xxx\n') + 'baz\''
+          errorize('toBe:') + ' \'foo\n' + highlight('xxx\n') + 'baz\'',
         );
       });
     });

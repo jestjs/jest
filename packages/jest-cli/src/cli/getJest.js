@@ -35,7 +35,7 @@ function getJest(packageRoot: Path) {
       ) {
         console.error(
           'Please run `npm install` to use the version of Jest intended for ' +
-          'this project.'
+          'this project.',
         );
         process.on('exit', () => process.exit(1));
       }

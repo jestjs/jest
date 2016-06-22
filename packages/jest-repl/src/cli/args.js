@@ -24,7 +24,7 @@ const options = {
     alias: 'r',
     description: wrap(
       'The "name" of the file given to preprocessors to be transpiled. ' +
-      'For example, "repl.ts" if using a Typescript preprocessor.'
+      'For example, "repl.ts" if using a Typescript preprocessor.',
     ),
     type: 'string',
   },

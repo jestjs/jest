@@ -16,7 +16,7 @@ const check = (argv: Object) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
-      'options do not make sense together. Which is it?'
+      'options do not make sense together. Which is it?',
     );
   }
 
@@ -24,13 +24,13 @@ const check = (argv: Object) => {
     throw new Error(
       'Both --onlyChanged and a path pattern were specified, but these ' +
       'two options do not make sense together. Which is it? Do you want ' +
-      'to run tests for changed files? Or for a specific set of files?'
+      'to run tests for changed files? Or for a specific set of files?',
     );
   }
 
   if (argv.watchExtensions && argv.watch === undefined) {
     throw new Error(
-      '--watchExtensions can only be specified together with --watch.'
+      '--watchExtensions can only be specified together with --watch.',
     );
   }
 
@@ -49,14 +49,14 @@ const options = {
     description: wrap(
       'The path to a jest config file specifying how to find and execute ' +
       'tests. If no rootDir is set in the config, the current directory ' +
-      'is assumed to be the rootDir for the project.'
+      'is assumed to be the rootDir for the project.',
     ),
     type: 'string',
   },
   coverage: {
     description: wrap(
       'Indicates that test coverage information should be collected and ' +
-      'reported in the output.'
+      'reported in the output.',
     ),
     type: 'boolean',
   },
@@ -66,7 +66,7 @@ const options = {
       'Specifies the maximum number of workers the worker-pool will ' +
       'spawn for running tests. This defaults to the number of the cores ' +
       'available on your machine. (its usually best not to override this ' +
-      'default)'
+      'default)',
     ),
     type: 'string', // no, yargs -- its a number.. :(
   },
@@ -75,7 +75,7 @@ const options = {
     description: wrap(
       'Attempts to identify which tests to run based on which files have ' +
       'changed in the current repository. Only works if you\'re running ' +
-      'tests in a git repository at the moment.'
+      'tests in a git repository at the moment.',
     ),
     type: 'boolean',
   },
@@ -85,21 +85,21 @@ const options = {
       'Run all tests serially in the current process (rather than ' +
       'creating a worker pool of child processes that run tests). This ' +
       'is sometimes useful for debugging, but such use cases are pretty ' +
-      'rare.'
+      'rare.',
     ),
     type: 'boolean',
   },
   testEnvData: {
     description: wrap(
       'A JSON object (string) that specifies data that will be made ' +
-      'available in the test environment (via jest.getTestEnvData())'
+      'available in the test environment (via jest.getTestEnvData())',
     ),
     type: 'string',
   },
   testPathPattern: {
     description: wrap(
       'A regexp pattern string that is matched against all tests ' +
-      'paths before executing the test.'
+      'paths before executing the test.',
     ),
     type: 'string',
   },
@@ -110,31 +110,31 @@ const options = {
   },
   noHighlight: {
     description: wrap(
-      'Disables test results output highlighting'
+      'Disables test results output highlighting',
     ),
     type: 'boolean',
   },
   colors: {
     description: wrap(
-      'Forces test results output highlighting (even if stdout is not a TTY)'
+      'Forces test results output highlighting (even if stdout is not a TTY)',
     ),
     type: 'boolean',
   },
   noStackTrace: {
     description: wrap(
-      'Disables stack trace in test results output'
+      'Disables stack trace in test results output',
     ),
     type: 'boolean',
   },
   verbose: {
     description: wrap(
-      'Display individual test results with the test suite hierarchy.'
+      'Display individual test results with the test suite hierarchy.',
     ),
     type: 'boolean',
   },
   notify: {
     description: wrap(
-      'Activates notifications for test results.'
+      'Activates notifications for test results.',
     ),
     type: 'boolean',
   },
@@ -142,20 +142,20 @@ const options = {
     description: wrap(
       'Watch files for changes and rerun tests related to changed files. ' +
       'If you want to re-run all tests when a file has changed, you can ' +
-      'call Jest using `--watch=all`.'
+      'call Jest using `--watch=all`.',
     ),
     type: 'string',
   },
   bail: {
     alias: 'b',
     description: wrap(
-      'Exit the test suite immediately upon the first failing test.'
+      'Exit the test suite immediately upon the first failing test.',
     ),
     type: 'boolean',
   },
   useStderr: {
     description: wrap(
-      'Divert all output to stderr.'
+      'Divert all output to stderr.',
     ),
     type: 'boolean',
   },
@@ -163,21 +163,21 @@ const options = {
     default: true,
     description: wrap(
       'Whether to use the preprocessor cache. Disable the cache using ' +
-      '--no-cache.'
+      '--no-cache.',
     ),
     type: 'boolean',
   },
   json: {
     description: wrap(
       'Prints the test results in JSON. This mode will send all ' +
-      'other test output and user messages to stderr.'
+      'other test output and user messages to stderr.',
     ),
     type: 'boolean',
   },
   setupTestFrameworkScriptFile: {
     description: wrap(
       'The path to a module that runs some code to configure or set up ' +
-      'the testing framework before each test.'
+      'the testing framework before each test.',
     ),
     type: 'string',
   },
@@ -187,14 +187,14 @@ const options = {
       '1 and 2 which can be enabled by setting this option to ' +
       '`jasmine1` or `jasmine2`. The default is `jasmine2`. A path to a ' +
       'custom test runner can be provided: ' +
-      '`<rootDir>/path/to/testRunner.js`.'
+      '`<rootDir>/path/to/testRunner.js`.',
     ),
     type: 'string',
   },
   logHeapUsage: {
     description: wrap(
       'Logs the heap usage after every test. Useful to debug memory ' +
-      'leaks. Use together with `--runInBand` and `--expose-gc` in node.'
+      'leaks. Use together with `--runInBand` and `--expose-gc` in node.',
     ),
     type: 'boolean',
   },
@@ -202,14 +202,14 @@ const options = {
     default: true,
     description: wrap(
       'Whether to use watchman for file crawling. Disable using ' +
-      '--no-watchman.'
+      '--no-watchman.',
     ),
     type: 'boolean',
   },
   silent: {
     default: false,
     description: wrap(
-      'Prevent tests from printing messages through the console.'
+      'Prevent tests from printing messages through the console.',
     ),
     type: 'boolean',
   },
@@ -217,7 +217,7 @@ const options = {
     alias: 'u',
     default: false,
     description: wrap(
-      'Use this flag to re-record snapshots.'
+      'Use this flag to re-record snapshots.',
     ),
     type: 'boolean',
   },
@@ -226,7 +226,7 @@ const options = {
     description: wrap(
       'The number of test cases to generate for each testcheck test. ' +
       'May be overriden for individual test cases using the options ' +
-      'argument of check.it.'
+      'argument of check.it.',
     ),
     type: 'number',
   },
@@ -237,7 +237,7 @@ const options = {
       'generated for testcheck tests. ' +
       'May be overriden for individual test cases using the options ' +
       'argument of check.it. ' +
-      'Generators can also be sized using gen.resize(n, anotherGenerator).'
+      'Generators can also be sized using gen.resize(n, anotherGenerator).',
     ),
     type: 'number',
   },
@@ -246,7 +246,7 @@ const options = {
     description: wrap(
       'The seed for generating testcheck test cases. Defaults to random. ' +
       'May be overriden for individual test cases using the options ' +
-      'argument of check.it.'
+      'argument of check.it.',
     ),
     type: 'number',
   },

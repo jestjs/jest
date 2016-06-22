@@ -115,7 +115,7 @@ module.exports = (filePath: Path, config: Config): string => {
   if (!preprocessorRegExpCache.has(config)) {
     preprocessorRegExpCache.set(
       config,
-      new RegExp(config.preprocessorIgnorePatterns.join('|'))
+      new RegExp(config.preprocessorIgnorePatterns.join('|')),
     );
   }
   const regex = preprocessorRegExpCache.get(config);
@@ -129,7 +129,7 @@ module.exports = (filePath: Path, config: Config): string => {
     const preprocessor = require(config.scriptPreprocessor);
     if (typeof preprocessor.process !== 'function') {
       throw new TypeError(
-        'Jest: a preprocessor must export a `process` function.'
+        'Jest: a preprocessor must export a `process` function.',
       );
     }
 
@@ -141,7 +141,7 @@ module.exports = (filePath: Path, config: Config): string => {
       const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
       const cachePath = path.join(
         cacheDir,
-        path.basename(filePath, path.extname(filePath)) + '_' + cacheKey
+        path.basename(filePath, path.extname(filePath)) + '_' + cacheKey,
       );
       createDirectory(cacheDir);
       const cachedData = readCacheFile(filePath, cachePath);

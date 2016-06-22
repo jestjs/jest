@@ -45,7 +45,7 @@ function promisifyIt(originalFn, env) {
           done();
         } else {
           done.fail(new Error(
-            'Jest: `it` must return either a Promise or undefined.'
+            'Jest: `it` must return either a Promise or undefined.',
           ));
         }
       }, timeout);

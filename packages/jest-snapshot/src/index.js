@@ -60,7 +60,7 @@ module.exports = {
         .filter(snapshotFile => !fileExists(path.resolve(
           path.dirname(snapshotFile),
           '..',
-          path.basename(snapshotFile, '.' + EXTENSION)
+          path.basename(snapshotFile, '.' + EXTENSION),
         )))
         .map(snapshotFile => update && fs.unlinkSync(snapshotFile))
         .length;

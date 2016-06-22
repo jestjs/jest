@@ -28,7 +28,7 @@ describe('normalize', () => {
   function joinForPattern() {
     return Array.prototype.join.call(
       arguments,
-      utils.escapeStrForRegex(path.sep)
+      utils.escapeStrForRegex(path.sep),
     );
   }
 
@@ -60,7 +60,7 @@ describe('normalize', () => {
     expect(console.error).toBeCalledWith(
       'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
       '"with a value even!". This is either a typing error or another user ' +
-      'mistake and fixing it will remove this message.'
+      'mistake and fixing it will remove this message.',
     );
 
     console.error = error;
@@ -412,7 +412,7 @@ describe('normalize', () => {
         },
         {
           testRunner: 'jasmine1',
-        }
+        },
       );
 
       expect(config.testRunner).toMatch('jasmine1');
@@ -448,7 +448,7 @@ describe('normalize', () => {
       })).toThrow(new Error(
         `Jest: test environment "phantom" cannot be found. Make sure the ` +
         `"testEnvironment" configuration option points to an existing node ` +
-        `module.`
+        `module.`,
       ));
     });
   });

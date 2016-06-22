@@ -18,7 +18,7 @@ let _memoizedCoverageTemplate = null;
 function _getCoverageTemplate() {
   if (_memoizedCoverageTemplate === null) {
     _memoizedCoverageTemplate = require('lodash.template')(
-      fs.readFileSync(COVERAGE_TEMPLATE_PATH, 'utf8')
+      fs.readFileSync(COVERAGE_TEMPLATE_PATH, 'utf8'),
     );
   }
   return _memoizedCoverageTemplate;
@@ -67,7 +67,7 @@ class CoverageCollector {
     for (nodeIndex in instrumentationInfo.nodes) {
       if (!this._coverageDataStore.nodes.hasOwnProperty(nodeIndex)) {
         coverageInfo.uncoveredSpans.push(
-          instrumentationInfo.nodes[nodeIndex].loc
+          instrumentationInfo.nodes[nodeIndex].loc,
         );
       }
     }

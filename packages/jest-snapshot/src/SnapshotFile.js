@@ -109,7 +109,7 @@ class SnapshotFile {
       for (const key in this._content) {
         const item = this._content[key];
         snapshots.push(
-          'exports[`' + escape(key) + '`] = `' + escape(item) + '`;'
+          'exports[`' + escape(key) + '`] = `' + escape(item) + '`;',
         );
       }
 
@@ -160,7 +160,7 @@ module.exports = {
 
     const snapshotFilename = path.join(
       snapshotsPath,
-      path.basename(testPath) + '.' + SNAPSHOT_EXTENSION
+      path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
     );
 
     return new SnapshotFile(snapshotFilename);

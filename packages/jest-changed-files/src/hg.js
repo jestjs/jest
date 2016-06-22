@@ -42,7 +42,7 @@ function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
           resolve([]);
         } else {
           resolve(stdout.split('\n').map(
-            changedPath => path.resolve(cwd, changedPath)
+            changedPath => path.resolve(cwd, changedPath),
           ));
         }
       } else {

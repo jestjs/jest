@@ -12,6 +12,8 @@
     "array-bracket-spacing": [2, "never"],
     "arrow-spacing": [2],
     "babel/arrow-parens": [2, "as-needed"],
+    "babel/flow-object-type": [2, "comma"],
+    "babel/func-params-comma-dangle": [2, "always-multiline"],
     "brace-style": [2, "1tbs", {"allowSingleLine": true}],
     "comma-dangle": [2, "always-multiline"],
     "comma-spacing": [2],

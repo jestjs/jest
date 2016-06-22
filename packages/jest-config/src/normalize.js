@@ -44,7 +44,7 @@ function _replaceRootDirTags(rootDir, config) {
 
       return path.resolve(
         rootDir,
-        path.normalize('./' + config.substr('<rootDir>'.length))
+        path.normalize('./' + config.substr('<rootDir>'.length)),
       );
   }
   return config;
@@ -74,7 +74,7 @@ function getTestEnvironment(config) {
 
   throw new Error(
     `Jest: test environment "${env}" cannot be found. Make sure the ` +
-    `"testEnvironment" configuration option points to an existing node module.`
+    `"testEnvironment" configuration option points to an existing node module.`,
   );
 }
 
@@ -115,7 +115,7 @@ function normalize(config, argv) {
     }
     const extensions = Array.from(
       new Set((config.testFileExtensions || [])
-        .concat(config.moduleFileExtensions)
+        .concat(config.moduleFileExtensions),
     ));
 
     config.moduleFileExtensions = extensions;
@@ -138,11 +138,11 @@ function normalize(config, argv) {
   } else {
     try {
       config.testRunner = path.resolve(
-        config.testRunner.replace(/<rootDir>/g, config.rootDir)
+        config.testRunner.replace(/<rootDir>/g, config.rootDir),
       );
     } catch (e) {
       throw new Error(
-        `Jest: Invalid testRunner path: ${config.testRunner}`
+        `Jest: Invalid testRunner path: ${config.testRunner}`,
       );
     }
   }
@@ -156,7 +156,7 @@ function normalize(config, argv) {
     config.scriptPreprocessor =
       _replaceRootDirTags(config.rootDir, config.scriptPreprocessor);
     if (config.scriptPreprocessor.includes(
-      constants.NODE_MODULES + 'babel-jest'
+      constants.NODE_MODULES + 'babel-jest',
     )) {
       babelJest = config.scriptPreprocessor;
     }
@@ -198,7 +198,7 @@ function normalize(config, argv) {
         value = Object.keys(config[key]).reduce((normObj, filePath) => {
           filePath = path.resolve(
             config.rootDir,
-            _replaceRootDirTags(config.rootDir, filePath)
+            _replaceRootDirTags(config.rootDir, filePath),
           );
           normObj[filePath] = true;
           return normObj;
@@ -209,7 +209,7 @@ function normalize(config, argv) {
       case 'testPathDirs':
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
-          _replaceRootDirTags(config.rootDir, filePath)
+          _replaceRootDirTags(config.rootDir, filePath),
         ));
         break;
 
@@ -221,7 +221,7 @@ function normalize(config, argv) {
       case 'testRunner':
         value = path.resolve(
           config.rootDir,
-          _replaceRootDirTags(config.rootDir, config[key])
+          _replaceRootDirTags(config.rootDir, config[key]),
         );
         break;
 
@@ -244,8 +244,8 @@ function normalize(config, argv) {
         // special case substitutions for patterns here.
         value = config[key].map(pattern =>
           utils.replacePathSepForRegex(
-            pattern.replace(/<rootDir>/g, config.rootDir)
-          )
+            pattern.replace(/<rootDir>/g, config.rootDir),
+          ),
         );
         break;
       case 'automock':
@@ -288,7 +288,7 @@ function normalize(config, argv) {
         console.error(
           `Error: Unknown config option "${key}" with value ` +
           `"${config[key]}". This is either a typing error or another user ` +
-          `mistake and fixing it will remove this message.`
+          `mistake and fixing it will remove this message.`,
         );
     }
     newConfig[key] = value;

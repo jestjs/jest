@@ -285,7 +285,7 @@ describe('FakeTimers', () => {
         fakeTimers.runAllTicks();
       }).toThrow(new Error(
         'Ran 100 ticks, and there are still more! Assuming we\'ve hit an ' +
-        'infinite recursion and bailing out...'
+        'infinite recursion and bailing out...',
       ));
     });
   });
@@ -388,7 +388,7 @@ describe('FakeTimers', () => {
         fakeTimers.runAllTimers();
       }).toThrow(new Error(
         'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
-        'infinite recursion and bailing out...'
+        'infinite recursion and bailing out...',
       ));
     });
   });
@@ -459,7 +459,7 @@ describe('FakeTimers', () => {
         fakeTimers.runTimersToTime(50);
       }).toThrow(new Error(
         'Ran 100 timers, and there are still more! Assuming we\'ve hit an ' +
-        'infinite recursion and bailing out...'
+        'infinite recursion and bailing out...',
       ));
     });
   });

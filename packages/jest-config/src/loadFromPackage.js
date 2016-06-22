@@ -23,7 +23,7 @@ function loadFromPackage(filePath, argv) {
         config.rootDir ? path.resolve(root, config.rootDir) : root;
       return normalize(config, argv);
     },
-    () => null
+    () => null,
   );
 }
 

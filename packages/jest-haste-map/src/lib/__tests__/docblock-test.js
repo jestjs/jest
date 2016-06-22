@@ -28,7 +28,7 @@ describe('docblock', () => {
       '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
       'const x = foo;';
     expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/'
+      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
     );
   });
 
@@ -37,7 +37,7 @@ describe('docblock', () => {
       '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
       'const x = foo;' + os.EOL + '/**foo*/';
     expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/'
+      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
     );
   });
 

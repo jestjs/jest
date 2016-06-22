@@ -42,7 +42,7 @@ class Test {
     const TestConsole = config.silent ? NullConsole : Console;
     env.global.console = new TestConsole(
       config.useStderr ? process.stderr : process.stdout,
-      process.stderr
+      process.stderr,
     );
     env.testFilePath = path;
     const moduleLoader = new ModuleLoader(config, env, resolver);
@@ -74,7 +74,7 @@ class Test {
         err => Promise.resolve().then(() => {
           env.dispose();
           throw err;
-        })
+        }),
       );
   }
 

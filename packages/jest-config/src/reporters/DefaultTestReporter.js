@@ -95,7 +95,7 @@ class DefaultTestReporter {
     const testDetail = [];
     if (runTime !== null) {
       testDetail.push(
-        runTime > 5 ? LONG_TEST_COLOR(runTime + 's') : runTime + 's'
+        runTime > 5 ? LONG_TEST_COLOR(runTime + 's') : runTime + 's',
       );
     }
 
@@ -111,7 +111,7 @@ class DefaultTestReporter {
     this.log(resultHeader);
     if (config.verbose && !testResult.testExecError) {
       this.verboseLogger.logTestResults(
-        testResult.testResults
+        testResult.testResults,
       );
     }
 
@@ -251,7 +251,7 @@ class DefaultTestReporter {
         this.log(
           '\u203A ' +
           SNAPSHOT_ADDED(pluralize('snapshot', snapshots.added)) +
-          ` written in ${pluralize('test file', snapshots.filesAdded)}.`
+          ` written in ${pluralize('test file', snapshots.filesAdded)}.`,
         );
       }
 
@@ -260,7 +260,7 @@ class DefaultTestReporter {
           '\u203A ' +
           FAIL_COLOR(pluralize('snapshot test', snapshots.unmatched)) +
           ` failed in ${pluralize('test file', snapshots.filesUnmatched)}. ` +
-          'Inspect your code changes or re-run with `-u` to update them.'
+          'Inspect your code changes or re-run with `-u` to update them.',
         );
       }
 
@@ -268,7 +268,7 @@ class DefaultTestReporter {
         this.log(
           '\u203A ' +
           SNAPSHOT_UPDATED(pluralize('snapshot', snapshots.updated)) +
-          ` updated in ${pluralize('test file', snapshots.filesUpdated)}.`
+          ` updated in ${pluralize('test file', snapshots.filesUpdated)}.`,
         );
       }
 
@@ -277,11 +277,11 @@ class DefaultTestReporter {
           '\u203A ' +
           SNAPSHOT_REMOVED(pluralize(
             'snapshot file',
-            snapshots.filesRemoved
+            snapshots.filesRemoved,
           )) +
           (snapshots.didUpdate
             ? ' removed.'
-            : ' found, re-run with `-u` to remove them.')
+            : ' found, re-run with `-u` to remove them.'),
         );
       }
 
@@ -291,7 +291,7 @@ class DefaultTestReporter {
           FAIL_COLOR(pluralize('obsolete snapshot', snapshots.unchecked)) +
           (snapshots.didUpdate
             ? ' removed.'
-            : ' found, re-run with `-u` to remove them.')
+            : ' found, re-run with `-u` to remove them.'),
         );
       }
 
@@ -346,7 +346,7 @@ class DefaultTestReporter {
       results.numRuntimeErrorTestSuites;
     if (!this._config.noHighlight && remaining > 0) {
       this._process.stdout.write(RUNNING_TEST_COLOR(
-        `Running ${pluralize('test suite', remaining)}...`
+        `Running ${pluralize('test suite', remaining)}...`,
       ));
     }
   }

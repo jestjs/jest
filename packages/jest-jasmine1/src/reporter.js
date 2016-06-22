@@ -55,10 +55,10 @@ class JasmineReporter extends jasmine.Reporter {
   _extractSuiteResults(container, ancestorTitles, suite) {
     ancestorTitles = ancestorTitles.concat([suite.description]);
     suite.specs().forEach(
-      this._extractSpecResults.bind(this, container, ancestorTitles)
+      this._extractSpecResults.bind(this, container, ancestorTitles),
     );
     suite.suites().forEach(
-      this._extractSuiteResults.bind(this, container, ancestorTitles)
+      this._extractSuiteResults.bind(this, container, ancestorTitles),
     );
   }
 
@@ -79,7 +79,7 @@ class JasmineReporter extends jasmine.Reporter {
             results.failureMessages.push(result.trace.stack);
           } else {
             results.failureMessages.push(
-              this._formatter.formatMatchFailure(result)
+              this._formatter.formatMatchFailure(result),
             );
           }
           break;

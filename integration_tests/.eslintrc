@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "babel/func-params-comma-dangle": 0
+  }
+}
