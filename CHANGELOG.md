@@ -1,3 +1,7 @@
+## master
+
+* Fail test suite if it does not contain any tests.
+
 ## jest 14.0.0
 
 * Split up `jest-cli` into `jest-runtime` and `jest-config`.

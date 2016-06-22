@@ -162,6 +162,11 @@ class TestRunner {
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
     const onTestResult = (testPath: Path, testResult: TestResult) => {
+      if (testResult.testResults.length === 0) {
+        onRunFailure(testPath, new EmptySuiteError());
+        return;
+      }
+
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
@@ -292,6 +297,14 @@ class TestRunner {
       });
   }
 
+}
+
+class EmptySuiteError extends Error {
+  constructor() {
+    super();
+    this.name = 'EmptySuiteError';
+    this.message = 'Your test suite must contain at least one test';
+  }
 }
 
 module.exports = TestRunner;
