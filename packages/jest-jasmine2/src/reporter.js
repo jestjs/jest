@@ -19,7 +19,6 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const microtime = require('microtime');
 const jasmineRequire = require('../vendor/jasmine-2.4.1.js');
 const jasmine = jasmineRequire.core(jasmineRequire);
 const JasmineFormatter = require('jest-util').JasmineFormatter;
@@ -56,7 +55,7 @@ class Jasmine2Reporter {
   }
 
   specStarted(spec: {id: string}) {
-    this._startTimes.set(spec.id, microtime.now());
+    this._startTimes.set(spec.id, Date.now());
   }
 
   specDone(result: SpecResult): void {
@@ -108,7 +107,7 @@ class Jasmine2Reporter {
     ancestorTitles: Array<string>,
   ): AssertionResult {
     const start = this._startTimes.get(specResult.id);
-    const duration = start ? (microtime.now() - start) / 1000 : undefined;
+    const duration = start ? (Date.now() - start) : undefined;
     const status =
       (specResult.status === 'disabled') ? 'pending' : specResult.status;
     const results = {
