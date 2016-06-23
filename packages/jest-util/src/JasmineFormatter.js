@@ -47,7 +47,7 @@ class JasmineFormatter {
     matcherName: string,
     isNot: boolean,
     actual: any,
-    expected: any
+    expected: any,
   ) {
     const ppActual = this.prettyPrint(actual);
     const ppExpected = this.prettyPrint(expected);
@@ -71,7 +71,7 @@ class JasmineFormatter {
         result.matcherName,
         isNot,
         result.actual,
-        result.expected
+        result.expected,
       );
     } else {
       message = ERROR_TITLE_COLOR(result.message);
@@ -118,7 +118,7 @@ class JasmineFormatter {
   prettyPrint(
     object: any,
     indent?: string,
-    cycleWeakMap?: WeakMap<any, boolean>
+    cycleWeakMap?: WeakMap<any, boolean>,
   ) {
     if (!indent) {
       indent = '';
@@ -163,8 +163,8 @@ class JasmineFormatter {
             indent + value[0] + ': ' + this.prettyPrint(
               value[1],
               indent,
-              cycleWeakMap
-            )
+              cycleWeakMap,
+            ),
           );
         }
         return `Map {\n${output.join(',')}\n}`;
@@ -175,8 +175,8 @@ class JasmineFormatter {
             this.prettyPrint(
               value,
               chalk.gray('|') + ' ' + indent,
-              cycleWeakMap
-            )
+              cycleWeakMap,
+            ),
           );
         }
         return `Set [\n${indent}${output.join(', ')}\n${indent}]`;
@@ -190,7 +190,7 @@ class JasmineFormatter {
         value = object[orderedKeys[i]];
         keysOutput.push(
           indent + keyIndent + orderedKeys[i] + ': ' +
-          this.prettyPrint(value, indent + keyIndent, cycleWeakMap)
+          this.prettyPrint(value, indent + keyIndent, cycleWeakMap),
         );
       }
       return '{\n' + keysOutput.join(',\n') + '\n' + indent + '}';

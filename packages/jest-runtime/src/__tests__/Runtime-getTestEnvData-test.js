@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 const config = {
@@ -34,7 +34,7 @@ describe('Runtime', () => {
       const root = runtime.requireModule(runtime.__mockRootPath);
       const envData = root.jest.getTestEnvData();
       expect(envData).toEqual(config.testEnvData);
-    })
+    }),
   );
 
   it('freezes jest.envData object', () =>
@@ -42,6 +42,6 @@ describe('Runtime', () => {
       const root = runtime.requireModule(runtime.__mockRootPath);
       const envData = root.jest.getTestEnvData();
       expect(Object.isFrozen(envData)).toBe(true);
-    })
+    }),
   );
 });

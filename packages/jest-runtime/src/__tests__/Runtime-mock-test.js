@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 let createRuntime;
@@ -35,13 +35,13 @@ describe('Runtime', () => {
         root.jest.mock('ManuallyMocked', () => mockReference);
 
         expect(
-          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
         ).toEqual(mockReference);
 
         expect(
-          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
         ).toEqual(mockReference);
-      })
+      }),
     );
 
     it('sets virtual mock for non-existing module', () =>
@@ -58,17 +58,17 @@ describe('Runtime', () => {
         expect(
           runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            'NotInstalledModule'
-          )
+            'NotInstalledModule',
+          ),
         ).toEqual(mockReference);
 
         expect(
           runtime.requireModuleOrMock(
             runtime.__mockRootPath,
-            '../ManuallyMocked'
-          )
+            '../ManuallyMocked',
+          ),
         ).toEqual(mockReference);
-      })
+      }),
     );
   });
 
@@ -84,13 +84,13 @@ describe('Runtime', () => {
         root.jest.setMock('ManuallyMocked', mockReference);
 
         expect(
-          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
         ).toBe(mockReference);
 
         expect(
-          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule')
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
         ).toBe(mockReference);
-      })
+      }),
     );
   });
 });

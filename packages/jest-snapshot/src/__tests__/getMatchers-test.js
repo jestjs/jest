@@ -25,7 +25,7 @@ describe('getMatchers', () => {
       const rendered = null;
       const expected = {};
       expect(
-        () => toMatchSnapshot.compare(rendered, expected)
+        () => toMatchSnapshot.compare(rendered, expected),
       ).toThrow();
     });
 
@@ -34,7 +34,7 @@ describe('getMatchers', () => {
       const rendered = {};
       const expected = undefined;
       expect(
-        () => toMatchSnapshot.compare(rendered, expected)
+        () => toMatchSnapshot.compare(rendered, expected),
       ).toThrow();
     });
   });

@@ -35,7 +35,7 @@ describe('hgChecker', () => {
     it('returns null for non hg repo folder', () =>
       hg.isHGRepository(tmpdir).then(res => {
         expect(res).toBeNull();
-      })
+      }),
     );
 
     it('returns dirname for hg repo folder', () => {
@@ -56,7 +56,7 @@ describe('hgChecker', () => {
     it('returns an empty array for hg repo folder without modified files', () =>
       hg.findChangedFiles(tmpdir).then(res => {
         expect(res).toEqual([]);
-      })
+      }),
     );
 
     it('returns an array of modified files for hg repo folder', () => {

@@ -31,30 +31,30 @@ const worker = require('./worker');
 const workerFarm = require('worker-farm');
 
 type Options = {
-  cacheDirectory?: string;
-  extensions: Array<string>;
+  cacheDirectory?: string,
+  extensions: Array<string>,
   ignorePattern: RegExp,
-  maxWorkers: number;
-  mocksPattern?: string;
-  name: string;
-  platforms: Array<string>;
-  providesModuleNodeModules?: Array<string>;
-  resetCache?: boolean;
-  roots: Array<string>;
-  useWatchman?: boolean;
+  maxWorkers: number,
+  mocksPattern?: string,
+  name: string,
+  platforms: Array<string>,
+  providesModuleNodeModules?: Array<string>,
+  resetCache?: boolean,
+  roots: Array<string>,
+  useWatchman?: boolean,
 };
 
 type InternalOptions = {
-  cacheDirectory: string;
-  extensions: Array<string>;
-  ignorePattern: RegExp;
-  maxWorkers: number;
-  mocksPattern: ?RegExp;
-  name: string;
-  platforms: Array<string>;
-  resetCache: ?boolean;
-  roots: Array<string>;
-  useWatchman: boolean;
+  cacheDirectory: string,
+  extensions: Array<string>,
+  ignorePattern: RegExp,
+  maxWorkers: number,
+  mocksPattern: ?RegExp,
+  name: string,
+  platforms: Array<string>,
+  resetCache: ?boolean,
+  roots: Array<string>,
+  useWatchman: boolean,
 };
 
 type HasteMapOptions = {
@@ -82,7 +82,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
     return new RegExp(
       '(' + escapePathSeparator(NODE_MODULES) +
       '(?:' + list.join('|') + ')(?=$|' + escapePathSeparator(path.sep) + '))',
-      'g'
+      'g',
     );
   }
   return null;
@@ -192,7 +192,7 @@ class HasteMap {
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
-      options.mocksPattern
+      options.mocksPattern,
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -205,7 +205,7 @@ class HasteMap {
     options?: HasteMapOptions,
   ): HasteMap {
     const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|')
+      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
     );
 
     return new HasteMap({
@@ -228,7 +228,7 @@ class HasteMap {
     Array.from(arguments).slice(1).forEach(arg => hash.update(arg));
     return path.join(
       tmpdir,
-      name.replace(/\W/g, '-') + '-' + hash.digest('hex')
+      name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
   }
 
@@ -303,7 +303,7 @@ class HasteMap {
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\n` +
           `This warning is caused by a @providesModule declaration ` +
-          `with the same name across two different files.`
+          `with the same name across two different files.`,
         );
         return;
       }
@@ -344,8 +344,8 @@ class HasteMap {
             // If a file cannot be read we remove it from the file list and
             // ignore the failure silently.
             delete hasteMap.files[filePath];
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -385,7 +385,7 @@ class HasteMap {
           {
             maxConcurrentWorkers: this._options.maxWorkers,
           },
-          require.resolve('./worker')
+          require.resolve('./worker'),
         );
         workerFn = this._workerFarm;
       }
@@ -397,7 +397,7 @@ class HasteMap {
           } else {
             resolve(metadata);
           }
-        })
+        }),
       );
     }
 
@@ -422,14 +422,14 @@ class HasteMap {
       if (crawl === watchmanCrawl) {
         console.warn(
           `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
-          `crawler.\n  ${error}`
+          `crawler.\n  ${error}`,
         );
         return nodeCrawl(options.roots, options.extensions, ignore, hasteMap)
           .catch(e => {
             throw new Error(
               `Crawler retry failed:\n` +
               `  Original error: ${error.message}\n` +
-              `  Retry error: ${e.message}\n`
+              `  Retry error: ${e.message}\n`,
             );
           });
       }

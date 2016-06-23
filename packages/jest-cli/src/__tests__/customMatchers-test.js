@@ -95,7 +95,7 @@ describe('jasmine', () => {
           (passed, result) => {
             expect(passed).toBe(true);
             expect(result.message).toBe('');
-          }
+          },
         );
         expectation.toTestJasmine();
         expect(actual).toBe(false);
@@ -122,7 +122,7 @@ describe('jasmine', () => {
           (passed, result) => {
             expect(passed).toBe(false);
             expect(result.message).toBe(SHOULD_BE_CALLED);
-          }
+          },
         );
         expectation.toTestJasmine();
         expect(actual).toBe(true);
@@ -142,7 +142,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(CALLED_AT_LEAST_ONCE);
-        }
+        },
       );
       expectation.toBeCalled();
     });
@@ -152,7 +152,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(SHOULD_NOT_BE_CALLED);
-        }
+        },
       );
       expectation.function();
       expectation.not.toBeCalled();
@@ -163,7 +163,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(true);
           expect(result.message).toBe('');
-        }
+        },
       );
       expectation.function();
       expectation.toBeCalled();
@@ -178,7 +178,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(true);
           expect(result.message).toBe('');
-        }
+        },
       );
       expectation.function(1, {}, '');
       expectation.lastCalledWith(1, {}, '');
@@ -189,7 +189,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(SHOULD_NOT_HAVE_LAST_CALLED_WITH);
-        }
+        },
       );
       expectation.function(1, {}, '');
       expectation.not.lastCalledWith(1, {}, '');
@@ -200,7 +200,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(NOT_EXPECTED_VALUES_LAST_TIME);
-        }
+        },
       );
 
       expectation.function(1, {}, '');
@@ -216,7 +216,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(true);
           expect(result.message).toBe('');
-        }
+        },
       );
       expectation.function(1, {}, '');
       expectation.toBeCalledWith(1, {}, '');
@@ -227,7 +227,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(SHOULD_NOT_HAVE_CALLED_WITH);
-        }
+        },
       );
       expectation.function(1, {}, '');
       expectation.not.toBeCalledWith(1, {}, '');
@@ -238,7 +238,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(NOT_EXPECTED_VALUES);
-        }
+        },
       );
 
       expectation.function(1, {}, '');
@@ -250,7 +250,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(NOT_EXPECTED_VALUES_EXACTLY_FOUR);
-        }
+        },
       );
 
       expectation.function(1);
@@ -265,7 +265,7 @@ describe('Jest custom matchers in Jasmine 2', () => {
         (passed, result) => {
           expect(passed).toBe(false);
           expect(result.message).toBe(NOT_EXPECTED_VALUES_MORE_THAN_FOUR);
-        }
+        },
       );
 
       expectation.function(1);

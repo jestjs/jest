@@ -96,7 +96,7 @@ describe('watchman watch', () => {
       {
         clocks: Object.create(null),
         files: Object.create(null),
-      }
+      },
     ).then(data => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
@@ -184,7 +184,7 @@ describe('watchman watch', () => {
       {
         clocks,
         files: mockFiles,
-      }
+      },
     ).then(data => {
       // The object was reused.
       expect(data.files).toBe(mockFiles);
@@ -249,7 +249,7 @@ describe('watchman watch', () => {
       {
         clocks,
         files: mockFiles,
-      }
+      },
     ).then(data => {
       // The file object was *not* reused.
       expect(data.files).not.toBe(mockFiles);
@@ -315,7 +315,7 @@ describe('watchman watch', () => {
       {
         clocks,
         files: mockFiles,
-      }
+      },
     ).then(data => {
       expect(data.clocks).toEqual({
         '/fruits': 'c:fake-clock:3',

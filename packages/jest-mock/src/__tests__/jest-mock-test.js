@@ -37,7 +37,7 @@ describe('moduleMocker', () => {
     it('forwards the function name property', () => {
       function foo() {}
       const fooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(foo)
+        moduleMocker.getMetadata(foo),
       );
       expect(fooMock.name).toBe('foo');
     });
@@ -46,7 +46,7 @@ describe('moduleMocker', () => {
       const ClassFoo = function() {};
       ClassFoo.prototype.x = () => {};
       const ClassFooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(ClassFoo)
+        moduleMocker.getMetadata(ClassFoo),
       );
       const foo = new ClassFooMock();
       const bar = new ClassFooMock();
@@ -72,7 +72,7 @@ describe('moduleMocker', () => {
         },
       });
       const fooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(foo)
+        moduleMocker.getMetadata(foo),
       );
 
       expect(typeof foo.nonEnumMethod).toBe('function');
@@ -90,13 +90,13 @@ describe('moduleMocker', () => {
       }
 
       const ClassFooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(ClassFoo)
+        moduleMocker.getMetadata(ClassFoo),
       );
       const foo = new ClassFooMock();
 
       const instanceFoo = new ClassFoo();
       const instanceFooMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(instanceFoo)
+        moduleMocker.getMetadata(instanceFoo),
       );
 
       expect(typeof foo.foo).toBe('function');
@@ -111,7 +111,7 @@ describe('moduleMocker', () => {
       const multipleBoundFunc = func.bind(null).bind(null);
 
       const multipleBoundFuncMock = moduleMocker.generateFromMetadata(
-        moduleMocker.getMetadata(multipleBoundFunc)
+        moduleMocker.getMetadata(multipleBoundFunc),
       );
 
       expect(typeof multipleBoundFuncMock).toBe('function');
@@ -119,7 +119,7 @@ describe('moduleMocker', () => {
 
     it('mocks regexp instances', () => {
       expect(
-        () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/))
+        () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
       ).not.toThrow();
     });
   });

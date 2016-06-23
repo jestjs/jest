@@ -19,6 +19,7 @@ const utils = require('jest-util');
 module.exports = ({
   automock: true,
   bail: false,
+  browser: false,
   cacheDirectory: os.tmpdir(),
   colors: false,
   coverageCollector: require.resolve('./IstanbulCollector'),

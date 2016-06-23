@@ -232,7 +232,7 @@ if (
       // Normalize the tail path
       resolvedTail = normalizeArray(
         resolvedTail.split(/[\\\/]+/),
-        !resolvedAbsolute
+        !resolvedAbsolute,
       ).join('\\');
 
       return (resolvedDevice + (resolvedAbsolute ? '\\' : '') + resolvedTail)
@@ -386,7 +386,7 @@ if (
       // Normalize the path
       resolvedPath = normalizeArray(
         resolvedPath.split('/'),
-        !resolvedAbsolute
+        !resolvedAbsolute,
       ).join('/');
 
       return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
@@ -471,12 +471,12 @@ if (
 
   exports.exists = (util.deprecate(
     (path, callback) => fs.exists(path, callback),
-    'path.exists is now called `fs.exists`.'
+    'path.exists is now called `fs.exists`.',
   ): (path: string, callback: (exists: boolean) => void) => void);
 
   exports.existsSync = (util.deprecate(
     path => fs.existsSync(path),
-    'path.existsSync is now called `fs.existsSync`.'
+    'path.existsSync is now called `fs.existsSync`.',
   ): (path: string) => boolean);
 
   if (IS_WINDOWS) {

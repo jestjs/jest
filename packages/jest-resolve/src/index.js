@@ -23,8 +23,10 @@ const fs = require('fs');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
+const browserResolve = require('browser-resolve');
 
 type ResolverConfig = {
+  browser?: boolean,
   defaultPlatform: ?string,
   extensions: Array<string>,
   hasCoreModules: boolean,
@@ -36,9 +38,10 @@ type ResolverConfig = {
 
 type FindNodeModuleConfig = {
   basedir: Path,
+  browser?: boolean,
   extensions: Array<string>,
-  paths?: Array<Path>,
   moduleDirectory: Array<string>,
+  paths?: Array<Path>,
 };
 
 export type ResolveModuleConfig = {skipNodeResolution?: boolean};
@@ -63,7 +66,7 @@ const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
     const moduleNameMapper = Object.create(null);
     config.moduleNameMapper.forEach(
-      map => moduleNameMapper[map[1]] = new RegExp(map[0])
+      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
     );
     return moduleNameMapper;
   }
@@ -86,6 +89,7 @@ class Resolver {
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
+      browser: options.browser,
     };
 
     this._supportsNativePlatform =
@@ -100,6 +104,7 @@ class Resolver {
     moduleMap: HasteMap,
   ): Resolver {
     return new Resolver(moduleMap, {
+      browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
       hasCoreModules: true,
@@ -113,14 +118,15 @@ class Resolver {
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const paths = options.paths;
     try {
-      return resolve.sync(
+      const resv = options.browser ? browserResolve : resolve;
+      return resv.sync(
         path,
         {
           basedir: options.basedir,
           extensions: options.extensions,
           moduleDirectory: options.moduleDirectory,
           paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
-        }
+        },
       );
     } catch (e) {}
     return null;
@@ -136,7 +142,7 @@ class Resolver {
   resolveModule(
     from: Path,
     moduleName: string,
-    options?: ResolveModuleConfig
+    options?: ResolveModuleConfig,
   ): Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
@@ -161,6 +167,7 @@ class Resolver {
     if (!options || !options.skipNodeResolution) {
       module = Resolver.findNodeModule(moduleName, {
         basedir: dirname,
+        browser: this._options.browser,
         extensions,
         moduleDirectory,
         paths,
@@ -178,7 +185,7 @@ class Resolver {
     if (module) {
       try {
         return this._moduleNameCache[key] = require.resolve(
-          path.join.apply(path, [path.dirname(module)].concat(parts))
+          path.join.apply(path, [path.dirname(module)].concat(parts)),
         );
       } catch (ignoredError) {}
     }
@@ -188,7 +195,7 @@ class Resolver {
     //    current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`
+      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
     (err: any).code = 'MODULE_NOT_FOUND';
     throw err;
@@ -249,7 +256,7 @@ class Resolver {
 
   resolveDependencies(
     file: Path,
-    options?: ResolveModuleConfig
+    options?: ResolveModuleConfig,
   ): Array<Path> {
     if (!this._moduleMap.files[file]) {
       return [];
@@ -270,7 +277,7 @@ class Resolver {
   resolveInverseDependencies(
     paths: Set<Path>,
     filter: (file: Path) => boolean,
-    options?: ResolveModuleConfig
+    options?: ResolveModuleConfig,
   ): Array<Path> {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();

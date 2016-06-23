@@ -12,8 +12,8 @@
 import type {Path, Config} from 'types/Config';
 import type Resolver from '../../jest-resolve/src';
 
-const Console = require('./Console');
-const NullConsole = require('./NullConsole');
+const Console = require('jest-util').Console;
+const NullConsole = require('jest-util').NullConsole;
 
 class Test {
 
@@ -42,22 +42,16 @@ class Test {
     const TestConsole = config.silent ? NullConsole : Console;
     env.global.console = new TestConsole(
       config.useStderr ? process.stderr : process.stdout,
-      process.stderr
+      process.stderr,
     );
     env.testFilePath = path;
-    const moduleLoader = new ModuleLoader(config, env, resolver);
-    if (config.setupFiles.length) {
-      for (let i = 0; i < config.setupFiles.length; i++) {
-        moduleLoader.requireModule(config.setupFiles[i]);
-      }
-    }
-
+    const runtime = new ModuleLoader(config, env, resolver);
     const start = Date.now();
-    return TestRunner(config, env, moduleLoader, path)
+    return TestRunner(config, env, runtime, path)
       .then(result => {
         result.perfStats = {start, end: Date.now()};
         result.testFilePath = path;
-        result.coverage = moduleLoader.getAllCoverageInfo();
+        result.coverage = runtime.getAllCoverageInfo();
         return result;
       })
       .then(
@@ -74,7 +68,7 @@ class Test {
         err => Promise.resolve().then(() => {
           env.dispose();
           throw err;
-        })
+        }),
       );
   }
 

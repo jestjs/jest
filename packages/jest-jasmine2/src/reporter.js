@@ -14,6 +14,7 @@ import type {Environment} from 'types/Environment';
 import type {
   AssertionResult,
   FailedAssertion,
+  Milliseconds,
   Status,
   TestResult,
 } from 'types/TestResult';
@@ -27,10 +28,14 @@ type Suite = {
 };
 
 type SpecResult = {
+  id: string,
   description: string,
   failedExpectations: Array<FailedAssertion>,
   status: Status,
+  duration?: Milliseconds,
 };
+
+type Microseconds = number;
 
 class Jasmine2Reporter {
   _formatter: JasmineFormatter;
@@ -38,6 +43,7 @@ class Jasmine2Reporter {
   _currentSuites: Array<string>;
   _resolve: any;
   _resultsPromise: Promise<TestResult>;
+  _startTimes: Map<string, Microseconds>;
 
   constructor(config: Config, environment: Environment) {
     this._formatter = new JasmineFormatter(jasmine, environment, config);
@@ -45,11 +51,16 @@ class Jasmine2Reporter {
     this._currentSuites = [];
     this._resolve = null;
     this._resultsPromise = new Promise(resolve => this._resolve = resolve);
+    this._startTimes = new Map();
+  }
+
+  specStarted(spec: {id: string}) {
+    this._startTimes.set(spec.id, Date.now());
   }
 
   specDone(result: SpecResult): void {
     this._testResults.push(
-      this._extractSpecResults(result, this._currentSuites.slice(0))
+      this._extractSpecResults(result, this._currentSuites.slice(0)),
     );
   }
 
@@ -95,6 +106,8 @@ class Jasmine2Reporter {
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): AssertionResult {
+    const start = this._startTimes.get(specResult.id);
+    const duration = start ? (Date.now() - start) : undefined;
     const status =
       (specResult.status === 'disabled') ? 'pending' : specResult.status;
     const results = {
@@ -103,6 +116,7 @@ class Jasmine2Reporter {
       ancestorTitles,
       failureMessages: [],
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
+      duration,
     };
 
     specResult.failedExpectations.forEach(failed => {

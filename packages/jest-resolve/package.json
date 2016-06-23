@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "12.1.1",
+  "version": "13.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,7 +8,8 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-haste-map": "^12.1.0",
+    "browser-resolve": "^1.11.2",
+    "jest-haste-map": "^13.0.0",
     "resolve": "^1.1.6"
   },
   "jest": {

@@ -12,7 +12,7 @@
 jest.disableAutomock();
 jest.mock(
   'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom')
+  () => require('../__mocks__/jest-environment-jsdom'),
 );
 
 const path = require('path');
@@ -36,7 +36,7 @@ describe('Runtime', () => {
     return createLocalRuntime(nodePath).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'RegularModuleInNodePath'
+        'RegularModuleInNodePath',
       );
       expect(exports).toBeDefined();
     });
@@ -47,7 +47,7 @@ describe('Runtime', () => {
     return createLocalRuntime(null, {modulePaths: nodePath}).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'RegularModuleInNodePath'
+        'RegularModuleInNodePath',
       );
       expect(exports).toBeDefined();
     });
@@ -59,7 +59,7 @@ describe('Runtime', () => {
     return createLocalRuntime(nodePath).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
-        'RegularModuleInNodePath'
+        'RegularModuleInNodePath',
       );
       expect(exports).toBeDefined();
     });
@@ -72,11 +72,11 @@ describe('Runtime', () => {
       expect(() => {
         runtime.requireModuleOrMock(
           runtime.__mockRootPath,
-          'RegularModuleInNodePath'
+          'RegularModuleInNodePath',
         );
-      }).toThrow(
-        new Error(`Cannot find module 'RegularModuleInNodePath' from 'root.js'`)
-      );
+      }).toThrow(new Error(
+        `Cannot find module 'RegularModuleInNodePath' from 'root.js'`,
+      ));
     });
   });
 

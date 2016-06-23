@@ -31,7 +31,7 @@ describe('Runtime', () => {
           expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
         }
         expect(hasThrown).toBe(true);
-      })
+      }),
     );
 
     it('emulates a node stack trace during function execution', () =>
@@ -39,7 +39,7 @@ describe('Runtime', () => {
         let hasThrown = false;
         const sum = runtime.requireModule(
           runtime.__mockRootPath,
-          './throwing-fn.js'
+          './throwing-fn.js',
         );
 
         try {
@@ -49,17 +49,17 @@ describe('Runtime', () => {
           /* eslint-disable max-len */
           if (process.platform === 'win32') {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing-fn.js:12:9/
+              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing-fn.js:12:9/,
             );
           } else {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing-fn.js:12:9/
+              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing-fn.js:12:9/,
             );
           }
           /* eslint-enable max-len */
         }
         expect(hasThrown).toBe(true);
-      })
+      }),
     );
   });
 });

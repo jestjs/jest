@@ -28,7 +28,7 @@ module.exports = function createRuntime(filename, config) {
       const runtime = new Runtime(
         config,
         environment,
-        createResolver(config, moduleMap)
+        createResolver(config, moduleMap),
       );
 
       runtime.__mockRootPath = path.join(config.rootDir, 'root.js');

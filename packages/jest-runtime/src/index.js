@@ -12,11 +12,15 @@
 
 import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
+import type {HasteResolverContext} from 'types/Runtime';
 
+const createHasteMap = require('jest-haste-map').create;
+const createResolver = require('jest-resolve').create;
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
 const transform = require('./lib/transform');
+const utils = require('jest-util');
 
 type Module = {
   exports: Object,
@@ -25,6 +29,10 @@ type Module = {
   parent?: Object,
   paths?: Array<string>,
   require?: Function,
+};
+
+export type BuildHasteMapOptions = {
+  maxWorkers: number,
 };
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
@@ -108,9 +116,44 @@ class Runtime {
     config.setupFiles.forEach(unmockPath);
 
     this.resetModuleRegistry();
+
+    if (config.setupFiles.length) {
+      for (let i = 0; i < config.setupFiles.length; i++) {
+        this.requireModule(config.setupFiles[i]);
+      }
+    }
   }
 
-  requireModule(from: Path, moduleName: string) {
+  static buildHasteMap(
+    config: Config,
+    options: {maxWorkers: number},
+  ): Promise<HasteResolverContext> {
+    utils.createDirectory(config.cacheDirectory);
+    const instance = createHasteMap(config, {
+      maxWorkers: options.maxWorkers,
+      resetCache: !config.cache,
+    });
+    return instance.build().then(
+      moduleMap => ({
+        instance,
+        moduleMap,
+        resolver: createResolver(config, moduleMap),
+      }),
+      error => {
+        throw error;
+      },
+    );
+  }
+
+  static runCLI(args?: Object, info?: Array<string>) {
+    return require('./cli').run(args, info);
+  }
+
+  static getCLIOptions() {
+    return require('./cli/args').options;
+  }
+
+  requireModule(from: Path, moduleName?: string) {
     const moduleID = this._getNormalizedModuleID(from, moduleName);
     let modulePath;
 
@@ -150,7 +193,7 @@ class Runtime {
       this._moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
-          fs.readFileSync(modulePath, 'utf8')
+          fs.readFileSync(modulePath, 'utf8'),
         );
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
@@ -286,7 +329,7 @@ class Runtime {
       if (!collectors[filename]) {
         collectors[filename] = new this._CoverageCollector(
           moduleContent,
-          filename
+          filename,
         );
       }
       const collector = collectors[filename];
@@ -315,7 +358,7 @@ class Runtime {
       filename, // __filename
       this._environment.global, // global object
       this._createRuntimeFor(filename), // jest object
-      collectorStore // the coverage object
+      collectorStore, // the coverage object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -347,7 +390,7 @@ class Runtime {
           `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string\n` +
           'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
           `Preprocessor: ${preprocessorInfo}.\n${babelInfo}` +
-          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`
+          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`,
         );
       }
       throw e;
@@ -382,13 +425,13 @@ class Runtime {
       if (mockMetadata === null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`
+          `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
         );
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;
     }
     return moduleMocker.generateFromMetadata(
-      this._mockMetaDataCache[modulePath]
+      this._mockMetaDataCache[modulePath],
     );
   }
 
@@ -608,7 +651,7 @@ class Runtime {
         // Make a shallow copy only because a deep copy seems like
         // overkill..
         Object.keys(this._config.testEnvData).forEach(
-          key => frozenCopy[key] = this._config.testEnvData[key]
+          key => frozenCopy[key] = this._config.testEnvData[key],
         );
         Object.freeze(frozenCopy);
         return frozenCopy;

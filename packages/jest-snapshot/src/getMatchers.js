@@ -31,13 +31,13 @@ module.exports = (
     return {
       negativeCompare() {
         throw new Error(
-          'Jest: `.not` can not be used with `.toMatchSnapshot()`.'
+          'Jest: `.not` can not be used with `.toMatchSnapshot()`.',
         );
       },
       compare(actual: any, expected: any): CompareResult {
         if (expected !== undefined) {
           throw new Error(
-            'Jest: toMatchSnapshot() does not accept parameters.'
+            'Jest: toMatchSnapshot() does not accept parameters.',
           );
         }
 
@@ -85,11 +85,11 @@ module.exports = (
             message = formatter
               .formatMatchFailure(Object.assign(
                 ({matcherName}: FailedAssertion),
-                matches
+                matches,
               ))
               .replace(
                 'toMatchSnapshot:',
-                'toMatchSnapshot #' + (callCount + 1) + ':'
+                'toMatchSnapshot #' + (callCount + 1) + ':',
               );
           } else {
             snapshotState.matched++;

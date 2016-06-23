@@ -26,7 +26,7 @@ function isDescendant(root: string, child: string): boolean {
 function WatchmanError(error: Error): Error {
   return new Error(
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
-    `is running for this project. See ${watchmanURL}.`
+    `is running for this project. See ${watchmanURL}.`,
   );
 }
 
@@ -56,7 +56,7 @@ module.exports = function watchmanCrawl(
     return Promise.all(roots.map(root => cmd(['watch-project', root])))
       .then(responses => {
         const watchmanRoots = Array.from(
-          new Set(responses.map(response => response.watch))
+          new Set(responses.map(response => response.watch)),
         );
         return Promise.all(watchmanRoots.map(root => {
           // Build up an expression to filter the output by the relevant roots.
@@ -70,7 +70,7 @@ module.exports = function watchmanCrawl(
             'allof',
             ['type', 'f'],
             ['anyof'].concat(extensions.map(
-              extension => ['suffix', extension]
+              extension => ['suffix', extension],
             )),
             dirExpr,
           ];

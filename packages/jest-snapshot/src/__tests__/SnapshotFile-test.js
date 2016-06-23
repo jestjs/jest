@@ -51,6 +51,13 @@ describe('SnapshotFile', () => {
     expect(snapshotFile.get(SNAPSHOT)).toBe('"' + SNAPSHOT_VALUE + '"');
   });
 
+  it('adds extra new lines for multi-line values', () => {
+    const MULTILINE_VALUE = 'foo\nbar';
+    const snapshotFile = SnapshotFile.forFile(TEST_FILE);
+    snapshotFile.add(SNAPSHOT, MULTILINE_VALUE);
+    expect(snapshotFile.get(SNAPSHOT)).toBe('\n"' + MULTILINE_VALUE + '"\n');
+  });
+
   it('can tell if a snapshot file has a snapshot', () => {
     const NOT_A_SNAPSHOT = 'baz';
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
@@ -80,7 +87,7 @@ describe('SnapshotFile', () => {
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
     expect(
-      () => snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE)
+      () => snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE),
     ).not.toThrow();
   });
 

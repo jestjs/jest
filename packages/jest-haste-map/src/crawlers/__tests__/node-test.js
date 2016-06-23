@@ -98,7 +98,7 @@ describe('node crawler', () => {
       pearMatcher,
       {
         files: Object.create(null),
-      }
+      },
     ).then(data => {
       expect(childProcess.spawn).lastCalledWith('find', [
         '/fruits',

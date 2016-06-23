@@ -53,7 +53,7 @@ class VerboseLogger {
 
   logTestResults(testResults: Array<AssertionResult>) {
     VerboseLogger.groupTestsBySuites(testResults).forEach(suite =>
-      this._logSuite(suite, 0)
+      this._logSuite(suite, 0),
     );
 
     this._logLine();
@@ -63,11 +63,11 @@ class VerboseLogger {
     this._logLine(suite.title, indentLevel);
 
     suite.tests.forEach(test =>
-      this._logTest(test, indentLevel + 1)
+      this._logTest(test, indentLevel + 1),
     );
 
     suite.suites.forEach(childSuite =>
-      this._logSuite(childSuite, indentLevel + 1)
+      this._logSuite(childSuite, indentLevel + 1),
     );
   }
 
@@ -83,7 +83,10 @@ class VerboseLogger {
 
   _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    this._logLine(status + chalk.gray(test.title), indentLevel);
+    const time = test.duration
+      ? ` (${test.duration.toFixed(0)} ms)`
+      : '';
+    this._logLine(status + ' ' + chalk.gray(test.title + time), indentLevel);
   }
 
   _logLine(str?: string, indentLevel?: number) {

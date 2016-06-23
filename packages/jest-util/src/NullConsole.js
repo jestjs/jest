@@ -8,12 +8,20 @@
  * @flow
  */
 
-import type {HasteMap as HasteMapObject} from 'types/HasteMap';
-import type HasteMap from '../../jest-haste-map/src';
-import type HasteResolver from '../../jest-resolve/src';
+'use strict';
 
-export type HasteResolverContext = {
-  instance: HasteMap,
-  moduleMap: HasteMapObject,
-  resolver: HasteResolver,
-};
+const Console = require('console').Console;
+
+class NullConsole extends Console {
+  assert() {}
+  dir() {}
+  error() {}
+  info() {}
+  log() {}
+  time() {}
+  timeEnd() {}
+  trace() {}
+  warn() {}
+}
+
+module.exports = NullConsole;
