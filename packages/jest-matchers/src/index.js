@@ -30,7 +30,13 @@ function makeMatcher(matcher, isNot, actual) {
     );
 
     if (!result.pass ^ isNot) { // eslint-disable-line no-bitwise
-      throw new Error(result.message);
+      let message = result.message;
+
+      if (typeof message === 'function') {
+        message = message();
+      }
+
+      throw new Error(message);
     }
   };
 }

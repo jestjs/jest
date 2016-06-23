@@ -12,22 +12,34 @@
 
 jest.disableAutomock();
 
-const expect = require('../index.js');
+const expect = require('../index.js').expect;
 
 describe('toBe()', () => {
   it(`doesn't throw`, () => {
     expect(1).toBe(1);
     expect(1).not.toBe(2);
   });
-});
 
-describe('toThrow', () => {
-  it('throws when no error thrown', () => {    
+  it('throws', () => {
+    let error;
     try {
-      expect(() => {}).toThrow();
-      throw new Error('should not be thrown');
+      expect(1).toBe(2);
     } catch (e) {
-      expect(!!e.message.match(/to throw/)).toBe(true);
+      error = e;
     }
+
+    expect(!!error.message.match('===')).toBe(true);
   });
+
+  it('throws with .not', () => {
+    let error;
+    try {
+      expect(1).not.toBe(1);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(!!error.message.match('!==')).toBe(true);
+  });
+
 });
