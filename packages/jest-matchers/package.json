@@ -1,0 +1,20 @@
+{
+  "name": "jest-matchers",
+  "version": "13.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "BSD-3-Clause",
+  "main": "build/index.js",
+  "dependencies": {
+    "deep-equal": "^1.0.1"
+  },
+  "jest": {
+    "rootDir": "./build",
+    "testEnvironment": "node"
+  },
+  "scripts": {
+    "test": "../../packages/jest-cli/bin/jest.js"
+  }
+}
