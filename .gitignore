@@ -12,3 +12,4 @@ website/src/jest/docs
 website/src/jest/blog
 lerna-debug.log
 npm-debug.log*
+.haste_cache
