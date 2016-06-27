@@ -258,7 +258,7 @@ describe('Runtime', () => {
           );
 
           expect(new FooContainer().render().indexOf('5')).toBe(-1);
-        })
+        }),
       );
 
       it('does not mock deep dependencies when using deepUnmock', () =>
@@ -275,7 +275,7 @@ describe('Runtime', () => {
           );
 
           expect(new FooContainer().render().indexOf('5')).not.toBe(-1);
-        })
+        }),
       );
     });
   });

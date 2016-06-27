@@ -588,7 +588,7 @@ class Runtime {
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
-    const deepUnmock = moduleName => {
+    const deepUnmock = (moduleName: string) => {
       const moduleID = this._getNormalizedModuleID(from, moduleName);
       this._explicitShouldMock[moduleID] = false;
       this._transitiveShouldMock[moduleID] = false;
