@@ -1,0 +1,15 @@
+{
+ "dependencies": {
+   "react": "15.2.0-rc.1"
+ },
+ "devDependencies": {
+   "jest": "*",
+   "babel": "*",
+   "babel-preset-react": "*",
+   "babel-jest": "*"
+ },
+ "jest": {
+   "automock": false,
+   "testEnvironment": "node"
+ }
+}

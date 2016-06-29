@@ -1,0 +1,49 @@
+exports[`Link renders correctly 0`] = `
+<a
+  className="normal"
+  href="http://www.example.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  HI
+</a>
+`;
+
+exports[`Link renders as an anchor when no page is set 0`] = `
+<a
+  className="normal"
+  href="#"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  HI
+</a>
+`;
+
+exports[`Link changes the class when hovered 0`] = `
+<a
+  className="normal"
+  href="http://www.example.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  HI
+</a>
+`;
+
+exports[`Link changes the class when hovered 1`] = `
+<a
+  className="hovered"
+  href="http://www.example.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  HI
+</a>
+`;
+
+exports[`Link changes the class when hovered 2`] = `
+<a
+  className="normal"
+  href="http://www.example.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  HI
+</a>
+`;
