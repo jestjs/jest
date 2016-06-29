@@ -5,21 +5,17 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule root
+ * @providesModule FooRenderUtil
  */
 
 'use strict';
 
-require('ExclusivelyManualMock');
-require('ManuallyMocked');
-require('ModuleWithSideEffects');
-require('RegularModule');
+module.exports = {
+  getHeaderHeight(): number {
+    return 5;
+  },
 
-// We only care about the static analysis, not about the runtime.
-() => {
-  require('image!not-really-a-module');
-  require('cat.png');
-  require('dog.png');
+  getBodyHeight(): number {
+    return 5;
+  },
 };
-
-exports.jest = jest;

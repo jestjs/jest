@@ -243,6 +243,40 @@ describe('Runtime', () => {
           expect(transitiveDep()).toEqual(undefined);
         }),
       );
+
+      it('mocks deep dependencies when using unmock', () =>
+        createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+          const root = runtime.requireModule(
+            runtime.__mockRootPath,
+            './root.js',
+          );
+          root.jest.unmock('FooContainer.react');
+
+          const FooContainer = runtime.requireModuleOrMock(
+            runtime.__mockRootPath,
+            'FooContainer.react',
+          );
+
+          expect(new FooContainer().render().indexOf('5')).toBe(-1);
+        }),
+      );
+
+      it('does not mock deep dependencies when using deepUnmock', () =>
+        createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+          const root = runtime.requireModule(
+            runtime.__mockRootPath,
+            './root.js',
+          );
+          root.jest.deepUnmock('FooContainer.react');
+
+          const FooContainer = runtime.requireModuleOrMock(
+            runtime.__mockRootPath,
+            'FooContainer.react',
+          );
+
+          expect(new FooContainer().render().indexOf('5')).not.toBe(-1);
+        }),
+      );
     });
   });
 });
