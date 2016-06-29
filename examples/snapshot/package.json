@@ -3,10 +3,14 @@
    "react": "15.2.0-rc.1"
  },
  "devDependencies": {
-   "jest": "*",
-   "babel": "*",
+   "babel-jest": "*",
+   "babel-polyfill": "*",
+   "babel-preset-es2015": "*",
    "babel-preset-react": "*",
-   "babel-jest": "*"
+   "jest-cli": "*"
+ },
+ "scripts": {
+   "test": "jest"
  },
  "jest": {
    "automock": false,

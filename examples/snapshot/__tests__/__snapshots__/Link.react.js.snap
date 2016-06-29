@@ -1,10 +1,10 @@
 exports[`Link renders correctly 0`] = `
 <a
   className="normal"
-  href="http://www.example.com"
+  href="http://www.facebook.com"
   onMouseEnter={[Function bound _onMouseEnter]}
   onMouseLeave={[Function bound _onMouseLeave]}>
-  HI
+  Facebook
 </a>
 `;
 
@@ -14,36 +14,36 @@ exports[`Link renders as an anchor when no page is set 0`] = `
   href="#"
   onMouseEnter={[Function bound _onMouseEnter]}
   onMouseLeave={[Function bound _onMouseLeave]}>
-  HI
+  Facebook
 </a>
 `;
 
 exports[`Link changes the class when hovered 0`] = `
 <a
   className="normal"
-  href="http://www.example.com"
+  href="http://www.facebook.com"
   onMouseEnter={[Function bound _onMouseEnter]}
   onMouseLeave={[Function bound _onMouseLeave]}>
-  HI
+  Facebook
 </a>
 `;
 
 exports[`Link changes the class when hovered 1`] = `
 <a
   className="hovered"
-  href="http://www.example.com"
+  href="http://www.facebook.com"
   onMouseEnter={[Function bound _onMouseEnter]}
   onMouseLeave={[Function bound _onMouseLeave]}>
-  HI
+  Facebook
 </a>
 `;
 
 exports[`Link changes the class when hovered 2`] = `
 <a
   className="normal"
-  href="http://www.example.com"
+  href="http://www.facebook.com"
   onMouseEnter={[Function bound _onMouseEnter]}
   onMouseLeave={[Function bound _onMouseLeave]}>
-  HI
+  Facebook
 </a>
 `;

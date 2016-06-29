@@ -4,7 +4,7 @@
     "react-dom": "~0.14.0"
   },
   "devDependencies": {
-    "babel-jest": "^9.0.0",
+    "babel-jest": "*",
     "babel-polyfill": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",

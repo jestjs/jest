@@ -3,29 +3,29 @@
 
 'use strict';
 
-const React = require('react');
-const Link = require('../Link.react');
-const renderer = require('react/lib/ReactTestRenderer');
+import React from 'react';
+import Link from '../Link.react';
+import renderer from 'react/lib/ReactTestRenderer';
 
 describe('Link', () => {
 
   it('renders correctly', () => {
     const tree = renderer.create(
-      <Link page="http://www.example.com">HI</Link>
+      <Link page="http://www.facebook.com">Facebook</Link>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders as an anchor when no page is set', () => {
     const tree = renderer.create(
-      <Link>HI</Link>
+      <Link>Facebook</Link>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('changes the class when hovered', () => {
     const component = renderer.create(
-      <Link page="http://www.example.com">HI</Link>
+      <Link page="http://www.facebook.com">Facebook</Link>
     );
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
