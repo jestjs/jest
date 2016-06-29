@@ -106,6 +106,8 @@ function jasmine2(
     moduleLoader.requireModule(require.resolve('./jasmine-check-install'));
     delete environment.global.jasmine.testcheckOptions;
 
+    environment.global.test = environment.global.it;
+
     if (config.setupTestFrameworkScriptFile) {
       moduleLoader.requireModule(config.setupTestFrameworkScriptFile);
     }
