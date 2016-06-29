@@ -1,5 +1,8 @@
 ## master
 
+* testcheck now needs to be required explicitly through
+  `require('jest-check')`.
+* Added `jest.deepUnmock`.
 * Fail test suite if it does not contain any tests.
 
 ## jest 13.0.0

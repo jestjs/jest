@@ -8,6 +8,8 @@
 
 'use strict';
 
+const check = require('jest-check');
+
 describe('testcheck', () => {
   check.it('works', [gen.int], a => {
     expect(a).toEqual(jasmine.any(Number));

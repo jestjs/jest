@@ -11,8 +11,8 @@
 
 import type {Config} from 'types/Config';
 import type {Environment} from 'types/Environment';
-import type {ModuleLoader} from 'types/ModuleLoader';
 import type {TestResult} from 'types/TestResult';
+import type Runtime from '../../jest-runtime/src';
 
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
@@ -22,6 +22,7 @@ const JasmineReporter = require('./reporter');
 const CALL_PRINT_LIMIT = 3;
 const LAST_CALL_PRINT_LIMIT = 1;
 const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
+const JASMINE_CHECK_PATH = require.resolve('./jasmine-check');
 const jasmineFileContent =
   fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
 
@@ -49,7 +50,7 @@ function getActualCalls(reporter, calls, limit) {
 function jasmine2(
   config: Config,
   environment: Environment,
-  moduleLoader: ModuleLoader,
+  runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
   let env;
@@ -99,17 +100,10 @@ function jasmine2(
     env.addReporter(jasmineInterface.jsApiReporter);
 
     jasminePit.install(environment.global);
-
-    // Jasmine-check must be installed from within the vm context because
-    // testcheck is compiled Clojurescript and is very delicate.
-    environment.global.jasmine.testcheckOptions = config.testcheckOptions;
-    moduleLoader.requireModule(require.resolve('./jasmine-check-install'));
-    delete environment.global.jasmine.testcheckOptions;
-
     environment.global.test = environment.global.it;
 
     if (config.setupTestFrameworkScriptFile) {
-      moduleLoader.requireModule(config.setupTestFrameworkScriptFile);
+      runtime.requireModule(config.setupTestFrameworkScriptFile);
     }
   });
 
@@ -152,6 +146,16 @@ function jasmine2(
     }
     return true;
   };
+
+  runtime.setMock(
+    '',
+    'jest-check',
+    () => {
+      const jasmineCheck = runtime.requireModule(JASMINE_CHECK_PATH);
+      return jasmineCheck(environment.global, config.testcheckOptions);
+    },
+    {virtual: true},
+  );
 
   env.beforeEach(() => {
     jasmine.addCustomEqualityTester(iterableEquality);
@@ -281,12 +285,12 @@ function jasmine2(
     });
 
     if (!config.persistModuleRegistryBetweenSpecs) {
-      moduleLoader.resetModuleRegistry();
+      runtime.resetModuleRegistry();
     }
   });
 
   env.addReporter(reporter);
-  moduleLoader.requireModule(testPath);
+  runtime.requireModule(testPath);
   env.execute();
   return reporter.getResults().then(results => {
     const currentSnapshot = env.snapshotState.snapshot;

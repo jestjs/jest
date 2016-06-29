@@ -8,6 +8,8 @@
 
 'use strict';
 
+const check = require('jest-check');
+
 let runCountWithoutOverride = 0;
 let runCountWithOverride = 0;
 
