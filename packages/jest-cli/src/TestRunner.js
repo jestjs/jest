@@ -162,6 +162,15 @@ class TestRunner {
     reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
 
     const onTestResult = (testPath: Path, testResult: TestResult) => {
+      if (testResult.testResults.length === 0) {
+        const message = 'Your test suite must contain at least one test.';
+        onRunFailure(testPath, {
+          message,
+          stack: new Error(message).stack,
+        });
+        return;
+      }
+
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numTotalTests +=
         testResult.numPassingTests +
