@@ -1,3 +1,7 @@
+## master
+
+* Fail test suite if it does not contain any tests.
+
 ## jest 13.0.0
 
 * Added duration of individual tests in verbose mode.
