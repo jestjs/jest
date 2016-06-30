@@ -41,8 +41,9 @@ describe('Runtime requireModule', () => {
         'RegularModule',
       );
       expect(exports.parent).toEqual({
-        id: 'mockParent',
         exports: {},
+        filename: 'mock.js',
+        id: 'mockParent',
       });
     }),
   );

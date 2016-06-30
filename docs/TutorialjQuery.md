@@ -65,7 +65,7 @@ describe('displayUser', () => {
     $('#button').click();
 
     // Assert that the fetchCurrentUser function was called, and that the
-    // #username span's innter text was updated as we'd it expect.
+    // #username span's inner text was updated as we'd expect it to.
     expect(fetchCurrentUser).toBeCalled();
     expect($('#username').text()).toEqual('Johnny Cash - Logged In');
   });
