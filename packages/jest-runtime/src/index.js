@@ -300,6 +300,21 @@ class Runtime {
     return coverage;
   }
 
+  setMock(
+    from: string,
+    moduleName: string,
+    mockFactory: () => any,
+    options?: {virtual: boolean},
+  ) {
+    if (options && options.virtual) {
+      const mockPath = this._getVirtualMockPath(from, moduleName);
+      this._virtualMocks[mockPath] = true;
+    }
+    const moduleID = this._getNormalizedModuleID(from, moduleName);
+    this._explicitShouldMock[moduleID] = true;
+    this._mockFactories[moduleID] = mockFactory;
+  }
+
   _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
@@ -608,13 +623,7 @@ class Runtime {
       return runtime;
     };
     const setMockFactory = (moduleName, mockFactory, options) => {
-      if (options && options.virtual) {
-        const mockPath = this._getVirtualMockPath(from, moduleName);
-        this._virtualMocks[mockPath] = true;
-      }
-      const moduleID = this._getNormalizedModuleID(from, moduleName);
-      this._explicitShouldMock[moduleID] = true;
-      this._mockFactories[moduleID] = mockFactory;
+      this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
     const useFakeTimers = () => {

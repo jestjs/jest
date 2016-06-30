@@ -8,6 +8,8 @@
 
 'use strict';
 
+const check = require('jest-check');
+
 describe('testcheck-exceptions', () => {
   check.it('reports exceptions', [], () => {
     throw new Error('This error should be reported.');

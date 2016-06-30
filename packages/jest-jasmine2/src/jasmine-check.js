@@ -8,12 +8,12 @@
 'use strict';
 
 jest.unmock('jasmine-check');
-require('jasmine-check').install();
 
-// Replace the 'check' functions with ones that default to options from
-// the jest configuration:
-(() => {
-  const configOptions = global.jasmine.testcheckOptions;
+const jasmineCheck = require.requireActual('jasmine-check');
+
+module.exports = (global, configOptions) => {
+  jasmineCheck.install(global);
+
   const check = global.check;
   const makeMergeOptions = (object, methodName) => {
     const original = object[methodName];
@@ -33,4 +33,5 @@ require('jasmine-check').install();
   makeMergeOptions(check.it, 'only');
   makeMergeOptions(check, 'fit');
   makeMergeOptions(check, 'xit');
-})();
+  return check;
+};

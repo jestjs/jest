@@ -8,6 +8,8 @@
 
 'use strict';
 
+const check = require('jest-check');
+
 describe('testcheck-fit', () => {
   check.fit('runs tests with fit exclusively', [], () => {
     expect(true).toBe(true);
