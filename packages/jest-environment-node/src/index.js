@@ -16,6 +16,8 @@ const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
 const vm = require('vm');
 
+const isNaN = global.isNaN;
+
 class NodeEnvironment {
 
   fakeTimers: ?FakeTimers;
@@ -24,12 +26,14 @@ class NodeEnvironment {
   constructor(config: Config) {
     const global = this.global = {};
     vm.createContext(this.global);
-    global.setTimeout = setTimeout;
+    global.clearInterval = clearInterval;
     global.clearTimeout = clearTimeout;
     global.setInterval = setInterval;
-    global.clearInterval = clearInterval;
-    global.Promise = Promise;
+    global.setTimeout = setTimeout;
+    global.isNaN = isNaN;
+    global.ArrayBuffer = ArrayBuffer;
     global.JSON = JSON;
+    global.Promise = Promise;
     installCommonGlobals(global, config.globals);
     this.fakeTimers = new FakeTimers(global);
   }
