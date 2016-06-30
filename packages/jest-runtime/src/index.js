@@ -63,6 +63,7 @@ class Runtime {
   _shouldMockModuleCache: Object;
   _shouldUnmockTransitiveDependenciesCache: Object;
   _testRegex: RegExp;
+  _coverageRegex: RegExp;
   _transitiveShouldMock: Object;
   _unmockList: ?RegExp;
   _virtualMocks: Object;
@@ -87,6 +88,9 @@ class Runtime {
       config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
+    this._coverageRegex = new RegExp(
+      config.coveragePathIgnorePatterns.replace(/\//g, path.sep),
+    );
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -337,7 +341,7 @@ class Runtime {
     let collectorStore;
     if (
       shouldCollectCoverage &&
-      !filename.includes(NODE_MODULES) &&
+      !this._coverageRegex.test(filename) &&
       !(this._mocksPattern && this._mocksPattern.test(filename)) &&
       !this._testRegex.test(filename)
     ) {

@@ -23,6 +23,9 @@ module.exports = ({
   cacheDirectory: os.tmpdir(),
   colors: false,
   coverageCollector: require.resolve('./IstanbulCollector'),
+  coveragePathIgnorePatterns: [
+    utils.replacePathSepForRegex(constants.NODE_MODULES),
+  ],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   globals: {},
   haste: {

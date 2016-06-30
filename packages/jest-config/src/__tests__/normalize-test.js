@@ -285,6 +285,57 @@ describe('normalize', () => {
     });
   });
 
+  describe('coveragePathIgnorePatterns', () => {
+    it('does not normalize paths relative to rootDir', () => {
+      // This is a list of patterns, so we can't assume any of them are
+      // directories
+      const config = normalize({
+        rootDir: '/root/path/foo',
+        coveragePathIgnorePatterns: [
+          'bar/baz',
+          'qux/quux',
+        ],
+      }, '/root/path');
+
+      expect(config.coveragePathIgnorePatterns).toEqual([
+        joinForPattern('bar', 'baz'),
+        joinForPattern('qux', 'quux'),
+      ]);
+    });
+
+    it('does not normalize trailing slashes', () => {
+      // This is a list of patterns, so we can't assume any of them are
+      // directories
+      const config = normalize({
+        rootDir: '/root/path/foo',
+        coveragePathIgnorePatterns: [
+          'bar/baz',
+          'qux/quux/',
+        ],
+      });
+
+      expect(config.coveragePathIgnorePatterns).toEqual([
+        joinForPattern('bar', 'baz'),
+        joinForPattern('qux', 'quux', ''),
+      ]);
+    });
+
+    it('substitutes <rootDir> tokens', () => {
+      const config = normalize({
+        rootDir: '/root/path/foo',
+        coveragePathIgnorePatterns: [
+          'hasNoToken',
+          '<rootDir>/hasAToken',
+        ],
+      });
+
+      expect(config.coveragePathIgnorePatterns).toEqual([
+        'hasNoToken',
+        joinForPattern('', 'root', 'path', 'foo', 'hasAToken'),
+      ]);
+    });
+  });
+
   describe('testPathIgnorePatterns', () => {
     it('does not normalize paths relative to rootDir', () => {
       // This is a list of patterns, so we can't assume any of them are
