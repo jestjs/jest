@@ -50,7 +50,7 @@ Since these files aren't particularly useful in tests anyway we can safely mock 
   "jest": {
     "moduleNameMapper": {
       "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js",
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
     }
   }
 }
@@ -108,7 +108,7 @@ For Webpack's `moduleDirectories`, and `extensions` options there are direct ana
 
     "moduleNameMapper": {
       "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js",
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
     }
   }
 }
@@ -128,7 +128,7 @@ env variable, which you can set, or make use of the `modulePaths` option.
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
     "moduleNameMapper": {
       "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js",
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
     }
   }
 }
@@ -152,7 +152,7 @@ of the `moduleNameMapper` option again.
       "^config$": "<rootDir>/configs/app-config.js",
 
       "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js",
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
     }
   }
 }
