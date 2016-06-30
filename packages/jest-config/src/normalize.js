@@ -232,6 +232,7 @@ function normalize(config, argv) {
         ]);
         break;
 
+      case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
