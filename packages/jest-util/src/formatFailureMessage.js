@@ -61,7 +61,7 @@ const formatStackTrace = (stackTrace: string, config) => {
 
 const formatFailureMessage = (testResult: TestResult, config: Config) => {
   const ancestrySeparator = ' \u203A ';
-  const descBullet = config.verbose ? '' : chalk.bold('\u25cf ');
+  const descBullet = config.verbose ? ' ' : chalk.bold('\u25cf ');
 
   if (testResult.testExecError) {
     const error = testResult.testExecError;
