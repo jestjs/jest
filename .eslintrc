@@ -1,8 +1,7 @@
 {
   "extends": "./node_modules/fbjs-scripts/eslint/.eslintrc.js",
   "globals": {
-    "check": true,
-    "gen": true,
+    "test": true
   },
   "parser": "babel-eslint",
   "plugins": [

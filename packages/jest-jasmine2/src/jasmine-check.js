@@ -9,12 +9,16 @@
 
 jest.unmock('jasmine-check');
 
-const jasmineCheck = require.requireActual('jasmine-check');
+const jasmineCheck = require('jasmine-check');
 
 module.exports = (global, configOptions) => {
   jasmineCheck.install(global);
 
   const check = global.check;
+  const gen = global.gen;
+  delete global.check;
+  delete global.gen;
+
   const makeMergeOptions = (object, methodName) => {
     const original = object[methodName];
     object[methodName] = (specName, options, gens, propertyFn) => {
@@ -33,5 +37,5 @@ module.exports = (global, configOptions) => {
   makeMergeOptions(check.it, 'only');
   makeMergeOptions(check, 'fit');
   makeMergeOptions(check, 'xit');
-  return check;
+  return {check, gen};
 };
