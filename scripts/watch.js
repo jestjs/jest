@@ -29,7 +29,7 @@ getPackages().forEach(p => {
   try {
     fs.accessSync(srcDir, fs.F_OK);
     fs.watch(path.resolve(p, 'src'), {recursive: true}, (event, filename) => {
-      if (event === 'change') {
+      if (event === 'change' || event === 'rename') {
         console.log(chalk.green('->'), `${event}: ${filename}`);
         rebuild(path.resolve(srcDir, filename));
       }
