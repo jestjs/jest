@@ -1,5 +1,11 @@
 {
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/setup.js"
+    ],
+    "setupFiles": [
+      "<rootDir>/setup.js"
+    ]
   }
 }
