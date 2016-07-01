@@ -54,6 +54,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`bail` [boolean]](#bail-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
+  - [`coveragePathIgnorePattern` [array<string>]](#coveragepathignorepattern-array-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
@@ -447,6 +448,13 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 (default: `undefined`)
 
 The directory where Jest should output its coverage files.
+
+### `coveragePathIgnorePattern` [array<string>]
+(default: `['/node_modules/']`)
+
+An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.
+
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
 
 ### `collectCoverage` [boolean]
 (default: `false`)
