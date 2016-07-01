@@ -9,6 +9,8 @@
 
 jest.disableAutomock();
 
+const wrap = obj => ({suites: obj, tests: [], title: ''});
+
 describe('VerboseLogger', () => {
   let groupTestsBySuites;
 
@@ -19,7 +21,7 @@ describe('VerboseLogger', () => {
   describe('groupTestsBySuites', () => {
 
     it('should handle empty results', () => {
-      expect(groupTestsBySuites([])).toEqual([]);
+      expect(groupTestsBySuites([])).toEqual(wrap([]));
     });
 
     it('should group A1 in A', () => {
@@ -28,7 +30,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [],
         tests: [{
@@ -37,7 +39,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
     it('should group A1 in A; B1 in B', () => {
@@ -51,7 +53,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['B'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [],
         tests: [{
@@ -69,7 +71,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
     it('should group A1, A2 in A', () => {
@@ -83,7 +85,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [],
         tests: [{
@@ -97,7 +99,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
     it('should group A1, A2 in A; B1, B2 in B', () => {
@@ -121,7 +123,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['B'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [],
         tests: [{
@@ -149,7 +151,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
     it('should group AB1 in AB', () => {
@@ -158,7 +160,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A', 'B'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [{
           title: 'B',
@@ -171,7 +173,7 @@ describe('VerboseLogger', () => {
           }],
         }],
         tests: [],
-      }]);
+      }]));
     });
 
     it('should group AB1, AB2 in AB', () => {
@@ -185,7 +187,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A', 'B'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [{
           title: 'B',
@@ -203,7 +205,7 @@ describe('VerboseLogger', () => {
           }],
         }],
         tests: [],
-      }]);
+      }]));
     });
 
     it('should group A1 in A; AB1 in AB', () => {
@@ -217,7 +219,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A', 'B'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [{
           title: 'B',
@@ -235,7 +237,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
     it('should group AB1 in AB; A1 in A', () => {
@@ -249,7 +251,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [{
           title: 'B',
@@ -267,7 +269,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
     it('should group AB1 in AB; CD1 in CD', () => {
@@ -281,7 +283,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['C', 'D'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [{
           title: 'B',
@@ -307,7 +309,7 @@ describe('VerboseLogger', () => {
           }],
         }],
         tests: [],
-      }]);
+      }]));
     });
 
     it('should group ABC1 in ABC; BC1 in BC; D1 in D; A1 in A', () => {
@@ -331,7 +333,7 @@ describe('VerboseLogger', () => {
         ancestorTitles: ['A'],
         failureMessages: [],
         numPassingAsserts: 1,
-      }])).toEqual([{
+      }])).toEqual(wrap([{
         title: 'A',
         suites: [{
           title: 'B',
@@ -375,7 +377,7 @@ describe('VerboseLogger', () => {
           failureMessages: [],
           numPassingAsserts: 1,
         }],
-      }]);
+      }]));
     });
 
   });

@@ -25,10 +25,10 @@ class VerboseLogger {
   }
 
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
-    const root: Suite = {
+    const root = {
       suites: [],
       tests: [],
-      title: 'Root Suite',
+      title: '',
     };
 
     testResults.forEach(testResult => {
@@ -48,27 +48,21 @@ class VerboseLogger {
       targetSuite.tests.push(testResult);
     });
 
-    return root.suites;
+    return root;
   }
 
   logTestResults(testResults: Array<AssertionResult>) {
-    VerboseLogger.groupTestsBySuites(testResults).forEach(suite =>
-      this._logSuite(suite, 0),
-    );
-
+    this._logSuite(VerboseLogger.groupTestsBySuites(testResults), 0);
     this._logLine();
   }
 
   _logSuite(suite: Suite, indentLevel: number) {
-    this._logLine(suite.title, indentLevel);
+    if (suite.title) {
+      this._logLine(suite.title, indentLevel);
+    }
 
-    suite.tests.forEach(test =>
-      this._logTest(test, indentLevel + 1),
-    );
-
-    suite.suites.forEach(childSuite =>
-      this._logSuite(childSuite, indentLevel + 1),
-    );
+    suite.tests.forEach(test => this._logTest(test, indentLevel + 1));
+    suite.suites.forEach(suite => this._logSuite(suite, indentLevel + 1));
   }
 
   _getIcon(status: string) {
@@ -84,7 +78,7 @@ class VerboseLogger {
   _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
     const time = test.duration
-      ? ` (${test.duration.toFixed(0)} ms)`
+      ? ` (${test.duration.toFixed(0)}ms)`
       : '';
     this._logLine(status + ' ' + chalk.gray(test.title + time), indentLevel);
   }
