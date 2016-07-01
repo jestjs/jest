@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {ThrowingMatcherFn, TestResult} from '../types';
+import type {ThrowingMatcherFn, ExpectationResult} from '../types';
 
 const matchers = require('./matchers');
 
@@ -27,12 +27,12 @@ function expect(actual: any) {
 }
 
 function makeThrowingMatcher(
-  matcher: (actual: any, expected: any) => TestResult,
+  matcher: (actual: any, expected: any) => ExpectationResult,
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn {
   return function(expected) {
-    const result: TestResult = matcher(
+    const result: ExpectationResult = matcher(
       actual,
       expected,
       {args: arguments},

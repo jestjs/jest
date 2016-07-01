@@ -292,9 +292,7 @@ function jasmine2(
 
   const jasmineExpect = env.expect;
 
-  // extend (and replace) the returned value from `expect` with `jest-matchers`
-  // values. This can be a performance bottleneck, but right now it just takes
-  // 0.015s per `expect` call
+  // extend jasmine matchers with `jest-matchers`
   env.expect = actual => {
     const jasmineMatchers = jasmineExpect(actual);
     const jestMatchers = expect(actual);

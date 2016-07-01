@@ -21,7 +21,7 @@ const JASMINE_IGNORE = /^\s+at.*?vendor\/|\\jasmine\-/;
 const STACK_TRACE_IGNORE =
   /^\s+at.*?jest(-cli)?\/(vendor|src|node_modules|packages)\//;
 
-const formatStackTrace = (stackTrace: string, config) => {
+const formatStackTrace = (stackTrace: string, config): string => {
   const msgBullet = '  - ';
   const msgIndent = msgBullet.replace(/./g, ' ');
   let stackTraceLines = 0;

@@ -10,12 +10,12 @@
 
 'use strict';
 
-import type {MatchersObject, TestResult} from '../types';
+import type {MatchersObject, ExpectationResult} from '../types';
 
-const diff = require('./diff');
+const diff = require('jest-diff');
 
 const matchers: MatchersObject = {
-  toBe(actual: any, expected: number): TestResult {
+  toBe(actual: any, expected: number): ExpectationResult {
     const pass = actual === expected;
 
     if (pass) {
@@ -29,17 +29,31 @@ const matchers: MatchersObject = {
       return {
         pass,
         message() {
-          let diffString = '\n';
+          let diffString = '\n\n';
 
           if (!(typeof actual === 'boolean' && typeof expected === 'boolean')) {
             diffString += diff(expected, actual);
           }
-          return `expected '${JSON.stringify(actual)}' to equal (using '===')` +
-          ` '${JSON.stringify(expected)}'${diffString}`;
+          return `expected '${stringify(actual)}' to equal (using '===')` +
+          ` '${stringify(expected)}'${diffString}`;
         },
       };
     }
   },
 };
+
+// Remove circular references
+function stringify(obj: any): string {
+  const set = new Set();
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (set.has(value)) {
+        return '[Circular]';
+      }
+      set.add(value);
+    }
+    return value;
+  });
+}
 
 module.exports = matchers;
