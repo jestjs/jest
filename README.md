@@ -327,6 +327,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`coverageDirectory` [string]](https://facebook.github.io/jest/docs/api.html#coveragedirectory-string)
   - [`collectCoverage` [boolean]](https://facebook.github.io/jest/docs/api.html#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](https://facebook.github.io/jest/docs/api.html#collectcoverageonlyfrom-object)
+  - [`coveragePathIgnorePattern` [array<string>]](https://facebook.github.io/jest/docs/api.html#coveragepathignorepattern-array-string)
   - [`coverageThreshold` [object]](https://facebook.github.io/jest/docs/api.html#coveragethreshold-object)
   - [`globals` [object]](https://facebook.github.io/jest/docs/api.html#globals-object)
   - [`mocksPattern` [string]](https://facebook.github.io/jest/docs/api.html#mockspattern-string)
@@ -728,6 +729,13 @@ Indicates whether the coverage information should be collected while executing t
 (default: `undefined`)
 
 An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
+
+### `coveragePathIgnorePattern` [array<string>]
+(default: `['/node_modules/']`)
+
+An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.
+
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
 
 ### `coverageThreshold` [object]
 (default: `undefined`)

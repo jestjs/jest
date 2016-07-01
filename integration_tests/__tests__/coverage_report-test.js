@@ -22,6 +22,10 @@ describe('Coverage Report', () => {
     expect(stdout).toMatch(/All files.*100.*100.*100.*100/);
     expect(stdout).not.toMatch(/^.+__tests__.+\|.+\|.+\|.+\|/gm);
     expect(stdout).not.toMatch(/^.+__mocks__.+\|.+\|.+\|.+\|/gm);
+
+    // Make sure `coveragePathIgnorePatterns` works
+    expect(stdout).not.toMatch('setup.js');
+
     // this will throw if the coverage directory is not there
     fs.accessSync(coverageDir, fs.F_OK);
     expect(result.status).toBe(0);
