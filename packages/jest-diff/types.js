@@ -9,11 +9,13 @@
  */
 'use strict';
 
-export type ExpectationResult = {
-  pass: boolean,
-  message: string | () => string,
-};
-
-export type RawMatcherFn = (expected: any, actual: any) => ExpectationResult;
-export type ThrowingMatcherFn = (actual: any) => void;
-export type MatchersObject = {[id:string]: RawMatcherFn};
+export type ValueType =
+  | 'array'
+  | 'boolean'
+  | 'function'
+  | 'null'
+  | 'number'
+  | 'object'
+  | 'string'
+  | 'symbol'
+  | 'undefined';

@@ -12,34 +12,38 @@
 
 jest.disableAutomock();
 
-const expect = require('../index.js').expect;
+const jestExpect = require('../').expect;
 
 describe('toBe()', () => {
-  it(`doesn't throw`, () => {
-    expect(1).toBe(1);
-    expect(1).not.toBe(2);
+  it('does not throw', () => {
+    jestExpect('a').not.toBe('b');
+    jestExpect('a').toBe('a');
+    jestExpect(1).not.toBe(2);
+    jestExpect(1).toBe(1);
+    jestExpect(null).not.toBe(undefined);
+    jestExpect(null).toBe(null);
+    jestExpect(undefined).toBe(undefined);
   });
 
-  it('throws', () => {
-    let error;
-    try {
-      expect(1).toBe(2);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(!!error.message.match('===')).toBe(true);
+  [[1, 2], [true, false], [{}, {}], [[], []], [null, undefined]].forEach(v => {
+    it(`fails for: ${JSON.stringify(v[0])} and ${JSON.stringify(v[1])}`, () => {
+      const fn = () => jestExpect(v[0]).toBe(v[1]);
+      expect(fn).toThrowError(/expected.*to equal.*===.*/);
+    });
   });
 
-  it('throws with .not', () => {
-    let error;
-    try {
-      expect(1).not.toBe(1);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(!!error.message.match('!==')).toBe(true);
+  [false, 1, 'a', undefined, null, {}, []].forEach(v => {
+    it(`fails for '${JSON.stringify(v)}' with '.not'`, () => {
+      const fn = () => jestExpect(v).not.toBe(v);
+      expect(fn).toThrowError(/expected.*to not equal.*!==.*/);
+    });
   });
 
+  it('does not crash on circular references', () => {
+    const obj = {};
+    obj.circular = obj;
+    expect(() => jestExpect(obj).toBe({})).toThrowError(
+      /expected.*circular.*\[Circular\].*to equal.*/,
+    );
+  });
 });
