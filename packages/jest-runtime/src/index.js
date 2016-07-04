@@ -14,6 +14,7 @@ import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {HasteResolverContext} from 'types/Runtime';
 import type Resolver from '../../jest-resolve/src';
+import type {Script} from 'vm';
 
 const createHasteMap = require('jest-haste-map').create;
 const createResolver = require('jest-resolve').create;
@@ -46,7 +47,6 @@ const mockParentModule = {
 
 const normalizedIDCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
-const cacheBuffer = new Map();
 
 type BooleanObject = {[key: string]: boolean};
 
@@ -356,15 +356,6 @@ class Runtime {
     }
     const collectorStore =
       shouldCollectCoverage && collectors[filename].getCoverageDataStore();
-    const moduleContent = transform(filename, this._config, {
-      instrument: shouldCollectCoverage && (
-        source => collectors[filename].getInstrumentedSource(
-          source,
-          filename,
-          '$JEST',
-        )
-      ),
-    });
 
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
@@ -377,8 +368,17 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename);
 
-    const wrapperFunc = this._runScript(moduleContent, filename);
-    wrapperFunc.call(
+    const script = transform(filename, this._config, {
+      instrument: shouldCollectCoverage && (
+        source => collectors[filename].getInstrumentedSource(
+          source,
+          filename,
+          '$JEST',
+        )
+      ),
+    });
+    const wrapper = this._runScript(script, filename);
+    wrapper.call(
       localModule.exports, // module context
       localModule, // module object
       localModule.exports, // module exports
@@ -394,24 +394,14 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  _runScript(moduleContent: string, filename: string) {
-    /* eslint-disable max-len */
-    const config = this._config;
-    const relative = filePath => path.relative(config.rootDir, filePath);
-    const env = this._environment;
-    const evalResultVariable = 'Object.<anonymous>';
-    const wrapper = '({"' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST) {' + moduleContent + '\n}});';
-
-    const vm = require('vm');
-    const script = cacheBuffer.get(filename) || new vm.Script(wrapper, {
-      displayErrors: true,
-      filename,
-    });
-    cacheBuffer.set(filename, script);
-
+  _runScript(script: Script, filename: string) {
     try {
-      return env.runScript(script)[evalResultVariable];
+      return this._environment.runScript(script)[
+        transform.EVAL_RESULT_VARIABLE
+      ];
     } catch (e) {
+      const config = this._config;
+      const relative = filePath => path.relative(config.rootDir, filePath);
       if (e.constructor.name === 'SyntaxError') {
         const hasPreprocessor = config.scriptPreprocessor;
         const preprocessorInfo = hasPreprocessor
@@ -421,18 +411,18 @@ class Runtime {
           ? `Make sure your '.babelrc' is set up correctly, ` +
             `for example it should include the 'es2015' preset.\n`
           : '';
+        /* eslint-disable max-len */
         throw new SyntaxError(
           `${e.message} in file '${relative(filename)}'.\n\n` +
           `Make sure your preprocessor is set up correctly and ensure ` +
           `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string\n` +
           'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
-          `Preprocessor: ${preprocessorInfo}.\n${babelInfo}` +
-          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`,
+          `Preprocessor: ${preprocessorInfo}.\n${babelInfo}`,
         );
+        /* eslint-enable max-len */
       }
       throw e;
     }
-    /* eslint-enable max-len */
   }
 
   _generateMock(from: Path, moduleName: string) {

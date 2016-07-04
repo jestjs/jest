@@ -16,10 +16,7 @@ const crypto = require('crypto');
 const fs = require('graceful-fs');
 const path = require('path');
 const stableStringify = require('json-stable-stringify');
-
-const cache = new Map();
-const configToJsonMap = new Map();
-const preprocessorRegExpCache = new WeakMap();
+const vm = require('vm');
 
 export type Processor = {
   process: (sourceText: string, sourcePath: Path) => string,
@@ -28,6 +25,12 @@ export type Processor = {
 type TransformOptions = {
   instrument: (source: string) => string,
 };
+
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+
+const cache = new Map();
+const configToJsonMap = new Map();
+const preprocessorRegExpCache = new WeakMap();
 
 const removeFile = (path: Path) => {
   try {
@@ -100,22 +103,25 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
 };
 
 module.exports = (
-  filePath: Path,
+  filename: Path,
   config: Config,
   options: ?TransformOptions,
-): string => {
-  const mtime = fs.statSync(filePath).mtime;
-  const mapCacheKey = filePath + '_' + mtime.getTime();
+): vm.Script => {
+  const mtime = fs.statSync(filename).mtime;
+  const mapCacheKey = filename + '_' + mtime.getTime();
 
   if (cache.has(mapCacheKey)) {
-    return cache.get(mapCacheKey) || '';
+    const content = cache.get(mapCacheKey);
+    if (content) {
+      return content;
+    }
   }
 
-  let fileData = fs.readFileSync(filePath, 'utf8');
+  let content = fs.readFileSync(filename, 'utf8');
   // If the file data starts with a shebang remove it. Leaves the empty line
   // to keep stack trace line numbers correct.
-  if (fileData.startsWith('#!')) {
-    fileData = fileData.replace(/^#!.*/, '');
+  if (content.startsWith('#!')) {
+    content = content.replace(/^#!.*/, '');
   }
 
   if (!preprocessorRegExpCache.has(config)) {
@@ -129,7 +135,7 @@ module.exports = (
     config.scriptPreprocessor &&
     (
       !config.preprocessorIgnorePatterns.length ||
-      !regex.test(filePath)
+      !regex.test(filename)
     )
   ) {
     // $FlowFixMe
@@ -141,30 +147,41 @@ module.exports = (
     }
 
     const baseCacheDir = path.join(config.cacheDirectory, 'preprocess-cache');
-    const cacheKey = getCacheKey(preprocessor, fileData, filePath, config);
+    const cacheKey = getCacheKey(preprocessor, content, filename, config);
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
     const cachePath = path.join(
       cacheDir,
-      path.basename(filePath, path.extname(filePath)) + '_' + cacheKey,
+      path.basename(filename, path.extname(filename)) + '_' + cacheKey,
     );
     createDirectory(cacheDir);
 
-    const cacheData = config.cache ? readCacheFile(filePath, cachePath) : null;
+    const cacheData = config.cache ? readCacheFile(filename, cachePath) : null;
     if (cacheData) {
-      fileData = cacheData;
+      content = cacheData;
     } else {
-      fileData = preprocessor.process(fileData, filePath, config);
+      content = preprocessor.process(content, filename, config);
       if (options && options.instrument) {
-        fileData = options.instrument(fileData);
+        content = options.instrument(content);
       }
-      writeCacheFile(cachePath, fileData);
+      writeCacheFile(cachePath, content);
     }
   } else if (options && options.instrument) {
-    fileData = options.instrument(fileData);
+    content = options.instrument(content);
   }
 
-  cache.set(mapCacheKey, fileData);
-  return fileData;
+  /* eslint-disable max-len */
+  content = '({"' + EVAL_RESULT_VARIABLE + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST) {' + content + '\n}});';
+  /* eslint-enable max-len */
+
+  const script = new vm.Script(content, {
+    displayErrors: true,
+    filename,
+  });
+
+  cache.set(mapCacheKey, script);
+  return script;
 };
+
+module.exports.EVAL_RESULT_VARIABLE = EVAL_RESULT_VARIABLE;
