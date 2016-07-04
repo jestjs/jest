@@ -9,7 +9,7 @@
 const path = require('path');
 
 module.exports = function createRuntime(filename, config) {
-  const JSDOMEnvironment = require('jest-environment-jsdom');
+  const NodeEnvironment = require('jest-environment-node');
   const Runtime = require('../');
 
   const createHasteMap = require('jest-haste-map').create;
@@ -21,7 +21,7 @@ module.exports = function createRuntime(filename, config) {
     rootDir: path.resolve(path.dirname(filename), 'test_root'),
   }, config));
 
-  const environment = new JSDOMEnvironment(config);
+  const environment = new NodeEnvironment(config);
   return createHasteMap(config, {resetCache: false, maxWorkers: 1})
     .build()
     .then(moduleMap => {

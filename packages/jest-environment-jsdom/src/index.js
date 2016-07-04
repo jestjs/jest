@@ -10,6 +10,7 @@
 
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
+import type {Script} from 'vm';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
@@ -45,9 +46,9 @@ class JSDOMEnvironment {
     this.fakeTimers = null;
   }
 
-  runSourceText(sourceText: string, filename: string): ?any {
+  runScript(script: Script): ?any {
     if (this.global) {
-      return this.global.eval(sourceText + '\n//# sourceURL=' + filename);
+      return require('jsdom').evalVMScript(this.global, script);
     }
     return null;
   }

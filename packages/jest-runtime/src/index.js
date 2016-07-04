@@ -46,6 +46,7 @@ const mockParentModule = {
 
 const normalizedIDCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
+const cacheBuffer = new Map();
 
 type BooleanObject = {[key: string]: boolean};
 
@@ -357,7 +358,7 @@ class Runtime {
       }
       const collector = collectors[filename];
       collectorStore = collector.getCoverageDataStore();
-      moduleContent = collector.getInstrumentedSource('$JEST_COVERAGE_DATA');
+      moduleContent = collector.getInstrumentedSource('$JEST');
     }
 
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
@@ -371,7 +372,7 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename);
 
-    const wrapperFunc = this._runSourceText(moduleContent, filename);
+    const wrapperFunc = this._runScript(moduleContent, filename);
     wrapperFunc.call(
       localModule.exports, // module context
       localModule, // module object
@@ -388,15 +389,23 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  _runSourceText(moduleContent: string, filename: string) {
+  _runScript(moduleContent: string, filename: string) {
     /* eslint-disable max-len */
     const config = this._config;
     const relative = filePath => path.relative(config.rootDir, filePath);
     const env = this._environment;
     const evalResultVariable = 'Object.<anonymous>';
-    const wrapper = '({ "' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST_COVERAGE_DATA) {' + moduleContent + '\n}});';
+    const wrapper = '({"' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST) {' + moduleContent + '\n}});';
+
+    const vm = require('vm');
+    const script = cacheBuffer.get(filename) || new vm.Script(wrapper, {
+      displayErrors: true,
+      filename,
+    });
+    cacheBuffer.set(filename, script);
+
     try {
-      return env.runSourceText(wrapper, filename)[evalResultVariable];
+      return env.runScript(script)[evalResultVariable];
     } catch (e) {
       if (e.constructor.name === 'SyntaxError') {
         const hasPreprocessor = config.scriptPreprocessor;

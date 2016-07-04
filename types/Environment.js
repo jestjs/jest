@@ -11,11 +11,12 @@
 
 import type {Config} from './Config';
 import type {Global} from './Global';
+import type {Script} from 'vm';
 
 export type Environment = {
   constructor(config: Config): void;
   dispose(): void;
-  runSourceText(sourceText: string, filename: string): any;
+  runScript(script: Script): any;
   global: Global;
   fakeTimers: {
     clearAllTimers(): void;

@@ -14,17 +14,22 @@ import type {Environment} from 'types/Environment';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from '../../jest-runtime/src';
 
+const JasmineReporter = require('./reporter');
+
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
 const snapshot = require('jest-snapshot');
-const JasmineReporter = require('./reporter');
+const vm = require('vm');
 
 const CALL_PRINT_LIMIT = 3;
 const LAST_CALL_PRINT_LIMIT = 1;
 const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
 const JASMINE_CHECK_PATH = require.resolve('./jasmine-check');
-const jasmineFileContent =
-  fs.readFileSync(require.resolve(JASMINE_PATH), 'utf8');
+
+const jasmineScript = new vm.Script(fs.readFileSync(JASMINE_PATH, 'utf8'), {
+  displayErrors: true,
+  filename: JASMINE_PATH,
+});
 
 function isSpyLike(test) {
   return test.calls && test.calls.all !== undefined;
@@ -62,7 +67,7 @@ function jasmine2(
   // To account for this conflict, we set up jasmine in an environment with real
   // timers (instead of mock timers).
   environment.fakeTimers.runWithRealTimers(() => {
-    environment.runSourceText(jasmineFileContent, JASMINE_PATH);
+    environment.runScript(jasmineScript);
 
     const requireJasmine = environment.global.jasmineRequire;
     jasmine = requireJasmine.core(requireJasmine);
