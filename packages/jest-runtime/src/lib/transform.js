@@ -22,7 +22,11 @@ const configToJsonMap = new Map();
 const preprocessorRegExpCache = new WeakMap();
 
 export type Processor = {
-  process: (sourceText: string, sourcePath: string) => string,
+  process: (sourceText: string, sourcePath: Path) => string,
+};
+
+type TransformOptions = {
+  instrument: (source: string) => string,
 };
 
 const removeFile = (path: Path) => {
@@ -42,16 +46,14 @@ const getCacheKey = (
     // cached output instead of all config options.
     configToJsonMap.set(config, stableStringify({
       cacheDirectory: config.cacheDirectory,
+      collectCoverage: config.collectCoverage,
       haste: config.haste,
       mocksPattern: config.mocksPattern,
       moduleFileExtensions: config.moduleFileExtensions,
       moduleNameMapper: config.moduleNameMapper,
-      modulePathIgnorePatterns: config.modulePathIgnorePatterns,
       rootDir: config.rootDir,
-      testDirectoryName: config.testDirectoryName,
-      testFileExtensions: config.testFileExtensions,
       testPathDirs: config.testPathDirs,
-      testPathIgnorePatterns: config.testPathIgnorePatterns,
+      testRegex: config.testRegex,
     }));
   }
   const configStr = configToJsonMap.get(config);
@@ -65,7 +67,7 @@ const getCacheKey = (
   }
 };
 
-const writeCacheFile = (cachePath: string, fileData: string) => {
+const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
     fs.writeFileSync(cachePath, fileData);
   } catch (e) {
@@ -75,7 +77,7 @@ const writeCacheFile = (cachePath: string, fileData: string) => {
   }
 };
 
-const readCacheFile = (filePath: string, cachePath: string): ?string => {
+const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   if (!fs.existsSync(cachePath)) {
     return null;
   }
@@ -97,7 +99,11 @@ const readCacheFile = (filePath: string, cachePath: string): ?string => {
   return fileData;
 };
 
-module.exports = (filePath: Path, config: Config): string => {
+module.exports = (
+  filePath: Path,
+  config: Config,
+  options: ?TransformOptions,
+): string => {
   const mtime = fs.statSync(filePath).mtime;
   const mapCacheKey = filePath + '_' + mtime.getTime();
 
@@ -122,7 +128,8 @@ module.exports = (filePath: Path, config: Config): string => {
   if (
     config.scriptPreprocessor &&
     (
-      !config.preprocessorIgnorePatterns.length || !regex.test(filePath)
+      !config.preprocessorIgnorePatterns.length ||
+      !regex.test(filePath)
     )
   ) {
     // $FlowFixMe
@@ -133,27 +140,29 @@ module.exports = (filePath: Path, config: Config): string => {
       );
     }
 
-    if (config.cache === true) {
-      const baseCacheDir = path.join(config.cacheDirectory, 'preprocess-cache');
-      const cacheKey = getCacheKey(preprocessor, fileData, filePath, config);
-      // Create sub folders based on the cacheKey to avoid creating one
-      // directory with many files.
-      const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
-      const cachePath = path.join(
-        cacheDir,
-        path.basename(filePath, path.extname(filePath)) + '_' + cacheKey,
-      );
-      createDirectory(cacheDir);
-      const cachedData = readCacheFile(filePath, cachePath);
-      if (cachedData) {
-        fileData = cachedData;
-      } else {
-        fileData = preprocessor.process(fileData, filePath, config);
-        writeCacheFile(cachePath, fileData);
-      }
+    const baseCacheDir = path.join(config.cacheDirectory, 'preprocess-cache');
+    const cacheKey = getCacheKey(preprocessor, fileData, filePath, config);
+    // Create sub folders based on the cacheKey to avoid creating one
+    // directory with many files.
+    const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
+    const cachePath = path.join(
+      cacheDir,
+      path.basename(filePath, path.extname(filePath)) + '_' + cacheKey,
+    );
+    createDirectory(cacheDir);
+
+    const cacheData = config.cache ? readCacheFile(filePath, cachePath) : null;
+    if (cacheData) {
+      fileData = cacheData;
     } else {
       fileData = preprocessor.process(fileData, filePath, config);
+      if (options && options.instrument) {
+        fileData = options.instrument(fileData);
+      }
+      writeCacheFile(cachePath, fileData);
     }
+  } else if (options && options.instrument) {
+    fileData = options.instrument(fileData);
   }
 
   cache.set(mapCacheKey, fileData);

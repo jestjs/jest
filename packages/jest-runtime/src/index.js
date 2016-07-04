@@ -328,38 +328,43 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _execModule(localModule: Module) {
-    // If the environment was disposed, prevent this module from
-    // being executed.
-    if (!this._environment.global) {
-      return;
-    }
-
-    const filename = localModule.filename;
-    const collectors = this._coverageCollectors;
+  _shouldCollectCoverage(filename: Path) {
     const collectOnlyFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage = (
       (this._config.collectCoverage && !collectOnlyFrom) ||
       (collectOnlyFrom && collectOnlyFrom[filename])
     );
-    let moduleContent = transform(filename, this._config);
-    let collectorStore;
-    if (
+    return (
       shouldCollectCoverage &&
       !this._coverageRegex.test(filename) &&
       !(this._mocksPattern && this._mocksPattern.test(filename)) &&
       !this._testRegex.test(filename)
-    ) {
-      if (!collectors[filename]) {
-        collectors[filename] = new this._CoverageCollector(
-          moduleContent,
-          filename,
-        );
-      }
-      const collector = collectors[filename];
-      collectorStore = collector.getCoverageDataStore();
-      moduleContent = collector.getInstrumentedSource('$JEST');
+    );
+  }
+
+  _execModule(localModule: Module) {
+    // If the environment was disposed, prevent this module from being executed.
+    if (!this._environment.global) {
+      return;
     }
+
+    const filename = localModule.filename;
+    const shouldCollectCoverage = this._shouldCollectCoverage(filename);
+    const collectors = this._coverageCollectors;
+    if (shouldCollectCoverage && !collectors[filename]) {
+      collectors[filename] = new this._CoverageCollector();
+    }
+    const collectorStore =
+      shouldCollectCoverage && collectors[filename].getCoverageDataStore();
+    const moduleContent = transform(filename, this._config, {
+      instrument: shouldCollectCoverage && (
+        source => collectors[filename].getInstrumentedSource(
+          source,
+          filename,
+          '$JEST',
+        )
+      ),
+    });
 
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;

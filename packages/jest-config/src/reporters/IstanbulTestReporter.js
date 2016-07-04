@@ -9,19 +9,31 @@
 */
 'use strict';
 
+import type {Config} from 'types/Config';
+import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {Process} from 'types/Process';
+
 const DefaultTestReporter = require('./DefaultTestReporter');
+
 const chalk = require('chalk');
 const istanbul = require('istanbul');
-const collector = new istanbul.Collector();
-const testCollectors = Object.create(null);
-const reporter = new istanbul.Reporter();
 
 const FAIL_COLOR = chalk.bold.red;
 
-import type {Config} from 'types/Config';
-import type {AggregatedResult, TestResult} from 'types/TestResult';
-
 class IstanbulTestReporter extends DefaultTestReporter {
+
+  _collector: istanbul.Collector;
+  _reporter: istanbul.Reporter;
+  _testCollectors: Object;
+
+  constructor(customProcess: Process) {
+    super(customProcess);
+
+    this._collector = new istanbul.Collector();
+    this._testCollectors = Object.create(null);
+    this._reporter = new istanbul.Reporter();
+  }
+
   onTestResult(
     config: Config,
     testResult: TestResult,
@@ -30,27 +42,29 @@ class IstanbulTestReporter extends DefaultTestReporter {
     super.onTestResult(config, testResult, aggregatedResults);
 
     if (config.collectCoverage && testResult.coverage) {
-      collector.add(testResult.coverage);
-      if (!testCollectors[testResult.testFilePath]) {
-        testCollectors[testResult.testFilePath] = new istanbul.Collector();
+      const testFilePath = testResult.testFilePath;
+      this._collector.add(testResult.coverage);
+      if (!this._testCollectors[testFilePath]) {
+        this._testCollectors[testFilePath] = new istanbul.Collector();
       }
-      testCollectors[testResult.testFilePath].add(testResult.coverage);
+      this._testCollectors[testFilePath].add(testResult.coverage);
     }
   }
 
   onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
     aggregatedResults.success = super.onRunComplete(config, aggregatedResults);
 
+    const reporter = this._reporter;
     if (config.collectCoverage) {
       try {
         if (config.coverageDirectory) {
           reporter.dir = config.coverageDirectory;
         }
         reporter.addAll(config.coverageReporters);
-        reporter.write(collector, true, () => {});
+        reporter.write(this._collector, true, () => {});
       } catch (e) {}
       if (config.coverageThreshold) {
-        const rawCoverage = collector.getFinalCoverage();
+        const rawCoverage = this._collector.getFinalCoverage();
         const globalResults = istanbul.utils.summarizeCoverage(rawCoverage);
 
         function check(name, thresholds, actuals) {
@@ -97,16 +111,16 @@ class IstanbulTestReporter extends DefaultTestReporter {
     return aggregatedResults.success;
   }
 
-  static getReporter() {
-    return reporter;
+  getReporter() {
+    return this._reporter;
   }
 
-  static getCollector() {
-    return collector;
+  getCollector() {
+    return this._collector;
   }
 
-  static getTestCollectors() {
-    return testCollectors;
+  getTestCollectors() {
+    return this._testCollectors;
   }
 }
 

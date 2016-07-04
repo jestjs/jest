@@ -55,6 +55,7 @@ export type Config = BaseConfig & {
   cache: boolean,
   collectCoverageOnlyFrom: {[key: string]: Path},
   colors: boolean,
+  collectCoverage: boolean,
   coverageThreshold: {
     global: {
       [key: string]: number,
