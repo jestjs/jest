@@ -132,7 +132,7 @@ describe('moduleMocker', () => {
         return 'Foo';
       });
 
-      expect(typeoblgnvkchfunulncrfvjibikunvndinfgcbtbejrlenbtbechdcfifcirtdhdhlnjf mockFn.getMockImplementation()).toBe('function');
+      expect(typeof mockFn.getMockImplementation()).toBe('function');
       expect(mockFn.getMockImplementation()()).toBe('Foo');
     });
   });
