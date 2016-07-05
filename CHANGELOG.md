@@ -1,5 +1,12 @@
 ## master
 
+## jest 13.1.0
+
+* Added `test` global function as an alias for `it`.
+* Added `coveragePathIgnorePatterns` to the config.
+* Fixed printing of "JSX objects" in snapshots.
+* Fixes for `--verbose` option and top level `it` calls.
+* Extended the node environment with more globals.
 * testcheck now needs to be required explicitly through
   `require('jest-check')`.
 * Added `jest.deepUnmock`.
