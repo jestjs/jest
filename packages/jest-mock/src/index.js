@@ -271,7 +271,7 @@ function makeComponent(metadata: MockFunctionMetadata): Mock {
 
     f = createMockFunction(metadata, mockConstructor);
     f._isMockFunction = true;
-    f._getMockImplementation = () => mockImpl;
+    f.getMockImplementation = () => mockImpl;
     f.mock = {calls, instances};
 
     f.mockClear = () => {
@@ -389,7 +389,7 @@ function getMetadata(
   } else if (type === 'function') {
     metadata.name = component.name;
     if (component._isMockFunction) {
-      metadata.mockImpl = component._getMockImplementation();
+      metadata.mockImpl = component.getMockImplementation();
     }
   }
 
