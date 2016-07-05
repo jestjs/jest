@@ -132,10 +132,8 @@ describe('moduleMocker', () => {
         return 'Foo';
       });
 
-      expect(mockFn.getMockImplementation()).toBe(
-        mockFn.mockImplementation.mockImpl);
-      expect(mockFn.getMockImplementation()).toBe(
-        mockFn.mockImplementation.mockImpl);
+      expect(typeoblgnvkchfunulncrfvjibikunvndinfgcbtbejrlenbtbechdcfifcirtdhdhlnjf mockFn.getMockImplementation()).toBe('function');
+      expect(mockFn.getMockImplementation()()).toBe('Foo');
     });
   });
   
