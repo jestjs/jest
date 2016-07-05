@@ -39,6 +39,9 @@ class NodeEnvironment {
   }
 
   dispose() {
+    if (this.fakeTimers) {
+      this.fakeTimers.clearAllTimers();
+    }
     this.global = null;
     this.fakeTimers = null;
   }
