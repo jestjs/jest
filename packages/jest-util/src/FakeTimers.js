@@ -74,22 +74,22 @@ class FakeTimers {
     };
 
     this._fakeTimerAPIs = {
-      setTimeout: mocks.getMockFn().getMockImplementation(
+      setTimeout: mocks.getMockFn().getMockImplementation()(
         this._fakeSetTimeout.bind(this),
       ),
-      clearTimeout: mocks.getMockFn().getMockImplementation(
+      clearTimeout: mocks.getMockFn().getMockImplementation()(
         this._fakeClearTimer.bind(this),
       ),
-      setInterval: mocks.getMockFn().getMockImplementation(
+      setInterval: mocks.getMockFn().getMockImplementation()(
         this._fakeSetInterval.bind(this),
       ),
-      clearInterval: mocks.getMockFn().getMockImplementation(
+      clearInterval: mocks.getMockFn().getMockImplementation()(
         this._fakeClearTimer.bind(this),
       ),
-      setImmediate: mocks.getMockFn().getMockImplementation(
+      setImmediate: mocks.getMockFn().getMockImplementation()(
         this._fakeSetImmediate.bind(this),
       ),
-      clearImmediate: mocks.getMockFn().getMockImplementation(
+      clearImmediate: mocks.getMockFn().getMockImplementation()(
         this._fakeClearImmediate.bind(this),
       ),
     };
@@ -99,7 +99,7 @@ class FakeTimers {
     if (typeof global.process === 'object'
       && typeof global.process.nextTick === 'function') {
       this._originalTimerAPIs.nextTick = global.process.nextTick;
-      this._fakeTimerAPIs.nextTick = mocks.getMockFn().getMockImplementation(
+      this._fakeTimerAPIs.nextTick = mocks.getMockFn().getMockImplementation()(
         this._fakeNextTick.bind(this),
       );
     }
