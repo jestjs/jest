@@ -364,7 +364,7 @@ function generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
 
 function getMetadata(
   component: any,
-  _refs?: Map,
+  _refs?: Map<any, number>,
 ): ?MockFunctionMetadata {
   const refs = _refs || new Map();
   const ref = refs.get(component);

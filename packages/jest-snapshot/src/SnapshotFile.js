@@ -58,7 +58,7 @@ class SnapshotFile {
   _content: SnapshotData;
   _dirty: boolean;
   _filename: Path;
-  _uncheckedKeys: Set;
+  _uncheckedKeys: Set<string>;
 
   constructor(filename: Path): void {
     this._filename = filename;
