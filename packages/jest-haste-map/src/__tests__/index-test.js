@@ -445,8 +445,7 @@ describe('HasteMap', () => {
 
   it('ignores files that do not exist', () => {
     const watchman = require('../crawlers/watchman');
-    // getMockImplementation should be a public method.
-    const mockImpl = watchman._getMockImplementation();
+    const mockImpl = watchman.getMockImplementation();
     // Wrap the watchman mock and add an invalid file to the file list.
     watchman.mockImplementation((roots, extensions, ignore, data) => {
       return mockImpl(roots, extensions, ignore, data).then(() => {
