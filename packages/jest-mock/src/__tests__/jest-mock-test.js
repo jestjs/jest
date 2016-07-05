@@ -124,6 +124,19 @@ describe('moduleMocker', () => {
     });
   });
 
+  describe('getMockImplementation', () => {
+    it('should mock calls to a mock function', () => {
+      const mockFn = moduleMocker.getMockFunction();
+
+      mockFn.mockImplementation(() => {
+        return 'Foo';
+      });
+
+      expect(mockFn.getMockImplementation()).toBe(mockFn.mockImplementation.mockImpl);
+      expect(mockFn.getMockImplementation()).toBe(mockFn.mockImplementation.mockImpl);
+    });
+  });
+  
   describe('mockImplementationOnce', () => {
     it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.getMockFunction();
