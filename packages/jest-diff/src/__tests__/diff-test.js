@@ -10,8 +10,6 @@
 
 'use strict';
 
-jest.disableAutomock();
-
 const diff = require('../');
 const stripAnsi = require('strip-ansi');
 
@@ -55,7 +53,9 @@ describe('no visual difference', () => {
     test(
       `'${JSON.stringify(values[0])}' and '${JSON.stringify(values[1])}'`,
       () => {
-        expect(diff(values[0], values[1])).toBe(null);
+        expect(stripAnsi(diff(values[0], values[1]))).toBe(
+          'Compared values have no visual difference',
+        );
       },
     );
   });
@@ -63,7 +63,7 @@ describe('no visual difference', () => {
 
 test('oneline strings', () => {
   expect(stripAnsi(diff('ab', 'aa'))).toMatch('aba');
-  expect(diff('a', 'a')).toBe(null);
+  expect(diff('a', 'a')).toMatch(/no visual difference/);
   expect(stripAnsi(diff('123456789', '234567890'))).toMatch('1234567890');
 });
 
@@ -87,4 +87,16 @@ test('objects', () => {
   const result = stripAnsi(diff({a: {b: {c: 5}}}, {a: {b: {c: 6}}}));
   expect(result).toMatch(/\-\s+\"c\"\: 5/);
   expect(result).toMatch(/\+\s+\"c\"\: 6/);
+});
+
+test('numbers', () => {
+  const result = diff(123, 234);
+  expect(stripAnsi(result)).toMatch(/Actual\: 234/);
+  expect(stripAnsi(result)).toMatch(/Expected\: 123/);
+});
+
+test('booleans', () => {
+  const result = diff(true, false);
+  expect(stripAnsi(result)).toMatch(/Actual\: false/);
+  expect(stripAnsi(result)).toMatch(/Expected\: true/);
 });

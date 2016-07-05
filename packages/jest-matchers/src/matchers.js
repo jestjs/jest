@@ -30,10 +30,7 @@ const matchers: MatchersObject = {
         pass,
         message() {
           let diffString = '\n\n';
-
-          if (!(typeof actual === 'boolean' && typeof expected === 'boolean')) {
-            diffString += diff(expected, actual);
-          }
+          diffString += diff(expected, actual);
           return `expected '${stringify(actual)}' to equal (using '===')` +
           ` '${stringify(expected)}'${diffString}`;
         },

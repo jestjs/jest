@@ -1,6 +1,6 @@
 {
   "name": "jest-diff",
-  "version": "13.0.0",
+  "version": "13.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -13,7 +13,9 @@
     "pretty-format": "^3.3.2"
   },
   "jest": {
-    "rootDir": "./build",
+    "automock": false,
+    "rootDir": "./src",
+    "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {

@@ -14,6 +14,7 @@ const chalk = require('chalk');
 const jsDiff = require('diff');
 
 const ANNOTATION = `${chalk.red('- expected')} ${chalk.green('+ actual')}\n\n`;
+const NO_DIFF_MESSAGE = require('./constants.js').NO_DIFF_MESSAGE;
 
 // diff characters if oneliner and diff lines if multiline
 function diffStrings(a: string, b: string): ?string {
@@ -63,7 +64,7 @@ function diffStrings(a: string, b: string): ?string {
   if (isDifferent) {
     return ANNOTATION + result;
   } else {
-    return null;
+    return NO_DIFF_MESSAGE;
   }
 }
 

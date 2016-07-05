@@ -10,8 +10,6 @@
 
 'use strict';
 
-jest.disableAutomock();
-
 const getType = require('../getType');
 
 test('null', () => expect(getType(null)).toBe('null'));

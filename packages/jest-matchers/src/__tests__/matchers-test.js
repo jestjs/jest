@@ -10,8 +10,6 @@
 
 'use strict';
 
-jest.disableAutomock();
-
 const jestExpect = require('../').expect;
 
 describe('toBe()', () => {
