@@ -1,10 +1,10 @@
 {
   "name": "jest",
   "description": "Painless JavaScript Unit Testing.",
-  "version": "13.0.0",
+  "version": "13.1.0",
   "main": "build/jest.js",
   "dependencies": {
-    "jest-cli": "^13.0.0"
+    "jest-cli": "^13.1.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
