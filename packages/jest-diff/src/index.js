@@ -14,13 +14,13 @@ const chalk = require('chalk');
 const diffStrings = require('./diffStrings');
 const getType = require('./getType');
 const prettyFormat = require('pretty-format');
+const NO_DIFF_MESSAGE = require('./constants').NO_DIFF_MESSAGE;
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-// Return null if no visual diff can be calculated.
 function diff(a: any, b: any): ?string {
   if (a === b) {
-    return null;
+    return NO_DIFF_MESSAGE;
   }
 
   if (getType(a) !== getType(b)) {
@@ -35,6 +35,11 @@ function diff(a: any, b: any): ?string {
   switch (getType(a)) {
     case 'string':
       return diffStrings(String(a), String(b));
+    case 'number':
+    case 'boolean':
+      return chalk.gray('Actual: ') + chalk.red(b) +
+        '\n' +
+        chalk.gray('Expected: ') + chalk.green(a);
     default:
       return diffStrings(
         prettyFormat(a),
