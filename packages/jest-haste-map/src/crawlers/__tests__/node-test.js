@@ -17,7 +17,7 @@ jest.mock('child_process', () => ({
     let closeCallback;
     return {
       stdout: {
-        on: jest.fn().mockImplementation((event, callback) => {
+        on: jest.fn().getMockImplementation((event, callback) => {
           if (event === 'data') {
             setTimeout(() => {
               callback(mockResponse);
