@@ -51,8 +51,11 @@ const determineSCM = path => Promise.all([
   hg.isHGRepository(path),
 ]);
 const pathToRegex = p => utils.replacePathSepForRegex(p);
-const pluralize =
-  (word, count, ending) => `${count} ${word}${count === 1 ? '' : ending}`;
+const pluralize = (
+  word: string,
+  count: number,
+  ending: string,
+) => `${count} ${word}${count === 1 ? '' : ending}`;
 
 class SearchSource {
   _hasteMap: Promise<HasteResolverContext>;
@@ -206,10 +209,10 @@ class SearchSource {
 
     const pattern = patternInfo.testPathPattern;
     const input = patternInfo.input;
-    const formattedPattern = `/${pattern}/`;
+    const formattedPattern = `/${pattern || ''}/`;
     const formattedInput = patternInfo.shouldTreatInputAsPattern
-      ? `/${input}/`
-      : `"${input}"`;
+      ? `/${input || ''}/`
+      : `"${input || ''}"`;
     const testPathPattern =
       (input === pattern) ? formattedInput : formattedPattern;
 
@@ -225,7 +228,7 @@ class SearchSource {
 
     return (
       `${chalk.bold.red('NO TESTS FOUND')}. ` +
-      `${pluralize('file', data.total, 's')} checked.\n${statsMessage}`
+      `${pluralize('file', data.total || 1, 's')} checked.\n${statsMessage}`
     );
   }
 
