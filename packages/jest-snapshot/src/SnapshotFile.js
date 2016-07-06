@@ -39,7 +39,8 @@ const ensureDirectoryExists = (filePath: Path) => {
   } catch (e) {}
 };
 
-const escape = string => string.replace(/\`/g, '\\`');
+const escape = string => string.replace(/\`/g, '\\\`');
+const unescape = string => string.replace(/\\(\"|\\)/g, '$1');
 
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
@@ -105,13 +106,10 @@ class SnapshotFile {
 
     const isEmpty = Object.keys(this._content).length === 0;
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
-      const snapshots = [];
-      for (const key in this._content) {
-        const item = this._content[key];
-        snapshots.push(
-          'exports[`' + escape(key) + '`] = `' + escape(item) + '`;',
-        );
-      }
+      const snapshots = Object.keys(this._content).sort().map(key =>
+        'exports[`' + escape(key) + '`] = `' +
+        escape(this._content[key]) + '`;',
+      );
 
       ensureDirectoryExists(this._filename);
       fs.writeFileSync(this._filename, snapshots.join('\n\n') + '\n');
@@ -136,7 +134,7 @@ class SnapshotFile {
 
   matches(key: string, value: any): MatchResult {
     this._uncheckedKeys.delete(key);
-    const actual = this.serialize(value);
+    const actual = unescape(this.serialize(value));
     const expected = this.get(key);
     return {
       actual,
