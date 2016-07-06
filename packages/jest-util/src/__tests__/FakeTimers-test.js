@@ -80,18 +80,6 @@ describe('FakeTimers', () => {
       new FakeTimers(global);
       expect(global.clearImmediate).not.toBe(origClearImmediate);
     });
-
-    it('doesn\'t mock setImmediate if real impl isnt present', () => {
-      const global = {};
-      new FakeTimers(global);
-      expect(global.setImmediate).toBe(undefined);
-    });
-
-    it('doesnt mock clearImmediate if real immediate isnt present', () => {
-      const global = {};
-      new FakeTimers(global);
-      expect(global.clearImmediate).toBe(undefined);
-    });
   });
 
   describe('runAllTicks', () => {
