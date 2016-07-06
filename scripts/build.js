@@ -33,6 +33,12 @@ const JS_FILES_PATTERN = '**/*.js';
 const IGNORE_PATTERN = '';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
+const babelOptions = JSON.parse(fs.readFileSync(
+  path.resolve(__dirname, '..', '.babelrc'),
+  'utf8'
+));
+babelOptions.babelrc = false;
+
 function buildPackage(p) {
   const srcDir = path.resolve(p, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
@@ -65,14 +71,7 @@ function buildFile(file) {
       '\n'
     );
   } else {
-    const transformed = babel.transformFileSync(file, {
-      plugins: [
-        'syntax-trailing-function-commas',
-        'transform-flow-strip-types',
-      ],
-      retainLines: true,
-      babelrc: false,
-    }).code;
+    const transformed = babel.transformFileSync(file, babelOptions).code;
     spawnSync('mkdir', ['-p', path.dirname(destPath)]);
     fs.writeFileSync(destPath, transformed);
     process.stdout.write(

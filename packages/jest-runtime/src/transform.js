@@ -11,6 +11,8 @@
 
 import type {Config, Path} from 'types/Config';
 
+const Resolver = require('jest-resolve');
+
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
 const fs = require('graceful-fs');
@@ -30,7 +32,7 @@ const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
 const cache = new Map();
 const configToJsonMap = new Map();
-const preprocessorRegExpCache = new WeakMap();
+const ignoreCache = new WeakMap();
 
 const removeFile = (path: Path) => {
   try {
@@ -72,20 +74,20 @@ const getCacheKey = (
 
 const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
-    fs.writeFileSync(cachePath, fileData);
+    fs.writeFileSync(cachePath, fileData, 'utf8');
   } catch (e) {
-    e.message = 'jest: failed to cache preprocess results in: ' + cachePath;
+    e.message = 'jest: failed to cache transform results in: ' + cachePath;
     removeFile(cachePath);
     throw e;
   }
 };
 
 /* eslint-disable max-len */
-const wrap = content => '({"' + EVAL_RESULT_VARIABLE + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST) {' + content + '\n}});';
+const wrap = content => '({"' + EVAL_RESULT_VARIABLE + '":function(module,exports,require,__dirname,__filename,global,jest,$JEST){' + content + '\n}});';
 /* eslint-enable max-len */
 
 const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
-  if (!fs.existsSync(cachePath)) {
+  if (!Resolver.fileExists(cachePath)) {
     return null;
   }
 
@@ -93,7 +95,7 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
   } catch (e) {
-    e.message = 'jest: failed to read preprocess cache file: ' + cachePath;
+    e.message = 'jest: failed to read cache file: ' + cachePath;
     removeFile(cachePath);
     throw e;
   }
@@ -128,18 +130,18 @@ module.exports = (
     content = content.replace(/^#!.*/, '');
   }
 
-  if (!preprocessorRegExpCache.has(config)) {
-    preprocessorRegExpCache.set(
+  if (!ignoreCache.has(config)) {
+    ignoreCache.set(
       config,
       new RegExp(config.preprocessorIgnorePatterns.join('|')),
     );
   }
-  const regex = preprocessorRegExpCache.get(config);
+
   if (
     config.scriptPreprocessor &&
     (
       !config.preprocessorIgnorePatterns.length ||
-      !regex.test(filename)
+      !ignoreCache.get(config).test(filename)
     )
   ) {
     // $FlowFixMe
@@ -173,7 +175,7 @@ module.exports = (
       writeCacheFile(cachePath, content);
     }
   } else if (options && options.instrument) {
-    content = options.instrument(content);
+    content = wrap(options.instrument(content));
   } else {
     content = wrap(content);
   }

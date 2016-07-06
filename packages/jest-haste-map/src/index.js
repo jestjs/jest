@@ -265,7 +265,7 @@ class HasteMap {
    * 1. read data from the cache or create an empty structure.
    */
   read(): HasteMapObject {
-    return this._parse(fs.readFileSync(this._cachePath, 'utf-8'));
+    return this._parse(fs.readFileSync(this._cachePath, 'utf8'));
   }
 
   /**
@@ -368,7 +368,7 @@ class HasteMap {
    * 4. serialize the new `HasteMap` in a cache file.
    */
   _persist(hasteMap: HasteMapObject): HasteMapObject {
-    fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf-8');
+    fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf8');
     return hasteMap;
   }
 

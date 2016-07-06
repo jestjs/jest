@@ -24,6 +24,7 @@
     "clean": "rm -rf ./packages/*/node_modules; npm run build-clean",
     "lint": "eslint .",
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js",
+    "publish": "npm run build-clean && npm run build && lerna publish",
     "t": "node ./scripts/test.js",
     "test": "npm run typecheck && npm run lint && npm run build && npm run t",
     "typecheck": "flow check",

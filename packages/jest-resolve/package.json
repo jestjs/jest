@@ -13,7 +13,8 @@
     "resolve": "^1.1.6"
   },
   "jest": {
-    "rootDir": "./build",
+    "rootDir": "./src",
+    "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {

@@ -58,7 +58,7 @@ describe('worker', () => {
     fs = require('graceful-fs');
     readFileSync = fs.readFileSync;
     fs.readFileSync = jest.fn((path, options) => {
-      expect(options).toBe('utf-8');
+      expect(options).toBe('utf8');
 
       if (mockFs[path]) {
         return mockFs[path];

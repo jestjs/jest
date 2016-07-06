@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 let createRuntime;
 
 describe('Runtime', () => {

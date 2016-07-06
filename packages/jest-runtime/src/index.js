@@ -21,7 +21,7 @@ const createResolver = require('jest-resolve').create;
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
-const transform = require('./lib/transform');
+const transform = require('./transform');
 const utils = require('jest-util');
 
 type Module = {

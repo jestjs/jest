@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const path = require('path');
 
 const cwd = process.cwd();

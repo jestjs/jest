@@ -47,8 +47,9 @@
     "test": "./bin/jest.js"
   },
   "jest": {
-    "rootDir": "./build",
-    "testEnvironment": "jest-environment-node"
+    "rootDir": "./src",
+    "scriptPreprocessor": "../../babel-jest",
+    "testEnvironment": "node"
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"

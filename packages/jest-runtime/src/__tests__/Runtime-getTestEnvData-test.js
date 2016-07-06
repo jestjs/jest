@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const config = {
   testEnvData: {
     someTestData: 42,
