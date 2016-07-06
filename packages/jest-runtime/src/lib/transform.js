@@ -80,6 +80,10 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   }
 };
 
+/* eslint-disable max-len */
+const wrap = content => '({"' + EVAL_RESULT_VARIABLE + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST) {' + content + '\n}});';
+/* eslint-enable max-len */
+
 const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   if (!fs.existsSync(cachePath)) {
     return null;
@@ -165,15 +169,14 @@ module.exports = (
       if (options && options.instrument) {
         content = options.instrument(content);
       }
+      content = wrap(content);
       writeCacheFile(cachePath, content);
     }
   } else if (options && options.instrument) {
     content = options.instrument(content);
+  } else {
+    content = wrap(content);
   }
-
-  /* eslint-disable max-len */
-  content = '({"' + EVAL_RESULT_VARIABLE + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST) {' + content + '\n}});';
-  /* eslint-enable max-len */
 
   const script = new vm.Script(content, {
     displayErrors: true,
