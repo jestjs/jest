@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "13.1.0",
+  "version": "13.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,13 +10,13 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "istanbul": "^0.4.2",
-    "jest-environment-jsdom": "^13.1.0",
-    "jest-environment-node": "^13.1.0",
-    "jest-jasmine1": "^13.1.0",
-    "jest-jasmine2": "^13.1.0",
-    "jest-mock": "^13.0.0",
-    "jest-resolve": "^13.0.0",
-    "jest-util": "^13.1.0",
+    "jest-environment-jsdom": "^13.1.1",
+    "jest-environment-node": "^13.1.1",
+    "jest-jasmine1": "^13.1.1",
+    "jest-jasmine2": "^13.1.1",
+    "jest-mock": "^13.1.1",
+    "jest-resolve": "^13.1.1",
+    "jest-util": "^13.1.1",
     "json-stable-stringify": "^1.0.0",
     "node-notifier": "^4.6.0"
   },

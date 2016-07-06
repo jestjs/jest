@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "13.1.0",
+  "version": "13.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,8 +10,8 @@
   "dependencies": {
     "graceful-fs": "^4.1.3",
     "jasmine-check": "^0.1.4",
-    "jest-snapshot": "^13.1.0",
-    "jest-util": "^13.1.0"
+    "jest-snapshot": "^13.1.1",
+    "jest-util": "^13.1.1"
   },
   "jest": {
     "rootDir": "./build",
