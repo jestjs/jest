@@ -664,7 +664,6 @@ class Runtime {
       enableAutomock,
 
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
-      currentTestPath: () => this._environment.testFilePath,
 
       dontMock: unmock,
       unmock,

@@ -281,7 +281,6 @@ just added.
 #### The `jest` object
 
   - [`jest.clearAllTimers()`](https://facebook.github.io/jest/docs/api.html#jest-clearalltimers)
-  - [`jest.currentTestPath()`](https://facebook.github.io/jest/docs/api.html#jest-currenttestpath)
   - [`jest.disableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-disableautomock)
   - [`jest.enableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-enableautomock)
   - [`jest.fn(?implementation)`](https://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
@@ -396,9 +395,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 Removes any pending timers from the timer system.
 
 This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
-
-### `jest.currentTestPath()`
-Returns the absolute path to the currently executing test file.
 
 ### `jest.disableAutomock()`
 Disables automatic mocking in the module loader.
