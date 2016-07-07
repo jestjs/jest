@@ -13,7 +13,9 @@
 const chalk = require('chalk');
 const diffStrings = require('./diffStrings');
 const getType = require('./getType');
+const jsxLikeExtension = require('pretty-format/plugins/ReactTestComponent');
 const prettyFormat = require('pretty-format');
+
 const NO_DIFF_MESSAGE = require('./constants').NO_DIFF_MESSAGE;
 
 // Generate a string that will highlight the difference between two values
@@ -42,8 +44,8 @@ function diff(a: any, b: any): ?string {
         chalk.gray('Expected: ') + chalk.green(a);
     default:
       return diffStrings(
-        prettyFormat(a),
-        prettyFormat(b),
+        prettyFormat(a, {plugins: [jsxLikeExtension]}),
+        prettyFormat(b, {plugins: [jsxLikeExtension]}),
       );
   }
 }

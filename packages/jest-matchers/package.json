@@ -8,8 +8,6 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "chalk": "^1.1.3",
-    "deep-equal": "^1.0.1",
     "jest-diff": "13.2.3"
   },
   "devDependencies": {

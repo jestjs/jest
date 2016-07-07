@@ -9,12 +9,11 @@
  */
 'use strict';
 
-const JasmineFormatter = require('jest-util').JasmineFormatter;
-
-import type {FailedAssertion} from 'types/TestResult';
 import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
+
+const diff = require('jest-diff');
 
 type CompareResult = {
   pass: boolean,
@@ -78,19 +77,9 @@ module.exports = (
           pass = matches.pass;
           if (!pass) {
             snapshotState.unmatched++;
-            const matcherName = 'toMatchSnapshot';
-            const formatter = new JasmineFormatter(jasmine, {global: {}}, {});
-            formatter.addDiffableMatcher(matcherName);
-
-            message = formatter
-              .formatMatchFailure(Object.assign(
-                ({matcherName}: FailedAssertion),
-                matches,
-              ))
-              .replace(
-                'toMatchSnapshot:',
-                'toMatchSnapshot #' + (callCount + 1) + ':',
-              );
+            message =
+              `expected value to match snapshot ${callCount + 1}\n` +
+              diff(matches.expected.trim(), matches.actual.trim());
           } else {
             snapshotState.matched++;
           }

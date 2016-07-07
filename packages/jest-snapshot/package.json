@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "jest-diff": "^13.2.3",
     "jest-util": "^13.2.2",
     "pretty-format": "^3.4.3"
   },
