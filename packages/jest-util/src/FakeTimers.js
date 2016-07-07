@@ -13,6 +13,8 @@ import type {Global} from 'types/Global';
 
 const mocks = require('jest-mock');
 
+const fn = impl => mocks.getMockFn().mockImpl(impl);
+
 type Callback = (...args: any) => void;
 
 type TimerID = string;
@@ -43,18 +45,18 @@ const MS_IN_A_YEAR = 31536000000;
 
 class FakeTimers {
 
-  _global: Global;
-  _uuidCounter: number;
-  _maxLoops: number;
-  _originalTimerAPIs: TimerAPI;
-  _fakeTimerAPIs: TimerAPI;
-
-  _cancelledTicks: {[key: TimerID]: boolean};
   _cancelledImmediates: {[key: TimerID]: boolean};
+  _cancelledTicks: {[key: TimerID]: boolean};
+  _disposed: boolean;
+  _fakeTimerAPIs: TimerAPI;
+  _global: Global;
+  _immediates: Array<Tick>;
+  _maxLoops: number;
   _now: number;
   _ticks: Array<Tick>;
-  _immediates: Array<Tick>;
+  _timerAPIs: TimerAPI;
   _timers: {[key: TimerID]: Timer};
+  _uuidCounter: number;
 
   constructor(global: Global, maxLoops: number) {
     this._global = global;
@@ -64,7 +66,7 @@ class FakeTimers {
     this.reset();
 
     // Store original timer APIs for future reference
-    this._originalTimerAPIs = {
+    this._timerAPIs = {
       clearImmediate: global.clearImmediate,
       clearInterval: global.clearInterval,
       clearTimeout: global.clearTimeout,
@@ -74,34 +76,20 @@ class FakeTimers {
     };
 
     this._fakeTimerAPIs = {
-      setTimeout: mocks.getMockFn().mockImpl(
-        this._fakeSetTimeout.bind(this),
-      ),
-      clearTimeout: mocks.getMockFn().mockImpl(
-        this._fakeClearTimer.bind(this),
-      ),
-      setInterval: mocks.getMockFn().mockImpl(
-        this._fakeSetInterval.bind(this),
-      ),
-      clearInterval: mocks.getMockFn().mockImpl(
-        this._fakeClearTimer.bind(this),
-      ),
-      setImmediate: mocks.getMockFn().mockImpl(
-        this._fakeSetImmediate.bind(this),
-      ),
-      clearImmediate: mocks.getMockFn().mockImpl(
-        this._fakeClearImmediate.bind(this),
-      ),
+      clearImmediate: fn(this._fakeClearImmediate.bind(this)),
+      clearInterval: fn(this._fakeClearTimer.bind(this)),
+      clearTimeout: fn(this._fakeClearTimer.bind(this)),
+      setImmediate: fn(this._fakeSetImmediate.bind(this)),
+      setInterval: fn(this._fakeSetInterval.bind(this)),
+      setTimeout: fn(this._fakeSetTimeout.bind(this)),
     };
 
     // If there's a process.nextTick on the global, mock it out
     // (only applicable to node/node-emulating environments)
     if (typeof global.process === 'object'
       && typeof global.process.nextTick === 'function') {
-      this._originalTimerAPIs.nextTick = global.process.nextTick;
-      this._fakeTimerAPIs.nextTick = mocks.getMockFn().mockImpl(
-        this._fakeNextTick.bind(this),
-      );
+      this._timerAPIs.nextTick = global.process.nextTick;
+      this._fakeTimerAPIs.nextTick = fn(this._fakeNextTick.bind(this));
     }
 
     this.useFakeTimers();
@@ -124,6 +112,11 @@ class FakeTimers {
     for (const uuid in this._timers) {
       delete this._timers[uuid];
     }
+  }
+
+  dispose() {
+    this._disposed = true;
+    this.clearAllTimers();
   }
 
   reset() {
@@ -272,24 +265,14 @@ class FakeTimers {
       typeof this._global.process === 'object'
       && typeof this._global.process.nextTick === 'function';
 
-    const hasSetImmediate = typeof this._global.setImmediate === 'function';
-
-    const prevSetTimeout = this._global.setTimeout;
-    const prevSetInterval = this._global.setInterval;
-    const prevClearTimeout = this._global.clearTimeout;
+    const prevClearImmediate = this._global.clearImmediate;
     const prevClearInterval = this._global.clearInterval;
+    const prevClearTimeout = this._global.clearTimeout;
+    const prevSetImmediate = this._global.setImmediate;
+    const prevSetInterval = this._global.setInterval;
+    const prevSetTimeout = this._global.setTimeout;
 
-    let prevNextTick;
-    let prevSetImmediate;
-    let prevClearImmediate;
-
-    if (hasNextTick) {
-      prevNextTick = this._global.process.nextTick;
-    }
-    if (hasSetImmediate) {
-      prevSetImmediate = this._global.setImmediate;
-      prevClearImmediate = this._global.clearImmediate;
-    }
+    const prevNextTick = hasNextTick ? this._global.process.nextTick : null;
 
     this.useRealTimers();
 
@@ -302,16 +285,14 @@ class FakeTimers {
       cbErr = e;
     }
 
-    this._global.setTimeout = prevSetTimeout;
-    this._global.setInterval = prevSetInterval;
-    this._global.clearTimeout = prevClearTimeout;
+    this._global.clearImmediate = prevClearImmediate;
     this._global.clearInterval = prevClearInterval;
+    this._global.clearTimeout = prevClearTimeout;
+    this._global.setImmediate = prevSetImmediate;
+    this._global.setInterval = prevSetInterval;
+    this._global.setTimeout = prevSetTimeout;
     if (hasNextTick) {
       this._global.process.nextTick = prevNextTick;
-    }
-    if (hasSetImmediate) {
-      this._global.setImmediate = prevSetImmediate;
-      this._global.clearImmediate = prevClearImmediate;
     }
 
     if (errThrown) {
@@ -324,18 +305,14 @@ class FakeTimers {
       typeof this._global.process === 'object'
       && typeof this._global.process.nextTick === 'function';
 
-    const hasSetImmediate = typeof this._global.setImmediate === 'function';
-
-    this._global.setTimeout = this._originalTimerAPIs.setTimeout;
-    this._global.setInterval = this._originalTimerAPIs.setInterval;
-    this._global.clearTimeout = this._originalTimerAPIs.clearTimeout;
-    this._global.clearInterval = this._originalTimerAPIs.clearInterval;
+    this._global.clearImmediate = this._timerAPIs.clearImmediate;
+    this._global.clearInterval = this._timerAPIs.clearInterval;
+    this._global.clearTimeout = this._timerAPIs.clearTimeout;
+    this._global.setImmediate = this._timerAPIs.setImmediate;
+    this._global.setInterval = this._timerAPIs.setInterval;
+    this._global.setTimeout = this._timerAPIs.setTimeout;
     if (hasNextTick) {
-      this._global.process.nextTick = this._originalTimerAPIs.nextTick;
-    }
-    if (hasSetImmediate) {
-      this._global.setImmediate = this._originalTimerAPIs.setImmediate;
-      this._global.clearImmediate = this._originalTimerAPIs.clearImmediate;
+      this._global.process.nextTick = this._timerAPIs.nextTick;
     }
   }
 
@@ -344,18 +321,14 @@ class FakeTimers {
       typeof this._global.process === 'object'
       && typeof this._global.process.nextTick === 'function';
 
-    const hasSetImmediate = typeof this._global.setImmediate === 'function';
-
-    this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
-    this._global.setInterval = this._fakeTimerAPIs.setInterval;
-    this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
+    this._global.clearImmediate = this._fakeTimerAPIs.clearImmediate;
     this._global.clearInterval = this._fakeTimerAPIs.clearInterval;
+    this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
+    this._global.setImmediate = this._fakeTimerAPIs.setImmediate;
+    this._global.setInterval = this._fakeTimerAPIs.setInterval;
+    this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
     if (hasNextTick) {
       this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
-    }
-    if (hasSetImmediate) {
-      this._global.setImmediate = this._fakeTimerAPIs.setImmediate;
-      this._global.clearImmediate = this._fakeTimerAPIs.clearImmediate;
     }
   }
 
@@ -370,6 +343,10 @@ class FakeTimers {
   }
 
   _fakeNextTick(callback: Callback) {
+    if (this._disposed) {
+      return;
+    }
+
     const args = [];
     for (let ii = 1, ll = arguments.length; ii < ll; ii++) {
       args.push(arguments[ii]);
@@ -383,7 +360,8 @@ class FakeTimers {
     });
 
     const cancelledTicks = this._cancelledTicks;
-    this._originalTimerAPIs.nextTick && this._originalTimerAPIs.nextTick(() => {
+    this._timerAPIs.nextTick && this._timerAPIs.nextTick(() => {
+      if (this._blocked) {return;}
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
@@ -393,6 +371,10 @@ class FakeTimers {
   }
 
   _fakeSetImmediate(callback: Callback) {
+    if (this._disposed) {
+      return null;
+    }
+
     const args = [];
     for (let ii = 1, ll = arguments.length; ii < ll; ii++) {
       args.push(arguments[ii]);
@@ -406,7 +388,7 @@ class FakeTimers {
     });
 
     const cancelledImmediates = this._cancelledImmediates;
-    this._originalTimerAPIs.setImmediate(() => {
+    this._timerAPIs.setImmediate(() => {
       if (!cancelledImmediates.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledImmediates[String(uuid)] = true;
@@ -418,6 +400,10 @@ class FakeTimers {
   }
 
   _fakeSetInterval(callback: Callback, intervalDelay?: number) {
+    if (this._disposed) {
+      return null;
+    }
+
     if (intervalDelay == null) {
       intervalDelay = 0;
     }
@@ -439,7 +425,11 @@ class FakeTimers {
     return uuid;
   }
 
-  _fakeSetTimeout(callback: Callback, delay?: number)  {
+  _fakeSetTimeout(callback: Callback, delay?: number) {
+    if (this._disposed) {
+      return null;
+    }
+
     if (delay == null) {
       delay = 0;
     }
