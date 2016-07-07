@@ -30,7 +30,7 @@
     "rootDir": "./src",
     "scriptPreprocessor": "../../babel-jest",
     "setupTestFrameworkScriptFile": "<rootDir>/__mocks__/env.js",
-    "testEnvironment": "jest-environment-node",
+    "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/__tests__/[^/]*/.+"
     ]
