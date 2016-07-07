@@ -44,7 +44,6 @@ class Test {
       config.useStderr ? process.stderr : process.stdout,
       process.stderr,
     );
-    env.testFilePath = path;
     const runtime = new ModuleLoader(config, env, resolver);
     const start = Date.now();
     return TestRunner(config, env, runtime, path)

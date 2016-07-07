@@ -10,7 +10,6 @@ next: troubleshooting
 #### The `jest` object
 
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
-  - [`jest.currentTestPath()`](#jest-currenttestpath)
   - [`jest.disableAutomock()`](#jest-disableautomock)
   - [`jest.enableAutomock()`](#jest-enableautomock)
   - [`jest.fn(?implementation)`](#jest-fn-implementation)
@@ -125,9 +124,6 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 Removes any pending timers from the timer system.
 
 This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
-
-### `jest.currentTestPath()`
-Returns the absolute path to the currently executing test file.
 
 ### `jest.disableAutomock()`
 Disables automatic mocking in the module loader.
