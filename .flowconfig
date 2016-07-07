@@ -2,6 +2,7 @@
 .*/packages/babel-plugin-jest-hoist/node_modules/fbjs/.*
 .*/examples/.*
 .*/website/.*
+.*/integration_tests/.*
 
 [include]
 

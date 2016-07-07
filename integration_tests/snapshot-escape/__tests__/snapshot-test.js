@@ -7,4 +7,14 @@
  */
 'use strict';
 
+import React  from 'react';
+import renderer  from 'react/lib/ReactTestRenderer';
+
 test('escape strings', () => expect('one: \\\'').toMatchSnapshot());
+
+test('escape strings in React components', () => {
+  const tree = renderer.create(
+    <div>{'\\\''}</div>
+  ).toJSON();
+  expect(tree).toMatchSnapshot();
+});

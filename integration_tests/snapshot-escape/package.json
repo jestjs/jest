@@ -1,5 +1,14 @@
 {
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-polyfill": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "jest-cli": "*",
+    "react": "15.2.0"
+  },
   "jest": {
+    "automock": false,
     "testEnvironment": "node"
   }
 }
