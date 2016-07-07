@@ -1,5 +1,5 @@
 {
-  "name": "jest-jasmine2",
+  "name": "jest-matchers",
   "version": "13.2.3",
   "repository": {
     "type": "git",
@@ -8,13 +8,15 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "graceful-fs": "^4.1.3",
-    "jasmine-check": "^0.1.4",
-    "jest-matchers": "^13.2.3",
-    "jest-snapshot": "^13.2.3",
-    "jest-util": "^13.2.2"
+    "chalk": "^1.1.3",
+    "deep-equal": "^1.0.1",
+    "jest-diff": "13.2.3"
+  },
+  "devDependencies": {
+    "strip-ansi": "^3.0.1"
   },
   "jest": {
+    "automock": false,
     "rootDir": "./src",
     "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"

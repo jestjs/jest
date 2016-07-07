@@ -16,6 +16,7 @@ import type Runtime from '../../jest-runtime/src';
 
 const JasmineReporter = require('./reporter');
 
+const expect = require('jest-matchers').expect;
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
 const snapshot = require('jest-snapshot');
@@ -293,6 +294,16 @@ function jasmine2(
       runtime.resetModuleRegistry();
     }
   });
+
+  const jasmineExpect = env.expect;
+
+  // extend jasmine matchers with `jest-matchers`
+  env.expect = actual => {
+    const jasmineMatchers = jasmineExpect(actual);
+    const jestMatchers = expect(actual);
+    const not = Object.assign(jasmineMatchers.not, jestMatchers.not);
+    return Object.assign(jasmineMatchers, jestMatchers, {not});
+  };
 
   env.addReporter(reporter);
   runtime.requireModule(testPath);
