@@ -15,13 +15,13 @@ import type {TestResult} from 'types/TestResult';
 const chalk = require('chalk');
 const path = require('path');
 
-const ERROR_TITLE_COLOR = chalk.bold.underline.red;
+const ERROR_TITLE_COLOR = chalk.bold.red;
 // filter for noisy stack trace lines
 const JASMINE_IGNORE = /^\s+at.*?vendor\/|\\jasmine\-/;
 const STACK_TRACE_IGNORE =
   /^\s+at.*?jest(-cli)?\/(vendor|src|node_modules|packages)\//;
 
-const formatStackTrace = (stackTrace: string, config) => {
+const formatStackTrace = (stackTrace: string, config): string => {
   const msgBullet = '  - ';
   const msgIndent = msgBullet.replace(/./g, ' ');
   let stackTraceLines = 0;
