@@ -11,6 +11,7 @@
 'use strict';
 
 const args = require('./args');
+const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
 const yargs = require('yargs');
@@ -75,7 +76,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
           runtime.requireModule(testFilePath);
         })
         .catch(e => {
-          console.error(e);
+          console.error(chalk.red(e));
           process.on('exit', () => process.exit(1));
         });
     });
