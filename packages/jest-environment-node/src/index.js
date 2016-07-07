@@ -40,7 +40,7 @@ class NodeEnvironment {
 
   dispose() {
     if (this.fakeTimers) {
-      this.fakeTimers.clearAllTimers();
+      this.fakeTimers.dispose();
     }
     this.global = null;
     this.fakeTimers = null;

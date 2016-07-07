@@ -35,7 +35,7 @@ class JSDOMEnvironment {
 
   dispose(): void {
     if (this.fakeTimers) {
-      this.fakeTimers.clearAllTimers();
+      this.fakeTimers.dispose();
     }
     if (this.global) {
       this.global.close();
