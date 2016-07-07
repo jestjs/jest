@@ -281,7 +281,8 @@ class DefaultTestReporter {
           )) +
           (snapshots.didUpdate
             ? ' removed.'
-            : ' found, re-run with `-u` to remove them.'),
+            : ' found, re-run with `-u` to remove ' +
+              (snapshots.filesRemoved === 1 ? 'it' : 'them.') + '.'),
         );
       }
 
@@ -291,7 +292,8 @@ class DefaultTestReporter {
           FAIL_COLOR(pluralize('obsolete snapshot', snapshots.unchecked)) +
           (snapshots.didUpdate
             ? ' removed.'
-            : ' found, re-run with `-u` to remove them.'),
+            : ' found, re-run with `-u` to remove ' +
+              (snapshots.filesRemoved === 1 ? 'it' : 'them') + '.'),
         );
       }
 

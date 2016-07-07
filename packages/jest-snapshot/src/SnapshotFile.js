@@ -134,12 +134,23 @@ class SnapshotFile {
 
   matches(key: string, value: any): MatchResult {
     this._uncheckedKeys.delete(key);
-    const actual = unescape(this.serialize(value));
+    const serialized = this.serialize(value);
+    const actual = unescape(serialized);
     const expected = this.get(key);
+    const pass = expected === actual;
+    if (pass) {
+      // Executing a snapshot file as JavaScript and writing the strings back
+      // when other snapshots have changed loses the proper escaping for some
+      // characters. Since we check every snapshot in every test, use the newly
+      // generated formatted string.
+      // Note that this is only relevant when a snapshot is added and the dirty
+      // flag is set.
+      this._content[key] = serialized;
+    }
     return {
       actual,
       expected,
-      pass: expected === actual,
+      pass,
     };
   }
 
