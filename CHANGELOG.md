@@ -1,5 +1,10 @@
 ## master
 
+## jest 13.2.0
+
+* Snapshot bugfixes.
+* Timer bugfixes.
+
 ## jest 13.1.0
 
 * Added `test` global function as an alias for `it`.
