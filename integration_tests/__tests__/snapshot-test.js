@@ -29,6 +29,17 @@ const originalTestPath = path.resolve(
 const originalTestContent = fs.readFileSync(originalTestPath, 'utf-8');
 const copyOfTestPath = originalTestPath.replace('.js', '_copy.js');
 
+const snapshotEscapeDir =
+  path.resolve(__dirname, '../snapshot-escape/__tests__/');
+const snapshotEscapeTestFile =
+  path.resolve(snapshotEscapeDir, 'snapshot-test.js');
+const snapshotEscapeSnapshotDir =
+  path.resolve(snapshotEscapeDir, '__snapshots__');
+const snapshotEscapeFile =
+  path.resolve(snapshotEscapeSnapshotDir, 'snapshot-test.js.snap');
+
+const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
+
 const fileExists = filePath => {
   try {
     return fs.statSync(filePath).isFile();
@@ -44,18 +55,30 @@ const getSnapshotOfCopy = () => {
 
 describe('Snapshot', () => {
 
-  afterEach(() => {
-    fs.unlinkSync(snapshotFile);
-    fs.unlinkSync(secondSnapshotFile);
-    if (fileExists(snapshotOfCopy)) {
-      fs.unlinkSync(snapshotOfCopy);
+  const cleanup = () => {
+    [
+      snapshotFile,
+      secondSnapshotFile,
+      snapshotOfCopy,
+      copyOfTestPath,
+      snapshotEscapeFile,
+    ].forEach(file => {
+      if (fileExists(file)) {
+        fs.unlinkSync(file);
+      }
+    });
+    if (fileExists(snapshotDir)) {
+      fs.rmdirSync(snapshotDir);
     }
-    if (fileExists(copyOfTestPath)) {
-      fs.unlinkSync(copyOfTestPath);
+    if (fileExists(snapshotEscapeSnapshotDir)) {
+      fs.rmdirSync(snapshotEscapeSnapshotDir);
     }
-    fs.rmdirSync(snapshotDir);
 
-  });
+    fs.writeFileSync(snapshotEscapeTestFile, initialTestData, 'utf8');
+  };
+
+  beforeEach(cleanup);
+  afterAll(cleanup);
 
   it('works as expected', () => {
     const result = runJest.json('snapshot', []);
@@ -76,6 +99,39 @@ describe('Snapshot', () => {
     expect(info).toMatch('4 snapshots written in 2 test files');
     expect(info).toMatch('4 tests passed');
     expect(info).toMatch('4 total in 2 test suites, 4 snapshots');
+  });
+
+  it('works with escaped characters', () => {
+    // Write the first snapshot
+    let result = runJest('snapshot-escape');
+    let stdout = result.stdout.toString();
+
+    expect(stdout).toMatch('1 snapshot written');
+    expect(stdout).toMatch('1 total in 1 test suite, 1 snapshot,');
+    expect(result.status).toBe(0);
+
+    // Write the second snapshot
+    const testData =
+      `test('escape strings two', () => expect('two: \\\'\"').` +
+      `toMatchSnapshot());`;
+    const newTestData = initialTestData + testData;
+    fs.writeFileSync(snapshotEscapeTestFile, newTestData, 'utf8');
+
+    result = runJest('snapshot-escape');
+    stdout = result.stdout.toString();
+
+    expect(stdout).toMatch('1 snapshot written');
+    expect(stdout).toMatch('2 total in 1 test suite, 2 snapshots,');
+    expect(result.status).toBe(0);
+
+    // Now let's check again if everything still passes.
+    // If this test doesn't pass, some snapshot data was not properly escaped.
+    result = runJest('snapshot-escape');
+    stdout = result.stdout.toString();
+
+    expect(stdout).not.toMatch('Snapshot Summary');
+    expect(stdout).toMatch('2 total in 1 test suite, 2 snapshots,');
+    expect(result.status).toBe(0);
   });
 
   describe('Validation', () => {

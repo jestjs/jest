@@ -7,10 +7,4 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
-describe('snapshot', () => {
-  it('handles escaped strings', () => {
-    expect('\\\'').toMatchSnapshot();
-  });
-});
+test('escape strings', () => expect('one: \\\'').toMatchSnapshot());
