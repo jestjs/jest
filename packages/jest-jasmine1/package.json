@@ -12,7 +12,8 @@
     "jest-util": "^13.2.2"
   },
   "jest": {
-    "rootDir": "./build",
+    "rootDir": "./src",
+    "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {

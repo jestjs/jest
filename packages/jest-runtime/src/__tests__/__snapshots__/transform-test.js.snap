@@ -1,0 +1,29 @@
+exports[`transform transforms a file properly 0`] = `
+"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest,$JEST){module.exports = "banana";
+}});"
+`;
+
+exports[`transform transforms a file properly 1`] = `
+"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest,$JEST){instrumented kiwi
+}});"
+`;
+
+exports[`transform uses the supplied preprocessor 0`] = `
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest,$JEST){
+Script: module.exports = \"banana\";
+Path: /fruits/banana.js
+Config: {
+  \"cache\": true,
+  \"cacheDirectory\": \"/cache/\",
+  \"preprocessorIgnorePatterns\": [
+    \"/node_modules/\"
+  ],
+  \"scriptPreprocessor\": \"test-preprocessor\"
+}
+}});"
+`;
+
+exports[`transform uses the supplied preprocessor 1`] = `
+"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest,$JEST){module.exports = "react"
+}});"
+`;

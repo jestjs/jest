@@ -7,15 +7,27 @@
  */
 'use strict';
 
+const JasmineReporter = require('./reporter');
+
 const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
-const JasmineReporter = require('./reporter');
+const vm = require('vm');
 
 const JASMINE_PATH = require.resolve('../vendor/jasmine-1.3.0');
 const JASMINE_ONLY_PATH = require.resolve('./jasmine-only.js');
 
-const jasmineFileContent = fs.readFileSync(JASMINE_PATH, 'utf8');
-const jasmineOnlyContent = fs.readFileSync(JASMINE_ONLY_PATH, 'utf8');
+const jasmineScript = new vm.Script(fs.readFileSync(JASMINE_PATH, 'utf8'), {
+  displayErrors: true,
+  filename: JASMINE_PATH,
+});
+
+const jasmineOnlyScript = new vm.Script(
+  fs.readFileSync(JASMINE_ONLY_PATH, 'utf8'),
+  {
+    displayErrors: true,
+    filename: JASMINE_ONLY_PATH,
+  },
+);
 
 function isSpyLike(test) {
   return test.calls !== undefined;
@@ -100,9 +112,9 @@ function jasmine1(config, environment, moduleLoader, testPath) {
   // To account for this conflict, we set up jasmine in an environment with real
   // timers (instead of mock timers).
   environment.fakeTimers.runWithRealTimers(() => {
-    environment.runSourceText(jasmineFileContent, JASMINE_PATH);
+    environment.runScript(jasmineScript);
     jasminePit.install(environment.global);
-    environment.runSourceText(jasmineOnlyContent);
+    environment.runScript(jasmineOnlyScript);
 
     const _comparedObjects = new WeakMap();
     environment.global.jasmine.Env.prototype.compareObjects_ =

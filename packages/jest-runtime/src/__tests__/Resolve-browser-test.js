@@ -9,12 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-jest.mock(
-  'jest-environment-jsdom',
-  () => require('../__mocks__/jest-environment-jsdom'),
-);
-
 let createRuntime;
 
 describe('resolve', () => {

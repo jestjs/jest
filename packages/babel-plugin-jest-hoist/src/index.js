@@ -14,10 +14,12 @@ function invariant(condition, message) {
   }
 }
 
-// We allow `jest`, `require`, all default Node.js globals and all ES2015
-// built-ins to be used inside of a `jest.mock` factory.
+// We allow `jest`, `expect`, `require`, all default Node.js globals and all
+// ES2015 built-ins to be used inside of a `jest.mock` factory.
+// We also allow variables prefixed with `mock` as an escape-hatch.
 const WHITELISTED_IDENTIFIERS = {
   jest: true,
+  expect: true,
   require: true,
   Infinity: true,
   NaN: true,
@@ -103,12 +105,16 @@ FUNCTIONS.mock = args => {
 
       if (!found) {
         invariant(
-          scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name],
-          'The second argument of `jest.mock()` is not allowed to ' +
-          'reference any outside variables.\n' +
+          (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
+          /^mock/.test(name),
+          'The module factory of `jest.mock()` is not allowed to ' +
+          'reference any out-of-scope variables.\n' +
           'Invalid variable access: ' + name + '\n' +
           'Whitelisted objects: ' +
-          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.',
+          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.\n' +
+          'Note: This is a precaution to guard against uninitialized mock ' +
+          'variables. If it is ensured that the mock is required lazily, ' +
+          'variable names prefixed with `mock` are permitted.',
         );
       }
     }

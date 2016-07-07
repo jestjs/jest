@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    "syntax-trailing-function-commas",
+    "transform-flow-strip-types"
+  ],
+  "retainLines": true
+}

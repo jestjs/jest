@@ -22,6 +22,12 @@ const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
 
 let filesToBuild = new Map();
 
+const exists = filename => {
+  try {
+    return fs.statSync(filename).isFile();
+  } catch (e) {}
+  return false;
+};
 const rebuild = filename => filesToBuild.set(filename, true);
 
 getPackages().forEach(p => {
@@ -29,9 +35,25 @@ getPackages().forEach(p => {
   try {
     fs.accessSync(srcDir, fs.F_OK);
     fs.watch(path.resolve(p, 'src'), {recursive: true}, (event, filename) => {
-      if (event === 'change' || event === 'rename') {
+      const filePath = path.resolve(srcDir, filename);
+
+      if (
+        (event === 'change' || event === 'rename') &&
+        exists(filePath)
+      ) {
         console.log(chalk.green('->'), `${event}: ${filename}`);
-        rebuild(path.resolve(srcDir, filename));
+        rebuild(filePath);
+      } else {
+        const buildFile = path.resolve(srcDir, '..', 'build', filename);
+        try {
+          fs.unlinkSync(buildFile);
+          process.stdout.write(
+            chalk.red('  \u2022 ') +
+            path.relative(path.resolve(srcDir, '..', '..'), buildFile) +
+            ' (deleted)' +
+            '\n'
+          );
+        } catch (e) {}
       }
     });
   } catch (e) {

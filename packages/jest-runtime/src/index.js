@@ -14,13 +14,14 @@ import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {HasteResolverContext} from 'types/Runtime';
 import type Resolver from '../../jest-resolve/src';
+import type {Script} from 'vm';
 
 const createHasteMap = require('jest-haste-map').create;
 const createResolver = require('jest-resolve').create;
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
-const transform = require('./lib/transform');
+const transform = require('./transform');
 const utils = require('jest-util');
 
 type Module = {
@@ -327,38 +328,34 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _execModule(localModule: Module) {
-    // If the environment was disposed, prevent this module from
-    // being executed.
-    if (!this._environment.global) {
-      return;
-    }
-
-    const filename = localModule.filename;
-    const collectors = this._coverageCollectors;
+  _shouldCollectCoverage(filename: Path) {
     const collectOnlyFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage = (
       (this._config.collectCoverage && !collectOnlyFrom) ||
       (collectOnlyFrom && collectOnlyFrom[filename])
     );
-    let moduleContent = transform(filename, this._config);
-    let collectorStore;
-    if (
+    return (
       shouldCollectCoverage &&
       !this._coverageRegex.test(filename) &&
       !(this._mocksPattern && this._mocksPattern.test(filename)) &&
       !this._testRegex.test(filename)
-    ) {
-      if (!collectors[filename]) {
-        collectors[filename] = new this._CoverageCollector(
-          moduleContent,
-          filename,
-        );
-      }
-      const collector = collectors[filename];
-      collectorStore = collector.getCoverageDataStore();
-      moduleContent = collector.getInstrumentedSource('$JEST_COVERAGE_DATA');
+    );
+  }
+
+  _execModule(localModule: Module) {
+    // If the environment was disposed, prevent this module from being executed.
+    if (!this._environment.global) {
+      return;
     }
+
+    const filename = localModule.filename;
+    const shouldCollectCoverage = this._shouldCollectCoverage(filename);
+    const collectors = this._coverageCollectors;
+    if (shouldCollectCoverage && !collectors[filename]) {
+      collectors[filename] = new this._CoverageCollector();
+    }
+    const collectorStore =
+      shouldCollectCoverage && collectors[filename].getCoverageDataStore();
 
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
@@ -371,8 +368,17 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename);
 
-    const wrapperFunc = this._runSourceText(moduleContent, filename);
-    wrapperFunc.call(
+    const script = transform(filename, this._config, {
+      instrument: shouldCollectCoverage && (
+        source => collectors[filename].getInstrumentedSource(
+          source,
+          filename,
+          '$JEST',
+        )
+      ),
+    });
+    const wrapper = this._runScript(script, filename);
+    wrapper.call(
       localModule.exports, // module context
       localModule, // module object
       localModule.exports, // module exports
@@ -388,16 +394,14 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  _runSourceText(moduleContent: string, filename: string) {
-    /* eslint-disable max-len */
-    const config = this._config;
-    const relative = filePath => path.relative(config.rootDir, filePath);
-    const env = this._environment;
-    const evalResultVariable = 'Object.<anonymous>';
-    const wrapper = '({ "' + evalResultVariable + '": function(module, exports, require, __dirname, __filename, global, jest, $JEST_COVERAGE_DATA) {' + moduleContent + '\n}});';
+  _runScript(script: Script, filename: string) {
     try {
-      return env.runSourceText(wrapper, filename)[evalResultVariable];
+      return this._environment.runScript(script)[
+        transform.EVAL_RESULT_VARIABLE
+      ];
     } catch (e) {
+      const config = this._config;
+      const relative = filePath => path.relative(config.rootDir, filePath);
       if (e.constructor.name === 'SyntaxError') {
         const hasPreprocessor = config.scriptPreprocessor;
         const preprocessorInfo = hasPreprocessor
@@ -407,18 +411,18 @@ class Runtime {
           ? `Make sure your '.babelrc' is set up correctly, ` +
             `for example it should include the 'es2015' preset.\n`
           : '';
+        /* eslint-disable max-len */
         throw new SyntaxError(
           `${e.message} in file '${relative(filename)}'.\n\n` +
           `Make sure your preprocessor is set up correctly and ensure ` +
           `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string\n` +
           'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
-          `Preprocessor: ${preprocessorInfo}.\n${babelInfo}` +
-          `Jest tried to the execute the following ${hasPreprocessor ? 'preprocessed ' : ''}code:\n${moduleContent}\n`,
+          `Preprocessor: ${preprocessorInfo}.\n${babelInfo}`,
         );
+        /* eslint-enable max-len */
       }
       throw e;
     }
-    /* eslint-enable max-len */
   }
 
   _generateMock(from: Path, moduleName: string) {

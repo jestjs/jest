@@ -18,7 +18,8 @@
     "jsdom": "^9.2.1"
   },
   "jest": {
-    "rootDir": "./build",
+    "rootDir": "./src",
+    "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {

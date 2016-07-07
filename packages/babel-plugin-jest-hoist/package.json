@@ -12,7 +12,7 @@
     "react": "^0.14.0"
   },
   "jest": {
-    "rootDir": "./build",
+    "rootDir": "./src",
     "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },

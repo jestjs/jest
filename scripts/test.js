@@ -28,7 +28,9 @@ const rimraf = require('rimraf');
 const EXAMPLES_DIR = path.resolve(__dirname, '../examples');
 const INTEGRATION_TESTS_DIR = path.resolve(__dirname, '../integration_tests');
 const JEST_CLI_PATH = path.resolve(__dirname, '../packages/jest-cli');
+const VERSION = require('../lerna').version;
 
+const packages = getPackages();
 
 const examples = fs.readdirSync(EXAMPLES_DIR)
   .map(file => path.resolve(EXAMPLES_DIR, file))
@@ -43,20 +45,30 @@ function runExampleTests(exampleDirectory) {
   console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleDirectory));
 
   runCommands('npm update', exampleDirectory);
-  rimraf.sync(path.resolve(exampleDirectory, './node_modules/jest-cli'));
-  mkdirp.sync(path.resolve(exampleDirectory, './node_modules/jest-cli'));
-  mkdirp.sync(path.resolve(exampleDirectory, './node_modules/.bin'));
+  packages.forEach(pkg => {
+    const name = path.basename(pkg);
+    const directory = path.resolve(exampleDirectory, 'node_modules', name);
 
-  // Using `npm link jest-cli` can create problems with module resolution,
-  // so instead of this we'll create an `index.js` file that will export the
-  // local `jest-cli` package.
-  fs.writeFileSync(
-    path.resolve(exampleDirectory, './node_modules/jest-cli/index.js'),
-    `module.exports = require('${JEST_CLI_PATH}');\n`, // link to the local jest
-    'utf8'
-  );
+    if (fs.existsSync(directory)) {
+      rimraf.sync(directory);
+      mkdirp.sync(directory);
+      // Using `npm link jest-*` can create problems with module resolution,
+      // so instead of this we'll create a proxy module.
+      fs.writeFileSync(
+        path.resolve(directory, 'index.js'),
+        `module.exports = require('${pkg}');\n`,
+        'utf8'
+      );
+      fs.writeFileSync(
+        path.resolve(directory, 'package.json'),
+        `{"name": "${name}", "version": "${VERSION}"}\n`,
+        'utf8'
+      );
+    }
+  });
 
   // overwrite the jest link and point it to the local jest-cli
+  mkdirp.sync(path.resolve(exampleDirectory, './node_modules/.bin'));
   runCommands(
     `ln -sf ${JEST_CLI_PATH}/bin/jest.js ./node_modules/.bin/jest`,
     exampleDirectory
@@ -65,8 +77,7 @@ function runExampleTests(exampleDirectory) {
   runCommands('npm test', exampleDirectory);
 }
 
-
-getPackages().forEach(runPackageTests);
+packages.forEach(runPackageTests);
 
 if (packagesOnly) {
   return;

@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 describe('Runtime', () => {
   describe('currentTestPath', () => {
     it('makes the current test path available', () => {

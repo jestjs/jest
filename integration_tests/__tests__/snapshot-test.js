@@ -26,7 +26,7 @@ const originalTestPath = path.resolve(
   __dirname,
   '../snapshot/__tests__/snapshot-test.js'
 );
-const originalTestContent = fs.readFileSync(originalTestPath, 'utf-8');
+const originalTestContent = fs.readFileSync(originalTestPath, 'utf8');
 const copyOfTestPath = originalTestPath.replace('.js', '_copy.js');
 
 const snapshotEscapeDir =
@@ -49,7 +49,7 @@ const fileExists = filePath => {
 const getSnapshotOfCopy = () => {
   const exports = Object.create(null);
   // eslint-disable-next-line no-eval
-  eval(fs.readFileSync(snapshotOfCopy, 'utf-8'));
+  eval(fs.readFileSync(snapshotOfCopy, 'utf8'));
   return exports;
 };
 

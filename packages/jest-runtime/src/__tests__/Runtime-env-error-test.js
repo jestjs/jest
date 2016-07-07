@@ -9,10 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
-
 let createRuntime;
 
 describe('Runtime', () => {

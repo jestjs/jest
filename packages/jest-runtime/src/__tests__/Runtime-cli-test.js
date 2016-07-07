@@ -14,8 +14,6 @@ const path = require('path');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 
-jest.disableAutomock();
-
 describe('Runtime', () => {
   describe('cli', () => {
     it('fails with no path', () => {

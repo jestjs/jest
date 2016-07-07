@@ -44,7 +44,7 @@ const formatError = (error: string|Error): Error => {
 module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
   try {
     const filePath = data.filePath;
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = fs.readFileSync(filePath, 'utf8');
     let module;
     let id;
     let dependencies;

@@ -11,6 +11,7 @@
 
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
+import type {Script} from 'vm';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
@@ -46,12 +47,9 @@ class NodeEnvironment {
     this.fakeTimers = null;
   }
 
-  runSourceText(sourceText: string, filename: string): ?any {
+  runScript(script: Script): ?any {
     if (this.global) {
-      return vm.runInContext(sourceText, this.global, {
-        filename,
-        displayErrors: false,
-      });
+      return script.runInContext(this.global);
     }
     return null;
   }

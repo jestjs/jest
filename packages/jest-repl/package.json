@@ -18,11 +18,9 @@
   },
   "jest": {
     "automock": false,
-    "rootDir": "./build",
-    "testEnvironment": "jest-environment-node",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ]
+    "rootDir": "./src",
+    "scriptPreprocessor": "../../babel-jest",
+    "testEnvironment": "node"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"

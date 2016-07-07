@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "react": "~0.14.0",
-    "react-dom": "~0.14.0"
+    "react": "~15.2.0",
+    "react-dom": "~15.2.0"
   },
   "devDependencies": {
     "babel-jest": "*",

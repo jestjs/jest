@@ -36,7 +36,7 @@ jest.mock('../crawlers/watchman', () =>
   jest.fn((roots, extensions, ignore, data) => {
     data.clocks = mockClocks;
 
-    const list = changedFiles || mockFs;
+    const list = mockChangedFiles || mockFs;
     for (const file in list) {
       if (new RegExp(roots.join('|')).test(file) && !ignore(file)) {
         if (list[file]) {
@@ -52,18 +52,18 @@ jest.mock('../crawlers/watchman', () =>
 );
 
 const cacheFilePath = '/cache-file';
-let H;
-let HasteMap;
-let changedFiles;
 let consoleWarn;
 let defaultConfig;
 let fs;
+let H;
+let HasteMap;
+let mockChangedFiles;
 let mockClocks;
 let mockFs;
 let object;
 let readFileSync;
-let writeFileSync;
 let workerFarmMock;
+let writeFileSync;
 
 describe('HasteMap', () => {
 
@@ -108,18 +108,18 @@ describe('HasteMap', () => {
       '/vegetables': 'c:fake-clock:2',
     });
 
-    changedFiles = null;
+    mockChangedFiles = null;
 
     fs = require('graceful-fs');
     readFileSync = fs.readFileSync;
     writeFileSync = fs.writeFileSync;
     fs.readFileSync = jest.fn((path, options) => {
-      expect(options).toBe('utf-8');
+      expect(options).toBe('utf8');
 
       // A file change can be triggered by writing into the
-      // changedFiles object.
-      if (changedFiles && (path in changedFiles)) {
-        return changedFiles[path];
+      // mockChangedFiles object.
+      if (mockChangedFiles && (path in mockChangedFiles)) {
+        return mockChangedFiles[path];
       }
 
       if (mockFs[path]) {
@@ -129,7 +129,7 @@ describe('HasteMap', () => {
       throw new Error(`Cannot read path '${path}'.`);
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
-      expect(options).toBe('utf-8');
+      expect(options).toBe('utf8');
       mockFs[path] = data;
     });
 
@@ -354,7 +354,7 @@ describe('HasteMap', () => {
       fs.readFileSync.mockClear();
 
       // Explicitly mock that no files have changed.
-      changedFiles = Object.create(null);
+      mockChangedFiles = Object.create(null);
 
       // Watchman would give us different clocks.
       mockClocks = object({
@@ -364,7 +364,7 @@ describe('HasteMap', () => {
 
       return new HasteMap(defaultConfig).build().then(data => {
         expect(fs.readFileSync.mock.calls.length).toBe(1);
-        expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf-8');
+        expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
 
         expect(data.clocks).toEqual(mockClocks);
         expect(data.files).toEqual(initialData.files);
@@ -378,7 +378,7 @@ describe('HasteMap', () => {
       fs.readFileSync.mockClear();
 
       // Let's assume one JS file has changed.
-      changedFiles = object({
+      mockChangedFiles = object({
         '/fruits/banana.js': [
           '/**',
           ' * @providesModule Kiwi', // Identity crisis.
@@ -396,8 +396,8 @@ describe('HasteMap', () => {
       return new HasteMap(defaultConfig).build().then(data => {
         expect(fs.readFileSync.mock.calls.length).toBe(2);
 
-        expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf-8');
-        expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf-8');
+        expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+        expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
         expect(data.clocks).toEqual(mockClocks);
 
@@ -421,7 +421,7 @@ describe('HasteMap', () => {
 
       // Let's assume one JS file was removed.
       delete mockFs['/fruits/banana.js'];
-      changedFiles = object({
+      mockChangedFiles = object({
         '/fruits/banana.js': null,
       });
 
