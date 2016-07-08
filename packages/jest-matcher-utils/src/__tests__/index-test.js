@@ -10,7 +10,9 @@
 
 'use strict';
 
-const {stringify} = require('../utils');
+jest.disableAutomock();
+
+const {stringify, getType} = require('../');
 
 describe('.stringify()', () => {
   [
@@ -38,4 +40,17 @@ describe('.stringify()', () => {
     a.a = a;
     expect(stringify(a)).toBe('{"a":"[Circular]"}');
   });
+});
+
+
+describe('.getType()', () => {
+  test('null', () => expect(getType(null)).toBe('null'));
+  test('undefined', () => expect(getType(undefined)).toBe('undefined'));
+  test('object', () => expect(getType({})).toBe('object'));
+  test('array', () => expect(getType([])).toBe('array'));
+  test('number', () => expect(getType(1)).toBe('number'));
+  test('string', () => expect(getType('oi')).toBe('string'));
+  test('function', () => expect(getType(() => {})).toBe('function'));
+  test('boolean', () => expect(getType(true)).toBe('boolean'));
+  test('symbol', () => expect(getType(Symbol.for('a'))).toBe('symbol'));
 });

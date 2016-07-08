@@ -10,9 +10,38 @@
 
 'use strict';
 
+import type {ValueType} from 'types/Values';
+
+// get the type of a value with handling the edge cases like `typeof []`
+// and `typeof null`
+const getType = (value: any): ValueType => {
+  if (typeof value === 'undefined') {
+    return 'undefined';
+  } else if (value === null) {
+    return 'null';
+  } else if (Array.isArray(value)) {
+    return 'array';
+  } else if (typeof value === 'boolean') {
+    return 'boolean';
+  } else if (typeof value === 'function') {
+    return 'function';
+  } else if (typeof value === 'number') {
+    return 'number';
+  } else if (typeof value === 'string') {
+    return 'string';
+  } else if (typeof value === 'object') {
+    return 'object';
+  // $FlowFixMe https://github.com/facebook/flow/issues/1015
+  } else if (typeof value === 'symbol') {
+    return 'symbol';
+  }
+
+  throw new Error(`value of unknown type: ${value}`);
+};
+
 // Convert to JSON removing circular references and
 // converting JS values to strings.
-function stringify(obj: any): string {
+const stringify = (obj: any): string => {
   const set = new Set();
   return JSON.stringify(obj, (key, value) => {
     if (typeof value === 'object' && value !== null) {
@@ -44,8 +73,9 @@ function stringify(obj: any): string {
     }
     return value;
   });
-}
+};
 
 module.exports = {
+  getType,
   stringify,
 };
