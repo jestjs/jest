@@ -70,6 +70,36 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toBeNull(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeNull');
+    const pass = actual === null;
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to be null`
+      : () => `expected '${stringify(actual)}' to be null`;
+
+    return {message, pass};
+  },
+
+  toBeDefined(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeDefined');
+    const pass = actual !== void 0;
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to be defined`
+      : () => `expected '${stringify(actual)}' to be defined`;
+
+    return {message, pass};
+  },
+
+  toBeUndefined(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeUndefined');
+    const pass = actual === void 0;
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to be undefined`
+      : () => `expected '${stringify(actual)}' to be undefined`;
+
+    return {message, pass};
+  },
+
   toBeGreaterThan(actual: number, expected: number) {
     ensureNumbers(actual, expected, '.toBeGreaterThan');
     const pass = actual > expected;
