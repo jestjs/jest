@@ -23,8 +23,8 @@ const matchers: MatchersObject = {
       return {
         pass,
         message() {
-          return `expected '${stringify(actual)}' to not equal (using '!==')` +
-            ` '${stringify(expected)}'`;
+          return `expected '${stringify(actual)}' not to be` +
+            ` '${stringify(expected)}'  (using '!==')`;
         },
       };
     } else {
@@ -33,8 +33,8 @@ const matchers: MatchersObject = {
         message() {
           let diffString = '\n\n';
           diffString += diff(expected, actual);
-          return `expected '${stringify(actual)}' to equal (using '===')` +
-          ` '${stringify(expected)}'${diffString}`;
+          return `expected '${stringify(actual)}' to be` +
+          ` '${stringify(expected)}' (using '===')${diffString}`;
         },
       };
     }

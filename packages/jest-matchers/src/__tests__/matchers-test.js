@@ -27,14 +27,14 @@ describe('.toBe()', () => {
   [[1, 2], [true, false], [{}, {}], [[], []], [null, undefined]].forEach(v => {
     it(`fails for: ${JSON.stringify(v[0])} and ${JSON.stringify(v[1])}`, () => {
       const fn = () => jestExpect(v[0]).toBe(v[1]);
-      expect(fn).toThrowError(/expected.*to equal.*===.*/);
+      expect(fn).toThrowError(/expected.*to be.*using \'===.*/);
     });
   });
 
   [false, 1, 'a', undefined, null, {}, []].forEach(v => {
     it(`fails for '${JSON.stringify(v)}' with '.not'`, () => {
       const fn = () => jestExpect(v).not.toBe(v);
-      expect(fn).toThrowError(/expected.*to not equal.*!==.*/);
+      expect(fn).toThrowError(/expected.*not to be.*using \'!==.*/);
     });
   });
 
@@ -42,7 +42,7 @@ describe('.toBe()', () => {
     const obj = {};
     obj.circular = obj;
     expect(() => jestExpect(obj).toBe({})).toThrowError(
-      /expected.*circular.*\[Circular\].*to equal.*/,
+      /expected.*circular.*\[Circular\].*to be.*/,
     );
   });
 });
