@@ -59,6 +59,16 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
+
+  toBeNaN(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeNaN');
+    const pass = Number.isNaN(actual);
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to be NaN`
+      : () => `expected '${stringify(actual)}' to be NaN`;
+
+    return {message, pass};
+  },
 };
 
 function ensureNoExpected(expected, matcherName) {
