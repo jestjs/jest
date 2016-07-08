@@ -40,12 +40,12 @@ const ensureDirectoryExists = (filePath: Path) => {
 };
 
 const escape = string => string.replace(/\`/g, '\\\`');
-const unescape = string => string.replace(/\\(\"|\\)/g, '$1');
+const unescape = string => string.replace(/\\(\"|\\|\')/g, '$1');
 
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
-const addExtraLineBreaks = string => string.indexOf('\n') > -1
-  ? `\n${string}\n` : string;
+const addExtraLineBreaks =
+  string => string.includes('\n') ? `\n${string}\n` : string;
 
 const fileExists = (filePath: Path): boolean => {
   try {
