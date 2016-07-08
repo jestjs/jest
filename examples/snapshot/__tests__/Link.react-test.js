@@ -23,6 +23,13 @@ describe('Link', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('properly escapes quotes', () => {
+    const tree = renderer.create(
+      <Link>{'"Facebook" \\\'is \\ \'awesome\''}</Link>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
   it('changes the class when hovered', () => {
     const component = renderer.create(
       <Link page="http://www.facebook.com">Facebook</Link>

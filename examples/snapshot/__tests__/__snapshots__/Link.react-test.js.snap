@@ -28,6 +28,16 @@ exports[`Link changes the class when hovered 3`] = `
 </a>
 `;
 
+exports[`Link properly escapes quotes 1`] = `
+<a
+  className="normal"
+  href="#"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  \"Facebook\" \\\'is \\ \'awesome\'
+</a>
+`;
+
 exports[`Link renders as an anchor when no page is set 1`] = `
 <a
   className="normal"
