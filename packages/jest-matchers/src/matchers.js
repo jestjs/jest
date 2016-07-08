@@ -139,16 +139,35 @@ const matchers: MatchersObject = {
         `'${expected}' (using <=)`;
     return {message, pass};
   },
+
+  toContain(actual: number | string, expected: any) {
+    if (!Array.isArray(actual) && typeof actual !== 'string') {
+      throw new Error(
+        '.toContain() works only on arrays and strings. ' +
+        `'${typeof actual}': ` +
+        `'${stringify(actual)}' was passed`,
+      );
+    }
+
+    const pass = actual.indexOf(expected) != -1;
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to contain ` +
+        `'${stringify(expected)}'`
+      : () => `expected '${stringify(actual)}' to contain ` +
+        `'${stringify(expected)}'`;
+
+    return {message, pass};
+  },
 };
 
-function ensureNoExpected(expected, matcherName) {
+const ensureNoExpected = (expected, matcherName) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
     throw new Error(`${matcherName} matcher does not accept any arguments`);
   }
-}
+};
 
-function ensureNumbers(actual, expected, matcherName) {
+const ensureNumbers = (actual, expected, matcherName) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
@@ -162,6 +181,6 @@ function ensureNumbers(actual, expected, matcherName) {
       `'${typeof expected}' was passed`,
     );
   }
-}
+};
 
 module.exports = matchers;
