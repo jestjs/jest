@@ -96,4 +96,5 @@ runCommands('node bin/jest.js --notify', 'packages/jest-cli');
 examples.forEach(runExampleTests);
 
 console.log(chalk.bold(chalk.cyan('Running integration tests:')));
+runCommands('npm update', `${INTEGRATION_TESTS_DIR}/snapshot-escape`);
 runCommands('../packages/jest-cli/bin/jest.js', INTEGRATION_TESTS_DIR);
