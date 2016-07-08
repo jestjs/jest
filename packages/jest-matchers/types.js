@@ -14,6 +14,6 @@ export type ExpectationResult = {
   message: string | () => string,
 };
 
-export type RawMatcherFn = (expected: any, actual: any) => ExpectationResult;
+export type RawMatcherFn = (expected?: any, actual: any) => ExpectationResult;
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatchersObject = {[id:string]: RawMatcherFn};

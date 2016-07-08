@@ -13,6 +13,7 @@
 import type {MatchersObject, ExpectationResult} from '../types';
 
 const diff = require('jest-diff');
+const stringify = require('./utils').stringify;
 
 const matchers: MatchersObject = {
   toBe(actual: any, expected: number): ExpectationResult {
@@ -22,7 +23,8 @@ const matchers: MatchersObject = {
       return {
         pass,
         message() {
-          return `expected ${actual} to not equal (using '!==') ${expected}`;
+          return `expected '${stringify(actual)}' to not equal (using '!==')` +
+            ` '${stringify(expected)}'`;
         },
       };
     } else {
@@ -37,20 +39,33 @@ const matchers: MatchersObject = {
       };
     }
   },
+
+  toBeTruthy(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeTruthy');
+    const pass = !!actual;
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to be truthy`
+      : () => `expected '${stringify(actual)}' to be truthy`;
+
+    return {message, pass};
+  },
+
+  toBeFalsy(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeFalsy');
+    const pass = !actual;
+    const message = pass
+      ? () => `expected '${stringify(actual)}' not to be falsy`
+      : () => `expected '${stringify(actual)}' to be falsy`;
+
+    return {message, pass};
+  },
 };
 
-// Remove circular references
-function stringify(obj: any): string {
-  const set = new Set();
-  return JSON.stringify(obj, (key, value) => {
-    if (typeof value === 'object' && value !== null) {
-      if (set.has(value)) {
-        return '[Circular]';
-      }
-      set.add(value);
-    }
-    return value;
-  });
+function ensureNoExpected(expected, matcherName) {
+  matcherName || (matcherName = 'This');
+  if (typeof expected !== 'undefined') {
+    throw new Error(`${matcherName} matcher does not accept any arguments`);
+  }
 }
 
 module.exports = matchers;

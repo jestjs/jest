@@ -11,8 +11,9 @@
 'use strict';
 
 const jestExpect = require('../').expect;
+const stringify = require('../utils').stringify;
 
-describe('toBe()', () => {
+describe('.toBe()', () => {
   it('does not throw', () => {
     jestExpect('a').not.toBe('b');
     jestExpect('a').toBe('a');
@@ -43,5 +44,34 @@ describe('toBe()', () => {
     expect(() => jestExpect(obj).toBe({})).toThrowError(
       /expected.*circular.*\[Circular\].*to equal.*/,
     );
+  });
+});
+
+describe('.toBeTruthy(), .toBeFalsy()', () => {
+  it('does not accept arguments', () => {
+    expect(() => jestExpect(0).toBeTruthy(null))
+      .toThrowError(/toBeTruthy matcher does not accept any arguments/);
+    expect(() => jestExpect(0).toBeFalsy(null))
+      .toThrowError(/toBeFalsy matcher does not accept any arguments/);
+  });
+
+  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+    test(`'${stringify(v)}' is truthy`, () => {
+      jestExpect(v).toBeTruthy();
+      jestExpect(v).not.toBeFalsy();
+      expect(() => jestExpect(v).not.toBeTruthy())
+        .toThrowError(/not to be truthy/);
+      expect(() => jestExpect(v).toBeFalsy()).toThrowError(/falsy/);
+    });
+  });
+
+  [false, null, NaN, 0, '', undefined].forEach(v => {
+    test(`'${stringify(v)}' is falsy`, () => {
+      jestExpect(v).toBeFalsy();
+      jestExpect(v).not.toBeTruthy();
+      expect(() => jestExpect(v).toBeTruthy()).toThrowError(/truthy/);
+      expect(() => jestExpect(v).not.toBeFalsy())
+        .toThrowError(/not to be falsy/);
+    });
   });
 });
