@@ -226,7 +226,10 @@ class TestRunner {
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
         return this._hasteMap
-          .then(hasteMap => snapshot.cleanup(hasteMap, config.updateSnapshot))
+          .then(hasteMap => snapshot.cleanup(
+            hasteMap.instance,
+            config.updateSnapshot,
+          ))
           .then(status => {
             aggregatedResults.snapshotFilesRemoved = status.filesRemoved;
             aggregatedResults.didUpdate = config.updateSnapshot;

@@ -92,7 +92,7 @@ describe('Snapshot', () => {
 
     const content = require(snapshotFile);
     expect(
-      content['snapshot is not influenced by previous counter 0']
+      content['snapshot is not influenced by previous counter 1']
     ).not.toBe(undefined);
 
     const info = result.stderr.toString();
@@ -207,7 +207,7 @@ describe('Snapshot', () => {
       );
       const keyToCheck =
         'snapshot works with plain objects and the title has `escape` ' +
-        'characters 1';
+        'characters 2';
       expect(
         beforeRemovingSnapshot[keyToCheck]
       ).not.toBe(undefined);

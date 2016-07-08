@@ -99,8 +99,6 @@ function jasmine2(
     };
 
     env = jasmine.getEnv();
-    env.snapshotState = snapshot.getSnapshotState(jasmine, testPath);
-
     const jasmineInterface = requireJasmine.interface(jasmine, env);
     Object.assign(environment.global, jasmineInterface);
     env.addReporter(jasmineInterface.jsApiReporter);
@@ -165,14 +163,14 @@ function jasmine2(
 
   env.beforeEach(() => {
     jasmine.addCustomEqualityTester(iterableEquality);
-    jasmine.addMatchers(
-      snapshot.getMatchers(
+    jasmine.addMatchers({
+      toMatchSnapshot: snapshot.matcher(
         testPath,
         config,
         jasmine,
-        env.snapshotState,
+        snapshotState,
       ),
-    );
+    });
 
     jasmine.addMatchers({
       toBeCalled: () => ({
@@ -295,9 +293,8 @@ function jasmine2(
     }
   });
 
-  const jasmineExpect = env.expect;
-
   // extend jasmine matchers with `jest-matchers`
+  const jasmineExpect = env.expect;
   env.expect = actual => {
     const jasmineMatchers = jasmineExpect(actual);
     const jestMatchers = expect(actual);
@@ -305,11 +302,13 @@ function jasmine2(
     return Object.assign(jasmineMatchers, jestMatchers, {not});
   };
 
+  const snapshotState = snapshot.getSnapshotState(jasmine, testPath);
+
   env.addReporter(reporter);
   runtime.requireModule(testPath);
   env.execute();
   return reporter.getResults().then(results => {
-    const currentSnapshot = env.snapshotState.snapshot;
+    const currentSnapshot = snapshotState.snapshot;
     const updateSnapshot = config.updateSnapshot;
     const hasUncheckedKeys = currentSnapshot.hasUncheckedKeys();
     if (updateSnapshot) {
@@ -319,10 +318,10 @@ function jasmine2(
 
     results.hasUncheckedKeys = !status.deleted && hasUncheckedKeys;
     results.snapshotFileDeleted = status.deleted;
-    results.snapshotsAdded = env.snapshotState.added;
-    results.snapshotsMatched = env.snapshotState.matched;
-    results.snapshotsUnmatched = env.snapshotState.unmatched;
-    results.snapshotsUpdated = env.snapshotState.updated;
+    results.snapshotsAdded = snapshotState.added;
+    results.snapshotsMatched = snapshotState.matched;
+    results.snapshotsUnmatched = snapshotState.unmatched;
+    results.snapshotsUpdated = snapshotState.updated;
     return results;
   });
 }
