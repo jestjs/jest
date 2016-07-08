@@ -10,7 +10,7 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "diff": "^2.2.3",
-    "pretty-format": "^3.3.2"
+    "pretty-format": "^3.4.3"
   },
   "jest": {
     "automock": false,

@@ -4,23 +4,29 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 'use strict';
+
+import type HasteMap from '../../jest-haste-map/src';
+import type {Jasmine} from 'types/Jasmine';
+import type {Path} from 'types/Config';
+import type {SnapshotState} from './SnapshotState';
 
 const SnapshotFile = require('./SnapshotFile');
 
 const fs = require('fs');
+const matcher = require('./matcher');
 const path = require('path');
 
 const EXTENSION = SnapshotFile.SNAPSHOT_EXTENSION;
+
 const patchAttr = (attr, state) => {
   attr.onStart = function(onStart) {
     return function(context) {
-      const specRunning = context.getFullName();
-      let index = 0;
-      state.getCounter = () => index;
-      state.incrementCounter = () => index++;
-      state.currentSpecName = specRunning;
+      state.setSpecName(context.getFullName());
+      state.setCounter(0);
       if (onStart) {
         onStart(context);
       }
@@ -53,9 +59,9 @@ const fileExists = filePath => {
 
 module.exports = {
   EXTENSION,
-  cleanup(hasteMap, update) {
+  cleanup(hasteMap: HasteMap, update: boolean) {
     const extension = new RegExp('\\.' + EXTENSION);
-    return hasteMap.instance.matchFiles(extension).then(files => {
+    return hasteMap.matchFiles(extension).then(files => {
       const filesRemoved = files
         .filter(snapshotFile => !fileExists(path.resolve(
           path.dirname(snapshotFile),
@@ -70,17 +76,27 @@ module.exports = {
       };
     });
   },
-  getMatchers: require('./getMatchers'),
-  getSnapshotState: (jasmine, filePath) => {
-    const state = Object.create(null);
-    state.currentSpecName = null;
-    state.getCounter = null;
-    state.incrementCounter = null;
-    state.snapshot = SnapshotFile.forFile(filePath);
-    state.added = 0;
-    state.updated = 0;
-    state.matched = 0;
-    state.unmatched = 0;
+  matcher,
+  getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
+    let _index = 0;
+    let _name = '';
+    /* $FlowFixMe */
+    const state = Object.assign(Object.create(null), {
+      getCounter: () => _index,
+      getSpecName: () => _name,
+      incrementCounter: () => ++_index,
+      setCounter(index) {
+        _index = index;
+      },
+      setSpecName(name) {
+        _name = name;
+      },
+      snapshot: SnapshotFile.forFile(filePath),
+      added: 0,
+      updated: 0,
+      matched: 0,
+      unmatched: 0,
+    });
 
     patchJasmine(jasmine, state);
     return state;

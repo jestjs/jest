@@ -39,10 +39,6 @@ class JasmineFormatter {
     });
   }
 
-  addDiffableMatcher(matcherName: string) {
-    this._diffableMatchers[matcherName] = true;
-  }
-
   formatDiffable(
     matcherName: string,
     isNot: boolean,

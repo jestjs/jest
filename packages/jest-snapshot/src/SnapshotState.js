@@ -12,12 +12,14 @@
 import type {SnapshotFileT} from './SnapshotFile';
 
 export type SnapshotState = {
-  currentSpecName: string,
-  getCounter: (() => number),
-  incrementCounter: (() => number),
-  snapshot: SnapshotFileT,
   added: number,
-  updated: number,
+  getSpecName(): string,
+  getCounter(): number,
+  incrementCounter(): number,
   matched: number,
+  setCounter(index: number): void,
+  setSpecName(name: string): void,
+  snapshot: SnapshotFileT,
   unmatched: number,
+  updated: number,
 };
