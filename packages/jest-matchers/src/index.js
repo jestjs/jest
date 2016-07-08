@@ -31,7 +31,7 @@ function makeThrowingMatcher(
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn {
-  return function(expected) {
+  return function throwingMatcher(expected) {
     const result: ExpectationResult = matcher(
       actual,
       expected,
@@ -47,7 +47,10 @@ function makeThrowingMatcher(
         message = message();
       }
 
-      throw new Error(message);
+      const error = new Error(message);
+      // Remove this function from the stack trace frame.
+      Error.captureStackTrace(error, throwingMatcher);
+      throw error;
     }
   };
 }

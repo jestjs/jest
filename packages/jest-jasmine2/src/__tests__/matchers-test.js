@@ -20,7 +20,7 @@ describe('matchers', () => {
       expect(1).toBe(2);
       throw new Error('should not be thrown');
     } catch (e) {
-      expect(e.message).toMatch(/expected.*to equal.*===.*/);
+      expect(e.message).toMatch(/expected.*to be.*===.*/);
     }
   });
 });
