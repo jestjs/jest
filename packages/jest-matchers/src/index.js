@@ -10,27 +10,44 @@
 
 'use strict';
 
-import type {ThrowingMatcherFn, ExpectationResult} from './types';
+import type {
+  Expect,
+  ExpectationResult,
+  ExpectationObject,
+  MatchersObject,
+  RawMatcherFn,
+  ThrowingMatcherFn,
+} from './types';
 
 const matchers = require('./matchers');
+const GLOBAL_MATCHERS_OBJECT_SYMBOL = Symbol.for('$$jest-matchers-object');
 
-function expect(actual: any) {
+if (!global[GLOBAL_MATCHERS_OBJECT_SYMBOL]) {
+  Object.defineProperty(
+    global,
+    GLOBAL_MATCHERS_OBJECT_SYMBOL,
+    {value: Object.create(null)},
+  );
+}
+
+const expect: Expect = (actual: any): ExpectationObject => {
+  const allMatchers = global[GLOBAL_MATCHERS_OBJECT_SYMBOL];
   const expectation = {not: {}};
-  const allMatchers = Object.assign({}, matchers);
   Object.keys(allMatchers).forEach(name => {
-    expectation[name] = makeThrowingMatcher(allMatchers[name], false, actual);
+    expectation[name] =
+      makeThrowingMatcher(allMatchers[name], false, actual);
     expectation.not[name] =
       makeThrowingMatcher(allMatchers[name], true, actual);
   });
 
   return expectation;
-}
+};
 
-function makeThrowingMatcher(
-  matcher: (actual: any, expected: any) => ExpectationResult,
+const makeThrowingMatcher = (
+  matcher: RawMatcherFn,
   isNot: boolean,
   actual: any,
-): ThrowingMatcherFn {
+): ThrowingMatcherFn => {
   return function throwingMatcher(expected, options) {
     const result: ExpectationResult = matcher(
       actual,
@@ -54,8 +71,16 @@ function makeThrowingMatcher(
       throw error;
     }
   };
-}
+};
+
+const addMatchers = (matchersObj: MatchersObject): void => {
+  Object.assign(global[GLOBAL_MATCHERS_OBJECT_SYMBOL], matchersObj);
+};
+
+// add default jest matchers
+addMatchers(matchers);
 
 module.exports = {
+  addMatchers,
   expect,
 };

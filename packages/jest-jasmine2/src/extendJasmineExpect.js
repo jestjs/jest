@@ -9,14 +9,14 @@
 
 jest.deepUnmock('jest-matchers');
 
-const expect = require('jest-matchers').expect;
+const jestExpect = require('jest-matchers').expect;
 
 const jasmineExpect = global.expect;
 
 // extend jasmine matchers with `jest-matchers`
 global.expect = actual => {
   const jasmineMatchers = jasmineExpect(actual);
-  const jestMatchers = expect(actual);
+  const jestMatchers = jestExpect(actual);
   const not = Object.assign(jasmineMatchers.not, jestMatchers.not);
   return Object.assign(jasmineMatchers, jestMatchers, {not});
 };
