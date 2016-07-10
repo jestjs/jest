@@ -10,13 +10,13 @@
 
 'use strict';
 
-import type {MatchersObject, ExpectationResult} from '../types';
+import type {MatchersObject} from '../types';
 
 const diff = require('jest-diff');
 const {stringify} = require('jest-matcher-utils');
 
 const matchers: MatchersObject = {
-  toBe(actual: any, expected: number): ExpectationResult {
+  toBe(actual: any, expected: number) {
     const pass = actual === expected;
 
     if (pass) {
@@ -155,6 +155,41 @@ const matchers: MatchersObject = {
         `'${stringify(expected)}'`
       : () => `expected '${stringify(actual)}' to contain ` +
         `'${stringify(expected)}'`;
+
+    return {message, pass};
+  },
+
+  toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
+    ensureNumbers(actual, expected, '.toBeCloseTo');
+    const pass = Math.abs(expected - actual) < (Math.pow(10, -precision) / 2);
+    const message = pass
+      ? () => `expected '${actual}' not to be close to '${expected}'` +
+        ` with ${precision}-digit precision`
+      : () => `expected '${actual}' to be close to '${expected}'` +
+        ` with ${precision}-digit precision`;
+
+    return {message, pass};
+  },
+
+  toMatch(actual: string, expected: string | RegExp) {
+    if (typeof actual !== 'string') {
+      return {
+        pass: false,
+        message: `actual '${actual}' is not a String`,
+      };
+    }
+
+    if (!(expected instanceof RegExp) && !(typeof expected == 'string')) {
+      return {
+        pass: false,
+        message: `expected '${expected}' is not a String or a RegExp`,
+      };
+    }
+
+    const pass = new RegExp(expected).test(actual);
+    const message = pass
+      ? () => `expected '${actual}' not to match '${stringify(expected)}'`
+      : () => `expected '${actual}' to match '${stringify(expected)}'`;
 
     return {message, pass};
   },
