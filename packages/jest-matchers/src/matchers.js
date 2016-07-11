@@ -69,12 +69,68 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
+
+  toBeGreaterThan(actual: number, expected: number) {
+    ensureNumbers(actual, expected, '.toBeGreaterThan');
+    const pass = actual > expected;
+    const message = pass
+      ? `expected '${actual}' not to be greater than '${expected}' (using >)`
+      : `expected '${actual}' to be greater than '${expected}' (using >)`;
+    return {message, pass};
+  },
+
+  toBeGreaterThanOrEqual(actual: number, expected: number) {
+    ensureNumbers(actual, expected, '.toBeGreaterThanOrEqual');
+    const pass = actual >= expected;
+    const message = pass
+      ? `expected '${actual}' not to be greater than or equal ` +
+        `'${expected}' (using >=)`
+      : `expected '${actual}' to be greater than or equal ` +
+        `'${expected}' (using >=)`;
+    return {message, pass};
+  },
+
+  toBeLessThan(actual: number, expected: number) {
+    ensureNumbers(actual, expected, '.toBeLessThan');
+    const pass = actual < expected;
+    const message = pass
+      ? `expected '${actual}' not to be less than '${expected}' (using <)`
+      : `expected '${actual}' to be less than '${expected}' (using <)`;
+    return {message, pass};
+  },
+
+  toBeLessThanOrEqual(actual: number, expected: number) {
+    ensureNumbers(actual, expected, '.toBeLessThanOrEqual');
+    const pass = actual <= expected;
+    const message = pass
+      ? `expected '${actual}' not to be less than or equal ` +
+        `'${expected}' (using <=)`
+      : `expected '${actual}' to be less than or equal ` +
+        `'${expected}' (using <=)`;
+    return {message, pass};
+  },
 };
 
 function ensureNoExpected(expected, matcherName) {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
     throw new Error(`${matcherName} matcher does not accept any arguments`);
+  }
+}
+
+function ensureNumbers(actual, expected, matcherName) {
+  matcherName || (matcherName = 'This matcher');
+  if (typeof actual !== 'number') {
+    throw new Error(
+      `${matcherName} actual value should be a number. ` +
+      `'${typeof actual}' was passed`,
+    );
+  }
+  if (typeof expected !== 'number') {
+    throw new Error(
+      `${matcherName} expected value should be a number. ` +
+      `'${typeof expected}' was passed`,
+    );
   }
 }
 

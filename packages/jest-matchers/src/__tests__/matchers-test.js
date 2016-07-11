@@ -91,3 +91,68 @@ describe('.toBeNaN()', () => {
     });
   });
 });
+
+describe(
+  '.toBeGreaterThan(), .toBeLessThan(), ' +
+    '.toBeGreaterThanOrEqual(), .toBeLessThanOrEqual()',
+  () => {
+    [
+      [1, 2],
+      [-Infinity, Infinity],
+      [Number.MIN_VALUE, Number.MAX_VALUE],
+      [0x11, 0x22],
+      [0b11, 0b111],
+      [0o11, 0o22],
+      [0.1, 0.2],
+    ].forEach(([small, big]) => {
+      it(`passes: [${small}, ${big}]`, () => {
+        jestExpect(small).toBeLessThan(big);
+        jestExpect(small).not.toBeGreaterThan(big);
+        jestExpect(big).toBeGreaterThan(small);
+        jestExpect(big).not.toBeLessThan(small);
+
+        jestExpect(small).toBeLessThanOrEqual(big);
+        jestExpect(small).not.toBeGreaterThanOrEqual(big);
+        jestExpect(big).toBeGreaterThanOrEqual(small);
+        jestExpect(big).not.toBeLessThanOrEqual(small);
+      });
+
+      it(`throws: [${small}, ${big}]`, () => {
+        expect(() => jestExpect(small).toBeGreaterThan(big))
+          .toThrowError(/to be greater than.*using \>/);
+        expect(() => jestExpect(small).not.toBeLessThan(big))
+          .toThrowError(/to be less than.*using \</);
+        expect(() => jestExpect(big).not.toBeGreaterThan(small))
+          .toThrowError(/not to be greater than.*using \>/);
+        expect(() => jestExpect(big).toBeLessThan(small))
+          .toThrowError(/to be less than.*using \</);
+
+        expect(() => jestExpect(small).toBeGreaterThanOrEqual(big))
+          .toThrowError(/to be greater than or equal.*using \>=/);
+        expect(() => jestExpect(small).not.toBeLessThanOrEqual(big))
+          .toThrowError(/to be less than or equal.*using \<=/);
+        expect(() => jestExpect(big).not.toBeGreaterThanOrEqual(small))
+          .toThrowError(/not to be greater than or equal.*using \>=/);
+        expect(() => jestExpect(big).toBeLessThanOrEqual(small))
+          .toThrowError(/to be less than or equal.*using \<=/);
+      });
+    });
+
+    [
+      [1, 1],
+      [Number.MIN_VALUE, Number.MIN_VALUE],
+      [Number.MAX_VALUE, Number.MAX_VALUE],
+      [Infinity, Infinity],
+      [-Infinity, -Infinity],
+    ].forEach(([n1, n2]) => {
+      test(`equal numbers: [${n1}, ${n2}]`, () => {
+        jestExpect(n1).toBeGreaterThanOrEqual(n2);
+        jestExpect(n1).toBeLessThanOrEqual(n2);
+        expect(() => jestExpect(n1).not.toBeGreaterThanOrEqual(n2))
+          .toThrowError(/not to be greater than or equal.*using \>=/);
+        expect(() => jestExpect(n1).not.toBeLessThanOrEqual(n2))
+          .toThrowError(/not to be less than or equal.*using \<=/);
+      });
+    });
+  },
+);
