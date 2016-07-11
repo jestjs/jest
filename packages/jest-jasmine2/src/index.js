@@ -16,10 +16,10 @@ import type Runtime from '../../jest-runtime/src';
 
 const JasmineReporter = require('./reporter');
 
-const expect = require('jest-matchers').expect;
-const fs = require('graceful-fs');
 const jasminePit = require('./jasmine-pit');
 const snapshot = require('jest-snapshot');
+const fs = require('graceful-fs');
+const path = require('path');
 const vm = require('vm');
 
 const CALL_PRINT_LIMIT = 3;
@@ -293,18 +293,15 @@ function jasmine2(
     }
   });
 
-  // extend jasmine matchers with `jest-matchers`
-  const jasmineExpect = env.expect;
-  env.expect = actual => {
-    const jasmineMatchers = jasmineExpect(actual);
-    const jestMatchers = expect(actual);
-    const not = Object.assign(jasmineMatchers.not, jestMatchers.not);
-    return Object.assign(jasmineMatchers, jestMatchers, {not});
-  };
-
   const snapshotState = snapshot.getSnapshotState(jasmine, testPath);
 
   env.addReporter(reporter);
+
+  // `jest-matchers` should be required inside test environment (vm).
+  // Otherwise if they throw, the `Error` class will differ from the `Error`
+  // class of the test and `error instanceof Error` will return `false`.
+  runtime.requireModule(path.resolve(__dirname, './extendJasmineExpect.js'));
+
   runtime.requireModule(testPath);
   env.execute();
   return reporter.getResults().then(results => {

@@ -10,17 +10,10 @@
 'use strict';
 
 jest.disableAutomock();
+const jestExpect = require('jest-matchers').expect;
 
 describe('matchers', () => {
   it('proxies matchers to jest-matchers', () => {
-    // We can't use `expect().toThrow()` because `jest-matchers` error
-    // is thrown in the framework context, and hence `e instanceof Error` will
-    // return `false` and break jasmine
-    try {
-      expect(1).toBe(2);
-      throw new Error('should not be thrown');
-    } catch (e) {
-      expect(e.message).toMatch(/expected.*to be.*===.*/);
-    }
+    expect(() => expect(1).toBe(2)).toThrowError(/expected.*to be.*using '===/);
   });
 });
