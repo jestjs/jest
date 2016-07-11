@@ -92,6 +92,44 @@ describe('.toBeNaN()', () => {
   });
 });
 
+describe('.toBeNull()', () => {
+  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+    test(`fails for '${stringify(v)}' with .not`, () => {
+      jestExpect(v).not.toBeNull();
+      expect(() => jestExpect(v).toBeNull())
+        .toThrowError(/expected.*to be null/);
+    });
+  });
+
+  it('pass for null', () => {
+    jestExpect(null).toBeNull();
+    expect(() => jestExpect(null).not.toBeNull())
+      .toThrowError(/expected.*not to be null/);
+  });
+});
+
+describe('.toBeDefined(), .toBeUndefined()', () => {
+  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+    test(`'${stringify(v)}' is defined`, () => {
+      jestExpect(v).toBeDefined();
+      jestExpect(v).not.toBeUndefined();
+      expect(() => jestExpect(v).not.toBeDefined())
+        .toThrowError(/not to be defined/);
+      expect(() => jestExpect(v).toBeUndefined())
+        .toThrowError(/to be undefined/);
+    });
+  });
+
+  test('undefined is undefined', () => {
+    jestExpect(undefined).toBeUndefined();
+    jestExpect(undefined).not.toBeDefined();
+    expect(() => jestExpect(undefined).toBeDefined())
+      .toThrowError(/to be defined/);
+    expect(() => jestExpect(undefined).not.toBeUndefined())
+      .toThrowError(/not to be undefined/);
+  });
+});
+
 describe(
   '.toBeGreaterThan(), .toBeLessThan(), ' +
     '.toBeGreaterThanOrEqual(), .toBeLessThanOrEqual()',
