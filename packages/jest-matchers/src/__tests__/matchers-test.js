@@ -25,14 +25,14 @@ describe('.toBe()', () => {
   });
 
   [[1, 2], [true, false], [{}, {}], [[], []], [null, undefined]].forEach(v => {
-    it(`fails for: ${JSON.stringify(v[0])} and ${JSON.stringify(v[1])}`, () => {
+    it(`fails for: ${stringify(v[0])} and ${stringify(v[1])}`, () => {
       const fn = () => jestExpect(v[0]).toBe(v[1]);
       expect(fn).toThrowError(/expected.*to be.*using \'===.*/);
     });
   });
 
   [false, 1, 'a', undefined, null, {}, []].forEach(v => {
-    it(`fails for '${JSON.stringify(v)}' with '.not'`, () => {
+    it(`fails for '${stringify(v)}' with '.not'`, () => {
       const fn = () => jestExpect(v).not.toBe(v);
       expect(fn).toThrowError(/expected.*not to be.*using \'!==.*/);
     });
@@ -223,5 +223,103 @@ describe('.toContain()', () => {
       expect(() => jestExpect(list).toContain(v))
         .toThrowError(/expected.*to contain.*/);
     });
+  });
+});
+
+describe('.toBeCloseTo()', () => {
+  [
+    [0, 0],
+    [0, 0.001],
+    [1.23, 1.229],
+    [1.23, 1.226],
+    [1.23, 1.225],
+    [1.23, 1.234],
+  ].forEach(([n1, n2]) => {
+    it(`passes: [${n1}, ${n2}]`, () => {
+      jestExpect(n1).toBeCloseTo(n2);
+      expect(() => jestExpect(n1).not.toBeCloseTo(n2))
+        .toThrowError(/not to be close to/);
+    });
+  });
+
+  [
+    [0, 0.01],
+    [1, 1.23],
+    [1.23, 1.2249999],
+  ].forEach(([n1, n2]) => {
+    it(`throws: [${n1}, ${n2}]`, () => {
+      expect(() => jestExpect(n1).toBeCloseTo(n2))
+        .toThrowError(/to be close to/);
+      jestExpect(n1).not.toBeCloseTo(n2);
+    });
+  });
+
+  [
+    [0, 0.1, 0],
+    [0, 0.0001, 3],
+    [0, 0.000004, 5],
+  ].forEach(([n1, n2, p]) => {
+    it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
+      jestExpect(n1).toBeCloseTo(n2, p);
+      expect(() => jestExpect(n1).not.toBeCloseTo(n2, p))
+        .toThrowError(new RegExp(`not to be close.* with.*-digit precision`));
+    });
+  });
+});
+
+describe('.toMatch()', () => {
+  [['foo', 'foo'], ['Foo bar', /^foo/i]].forEach(([n1, n2]) => {
+    it(`passes: [${n1}, ${n2}]`, () => {
+      jestExpect(n1).toMatch(n2);
+      expect(() => jestExpect(n1).not.toMatch(n2))
+        .toThrowError(/not to match/);
+    });
+  });
+
+  [['bar', 'foo'], ['bar', /foo/]].forEach(([n1, n2]) => {
+    it(`throws: [${n1}, ${n2}]`, () => {
+      expect(() => jestExpect(n1).toMatch(n2))
+        .toThrowError(/to match/);
+      jestExpect(n1).not.toMatch(n2);
+    });
+  });
+
+  [
+    [1, 'foo'],
+    [{}, 'foo'],
+    [[], 'foo'],
+    [true, 'foo'],
+    [/foo/i, 'foo'],
+    [() => {}, 'foo'],
+    [undefined, 'foo'],
+  ].forEach(([n1, n2]) => {
+    it(
+      'throws if non String actual value passed:' +
+        ` [${stringify(n1)}, ${stringify(n2)}]`,
+      () => {
+        expect(() => jestExpect(n1).toMatch(n2))
+          .toThrowError(/is not a String/);
+        jestExpect(n1).not.toMatch(n2);
+      },
+    );
+  });
+
+  [
+    ['foo', 1],
+    ['foo', {}],
+    ['foo', []],
+    ['foo', true],
+    ['foo', () => {}],
+    ['foo', undefined],
+  ].forEach(([n1, n2]) => {
+    it(
+      `throws if non String/RegExp expected value passed:` +
+        ` [${stringify(n1)}, ${stringify(n2)}]`,
+      () => {
+        expect(() => jestExpect(n1).toMatch(n2))
+          .toThrowError(/is not a String or a RegExp/);
+        jestExpect(n1).not.toMatch(n2);
+      },
+    );
   });
 });

@@ -31,10 +31,11 @@ function makeThrowingMatcher(
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn {
-  return function throwingMatcher(expected) {
+  return function throwingMatcher(expected, options) {
     const result: ExpectationResult = matcher(
       actual,
       expected,
+      options,
       {args: arguments},
     );
 
