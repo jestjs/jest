@@ -12,7 +12,7 @@
 
 const chalk = require('chalk');
 const diffStrings = require('./diffStrings');
-const getType = require('./getType');
+const {getType} = require('jest-matcher-utils');
 const jsxLikeExtension = require('pretty-format/plugins/ReactTestComponent');
 const prettyFormat = require('pretty-format');
 

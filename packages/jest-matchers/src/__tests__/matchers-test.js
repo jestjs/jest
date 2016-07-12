@@ -11,7 +11,7 @@
 'use strict';
 
 const jestExpect = require('../').expect;
-const stringify = require('../utils').stringify;
+const {stringify} = require('jest-matcher-utils');
 
 describe('.toBe()', () => {
   it('does not throw', () => {

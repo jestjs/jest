@@ -13,7 +13,7 @@
 import type {MatchersObject, ExpectationResult} from '../types';
 
 const diff = require('jest-diff');
-const stringify = require('./utils').stringify;
+const {stringify} = require('jest-matcher-utils');
 
 const matchers: MatchersObject = {
   toBe(actual: any, expected: number): ExpectationResult {

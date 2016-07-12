@@ -9,6 +9,7 @@
  */
 'use strict';
 
+// Types of javascript values returned by `jest-matcher-utils$getType()`
 export type ValueType =
   | 'array'
   | 'boolean'
