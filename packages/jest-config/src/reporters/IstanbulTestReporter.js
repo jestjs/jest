@@ -23,7 +23,6 @@ const FAIL_COLOR = chalk.bold.red;
 class IstanbulTestReporter extends DefaultTestReporter {
 
   _collector: istanbul.Collector;
-  _reporter: istanbul.Reporter;
   _testCollectors: Object;
 
   constructor(customProcess: Process) {
@@ -31,7 +30,6 @@ class IstanbulTestReporter extends DefaultTestReporter {
 
     this._collector = new istanbul.Collector();
     this._testCollectors = Object.create(null);
-    this._reporter = new istanbul.Reporter();
   }
 
   onTestResult(
@@ -54,8 +52,8 @@ class IstanbulTestReporter extends DefaultTestReporter {
   onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
     aggregatedResults.success = super.onRunComplete(config, aggregatedResults);
 
-    const reporter = this._reporter;
     if (config.collectCoverage) {
+      const reporter = new istanbul.Reporter();
       try {
         if (config.coverageDirectory) {
           reporter.dir = config.coverageDirectory;
@@ -109,14 +107,6 @@ class IstanbulTestReporter extends DefaultTestReporter {
       }
     }
     return aggregatedResults.success;
-  }
-
-  getReporter() {
-    return this._reporter;
-  }
-
-  getCollector() {
-    return this._collector;
   }
 
   getTestCollectors() {
