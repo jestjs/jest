@@ -194,3 +194,34 @@ describe(
     });
   },
 );
+
+describe('.toContain()', () => {
+  [
+    [[1, 2, 3, 4], 1],
+    [['a', 'b', 'c', 'd'], 'a'],
+    [[undefined, null], null],
+    [[undefined, null], undefined],
+    [[Symbol.for('a')], Symbol.for('a')],
+    ['abcdef', 'abc'],
+    ['11112111', '2'],
+  ].forEach(([list, v]) => {
+    it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
+      jestExpect(list).toContain(v);
+      expect(() => jestExpect(list).not.toContain(v))
+        .toThrowError(/expected.*not to contain.*/);
+    });
+  });
+
+  [
+    [[1, 2, 3], 4],
+    [[null, undefined], 1],
+    [[{}, []], []],
+    [[{}, []], {}],
+  ].forEach(([list, v]) => {
+    it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
+      jestExpect(list).not.toContain(v);
+      expect(() => jestExpect(list).toContain(v))
+        .toThrowError(/expected.*to contain.*/);
+    });
+  });
+});
