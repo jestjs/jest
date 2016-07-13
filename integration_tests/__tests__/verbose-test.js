@@ -14,11 +14,10 @@ const runJest = require('../runJest');
 describe('Verbose', () => {
   it('outputs coverage report', () => {
     const result = runJest('verbose_logger', ['--verbose']);
-    const stdout = result.stdout.toString();
+    const stderr = result.stderr.toString();
 
     expect(result.status).toBe(1);
-
-    expect(stdout).toMatch('it works just fine');
-    expect(stdout).toMatch('it does not work');
+    expect(stderr).toMatch('it works just fine');
+    expect(stderr).toMatch('it does not work');
   });
 });

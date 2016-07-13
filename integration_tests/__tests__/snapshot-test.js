@@ -104,10 +104,10 @@ describe('Snapshot', () => {
   it('works with escaped characters', () => {
     // Write the first snapshot
     let result = runJest('snapshot-escape');
-    let stdout = result.stdout.toString();
+    let stderr = result.stderr.toString();
 
-    expect(stdout).toMatch('1 snapshot written');
-    expect(stdout).toMatch('1 total in 1 test suite, 1 snapshot,');
+    expect(stderr).toMatch('1 snapshot written');
+    expect(stderr).toMatch('1 total in 1 test suite, 1 snapshot,');
     expect(result.status).toBe(0);
 
     // Write the second snapshot
@@ -118,19 +118,19 @@ describe('Snapshot', () => {
     fs.writeFileSync(snapshotEscapeTestFile, newTestData, 'utf8');
 
     result = runJest('snapshot-escape');
-    stdout = result.stdout.toString();
+    stderr = result.stderr.toString();
 
-    expect(stdout).toMatch('1 snapshot written');
-    expect(stdout).toMatch('2 total in 1 test suite, 2 snapshots,');
+    expect(stderr).toMatch('1 snapshot written');
+    expect(stderr).toMatch('2 total in 1 test suite, 2 snapshots,');
     expect(result.status).toBe(0);
 
     // Now let's check again if everything still passes.
     // If this test doesn't pass, some snapshot data was not properly escaped.
     result = runJest('snapshot-escape');
-    stdout = result.stdout.toString();
+    stderr = result.stderr.toString();
 
-    expect(stdout).not.toMatch('Snapshot Summary');
-    expect(stdout).toMatch('2 total in 1 test suite, 2 snapshots,');
+    expect(stderr).not.toMatch('Snapshot Summary');
+    expect(stderr).toMatch('2 total in 1 test suite, 2 snapshots,');
     expect(result.status).toBe(0);
   });
 

@@ -46,7 +46,6 @@ module.exports = ({
     utils.replacePathSepForRegex(constants.NODE_MODULES),
   ],
   testRegex: '__tests__/.*\.js$',
-  testReporter: require.resolve('./reporters/IstanbulTestReporter'),
   testURL: 'about:blank',
   useStderr: false,
   verbose: false,

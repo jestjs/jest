@@ -54,7 +54,7 @@ describe('testcheck', () => {
   it('reports exceptions', () => {
     const result = runJest('testcheck', ['testcheck-exceptions-test.js']);
     expect(result.status).toBe(1);
-    expect(result.stdout.toString()).toMatch(
+    expect(result.stderr.toString()).toMatch(
       /Error: This error should be reported/
     );
   });

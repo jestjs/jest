@@ -13,9 +13,9 @@ const runJest = require('../runJest');
 describe('JSON Reporter', () => {
   it('fails the test suite if it contains no tests', () => {
     const result = runJest('empty_suite_error', []);
-    const stdout = result.stdout.toString();
-    expect(stdout).toMatch('Runtime Error');
-    expect(stdout).toMatch(
+    const stderr = result.stderr.toString();
+    expect(stderr).toMatch('Runtime Error');
+    expect(stderr).toMatch(
       'Error: Your test suite must contain at least one test.'
     );
   });

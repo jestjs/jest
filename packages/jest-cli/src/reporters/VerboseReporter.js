@@ -9,27 +9,20 @@
  */
 'use strict';
 
+import type {Config} from 'types/Config';
 import type {
+  AggregatedResult,
   AssertionResult,
   Suite,
+  TestResult,
 } from 'types/TestResult';
-import type {Process} from 'types/Process';
 
+const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 
-class VerboseLogger {
-  _process: Process;
-
-  constructor(customProcess?: ?Process) {
-    this._process = customProcess || process;
-  }
-
+class VerboseReporter extends DefaultReporter {
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
-    const root = {
-      suites: [],
-      tests: [],
-      title: '',
-    };
+    const root = {suites: [], tests: [], title: ''};
 
     testResults.forEach(testResult => {
       let targetSuite = root;
@@ -51,8 +44,22 @@ class VerboseLogger {
     return root;
   }
 
-  logTestResults(testResults: Array<AssertionResult>) {
-    this._logSuite(VerboseLogger.groupTestsBySuites(testResults), 0);
+  onTestResult(
+    config: Config,
+    testResult: TestResult,
+    results: AggregatedResult,
+  ) {
+    this._clearWaitingOn(config);
+    this._printTestFileHeaderAndFailures(config, testResult);
+    if (!testResult.testExecError) {
+      this._logTestResults(testResult.testResults);
+    }
+    this._printWaitingOn(results, config);
+  }
+
+
+  _logTestResults(testResults: Array<AssertionResult>) {
+    this._logSuite(VerboseReporter.groupTestsBySuites(testResults), 0);
     this._logLine();
   }
 
@@ -85,8 +92,8 @@ class VerboseLogger {
 
   _logLine(str?: string, indentLevel?: number) {
     const indentation = '  '.repeat(indentLevel || 0);
-    this._process.stdout.write(indentation + (str || '') + '\n');
+    process.stderr.write(indentation + (str || '') + '\n');
   }
 }
 
-module.exports = VerboseLogger;
+module.exports = VerboseReporter;
