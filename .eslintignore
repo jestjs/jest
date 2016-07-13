@@ -3,7 +3,7 @@
 **/vendor/**
 bin/
 docs/
-flowlibs/**
+flow-typed/**
 packages/*/build/**
 types/**
 website/
