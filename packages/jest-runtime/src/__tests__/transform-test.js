@@ -94,6 +94,7 @@ describe('transform', () => {
     config = {
       cache: true,
       cacheDirectory: '/cache/',
+      name: 'test',
       preprocessorIgnorePatterns: ['/node_modules/'],
     };
 
@@ -160,5 +161,17 @@ describe('transform', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
     expect(fs.writeFileSync).not.toBeCalled();
+
+    // Don't read from the cache when `config.cache` is false.
+    jest.resetModuleRegistry();
+    reset();
+    mockFs = mockFsCopy;
+    transformConfig.cache = false;
+    transform('/fruits/banana.js', transformConfig);
+
+    expect(fs.readFileSync.mock.calls.length).toBe(1);
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
+    expect(fs.writeFileSync).toBeCalled();
   });
 });

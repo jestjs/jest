@@ -16,9 +16,12 @@ const Resolver = require('jest-resolve');
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
 const fs = require('graceful-fs');
+const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
 const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
+
+const VERSION = require('../package.json').version;
 
 export type Processor = {
   process: (sourceText: string, sourcePath: Path) => string,
@@ -152,7 +155,11 @@ module.exports = (
       );
     }
 
-    const baseCacheDir = path.join(config.cacheDirectory, 'preprocess-cache');
+    const baseCacheDir = getCacheFilePath(
+      config.cacheDirectory,
+      'jest-transform-cache-' + config.name,
+      VERSION,
+    );
     const cacheKey = getCacheKey(preprocessor, content, filename, config);
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.

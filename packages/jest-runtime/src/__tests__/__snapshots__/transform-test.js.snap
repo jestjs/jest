@@ -15,6 +15,7 @@ Path: /fruits/banana.js
 Config: {
   \"cache\": true,
   \"cacheDirectory\": \"/cache/\",
+  \"name\": \"test\",
   \"preprocessorIgnorePatterns\": [
     \"/node_modules/\"
   ],
