@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {MatchersObject} from '../types';
+import type {MatchersObject} from './types';
 
 const diff = require('jest-diff');
 const {stringify} = require('jest-matcher-utils');
