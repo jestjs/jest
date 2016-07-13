@@ -11,6 +11,8 @@
 
 jest.disableAutomock();
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+
 const path = require('path');
 
 const rootDir = path.resolve(__dirname, 'test_root');

@@ -10,10 +10,12 @@
 'use strict';
 
 const createDirectory = require('jest-util').createDirectory;
+const fileExists = require('jest-file-exists');
 const fs = require('fs');
+const jsxLikeExtension = require('pretty-format/plugins/ReactTestComponent');
 const path = require('path');
 const prettyFormat = require('pretty-format');
-const jsxLikeExtension = require('pretty-format/plugins/ReactTestComponent');
+
 const SNAPSHOT_EXTENSION = 'snap';
 
 import type {Path} from 'types/Config';
@@ -46,13 +48,6 @@ const unescape = string => string.replace(/\\(\"|\\|\')/g, '$1');
 // to make the content of the snapshot easier to read
 const addExtraLineBreaks =
   string => string.includes('\n') ? `\n${string}\n` : string;
-
-const fileExists = (filePath: Path): boolean => {
-  try {
-    return fs.statSync(filePath).isFile();
-  } catch (e) {}
-  return false;
-};
 
 class SnapshotFile {
 

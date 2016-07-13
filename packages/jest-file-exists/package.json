@@ -1,5 +1,5 @@
 {
-  "name": "jest-resolve",
+  "name": "jest-file-exists",
   "version": "13.2.2",
   "repository": {
     "type": "git",
@@ -7,13 +7,8 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "dependencies": {
-    "browser-resolve": "^1.11.2",
-    "jest-file-exists": "^13.2.2",
-    "jest-haste-map": "^13.2.2",
-    "resolve": "^1.1.6"
-  },
   "jest": {
+    "automock": false,
     "rootDir": "./src",
     "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"

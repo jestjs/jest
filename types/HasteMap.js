@@ -18,13 +18,7 @@ export type HasteContext = {
   resolver: HasteResolver,
 };
 
-export type HasteMap = {
-  clocks: WatchmanClocks,
-  files: {[filepath: string]: FileMetaData},
-
-  map: {[id: string]: ModuleMapItem},
-  mocks: {[id: string]: string},
-};
+export type HasteMap = FileMap & ModuleMap;
 
 export type FileMap = {
   clocks: WatchmanClocks,

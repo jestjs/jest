@@ -14,10 +14,11 @@ import type {HasteContext} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {ResolveModuleConfig} from '../../jest-resolve/src';
 
-const Resolver = require('jest-resolve');
+const DependencyResolver = require('jest-resolve-dependencies');
 
 const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
+const fileExists = require('jest-file-exists');
 const path = require('path');
 const utils = require('jest-util');
 
@@ -147,7 +148,7 @@ class SearchSource {
   ): SearchResult {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
-      if (Resolver.fileExists(maybeFile)) {
+      if (fileExists(maybeFile, this._hasteContext.moduleMap.files)) {
         return this._filterTestPathsWithStats([maybeFile]);
       }
     }
@@ -156,8 +157,12 @@ class SearchSource {
   }
 
   findRelatedTests(allPaths: Set<Path>): SearchResult {
+    const dependencyResolver = new DependencyResolver(
+      this._hasteContext.resolver,
+      this._hasteContext.moduleMap,
+    );
     return {
-      paths: this._hasteContext.resolver.resolveInverseDependencies(
+      paths: dependencyResolver.resolveInverse(
         allPaths,
         this.isTestFilePath.bind(this),
         {
