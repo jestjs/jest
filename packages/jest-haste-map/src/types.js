@@ -10,6 +10,7 @@
 'use strict';
 
 import type {Error} from 'types/TestResult';
+import type {ModuleMetaData} from 'types/HasteMap';
 
 export type IgnoreMatcher = (item: string) => boolean;
 
@@ -18,7 +19,7 @@ export type WorkerMessage = {
 };
 export type WorkerMetadata = {
   id: ?string,
-  module: ?[string, number],
+  module: ?ModuleMetaData,
   dependencies: ?Array<string>,
 };
 export type WorkerCallback = (error: ?Error, metaData: ?WorkerMetadata) => void;

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type HasteMap from '../../jest-haste-map/src';
+import type {HasteContext} from 'types/HasteMap';
 import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
@@ -59,9 +59,9 @@ const fileExists = filePath => {
 
 module.exports = {
   EXTENSION,
-  cleanup(hasteMap: HasteMap, update: boolean) {
-    const extension = new RegExp('\\.' + EXTENSION);
-    return hasteMap.matchFiles(extension).then(files => {
+  cleanup(hasteContext: HasteContext, update: boolean) {
+    const pattern = '\\.' + EXTENSION + '$';
+    return hasteContext.instance.matchFiles(pattern).then(files => {
       const filesRemoved = files
         .filter(snapshotFile => !fileExists(path.resolve(
           path.dirname(snapshotFile),

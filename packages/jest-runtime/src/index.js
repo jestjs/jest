@@ -12,9 +12,9 @@
 
 import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
-import type {HasteResolverContext} from 'types/Runtime';
-import type Resolver from '../../jest-resolve/src';
+import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
+import type Resolver from '../../jest-resolve/src';
 
 const createHasteMap = require('jest-haste-map').create;
 const createResolver = require('jest-resolve').create;
@@ -136,7 +136,7 @@ class Runtime {
   static buildHasteMap(
     config: Config,
     options: {maxWorkers: number},
-  ): Promise<HasteResolverContext> {
+  ): Promise<HasteContext> {
     utils.createDirectory(config.cacheDirectory);
     const instance = createHasteMap(config, {
       maxWorkers: options.maxWorkers,

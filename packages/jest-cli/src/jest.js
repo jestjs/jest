@@ -85,46 +85,48 @@ function getWatcher(config, packageRoot, callback) {
 function runJest(config, argv, pipe, onComplete) {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
-  const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-  const source = new SearchSource(hasteMap, config);
-  return source.getTestPaths(patternInfo)
-    .then(data => {
-      if (!data.paths.length) {
-        pipe.write(
-          source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
-        );
-      }
-      return data.paths;
-    })
-    .then(testPaths =>
-      new TestRunner(hasteMap, config, {maxWorkers}).runTests(testPaths),
-    )
-    .then(runResults => {
-      if (config.testResultsProcessor) {
-        /* $FlowFixMe */
-        const processor = require(config.testResultsProcessor);
-        processor(runResults);
-      }
-      if (argv.json) {
-        process.stdout.write(
-          JSON.stringify(formatTestResults(runResults, config)),
-        );
-      }
-      return runResults;
-    })
-    .then(runResults => onComplete && onComplete(runResults.success))
-    .catch(error => {
-      if (error.type == 'DependencyGraphError') {
-        throw new Error([
-          '\nError: ' + error.message + '\n\n',
-          'This is most likely a setup ',
-          'or configuration issue. To resolve a module name collision, ',
-          'change or blacklist one of the offending modules. See ',
-          'http://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string',
-        ].join(''));
-      } else {
-        throw error;
-      }
+  return Runtime.buildHasteMap(config, {maxWorkers})
+    .then(hasteMap => {
+      const source = new SearchSource(hasteMap, config);
+      return source.getTestPaths(patternInfo)
+        .then(data => {
+          if (!data.paths.length) {
+            pipe.write(
+              source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
+            );
+          }
+          return data.paths;
+        })
+        .then(testPaths =>
+          new TestRunner(hasteMap, config, {maxWorkers}).runTests(testPaths),
+        )
+        .then(runResults => {
+          if (config.testResultsProcessor) {
+            /* $FlowFixMe */
+            const processor = require(config.testResultsProcessor);
+            processor(runResults);
+          }
+          if (argv.json) {
+            process.stdout.write(
+              JSON.stringify(formatTestResults(runResults, config)),
+            );
+          }
+          return runResults;
+        })
+        .then(runResults => onComplete && onComplete(runResults.success))
+        .catch(error => {
+          if (error.type == 'DependencyGraphError') {
+            throw new Error([
+              '\nError: ' + error.message + '\n\n',
+              'This is most likely a setup ',
+              'or configuration issue. To resolve a module name collision, ',
+              'change or blacklist one of the offending modules. See ',
+              'http://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string',
+            ].join(''));
+          } else {
+            throw error;
+          }
+        });
     });
 }
 
