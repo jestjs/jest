@@ -20,6 +20,7 @@ import type {
 } from './types';
 
 const matchers = require('./matchers');
+const spyMatchers = require('./spy-matchers');
 const GLOBAL_MATCHERS_OBJECT_SYMBOL = Symbol.for('$$jest-matchers-object');
 
 if (!global[GLOBAL_MATCHERS_OBJECT_SYMBOL]) {
@@ -79,6 +80,7 @@ const addMatchers = (matchersObj: MatchersObject): void => {
 
 // add default jest matchers
 addMatchers(matchers);
+addMatchers(spyMatchers);
 
 module.exports = {
   addMatchers,
