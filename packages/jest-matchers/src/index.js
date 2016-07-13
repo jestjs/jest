@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {ThrowingMatcherFn, ExpectationResult} from '../types';
+import type {ThrowingMatcherFn, ExpectationResult} from './types';
 
 const matchers = require('./matchers');
 
