@@ -12,6 +12,7 @@
 
 import type {Path} from 'types/Config';
 
+const chalk = require('chalk');
 const fs = require('graceful-fs');
 const path = require('path');
 
@@ -33,11 +34,12 @@ function getJest(packageRoot: Path) {
         (dependencies && dependencies['jest-cli']) ||
         (devDependencies && devDependencies['jest-cli'])
       ) {
-        console.error(
-          'Please run `npm install` to use the version of Jest intended for ' +
-          'this project.',
-        );
-        process.on('exit', () => process.exit(1));
+        process.on('exit', () => console.log(
+          chalk.red(
+            'Please run `npm install` to use the version of Jest intended ' +
+            'for this project.',
+          ),
+        ));
       }
     }
     return jest;
