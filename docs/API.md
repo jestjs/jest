@@ -542,7 +542,7 @@ along with any other options: `['node_modules', 'bower_components']`
 
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
-When imported, these mapped modules come automatically unmocked.
+Modules that are mapped to an alias are unmocked by default, regardless of whether automocking is enabled or not.
 
 Use `<rootDir>` string token to refer to [`rootDir`](#rootdir-string) value if you want to use file paths.
 
