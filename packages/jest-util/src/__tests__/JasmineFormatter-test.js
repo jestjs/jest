@@ -11,14 +11,11 @@
 
 jest.disableAutomock();
 
-const chalk = require('chalk');
-const jasmine = require('../../../jest-jasmine1/vendor/jasmine-1.3.0').jasmine;
-const jasmine2Require = require('../../../jest-jasmine2/vendor/jasmine-2.4.1.js');
-const jasmine2 = jasmine2Require.core(jasmine2Require);
-
 const JasmineFormatter = require('../JasmineFormatter');
 
+const chalk = require('chalk');
 const jsdom = require('jsdom').jsdom;
+
 const fixture = '<html><body id="foo"></body></html>';
 
 let formatter;
@@ -26,13 +23,7 @@ let formatter;
 describe('JasmineFormatter', () => {
   describe('pretty printer', () => {
     beforeEach(() => {
-      formatter = new JasmineFormatter(jasmine2, {global: {}});
-    });
-
-    it('should handle JSDOM nodes with Jasmine 1.x', () => {
       formatter = new JasmineFormatter(jasmine, {global: {}});
-
-      expect(() => formatter.prettyPrint(jsdom(fixture).body)).not.toThrow();
     });
 
     it('should handle JSDOM nodes with Jasmine 2.x', () => {

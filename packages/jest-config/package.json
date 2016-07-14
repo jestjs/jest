@@ -12,7 +12,6 @@
     "istanbul": "^0.4.2",
     "jest-environment-jsdom": "^13.2.2",
     "jest-environment-node": "^13.2.2",
-    "jest-jasmine1": "^13.2.2",
     "jest-jasmine2": "^13.2.3",
     "jest-mock": "^13.2.2",
     "jest-resolve": "^13.2.2",

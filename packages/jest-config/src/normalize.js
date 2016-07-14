@@ -131,9 +131,7 @@ function normalize(config, argv) {
     config.testRunner = argv.testRunner;
   }
 
-  if (config.testRunner === 'jasmine1') {
-    config.testRunner = require.resolve('jest-jasmine1');
-  } else if (!config.testRunner || config.testRunner === 'jasmine2') {
+  if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
     try {
