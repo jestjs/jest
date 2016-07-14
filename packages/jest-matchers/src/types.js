@@ -22,3 +22,8 @@ export type RawMatcherFn = (
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatchersObject = {[id:string]: RawMatcherFn};
+export type Expect = (expected: any) => ExpectationObject;
+export type ExpectationObject = {
+  [id: string]: ThrowingMatcherFn,
+  not: {[id: string]: ThrowingMatcherFn},
+};
