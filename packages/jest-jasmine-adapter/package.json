@@ -1,5 +1,6 @@
 {
-  "name": "jest-jasmine2",
+  "name": "jest-jasmine-adapter",
+  "description": "collection of jasmine globals and util functions to make jest backwards compatible with jasmine",
   "version": "13.2.3",
   "repository": {
     "type": "git",
@@ -7,20 +8,17 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "dependencies": {
-    "graceful-fs": "^4.1.3",
-    "jasmine-check": "^0.1.4",
-    "jest-jasmine-adapter": "13.2.3",
-    "jest-matchers": "^13.2.3",
-    "jest-snapshot": "^13.2.3",
-    "jest-util": "^13.2.2"
-  },
   "jest": {
+    "automock": false,
     "rootDir": "./src",
     "scriptPreprocessor": "../../babel-jest",
     "testEnvironment": "node"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
+  },
+  "dependencies": {
+    "jasmine": "^2.4.1",
+    "jest-matchers": "13.2.3"
   }
 }

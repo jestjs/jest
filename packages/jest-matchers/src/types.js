@@ -20,6 +20,7 @@ export type RawMatcherFn = (
   options: any,
 ) => ExpectationResult;
 
+export type MatcherContext = {isNot: boolean};
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatchersObject = {[id:string]: RawMatcherFn};
 export type Expect = (expected: any) => ExpectationObject;

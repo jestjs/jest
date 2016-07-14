@@ -48,236 +48,99 @@ const SHOULD_NOT_HAVE_CALLED_WITH =
 const SHOULD_NOT_HAVE_LAST_CALLED_WITH =
   `Shouldn't have been last called with\n${formatter.prettyPrint([1, {}, ''])}`;
 
-const getMockedFunctionWithExpectationResult = expectationResult => {
-  const mockedFunction = jest.fn();
-  const expectation = expect(mockedFunction);
-  if (expectation.addExpectationResult) {
-    expectation.addExpectationResult =
-      expectation.not.addExpectationResult =
-        expectationResult;
-  } else {
-    // skip this tests for jasmine 1 for now by returning a mocked expectation
-    return {
-      toBeCalled() {},
-      toBeCalledWith() {},
-      lastCalledWith() {},
-      not: {
-        toBeCalled() {},
-        toBeCalledWith() {},
-        lastCalledWith() {},
-      },
-      function: mockedFunction,
-    };
-  }
-  expectation.function = mockedFunction;
-  return expectation;
-};
+describe('toBeCalled', () => {
+  it('shows a custom message when the test fails', () => {
+    const fn = jest.fn();
+    expect(() => expect(fn).toBeCalled()).toThrowError(
+      CALLED_AT_LEAST_ONCE,
+    );
+  });
 
-describe('jasmine', () => {
+  it('shows another message for failing a "not" expression', () => {
+    const fn = jest.fn();
+    fn();
+    expect(() => expect(fn).not.toBeCalled()).toThrowError(
+      SHOULD_NOT_BE_CALLED,
+    );
+  });
 
-  describe('when using a getter for a custom matcher message', () => {
+  it(`doesn't show any message when succeeding`, () => {
+    const fn = jest.fn();
+    fn();
+    expect(fn).toBeCalled();
+  });
+});
 
-    it(`doesn't access message if test passes`, () => {
-      if (jasmine.addMatchers) {
-        let actual = false;
-        jasmine.addMatchers({
-          toTestJasmine: () => ({
-            compare: () => ({
-              pass: true,
-              get message() {
-                actual = true;
-                return 'should never be called';
-              },
-            }),
-          }),
-        });
-        const expectation = getMockedFunctionWithExpectationResult(
-          (passed, result) => {
-            expect(passed).toBe(true);
-            expect(result.message).toBe('');
-          },
-        );
-        expectation.toTestJasmine();
-        expect(actual).toBe(false);
-      }
-    });
+describe('lastCalledWith', () => {
+  it(`doesn't show any message when succeding`, () => {
+    const fn = jest.fn();
+    fn(1, {}, '');
+    expect(fn).lastCalledWith(1, {}, '');
+  });
 
-    it('accesses the message when the test fails', () => {
-      if (jasmine.addMatchers) {
-        const SHOULD_BE_CALLED = 'should be called';
-        let actual = false;
-        jasmine.addMatchers({
-          toTestJasmine: () => ({
-            compare: () => ({
-              pass: false,
-              get message() {
-                actual = true;
-                return SHOULD_BE_CALLED;
-              },
-            }),
-          }),
-        });
+  it('shows another message for failing a "not" expression', () => {
+    const fn = jest.fn();
+    fn(1, {}, '');
+    expect(() => expect(fn).not.lastCalledWith(1, {}, '')).toThrowError(
+      SHOULD_NOT_HAVE_LAST_CALLED_WITH,
+    );
+  });
 
-        const expectation = getMockedFunctionWithExpectationResult(
-          (passed, result) => {
-            expect(passed).toBe(false);
-            expect(result.message).toBe(SHOULD_BE_CALLED);
-          },
-        );
-        expectation.toTestJasmine();
-        expect(actual).toBe(true);
-      }
-    });
-
+  it('shows a custom message when the test fails', () => {
+    const fn = jest.fn();
+    fn(1, {}, '');
+    expect(() => expect(fn).lastCalledWith(1, {}, 'Error')).toThrowError(
+      NOT_EXPECTED_VALUES_LAST_TIME,
+    );
   });
 
 });
 
-describe('Jest custom matchers in Jasmine 2', () => {
-
-  describe('toBeCalled', () => {
-
-    it('shows a custom message when the test fails', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(CALLED_AT_LEAST_ONCE);
-        },
-      );
-      expectation.toBeCalled();
-    });
-
-    it('shows another message for failing a "not" expression', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(SHOULD_NOT_BE_CALLED);
-        },
-      );
-      expectation.function();
-      expectation.not.toBeCalled();
-    });
-
-    it(`doesn't show any message when succeeding`, () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(true);
-          expect(result.message).toBe('');
-        },
-      );
-      expectation.function();
-      expectation.toBeCalled();
-    });
-
+describe('toBeCalledWith', () => {
+  it(`doesn't show any message when succeeding`, () => {
+    const fn = jest.fn();
+    fn(1, {}, '');
+    expect(fn).toBeCalledWith(1, {}, '');
   });
 
-  describe('lastCalledWith', () => {
-
-    it(`doesn't show any message when succeding`, () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(true);
-          expect(result.message).toBe('');
-        },
-      );
-      expectation.function(1, {}, '');
-      expectation.lastCalledWith(1, {}, '');
-    });
-
-    it('shows another message for failing a "not" expression', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(SHOULD_NOT_HAVE_LAST_CALLED_WITH);
-        },
-      );
-      expectation.function(1, {}, '');
-      expectation.not.lastCalledWith(1, {}, '');
-    });
-
-    it('shows a custom message when the test fails', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(NOT_EXPECTED_VALUES_LAST_TIME);
-        },
-      );
-
-      expectation.function(1, {}, '');
-      expectation.lastCalledWith(1, {}, 'Error');
-    });
-
+  it('shows another message for failing a "not" expression', () => {
+    const fn = jest.fn();
+    fn(1, {}, '');
+    expect(() => expect(fn).not.toBeCalledWith(1, {}, '')).toThrowError(
+      SHOULD_NOT_HAVE_CALLED_WITH,
+    );
   });
 
-  describe('toBeCalledWith', () => {
-
-    it(`doesn't show any message when succeeding`, () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(true);
-          expect(result.message).toBe('');
-        },
-      );
-      expectation.function(1, {}, '');
-      expectation.toBeCalledWith(1, {}, '');
-    });
-
-    it('shows another message for failing a "not" expression', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(SHOULD_NOT_HAVE_CALLED_WITH);
-        },
-      );
-      expectation.function(1, {}, '');
-      expectation.not.toBeCalledWith(1, {}, '');
-    });
-
-    it('shows a custom message when the test fails without other calls when calls >= 3', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(NOT_EXPECTED_VALUES);
-        },
-      );
-
-      expectation.function(1, {}, '');
-      expectation.toBeCalledWith(1, {}, 'Error');
-    });
-
-    it('shows a custom message with amount of singular amount of other calls when calls === 4', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(NOT_EXPECTED_VALUES_EXACTLY_FOUR);
-        },
-      );
-
-      expectation.function(1);
-      expectation.function(2);
-      expectation.function(3);
-      expectation.function(4);
-      expectation.toBeCalledWith(5);
-    });
-
-    it('shows a custom message with plurar amount of other calls when calls > 4', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(NOT_EXPECTED_VALUES_MORE_THAN_FOUR);
-        },
-      );
-
-      expectation.function(1);
-      expectation.function(2);
-      expectation.function(3);
-      expectation.function(4);
-      expectation.function(6);
-      expectation.function(7);
-      expectation.function(8);
-      expectation.toBeCalledWith(5);
-    });
-
+  it('shows a custom message when the test fails without other calls when calls >= 3', () => {
+    const fn = jest.fn();
+    fn(1, {}, '');
+    expect(() => expect(fn).toBeCalledWith(1, {}, 'Error')).toThrowError(
+      NOT_EXPECTED_VALUES,
+    );
   });
 
+  it('shows a custom message with amount of singular amount of other calls when calls === 4', () => {
+    const fn = jest.fn();
+    fn(1);
+    fn(2);
+    fn(3);
+    fn(4);
+    expect(() => expect(fn).toBeCalledWith(5)).toThrowError(
+      NOT_EXPECTED_VALUES_EXACTLY_FOUR,
+    );
+  });
+
+  it('shows a custom message with plurar amount of other calls when calls > 4', () => {
+    const fn = jest.fn();
+    fn(1);
+    fn(2);
+    fn(3);
+    fn(4);
+    fn(6);
+    fn(7);
+    fn(8);
+    expect(() => expect(fn).toBeCalledWith(5)).toThrowError(
+      NOT_EXPECTED_VALUES_MORE_THAN_FOUR,
+    );
+  });
 });
