@@ -73,11 +73,9 @@ class JasmineFormatter {
       message = ERROR_TITLE_COLOR(result.message);
     }
 
-    // error message & stack live on 'trace' field in jasmine 1.3
-    const error = result.trace ? result.trace : result;
-    if (!this._config.noStackTrace && error.stack) {
-      const errorMessage = error.message || '';
-      message = error.stack
+    if (!this._config.noStackTrace && result.stack) {
+      const errorMessage = result.message || '';
+      message = result.stack
         .replace(message, errorMessage)
         .replace(/^.*Error:\s*/, '');
     }

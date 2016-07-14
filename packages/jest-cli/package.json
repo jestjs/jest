@@ -10,7 +10,6 @@
     "jest-config": "^13.2.3",
     "jest-environment-jsdom": "^13.2.2",
     "jest-haste-map": "^13.2.2",
-    "jest-jasmine1": "^13.2.2",
     "jest-jasmine2": "^13.2.3",
     "jest-mock": "^13.2.2",
     "jest-resolve": "^13.2.2",
@@ -34,16 +33,6 @@
     "url": "https://github.com/facebook/jest"
   },
   "scripts": {
-    "jest-cache": "node bin/jest.js",
-    "jest-heap-usage": "node bin/jest.js --runInBand --logHeapUsage",
-    "jest-in-band": "node bin/jest.js --runInBand",
-    "jest-jasmine1": "node bin/jest.js --testRunner=jasmine1",
-    "jest-json": "node bin/jest.js --json",
-    "jest-no-cache": "node bin/jest.js --no-cache",
-    "jest-node-cache": "node bin/jest.js --no-watchman",
-    "jest-node-no-cache": "node bin/jest.js --no-watchman --no-cache",
-    "jest-verbose": "node bin/jest.js --verbose",
-    "lint": "eslint .",
     "test": "./bin/jest.js"
   },
   "jest": {

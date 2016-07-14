@@ -88,7 +88,6 @@ runCommands('node bin/jest.js --no-cache', 'packages/jest-cli');
 runCommands('node bin/jest.js', 'packages/jest-cli');
 runCommands('node bin/jest.js --no-watchman --no-cache', 'packages/jest-cli');
 runCommands('node bin/jest.js --no-watchman', 'packages/jest-cli');
-runCommands('node bin/jest.js --testRunner=jasmine1', 'packages/jest-cli');
 runCommands('node bin/jest.js --runInBand', 'packages/jest-cli');
 runCommands('node bin/jest.js --runInBand --logHeapUsage', 'packages/jest-cli');
 runCommands('node bin/jest.js --notify', 'packages/jest-cli');
