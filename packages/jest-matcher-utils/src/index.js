@@ -75,7 +75,43 @@ const stringify = (obj: any): string => {
   });
 };
 
+const ensureNoExpected = (expected: any, matcherName: string) => {
+  matcherName || (matcherName = 'This');
+  if (typeof expected !== 'undefined') {
+    throw new Error(`${matcherName} matcher does not accept any arguments`);
+  }
+};
+
+const ensureActualIsNumber = (actual: any, matcherName: string) => {
+  matcherName || (matcherName = 'This matcher');
+  if (typeof actual !== 'number') {
+    throw new Error(
+      `${matcherName} actual value should be a number. ` +
+      `'${typeof actual}' was passed`,
+    );
+  }
+};
+
+const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
+  matcherName || (matcherName = 'This matcher');
+  if (typeof expected !== 'number') {
+    throw new Error(
+      `${matcherName} expected value should be a number. ` +
+      `'${typeof expected}' was passed`,
+    );
+  }
+};
+
+const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
+  ensureActualIsNumber(actual, matcherName);
+  ensureExpectedIsNumber(expected, matcherName);
+};
+
 module.exports = {
   getType,
   stringify,
+  ensureNoExpected,
+  ensureActualIsNumber,
+  ensureExpectedIsNumber,
+  ensureNumbers,
 };

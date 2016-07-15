@@ -13,7 +13,11 @@
 import type {MatchersObject} from './types';
 
 const diff = require('jest-diff');
-const {stringify} = require('jest-matcher-utils');
+const {
+  stringify,
+  ensureNoExpected,
+  ensureNumbers,
+} = require('jest-matcher-utils');
 
 const matchers: MatchersObject = {
   toBe(actual: any, expected: number) {
@@ -193,29 +197,6 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
-};
-
-const ensureNoExpected = (expected, matcherName) => {
-  matcherName || (matcherName = 'This');
-  if (typeof expected !== 'undefined') {
-    throw new Error(`${matcherName} matcher does not accept any arguments`);
-  }
-};
-
-const ensureNumbers = (actual, expected, matcherName) => {
-  matcherName || (matcherName = 'This matcher');
-  if (typeof actual !== 'number') {
-    throw new Error(
-      `${matcherName} actual value should be a number. ` +
-      `'${typeof actual}' was passed`,
-    );
-  }
-  if (typeof expected !== 'number') {
-    throw new Error(
-      `${matcherName} expected value should be a number. ` +
-      `'${typeof expected}' was passed`,
-    );
-  }
 };
 
 module.exports = matchers;
