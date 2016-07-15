@@ -15,8 +15,10 @@ import type {
   TestResult,
 } from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
-import type {HasteResolverContext} from 'types/Runtime';
+import type {HasteContext} from 'types/HasteMap';
 import type BaseReporter from './reporters/BaseReporter';
+
+const Test = require('./Test');
 
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
@@ -27,7 +29,6 @@ const SummaryReporter = require('./reporters/SummaryReporter');
 const VerboseReporter = require('./reporters/VerboseReporter');
 const promisify = require('./lib/promisify');
 const snapshot = require('jest-snapshot');
-const Test = require('./Test');
 const workerFarm = require('worker-farm');
 
 type Options = {
@@ -47,18 +48,18 @@ type OnTestResult = (
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
-  _hasteMap: Promise<HasteResolverContext>;
+  _hasteContext: HasteContext;
   _config: Config;
   _options: Options;
   _dispatcher: ReporterDispatcher;
   _testPerformanceCache: Object | null;
 
   constructor(
-    hasteMap: Promise<HasteResolverContext>,
+    hasteMap: HasteContext,
     config: Config,
     options: Options,
   ) {
-    this._hasteMap = hasteMap;
+    this._hasteContext = hasteMap;
     this._config = config;
     this._options = options;
     this._dispatcher = this._setupReporters();
@@ -153,11 +154,7 @@ class TestRunner {
         aggregatedResults.success =
           aggregatedResults.numFailedTests === 0 &&
           aggregatedResults.numRuntimeErrorTestSuites === 0;
-        return this._hasteMap
-          .then(hasteMap => snapshot.cleanup(
-            hasteMap.instance,
-            config.updateSnapshot,
-          ))
+        return snapshot.cleanup(this._hasteContext, config.updateSnapshot)
           .then(status => {
             aggregatedResults.snapshotFilesRemoved = status.filesRemoved;
             aggregatedResults.didUpdate = config.updateSnapshot;
@@ -188,7 +185,7 @@ class TestRunner {
   ) {
     return testPaths.reduce((promise, path) =>
       promise
-        .then(() => this._hasteMap)
+        .then(() => this._hasteContext)
         .then(data => new Test(path, this._config, data.resolver).run())
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
@@ -202,31 +199,28 @@ class TestRunner {
     onRunFailure: OnRunFailure,
   ) {
     const config = this._config;
-    return this._hasteMap
-      .then(() => {
-        const farm = workerFarm({
-          autoStart: true,
-          maxConcurrentCallsPerWorker: 1,
-          maxRetries: 2, // Allow for a couple of transient errors.
-          maxConcurrentWorkers: this._options.maxWorkers,
-        }, TEST_WORKER_PATH);
-        const runTest = promisify(farm);
-        return Promise.all(testPaths.map(
-          path => runTest({path, config})
-            .then(testResult => onTestResult(path, testResult))
-            .catch(err => {
-              onRunFailure(path, err);
-              if (err.type === 'ProcessTerminatedError') {
-                console.error(
-                  'A worker process has quit unexpectedly! ' +
-                  'Most likely this an initialization error.',
-                );
-                process.exit(1);
-              }
-            })),
-        )
-        .then(() => workerFarm.end(farm));
-      });
+    const farm = workerFarm({
+      autoStart: true,
+      maxConcurrentCallsPerWorker: 1,
+      maxRetries: 2, // Allow for a couple of transient errors.
+      maxConcurrentWorkers: this._options.maxWorkers,
+    }, TEST_WORKER_PATH);
+    const runTest = promisify(farm);
+    return Promise.all(testPaths.map(
+      path => runTest({path, config})
+        .then(testResult => onTestResult(path, testResult))
+        .catch(err => {
+          onRunFailure(path, err);
+          if (err.type === 'ProcessTerminatedError') {
+            console.error(
+              'A worker process has quit unexpectedly! ' +
+              'Most likely this an initialization error.',
+            );
+            process.exit(1);
+          }
+        })),
+    )
+    .then(() => workerFarm.end(farm));
   }
 
   _setupReporters(): ReporterDispatcher {

@@ -9,13 +9,11 @@
  */
 'use strict';
 
-import type {HasteMap as HasteMapObject} from 'types/HasteMap';
-import type {Config} from 'types/Config';
+import type {HasteMap as HasteMapObject, ModuleMetaData} from 'types/HasteMap';
+import type {Config, Path} from 'types/Config';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
 import typeof FastpathType from './fastpath';
-
-type Path = string;
 
 const H = require('./constants');
 
@@ -111,7 +109,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  * type HasteMap = {
  *   clocks: WatchmanClocks,
  *   files: {[filepath: string]: FileMetaData},
- *   map: {[id: string]: ModuleMap},
+ *   map: {[id: string]: ModuleMapItem},
  *   mocks: {[id: string]: string},
  * }
  *
@@ -128,7 +126,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  * // Modules can be targeted to a specific platform based on the file name.
  * // Example: Platform.ios.js and Platform.android.js will both map to the same
  * // `Platform` module. The platform should be specified during resolution.
- * type ModuleMap = {[platform: string]: ModuleMetaData};
+ * type ModuleMapItem = {[platform: string]: ModuleMetaData};
  *
  * //
  * type ModuleMetaData = {
@@ -288,7 +286,7 @@ class HasteMap {
     const mocks = Object.create(null);
     const mocksPattern = this._options.mocksPattern;
     const promises = [];
-    const setModule = (id: string, module: [string, number]) => {
+    const setModule = (id: string, module: ModuleMetaData) => {
       if (!map[id]) {
         map[id] = Object.create(null);
       }

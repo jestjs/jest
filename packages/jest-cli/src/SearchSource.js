@@ -10,14 +10,15 @@
 
 'use strict';
 
-import type {HasteResolverContext} from 'types/Runtime';
+import type {HasteContext} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {ResolveModuleConfig} from '../../jest-resolve/src';
 
-const Resolver = require('jest-resolve');
+const DependencyResolver = require('jest-resolve-dependencies');
 
 const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
+const fileExists = require('jest-file-exists');
 const path = require('path');
 const utils = require('jest-util');
 
@@ -58,7 +59,7 @@ const pluralize = (
 ) => `${count} ${word}${count === 1 ? '' : ending}`;
 
 class SearchSource {
-  _hasteMap: Promise<HasteResolverContext>;
+  _hasteContext: HasteContext;
   _config: SearchSourceConfig;
   _options: ResolveModuleConfig;
   _testPathDirPattern: RegExp;
@@ -71,11 +72,11 @@ class SearchSource {
   };
 
   constructor(
-    hasteMap: Promise<HasteResolverContext>,
+    hasteMap: HasteContext,
     config: SearchSourceConfig,
     options?: ResolveModuleConfig,
   ) {
-    this._hasteMap = hasteMap;
+    this._hasteContext = hasteMap;
     this._config = config;
     this._options = options || {};
 
@@ -129,13 +130,11 @@ class SearchSource {
 
   _getAllTestPaths(
     testPathPattern: StrOrRegExpPattern,
-  ): Promise<SearchResult> {
-    return this._hasteMap.then(data => (
-      this._filterTestPathsWithStats(
-        Object.keys(data.moduleMap.files),
-        testPathPattern,
-      )
-    ));
+  ): SearchResult {
+    return this._filterTestPathsWithStats(
+      Object.keys(this._hasteContext.moduleMap.files),
+      testPathPattern,
+    );
   }
 
   isTestFilePath(path: Path): boolean {
@@ -146,33 +145,34 @@ class SearchSource {
 
   findMatchingTests(
     testPathPattern: StrOrRegExpPattern,
-  ): Promise<SearchResult> {
+  ): SearchResult {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
-      if (Resolver.fileExists(maybeFile)) {
-        return Promise.resolve(
-          this._filterTestPathsWithStats([maybeFile]),
-        );
+      if (fileExists(maybeFile, this._hasteContext.moduleMap.files)) {
+        return this._filterTestPathsWithStats([maybeFile]);
       }
     }
 
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(allPaths: Set<Path>): Promise<SearchResult> {
-    return this._hasteMap
-      .then(data => ({
-        paths: data.resolver.resolveInverseDependencies(
-          allPaths,
-          this.isTestFilePath.bind(this),
-          {
-            skipNodeResolution: this._options.skipNodeResolution,
-          },
-        ),
-      }));
+  findRelatedTests(allPaths: Set<Path>): SearchResult {
+    const dependencyResolver = new DependencyResolver(
+      this._hasteContext.resolver,
+      this._hasteContext.moduleMap,
+    );
+    return {
+      paths: dependencyResolver.resolveInverse(
+        allPaths,
+        this.isTestFilePath.bind(this),
+        {
+          skipNodeResolution: this._options.skipNodeResolution,
+        },
+      ),
+    };
   }
 
-  findOnlyChangedTestPaths(): Promise<SearchResult> {
+  findChangedTests(): Promise<SearchResult> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
@@ -234,9 +234,11 @@ class SearchSource {
 
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
-      return this.findOnlyChangedTestPaths();
+      return this.findChangedTests();
     } else if (patternInfo.testPathPattern != null) {
-      return this.findMatchingTests(patternInfo.testPathPattern);
+      return Promise.resolve(
+        this.findMatchingTests(patternInfo.testPathPattern),
+      );
     } else {
       return Promise.resolve({paths: []});
     }

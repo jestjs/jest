@@ -11,10 +11,9 @@
 
 import type {Config, Path} from 'types/Config';
 
-const Resolver = require('jest-resolve');
-
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
+const fileExists = require('jest-file-exists');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
@@ -64,7 +63,7 @@ const getCacheKey = (
       testRegex: config.testRegex,
     }));
   }
-  const configStr = configToJsonMap.get(config);
+  const configStr = configToJsonMap.get(config) || '';
   if (typeof preprocessor.getCacheKey === 'function') {
     return preprocessor.getCacheKey(fileData, filePath, configStr);
   } else {
@@ -90,7 +89,7 @@ const wrap = content => '({"' + EVAL_RESULT_VARIABLE + '":function(module,export
 /* eslint-enable max-len */
 
 const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
-  if (!Resolver.fileExists(cachePath)) {
+  if (!fileExists(cachePath)) {
     return null;
   }
 

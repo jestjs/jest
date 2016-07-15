@@ -19,7 +19,6 @@ import type {Config, Path} from 'types/Config';
 
 const H: HType = require('jest-haste-map').H;
 
-const fs = require('fs');
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
@@ -50,17 +49,6 @@ const NATIVE_PLATFORM = 'native';
 
 const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
-
-function compact(array: Array<?Path>): Array<Path> {
-  const result = [];
-  for (let i = 0; i < array.length; ++i) {
-    const element = array[i];
-    if (element != null) {
-      result.push(element);
-    }
-  }
-  return result;
-}
 
 const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
@@ -130,13 +118,6 @@ class Resolver {
       );
     } catch (e) {}
     return null;
-  }
-
-  static fileExists(filePath: Path): boolean {
-    try {
-      return fs.statSync(filePath).isFile();
-    } catch (e) {}
-    return false;
   }
 
   resolveModule(
@@ -252,77 +233,6 @@ class Resolver {
       this._modulePathCache[from] = paths;
     }
     return this._modulePathCache[from];
-  }
-
-  resolveDependencies(
-    file: Path,
-    options?: ResolveModuleConfig,
-  ): Array<Path> {
-    if (!this._moduleMap.files[file]) {
-      return [];
-    }
-
-    return compact(this._moduleMap.files[file][H.DEPENDENCIES]
-      .map(dependency => {
-        if (this.isCoreModule(dependency)) {
-          return null;
-        }
-        try {
-          return this.resolveModule(file, dependency, options);
-        } catch (e) {}
-        return this.getMockModule(dependency) || null;
-      }));
-  }
-
-  resolveInverseDependencies(
-    paths: Set<Path>,
-    filter: (file: Path) => boolean,
-    options?: ResolveModuleConfig,
-  ): Array<Path> {
-    const collectModules = (relatedPaths, moduleMap, changed) => {
-      const visitedModules = new Set();
-      while (changed.size) {
-        changed = new Set(moduleMap.filter(module => (
-          !visitedModules.has(module.file) &&
-          module.dependencies.some(dep => dep && changed.has(dep))
-        )).map(module => {
-          const file = module.file;
-          if (filter(file)) {
-            relatedPaths.add(file);
-          }
-          visitedModules.add(file);
-          return module.file;
-        }));
-      }
-      return relatedPaths;
-    };
-
-    if (!paths.size) {
-      return [];
-    }
-
-    const relatedPaths = new Set();
-    const changed = new Set();
-    for (const path of paths) {
-      if (Resolver.fileExists(path)) {
-        const module = this._moduleMap.files[path];
-        if (module) {
-          changed.add(path);
-          if (filter(path)) {
-            relatedPaths.add(path);
-          }
-        }
-      }
-    }
-
-    const modules = [];
-    for (const file in this._moduleMap.files) {
-      modules.push({
-        file,
-        dependencies: this.resolveDependencies(file, options),
-      });
-    }
-    return Array.from(collectModules(relatedPaths, modules, changed));
   }
 
   _resolveStubModuleName(moduleName: string): ?Path {

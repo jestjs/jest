@@ -1,5 +1,5 @@
 {
-  "name": "jest-resolve",
+  "name": "jest-resolve-dependencies",
   "version": "13.2.2",
   "repository": {
     "type": "git",
@@ -8,10 +8,8 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "browser-resolve": "^1.11.2",
-    "jest-file-exists": "^13.2.2",
-    "jest-haste-map": "^13.2.2",
-    "resolve": "^1.1.6"
+    "jest-file-exists": "13.2.2",
+    "jest-resolve": "13.2.2"
   },
   "jest": {
     "rootDir": "./src",

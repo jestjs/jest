@@ -11,18 +11,20 @@
 
 jest.disableAutomock();
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+
 const path = require('path');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
 const maxWorkers = 1;
 
+let findMatchingTests;
 let normalizeConfig;
 
 describe('SearchSource', () => {
   const name = 'SearchSource';
   let Runtime;
-  let hasteMap;
   let SearchSource;
   let searchSource;
 
@@ -35,14 +37,16 @@ describe('SearchSource', () => {
   describe('isTestFilePath', () => {
     let config;
 
-    beforeEach(() => {
+    beforeEach(done => {
       config = normalizeConfig({
         name,
         rootDir: '.',
         testPathDirs: [],
       });
-      hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      searchSource = new SearchSource(hasteMap, config);
+      Runtime.buildHasteMap(config, {maxWorkers}).then(hasteMap => {
+        searchSource = new SearchSource(hasteMap, config);
+        done();
+      });
     });
 
     it('supports ../ paths and unix separators', () => {
@@ -68,6 +72,13 @@ describe('SearchSource', () => {
   });
 
   describe('testPathsMatching', () => {
+    beforeEach(() => {
+      findMatchingTests = config =>
+        Runtime.buildHasteMap(config, {maxWorkers}).then(hasteMap =>
+          new SearchSource(hasteMap, config).findMatchingTests(),
+        );
+    });
+
     it('finds tests matching a pattern', () => {
       const config = normalizeConfig({
         name,
@@ -75,9 +86,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         testRegex: 'not-really-a-test',
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -94,9 +103,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx'],
         testRegex: 'test\.jsx?',
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -113,9 +120,7 @@ describe('SearchSource', () => {
         rootDir,
         testRegex,
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -132,9 +137,7 @@ describe('SearchSource', () => {
         testRegex,
         moduleFileExtensions: ['jsx'],
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -151,9 +154,7 @@ describe('SearchSource', () => {
         testRegex,
         moduleFileExtensions: ['foobar'],
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -162,7 +163,6 @@ describe('SearchSource', () => {
         ]);
       });
     });
-
     it('finds tests with many kinds of file extensions', () => {
       const config = normalizeConfig({
         name,
@@ -170,9 +170,7 @@ describe('SearchSource', () => {
         testRegex,
         moduleFileExtensions: ['js', 'jsx'],
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -189,9 +187,7 @@ describe('SearchSource', () => {
         rootDir,
         testDirectoryName: '__testtests__',
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -207,9 +203,7 @@ describe('SearchSource', () => {
         rootDir,
         testFileExtensions: ['js', 'jsx'],
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -228,9 +222,7 @@ describe('SearchSource', () => {
         testDirectoryName: '__testtests__',
         testFileExtensions: ['js', 'jsx', 'foobar'],
       });
-      const hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      const searchSource = new SearchSource(hasteMap, config);
-      return searchSource.findMatchingTests().then(data => {
+      return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
@@ -256,33 +248,31 @@ describe('SearchSource', () => {
     );
     const rootPath = path.join(rootDir, 'root.js');
 
-    beforeEach(() => {
+    beforeEach(done => {
       const config = normalizeConfig({
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
-      hasteMap = Runtime.buildHasteMap(config, {maxWorkers});
-      searchSource = new SearchSource(hasteMap, config);
+      Runtime.buildHasteMap(config, {maxWorkers}).then(hasteMap => {
+        searchSource = new SearchSource(hasteMap, config);
+        done();
+      });
     });
 
     it('makes sure a file is related to itself', () => {
-      return searchSource.findRelatedTests(new Set([rootPath]))
-        .then(data => {
-          expect(data.paths).toEqual([rootPath]);
-        });
+      const data = searchSource.findRelatedTests(new Set([rootPath]));
+      expect(data.paths).toEqual([rootPath]);
     });
 
     it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
-      return searchSource.findRelatedTests(new Set([filePath]))
-        .then(data => {
-          expect(data.paths.sort()).toEqual([
-            parentDep,
-            filePath,
-            rootPath,
-          ]);
-        });
+      const data = searchSource.findRelatedTests(new Set([filePath]));
+      expect(data.paths.sort()).toEqual([
+        parentDep,
+        filePath,
+        rootPath,
+      ]);
     });
   });
 });

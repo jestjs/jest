@@ -33,7 +33,6 @@ module.exports = (global: Global, globals: ConfigGlobals) => {
   // object for the jsdom environment to prevent memory leaks.
   global.process = Object.assign({}, process);
   global.process.setMaxListeners = process.setMaxListeners.bind(process);
-  /* $FlowFixMe https://github.com/facebook/flow/pull/1942 */
   global.process.getMaxListeners = process.getMaxListeners.bind(process);
   global.process.emit = process.emit.bind(process);
   global.process.addListener = process.addListener.bind(process);

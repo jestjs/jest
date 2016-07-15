@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-diff": "^13.2.3",
+    "jest-file-exists": "^13.2.2",
     "jest-util": "^13.2.2",
     "pretty-format": "^3.5.0"
   },

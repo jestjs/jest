@@ -9,14 +9,28 @@
  */
 'use strict';
 
-export type HasteMap = {
-  clocks: WatchmanClocks,
-  files: {[filepath: string]: FileMetaData},
-  map: {[id: string]: ModuleMap},
-  mocks: {[id: string]: string},
+import type HasteMapInstance from '../packages/jest-haste-map/src';
+import type HasteResolver from '../packages/jest-resolve/src';
+
+export type HasteContext = {
+  instance: HasteMapInstance,
+  moduleMap: HasteMap,
+  resolver: HasteResolver,
 };
 
-export type WatchmanClocks = {[filepath: string]: string};
+export type HasteMap = FileMap & ModuleMap;
+
+export type FileMap = {
+  clocks: WatchmanClocks,
+  files: {[filepath: string]: FileMetaData},
+};
+
+export type ModuleMap = {
+  map: {[id: string]: ModuleMapItem},
+  mocks: {[id: string]: string},
+}
+
+type WatchmanClocks = {[filepath: string]: string};
 
 export type FileMetaData = [
   /* id */ string,
@@ -25,10 +39,10 @@ export type FileMetaData = [
   /* dependencies */ Array<string>,
 ];
 
-export type ModuleMap = {[platform: string]: ModuleMetaData};
+type ModuleMapItem = {[platform: string]: ModuleMetaData};
 export type ModuleMetaData = [
   /* path */ string,
-  /* type */ string,
+  /* type */ number,
 ];
 
 export type HType = {

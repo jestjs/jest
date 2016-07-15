@@ -11,7 +11,7 @@
 
 jest
   .mock('graceful-fs')
-  .mock('jest-resolve')
+  .mock('jest-file-exists')
   .mock('jest-util')
   .mock('vm');
 
@@ -89,7 +89,7 @@ describe('transform', () => {
       mtime: {getTime: () => 42},
     }));
 
-    require('jest-resolve').fileExists = jest.fn(path => !!mockFs[path]);
+    require('jest-file-exists').mockImplementation(path => !!mockFs[path]);
 
     config = {
       cache: true,

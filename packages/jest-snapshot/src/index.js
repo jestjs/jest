@@ -9,13 +9,14 @@
  */
 'use strict';
 
-import type HasteMap from '../../jest-haste-map/src';
+import type {HasteContext} from 'types/HasteMap';
 import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
 
 const SnapshotFile = require('./SnapshotFile');
 
+const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const matcher = require('./matcher');
 const path = require('path');
@@ -50,25 +51,25 @@ const patchJasmine = (jasmine, state) => {
   })(jasmine.Spec);
 };
 
-const fileExists = filePath => {
-  try {
-    return fs.statSync(filePath).isFile();
-  } catch (e) {}
-  return false;
-};
-
 module.exports = {
   EXTENSION,
-  cleanup(hasteMap: HasteMap, update: boolean) {
-    const extension = new RegExp('\\.' + EXTENSION);
-    return hasteMap.matchFiles(extension).then(files => {
+  cleanup(hasteContext: HasteContext, update: boolean) {
+    const pattern = '\\.' + EXTENSION + '$';
+    return hasteContext.instance.matchFiles(pattern).then(files => {
       const filesRemoved = files
-        .filter(snapshotFile => !fileExists(path.resolve(
-          path.dirname(snapshotFile),
-          '..',
-          path.basename(snapshotFile, '.' + EXTENSION),
-        )))
-        .map(snapshotFile => update && fs.unlinkSync(snapshotFile))
+        .filter(snapshotFile => !fileExists(
+          path.resolve(
+            path.dirname(snapshotFile),
+            '..',
+            path.basename(snapshotFile, '.' + EXTENSION),
+          ),
+          hasteContext.moduleMap.files,
+        ))
+        .map(snapshotFile => {
+          if (update) {
+            fs.unlinkSync(snapshotFile);
+          }
+        })
         .length;
 
       return {
