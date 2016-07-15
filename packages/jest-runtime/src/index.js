@@ -14,10 +14,10 @@ import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
-import type Resolver from '../../jest-resolve/src';
 
-const createHasteMap = require('jest-haste-map').create;
-const createResolver = require('jest-resolve').create;
+const HasteMap = require('jest-haste-map');
+const Resolver = require('jest-resolve');
+
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
@@ -33,11 +33,24 @@ type Module = {
   require?: Function,
 };
 
-export type BuildHasteMapOptions = {
+type HasteMapOptions = {
   maxWorkers: number,
+  resetCache: boolean,
 };
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+const SNAPSHOT_EXTENSION = 'snap';
+
+const getModuleNameMapper = (config: Config) => {
+  if (config.moduleNameMapper.length) {
+    const moduleNameMapper = Object.create(null);
+    config.moduleNameMapper.forEach(
+      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
+    );
+    return moduleNameMapper;
+  }
+  return null;
+};
 
 const mockParentModule = {
   exports: {},
@@ -133,12 +146,12 @@ class Runtime {
     }
   }
 
-  static buildHasteMap(
+  static createHasteContext(
     config: Config,
     options: {maxWorkers: number},
   ): Promise<HasteContext> {
     utils.createDirectory(config.cacheDirectory);
-    const instance = createHasteMap(config, {
+    const instance = Runtime.createHasteMap(config, {
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
     });
@@ -146,12 +159,51 @@ class Runtime {
       moduleMap => ({
         instance,
         moduleMap,
-        resolver: createResolver(config, moduleMap),
+        resolver: Runtime.createResolver(config, moduleMap),
       }),
       error => {
         throw error;
       },
     );
+  }
+
+  static createHasteMap(
+    config: Config,
+    options?: HasteMapOptions,
+  ): HasteMap {
+    const ignorePattern = new RegExp(
+      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
+    );
+
+    return new HasteMap({
+      cacheDirectory: config.cacheDirectory,
+      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      ignorePattern,
+      maxWorkers: (options && options.maxWorkers) || 1,
+      mocksPattern: config.mocksPattern,
+      name: config.name,
+      platforms: config.haste.platforms || ['ios', 'android'],
+      providesModuleNodeModules: config.haste.providesModuleNodeModules,
+      resetCache: options && options.resetCache,
+      roots: config.testPathDirs,
+      useWatchman: config.watchman,
+    });
+  }
+
+  static createResolver(
+    config: Config,
+    moduleMap: HasteMap,
+  ): Resolver {
+    return new Resolver(moduleMap, {
+      browser: config.browser,
+      defaultPlatform: config.haste.defaultPlatform,
+      extensions: config.moduleFileExtensions.map(extension => '.' + extension),
+      hasCoreModules: true,
+      moduleDirectories: config.moduleDirectories,
+      moduleNameMapper: getModuleNameMapper(config),
+      modulePaths: config.modulePaths,
+      platforms: config.haste.platforms,
+    });
   }
 
   static runCLI(args?: Object, info?: Array<string>) {

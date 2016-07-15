@@ -43,7 +43,7 @@ describe('SearchSource', () => {
         rootDir: '.',
         testPathDirs: [],
       });
-      Runtime.buildHasteMap(config, {maxWorkers}).then(hasteMap => {
+      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
         done();
       });
@@ -74,7 +74,7 @@ describe('SearchSource', () => {
   describe('testPathsMatching', () => {
     beforeEach(() => {
       findMatchingTests = config =>
-        Runtime.buildHasteMap(config, {maxWorkers}).then(hasteMap =>
+        Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap =>
           new SearchSource(hasteMap, config).findMatchingTests(),
         );
     });
@@ -253,7 +253,7 @@ describe('SearchSource', () => {
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
-      Runtime.buildHasteMap(config, {maxWorkers}).then(hasteMap => {
+      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
         done();
       });

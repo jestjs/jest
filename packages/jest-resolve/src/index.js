@@ -15,7 +15,7 @@ import type {
   HType,
   HTypeValue,
 } from 'types/HasteMap';
-import type {Config, Path} from 'types/Config';
+import type {Path} from 'types/Config';
 
 const H: HType = require('jest-haste-map').H;
 
@@ -50,17 +50,6 @@ const NATIVE_PLATFORM = 'native';
 const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
 
-const getModuleNameMapper = (config: Config) => {
-  if (config.moduleNameMapper.length) {
-    const moduleNameMapper = Object.create(null);
-    config.moduleNameMapper.forEach(
-      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
-    );
-    return moduleNameMapper;
-  }
-  return null;
-};
-
 class Resolver {
   _options: ResolverConfig;
   _supportsNativePlatform: boolean;
@@ -85,22 +74,6 @@ class Resolver {
     this._moduleMap = moduleMap;
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
-  }
-
-  static create(
-    config: Config,
-    moduleMap: HasteMap,
-  ): Resolver {
-    return new Resolver(moduleMap, {
-      browser: config.browser,
-      defaultPlatform: config.haste.defaultPlatform,
-      extensions: config.moduleFileExtensions.map(extension => '.' + extension),
-      hasCoreModules: true,
-      moduleDirectories: config.moduleDirectories,
-      moduleNameMapper: getModuleNameMapper(config),
-      modulePaths: config.modulePaths,
-      platforms: config.haste.platforms,
-    });
   }
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {

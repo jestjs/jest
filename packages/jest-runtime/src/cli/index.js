@@ -61,7 +61,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
   console.log(`Using Jest Runtime v${VERSION}${info}`);
   readConfig(argv, root)
     .then(config => {
-      Runtime.buildHasteMap(config, {
+      Runtime.createHasteContext(config, {
         maxWorkers: os.cpus().length - 1,
       })
         .then(hasteMap => {

@@ -85,7 +85,7 @@ function getWatcher(config, packageRoot, callback) {
 function runJest(config, argv, pipe, onComplete) {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
-  return Runtime.buildHasteMap(config, {maxWorkers})
+  return Runtime.createHasteContext(config, {maxWorkers})
     .then(hasteMap => {
       const source = new SearchSource(hasteMap, config);
       return source.getTestPaths(patternInfo)
