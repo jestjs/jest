@@ -11,7 +11,7 @@
     "eslint": "^3.0.1",
     "eslint-plugin-babel": "^3.3.0",
     "fbjs-scripts": "^0.7.1",
-    "flow-bin": "^0.28.0",
+    "flow-bin": "^0.29.0",
     "glob": "^7.0.4",
     "graceful-fs": "^4.1.4",
     "lerna": "2.0.0-beta.24",

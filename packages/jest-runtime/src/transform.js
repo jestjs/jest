@@ -63,7 +63,7 @@ const getCacheKey = (
       testRegex: config.testRegex,
     }));
   }
-  const configStr = configToJsonMap.get(config);
+  const configStr = configToJsonMap.get(config) || '';
   if (typeof preprocessor.getCacheKey === 'function') {
     return preprocessor.getCacheKey(fileData, filePath, configStr);
   } else {
