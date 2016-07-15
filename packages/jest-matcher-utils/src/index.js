@@ -10,7 +10,19 @@
 
 'use strict';
 
-import type {ValueType} from 'types/Values';
+export type ValueType =
+  | 'array'
+  | 'boolean'
+  | 'function'
+  | 'null'
+  | 'number'
+  | 'object'
+  | 'regexp'
+  | 'string'
+  | 'symbol'
+  | 'undefined';
+
+const chalk = require('chalk');
 
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
@@ -30,6 +42,9 @@ const getType = (value: any): ValueType => {
   } else if (typeof value === 'string') {
     return 'string';
   } else if (typeof value === 'object') {
+    if (value.constructor === RegExp) {
+      return 'regexp';
+    }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
   } else if (typeof value === 'symbol') {
@@ -75,6 +90,8 @@ const stringify = (obj: any): string => {
   });
 };
 
+const highlight = (obj: any) => chalk.cyan.bold(stringify(obj));
+
 const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
@@ -108,10 +125,11 @@ const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
 };
 
 module.exports = {
-  getType,
-  stringify,
-  ensureNoExpected,
   ensureActualIsNumber,
   ensureExpectedIsNumber,
+  ensureNoExpected,
   ensureNumbers,
+  getType,
+  highlight,
+  stringify,
 };

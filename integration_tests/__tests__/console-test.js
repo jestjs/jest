@@ -23,7 +23,7 @@ test('console printing', () => {
 });
 
 test('console printing with --verbose', () => {
-  const result = runJest('console', ['--verbose']);
+  const result = runJest('console', ['--verbose', '--no-cache']);
   const stdout = result.stdout.toString();
 
   expect(result.status).toBe(0);
