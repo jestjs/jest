@@ -18,10 +18,8 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
+const Runtime = require('jest-runtime');
 const Test = require('./Test');
-
-const createHasteMap = require('jest-haste-map').create;
-const createResolver = require('jest-resolve').create;
 
 type WorkerData = {
   config: Config,
@@ -52,9 +50,9 @@ module.exports = (data: WorkerData, callback: WorkerCallback) => {
   try {
     const name = data.config.name;
     if (!resolvers[name]) {
-      resolvers[name] = createResolver(
+      resolvers[name] = Runtime.createResolver(
         data.config,
-        createHasteMap(data.config).read(),
+        Runtime.createHasteMap(data.config).read(),
       );
     }
 

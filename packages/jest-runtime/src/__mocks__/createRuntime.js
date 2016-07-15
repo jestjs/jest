@@ -12,8 +12,6 @@ module.exports = function createRuntime(filename, config) {
   const NodeEnvironment = require('jest-environment-node');
   const Runtime = require('../');
 
-  const createHasteMap = require('jest-haste-map').create;
-  const createResolver = require('jest-resolve').create;
   const normalizeConfig = require('jest-config').normalize;
 
   config = normalizeConfig(Object.assign({
@@ -22,13 +20,13 @@ module.exports = function createRuntime(filename, config) {
   }, config));
 
   const environment = new NodeEnvironment(config);
-  return createHasteMap(config, {resetCache: false, maxWorkers: 1})
+  return Runtime.createHasteMap(config, {resetCache: false, maxWorkers: 1})
     .build()
     .then(moduleMap => {
       const runtime = new Runtime(
         config,
         environment,
-        createResolver(config, moduleMap),
+        Runtime.createResolver(config, moduleMap),
       );
 
       runtime.__mockRootPath = path.join(config.rootDir, 'root.js');

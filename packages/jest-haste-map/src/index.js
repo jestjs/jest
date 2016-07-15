@@ -10,7 +10,7 @@
 'use strict';
 
 import type {HasteMap as HasteMapObject, ModuleMetaData} from 'types/HasteMap';
-import type {Config, Path} from 'types/Config';
+import type {Path} from 'types/Config';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof HType from './constants';
 import typeof FastpathType from './fastpath';
@@ -55,14 +55,8 @@ type InternalOptions = {
   useWatchman: boolean,
 };
 
-type HasteMapOptions = {
-  maxWorkers: number,
-  resetCache: boolean,
-}
-
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
-const SNAPSHOT_EXTENSION = 'snap';
 
 const canUseWatchman = ((): boolean => {
   try {
@@ -196,29 +190,6 @@ class HasteMap {
     this._buildPromise = null;
     this._workerPromise = null;
     this._workerFarm = null;
-  }
-
-  static create(
-    config: Config,
-    options?: HasteMapOptions,
-  ): HasteMap {
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
-    );
-
-    return new HasteMap({
-      cacheDirectory: config.cacheDirectory,
-      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
-      ignorePattern,
-      maxWorkers: (options && options.maxWorkers) || 1,
-      mocksPattern: config.mocksPattern,
-      name: config.name,
-      platforms: config.haste.platforms || ['ios', 'android'],
-      providesModuleNodeModules: config.haste.providesModuleNodeModules,
-      resetCache: options && options.resetCache,
-      roots: config.testPathDirs,
-      useWatchman: config.watchman,
-    });
   }
 
   static getCacheFilePath(tmpdir: Path, name: string): string {
