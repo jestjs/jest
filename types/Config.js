@@ -41,7 +41,6 @@ type BaseConfig = {
   testPathDirs: Array<Path>,
   testPathIgnorePatterns: Array<string>,
   testRegex: string,
-  testReporter: Path,
   testURL: string,
   useStderr: boolean,
   verbose: boolean,

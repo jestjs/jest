@@ -16,25 +16,22 @@ import type {
 } from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
 import type {HasteResolverContext} from 'types/Runtime';
-
-const Test = require('./Test');
+import type BaseReporter from './reporters/BaseReporter';
 
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
+const CoverageReporter = require('./reporters/CoverageReporter');
+const DefaultReporter = require('./reporters/DefaultReporter');
+const NotifyReporter = require('./reporters/NotifyReporter');
+const SummaryReporter = require('./reporters/SummaryReporter');
+const VerboseReporter = require('./reporters/VerboseReporter');
 const promisify = require('./lib/promisify');
 const snapshot = require('jest-snapshot');
+const Test = require('./Test');
 const workerFarm = require('worker-farm');
 
 type Options = {
   maxWorkers: number,
-};
-
-type TestReporter = {
-  onTestResult?: (
-    config: Config,
-    result: TestResult,
-    aggregatedResults: AggregatedResult
-  ) => void,
 };
 
 type OnRunFailure = (
@@ -50,10 +47,10 @@ type OnTestResult = (
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
-
   _hasteMap: Promise<HasteResolverContext>;
   _config: Config;
   _options: Options;
+  _dispatcher: ReporterDispatcher;
   _testPerformanceCache: Object | null;
 
   constructor(
@@ -64,6 +61,7 @@ class TestRunner {
     this._hasteMap = hasteMap;
     this._config = config;
     this._options = options;
+    this._dispatcher = this._setupReporters();
 
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
@@ -121,45 +119,11 @@ class TestRunner {
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
 
-  runTests(testPaths: Array<string>, maybeReporter?: TestReporter) {
+  runTests(testPaths: Array<string>) {
     const config = this._config;
-    if (!maybeReporter) {
-      const TestReporter = require(config.testReporter);
-      if (config.useStderr) {
-        maybeReporter = new TestReporter(Object.create(
-          process,
-          {stdout: {value: process.stderr}},
-        ));
-      } else {
-        maybeReporter = new TestReporter();
-      }
-    }
-
-    // Prove that `reporter` exists to Flow
-    const reporter = maybeReporter;
-    if (!reporter) {
-      throw new Error('No reporter specified!');
-    }
-
     testPaths = this._sortTests(testPaths);
-
-    const aggregatedResults = {
-      didUpdate: false,
-      numFailedTests: 0,
-      numFailedTestSuites: 0,
-      numPassedTests: 0,
-      numPassedTestSuites: 0,
-      numPendingTests: 0,
-      numRuntimeErrorTestSuites: 0,
-      numTotalTests: 0,
-      numTotalTestSuites: testPaths.length,
-      snapshotFilesRemoved: 0,
-      startTime: Date.now(),
-      success: false,
-      testResults: [],
-    };
-
-    reporter.onRunStart && reporter.onRunStart(config, aggregatedResults);
+    const aggregatedResults = createAggregatedResults(testPaths.length);
+    this._dispatcher.onRunStart(config, aggregatedResults);
 
     const onTestResult = (testPath: Path, testResult: TestResult) => {
       if (testResult.testResults.length === 0) {
@@ -170,52 +134,16 @@ class TestRunner {
         });
         return;
       }
-
-      aggregatedResults.testResults.push(testResult);
-      aggregatedResults.numTotalTests +=
-        testResult.numPassingTests +
-        testResult.numFailingTests +
-        testResult.numPendingTests;
-
-      aggregatedResults.numFailedTests += testResult.numFailingTests;
-      aggregatedResults.numPassedTests += testResult.numPassingTests;
-      aggregatedResults.numPendingTests += testResult.numPendingTests;
-      if (testResult.numFailingTests > 0) {
-        aggregatedResults.numFailedTestSuites++;
-      } else {
-        aggregatedResults.numPassedTestSuites++;
-      }
-      reporter.onTestResult && reporter.onTestResult(
-        config,
-        testResult,
-        aggregatedResults,
-      );
+      addResult(aggregatedResults, testResult);
+      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      this._bailIfNeeded(aggregatedResults);
     };
 
     const onRunFailure = (testPath: Path, err: TestError) => {
-      const testResult = {
-        hasUncheckedKeys: false,
-        numFailingTests: 1,
-        numPassingTests: 0,
-        numPendingTests: 0,
-        perfStats: {
-          end: 0,
-          start: 0,
-        },
-        snapshotFileDeleted: false,
-        snapshotsAdded: 0,
-        snapshotsMatched: 0,
-        snapshotsUnmatched: 0,
-        snapshotsUpdated: 0,
-        testExecError: err,
-        testFilePath: testPath,
-        testResults: [],
-      };
+      const testResult = buildFailureTestResult(testPath, err);
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numRuntimeErrorTestSuites++;
-      if (reporter.onTestResult) {
-        reporter.onTestResult(config, testResult, aggregatedResults);
-      }
+      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
     };
 
     const testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
@@ -233,13 +161,10 @@ class TestRunner {
           .then(status => {
             aggregatedResults.snapshotFilesRemoved = status.filesRemoved;
             aggregatedResults.didUpdate = config.updateSnapshot;
-            if (reporter.onRunComplete) {
-              aggregatedResults.success =
-                reporter.onRunComplete(config, aggregatedResults);
-            }
+            this._dispatcher.onRunComplete(config, aggregatedResults);
+            aggregatedResults.success = !this._dispatcher.hasErrors();
             return aggregatedResults;
           });
-
       })
       .then(results => this._cacheTestResults(results).then(() => results));
   }
@@ -304,6 +229,138 @@ class TestRunner {
       });
   }
 
+  _setupReporters(): ReporterDispatcher {
+    const dispatcher = new ReporterDispatcher();
+    dispatcher.register(new SummaryReporter());
+    dispatcher.register(
+      this._config.verbose
+        ? new VerboseReporter()
+        : new DefaultReporter(),
+    );
+
+    if (this._config.notify) {
+      dispatcher.register(new NotifyReporter());
+    }
+
+    if (this._config.collectCoverage) {
+      dispatcher.register(new CoverageReporter());
+    }
+
+    return dispatcher;
+  }
+
+  _bailIfNeeded(aggregatedResults: AggregatedResult) {
+    if (this._config.bail) {
+      this._dispatcher.onRunComplete(this._config, aggregatedResults);
+      process.exit(1);
+    }
+  }
+}
+
+const createAggregatedResults = (numTotalTestSuites: number) => {
+  return {
+    didUpdate: false,
+    numFailedTests: 0,
+    numFailedTestSuites: 0,
+    numPassedTests: 0,
+    numPassedTestSuites: 0,
+    numPendingTests: 0,
+    numRuntimeErrorTestSuites: 0,
+    numTotalTests: 0,
+    numTotalTestSuites,
+    snapshotFilesRemoved: 0,
+    startTime: Date.now(),
+    success: false,
+    testResults: [],
+  };
+};
+
+const addResult = (
+  aggregatedResults: AggregatedResult,
+  testResult: TestResult,
+) => {
+  aggregatedResults.testResults.push(testResult);
+  aggregatedResults.numTotalTests +=
+    testResult.numPassingTests +
+    testResult.numFailingTests +
+    testResult.numPendingTests;
+
+  aggregatedResults.numFailedTests += testResult.numFailingTests;
+  aggregatedResults.numPassedTests += testResult.numPassingTests;
+  aggregatedResults.numPendingTests += testResult.numPendingTests;
+  if (testResult.numFailingTests > 0) {
+    aggregatedResults.numFailedTestSuites++;
+  } else {
+    aggregatedResults.numPassedTestSuites++;
+  }
+};
+
+const buildFailureTestResult = (testPath: string, err: TestError) => {
+  return {
+    hasUncheckedKeys: false,
+    numFailingTests: 1,
+    numPassingTests: 0,
+    numPendingTests: 0,
+    perfStats: {
+      end: 0,
+      start: 0,
+    },
+    snapshotFileDeleted: false,
+    snapshotsAdded: 0,
+    snapshotsMatched: 0,
+    snapshotsUnmatched: 0,
+    snapshotsUpdated: 0,
+    testExecError: err,
+    testFilePath: testPath,
+    testResults: [],
+  };
+};
+
+// Proxy class that holds all reporter and dispatchers events to each
+// of them.
+class ReporterDispatcher {
+  _reporters: Array<BaseReporter>;
+
+  constructor() {
+    this._reporters = [];
+  }
+
+  register(reporter: BaseReporter): void {
+    this._reporters.push(reporter);
+  }
+
+  onTestResult() {
+    this._reporters.forEach(
+      reporter => reporter.onTestResult.apply(reporter, arguments),
+    );
+  }
+
+  onRunStart() {
+    this._reporters.forEach(
+      reporter => reporter.onRunStart.apply(reporter, arguments),
+    );
+  }
+
+  onRunComplete() {
+    this._reporters.forEach(
+      reporter => reporter.onRunComplete.apply(reporter, arguments),
+    );
+  }
+
+  // Return a list of last errors for every reporter
+  getErrors(): Array<Error> {
+    return this._reporters.reduce(
+      (list, reporter) => {
+        const error = reporter.getLastError();
+        return error ? list.concat(error) : list;
+      },
+      [],
+    );
+  }
+
+  hasErrors(): boolean {
+    return this.getErrors().length !== 0;
+  }
 }
 
 module.exports = TestRunner;

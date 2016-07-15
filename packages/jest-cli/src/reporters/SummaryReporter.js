@@ -9,15 +9,11 @@
  */
 'use strict';
 
-import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {AggregatedResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
-import type {Process} from 'types/Process';
 
 const chalk = require('chalk');
-const formatFailureMessage = require('jest-util').formatFailureMessage;
-const Notifier = require('../Notifier');
-const path = require('path');
-const VerboseLogger = require('./VerboseLogger');
+const BaseReporter = require('./BaseReporter');
 
 type SnapshotSummary = {
   added: number,
@@ -33,107 +29,18 @@ type SnapshotSummary = {
   updated: number,
 };
 
-// Explicitly reset for these messages since they can get written out in the
-// middle of error logging (should have listened to Spengler and not crossed the
-// streams).
-const FAIL = chalk.reset.bold.bgRed(' FAIL ');
-const PASS = chalk.reset.bold.bgGreen(' PASS ');
-
 const FAIL_COLOR = chalk.bold.red;
-const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 const PASS_COLOR = chalk.bold.green;
 const PENDING_COLOR = chalk.bold.yellow;
-const RUNNING_TEST_COLOR = chalk.bold.gray;
 const SNAPSHOT_ADDED = chalk.bold.green;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 const SNAPSHOT_REMOVED = chalk.bold.red;
 const SNAPSHOT_SUMMARY = chalk.bold;
-const TEST_NAME_COLOR = chalk.bold;
 const TEST_SUMMARY_THRESHOLD = 20;
 
 const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
-class DefaultTestReporter {
-
-  _config: Config;
-  _process: Process;
-  verboseLogger: VerboseLogger;
-
-  constructor(customProcess: Process) {
-    this._process = customProcess || process;
-  }
-
-  log(message: string) {
-    this._process.stdout.write(message + '\n');
-  }
-
-  onRunStart(config: Config, results: AggregatedResult) {
-    this._config = config;
-    this._printWaitingOn(results);
-    if (this._config.verbose) {
-      this.verboseLogger = new VerboseLogger(this._process);
-    }
-  }
-
-  onTestResult(
-    config: Config,
-    testResult: TestResult,
-    results: AggregatedResult,
-  ) {
-    this._clearWaitingOn();
-
-    const pathStr =
-      config.rootDir
-      ? path.relative(config.rootDir, testResult.testFilePath)
-      : testResult.testFilePath;
-    const allTestsPassed = testResult.numFailingTests === 0;
-    const runTime =
-      testResult.perfStats
-      ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
-      : null;
-
-    const testDetail = [];
-    if (runTime !== null) {
-      testDetail.push(
-        runTime > 5 ? LONG_TEST_COLOR(runTime + 's') : runTime + 's',
-      );
-    }
-
-    if (testResult.memoryUsage) {
-      const toMB = bytes => Math.floor(bytes / 1024 / 1024);
-      testDetail.push(`${toMB(testResult.memoryUsage)} MB heap size`);
-    }
-
-    const resultHeader =
-       `${allTestsPassed ? PASS : FAIL} ${TEST_NAME_COLOR(pathStr)}` +
-       (testDetail.length ? ` (${testDetail.join(', ')})` : '');
-
-    this.log(resultHeader);
-    if (config.verbose && !testResult.testExecError) {
-      this.verboseLogger.logTestResults(
-        testResult.testResults,
-      );
-    }
-
-    if (!allTestsPassed) {
-      const failureMessage = formatFailureMessage(testResult, {
-        noStackTrace: config.noStackTrace,
-        rootDir: config.rootDir,
-        verbose: config.verbose,
-      });
-
-      this._write(failureMessage);
-      testResult.message = resultHeader + '\n' + failureMessage + '\n';
-
-      if (config.bail) {
-        this.onRunComplete(config, results);
-        this._process.exit(1);
-      }
-    }
-
-    this._printWaitingOn(results);
-  }
-
+class SummareReporter extends BaseReporter {
   onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
     const totalTestSuites = aggregatedResults.numTotalTestSuites;
     const failedTests = aggregatedResults.numFailedTests;
@@ -142,10 +49,6 @@ class DefaultTestReporter {
     const totalTests = aggregatedResults.numTotalTests;
     const totalErrors = aggregatedResults.numRuntimeErrorTestSuites;
     const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
-
-    if (totalTests === 0 && totalErrors === 0) {
-      return true;
-    }
 
     const snapshots = this._getSnapshotSummary(aggregatedResults);
     const snapshotFailure = !!(!snapshots.didUpdate && (
@@ -185,11 +88,9 @@ class DefaultTestReporter {
     this._printSnapshotSummary(snapshots);
     this.log(results);
 
-    if (config.notify) {
-      Notifier.onTestResults(aggregatedResults);
+    if (failedTests || totalErrors || snapshotFailure) {
+      this._setError(new Error('Some of the tests failed'));
     }
-
-    return snapshotFailure ? false : aggregatedResults.success;
   }
 
   _getSnapshotSummary(aggregatedResults: AggregatedResult): SnapshotSummary {
@@ -325,34 +226,6 @@ class DefaultTestReporter {
       this.log(''); // print empty line
     }
   }
-
-  _write(string) {
-    // If we write more than one character at a time it is possible that
-    // node exits in the middle of printing the result.
-    // If you are reading this and you are from the future, this might not
-    // be true any more.
-    for (let i = 0; i < string.length; i++) {
-      this._process.stdout.write(string.charAt(i));
-    }
-    this._process.stdout.write('\n');
-  }
-
-  _clearWaitingOn() {
-    this._process.stdout.write(this._config.noHighlight ? '' : '\r\x1B[K');
-  }
-
-  _printWaitingOn(results: AggregatedResult) {
-    const remaining = results.numTotalTestSuites -
-      results.numPassedTestSuites -
-      results.numFailedTestSuites -
-      results.numRuntimeErrorTestSuites;
-    if (!this._config.noHighlight && remaining > 0) {
-      this._process.stdout.write(RUNNING_TEST_COLOR(
-        `Running ${pluralize('test suite', remaining)}...`,
-      ));
-    }
-  }
-
 }
 
-module.exports = DefaultTestReporter;
+module.exports = SummareReporter;
