@@ -34,6 +34,7 @@ describe('sum', () => {
   });
 });
 ```
+> Note: Make sure the `__tests__/` folder is at the same level with `sum.js` file, otherwise the test can not be found.
 
 Add the following to your `package.json`:
 
