@@ -59,14 +59,19 @@ class TestRunner {
     config: Config,
     options: Options,
   ) {
-    this._hasteContext = hasteMap;
     this._config = config;
+    this._dispatcher = new ReporterDispatcher();
+    this._hasteContext = hasteMap;
     this._options = options;
-    this._dispatcher = this._setupReporters();
+    this._setupReporters();
 
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
     this._testPerformanceCache = null;
+  }
+
+  addReporter(reporter: BaseReporter) {
+    this._dispatcher.register(reporter);
   }
 
   _getTestPerformanceCachePath() {
@@ -223,24 +228,21 @@ class TestRunner {
     .then(() => workerFarm.end(farm));
   }
 
-  _setupReporters(): ReporterDispatcher {
-    const dispatcher = new ReporterDispatcher();
-    dispatcher.register(new SummaryReporter());
-    dispatcher.register(
+  _setupReporters() {
+    this.addReporter(new SummaryReporter());
+    this.addReporter(
       this._config.verbose
         ? new VerboseReporter()
         : new DefaultReporter(),
     );
 
     if (this._config.notify) {
-      dispatcher.register(new NotifyReporter());
+      this.addReporter(new NotifyReporter());
     }
 
     if (this._config.collectCoverage) {
-      dispatcher.register(new CoverageReporter());
+      this.addReporter(new CoverageReporter());
     }
-
-    return dispatcher;
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult) {
