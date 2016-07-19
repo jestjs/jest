@@ -74,6 +74,10 @@ class TestRunner {
     this._dispatcher.register(reporter);
   }
 
+  removeReporter(ReporterClass: Function) {
+    this._dispatcher.unregister(ReporterClass);
+  }
+
   _getTestPerformanceCachePath() {
     const config = this._config;
     return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
@@ -323,6 +327,12 @@ class ReporterDispatcher {
 
   register(reporter: BaseReporter): void {
     this._reporters.push(reporter);
+  }
+
+  unregister(ReporterClass: Function) {
+    this._reporters = this._reporters.filter(
+      reporter => !(reporter instanceof ReporterClass),
+    );
   }
 
   onTestResult() {
