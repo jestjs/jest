@@ -13,7 +13,7 @@
 const utils = require('jest-util');
 
 import type {
-  AggregatedTestResults,
+  AggregatedResult,
   CodeCoverageFormatter,
   CodeCoverageReporter,
   TestResult,
@@ -59,7 +59,7 @@ const formatResult = (
 };
 
 function formatTestResults(
-  results: AggregatedTestResults,
+  results: AggregatedResult,
   config: Config,
   codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
