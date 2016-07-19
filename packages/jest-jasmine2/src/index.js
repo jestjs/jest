@@ -314,11 +314,11 @@ function jasmine2(
     const status = currentSnapshot.save(updateSnapshot);
 
     results.hasUncheckedKeys = !status.deleted && hasUncheckedKeys;
-    results.snapshotFileDeleted = status.deleted;
-    results.snapshotsAdded = snapshotState.added;
-    results.snapshotsMatched = snapshotState.matched;
-    results.snapshotsUnmatched = snapshotState.unmatched;
-    results.snapshotsUpdated = snapshotState.updated;
+    results.snapshot.fileDeleted = status.deleted;
+    results.snapshot.added = snapshotState.added;
+    results.snapshot.matched = snapshotState.matched;
+    results.snapshot.unmatched = snapshotState.unmatched;
+    results.snapshot.updated = snapshotState.updated;
     return results;
   });
 }

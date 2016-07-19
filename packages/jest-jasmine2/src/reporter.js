@@ -91,6 +91,7 @@ class Jasmine2Reporter {
       numPassingTests,
       numPendingTests,
       testResults,
+      snapshot: {},
     });
   }
 

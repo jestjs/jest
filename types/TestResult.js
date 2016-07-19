@@ -42,7 +42,6 @@ export type AssertionResult = {
 };
 
 export type AggregatedResult = {
-  didUpdate: boolean,
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -51,7 +50,10 @@ export type AggregatedResult = {
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
   numTotalTestSuites: number,
-  snapshotFilesRemoved: number,
+  snapshot: {
+    didUpdate: boolean,
+    filesRemoved: number,
+  },
   startTime: number,
   success: boolean,
   testResults: Array<TestResult>,
@@ -75,11 +77,13 @@ export type TestResult = {
     end: Milliseconds,
     start: Milliseconds,
   },
-  snapshotFileDeleted: boolean,
-  snapshotsAdded: number,
-  snapshotsMatched: number,
-  snapshotsUnmatched: number,
-  snapshotsUpdated: number,
+  snapshot: {
+    fileDeleted: boolean,
+    added: number,
+    matched: number,
+    unmatched: number,
+    updated: number,
+  },
   testExecError: Error,
   testFilePath: string,
   testResults: Array<AssertionResult>,

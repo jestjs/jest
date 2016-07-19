@@ -161,8 +161,8 @@ class TestRunner {
           aggregatedResults.numRuntimeErrorTestSuites === 0;
         return snapshot.cleanup(this._hasteContext, config.updateSnapshot)
           .then(status => {
-            aggregatedResults.snapshotFilesRemoved = status.filesRemoved;
-            aggregatedResults.didUpdate = config.updateSnapshot;
+            aggregatedResults.snapshot.filesRemoved = status.filesRemoved;
+            aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
             this._dispatcher.onRunComplete(config, aggregatedResults);
             aggregatedResults.success = !this._dispatcher.hasErrors();
             return aggregatedResults;
@@ -255,7 +255,6 @@ class TestRunner {
 
 const createAggregatedResults = (numTotalTestSuites: number) => {
   return {
-    didUpdate: false,
     numFailedTests: 0,
     numFailedTestSuites: 0,
     numPassedTests: 0,
@@ -264,7 +263,10 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
     numRuntimeErrorTestSuites: 0,
     numTotalTests: 0,
     numTotalTestSuites,
-    snapshotFilesRemoved: 0,
+    snapshot: {
+      didUpdate: false,
+      filesRemoved: 0,
+    },
     startTime: Date.now(),
     success: false,
     testResults: [],
@@ -291,7 +293,10 @@ const addResult = (
   }
 };
 
-const buildFailureTestResult = (testPath: string, err: TestError) => {
+const buildFailureTestResult = (
+  testPath: string,
+  err: TestError
+): TestResult => {
   return {
     hasUncheckedKeys: false,
     numFailingTests: 1,
@@ -301,11 +306,13 @@ const buildFailureTestResult = (testPath: string, err: TestError) => {
       end: 0,
       start: 0,
     },
-    snapshotFileDeleted: false,
-    snapshotsAdded: 0,
-    snapshotsMatched: 0,
-    snapshotsUnmatched: 0,
-    snapshotsUpdated: 0,
+    snapshot: {
+      fileDeleted: false,
+      added: 0,
+      matched: 0,
+      unmatched: 0,
+      updated: 0,
+    },
     testExecError: err,
     testFilePath: testPath,
     testResults: [],

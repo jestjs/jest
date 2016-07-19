@@ -96,7 +96,7 @@ class SummareReporter extends BaseReporter {
   _getSnapshotSummary(aggregatedResults: AggregatedResult): SnapshotSummary {
     let added = 0;
     let filesAdded = 0;
-    let filesRemoved = aggregatedResults.snapshotFilesRemoved;
+    let filesRemoved = aggregatedResults.snapshot.filesRemoved;
     let filesUnmatched = 0;
     let filesUpdated = 0;
     let matched = 0;
@@ -104,29 +104,29 @@ class SummareReporter extends BaseReporter {
     let unmatched = 0;
     let updated = 0;
     aggregatedResults.testResults.forEach(result => {
-      if (result.snapshotsAdded) {
+      if (result.snapshot.added) {
         filesAdded++;
       }
-      if (result.snapshotFileDeleted) {
+      if (result.snapshot.fileDeleted) {
         filesRemoved++;
       }
-      if (result.snapshotsUnmatched) {
+      if (result.snapshot.unmatched) {
         filesUnmatched++;
       }
-      if (result.snapshotsUpdated) {
+      if (result.snapshot.updated) {
         filesUpdated++;
       }
       if (result.hasUncheckedKeys) {
         unchecked++;
       }
-      added += result.snapshotsAdded;
-      matched += result.snapshotsMatched;
-      unmatched += result.snapshotsUnmatched;
-      updated += result.snapshotsUpdated;
+      added += result.snapshot.added;
+      matched += result.snapshot.matched;
+      unmatched += result.snapshot.unmatched;
+      updated += result.snapshot.updated;
     });
     return {
       added,
-      didUpdate: aggregatedResults.didUpdate,
+      didUpdate: aggregatedResults.snapshot.didUpdate,
       filesAdded,
       filesRemoved,
       filesUnmatched,
