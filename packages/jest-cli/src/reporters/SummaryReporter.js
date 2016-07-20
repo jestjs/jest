@@ -9,25 +9,12 @@
  */
 'use strict';
 
-import type {AggregatedResult} from 'types/TestResult';
+import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {Config} from 'types/Config';
 
 const chalk = require('chalk');
 const BaseReporter = require('./BaseReporter');
 
-type SnapshotSummary = {
-  added: number,
-  didUpdate: boolean,
-  filesAdded: number,
-  filesRemoved: number,
-  filesUnmatched: number,
-  filesUpdated: number,
-  matched: number,
-  total: number,
-  unchecked: number,
-  unmatched: number,
-  updated: number,
-};
 
 const FAIL_COLOR = chalk.bold.red;
 const PASS_COLOR = chalk.bold.green;
@@ -50,16 +37,11 @@ class SummareReporter extends BaseReporter {
     const totalErrors = aggregatedResults.numRuntimeErrorTestSuites;
     const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
 
-    const snapshots = this._getSnapshotSummary(aggregatedResults);
-    const snapshotFailure = !!(!snapshots.didUpdate && (
-      snapshots.unchecked ||
-      snapshots.unmatched ||
-      snapshots.filesRemoved
-    ));
+    const snapshots = aggregatedResults.snapshot;
 
     let results = '';
 
-    if (snapshotFailure) {
+    if (snapshots.failure) {
       results += FAIL_COLOR('snapshot failure') + ', ';
     }
 
@@ -87,56 +69,6 @@ class SummareReporter extends BaseReporter {
     this._printSummary(aggregatedResults);
     this._printSnapshotSummary(snapshots);
     this.log(results);
-
-    if (failedTests || totalErrors || snapshotFailure) {
-      this._setError(new Error('Some of the tests failed'));
-    }
-  }
-
-  _getSnapshotSummary(aggregatedResults: AggregatedResult): SnapshotSummary {
-    let added = 0;
-    let filesAdded = 0;
-    let filesRemoved = aggregatedResults.snapshotFilesRemoved;
-    let filesUnmatched = 0;
-    let filesUpdated = 0;
-    let matched = 0;
-    let unchecked = 0;
-    let unmatched = 0;
-    let updated = 0;
-    aggregatedResults.testResults.forEach(result => {
-      if (result.snapshotsAdded) {
-        filesAdded++;
-      }
-      if (result.snapshotFileDeleted) {
-        filesRemoved++;
-      }
-      if (result.snapshotsUnmatched) {
-        filesUnmatched++;
-      }
-      if (result.snapshotsUpdated) {
-        filesUpdated++;
-      }
-      if (result.hasUncheckedKeys) {
-        unchecked++;
-      }
-      added += result.snapshotsAdded;
-      matched += result.snapshotsMatched;
-      unmatched += result.snapshotsUnmatched;
-      updated += result.snapshotsUpdated;
-    });
-    return {
-      added,
-      didUpdate: aggregatedResults.didUpdate,
-      filesAdded,
-      filesRemoved,
-      filesUnmatched,
-      filesUpdated,
-      matched,
-      total: matched + added + updated,
-      unchecked,
-      unmatched,
-      updated,
-    };
   }
 
   _printSnapshotSummary(snapshots: SnapshotSummary) {

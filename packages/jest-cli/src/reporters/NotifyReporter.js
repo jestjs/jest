@@ -25,8 +25,11 @@ class NotifyReporter extends BaseReporter {
   onRunComplete(config: Config, result: AggregatedResult): void {
     let title;
     let message;
+    const success = result.numFailedTests === 0 &&
+      result.numRuntimeErrorTestSuites === 0;
 
-    if (result.success) {
+
+    if (success) {
       title = util.format('%d%% Passed', 100);
       message = util.format(
         (isDarwin ? '\u2705 ' : '') + '%d tests passed',

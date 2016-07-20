@@ -42,7 +42,6 @@ export type AssertionResult = {
 };
 
 export type AggregatedResult = {
-  didUpdate: boolean,
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -51,7 +50,7 @@ export type AggregatedResult = {
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
   numTotalTestSuites: number,
-  snapshotFilesRemoved: number,
+  snapshot: SnapshotSummary,
   startTime: number,
   success: boolean,
   testResults: Array<TestResult>,
@@ -75,28 +74,16 @@ export type TestResult = {
     end: Milliseconds,
     start: Milliseconds,
   },
-  snapshotFileDeleted: boolean,
-  snapshotsAdded: number,
-  snapshotsMatched: number,
-  snapshotsUnmatched: number,
-  snapshotsUpdated: number,
+  snapshot: {
+    fileDeleted: boolean,
+    added: number,
+    matched: number,
+    unmatched: number,
+    updated: number,
+  },
   testExecError: Error,
   testFilePath: string,
   testResults: Array<AssertionResult>,
-};
-
-export type AggregatedTestResults = {
-  success: ?boolean,
-  startTime: Date,
-  numTotalTestSuites: number,
-  numPassedTestSuites: number,
-  numFailedTestSuites: number,
-  numRuntimeErrorTestSuites: number,
-  numTotalTests: number,
-  numPassedTests: number,
-  numFailedTests: number,
-  numPendingTests: number,
-  testResults: Array<TestResult>,
 };
 
 export type CodeCoverageResult = {
@@ -111,3 +98,19 @@ export type CodeCoverageFormatter = (
   coverage: ?CodeCoverageResult,
   reporter?: CodeCoverageReporter,
 ) => ?Object;
+
+
+export type SnapshotSummary = {
+  added: number,
+  didUpdate: boolean,
+  failure: boolean,
+  filesAdded: number,
+  filesRemoved: number,
+  filesUnmatched: number,
+  filesUpdated: number,
+  matched: number,
+  total: number,
+  unchecked: number,
+  unmatched: number,
+  updated: number,
+};
