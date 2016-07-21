@@ -105,7 +105,7 @@ runCommands('node bin/jest.js --runInBand', 'packages/jest-cli');
 runCommands('node bin/jest.js --runInBand --logHeapUsage', 'packages/jest-cli');
 runCommands('node bin/jest.js --notify', 'packages/jest-cli');
 
-examples.forEach(runExampleTests);
-
 console.log(chalk.bold(chalk.cyan('Running integration tests:')));
 runCommands('../packages/jest-cli/bin/jest.js', INTEGRATION_TESTS_DIR);
+
+examples.forEach(runExampleTests);

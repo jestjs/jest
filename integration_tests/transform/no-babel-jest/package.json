@@ -1,0 +1,9 @@
+{
+  "jest": {
+    "collectCoverageOnlyFrom": {
+      "<rootDir>/this-directory-is-covered/covered.js": true,
+      "<rootDir>/this-directory-is-covered/excluded-from-coverage.js": true
+    },
+    "coveragePathIgnorePatterns": ["excluded-from-coverage"]
+  }
+}

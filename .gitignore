@@ -5,7 +5,11 @@
 /examples/*/node_modules/
 /packages/*/node_modules/
 /packages/*/build/
+/packages/*/coverage/
 /website/node_modules
+/integration_tests/transform/*/coverage
+/integration_tests/transform/*/node_modules
+/integration_tests/*/node_modules
 npm-debug.log
 website/core/metadata*.js
 website/src/jest/docs

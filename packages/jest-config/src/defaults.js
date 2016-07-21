@@ -22,7 +22,6 @@ module.exports = ({
   browser: false,
   cacheDirectory: os.tmpdir(),
   colors: false,
-  coverageCollector: require.resolve('./IstanbulCollector'),
   coveragePathIgnorePatterns: [
     utils.replacePathSepForRegex(constants.NODE_MODULES),
   ],
