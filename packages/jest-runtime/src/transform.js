@@ -116,10 +116,11 @@ module.exports = (
   options: ?TransformOptions,
 ): vm.Script => {
   const mtime = fs.statSync(filename).mtime;
-  const mapCacheKey = filename + '_' + mtime.getTime();
+  const instrumentCacheKey = (options && options.instrument ? '1' : '0');
+  const key = filename + '-' + mtime.getTime() + '-' + instrumentCacheKey;
 
-  if (cache.has(mapCacheKey)) {
-    const content = cache.get(mapCacheKey);
+  if (cache.has(key)) {
+    const content = cache.get(key);
     if (content) {
       return content;
     }
@@ -159,7 +160,10 @@ module.exports = (
       'jest-transform-cache-' + config.name,
       VERSION,
     );
-    const cacheKey = getCacheKey(preprocessor, content, filename, config);
+    const cacheKey =
+      getCacheKey(preprocessor, content, filename, config) +
+      instrumentCacheKey;
+
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
@@ -191,7 +195,7 @@ module.exports = (
     filename,
   });
 
-  cache.set(mapCacheKey, script);
+  cache.set(key, script);
   return script;
 };
 
