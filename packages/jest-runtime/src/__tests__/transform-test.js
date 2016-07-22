@@ -104,6 +104,7 @@ describe('transform', () => {
   beforeEach(reset);
 
   it('transforms a file properly', () => {
+    config.collectCoverage = true;
     const response = transform('/fruits/banana.js', config);
 
     expect(response instanceof vm.Script);
@@ -120,7 +121,25 @@ describe('transform', () => {
     transform('/fruits/kiwi.js', config, {
       instrument: () => 'instrumented kiwi',
     });
-    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+    const snapshot = vm.Script.mock.calls[1][0];
+    expect(snapshot).toMatchSnapshot();
+
+    // reset and make sure `instrument` returns a different value.
+    jest.resetModuleRegistry();
+    reset();
+    config.collectCoverage = true;
+
+    transform('/fruits/kiwi.js', config, {
+      instrument: null,
+    });
+    expect(vm.Script.mock.calls[0][0]).not.toEqual(snapshot);
+    expect(vm.Script.mock.calls[0][0]).not.toMatch(/instrumented kiwi/);
+
+    // If we instrument again, we get a different result.
+    transform('/fruits/kiwi.js', config, {
+      instrument: () => 'instrumented kiwi',
+    });
+    expect(vm.Script.mock.calls[1][0]).toEqual(snapshot);
   });
 
   it('uses the supplied preprocessor', () => {
