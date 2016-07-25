@@ -47,6 +47,7 @@ type BaseConfig = {
 };
 
 export type DefaultConfig = BaseConfig & {
+  preset: ?string,
   moduleNameMapper: {},
 };
 

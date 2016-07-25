@@ -1,0 +1,21 @@
+{
+  "automock": false,
+  "testEnvironment": "node",
+  "preprocessorIgnorePatterns": [
+    "node_modules/(?!react-native)"
+  ],
+  "setupFiles": [
+    "<rootDir>/node_modules/jest-react-native/build/index.js"
+  ],
+  "modulePathIgnorePatterns": [
+    "<rootDir>/node_modules/react-native/Libraries/react-native/"
+  ],
+  "haste": {
+    "defaultPlatform": "ios",
+    "platforms": ["android", "ios"],
+    "providesModuleNodeModules": [
+      "react",
+      "react-native"
+    ]
+  }
+}

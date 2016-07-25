@@ -89,6 +89,27 @@ function normalize(config, argv) {
     throw new Error('No rootDir config value found!');
   }
 
+  if (config.preset) {
+    const presetPath = Resolver.findNodeModule(
+      path.join(config.preset, 'jest-preset.json'),
+      {
+        basedir: config.rootDir,
+      },
+    );
+    if (presetPath) {
+      const preset = require(presetPath);
+      if (config.setupFiles) {
+        config.setupFiles = preset.setupFiles.concat(config.setupFiles);
+      }
+      if (config.modulePathIgnorePatterns) {
+        config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
+          .concat(config.modulePathIgnorePatterns);
+      }
+      config = Object.assign({}, preset, config);
+      delete config.preset;
+    }
+  }
+
   config.rootDir = path.normalize(config.rootDir);
 
   if (!config.name) {
