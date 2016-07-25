@@ -90,14 +90,15 @@ function normalize(config, argv) {
   }
 
   if (config.preset) {
-    const presetPath = Resolver.findNodeModule(
-      path.join(config.preset, 'jest-preset.json'),
+    const presetPath = _replaceRootDirTags(config.rootDir, config.preset);
+    const presetModule = Resolver.findNodeModule(
+      path.join(presetPath, 'jest-preset.json'),
       {
         basedir: config.rootDir,
       },
     );
-    if (presetPath) {
-      const preset = require(presetPath);
+    if (presetModule) {
+      const preset = require(presetModule);
       if (config.setupFiles) {
         config.setupFiles = preset.setupFiles.concat(config.setupFiles);
       }
@@ -105,8 +106,14 @@ function normalize(config, argv) {
         config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
           .concat(config.modulePathIgnorePatterns);
       }
+      if (config.moduleNameMapper) {
+        config.moduleNameMapper = Object.assign(
+          {},
+          preset.moduleNameMapper,
+          config.moduleNameMapper,
+        );
+      }
       config = Object.assign({}, preset, config);
-      delete config.preset;
     } else {
       throw new Error(
         `Jest: Preset '${config.preset}' not found.`,
@@ -294,14 +301,15 @@ function normalize(config, argv) {
       case 'noStackTrace':
       case 'notify':
       case 'persistModuleRegistryBetweenSpecs':
+      case 'preset':
       case 'replname':
       case 'rootDir':
-      case 'updateSnapshot':
       case 'testEnvData':
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
       case 'testURL':
+      case 'updateSnapshot':
       case 'usesBabelJest':
       case 'verbose':
       case 'watchman':

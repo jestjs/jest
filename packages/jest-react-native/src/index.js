@@ -9,8 +9,19 @@
 /* global jest */
 
 jest
-  .mock('Text')
-  .mock('View')
+  .mock('Image')
+  .mock('Text', () => {
+    const mockText = require.requireActual('Text');
+    const React = require('React');
+    class Text extends React.Component {
+      render() {
+        return React.createElement('Text', this.props, this.props.children);
+      }
+    }
+    Text.propTypes = mockText.propTypes;
+    return Text;
+  })
+  .mock('ensureComponentIsNative', () => () => true)
   .mock('View');
 
 global.__DEV__ = true;
@@ -23,8 +34,8 @@ require(
   'react-native/packager/react-packager/src/Resolver/polyfills/error-guard',
 );
 
-const emptyObject = {};
+const mockEmptyObject = {};
 jest.mock('ReactNativePropRegistry', () => ({
   register: id => id,
-  getByID: () => emptyObject,
+  getByID: () => mockEmptyObject,
 }));

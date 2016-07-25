@@ -153,6 +153,9 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
       if (config.usesBabelJest) {
         info.push('babel-jest');
       }
+      if (config.preset) {
+        info.push(config.preset + ' preset');
+      }
 
       const prefix = argv.watch ? 'Watch using' : 'Using';
       const header = `${prefix} Jest CLI ${info.join(', ')}\n`;
