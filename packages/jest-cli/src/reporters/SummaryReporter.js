@@ -60,15 +60,16 @@ class SummareReporter extends BaseReporter {
         PENDING_COLOR(`${pluralize('test', pendingTests)} skipped`) + ', ';
     }
 
-    results +=
-      `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} ` +
-      `(${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
-      (snapshots.total ? pluralize('snapshot', snapshots.total) + ', ' : '') +
-      `run time ${runTime}s)`;
-
     this._printSummary(aggregatedResults);
     this._printSnapshotSummary(snapshots);
-    this.log(results);
+    if (totalTestSuites) {
+      results +=
+        `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} (` +
+        `${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
+        (snapshots.total ? pluralize('snapshot', snapshots.total) + ', ' : '') +
+        `run time ${runTime}s)`;
+      this.log(results);
+    }
   }
 
   _printSnapshotSummary(snapshots: SnapshotSummary) {
