@@ -1,0 +1,21 @@
+{
+  "name": "jest-rn",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "15.2.1",
+    "react-native": "0.30.0"
+  },
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-preset-react-native": "^1.9.0",
+    "jest-cli": "*",
+    "jest-react-native": "*"
+  },
+  "jest": {
+    "preset": "jest-react-native"
+  }
+}

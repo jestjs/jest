@@ -86,7 +86,7 @@ function normalize(config, argv) {
 
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
-    throw new Error('No rootDir config value found!');
+    throw new Error(`Jest: 'rootDir' config value must be specified.`);
   }
 
   if (config.preset) {
@@ -107,6 +107,10 @@ function normalize(config, argv) {
       }
       config = Object.assign({}, preset, config);
       delete config.preset;
+    } else {
+      throw new Error(
+        `Jest: Preset '${config.preset}' not found.`,
+      );
     }
   }
 
@@ -307,7 +311,7 @@ function normalize(config, argv) {
       default:
         console.error(
           `Error: Unknown config option "${key}" with value ` +
-          `"${config[key]}". This is either a typing error or another user ` +
+          `"${config[key]}". This is either a typing error or a user ` +
           `mistake and fixing it will remove this message.`,
         );
     }

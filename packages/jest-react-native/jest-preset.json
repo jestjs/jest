@@ -8,7 +8,8 @@
     "<rootDir>/node_modules/jest-react-native/build/index.js"
   ],
   "modulePathIgnorePatterns": [
-    "<rootDir>/node_modules/react-native/Libraries/react-native/"
+    "<rootDir>/node_modules/react-native/Libraries/react-native/",
+    "<rootDir>/node_modules/react-native/packager/"
   ],
   "haste": {
     "defaultPlatform": "ios",

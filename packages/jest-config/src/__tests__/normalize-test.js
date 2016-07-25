@@ -59,7 +59,7 @@ describe('normalize', () => {
 
     expect(console.error).toBeCalledWith(
       'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
-      '"with a value even!". This is either a typing error or another user ' +
+      '"with a value even!". This is either a typing error or a user ' +
       'mistake and fixing it will remove this message.',
     );
 
@@ -83,7 +83,7 @@ describe('normalize', () => {
     it('throws if the config is missing a rootDir property', () => {
       expect(() => {
         normalize({});
-      }).toThrow(new Error('No rootDir config value found!'));
+      }).toThrow(new Error(`Jest: 'rootDir' config value must be specified.`));
     });
   });
 
