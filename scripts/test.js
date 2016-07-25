@@ -28,6 +28,7 @@ const rimraf = require('rimraf');
 const EXAMPLES_DIR = path.resolve(__dirname, '../examples');
 const INTEGRATION_TESTS_DIR = path.resolve(__dirname, '../integration_tests');
 const JEST_CLI_PATH = path.resolve(__dirname, '../packages/jest-cli');
+const LINKED_MODULES = ['jest-react-native'];
 const VERSION = require('../lerna').version;
 
 const packages = getPackages();
@@ -51,19 +52,23 @@ function runExampleTests(exampleDirectory) {
 
     if (fs.existsSync(directory)) {
       rimraf.sync(directory);
-      mkdirp.sync(directory);
-      // Using `npm link jest-*` can create problems with module resolution,
-      // so instead of this we'll create a proxy module.
-      fs.writeFileSync(
-        path.resolve(directory, 'index.js'),
-        `module.exports = require('${pkg}');\n`,
-        'utf8'
-      );
-      fs.writeFileSync(
-        path.resolve(directory, 'package.json'),
-        `{"name": "${name}", "version": "${VERSION}"}\n`,
-        'utf8'
-      );
+      if (LINKED_MODULES.indexOf(name) !== -1) {
+        runCommands(`ln -s ${pkg} ./node_modules/`, exampleDirectory);
+      } else {
+        mkdirp.sync(directory);
+        // Using `npm link jest-*` can create problems with module resolution,
+        // so instead of this we'll create a proxy module.
+        fs.writeFileSync(
+          path.resolve(directory, 'index.js'),
+          `module.exports = require('${pkg}');\n`,
+          'utf8'
+        );
+        fs.writeFileSync(
+          path.resolve(directory, 'package.json'),
+          `{"name": "${name}", "version": "${VERSION}"}\n`,
+          'utf8'
+        );
+      }
     }
   });
 
