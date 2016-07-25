@@ -8,6 +8,11 @@
 'use strict';
 /* global jest */
 
+jest
+  .mock('Text')
+  .mock('View')
+  .mock('View');
+
 global.__DEV__ = true;
 global.__fbBatchedBridgeConfig = require('./bridge-mock');
 
@@ -17,10 +22,6 @@ require(
 require(
   'react-native/packager/react-packager/src/Resolver/polyfills/error-guard',
 );
-
-jest.mock('Text', () => 'Text');
-jest.mock('View', () => 'Image');
-jest.mock('View', () => 'View');
 
 const emptyObject = {};
 jest.mock('ReactNativePropRegistry', () => ({
