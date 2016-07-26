@@ -1,5 +1,17 @@
 ## master
 
+## jest 14.0.0
+
+* Official release of snapshot tests.
+* Started to replace Jasmine matchers with Jest matchers: `toBe`,
+  `toBeFalsy`, `toBeTruthy`, `toBeNaN`,
+  `toBe{Greater,Less}Than{,OrEqual}`, `toBeNull`, `toBeDefined`,
+  `toBeUndefined`, `toContain`, `toMatch`, `toBeCloseTo` were rewritten.
+* Rewrite of Jest's reporters.
+* Experimental react-native support.
+* Removed Jasmine 1 support from Jest.
+* Transform caching improvements.
+
 ## jest 13.2.0
 
 * Snapshot bugfixes.
