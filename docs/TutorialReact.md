@@ -4,11 +4,196 @@ title: Tutorial – React
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-react.html
-next: tutorial-async
+next: tutorial-react-native
 ---
 
 At Facebook, we use Jest to test [React](http://facebook.github.io/react/)
-applications. Let's implement a simple checkbox which swaps between two labels:
+applications.
+
+## Setup
+
+We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
+
+Run
+
+```javascript
+npm install --save-dev jest react babel-jest babel-preset-es2015 babel-preset-react
+```
+
+Your `package.json` should look something like this. Please add the scripts and jest configuration entries:
+
+```javascript
+// package.json
+  "dependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "jest": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "automock": false,
+  }
+```
+
+```javascript
+// .babelrc
+{
+  "presets": ["es2015", "react"]
+}
+```
+
+Run ```npm install```.
+
+**And you're good to go!**
+
+React is designed to be tested without being mocked and we recommend turning automocking off using `"automock: false"` in Jest's configuration.
+
+If you'd like to use Jest's automocking feature you can unmock React explicitly:
+
+```javascript
+"jest": {
+  "unmockedModulePathPatterns": [
+    "<rootDir>/node_modules/react/",
+    "<rootDir>/node_modules/react-dom/",
+    "<rootDir>/node_modules/react-addons-test-utils/"
+  ]
+}
+```
+
+### Snapshot Testing
+
+Snapshot testing was introduced in Jest 14.0. More information on how it works and why we built it can be found on the [release blog post](/jest/blog/2016/07/27/jest-14.html).
+
+Let's build a Link component in React that renders hyperlinks:
+
+```javascript
+// Link.react-test.js
+import React from 'react';
+
+const STATUS = {
+  NORMAL: 'normal',
+  HOVERED: 'hovered',
+};
+
+export default class Link extends React.Component {
+
+  constructor() {
+    super();
+
+    this._onMouseEnter = this._onMouseEnter.bind(this);
+    this._onMouseLeave = this._onMouseLeave.bind(this);
+
+    this.state = {
+      class: STATUS.NORMAL,
+    };
+  }
+
+  _onMouseEnter() {
+    this.setState({class: STATUS.HOVERED});
+  }
+
+  _onMouseLeave() {
+    this.setState({class: STATUS.NORMAL});
+  }
+
+  render() {
+    return (
+      <a
+        className={this.state.class}
+        href={this.props.page || '#'}
+        onMouseEnter={this._onMouseEnter}
+        onMouseLeave={this._onMouseLeave}>
+        {this.props.children}
+      </a>
+    );
+  }
+
+}
+```
+
+Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
+
+```javascript
+// Link.react-test.js
+import React from 'react';
+import Link from '../Link.react';
+import renderer from 'react/lib/ReactTestRenderer';
+
+describe('Link', () => {
+  it('changes the class when hovered', () => {
+    const component = renderer.create(
+      <Link page="http://www.facebook.com">Facebook</Link>
+    );
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+
+    // manually trigger the callback
+    tree.props.onMouseEnter();
+    // re-rendering
+    tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+
+    // manually trigger the callback
+    tree.props.onMouseLeave();
+    // re-rendering
+    tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+});
+```
+
+When you run `npm test` or `jest`, this will produce an output file like this:
+
+```javascript
+// __tests__/__snapshots__/Link.react-test.js.snap
+exports[`Link changes the class when hovered 1`] = `
+<a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  Facebook
+</a>
+`;
+
+exports[`Link changes the class when hovered 2`] = `
+<a
+  className="hovered"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  Facebook
+</a>
+`;
+
+exports[`Link changes the class when hovered 3`] = `
+<a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  Facebook
+</a>
+`;
+```
+
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+
+The code for this example is available at
+[examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
+
+### DOM Testing
+
+If you'd like to instead render components to a mock implementation of the DOM APIs you can use the DOM renderer and the `jsdom` `testEnvironment`. You have to run `npm install --save-dev react-addons-test-utils` to use React's test utils.
+
+Let's implement a simple checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
@@ -45,8 +230,7 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-The test code is pretty straightforward; we use React's
-[TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to
+We use React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to
 manipulate React components.
 
 ```javascript
@@ -82,51 +266,7 @@ describe('CheckboxWithLabel', () => {
 });
 ```
 
-## Setup
-
-Since we are writing code using JSX, a bit of one-time setup is required to make
-the test work. We are going to use the `babel-jest` package as a preprocessor
-for Jest. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
-
-```javascript
-// package.json
-    "dependencies": {
-    "react": "~0.14.0",
-    "react-dom": "~0.14.0"
-  },
-  "devDependencies": {
-    "babel-jest": "^9.0.0",
-    "babel-preset-es2015": "*",
-    "babel-preset-react": "*",
-    "jest-cli": "*",
-    "react-addons-test-utils": "~0.14.0"
-  },
-  "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react/",
-      "<rootDir>/node_modules/react-dom/",
-      "<rootDir>/node_modules/react-addons-test-utils/"
-    ]
-  }
-```
-
-```javascript
-// .babelrc
-{
-  "presets": ["es2015", "react"]
-}
-```
-
-Run ```npm install```.
-
-**And you're good to go!**
-
-React is designed to be tested without being mocked and ships with `TestUtils`
-to help. Therefore, we use `unmockedModulePathPatterns` to prevent React from
-being mocked.
+Alternatively you can also use [enzyme](https://github.com/airbnb/enzyme) to test DOM components.
 
 The code for this example is available at
 [examples/react](https://github.com/facebook/jest/tree/master/examples/react).

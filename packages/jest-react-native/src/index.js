@@ -11,14 +11,14 @@
 jest
   .mock('Image')
   .mock('Text', () => {
-    const mockText = require.requireActual('Text');
+    const realText = require.requireActual('Text');
     const React = require('React');
     class Text extends React.Component {
       render() {
         return React.createElement('Text', this.props, this.props.children);
       }
     }
-    Text.propTypes = mockText.propTypes;
+    Text.propTypes = realText.propTypes;
     return Text;
   })
   .mock('ensureComponentIsNative', () => () => true)

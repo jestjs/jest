@@ -66,6 +66,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
   - [`notify` [boolean]](#notify-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
+  - [`preset` [string]](#preset-string)
   - [`rootDir` [string]](#rootdir-string)
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
   - [`setupFiles` [array]](#setupfiles-array)
@@ -561,6 +562,11 @@ Example:
 (default: `false`)
 
 Activates notifications for test results.
+
+### `preset` [string]
+(default: `undefined`)
+
+A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
 
 ### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
