@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.deepUnmock('jest-matchers');
-
 const jestExpect = require('jest-matchers').expect;
 
 const jasmineExpect = global.expect;
