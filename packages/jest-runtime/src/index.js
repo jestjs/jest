@@ -38,6 +38,8 @@ type HasteMapOptions = {
   resetCache: boolean,
 };
 
+type InternalModuleOptions = {isInternalModule: boolean};
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
@@ -214,7 +216,11 @@ class Runtime {
     return require('./cli/args').options;
   }
 
-  requireModule(from: Path, moduleName?: string) {
+  requireModule(
+    from: Path,
+    moduleName?: string,
+    options: ?InternalModuleOptions,
+  ) {
     const moduleID = this._normalizeID(from, moduleName);
     let modulePath;
 
@@ -225,6 +231,7 @@ class Runtime {
     moduleResource = moduleName && this._resolver.getModule(moduleName);
     manualMockResource = moduleName && this._resolver.getMockModule(moduleName);
     if (
+      (!options || !options.isInternalModule) &&
       !moduleResource &&
       manualMockResource &&
       manualMockResource !== this._isCurrentlyExecutingManualMock &&
@@ -250,7 +257,6 @@ class Runtime {
         filename: modulePath,
         exports: {},
       };
-
       this._moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
@@ -260,10 +266,14 @@ class Runtime {
         // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
-        this._execModule(localModule);
+        this._execModule(localModule, options);
       }
     }
     return this._moduleRegistry[modulePath].exports;
+  }
+
+  requireInternalModule(from: Path, to?: string) {
+    return this.requireModule(from, to, {isInternalModule: true});
   }
 
   requireMock(from: Path, moduleName: string) {
@@ -380,13 +390,13 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _shouldCollectCoverage(filename: Path) {
+  _shouldCollectCoverage(filename: Path): boolean {
     const collectOnlyFrom = this._config.collectCoverageOnlyFrom;
     const shouldCollectCoverage = (
       (this._config.collectCoverage && !collectOnlyFrom) ||
       (collectOnlyFrom && collectOnlyFrom[filename])
     );
-    return (
+    return !!(
       shouldCollectCoverage &&
       !this._coverageRegex.test(filename) &&
       !(this._mocksPattern && this._mocksPattern.test(filename)) &&
@@ -394,14 +404,16 @@ class Runtime {
     );
   }
 
-  _execModule(localModule: Module) {
+  _execModule(localModule: Module, options: ?InternalModuleOptions) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
     }
 
     const filename = localModule.filename;
-    const shouldCollectCoverage = this._shouldCollectCoverage(filename);
+    const shouldCollectCoverage =
+      (!options || !options.isInternalModule) &&
+      this._shouldCollectCoverage(filename);
     const collectors = this._coverageCollectors;
     if (shouldCollectCoverage && !collectors[filename]) {
       collectors[filename] = new this._CoverageCollector();
@@ -418,17 +430,19 @@ class Runtime {
     localModule.children = [];
     localModule.parent = mockParentModule;
     localModule.paths = this._resolver.getModulePaths(dirname);
-    localModule.require = this._createRequireImplementation(filename);
+    localModule.require = this._createRequireImplementation(filename, options);
 
-    const script = transform(filename, this._config, {
-      instrument: shouldCollectCoverage && (
-        source => collectors[filename].getInstrumentedSource(
+    const script = transform(
+      filename,
+      options && options.isInternalModule ? null : this._config,
+      shouldCollectCoverage ? {
+        instrument: source => collectors[filename].getInstrumentedSource(
           source,
           filename,
           '$JEST',
-        )
-      ),
-    });
+        ),
+      } : null,
+    );
     const wrapper = this._runScript(script, filename);
     wrapper.call(
       localModule.exports, // module context
@@ -645,13 +659,18 @@ class Runtime {
     return this._shouldMockModuleCache[moduleID] = true;
   }
 
-  _createRequireImplementation(from: Path) {
-    const moduleRequire = this.requireModuleOrMock.bind(this, from);
-    moduleRequire.requireMock = this.requireMock.bind(this, from);
-    moduleRequire.requireActual = this.requireModule.bind(this, from);
-    moduleRequire.resolve = moduleName => this._resolveModule(from, moduleName);
+  _createRequireImplementation(
+    from: Path,
+    options: ?InternalModuleOptions,
+  ) {
+    const moduleRequire = options && options.isInternalModule
+      ? (moduleName: string) => this.requireInternalModule(from, moduleName)
+      : this.requireModuleOrMock.bind(this, from);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
+    moduleRequire.requireActual = this.requireModule.bind(this, from);
+    moduleRequire.requireMock = this.requireMock.bind(this, from);
+    moduleRequire.resolve = moduleName => this._resolveModule(from, moduleName);
     return moduleRequire;
   }
 

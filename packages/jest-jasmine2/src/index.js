@@ -155,7 +155,7 @@ function jasmine2(
     '',
     'jest-check',
     () => {
-      const jasmineCheck = runtime.requireModule(JASMINE_CHECK_PATH);
+      const jasmineCheck = runtime.requireInternalModule(JASMINE_CHECK_PATH);
       return jasmineCheck(environment.global, config.testcheckOptions);
     },
     {virtual: true},
@@ -300,7 +300,9 @@ function jasmine2(
   // `jest-matchers` should be required inside test environment (vm).
   // Otherwise if they throw, the `Error` class will differ from the `Error`
   // class of the test and `error instanceof Error` will return `false`.
-  runtime.requireModule(path.resolve(__dirname, './extendJasmineExpect.js'));
+  runtime.requireInternalModule(
+    path.resolve(__dirname, './extendJasmineExpect.js'),
+  );
 
   runtime.requireModule(testPath);
   env.execute();

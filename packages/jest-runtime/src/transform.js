@@ -112,7 +112,7 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
 
 module.exports = (
   filename: Path,
-  config: Config,
+  config: ?Config,
   options: ?TransformOptions,
 ): vm.Script => {
   const mtime = fs.statSync(filename).mtime;
@@ -133,7 +133,7 @@ module.exports = (
     content = content.replace(/^#!.*/, '');
   }
 
-  if (!ignoreCache.has(config)) {
+  if (config && !ignoreCache.has(config)) {
     ignoreCache.set(
       config,
       new RegExp(config.preprocessorIgnorePatterns.join('|')),
@@ -141,6 +141,7 @@ module.exports = (
   }
 
   if (
+    config &&
     config.scriptPreprocessor &&
     (
       !config.preprocessorIgnorePatterns.length ||

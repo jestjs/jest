@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.unmock('jasmine-check');
-
 const jasmineCheck = require('jasmine-check');
 
 module.exports = (global, configOptions) => {
