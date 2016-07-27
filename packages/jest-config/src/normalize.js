@@ -86,7 +86,39 @@ function normalize(config, argv) {
 
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
-    throw new Error('No rootDir config value found!');
+    throw new Error(`Jest: 'rootDir' config value must be specified.`);
+  }
+
+  if (config.preset) {
+    const presetPath = _replaceRootDirTags(config.rootDir, config.preset);
+    const presetModule = Resolver.findNodeModule(
+      path.join(presetPath, 'jest-preset.json'),
+      {
+        basedir: config.rootDir,
+      },
+    );
+    if (presetModule) {
+      const preset = require(presetModule);
+      if (config.setupFiles) {
+        config.setupFiles = preset.setupFiles.concat(config.setupFiles);
+      }
+      if (config.modulePathIgnorePatterns) {
+        config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
+          .concat(config.modulePathIgnorePatterns);
+      }
+      if (config.moduleNameMapper) {
+        config.moduleNameMapper = Object.assign(
+          {},
+          preset.moduleNameMapper,
+          config.moduleNameMapper,
+        );
+      }
+      config = Object.assign({}, preset, config);
+    } else {
+      throw new Error(
+        `Jest: Preset '${config.preset}' not found.`,
+      );
+    }
   }
 
   config.rootDir = path.normalize(config.rootDir);
@@ -269,14 +301,15 @@ function normalize(config, argv) {
       case 'noStackTrace':
       case 'notify':
       case 'persistModuleRegistryBetweenSpecs':
+      case 'preset':
       case 'replname':
       case 'rootDir':
-      case 'updateSnapshot':
       case 'testEnvData':
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
       case 'testURL':
+      case 'updateSnapshot':
       case 'usesBabelJest':
       case 'verbose':
       case 'watchman':
@@ -286,7 +319,7 @@ function normalize(config, argv) {
       default:
         console.error(
           `Error: Unknown config option "${key}" with value ` +
-          `"${config[key]}". This is either a typing error or another user ` +
+          `"${config[key]}". This is either a typing error or a user ` +
           `mistake and fixing it will remove this message.`,
         );
     }

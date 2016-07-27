@@ -10,7 +10,6 @@
 'use strict';
 
 jest.disableAutomock();
-const jestExpect = require('jest-matchers').expect;
 
 describe('matchers', () => {
   it('proxies matchers to jest-matchers', () => {

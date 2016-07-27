@@ -36,6 +36,7 @@ type BaseConfig = {
   noHighlight: boolean,
   noStackTrace: boolean,
   notify: boolean,
+  preset: ?string,
   testEnvData: {},
   testEnvironment: string,
   testPathDirs: Array<Path>,

@@ -1,0 +1,27 @@
+{
+  "automock": false,
+  "haste": {
+    "defaultPlatform": "ios",
+    "platforms": ["android", "ios"],
+    "providesModuleNodeModules": [
+      "react",
+      "react-native"
+    ]
+  },
+  "moduleNameMapper": {
+    "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
+    "^[./a-zA-Z0-9$_-]+\\.png$": "RelativeImageStub"
+  },
+  "modulePathIgnorePatterns": [
+    "<rootDir>/node_modules/react-native/Libraries/react-native/",
+    "<rootDir>/node_modules/react-native/packager/"
+  ],
+  "persistModuleRegistryBetweenSpecs": true,
+  "preprocessorIgnorePatterns": [
+    "node_modules/(?!react-native)"
+  ],
+  "setupFiles": [
+    "<rootDir>/node_modules/jest-react-native/build/index.js"
+  ],
+  "testEnvironment": "node"
+}

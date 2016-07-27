@@ -1,5 +1,7 @@
 [ignore]
 .*/packages/babel-plugin-jest-hoist/node_modules/fbjs/.*
+.*/packages/jest-react-native/node_modules/fbjs/.*
+.*/packages/jest-react-native/node_modules/react-native/.*
 .*/examples/.*
 .*/website/.*
 

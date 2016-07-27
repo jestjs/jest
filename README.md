@@ -107,8 +107,6 @@ describe('CheckboxWithLabel', () => {
 });
 ```
 
-Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more.
-
 **And you are good to go!** The next time you run Jest it will print something
 like
 
@@ -121,6 +119,38 @@ The
 [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and
 [react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
 repositories have excellent examples of tests written by Facebook engineers.
+
+### React, React-Native and Snapshot Testing
+
+Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React-Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React-Native codebases.
+
+We recommend using React's test renderer to capture snapshots with Jest's snapshot feature. Write a test using `toMatchSnapshot`:
+
+```js
+import renderer from 'react/lib/ReactTestRenderer';
+it('renders correctly', () => {
+  const tree = renderer.create(
+    <Link page="http://www.facebook.com">Facebook</Link>
+  ).toJSON();
+  expect(tree).toMatchSnapshot();
+});
+```
+
+and it will produce a snapshot like this:
+
+```js
+exports[`Link renders correctly 1`] = `
+<a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  Facebook
+</a>
+`;
+```
+
+On subsequent test runs, Jest will compare the stored snapshot with the rendered output and highlight differences. If there are differences, Jest will ask you to fix your mistake and can be re-run with `jest -u` to update an outdated snapshot.
 
 ### Advanced Features
 
@@ -337,6 +367,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`modulePathIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string)
   - [`notify` [boolean]](https://facebook.github.io/jest/docs/api.html#notify-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string)
+  - [`preset` [string]](https://facebook.github.io/jest/docs/api.html#preset-string)
   - [`rootDir` [string]](https://facebook.github.io/jest/docs/api.html#rootdir-string)
   - [`scriptPreprocessor` [string]](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string)
   - [`setupFiles` [array]](https://facebook.github.io/jest/docs/api.html#setupfiles-array)
@@ -813,6 +844,8 @@ along with any other options: `['node_modules', 'bower_components']`
 
 A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
 
+Modules that are mapped to an alias are unmocked by default, regardless of whether automocking is enabled or not.
+
 Use `<rootDir>` string token to refer to [`rootDir`](https://facebook.github.io/jest/docs/api.html#rootdir-string) value if you want to use file paths.
 
 Additionally, you can substitute captured regex groups using numbered backreferences.
@@ -830,6 +863,11 @@ Example:
 (default: `false`)
 
 Activates notifications for test results.
+
+### `preset` [string]
+(default: `undefined`)
+
+A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
 
 ### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)

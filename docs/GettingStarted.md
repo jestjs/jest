@@ -102,8 +102,6 @@ describe('CheckboxWithLabel', () => {
 });
 ```
 
-Check out the [React tutorial](/jest/docs/tutorial-react.html) for more.
-
 **And you are good to go!** The next time you run Jest it will print something
 like
 
@@ -116,6 +114,38 @@ The
 [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and
 [react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__)
 repositories have excellent examples of tests written by Facebook engineers.
+
+### React, React-Native and Snapshot Testing
+
+Check out the [React tutorial](/jest/docs/tutorial-react.html) and the [React-Native tutorial](/jest/docs/tutorial-react-native.html) to get started with React or React-Native codebases.
+
+We recommend using React's test renderer to capture snapshots with Jest's snapshot feature. Write a test using `toMatchSnapshot`:
+
+```js
+import renderer from 'react/lib/ReactTestRenderer';
+it('renders correctly', () => {
+  const tree = renderer.create(
+    <Link page="http://www.facebook.com">Facebook</Link>
+  ).toJSON();
+  expect(tree).toMatchSnapshot();
+});
+```
+
+and it will produce a snapshot like this:
+
+```js
+exports[`Link renders correctly 1`] = `
+<a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function bound _onMouseEnter]}
+  onMouseLeave={[Function bound _onMouseLeave]}>
+  Facebook
+</a>
+`;
+```
+
+On subsequent test runs, Jest will compare the stored snapshot with the rendered output and highlight differences. If there are differences, Jest will ask you to fix your mistake and can be re-run with `jest -u` to update an outdated snapshot.
 
 ### Advanced Features
 
