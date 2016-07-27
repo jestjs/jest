@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "13.2.2",
+  "version": "14.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,6 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "jsdom": "^9.4.0",
-    "jest-util": "^13.2.2"
+    "jest-util": "^14.0.0"
   }
 }

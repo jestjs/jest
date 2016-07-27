@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "13.2.3",
+  "version": "14.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,13 +10,13 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "graceful-fs": "^4.1.3",
-    "jest-config": "^13.2.3",
-    "jest-file-exists": "^13.2.2",
-    "jest-haste-map": "^13.2.2",
-    "jest-mock": "^13.2.2",
-    "jest-resolve": "^13.2.2",
-    "jest-snapshot": "^13.2.3",
-    "jest-util": "^13.2.2",
+    "jest-config": "^14.0.0",
+    "jest-file-exists": "^14.0.0",
+    "jest-haste-map": "^14.0.0",
+    "jest-mock": "^14.0.0",
+    "jest-resolve": "^14.0.0",
+    "jest-snapshot": "^14.0.0",
+    "jest-util": "^14.0.0",
     "json-stable-stringify": "^1.0.0",
     "yargs": "^4.7.1"
   },
@@ -24,8 +24,8 @@
     "jest-runtime": "./bin/jest-runtime.js"
   },
   "devDependencies": {
-    "jest-config": "^13.2.3",
-    "jest-environment-node": "^13.2.2"
+    "jest-config": "^14.0.0",
+    "jest-environment-node": "^14.0.0"
   },
   "jest": {
     "automock": false,

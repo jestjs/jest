@@ -1,7 +1,7 @@
 {
   "name": "jest-matcher-utils",
   "description": "A set of utility functions for jest-matchers and related packages",
-  "version": "13.2.3",
+  "version": "14.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
