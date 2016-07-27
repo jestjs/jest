@@ -14,6 +14,7 @@ import type {
   Expect,
   ExpectationResult,
   ExpectationObject,
+  MatcherContext,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -30,6 +31,8 @@ if (!global[GLOBAL_MATCHERS_OBJECT_SYMBOL]) {
     {value: Object.create(null)},
   );
 }
+
+class JestAssertionError extends Error {}
 
 const expect: Expect = (actual: any): ExpectationObject => {
   const allMatchers = global[GLOBAL_MATCHERS_OBJECT_SYMBOL];
@@ -49,12 +52,12 @@ const makeThrowingMatcher = (
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn => {
-  return function throwingMatcher(expected, options) {
-    const result: ExpectationResult = matcher(
-      actual,
-      expected,
-      options,
-      {args: arguments},
+  return function throwingMatcher(expected) {
+    const rest = Array.prototype.slice.call(arguments, 1);
+    const matcherContext: MatcherContext = {isNot};
+    const result: ExpectationResult = matcher.apply(
+      matcherContext,
+      [actual, expected].concat(rest),
     );
 
     if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
@@ -66,7 +69,7 @@ const makeThrowingMatcher = (
         message = message();
       }
 
-      const error = new Error(message);
+      const error = new JestAssertionError(message);
       // Remove this function from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
       throw error;
@@ -85,4 +88,5 @@ addMatchers(spyMatchers);
 module.exports = {
   addMatchers,
   expect,
+  JestAssertionError,
 };

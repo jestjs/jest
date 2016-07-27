@@ -297,6 +297,8 @@ function jasmine2(
 
   env.addReporter(reporter);
 
+  runtime.requireModule(path.resolve(__dirname, './setupJasmineAdapter.js'));
+
   // `jest-matchers` should be required inside test environment (vm).
   // Otherwise if they throw, the `Error` class will differ from the `Error`
   // class of the test and `error instanceof Error` will return `false`.
