@@ -18,10 +18,20 @@ jest
 jest.mock(
   'test-preprocessor',
   () => {
+    const escapeStrings = str => {
+      return str.replace(/'/, `'`);
+    };
+
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
       process: (content, filename, config) => {
-        return (`const TRANSFORMED = '${filename.replace(/'/, `'`)}'`);
+        return (`
+          const TRANSFORMED = {
+            filename: '${escapeStrings(filename)}',
+            script: '${escapeStrings(content)}',
+            config: '${escapeStrings(JSON.stringify(config))}',
+          };
+        `);
       },
     };
   },
@@ -56,10 +66,10 @@ describe('transform', () => {
         'module.exports = "banana";',
       ].join('\n'),
       '/fruits/kiwi.js': [
-        'module.exports = () => "kiwi"',
+        'module.exports = () => "kiwi";',
       ].join('\n'),
       '/node_modules/react.js': [
-        'module.exports = "react"',
+        'module.exports = "react";',
       ].join('\n'),
     });
 
@@ -102,7 +112,7 @@ describe('transform', () => {
     config.collectCoverage = true;
     const response = transform('/fruits/banana.js', config);
 
-    expect(response instanceof vm.Script);
+    expect(response instanceof vm.Script).toBe(true);
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
     // no-cache case
@@ -125,7 +135,7 @@ describe('transform', () => {
     expect(vm.Script.mock.calls[0][0]).not.toEqual(snapshot);
     expect(vm.Script.mock.calls[0][0]).not.toMatch(/instrumented kiwi/);
 
-    // If we instrument again, we get a different result.
+    // If we disable coverage, we get a different result.
     transform(
       '/fruits/kiwi.js',
       Object.assign({}, config, {collectCoverage: false}),

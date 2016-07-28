@@ -1,5 +1,5 @@
 exports[`babel-jest instruments only specific files and collects coverage 1`] = `
-"Using Jest CLI v14.0.0, jasmine2, babel-jest
+"Using <<REPLACED>>, jasmine2, babel-jest
 ----------------------------|----------|----------|----------|----------|----------------|
 File                        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------------------------|----------|----------|----------|----------|----------------|
@@ -13,7 +13,7 @@ All files                   |    83.33 |      100 |       50 |    83.33 |       
 `;
 
 exports[`no babel-jest instrumentation with no babel-jest 1`] = `
-"Using Jest CLI v14.0.0, jasmine2
+"Using <<REPLACED>>, jasmine2
 ----------------------------|----------|----------|----------|----------|----------------|
 File                        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------------------------|----------|----------|----------|----------|----------------|

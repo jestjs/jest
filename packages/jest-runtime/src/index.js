@@ -67,7 +67,6 @@ type BooleanObject = {[key: string]: boolean};
 
 class Runtime {
   _config: Config;
-  _coverageRegex: RegExp;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
@@ -105,9 +104,6 @@ class Runtime {
       config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
-    this._coverageRegex = new RegExp(
-      config.coveragePathIgnorePatterns.join('|').replace(/\//g, path.sep),
-    );
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);

@@ -14,6 +14,9 @@ const {linkJestPackage, run} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 
+const stripJestVersion = stdout =>
+  stdout.replace(/Jest CLI v\d{1,2}\.\d{1,2}\.\d{1,2}/, '<<REPLACED>>');
+
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
@@ -34,7 +37,8 @@ describe('babel-jest', () => {
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('not-covered.js');
     expect(stdout).not.toMatch('excluded-from-coverage.js');
-    expect(stdout).toMatchSnapshot(); // coverage result should not change
+    // coverage result should not change
+    expect(stripJestVersion(stdout)).toMatchSnapshot();
   });
 });
 
@@ -51,6 +55,7 @@ describe('no babel-jest', () => {
     const {stdout} = runJest(dir, ['--no-cache', '--coverage']);
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excluded-from-coverage.js');
-    expect(stdout).toMatchSnapshot(); // coverage result should not change
+    // coverage result should not change
+    expect(stripJestVersion(stdout)).toMatchSnapshot();
   });
 });

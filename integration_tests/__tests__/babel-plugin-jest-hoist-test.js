@@ -19,7 +19,6 @@ beforeEach(() => {
   run('npm i', DIR);
   linkJestPackage('babel-plugin-jest-hoist', DIR);
   linkJestPackage('babel-jest', DIR);
-
 });
 
 it('sucessfully runs the tests inside `babel-plugin-jest-hoist/`', () => {

@@ -26,7 +26,7 @@ export type Processor = {
   process: (sourceText: string, sourcePath: Path) => string,
 };
 
-export type Options = {
+type Options = {
   isInternalModule: boolean
 };
 
@@ -35,7 +35,7 @@ const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 const cache: Map<string, vm.Script> = new Map();
 const configToJsonMap = new Map();
 // Cache regular expressions to test whether the file needs to be preprocessed
-const ignoreCache: WeakMap<Config, RegExp> = new WeakMap();
+const ignoreCache: WeakMap<Config, ?RegExp> = new WeakMap();
 
 const removeFile = (path: Path) => {
   try {
@@ -118,26 +118,36 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
 
 const getScriptCacheKey = (filename, config) => {
   const mtime = fs.statSync(filename).mtime;
-  return `${filename}_${mtime.getTime()}_` +
-    `${shouldInstrument(filename, config).toString()}`;
+  return filename + '_' + mtime.getTime() +
+    (shouldInstrument(filename, config) ? '_instrumented' : '');
 };
 
 const shouldPreprocess = (filename: Path, config: Config): boolean => {
   if (!ignoreCache.has(config)) {
-    ignoreCache.set(
-      config,
-      new RegExp(config.preprocessorIgnorePatterns.join('|')),
-    );
+    if (!config.preprocessorIgnorePatterns) {
+      ignoreCache.set(config, null);
+    } else {
+      ignoreCache.set(
+        config,
+        new RegExp(config.preprocessorIgnorePatterns.join('|')),
+      );
+    }
   }
 
+  const ignoreRegexp = ignoreCache.get(config);
+  const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
   return config.scriptPreprocessor && (
     !config.preprocessorIgnorePatterns.length ||
-    !ignoreCache.get(config).test(filename)
+    !isIgnored
   );
 };
 
 const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (!config.collectCoverage) {
+    return false;
+  }
+
+  if (config.testRegex && filename.match(config.testRegex)) {
     return false;
   }
 
@@ -150,13 +160,14 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
     return false;
   }
 
-  if (config.coveragePathIgnorePatterns &&
+  if (
+    config.coveragePathIgnorePatterns &&
     config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
   ) {
     return false;
   }
 
-  if (filename.match(config.mocksPattern)) {
+  if (config.mocksPattern && filename.match(config.mocksPattern)) {
     return false;
   }
 
@@ -228,7 +239,17 @@ const instrument = (content: string, filename: Path): string => {
   if (babel.util.canCompile(filename)) {
     return babel.transform(content, {
       filename,
-      plugins: [babelPluginIstanbul],
+      auxiliaryCommentBefore: ' istanbul ignore next ',
+      plugins: [
+        [
+          babelPluginIstanbul,
+          // right now babel-plugin-istanbul doesn't have any configuration
+          // for bypassing the excludes check, but there is a config for
+          // overwriting it. `.^` as a regexp that matches nothing.
+          // @see https://github.com/istanbuljs/test-exclude/issues/7
+          {exclude: ['.^']},
+        ],
+      ],
       retainLines: true,
       babelrc: false,
     }).code;
