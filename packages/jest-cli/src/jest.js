@@ -154,7 +154,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         info.push('babel-jest');
       }
       if (config.preset) {
-        info.push(config.preset + ' preset');
+        info.push(path.relative(config.rootDir, config.preset) + ' preset');
       }
 
       const prefix = argv.watch ? 'Watch using' : 'Using';
