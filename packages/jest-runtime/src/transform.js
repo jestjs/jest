@@ -19,10 +19,12 @@ const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
 const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
+const {shouldBeCovered} = require('jest-config');
 
 const VERSION = require('../package.json').version;
 
 export type Processor = {
+  INSTRUMENTS?: boolean,
   process: (sourceText: string, sourcePath: Path) => string,
 };
 
@@ -119,7 +121,7 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
 const getScriptCacheKey = (filename, config) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() +
-    (shouldInstrument(filename, config) ? '_instrumented' : '');
+    (shouldBeCovered(filename, config) ? '_instrumented' : '');
 };
 
 const shouldPreprocess = (filename: Path, config: Config): boolean => {
@@ -140,38 +142,6 @@ const shouldPreprocess = (filename: Path, config: Config): boolean => {
     !config.preprocessorIgnorePatterns.length ||
     !isIgnored
   );
-};
-
-const shouldInstrument = (filename: Path, config: Config): boolean => {
-  if (!config.collectCoverage) {
-    return false;
-  }
-
-  if (config.testRegex && filename.match(config.testRegex)) {
-    return false;
-  }
-
-  if (
-    // This configuration field contains an object in the form of:
-    // {'path/to/file.js': true}
-    config.collectCoverageOnlyFrom &&
-    !config.collectCoverageOnlyFrom[filename]
-  ) {
-    return false;
-  }
-
-  if (
-    config.coveragePathIgnorePatterns &&
-    config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
-  ) {
-    return false;
-  }
-
-  if (config.mocksPattern && filename.match(config.mocksPattern)) {
-    return false;
-  }
-
-  return true;
 };
 
 const getFileCachePath = (
@@ -276,7 +246,12 @@ const cachedTransformAndWrap = (
   if (preprocessor && shouldPreprocess(filename, config)) {
     result = preprocessor.process(result, filename, config);
   }
-  if (shouldInstrument(filename, config)) {
+
+  // That means that the preprocessor has a custom instrumentation
+  // logic and will handle it based on `config.collectCoverage` option
+  const preprocessorWillInstrument = preprocessor && preprocessor.INSTRUMENTS;
+
+  if (!preprocessorWillInstrument && shouldBeCovered(filename, config)) {
     result = instrument(result, filename, config);
   }
 
@@ -296,7 +271,7 @@ const transformAndBuildScript = (
 
   if (
     !isInternalModule &&
-      (shouldPreprocess(filename, config) || shouldInstrument(filename, config))
+      (shouldPreprocess(filename, config) || shouldBeCovered(filename, config))
   ) {
     wrappedResult = cachedTransformAndWrap(filename, config, content);
   } else {
