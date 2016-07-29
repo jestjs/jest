@@ -80,6 +80,11 @@ class SummareReporter extends BaseReporter {
       snapshots.unmatched ||
       snapshots.updated
     ) {
+      const event = process.env.npm_lifecycle_event;
+      const updateCommand =
+        (!event ? 're-' : '') + 'run with `' +
+        (event ? 'npm ' + event + ' -- ' : '') + '-u' + '`';
+
       this.log('\n' + SNAPSHOT_SUMMARY('Snapshot Summary'));
       if (snapshots.added) {
         this.log(
@@ -94,7 +99,7 @@ class SummareReporter extends BaseReporter {
           '\u203A ' +
           FAIL_COLOR(pluralize('snapshot test', snapshots.unmatched)) +
           ` failed in ${pluralize('test file', snapshots.filesUnmatched)}. ` +
-          'Inspect your code changes or re-run with `-u` to update them.',
+          'Inspect your code changes or ' + updateCommand + ' to update them.',
         );
       }
 
@@ -115,7 +120,7 @@ class SummareReporter extends BaseReporter {
           )) +
           (snapshots.didUpdate
             ? ' removed.'
-            : ' found, re-run with `-u` to remove ' +
+            : ' found, ' + updateCommand + ' to remove ' +
               (snapshots.filesRemoved === 1 ? 'it' : 'them.') + '.'),
         );
       }
@@ -126,7 +131,7 @@ class SummareReporter extends BaseReporter {
           FAIL_COLOR(pluralize('obsolete snapshot', snapshots.unchecked)) +
           (snapshots.didUpdate
             ? ' removed.'
-            : ' found, re-run with `-u` to remove ' +
+            : ' found, ' + updateCommand + ' to remove ' +
               (snapshots.filesRemoved === 1 ? 'it' : 'them') + '.'),
         );
       }
