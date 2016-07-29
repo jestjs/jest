@@ -10,18 +10,31 @@
 
 'use strict';
 
+import type {Path} from 'types/Config';
+
 const args = require('./args');
 const getJest = require('./getJest');
 const getPackageRoot = require('jest-util').getPackageRoot;
 const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
 const yargs = require('yargs');
 
-function run() {
-  const argv = yargs
+function run(argv?: Object, root?: Path) {
+  argv = yargs(argv || process.argv.slice(2))
     .usage(args.usage)
     .options(args.options)
     .check(args.check)
     .argv;
+
+  const {config} = argv;
+  // If the passed in value looks like JSON, treat it as an object.
+  if (
+    config &&
+    typeof config === 'string' &&
+    config[0] === '{' &&
+    config[config.length - 1] === '}'
+  ) {
+    argv.config = JSON.parse(config);
+  }
 
   warnAboutUnrecognizedOptions(argv, args.options);
 
@@ -31,7 +44,9 @@ function run() {
     return;
   }
 
-  const root = getPackageRoot();
+  if (!root) {
+    root = getPackageRoot();
+  }
   getJest(root).runCLI(argv, root, success => {
     process.on('exit', () => process.exit(success ? 0 : 1));
   });

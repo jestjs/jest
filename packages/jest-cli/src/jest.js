@@ -17,15 +17,16 @@ const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
-const TestRunner = require('./TestRunner');
-const SearchSource = require('./SearchSource');
-
 const Runtime = require('jest-runtime');
+const SearchSource = require('./SearchSource');
+const TestRunner = require('./TestRunner');
+
 const chalk = require('chalk');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
 const readConfig = require('jest-config').readConfig;
+const {run} = require('./cli');
 const sane = require('sane');
 const which = require('which');
 
@@ -208,6 +209,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 
 module.exports = {
   getVersion: () => VERSION,
+  run,
   runCLI,
   SearchSource,
   TestRunner,

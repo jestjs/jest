@@ -15,6 +15,9 @@ const constants = require('./constants');
 const path = require('path');
 const utils = require('jest-util');
 
+const JSON_EXTENSION = '.json';
+const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
+
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
     case 'object':
@@ -89,10 +92,14 @@ function normalize(config, argv) {
     throw new Error(`Jest: 'rootDir' config value must be specified.`);
   }
 
+  config.rootDir = path.normalize(config.rootDir);
+
   if (config.preset) {
     const presetPath = _replaceRootDirTags(config.rootDir, config.preset);
     const presetModule = Resolver.findNodeModule(
-      path.join(presetPath, 'jest-preset.json'),
+      presetPath.endsWith(JSON_EXTENSION)
+        ? presetPath
+        : path.join(presetPath, PRESET_NAME),
       {
         basedir: config.rootDir,
       },
@@ -116,12 +123,10 @@ function normalize(config, argv) {
       config = Object.assign({}, preset, config);
     } else {
       throw new Error(
-        `Jest: Preset '${config.preset}' not found.`,
+        `Jest: Preset '${presetPath}' not found.`,
       );
     }
   }
-
-  config.rootDir = path.normalize(config.rootDir);
 
   if (!config.name) {
     config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
