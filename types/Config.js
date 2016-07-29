@@ -24,7 +24,6 @@ type BaseConfig = {
   bail: boolean,
   browser: boolean,
   cacheDirectory: Path,
-  coverageCollector: Path,
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
   globals: ConfigGlobals,

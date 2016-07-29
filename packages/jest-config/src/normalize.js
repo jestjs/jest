@@ -190,9 +190,12 @@ function normalize(config, argv) {
   if (config.scriptPreprocessor) {
     config.scriptPreprocessor =
       _replaceRootDirTags(config.rootDir, config.scriptPreprocessor);
-    if (config.scriptPreprocessor.includes(
-      constants.NODE_MODULES + 'babel-jest',
-    )) {
+    if (
+      config.scriptPreprocessor.includes(
+        constants.NODE_MODULES + 'babel-jest',
+      )
+      || config.scriptPreprocessor.includes('packages/babel-jest')
+  ) {
       babelJest = config.scriptPreprocessor;
     }
   } else {

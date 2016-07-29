@@ -8,6 +8,9 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "babel-core": "^6.11.4",
+    "babel-jest": "13.2.2",
+    "babel-plugin-istanbul": "^1.1.0",
     "chalk": "^1.1.3",
     "graceful-fs": "^4.1.3",
     "jest-config": "^14.0.1",
@@ -29,8 +32,11 @@
   },
   "jest": {
     "automock": false,
+    "preprocessorIgnorePatterns": [
+      "node_modules"
+    ],
     "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
+    "scriptPreprocessor": "<rootDir>/../../babel-jest",
     "setupTestFrameworkScriptFile": "<rootDir>/__mocks__/env.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [

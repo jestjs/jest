@@ -18,15 +18,20 @@ jest
 jest.mock(
   'test-preprocessor',
   () => {
-    const stableStringify = require('json-stable-stringify');
+    const escapeStrings = str => {
+      return str.replace(/'/, `'`);
+    };
+
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
       process: (content, filename, config) => {
-        return (
-          `\nScript: ${content}\n` +
-          `Path: ${filename}\n` +
-          `Config: ${stableStringify(config, {space: 2})}`
-        );
+        return (`
+          const TRANSFORMED = {
+            filename: '${escapeStrings(filename)}',
+            script: '${escapeStrings(content)}',
+            config: '${escapeStrings(JSON.stringify(config))}',
+          };
+        `);
       },
     };
   },
@@ -61,10 +66,10 @@ describe('transform', () => {
         'module.exports = "banana";',
       ].join('\n'),
       '/fruits/kiwi.js': [
-        'module.exports = () => "kiwi"',
+        'module.exports = () => "kiwi";',
       ].join('\n'),
       '/node_modules/react.js': [
-        'module.exports = "react"',
+        'module.exports = "react";',
       ].join('\n'),
     });
 
@@ -107,7 +112,7 @@ describe('transform', () => {
     config.collectCoverage = true;
     const response = transform('/fruits/banana.js', config);
 
-    expect(response instanceof vm.Script);
+    expect(response instanceof vm.Script).toBe(true);
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
     // no-cache case
@@ -118,27 +123,23 @@ describe('transform', () => {
     const response2 = transform('/fruits/banana.js', config);
     expect(response2).toBe(response);
 
-    transform('/fruits/kiwi.js', config, {
-      instrument: () => 'instrumented kiwi',
-    });
+    transform('/fruits/kiwi.js', config);
     const snapshot = vm.Script.mock.calls[1][0];
     expect(snapshot).toMatchSnapshot();
 
-    // reset and make sure `instrument` returns a different value.
-    jest.resetModuleRegistry();
-    reset();
-    config.collectCoverage = true;
+    transform(
+      '/fruits/kiwi.js',
+      Object.assign({}, config, {collectCoverage: true}),
+    );
 
-    transform('/fruits/kiwi.js', config, {
-      instrument: null,
-    });
     expect(vm.Script.mock.calls[0][0]).not.toEqual(snapshot);
     expect(vm.Script.mock.calls[0][0]).not.toMatch(/instrumented kiwi/);
 
-    // If we instrument again, we get a different result.
-    transform('/fruits/kiwi.js', config, {
-      instrument: () => 'instrumented kiwi',
-    });
+    // If we disable coverage, we get a different result.
+    transform(
+      '/fruits/kiwi.js',
+      Object.assign({}, config, {collectCoverage: false}),
+    );
     expect(vm.Script.mock.calls[1][0]).toEqual(snapshot);
   });
 
@@ -154,6 +155,7 @@ describe('transform', () => {
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
     transform('/node_modules/react.js', config);
+    // ignores preprocessor
     expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
   });
 

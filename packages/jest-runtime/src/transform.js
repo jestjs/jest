@@ -26,15 +26,16 @@ export type Processor = {
   process: (sourceText: string, sourcePath: Path) => string,
 };
 
-type TransformOptions = {
-  instrument: (source: string) => string,
+type Options = {
+  isInternalModule: boolean
 };
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
-const cache = new Map();
+const cache: Map<string, vm.Script> = new Map();
 const configToJsonMap = new Map();
-const ignoreCache = new WeakMap();
+// Cache regular expressions to test whether the file needs to be preprocessed
+const ignoreCache: WeakMap<Config, ?RegExp> = new WeakMap();
 
 const removeFile = (path: Path) => {
   try {
@@ -43,7 +44,6 @@ const removeFile = (path: Path) => {
 };
 
 const getCacheKey = (
-  preprocessor: Processor,
   fileData: string,
   filePath: Path,
   config: Config,
@@ -54,6 +54,8 @@ const getCacheKey = (
     configToJsonMap.set(config, stableStringify({
       cacheDirectory: config.cacheDirectory,
       collectCoverage: config.collectCoverage,
+      collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
+      coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
       haste: config.haste,
       mocksPattern: config.mocksPattern,
       moduleFileExtensions: config.moduleFileExtensions,
@@ -64,7 +66,9 @@ const getCacheKey = (
     }));
   }
   const configStr = configToJsonMap.get(config) || '';
-  if (typeof preprocessor.getCacheKey === 'function') {
+  const preprocessor = getPreprocessor(config);
+
+  if (preprocessor && typeof preprocessor.getCacheKey === 'function') {
     return preprocessor.getCacheKey(fileData, filePath, configStr);
   } else {
     return crypto.createHash('md5')
@@ -84,9 +88,11 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   }
 };
 
-/* eslint-disable max-len */
-const wrap = content => '({"' + EVAL_RESULT_VARIABLE + '":function(module,exports,require,__dirname,__filename,global,jest,$JEST){' + content + '\n}});';
-/* eslint-enable max-len */
+const wrap = content => '({"' +
+  EVAL_RESULT_VARIABLE +
+  '":function(module,exports,require,__dirname,__filename,global,jest){' +
+   content +
+   '\n}});';
 
 const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   if (!fileExists(cachePath)) {
@@ -110,94 +116,210 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   return fileData;
 };
 
-module.exports = (
-  filename: Path,
-  config: ?Config,
-  options: ?TransformOptions,
-): vm.Script => {
+const getScriptCacheKey = (filename, config) => {
   const mtime = fs.statSync(filename).mtime;
-  const instrumentCacheKey = (options && options.instrument ? '1' : '0');
-  const key = filename + '-' + mtime.getTime() + '-' + instrumentCacheKey;
+  return filename + '_' + mtime.getTime() +
+    (shouldInstrument(filename, config) ? '_instrumented' : '');
+};
 
-  if (cache.has(key)) {
-    const content = cache.get(key);
-    if (content) {
-      return content;
+const shouldPreprocess = (filename: Path, config: Config): boolean => {
+  if (!ignoreCache.has(config)) {
+    if (!config.preprocessorIgnorePatterns) {
+      ignoreCache.set(config, null);
+    } else {
+      ignoreCache.set(
+        config,
+        new RegExp(config.preprocessorIgnorePatterns.join('|')),
+      );
     }
   }
 
-  let content = fs.readFileSync(filename, 'utf8');
-  // If the file data starts with a shebang remove it. Leaves the empty line
-  // to keep stack trace line numbers correct.
-  if (content.startsWith('#!')) {
-    content = content.replace(/^#!.*/, '');
+  const ignoreRegexp = ignoreCache.get(config);
+  const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
+  return config.scriptPreprocessor && (
+    !config.preprocessorIgnorePatterns.length ||
+    !isIgnored
+  );
+};
+
+const shouldInstrument = (filename: Path, config: Config): boolean => {
+  if (!config.collectCoverage) {
+    return false;
   }
 
-  if (config && !ignoreCache.has(config)) {
-    ignoreCache.set(
-      config,
-      new RegExp(config.preprocessorIgnorePatterns.join('|')),
-    );
+  if (config.testRegex && filename.match(config.testRegex)) {
+    return false;
   }
 
   if (
-    config &&
-    config.scriptPreprocessor &&
-    (
-      !config.preprocessorIgnorePatterns.length ||
-      !ignoreCache.get(config).test(filename)
-    )
+    // This configuration field contains an object in the form of:
+    // {'path/to/file.js': true}
+    config.collectCoverageOnlyFrom &&
+    !config.collectCoverageOnlyFrom[filename]
   ) {
-    // $FlowFixMe
-    const preprocessor = require(config.scriptPreprocessor);
-    if (typeof preprocessor.process !== 'function') {
-      throw new TypeError(
-        'Jest: a preprocessor must export a `process` function.',
-      );
-    }
-
-    const baseCacheDir = getCacheFilePath(
-      config.cacheDirectory,
-      'jest-transform-cache-' + config.name,
-      VERSION,
-    );
-    const cacheKey =
-      getCacheKey(preprocessor, content, filename, config) +
-      instrumentCacheKey;
-
-    // Create sub folders based on the cacheKey to avoid creating one
-    // directory with many files.
-    const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
-    const cachePath = path.join(
-      cacheDir,
-      path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-    );
-    createDirectory(cacheDir);
-
-    const cacheData = config.cache ? readCacheFile(filename, cachePath) : null;
-    if (cacheData) {
-      content = cacheData;
-    } else {
-      content = preprocessor.process(content, filename, config);
-      if (options && options.instrument) {
-        content = options.instrument(content);
-      }
-      content = wrap(content);
-      writeCacheFile(cachePath, content);
-    }
-  } else if (options && options.instrument) {
-    content = wrap(options.instrument(content));
-  } else {
-    content = wrap(content);
+    return false;
   }
 
-  const script = new vm.Script(content, {
-    displayErrors: true,
-    filename,
-  });
+  if (
+    config.coveragePathIgnorePatterns &&
+    config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
+  ) {
+    return false;
+  }
 
-  cache.set(key, script);
-  return script;
+  if (config.mocksPattern && filename.match(config.mocksPattern)) {
+    return false;
+  }
+
+  return true;
+};
+
+const getFileCachePath = (
+  filename: Path,
+  config: Config,
+  content: string,
+): Path => {
+  const baseCacheDir = getCacheFilePath(
+    config.cacheDirectory,
+    'jest-transform-cache-' + config.name,
+    VERSION,
+  );
+  const cacheKey = getCacheKey(content, filename, config);
+  // Create sub folders based on the cacheKey to avoid creating one
+  // directory with many files.
+  const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
+  const cachePath = path.join(
+    cacheDir,
+    path.basename(filename, path.extname(filename)) + '_' + cacheKey,
+  );
+  createDirectory(cacheDir);
+
+  return cachePath;
+};
+
+const preprocessorCache = new WeakMap();
+
+const getPreprocessor = (config: Config): ?Processor => {
+  if (preprocessorCache.has(config)) {
+    return preprocessorCache.get(config);
+  } else {
+    let preprocessor;
+    if (!config.scriptPreprocessor) {
+      preprocessor = null;
+    } else {
+      // $FlowFixMe
+      preprocessor = require(config.scriptPreprocessor);
+      if (typeof preprocessor.process !== 'function') {
+        throw new TypeError(
+          'Jest: a preprocessor must export a `process` function.',
+        );
+      }
+    }
+    preprocessorCache.set(config, preprocessor);
+    return preprocessor;
+  }
+};
+
+const stripShebang = content => {
+  // If the file data starts with a shebang remove it. Leaves the empty line
+  // to keep stack trace line numbers correct.
+  if (content.startsWith('#!')) {
+    return content.replace(/^#!.*/, '');
+  } else {
+    return content;
+  }
+};
+
+const instrument = (content: string, filename: Path): string => {
+  // NOTE: Keeping these requires inside this function reduces a single run
+  // time by 2sec if not running in `--coverage` mode
+  const babel = require('babel-core');
+  const babelPluginIstanbul = require('babel-plugin-istanbul').default;
+
+  if (babel.util.canCompile(filename)) {
+    return babel.transform(content, {
+      filename,
+      auxiliaryCommentBefore: ' istanbul ignore next ',
+      plugins: [
+        [
+          babelPluginIstanbul,
+          // right now babel-plugin-istanbul doesn't have any configuration
+          // for bypassing the excludes check, but there is a config for
+          // overwriting it. `.^` as a regexp that matches nothing.
+          // @see https://github.com/istanbuljs/test-exclude/issues/7
+          {exclude: ['.^']},
+        ],
+      ],
+      retainLines: true,
+      babelrc: false,
+    }).code;
+  }
+  return content;
+};
+
+const cachedTransformAndWrap = (
+  filename: Path,
+  config: Config,
+  content: string
+) => {
+  const preprocessor = getPreprocessor(config);
+  const cacheFilePath = getFileCachePath(filename, config, content);
+  // Ignore cache if `config.cache` is set (--no-cache)
+  let result = config.cache ? readCacheFile(filename, cacheFilePath) : null;
+
+  if (result) {
+    return result;
+  }
+
+  result = content;
+
+  if (preprocessor && shouldPreprocess(filename, config)) {
+    result = preprocessor.process(result, filename, config);
+  }
+  if (shouldInstrument(filename, config)) {
+    result = instrument(result, filename, config);
+  }
+
+  result = wrap(result);
+  writeCacheFile(cacheFilePath, result);
+  return result;
+};
+
+const transformAndBuildScript = (
+  filename: Path,
+  config: Config,
+  options?: Options,
+): vm.Script => {
+  const isInternalModule = !!(options && options.isInternalModule);
+  const content = stripShebang(fs.readFileSync(filename, 'utf8'));
+  let wrappedResult;
+
+  if (
+    !isInternalModule &&
+      (shouldPreprocess(filename, config) || shouldInstrument(filename, config))
+  ) {
+    wrappedResult = cachedTransformAndWrap(filename, config, content);
+  } else {
+    wrappedResult = wrap(content);
+  }
+
+  return new vm.Script(wrappedResult, {displayErrors: true, filename});
+};
+
+module.exports = (
+  filename: Path,
+  config: Config,
+  options?: Options,
+): vm.Script => {
+  const scriptCacheKey = getScriptCacheKey(filename, config);
+  let script = cache.get(scriptCacheKey);
+  if (script) {
+    return script;
+  } else {
+    script = transformAndBuildScript(filename, config, options);
+    cache.set(scriptCacheKey, script);
+    return script;
+  }
 };
 
 module.exports.EVAL_RESULT_VARIABLE = EVAL_RESULT_VARIABLE;

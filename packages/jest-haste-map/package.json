@@ -19,5 +19,8 @@
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
+  },
+  "devDependencies": {
+    "pretty-format": "^3.5.0"
   }
 }

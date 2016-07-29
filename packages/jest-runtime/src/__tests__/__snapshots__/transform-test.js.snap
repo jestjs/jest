@@ -1,30 +1,25 @@
 exports[`transform transforms a file properly 1`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest,$JEST){module.exports = \"banana\";
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \"banana\";
 }});"
 `;
 
 exports[`transform transforms a file properly 2`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest,$JEST){instrumented kiwi
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = () => \"kiwi\";
 }});"
 `;
 
 exports[`transform uses the supplied preprocessor 1`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest,$JEST){
-Script: module.exports = \"banana\";
-Path: /fruits/banana.js
-Config: {
-  \"cache\": true,
-  \"cacheDirectory\": \"/cache/\",
-  \"name\": \"test\",
-  \"preprocessorIgnorePatterns\": [
-    \"/node_modules/\"
-  ],
-  \"scriptPreprocessor\": \"test-preprocessor\"
-}
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
+          const TRANSFORMED = {
+            filename: \'/fruits/banana.js\',
+            script: \'module.exports = \"banana\";\',
+            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"preprocessorIgnorePatterns\":[\"/node_modules/\"],\"scriptPreprocessor\":\"test-preprocessor\"}\',
+          };
+        
 }});"
 `;
 
 exports[`transform uses the supplied preprocessor 2`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest,$JEST){module.exports = \"react\"
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \"react\";
 }});"
 `;

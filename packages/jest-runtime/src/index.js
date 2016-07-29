@@ -67,9 +67,6 @@ type BooleanObject = {[key: string]: boolean};
 
 class Runtime {
   _config: Config;
-  _CoverageCollector: any;
-  _coverageCollectors: Object;
-  _coverageRegex: RegExp;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
   _explicitShouldMock: BooleanObject;
@@ -99,7 +96,6 @@ class Runtime {
     this._environment = environment;
     this._resolver = resolver;
 
-    this._coverageCollectors = Object.create(null);
     this._currentlyExecutingModulePath = '';
     this._explicitShouldMock = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
@@ -108,20 +104,12 @@ class Runtime {
       config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
-    this._coverageRegex = new RegExp(
-      config.coveragePathIgnorePatterns.join('|').replace(/\//g, path.sep),
-    );
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
     this._shouldUnmockTransitiveDependenciesCache = Object.create(null);
     this._transitiveShouldMock = Object.create(null);
-
-    if (config.collectCoverage) {
-      // $FlowFixMe flow doesn't allow dynamic requires
-      this._CoverageCollector = require(config.coverageCollector);
-    }
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -361,14 +349,7 @@ class Runtime {
   }
 
   getAllCoverageInfo() {
-    const coverage = Object.create(null);
-    if (this._config.collectCoverage) {
-      const collectors = this._coverageCollectors;
-      for (const filePath in collectors) {
-        coverage[filePath] = collectors[filePath].extractRuntimeCoverageInfo();
-      }
-    }
-    return coverage;
+    return this._environment.global.__coverage__;
   }
 
   setMock(
@@ -390,37 +371,14 @@ class Runtime {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _shouldCollectCoverage(filename: Path): boolean {
-    const collectOnlyFrom = this._config.collectCoverageOnlyFrom;
-    const shouldCollectCoverage = (
-      (this._config.collectCoverage && !collectOnlyFrom) ||
-      (collectOnlyFrom && collectOnlyFrom[filename])
-    );
-    return !!(
-      shouldCollectCoverage &&
-      !this._coverageRegex.test(filename) &&
-      !(this._mocksPattern && this._mocksPattern.test(filename)) &&
-      !this._testRegex.test(filename)
-    );
-  }
-
   _execModule(localModule: Module, options: ?InternalModuleOptions) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
     }
 
+    const isInternalModule = !!(options && options.isInternalModule);
     const filename = localModule.filename;
-    const shouldCollectCoverage =
-      (!options || !options.isInternalModule) &&
-      this._shouldCollectCoverage(filename);
-    const collectors = this._coverageCollectors;
-    if (shouldCollectCoverage && !collectors[filename]) {
-      collectors[filename] = new this._CoverageCollector();
-    }
-    const collectorStore =
-      shouldCollectCoverage && collectors[filename].getCoverageDataStore();
-
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
@@ -432,17 +390,8 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
 
-    const script = transform(
-      filename,
-      options && options.isInternalModule ? null : this._config,
-      shouldCollectCoverage ? {
-        instrument: source => collectors[filename].getInstrumentedSource(
-          source,
-          filename,
-          '$JEST',
-        ),
-      } : null,
-    );
+    const script = transform(filename, this._config, {isInternalModule});
+
     const wrapper = this._runScript(script, filename);
     wrapper.call(
       localModule.exports, // module context
@@ -453,7 +402,6 @@ class Runtime {
       filename, // __filename
       this._environment.global, // global object
       this._createRuntimeFor(filename), // jest object
-      collectorStore, // the coverage object
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
