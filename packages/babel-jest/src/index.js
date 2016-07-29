@@ -11,16 +11,26 @@
 const babel = require('babel-core');
 const jestPreset = require('babel-preset-jest');
 
-module.exports = {
-  process(src, filename) {
-    if (babel.util.canCompile(filename)) {
-      return babel.transform(src, {
-        auxiliaryCommentBefore: ' istanbul ignore next ',
-        filename,
-        presets: [jestPreset],
-        retainLines: true,
-      }).code;
-    }
-    return src;
-  },
+const createTransformer = options => {
+  options = Object.assign({}, options, {
+    auxiliaryCommentBefore: ' istanbul ignore next ',
+    presets: [jestPreset],
+    retainLines: true,
+  });
+  delete options.cacheDirectory;
+
+  return {
+    process(src, filename) {
+      if (babel.util.canCompile(filename)) {
+        return babel.transform(
+          src,
+          Object.assign({}, options, {filename}),
+        ).code;
+      }
+      return src;
+    },
+  };
 };
+
+module.exports = createTransformer();
+module.exports.createTransformer = createTransformer;
