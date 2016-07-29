@@ -14,7 +14,7 @@ const jestPreset = require('babel-preset-jest');
 const createTransformer = options => {
   options = Object.assign({}, options, {
     auxiliaryCommentBefore: ' istanbul ignore next ',
-    presets: [jestPreset],
+    presets: ((options && options.presets) || []).concat([jestPreset]),
     retainLines: true,
   });
   delete options.cacheDirectory;
