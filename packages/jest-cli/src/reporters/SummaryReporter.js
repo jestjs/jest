@@ -83,7 +83,7 @@ class SummareReporter extends BaseReporter {
       const event = process.env.npm_lifecycle_event;
       const updateCommand =
         (!event ? 're-' : '') + 'run with `' +
-        (event ? 'npm ' + event + ' -- ' : '') + '-u' + '`';
+        (event ? 'npm ' + event + ' -- ' : '') + '-u`';
 
       this.log('\n' + SNAPSHOT_SUMMARY('Snapshot Summary'));
       if (snapshots.added) {

@@ -1,5 +1,12 @@
 ## master
 
+## jest 14.0.1
+
+* `babel-jest` can now be used to compose a transformer.
+* Updated snapshot instructions to run `jest -u` or `npm test -- -u`.
+* Fixed `config` cli option to enable JSON objects as configuration.
+* Updated printing of preset path in the CLI.
+
 ## jest 14.0.0
 
 * Official release of snapshot tests.
