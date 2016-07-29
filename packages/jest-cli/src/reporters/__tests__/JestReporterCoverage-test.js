@@ -10,41 +10,28 @@
 'use strict';
 
 jest.disableAutomock().mock('fs');
-jest.mock('istanbul', () => ({
-  Collector: jest.fn(() => ({
-    getFinalCoverage: jest.fn(),
-  })),
-  Reporter: jest.fn(),
-  utils: {
-    summarizeCoverage: jest.fn(),
-  },
-}));
 
-let istanbul;
+jest.mock('istanbul-lib-coverage');
+jest.mock('istanbul-api');
+
+let libCoverage;
 let CoverageReporter;
+let istanbulApi;
 
 beforeEach(() => {
-  istanbul = require('istanbul');
+  istanbulApi = require('istanbul-api');
+  istanbulApi.createReporter = jest.fn(() => ({
+    addAll: jest.fn(),
+    write: jest.fn(),
+  }));
+
   CoverageReporter = require('../CoverageReporter');
+  libCoverage = require('istanbul-lib-coverage');
 });
 
 describe('onRunComplete', () => {
   let mockAggResults;
   let testReporter;
-  const globalResults = {
-    statements: {
-      pct: 50,
-    },
-    branches: {
-      pct: 0,
-    },
-    lines: {
-      pct: 0,
-    },
-    functions: {
-      pct: 0,
-    },
-  };
 
   beforeEach(() => {
     mockAggResults = {
@@ -62,9 +49,25 @@ describe('onRunComplete', () => {
       testFilePath: 'foo',
     };
 
+    libCoverage.createCoverageMap = jest.fn(() => {
+      return {
+        getCoverageSummary() {
+          return {
+            toJSON() {
+              return {
+                branches: {total: 0, covered: 0, skipped: 0, pct: 0},
+                functions: {total: 0, covered: 0, skipped: 0, pct: 0},
+                lines: {total: 0, covered: 0, skipped: 0, pct: 0},
+                statements: {total: 0, covered: 0, skipped: 0, pct: 50},
+              };
+            },
+          };
+        },
+      };
+    });
+
     testReporter = new CoverageReporter();
     testReporter.log = jest.fn();
-    istanbul.utils.summarizeCoverage.mockReturnValue(globalResults);
   });
 
   it('getLastError() returns an error when threshold is not met', () => {
