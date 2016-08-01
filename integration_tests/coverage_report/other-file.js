@@ -7,9 +7,4 @@
  */
 'use strict';
 
-require('./sum_dependency.js');
-require('./other-file');
-
-module.exports = function(a, b) {
-  return a + b;
-};
+module.exports = {a: 5};

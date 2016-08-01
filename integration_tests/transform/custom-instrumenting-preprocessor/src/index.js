@@ -8,4 +8,6 @@
 
 'use strict';
 
+require('./some-other-file');
+
 module.exports = {a: 1};

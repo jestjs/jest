@@ -52,6 +52,7 @@ export type DefaultConfig = BaseConfig & {
 
 export type Config = BaseConfig & {
   cache: boolean,
+  collectCoverageFrom: Array<string>,
   collectCoverageOnlyFrom: {[key: string]: Path},
   colors: boolean,
   collectCoverage: boolean,
