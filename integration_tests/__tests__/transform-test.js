@@ -59,3 +59,27 @@ describe('no babel-jest', () => {
     expect(stripJestVersion(stdout)).toMatchSnapshot();
   });
 });
+
+describe('custom preprocessor', () => {
+  const dir = path.resolve(
+    __dirname,
+    '..',
+    'transform/custom-instrumenting-preprocessor'
+  );
+
+  it('proprocesses files', () => {
+    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+    expect(stderr).toMatch(/FAIL/);
+    expect(stderr).toMatch(/instruments by setting.*global\.__INSTRUMENTED__/);
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(1);
+  });
+
+  it('instruments files', () => {
+    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage']);
+    // coverage should be empty (100%) because there's no real instrumentation
+    expect(stripJestVersion(stdout)).toMatchSnapshot();
+    expect(status).toBe(0);
+  });
+});

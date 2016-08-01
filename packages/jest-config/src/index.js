@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
@@ -14,7 +16,7 @@ const normalize = require('./normalize');
 const path = require('path');
 const setFromArgv = require('./setFromArgv');
 
-function readConfig(argv, packageRoot) {
+function readConfig(argv: any, packageRoot: string) {
   return readRawConfig(argv, packageRoot)
     .then(config => Object.freeze(setFromArgv(config, argv)));
 }
