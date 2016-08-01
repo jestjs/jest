@@ -102,16 +102,20 @@ function findNative(
       .filter(x => !ignore(x));
     const result = [];
     let count = lines.length;
-    lines.forEach(path => {
-      fs.stat(path, (err, stat) => {
-        if (!err && stat) {
-          result.push([path, stat.mtime.getTime()]);
-        }
-        if (--count === 0) {
-          callback(result);
-        }
+    if (!count) {
+      callback([]);
+    } else {
+      lines.forEach(path => {
+        fs.stat(path, (err, stat) => {
+          if (!err && stat) {
+            result.push([path, stat.mtime.getTime()]);
+          }
+          if (--count === 0) {
+            callback(result);
+          }
+        });
       });
-    });
+    }
   });
 }
 

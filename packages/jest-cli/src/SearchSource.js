@@ -228,7 +228,11 @@ class SearchSource {
 
     return (
       `${chalk.bold.red('NO TESTS FOUND')}. ` +
-      `${pluralize('file', data.total || 1, 's')} checked.\n${statsMessage}`
+      (data.total
+        ? `${pluralize('file', data.total || 0, 's')} checked.\n${statsMessage}`
+        : `No files found in ${config.rootDir}.\n` +
+          `Make sure Jest's configuration does not exclude this directory.`
+      )
     );
   }
 
