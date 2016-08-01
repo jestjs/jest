@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "14.0.1",
+  "version": "14.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -14,7 +14,7 @@
     "jest-environment-node": "^14.0.0",
     "jest-jasmine2": "^14.0.0",
     "jest-mock": "^14.0.0",
-    "jest-resolve": "^14.0.0",
+    "jest-resolve": "^14.1.0",
     "jest-util": "^14.0.0",
     "json-stable-stringify": "^1.0.0"
   },

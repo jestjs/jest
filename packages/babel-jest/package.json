@@ -1,6 +1,6 @@
 {
   "name": "babel-jest",
-  "version": "14.0.2",
+  "version": "14.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "babel-core": "^6.0.0",
-    "babel-preset-jest": "^14.0.0"
+    "babel-plugin-istanbul": "^1.1.0",
+    "babel-preset-jest": "^14.1.0"
   }
 }
