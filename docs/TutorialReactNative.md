@@ -19,7 +19,7 @@ for Jest. Also see [babel integration](/jest/docs/getting-started.html#babel-int
 
 Run the following command to install the necessary dependencies:
 ```
-npm install --save-dev jest babel-jest jest-react-native babel-preset-react-native
+npm install --save-dev jest babel-jest jest-react-native babel-preset-react-native react-test-renderer
 ```
 
 Add the following configuration to your package.json file:
@@ -102,7 +102,7 @@ import React from 'react';
 import Intro from '../Intro';
 
 // Note: test renderer must be required after react-native.
-import renderer from 'react/lib/ReactTestRenderer';
+import renderer from 'react-test-renderer';
 
 describe('Intro', () => {
 
@@ -197,13 +197,15 @@ The [`moduleNameMapper`](api.html#modulenamemapper-object-string-string) can be 
 
 ### Mock native modules using jest.mock
 
-The jest-react-native preset comes with a couple of default mocks that are applied on a react-native repository. However, sometimes native modules need to be mocked manually.
+The jest-react-native preset comes with a few default mocks that are applied on a react-native repository. However some react-native components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
 For example, if you'd like to create a snapshot that involves the `ActivityIndicator` module, you need to create a manual mock:
 
 ```js
 jest.mock('ActivityIndicator', () => 'ActivityIndicator');
 ```
+
+This will render the component as `<ActivityIndicator {...props} />` with all of its props in the snapshot output.
 
 Sometimes you need to provide a more complex manual mock. For example if you'd like to forward the props of a native component to a mock, you can return a different React component from a mock:
 
@@ -228,7 +230,7 @@ Currently it is required to require react-native before loading the test rendere
 ```
 import 'react-native';
 // Require after react-native
-import renderer from 'react/lib/ReactTestRenderer';
+import renderer from 'react-test-renderer';
 ```
 
 ### `@providesModule`

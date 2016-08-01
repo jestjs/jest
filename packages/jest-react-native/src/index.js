@@ -21,8 +21,9 @@ jest
     Text.propTypes = realText.propTypes;
     return Text;
   })
-  .mock('ensureComponentIsNative', () => () => true)
-  .mock('View');
+  .mock('ReactNativeDefaultInjection')
+  .mock('View')
+  .mock('ensureComponentIsNative', () => () => true);
 
 global.__DEV__ = true;
 global.__fbBatchedBridgeConfig = require('./bridge-mock');

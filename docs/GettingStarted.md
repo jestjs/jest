@@ -119,10 +119,10 @@ repositories have excellent examples of tests written by Facebook engineers.
 
 Check out the [React tutorial](/jest/docs/tutorial-react.html) and the [React-Native tutorial](/jest/docs/tutorial-react-native.html) to get started with React or React-Native codebases.
 
-We recommend using React's test renderer to capture snapshots with Jest's snapshot feature. Write a test using `toMatchSnapshot`:
+We recommend using React's test renderer (`npm install --save-dev react-test-renderer`) to capture snapshots with Jest's snapshot feature. Write a test using `toMatchSnapshot`:
 
 ```js
-import renderer from 'react/lib/ReactTestRenderer';
+import renderer from 'react-test-renderer';
 it('renders correctly', () => {
   const tree = renderer.create(
     <Link page="http://www.facebook.com">Facebook</Link>

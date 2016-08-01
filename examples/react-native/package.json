@@ -6,14 +6,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "15.2.1",
+    "react": "15.3.0",
     "react-native": "0.30.0"
   },
   "devDependencies": {
     "babel-jest": "*",
     "babel-preset-react-native": "^1.9.0",
     "jest-cli": "*",
-    "jest-react-native": "*"
+    "jest-react-native": "*",
+    "react-test-renderer": "*"
   },
   "jest": {
     "preset": "jest-react-native"
