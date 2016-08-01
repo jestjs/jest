@@ -12,21 +12,25 @@
 import type {Config} from 'types/Config';
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 
+type CoverageMap = {
+  merge: (data: Object) => void,
+  getCoverageSummary: () => Object,
+};
+
 const BaseReporter = require('./BaseReporter');
 
+const {createReporter} = require('istanbul-api');
 const chalk = require('chalk');
-const istanbul = require('istanbul');
+const istanbulCoverage = require('istanbul-lib-coverage');
 
 const FAIL_COLOR = chalk.bold.red;
 
 class CoverageReporter extends BaseReporter {
-  _collector: istanbul.Collector;
-  _testCollectors: Object;
+  _coverageMap: CoverageMap;
 
   constructor() {
     super();
-    this._collector = new istanbul.Collector();
-    this._testCollectors = Object.create(null);
+    this._coverageMap = istanbulCoverage.createCoverageMap({});
   }
 
   onTestResult(
@@ -35,27 +39,28 @@ class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     if (testResult.coverage) {
-      const testFilePath = testResult.testFilePath;
-      this._collector.add(testResult.coverage);
-      if (!this._testCollectors[testFilePath]) {
-        this._testCollectors[testFilePath] = new istanbul.Collector();
-      }
-      this._testCollectors[testFilePath].add(testResult.coverage);
+      this._coverageMap.merge(testResult.coverage);
     }
   }
 
   onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
-    const reporter = new istanbul.Reporter();
+    const reporter = createReporter();
     try {
       if (config.coverageDirectory) {
         reporter.dir = config.coverageDirectory;
       }
-      reporter.addAll(config.coverageReporters);
-      reporter.write(this._collector, true, () => {});
-    } catch (e) {}
+      reporter.addAll(config.coverageReporters || []);
+      reporter.write(this._coverageMap);
+    } catch (e) {
+      console.error(chalk.red(`
+        Failed to write coverage reports:
+        ERROR: ${e.toString()}
+        STACK: ${e.stack}
+      `));
+    }
+
     if (config.coverageThreshold) {
-      const rawCoverage = this._collector.getFinalCoverage();
-      const globalResults = istanbul.utils.summarizeCoverage(rawCoverage);
+      const globalResults = this._coverageMap.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
         return [
@@ -99,8 +104,9 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  getTestCollectors() {
-    return this._testCollectors;
+  // Only exposed for the internal runner. Should not be used
+  getCoverageMap(): CoverageMap {
+    return this._coverageMap;
   }
 }
 
