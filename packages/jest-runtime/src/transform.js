@@ -10,6 +10,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
+import type {Preprocessor} from 'types/Preprocessor';
 
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
@@ -22,12 +23,8 @@ const vm = require('vm');
 
 const VERSION = require('../package.json').version;
 
-export type Processor = {
-  process: (sourceText: string, sourcePath: Path) => string,
-};
-
 type Options = {
-  isInternalModule: boolean
+  isInternalModule: boolean,
 };
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
@@ -47,6 +44,7 @@ const getCacheKey = (
   fileData: string,
   filePath: Path,
   config: Config,
+  instrument: boolean,
 ): string => {
   if (!configToJsonMap.has(config)) {
     // We only need this set of config options that can likely influence
@@ -65,15 +63,15 @@ const getCacheKey = (
       testRegex: config.testRegex,
     }));
   }
-  const configStr = configToJsonMap.get(config) || '';
+  const confStr = configToJsonMap.get(config) || '';
   const preprocessor = getPreprocessor(config);
 
   if (preprocessor && typeof preprocessor.getCacheKey === 'function') {
-    return preprocessor.getCacheKey(fileData, filePath, configStr);
+    return preprocessor.getCacheKey(fileData, filePath, confStr, {instrument});
   } else {
     return crypto.createHash('md5')
       .update(fileData)
-      .update(configStr)
+      .update(confStr)
       .digest('hex');
   }
 };
@@ -116,10 +114,10 @@ const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename, config) => {
+const getScriptCacheKey = (filename, config, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() +
-    (shouldInstrument(filename, config) ? '_instrumented' : '');
+    (instrument ? '_instrumented' : '');
 };
 
 const shouldPreprocess = (filename: Path, config: Config): boolean => {
@@ -178,13 +176,14 @@ const getFileCachePath = (
   filename: Path,
   config: Config,
   content: string,
+  instrument: boolean,
 ): Path => {
   const baseCacheDir = getCacheFilePath(
     config.cacheDirectory,
     'jest-transform-cache-' + config.name,
     VERSION,
   );
-  const cacheKey = getCacheKey(content, filename, config);
+  const cacheKey = getCacheKey(content, filename, config, instrument);
   // Create sub folders based on the cacheKey to avoid creating one
   // directory with many files.
   const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
@@ -199,7 +198,7 @@ const getFileCachePath = (
 
 const preprocessorCache = new WeakMap();
 
-const getPreprocessor = (config: Config): ?Processor => {
+const getPreprocessor = (config: Config): ?Preprocessor => {
   if (preprocessorCache.has(config)) {
     return preprocessorCache.get(config);
   } else {
@@ -230,7 +229,7 @@ const stripShebang = content => {
   }
 };
 
-const instrument = (content: string, filename: Path): string => {
+const instrumentFile = (content: string, filename: Path): string => {
   // NOTE: Keeping these requires inside this function reduces a single run
   // time by 2sec if not running in `--coverage` mode
   const babel = require('babel-core');
@@ -260,10 +259,11 @@ const instrument = (content: string, filename: Path): string => {
 const cachedTransformAndWrap = (
   filename: Path,
   config: Config,
-  content: string
-) => {
+  content: string,
+  instrument: boolean,
+): string => {
   const preprocessor = getPreprocessor(config);
-  const cacheFilePath = getFileCachePath(filename, config, content);
+  const cacheFilePath = getFileCachePath(filename, config, content, instrument);
   // Ignore cache if `config.cache` is set (--no-cache)
   let result = config.cache ? readCacheFile(filename, cacheFilePath) : null;
 
@@ -274,10 +274,15 @@ const cachedTransformAndWrap = (
   result = content;
 
   if (preprocessor && shouldPreprocess(filename, config)) {
-    result = preprocessor.process(result, filename, config);
+    result = preprocessor.process(result, filename, config, {instrument});
   }
-  if (shouldInstrument(filename, config)) {
-    result = instrument(result, filename, config);
+
+  // That means that the preprocessor has a custom instrumentation
+  // logic and will handle it based on `config.collectCoverage` option
+  const preprocessorWillInstrument = preprocessor && preprocessor.INSTRUMENTS;
+
+  if (!preprocessorWillInstrument && instrument) {
+    result = instrumentFile(result, filename, config);
   }
 
   result = wrap(result);
@@ -288,7 +293,8 @@ const cachedTransformAndWrap = (
 const transformAndBuildScript = (
   filename: Path,
   config: Config,
-  options: ?Options,
+  options?: Options,
+  instrument: boolean,
 ): vm.Script => {
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
@@ -296,9 +302,10 @@ const transformAndBuildScript = (
 
   if (
     !isInternalModule &&
-      (shouldPreprocess(filename, config) || shouldInstrument(filename, config))
+      (shouldPreprocess(filename, config) || instrument)
   ) {
-    wrappedResult = cachedTransformAndWrap(filename, config, content);
+    wrappedResult =
+      cachedTransformAndWrap(filename, config, content, instrument);
   } else {
     wrappedResult = wrap(content);
   }
@@ -309,14 +316,15 @@ const transformAndBuildScript = (
 module.exports = (
   filename: Path,
   config: Config,
-  options: ?Options,
+  options?: Options,
 ): vm.Script => {
-  const scriptCacheKey = getScriptCacheKey(filename, config);
+  const instrument = shouldInstrument(filename, config);
+  const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
   let script = cache.get(scriptCacheKey);
   if (script) {
     return script;
   } else {
-    script = transformAndBuildScript(filename, config, options);
+    script = transformAndBuildScript(filename, config, options, instrument);
     cache.set(scriptCacheKey, script);
     return script;
   }
