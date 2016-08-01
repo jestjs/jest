@@ -78,7 +78,7 @@ describe('custom preprocessor', () => {
 
   it('instruments files', () => {
     const {stdout, status} = runJest(dir, ['--no-cache', '--coverage']);
-    // coverage should be empty (100%) because there's no real instrumentation
+    // coverage should be empty because there's no real instrumentation
     expect(stripJestVersion(stdout)).toMatchSnapshot();
     expect(status).toBe(0);
   });

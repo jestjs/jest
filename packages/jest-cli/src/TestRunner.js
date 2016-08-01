@@ -22,7 +22,6 @@ const Test = require('./Test');
 
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
-const CoverageReporter = require('./reporters/CoverageReporter');
 const DefaultReporter = require('./reporters/DefaultReporter');
 const NotifyReporter = require('./reporters/NotifyReporter');
 const SummaryReporter = require('./reporters/SummaryReporter');
@@ -266,6 +265,7 @@ class TestRunner {
     }
 
     if (this._config.collectCoverage) {
+      const CoverageReporter = require('./reporters/CoverageReporter');
       this.addReporter(new CoverageReporter());
     }
   }

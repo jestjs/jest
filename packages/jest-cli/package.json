@@ -6,7 +6,8 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "graceful-fs": "^4.1.3",
-    "istanbul": "^0.4.4",
+    "istanbul-api": "^1.0.0-aplha.10",
+    "istanbul-lib-coverage": "^1.0.0-alpha.4",
     "jest-changed-files": "^14.0.0",
     "jest-config": "^14.1.0",
     "jest-environment-jsdom": "^14.0.0",
