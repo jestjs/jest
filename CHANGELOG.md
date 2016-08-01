@@ -1,5 +1,16 @@
 ## master
 
+## jest 14.1.0
+
+* Changed Jest's default cache directory.
+* Fixed `jest-react-native` for react 15.3.0.
+* Updated react and react-native example to use `react-test-renderer`.
+* Started to refactor code coverage.
+
+## jest 14.0.2
+
+* `babel-jest` bugfix.
+
 ## jest 14.0.1
 
 * `babel-jest` can now be used to compose a transformer.

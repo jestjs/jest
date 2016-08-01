@@ -14,13 +14,14 @@ import type {DefaultConfig} from 'types/Config';
 
 const constants = require('./constants');
 const os = require('os');
+const path = require('path');
 const utils = require('jest-util');
 
 module.exports = ({
   automock: true,
   bail: false,
   browser: false,
-  cacheDirectory: os.tmpdir(),
+  cacheDirectory: path.join(os.tmpdir(), 'jest'),
   colors: false,
   coveragePathIgnorePatterns: [
     utils.replacePathSepForRegex(constants.NODE_MODULES),

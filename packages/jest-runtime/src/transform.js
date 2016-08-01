@@ -288,7 +288,7 @@ const cachedTransformAndWrap = (
 const transformAndBuildScript = (
   filename: Path,
   config: Config,
-  options?: Options,
+  options: ?Options,
 ): vm.Script => {
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
@@ -309,7 +309,7 @@ const transformAndBuildScript = (
 module.exports = (
   filename: Path,
   config: Config,
-  options?: Options,
+  options: ?Options,
 ): vm.Script => {
   const scriptCacheKey = getScriptCacheKey(filename, config);
   let script = cache.get(scriptCacheKey);
