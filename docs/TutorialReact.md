@@ -17,7 +17,7 @@ We are using the `babel-jest` package and the `react` babel preset to transform 
 Run
 
 ```javascript
-npm install --save-dev jest react babel-jest babel-preset-es2015 babel-preset-react
+npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this. Please add the scripts and jest configuration entries:
@@ -32,7 +32,8 @@ Your `package.json` should look something like this. Please add the scripts and 
     "babel-jest": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
-    "jest": "*"
+    "jest": "*",
+    "react-test-renderer": "*"
   },
   "scripts": {
     "test": "jest"
@@ -62,6 +63,7 @@ If you'd like to use Jest's automocking feature you can unmock React explicitly:
   "unmockedModulePathPatterns": [
     "<rootDir>/node_modules/react/",
     "<rootDir>/node_modules/react-dom/",
+    "<rootDir>/node_modules/react-test-renderer/",
     "<rootDir>/node_modules/react-addons-test-utils/"
   ]
 }
@@ -124,7 +126,7 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 // Link.react-test.js
 import React from 'react';
 import Link from '../Link.react';
-import renderer from 'react/lib/ReactTestRenderer';
+import renderer from 'react-test-renderer';
 
 describe('Link', () => {
   it('changes the class when hovered', () => {
