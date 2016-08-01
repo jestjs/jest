@@ -401,7 +401,7 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
 #### `expect(value)`
 
   - `.not` inverse the next comparison
-  - `.toThrow(?message)`
+  - `.toThrow(?exception)`
   - `.toBe(value)` comparison using `===`
   - `.toEqual(value)` deep comparison. Use [`jasmine.any(type)`](http://jasmine.github.io/1.3/introduction.html#section-Matching_Anything_with_<code>jasmine.any</code>) to be softer
   - `.toBeFalsy()`
