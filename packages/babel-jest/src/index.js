@@ -11,10 +11,10 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
+import type {PreprocessorOptions} from 'types/Preprocessor';
 
 const babel = require('babel-core');
 const jestPreset = require('babel-preset-jest');
-const {shouldBeCovered} = require('jest-config');
 
 const createTransformer = (options: any) => {
   options = Object.assign({}, options, {
@@ -26,10 +26,15 @@ const createTransformer = (options: any) => {
 
   return {
     INSTRUMENTS: true,
-    process(src: string, filename: Path, config: Config) {
+    process(
+      src: string,
+      filename: Path,
+      config: Config,
+      preprocessorOptions: PreprocessorOptions,
+    ): string {
       let plugins = options.plugins || [];
 
-      if (shouldBeCovered(filename, config)) {
+      if (preprocessorOptions.instrument) {
         plugins = plugins.concat(require('babel-plugin-istanbul').default);
       }
 

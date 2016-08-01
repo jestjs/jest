@@ -8,14 +8,12 @@
 
 'use strict';
 
-const shouldBeCovered = require('jest-config').shouldBeCovered;
-
 module.exports = {
   INSTRUMENTS: true,
-  process(src, filename, config) {
+  process(src, filename, config, options) {
     src = `${src};\nglobal.__PREPROCESSED__ = true;`;
 
-    if (shouldBeCovered(filename, config)) {
+    if (options.instrument) {
       src = `${src};\nglobal.__INSTRUMENTED__ = true;`;
     }
 

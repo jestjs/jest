@@ -10,8 +10,6 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
-
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
@@ -38,40 +36,7 @@ function readRawConfig(argv, root) {
     .then(config => config || normalize({rootDir: root}, argv));
 }
 
-const shouldBeCovered = (filename: Path, config: Config): boolean => {
-  if (!config.collectCoverage) {
-    return false;
-  }
-
-  if (config.testRegex && filename.match(config.testRegex)) {
-    return false;
-  }
-
-  if (
-    // This configuration field contains an object in the form of:
-    // {'path/to/file.js': true}
-    config.collectCoverageOnlyFrom &&
-    !config.collectCoverageOnlyFrom[filename]
-  ) {
-    return false;
-  }
-
-  if (
-    config.coveragePathIgnorePatterns &&
-    config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
-  ) {
-    return false;
-  }
-
-  if (config.mocksPattern && filename.match(config.mocksPattern)) {
-    return false;
-  }
-
-  return true;
-};
-
 module.exports = {
   normalize: require('./normalize'),
-  shouldBeCovered,
   readConfig,
 };

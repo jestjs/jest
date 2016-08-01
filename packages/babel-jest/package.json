@@ -10,7 +10,6 @@
   "dependencies": {
     "babel-core": "^6.0.0",
     "babel-plugin-istanbul": "^1.1.0",
-    "babel-preset-jest": "^14.0.0",
-    "jest-config": "^14.0.1"
+    "babel-preset-jest": "^14.0.0"
   }
 }

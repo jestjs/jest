@@ -67,10 +67,6 @@ describe('custom preprocessor', () => {
     'transform/custom-instrumenting-preprocessor'
   );
 
-  beforeEach(() => {
-    linkJestPackage('jest-config', dir);
-  });
-
   it('proprocesses files', () => {
     const {json, stderr} = runJest.json(dir, ['--no-cache']);
     expect(stderr).toMatch(/FAIL/);
