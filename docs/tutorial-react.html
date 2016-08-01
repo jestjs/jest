@@ -17,7 +17,7 @@
           };
         </script></nav></div><div class="container mainContainer documentContainer postContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link" href="https://github.com/facebook/jest/edit/master/docs/TutorialReact.md" target="_blank">Edit on GitHub</a><h1>Tutorial – React</h1></header><article><div><p>At Facebook, we use Jest to test <a href="http://facebook.github.io/react/" target="_blank">React</a>
 applications.</p><h2><a class="anchor" name="setup"></a>Setup <a class="hash-link" href="#setup">#</a></h2><p>We are using the <code>babel-jest</code> package and the <code>react</code> babel preset to transform our code inside of the test environment. Also see <a href="/jest/docs/getting-started.html#babel-integration" target="">babel integration</a>.</p><p>Run</p><pre class="prism language-javascript">
-npm install <span class="token operator">--</span>save<span class="token operator">-</span>dev jest react babel<span class="token operator">-</span>jest babel<span class="token operator">-</span>preset<span class="token operator">-</span>es2015 babel<span class="token operator">-</span>preset<span class="token operator">-</span>react</pre><p>Your <code>package.json</code> should look something like this. Please add the scripts and jest configuration entries:</p><pre class="prism language-javascript">
+npm install <span class="token operator">--</span>save<span class="token operator">-</span>dev jest babel<span class="token operator">-</span>jest babel<span class="token operator">-</span>preset<span class="token operator">-</span>es2015 babel<span class="token operator">-</span>preset<span class="token operator">-</span>react react<span class="token operator">-</span>test<span class="token operator">-</span>renderer</pre><p>Your <code>package.json</code> should look something like this. Please add the scripts and jest configuration entries:</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// package.json</span>
   <span class="token string">&quot;dependencies&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
     <span class="token string">&quot;react&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span><span class="token punctuation">,</span>
@@ -27,7 +27,8 @@ npm install <span class="token operator">--</span>save<span class="token operato
     <span class="token string">&quot;babel-jest&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span><span class="token punctuation">,</span>
     <span class="token string">&quot;babel-preset-es2015&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span><span class="token punctuation">,</span>
     <span class="token string">&quot;babel-preset-react&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span><span class="token punctuation">,</span>
-    <span class="token string">&quot;jest&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span>
+    <span class="token string">&quot;jest&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;react-test-renderer&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;*&quot;</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token string">&quot;scripts&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
     <span class="token string">&quot;test&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;jest&quot;</span>
@@ -43,6 +44,7 @@ npm install <span class="token operator">--</span>save<span class="token operato
   <span class="token string">&quot;unmockedModulePathPatterns&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
     <span class="token string">&quot;&lt;rootDir&gt;/node_modules/react/&quot;</span><span class="token punctuation">,</span>
     <span class="token string">&quot;&lt;rootDir&gt;/node_modules/react-dom/&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;&lt;rootDir&gt;/node_modules/react-test-renderer/&quot;</span><span class="token punctuation">,</span>
     <span class="token string">&quot;&lt;rootDir&gt;/node_modules/react-addons-test-utils/&quot;</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></pre><h3><a class="anchor" name="snapshot-testing"></a>Snapshot Testing <a class="hash-link" href="#snapshot-testing">#</a></h3><p>Snapshot testing was introduced in Jest 14.0. More information on how it works and why we built it can be found on the <a href="/jest/blog/2016/07/27/jest-14.html" target="">release blog post</a>.</p><p>Let&#x27;s build a Link component in React that renders hyperlinks:</p><pre class="prism language-javascript">
@@ -91,7 +93,7 @@ npm install <span class="token operator">--</span>save<span class="token operato
 <span spellcheck="true" class="token comment">// Link.react-test.js</span>
 <span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">&#x27;react&#x27;</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">&#x27;../Link.react&#x27;</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> renderer <span class="token keyword">from</span> <span class="token string">&#x27;react/lib/ReactTestRenderer&#x27;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> renderer <span class="token keyword">from</span> <span class="token string">&#x27;react-test-renderer&#x27;</span><span class="token punctuation">;</span>
 
 <span class="token function">describe</span><span class="token punctuation">(</span><span class="token string">&#x27;Link&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
   <span class="token function">it</span><span class="token punctuation">(</span><span class="token string">&#x27;changes the class when hovered&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
