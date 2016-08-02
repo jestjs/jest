@@ -28,6 +28,10 @@ jest
 global.__DEV__ = true;
 global.__fbBatchedBridgeConfig = require('./bridge-mock');
 
+global.Request = require('react-native/Libraries/Fetch/fetch').Request;
+global.Response = require('react-native/Libraries/Fetch/fetch').Response;
+global.Headers = require('react-native/Libraries/Fetch/fetch').Headers;
+
 require(
   'react-native/packager/react-packager/src/Resolver/polyfills/Object.es7',
 );
