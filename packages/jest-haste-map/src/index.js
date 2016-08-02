@@ -9,11 +9,11 @@
  */
 'use strict';
 
-import type {HasteMap as HasteMapObject, ModuleMetaData} from 'types/HasteMap';
 import type {Path} from 'types/Config';
+import type {HasteMap as HasteMapObject, ModuleMetaData} from 'types/HasteMap';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
-import typeof HType from './constants';
 import typeof FastpathType from './fastpath';
+import typeof HType from './constants';
 
 const H = require('./constants');
 

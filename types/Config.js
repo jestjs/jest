@@ -10,6 +10,7 @@
 'use strict';
 
 export type Path = string;
+export type Glob = string;
 
 export type HasteConfig = {
   providesModuleNodeModules: Array<string>,
@@ -52,7 +53,7 @@ export type DefaultConfig = BaseConfig & {
 
 export type Config = BaseConfig & {
   cache: boolean,
-  collectCoverageFrom: Array<string>,
+  collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: {[key: string]: Path},
   colors: boolean,
   collectCoverage: boolean,

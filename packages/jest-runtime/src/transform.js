@@ -25,7 +25,8 @@ const vm = require('vm');
 const VERSION = require('../package.json').version;
 
 type Options = {
-  isInternalModule: boolean,
+  isInternalModule?: boolean,
+  instrument?: boolean,
 };
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
@@ -74,6 +75,7 @@ const getCacheKey = (
     return crypto.createHash('md5')
       .update(fileData)
       .update(confStr)
+      .update(instrument ? 'instrument' : '')
       .digest('hex');
   }
 };
@@ -270,7 +272,7 @@ const instrumentFile = (content: string, filename: Path): string => {
   return content;
 };
 
-const cachedTransformAndWrap = (
+const transformSource = (
   filename: Path,
   config: Config,
   content: string,
@@ -299,7 +301,6 @@ const cachedTransformAndWrap = (
     result = instrumentFile(result, filename, config);
   }
 
-  result = wrap(result);
   writeCacheFile(cacheFilePath, result);
   return result;
 };
@@ -319,7 +320,7 @@ const transformAndBuildScript = (
       (shouldPreprocess(filename, config) || instrument)
   ) {
     wrappedResult =
-      cachedTransformAndWrap(filename, config, content, instrument);
+      wrap(transformSource(filename, config, content, instrument));
   } else {
     wrappedResult = wrap(content);
   }
@@ -330,9 +331,14 @@ const transformAndBuildScript = (
 module.exports = (
   filename: Path,
   config: Config,
-  options: ?Options,
+  options: Options,
 ): vm.Script => {
-  const instrument = shouldInstrument(filename, config);
+  let instrument;
+  if (options && options.instrument !== undefined) {
+    instrument = options.instrument;
+  } else {
+    instrument = shouldInstrument(filename, config);
+  }
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
   let script = cache.get(scriptCacheKey);
   if (script) {
@@ -345,3 +351,4 @@ module.exports = (
 };
 
 module.exports.EVAL_RESULT_VARIABLE = EVAL_RESULT_VARIABLE;
+module.exports.transformSource = transformSource;

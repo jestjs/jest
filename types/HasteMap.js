@@ -9,8 +9,10 @@
  */
 'use strict';
 
-import type HasteMapInstance from '../packages/jest-haste-map/src';
+import type _HasteMapInstance from '../packages/jest-haste-map/src';
 import type HasteResolver from '../packages/jest-resolve/src';
+
+export type HasteMapInstance = _HasteMapInstance;
 
 export type HasteContext = {
   instance: HasteMapInstance,

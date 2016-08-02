@@ -1,0 +1,129 @@
+exports[`test generates an empty coverage object for a file without running it 1`] = `
+SourceCoverage {
+  "data": Object {
+    "b": Object {
+      "1": Array [
+        0,
+        0
+      ]
+    },
+    "branchMap": Object {
+      "1": Object {
+        "loc": SourceLocation {
+          "end": Object {
+            "column": 3,
+            "line": 9
+          },
+          "start": Position {
+            "column": 2,
+            "line": 5
+          }
+        },
+        "locations": Array [
+          Object {
+            "end": Object {
+              "column": 2,
+              "line": 5
+            },
+            "start": Object {
+              "column": 2,
+              "line": 5
+            }
+          },
+          Object {
+            "end": Object {
+              "column": 2,
+              "line": 5
+            },
+            "start": Object {
+              "column": 2,
+              "line": 5
+            }
+          }
+        ],
+        "type": "if"
+      }
+    },
+    "f": Object {},
+    "fnMap": Object {},
+    "path": "/sum.js",
+    "s": Object {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "statementMap": Object {
+      "1": Object {
+        "end": Object {
+          "column": 45,
+          "line": 2
+        },
+        "start": Object {
+          "column": 0,
+          "line": 2
+        }
+      },
+      "2": Object {
+        "end": Object {
+          "column": 2,
+          "line": 10
+        },
+        "start": Object {
+          "column": 0,
+          "line": 4
+        }
+      },
+      "3": Object {
+        "end": Object {
+          "column": 3,
+          "line": 9
+        },
+        "start": Object {
+          "column": 2,
+          "line": 5
+        }
+      },
+      "4": Object {
+        "end": Object {
+          "column": 13,
+          "line": 6
+        },
+        "start": Object {
+          "column": 4,
+          "line": 6
+        }
+      },
+      "5": Object {
+        "end": Object {
+          "column": 13,
+          "line": 8
+        },
+        "start": Object {
+          "column": 4,
+          "line": 8
+        }
+      },
+      "6": Object {
+        "end": Object {
+          "column": 2,
+          "line": 14
+        },
+        "start": Object {
+          "column": 0,
+          "line": 12
+        }
+      }
+    }
+  },
+  "meta": Object {
+    "last": Object {
+      "b": 1,
+      "f": 0,
+      "s": 6
+    }
+  }
+}
+`;

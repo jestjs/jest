@@ -29,7 +29,7 @@ describe('Runtime', () => {
 
     it('displays script output', () => {
       const scriptPath = path.resolve(__dirname, './test_root/logging.js');
-      const output = spawnSync(JEST_RUNTIME, [scriptPath], {
+      const output = spawnSync(JEST_RUNTIME, [scriptPath, '--no-cache'], {
         encoding: 'utf8',
         cwd: process.cwd(),
         env: process.env,
@@ -39,7 +39,7 @@ describe('Runtime', () => {
 
     it('throws script errors', () => {
       const scriptPath = path.resolve(__dirname, './test_root/throwing.js');
-      const output = spawnSync(JEST_RUNTIME, [scriptPath], {
+      const output = spawnSync(JEST_RUNTIME, [scriptPath, '--no-cache'], {
         encoding: 'utf8',
         cwd: process.cwd(),
         env: process.env,
