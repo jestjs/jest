@@ -60,6 +60,13 @@ const options = {
     ),
     type: 'boolean',
   },
+  collectCoverageFrom: {
+    description: wrap(
+      'relative to <rootDir> glob pattern matching the files that coverage ' +
+      'info needs to be collected from.',
+    ),
+    type: 'string',
+  },
   maxWorkers: {
     alias: 'w',
     description: wrap(

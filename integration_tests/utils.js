@@ -46,8 +46,12 @@ const fileExists = filePath => {
   }
 };
 
+const stripJestVersion = stdout =>
+  stdout.replace(/Jest CLI v\d{1,2}\.\d{1,2}\.\d{1,2}/, '<<REPLACED>>');
+
 module.exports = {
   fileExists,
   linkJestPackage,
   run,
+  stripJestVersion,
 };

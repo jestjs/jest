@@ -9,25 +9,29 @@
  */
 'use strict';
 
+const {stripJestVersion} = require('../utils');
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
 
-describe('Coverage Report', () => {
-  it('outputs coverage report', () => {
-    const result = runJest('coverage_report', ['--coverage']);
-    const stdout = result.stdout.toString();
+it('outputs coverage report', () => {
+  const {stdout, status} = runJest('coverage_report', ['--coverage']);
+  const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
 
-    const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
-    expect(stdout).toMatch(/All files.*100.*100.*100.*100/);
-    expect(stdout).not.toMatch(/^.+__tests__.+\|.+\|.+\|.+\|/gm);
-    expect(stdout).not.toMatch(/^.+__mocks__.+\|.+\|.+\|.+\|/gm);
+  // should be no `setup.file` in the coverage report. It's ignored
+  expect(stripJestVersion(stdout)).toMatchSnapshot();
 
-    // Make sure `coveragePathIgnorePatterns` works
-    expect(stdout).not.toMatch('setup.js');
+  expect(() => fs.accessSync(coverageDir, fs.F_OK)).not.toThrow();
+  expect(status).toBe(0);
+});
 
-    // this will throw if the coverage directory is not there
-    fs.accessSync(coverageDir, fs.F_OK);
-    expect(result.status).toBe(0);
-  });
+it('collects coverage only from specified files', () => {
+  const {stdout} = runJest('coverage_report', [
+    '--coverage',
+    '--collectCoverageFrom', // overwrites the one in package.json
+    'setup.js',
+  ]);
+
+  // Coverage report should only have `setup.js` coverage info
+  expect(stripJestVersion(stdout)).toMatchSnapshot();
 });

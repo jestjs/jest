@@ -17,6 +17,7 @@ const crypto = require('crypto');
 const fileExists = require('jest-file-exists');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
+const multimatch = require('multimatch');
 const path = require('path');
 const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
@@ -52,6 +53,7 @@ const getCacheKey = (
     configToJsonMap.set(config, stableStringify({
       cacheDirectory: config.cacheDirectory,
       collectCoverage: config.collectCoverage,
+      collectCoverageFrom: config.collectCoverageFrom,
       collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
       coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
       haste: config.haste,
@@ -157,6 +159,18 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
   ) {
     return false;
   }
+
+  if (
+    !config.collectCoverageOnlyFrom && // still cover if `only` is specified
+    config.collectCoverageFrom &&
+    !multimatch(
+      [path.relative(config.rootDir, filename)],
+      config.collectCoverageFrom,
+    ).length
+  ) {
+    return false;
+  }
+
 
   if (
     config.coveragePathIgnorePatterns &&

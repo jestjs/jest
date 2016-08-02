@@ -168,6 +168,10 @@ function normalize(config, argv) {
     config.testRunner = argv.testRunner;
   }
 
+  if (argv.collectCoverageFrom) {
+    config.collectCoverageFrom = argv.collectCoverageFrom;
+  }
+
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
@@ -251,6 +255,23 @@ function normalize(config, argv) {
         ));
         break;
 
+      case 'collectCoverageFrom':
+        if (!config[key]) {
+          value = [];
+        }
+
+
+        if (!Array.isArray(config[key])) {
+          try {
+            value = JSON.parse(config[key]);
+          } catch (e) {}
+
+          Array.isArray(value) || (value = [config[key]]);
+        } else {
+          value = config[key];
+        }
+
+        break;
       case 'cacheDirectory':
       case 'coverageDirectory':
       case 'scriptPreprocessor':

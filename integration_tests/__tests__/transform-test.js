@@ -10,12 +10,9 @@
 
 jest.unmock('../runJest');
 
-const {linkJestPackage, run} = require('../utils');
+const {linkJestPackage, run, stripJestVersion} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
-
-const stripJestVersion = stdout =>
-  stdout.replace(/Jest CLI v\d{1,2}\.\d{1,2}\.\d{1,2}/, '<<REPLACED>>');
 
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
