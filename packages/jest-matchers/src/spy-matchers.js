@@ -13,6 +13,7 @@
 import type {MatchersObject} from './types';
 
 const {
+  stringify,
   ensureNoExpected,
   ensureExpectedIsNumber,
 } = require('jest-matcher-utils');
@@ -41,6 +42,24 @@ const spyMatchers: MatchersObject = {
         ` but it was called ${actual.calls.count()} times`
       : `expected a spy to be called ${expected} times,` +
         ` but it was called ${actual.calls.count()} times`;
+
+    return {message, pass};
+  },
+
+  toHaveBeenCalledWith(actual: any, expected: any) {
+    ensureSpy(actual, 'toHaveBeenCalledWith');
+
+    const args = Array.from(arguments).pop().args;
+    const pass = actual.calls.all().some(call => {
+      return Object.keys(args).every((key, i) => {
+        return args[key] === call.args[i];
+      });
+    });
+    const message = pass
+      ? `expected the spy to not be called` +
+        ` with '${stringify(args)}' but it was`
+      : `expected the spy to be called with` +
+        ` '${stringify(args)}', but it wasn't`;
 
     return {message, pass};
   },

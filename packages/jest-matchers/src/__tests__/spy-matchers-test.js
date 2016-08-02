@@ -97,3 +97,30 @@ describe('.toHaveBeenCalledTimes()', () => {
       .toThrowError(/spy to be called 2 times, but it was called 1 times/);
   });
 });
+
+describe('.toHaveBeenCalledWith()', () => {
+  it('verifies that actual is a Spy', () => {
+    const foo = () => {};
+
+    expect(() => jestExpect(foo).toHaveBeenCalledWith('bar', 'baz'))
+      .toThrowError(/toHaveBeenCalledWith matcher can only execute on a Spy/);
+  });
+
+  it('passes if function is called with expected params', () => {
+    const foo = jasmine.createSpy('foo');
+    foo('bar', 'baz');
+
+    jestExpect(foo).toHaveBeenCalledWith('bar', 'baz');
+    expect(() => jestExpect(foo).not.toHaveBeenCalledWith('bar', 'baz'))
+      .toThrowError(/expected the spy to not be called/);
+  });
+
+  it('fails if function is called with NON-expected params', () => {
+    const foo = jasmine.createSpy('foo');
+    foo('bar');
+
+    jestExpect(foo).not.toHaveBeenCalledWith('bar', 'baz');
+    expect(() => jestExpect(foo).toHaveBeenCalledWith('bar', 'baz'))
+      .toThrowError(/expected the spy to be called/);
+  });
+});
