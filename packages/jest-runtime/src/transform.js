@@ -293,7 +293,7 @@ const cachedTransformAndWrap = (
 const transformAndBuildScript = (
   filename: Path,
   config: Config,
-  options?: Options,
+  options: ?Options,
   instrument: boolean,
 ): vm.Script => {
   const isInternalModule = !!(options && options.isInternalModule);
@@ -316,7 +316,7 @@ const transformAndBuildScript = (
 module.exports = (
   filename: Path,
   config: Config,
-  options?: Options,
+  options: ?Options,
 ): vm.Script => {
   const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
