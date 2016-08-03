@@ -16,6 +16,12 @@ const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
 //    'envPairs', 'options', 'args', 'file' ]
 function runJest(dir, args) {
+  const isRelative = dir[0] !== '/';
+
+  if (isRelative) {
+    dir = path.resolve(__dirname, dir);
+  }
+
   const localPackageJson = path.resolve(dir, 'package.json');
   if (!fileExists(localPackageJson)) {
     throw new Error(`
@@ -27,7 +33,7 @@ function runJest(dir, args) {
   }
 
   const result = spawnSync(JEST_PATH, args || [], {
-    cwd: path.resolve(__dirname, dir),
+    cwd: dir,
   });
 
   result.stdout = result.stdout && result.stdout.toString();

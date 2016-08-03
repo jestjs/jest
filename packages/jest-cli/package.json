@@ -40,14 +40,6 @@
   "scripts": {
     "test": "./bin/jest.js"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ]
-  },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
   },

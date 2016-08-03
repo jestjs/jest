@@ -7,11 +7,6 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

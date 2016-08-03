@@ -13,11 +13,6 @@
     "jest-haste-map": "^14.1.0",
     "resolve": "^1.1.6"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

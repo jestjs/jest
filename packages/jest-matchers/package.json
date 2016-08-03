@@ -14,12 +14,6 @@
   "devDependencies": {
     "strip-ansi": "^3.0.1"
   },
-  "jest": {
-    "automock": false,
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

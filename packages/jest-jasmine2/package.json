@@ -14,11 +14,6 @@
     "jest-snapshot": "^14.0.0",
     "jest-util": "^14.0.0"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

@@ -17,11 +17,6 @@
   "devDependencies": {
     "jsdom": "^9.2.1"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

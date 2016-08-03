@@ -13,12 +13,6 @@
     "jest-matcher-utils": "^14.0.0",
     "pretty-format": "^3.5.0"
   },
-  "jest": {
-    "automock": false,
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

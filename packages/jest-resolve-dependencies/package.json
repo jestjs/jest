@@ -11,11 +11,6 @@
     "jest-file-exists": "^14.0.0",
     "jest-resolve": "^14.1.0"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

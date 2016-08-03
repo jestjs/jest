@@ -12,11 +12,6 @@
     "graceful-fs": "^4.1.3",
     "worker-farm": "^1.3.1"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   },

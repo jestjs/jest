@@ -13,11 +13,6 @@
     "jest-util": "^14.0.0",
     "pretty-format": "^3.5.0"
   },
-  "jest": {
-    "rootDir": "./src",
-    "scriptPreprocessor": "../../babel-jest",
-    "testEnvironment": "node"
-  },
   "scripts": {
     "test": "../jest-cli/bin/jest.js"
   }

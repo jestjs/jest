@@ -29,20 +29,8 @@
   },
   "devDependencies": {
     "jest-config": "^14.1.0",
-    "jest-environment-node": "^14.0.0"
-  },
-  "jest": {
-    "automock": false,
-    "preprocessorIgnorePatterns": [
-      "node_modules"
-    ],
-    "rootDir": "./src",
-    "scriptPreprocessor": "<rootDir>/../../babel-jest",
-    "setupTestFrameworkScriptFile": "<rootDir>/__mocks__/env.js",
-    "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/__tests__/[^/]*/.+"
-    ]
+    "jest-environment-node": "^14.0.0",
+    "jest-environment-jsdom": "^14.0.0"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
