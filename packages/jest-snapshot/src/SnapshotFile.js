@@ -169,4 +169,5 @@ module.exports = {
 
     return new SnapshotFile(snapshotFilename);
   },
+  SnapshotFile,
 };
