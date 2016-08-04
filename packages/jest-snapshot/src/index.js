@@ -53,6 +53,7 @@ const patchJasmine = (jasmine, state) => {
 
 module.exports = {
   EXTENSION,
+  SnapshotFile: SnapshotFile.SnapshotFile,
   cleanup(hasteContext: HasteContext, update: boolean) {
     const pattern = '\\.' + EXTENSION + '$';
     return hasteContext.instance.matchFiles(pattern).then(files => {
