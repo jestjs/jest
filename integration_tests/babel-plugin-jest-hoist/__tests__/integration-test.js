@@ -50,6 +50,10 @@ jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');
 jest.unmock('../__test_modules__/' + 'c');
 jest.dontMock('../__test_modules__/Mocked');
 
+// This must not throw an error
+const myObject = {mock: () => {}};
+myObject.mock('apple', 27);
+
 describe('babel-plugin-jest-hoist', () => {
 
   it('does not throw during transform', () => {

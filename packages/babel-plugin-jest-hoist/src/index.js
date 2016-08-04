@@ -131,6 +131,10 @@ FUNCTIONS.disableAutomock =
     args => args.length === 0;
 
 module.exports = babel => {
+  const isJest = callee => (
+    callee.get('object').isIdentifier(JEST_GLOBAL) ||
+    (callee.isMemberExpression() && isJest(callee.get('object')))
+  );
   const shouldHoistExpression = expr => {
     if (!expr.isCallExpression()) {
       return false;
@@ -142,11 +146,11 @@ module.exports = babel => {
     return (
       property.isIdentifier() &&
       FUNCTIONS[property.node.name] &&
-      FUNCTIONS[property.node.name](expr.get('arguments')) &&
       (
         object.isIdentifier(JEST_GLOBAL) ||
-        (callee.isMemberExpression() && shouldHoistExpression(object))
-      )
+        callee.isMemberExpression() && shouldHoistExpression(object)
+      ) &&
+      FUNCTIONS[property.node.name](expr.get('arguments'))
     );
   };
   return {

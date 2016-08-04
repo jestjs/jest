@@ -7,10 +7,6 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "devDependencies": {
-    "babel-preset-es2015": "*",
-    "react": "^0.14.0"
-  },
   "jest": {
     "rootDir": "./src",
     "scriptPreprocessor": "../../babel-jest",
