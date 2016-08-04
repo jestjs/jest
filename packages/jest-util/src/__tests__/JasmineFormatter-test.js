@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const JasmineFormatter = require('../JasmineFormatter');
 
 const chalk = require('chalk');

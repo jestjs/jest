@@ -9,6 +9,8 @@
  */
 'use strict';
 
+jest.enableAutomock();
+
 jest.unmock('../constants')
   .unmock('../lib/docblock')
   .unmock('../lib/extractRequires')

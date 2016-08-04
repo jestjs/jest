@@ -14,8 +14,10 @@ const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
 
+const DIR = path.resolve(__dirname, '../coverage_report');
+
 it('outputs coverage report', () => {
-  const {stdout, status} = runJest('coverage_report', ['--coverage']);
+  const {stdout, status} = runJest(DIR, ['--coverage']);
   const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
 
   // should be no `setup.file` in the coverage report. It's ignored
@@ -26,7 +28,7 @@ it('outputs coverage report', () => {
 });
 
 it('collects coverage only from specified files', () => {
-  const {stdout} = runJest('coverage_report', [
+  const {stdout} = runJest(DIR, [
     '--coverage',
     '--collectCoverageFrom', // overwrites the one in package.json
     'setup.js',
