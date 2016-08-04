@@ -20,20 +20,20 @@ Run
 npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
 ```
 
-Your `package.json` should look something like this. Please add the scripts and jest configuration entries:
+Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
 
 ```javascript
 // package.json
   "dependencies": {
-    "react": "*",
-    "react-dom": "*"
+    "react": "<current-version>",
+    "react-dom": "<current-version>"
   },
   "devDependencies": {
-    "babel-jest": "*",
-    "babel-preset-es2015": "*",
-    "babel-preset-react": "*",
-    "jest": "*",
-    "react-test-renderer": "*"
+    "babel-jest": "<current-version>",
+    "babel-preset-es2015": "<current-version>",
+    "babel-preset-react": "<current-version>",
+    "jest": "<current-version>",
+    "react-test-renderer": "<current-version>"
   },
   "scripts": {
     "test": "jest"
