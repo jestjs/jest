@@ -50,8 +50,6 @@ Your `package.json` should look something like this (where `<current-version>` i
 }
 ```
 
-Run ```npm install```.
-
 **And you're good to go!**
 
 React is designed to be tested without being mocked and we recommend turning automocking off using `"automock: false"` in Jest's configuration.
