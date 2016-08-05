@@ -39,7 +39,7 @@ Your `package.json` should look something like this (where `<current-version>` i
     "test": "jest"
   },
   "jest": {
-    "automock": false,
+    "automock": false
   }
 ```
 
