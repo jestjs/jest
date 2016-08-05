@@ -27,8 +27,9 @@
     "lint": "eslint .",
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js",
     "publish": "npm run build-clean && npm run build && lerna publish",
-    "t": "node ./scripts/test.js",
-    "test": "npm run typecheck && npm run lint && npm run build && npm run t",
+    "test-examples": "node ./scripts/test_examples.js",
+    "test": "npm run typecheck && npm run lint && npm run build && npm run jest && npm run test-examples",
+    "jest": "./packages/jest-cli/bin/jest.js",
     "typecheck": "flow check",
     "watch": "npm run build; node ./scripts/watch.js"
   },

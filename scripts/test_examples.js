@@ -10,15 +10,6 @@
 const runCommands = require('./_runCommands');
 const getPackages = require('./_getPackages');
 
-if (process.platform === 'win32') {
-  console.error('Tests are skipped on Windows.');
-  return;
-}
-
-const packagesOnly =
-  process.argv.indexOf('-p') !== -1 ||
-  process.argv.indexOf('--packages-only') !== -1;
-
 const fs = require('graceful-fs');
 const path = require('path');
 const chalk = require('chalk');
@@ -83,12 +74,6 @@ function runExampleTests(exampleDirectory) {
   );
 
   runCommands('npm test', exampleDirectory);
-}
-
-runCommands(JEST_BIN_PATH, path.resolve(__dirname, '..'));
-
-if (packagesOnly) {
-  return;
 }
 
 examples.forEach(runExampleTests);
