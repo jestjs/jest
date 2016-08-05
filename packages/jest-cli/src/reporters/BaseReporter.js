@@ -11,6 +11,7 @@
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
+import type {RunnerContext} from 'types/Reporters';
 
 class BaseReporter {
   _error: ?Error;
@@ -27,7 +28,11 @@ class BaseReporter {
     results: AggregatedResult,
   ) {}
 
-  onRunComplete(config: Config, aggregatedResults: AggregatedResult) {}
+  onRunComplete(
+    config: Config,
+    aggregatedResults: AggregatedResult,
+    runnerContext: RunnerContext,
+  ): ?Promise<any> {}
 
   _write(string: string) {
     // If we write more than one character at a time it is possible that

@@ -85,6 +85,10 @@ class Runtime {
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
 
+  static transformSource() {
+    return transform.transformSource.apply(null, arguments);
+  }
+
   constructor(
     config: Config,
     environment: Environment,

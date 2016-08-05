@@ -9,18 +9,24 @@
  */
 'use strict';
 
-const {stripJestVersion} = require('../utils');
+const {stripJestVersion, linkJestPackage} = require('../utils');
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
 
 const DIR = path.resolve(__dirname, '../coverage_report');
 
+beforeEach(() => linkJestPackage('babel-jest', DIR));
+
 it('outputs coverage report', () => {
-  const {stdout, status} = runJest(DIR, ['--coverage']);
+  const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage']);
   const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
 
-  // should be no `setup.file` in the coverage report. It's ignored
+  // - the `setup.js` file is ignored and should not be in the coverage report.
+  // - `sum_dependency.js` is mocked and the real module is never required but
+  //  is listed with 0 % coverage.
+  // - `not-required-in-test-suite.js` is not required but it is listed
+  //  with 0 % coverage.
   expect(stripJestVersion(stdout)).toMatchSnapshot();
 
   expect(() => fs.accessSync(coverageDir, fs.F_OK)).not.toThrow();
@@ -29,6 +35,7 @@ it('outputs coverage report', () => {
 
 it('collects coverage only from specified files', () => {
   const {stdout} = runJest(DIR, [
+    '--no-cache',
     '--coverage',
     '--collectCoverageFrom', // overwrites the one in package.json
     'setup.js',

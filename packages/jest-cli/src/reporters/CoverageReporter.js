@@ -9,19 +9,27 @@
 */
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {Config, Glob, Path} from 'types/Config';
+import type {HasteMap} from 'types/HasteMap';
+import type {RunnerContext} from 'types/Reporters';
 
 type CoverageMap = {
   merge: (data: Object) => void,
   getCoverageSummary: () => Object,
+  data: Object,
+  addFileCoverage: (fileCoverage: Object) => void,
 };
 
 const BaseReporter = require('./BaseReporter');
 
 const {createReporter} = require('istanbul-api');
 const chalk = require('chalk');
+const fs = require('fs');
+const generateEmptyCoverage = require('../generateEmptyCoverage');
 const istanbulCoverage = require('istanbul-lib-coverage');
+const path = require('path');
+const multimatch = require('multimatch');
 
 const FAIL_COLOR = chalk.bold.red;
 
@@ -43,7 +51,12 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
+  onRunComplete(
+    config: Config,
+    aggregatedResults: AggregatedResult,
+    runnerContext: RunnerContext,
+  ) {
+    this._addUntestedFiles(config, runnerContext);
     const reporter = createReporter();
     try {
       if (config.coverageDirectory) {
@@ -59,6 +72,37 @@ class CoverageReporter extends BaseReporter {
       `));
     }
 
+    this._checkThreshold(config);
+  }
+
+  _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
+    if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+      const files = matchFilesWithGlobs(
+        runnerContext.hasteContext.moduleMap,
+        config.collectCoverageFrom,
+        config.rootDir,
+      );
+
+      files.forEach(filename => {
+        if (!this._coverageMap.data[filename]) {
+          try {
+            const source = fs.readFileSync(filename).toString();
+            this._coverageMap.addFileCoverage(
+              generateEmptyCoverage(source, filename, config),
+            );
+          } catch (e) {
+            console.error(chalk.red(`
+              Failed to collect coverage from ${filename}
+              ERROR: ${e}
+              STACK: ${e.stack}
+            `));
+          }
+        }
+      });
+    }
+  }
+
+  _checkThreshold(config: Config) {
     if (config.coverageThreshold) {
       const globalResults = this._coverageMap.getCoverageSummary().toJSON();
 
@@ -109,5 +153,21 @@ class CoverageReporter extends BaseReporter {
     return this._coverageMap;
   }
 }
+
+// This is a temporary hack until we rewrite HasteMap to be synchronous
+const matchFilesWithGlobs = (
+  moduleMap: HasteMap,
+  globs: Array<Glob>,
+  rootDir: Path
+): Set<Path> => {
+  const files = new Set();
+  for (const file in moduleMap.files) {
+    if (multimatch([path.relative(rootDir, file)], globs).length) {
+      files.add(file);
+    }
+  }
+  return files;
+};
+
 
 module.exports = CoverageReporter;

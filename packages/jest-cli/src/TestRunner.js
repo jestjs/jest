@@ -59,7 +59,7 @@ class TestRunner {
     options: Options,
   ) {
     this._config = config;
-    this._dispatcher = new ReporterDispatcher();
+    this._dispatcher = new ReporterDispatcher({hasteContext: hasteMap});
     this._hasteContext = hasteMap;
     this._options = options;
     this._setupReporters();
@@ -253,6 +253,12 @@ class TestRunner {
   }
 
   _setupReporters() {
+    if (this._config.collectCoverage) {
+      // coverage reporter dependency graph is pretty big and we don't
+      // want to require it if we're not in the `--coverage` mode
+      const CoverageReporter = require('./reporters/CoverageReporter');
+      this.addReporter(new CoverageReporter());
+    }
     this.addReporter(new SummaryReporter());
     this.addReporter(
       this._config.verbose
@@ -264,10 +270,6 @@ class TestRunner {
       this.addReporter(new NotifyReporter());
     }
 
-    if (this._config.collectCoverage) {
-      const CoverageReporter = require('./reporters/CoverageReporter');
-      this.addReporter(new CoverageReporter());
-    }
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult) {
@@ -386,9 +388,16 @@ const buildFailureTestResult = (
 // Proxy class that holds all reporter and dispatchers events to each
 // of them.
 class ReporterDispatcher {
+  _disabled: boolean;
   _reporters: Array<BaseReporter>;
+  _runnerContext: {
+    hasteContext: HasteContext,
+  };
 
-  constructor() {
+  constructor(options: {hasteContext: HasteContext}) {
+    this._runnerContext = {
+      hasteContext: options.hasteContext,
+    };
     this._reporters = [];
   }
 
@@ -402,21 +411,21 @@ class ReporterDispatcher {
     );
   }
 
-  onTestResult() {
-    this._reporters.forEach(
-      reporter => reporter.onTestResult.apply(reporter, arguments),
+  onTestResult(config, testResult, results) {
+    this._reporters.forEach(reporter =>
+      reporter.onTestResult(config, testResult, results, this._runnerContext),
     );
   }
 
-  onRunStart() {
+  onRunStart(config, results) {
     this._reporters.forEach(
-      reporter => reporter.onRunStart.apply(reporter, arguments),
+      reporter => reporter.onRunStart(config, results, this._runnerContext),
     );
   }
 
-  onRunComplete() {
-    this._reporters.forEach(
-      reporter => reporter.onRunComplete.apply(reporter, arguments),
+  onRunComplete(config, results) {
+    this._reporters.forEach(reporter =>
+      reporter.onRunComplete(config, results, this._runnerContext),
     );
   }
 
