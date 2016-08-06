@@ -4,3 +4,5 @@ node_js:
   - "6"
 sudo: false
 before_install: npm i -g npm@latest
+script:
+  - npm run test-ci

@@ -14,6 +14,8 @@
     "flow-bin": "^0.29.0",
     "glob": "^7.0.4",
     "graceful-fs": "^4.1.4",
+    "istanbul-api": "^1.0.0-aplha.10",
+    "istanbul-lib-coverage": "^1.0.0-alpha.4",
     "lerna": "2.0.0-beta.24",
     "minimatch": "^3.0.2",
     "mkdirp": "^0.5.1",
@@ -29,6 +31,8 @@
     "publish": "npm run build-clean && npm run build && lerna publish",
     "test-examples": "node ./scripts/test_examples.js",
     "test": "npm run typecheck && npm run lint && npm run build && npm run jest && npm run test-examples",
+    "test-coverage": "./packages/jest-cli/bin/jest.js --coverage && node ./scripts/mapCoverage",
+    "test-ci": "npm run typecheck && npm run lint && npm run jest -- --runInBand --coverage && node ./scripts/mapCoverage",
     "jest": "./packages/jest-cli/bin/jest.js",
     "typecheck": "flow check",
     "watch": "npm run build; node ./scripts/watch.js"
@@ -40,14 +44,22 @@
       "packages\/.*\/build"
     ],
     "rootDir": "./",
+    "collectCoverageFrom": [
+      "**/packages/**/*.js",
+      "!**/vendor/**",
+      "!**/__mocks__/**",
+      "!**/__tests__/**",
+      "!integration_tests/**"
+    ],
+    "coverageReporters": ["json"],
     "scriptPreprocessor": "<rootDir>/packages/babel-jest",
     "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",
-      "integration_tests\/.*\/__tests__",
+      "integration_tests/.*/__tests__",
       "\\.snap$",
-      "packages\/.*\/build"
+      "packages/.*/build"
     ],
     "testRegex": ".*-test.\\js"
   }

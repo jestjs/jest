@@ -11,13 +11,13 @@
 
 jest.disableAutomock();
 
+const JasmineReporter = require('../reporter');
+
 describe('Jasmine2Reporter', () => {
-  let JasmineReporter;
   let chalk;
   let reporter;
 
   beforeEach(() => {
-    JasmineReporter = require('../reporter');
     chalk = require('chalk');
 
     reporter = new JasmineReporter({});
