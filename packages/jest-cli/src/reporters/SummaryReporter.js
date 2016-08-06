@@ -13,6 +13,7 @@ import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {Config} from 'types/Config';
 
 const chalk = require('chalk');
+const getResultHeader = require('./getResultHeader');
 const BaseReporter = require('./BaseReporter');
 
 
@@ -60,7 +61,7 @@ class SummareReporter extends BaseReporter {
         PENDING_COLOR(`${pluralize('test', pendingTests)} skipped`) + ', ';
     }
 
-    this._printSummary(aggregatedResults);
+    this._printSummary(aggregatedResults, config);
     this._printSnapshotSummary(snapshots);
     if (totalTestSuites) {
       results +=
@@ -140,7 +141,7 @@ class SummareReporter extends BaseReporter {
     }
   }
 
-  _printSummary(aggregatedResults: AggregatedResult) {
+  _printSummary(aggregatedResults: AggregatedResult, config: Config) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
     const failedTests = aggregatedResults.numFailedTests;
@@ -151,14 +152,10 @@ class SummareReporter extends BaseReporter {
     ) {
       this.log(chalk.bold('\nSummary of all failing tests'));
       aggregatedResults.testResults.forEach(testResult => {
-        if (
-          testResult.message &&
-          (
-            testResult.numFailingTests > 0 ||
-            testResult.testExecError
-          )
-        ) {
-          this._write(testResult.message);
+        const {failureMessage} = testResult;
+        if (failureMessage) {
+          this._write(getResultHeader(testResult, config));
+          this._write(failureMessage);
         }
       });
       this.log(''); // print empty line

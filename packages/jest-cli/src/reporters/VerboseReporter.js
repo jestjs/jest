@@ -50,13 +50,12 @@ class VerboseReporter extends DefaultReporter {
     results: AggregatedResult,
   ) {
     this._clearWaitingOn(config);
-    this._printTestFileHeaderAndFailures(config, testResult);
     if (!testResult.testExecError) {
       this._logTestResults(testResult.testResults);
     }
+    this._printTestFileHeaderAndFailures(config, testResult);
     this._printWaitingOn(results, config);
   }
-
 
   _logTestResults(testResults: Array<AssertionResult>) {
     this._logSuite(VerboseReporter.groupTestsBySuites(testResults), 0);

@@ -17,7 +17,7 @@ describe('Verbose', () => {
     const stderr = result.stderr.toString();
 
     expect(result.status).toBe(1);
-    expect(stderr).toMatch('it works just fine');
-    expect(stderr).toMatch('it does not work');
+    expect(stderr).toMatch('works just fine');
+    expect(stderr).toMatch('does not work');
   });
 });

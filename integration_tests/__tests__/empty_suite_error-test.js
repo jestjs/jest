@@ -17,7 +17,7 @@ describe('JSON Reporter', () => {
   it('fails the test suite if it contains no tests', () => {
     const result = runJest(DIR, []);
     const stderr = result.stderr.toString();
-    expect(stderr).toMatch('Runtime Error');
+    expect(stderr).toMatch('Test suite failed to run:');
     expect(stderr).toMatch(
       'Error: Your test suite must contain at least one test.'
     );
