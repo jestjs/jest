@@ -39,7 +39,7 @@ Your `package.json` should look something like this (where `<current-version>` i
     "test": "jest"
   },
   "jest": {
-    "automock": false,
+    "automock": false
   }
 ```
 
@@ -49,8 +49,6 @@ Your `package.json` should look something like this (where `<current-version>` i
   "presets": ["es2015", "react"]
 }
 ```
-
-Run ```npm install```.
 
 **And you're good to go!**
 
