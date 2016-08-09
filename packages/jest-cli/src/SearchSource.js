@@ -81,7 +81,9 @@ class SearchSource {
     this._options = options || {};
 
     this._testPathDirPattern =
-      new RegExp(config.testPathDirs.map(dir => pathToRegex(dir)).join('|'));
+      new RegExp(config.testPathDirs.map(dir => {
+        return pathToRegex(utils.escapeStrForRegex(dir));
+      }).join('|'));
     this._testRegex = new RegExp(pathToRegex(config.testRegex));
     const ignorePattern = config.testPathIgnorePatterns;
     this._testIgnorePattern =
