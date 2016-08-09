@@ -26,4 +26,10 @@ describe('NodeEnvironment', () => {
     expect(env1.global.process.on).not.toBe(null);
   });
 
+  it('exposes global.global', () => {
+    const env1 = new NodeEnvironment({});
+
+    expect(env1.global.global).toBe(env1.global);
+  });
+
 });
