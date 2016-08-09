@@ -8,6 +8,6 @@
 
 'use strict';
 
-it('runs this', [], () => {
+it('runs this', () => {
   expect(true).toBe(true);
 });
