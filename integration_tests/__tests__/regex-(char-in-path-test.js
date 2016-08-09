@@ -13,8 +13,9 @@ const runJest = require('../runJest');
 
 describe('Regex Char In Path', () => {
   it('parses paths containing regex chars correctly', () => {
-    const {stderr} = runJest('regex-(char-in-path', []);
+    const {json} = runJest.json('regex-(char-in-path', []);
 
-    expect(stderr).not.toMatch('Invalid regular expression');
+    expect(json.numTotalTests).toBe(1);
+    expect(json.numPassedTests).toBe(1);
   });
 });
