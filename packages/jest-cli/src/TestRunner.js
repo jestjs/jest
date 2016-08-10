@@ -20,6 +20,7 @@ import type BaseReporter from './reporters/BaseReporter';
 
 const Test = require('./Test');
 
+const {formatExecError} = require('jest-util');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const DefaultReporter = require('./reporters/DefaultReporter');
@@ -150,6 +151,7 @@ class TestRunner {
 
     const onRunFailure = (testPath: Path, err: TestError) => {
       const testResult = buildFailureTestResult(testPath, err);
+      testResult.failureMessage = formatExecError(testResult, config, testPath);
       aggregatedResults.testResults.push(testResult);
       aggregatedResults.numRuntimeErrorTestSuites++;
       this._dispatcher.onTestResult(config, testResult, aggregatedResults);
@@ -364,6 +366,7 @@ const buildFailureTestResult = (
   err: TestError
 ): TestResult => {
   return {
+    failureMessage: null,
     hasUncheckedKeys: false,
     numFailingTests: 1,
     numPassingTests: 0,

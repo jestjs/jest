@@ -57,10 +57,13 @@ exports.NullConsole = require('./NullConsole');
 
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
-exports.formatFailureMessage = require('./formatFailureMessage');
+exports.formatResultsErrors =
+  require('./formatFailureMessage').formatResultsErrors;
+exports.formatExecError = require('./formatFailureMessage').formatExecError;
 exports.getPackageRoot = getPackageRoot;
 exports.installCommonGlobals = require('./installCommonGlobals');
 exports.replacePathSepForRegex = replacePathSepForRegex;
+exports.separateMessageFromStack = require('./separateMessageFromStack');
 exports.warnAboutUnrecognizedOptions =
   require('./args').warnAboutUnrecognizedOptions;
 exports.wrap = require('./args').wrap;

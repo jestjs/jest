@@ -1,0 +1,9 @@
+exports[`formatFailureMessage should exclude jasmine from stack trace for windows paths 1`] = `
+"  [1m● [22m › windows test
+
+[31m      at stack (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1580:17)[39m
+[90m      
+      at Object.addResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1550:14)
+      at Object.it (build\\__tests__\\formatFailureMessage-test.js:45:41)[39m
+"
+`;

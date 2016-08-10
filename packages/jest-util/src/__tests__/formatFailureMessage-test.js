@@ -11,7 +11,7 @@
 
 jest.disableAutomock();
 
-const formatFailureMessage = require('../formatFailureMessage');
+const {formatResultsErrors} = require('../formatFailureMessage');
 
 const windowsStackTrace =
 `  at stack (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1580:17)
@@ -27,18 +27,20 @@ const windowsStackTrace =
 
 describe('formatFailureMessage', () => {
   it('should exclude jasmine from stack trace for windows paths', () => {
-    const messages = formatFailureMessage({
+    const messages = formatResultsErrors({
       testResults: [
         {
           ancestorTitles: [],
           failureMessages: [
             windowsStackTrace,
           ],
+          title: 'windows test',
         },
       ],
     }, {
       rootDir: '',
     });
-    expect(messages.split('\n').length).toBe(4);
+
+    expect(messages).toMatchSnapshot();
   });
 });

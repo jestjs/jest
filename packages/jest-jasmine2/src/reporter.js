@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {
   AssertionResult,
@@ -21,7 +21,7 @@ import type {
 
 const jasmineRequire = require('../vendor/jasmine-2.4.1.js');
 const jasmine = jasmineRequire.core(jasmineRequire);
-const JasmineFormatter = require('jest-util').JasmineFormatter;
+const {formatResultsErrors, JasmineFormatter} = require('jest-util');
 
 type Suite = {
   description: string,
@@ -40,13 +40,17 @@ type Microseconds = number;
 class Jasmine2Reporter {
   _formatter: JasmineFormatter;
   _testResults: Array<AssertionResult>;
+  _config: Config;
   _currentSuites: Array<string>;
   _resolve: any;
   _resultsPromise: Promise<TestResult>;
   _startTimes: Map<string, Microseconds>;
+  _testPath: Path;
 
-  constructor(config: Config, environment: Environment) {
+  constructor(config: Config, environment: Environment, testPath: Path) {
     this._formatter = new JasmineFormatter(jasmine, environment, config);
+    this._config = config;
+    this._testPath = testPath;
     this._testResults = [];
     this._currentSuites = [];
     this._resolve = null;
@@ -86,13 +90,23 @@ class Jasmine2Reporter {
         numPassingTests++;
       }
     });
-    this._resolve({
+
+    const testResult = {
+      failureMessage: null,
       numFailingTests,
       numPassingTests,
       numPendingTests,
       testResults,
       snapshot: {},
-    });
+    };
+
+    testResult.failureMessage = formatResultsErrors(
+      testResult,
+      this._config,
+      this._testPath,
+    );
+
+    this._resolve(testResult);
   }
 
   getFormatter(): JasmineFormatter {
@@ -112,7 +126,7 @@ class Jasmine2Reporter {
     const status =
       (specResult.status === 'disabled') ? 'pending' : specResult.status;
     const results = {
-      title: 'it ' + specResult.description,
+      title: specResult.description,
       status,
       ancestorTitles,
       failureMessages: [],

@@ -12,6 +12,8 @@
 import type {Config, Path} from 'types/Config';
 import type {Error, TestResult} from 'types/TestResult';
 
+const {separateMessageFromStack} = require('jest-util');
+
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
   console.error(err.stack);
@@ -30,9 +32,10 @@ type WorkerCallback = (error: ?Error, result?: TestResult) => void;
 
 const formatError = error => {
   if (typeof error === 'string') {
+    const {message, stack} = separateMessageFromStack(error);
     return {
-      stack: null,
-      message: error,
+      stack,
+      message,
       type: 'Error',
     };
   }

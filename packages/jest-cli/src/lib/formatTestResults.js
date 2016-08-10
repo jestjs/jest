@@ -10,8 +10,6 @@
 
 'use strict';
 
-const utils = require('jest-util');
-
 import type {
   AggregatedResult,
   CodeCoverageFormatter,
@@ -45,14 +43,10 @@ const formatResult = (
     output.startTime = testResult.perfStats.start;
     output.endTime = testResult.perfStats.end;
     output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
+  }
 
-    if (!allTestsPassed) {
-      output.message = utils.formatFailureMessage(testResult, {
-        noStackTrace: config.noStackTrace,
-        rootDir: config.rootDir,
-        verbose: false,
-      });
-    }
+  if (testResult.failureMessage) {
+    output.message = testResult.failureMessage;
   }
 
   return output;

@@ -62,7 +62,7 @@ function jasmine2(
   let env;
   let jasmine;
 
-  const reporter = new JasmineReporter(config, environment);
+  const reporter = new JasmineReporter(config, environment, testPath);
   // Jasmine does stuff with timers that affect running the tests. However, we
   // also mock out all the timer APIs (to make them test-controllable).
   // To account for this conflict, we set up jasmine in an environment with real

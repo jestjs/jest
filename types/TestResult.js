@@ -66,7 +66,7 @@ export type TestResult = {
   coverage?: Coverage,
   hasUncheckedKeys: boolean,
   memoryUsage?: Bytes,
-  message?: string,
+  failureMessage: ?string,
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
