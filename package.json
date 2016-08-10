@@ -32,7 +32,7 @@
     "test-examples": "node ./scripts/test_examples.js",
     "test": "npm run typecheck && npm run lint && npm run build && npm run jest && npm run test-examples",
     "test-coverage": "./packages/jest-cli/bin/jest.js --coverage && node ./scripts/mapCoverage",
-    "test-ci": "npm run typecheck && npm run lint && npm run jest -- --runInBand --coverage && node ./scripts/mapCoverage",
+    "test-ci": "npm run typecheck && npm run lint && npm run jest -- --runInBand --coverage && npm run test-examples && node ./scripts/mapCoverage",
     "jest": "./packages/jest-cli/bin/jest.js",
     "typecheck": "flow check",
     "watch": "npm run build; node ./scripts/watch.js"
