@@ -164,3 +164,26 @@ flexible enough to handle your webpack config.
 
 *Note: For more complex webpack configurations, you may also want to investigate
 projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).*
+
+
+## webpack 2
+
+webpack 2 beta offers native support for ES modules. However, Jest runs in
+Node, and thus requires ES modules to be transpiled to CommonJS modules. As
+such, if you are using webpack 2, you most likely will want to configure Babel
+to transpile ES modules to CommonJS modules only in the `test` environment.
+
+```js
+// .babelrc
+{
+  "presets": [
+    ["es2015", { "modules": false }]
+  ],
+
+  "env": {
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
+}
+```
