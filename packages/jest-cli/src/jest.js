@@ -148,18 +148,13 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         chalk.enabled = false;
       }
 
-      /* $FlowFixMe */
-      const testFramework = require(config.testRunner);
-      const info = [`v${VERSION}`, testFramework.name];
-      if (config.usesBabelJest) {
-        info.push('babel-jest');
+      if (argv.debug) {
+        /* $FlowFixMe */
+        const testFramework = require(config.testRunner);
+        pipe.write('jest version = ' + VERSION + '\n');
+        pipe.write('test framework = ' + testFramework.name + '\n');
+        pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
-      if (config.preset) {
-        info.push(path.relative(config.rootDir, config.preset) + ' preset');
-      }
-
-      const prefix = argv.watch ? 'Watch using' : 'Using';
-      const header = `${prefix} Jest CLI ${info.join(', ')}\n`;
       if (argv.watch !== undefined) {
         if (argv.watch !== 'all') {
           argv.onlyChanged = true;
@@ -170,9 +165,9 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
             let timer;
             let isRunning;
 
-            pipe.write(CLEAR + header);
+            pipe.write(CLEAR);
             watcher.on('all', (_, filePath) => {
-              pipe.write(CLEAR + header);
+              pipe.write(CLEAR);
               filePath = path.join(root, filePath);
               const isValidPath =
                 config.testPathDirs.some(dir => filePath.startsWith(dir));
@@ -197,7 +192,6 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
           });
         });
       } else {
-        pipe.write(header);
         return runJest(config, argv, pipe, onComplete);
       }
     })

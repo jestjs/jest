@@ -28,6 +28,12 @@ const options = {
     description: wrap('The path to a Jest config file.'),
     type: 'string',
   },
+  debug: {
+    description: wrap(
+      'Print debugging info about your jest config.',
+    ),
+    type: 'boolean',
+  },
   version: {
     alias: 'v',
     description: wrap('Print the version and exit'),

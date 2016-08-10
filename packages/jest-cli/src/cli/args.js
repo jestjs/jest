@@ -67,6 +67,12 @@ const options = {
     ),
     type: 'string',
   },
+  debug: {
+    description: wrap(
+      'Print debugging info about your jest config.',
+    ),
+    type: 'boolean',
+  },
   maxWorkers: {
     alias: 'w',
     description: wrap(
