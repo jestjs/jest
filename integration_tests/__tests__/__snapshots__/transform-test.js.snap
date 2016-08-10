@@ -1,6 +1,5 @@
 exports[`babel-jest instruments only specific files and collects coverage 1`] = `
-"Using <<REPLACED>>, jasmine2, babel-jest
-------------|----------|----------|----------|----------|----------------|
+"------------|----------|----------|----------|----------|----------------|
 File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ------------|----------|----------|----------|----------|----------------|
 All files   |    83.33 |      100 |       50 |    83.33 |                |
@@ -10,8 +9,7 @@ All files   |    83.33 |      100 |       50 |    83.33 |                |
 `;
 
 exports[`custom preprocessor instruments files 1`] = `
-"Using <<REPLACED>>, jasmine2
-----------|----------|----------|----------|----------|----------------|
+"----------|----------|----------|----------|----------|----------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|
 All files |  Unknown |  Unknown |  Unknown |  Unknown |                |
@@ -20,8 +18,7 @@ All files |  Unknown |  Unknown |  Unknown |  Unknown |                |
 `;
 
 exports[`no babel-jest instrumentation with no babel-jest 1`] = `
-"Using <<REPLACED>>, jasmine2
-------------|----------|----------|----------|----------|----------------|
+"------------|----------|----------|----------|----------|----------------|
 File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ------------|----------|----------|----------|----------|----------------|
 All files   |    83.33 |      100 |       50 |    83.33 |                |
