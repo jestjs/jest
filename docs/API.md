@@ -45,7 +45,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toBeNull()`](#tobenull)
   - [`.toBeTruthy()`](#tobetruthy)
   - [`.toBeUndefined()`](#tobeundefined)
-  - [`.toContain(string)`](#tocontain-string)
+  - [`.toContain(item)`](#tocontain-item)
   - [`.toEqual(value)`](#toequal-value)
   - [`.toMatch(regexp)`](#tomatch-regexp)
   - [`.toMatchSnapshot()`](#tomatchsnapshot)
@@ -249,38 +249,262 @@ describe('the can', () => {
 });
 ```
 
+Don't use `toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
+
 ### `.toBeCalled()`
 
 Use `.toBeCalled` to ensure that a mock function got called.
 
-For example, let's say you have a `fetchFlavorInfo(flavor, success, error)` function that will call one of two callbacks - `success` if the flavor information can be found, `error` if the flavor information cannot be found. You might want to check that you can fetch flavor information for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
+For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
 
 ```js
-describe('fetching flavor info', () => {
-  it('succeeds for lemon', () => {
-
+describe('drinkAll', () => {
+  it('drinks something lemon-flavored', () => {
+    let drink = jest.fn();
+    drinkAll(drink, 'lemon');
+    expect(drink).toBeCalled();
   });
 
-  it('fails for octopus', () => {
-
+  it('does not drink something octopus-flavored', () => {
+    let drink = jest.fn();
+    drinkAll(drink, 'octopus');
+    expect(drink).not.toBeCalled();
   });
 });
 ```
 
 ### `.toBeCalledWith(arg1, arg2, ...)`
+
+Use `.toBeCalledWith` to ensure that a mock function was called with specific
+arguments.
+
+For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
+
+```js
+describe('beverage registration', () => {
+  it('applies correctly to orange La Croix', () => {
+    let beverage = new LaCroix('orange');
+    register(beverage);
+    let f = jest.fn();
+    applyToAll(f);
+    expect(f).toBeCalledWith(beverage);
+  });
+});
+```
+
 ### `.toBeCloseTo(number, delta)`
+
+Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
+
+```js
+describe('adding numbers', () => {
+  it('works sanely with simple decimals', () => {
+    expect(0.2 + 0.1).toBe(0.3); // Fails!
+  });
+});
+```
+
+It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
+
+Instead, use `.toBeCloseTo` with a small delta. A valid test for this same addition problem is:
+
+```js
+describe('adding numbers', () => {
+  it('works sanely with simple decimals', () => {
+    expect(0.2 + 0.1).toBeCloseTo(0.3, 0.000000001);
+  });
+});
+```
+
 ### `.toBeDefined()`
+
+Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns *something*, you can write:
+
+```js
+describe('fetching new flavor ideas', () => {
+  it('returns something', () => {
+    expect(fetchNewFlavorIdea()).toBeDefined();
+  });
+});
+```
+
+You could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
+
 ### `.toBeFalsy()`
+
+Use `.toBeFalsy` when you don't care what a value is, you just want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
+
+```js
+drinkSomeLaCroix();
+if (!getErrors()) {
+  drinkMoreLaCroix();
+}
+```
+
+You may not care what `getErrors` returns, specifically - it might return `false`, `null`, or `0`, and your code would still work. So if you want to test there are no errors after drinking some La Croix, you could write:
+
+```js
+describe('drinking some La Croix', () => {
+  it('does not lead to errors', () => {
+    drinkSomeLaCroix();
+    expect(getErrors()).toBeFalsy();
+  });
+});
+```
+
+In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefined`, and `NaN`. Everything else is truthy.
+
 ### `.toBeGreaterThan(number)`
+
+To compare floating point numbers, you can use `toBeGreaterThan`. For example, if you want to test that `ouncesPerCan()` returns a value of more than 10 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is more than 10', () => {
+    expect(ouncesPerCan()).toBeGreaterThan(10);
+  });
+});
+```
+
+There is no `toBeGreaterThanOrEqualTo`. Just use `.not.toBeLessThan` instead.
+
 ### `.toBeLessThan(number)`
+
+To compare floating point numbers, you can use `toBeLessThan`. For example, if you want to test that `ouncesPerCan()` returns a value of less than 20 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is less than 20', () => {
+    expect(ouncesPerCan()).toBeLessThan(10);
+  });
+});
+```
+
+There is no `toBeLessThanOrEqualTo`. Just use `.not.ToBeGreaterThan` instead.
+
 ### `.toBeNull()`
+
+`.toBeNull()` is the same as `.toBe(null)` but the error messages are a bit nicer. So use `.toBeNull()` when you want to check that something is null.
+
+```js
+function bloop() {
+  return null;
+}
+
+describe('bloop', () => {
+  it('returns null', () => {
+    expect(bloop()).toBeNull();
+  });
+})
+```
+
 ### `.toBeTruthy()`
+
+Use `.toBeTruthy` when you don't care what a value is, you just want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
+
+```js
+drinkSomeLaCroix();
+if (thirstInfo()) {
+  drinkMoreLaCroix();
+}
+```
+
+You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you just want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
+
+```js
+describe('drinking some La Croix', () => {
+  it('leads to having thirst info', () => {
+    drinkSomeLaCroix();
+    expect(thirstInfo()).toBeTruthy();
+  });
+});
+```
+
+In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefined`, and `NaN`. Everything else is truthy.
+
 ### `.toBeUndefined()`
-### `.toContain(string)`
+
+Use `.toBeUndefined` to check that a variable is undefined. For example, if you want to check that a function `bestDrinkForFlavor(flavor)` returns `undefined` for the `'octopus'` flavor, because there is no good octopus-flavored drink:
+
+```js
+describe('the best drink', () => {
+  it('for octopus flavor is undefined', () => {
+    expect(bestDrinkForFlavor('octopus')).toBeUndefined();
+  });
+});
+```
+
+You could write `expect(bestDrinkForFlavor('octopus')).toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
+
+### `.toContain(item)`
+
+Use `.toContain` when you want to check that an item is in a list.
+
+For example, if `getAllFlavors()` returns a list of flavors and you want to be sure that `lime` is in there, you can write:
+
+```js
+describe('the list of all flavors', () => {
+  it('contains lime', () => {
+    expect(getAllFlavors()).toContain('lime');
+  });
+});
+```
+
 ### `.toEqual(value)`
+
+Use `.toEqual` when you want to check that two objects are equal when you recursively check for the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+
+```js
+let can1 = {
+  flavor: 'grapefruit',
+  ounces: 12,
+};
+let can2 = {
+  flavor: 'grapefruit',
+  ounces: 12,
+};
+
+describe('the La Croix cans on my desk', () => {
+  it('have all the same properties', () => {
+    expect(can1).toEqual(can2);
+  });
+  it('are not the exact same can', () => {
+    expect(can1).not.toBe(can2);
+  });
+});
+```
+
 ### `.toMatch(regexp)`
+
+Use `.toMatch` to check that a string matches a regular expression.
+
+For example, you might not know what exactly `essayOnTheBestFlavor()` returns, but you know the string `grapefruit` should be in there somewhere. You can test this with:
+
+```js
+describe('an essay on the best flavor', () => {
+  it('should mention grapefruit', () => {
+    expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
+  })
+})
+```
+
 ### `.toMatchSnapshot()`
+
+This ensures that a React component matches the most recent snapshot. Check out [the announcement blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+
 ### `.toThrow(?message)`
+
+Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
+
+```js
+describe('drinking flavors', () => {
+  it('throws on octopus', () => {
+    expect(() => {
+      drink('octopus');
+    }).toThrow();
+  });
+});
+```
 
 ## Mock Functions
 
