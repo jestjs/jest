@@ -318,6 +318,8 @@ describe('adding numbers', () => {
 });
 ```
 
+The default for `numDigits` is 2, which has proved to be a good default in most cases.
+
 ### `.toBeDefined()`
 
 Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns *something*, you can write:
