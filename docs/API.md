@@ -191,7 +191,7 @@ Here's how you would test that:
 
 ```js
 describe('the best La Croix flavor', () => {
-  it('should be grapefruit', () => {
+  it('is grapefruit', () => {
     expect(bestLaCroixFlavor()).toBe('grapefruit');
   });
 });
@@ -207,7 +207,7 @@ If you have a mock function, you can use `.lastCalledWith` to test what argument
 
 ```js
 describe('applying to all flavors', () => {
-  it('should do mango last', () => {
+  it('does mango last', () => {
     let drink = jest.fn();
     applyToAllFlavors(drink);
     expect(drink).lastCalledWith('mango');
@@ -221,7 +221,7 @@ If you know how to test something, `.not` lets you test its opposite. For exampl
 
 ```js
 describe('the best La Croix flavor', () => {
-  it('should not be coconut', () => {
+  it('is not coconut', () => {
     expect(bestLaCroixFlavor()).not.toBe('coconut');
   });
 });
@@ -241,11 +241,11 @@ let beverage = {
 };
 
 describe('the can', () => {
-  it('should have 12 ounces', () => {
+  it('has 12 ounces', () => {
     expect(can.ounces).toBe(12);
   });
 
-  it('should have a silly name', () => {
+  it('has a silly name', () => {
     expect(can.frenchName).toBe('pamplemousse');
   });
 });
@@ -502,11 +502,11 @@ describe('the La Croix cans on my desk', () => {
 
 Use `.toMatch` to check that a string matches a regular expression.
 
-For example, you might not know what exactly `essayOnTheBestFlavor()` returns, but you know the string `grapefruit` should be in there somewhere. You can test this with:
+For example, you might not know what exactly `essayOnTheBestFlavor()` returns, but you know it's a really long string, and the substring `grapefruit` should be in there somewhere. You can test this with:
 
 ```js
 describe('an essay on the best flavor', () => {
-  it('should mention grapefruit', () => {
+  it('mentions grapefruit', () => {
     expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
   })
 })
