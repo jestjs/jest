@@ -222,7 +222,7 @@ If you know how to test something, `.not` lets you test its opposite. For exampl
 ```js
 describe('the best La Croix flavor', () => {
   it('should not be coconut', () => {
-    expect(bestLaCroixFlavor()).not.toEqual('coconut');
+    expect(bestLaCroixFlavor()).not.toBe('coconut');
   });
 });
 ```
