@@ -324,6 +324,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - `require(module)`
   - [`require.requireActual(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requireactual-modulename)
   - [`require.requireMock(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requiremock-modulename)
+  - `test(name, fn)` is an alias for `it`
   - `xdescribe(name, fn)`
   - `xit(name, fn)`
 
@@ -338,11 +339,13 @@ expect all the time. That's what you use `expect` for.
   - [`.toBe(value)`](https://facebook.github.io/jest/docs/api.html#tobe-value)
   - [`.toBeCalled()`](https://facebook.github.io/jest/docs/api.html#tobecalled)
   - [`.toBeCalledWith(arg1, arg2, ...)`](https://facebook.github.io/jest/docs/api.html#tobecalledwith-arg1-arg2)
-  - [`.toBeCloseTo(number, delta)`](https://facebook.github.io/jest/docs/api.html#tobecloseto-number-delta)
+  - [`.toBeCloseTo(number, numDigits)`](https://facebook.github.io/jest/docs/api.html#tobecloseto-number-numdigits)
   - [`.toBeDefined()`](https://facebook.github.io/jest/docs/api.html#tobedefined)
   - [`.toBeFalsy()`](https://facebook.github.io/jest/docs/api.html#tobefalsy)
   - [`.toBeGreaterThan(number)`](https://facebook.github.io/jest/docs/api.html#tobegreaterthan-number)
+  - [`.toBeGreaterThanOrEqual(number)`](https://facebook.github.io/jest/docs/api.html#tobegreaterthanorequal-number)
   - [`.toBeLessThan(number)`](https://facebook.github.io/jest/docs/api.html#tobelessthan-number)
+  - [`.toBeLessThanOrEqual(number)`](https://facebook.github.io/jest/docs/api.html#tobelessthanorequal-number)
   - [`.toBeNull()`](https://facebook.github.io/jest/docs/api.html#tobenull)
   - [`.toBeTruthy()`](https://facebook.github.io/jest/docs/api.html#tobetruthy)
   - [`.toBeUndefined()`](https://facebook.github.io/jest/docs/api.html#tobeundefined)
@@ -350,7 +353,8 @@ expect all the time. That's what you use `expect` for.
   - [`.toEqual(value)`](https://facebook.github.io/jest/docs/api.html#toequal-value)
   - [`.toMatch(regexp)`](https://facebook.github.io/jest/docs/api.html#tomatch-regexp)
   - [`.toMatchSnapshot()`](https://facebook.github.io/jest/docs/api.html#tomatchsnapshot)
-  - [`.toThrow(?message)`](https://facebook.github.io/jest/docs/api.html#tothrow-message)
+  - [`.toThrow()`](https://facebook.github.io/jest/docs/api.html#tothrow)
+  - [`.toThrowError(error)`](https://facebook.github.io/jest/docs/api.html#tothrowerror-error)
 
 #### Mock functions
 
@@ -490,7 +494,7 @@ Here's how you would test that:
 
 ```js
 describe('the best La Croix flavor', () => {
-  it('should be grapefruit', () => {
+  it('is grapefruit', () => {
     expect(bestLaCroixFlavor()).toBe('grapefruit');
   });
 });
@@ -506,7 +510,7 @@ If you have a mock function, you can use `.lastCalledWith` to test what argument
 
 ```js
 describe('applying to all flavors', () => {
-  it('should do mango last', () => {
+  it('does mango last', () => {
     let drink = jest.fn();
     applyToAllFlavors(drink);
     expect(drink).lastCalledWith('mango');
@@ -520,8 +524,8 @@ If you know how to test something, `.not` lets you test its opposite. For exampl
 
 ```js
 describe('the best La Croix flavor', () => {
-  it('should not be coconut', () => {
-    expect(bestLaCroixFlavor()).not.toEqual('coconut');
+  it('is not coconut', () => {
+    expect(bestLaCroixFlavor()).not.toBe('coconut');
   });
 });
 ```
@@ -540,11 +544,11 @@ let beverage = {
 };
 
 describe('the can', () => {
-  it('should have 12 ounces', () => {
+  it('has 12 ounces', () => {
     expect(can.ounces).toBe(12);
   });
 
-  it('should have a silly name', () => {
+  it('has a silly name', () => {
     expect(can.frenchName).toBe('pamplemousse');
   });
 });
@@ -593,7 +597,7 @@ describe('beverage registration', () => {
 });
 ```
 
-### `.toBeCloseTo(number, delta)`
+### `.toBeCloseTo(number, numDigits)`
 
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
 
@@ -607,15 +611,17 @@ describe('adding numbers', () => {
 
 It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
 
-Instead, use `.toBeCloseTo` with a small delta. A valid test for this same addition problem is:
+Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
 
 ```js
 describe('adding numbers', () => {
   it('works sanely with simple decimals', () => {
-    expect(0.2 + 0.1).toBeCloseTo(0.3, 0.000000001);
+    expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
   });
 });
 ```
+
+The default for `numDigits` is 2, which has proved to be a good default in most cases.
 
 ### `.toBeDefined()`
 
@@ -667,7 +673,17 @@ describe('ounces per can', () => {
 });
 ```
 
-There is no `toBeGreaterThanOrEqualTo`. Just use `.not.toBeLessThan` instead.
+### `.toBeGreaterThanOrEqual(number)`
+
+To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is at least 12', () => {
+    expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
+  });
+});
+```
 
 ### `.toBeLessThan(number)`
 
@@ -681,7 +697,17 @@ describe('ounces per can', () => {
 });
 ```
 
-There is no `toBeLessThanOrEqualTo`. Just use `.not.ToBeGreaterThan` instead.
+### `.toBeLessThanOrEqual(number)`
+
+To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is at most 12', () => {
+    expect(ouncesPerCan()).toBeLessThanOrEqual(12);
+  });
+});
+```
 
 ### `.toBeNull()`
 
@@ -779,11 +805,11 @@ describe('the La Croix cans on my desk', () => {
 
 Use `.toMatch` to check that a string matches a regular expression.
 
-For example, you might not know what exactly `essayOnTheBestFlavor()` returns, but you know the string `grapefruit` should be in there somewhere. You can test this with:
+For example, you might not know what exactly `essayOnTheBestFlavor()` returns, but you know it's a really long string, and the substring `grapefruit` should be in there somewhere. You can test this with:
 
 ```js
 describe('an essay on the best flavor', () => {
-  it('should mention grapefruit', () => {
+  it('mentions grapefruit', () => {
     expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
   })
 })
@@ -793,7 +819,7 @@ describe('an essay on the best flavor', () => {
 
 This ensures that a React component matches the most recent snapshot. Check out [the announcement blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
-### `.toThrow(?message)`
+### `.toThrow()`
 
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
@@ -806,6 +832,44 @@ describe('drinking flavors', () => {
   });
 });
 ```
+
+If you want to test that a specific error gets thrown, use `.toThrowError`.
+
+### `.toThrowError(error)`
+
+Use `.toThrowError` to test that a function throws a specific error when it
+is called. The argument can be a string for the error message, a class for the error, or a regex that should match the error. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+
+```js
+function drinkFlavor(flavor) {
+  if (flavor == 'octopus') {
+    throw new DisgustingFlavorError('yuck, octopus flavor');
+  }
+  // Do some other stuff
+}
+```
+
+We could test this error gets thrown in several ways:
+
+```js
+describe('drinking flavors', () => {
+  it('throws on octopus', () => {
+    function drinkOctopus() {
+      drink('octopus');
+    }
+    // Test the exact error message
+    expect(drinkOctopus).toThrowError('yuck, octopus flavor');
+
+    // Test that the error message says "yuck" somewhere
+    expect(drinkOctopus).toThrowError(/yuck/);
+
+    // Test that we get a DisgustingFlavorError
+    expect(drinkOctopus).toThrowError(DisgustingFlavorError);
+  });
+});
+```
+
+If you don't care what specific error gets thrown, use `.toThrow`.
 
 ## Mock Functions
 

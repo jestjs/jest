@@ -23,6 +23,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - `require(module)`
   - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
   - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
+  - `test(name, fn)` is an alias for `it`
   - `xdescribe(name, fn)`
   - `xit(name, fn)`
 
