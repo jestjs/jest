@@ -41,7 +41,9 @@ expect all the time. That's what you use `expect` for.
   - [`.toBeDefined()`](#tobedefined)
   - [`.toBeFalsy()`](#tobefalsy)
   - [`.toBeGreaterThan(number)`](#tobegreaterthan-number)
+  - [`.toBeGreaterThanOrEqual(number)`](#tobegreaterthanorequal-number)
   - [`.toBeLessThan(number)`](#tobelessthan-number)
+  - [`.toBeLessThanOrEqual(number)`](#tobelessthanorequal-number)
   - [`.toBeNull()`](#tobenull)
   - [`.toBeTruthy()`](#tobetruthy)
   - [`.toBeUndefined()`](#tobeundefined)
@@ -366,7 +368,17 @@ describe('ounces per can', () => {
 });
 ```
 
-There is no `toBeGreaterThanOrEqualTo`. Just use `.not.toBeLessThan` instead.
+### `.toBeGreaterThanOrEqual(number)`
+
+To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is at least 12', () => {
+    expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
+  });
+});
+```
 
 ### `.toBeLessThan(number)`
 
@@ -380,7 +392,17 @@ describe('ounces per can', () => {
 });
 ```
 
-There is no `toBeLessThanOrEqualTo`. Just use `.not.ToBeGreaterThan` instead.
+### `.toBeLessThanOrEqual(number)`
+
+To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is at most 12', () => {
+    expect(ouncesPerCan()).toBeLessThanOrEqual(12);
+  });
+});
+```
 
 ### `.toBeNull()`
 
