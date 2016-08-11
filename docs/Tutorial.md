@@ -111,7 +111,7 @@ like to test that the callback we are passing in is indeed called back when the
 ```
 
 In order for `fetchCurrentUser` to compute the result to be passed in to the
-callback, `fetchCurrentUser` will call in to one of it's dependencies: `$.ajax`.
+callback, `fetchCurrentUser` will call in to one of its dependencies: `$.ajax`.
 Since Jest has mocked this dependency for us, it's easy to inspect all of the
 interactions with `$.ajax` that occurred during our test.
 
