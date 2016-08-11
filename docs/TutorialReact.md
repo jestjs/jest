@@ -74,7 +74,7 @@ Snapshot testing was introduced in Jest 14.0. More information on how it works a
 Let's build a Link component in React that renders hyperlinks:
 
 ```javascript
-// Link.react-test.js
+// Link.react.js
 import React from 'react';
 
 const STATUS = {
@@ -87,6 +87,8 @@ export default class Link extends React.Component {
   constructor() {
     super();
 
+    // bind manually because React class components don't auto-bind
+    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this._onMouseEnter = this._onMouseEnter.bind(this);
     this._onMouseLeave = this._onMouseLeave.bind(this);
 
@@ -121,7 +123,7 @@ export default class Link extends React.Component {
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
 ```javascript
-// Link.react-test.js
+// __tests__/Link.react-test.js
 import React from 'react';
 import Link from '../Link.react';
 import renderer from 'react-test-renderer';
