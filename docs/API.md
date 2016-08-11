@@ -37,7 +37,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toBe(value)`](#tobe-value)
   - [`.toBeCalled()`](#tobecalled)
   - [`.toBeCalledWith(arg1, arg2, ...)`](#tobecalledwith-arg1-arg2)
-  - [`.toBeCloseTo(number, delta)`](#tobecloseto-number-delta)
+  - [`.toBeCloseTo(number, numDigits)`](#tobecloseto-number-numdigits)
   - [`.toBeDefined()`](#tobedefined)
   - [`.toBeFalsy()`](#tobefalsy)
   - [`.toBeGreaterThan(number)`](#tobegreaterthan-number)
@@ -294,7 +294,7 @@ describe('beverage registration', () => {
 });
 ```
 
-### `.toBeCloseTo(number, delta)`
+### `.toBeCloseTo(number, numDigits)`
 
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
 
@@ -308,12 +308,12 @@ describe('adding numbers', () => {
 
 It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
 
-Instead, use `.toBeCloseTo` with a small delta. A valid test for this same addition problem is:
+Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
 
 ```js
 describe('adding numbers', () => {
   it('works sanely with simple decimals', () => {
-    expect(0.2 + 0.1).toBeCloseTo(0.3, 0.000000001);
+    expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
   });
 });
 ```
