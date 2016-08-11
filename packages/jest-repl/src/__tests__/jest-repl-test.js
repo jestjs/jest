@@ -24,11 +24,7 @@ describe('Repl', () => {
         cwd: process.cwd(),
         env: process.env,
       });
-      const expectedRegex = new RegExp([
-        'Using Jest Runtime v([0-9]+.[0-9]+.[0-9]+), ',
-        'Jest REPL v([0-9]+.[0-9]+.[0-9]+)',
-      ].join(''));
-      expect(output.stdout.trim()).toMatch(expectedRegex);
+      expect(output.stdout.trim()).toMatch(/›/);
     });
   });
 });
