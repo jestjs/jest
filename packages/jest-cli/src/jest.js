@@ -96,11 +96,10 @@ function runJest(config, argv, pipe, onComplete) {
               source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
             );
           }
-          return data.paths;
+          return new TestRunner(hasteMap, config, {maxWorkers}).runTests(
+            data.paths,
+          );
         })
-        .then(testPaths =>
-          new TestRunner(hasteMap, config, {maxWorkers}).runTests(testPaths),
-        )
         .then(runResults => {
           if (config.testResultsProcessor) {
             /* $FlowFixMe */
@@ -112,10 +111,8 @@ function runJest(config, argv, pipe, onComplete) {
               JSON.stringify(formatTestResults(runResults, config)),
             );
           }
-          return runResults;
-        })
-        .then(runResults => onComplete && onComplete(runResults.success))
-        .catch(error => {
+          return onComplete && onComplete(runResults.success);
+        }).catch(error => {
           if (error.type == 'DependencyGraphError') {
             throw new Error([
               '\nError: ' + error.message + '\n\n',
