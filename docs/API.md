@@ -51,7 +51,8 @@ expect all the time. That's what you use `expect` for.
   - [`.toEqual(value)`](#toequal-value)
   - [`.toMatch(regexp)`](#tomatch-regexp)
   - [`.toMatchSnapshot()`](#tomatchsnapshot)
-  - [`.toThrow(?message)`](#tothrow-message)
+  - [`.toThrow()`](#tothrow)
+  - [`.toThrowError(error)`](#tothrowerror-error)
 
 #### Mock functions
 
@@ -516,7 +517,7 @@ describe('an essay on the best flavor', () => {
 
 This ensures that a React component matches the most recent snapshot. Check out [the announcement blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
-### `.toThrow(?message)`
+### `.toThrow()`
 
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
@@ -529,6 +530,44 @@ describe('drinking flavors', () => {
   });
 });
 ```
+
+If you want to test that a specific error gets thrown, use `.toThrowError`.
+
+### `.toThrowError(error)`
+
+Use `.toThrowError` to test that a function throws a specific error when it
+is called. The argument can be a string for the error message, a class for the error, or a regex that should match the error. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+
+```js
+function drinkFlavor(flavor) {
+  if (flavor == 'octopus') {
+    throw new DisgustingFlavorError('yuck, octopus flavor');
+  }
+  // Do some other stuff
+}
+```
+
+We could test this error gets thrown in several ways:
+
+```js
+describe('drinking flavors', () => {
+  it('throws on octopus', () => {
+    function drinkOctopus() {
+      drink('octopus');
+    }
+    // Test the exact error message
+    expect(drinkOctopus).toThrowError('yuck, octopus flavor');
+
+    // Test that the error message says "yuck" somewhere
+    expect(drinkOctopus).toThrowError(/yuck/);
+
+    // Test that we get a DisgustingFlavorError
+    expect(drinkOctopus).toThrowError(DisgustingFlavorError);
+  });
+});
+```
+
+If you don't care what specific error gets thrown, use `.toThrow`.
 
 ## Mock Functions
 
