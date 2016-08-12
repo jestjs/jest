@@ -10,7 +10,7 @@
 
 jest.unmock('../runJest');
 
-const {linkJestPackage, run, stripJestVersion} = require('../utils');
+const {linkJestPackage} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 

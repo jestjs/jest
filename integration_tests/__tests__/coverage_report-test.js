@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const {stripJestVersion, linkJestPackage} = require('../utils');
+const {linkJestPackage} = require('../utils');
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
@@ -27,7 +27,7 @@ it('outputs coverage report', () => {
   //  is listed with 0 % coverage.
   // - `not-required-in-test-suite.js` is not required but it is listed
   //  with 0 % coverage.
-  expect(stripJestVersion(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 
   expect(() => fs.accessSync(coverageDir, fs.F_OK)).not.toThrow();
   expect(status).toBe(0);
@@ -42,5 +42,5 @@ it('collects coverage only from specified files', () => {
   ]);
 
   // Coverage report should only have `setup.js` coverage info
-  expect(stripJestVersion(stdout)).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
 });

@@ -10,7 +10,7 @@
 
 jest.unmock('../runJest');
 
-const {linkJestPackage, run, stripJestVersion} = require('../utils');
+const {linkJestPackage, run} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 
@@ -35,7 +35,7 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('not-covered.js');
     expect(stdout).not.toMatch('excluded-from-coverage.js');
     // coverage result should not change
-    expect(stripJestVersion(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -53,7 +53,7 @@ describe('no babel-jest', () => {
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excluded-from-coverage.js');
     // coverage result should not change
-    expect(stripJestVersion(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
@@ -76,7 +76,7 @@ describe('custom preprocessor', () => {
   it('instruments files', () => {
     const {stdout, status} = runJest(dir, ['--no-cache', '--coverage']);
     // coverage should be empty because there's no real instrumentation
-    expect(stripJestVersion(stdout)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
     expect(status).toBe(0);
   });
 });
