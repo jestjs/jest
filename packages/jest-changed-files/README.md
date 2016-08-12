@@ -1,6 +1,6 @@
 # jest-changed-files
 
-A module used internally by jest to check which files have changed since you
+A module used internally by Jest to check which files have changed since you
 last committed in git or hg.
 
 ## Install
