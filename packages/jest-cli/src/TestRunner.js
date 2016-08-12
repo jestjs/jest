@@ -31,6 +31,8 @@ const promisify = require('./lib/promisify');
 const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
+const SLOW_TEST_TIME = 3000;
+
 type Options = {
   maxWorkers: number,
 };
@@ -52,7 +54,7 @@ class TestRunner {
   _config: Config;
   _options: Options;
   _dispatcher: ReporterDispatcher;
-  _testPerformanceCache: Object | null;
+  _testPerformanceCache: Object;
 
   constructor(
     hasteMap: HasteContext,
@@ -67,7 +69,7 @@ class TestRunner {
 
     // Map from testFilePath -> time it takes to run the test. Used to
     // optimally schedule bigger test runs.
-    this._testPerformanceCache = null;
+    this._testPerformanceCache = {};
   }
 
   addReporter(reporter: BaseReporter) {
@@ -96,30 +98,35 @@ class TestRunner {
       this._testPerformanceCache = JSON.parse(fs.readFileSync(
         this._getTestPerformanceCachePath(),
       ));
-    } catch (e) {}
-
-    const testPerformanceCache = this._testPerformanceCache;
-    if (testPaths.length > this._options.maxWorkers) {
-      testPaths = testPaths
-        .map(path => [path, fs.statSync(path).size])
-        .sort((a, b) => {
-          const cacheA = testPerformanceCache && testPerformanceCache[a[0]];
-          const cacheB = testPerformanceCache && testPerformanceCache[b[0]];
-          if (cacheA !== null && cacheB !== null) {
-            return cacheA < cacheB ? 1 : -1;
-          }
-          return a[1] < b[1] ? 1 : -1;
-        })
-        .map(p => p[0]);
+    } catch (e) {
+      this._testPerformanceCache = {};
     }
 
-    return testPaths;
+    const testPerformanceCache = this._testPerformanceCache;
+    const timings = [];
+    testPaths = testPaths
+      .map(path => ({path, size: fs.statSync(path).size}))
+      .sort((a, b) => {
+        const cacheA = testPerformanceCache && testPerformanceCache[a.path];
+        const cacheB = testPerformanceCache && testPerformanceCache[b.path];
+        if (cacheA !== null && cacheB !== null) {
+          return cacheA < cacheB ? 1 : -1;
+        }
+        return a.size < b.size ? 1 : -1;
+      })
+      .map(item => {
+        if (testPerformanceCache[item.path]) {
+          timings.push(testPerformanceCache[item.path]);
+        }
+        return item.path;
+      });
+
+    return {testPaths, timings};
   }
 
   _cacheTestResults(aggregatedResults: AggregatedResult) {
     const cacheFile = this._getTestPerformanceCachePath();
-    const cache =
-      this._testPerformanceCache || (this._testPerformanceCache = {});
+    const cache = this._testPerformanceCache;
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
       if (perf && perf.end && perf.start) {
@@ -129,9 +136,9 @@ class TestRunner {
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
 
-  runTests(testPaths: Array<string>) {
+  runTests(paths: Array<string>) {
     const config = this._config;
-    testPaths = this._sortTests(testPaths);
+    const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
     this._dispatcher.onRunStart(config, aggregatedResults);
 
@@ -156,8 +163,6 @@ class TestRunner {
       aggregatedResults.numRuntimeErrorTestSuites++;
       this._dispatcher.onTestResult(config, testResult, aggregatedResults);
     };
-
-    const testRun = this._createTestRun(testPaths, onTestResult, onRunFailure);
 
     const setSuccess = () => {
       const anyTestFailures = !(
@@ -189,24 +194,29 @@ class TestRunner {
         });
     };
 
+    // Run in band if we only have one test or one worker available.
+    // If we are confident from previous runs that the tests will finish quickly
+    // we also run in band to reduce the overhead of spawning workers.
+    const shouldRunInBand = () => (
+      this._options.maxWorkers <= 1 ||
+      testPaths.length <= 1 ||
+      (
+        testPaths.length <= 20 &&
+        timings.every(timing => timing < SLOW_TEST_TIME)
+      )
+    );
+
+    const testRun =
+      shouldRunInBand()
+      ? this._createInBandTestRun(testPaths, onTestResult, onRunFailure)
+      : this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
+
     return testRun
       .then(updateSnapshotSummary)
       .then(() => this._dispatcher.onRunComplete(config, aggregatedResults))
       .then(setSuccess)
       .then(() => this._cacheTestResults(aggregatedResults))
       .then(() => aggregatedResults);
-  }
-
-  _createTestRun(
-    testPaths: Array<Path>,
-    onTestResult: OnTestResult,
-    onRunFailure: (path: Path, err: TestError) => void,
-  ) {
-    if (this._options.maxWorkers <= 1 || testPaths.length <= 1) {
-      return this._createInBandTestRun(testPaths, onTestResult, onRunFailure);
-    } else {
-      return this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
-    }
   }
 
   _createInBandTestRun(
