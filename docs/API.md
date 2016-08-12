@@ -13,14 +13,11 @@ In your test files, Jest puts each of these methods and objects into the global 
 
   - `afterEach(fn)`
   - `beforeEach(fn)`
-  - [`check`](#check)
-  - `describe(name, fn)`
+  - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expect-value)
-  - [`gen`](#gen)
-  - `it(name, fn)`
+  - [`it(name, fn)`](#basic-testing)
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
-  - `require(module)`
   - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
   - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
   - `test(name, fn)` is an alias for `it`
@@ -129,48 +126,52 @@ These options let you control Jest's behavior in your `package.json` file. The J
 
 ## The Jest global environment
 
-### `check`
+### Basic Testing
 
-Jest supports property testing with the
-[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
-the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
-
-### `check.it(name, [options], generators, fn)`
-Creates a property test. Test cases will be created by the given `generators`
-and passed as arguments to `fn`. If any test case fails, a shrunken failing
-value will be given in the test output. For example:
+All you need in a test file is the `it` method which runs a test. The convention is to name your test so that your code reads like a sentence - that's why the name of the core testing function is `it`. For example, let's say there's a function `inchesOfRain()` that should be zero. Your whole test file could be:
 
 ```js
-check.it('can recover encoded URIs',
-  [gen.string],
-  s => expect(s).toBe(decodeURI(encodeURI(s))));
+it('did not rain', () => {
+  expect(inchesOfRain()).toBe(0);
+});
 ```
 
-If `options` are provided, they override the corresponding command-line options.
-The possible options are:
+The first argument is the test name; the second argument is a function that contains the expectations to test.
 
+It's often handy to group together several related tests in one "test suite". For example, if you have a `myBeverage` object that is supposed to be delicious but not sour, you could test it with:
+
+```js
+const myBeverage = {
+  delicious: true,
+  sour: false,
+};
+
+describe('my beverage', () => {
+  it('is delicious', () => {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  it('is not sour', () => {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+})
 ```
-{
-  times: number;   // The number of test cases to run. Default: 100.
-  maxSize: number; // The maximum size of sized data such as numbers
-                   // (their magnitude) or arrays (their length). This can be
-                   // overridden with `gen.resize`. Default: 200.
-  seed: number;    // The random number seed. Defaults to a random value.
-}
+
+To test an asynchronous function, just return a promise from `it`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
+
+For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
+
+```js
+describe('my beverage list', () => {
+  it('has lemon in it', () => {
+    return fetchBeverageList().then((list) => {
+      expect(list).toContain('lemon');
+    });
+  });
+});
 ```
 
-### `check.fit(name, [options], generators, fn)`
-
-Executes this test and skips all others. Like `fit`, but for property tests.
-
-### `check.xit(name, [options], generators, fn)`
-
-Skips this test. Like `xit`, but for property tests.
-
-### `gen`
-
-A library of generators for property tests. See the
-[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
+Even though the call to `it` will return right away, the test doesn't complete until the promise resolves as well.
 
 ### `require.requireActual(moduleName)`
 
@@ -1097,3 +1098,50 @@ It is possible to override this setting in individual tests by explicitly callin
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+## Miscellaneous
+
+### `check`
+
+Jest supports property testing with the
+[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
+the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
+
+### `check.it(name, [options], generators, fn)`
+Creates a property test. Test cases will be created by the given `generators`
+and passed as arguments to `fn`. If any test case fails, a shrunken failing
+value will be given in the test output. For example:
+
+```js
+const { check, gen } = require('jest-check');
+
+check.it('can recover encoded URIs',
+  [gen.string],
+  s => expect(s).toBe(decodeURI(encodeURI(s))));
+```
+
+If `options` are provided, they override the corresponding command-line options.
+The possible options are:
+
+```
+{
+  times: number;   // The number of test cases to run. Default: 100.
+  maxSize: number; // The maximum size of sized data such as numbers
+                   // (their magnitude) or arrays (their length). This can be
+                   // overridden with `gen.resize`. Default: 200.
+  seed: number;    // The random number seed. Defaults to a random value.
+}
+```
+
+### `check.fit(name, [options], generators, fn)`
+
+Executes this test and skips all others. Like `fit`, but for property tests.
+
+### `check.xit(name, [options], generators, fn)`
+
+Skips this test. Like `xit`, but for property tests.
+
+### `gen`
+
+A library of generators for property tests. See the
+[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
