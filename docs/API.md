@@ -479,14 +479,14 @@ describe('the list of all flavors', () => {
 
 ### `.toEqual(value)`
 
-Use `.toEqual` when you want to check that two objects are equal when you recursively check for the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
 
 ```js
-let can1 = {
+const can1 = {
   flavor: 'grapefruit',
   ounces: 12,
 };
-let can2 = {
+const can2 = {
   flavor: 'grapefruit',
   ounces: 12,
 };
@@ -517,7 +517,7 @@ describe('an essay on the best flavor', () => {
 
 ### `.toMatchSnapshot()`
 
-This ensures that a React component matches the most recent snapshot. Check out [the announcement blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+This ensures that a React component matches the most recent snapshot. Check out [the React + Jest tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more information on snapshot testing.
 
 ### `.toThrow()`
 
@@ -701,7 +701,7 @@ Examples of dependencies that might be considered "implementation details" are t
 *Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.*
 
 ### `jest.enableAutomock()`
-Re-enables automatic mocking in the module loader.
+Enables automatic mocking in the module loader.
 
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
