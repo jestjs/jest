@@ -1,19 +1,19 @@
 ---
 id: tutorial-webpack
-title: Tutorial – Webpack
+title: Tutorial – webpack
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-webpack.html
 next: tutorial-jquery
 ---
 
-Jest can be used in projects that use Webpack to manage assets, styles, and compilation.
-Webpack _does_ offers some unique challenges over other tools because it
+Jest can be used in projects that use webpack to manage assets, styles, and compilation.
+webpack _does_ offers some unique challenges over other tools because it
 integrates directly with your application to allow managing stylesheets,
 assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript
 languages and tools.
 
-Let's start with a common sort of Webpack config file and translate it to a Jest setup.
+Let's start with a common sort of webpack config file and translate it to a Jest setup.
 
 ```js
 // webpack.config.js
@@ -65,7 +65,7 @@ And the mock file's themselves:
 module.exports = {};
 ```
 
-Alternatively, you can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
+Alternatively, you can use an [ES2015 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
 (`npm install --save-dev identity-obj-proxy` or create your own) to mock [CSS Modules](https://github.com/css-modules/css-modules); then all your className
 lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`).
 
@@ -85,16 +85,16 @@ module.exports = idObj;
 // test/fileMock.js
 
 // Return an empty string or other mock path to emulate the url that
-// Webpack provides via the file-loader
+// webpack provides via the file-loader
 module.exports = '';
 ```
 
 We've told Jest to ignore files matching a stylesheet or image extension, and instead,
 require our mock files. You can adjust the regular expression to match the
-file types your Webpack config handles.
+file types your webpack config handles.
 
 Now that Jest knows how to process our files, we need to tell it how to _find_ them.
-For Webpack's `moduleDirectories`, and `extensions` options there are direct analogs in Jest.
+For webpack's `moduleDirectories`, and `extensions` options there are direct analogs in Jest.
 
 *Note: the `modulesDirectories` option in webpack is called `moduleDirectories` in Jest.*
 
@@ -114,7 +114,7 @@ For Webpack's `moduleDirectories`, and `extensions` options there are direct ana
 }
 ```
 
-Similarly Webpack's `resolve.root` option functions like setting the `NODE_PATH`
+Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 env variable, which you can set, or make use of the `modulePaths` option.
 
 ```js
@@ -134,7 +134,7 @@ env variable, which you can set, or make use of the `modulePaths` option.
 }
 ```
 
-And finally we just have the Webpack `alias`s left to handle. For that we can make use
+And finally we just have the webpack `alias` left to handle. For that we can make use
 of the `moduleNameMapper` option again.
 
 ```js
@@ -158,9 +158,32 @@ of the `moduleNameMapper` option again.
 }
 ```
 
-That's it! Webpack is a complex and flexible tool, so you may have to make some adjustments
+That's it! webpack is a complex and flexible tool, so you may have to make some adjustments
 to handle your specific application's needs. Luckily for most projects, Jest should be more than
-flexible enough to handle your Webpack config.
+flexible enough to handle your webpack config.
 
-*Note: For more complex Webpack configurations, you may also want to investigate
+*Note: For more complex webpack configurations, you may also want to investigate
 projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).*
+
+
+## webpack 2
+
+webpack 2 offers native support for ES modules. However, Jest runs in Node, and
+thus requires ES modules to be transpiled to CommonJS modules. As such, if you
+are using webpack 2, you most likely will want to configure Babel to transpile
+ES modules to CommonJS modules only in the `test` environment.
+
+```js
+// .babelrc
+{
+  "presets": [
+    ["es2015", {"modules": false}]
+  ],
+
+  "env": {
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
+}
+```
