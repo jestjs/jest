@@ -187,7 +187,7 @@ whether the module should be required normally or not.
 
 ### `expect(value)`
 
-If you haven't used `expect` before, you might find its behavior a little unintuitive. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about a value.
+The `expect` function is used every time you want to test a value. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about a value.
 
 It's easier to understand this with an example. Let's say you have a method `bestLaCroixFlavor()` which is supposed to return the string `'grapefruit'`.
 Here's how you would test that:
@@ -238,9 +238,9 @@ strict equality.
 For example, this code will validate some properties of the `beverage` object:
 
 ```js
-let beverage = {
+const can = {
   ounces: 12,
-  frenchName: 'pamplemousse',
+  name: 'pamplemousse',
 };
 
 describe('the can', () => {
@@ -248,8 +248,8 @@ describe('the can', () => {
     expect(can.ounces).toBe(12);
   });
 
-  it('has a silly name', () => {
-    expect(can.frenchName).toBe('pamplemousse');
+  it('has a sophisticated name', () => {
+    expect(can.name).toBe('pamplemousse');
   });
 });
 ```
@@ -465,7 +465,7 @@ You could write `expect(bestDrinkForFlavor('octopus')).toBe(undefined)`, but it'
 
 ### `.toContain(item)`
 
-Use `.toContain` when you want to check that an item is in a list.
+Use `.toContain` when you want to check that an item is in a list. For testing the items in the list, this uses `===`, a strict equality check.
 
 For example, if `getAllFlavors()` returns a list of flavors and you want to be sure that `lime` is in there, you can write:
 
