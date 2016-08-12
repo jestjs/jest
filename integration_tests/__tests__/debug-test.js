@@ -8,8 +8,6 @@
 
 'use strict';
 
-jest.unmock('../runJest');
-
 const {linkJestPackage} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
