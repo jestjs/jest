@@ -7,7 +7,66 @@ permalink: docs/api.html
 next: troubleshooting
 ---
 
+#### The Jest global environment
+
+In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
+
+  - `afterEach(fn)`
+  - `beforeEach(fn)`
+  - [`describe(name, fn)`](#basic-testing)
+  - [`expect(value)`](#expect-value)
+  - [`it(name, fn)`](#basic-testing)
+  - `fit(name, fn)` executes only this test. Useful when investigating a failure
+  - [`jest`](#the-jest-object)
+  - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
+  - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
+  - `test(name, fn)` is an alias for `it`
+  - `xdescribe(name, fn)`
+  - `xit(name, fn)`
+
+#### Writing assertions with `expect`
+
+When you're writing tests, you need to check that values are what you
+expect all the time. That's what you use `expect` for.
+
+  - [`expect(value)`](#expect-value)
+  - [`.lastCalledWith(arg1, arg2, ...)`](#lastcalledwith-arg1-arg2)
+  - [`.not`](#not)
+  - [`.toBe(value)`](#tobe-value)
+  - [`.toBeCalled()`](#tobecalled)
+  - [`.toBeCalledWith(arg1, arg2, ...)`](#tobecalledwith-arg1-arg2)
+  - [`.toBeCloseTo(number, numDigits)`](#tobecloseto-number-numdigits)
+  - [`.toBeDefined()`](#tobedefined)
+  - [`.toBeFalsy()`](#tobefalsy)
+  - [`.toBeGreaterThan(number)`](#tobegreaterthan-number)
+  - [`.toBeGreaterThanOrEqual(number)`](#tobegreaterthanorequal-number)
+  - [`.toBeLessThan(number)`](#tobelessthan-number)
+  - [`.toBeLessThanOrEqual(number)`](#tobelessthanorequal-number)
+  - [`.toBeNull()`](#tobenull)
+  - [`.toBeTruthy()`](#tobetruthy)
+  - [`.toBeUndefined()`](#tobeundefined)
+  - [`.toContain(item)`](#tocontain-item)
+  - [`.toEqual(value)`](#toequal-value)
+  - [`.toMatch(regexp)`](#tomatch-regexp)
+  - [`.toMatchSnapshot()`](#tomatchsnapshot)
+  - [`.toThrow()`](#tothrow)
+  - [`.toThrowError(error)`](#tothrowerror-error)
+
+#### Mock functions
+
+Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. You can create a mock function with `jest.fn()`.
+
+  - [`mockFn.mock.calls`](#mockfn-mock-calls)
+  - [`mockFn.mock.instances`](#mockfn-mock-instances)
+  - [`mockFn.mockClear()`](#mockfn-mockclear)
+  - [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn)
+  - [`mockFn.mockReturnThis()`](#mockfn-mockreturnthis)
+  - [`mockFn.mockReturnValue(value)`](#mockfn-mockreturnvalue-value)
+  - [`mockFn.mockReturnValueOnce(value)`](#mockfn-mockreturnvalueonce-value)
+
 #### The `jest` object
+
+These methods help create mocks and let you control Jest's overall behavior.
 
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
   - [`jest.disableAutomock()`](#jest-disableautomock)
@@ -24,29 +83,9 @@ next: troubleshooting
   - [`jest.useFakeTimers()`](#jest-usefaketimers)
   - [`jest.useRealTimers()`](#jest-userealtimers)
 
-#### Mock functions
-
-Mock functions can be created using `jest.fn()`.
-
-  - [`mockFn.mock.calls`](#mockfn-mock-calls)
-  - [`mockFn.mock.instances`](#mockfn-mock-instances)
-  - [`mockFn.mockClear()`](#mockfn-mockclear)
-  - [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn)
-  - [`mockFn.mockReturnThis()`](#mockfn-mockreturnthis)
-  - [`mockFn.mockReturnValue(value)`](#mockfn-mockreturnvalue-value)
-  - [`mockFn.mockReturnValueOnce(value)`](#mockfn-mockreturnvalueonce-value)
-
-#### Jasmine API
-
-Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
-[here](http://jasmine.github.io/2.0/introduction.html).
-
-#### require extensions
-
-  - [`require.requireActual(moduleName)`](#require-requireactual-modulename)
-  - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
-
 #### [Configuration Options](#configuration)
+
+These options let you control Jest's behavior in your `package.json` file. The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
 
   - [`automock` [boolean]](#automock-boolean)
   - [`browser` [boolean]](#browser-boolean)
@@ -81,151 +120,458 @@ Jest uses Jasmine 2 by default. An introduction to Jasmine 2 can be found
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
 
-#### Globally injected variables
-
-  - `afterEach(fn)`
-  - `beforeEach(fn)`
-  - [`check`](#property-testing)
-  - `describe(name, fn)`
-  - [`expect(value)`](#expect-value)
-  - [`gen`](#property-testing)
-  - `it(name, fn)`
-  - `fit(name, fn)` executes only this test. Useful when investigating a failure
-  - [`jest`](#the-jest-object)
-  - `require(module)`
-  - `require.requireActual(module)`
-  - `xdescribe(name, fn)`
-  - `xit(name, fn)`
-
-#### `expect(value)`
-
-  - `.not` inverse the next comparison
-  - `.toThrow(?message)`
-  - `.toBe(value)` comparison using `===`
-  - `.toEqual(value)` deep comparison. Use [`jasmine.any(type)`](http://jasmine.github.io/1.3/introduction.html#section-Matching_Anything_with_%3Ccode%3Ejasmine.any%3C%2Fcode%3E) to be softer
-  - `.toBeFalsy()`
-  - `.toBeTruthy()`
-  - `.toBeNull()`
-  - `.toBeUndefined()`
-  - `.toBeDefined()`
-  - `.toMatch(regexp)`
-  - `.toContain(string)`
-  - `.toBeCloseTo(number, delta)`
-  - `.toBeGreaterThan(number)`
-  - `.toBeLessThan(number)`
-  - `.toBeCalled()`
-  - `.toBeCalledWith(arg1, arg2, ...)`
-  - `.lastCalledWith(arg1, arg2, ...)`
 
 -----
 
-## Jest API
 
-### `jest.clearAllTimers()`
-Removes any pending timers from the timer system.
+## The Jest global environment
 
-This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+### Basic Testing
 
-### `jest.disableAutomock()`
-Disables automatic mocking in the module loader.
-
-After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
-
-This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
-
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.
-
-*Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.*
-
-### `jest.enableAutomock()`
-Re-enables automatic mocking in the module loader.
-
-*Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
-
-### `jest.fn(?implementation)`
-Returns a new, unused [mock function](#mock-functions). Optionally takes a mock
-implementation.
+All you need in a test file is the `it` method which runs a test. The convention is to name your test so that your code reads like a sentence - that's why the name of the core testing function is `it`. For example, let's say there's a function `inchesOfRain()` that should be zero. Your whole test file could be:
 
 ```js
-  const mockFn = jest.fn();
-  mockFn();
-  expect(mockFn).toBeCalled();
-
-  // With a mock implementation:
-  const returnsTrue = jest.fn(() => true);
-  console.log(returnsTrue()) // true;
+it('did not rain', () => {
+  expect(inchesOfRain()).toBe(0);
+});
 ```
 
-### `jest.isMockFunction(fn)`
-Determines if the given function is a mocked function.
+The first argument is the test name; the second argument is a function that contains the expectations to test.
 
-### `jest.genMockFromModule(moduleName)`
-Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
-
-This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
-
-### `jest.mock(moduleName, ?factory)`
-Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
+It's often handy to group together several related tests in one "test suite". For example, if you have a `myBeverage` object that is supposed to be delicious but not sour, you could test it with:
 
 ```js
-  jest.mock('moduleName');
+const myBeverage = {
+  delicious: true,
+  sour: false,
+};
 
-  const moduleName = require('moduleName'); // moduleName will be explicitly mocked
-```
-
-The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
-
-```js
-  jest.mock('moduleName', () => {
-    return jest.fn(() => 42);
+describe('my beverage', () => {
+  it('is delicious', () => {
+    expect(myBeverage.delicious).toBeTruthy();
   });
 
-  const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
-  moduleName(); // Will return '42';
+  it('is not sour', () => {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+})
 ```
 
-*Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
+To test an asynchronous function, just return a promise from `it`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
 
-### `jest.runAllTicks()`
-Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
+For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
 
-When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
+```js
+describe('my beverage list', () => {
+  it('has lemon in it', () => {
+    return fetchBeverageList().then((list) => {
+      expect(list).toContain('lemon');
+    });
+  });
+});
+```
 
-### `jest.runAllTimers()`
-Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
+Even though the call to `it` will return right away, the test doesn't complete until the promise resolves as well.
 
-When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
+### `require.requireActual(moduleName)`
 
-This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](/jest/docs/timer-mocks.html) doc for more information.
+Returns the actual module instead of a mock, bypassing all checks on whether the
+module should receive a mock implementation or not.
 
-### `jest.runOnlyPendingTimers()`
-Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
+### `require.requireMock(moduleName)`
 
-This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
+Returns a mock module instead of the actual module, bypassing all checks on
+whether the module should be required normally or not.
 
-### `jest.setMock(moduleName, moduleExports)`
-Explicitly supplies the mock object that the module system should return for the specified module.
+## Writing assertions with `expect`
 
-On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
+### `expect(value)`
 
-In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
+The `expect` function is used every time you want to test a value. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about a value.
 
-*Note It is recommended to use [`jest.mock()`](#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
+It's easier to understand this with an example. Let's say you have a method `bestLaCroixFlavor()` which is supposed to return the string `'grapefruit'`.
+Here's how you would test that:
 
-### `jest.unmock(moduleName)`
-Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
+```js
+describe('the best La Croix flavor', () => {
+  it('is grapefruit', () => {
+    expect(bestLaCroixFlavor()).toBe('grapefruit');
+  });
+});
+```
 
-The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
+In this case, `toBe` is the matcher function. There are a lot of different matcher functions, documented below, to help you test different things.
 
-*Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
+The argument to `expect` should be the value that your code produces, and any argument to the matcher should be the correct value. If you mix them up, your tests will still work, but the error messages on failing tests will look strange.
 
-### `jest.useFakeTimers()`
-Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`). Fake timers are used by default.
+### `.lastCalledWith(arg1, arg2, ...)`
 
-### `jest.useRealTimers()`
-Instructs Jest to use the real versions of the standard timer functions.
+If you have a mock function, you can use `.lastCalledWith` to test what arguments it was last called with. For example, let's say you have a `applyToAllFlavors(f)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the last flavor it operates on is `'mango'`. You can write:
 
-## Mock API
+```js
+describe('applying to all flavors', () => {
+  it('does mango last', () => {
+    let drink = jest.fn();
+    applyToAllFlavors(drink);
+    expect(drink).lastCalledWith('mango');
+  });
+});
+```
+
+### `.not`
+
+If you know how to test something, `.not` lets you test its opposite. For example, this code tests that the best La Croix flavor is not coconut:
+
+```js
+describe('the best La Croix flavor', () => {
+  it('is not coconut', () => {
+    expect(bestLaCroixFlavor()).not.toBe('coconut');
+  });
+});
+```
+
+### `.toBe(value)`
+
+`toBe` just checks that a value is what you expect. It uses `===` to check
+strict equality.
+
+For example, this code will validate some properties of the `beverage` object:
+
+```js
+const can = {
+  ounces: 12,
+  name: 'pamplemousse',
+};
+
+describe('the can', () => {
+  it('has 12 ounces', () => {
+    expect(can.ounces).toBe(12);
+  });
+
+  it('has a sophisticated name', () => {
+    expect(can.name).toBe('pamplemousse');
+  });
+});
+```
+
+Don't use `toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
+
+### `.toBeCalled()`
+
+Use `.toBeCalled` to ensure that a mock function got called.
+
+For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
+
+```js
+describe('drinkAll', () => {
+  it('drinks something lemon-flavored', () => {
+    let drink = jest.fn();
+    drinkAll(drink, 'lemon');
+    expect(drink).toBeCalled();
+  });
+
+  it('does not drink something octopus-flavored', () => {
+    let drink = jest.fn();
+    drinkAll(drink, 'octopus');
+    expect(drink).not.toBeCalled();
+  });
+});
+```
+
+### `.toBeCalledWith(arg1, arg2, ...)`
+
+Use `.toBeCalledWith` to ensure that a mock function was called with specific
+arguments.
+
+For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
+
+```js
+describe('beverage registration', () => {
+  it('applies correctly to orange La Croix', () => {
+    let beverage = new LaCroix('orange');
+    register(beverage);
+    let f = jest.fn();
+    applyToAll(f);
+    expect(f).toBeCalledWith(beverage);
+  });
+});
+```
+
+### `.toBeCloseTo(number, numDigits)`
+
+Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
+
+```js
+describe('adding numbers', () => {
+  it('works sanely with simple decimals', () => {
+    expect(0.2 + 0.1).toBe(0.3); // Fails!
+  });
+});
+```
+
+It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
+
+Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
+
+```js
+describe('adding numbers', () => {
+  it('works sanely with simple decimals', () => {
+    expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
+  });
+});
+```
+
+The default for `numDigits` is 2, which has proved to be a good default in most cases.
+
+### `.toBeDefined()`
+
+Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns *something*, you can write:
+
+```js
+describe('fetching new flavor ideas', () => {
+  it('returns something', () => {
+    expect(fetchNewFlavorIdea()).toBeDefined();
+  });
+});
+```
+
+You could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
+
+### `.toBeFalsy()`
+
+Use `.toBeFalsy` when you don't care what a value is, you just want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
+
+```js
+drinkSomeLaCroix();
+if (!getErrors()) {
+  drinkMoreLaCroix();
+}
+```
+
+You may not care what `getErrors` returns, specifically - it might return `false`, `null`, or `0`, and your code would still work. So if you want to test there are no errors after drinking some La Croix, you could write:
+
+```js
+describe('drinking some La Croix', () => {
+  it('does not lead to errors', () => {
+    drinkSomeLaCroix();
+    expect(getErrors()).toBeFalsy();
+  });
+});
+```
+
+In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefined`, and `NaN`. Everything else is truthy.
+
+### `.toBeGreaterThan(number)`
+
+To compare floating point numbers, you can use `toBeGreaterThan`. For example, if you want to test that `ouncesPerCan()` returns a value of more than 10 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is more than 10', () => {
+    expect(ouncesPerCan()).toBeGreaterThan(10);
+  });
+});
+```
+
+### `.toBeGreaterThanOrEqual(number)`
+
+To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is at least 12', () => {
+    expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
+  });
+});
+```
+
+### `.toBeLessThan(number)`
+
+To compare floating point numbers, you can use `toBeLessThan`. For example, if you want to test that `ouncesPerCan()` returns a value of less than 20 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is less than 20', () => {
+    expect(ouncesPerCan()).toBeLessThan(10);
+  });
+});
+```
+
+### `.toBeLessThanOrEqual(number)`
+
+To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
+
+```js
+describe('ounces per can', () => {
+  it('is at most 12', () => {
+    expect(ouncesPerCan()).toBeLessThanOrEqual(12);
+  });
+});
+```
+
+### `.toBeNull()`
+
+`.toBeNull()` is the same as `.toBe(null)` but the error messages are a bit nicer. So use `.toBeNull()` when you want to check that something is null.
+
+```js
+function bloop() {
+  return null;
+}
+
+describe('bloop', () => {
+  it('returns null', () => {
+    expect(bloop()).toBeNull();
+  });
+})
+```
+
+### `.toBeTruthy()`
+
+Use `.toBeTruthy` when you don't care what a value is, you just want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
+
+```js
+drinkSomeLaCroix();
+if (thirstInfo()) {
+  drinkMoreLaCroix();
+}
+```
+
+You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you just want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
+
+```js
+describe('drinking some La Croix', () => {
+  it('leads to having thirst info', () => {
+    drinkSomeLaCroix();
+    expect(thirstInfo()).toBeTruthy();
+  });
+});
+```
+
+In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefined`, and `NaN`. Everything else is truthy.
+
+### `.toBeUndefined()`
+
+Use `.toBeUndefined` to check that a variable is undefined. For example, if you want to check that a function `bestDrinkForFlavor(flavor)` returns `undefined` for the `'octopus'` flavor, because there is no good octopus-flavored drink:
+
+```js
+describe('the best drink', () => {
+  it('for octopus flavor is undefined', () => {
+    expect(bestDrinkForFlavor('octopus')).toBeUndefined();
+  });
+});
+```
+
+You could write `expect(bestDrinkForFlavor('octopus')).toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
+
+### `.toContain(item)`
+
+Use `.toContain` when you want to check that an item is in a list. For testing the items in the list, this uses `===`, a strict equality check.
+
+For example, if `getAllFlavors()` returns a list of flavors and you want to be sure that `lime` is in there, you can write:
+
+```js
+describe('the list of all flavors', () => {
+  it('contains lime', () => {
+    expect(getAllFlavors()).toContain('lime');
+  });
+});
+```
+
+### `.toEqual(value)`
+
+Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+
+```js
+const can1 = {
+  flavor: 'grapefruit',
+  ounces: 12,
+};
+const can2 = {
+  flavor: 'grapefruit',
+  ounces: 12,
+};
+
+describe('the La Croix cans on my desk', () => {
+  it('have all the same properties', () => {
+    expect(can1).toEqual(can2);
+  });
+  it('are not the exact same can', () => {
+    expect(can1).not.toBe(can2);
+  });
+});
+```
+
+### `.toMatch(regexp)`
+
+Use `.toMatch` to check that a string matches a regular expression.
+
+For example, you might not know what exactly `essayOnTheBestFlavor()` returns, but you know it's a really long string, and the substring `grapefruit` should be in there somewhere. You can test this with:
+
+```js
+describe('an essay on the best flavor', () => {
+  it('mentions grapefruit', () => {
+    expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
+  })
+})
+```
+
+### `.toMatchSnapshot()`
+
+This ensures that a React component matches the most recent snapshot. Check out [the React + Jest tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more information on snapshot testing.
+
+### `.toThrow()`
+
+Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
+
+```js
+describe('drinking flavors', () => {
+  it('throws on octopus', () => {
+    expect(() => {
+      drink('octopus');
+    }).toThrow();
+  });
+});
+```
+
+If you want to test that a specific error gets thrown, use `.toThrowError`.
+
+### `.toThrowError(error)`
+
+Use `.toThrowError` to test that a function throws a specific error when it
+is called. The argument can be a string for the error message, a class for the error, or a regex that should match the error. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+
+```js
+function drinkFlavor(flavor) {
+  if (flavor == 'octopus') {
+    throw new DisgustingFlavorError('yuck, octopus flavor');
+  }
+  // Do some other stuff
+}
+```
+
+We could test this error gets thrown in several ways:
+
+```js
+describe('drinking flavors', () => {
+  it('throws on octopus', () => {
+    function drinkOctopus() {
+      drink('octopus');
+    }
+    // Test the exact error message
+    expect(drinkOctopus).toThrowError('yuck, octopus flavor');
+
+    // Test that the error message says "yuck" somewhere
+    expect(drinkOctopus).toThrowError(/yuck/);
+
+    // Test that we get a DisgustingFlavorError
+    expect(drinkOctopus).toThrowError(DisgustingFlavorError);
+  });
+});
+```
+
+If you don't care what specific error gets thrown, use `.toThrow`.
+
+## Mock Functions
 
 ### `mockFn.mock.calls`
 An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
@@ -336,60 +682,111 @@ jest.fn(() => {
 });
 ```
 
-## `require` Extensions
+## The `jest` object
 
-### `require.requireActual(moduleName)`
+### `jest.clearAllTimers()`
+Removes any pending timers from the timer system.
 
-Returns the actual module instead of a mock, bypassing all checks on whether the
-module should receive a mock implementation or not.
+This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
 
-### `require.requireMock(moduleName)`
+### `jest.disableAutomock()`
+Disables automatic mocking in the module loader.
 
-Returns a mock module instead of the actual module, bypassing all checks on
-whether the module should be required normally or not.
+After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
 
-## Property testing
+This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Jest supports property testing with the
-[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
-the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.
 
-### `check.it(name, [options], generators, fn)`
-Creates a property test. Test cases will be created by the given `generators`
-and passed as arguments to `fn`. If any test case fails, a shrunken failing
-value will be given in the test output. For example:
+*Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.*
+
+### `jest.enableAutomock()`
+Enables automatic mocking in the module loader.
+
+*Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
+
+### `jest.fn(?implementation)`
+Returns a new, unused [mock function](#mock-functions). Optionally takes a mock
+implementation.
 
 ```js
-check.it('can recover encoded URIs',
-  [gen.string],
-  s => expect(s).toBe(decodeURI(encodeURI(s))));
+  const mockFn = jest.fn();
+  mockFn();
+  expect(mockFn).toBeCalled();
+
+  // With a mock implementation:
+  const returnsTrue = jest.fn(() => true);
+  console.log(returnsTrue()) // true;
 ```
 
-If `options` are provided, they override the corresponding command-line options.
-The possible options are:
+### `jest.isMockFunction(fn)`
+Determines if the given function is a mocked function.
 
+### `jest.genMockFromModule(moduleName)`
+Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
+
+This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
+
+### `jest.mock(moduleName, ?factory)`
+Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
+
+```js
+  jest.mock('moduleName');
+
+  const moduleName = require('moduleName'); // moduleName will be explicitly mocked
 ```
-{
-  times: number;   // The number of test cases to run. Default: 100.
-  maxSize: number; // The maximum size of sized data such as numbers
-                   // (their magnitude) or arrays (their length). This can be
-                   // overridden with `gen.resize`. Default: 200.
-  seed: number;    // The random number seed. Defaults to a random value.
-}
+
+The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
+
+```js
+  jest.mock('moduleName', () => {
+    return jest.fn(() => 42);
+  });
+
+  const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
+  moduleName(); // Will return '42';
 ```
 
-### `check.fit(name, [options], generators, fn)`
+*Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
 
-Executes this test and skips all others. Like `fit`, but for property tests.
+### `jest.runAllTicks()`
+Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
 
-### `check.xit(name, [options], generators, fn)`
+When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
 
-Skips this test. Like `xit`, but for property tests.
+### `jest.runAllTimers()`
+Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
 
-### `gen`
+When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
 
-A library of generators for property tests. See the
-[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
+This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](/jest/docs/timer-mocks.html) doc for more information.
+
+### `jest.runOnlyPendingTimers()`
+Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
+
+This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
+
+### `jest.setMock(moduleName, moduleExports)`
+Explicitly supplies the mock object that the module system should return for the specified module.
+
+On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](/jest/docs/manual-mocks.html) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
+
+In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
+
+*Note It is recommended to use [`jest.mock()`](#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
+
+### `jest.unmock(moduleName)`
+Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
+
+The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
+
+*Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
+
+### `jest.useFakeTimers()`
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`). Fake timers are used by default.
+
+### `jest.useRealTimers()`
+Instructs Jest to use the real versions of the standard timer functions.
 
 ## Configuration
 
@@ -701,3 +1098,50 @@ It is possible to override this setting in individual tests by explicitly callin
 (default: `false`)
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+
+## Miscellaneous
+
+### `check`
+
+Jest supports property testing with the
+[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
+the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
+
+### `check.it(name, [options], generators, fn)`
+Creates a property test. Test cases will be created by the given `generators`
+and passed as arguments to `fn`. If any test case fails, a shrunken failing
+value will be given in the test output. For example:
+
+```js
+const { check, gen } = require('jest-check');
+
+check.it('can recover encoded URIs',
+  [gen.string],
+  s => expect(s).toBe(decodeURI(encodeURI(s))));
+```
+
+If `options` are provided, they override the corresponding command-line options.
+The possible options are:
+
+```
+{
+  times: number;   // The number of test cases to run. Default: 100.
+  maxSize: number; // The maximum size of sized data such as numbers
+                   // (their magnitude) or arrays (their length). This can be
+                   // overridden with `gen.resize`. Default: 200.
+  seed: number;    // The random number seed. Defaults to a random value.
+}
+```
+
+### `check.fit(name, [options], generators, fn)`
+
+Executes this test and skips all others. Like `fit`, but for property tests.
+
+### `check.xit(name, [options], generators, fn)`
+
+Skips this test. Like `xit`, but for property tests.
+
+### `gen`
+
+A library of generators for property tests. See the
+[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
