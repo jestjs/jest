@@ -37,7 +37,7 @@ const patchAttr = (attr, state) => {
   }(attr.onStart);
 };
 
-const patchJasmine = (jasmine, state) => {
+const patchJasmine = (jasmine: Jasmine, state) => {
   jasmine.Spec = (realSpec => {
     const Spec = function Spec(attr) {
       patchAttr(attr, state);
@@ -82,6 +82,7 @@ module.exports = {
   matcher,
   processSnapshot,
   createSnapshotState,
+  patchJasmine,
   getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
     const state = createSnapshotState(filePath);
     patchJasmine(jasmine, state);
