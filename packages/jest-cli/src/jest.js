@@ -96,6 +96,9 @@ function runJest(config, argv, pipe, onComplete) {
               source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
             );
           }
+          if (data.paths.length === 1) {
+            config = Object.assign({}, config, {verbose: true});
+          }
           return new TestRunner(hasteMap, config, {maxWorkers}).runTests(
             data.paths,
           );
