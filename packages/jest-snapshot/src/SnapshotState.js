@@ -10,6 +10,9 @@
 'use strict';
 
 import type {SnapshotFileT} from './SnapshotFile';
+import type {Path} from 'types/Config';
+
+const SnapshotFile = require('./SnapshotFile');
 
 export type SnapshotState = {
   added: number,
@@ -22,4 +25,29 @@ export type SnapshotState = {
   snapshot: SnapshotFileT,
   unmatched: number,
   updated: number,
+};
+
+module.exports = {
+  createSnapshotState(filePath: Path): SnapshotState {
+    let _index = 0;
+    let _name = '';
+
+    /* $FlowFixMe */
+    return Object.assign(Object.create(null), {
+      getCounter: () => _index,
+      getSpecName: () => _name,
+      incrementCounter: () => ++_index,
+      setCounter(index) {
+        _index = index;
+      },
+      setSpecName(name) {
+        _name = name;
+      },
+      snapshot: SnapshotFile.forFile(filePath),
+      added: 0,
+      updated: 0,
+      matched: 0,
+      unmatched: 0,
+    });
+  },
 };

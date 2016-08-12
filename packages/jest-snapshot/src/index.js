@@ -15,6 +15,7 @@ import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
 
 const SnapshotFile = require('./SnapshotFile');
+const createSnapshotState = require('./SnapshotState').createSnapshotState;
 
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
@@ -80,27 +81,9 @@ module.exports = {
   },
   matcher,
   processSnapshot,
+  createSnapshotState,
   getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
-    let _index = 0;
-    let _name = '';
-    /* $FlowFixMe */
-    const state = Object.assign(Object.create(null), {
-      getCounter: () => _index,
-      getSpecName: () => _name,
-      incrementCounter: () => ++_index,
-      setCounter(index) {
-        _index = index;
-      },
-      setSpecName(name) {
-        _name = name;
-      },
-      snapshot: SnapshotFile.forFile(filePath),
-      added: 0,
-      updated: 0,
-      matched: 0,
-      unmatched: 0,
-    });
-
+    const state = createSnapshotState(filePath);
     patchJasmine(jasmine, state);
     return state;
   },
