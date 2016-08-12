@@ -17,7 +17,9 @@ config option.
 
 You can also provide a [manual mock](/jest/docs/manual-mocks.html) by creating
 a `moduleName.js` file in a `__mocks__` folder in the root level of your
-project.
+project. If you have set `testPathDirs` in your `package.json`, you will need to
+make sure that the root level `__mocks__` directory is also incuded in
+`testPathDirs`.
 
 ### Caching Issues
 
