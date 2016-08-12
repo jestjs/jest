@@ -8,8 +8,6 @@
 
 'use strict';
 
-jest.unmock('../runJest');
-
 const runJest = require('../runJest');
 
 describe('testcheck', () => {
