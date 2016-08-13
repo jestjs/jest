@@ -18,7 +18,7 @@
   ],
   "persistModuleRegistryBetweenSpecs": true,
   "preprocessorIgnorePatterns": [
-    "node_modules/(?!react-native)"
+    "node_modules/(?!(jest-)?react-native)"
   ],
   "setupFiles": [
     "<rootDir>/node_modules/jest-react-native/build/index.js"

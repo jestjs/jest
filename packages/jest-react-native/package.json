@@ -8,7 +8,8 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "peerDependencies": {
-    "react-native": ">=0.30.0"
+    "react-native": ">=0.30.0",
+    "whatwg-fetch": "^1.0.0"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
