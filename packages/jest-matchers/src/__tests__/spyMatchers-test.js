@@ -12,36 +12,39 @@
 
 const jestExpect = require('../').expect;
 
-describe('.toHaveBeenCalled()', () => {
-  it('does not accept arguments', () => {
-    const foo = jasmine.createSpy('foo');
+describe('.toHaveBeenCalled() .toBeCalled()', () => {
+  ['toHaveBeenCalled', 'toBeCalled'].forEach((matcherName) => {
+    it('does not accept arguments', () => {
+      [jasmine.createSpy('foo'), jest.fn()].forEach((foo) => {
+        expect(() => jestExpect(foo)[matcherName](5))
+          .toThrowError(/(toHaveBeenCalled|toBeCalled) matcher does not accept any arguments/);
+      });
+    });
 
-    expect(() => jestExpect(foo).toHaveBeenCalled(5))
-      .toThrowError(/toHaveBeenCalled matcher does not accept any arguments/);
-  });
+    it('verifies that actual is a Spy', () => {
+      const foo = () => {};
 
-  it('verifies that actual is a Spy', () => {
-    const foo = () => {};
+      expect(() => jestExpect(foo)[matcherName]())
+        .toThrowError(/(toHaveBeenCalled|toBeCalled) matcher can only execute on a Spy/);
+    });
 
-    expect(() => jestExpect(foo).toHaveBeenCalled())
-      .toThrowError(/toHaveBeenCalled matcher can only execute on a Spy/);
-  });
+    it('passes if function called', () => {
+      [jasmine.createSpy('foo'), jest.fn()].forEach((foo) => {
+        foo();
 
-  it('passes if function called', () => {
-    const foo = jasmine.createSpy('foo');
-    foo();
+        jestExpect(foo).toHaveBeenCalled();
+        expect(() => jestExpect(foo).not[matcherName]())
+          .toThrowError(/a (mock|spy) to not be called, but it was called 1 times/);
+      });
+    });
 
-    jestExpect(foo).toHaveBeenCalled();
-    expect(() => jestExpect(foo).not.toHaveBeenCalled())
-      .toThrowError(/a spy to not be called, but it was called 1 times/);
-  });
-
-  it(`fails if function hasn't called`, () => {
-    const foo = jasmine.createSpy('foo');
-
-    jestExpect(foo).not.toHaveBeenCalled();
-    expect(() => jestExpect(foo).toHaveBeenCalled())
-      .toThrowError(/expected a spy to be called but it wasn't/);
+    it(`fails if function hasn't called`, () => {
+      [jasmine.createSpy('foo'), jest.fn()].forEach((foo) => {
+        jestExpect(foo).not.toHaveBeenCalled();
+        expect(() => jestExpect(foo)[matcherName]())
+          .toThrowError(/expected a (mock|spy) to be called but it wasn't/);
+      });
+    });
   });
 });
 
