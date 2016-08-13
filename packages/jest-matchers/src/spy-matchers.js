@@ -20,20 +20,25 @@ const {
 const spyMatchers: MatchersObject = {
   toHaveBeenCalled(actual: any, expected: void) {
     ensureNoExpected(expected, 'toHaveBeenCalled');
-    ensureSpy(actual, 'toHaveBeenCalled');
+    ensureMockOrSpy(actual, 'toHaveBeenCalled');
 
-    const pass = actual.calls.any();
-    const message = pass
-      ? `expected a spy to not be called, but it was` +
-        ` called ${actual.calls.count()} times`
-      : `expected a spy to be called but it wasn't`;
+    return isJestMock(actual)
+      ? jestToHaveBeenCalled(actual)
+      : jasmineToHaveBeenCalled(actual);
+  },
 
-    return {message, pass};
+  toBeCalled(actual: any, expected: void) {
+    ensureNoExpected(expected, 'toBeCalled');
+    ensureMockOrSpy(actual, 'toBeCalled');
+
+    return isJestMock(actual)
+      ? jestToHaveBeenCalled(actual)
+      : jasmineToHaveBeenCalled(actual);
   },
 
   toHaveBeenCalledTimes(actual: any, expected: number) {
     ensureExpectedIsNumber(expected, 'toHaveBeenCalledTimes');
-    ensureSpy(actual, 'toHaveBeenCalledTimes');
+    ensureMockOrSpy(actual, 'toHaveBeenCalledTimes');
 
     const pass = actual.calls.count() === expected;
     const message = pass
@@ -46,10 +51,37 @@ const spyMatchers: MatchersObject = {
   },
 };
 
-const ensureSpy = (spy, matcherName) => {
-  if (spy.calls === undefined || spy.calls.all === undefined) {
+const jestToHaveBeenCalled = (actual) => {
+  const pass = actual.mock.calls.length > 0;
+  const message = pass
+    ? `expected a mock to not be called, but it was` +
+      ` called ${actual.mock.calls.length} times`
+    : `expected a mock to be called but it wasn't`;
+
+  return {message, pass};
+};
+
+const jasmineToHaveBeenCalled = (actual) => {
+  const pass = actual.calls.any();
+  const message = pass
+    ? `expected a spy to not be called, but it was` +
+      ` called ${actual.calls.count()} times`
+    : `expected a spy to be called but it wasn't`;
+
+  return {message, pass};
+};
+
+const isJestMock = (mockOrSpy) => {
+  return mockOrSpy._isMockFunction === true;
+};
+
+const ensureMockOrSpy = (mockOrSpy, matcherName) => {
+  if (
+    (mockOrSpy.calls === undefined || mockOrSpy.calls.all === undefined) &&
+    mockOrSpy._isMockFunction !== true
+  ) {
     throw new Error(
-      `${matcherName} matcher can only execute on a Spy function`);
+      `${matcherName} matcher can only execute on a Spy or Mock function`);
   }
 };
 
