@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "react": "15.3.0",
-    "react-native": "0.30.0"
+    "react-native": "0.31.0"
   },
   "devDependencies": {
     "babel-jest": "*",

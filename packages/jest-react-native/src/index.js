@@ -28,7 +28,7 @@ jest
 global.__DEV__ = true;
 global.__fbBatchedBridgeConfig = require('./bridge-mock');
 
-const {Response, Request, Headers, fetch} = require('react-native/Libraries/Fetch/fetch');
+const {Response, Request, Headers, fetch} = require('whatwg-fetch');
 global.Response = Response;
 global.Request = Request;
 global.Headers = Headers;
