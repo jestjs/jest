@@ -9,7 +9,7 @@
 'use strict';
 
 module.exports = {
-  INSTRUMENTS: true,
+  canInstrument: true,
   process(src, filename, config, options) {
     src = `${src};\nglobal.__PREPROCESSED__ = true;`;
 

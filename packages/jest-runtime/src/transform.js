@@ -26,7 +26,6 @@ const VERSION = require('../package.json').version;
 
 type Options = {
   isInternalModule?: boolean,
-  instrument?: boolean,
 };
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
@@ -295,7 +294,7 @@ const transformSource = (
 
   // That means that the preprocessor has a custom instrumentation
   // logic and will handle it based on `config.collectCoverage` option
-  const preprocessorWillInstrument = preprocessor && preprocessor.INSTRUMENTS;
+  const preprocessorWillInstrument = preprocessor && preprocessor.canInstrument;
 
   if (!preprocessorWillInstrument && instrument) {
     result = instrumentFile(result, filename, config);
@@ -333,12 +332,7 @@ module.exports = (
   config: Config,
   options: Options,
 ): vm.Script => {
-  let instrument;
-  if (options && options.instrument !== undefined) {
-    instrument = options.instrument;
-  } else {
-    instrument = shouldInstrument(filename, config);
-  }
+  const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
   let script = cache.get(scriptCacheKey);
   if (script) {
