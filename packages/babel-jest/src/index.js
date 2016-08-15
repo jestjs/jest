@@ -25,7 +25,7 @@ const createTransformer = (options: any) => {
   delete options.cacheDirectory;
 
   return {
-    INSTRUMENTS: true,
+    canInstrument: true,
     process(
       src: string,
       filename: Path,

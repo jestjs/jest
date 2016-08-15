@@ -16,7 +16,7 @@ export type PreprocessorOptions = {
 };
 
 export type Preprocessor = {
-  INSTRUMENTS?: boolean,
+  canInstrument?: boolean,
 
   getCacheKey: (
     fileData: string,
