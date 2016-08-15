@@ -8,40 +8,52 @@
  * @flow
  */
 
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 'use strict';
 
-const util = require('util');
+import type {LogType, LogMessage} from 'types/Console';
+
 const Console = require('console').Console;
-const chalk = require('chalk');
+
+const format = require('util').format;
+
+type Formatter = (type: LogType, message: LogMessage) => string;
 
 class CustomConsole extends Console {
+
+  _formatBuffer: Formatter;
+
+  constructor(
+    stdout: Object,
+    stderr: Object,
+    formatBuffer: ?Formatter,
+  ) {
+    super(stdout, stderr);
+    this._formatBuffer =
+      formatBuffer || ((type, message) => type + ' ' + message);
+  }
+
+  _log(type: LogType, message: string) {
+    super.log(this._formatBuffer(type, message));
+  }
+
+  log() {
+    this._log('log', format.apply(null, arguments));
+  }
+
+  info() {
+    this._log('info', format.apply(null, arguments));
+  }
+
   warn() {
-    return super.warn(chalk.yellow(util.format.apply(this, arguments)));
+    this._log('warn', format.apply(null, arguments));
   }
 
   error() {
-    return super.error(chalk.red(util.format.apply(this, arguments)));
+    this._log('error', format.apply(null, arguments));
+  }
+
+  getBuffer() {
+    return null;
   }
 }
 

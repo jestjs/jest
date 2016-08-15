@@ -42,7 +42,6 @@ class BaseReporter {
     for (let i = 0; i < string.length; i++) {
       process.stderr.write(string.charAt(i));
     }
-    process.stderr.write('\n');
   }
 
   _setError(error: Error) {

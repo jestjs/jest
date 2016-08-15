@@ -7,21 +7,13 @@
  *
  * @flow
  */
-
 'use strict';
 
-const Console = require('./Console');
-
-class NullConsole extends Console {
-  assert() {}
-  dir() {}
-  error() {}
-  info() {}
-  log() {}
-  time() {}
-  timeEnd() {}
-  trace() {}
-  warn() {}
-}
-
-module.exports = NullConsole;
+export type LogMessage = string;
+export type LogEntry = {
+  message: LogMessage,
+  origin: string,
+  type: LogType,
+};
+export type LogType = 'log' | 'info' | 'warn' | 'error';
+export type ConsoleBuffer = Array<LogEntry>;
