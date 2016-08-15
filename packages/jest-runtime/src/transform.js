@@ -250,25 +250,22 @@ const instrumentFile = (content: string, filename: Path): string => {
   const babel = require('babel-core');
   const babelPluginIstanbul = require('babel-plugin-istanbul').default;
 
-  if (babel.util.canCompile(filename)) {
-    return babel.transform(content, {
-      filename,
-      auxiliaryCommentBefore: ' istanbul ignore next ',
-      plugins: [
-        [
-          babelPluginIstanbul,
-          // right now babel-plugin-istanbul doesn't have any configuration
-          // for bypassing the excludes check, but there is a config for
-          // overwriting it. `.^` as a regexp that matches nothing.
-          // @see https://github.com/istanbuljs/test-exclude/issues/7
-          {exclude: ['.^']},
-        ],
+  return babel.transform(content, {
+    filename,
+    auxiliaryCommentBefore: ' istanbul ignore next ',
+    plugins: [
+      [
+        babelPluginIstanbul,
+        // right now babel-plugin-istanbul doesn't have any configuration
+        // for bypassing the excludes check, but there is a config for
+        // overwriting it. `.^` as a regexp that matches nothing.
+        // @see https://github.com/istanbuljs/test-exclude/issues/7
+        {exclude: ['.^']},
       ],
-      retainLines: true,
-      babelrc: false,
-    }).code;
-  }
-  return content;
+    ],
+    retainLines: true,
+    babelrc: false,
+  }).code;
 };
 
 const transformSource = (
