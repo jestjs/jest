@@ -15,6 +15,7 @@ const moduleNameMapper = {
   '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
   '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
   'mappedToPath': '<rootDir>/GlobalImageStub.js',
+  'mappedToModule': '<rootDir>/TestModuleNameMapperResolution',
   'mappedToDirectory': '<rootDir>/MyDirectoryModule',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
@@ -92,7 +93,11 @@ it('does not use manual mock when automocking is off and a real module is availa
 );
 
 it('resolves mapped module names and unmocks them by default', () =>
-  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+  createRuntime(__filename, {
+    automock: false,
+    moduleNameMapper,
+    moduleFileExtensions: ['js', 'jsx'],
+  }).then(runtime => {
     let exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
       'image!not-really-a-module',
@@ -104,6 +109,12 @@ it('resolves mapped module names and unmocks them by default', () =>
       'mappedToPath',
     );
     expect(exports.isGlobalImageStub).toBe(true);
+
+    exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'mappedToModule',
+    );
+    expect(exports.moduleNameMapperResolutionWorks).toBe(true);
 
     exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,

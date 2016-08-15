@@ -14,9 +14,10 @@ import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
+import type Resolver from '../../jest-resolve/src';
 
 const HasteMap = require('jest-haste-map');
-const Resolver = require('jest-resolve');
+const ResolverClass = require('jest-resolve');
 
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
@@ -188,7 +189,7 @@ class Runtime {
     config: Config,
     moduleMap: HasteMap,
   ): Resolver {
-    return new Resolver(moduleMap, {
+    return new ResolverClass(moduleMap, {
       browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
@@ -218,18 +219,17 @@ class Runtime {
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
-    let manualMockResource = null;
-    let moduleResource = null;
-    moduleResource = moduleName && this._resolver.getModule(moduleName);
-    manualMockResource = moduleName && this._resolver.getMockModule(moduleName);
+    const moduleResource = moduleName && this._resolver.getModule(moduleName);
+    const manualMock =
+      moduleName && this._resolver.getMockModule(from, moduleName);
     if (
       (!options || !options.isInternalModule) &&
       !moduleResource &&
-      manualMockResource &&
-      manualMockResource !== this._isCurrentlyExecutingManualMock &&
+      manualMock &&
+      manualMock !== this._isCurrentlyExecutingManualMock &&
       this._explicitShouldMock[moduleID] !== false
     ) {
-      modulePath = manualMockResource;
+      modulePath = manualMock;
     }
 
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
@@ -279,10 +279,10 @@ class Runtime {
       return this._mockRegistry[moduleID] = this._mockFactories[moduleID]();
     }
 
-    let manualMockResource = this._resolver.getMockModule(moduleName);
+    let manualMock = this._resolver.getMockModule(from, moduleName);
     let modulePath;
-    if (manualMockResource) {
-      modulePath = this._resolveModule(from, manualMockResource);
+    if (manualMock) {
+      modulePath = this._resolveModule(from, manualMock);
     } else {
       modulePath = this._resolveModule(from, moduleName);
 
@@ -302,12 +302,12 @@ class Runtime {
       const potentialManualMock =
         path.join(moduleDir, '__mocks__', moduleFileName);
       if (fs.existsSync(potentialManualMock)) {
-        manualMockResource = true;
+        manualMock = true;
         modulePath = potentialManualMock;
       }
     }
 
-    if (manualMockResource) {
+    if (manualMock) {
       const localModule = {
         exports: {},
         filename: modulePath,
@@ -501,7 +501,7 @@ class Runtime {
       moduleType = 'user';
       if (
         !this._resolver.getModule(moduleName) &&
-        !this._resolver.getMockModule(moduleName)
+        !this._resolver.getMockModule(from, moduleName)
       ) {
         if (moduleName) {
           const virtualMockPath = this._getVirtualMockPath(from, moduleName);
@@ -513,12 +513,6 @@ class Runtime {
         if (absolutePath === null) {
           absolutePath = this._resolveModule(from, moduleName);
         }
-
-        // Look up if this module has an associated manual mock.
-        const mockModule = this._resolver.getMockModule(moduleName);
-        if (mockModule) {
-          mockPath = mockModule;
-        }
       }
 
       if (absolutePath === null) {
@@ -529,7 +523,7 @@ class Runtime {
       }
 
       if (mockPath === null) {
-        const mockResource = this._resolver.getMockModule(moduleName);
+        const mockResource = this._resolver.getMockModule(from, moduleName);
         if (mockResource) {
           mockPath = mockResource;
         }
@@ -574,12 +568,12 @@ class Runtime {
       return this._shouldMockModuleCache[moduleID];
     }
 
-    const manualMockResource = this._resolver.getMockModule(moduleName);
+    const manualMock = this._resolver.getMockModule(from, moduleName);
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName);
     } catch (e) {
-      if (manualMockResource) {
+      if (manualMock) {
         this._shouldMockModuleCache[moduleID] = true;
         return true;
       }

@@ -183,11 +183,11 @@ class Resolver {
     return this.getModule(name, H.PACKAGE);
   }
 
-  getMockModule(name: string): ?Path {
+  getMockModule(from: Path, name: string): ?Path {
     if (this._moduleMap.mocks[name]) {
       return this._moduleMap.mocks[name];
     } else {
-      const moduleName = this._resolveStubModuleName(name);
+      const moduleName = this._resolveStubModuleName(from, name);
       if (moduleName) {
         return this.getModule(moduleName) || moduleName;
       }
@@ -208,13 +208,28 @@ class Resolver {
     return this._modulePathCache[from];
   }
 
-  _resolveStubModuleName(moduleName: string): ?Path {
+  _resolveStubModuleName(from: Path, moduleName: string): ?Path {
+    const dirname = path.dirname(from);
+    const paths = this._options.modulePaths;
+    const extensions = this._options.extensions;
+    const moduleDirectory = this._options.moduleDirectories;
+
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper) {
       for (const mappedModuleName in moduleNameMapper) {
         const regex = moduleNameMapper[mappedModuleName];
         if (regex.test(moduleName)) {
-          return moduleName.replace(regex, mappedModuleName);
+          moduleName = moduleName.replace(regex, mappedModuleName);
+          return this.getModule(moduleName) || Resolver.findNodeModule(
+            moduleName,
+            {
+              basedir: dirname,
+              browser: this._options.browser,
+              extensions,
+              moduleDirectory,
+              paths,
+            },
+          );
         }
       }
     }
