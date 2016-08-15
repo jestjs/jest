@@ -77,26 +77,18 @@ const removeInternalStackEntries = (lines, config) => {
 
   return lines.filter(line => {
     const isPath = STACK_PATH_REGEXP.test(line);
-
     if (!isPath) {
       return true;
     }
-
-    pathCounter += 1;
-
-    if (pathCounter === 1) {
-      return true; // always keep the first line even if it's from jest
-    }
-
-    if (
-      STACK_TRACE_IGNORE.test(line) ||
-      JASMINE_IGNORE.test(line) ||
-      config.noStackTrace
-    ) {
+    if (JASMINE_IGNORE.test(line)) {
       return false;
     }
 
-    return true;
+    if (++pathCounter === 1) {
+      return true; // always keep the first line even if it's from Jest
+    }
+
+    return !(STACK_TRACE_IGNORE.test(line) || config.noStackTrace);
   });
 };
 
@@ -136,7 +128,7 @@ const formatStackTrace = (stack, config, testPath) => {
 const formatResultsErrors = (
   testResults: TestResult,
   config: Config,
-  testPath?: ?Path,
+  testPath: ?Path,
 ): ?string => {
   const failedResults = testResults.testResults.reduce(
     (errors, result) => {

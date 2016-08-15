@@ -15,7 +15,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
-import type {HasteContext} from 'types/HasteMap';
+import type {HasteContext, HasteFS} from 'types/HasteMap';
 import type BaseReporter from './reporters/BaseReporter';
 
 const Test = require('./Test');
@@ -57,13 +57,13 @@ class TestRunner {
   _testPerformanceCache: Object;
 
   constructor(
-    hasteMap: HasteContext,
+    hasteContext: HasteContext,
     config: Config,
     options: Options,
   ) {
     this._config = config;
-    this._dispatcher = new ReporterDispatcher({hasteContext: hasteMap});
-    this._hasteContext = hasteMap;
+    this._dispatcher = new ReporterDispatcher(hasteContext.hasteFS);
+    this._hasteContext = hasteContext;
     this._options = options;
     this._setupReporters();
 
@@ -180,18 +180,17 @@ class TestRunner {
     };
 
     const updateSnapshotSummary = () => {
-      return snapshot.cleanup(this._hasteContext, config.updateSnapshot)
-        .then(status => {
-          aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-          aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
-          aggregatedResults.snapshot.failure = !!(
-            !aggregatedResults.snapshot.didUpdate && (
-              aggregatedResults.snapshot.unchecked ||
-              aggregatedResults.snapshot.unmatched ||
-              aggregatedResults.snapshot.filesRemoved
-            )
-          );
-        });
+      const status =
+        snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
+      aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
+      aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
+      aggregatedResults.snapshot.failure = !!(
+        !aggregatedResults.snapshot.didUpdate && (
+          aggregatedResults.snapshot.unchecked ||
+          aggregatedResults.snapshot.unmatched ||
+          aggregatedResults.snapshot.filesRemoved
+        )
+      );
     };
 
     // Run in band if we only have one test or one worker available.
@@ -404,13 +403,11 @@ class ReporterDispatcher {
   _disabled: boolean;
   _reporters: Array<BaseReporter>;
   _runnerContext: {
-    hasteContext: HasteContext,
+    hasteFS: HasteFS,
   };
 
-  constructor(options: {hasteContext: HasteContext}) {
-    this._runnerContext = {
-      hasteContext: options.hasteContext,
-    };
+  constructor(hasteFS: HasteFS) {
+    this._runnerContext = {hasteFS};
     this._reporters = [];
   }
 

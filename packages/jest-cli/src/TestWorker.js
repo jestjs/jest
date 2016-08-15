@@ -55,7 +55,7 @@ module.exports = (data: WorkerData, callback: WorkerCallback) => {
     if (!resolvers[name]) {
       resolvers[name] = Runtime.createResolver(
         data.config,
-        Runtime.createHasteMap(data.config).read(),
+        Runtime.createHasteMap(data.config).readModuleMap(),
       );
     }
 

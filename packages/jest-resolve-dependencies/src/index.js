@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {HasteMap} from 'types/HasteMap';
+import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type Resolver from '../../jest-resolve/src';
 
@@ -34,23 +34,24 @@ function compact(array: Array<?Path>): Array<Path> {
  * to retrieve a list of all transitive inverse dependencies.
  */
 class DependencyResolver {
-  _moduleMap: HasteMap;
+  _hasteFS: HasteFS;
   _resolver: Resolver;
 
-  constructor(resolver: Resolver, moduleMap: HasteMap) {
+  constructor(resolver: Resolver, hasteFS: HasteFS) {
     this._resolver = resolver;
-    this._moduleMap = moduleMap;
+    this._hasteFS = hasteFS;
   }
 
   resolve(
     file: Path,
     options?: ResolveModuleConfig,
   ): Array<Path> {
-    if (!this._moduleMap.files[file]) {
+    const dependencies = this._hasteFS.getDependencies(file);
+    if (!dependencies) {
       return [];
     }
     return compact(
-      this._moduleMap.files[file][3].map(dependency => {
+      dependencies.map(dependency => {
         if (this._resolver.isCoreModule(dependency)) {
           return null;
         }
@@ -92,8 +93,8 @@ class DependencyResolver {
     const relatedPaths = new Set();
     const changed = new Set();
     for (const path of paths) {
-      if (fileExists(path, this._moduleMap.files)) {
-        const module = this._moduleMap.files[path];
+      if (fileExists(path, this._hasteFS)) {
+        const module = this._hasteFS.exists(path);
         if (module) {
           changed.add(path);
           if (filter(path)) {
@@ -103,13 +104,10 @@ class DependencyResolver {
       }
     }
 
-    const modules = [];
-    for (const file in this._moduleMap.files) {
-      modules.push({
-        file,
-        dependencies: this.resolve(file, options),
-      });
-    }
+    const modules = this._hasteFS.getAllFiles().map(file => ({
+      file,
+      dependencies: this.resolve(file, options),
+    }));
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 

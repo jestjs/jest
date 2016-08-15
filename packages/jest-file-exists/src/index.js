@@ -11,15 +11,15 @@
 'use strict';
 
 import type {Path} from 'types/Config';
-import type {FileMetaData} from 'types/HasteMap';
+import type {HasteFS} from 'types/HasteMap';
 
 const fs = require('fs');
 
 module.exports = (
   filePath: Path,
-  files: ?{[filepath: string]: FileMetaData},
+  hasteFS: ?HasteFS,
 ): boolean => {
-  if (files && files[filePath]) {
+  if (hasteFS && hasteFS.exists(filePath)) {
     return true;
   }
 

@@ -8,8 +8,8 @@
  * @flow
  */
 'use strict';
-import type {HasteContext} from 'types/HasteMap';
+import type HasteFS from '../packages/jest-haste-map/src/HasteFS';
 
 export type RunnerContext = {
-  hasteContext: HasteContext,
+  hasteFS: HasteFS,
 };

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {HasteMap} from 'types/HasteMap';
+import type {InternalHasteMap} from 'types/HasteMap';
 import type {IgnoreMatcher} from '../types';
 
 const H = require('../constants');
@@ -34,8 +34,8 @@ module.exports = function watchmanCrawl(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  data: HasteMap,
-): Promise<HasteMap> {
+  data: InternalHasteMap,
+): Promise<InternalHasteMap> {
   return new Promise((resolve, reject) => {
     const client = new watchman.Client();
     client.on('error', error => reject(error));

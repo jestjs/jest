@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {HasteMap} from 'types/HasteMap';
+import type {InternalHasteMap} from 'types/HasteMap';
 import type {IgnoreMatcher} from '../types';
 
 const H = require('../constants');
@@ -123,8 +123,8 @@ module.exports = function nodeCrawl(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  data: HasteMap,
-): Promise<HasteMap> {
+  data: InternalHasteMap,
+): Promise<InternalHasteMap> {
   return new Promise(resolve => {
     const callback = list => {
       const files = Object.create(null);

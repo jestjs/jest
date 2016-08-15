@@ -33,4 +33,5 @@ module.exports = {
 
   /* platforms */
   GENERIC_PLATFORM: 'g',
+  NATIVE_PLATFORM: 'native',
 };

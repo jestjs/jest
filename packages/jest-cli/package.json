@@ -21,7 +21,6 @@
     "jest-snapshot": "^14.0.0",
     "jest-util": "^14.0.0",
     "json-stable-stringify": "^1.0.0",
-    "multimatch": "^2.1.0",
     "node-notifier": "^4.6.0",
     "sane": "^1.2.0",
     "which": "^1.1.1",

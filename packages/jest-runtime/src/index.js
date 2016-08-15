@@ -14,6 +14,7 @@ import type {Config, Path} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
+import type ModuleMap from '../../jest-haste-map/src/ModuleMap';
 import type Resolver from '../../jest-resolve/src';
 
 const HasteMap = require('jest-haste-map');
@@ -151,10 +152,9 @@ class Runtime {
       resetCache: !config.cache,
     });
     return instance.build().then(
-      moduleMap => ({
-        instance,
-        moduleMap,
-        resolver: Runtime.createResolver(config, moduleMap),
+      hasteMap => ({
+        hasteFS: hasteMap.hasteFS,
+        resolver: Runtime.createResolver(config, hasteMap.moduleMap),
       }),
       error => {
         throw error;
@@ -187,7 +187,7 @@ class Runtime {
 
   static createResolver(
     config: Config,
-    moduleMap: HasteMap,
+    moduleMap: ModuleMap,
   ): Resolver {
     return new ResolverClass(moduleMap, {
       browser: config.browser,

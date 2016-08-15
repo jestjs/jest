@@ -9,30 +9,36 @@
  */
 'use strict';
 
+import type {Path} from 'types/Config';
 import type _HasteMapInstance from '../packages/jest-haste-map/src';
+import type _HasteFS from '../packages/jest-haste-map/src/HasteFS';
 import type HasteResolver from '../packages/jest-resolve/src';
+import type _ModuleMap from '../packages/jest-haste-map/src/ModuleMap';
 
+export type HasteFS = _HasteFS;
 export type HasteMapInstance = _HasteMapInstance;
+export type ModuleMap = _ModuleMap;
 
 export type HasteContext = {
-  instance: HasteMapInstance,
-  moduleMap: HasteMap,
+  hasteFS: HasteFS,
   resolver: HasteResolver,
 };
 
-export type HasteMap = FileMap & ModuleMap;
+export type FileData = {[filepath: Path]: FileMetaData};
+export type MockData = {[id: string]: Path};
+export type ModuleMapData = {[id: string]: ModuleMapItem};
+export type WatchmanClocks = {[filepath: Path]: string};
 
-export type FileMap = {
+export type InternalHasteMap = {
   clocks: WatchmanClocks,
-  files: {[filepath: string]: FileMetaData},
+  files: FileData,
+  map: ModuleMapData,
+  mocks: MockData,
 };
-
-export type ModuleMap = {
-  map: {[id: string]: ModuleMapItem},
-  mocks: {[id: string]: string},
-}
-
-type WatchmanClocks = {[filepath: string]: string};
+export type HasteMap = {
+  hasteFS: HasteFS,
+  moduleMap: ModuleMap,
+};
 
 export type FileMetaData = [
   /* id */ string,
@@ -43,7 +49,7 @@ export type FileMetaData = [
 
 type ModuleMapItem = {[platform: string]: ModuleMetaData};
 export type ModuleMetaData = [
-  /* path */ string,
+  Path,
   /* type */ number,
 ];
 
@@ -57,6 +63,7 @@ export type HType = {
   MODULE: 0,
   PACKAGE: 1,
   GENERIC_PLATFORM: 'g',
+  NATIVE_PLATFORM: 'native',
 };
 
 export type HTypeValue = 0 | 1 | 2 | 3 | 'g';

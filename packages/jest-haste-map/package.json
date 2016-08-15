@@ -16,6 +16,7 @@
     "test": "../../packages/jest-cli/bin/jest.js"
   },
   "devDependencies": {
+    "multimatch": "^2.1.0",
     "pretty-format": "^3.5.0"
   }
 }

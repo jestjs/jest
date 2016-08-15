@@ -134,7 +134,7 @@ class SearchSource {
     testPathPattern: StrOrRegExpPattern,
   ): SearchResult {
     return this._filterTestPathsWithStats(
-      Object.keys(this._hasteContext.moduleMap.files),
+      this._hasteContext.hasteFS.getAllFiles(),
       testPathPattern,
     );
   }
@@ -150,7 +150,7 @@ class SearchSource {
   ): SearchResult {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
-      if (fileExists(maybeFile, this._hasteContext.moduleMap.files)) {
+      if (fileExists(maybeFile, this._hasteContext.hasteFS)) {
         return this._filterTestPathsWithStats([maybeFile]);
       }
     }
@@ -161,7 +161,7 @@ class SearchSource {
   findRelatedTests(allPaths: Set<Path>): SearchResult {
     const dependencyResolver = new DependencyResolver(
       this._hasteContext.resolver,
-      this._hasteContext.moduleMap,
+      this._hasteContext.hasteFS,
     );
     return {
       paths: dependencyResolver.resolveInverse(
