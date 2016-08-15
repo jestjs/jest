@@ -10,14 +10,8 @@
 
 'use strict';
 
-import type {
-  HasteMap,
-  HType,
-  HTypeValue,
-} from 'types/HasteMap';
 import type {Path} from 'types/Config';
-
-const H: HType = require('jest-haste-map').H;
+import type ModuleMap from '../../jest-haste-map/src/ModuleMap';
 
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
@@ -32,7 +26,7 @@ type ResolverConfig = {
   moduleDirectories: Array<string>,
   moduleNameMapper: ?{[key: string]: RegExp},
   modulePaths: Array<Path>,
-  platforms?: Array<string>,
+  platforms: Array<string>,
 };
 
 type FindNodeModuleConfig = {
@@ -52,13 +46,13 @@ const nodePaths =
 
 class Resolver {
   _options: ResolverConfig;
-  _supportsNativePlatform: boolean;
-  _moduleMap: HasteMap;
+  _moduleMap: ModuleMap;
   _moduleNameCache: {[name: string]: Path};
   _modulePathCache: {[path: Path]: Array<Path>};
 
-  constructor(moduleMap: HasteMap, options: ResolverConfig) {
+  constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
+      browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
@@ -66,11 +60,8 @@ class Resolver {
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
-      browser: options.browser,
+      platforms: options.platforms,
     };
-
-    this._supportsNativePlatform =
-      (options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
     this._moduleMap = moduleMap;
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
@@ -159,33 +150,26 @@ class Resolver {
     return this._options.hasCoreModules && resolve.isCore(moduleName);
   }
 
-  getModule(name: string, type?: HTypeValue): ?Path {
-    if (!type) {
-      type = H.MODULE;
-    }
-    const map = this._moduleMap.map[name];
-    if (map) {
-      const platform = this._options.defaultPlatform;
-      let module = platform && map[platform];
-      if (!module && map[NATIVE_PLATFORM] && this._supportsNativePlatform) {
-        module = map[NATIVE_PLATFORM];
-      } else if (!module) {
-        module = map[H.GENERIC_PLATFORM];
-      }
-      if (module && module[H.TYPE] === type) {
-        return module[H.PATH];
-      }
-    }
-    return null;
+  getModule(name: string): ?Path {
+    return this._moduleMap.getModule(
+      name,
+      this._options.defaultPlatform,
+      this._supportsNativePlatform(),
+    );
   }
 
   getPackage(name: string): ?Path {
-    return this.getModule(name, H.PACKAGE);
+    return this._moduleMap.getPackage(
+      name,
+      this._options.defaultPlatform,
+      this._supportsNativePlatform(),
+    );
   }
 
   getMockModule(from: Path, name: string): ?Path {
-    if (this._moduleMap.mocks[name]) {
-      return this._moduleMap.mocks[name];
+    const mock = this._moduleMap.getMockModule(name);
+    if (mock) {
+      return mock;
     } else {
       const moduleName = this._resolveStubModuleName(from, name);
       if (moduleName) {
@@ -234,6 +218,10 @@ class Resolver {
       }
     }
     return null;
+  }
+
+  _supportsNativePlatform() {
+    return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
 
 }

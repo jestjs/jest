@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {HasteContext} from 'types/HasteMap';
+import type {HasteFS} from 'types/HasteMap';
 import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
@@ -54,29 +54,28 @@ const patchJasmine = (jasmine, state) => {
 module.exports = {
   EXTENSION,
   SnapshotFile: SnapshotFile.SnapshotFile,
-  cleanup(hasteContext: HasteContext, update: boolean) {
+  cleanup(hasteFS: HasteFS, update: boolean) {
     const pattern = '\\.' + EXTENSION + '$';
-    return hasteContext.instance.matchFiles(pattern).then(files => {
-      const filesRemoved = files
-        .filter(snapshotFile => !fileExists(
-          path.resolve(
-            path.dirname(snapshotFile),
-            '..',
-            path.basename(snapshotFile, '.' + EXTENSION),
-          ),
-          hasteContext.moduleMap.files,
-        ))
-        .map(snapshotFile => {
-          if (update) {
-            fs.unlinkSync(snapshotFile);
-          }
-        })
-        .length;
+    const files = hasteFS.matchFiles(pattern);
+    const filesRemoved = files
+      .filter(snapshotFile => !fileExists(
+        path.resolve(
+          path.dirname(snapshotFile),
+          '..',
+          path.basename(snapshotFile, '.' + EXTENSION),
+        ),
+        hasteFS,
+      ))
+      .map(snapshotFile => {
+        if (update) {
+          fs.unlinkSync(snapshotFile);
+        }
+      })
+      .length;
 
-      return {
-        filesRemoved,
-      };
-    });
+    return {
+      filesRemoved,
+    };
   },
   matcher,
   getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {

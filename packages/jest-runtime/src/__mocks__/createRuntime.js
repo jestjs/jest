@@ -22,11 +22,11 @@ module.exports = function createRuntime(filename, config) {
   const environment = new NodeEnvironment(config);
   return Runtime.createHasteMap(config, {resetCache: false, maxWorkers: 1})
     .build()
-    .then(moduleMap => {
+    .then(hasteMap => {
       const runtime = new Runtime(
         config,
         environment,
-        Runtime.createResolver(config, moduleMap),
+        Runtime.createResolver(config, hasteMap.moduleMap),
       );
 
       runtime.__mockRootPath = path.join(config.rootDir, 'root.js');

@@ -10,8 +10,7 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, Glob, Path} from 'types/Config';
-import type {HasteMap} from 'types/HasteMap';
+import type {Config} from 'types/Config';
 import type {RunnerContext} from 'types/Reporters';
 
 type CoverageMap = {
@@ -28,8 +27,6 @@ const chalk = require('chalk');
 const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 const istanbulCoverage = require('istanbul-lib-coverage');
-const path = require('path');
-const multimatch = require('multimatch');
 
 const FAIL_COLOR = chalk.bold.red;
 
@@ -77,8 +74,7 @@ class CoverageReporter extends BaseReporter {
 
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
     if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
-      const files = matchFilesWithGlobs(
-        runnerContext.hasteContext.moduleMap,
+      const files = runnerContext.hasteFS.matchFilesWithGlob(
         config.collectCoverageFrom,
         config.rootDir,
       );
@@ -153,21 +149,5 @@ class CoverageReporter extends BaseReporter {
     return this._coverageMap;
   }
 }
-
-// This is a temporary hack until we rewrite HasteMap to be synchronous
-const matchFilesWithGlobs = (
-  moduleMap: HasteMap,
-  globs: Array<Glob>,
-  rootDir: Path
-): Set<Path> => {
-  const files = new Set();
-  for (const file in moduleMap.files) {
-    if (multimatch([path.relative(rootDir, file)], globs).length) {
-      files.add(file);
-    }
-  }
-  return files;
-};
-
 
 module.exports = CoverageReporter;

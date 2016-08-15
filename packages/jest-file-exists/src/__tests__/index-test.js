@@ -18,7 +18,7 @@ test('file exists', () => {
 
 test('file exists if module map is provided', () => {
   expect(fileExists('/random-string.js', {
-    '/random-string.js': true,
+    exists: filePath => filePath === '/random-string.js',
   })).toBe(true);
 });
 
@@ -26,7 +26,7 @@ test('file does not exist', () => {
   expect(fileExists(
     path.join(path.basename(__filename), 'does-probably-not-exist.js'),
     {
-      '/random-string.js': true,
+      exists: filePath => filePath === '/random-string.js',
     },
   )).toBe(false);
 });
