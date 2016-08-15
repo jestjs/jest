@@ -101,6 +101,7 @@ describe('transform', () => {
       cacheDirectory: '/cache/',
       name: 'test',
       preprocessorIgnorePatterns: ['/node_modules/'],
+      rootDir: '/',
     };
 
     transform = require('../transform');
