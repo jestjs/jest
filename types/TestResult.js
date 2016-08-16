@@ -9,6 +9,8 @@
  */
 'use strict';
 
+import type {ConsoleBuffer} from './Console';
+
 export type Coverage = Object;
 
 export type Error = {
@@ -63,6 +65,7 @@ export type Suite = {
 };
 
 export type TestResult = {
+  console?: ConsoleBuffer,
   coverage?: Coverage,
   hasUncheckedKeys: boolean,
   memoryUsage?: Bytes,

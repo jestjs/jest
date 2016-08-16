@@ -4,6 +4,7 @@
   "version": "14.1.0",
   "main": "build/jest.js",
   "dependencies": {
+    "callsites": "^1.0.1",
     "chalk": "^1.1.1",
     "graceful-fs": "^4.1.3",
     "istanbul-api": "^1.0.0-aplha.10",

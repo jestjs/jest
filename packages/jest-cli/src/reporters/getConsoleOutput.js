@@ -1,0 +1,44 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+'use strict';
+
+import type {ConsoleBuffer} from 'types/Console';
+
+const chalk = require('chalk');
+const path = require('path');
+
+module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
+  const TITLE_INDENT = verbose ? '  ' : '    ';
+  const CONSOLE_INDENT = TITLE_INDENT + '  ';
+
+  return buffer.reduce((output, {type, message, origin}) => {
+    origin = path.relative(root, origin);
+    message = message
+      .split(/\n/)
+      .map(line => CONSOLE_INDENT + line)
+      .join('\n');
+
+    if (type === 'warn') {
+      message = chalk.yellow(message);
+      type = chalk.yellow(type);
+    } else if (type === 'error') {
+      message = chalk.red(message);
+      type = chalk.red(type);
+    }
+
+    return (
+      output +
+      TITLE_INDENT +
+      (verbose ? type : chalk.bold(type)) +
+      ' ' + chalk.gray(origin) + '\n' +
+      message + '\n'
+    );
+  }, '');
+};

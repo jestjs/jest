@@ -10,10 +10,14 @@
 'use strict';
 
 import type {Path, Config} from 'types/Config';
+import type {TestResult} from 'types/TestResult';
 import type Resolver from '../../jest-resolve/src';
 
+const BufferedConsole = require('./lib/BufferedConsole');
 const Console = require('jest-util').Console;
 const NullConsole = require('jest-util').NullConsole;
+
+const getConsoleOutput = require('./reporters/getConsoleOutput');
 
 class Test {
 
@@ -39,18 +43,31 @@ class Test {
     const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
 
     const env = new TestEnvironment(config);
-    const TestConsole = config.silent ? NullConsole : Console;
-    env.global.console = new TestConsole(
+    const TestConsole =
+      config.verbose
+        ? Console
+        : (config.silent
+          ? NullConsole
+          : BufferedConsole
+        );
+    const testConsole = env.global.console = new TestConsole(
       config.useStderr ? process.stderr : process.stdout,
       process.stderr,
+      (type, message) => getConsoleOutput(
+        config.rootDir,
+        config.verbose,
+        // 4 = the console call is burried 4 stack frames deep
+        BufferedConsole.write([], type, message, 4),
+      ),
     );
     const runtime = new ModuleLoader(config, env, resolver);
     const start = Date.now();
     return TestRunner(config, env, runtime, path)
-      .then(result => {
+      .then((result: TestResult) => {
         result.perfStats = {start, end: Date.now()};
         result.testFilePath = path;
         result.coverage = runtime.getAllCoverageInfo();
+        result.console = testConsole.getBuffer();
         return result;
       })
       .then(

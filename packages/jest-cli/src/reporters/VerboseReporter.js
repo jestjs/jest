@@ -53,7 +53,7 @@ class VerboseReporter extends DefaultReporter {
     if (!testResult.testExecError) {
       this._logTestResults(testResult.testResults);
     }
-    this._printTestFileHeaderAndFailures(config, testResult);
+    this._printTestFileSummary(config, testResult);
     this._printWaitingOn(results, config);
   }
 

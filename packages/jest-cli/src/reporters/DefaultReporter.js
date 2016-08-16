@@ -16,8 +16,10 @@ const BaseReporter = require('./BaseReporter');
 
 const chalk = require('chalk');
 const getResultHeader = require('./getResultHeader');
+const getConsoleOutput = require('./getConsoleOutput');
 
 const RUNNING_TEST_COLOR = chalk.bold.gray;
+const TITLE_BULLET = chalk.bold('\u25cf ');
 
 const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
@@ -32,13 +34,24 @@ class DefaultReporter extends BaseReporter {
     results: AggregatedResult,
   ) {
     this._clearWaitingOn(config);
-    this._printTestFileHeaderAndFailures(config, testResult);
+    this._printTestFileSummary(config, testResult);
     this._printWaitingOn(results, config);
   }
 
-  _printTestFileHeaderAndFailures(config: Config, testResult: TestResult) {
+  _printTestFileSummary(config: Config, testResult: TestResult) {
     this.log(getResultHeader(testResult, config));
-    testResult.failureMessage && this._write(testResult.failureMessage);
+
+    const consoleBuffer = testResult.console;
+    if (consoleBuffer && consoleBuffer.length) {
+      this._write(
+        '  ' + TITLE_BULLET + 'Console\n' +
+        getConsoleOutput(config.rootDir, config.verbose, consoleBuffer),
+      );
+    }
+
+    if (testResult.failureMessage) {
+      this._write(testResult.failureMessage + '\n');
+    }
   }
 
   _clearWaitingOn(config: Config) {

@@ -154,8 +154,10 @@ class SummareReporter extends BaseReporter {
       aggregatedResults.testResults.forEach(testResult => {
         const {failureMessage} = testResult;
         if (failureMessage) {
-          this._write(getResultHeader(testResult, config));
-          this._write(failureMessage);
+          this._write(
+            getResultHeader(testResult, config) + '\n' +
+            failureMessage + '\n',
+          );
         }
       });
       this.log(''); // print empty line
