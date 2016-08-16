@@ -15,8 +15,9 @@ import type {Config} from 'types/Config';
 const BaseReporter = require('./BaseReporter');
 
 const chalk = require('chalk');
-const getResultHeader = require('./getResultHeader');
+const clearLine = require('jest-util').clearLine;
 const getConsoleOutput = require('./getConsoleOutput');
+const getResultHeader = require('./getResultHeader');
 
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 const TITLE_BULLET = chalk.bold('\u25cf ');
@@ -55,7 +56,7 @@ class DefaultReporter extends BaseReporter {
   }
 
   _clearWaitingOn(config: Config) {
-    process.stderr.write(config.noHighlight ? '' : '\r\x1B[K');
+    clearLine(process.stderr);
   }
 
   _printWaitingOn(results: AggregatedResult, config: Config) {
@@ -63,7 +64,7 @@ class DefaultReporter extends BaseReporter {
       results.numPassedTestSuites -
       results.numFailedTestSuites -
       results.numRuntimeErrorTestSuites;
-    if (!config.noHighlight && remaining > 0) {
+    if (process.stdout.isTTY && remaining > 0) {
       process.stderr.write(RUNNING_TEST_COLOR(
         `Running ${pluralize('test suite', remaining)}...`,
       ));

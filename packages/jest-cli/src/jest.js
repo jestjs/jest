@@ -140,11 +140,6 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 
   readConfig(argv, root)
     .then(config => {
-      // Disable colorization
-      if (config.noHighlight) {
-        chalk.enabled = false;
-      }
-
       if (argv.debug) {
         /* $FlowFixMe */
         const testFramework = require(config.testRunner);

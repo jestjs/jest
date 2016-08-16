@@ -36,7 +36,6 @@ module.exports = ({
   moduleFileExtensions: ['js', 'json', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
-  noHighlight: false,
   noStackTrace: false,
   notify: false,
   preset: null,

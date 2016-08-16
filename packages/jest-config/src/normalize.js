@@ -326,7 +326,6 @@ function normalize(config, argv) {
       case 'moduleLoader':
       case 'modulePaths':
       case 'name':
-      case 'noHighlight':
       case 'noStackTrace':
       case 'notify':
       case 'persistModuleRegistryBetweenSpecs':

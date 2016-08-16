@@ -7,19 +7,21 @@
  *
  * @flow
  */
-
+/* global stream$Writable */
 'use strict';
 
 import type {LogType, LogMessage} from 'types/Console';
 
 const Console = require('console').Console;
 
+const clearLine = require('./clearLine');
 const format = require('util').format;
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 class CustomConsole extends Console {
 
+  _stdout: stream$Writable;
   _formatBuffer: Formatter;
 
   constructor(
@@ -33,6 +35,7 @@ class CustomConsole extends Console {
   }
 
   _log(type: LogType, message: string) {
+    clearLine(this._stdout);
     super.log(this._formatBuffer(type, message));
   }
 
