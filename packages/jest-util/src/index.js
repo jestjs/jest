@@ -55,6 +55,7 @@ exports.FakeTimers = require('./FakeTimers');
 exports.JasmineFormatter = require('./JasmineFormatter');
 exports.NullConsole = require('./NullConsole');
 
+exports.clearLine = require('./clearLine');
 exports.createDirectory = createDirectory;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatResultsErrors =

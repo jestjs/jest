@@ -33,7 +33,6 @@ type BaseConfig = {
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   modulePathIgnorePatterns: Array<string>,
-  noHighlight: boolean,
   noStackTrace: boolean,
   notify: boolean,
   preset: ?string,

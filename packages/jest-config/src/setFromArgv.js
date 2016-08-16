@@ -17,9 +17,6 @@ function setFromArgv(config, argv) {
     config.testEnvData = argv.testEnvData;
   }
 
-  config.noHighlight =
-    argv.noHighlight || (!argv.colors && !process.stdout.isTTY);
-
   if (argv.verbose) {
     config.verbose = argv.verbose;
   }

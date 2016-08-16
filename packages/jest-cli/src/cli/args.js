@@ -121,12 +121,6 @@ const options = {
     description: wrap('Print the version and exit'),
     type: 'boolean',
   },
-  noHighlight: {
-    description: wrap(
-      'Disables test results output highlighting',
-    ),
-    type: 'boolean',
-  },
   colors: {
     description: wrap(
       'Forces test results output highlighting (even if stdout is not a TTY)',
