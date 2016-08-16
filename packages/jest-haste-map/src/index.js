@@ -44,6 +44,7 @@ type Options = {
   platforms: Array<string>,
   providesModuleNodeModules?: Array<string>,
   resetCache?: boolean,
+  retainAllFiles: boolean,
   roots: Array<string>,
   useWatchman?: boolean,
 };
@@ -57,6 +58,7 @@ type InternalOptions = {
   name: string,
   platforms: Array<string>,
   resetCache: ?boolean,
+  retainAllFiles: boolean,
   roots: Array<string>,
   useWatchman: boolean,
 };
@@ -178,6 +180,7 @@ class HasteMap {
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
+      retainAllFiles: options.retainAllFiles,
       roots: options.roots,
       useWatchman:
         options.useWatchman == null ? true : options.useWatchman,
@@ -279,6 +282,12 @@ class HasteMap {
     };
 
     for (const filePath in hasteMap.files) {
+      // If we retain all files in the virtual HasteFS representation, we avoid
+      // reading them if they aren't important (node_modules).
+      if (this._options.retainAllFiles && this._isNodeModulesDir(filePath)) {
+        continue;
+      }
+
       if (mocksPattern && mocksPattern.test(filePath)) {
         mocks[path.basename(filePath, path.extname(filePath))] = filePath;
       }
@@ -415,7 +424,7 @@ class HasteMap {
   _ignore(filePath: Path): boolean {
     return (
       this._options.ignorePattern.test(filePath) ||
-      this._isNodeModulesDir(filePath)
+      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
     );
   }
 
