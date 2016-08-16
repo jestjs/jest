@@ -218,7 +218,6 @@ describe('HasteMap', () => {
       ' */',
     ].join('\n');
 
-
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
       mocksPattern: '/__mocks__/',
       providesModuleNodeModules: ['react', 'fbjs'],
@@ -267,6 +266,32 @@ describe('HasteMap', () => {
       // The cache file must exactly mirror the data structure returned
       // from a build.
       expect(hasteMap.read()).toEqual(data);
+    });
+  });
+
+  it('retains all files if `retainAllFiles` is specified', () => {
+    mockFs['/fruits/node_modules/fbjs/index.js'] = [
+      '/**',
+      ' * @providesModule fbjs',
+      ' */',
+    ].join('\n');
+
+    const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
+      mocksPattern: '/__mocks__/',
+      retainAllFiles: true,
+    }));
+
+    return hasteMap.build().then(({__hasteMapForTest: data}) => {
+      // Expect the node module to be part of files but make sure it wasn't
+      // read.
+      expect(
+        data.files['/fruits/node_modules/fbjs/index.js'],
+      ).toEqual(['', 32, 0, []]);
+
+      expect(data.map.fbjs).not.toBeDefined();
+
+      // cache file + 5 modules - the node_module
+      expect(fs.readFileSync.mock.calls.length).toBe(6);
     });
   });
 
