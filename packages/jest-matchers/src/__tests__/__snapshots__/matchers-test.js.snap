@@ -1,0 +1,106 @@
+exports[`.toEqual() fails for 1 and 2 1`] = `
+"expected 1 to deep equal 2
+
+[90mActual: [39m[31m1[39m
+[90mExpected: [39m[32m2[39m"
+`;
+
+exports[`.toEqual() fails for [1,2,3] and [3,2,1] 1`] = `
+"expected [1,2,3] to deep equal [3,2,1]
+
+[31m- expected[39m [32m+ actual[39m
+
+  [37mArray [[39m
+[31m-[39m [31m  3,[39m
+[32m+[39m [32m  1,[39m
+  [37m  2,[39m
+[31m-[39m [31m  1[39m
+[32m+[39m [32m  3[39m
+  [37m][39m
+"
+`;
+
+exports[`.toEqual() fails for [[[[[]]]]] and [[[[[[]]]]]] 1`] = `
+"expected [[[[[]]]]] to deep equal [[[[[[]]]]]]
+
+[31m- expected[39m [32m+ actual[39m
+
+  [37mArray [[39m
+  [37m  Array [[39m
+  [37m    Array [[39m
+  [37m      Array [[39m
+[31m-[39m [31m        Array [[39m
+[31m-[39m [31m          Array [][39m
+[31m-[39m [31m        ][39m
+[32m+[39m [32m        Array [][39m
+  [37m      ][39m
+  [37m    ][39m
+  [37m  ][39m
+  [37m][39m
+"
+`;
+
+exports[`.toEqual() fails for [] and [1,2] 1`] = `
+"expected [] to deep equal [1,2]
+
+[31m- expected[39m [32m+ actual[39m
+
+[90mArray [[39m[31m
+  1,
+  2
+[39m[90m][39m"
+`;
+
+exports[`.toEqual() fails for true and false 1`] = `
+"expected true to deep equal false
+
+[90mActual: [39m[31mtrue[39m
+[90mExpected: [39m[32mfalse[39m"
+`;
+
+exports[`.toEqual() fails for {"a":"undefined"} and {} 1`] = `
+"expected {\"a\":\"undefined\"} to deep equal {}
+
+[31m- expected[39m [32m+ actual[39m
+
+[31m-[39m [31mObject {}[39m
+[32m+[39m [32mObject {[39m
+[32m+[39m [32m  \"a\": undefined[39m
+[32m+[39m [32m}[39m
+"
+`;
+
+exports[`.toEqual() fails for {"a":1} and {"a":5} 1`] = `
+"expected {\"a\":1} to deep equal {\"a\":5}
+
+[31m- expected[39m [32m+ actual[39m
+
+[31m-[39m [31mA {[39m
+[31m-[39m [31m  \"a\": 5[39m
+[32m+[39m [32mObject {[39m
+[32m+[39m [32m  \"a\": 1[39m
+  [37m}[39m
+"
+`;
+
+exports[`.toEqual() fails for {"a":9} and {"a":8} 1`] = `
+"expected {\"a\":9} to deep equal {\"a\":8}
+
+[31m- expected[39m [32m+ actual[39m
+
+  [37mObject {[39m
+[31m-[39m [31m  \"a\": 8[39m
+[32m+[39m [32m  \"a\": 9[39m
+  [37m}[39m
+"
+`;
+
+exports[`.toEqual() fails for {} and {"a":5} 1`] = `
+"expected {} to deep equal {\"a\":5}
+
+[31m- expected[39m [32m+ actual[39m
+
+[90mObject {[39m[31m
+  \"a\": 5
+[39m[90m}[39m"
+`;
