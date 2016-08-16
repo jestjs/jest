@@ -8,23 +8,26 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 ## Our Development Process
 
-Some of the core team will be working directly on GitHub. These changes will be public from the beginning. Other changesets will come via a bridge with Facebook's internal source control. This is a necessity as it allows engineers at Facebook outside of the core team to move fast and contribute from an environment they are comfortable in.
+The core team works directly on GitHub and all work is public.
 
 ### `master` is unsafe
 
 We will do our best to keep `master` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
 
-### Pull Requests
+### Worfklow and Pull Requests
 
 The core team will be monitoring for pull requests. When we get one, we'll run some Facebook-specific integration tests on it first. From here, we'll need to get another person to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delay. We'll do our best to provide updates and feedback throughout the process.
 
 *Before* submitting a pull request, please make sure the following is done…
 
 1. Fork the repo and create your branch from `master`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes (`npm test`).
-5. If you haven't already, complete the CLA.
+2. Run `npm install`. It is recommended to use `npm3`.
+3. If you've added code that should be tested, add tests.
+4. If you've changed APIs, update the documentation.
+5. Ensure the test suite passes (`npm test`). To run the test suite you
+   may need to install Mercurial (`hg`). On macOS, this can be done
+   using [homebrew](http://brew.sh/): `brew install hg`.
+6. If you haven't already, complete the CLA.
 
 ### Contributor License Agreement (CLA)
 
