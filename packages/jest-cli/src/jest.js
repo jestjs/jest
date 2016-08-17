@@ -51,6 +51,7 @@ function buildTestPathPatternInfo(argv) {
     return {
       onlyChanged: true,
       watch: argv.watch !== undefined,
+      lastCommit: argv.lastCommit,
     };
   }
   if (argv.testPathPattern) {

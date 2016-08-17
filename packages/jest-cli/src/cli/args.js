@@ -257,6 +257,14 @@ const options = {
     ),
     type: 'number',
   },
+  lastCommit :{
+    default: false,
+    description: wrap(
+      'Will get the list of changed files from the last commit.'+
+      'Can be used with --onlyChanged for CI testing.',
+    ),
+    type: 'boolean',
+  },
 };
 
 module.exports = {

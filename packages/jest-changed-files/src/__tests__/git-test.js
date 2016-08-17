@@ -54,7 +54,7 @@ describe('gitChecker', () => {
     });
 
     it('returns an empty array for git repo folder without modified files', () => {
-      return git.findChangedFiles(tmpdir).then(res => {
+      return git.findChangedFiles(tmpdir, {lastCommit:false}).then(res => {
         expect(res).toEqual([]);
       });
     });
@@ -63,7 +63,7 @@ describe('gitChecker', () => {
       fs.writeFileSync(tmpfile);
       fs.writeFileSync(tmpfileNested);
 
-      return git.findChangedFiles(tmpdir).then(res => {
+      return git.findChangedFiles(tmpdir, {lastCommit: false}).then(res => {
         expect(res).toEqual([tmpfile, tmpfileNested]);
       });
     });

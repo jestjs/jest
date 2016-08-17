@@ -21,13 +21,17 @@ const env = Object.assign({}, process.env, {
 
 type Options = {
   withAncestor?: boolean,
+  lastCommit?: boolean,
 };
 
 function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {
-    const args = ['status', '-amn'];
+    let args = ['status', '-amn'];
     if (options && options.withAncestor) {
       args.push('--rev', 'ancestor(.^)');
+    }
+    if (options.lastCommit === true) {
+      args = ['tip', '--template', '"{files%\"{file}\n\"}"'];
     }
     const child = childProcess.spawn('hg', args, {cwd, env});
     let stdout = '';
