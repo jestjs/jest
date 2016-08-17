@@ -22,11 +22,10 @@ type Options = {
 
 function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {
-    let args = ['ls-files', '--other', '--modified', '--exclude-standard'];
+    const args = options.lastCommit
+       ? ['show', '--name-only', '--pretty=%b', 'HEAD']
+       : ['ls-files', '--other', '--modified', '--exclude-standard'];
     const child = childProcess.spawn('git', args, {cwd});
-    if (options.lastCommit === true) {
-      args = ['show', '--name-only', '--pretty=%b', 'HEAD'];
-    }
     let stdout = '';
     let stderr = '';
     child.stdout.on('data', data => stdout += data);

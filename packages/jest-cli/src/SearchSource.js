@@ -45,6 +45,10 @@ type PatternInfo = {
   lastCommit?: boolean,
 };
 
+type options = {
+  lastCommit?: boolean
+};
+
 const git = changedFiles.git;
 const hg = changedFiles.hg;
 
@@ -175,7 +179,7 @@ class SearchSource {
     };
   }
 
-  findChangedTests(lastCommit: boolean): Promise<SearchResult> {
+  findChangedTests(options: options): Promise<SearchResult> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
@@ -185,7 +189,6 @@ class SearchSource {
             'only works with git or hg projects.',
           );
         }
-        const options = {lastCommit};
         return Promise.all(Array.from(repos).map(repo => {
           return repo[0]
             ? git.findChangedFiles(repo[0], options)
@@ -242,11 +245,7 @@ class SearchSource {
 
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
-      if (patternInfo.lastCommit) {
-        return this.findChangedTests(true);
-      } else {
-        return this.findChangedTests(false);
-      }
+      return this.findChangedTests({lastCommit: patternInfo.lastCommit});
     } else if (patternInfo.testPathPattern != null) {
       return Promise.resolve(
         this.findMatchingTests(patternInfo.testPathPattern),

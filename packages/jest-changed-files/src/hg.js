@@ -30,7 +30,7 @@ function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
     if (options && options.withAncestor) {
       args.push('--rev', 'ancestor(.^)');
     }
-    if (options.lastCommit === true) {
+    if (options && options.lastCommit === true) {
       args = ['tip', '--template', '{files%"{file}\n"}'];
     }
     const child = childProcess.spawn('hg', args, {cwd, env});
