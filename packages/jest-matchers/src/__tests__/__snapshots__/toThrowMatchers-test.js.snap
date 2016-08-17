@@ -1,0 +1,47 @@
+exports[`.toThrowError() error class did not throw at all 1`] = `"Expected the function to throw an error of [36m[1m\"Err\"[22m[39m type, but it didn\'t."`;
+
+exports[`.toThrowError() error class threw, but class did not match 1`] = `
+"Expected the function to throw an error of [36m[1m\"Err2\"[22m[39m type, but it didn\'t.
+Actual error:
+  Type: [36m[1m\"Err\"[22m[39m
+  Message: [36m[1m\"apple\"[22m[39m"
+`;
+
+exports[`.toThrowError() error class threw, but should not have 1`] = `
+"Expected the function to not throw an error of [36m[1m\"Err\"[22m[39m type, but it did.
+Actual error:
+  Type: [36m[1m\"Err\"[22m[39m
+  Message: [36m[1m\"apple\"[22m[39m"
+`;
+
+exports[`.toThrowError() regexp did not throw at all 1`] = `"Expected the function to throw an error matching [36m[1m\"/apple/\"[22m[39m, but it didn\'t."`;
+
+exports[`.toThrowError() regexp threw, but message did not match 1`] = `
+"Expected the function to throw an error matching [36m[1m\"/banana/\"[22m[39m, but it didn\'t.
+Actual error:
+  Type: [36m[1m\"Error\"[22m[39m
+  Message: [36m[1m\"apple\"[22m[39m"
+`;
+
+exports[`.toThrowError() regexp threw, but should not have 1`] = `
+"Expected the function to not throw an error matching [36m[1m\"/apple/\"[22m[39m, but it did.
+Actual error:
+  Type: [36m[1m\"Error\"[22m[39m
+  Message: [36m[1m\"apple\"[22m[39m"
+`;
+
+exports[`.toThrowError() strings did not throw at all 1`] = `"Expected the function to throw an error matching [36m[1m\"apple\"[22m[39m, but it didn\'t."`;
+
+exports[`.toThrowError() strings threw, but message did not match 1`] = `
+"Expected the function to throw an error matching [36m[1m\"banana\"[22m[39m, but it didn\'t.
+Actual error:
+  Type: [36m[1m\"Error\"[22m[39m
+  Message: [36m[1m\"apple\"[22m[39m"
+`;
+
+exports[`.toThrowError() strings threw, but should not have 1`] = `
+"Expected the function to not throw an error matching [36m[1m\"apple\"[22m[39m, but it did.
+Actual error:
+  Type: [36m[1m\"Error\"[22m[39m
+  Message: [36m[1m\"apple\"[22m[39m"
+`;

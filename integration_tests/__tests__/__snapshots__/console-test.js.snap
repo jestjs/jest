@@ -11,7 +11,7 @@ exports[`test console printing 1`] = `
       This is a error message.
  PASS  __tests__/console2-test.js
   ● Console
-    error __tests__/console2-test.js:11
+    error __tests__/console2-test.js:18
       This is an error from another test file."
 `;
 
@@ -28,7 +28,7 @@ exports[`test console printing with --verbose 1`] = `
   error __tests__/console-test.js:17
     This is a error message.
 
-  error __tests__/console2-test.js:11
+  error __tests__/console2-test.js:18
     This is an error from another test file.
 
 "

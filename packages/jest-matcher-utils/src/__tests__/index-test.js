@@ -53,4 +53,6 @@ describe('.getType()', () => {
   test('function', () => expect(getType(() => {})).toBe('function'));
   test('boolean', () => expect(getType(true)).toBe('boolean'));
   test('symbol', () => expect(getType(Symbol.for('a'))).toBe('symbol'));
+  test('regexp', () => expect(getType(/abc/)).toBe('regexp'));
+
 });

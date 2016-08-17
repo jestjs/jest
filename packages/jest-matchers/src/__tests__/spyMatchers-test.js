@@ -49,9 +49,7 @@ describe('.toHaveBeenCalledTimes()', () => {
   it('accept only numbers', () => {
     const foo = jasmine.createSpy('foo');
     foo();
-
-    expect(() => jestExpect(foo).toHaveBeenCalledTimes(1))
-      .not.toThrowError();
+    jestExpect(foo).toHaveBeenCalledTimes(1);
 
     [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
       expect(() => jestExpect(foo).toHaveBeenCalledTimes(value))
