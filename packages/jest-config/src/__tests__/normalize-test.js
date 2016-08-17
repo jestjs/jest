@@ -476,13 +476,16 @@ describe('normalize', () => {
       Resolver = require('jest-resolve');
       Resolver.findNodeModule = jest.fn(name => {
         if (name === 'jsdom') {
+          return 'node_modules/jsdom';
+        }
+        if (name === 'jest-environment-jsdom') {
           return 'node_modules/jest-environment-jsdom';
         }
         return null;
       });
     });
 
-    it('correctly resolves to an environment', () => {
+    it('resolves to an environment and prefers jest-environment-`name`', () => {
       const config = normalize({
         rootDir: '/root',
         testEnvironment: 'jsdom',
