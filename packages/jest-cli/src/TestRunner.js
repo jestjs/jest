@@ -372,7 +372,7 @@ const addResult = (
 
 const buildFailureTestResult = (
   testPath: string,
-  err: TestError
+  err: TestError,
 ): TestResult => {
   return {
     failureMessage: null,

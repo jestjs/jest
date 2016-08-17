@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {linkJestPackage, run} = require('../utils');
+const {run} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 
