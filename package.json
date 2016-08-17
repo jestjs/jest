@@ -1,4 +1,7 @@
 {
+  "name": "jest",
+  "description": "JavaScript unit testing.",
+  "version": "0.7.1",
   "private": true,
   "devDependencies": {
     "babel-core": "^6.13.2",
