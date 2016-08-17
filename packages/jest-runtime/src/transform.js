@@ -245,7 +245,11 @@ const stripShebang = content => {
   }
 };
 
-const instrumentFile = (content: string, filename: Path): string => {
+const instrumentFile = (
+  content: string,
+  filename: Path,
+  config: Config,
+): string => {
   // NOTE: Keeping these requires inside this function reduces a single run
   // time by 2sec if not running in `--coverage` mode
   const babel = require('babel-core');
@@ -257,11 +261,10 @@ const instrumentFile = (content: string, filename: Path): string => {
     plugins: [
       [
         babelPluginIstanbul,
-        // right now babel-plugin-istanbul doesn't have any configuration
-        // for bypassing the excludes check, but there is a config for
-        // overwriting it. `.^` as a regexp that matches nothing.
-        // @see https://github.com/istanbuljs/test-exclude/issues/7
-        {exclude: ['.^']},
+        {
+          exclude: [],
+          cwd: config.rootDir, // files outside `cwd` will not be instrumented
+        },
       ],
     ],
     retainLines: true,

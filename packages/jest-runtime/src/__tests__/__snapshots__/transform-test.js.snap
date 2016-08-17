@@ -1,25 +1,25 @@
 exports[`transform transforms a file properly 1`] = `
-"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest){module.exports = "banana";
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var __cov_x7UnmYr4Z2Ri0gDGHLEpjtffMpg = function () {var path = \"/fruits/banana.js\",hash = \"967e86f6721738b8589b8f0bc5c9bd25c31f4c70\",global = new Function(\'return this\')(),gcv = \"__coverage__\",coverageData = { path: \"/fruits/banana.js\", statementMap: { \"1\": { start: { line: 1, column: 0 }, end: { line: 1, column: 26 } } }, fnMap: {}, branchMap: {}, s: { \"1\": 0 }, f: {}, b: {} },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++__cov_x7UnmYr4Z2Ri0gDGHLEpjtffMpg.s[\"1\"];module.exports = \"banana\";
 }});"
 `;
 
 exports[`transform transforms a file properly 2`] = `
-"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest){module.exports = () => "kiwi";
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var __cov_wuuMqT2G_TkJ4rkmzKzBUe21Zsw = function () {var path = \"/fruits/kiwi.js\",hash = \"6810277195333df07a5b9afed35f8b879dd205ca\",global = new Function(\'return this\')(),gcv = \"__coverage__\",coverageData = { path: \"/fruits/kiwi.js\", statementMap: { \"1\": { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } }, \"2\": { start: { line: 1, column: 23 }, end: { line: 1, column: 29 } } }, fnMap: { \"1\": { name: \"(anonymous_1)\", decl: { start: { line: 1, column: 17 }, end: { line: 1, column: 18 } }, loc: { start: { line: 1, column: 23 }, end: { line: 1, column: 29 } } } }, branchMap: {}, s: { \"1\": 0, \"2\": 0 }, f: { \"1\": 0 }, b: {} },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++__cov_wuuMqT2G_TkJ4rkmzKzBUe21Zsw.s[\"1\"];module.exports = () => {/* istanbul ignore next */++__cov_wuuMqT2G_TkJ4rkmzKzBUe21Zsw.f[\"1\"];++__cov_wuuMqT2G_TkJ4rkmzKzBUe21Zsw.s[\"2\"];return \"kiwi\";};
 }});"
 `;
 
 exports[`transform uses the supplied preprocessor 1`] = `
-"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest){
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
           const TRANSFORMED = {
-            filename: '/fruits/banana.js',
-            script: 'module.exports = "banana";',
-            config: '{"cache":true,"cacheDirectory":"/cache/","name":"test","preprocessorIgnorePatterns":["/node_modules/"],"scriptPreprocessor":"test-preprocessor"}',
+            filename: \'/fruits/banana.js\',
+            script: \'module.exports = \"banana\";\',
+            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"preprocessorIgnorePatterns\":[\"/node_modules/\"],\"rootDir\":\"/\",\"scriptPreprocessor\":\"test-preprocessor\"}\',
           };
         
 }});"
 `;
 
 exports[`transform uses the supplied preprocessor 2`] = `
-"({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,global,jest){module.exports = "react";
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \"react\";
 }});"
 `;
