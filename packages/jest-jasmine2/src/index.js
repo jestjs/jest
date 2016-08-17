@@ -173,37 +173,6 @@ function jasmine2(
     });
 
     jasmine.addMatchers({
-      toBeCalled: () => ({
-        compare: (actual, expected) => {
-          if (expected) {
-            throw Error(
-              'toBeCalled() does not accept parameters, use ' +
-              'toBeCalledWith instead.',
-            );
-          }
-          const isSpy = isSpyLike(actual);
-          if (!isSpy && !isMockLike(actual)) {
-            throw Error(
-              'toBeCalled() should be used on a mock function or ' +
-              'a jasmine spy.',
-            );
-          }
-          const calls = isSpy
-            ? actual.calls.all().map(x => x.args)
-            : actual.mock.calls;
-          const pass = calls.length !== 0;
-          const message = (
-            pass ?
-            'Expected not to be called' :
-            'Expected to be called at least once'
-          );
-          return {
-            pass,
-            message,
-          };
-        },
-      }),
-
       lastCalledWith: util => ({
         compare(actual) {
           const isSpy = isSpyLike(actual);

@@ -51,24 +51,9 @@ const SHOULD_NOT_HAVE_LAST_CALLED_WITH =
 const getMockedFunctionWithExpectationResult = expectationResult => {
   const mockedFunction = jest.fn();
   const expectation = expect(mockedFunction);
-  if (expectation.addExpectationResult) {
-    expectation.addExpectationResult =
-      expectation.not.addExpectationResult =
-        expectationResult;
-  } else {
-    // skip this tests for jasmine 1 for now by returning a mocked expectation
-    return {
-      toBeCalled() {},
-      toBeCalledWith() {},
-      lastCalledWith() {},
-      not: {
-        toBeCalled() {},
-        toBeCalledWith() {},
-        lastCalledWith() {},
-      },
-      function: mockedFunction,
-    };
-  }
+  expectation.addExpectationResult =
+    expectation.not.addExpectationResult =
+      expectationResult;
   expectation.function = mockedFunction;
   return expectation;
 };
@@ -134,42 +119,6 @@ describe('jasmine', () => {
 });
 
 describe('Jest custom matchers in Jasmine 2', () => {
-
-  describe('toBeCalled', () => {
-
-    it('shows a custom message when the test fails', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(CALLED_AT_LEAST_ONCE);
-        },
-      );
-      expectation.toBeCalled();
-    });
-
-    it('shows another message for failing a "not" expression', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(SHOULD_NOT_BE_CALLED);
-        },
-      );
-      expectation.function();
-      expectation.not.toBeCalled();
-    });
-
-    it(`doesn't show any message when succeeding`, () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(true);
-          expect(result.message).toBe('');
-        },
-      );
-      expectation.function();
-      expectation.toBeCalled();
-    });
-
-  });
 
   describe('lastCalledWith', () => {
 
