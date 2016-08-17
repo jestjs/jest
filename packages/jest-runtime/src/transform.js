@@ -60,6 +60,7 @@ const getCacheKey = (
       mocksPattern: config.mocksPattern,
       moduleFileExtensions: config.moduleFileExtensions,
       moduleNameMapper: config.moduleNameMapper,
+      preprocessorIgnorePatterns: config.preprocessorIgnorePatterns,
       rootDir: config.rootDir,
       testPathDirs: config.testPathDirs,
       testRegex: config.testRegex,

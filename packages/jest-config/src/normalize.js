@@ -55,24 +55,24 @@ function _replaceRootDirTags(rootDir, config) {
 
 function getTestEnvironment(config) {
   const env = config.testEnvironment;
-  let module = Resolver.findNodeModule(env, {basedir: config.rootDir});
-  if (module) {
-    return module;
-  }
-
-  module = Resolver.findNodeModule(`jest-environment-${env}`, {
+  let module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
   });
   if (module) {
     return module;
   }
 
-  try {
-    return require.resolve(env);
-  } catch (e) {}
+  module = Resolver.findNodeModule(env, {basedir: config.rootDir});
+  if (module) {
+    return module;
+  }
 
   try {
     return require.resolve(`jest-environment-${env}`);
+  } catch (e) {}
+
+  try {
+    return require.resolve(env);
   } catch (e) {}
 
   throw new Error(
