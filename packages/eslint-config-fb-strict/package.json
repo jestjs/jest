@@ -1,5 +1,5 @@
 {
-  "name": "strict-fb-style",
+  "name": "eslint-config-fb-strict",
   "version": "14.1.3",
   "repository": {
     "type": "git",
