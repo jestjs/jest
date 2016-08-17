@@ -643,7 +643,7 @@ class Runtime {
     const mock = (
       moduleName: string,
       mockFactory: Object,
-      options: {virtual: boolean}
+      options: {virtual: boolean},
     ) => {
       if (mockFactory !== undefined) {
         return setMockFactory(moduleName, mockFactory, options);
