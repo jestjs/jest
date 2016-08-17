@@ -132,10 +132,6 @@ function normalize(config, argv) {
     config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
   }
 
-  if (config.coverageThreshold) {
-    config.collectCoverage = true;
-  }
-
   if (!config.setupFiles) {
     config.setupFiles = [];
   }
