@@ -18,8 +18,6 @@ import type {Config, Path} from 'types/Config';
 import type {HasteContext, HasteFS} from 'types/HasteMap';
 import type BaseReporter from './reporters/BaseReporter';
 
-const Test = require('./Test');
-
 const {formatExecError} = require('jest-util');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
@@ -28,6 +26,7 @@ const NotifyReporter = require('./reporters/NotifyReporter');
 const SummaryReporter = require('./reporters/SummaryReporter');
 const VerboseReporter = require('./reporters/VerboseReporter');
 const promisify = require('./lib/promisify');
+const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
 const workerFarm = require('worker-farm');
 
@@ -226,7 +225,7 @@ class TestRunner {
     return testPaths.reduce((promise, path) =>
       promise
         .then(() => this._hasteContext)
-        .then(data => new Test(path, this._config, data.resolver).run())
+        .then(data => runTest(path, this._config, data.resolver))
         .then(result => onTestResult(path, result))
         .catch(err => onRunFailure(path, err)),
       Promise.resolve(),
@@ -245,9 +244,9 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._options.maxWorkers,
     }, TEST_WORKER_PATH);
-    const runTest = promisify(farm);
+    const runTestInWorkerFarm = promisify(farm);
     return Promise.all(testPaths.map(
-      path => runTest({path, config})
+      path => runTestInWorkerFarm({path, config})
         .then(testResult => onTestResult(path, testResult))
         .catch(err => {
           onRunFailure(path, err);

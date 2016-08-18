@@ -21,7 +21,7 @@ process.on('uncaughtException', err => {
 });
 
 const Runtime = require('jest-runtime');
-const Test = require('./Test');
+const runTest = require('./runTest');
 
 type WorkerData = {
   config: Config,
@@ -59,8 +59,7 @@ module.exports = (data: WorkerData, callback: WorkerCallback) => {
       );
     }
 
-    new Test(data.path, data.config, resolvers[name])
-      .run()
+    runTest(data.path, data.config, resolvers[name])
       .then(
         result => callback(null, result),
         error => callback(formatError(error)),
