@@ -14,8 +14,6 @@ jest.disableAutomock();
 const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 const formatter = new JasmineFormatter(jasmine, {global: {}});
-const CALLED_AT_LEAST_ONCE = 'Expected to be called at least once';
-const SHOULD_NOT_BE_CALLED = 'Expected not to be called';
 const NOT_EXPECTED_VALUES =
   'Was not called with the expected values.\n' +
   `Expected call:\n${formatter.prettyPrint([1, {}, 'Error'])}\n` +
