@@ -13,6 +13,7 @@
 import type {MatchersObject} from './types';
 
 const diff = require('jest-diff');
+const deepEqual = require('deep-equal');
 const {
   stringify,
   ensureNoExpected,
@@ -35,8 +36,7 @@ const matchers: MatchersObject = {
       return {
         pass,
         message() {
-          let diffString = '\n\n';
-          diffString += diff(expected, actual);
+          let diffString = '\n\n' + diff(expected, actual);
           return `expected '${stringify(actual)}' to be` +
           ` '${stringify(expected)}' (using '===')${diffString}`;
         },
@@ -172,6 +172,17 @@ const matchers: MatchersObject = {
       : () => `expected '${actual}' to be close to '${expected}'` +
         ` with ${precision}-digit precision`;
 
+    return {message, pass};
+  },
+
+  toEqual(actual: any, expected: any) {
+    const pass = deepEqual(actual, expected, {strict: true});
+    const message = pass
+      ? () =>
+        `expected ${stringify(actual)} not to deep equal ${stringify(expected)}`
+      : () =>
+        `expected ${stringify(actual)} to deep equal ${stringify(expected)}` +
+        `\n\n${diff(expected, actual)}`;
     return {message, pass};
   },
 

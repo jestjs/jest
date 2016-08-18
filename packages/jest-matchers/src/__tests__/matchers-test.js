@@ -267,6 +267,63 @@ describe('.toBeCloseTo()', () => {
   });
 });
 
+describe('.toEqual()', () => {
+  class A {
+    constructor() {
+      this.a = 5;
+    }
+  }
+
+  [
+    ['foo', 'foo'],
+    [1, 1],
+    [true, true],
+    [[], []],
+    [{}, {}],
+    [null, null],
+    [undefined, undefined],
+    [0.1, 0.1],
+    [Infinity, Infinity],
+    [{a: 5}, {a: 5}],
+    [[1, 2], [1, 2]],
+    [{a: 5}, new A()],
+    [new A(), new A()],
+    [{a: {b: {c: [[5]]}}}, {a: {b: {c: [[5]]}}}],
+    [new Set([1, 2]), new Set([1, 2])],
+    [new Map(), new Map()],
+    [new WeakMap(), new WeakMap()],
+  ].forEach(([a, b]) => {
+    it(`passes for ${stringify(a)} and ${stringify(b)}`, () => {
+      expect(a).toEqual(b);
+    });
+  });
+
+  [
+    [1, 2],
+    [true, false],
+    [{}, {a: 5}],
+    [[], [1, 2]],
+    [{a: 1}, new A()],
+    [{a: 9}, {a: 8}],
+    [[1, 2, 3], [3, 2, 1]],
+    [[[[[[]]]]], [[[[[[]]]]]]],
+    [{a: undefined}, {}],
+  ].forEach(([a, b]) => {
+    it(`fails for ${stringify(a)} and ${stringify(b)}`, () => {
+      let error;
+
+      try {
+        expect(a).toEqual(b);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+});
+
 describe('.toMatch()', () => {
   [['foo', 'foo'], ['Foo bar', /^foo/i]].forEach(([n1, n2]) => {
     it(`passes: [${n1}, ${n2}]`, () => {
