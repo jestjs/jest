@@ -1,0 +1,6 @@
+exports[`failure messages toMatchSnapshot 1`] = `
+Object {
+  "a": 1,
+  "b": 2
+}
+`;

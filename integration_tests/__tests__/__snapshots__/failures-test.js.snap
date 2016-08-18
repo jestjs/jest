@@ -1,0 +1,9 @@
+exports[`test failure messages 1`] = `
+"  console.log __tests__/test-error-test.js:12
+    This is what a log looks like.
+
+  console.error __tests__/test-error-test.js:14
+    This is what an error looks like.
+
+"
+`;

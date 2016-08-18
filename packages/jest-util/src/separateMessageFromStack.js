@@ -9,13 +9,19 @@
  */
 'use strict';
 
+const ERROR_TEXT = 'Error: ';
 
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
 module.exports = (content: string) => {
   const messageMatch = content.match(/(^(.|\n)*?(?=\n\s*at\s.*\:\d*\:\d*))/);
-  const message = messageMatch ? messageMatch[0] : 'Error';
+  let message = messageMatch ? messageMatch[0] : 'Error';
   const stack = messageMatch ? content.slice(message.length) : content;
+  // If the error is a plain error instead of a SyntaxError or TypeError
+  // we remove it from the message because it is generally not useful.
+  if (message.startsWith(ERROR_TEXT)) {
+    message = message.substr(ERROR_TEXT.length);
+  }
   return {message, stack};
 };

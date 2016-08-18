@@ -25,20 +25,18 @@ module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
       .map(line => CONSOLE_INDENT + line)
       .join('\n');
 
+    let typeMessage = 'console.' + type;
     if (type === 'warn') {
       message = chalk.yellow(message);
-      type = chalk.yellow(type);
+      typeMessage = chalk.yellow(typeMessage);
     } else if (type === 'error') {
       message = chalk.red(message);
-      type = chalk.red(type);
+      typeMessage = chalk.red(typeMessage);
     }
 
     return (
-      output +
-      TITLE_INDENT +
-      (verbose ? type : chalk.bold(type)) +
-      ' ' + chalk.gray(origin) + '\n' +
-      message + '\n'
+      output + TITLE_INDENT + chalk.dim(typeMessage) +
+      ' ' + chalk.gray(origin) + '\n' + message + '\n'
     );
   }, '');
 };

@@ -39,15 +39,17 @@ const spyMatchers: MatchersObject = {
     ensureExpectedIsNumber(expected, 'toHaveBeenCalledTimes');
     ensureMockOrSpy(actual, 'toHaveBeenCalledTimes');
 
-    const count = isSpy(actual)
+    const actualIsSpy = isSpy(actual);
+    const type = actualIsSpy ? 'spy' : 'mock function';
+    const count = actualIsSpy
       ? actual.calls.count()
       : actual.mock.calls.length;
     const pass = count === expected;
     const message = pass
-      ? `expected a spy to not be called ${expected} times,` +
-        ` but it was called ${count} times`
-      : `expected a spy to be called ${expected} times,` +
-        ` but it was called ${count} times`;
+      ? `Expected the ${type} not to be called ${expected} times,` +
+        ` but it was called ${count} times.`
+      : `Expected the ${type} to be called ${expected} times,` +
+        ` but it was called ${count} times.`;
 
     return {message, pass};
   },
@@ -56,9 +58,9 @@ const spyMatchers: MatchersObject = {
 const jestToHaveBeenCalled = actual => {
   const pass = actual.mock.calls.length > 0;
   const message = pass
-    ? `expected a mock to not be called, but it was` +
-      ` called ${actual.mock.calls.length} times`
-    : `expected a mock to be called but it wasn't`;
+    ? `Expected the mock function not to be called, but it was` +
+      ` called ${actual.mock.calls.length} times.`
+    : `Expected the mock function to be called.`;
 
   return {message, pass};
 };
@@ -66,9 +68,9 @@ const jestToHaveBeenCalled = actual => {
 const jasmineToHaveBeenCalled = actual => {
   const pass = actual.calls.any();
   const message = pass
-    ? `expected a spy to not be called, but it was` +
-      ` called ${actual.calls.count()} times`
-    : `expected a spy to be called but it wasn't`;
+    ? `Expected the spy not to be called, but it was` +
+      ` called ${actual.calls.count()} times.`
+    : `Expected the spy to be called.`;
 
   return {message, pass};
 };
@@ -81,7 +83,7 @@ const ensureMockOrSpy = (mockOrSpy, matcherName) => {
     mockOrSpy._isMockFunction !== true
   ) {
     throw new Error(
-      `${matcherName} matcher can only execute on a Spy or Mock function`,
+      `${matcherName} matcher can only be used on a spy or mock function.`,
     );
   }
 };

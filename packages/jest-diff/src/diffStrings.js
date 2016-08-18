@@ -13,11 +13,19 @@
 const chalk = require('chalk');
 const jsDiff = require('diff');
 
-const ANNOTATION = `${chalk.red('- expected')} ${chalk.green('+ actual')}\n\n`;
-const NO_DIFF_MESSAGE = require('./constants.js').NO_DIFF_MESSAGE;
+const {NO_DIFF_MESSAGE} = require('./constants.js');
+
+export type DiffOptions = {
+  aAnnotation: string,
+  bAnnotation: string,
+};
+
+const getAnnotation = options =>
+  chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +
+  chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
 
 // diff characters if oneliner and diff lines if multiline
-function diffStrings(a: string, b: string): ?string {
+function diffStrings(a: string, b: string, options: ?DiffOptions): ?string {
   const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
   let isDifferent = false;
   let result;
@@ -34,20 +42,18 @@ function diffStrings(a: string, b: string): ?string {
 
       const lines = part.value.split('\n');
       const color = part.added
-        ? chalk.green
-        : (part.removed ? chalk.red : chalk.white);
+        ? chalk.red
+        : (part.removed ? chalk.green : chalk.white);
 
       if (lines[lines.length - 1] === '') {
         lines.pop();
       }
 
       return lines.map(line => {
-        const mark = part.added
-          ? chalk.green('+')
-          : part.removed ? chalk.red('-') : ' ';
+        const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
         return mark + ' ' +  color(line) + '\n';
       }).join('');
-    }).join('');
+    }).join('').trim();
   } else {
     result = jsDiff.diffChars(a, b).map(part => {
       if (part.added || part.removed) {
@@ -62,7 +68,7 @@ function diffStrings(a: string, b: string): ?string {
   }
 
   if (isDifferent) {
-    return ANNOTATION + result;
+    return getAnnotation(options) + result;
   } else {
     return NO_DIFF_MESSAGE;
   }

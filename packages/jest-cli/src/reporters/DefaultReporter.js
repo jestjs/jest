@@ -45,8 +45,8 @@ class DefaultReporter extends BaseReporter {
     const consoleBuffer = testResult.console;
     if (consoleBuffer && consoleBuffer.length) {
       this._write(
-        '  ' + TITLE_BULLET + 'Console\n' +
-        getConsoleOutput(config.rootDir, config.verbose, consoleBuffer),
+        '  ' + TITLE_BULLET + 'Console\n\n' +
+        getConsoleOutput(config.rootDir, config.verbose, consoleBuffer) + '\n',
       );
     }
 
