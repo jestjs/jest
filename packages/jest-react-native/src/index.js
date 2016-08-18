@@ -9,6 +9,12 @@
 /* global jest */
 
 jest
+  .mock('ImageViewManager', () => ({
+    prefetchImage: jest.fn(),
+    getSize: jest.fn((uri, success, failure) =>
+      process.nextTick(() => success(1, 1)),
+    ),
+  }), {virtual: true})
   .mock('Image', () => {
     const realImage = require.requireActual('Image');
     const React = require('React');
@@ -20,6 +26,8 @@ jest
 
     Image.resizeMode = realImage.resizeMode;
     Image.propTypes = realImage.propTypes;
+    Image.prefetch = realImage.prefetch;
+    Image.getSize = realImage.getSize;
     return Image;
   })
   .mock('Text', () => {
