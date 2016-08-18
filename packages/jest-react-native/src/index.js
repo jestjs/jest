@@ -12,7 +12,7 @@ jest
   .mock('ImageViewManager', () => ({
     prefetchImage: jest.fn(),
     getSize: jest.fn((uri, success, failure) =>
-      process.nextTick(() => success(1, 1)),
+      process.nextTick(() => success(320, 240)),
     ),
   }), {virtual: true})
   .mock('Image', () => {
