@@ -12,7 +12,7 @@
 const runJest = require('../runJest');
 
 test('Verbose Reporter', () => {
-  const result = runJest('verbose_logger', ['--verbose']);
+  const result = runJest('verbose_logger');
   const stderr = result.stderr.toString();
 
   expect(result.status).toBe(1);
