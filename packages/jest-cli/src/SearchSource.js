@@ -37,15 +37,15 @@ type SearchResult = {
 type StrOrRegExpPattern = RegExp | string;
 
 type PatternInfo = {
-  onlyChanged?: boolean,
-  watch?: boolean,
-  testPathPattern?: string,
   input?: string,
-  shouldTreatInputAsPattern?: boolean,
   lastCommit?: boolean,
+  onlyChanged?: boolean,
+  shouldTreatInputAsPattern?: boolean,
+  testPathPattern?: string,
+  watch?: boolean,
 };
 
-type options = {
+type Options = {
   lastCommit?: boolean,
 };
 
@@ -179,7 +179,7 @@ class SearchSource {
     };
   }
 
-  findChangedTests(options: options): Promise<SearchResult> {
+  findChangedTests(options: Options): Promise<SearchResult> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
