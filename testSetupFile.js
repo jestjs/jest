@@ -9,4 +9,4 @@
 
 // Some of the `jest-runtime` tests are very slow and cause
 // timeouts on travis
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 70000;
