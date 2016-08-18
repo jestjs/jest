@@ -53,6 +53,16 @@ exports[`test tests with no implementation 1`] = `
   ○ it, no implementation
   ○ test, no implementation
 
-Test Summary
- › Ran all tests."
+
+"
+`;
+
+exports[`test global jest variables 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     4 passed (11 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
 `;

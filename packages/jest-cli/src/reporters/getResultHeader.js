@@ -12,8 +12,8 @@
 import type {TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
 
+const {formatTestPath} = require('./utils');
 const chalk = require('chalk');
-const path = require('path');
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
@@ -22,10 +22,9 @@ const FAIL = chalk.reset.inverse.bold.red(' FAIL ');
 const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
 module.exports = (testResult: TestResult, config: Config) => {
-  const pathStr = config.rootDir
-    ? path.relative(config.rootDir, testResult.testFilePath)
-    : testResult.testFilePath;
-  const allTestsPassed = testResult.numFailingTests === 0;
+  const testPath = testResult.testFilePath;
+  const allTestsPassed = testResult.numFailingTests === 0
+    && !testResult.testExecError;
   const runTime = testResult.perfStats
     ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
     : null;
@@ -40,9 +39,6 @@ module.exports = (testResult: TestResult, config: Config) => {
     testDetail.push(`${toMB(testResult.memoryUsage)} MB heap size`);
   }
 
-  const dirname = path.dirname(pathStr);
-  const basename = path.basename(pathStr);
-  const testFileStr = chalk.dim(dirname + path.sep) + chalk.bold(basename);
-  return `${allTestsPassed ? PASS : FAIL} ${testFileStr}` +
+  return `${allTestsPassed ? PASS : FAIL} ${formatTestPath(config, testPath)}` +
   (testDetail.length ? ` (${testDetail.join(', ')})` : '');
 };

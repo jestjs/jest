@@ -29,6 +29,7 @@ const VerboseReporter = require('./reporters/VerboseReporter');
 const promisify = require('./lib/promisify');
 const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
+const throat = require('throat');
 const workerFarm = require('worker-farm');
 
 const SLOW_TEST_TIME = 3000;
@@ -157,16 +158,23 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      this._dispatcher.onTestResult(
+        config,
+        testResult,
+        aggregatedResults,
+      );
       this._bailIfNeeded(aggregatedResults);
     };
 
     const onRunFailure = (testPath: Path, err: TestError) => {
       const testResult = buildFailureTestResult(testPath, err);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
-      aggregatedResults.testResults.push(testResult);
-      aggregatedResults.numRuntimeErrorTestSuites++;
-      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      addResult(aggregatedResults, testResult);
+      this._dispatcher.onTestResult(
+        config,
+        testResult,
+        aggregatedResults,
+      );
     };
 
     const setSuccess = () => {
@@ -228,12 +236,19 @@ class TestRunner {
     onTestResult: OnTestResult,
     onRunFailure: OnRunFailure,
   ) {
-    return testPaths.reduce((promise, path) =>
-      promise
-        .then(() => this._hasteContext)
-        .then(data => runTest(path, this._config, data.resolver))
-        .then(result => onTestResult(path, result))
-        .catch(err => onRunFailure(path, err)),
+    const mutex = throat(1);
+
+    return testPaths.reduce(
+      (promise, path) => {
+        return mutex(() => {
+          return promise
+            .then(() => this._dispatcher.onTestStart(this._config, path))
+            .then(() => this._hasteContext)
+            .then(data => runTest(path, this._config, data.resolver))
+            .then(result => onTestResult(path, result))
+            .catch(err => onRunFailure(path, err));
+        });
+      },
       Promise.resolve(),
     );
   }
@@ -250,25 +265,42 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._options.maxWorkers,
     }, TEST_WORKER_PATH);
-    const runTestInWorkerFarm = promisify(farm);
-    return Promise.all(testPaths.map(
-      path => runTestInWorkerFarm({path, config})
+    const mutex = throat(this._options.maxWorkers);
+    const runTestInFarm = ({path, config}) => {
+      // send test suites to workes continuously, not just dump the whole
+      // map at once. We need this to track the start time of individual tests.
+      return mutex(() => {
+        this._dispatcher.onTestStart(config, path);
+        return promisify(farm)({path, config});
+      });
+    };
+
+    const catchError = (err, path) => {
+      onRunFailure(path, err);
+      if (err.type === 'ProcessTerminatedError') {
+        console.error(
+          'A worker process has quit unexpectedly! ' +
+          'Most likely this an initialization error.',
+        );
+        process.exit(1);
+      }
+    };
+
+    return Promise.all(testPaths.map(path => {
+      return runTestInFarm({path, config})
         .then(testResult => onTestResult(path, testResult))
-        .catch(err => {
-          onRunFailure(path, err);
-          if (err.type === 'ProcessTerminatedError') {
-            console.error(
-              'A worker process has quit unexpectedly! ' +
-              'Most likely this an initialization error.',
-            );
-            process.exit(1);
-          }
-        })),
-    )
+        .catch(err => catchError(err, path));
+    }))
     .then(() => workerFarm.end(farm));
   }
 
   _setupReporters() {
+    this.addReporter(
+      this._config.verbose
+      ? new VerboseReporter()
+      : new DefaultReporter(),
+    );
+
     if (this._config.collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
@@ -276,12 +308,6 @@ class TestRunner {
       this.addReporter(new CoverageReporter());
     }
     this.addReporter(new SummaryReporter());
-    this.addReporter(
-      this._config.verbose
-        ? new VerboseReporter()
-        : new DefaultReporter(),
-    );
-
     if (this._config.notify) {
       this.addReporter(new NotifyReporter());
     }
@@ -330,7 +356,7 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
 const addResult = (
   aggregatedResults: AggregatedResult,
   testResult: TestResult,
-) => {
+): void => {
   aggregatedResults.testResults.push(testResult);
   aggregatedResults.numTotalTests +=
     testResult.numPassingTests +
@@ -340,7 +366,10 @@ const addResult = (
   aggregatedResults.numFailedTests += testResult.numFailingTests;
   aggregatedResults.numPassedTests += testResult.numPassingTests;
   aggregatedResults.numPendingTests += testResult.numPendingTests;
-  if (testResult.numFailingTests > 0) {
+  if (testResult.testExecError) {
+    aggregatedResults.numRuntimeErrorTestSuites++;
+  }
+  if (testResult.numFailingTests > 0 || testResult.testExecError) {
     aggregatedResults.numFailedTestSuites++;
   } else {
     aggregatedResults.numPassedTestSuites++;
@@ -368,6 +397,7 @@ const addResult = (
   aggregatedResults.snapshot.total +=
     testResult.snapshot.added +
     testResult.snapshot.matched +
+    testResult.snapshot.unmatched +
     testResult.snapshot.updated;
 };
 
@@ -378,7 +408,8 @@ const buildFailureTestResult = (
   return {
     console: null,
     failureMessage: null,
-    numFailingTests: 1,
+    hasUncheckedKeys: false,
+    numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,
     perfStats: {
@@ -423,7 +454,18 @@ class ReporterDispatcher {
 
   onTestResult(config, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(config, testResult, results, this._runnerContext),
+      reporter.onTestResult(
+        config,
+        testResult,
+        results,
+        this._runnerContext,
+      ),
+    );
+  }
+
+  onTestStart(config, path) {
+    this._reporters.forEach(reporter =>
+      reporter.onTestStart(config, path, this._runnerContext),
     );
   }
 

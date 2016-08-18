@@ -9,6 +9,7 @@
 
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary} = require('../utils');
 
 describe('Stack Trace', () => {
   skipOnWindows.suite();
@@ -17,9 +18,8 @@ describe('Stack Trace', () => {
     const result = runJest('stack_trace', ['runtime-error-test.js']);
     const stderr = result.stderr.toString();
 
-    expect(stderr).toMatch(
-      /1 test suite failed, 0 tests passed/
-    );
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+
     expect(result.status).toBe(1);
     expect(stderr).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/
@@ -36,9 +36,7 @@ describe('Stack Trace', () => {
     ]);
     const stderr = result.stderr.toString();
 
-    expect(stderr).toMatch(
-      /1 test suite failed, 0 tests passed/
-    );
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(1);
 
     expect(stderr).toMatch(
@@ -53,7 +51,7 @@ describe('Stack Trace', () => {
     const result = runJest('stack_trace', ['stack-trace-test.js']);
     const stderr = result.stderr.toString();
 
-    expect(stderr).toMatch(/1 test failed, 0 tests passed/);
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(1);
 
     expect(stderr).toMatch(
@@ -68,7 +66,7 @@ describe('Stack Trace', () => {
     ]);
     const stderr = result.stderr.toString();
 
-    expect(stderr).toMatch(/1 test failed, 0 tests passed/);
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(1);
 
     expect(stderr).not.toMatch(
@@ -80,7 +78,7 @@ describe('Stack Trace', () => {
     const result = runJest('stack_trace', ['test-error-test.js']);
     const stderr = result.stderr.toString();
 
-    expect(stderr).toMatch(/3 tests failed, 0 tests passed/);
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(1);
 
     expect(stderr).toMatch(/this is unexpected\./);
@@ -109,7 +107,7 @@ describe('Stack Trace', () => {
     ]);
     const stderr = result.stderr.toString();
 
-    expect(stderr).toMatch(/3 tests failed, 0 tests passed/);
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(1);
 
     expect(stderr).not.toMatch(

@@ -1,0 +1,31 @@
+exports[`wrapAnsiString() wraps a long string containing ansi chars 1`] = `
+"abcde [31m[1mred-
+bold[22m[39m 12344
+56[2mbcd[22m 123t
+tttttththt
+hththththt
+hththththt
+hththththt
+hthththtet
+etetetette
+tetetetete
+tetete[4m[1mstnh
+snthsnth[22m[24mss
+ot"
+`;
+
+exports[`wrapAnsiString() wraps a long string containing ansi chars 2`] = `
+"abcde red-
+bold 12344
+56bcd 123t
+tttttththt
+hththththt
+hththththt
+hththththt
+hthththtet
+etetetette
+tetetetete
+tetetestnh
+snthsnthss
+ot"
+`;

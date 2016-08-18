@@ -11,8 +11,18 @@ exports[`test console printing 1`] = `
     console.error __tests__/console-test.js:17
       This is an error message.
 
-Test Summary
- › Ran all tests."
+
+"
+`;
+
+exports[`test console printing 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     1 passed (1 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
 `;
 
 exports[`test console printing with --verbose 1`] = `
@@ -28,5 +38,23 @@ exports[`test console printing with --verbose 1`] = `
   console.error __tests__/console-test.js:17
     This is an error message.
 
+"
+`;
+
+exports[`test console printing with --verbose 2`] = `
+" PASS  __tests__/console-test.js
+  ✓ works just fine
+
+
+"
+`;
+
+exports[`test console printing with --verbose 3`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     1 passed (1 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
 "
 `;

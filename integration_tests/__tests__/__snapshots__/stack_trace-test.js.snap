@@ -1,0 +1,59 @@
+exports[`Stack Trace does not print a stack trace for errors when --noStackTrace is given 1`] = `
+"Test Summary: › Ran all tests matching \"test-error-test.js\".
+
+suites:    1 failed, 1 passed (1 total)
+tests:     3 failed, 0 passed (3 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Stack Trace does not print a stack trace for matching errors when --noStackTrace is given 1`] = `
+"Test Summary: › Ran all tests matching \"stack-trace-test.js\".
+
+suites:    1 failed, 1 passed (1 total)
+tests:     1 failed, 0 passed (1 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Stack Trace does not print a stack trace for runtime errors when --noStackTrace is given 1`] = `
+"Test Summary: › Ran all tests matching \"runtime-error-test.js\".
+
+suites:    1 failed, 0 passed (1 total)
+tests:     0 passed (0 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Stack Trace prints a stack trace for errors 1`] = `
+"Test Summary: › Ran all tests matching \"test-error-test.js\".
+
+suites:    1 failed, 1 passed (1 total)
+tests:     3 failed, 0 passed (3 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Stack Trace prints a stack trace for matching errors 1`] = `
+"Test Summary: › Ran all tests matching \"stack-trace-test.js\".
+
+suites:    1 failed, 1 passed (1 total)
+tests:     1 failed, 0 passed (1 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Stack Trace prints a stack trace for runtime errors 1`] = `
+"Test Summary: › Ran all tests matching \"runtime-error-test.js\".
+
+suites:    1 failed, 0 passed (1 total)
+tests:     0 passed (0 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;

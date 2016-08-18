@@ -1,0 +1,99 @@
+exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 1`] = `
+"Test Summary: › Ran all tests.
+
+suites:    3 passed (3 total)
+tests:     7 passed (7 total)
+snapshots: 7 added, 0 passed (7 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    3 passed (3 total)
+tests:     5 passed (5 total)
+snapshots: 4 passed (4 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot Validation deletes the snapshot if the test file has been removed 1`] = `
+"Test Summary: › Ran all tests.
+
+suites:    3 passed (3 total)
+tests:     7 passed (7 total)
+snapshots: 7 added, 0 passed (7 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot Validation deletes the snapshot if the test file has been removed 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    2 passed (2 total)
+tests:     4 passed (4 total)
+snapshots: 4 passed (4 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 1`] = `
+"Test Summary: › Ran all tests.
+
+suites:    3 passed (3 total)
+tests:     7 passed (7 total)
+snapshots: 7 added, 0 passed (7 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    3 passed (3 total)
+tests:     7 passed (7 total)
+snapshots: 1 updated, 5 passed (6 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot works as expected 1`] = `
+"Test Summary: › Ran all tests.
+
+suites:    2 passed (2 total)
+tests:     4 passed (4 total)
+snapshots: 4 added, 0 passed (4 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot works with escaped characters 1`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     1 passed (1 total)
+snapshots: 1 added, 0 passed (1 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot works with escaped characters 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     2 passed (2 total)
+snapshots: 1 added, 1 passed (2 total)
+time:      <<REPLACED>>
+"
+`;
+
+exports[`Snapshot works with escaped characters 3`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     2 passed (2 total)
+snapshots: 2 passed (2 total)
+time:      <<REPLACED>>
+"
+`;

@@ -1,0 +1,9 @@
+exports[`trimAndFormatPath() does not trim anything 1`] = `"[2m1234567890/1234567890/[22m[1m1234.js[22m"`;
+
+exports[`trimAndFormatPath() split at the path.sep index 1`] = `"[2m.../[22m[1m1234.js[22m"`;
+
+exports[`trimAndFormatPath() trims dirname (longer line width) 1`] = `"[2m...890/1234567890/[22m[1m1234.js[22m"`;
+
+exports[`trimAndFormatPath() trims dirname 1`] = `"[2m...234567890/[22m[1m1234.js[22m"`;
+
+exports[`trimAndFormatPath() trims dirname and basename 1`] = `"[1m...1234.js[22m"`;

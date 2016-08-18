@@ -48,15 +48,14 @@ class VerboseReporter extends DefaultReporter {
   onTestResult(
     config: Config,
     testResult: TestResult,
-    results: AggregatedResult,
+    aggregatedResults: AggregatedResult,
   ) {
-    this.clearLine();
-    this._printResultHeader(config, testResult);
+
+    this._status.testFinished(config, testResult, aggregatedResults);
+    this._printTestFileSummary(testResult.testFilePath, config, testResult);
     if (!testResult.testExecError) {
       this._logTestResults(testResult.testResults);
     }
-    this._printTestFileSummary(config, testResult);
-    this._printWaitingOn(results, config);
   }
 
   _logTestResults(testResults: Array<AssertionResult>) {
