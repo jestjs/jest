@@ -257,6 +257,13 @@ const options = {
     ),
     type: 'number',
   },
+  lastCommit :{
+    default: false,
+    description: wrap(
+      'Will run all tests affected by file changes in the last commit made.',
+    ),
+    type: 'boolean',
+  },
 };
 
 module.exports = {

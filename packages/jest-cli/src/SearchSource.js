@@ -37,11 +37,16 @@ type SearchResult = {
 type StrOrRegExpPattern = RegExp | string;
 
 type PatternInfo = {
-  onlyChanged?: boolean,
-  watch?: boolean,
-  testPathPattern?: string,
   input?: string,
+  lastCommit?: boolean,
+  onlyChanged?: boolean,
   shouldTreatInputAsPattern?: boolean,
+  testPathPattern?: string,
+  watch?: boolean,
+};
+
+type Options = {
+  lastCommit?: boolean,
 };
 
 const git = changedFiles.git;
@@ -174,7 +179,7 @@ class SearchSource {
     };
   }
 
-  findChangedTests(): Promise<SearchResult> {
+  findChangedTests(options: Options): Promise<SearchResult> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
@@ -186,8 +191,8 @@ class SearchSource {
         }
         return Promise.all(Array.from(repos).map(repo => {
           return repo[0]
-            ? git.findChangedFiles(repo[0])
-            : hg.findChangedFiles(repo[1]);
+            ? git.findChangedFiles(repo[0], options)
+            : hg.findChangedFiles(repo[1], options);
         }));
       })
       .then(changedPathSets => this.findRelatedTests(
@@ -240,7 +245,7 @@ class SearchSource {
 
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
-      return this.findChangedTests();
+      return this.findChangedTests({lastCommit: patternInfo.lastCommit});
     } else if (patternInfo.testPathPattern != null) {
       return Promise.resolve(
         this.findMatchingTests(patternInfo.testPathPattern),

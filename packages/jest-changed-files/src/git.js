@@ -15,11 +15,17 @@ import type {Path} from 'types/Config';
 const path = require('path');
 const childProcess = require('child_process');
 
-function findChangedFiles(cwd: string): Promise<Array<Path>> {
-  return new Promise((resolve, reject) => {
-    const args = ['ls-files', '--other', '--modified', '--exclude-standard'];
-    const child = childProcess.spawn('git', args, {cwd});
+type Options = { 
+  withAncestor?: boolean,
+  lastCommit?: boolean,
+};
 
+function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
+  return new Promise((resolve, reject) => {
+    const args = options.lastCommit
+       ? ['show', '--name-only', '--pretty=%b', 'HEAD']
+       : ['ls-files', '--other', '--modified', '--exclude-standard'];
+    const child = childProcess.spawn('git', args, {cwd});
     let stdout = '';
     let stderr = '';
     child.stdout.on('data', data => stdout += data);

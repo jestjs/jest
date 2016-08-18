@@ -19,6 +19,9 @@ const tmpdir = path.resolve(os.tmpdir(), 'jest-changed-files-hg');
 const tmpfile = path.resolve(tmpdir, Date.now() + '.js');
 const tmpdirNested = path.resolve(tmpdir, 'src');
 const tmpfileNested = path.resolve(tmpdirNested, Date.now() + '.js');
+const options = {
+  lastCommit: false,
+};
 
 describe('hgChecker', () => {
   let hg;
@@ -54,7 +57,7 @@ describe('hgChecker', () => {
     });
 
     it('returns an empty array for hg repo folder without modified files', () =>
-      hg.findChangedFiles(tmpdir).then(res => {
+      hg.findChangedFiles(tmpdir, options).then(res => {
         expect(res).toEqual([]);
       }),
     );
@@ -64,7 +67,7 @@ describe('hgChecker', () => {
       fs.writeFileSync(tmpfileNested);
       childProcess.spawnSync('hg', ['add'], {cwd: tmpdir});
 
-      return hg.findChangedFiles(tmpdir).then(res => {
+      return hg.findChangedFiles(tmpdir, options).then(res => {
         expect(res).toEqual([tmpfile, tmpfileNested]);
       });
     });

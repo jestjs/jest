@@ -49,6 +49,7 @@ function getMaxWorkers(argv) {
 function buildTestPathPatternInfo(argv) {
   if (argv.onlyChanged) {
     return {
+      lastCommit: argv.lastCommit,
       onlyChanged: true,
       watch: argv.watch !== undefined,
     };

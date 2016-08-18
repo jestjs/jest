@@ -19,6 +19,9 @@ const tmpdir = path.resolve(os.tmpdir(), 'jest-changed-files-git');
 const tmpfile = path.resolve(tmpdir, Date.now() + '.js');
 const tmpdirNested = path.resolve(tmpdir, 'src');
 const tmpfileNested = path.resolve(tmpdirNested, Date.now() + '.js');
+const options = {
+  lastCommit: false, 
+};
 
 describe('gitChecker', () => {
   let git;
@@ -54,7 +57,7 @@ describe('gitChecker', () => {
     });
 
     it('returns an empty array for git repo folder without modified files', () => {
-      return git.findChangedFiles(tmpdir).then(res => {
+      return git.findChangedFiles(tmpdir, options).then(res => {
         expect(res).toEqual([]);
       });
     });
@@ -63,7 +66,7 @@ describe('gitChecker', () => {
       fs.writeFileSync(tmpfile);
       fs.writeFileSync(tmpfileNested);
 
-      return git.findChangedFiles(tmpdir).then(res => {
+      return git.findChangedFiles(tmpdir, options).then(res => {
         expect(res).toEqual([tmpfile, tmpfileNested]);
       });
     });
