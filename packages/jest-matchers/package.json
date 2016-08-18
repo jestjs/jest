@@ -9,7 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-diff": "^14.0.0",
-    "jest-matcher-utils": "^14.0.0"
+    "jest-matcher-utils": "^14.0.0",
+    "jest-util": "^14.0.0"
   },
   "devDependencies": {
     "strip-ansi": "^3.0.1"

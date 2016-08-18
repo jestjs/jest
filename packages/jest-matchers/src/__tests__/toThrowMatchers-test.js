@@ -42,6 +42,11 @@ describe('.toThrowError()', () => {
       expect(error.message).toMatchSnapshot();
     });
 
+    it('properly escapes strings when matching against errors', () => {
+      expect(() => { throw new TypeError('"this"? throws.'); })
+        .toThrowError('"this"? throws.');
+    });
+
     test('threw, but should not have', () => {
       let error;
       try {
