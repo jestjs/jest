@@ -9,7 +9,19 @@
 /* global jest */
 
 jest
-  .mock('Image')
+  .mock('Image', () => {
+    const realImage = require.requireActual('Image');
+    const React = require('React');
+    class Image extends React.Component {
+      render() {
+        return React.createElement('Image', this.props, this.props.children);
+      }
+    }
+
+    Image.resizeMode = realImage.resizeMode;
+    Image.propTypes = realImage.propTypes;
+    return Image;
+  })
   .mock('Text', () => {
     const realText = require.requireActual('Text');
     const React = require('React');
