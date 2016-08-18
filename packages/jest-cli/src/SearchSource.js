@@ -46,7 +46,7 @@ type PatternInfo = {
 };
 
 type options = {
-  lastCommit?: boolean
+  lastCommit?: boolean,
 };
 
 const git = changedFiles.git;
