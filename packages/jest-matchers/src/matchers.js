@@ -19,6 +19,44 @@ const {
   ensureNumbers,
 } = require('jest-matcher-utils');
 
+const equals = global.jasmine.matchersUtil.equals;
+
+const hasIterator = object => !!(object != null && object[Symbol.iterator]);
+const iterableEquality = (a, b) => {
+  if (
+    typeof a !== 'object' ||
+    typeof b !== 'object' ||
+    Array.isArray(a) ||
+    Array.isArray(b) ||
+    !hasIterator(a) ||
+    !hasIterator(b)
+  ) {
+    return undefined;
+  }
+  if (a.constructor !== b.constructor) {
+    return false;
+  }
+  const bIterator = b[Symbol.iterator]();
+
+  for (const aValue of a) {
+    const nextB = bIterator.next();
+    if (
+      nextB.done ||
+      !global.jasmine.matchersUtil.equals(
+        aValue,
+        nextB.value,
+        [iterableEquality],
+      )
+    ) {
+      return false;
+    }
+  }
+  if (!bIterator.next().done) {
+    return false;
+  }
+  return true;
+};
+
 const matchers: MatchersObject = {
   toBe(actual: any, expected: number) {
     const pass = actual === expected;
@@ -39,6 +77,30 @@ const matchers: MatchersObject = {
           diffString += diff(expected, actual);
           return `expected '${stringify(actual)}' to be` +
           ` '${stringify(expected)}' (using '===')${diffString}`;
+        },
+      };
+    }
+  },
+
+  toEqual(actual: any, expected: any) {
+    const pass = equals(actual, expected, [iterableEquality]);
+
+    if (pass) {
+      return {
+        pass,
+        message() {
+          return `expected '${stringify(actual)}' not to equal` +
+            ` '${stringify(expected)}'`;
+        },
+      };
+    } else {
+      return {
+        pass,
+        message() {
+          let diffString = '\n\n';
+          diffString += diff(expected, actual);
+          return `expected '${stringify(actual)}' to equal` +
+          ` '${stringify(expected)}' ${diffString}`;
         },
       };
     }
