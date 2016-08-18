@@ -115,42 +115,6 @@ function jasmine2(
     throw new Error('jasmine2 could not be initialized by Jest');
   }
 
-  const hasIterator = object => !!(object != null && object[Symbol.iterator]);
-  const iterableEquality = (a, b) => {
-    if (
-      typeof a !== 'object' ||
-      typeof b !== 'object' ||
-      Array.isArray(a) ||
-      Array.isArray(b) ||
-      !hasIterator(a) ||
-      !hasIterator(b)
-    ) {
-      return undefined;
-    }
-    if (a.constructor !== b.constructor) {
-      return false;
-    }
-    const bIterator = b[Symbol.iterator]();
-
-    for (const aValue of a) {
-      const nextB = bIterator.next();
-      if (
-        nextB.done ||
-        !jasmine.matchersUtil.equals(
-          aValue,
-          nextB.value,
-          [iterableEquality],
-        )
-      ) {
-        return false;
-      }
-    }
-    if (!bIterator.next().done) {
-      return false;
-    }
-    return true;
-  };
-
   runtime.setMock(
     '',
     'jest-check',
@@ -162,12 +126,10 @@ function jasmine2(
   );
 
   env.beforeEach(() => {
-    jasmine.addCustomEqualityTester(iterableEquality);
     jasmine.addMatchers({
       toMatchSnapshot: snapshot.matcher(
         testPath,
         config,
-        jasmine,
         snapshotState,
       ),
     });

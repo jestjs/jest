@@ -9,7 +9,6 @@
  */
 'use strict';
 
-import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
 
@@ -23,7 +22,6 @@ type CompareResult = {
 module.exports = (
   filePath: Path,
   options: Object,
-  jasmine: Jasmine,
   snapshotState: SnapshotState,
 ) => (util: any, customEquality: any) => {
   return {
