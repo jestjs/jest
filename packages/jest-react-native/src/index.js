@@ -24,10 +24,15 @@ jest
       }
     }
 
-    Image.resizeMode = realImage.resizeMode;
-    Image.propTypes = realImage.propTypes;
-    Image.prefetch = realImage.prefetch;
-    Image.getSize = realImage.getSize;
+    const {getSize, prefetch, propTypes, resizeMode} = realImage;
+
+    Object.assign(Image, {
+      getSize,
+      prefetch,
+      propTypes,
+      resizeMode,
+    });
+
     return Image;
   })
   .mock('Text', () => {
