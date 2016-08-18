@@ -9,7 +9,32 @@
 /* global jest */
 
 jest
-  .mock('Image')
+  .mock('ImageViewManager', () => ({
+    prefetchImage: jest.fn(),
+    getSize: jest.fn((uri, success, failure) =>
+      process.nextTick(() => success(320, 240)),
+    ),
+  }), {virtual: true})
+  .mock('Image', () => {
+    const realImage = require.requireActual('Image');
+    const React = require('React');
+    class Image extends React.Component {
+      render() {
+        return React.createElement('Image', this.props, this.props.children);
+      }
+    }
+
+    const {getSize, prefetch, propTypes, resizeMode} = realImage;
+
+    Object.assign(Image, {
+      getSize,
+      prefetch,
+      propTypes,
+      resizeMode,
+    });
+
+    return Image;
+  })
   .mock('Text', () => {
     const realText = require.requireActual('Text');
     const React = require('React');
