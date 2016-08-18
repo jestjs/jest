@@ -7,7 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
-
+/* eslint-disable max-len */
 'use strict';
 
 const jestExpect = require('../').expect;
@@ -26,7 +26,7 @@ describe('.toHaveBeenCalled() .toBeCalled()', () => {
       const fn = () => {};
 
       expect(() => jestExpect(fn)[matcherName]()).toThrowError(
-        /(toHaveBeenCalled|toBeCalled) matcher can only execute on a Spy/,
+        /(toHaveBeenCalled|toBeCalled) matcher can only be used on a spy or mock function./,
       );
     });
 
@@ -36,7 +36,7 @@ describe('.toHaveBeenCalled() .toBeCalled()', () => {
 
         jestExpect(fn).toHaveBeenCalled();
         expect(() => jestExpect(fn).not[matcherName]()).toThrowError(
-          /a (mock|spy) to not be called, but it was called 1 times/,
+          /Expected the (mock function|spy) not to be called, but it was called 1 times/,
         );
       });
     });
@@ -45,7 +45,7 @@ describe('.toHaveBeenCalled() .toBeCalled()', () => {
       [jasmine.createSpy('fn'), jest.fn()].forEach(fn => {
         jestExpect(fn).not.toHaveBeenCalled();
         expect(() => jestExpect(fn)[matcherName]())
-          .toThrowError(/expected a (mock|spy) to be called but it wasn't/);
+          .toThrowError(/Expected the (mock function|spy) to be called./);
       });
     });
   });
@@ -68,7 +68,7 @@ describe('.toHaveBeenCalledTimes()', () => {
     const fn = () => {};
 
     expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
-      .toThrowError(/toHaveBeenCalledTimes matcher can only execute on a Spy/);
+      .toThrowError(/toHaveBeenCalledTimes matcher can only be used on a spy or mock function/);
   });
 
   it('works both for Mock functions and Spies', () => {
@@ -86,7 +86,7 @@ describe('.toHaveBeenCalledTimes()', () => {
 
     jestExpect(fn).toHaveBeenCalledTimes(2);
     expect(() => jestExpect(fn).not.toHaveBeenCalledTimes(2))
-      .toThrowError(/spy to not be called 2 times, but it was called 2 times/);
+      .toThrowError(/spy not to be called 2 times, but it was called 2 times/);
   });
 
   it('fails if function called more than expected times', () => {

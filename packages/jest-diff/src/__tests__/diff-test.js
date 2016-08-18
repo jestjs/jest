@@ -28,8 +28,8 @@ describe('different types', () => {
 
     test(`'${a}' and '${b}'`, () => {
       expect(stripAnsi(diff(a, b))).toBe(
-        'Comparing different types of values.\n' +
-        `Actual: '${typeB}', Expected: '${typeA}'`,
+        'Comparing two different types of values:\n' +
+        `  Expected: ${typeA}\n  Received: ${typeB}`,
       );
 
     });
@@ -91,12 +91,12 @@ test('objects', () => {
 
 test('numbers', () => {
   const result = diff(123, 234);
-  expect(stripAnsi(result)).toMatch(/Actual\: 234/);
-  expect(stripAnsi(result)).toMatch(/Expected\: 123/);
+  expect(result).toBe(null);
+  expect(result).toBe(null);
 });
 
 test('booleans', () => {
   const result = diff(true, false);
-  expect(stripAnsi(result)).toMatch(/Actual\: false/);
-  expect(stripAnsi(result)).toMatch(/Expected\: true/);
+  expect(result).toBe(null);
+  expect(result).toBe(null);
 });

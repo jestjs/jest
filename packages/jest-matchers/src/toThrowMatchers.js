@@ -7,13 +7,18 @@
  *
  * @flow
  */
+/* eslint-disable max-len */
 
 'use strict';
 
 import type {MatchersObject} from './types';
 
 const {escapeStrForRegex} = require('jest-util');
-const {highlight, getType} = require('jest-matcher-utils');
+const {
+  getType,
+  highlight,
+  printExpected,
+} = require('jest-matcher-utils');
 
 const matchers: MatchersObject = {
   toThrowError(actual: Function, expected: string | Error | RegExp) {
@@ -38,7 +43,7 @@ const matchers: MatchersObject = {
       throw new Error(
         'Unexpected argument passed. Expected to get ' +
         '"string", "Error type" or "regexp". Got: ' +
-        `${highlight(getType(expected))} ${highlight(expected)}'`,
+        `${highlight(getType(expected))} ${highlight(expected)}.`,
       );
     }
   },
@@ -50,16 +55,10 @@ const toThrowMatchingStringOrRegexp = (
   value: RegExp | string | Error,
 ) => {
   const pass = !!(error && error.message.match(pattern));
-  let message = pass
-    ? 'Expected the function to not throw an error matching ' +
-     `${highlight(String(value))}, but it did.`
-    : 'Expected the function to throw an error matching ' +
-      `${highlight(String(value))}, but it didn't.`;
-
-  if (error) {
-    message += _printThrownError(error);
-  }
-
+  const message = (error ? getErrorMessage(error) : '') + (pass
+    ? `the function not to throw an error matching ${printExpected(String(value))}.`
+    : `the function to throw an error matching ${printExpected(String(value))}.`
+  );
   return {pass, message};
 };
 
@@ -68,24 +67,15 @@ const toThrowMatchingError = (
   ErrorClass: typeof Error,
 ) => {
   const pass = !!(error && error instanceof ErrorClass);
-  let message = pass
-    ? 'Expected the function to not throw an error of ' +
-      `${highlight(ErrorClass.name)} type, but it did.`
-    : 'Expected the function to throw an error of ' +
-    `${highlight(ErrorClass.name)} type, but it didn't.`;
-
-  if (error) {
-    message += _printThrownError(error);
-  }
-
+  const message = (error ? getErrorMessage(error) : '') + (pass
+    ? `the function not to throw an error of type ${printExpected(ErrorClass.name)}.`
+    : `Expected function to throw an error of type ${printExpected(ErrorClass.name)}.`
+  );
   return {pass, message};
 };
 
-const _printThrownError = error => {
-  return '\n' +
-    'Actual error:\n' +
-    `  Type: ${highlight(error.constructor.name)}\n` +
-    `  Message: ${highlight(error.message)}`;
+const getErrorMessage = error => {
+  return `Received ${highlight(error.constructor.name + ': ' + error.message)} but expected `;
 };
 
 module.exports = matchers;

@@ -1,34 +1,38 @@
 exports[`test console printing 1`] = `
 " PASS  __tests__/console-test.js
   ● Console
-    log __tests__/console-test.js:11
+
+    console.log __tests__/console-test.js:11
       This is a log message.
-    info __tests__/console-test.js:13
+    console.info __tests__/console-test.js:13
       This is an info message.
-    warn __tests__/console-test.js:15
+    console.warn __tests__/console-test.js:15
       This is a warning message.
-    error __tests__/console-test.js:17
+    console.error __tests__/console-test.js:17
       This is a error message.
+
  PASS  __tests__/console2-test.js
   ● Console
-    error __tests__/console2-test.js:18
-      This is an error from another test file."
+
+    console.error __tests__/console2-test.js:18
+      This is an error from another test file.
+"
 `;
 
 exports[`test console printing with --verbose 1`] = `
-"  log __tests__/console-test.js:11
+"  console.log __tests__/console-test.js:11
     This is a log message.
 
-  info __tests__/console-test.js:13
+  console.info __tests__/console-test.js:13
     This is an info message.
 
-  warn __tests__/console-test.js:15
+  console.warn __tests__/console-test.js:15
     This is a warning message.
 
-  error __tests__/console-test.js:17
+  console.error __tests__/console-test.js:17
     This is a error message.
 
-  error __tests__/console2-test.js:18
+  console.error __tests__/console2-test.js:18
     This is an error from another test file.
 
 "

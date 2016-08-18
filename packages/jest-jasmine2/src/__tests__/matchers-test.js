@@ -13,6 +13,7 @@ jest.disableAutomock();
 
 describe('matchers', () => {
   it('proxies matchers to jest-matchers', () => {
-    expect(() => expect(1).toBe(2)).toThrowError(/expected.*to be.*using '===/);
+    expect(() => expect(1).toBe(2))
+      .toThrowError(/Received.*but expected.*using '===/);
   });
 });

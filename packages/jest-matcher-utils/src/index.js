@@ -10,6 +10,8 @@
 
 'use strict';
 
+const chalk = require('chalk');
+
 export type ValueType =
   | 'array'
   | 'boolean'
@@ -21,8 +23,6 @@ export type ValueType =
   | 'string'
   | 'symbol'
   | 'undefined';
-
-const chalk = require('chalk');
 
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
@@ -90,12 +90,13 @@ const stringify = (obj: any): string => {
   });
 };
 
-const highlight = (obj: any) => chalk.cyan.bold(stringify(obj));
+const highlight = (object: any) => chalk.red(stringify(object));
+const printExpected = (value: any) => chalk.green(stringify(value));
 
 const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
-    throw new Error(`${matcherName} matcher does not accept any arguments`);
+    throw new Error(`${matcherName} matcher does not accept any arguments.`);
   }
 };
 
@@ -104,7 +105,7 @@ const ensureActualIsNumber = (actual: any, matcherName: string) => {
   if (typeof actual !== 'number') {
     throw new Error(
       `${matcherName} actual value should be a number. ` +
-      `'${typeof actual}' was passed`,
+      `'${typeof actual}' was passed.`,
     );
   }
 };
@@ -114,7 +115,7 @@ const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
   if (typeof expected !== 'number') {
     throw new Error(
       `${matcherName} expected value should be a number. ` +
-      `'${typeof expected}' was passed`,
+      `'${typeof expected}' was passed.`,
     );
   }
 };
@@ -131,5 +132,6 @@ module.exports = {
   ensureNumbers,
   getType,
   highlight,
+  printExpected,
   stringify,
 };

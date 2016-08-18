@@ -27,9 +27,8 @@ const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
 const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.gray;
-const ERROR_MESSAGE_COLOR = chalk.red;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
-const EXEC_ERROR_MESSAGE = 'Test suite failed to run:';
+const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 
 const trim = string => string.replace(/^\s+/, '').replace(/\s+$/, '');
 
@@ -63,12 +62,11 @@ const formatExecError = (
 
   message = message.split(/\n/).map(line => MESSAGE_INDENT + line).join('\n');
 
-  message = message && ERROR_MESSAGE_COLOR(message);
   stack = stack && !config.noStackTrace
     ? '\n' + STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath))
     : '';
 
-  return TITLE_INDENT + ERROR_MESSAGE_COLOR(EXEC_ERROR_MESSAGE) + '\n' +
+  return TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
     message  + stack + '\n';
 };
 
@@ -105,7 +103,9 @@ const formatPaths = (config, relativeTestPath, line) => {
   let filePath = matches[2];
   filePath = path.relative(config.rootDir, filePath);
 
-  if (filePath === relativeTestPath) {
+  if (new RegExp(config.testRegex).test(filePath)) {
+    filePath = chalk.blue(filePath);
+  } else if (filePath === relativeTestPath) {
     // highlight paths from the current test file
     filePath = chalk.cyan(filePath);
   }
@@ -157,7 +157,7 @@ const formatResultsErrors = (
       result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
       ANCESTRY_SEPARATOR + result.title + '\n';
 
-    return title + '\n' + ERROR_MESSAGE_COLOR(message) + '\n' + stack;
+    return title + '\n' + message + '\n' + stack;
   }).join('\n');
 };
 

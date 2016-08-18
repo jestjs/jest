@@ -27,14 +27,14 @@ describe('.toBe()', () => {
   [[1, 2], [true, false], [{}, {}], [[], []], [null, undefined]].forEach(v => {
     it(`fails for: ${stringify(v[0])} and ${stringify(v[1])}`, () => {
       const fn = () => jestExpect(v[0]).toBe(v[1]);
-      expect(fn).toThrowError(/expected.*to be.*using \'===.*/);
+      expect(fn).toThrowError(/Received.*but expected.*using \'===.*/);
     });
   });
 
   [false, 1, 'a', undefined, null, {}, []].forEach(v => {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
       const fn = () => jestExpect(v).not.toBe(v);
-      expect(fn).toThrowError(/expected.*not to be.*using \'!==.*/);
+      expect(fn).toThrowError(/Received.*but expected.*using \'!==.*/);
     });
   });
 
@@ -42,7 +42,7 @@ describe('.toBe()', () => {
     const obj = {};
     obj.circular = obj;
     expect(() => jestExpect(obj).toBe({})).toThrowError(
-      /expected.*circular.*\[Circular\].*to be.*/,
+      /Received.*circular.*\[Circular\].*but expected.*/,
     );
   });
 });
@@ -60,7 +60,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
       jestExpect(v).toBeTruthy();
       jestExpect(v).not.toBeFalsy();
       expect(() => jestExpect(v).not.toBeTruthy())
-        .toThrowError(/not to be truthy/);
+        .toThrowError(/but expected it to be truthy./);
       expect(() => jestExpect(v).toBeFalsy()).toThrowError(/falsy/);
     });
   });
@@ -71,7 +71,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
       jestExpect(v).not.toBeTruthy();
       expect(() => jestExpect(v).toBeTruthy()).toThrowError(/truthy/);
       expect(() => jestExpect(v).not.toBeFalsy())
-        .toThrowError(/not to be falsy/);
+        .toThrowError(/but expected it not to be falsy./);
     });
   });
 });
@@ -97,14 +97,14 @@ describe('.toBeNull()', () => {
     test(`fails for '${stringify(v)}' with .not`, () => {
       jestExpect(v).not.toBeNull();
       expect(() => jestExpect(v).toBeNull())
-        .toThrowError(/expected.*to be null/);
+        .toThrowError(/Received.*to be null/);
     });
   });
 
   it('pass for null', () => {
     jestExpect(null).toBeNull();
     expect(() => jestExpect(null).not.toBeNull())
-      .toThrowError(/expected.*not to be null/);
+      .toThrowError(/Received.*not to be null/);
   });
 });
 
@@ -298,7 +298,7 @@ describe('.toMatch()', () => {
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
         expect(() => jestExpect(n1).toMatch(n2))
-          .toThrowError(/is not a String/);
+          .toThrowError(/it to be a string/);
         jestExpect(n1).not.toMatch(n2);
       },
     );
@@ -317,9 +317,13 @@ describe('.toMatch()', () => {
         ` [${stringify(n1)}, ${stringify(n2)}]`,
       () => {
         expect(() => jestExpect(n1).toMatch(n2))
-          .toThrowError(/is not a String or a RegExp/);
+          .toThrowError(/to be a string or regular expression/);
         jestExpect(n1).not.toMatch(n2);
       },
     );
+  });
+
+  it('escapes strings properly', () => {
+    jestExpect('this?: throws').toMatch('this?: throws');
   });
 });

@@ -53,7 +53,7 @@ describe('testcheck', () => {
     const result = runJest('testcheck', ['testcheck-exceptions-test.js']);
     expect(result.status).toBe(1);
     expect(result.stderr.toString()).toMatch(
-      /Error: This error should be reported/
+      /This error should be reported/
     );
   });
 });
