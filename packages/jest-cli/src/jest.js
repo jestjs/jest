@@ -158,8 +158,18 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
           getWatcher(config, root, watcher => {
             let timer;
             let isRunning;
+            const startRun = () => {
+              isRunning = true;
+              runJest(config, argv, pipe, () => isRunning = false)
+                .then(
+                  resolve,
+                  error => console.error(chalk.red(error)),
+                );
+            };
 
             pipe.write(CLEAR);
+            startRun();
+
             watcher.on('all', (_, filePath) => {
               pipe.write(CLEAR);
               filePath = path.join(root, filePath);
@@ -170,17 +180,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
                   clearTimeout(timer);
                   timer = null;
                 }
-                timer = setTimeout(
-                  () => {
-                    isRunning = true;
-                    runJest(config, argv, pipe, () => isRunning = false)
-                      .then(
-                        resolve,
-                        error => console.error(chalk.red(error)),
-                      );
-                  },
-                  WATCHER_DEBOUNCE,
-                );
+                timer = setTimeout(startRun, WATCHER_DEBOUNCE);
               }
             });
           });
