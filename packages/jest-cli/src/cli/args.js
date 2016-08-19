@@ -28,9 +28,11 @@ const check = (argv: Object) => {
     );
   }
 
-  if (argv.watchExtensions && argv.watch === undefined) {
+  if (argv.onlyChanged && argv.watchAll) {
     throw new Error(
-      '--watchExtensions can only be specified together with --watch.',
+      'Both --onlyChanged and --watchAll were specified, but these two ' +
+      'options do not make sense together. Try the --watch option which ' +
+      'reruns only tests related to changed files.',
     );
   }
 
@@ -148,10 +150,18 @@ const options = {
   watch: {
     description: wrap(
       'Watch files for changes and rerun tests related to changed files. ' +
-      'If you want to re-run all tests when a file has changed, you can ' +
-      'call Jest using `--watch=all`.',
+      'If you want to re-run all tests when a file has changed, use the ' +
+      '`--watchAll` option.',
     ),
-    type: 'string',
+    type: 'boolean',
+  },
+  watchAll: {
+    description: wrap(
+      'Watch files for changes and rerun all tests. If you want to re-run ' +
+       'only the tests related to the changed files, use the ' +
+      '`--watch` option.',
+    ),
+    type: 'boolean',
   },
   bail: {
     alias: 'b',
