@@ -51,7 +51,7 @@ function buildTestPathPatternInfo(argv) {
     return {
       lastCommit: argv.lastCommit,
       onlyChanged: true,
-      watch: argv.watch !== undefined,
+      watch: argv.watch,
     };
   }
   if (argv.testPathPattern) {
@@ -151,10 +151,8 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         pipe.write('test framework = ' + testFramework.name + '\n');
         pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
-      if (argv.watch !== undefined) {
-        if (argv.watch !== 'all') {
-          argv.onlyChanged = true;
-        }
+      if (argv.watch || argv.watchAll) {
+        argv.onlyChanged = !argv.watchAll;
 
         return new Promise(resolve => {
           getWatcher(config, root, watcher => {
