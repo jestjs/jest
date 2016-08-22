@@ -63,6 +63,7 @@ class SnapshotFile {
     this._content = Object.create(null);
     if (this.fileExists(filename)) {
       try {
+        delete require.cache[require.resolve(filename)];
         /* eslint-disable no-useless-call */
         Object.assign(this._content, require.call(null, filename));
         /* eslint-enable no-useless-call */
