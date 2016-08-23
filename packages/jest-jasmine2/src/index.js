@@ -224,7 +224,8 @@ function jasmine2(
     }
   });
 
-  const snapshotState = snapshot.getSnapshotState(jasmine, testPath);
+  const snapshotState = snapshot.createSnapshotState(testPath);
+  snapshot.patchJasmine(jasmine, snapshotState);
 
   env.addReporter(reporter);
 

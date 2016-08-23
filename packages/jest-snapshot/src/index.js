@@ -11,7 +11,6 @@
 
 import type {HasteFS} from 'types/HasteMap';
 import type {Jasmine} from 'types/Jasmine';
-import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
 
 const SnapshotFile = require('./SnapshotFile');
@@ -37,7 +36,7 @@ const patchAttr = (attr, state) => {
   }(attr.onStart);
 };
 
-const patchJasmine = (jasmine: Jasmine, state) => {
+const patchJasmine = (jasmine: Jasmine, state: SnapshotState) => {
   jasmine.Spec = (realSpec => {
     const Spec = function Spec(attr) {
       patchAttr(attr, state);
@@ -83,9 +82,4 @@ module.exports = {
   processSnapshot,
   createSnapshotState,
   patchJasmine,
-  getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
-    const state = createSnapshotState(filePath);
-    patchJasmine(jasmine, state);
-    return state;
-  },
 };
