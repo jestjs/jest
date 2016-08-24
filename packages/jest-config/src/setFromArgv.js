@@ -64,6 +64,11 @@ function setFromArgv(config, argv) {
   if (argv.updateSnapshot) {
     config.updateSnapshot = argv.updateSnapshot;
   }
+
+  if (argv.watch || argv.watchAll) {
+    config.watch = true;
+  }
+
   config.noStackTrace = argv.noStackTrace;
 
   config.testcheckOptions = {

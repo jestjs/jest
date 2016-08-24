@@ -44,6 +44,7 @@ type BaseConfig = {
   testURL: string,
   useStderr: boolean,
   verbose: boolean,
+  watch: boolean,
 };
 
 export type DefaultConfig = BaseConfig & {

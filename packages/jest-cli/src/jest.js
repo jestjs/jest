@@ -34,6 +34,12 @@ const CLEAR = '\x1B[2J\x1B[H';
 const VERSION = require('../package.json').version;
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
+const KEYS = {
+  CONTROL_C: '03',
+  CONTROL_D: '04',
+  ENTER: '0d',
+  U: '75',
+};
 
 function getMaxWorkers(argv) {
   if (argv.runInBand) {
@@ -51,7 +57,7 @@ function buildTestPathPatternInfo(argv) {
     return {
       lastCommit: argv.lastCommit,
       onlyChanged: true,
-      watch: argv.watch !== undefined,
+      watch: argv.watch,
     };
   }
   if (argv.testPathPattern) {
@@ -151,42 +157,74 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         pipe.write('test framework = ' + testFramework.name + '\n');
         pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
-      if (argv.watch !== undefined) {
-        if (argv.watch !== 'all') {
-          argv.onlyChanged = true;
+      if (argv.watch || argv.watchAll) {
+        argv.onlyChanged = !argv.watchAll;
+
+        let isRunning: ?boolean;
+        let timer: ?number;
+
+        const startRun = (overrideConfig: Object = {}) => {
+          if (isRunning) {
+            return;
+          }
+
+          pipe.write(CLEAR);
+          isRunning = true;
+          runJest(
+            Object.freeze(Object.assign({}, config, overrideConfig)),
+            argv,
+            pipe,
+            () => {
+              isRunning = false;
+            },
+          ).then(
+            () => {},
+            error => console.error(chalk.red(error)),
+          );
+        };
+
+        const onKeypress = (key: string) => {
+          switch (key) {
+            case KEYS.CONTROL_C:
+              process.exit(0);
+              break;
+            case KEYS.CONTROL_D:
+              process.exit(0);
+              break;
+            case KEYS.ENTER:
+              startRun();
+              break;
+            case KEYS.U:
+              startRun({updateSnapshot: true});
+              break;
+          }
+        };
+
+        const onFileChange = (_, filePath: string) => {
+          filePath = path.join(root, filePath);
+          const isValidPath =
+            config.testPathDirs.some(dir => filePath.startsWith(dir));
+
+          if (!isValidPath) {
+            return;
+          }
+          if (timer) {
+            clearTimeout(timer);
+            timer = null;
+          }
+          timer = setTimeout(startRun, WATCHER_DEBOUNCE);
+        };
+
+        if (typeof process.stdin.setRawMode === 'function') {
+          process.stdin.setRawMode(true);
+          process.stdin.resume();
+          process.stdin.setEncoding('hex');
+          process.stdin.on('data', onKeypress);
         }
-
-        return new Promise(resolve => {
-          getWatcher(config, root, watcher => {
-            let timer;
-            let isRunning;
-
-            pipe.write(CLEAR);
-            watcher.on('all', (_, filePath) => {
-              pipe.write(CLEAR);
-              filePath = path.join(root, filePath);
-              const isValidPath =
-                config.testPathDirs.some(dir => filePath.startsWith(dir));
-              if (!isRunning && isValidPath) {
-                if (timer) {
-                  clearTimeout(timer);
-                  timer = null;
-                }
-                timer = setTimeout(
-                  () => {
-                    isRunning = true;
-                    runJest(config, argv, pipe, () => isRunning = false)
-                      .then(
-                        resolve,
-                        error => console.error(chalk.red(error)),
-                      );
-                  },
-                  WATCHER_DEBOUNCE,
-                );
-              }
-            });
-          });
+        getWatcher(config, root, watcher => {
+          watcher.on('all', onFileChange);
         });
+        startRun();
       } else {
         return runJest(config, argv, pipe, onComplete);
       }

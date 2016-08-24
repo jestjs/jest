@@ -62,7 +62,7 @@ class SummareReporter extends BaseReporter {
     }
 
     this._printSummary(aggregatedResults, config);
-    this._printSnapshotSummary(snapshots);
+    this._printSnapshotSummary(snapshots, config);
     if (totalTestSuites) {
       results +=
         `${PASS_COLOR(`${pluralize('test', passedTests)} passed`)} (` +
@@ -73,7 +73,7 @@ class SummareReporter extends BaseReporter {
     }
   }
 
-  _printSnapshotSummary(snapshots: SnapshotSummary) {
+  _printSnapshotSummary(snapshots: SnapshotSummary, config: Config) {
     if (
       snapshots.added ||
       snapshots.filesRemoved ||
@@ -81,10 +81,15 @@ class SummareReporter extends BaseReporter {
       snapshots.unmatched ||
       snapshots.updated
     ) {
+      let updateCommand;
       const event = process.env.npm_lifecycle_event;
-      const updateCommand =
-        (!event ? 're-' : '') + 'run with `' +
-        (event ? 'npm ' + event + ' -- ' : '') + '-u`';
+      if (config.watch) {
+        updateCommand = 'press "u"';
+      } else if (event) {
+        updateCommand = `run with \`npm ${event} -- -u\``;
+      } else {
+        updateCommand = 're-run with `-u`';
+      }
 
       this.log('\n' + SNAPSHOT_SUMMARY('Snapshot Summary'));
       if (snapshots.added) {
