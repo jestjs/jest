@@ -12,42 +12,67 @@
 
 const jestExpect = require('../').expect;
 
-describe('.toHaveBeenCalled() .toBeCalled()', () => {
-  ['toHaveBeenCalled', 'toBeCalled'].forEach(matcherName => {
-    it('does not accept arguments', () => {
-      [jasmine.createSpy('fn'), jest.fn()].forEach(fn => {
-        expect(() => jestExpect(fn)[matcherName](5)).toThrowError(
-          /(toHaveBeenCalled|toBeCalled) matcher does not accept any arguments/,
-        );
-      });
-    });
+[
+  ['toHaveBeenCalled', 'jasmine.createSpy'],
+  ['toHaveBeenCalled', 'jest.fn'],
+  ['toBeCalled', 'jasmine.createSpy'],
+  ['toBeCalled', 'jest.fn'],
+].forEach(([matcherName, mockName]) => {
+  test(`${matcherName} works with ${mockName}`, () => {
+    const fn = mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
+    let error;
 
-    it('verifies that actual is a Spy', () => {
-      const fn = () => {};
+    jestExpect(fn).not[matcherName]();
 
-      expect(() => jestExpect(fn)[matcherName]()).toThrowError(
-        /(toHaveBeenCalled|toBeCalled) matcher can only be used on a spy or mock function./,
-      );
-    });
+    try {
+      jestExpect(fn)[matcherName]();
+    } catch (e) {
+      error = e;
+    }
 
-    it('passes if function called', () => {
-      [jasmine.createSpy('fn'), jest.fn()].forEach(fn => {
-        fn();
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
 
-        jestExpect(fn).toHaveBeenCalled();
-        expect(() => jestExpect(fn).not[matcherName]()).toThrowError(
-          /Expected the (mock function|spy) not to be called, but it was called 1 times/,
-        );
-      });
-    });
+    error = undefined;
+    fn();
 
-    it(`fails if function hasn't called`, () => {
-      [jasmine.createSpy('fn'), jest.fn()].forEach(fn => {
-        jestExpect(fn).not.toHaveBeenCalled();
-        expect(() => jestExpect(fn)[matcherName]())
-          .toThrowError(/Expected the (mock function|spy) to be called./);
-      });
-    });
+    jestExpect(fn)[matcherName]();
+
+    try {
+      jestExpect(fn).not[matcherName]();
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
+
+    error = undefined;
+
+    try {
+      jestExpect(fn)[matcherName](555);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
+  });
+});
+
+['toHaveBeenCalled', 'toBeCalled'].forEach(matcherName => {
+  test(`${matcherName} works only on spies or jest.fn`, () => {
+    let error;
+    const fn = () => {};
+
+    try {
+      jestExpect(fn)[matcherName]();
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
   });
 });
 
@@ -108,6 +133,6 @@ describe('.toHaveBeenCalledTimes()', () => {
     jestExpect(fn).toHaveBeenCalledTimes(1);
     jestExpect(fn).not.toHaveBeenCalledTimes(2);
     expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
-      .toThrowError(/spy to be called 2 times, but it was called 1 times/);
+      .toThrowError(/spy to be called 2 times, but it was called 1 time/);
   });
 });

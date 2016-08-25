@@ -125,6 +125,9 @@ const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
   ensureExpectedIsNumber(expected, matcherName);
 };
 
+const pluralize =
+  (word: string, count: number) => `${count} ${word}${count === 1 ? '' : 's'}`;
+
 module.exports = {
   ensureActualIsNumber,
   ensureExpectedIsNumber,
@@ -132,6 +135,7 @@ module.exports = {
   ensureNumbers,
   getType,
   highlight,
+  pluralize,
   printExpected,
   stringify,
 };

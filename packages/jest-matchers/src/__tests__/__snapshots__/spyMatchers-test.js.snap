@@ -1,0 +1,27 @@
+exports[`test toBeCalled works only on spies or jest.fn 1`] = `[Error: toBeCalled matcher can only be used on a spy or mock function.]`;
+
+exports[`test toBeCalled works with jasmine.createSpy 1`] = `[Error: Expected the spy to be called.]`;
+
+exports[`test toBeCalled works with jasmine.createSpy 2`] = `[Error: Expected the spy not to be called, but it was called 1 time.]`;
+
+exports[`test toBeCalled works with jasmine.createSpy 3`] = `[Error: toBeCalled matcher does not accept any arguments.]`;
+
+exports[`test toBeCalled works with jest.fn 1`] = `[Error: Expected the mock function to be called.]`;
+
+exports[`test toBeCalled works with jest.fn 2`] = `[Error: Expected the mock function not to be called, but it was called 1 time.]`;
+
+exports[`test toBeCalled works with jest.fn 3`] = `[Error: toBeCalled matcher does not accept any arguments.]`;
+
+exports[`test toHaveBeenCalled works only on spies or jest.fn 1`] = `[Error: toHaveBeenCalled matcher can only be used on a spy or mock function.]`;
+
+exports[`test toHaveBeenCalled works with jasmine.createSpy 1`] = `[Error: Expected the spy to be called.]`;
+
+exports[`test toHaveBeenCalled works with jasmine.createSpy 2`] = `[Error: Expected the spy not to be called, but it was called 1 time.]`;
+
+exports[`test toHaveBeenCalled works with jasmine.createSpy 3`] = `[Error: toHaveBeenCalled matcher does not accept any arguments.]`;
+
+exports[`test toHaveBeenCalled works with jest.fn 1`] = `[Error: Expected the mock function to be called.]`;
+
+exports[`test toHaveBeenCalled works with jest.fn 2`] = `[Error: Expected the mock function not to be called, but it was called 1 time.]`;
+
+exports[`test toHaveBeenCalled works with jest.fn 3`] = `[Error: toHaveBeenCalled matcher does not accept any arguments.]`;
