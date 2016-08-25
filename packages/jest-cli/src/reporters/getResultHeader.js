@@ -42,7 +42,7 @@ module.exports = (testResult: TestResult, config: Config) => {
 
   const dirname = path.dirname(pathStr);
   const basename = path.basename(pathStr);
-  const testFileStr = chalk.gray(dirname + path.sep) + chalk.bold(basename);
+  const testFileStr = chalk.dim(dirname + path.sep) + chalk.bold(basename);
   return `${allTestsPassed ? PASS : FAIL} ${testFileStr}` +
   (testDetail.length ? ` (${testDetail.join(', ')})` : '');
 };

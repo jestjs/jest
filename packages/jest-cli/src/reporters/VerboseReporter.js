@@ -86,7 +86,7 @@ class VerboseReporter extends DefaultReporter {
     const time = test.duration
       ? ` (${test.duration.toFixed(0)}ms)`
       : '';
-    this._logLine(status + ' ' + chalk.gray(test.title + time), indentLevel);
+    this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
   _logLine(str?: string, indentLevel?: number) {

@@ -13,4 +13,4 @@
 const chalk = require('chalk');
 
 module.exports.NO_DIFF_MESSAGE =
-  chalk.gray.underline('Compared values have no visual difference');
+  chalk.dim.underline('Compared values have no visual difference');

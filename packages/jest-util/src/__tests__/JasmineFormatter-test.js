@@ -39,7 +39,7 @@ describe('JasmineFormatter', () => {
       '| | bar: \'baz\'\n' +
       '| }\n' +
       '}';
-      expect(printed).toBe(expected.replace(/\|/g, chalk.gray('|')));
+      expect(printed).toBe(expected.replace(/\|/g, chalk.dim('|')));
     });
 
     it('should pretty print Sets', () => {
@@ -68,7 +68,7 @@ describe('JasmineFormatter', () => {
       '| | ]\n' +
       '| }\n' +
       '}';
-      expect(printed).toBe(expected.replace(/\|/g, chalk.gray('|')));
+      expect(printed).toBe(expected.replace(/\|/g, chalk.dim('|')));
     });
   });
 });

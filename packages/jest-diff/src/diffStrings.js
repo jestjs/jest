@@ -62,7 +62,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): ?string {
 
       const color = part.added
         ? chalk.green
-        : (part.removed ? chalk.red : chalk.gray);
+        : (part.removed ? chalk.red : chalk.dim);
       return color(part.value);
     }).join('');
   }

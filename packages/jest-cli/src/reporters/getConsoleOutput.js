@@ -36,7 +36,7 @@ module.exports = (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
 
     return (
       output + TITLE_INDENT + chalk.dim(typeMessage) +
-      ' ' + chalk.gray(origin) + '\n' + message + '\n'
+      ' ' + chalk.dim(origin) + '\n' + message + '\n'
     );
   }, '');
 };

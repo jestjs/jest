@@ -44,7 +44,7 @@ const fixedWidth = str => {
   const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
   let lastString = strs[strs.length - 1];
   if (lastString.length < WIDTH) {
-    lastString += Array(WIDTH - lastString.length).join(chalk.gray('.'));
+    lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
   }
   return strs.slice(0, -1).concat(lastString).join('\n');
 };
@@ -72,7 +72,7 @@ function buildFile(file, silent) {
   spawnSync('mkdir', ['-p', path.dirname(destPath)]);
   if (minimatch(file, IGNORE_PATTERN)) {
     silent || process.stdout.write(
-      chalk.gray('  \u2022 ') +
+      chalk.dim('  \u2022 ') +
       path.relative(PACKAGES_DIR, file) +
       ' (ignore)\n'
     );
