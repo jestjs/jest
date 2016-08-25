@@ -1,9 +1,345 @@
-exports[`test failure messages 1`] = `
+exports[`test matcher mesasges 1`] = `
+"  failure messages
+    ✓ logs
+    ✕ () => expect(1).toBe(2)
+    ✕ () => expect(\'a\').toBe(2)
+    ✕ () => expect(true).toBe(5)
+    ✕ () => expect({a: 1, b: 2}).toBe({a: 1, b: 3})
+    ✕ () => expect({
+      a: 1,
+      b: 2,
+      c: {
+        apple: \'banana\',
+      },
+    }).toEqual({
+      a: 2,
+      b: 2,
+      c: {
+        kiwi: \'melon\',
+      },
+    })
+    ✕ () => expect([1, 2, 3]).toEqual([2, 3, 1])
+    ✕ () => expect([1, 2, 3]).toEqual([1, 3, 2])
+    ✕ () => expect(true).not.toBeTruthy()
+    ✕ () => expect(false).toBeTruthy()
+    ✕ () => expect(true).toBeFalsy()
+    ✕ () => expect(false).not.toBeFalsy()
+    ✕ () => expect({a: 1, b: 2}).toBeFalsy()
+    ✕ () => expect(1).toBeNaN()
+    ✕ () => expect({}).toBeNull()
+    ✕ () => expect(undefined).toBeDefined()
+    ✕ () => expect(1).toBeUndefined()
+    ✕ () => expect(1).toBeGreaterThan(5)
+    ✕ () => expect(1).toBeGreaterThanOrEqual(5)
+    ✕ () => expect(5).toBeLessThan(1)
+    ✕ () => expect(5).toBeLessThanOrEqual(1)
+    ✕ () => expect([1, 2]).toContain({apple: \'banana\'})
+    ✕ () => expect(4).toBeCloseTo(100)
+    ✕ () => expect(\'hello this is a message\').toMatch(\'bye\')
+    ✕ () => expect(() => {}).toThrow()
+    ✕ () => expect(() => {}).toThrow(new TypeError(\'This is an error!\'))
+    ✕ () => expect(() => { throw new Error(\'not an error\'); })
+      .toThrow(\'This is an error!\')
+    ✕ () => expect(() => {}).toThrow(\'This is an error!\')
+    ✕ () => expect(() => { throw new Error(\'not an error\'); })
+      .toThrowError(\'This is an error!\')
+    ✕ toMatchSnapshot
+
+ FAIL  __tests__/test-error-test.js
+  ● failure messages › () => expect(1).toBe(2)
+
+    Received 1 but expected 2 (using \'===\').
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:18:21)
+
+  ● failure messages › () => expect(\'a\').toBe(2)
+
+    Received \"a\" but expected 2 (using \'===\').
+    
+    Comparing two different types of values:
+      Expected: number
+      Received: string
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:19:23)
+
+  ● failure messages › () => expect(true).toBe(5)
+
+    Received true but expected 5 (using \'===\').
+    
+    Comparing two different types of values:
+      Expected: number
+      Received: boolean
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:20:24)
+
+  ● failure messages › () => expect({a: 1, b: 2}).toBe({a: 1, b: 3})
+
+    Received {\"a\":1,\"b\":2} but expected {\"a\":1,\"b\":3} (using \'===\').
+    
+    - Expected
+    + Received
+    
+    Object {
+        \"a\": 1,
+    -   \"b\": 3
+    +   \"b\": 2
+      }
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:21:32)
+
+  ● failure messages › () => expect({
+      a: 1,
+      b: 2,
+      c: {
+        apple: \'banana\',
+      },
+    }).toEqual({
+      a: 2,
+      b: 2,
+      c: {
+        kiwi: \'melon\',
+      },
+    })
+
+    Received {\"a\":1,\"b\":2,\"c\":{\"apple\":\"banana\"}} but expected it to equal {\"a\":2,\"b\":2,\"c\":{\"kiwi\":\"melon\"}}.
+    
+    - Expected
+    + Received
+    
+    Object {
+    -   \"a\": 2,
+    +   \"a\": 1,
+        \"b\": 2,
+        \"c\": Object {
+    -     \"kiwi\": \"melon\"
+    +     \"apple\": \"banana\"
+        }
+      }
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:28:8)
+
+  ● failure messages › () => expect([1, 2, 3]).toEqual([2, 3, 1])
+
+    Received [1,2,3] but expected it to equal [2,3,1].
+    
+    - Expected
+    + Received
+    
+    Array [
+    +   1,
+        2,
+    -   3,
+    -   1
+    +   3
+      ]
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:35:29)
+
+  ● failure messages › () => expect([1, 2, 3]).toEqual([1, 3, 2])
+
+    Received [1,2,3] but expected it to equal [1,3,2].
+    
+    - Expected
+    + Received
+    
+    Array [
+        1,
+    -   3,
+    -   2
+    +   2,
+    +   3
+      ]
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:36:29)
+
+  ● failure messages › () => expect(true).not.toBeTruthy()
+
+    Received true but expected it to be truthy.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:37:28)
+
+  ● failure messages › () => expect(false).toBeTruthy()
+
+    Received false but expected it not to be truthy.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:38:25)
+
+  ● failure messages › () => expect(true).toBeFalsy()
+
+    Received true but expected it to be falsy.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:39:24)
+
+  ● failure messages › () => expect(false).not.toBeFalsy()
+
+    Received false but expected it not to be falsy.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:40:29)
+
+  ● failure messages › () => expect({a: 1, b: 2}).toBeFalsy()
+
+    Received {\"a\":1,\"b\":2} but expected it to be falsy.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:41:32)
+
+  ● failure messages › () => expect(1).toBeNaN()
+
+    Received 1 but expected it to be NaN.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:42:21)
+
+  ● failure messages › () => expect({}).toBeNull()
+
+    Received {} but expected it to be null.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:43:22)
+
+  ● failure messages › () => expect(undefined).toBeDefined()
+
+    Received \"undefined\" but expected it to be defined.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:44:29)
+
+  ● failure messages › () => expect(1).toBeUndefined()
+
+    Received 1 but expected it to be undefined.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:45:21)
+
+  ● failure messages › () => expect(1).toBeGreaterThan(5)
+
+    Received 1 but expected it to be greater than 5 (using >).
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:46:21)
+
+  ● failure messages › () => expect(1).toBeGreaterThanOrEqual(5)
+
+    Received 1 but expected it to be greater than or equal 5 (using >=).
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:47:21)
+
+  ● failure messages › () => expect(5).toBeLessThan(1)
+
+    Received 5 but expected it to be less than 1 (using <).
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:48:21)
+
+  ● failure messages › () => expect(5).toBeLessThanOrEqual(1)
+
+    Received 5 but expected it to be less than or equal 1 (using <=).
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:49:21)
+
+  ● failure messages › () => expect([1, 2]).toContain({apple: \'banana\'})
+
+    Received [1,2] but expected it to contain {\"apple\":\"banana\"}.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:50:26)
+
+  ● failure messages › () => expect(4).toBeCloseTo(100)
+
+    Received 4 but expected it to be close to 100 with 2-digit precision.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:51:21)
+
+  ● failure messages › () => expect(\'hello this is a message\').toMatch(\'bye\')
+
+    Received \"hello this is a message\" but expected it to match \"bye\".
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:52:45)
+
+  ● failure messages › () => expect(() => {}).toThrow()
+
+    Expected function to throw an exception.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:53:28)
+
+  ● failure messages › () => expect(() => {}).toThrow(new TypeError(\'This is an error!\'))
+
+    Expected function to throw an exception.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:54:28)
+
+  ● failure messages › () => expect(() => { throw new Error(\'not an error\'); })
+      .toThrow(\'This is an error!\')
+
+    not an error.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:56:8)
+
+  ● failure messages › () => expect(() => {}).toThrow(\'This is an error!\')
+
+    Expected function to throw an exception.
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:57:28)
+
+  ● failure messages › () => expect(() => { throw new Error(\'not an error\'); })
+      .toThrowError(\'This is an error!\')
+
+    Received \"Error: not an error\" but expected the function to throw an error matching \"This is an error!\".
+      
+      at Object.<anonymous> (__tests__/test-error-test.js:59:8)
+
+  ● failure messages › toMatchSnapshot
+
+    Received value does not match the stored snapshot 1.
+    
+    - Snapshot
+    + Received
+    
+    Object {
+        \"a\": 1,
+    -   \"b\": 2
+    +   \"apple\": \"banana\"
+      }
+      
+      at Object.test (__tests__/test-error-test.js:66:8)
+
+
+Snapshot Summary
+› 
+snapshot failure, 29 tests failed, 1 test passed (30 total in 1 test suite, <TIME>)
+"
+`;
+
+exports[`test matcher mesasges 2`] = `
 "  console.log __tests__/test-error-test.js:12
     This is what a log looks like.
 
   console.error __tests__/test-error-test.js:14
     This is what an error looks like.
 
+"
+`;
+
+exports[`test throwing not Error objects 1`] = `
+" FAIL  __tests__/throw-number-test.js
+  ● Test suite failed to run
+
+    Expected an Error, but \"1\" was thrown
+    
+
+1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+"
+`;
+
+exports[`test throwing not Error objects 2`] = `
+" FAIL  __tests__/throw-string-test.js
+  ● Test suite failed to run
+
+    Error
+      banana
+
+1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+"
+`;
+
+exports[`test throwing not Error objects 3`] = `
+" FAIL  __tests__/throw-object-test.js
+  ● Test suite failed to run
+
+ERROR: No message was provided
+
+1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
 "
 `;

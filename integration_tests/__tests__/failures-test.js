@@ -11,8 +11,33 @@
 const path = require('path');
 const runJest = require('../runJest');
 
-it('failure messages', () => {
-  const dir = path.resolve(__dirname, '../failures');
-  const {stdout} = runJest(dir);
+const dir = path.resolve(__dirname, '../failures');
+
+test('matcher messages', () => {
+  const {stderr, stdout} = runJest(dir, ['test-error-test.js']);
+
+  expect(
+      stderr
+        .replace(/\s*\(\d*ms\)/g, '')
+        .replace(/run time.*s/, '<TIME>')
+        .replace(/1 snapshot test failed.*\n/g, ''),
+  ).toMatchSnapshot();
   expect(stdout).toMatchSnapshot();
+
+});
+
+test('throwing not Error objects', () => {
+  let stderr;
+  stderr = runJest(dir, ['throw-number-test.js']).stderr;
+  expect(
+    stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
+  ).toMatchSnapshot();
+  stderr = runJest(dir, ['throw-string-test.js']).stderr;
+  expect(
+    stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
+  ).toMatchSnapshot();
+  stderr = runJest(dir, ['throw-object-test.js']).stderr;
+  expect(
+    stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
+  ).toMatchSnapshot();
 });
