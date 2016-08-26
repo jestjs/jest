@@ -1,0 +1,1727 @@
+exports[`.toBe() does not crash on circular references 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m{}[39m
+Received:
+  [31m{\"circular\":\"[Circular]\"}[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m-[39m [32mObject {}[39m
+[31m+[39m [31mObject {[39m
+[31m+[39m [31m  \"circular\": [Circular][39m
+[31m+[39m [31m}[39m"
+`;
+
+exports[`.toBe() fails for '"a"' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32m\"a\"[39m
+Received:
+  [31m\"a\"[39m"
+`;
+
+exports[`.toBe() fails for '"undefined"' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32m\"undefined\"[39m
+Received:
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBe() fails for '1' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32m1[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBe() fails for '[]' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32m[][39m
+Received:
+  [31m[][39m"
+`;
+
+exports[`.toBe() fails for 'false' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32mfalse[39m
+Received:
+  [31mfalse[39m"
+`;
+
+exports[`.toBe() fails for 'null' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32mnull[39m
+Received:
+  [31mnull[39m"
+`;
+
+exports[`.toBe() fails for '{}' with '.not' 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to not be (using ===):
+  [32m{}[39m
+Received:
+  [31m{}[39m"
+`;
+
+exports[`.toBe() fails for: "abc" and "cde" 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m\"cde\"[39m
+Received:
+  [31m\"abc\"[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32mab[39m[2mc[22m[31mde[39m"
+`;
+
+exports[`.toBe() fails for: 1 and 2 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m2[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBe() fails for: [] and [] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m[][39m
+Received:
+  [31m[][39m
+
+Difference:
+
+[2m[4mCompared values have no visual difference[24m[22m"
+`;
+
+exports[`.toBe() fails for: null and "undefined" 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m\"undefined\"[39m
+Received:
+  [31mnull[39m
+
+Difference:
+
+Comparing two different types of values:
+  Expected: [32mundefined[39m
+  Received: [31mnull[39m"
+`;
+
+exports[`.toBe() fails for: true and false 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32mfalse[39m
+Received:
+  [31mtrue[39m"
+`;
+
+exports[`.toBe() fails for: {"a":1} and {"a":1} 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m{\"a\":1}[39m
+Received:
+  [31m{\"a\":1}[39m
+
+Difference:
+
+[2m[4mCompared values have no visual difference[24m[22m"
+`;
+
+exports[`.toBe() fails for: {"a":1} and {"a":5} 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m{\"a\":5}[39m
+Received:
+  [31m{\"a\":1}[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[37m [39m [37mObject {[39m
+[32m-[39m [32m  \"a\": 5[39m
+[31m+[39m [31m  \"a\": 1[39m
+[37m [39m [37m}[39m"
+`;
+
+exports[`.toBe() fails for: {} and {} 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+
+Expected value to be (using ===):
+  [32m{}[39m
+Received:
+  [31m{}[39m
+
+Difference:
+
+[2m[4mCompared values have no visual difference[24m[22m"
+`;
+
+exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m5[39m-digit precision):
+  [32m0.000004[39m
+Received: 
+  [31m0[39m"
+`;
+
+exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m3[39m-digit precision):
+  [32m0.0001[39m
+Received: 
+  [31m0[39m"
+`;
+
+exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m0[39m-digit precision):
+  [32m0.1[39m
+Received: 
+  [31m0[39m"
+`;
+
+exports[`.toBeCloseTo() passes: [0, 0.001] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m2[39m-digit precision):
+  [32m0.001[39m
+Received: 
+  [31m0[39m"
+`;
+
+exports[`.toBeCloseTo() passes: [0, 0] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m2[39m-digit precision):
+  [32m0[39m
+Received: 
+  [31m0[39m"
+`;
+
+exports[`.toBeCloseTo() passes: [1.23, 1.225] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m2[39m-digit precision):
+  [32m1.225[39m
+Received: 
+  [31m1.23[39m"
+`;
+
+exports[`.toBeCloseTo() passes: [1.23, 1.226] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m2[39m-digit precision):
+  [32m1.226[39m
+Received: 
+  [31m1.23[39m"
+`;
+
+exports[`.toBeCloseTo() passes: [1.23, 1.229] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m2[39m-digit precision):
+  [32m1.229[39m
+Received: 
+  [31m1.23[39m"
+`;
+
+exports[`.toBeCloseTo() passes: [1.23, 1.234] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value not to be close to (with [32m2[39m-digit precision):
+  [32m1.234[39m
+Received: 
+  [31m1.23[39m"
+`;
+
+exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value to be close to (with [32m2[39m-digit precision):
+  [32m0.01[39m
+Received: 
+  [31m0[39m"
+`;
+
+exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value to be close to (with [32m2[39m-digit precision):
+  [32m1.23[39m
+Received: 
+  [31m1[39m"
+`;
+
+exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeCloseTo([22m[32mexpected, precision[39m[2m)[22m
+
+Expected value to be close to (with [32m2[39m-digit precision):
+  [32m1.2249999[39m
+Received: 
+  [31m1.23[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '"() => {}"' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m\"() => {}\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '"() => {}"' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m\"() => {}\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '"Infinity"' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '"Infinity"' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m\"a\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m\"a\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '0.5' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m0.5[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '0.5' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m0.5[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '1' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m1[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '1' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m1[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '[]' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m[][39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '[]' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m[][39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() 'true' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31mtrue[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() 'true' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31mtrue[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '{}' is defined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeDefined([22m[2m)[22m
+
+Expected value not to be defined, instead received
+  [31m{}[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '{}' is defined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeUndefined([22m[2m)[22m
+
+Expected value to be undefined, instead received
+  [31m{}[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() undefined is undefined 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeDefined([22m[2m)[22m
+
+Expected value to be defined, instead received
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() undefined is undefined 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeUndefined([22m[2m)[22m
+
+Expected value not to be undefined, instead received
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m\"-Infinity\"[39m
+Received:
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m\"-Infinity\"[39m
+Received:
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1, 1] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m1[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1, 1] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m1[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m1.7976931348623157e+308[39m
+Received:
+  [31m1.7976931348623157e+308[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m1.7976931348623157e+308[39m
+Received:
+  [31m1.7976931348623157e+308[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [5e-324, 5e-324] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m5e-324[39m
+Received:
+  [31m5e-324[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [5e-324, 5e-324] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m5e-324[39m
+Received:
+  [31m5e-324[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [Infinity, Infinity] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m\"Infinity\"[39m
+Received:
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [Infinity, Infinity] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m\"Infinity\"[39m
+Received:
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m\"Infinity\"[39m
+Received:
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m\"Infinity\"[39m
+Received:
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m\"-Infinity\"[39m
+Received:
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m\"-Infinity\"[39m
+Received:
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m\"Infinity\"[39m
+Received:
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m\"Infinity\"[39m
+Received:
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m\"-Infinity\"[39m
+Received:
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m\"-Infinity\"[39m
+Received:
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m0.2[39m
+Received:
+  [31m0.1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m0.2[39m
+Received:
+  [31m0.1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m0.1[39m
+Received:
+  [31m0.2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m0.1[39m
+Received:
+  [31m0.2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m0.2[39m
+Received:
+  [31m0.1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m0.2[39m
+Received:
+  [31m0.1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m0.1[39m
+Received:
+  [31m0.2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m0.1[39m
+Received:
+  [31m0.2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m2[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m2[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m1[39m
+Received:
+  [31m2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m1[39m
+Received:
+  [31m2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m2[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m2[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m1[39m
+Received:
+  [31m2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m1[39m
+Received:
+  [31m2[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m34[39m
+Received:
+  [31m17[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m34[39m
+Received:
+  [31m17[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m17[39m
+Received:
+  [31m34[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m17[39m
+Received:
+  [31m34[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m34[39m
+Received:
+  [31m17[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m34[39m
+Received:
+  [31m17[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m17[39m
+Received:
+  [31m34[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m17[39m
+Received:
+  [31m34[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m7[39m
+Received:
+  [31m3[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m7[39m
+Received:
+  [31m3[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m3[39m
+Received:
+  [31m7[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m3[39m
+Received:
+  [31m7[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m7[39m
+Received:
+  [31m3[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m7[39m
+Received:
+  [31m3[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m3[39m
+Received:
+  [31m7[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m3[39m
+Received:
+  [31m7[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m1.7976931348623157e+308[39m
+Received:
+  [31m5e-324[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m1.7976931348623157e+308[39m
+Received:
+  [31m5e-324[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m5e-324[39m
+Received:
+  [31m1.7976931348623157e+308[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m5e-324[39m
+Received:
+  [31m1.7976931348623157e+308[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m1.7976931348623157e+308[39m
+Received:
+  [31m5e-324[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m1.7976931348623157e+308[39m
+Received:
+  [31m5e-324[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m5e-324[39m
+Received:
+  [31m1.7976931348623157e+308[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m5e-324[39m
+Received:
+  [31m1.7976931348623157e+308[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than:
+  [32m18[39m
+Received:
+  [31m9[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than:
+  [32m18[39m
+Received:
+  [31m9[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThan([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than:
+  [32m9[39m
+Received:
+  [31m18[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThan([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than:
+  [32m9[39m
+Received:
+  [31m18[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be greater than or equal:
+  [32m18[39m
+Received:
+  [31m9[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be less than or equal:
+  [32m18[39m
+Received:
+  [31m9[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeGreaterThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value not to be greater than or equal:
+  [32m9[39m
+Received:
+  [31m18[39m"
+`;
+
+exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeLessThanOrEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to be less than or equal:
+  [32m9[39m
+Received:
+  [31m18[39m"
+`;
+
+exports[`.toBeNaN() passes 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeNaN([22m[2m)[22m
+
+Expected value not to be NaN, instead received
+  [31m\"NaN\"[39m"
+`;
+
+exports[`.toBeNaN() passes 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeNaN([22m[2m)[22m
+
+Expected value not to be NaN, instead received
+  [31m\"NaN\"[39m"
+`;
+
+exports[`.toBeNaN() passes 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeNaN([22m[2m)[22m
+
+Expected value not to be NaN, instead received
+  [31m\"NaN\"[39m"
+`;
+
+exports[`.toBeNaN() passes 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeNaN([22m[2m)[22m
+
+Expected value not to be NaN, instead received
+  [31m\"NaN\"[39m"
+`;
+
+exports[`.toBeNaN() throws 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m1[39m"
+`;
+
+exports[`.toBeNaN() throws 10`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m\"-Infinity\"[39m"
+`;
+
+exports[`.toBeNaN() throws 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m\"\"[39m"
+`;
+
+exports[`.toBeNaN() throws 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31mnull[39m"
+`;
+
+exports[`.toBeNaN() throws 4`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBeNaN() throws 5`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m{}[39m"
+`;
+
+exports[`.toBeNaN() throws 6`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m[][39m"
+`;
+
+exports[`.toBeNaN() throws 7`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m0.2[39m"
+`;
+
+exports[`.toBeNaN() throws 8`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m0[39m"
+`;
+
+exports[`.toBeNaN() throws 9`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNaN([22m[2m)[22m
+
+Expected value to be NaN, instead received
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeNull() fails for '"() => {}"' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m\"() => {}\"[39m"
+`;
+
+exports[`.toBeNull() fails for '"Infinity"' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeNull() fails for '"a"' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m\"a\"[39m"
+`;
+
+exports[`.toBeNull() fails for '0.5' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m0.5[39m"
+`;
+
+exports[`.toBeNull() fails for '1' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m1[39m"
+`;
+
+exports[`.toBeNull() fails for '[]' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m[][39m"
+`;
+
+exports[`.toBeNull() fails for 'true' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31mtrue[39m"
+`;
+
+exports[`.toBeNull() fails for '{}' with .not 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeNull([22m[2m)[22m
+
+Expected value to be null, instead received
+  [31m{}[39m"
+`;
+
+exports[`.toBeNull() pass for null 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeNull([22m[2m)[22m
+
+Expected value not to be null, instead received
+  [31mnull[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '""' is falsy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeTruthy([22m[2m)[22m
+
+Expected value to be truthy, instead received
+  [31m\"\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '""' is falsy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeFalsy([22m[2m)[22m
+
+Expected value not to be falsy, instead received
+  [31m\"\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"() => {}"' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m\"() => {}\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"() => {}"' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m\"() => {}\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"Infinity"' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"Infinity"' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m\"Infinity\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"NaN"' is falsy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeTruthy([22m[2m)[22m
+
+Expected value to be truthy, instead received
+  [31m\"NaN\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"NaN"' is falsy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeFalsy([22m[2m)[22m
+
+Expected value not to be falsy, instead received
+  [31m\"NaN\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"a"' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m\"a\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"a"' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m\"a\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"undefined"' is falsy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeTruthy([22m[2m)[22m
+
+Expected value to be truthy, instead received
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '"undefined"' is falsy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeFalsy([22m[2m)[22m
+
+Expected value not to be falsy, instead received
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '0' is falsy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeTruthy([22m[2m)[22m
+
+Expected value to be truthy, instead received
+  [31m0[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '0' is falsy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeFalsy([22m[2m)[22m
+
+Expected value not to be falsy, instead received
+  [31m0[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '0.5' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m0.5[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '0.5' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m0.5[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '1' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m1[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '1' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m1[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '[]' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m[][39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '[]' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m[][39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() 'false' is falsy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeTruthy([22m[2m)[22m
+
+Expected value to be truthy, instead received
+  [31mfalse[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() 'false' is falsy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeFalsy([22m[2m)[22m
+
+Expected value not to be falsy, instead received
+  [31mfalse[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() 'null' is falsy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeTruthy([22m[2m)[22m
+
+Expected value to be truthy, instead received
+  [31mnull[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() 'null' is falsy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeFalsy([22m[2m)[22m
+
+Expected value not to be falsy, instead received
+  [31mnull[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() 'true' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31mtrue[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() 'true' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31mtrue[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '{}' is truthy 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toBeTruthy([22m[2m)[22m
+
+Expected value not to be truthy, instead received
+  [31m{}[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() '{}' is truthy 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toBeFalsy([22m[2m)[22m
+
+Expected value to be falsy, instead received
+  [31m{}[39m"
+`;
+
+exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 1`] = `"toBeTruthy matcher does not accept any arguments."`;
+
+exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 2`] = `"toBeFalsy matcher does not accept any arguments."`;
+
+exports[`.toContain() '"11112111"' contains '"2"' 1`] = `
+"[2mexpect([22m[31mstring[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected string:
+  [31m\"11112111\"[39m
+Not to contain value:
+  [32m\"2\"[39m
+"
+`;
+
+exports[`.toContain() '"abcdef"' contains '"abc"' 1`] = `
+"[2mexpect([22m[31mstring[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected string:
+  [31m\"abcdef\"[39m
+Not to contain value:
+  [32m\"abc\"[39m
+"
+`;
+
+exports[`.toContain() '["Symbol(a)"]' contains '"Symbol(a)"' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[\"Symbol(a)\"][39m
+Not to contain value:
+  [32m\"Symbol(a)\"[39m
+"
+`;
+
+exports[`.toContain() '["a","b","c","d"]' contains '"a"' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[\"a\",\"b\",\"c\",\"d\"][39m
+Not to contain value:
+  [32m\"a\"[39m
+"
+`;
+
+exports[`.toContain() '["undefined",null]' contains '"undefined"' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[\"undefined\",null][39m
+Not to contain value:
+  [32m\"undefined\"[39m
+"
+`;
+
+exports[`.toContain() '["undefined",null]' contains 'null' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[\"undefined\",null][39m
+Not to contain value:
+  [32mnull[39m
+"
+`;
+
+exports[`.toContain() '[1,2,3,4]' contains '1' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[1,2,3,4][39m
+Not to contain value:
+  [32m1[39m
+"
+`;
+
+exports[`.toContain() '[1,2,3]' does not contain '4' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[1,2,3][39m
+To contain value:
+  [32m4[39m"
+`;
+
+exports[`.toContain() '[null,"undefined"]' does not contain '1' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[null,\"undefined\"][39m
+To contain value:
+  [32m1[39m"
+`;
+
+exports[`.toContain() '[{},[]]' does not contain '[]' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[{},[]][39m
+To contain value:
+  [32m[][39m"
+`;
+
+exports[`.toContain() '[{},[]]' does not contain '{}' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[{},[]][39m
+To contain value:
+  [32m{}[39m"
+`;
+
+exports[`.toEqual() expect("abc").not.toEqual("abc") 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m\"abc\"[39m
+Received:
+  [31m\"abc\"[39m"
+`;
+
+exports[`.toEqual() expect("banana").toEqual("apple") 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m\"apple\"[39m
+Received:
+  [31m\"banana\"[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32mb[39m[2ma[22m[31mpple[39m[32mnana[39m"
+`;
+
+exports[`.toEqual() expect(1).not.toEqual(1) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m1[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toEqual() expect(1).toEqual(2) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m2[39m
+Received:
+  [31m1[39m"
+`;
+
+exports[`.toEqual() expect(null).toEqual("undefined") 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m\"undefined\"[39m
+Received:
+  [31mnull[39m
+
+Difference:
+
+Comparing two different types of values:
+  Expected: [32mundefined[39m
+  Received: [31mnull[39m"
+`;
+
+exports[`.toEqual() expect(true).not.toEqual(true) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32mtrue[39m
+Received:
+  [31mtrue[39m"
+`;
+
+exports[`.toEqual() expect(true).toEqual(false) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mfalse[39m
+Received:
+  [31mtrue[39m"
+`;
+
+exports[`.toEqual() expect({"a":5}).toEqual({"b":6}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\"b\":6}[39m
+Received:
+  [31m{\"a\":5}[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[37m [39m [37mObject {[39m
+[32m-[39m [32m  \"b\": 6[39m
+[31m+[39m [31m  \"a\": 5[39m
+[37m [39m [37m}[39m"
+`;
+
+exports[`.toEqual() expect({"a":99}).not.toEqual({"a":99}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\"a\":99}[39m
+Received:
+  [31m{\"a\":99}[39m"
+`;
+
+exports[`.toMatch() passes: [Foo bar, /^foo/i] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatch([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match:
+  [32m\"/^foo/i\"[39m
+Received:
+  [31m\"Foo bar\"[39m"
+`;
+
+exports[`.toMatch() passes: [foo, foo] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatch([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match:
+  [32m\"foo\"[39m
+Received:
+  [31m\"foo\"[39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: ["() => {}", "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  function: [31m\"() => {}\"[39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: ["/foo/i", "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  regexp: [31m\"/foo/i\"[39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: ["undefined", "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  undefined: [31m\"undefined\"[39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: [1, "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  number: [31m1[39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: [[], "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  array: [31m[][39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: [true, "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  boolean: [31mtrue[39m"
+`;
+
+exports[`.toMatch() throws if non String actual value passed: [{}, "foo"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[31mstring[39m value should be a string.
+Received:
+  object: [31m{}[39m"
+`;
+
+exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", "() => {}"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[32mexpected[39m value should be a string or a regular expression.
+Received:
+  function: [32m\"() => {}\"[39m"
+`;
+
+exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", "undefined"] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[32mexpected[39m value should be a string or a regular expression.
+Received:
+  undefined: [32m\"undefined\"[39m"
+`;
+
+exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", 1] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[32mexpected[39m value should be a string or a regular expression.
+Received:
+  number: [32m1[39m"
+`;
+
+exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", []] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[32mexpected[39m value should be a string or a regular expression.
+Received:
+  array: [32m[][39m"
+`;
+
+exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", true] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[32mexpected[39m value should be a string or a regular expression.
+Received:
+  boolean: [32mtrue[39m"
+`;
+
+exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", {}] 1`] = `
+"[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
+
+[32mexpected[39m value should be a string or a regular expression.
+Received:
+  object: [32m{}[39m"
+`;
+
+exports[`.toMatch() throws: [bar, /foo/] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatch([22m[32mexpected[39m[2m)[22m
+
+Expected value to match:
+  [32m\"/foo/\"[39m
+Received:
+  [31m\"bar\"[39m"
+`;
+
+exports[`.toMatch() throws: [bar, foo] 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatch([22m[32mexpected[39m[2m)[22m
+
+Expected value to match:
+  [32m\"foo\"[39m
+Received:
+  [31m\"bar\"[39m"
+`;

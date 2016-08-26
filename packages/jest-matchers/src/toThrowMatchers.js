@@ -16,7 +16,7 @@ import type {MatchersObject} from './types';
 const {escapeStrForRegex} = require('jest-util');
 const {
   getType,
-  highlight,
+  printReceived,
   printExpected,
 } = require('jest-matcher-utils');
 
@@ -43,7 +43,7 @@ const matchers: MatchersObject = {
       throw new Error(
         'Unexpected argument passed. Expected to get ' +
         '"string", "Error type" or "regexp". Got: ' +
-        `${highlight(getType(expected))} ${highlight(expected)}.`,
+        `${printReceived(getType(expected))} ${printReceived(expected)}.`,
       );
     }
   },
@@ -75,7 +75,7 @@ const toThrowMatchingError = (
 };
 
 const getErrorMessage = error => {
-  return `Received ${highlight(error.constructor.name + ': ' + error.message)} but expected `;
+  return `Received ${printReceived(error.constructor.name + ': ' + error.message)} but expected `;
 };
 
 module.exports = matchers;
