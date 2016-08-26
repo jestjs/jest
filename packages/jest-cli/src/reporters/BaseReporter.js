@@ -13,6 +13,8 @@ import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {RunnerContext} from 'types/Reporters';
 
+const clearLine = require('jest-util').clearLine;
+
 class BaseReporter {
   _error: ?Error;
 
@@ -33,6 +35,10 @@ class BaseReporter {
     aggregatedResults: AggregatedResult,
     runnerContext: RunnerContext,
   ): ?Promise<any> {}
+
+  clearLine() {
+    clearLine(process.stderr);
+  }
 
   _write(string: string) {
     // If we write more than one character at a time it is possible that

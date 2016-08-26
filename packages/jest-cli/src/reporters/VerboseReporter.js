@@ -49,7 +49,7 @@ class VerboseReporter extends DefaultReporter {
     testResult: TestResult,
     results: AggregatedResult,
   ) {
-    this._clearWaitingOn(config);
+    this.clearLine();
     if (!testResult.testExecError) {
       this._logTestResults(testResult.testResults);
     }
