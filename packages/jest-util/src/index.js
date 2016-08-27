@@ -14,6 +14,15 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
+const escapePathForRegex = (dir: string) => {
+  if (path.sep === '\\') {
+    // Replace "\" with "/" so it's not escaped by escapeStrForRegex.
+    // replacePathSepForRegex will convert it back.
+    dir = dir.replace(/\\/g, '/');
+  }
+  return replacePathSepForRegex(escapeStrForRegex(dir));
+};
+
 const escapeStrForRegex =
   (string: string) => string.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
@@ -57,6 +66,7 @@ exports.NullConsole = require('./NullConsole');
 
 exports.clearLine = require('./clearLine');
 exports.createDirectory = createDirectory;
+exports.escapePathForRegex = escapePathForRegex;
 exports.escapeStrForRegex = escapeStrForRegex;
 exports.formatResultsErrors =
   require('./formatFailureMessage').formatResultsErrors;
