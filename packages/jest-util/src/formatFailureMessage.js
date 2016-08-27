@@ -26,7 +26,7 @@ const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
 const TITLE_BULLET = chalk.bold('\u25cf ');
-const STACK_TRACE_COLOR = chalk.gray;
+const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 
@@ -104,13 +104,14 @@ const formatPaths = (config, relativeTestPath, line) => {
   filePath = path.relative(config.rootDir, filePath);
 
   if (new RegExp(config.testRegex).test(filePath)) {
-    filePath = chalk.blue(filePath);
+    filePath = chalk.reset.blue(filePath);
   } else if (filePath === relativeTestPath) {
     // highlight paths from the current test file
-    filePath = chalk.cyan(filePath);
+    filePath = chalk.reset.cyan(filePath);
   }
   // make paths relative to the <rootDir>
-  return matches[1] + filePath + matches[3];
+  return STACK_TRACE_COLOR(matches[1])
+    + filePath + STACK_TRACE_COLOR(matches[3]);
 };
 
 const formatStackTrace = (stack, config, testPath) => {

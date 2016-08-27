@@ -151,7 +151,7 @@ class JasmineFormatter {
       const type = Object.prototype.toString.call(object);
       const output = [];
       if (type === '[object Map]') {
-        indent = chalk.gray('|') + ' ' + indent;
+        indent = chalk.dim('|') + ' ' + indent;
         for (const value of object) {
           output.push(
             indent + value[0] + ': ' + this.prettyPrint(
@@ -168,7 +168,7 @@ class JasmineFormatter {
           output.push(
             this.prettyPrint(
               value,
-              chalk.gray('|') + ' ' + indent,
+              chalk.dim('|') + ' ' + indent,
               cycleWeakMap,
             ),
           );
@@ -179,7 +179,7 @@ class JasmineFormatter {
       const orderedKeys = Object.keys(object).sort();
       let value;
       const keysOutput = [];
-      const keyIndent = chalk.gray('|') + ' ';
+      const keyIndent = chalk.dim('|') + ' ';
       for (let i = 0; i < orderedKeys.length; i++) {
         value = object[orderedKeys[i]];
         keysOutput.push(

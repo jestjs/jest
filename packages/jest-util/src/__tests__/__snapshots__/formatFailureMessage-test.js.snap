@@ -2,8 +2,8 @@ exports[`formatFailureMessage should exclude jasmine from stack trace for window
 "  [1m● [22m › windows test
 
       at stack (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1580:17)
-[90m      
-      at Object.addResult ([34m..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js[90m:1550:14)
-      at Object.it ([34mbuild\\__tests__\\formatFailureMessage-test.js[90m:45:41)[39m
+[2m      
+      [2mat Object.addResult ([2m[0m[34m..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js[39m[0m[2m:1550:14)[2m
+      [2mat Object.it ([2m[0m[34mbuild\\__tests__\\formatFailureMessage-test.js[39m[0m[2m:45:41)[2m[22m
 "
 `;
