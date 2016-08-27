@@ -74,7 +74,7 @@ Snapshot testing was introduced in Jest 14.0. More information on how it works a
 Let's build a Link component in React that renders hyperlinks:
 
 ```javascript
-// Link.react-test.js
+// Link.react.js
 import React from 'react';
 
 const STATUS = {
