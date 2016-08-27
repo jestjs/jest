@@ -34,7 +34,7 @@ const createTransformer = (options: any) => {
     ): string {
       let plugins = options.plugins || [];
 
-      if (preprocessorOptions.instrument) {
+      if (preprocessorOptions && preprocessorOptions.instrument) {
         plugins = plugins.concat(require('babel-plugin-istanbul').default);
       }
 
