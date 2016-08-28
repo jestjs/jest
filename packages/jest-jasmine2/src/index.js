@@ -127,14 +127,6 @@ function jasmine2(
 
   env.beforeEach(() => {
     jasmine.addMatchers({
-      toMatchSnapshot: snapshot.matcher(
-        testPath,
-        config,
-        snapshotState,
-      ),
-    });
-
-    jasmine.addMatchers({
       lastCalledWith: util => ({
         compare(actual) {
           const isSpy = isSpyLike(actual);
@@ -225,6 +217,10 @@ function jasmine2(
   });
 
   const snapshotState = snapshot.getSnapshotState(jasmine, testPath);
+  environment.global.matchersContext = {
+    config,
+    snapshotState,
+  };
 
   env.addReporter(reporter);
 

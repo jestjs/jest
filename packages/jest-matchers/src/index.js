@@ -14,6 +14,7 @@ import type {
   Expect,
   ExpectationResult,
   ExpectationObject,
+  MatchersContext,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -37,14 +38,17 @@ if (!global[GLOBAL_MATCHERS_OBJECT_SYMBOL]) {
   );
 }
 
-const expect: Expect = (actual: any): ExpectationObject => {
+const expect: Expect = (
+  actual: any,
+  matchersContext: MatchersContext,
+): ExpectationObject => {
   const allMatchers = global[GLOBAL_MATCHERS_OBJECT_SYMBOL];
   const expectation = {not: {}};
   Object.keys(allMatchers).forEach(name => {
     expectation[name] =
-      makeThrowingMatcher(allMatchers[name], false, actual);
+      makeThrowingMatcher(allMatchers[name], false, actual, matchersContext);
     expectation.not[name] =
-      makeThrowingMatcher(allMatchers[name], true, actual);
+      makeThrowingMatcher(allMatchers[name], true, actual, matchersContext);
   });
 
   return expectation;
@@ -54,11 +58,13 @@ const makeThrowingMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: any,
+  matchersContext: MatchersContext,
 ): ThrowingMatcherFn => {
   return function throwingMatcher(expected, options) {
     const result: ExpectationResult = matcher(
       actual,
       expected,
+      matchersContext,
       options,
       {args: arguments},
     );

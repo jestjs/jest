@@ -14,7 +14,7 @@ const jasmineExpect = global.expect;
 // extend jasmine matchers with `jest-matchers`
 global.expect = actual => {
   const jasmineMatchers = jasmineExpect(actual);
-  const jestMatchers = jestExpect(actual);
+  const jestMatchers = jestExpect(actual, global.matchersContext);
   const not = Object.assign(jasmineMatchers.not, jestMatchers.not);
   return Object.assign(jasmineMatchers, jestMatchers, {not});
 };
