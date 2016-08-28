@@ -19,7 +19,9 @@
 to the <a href="/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string" target="">unmockedModulePathPatterns</a>
 config option.</p><p>You can also provide a <a href="/jest/docs/manual-mocks.html" target="">manual mock</a> by creating
 a <code>moduleName.js</code> file in a <code>__mocks__</code> folder in the root level of your
-project.</p><h3><a class="anchor" name="caching-issues"></a>Caching Issues <a class="hash-link" href="#caching-issues">#</a></h3><p>The preprocessor script was changed or babel was updated and the changes aren&#x27;t
+project. If you have set <code>testPathDirs</code> in your <code>package.json</code>, you will need to
+make sure that the root level <code>__mocks__</code> directory is also incuded in
+<code>testPathDirs</code>.</p><h3><a class="anchor" name="caching-issues"></a>Caching Issues <a class="hash-link" href="#caching-issues">#</a></h3><p>The preprocessor script was changed or babel was updated and the changes aren&#x27;t
 being recognized by Jest?</p><p>Retry with <code>--no-cache</code>.</p><p>Explanation: Jest caches transformed module files to speed up test execution.
 If you are using your own custom preprocessor, consider adding a <code>getCacheKey</code>
 function to it: <a href="https://github.com/facebook/relay/blob/master/scripts/jest/preprocessor.js#L63-L67" target="_blank">getCacheKey in Relay</a>.</p><h3><a class="anchor" name="unresolved-promises"></a>Unresolved Promises <a class="hash-link" href="#unresolved-promises">#</a></h3><p>If a promise doesn&#x27;t resolve at all, this error might be thrown:</p><pre class="prism language-javascript">
@@ -49,8 +51,9 @@ upgrade to the latest stable release of Node. The minimum supported version is
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-            ga('create', 'UA-387204-10', 'facebook.github.io');
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-44373548-17', 'auto');
             ga('send', 'pageview');
 
             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)
