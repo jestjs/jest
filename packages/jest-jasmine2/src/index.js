@@ -101,14 +101,6 @@ function jasmine2(
   );
 
   env.beforeEach(() => {
-    jasmine.addMatchers({
-      toMatchSnapshot: snapshot.matcher(
-        testPath,
-        config,
-        snapshotState,
-      ),
-    });
-
     if (config.resetModules) {
       runtime.resetModules();
     }
@@ -127,7 +119,7 @@ function jasmine2(
   // class of the test and `error instanceof Error` will return `false`.
   runtime.requireInternalModule(
     path.resolve(__dirname, './extendJasmineExpect.js'),
-  );
+  )({snapshotState, updateSnapshot: config.updateSnapshot});
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
