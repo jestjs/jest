@@ -18,7 +18,6 @@ const SnapshotFile = require('./SnapshotFile');
 
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
-const matcher = require('./matcher');
 const path = require('path');
 
 const EXTENSION = SnapshotFile.SNAPSHOT_EXTENSION;
@@ -77,7 +76,6 @@ module.exports = {
       filesRemoved,
     };
   },
-  matcher,
   getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
     let _index = 0;
     let _name = '';

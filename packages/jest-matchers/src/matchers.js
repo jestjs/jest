@@ -11,7 +11,10 @@
 
 'use strict';
 
-import type {MatchersObject} from './types';
+import type {
+  MatchersObject,
+  MatchersContext,
+} from './types';
 
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-util');
@@ -219,7 +222,12 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
+  toBeCloseTo(
+    actual: number,
+    expected: number,
+    matchersContext: MatchersContext,
+    precision?: number = 2,
+  ) {
     ensureNumbers(actual, expected, '.toBeCloseTo');
     const pass = Math.abs(expected - actual) < (Math.pow(10, -precision) / 2);
     const message = pass
@@ -252,6 +260,68 @@ const matchers: MatchersObject = {
       : () => `Received ${highlight(actual)} but expected it to match ${printExpected(expected)}.`;
 
     return {message, pass};
+  },
+
+  toMatchSnapshot(
+    actual: any,
+    expected: void,
+    {config, snapshotState}: MatchersContext,
+  ) {
+    ensureNoExpected(expected, 'toMatchSnapshot');
+
+    const snapshot = snapshotState.snapshot;
+    const count = snapshotState.incrementCounter();
+    const key = snapshotState.getSpecName() + ' ' + count;
+    const hasSnapshot = snapshot.has(key);
+    let pass = false;
+    let message = () => '';
+
+    if (
+      !snapshot.fileExists() ||
+      (hasSnapshot && config.updateSnapshot) ||
+      !hasSnapshot
+    ) {
+      if (config.updateSnapshot) {
+        if (!snapshot.matches(key, actual).pass) {
+          if (hasSnapshot) {
+            snapshotState.updated++;
+          } else {
+            snapshotState.added++;
+          }
+          snapshot.add(key, actual);
+        } else {
+          snapshotState.matched++;
+        }
+      } else {
+        snapshot.add(key, actual);
+        snapshotState.added++;
+      }
+      pass = true;
+    } else {
+      const matches = snapshot.matches(key, actual);
+      pass = matches.pass;
+      if (!pass) {
+        snapshotState.unmatched++;
+        message = () => {
+          return `Received value does not match the stored snapshot ${count}.\n\n` +
+          diff(
+            matches.expected.trim(),
+            matches.actual.trim(),
+            {
+              aAnnotation: 'Snapshot',
+              bAnnotation: 'Received',
+            },
+          );
+        };
+      } else {
+        snapshotState.matched++;
+      }
+    }
+
+    return {
+      pass,
+      message,
+    };
   },
 };
 

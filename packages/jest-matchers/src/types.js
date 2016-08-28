@@ -9,6 +9,9 @@
  */
 'use strict';
 
+import type {Config} from 'types/Config';
+import type {SnapshotState} from '../jest-snapshot/src/SnapshotState';
+
 export type ExpectationResult = {
   pass: boolean,
   message: string | () => string,
@@ -22,8 +25,15 @@ export type RawMatcherFn = (
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatchersObject = {[id:string]: RawMatcherFn};
-export type Expect = (expected: any) => ExpectationObject;
+export type Expect = (
+  expected: any,
+  matchersContext: MatchersContext,
+) => ExpectationObject;
 export type ExpectationObject = {
   [id: string]: ThrowingMatcherFn,
   not: {[id: string]: ThrowingMatcherFn},
+};
+export type MatchersContext = {
+  config: Config,
+  snapshotState: SnapshotState,
 };
