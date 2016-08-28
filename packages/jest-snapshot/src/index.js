@@ -19,6 +19,7 @@ const path = require('path');
 const SnapshotState = require('./State');
 const {
  EXPECTED_COLOR,
+ ensureNoExpected,
  matcherHint,
  RECEIVED_COLOR,
 } = require('jest-matcher-utils');
@@ -55,7 +56,7 @@ const initializeSnapshotState
 
 const getSnapshotState = () => snapshotState;
 
-const matcher = function(received: any) {
+const toMatchSnapshot = function(received: any, expected: void) {
   this.dontThrow();
   const {currentTestName, isNot, snapshotState} = this;
 
@@ -64,6 +65,8 @@ const matcher = function(received: any) {
       'Jest: `.not` can not be used with `.toMatchSnapshot()`.',
     );
   }
+
+  ensureNoExpected(expected, '.toMatchSnapshot');
 
   if (!snapshotState) {
     throw new Error('Jest: snapshot state must be initialized.');
@@ -102,11 +105,39 @@ const matcher = function(received: any) {
   }
 };
 
+const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
+  this.dontThrow();
+  const {isNot} = this;
+
+  if (isNot) {
+    throw new Error(
+      'Jest: `.not` can not be used with `.toThrowErrorMatchingSnapshot()`.',
+    );
+  }
+
+  ensureNoExpected(expected, '.toThrowErrorMatchingSnapshot');
+
+  let error;
+
+  try {
+    received();
+  } catch (e) {
+    error = e;
+  }
+
+  if (error === void 0) {
+    throw new Error("Jest: Expected function should throw error but didn't");
+  }
+
+  return toMatchSnapshot.call(this, error.message);
+};
+
 module.exports = {
   EXTENSION: SNAPSHOT_EXTENSION,
+  SnapshotState,
   cleanup,
   getSnapshotState,
   initializeSnapshotState,
-  toMatchSnapshot: matcher,
-  SnapshotState,
+  toMatchSnapshot,
+  toThrowErrorMatchingSnapshot,
 };

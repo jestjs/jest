@@ -20,43 +20,18 @@ const jestExpect = require('../').expect;
 ].forEach(([called, mockName]) => {
   test(`${called} works with ${mockName}`, () => {
     const fn = mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
-    let error;
 
     jestExpect(fn).not[called]();
+    expect(() => jestExpect(fn)[called]())
+      .toThrowErrorMatchingSnapshot();
 
-    try {
-      jestExpect(fn)[called]();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
-
-    error = undefined;
     fn();
-
     jestExpect(fn)[called]();
+    expect(() => jestExpect(fn).not[called]())
+      .toThrowErrorMatchingSnapshot();
 
-    try {
-      jestExpect(fn).not[called]();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
-
-    error = undefined;
-
-    try {
-      jestExpect(fn)[called](555);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[called](555))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -67,30 +42,16 @@ describe('toHaveBeenCalledTimes', () => {
     jestExpect(fn).toHaveBeenCalledTimes(1);
 
     [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
-      let error;
-      try {
-        jestExpect(fn).toHaveBeenCalledTimes(value);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error).toMatchSnapshot();
+      expect(() => jestExpect(fn).toHaveBeenCalledTimes(value))
+        .toThrowErrorMatchingSnapshot();
     });
   });
 
   it('verifies that actual is a Spy', () => {
     const fn = function fn() {};
 
-    let error;
-    try {
-      jestExpect(fn).toHaveBeenCalledTimes(2);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
+      .toThrowErrorMatchingSnapshot();
   });
 
   it('works both for Mock functions and Spies', () => {
@@ -108,15 +69,8 @@ describe('toHaveBeenCalledTimes', () => {
 
     jestExpect(fn).toHaveBeenCalledTimes(2);
 
-    let error;
-    try {
-      jestExpect(fn).not.toHaveBeenCalledTimes(2);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn).not.toHaveBeenCalledTimes(2))
+      .toThrowErrorMatchingSnapshot();
   });
 
   it('fails if function called more than expected times', () => {
@@ -128,15 +82,8 @@ describe('toHaveBeenCalledTimes', () => {
     jestExpect(fn).toHaveBeenCalledTimes(3);
     jestExpect(fn).not.toHaveBeenCalledTimes(2);
 
-    let error;
-    try {
-      jestExpect(fn).toHaveBeenCalledTimes(2);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
+      .toThrowErrorMatchingSnapshot();
   });
 
   it('fails if function called less than expected times', () => {
@@ -146,15 +93,8 @@ describe('toHaveBeenCalledTimes', () => {
     jestExpect(fn).toHaveBeenCalledTimes(1);
     jestExpect(fn).not.toHaveBeenCalledTimes(2);
 
-    let error;
-    try {
-      jestExpect(fn).toHaveBeenCalledTimes(2);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -167,17 +107,10 @@ describe('toHaveBeenCalledTimes', () => {
   'toHaveBeenLastCalledWith',
 ].forEach(calledWith => {
   test(`${calledWith} works only on spies or jest.fn`, () => {
-    let error;
     const fn = function fn() {};
 
-    try {
-      jestExpect(fn)[calledWith]();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[calledWith]())
+      .toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -194,56 +127,34 @@ describe('toHaveBeenCalledTimes', () => {
     return mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
   };
   test(`${calledWith} works with ${mockName} and no arguments`, () => {
-    let error;
     const fn = getFunction();
     jestExpect(fn).not[calledWith]('foo', 'bar');
 
-    try {
-      jestExpect(fn)[calledWith]('foo', 'bar');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[calledWith]('foo', 'bar'))
+      .toThrowErrorMatchingSnapshot();
   });
 
   test(`${calledWith} works with ${mockName} and arguments that don't match`, () => {
-    let error;
     const fn = getFunction();
     fn('foo', 'bar1');
 
     jestExpect(fn).not[calledWith]('foo', 'bar');
 
-    try {
-      jestExpect(fn)[calledWith]('foo', 'bar');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[calledWith]('foo', 'bar'))
+      .toThrowErrorMatchingSnapshot();
   });
 
   test(`${calledWith} works with ${mockName} and arguments that match`, () => {
-    let error;
     const fn = getFunction();
     fn('foo', 'bar');
 
     jestExpect(fn)[calledWith]('foo', 'bar');
 
-    try {
-      jestExpect(fn).not[calledWith]('foo', 'bar');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn).not[calledWith]('foo', 'bar'))
+      .toThrowErrorMatchingSnapshot();
   });
 
   test(`${calledWith} works with ${mockName} and many arguments that don't match`, () => {
-    let error;
     const fn = getFunction();
     fn('foo', 'bar1');
     fn('foo', 'bar2');
@@ -251,18 +162,11 @@ describe('toHaveBeenCalledTimes', () => {
 
     jestExpect(fn).not[calledWith]('foo', 'bar');
 
-    try {
-      jestExpect(fn)[calledWith]('foo', 'bar');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[calledWith]('foo', 'bar'))
+      .toThrowErrorMatchingSnapshot();
   });
 
   test(`${calledWith} works with ${mockName} and many arguments`, () => {
-    let error;
     const fn = getFunction();
     fn('foo1', 'bar');
     fn('foo', 'bar1');
@@ -270,13 +174,7 @@ describe('toHaveBeenCalledTimes', () => {
 
     jestExpect(fn)[calledWith]('foo', 'bar');
 
-    try {
-      jestExpect(fn).not[calledWith]('foo', 'bar');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn).not[calledWith]('foo', 'bar'))
+      .toThrowErrorMatchingSnapshot();
   });
 });

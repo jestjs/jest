@@ -11,7 +11,6 @@
 'use strict';
 
 const jestExpect = require('../').expect;
-const matchErrorSnapshot = require('./_matchErrorSnapshot');
 const skipOnWindows = require('skipOnWindows');
 
 // Custom Error class because node versions have different stack trace strings.
@@ -47,14 +46,15 @@ class Error {
       });
 
       test('did not throw at all', () => {
-        matchErrorSnapshot(() => jestExpect(() => {})[toThrow]('apple'));
+        expect(() => jestExpect(() => {})[toThrow]('apple'))
+          .toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but message did not match', () => {
-        matchErrorSnapshot(() =>
+        expect(() => {
           jestExpect(() => { throw new Error('apple'); })
-            [toThrow]('banana'),
-        );
+            [toThrow]('banana');
+        }).toThrowErrorMatchingSnapshot();
       });
 
       it('properly escapes strings when matching against errors', () => {
@@ -63,10 +63,10 @@ class Error {
       });
 
       test('threw, but should not have', () => {
-        matchErrorSnapshot(() => {
+        expect(() => {
           jestExpect(() => { throw new Error('apple'); })
             .not[toThrow]('apple');
-        });
+        }).toThrowErrorMatchingSnapshot();
       });
     });
 
@@ -78,21 +78,22 @@ class Error {
       });
 
       test('did not throw at all', () => {
-        matchErrorSnapshot(() => jestExpect(() => {})[toThrow](/apple/));
+        expect(() => jestExpect(() => {})[toThrow](/apple/))
+          .toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but message did not match', () => {
-        matchErrorSnapshot(() => {
+        expect(() => {
           jestExpect(() => { throw new Error('apple'); })
             [toThrow](/banana/);
-        });
+        }).toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but should not have', () => {
-        matchErrorSnapshot(() => {
+        expect(() => {
           jestExpect(() => { throw new Error('apple'); })
             .not[toThrow](/apple/);
-        });
+        }).toThrowErrorMatchingSnapshot();
       });
     });
 
@@ -118,24 +119,26 @@ class Error {
       });
 
       test('did not throw at all', () => {
-        matchErrorSnapshot(() => expect(() => {})[toThrow](Err));
+        expect(() => expect(() => {})[toThrow](Err))
+          .toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but class did not match', () => {
-        matchErrorSnapshot(() => {
+        expect(() => {
           jestExpect(() => { throw new Err('apple'); })[toThrow](Err2);
-        });
+        }).toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but should not have', () => {
-        matchErrorSnapshot(() => {
+        expect(() => {
           jestExpect(() => { throw new Err('apple'); }).not[toThrow](Err);
-        });
+        }).toThrowErrorMatchingSnapshot();
       });
     });
 
     test('invalid arguments', () => {
-      matchErrorSnapshot(() => jestExpect(() => {})[toThrow](111));
+      expect(() => jestExpect(() => {})[toThrow](111))
+        .toThrowErrorMatchingSnapshot();
     });
   });
 
