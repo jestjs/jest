@@ -20,59 +20,27 @@ const jestExpect = require('../').expect;
 ].forEach(([matcherName, mockName]) => {
   test(`${matcherName} works with ${mockName}`, () => {
     const fn = mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
-    let error;
 
     jestExpect(fn).not[matcherName]();
+    expect(() => jestExpect(fn)[matcherName]())
+      .toThowErrorMatchingSnapshot();
 
-    try {
-      jestExpect(fn)[matcherName]();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
-
-    error = undefined;
     fn();
-
     jestExpect(fn)[matcherName]();
+    expect(() => jestExpect(fn).not[matcherName]())
+      .toThowErrorMatchingSnapshot();
 
-    try {
-      jestExpect(fn).not[matcherName]();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
-
-    error = undefined;
-
-    try {
-      jestExpect(fn)[matcherName](555);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[matcherName](555))
+      .toThowErrorMatchingSnapshot();
   });
 });
 
 ['toHaveBeenCalled', 'toBeCalled'].forEach(matcherName => {
   test(`${matcherName} works only on spies or jest.fn`, () => {
-    let error;
     const fn = () => {};
 
-    try {
-      jestExpect(fn)[matcherName]();
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error).toMatchSnapshot();
+    expect(() => jestExpect(fn)[matcherName]())
+      .toThowErrorMatchingSnapshot();
   });
 });
 

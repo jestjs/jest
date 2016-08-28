@@ -29,6 +29,7 @@ const {stringify} = require('jest-matcher-utils');
 const GLOBAL_MATCHERS_OBJECT_SYMBOL = Symbol.for('$$jest-matchers-object');
 const CAN_NOT_BE_USED_WITH_NOT = [
   'toMatchSnapshot',
+  'toThowErrorMatchingSnapshot',
 ];
 
 class JestAssertionError extends Error {}

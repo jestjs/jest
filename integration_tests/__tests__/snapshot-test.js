@@ -229,4 +229,19 @@ describe('Snapshot', () => {
     });
   });
 
+  it('works for toThowErrorMatchingSnapshot matcher', () => {
+    const result = runJest.json('to-throw-error-matching-snapshot', []);
+    const json = result.json;
+
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(2);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(0);
+    expect(result.status).toBe(0);
+
+    const info = result.stderr.toString();
+    expect(info).toMatch('2 tests passed');
+    expect(info).toMatch('2 total in 1 test suite, 1 snapshot');
+  });
+
 });
