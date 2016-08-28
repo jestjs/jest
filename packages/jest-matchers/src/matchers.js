@@ -11,8 +11,12 @@
 
 'use strict';
 
-import type {MatchersObject} from './types';
+import type {
+  MatchersObject,
+  MatchersContext,
+} from './types';
 
+const snapshot = require('jest-snapshot');
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-util');
 const {
@@ -338,7 +342,12 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
+  toBeCloseTo(
+    actual: number,
+    expected: number,
+    matchersContext: MatchersContext,
+    precision?: number = 2,
+  ) {
     ensureNumbers(actual, expected, '.toBeCloseTo');
     const pass = Math.abs(expected - actual) < (Math.pow(10, -precision) / 2);
     const message = pass
@@ -392,6 +401,8 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
+
+  toMatchSnapshot: snapshot.matcher,
 };
 
 module.exports = matchers;
