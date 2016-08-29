@@ -15,6 +15,12 @@ const os = require('os');
 
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 
+jest.mock('jest-runtime', () => {
+  const realRuntime = require.requireActual('jest-runtime');
+  realRuntime.shouldInstrument = () => true;
+  return realRuntime;
+});
+
 const src = `
 throw new Error('this should not be thrown');
 

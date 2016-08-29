@@ -83,9 +83,10 @@ class CoverageReporter extends BaseReporter {
         if (!this._coverageMap.data[filename]) {
           try {
             const source = fs.readFileSync(filename).toString();
-            this._coverageMap.addFileCoverage(
-              generateEmptyCoverage(source, filename, config),
-            );
+            const coverage = generateEmptyCoverage(source, filename, config);
+            if (coverage) {
+              this._coverageMap.addFileCoverage(coverage);
+            }
           } catch (e) {
             console.error(chalk.red(`
               Failed to collect coverage from ${filename}

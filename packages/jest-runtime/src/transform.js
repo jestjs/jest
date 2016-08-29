@@ -17,8 +17,8 @@ const crypto = require('crypto');
 const fileExists = require('jest-file-exists');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
-const multimatch = require('multimatch');
 const path = require('path');
+const shouldInstrument = require('./shouldInstrument');
 const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
 
@@ -142,50 +142,6 @@ const shouldPreprocess = (filename: Path, config: Config): boolean => {
     !config.preprocessorIgnorePatterns.length ||
     !isIgnored
   );
-};
-
-const shouldInstrument = (filename: Path, config: Config): boolean => {
-  if (!config.collectCoverage) {
-    return false;
-  }
-
-  if (config.testRegex && filename.match(config.testRegex)) {
-    return false;
-  }
-
-  if (
-    // This configuration field contains an object in the form of:
-    // {'path/to/file.js': true}
-    config.collectCoverageOnlyFrom &&
-    !config.collectCoverageOnlyFrom[filename]
-  ) {
-    return false;
-  }
-
-  if (
-    !config.collectCoverageOnlyFrom && // still cover if `only` is specified
-    config.collectCoverageFrom &&
-    !multimatch(
-      [path.relative(config.rootDir, filename)],
-      config.collectCoverageFrom,
-    ).length
-  ) {
-    return false;
-  }
-
-
-  if (
-    config.coveragePathIgnorePatterns &&
-    config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
-  ) {
-    return false;
-  }
-
-  if (config.mocksPattern && filename.match(config.mocksPattern)) {
-    return false;
-  }
-
-  return true;
 };
 
 const getFileCachePath = (

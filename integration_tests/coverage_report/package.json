@@ -1,8 +1,10 @@
 {
   "jest": {
     "collectCoverageFrom": [
-      "*.js",
-      "!setup.js"
+      "**/*.js",
+      "!setup.js",
+      "!**/node_modules/**",
+      "!**/coverage/**"
     ],
     "setupFiles": [
       "<rootDir>/setup.js"

@@ -14,13 +14,17 @@ import type {Config, Path} from 'types/Config';
 
 const IstanbulInstrument = require('istanbul-lib-instrument');
 
-const {transformSource} = require('jest-runtime');
+const {transformSource, shouldInstrument} = require('jest-runtime');
 
 module.exports = function(source: string, filename: Path, config: Config) {
-  // Transform file without instrumentation first, to make sure produced
-  // source code is ES6 (no flowtypes etc.) and can be instrumented
-  source = transformSource(filename, config, source, false);
-  const instrumenter = IstanbulInstrument.createInstrumenter();
-  instrumenter.instrumentSync(source, filename);
-  return instrumenter.fileCoverage;
+  if (shouldInstrument(filename, config)) {
+    // Transform file without instrumentation first, to make sure produced
+    // source code is ES6 (no flowtypes etc.) and can be instrumented
+    source = transformSource(filename, config, source, false);
+    const instrumenter = IstanbulInstrument.createInstrumenter();
+    instrumenter.instrumentSync(source, filename);
+    return instrumenter.fileCoverage;
+  } else {
+    return null;
+  }
 };
