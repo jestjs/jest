@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^1.1.1",
-    "istanbul": "^0.4.4",
+    "istanbul": "^0.4.5",
     "jest-environment-jsdom": "^14.0.0",
     "jest-environment-node": "^14.0.0",
     "jest-jasmine2": "^14.0.0",
