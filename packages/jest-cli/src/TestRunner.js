@@ -96,6 +96,7 @@ class TestRunner {
     try {
       this._testPerformanceCache = JSON.parse(fs.readFileSync(
         this._getTestPerformanceCachePath(),
+        'utf8',
       ));
     } catch (e) {
       this._testPerformanceCache = {};

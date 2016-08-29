@@ -138,7 +138,7 @@ const shouldPreprocess = (filename: Path, config: Config): boolean => {
 
   const ignoreRegexp = ignoreCache.get(config);
   const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return config.scriptPreprocessor && (
+  return !!config.scriptPreprocessor && (
     !config.preprocessorIgnorePatterns.length ||
     !isIgnored
   );
