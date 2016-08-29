@@ -65,7 +65,7 @@ class DefaultReporter extends BaseReporter {
       results.numFailedTestSuites -
       results.numRuntimeErrorTestSuites;
     if (process.stdout.isTTY && remaining > 0) {
-      process.stderr.write(RUNNING_TEST_COLOR(
+      this.log(RUNNING_TEST_COLOR(
         `Running ${pluralize('test suite', remaining)}...`,
       ));
     }
