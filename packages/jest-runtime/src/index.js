@@ -23,6 +23,7 @@ const ResolverClass = require('jest-resolve');
 const fs = require('graceful-fs');
 const moduleMocker = require('jest-mock');
 const path = require('path');
+const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const utils = require('jest-util');
 
@@ -86,10 +87,6 @@ class Runtime {
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
-
-  static transformSource() {
-    return transform.transformSource.apply(null, arguments);
-  }
 
   constructor(
     config: Config,
@@ -737,3 +734,5 @@ class Runtime {
 }
 
 module.exports = Runtime;
+(module.exports: any).shouldInstrument = shouldInstrument;
+(module.exports :any).transformSource = transform.transformSource;
