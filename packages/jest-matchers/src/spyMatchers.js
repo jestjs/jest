@@ -15,6 +15,7 @@ import type {MatchersObject} from './types';
 const {
   ensureNoExpected,
   ensureExpectedIsNumber,
+  pluralize,
 } = require('jest-matcher-utils');
 
 const spyMatchers: MatchersObject = {
@@ -46,10 +47,10 @@ const spyMatchers: MatchersObject = {
       : actual.mock.calls.length;
     const pass = count === expected;
     const message = pass
-      ? `Expected the ${type} not to be called ${expected} times,` +
-        ` but it was called ${count} times.`
-      : `Expected the ${type} to be called ${expected} times,` +
-        ` but it was called ${count} times.`;
+      ? `Expected the ${type} not to be called ${pluralize('time', expected)}` +
+        `, but it was called ${pluralize('time', count)}.`
+      : `Expected the ${type} to be called ${pluralize('time', expected)},` +
+        ` but it was called ${pluralize('time', count)}.`;
 
     return {message, pass};
   },
@@ -59,7 +60,7 @@ const jestToHaveBeenCalled = actual => {
   const pass = actual.mock.calls.length > 0;
   const message = pass
     ? `Expected the mock function not to be called, but it was` +
-      ` called ${actual.mock.calls.length} times.`
+      ` called ${pluralize('time', actual.mock.calls.length)}.`
     : `Expected the mock function to be called.`;
 
   return {message, pass};
@@ -69,7 +70,7 @@ const jasmineToHaveBeenCalled = actual => {
   const pass = actual.calls.any();
   const message = pass
     ? `Expected the spy not to be called, but it was` +
-      ` called ${actual.calls.count()} times.`
+      ` called ${pluralize('time', actual.calls.count())}.`
     : `Expected the spy to be called.`;
 
   return {message, pass};
