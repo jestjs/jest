@@ -21,56 +21,59 @@ type MockFunctionMetadata = {
   value?: any,
 };
 
-const RESERVED_KEYWORDS:Array<string> = [
-  'do',
-  'if',
-  'in',
-  'for',
-  'let',
-  'new',
-  'try',
-  'var',
-  'case',
-  'else',
-  'enum',
-  'eval',
-  'null',
-  'this',
-  'true',
-  'void',
-  'with',
-  'await',
-  'break',
-  'catch',
-  'class',
-  'const',
-  'false',
-  'super',
-  'throw',
-  'while',
-  'yield',
-  'delete',
-  'export',
-  'import',
-  'public',
-  'return',
-  'static',
-  'switch',
-  'typeof',
-  'default',
-  'extends',
-  'finally',
-  'package',
-  'private',
-  'continue',
-  'debugger',
-  'function',
-  'arguments',
-  'interface',
-  'protected',
-  'implements',
-  'instanceof',
-];
+const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
+
+// $FlowFixMe
+const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
+  do: true,
+  if: true,
+  in: true,
+  for: true,
+  let: true,
+  new: true,
+  try: true,
+  var: true,
+  case: true,
+  else: true,
+  enum: true,
+  eval: true,
+  null: true,
+  this: true,
+  true: true,
+  void: true,
+  with: true,
+  await: true,
+  break: true,
+  catch: true,
+  class: true,
+  const: true,
+  false: true,
+  super: true,
+  throw: true,
+  while: true,
+  yield: true,
+  delete: true,
+  export: true,
+  import: true,
+  public: true,
+  return: true,
+  static: true,
+  switch: true,
+  typeof: true,
+  default: true,
+  extends: true,
+  finally: true,
+  package: true,
+  private: true,
+  continue: true,
+  debugger: true,
+  function: true,
+  arguments: true,
+  interface: true,
+  protected: true,
+  implements: true,
+  instanceof: true,
+});
 
 function isA(typeName: string, value: any): boolean {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
@@ -153,7 +156,8 @@ function createMockFunction(
   mockConstructor: () => any,
 ): any {
   let name = metadata.name;
-  if (!name) {
+  // Special case functions named `mockConstructor` to guard for infinite loops.
+  if (!name || name === MOCK_CONSTRUCTOR_NAME) {
     return mockConstructor;
   }
 
@@ -171,15 +175,19 @@ function createMockFunction(
 
   // It's a syntax error to define functions with a reserved keyword
   // as name.
-  if (RESERVED_KEYWORDS.indexOf(name) !== -1) {
+  if (RESERVED_KEYWORDS[name]) {
     name = '$' + name;
+  }
+
+  if (/\s/.test(name)) {
+    name = name.replace(/\s/g, '$');
   }
 
   /* eslint-disable no-new-func */
   return new Function(
-    'mockConstructor',
+    MOCK_CONSTRUCTOR_NAME,
     'return function ' + name + '() {' +
-      'return mockConstructor.apply(this,arguments);' +
+      'return ' + MOCK_CONSTRUCTOR_NAME + '.apply(this,arguments);' +
     '}' + bindCall,
   )(mockConstructor);
   /* eslint-enable no-new-func */

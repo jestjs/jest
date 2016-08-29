@@ -42,6 +42,18 @@ describe('moduleMocker', () => {
       expect(fooMock.name).toBe('foo');
     });
 
+    it('special cases the mockConstructor name', () => {
+      function mockConstructor() {}
+      const fooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(mockConstructor),
+      );
+      // Depends on node version
+      expect(
+        !fooMock.name ||
+        fooMock.name === 'mockConstructor',
+      ).toBeTruthy();
+    });
+
     it('wont interfere with previous mocks on a shared prototype', () => {
       const ClassFoo = function() {};
       ClassFoo.prototype.x = () => {};
@@ -136,7 +148,7 @@ describe('moduleMocker', () => {
       expect(mockFn.getMockImplementation()()).toBe('Foo');
     });
   });
-  
+
   describe('mockImplementationOnce', () => {
     it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.getMockFunction();
