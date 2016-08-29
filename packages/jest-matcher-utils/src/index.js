@@ -24,6 +24,9 @@ export type ValueType =
   | 'symbol'
   | 'undefined';
 
+const EXPECTED_COLOR = chalk.green;
+const RECEIVED_COLOR = chalk.red;
+
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
 const getType = (value: any): ValueType => {
@@ -90,8 +93,8 @@ const stringify = (obj: any): string => {
   });
 };
 
-const highlight = (object: any) => chalk.red(stringify(object));
-const printExpected = (value: any) => chalk.green(stringify(value));
+const printReceived = (object: any) => RECEIVED_COLOR(stringify(object));
+const printExpected = (value: any) => EXPECTED_COLOR(stringify(value));
 
 const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
@@ -128,14 +131,27 @@ const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
 const pluralize =
   (word: string, count: number) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
+const matcherHint = (
+  matcherName: string,
+  received: string = 'received',
+  expected: string = 'expected',
+) => {
+  return chalk.dim('expect(') + RECEIVED_COLOR(received) +
+    chalk.dim(')' + matcherName + '(') +
+    EXPECTED_COLOR(expected) + chalk.dim(')');
+};
+
 module.exports = {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
   ensureActualIsNumber,
   ensureExpectedIsNumber,
   ensureNoExpected,
   ensureNumbers,
   getType,
-  highlight,
+  matcherHint,
   pluralize,
   printExpected,
+  printReceived,
   stringify,
 };

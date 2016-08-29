@@ -16,9 +16,13 @@ import type {MatchersObject} from './types';
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-util');
 const {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
   ensureNoExpected,
   ensureNumbers,
-  highlight,
+  getType,
+  matcherHint,
+  printReceived,
   printExpected,
 } = require('jest-matcher-utils');
 
@@ -61,60 +65,60 @@ const iterableEquality = (a, b) => {
 };
 
 const matchers: MatchersObject = {
-  toBe(actual: any, expected: number) {
-    const pass = actual === expected;
+  toBe(received: any, expected: number) {
+    const pass = received === expected;
 
-    if (pass) {
-      return {
-        pass,
-        message() {
-          return `Received ${highlight(actual)} but expected it not to ` +
-            `be ${printExpected(expected)}  (using '!==').`;
-        },
+    const message = pass
+      ?  () => matcherHint('.not.toBe') + '\n\n' +
+        `Expected value to not be (using ===):\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}`
+      : () => {
+        const diffString = diff(expected, received);
+        return matcherHint('.toBe') + '\n\n' +
+        `Expected value to be (using ===):\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}` +
+        (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
-    } else {
-      return {
-        pass,
-        message() {
-          const diffString = diff(expected, actual);
-          return `Received ${highlight(actual)} but expected ` +
-          `${printExpected(expected)} (using '===').` +
-          (diffString ? '\n\n' + diffString : '');
-        },
-      };
-    }
+
+    return {message, pass};
   },
 
-  toEqual(actual: any, expected: any) {
-    const pass = equals(actual, expected, [iterableEquality]);
+  toEqual(received: any, expected: any) {
+    const pass = equals(received, expected, [iterableEquality]);
 
-    if (pass) {
-      return {
-        pass,
-        message() {
-          return `Received ${highlight(actual)} but expected it not `
-            `to equal ${printExpected(expected)}.`;
-        },
+    const message = pass
+      ?  () => matcherHint('.not.toEqual') + '\n\n' +
+        `Expected value to not equal:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}`
+      : () => {
+        const diffString = diff(expected, received);
+        return matcherHint('.toEqual') + '\n\n' +
+        `Expected value to equal:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}` +
+        (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
-    } else {
-      return {
-        pass,
-        message() {
-          const diffString = diff(expected, actual);
-          return `Received ${highlight(actual)} but expected it to equal ` +
-          `${printExpected(expected)}.` + (diffString ? '\n\n' + diffString : '');
-        },
-      };
-    }
+
+    return {message, pass};
   },
 
   toBeTruthy(actual: any, expected: void) {
     ensureNoExpected(expected, 'toBeTruthy');
     const pass = !!actual;
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it to be truthy.`
-      : () => `Received ${highlight(actual)} but expected it not to be truthy.`;
-
+      ? matcherHint('.not.toBeTruthy', 'received', '') + '\n\n' +
+        `Expected value not to be truthy, instead received\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeTruthy', 'received', '') + '\n\n' +
+        `Expected value to be truthy, instead received\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -122,9 +126,12 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, 'toBeFalsy');
     const pass = !actual;
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to be falsy.`
-      : () => `Received ${highlight(actual)} but expected it to be falsy.`;
-
+      ? matcherHint('.not.toBeFalsy', 'received', '') + '\n\n' +
+        `Expected value not to be falsy, instead received\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeFalsy', 'received', '') + '\n\n' +
+        `Expected value to be falsy, instead received\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -132,9 +139,12 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, 'toBeNaN');
     const pass = Number.isNaN(actual);
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to be NaN.`
-      : () => `Received ${highlight(actual)} but expected it to be NaN.`;
-
+      ? matcherHint('.not.toBeNaN', 'received', '') + '\n\n' +
+        `Expected value not to be NaN, instead received\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeNaN', 'received', '') + '\n\n' +
+        `Expected value to be NaN, instead received\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -142,9 +152,12 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, 'toBeNull');
     const pass = actual === null;
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to be null.`
-      : () => `Received ${highlight(actual)} but expected it to be null.`;
-
+      ? matcherHint('.not.toBeNull', 'received', '') + '\n\n' +
+        `Expected value not to be null, instead received\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeNull', 'received', '') + '\n\n' +
+        `Expected value to be null, instead received\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -152,9 +165,12 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, 'toBeDefined');
     const pass = actual !== void 0;
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to be defined.`
-      : () => `Received ${highlight(actual)} but expected it to be defined.`;
-
+      ? matcherHint('.not.toBeDefined', 'received', '') + '\n\n' +
+        `Expected value not to be defined, instead received\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeDefined', 'received', '') + '\n\n' +
+        `Expected value to be defined, instead received\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -162,8 +178,12 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, 'toBeUndefined');
     const pass = actual === void 0;
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to be undefined.`
-      : () => `Received ${highlight(actual)} but expected it to be undefined.`;
+      ? matcherHint('.not.toBeUndefined', 'received', '') + '\n\n' +
+        `Expected value not to be undefined, instead received\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeUndefined', 'received', '') + '\n\n' +
+        `Expected value to be undefined, instead received\n` +
+        `  ${printReceived(actual)}`;
 
     return {message, pass};
   },
@@ -172,8 +192,16 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeGreaterThan');
     const pass = actual > expected;
     const message = pass
-      ? `Received ${highlight(actual)} but expected it not to be greater than ${printExpected(expected)} (using >.)`
-      : `Received ${highlight(actual)} but expected it to be greater than ${printExpected(expected)} (using >).`;
+      ? matcherHint('.not.toBeGreaterThan') + '\n\n' +
+        `Expected value not to be greater than:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeGreaterThan') + '\n\n' +
+        `Expected value to be greater than:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -181,8 +209,16 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeGreaterThanOrEqual');
     const pass = actual >= expected;
     const message = pass
-      ? `Received ${highlight(actual)} but expected it not to be greater than or equal ${printExpected(expected)} (using >=).`
-      : `Received ${highlight(actual)} but expected it to be greater than or equal ${printExpected(expected)} (using >=).`;
+      ? matcherHint('.not.toBeGreaterThanOrEqual') + '\n\n' +
+        `Expected value not to be greater than or equal:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeGreaterThanOrEqual') + '\n\n' +
+        `Expected value to be greater than or equal:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -190,8 +226,16 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeLessThan');
     const pass = actual < expected;
     const message = pass
-      ? `Received ${highlight(actual)} but expected it not to be less than ${printExpected(expected)} (using <).`
-      : `Received ${highlight(actual)} but expected it to be less than ${printExpected(expected)} (using <).`;
+      ? matcherHint('.not.toBeLessThan') + '\n\n' +
+        `Expected value not to be less than:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeLessThan') + '\n\n' +
+        `Expected value to be less than:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
@@ -199,22 +243,39 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeLessThanOrEqual');
     const pass = actual <= expected;
     const message = pass
-      ? `Received ${highlight(actual)} but expected it not to be less than or equal ${printExpected(expected)} (using <=).`
-      : `Received ${highlight(actual)} but expected it to be less than or equal ${printExpected(expected)} (using <=).`;
+      ? matcherHint('.not.toBeLessThanOrEqual') + '\n\n' +
+        `Expected value not to be less than or equal:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`
+      : matcherHint('.toBeLessThanOrEqual') + '\n\n' +
+        `Expected value to be less than or equal:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(actual)}`;
     return {message, pass};
   },
 
-  toContain(actual: number | string, expected: any) {
-    if (!Array.isArray(actual) && typeof actual !== 'string') {
+  toContain(collection: Array<any> | string, value: any) {
+    const collectionType = getType(collection);
+    if (!Array.isArray(collection) && typeof collection !== 'string') {
       throw new Error(
-        `.toContain() only works with arrays and strings. ${typeof actual}: ${highlight(actual)} was passed.`,
+        `.toContain() only works with arrays and strings. ${typeof collection}: ${printReceived(collection)} was passed.`,
       );
     }
 
-    const pass = actual.indexOf(expected) != -1;
+    const pass = collection.indexOf(value) != -1;
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to contain ${printExpected(expected)}.`
-      : () => `Received ${highlight(actual)} but expected it to contain ${printExpected(expected)}.`;
+      ? () => matcherHint('.not.toContain', collectionType, 'value') + '\n\n' +
+        `Expected ${collectionType}:\n` +
+        `  ${printReceived(collection)}\n` +
+        `Not to contain value:\n` +
+        `  ${printExpected(value)}\n`
+      : () => matcherHint('.toContain', collectionType, 'value') + '\n\n' +
+        `Expected ${collectionType}:\n` +
+        `  ${printReceived(collection)}\n` +
+        `To contain value:\n` +
+        `  ${printExpected(value)}`;
 
     return {message, pass};
   },
@@ -223,33 +284,53 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeCloseTo');
     const pass = Math.abs(expected - actual) < (Math.pow(10, -precision) / 2);
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to be close to ${printExpected(expected)} with ${printExpected(precision)}-digit precision.`
-      : () => `Received ${highlight(actual)} but expected it to be close to ${printExpected(expected)} with ${printExpected(precision)}-digit precision.`;
+      ? () => matcherHint('.not.toBeCloseTo', 'received', 'expected, precision') + '\n\n' +
+        `Expected value not to be close to (with ${printExpected(precision)}-digit precision):\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received: \n` +
+        `  ${printReceived(actual)}`
+      : () => matcherHint('.toBeCloseTo', 'received', 'expected, precision') + '\n\n' +
+        `Expected value to be close to (with ${printExpected(precision)}-digit precision):\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received: \n` +
+        `  ${printReceived(actual)}`;
 
     return {message, pass};
   },
 
-  toMatch(actual: string, expected: string | RegExp) {
-    if (typeof actual !== 'string') {
-      return {
-        pass: false,
-        message: `Received ${highlight(actual)} and expected it to be a string.`,
-      };
+  toMatch(received: string, expected: string | RegExp) {
+    if (typeof received !== 'string') {
+      throw new Error(
+        matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
+        `${RECEIVED_COLOR('string')} value should be a string.\n` +
+        `Received:\n` +
+        `  ${getType(received)}: ${printReceived(received)}`,
+      );
     }
 
     const isString = typeof expected == 'string';
     if (!(expected instanceof RegExp) && !isString) {
-      return {
-        pass: false,
-        message: `Expected ${printExpected(expected)} to be a string or regular expression.`,
-      };
+      throw new Error(
+        matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
+        `${EXPECTED_COLOR('expected')} value should be a string or a regular expression.\n` +
+        `Received:\n` +
+        `  ${getType(expected)}: ${printExpected(expected)}`,
+      );
     }
 
     const pass = new RegExp(isString ? escapeStrForRegex(expected) : expected)
-      .test(actual);
+      .test(received);
     const message = pass
-      ? () => `Received ${highlight(actual)} but expected it not to match ${printExpected(expected)}.`
-      : () => `Received ${highlight(actual)} but expected it to match ${printExpected(expected)}.`;
+      ? () => matcherHint('.not.toMatch') +
+        `\n\nExpected value not to match:\n` +
+        `  ${printExpected(expected)}` +
+        `\nReceived:\n` +
+        `  ${printReceived(received)}`
+      : () => matcherHint('.toMatch') +
+        `\n\nExpected value to match:\n` +
+        `  ${printExpected(expected)}` +
+        `\nReceived:\n` +
+        `  ${printReceived(received)}`;
 
     return {message, pass};
   },
