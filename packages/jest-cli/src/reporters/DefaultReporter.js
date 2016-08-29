@@ -15,7 +15,6 @@ import type {Config} from 'types/Config';
 const BaseReporter = require('./BaseReporter');
 
 const chalk = require('chalk');
-const clearLine = require('jest-util').clearLine;
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
 
@@ -34,7 +33,7 @@ class DefaultReporter extends BaseReporter {
     testResult: TestResult,
     results: AggregatedResult,
   ) {
-    this._clearWaitingOn(config);
+    this.clearLine();
     this._printTestFileSummary(config, testResult);
     this._printWaitingOn(results, config);
   }
@@ -53,10 +52,6 @@ class DefaultReporter extends BaseReporter {
     if (testResult.failureMessage) {
       this._write(testResult.failureMessage + '\n');
     }
-  }
-
-  _clearWaitingOn(config: Config) {
-    clearLine(process.stderr);
   }
 
   _printWaitingOn(results: AggregatedResult, config: Config) {

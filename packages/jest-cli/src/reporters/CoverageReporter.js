@@ -29,6 +29,7 @@ const generateEmptyCoverage = require('../generateEmptyCoverage');
 const istanbulCoverage = require('istanbul-lib-coverage');
 
 const FAIL_COLOR = chalk.bold.red;
+const RUNNING_TEST_COLOR = chalk.bold.gray;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
@@ -74,6 +75,9 @@ class CoverageReporter extends BaseReporter {
 
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
     if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+      process.stderr.write(RUNNING_TEST_COLOR(
+        'Running coverage for untested files...',
+      ));
       const files = runnerContext.hasteFS.matchFilesWithGlob(
         config.collectCoverageFrom,
         config.rootDir,
@@ -95,6 +99,7 @@ class CoverageReporter extends BaseReporter {
           }
         }
       });
+      this.clearLine();
     }
   }
 
