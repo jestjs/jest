@@ -208,7 +208,7 @@ class SearchSource {
   ): string {
     if (patternInfo.onlyChanged) {
       const guide = patternInfo.watch
-        ? 'starting Jest with `jest --watch=all`'
+        ? 'starting Jest with `jest --watchAll`'
         : 'running Jest without `-o`';
       return 'No tests found related to changed and uncommitted files.\n' +
         'Note: If you are using dynamic `require`-calls or no tests related ' +

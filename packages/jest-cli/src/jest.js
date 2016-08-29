@@ -51,7 +51,7 @@ function buildTestPathPatternInfo(argv) {
     return {
       lastCommit: argv.lastCommit,
       onlyChanged: true,
-      watch: argv.watch !== undefined,
+      watch: argv.watch,
     };
   }
   if (argv.testPathPattern) {
@@ -151,17 +151,25 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         pipe.write('test framework = ' + testFramework.name + '\n');
         pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
-      if (argv.watch !== undefined) {
-        if (argv.watch !== 'all') {
-          argv.onlyChanged = true;
-        }
+      if (argv.watch || argv.watchAll) {
+        argv.onlyChanged = !argv.watchAll;
 
         return new Promise(resolve => {
           getWatcher(config, root, watcher => {
             let timer;
             let isRunning;
+            const startRun = () => {
+              isRunning = true;
+              runJest(config, argv, pipe, () => isRunning = false)
+                .then(
+                  resolve,
+                  error => console.error(chalk.red(error)),
+                );
+            };
 
             pipe.write(CLEAR);
+            startRun();
+
             watcher.on('all', (_, filePath) => {
               pipe.write(CLEAR);
               filePath = path.join(root, filePath);
@@ -172,17 +180,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
                   clearTimeout(timer);
                   timer = null;
                 }
-                timer = setTimeout(
-                  () => {
-                    isRunning = true;
-                    runJest(config, argv, pipe, () => isRunning = false)
-                      .then(
-                        resolve,
-                        error => console.error(chalk.red(error)),
-                      );
-                  },
-                  WATCHER_DEBOUNCE,
-                );
+                timer = setTimeout(startRun, WATCHER_DEBOUNCE);
               }
             });
           });
