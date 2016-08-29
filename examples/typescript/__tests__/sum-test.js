@@ -1,9 +1,5 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-jest
-  .unmock('../sum.ts')
-  .unmock('../sum.js');
-
 describe('sum', () => {
   it('adds 1 + 2 to equal 3 in CoffeeScript', () => {
     const sum = require('../sum.ts');

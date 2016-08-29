@@ -8,8 +8,7 @@ permalink: docs/timer-mocks.html
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,
 `clearInterval`) are less than ideal for a testing environment since they depend
-on real time to elapse. To resolve this issue, Jest provides you with mocked
-timer functions and APIs that allow you to control the passage of time.
+on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time.
 [Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
 
 ```javascript
@@ -31,7 +30,7 @@ module.exports = timerGame;
 // __tests__/timerGame-test.js
 'use strict';
 
-jest.unmock('../timerGame');
+jest.useFakeTimers();
 
 describe('timerGame', () => {
   it('waits 1 second before ending the game', () => {
@@ -43,6 +42,8 @@ describe('timerGame', () => {
   });
 });
 ```
+
+Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions.
 
 ## Run All Timers
 
@@ -102,7 +103,7 @@ module.exports = infiniteTimerGame;
 // __tests__/infiniteTimerGame-test.js
 'use strict';
 
-jest.unmock('../infiniteTimerGame');
+jest.useFakeTimers();
 
 describe('infiniteTimerGame', () => {
   it('schedules a 10-second timer after 1 second', () => {

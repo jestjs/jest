@@ -9,14 +9,14 @@
  */
 'use strict';
 
-jest.disableAutomock();
 jest.mock('jest-resolve');
 
+const path = require('path');
+const utils = require('jest-util');
+const normalize = require('../normalize');
+
 describe('normalize', () => {
-  let path;
   let root;
-  let utils;
-  let normalize;
   let expectedPathFooBar;
   let expectedPathFooQux;
   let expectedPathAbs;
@@ -39,14 +39,11 @@ describe('normalize', () => {
   }
 
   beforeEach(() => {
-    path = require('path');
     root = path.resolve('/');
     expectedPathFooBar = path.join(root, 'root', 'path', 'foo', 'bar', 'baz');
     expectedPathFooQux = path.join(root, 'root', 'path', 'foo', 'qux', 'quux');
     expectedPathAbs = path.join(root, 'an', 'abs', 'path');
     expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
-    utils = require('jest-util');
-    normalize = require('../normalize');
   });
 
   it('errors when an invalid config option is passed in', () => {
@@ -89,12 +86,16 @@ describe('normalize', () => {
 
   describe('automock', () => {
     it('falsy automock is not overwritten', () => {
+      const consoleWarn = console.warn;
+      console.warn = jest.fn();
       const config = normalize({
         rootDir: '/root/path/foo',
         automock: false,
       });
 
       expect(config.automock).toBe(false);
+
+      console.warn = consoleWarn;
     });
   });
 
@@ -568,4 +569,71 @@ describe('normalize', () => {
         .toEqual(['/node_modules']);
     });
   });
+
+  describe('Upgrade help', () => {
+
+    let consoleWarn;
+
+    const throwAndMatchErrorSnapshot = fn => {
+      try {
+        fn();
+      } catch (e) {
+        expect(e.message).toMatchSnapshot();
+        return;
+      }
+
+      // failure case
+      expect(() => {}).toThrow();
+    };
+
+    beforeEach(() => {
+      consoleWarn = console.warn;
+      console.warn = jest.fn();
+    });
+
+    afterEach(() => {
+      console.warn = consoleWarn;
+    });
+
+    it('logs a warning when automocking is explicitly disabled', () => {
+      normalize({
+        automock: false,
+        rootDir: '/root',
+      });
+
+      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    });
+
+    it('throws when using old configuration options', () => {
+      throwAndMatchErrorSnapshot(() => normalize({
+        rootDir: '/root',
+        persistModuleRegistryBetweenSpecs: false,
+      }));
+
+      throwAndMatchErrorSnapshot(() => normalize({
+        rootDir: '/root',
+        setupEnvScriptFile: 'foo.js',
+      }));
+
+      throwAndMatchErrorSnapshot(() => normalize({
+        rootDir: '/root',
+        testDirectoryName: 'test',
+      }));
+
+      throwAndMatchErrorSnapshot(() => normalize({
+        rootDir: '/root',
+        testFileExtensions: ['js', 'ts'],
+      }));
+    });
+
+    it('logs a warning when automocking is disabled and unmockedModulePathPatterns is used', () => {
+      normalize({
+        rootDir: '/root',
+        unmockedModulePathPatterns: [],
+      });
+
+      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    });
+  });
+
 });

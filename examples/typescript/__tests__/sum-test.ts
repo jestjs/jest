@@ -1,7 +1,3 @@
-jest
-  .unmock('../sum.ts')
-  .unmock('../sum.js')
-
 describe('sum', () => {
   it('adds 1 + 2 to equal 3 in TScript', ()=> {
     const sum = require('../sum.ts');

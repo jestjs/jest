@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 describe('matchers', () => {
   it('proxies matchers to jest-matchers', () => {
     let error;

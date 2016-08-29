@@ -30,8 +30,6 @@ module.exports = sum;
 Create a directory `__tests__/` with a file `sum-test.js`:
 
 ```javascript
-jest.unmock('../sum'); // unmock to use the actual implementation of sum
-
 describe('sum', () => {
   it('adds 1 + 2 to equal 3', () => {
     const sum = require('../sum');
@@ -51,8 +49,10 @@ Add the following to your `package.json`:
 Run `npm test`:
 
 ```
-[PASS] __tests__/sum-test.js (0.010s)
+PASS __tests__/sum-test.js
 ```
+
+Please read the [API documentation](https://facebook.github.io/jest/docs/api.html) to learn about all available assertions, ways of writing tests, configuration options and Jest specific APIs.
 
 The code for this example is available at
 [examples/getting_started](https://github.com/facebook/jest/tree/master/examples/getting_started).
@@ -83,8 +83,6 @@ You are now set up to use all ES2015 features and React specific syntax,
 for example:
 
 ```js
-jest.unmock('../CheckboxWithLabel');
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -178,8 +176,6 @@ async test with Babel and
 [`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/):
 
 ```js
-jest.unmock('../user');
-
 import * as user from '../user';
 
 describe('async tests', () => {
@@ -198,7 +194,7 @@ describe('async tests', () => {
 
 Check out the [Async tutorial](https://facebook.github.io/jest/docs/tutorial-async.html) for more.
 
-#### Automated Mocking and Sandboxing
+#### Mocking and Sandboxing
 
 Jest isolates test files into their own environment and isolates module
 execution between test runs. Jest swaps out `require()` to inject mocks that
@@ -373,9 +369,10 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.disableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-disableautomock)
   - [`jest.enableAutomock()`](https://facebook.github.io/jest/docs/api.html#jest-enableautomock)
   - [`jest.fn(?implementation)`](https://facebook.github.io/jest/docs/api.html#jest-fn-implementation)
-  - [`jest.isMockFunction(fn)`](https://facebook.github.io/jest/docs/api.html#jest-ismockfunction-implementation)
+  - [`jest.isMockFunction(fn)`](https://facebook.github.io/jest/docs/api.html#jest-ismockfunction-fn)
   - [`jest.genMockFromModule(moduleName)`](https://facebook.github.io/jest/docs/api.html#jest-genmockfrommodule-modulename)
-  - [`jest.mock(moduleName, ?factory)`](https://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory)
+  - [`jest.mock(moduleName, ?factory, ?options)`](https://facebook.github.io/jest/docs/api.html#jest-mock-modulename-factory-options)
+  - [`jest.resetModules()`](https://facebook.github.io/jest/docs/api.html#jest-resetmodules)
   - [`jest.runAllTicks()`](https://facebook.github.io/jest/docs/api.html#jest-runallticks)
   - [`jest.runAllTimers()`](https://facebook.github.io/jest/docs/api.html#jest-runalltimers)
   - [`jest.runOnlyPendingTimers()`](https://facebook.github.io/jest/docs/api.html#jest-runonlypendingtimers)
@@ -407,6 +404,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`notify` [boolean]](https://facebook.github.io/jest/docs/api.html#notify-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#preprocessorignorepatterns-array-string)
   - [`preset` [string]](https://facebook.github.io/jest/docs/api.html#preset-string)
+  - [`resetModules` [boolean]](https://facebook.github.io/jest/docs/api.html#resetmodules-boolean)
   - [`rootDir` [string]](https://facebook.github.io/jest/docs/api.html#rootdir-string)
   - [`scriptPreprocessor` [string]](https://facebook.github.io/jest/docs/api.html#scriptpreprocessor-string)
   - [`setupFiles` [array]](https://facebook.github.io/jest/docs/api.html#setupfiles-array)
@@ -1028,27 +1026,69 @@ Given the name of a module, use the automatic mocking system to generate a mocke
 
 This is useful when you want to create a [manual mock](https://facebook.github.io/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
 
-### `jest.mock(moduleName, ?factory)`
-Indicates that the module system should always return a mocked version of the specified module from `require()` (e.g. that it should never return the real module).
+### `jest.mock(moduleName, ?factory, ?options)`
+Mocks a module with an auto-mocked version when it is being required:
 
 ```js
-  jest.mock('moduleName');
+// banana.js
+module.exports = () => 'banana';
 
-  const moduleName = require('moduleName'); // moduleName will be explicitly mocked
+// __tests__/test.js
+jest.mock('../banana');
+
+const banana = require('../banana'); // banana will be explicitly mocked.
+
+banana(); // will return 'undefined' because the function is auto-mocked.
 ```
 
 The second argument can be used to specify an explicit module factory that is being run instead of using Jest's automocking feature:
 
 ```js
-  jest.mock('moduleName', () => {
-    return jest.fn(() => 42);
-  });
+jest.mock('../moduleName', () => {
+  return jest.fn(() => 42);
+});
 
-  const moduleName = require('moduleName'); // This runs the function specified as second argument to `jest.mock`.
-  moduleName(); // Will return '42';
+const moduleName = require('../moduleName'); // This runs the function specified as second argument to `jest.mock`.
+moduleName(); // Will return '42';
+```
+
+The third argument can be used to create virtual mocks – mocks of modules that don't exist anywhere in the system:
+
+```js
+jest.mock('../moduleName', () => {
+  // custom implementation of a module that doesn't exist in JS, like a generated module or a native module in react-native.
+}, {virtual: true});
 ```
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
+
+### `jest.resetModules()`
+
+Resets the module registry - the cache of all required modules. This is useful to isolate modules where local state might conflict between tests.
+
+Example:
+```js
+const sum1 = require('../sum');
+jest.resetModules();
+const sum2 = require('../sum');
+sum1 === sum2 // false! Both sum modules are separate "instances" of the sum module.
+```
+
+Example in a test:
+```js
+beforeEach(() => {
+  jest.resetModules();
+});
+
+it('works', () => {
+  const sum = require('../sum');
+});
+
+it('works too', () => {
+  const sum = require('../sum');
+  // sum is a different copy of the sum module from the previous test.
+});
+```
 
 ### `jest.runAllTicks()`
 Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
@@ -1115,12 +1155,9 @@ When using the --config option, the JSON file must not contain a "jest" key:
 ```
 
 ### `automock` [boolean]
-(default: true)
+(default: false)
 
-By default, Jest mocks every module automatically. If you are building a small
-JavaScript library and would like to use Jest, you may not want to use
-automocking. You can disable this option and create manual mocks or explicitly
-mock modules using `jest.mock(moduleName)`.
+This option is disabled by default. If you are introducing Jest to a large organization with an existing codebase but few tests, enabling this option can be helpful to introduce unit tests gradually. Modules can be explicitly auto-mocked using `jest.mock(moduleName)`.
 
 ### `browser` [boolean]
 (default: false)
@@ -1266,6 +1303,11 @@ Activates notifications for test results.
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
 
+### `resetModules` [boolean]
+(default: `false`)
+
+If enabled, the module registry for every test file will be reset before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](https://facebook.github.io/jest/docs/api.html#jest-resetmodules).
+
 ### `rootDir` [string]
 (default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found)
 
@@ -1334,7 +1376,7 @@ A regexp pattern string that is matched against all test paths before executing 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `testRegex` [string]
-(default: `'__tests__/.*\.js$'`)
+(default: `(/__tests__/.*|\\.(test|spec))\\.js$`)
 
 The pattern Jest uses to detect test files. By default it looks for `.js` files
 inside of `__tests__` folders.

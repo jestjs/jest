@@ -53,12 +53,6 @@ class JSDOMEnvironment {
     return null;
   }
 
-  runWithRealTimers(cb: Function): void {
-    if (this.global && this.fakeTimers) {
-      this.fakeTimers.runWithRealTimers(cb);
-    }
-  }
-
 }
 
 module.exports = JSDOMEnvironment;

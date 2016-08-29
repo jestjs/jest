@@ -3,7 +3,6 @@
 'use strict';
 
 jest.mock('fs');
-jest.unmock('../FileSummarizer');
 
 describe('FileSummarizer', () => {
   describe('listFilesInDirectorySync', () => {

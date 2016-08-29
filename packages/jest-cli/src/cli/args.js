@@ -36,10 +36,6 @@ const check = (argv: Object) => {
     );
   }
 
-  if (argv.testEnvData) {
-    argv.testEnvData = JSON.parse(argv.testEnvData);
-  }
-
   return true;
 };
 
@@ -103,13 +99,6 @@ const options = {
       'rare.',
     ),
     type: 'boolean',
-  },
-  testEnvData: {
-    description: wrap(
-      'A JSON object (string) that specifies data that will be made ' +
-      'available in the test environment (via jest.getTestEnvData())',
-    ),
-    type: 'string',
   },
   testPathPattern: {
     description: wrap(

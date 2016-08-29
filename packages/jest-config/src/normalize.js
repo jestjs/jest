@@ -11,12 +11,34 @@
 const DEFAULT_CONFIG_VALUES = require('./defaults');
 const Resolver = require('jest-resolve');
 
+const chalk = require('chalk');
 const constants = require('./constants');
 const path = require('path');
 const utils = require('jest-util');
 
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
+
+const BULLET = chalk.bold('\u25cf ');
+const JEST15_MESSAGE = `
+
+  Jest 15 changed the default configuration for tests and makes Jest easier to
+  use and less confusing for beginners. All previous defaults can be restored
+  if your project depends on it. A comprehensive explanation of the breaking
+  changes and an upgrade guide can be found in the release blog post linked
+  below.
+
+  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
+  ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/api.html
+  ${chalk.bold('Release Blog Post:')} https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+`;
+const throwConfigurationError = message => {
+  throw new Error(chalk.red(message + JEST15_MESSAGE));
+};
+
+const logConfigurationWarning = message => {
+  console.warn(chalk.yellow(BULLET + message + JEST15_MESSAGE));
+};
 
 function _replaceRootDirTags(rootDir, config) {
   switch (typeof config) {
@@ -136,28 +158,65 @@ function normalize(config, argv) {
     config.setupFiles = [];
   }
 
-  if (config.setupEnvScriptFile) {
-    config.setupFiles.push(config.setupEnvScriptFile);
-    delete config.setupEnvScriptFile;
+  // Warn or throw for deprecated or removed configuration options.
+  if (config.automock === false) {
+    logConfigurationWarning(
+      'Automocking was disabled by default in Jest. The setting ' +
+      '`"automock": false` can safely be removed from Jest\'s config.',
+    );
   }
 
-  // Deprecated. We'll start warning about this in the future.
+  if (
+    config.unmockedModulePathPatterns &&
+    (
+      !('automock' in config) ||
+      config.automock === false
+    )
+  ) {
+    logConfigurationWarning(
+      'The `unmockedModulePathPatterns` setting is defined but automocking ' +
+      'is disabled in Jest. Please either remove ' +
+      '`unmockedModulePathPatterns` from your configuration or explicitly ' +
+      'set `"automock": true` in your configuration if you wish to use ' +
+      'automocking.',
+    );
+  }
+
+  if (config.setupEnvScriptFile) {
+    throwConfigurationError(
+      'The setting `setupEnvScriptFile` was removed from Jest. Instead, use ' +
+      'the `setupFiles` setting.',
+    );
+  }
+
+  if ('persistModuleRegistryBetweenSpecs' in config) {
+    throwConfigurationError(
+      'The setting `persistModuleRegistryBetweenSpecs` was removed from ' +
+      'Jest. Instead use the `resetModules` configuration option. ' +
+      'When `resetModules` is true, it behaves like Jest did prior to ' +
+      'version 15 and resets all modules between each test. This behavior is ' +
+      'now disabled by default.',
+    );
+  }
+
   if (config.testDirectoryName || config.testFileExtensions) {
-    if (!config.moduleFileExtensions) {
-      config.moduleFileExtensions = DEFAULT_CONFIG_VALUES.moduleFileExtensions;
-    }
+    const moduleFileExtensions =
+      config.moduleFileExtensions ||
+      DEFAULT_CONFIG_VALUES.moduleFileExtensions;
     const extensions = Array.from(
       new Set((config.testFileExtensions || [])
-        .concat(config.moduleFileExtensions),
+        .concat(moduleFileExtensions),
     ));
 
-    config.moduleFileExtensions = extensions;
-    config.testRegex =
-      '/' + (config.testDirectoryName || '__tests__') + '/' +
-      '.*\\.(' + extensions.join('|') + ')$';
+    const testRegex =
+      '(/' + (config.testDirectoryName || '__tests__') + '/' +
+      '.*|\\\\.(test|spec))\\\\.(' + extensions.join('|') + ')$';
 
-    delete config.testDirectoryName;
-    delete config.testFileExtensions;
+    throw throwConfigurationError(
+      'The settings `testDirectoryName` and `testFileExtensions` were ' +
+      'removed from Jest. Instead, use `testRegex` like this:\n' +
+      '    "testRegex": "' + testRegex + '"',
+    );
   }
 
   if (argv.testRunner) {
@@ -327,12 +386,13 @@ function normalize(config, argv) {
       case 'persistModuleRegistryBetweenSpecs':
       case 'preset':
       case 'replname':
+      case 'resetModules':
       case 'rootDir':
-      case 'testEnvData':
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
       case 'testURL':
+      case 'timers':
       case 'updateSnapshot':
       case 'usesBabelJest':
       case 'verbose':

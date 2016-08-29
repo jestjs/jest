@@ -34,13 +34,16 @@ class DefaultReporter extends BaseReporter {
     results: AggregatedResult,
   ) {
     this.clearLine();
+    this._printResultHeader(config, testResult);
     this._printTestFileSummary(config, testResult);
     this._printWaitingOn(results, config);
   }
 
-  _printTestFileSummary(config: Config, testResult: TestResult) {
+  _printResultHeader(config: Config, testResult: TestResult) {
     this.log(getResultHeader(testResult, config));
+  }
 
+  _printTestFileSummary(config: Config, testResult: TestResult) {
     const consoleBuffer = testResult.console;
     if (consoleBuffer && consoleBuffer.length) {
       this._write(

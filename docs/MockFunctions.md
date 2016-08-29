@@ -14,7 +14,7 @@ when instantiated with `new`, and allowing test-time configuration of return
 values.
 
 There are two ways to get your hands on a mock functions: Either by
-`require()`ing a mocked component (See [Automatic Mocking](/jest/docs/automatic-mocking.html))
+`require()`ing a mocked component (via `jest.mock('moduleName')`)
 or by explicitly requesting one from `jest.fn()` in your test:
 
 ```javascript

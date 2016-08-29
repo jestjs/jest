@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
@@ -23,10 +21,12 @@ const options = {
   lastCommit: false,
 };
 
-describe('hgChecker', () => {
+describe('hg', () => {
   let hg;
 
   beforeEach(() => {
+    jest.resetModules();
+
     hg = require('../hg');
     childProcess.spawnSync('mkdir', ['-p', tmpdirNested]);
   });

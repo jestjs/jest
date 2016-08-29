@@ -167,7 +167,9 @@ describe('Runtime requireModule', () => {
   );
 
   it(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () =>
-    createRuntime(__filename).then(runtime => {
+    createRuntime(__filename, {
+      automock: true,
+    }).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
       root.jest.resetModuleRegistry();
       root.jest.unmock('ManuallyMocked');

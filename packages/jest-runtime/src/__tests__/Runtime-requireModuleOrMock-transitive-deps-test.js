@@ -20,6 +20,8 @@ const moduleNameMapper = {
 };
 
 beforeEach(() => {
+  jest.resetModules();
+
   createRuntime = require('createRuntime');
 });
 
@@ -34,6 +36,7 @@ describe('transitive dependencies', () => {
 
   it('unmocks transitive dependencies in node_modules by default', () =>
     createRuntime(__filename, {
+      automock: true,
       moduleNameMapper,
       unmockedModulePathPatterns: ['npm3-main-dep'],
     }).then(runtime => {
@@ -63,7 +66,10 @@ describe('transitive dependencies', () => {
   );
 
   it('unmocks transitive dependencies in node_modules when using unmock', () =>
-    createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+    createRuntime(__filename, {
+      automock: true,
+      moduleNameMapper,
+    }).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath);
       root.jest.unmock('npm3-main-dep');
       expectUnmocked(runtime.requireModuleOrMock(
@@ -89,6 +95,7 @@ describe('transitive dependencies', () => {
 
   it('unmocks transitive dependencies in node_modules by default when using both patterns and unmock', () =>
     createRuntime(__filename, {
+      automock: true,
       moduleNameMapper,
       unmockedModulePathPatterns: ['banana-module'],
     }).then(runtime => {
@@ -116,7 +123,10 @@ describe('transitive dependencies', () => {
   );
 
   it('mocks deep dependencies when using unmock', () =>
-    createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+    createRuntime(__filename, {
+      automock: true,
+      moduleNameMapper,
+    }).then(runtime => {
       const root = runtime.requireModule(
         runtime.__mockRootPath,
         './root.js',

@@ -13,12 +13,7 @@
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
-    "testFileExtensions": ["ts", "tsx", "js"],
     "moduleFileExtensions": ["ts", "tsx", "js"],
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react/",
-      "<rootDir>/node_modules/react-dom/",
-      "<rootDir>/node_modules/react-addons-test-utils/"
-    ]
+    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
   }
 }

@@ -1,8 +1,11 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-jest.unmock('../fetchCurrentUser.js');
+jest.mock('jquery');
 
 describe('fetchCurrentUser', () => {
+
+  beforeEach(() => jest.resetModules());
+
   it('calls into $.ajax with the correct params', () => {
     const $ = require('jquery');
     const fetchCurrentUser = require('../fetchCurrentUser');

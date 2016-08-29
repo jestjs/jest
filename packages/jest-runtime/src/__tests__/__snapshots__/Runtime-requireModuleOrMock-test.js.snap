@@ -1,0 +1,1 @@
+exports[`test warns when calling unmock when automocking is disabled 1`] = `"jest.unmock(\'RegularModule\') was called but automocking is disabled. Remove the unnecessary call to \"jest.unmock\" or enable automocking for this test via \"jest.enableAutomock();\"."`;

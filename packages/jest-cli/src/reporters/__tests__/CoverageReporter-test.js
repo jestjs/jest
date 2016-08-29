@@ -9,10 +9,10 @@
  */
 'use strict';
 
-jest.disableAutomock().mock('fs');
-
-jest.mock('istanbul-lib-coverage');
-jest.mock('istanbul-api');
+jest
+  .mock('fs')
+  .mock('istanbul-lib-coverage')
+  .mock('istanbul-api');
 
 let libCoverage;
 let CoverageReporter;

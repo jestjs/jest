@@ -4,7 +4,7 @@ title: Tutorial – jQuery
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-jquery.html
-next: common-js-testing
+next: api
 ---
 
 Another class of functions that is often considered difficult to test is code
@@ -33,9 +33,7 @@ Again, we create a test file in the `__tests__/` folder:
 // __tests__/displayUser-test.js
 'use strict';
 
-jest
-  .unmock('../displayUser.js')
-  .unmock('jquery');
+jest.mock('../fetchCurrentUser');
 
 describe('displayUser', () => {
   it('displays a user after a click', () => {
@@ -79,9 +77,6 @@ which simulates a DOM environment as if you were in the browser. This means that
 every DOM API that we call can be observed in the same way it would be observed
 in a browser!
 
-Since we are interested in testing that `displayUser.js` makes specific changes
-to the DOM, we tell Jest not to mock our `jquery` dependency. This lets
-`displayUser.js` actually mutate the DOM, and it gives us an easy means of
-querying the DOM in our test.
+We are mocking `fetchCurrentUser.js` so that our test doesn't make a real network request but instead resolves to mock data locally. This ensures that our test can complete in milliseconds rather than seconds and guarantees a fast unit test iteration speed.
 
 The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/master/examples/jquery).

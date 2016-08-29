@@ -9,18 +9,6 @@ next: mock-functions
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
-### An npm package isn't properly being mocked.
-
-Consider using `jest.unmock('moduleName')` or add the path to the node module
-to the [unmockedModulePathPatterns](/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string)
-config option.
-
-You can also provide a [manual mock](/jest/docs/manual-mocks.html) by creating
-a `moduleName.js` file in a `__mocks__` folder in the root level of your
-project. If you have set `testPathDirs` in your `package.json`, you will need to
-make sure that the root level `__mocks__` directory is also incuded in
-`testPathDirs`.
-
 ### Caching Issues
 
 The preprocessor script was changed or babel was updated and the changes aren't
@@ -61,11 +49,11 @@ Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/tro
 
 ### I'm using npm3 and my node_modules aren't properly loading.
 
-Upgrade `jest-cli` to `0.9.0`.
+Upgrade `jest-cli` to `0.9.0` or above.
 
 ### I'm using babel and my unmocked imports aren't working?
 
-Upgrade `jest-cli` to `0.9.0`.
+Upgrade `jest-cli` to `0.9.0` or above.
 
 Explanation:
 

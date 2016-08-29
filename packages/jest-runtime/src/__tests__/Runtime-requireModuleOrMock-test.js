@@ -9,8 +9,6 @@
  */
 'use strict';
 
-let createRuntime;
-
 const moduleNameMapper = {
   '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
   '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
@@ -20,12 +18,25 @@ const moduleNameMapper = {
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
 
+let createRuntime;
+let consoleWarn;
+
 beforeEach(() => {
+  consoleWarn = console.warn;
+  console.warn = jest.fn();
+
   createRuntime = require('createRuntime');
 });
 
-it('mocks modules by default', () =>
-  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+afterEach(() => {
+  console.warn = consoleWarn;
+});
+
+it('mocks modules by default when using automocking', () =>
+  createRuntime(__filename, {
+    automock: true,
+    moduleNameMapper,
+  }).then(runtime => {
     const exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
       'RegularModule',
@@ -34,8 +45,11 @@ it('mocks modules by default', () =>
   }),
 );
 
-it(`doesn't mock modules when explicitly unmocked`, () =>
-  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+it(`doesn't mock modules when explicitly unmocked when using automocking`, () =>
+  createRuntime(__filename, {
+    automock: true,
+    moduleNameMapper,
+  }).then(runtime => {
     const root = runtime.requireModule(runtime.__mockRootPath);
     root.jest.unmock('RegularModule');
     const exports = runtime.requireModuleOrMock(
@@ -47,7 +61,10 @@ it(`doesn't mock modules when explicitly unmocked`, () =>
 );
 
 it(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () =>
-  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+  createRuntime(__filename, {
+    automock: true,
+    moduleNameMapper,
+  }).then(runtime => {
     const root = runtime.requireModule(runtime.__mockRootPath);
     root.jest.unmock('./RegularModule');
     const exports = runtime.requireModuleOrMock(
@@ -70,8 +87,11 @@ it(`doesn't mock modules when disableAutomock() has been called`, () =>
   }),
 );
 
-it('uses manual mock when automocking on and mock is avail', () =>
-  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+it('uses manual mock when automocking on and mock is available', () =>
+  createRuntime(__filename, {
+    automock: true,
+    moduleNameMapper,
+  }).then(runtime => {
     const exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
       'ManuallyMocked',
@@ -94,7 +114,6 @@ it('does not use manual mock when automocking is off and a real module is availa
 
 it('resolves mapped module names and unmocks them by default', () =>
   createRuntime(__filename, {
-    automock: false,
     moduleNameMapper,
     moduleFileExtensions: ['js', 'jsx'],
   }).then(runtime => {
@@ -142,15 +161,29 @@ it('resolves mapped module names and unmocks them by default', () =>
   }),
 );
 
-it('automocking be disabled by default', () =>
+it('automocking is disabled by default', () =>
   createRuntime(__filename, {
     moduleNameMapper,
-    automock: false,
   }).then(runtime => {
     const exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,
       'RegularModule',
     );
     expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
+  }),
+);
+
+it('warns when calling unmock when automocking is disabled', () =>
+  createRuntime(__filename, {
+    moduleNameMapper,
+  }).then(runtime => {
+    const root = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      './root.js',
+    );
+
+    root.jest.unmock('RegularModule');
+
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   }),
 );

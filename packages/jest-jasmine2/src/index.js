@@ -59,57 +59,48 @@ function jasmine2(
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
-  let env;
-  let jasmine;
-
   const reporter = new JasmineReporter(config, environment, testPath);
-  // Jasmine does stuff with timers that affect running the tests. However, we
-  // also mock out all the timer APIs (to make them test-controllable).
-  // To account for this conflict, we set up jasmine in an environment with real
-  // timers (instead of mock timers).
-  environment.fakeTimers.runWithRealTimers(() => {
-    environment.runScript(jasmineScript);
+  environment.runScript(jasmineScript);
 
-    const requireJasmine = environment.global.jasmineRequire;
-    jasmine = requireJasmine.core(requireJasmine);
+  const requireJasmine = environment.global.jasmineRequire;
+  const jasmine = requireJasmine.core(requireJasmine);
 
-    const jasmineBuildExpectationResult = jasmine.buildExpectationResult;
+  const jasmineBuildExpectationResult = jasmine.buildExpectationResult;
 
-    // https://github.com/facebook/jest/issues/429
-    jasmine.buildExpectationResult = function(options) {
-      if (!options.passed) {
-        function shallowCopy(object) {
-          if (
-            typeof object !== 'object' ||
-            object === null || (
-              environment.global.Node &&
-              object instanceof environment.global.Node &&
-              object.nodeType > 0
-            )
-          ) {
-            return object;
-          }
-          return jasmine.util.clone(object);
+  // https://github.com/facebook/jest/issues/429
+  jasmine.buildExpectationResult = function(options) {
+    if (!options.passed) {
+      function shallowCopy(object) {
+        if (
+          typeof object !== 'object' ||
+          object === null || (
+            environment.global.Node &&
+            object instanceof environment.global.Node &&
+            object.nodeType > 0
+          )
+        ) {
+          return object;
         }
-        options.expected = shallowCopy(options.expected);
-        options.actual = shallowCopy(options.actual);
+        return jasmine.util.clone(object);
       }
-
-      return jasmineBuildExpectationResult.apply(jasmine, arguments);
-    };
-
-    env = jasmine.getEnv();
-    const jasmineInterface = requireJasmine.interface(jasmine, env);
-    Object.assign(environment.global, jasmineInterface);
-    env.addReporter(jasmineInterface.jsApiReporter);
-
-    jasminePit.install(environment.global);
-    environment.global.test = environment.global.it;
-
-    if (config.setupTestFrameworkScriptFile) {
-      runtime.requireModule(config.setupTestFrameworkScriptFile);
+      options.expected = shallowCopy(options.expected);
+      options.actual = shallowCopy(options.actual);
     }
-  });
+
+    return jasmineBuildExpectationResult.apply(jasmine, arguments);
+  };
+
+  const env = jasmine.getEnv();
+  const jasmineInterface = requireJasmine.interface(jasmine, env);
+  Object.assign(environment.global, jasmineInterface);
+  env.addReporter(jasmineInterface.jsApiReporter);
+
+  jasminePit.install(environment.global);
+  environment.global.test = environment.global.it;
+
+  if (config.setupTestFrameworkScriptFile) {
+    runtime.requireModule(config.setupTestFrameworkScriptFile);
+  }
 
   if (!jasmine || !env) {
     throw new Error('jasmine2 could not be initialized by Jest');
@@ -219,8 +210,8 @@ function jasmine2(
       }),
     });
 
-    if (!config.persistModuleRegistryBetweenSpecs) {
-      runtime.resetModuleRegistry();
+    if (config.resetModules) {
+      runtime.resetModules();
     }
   });
 
@@ -234,6 +225,10 @@ function jasmine2(
   runtime.requireInternalModule(
     path.resolve(__dirname, './extendJasmineExpect.js'),
   );
+
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
 
   runtime.requireModule(testPath);
   env.execute();

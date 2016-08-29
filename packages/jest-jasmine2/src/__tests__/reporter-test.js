@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const JasmineReporter = require('../reporter');
 
 describe('Jasmine2Reporter', () => {

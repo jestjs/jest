@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const NodeEnvironment = require.requireActual('../');
 
 describe('NodeEnvironment', () => {

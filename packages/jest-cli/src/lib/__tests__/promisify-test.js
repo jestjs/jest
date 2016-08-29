@@ -9,14 +9,9 @@
  */
 'use strict';
 
-jest.unmock('../promisify');
+const promisify = require('../promisify');
 
 describe('promisify', () => {
-  let promisify;
-
-  beforeEach(() => {
-    promisify = require('../promisify');
-  });
 
   it('should resolve', () => {
     const foo = promisify(callback => {
@@ -47,4 +42,5 @@ describe('promisify', () => {
       expect(err.message).toBe('lol');
     });
   });
+
 });

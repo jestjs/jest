@@ -9,18 +9,15 @@
  */
 'use strict';
 
-jest.unmock('../constants')
-  .unmock('../lib/docblock')
-  .unmock('../lib/extractRequires')
-  .unmock('../worker');
+const H = require('../constants');
+const worker = require('../worker');
 
-let H;
+const fs = require('graceful-fs');
+
 let createCallback;
-let fs;
 let mockFs;
 let moduleData;
 let readFileSync;
-let worker;
 let workerError;
 
 describe('worker', () => {
@@ -52,10 +49,6 @@ describe('worker', () => {
       ].join('\n'),
     };
 
-    H = require('../constants');
-    worker = require('../worker');
-
-    fs = require('graceful-fs');
     readFileSync = fs.readFileSync;
     fs.readFileSync = jest.fn((path, options) => {
       expect(options).toBe('utf8');

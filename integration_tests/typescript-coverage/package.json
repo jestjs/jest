@@ -2,11 +2,7 @@
   "jest": {
     "rootDir": "./",
     "scriptPreprocessor": "<rootDir>/typescript-preprocessor.js",
-    "testFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
+    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",

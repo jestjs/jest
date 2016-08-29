@@ -2,9 +2,7 @@
 
 'use strict';
 
-jest
-  .unmock('../displayUser.js')
-  .unmock('jquery');
+jest.mock('../fetchCurrentUser.js');
 
 describe('displayUser', () => {
   it('displays a user after a click', () => {

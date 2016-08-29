@@ -57,6 +57,8 @@ let vm;
 describe('transform', () => {
 
   const reset = () => {
+    jest.resetModules();
+
     object = data => Object.assign(Object.create(null), data);
 
     vm = require('vm');

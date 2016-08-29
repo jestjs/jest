@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const {formatResultsErrors} = require('../formatFailureMessage');
 
 const windowsStackTrace =

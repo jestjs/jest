@@ -14,8 +14,6 @@
 declare var jestConfig: Object;
 declare var jest: Object;
 
-jest.disableAutomock();
-
 const path = require('path');
 const repl = require('repl');
 const vm = require('vm');

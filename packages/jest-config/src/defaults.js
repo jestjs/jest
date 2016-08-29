@@ -18,7 +18,7 @@ const path = require('path');
 const utils = require('jest-util');
 
 module.exports = ({
-  automock: true,
+  automock: false,
   bail: false,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
@@ -39,14 +39,15 @@ module.exports = ({
   noStackTrace: false,
   notify: false,
   preset: null,
-  testEnvData: {},
+  resetModules: false,
   testEnvironment: 'jest-environment-jsdom',
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [
     utils.replacePathSepForRegex(constants.NODE_MODULES),
   ],
-  testRegex: '__tests__/.*\.js$',
+  testRegex: '(/__tests__/.*|\\.(test|spec))\\.js$',
   testURL: 'about:blank',
+  timers: 'real',
   useStderr: false,
   verbose: false,
   watch: false,

@@ -88,6 +88,8 @@ describe('babel-plugin-jest-hoist', () => {
   });
 
   it('only executes the module factories once', () => {
+    jest.resetModules();
+
     global.CALLS = 0;
 
     require('../__test_modules__/e');

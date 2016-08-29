@@ -2,7 +2,7 @@
 
 'use strict';
 
-jest.unmock('../infiniteTimerGame');
+jest.useFakeTimers();
 
 describe('infiniteTimerGame', () => {
   it('schedules a 10-second timer after 1 second', () => {

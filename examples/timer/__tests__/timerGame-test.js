@@ -2,7 +2,7 @@
 
 'use strict';
 
-jest.unmock('../timerGame');
+jest.useFakeTimers();
 
 describe('timerGame', () => {
   it('waits 1 second before ending the game', () => {

@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const JasmineFormatter = require('jest-util').JasmineFormatter;
 
 const formatter = new JasmineFormatter(jasmine, {global: {}});

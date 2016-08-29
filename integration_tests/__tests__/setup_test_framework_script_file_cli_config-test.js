@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const runJest = require('../runJest');
 
 describe('--setupTestFrameworkScriptFile setup.js', () => {

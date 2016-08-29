@@ -8,8 +8,6 @@
 
 'use strict';
 
-jest.disableAutomock();
-
 require('../this-directory-is-covered/excluded-from-coverage');
 
 test('1', () => {});
