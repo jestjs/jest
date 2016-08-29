@@ -30,7 +30,7 @@ const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 
-const trim = string => string.replace(/^\s+/, '').replace(/\s+$/, '');
+const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
 
 // Some errors contain not only line numbers in stack traces
 // e.g. SyntaxErrors can contain snippets of code, and we don't
@@ -47,8 +47,19 @@ const formatExecError = (
   config: Config,
   testPath: Path,
 ) => {
-  const error = testResult.testExecError;
+  let error = testResult.testExecError;
+  if (!error || typeof error === 'number') {
+    error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
+    error.stack = '';
+  }
+
   let {message, stack} = error;
+
+  if (typeof error === 'string' || !error) {
+    error || (error = 'EMPTY ERROR');
+    message = '';
+    stack = error;
+  }
 
   const separated = separateMessageFromStack(stack || '');
   stack = separated.stack;
@@ -66,6 +77,10 @@ const formatExecError = (
     ? '\n' + STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath))
     : '';
 
+  if (message.match(/^\s*$/) && stack.match(/^\s*$/)) {
+    // this can happen if an empty object is thrown.
+    message = 'ERROR: No message was provided';
+  }
   return TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
     message  + stack + '\n';
 };

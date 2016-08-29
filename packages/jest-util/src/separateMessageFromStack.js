@@ -15,6 +15,10 @@ const ERROR_TEXT = 'Error: ';
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
 module.exports = (content: string) => {
+  if (!content) {
+    return {message: '', stack: ''};
+  }
+
   const messageMatch = content.match(/(^(.|\n)*?(?=\n\s*at\s.*\:\d*\:\d*))/);
   let message = messageMatch ? messageMatch[0] : 'Error';
   const stack = messageMatch ? content.slice(message.length) : content;
