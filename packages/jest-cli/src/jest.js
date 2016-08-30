@@ -55,6 +55,7 @@ function getMaxWorkers(argv) {
 function buildTestPathPatternInfo(argv) {
   if (argv.onlyChanged) {
     return {
+      input: '',
       lastCommit: argv.lastCommit,
       onlyChanged: true,
       watch: argv.watch,
@@ -158,7 +159,9 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
       if (argv.watch || argv.watchAll) {
-        argv.onlyChanged = !argv.watchAll;
+        if (buildTestPathPatternInfo(argv).input === '') {
+          argv.onlyChanged = !argv.watchAll;
+        }
 
         let isRunning: ?boolean;
         let timer: ?number;
@@ -202,8 +205,12 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
 
         const onFileChange = (_, filePath: string) => {
           filePath = path.join(root, filePath);
+          const coverageDirectory =
+            config.coverageDirectory ||
+            path.resolve(config.rootDir, 'coverage');
           const isValidPath =
-            config.testPathDirs.some(dir => filePath.startsWith(dir));
+            config.testPathDirs.some(dir => filePath.startsWith(dir)) &&
+            !filePath.includes(coverageDirectory);
 
           if (!isValidPath) {
             return;
