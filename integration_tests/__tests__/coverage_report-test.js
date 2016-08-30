@@ -18,7 +18,7 @@ const DIR = path.resolve(__dirname, '../coverage_report');
 
 beforeEach(() => linkJestPackage('babel-jest', DIR));
 
-it('outputs coverage report', () => {
+test('outputs coverage report', () => {
   const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage']);
   const coverageDir = path.resolve(__dirname, '../coverage_report/coverage');
 
@@ -33,7 +33,7 @@ it('outputs coverage report', () => {
   expect(status).toBe(0);
 });
 
-it('collects coverage only from specified files', () => {
+test('collects coverage only from specified files', () => {
   const {stdout} = runJest(DIR, [
     '--no-cache',
     '--coverage',
@@ -43,4 +43,17 @@ it('collects coverage only from specified files', () => {
 
   // Coverage report should only have `setup.js` coverage info
   expect(stdout).toMatchSnapshot();
+});
+
+test('json reporter printing with --coverage', () => {
+  const result = runJest('json_reporter', ['--coverage']);
+  let stderr =
+    ('Coverage' + result.stderr.toString().split('Coverage')[1]).split('\n');
+  stderr.pop();
+  stderr.pop();
+  stderr = stderr.join('\n');
+
+  expect(result.status).toBe(1);
+
+  expect(stderr).toMatchSnapshot();
 });

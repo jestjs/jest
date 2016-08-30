@@ -13,7 +13,7 @@ test('works just fine', () => {
   return new Promise(resolve => {
     // Make the second test finish last to get consistent console
     // output
-    setTimeout(resolve, 3000);
+    setTimeout(resolve, 2000);
   }).then(() => {
     console.error('This is an error from another test file.');
   });
