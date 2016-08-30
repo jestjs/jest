@@ -16,10 +16,10 @@
     "<rootDir>/node_modules/react-native/packager/"
   ],
   "preprocessorIgnorePatterns": [
-    "node_modules/(?!(jest-)?react-native)"
+    "node_modules/(?!(jest-)?react-native|react-clone-referenced-element)"
   ],
   "setupFiles": [
-    "<rootDir>/node_modules/jest-react-native/build/index.js"
+    "<rootDir>/node_modules/jest-react-native/build/setup.js"
   ],
   "testEnvironment": "node"
 }

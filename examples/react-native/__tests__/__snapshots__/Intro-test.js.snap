@@ -9,6 +9,9 @@ exports[`Intro renders correctly 1`] = `
     }
   }>
   <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
     style={
       Object {
         "fontSize": 20,
@@ -19,6 +22,9 @@ exports[`Intro renders correctly 1`] = `
     Welcome to React Native!
   </Text>
   <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
     style={
       Object {
         "color": "#333333",
@@ -29,4 +35,71 @@ exports[`Intro renders correctly 1`] = `
     This is a React Native snapshot test.
   </Text>
 </View>
+`;
+
+exports[`Intro renders the ActivityIndicator component 1`] = `
+<ActivityIndicator
+  animating={true}
+  color="#999999"
+  hidesWhenStopped={true}
+  size="small" />
+`;
+
+exports[`Intro renders the Image component 1`] = `
+<Image
+  style={
+    Object {
+      "height": 240,
+      "width": 320
+    }
+  } />
+`;
+
+exports[`Intro renders the ListView component 1`] = `
+<ScrollView
+  dataSource={
+    ListViewDataSource {
+      "items": 3
+    }
+  }
+  initialListSize={10}
+  onContentSizeChange={[Function bound _onContentSizeChange]}
+  onEndReachedThreshold={1000}
+  onKeyboardDidHide={undefined}
+  onKeyboardDidShow={undefined}
+  onKeyboardWillHide={undefined}
+  onKeyboardWillShow={undefined}
+  onLayout={[Function bound _onLayout]}
+  onScroll={[Function bound _onScroll]}
+  pageSize={1}
+  removeClippedSubviews={true}
+  renderRow={[Function renderRow]}
+  scrollEventThrottle={50}
+  scrollRenderAheadDistance={1000}
+  stickyHeaderIndices={Array []}>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail">
+    apple
+  </Text>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail">
+    banana
+  </Text>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail">
+    kiwi
+  </Text>
+</ScrollView>
+`;
+
+exports[`Intro renders the TextInput component 1`] = `
+<TextInput
+  autoCorrect={false}
+  value="apple banana kiwi" />
 `;
