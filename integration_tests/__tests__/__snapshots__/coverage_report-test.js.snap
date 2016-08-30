@@ -8,6 +8,15 @@ All files |      100 |      100 |      100 |      100 |                |
 "
 `;
 
+exports[`test json reporter printing with --coverage 1`] = `
+"Coverage Summary (add \"text\" to the \"coverageReporter\" setting to receive a full report)
+ › Statements: 100%
+ › Branches: 100%
+ › Lines: 100%
+ › Functions: 100%
+"
+`;
+
 exports[`test outputs coverage report 1`] = `
 "-------------------------------|----------|----------|----------|----------|----------------|
 File                           |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |

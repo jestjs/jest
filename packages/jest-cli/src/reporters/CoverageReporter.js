@@ -28,6 +28,7 @@ const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 const istanbulCoverage = require('istanbul-lib-coverage');
 
+const COVERAGE_SUMMARY = chalk.bold;
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.gray;
 
@@ -62,6 +63,23 @@ class CoverageReporter extends BaseReporter {
       }
       reporter.addAll(config.coverageReporters || []);
       reporter.write(this._coverageMap);
+
+      if (
+        config.coverageReporters &&
+        config.coverageReporters.length &&
+        !config.coverageReporters.includes('text')
+      ) {
+        const results = this._coverageMap.getCoverageSummary().toJSON();
+        const format = percent => percent + (percent === 'Unknown' ? '' : '%');
+        this.log(
+          '\n' + COVERAGE_SUMMARY('Coverage Summary') + ' (add "text" to the ' +
+          '"coverageReporter" setting to receive a full report)\n' +
+          ' \u203A Statements: ' + format(results.statements.pct) + '\n' +
+          ' \u203A Branches: ' + format(results.branches.pct) + '\n' +
+          ' \u203A Lines: ' + format(results.lines.pct) + '\n' +
+          ' \u203A Functions: ' + format(results.functions.pct) + '\n',
+        );
+      }
     } catch (e) {
       console.error(chalk.red(`
         Failed to write coverage reports:
@@ -76,7 +94,7 @@ class CoverageReporter extends BaseReporter {
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
     if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
       process.stderr.write(RUNNING_TEST_COLOR(
-        'Running coverage for untested files...',
+        'Running coverage on untested files...',
       ));
       const files = runnerContext.hasteFS.matchFilesWithGlob(
         config.collectCoverageFrom,
@@ -106,7 +124,7 @@ class CoverageReporter extends BaseReporter {
 
   _checkThreshold(config: Config) {
     if (config.coverageThreshold) {
-      const globalResults = this._coverageMap.getCoverageSummary().toJSON();
+      const results = this._coverageMap.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
         return [
@@ -140,7 +158,7 @@ class CoverageReporter extends BaseReporter {
       const errors = check(
         'global',
         config.coverageThreshold.global,
-        globalResults,
+        results,
       );
 
       if (errors.length > 0) {

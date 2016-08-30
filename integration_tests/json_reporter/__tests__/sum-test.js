@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.unmock('../sum');
-
 const sum = require('../sum');
 
 describe('sum', () => {
