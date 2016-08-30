@@ -1,0 +1,31 @@
+exports[`test throwing not Error objects 1`] = `
+" FAIL  __tests__/throw-number-test.js
+  ● Test suite failed to run
+
+    Expected an Error, but \"1\" was thrown
+    
+
+1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+"
+`;
+
+exports[`test throwing not Error objects 2`] = `
+" FAIL  __tests__/throw-string-test.js
+  ● Test suite failed to run
+
+    Error
+      banana
+
+1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+"
+`;
+
+exports[`test throwing not Error objects 3`] = `
+" FAIL  __tests__/throw-object-test.js
+  ● Test suite failed to run
+
+ERROR: No message was provided
+
+1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+"
+`;

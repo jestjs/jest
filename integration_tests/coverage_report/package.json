@@ -6,6 +6,7 @@
       "!**/node_modules/**",
       "!**/coverage/**"
     ],
+    "testEnvironment": "node",
     "setupFiles": [
       "<rootDir>/setup.js"
     ]

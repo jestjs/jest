@@ -4,6 +4,7 @@
     "react": "^15.2.1"
   },
   "jest": {
-    "automock": true
+    "automock": true,
+    "testEnvironment": "node"
   }
 }

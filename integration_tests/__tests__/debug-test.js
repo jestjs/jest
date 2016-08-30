@@ -13,7 +13,7 @@ const path = require('path');
 const runJest = require('../runJest');
 
 describe('jest --debug', () => {
-  const dir = path.resolve(__dirname, '..', 'verbose_logger');
+  const dir = path.resolve(__dirname, '..', 'verbose_reporter');
 
   beforeEach(() => {
     linkJestPackage('babel-jest', dir);
