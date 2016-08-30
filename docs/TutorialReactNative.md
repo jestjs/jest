@@ -197,28 +197,37 @@ The [`moduleNameMapper`](api.html#modulenamemapper-object-string-string) can be 
 
 ### Mock native modules using jest.mock
 
-The jest-react-native preset comes with a few default mocks that are applied on a react-native repository. However some react-native components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
+The jest-react-native preset comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
-For example, if you'd like to create a snapshot that involves the `ActivityIndicator` module, you need to create a manual mock:
+For example, if you code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
 
 ```js
-jest.mock('ActivityIndicator', () => 'ActivityIndicator');
+jest.mock('react-native-video', () => 'Video');
 ```
 
-This will render the component as `<ActivityIndicator {...props} />` with all of its props in the snapshot output.
+This will render the component as `<Video {...props} />` with all of its props in the snapshot output.
 
-Sometimes you need to provide a more complex manual mock. For example if you'd like to forward the props of a native component to a mock, you can return a different React component from a mock:
+Sometimes you need to provide a more complex manual mock. For example if you'd like to forward the prop types or static fields of a native component to a mock, you can return a different React component from a mock through this helper from jest-react-native:
+
+```js
+jest.mock('path/to/MyNativeComponent', () => {
+  const jestReactNative = require('./index');
+  return jestReactNative.mockComponent('path/to/MyNativeComponent');
+});
+```
+
+Or if you'd like to create your own manual mock, you can do something like this:
 
 ```js
 jest.mock('Text', () => {
-  const realText = require.requireActual('Text');
+  const RealComponent = require.requireActual('Text');
   const React = require('React');
   class Text extends React.Component {
     render() {
       return React.createElement('Text', this.props, this.props.children);
     }
   }
-  Text.propTypes = realText.propTypes;
+  Text.propTypes = RealComponent.propTypes;
   return Text;
 });
 ```
