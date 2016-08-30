@@ -11,17 +11,10 @@
 
 'use strict';
 
-jest.unmock('../docblock');
-
-let os;
-let docblock;
+const os = require('os');
+const docblock = require('../docblock');
 
 describe('docblock', () => {
-
-  beforeEach(() => {
-    os = require('os');
-    docblock = require('../docblock');
-  });
 
   it('extracts valid docblock', () => {
     const code =

@@ -19,7 +19,7 @@ var index = React.createClass({
   render: function() {
     var whyUseJest = [
       {
-        content: "Jest automatically finds tests to execute in your repo, and [automatically mocks](/jest/docs/automatic-mocking.html) dependencies for you when running your tests. ",
+        content: "Jest automatically finds tests to execute in your repo",
       },
       {
         content: "It sandboxes test files, and resets state automatically for every test.",

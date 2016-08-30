@@ -4,7 +4,7 @@ title: Getting Started
 layout: docs
 category: Quick Start
 permalink: docs/getting-started.html
-next: tutorial
+next: tutorial-react
 ---
 
 First install Jest with npm by running:
@@ -25,8 +25,6 @@ module.exports = sum;
 Create a directory `__tests__/` with a file `sum-test.js`:
 
 ```javascript
-jest.unmock('../sum'); // unmock to use the actual implementation of sum
-
 describe('sum', () => {
   it('adds 1 + 2 to equal 3', () => {
     const sum = require('../sum');
@@ -46,8 +44,10 @@ Add the following to your `package.json`:
 Run `npm test`:
 
 ```
-[PASS] __tests__/sum-test.js (0.010s)
+PASS __tests__/sum-test.js
 ```
+
+Please read the [API documentation](/jest/docs/api.html) to learn about all available assertions, ways of writing tests, configuration options and Jest specific APIs.
 
 The code for this example is available at
 [examples/getting_started](https://github.com/facebook/jest/tree/master/examples/getting_started).
@@ -78,8 +78,6 @@ You are now set up to use all ES2015 features and React specific syntax,
 for example:
 
 ```js
-jest.unmock('../CheckboxWithLabel');
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -173,8 +171,6 @@ async test with Babel and
 [`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/):
 
 ```js
-jest.unmock('../user');
-
 import * as user from '../user';
 
 describe('async tests', () => {
@@ -193,7 +189,7 @@ describe('async tests', () => {
 
 Check out the [Async tutorial](/jest/docs/tutorial-async.html) for more.
 
-#### Automated Mocking and Sandboxing
+#### Mocking and Sandboxing
 
 Jest isolates test files into their own environment and isolates module
 execution between test runs. Jest swaps out `require()` to inject mocks that

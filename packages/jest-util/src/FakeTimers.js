@@ -92,8 +92,6 @@ class FakeTimers {
       this._fakeTimerAPIs.nextTick = fn(this._fakeNextTick.bind(this));
     }
 
-    this.useFakeTimers();
-
     // These globally-accessible function are now deprecated!
     // They will go away very soon, so do not use them!
     // Instead, use the versions available on the `jest` object

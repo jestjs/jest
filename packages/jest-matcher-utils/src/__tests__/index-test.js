@@ -10,8 +10,6 @@
 
 'use strict';
 
-jest.disableAutomock();
-
 const {stringify, getType} = require('../');
 
 describe('.stringify()', () => {

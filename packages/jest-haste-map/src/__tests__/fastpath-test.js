@@ -35,11 +35,11 @@
 /* eslint-disable fb-www/soft-max-len */
 'use strict';
 
-jest.unmock('../fastpath');
-
 let fp;
 
 describe('fast-path', () => {
+
+  beforeEach(() => jest.resetModules());
 
   if (parseInt(process.versions.node.split('.')[0], 10) >= 5) {
     it('exports path directly', () => {

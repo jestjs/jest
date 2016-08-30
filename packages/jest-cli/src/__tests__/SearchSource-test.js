@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
 const path = require('path');
@@ -175,59 +173,6 @@ describe('SearchSource', () => {
           path.relative(rootDir, absPath)
         ));
         expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-        ]);
-      });
-    });
-
-    it('supports legacy APIs', () => {
-      const config = normalizeConfig({
-        name,
-        rootDir,
-        testDirectoryName: '__testtests__',
-      });
-      return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
-        expect(relPaths).toEqual([
-          path.normalize('__testtests__/test.js'),
-        ]);
-      });
-    });
-
-    it('supports legacy APIs', () => {
-      const config = normalizeConfig({
-        name,
-        rootDir,
-        testFileExtensions: ['js', 'jsx'],
-      });
-      return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.js'),
-          path.normalize('__testtests__/test.jsx'),
-          path.normalize('module.jsx'),
-        ]);
-      });
-    });
-
-    it('supports legacy APIs', () => {
-      const config = normalizeConfig({
-        name,
-        rootDir,
-        testDirectoryName: '__testtests__',
-        testFileExtensions: ['js', 'jsx', 'foobar'],
-      });
-      return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
-        expect(relPaths.sort()).toEqual([
-          path.normalize('__testtests__/test.foobar'),
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
         ]);

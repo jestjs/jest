@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
@@ -20,10 +18,10 @@ const tmpfile = path.resolve(tmpdir, Date.now() + '.js');
 const tmpdirNested = path.resolve(tmpdir, 'src');
 const tmpfileNested = path.resolve(tmpdirNested, Date.now() + '.js');
 const options = {
-  lastCommit: false, 
+  lastCommit: false,
 };
 
-describe('gitChecker', () => {
+describe('git', () => {
   let git;
 
   beforeEach(() => {

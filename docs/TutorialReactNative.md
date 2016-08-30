@@ -163,9 +163,9 @@ The code for this example is available at
 
 The preset sets up the environment and is very opinionated and based on what we found to be useful at Facebook. All of the configuration options can be overwritten just as they can be customized when no preset is used.
 
-### Disabled automocking and node environment
+### Node Environment
 
-Because most snapshot tests will be integration tests that require React, React-Native and your components to be unmocked, automocking is disabled by default. Instead of `jsdom`, a simple `node` environment is loaded that is similar to a react-native environment. Because the node environment doesn't load any DOM or browser APIs it improves Jest's startup greatly.
+Instead of `jsdom`, a simple `node` environment is loaded that is similar to a react-native environment. Because the node environment doesn't load any DOM or browser APIs it improves Jest's startup greatly.
 
 ### preprocessorIgnorePatterns customization
 
@@ -222,6 +222,10 @@ jest.mock('Text', () => {
   return Text;
 });
 ```
+
+In other cases you may want to mock a native module that isn't a React component. The same technique can be applied. We recommend inspecting the native module's source code and logging the module when running a react native app on a real device and then modeling a manual mock after the real module.
+
+If you end up mocking the same modules over and over it is recommended to define these mocks in a separate file and add it to the list of `setupFiles`.
 
 ### require react-native before the test renderer
 

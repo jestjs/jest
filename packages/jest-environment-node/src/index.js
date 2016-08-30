@@ -55,12 +55,6 @@ class NodeEnvironment {
     return null;
   }
 
-  runWithRealTimers(callback: Function) {
-    if (this.global && this.fakeTimers) {
-      this.fakeTimers.runWithRealTimers(callback);
-    }
-  }
-
 }
 
 module.exports = NodeEnvironment;

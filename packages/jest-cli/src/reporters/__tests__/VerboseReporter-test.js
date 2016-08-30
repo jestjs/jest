@@ -7,8 +7,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const wrap = obj => ({suites: obj, tests: [], title: ''});
 
 let groupTestsBySuites;

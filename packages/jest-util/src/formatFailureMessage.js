@@ -156,7 +156,8 @@ const formatResultsErrors = (
 
     const title = TITLE_INDENT + TITLE_BULLET +
       result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-      ANCESTRY_SEPARATOR + result.title + '\n';
+      (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+      result.title + '\n';
 
     return title + '\n' + message + '\n' + stack;
   }).join('\n');

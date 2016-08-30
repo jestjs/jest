@@ -9,9 +9,6 @@
  */
 'use strict';
 
-jest.unmock('../../constants')
-  .unmock('../watchman');
-
 jest.mock('fb-watchman', () => {
   const Client = jest.fn();
   Client.prototype.command = jest.fn((args, callback) => {

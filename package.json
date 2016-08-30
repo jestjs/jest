@@ -40,12 +40,10 @@
     "watch": "npm run build; node ./scripts/watch.js"
   },
   "jest": {
-    "automock": false,
     "modulePathIgnorePatterns": [
       "examples/.*",
       "packages/.*/build"
     ],
-    "rootDir": "./",
     "collectCoverageFrom": [
       "**/packages/**/*.js",
       "!**/vendor/**",
@@ -58,6 +56,7 @@
     ],
     "scriptPreprocessor": "<rootDir>/packages/babel-jest",
     "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
+    "testEnvironment": "./packages/jest-environment-node",
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",

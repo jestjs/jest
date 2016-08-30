@@ -51,7 +51,7 @@ a manual mock for our `request.js` module in the `__mocks__` folder.
 It could look something like this:
 
 ```js
-__mocks__/request.js
+// __mocks__/request.js
 const users = {
   4: {name: 'Mark'},
   5: {name: 'Paul'},
@@ -72,7 +72,7 @@ export default function request(url) {
 Now let's write a test for our async functionality.
 ```js
 // __tests__/user-test.js
-jest.unmock('../user');
+jest.mock('../request');
 
 import * as user from '../user';
 
@@ -85,7 +85,7 @@ describe('async tests', () => {
 });
 ```
 
-`it` expects the return value to be a Promise that is going to be resolved.
+We call `jest.mock('../request')` to tell Jest to use our manual mock. `it` expects the return value to be a Promise that is going to be resolved.
 You can chain as many Promises as you like and call `expect` at any time, as
 long as you return a Promise at the end.
 

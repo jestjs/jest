@@ -15,6 +15,8 @@ let createRuntime;
 
 describe('Runtime', () => {
   beforeEach(() => {
+    jest.resetModules();
+
     createRuntime = require('createRuntime');
   });
 

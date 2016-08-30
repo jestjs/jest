@@ -115,22 +115,26 @@ class Runtime {
     this._transitiveShouldMock = Object.create(null);
 
     this._unmockList = unmockRegExpCache.get(config);
-    if (!this._unmockList && config.unmockedModulePathPatterns) {
+    if (
+      !this._unmockList &&
+      config.automock &&
+      config.unmockedModulePathPatterns
+    ) {
       this._unmockList =
         new RegExp(config.unmockedModulePathPatterns.join('|'));
       unmockRegExpCache.set(config, this._unmockList);
     }
 
-    const unmockPath = filePath => {
-      if (filePath && filePath.includes(NODE_MODULES)) {
-        const moduleID = this._normalizeID(filePath);
-        this._transitiveShouldMock[moduleID] = false;
-      }
-    };
+    if (config.automock) {
+      config.setupFiles.forEach(filePath => {
+        if (filePath && filePath.includes(NODE_MODULES)) {
+          const moduleID = this._normalizeID(filePath);
+          this._transitiveShouldMock[moduleID] = false;
+        }
+      });
+    }
 
-    config.setupFiles.forEach(unmockPath);
-
-    this.resetModuleRegistry();
+    this.resetModules();
 
     if (config.setupFiles.length) {
       for (let i = 0; i < config.setupFiles.length; i++) {
@@ -327,7 +331,7 @@ class Runtime {
     }
   }
 
-  resetModuleRegistry() {
+  resetModules() {
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
@@ -628,6 +632,17 @@ class Runtime {
     };
     const unmock = (moduleName: string) => {
       const moduleID = this._normalizeID(from, moduleName);
+      if (
+        !this._shouldAutoMock &&
+        this._config.automock === false &&
+        this._explicitShouldMock[moduleID] !== true
+      ) {
+        this._environment.global.console.warn(
+          `jest.unmock('${moduleName}') was called but automocking is ` +
+          `disabled. Remove the unnecessary call to "jest.unmock" or enable ` +
+          `automocking for this test via "jest.enableAutomock();".`,
+        );
+      }
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
@@ -662,6 +677,10 @@ class Runtime {
       this._environment.fakeTimers.useRealTimers();
       return runtime;
     };
+    const resetModules = () => {
+      this.resetModules();
+      return runtime;
+    };
 
     const runtime = {
       addMatchers: (matchers: Object) => {
@@ -682,17 +701,6 @@ class Runtime {
       dontMock: unmock,
       unmock,
 
-      getTestEnvData: () => {
-        const frozenCopy = {};
-        // Make a shallow copy only because a deep copy seems like
-        // overkill..
-        Object.keys(this._config.testEnvData).forEach(
-          key => frozenCopy[key] = this._config.testEnvData[key],
-        );
-        Object.freeze(frozenCopy);
-        return frozenCopy;
-      },
-
       genMockFromModule: (moduleName: string) => {
         return this._generateMock(from, moduleName);
       },
@@ -710,10 +718,8 @@ class Runtime {
       doMock: mock,
       mock,
 
-      resetModuleRegistry: () => {
-        this.resetModuleRegistry();
-        return runtime;
-      },
+      resetModules,
+      resetModuleRegistry: resetModules,
 
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),

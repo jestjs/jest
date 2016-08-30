@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 const os = require('os');
 
 const generateEmptyCoverage = require('../generateEmptyCoverage');

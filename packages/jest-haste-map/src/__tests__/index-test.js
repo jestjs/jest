@@ -61,6 +61,8 @@ let writeFileSync;
 describe('HasteMap', () => {
 
   beforeEach(() => {
+    jest.resetModules();
+
     object = data => Object.assign(Object.create(null), data);
 
     mockFs = object({

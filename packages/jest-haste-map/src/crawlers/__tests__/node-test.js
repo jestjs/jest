@@ -9,9 +9,6 @@
  */
 'use strict';
 
-jest.unmock('../../constants')
-  .unmock('../node');
-
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
     let closeCallback;
@@ -72,6 +69,8 @@ let childProcess;
 describe('node crawler', () => {
 
   beforeEach(() => {
+    jest.resetModules();
+
     mockResponse = [
       '/fruits/pear.js',
       '/fruits/strawberry.js',

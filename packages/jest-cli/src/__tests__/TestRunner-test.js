@@ -10,8 +10,6 @@
 
 'use strict';
 
-jest.disableAutomock();
-
 const TestRunner = require('../TestRunner');
 const SummaryReporter = require('../reporters/SummaryReporter');
 

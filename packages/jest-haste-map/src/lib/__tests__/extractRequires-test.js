@@ -10,15 +10,9 @@
  */
 'use strict';
 
-jest.unmock('../extractRequires');
-
-let extractRequires;
+const extractRequires = require('../extractRequires');
 
 describe('extractRequires', () => {
-
-  beforeEach(() => {
-    extractRequires = require('../extractRequires');
-  });
 
   it('extracts both requires and imports from code', () => {
     const code = `

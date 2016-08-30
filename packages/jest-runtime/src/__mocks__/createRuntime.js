@@ -12,14 +12,15 @@ module.exports = function createRuntime(filename, config) {
   const NodeEnvironment = require('jest-environment-node');
   const Runtime = require('../');
 
-  const normalizeConfig = require('jest-config').normalize;
+  const {normalize} = require('jest-config');
 
-  config = normalizeConfig(Object.assign({
+  config = normalize(Object.assign({
     name: 'Runtime-' + filename.replace(/\W/, '-') + '-tests',
     rootDir: path.resolve(path.dirname(filename), 'test_root'),
   }, config));
 
   const environment = new NodeEnvironment(config);
+  environment.global.console = console;
   return Runtime.createHasteMap(config, {resetCache: false, maxWorkers: 1})
     .build()
     .then(hasteMap => {

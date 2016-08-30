@@ -25,9 +25,9 @@ var siteConfig = {
       content: "Jest virtualizes JavaScript environments, provides browser mocks and runs tests in parallel across workers."
     },
     {
-      image: "/jest/img/content/automatic_mocks.svg",
-      title: "Mock by Default",
-      content: "Jest [automatically mocks](/jest/docs/automatic-mocking.html#content) JavaScript [modules](/jest/docs/common-js-testing.html#content), making most existing code testable."
+      image: "/jest/img/content/snapshots.svg",
+      title: "Snapshot Testing",
+      content: "Jest can [capture snapshots](/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to write tests quickly and it provides a seamless update experience."
     },
   ]
 };

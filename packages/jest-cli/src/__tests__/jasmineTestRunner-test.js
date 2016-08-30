@@ -9,8 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
-
 describe('jasmineTestRunner', () => {
   describe('custom matchers', () => {
 

@@ -9,7 +9,6 @@
  */
 'use strict';
 
-jest.disableAutomock();
 jest.mock('vm');
 
 const path = require('path');

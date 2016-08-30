@@ -10,8 +10,6 @@
  */
 'use strict';
 
-jest.unmock('../getPlatformExtension');
-
 let getPlatformExtension;
 
 describe('getPlatformExtension', () => {

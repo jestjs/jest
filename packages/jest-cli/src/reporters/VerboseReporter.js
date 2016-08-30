@@ -50,6 +50,7 @@ class VerboseReporter extends DefaultReporter {
     results: AggregatedResult,
   ) {
     this.clearLine();
+    this._printResultHeader(config, testResult);
     if (!testResult.testExecError) {
       this._logTestResults(testResult.testResults);
     }

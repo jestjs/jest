@@ -37,9 +37,6 @@ Your `package.json` should look something like this (where `<current-version>` i
   },
   "scripts": {
     "test": "jest"
-  },
-  "jest": {
-    "automock": false
   }
 ```
 
@@ -51,21 +48,6 @@ Your `package.json` should look something like this (where `<current-version>` i
 ```
 
 **And you're good to go!**
-
-React is designed to be tested without being mocked and we recommend turning automocking off using `"automock: false"` in Jest's configuration.
-
-If you'd like to use Jest's automocking feature you can unmock React explicitly:
-
-```javascript
-"jest": {
-  "unmockedModulePathPatterns": [
-    "<rootDir>/node_modules/react/",
-    "<rootDir>/node_modules/react-dom/",
-    "<rootDir>/node_modules/react-test-renderer/",
-    "<rootDir>/node_modules/react-addons-test-utils/"
-  ]
-}
-```
 
 ### Snapshot Testing
 
@@ -235,9 +217,6 @@ manipulate React components.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
-
-jest.unmock('../CheckboxWithLabel');
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';

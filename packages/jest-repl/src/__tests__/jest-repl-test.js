@@ -14,8 +14,6 @@ const path = require('path');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
-jest.disableAutomock();
-
 describe('Repl', () => {
   describe('cli', () => {
     it('runs without errors', () => {

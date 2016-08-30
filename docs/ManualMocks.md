@@ -7,10 +7,7 @@ permalink: docs/manual-mocks.html
 next: timer-mocks
 ---
 
-Although autogeneration of mocks is convenient, there are behaviors it misses,
-such as [fluent interfaces](http://martinfowler.com/bliki/FluentInterface.html).
-Furthermore, providing useful helpers on mock versions of a module, especially a
-core module, promotes reuse and can help to hide implementation details.
+Manual mocks are used to stub out functionality with mock data. For example, instead of accessing a remote resource like a website or a database, you might want to create a manual mock that allows you to use fake data. This ensures your tests will be fast and not flaky.
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory
 immediately adjacent to the module. For example, to mock a module called
@@ -27,12 +24,7 @@ a node module, the mock should be placed in the same parent directory as the
   config
 ```
 
-When a manual mock exists for a given module, Jest's module system will just
-use that instead of trying to automatically generate a mock.
-
-Assuming that the module can be loaded by the automocker, it's best to build on
-the automocked API. This makes it harder for mock APIs to get out of sync with
-real ones.
+When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleNmae')`.
 
 Here's a contrived example where we have a module that provides a summary of
 all the files in a given directory.
@@ -54,7 +46,7 @@ exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 ```
 
 Since we'd like our tests to avoid actually hitting the disk (that's pretty
-slow and fragile), we create a manual mock for the `fs` module by extending the
+slow and fragile), we create a manual mock for the `fs` module by extending an
 automatic mock. Our manual mock will implement custom versions of the `fs` APIs
 that we can build on for our tests:
 
@@ -101,7 +93,6 @@ Now we write our test:
 'use strict';
 
 jest.mock('fs');
-jest.unmock('../FileSummarizer');
 
 describe('FileSummarizer', () => {
   describe('listFilesInDirectorySync', () => {
@@ -127,9 +118,6 @@ describe('FileSummarizer', () => {
 });
 ```
 
-As you can see, it's sometimes useful to do more than what the automatic mocker
-is capable of doing for us.
-
 The example mock shown here uses [`jest.genMockFromModule`](/jest/docs/api.html#jest-genmockfrommodule-modulename)
 to generate an automatic mock, and overrides its default behavior. This is the
 recommended approach, but is completely optional. If you do not want to use the
@@ -139,24 +127,7 @@ meaning you have to manually update them any time the module they are mocking
 changes. Because of this, it's best to use or extend the automatic mock when it
 works for your needs.
 
+To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using `require.requireActual(moduleName)` in your manual mock and amending it with mock functions before exporting it.
+
 The code for this example is available at
 [examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
-
-
-Testing manual mocks
--------------
-
-It's generally an anti-pattern to implement an elaborate, stateful mock for a
-module. Before going down this route, consider covering the real module
-completely with tests and then whitelisting it with
-[`config.unmockedModulePathPatterns`](/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string),
-so that any tests that `require()` it will always get the real implementation
-(rather than a complicated mock version). Of course, this does not work in some
-scenarios, such as when disk or network access is involved.
-
-In cases where this kind of elaborate mock is unavoidable, it's not necessarily
-a bad idea to write a test that ensures that the mock and the actual
-implementation are in sync. Luckily, this is relatively easy to do with the API
-provided by `jest`, which allows you to explicitly require both the real module
-(using `require.requireActual()`) and the manually mocked implementation of the
-module (using `require()`) in a single test!
