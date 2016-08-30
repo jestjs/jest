@@ -14,5 +14,5 @@ test('works just fine', () => {
 
   console.warn('This is a warning message.');
 
-  console.error('This is a error message.');
+  console.error('This is an error message.');
 });

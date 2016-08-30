@@ -5,7 +5,9 @@ exports[`test throwing not Error objects 1`] = `
     Expected an Error, but \"1\" was thrown
     
 
-1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+Test Summary
+ › Ran all tests matching \"throw-number-test.js\".
+ › 1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
 "
 `;
 
@@ -16,7 +18,9 @@ exports[`test throwing not Error objects 2`] = `
     Error
       banana
 
-1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+Test Summary
+ › Ran all tests matching \"throw-string-test.js\".
+ › 1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
 "
 `;
 
@@ -26,6 +30,8 @@ exports[`test throwing not Error objects 3`] = `
 
 ERROR: No message was provided
 
-1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
+Test Summary
+ › Ran all tests matching \"throw-object-test.js\".
+ › 1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
 "
 `;

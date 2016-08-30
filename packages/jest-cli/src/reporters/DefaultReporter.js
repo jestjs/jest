@@ -18,13 +18,14 @@ const chalk = require('chalk');
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
 
-const RUNNING_TEST_COLOR = chalk.bold.gray;
+const RUNNING_TEST_COLOR = chalk.bold.dim;
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
 const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
 class DefaultReporter extends BaseReporter {
   onRunStart(config: Config, results: AggregatedResult) {
+    this.clearLine();
     this._printWaitingOn(results, config);
   }
 

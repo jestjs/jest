@@ -30,7 +30,7 @@ const istanbulCoverage = require('istanbul-lib-coverage');
 
 const COVERAGE_SUMMARY = chalk.bold;
 const FAIL_COLOR = chalk.bold.red;
-const RUNNING_TEST_COLOR = chalk.bold.gray;
+const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;

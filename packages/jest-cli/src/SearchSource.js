@@ -201,6 +201,17 @@ class SearchSource {
       ));
   }
 
+  static getTestSummary(patternInfo: PatternInfo) {
+    const testPathPattern = getTestPathPattern(patternInfo);
+    const testInfo = patternInfo.onlyChanged
+      ? ' related to changed files'
+      : patternInfo.input !== ''
+        ? ' matching ' + testPathPattern
+        : '';
+
+    return 'Ran all tests' + testInfo + '.';
+  }
+
   getNoTestsFoundMessage(
     patternInfo: PatternInfo,
     config: {[key: string]: string},
@@ -208,22 +219,20 @@ class SearchSource {
   ): string {
     if (patternInfo.onlyChanged) {
       const guide = patternInfo.watch
-        ? 'starting Jest with `jest --watchAll`'
-        : 'running Jest without `-o`';
-      return 'No tests found related to changed and uncommitted files.\n' +
-        'Note: If you are using dynamic `require`-calls or no tests related ' +
-        'to your changed files can be found, consider ' + guide + '.';
+        ? 'with `jest --watchAll` or press `a` to switch to `--watchAll`'
+        : 'without `-o`';
+      return (
+        chalk.bold(
+          'No tests found related to changed and uncommitted files.\n',
+        ) +
+        chalk.dim(
+          ' When dynamically calling `require` or no tests ' +
+          'related to changed files can be found, run Jest ' + guide + '.',
+        )
+      );
     }
 
-    const pattern = patternInfo.testPathPattern;
-    const input = patternInfo.input;
-    const formattedPattern = `/${pattern || ''}/`;
-    const formattedInput = patternInfo.shouldTreatInputAsPattern
-      ? `/${input || ''}/`
-      : `"${input || ''}"`;
-    const testPathPattern =
-      (input === pattern) ? formattedInput : formattedPattern;
-
+    const testPathPattern = getTestPathPattern(patternInfo);
     const stats = data.stats || {};
     const statsMessage = Object.keys(stats).map(key => {
       const value = key === 'testPathPattern' ? testPathPattern : config[key];
@@ -235,9 +244,10 @@ class SearchSource {
     }).filter(line => line).join('\n');
 
     return (
-      `${chalk.bold.red('NO TESTS FOUND')}. ` +
+      chalk.bold('No tests found') + '\n' +
       (data.total
-        ? `${pluralize('file', data.total || 0, 's')} checked.\n${statsMessage}`
+        ? `  ${pluralize('file', data.total || 0, 's')} checked.\n` +
+          statsMessage
         : `No files found in ${config.rootDir}.\n` +
           `Make sure Jest's configuration does not exclude this directory.`
       )
@@ -257,5 +267,15 @@ class SearchSource {
   }
 
 }
+
+const getTestPathPattern = (patternInfo: PatternInfo) => {
+  const pattern = patternInfo.testPathPattern;
+  const input = patternInfo.input;
+  const formattedPattern = `/${pattern || ''}/`;
+  const formattedInput = patternInfo.shouldTreatInputAsPattern
+    ? `/${input || ''}/`
+    : `"${input || ''}"`;
+  return (input === pattern) ? formattedInput : formattedPattern;
+};
 
 module.exports = SearchSource;
