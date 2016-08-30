@@ -13,18 +13,7 @@
 const jestExpect = require('../').expect;
 const {stringify} = require('jest-matcher-utils');
 
-const matchErrorSnapshot = fn => {
-  let error;
-
-  try {
-    fn();
-  } catch (e) {
-    error = e;
-  }
-
-  expect(error).toBeDefined();
-  expect(error.message).toMatchSnapshot();
-};
+const matchErrorSnapshot = require('./_matchErrorSnapshot');
 
 describe('.toBe()', () => {
   it('does not throw', () => {

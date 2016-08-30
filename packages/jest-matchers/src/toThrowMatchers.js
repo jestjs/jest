@@ -16,6 +16,7 @@ import type {MatchersObject} from './types';
 const {escapeStrForRegex} = require('jest-util');
 const {
   getType,
+  matcherHint,
   printReceived,
   printExpected,
 } = require('jest-matcher-utils');
@@ -41,9 +42,10 @@ const matchers: MatchersObject = {
       return toThrowMatchingStringOrRegexp(error, expected, value);
     } else {
       throw new Error(
-        'Unexpected argument passed. Expected to get ' +
-        '"string", "Error type" or "regexp". Got: ' +
-        `${printReceived(getType(expected))} ${printReceived(expected)}.`,
+        'Unexpected argument passed. Expected to get\n' +
+        `  ${printExpected('"string"')}, ${printExpected('"Error type"')} or ${printExpected('"regexp"')}.\n` +
+        `Got: \n` +
+        `  ${printReceived(getType(expected))}: ${printReceived(expected)}.`,
       );
     }
   },
@@ -54,11 +56,23 @@ const toThrowMatchingStringOrRegexp = (
   pattern: RegExp,
   value: RegExp | string | Error,
 ) => {
+  if (error && !(error instanceof Error)) {
+    error = new Error(error);
+  }
+
   const pass = !!(error && error.message.match(pattern));
-  const message = (error ? getErrorMessage(error) : '') + (pass
-    ? `the function not to throw an error matching ${printExpected(String(value))}.`
-    : `the function to throw an error matching ${printExpected(String(value))}.`
-  );
+
+  const message = pass
+    ? () => matcherHint('.not.toThrowError', 'function', getType(value)) + '\n\n' +
+      `Expeced the function not to throw an error matching:\n` +
+      `  ${printExpected(value)}\n` +
+      `But it threw:\n` +
+      `  ${printReceived(error)}`
+    : () => matcherHint('.toThrowError', 'function', getType(value)) + '\n\n' +
+      `Expected the function to throw an error matching:\n` +
+      `  ${printExpected(value)}\n` +
+      getActualErrorMessage(error);
+
   return {pass, message};
 };
 
@@ -67,15 +81,26 @@ const toThrowMatchingError = (
   ErrorClass: typeof Error,
 ) => {
   const pass = !!(error && error instanceof ErrorClass);
-  const message = (error ? getErrorMessage(error) : '') + (pass
-    ? `the function not to throw an error of type ${printExpected(ErrorClass.name)}.`
-    : `Expected function to throw an error of type ${printExpected(ErrorClass.name)}.`
-  );
+
+  const message = pass
+    ? () => matcherHint('.not.toThrowError', 'function', 'type') + '\n\n' +
+      `Expeced the function not to throw an error of type:\n` +
+      `  ${printExpected(ErrorClass.name)}\n` +
+      `But it threw:\n` +
+      `  ${printReceived(error)}`
+    : () => matcherHint('.toThrowError', 'function', 'type') + '\n\n' +
+      `Expected the function to throw an error of type:\n` +
+      `  ${printExpected(ErrorClass.name)}\n` +
+      getActualErrorMessage(error);
+
   return {pass, message};
 };
 
-const getErrorMessage = error => {
-  return `Received ${printReceived(error.constructor.name + ': ' + error.message)} but expected `;
+const getActualErrorMessage = error => {
+  return error
+    ? `Instead, it threw:\n` +
+      `  ${printReceived(error)}`
+    : `But it didn't throw anything.`;
 };
 
 module.exports = matchers;

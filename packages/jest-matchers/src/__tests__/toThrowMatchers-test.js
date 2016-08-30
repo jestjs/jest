@@ -10,53 +10,38 @@
 
 'use strict';
 
+const jestExpect = require('../').expect;
+const matchErrorSnapshot = require('./_matchErrorSnapshot');
+
 describe('.toThrowError()', () => {
   describe('strings', () => {
     it('passes', () => {
-      expect(() => { throw new Error('apple'); }).toThrowError('apple');
-      expect(() => { throw new Error('banana'); }).not.toThrowError('apple');
-      expect(() => {}).not.toThrowError('apple');
+      jestExpect(() => { throw new Error('apple'); }).toThrowError('apple');
+      jestExpect(() => { throw new Error('banana'); })
+        .not.toThrowError('apple');
+      jestExpect(() => {}).not.toThrowError('apple');
     });
 
     test('did not throw at all', () => {
-      let error;
-      try {
-        expect(() => {}).toThrowError('apple');
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => jestExpect(() => {}).toThrowError('apple'));
     });
 
     test('threw, but message did not match', () => {
-      let error;
-      try {
-        expect(() => { throw new Error('apple'); }).toThrowError('banana');
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() =>
+        jestExpect(() => { throw new Error('apple'); }).toThrowError('banana'),
+      );
     });
 
     it('properly escapes strings when matching against errors', () => {
-      expect(() => { throw new TypeError('"this"? throws.'); })
+      jestExpect(() => { throw new TypeError('"this"? throws.'); })
         .toThrowError('"this"? throws.');
     });
 
     test('threw, but should not have', () => {
-      let error;
-      try {
-        expect(() => { throw new Error('apple'); }).not.toThrowError('apple');
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => {
+        jestExpect(() => { throw new Error('apple'); })
+          .not.toThrowError('apple');
+      });
     });
   });
 
@@ -68,39 +53,20 @@ describe('.toThrowError()', () => {
     });
 
     test('did not throw at all', () => {
-      let error;
-      try {
-        expect(() => {}).toThrowError(/apple/);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => jestExpect(() => {}).toThrowError(/apple/));
     });
 
     test('threw, but message did not match', () => {
-      let error;
-      try {
-        expect(() => { throw new Error('apple'); }).toThrowError(/banana/);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => {
+        jestExpect(() => { throw new Error('apple'); }).toThrowError(/banana/);
+      });
     });
 
     test('threw, but should not have', () => {
-      let error;
-      try {
-        expect(() => { throw new Error('apple'); }).not.toThrowError(/apple/);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => {
+        jestExpect(() => { throw new Error('apple'); })
+          .not.toThrowError(/apple/);
+      });
     });
   });
 
@@ -109,46 +75,30 @@ describe('.toThrowError()', () => {
     class Err2 extends Error {}
 
     it('passes', () => {
-      expect(() => { throw new Err(); }).toThrowError(Err);
-      expect(() => { throw new Err(); }).toThrowError(Error);
-      expect(() => { throw new Err(); }).not.toThrowError(Err2);
-      expect(() => {}).not.toThrowError(Err);
+      jestExpect(() => { throw new Err(); }).toThrowError(Err);
+      jestExpect(() => { throw new Err(); }).toThrowError(Error);
+      jestExpect(() => { throw new Err(); }).not.toThrowError(Err2);
+      jestExpect(() => {}).not.toThrowError(Err);
     });
 
     test('did not throw at all', () => {
-      let error;
-      try {
-        expect(() => {}).toThrowError(Err);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => expect(() => {}).toThrowError(Err));
     });
 
     test('threw, but class did not match', () => {
-      let error;
-      try {
-        expect(() => { throw new Err('apple'); }).toThrowError(Err2);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => {
+        jestExpect(() => { throw new Err('apple'); }).toThrowError(Err2);
+      });
     });
 
     test('threw, but should not have', () => {
-      let error;
-      try {
-        expect(() => { throw new Err('apple'); }).not.toThrowError(Err);
-      } catch (e) {
-        error = e;
-      }
-
-      expect(error).toBeDefined();
-      expect(error.message).toMatchSnapshot();
+      matchErrorSnapshot(() => {
+        jestExpect(() => { throw new Err('apple'); }).not.toThrowError(Err);
+      });
     });
+  });
+
+  test('invalid arguments', () => {
+    matchErrorSnapshot(() => jestExpect(() => {}).toThrowError(111));
   });
 });
