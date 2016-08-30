@@ -169,10 +169,12 @@ const formatResultsErrors = (
       .map(line => MESSAGE_INDENT + line)
       .join('\n');
 
-    const title = TITLE_INDENT + TITLE_BULLET +
+    const title = chalk.bold.red(
+      TITLE_INDENT + TITLE_BULLET +
       result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
       (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-      result.title + '\n';
+      result.title,
+    ) + '\n';
 
     return title + '\n' + message + '\n' + stack;
   }).join('\n');
