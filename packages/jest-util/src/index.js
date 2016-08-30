@@ -59,6 +59,21 @@ const getPackageRoot = () => {
   return root;
 };
 
+const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
+  const yargsSpecialOptions = ['$0', '_', 'help'];
+  const allowedOptions = Object.keys(options).reduce((acc, option) => (
+    acc
+      .add(option)
+      .add(options[option].alias)
+  ), new Set(yargsSpecialOptions));
+  const unrecognizedOptions = Object.keys(argv).filter(arg => (
+    !allowedOptions.has(arg)
+  ));
+  if (unrecognizedOptions.length) {
+    console.warn('Unrecognized options: ' + unrecognizedOptions.join(', '));
+  }
+};
+
 exports.Console = require('./Console');
 exports.FakeTimers = require('./FakeTimers');
 exports.JasmineFormatter = require('./JasmineFormatter');
@@ -75,6 +90,4 @@ exports.getPackageRoot = getPackageRoot;
 exports.installCommonGlobals = require('./installCommonGlobals');
 exports.replacePathSepForRegex = replacePathSepForRegex;
 exports.separateMessageFromStack = require('./separateMessageFromStack');
-exports.warnAboutUnrecognizedOptions =
-  require('./args').warnAboutUnrecognizedOptions;
-exports.wrap = require('./args').wrap;
+exports.warnAboutUnrecognizedOptions = warnAboutUnrecognizedOptions;

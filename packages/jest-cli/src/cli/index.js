@@ -21,6 +21,7 @@ const yargs = require('yargs');
 function run(argv?: Object, root?: Path) {
   argv = yargs(argv || process.argv.slice(2))
     .usage(args.usage)
+    .help()
     .options(args.options)
     .check(args.check)
     .argv;

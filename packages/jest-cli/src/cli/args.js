@@ -10,8 +10,6 @@
 
 'use strict';
 
-const wrap = require('jest-util').wrap;
-
 const check = (argv: Object) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
@@ -39,228 +37,202 @@ const check = (argv: Object) => {
   return true;
 };
 
-const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathRegExp]';
+const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
 
 const options = {
   config: {
     alias: 'c',
-    description: wrap(
+    description:
       'The path to a jest config file specifying how to find and execute ' +
       'tests. If no rootDir is set in the config, the current directory ' +
-      'is assumed to be the rootDir for the project.',
-    ),
+      'is assumed to be the rootDir for the project. This can also be a JSON' +
+      'encoded value which Jest will use as configuration.',
     type: 'string',
   },
   coverage: {
-    description: wrap(
+    description:
       'Indicates that test coverage information should be collected and ' +
       'reported in the output.',
-    ),
     type: 'boolean',
   },
   collectCoverageFrom: {
-    description: wrap(
+    description:
       'relative to <rootDir> glob pattern matching the files that coverage ' +
       'info needs to be collected from.',
-    ),
     type: 'string',
   },
   debug: {
-    description: wrap(
-      'Print debugging info about your jest config.',
-    ),
+    description: 'Print debugging info about your jest config.',
     type: 'boolean',
   },
   maxWorkers: {
     alias: 'w',
-    description: wrap(
+    description:
       'Specifies the maximum number of workers the worker-pool will ' +
       'spawn for running tests. This defaults to the number of the cores ' +
       'available on your machine. (its usually best not to override this ' +
       'default)',
-    ),
     type: 'string', // no, yargs -- its a number.. :(
   },
   onlyChanged: {
     alias: 'o',
-    description: wrap(
+    description:
       'Attempts to identify which tests to run based on which files have ' +
       'changed in the current repository. Only works if you\'re running ' +
       'tests in a git repository at the moment.',
-    ),
     type: 'boolean',
   },
   runInBand: {
     alias: 'i',
-    description: wrap(
+    description:
       'Run all tests serially in the current process (rather than ' +
       'creating a worker pool of child processes that run tests). This ' +
       'is sometimes useful for debugging, but such use cases are pretty ' +
       'rare.',
-    ),
     type: 'boolean',
   },
   testPathPattern: {
-    description: wrap(
+    description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
-    ),
     type: 'string',
   },
   version: {
     alias: 'v',
-    description: wrap('Print the version and exit'),
+    description:'Print the version and exit',
     type: 'boolean',
   },
   colors: {
-    description: wrap(
+    description:
       'Forces test results output highlighting (even if stdout is not a TTY)',
-    ),
     type: 'boolean',
   },
   noStackTrace: {
-    description: wrap(
-      'Disables stack trace in test results output',
-    ),
+    description: 'Disables stack trace in test results output',
     type: 'boolean',
   },
   verbose: {
-    description: wrap(
+    description:
       'Display individual test results with the test suite hierarchy.',
-    ),
     type: 'boolean',
   },
   notify: {
-    description: wrap(
-      'Activates notifications for test results.',
-    ),
+    description: 'Activates notifications for test results.',
     type: 'boolean',
   },
   watch: {
-    description: wrap(
+    description:
       'Watch files for changes and rerun tests related to changed files. ' +
       'If you want to re-run all tests when a file has changed, use the ' +
       '`--watchAll` option.',
-    ),
     type: 'boolean',
   },
   watchAll: {
-    description: wrap(
+    description:
       'Watch files for changes and rerun all tests. If you want to re-run ' +
        'only the tests related to the changed files, use the ' +
       '`--watch` option.',
-    ),
     type: 'boolean',
   },
   bail: {
     alias: 'b',
-    description: wrap(
+    description:
       'Exit the test suite immediately upon the first failing test.',
-    ),
     type: 'boolean',
   },
   useStderr: {
-    description: wrap(
-      'Divert all output to stderr.',
-    ),
+    description: 'Divert all output to stderr.',
     type: 'boolean',
   },
   cache: {
     default: true,
-    description: wrap(
+    description:
       'Whether to use the preprocessor cache. Disable the cache using ' +
       '--no-cache.',
-    ),
     type: 'boolean',
   },
+  env: {
+    default: undefined,
+    description:
+      'The test environment used for all tests. This can point to any file or' +
+      'node module. Examples: `jsdom`, `node` or `path/to/my-environment.js`',
+    type: 'string',
+  },
   json: {
-    description: wrap(
+    description:
       'Prints the test results in JSON. This mode will send all ' +
       'other test output and user messages to stderr.',
-    ),
     type: 'boolean',
   },
   setupTestFrameworkScriptFile: {
-    description: wrap(
+    description:
       'The path to a module that runs some code to configure or set up ' +
       'the testing framework before each test.',
-    ),
     type: 'string',
   },
   testRunner: {
-    description: wrap(
+    description:
       'Allows to specify a custom test runner. Jest ships with Jasmine ' +
       '1 and 2 which can be enabled by setting this option to ' +
       '`jasmine1` or `jasmine2`. The default is `jasmine2`. A path to a ' +
       'custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
-    ),
     type: 'string',
   },
   logHeapUsage: {
-    description: wrap(
+    description:
       'Logs the heap usage after every test. Useful to debug memory ' +
       'leaks. Use together with `--runInBand` and `--expose-gc` in node.',
-    ),
     type: 'boolean',
   },
   watchman: {
     default: true,
-    description: wrap(
+    description:
       'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
-    ),
     type: 'boolean',
   },
   silent: {
     default: false,
-    description: wrap(
-      'Prevent tests from printing messages through the console.',
-    ),
+    description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
   updateSnapshot: {
     alias: 'u',
     default: false,
-    description: wrap(
-      'Use this flag to re-record snapshots.',
-    ),
+    description: 'Use this flag to re-record snapshots.',
     type: 'boolean',
   },
   testcheckTimes: {
     default: 100,
-    description: wrap(
+    description:
       'The number of test cases to generate for each testcheck test. ' +
       'May be overriden for individual test cases using the options ' +
       'argument of check.it.',
-    ),
     type: 'number',
   },
   testcheckMaxSize: {
     default: 200,
-    description: wrap(
+    description:
       'The maximum size of sized types, such as arrays and ints, to be ' +
       'generated for testcheck tests. ' +
       'May be overriden for individual test cases using the options ' +
       'argument of check.it. ' +
       'Generators can also be sized using gen.resize(n, anotherGenerator).',
-    ),
     type: 'number',
   },
   testcheckSeed: {
     default: undefined,
-    description: wrap(
+    description:
       'The seed for generating testcheck test cases. Defaults to random. ' +
       'May be overriden for individual test cases using the options ' +
       'argument of check.it.',
-    ),
     type: 'number',
   },
-  lastCommit :{
+  lastCommit: {
     default: false,
-    description: wrap(
+    description:
       'Will run all tests affected by file changes in the last commit made.',
-    ),
     type: 'boolean',
   },
 };

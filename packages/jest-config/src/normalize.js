@@ -241,6 +241,10 @@ function normalize(config, argv) {
     }
   }
 
+  if (argv.env) {
+    config.testEnvironment = argv.env;
+  }
+
   if (config.testEnvironment) {
     config.testEnvironment = getTestEnvironment(config);
   }
