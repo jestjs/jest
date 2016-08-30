@@ -1,5 +1,6 @@
 {
   "jest": {
-    "scriptPreprocessor": "<rootDir>/preprocessor.js"
+    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "testEnvironment": "node"
   }
 }

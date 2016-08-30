@@ -13,18 +13,6 @@ const runJest = require('../runJest');
 
 const dir = path.resolve(__dirname, '../failures');
 
-test('matcher messages', () => {
-  const {stderr, stdout} = runJest(dir, ['test-error-test.js']);
-
-  expect(
-      stderr
-        .replace(/\s*\(\d*ms\)/g, '')
-        .replace(/run time.*s/, '<TIME>')
-        .replace(/1 snapshot test failed.*\n/g, ''),
-  ).toMatchSnapshot();
-  expect(stdout).toMatchSnapshot();
-});
-
 test('throwing not Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;

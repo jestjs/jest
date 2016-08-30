@@ -3,6 +3,7 @@
     "rootDir": "./",
     "scriptPreprocessor": "<rootDir>/typescript-preprocessor.js",
     "testRegex": "/__tests__/.*\\.(ts|tsx|js)$",
+    "testEnvironment": "node",
     "moduleFileExtensions": [
       "ts",
       "tsx",
