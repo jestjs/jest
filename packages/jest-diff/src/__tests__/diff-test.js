@@ -62,9 +62,9 @@ describe('no visual difference', () => {
 });
 
 test('oneline strings', () => {
-  expect(stripAnsi(diff('ab', 'aa'))).toMatch('aba');
-  expect(diff('a', 'a')).toMatch(/no visual difference/);
-  expect(stripAnsi(diff('123456789', '234567890'))).toMatch('1234567890');
+  expect(stripAnsi(diff('ab', 'aa'))).toMatchSnapshot();
+  expect(diff('a', 'a')).toMatchSnapshot();
+  expect(stripAnsi(diff('123456789', '234567890'))).toMatchSnapshot();
 });
 
 test('multiline strings', () => {

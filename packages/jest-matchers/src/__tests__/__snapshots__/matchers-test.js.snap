@@ -93,7 +93,8 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[32mab[39m[2mc[22m[31mde[39m"
+[32m-[39m [32mcde[39m
+[31m+[39m [31mabc[39m"
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
@@ -1504,7 +1505,8 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[32mb[39m[2ma[22m[31mpple[39m[32mnana[39m"
+[32m-[39m [32mapple[39m
+[31m+[39m [31mbanana[39m"
 `;
 
 exports[`.toEqual() expect(1).not.toEqual(1) 1`] = `
