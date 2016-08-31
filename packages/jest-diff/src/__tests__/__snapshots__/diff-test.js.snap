@@ -1,0 +1,17 @@
+exports[`test oneline strings 1`] = `
+"- Expected
++ Received
+
+- ab
++ aa"
+`;
+
+exports[`test oneline strings 2`] = `"[2m[4mCompared values have no visual difference[24m[22m"`;
+
+exports[`test oneline strings 3`] = `
+"- Expected
++ Received
+
+- 123456789
++ 234567890"
+`;
