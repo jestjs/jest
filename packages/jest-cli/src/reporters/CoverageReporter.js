@@ -73,7 +73,7 @@ class CoverageReporter extends BaseReporter {
         const format = percent => percent + (percent === 'Unknown' ? '' : '%');
         this.log(
           '\n' + COVERAGE_SUMMARY('Coverage Summary') + ' (add "text" to the ' +
-          '"coverageReporter" setting to receive a full report)\n' +
+          '"coverageReporters" setting to receive a full report)\n' +
           ' \u203A Statements: ' + format(results.statements.pct) + '\n' +
           ' \u203A Branches: ' + format(results.branches.pct) + '\n' +
           ' \u203A Lines: ' + format(results.lines.pct) + '\n' +
