@@ -45,7 +45,10 @@
       "packages/.*/build"
     ],
     "collectCoverageFrom": [
-      "**/packages/**/*.js",
+      "**/packages/{jest-runtime,jest-matchers,jest-haste-map,jest-file-exists,jest-diff,jest-changed-files}/**/*.js",
+      "!**/bin/**",
+      "!**/cli/**",
+      "!**/fastpath.js",
       "!**/vendor/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
