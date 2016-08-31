@@ -10,7 +10,7 @@
 
  /**
  * This module adds ability to test async promise code with jasmine by
- * returning a promise from `it\fit` block.
+ * returning a promise from `it\fit` and `beforeEach/afterEach` blocks.
  */
 
 'use strict';
@@ -53,12 +53,33 @@ function promisifyIt(originalFn, env) {
   };
 }
 
+function promisifyLifeCycleFunction(originalFn: Function, env) {
+  return function(fn) {
+    const hasDoneCallback = fn.length;
+    if (!hasDoneCallback) {
+      const originalBodyFn = fn;
+      fn = function(done) {
+        const returnValue = originalBodyFn.apply(this, arguments);
+        if (isPromise(returnValue)) {
+          returnValue.then(done, done.fail);
+        } else {
+          done();
+        }
+      };
+    }
+
+    return originalFn.call(env, fn);
+  };
+}
+
 function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
   global.pit = env.it = promisifyIt(env.it, env);
   env.fit = promisifyIt(env.fit, env);
+  env.beforeEach = promisifyLifeCycleFunction(env.beforeEach, env);
+  env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);
 }
 
 module.exports = {

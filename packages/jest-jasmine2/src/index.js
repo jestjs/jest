@@ -16,7 +16,7 @@ import type Runtime from '../../jest-runtime/src';
 
 const JasmineReporter = require('./reporter');
 
-const jasminePit = require('./jasmine-pit');
+const jasmineAsync = require('./jasmine-async');
 const snapshot = require('jest-snapshot');
 const fs = require('graceful-fs');
 const path = require('path');
@@ -95,7 +95,7 @@ function jasmine2(
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 
-  jasminePit.install(environment.global);
+  jasmineAsync.install(environment.global);
   environment.global.test = environment.global.it;
 
   if (config.setupTestFrameworkScriptFile) {
