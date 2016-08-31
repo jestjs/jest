@@ -21,7 +21,6 @@ const changedFiles = require('jest-changed-files');
 const fileExists = require('jest-file-exists');
 const path = require('path');
 const {
-  clearLine,
   escapePathForRegex,
   replacePathSepForRegex,
 } = require('jest-util');
@@ -33,6 +32,7 @@ type SearchSourceConfig = {
 };
 
 type SearchResult = {
+  noSCM?: boolean,
   paths: Array<Path>,
   stats?: {[key: string]: number},
   total?: number,
@@ -121,17 +121,8 @@ class SearchSource {
 
     const testCases = Object.assign({}, this._testPathCases);
     if (testPathPattern) {
-      let regex;
-      try {
-        regex = new RegExp(testPathPattern);
-        testCases.testPathPattern = path => regex.test(path);
-      } catch (e) {
-        clearLine(process.stdout);
-        console.log(
-          'Invalid testPattern ' + String(testPathPattern) + ' supplied. ',
-        );
-        testCases.testPathPattern = () => false;
-      }
+      const regex = new RegExp(testPathPattern);
+      testCases.testPathPattern = path => regex.test(path);
     }
 
     data.paths = allPaths.filter(path => {
@@ -195,25 +186,20 @@ class SearchSource {
   findChangedTests(options: Options): Promise<SearchResult> {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
-        if (!repos.every(result => result[0] || result[1])) {
-          clearLine(process.stdout);
-          console.log(
-            'Jest can only find uncommitted changed files in a git or hg ' +
-            'repository. If you make your project a git or hg repository ' +
-            '(`git init` or `hg init`), Jest will be able to only ' +
-            'run tests related to files changed since the last commit.',
-          );
-          return null;
+        if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
+          return {
+            noSCM: true,
+            paths: [],
+          };
         }
-        return Promise.all(Array.from(repos).map(repo => {
-          return repo[0]
-            ? git.findChangedFiles(repo[0], options)
-            : hg.findChangedFiles(repo[1], options);
-        }));
-      })
-      .then(changedPathSets => this.findRelatedTests(
-        new Set(Array.prototype.concat.apply([], changedPathSets)),
-      ));
+        return Promise.all(Array.from(repos).map(([gitRepo, hgRepo]) => {
+          return gitRepo
+            ? git.findChangedFiles(gitRepo, options)
+            : hg.findChangedFiles(hgRepo, options);
+        })).then(changedPathSets => this.findRelatedTests(
+          new Set(Array.prototype.concat.apply([], changedPathSets)),
+        ));
+      });
   }
 
   static getTestSummary(patternInfo: PatternInfo) {
@@ -235,7 +221,7 @@ class SearchSource {
     if (patternInfo.onlyChanged) {
       return (
         chalk.bold(
-          'No tests found related to changed and uncommitted files.\n',
+          'No tests found related to files changed since last commit.\n',
         ) +
         chalk.dim(
           patternInfo.watch ?

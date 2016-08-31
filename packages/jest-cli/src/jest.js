@@ -66,6 +66,29 @@ const getMaxWorkers = argv => {
 };
 
 const buildTestPathPatternInfo = argv => {
+  const defaultPattern = {
+    input: '',
+    testPathPattern: '',
+    shouldTreatInputAsPattern: false,
+  };
+  const validatePattern = patternInfo => {
+    const {testPathPattern} = patternInfo;
+    if (testPathPattern) {
+      try {
+        /* eslint-disable no-new */
+        new RegExp(testPathPattern);
+        /* eslint-enable no-new */
+      } catch (error) {
+        clearLine(process.stdout);
+        console.log(chalk.red(
+          'Invalid testPattern ' + String(testPathPattern) + ' supplied. ' +
+          'Running all tests instead.',
+        ));
+        return defaultPattern;
+      }
+    }
+    return patternInfo;
+  };
   if (argv.onlyChanged) {
     return {
       input: '',
@@ -75,24 +98,20 @@ const buildTestPathPatternInfo = argv => {
     };
   }
   if (argv.testPathPattern) {
-    return {
+    return validatePattern({
       input: argv.testPathPattern,
       testPathPattern: argv.testPathPattern,
       shouldTreatInputAsPattern: true,
-    };
+    });
   }
   if (argv._ && argv._.length) {
-    return {
+    return validatePattern({
       input: argv._.join(' '),
       testPathPattern: argv._.join('|'),
       shouldTreatInputAsPattern: false,
-    };
+    });
   }
-  return {
-    input: '',
-    testPathPattern: '',
-    shouldTreatInputAsPattern: false,
-  };
+  return defaultPattern;
 };
 
 const getWatcher = (
@@ -110,9 +129,9 @@ const getWatcher = (
 };
 
 const runJest = (config, argv, pipe, onComplete) => {
-  const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
   const localConsole = new Console(pipe, pipe);
+  let patternInfo = buildTestPathPatternInfo(argv);
   return Runtime.createHasteContext(config, {
     console: localConsole,
     maxWorkers,
@@ -121,13 +140,34 @@ const runJest = (config, argv, pipe, onComplete) => {
     return source.getTestPaths(patternInfo)
       .then(data => {
         if (!data.paths.length) {
+          if (patternInfo.onlyChanged && data.noSCM) {
+            if (config.watch) {
+              // Run all the tests
+              setWatchMode(argv, 'watchAll', {
+                noSCM: true,
+              });
+              patternInfo = buildTestPathPatternInfo(argv);
+              return source.getTestPaths(patternInfo);
+            } else {
+              localConsole.log(
+                'Jest can only find uncommitted changed files in a git or hg ' +
+                'repository. If you make your project a git or hg repository ' +
+                '(`git init` or `hg init`), Jest will be able to only ' +
+                'run tests related to files changed since the last commit.',
+              );
+            }
+          }
+
           localConsole.log(
             source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
           );
         }
+        return data;
+      }).then(data => {
         if (data.paths.length === 1 && config.verbose !== false) {
           config = Object.assign({}, config, {verbose: true});
         }
+
         return new TestRunner(
           hasteMap,
           config,
@@ -155,6 +195,26 @@ const runJest = (config, argv, pipe, onComplete) => {
   });
 };
 
+const setWatchMode = (argv, mode: 'watch' | 'watchAll', options) => {
+  if (mode === 'watch') {
+    argv.watch = true;
+    argv.watchAll = false;
+  } else if (mode === 'watchAll') {
+    argv.watch = false;
+    argv.watchAll = true;
+  }
+
+  // Reset before setting these to the new values
+  argv._ = (options && options.pattern) || '';
+  argv.onlyChanged = false;
+  argv.onlyChanged =
+    buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
+
+  if (options && options.noSCM) {
+    argv.noSCM = true;
+  }
+};
+
 const runCLI = (
   argv: Object,
   root: Path,
@@ -179,21 +239,9 @@ const runCLI = (
         pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
       if (argv.watch || argv.watchAll) {
-        const setMode = (mode: 'watch' | 'watchAll') => {
-          if (mode === 'watch') {
-            argv.watch = true;
-            argv.watchAll = false;
-          } else if (mode === 'watchAll') {
-            argv.watch = false;
-            argv.watchAll = true;
-          }
-          // Reset before setting it to the new value
-          argv.onlyChanged = false;
-          argv.onlyChanged =
-            buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
-        };
-
-        setMode(argv.watch ? 'watch' : 'watchAll');
+        setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
+          pattern: argv._,
+        });
 
         let isRunning = false;
         let isEnteringPattern = false;
@@ -225,7 +273,7 @@ const runCLI = (
                 argv.watch
                   ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
                   : null,
-                argv.watchAll
+                (argv.watchAll || argv._) && !argv.noSCM
                   ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
                   : null,
                 results.snapshot.failure
@@ -253,8 +301,9 @@ const runCLI = (
             switch (key) {
               case KEYS.ENTER:
                 isEnteringPattern = false;
-                argv._ = [currentPattern];
-                setMode('watch');
+                setWatchMode(argv, 'watch', {
+                  pattern: [currentPattern],
+                });
                 startRun();
                 break;
               default:
@@ -278,11 +327,11 @@ const runCLI = (
               startRun({updateSnapshot: true});
               break;
             case KEYS.A:
-              setMode('watchAll');
+              setWatchMode(argv, 'watchAll');
               startRun();
               break;
             case KEYS.O:
-              setMode('watch');
+              setWatchMode(argv, 'watch');
               startRun();
               break;
             case KEYS.P:
