@@ -62,7 +62,10 @@ const getType = (value: any): ValueType => {
 const stringify = (obj: any): string => {
   const set = new Set();
   return JSON.stringify(obj, (key, value) => {
-    if (typeof value === 'object' && value !== null) {
+    if (value instanceof Error) {
+      const name = (value.constructor && value.constructor.name) || 'Error';
+      return `${name}: ${value.message}`;
+    } else if (typeof value === 'object' && value !== null) {
       if (
         value &&
         value.constructor &&

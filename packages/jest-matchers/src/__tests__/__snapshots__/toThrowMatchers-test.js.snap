@@ -1,17 +1,84 @@
-exports[`.toThrowError() error class did not throw at all 1`] = `"Expected function to throw an error of type [32m\"Err\"[39m."`;
+exports[`.toThrowError() error class did not throw at all 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mtype[39m[2m)[22m
 
-exports[`.toThrowError() error class threw, but class did not match 1`] = `"Received [31m\"Err: apple\"[39m but expected Expected function to throw an error of type [32m\"Err2\"[39m."`;
+Expected the function to throw an error of type:
+  [32m\"Err\"[39m
+But it didn\'t throw anything."
+`;
 
-exports[`.toThrowError() error class threw, but should not have 1`] = `"Received [31m\"Err: apple\"[39m but expected the function not to throw an error of type [32m\"Err\"[39m."`;
+exports[`.toThrowError() error class threw, but class did not match 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mtype[39m[2m)[22m
 
-exports[`.toThrowError() regexp did not throw at all 1`] = `"the function to throw an error matching [32m\"/apple/\"[39m."`;
+Expected the function to throw an error of type:
+  [32m\"Err2\"[39m
+Instead, it threw:
+  [31m\"Err: apple\"[39m"
+`;
 
-exports[`.toThrowError() regexp threw, but message did not match 1`] = `"Received [31m\"Error: apple\"[39m but expected the function to throw an error matching [32m\"/banana/\"[39m."`;
+exports[`.toThrowError() error class threw, but should not have 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mtype[39m[2m)[22m
 
-exports[`.toThrowError() regexp threw, but should not have 1`] = `"Received [31m\"Error: apple\"[39m but expected the function not to throw an error matching [32m\"/apple/\"[39m."`;
+Expeced the function not to throw an error of type:
+  [32m\"Err\"[39m
+But it threw:
+  [31m\"Err: apple\"[39m"
+`;
 
-exports[`.toThrowError() strings did not throw at all 1`] = `"the function to throw an error matching [32m\"apple\"[39m."`;
+exports[`.toThrowError() invalid arguments 1`] = `
+"Unexpected argument passed. Expected to get
+  [32m\"\\\"string\\\"\"[39m, [32m\"\\\"Error type\\\"\"[39m or [32m\"\\\"regexp\\\"\"[39m.
+Got: 
+  [31m\"number\"[39m: [31m111[39m."
+`;
 
-exports[`.toThrowError() strings threw, but message did not match 1`] = `"Received [31m\"Error: apple\"[39m but expected the function to throw an error matching [32m\"banana\"[39m."`;
+exports[`.toThrowError() regexp did not throw at all 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mregexp[39m[2m)[22m
 
-exports[`.toThrowError() strings threw, but should not have 1`] = `"Received [31m\"Error: apple\"[39m but expected the function not to throw an error matching [32m\"apple\"[39m."`;
+Expected the function to throw an error matching:
+  [32m\"/apple/\"[39m
+But it didn\'t throw anything."
+`;
+
+exports[`.toThrowError() regexp threw, but message did not match 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mregexp[39m[2m)[22m
+
+Expected the function to throw an error matching:
+  [32m\"/banana/\"[39m
+Instead, it threw:
+  [31m\"Error: apple\"[39m"
+`;
+
+exports[`.toThrowError() regexp threw, but should not have 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mregexp[39m[2m)[22m
+
+Expeced the function not to throw an error matching:
+  [32m\"/apple/\"[39m
+But it threw:
+  [31m\"Error: apple\"[39m"
+`;
+
+exports[`.toThrowError() strings did not throw at all 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mstring[39m[2m)[22m
+
+Expected the function to throw an error matching:
+  [32m\"apple\"[39m
+But it didn\'t throw anything."
+`;
+
+exports[`.toThrowError() strings threw, but message did not match 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mstring[39m[2m)[22m
+
+Expected the function to throw an error matching:
+  [32m\"banana\"[39m
+Instead, it threw:
+  [31m\"Error: apple\"[39m"
+`;
+
+exports[`.toThrowError() strings threw, but should not have 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mstring[39m[2m)[22m
+
+Expeced the function not to throw an error matching:
+  [32m\"apple\"[39m
+But it threw:
+  [31m\"Error: apple\"[39m"
+`;
