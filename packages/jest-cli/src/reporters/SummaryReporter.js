@@ -106,6 +106,7 @@ class SummareReporter extends BaseReporter {
         `${totalTests} total in ${pluralize('test suite', totalTestSuites)}, ` +
         (snapshots.total ? pluralize('snapshot', snapshots.total) + ', ' : '') +
         `run time ${runTime}s)`;
+      this.clearLine();
       this.log(results);
     }
   }
