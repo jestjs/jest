@@ -4,5 +4,5 @@ exports[`FakeTimers runAllTimers warns when trying to advance timers while real 
 Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 Stack Trace:
       Error
-      [2mat FakeTimers._checkFakeTimers ([22m[0m[34m../FakeTimers.js[39m[0m[2m:347:43)[22m"
+      [2mat FakeTimers._checkFakeTimers ([22m../FakeTimers.js[2m:347:43)[22m"
 `;

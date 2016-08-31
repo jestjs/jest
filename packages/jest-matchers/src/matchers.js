@@ -24,21 +24,11 @@ const {
   matcherHint,
   printReceived,
   printExpected,
+  printWithType,
 } = require('jest-matcher-utils');
 
 const IteratorSymbol = Symbol.iterator;
 const equals = global.jasmine.matchersUtil.equals;
-
-const printWithType = (name, received, print) => {
-  const type = getType(received);
-  return (
-    name + ':' +
-    (type !== 'null' && type !== 'undefined'
-      ? '\n  ' + type + ': '
-      : ' ') +
-    print(received)
-  );
-};
 
 const hasIterator = object => !!(object != null && object[IteratorSymbol]);
 const iterableEquality = (a, b) => {
