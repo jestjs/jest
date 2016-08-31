@@ -9,7 +9,7 @@ All files |      100 |      100 |      100 |      100 |                |
 `;
 
 exports[`test json reporter printing with --coverage 1`] = `
-"Coverage Summary (add \"text\" to the \"coverageReporter\" setting to receive a full report)
+"Coverage Summary (add \"text\" to the \"coverageReporters\" setting to receive a full report)
  › Statements: 100%
  › Branches: 100%
  › Lines: 100%
