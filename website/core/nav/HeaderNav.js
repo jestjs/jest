@@ -79,9 +79,9 @@ class HeaderNav extends React.Component {
 
 HeaderNav.defaultProps = {
   linksInternal: [
-    {section: 'docs', href: '/jest/docs/tutorial.html#content', text: 'Docs'},
-    {section: 'support', href: '/jest/support.html#content', text: 'Support'},
-    {section: 'blog', href: '/jest/blog/#content', text: 'Blog'},
+    {section: 'docs', href: '/jest/docs/getting-started.html', text: 'Docs'},
+    {section: 'support', href: '/jest/support.html', text: 'Support'},
+    {section: 'blog', href: '/jest/blog/', text: 'Blog'},
   ],
   linksExternal: [
     {section: 'github', href: 'https://github.com/facebook/jest', text: 'GitHub'},
