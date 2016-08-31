@@ -14,6 +14,16 @@ const jestExpect = require('../').expect;
 const matchErrorSnapshot = require('./_matchErrorSnapshot');
 
 describe('.toThrowError()', () => {
+  test('invalid arguments', () => {
+    expect(() => {
+      jestExpect(() => {}).not.toThrowError();
+    }).toThrow();
+
+    expect(() => {
+      jestExpect(() => {}).not.toThrowError([]);
+    }).toThrow();
+  });
+
   describe('strings', () => {
     it('passes', () => {
       jestExpect(() => { throw new Error('apple'); }).toThrowError('apple');

@@ -41,14 +41,12 @@ const matchers: MatchersObject = {
     } else if (expected instanceof RegExp) {
       return toThrowMatchingStringOrRegexp(error, expected, value);
     } else {
-      return {
-        pass: false,
-        message:
-          'Unexpected argument passed. Expected to get\n' +
-          `  ${printExpected('"string"')}, ${printExpected('"Error type"')} or ${printExpected('"regexp"')}.\n` +
-          `Got: \n` +
-          `  ${printReceived(getType(expected))}: ${printReceived(expected)}.`,
-      };
+      throw new Error(
+        'Unexpected argument passed. Expected to get\n' +
+        `  ${printExpected('"string"')}, ${printExpected('"Error type"')} or ${printExpected('"regexp"')}.\n` +
+        `Got: \n` +
+        `  ${printReceived(getType(expected))}: ${printReceived(expected)}.`,
+      );
     }
   },
 };
