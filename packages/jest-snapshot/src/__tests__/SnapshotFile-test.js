@@ -32,6 +32,8 @@ let SnapshotFile;
 
 describe('SnapshotFile', () => {
   beforeEach(() => {
+    jest.resetModules();
+
     SnapshotFile = require('../SnapshotFile');
   });
 

@@ -4,22 +4,20 @@ import * as TestUtils from 'react-addons-test-utils';
 
 const CheckboxWithLabel = require('../CheckboxWithLabel');
 
-describe('CheckboxWithLabel', () => {
-  it('changes the text after click', () => {
-    // Render a checkbox with label in the document
-    const checkbox = TestUtils.renderIntoDocument(
-      <CheckboxWithLabel labelOn="On" labelOff="Off" />
-    );
+it('CheckboxWithLabel changes the text after click', () => {
+  // Render a checkbox with label in the document
+  const checkbox = TestUtils.renderIntoDocument(
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />
+  );
 
-    const checkboxNode = ReactDOM.findDOMNode(checkbox);
+  const checkboxNode = ReactDOM.findDOMNode(checkbox);
 
-    // Verify that it's Off by default
-    expect(checkboxNode.textContent).toEqual('Off');
+  // Verify that it's Off by default
+  expect(checkboxNode.textContent).toEqual('Off');
 
-    // Simulate a click and verify that it is now On
-    TestUtils.Simulate.change(
-      TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
-    );
-    expect(checkboxNode.textContent).toEqual('On');
-  });
+  // Simulate a click and verify that it is now On
+  TestUtils.Simulate.change(
+    TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
+  );
+  expect(checkboxNode.textContent).toEqual('On');
 });

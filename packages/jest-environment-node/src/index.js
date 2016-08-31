@@ -37,7 +37,7 @@ class NodeEnvironment {
     global.JSON = JSON;
     global.Promise = Promise;
     installCommonGlobals(global, config.globals);
-    this.fakeTimers = new FakeTimers(global);
+    this.fakeTimers = new FakeTimers(global, config);
   }
 
   dispose() {

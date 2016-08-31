@@ -79,7 +79,7 @@ const formatExecError = (
 
   if (message.match(/^\s*$/) && stack.match(/^\s*$/)) {
     // this can happen if an empty object is thrown.
-    message = 'ERROR: No message was provided';
+    message = MESSAGE_INDENT + 'Error: No message was provided';
   }
   return TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
     message  + stack + '\n';
@@ -129,7 +129,7 @@ const formatPaths = (config, relativeTestPath, line) => {
     + filePath + STACK_TRACE_COLOR(matches[3]);
 };
 
-const formatStackTrace = (stack, config, testPath) => {
+const formatStackTrace = (stack, config: Config, testPath: ?Path) => {
   let lines = stack.split(/\n/);
   const relativeTestPath = testPath
     ? path.relative(config.rootDir, testPath)
@@ -183,4 +183,5 @@ const formatResultsErrors = (
 module.exports = {
   formatExecError,
   formatResultsErrors,
+  formatStackTrace,
 };

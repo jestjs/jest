@@ -122,8 +122,6 @@ describe('node crawler', () => {
       });
     });
 
-    jest.runAllTimers();
-
     return promise;
   });
 
@@ -139,7 +137,7 @@ describe('node crawler', () => {
     files['/fruits/strawberry.js'] = ['', 30, 1, []];
     files['/fruits/tomato.js'] = tomato;
 
-    const promise = nodeCrawl(['/fruits'], ['js'], pearMatcher, {files})
+    return nodeCrawl(['/fruits'], ['js'], pearMatcher, {files})
       .then(data => {
         expect(data.files).toEqual({
           '/fruits/strawberry.js': ['', 32, 0, []],
@@ -149,10 +147,6 @@ describe('node crawler', () => {
         // Make sure it is the *same* unchanged object.
         expect(data.files['/fruits/tomato.js']).toBe(tomato);
       });
-
-    jest.runAllTimers();
-
-    return promise;
   });
 
   it('uses node fs APIs on windows', () => {
@@ -161,17 +155,13 @@ describe('node crawler', () => {
     nodeCrawl = require('../node');
 
     const files = Object.create(null);
-    const promise = nodeCrawl(['/fruits'], ['js'], pearMatcher, {files})
+    return nodeCrawl(['/fruits'], ['js'], pearMatcher, {files})
       .then(data => {
         expect(data.files).toEqual({
           '/fruits/tomato.js': ['', 32, 0, []],
           '/fruits/directory/strawberry.js': ['', 33, 0, []],
         });
       });
-
-    jest.runAllTimers();
-
-    return promise;
   });
 
 });

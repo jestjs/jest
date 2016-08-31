@@ -1,0 +1,13 @@
+exports[`HasteMap tries to crawl using node as a fallback 1`] = `
+"jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
+  Usually this happens when watchman isn\'t running. Create an empty \`.watchmanconfig\` file in your project\'s root folder or initialize a git or hg repository in your project.
+  Error: watchman error"
+`;
+
+exports[`HasteMap warns on duplicate module ids 1`] = `
+"jest-haste-map: @providesModule naming collision:
+  Duplicate module name: Strawberry
+  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js
+
+This warning is caused by a @providesModule declaration with the same name across two different files."
+`;

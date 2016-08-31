@@ -43,7 +43,7 @@ type BaseConfig = {
   testURL: string,
   timers: 'real' | 'fake',
   useStderr: boolean,
-  verbose: boolean,
+  verbose: ?boolean,
   watch: boolean,
 };
 

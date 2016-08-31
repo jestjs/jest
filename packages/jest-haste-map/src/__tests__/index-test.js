@@ -311,14 +311,7 @@ describe('HasteMap', () => {
         expect(data.map.Strawberry[H.GENERIC_PLATFORM][0])
           .toEqual('/fruits/strawberry.js');
 
-        expect(console.warn).toBeCalledWith([
-          'jest-haste-map: @providesModule naming collision:',
-          '  Duplicate module name: Strawberry',
-          '  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js',
-          '',
-          'This warning is caused by a @providesModule declaration with the ' +
-          'same name across two different files.',
-        ].join('\n'));
+        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
       });
   });
 
@@ -531,10 +524,7 @@ describe('HasteMap', () => {
           '/fruits/banana.js': ['Banana', 32, 1, ['Strawberry']],
         });
 
-        expect(console.warn).toBeCalledWith(
-          'jest-haste-map: Watchman crawl failed. Retrying once with node ' +
-          'crawler.\n  Error: watchman error',
-        );
+        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
       });
   });
 

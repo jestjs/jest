@@ -86,14 +86,7 @@ exports[`.toBe() fails for: "abc" and "cde" 1`] = `
 Expected value to be (using ===):
   [32m\"cde\"[39m
 Received:
-  [31m\"abc\"[39m
-
-Difference:
-
-[32m- Expected[39m
-[31m+ Received[39m
-
-[32mab[39m[2mc[22m[31mde[39m"
+  [31m\"abc\"[39m"
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
@@ -1497,14 +1490,7 @@ exports[`.toEqual() expect("banana").toEqual("apple") 1`] = `
 Expected value to equal:
   [32m\"apple\"[39m
 Received:
-  [31m\"banana\"[39m
-
-Difference:
-
-[32m- Expected[39m
-[31m+ Received[39m
-
-[32mb[39m[2ma[22m[31mpple[39m[32mnana[39m"
+  [31m\"banana\"[39m"
 `;
 
 exports[`.toEqual() expect(1).not.toEqual(1) 1`] = `
@@ -1624,8 +1610,7 @@ exports[`.toMatch() throws if non String actual value passed: ["undefined", "foo
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [31mstring[39m value should be a string.
-Received:
-  undefined: [31m\"undefined\"[39m"
+Received: [31m\"undefined\"[39m"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [1, "foo"] 1`] = `
@@ -1664,7 +1649,7 @@ exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", "
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [32mexpected[39m value should be a string or a regular expression.
-Received:
+Expected:
   function: [32m\"() => {}\"[39m"
 `;
 
@@ -1672,15 +1657,14 @@ exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", "
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [32mexpected[39m value should be a string or a regular expression.
-Received:
-  undefined: [32m\"undefined\"[39m"
+Expected: [32m\"undefined\"[39m"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", 1] 1`] = `
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [32mexpected[39m value should be a string or a regular expression.
-Received:
+Expected:
   number: [32m1[39m"
 `;
 
@@ -1688,7 +1672,7 @@ exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", [
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [32mexpected[39m value should be a string or a regular expression.
-Received:
+Expected:
   array: [32m[][39m"
 `;
 
@@ -1696,7 +1680,7 @@ exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", t
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [32mexpected[39m value should be a string or a regular expression.
-Received:
+Expected:
   boolean: [32mtrue[39m"
 `;
 
@@ -1704,7 +1688,7 @@ exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", {
 "[2mexpect([22m[31mstring[39m[2m)[.not].toMatch([22m[32mexpected[39m[2m)[22m
 
 [32mexpected[39m value should be a string or a regular expression.
-Received:
+Expected:
   object: [32m{}[39m"
 `;
 

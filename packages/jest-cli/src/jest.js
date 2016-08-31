@@ -22,7 +22,7 @@ const Runtime = require('jest-runtime');
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
-const {clearLine} = require('jest-util');
+const {Console, clearLine} = require('jest-util');
 const {run} = require('./cli');
 const chalk = require('chalk');
 const formatTestResults = require('./lib/formatTestResults');
@@ -44,6 +44,7 @@ const KEYS = {
   ENTER: '0d',
   O: '6f',
   P: '70',
+  Q: '71',
   U: '75',
 };
 
@@ -94,9 +95,14 @@ const buildTestPathPatternInfo = argv => {
   };
 };
 
-const getWatcher = (config, packageRoot, callback) => {
+const getWatcher = (
+  config,
+  packageRoot,
+  callback,
+  options,
+) => {
   which(WATCHMAN_BIN, (err, resolvedPath) => {
-    const watchman = !err && resolvedPath;
+    const watchman = !err && options.useWatchman && resolvedPath;
     const glob = config.moduleFileExtensions.map(ext => '**/*' + ext);
     const watcher = sane(packageRoot, {glob, watchman});
     callback(watcher);
@@ -106,55 +112,47 @@ const getWatcher = (config, packageRoot, callback) => {
 const runJest = (config, argv, pipe, onComplete) => {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
-  return Runtime.createHasteContext(config, {maxWorkers})
-    .then(hasteMap => {
-      const source = new SearchSource(hasteMap, config);
-      return source.getTestPaths(patternInfo)
-        .then(data => {
-          if (!data.paths.length) {
-            clearLine(pipe);
-            pipe.write(
-              source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
-            );
-          }
-          if (data.paths.length === 1) {
-            config = Object.assign({}, config, {verbose: true});
-          }
-          return new TestRunner(
-            hasteMap,
-            config,
-            {
-              maxWorkers,
-              getTestSummary: () => SearchSource.getTestSummary(patternInfo),
-            },
-          ).runTests(data.paths);
-        })
-        .then(runResults => {
-          if (config.testResultsProcessor) {
-            /* $FlowFixMe */
-            const processor = require(config.testResultsProcessor);
-            processor(runResults);
-          }
-          if (argv.json) {
-            process.stdout.write(
-              JSON.stringify(formatTestResults(runResults, config)),
-            );
-          }
-          return onComplete && onComplete(runResults);
-        }).catch(error => {
-          if (error.type == 'DependencyGraphError') {
-            throw new Error([
-              '\nError: ' + error.message + '\n\n',
-              'This is most likely a setup ',
-              'or configuration issue. To resolve a module name collision, ',
-              'change or blacklist one of the offending modules. See ',
-              'http://facebook.github.io/jest/docs/api.html#modulepathignorepatterns-array-string',
-            ].join(''));
-          } else {
-            throw error;
-          }
-        });
-    });
+  const localConsole = new Console(pipe, pipe);
+  return Runtime.createHasteContext(config, {
+    console: localConsole,
+    maxWorkers,
+  }).then(hasteMap => {
+    const source = new SearchSource(hasteMap, config);
+    return source.getTestPaths(patternInfo)
+      .then(data => {
+        if (!data.paths.length) {
+          localConsole.log(
+            source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
+          );
+        }
+        if (data.paths.length === 1 && config.verbose !== false) {
+          config = Object.assign({}, config, {verbose: true});
+        }
+        return new TestRunner(
+          hasteMap,
+          config,
+          {
+            maxWorkers,
+            getTestSummary: () => SearchSource.getTestSummary(patternInfo),
+          },
+        ).runTests(data.paths);
+      })
+      .then(runResults => {
+        if (config.testResultsProcessor) {
+          /* $FlowFixMe */
+          const processor = require(config.testResultsProcessor);
+          processor(runResults);
+        }
+        if (argv.json) {
+          process.stdout.write(
+            JSON.stringify(formatTestResults(runResults, config)),
+          );
+        }
+        return onComplete && onComplete(runResults);
+      }).catch(error => {
+        throw error;
+      });
+  });
 };
 
 const runCLI = (
@@ -225,23 +223,24 @@ const runCLI = (
               const messages = [
                 '\n' + chalk.bold('Watch Usage'),
                 argv.watch
-                  ? chalk.dim(' \u203A Press `a` to run all tests.')
+                  ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
                   : null,
                 argv.watchAll
-                  ? chalk.dim(' \u203A Press `o` to only run tests related to changed files.')
+                  ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
                   : null,
                 results.snapshot.failure
-                  ? chalk.dim(' \u203A Press `u` to update failing snapshots.')
+                  ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
                   : null,
-                chalk.dim(' \u203A Press `p` to enter a new test pattern.'),
-                chalk.dim(' \u203A Press `enter` to trigger a test run.'),
+                chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to enter a new test pattern.'),
+                chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
+                chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
               ];
               /* eslint-enable max-len */
               console.log(messages.filter(message => !!message).join('\n'));
             },
           ).then(
             () => {},
-            error => console.error(chalk.red(error)),
+            error => console.error(chalk.red(error.stack)),
           );
         };
 
@@ -269,6 +268,9 @@ const runCLI = (
             return;
           }
           switch (key) {
+            case KEYS.Q:
+              process.exit(0);
+              return;
             case KEYS.ENTER:
               startRun();
               break;
@@ -317,7 +319,14 @@ const runCLI = (
           process.stdin.setEncoding('hex');
           process.stdin.on('data', onKeypress);
         }
-        getWatcher(config, root, watcher => watcher.on('all', onFileChange));
+        const callback = watcher => {
+          watcher.on('error', error => {
+            watcher.close();
+            getWatcher(config, root, callback, {useWatchman: false});
+          });
+          watcher.on('all', onFileChange);
+        };
+        getWatcher(config, root, callback, {useWatchman: true});
         startRun();
         return Promise.resolve();
       } else {
@@ -326,7 +335,9 @@ const runCLI = (
       }
     })
     .catch(error => {
-      console.error(error.stack);
+      clearLine(process.stderr);
+      clearLine(process.stdout);
+      console.error(chalk.red(error.stack));
       process.exit(1);
     });
 };

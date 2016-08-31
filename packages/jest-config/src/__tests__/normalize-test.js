@@ -612,7 +612,12 @@ describe('normalize', () => {
 
       throwAndMatchErrorSnapshot(() => normalize({
         rootDir: '/root',
-        setupEnvScriptFile: 'foo.js',
+        persistModuleRegistryBetweenSpecs: true,
+      }));
+
+      throwAndMatchErrorSnapshot(() => normalize({
+        rootDir: '/root',
+        setupEnvScriptFile: '<rootDir>/setup.js',
       }));
 
       throwAndMatchErrorSnapshot(() => normalize({
