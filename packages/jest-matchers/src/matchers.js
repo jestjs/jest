@@ -27,7 +27,7 @@ const {
 } = require('jest-matcher-utils');
 
 const equals = global.jasmine.matchersUtil.equals;
-const _Symbol = Symbol;
+const Symbol = global.Symbol;
 
 const printWithType = (name, received, print) => {
   const type = getType(received);
@@ -40,7 +40,7 @@ const printWithType = (name, received, print) => {
   );
 };
 
-const hasIterator = object => !!(object != null && object[_Symbol.iterator]);
+const hasIterator = object => !!(object != null && object[Symbol.iterator]);
 const iterableEquality = (a, b) => {
   if (
     typeof a !== 'object' ||
@@ -55,7 +55,7 @@ const iterableEquality = (a, b) => {
   if (a.constructor !== b.constructor) {
     return false;
   }
-  const bIterator = b[_Symbol.iterator]();
+  const bIterator = b[Symbol.iterator]();
 
   for (const aValue of a) {
     const nextB = bIterator.next();
