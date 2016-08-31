@@ -11,25 +11,32 @@
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {Config} from 'types/Config';
+import type {RunnerContext} from 'types/Reporters';
+
+const BaseReporter = require('./BaseReporter');
 
 const chalk = require('chalk');
 const getResultHeader = require('./getResultHeader');
-const BaseReporter = require('./BaseReporter');
 
-
+const ARROW = ' \u203A ';
 const FAIL_COLOR = chalk.bold.red;
 const PASS_COLOR = chalk.bold.green;
 const PENDING_COLOR = chalk.bold.yellow;
 const SNAPSHOT_ADDED = chalk.bold.green;
-const SNAPSHOT_UPDATED = chalk.bold.green;
+const SNAPSHOT_NOTE = chalk.dim;
 const SNAPSHOT_REMOVED = chalk.bold.red;
 const SNAPSHOT_SUMMARY = chalk.bold;
+const SNAPSHOT_UPDATED = chalk.bold.green;
 const TEST_SUMMARY_THRESHOLD = 20;
 
 const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
 class SummareReporter extends BaseReporter {
-  onRunComplete(config: Config, aggregatedResults: AggregatedResult) {
+  onRunComplete(
+    config: Config,
+    aggregatedResults: AggregatedResult,
+    runnerContext: RunnerContext,
+  ) {
     const totalTestSuites = aggregatedResults.numTotalTestSuites;
     const failedTests = aggregatedResults.numFailedTests;
     const passedTests = aggregatedResults.numPassedTests;
@@ -39,9 +46,12 @@ class SummareReporter extends BaseReporter {
     const runTime = (Date.now() - aggregatedResults.startTime) / 1000;
 
     const snapshots = aggregatedResults.snapshot;
+    const arrowColor = (snapshots.failure || failedTests || totalErrors)
+      ? FAIL_COLOR
+      : PASS_COLOR;
 
-    let results = '';
-
+    let results = chalk.bold('Test Summary') + '\n' +
+      ARROW + runnerContext.getTestSummary() + '\n' + arrowColor(ARROW);
     if (snapshots.failure) {
       results += FAIL_COLOR('snapshot failure') + ', ';
     }
@@ -84,7 +94,7 @@ class SummareReporter extends BaseReporter {
       let updateCommand;
       const event = process.env.npm_lifecycle_event;
       if (config.watch) {
-        updateCommand = 'press "u"';
+        updateCommand = 'press `u`';
       } else if (event) {
         updateCommand = `run with \`npm ${event} -- -u\``;
       } else {
@@ -94,33 +104,32 @@ class SummareReporter extends BaseReporter {
       this.log('\n' + SNAPSHOT_SUMMARY('Snapshot Summary'));
       if (snapshots.added) {
         this.log(
-          '\u203A ' +
-          SNAPSHOT_ADDED(pluralize('snapshot', snapshots.added)) +
+          SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
           ` written in ${pluralize('test file', snapshots.filesAdded)}.`,
         );
       }
 
       if (snapshots.unmatched) {
         this.log(
-          '\u203A ' +
-          FAIL_COLOR(pluralize('snapshot test', snapshots.unmatched)) +
+          FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
           ` failed in ${pluralize('test file', snapshots.filesUnmatched)}. ` +
-          'Inspect your code changes or ' + updateCommand + ' to update them.',
+          SNAPSHOT_NOTE(
+            'Inspect your code changes or ' +
+            updateCommand + ' to update them.',
+          ),
         );
       }
 
       if (snapshots.updated) {
         this.log(
-          '\u203A ' +
-          SNAPSHOT_UPDATED(pluralize('snapshot', snapshots.updated)) +
+          SNAPSHOT_UPDATED(ARROW + pluralize('snapshot', snapshots.updated)) +
           ` updated in ${pluralize('test file', snapshots.filesUpdated)}.`,
         );
       }
 
       if (snapshots.filesRemoved) {
         this.log(
-          '\u203A ' +
-          SNAPSHOT_REMOVED(pluralize(
+          SNAPSHOT_REMOVED(ARROW + pluralize(
             'snapshot file',
             snapshots.filesRemoved,
           )) +
@@ -133,8 +142,10 @@ class SummareReporter extends BaseReporter {
 
       if (snapshots.unchecked) {
         this.log(
-          '\u203A ' +
-          FAIL_COLOR(pluralize('obsolete snapshot', snapshots.unchecked)) +
+          FAIL_COLOR(ARROW + pluralize(
+            'obsolete snapshot',
+            snapshots.unchecked,
+          )) +
           (snapshots.didUpdate
             ? ' removed.'
             : ' found, ' + updateCommand + ' to remove ' +

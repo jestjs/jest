@@ -16,6 +16,7 @@ import type {
 } from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
 import type {HasteContext, HasteFS} from 'types/HasteMap';
+import type {RunnerContext} from 'types/Reporters';
 import type BaseReporter from './reporters/BaseReporter';
 
 const {formatExecError} = require('jest-util');
@@ -34,6 +35,7 @@ const SLOW_TEST_TIME = 3000;
 
 type Options = {
   maxWorkers: number,
+  getTestSummary: () => string,
 };
 
 type OnRunFailure = (
@@ -61,7 +63,10 @@ class TestRunner {
     options: Options,
   ) {
     this._config = config;
-    this._dispatcher = new ReporterDispatcher(hasteContext.hasteFS);
+    this._dispatcher = new ReporterDispatcher(
+      hasteContext.hasteFS,
+      options.getTestSummary,
+    );
     this._hasteContext = hasteContext;
     this._options = options;
     this._setupReporters();
@@ -402,12 +407,10 @@ const buildFailureTestResult = (
 class ReporterDispatcher {
   _disabled: boolean;
   _reporters: Array<BaseReporter>;
-  _runnerContext: {
-    hasteFS: HasteFS,
-  };
+  _runnerContext: RunnerContext;
 
-  constructor(hasteFS: HasteFS) {
-    this._runnerContext = {hasteFS};
+  constructor(hasteFS: HasteFS, getTestSummary: () => string) {
+    this._runnerContext = {hasteFS, getTestSummary};
     this._reporters = [];
   }
 

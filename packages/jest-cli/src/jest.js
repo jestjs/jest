@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {AggregatedResult} from 'types/TestResult';
 import type {Path} from 'types/Config';
 
 require('jest-haste-map').fastpath.replace();
@@ -21,12 +22,13 @@ const Runtime = require('jest-runtime');
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
+const {clearLine} = require('jest-util');
+const {run} = require('./cli');
 const chalk = require('chalk');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
 const readConfig = require('jest-config').readConfig;
-const {run} = require('./cli');
 const sane = require('sane');
 const which = require('which');
 
@@ -35,13 +37,23 @@ const VERSION = require('../package.json').version;
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
 const KEYS = {
+  A: '61',
+  BACKSPACE: '7f',
   CONTROL_C: '03',
   CONTROL_D: '04',
   ENTER: '0d',
+  O: '6f',
+  P: '70',
   U: '75',
 };
 
-function getMaxWorkers(argv) {
+const printHeader = pipe => {
+  if (process.stdout.isTTY) {
+    pipe.write(chalk.bold.dim('Determining test suites to run...'));
+  }
+};
+
+const getMaxWorkers = argv => {
   if (argv.runInBand) {
     return 1;
   } else if (argv.maxWorkers) {
@@ -50,9 +62,9 @@ function getMaxWorkers(argv) {
     const cpus = os.cpus().length;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
   }
-}
+};
 
-function buildTestPathPatternInfo(argv) {
+const buildTestPathPatternInfo = argv => {
   if (argv.onlyChanged) {
     return {
       input: '',
@@ -80,18 +92,18 @@ function buildTestPathPatternInfo(argv) {
     testPathPattern: '',
     shouldTreatInputAsPattern: false,
   };
-}
+};
 
-function getWatcher(config, packageRoot, callback) {
+const getWatcher = (config, packageRoot, callback) => {
   which(WATCHMAN_BIN, (err, resolvedPath) => {
     const watchman = !err && resolvedPath;
     const glob = config.moduleFileExtensions.map(ext => '**/*' + ext);
     const watcher = sane(packageRoot, {glob, watchman});
     callback(watcher);
   });
-}
+};
 
-function runJest(config, argv, pipe, onComplete) {
+const runJest = (config, argv, pipe, onComplete) => {
   const patternInfo = buildTestPathPatternInfo(argv);
   const maxWorkers = getMaxWorkers(argv);
   return Runtime.createHasteContext(config, {maxWorkers})
@@ -100,6 +112,7 @@ function runJest(config, argv, pipe, onComplete) {
       return source.getTestPaths(patternInfo)
         .then(data => {
           if (!data.paths.length) {
+            clearLine(pipe);
             pipe.write(
               source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
             );
@@ -107,9 +120,14 @@ function runJest(config, argv, pipe, onComplete) {
           if (data.paths.length === 1) {
             config = Object.assign({}, config, {verbose: true});
           }
-          return new TestRunner(hasteMap, config, {maxWorkers}).runTests(
-            data.paths,
-          );
+          return new TestRunner(
+            hasteMap,
+            config,
+            {
+              maxWorkers,
+              getTestSummary: () => SearchSource.getTestSummary(patternInfo),
+            },
+          ).runTests(data.paths);
         })
         .then(runResults => {
           if (config.testResultsProcessor) {
@@ -122,7 +140,7 @@ function runJest(config, argv, pipe, onComplete) {
               JSON.stringify(formatTestResults(runResults, config)),
             );
           }
-          return onComplete && onComplete(runResults.success);
+          return onComplete && onComplete(runResults);
         }).catch(error => {
           if (error.type == 'DependencyGraphError') {
             throw new Error([
@@ -137,15 +155,19 @@ function runJest(config, argv, pipe, onComplete) {
           }
         });
     });
-}
+};
 
-function runCLI(argv: Object, root: Path, onComplete: () => void) {
+const runCLI = (
+  argv: Object,
+  root: Path,
+  onComplete: (results: ?AggregatedResult) => void,
+) => {
   const pipe = argv.json ? process.stderr : process.stdout;
 
   argv = argv || {};
   if (argv.version) {
     pipe.write(`v${VERSION}\n`);
-    onComplete && onComplete(true);
+    onComplete && onComplete();
     return;
   }
 
@@ -159,12 +181,31 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
       }
       if (argv.watch || argv.watchAll) {
-        if (buildTestPathPatternInfo(argv).input === '') {
-          argv.onlyChanged = !argv.watchAll;
-        }
+        const setMode = (mode: 'watch' | 'watchAll') => {
+          if (mode === 'watch') {
+            argv.watch = true;
+            argv.watchAll = false;
+          } else if (mode === 'watchAll') {
+            argv.watch = false;
+            argv.watchAll = true;
+          }
+          // Reset before setting it to the new value
+          argv.onlyChanged = false;
+          argv.onlyChanged =
+            buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
+        };
 
-        let isRunning: ?boolean;
+        setMode(argv.watch ? 'watch' : 'watchAll');
+
+        let isRunning = false;
+        let isEnteringPattern = false;
+        let currentPattern = '';
         let timer: ?number;
+
+        const writeCurrentPattern = () => {
+          clearLine(pipe);
+          pipe.write(chalk.dim(' pattern \u203A ' + currentPattern));
+        };
 
         const startRun = (overrideConfig: Object = {}) => {
           if (isRunning) {
@@ -172,13 +213,31 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
           }
 
           pipe.write(CLEAR);
+          printHeader(pipe);
           isRunning = true;
           return runJest(
             Object.freeze(Object.assign({}, config, overrideConfig)),
             argv,
             pipe,
-            () => {
+            results => {
               isRunning = false;
+              /* eslint-disable max-len */
+              const messages = [
+                '\n' + chalk.bold('Watch Usage'),
+                argv.watch
+                  ? chalk.dim(' \u203A Press `a` to run all tests.')
+                  : null,
+                argv.watchAll
+                  ? chalk.dim(' \u203A Press `o` to only run tests related to changed files.')
+                  : null,
+                results.snapshot.failure
+                  ? chalk.dim(' \u203A Press `u` to update failing snapshots.')
+                  : null,
+                chalk.dim(' \u203A Press `p` to enter a new test pattern.'),
+                chalk.dim(' \u203A Press `enter` to trigger a test run.'),
+              ];
+              /* eslint-enable max-len */
+              console.log(messages.filter(message => !!message).join('\n'));
             },
           ).then(
             () => {},
@@ -187,18 +246,48 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         };
 
         const onKeypress = (key: string) => {
+          if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
+            process.exit(0);
+            return;
+          }
+          if (isEnteringPattern) {
+            switch (key) {
+              case KEYS.ENTER:
+                isEnteringPattern = false;
+                argv._ = [currentPattern];
+                setMode('watch');
+                startRun();
+                break;
+              default:
+                const char = new Buffer(key, 'hex').toString();
+                currentPattern = key === KEYS.BACKSPACE
+                  ? currentPattern.slice(0, -1)
+                  : currentPattern + char;
+                writeCurrentPattern();
+                break;
+            }
+            return;
+          }
           switch (key) {
-            case KEYS.CONTROL_C:
-              process.exit(0);
-              break;
-            case KEYS.CONTROL_D:
-              process.exit(0);
-              break;
             case KEYS.ENTER:
               startRun();
               break;
             case KEYS.U:
               startRun({updateSnapshot: true});
+              break;
+            case KEYS.A:
+              setMode('watchAll');
+              startRun();
+              break;
+            case KEYS.O:
+              setMode('watch');
+              startRun();
+              break;
+            case KEYS.P:
+              isEnteringPattern = true;
+              currentPattern = '';
+              pipe.write('\n');
+              writeCurrentPattern();
               break;
           }
         };
@@ -232,6 +321,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
         startRun();
         return Promise.resolve();
       } else {
+        printHeader(pipe);
         return runJest(config, argv, pipe, onComplete);
       }
     })
@@ -239,7 +329,7 @@ function runCLI(argv: Object, root: Path, onComplete: () => void) {
       console.error(error.stack);
       process.exit(1);
     });
-}
+};
 
 module.exports = {
   getVersion: () => VERSION,

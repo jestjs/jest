@@ -14,7 +14,7 @@ const TestRunner = require('../TestRunner');
 const SummaryReporter = require('../reporters/SummaryReporter');
 
 test('.addReporter() .removeReporter()', () => {
-  const runner = new TestRunner({}, {});
+  const runner = new TestRunner({}, {}, {});
   const reporter = new SummaryReporter();
   runner.addReporter(reporter);
   expect(runner._dispatcher._reporters).toContain(reporter);

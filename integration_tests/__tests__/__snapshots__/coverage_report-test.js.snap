@@ -14,7 +14,9 @@ exports[`test json reporter printing with --coverage 1`] = `
  › Branches: 100%
  › Lines: 100%
  › Functions: 100%
-"
+
+Test Summary
+ › Ran all tests."
 `;
 
 exports[`test outputs coverage report 1`] = `
