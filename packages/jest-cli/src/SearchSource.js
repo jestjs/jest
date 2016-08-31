@@ -218,16 +218,14 @@ class SearchSource {
     data: SearchResult,
   ): string {
     if (patternInfo.onlyChanged) {
-      const guide = patternInfo.watch
-        ? 'with `jest --watchAll` or press `a` to switch to `--watchAll`'
-        : 'without `-o`';
       return (
         chalk.bold(
           'No tests found related to changed and uncommitted files.\n',
         ) +
         chalk.dim(
-          ' When dynamically calling `require` or no tests ' +
-          'related to changed files can be found, run Jest ' + guide + '.',
+          patternInfo.watch ?
+            'Press `a` to run all tests, or run Jest with `--watchAll`.' :
+            'Run Jest without `-o` to run all tests.'
         )
       );
     }
