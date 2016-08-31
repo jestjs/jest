@@ -33,16 +33,8 @@ const NOT_EXPECTED_VALUES_MORE_THAN_FOUR =
   `\n${formatter.prettyPrint([6])}` +
   `\nand 4 other calls.`;
 
-const NOT_EXPECTED_VALUES_LAST_TIME =
-  `Wasn't last called with the expected values.\n` +
-  `Expected call:\n${formatter.prettyPrint([1, {}, 'Error'])}\n` +
-  `Actual call:\n${formatter.prettyPrint([1, {}, ''])}`;
-
 const SHOULD_NOT_HAVE_CALLED_WITH =
   `Shouldn't have been called with\n${formatter.prettyPrint([1, {}, ''])}`;
-
-const SHOULD_NOT_HAVE_LAST_CALLED_WITH =
-  `Shouldn't have been last called with\n${formatter.prettyPrint([1, {}, ''])}`;
 
 const getMockedFunctionWithExpectationResult = expectationResult => {
   const mockedFunction = jest.fn();
@@ -115,44 +107,6 @@ describe('jasmine', () => {
 });
 
 describe('Jest custom matchers in Jasmine 2', () => {
-
-  describe('lastCalledWith', () => {
-
-    it(`doesn't show any message when succeding`, () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(true);
-          expect(result.message).toBe('');
-        },
-      );
-      expectation.function(1, {}, '');
-      expectation.lastCalledWith(1, {}, '');
-    });
-
-    it('shows another message for failing a "not" expression', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(SHOULD_NOT_HAVE_LAST_CALLED_WITH);
-        },
-      );
-      expectation.function(1, {}, '');
-      expectation.not.lastCalledWith(1, {}, '');
-    });
-
-    it('shows a custom message when the test fails', () => {
-      const expectation = getMockedFunctionWithExpectationResult(
-        (passed, result) => {
-          expect(passed).toBe(false);
-          expect(result.message).toBe(NOT_EXPECTED_VALUES_LAST_TIME);
-        },
-      );
-
-      expectation.function(1, {}, '');
-      expectation.lastCalledWith(1, {}, 'Error');
-    });
-
-  });
 
   describe('toBeCalledWith', () => {
 

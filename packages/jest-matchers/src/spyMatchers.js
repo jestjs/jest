@@ -12,11 +12,15 @@
 
 import type {MatchersObject} from './types';
 
+const LAST_CALL_PRINT_LIMIT = 1;
 const {
+  stringify,
   ensureNoExpected,
   ensureExpectedIsNumber,
   pluralize,
 } = require('jest-matcher-utils');
+
+const equals = global.jasmine.matchersUtil.equals;
 
 const spyMatchers: MatchersObject = {
   toHaveBeenCalled(actual: any, expected: void) {
@@ -24,7 +28,7 @@ const spyMatchers: MatchersObject = {
     ensureMockOrSpy(actual, 'toHaveBeenCalled');
 
     return isSpy(actual)
-    ? jasmineToHaveBeenCalled(actual)
+      ? jasmineToHaveBeenCalled(actual)
       : jestToHaveBeenCalled(actual);
   },
 
@@ -54,6 +58,28 @@ const spyMatchers: MatchersObject = {
 
     return {message, pass};
   },
+
+  toHaveBeenLastCalledWith(
+    actual: any,
+    _: any,
+    options: Object,
+    {args}: any,
+  ) {
+    ensureMockOrSpy(actual, 'toHaveBeenLastCalledWith');
+
+    return toHaveBeenLastCalledWith(actual, Array.from(args));
+  },
+
+  lastCalledWith(
+    actual: any,
+    _: any,
+    options: Object,
+    {args}: any,
+  ) {
+    ensureMockOrSpy(actual, 'lastCalledWith');
+
+    return toHaveBeenLastCalledWith(actual, Array.from(args));
+  },
 };
 
 const jestToHaveBeenCalled = actual => {
@@ -76,6 +102,24 @@ const jasmineToHaveBeenCalled = actual => {
   return {message, pass};
 };
 
+const toHaveBeenLastCalledWith = (actual, expected) => {
+  const actualIsSpy = isSpy(actual);
+  const type = actualIsSpy ? 'spy' : 'mock function';
+  const calls = actualIsSpy
+    ? actual.calls.all().map(x => x.args)
+    : actual.mock.calls;
+  const pass = equals(calls[calls.length - 1], expected);
+
+  const message = pass
+    ? `Expected ${type} not to be last called` +
+      ` with '${stringify(expected)}' but it was`
+    : `Expected ${type} to be last called with:\n` +
+       stringify(expected) +
+       getActualCalls(calls, LAST_CALL_PRINT_LIMIT);
+
+  return {message, pass};
+};
+
 const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';
 
 const ensureMockOrSpy = (mockOrSpy, matcherName) => {
@@ -86,6 +130,24 @@ const ensureMockOrSpy = (mockOrSpy, matcherName) => {
     throw new Error(
       `${matcherName} matcher can only be used on a spy or mock function.`,
     );
+  }
+};
+
+const getActualCalls = (calls, limit) => {
+  if (calls.length) {
+    const count = calls.length - limit;
+    return (
+      `\nBut was called with:\n` +
+      calls
+        .slice(-limit)
+        .map(call => stringify(call))
+        .reverse()
+        .join(',\n') +
+      (count > 0
+        ? `\nand ${pluralize('other call', count)}.` : '.')
+    );
+  } else {
+    return `\nBut was not called.`;
   }
 };
 
