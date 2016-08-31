@@ -29,7 +29,7 @@ exports[`normalize Upgrade help logs a warning when automocking is explicitly di
 `;
 
 exports[`normalize Upgrade help throws when using old configuration options 1`] = `
-"[31mThe setting \`persistModuleRegistryBetweenSpecs\` was removed from Jest. Instead use the \`resetModules\` configuration option. When \`resetModules\` is true, it behaves like Jest did prior to version 15 and resets all modules between each test. This behavior is now disabled by default.
+"[31mThe setting \`persistModuleRegistryBetweenSpecs\` was removed from Jest. Set \`\"resetModules\": true\` in your configuration to retain the previous behavior
 
   Jest 15 changed the default configuration for tests and makes Jest easier to
   use and less confusing for beginners. All previous defaults can be restored
@@ -44,7 +44,7 @@ exports[`normalize Upgrade help throws when using old configuration options 1`] 
 `;
 
 exports[`normalize Upgrade help throws when using old configuration options 2`] = `
-"[31mThe setting \`setupEnvScriptFile\` was removed from Jest. Instead, use the \`setupFiles\` setting.
+"[31mThe setting \`persistModuleRegistryBetweenSpecs\` was removed from Jest. This configuration option can safely be removed.
 
   Jest 15 changed the default configuration for tests and makes Jest easier to
   use and less confusing for beginners. All previous defaults can be restored
@@ -59,6 +59,23 @@ exports[`normalize Upgrade help throws when using old configuration options 2`] 
 `;
 
 exports[`normalize Upgrade help throws when using old configuration options 3`] = `
+"[31mThe setting \`setupEnvScriptFile\` was removed from Jest. Instead, use the \`setupFiles\` setting:
+
+    \"setupFiles\": [\"<rootDir>/setup.js\"]
+
+  Jest 15 changed the default configuration for tests and makes Jest easier to
+  use and less confusing for beginners. All previous defaults can be restored
+  if your project depends on it. A comprehensive explanation of the breaking
+  changes and an upgrade guide can be found in the release blog post linked
+  below.
+
+  [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+[39m"
+`;
+
+exports[`normalize Upgrade help throws when using old configuration options 4`] = `
 "[31mThe settings \`testDirectoryName\` and \`testFileExtensions\` were removed from Jest. Instead, use \`testRegex\` like this:
     \"testRegex\": \"(/test/.*|\\\\.(test|spec))\\\\.(js|json|node)$\"
 
@@ -74,7 +91,7 @@ exports[`normalize Upgrade help throws when using old configuration options 3`] 
 [39m"
 `;
 
-exports[`normalize Upgrade help throws when using old configuration options 4`] = `
+exports[`normalize Upgrade help throws when using old configuration options 5`] = `
 "[31mThe settings \`testDirectoryName\` and \`testFileExtensions\` were removed from Jest. Instead, use \`testRegex\` like this:
     \"testRegex\": \"(/__tests__/.*|\\\\.(test|spec))\\\\.(js|ts|json|node)$\"
 

@@ -14,3 +14,9 @@ test('works just fine', () => {
 test('does not work', () => {
   expect(1).toBe(2);
 });
+
+describe('Verbose', () => {
+  it('works', () => {
+    expect('apple').toBe('apple');
+  });
+});

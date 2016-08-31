@@ -25,11 +25,9 @@ module.exports = sum;
 Create a directory `__tests__/` with a file `sum-test.js`:
 
 ```javascript
-describe('sum', () => {
-  it('adds 1 + 2 to equal 3', () => {
-    const sum = require('../sum');
-    expect(sum(1, 2)).toBe(3);
-  });
+it('adds 1 + 2 to equal 3', () => {
+  const sum = require('../sum');
+  expect(sum(1, 2)).toBe(3);
 });
 ```
 
@@ -83,20 +81,18 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-describe('CheckboxWithLabel', () => {
-  it('changes the text after click', () => {
-    // Render a checkbox with label in the document
-    const checkbox = TestUtils.renderIntoDocument(
-      <CheckboxWithLabel labelOn="On" labelOff="Off" />
-    );
+it('CheckboxWithLabel changes the text after click', () => {
+  // Render a checkbox with label in the document
+  const checkbox = TestUtils.renderIntoDocument(
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />
+  );
 
-    const checkboxNode = ReactDOM.findDOMNode(checkbox);
+  const checkboxNode = ReactDOM.findDOMNode(checkbox);
 
-    // Verify that it's Off by default
-    expect(checkboxNode.textContent).toEqual('Off');
+  // Verify that it's Off by default
+  expect(checkboxNode.textContent).toEqual('Off');
 
-    // ...
-  });
+  // ...
 });
 ```
 
@@ -173,17 +169,15 @@ async test with Babel and
 ```js
 import * as user from '../user';
 
-describe('async tests', () => {
-  // The promise that is being tested should be returned.
-  it('works with promises', () => {
-    return user.getUserName(5)
-      .then(name => expect(name).toEqual('Paul'));
-  });
+// The promise that is being tested should be returned.
+it('works with promises', () => {
+  return user.getUserName(5)
+    .then(name => expect(name).toEqual('Paul'));
+});
 
-  it('works with async/await', async () => {
-    const userName = await user.getUserName(4);
-    expect(userName).toEqual('Mark');
-  });
+it('works with async/await', async () => {
+  const userName = await user.getUserName(4);
+  expect(userName).toEqual('Mark');
 });
 ```
 

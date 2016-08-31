@@ -235,18 +235,18 @@ function jasmine2(
   return reporter.getResults().then(results => {
     const currentSnapshot = snapshotState.snapshot;
     const updateSnapshot = config.updateSnapshot;
-    const hasUncheckedKeys = currentSnapshot.hasUncheckedKeys();
+    const uncheckedCount = currentSnapshot.getUncheckedCount();
     if (updateSnapshot) {
       currentSnapshot.removeUncheckedKeys();
     }
     const status = currentSnapshot.save(updateSnapshot);
 
-    results.hasUncheckedKeys = !status.deleted && hasUncheckedKeys;
     results.snapshot.fileDeleted = status.deleted;
     results.snapshot.added = snapshotState.added;
     results.snapshot.matched = snapshotState.matched;
     results.snapshot.unmatched = snapshotState.unmatched;
     results.snapshot.updated = snapshotState.updated;
+    results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
     return results;
   });
 }

@@ -72,8 +72,8 @@ class SnapshotFile {
     this._uncheckedKeys = new Set(Object.keys(this._content));
   }
 
-  hasUncheckedKeys(): boolean {
-    return this._uncheckedKeys.size > 0;
+  getUncheckedCount(): number {
+    return this._uncheckedKeys.size || 0;
   }
 
   fileExists(): boolean {

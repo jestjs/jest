@@ -67,7 +67,6 @@ export type Suite = {
 export type TestResult = {
   console?: ConsoleBuffer,
   coverage?: Coverage,
-  hasUncheckedKeys: boolean,
   memoryUsage?: Bytes,
   failureMessage: ?string,
   numFailingTests: number,
@@ -78,9 +77,10 @@ export type TestResult = {
     start: Milliseconds,
   },
   snapshot: {
-    fileDeleted: boolean,
     added: number,
+    fileDeleted: boolean,
     matched: number,
+    unchecked: number,
     unmatched: number,
     updated: number,
   },

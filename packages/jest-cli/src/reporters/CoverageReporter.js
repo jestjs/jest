@@ -67,7 +67,7 @@ class CoverageReporter extends BaseReporter {
       if (
         config.coverageReporters &&
         config.coverageReporters.length &&
-        !config.coverageReporters.includes('text')
+        config.coverageReporters.indexOf('text') === -1
       ) {
         const results = this._coverageMap.getCoverageSummary().toJSON();
         const format = percent => percent + (percent === 'Unknown' ? '' : '%');

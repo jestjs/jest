@@ -31,7 +31,7 @@ class JSDOMEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(this.global, config.globals);
-    this.fakeTimers = new FakeTimers(this.global);
+    this.fakeTimers = new FakeTimers(this.global, config);
   }
 
   dispose(): void {

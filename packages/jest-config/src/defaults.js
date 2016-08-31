@@ -49,6 +49,6 @@ module.exports = ({
   testURL: 'about:blank',
   timers: 'real',
   useStderr: false,
-  verbose: false,
+  verbose: null,
   watch: false,
 }: DefaultConfig);

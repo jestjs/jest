@@ -26,46 +26,31 @@ const getAnnotation = options =>
 
 // diff characters if oneliner and diff lines if multiline
 function diffStrings(a: string, b: string, options: ?DiffOptions): ?string {
-  const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
   let isDifferent = false;
-  let result;
 
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
-  if (multiline) {
-    result = jsDiff.diffLines(a, b).map(part => {
-      if (part.added || part.removed) {
-        isDifferent = true;
-      }
+  const result = jsDiff.diffLines(a, b).map(part => {
+    if (part.added || part.removed) {
+      isDifferent = true;
+    }
 
-      const lines = part.value.split('\n');
-      const color = part.added
-        ? chalk.red
-        : (part.removed ? chalk.green : chalk.white);
+    const lines = part.value.split('\n');
+    const color = part.added
+      ? chalk.red
+      : (part.removed ? chalk.green : chalk.white);
 
-      if (lines[lines.length - 1] === '') {
-        lines.pop();
-      }
+    if (lines[lines.length - 1] === '') {
+      lines.pop();
+    }
 
-      return lines.map(line => {
-        const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
-        return mark + ' ' +  color(line) + '\n';
-      }).join('');
-    }).join('').trim();
-  } else {
-    result = jsDiff.diffChars(a, b).map(part => {
-      if (part.added || part.removed) {
-        isDifferent = true;
-      }
-
-      const color = part.added
-        ? chalk.green
-        : (part.removed ? chalk.red : chalk.dim);
-      return color(part.value);
+    return lines.map(line => {
+      const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
+      return mark + ' ' +  color(line) + '\n';
     }).join('');
-  }
+  }).join('').trim();
 
   if (isDifferent) {
     return getAnnotation(options) + result;

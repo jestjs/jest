@@ -9,8 +9,10 @@
  */
 'use strict';
 
+import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
 
+const {formatStackTrace} = require('./messages');
 const mocks = require('jest-mock');
 
 const fn = impl => mocks.getMockFn().mockImpl(impl);
@@ -47,6 +49,7 @@ class FakeTimers {
 
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
+  _config: Config;
   _disposed: boolean;
   _fakeTimerAPIs: TimerAPI;
   _global: Global;
@@ -58,10 +61,11 @@ class FakeTimers {
   _timers: {[key: TimerID]: Timer};
   _uuidCounter: number;
 
-  constructor(global: Global, maxLoops: number) {
+  constructor(global: Global, config: Config, maxLoops: number) {
     this._global = global;
-    this._uuidCounter = 1;
+    this._config = config;
     this._maxLoops = maxLoops || 100000;
+    this._uuidCounter = 1;
 
     this.reset();
 
@@ -126,8 +130,8 @@ class FakeTimers {
     this._timers = {};
   }
 
-  // Used to be called runTicksRepeatedly
   runAllTicks() {
+    this._checkFakeTimers();
     // Only run a generous number of ticks and then bail.
     // This is just to help avoid recursive loops
     let i;
@@ -154,6 +158,7 @@ class FakeTimers {
   }
 
   runAllImmediates() {
+    this._checkFakeTimers();
     // Only run a generous number of immediates and then bail.
     let i;
     for (i = 0; i < this._maxLoops; i++) {
@@ -181,8 +186,8 @@ class FakeTimers {
     }
   }
 
-  // Used to be called runTimersRepeatedly
   runAllTimers() {
+    this._checkFakeTimers();
     this.runAllTicks();
     this.runAllImmediates();
 
@@ -215,8 +220,8 @@ class FakeTimers {
     }
   }
 
-  // Used to be called runTimersOnce
   runOnlyPendingTimers() {
+    this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
     const timers = this._timers;
     Object.keys(timers)
@@ -224,8 +229,8 @@ class FakeTimers {
       .forEach(this._runTimerHandle, this);
   }
 
-  // Use to be runTimersToTime
   runTimersToTime(msToRun: number) {
+    this._checkFakeTimers();
     // Only run a generous number of timers and then bail.
     // This is jsut to help avoid recursive loops
     let i;
@@ -327,6 +332,20 @@ class FakeTimers {
     this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
     if (hasNextTick) {
       this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
+    }
+  }
+
+  _checkFakeTimers() {
+    if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
+      this._global.console.warn(
+        `A function to advance timers was called but the timers API is not ` +
+        `mocked with fake timers. Call \`jest.useFakeTimers()\` in this test ` +
+        `or enable fake timers globally by setting \`"timers": "fake"\` in ` +
+        `the configuration file. This warning is likely a result of a ` +
+        `default configuration change in Jest 15.\n\n` +
+        `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
+        `Stack Trace:\n` + formatStackTrace(new Error().stack, this._config),
+      );
     }
   }
 

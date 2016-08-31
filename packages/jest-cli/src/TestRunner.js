@@ -347,8 +347,6 @@ const addResult = (
   }
 
   // Snapshot data
-
-
   if (testResult.snapshot.added) {
     aggregatedResults.snapshot.filesAdded++;
   }
@@ -361,12 +359,10 @@ const addResult = (
   if (testResult.snapshot.updated) {
     aggregatedResults.snapshot.filesUpdated++;
   }
-  if (testResult.hasUncheckedKeys) {
-    aggregatedResults.snapshot.unchecked++;
-  }
 
   aggregatedResults.snapshot.added += testResult.snapshot.added;
   aggregatedResults.snapshot.matched += testResult.snapshot.matched;
+  aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
   aggregatedResults.snapshot.total +=
@@ -381,7 +377,6 @@ const buildFailureTestResult = (
 ): TestResult => {
   return {
     failureMessage: null,
-    hasUncheckedKeys: false,
     numFailingTests: 1,
     numPassingTests: 0,
     numPendingTests: 0,
@@ -390,9 +385,10 @@ const buildFailureTestResult = (
       start: 0,
     },
     snapshot: {
-      fileDeleted: false,
       added: 0,
+      fileDeleted: false,
       matched: 0,
+      unchecked: 0,
       unmatched: 0,
       updated: 0,
     },

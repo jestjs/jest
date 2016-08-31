@@ -29,6 +29,33 @@ const SNAPSHOT_SUMMARY = chalk.bold;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 const TEST_SUMMARY_THRESHOLD = 20;
 
+const NPM_EVENTS = new Set([
+  'prepublish',
+  'publish',
+  'postpublish',
+  'preinstall',
+  'install',
+  'postinstall',
+  'preuninstall',
+  'uninstall',
+  'postuninstall',
+  'preversion',
+  'version',
+  'postversion',
+  'pretest',
+  'test',
+  'posttest',
+  'prestop',
+  'stop',
+  'poststop',
+  'prestart',
+  'start',
+  'poststart',
+  'prerestart',
+  'restart',
+  'postrestart',
+]);
+
 const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
 class SummareReporter extends BaseReporter {
@@ -93,10 +120,11 @@ class SummareReporter extends BaseReporter {
     ) {
       let updateCommand;
       const event = process.env.npm_lifecycle_event;
+      const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
       if (config.watch) {
         updateCommand = 'press `u`';
       } else if (event) {
-        updateCommand = `run with \`npm ${event} -- -u\``;
+        updateCommand = `run with \`npm ${prefix + event} -- -u\``;
       } else {
         updateCommand = 're-run with `-u`';
       }

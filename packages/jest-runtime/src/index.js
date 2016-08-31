@@ -11,6 +11,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
+import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
@@ -37,6 +38,7 @@ type Module = {
 };
 
 type HasteMapOptions = {
+  console?: Console,
   maxWorkers: number,
   resetCache: boolean,
 };
@@ -145,10 +147,14 @@ class Runtime {
 
   static createHasteContext(
     config: Config,
-    options: {maxWorkers: number},
+    options: {
+      console?: Console,
+      maxWorkers: number,
+    },
   ): Promise<HasteContext> {
     utils.createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
+      console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
     });
@@ -173,6 +179,7 @@ class Runtime {
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
+      console: options && options.console,
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -639,8 +646,11 @@ class Runtime {
       ) {
         this._environment.global.console.warn(
           `jest.unmock('${moduleName}') was called but automocking is ` +
-          `disabled. Remove the unnecessary call to "jest.unmock" or enable ` +
-          `automocking for this test via "jest.enableAutomock();".`,
+          `disabled. Remove the unnecessary call to \`jest.unmock\` or ` +
+          `enable automocking for this test via \`jest.enableAutomock();\`. ` +
+          `This warning is likely a result of a default configuration change ` +
+          `in Jest 15.\n\n` +
+          `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html`,
         );
       }
       this._explicitShouldMock[moduleID] = false;

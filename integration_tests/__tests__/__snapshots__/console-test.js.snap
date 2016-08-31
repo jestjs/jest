@@ -1,11 +1,5 @@
 exports[`test console printing 1`] = `
-" PASS  __tests__/console2-test.js
-  ● Console
-
-    console.error __tests__/console2-test.js:18
-      This is an error from another test file.
-
- PASS  __tests__/console-test.js
+" PASS  __tests__/console-test.js
   ● Console
 
     console.log __tests__/console-test.js:11
@@ -22,10 +16,7 @@ Test Summary
 `;
 
 exports[`test console printing with --verbose 1`] = `
-"  console.error __tests__/console2-test.js:18
-    This is an error from another test file.
-
-  console.log __tests__/console-test.js:11
+"  console.log __tests__/console-test.js:11
     This is a log message.
 
   console.info __tests__/console-test.js:13

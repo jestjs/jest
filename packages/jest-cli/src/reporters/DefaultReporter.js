@@ -49,7 +49,11 @@ class DefaultReporter extends BaseReporter {
     if (consoleBuffer && consoleBuffer.length) {
       this._write(
         '  ' + TITLE_BULLET + 'Console\n\n' +
-        getConsoleOutput(config.rootDir, config.verbose, consoleBuffer) + '\n',
+        getConsoleOutput(
+          config.rootDir,
+          !!config.verbose,
+          consoleBuffer,
+        ) + '\n',
       );
     }
 

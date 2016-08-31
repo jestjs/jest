@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const {formatResultsErrors} = require('../formatFailureMessage');
+const {formatResultsErrors} = require('../messages');
 
 const windowsStackTrace =
 `  at stack (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1580:17)
@@ -19,26 +19,24 @@ const windowsStackTrace =
   at Spec.addResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:333:34)
   at Expectation.addResult (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:591:21)
   at Expectation.toBe (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1504:12)
-  at Object.it (build\\__tests__\\formatFailureMessage-test.js:45:41)
+  at Object.it (build\\__tests__\\messages-test.js:45:41)
   at Object.<anonymous> (..\\jest-jasmine2\\build\\jasmine-pit.js:35:32)
   at attemptAsync (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1919:24)`;
 
-describe('formatFailureMessage', () => {
-  it('should exclude jasmine from stack trace for windows paths', () => {
-    const messages = formatResultsErrors({
-      testResults: [
-        {
-          ancestorTitles: [],
-          failureMessages: [
-            windowsStackTrace,
-          ],
-          title: 'windows test',
-        },
-      ],
-    }, {
-      rootDir: '',
-    });
-
-    expect(messages).toMatchSnapshot();
+it('should exclude jasmine from stack trace for windows paths', () => {
+  const messages = formatResultsErrors({
+    testResults: [
+      {
+        ancestorTitles: [],
+        failureMessages: [
+          windowsStackTrace,
+        ],
+        title: 'windows test',
+      },
+    ],
+  }, {
+    rootDir: '',
   });
+
+  expect(messages).toMatchSnapshot();
 });

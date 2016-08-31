@@ -28,6 +28,17 @@ const {
 
 const equals = global.jasmine.matchersUtil.equals;
 
+const printWithType = (name, received, print) => {
+  const type = getType(received);
+  return (
+    name + ':' +
+    (type !== 'null' && type !== 'undefined'
+      ? '\n  ' + type + ': '
+      : ' ') +
+    print(received)
+  );
+};
+
 const hasIterator = object => !!(object != null && object[Symbol.iterator]);
 const iterableEquality = (a, b) => {
   if (
@@ -260,7 +271,8 @@ const matchers: MatchersObject = {
     const collectionType = getType(collection);
     if (!Array.isArray(collection) && typeof collection !== 'string') {
       throw new Error(
-        `.toContain() only works with arrays and strings. ${typeof collection}: ${printReceived(collection)} was passed.`,
+        `.toContain() only works with arrays and strings.\n` +
+        printWithType('Received', collection, printReceived),
       );
     }
 
@@ -303,8 +315,7 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
         `${RECEIVED_COLOR('string')} value should be a string.\n` +
-        `Received:\n` +
-        `  ${getType(received)}: ${printReceived(received)}`,
+        printWithType('Received', received, printReceived),
       );
     }
 
@@ -313,8 +324,7 @@ const matchers: MatchersObject = {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
         `${EXPECTED_COLOR('expected')} value should be a string or a regular expression.\n` +
-        `Received:\n` +
-        `  ${getType(expected)}: ${printExpected(expected)}`,
+        printWithType('Expected', expected, printExpected),
       );
     }
 

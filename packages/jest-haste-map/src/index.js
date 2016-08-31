@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Console} from 'console';
 import type {Path} from 'types/Config';
 import type {
   HasteMap as HasteMapObject,
@@ -36,6 +37,7 @@ const workerFarm = require('worker-farm');
 
 type Options = {
   cacheDirectory?: string,
+  console?: Console,
   extensions: Array<string>,
   ignorePattern: RegExp,
   maxWorkers: number,
@@ -164,6 +166,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
 class HasteMap {
   _options: InternalOptions;
   _cachePath: Path;
+  _console: Console;
   _whitelist: ?RegExp;
   _buildPromise: ?Promise<HasteMapObject>;
   _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
@@ -185,6 +188,7 @@ class HasteMap {
       useWatchman:
         options.useWatchman == null ? true : options.useWatchman,
     };
+    this._console = options.console || global.console;
 
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
@@ -267,7 +271,7 @@ class HasteMap {
         getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        console.warn(
+        this._console.warn(
           `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
@@ -396,9 +400,13 @@ class HasteMap {
 
     const retry = error => {
       if (crawl === watchmanCrawl) {
-        console.warn(
+        this._console.warn(
           `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
-          `crawler.\n  ${error}`,
+          `crawler.\n` +
+          `  Usually this happens when watchman isn't running. Create an ` +
+          `empty \`.watchmanconfig\` file in your project's root folder or ` +
+          `initialize a git or hg repository in your project.\n` +
+          `  ` + error,
         );
         return nodeCrawl(options.roots, options.extensions, ignore, hasteMap)
           .catch(e => {

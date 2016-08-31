@@ -28,7 +28,7 @@ exports[`test throwing not Error objects 3`] = `
 " FAIL  __tests__/throw-object-test.js
   ● Test suite failed to run
 
-ERROR: No message was provided
+    Error: No message was provided
 
 Test Summary
  › Ran all tests matching \"throw-object-test.js\".

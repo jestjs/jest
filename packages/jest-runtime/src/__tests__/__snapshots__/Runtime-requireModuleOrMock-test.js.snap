@@ -1,1 +1,5 @@
-exports[`test warns when calling unmock when automocking is disabled 1`] = `"jest.unmock(\'RegularModule\') was called but automocking is disabled. Remove the unnecessary call to \"jest.unmock\" or enable automocking for this test via \"jest.enableAutomock();\"."`;
+exports[`test warns when calling unmock when automocking is disabled 1`] = `
+"jest.unmock(\'RegularModule\') was called but automocking is disabled. Remove the unnecessary call to \`jest.unmock\` or enable automocking for this test via \`jest.enableAutomock();\`. This warning is likely a result of a default configuration change in Jest 15.
+
+Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html"
+`;

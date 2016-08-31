@@ -37,7 +37,11 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
 
   switch (getType(a)) {
     case 'string':
-      return diffStrings(String(a), String(b), options);
+      const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
+      if (multiline) {
+        return diffStrings(String(a), String(b), options);
+      }
+      return null;
     case 'number':
     case 'boolean':
       return null;

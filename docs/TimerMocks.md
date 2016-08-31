@@ -32,14 +32,12 @@ module.exports = timerGame;
 
 jest.useFakeTimers();
 
-describe('timerGame', () => {
-  it('waits 1 second before ending the game', () => {
-    const timerGame = require('../timerGame');
-    timerGame();
+it('waits 1 second before ending the game', () => {
+  const timerGame = require('../timerGame');
+  timerGame();
 
-    expect(setTimeout.mock.calls.length).toBe(1);
-    expect(setTimeout.mock.calls[0][1]).toBe(1000);
-  });
+  expect(setTimeout.mock.calls.length).toBe(1);
+  expect(setTimeout.mock.calls[0][1]).toBe(1000);
 });
 ```
 

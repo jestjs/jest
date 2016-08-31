@@ -277,7 +277,7 @@ describe('FakeTimers', () => {
         },
       };
 
-      const timers = new FakeTimers(global, 100);
+      const timers = new FakeTimers(global, null, 100);
       timers.useFakeTimers();
 
       global.process.nextTick(function infinitelyRecursingCallback() {
@@ -323,6 +323,15 @@ describe('FakeTimers', () => {
 
       timers.runAllTimers();
       expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4']);
+    });
+
+    it('warns when trying to advance timers while real timers are used', () => {
+      const consoleWarn = console.warn;
+      console.warn = jest.fn();
+      const timers = new FakeTimers(global, {rootDir: __dirname});
+      timers.runAllTimers();
+      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+      console.warn = consoleWarn;
     });
 
     it('does nothing when no timers have been scheduled', () => {
@@ -386,7 +395,7 @@ describe('FakeTimers', () => {
 
     it('throws before allowing infinite recursion', () => {
       const global = {};
-      const timers = new FakeTimers(global, 100);
+      const timers = new FakeTimers(global, null, 100);
       timers.useFakeTimers();
 
       global.setTimeout(function infinitelyRecursingCallback() {
@@ -460,7 +469,7 @@ describe('FakeTimers', () => {
 
     it('throws before allowing infinite recursion', () => {
       const global = {};
-      const timers = new FakeTimers(global, 100);
+      const timers = new FakeTimers(global, null, 100);
       timers.useFakeTimers();
 
       global.setTimeout(function infinitelyRecursingCallback() {

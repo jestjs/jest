@@ -56,12 +56,19 @@ const makeThrowingMatcher = (
   actual: any,
 ): ThrowingMatcherFn => {
   return function throwingMatcher(expected, options) {
-    const result: ExpectationResult = matcher(
-      actual,
-      expected,
-      options,
-      {args: arguments},
-    );
+    let result: ExpectationResult;
+    try {
+      result = matcher(
+        actual,
+        expected,
+        options,
+        {args: arguments},
+      );
+    } catch (error) {
+      // Remove this and deeper functions from the stack trace frame.
+      Error.captureStackTrace(error, throwingMatcher);
+      throw error;
+    }
 
     _validateResult(result);
 

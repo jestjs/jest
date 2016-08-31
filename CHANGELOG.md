@@ -1,5 +1,28 @@
 ## master
 
+## jest 15.0.0
+
+* See https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+* Jest by default now also recognizes files ending in `.spec.js` and `.test.js` as test files.
+* Completely replaced most Jasmine matchers with new Jest matchers.
+* Rewrote Jest's CLI output for test failures and summaries.
+* Added `--env` option to override the default test environment.
+* Disabled automocking, fake timers and resetting the module registry by default.
+* Added `--watchAll`, made `--watch` interactive and added the ability to update snapshots and select test patterns in watch mode.
+* Jest uses verbose mode when running a single test file.
+* Console messages are now buffered and printed along with the test results.
+* Fix `testEnvironment` resolution to prefer `jest-environment-{name}` instead of `{name}` only. This prevents a module colision when using `jsdom` as test environment.
+* `moduleNameMapper` now uses a resolution algorithm.
+* Improved performance for small test runs.
+* Improved API documentation.
+* Jest now works properly with directories that have special characters in them.
+* Improvements to Jest's own test infra by merging integration and unit tests. Code coverage is now collected for Jest.
+* Added `global.global` to the node environment.
+* Fixed babel-jest-plugin-hoist issues with functions called `mock`.
+* Improved jest-react-native preset with mocks for ListView, TextInput, ActivityIndicator and ScrollView.
+* Added `collectCoverageFrom` to collect code coverage from untested files.
+* Rewritten code coverage support.
+
 ## jest 14.1.0
 
 * Changed Jest's default cache directory.

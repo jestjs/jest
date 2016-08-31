@@ -40,7 +40,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
     process.stderr,
     (type, message) => getConsoleOutput(
       config.rootDir,
-      config.verbose,
+      !!config.verbose,
       // 4 = the console call is burried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
     ),

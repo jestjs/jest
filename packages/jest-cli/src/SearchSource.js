@@ -20,7 +20,11 @@ const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
 const fileExists = require('jest-file-exists');
 const path = require('path');
-const utils = require('jest-util');
+const {
+  clearLine,
+  escapePathForRegex,
+  replacePathSepForRegex,
+} = require('jest-util');
 
 type SearchSourceConfig = {
   testPathDirs: Array<Path>,
@@ -56,7 +60,7 @@ const determineSCM = path => Promise.all([
   git.isGitRepository(path),
   hg.isHGRepository(path),
 ]);
-const pathToRegex = p => utils.replacePathSepForRegex(p);
+const pathToRegex = p => replacePathSepForRegex(p);
 const pluralize = (
   word: string,
   count: number,
@@ -87,7 +91,7 @@ class SearchSource {
 
     this._testPathDirPattern =
       new RegExp(config.testPathDirs.map(
-        dir => utils.escapePathForRegex(dir),
+        dir => escapePathForRegex(dir),
       ).join('|'));
 
     this._testRegex = new RegExp(pathToRegex(config.testRegex));
@@ -117,9 +121,17 @@ class SearchSource {
 
     const testCases = Object.assign({}, this._testPathCases);
     if (testPathPattern) {
-      const regex = new RegExp(testPathPattern);
-      testCases.testPathPattern =
-        path => regex.test(path);
+      let regex;
+      try {
+        regex = new RegExp(testPathPattern);
+        testCases.testPathPattern = path => regex.test(path);
+      } catch (e) {
+        clearLine(process.stdout);
+        console.log(
+          'Invalid testPattern ' + String(testPathPattern) + ' supplied. ',
+        );
+        testCases.testPathPattern = () => false;
+      }
     }
 
     data.paths = allPaths.filter(path => {
@@ -184,11 +196,14 @@ class SearchSource {
     return Promise.all(this._config.testPathDirs.map(determineSCM))
       .then(repos => {
         if (!repos.every(result => result[0] || result[1])) {
-          throw new Error(
-            'It appears that one of your testPathDirs does not exist ' +
-            'within a git or hg repository. Currently `--onlyChanged` ' +
-            'only works with git or hg projects.',
+          clearLine(process.stdout);
+          console.log(
+            'Jest can only find uncommitted changed files in a git or hg ' +
+            'repository. If you make your project a git or hg repository ' +
+            '(`git init` or `hg init`), Jest will be able to only ' +
+            'run tests related to files changed since the last commit.',
           );
+          return null;
         }
         return Promise.all(Array.from(repos).map(repo => {
           return repo[0]
@@ -225,7 +240,7 @@ class SearchSource {
         chalk.dim(
           patternInfo.watch ?
             'Press `a` to run all tests, or run Jest with `--watchAll`.' :
-            'Run Jest without `-o` to run all tests.'
+            'Run Jest without `-o` to run all tests.',
         )
       );
     }
@@ -247,7 +262,9 @@ class SearchSource {
         ? `  ${pluralize('file', data.total || 0, 's')} checked.\n` +
           statsMessage
         : `No files found in ${config.rootDir}.\n` +
-          `Make sure Jest's configuration does not exclude this directory.`
+          `Make sure Jest's configuration does not exclude this directory.\n` +
+          `To set up Jest, make sure a package.json file exists.\n` +
+          `Jest API Documentation: facebook.github.io/jest/docs/api.html`
       )
     );
   }

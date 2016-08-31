@@ -185,17 +185,20 @@ function normalize(config, argv) {
   if (config.setupEnvScriptFile) {
     throwConfigurationError(
       'The setting `setupEnvScriptFile` was removed from Jest. Instead, use ' +
-      'the `setupFiles` setting.',
+      'the `setupFiles` setting:\n\n' +
+      '    "setupFiles": [' + JSON.stringify(config.setupEnvScriptFile) + ']',
     );
   }
 
   if ('persistModuleRegistryBetweenSpecs' in config) {
     throwConfigurationError(
       'The setting `persistModuleRegistryBetweenSpecs` was removed from ' +
-      'Jest. Instead use the `resetModules` configuration option. ' +
-      'When `resetModules` is true, it behaves like Jest did prior to ' +
-      'version 15 and resets all modules between each test. This behavior is ' +
-      'now disabled by default.',
+      'Jest. ' + (
+        config.persistModuleRegistryBetweenSpecs
+          ? 'This configuration option can safely be removed.'
+          : 'Set `"resetModules": true` in your configuration to retain the ' +
+            'previous behavior'
+      ),
     );
   }
 

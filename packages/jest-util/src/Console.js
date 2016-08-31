@@ -30,8 +30,7 @@ class CustomConsole extends Console {
     formatBuffer: ?Formatter,
   ) {
     super(stdout, stderr);
-    this._formatBuffer =
-      formatBuffer || ((type, message) => type + ' ' + message);
+    this._formatBuffer = formatBuffer || ((type, message) => message);
   }
 
   _log(type: LogType, message: string) {
