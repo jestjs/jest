@@ -10,9 +10,34 @@
 
 const runJest = require('../runJest');
 
-describe('promise it', () => {
+describe('async jasmine', () => {
+  it('works with beforeEach', () => {
+    const result = runJest.json(
+      'jasmine_async',
+      ['promise_beforeEach-test.js'],
+    );
+    const json = result.json;
+
+    expect(json.numTotalTests).toBe(1);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(0);
+    expect(json.testResults[0].message).toBe('');
+  });
+
+  it('works with afterEach', () => {
+    const result = runJest.json('jasmine_async', ['promise_afterEach-test.js']);
+    const json = result.json;
+
+    expect(json.numTotalTests).toBe(2);
+    expect(json.numPassedTests).toBe(2);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(0);
+    expect(json.testResults[0].message).toBe('');
+  });
+
   it('works with fit', () => {
-    const result = runJest.json('promise_it', ['promise_fit-test.js']);
+    const result = runJest.json('jasmine_async', ['promise_fit-test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(3);
@@ -23,7 +48,7 @@ describe('promise it', () => {
   });
 
   it('works with xit', () => {
-    const result = runJest.json('promise_it', ['promise_xit-test.js']);
+    const result = runJest.json('jasmine_async', ['promise_xit-test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(2);
@@ -33,7 +58,7 @@ describe('promise it', () => {
   });
 
   it('throws when not a promise is returned', () => {
-    const result = runJest.json('promise_it', ['returning_values-test.js']);
+    const result = runJest.json('jasmine_async', ['returning_values-test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(11);
@@ -43,7 +68,7 @@ describe('promise it', () => {
   });
 
   it('tests async promise code', () => {
-    const result = runJest.json('promise_it', ['promise_it-test.js']);
+    const result = runJest.json('jasmine_async', ['promise_it-test.js']);
     const json = result.json;
     const message = json.testResults[0].message;
 
@@ -57,7 +82,7 @@ describe('promise it', () => {
   });
 
   it('works with pit', () => {
-    const result = runJest.json('promise_it', ['pit-test.js']);
+    const result = runJest.json('jasmine_async', ['pit-test.js']);
     const json = result.json;
     expect(json.numTotalTests).toBe(2);
     expect(json.numPassedTests).toBe(1);
