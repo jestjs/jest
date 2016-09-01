@@ -12,8 +12,8 @@ exports[`.toThrow() error class threw, but class did not match 1`] = `
 Expected the function to throw an error of type:
   [32m\"Err2\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat Err ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:19:5)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrow() error class threw, but should not have 1`] = `
@@ -22,8 +22,8 @@ exports[`.toThrow() error class threw, but should not have 1`] = `
 Expected the function not to throw an error of type:
   [32m\"Err\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat Err ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:19:5)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrow() invalid arguments 1`] = `
@@ -49,8 +49,8 @@ exports[`.toThrow() regexp threw, but message did not match 1`] = `
 Expected the function to throw an error matching:
   [32m\"/banana/\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:72:35)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrow() regexp threw, but should not have 1`] = `
@@ -59,8 +59,8 @@ exports[`.toThrow() regexp threw, but should not have 1`] = `
 Expected the function not to throw an error matching:
   [32m\"/apple/\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:79:35)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrow() strings did not throw at all 1`] = `
@@ -77,8 +77,8 @@ exports[`.toThrow() strings threw, but message did not match 1`] = `
 Expected the function to throw an error matching:
   [32m\"banana\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:41:33)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrow() strings threw, but should not have 1`] = `
@@ -87,8 +87,8 @@ exports[`.toThrow() strings threw, but should not have 1`] = `
 Expected the function not to throw an error matching:
   [32m\"apple\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:53:35)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrowError() error class did not throw at all 1`] = `
@@ -105,8 +105,8 @@ exports[`.toThrowError() error class threw, but class did not match 1`] = `
 Expected the function to throw an error of type:
   [32m\"Err2\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat Err ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:19:5)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrowError() error class threw, but should not have 1`] = `
@@ -115,8 +115,8 @@ exports[`.toThrowError() error class threw, but should not have 1`] = `
 Expected the function not to throw an error of type:
   [32m\"Err\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat Err ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:19:5)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrowError() invalid arguments 1`] = `
@@ -142,8 +142,8 @@ exports[`.toThrowError() regexp threw, but message did not match 1`] = `
 Expected the function to throw an error matching:
   [32m\"/banana/\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:72:35)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrowError() regexp threw, but should not have 1`] = `
@@ -152,8 +152,8 @@ exports[`.toThrowError() regexp threw, but should not have 1`] = `
 Expected the function not to throw an error matching:
   [32m\"/apple/\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:79:35)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrowError() strings did not throw at all 1`] = `
@@ -170,8 +170,8 @@ exports[`.toThrowError() strings threw, but message did not match 1`] = `
 Expected the function to throw an error matching:
   [32m\"banana\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:41:33)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
 exports[`.toThrowError() strings threw, but should not have 1`] = `
@@ -180,6 +180,6 @@ exports[`.toThrowError() strings threw, but should not have 1`] = `
 Expected the function not to throw an error matching:
   [32m\"apple\"[39m
 Instead, it threw:
-[31m  apple      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:53:35)[22m[39m"
+[31m  Error      
+      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;

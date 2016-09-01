@@ -107,17 +107,12 @@ const removeInternalStackEntries = (lines, config) => {
 
 const formatPaths = (config, relativeTestPath, line) => {
   // Extract the file path from the trace line.
-  let matches = line.match(/(^\s*at .*?\()([^()]+)(:[0-9]+:[0-9]+\).*$)/);
-  if (!matches) {
-    matches = line.match(/(^\s+at )([^()]+)(:[0-9]+:[0-9]+.*$)/);
-    if (!matches) {
-      return line;
-    }
+  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
+  if (!match) {
+    return line;
   }
 
-  let filePath = matches[2];
-  filePath = path.relative(config.rootDir, filePath);
-
+  let filePath = path.relative(config.rootDir, match[2]);
   if (config.testRegex && new RegExp(config.testRegex).test(filePath)) {
     filePath = chalk.reset.blue(filePath);
   } else if (filePath === relativeTestPath) {
@@ -125,8 +120,7 @@ const formatPaths = (config, relativeTestPath, line) => {
     filePath = chalk.reset.cyan(filePath);
   }
   // make paths relative to the <rootDir>
-  return STACK_TRACE_COLOR(matches[1])
-    + filePath + STACK_TRACE_COLOR(matches[3]);
+  return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
 const formatStackTrace = (stack, config: Config, testPath: ?Path) => {

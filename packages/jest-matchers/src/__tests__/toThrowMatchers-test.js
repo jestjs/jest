@@ -13,6 +13,18 @@
 const jestExpect = require('../').expect;
 const matchErrorSnapshot = require('./_matchErrorSnapshot');
 
+// Custom Error class because node versions have different stack trace strings.
+class Error {
+  constructor(message) {
+    this.message = message;
+    this.name = 'Error';
+    this.stack =
+      'Error\n' +
+      '  at jestExpect' +
+      ' (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)';
+  }
+}
+
 ['toThrowError', 'toThrow'].forEach(toThrow => {
   describe('.' + toThrow + '()', () => {
 
