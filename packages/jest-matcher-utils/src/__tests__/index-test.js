@@ -46,7 +46,7 @@ describe('.stringify()', () => {
       },
     };
     expect(stringify(evil)).toBe('[object]');
-    expect(stringify({a:{b:{evil}}})).toBe('[object]');
+    expect(stringify({a: {b: {evil}}})).toBe('[object]');
 
     function Evil() {}
     Evil.toJSON = evil.toJSON;
