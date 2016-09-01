@@ -38,6 +38,20 @@ describe('.stringify()', () => {
     a.a = a;
     expect(stringify(a)).toBe('{"a":"[Circular]"}');
   });
+
+  test('toJSON error', () => {
+    const evil = {
+      toJSON() {
+        throw new Error('Nope.');
+      },
+    };
+    expect(stringify(evil)).toBe('[object]');
+    expect(stringify({a: {b: {evil}}})).toBe('[object]');
+
+    function Evil() {}
+    Evil.toJSON = evil.toJSON;
+    expect(stringify(Evil)).toBe('function Evil() {}');
+  });
 });
 
 

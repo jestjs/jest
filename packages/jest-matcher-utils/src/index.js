@@ -57,43 +57,68 @@ const getType = (value: any): ValueType => {
   throw new Error(`value of unknown type: ${value}`);
 };
 
+const stringifyValue = (value, visitedSet) => {
+  if (value instanceof Error) {
+    const name = (value.constructor && value.constructor.name) || 'Error';
+    return `${name}: ${value.message}`;
+  } else if (typeof value === 'object' && value !== null) {
+    if (
+      value &&
+      value.constructor &&
+      value.constructor.name === 'RegExp'
+    ) {
+      return value.toString();
+    } else {
+      if (visitedSet.has(value)) {
+        return '[Circular]';
+      }
+      visitedSet.add(value);
+    }
+  } else if (typeof value === 'function') {
+    return value.toString();
+  } else if (typeof value === 'undefined') {
+    return 'undefined';
+  // $FlowFixMe symbols are not supported by flow yet
+  } else if (typeof value === 'symbol') {
+    return value.toString();
+  } else if (value === Infinity) {
+    return 'Infinity';
+  } else if (value === -Infinity) {
+    return '-Infinity';
+  } else if (Number.isNaN(value)) {
+    return 'NaN';
+  }
+  return value;
+};
+
+const stringifyDeep = obj => {
+  const visitedSet = new Set();
+  let result = null;
+  try {
+    result = JSON.stringify(
+      obj,
+      (_, value) => stringifyValue(value, visitedSet),
+    );
+  } catch (err) { }
+  return typeof result === 'string' ? result : null;
+};
+
+const stringifyShallow = obj => {
+  let result = null;
+  try {
+    result = stringifyValue(obj, new Set());
+  } catch (err) {}
+  return typeof result === 'string' ? result : null;
+};
+
 // Convert to JSON removing circular references and
 // converting JS values to strings.
 const stringify = (obj: any): string => {
-  const set = new Set();
-  return JSON.stringify(obj, (key, value) => {
-    if (value instanceof Error) {
-      const name = (value.constructor && value.constructor.name) || 'Error';
-      return `${name}: ${value.message}`;
-    } else if (typeof value === 'object' && value !== null) {
-      if (
-        value &&
-        value.constructor &&
-        value.constructor.name === 'RegExp'
-      ) {
-        return value.toString();
-      } else {
-        if (set.has(value)) {
-          return '[Circular]';
-        }
-        set.add(value);
-      }
-    } else if (typeof value === 'function') {
-      return value.toString();
-    } else if (typeof value === 'undefined') {
-      return 'undefined';
-    // $FlowFixMe symbols are not supported by flow yet
-    } else if (typeof value === 'symbol') {
-      return value.toString();
-    } else if (value === Infinity) {
-      return 'Infinity';
-    } else if (value === -Infinity) {
-      return '-Infinity';
-    } else if (Number.isNaN(value)) {
-      return 'NaN';
-    }
-    return value;
-  });
+  return (
+    stringifyDeep(obj) ||
+    stringifyShallow(obj) ||
+    '[' + typeof obj + ']'
+  );
 };
 
 const printReceived = (object: any) => RECEIVED_COLOR(stringify(object));
