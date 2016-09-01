@@ -1,6 +1,6 @@
 {
   "name": "jest-matchers",
-  "version": "15.0.1",
+  "version": "15.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,9 +8,9 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-diff": "^15.0.1",
-    "jest-matcher-utils": "^15.0.1",
-    "jest-util": "^15.0.1"
+    "jest-diff": "^15.1.0",
+    "jest-matcher-utils": "^15.1.0",
+    "jest-util": "^15.1.0"
   },
   "devDependencies": {
     "strip-ansi": "^3.0.1"
