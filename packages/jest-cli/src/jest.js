@@ -42,6 +42,7 @@ const KEYS = {
   CONTROL_C: '03',
   CONTROL_D: '04',
   ENTER: '0d',
+  ESCAPE: '1b',
   O: '6f',
   P: '70',
   Q: '71',
@@ -250,7 +251,7 @@ const runCLI = (
 
         const writeCurrentPattern = () => {
           clearLine(pipe);
-          pipe.write(chalk.dim(' pattern \u203A ' + currentPattern));
+          pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
         };
 
         const startRun = (overrideConfig: Object = {}) => {
@@ -305,6 +306,11 @@ const runCLI = (
                   pattern: [currentPattern],
                 });
                 startRun();
+                break;
+              case KEYS.ESCAPE:
+                isEnteringPattern = false;
+                clearLine(pipe);
+                currentPattern = argv._[0];
                 break;
               default:
                 const char = new Buffer(key, 'hex').toString();

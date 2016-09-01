@@ -207,7 +207,7 @@ class SearchSource {
     const testInfo = patternInfo.onlyChanged
       ? ' related to changed files'
       : patternInfo.input !== ''
-        ? ' matching ' + testPathPattern
+        ? ' matching ' + chalk.bold(testPathPattern)
         : '';
 
     return 'Ran all tests' + testInfo + '.';
