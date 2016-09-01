@@ -24,6 +24,7 @@ const TestRunner = require('./TestRunner');
 
 const {Console, clearLine} = require('jest-util');
 const {run} = require('./cli');
+const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
@@ -309,7 +310,7 @@ const runCLI = (
                 break;
               case KEYS.ESCAPE:
                 isEnteringPattern = false;
-                clearLine(pipe);
+                pipe.write(ansiEscapes.eraseLines(2));
                 currentPattern = argv._[0];
                 break;
               default:
