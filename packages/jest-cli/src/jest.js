@@ -38,7 +38,7 @@ const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
 const KEYS = {
   A: '61',
-  BACKSPACE: '7f',
+  BACKSPACE: process.platform === 'win32' ? '08' : '7f',
   CONTROL_C: '03',
   CONTROL_D: '04',
   ENTER: '0d',
