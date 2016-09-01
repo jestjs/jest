@@ -1,5 +1,24 @@
 ## master
 
+## jest 15.1.0
+
+* Pretty printer updates for React and global window objects.
+* `jest-runtime` overwrites automocking from configuration files.
+* Improvements for watch mode on Windows.
+* afterAll/afterEach/beforeAll/beforeEach can now return a Promise and be used together with async/await.
+* Improved stack trace printing on Node 4.
+
+## jest 15.0.2
+
+* Fixed Jest with npm2 when using coverage.
+
+## jest 15.0.1
+
+* Updated toThrow and toThrowMatchers and aliased them to the same matcher.
+* Improvements for watch mode.
+* Fixed Symbol reassignment in tests would break Jest's matchers.
+* Fixed `--bail` option.
+
 ## jest 15.0.0
 
 * See https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
