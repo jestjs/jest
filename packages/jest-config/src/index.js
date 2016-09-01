@@ -16,27 +16,38 @@ const normalize = require('./normalize');
 const path = require('path');
 const setFromArgv = require('./setFromArgv');
 
-function readConfig(argv: any, packageRoot: string) {
-  return readRawConfig(argv, packageRoot)
+const readConfig = (argv: any, packageRoot: string) =>
+  readRawConfig(argv, packageRoot)
     .then(config => Object.freeze(setFromArgv(config, argv)));
-}
 
-function readRawConfig(argv, root) {
-  if (typeof argv.config === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), argv.config));
+const parseConfig = argv => {
+  if (argv.config && typeof argv.config === 'string') {
+    // If the passed in value looks like JSON, treat it as an object.
+    if (argv.config[0] === '{' && argv.config[argv.config.length - 1] === '}') {
+      return JSON.parse(argv.config);
+    }
+  }
+  return argv.config;
+};
+
+const readRawConfig = (argv, root) => {
+  const rawConfig = parseConfig(argv);
+
+  if (typeof rawConfig === 'string') {
+    return loadFromFile(path.resolve(process.cwd(), rawConfig));
   }
 
-  if (typeof argv.config === 'object') {
-    const config = Object.assign({}, argv.config);
+  if (typeof rawConfig === 'object') {
+    const config = Object.assign({}, rawConfig);
     config.rootDir = config.rootDir || root;
     return Promise.resolve(normalize(config, argv));
   }
 
   return loadFromPackage(path.join(root, 'package.json'), argv)
     .then(config => config || normalize({rootDir: root}, argv));
-}
+};
 
 module.exports = {
-  normalize: require('./normalize'),
+  normalize,
   readConfig,
 };

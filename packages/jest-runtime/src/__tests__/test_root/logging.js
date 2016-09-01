@@ -8,4 +8,8 @@
 
 'use strict';
 
-console.log('Hello, world!');
+if (require('RegularModule').getModuleStateValue()) {
+  console.log('Hello, world!');
+} else {
+  console.log('Automocking is not properly disabled in jest-runtime.');
+}
