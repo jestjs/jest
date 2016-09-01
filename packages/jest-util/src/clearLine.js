@@ -12,6 +12,6 @@
 
 module.exports = (stream: stream$Writable) => {
   if (process.stdout.isTTY) {
-    stream.write('\r\x1B[K');
+    stream.write('\x1b[999D\x1b[K');
   }
 };

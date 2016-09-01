@@ -19,6 +19,7 @@ import type {
 
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
+const isWindows = process.platform === 'win32';
 
 class VerboseReporter extends DefaultReporter {
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
@@ -74,11 +75,11 @@ class VerboseReporter extends DefaultReporter {
 
   _getIcon(status: string) {
     if (status === 'failed') {
-      return chalk.red('\u2715');
+      return chalk.red(isWindows ? '\u00D7' : '\u2715');
     } else if (status === 'pending') {
       return chalk.yellow('\u25CB');
     } else {
-      return chalk.green('\u2713');
+      return chalk.green(isWindows ? '\u221A' : '\u2713');
     }
   }
 
