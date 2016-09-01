@@ -118,7 +118,7 @@ const formatPaths = (config, relativeTestPath, line) => {
   let filePath = matches[2];
   filePath = path.relative(config.rootDir, filePath);
 
-  if (new RegExp(config.testRegex).test(filePath)) {
+  if (config.testRegex && new RegExp(config.testRegex).test(filePath)) {
     filePath = chalk.reset.blue(filePath);
   } else if (filePath === relativeTestPath) {
     // highlight paths from the current test file

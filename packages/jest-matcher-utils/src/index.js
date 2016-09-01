@@ -99,6 +99,21 @@ const stringify = (obj: any): string => {
 const printReceived = (object: any) => RECEIVED_COLOR(stringify(object));
 const printExpected = (value: any) => EXPECTED_COLOR(stringify(value));
 
+const printWithType = (
+  name: string,
+  received: string,
+  print: (value: string) => string,
+) => {
+  const type = getType(received);
+  return (
+    name + ':' +
+    (type !== 'null' && type !== 'undefined'
+      ? '\n  ' + type + ': '
+      : ' ') +
+    print(received)
+  );
+};
+
 const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
@@ -156,5 +171,6 @@ module.exports = {
   pluralize,
   printExpected,
   printReceived,
+  printWithType,
   stringify,
 };
