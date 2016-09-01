@@ -12,12 +12,13 @@
 
 import type {DiffOptions} from './diffStrings';
 
+const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
+const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+
 const chalk = require('chalk');
 const diffStrings = require('./diffStrings');
 const {getType} = require('jest-matcher-utils');
 const prettyFormat = require('pretty-format');
-const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
-const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
 
 const jsxLikePlugins = [ReactTestComponentPlugin, ReactElementPlugin];
 const NO_DIFF_MESSAGE = require('./constants').NO_DIFF_MESSAGE;
