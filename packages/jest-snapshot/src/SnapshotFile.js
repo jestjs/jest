@@ -9,15 +9,16 @@
  */
 'use strict';
 
+const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
+const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+
 const createDirectory = require('jest-util').createDirectory;
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
 const prettyFormat = require('pretty-format');
-const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
-const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
 
-const jsxLikePlugins = [ReactTestComponentPlugin, ReactElementPlugin];
+const jsxLikePlugins = [ReactElementPlugin, ReactTestComponentPlugin];
 const SNAPSHOT_EXTENSION = 'snap';
 
 import type {Path} from 'types/Config';
