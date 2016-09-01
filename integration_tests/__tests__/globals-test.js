@@ -12,6 +12,6 @@
 describe('Common globals', () => {
   it('check process', () => {
     expect(Object.prototype.toString.call(global.process))
-    .toBe('[object process]');
+      .toBe('[object process]');
   });
 });
