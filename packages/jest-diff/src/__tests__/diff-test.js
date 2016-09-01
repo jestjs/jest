@@ -101,3 +101,24 @@ test('booleans', () => {
   expect(result).toBe(null);
   expect(result).toBe(null);
 });
+
+test('React elements', () => {
+  const result = diff({
+    $$typeof: Symbol.for('react.element'),
+    type: 'div',
+    props: {
+      className: 'fun',
+      children: 'Hello',
+    },
+  }, {
+    $$typeof: Symbol.for('react.element'),
+    type: 'div',
+    className: 'fun',
+    props: {
+      children: 'Goodbye',
+    },
+  });
+  expect(stripAnsi(result)).toMatch(/<div[\s\S]+className="fun">/);
+  expect(stripAnsi(result)).toMatch(/\-\s+Hello/);
+  expect(stripAnsi(result)).toMatch(/\+\s+Goodbye/);
+});
