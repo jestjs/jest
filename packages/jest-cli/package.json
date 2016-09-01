@@ -4,6 +4,7 @@
   "version": "15.0.2",
   "main": "build/jest.js",
   "dependencies": {
+    "ansi-escapes": "^1.4.0",
     "callsites": "^2.0.0",
     "chalk": "^1.1.1",
     "graceful-fs": "^4.1.6",
