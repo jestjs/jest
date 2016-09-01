@@ -95,8 +95,9 @@ const stringifyDeep = obj => {
   const visitedSet = new Set();
   let result = null;
   try {
-    result = JSON.stringify(obj, (key, value) =>
-      stringifyValue(value, visitedSet),
+    result = JSON.stringify(
+      obj,
+      (_, value) => stringifyValue(value, visitedSet),
     );
   } catch (err) { }
   return typeof result === 'string' ? result : null;
