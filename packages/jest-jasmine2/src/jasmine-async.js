@@ -78,8 +78,10 @@ function install(global: Global) {
   const env = jasmine.getEnv();
   global.pit = env.it = promisifyIt(env.it, env);
   env.fit = promisifyIt(env.fit, env);
-  env.beforeEach = promisifyLifeCycleFunction(env.beforeEach, env);
+  env.afterAll = promisifyLifeCycleFunction(env.afterAll, env);
   env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);
+  env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);
+  env.beforeEach = promisifyLifeCycleFunction(env.beforeEach, env);
 }
 
 module.exports = {

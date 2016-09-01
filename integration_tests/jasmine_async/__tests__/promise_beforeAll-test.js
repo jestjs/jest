@@ -8,27 +8,17 @@
 
 'use strict';
 
-describe('promise afterEach', () => {
-  let localFlag = true;
-
-  afterEach(() => {
-    this.flag = 1;
-    localFlag = false;
+describe('promise beforeAll', () => {
+  beforeAll(() => {
     return new Promise(resolve => {
       process.nextTick(resolve);
     }).then(() => {
-      this.flag = undefined;
+      this.flag = 1;
     });
   });
 
   // passing tests
-  it('runs afterEach after each test', () => {
-    expect(this.flag).toBe(undefined);
-    expect(localFlag).toBe(true);
-  });
-
-  it('waits for afterEach to asynchronously complete before each test', () => {
-    expect(this.flag).toBe(undefined);
-    expect(localFlag).toBe(false);
+  it('runs tests after beforeAll asynchronously completes', () => {
+    expect(this.flag).toBe(1);
   });
 });
