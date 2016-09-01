@@ -26,17 +26,6 @@ function run(argv?: Object, root?: Path) {
     .check(args.check)
     .argv;
 
-  const {config} = argv;
-  // If the passed in value looks like JSON, treat it as an object.
-  if (
-    config &&
-    typeof config === 'string' &&
-    config[0] === '{' &&
-    config[config.length - 1] === '}'
-  ) {
-    argv.config = JSON.parse(config);
-  }
-
   warnAboutUnrecognizedOptions(argv, args.options);
 
   if (argv.help) {

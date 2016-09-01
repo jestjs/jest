@@ -63,6 +63,11 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
   }
   readConfig(argv, root)
     .then(config => {
+      // Always disable automocking in scripts.
+      config = Object.assign({}, config, {
+        automock: false,
+        unmockedModulePathPatterns: null,
+      });
       Runtime.createHasteContext(config, {
         maxWorkers: os.cpus().length - 1,
       })

@@ -211,11 +211,13 @@ describe('SearchSource', () => {
 
     it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
+      const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       const data = searchSource.findRelatedTests(new Set([filePath]));
       expect(data.paths.sort()).toEqual([
         parentDep,
         filePath,
+        loggingDep,
         rootPath,
       ]);
     });
