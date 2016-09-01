@@ -31,7 +31,12 @@ module.exports = (global: Global, globals: ConfigGlobals) => {
 
   // `global.process` is mutated by FakeTimers. Make a copy of the
   // object for the jsdom environment to prevent memory leaks.
-  global.process = Object.assign({}, process);
+  // Symbol toStringTag is added to improve detection by
+  // Libraries (bluebird checks for this)
+  // $FlowFixMe Flow has problems with Symbols as computed
+  global.process = Object.assign({}, process, {
+    [Symbol.toStringTag]: 'process',
+  });
   global.process.setMaxListeners = process.setMaxListeners.bind(process);
   global.process.getMaxListeners = process.getMaxListeners.bind(process);
   global.process.emit = process.emit.bind(process);
