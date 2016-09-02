@@ -66,6 +66,8 @@ var index = React.createClass({
             </div>
             <div className="video-shoutout">
               <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a>
+              {' '}by{' '}
+              <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a>
               {' '}hosted by{' '}
               <a href="https://egghead.io">Egghead</a>.
             </div>
