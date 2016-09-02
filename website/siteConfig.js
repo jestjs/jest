@@ -9,7 +9,7 @@ var siteConfig = {
   repo: "facebook/jest",
   homepagePromos: [
     <div className="pluginRowBlock">
-      <Button href="/jest/docs/getting-started.html#content">Get Started</Button>
+      <Button href="#getting-started">Get Started</Button>
       <Button href="/jest/docs/api.html#content">API Reference</Button>
     </div>,
   ],

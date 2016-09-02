@@ -70,7 +70,7 @@ var DocsSidebar = React.createClass({
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
         <SideNav
-          root="/jest/docs/"
+          root="/jest/docs/getting-started.html"
           title="Docs"
           contents={this.getCategories()}
           current={this.props.metadata}

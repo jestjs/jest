@@ -12,7 +12,9 @@ applications.
 
 ## Setup
 
-We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
+If you are just getting started with React, we recommend using [create-react-app](https://github.com/facebookincubator/create-react-app). It [ships with Jest](https://github.com/facebookincubator/create-react-app/tree/master/template#running-tests) is ready to use!
+
+If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
 
 Run
 
@@ -244,12 +246,12 @@ Alternatively you can also use [enzyme](https://github.com/airbnb/enzyme) to tes
 The code for this example is available at
 [examples/react](https://github.com/facebook/jest/tree/master/examples/react).
 
-### Building your own preprocessor
+### Custom preprocessors
 
-Instead of using babel-jest, here is an example of using babel to build your own
-preprocessor:
+If you need more advanced functionality, you can also build your own preprocessor. Instead of using babel-jest, here is an example of using babel:
 
 ```javascript
+// custom-preprocessor.js
 'use strict';
 
 const babel = require('babel-core');
@@ -269,8 +271,16 @@ module.exports = {
 };
 ```
 
-In fact, this is the entire [source code](https://github.com/facebook/jest/blob/master/packages/babel-jest/src/index.js)
-of `babel-jest`!
+Don't forget to install the `babel-core` and `babel-preset-jest` packages for this example to work.
 
-*Note: Don't forget to install the `babel-core` and `babel-preset-jest` packages
-for this example to work!*
+To make this work with Jest you need to update your Jest configuration with this: `"scriptPreprocessor": "path/to/custom-preprocessor.js"`.
+
+If you'd like to build a preprocessor with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
+
+```javascript
+const babelJest = require('babelJest');
+
+module.exports = babelJest.createTransformer({
+  presets: ['my-custom-preset'],
+});
+```

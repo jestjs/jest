@@ -56,7 +56,19 @@ var index = React.createClass({
             <GridBlock className="responsiveList" contents={whyUseJest} layout="fourColumn" />
           </Container>
           <Container padding={["bottom"]}>
-            <h2>Getting Started</h2>
+            <h2>
+              <a className="anchor" name="getting-started"></a>
+              Getting Started
+              <a className="hash-link" href="#getting-started"></a>
+            </h2>
+            <div className="video">
+              <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
+            </div>
+            <div className="video-shoutout">
+              <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a>
+              {' '}hosted by{' '}
+              <a href="https://egghead.io">Egghead</a>.
+            </div>
             <Marked>{gettingStartedContent}</Marked>
           </Container>
         </div>
