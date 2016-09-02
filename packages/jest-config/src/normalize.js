@@ -423,6 +423,7 @@ function normalize(config, argv) {
         );
     }
     newConfig[key] = value;
+
     return newConfig;
   }, newConfig);
 
@@ -434,6 +435,12 @@ function normalize(config, argv) {
     }
     return newConfig;
   }, newConfig);
+
+  // If argv.json is set the coverageReporters array must be overridden
+  if (argv.json) {
+
+    newConfig.coverageReporters = ["json"];
+  }
 
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
 }
