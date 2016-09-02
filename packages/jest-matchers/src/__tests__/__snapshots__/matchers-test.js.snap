@@ -161,10 +161,10 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[37m [39m [37mObject {[39m
+[2m [22m [2mObject {[22m
 [32m-[39m [32m  \"a\": 5[39m
 [31m+[39m [31m  \"a\": 1[39m
-[37m [39m [37m}[39m"
+[2m [22m [2m}[22m"
 `;
 
 exports[`.toBe() fails for: {} and {} 1`] = `
@@ -1557,10 +1557,10 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[37m [39m [37mObject {[39m
+[2m [22m [2mObject {[22m
 [32m-[39m [32m  \"b\": 6[39m
 [31m+[39m [31m  \"a\": 5[39m
-[37m [39m [37m}[39m"
+[2m [22m [2m}[22m"
 `;
 
 exports[`.toEqual() expect({"a":99}).not.toEqual({"a":99}) 1`] = `
