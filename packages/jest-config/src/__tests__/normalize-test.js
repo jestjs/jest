@@ -80,7 +80,6 @@ describe('normalize', () => {
     expect(normalize({
       rootDir: '/root/path/foo',
     }, {json: true}).coverageReporters).toEqual(['json']);
-
   });
 
   describe('rootDir', () => {
