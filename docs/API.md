@@ -666,7 +666,7 @@ myMockFn((err, val) => console.log(val));
 > false
 ```
 
-When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with jest.fn(() => defaultValue) or .mockImplementation(() => defaultValue) if they were called:
+When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if they were called:
 
 ```
 var myMockFn = jest.fn(() => 'default')
