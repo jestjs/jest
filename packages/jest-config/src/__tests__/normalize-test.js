@@ -550,7 +550,7 @@ describe('normalize', () => {
       const config = normalize({
         rootDir: '/root',
         scriptPreprocessor:
-        '<rootDir>/' + Resolver.findNodeModule('babel-jest'),
+          '<rootDir>/' + Resolver.findNodeModule('babel-jest'),
       });
 
       expect(config.usesBabelJest).toBe(true);
@@ -590,7 +590,7 @@ describe('normalize', () => {
       }
 
       // failure case
-      expect(() => { }).toThrow();
+      expect(() => {}).toThrow();
     };
 
     beforeEach(() => {

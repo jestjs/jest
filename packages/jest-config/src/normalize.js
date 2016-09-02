@@ -435,10 +435,9 @@ function normalize(config, argv) {
     return newConfig;
   }, newConfig);
 
-  // If argv.json is set the coverageReporters to json so we don't polute STDOUT
+  // If argv.json is set remove 'text' from coverageReporters so we don't polute STDOUT
   if (argv.json) {
-
-    newConfig.coverageReporters = ['json'];
+    newConfig.coverageReporters = newConfig.coverageReporters.filter(reporter => reporter !== 'text');
   }
 
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
