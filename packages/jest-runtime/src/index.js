@@ -81,6 +81,7 @@ class Runtime {
   _mockRegistry: {[key: string]: any};
   _mocksPattern: ?RegExp;
   _moduleRegistry: {[key: string]: Module};
+  _internalModuleRegistry: {[key: string]: Module};
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
@@ -96,6 +97,7 @@ class Runtime {
     resolver: Resolver,
   ) {
     this._moduleRegistry = Object.create(null);
+    this._internalModuleRegistry = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._config = config;
     this._environment = environment;
@@ -225,6 +227,10 @@ class Runtime {
     const moduleID = this._normalizeID(from, moduleName);
     let modulePath;
 
+    const moduleRegistry = (!options || !options.isInternalModule) ?
+      this._moduleRegistry :
+      this._internalModuleRegistry;
+
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -249,7 +255,7 @@ class Runtime {
       modulePath = this._resolveModule(from, moduleName);
     }
 
-    if (!this._moduleRegistry[modulePath]) {
+    if (!moduleRegistry[modulePath]) {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
@@ -257,7 +263,7 @@ class Runtime {
         filename: modulePath,
         exports: {},
       };
-      this._moduleRegistry[modulePath] = localModule;
+      moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
           fs.readFileSync(modulePath, 'utf8'),
@@ -269,7 +275,7 @@ class Runtime {
         this._execModule(localModule, options);
       }
     }
-    return this._moduleRegistry[modulePath].exports;
+    return moduleRegistry[modulePath].exports;
   }
 
   requireInternalModule(from: Path, to?: string) {
