@@ -435,7 +435,7 @@ function normalize(config, argv) {
     return newConfig;
   }, newConfig);
 
-  // If argv.json is set remove 'text' from coverageReporters so we don't polute STDOUT
+  // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
     newConfig.coverageReporters = newConfig.coverageReporters.filter(reporter => reporter !== 'text');
   }
