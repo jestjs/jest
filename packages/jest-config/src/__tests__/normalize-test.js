@@ -79,7 +79,7 @@ describe('normalize', () => {
   it('sets coverageReporters correctly when argv.json is set', () => {
     expect(normalize({
       rootDir: '/root/path/foo',
-    }, { json: true }).coverageReporters).toEqual(["json"]);
+    }, {json: true}).coverageReporters).toEqual(['json']);
 
   });
 
