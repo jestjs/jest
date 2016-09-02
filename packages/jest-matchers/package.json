@@ -1,6 +1,6 @@
 {
   "name": "jest-matchers",
-  "version": "15.1.0",
+  "version": "15.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,7 +10,7 @@
   "dependencies": {
     "jest-diff": "^15.1.0",
     "jest-matcher-utils": "^15.1.0",
-    "jest-util": "^15.1.0"
+    "jest-util": "^15.1.1"
   },
   "devDependencies": {
     "strip-ansi": "^3.0.1"
