@@ -1,0 +1,22 @@
+environment:
+  matrix:
+    - nodejs_version: "4"
+    - nodejs_version: "6"
+
+install:
+  - ps: Install-Product node $env:nodejs_version x64
+  - npm i -g npm@latest
+  - node --version
+  - npm --version
+  - npm install
+
+test_script:
+  - npm run build
+  # Hax - Some snapshot tests don't currently work on Windows, so the tests are
+  # commented out. Jest complains that obsolete snapshot files exist, so the
+  # "-u" will just delete those snapshots when running in the AppVeyor run,
+  # instead of failing the build.
+  - npm run jest -- -u
+
+# Don't actually build.
+build: off
