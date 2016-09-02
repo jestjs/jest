@@ -43,6 +43,10 @@ describe('git', () => {
       childProcess.spawnSync('git', ['init', tmpdir]);
 
       return git.isGitRepository(tmpdir).then(res => {
+        if (process.platform === 'win32') {
+          // Git port on Win32 returns paths with "/" rather than "\"
+          res = res.replace(/\//g, '\\');
+        }
         expect(res).toContain(tmpdir);
       });
     });

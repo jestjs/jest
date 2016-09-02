@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const skipOnWindows = require('jest-util/build/skipOnWindows');
+
 jest
   .mock('graceful-fs')
   .mock('jest-file-exists')
@@ -163,6 +165,9 @@ describe('transform', () => {
   });
 
   it('reads values from the cache', () => {
+    if (skipOnWindows.test()) {
+      return;
+    }
     const transformConfig = Object.assign(config, {
       scriptPreprocessor: 'test-preprocessor',
     });

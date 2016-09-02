@@ -10,8 +10,11 @@
 
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 const dir = path.resolve(__dirname, '../failures');
+
+skipOnWindows.suite();
 
 test('throwing not Error objects', () => {
   let stderr;

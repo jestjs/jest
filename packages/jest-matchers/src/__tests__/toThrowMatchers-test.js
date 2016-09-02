@@ -12,6 +12,7 @@
 
 const jestExpect = require('../').expect;
 const matchErrorSnapshot = require('./_matchErrorSnapshot');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 // Custom Error class because node versions have different stack trace strings.
 class Error {
@@ -27,6 +28,7 @@ class Error {
 
 ['toThrowError', 'toThrow'].forEach(toThrow => {
   describe('.' + toThrow + '()', () => {
+    skipOnWindows.suite();
 
     class Err extends Error {}
     class Err2 extends Error {}

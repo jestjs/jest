@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const skipOnWindows = require('jest-util/build/skipOnWindows');
+
 jest.mock('child_process', () => ({
   // If this does not throw, we'll use the (mocked) watchman crawler
   execSync() {},
@@ -59,6 +61,7 @@ let workerFarmMock;
 let writeFileSync;
 
 describe('HasteMap', () => {
+  skipOnWindows.suite();
 
   beforeEach(() => {
     jest.resetModules();

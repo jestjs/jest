@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const skipOnWindows = require('jest-util/build/skipOnWindows');
+
 describe('FakeTimers', () => {
   let FakeTimers;
 
@@ -326,6 +328,9 @@ describe('FakeTimers', () => {
     });
 
     it('warns when trying to advance timers while real timers are used', () => {
+      if (skipOnWindows.test()) {
+        return;
+      }
       const consoleWarn = console.warn;
       console.warn = jest.fn();
       const timers = new FakeTimers(global, {rootDir: __dirname});

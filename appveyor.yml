@@ -16,7 +16,7 @@ test_script:
   # commented out. Jest complains that obsolete snapshot files exist, so the
   # "-u" will just delete those snapshots when running in the AppVeyor run,
   # instead of failing the build.
-  - npm run jest -- -u
+  - npm run jest -- -u --color
 
 # Don't actually build.
 build: off

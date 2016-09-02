@@ -10,6 +10,7 @@
 'use strict';
 
 const H = require('../constants');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 const worker = require('../worker');
 
 const fs = require('graceful-fs');
@@ -21,6 +22,7 @@ let readFileSync;
 let workerError;
 
 describe('worker', () => {
+  skipOnWindows.suite();
 
   beforeEach(() => {
     mockFs = {

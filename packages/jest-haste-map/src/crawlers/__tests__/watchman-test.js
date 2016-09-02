@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const skipOnWindows = require('jest-util/build/skipOnWindows');
+
 jest.mock('fb-watchman', () => {
   const Client = jest.fn();
   Client.prototype.command = jest.fn((args, callback) => {
@@ -30,6 +32,7 @@ let mockResponse;
 let mockFiles;
 
 describe('watchman watch', () => {
+  skipOnWindows.suite();
 
   beforeEach(() => {
     watchmanCrawl = require('../watchman');

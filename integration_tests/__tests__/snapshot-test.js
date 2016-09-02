@@ -12,6 +12,7 @@
 const fs = require('fs');
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir =
@@ -54,6 +55,7 @@ const getSnapshotOfCopy = () => {
 };
 
 describe('Snapshot', () => {
+  skipOnWindows.suite();
 
   const cleanup = () => {
     [
