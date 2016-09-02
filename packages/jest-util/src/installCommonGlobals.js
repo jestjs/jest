@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @flow
- */
+* Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+*
+* This source code is licensed under the BSD-style license found in the
+* LICENSE file in the root directory of this source tree. An additional grant
+* of patent rights can be found in the PATENTS file in the same directory.
+*
+* @flow
+*/
 'use strict';
 
 import type {ConfigGlobals} from 'types/Config';
@@ -31,7 +31,15 @@ module.exports = (global: Global, globals: ConfigGlobals) => {
 
   // `global.process` is mutated by FakeTimers. Make a copy of the
   // object for the jsdom environment to prevent memory leaks.
-  global.process = Object.assign({}, process);
+  // Overwrite toString to make it look like the real process object
+  let toStringOverwrite;
+  if (Symbol && Symbol.toStringTag) {
+    // $FlowFixMe
+    toStringOverwrite = {
+      [Symbol.toStringTag]: 'process',
+    };
+  }
+  global.process = Object.assign({}, process, toStringOverwrite);
   global.process.setMaxListeners = process.setMaxListeners.bind(process);
   global.process.getMaxListeners = process.getMaxListeners.bind(process);
   global.process.emit = process.emit.bind(process);
