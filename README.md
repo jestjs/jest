@@ -254,6 +254,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mock.instances`](https://facebook.github.io/jest/docs/api.html#mockfn-mock-instances)
   - [`mockFn.mockClear()`](https://facebook.github.io/jest/docs/api.html#mockfn-mockclear)
   - [`mockFn.mockImplementation(fn)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockimplementation-fn)
+  - [`mockFn.mockImplementationOnce(fn)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockimplementationonce-fn)
   - [`mockFn.mockReturnThis()`](https://facebook.github.io/jest/docs/api.html#mockfn-mockreturnthis)
   - [`mockFn.mockReturnValue(value)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalue-value)
   - [`mockFn.mockReturnValueOnce(value)`](https://facebook.github.io/jest/docs/api.html#mockfn-mockreturnvalueonce-value)
@@ -842,6 +843,32 @@ SomeClass.mockImplementation(() => {
 const some = new SomeClass()
 some.m('a', 'b')
 console.log('Calls to m: ', mMock.mock.calls)
+```
+
+### `mockFn.mockImplementationOnce(fn)`
+Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.
+
+```
+var myMockFn = jest.fn()
+  .mockImplementationOnce(cb => cb(null, true))
+  .mockImplementationOnce(cb => cb(null, false));
+
+myMockFn((err, val) => console.log(val));
+> true
+
+myMockFn((err, val) => console.log(val));
+> false
+```
+
+When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if they were called:
+
+```
+var myMockFn = jest.fn(() => 'default')
+  .mockImplementationOnce(() => 'first call')
+  .mockImplementationOnce(() => 'second call');
+
+console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+> 'first call', 'second call', 'default', 'default'
 ```
 
 ### `mockFn.mockReturnThis()`

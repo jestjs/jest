@@ -60,6 +60,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mock.instances`](#mockfn-mock-instances)
   - [`mockFn.mockClear()`](#mockfn-mockclear)
   - [`mockFn.mockImplementation(fn)`](#mockfn-mockimplementation-fn)
+  - [`mockFn.mockImplementationOnce(fn)`](#mockfn-mockimplementationonce-fn)
   - [`mockFn.mockReturnThis()`](#mockfn-mockreturnthis)
   - [`mockFn.mockReturnValue(value)`](#mockfn-mockreturnvalue-value)
   - [`mockFn.mockReturnValueOnce(value)`](#mockfn-mockreturnvalueonce-value)
@@ -648,6 +649,32 @@ SomeClass.mockImplementation(() => {
 const some = new SomeClass()
 some.m('a', 'b')
 console.log('Calls to m: ', mMock.mock.calls)
+```
+
+### `mockFn.mockImplementationOnce(fn)`
+Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.
+
+```
+var myMockFn = jest.fn()
+  .mockImplementationOnce(cb => cb(null, true))
+  .mockImplementationOnce(cb => cb(null, false));
+
+myMockFn((err, val) => console.log(val));
+> true
+
+myMockFn((err, val) => console.log(val));
+> false
+```
+
+When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if they were called:
+
+```
+var myMockFn = jest.fn(() => 'default')
+  .mockImplementationOnce(() => 'first call')
+  .mockImplementationOnce(() => 'second call');
+
+console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+> 'first call', 'second call', 'default', 'default'
 ```
 
 ### `mockFn.mockReturnThis()`
