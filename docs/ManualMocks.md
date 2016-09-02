@@ -24,7 +24,7 @@ a node module, the mock should be placed in the same parent directory as the
   config
 ```
 
-When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleNmae')`.
+When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`.
 
 Here's a contrived example where we have a module that provides a summary of
 all the files in a given directory.
