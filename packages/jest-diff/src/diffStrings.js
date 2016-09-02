@@ -40,7 +40,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): ?string {
     const lines = part.value.split('\n');
     const color = part.added
       ? chalk.red
-      : (part.removed ? chalk.green : chalk.white);
+      : (part.removed ? chalk.green : chalk.dim);
 
     if (lines[lines.length - 1] === '') {
       lines.pop();
