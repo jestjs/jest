@@ -13,10 +13,15 @@ const {linkJestPackage} = require('../utils');
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 const DIR = path.resolve(__dirname, '../coverage_report');
 
-beforeEach(() => linkJestPackage('babel-jest', DIR));
+if (process.platform !== 'win32') {
+  beforeEach(() => linkJestPackage('babel-jest', DIR));
+}
+
+skipOnWindows.suite();
 
 test('outputs coverage report', () => {
   const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage']);

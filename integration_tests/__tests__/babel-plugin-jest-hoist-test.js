@@ -12,14 +12,19 @@
 const {linkJestPackage, run} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
-beforeEach(() => {
-  run('npm i', DIR);
-  linkJestPackage('babel-plugin-jest-hoist', DIR);
-  linkJestPackage('babel-jest', DIR);
-});
+skipOnWindows.suite();
+
+if (process.platform !== 'win32') {
+  beforeEach(() => {
+    run('npm i', DIR);
+    linkJestPackage('babel-plugin-jest-hoist', DIR);
+    linkJestPackage('babel-jest', DIR);
+  });
+}
 
 it('sucessfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
   const {json} = runJest.json(DIR, ['--no-cache']);

@@ -8,8 +8,10 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 describe('Stack Trace', () => {
+  skipOnWindows.suite();
 
   it('prints a stack trace for runtime errors', () => {
     const result = runJest('stack_trace', ['runtime-error-test.js']);

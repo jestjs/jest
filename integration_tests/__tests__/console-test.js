@@ -10,6 +10,9 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
+
+skipOnWindows.suite();
 
 test('console printing', () => {
   const result = runJest('console');

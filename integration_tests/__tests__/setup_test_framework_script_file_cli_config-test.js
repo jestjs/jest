@@ -8,8 +8,11 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('jest-util/build/skipOnWindows');
 
 describe('--setupTestFrameworkScriptFile setup.js', () => {
+  skipOnWindows.suite();
+
   it('requires a setup file before each file in the suite', () => {
     const result = runJest.json('setup_test_framework_script_file_cli_config', [
       '--setupTestFrameworkScriptFile',
