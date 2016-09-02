@@ -281,7 +281,7 @@ const runCLI = (
                 results.snapshot.failure
                   ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
                   : null,
-                chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to enter a new test pattern.'),
+                chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
                 chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
                 chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
               ];
