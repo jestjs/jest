@@ -75,6 +75,14 @@ function _replaceRootDirTags(rootDir, config) {
   return config;
 }
 
+/**
+ * Finds the test environment to use:
+ *
+ * 1. looks for jest-environment-<name> relative to project.
+ * 1. looks for jest-environment-<name> relative to Jest.
+ * 1. looks for <name> relative to project.
+ * 1. looks for <name> relative to Jest.
+ */
 function getTestEnvironment(config) {
   const env = config.testEnvironment;
   let module = Resolver.findNodeModule(`jest-environment-${env}`, {
@@ -84,14 +92,14 @@ function getTestEnvironment(config) {
     return module;
   }
 
+  try {
+    return require.resolve(`jest-environment-${env}`);
+  } catch (e) {}
+
   module = Resolver.findNodeModule(env, {basedir: config.rootDir});
   if (module) {
     return module;
   }
-
-  try {
-    return require.resolve(`jest-environment-${env}`);
-  } catch (e) {}
 
   try {
     return require.resolve(env);
