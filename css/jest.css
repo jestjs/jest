@@ -1615,6 +1615,13 @@ div.video iframe {
   width: 100%;
 }
 
+div.video-shoutout {
+  display: block;
+  font-size: 80%;
+  margin: 0 5%;
+  text-align: right;
+}
+
 @media only screen and (max-width: 1023px) {
   div.video {
     height: 300px;
