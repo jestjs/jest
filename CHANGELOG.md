@@ -1,5 +1,11 @@
 ## master
 
+## jest 15.1.1
+
+* Fixed issues with test paths that include hyphens on Windows.
+* Fixed `testEnvironment` resolution.
+* Updated watch file name pattern input.
+
 ## jest 15.1.0
 
 * Pretty printer updates for React and global window objects.
