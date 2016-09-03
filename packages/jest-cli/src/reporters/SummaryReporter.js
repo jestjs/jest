@@ -77,7 +77,7 @@ class SummareReporter extends BaseReporter {
       ? FAIL_COLOR
       : PASS_COLOR;
 
-    let results = chalk.bold('Test Summary') + '\n' +
+    let results = '\n' + chalk.bold('Test Summary') + '\n' +
       ARROW + runnerContext.getTestSummary() + '\n' + arrowColor(ARROW);
     if (snapshots.failure) {
       results += FAIL_COLOR('snapshot failure') + ', ';
