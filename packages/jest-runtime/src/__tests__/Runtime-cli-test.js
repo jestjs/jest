@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 const spawnSync = require('child_process').spawnSync;
 const path = require('path');
 

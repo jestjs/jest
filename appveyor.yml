@@ -1,6 +1,6 @@
 environment:
   matrix:
-    - nodejs_version: "4"
+    #- nodejs_version: "4"
     - nodejs_version: "6"
 
 install:
@@ -12,10 +12,11 @@ install:
 
 test_script:
   - npm run build
-  # Hax - Some snapshot tests don't currently work on Windows, so the tests are
+  # Some snapshot tests don't currently work on Windows, so the tests are
   # commented out. Jest complains that obsolete snapshot files exist, so the
   # "-u" will just delete those snapshots when running in the AppVeyor run,
-  # instead of failing the build.
+  # instead of failing the build. Note that this means that all snapshot tests
+  # WILL ALWAYS PASS, as it updates the snapshots.
   - npm run jest -- -u --color
 
 # Don't actually build.

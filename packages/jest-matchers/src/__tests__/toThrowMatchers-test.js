@@ -12,7 +12,7 @@
 
 const jestExpect = require('../').expect;
 const matchErrorSnapshot = require('./_matchErrorSnapshot');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 // Custom Error class because node versions have different stack trace strings.
 class Error {

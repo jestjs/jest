@@ -11,7 +11,7 @@
 const {linkJestPackage} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 describe('jest --debug', () => {
   skipOnWindows.suite();

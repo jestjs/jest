@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 jest.mock('child_process', () => ({
   // If this does not throw, we'll use the (mocked) watchman crawler
