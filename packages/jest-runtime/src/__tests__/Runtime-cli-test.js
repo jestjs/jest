@@ -9,21 +9,18 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
 const spawnSync = require('child_process').spawnSync;
 const path = require('path');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 
-const run = args => spawnSync(JEST_RUNTIME, args, {
+const run = args => spawnSync('node', [JEST_RUNTIME].concat(args), {
   encoding: 'utf8',
   cwd: process.cwd(),
   env: process.env,
 });
 
 describe('Runtime', () => {
-  skipOnWindows.suite();
-
   describe('cli', () => {
     it('fails with no path', () => {
       const expectedOutput =

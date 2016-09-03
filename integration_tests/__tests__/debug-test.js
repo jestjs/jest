@@ -11,11 +11,8 @@
 const {linkJestPackage} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 describe('jest --debug', () => {
-  skipOnWindows.suite();
-
   const dir = path.resolve(__dirname, '..', 'verbose_reporter');
 
   beforeEach(() => {

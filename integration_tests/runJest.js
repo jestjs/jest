@@ -32,9 +32,15 @@ function runJest(dir, args) {
     `);
   }
 
-  const result = spawnSync(JEST_PATH, args || [], {
+  const fullArgs = [].concat(JEST_PATH, args);
+  const result = spawnSync('node', fullArgs || [], {
     cwd: dir,
   });
+
+  if (result.error) {
+    // Failed to execute the process - Rethrow the error.
+    throw result.error;
+  }
 
   result.stdout = result.stdout && result.stdout.toString();
   result.stderr = result.stderr && result.stderr.toString();
