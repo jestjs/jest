@@ -33,7 +33,7 @@ const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
 
-const CLEAR = '\x1bc';
+const CLEAR = '\x1B[2J\x1B[H';
 const VERSION = require('../package.json').version;
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
