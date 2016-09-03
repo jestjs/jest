@@ -10,8 +10,11 @@
 
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 const dir = path.resolve(__dirname, '../failures');
+
+skipOnWindows.suite();
 
 test('throwing not Error objects', () => {
   let stderr;

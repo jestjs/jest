@@ -9,8 +9,11 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 describe('testcheck', () => {
+  skipOnWindows.suite();
+
   it('works', () => {
     const result = runJest.json('testcheck', ['testcheck-test.js']);
     const json = result.json;

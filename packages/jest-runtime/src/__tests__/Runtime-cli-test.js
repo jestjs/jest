@@ -9,6 +9,7 @@
  */
 'use strict';
 
+const skipOnWindows = require('skipOnWindows');
 const spawnSync = require('child_process').spawnSync;
 const path = require('path');
 
@@ -21,6 +22,8 @@ const run = args => spawnSync(JEST_RUNTIME, args, {
 });
 
 describe('Runtime', () => {
+  skipOnWindows.suite();
+
   describe('cli', () => {
     it('fails with no path', () => {
       const expectedOutput =

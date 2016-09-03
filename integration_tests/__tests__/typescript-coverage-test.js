@@ -11,6 +11,9 @@
 const {run} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
+
+skipOnWindows.suite();
 
 it('instruments and collects coverage for typescript files', () => {
   const dir = path.resolve(__dirname, '../typescript-coverage');

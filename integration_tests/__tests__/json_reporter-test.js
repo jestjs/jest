@@ -8,8 +8,11 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 describe('JSON Reporter', () => {
+  skipOnWindows.suite();
+
   it('outputs coverage report', () => {
     const result = runJest('json_reporter', ['--json']);
     const stdout = result.stdout.toString();

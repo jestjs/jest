@@ -11,13 +11,17 @@
 const {linkJestPackage, run} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 describe('babel-jest', () => {
+  skipOnWindows.suite();
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    run('npm install', dir);
-    linkJestPackage('babel-jest', dir);
+    if (process.platform !== 'win32') {
+      run('npm install', dir);
+      linkJestPackage('babel-jest', dir);
+    }
   });
 
   it('runs transpiled code', () => {
