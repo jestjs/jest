@@ -60,24 +60,37 @@ const jestExpect = require('../').expect;
   });
 });
 
-describe('.toHaveBeenCalledTimes()', () => {
+describe('toHaveBeenCalledTimes', () => {
   it('accepts only numbers', () => {
     const fn = jasmine.createSpy('fn');
     fn();
     jestExpect(fn).toHaveBeenCalledTimes(1);
 
     [{}, [], true, 'a', new Map(), () => {}].forEach(value => {
-      expect(() => jestExpect(fn).toHaveBeenCalledTimes(value))
-        .toThrowError(
-          /toHaveBeenCalledTimes expected value should be a number/);
+      let error;
+      try {
+        jestExpect(fn).toHaveBeenCalledTimes(value);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toBeDefined();
+      expect(error).toMatchSnapshot();
     });
   });
 
   it('verifies that actual is a Spy', () => {
     const fn = () => {};
 
-    expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
-      .toThrowError(/toHaveBeenCalledTimes matcher can only be used on a spy or mock function/);
+    let error;
+    try {
+      jestExpect(fn).toHaveBeenCalledTimes(2);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
   });
 
   it('works both for Mock functions and Spies', () => {
@@ -94,8 +107,16 @@ describe('.toHaveBeenCalledTimes()', () => {
     fn();
 
     jestExpect(fn).toHaveBeenCalledTimes(2);
-    expect(() => jestExpect(fn).not.toHaveBeenCalledTimes(2))
-      .toThrowError(/spy not to be called 2 times, but it was called 2 times/);
+
+    let error;
+    try {
+      jestExpect(fn).not.toHaveBeenCalledTimes(2);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
   });
 
   it('fails if function called more than expected times', () => {
@@ -106,8 +127,16 @@ describe('.toHaveBeenCalledTimes()', () => {
 
     jestExpect(fn).toHaveBeenCalledTimes(3);
     jestExpect(fn).not.toHaveBeenCalledTimes(2);
-    expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
-      .toThrowError(/spy to be called 2 times, but it was called 3 times/);
+
+    let error;
+    try {
+      jestExpect(fn).toHaveBeenCalledTimes(2);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
   });
 
   it('fails if function called less than expected times', () => {
@@ -116,8 +145,16 @@ describe('.toHaveBeenCalledTimes()', () => {
 
     jestExpect(fn).toHaveBeenCalledTimes(1);
     jestExpect(fn).not.toHaveBeenCalledTimes(2);
-    expect(() => jestExpect(fn).toHaveBeenCalledTimes(2))
-      .toThrowError(/spy to be called 2 times, but it was called 1 time/);
+
+    let error;
+    try {
+      jestExpect(fn).toHaveBeenCalledTimes(2);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error).toMatchSnapshot();
   });
 });
 
