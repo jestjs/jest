@@ -9,7 +9,7 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 describe('async jasmine', () => {
   skipOnWindows.suite();

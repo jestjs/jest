@@ -10,7 +10,7 @@
 
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 const DIR = path.resolve(__dirname, '../empty_suite_error');
 

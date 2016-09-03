@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {

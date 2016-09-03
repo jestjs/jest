@@ -10,7 +10,7 @@
 'use strict';
 
 const H = require('../constants');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 const worker = require('../worker');
 
 const fs = require('graceful-fs');

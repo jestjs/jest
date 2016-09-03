@@ -13,7 +13,7 @@ const {linkJestPackage} = require('../utils');
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 const DIR = path.resolve(__dirname, '../coverage_report');
 

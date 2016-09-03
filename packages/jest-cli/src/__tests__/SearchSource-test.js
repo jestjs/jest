@@ -12,7 +12,7 @@
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
 const path = require('path');
-const skipOnWindows = require('jest-util/build/skipOnWindows');
+const skipOnWindows = require('skipOnWindows');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
