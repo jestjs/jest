@@ -10,6 +10,9 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
+
+skipOnWindows.suite();
 
 test('Verbose Reporter', () => {
   const result = runJest('verbose_reporter');

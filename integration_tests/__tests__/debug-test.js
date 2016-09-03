@@ -11,12 +11,17 @@
 const {linkJestPackage} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 describe('jest --debug', () => {
+  skipOnWindows.suite();
+
   const dir = path.resolve(__dirname, '..', 'verbose_reporter');
 
   beforeEach(() => {
-    linkJestPackage('babel-jest', dir);
+    if (process.platform !== 'win32') {
+      linkJestPackage('babel-jest', dir);
+    }
   });
 
   it('outputs debugging info before running the test', () => {

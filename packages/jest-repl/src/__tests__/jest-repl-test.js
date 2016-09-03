@@ -9,12 +9,15 @@
  */
 'use strict';
 
+const skipOnWindows = require('skipOnWindows');
 const spawnSync = require('child_process').spawnSync;
 const path = require('path');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
 describe('Repl', () => {
+  skipOnWindows.suite();
+
   describe('cli', () => {
     it('runs without errors', () => {
       const output = spawnSync(JEST_RUNTIME, [], {

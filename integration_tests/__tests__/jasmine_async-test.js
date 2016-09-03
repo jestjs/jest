@@ -9,8 +9,11 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 describe('async jasmine', () => {
+  skipOnWindows.suite();
+
   it('works with beforeAll', () => {
     const result = runJest.json(
       'jasmine_async',
