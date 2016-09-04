@@ -10,6 +10,8 @@
 
 'use strict';
 
+const {normalizePathsInSnapshot} = require('jest-util');
+
 module.exports = fn => {
   let error;
 
@@ -20,5 +22,5 @@ module.exports = fn => {
   }
 
   expect(error).toBeDefined();
-  expect(error.message).toMatchSnapshot();
+  expect(normalizePathsInSnapshot(error.message)).toMatchSnapshot();
 };
