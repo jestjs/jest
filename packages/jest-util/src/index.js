@@ -87,6 +87,19 @@ const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
   }
 };
 
+/**
+ * Normalizes relative paths to always use "/", even on Windows where "\" is the
+ * native path separator. This is so snapshots recorded on Linux are still
+ * considered valid when the test is ran on Windows, and vice versa.
+ */
+const normalizePathsInSnapshot = (input: string) => {
+  if (process.platform !== 'win32') {
+    return input;
+  }
+  // Look for strings that "look like" file paths, and swap "\" for "/".
+  return input.replace(/\b([^ ]+\\[^ ]+)\b/g, path => path.replace(/\\/g, '/'));
+}
+
 module.exports = {
   Console,
   FakeTimers,
@@ -101,6 +114,7 @@ module.exports = {
   formatExecError,
   getPackageRoot,
   installCommonGlobals,
+  normalizePathsInSnapshot,
   replacePathSepForRegex,
   separateMessageFromStack,
   warnAboutUnrecognizedOptions,

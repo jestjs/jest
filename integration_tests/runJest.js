@@ -32,7 +32,7 @@ function runJest(dir, args) {
     `);
   }
 
-  const fullArgs = [].concat(JEST_PATH, args);
+  const fullArgs = [JEST_PATH].concat(args);
   const result = spawnSync('node', fullArgs || [], {
     cwd: dir,
   });

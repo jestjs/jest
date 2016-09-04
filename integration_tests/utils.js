@@ -8,11 +8,13 @@
 
 const {spawnSync} = require('child_process');
 const fs = require('fs');
+const {createDirectory} = require('jest-util');
 const path = require('path');
 
 const run = (cmd, cwd) => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd};
+  // "shell: true" required to spawn npm on Windows
+  const spawnOptions = {cwd, shell: true};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
 
   if (result.status !== 0) {
@@ -33,8 +35,14 @@ const linkJestPackage = (packageName, cwd) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/');
-  run(`mkdir -p ${destination}`);
-  return run(`ln -sf ${packagePath} ${destination}`);
+  const destinationPackage = path.join(destination, packageName);
+  createDirectory(destination);
+
+  // Remove any existing symlink
+  if (fs.existsSync(destinationPackage)) {
+    fs.unlinkSync(destinationPackage);
+  }
+  fs.symlinkSync(packagePath, destinationPackage, 'dir');
 };
 
 const fileExists = filePath => {
