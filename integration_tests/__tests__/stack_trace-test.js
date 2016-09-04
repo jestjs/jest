@@ -8,10 +8,25 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
+const {escapePathForRegex} = require('jest-util');
 
 describe('Stack Trace', () => {
-  skipOnWindows.suite();
+  beforeEach(() => {
+    jasmine.addMatchers({
+      toContainPath(util, customEqualityTesters) {
+        return {
+          compare(actual, expected) {
+            const path = escapePathForRegex(expected);
+            const regex = new RegExp('\\s+at\\s(?:.+?)\\s\\(' + path);
+            return {
+              pass: regex.test(actual),
+              message: 'Result does not contain "' + expected + '": ' + actual,
+            };
+          }
+        };
+      },
+    });
+  });
 
   it('prints a stack trace for runtime errors', () => {
     const result = runJest('stack_trace', ['runtime-error-test.js']);
@@ -24,9 +39,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/
     );
-    expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/
-    );
+    expect(stderr).toContainPath('__tests__/runtime-error-test.js');
   });
 
   it('does not print a stack trace for runtime errors when --noStackTrace is given', () => {
@@ -44,9 +57,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/
     );
-    expect(stderr).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/runtime-error-test\.js/
-    );
+    expect(stderr).not.toContainPath('__tests__/runtime-error-test.js');
   });
 
   it('prints a stack trace for matching errors', () => {
@@ -56,9 +67,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(/1 test failed, 0 tests passed/);
     expect(result.status).toBe(1);
 
-    expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/
-    );
+    expect(stderr).toContainPath('__tests__/stack-trace-test.js');
   });
 
   it('does not print a stack trace for matching errors when --noStackTrace is given', () => {
@@ -71,9 +80,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(/1 test failed, 0 tests passed/);
     expect(result.status).toBe(1);
 
-    expect(stderr).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/stack-trace-test\.js/
-    );
+    expect(stderr).not.toContainPath('__tests__/stack-trace-test.js');
   });
 
   it('prints a stack trace for errors', () => {
@@ -86,9 +93,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(/this is unexpected\./);
     expect(stderr).toMatch(/this is a string\. thrown/);
 
-    expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
-    );
+    expect(stderr).toContainPath('__tests__/test-error-test.js');
 
     // Make sure we show Jest's jest-resolve as part of the stack trace
     /* eslint-disable max-len */
@@ -97,8 +102,9 @@ describe('Stack Trace', () => {
     );
     /* eslint-enable max-len */
 
+    const path = escapePathForRegex('jest-resolve/build/index.js');
     expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/
+      new RegExp('\\s+at\\s(?:.+?)\\s\\((?:.+?)' + path)
     );
   });
 
@@ -112,9 +118,7 @@ describe('Stack Trace', () => {
     expect(stderr).toMatch(/3 tests failed, 0 tests passed/);
     expect(result.status).toBe(1);
 
-    expect(stderr).not.toMatch(
-      /\s+at\s(?:.+?)\s\(__tests__\/test-error-test\.js/
-    );
+    expect(stderr).not.toContainPath('__tests__/test-error-test.js');
   });
 
 });
