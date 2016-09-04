@@ -22,7 +22,7 @@ describe('Stack Trace', () => {
               pass: regex.test(actual),
               message: 'Result does not contain "' + expected + '": ' + actual,
             };
-          }
+          },
         };
       },
     });

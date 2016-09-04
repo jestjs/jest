@@ -98,7 +98,7 @@ const normalizePathsInSnapshot = (input: string) => {
   }
   // Look for strings that "look like" file paths, and swap "\" for "/".
   return input.replace(/\b([^ ]+\\[^ ]+)\b/g, path => path.replace(/\\/g, '/'));
-}
+};
 
 module.exports = {
   Console,

@@ -9,7 +9,6 @@
  */
 'use strict';
 
-const path = require('path');
 const runJest = require('../runJest');
 const {normalizePathsInSnapshot} = require('jest-util');
 
