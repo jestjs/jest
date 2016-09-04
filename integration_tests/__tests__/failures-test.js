@@ -8,26 +8,24 @@
 
 'use strict';
 
+const {normalizePathsInSnapshot} = require('jest-util');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 const dir = path.resolve(__dirname, '../failures');
-
-skipOnWindows.suite();
 
 test('throwing not Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;
-  expect(
+  expect(normalizePathsInSnapshot(
     stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
-  ).toMatchSnapshot();
+  )).toMatchSnapshot();
   stderr = runJest(dir, ['throw-string-test.js']).stderr;
-  expect(
+  expect(normalizePathsInSnapshot(
     stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
-  ).toMatchSnapshot();
+  )).toMatchSnapshot();
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
-  expect(
+  expect(normalizePathsInSnapshot(
     stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
-  ).toMatchSnapshot();
+  )).toMatchSnapshot();
 });
