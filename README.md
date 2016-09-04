@@ -7,7 +7,7 @@ Painless JavaScript Unit Testing
 
 - **Sandboxed and Fast**: Jest virtualizes JavaScript environments, provides browser mocks and runs tests in parallel across workers.
 
-- **Mock by Default**: Jest [automatically mocks](http://facebook.github.io/jest/docs/automatic-mocking.html#content) JavaScript [modules](http://facebook.github.io/jest/docs/common-js-testing.html#content), making most existing code testable.
+- **Snapshot Testing**: Jest can [capture snapshots](http://facebook.github.io/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to write tests quickly and it provides a seamless update experience.
 
 ## Getting Started
 
