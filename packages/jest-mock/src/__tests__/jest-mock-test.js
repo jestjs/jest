@@ -91,6 +91,22 @@ describe('moduleMocker', () => {
       expect(fooMock.nonEnumGetter).toBeUndefined();
     });
 
+    it('mocks getters of ES modules', () => {
+      const foo = Object.defineProperties({}, {
+        __esModule: {
+          value: true,
+        },
+        enumGetter: {
+          enumerable: true,
+          get: () => 10,
+        },
+      });
+      const fooMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(foo),
+      );
+      expect(fooMock.enumGetter).toBeDefined();
+    });
+
     it('mocks ES2015 non-enumerable methods', () => {
       class ClassFoo {
         foo() {}

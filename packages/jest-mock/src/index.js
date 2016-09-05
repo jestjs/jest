@@ -141,7 +141,7 @@ function getSlots(object?: Object): Array<string> {
       const prop = ownNames[i];
       if (!isReadonlyProp(object, prop)) {
         const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-        if (!propDesc.get) {
+        if (!propDesc.get || object.__esModule) {
           slots[prop] = true;
         }
       }
