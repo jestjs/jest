@@ -98,6 +98,7 @@ For webpack's `moduleDirectories`, and `extensions` options there are direct ana
 
 *Note: the `modulesDirectories` option in webpack is called `moduleDirectories` in Jest.*
 
+*Note: <rootDir> is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your package.json is located unless you specify a custom `rootDir` option in your configuration.*
 
 ```js
 // package.json
