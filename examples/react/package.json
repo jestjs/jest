@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "react": "~15.2.0",
-    "react-dom": "~15.2.0"
+    "react": "~15.3.1",
+    "react-dom": "~15.3.1"
   },
   "devDependencies": {
     "babel-jest": "*",
@@ -9,7 +9,7 @@
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
     "jest-cli": "*",
-    "react-addons-test-utils": "~0.14.0"
+    "react-addons-test-utils": "~15.3.1"
   },
   "scripts": {
     "test": "jest"
