@@ -98,6 +98,7 @@ For webpack's `moduleDirectories`, and `extensions` options there are direct ana
 
 *Note: the `modulesDirectories` option in webpack is called `moduleDirectories` in Jest.*
 
+*Note: `<rootDir>` is the directory where you execute the `jest` command.*
 
 ```js
 // package.json
