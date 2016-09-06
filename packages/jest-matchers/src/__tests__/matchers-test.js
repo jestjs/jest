@@ -106,6 +106,39 @@ describe('.toEqual()', () => {
   });
 });
 
+describe('.toBeInstanceOf()', () => {
+  class A {}
+  class B {}
+
+  [
+    [new Map(), Map],
+    [[], Array],
+    [new A(), A],
+  ].forEach(([a, b]) => {
+    test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
+      matchErrorSnapshot(() => jestExpect(a).not.toBeInstanceOf(b));
+      jestExpect(a).toBeInstanceOf(b);
+    });
+  });
+
+  [
+    ['a', String],
+    [1, Number],
+    [true, Boolean],
+    [new A(), B],
+    [Object.create(null), A],
+  ].forEach(([a, b]) => {
+    test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
+      matchErrorSnapshot(() => jestExpect(a).toBeInstanceOf(b));
+      jestExpect(a).not.toBeInstanceOf(b);
+    });
+  });
+
+  it('throws if constructor is not a function', () => {
+    matchErrorSnapshot(() => jestExpect({}).toBeInstanceOf(4));
+  });
+});
+
 describe('.toBeTruthy(), .toBeFalsy()', () => {
   it('does not accept arguments', () => {
     matchErrorSnapshot(() => jestExpect(0).toBeTruthy(null));
