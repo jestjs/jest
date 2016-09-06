@@ -1,7 +1,7 @@
 # [Jest](http://facebook.github.io/jest/) [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![npm version](https://badge.fury.io/js/jest-cli.svg)](http://badge.fury.io/js/jest-cli)
 
 
-Painless JavaScript Unit Testing
+Painless JavaScript Testing
 
 - **Adaptable**: Jest uses Jasmine assertions by default and Jest is modular, extendible and configurable.
 

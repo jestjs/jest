@@ -2,7 +2,7 @@ var Button = require('Button');
 
 var siteConfig = {
   title: "Jest",
-  tagline: "Painless JavaScript Unit Testing",
+  tagline: "Painless JavaScript Testing",
   description: "Jest is a JavaScript unit testing framework, used by Facebook to test services and React applications.",
   url: "https://facebook.github.io",
   baseUrl: "/jest/",
