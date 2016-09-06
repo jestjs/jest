@@ -11,6 +11,8 @@ Painless JavaScript Testing
 
 ## Getting Started
 
+[Egghead.io video](https://egghead.io/lessons/javascript-test-javascript-with-jest)
+
 <generated_getting_started_start />
 Install Jest with `npm` by running:
 
@@ -59,6 +61,8 @@ The [React](https://github.com/facebook/react/tree/master/src/renderers/shared/s
 **And you are ready to use Jest!**
 
 ### Babel Integration
+
+[Egghead.io video](https://egghead.io/lessons/javascript-add-babel-integration-with-jest)
 
 If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled:
 
