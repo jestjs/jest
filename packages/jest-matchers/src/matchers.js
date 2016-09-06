@@ -111,6 +111,35 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toBeInstanceOf(received: any, constructor: Function) {
+    const constType = getType(constructor);
+
+    if (constType !== 'function') {
+      throw new Error(
+        matcherHint('[.not].toBeInstanceOf', 'value', 'constructor') + `\n\n` +
+        `Expected constructor to be a function. Instead got:\n` +
+        `  ${printExpected(constType)}`,
+      );
+    }
+    const pass = received instanceof constructor;
+
+    const message = pass
+      ? () => matcherHint('.not.toBeInstanceOf', 'value', 'constructor') + '\n\n' +
+        `Expected value not to be an instance of:\n` +
+        `  ${printExpected(constructor.name || constructor)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}\n`
+      : () => matcherHint('.toBeInstanceOf', 'value', 'constructor') + '\n\n' +
+        `Expected value to be an instance of:\n` +
+        `  ${printExpected(constructor.name || constructor)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}\n` +
+        `Constructor:\n` +
+        `  ${printReceived(received.constructor && received.constructor.name)}`;
+
+    return {message, pass};
+  },
+
   toBeTruthy(actual: any, expected: void) {
     ensureNoExpected(expected, 'toBeTruthy');
     const pass = !!actual;

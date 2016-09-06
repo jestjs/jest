@@ -1008,6 +1008,98 @@ Received:
   [31m18[39m"
 `;
 
+exports[`.toBeInstanceOf() failing "a" and "function String() { [native code] }" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value to be an instance of:
+  [32m\"String\"[39m
+Received:
+  [31m\"a\"[39m
+Constructor:
+  [31m\"String\"[39m"
+`;
+
+exports[`.toBeInstanceOf() failing 1 and "function Number() { [native code] }" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value to be an instance of:
+  [32m\"Number\"[39m
+Received:
+  [31m1[39m
+Constructor:
+  [31m\"Number\"[39m"
+`;
+
+exports[`.toBeInstanceOf() failing true and "function Boolean() { [native code] }" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value to be an instance of:
+  [32m\"Boolean\"[39m
+Received:
+  [31mtrue[39m
+Constructor:
+  [31m\"Boolean\"[39m"
+`;
+
+exports[`.toBeInstanceOf() failing {} and "class A {}" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value to be an instance of:
+  [32m\"A\"[39m
+Received:
+  [31m{}[39m
+Constructor:
+  [31m\"undefined\"[39m"
+`;
+
+exports[`.toBeInstanceOf() failing {} and "class B {}" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value to be an instance of:
+  [32m\"B\"[39m
+Received:
+  [31m{}[39m
+Constructor:
+  [31m\"A\"[39m"
+`;
+
+exports[`.toBeInstanceOf() passing [] and "function Array() { [native code] }" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).not.toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value not to be an instance of:
+  [32m\"Array\"[39m
+Received:
+  [31m[][39m
+"
+`;
+
+exports[`.toBeInstanceOf() passing {} and "class A {}" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).not.toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value not to be an instance of:
+  [32m\"A\"[39m
+Received:
+  [31m{}[39m
+"
+`;
+
+exports[`.toBeInstanceOf() passing {} and "function Map() { [native code] }" 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m).not.toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected value not to be an instance of:
+  [32m\"Map\"[39m
+Received:
+  [31m{}[39m
+"
+`;
+
+exports[`.toBeInstanceOf() throws if constructor is not a function 1`] = `
+"[2mexpect([22m[31mvalue[39m[2m)[.not].toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
+
+Expected constructor to be a function. Instead got:
+  [31m\"number\"[39m"
+`;
+
 exports[`.toBeNaN() passes 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toBeNaN([22m[2m)[22m
 
