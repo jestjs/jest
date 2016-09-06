@@ -1097,7 +1097,7 @@ exports[`.toBeInstanceOf() throws if constructor is not a function 1`] = `
 "[2mexpect([22m[31mvalue[39m[2m)[.not].toBeInstanceOf([22m[32mconstructor[39m[2m)[22m
 
 Expected constructor to be a function. Instead got:
-  [31m\"number\"[39m"
+  [32m\"number\"[39m"
 `;
 
 exports[`.toBeNaN() passes 1`] = `
