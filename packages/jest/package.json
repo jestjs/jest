@@ -1,6 +1,6 @@
 {
   "name": "jest",
-  "description": "Painless JavaScript Unit Testing.",
+  "description": "Painless JavaScript Testing.",
   "version": "15.1.1",
   "main": "build/jest.js",
   "dependencies": {
