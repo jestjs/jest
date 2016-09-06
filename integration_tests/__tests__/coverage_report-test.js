@@ -62,3 +62,16 @@ test('json reporter printing with --coverage', () => {
 
   expect(stderr).toMatchSnapshot();
 });
+
+test('outputs coverage report as json', () => {
+  const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage', '--json']);
+  expect(status).toBe(0);
+
+  try {
+    JSON.parse(stdout);
+  } catch (err) {
+    throw new Error(
+      'Can\'t parse the JSON result from stdout' + err.toString()
+    );
+  }
+});

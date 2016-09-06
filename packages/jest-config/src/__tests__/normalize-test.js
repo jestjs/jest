@@ -76,6 +76,12 @@ describe('normalize', () => {
     }).name).toBe('custom-name');
   });
 
+  it('sets coverageReporters correctly when argv.json is set', () => {
+    expect(normalize({
+      rootDir: '/root/path/foo',
+    }, {json: true}).coverageReporters).toEqual(['json', 'lcov', 'clover']);
+  });
+
   describe('rootDir', () => {
     it('throws if the config is missing a rootDir property', () => {
       expect(() => {
