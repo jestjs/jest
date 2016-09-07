@@ -50,7 +50,7 @@ Run `npm test`:
 PASS __tests__/sum-test.js
 ```
 
-Please read the [API documentation](https://facebook.github.io/jest/docs/api.html) to learn about all available assertions, ways of writing tests, configuration options and Jest specific APIs.
+Please read the [API documentation](https://facebook.github.io/jest/docs/api.html) to learn about all available assertions, ways of writing tests, configuration options and Jest specific APIs. There is also a great introductory guide available at [Plotly Academy](academy.plot.ly/react/6-testing) that walks you through testing a react and redux application.
 
 The code for this example is available at [examples/getting_started](https://github.com/facebook/jest/tree/master/examples/getting_started).
 
@@ -110,7 +110,7 @@ On subsequent test runs, Jest will compare the stored snapshot with the rendered
 
 ### Advanced Features
 
-#### Use the interactive mode mode to automatically re-run tests
+#### Use the interactive watch mode to automatically re-run tests
 
 ```
 npm test -- --watch
