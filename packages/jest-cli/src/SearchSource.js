@@ -121,7 +121,7 @@ class SearchSource {
 
     const testCases = Object.assign({}, this._testPathCases);
     if (testPathPattern) {
-      const regex = new RegExp(testPathPattern);
+      const regex = new RegExp(testPathPattern, 'i');
       testCases.testPathPattern = path => regex.test(path);
     }
 
