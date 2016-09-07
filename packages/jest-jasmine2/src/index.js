@@ -96,7 +96,19 @@ function jasmine2(
   env.addReporter(jasmineInterface.jsApiReporter);
 
   jasmineAsync.install(environment.global);
+
   environment.global.test = environment.global.it;
+  environment.global.it.only = environment.global.fit;
+  environment.global.test.only = environment.global.fit;
+  environment.global.it.skip = environment.global.xit;
+  environment.global.test.skip = environment.global.xit;
+  environment.global.xtest = environment.global.xit;
+  environment.global.context = environment.global.describe;
+  environment.global.xcontext = environment.global.xdescribe;
+  environment.global.context.skip = environment.global.xdescribe;
+  environment.global.describe.skip = environment.global.xdescribe;
+  environment.global.describe.only = environment.global.fdescribe;
+
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
