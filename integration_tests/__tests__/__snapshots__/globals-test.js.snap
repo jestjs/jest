@@ -1,0 +1,20 @@
+exports[`test global jest variables 1`] = `
+" PASS  __tests__/globals-test.js
+  ✓ it.only
+  ✓ test.only
+  ○ it
+  ○ test
+  ○ it.skip
+  ○ test.skip
+  ○ xit
+  ○ xtest
+  fdescribe
+    ✓ test
+  describe.only
+    ✓ test
+  describe
+    ○ test
+
+Test Summary
+ › Ran all tests."
+`;
