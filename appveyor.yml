@@ -21,3 +21,9 @@ test_script:
 
 # Don't actually build.
 build: off
+
+notifications:
+  - provider: Email
+    on_build_success: false
+    on_build_failure: false
+    on_build_status_changed: false
