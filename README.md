@@ -110,7 +110,7 @@ On subsequent test runs, Jest will compare the stored snapshot with the rendered
 
 ### Advanced Features
 
-#### Use the interactive mode mode to automatically re-run tests
+#### Use the interactive mode to automatically re-run tests
 
 ```
 npm test -- --watch
