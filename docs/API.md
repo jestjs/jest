@@ -120,6 +120,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testRegex` [string]](#testregex-string)
   - [`testResultsProcessor` [string]](#testresultsprocessor-string)
   - [`testRunner` [string]](#testrunner-string)
+  - [`timers` [string]](#timers-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
 
@@ -1157,6 +1158,11 @@ This option allows the use of a custom results processor. This processor must be
 (default: `jasmine2`)
 
 This option allows use of a custom test runner. The default is jasmine2. Jest also ships with jasmine1 which can enabled by setting this option to `jasmine1`. A custom test runner can be provided by specifying a path to a test runner implementation.
+
+### `timers` [string]
+(default: `real`)
+
+Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`.  Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
 
 ### `unmockedModulePathPatterns` [array<string>]
 (default: `[]`)
