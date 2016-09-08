@@ -154,7 +154,7 @@ const options = {
   env: {
     default: undefined,
     description:
-      'The test environment used for all tests. This can point to any file or' +
+      'The test environment used for all tests. This can point to any file or ' +
       'node module. Examples: `jsdom`, `node` or `path/to/my-environment.js`',
     type: 'string',
   },
