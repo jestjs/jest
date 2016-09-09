@@ -385,6 +385,10 @@ class Runtime {
     this._mockFactories[moduleID] = mockFactory;
   }
 
+  clearAllMocks() {
+    moduleMocker.clearAllMocks();
+  }
+
   _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
@@ -685,6 +689,10 @@ class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
+    const clearAllMocks = () => {
+      this.clearAllMocks();
+      return runtime;
+    };
     const useFakeTimers = () => {
       this._environment.fakeTimers.useFakeTimers();
       return runtime;
@@ -733,6 +741,8 @@ class Runtime {
 
       doMock: mock,
       mock,
+
+      clearAllMocks,
 
       resetModules,
       resetModuleRegistry: resetModules,

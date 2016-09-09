@@ -21,6 +21,12 @@ type MockFunctionMetadata = {
   value?: any,
 };
 
+type MockFunctionState = {
+  instances: Array<any>,
+  calls: Array<Array<any>>,
+};
+
+
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
 // $FlowFixMe
@@ -74,6 +80,8 @@ const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
   implements: true,
   instanceof: true,
 });
+
+let globalMockRegistry: WeakMap<Function, MockFunctionState> = new WeakMap();
 
 function isA(typeName: string, value: any): boolean {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
@@ -218,8 +226,7 @@ function makeComponent(metadata: MockFunctionMetadata): Mock {
     /* eslint-enable perfer-const */
     const specificReturnValues = [];
     const specificMockImpls = [];
-    const calls = [];
-    const instances = [];
+
     const prototype = (
       metadata.members &&
       metadata.members.prototype &&
@@ -227,8 +234,8 @@ function makeComponent(metadata: MockFunctionMetadata): Mock {
     ) || {};
     const prototypeSlots = getSlots(prototype);
     const mockConstructor = function() {
-      instances.push(this);
-      calls.push(Array.prototype.slice.call(arguments));
+      f.mock.instances.push(this);
+      f.mock.calls.push(Array.prototype.slice.call(arguments));
       if (this instanceof f) {
         // This is probably being called as a constructor
         prototypeSlots.forEach(slot => {
@@ -282,11 +289,28 @@ function makeComponent(metadata: MockFunctionMetadata): Mock {
     f = createMockFunction(metadata, mockConstructor);
     f._isMockFunction = true;
     f.getMockImplementation = () => mockImpl;
-    f.mock = {calls, instances};
+
+    globalMockRegistry.set(f, {calls: [], instances: []});
+
+    // $FlowFixMe - defineProperty getters not supported
+    Object.defineProperty(f, 'mock', {
+      configurable: false,
+      enumerable: true,
+
+      get: () => {
+        if (!globalMockRegistry.has(f)) {
+          globalMockRegistry.set(f, {calls: [], instances: []});
+        }
+
+        return globalMockRegistry.get(f);
+      },
+
+      set: val => globalMockRegistry.set(f, val),
+    });
 
     f.mockClear = () => {
-      calls.length = 0;
-      instances.length = 0;
+      f.mock.calls.length = 0;
+      f.mock.instances.length = 0;
     };
 
     f.mockReturnValueOnce = value => {
@@ -485,4 +509,6 @@ module.exports = {
   },
 
   isMockFunction,
+
+  clearAllMocks: () => globalMockRegistry = new WeakMap(),
 };

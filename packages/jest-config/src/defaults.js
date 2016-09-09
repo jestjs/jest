@@ -24,6 +24,7 @@ module.exports = ({
   bail: false,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
+  clearMocks: false,
   colors: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],

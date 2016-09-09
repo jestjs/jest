@@ -74,6 +74,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 
 These methods help create mocks and let you control Jest's overall behavior.
 
+  - [`jest.clearAllMocks()`](#jest-clearallmocks)
   - [`jest.clearAllTimers()`](#jest-clearalltimers)
   - [`jest.disableAutomock()`](#jest-disableautomock)
   - [`jest.enableAutomock()`](#jest-enableautomock)
@@ -731,6 +732,9 @@ jest.fn(() => {
 ```
 
 ## The `jest` object
+
+### `jest.clearAllMocks()`
+Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
 
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
