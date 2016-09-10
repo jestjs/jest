@@ -17,8 +17,21 @@ describe('promise beforeAll', () => {
     });
   });
 
+  beforeAll(() => {
+    return new Promise(resolve => setTimeout(resolve, 10));
+  }, 500);
+
   // passing tests
   it('runs tests after beforeAll asynchronously completes', () => {
     expect(this.flag).toBe(1);
+  });
+
+  describe('with failing timeout', () => {
+    // failing before hook
+    beforeAll(() => {
+      return new Promise(resolve => setTimeout(resolve, 100));
+    }, 10);
+
+    it('fails', () => {});
   });
 });

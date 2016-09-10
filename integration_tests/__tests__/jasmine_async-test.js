@@ -21,11 +21,14 @@ describe('async jasmine', () => {
     );
     const json = result.json;
 
-    expect(json.numTotalTests).toBe(1);
+    expect(json.numTotalTests).toBe(2);
     expect(json.numPassedTests).toBe(1);
-    expect(json.numFailedTests).toBe(0);
+    expect(json.numFailedTests).toBe(1);
     expect(json.numPendingTests).toBe(0);
-    expect(json.testResults[0].message).toBe('');
+
+    const {message} = json.testResults[0];
+    expect(message).toMatch('with failing timeout');
+    expect(message).toMatch('Async callback was not invoked within timeout');
   });
 
   it('works with beforeEach', () => {
@@ -104,13 +107,14 @@ describe('async jasmine', () => {
     const json = result.json;
     const message = json.testResults[0].message;
 
-    expect(json.numTotalTests).toBe(7);
-    expect(json.numPassedTests).toBe(4);
-    expect(json.numFailedTests).toBe(3);
+    expect(json.numTotalTests).toBe(9);
+    expect(json.numPassedTests).toBe(5);
+    expect(json.numFailedTests).toBe(4);
 
     expect(message).toMatch('fails if promise is rejected');
     expect(message).toMatch('works with done.fail');
     expect(message).toMatch('fails a sync test');
+    expect(message).toMatch('fails if a custom timeout is exceeded');
   });
 
   it('works with pit', () => {

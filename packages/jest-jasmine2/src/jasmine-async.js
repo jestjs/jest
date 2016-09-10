@@ -54,7 +54,7 @@ function promisifyIt(originalFn, env) {
 }
 
 function promisifyLifeCycleFunction(originalFn: Function, env) {
-  return function(fn) {
+  return function(fn, timeout) {
     const hasDoneCallback = fn.length;
     if (!hasDoneCallback) {
       const originalBodyFn = fn;
@@ -68,7 +68,7 @@ function promisifyLifeCycleFunction(originalFn: Function, env) {
       };
     }
 
-    return originalFn.call(env, fn);
+    return originalFn.call(env, fn, timeout);
   };
 }
 
