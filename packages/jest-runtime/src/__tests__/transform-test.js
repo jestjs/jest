@@ -45,6 +45,25 @@ jest.mock(
 );
 
 jest.mock(
+  'preprocessor-with-sourcemaps',
+  () => {
+    return {
+      getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
+      process: (content, filename, config) => {
+        return {
+          content: 'content',
+          sourceMap: {
+            mappings: ';AAAA',
+            version: 3,
+          },
+        };
+      },
+    };
+  },
+  {virtual: true},
+);
+
+jest.mock(
   'css-preprocessor',
   () => {
     return {
@@ -210,6 +229,28 @@ describe('transform', () => {
     transform('/node_modules/react.js', config);
     // ignores preprocessor
     expect(vm.Script.mock.calls[2][0]).toMatchSnapshot();
+  });
+
+  it('instruments with source map if preprocessor supplies it', () => {
+    config = Object.assign(config, {
+      collectCoverage: true,
+      mapCoverage: true,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    transform('/fruits/banana.js', config);
+    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+  });
+
+  it('does not instrument with source map if mapCoverage config option is false', () => {
+    config = Object.assign(config, {
+      collectCoverage: true,
+      mapCoverage: false,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    transform('/fruits/banana.js', config);
+    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
   });
 
   it('reads values from the cache', () => {

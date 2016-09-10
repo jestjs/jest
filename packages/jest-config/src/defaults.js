@@ -32,6 +32,7 @@ module.exports = ({
   haste: {
     providesModuleNodeModules: [],
   },
+  mapCoverage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [
     'js',

@@ -10,7 +10,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
-import type {Transformer} from 'types/Transform';
+import type {Transformer, TransformedSource} from 'types/Transform';
 
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
@@ -235,7 +235,7 @@ const stripShebang = content => {
 };
 
 const instrumentFile = (
-  content: string,
+  transformedSource: TransformedSource,
   filename: Path,
   config: Config,
 ): string => {
@@ -243,18 +243,24 @@ const instrumentFile = (
   // time by 2sec if not running in `--coverage` mode
   const babel = require('babel-core');
   const babelPluginIstanbul = require('babel-plugin-istanbul').default;
+  const pluginOptions: any = {
+    cwd: config.rootDir, // files outside `cwd` will not be instrumented
+    exclude: [],
+    useInlineSourceMaps: config.mapCoverage,
+  };
 
-  return babel.transform(content, {
+  if (transformedSource.sourceMap && config.mapCoverage) {
+    pluginOptions.inputSourceMap = transformedSource.sourceMap;
+  }
+
+  return babel.transform(transformedSource.content, {
     auxiliaryCommentBefore: ' istanbul ignore next ',
     babelrc: false,
     filename,
     plugins: [
       [
         babelPluginIstanbul,
-        {
-          cwd: config.rootDir, // files outside `cwd` will not be instrumented
-          exclude: [],
-        },
+        pluginOptions,
       ],
     ],
     retainLines: true,
@@ -276,21 +282,36 @@ const transformSource = (
     return result;
   }
 
-  result = content;
+  let transformed: TransformedSource = {
+    content,
+    sourceMap: null,
+  };
 
   if (transform && shouldTransform(filename, config)) {
-    result = transform.process(result, filename, config, {
+    const processed = transform.process(content, filename, config, {
       instrument,
       watch: config.watch,
     });
+
+    if (typeof processed === 'string') {
+      transformed.content = processed;
+    } else {
+      transformed = processed;
+    }
+  }
+
+  if (config.mapCoverage === false) {
+    transformed.sourceMap = null;
   }
 
   // That means that the transform has a custom instrumentation
   // logic and will handle it based on `config.collectCoverage` option
-  const transformWillInstrument = transform && transform.canInstrument;
+  const transformDidInstrument = transform && transform.canInstrument;
 
-  if (!transformWillInstrument && instrument) {
-    result = instrumentFile(result, filename, config);
+  if (!transformDidInstrument && instrument) {
+    result = instrumentFile(transformed, filename, config);
+  } else {
+    result = transformed.content;
   }
 
   writeCacheFile(cacheFilePath, result);

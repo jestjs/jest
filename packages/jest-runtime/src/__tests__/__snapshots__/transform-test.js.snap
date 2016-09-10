@@ -1,3 +1,13 @@
+exports[`transform does not instrument with source map if mapCoverage config option is false 1`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"4a81f91764b586e5729481ba491440a08d658002\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 7 } } }, fnMap: {}, branchMap: {}, s: { \\"0\\": 0 }, f: {}, b: {}, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];content;
+}});"
+`;
+
+exports[`transform instruments with source map if preprocessor supplies it 1`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"2af15ff13eaa7e17fc0a001b1b75722b8fbeeb74\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 7 } } }, fnMap: {}, branchMap: {}, s: { \\"0\\": 0 }, f: {}, b: {}, inputSourceMap: { mappings: \\";AAAA\\", version: 3 }, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];content;
+}});"
+`;
+
 exports[`transform transforms a file properly 1`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"04636d4ae73b4b3e24bf6fba39e08c946fd0afb5\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 26 } } }, fnMap: {}, branchMap: {}, s: { \\"0\\": 0 }, f: {}, b: {}, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];module.exports = \\"banana\\";
 }});"

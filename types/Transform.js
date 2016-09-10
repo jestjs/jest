@@ -11,6 +11,21 @@
 
 import type {Config, Path} from 'types/Config';
 
+export type TransformedSource = {|
+  content: string,
+  sourceMap: ?SourceMap,
+|};
+
+export type SourceMap = {|
+  file: string,
+  mappings: string,
+  names: string[],
+  sourceRoot: string,
+  sources: string[],
+  sourcesContent: string[],
+  version: number,
+|};
+
 export type TransformOptions = {|
   instrument: boolean,
   watch: boolean,
@@ -31,5 +46,5 @@ export type Transformer = {|
     sourcePath: Path,
     config: Config,
     options?: TransformOptions,
-  ) => string,
+  ) => string | TransformedSource,
 |};

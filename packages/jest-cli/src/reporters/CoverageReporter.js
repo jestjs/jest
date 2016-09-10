@@ -9,7 +9,7 @@
 */
 'use strict';
 
-import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
+import type {AggregatedResult, CoverageMap, SourceMapStore, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {RunnerContext} from 'types/Reporters';
 
@@ -22,6 +22,7 @@ const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
+const libSourceMaps = require('istanbul-lib-source-maps');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -30,10 +31,12 @@ const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
+  _sourceMapStore: SourceMapStore;
 
   constructor() {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
+    this._sourceMapStore = libSourceMaps.createSourceMapStore();
   }
 
   onTestResult(
@@ -54,6 +57,10 @@ class CoverageReporter extends BaseReporter {
     runnerContext: RunnerContext,
   ) {
     this._addUntestedFiles(config, runnerContext);
+    const {map, sourceFinder} = config.mapCoverage
+      ? this._sourceMapStore.transformCoverage(this._coverageMap)
+      : {map: this._coverageMap, sourceFinder: undefined};
+
     const reporter = createReporter();
     try {
       if (config.coverageDirectory) {
@@ -70,8 +77,8 @@ class CoverageReporter extends BaseReporter {
       }
 
       reporter.addAll(coverageReporters);
-      reporter.write(this._coverageMap);
-      aggregatedResults.coverageMap = this._coverageMap;
+      reporter.write(map, sourceFinder && {sourceFinder});
+      aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(chalk.red(`
         Failed to write coverage reports:
@@ -80,7 +87,7 @@ class CoverageReporter extends BaseReporter {
       `));
     }
 
-    this._checkThreshold(config);
+    this._checkThreshold(map, config);
   }
 
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
@@ -118,9 +125,9 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  _checkThreshold(config: Config) {
+  _checkThreshold(map: CoverageMap, config: Config) {
     if (config.coverageThreshold) {
-      const results = this._coverageMap.getCoverageSummary().toJSON();
+      const results = map.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
         return [
