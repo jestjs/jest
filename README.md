@@ -50,7 +50,7 @@ Run `npm test`:
 PASS __tests__/sum-test.js
 ```
 
-Please read the [API documentation](https://facebook.github.io/jest/docs/api.html) to learn about all available assertions, ways of writing tests, configuration options and Jest specific APIs. There is also a great introductory guide available at [Plotly Academy](http://academy.plot.ly/react/6-testing) that walks you through testing a react and redux application.
+Please read the [API documentation](https://facebook.github.io/jest/docs/api.html) to learn about all available assertions, ways of writing tests, configuration options and Jest specific APIs. There is also a great introductory guide available at [Plotly Academy](https://academy.plot.ly/react/6-testing) that walks you through testing a react and redux application.
 
 The code for this example is available at [examples/getting_started](https://github.com/facebook/jest/tree/master/examples/getting_started).
 
@@ -314,6 +314,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testRegex` [string]](https://facebook.github.io/jest/docs/api.html#testregex-string)
   - [`testResultsProcessor` [string]](https://facebook.github.io/jest/docs/api.html#testresultsprocessor-string)
   - [`testRunner` [string]](https://facebook.github.io/jest/docs/api.html#testrunner-string)
+  - [`timers` [string]](https://facebook.github.io/jest/docs/api.html#timers-string)
   - [`unmockedModulePathPatterns` [array<string>]](https://facebook.github.io/jest/docs/api.html#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](https://facebook.github.io/jest/docs/api.html#verbose-boolean)
 
@@ -1351,6 +1352,11 @@ This option allows the use of a custom results processor. This processor must be
 (default: `jasmine2`)
 
 This option allows use of a custom test runner. The default is jasmine2. Jest also ships with jasmine1 which can enabled by setting this option to `jasmine1`. A custom test runner can be provided by specifying a path to a test runner implementation.
+
+### `timers` [string]
+(default: `real`)
+
+Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`.  Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
 
 ### `unmockedModulePathPatterns` [array<string>]
 (default: `[]`)
