@@ -77,7 +77,7 @@ exports[`normalize Upgrade help throws when using old configuration options 3`] 
 
 exports[`normalize Upgrade help throws when using old configuration options 4`] = `
 "[31mThe settings \`testDirectoryName\` and \`testFileExtensions\` were removed from Jest. Instead, use \`testRegex\` like this:
-    \"testRegex\": \"(/test/.*|\\\\.(test|spec))\\\\.(js|json|node)$\"
+    \"testRegex\": \"(/test/.*|\\\\.(test|spec))\\\\.(js|json|jsx|node)$\"
 
   Jest 15 changed the default configuration for tests and makes Jest easier to
   use and less confusing for beginners. All previous defaults can be restored
@@ -93,7 +93,7 @@ exports[`normalize Upgrade help throws when using old configuration options 4`] 
 
 exports[`normalize Upgrade help throws when using old configuration options 5`] = `
 "[31mThe settings \`testDirectoryName\` and \`testFileExtensions\` were removed from Jest. Instead, use \`testRegex\` like this:
-    \"testRegex\": \"(/__tests__/.*|\\\\.(test|spec))\\\\.(js|ts|json|node)$\"
+    \"testRegex\": \"(/__tests__/.*|\\\\.(test|spec))\\\\.(js|ts|json|jsx|node)$\"
 
   Jest 15 changed the default configuration for tests and makes Jest easier to
   use and less confusing for beginners. All previous defaults can be restored

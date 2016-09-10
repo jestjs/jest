@@ -1029,11 +1029,11 @@ Note that, if you specify a global reference value (like an object or array) her
 A pattern that is matched against file paths to determine which folder contains manual mocks.
 
 ### `moduleFileExtensions` [array<string>]
-(default: `['js', 'json', 'node']`)
+(default: `['js', 'json', 'jsx', 'node']`)
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
-If you are using TypeScript this should be `['js', 'json', 'ts']`
+If you are using TypeScript this should be `['js', 'jsx', 'json', 'ts', 'tsx']`
 
 ### `modulePathIgnorePatterns` [array<string>]
 (default: `[]`)
@@ -1158,9 +1158,9 @@ A regexp pattern string that is matched against all test paths before executing 
 This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `testRegex` [string]
-(default: `(/__tests__/.*|\\.(test|spec))\\.js$`)
+(default: `(/__tests__/.*|\\.(test|spec))\\.(js|jsx)$`)
 
-The pattern Jest uses to detect test files. By default it looks for `.js` files
+The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files
 inside of `__tests__` folders.
 
 ### `testResultsProcessor` [string]
