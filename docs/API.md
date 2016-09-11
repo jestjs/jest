@@ -13,6 +13,8 @@ In your test files, Jest puts each of these methods and objects into the global 
 
   - `afterEach(fn)`
   - `beforeEach(fn)`
+  - `afterAll(fn)`
+  - `beforeAll(fn)`
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expect-value)
   - [`it(name, fn)`](#basic-testing)
