@@ -42,8 +42,8 @@ describe('moduleMocker', () => {
 
     it('escapes illegal characters in function name property', () => {
       let foo = {
-        'foo-bar': function() {}
-      }
+        'foo-bar': () => {},
+      };
 
       const fooBarMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo['foo-bar']),
