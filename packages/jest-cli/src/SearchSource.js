@@ -44,6 +44,7 @@ type PatternInfo = {
   input?: string,
   lastCommit?: boolean,
   onlyChanged?: boolean,
+  findRelatedTests?: boolean,
   shouldTreatInputAsPattern?: boolean,
   testPathPattern?: string,
   watch?: boolean,
@@ -141,9 +142,24 @@ class SearchSource {
 
   _getAllTestPaths(
     testPathPattern: StrOrRegExpPattern,
+    findRelatedTests?: boolean,
   ): SearchResult {
+    const allFiles = this._hasteContext.hasteFS.getAllFiles();
+
+    if (findRelatedTests) {
+      const regex = new RegExp(testPathPattern, 'i');
+      const filteredFiles = allFiles.filter(path => regex.test(path));
+      const relatedTestFiles = this.findRelatedTests(
+        new Set(Array.prototype.concat.apply([], filteredFiles)),
+      ).paths;
+      return this._filterTestPathsWithStats(
+        relatedTestFiles,
+        null,
+      );
+    }
+
     return this._filterTestPathsWithStats(
-      this._hasteContext.hasteFS.getAllFiles(),
+      allFiles,
       testPathPattern,
     );
   }
@@ -156,25 +172,32 @@ class SearchSource {
 
   findMatchingTests(
     testPathPattern: StrOrRegExpPattern,
+    findRelatedTests?: boolean,
   ): SearchResult {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
       if (fileExists(maybeFile, this._hasteContext.hasteFS)) {
-        return this._filterTestPathsWithStats([maybeFile]);
+        let maybeFiles = [maybeFile];
+        if (findRelatedTests) {
+          maybeFiles = this.findRelatedTests(
+            new Set(Array.prototype.concat.apply([], maybeFiles)),
+          ).paths;
+        }
+        return this._filterTestPathsWithStats(maybeFiles);
       }
     }
 
-    return this._getAllTestPaths(testPathPattern);
+    return this._getAllTestPaths(testPathPattern, findRelatedTests);
   }
 
-  findRelatedTests(allPaths: Set<Path>): SearchResult {
+  findRelatedTests(paths: Set<Path>): SearchResult {
     const dependencyResolver = new DependencyResolver(
       this._hasteContext.resolver,
       this._hasteContext.hasteFS,
     );
     return {
       paths: dependencyResolver.resolveInverse(
-        allPaths,
+        paths,
         this.isTestFilePath.bind(this),
         {
           skipNodeResolution: this._options.skipNodeResolution,
@@ -260,7 +283,10 @@ class SearchSource {
       return this.findChangedTests({lastCommit: patternInfo.lastCommit});
     } else if (patternInfo.testPathPattern != null) {
       return Promise.resolve(
-        this.findMatchingTests(patternInfo.testPathPattern),
+        this.findMatchingTests(
+          patternInfo.testPathPattern,
+          patternInfo.findRelatedTests,
+        ),
       );
     } else {
       return Promise.resolve({paths: []});

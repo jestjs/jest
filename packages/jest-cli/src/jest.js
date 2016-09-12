@@ -111,6 +111,7 @@ const buildTestPathPatternInfo = argv => {
       input: argv._.join(' '),
       testPathPattern: argv._.join('|'),
       shouldTreatInputAsPattern: false,
+      findRelatedTests: argv.findRelatedTests,
     });
   }
   return defaultPattern;

@@ -97,6 +97,14 @@ const options = {
       'paths before executing the test.',
     type: 'string',
   },
+  findRelatedTests: {
+    description:
+      'Find related tests for the a list of source files passed ' +
+      'in arguments and run tests. Useful for pre-commit hook ' +
+      'integration when you want to run single tests for the ' +
+      'changed source files.',
+    type: 'boolean',
+  },
   version: {
     alias: 'v',
     description:'Print the version and exit',
