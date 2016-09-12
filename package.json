@@ -21,7 +21,7 @@
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "lerna": "2.0.0-beta.26",
-    "lint-staged": "^3.0.1",
+    "lint-staged": "^3.0.2",
     "minimatch": "^3.0.3",
     "mkdirp": "^0.5.1",
     "pre-commit": "^1.1.3",
@@ -75,7 +75,11 @@
     "testRegex": ".*-test\\.js"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix", "jest --findRelatedTests", "git add"]
+    "*.js": [
+      "eslint --fix",
+      "jest --findRelatedTests",
+      "git add"
+    ]
   },
   "pre-commit": "lint-staged"
 }
