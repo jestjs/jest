@@ -224,5 +224,60 @@ describe('SearchSource', () => {
         rootPath,
       ]);
     });
+
+    it('getTestPaths returns related tests for one file when findRelatedTests is true', () => {
+      const filePath = path.join(rootDir, 'RegularModule.js');
+      const loggingDep = path.join(rootDir, 'logging.js');
+      const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
+      const patternInfo = {
+        input: filePath,
+        testPathPattern: filePath,
+        shouldTreatInputAsPattern: false,
+        findRelatedTests: true,
+      };
+      return searchSource.getTestPaths(patternInfo).then(data => {
+        expect(data.paths.sort()).toEqual([
+          parentDep,
+          filePath,
+          loggingDep,
+          rootPath,
+        ]);
+      });
+    });
+
+    it('getTestPaths returns related tests for multiple files when findRelatedTests is true', () => {
+      const filePath = path.join(rootDir, 'RegularModule.js');
+      const loggingDep = path.join(rootDir, 'logging.js');
+      const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
+      const patternInfo = {
+        input: filePath + ' ' + loggingDep,
+        testPathPattern: filePath + '|' + loggingDep,
+        shouldTreatInputAsPattern: false,
+        findRelatedTests: true,
+      };
+      return searchSource.getTestPaths(patternInfo).then(data => {
+        expect(data.paths.sort()).toEqual([
+          parentDep,
+          filePath,
+          loggingDep,
+          rootPath,
+        ]);
+      });
+    });
+
+    it('getTestPaths return filePath when findRelatedTests is false', () => {
+      const filePath = path.join(rootDir, 'RegularModule.js');
+      const patternInfo = {
+        input: filePath,
+        testPathPattern: filePath,
+        shouldTreatInputAsPattern: false,
+      };
+      return searchSource.getTestPaths(patternInfo).then(data => {
+        expect(data.paths.sort()).toEqual([
+          filePath,
+        ]);
+      });
+    });
+
   });
 });
