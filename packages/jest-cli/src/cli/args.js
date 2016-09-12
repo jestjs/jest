@@ -98,6 +98,7 @@ const options = {
     type: 'string',
   },
   findRelatedTests: {
+    alias: 'f',
     description:
       'Find related tests for the a list of source files passed ' +
       'in arguments and run tests. Useful for pre-commit hook ' +
