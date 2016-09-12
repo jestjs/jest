@@ -179,8 +179,8 @@ function createMockFunction(
     name = '$' + name;
   }
 
-  if (/\s/.test(name)) {
-    name = name.replace(/\s/g, '$');
+  if (/[\s-]/.test(name)) {
+    name = name.replace(/[\s-]/g, '$');
   }
 
   /* eslint-disable no-new-func */
