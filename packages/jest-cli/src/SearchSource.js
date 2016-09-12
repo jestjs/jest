@@ -152,10 +152,7 @@ class SearchSource {
       const relatedTestFiles = this.findRelatedTests(
         new Set(Array.prototype.concat.apply([], filteredFiles)),
       ).paths;
-      return this._filterTestPathsWithStats(
-        relatedTestFiles,
-        null,
-      );
+      return this._filterTestPathsWithStats(relatedTestFiles);
     }
 
     return this._filterTestPathsWithStats(
