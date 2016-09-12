@@ -34,6 +34,15 @@ const check = (argv: Object) => {
     );
   }
 
+  if (argv.findRelatedTests && argv._.length === 0) {
+    throw new Error(
+      '--findRelatedTests requires paths to be specified.\n' +
+      'Example usage: jest --findRealtedTests ./src/source.js',
+    );
+  }
+
+
+
   return true;
 };
 
