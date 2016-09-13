@@ -80,6 +80,10 @@ Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file 
 
 You are now set up to use all ES2015 features and React specific syntax.
 
+If you are using a more complicated Babel configuration, using Babel's `env` option,
+keep in mind that Jest will automatically define `NODE_ENV` as `test`.
+It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
+
 ### React, React-Native and Snapshot Testing
 
 Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React-Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React-Native codebases.
@@ -211,14 +215,18 @@ In your test files, Jest puts each of these methods and objects into the global 
 
   - `afterEach(fn)`
   - `beforeEach(fn)`
+  - `afterAll(fn)`
+  - `beforeAll(fn)`
   - [`describe(name, fn)`](https://facebook.github.io/jest/docs/api.html#basic-testing)
   - [`expect(value)`](https://facebook.github.io/jest/docs/api.html#expect-value)
   - [`it(name, fn)`](https://facebook.github.io/jest/docs/api.html#basic-testing)
+  - [`it.only(name, fn)`](https://facebook.github.io/jest/docs/api.html#basic-testing)
+  - [`it.skip(name, fn)`](https://facebook.github.io/jest/docs/api.html#basic-testing)
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](https://facebook.github.io/jest/docs/api.html#the-jest-object)
   - [`require.requireActual(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requireactual-modulename)
   - [`require.requireMock(moduleName)`](https://facebook.github.io/jest/docs/api.html#require-requiremock-modulename)
-  - `test(name, fn)` is an alias for `it`
+  - [`test(name, fn)`](https://facebook.github.io/jest/docs/api.html#basic-testing) is an alias for `it`
   - `xdescribe(name, fn)`
   - `xit(name, fn)`
 
@@ -356,7 +364,7 @@ describe('my beverage', () => {
   it('is not sour', () => {
     expect(myBeverage.sour).toBeFalsy();
   });
-})
+});
 ```
 
 To test an asynchronous function, just return a promise from `it`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
@@ -374,6 +382,45 @@ describe('my beverage list', () => {
 ```
 
 Even though the call to `it` will return right away, the test doesn't complete until the promise resolves as well.
+
+You can use `.only` if you want to run only one test or describe block:
+
+```js
+describe.only('my beverage', () => {
+  it('is delicious', () => {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  it('is not sour', () => {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+
+describe('my other beverage', () => {
+  // ... will be skipped
+});
+```
+
+or
+
+```js
+it.only('will run', () => { /* ... */ });
+it('will be skipped', () => { /* ... */ });
+```
+
+Or you can use `.skip` if you want to skip a test or a describe block:
+```js
+it.skip('will be skipped', () => { /* ... */ });
+it('will run', () => { /* ... */ });
+```
+
+Alternatively you can use `test` instead of `it`. `test` is just an alias for `it` and
+works exactly the same.
+```js
+test('something works', () => { /* ... */ });
+test.skip('this test is skipped', () => { /* ... */ });
+test.only('this test will run');
+```
 
 ### `require.requireActual(moduleName)`
 
