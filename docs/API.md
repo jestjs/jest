@@ -98,6 +98,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`bail` [boolean]](#bail-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
+  - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
   - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepattern-array-string)
@@ -954,6 +955,13 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 (default: `undefined`)
 
 The directory where Jest should output its coverage files.
+
+### `coverageReporters` [array<string>]
+(default: `['json', 'lcov', 'text']`)
+
+A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be used.
+
+*Note: Setting this option overwrites the default values. Add `'text'` or `'text-summary'` to see a coverage summary in the console output.*
 
 ### `collectCoverage` [boolean]
 (default: `false`)
