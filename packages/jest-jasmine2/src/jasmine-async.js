@@ -17,6 +17,8 @@
 
 import type {Global} from 'types/Global';
 
+const co = require('co');
+
 function isPromise(obj) {
   return obj && typeof obj.then === 'function';
 }
@@ -37,7 +39,10 @@ function promisifyIt(originalFn, env) {
       // we make *all* tests async and run `done` right away if they
       // didn't return a promise.
       return originalFn.call(env, specName, function(done) {
-        const returnValue = fn.apply(this, arguments);
+        const returnValue =
+          fn.constructor && fn.constructor.name === 'GeneratorFunction'
+           ? co(fn)
+           : fn.apply(this, arguments);
 
         if (isPromise(returnValue)) {
           returnValue.then(done).catch(done.fail);
