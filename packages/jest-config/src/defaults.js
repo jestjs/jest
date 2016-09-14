@@ -33,7 +33,12 @@ module.exports = ({
   },
   mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'node'],
+  moduleFileExtensions: [
+    'js',
+    'json',
+    'jsx',
+    'node',
+  ],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noStackTrace: false,
@@ -45,7 +50,7 @@ module.exports = ({
   testPathIgnorePatterns: [
     utils.replacePathSepForRegex(constants.NODE_MODULES),
   ],
-  testRegex: '(/__tests__/.*|\\.(test|spec))\\.js$',
+  testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
   testURL: 'about:blank',
   timers: 'real',
   useStderr: false,
