@@ -28,7 +28,7 @@ Let's start with a common sort of webpack config file and translate it to a Jest
   },
   resolve: {
     extensions: ['', 'js', 'jsx'],
-    moduleDirectories: ['node_modules', 'bower_components', 'shared']
+    modulesDirectories: ['node_modules', 'bower_components', 'shared']
     root: '/shared/vendor/modules',
     alias: {
       react: './vendor/react-master',
@@ -94,7 +94,7 @@ require our mock files. You can adjust the regular expression to match the
 file types your webpack config handles.
 
 Now that Jest knows how to process our files, we need to tell it how to _find_ them.
-For webpack's `moduleDirectories`, and `extensions` options there are direct analogs in Jest.
+For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest.
 
 *Note: the `modulesDirectories` option in webpack is called `moduleDirectories` in Jest.*
 
