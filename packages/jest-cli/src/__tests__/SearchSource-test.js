@@ -125,8 +125,9 @@ describe('SearchSource', () => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
         ));
-        expect(relPaths).toEqual([
+        expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
+          path.normalize('__testtests__/test.jsx'),
         ]);
       });
     });
