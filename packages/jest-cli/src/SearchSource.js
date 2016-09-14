@@ -42,9 +42,9 @@ type StrOrRegExpPattern = RegExp | string;
 
 type PatternInfo = {
   input?: string,
+  findRelatedTests?: boolean,
   lastCommit?: boolean,
   onlyChanged?: boolean,
-  findRelatedTests?: boolean,
   shouldTreatInputAsPattern?: boolean,
   testPathPattern?: string,
   watch?: boolean,
