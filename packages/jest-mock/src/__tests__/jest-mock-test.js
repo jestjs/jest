@@ -50,7 +50,7 @@ describe('moduleMocker', () => {
       );
       expect(
         !mock.name ||
-        mock.name === 'foo$bar'
+        mock.name === 'foo$bar',
       ).toBeTruthy();
     });
 
