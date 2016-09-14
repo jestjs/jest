@@ -179,8 +179,10 @@ function createMockFunction(
     name = '$' + name;
   }
 
-  if (/\s/.test(name)) {
-    name = name.replace(/\s/g, '$');
+  // It's also a syntax error to define a function with a reserved character
+  // as part of it's name.
+  if (/[\s-]/.test(name)) {
+    name = name.replace(/[\s-]/g, '$');
   }
 
   /* eslint-disable no-new-func */

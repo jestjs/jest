@@ -40,6 +40,17 @@ describe('moduleMocker', () => {
       expect(fooMock.name).toBe('foo');
     });
 
+    it('escapes illegal characters in function name property', () => {
+      let foo = {
+        'foo-bar': () => {},
+      };
+
+      const fooBarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(foo['foo-bar']),
+      );
+      expect(fooBarMock.name).toBe('foo$bar');
+    })
+
     it('special cases the mockConstructor name', () => {
       function mockConstructor() {}
       const fooMock = moduleMocker.generateFromMetadata(
