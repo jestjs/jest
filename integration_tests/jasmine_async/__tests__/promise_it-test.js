@@ -50,4 +50,13 @@ describe('promise it', () => {
   it('fails a sync test', () => {
     expect('sync').toBe('failed');
   });
+
+  it('succeeds if the test finishes in time', () => {
+    return new Promise(resolve => setTimeout(resolve, 10));
+  }, 250);
+
+  // failing tests
+  it('fails if a custom timeout is exceeded', () => {
+    return new Promise(resolve => setTimeout(resolve, 100));
+  }, 10);
 });
