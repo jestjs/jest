@@ -79,7 +79,7 @@ function makeConcurrent(originalFn: Function, env) {
     try {
       promise = fn();
       if (!isPromise(promise)) {
-        throw new Error('it.concurrent tests should return a promise');
+        throw new Error('Jest: concurrent tests must return a Promise.');
       }
     } catch (error) {
       return originalFn.call(env, Promise.reject(error));
