@@ -224,60 +224,87 @@ describe('SearchSource', () => {
         rootPath,
       ]);
     });
+  });
 
-    it('getTestPaths returns related tests for one file when findRelatedTests is true', () => {
-      const filePath = path.join(rootDir, 'RegularModule.js');
-      const loggingDep = path.join(rootDir, 'logging.js');
-      const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
+  describe('findRelatedTestsFromPattern', () => {
+    beforeEach(done => {
+      const config = normalizeConfig({
+        name,
+        rootDir,
+        testRegex,
+        moduleFileExtensions: ['js', 'jsx', 'foobar'],
+      });
+      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+        searchSource = new SearchSource(hasteMap, config);
+        done();
+      });
+    });
+
+    it('returns empty search result for empty input', () => {
       const patternInfo = {
-        input: filePath,
-        testPathPattern: filePath,
+        input: '',
+        testPathPattern: '',
         shouldTreatInputAsPattern: false,
         findRelatedTests: true,
       };
-      return searchSource.getTestPaths(patternInfo).then(data => {
-        expect(data.paths.sort()).toEqual([
-          parentDep,
-          filePath,
-          loggingDep,
-          rootPath,
-        ]);
-      });
+      const data = searchSource
+        .findRelatedTestsFromPattern(patternInfo, rootDir);
+      expect(data.paths).toEqual([]);
     });
 
-    it('getTestPaths returns related tests for multiple files when findRelatedTests is true', () => {
-      const filePath = path.join(rootDir, 'RegularModule.js');
-      const loggingDep = path.join(rootDir, 'logging.js');
-      const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
+    it('returns empty search result for invalid input', () => {
       const patternInfo = {
-        input: filePath + ' ' + loggingDep,
-        testPathPattern: filePath + '|' + loggingDep,
+        input: 'non-existend.js',
+        testPathPattern: 'non-existend.js',
         shouldTreatInputAsPattern: false,
         findRelatedTests: true,
       };
-      return searchSource.getTestPaths(patternInfo).then(data => {
-        expect(data.paths.sort()).toEqual([
-          parentDep,
-          filePath,
-          loggingDep,
-          rootPath,
-        ]);
-      });
+      const data = searchSource
+        .findRelatedTestsFromPattern(patternInfo, rootDir);
+      expect(data.paths).toEqual([]);
     });
 
-    it('getTestPaths return filePath when findRelatedTests is false', () => {
-      const filePath = path.join(rootDir, 'RegularModule.js');
+    it('returns empty search result if no related tests were found', () => {
       const patternInfo = {
-        input: filePath,
-        testPathPattern: filePath,
+        input: 'no-tests.js',
+        testPathPattern: 'no-tests.js',
         shouldTreatInputAsPattern: false,
+        findRelatedTests: true,
       };
-      return searchSource.getTestPaths(patternInfo).then(data => {
-        expect(data.paths.sort()).toEqual([
-          filePath,
-        ]);
-      });
+      const data = searchSource
+        .findRelatedTestsFromPattern(patternInfo, rootDir);
+      expect(data.paths).toEqual([]);
     });
 
+    it('finds tests for a single file', () => {
+      const patternInfo = {
+        input: 'module.jsx',
+        testPathPattern: 'module.jsx',
+        shouldTreatInputAsPattern: false,
+        findRelatedTests: true,
+      };
+      const data = searchSource
+        .findRelatedTestsFromPattern(patternInfo, rootDir);
+      expect(data.paths).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+        path.join(rootDir, '__testtests__', 'test.jsx'),
+      ]);
+    });
+
+    it('finds tests for multiple files', () => {
+      const patternInfo = {
+        input: 'module.jsx module.foobar',
+        testPathPattern: 'module.jsx|module.foobar',
+        shouldTreatInputAsPattern: false,
+        findRelatedTests: true,
+      };
+      const data = searchSource
+        .findRelatedTestsFromPattern(patternInfo, rootDir);
+      expect(data.paths).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+        path.join(rootDir, '__testtests__', 'test.jsx'),
+        path.join(rootDir, '__testtests__', 'test.foobar'),
+      ]);
+    });
   });
 });

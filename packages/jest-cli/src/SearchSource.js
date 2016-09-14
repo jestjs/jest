@@ -142,19 +142,8 @@ class SearchSource {
 
   _getAllTestPaths(
     testPathPattern: StrOrRegExpPattern,
-    findRelatedTests?: boolean,
   ): SearchResult {
     const allFiles = this._hasteContext.hasteFS.getAllFiles();
-
-    if (findRelatedTests) {
-      const regex = new RegExp(testPathPattern, 'i');
-      const filteredFiles = allFiles.filter(path => regex.test(path));
-      const relatedTestFiles = this.findRelatedTests(
-        new Set(Array.prototype.concat.apply([], filteredFiles)),
-      ).paths;
-      return this._filterTestPathsWithStats(relatedTestFiles);
-    }
-
     return this._filterTestPathsWithStats(
       allFiles,
       testPathPattern,
@@ -169,22 +158,15 @@ class SearchSource {
 
   findMatchingTests(
     testPathPattern: StrOrRegExpPattern,
-    findRelatedTests?: boolean,
   ): SearchResult {
     if (testPathPattern && !(testPathPattern instanceof RegExp)) {
       const maybeFile = path.resolve(process.cwd(), testPathPattern);
       if (fileExists(maybeFile, this._hasteContext.hasteFS)) {
-        let maybeFiles = [maybeFile];
-        if (findRelatedTests) {
-          maybeFiles = this.findRelatedTests(
-            new Set(Array.prototype.concat.apply([], maybeFiles)),
-          ).paths;
-        }
-        return this._filterTestPathsWithStats(maybeFiles);
+        return this._filterTestPathsWithStats([maybeFile]);
       }
     }
 
-    return this._getAllTestPaths(testPathPattern, findRelatedTests);
+    return this._getAllTestPaths(testPathPattern);
   }
 
   findRelatedTests(paths: Set<Path>): SearchResult {
@@ -201,6 +183,20 @@ class SearchSource {
         },
       ),
     };
+  }
+
+  findRelatedTestsFromPattern(
+    patternInfo: PatternInfo,
+    cwd: Path = process.cwd(),
+  ): SearchResult {
+    if (patternInfo.input.length) {
+      const sources = patternInfo.input.split(' ');
+      const resolvedPaths = sources.map(p => path.resolve(cwd, p));
+      return this.findRelatedTests(
+        new Set(Array.prototype.concat.apply([], resolvedPaths)),
+      );
+    }
+    return {paths: []};
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
@@ -278,6 +274,10 @@ class SearchSource {
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
       return this.findChangedTests({lastCommit: patternInfo.lastCommit});
+    } else if (patternInfo.findRelatedTests) {
+      return Promise.resolve(
+        this.findRelatedTestsFromPattern(patternInfo),
+      );
     } else if (patternInfo.testPathPattern != null) {
       return Promise.resolve(
         this.findMatchingTests(
