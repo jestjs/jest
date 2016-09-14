@@ -918,7 +918,9 @@ The directory where Jest should output its coverage files.
 ### `coverageReporters` [array<string>]
 (default: `['json', 'lcov', 'text']`)
 
-A list of reporter names that Jest should use when writing coverege reports. Any [istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be used. Setting this option overwrites the default values so you should add `'text'` or `'text-summary'` reporter if you want to see a coverage summary in the console output.
+A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be used.
+
+*Note: Setting this option overwrites the default values. Add `'text'` or `'text-summary'` to see a coverage summary in the console output.*
 
 ### `collectCoverage` [boolean]
 (default: `false`)
