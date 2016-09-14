@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "co": "^4.6.0",
     "graceful-fs": "^4.1.6",
     "jasmine-check": "^0.1.4",
     "jest-matchers": "^15.1.1",
