@@ -72,12 +72,33 @@ function promisifyLifeCycleFunction(originalFn: Function, env) {
   };
 }
 
+function makeConcurrent(originalFn: Function, env) {
+  return function(specName, fn, timeout) {
+    let promise;
+
+    try {
+      promise = fn();
+      if (!isPromise(promise)) {
+        throw new Error('Jest: concurrent tests must return a Promise.');
+      }
+    } catch (error) {
+      return originalFn.call(env, Promise.reject(error));
+    }
+
+    return originalFn.call(env, specName, () => promise, timeout);
+  };
+}
+
 function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
   global.pit = env.it = promisifyIt(env.it, env);
   env.fit = promisifyIt(env.fit, env);
+  global.it.concurrent = makeConcurrent(env.it, env);
+  global.it.concurrent.only = makeConcurrent(env.fit, env);
+  global.it.concurrent.skip = makeConcurrent(env.xit, env);
+  global.fit.concurrent = makeConcurrent(env.fit);
   env.afterAll = promisifyLifeCycleFunction(env.afterAll, env);
   env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);
   env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);
