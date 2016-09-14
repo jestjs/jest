@@ -54,6 +54,8 @@ specified in `jasmine.DEFAULT_TIMEOUT_INTERVAL`.
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // 10 second timeout
 ```
 
+If you want to set this up globally, put it in [setupTestFrameworkScriptFile](http://facebook.github.io/jest/docs/api.html#setuptestframeworkscriptfile-string)
+
 ### Watchman Issues
 
 Try running Jest with `--no-watchman` or set the `watchman` configuration option
