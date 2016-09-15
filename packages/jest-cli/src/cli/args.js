@@ -165,6 +165,11 @@ const options = {
       'other test output and user messages to stderr.',
     type: 'boolean',
   },
+  jsonOutputFile: {
+    description:
+      'Write the test results in JSON to your specified file.',
+    type: 'string',
+  },
   setupTestFrameworkScriptFile: {
     description:
       'The path to a module that runs some code to configure or set up ' +
