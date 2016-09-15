@@ -135,13 +135,4 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
   });
-
-  it('works with generators', () => {
-    const result = runJest.json('jasmine_async', ['generators-test.js']);
-    const json = result.json;
-    expect(json.numTotalTests).toBe(2);
-    expect(json.numPassedTests).toBe(1);
-    expect(json.numFailedTests).toBe(1);
-    expect(json.testResults[0].message).toMatch(/generator test fails/);
-  });
 });
