@@ -14,6 +14,7 @@ import type {
   Expect,
   ExpectationResult,
   ExpectationObject,
+  MatchersContext,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -26,6 +27,10 @@ const toThrowMatchers = require('./toThrowMatchers');
 const {stringify} = require('jest-matcher-utils');
 
 const GLOBAL_MATCHERS_OBJECT_SYMBOL = Symbol.for('$$jest-matchers-object');
+const CAN_NOT_BE_USED_WITH_NOT = [
+  'toMatchSnapshot',
+  'toThowErrorMatchingSnapshot',
+];
 
 class JestAssertionError extends Error {}
 
@@ -37,14 +42,20 @@ if (!global[GLOBAL_MATCHERS_OBJECT_SYMBOL]) {
   );
 }
 
-const expect: Expect = (actual: any): ExpectationObject => {
+const expect: Expect = (
+  actual: any,
+  matchersContext: MatchersContext,
+): ExpectationObject => {
   const allMatchers = global[GLOBAL_MATCHERS_OBJECT_SYMBOL];
   const expectation = {not: {}};
   Object.keys(allMatchers).forEach(name => {
     expectation[name] =
-      makeThrowingMatcher(allMatchers[name], false, actual);
-    expectation.not[name] =
-      makeThrowingMatcher(allMatchers[name], true, actual);
+      makeThrowingMatcher(allMatchers[name], false, actual, matchersContext);
+    expectation.not[name] = CAN_NOT_BE_USED_WITH_NOT.indexOf(name) >= 0
+      ? () => {
+        throw new Error(`Jest: \`.not\` can not be used with \`.${name}()\`.`);
+      }
+      : makeThrowingMatcher(allMatchers[name], true, actual, matchersContext);
   });
 
   return expectation;
@@ -54,6 +65,7 @@ const makeThrowingMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: any,
+  matchersContext: MatchersContext,
 ): ThrowingMatcherFn => {
   return function throwingMatcher(expected, options) {
     let result: ExpectationResult;
@@ -61,6 +73,7 @@ const makeThrowingMatcher = (
       result = matcher(
         actual,
         expected,
+        matchersContext,
         options,
         {args: arguments},
       );

@@ -1,0 +1,1 @@
+exports[`toThowErrorMatchingSnapshot works fine when function throws error 1`] = `"apple"`;

@@ -11,8 +11,12 @@
 
 'use strict';
 
-import type {MatchersObject} from './types';
+import type {
+  MatchersObject,
+  MatchersContext,
+} from './types';
 
+const snapshot = require('jest-snapshot');
 const {
   escapeStrForRegex,
   formatStackTrace,
@@ -20,6 +24,7 @@ const {
 } = require('jest-util');
 const {
   RECEIVED_COLOR,
+  ensureNoExpected,
   getType,
   matcherHint,
   printExpected,
@@ -74,6 +79,27 @@ const createMatcher = name =>
 const matchers: MatchersObject = {
   toThrow: createMatcher('toThrow'),
   toThrowError: createMatcher('toThrowError'),
+
+  toThowErrorMatchingSnapshot(
+    actual: Function,
+    expected: void,
+    matchersContext: MatchersContext,
+  ) {
+    ensureNoExpected(expected, 'toThowErrorMatchingSnapshot');
+    let error;
+
+    try {
+      actual();
+    } catch (e) {
+      error = e;
+    }
+
+    if (error === void 0) {
+      throw new Error("Expected function should throw error but didn't");
+    }
+
+    return snapshot.matcher(error.message, undefined, matchersContext);
+  },
 };
 
 const toThrowMatchingStringOrRegexp = (

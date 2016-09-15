@@ -1,3 +1,5 @@
+exports[`.toThowErrorMatchingSnapshot() does not accept arguments 1`] = `"toThowErrorMatchingSnapshot matcher does not accept any arguments."`;
+
 exports[`.toThrow() error class did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
 
