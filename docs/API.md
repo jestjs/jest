@@ -1214,7 +1214,7 @@ This option allows use of a custom test runner. The default is jasmine2. Jest al
 ### `testURL` [string]
 (default: `about:blank`)
 
-This option sets the url for the jsdom environment. It is reflected in properties such as `location.href`.
+This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
 ### `timers` [string]
 (default: `real`)
