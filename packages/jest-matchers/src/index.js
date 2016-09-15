@@ -12,8 +12,9 @@
 
 import type {
   Expect,
-  ExpectationResult,
   ExpectationObject,
+  ExpectationResult,
+  MatcherContext,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -55,14 +56,14 @@ const makeThrowingMatcher = (
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn => {
-  return function throwingMatcher(expected, options) {
+  return function throwingMatcher(expected, ...rest) {
+    const matcherContext: MatcherContext = {isNot};
     let result: ExpectationResult;
+
     try {
-      result = matcher(
-        actual,
-        expected,
-        options,
-        {args: arguments},
+      result = matcher.apply(
+        matcherContext,
+        [actual, expected].concat(rest),
       );
     } catch (error) {
       // Remove this and deeper functions from the stack trace frame.
