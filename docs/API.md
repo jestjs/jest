@@ -125,6 +125,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testRegex` [string]](#testregex-string)
   - [`testResultsProcessor` [string]](#testresultsprocessor-string)
   - [`testRunner` [string]](#testrunner-string)
+  - [`testURL` [string]](#testurl-string)
   - [`timers` [string]](#timers-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
@@ -1209,6 +1210,11 @@ This option allows the use of a custom results processor. This processor must be
 (default: `jasmine2`)
 
 This option allows use of a custom test runner. The default is jasmine2. Jest also ships with jasmine1 which can enabled by setting this option to `jasmine1`. A custom test runner can be provided by specifying a path to a test runner implementation.
+
+### `testURL` [string]
+(default: `about:blank`)
+
+This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
 ### `timers` [string]
 (default: `real`)
