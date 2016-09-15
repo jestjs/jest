@@ -31,10 +31,18 @@ const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
 const throat = require('throat');
 const workerFarm = require('worker-farm');
+const TestWatcher = require('./TestWatcher');
 
 const FAIL = 0;
 const SLOW_TEST_TIME = 3000;
 const SUCCESS = 1;
+
+class CancelRunError extends Error {
+  constructor(message: ?string) {
+    super(message);
+    this.name = 'CancelRunError';
+  }
+}
 
 type Options = {|
   maxWorkers: number,
@@ -159,24 +167,27 @@ class TestRunner {
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
 
-  runTests(paths: Array<string>) {
+  runTests(paths: Array<string>, testWatcher: TestWatcher) {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
     const estimatedTime =
       Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
 
-    const onTestResult = (testPath: Path, testResult: TestResult) => {
+    const onResult = (testPath: Path, testResult: TestResult) => {
+      if (testWatcher.isInterrupted()) {
+        throw new CancelRunError();
+      }
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
-        onRunFailure(testPath, {
+        onFailure(testPath, {
           message,
           stack: new Error(message).stack,
         });
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
+      this._dispatcher.onResult(
         config,
         testResult,
         aggregatedResults,
@@ -184,11 +195,14 @@ class TestRunner {
       this._bailIfNeeded(aggregatedResults);
     };
 
-    const onRunFailure = (testPath: Path, err: TestError) => {
+    const onFailure = (testPath: Path, err: TestError) => {
+      if (testWatcher.isInterrupted()) {
+        throw new CancelRunError();
+      }
       const testResult = buildFailureTestResult(testPath, err);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
+      this._dispatcher.onResult(
         config,
         testResult,
         aggregatedResults,
@@ -248,8 +262,8 @@ class TestRunner {
 
     const testRun =
       runInBand
-      ? this._createInBandTestRun(testPaths, onTestResult, onRunFailure)
-      : this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
+        ? this._createInBandTestRun(testPaths, testWatcher, onResult, onFailure)
+        : this._createParallelTestRun(testPaths, testWatcher, onResult, onFailure);
 
     return testRun
       .then(updateSnapshotSummary)
@@ -261,8 +275,9 @@ class TestRunner {
 
   _createInBandTestRun(
     testPaths: Array<Path>,
-    onTestResult: OnTestResult,
-    onRunFailure: OnRunFailure,
+    testWatcher: TestWatcher,
+    onResult: OnTestResult,
+    onFailure: OnRunFailure,
   ) {
     const mutex = throat(1);
 
@@ -278,17 +293,18 @@ class TestRunner {
                 this._hasteContext.resolver,
               );
             })
-            .then(result => onTestResult(path, result))
-            .catch(err => onRunFailure(path, err)),
+            .then(result => onResult(path, result))
+            .catch(err => onFailure(path, err)),
         ),
       Promise.resolve(),
-    );
+    ).catch(error => testWatcher.isInterrupted() ? null : error);
   }
 
   _createParallelTestRun(
     testPaths: Array<Path>,
-    onTestResult: OnTestResult,
-    onRunFailure: OnRunFailure,
+    testWatcher: TestWatcher,
+    onResult: OnTestResult,
+    onFailure: OnRunFailure,
   ) {
     const config = this._config;
     const farm = workerFarm({
@@ -303,11 +319,14 @@ class TestRunner {
     // the start time of individual tests.
     const runTestInWorker = ({path, config}) => mutex(() => {
       this._dispatcher.onTestStart(config, path);
+      if (testWatcher.isInterrupted()) {
+        throw new CancelRunError();
+      }
       return promisify(farm)({path, config});
     });
 
     const onError = (err, path) => {
-      onRunFailure(path, err);
+      onFailure(path, err);
       if (err.type === 'ProcessTerminatedError') {
         console.error(
           'A worker process has quit unexpectedly! ' +
@@ -317,12 +336,23 @@ class TestRunner {
       }
     };
 
-    return Promise.all(testPaths.map(path => {
+    const runAllTests = Promise.all(testPaths.map(path => {
       return runTestInWorker({path, config})
-        .then(testResult => onTestResult(path, testResult))
+        .then(testResult => onResult(path, testResult))
         .catch(error => onError(error, path));
-    }))
-    .then(() => workerFarm.end(farm));
+    }));
+
+    const waitForWatcherInterruption = new Promise(resolve => {
+      const unsubscribe = testWatcher.subscribe(() => {
+        if (testWatcher.isInterrupted()) {
+          unsubscribe();
+          resolve('CanelRun');
+        }
+      });
+    });
+
+    return Promise.race([runAllTests, waitForWatcherInterruption])
+      .then(() => workerFarm.end(farm));
   }
 
   _setupReporters() {
@@ -482,7 +512,7 @@ class ReporterDispatcher {
     );
   }
 
-  onTestResult(config, testResult, results) {
+  onResult(config, testResult, results) {
     this._reporters.forEach(reporter =>
       reporter.onTestResult(
         config,

@@ -33,6 +33,7 @@ const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
+const TestWatcher = require('./TestWatcher');
 
 const CLEAR = '\x1B[2J\x1B[H';
 const VERSION = require('../package.json').version;
@@ -49,6 +50,7 @@ const KEYS = {
   P: '70',
   Q: '71',
   U: '75',
+  C: '63',
 };
 
 const getMaxWorkers = argv => {
@@ -127,7 +129,7 @@ const getWatcher = (
   });
 };
 
-const runJest = (config, argv, pipe, onComplete) => {
+const runJest = (config, argv, pipe, testWatcher, onComplete) => {
   const maxWorkers = getMaxWorkers(argv);
   const localConsole = new Console(pipe, pipe);
   let patternInfo = buildTestPathPatternInfo(argv);
@@ -174,7 +176,7 @@ const runJest = (config, argv, pipe, onComplete) => {
             maxWorkers,
             getTestSummary: () => SearchSource.getTestSummary(patternInfo),
           },
-        ).runTests(data.paths);
+        ).runTests(data.paths, testWatcher);
       })
       .then(runResults => {
         if (config.testResultsProcessor) {
@@ -233,6 +235,7 @@ const runCLI = (
   onComplete: (results: ?AggregatedResult) => void,
 ) => {
   const pipe = argv.json ? process.stderr : process.stdout;
+  const testWatcher = new TestWatcher();
 
   argv = argv || {};
   if (argv.version) {
@@ -240,6 +243,7 @@ const runCLI = (
     onComplete && onComplete();
     return;
   }
+
 
   readConfig(argv, root)
     .then(config => {
@@ -270,6 +274,10 @@ const runCLI = (
             return null;
           }
 
+          if (testWatcher.isInterrupted()) {
+            testWatcher.setState({interrupted: false});
+          }
+
           pipe.write(CLEAR);
           preRunMessage.print(pipe);
           isRunning = true;
@@ -277,6 +285,7 @@ const runCLI = (
             Object.freeze(Object.assign({}, config, overrideConfig)),
             argv,
             pipe,
+            testWatcher,
             results => {
               isRunning = false;
               /* eslint-disable max-len */
@@ -292,6 +301,7 @@ const runCLI = (
                   ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
                   : null,
                 chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
+                chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to cancel tests running in watch mode.'),
                 chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
                 chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
               ];
@@ -357,6 +367,12 @@ const runCLI = (
               pipe.write('\n');
               writeCurrentPattern();
               break;
+            case KEYS.C:
+              if (isRunning) {
+                testWatcher.setState({interrupted: true});
+                pipe.write('\n' + chalk.bold('Test run interrupted'));
+              }
+              break;
           }
         };
 
@@ -375,6 +391,9 @@ const runCLI = (
           if (timer) {
             clearTimeout(timer);
             timer = null;
+          }
+          if (testWatcher.isInterrupted()) {
+            return;
           }
           timer = setTimeout(startRun, WATCHER_DEBOUNCE);
         };
@@ -397,7 +416,7 @@ const runCLI = (
         return Promise.resolve();
       } else {
         preRunMessage.print(pipe);
-        return runJest(config, argv, pipe, onComplete);
+        return runJest(config, argv, pipe, testWatcher, onComplete);
       }
     })
     .catch(error => {
