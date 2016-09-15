@@ -295,7 +295,6 @@ const matchers: MatchersObject = {
         printWithType('Received', collection, printReceived),
       );
     }
-
     const pass = collection.indexOf(value) != -1;
     const message = pass
       ? () => matcherHint('.not.toContain', collectionType, 'value') + '\n\n' +
@@ -307,6 +306,33 @@ const matchers: MatchersObject = {
         `Expected ${collectionType}:\n` +
         `  ${printReceived(collection)}\n` +
         `To contain value:\n` +
+        `  ${printExpected(value)}`;
+
+    return {message, pass};
+  },
+
+  toContainEqual(collection: Array<any>, value: any) {
+    const collectionType = getType(collection);
+    if (!Array.isArray(collection)) {
+      throw new Error(
+        `.toContainEqual() only works with arrays.\n` +
+        printWithType('Received', collection, printReceived),
+      );
+    }
+
+    const pass = collection.findIndex(elem => {
+      return equals(elem, value, [iterableEquality]);
+    }) != -1;
+    const message = pass
+      ? () => matcherHint('.not.toContainEqual', collectionType, 'value') + '\n\n' +
+        `Expected ${collectionType}:\n` +
+        `  ${printReceived(collection)}\n` +
+        `Not to contain value with deep checking:\n` +
+        `  ${printExpected(value)}\n`
+      : () => matcherHint('.toContainEqual', collectionType, 'value') + '\n\n' +
+        `Expected ${collectionType}:\n` +
+        `  ${printReceived(collection)}\n` +
+        `To contain value with deep checking:\n` +
         `  ${printExpected(value)}`;
 
     return {message, pass};
