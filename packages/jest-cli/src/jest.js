@@ -187,12 +187,10 @@ const runJest = (config, argv, pipe, onComplete) => {
         }
         if (argv.json) {
           if (argv.jsonOutputFile.length >= 1) {
-            const writeStream = fs.createWriteStream(argv.jsonOutputFile);
-            writeStream.write(
+            fs.writeFileSync(
+              argv.jsonOutputFile,
               JSON.stringify(formatTestResults(runResults, config)),
             );
-            writeStream.end();
-
             process.stdout.write(
               `Wrote the test results in JSON to: ${argv.jsonOutputFile}\n`,
             );
