@@ -13,7 +13,7 @@ parameters passed in those calls), capturing instances of constructor functions
 when instantiated with `new`, and allowing test-time configuration of return
 values.
 
-There are two ways to get your hands on a mock functions: Either by
+There are two ways to get your hands on mock functions: Either by
 `require()`ing a mocked component (via `jest.mock('moduleName')`)
 or by explicitly requesting one from `jest.fn()` in your test:
 
