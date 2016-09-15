@@ -31,7 +31,7 @@ const makeTemplate = string => {
 const cleanup = () => rimraf.sync(TESTS_DIR);
 
 const makeTests = (tests: {[filename: string]: string}) => {
-  mkdirp(TESTS_DIR);
+  mkdirp.sync(TESTS_DIR);
   Object.keys(tests).forEach(filename => {
     fs.writeFileSync(path.resolve(TESTS_DIR, filename), tests[filename]);
   });
@@ -50,26 +50,85 @@ test('basic support', () => {
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(status).toBe(0);
     expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(status).toBe(0);
   }
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(status).toBe(0);
     expect(stderr).toMatch('1 snapshot,');
+    expect(stderr).not.toMatch('1 snapshot written in 1 test file.');
+    expect(status).toBe(0);
   }
 
   makeTests({[filename]: template(['{apple: "updated value"}'])});
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(status).toBe(1);
     expect(stderr).toMatch('Received value does not match the stored snapshot');
+    expect(status).toBe(1);
   }
 
   {
     const {stderr, status} = runJest(DIR, [filename, '-u']);
-    expect(status).toBe(0);
     expect(stderr).toMatch('1 snapshot updated in 1 test file.');
+    expect(status).toBe(0);
+  }
+});
+
+test.skip('error thrown before snapshot', () => {
+  const filename = 'error-thrown-before-snapshot-test.js';
+  const template = makeTemplate(
+    `test('snapshots', () => {
+      expect($1).toBeTruthy();
+      expect($2).toMatchSnapshot();
+    });`,
+  );
+
+  makeTests({[filename]: template(['true', '{apple: "original value"}'])});
+
+  {
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(status).toBe(0);
+  }
+  {
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).toMatch('1 snapshot,');
+    expect(status).toBe(0);
+  }
+
+  makeTests({[filename]: template(['false', '{apple: "original value"}'])});
+
+  {
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(status).toBe(0);
+  }
+});
+
+test('first snapshot fails, second passes', () => {
+  const filename = 'first-snapshot-fails-second-passes-test.js';
+  const template = makeTemplate(
+    `test('snapshots', () => {
+      expect($1).toMatchSnapshot();
+      expect($2).toMatchSnapshot();
+    });`,
+  );
+
+  makeTests({[filename]: template([`'apple'`, `'banana'`])});
+
+  {
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).toMatch('2 snapshots written in 1 test file.');
+    expect(status).toBe(0);
+  }
+
+  makeTests({[filename]: template([`'kiwi'`, `'banana'`])});
+
+  {
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).toMatch('Received value does not match the stored snapshot');
+    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(status).toBe(1);
   }
 });
