@@ -186,7 +186,7 @@ const runJest = (config, argv, pipe, onComplete) => {
           processor(runResults);
         }
         if (argv.json) {
-          if (argv.jsonOutputFile.length >= 1) {
+          if (argv.jsonOutputFile) {
             fs.writeFileSync(
               argv.jsonOutputFile,
               JSON.stringify(formatTestResults(runResults, config)),
