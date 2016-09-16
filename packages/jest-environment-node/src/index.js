@@ -15,6 +15,7 @@ import type {Script} from 'vm';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
+const ModuleMocker = require('jest-mock');
 const vm = require('vm');
 
 const isNaN = global.isNaN;
@@ -23,6 +24,7 @@ class NodeEnvironment {
 
   fakeTimers: ?FakeTimers;
   global: ?Global;
+  moduleMocker: ?ModuleMocker;
 
   constructor(config: Config) {
     const global = this.global = {};
@@ -37,7 +39,8 @@ class NodeEnvironment {
     global.JSON = JSON;
     global.Promise = Promise;
     installCommonGlobals(global, config.globals);
-    this.fakeTimers = new FakeTimers(global, config);
+    this.moduleMocker = new ModuleMocker();
+    this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
   }
 
   dispose() {

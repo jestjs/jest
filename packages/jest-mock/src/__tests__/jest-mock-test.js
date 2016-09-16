@@ -13,7 +13,8 @@ describe('moduleMocker', () => {
   let moduleMocker;
 
   beforeEach(() => {
-    moduleMocker = require('../');
+    const ModuleMocker = require('../');
+    moduleMocker = new ModuleMocker();
   });
 
   describe('getMetadata', () => {
