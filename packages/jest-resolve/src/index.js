@@ -204,9 +204,13 @@ class Resolver {
         const regex = moduleNameMapper[mappedModuleName];
         if (regex.test(moduleName)) {
           const matches = moduleName.match(regex);
-          moduleName = mappedModuleName.replace(/\$([0-9]+)/g, (_, index) => {
-            return matches[parseInt(index, 10)];
-          });
+          if (!matches) {
+            moduleName = mappedModuleName;
+          } else {
+            moduleName = mappedModuleName.replace(/\$([0-9]+)/g, (_, index) => {
+              return matches[parseInt(index, 10)];
+            });
+          }
           return this.getModule(moduleName) || Resolver.findNodeModule(
             moduleName,
             {
