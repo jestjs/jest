@@ -15,7 +15,7 @@ const path = require('path');
 describe('JSON Reporter', () => {
   skipOnWindows.suite();
 
-  it('writes test result to some-file.json', () => {
+  it('writes test result to sum.result.json', () => {
     const outputFileName = 'sum.result.json';
     const outputFilePath = path.join(
       process.cwd(),
