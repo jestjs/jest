@@ -33,15 +33,15 @@ const RECEIVED_NAME = {
 
 const equals = global.jasmine.matchersUtil.equals;
 
-const createToBeCalledMatcher = matcherName => (actual, expected) => {
+const createToBeCalledMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
-  ensureMock(actual, matcherName);
+  ensureMock(received, matcherName);
 
-  const actualIsSpy = isSpy(actual);
-  const type = actualIsSpy ? 'spy' : 'mock function';
-  const count = actualIsSpy
-    ? actual.calls.count()
-    : actual.mock.calls.length;
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+  const count = receivedIsSpy
+    ? received.calls.count()
+    : received.mock.calls.length;
   const pass = count > 0;
   const message = pass
     ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') + '\n\n' +
@@ -55,16 +55,16 @@ const createToBeCalledMatcher = matcherName => (actual, expected) => {
 
 const createToBeCalledWithMatcher = matcherName =>
   (
-    actual: any,
+    received: any,
     ...expected: any
   ) => {
-    ensureMock(actual, matcherName);
+    ensureMock(received, matcherName);
 
-    const actualIsSpy = isSpy(actual);
-    const type = actualIsSpy ? 'spy' : 'mock function';
-    const calls = actualIsSpy
-      ? actual.calls.all().map(x => x.args)
-      : actual.mock.calls;
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const calls = receivedIsSpy
+      ? received.calls.all().map(x => x.args)
+      : received.mock.calls;
     const pass = calls.some(call => equals(call, expected));
 
     const message = pass
@@ -74,23 +74,23 @@ const createToBeCalledWithMatcher = matcherName =>
       : matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
         `Expected ${type} to have been called with:\n` +
          `  ${printExpected(expected)}\n` +
-         getActualCalls(calls, CALL_PRINT_LIMIT);
+         formatReceivedCalls(calls, CALL_PRINT_LIMIT);
 
     return {message, pass};
   };
 
 const createLastCalledWithMatcher = matcherName =>
   (
-    actual: any,
+    received: any,
     ...expected: any
   ) => {
-    ensureMock(actual, matcherName);
+    ensureMock(received, matcherName);
 
-    const actualIsSpy = isSpy(actual);
-    const type = actualIsSpy ? 'spy' : 'mock function';
-    const calls = actualIsSpy
-      ? actual.calls.all().map(x => x.args)
-      : actual.mock.calls;
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const calls = receivedIsSpy
+      ? received.calls.all().map(x => x.args)
+      : received.mock.calls;
     const pass = equals(calls[calls.length - 1], expected);
 
     const message = pass
@@ -100,7 +100,7 @@ const createLastCalledWithMatcher = matcherName =>
       : matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
         `Expected ${type} to have been last called with:\n` +
          `  ${printExpected(expected)}\n` +
-         getActualCalls(calls, LAST_CALL_PRINT_LIMIT, {isLast: true});
+         formatReceivedCalls(calls, LAST_CALL_PRINT_LIMIT, {isLast: true});
 
     return {message, pass};
   };
@@ -114,16 +114,16 @@ const spyMatchers: MatchersObject = {
     createLastCalledWithMatcher('.toHaveBeenLastCalledWith'),
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
 
-  toHaveBeenCalledTimes(actual: any, expected: number) {
+  toHaveBeenCalledTimes(received: any, expected: number) {
     const matcherName = '.toHaveBeenCalledTimes';
     ensureExpectedIsNumber(expected, matcherName);
-    ensureMock(actual, matcherName);
+    ensureMock(received, matcherName);
 
-    const actualIsSpy = isSpy(actual);
-    const type = actualIsSpy ? 'spy' : 'mock function';
-    const count = actualIsSpy
-      ? actual.calls.count()
-      : actual.mock.calls.length;
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const count = receivedIsSpy
+      ? received.calls.count()
+      : received.mock.calls.length;
     const pass = count === expected;
     const message = pass
       ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], expected) +
@@ -156,7 +156,7 @@ const ensureMock = (mockOrSpy, matcherName) => {
   }
 };
 
-const getActualCalls = (calls, limit, options) => {
+const formatReceivedCalls = (calls, limit, options) => {
   if (calls.length) {
     const count = calls.length - limit;
     const printedCalls =
