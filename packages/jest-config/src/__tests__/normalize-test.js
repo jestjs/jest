@@ -556,24 +556,6 @@ describe('normalize', () => {
       expect(config.setupFiles.map(uniformPath))
         .toEqual(['/root/node_modules/babel-polyfill']);
     });
-
-    it('correctly identifies react-native', () => {
-      // The default Resolver.findNodeModule fn finds `react-native`.
-      let config = normalize({
-        rootDir: '/root',
-      });
-      expect(config.preprocessorIgnorePatterns).toEqual([]);
-
-      // This version doesn't find react native and sets the default to
-      // /node_modules/
-      Resolver.findNodeModule.mockImplementation(() => null);
-      config = normalize({
-        rootDir: '/root',
-      });
-
-      expect(config.preprocessorIgnorePatterns.map(uniformPath))
-        .toEqual(['/node_modules']);
-    });
   });
 
   describe('Upgrade help', () => {
