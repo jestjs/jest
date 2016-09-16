@@ -187,12 +187,14 @@ const runJest = (config, argv, pipe, onComplete) => {
         }
         if (argv.json) {
           if (argv.jsonOutputFile) {
+            const outputFile = path.resolve(process.cwd(), argv.jsonOutputFile);
+
             fs.writeFileSync(
-              argv.jsonOutputFile,
+              outputFile,
               JSON.stringify(formatTestResults(runResults, config)),
             );
             process.stdout.write(
-              `Wrote the test results in JSON to: ${argv.jsonOutputFile}\n`,
+              `Test results written to: ${path.relative(process.cwd(), outputFile)}\n`, //eslint-disable-line max-len
             );
           } else {
             process.stdout.write(

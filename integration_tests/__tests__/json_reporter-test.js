@@ -9,9 +9,38 @@
 
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const fs = require('fs');
+const path = require('path');
 
 describe('JSON Reporter', () => {
   skipOnWindows.suite();
+
+  it('writes test result to some-file.json', () => {
+    const outputFileName = 'sum.result.json';
+    const outputFilePath = path.join(
+      process.cwd(),
+      'integration_tests/json_reporter/',
+      outputFileName
+    );
+    runJest('json_reporter', ['--json', `--jsonOutputFile=${outputFileName}`]);
+    const testOutput = fs.readFileSync(outputFilePath, 'UTF-8', (err, res) => {
+      return res;
+    });
+    let jsonResult;
+    try {
+      jsonResult = JSON.parse(testOutput);
+    } catch (err) {
+      throw new Error(
+        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`
+      );
+    }
+    expect(jsonResult.numTotalTests).toBe(2);
+    expect(jsonResult.numTotalTestSuites).toBe(1);
+    expect(jsonResult.numRuntimeErrorTestSuites).toBe(0);
+    expect(jsonResult.numPassedTests).toBe(1);
+    expect(jsonResult.numFailedTests).toBe(1);
+    expect(jsonResult.numPendingTests).toBe(0);
+  });
 
   it('outputs coverage report', () => {
     const result = runJest('json_reporter', ['--json']);
