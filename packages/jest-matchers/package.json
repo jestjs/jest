@@ -10,7 +10,6 @@
   "dependencies": {
     "jest-diff": "^15.1.0",
     "jest-matcher-utils": "^15.1.0",
-    "jest-snapshot": "^15.1.1",
     "jest-util": "^15.1.1"
   },
   "devDependencies": {

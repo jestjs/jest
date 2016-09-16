@@ -10,96 +10,105 @@
 'use strict';
 
 import type {HasteFS} from 'types/HasteMap';
-import type {Jasmine} from 'types/Jasmine';
 import type {Path} from 'types/Config';
-import type {SnapshotState} from './SnapshotState';
 
-const SnapshotFile = require('./SnapshotFile');
-
+const SnapshotState = require('./State');
+const {SnapshotFile, SNAPSHOT_EXTENSION} = require('./SnapshotFile');
+const diff = require('jest-diff');
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
-const matcher = require('./matcher');
 const path = require('path');
+const {
+ EXPECTED_COLOR,
+ matcherHint,
+ RECEIVED_COLOR,
+} = require('jest-matcher-utils');
 
-const EXTENSION = SnapshotFile.SNAPSHOT_EXTENSION;
+const EXTENSION = SNAPSHOT_EXTENSION;
 
-const patchAttr = (attr, state) => {
-  attr.onStart = function(onStart) {
-    return function(context) {
-      state.setSpecName(context.getFullName());
-      state.setCounter(0);
-      if (onStart) {
-        onStart(context);
+const cleanup = (hasteFS: HasteFS, update: boolean) => {
+  const pattern = '\\.' + EXTENSION + '$';
+  const files = hasteFS.matchFiles(pattern);
+  const filesRemoved = files
+    .filter(snapshotFile => !fileExists(
+      path.resolve(
+        path.dirname(snapshotFile),
+        '..',
+        path.basename(snapshotFile, '.' + EXTENSION),
+      ),
+      hasteFS,
+    ))
+    .map(snapshotFile => {
+      if (update) {
+        fs.unlinkSync(snapshotFile);
       }
-    };
-  }(attr.onStart);
+    })
+    .length;
+
+  return {
+    filesRemoved,
+  };
 };
 
-const patchJasmine = (jasmine, state) => {
-  jasmine.Spec = (realSpec => {
-    const Spec = function Spec(attr) {
-      patchAttr(attr, state);
-      realSpec.call(this, attr);
-    };
-    Spec.prototype = realSpec.prototype;
-    for (const statics in realSpec) {
-      if (Object.prototype.hasOwnProperty.call(realSpec, statics)) {
-        Spec[statics] = realSpec[statics];
-      }
-    }
-    return Spec;
-  })(jasmine.Spec);
+let snapshotState;
+
+const initializeSnapshotState
+  = (testFile: Path, update: boolean) => new SnapshotState(testFile, update);
+
+const getSnapshotState = () => snapshotState;
+
+const matcher = function(received: any) {
+  this.dontThrow();
+  const {currentTestName, isNot, snapshotState} = this;
+
+  if (isNot) {
+    throw new Error(
+      'Jest: `.not` can not be used with `.toMatchSnapshot()`.',
+    );
+  }
+
+  if (!snapshotState) {
+    throw new Error('Jest: snapshot state must be initialized.');
+  }
+
+  const result = snapshotState.match(currentTestName, received);
+  const {pass} = result;
+
+  if (pass) {
+    return {pass: true, message: ''};
+  } else {
+    const {count, expected, actual} = result;
+
+
+    const expectedString = expected.trim();
+    const actualString = actual.trim();
+    const diffMessage = diff(
+      expectedString,
+      actualString,
+      {
+        aAnnotation: 'Snapshot',
+        bAnnotation: 'Received',
+      },
+    );
+
+    const message =
+      matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
+      `${RECEIVED_COLOR('Received value')} does not match ` +
+      `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
+      (diffMessage || (
+        RECEIVED_COLOR('- ' + expectedString) + '\n' +
+        EXPECTED_COLOR('+ ' + actualString)
+      ));
+
+    return {pass: false, message};
+  }
 };
 
 module.exports = {
   EXTENSION,
-  SnapshotFile: SnapshotFile.SnapshotFile,
-  cleanup(hasteFS: HasteFS, update: boolean) {
-    const pattern = '\\.' + EXTENSION + '$';
-    const files = hasteFS.matchFiles(pattern);
-    const filesRemoved = files
-      .filter(snapshotFile => !fileExists(
-        path.resolve(
-          path.dirname(snapshotFile),
-          '..',
-          path.basename(snapshotFile, '.' + EXTENSION),
-        ),
-        hasteFS,
-      ))
-      .map(snapshotFile => {
-        if (update) {
-          fs.unlinkSync(snapshotFile);
-        }
-      })
-      .length;
-
-    return {
-      filesRemoved,
-    };
-  },
-  matcher,
-  getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
-    let _index = 0;
-    let _name = '';
-    /* $FlowFixMe */
-    const state = Object.assign(Object.create(null), {
-      getCounter: () => _index,
-      getSpecName: () => _name,
-      incrementCounter: () => ++_index,
-      setCounter(index) {
-        _index = index;
-      },
-      setSpecName(name) {
-        _name = name;
-      },
-      snapshot: SnapshotFile.forFile(filePath),
-      added: 0,
-      updated: 0,
-      matched: 0,
-      unmatched: 0,
-    });
-
-    patchJasmine(jasmine, state);
-    return state;
-  },
+  cleanup,
+  getSnapshotState,
+  initializeSnapshotState,
+  toMatchSnapshot: matcher,
+  SnapshotFile,
 };
