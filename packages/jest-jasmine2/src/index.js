@@ -23,7 +23,6 @@ const path = require('path');
 const vm = require('vm');
 
 const CALL_PRINT_LIMIT = 3;
-const LAST_CALL_PRINT_LIMIT = 1;
 const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
 const JASMINE_CHECK_PATH = require.resolve('./jasmine-check');
 
@@ -137,48 +136,6 @@ function jasmine2(
     });
 
     jasmine.addMatchers({
-      lastCalledWith: util => ({
-        compare(actual) {
-          const isSpy = isSpyLike(actual);
-          if (!isSpy && !isMockLike(actual)) {
-            throw Error(
-              'lastCalledWith() should be used on a mock function or ' +
-              'a jasmine spy.',
-            );
-          }
-          const calls = isSpy
-            ? actual.calls.all().map(x => x.args)
-            : actual.mock.calls;
-          const expected = Array.prototype.slice.call(arguments, 1);
-          const pass = util.equals(calls[calls.length - 1], expected);
-          if (!pass) {
-            return {
-              pass,
-              // $FlowFixMe - get/set properties not yet supported
-              get message() {
-                return (
-                  `Wasn't last called with the expected values.\n` +
-                  'Expected call:\n' +
-                  reporter.getFormatter().prettyPrint(expected) +
-                  getActualCalls(reporter, calls, LAST_CALL_PRINT_LIMIT)
-                );
-              },
-            };
-          }
-          return {
-            pass,
-            // $FlowFixMe - get/set properties not yet supported
-            get message() {
-              return (
-                `Shouldn't have been last called with\n` +
-                reporter.getFormatter().prettyPrint(expected)
-              );
-            },
-          };
-
-        },
-      }),
-
       toBeCalledWith: util => ({
         compare(actual) {
           const isSpy = isSpyLike(actual);

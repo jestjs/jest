@@ -1,3 +1,39 @@
+exports[`test lastCalledWith works only on spies or jest.fn 1`] = `[Error: lastCalledWith matcher can only be used on a spy or mock function.]`;
+
+exports[`test lastCalledWith works with jasmine.createSpy 1`] = `
+[Error: Expected spy to be last called with:
+["foo","bar"]
+But was not called.]
+`;
+
+exports[`test lastCalledWith works with jasmine.createSpy 2`] = `
+[Error: Expected spy to be last called with:
+["foo","bar"]
+But was called with:
+["foo","bar1"].]
+`;
+
+exports[`test lastCalledWith works with jasmine.createSpy 3`] = `[Error: Expected spy not to be last called with '["foo","bar"]' but it was]`;
+
+exports[`test lastCalledWith works with jasmine.createSpy 4`] = `[Error: Expected spy not to be last called with '["foo","bar"]' but it was]`;
+
+exports[`test lastCalledWith works with jest.fn 1`] = `
+[Error: Expected mock function to be last called with:
+["foo","bar"]
+But was not called.]
+`;
+
+exports[`test lastCalledWith works with jest.fn 2`] = `
+[Error: Expected mock function to be last called with:
+["foo","bar"]
+But was called with:
+["foo","bar1"].]
+`;
+
+exports[`test lastCalledWith works with jest.fn 3`] = `[Error: Expected mock function not to be last called with '["foo","bar"]' but it was]`;
+
+exports[`test lastCalledWith works with jest.fn 4`] = `[Error: Expected mock function not to be last called with '["foo","bar"]' but it was]`;
+
 exports[`test toBeCalled works only on spies or jest.fn 1`] = `[Error: toBeCalled matcher can only be used on a spy or mock function.]`;
 
 exports[`test toBeCalled works with jasmine.createSpy 1`] = `[Error: Expected the spy to be called.]`;
@@ -25,3 +61,39 @@ exports[`test toHaveBeenCalled works with jest.fn 1`] = `[Error: Expected the mo
 exports[`test toHaveBeenCalled works with jest.fn 2`] = `[Error: Expected the mock function not to be called, but it was called 1 time.]`;
 
 exports[`test toHaveBeenCalled works with jest.fn 3`] = `[Error: toHaveBeenCalled matcher does not accept any arguments.]`;
+
+exports[`test toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `[Error: toHaveBeenLastCalledWith matcher can only be used on a spy or mock function.]`;
+
+exports[`test toHaveBeenLastCalledWith works with jasmine.createSpy 1`] = `
+[Error: Expected spy to be last called with:
+["foo","bar"]
+But was not called.]
+`;
+
+exports[`test toHaveBeenLastCalledWith works with jasmine.createSpy 2`] = `
+[Error: Expected spy to be last called with:
+["foo","bar"]
+But was called with:
+["foo","bar1"].]
+`;
+
+exports[`test toHaveBeenLastCalledWith works with jasmine.createSpy 3`] = `[Error: Expected spy not to be last called with '["foo","bar"]' but it was]`;
+
+exports[`test toHaveBeenLastCalledWith works with jasmine.createSpy 4`] = `[Error: Expected spy not to be last called with '["foo","bar"]' but it was]`;
+
+exports[`test toHaveBeenLastCalledWith works with jest.fn 1`] = `
+[Error: Expected mock function to be last called with:
+["foo","bar"]
+But was not called.]
+`;
+
+exports[`test toHaveBeenLastCalledWith works with jest.fn 2`] = `
+[Error: Expected mock function to be last called with:
+["foo","bar"]
+But was called with:
+["foo","bar1"].]
+`;
+
+exports[`test toHaveBeenLastCalledWith works with jest.fn 3`] = `[Error: Expected mock function not to be last called with '["foo","bar"]' but it was]`;
+
+exports[`test toHaveBeenLastCalledWith works with jest.fn 4`] = `[Error: Expected mock function not to be last called with '["foo","bar"]' but it was]`;
