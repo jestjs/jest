@@ -17,7 +17,6 @@ import type Runtime from 'jest-runtime';
 const JasmineReporter = require('./reporter');
 
 const jasmineAsync = require('./jasmine-async');
-const snapshot = require('jest-snapshot');
 const fs = require('graceful-fs');
 const path = require('path');
 const vm = require('vm');
@@ -110,8 +109,6 @@ function jasmine2(
     }
   });
 
-  const snapshotState = snapshot.getSnapshotState(jasmine, testPath);
-
   env.addReporter(reporter);
 
   // `jest-matchers` should be required inside test environment (vm).
@@ -119,7 +116,12 @@ function jasmine2(
   // class of the test and `error instanceof Error` will return `false`.
   runtime.requireInternalModule(
     path.resolve(__dirname, './extendJasmineExpect.js'),
-  )({snapshotState, updateSnapshot: config.updateSnapshot});
+  )();
+
+  const snapshotState = runtime.requireInternalModule(
+    path.resolve(__dirname, './setup-jest-globals.js'),
+  )({testPath, config});
+
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
