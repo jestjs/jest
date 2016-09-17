@@ -186,14 +186,15 @@ class SearchSource {
 
   findRelatedTestsFromPattern(
     patternInfo: PatternInfo,
-    cwd: Path = process.cwd(),
+    cwd: Path,
   ): SearchResult {
-    if (patternInfo.input.length) {
+    if (!cwd) {
+      cwd = process.cwd();
+    }
+    if (patternInfo.input && patternInfo.input.length) {
       const sources = patternInfo.input.split(' ');
       const resolvedPaths = sources.map(p => path.resolve(cwd, p));
-      return this.findRelatedTests(
-        new Set(Array.prototype.concat.apply([], resolvedPaths)),
-      );
+      return this.findRelatedTests(new Set(resolvedPaths));
     }
     return {paths: []};
   }
