@@ -292,17 +292,6 @@ function normalize(config, argv) {
     config.usesBabelJest = true;
   }
 
-  if (!('preprocessorIgnorePatterns' in config)) {
-    const isRNProject =
-      !!Resolver.findNodeModule('react-native', {
-        basedir: config.rootDir,
-      });
-    config.preprocessorIgnorePatterns =
-      isRNProject ? [] : [constants.NODE_MODULES];
-  } else if (!config.preprocessorIgnorePatterns) {
-    config.preprocessorIgnorePatterns = [];
-  }
-
   Object.keys(config).reduce((newConfig, key) => {
     let value;
     switch (key) {
