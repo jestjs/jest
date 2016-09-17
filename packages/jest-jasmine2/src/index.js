@@ -86,10 +86,6 @@ function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.setupTestFrameworkScriptFile) {
-    runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
-
   if (!jasmine || !env) {
     throw new Error('jasmine2 could not be initialized by Jest');
   }
@@ -128,6 +124,10 @@ function jasmine2(
   runtime.requireInternalModule(
     path.resolve(__dirname, './extendJasmineExpect.js'),
   );
+
+  if (config.setupTestFrameworkScriptFile) {
+    runtime.requireModule(config.setupTestFrameworkScriptFile);
+  }
 
   if (config.timers === 'fake') {
     environment.fakeTimers.useFakeTimers();
