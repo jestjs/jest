@@ -133,6 +133,11 @@ function jasmine2(
     environment.fakeTimers.useFakeTimers();
   }
 
+  if (config.testNamePattern) {
+    const testNameRegex = new RegExp(config.testNamePattern);
+    env.specFilter = spec => testNameRegex.test(spec.getFullName());
+  }
+
   runtime.requireModule(testPath);
   env.execute();
   return reporter.getResults().then(results => {

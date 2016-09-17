@@ -91,6 +91,11 @@ const options = {
       'rare.',
     type: 'boolean',
   },
+  testNamePattern: {
+    description:
+      'Run only tests with a name that matches the regex pattern.',
+    type: 'string',
+  },
   testPathPattern: {
     description:
       'A regexp pattern string that is matched against all tests ' +
