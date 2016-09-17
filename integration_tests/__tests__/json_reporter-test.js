@@ -7,26 +7,33 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 const fs = require('fs');
 const path = require('path');
+const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
 
 describe('JSON Reporter', () => {
   skipOnWindows.suite();
 
+  const outputFileName = 'sum.result.json';
+  const outputFilePath = path.join(
+    process.cwd(),
+    'integration_tests/json_reporter/',
+    outputFileName
+  );
+
+  const cleanUp = () => {
+    fs.unlinkSync(outputFilePath);
+  };
+
+  afterAll(cleanUp);
+
   it('writes test result to sum.result.json', () => {
-    const outputFileName = 'sum.result.json';
-    const outputFilePath = path.join(
-      process.cwd(),
-      'integration_tests/json_reporter/',
-      outputFileName
-    );
-    runJest('json_reporter', ['--json', `--jsonOutputFile=${outputFileName}`]);
-    const testOutput = fs.readFileSync(outputFilePath, 'UTF-8', (err, res) => {
-      return res;
-    });
     let jsonResult;
+
+    runJest('json_reporter', ['--json', `--jsonOutputFile=${outputFileName}`]);
+    const testOutput = fs.readFileSync(outputFilePath, 'utf8');
+
     try {
       jsonResult = JSON.parse(testOutput);
     } catch (err) {
@@ -34,6 +41,7 @@ describe('JSON Reporter', () => {
         `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`
       );
     }
+
     expect(jsonResult.numTotalTests).toBe(2);
     expect(jsonResult.numTotalTestSuites).toBe(1);
     expect(jsonResult.numRuntimeErrorTestSuites).toBe(0);

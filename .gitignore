@@ -10,7 +10,6 @@
 /integration_tests/transform/*/coverage
 /integration_tests/transform/*/node_modules
 /integration_tests/*/node_modules
-/integration_tests/json_reporter/sum.result.json
 npm-debug.log
 website/core/metadata*.js
 website/src/jest/docs

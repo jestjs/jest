@@ -167,7 +167,7 @@ const options = {
   },
   jsonOutputFile: {
     description:
-      'Write the test results in JSON to your specified file.',
+      'Write test results to a file when the --json option is also specified.',
     type: 'string',
   },
   setupTestFrameworkScriptFile: {
