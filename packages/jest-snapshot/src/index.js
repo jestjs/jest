@@ -11,14 +11,15 @@
 
 import type {HasteFS} from 'types/HasteMap';
 import type {Jasmine} from 'types/Jasmine';
-import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
 
 const SnapshotFile = require('./SnapshotFile');
+const createSnapshotState = require('./SnapshotState').createSnapshotState;
 
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const matcher = require('./matcher');
+const processSnapshot = require('./processSnapshot');
 const path = require('path');
 
 const EXTENSION = SnapshotFile.SNAPSHOT_EXTENSION;
@@ -35,7 +36,7 @@ const patchAttr = (attr, state) => {
   }(attr.onStart);
 };
 
-const patchJasmine = (jasmine, state) => {
+const patchJasmine = (jasmine: Jasmine, state: SnapshotState) => {
   jasmine.Spec = (realSpec => {
     const Spec = function Spec(attr) {
       patchAttr(attr, state);
@@ -78,28 +79,7 @@ module.exports = {
     };
   },
   matcher,
-  getSnapshotState: (jasmine: Jasmine, filePath: Path): SnapshotState => {
-    let _index = 0;
-    let _name = '';
-    /* $FlowFixMe */
-    const state = Object.assign(Object.create(null), {
-      getCounter: () => _index,
-      getSpecName: () => _name,
-      incrementCounter: () => ++_index,
-      setCounter(index) {
-        _index = index;
-      },
-      setSpecName(name) {
-        _name = name;
-      },
-      snapshot: SnapshotFile.forFile(filePath),
-      added: 0,
-      updated: 0,
-      matched: 0,
-      unmatched: 0,
-    });
-
-    patchJasmine(jasmine, state);
-    return state;
-  },
+  processSnapshot,
+  createSnapshotState,
+  patchJasmine,
 };
