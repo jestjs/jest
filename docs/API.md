@@ -972,8 +972,8 @@ Indicates whether the coverage information should be collected while executing t
 ### `collectCoverageFrom` [object]
 (default: `undefined`)
 
-An array of [glob patterns](https://github.com/sindresorhus/multimatch) that, when present,
-indicates a set of files for which coverage information should be collected. If a file matches
+An array of [glob patterns](https://github.com/sindresorhus/multimatch)
+indicating a set of files for which coverage information should be collected. If a file matches
 the specified glob pattern, coverage information will be collected for it even if no tests exist for
 this file and it's never required in the test suite.
 
@@ -981,8 +981,11 @@ Example:
 ```js
 collectCoverageFrom: ['**/*.{js,jsx}', '!**/node_modules/**', '!**/vendor/**']
 ```
-will collect coverage information for all the files inside `rootDir`, except the ones that match
-`**/node_modules/**` or `**/vendor/**`
+
+This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match
+`**/node_modules/**` or `**/vendor/**`.
+
+*Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`.*
 
 ### `coveragePathIgnorePatterns` [array<string>]
 (default: `['/node_modules/']`)
