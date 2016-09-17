@@ -532,9 +532,9 @@ Use `.toContainEqual` when you want to check that an item is in a list.
 For testing the items in the list, this  matcher recursively checks the equality of all fields, rather than checking for object identity.
 
 ```js
-describe('', () => {
-  it('', () => {
-    const myBeverage = { delicious: true, sour: false };
+describe('my beverage', () => {
+  it('is delicious and not sour', () => {
+    const myBeverage = {delicious: true, sour: false};
     expect(myBeverages()).toContainEqual(myBeverage);
   });
 });

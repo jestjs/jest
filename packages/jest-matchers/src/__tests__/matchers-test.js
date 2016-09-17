@@ -309,7 +309,7 @@ describe('.toContainEqual()', () => {
     [[Symbol.for('a')], Symbol.for('a')],
     [[{a:'b'}, {a:'c'}], {a:'b'}],
   ].forEach(([list, v]) => {
-    it(`'${stringify(list)}' contains with deep checking '${stringify(v)}'`, () => {
+    it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
       jestExpect(list).toContainEqual(v);
     });
   });
@@ -317,9 +317,9 @@ describe('.toContainEqual()', () => {
   [
     [[{a:'b'}, {a:'c'}], {a:'d'}],
   ].forEach(([list, v]) => {
-    it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
-      jestExpect(list).not.toContain(v);
-      matchErrorSnapshot(() => jestExpect(list).toContain(v));
+    it(`'${stringify(list)}' does not contain a value equal to'${stringify(v)}'`, () => {
+      jestExpect(list).not.toContainEqual(v);
+      matchErrorSnapshot(() => jestExpect(list).toContainEqual(v));
     });
   });
 });
