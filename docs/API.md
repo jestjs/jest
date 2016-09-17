@@ -100,7 +100,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
-  - [`collectCoverageOnlyFrom` [object]](#collectcoverageonlyfrom-object)
+  - [`collectCoverageFrom` [object]](#collectcoveragefrom-object)
   - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepattern-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
@@ -969,10 +969,23 @@ A list of reporter names that Jest uses when writing coverage reports. Any [ista
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-### `collectCoverageOnlyFrom` [object]
+### `collectCoverageFrom` [object]
 (default: `undefined`)
 
-An object that, when present, indicates a set of files for which coverage information should be collected. Any files not present in this set will not have coverage collected for them. Since there is a performance cost for each file that we collect coverage information from, this can help prune this cost down to only the files in which you care about coverage (such as the specific modules that you are testing).
+An array of [glob patterns](https://github.com/sindresorhus/multimatch)
+indicating a set of files for which coverage information should be collected. If a file matches
+the specified glob pattern, coverage information will be collected for it even if no tests exist for
+this file and it's never required in the test suite.
+
+Example:
+```js
+collectCoverageFrom: ['**/*.{js,jsx}', '!**/node_modules/**', '!**/vendor/**']
+```
+
+This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match
+`**/node_modules/**` or `**/vendor/**`.
+
+*Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`.*
 
 ### `coveragePathIgnorePatterns` [array<string>]
 (default: `['/node_modules/']`)
