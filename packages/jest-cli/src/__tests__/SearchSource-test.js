@@ -241,50 +241,30 @@ describe('SearchSource', () => {
     });
 
     it('returns empty search result for empty input', () => {
-      const patternInfo = {
-        input: '',
-        testPathPattern: '',
-        shouldTreatInputAsPattern: false,
-        findRelatedTests: true,
-      };
+      const input = [];
       const data = searchSource
-        .findRelatedTestsFromPattern(patternInfo, rootDir);
+        .findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([]);
     });
 
     it('returns empty search result for invalid input', () => {
-      const patternInfo = {
-        input: 'non-existend.js',
-        testPathPattern: 'non-existend.js',
-        shouldTreatInputAsPattern: false,
-        findRelatedTests: true,
-      };
+      const input = ['non-existend.js'];
       const data = searchSource
-        .findRelatedTestsFromPattern(patternInfo, rootDir);
+        .findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([]);
     });
 
     it('returns empty search result if no related tests were found', () => {
-      const patternInfo = {
-        input: 'no-tests.js',
-        testPathPattern: 'no-tests.js',
-        shouldTreatInputAsPattern: false,
-        findRelatedTests: true,
-      };
+      const input = ['no tests.js'];
       const data = searchSource
-        .findRelatedTestsFromPattern(patternInfo, rootDir);
+        .findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([]);
     });
 
     it('finds tests for a single file', () => {
-      const patternInfo = {
-        input: 'module.jsx',
-        testPathPattern: 'module.jsx',
-        shouldTreatInputAsPattern: false,
-        findRelatedTests: true,
-      };
+      const input = ['packages/jest-cli/src/__tests__/test_root/module.jsx'];
       const data = searchSource
-        .findRelatedTestsFromPattern(patternInfo, rootDir);
+        .findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
@@ -292,14 +272,12 @@ describe('SearchSource', () => {
     });
 
     it('finds tests for multiple files', () => {
-      const patternInfo = {
-        input: 'module.jsx module.foobar',
-        testPathPattern: 'module.jsx|module.foobar',
-        shouldTreatInputAsPattern: false,
-        findRelatedTests: true,
-      };
+      const input = [
+        'packages/jest-cli/src/__tests__/test_root/module.jsx',
+        'packages/jest-cli/src/__tests__/test_root/module.foobar',
+      ];
       const data = searchSource
-        .findRelatedTestsFromPattern(patternInfo, rootDir);
+        .findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),

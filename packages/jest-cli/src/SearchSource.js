@@ -45,6 +45,7 @@ type PatternInfo = {
   findRelatedTests?: boolean,
   lastCommit?: boolean,
   onlyChanged?: boolean,
+  paths?: Array<Path>,
   shouldTreatInputAsPattern?: boolean,
   testPathPattern?: string,
   watch?: boolean,
@@ -185,11 +186,10 @@ class SearchSource {
   }
 
   findRelatedTestsFromPattern(
-    patternInfo: PatternInfo
+    paths: Array<Path>,
   ): SearchResult {
-    if (patternInfo.input && patternInfo.input.length) {
-      const sources = patternInfo.input.split(' ');
-      const resolvedPaths = sources.map(p => path.resolve(process.cwd(), p));
+    if (Array.isArray(paths) && paths.length) {
+      const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
       return this.findRelatedTests(new Set(resolvedPaths));
     }
     return {paths: []};
@@ -270,9 +270,9 @@ class SearchSource {
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
       return this.findChangedTests({lastCommit: patternInfo.lastCommit});
-    } else if (patternInfo.findRelatedTests) {
+    } else if (patternInfo.findRelatedTests && patternInfo.paths) {
       return Promise.resolve(
-        this.findRelatedTestsFromPattern(patternInfo),
+        this.findRelatedTestsFromPattern(patternInfo.paths),
       );
     } else if (patternInfo.testPathPattern != null) {
       return Promise.resolve(
