@@ -143,9 +143,8 @@ class SearchSource {
   _getAllTestPaths(
     testPathPattern: StrOrRegExpPattern,
   ): SearchResult {
-    const allFiles = this._hasteContext.hasteFS.getAllFiles();
     return this._filterTestPathsWithStats(
-      allFiles,
+      this._hasteContext.hasteFS.getAllFiles(),
       testPathPattern,
     );
   }
@@ -169,14 +168,14 @@ class SearchSource {
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(paths: Set<Path>): SearchResult {
+  findRelatedTests(allPaths: Set<Path>): SearchResult {
     const dependencyResolver = new DependencyResolver(
       this._hasteContext.resolver,
       this._hasteContext.hasteFS,
     );
     return {
       paths: dependencyResolver.resolveInverse(
-        paths,
+        allPaths,
         this.isTestFilePath.bind(this),
         {
           skipNodeResolution: this._options.skipNodeResolution,
