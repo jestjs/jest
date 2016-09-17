@@ -226,7 +226,7 @@ function makeComponent(metadata: MockFunctionMetadata): Mock {
       metadata.members.prototype.members
     ) || {};
     const prototypeSlots = getSlots(prototype);
-    const mockConstructor = function() {
+    const mockConstructor = function mockConstructor() {
       instances.push(this);
       calls.push(Array.prototype.slice.call(arguments));
       if (this instanceof f) {
