@@ -16,6 +16,7 @@ const moduleNameMapper = {
   'mappedToModule': '<rootDir>/TestModuleNameMapperResolution',
   'mappedToDirectory': '<rootDir>/MyDirectoryModule',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
+  '\\.css$': '<rootDir>/__mocks__/ManuallyMocked',
 };
 
 let createRuntime;
@@ -158,6 +159,12 @@ it('resolves mapped module names and unmocks them by default', () =>
       'module/name/test',
     );
     expect(exports).toBe('mapped_module');
+
+    exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'subdir1/style.css',
+    );
+    expect(exports.isManualMockModule).toBe(true);
   }),
 );
 
