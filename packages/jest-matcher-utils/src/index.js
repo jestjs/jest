@@ -27,6 +27,23 @@ export type ValueType =
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 
+const NUMBERS = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+];
+
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
 const getType = (value: any): ValueType => {
@@ -142,7 +159,11 @@ const printWithType = (
 const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
-    throw new Error(`${matcherName} matcher does not accept any arguments.`);
+    throw new Error(
+      matcherHint('[.not]' + matcherName, undefined, '') + '\n\n' +
+      'Matcher does not accept any arguments.\n' +
+      printWithType('Got', expected, printExpected),
+    );
   }
 };
 
@@ -150,8 +171,9 @@ const ensureActualIsNumber = (actual: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
-      `${matcherName} actual value should be a number. ` +
-      `'${typeof actual}' was passed.`,
+      matcherHint('[.not]' + matcherName) + '\n\n' +
+      `Actual value must be a number.\n` +
+      printWithType('Received', actual, printReceived),
     );
   }
 };
@@ -160,8 +182,9 @@ const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
     throw new Error(
-      `${matcherName} expected value should be a number. ` +
-      `'${typeof expected}' was passed.`,
+      matcherHint('[.not]' + matcherName) + '\n\n' +
+      `Expected value must be a number.\n` +
+      printWithType('Got', expected, printExpected),
     );
   }
 };
@@ -172,16 +195,19 @@ const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
 };
 
 const pluralize =
-  (word: string, count: number) => `${count} ${word}${count === 1 ? '' : 's'}`;
+  (word: string, count: number) =>
+    (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
 
 const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
 ) => {
-  return chalk.dim('expect(') + RECEIVED_COLOR(received) +
+  return (
+    chalk.dim('expect(') + RECEIVED_COLOR(received) +
     chalk.dim(')' + matcherName + '(') +
-    EXPECTED_COLOR(expected) + chalk.dim(')');
+    EXPECTED_COLOR(expected) + chalk.dim(')')
+  );
 };
 
 module.exports = {

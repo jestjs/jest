@@ -28,7 +28,7 @@ const {
 
 const equals = global.jasmine.matchersUtil.equals;
 
-const createMatcher = name =>
+const createMatcher = matcherName =>
   (actual: Function, expected: string | Error | RegExp) => {
     const value = expected;
     let error;
@@ -44,26 +44,26 @@ const createMatcher = name =>
     }
 
     if (typeof expected === 'function') {
-      return toThrowMatchingError(name, error, expected);
+      return toThrowMatchingError(matcherName, error, expected);
     } else if (expected instanceof RegExp) {
-      return toThrowMatchingStringOrRegexp(name, error, expected, value);
+      return toThrowMatchingStringOrRegexp(matcherName, error, expected, value);
     } else if (expected && typeof expected === 'object') {
-      return toThrowMatchingErrorInstance(name, error, expected);
+      return toThrowMatchingErrorInstance(matcherName, error, expected);
     } else if (expected === undefined) {
       const pass = error !== undefined;
       return {
         pass,
         message: pass
-          ? () => matcherHint('.not.' + name, 'function', '') + '\n\n' +
+          ? () => matcherHint('.not' + matcherName, 'function', '') + '\n\n' +
             'Expected the function not to throw an error.\n' +
             printActualErrorMessage(error)
-          : () => matcherHint('.' + name, 'function', getType(value)) + '\n\n' +
+          : () => matcherHint(matcherName, 'function', getType(value)) + '\n\n' +
             'Expected the function to throw an error.\n' +
             printActualErrorMessage(error),
       };
     } else {
       throw new Error(
-        matcherHint('.not.' + name, 'function', getType(value)) + '\n\n' +
+        matcherHint('.not' + matcherName, 'function', getType(value)) + '\n\n' +
         'Unexpected argument passed.\nExpected: ' +
         `${printExpected('string')}, ${printExpected('Error (type)')} or ${printExpected('regexp')}.\n` +
         printWithType('Got', expected, printExpected),
@@ -72,8 +72,8 @@ const createMatcher = name =>
   };
 
 const matchers: MatchersObject = {
-  toThrow: createMatcher('toThrow'),
-  toThrowError: createMatcher('toThrowError'),
+  toThrow: createMatcher('.toThrow'),
+  toThrowError: createMatcher('.toThrowError'),
 };
 
 const toThrowMatchingStringOrRegexp = (
@@ -88,11 +88,11 @@ const toThrowMatchingStringOrRegexp = (
 
   const pass = !!(error && error.message.match(pattern));
   const message = pass
-    ? () => matcherHint('.not.' + name, 'function', getType(value)) + '\n\n' +
+    ? () => matcherHint('.not' + name, 'function', getType(value)) + '\n\n' +
       `Expected the function not to throw an error matching:\n` +
       `  ${printExpected(value)}\n` +
       printActualErrorMessage(error)
-    : () => matcherHint('.' + name, 'function', getType(value)) + '\n\n' +
+    : () => matcherHint(name, 'function', getType(value)) + '\n\n' +
       `Expected the function to throw an error matching:\n` +
       `  ${printExpected(value)}\n` +
       printActualErrorMessage(error);
@@ -111,11 +111,11 @@ const toThrowMatchingErrorInstance = (
 
   const pass = equals(error, expectedError);
   const message = pass
-    ? () => matcherHint('.not.' + name, 'function', 'error') + '\n\n' +
+    ? () => matcherHint('.not' + name, 'function', 'error') + '\n\n' +
       `Expected the function not to throw an error matching:\n` +
       `  ${printExpected(expectedError)}\n` +
       printActualErrorMessage(error)
-    : () => matcherHint('.' + name, 'function', 'error') + '\n\n' +
+    : () => matcherHint(name, 'function', 'error') + '\n\n' +
       `Expected the function to throw an error matching:\n` +
       `  ${printExpected(expectedError)}\n` +
       printActualErrorMessage(error);
@@ -130,11 +130,11 @@ const toThrowMatchingError = (
 ) => {
   const pass = !!(error && error instanceof ErrorClass);
   const message = pass
-    ? () => matcherHint('.not.' + name, 'function', 'type') + '\n\n' +
+    ? () => matcherHint('.not' + name, 'function', 'type') + '\n\n' +
       `Expected the function not to throw an error of type:\n` +
       `  ${printExpected(ErrorClass.name)}\n` +
       printActualErrorMessage(error)
-    : () => matcherHint('.' + name, 'function', 'type') + '\n\n' +
+    : () => matcherHint(name, 'function', 'type') + '\n\n' +
       `Expected the function to throw an error of type:\n` +
       `  ${printExpected(ErrorClass.name)}\n` +
       printActualErrorMessage(error);
