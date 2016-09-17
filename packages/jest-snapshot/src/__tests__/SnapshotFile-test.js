@@ -99,4 +99,21 @@ describe('SnapshotFile', () => {
     expect(snapshotFile.get(SNAPSHOT)).toBe('"' + SNAPSHOT_VALUE + '"');
     snapshotFile.save();
   });
+
+  it('sorts snapshots by natural sort order', () => {
+    const fs = require('fs');
+    const snapshotFile = SnapshotFile.forFile(TEST_FILE);
+    ['test 2', 'test 11', 'test 1', 'test 10'].forEach(snapshot =>
+      snapshotFile.add(snapshot, SNAPSHOT_VALUE),
+    );
+    fs.writeFileSync.mockImplementation((path, content) => {
+      expect(content).toBe(
+        'exports[`test 1`] = `"bar"`;\n\n' +
+        'exports[`test 2`] = `"bar"`;\n\n' +
+        'exports[`test 10`] = `"bar"`;\n\n' +
+        'exports[`test 11`] = `"bar"`;\n',
+      );
+    });
+    snapshotFile.save();
+  });
 });

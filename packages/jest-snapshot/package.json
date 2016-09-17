@@ -11,6 +11,7 @@
     "jest-diff": "^15.1.0",
     "jest-file-exists": "^15.0.0",
     "jest-util": "^15.1.1",
+    "natural-compare": "^1.4.0",
     "pretty-format": "^3.7.0"
   },
   "scripts": {
