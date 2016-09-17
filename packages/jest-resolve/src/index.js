@@ -207,9 +207,10 @@ class Resolver {
           if (!matches) {
             moduleName = mappedModuleName;
           } else {
-            moduleName = mappedModuleName.replace(/\$([0-9]+)/g, (_, index) => {
-              return matches[parseInt(index, 10)];
-            });
+            moduleName = mappedModuleName.replace(
+              /\$([0-9]+)/g,
+              (_, index) => matches[parseInt(index, 10)],
+            );
           }
           return this.getModule(moduleName) || Resolver.findNodeModule(
             moduleName,
