@@ -141,7 +141,7 @@ const matchers: MatchersObject = {
   },
 
   toBeTruthy(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeTruthy');
+    ensureNoExpected(expected, '.toBeTruthy');
     const pass = !!actual;
     const message = pass
       ? matcherHint('.not.toBeTruthy', 'received', '') + '\n\n' +
@@ -154,7 +154,7 @@ const matchers: MatchersObject = {
   },
 
   toBeFalsy(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeFalsy');
+    ensureNoExpected(expected, '.toBeFalsy');
     const pass = !actual;
     const message = pass
       ? matcherHint('.not.toBeFalsy', 'received', '') + '\n\n' +
@@ -167,7 +167,7 @@ const matchers: MatchersObject = {
   },
 
   toBeNaN(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeNaN');
+    ensureNoExpected(expected, '.toBeNaN');
     const pass = Number.isNaN(actual);
     const message = pass
       ? matcherHint('.not.toBeNaN', 'received', '') + '\n\n' +
@@ -180,7 +180,7 @@ const matchers: MatchersObject = {
   },
 
   toBeNull(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeNull');
+    ensureNoExpected(expected, '.toBeNull');
     const pass = actual === null;
     const message = pass
       ? matcherHint('.not.toBeNull', 'received', '') + '\n\n' +
@@ -193,7 +193,7 @@ const matchers: MatchersObject = {
   },
 
   toBeDefined(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeDefined');
+    ensureNoExpected(expected, '.toBeDefined');
     const pass = actual !== void 0;
     const message = pass
       ? matcherHint('.not.toBeDefined', 'received', '') + '\n\n' +
@@ -206,7 +206,7 @@ const matchers: MatchersObject = {
   },
 
   toBeUndefined(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeUndefined');
+    ensureNoExpected(expected, '.toBeUndefined');
     const pass = actual === void 0;
     const message = pass
       ? matcherHint('.not.toBeUndefined', 'received', '') + '\n\n' +
@@ -334,7 +334,7 @@ const matchers: MatchersObject = {
     if (typeof received !== 'string') {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
-        `${RECEIVED_COLOR('string')} value should be a string.\n` +
+        `${RECEIVED_COLOR('string')} value must be a string.\n` +
         printWithType('Received', received, printReceived),
       );
     }
@@ -343,7 +343,7 @@ const matchers: MatchersObject = {
     if (!(expected instanceof RegExp) && !isString) {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
-        `${EXPECTED_COLOR('expected')} value should be a string or a regular expression.\n` +
+        `${EXPECTED_COLOR('expected')} value must be a string or a regular expression.\n` +
         printWithType('Expected', expected, printExpected),
       );
     }

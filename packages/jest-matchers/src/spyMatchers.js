@@ -12,80 +12,169 @@
 
 import type {MatchersObject} from './types';
 
+const CALL_PRINT_LIMIT = 3;
+const LAST_CALL_PRINT_LIMIT = 1;
 const {
-  ensureNoExpected,
   ensureExpectedIsNumber,
+  ensureNoExpected,
+  EXPECTED_COLOR,
+  matcherHint,
   pluralize,
+  printExpected,
+  printReceived,
+  printWithType,
+  RECEIVED_COLOR,
 } = require('jest-matcher-utils');
 
+const RECEIVED_NAME = {
+  spy: 'spy',
+  'mock function': 'jest.fn()',
+};
+
+const equals = global.jasmine.matchersUtil.equals;
+
+const createToBeCalledMatcher = matcherName => (received, expected) => {
+  ensureNoExpected(expected, matcherName);
+  ensureMock(received, matcherName);
+
+  const receivedIsSpy = isSpy(received);
+  const type = receivedIsSpy ? 'spy' : 'mock function';
+  const count = receivedIsSpy
+    ? received.calls.count()
+    : received.mock.calls.length;
+  const pass = count > 0;
+  const message = pass
+    ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') + '\n\n' +
+      `Expected ${type} not to be called, but it was` +
+      ` called ${RECEIVED_COLOR(pluralize('time', count))}.`
+    : matcherHint(matcherName, RECEIVED_NAME[type], '') + '\n\n' +
+      `Expected ${type} to have been called.`;
+
+  return {message, pass};
+};
+
+const createToBeCalledWithMatcher = matcherName =>
+  (
+    received: any,
+    ...expected: any
+  ) => {
+    ensureMock(received, matcherName);
+
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const calls = receivedIsSpy
+      ? received.calls.all().map(x => x.args)
+      : received.mock.calls;
+    const pass = calls.some(call => equals(call, expected));
+
+    const message = pass
+      ? matcherHint('.not' + matcherName, RECEIVED_NAME[type]) + '\n\n' +
+        `Expected ${type} not to have been called with:\n` +
+        `  ${printExpected(expected)}`
+      : matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
+        `Expected ${type} to have been called with:\n` +
+         `  ${printExpected(expected)}\n` +
+         formatReceivedCalls(calls, CALL_PRINT_LIMIT);
+
+    return {message, pass};
+  };
+
+const createLastCalledWithMatcher = matcherName =>
+  (
+    received: any,
+    ...expected: any
+  ) => {
+    ensureMock(received, matcherName);
+
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const calls = receivedIsSpy
+      ? received.calls.all().map(x => x.args)
+      : received.mock.calls;
+    const pass = equals(calls[calls.length - 1], expected);
+
+    const message = pass
+      ? matcherHint('.not' + matcherName, RECEIVED_NAME[type]) + '\n\n' +
+        `Expected ${type} to not have been last called with:\n` +
+        `  ${printExpected(expected)}`
+      : matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
+        `Expected ${type} to have been last called with:\n` +
+         `  ${printExpected(expected)}\n` +
+         formatReceivedCalls(calls, LAST_CALL_PRINT_LIMIT, {isLast: true});
+
+    return {message, pass};
+  };
+
 const spyMatchers: MatchersObject = {
-  toHaveBeenCalled(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toHaveBeenCalled');
-    ensureMockOrSpy(actual, 'toHaveBeenCalled');
+  toBeCalled: createToBeCalledMatcher('.toBeCalled'),
+  toHaveBeenCalled: createToBeCalledMatcher('.toHaveBeenCalled'),
+  toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
+  toHaveBeenCalledWith: createToBeCalledWithMatcher('.toHaveBeenCalledWith'),
+  toHaveBeenLastCalledWith:
+    createLastCalledWithMatcher('.toHaveBeenLastCalledWith'),
+  lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
 
-    return isSpy(actual)
-    ? jasmineToHaveBeenCalled(actual)
-      : jestToHaveBeenCalled(actual);
-  },
+  toHaveBeenCalledTimes(received: any, expected: number) {
+    const matcherName = '.toHaveBeenCalledTimes';
+    ensureExpectedIsNumber(expected, matcherName);
+    ensureMock(received, matcherName);
 
-  toBeCalled(actual: any, expected: void) {
-    ensureNoExpected(expected, 'toBeCalled');
-    ensureMockOrSpy(actual, 'toBeCalled');
-    return isSpy(actual)
-      ? jasmineToHaveBeenCalled(actual)
-      : jestToHaveBeenCalled(actual);
-  },
-
-  toHaveBeenCalledTimes(actual: any, expected: number) {
-    ensureExpectedIsNumber(expected, 'toHaveBeenCalledTimes');
-    ensureMockOrSpy(actual, 'toHaveBeenCalledTimes');
-
-    const actualIsSpy = isSpy(actual);
-    const type = actualIsSpy ? 'spy' : 'mock function';
-    const count = actualIsSpy
-      ? actual.calls.count()
-      : actual.mock.calls.length;
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const count = receivedIsSpy
+      ? received.calls.count()
+      : received.mock.calls.length;
     const pass = count === expected;
     const message = pass
-      ? `Expected the ${type} not to be called ${pluralize('time', expected)}` +
-        `, but it was called ${pluralize('time', count)}.`
-      : `Expected the ${type} to be called ${pluralize('time', expected)},` +
-        ` but it was called ${pluralize('time', count)}.`;
+      ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], expected) +
+        `\n\n` +
+        `Expected ${type} not to be called ` +
+        `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
+        ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
+      : matcherHint(matcherName, RECEIVED_NAME[type], expected) + '\n\n' +
+        `Expected ${type} to have been called ` +
+        `${EXPECTED_COLOR(pluralize('time', expected))},` +
+        ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
     return {message, pass};
   },
 };
 
-const jestToHaveBeenCalled = actual => {
-  const pass = actual.mock.calls.length > 0;
-  const message = pass
-    ? `Expected the mock function not to be called, but it was` +
-      ` called ${pluralize('time', actual.mock.calls.length)}.`
-    : `Expected the mock function to be called.`;
-
-  return {message, pass};
-};
-
-const jasmineToHaveBeenCalled = actual => {
-  const pass = actual.calls.any();
-  const message = pass
-    ? `Expected the spy not to be called, but it was` +
-      ` called ${pluralize('time', actual.calls.count())}.`
-    : `Expected the spy to be called.`;
-
-  return {message, pass};
-};
-
 const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';
 
-const ensureMockOrSpy = (mockOrSpy, matcherName) => {
+const ensureMock = (mockOrSpy, matcherName) => {
   if (
+    !mockOrSpy ||
     (mockOrSpy.calls === undefined || mockOrSpy.calls.all === undefined) &&
     mockOrSpy._isMockFunction !== true
   ) {
     throw new Error(
-      `${matcherName} matcher can only be used on a spy or mock function.`,
+      matcherHint('[.not]' + matcherName, 'jest.fn()', '') + '\n\n' +
+      `${RECEIVED_COLOR('jest.fn()')} value must be a mock function or spy.\n` +
+      printWithType('Received', mockOrSpy, printReceived),
     );
+  }
+};
+
+const formatReceivedCalls = (calls, limit, options) => {
+  if (calls.length) {
+    const count = calls.length - limit;
+    const printedCalls =
+      calls
+        .slice(-limit)
+        .reverse()
+        .map(printReceived)
+        .join(', ');
+    return (
+      `But it was ${options && options.isLast ? 'last ' : ''}called with:\n` +
+      `  ` + printedCalls +
+      (count > 0
+        ? '\nand ' + RECEIVED_COLOR(pluralize('more call', count)) + '.'
+        : ''
+      )
+    );
+  } else {
+    return `But it was ${RECEIVED_COLOR('not called')}.`;
   }
 };
 
