@@ -92,6 +92,7 @@ const options = {
     type: 'boolean',
   },
   testNamePattern: {
+    alias: 't',
     description:
       'Run only tests with a name that matches the regex pattern.',
     type: 'string',
