@@ -17,8 +17,11 @@ jest
     writeFileSync: jest.fn(),
   }));
 
-const TEST_FILE = '/foo/__tests__/baz.js';
-const EXPECTED_FILE_NAME = '/foo/__tests__/__snapshots__/baz.js.snap';
+const path = require('path');
+
+const TEST_DIR = '/foo/__tests__';
+const TEST_FILE = path.join(TEST_DIR, 'baz.js');
+const EXPECTED_FILE_NAME = path.join(TEST_DIR, '__snapshots__/baz.js.snap');
 const SNAPSHOT = 'foo';
 const SNAPSHOT_VALUE = 'bar';
 
