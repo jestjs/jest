@@ -10,19 +10,19 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
+const {normalizePathsInSnapshot} = require('jest-util');
 
 test('console printing', () => {
-  const result = runJest('console');
+  // On Windows, this test only works when --no-cache is passed in. Need to
+  // determine why.
+  const result = runJest('console', ['--no-cache']);
   const stderr = result.stderr.toString();
 
   expect(result.status).toBe(0);
 
   // Remove last two lines because they contain timing information.
   const output = stderr.split('\n').slice(0, -2).join('\n');
-  expect(output).toMatchSnapshot();
+  expect(normalizePathsInSnapshot(output)).toMatchSnapshot();
 });
 
 test('console printing with --verbose', () => {
@@ -31,5 +31,5 @@ test('console printing with --verbose', () => {
 
   expect(result.status).toBe(0);
 
-  expect(stdout).toMatchSnapshot();
+  expect(normalizePathsInSnapshot(stdout)).toMatchSnapshot();
 });
