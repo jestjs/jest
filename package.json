@@ -20,7 +20,7 @@
     "istanbul-api": "^1.0.0-aplha.10",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
-    "lerna": "2.0.0-beta.26",
+    "lerna": "2.0.0-beta.28",
     "minimatch": "^3.0.3",
     "mkdirp": "^0.5.1",
     "progress": "^1.1.8",
