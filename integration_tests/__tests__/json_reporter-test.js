@@ -22,11 +22,9 @@ describe('JSON Reporter', () => {
     outputFileName
   );
 
-  const cleanUp = () => {
+  afterAll(() => {
     fs.unlinkSync(outputFilePath);
-  };
-
-  afterAll(cleanUp);
+  });
 
   it('writes test result to sum.result.json', () => {
     let jsonResult;
