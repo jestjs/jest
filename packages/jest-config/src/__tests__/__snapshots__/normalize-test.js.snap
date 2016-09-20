@@ -8,7 +8,7 @@ exports[`normalize Upgrade help logs a warning when automocking is disabled and 
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
@@ -23,7 +23,7 @@ exports[`normalize Upgrade help logs a warning when automocking is explicitly di
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
@@ -38,7 +38,7 @@ exports[`normalize Upgrade help throws when using old configuration options 1`] 
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
@@ -53,7 +53,7 @@ exports[`normalize Upgrade help throws when using old configuration options 2`] 
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
@@ -70,7 +70,7 @@ exports[`normalize Upgrade help throws when using old configuration options 3`] 
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
@@ -86,7 +86,7 @@ exports[`normalize Upgrade help throws when using old configuration options 4`] 
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
@@ -102,7 +102,7 @@ exports[`normalize Upgrade help throws when using old configuration options 5`] 
   below.
 
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
-  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/api.html
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
   [1mRelease Blog Post:[22m https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 [39m"
 `;
