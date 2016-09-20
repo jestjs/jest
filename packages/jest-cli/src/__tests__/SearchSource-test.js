@@ -226,4 +226,64 @@ describe('SearchSource', () => {
       ]);
     });
   });
+
+  describe('findRelatedTestsFromPattern', () => {
+    beforeEach(done => {
+      const config = normalizeConfig({
+        name,
+        rootDir,
+        testRegex,
+        moduleFileExtensions: ['js', 'jsx', 'foobar'],
+      });
+      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+        searchSource = new SearchSource(hasteMap, config);
+        done();
+      });
+    });
+
+    it('returns empty search result for empty input', () => {
+      const input = [];
+      const data = searchSource
+        .findRelatedTestsFromPattern(input);
+      expect(data.paths).toEqual([]);
+    });
+
+    it('returns empty search result for invalid input', () => {
+      const input = ['non-existend.js'];
+      const data = searchSource
+        .findRelatedTestsFromPattern(input);
+      expect(data.paths).toEqual([]);
+    });
+
+    it('returns empty search result if no related tests were found', () => {
+      const input = ['no tests.js'];
+      const data = searchSource
+        .findRelatedTestsFromPattern(input);
+      expect(data.paths).toEqual([]);
+    });
+
+    it('finds tests for a single file', () => {
+      const input = ['packages/jest-cli/src/__tests__/test_root/module.jsx'];
+      const data = searchSource
+        .findRelatedTestsFromPattern(input);
+      expect(data.paths).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+        path.join(rootDir, '__testtests__', 'test.jsx'),
+      ]);
+    });
+
+    it('finds tests for multiple files', () => {
+      const input = [
+        'packages/jest-cli/src/__tests__/test_root/module.jsx',
+        'packages/jest-cli/src/__tests__/test_root/module.foobar',
+      ];
+      const data = searchSource
+        .findRelatedTestsFromPattern(input);
+      expect(data.paths).toEqual([
+        path.join(rootDir, '__testtests__', 'test.js'),
+        path.join(rootDir, '__testtests__', 'test.jsx'),
+        path.join(rootDir, '__testtests__', 'test.foobar'),
+      ]);
+    });
+  });
 });
