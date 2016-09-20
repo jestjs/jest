@@ -34,6 +34,13 @@ const check = (argv: Object) => {
     );
   }
 
+  if (argv.findRelatedTests && argv._.length === 0) {
+    throw new Error(
+      'The --findRelatedTests option requires file paths to be specified.\n' +
+      'Example usage: jest --findRelatedTests ./src/source.js ./src/index.js.',
+    );
+  }
+
   return true;
 };
 
@@ -102,6 +109,13 @@ const options = {
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
     type: 'string',
+  },
+  findRelatedTests: {
+    description:
+      'Find related tests for a list of source files that were passed in ' +
+      'as arguments. Useful for pre-commit hook integration to run the ' +
+      'minimal amount of tests necessary.',
+    type: 'boolean',
   },
   version: {
     alias: 'v',

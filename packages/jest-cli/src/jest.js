@@ -109,6 +109,8 @@ const buildTestPathPatternInfo = argv => {
   if (argv._ && argv._.length) {
     return validatePattern({
       input: argv._.join(' '),
+      findRelatedTests: argv.findRelatedTests,
+      paths: argv._,
       testPathPattern: argv._.join('|'),
       shouldTreatInputAsPattern: false,
     });
