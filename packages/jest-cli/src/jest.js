@@ -194,7 +194,8 @@ const runJest = (config, argv, pipe, onComplete) => {
               JSON.stringify(formatTestResults(runResults, config)),
             );
             process.stdout.write(
-              `Test results written to: ${path.relative(process.cwd(), outputFile)}\n`, //eslint-disable-line max-len
+              `Test results written to: ` +
+              `${path.relative(process.cwd(), outputFile)}\n`,
             );
           } else {
             process.stdout.write(
