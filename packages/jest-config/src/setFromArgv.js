@@ -57,6 +57,10 @@ function setFromArgv(config, argv) {
     config.setupTestFrameworkScriptFile = argv.setupTestFrameworkScriptFile;
   }
 
+  if (argv.testNamePattern) {
+    config.testNamePattern = argv.testNamePattern;
+  }
+
   if (argv.updateSnapshot) {
     config.updateSnapshot = argv.updateSnapshot;
   }

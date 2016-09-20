@@ -75,6 +75,7 @@ export type Config = BaseConfig & {
   setupTestFrameworkScriptFile: Path,
   silent: boolean,
   testcheckOptions: {},
+  testNamePattern: string,
   unmockedModulePathPatterns: Array<string>,
   updateSnapshot: boolean,
   usesBabelJest: boolean,
