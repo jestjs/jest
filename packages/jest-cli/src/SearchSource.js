@@ -276,10 +276,7 @@ class SearchSource {
       );
     } else if (patternInfo.testPathPattern != null) {
       return Promise.resolve(
-        this.findMatchingTests(
-          patternInfo.testPathPattern,
-          patternInfo.findRelatedTests,
-        ),
+        this.findMatchingTests(patternInfo.testPathPattern),
       );
     } else {
       return Promise.resolve({paths: []});
