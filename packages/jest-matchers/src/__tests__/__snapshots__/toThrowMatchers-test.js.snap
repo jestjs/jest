@@ -32,7 +32,7 @@ exports[`.toThrow() invalid arguments 1`] = `
 Unexpected argument passed.
 Expected: [32m\"string\"[39m, [32m\"Error (type)\"[39m or [32m\"regexp\"[39m.
 Got:
-  number: [32m111[39m"
+  string: [32m\"111\"[39m"
 `;
 
 exports[`.toThrow() regexp did not throw at all 1`] = `
@@ -125,7 +125,7 @@ exports[`.toThrowError() invalid arguments 1`] = `
 Unexpected argument passed.
 Expected: [32m\"string\"[39m, [32m\"Error (type)\"[39m or [32m\"regexp\"[39m.
 Got:
-  number: [32m111[39m"
+  string: [32m\"111\"[39m"
 `;
 
 exports[`.toThrowError() regexp did not throw at all 1`] = `

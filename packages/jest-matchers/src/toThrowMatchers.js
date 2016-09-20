@@ -66,7 +66,7 @@ const createMatcher = matcherName =>
         matcherHint('.not' + matcherName, 'function', getType(value)) + '\n\n' +
         'Unexpected argument passed.\nExpected: ' +
         `${printExpected('string')}, ${printExpected('Error (type)')} or ${printExpected('regexp')}.\n` +
-        printWithType('Got', expected, printExpected),
+        printWithType('Got', String(expected), printExpected),
       );
     }
   };
@@ -148,7 +148,11 @@ const printActualErrorMessage = error => {
     return (
       `Instead, it threw:\n` +
       RECEIVED_COLOR(
-        '  ' + message + formatStackTrace(stack, {rootDir: process.cwd()}),
+        '  ' + message + formatStackTrace(stack, {
+          noStackTrace: false,
+          rootDir: process.cwd(),
+          testRegex: '',
+        }),
       )
     );
   }

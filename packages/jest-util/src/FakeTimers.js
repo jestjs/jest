@@ -63,7 +63,7 @@ class FakeTimers {
     global: Global,
     moduleMocker: ModuleMocker,
     config: Config,
-    maxLoops: number,
+    maxLoops?: number,
   ) {
 
     this._global = global;

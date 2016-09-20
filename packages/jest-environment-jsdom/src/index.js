@@ -28,14 +28,14 @@ class JSDOMEnvironment {
     this.document = require('jsdom').jsdom(/* markup */undefined, {
       url: config.testURL,
     });
-    this.global = this.document.defaultView;
+    const global = this.global = this.document.defaultView;
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(this.global, config.globals);
+    installCommonGlobals(global, config.globals);
 
     this.moduleMocker = new ModuleMocker();
-    this.fakeTimers = new FakeTimers(this.global, this.moduleMocker, config);
+    this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
   }
 
   dispose(): void {

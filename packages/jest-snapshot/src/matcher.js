@@ -72,14 +72,14 @@ module.exports = (
           snapshotState.unmatched++;
           message =
             `Received value does not match the stored snapshot ${count}.\n\n` +
-            diff(
+            String(diff(
               matches.expected.trim(),
               matches.actual.trim(),
               {
                 aAnnotation: 'Snapshot',
                 bAnnotation: 'Received',
               },
-            );
+            ));
         } else {
           snapshotState.matched++;
         }

@@ -337,7 +337,8 @@ describe('FakeTimers', () => {
       console.warn = jest.fn();
       const timers = new FakeTimers(global, moduleMocker, {rootDir: __dirname});
       timers.runAllTimers();
-      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+      expect(console.warn.mock.calls[0][0].split('\n').slice(0, -3).join('\n'))
+        .toMatchSnapshot();
       console.warn = consoleWarn;
     });
 

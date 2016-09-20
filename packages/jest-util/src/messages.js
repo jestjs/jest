@@ -10,7 +10,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
-import type {TestResult} from 'types/TestResult';
+import type {AssertionResult, TestResult} from 'types/TestResult';
 
 const chalk = require('chalk');
 const path = require('path');
@@ -85,7 +85,7 @@ const formatExecError = (
     message  + stack + '\n';
 };
 
-const removeInternalStackEntries = (lines, config) => {
+const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
   let pathCounter = 0;
 
   return lines.filter(line => {
@@ -105,7 +105,11 @@ const removeInternalStackEntries = (lines, config) => {
   });
 };
 
-const formatPaths = (config, relativeTestPath, line) => {
+const formatPaths = (
+  config: StackTraceOptions,
+  relativeTestPath,
+  line,
+) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -113,17 +117,27 @@ const formatPaths = (config, relativeTestPath, line) => {
   }
 
   let filePath = path.relative(config.rootDir, match[2]);
-  if (config.testRegex && new RegExp(config.testRegex).test(filePath)) {
-    filePath = chalk.reset.blue(filePath);
-  } else if (filePath === relativeTestPath) {
-    // highlight paths from the current test file
+  // highlight paths from the current test file
+  if (
+    config.testRegex && new RegExp(config.testRegex).test(filePath) ||
+    filePath === relativeTestPath
+  ) {
     filePath = chalk.reset.cyan(filePath);
   }
-  // make paths relative to the <rootDir>
   return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
 };
 
-const formatStackTrace = (stack, config: Config, testPath: ?Path) => {
+type StackTraceOptions = {
+  noStackTrace: boolean,
+  rootDir: string,
+  testRegex: string,
+};
+
+const formatStackTrace = (
+  stack,
+  config: StackTraceOptions,
+  testPath: ?Path,
+) => {
   let lines = stack.split(/\n/);
   const relativeTestPath = testPath
     ? path.relative(config.rootDir, testPath)
@@ -136,11 +150,11 @@ const formatStackTrace = (stack, config: Config, testPath: ?Path) => {
 };
 
 const formatResultsErrors = (
-  testResults: TestResult,
+  testResults: Array<AssertionResult>,
   config: Config,
   testPath: ?Path,
 ): ?string => {
-  const failedResults = testResults.testResults.reduce(
+  const failedResults = testResults.reduce(
     (errors, result) => {
       result.failureMessages.forEach(content => errors.push({result, content}));
       return errors;

@@ -65,7 +65,7 @@ export type Suite = {
 };
 
 export type TestResult = {
-  console?: ConsoleBuffer,
+  console: ?ConsoleBuffer,
   coverage?: Coverage,
   memoryUsage?: Bytes,
   failureMessage: ?string,
@@ -84,7 +84,7 @@ export type TestResult = {
     unmatched: number,
     updated: number,
   },
-  testExecError: Error,
+  testExecError?: Error,
   testFilePath: string,
   testResults: Array<AssertionResult>,
 };

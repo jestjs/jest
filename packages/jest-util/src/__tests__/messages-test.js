@@ -24,17 +24,15 @@ const windowsStackTrace =
   at attemptAsync (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1919:24)`;
 
 it('should exclude jasmine from stack trace for windows paths', () => {
-  const messages = formatResultsErrors({
-    testResults: [
-      {
-        ancestorTitles: [],
-        failureMessages: [
-          windowsStackTrace,
-        ],
-        title: 'windows test',
-      },
-    ],
-  }, {
+  const messages = formatResultsErrors([
+    {
+      ancestorTitles: [],
+      failureMessages: [
+        windowsStackTrace,
+      ],
+      title: 'windows test',
+    },
+  ], {
     rootDir: '',
   });
 
