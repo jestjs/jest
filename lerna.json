@@ -1,5 +1,5 @@
 {
-  "lerna": "2.0.0-beta.26",
+  "lerna": "2.0.0-beta.28",
   "version": "15.1.1",
   "linkedFiles": {
     "prefix": "/**\n * @flow\n */\n"
