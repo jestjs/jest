@@ -26,7 +26,6 @@ type MockFunctionState = {
   calls: Array<Array<any>>,
 };
 
-
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
 // $FlowFixMe

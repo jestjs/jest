@@ -22,7 +22,7 @@ import typeof HType from './constants';
 
 const H = require('./constants');
 const HasteFS = require('./HasteFS');
-const ModuleMap = require('./ModuleMap');
+const HasteModuleMap = require('./ModuleMap');
 
 const crypto = require('crypto');
 const execSync = require('child_process').execSync;
@@ -64,6 +64,8 @@ type InternalOptions = {
   roots: Array<string>,
   useWatchman: boolean,
 };
+
+export type ModuleMap = HasteModuleMap;
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
@@ -223,7 +225,7 @@ class HasteMap {
         .then(internalHasteMap => ({
           hasteFS: new HasteFS(internalHasteMap.files),
           moduleMap:
-            new ModuleMap(internalHasteMap.map, internalHasteMap.mocks),
+            new HasteModuleMap(internalHasteMap.map, internalHasteMap.mocks),
           __hasteMapForTest: isTest && internalHasteMap,
         }));
     }
@@ -239,7 +241,7 @@ class HasteMap {
 
   readModuleMap(): ModuleMap {
     const data = this.read();
-    return new ModuleMap(data.map, data.mocks);
+    return new HasteModuleMap(data.map, data.mocks);
   }
 
   /**

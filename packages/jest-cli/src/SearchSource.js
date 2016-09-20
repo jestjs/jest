@@ -12,7 +12,7 @@
 
 import type {HasteContext} from 'types/HasteMap';
 import type {Path} from 'types/Config';
-import type {ResolveModuleConfig} from '../../jest-resolve/src';
+import type {ResolveModuleConfig} from 'jest-resolve';
 
 const DependencyResolver = require('jest-resolve-dependencies');
 
@@ -27,7 +27,7 @@ const {
 
 type SearchSourceConfig = {
   testPathDirs: Array<Path>,
-  testRegex: RegExp,
+  testRegex: string,
   testPathIgnorePatterns: Array<RegExp>,
 };
 

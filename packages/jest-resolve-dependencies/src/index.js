@@ -12,7 +12,7 @@
 
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
-import type Resolver from '../../jest-resolve/src';
+import type Resolver from 'jest-resolve';
 
 const fileExists = require('jest-file-exists');
 

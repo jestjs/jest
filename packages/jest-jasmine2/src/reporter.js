@@ -92,19 +92,30 @@ class Jasmine2Reporter {
     });
 
     const testResult = {
-      failureMessage: null,
+      console: null,
+      failureMessage: formatResultsErrors(
+        testResults,
+        this._config,
+        this._testPath,
+      ),
       numFailingTests,
       numPassingTests,
       numPendingTests,
+      perfStats: {
+        end: 0,
+        start: 0,
+      },
+      snapshot: {
+        added: 0,
+        fileDeleted: false,
+        matched: 0,
+        unchecked: 0,
+        unmatched: 0,
+        updated: 0,
+      },
+      testFilePath: this._testPath,
       testResults,
-      snapshot: {},
     };
-
-    testResult.failureMessage = formatResultsErrors(
-      testResult,
-      this._config,
-      this._testPath,
-    );
 
     this._resolve(testResult);
   }

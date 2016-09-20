@@ -11,7 +11,7 @@
 
 import type {Path, Config} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
-import type Resolver from '../../jest-resolve/src';
+import type Resolver from 'jest-resolve';
 
 const BufferedConsole = require('./lib/BufferedConsole');
 const Console = require('jest-util').Console;

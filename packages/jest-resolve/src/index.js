@@ -11,7 +11,7 @@
 'use strict';
 
 import type {Path} from 'types/Config';
-import type ModuleMap from '../../jest-haste-map/src/ModuleMap';
+import type {ModuleMap} from 'jest-haste-map';
 
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
@@ -26,7 +26,7 @@ type ResolverConfig = {
   moduleDirectories: Array<string>,
   moduleNameMapper: ?{[key: string]: RegExp},
   modulePaths: Array<Path>,
-  platforms: Array<string>,
+  platforms?: Array<string>,
 };
 
 type FindNodeModuleConfig = {
