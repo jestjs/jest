@@ -14,12 +14,14 @@ import type {Script} from 'vm';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
+const ModuleMocker = require('jest-mock');
 
 class JSDOMEnvironment {
 
   document: ?Object;
   fakeTimers: ?FakeTimers;
   global: ?Global;
+  moduleMocker: ?ModuleMocker;
 
   constructor(config: Config): void {
     // lazy require
@@ -31,7 +33,9 @@ class JSDOMEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(this.global, config.globals);
-    this.fakeTimers = new FakeTimers(this.global, config);
+
+    this.moduleMocker = new ModuleMocker();
+    this.fakeTimers = new FakeTimers(this.global, this.moduleMocker, config);
   }
 
   dispose(): void {

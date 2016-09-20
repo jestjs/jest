@@ -11,11 +11,9 @@
 
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
+import type ModuleMocker from 'jest-mock';
 
 const {formatStackTrace} = require('./messages');
-const mocks = require('jest-mock');
-
-const fn = impl => mocks.getMockFn().mockImpl(impl);
 
 type Callback = (...args: any) => void;
 
@@ -61,7 +59,13 @@ class FakeTimers {
   _timers: {[key: TimerID]: Timer};
   _uuidCounter: number;
 
-  constructor(global: Global, config: Config, maxLoops: number) {
+  constructor(
+    global: Global,
+    moduleMocker: ModuleMocker,
+    config: Config,
+    maxLoops: number,
+  ) {
+
     this._global = global;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
@@ -78,6 +82,8 @@ class FakeTimers {
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
     };
+
+    const fn = impl => moduleMocker.getMockFn().mockImpl(impl);
 
     this._fakeTimerAPIs = {
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),

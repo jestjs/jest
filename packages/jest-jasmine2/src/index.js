@@ -112,6 +112,10 @@ function jasmine2(
     if (config.resetModules) {
       runtime.resetModules();
     }
+
+    if (config.clearMocks) {
+      runtime.clearAllMocks();
+    }
   });
 
   const snapshotState = snapshot.getSnapshotState(jasmine, testPath);

@@ -371,6 +371,7 @@ function normalize(config, argv) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'clearMocks':
       case 'collectCoverage':
       case 'colors':
       case 'coverageCollector':
