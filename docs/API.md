@@ -4,7 +4,7 @@ title: API Reference
 layout: docs
 category: Reference
 permalink: docs/api.html
-next: troubleshooting
+next: configuration
 ---
 
 #### The Jest global environment
@@ -862,8 +862,6 @@ Instructs Jest to use fake versions of the standard timer functions (`setTimeout
 
 ### `jest.useRealTimers()`
 Instructs Jest to use the real versions of the standard timer functions.
-
-
 
 ## Miscellaneous
 

@@ -250,7 +250,7 @@ class SearchSource {
         : `No files found in ${config.rootDir}.\n` +
           `Make sure Jest's configuration does not exclude this directory.\n` +
           `To set up Jest, make sure a package.json file exists.\n` +
-          `Jest API Documentation: facebook.github.io/jest/docs/api.html`
+          `Jest Documentation: facebook.github.io/jest/docs/configuration.html`
       )
     );
   }
