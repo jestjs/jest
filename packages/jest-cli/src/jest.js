@@ -186,9 +186,22 @@ const runJest = (config, argv, pipe, onComplete) => {
           processor(runResults);
         }
         if (argv.json) {
-          process.stdout.write(
-            JSON.stringify(formatTestResults(runResults, config)),
-          );
+          if (argv.jsonOutputFile) {
+            const outputFile = path.resolve(process.cwd(), argv.jsonOutputFile);
+
+            fs.writeFileSync(
+              outputFile,
+              JSON.stringify(formatTestResults(runResults, config)),
+            );
+            process.stdout.write(
+              `Test results written to: ` +
+              `${path.relative(process.cwd(), outputFile)}\n`,
+            );
+          } else {
+            process.stdout.write(
+              JSON.stringify(formatTestResults(runResults, config)),
+            );
+          }
         }
         return onComplete && onComplete(runResults);
       }).catch(error => {

@@ -171,6 +171,11 @@ const options = {
       'other test output and user messages to stderr.',
     type: 'boolean',
   },
+  jsonOutputFile: {
+    description:
+      'Write test results to a file when the --json option is also specified.',
+    type: 'string',
+  },
   setupTestFrameworkScriptFile: {
     description:
       'The path to a module that runs some code to configure or set up ' +
