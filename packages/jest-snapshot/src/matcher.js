@@ -13,6 +13,11 @@ import type {Path} from 'types/Config';
 import type {SnapshotState} from './SnapshotState';
 
 const diff = require('jest-diff');
+const {
+  EXPECTED_COLOR,
+  matcherHint,
+  RECEIVED_COLOR,
+} = require('jest-matcher-utils');
 
 type CompareResult = {
   pass: boolean,
@@ -70,16 +75,24 @@ module.exports = (
         pass = matches.pass;
         if (!pass) {
           snapshotState.unmatched++;
+          const expectedString = matches.expected.trim();
+          const actualString = matches.actual.trim();
+          const diffMessage = diff(
+            expectedString,
+            actualString,
+            {
+              aAnnotation: 'Snapshot',
+              bAnnotation: 'Received',
+            },
+          );
           message =
-            `Received value does not match the stored snapshot ${count}.\n\n` +
-            diff(
-              matches.expected.trim(),
-              matches.actual.trim(),
-              {
-                aAnnotation: 'Snapshot',
-                bAnnotation: 'Received',
-              },
-            );
+            matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
+            `${RECEIVED_COLOR('Received value')} does not match ` +
+            `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
+            (diffMessage || (
+              RECEIVED_COLOR('- ' + expectedString) + '\n' +
+              EXPECTED_COLOR('+ ' + actualString)
+            ));
         } else {
           snapshotState.matched++;
         }

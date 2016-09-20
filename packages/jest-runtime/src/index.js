@@ -15,12 +15,11 @@ import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
-import type ModuleMap from '../../jest-haste-map/src/ModuleMap';
-import type Resolver from '../../jest-resolve/src';
-import type ModuleMocker from '../../jest-mock/src';
+import type {ModuleMap} from 'jest-haste-map';
+import type ModuleMocker from 'jest-mock';
 
 const HasteMap = require('jest-haste-map');
-const ResolverClass = require('jest-resolve');
+const Resolver = require('jest-resolve');
 
 const fs = require('graceful-fs');
 const path = require('path');
@@ -149,6 +148,19 @@ class Runtime {
     }
   }
 
+  static shouldInstrument(filename: Path, config: Config) {
+    return shouldInstrument(filename, config);
+  }
+
+  static transformSource(
+    filename: Path,
+    config: Config,
+    content: string,
+    instrument: boolean,
+  ) {
+    return transform.transformSource(filename, config, content, instrument);
+  }
+
   static createHasteContext(
     config: Config,
     options: {
@@ -192,6 +204,7 @@ class Runtime {
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
+      retainAllFiles: false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
     });
@@ -201,7 +214,7 @@ class Runtime {
     config: Config,
     moduleMap: ModuleMap,
   ): Resolver {
-    return new ResolverClass(moduleMap, {
+    return new Resolver(moduleMap, {
       browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
@@ -770,5 +783,3 @@ class Runtime {
 }
 
 module.exports = Runtime;
-(module.exports: any).shouldInstrument = shouldInstrument;
-(module.exports :any).transformSource = transform.transformSource;

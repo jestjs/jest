@@ -64,7 +64,7 @@ test('basic support', () => {
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('Received value does not match the stored snapshot');
+    expect(stderr).toMatch('Received value does not match stored snapshot');
     expect(status).toBe(1);
   }
 
@@ -127,7 +127,8 @@ test('first snapshot fails, second passes', () => {
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('Received value does not match the stored snapshot');
+    expect(stderr).toMatch('Received value does not match stored snapshot');
+    expect(stderr).toMatch('- "apple"\n    + "kiwi"');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(1);
   }

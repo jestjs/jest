@@ -126,12 +126,18 @@ const spyMatchers: MatchersObject = {
       : received.mock.calls.length;
     const pass = count === expected;
     const message = pass
-      ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], expected) +
+      ? matcherHint(
+          '.not' +
+          matcherName,
+          RECEIVED_NAME[type],
+          String(expected),
+        ) +
         `\n\n` +
         `Expected ${type} not to be called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
         ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
-      : matcherHint(matcherName, RECEIVED_NAME[type], expected) + '\n\n' +
+      : matcherHint(matcherName, RECEIVED_NAME[type], String(expected)) +
+        '\n\n' +
         `Expected ${type} to have been called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +
         ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;

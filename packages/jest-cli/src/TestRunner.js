@@ -376,6 +376,7 @@ const buildFailureTestResult = (
   err: TestError,
 ): TestResult => {
   return {
+    console: null,
     failureMessage: null,
     numFailingTests: 1,
     numPassingTests: 0,

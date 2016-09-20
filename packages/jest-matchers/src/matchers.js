@@ -365,8 +365,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    const isString = typeof expected == 'string';
-    if (!(expected instanceof RegExp) && !isString) {
+    if (!(expected instanceof RegExp) && !(typeof expected === 'string')) {
       throw new Error(
         matcherHint('[.not].toMatch', 'string', 'expected') + '\n\n' +
         `${EXPECTED_COLOR('expected')} value must be a string or a regular expression.\n` +
@@ -374,8 +373,11 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = new RegExp(isString ? escapeStrForRegex(expected) : expected)
-      .test(received);
+    const pass = new RegExp(
+      typeof expected === 'string'
+        ? escapeStrForRegex(expected)
+        : expected,
+      ).test(received);
     const message = pass
       ? () => matcherHint('.not.toMatch') +
         `\n\nExpected value not to match:\n` +

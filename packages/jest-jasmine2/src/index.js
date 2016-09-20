@@ -12,7 +12,7 @@
 import type {Config} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {TestResult} from 'types/TestResult';
-import type Runtime from '../../jest-runtime/src';
+import type Runtime from 'jest-runtime';
 
 const JasmineReporter = require('./reporter');
 
