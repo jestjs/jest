@@ -41,6 +41,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`browser` [boolean]](#browser-boolean)
   - [`bail` [boolean]](#bail-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
+  - [`clearMocks` [boolean]](#clearmocks-boolean)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
@@ -99,6 +100,11 @@ By default, Jest runs all tests and produces all errors into the console upon co
 The directory where Jest should store its cached dependency information.
 
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
+
+### `clearMocks` [boolean]
+(default: false)
+
+Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test.
 
 ### `coverageDirectory` [string]
 (default: `undefined`)

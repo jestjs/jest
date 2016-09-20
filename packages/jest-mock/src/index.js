@@ -21,6 +21,12 @@ type MockFunctionMetadata = {
   value?: any,
 };
 
+type MockFunctionState = {
+  instances: Array<any>,
+  calls: Array<Array<any>>,
+};
+
+
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
 // $FlowFixMe
@@ -195,294 +201,318 @@ function createMockFunction(
   /* eslint-enable no-new-func */
 }
 
-function makeComponent(metadata: MockFunctionMetadata): Mock {
-  if (metadata.type === 'object') {
-    return {};
-  } else if (metadata.type === 'array') {
-    return [];
-  } else if (metadata.type === 'regexp') {
-    return new RegExp('');
-  } else if (
-    metadata.type === 'constant' ||
-    metadata.type === 'collection' ||
-    metadata.type === 'null' ||
-    metadata.type === 'undefined'
-  ) {
-    return metadata.value;
-  } else if (metadata.type === 'function') {
-    let isReturnValueLastSet = false;
-    let defaultReturnValue;
-    let mockImpl;
-    /* eslint-disable prefer-const */
-    let f;
-    /* eslint-enable perfer-const */
-    const specificReturnValues = [];
-    const specificMockImpls = [];
-    const calls = [];
-    const instances = [];
-    const prototype = (
-      metadata.members &&
-      metadata.members.prototype &&
-      metadata.members.prototype.members
-    ) || {};
-    const prototypeSlots = getSlots(prototype);
-    const mockConstructor = function() {
-      instances.push(this);
-      calls.push(Array.prototype.slice.call(arguments));
-      if (this instanceof f) {
-        // This is probably being called as a constructor
-        prototypeSlots.forEach(slot => {
-          // Copy prototype methods to the instance to make
-          // it easier to interact with mock instance call and
-          // return values
-          if (prototype[slot].type === 'function') {
-            const protoImpl = this[slot];
-            this[slot] = generateFromMetadata(prototype[slot]);
-            this[slot]._protoImpl = protoImpl;
+
+class ModuleMocker {
+  _mockRegistry: WeakMap<Function, MockFunctionState>;
+
+  constructor() {
+    this._mockRegistry = new WeakMap();
+  }
+
+  _makeComponent(metadata: MockFunctionMetadata): Mock {
+    if (metadata.type === 'object') {
+      return {};
+    } else if (metadata.type === 'array') {
+      return [];
+    } else if (metadata.type === 'regexp') {
+      return new RegExp('');
+    } else if (
+      metadata.type === 'constant' ||
+      metadata.type === 'collection' ||
+      metadata.type === 'null' ||
+      metadata.type === 'undefined'
+    ) {
+      return metadata.value;
+    } else if (metadata.type === 'function') {
+      let isReturnValueLastSet = false;
+      let defaultReturnValue;
+      let mockImpl;
+      /* eslint-disable prefer-const */
+      let f;
+      /* eslint-enable perfer-const */
+      const specificReturnValues = [];
+      const specificMockImpls = [];
+
+      const prototype = (
+        metadata.members &&
+        metadata.members.prototype &&
+        metadata.members.prototype.members
+      ) || {};
+      const prototypeSlots = getSlots(prototype);
+      const mocker = this;
+      const mockConstructor = function() {
+        f.mock.instances.push(this);
+        f.mock.calls.push(Array.prototype.slice.call(arguments));
+        if (this instanceof f) {
+          // This is probably being called as a constructor
+          prototypeSlots.forEach(slot => {
+            // Copy prototype methods to the instance to make
+            // it easier to interact with mock instance call and
+            // return values
+            if (prototype[slot].type === 'function') {
+              const protoImpl = this[slot];
+              this[slot] = mocker.generateFromMetadata(prototype[slot]);
+              this[slot]._protoImpl = protoImpl;
+            }
+          });
+
+          // Run the mock constructor implementation
+          return mockImpl && mockImpl.apply(this, arguments);
+        }
+
+        let returnValue;
+        // If return value is last set, either specific or default, i.e.
+        // mockReturnValueOnce()/mockReturnValue() is called and no
+        // mockImplementationOnce()/mockImplementation() is called after that.
+        // use the set return value.
+        if (isReturnValueLastSet) {
+          returnValue = specificReturnValues.shift();
+          if (returnValue === undefined) {
+            returnValue = defaultReturnValue;
           }
+        }
+
+        // If mockImplementationOnce()/mockImplementation() is last set,
+        // or specific return values are used up, use the mock implementation.
+        let specificMockImpl;
+        if (returnValue === undefined) {
+          specificMockImpl = specificMockImpls.shift();
+          if (specificMockImpl === undefined) {
+            specificMockImpl = mockImpl;
+          }
+          if (specificMockImpl) {
+            return specificMockImpl.apply(this, arguments);
+          }
+        }
+
+        // Otherwise use prototype implementation
+        if (returnValue === undefined && f._protoImpl) {
+          return f._protoImpl.apply(this, arguments);
+        }
+
+        return returnValue;
+      };
+
+      f = createMockFunction(metadata, mockConstructor);
+      f._isMockFunction = true;
+      f.getMockImplementation = () => mockImpl;
+
+      this._mockRegistry.set(f, {calls: [], instances: []});
+
+      // $FlowFixMe - defineProperty getters not supported
+      Object.defineProperty(f, 'mock', {
+        configurable: false,
+        enumerable: true,
+
+        get: () => {
+          if (!this._mockRegistry.has(f)) {
+            this._mockRegistry.set(f, {calls: [], instances: []});
+          }
+
+          return this._mockRegistry.get(f);
+        },
+
+        set: val => this._mockRegistry.set(f, val),
+      });
+
+      f.mockClear = () => {
+        f.mock.calls.length = 0;
+        f.mock.instances.length = 0;
+      };
+
+      f.mockReturnValueOnce = value => {
+        // next function call will return this value or default return value
+        isReturnValueLastSet = true;
+        specificReturnValues.push(value);
+        return f;
+      };
+
+      f.mockReturnValue = value => {
+        // next function call will return specified return value or this one
+        isReturnValueLastSet = true;
+        defaultReturnValue = value;
+        return f;
+      };
+
+      f.mockImplementationOnce = fn => {
+        // next function call will use this mock implementation return value
+        // or default mock implementation return value
+        isReturnValueLastSet = false;
+        specificMockImpls.push(fn);
+        return f;
+      };
+
+      f.mockImplementation = f.mockImpl = fn => {
+        // next function call will use mock implementation return value
+        isReturnValueLastSet = false;
+        mockImpl = fn;
+        return f;
+      };
+
+      f.mockReturnThis = () =>
+        f.mockImplementation(function() {
+          return this;
         });
 
-        // Run the mock constructor implementation
-        return mockImpl && mockImpl.apply(this, arguments);
+      if (metadata.mockImpl) {
+        f.mockImplementation(metadata.mockImpl);
       }
 
-      let returnValue;
-      // If return value is last set, either specific or default, i.e.
-      // mockReturnValueOnce()/mockReturnValue() is called and no
-      // mockImplementationOnce()/mockImplementation() is called after that.
-      // use the set return value.
-      if (isReturnValueLastSet) {
-        returnValue = specificReturnValues.shift();
-        if (returnValue === undefined) {
-          returnValue = defaultReturnValue;
-        }
-      }
-
-      // If mockImplementationOnce()/mockImplementation() is last set,
-      // or specific return values are used up, use the mock implementation.
-      let specificMockImpl;
-      if (returnValue === undefined) {
-        specificMockImpl = specificMockImpls.shift();
-        if (specificMockImpl === undefined) {
-          specificMockImpl = mockImpl;
-        }
-        if (specificMockImpl) {
-          return specificMockImpl.apply(this, arguments);
-        }
-      }
-
-      // Otherwise use prototype implementation
-      if (returnValue === undefined && f._protoImpl) {
-        return f._protoImpl.apply(this, arguments);
-      }
-
-      return returnValue;
-    };
-
-    f = createMockFunction(metadata, mockConstructor);
-    f._isMockFunction = true;
-    f.getMockImplementation = () => mockImpl;
-    f.mock = {calls, instances};
-
-    f.mockClear = () => {
-      calls.length = 0;
-      instances.length = 0;
-    };
-
-    f.mockReturnValueOnce = value => {
-      // next function call will return this value or default return value
-      isReturnValueLastSet = true;
-      specificReturnValues.push(value);
       return f;
-    };
-
-    f.mockReturnValue = value => {
-      // next function call will return specified return value or this one
-      isReturnValueLastSet = true;
-      defaultReturnValue = value;
-      return f;
-    };
-
-    f.mockImplementationOnce = fn => {
-      // next function call will use this mock implementation return value
-      // or default mock implementation return value
-      isReturnValueLastSet = false;
-      specificMockImpls.push(fn);
-      return f;
-    };
-
-    f.mockImplementation = f.mockImpl = fn => {
-      // next function call will use mock implementation return value
-      isReturnValueLastSet = false;
-      mockImpl = fn;
-      return f;
-    };
-
-    f.mockReturnThis = () =>
-      f.mockImplementation(function() {
-        return this;
-      });
-
-    if (metadata.mockImpl) {
-      f.mockImplementation(metadata.mockImpl);
-    }
-
-    return f;
-  } else {
-    const unknownType = metadata.type || 'undefined type';
-    throw new Error('Unrecognized type ' + unknownType);
-  }
-}
-
-function generateMock(
-  metadata: MockFunctionMetadata,
-  callbacks: Array<() => any>,
-  refs: Object,
-): Mock {
-  const mock = makeComponent(metadata);
-  if (metadata.refID != null) {
-    refs[metadata.refID] = mock;
-  }
-
-  getSlots(metadata.members).forEach(slot => {
-    const slotMetadata = metadata.members && metadata.members[slot] || {};
-    if (slotMetadata.ref != null) {
-      callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
     } else {
-      mock[slot] = generateMock(slotMetadata, callbacks, refs);
-    }
-  });
-
-  if (
-    metadata.type !== 'undefined' &&
-    metadata.type !== 'null' &&
-    mock.prototype
-  ) {
-    mock.prototype.constructor = mock;
-  }
-
-  return mock;
-}
-
-function generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
-  const callbacks = [];
-  const refs = {};
-  const mock = generateMock(_metadata, callbacks, refs);
-  callbacks.forEach(setter => setter());
-  return mock;
-}
-
-function getMetadata(
-  component: any,
-  _refs?: Map<any, any>,
-): ?MockFunctionMetadata {
-  const refs = _refs || new Map();
-  const ref = refs.get(component);
-  if (ref != null) {
-    return {ref};
-  }
-
-  const type = getType(component);
-  if (!type) {
-    return null;
-  }
-
-  const metadata: MockFunctionMetadata = {type};
-  if (
-    type === 'constant' ||
-    type === 'collection' ||
-    type === 'undefined' ||
-    type === 'null'
-  ) {
-    metadata.value = component;
-    return metadata;
-  } else if (type === 'function') {
-    metadata.name = component.name;
-    if (component._isMockFunction) {
-      metadata.mockImpl = component.getMockImplementation();
+      const unknownType = metadata.type || 'undefined type';
+      throw new Error('Unrecognized type ' + unknownType);
     }
   }
 
-  metadata.refID = refs.size;
-  refs.set(component, metadata.refID);
-
-  let members = null;
-  // Leave arrays alone
-  if (type !== 'array') {
-    if (type !== 'undefined') {
-      getSlots(component).forEach(slot => {
-        if (
-          type === 'function' &&
-          component._isMockFunction &&
-          slot.match(/^mock/)
-        ) {
-          return;
-        }
-
-        if (
-          (!component.hasOwnProperty && component[slot] !== undefined) ||
-          (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-          (type === 'object' && component[slot] != Object.prototype[slot])
-        ) {
-          const slotMetadata = getMetadata(component[slot], refs);
-          if (slotMetadata) {
-            if (!members) {
-              members = {};
-            }
-            members[slot] = slotMetadata;
-          }
-        }
-      });
+  _generateMock(
+    metadata: MockFunctionMetadata,
+    callbacks: Array<() => any>,
+    refs: Object,
+  ): Mock {
+    const mock = this._makeComponent(metadata);
+    if (metadata.refID != null) {
+      refs[metadata.refID] = mock;
     }
 
-    // If component is native code function, prototype might be undefined
-    if (type === 'function' && component.prototype) {
-      const prototype = getMetadata(component.prototype, refs);
-      if (prototype && prototype.members) {
-        if (!members) {
-          members = {};
-        }
-        members.prototype = prototype;
+    getSlots(metadata.members).forEach(slot => {
+      const slotMetadata = metadata.members && metadata.members[slot] || {};
+      if (slotMetadata.ref != null) {
+        callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
+      } else {
+        mock[slot] = this._generateMock(slotMetadata, callbacks, refs);
       }
+    });
+
+    if (
+      metadata.type !== 'undefined' &&
+      metadata.type !== 'null' &&
+      mock.prototype
+    ) {
+      mock.prototype.constructor = mock;
     }
+
+    return mock;
   }
 
-  if (members) {
-    metadata.members = members;
-  }
-
-  return metadata;
-}
-
-function isMockFunction(fn: any): boolean {
-  return !!fn._isMockFunction;
-}
-
-module.exports = {
   /**
    * @see README.md
    * @param metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
-  generateFromMetadata,
+  generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
+    const callbacks = [];
+    const refs = {};
+    const mock = this._generateMock(_metadata, callbacks, refs);
+    callbacks.forEach(setter => setter());
+    return mock;
+  }
 
   /**
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata,
+  getMetadata(
+    component: any,
+    _refs?: Map<any, any>,
+  ): ?MockFunctionMetadata {
+    const refs = _refs || new Map();
+    const ref = refs.get(component);
+    if (ref != null) {
+      return {ref};
+    }
+
+    const type = getType(component);
+    if (!type) {
+      return null;
+    }
+
+    const metadata: MockFunctionMetadata = {type};
+    if (
+      type === 'constant' ||
+      type === 'collection' ||
+      type === 'undefined' ||
+      type === 'null'
+    ) {
+      metadata.value = component;
+      return metadata;
+    } else if (type === 'function') {
+      metadata.name = component.name;
+      if (component._isMockFunction) {
+        metadata.mockImpl = component.getMockImplementation();
+      }
+    }
+
+    metadata.refID = refs.size;
+    refs.set(component, metadata.refID);
+
+    let members = null;
+    // Leave arrays alone
+    if (type !== 'array') {
+      if (type !== 'undefined') {
+        getSlots(component).forEach(slot => {
+          if (
+            type === 'function' &&
+            component._isMockFunction &&
+            slot.match(/^mock/)
+          ) {
+            return;
+          }
+
+          if (
+            (!component.hasOwnProperty && component[slot] !== undefined) ||
+            (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
+            (type === 'object' && component[slot] != Object.prototype[slot])
+          ) {
+            const slotMetadata = this.getMetadata(component[slot], refs);
+            if (slotMetadata) {
+              if (!members) {
+                members = {};
+              }
+              members[slot] = slotMetadata;
+            }
+          }
+        });
+      }
+
+      // If component is native code function, prototype might be undefined
+      if (type === 'function' && component.prototype) {
+        const prototype = this.getMetadata(component.prototype, refs);
+        if (prototype && prototype.members) {
+          if (!members) {
+            members = {};
+          }
+          members.prototype = prototype;
+        }
+      }
+    }
+
+    if (members) {
+      metadata.members = members;
+    }
+
+    return metadata;
+  }
+
+  isMockFunction(fn: any): boolean {
+    return !!fn._isMockFunction;
+  }
 
   /**
    * @see README.md
    */
-  getMockFunction(): () => any {
-    return makeComponent({type: 'function'});
-  },
+  getMockFunction(): any {
+    return this._makeComponent({type: 'function'});
+  }
 
   // Just a short-hand alias
-  getMockFn(): () => any {
+  getMockFn(): any {
     return this.getMockFunction();
-  },
+  }
 
-  isMockFunction,
-};
+  clearAllMocks() {
+    this._mockRegistry = new WeakMap();
+  }
+}
+
+module.exports = ModuleMocker;

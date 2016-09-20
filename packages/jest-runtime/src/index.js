@@ -17,12 +17,12 @@ import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
 import type ModuleMap from '../../jest-haste-map/src/ModuleMap';
 import type Resolver from '../../jest-resolve/src';
+import type ModuleMocker from '../../jest-mock/src';
 
 const HasteMap = require('jest-haste-map');
 const ResolverClass = require('jest-resolve');
 
 const fs = require('graceful-fs');
-const moduleMocker = require('jest-mock');
 const path = require('path');
 const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
@@ -80,6 +80,7 @@ class Runtime {
   _mockMetaDataCache: {[key: string]: Object};
   _mockRegistry: {[key: string]: any};
   _mocksPattern: ?RegExp;
+  _moduleMocker: ModuleMocker;
   _moduleRegistry: {[key: string]: Module};
   _internalModuleRegistry: {[key: string]: Module};
   _resolver: Resolver;
@@ -102,6 +103,7 @@ class Runtime {
     this._config = config;
     this._environment = environment;
     this._resolver = resolver;
+    this._moduleMocker = this._environment.moduleMocker;
 
     this._currentlyExecutingModulePath = '';
     this._explicitShouldMock = Object.create(null);
@@ -385,6 +387,10 @@ class Runtime {
     this._mockFactories[moduleID] = mockFactory;
   }
 
+  clearAllMocks() {
+    this._moduleMocker.clearAllMocks();
+  }
+
   _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
@@ -463,7 +469,8 @@ class Runtime {
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] = moduleMocker.getMetadata({});
+      this._mockMetaDataCache[modulePath] =
+        (this._moduleMocker.getMetadata({}): any);
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute
@@ -480,8 +487,8 @@ class Runtime {
       this._mockRegistry = origMockRegistry;
       this._moduleRegistry = origModuleRegistry;
 
-      const mockMetadata = moduleMocker.getMetadata(moduleExports);
-      if (mockMetadata === null) {
+      const mockMetadata = this._moduleMocker.getMetadata(moduleExports);
+      if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
           `See: http://facebook.github.io/jest/docs/manual-mocks.html#content`,
@@ -489,7 +496,7 @@ class Runtime {
       }
       this._mockMetaDataCache[modulePath] = mockMetadata;
     }
-    return moduleMocker.generateFromMetadata(
+    return this._moduleMocker.generateFromMetadata(
       this._mockMetaDataCache[modulePath],
     );
   }
@@ -685,6 +692,10 @@ class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
+    const clearAllMocks = () => {
+      this.clearAllMocks();
+      return runtime;
+    };
     const useFakeTimers = () => {
       this._environment.fakeTimers.useFakeTimers();
       return runtime;
@@ -720,19 +731,22 @@ class Runtime {
       genMockFromModule: (moduleName: string) => {
         return this._generateMock(from, moduleName);
       },
-      genMockFunction: moduleMocker.getMockFunction,
-      genMockFn: moduleMocker.getMockFunction,
-      fn() {
-        const fn = moduleMocker.getMockFunction();
-        if (arguments.length > 0) {
-          return fn.mockImplementation(arguments[0]);
+      genMockFunction:
+        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      fn: (impl: ?Function) => {
+        const fn = this._moduleMocker.getMockFunction();
+        if (impl) {
+          return fn.mockImplementation(impl);
         }
         return fn;
       },
-      isMockFunction: moduleMocker.isMockFunction,
+      isMockFunction: this._moduleMocker.isMockFunction,
 
       doMock: mock,
       mock,
+
+      clearAllMocks,
 
       resetModules,
       resetModuleRegistry: resetModules,

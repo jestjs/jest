@@ -13,7 +13,8 @@ describe('moduleMocker', () => {
   let moduleMocker;
 
   beforeEach(() => {
-    moduleMocker = require('../');
+    const ModuleMocker = require('../');
+    moduleMocker = new ModuleMocker();
   });
 
   describe('getMetadata', () => {
@@ -161,6 +162,58 @@ describe('moduleMocker', () => {
       expect(
         () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
       ).not.toThrow();
+    });
+
+    describe('mocked functions', () => {
+      it('tracks calls to mocks', () => {
+        const fn = moduleMocker.getMockFunction();
+        expect(fn.mock.calls).toEqual([]);
+
+        fn(1, 2, 3);
+        expect(fn.mock.calls).toEqual([[1, 2, 3]]);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.calls).toEqual([[1, 2, 3], ['a', 'b', 'c']]);
+      });
+
+      it('tracks instances made by mocks', () => {
+        const fn = moduleMocker.getMockFunction();
+        expect(fn.mock.instances).toEqual([]);
+
+        const instance1 = new fn();
+        expect(fn.mock.instances[0]).toBe(instance1);
+
+        const instance2 = new fn();
+        expect(fn.mock.instances[1]).toBe(instance2);
+      });
+
+      it('supports clearing mocks', () => {
+        const fn = moduleMocker.getMockFunction();
+        expect(fn.mock.calls).toEqual([]);
+
+        fn(1, 2, 3);
+        expect(fn.mock.calls).toEqual([[1, 2, 3]]);
+
+        fn.mockClear();
+        expect(fn.mock.calls).toEqual([]);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.calls).toEqual([['a', 'b', 'c']]);
+      });
+
+      it('supports clearing all mocks', () => {
+        const fn1 = moduleMocker.getMockFunction();
+        fn1(1, 2, 3);
+        expect(fn1.mock.calls).toEqual([[1, 2, 3]]);
+
+        const fn2 = moduleMocker.getMockFunction();
+        fn2('a', 'b', 'c');
+        expect(fn2.mock.calls).toEqual([['a', 'b', 'c']]);
+
+        moduleMocker.clearAllMocks();
+        expect(fn1.mock.calls).toEqual([]);
+        expect(fn2.mock.calls).toEqual([]);
+      });
     });
   });
 

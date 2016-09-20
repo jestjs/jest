@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "jest-mock": "^15.0.0",
     "jest-util": "^15.1.1"
   },
   "scripts": {

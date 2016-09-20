@@ -12,6 +12,7 @@
 import type {Config} from './Config';
 import type {Global} from './Global';
 import type {Script} from 'vm';
+import type ModuleMocker from '../packages/jest-mock';
 
 export type Environment = {
   constructor(config: Config): void;
@@ -29,4 +30,5 @@ export type Environment = {
     useRealTimers(): void;
   };
   testFilePath: string;
+  moduleMocker: ModuleMocker;
 };
