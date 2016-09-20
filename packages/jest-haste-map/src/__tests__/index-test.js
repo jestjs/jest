@@ -327,12 +327,12 @@ describe('HasteMap', () => {
       'const Banana = require("Banana");',
     ].join('\n');
 
-    return new HasteMap(Object.assign({throwOnModuleCollision: true}, defaultConfig))
-      .build()
-        .catch(err => {
-          expect(err).toMatchSnapshot();
-        });
-  })
+    return new HasteMap(
+      Object.assign({throwOnModuleCollision: true}, defaultConfig),
+    ).build().catch(err => {
+      expect(err).toMatchSnapshot();
+    });
+  });
 
   it('splits up modules by platform', () => {
     mockFs = Object.create(null);
