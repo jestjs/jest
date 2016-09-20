@@ -29,7 +29,7 @@ const JEST15_MESSAGE = `
   below.
 
   ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
-  ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/api.html
+  ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/configuration.html
   ${chalk.bold('Release Blog Post:')} https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
 `;
 const throwConfigurationError = message => {

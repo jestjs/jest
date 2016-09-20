@@ -99,18 +99,10 @@ function execute() {
 
   const gettingStarted = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'GettingStarted.md', 'utf8')).content
     .replace(/\(\/jest\//g, '(https://facebook.github.io/jest/');
-  const api = splitHeader(fs.readFileSync(DOCS_MD_DIR + 'API.md', 'utf8')).content
-    .replace(/\(\/jest\//g, '(https://facebook.github.io/jest/')
-    .replace(/\(#/g, '(https://facebook.github.io/jest/docs/api.html#');
 
   let readme = fs.readFileSync('../README.md', 'utf8');
-  const apiStart = '<generated_api_start />';
-  const apiEnd = '<generated_api_end />';
   const guideStart = '<generated_getting_started_start />';
   const guideEnd = '<generated_getting_started_end />';
-  readme = readme.slice(0, readme.indexOf(apiStart) + apiStart.length) +
-    api +
-    readme.slice(readme.indexOf(apiEnd))
   readme = readme.slice(0, readme.indexOf(guideStart) + guideStart.length) +
     gettingStarted +
     readme.slice(readme.indexOf(guideEnd));
