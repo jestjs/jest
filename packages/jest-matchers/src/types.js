@@ -9,6 +9,8 @@
  */
 'use strict';
 
+import type {Path} from 'types/Config';
+
 export type ExpectationResult = {
   pass: boolean,
   message: string | () => string,
@@ -22,6 +24,10 @@ export type RawMatcherFn = (
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatcherContext = {isNot: boolean};
+export type MatcherState = {
+  currentTestName?: string,
+  testPath?: Path,
+};
 export type MatchersObject = {[id:string]: RawMatcherFn};
 export type Expect = (expected: any) => ExpectationObject;
 export type ExpectationObject = {
