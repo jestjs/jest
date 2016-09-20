@@ -50,6 +50,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toBeTruthy()`](#tobetruthy)
   - [`.toBeUndefined()`](#tobeundefined)
   - [`.toContain(item)`](#tocontain-item)
+  - [`.toContainEqual(item)`](#tocontainequal-item)
   - [`.toEqual(value)`](#toequal-value)
   - [`.toMatch(regexp)`](#tomatch-regexp)
   - [`.toMatchSnapshot()`](#tomatchsnapshot)
@@ -480,6 +481,20 @@ For example, if `getAllFlavors()` returns a list of flavors and you want to be s
 describe('the list of all flavors', () => {
   it('contains lime', () => {
     expect(getAllFlavors()).toContain('lime');
+  });
+});
+```
+
+### `.toContainEqual(item)`
+
+Use `.toContainEqual` when you want to check that an item is in a list.
+For testing the items in the list, this  matcher recursively checks the equality of all fields, rather than checking for object identity.
+
+```js
+describe('my beverage', () => {
+  it('is delicious and not sour', () => {
+    const myBeverage = {delicious: true, sour: false};
+    expect(myBeverages()).toContainEqual(myBeverage);
   });
 });
 ```

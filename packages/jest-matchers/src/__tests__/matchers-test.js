@@ -300,6 +300,30 @@ describe('.toContain()', () => {
   });
 });
 
+describe('.toContainEqual()', () => {
+  [
+    [[1, 2, 3, 4], 1],
+    [['a', 'b', 'c', 'd'], 'a'],
+    [[undefined, null], null],
+    [[undefined, null], undefined],
+    [[Symbol.for('a')], Symbol.for('a')],
+    [[{a:'b'}, {a:'c'}], {a:'b'}],
+  ].forEach(([list, v]) => {
+    it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
+      jestExpect(list).toContainEqual(v);
+    });
+  });
+
+  [
+    [[{a:'b'}, {a:'c'}], {a:'d'}],
+  ].forEach(([list, v]) => {
+    it(`'${stringify(list)}' does not contain a value equal to'${stringify(v)}'`, () => {
+      jestExpect(list).not.toContainEqual(v);
+      matchErrorSnapshot(() => jestExpect(list).toContainEqual(v));
+    });
+  });
+});
+
 describe('.toBeCloseTo()', () => {
   [
     [0, 0],

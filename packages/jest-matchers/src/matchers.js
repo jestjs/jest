@@ -312,6 +312,32 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toContainEqual(collection: Array<any>, value: any) {
+    const collectionType = getType(collection);
+    if (!Array.isArray(collection)) {
+      throw new Error(
+        `.toContainEqual() only works with arrays.\n` +
+        printWithType('Received', collection, printReceived),
+      );
+    }
+
+    const pass =
+      collection.findIndex(item => equals(item, value, [iterableEquality])) !== -1;
+    const message = pass
+      ? () => matcherHint('.not.toContainEqual', collectionType, 'value') + '\n\n' +
+        `Expected ${collectionType}:\n` +
+        `  ${printReceived(collection)}\n` +
+        `Not to contain a value equal to:\n` +
+        `  ${printExpected(value)}\n`
+      : () => matcherHint('.toContainEqual', collectionType, 'value') + '\n\n' +
+        `Expected ${collectionType}:\n` +
+        `  ${printReceived(collection)}\n` +
+        `To contain a value equal to:\n` +
+        `  ${printExpected(value)}`;
+
+    return {message, pass};
+  },
+
   toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
     ensureNumbers(actual, expected, '.toBeCloseTo');
     const pass = Math.abs(expected - actual) < (Math.pow(10, -precision) / 2);

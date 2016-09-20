@@ -1577,6 +1577,15 @@ To contain value:
   [32m{}[39m"
 `;
 
+exports[`.toContainEqual() '[{"a":"b"},{"a":"c"}]' does not contain a value equal to'{"a":"d"}' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContainEqual([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[{\"a\":\"b\"},{\"a\":\"c\"}][39m
+To contain a value equal to:
+  [32m{\"a\":\"d\"}[39m"
+`;
+
 exports[`.toEqual() expect("abc").not.toEqual("abc") 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
