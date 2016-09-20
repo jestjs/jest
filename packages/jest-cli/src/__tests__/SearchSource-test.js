@@ -266,7 +266,7 @@ describe('SearchSource', () => {
       const input = ['packages/jest-cli/src/__tests__/test_root/module.jsx'];
       const data = searchSource
         .findRelatedTestsFromPattern(input);
-      expect(data.paths).toEqual([
+      expect(data.paths.sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
       ]);
@@ -279,10 +279,10 @@ describe('SearchSource', () => {
       ];
       const data = searchSource
         .findRelatedTestsFromPattern(input);
-      expect(data.paths).toEqual([
+      expect(data.paths.sort()).toEqual([
+        path.join(rootDir, '__testtests__', 'test.foobar'),
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
-        path.join(rootDir, '__testtests__', 'test.foobar'),
       ]);
     });
   });
