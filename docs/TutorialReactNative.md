@@ -195,7 +195,7 @@ The [`moduleNameMapper`](api.html#modulenamemapper-object-string-string) can be 
 
 The jest-react-native preset comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
-For example, if you code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
+For example, if your code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
 
 ```js
 jest.mock('react-native-video', () => 'Video');
