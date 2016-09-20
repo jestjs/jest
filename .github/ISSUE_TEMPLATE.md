@@ -1,4 +1,4 @@
-*Before creating an issue please make sure you are using the latest version of Jest, try re-installing your node_modules folder and run Jest once with `--no-cache` to see if that fixes the problem you are experiencing.*
+<!-- *Before creating an issue please make sure you are using the latest version of Jest, try re-installing your node_modules folder and run Jest once with `--no-cache` to see if that fixes the problem you are experiencing.* -->
 
 **Do you want to request a *feature* or report a *bug*?**
 
