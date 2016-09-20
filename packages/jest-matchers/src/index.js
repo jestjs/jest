@@ -15,6 +15,7 @@ import type {
   ExpectationObject,
   ExpectationResult,
   MatcherContext,
+  MatcherState,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
@@ -26,20 +27,20 @@ const toThrowMatchers = require('./toThrowMatchers');
 
 const {stringify} = require('jest-matcher-utils');
 
-const GLOBAL_MATCHERS_OBJECT_SYMBOL = Symbol.for('$$jest-matchers-object');
+const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
 class JestAssertionError extends Error {}
 
-if (!global[GLOBAL_MATCHERS_OBJECT_SYMBOL]) {
+if (!global[GLOBAL_STATE]) {
   Object.defineProperty(
     global,
-    GLOBAL_MATCHERS_OBJECT_SYMBOL,
-    {value: Object.create(null)},
+    GLOBAL_STATE,
+    {value: {matchers: Object.create(null), state: {suppressedErrors: []}}},
   );
 }
 
 const expect: Expect = (actual: any): ExpectationObject => {
-  const allMatchers = global[GLOBAL_MATCHERS_OBJECT_SYMBOL];
+  const allMatchers = global[GLOBAL_STATE].matchers;
   const expectation = {not: {}};
   Object.keys(allMatchers).forEach(name => {
     expectation[name] =
@@ -57,7 +58,17 @@ const makeThrowingMatcher = (
   actual: any,
 ): ThrowingMatcherFn => {
   return function throwingMatcher(expected, ...rest) {
-    const matcherContext: MatcherContext = {isNot};
+    let throws = true;
+    const matcherContext: MatcherContext = Object.assign(
+      // When throws is disabled, the matcher will not throw errors during test
+      // execution but instead add them to the global matcher state. If a
+      // matcher throws, test execution is normally stopped immediately. The
+      // snapshot matcher uses it because we want to log all snapshot
+      // failures in a test.
+      {dontThrow: () => throws = false},
+      global[GLOBAL_STATE].state,
+      {isNot},
+    );
     let result: ExpectationResult;
 
     try {
@@ -85,13 +96,18 @@ const makeThrowingMatcher = (
       const error = new JestAssertionError(message);
       // Remove this function from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
-      throw error;
+
+      if (throws) {
+        throw error;
+      } else {
+        global[GLOBAL_STATE].state.suppressedErrors.push(error);
+      }
     }
   };
 };
 
 const addMatchers = (matchersObj: MatchersObject): void => {
-  Object.assign(global[GLOBAL_MATCHERS_OBJECT_SYMBOL], matchersObj);
+  Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
 };
 
 const _validateResult = result => {
@@ -113,6 +129,12 @@ const _validateResult = result => {
   }
 };
 
+const setState = (state: MatcherState) => {
+  Object.assign(global[GLOBAL_STATE].state, state);
+};
+
+const getState = () => global[GLOBAL_STATE].state;
+
 // add default jest matchers
 addMatchers(matchers);
 addMatchers(spyMatchers);
@@ -121,4 +143,6 @@ addMatchers(toThrowMatchers);
 module.exports = {
   addMatchers,
   expect,
+  getState,
+  setState,
 };

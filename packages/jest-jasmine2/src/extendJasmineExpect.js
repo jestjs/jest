@@ -8,13 +8,18 @@
 'use strict';
 
 const jestExpect = require('jest-matchers').expect;
+const {addMatchers} = require('jest-matchers');
+const {toMatchSnapshot} = require('jest-snapshot');
 
 const jasmineExpect = global.expect;
 
 // extend jasmine matchers with `jest-matchers`
-global.expect = actual => {
-  const jasmineMatchers = jasmineExpect(actual);
-  const jestMatchers = jestExpect(actual);
-  const not = Object.assign(jasmineMatchers.not, jestMatchers.not);
-  return Object.assign(jasmineMatchers, jestMatchers, {not});
+module.exports = () => {
+  addMatchers({toMatchSnapshot});
+  global.expect = actual => {
+    const jasmineMatchers = jasmineExpect(actual);
+    const jestMatchers = jestExpect(actual);
+    const not = Object.assign(jasmineMatchers.not, jestMatchers.not);
+    return Object.assign(jasmineMatchers, jestMatchers, {not});
+  };
 };
