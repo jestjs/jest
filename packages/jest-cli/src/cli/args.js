@@ -41,8 +41,6 @@ const check = (argv: Object) => {
     );
   }
 
-
-
   return true;
 };
 
