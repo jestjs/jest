@@ -15,6 +15,7 @@ const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestCompone
 const createDirectory = require('jest-util').createDirectory;
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
+const naturalCompare = require('natural-compare');
 const path = require('path');
 const prettyFormat = require('pretty-format');
 
@@ -105,10 +106,11 @@ class SnapshotFile {
 
     const isEmpty = Object.keys(this._content).length === 0;
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
-      const snapshots = Object.keys(this._content).sort().map(key =>
-        'exports[`' + escape(key) + '`] = `' +
-        escape(this._content[key]) + '`;',
-      );
+      const snapshots = Object.keys(this._content).sort(naturalCompare)
+        .map(key =>
+          'exports[`' + escape(key) + '`] = `' +
+          escape(this._content[key]) + '`;',
+        );
 
       ensureDirectoryExists(this._filename);
       fs.writeFileSync(this._filename, snapshots.join('\n\n') + '\n');

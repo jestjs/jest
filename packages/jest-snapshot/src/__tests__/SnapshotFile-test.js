@@ -14,17 +14,14 @@ jest
   .mock('mkdirp', () => ({sync: jest.fn()}))
   .mock('fs', () => ({
     statSync: jest.fn(() => ({isFile: () => true})),
-    readFileSync: jest.fn(fileName => {
-      const EXPECTED_FILE_NAME = '/foo/__tests__/__snapshots__/baz.js.snap';
-      expect(fileName).toBe(EXPECTED_FILE_NAME);
-      return null;
-    }),
-    writeFileSync: jest.fn((path, content) => {
-      expect(content).toBe('exports[`foo`] = `"bar"`;\n');
-    }),
+    writeFileSync: jest.fn(),
   }));
 
-const TEST_FILE = '/foo/__tests__/baz.js';
+const path = require('path');
+
+const TEST_DIR = '/foo/__tests__';
+const TEST_FILE = path.join(TEST_DIR, 'baz.js');
+const EXPECTED_FILE_NAME = path.join(TEST_DIR, '__snapshots__/baz.js.snap');
 const SNAPSHOT = 'foo';
 const SNAPSHOT_VALUE = 'bar';
 
@@ -94,9 +91,30 @@ describe('SnapshotFile', () => {
   });
 
   it('loads and saves file correctly', () => {
+    const fs = require('fs');
     const snapshotFile = SnapshotFile.forFile(TEST_FILE);
     snapshotFile.add(SNAPSHOT, SNAPSHOT_VALUE);
     expect(snapshotFile.get(SNAPSHOT)).toBe('"' + SNAPSHOT_VALUE + '"');
     snapshotFile.save();
+    expect(fs.writeFileSync).toBeCalledWith(
+      EXPECTED_FILE_NAME,
+      'exports[`foo`] = `"bar"`;\n',
+    );
+  });
+
+  it('sorts snapshots by natural sort order', () => {
+    const fs = require('fs');
+    const snapshotFile = SnapshotFile.forFile(TEST_FILE);
+    ['test 2', 'test 11', 'test 1', 'test 10'].forEach(snapshot =>
+      snapshotFile.add(snapshot, SNAPSHOT_VALUE),
+    );
+    snapshotFile.save();
+    expect(fs.writeFileSync).toBeCalledWith(
+      EXPECTED_FILE_NAME,
+      'exports[`test 1`] = `"bar"`;\n\n' +
+      'exports[`test 2`] = `"bar"`;\n\n' +
+      'exports[`test 10`] = `"bar"`;\n\n' +
+      'exports[`test 11`] = `"bar"`;\n',
+    );
   });
 });
