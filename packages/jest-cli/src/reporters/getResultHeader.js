@@ -18,8 +18,8 @@ const path = require('path');
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
 // middle of error logging
-const FAIL = chalk.reset.bold.bgRed(' FAIL ');
-const PASS = chalk.reset.bold.bgGreen(' PASS ');
+const FAIL = chalk.reset.inverse.bold.red(' FAIL ');
+const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
 module.exports = (testResult: TestResult, config: Config) => {
   const pathStr = config.rootDir
