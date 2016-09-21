@@ -14,19 +14,19 @@ const {stringify, getType} = require('../');
 
 describe('.stringify()', () => {
   [
-    [[], '[]'],
+    [[], 'Array []'],
     [{}, '{}'],
     [1, '1'],
     [0, '0'],
     [1.5, '1.5'],
     [null, 'null'],
-    [undefined, '"undefined"'],
+    [undefined, 'undefined'],
     ['abc', '"abc"'],
-    [Symbol.for('abc'), '"Symbol(abc)"'],
-    [NaN, '"NaN"'],
-    [Infinity, '"Infinity"'],
-    [-Infinity, '"-Infinity"'],
-    [/ab\.c/gi, '"/ab\\\\.c/gi"'],
+    [Symbol.for('abc'), 'Symbol(abc)'],
+    [NaN, 'NaN'],
+    [Infinity, 'Infinity'],
+    [-Infinity, '-Infinity'],
+    [/ab\.c/gi, '/ab\\.c/gi'],
   ].forEach(([v, s]) => {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
@@ -36,7 +36,7 @@ describe('.stringify()', () => {
   test('circular references', () => {
     const a = {};
     a.a = a;
-    expect(stringify(a)).toBe('{"a":"[Circular]"}');
+    expect(stringify(a)).toBe('{"a": [Circular]}');
   });
 
   test('toJSON error', () => {
@@ -45,12 +45,37 @@ describe('.stringify()', () => {
         throw new Error('Nope.');
       },
     };
-    expect(stringify(evil)).toBe('[object]');
-    expect(stringify({a: {b: {evil}}})).toBe('[object]');
+    expect(stringify(evil)).toBe('{"toJSON": [Function toJSON]}');
+    expect(stringify({a: {b: {evil}}}))
+      .toBe('{"a": {"b": {"evil": {"toJSON": [Function toJSON]}}}}');
 
     function Evil() {}
     Evil.toJSON = evil.toJSON;
-    expect(stringify(Evil)).toBe('function Evil() {}');
+    expect(stringify(Evil)).toBe('[Function Evil]');
+  });
+
+  test('toJSON errors when comparing two objects', () => {
+    function toJSON() {
+      throw new Error('Nope.');
+    }
+    const evilA = {
+      a: 1,
+      toJSON,
+    };
+    const evilB = {
+      b: 1,
+      toJSON,
+    };
+
+    let error;
+    try {
+      expect(evilA).toEqual(evilB);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.message).toMatchSnapshot();
   });
 });
 
@@ -66,5 +91,4 @@ describe('.getType()', () => {
   test('boolean', () => expect(getType(true)).toBe('boolean'));
   test('symbol', () => expect(getType(Symbol.for('a'))).toBe('symbol'));
   test('regexp', () => expect(getType(/abc/)).toBe('regexp'));
-
 });

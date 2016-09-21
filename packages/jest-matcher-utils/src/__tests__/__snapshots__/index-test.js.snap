@@ -1,0 +1,19 @@
+exports[`.stringify() toJSON errors when comparing two objects 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\"b\": 1, \"toJSON\": [Function toJSON]}[39m
+Received:
+  [31m{\"a\": 1, \"toJSON\": [Function toJSON]}[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m [22m [2mObject {[22m
+[32m-[39m [32m  \"b\": 1,[39m
+[31m+[39m [31m  \"a\": 1,[39m
+[2m [22m [2m  \"toJSON\": [Function toJSON],[22m
+[2m [22m [2m}[22m"
+`;

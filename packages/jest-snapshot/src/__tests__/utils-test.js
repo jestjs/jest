@@ -14,7 +14,8 @@ const path = require('path');
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
   expect(keyToTestName('abc cde   12')).toBe('abc cde  ');
-  expect(() => keyToTestName('abc cde')).toThrowError('count at the end');
+  expect(() => keyToTestName('abc cde'))
+    .toThrowError('Snapshot keys must end with a number.');
 });
 
 test('testNameToKey', () => {

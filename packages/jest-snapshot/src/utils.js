@@ -21,8 +21,7 @@ const fs = require('fs');
 const naturalCompare = require('natural-compare');
 const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
 
-const jsxLikePlugins = [ReactElementPlugin, ReactTestComponentPlugin];
-
+const PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 const SNAPSHOT_EXTENSION = 'snap';
 
 const testNameToKey = (testName: string, count: number) =>
@@ -56,15 +55,6 @@ const getSnapshotData = (snapshotPath: Path) => {
   return data;
 };
 
-const fileExistsCache = new Map();
-const memoizedFileExists = (filename: Path) => {
-  if (!fileExistsCache.has(filename)) {
-    fileExistsCache.set(filename, fileExists(filename));
-  }
-
-  return fileExistsCache.get(filename);
-};
-
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
 const addExtraLineBreaks =
@@ -72,7 +62,8 @@ const addExtraLineBreaks =
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(prettyFormat(data, {
-    plugins: jsxLikePlugins,
+    plugins: PLUGINS,
+    printFunctionName: false,
   }));
 };
 
@@ -110,5 +101,4 @@ module.exports = {
   saveSnapshotFile,
   escape,
   unescape,
-  fileExists: memoizedFileExists,
 };
