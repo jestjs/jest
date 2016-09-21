@@ -106,7 +106,9 @@ FUNCTIONS.mock = args => {
       if (!found) {
         invariant(
           (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
-          /^mock/.test(name),
+          /^mock/.test(name) ||
+          // Allow istanbul's coverage variable to pass.
+          //^(?:__)?cov/.test(name),
           'The module factory of `jest.mock()` is not allowed to ' +
           'reference any out-of-scope variables.\n' +
           'Invalid variable access: ' + name + '\n' +
@@ -125,6 +127,7 @@ FUNCTIONS.mock = args => {
 };
 
 FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
+FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 
 FUNCTIONS.disableAutomock =
   FUNCTIONS.enableAutomock =
