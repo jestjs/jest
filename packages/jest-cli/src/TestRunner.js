@@ -239,16 +239,20 @@ class TestRunner {
     const mutex = throat(1);
 
     return testPaths.reduce(
-      (promise, path) => {
-        return mutex(() => {
-          return promise
-            .then(() => this._dispatcher.onTestStart(this._config, path))
-            .then(() => this._hasteContext)
-            .then(data => runTest(path, this._config, data.resolver))
+      (promise, path) =>
+        mutex(() =>
+          promise
+            .then(() => {
+              this._dispatcher.onTestStart(this._config, path);
+              return runTest(
+                path,
+                this._config,
+                this._hasteContext.resolver,
+              );
+            })
             .then(result => onTestResult(path, result))
-            .catch(err => onRunFailure(path, err));
-        });
-      },
+            .catch(err => onRunFailure(path, err)),
+        ),
       Promise.resolve(),
     );
   }
@@ -266,16 +270,15 @@ class TestRunner {
       maxConcurrentWorkers: this._options.maxWorkers,
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
-    const runTestInFarm = ({path, config}) => {
-      // send test suites to workes continuously, not just dump the whole
-      // map at once. We need this to track the start time of individual tests.
-      return mutex(() => {
-        this._dispatcher.onTestStart(config, path);
-        return promisify(farm)({path, config});
-      });
-    };
 
-    const catchError = (err, path) => {
+    // Send test suites to workers continuously instead of all at once to track
+    // the start time of individual tests.
+    const runTestInWorker = ({path, config}) => mutex(() => {
+      this._dispatcher.onTestStart(config, path);
+      return promisify(farm)({path, config});
+    });
+
+    const onError = (err, path) => {
       onRunFailure(path, err);
       if (err.type === 'ProcessTerminatedError') {
         console.error(
@@ -287,9 +290,9 @@ class TestRunner {
     };
 
     return Promise.all(testPaths.map(path => {
-      return runTestInFarm({path, config})
+      return runTestInWorker({path, config})
         .then(testResult => onTestResult(path, testResult))
-        .catch(err => catchError(err, path));
+        .catch(error => onError(error, path));
     }))
     .then(() => workerFarm.end(farm));
   }
@@ -297,8 +300,8 @@ class TestRunner {
   _setupReporters() {
     this.addReporter(
       this._config.verbose
-      ? new VerboseReporter()
-      : new DefaultReporter(),
+        ? new VerboseReporter()
+        : new DefaultReporter(),
     );
 
     if (this._config.collectCoverage) {

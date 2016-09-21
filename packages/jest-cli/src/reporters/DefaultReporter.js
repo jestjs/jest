@@ -16,13 +16,12 @@ import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
 
 const BaseReporter = require('./BaseReporter');
+const Status = require('./Status');
 
 const chalk = require('chalk');
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
 const isCI = require('is-ci');
-
-const Status = require('./Status');
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
 

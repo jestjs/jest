@@ -16,6 +16,12 @@ import type {AggregatedResult} from 'types/TestResult';
 const chalk = require('chalk');
 const path = require('path');
 
+type SummaryOptions = {
+  roundTime?: boolean,
+  currentSuites?: boolean,
+  width?: number,
+};
+
 const formatTestPath = (config: Config, testPath: Path) => {
   const {dirname, basename} = relativePath(config, testPath);
   return chalk.gray(dirname + path.sep) + chalk.bold(basename);
@@ -31,13 +37,7 @@ const relativePath = (config: Config, testPath: Path) => {
 const pluralize = (word: string, count: number) =>
   `${count} ${word}${count === 1 ? '' : 's'}`;
 
-type SummaryOptions = {
-  roundTime?: boolean,
-  currentSuites?: boolean,
-  width?: number,
-};
-
-const getSummaryLine = (
+const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
 ) => {
@@ -47,35 +47,31 @@ const getSummaryLine = (
   }
   const snapshotResults = aggregatedResults.snapshot;
 
-  let suites = 'suites:    ';
+  let suites = chalk.bold('Test Suites: ');
   const suitesFailed = aggregatedResults.numFailedTestSuites;
-  const suitesPassed = aggregatedResults.testResults.length
-    - aggregatedResults.numRuntimeErrorTestSuites;
-  const suitesRan = aggregatedResults.testResults.length;
+  const suitesPassed = aggregatedResults.numPassedTestSuites;
   const suitesTotal = aggregatedResults.numTotalTestSuites;
 
   if (suitesFailed) {
-    suites += chalk.red(`${suitesFailed} failed`) + ', ';
+    suites += chalk.bold.red(`${suitesFailed} failed`) + ', ';
   }
 
-  suites += chalk.green(`${suitesPassed} passed`);
-  suitesRan === suitesTotal
-    ? suites += ` (${suitesTotal} total)`
-    : suites += ` (${suitesRan}/${suitesTotal} total)`;
+  suites += chalk.bold.green(`${suitesPassed} passed`);
+  suites += ` (${suitesTotal} total)`;
 
-  let tests = 'tests:     ';
+  let tests = chalk.bold('Tests:       ');
   const testsPassed = aggregatedResults.numPassedTests;
   const testsFailed = aggregatedResults.numFailedTests;
   const testsTotal = aggregatedResults.numTotalTests;
 
   if (testsFailed) {
-    tests += chalk.red(`${testsFailed} failed`) + ', ';
+    tests += chalk.bold.red(`${testsFailed} failed`) + ', ';
   }
 
-  tests += chalk.green(`${testsPassed} passed`);
+  tests += chalk.bold.green(`${testsPassed} passed`);
   tests += ` (${testsTotal} total)`;
 
-  let snapshots = 'snapshots: ';
+  let snapshots = chalk.bold('Snapshots:   ');
   const snapshotsPassed = snapshotResults.matched;
   const snapshotsFailed = snapshotResults.unmatched;
   const snapshotsUpdated = snapshotResults.updated;
@@ -83,26 +79,26 @@ const getSummaryLine = (
   const snapshotsTotal = snapshotResults.total;
 
   if (snapshotsFailed) {
-    snapshots += chalk.red(`${snapshotsFailed} failed`) + ', ';
+    snapshots += chalk.bold.red(`${snapshotsFailed} failed`) + ', ';
   }
 
   if (snapshotsUpdated) {
-    snapshots += chalk.green(`${snapshotsUpdated} updated`) + ', ';
+    snapshots += chalk.bold.green(`${snapshotsUpdated} updated`) + ', ';
   }
 
   if (snapshotsAdded) {
-    snapshots += chalk.green(`${snapshotsAdded} added`) + ', ';
+    snapshots += chalk.bold.green(`${snapshotsAdded} added`) + ', ';
   }
 
-  snapshots += chalk.green(`${snapshotsPassed} passed`);
+  snapshots += chalk.bold.green(`${snapshotsPassed} passed`);
   snapshots += ` (${snapshotsTotal} total)`;
 
-  const time = `time:      ${runTime}s`;
+  const time = chalk.bold(`Time:`) + `        ${runTime}s`;
 
   return [suites, tests, snapshots, time].join('\n');
 };
 
-// wrap a strig that contains ANSI escape sequences. ANSI escape sequences
+// wrap a string that contains ANSI escape sequences. ANSI escape sequences
 // do not add to the string length.
 const wrapAnsiString = (string: string, width: number) => {
   const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/g;
@@ -158,7 +154,7 @@ const wrapAnsiString = (string: string, width: number) => {
 
 module.exports = {
   formatTestPath,
-  getSummaryLine,
+  getSummary,
   pluralize,
   relativePath,
   wrapAnsiString,

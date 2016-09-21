@@ -15,7 +15,7 @@ import type {RunnerContext} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 
-const {getSummaryLine, pluralize} = require('./utils');
+const {getSummary, pluralize} = require('./utils');
 const chalk = require('chalk');
 const getResultHeader = require('./getResultHeader');
 
@@ -64,13 +64,13 @@ class SummareReporter extends BaseReporter {
     const totalTestSuites = aggregatedResults.numTotalTestSuites;
     const snapshots = aggregatedResults.snapshot;
 
-    let results = '\n' + chalk.bold('Test Summary:') +
-      ARROW + runnerContext.getTestSummary() + '\n';// + arrowColor(ARROW);
+    let results =
+      '\n\n' + chalk.bold('Summary: ') + runnerContext.getTestSummary() + '\n';
 
     this._printSummary(aggregatedResults, config);
     this._printSnapshotSummary(snapshots, config);
     if (totalTestSuites) {
-      results += '\n' + getSummaryLine(aggregatedResults);
+      results += getSummary(aggregatedResults);
     }
     this.log(results);
   }

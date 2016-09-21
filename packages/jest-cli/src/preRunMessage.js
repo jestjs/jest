@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ * @flow
  */
 
 'use strict';
@@ -13,13 +14,13 @@ const {clearLine} = require('jest-util');
 const chalk = require('chalk');
 const isCI = require('is-ci');
 
-const print = stream => {
+const print = (stream: stream$Writable | tty$WriteStream) => {
   if (process.stdout.isTTY && !isCI) {
     stream.write(chalk.bold.dim('Determining test suites to run...'));
   }
 };
 
-const remove = stream => {
+const remove = (stream: stream$Writable | tty$WriteStream) => {
   if (stream.isTTY && !isCI) {
     clearLine(stream);
   }

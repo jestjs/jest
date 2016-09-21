@@ -14,7 +14,7 @@ suites:    1 failed, 0 passed (1 total)
 tests:     0 passed (0 total)
 snapshots: 0 passed (0 total)
 time:      <<REPLACED>>
-"
+",
 }
 `;
 
@@ -34,7 +34,7 @@ suites:    1 failed, 0 passed (1 total)
 tests:     0 passed (0 total)
 snapshots: 0 passed (0 total)
 time:      <<REPLACED>>
-"
+",
 }
 `;
 
@@ -53,6 +53,6 @@ suites:    1 failed, 0 passed (1 total)
 tests:     0 passed (0 total)
 snapshots: 0 passed (0 total)
 time:      <<REPLACED>>
-"
+",
 }
 `;

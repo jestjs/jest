@@ -39,9 +39,7 @@ function run(argv?: Object, root?: Path) {
   }
 
   getJest(root).runCLI(argv, root, result => {
-    setTimeout(() => {
-      process.on('exit', () => process.exit(!result || result.success ? 0 : 1));
-    }, 500);
+    process.on('exit', () => process.exit(!result || result.success ? 0 : 1));
   });
 }
 
