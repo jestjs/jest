@@ -48,8 +48,8 @@ type Options = {
   resetCache?: boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  useWatchman?: boolean,
   throwOnModuleCollision?: boolean,
+  useWatchman?: boolean,
 };
 
 type InternalOptions = {
@@ -188,9 +188,9 @@ class HasteMap {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: options.roots,
+      throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman:
         options.useWatchman == null ? true : options.useWatchman,
-      throwOnModuleCollision: options.throwOnModuleCollision,
     };
     this._console = options.console || global.console;
 
@@ -275,24 +275,18 @@ class HasteMap {
         getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        if (this._options.throwOnModuleCollision) {
-          throw new Error(
-            `jest-haste-map: @providesModule naming collision:\n` +
-            `  Duplicate module name: ${id}\n` +
-            `  Paths: ${module[H.PATH]} collides with ` +
-            `${existingModule[H.PATH]}\n\n` +
-            `This error is caused by a @providesModule declaration ` +
-            `with the same name across two different files.`,
-          );
-        }
-        this._console.warn(
+        const message =
           `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
-          `${existingModule[H.PATH]}\n\n` +
-          `This warning is caused by a @providesModule declaration ` +
-          `with the same name across two different files.`,
-        );
+          `${existingModule[H.PATH]}\n\n This ` +
+          `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
+          `is caused by a @providesModule declaration ` +
+          `with the same name across two different files.`;
+        if (this._options.throwOnModuleCollision) {
+          throw new Error(message);
+        }
+        this._console.warn(message);
         return;
       }
 
