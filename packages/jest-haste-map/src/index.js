@@ -279,7 +279,7 @@ class HasteMap {
           `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
-          `${existingModule[H.PATH]}\n\n This ` +
+          `${existingModule[H.PATH]}\n\nThis ` +
           `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
           `is caused by a @providesModule declaration ` +
           `with the same name across two different files.`;
