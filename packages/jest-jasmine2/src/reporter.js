@@ -28,11 +28,12 @@ type Suite = {
 };
 
 type SpecResult = {
-  id: string,
   description: string,
-  failedExpectations: Array<FailedAssertion>,
-  status: Status,
   duration?: Milliseconds,
+  failedExpectations: Array<FailedAssertion>,
+  fullName: string,
+  id: string,
+  status: Status,
 };
 
 type Microseconds = number;
@@ -137,12 +138,13 @@ class Jasmine2Reporter {
     const status =
       (specResult.status === 'disabled') ? 'pending' : specResult.status;
     const results = {
-      title: specResult.description,
-      status,
       ancestorTitles,
-      failureMessages: [],
-      numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
       duration,
+      failureMessages: [],
+      fullName: specResult.fullName,
+      numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
+      status,
+      title: specResult.description,
     };
 
     specResult.failedExpectations.forEach(failed => {

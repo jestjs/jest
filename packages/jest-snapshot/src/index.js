@@ -12,29 +12,27 @@
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 
-const SnapshotState = require('./State');
-const {SnapshotFile, SNAPSHOT_EXTENSION} = require('./SnapshotFile');
 const diff = require('jest-diff');
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
+const SnapshotState = require('./State');
 const {
  EXPECTED_COLOR,
  matcherHint,
  RECEIVED_COLOR,
 } = require('jest-matcher-utils');
-
-const EXTENSION = SNAPSHOT_EXTENSION;
+const {SNAPSHOT_EXTENSION} = require('./utils');
 
 const cleanup = (hasteFS: HasteFS, update: boolean) => {
-  const pattern = '\\.' + EXTENSION + '$';
+  const pattern = '\\.' + SNAPSHOT_EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
     .filter(snapshotFile => !fileExists(
       path.resolve(
         path.dirname(snapshotFile),
         '..',
-        path.basename(snapshotFile, '.' + EXTENSION),
+        path.basename(snapshotFile, '.' + SNAPSHOT_EXTENSION),
       ),
       hasteFS,
     ))
@@ -105,10 +103,10 @@ const matcher = function(received: any) {
 };
 
 module.exports = {
-  EXTENSION,
+  EXTENSION: SNAPSHOT_EXTENSION,
   cleanup,
   getSnapshotState,
   initializeSnapshotState,
   toMatchSnapshot: matcher,
-  SnapshotFile,
+  SnapshotState,
 };
