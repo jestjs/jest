@@ -48,6 +48,7 @@ type Options = {
   resetCache?: boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
+  throwOnModuleCollision?: boolean,
   useWatchman?: boolean,
 };
 
@@ -187,6 +188,7 @@ class HasteMap {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: options.roots,
+      throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman:
         options.useWatchman == null ? true : options.useWatchman,
     };
@@ -273,14 +275,18 @@ class HasteMap {
         getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        this._console.warn(
+        const message =
           `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
-          `${existingModule[H.PATH]}\n\n` +
-          `This warning is caused by a @providesModule declaration ` +
-          `with the same name across two different files.`,
-        );
+          `${existingModule[H.PATH]}\n\nThis ` +
+          `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
+          `is caused by a @providesModule declaration ` +
+          `with the same name across two different files.`;
+        if (this._options.throwOnModuleCollision) {
+          throw new Error(message);
+        }
+        this._console.warn(message);
         return;
       }
 

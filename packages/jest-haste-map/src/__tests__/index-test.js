@@ -318,6 +318,22 @@ describe('HasteMap', () => {
       });
   });
 
+  it('throws on duplicate module ids if "throwOnModuleCollision" is set to true', () => {
+    // Raspberry thinks it is a Strawberry
+    mockFs['/fruits/raspberry.js'] = [
+      '/**',
+      ' * @providesModule Strawberry',
+      ' */',
+      'const Banana = require("Banana");',
+    ].join('\n');
+
+    return new HasteMap(
+      Object.assign({throwOnModuleCollision: true}, defaultConfig),
+    ).build().catch(err => {
+      expect(err).toMatchSnapshot();
+    });
+  });
+
   it('splits up modules by platform', () => {
     mockFs = Object.create(null);
     mockFs['/fruits/strawberry.js'] = [
