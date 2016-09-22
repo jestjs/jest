@@ -26,7 +26,9 @@ In your test files, Jest puts each of these methods and objects into the global 
   - [`require.requireMock(moduleName)`](#require-requiremock-modulename)
   - [`test(name, fn)`](#basic-testing) is an alias for `it`
   - `xdescribe(name, fn)`
+  - `fdescribe(name, fn)`
   - `xit(name, fn)`
+  - `xtest(name, fn)`
 
 #### Writing assertions with `expect`
 
@@ -538,6 +540,8 @@ describe('an essay on the best flavor', () => {
 })
 ```
 
+This matcher also accepts a string, which it converts to a RegExp.
+
 ### `.toMatchSnapshot()`
 
 This ensures that a React component matches the most recent snapshot. Check out [the React + Jest tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more information on snapshot testing.
@@ -819,9 +823,9 @@ jest.mock('../moduleName', () => {
 }, {virtual: true});
 ```
 
-Returns the `jest` object for chaining.
-
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
+
+Returns the `jest` object for chaining.
 
 ### `jest.resetModules()`
 
@@ -859,11 +863,14 @@ Exhausts the **micro**-task queue (usually interfaced in node via `process.nextT
 When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
 
 ### `jest.runAllTimers()`
-Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()` and `setInterval()`).
+Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()`, `setInterval()`, and `setImmediate()`).
 
 When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
 
 This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](/jest/docs/timer-mocks.html) doc for more information.
+
+### `jest.runAllImmediates()`
+Exhausts all tasks queued by `setImmediate()`.
 
 ### `jest.runOnlyPendingTimers()`
 Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
