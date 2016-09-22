@@ -41,31 +41,6 @@ function jasmine2(
   const requireJasmine = environment.global.jasmineRequire;
   const jasmine = requireJasmine.core(requireJasmine);
 
-  const jasmineBuildExpectationResult = jasmine.buildExpectationResult;
-
-  // https://github.com/facebook/jest/issues/429
-  jasmine.buildExpectationResult = function(options) {
-    if (!options.passed) {
-      function shallowCopy(object) {
-        if (
-          typeof object !== 'object' ||
-          object === null || (
-            environment.global.Node &&
-            object instanceof environment.global.Node &&
-            object.nodeType > 0
-          )
-        ) {
-          return object;
-        }
-        return jasmine.util.clone(object);
-      }
-      options.expected = shallowCopy(options.expected);
-      options.actual = shallowCopy(options.actual);
-    }
-
-    return jasmineBuildExpectationResult.apply(jasmine, arguments);
-  };
-
   const env = jasmine.getEnv();
   const jasmineInterface = requireJasmine.interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
