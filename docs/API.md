@@ -736,6 +736,8 @@ jest.fn(() => {
 ### `jest.clearAllMocks()`
 Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
 
+Returns the `jest` object for chaining.
+
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
 
@@ -750,10 +752,14 @@ This is usually useful when you have a scenario where the number of dependencies
 
 Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.
 
+Returns the `jest` object for chaining.
+
 *Note: this method was previously called `autoMockOff`. When using `babel-jest`, calls to `disableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOff` if you want to explicitly avoid this behavior.*
 
 ### `jest.enableAutomock()`
 Enables automatic mocking in the module loader.
+
+Returns the `jest` object for chaining.
 
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
@@ -813,6 +819,8 @@ jest.mock('../moduleName', () => {
 }, {virtual: true});
 ```
 
+Returns the `jest` object for chaining.
+
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
 
 ### `jest.resetModules()`
@@ -843,6 +851,8 @@ it('works too', () => {
 });
 ```
 
+Returns the `jest` object for chaining.
+
 ### `jest.runAllTicks()`
 Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
 
@@ -867,6 +877,8 @@ On occasion there are times where the automatically generated mock the module sy
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
+Returns the `jest` object for chaining.
+
 *Note It is recommended to use [`jest.mock()`](#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
 ### `jest.unmock(moduleName)`
@@ -874,13 +886,19 @@ Indicates that the module system should never return a mocked version of the spe
 
 The most common use of this API is for specifying the module a given test intends to be testing (and thus doesn't want automatically mocked).
 
+Returns the `jest` object for chaining.
+
 *Note: this method was previously called `dontMock`. When using `babel-jest`, calls to `unmock` will automatically be hoisted to the top of the code block. Use `dontMock` if you want to explicitly avoid this behavior.*
 
 ### `jest.useFakeTimers()`
 Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
 
+Returns the `jest` object for chaining.
+
 ### `jest.useRealTimers()`
 Instructs Jest to use the real versions of the standard timer functions.
+
+Returns the `jest` object for chaining.
 
 ## Miscellaneous
 
