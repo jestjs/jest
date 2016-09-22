@@ -8,7 +8,9 @@
 
 const {spawnSync} = require('child_process');
 const fs = require('fs');
+const mkdirp = require('mkdirp');
 const path = require('path');
+const rimraf = require('rimraf');
 
 const run = (cmd, cwd) => {
   const args = cmd.split(/\s/).slice(1);
@@ -46,7 +48,27 @@ const fileExists = filePath => {
   }
 };
 
+const makeTemplate = string => {
+  return values => {
+    return string.replace(/\$(\d+)/g, (match, number) => {
+      return values[number - 1];
+    });
+  };
+};
+
+const cleanup = (directory: string) => rimraf.sync(directory);
+
+const makeTests = (directory: string, tests: {[filename: string]: string}) => {
+  mkdirp.sync(directory);
+  Object.keys(tests).forEach(filename => {
+    fs.writeFileSync(path.resolve(directory, filename), tests[filename]);
+  });
+};
+
 module.exports = {
+  cleanup,
+  makeTests,
+  makeTemplate,
   fileExists,
   linkJestPackage,
   run,
