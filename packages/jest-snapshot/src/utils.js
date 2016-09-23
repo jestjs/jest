@@ -30,7 +30,7 @@ const testNameToKey = (testName: string, count: number) =>
 
 const keyToTestName = (key: string) => {
   if (!/ \d+$/.test(key)) {
-    throw new Error('Snapshot keys must have count at the end');
+    throw new Error('Snapshot keys must end with a number.');
   }
 
   return key.replace(/ \d+$/, '');
