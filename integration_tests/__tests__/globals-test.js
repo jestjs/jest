@@ -10,22 +10,118 @@
 
 const path = require('path');
 const runJest = require('../runJest');
+const {extractSummary} = require('../utils');
 const skipOnWindows = require('skipOnWindows');
+const os = require('os');
+const {createEmptyPackage, makeTests, cleanup} = require('../utils');
+
+const DIR = path.resolve(os.tmpdir(), 'global-variables-test');
+const TEST_DIR = path.resolve(DIR, '__tests__');
 
 skipOnWindows.suite();
 
-const dir = path.resolve(__dirname, '../globals');
+beforeEach(() => {
+  cleanup(DIR);
+  createEmptyPackage(DIR);
+});
 
-test('global jest variables', () => {
-  const {stderr, status} = runJest(dir);
+afterAll(() => cleanup(DIR));
 
+test('basic test constructs', () => {
+  const filename = 'basic-test-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    test('test', () => {});
+
+    describe('describe', () => {
+      it('it', () => {});
+      test('test', () => {});
+    });
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
   expect(status).toBe(0);
 
-  const output = stderr
-    .split('\n')
-    .slice(0, -2)
-    .join('\n')
-    .replace(/\s*\(.*ms\)/gm, '');
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
 
-  expect(output).toMatchSnapshot();
+test('skips', () => {
+  const filename = 'skips-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    xtest('xtest', () => {});
+    xit('xit', () => {});
+    it.skip('it.skip', () => {});
+    test.skip('test.skip', () => {});
+
+    xdescribe('xdescribe', () => {
+      it('it', () => {});
+      test('test', () => {});
+    });
+
+    describe.skip('describe.skip', () => {
+      test('test', () => {});
+      describe('describe', () => {
+        test('test', () => {});
+      });
+    });
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
+test('only', () => {
+  const filename = 'only-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    test.only('test.only', () => {});
+    it.only('it.only', () => {});
+    fit('fit', () => {});
+
+    fdescribe('fdescribe', () => {
+      it('it', () => {});
+      test('test', () => {});
+    });
+
+    describe.only('describe.only', () => {
+      test('test', () => {});
+      describe('describe', () => {
+        test('test', () => {});
+      });
+    });
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
+test('tests with no implementation', () => {
+  const filename = 'only-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    it('it, no implementation');
+    test('test, no implementation');
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });

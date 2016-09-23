@@ -10,10 +10,11 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
-import type {RunnerContext} from 'types/Reporters';
+import type {Config, Path} from 'types/Config';
+import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
 const clearLine = require('jest-util').clearLine;
+const preRunMessage = require('../preRunMessage');
 
 class BaseReporter {
   _error: ?Error;
@@ -22,12 +23,25 @@ class BaseReporter {
     process.stderr.write(message + '\n');
   }
 
-  onRunStart(config: Config, results: AggregatedResult) {}
+  onRunStart(
+    config: Config,
+    results: AggregatedResult,
+    runnerContext: RunnerContext,
+    options: ReporterOnStartOptions,
+  ) {
+    preRunMessage.remove(process.stderr);
+  }
 
   onTestResult(
     config: Config,
     testResult: TestResult,
     results: AggregatedResult,
+  ) {}
+
+  onTestStart(
+    config: Config,
+    path: Path,
+    runnerContext: RunnerContext,
   ) {}
 
   onRunComplete(
@@ -38,16 +52,6 @@ class BaseReporter {
 
   clearLine() {
     clearLine(process.stderr);
-  }
-
-  _write(string: string) {
-    // If we write more than one character at a time it is possible that
-    // node exits in the middle of printing the result.
-    // If you are reading this and you are from the future, this might not
-    // be true any more.
-    for (let i = 0; i < string.length; i++) {
-      process.stderr.write(string.charAt(i));
-    }
   }
 
   _setError(error: Error) {

@@ -11,25 +11,26 @@
 
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
+const {extractSummary} = require('../utils');
 
 skipOnWindows.suite();
 
 test('console printing', () => {
-  const result = runJest('console');
-  const stderr = result.stderr.toString();
+  const {stderr, status} = runJest('console');
+  const {summary, rest} = extractSummary(stderr);
 
-  expect(result.status).toBe(0);
-
-  // Remove last two lines because they contain timing information.
-  const output = stderr.split('\n').slice(0, -2).join('\n');
-  expect(output).toMatchSnapshot();
+  expect(status).toBe(0);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('console printing with --verbose', () => {
-  const result = runJest('console', ['--verbose', '--no-cache']);
-  const stdout = result.stdout.toString();
+  const {stderr, stdout, status} =
+    runJest('console', ['--verbose', '--no-cache']);
+  const {summary, rest} = extractSummary(stderr);
 
-  expect(result.status).toBe(0);
-
+  expect(status).toBe(0);
   expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });

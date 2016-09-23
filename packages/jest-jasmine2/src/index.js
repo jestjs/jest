@@ -17,7 +17,6 @@ import type Runtime from 'jest-runtime';
 const JasmineReporter = require('./reporter');
 
 const jasmineAsync = require('./jasmine-async');
-const snapshot = require('jest-snapshot');
 const fs = require('graceful-fs');
 const path = require('path');
 const vm = require('vm');
@@ -41,31 +40,6 @@ function jasmine2(
 
   const requireJasmine = environment.global.jasmineRequire;
   const jasmine = requireJasmine.core(requireJasmine);
-
-  const jasmineBuildExpectationResult = jasmine.buildExpectationResult;
-
-  // https://github.com/facebook/jest/issues/429
-  jasmine.buildExpectationResult = function(options) {
-    if (!options.passed) {
-      function shallowCopy(object) {
-        if (
-          typeof object !== 'object' ||
-          object === null || (
-            environment.global.Node &&
-            object instanceof environment.global.Node &&
-            object.nodeType > 0
-          )
-        ) {
-          return object;
-        }
-        return jasmine.util.clone(object);
-      }
-      options.expected = shallowCopy(options.expected);
-      options.actual = shallowCopy(options.actual);
-    }
-
-    return jasmineBuildExpectationResult.apply(jasmine, arguments);
-  };
 
   const env = jasmine.getEnv();
   const jasmineInterface = requireJasmine.interface(jasmine, env);
@@ -101,14 +75,6 @@ function jasmine2(
   );
 
   env.beforeEach(() => {
-    jasmine.addMatchers({
-      toMatchSnapshot: snapshot.matcher(
-        testPath,
-        config,
-        snapshotState,
-      ),
-    });
-
     if (config.resetModules) {
       runtime.resetModules();
     }
@@ -118,8 +84,6 @@ function jasmine2(
     }
   });
 
-  const snapshotState = snapshot.getSnapshotState(jasmine, testPath);
-
   env.addReporter(reporter);
 
   // `jest-matchers` should be required inside test environment (vm).
@@ -127,7 +91,12 @@ function jasmine2(
   // class of the test and `error instanceof Error` will return `false`.
   runtime.requireInternalModule(
     path.resolve(__dirname, './extendJasmineExpect.js'),
-  );
+  )();
+
+  const snapshotState = runtime.requireInternalModule(
+    path.resolve(__dirname, './setup-jest-globals.js'),
+  )({testPath, config});
+
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
@@ -144,23 +113,34 @@ function jasmine2(
 
   runtime.requireModule(testPath);
   env.execute();
-  return reporter.getResults().then(results => {
-    const currentSnapshot = snapshotState.snapshot;
-    const updateSnapshot = config.updateSnapshot;
-    const uncheckedCount = currentSnapshot.getUncheckedCount();
-    if (updateSnapshot) {
-      currentSnapshot.removeUncheckedKeys();
-    }
-    const status = currentSnapshot.save(updateSnapshot);
-
-    results.snapshot.fileDeleted = status.deleted;
-    results.snapshot.added = snapshotState.added;
-    results.snapshot.matched = snapshotState.matched;
-    results.snapshot.unmatched = snapshotState.unmatched;
-    results.snapshot.updated = snapshotState.updated;
-    results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
-    return results;
-  });
+  return reporter
+    .getResults()
+    .then(results => addSnapshotData(results, config, snapshotState));
 }
+
+const addSnapshotData = (results, config, snapshotState) => {
+  results.testResults.forEach(({fullName, status}) => {
+    if (status === 'pending' || status === 'failed') {
+      // if test is skipped or failed, we don't want to mark
+      // its snapshots as obsolete.
+      snapshotState.markSnapshotsAsCheckedForTest(fullName);
+    }
+  });
+
+  const updateSnapshot = config.updateSnapshot;
+  const uncheckedCount = snapshotState.getUncheckedCount();
+  if (updateSnapshot) {
+    snapshotState.removeUncheckedKeys();
+  }
+  const status = snapshotState.save(updateSnapshot);
+
+  results.snapshot.fileDeleted = status.deleted;
+  results.snapshot.added = snapshotState.added;
+  results.snapshot.matched = snapshotState.matched;
+  results.snapshot.unmatched = snapshotState.unmatched;
+  results.snapshot.updated = snapshotState.updated;
+  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  return results;
+};
 
 module.exports = jasmine2;

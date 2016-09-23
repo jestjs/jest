@@ -1,0 +1,89 @@
+exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 1`] = `
+"Test Suites: 3 passed, 3 total
+Tests:       7 passed, 7 total
+Snapshots:   7 added, 0 passed, 7 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot Validation deletes a snapshot when a test does removes all the snapshots 2`] = `
+"Test Suites: 3 passed, 3 total
+Tests:       5 passed, 5 total
+Snapshots:   4 passed, 4 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot Validation deletes the snapshot if the test file has been removed 1`] = `
+"Test Suites: 3 passed, 3 total
+Tests:       7 passed, 7 total
+Snapshots:   7 added, 0 passed, 7 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot Validation deletes the snapshot if the test file has been removed 2`] = `
+"Test Suites: 2 passed, 2 total
+Tests:       4 passed, 4 total
+Snapshots:   4 passed, 4 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 1`] = `
+"Test Suites: 3 passed, 3 total
+Tests:       7 passed, 7 total
+Snapshots:   7 added, 0 passed, 7 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot Validation updates the snapshot when a test removes some snapshots 2`] = `
+"Test Suites: 3 passed, 3 total
+Tests:       7 passed, 7 total
+Snapshots:   1 updated, 5 passed, 6 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot works as expected 1`] = `
+"Test Suites: 2 passed, 2 total
+Tests:       4 passed, 4 total
+Snapshots:   4 added, 0 passed, 4 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot works with escaped characters 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   1 added, 0 passed, 1 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot works with escaped characters 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   1 added, 1 passed, 2 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`Snapshot works with escaped characters 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   2 passed, 2 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;

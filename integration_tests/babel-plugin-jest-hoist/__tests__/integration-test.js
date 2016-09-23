@@ -23,7 +23,7 @@ import e from '../__test_modules__/e';
 
 // These will all be hoisted above imports
 jest.unmock('react');
-jest.unmock('../__test_modules__/Unmocked');
+jest.deepUnmock('../__test_modules__/Unmocked');
 jest
   .unmock('../__test_modules__/c')
   .unmock('../__test_modules__/d');
@@ -110,5 +110,11 @@ describe('babel-plugin-jest-hoist', () => {
 
     expect(b._isMockFunction).toBe(true);
     expect(b()).toEqual(undefined);
+  });
+
+  it('requires modules that also call jest.mock', () => {
+    require('../mock-file');
+    const mock = require('../banana');
+    expect(mock).toEqual('apple');
   });
 });

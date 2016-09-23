@@ -8,6 +8,7 @@
 
 'use strict';
 
+const {extractSummary} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
@@ -19,15 +20,9 @@ skipOnWindows.suite();
 test('throwing not Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;
-  expect(
-    stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
-  ).toMatchSnapshot();
+  expect(extractSummary(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['throw-string-test.js']).stderr;
-  expect(
-    stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
-  ).toMatchSnapshot();
+  expect(extractSummary(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
-  expect(
-    stderr.replace(/\s*\(\d*ms\)/g, '').replace(/run time.*s/, '<TIME>'),
-  ).toMatchSnapshot();
+  expect(extractSummary(stderr)).toMatchSnapshot();
 });

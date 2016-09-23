@@ -95,6 +95,7 @@ class SnapshotFile {
   serialize(data: any): string {
     return addExtraLineBreaks(prettyFormat(data, {
       plugins: jsxLikePlugins,
+      printFunctionName: false,
     }));
   }
 
