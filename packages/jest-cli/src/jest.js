@@ -29,6 +29,7 @@ const chalk = require('chalk');
 const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
+const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
@@ -50,17 +51,11 @@ const KEYS = {
   U: '75',
 };
 
-const printHeader = pipe => {
-  if (process.stdout.isTTY) {
-    pipe.write(chalk.bold.dim('Determining test suites to run...'));
-  }
-};
-
 const getMaxWorkers = argv => {
   if (argv.runInBand) {
     return 1;
   } else if (argv.maxWorkers) {
-    return argv.maxWorkers;
+    return parseInt(argv.maxWorkers, 10);
   } else {
     const cpus = os.cpus().length;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
@@ -276,7 +271,7 @@ const runCLI = (
           }
 
           pipe.write(CLEAR);
-          printHeader(pipe);
+          preRunMessage.print(pipe);
           isRunning = true;
           return runJest(
             Object.freeze(Object.assign({}, config, overrideConfig)),
@@ -401,7 +396,7 @@ const runCLI = (
         startRun();
         return Promise.resolve();
       } else {
-        printHeader(pipe);
+        preRunMessage.print(pipe);
         return runJest(config, argv, pipe, onComplete);
       }
     })

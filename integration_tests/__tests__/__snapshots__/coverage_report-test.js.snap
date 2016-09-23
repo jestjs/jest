@@ -9,14 +9,12 @@ All files |      100 |      100 |      100 |      100 |                |
 `;
 
 exports[`test json reporter printing with --coverage 1`] = `
-"Coverage Summary (add \"text\" to the \"coverageReporters\" setting to receive a full report)
- › Statements: 100%
- › Branches: 100%
- › Lines: 100%
- › Functions: 100%
-
-Test Summary
- › Ran all tests."
+"Test Suites: 1 failed, 0 passed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
 `;
 
 exports[`test outputs coverage report 1`] = `

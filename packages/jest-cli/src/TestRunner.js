@@ -29,9 +29,12 @@ const VerboseReporter = require('./reporters/VerboseReporter');
 const promisify = require('./lib/promisify');
 const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
+const throat = require('throat');
 const workerFarm = require('worker-farm');
 
+const FAIL = 0;
 const SLOW_TEST_TIME = 3000;
+const SUCCESS = 1;
 
 type Options = {
   maxWorkers: number,
@@ -99,32 +102,46 @@ class TestRunner {
     // subsequent runs we use that to run the slowest tests first, yielding the
     // fastest results.
     try {
-      this._testPerformanceCache = JSON.parse(fs.readFileSync(
-        this._getTestPerformanceCachePath(),
-        'utf8',
-      ));
+      if (this._config.cache) {
+        this._testPerformanceCache = JSON.parse(fs.readFileSync(
+          this._getTestPerformanceCachePath(),
+          'utf8',
+        ));
+      } else {
+        this._testPerformanceCache = {};
+      }
     } catch (e) {
       this._testPerformanceCache = {};
     }
 
-    const testPerformanceCache = this._testPerformanceCache;
+    const cache = this._testPerformanceCache;
     const timings = [];
+    const stats = {};
+    const getFileSize = filePath =>
+      stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
+    const getTestRunTime = filePath => {
+      if (cache[filePath]) {
+        return (cache[filePath][0] === FAIL) ? Infinity : cache[filePath][1];
+      }
+      return null;
+    };
+
     testPaths = testPaths
-      .map(path => ({path, size: fs.statSync(path).size}))
-      .sort((a, b) => {
-        const cacheA = testPerformanceCache && testPerformanceCache[a.path];
-        const cacheB = testPerformanceCache && testPerformanceCache[b.path];
-        if (cacheA !== null && cacheB !== null) {
-          return cacheA < cacheB ? 1 : -1;
+      .sort((pathA, pathB) => {
+        const timeA = getTestRunTime(pathA);
+        const timeB = getTestRunTime(pathB);
+        if (timeA != null && timeB != null) {
+          return timeA < timeB ? 1 : -1;
         }
-        return a.size < b.size ? 1 : -1;
-      })
-      .map(item => {
-        if (testPerformanceCache[item.path]) {
-          timings.push(testPerformanceCache[item.path]);
-        }
-        return item.path;
+        return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
       });
+
+    testPaths.forEach(filePath => {
+      const timing = cache[filePath] && cache[filePath][1];
+      if (timing) {
+        timings.push(timing);
+      }
+    });
 
     return {testPaths, timings};
   }
@@ -134,9 +151,10 @@ class TestRunner {
     const cache = this._testPerformanceCache;
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
-      if (perf && perf.end && perf.start) {
-        cache[test.testFilePath] = perf.end - perf.start;
-      }
+      cache[test.testFilePath] = [
+        test.numFailingTests ? FAIL : SUCCESS,
+        (perf.end - perf.start) || 0,
+      ];
     });
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
@@ -145,7 +163,14 @@ class TestRunner {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
-    this._dispatcher.onRunStart(config, aggregatedResults);
+    const estimatedTime =
+      Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
+
+    this._dispatcher.onRunStart(
+      config,
+      aggregatedResults,
+      {estimatedTime},
+    );
 
     const onTestResult = (testPath: Path, testResult: TestResult) => {
       if (testResult.testResults.length === 0) {
@@ -157,16 +182,23 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      this._dispatcher.onTestResult(
+        config,
+        testResult,
+        aggregatedResults,
+      );
       this._bailIfNeeded(aggregatedResults);
     };
 
     const onRunFailure = (testPath: Path, err: TestError) => {
       const testResult = buildFailureTestResult(testPath, err);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
-      aggregatedResults.testResults.push(testResult);
-      aggregatedResults.numRuntimeErrorTestSuites++;
-      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      addResult(aggregatedResults, testResult);
+      this._dispatcher.onTestResult(
+        config,
+        testResult,
+        aggregatedResults,
+      );
     };
 
     const setSuccess = () => {
@@ -228,12 +260,23 @@ class TestRunner {
     onTestResult: OnTestResult,
     onRunFailure: OnRunFailure,
   ) {
-    return testPaths.reduce((promise, path) =>
-      promise
-        .then(() => this._hasteContext)
-        .then(data => runTest(path, this._config, data.resolver))
-        .then(result => onTestResult(path, result))
-        .catch(err => onRunFailure(path, err)),
+    const mutex = throat(1);
+
+    return testPaths.reduce(
+      (promise, path) =>
+        mutex(() =>
+          promise
+            .then(() => {
+              this._dispatcher.onTestStart(this._config, path);
+              return runTest(
+                path,
+                this._config,
+                this._hasteContext.resolver,
+              );
+            })
+            .then(result => onTestResult(path, result))
+            .catch(err => onRunFailure(path, err)),
+        ),
       Promise.resolve(),
     );
   }
@@ -250,25 +293,41 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._options.maxWorkers,
     }, TEST_WORKER_PATH);
-    const runTestInWorkerFarm = promisify(farm);
-    return Promise.all(testPaths.map(
-      path => runTestInWorkerFarm({path, config})
+    const mutex = throat(this._options.maxWorkers);
+
+    // Send test suites to workers continuously instead of all at once to track
+    // the start time of individual tests.
+    const runTestInWorker = ({path, config}) => mutex(() => {
+      this._dispatcher.onTestStart(config, path);
+      return promisify(farm)({path, config});
+    });
+
+    const onError = (err, path) => {
+      onRunFailure(path, err);
+      if (err.type === 'ProcessTerminatedError') {
+        console.error(
+          'A worker process has quit unexpectedly! ' +
+          'Most likely this an initialization error.',
+        );
+        process.exit(1);
+      }
+    };
+
+    return Promise.all(testPaths.map(path => {
+      return runTestInWorker({path, config})
         .then(testResult => onTestResult(path, testResult))
-        .catch(err => {
-          onRunFailure(path, err);
-          if (err.type === 'ProcessTerminatedError') {
-            console.error(
-              'A worker process has quit unexpectedly! ' +
-              'Most likely this an initialization error.',
-            );
-            process.exit(1);
-          }
-        })),
-    )
+        .catch(error => onError(error, path));
+    }))
     .then(() => workerFarm.end(farm));
   }
 
   _setupReporters() {
+    this.addReporter(
+      this._config.verbose
+        ? new VerboseReporter()
+        : new DefaultReporter(),
+    );
+
     if (this._config.collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
@@ -276,16 +335,9 @@ class TestRunner {
       this.addReporter(new CoverageReporter());
     }
     this.addReporter(new SummaryReporter());
-    this.addReporter(
-      this._config.verbose
-        ? new VerboseReporter()
-        : new DefaultReporter(),
-    );
-
     if (this._config.notify) {
       this.addReporter(new NotifyReporter());
     }
-
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult) {
@@ -330,7 +382,7 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
 const addResult = (
   aggregatedResults: AggregatedResult,
   testResult: TestResult,
-) => {
+): void => {
   aggregatedResults.testResults.push(testResult);
   aggregatedResults.numTotalTests +=
     testResult.numPassingTests +
@@ -340,7 +392,10 @@ const addResult = (
   aggregatedResults.numFailedTests += testResult.numFailingTests;
   aggregatedResults.numPassedTests += testResult.numPassingTests;
   aggregatedResults.numPendingTests += testResult.numPendingTests;
-  if (testResult.numFailingTests > 0) {
+  if (testResult.testExecError) {
+    aggregatedResults.numRuntimeErrorTestSuites++;
+  }
+  if (testResult.numFailingTests > 0 || testResult.testExecError) {
     aggregatedResults.numFailedTestSuites++;
   } else {
     aggregatedResults.numPassedTestSuites++;
@@ -368,6 +423,7 @@ const addResult = (
   aggregatedResults.snapshot.total +=
     testResult.snapshot.added +
     testResult.snapshot.matched +
+    testResult.snapshot.unmatched +
     testResult.snapshot.updated;
 };
 
@@ -378,7 +434,8 @@ const buildFailureTestResult = (
   return {
     console: null,
     failureMessage: null,
-    numFailingTests: 1,
+    hasUncheckedKeys: false,
+    numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,
     perfStats: {
@@ -423,13 +480,29 @@ class ReporterDispatcher {
 
   onTestResult(config, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(config, testResult, results, this._runnerContext),
+      reporter.onTestResult(
+        config,
+        testResult,
+        results,
+        this._runnerContext,
+      ),
     );
   }
 
-  onRunStart(config, results) {
+  onTestStart(config, path) {
+    this._reporters.forEach(reporter =>
+      reporter.onTestStart(config, path, this._runnerContext),
+    );
+  }
+
+  onRunStart(config, results, options) {
     this._reporters.forEach(
-      reporter => reporter.onRunStart(config, results, this._runnerContext),
+      reporter => reporter.onRunStart(
+        config,
+        results,
+        this._runnerContext,
+        options,
+      ),
     );
   }
 
@@ -454,5 +527,21 @@ class ReporterDispatcher {
     return this.getErrors().length !== 0;
   }
 }
+
+const getEstimatedTime = (timings, workers) => {
+  if (!timings.length) {
+    return 0;
+  }
+
+  const max = Math.max.apply(null, timings);
+  if (timings.length <= workers) {
+    return max;
+  }
+
+  return Math.max(
+    timings.reduce((sum, time) => sum + time) / workers,
+    max,
+  );
+};
 
 module.exports = TestRunner;

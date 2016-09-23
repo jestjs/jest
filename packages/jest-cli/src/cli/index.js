@@ -37,6 +37,7 @@ function run(argv?: Object, root?: Path) {
   if (!root) {
     root = getPackageRoot();
   }
+
   getJest(root).runCLI(argv, root, result => {
     process.on('exit', () => process.exit(!result || result.success ? 0 : 1));
   });

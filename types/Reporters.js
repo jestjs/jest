@@ -15,3 +15,7 @@ export type RunnerContext = {
   hasteFS: HasteFS,
   getTestSummary: () => string,
 };
+
+export type ReporterOnStartOptions = {
+  estimatedTime: number,
+};

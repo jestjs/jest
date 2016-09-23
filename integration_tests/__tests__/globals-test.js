@@ -10,6 +10,7 @@
 
 const path = require('path');
 const runJest = require('../runJest');
+const {extractSummary} = require('../utils');
 const skipOnWindows = require('skipOnWindows');
 const os = require('os');
 const {createEmptyPackage, makeTests, cleanup} = require('../utils');
@@ -18,12 +19,6 @@ const DIR = path.resolve(os.tmpdir(), 'global-variables-test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
 skipOnWindows.suite();
-
-const escapeOutput = string => string
-  .split('\n')
-  .slice(0, -2)
-  .join('\n')
-  .replace(/\s*\(.*ms\)/gm, '');
 
 beforeEach(() => {
   cleanup(DIR);
@@ -46,9 +41,11 @@ test('basic test constructs', () => {
 
   makeTests(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-
-  expect(escapeOutput(stderr)).toMatchSnapshot();
   expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('skips', () => {
@@ -75,9 +72,11 @@ test('skips', () => {
 
   makeTests(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-
-  expect(escapeOutput(stderr)).toMatchSnapshot();
   expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('only', () => {
@@ -103,9 +102,11 @@ test('only', () => {
 
   makeTests(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-
-  expect(escapeOutput(stderr)).toMatchSnapshot();
   expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('tests with no implementation', () => {
@@ -118,7 +119,9 @@ test('tests with no implementation', () => {
 
   makeTests(TEST_DIR, {[filename]: content});
   const {stderr, status} = runJest(DIR);
-
-  expect(escapeOutput(stderr)).toMatchSnapshot();
   expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });

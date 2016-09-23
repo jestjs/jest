@@ -54,7 +54,7 @@ describe('JSON Reporter', () => {
     const stderr = result.stderr.toString();
     let jsonResult;
 
-    expect(stderr).toMatch(/1 test failed, 1 test passed/);
+    expect(stderr).toMatch(/1 failed, 1 passed/);
     expect(result.status).toBe(1);
 
     try {
