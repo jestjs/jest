@@ -113,23 +113,34 @@ function jasmine2(
 
   runtime.requireModule(testPath);
   env.execute();
-  return reporter.getResults().then(results => {
-    const currentSnapshot = snapshotState.snapshot;
-    const updateSnapshot = config.updateSnapshot;
-    const uncheckedCount = currentSnapshot.getUncheckedCount();
-    if (updateSnapshot) {
-      currentSnapshot.removeUncheckedKeys();
-    }
-    const status = currentSnapshot.save(updateSnapshot);
-
-    results.snapshot.fileDeleted = status.deleted;
-    results.snapshot.added = snapshotState.added;
-    results.snapshot.matched = snapshotState.matched;
-    results.snapshot.unmatched = snapshotState.unmatched;
-    results.snapshot.updated = snapshotState.updated;
-    results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
-    return results;
-  });
+  return reporter
+    .getResults()
+    .then(results => addSnapshotData(results, config, snapshotState));
 }
+
+const addSnapshotData = (results, config, snapshotState) => {
+  results.testResults.forEach(({fullName, status}) => {
+    if (status === 'pending' || status === 'failed') {
+      // if test is skipped or failed, we don't want to mark
+      // its snapshots as obsolete.
+      snapshotState.markSnapshotsAsCheckedForTest(fullName);
+    }
+  });
+
+  const updateSnapshot = config.updateSnapshot;
+  const uncheckedCount = snapshotState.getUncheckedCount();
+  if (updateSnapshot) {
+    snapshotState.removeUncheckedKeys();
+  }
+  const status = snapshotState.save(updateSnapshot);
+
+  results.snapshot.fileDeleted = status.deleted;
+  results.snapshot.added = snapshotState.added;
+  results.snapshot.matched = snapshotState.matched;
+  results.snapshot.unmatched = snapshotState.unmatched;
+  results.snapshot.updated = snapshotState.updated;
+  results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  return results;
+};
 
 module.exports = jasmine2;

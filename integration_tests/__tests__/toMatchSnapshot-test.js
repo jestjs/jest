@@ -27,20 +27,19 @@ test('basic support', () => {
     `test('snapshots', () => expect($1).toMatchSnapshot());`,
   );
 
-
   {
     makeTests(TESTS_DIR, {[filename]: template(['{apple: "original value"}'])});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch('1 snapshot written in 1 test file.');
     expect(status).toBe(0);
   }
+
   {
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch('1 snapshot,');
     expect(stderr).not.toMatch('1 snapshot written in 1 test file.');
     expect(status).toBe(0);
   }
-
 
   {
     makeTests(TESTS_DIR, {[filename]: template(['{apple: "updated value"}'])});
@@ -56,7 +55,7 @@ test('basic support', () => {
   }
 });
 
-test.skip('error thrown before snapshot', () => {
+test('error thrown before snapshot', () => {
   const filename = 'error-thrown-before-snapshot-test.js';
   const template = makeTemplate(
     `test('snapshots', () => {
@@ -72,6 +71,7 @@ test.skip('error thrown before snapshot', () => {
     expect(stderr).toMatch('1 snapshot written in 1 test file.');
     expect(status).toBe(0);
   }
+
   {
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch('1 snapshot,');
@@ -83,7 +83,7 @@ test.skip('error thrown before snapshot', () => {
     makeTests(TESTS_DIR, {[filename]: template(['false', '{a: "original"}'])});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).not.toMatch('1 obsolete snapshot found');
-    expect(status).toBe(0);
+    expect(status).toBe(1);
   }
 });
 
@@ -96,14 +96,12 @@ test('first snapshot fails, second passes', () => {
     });`,
   );
 
-
   {
     makeTests(TESTS_DIR, {[filename]: template([`'apple'`, `'banana'`])});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch('2 snapshots written in 1 test file.');
     expect(status).toBe(0);
   }
-
 
   {
     makeTests(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
@@ -112,5 +110,33 @@ test('first snapshot fails, second passes', () => {
     expect(stderr).toMatch('- "apple"\n    + "kiwi"');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(1);
+  }
+});
+
+test('does not mark snapshots as obsolete in skipped tests', () => {
+  const filename = 'no-obsolete-if-skipped.js';
+  const template = makeTemplate(
+    `test('snapshots', () => {
+      expect(true).toBe(true);
+    });
+
+    $1('will be skipped', () => {
+      expect({a: 6}).toMatchSnapshot();
+    });
+    `,
+  );
+
+  {
+    makeTests(TESTS_DIR, {[filename]: template(['test'])});
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(status).toBe(0);
+  }
+
+  {
+    makeTests(TESTS_DIR, {[filename]: template(['test.skip'])});
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(status).toBe(0);
   }
 });
