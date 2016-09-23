@@ -14,7 +14,6 @@ import type {Path} from 'types/Config';
 
 const {
   saveSnapshotFile,
-  fileExists,
   getSnapshotData,
   getSnapshotPath,
   keyToTestName,
@@ -22,6 +21,7 @@ const {
   testNameToKey,
   unescape,
 } = require('./utils');
+const fileExists = require('jest-file-exists');
 const fs = require('fs');
 
 class SnapshotState {

@@ -80,7 +80,7 @@ describe('toHaveBeenCalledTimes', () => {
   });
 
   it('verifies that actual is a Spy', () => {
-    const fn = () => {};
+    const fn = function fn() {};
 
     let error;
     try {
@@ -168,7 +168,7 @@ describe('toHaveBeenCalledTimes', () => {
 ].forEach(calledWith => {
   test(`${calledWith} works only on spies or jest.fn`, () => {
     let error;
-    const fn = () => {};
+    const fn = function fn() {};
 
     try {
       jestExpect(fn)[calledWith]();

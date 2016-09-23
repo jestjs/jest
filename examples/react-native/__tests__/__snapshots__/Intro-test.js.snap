@@ -63,17 +63,17 @@ exports[`test renders the ListView component 1`] = `
     }
   }
   initialListSize={10}
-  onContentSizeChange={[Function bound _onContentSizeChange]}
+  onContentSizeChange={[Function]}
   onEndReachedThreshold={1000}
   onKeyboardDidHide={undefined}
   onKeyboardDidShow={undefined}
   onKeyboardWillHide={undefined}
   onKeyboardWillShow={undefined}
-  onLayout={[Function bound _onLayout]}
-  onScroll={[Function bound _onScroll]}
+  onLayout={[Function]}
+  onScroll={[Function]}
   pageSize={1}
   removeClippedSubviews={true}
-  renderRow={[Function renderRow]}
+  renderRow={[Function]}
   scrollEventThrottle={50}
   scrollRenderAheadDistance={1000}
   stickyHeaderIndices={Array []}>

@@ -25,7 +25,7 @@ const getAnnotation = options =>
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
 
 // diff characters if oneliner and diff lines if multiline
-function diffStrings(a: string, b: string, options: ?DiffOptions): ?string {
+function diffStrings(a: string, b: string, options: ?DiffOptions): string {
   let isDifferent = false;
 
   // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
