@@ -35,12 +35,13 @@ export type Bytes = number;
 export type Milliseconds = number;
 
 export type AssertionResult = {
-  title: string,
-  status: Status,
   ancestorTitles: Array<string>,
-  failureMessages: Array<string>,
-  numPassingAsserts: number,
   duration?: Milliseconds,
+  failureMessages: Array<string>,
+  fullName: string,
+  numPassingAsserts: number,
+  status: Status,
+  title: string,
 };
 
 export type AggregatedResult = {
