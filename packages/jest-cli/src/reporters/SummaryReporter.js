@@ -11,7 +11,7 @@
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {Config} from 'types/Config';
-import type {RunnerContext} from 'types/Reporters';
+import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 
@@ -56,6 +56,24 @@ const NPM_EVENTS = new Set([
 ]);
 
 class SummareReporter extends BaseReporter {
+
+  _estimatedTime: number;
+
+  constructor() {
+    super();
+    this._estimatedTime = 0;
+  }
+
+  onRunStart(
+    config: Config,
+    aggregatedResults: AggregatedResult,
+    runnerContext: RunnerContext,
+    options: ReporterOnStartOptions,
+  ) {
+    super.onRunStart(config, aggregatedResults, runnerContext, options);
+    this._estimatedTime = options.estimatedTime;
+  }
+
   onRunComplete(
     config: Config,
     aggregatedResults: AggregatedResult,
@@ -64,14 +82,18 @@ class SummareReporter extends BaseReporter {
     const totalTestSuites = aggregatedResults.numTotalTestSuites;
     const snapshots = aggregatedResults.snapshot;
 
-    let results =
-      '\n\n' + chalk.bold('Summary: ') + runnerContext.getTestSummary() + '\n';
-
     this._printSummary(aggregatedResults, config);
     this._printSnapshotSummary(snapshots, config);
-    if (totalTestSuites) {
-      results += getSummary(aggregatedResults);
-    }
+
+    const results =
+      '\n' +
+      (totalTestSuites
+        ? getSummary(aggregatedResults, {
+          estimatedTime: this._estimatedTime,
+        })
+        : ''
+      ) +
+      '\n' + runnerContext.getTestSummary();
     this.log(results);
   }
 

@@ -11,7 +11,7 @@
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
-import type {RunnerContext} from 'types/Reporters';
+import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
 const clearLine = require('jest-util').clearLine;
 const preRunMessage = require('../preRunMessage');
@@ -23,7 +23,12 @@ class BaseReporter {
     process.stderr.write(message + '\n');
   }
 
-  onRunStart(config: Config, results: AggregatedResult) {
+  onRunStart(
+    config: Config,
+    results: AggregatedResult,
+    runnerContext: RunnerContext,
+    options: ReporterOnStartOptions,
+  ) {
     preRunMessage.remove(process.stderr);
   }
 

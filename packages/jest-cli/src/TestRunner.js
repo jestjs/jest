@@ -146,7 +146,14 @@ class TestRunner {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
-    this._dispatcher.onRunStart(config, aggregatedResults);
+    const estimatedTime =
+      Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
+
+    this._dispatcher.onRunStart(
+      config,
+      aggregatedResults,
+      {estimatedTime},
+    );
 
     const onTestResult = (testPath: Path, testResult: TestResult) => {
       if (testResult.testResults.length === 0) {
@@ -472,9 +479,14 @@ class ReporterDispatcher {
     );
   }
 
-  onRunStart(config, results) {
+  onRunStart(config, results, options) {
     this._reporters.forEach(
-      reporter => reporter.onRunStart(config, results, this._runnerContext),
+      reporter => reporter.onRunStart(
+        config,
+        results,
+        this._runnerContext,
+        options,
+      ),
     );
   }
 
@@ -499,5 +511,17 @@ class ReporterDispatcher {
     return this.getErrors().length !== 0;
   }
 }
+
+const getEstimatedTime = (timings, workers) => {
+  if (!timings.length) {
+    return 0;
+  }
+
+  if (timings.length <= workers) {
+    return Math.max.apply(null, timings);
+  }
+
+  return timings.reduce((sum, time) => sum + time) / workers;
+};
 
 module.exports = TestRunner;

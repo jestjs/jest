@@ -84,7 +84,7 @@ const createEmptyPackage = (directory, packageJson) => {
 
 const extractSummary = stdout => {
   const match = stdout.match(
-    /Summary.*\n\nTest Suites:.*\nTests.*\nSnapshots.*\nTime.*\n*$/gm
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all tests.*\n*$/gm
   );
   if (!match) {
     throw new Error(`
@@ -100,7 +100,7 @@ const extractSummary = stdout => {
     .replace(/\s*\(.*ms\)/gm, '');
 
   return {
-    summary: match[0].replace(/\d*\.\d*s/, '<<REPLACED>>'),
+    summary: match[0].replace(/\d*\.?\d+m?s/g, '<<REPLACED>>'),
     rest,
   };
 };

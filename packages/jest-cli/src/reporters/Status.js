@@ -12,6 +12,7 @@
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const {getSummary, wrapAnsiString, formatTestPath} = require('./utils');
 const chalk = require('chalk');
@@ -64,16 +65,18 @@ class Status {
   _currentTests: CurrentTestList;
   _done: boolean;
   _emitScheduled: boolean;
+  _estimatedTime: number;
   _height: number;
   _interval: number;
   _lastAggregatedResults: AggregatedResult;
   _lastUpdated: number;
 
   constructor() {
-    this._done = false;
-    this._emitScheduled = false;
     this._cache = null;
     this._currentTests = new CurrentTestList();
+    this._done = false;
+    this._emitScheduled = false;
+    this._estimatedTime = 0;
     this._height = 0;
   }
 
@@ -81,7 +84,11 @@ class Status {
     this._callback = callback;
   }
 
-  runStarted(aggregatedResults: AggregatedResult) {
+  runStarted(
+    aggregatedResults: AggregatedResult,
+    options: ReporterOnStartOptions,
+  ) {
+    this._estimatedTime = (options && options.estimatedTime) || 0;
     this._interval = setInterval(() => this._tick(), 1000);
     this._lastAggregatedResults = aggregatedResults;
     this._debouncedEmit();
@@ -119,14 +126,14 @@ class Status {
     }
 
     // $FlowFixMe
-    const columns: number = process.stdout.columns;
+    const width: number = process.stdout.columns;
     let content = '\n'; // status can't share lines with anything else
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
         content += wrapAnsiString(
           RUNNING + formatTestPath(config, testPath),
-          columns,
+          width,
         ) + '\n';
       }
     });
@@ -134,7 +141,12 @@ class Status {
     if (this._lastAggregatedResults) {
       content += '\n' + getSummary(
         this._lastAggregatedResults,
-        {roundTime: true, currentSuites: true, width: columns},
+        {
+          currentSuites: true,
+          estimatedTime: this._estimatedTime,
+          roundTime: true,
+          width,
+        },
       );
     }
 

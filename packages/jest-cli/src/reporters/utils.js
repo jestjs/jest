@@ -17,8 +17,9 @@ const chalk = require('chalk');
 const path = require('path');
 
 type SummaryOptions = {
-  roundTime?: boolean,
   currentSuites?: boolean,
+  estimatedTime?: number,
+  roundTime?: boolean,
   width?: number,
 };
 
@@ -45,6 +46,7 @@ const getSummary = (
   if (options && options.roundTime) {
     runTime = Math.floor(runTime);
   }
+  const estimatedTime = (options && options.estimatedTime) || 0;
   const snapshotResults = aggregatedResults.snapshot;
 
   let suites = chalk.bold('Test Suites: ');
@@ -93,7 +95,10 @@ const getSummary = (
   snapshots += chalk.bold.green(`${snapshotsPassed} passed`);
   snapshots += ` (${snapshotsTotal} total)`;
 
-  const time = chalk.bold(`Time:`) + `        ${runTime}s`;
+  let time = chalk.bold(`Time:`) + `        ${runTime}s`;
+  if (estimatedTime) {
+    time += ` (${estimatedTime}s estimated)`;
+  }
 
   return [suites, tests, snapshots, time].join('\n');
 };
