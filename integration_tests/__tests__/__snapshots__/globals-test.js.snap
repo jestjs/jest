@@ -1,19 +1,57 @@
-exports[`test global jest variables 1`] = `
-" PASS  __tests__/globals-test.js
-  ✓ it.only
+exports[`test basic test constructs 1`] = `
+" PASS  __tests__/basic-test-constructs-test.js
+  ✓ it
+  ✓ test
+  describe
+    ✓ it
+    ✓ test
+
+Test Summary
+ › Ran all tests."
+`;
+
+exports[`test only 1`] = `
+" PASS  __tests__/only-constructs-test.js
   ✓ test.only
+  ✓ it.only
+  ✓ fit
   ○ it
-  ○ test
-  ○ it.skip
-  ○ test.skip
-  ○ xit
-  ○ xtest
   fdescribe
+    ✓ it
     ✓ test
   describe.only
     ✓ test
-  describe
+    describe
+      ✓ test
+
+Test Summary
+ › Ran all tests."
+`;
+
+exports[`test skips 1`] = `
+" PASS  __tests__/skips-constructs-test.js
+  ✓ it
+  ○ xtest
+  ○ xit
+  ○ it.skip
+  ○ test.skip
+  xdescribe
+    ○ it
     ○ test
+  describe.skip
+    ○ test
+    describe
+      ○ test
+
+Test Summary
+ › Ran all tests."
+`;
+
+exports[`test tests with no implementation 1`] = `
+" PASS  __tests__/only-constructs-test.js
+  ✓ it
+  ○ it, no implementation
+  ○ test, no implementation
 
 Test Summary
  › Ran all tests."
