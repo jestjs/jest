@@ -125,6 +125,7 @@ class DefaultReporter extends BaseReporter {
     process.stdout.write = this._out;
     // $FlowFixMe
     process.stderr.write = this._err;
+    this.clearLine();
   }
 
   onTestResult(
@@ -145,18 +146,18 @@ class DefaultReporter extends BaseReporter {
 
     const consoleBuffer = testResult.console;
     if (consoleBuffer && consoleBuffer.length) {
-      this._write(
+      this.log(
         '  ' + TITLE_BULLET + 'Console\n\n' +
         getConsoleOutput(
           config.rootDir,
           !!config.verbose,
           consoleBuffer,
-        ) + '\n',
+        ),
       );
     }
 
     if (testResult.failureMessage) {
-      this._write(testResult.failureMessage + '\n');
+      this.log(testResult.failureMessage);
     }
   }
 }

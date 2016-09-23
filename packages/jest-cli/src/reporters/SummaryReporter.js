@@ -79,10 +79,22 @@ class SummareReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
     runnerContext: RunnerContext,
   ) {
+    const {testResults} = aggregatedResults;
+    const lastResult = testResults[testResults.length - 1];
+    // Print a newline if the last test did not fail to line up newlines if the
+    // test had failed.
+    if (
+      !config.verbose &&
+      lastResult &&
+      !lastResult.numFailingTests &&
+      !lastResult.testExecError
+    ) {
+      this.log('');
+    }
+
     this._printSummary(aggregatedResults, config);
     this._printSnapshotSummary(aggregatedResults.snapshot, config);
     this.log(
-      '\n' +
       (aggregatedResults.numTotalTestSuites
         ? getSummary(aggregatedResults, {
           estimatedTime: this._estimatedTime,
@@ -112,7 +124,7 @@ class SummareReporter extends BaseReporter {
         updateCommand = 're-run with `-u`';
       }
 
-      this.log('\n' + SNAPSHOT_SUMMARY('Snapshot Summary'));
+      this.log(SNAPSHOT_SUMMARY('Snapshot Summary'));
       if (snapshots.added) {
         this.log(
           SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
@@ -177,13 +189,13 @@ class SummareReporter extends BaseReporter {
       failedTests + runtimeErrors > 0 &&
       aggregatedResults.numTotalTestSuites > TEST_SUMMARY_THRESHOLD
     ) {
-      this.log(chalk.bold('\nSummary of all failing tests'));
+      this.log(chalk.bold('Summary of all failing tests'));
       aggregatedResults.testResults.forEach(testResult => {
         const {failureMessage} = testResult;
         if (failureMessage) {
-          this._write(
+          this.log(
             getResultHeader(testResult, config) + '\n' +
-            failureMessage + '\n',
+            failureMessage,
           );
         }
       });

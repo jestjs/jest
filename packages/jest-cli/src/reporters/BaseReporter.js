@@ -54,10 +54,6 @@ class BaseReporter {
     clearLine(process.stderr);
   }
 
-  _write(string: string) {
-    process.stderr.write(string);
-  }
-
   _setError(error: Error) {
     this._error = error;
   }

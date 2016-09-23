@@ -9,40 +9,11 @@ All files |      100 |      100 |      100 |      100 |                |
 `;
 
 exports[`test json reporter printing with --coverage 1`] = `
-" FAIL  __tests__/sum-test.js
-  ● sum › fails the test
-
-    expect(received).toEqual(expected)
-    
-    Expected value to equal:
-      4
-    Received:
-      3
-      
-      at Object.it (__tests__/sum-test.js:18:23)
-
-  sum
-    ✓ adds numbers
-    ✕ fails the test
-
-
-Coverage Summary (add \"text\" to the \"coverageReporters\" setting to receive a full report)
- › Statements: 100%
- › Branches: 100%
- › Lines: 100%
- › Functions: 100%
-
-
-"
-`;
-
-exports[`test json reporter printing with --coverage 2`] = `
-"Test Summary: › Ran all tests.
-
-suites:    1 failed, 1 passed (1 total)
-tests:     1 failed, 1 passed (2 total)
-snapshots: 0 passed (0 total)
-time:      <<REPLACED>>
+"Test Suites: 1 failed, 0 passed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests.
 "
 `;
 

@@ -89,7 +89,7 @@ class VerboseReporter extends DefaultReporter {
 
   _logLine(str?: string, indentLevel?: number) {
     const indentation = '  '.repeat(indentLevel || 0);
-    this._write(indentation + (str || '') + '\n');
+    this.log(indentation + (str || ''));
   }
 
 }

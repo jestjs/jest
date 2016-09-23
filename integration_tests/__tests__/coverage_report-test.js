@@ -52,9 +52,8 @@ test('collects coverage only from specified files', () => {
 
 test('json reporter printing with --coverage', () => {
   const {stderr, status} = runJest('json_reporter', ['--coverage']);
-  const {summary, rest} = extractSummary(stderr);
+  const {summary} = extractSummary(stderr);
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
 

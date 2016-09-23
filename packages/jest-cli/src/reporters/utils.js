@@ -17,7 +17,6 @@ const chalk = require('chalk');
 const path = require('path');
 
 type SummaryOptions = {
-  currentSuites?: boolean,
   estimatedTime?: number,
   roundTime?: boolean,
   width?: number,
@@ -25,9 +24,45 @@ type SummaryOptions = {
 
 const PROGRESS_BAR_WIDTH = 40;
 
+const trimAndFormatPath = (
+  pad: number,
+  config: Config,
+  testPath: Path,
+  columns: number,
+): string => {
+  const maxLength = columns - pad;
+  const relative = relativePath(config, testPath);
+  const {basename} = relative;
+  let {dirname} = relative;
+
+  // length is ok
+  if ((dirname + path.sep + basename).length <= maxLength) {
+    return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+  }
+
+  // we can fit trimmed dirname and full basename
+  const basenameLength = basename.length;
+  if (basenameLength + 4 < maxLength) {
+    const dirnameLength = maxLength - 4 - basenameLength;
+    dirname = '...' +
+      dirname.slice(dirname.length - dirnameLength, dirname.length);
+    return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+  }
+
+  if (basenameLength + 4 === maxLength) {
+    return chalk.dim('...' + path.sep) + chalk.bold(basename);
+  }
+
+  // can't fit dirname, but can fit trimmed basename
+  return chalk.bold(
+    '...' +
+    basename.slice(basename.length - maxLength - 4, basename.length),
+  );
+};
+
 const formatTestPath = (config: Config, testPath: Path) => {
   const {dirname, basename} = relativePath(config, testPath);
-  return chalk.gray(dirname + path.sep) + chalk.bold(basename);
+  return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
 const relativePath = (config: Config, testPath: Path) => {
@@ -48,60 +83,52 @@ const getSummary = (
   if (options && options.roundTime) {
     runTime = Math.floor(runTime);
   }
+
   const estimatedTime = (options && options.estimatedTime) || 0;
   const snapshotResults = aggregatedResults.snapshot;
-  const width = (options && options.width) || 0;
-
-  let suites = chalk.bold('Test Suites: ');
+  const snapshotsAdded = snapshotResults.added;
+  const snapshotsFailed = snapshotResults.unmatched;
+  const snapshotsPassed = snapshotResults.matched;
+  const snapshotsTotal = snapshotResults.total;
+  const snapshotsUpdated = snapshotResults.updated;
   const suitesFailed = aggregatedResults.numFailedTestSuites;
   const suitesPassed = aggregatedResults.numPassedTestSuites;
   const suitesRun = suitesFailed + suitesPassed;
   const suitesTotal = aggregatedResults.numTotalTestSuites;
+  const testsFailed = aggregatedResults.numFailedTests;
+  const testsPassed = aggregatedResults.numPassedTests;
+  const testsTotal = aggregatedResults.numTotalTests;
+  const width = (options && options.width) || 0;
 
-  if (suitesFailed) {
-    suites += chalk.bold.red(`${suitesFailed} failed`) + ', ';
-  }
-
-  suites +=
+  const suites =
+    chalk.bold('Test Suites: ') +
+    (suitesFailed ? chalk.bold.red(`${suitesFailed} failed`) + ', ' : '') +
     chalk.bold.green(`${suitesPassed} passed`) + ', ' +
     (suitesRun !== suitesTotal
       ? suitesRun + '/' + suitesTotal
       : suitesTotal
     ) + ` total`;
 
-  let tests = chalk.bold('Tests:       ');
-  const testsPassed = aggregatedResults.numPassedTests;
-  const testsFailed = aggregatedResults.numFailedTests;
-  const testsTotal = aggregatedResults.numTotalTests;
-
-  if (testsFailed) {
-    tests += chalk.bold.red(`${testsFailed} failed`) + ', ';
-  }
-
-  tests +=
+  const tests =
+    chalk.bold('Tests:       ') +
+    (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
     chalk.bold.green(`${testsPassed} passed`) +
     `, ${testsTotal} total`;
 
-  let snapshots = chalk.bold('Snapshots:   ');
-  const snapshotsPassed = snapshotResults.matched;
-  const snapshotsFailed = snapshotResults.unmatched;
-  const snapshotsUpdated = snapshotResults.updated;
-  const snapshotsAdded = snapshotResults.added;
-  const snapshotsTotal = snapshotResults.total;
-
-  if (snapshotsFailed) {
-    snapshots += chalk.bold.red(`${snapshotsFailed} failed`) + ', ';
-  }
-
-  if (snapshotsUpdated) {
-    snapshots += chalk.bold.green(`${snapshotsUpdated} updated`) + ', ';
-  }
-
-  if (snapshotsAdded) {
-    snapshots += chalk.bold.green(`${snapshotsAdded} added`) + ', ';
-  }
-
-  snapshots +=
+  const snapshots =
+    chalk.bold('Snapshots:   ') +
+    (snapshotsFailed
+      ? chalk.bold.red(`${snapshotsFailed} failed`) + ', '
+      : ''
+    ) +
+    (snapshotsUpdated
+      ? chalk.bold.green(`${snapshotsUpdated} updated`) + ', '
+      : ''
+    ) +
+    (snapshotsAdded
+      ? chalk.bold.green(`${snapshotsAdded} added`) + ', '
+      : ''
+    ) +
     chalk.bold.green(`${snapshotsPassed} passed`) +
     `, ${snapshotsTotal} total`;
 
@@ -114,7 +141,8 @@ const renderTime = (
   estimatedTime,
   width,
 ) => {
-  const renderedTime = (estimatedTime && runTime >= estimatedTime)
+  // If we are more than one second over the estimated time, highlight it.
+  const renderedTime = (estimatedTime && runTime >= estimatedTime + 1)
     ? chalk.bold.red(runTime + 's')
     : runTime + 's';
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
@@ -203,5 +231,6 @@ module.exports = {
   getSummary,
   pluralize,
   relativePath,
+  trimAndFormatPath,
   wrapAnsiString,
 };

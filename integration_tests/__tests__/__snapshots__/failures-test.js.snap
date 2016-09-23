@@ -6,14 +6,12 @@ Object {
     Expected an Error, but \"1\" was thrown
     
 
-
 ",
-  "summary": "Test Summary: › Ran all tests matching \"throw-number-test.js\".
-
-suites:    1 failed, 0 passed (1 total)
-tests:     0 passed (0 total)
-snapshots: 0 passed (0 total)
-time:      <<REPLACED>>
+  "summary": "Test Suites: 1 failed, 0 passed, 1 total
+Tests:       0 passed, 0 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests matching \"throw-number-test.js\".
 ",
 }
 `;
@@ -26,14 +24,12 @@ Object {
     Error
       banana
 
-
 ",
-  "summary": "Test Summary: › Ran all tests matching \"throw-string-test.js\".
-
-suites:    1 failed, 0 passed (1 total)
-tests:     0 passed (0 total)
-snapshots: 0 passed (0 total)
-time:      <<REPLACED>>
+  "summary": "Test Suites: 1 failed, 0 passed, 1 total
+Tests:       0 passed, 0 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests matching \"throw-string-test.js\".
 ",
 }
 `;
@@ -45,14 +41,12 @@ Object {
 
     Error: No message was provided
 
-
 ",
-  "summary": "Test Summary: › Ran all tests matching \"throw-object-test.js\".
-
-suites:    1 failed, 0 passed (1 total)
-tests:     0 passed (0 total)
-snapshots: 0 passed (0 total)
-time:      <<REPLACED>>
+  "summary": "Test Suites: 1 failed, 0 passed, 1 total
+Tests:       0 passed, 0 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests matching \"throw-object-test.js\".
 ",
 }
 `;
