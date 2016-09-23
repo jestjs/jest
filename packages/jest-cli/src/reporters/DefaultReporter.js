@@ -7,70 +7,157 @@
  *
  * @flow
  */
+
+ /* global stream$Writable, tty$WriteStream */
+
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {Config, Path} from 'types/Config';
+import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
+const Status = require('./Status');
 
 const chalk = require('chalk');
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
+const isCI = require('is-ci');
 
-const RUNNING_TEST_COLOR = chalk.bold.dim;
+type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
+
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
-const pluralize = (word, count) => `${count} ${word}${count === 1 ? '' : 's'}`;
+const isInteractive = process.stdin.isTTY && !isCI;
 
 class DefaultReporter extends BaseReporter {
-  onRunStart(config: Config, results: AggregatedResult) {
+  _clear: string; // ANSI clear sequence for the last printed status
+  _currentlyRunning: Map<Path, Config>;
+  _currentStatusHeight: number;
+  _err: write;
+  _lastAggregatedResults: AggregatedResult;
+  _out: write;
+  _status: Status;
+
+  constructor() {
+    super();
+    this._clear = '';
+    this._out = process.stdout.write.bind(process.stdout);
+    this._err = process.stderr.write.bind(process.stderr);
+    this._status = new Status();
+    this._wrapStdio(process.stdout);
+    this._wrapStdio(process.stderr);
+    this._status.onChange(() => {
+      this._clearStatus();
+      this._printStatus();
+    });
+  }
+
+  _wrapStdio(stream: stream$Writable | tty$WriteStream) {
+    const originalWrite = stream.write;
+
+    let buffer = [];
+    let timeout = null;
+
+    const doFlush = () => {
+      const string = buffer.join('');
+      buffer = [];
+      // This is to avoid conflicts between random output and status text
+      this._clearStatus();
+      originalWrite.call(stream, string);
+      this._printStatus();
+    };
+
+    const flush = () => {
+      // If the process blows up no errors would be printed.
+      // There should be a smart way to buffer stderr, but for now
+      // we just won't buffer it.
+      if (stream === process.stderr) {
+        doFlush();
+      } else {
+        if (!timeout) {
+          timeout = setTimeout(() => {
+            doFlush();
+            timeout = null;
+          }, 100);
+        }
+      }
+    };
+
+    // $FlowFixMe
+    stream.write = chunk => {
+      buffer.push(chunk);
+      flush();
+      return true;
+    };
+  }
+
+  _clearStatus() {
+    if (isInteractive) {
+      this._out(this._clear);
+    }
+  }
+
+  _printStatus() {
+    const {content, clear} = this._status.get();
+    this._clear = clear;
+    if (isInteractive) {
+      this._out(content);
+    }
+  }
+
+  onRunStart(
+    config: Config,
+    aggregatedResults: AggregatedResult,
+    runnerContext: RunnerContext,
+    options: ReporterOnStartOptions,
+  ) {
+    this._status.runStarted(aggregatedResults, options);
+  }
+
+  onTestStart(config: Config, testPath: Path) {
+    this._status.testStarted(testPath, config);
+  }
+
+  onRunComplete() {
+    this._status.runFinished();
+    // $FlowFixMe
+    process.stdout.write = this._out;
+    // $FlowFixMe
+    process.stderr.write = this._err;
     this.clearLine();
-    this._printWaitingOn(results, config);
   }
 
   onTestResult(
     config: Config,
     testResult: TestResult,
-    results: AggregatedResult,
+    aggregatedResults: AggregatedResult,
   ) {
-    this.clearLine();
-    this._printResultHeader(config, testResult);
-    this._printTestFileSummary(config, testResult);
-    this._printWaitingOn(results, config);
+    this._status.testFinished(config, testResult, aggregatedResults);
+    this._printTestFileSummary(testResult.testFilePath, config, testResult);
   }
 
-  _printResultHeader(config: Config, testResult: TestResult) {
+  _printTestFileSummary(
+    testPath: Path,
+    config: Config,
+    testResult: TestResult,
+  ) {
     this.log(getResultHeader(testResult, config));
-  }
 
-  _printTestFileSummary(config: Config, testResult: TestResult) {
     const consoleBuffer = testResult.console;
     if (consoleBuffer && consoleBuffer.length) {
-      this._write(
+      this.log(
         '  ' + TITLE_BULLET + 'Console\n\n' +
         getConsoleOutput(
           config.rootDir,
           !!config.verbose,
           consoleBuffer,
-        ) + '\n',
+        ),
       );
     }
 
     if (testResult.failureMessage) {
-      this._write(testResult.failureMessage + '\n');
-    }
-  }
-
-  _printWaitingOn(results: AggregatedResult, config: Config) {
-    const remaining = results.numTotalTestSuites -
-      results.numPassedTestSuites -
-      results.numFailedTestSuites -
-      results.numRuntimeErrorTestSuites;
-    if (process.stdout.isTTY && remaining > 0) {
-      process.stderr.write(RUNNING_TEST_COLOR(
-        `Running ${pluralize('test suite', remaining)}...`,
-      ));
+      this.log(testResult.failureMessage);
     }
   }
 }

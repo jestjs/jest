@@ -26,11 +26,14 @@ const {createReporter} = require('istanbul-api');
 const chalk = require('chalk');
 const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
+const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
 
 const COVERAGE_SUMMARY = chalk.bold;
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
+
+const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
@@ -93,9 +96,11 @@ class CoverageReporter extends BaseReporter {
 
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
     if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
-      process.stderr.write(RUNNING_TEST_COLOR(
-        'Running coverage on untested files...',
-      ));
+      if (isInteractive) {
+        process.stderr.write(RUNNING_TEST_COLOR(
+          'Running coverage on untested files...',
+        ));
+      }
       const files = runnerContext.hasteFS.matchFilesWithGlob(
         config.collectCoverageFrom,
         config.rootDir,
@@ -118,7 +123,9 @@ class CoverageReporter extends BaseReporter {
           }
         }
       });
-      this.clearLine();
+      if (isInteractive) {
+        this.clearLine();
+      }
     }
   }
 

@@ -36,7 +36,7 @@ test('basic support', () => {
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('1 snapshot,');
+    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written in 1 test file.');
     expect(status).toBe(0);
   }
@@ -74,7 +74,7 @@ test('error thrown before snapshot', () => {
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('1 snapshot,');
+    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(status).toBe(0);
   }
 

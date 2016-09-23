@@ -1,37 +1,52 @@
 exports[`test throwing not Error objects 1`] = `
-" FAIL  __tests__/throw-number-test.js
+Object {
+  "rest": " FAIL  __tests__/throw-number-test.js
   ● Test suite failed to run
 
     Expected an Error, but \"1\" was thrown
     
 
-Test Summary
- › Ran all tests matching \"throw-number-test.js\".
- › 1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
-"
+",
+  "summary": "Test Suites: 1 failed, 0 passed, 1 total
+Tests:       0 passed, 0 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests matching \"throw-number-test.js\".
+",
+}
 `;
 
 exports[`test throwing not Error objects 2`] = `
-" FAIL  __tests__/throw-string-test.js
+Object {
+  "rest": " FAIL  __tests__/throw-string-test.js
   ● Test suite failed to run
 
     Error
       banana
 
-Test Summary
- › Ran all tests matching \"throw-string-test.js\".
- › 1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
-"
+",
+  "summary": "Test Suites: 1 failed, 0 passed, 1 total
+Tests:       0 passed, 0 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests matching \"throw-string-test.js\".
+",
+}
 `;
 
 exports[`test throwing not Error objects 3`] = `
-" FAIL  __tests__/throw-object-test.js
+Object {
+  "rest": " FAIL  __tests__/throw-object-test.js
   ● Test suite failed to run
 
     Error: No message was provided
 
-Test Summary
- › Ran all tests matching \"throw-object-test.js\".
- › 1 test suite failed, 0 tests passed (0 total in 1 test suite, <TIME>)
-"
+",
+  "summary": "Test Suites: 1 failed, 0 passed, 1 total
+Tests:       0 passed, 0 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests matching \"throw-object-test.js\".
+",
+}
 `;

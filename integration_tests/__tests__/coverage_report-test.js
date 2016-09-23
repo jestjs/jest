@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const {linkJestPackage} = require('../utils');
+const {extractSummary, linkJestPackage} = require('../utils');
 const runJest = require('../runJest');
 const fs = require('fs');
 const path = require('path');
@@ -51,16 +51,10 @@ test('collects coverage only from specified files', () => {
 });
 
 test('json reporter printing with --coverage', () => {
-  const result = runJest('json_reporter', ['--coverage']);
-  let stderr =
-    ('Coverage' + result.stderr.toString().split('Coverage')[1]).split('\n');
-  stderr.pop();
-  stderr.pop();
-  stderr = stderr.join('\n');
-
-  expect(result.status).toBe(1);
-
-  expect(stderr).toMatchSnapshot();
+  const {stderr, status} = runJest('json_reporter', ['--coverage']);
+  const {summary} = extractSummary(stderr);
+  expect(status).toBe(1);
+  expect(summary).toMatchSnapshot();
 });
 
 test('outputs coverage report as json', () => {

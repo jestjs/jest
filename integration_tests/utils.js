@@ -79,11 +79,37 @@ const createEmptyPackage = (directory, packageJson) => {
     path.resolve(directory, 'package.json'),
     JSON.stringify(packageJson, null, 2)
   );
+
+};
+
+const extractSummary = stdout => {
+  const match = stdout.match(
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all tests.*\n*$/gm
+  );
+  if (!match) {
+    throw new Error(`
+      Could not find test summary in the output.
+      OUTPUT:
+        ${stdout}
+    `);
+  }
+
+  const summary = match[0]
+    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/, estimated <<REPLACED>>/g, '');
+
+  const rest = stdout
+    .slice(0, -match[0].length)
+    // remove all timestamps
+    .replace(/\s*\(.*ms\)/gm, '');
+
+  return {summary, rest};
 };
 
 module.exports = {
   cleanup,
   createEmptyPackage,
+  extractSummary,
   fileExists,
   linkJestPackage,
   makeTemplate,
