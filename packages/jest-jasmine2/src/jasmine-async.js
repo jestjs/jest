@@ -25,7 +25,9 @@ function isPromise(obj) {
 function promisifyIt(originalFn, env) {
   return function(specName, fn, timeout) {
     if (!fn) {
-      return null;
+      const spec = originalFn.call(env, specName);
+      spec.pend('not implemented');
+      return spec;
     }
 
     const isAsync = fn.length; // `done` was passed
