@@ -79,22 +79,18 @@ class SummareReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
     runnerContext: RunnerContext,
   ) {
-    const totalTestSuites = aggregatedResults.numTotalTestSuites;
-    const snapshots = aggregatedResults.snapshot;
-
     this._printSummary(aggregatedResults, config);
-    this._printSnapshotSummary(snapshots, config);
-
-    const results =
+    this._printSnapshotSummary(aggregatedResults.snapshot, config);
+    this.log(
       '\n' +
-      (totalTestSuites
+      (aggregatedResults.numTotalTestSuites
         ? getSummary(aggregatedResults, {
           estimatedTime: this._estimatedTime,
         })
         : ''
       ) +
-      '\n' + runnerContext.getTestSummary();
-    this.log(results);
+      '\n' + runnerContext.getTestSummary(),
+    );
   }
 
   _printSnapshotSummary(snapshots: SnapshotSummary, config: Config) {

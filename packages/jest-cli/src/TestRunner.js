@@ -338,7 +338,6 @@ class TestRunner {
     if (this._config.notify) {
       this.addReporter(new NotifyReporter());
     }
-
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult) {

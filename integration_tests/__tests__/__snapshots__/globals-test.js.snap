@@ -10,6 +10,25 @@ Test Summary
  › Ran all tests."
 `;
 
+exports[`test basic test constructs 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
+exports[`test global jest variables 2`] = `
+"Test Summary: › Ran all tests.
+
+suites:    1 passed (1 total)
+tests:     4 passed (11 total)
+snapshots: 0 passed (0 total)
+time:      <<REPLACED>>
+"
+`;
+
 exports[`test only 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ test.only
@@ -26,6 +45,15 @@ exports[`test only 1`] = `
 
 Test Summary
  › Ran all tests."
+`;
+
+exports[`test only 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       7 passed, 8 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
 `;
 
 exports[`test skips 1`] = `
@@ -47,6 +75,15 @@ Test Summary
  › Ran all tests."
 `;
 
+exports[`test skips 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 9 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests.
+"
+`;
+
 exports[`test tests with no implementation 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ it
@@ -57,12 +94,11 @@ exports[`test tests with no implementation 1`] = `
 "
 `;
 
-exports[`test global jest variables 2`] = `
-"Test Summary: › Ran all tests.
-
-suites:    1 passed (1 total)
-tests:     4 passed (11 total)
-snapshots: 0 passed (0 total)
-time:      <<REPLACED>>
+exports[`test tests with no implementation 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 3 total
+Snapshots:   0 passed, 0 total
+Time:        <<REPLACED>>
+Ran all tests.
 "
 `;

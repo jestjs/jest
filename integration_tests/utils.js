@@ -94,15 +94,16 @@ const extractSummary = stdout => {
     `);
   }
 
+  const summary = match[0]
+    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/, estimated <<REPLACED>>/g, '');
+
   const rest = stdout
     .slice(0, -match[0].length)
     // remove all timestamps
     .replace(/\s*\(.*ms\)/gm, '');
 
-  return {
-    summary: match[0].replace(/\d*\.?\d+m?s/g, '<<REPLACED>>'),
-    rest,
-  };
+  return {summary, rest};
 };
 
 module.exports = {

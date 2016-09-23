@@ -23,6 +23,8 @@ type SummaryOptions = {
   width?: number,
 };
 
+const PROGRESS_BAR_WIDTH = 40;
+
 const formatTestPath = (config: Config, testPath: Path) => {
   const {dirname, basename} = relativePath(config, testPath);
   return chalk.gray(dirname + path.sep) + chalk.bold(basename);
@@ -48,18 +50,24 @@ const getSummary = (
   }
   const estimatedTime = (options && options.estimatedTime) || 0;
   const snapshotResults = aggregatedResults.snapshot;
+  const width = (options && options.width) || 0;
 
   let suites = chalk.bold('Test Suites: ');
   const suitesFailed = aggregatedResults.numFailedTestSuites;
   const suitesPassed = aggregatedResults.numPassedTestSuites;
+  const suitesRun = suitesFailed + suitesPassed;
   const suitesTotal = aggregatedResults.numTotalTestSuites;
 
   if (suitesFailed) {
     suites += chalk.bold.red(`${suitesFailed} failed`) + ', ';
   }
 
-  suites += chalk.bold.green(`${suitesPassed} passed`);
-  suites += ` (${suitesTotal} total)`;
+  suites +=
+    chalk.bold.green(`${suitesPassed} passed`) + ', ' +
+    (suitesRun !== suitesTotal
+      ? suitesRun + '/' + suitesTotal
+      : suitesTotal
+    ) + ` total`;
 
   let tests = chalk.bold('Tests:       ');
   const testsPassed = aggregatedResults.numPassedTests;
@@ -70,8 +78,9 @@ const getSummary = (
     tests += chalk.bold.red(`${testsFailed} failed`) + ', ';
   }
 
-  tests += chalk.bold.green(`${testsPassed} passed`);
-  tests += ` (${testsTotal} total)`;
+  tests +=
+    chalk.bold.green(`${testsPassed} passed`) +
+    `, ${testsTotal} total`;
 
   let snapshots = chalk.bold('Snapshots:   ');
   const snapshotsPassed = snapshotResults.matched;
@@ -92,15 +101,47 @@ const getSummary = (
     snapshots += chalk.bold.green(`${snapshotsAdded} added`) + ', ';
   }
 
-  snapshots += chalk.bold.green(`${snapshotsPassed} passed`);
-  snapshots += ` (${snapshotsTotal} total)`;
+  snapshots +=
+    chalk.bold.green(`${snapshotsPassed} passed`) +
+    `, ${snapshotsTotal} total`;
 
-  let time = chalk.bold(`Time:`) + `        ${runTime}s`;
-  if (estimatedTime) {
-    time += ` (${estimatedTime}s estimated)`;
+  const time = renderTime(runTime, estimatedTime, width);
+  return [suites, tests, snapshots, time].join('\n');
+};
+
+const renderTime = (
+  runTime,
+  estimatedTime,
+  width,
+) => {
+  const renderedTime = (estimatedTime && runTime >= estimatedTime)
+    ? chalk.bold.red(runTime + 's')
+    : runTime + 's';
+  let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
+  if (runTime < estimatedTime) {
+    time += `, estimated ${estimatedTime}s`;
   }
 
-  return [suites, tests, snapshots, time].join('\n');
+  // Only show a progress bar if the test run is actually going to take
+  // some time.
+  if (
+    estimatedTime > 2 &&
+    runTime < estimatedTime &&
+    width
+  ) {
+    const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
+    const length = Math.min(
+      Math.floor(runTime / estimatedTime * availableWidth),
+      availableWidth,
+    );
+    if (availableWidth >= 2) {
+      time +=
+        '\n' +
+        chalk.green.inverse(' ').repeat(length) +
+        chalk.white.inverse(' ').repeat(availableWidth - length);
+    }
+  }
+  return time;
 };
 
 // wrap a string that contains ANSI escape sequences. ANSI escape sequences

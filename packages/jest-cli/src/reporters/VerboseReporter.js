@@ -22,9 +22,9 @@ const chalk = require('chalk');
 const isWindows = process.platform === 'win32';
 
 class VerboseReporter extends DefaultReporter {
+
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
     const root = {suites: [], tests: [], title: ''};
-
     testResults.forEach(testResult => {
       let targetSuite = root;
 
@@ -41,7 +41,6 @@ class VerboseReporter extends DefaultReporter {
 
       targetSuite.tests.push(testResult);
     });
-
     return root;
   }
 
@@ -50,9 +49,7 @@ class VerboseReporter extends DefaultReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-
-    this._status.testFinished(config, testResult, aggregatedResults);
-    this._printTestFileSummary(testResult.testFilePath, config, testResult);
+    super.onTestResult(config, testResult, aggregatedResults);
     if (!testResult.testExecError) {
       this._logTestResults(testResult.testResults);
     }
@@ -92,8 +89,9 @@ class VerboseReporter extends DefaultReporter {
 
   _logLine(str?: string, indentLevel?: number) {
     const indentation = '  '.repeat(indentLevel || 0);
-    process.stderr.write(indentation + (str || '') + '\n');
+    this._write(indentation + (str || '') + '\n');
   }
+
 }
 
 module.exports = VerboseReporter;

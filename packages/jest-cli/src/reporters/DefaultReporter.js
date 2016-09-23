@@ -24,17 +24,19 @@ const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
 const isCI = require('is-ci');
 
-const TITLE_BULLET = chalk.bold('\u25cf ');
-
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 
+const TITLE_BULLET = chalk.bold('\u25cf ');
+
+const isInteractive = process.stdin.isTTY && !isCI;
+
 class DefaultReporter extends BaseReporter {
-  _out: write;
-  _err: write;
   _clear: string; // ANSI clear sequence for the last printed status
-  _currentStatusHeight: number;
   _currentlyRunning: Map<Path, Config>;
+  _currentStatusHeight: number;
+  _err: write;
   _lastAggregatedResults: AggregatedResult;
+  _out: write;
   _status: Status;
 
   constructor() {
@@ -91,13 +93,17 @@ class DefaultReporter extends BaseReporter {
   }
 
   _clearStatus() {
-    process.stdin.isTTY && !isCI && this._out(this._clear);
+    if (isInteractive) {
+      this._out(this._clear);
+    }
   }
 
   _printStatus() {
     const {content, clear} = this._status.get();
     this._clear = clear;
-    process.stdin.isTTY && !isCI && this._out(content);
+    if (isInteractive) {
+      this._out(content);
+    }
   }
 
   onRunStart(

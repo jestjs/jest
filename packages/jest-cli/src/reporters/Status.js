@@ -151,18 +151,14 @@ class Status {
     }
 
     content += '\n';
-
-    let clear = '';
     let height = 1;
 
     for (let i = 0; i < content.length; i++) {
-      content[i] === '\n' && height++;
+      if (content[i] === '\n') {
+        height++;
+      }
     }
-
-    for (let i = 0; i < height - 1; i++) {
-      clear += '\r\x1B[K\r\x1B[1A';
-    }
-
+    const clear = '\r\x1B[K\r\x1B[1A'.repeat(height - 1);
     return this._cache = {content, clear};
   }
 
