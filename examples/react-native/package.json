@@ -6,8 +6,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "15.3.0",
-    "react-native": "0.32.0"
+    "react": "^15.3.2",
+    "react-native": "0.35.0-rc.0"
   },
   "devDependencies": {
     "babel-jest": "*",
