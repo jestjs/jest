@@ -32,7 +32,9 @@ const snapshot = require('jest-snapshot');
 const throat = require('throat');
 const workerFarm = require('worker-farm');
 
+const FAIL = 0;
 const SLOW_TEST_TIME = 3000;
+const SUCCESS = 1;
 
 type Options = {
   maxWorkers: number,
@@ -100,32 +102,46 @@ class TestRunner {
     // subsequent runs we use that to run the slowest tests first, yielding the
     // fastest results.
     try {
-      this._testPerformanceCache = JSON.parse(fs.readFileSync(
-        this._getTestPerformanceCachePath(),
-        'utf8',
-      ));
+      if (this._config.cache) {
+        this._testPerformanceCache = JSON.parse(fs.readFileSync(
+          this._getTestPerformanceCachePath(),
+          'utf8',
+        ));
+      } else {
+        this._testPerformanceCache = {};
+      }
     } catch (e) {
       this._testPerformanceCache = {};
     }
 
-    const testPerformanceCache = this._testPerformanceCache;
+    const cache = this._testPerformanceCache;
     const timings = [];
+    const stats = {};
+    const getFileSize = filePath =>
+      stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
+    const getTestRunTime = filePath => {
+      if (cache[filePath]) {
+        return (cache[filePath][0] === FAIL) ? Infinity : cache[filePath][1];
+      }
+      return null;
+    };
+
     testPaths = testPaths
-      .map(path => ({path, size: fs.statSync(path).size}))
-      .sort((a, b) => {
-        const cacheA = testPerformanceCache && testPerformanceCache[a.path];
-        const cacheB = testPerformanceCache && testPerformanceCache[b.path];
-        if (cacheA !== null && cacheB !== null) {
-          return cacheA < cacheB ? 1 : -1;
+      .sort((pathA, pathB) => {
+        const timeA = getTestRunTime(pathA);
+        const timeB = getTestRunTime(pathB);
+        if (timeA != null && timeB != null) {
+          return timeA < timeB ? 1 : -1;
         }
-        return a.size < b.size ? 1 : -1;
-      })
-      .map(item => {
-        if (testPerformanceCache[item.path]) {
-          timings.push(testPerformanceCache[item.path]);
-        }
-        return item.path;
+        return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
       });
+
+    testPaths.forEach(filePath => {
+      const timing = cache[filePath] && cache[filePath][1];
+      if (timing) {
+        timings.push(timing);
+      }
+    });
 
     return {testPaths, timings};
   }
@@ -135,9 +151,10 @@ class TestRunner {
     const cache = this._testPerformanceCache;
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
-      if (perf && perf.end && perf.start) {
-        cache[test.testFilePath] = perf.end - perf.start;
-      }
+      cache[test.testFilePath] = [
+        test.numFailingTests ? FAIL : SUCCESS,
+        (perf.end - perf.start) || 0,
+      ];
     });
     return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
   }
@@ -517,11 +534,15 @@ const getEstimatedTime = (timings, workers) => {
     return 0;
   }
 
+  const max = Math.max.apply(null, timings);
   if (timings.length <= workers) {
-    return Math.max.apply(null, timings);
+    return max;
   }
 
-  return timings.reduce((sum, time) => sum + time) / workers;
+  return Math.max(
+    timings.reduce((sum, time) => sum + time) / workers,
+    max,
+  );
 };
 
 module.exports = TestRunner;
