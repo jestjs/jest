@@ -20,8 +20,19 @@ const diffStrings = require('./diffStrings');
 const {getType} = require('jest-matcher-utils');
 const prettyFormat = require('pretty-format');
 
-const jsxLikePlugins = [ReactTestComponentPlugin, ReactElementPlugin];
-const NO_DIFF_MESSAGE = require('./constants').NO_DIFF_MESSAGE;
+const {
+  NO_DIFF_MESSAGE,
+  SIMILAR_MESSAGE,
+} = require('./constants');
+
+const PLUGINS = [ReactTestComponentPlugin, ReactElementPlugin];
+const FORMAT_OPTIONS = {
+  plugins: PLUGINS,
+};
+const FALLBACK_FORMAT_OPTIONS = {
+  callToJSON: false,
+  plugins: PLUGINS,
+};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
@@ -49,10 +60,32 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
     case 'boolean':
       return null;
     default:
-      return diffStrings(
-        prettyFormat(a, {plugins: jsxLikePlugins}, options),
-        prettyFormat(b, {plugins: jsxLikePlugins}, options),
-      );
+      let diffMessage;
+      let hasThrown = false;
+
+      try {
+        diffMessage = diffStrings(
+          prettyFormat(a, FORMAT_OPTIONS),
+          prettyFormat(b, FORMAT_OPTIONS),
+          options,
+        );
+      } catch (e) {
+        hasThrown = true;
+      }
+
+      // If the comparison yields no results, compare again but this time
+      // without calling `toJSON`. It's also possible that toJSON might throw.
+      if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
+        diffMessage = diffStrings(
+          prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
+          prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
+          options,
+        );
+        if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
+          diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
+        }
+      }
+      return diffMessage;
   }
 }
 

@@ -13,6 +13,10 @@
 const diff = require('../');
 const stripAnsi = require('strip-ansi');
 
+const toJSON = function toJSON() {
+  return 'apple';
+};
+
 describe('different types', () => {
   [
     [1, 'a', 'number', 'string'],
@@ -54,7 +58,7 @@ describe('no visual difference', () => {
       `'${JSON.stringify(values[0])}' and '${JSON.stringify(values[1])}'`,
       () => {
         expect(stripAnsi(diff(values[0], values[1]))).toBe(
-          'Compared values have no visual difference',
+          'Compared values have no visual difference.',
         );
       },
     );
@@ -66,6 +70,18 @@ test('oneline strings', () => {
   expect(stripAnsi(diff('ab', 'aa'))).toBe(null);
   expect(diff('a', 'a')).toMatch(/no visual difference/);
   expect(stripAnsi(diff('123456789', '234567890'))).toBe(null);
+});
+
+test('falls back to not call toJSON if objects look identical', () => {
+  const a = {toJSON, line: 1};
+  const b = {toJSON, line: 2};
+  expect(diff(a, b)).toMatchSnapshot();
+});
+
+test('prints a fallback message if two objects truly look identical', () => {
+  const a = {toJSON, line: 2};
+  const b = {toJSON, line: 2};
+  expect(diff(a, b)).toMatchSnapshot();
 });
 
 test('multiline strings', () => {

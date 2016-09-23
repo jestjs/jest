@@ -39,7 +39,7 @@ exports[`.toThrow() regexp did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mregexp[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"/apple/\"[39m
+  [32m/apple/[39m
 But it didn\'t throw anything."
 `;
 
@@ -47,7 +47,7 @@ exports[`.toThrow() regexp threw, but message did not match 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mregexp[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"/banana/\"[39m
+  [32m/banana/[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -57,7 +57,7 @@ exports[`.toThrow() regexp threw, but should not have 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mregexp[39m[2m)[22m
 
 Expected the function not to throw an error matching:
-  [32m\"/apple/\"[39m
+  [32m/apple/[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -132,7 +132,7 @@ exports[`.toThrowError() regexp did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mregexp[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"/apple/\"[39m
+  [32m/apple/[39m
 But it didn\'t throw anything."
 `;
 
@@ -140,7 +140,7 @@ exports[`.toThrowError() regexp threw, but message did not match 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mregexp[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"/banana/\"[39m
+  [32m/banana/[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -150,7 +150,7 @@ exports[`.toThrowError() regexp threw, but should not have 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mregexp[39m[2m)[22m
 
 Expected the function not to throw an error matching:
-  [32m\"/apple/\"[39m
+  [32m/apple/[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
