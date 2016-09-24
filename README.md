@@ -11,8 +11,6 @@ Painless JavaScript Testing
 
 ## Getting Started
 
-[Egghead.io video](https://egghead.io/lessons/javascript-test-javascript-with-jest)
-
 <generated_getting_started_start />
 [Egghead.io video](https://egghead.io/lessons/javascript-test-javascript-with-jest)
 
