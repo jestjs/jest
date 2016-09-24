@@ -173,7 +173,9 @@ The code for this example is available at
 
 ### DOM Testing
 
-If you'd like to instead render components to a mock implementation of the DOM APIs you can use the DOM renderer and the `jsdom` `testEnvironment`. You have to run `npm install --save-dev react-addons-test-utils` to use React's test utils.
+If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
+
+You have to run `npm install --save-dev enzyme react-addons-test-utils` to use Enzyme (`react-addons-test-utils` is a peer dependency).
 
 Let's implement a simple checkbox which swaps between two labels:
 
@@ -212,39 +214,31 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-We use React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html) in order to
-manipulate React components.
+We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
+
 import React from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
+import {shallow} from 'enzyme';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
-  const checkbox = TestUtils.renderIntoDocument(
+  const checkbox = shallow(
     <CheckboxWithLabel labelOn="On" labelOff="Off" />
   );
 
-  const checkboxNode = ReactDOM.findDOMNode(checkbox);
+  expect(checkbox.text()).toEqual('Off');
 
-  // Verify that it's Off by default
-  expect(checkboxNode.textContent).toEqual('Off');
+  checkbox.find('input').simulate('change');
 
-  // Simulate a click and verify that it is now On
-  TestUtils.Simulate.change(
-    TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
-  );
-  expect(checkboxNode.textContent).toEqual('On');
+  expect(checkbox.text()).toEqual('On');
 });
 ```
 
-Alternatively you can also use [enzyme](https://github.com/airbnb/enzyme) to test DOM components.
-
 The code for this example is available at
-[examples/react](https://github.com/facebook/jest/tree/master/examples/react).
+[examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
 
 ### Custom preprocessors
 
