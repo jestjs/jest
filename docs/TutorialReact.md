@@ -240,19 +240,6 @@ it('CheckboxWithLabel changes the text after click', () => {
 The code for this example is available at
 [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
 
-If you need to mock a full DOM environment or depend on life-cycle hooks (eg, `componentDidMount`) you can use `jsdom` &
-Enzyme's [mount renderer](http://airbnb.io/enzyme/docs/api/mount.html):
-
-```js
-import jsdom from 'jsdom-global'
-import {mount} from 'enzyme'
-const cleanup = jsdom()
-
-// ...
-
-cleanup()
-```
-
 ### Custom preprocessors
 
 If you need more advanced functionality, you can also build your own preprocessor. Instead of using babel-jest, here is an example of using babel:
