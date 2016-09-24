@@ -49,8 +49,8 @@ Since these files aren't particularly useful in tests anyway we can safely mock 
 {
   "jest": {
     "moduleNameMapper": {
-      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
+       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/fileMock.js",
+      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js"
     }
   }
 }
