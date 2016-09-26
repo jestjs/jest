@@ -12,11 +12,9 @@
 
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
-import type Resolver from 'jest-resolve';
+import type Resolver, {ResolveModuleConfig} from 'jest-resolve';
 
 const fileExists = require('jest-file-exists');
-
-export type ResolveModuleConfig = {skipNodeResolution?: boolean};
 
 function compact(array: Array<?Path>): Array<Path> {
   const result = [];

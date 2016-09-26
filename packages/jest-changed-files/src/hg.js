@@ -19,10 +19,10 @@ const env = Object.assign({}, process.env, {
   HGPLAIN: 1,
 });
 
-type Options = {
+type Options = {|
   withAncestor?: boolean,
   lastCommit?: boolean,
-};
+|};
 
 function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {

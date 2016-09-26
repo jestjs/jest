@@ -13,12 +13,12 @@ import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {RunnerContext} from 'types/Reporters';
 
-type CoverageMap = {
+type CoverageMap = {|
   merge: (data: Object) => void,
   getCoverageSummary: () => Object,
   data: Object,
   addFileCoverage: (fileCoverage: Object) => void,
-};
+|};
 
 const BaseReporter = require('./BaseReporter');
 

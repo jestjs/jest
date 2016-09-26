@@ -12,9 +12,6 @@
     "jest-matcher-utils": "^15.1.0",
     "jest-util": "^15.1.1"
   },
-  "devDependencies": {
-    "strip-ansi": "^3.0.1"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

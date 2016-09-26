@@ -18,7 +18,7 @@ const path = require('path');
 const resolve = require('resolve');
 const browserResolve = require('browser-resolve');
 
-type ResolverConfig = {
+type ResolverConfig = {|
   browser?: boolean,
   defaultPlatform: ?string,
   extensions: Array<string>,
@@ -27,17 +27,19 @@ type ResolverConfig = {
   moduleNameMapper: ?{[key: string]: RegExp},
   modulePaths: Array<Path>,
   platforms?: Array<string>,
-};
+|};
 
-type FindNodeModuleConfig = {
+type FindNodeModuleConfig = {|
   basedir: Path,
   browser?: boolean,
   extensions: Array<string>,
   moduleDirectory: Array<string>,
   paths?: Array<Path>,
-};
+|};
 
-export type ResolveModuleConfig = {skipNodeResolution?: boolean};
+export type ResolveModuleConfig = {|
+  skipNodeResolution?: boolean,
+|};
 
 const NATIVE_PLATFORM = 'native';
 

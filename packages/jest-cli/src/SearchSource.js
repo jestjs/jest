@@ -25,22 +25,22 @@ const {
   replacePathSepForRegex,
 } = require('jest-util');
 
-type SearchSourceConfig = {
+type SearchSourceConfig = {|
   testPathDirs: Array<Path>,
   testRegex: string,
   testPathIgnorePatterns: Array<RegExp>,
-};
+|};
 
-type SearchResult = {
+type SearchResult = {|
   noSCM?: boolean,
   paths: Array<Path>,
   stats?: {[key: string]: number},
   total?: number,
-};
+|};
 
 type StrOrRegExpPattern = RegExp | string;
 
-type PatternInfo = {
+type PatternInfo = {|
   input?: string,
   findRelatedTests?: boolean,
   lastCommit?: boolean,
@@ -49,11 +49,11 @@ type PatternInfo = {
   shouldTreatInputAsPattern?: boolean,
   testPathPattern?: string,
   watch?: boolean,
-};
+|};
 
-type Options = {
+type Options = {|
   lastCommit?: boolean,
-};
+|};
 
 const git = changedFiles.git;
 const hg = changedFiles.hg;
@@ -89,7 +89,9 @@ class SearchSource {
   ) {
     this._hasteContext = hasteMap;
     this._config = config;
-    this._options = options || {};
+    this._options = options || {
+      skipNodeResolution: false,
+    };
 
     this._testPathDirPattern =
       new RegExp(config.testPathDirs.map(

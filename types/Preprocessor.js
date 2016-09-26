@@ -11,11 +11,11 @@
 
 import type {Config, Path} from 'types/Config';
 
-export type PreprocessorOptions = {
+export type PreprocessorOptions = {|
   instrument: boolean,
-};
+|};
 
-export type Preprocessor = {
+export type Preprocessor = {|
   canInstrument?: boolean,
 
   getCacheKey: (
@@ -31,4 +31,4 @@ export type Preprocessor = {
     config: Config,
     options?: PreprocessorOptions,
   ) => string,
-};
+|};

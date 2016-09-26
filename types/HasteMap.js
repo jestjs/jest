@@ -19,26 +19,27 @@ export type HasteFS = _HasteFS;
 export type HasteMapInstance = _HasteMapInstance;
 export type ModuleMap = _ModuleMap;
 
-export type HasteContext = {
+export type HasteContext = {|
   hasteFS: HasteFS,
   resolver: HasteResolver,
-};
+|};
 
 export type FileData = {[filepath: Path]: FileMetaData};
 export type MockData = {[id: string]: Path};
 export type ModuleMapData = {[id: string]: ModuleMapItem};
 export type WatchmanClocks = {[filepath: Path]: string};
 
-export type InternalHasteMap = {
+export type InternalHasteMap = {|
   clocks: WatchmanClocks,
   files: FileData,
   map: ModuleMapData,
   mocks: MockData,
-};
-export type HasteMap = {
+|};
+export type HasteMap = {|
   hasteFS: HasteFS,
   moduleMap: ModuleMap,
-};
+  __hasteMapForTest: ?InternalHasteMap,
+|};
 
 export type FileMetaData = [
   /* id */ string,
@@ -53,7 +54,7 @@ export type ModuleMetaData = [
   /* type */ number,
 ];
 
-export type HType = {
+export type HType = {|
   ID: 0,
   MTIME: 1,
   VISITED: 2,
@@ -64,6 +65,6 @@ export type HType = {
   PACKAGE: 1,
   GENERIC_PLATFORM: 'g',
   NATIVE_PLATFORM: 'native',
-};
+|};
 
 export type HTypeValue = 0 | 1 | 2 | 3 | 'g';

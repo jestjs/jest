@@ -26,18 +26,18 @@ import type {Path} from 'types/Config';
 
 export type SnapshotFileT = SnapshotFile;
 
-export type MatchResult = {
+export type MatchResult = {|
   actual: string,
   expected: string,
   pass: boolean,
-};
+|};
 
 type SnapshotData = {[key: string]: string};
 
-type SaveStatus = {
+type SaveStatus = {|
   deleted: boolean,
   saved: boolean,
-};
+|};
 
 const ensureDirectoryExists = (filePath: Path) => {
   try {

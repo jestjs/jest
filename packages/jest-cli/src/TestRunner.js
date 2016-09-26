@@ -36,10 +36,10 @@ const FAIL = 0;
 const SLOW_TEST_TIME = 3000;
 const SUCCESS = 1;
 
-type Options = {
+type Options = {|
   maxWorkers: number,
   getTestSummary: () => string,
-};
+|};
 
 type OnRunFailure = (
   path: string,
@@ -434,7 +434,6 @@ const buildFailureTestResult = (
   return {
     console: null,
     failureMessage: null,
-    hasUncheckedKeys: false,
     numFailingTests: 0,
     numPassingTests: 0,
     numPendingTests: 0,

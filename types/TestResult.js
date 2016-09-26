@@ -11,15 +11,19 @@
 
 import type {ConsoleBuffer} from './Console';
 
-export type Coverage = Object;
+export type Coverage = {|
+  coveredSpans: Array<Object>,
+  uncoveredSpans: Array<Object>,
+  sourceText: string,
+|};
 
-export type Error = {
+export type Error = {|
   message: string,
   stack: ?string,
   type?: ?string,
-};
+|};
 
-export type FailedAssertion = {
+export type FailedAssertion = {|
   matcherName: string,
   message?: string,
   actual?: any,
@@ -27,14 +31,14 @@ export type FailedAssertion = {
   expected?: any,
   isNot?: boolean,
   stack?: string,
-};
+|};
 
 export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
 
 export type Bytes = number;
 export type Milliseconds = number;
 
-export type AssertionResult = {
+export type AssertionResult = {|
   ancestorTitles: Array<string>,
   duration?: Milliseconds,
   failureMessages: Array<string>,
@@ -42,9 +46,9 @@ export type AssertionResult = {
   numPassingAsserts: number,
   status: Status,
   title: string,
-};
+|};
 
-export type AggregatedResult = {
+export type AggregatedResult = {|
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -57,15 +61,15 @@ export type AggregatedResult = {
   startTime: number,
   success: boolean,
   testResults: Array<TestResult>,
-};
+|};
 
-export type Suite = {
+export type Suite = {|
   title: string,
   suites: Array<Suite>,
   tests: Array<AssertionResult>,
-};
+|};
 
-export type TestResult = {
+export type TestResult = {|
   console: ?ConsoleBuffer,
   coverage?: Coverage,
   memoryUsage?: Bytes,
@@ -73,38 +77,32 @@ export type TestResult = {
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
-  perfStats: {
+  perfStats: {|
     end: Milliseconds,
     start: Milliseconds,
-  },
-  snapshot: {
+  |},
+  snapshot: {|
     added: number,
     fileDeleted: boolean,
     matched: number,
     unchecked: number,
     unmatched: number,
     updated: number,
-  },
+  |},
   testExecError?: Error,
   testFilePath: string,
   testResults: Array<AssertionResult>,
-};
-
-export type CodeCoverageResult = {
-  coveredSpans: Array<Object>,
-  uncoveredSpans: Array<Object>,
-  sourceText: string,
-};
+|};
 
 export type CodeCoverageReporter = any;
 
 export type CodeCoverageFormatter = (
-  coverage: ?CodeCoverageResult,
+  coverage: ?Coverage,
   reporter?: CodeCoverageReporter,
 ) => ?Object;
 
 
-export type SnapshotSummary = {
+export type SnapshotSummary = {|
   added: number,
   didUpdate: boolean,
   failure: boolean,
@@ -117,4 +115,4 @@ export type SnapshotSummary = {
   unchecked: number,
   unmatched: number,
   updated: number,
-};
+|};
