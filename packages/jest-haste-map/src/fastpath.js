@@ -43,7 +43,9 @@
 
 import typeof PathType from 'path';
 
-type ReplaceType = { replace: () => void };
+type ReplaceType = {
+  replace: () => void,
+};
 
 const fs = require('fs');
 const path = require('path');

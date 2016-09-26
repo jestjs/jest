@@ -15,9 +15,6 @@
     "jest-mock": "^15.0.0",
     "mkdirp": "^0.5.1"
   },
-  "devDependencies": {
-    "jsdom": "^9.2.1"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }

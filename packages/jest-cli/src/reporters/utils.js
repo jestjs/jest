@@ -16,11 +16,11 @@ import type {AggregatedResult} from 'types/TestResult';
 const chalk = require('chalk');
 const path = require('path');
 
-type SummaryOptions = {
+type SummaryOptions = {|
   estimatedTime?: number,
   roundTime?: boolean,
   width?: number,
-};
+|};
 
 const PROGRESS_BAR_WIDTH = 40;
 

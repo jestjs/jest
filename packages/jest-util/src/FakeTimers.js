@@ -19,17 +19,17 @@ type Callback = (...args: any) => void;
 
 type TimerID = string;
 
-type Tick = {
+type Tick = {|
   uuid: string,
   callback: Callback,
-};
+|};
 
-type Timer = {
+type Timer = {|
   type: string,
   callback: Callback,
   expiry: number,
   interval: ?number,
-};
+|};
 
 type TimerAPI = {
   clearImmediate(timeoutId?: any): void,

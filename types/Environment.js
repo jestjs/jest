@@ -14,7 +14,7 @@ import type {Global} from './Global';
 import type {Script} from 'vm';
 import type ModuleMocker from '../packages/jest-mock';
 
-export type Environment = {
+export type Environment = {|
   constructor(config: Config): void;
   dispose(): void;
   runScript(script: Script): any;
@@ -31,4 +31,4 @@ export type Environment = {
   };
   testFilePath: string;
   moduleMocker: ModuleMocker;
-};
+|};

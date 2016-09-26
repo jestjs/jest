@@ -7,9 +7,6 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "devDependencies": {
-    "rimraf": "^2.5.2"
-  },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   }
