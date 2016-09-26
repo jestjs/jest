@@ -42,11 +42,14 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
+  const calls = receivedIsSpy
+    ? received.calls.all().map(x => x.args)
+    : received.mock.calls;
   const pass = count > 0;
   const message = pass
     ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') + '\n\n' +
-      `Expected ${type} not to be called, but it was` +
-      ` called ${RECEIVED_COLOR(pluralize('time', count))}.`
+      `Expected ${type} not to be called. ` +
+      formatReceivedCalls(calls, CALL_PRINT_LIMIT)
     : matcherHint(matcherName, RECEIVED_NAME[type], '') + '\n\n' +
       `Expected ${type} to have been called.`;
 
