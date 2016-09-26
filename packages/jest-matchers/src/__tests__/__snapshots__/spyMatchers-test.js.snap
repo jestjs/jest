@@ -64,7 +64,7 @@ Expected spy to have been called.]
 exports[`test toBeCalled works with jasmine.createSpy 2`] = `
 [Error: [2mexpect([22m[31mspy[39m[2m).not.toBeCalled([22m[2m)[22m
 
-Expected spy not to be called. But it was called with:
+Expected spy not to be called but it was called with:
   [31mArray [][39m]
 `;
 
@@ -85,7 +85,7 @@ Expected mock function to have been called.]
 exports[`test toBeCalled works with jest.fn 2`] = `
 [Error: [2mexpect([22m[31mjest.fn()[39m[2m).not.toBeCalled([22m[2m)[22m
 
-Expected mock function not to be called. But it was called with:
+Expected mock function not to be called but it was called with:
   [31mArray [][39m]
 `;
 
@@ -162,7 +162,7 @@ Expected spy to have been called.]
 exports[`test toHaveBeenCalled works with jasmine.createSpy 2`] = `
 [Error: [2mexpect([22m[31mspy[39m[2m).not.toHaveBeenCalled([22m[2m)[22m
 
-Expected spy not to be called. But it was called with:
+Expected spy not to be called but it was called with:
   [31mArray [][39m]
 `;
 
@@ -183,7 +183,7 @@ Expected mock function to have been called.]
 exports[`test toHaveBeenCalled works with jest.fn 2`] = `
 [Error: [2mexpect([22m[31mjest.fn()[39m[2m).not.toHaveBeenCalled([22m[2m)[22m
 
-Expected mock function not to be called. But it was called with:
+Expected mock function not to be called but it was called with:
   [31mArray [][39m]
 `;
 
