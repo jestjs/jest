@@ -42,11 +42,14 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   const count = receivedIsSpy
     ? received.calls.count()
     : received.mock.calls.length;
+  const calls = receivedIsSpy
+    ? received.calls.all().map(x => x.args)
+    : received.mock.calls;
   const pass = count > 0;
   const message = pass
     ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') + '\n\n' +
-      `Expected ${type} not to be called, but it was` +
-      ` called ${RECEIVED_COLOR(pluralize('time', count))}.`
+      `Expected ${type} not to be called ` +
+      formatReceivedCalls(calls, CALL_PRINT_LIMIT, {sameSentence: true})
     : matcherHint(matcherName, RECEIVED_NAME[type], '') + '\n\n' +
       `Expected ${type} to have been called.`;
 
@@ -164,6 +167,7 @@ const ensureMock = (mockOrSpy, matcherName) => {
 
 const formatReceivedCalls = (calls, limit, options) => {
   if (calls.length) {
+    const but = (options && options.sameSentence) ? 'but' : 'But';
     const count = calls.length - limit;
     const printedCalls =
       calls
@@ -172,8 +176,8 @@ const formatReceivedCalls = (calls, limit, options) => {
         .map(printReceived)
         .join(', ');
     return (
-      `But it was ${options && options.isLast ? 'last ' : ''}called with:\n` +
-      `  ` + printedCalls +
+      `${but} it was ${options && options.isLast ? 'last ' : ''}called ` +
+      `with:\n  ` + printedCalls +
       (count > 0
         ? '\nand ' + RECEIVED_COLOR(pluralize('more call', count)) + '.'
         : ''
