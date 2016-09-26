@@ -14,7 +14,7 @@ module.exports = {
     const Component = class extends RealComponent {
       render() {
         return React.createElement(
-          RealComponent.displayName,
+          RealComponent.displayName || RealComponent.name,
           this.props,
           this.props.children,
         );
