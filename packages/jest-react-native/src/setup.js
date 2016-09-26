@@ -15,6 +15,7 @@ jest
   .mock('Image', () => mockReactNative.mockComponent('Image'))
   .mock('Text', () => mockReactNative.mockComponent('Text'))
   .mock('TextInput', () => mockReactNative.mockComponent('TextInput'))
+  .mock('Modal', () => mockReactNative.mockComponent('Modal'))
   .mock('View', () => mockReactNative.mockComponent('View'))
   .mock('ScrollView', () => mockReactNative.mockComponent('ScrollView'))
   .mock(
