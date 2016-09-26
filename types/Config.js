@@ -12,15 +12,15 @@
 export type Path = string;
 export type Glob = string;
 
-export type HasteConfig = {
+export type HasteConfig = {|
   providesModuleNodeModules: Array<string>,
   defaultPlatform?: ?string,
   platforms?: Array<string>,
-};
+|};
 
 export type ConfigGlobals = Object;
 
-type BaseConfig = {
+export type DefaultConfig = {|
   automock: boolean,
   bail: boolean,
   browser: boolean,
@@ -33,10 +33,13 @@ type BaseConfig = {
   mocksPattern: string,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
+  moduleNameMapper: {},
   modulePathIgnorePatterns: Array<string>,
   noStackTrace: boolean,
   notify: boolean,
+  preprocessorIgnorePatterns: Array<string>,
   preset: ?string,
+  resetModules: boolean,
   testEnvironment: string,
   testPathDirs: Array<Path>,
   testPathIgnorePatterns: Array<string>,
@@ -46,13 +49,9 @@ type BaseConfig = {
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
-};
+|};
 
-export type DefaultConfig = BaseConfig & {
-  moduleNameMapper: {},
-};
-
-export type Config = BaseConfig & {
+export type Config = DefaultConfig & {|
   cache: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: {[key: string]: Path},
@@ -68,8 +67,6 @@ export type Config = BaseConfig & {
   moduleNameMapper: Array<string>,
   modulePaths: Array<string>,
   name: string,
-  resetModules: boolean,
-  preprocessorIgnorePatterns: Array<string>,
   rootDir: Path,
   scriptPreprocessor: Path,
   setupFiles: Array<Path>,
@@ -81,4 +78,4 @@ export type Config = BaseConfig & {
   updateSnapshot: boolean,
   usesBabelJest: boolean,
   watchman: boolean,
-};
+|};

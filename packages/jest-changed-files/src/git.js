@@ -15,10 +15,10 @@ import type {Path} from 'types/Config';
 const path = require('path');
 const childProcess = require('child_process');
 
-type Options = { 
+type Options = {|
   withAncestor?: boolean,
   lastCommit?: boolean,
-};
+|};
 
 function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {

@@ -24,9 +24,9 @@ const vm = require('vm');
 
 const VERSION = require('../package.json').version;
 
-type Options = {
+type Options = {|
   isInternalModule?: boolean,
-};
+|};
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 

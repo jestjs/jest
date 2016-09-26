@@ -11,9 +11,9 @@
 'use strict';
 
 type Mock = any;
-type MockFunctionMetadata = {
+export type MockFunctionMetadata = {
   ref?: any,
-  members?: Object,
+  members?: {[key: string]: MockFunctionMetadata},
   mockImpl?: () => any,
   name?: string,
   refID?: string|number,

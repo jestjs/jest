@@ -15,10 +15,10 @@ const jsDiff = require('diff');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
 
-export type DiffOptions = {
+export type DiffOptions = {|
   aAnnotation: string,
   bAnnotation: string,
-};
+|};
 
 const getAnnotation = options =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +

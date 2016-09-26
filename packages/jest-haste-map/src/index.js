@@ -228,7 +228,7 @@ class HasteMap {
           hasteFS: new HasteFS(internalHasteMap.files),
           moduleMap:
             new HasteModuleMap(internalHasteMap.map, internalHasteMap.mocks),
-          __hasteMapForTest: isTest && internalHasteMap,
+          __hasteMapForTest: (isTest && internalHasteMap) || null,
         }));
     }
     return this._buildPromise;

@@ -16,7 +16,7 @@ import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {Script} from 'vm';
 import type {ModuleMap} from 'jest-haste-map';
-import type ModuleMocker from 'jest-mock';
+import type ModuleMocker, {MockFunctionMetadata} from 'jest-mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
@@ -27,22 +27,25 @@ const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const utils = require('jest-util');
 
-type Module = {
+type Module = {|
+  children?: Array<any>,
   exports: any,
   filename: string,
-  children?: Array<any>,
+  id: string,
   parent?: Module,
   paths?: Array<Path>,
   require?: Function,
-};
+|};
 
-type HasteMapOptions = {
+type HasteMapOptions = {|
   console?: Console,
   maxWorkers: number,
   resetCache: boolean,
-};
+|};
 
-type InternalModuleOptions = {isInternalModule: boolean};
+type InternalModuleOptions = {|
+  isInternalModule: boolean,
+|};
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
@@ -76,7 +79,7 @@ class Runtime {
   _explicitShouldMock: BooleanObject;
   _isCurrentlyExecutingManualMock: ?string;
   _mockFactories: {[key: string]: () => any};
-  _mockMetaDataCache: {[key: string]: Object};
+  _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
   _mocksPattern: ?RegExp;
   _moduleMocker: ModuleMocker;
@@ -275,8 +278,9 @@ class Runtime {
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
       const localModule = {
-        filename: modulePath,
         exports: {},
+        filename: modulePath,
+        id: modulePath,
       };
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
@@ -340,6 +344,7 @@ class Runtime {
       const localModule = {
         exports: {},
         filename: modulePath,
+        id: modulePath,
       };
       this._execModule(localModule);
       this._mockRegistry[moduleID] = localModule.exports;

@@ -11,11 +11,11 @@
 
 import type HasteFS from '../packages/jest-haste-map/src/HasteFS';
 
-export type RunnerContext = {
+export type RunnerContext = {|
   hasteFS: HasteFS,
   getTestSummary: () => string,
-};
+|};
 
-export type ReporterOnStartOptions = {
+export type ReporterOnStartOptions = {|
   estimatedTime: number,
-};
+|};
