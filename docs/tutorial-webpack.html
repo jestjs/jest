@@ -46,8 +46,8 @@ Since these files aren&#x27;t particularly useful in tests anyway we can safely 
 <span class="token punctuation">{</span>
   <span class="token string">&quot;jest&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
     <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span>
+       <span class="token string">&quot;^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></pre><p>And the mock file&#x27;s themselves:</p><pre class="prism language-javascript">
@@ -58,17 +58,15 @@ module<span class="token punctuation">.</span>exports <span class="token operato
 (<code>npm install --save-dev identity-obj-proxy</code> or create your own) to mock <a href="https://github.com/css-modules/css-modules" target="_blank">CSS Modules</a>; then all your className
 lookups on the styles object will be returned as-is (e.g., <code>styles.foobar === &#x27;foobar&#x27;</code>).</p><p>Notice that Proxy is enabled in Node.js <code>v6.*</code> by default; if you are not on Node <code>v6.*</code> yet,
 make sure you invoke Jest using <code>node --harmony_proxies node_modules/.bin/jest</code>.</p><pre class="prism language-javascript">
-<span spellcheck="true" class="token comment">// test/styleMock.js</span>
-
-<span spellcheck="true" class="token comment">// Return a Proxy to emulate css modules (if you are using them)</span>
-
-<span class="token keyword">var</span> idObj <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&#x27;identity-obj-proxy&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> idObj<span class="token punctuation">;</span></pre><pre class="prism language-javascript">
-<span spellcheck="true" class="token comment">// test/fileMock.js</span>
-
-<span spellcheck="true" class="token comment">// Return an empty string or other mock path to emulate the url that</span>
-<span spellcheck="true" class="token comment">// webpack provides via the file-loader</span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token string">&#x27;&#x27;</span><span class="token punctuation">;</span></pre><p>We&#x27;ve told Jest to ignore files matching a stylesheet or image extension, and instead,
+<span spellcheck="true" class="token comment">// package.json</span>
+<span class="token punctuation">{</span>
+  <span class="token string">&quot;jest&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+       <span class="token string">&quot;^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;identity-obj-proxy&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;identity-obj-proxy&quot;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></pre><p>We&#x27;ve told Jest to ignore files matching a stylesheet or image extension, and instead,
 require our mock files. You can adjust the regular expression to match the
 file types your webpack config handles.</p><p>Now that Jest knows how to process our files, we need to tell it how to <em>find</em> them.
 For webpack&#x27;s <code>modulesDirectories</code>, and <code>extensions</code> options there are direct analogs in Jest.</p><p><em>Note: the <code>modulesDirectories</code> option in webpack is called <code>moduleDirectories</code> in Jest.</em></p><p><em>Note: &lt;rootDir&gt; is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your package.json is located unless you specify a custom <code>rootDir</code> option in your configuration.</em></p><pre class="prism language-javascript">
@@ -153,4 +151,4 @@ ES modules to CommonJS modules only in the <code>test</code> environment.</p><pr
               indexName: 'jest',
               inputSelector: '#search_input_react'
             });
-          </script></body></html>
+          </script><script async defer src="https://buttons.github.io/buttons.js"></script></body></html>
