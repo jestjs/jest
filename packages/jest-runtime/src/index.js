@@ -772,6 +772,8 @@ class Runtime {
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
+      runTimersToTime: (msToRun: number) =>
+        this._environment.fakeTimers.runTimersToTime(msToRun),
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
 
