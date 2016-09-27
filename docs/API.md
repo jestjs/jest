@@ -87,6 +87,7 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.resetModules()`](#jest-resetmodules)
   - [`jest.runAllTicks()`](#jest-runallticks)
   - [`jest.runAllTimers()`](#jest-runalltimers)
+  - [`jest.runTimersToTime()`](#jest-runtimerstotime)
   - [`jest.runOnlyPendingTimers()`](#jest-runonlypendingtimers)
   - [`jest.setMock(moduleName, moduleExports)`](#jest-setmock-modulename-moduleexports)
   - [`jest.unmock(moduleName)`](#jest-unmock-modulename)
@@ -871,6 +872,11 @@ This is often useful for synchronously executing setTimeouts during a test in or
 
 ### `jest.runAllImmediates()`
 Exhausts all tasks queued by `setImmediate()`.
+
+### `jest.runTimersToTime(msToRun)`
+Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
+
+When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within `msToRun` milliseconds will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
 
 ### `jest.runOnlyPendingTimers()`
 Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
