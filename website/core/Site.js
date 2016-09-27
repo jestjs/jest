@@ -52,6 +52,7 @@ var Site = React.createClass({
               inputSelector: '#search_input_react'
             });
           `}} />
+          <script async defer src="https://buttons.github.io/buttons.js"></script>
         </body>
       </html>
     );
