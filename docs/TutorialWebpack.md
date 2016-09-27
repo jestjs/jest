@@ -73,20 +73,15 @@ Notice that Proxy is enabled in Node.js `v6.*` by default; if you are not on Nod
 make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
 ```js
-// test/styleMock.js
-
-// Return a Proxy to emulate css modules (if you are using them)
-
-var idObj = require('identity-obj-proxy');
-module.exports = idObj;
-```
-
-```js
-// test/fileMock.js
-
-// Return an empty string or other mock path to emulate the url that
-// webpack provides via the file-loader
-module.exports = '';
+// package.json
+{
+  "jest": {
+    "moduleNameMapper": {
+       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "identity-obj-proxy",
+      "^.+\\.(css|less)$": "identity-obj-proxy"
+    }
+  }
+}
 ```
 
 We've told Jest to ignore files matching a stylesheet or image extension, and instead,
