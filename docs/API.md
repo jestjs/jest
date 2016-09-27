@@ -133,6 +133,8 @@ describe('my beverage', () => {
 
 To test an asynchronous function, just return a promise from `it`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
 
+You can also return a promise from `beforeEach`, `afterEach`, `beforeAll` or `afterAll` functions.
+
 For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
 
 ```js
