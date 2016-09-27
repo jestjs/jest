@@ -301,7 +301,20 @@ class HasteMap {
       }
 
       if (mocksPattern && mocksPattern.test(filePath)) {
-        mocks[path.basename(filePath, path.extname(filePath))] = filePath;
+        const mockPath = path.basename(filePath, path.extname(filePath));
+        if (mocks[mockPath]) {
+          this._console.warn(
+            `jest-haste-map: duplicate manual mock found:\n` +
+            `  Module name: ${mockPath}\n` +
+            `  Dupicate Mock path: ${filePath}\nThis warning ` +
+            `is caused by two manual mock files with the same file name.\n` +
+            `Jest will use the mock file found in: \n` +
+            `${filePath}\n` +
+            ` Please delete one of the following two files: \n ` +
+            `${mocks[mockPath]}\n${filePath}\n\n`,
+          );
+        }
+        mocks[mockPath] = filePath;
       }
 
       const fileMetadata = hasteMap.files[filePath];
