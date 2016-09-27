@@ -24,6 +24,7 @@ export type Environment = {|
     runAllImmediates(): void;
     runAllTicks(): void;
     runAllTimers(): void;
+    runTimersToTime(): void;
     runOnlyPendingTimers(): void;
     runWithRealTimers(callback: any): void;
     useFakeTimers(): void;
