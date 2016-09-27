@@ -48,6 +48,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toBeGreaterThanOrEqual(number)`](#tobegreaterthanorequal-number)
   - [`.toBeLessThan(number)`](#tobelessthan-number)
   - [`.toBeLessThanOrEqual(number)`](#tobelessthanorequal-number)
+  - [`.toBeInstanceOf(Class)`](#tobeinstanceof-class)
   - [`.toBeNull()`](#tobenull)
   - [`.toBeTruthy()`](#tobetruthy)
   - [`.toBeUndefined()`](#tobeundefined)
@@ -419,6 +420,18 @@ describe('ounces per can', () => {
     expect(ouncesPerCan()).toBeLessThanOrEqual(12);
   });
 });
+```
+
+### `.toBeInstanceOf(Class)`
+
+Use `.toBeInstanceOf(Class)` to check that an object is an instance of a class. This matcher uses `instanceof` underneath.
+
+```js
+class A {}
+
+expect(new A()).toBeInstanceOf(A);
+expect(() => {}).toBeinstanceOf(Function);
+expect(new A()).toBeInstanceOf(Function); // throws
 ```
 
 ### `.toBeNull()`
