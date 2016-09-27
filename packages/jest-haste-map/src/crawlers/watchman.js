@@ -72,8 +72,10 @@ module.exports = function watchmanCrawl(
             ['anyof'].concat(extensions.map(
               extension => ['suffix', extension],
             )),
-            dirExpr,
           ];
+          if (dirExpr.length > 1) {
+            expression.push(dirExpr);
+          }
           const fields = ['name', 'exists', 'mtime_ms'];
 
           const query = clocks[root]
