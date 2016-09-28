@@ -22,6 +22,7 @@ type CoverageMap = {|
 
 const BaseReporter = require('./BaseReporter');
 
+const {clearLine} = require('jest-util');
 const {createReporter} = require('istanbul-api');
 const chalk = require('chalk');
 const fs = require('fs');
@@ -124,7 +125,7 @@ class CoverageReporter extends BaseReporter {
         }
       });
       if (isInteractive) {
-        this.clearLine();
+        clearLine(process.stderr);
       }
     }
   }

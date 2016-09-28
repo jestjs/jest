@@ -68,8 +68,9 @@ class Status {
   _estimatedTime: number;
   _height: number;
   _interval: number;
-  _lastAggregatedResults: AggregatedResult;
+  _aggregatedResults: AggregatedResult;
   _lastUpdated: number;
+  _showStatus: boolean;
 
   constructor() {
     this._cache = null;
@@ -78,6 +79,7 @@ class Status {
     this._emitScheduled = false;
     this._estimatedTime = 0;
     this._height = 0;
+    this._showStatus = false;
   }
 
   onChange(callback: () => void) {
@@ -89,8 +91,9 @@ class Status {
     options: ReporterOnStartOptions,
   ) {
     this._estimatedTime = (options && options.estimatedTime) || 0;
+    this._showStatus = options && options.showStatus;
     this._interval = setInterval(() => this._tick(), 1000);
-    this._lastAggregatedResults = aggregatedResults;
+    this._aggregatedResults = aggregatedResults;
     this._debouncedEmit();
   }
 
@@ -102,7 +105,11 @@ class Status {
 
   testStarted(testPath: Path, config: Config) {
     this._currentTests.add(testPath, config);
-    this._debouncedEmit();
+    if (!this._showStatus) {
+      this._emit();
+    } else {
+      this._debouncedEmit();
+    }
   }
 
   testFinished(
@@ -111,7 +118,7 @@ class Status {
     aggregatedResults: AggregatedResult,
   ) {
     const {testFilePath} = testResult;
-    this._lastAggregatedResults = aggregatedResults;
+    this._aggregatedResults = aggregatedResults;
     this._currentTests.delete(testFilePath);
     this._debouncedEmit();
   }
@@ -143,9 +150,9 @@ class Status {
       }
     });
 
-    if (this._lastAggregatedResults) {
+    if (this._showStatus && this._aggregatedResults) {
       content += '\n' + getSummary(
-        this._lastAggregatedResults,
+        this._aggregatedResults,
         {
           estimatedTime: this._estimatedTime,
           roundTime: true,
@@ -154,7 +161,6 @@ class Status {
       );
     }
 
-    content += '\n';
     let height = 0;
 
     for (let i = 0; i < content.length; i++) {

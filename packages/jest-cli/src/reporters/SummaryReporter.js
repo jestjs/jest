@@ -79,30 +79,31 @@ class SummareReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
     runnerContext: RunnerContext,
   ) {
-    const {testResults} = aggregatedResults;
-    const lastResult = testResults[testResults.length - 1];
-    // Print a newline if the last test did not fail to line up newlines if the
-    // test had failed.
-    if (
-      !config.verbose &&
-      lastResult &&
-      !lastResult.numFailingTests &&
-      !lastResult.testExecError
-    ) {
-      this.log('');
-    }
+    if (aggregatedResults.numTotalTestSuites) {
+      const {testResults} = aggregatedResults;
+      const lastResult = testResults[testResults.length - 1];
+      // Print a newline if the last test did not fail to line up newlines
+      // similar to when an error would have been thrown in the test.
+      if (
+        !config.verbose &&
+        lastResult &&
+        !lastResult.numFailingTests &&
+        !lastResult.testExecError
+      ) {
+        this.log('');
+      }
 
-    this._printSummary(aggregatedResults, config);
-    this._printSnapshotSummary(aggregatedResults.snapshot, config);
-    this.log(
-      (aggregatedResults.numTotalTestSuites
-        ? getSummary(aggregatedResults, {
-          estimatedTime: this._estimatedTime,
-        })
-        : ''
-      ) +
-      '\n' + runnerContext.getTestSummary(),
-    );
+      this._printSummary(aggregatedResults, config);
+      this._printSnapshotSummary(aggregatedResults.snapshot, config);
+
+      this.log(
+        aggregatedResults.numTotalTestSuites
+          ? getSummary(aggregatedResults, {
+            estimatedTime: this._estimatedTime,
+          }) + '\n' + runnerContext.getTestSummary()
+          : '',
+      );
+    }
   }
 
   _printSnapshotSummary(snapshots: SnapshotSummary, config: Config) {

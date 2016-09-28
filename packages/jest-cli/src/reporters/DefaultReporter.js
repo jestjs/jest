@@ -19,6 +19,7 @@ import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 const BaseReporter = require('./BaseReporter');
 const Status = require('./Status');
 
+const {clearLine} = require('jest-util');
 const chalk = require('chalk');
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
@@ -125,7 +126,7 @@ class DefaultReporter extends BaseReporter {
     process.stdout.write = this._out;
     // $FlowFixMe
     process.stderr.write = this._err;
-    this.clearLine();
+    clearLine(process.stderr);
   }
 
   onTestResult(

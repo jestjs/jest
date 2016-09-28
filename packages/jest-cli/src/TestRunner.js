@@ -166,12 +166,6 @@ class TestRunner {
     const estimatedTime =
       Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
 
-    this._dispatcher.onRunStart(
-      config,
-      aggregatedResults,
-      {estimatedTime},
-    );
-
     const onTestResult = (testPath: Path, testResult: TestResult) => {
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
@@ -242,8 +236,18 @@ class TestRunner {
       )
     );
 
+    const runInBand = shouldRunInBand();
+    this._dispatcher.onRunStart(
+      config,
+      aggregatedResults,
+      {
+        estimatedTime,
+        showStatus: !runInBand,
+      },
+    );
+
     const testRun =
-      shouldRunInBand()
+      runInBand
       ? this._createInBandTestRun(testPaths, onTestResult, onRunFailure)
       : this._createParallelTestRun(testPaths, onTestResult, onRunFailure);
 
@@ -334,6 +338,7 @@ class TestRunner {
       const CoverageReporter = require('./reporters/CoverageReporter');
       this.addReporter(new CoverageReporter());
     }
+
     this.addReporter(new SummaryReporter());
     if (this._config.notify) {
       this.addReporter(new NotifyReporter());
