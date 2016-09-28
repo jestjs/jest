@@ -50,7 +50,6 @@ const KEYS = {
   P: '70',
   Q: '71',
   U: '75',
-  C: '63',
 };
 
 const getMaxWorkers = argv => {
@@ -235,15 +234,12 @@ const runCLI = (
   onComplete: (results: ?AggregatedResult) => void,
 ) => {
   const pipe = argv.json ? process.stderr : process.stdout;
-  const testWatcher = new TestWatcher();
-
   argv = argv || {};
   if (argv.version) {
     pipe.write(`v${VERSION}\n`);
     onComplete && onComplete();
     return;
   }
-
 
   readConfig(argv, root)
     .then(config => {
@@ -264,6 +260,7 @@ const runCLI = (
         let currentPattern = '';
         let timer: ?number;
 
+        let testWatcher;
         const writeCurrentPattern = () => {
           clearLine(pipe);
           pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
@@ -274,10 +271,7 @@ const runCLI = (
             return null;
           }
 
-          if (testWatcher.isInterrupted()) {
-            testWatcher.setState({interrupted: false});
-          }
-
+          testWatcher = new TestWatcher();
           pipe.write(CLEAR);
           preRunMessage.print(pipe);
           isRunning = true;
@@ -301,7 +295,6 @@ const runCLI = (
                   ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
                   : null,
                 chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
-                chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to cancel tests running in watch mode.'),
                 chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
                 chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
               ];
@@ -343,6 +336,17 @@ const runCLI = (
             }
             return;
           }
+
+          // Abort test run
+          if (
+            isRunning &&
+            testWatcher &&
+            [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].includes(key)
+          ) {
+            testWatcher.setState({interrupted: true});
+            return;
+          }
+
           switch (key) {
             case KEYS.Q:
               process.exit(0);
@@ -367,12 +371,6 @@ const runCLI = (
               pipe.write('\n');
               writeCurrentPattern();
               break;
-            case KEYS.C:
-              if (isRunning) {
-                testWatcher.setState({interrupted: true});
-                pipe.write('\n' + chalk.bold('Test run interrupted'));
-              }
-              break;
           }
         };
 
@@ -392,7 +390,7 @@ const runCLI = (
             clearTimeout(timer);
             timer = null;
           }
-          if (testWatcher.isInterrupted()) {
+          if (testWatcher && testWatcher.isInterrupted()) {
             return;
           }
           timer = setTimeout(startRun, WATCHER_DEBOUNCE);
@@ -416,7 +414,7 @@ const runCLI = (
         return Promise.resolve();
       } else {
         preRunMessage.print(pipe);
-        return runJest(config, argv, pipe, testWatcher, onComplete);
+        return runJest(config, argv, pipe, new TestWatcher(), onComplete);
       }
     })
     .catch(error => {

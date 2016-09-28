@@ -1,52 +1,37 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
 'use strict';
 
-type TestWatcherState = {
+const {EventEmitter} = require('events');
+
+type State = {
   interrupted: boolean,
 };
 
-class TestWatcher {
-  state: TestWatcherState;
-  listeners: Array<func>;
+class TestWatcher extends EventEmitter {
+  state: State;
 
   constructor() {
+    super();
     this.state = {interrupted: false};
-    this.listeners = [];
   }
 
-  setState(val: any): void {
-    this.state = Object.assign({}, this.state, val);
-
-    for (let i = 0; i < this.listeners.length; i++) {
-      const listener = this.listeners[i];
-      listener();
-    }
+  setState(state: State) {
+    this.state = Object.assign({}, this.state, state);
+    this.emit('change', this.state);
   }
 
-  isInterrupted(): boolean {
+  isInterrupted() {
     return this.state.interrupted;
   }
 
-  subscribe(listener: void) {
-    if (typeof listener !== 'function') {
-      throw new Error('Expected listener to be a function.');
-    }
-
-    let isSubscribed = true;
-    const listeners = this.listeners;
-
-    listeners.push(listener);
-
-    return function unsubscribe() {
-      if (!isSubscribed) {
-        return;
-      }
-
-      isSubscribed = false;
-
-      const index = listeners.indexOf(listener);
-      listeners.splice(index, 1);
-    };
-  }
 }
 
 module.exports = TestWatcher;

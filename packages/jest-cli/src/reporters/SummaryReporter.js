@@ -79,8 +79,8 @@ class SummareReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
     runnerContext: RunnerContext,
   ) {
-    if (aggregatedResults.numTotalTestSuites) {
-      const {testResults} = aggregatedResults;
+    const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
+    if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];
       // Print a newline if the last test did not fail to line up newlines
       // similar to when an error would have been thrown in the test.
@@ -96,13 +96,16 @@ class SummareReporter extends BaseReporter {
       this._printSummary(aggregatedResults, config);
       this._printSnapshotSummary(aggregatedResults.snapshot, config);
 
-      this.log(
-        aggregatedResults.numTotalTestSuites
-          ? getSummary(aggregatedResults, {
+      if (numTotalTestSuites) {
+        const testSummary = wasInterrupted
+          ? chalk.bold.red('Test run was interrupted.')
+          : runnerContext.getTestSummary();
+        this.log(
+          getSummary(aggregatedResults, {
             estimatedTime: this._estimatedTime,
-          }) + '\n' + runnerContext.getTestSummary()
-          : '',
-      );
+          }) + '\n' + testSummary,
+        );
+      }
     }
   }
 

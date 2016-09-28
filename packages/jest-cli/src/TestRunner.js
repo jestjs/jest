@@ -37,10 +37,10 @@ const FAIL = 0;
 const SLOW_TEST_TIME = 3000;
 const SUCCESS = 1;
 
-class CancelRunError extends Error {
+class CancelRun extends Error {
   constructor(message: ?string) {
     super(message);
-    this.name = 'CancelRunError';
+    this.name = 'CancelRun';
   }
 }
 
@@ -155,7 +155,6 @@ class TestRunner {
   }
 
   _cacheTestResults(aggregatedResults: AggregatedResult) {
-    const cacheFile = this._getTestPerformanceCachePath();
     const cache = this._testPerformanceCache;
     aggregatedResults.testResults.forEach(test => {
       const perf = test && test.perfStats;
@@ -164,10 +163,13 @@ class TestRunner {
         (perf.end - perf.start) || 0,
       ];
     });
-    return promisify(fs.writeFile)(cacheFile, JSON.stringify(cache));
+    fs.writeFileSync(
+      this._getTestPerformanceCachePath(),
+      JSON.stringify(cache),
+    );
   }
 
-  runTests(paths: Array<string>, testWatcher: TestWatcher) {
+  runTests(paths: Array<string>, watcher: TestWatcher) {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
@@ -175,8 +177,8 @@ class TestRunner {
       Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
 
     const onResult = (testPath: Path, testResult: TestResult) => {
-      if (testWatcher.isInterrupted()) {
-        throw new CancelRunError();
+      if (watcher.isInterrupted()) {
+        return;
       }
       if (testResult.testResults.length === 0) {
         const message = 'Your test suite must contain at least one test.';
@@ -187,7 +189,7 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onResult(
+      this._dispatcher.onTestResult(
         config,
         testResult,
         aggregatedResults,
@@ -195,46 +197,17 @@ class TestRunner {
       this._bailIfNeeded(aggregatedResults);
     };
 
-    const onFailure = (testPath: Path, err: TestError) => {
-      if (testWatcher.isInterrupted()) {
-        throw new CancelRunError();
+    const onFailure = (testPath: Path, error: TestError) => {
+      if (watcher.isInterrupted()) {
+        return;
       }
-      const testResult = buildFailureTestResult(testPath, err);
+      const testResult = buildFailureTestResult(testPath, error);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onResult(
+      this._dispatcher.onTestResult(
         config,
         testResult,
         aggregatedResults,
-      );
-    };
-
-    const setSuccess = () => {
-      const anyTestFailures = !(
-        aggregatedResults.numFailedTests === 0 &&
-        aggregatedResults.numRuntimeErrorTestSuites === 0
-      );
-
-      const anyReporterErrors = this._dispatcher.hasErrors();
-
-      aggregatedResults.success = !(
-        anyTestFailures ||
-        aggregatedResults.snapshot.failure ||
-        anyReporterErrors
-      );
-    };
-
-    const updateSnapshotSummary = () => {
-      const status =
-        snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
-      aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-      aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(
-        !aggregatedResults.snapshot.didUpdate && (
-          aggregatedResults.snapshot.unchecked ||
-          aggregatedResults.snapshot.unmatched ||
-          aggregatedResults.snapshot.filesRemoved
-        )
       );
     };
 
@@ -250,7 +223,38 @@ class TestRunner {
       )
     );
 
+    const finalizeResults = () => {
+      // Update snapshot state.
+      const status =
+        snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
+      aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
+      aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
+      aggregatedResults.snapshot.failure = !!(
+        !aggregatedResults.snapshot.didUpdate && (
+          aggregatedResults.snapshot.unchecked ||
+          aggregatedResults.snapshot.unmatched ||
+          aggregatedResults.snapshot.filesRemoved
+        )
+      );
+
+      aggregatedResults.wasInterrupted = watcher.isInterrupted();
+
+      // Check if the test run was successful or not.
+      const anyTestFailures = !(
+        aggregatedResults.numFailedTests === 0 &&
+        aggregatedResults.numRuntimeErrorTestSuites === 0
+      );
+      const anyReporterErrors = this._dispatcher.hasErrors();
+
+      aggregatedResults.success = !(
+        anyTestFailures ||
+        aggregatedResults.snapshot.failure ||
+        anyReporterErrors
+      );
+    };
+
     const runInBand = shouldRunInBand();
+
     this._dispatcher.onRunStart(
       config,
       aggregatedResults,
@@ -262,30 +266,39 @@ class TestRunner {
 
     const testRun =
       runInBand
-        ? this._createInBandTestRun(testPaths, testWatcher, onResult, onFailure)
-        : this._createParallelTestRun(testPaths, testWatcher, onResult, onFailure);
+        ? this._createInBandTestRun(testPaths, watcher, onResult, onFailure)
+        : this._createParallelTestRun(testPaths, watcher, onResult, onFailure);
 
     return testRun
-      .then(updateSnapshotSummary)
-      .then(() => this._dispatcher.onRunComplete(config, aggregatedResults))
-      .then(setSuccess)
-      .then(() => this._cacheTestResults(aggregatedResults))
-      .then(() => aggregatedResults);
+      .catch(error => {
+        if (!watcher.isInterrupted()) {
+          throw error;
+        }
+      })
+      .then(() => {
+        finalizeResults();
+        this._dispatcher.onRunComplete(config, aggregatedResults);
+        this._cacheTestResults(aggregatedResults);
+        return aggregatedResults;
+      });
   }
 
   _createInBandTestRun(
     testPaths: Array<Path>,
-    testWatcher: TestWatcher,
+    watcher: TestWatcher,
     onResult: OnTestResult,
     onFailure: OnRunFailure,
   ) {
     const mutex = throat(1);
-
     return testPaths.reduce(
       (promise, path) =>
         mutex(() =>
           promise
             .then(() => {
+              if (watcher.isInterrupted()) {
+                throw new CancelRun();
+              }
+
               this._dispatcher.onTestStart(this._config, path);
               return runTest(
                 path,
@@ -297,12 +310,12 @@ class TestRunner {
             .catch(err => onFailure(path, err)),
         ),
       Promise.resolve(),
-    ).catch(error => testWatcher.isInterrupted() ? null : error);
+    );
   }
 
   _createParallelTestRun(
     testPaths: Array<Path>,
-    testWatcher: TestWatcher,
+    watcher: TestWatcher,
     onResult: OnTestResult,
     onFailure: OnRunFailure,
   ) {
@@ -314,14 +327,13 @@ class TestRunner {
       maxConcurrentWorkers: this._options.maxWorkers,
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
-
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
     const runTestInWorker = ({path, config}) => mutex(() => {
-      this._dispatcher.onTestStart(config, path);
-      if (testWatcher.isInterrupted()) {
-        throw new CancelRunError();
+      if (watcher.isInterrupted()) {
+        return Promise.reject();
       }
+      this._dispatcher.onTestStart(config, path);
       return promisify(farm)({path, config});
     });
 
@@ -336,23 +348,24 @@ class TestRunner {
       }
     };
 
+    const onInterrupt = new Promise((_, reject) => {
+      watcher.on('change', state => {
+        if (state.interrupted) {
+          reject(new CancelRun());
+        }
+      });
+    });
+
     const runAllTests = Promise.all(testPaths.map(path => {
       return runTestInWorker({path, config})
         .then(testResult => onResult(path, testResult))
         .catch(error => onError(error, path));
     }));
 
-    const waitForWatcherInterruption = new Promise(resolve => {
-      const unsubscribe = testWatcher.subscribe(() => {
-        if (testWatcher.isInterrupted()) {
-          unsubscribe();
-          resolve('CanelRun');
-        }
-      });
-    });
-
-    return Promise.race([runAllTests, waitForWatcherInterruption])
-      .then(() => workerFarm.end(farm));
+    return Promise.race([
+      runAllTests,
+      onInterrupt,
+    ]).then(() => workerFarm.end(farm));
   }
 
   _setupReporters() {
@@ -411,6 +424,7 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
     startTime: Date.now(),
     success: false,
     testResults: [],
+    wasInterrupted: false,
   };
 };
 
@@ -512,7 +526,7 @@ class ReporterDispatcher {
     );
   }
 
-  onResult(config, testResult, results) {
+  onTestResult(config, testResult, results) {
     this._reporters.forEach(reporter =>
       reporter.onTestResult(
         config,
