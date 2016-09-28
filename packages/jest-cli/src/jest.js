@@ -158,7 +158,7 @@ const runJest = (config, argv, pipe, onComplete) => {
           }
 
           localConsole.log(
-            source.getNoTestsFoundMessage(patternInfo, config, data) + '\n',
+            source.getNoTestsFoundMessage(patternInfo, config, data),
           );
         }
         return data;

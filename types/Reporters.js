@@ -18,4 +18,5 @@ export type RunnerContext = {|
 
 export type ReporterOnStartOptions = {|
   estimatedTime: number,
+  showStatus: boolean,
 |};
