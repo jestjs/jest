@@ -13,7 +13,6 @@ import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
 import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
-const clearLine = require('jest-util').clearLine;
 const preRunMessage = require('../preRunMessage');
 
 class BaseReporter {
@@ -49,10 +48,6 @@ class BaseReporter {
     aggregatedResults: AggregatedResult,
     runnerContext: RunnerContext,
   ): ?Promise<any> {}
-
-  clearLine() {
-    clearLine(process.stderr);
-  }
 
   _setError(error: Error) {
     this._error = error;
