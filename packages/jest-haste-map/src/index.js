@@ -39,6 +39,7 @@ type Options = {
   cacheDirectory?: string,
   console?: Console,
   extensions: Array<string>,
+  forceNativeFind?: boolean,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern?: string,
@@ -55,6 +56,7 @@ type Options = {
 type InternalOptions = {
   cacheDirectory: string,
   extensions: Array<string>,
+  forceNativeFind: boolean,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
@@ -179,6 +181,7 @@ class HasteMap {
     this._options = {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
+      forceNativeFind: !!options.forceNativeFind,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern:
@@ -416,8 +419,13 @@ class HasteMap {
           `initialize a git or hg repository in your project.\n` +
           `  ` + error,
         );
-        return nodeCrawl(options.roots, options.extensions, ignore, hasteMap)
-          .catch(e => {
+        return nodeCrawl(
+          options.roots,
+          options.extensions,
+          ignore,
+          hasteMap,
+          options.forceNativeFind,
+        ).catch(e => {
             throw new Error(
               `Crawler retry failed:\n` +
               `  Original error: ${error.message}\n` +
@@ -430,8 +438,13 @@ class HasteMap {
     };
 
     try {
-      return crawl(options.roots, options.extensions, ignore, hasteMap)
-        .catch(retry);
+      return crawl(
+        options.roots,
+        options.extensions,
+        ignore,
+        hasteMap,
+        options.forceNativeFind,
+      ).catch(retry);
     } catch (error) {
       return retry(error);
     }

@@ -124,6 +124,7 @@ module.exports = function nodeCrawl(
   extensions: Array<string>,
   ignore: IgnoreMatcher,
   data: InternalHasteMap,
+  forceNativeFind: boolean = false,
 ): Promise<InternalHasteMap> {
   return new Promise(resolve => {
     const callback = list => {
@@ -143,7 +144,7 @@ module.exports = function nodeCrawl(
       resolve(data);
     };
 
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32' && !forceNativeFind) {
       find(roots, extensions, ignore, callback);
     } else {
       findNative(roots, extensions, ignore, callback);
