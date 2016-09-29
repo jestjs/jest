@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const path = require('path');
+
 let createRuntime;
 
 describe('Runtime', () => {
@@ -150,7 +152,10 @@ describe('Runtime', () => {
     );
 
     it('uses the closest manual mock when duplicates exist', () =>
-      createRuntime(__filename).then(runtime => {
+      createRuntime(__filename, {
+        rootDir:
+          path.resolve(path.dirname(__filename), 'test_root_with_dup_mocks'),
+      }).then(runtime => {
         const exports1 = runtime.requireMock(
           runtime.__mockRootPath,
           './subdir1/MyModule',
