@@ -389,7 +389,8 @@ class TestRunner {
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult) {
-    if (this._config.bail && aggregatedResults.numFailedTests !== 0) {
+    if (this._config.bail && !this._config.watch &&
+      aggregatedResults.numFailedTests !== 0) {
       this._dispatcher.onRunComplete(this._config, aggregatedResults);
       process.exit(1);
     }
