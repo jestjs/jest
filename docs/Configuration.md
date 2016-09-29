@@ -66,7 +66,6 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testEnvironment` [string]](#testenvironment-string)
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
-  - [`testPathPattern` [string]](#testpathpattern-string)
   - [`testRegex` [string]](#testregex-string)
   - [`testResultsProcessor` [string]](#testresultsprocessor-string)
   - [`testRunner` [string]](#testrunner-string)
@@ -317,13 +316,6 @@ There are times where you only want Jest to search in a single sub-directory (su
 An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
-
-### `testPathPattern` [string]
-(default: `/.*/`) - See notes below for more details on the default setting.
-
-A regexp pattern string that is matched against all test paths before executing the test. If the test path does not match the pattern, it will be skipped.
-
-This is useful if you need to override the default. If you are testing one file at a time the default will be set to `/.*/`, however if you pass a blob rather than a single file the default will then be the absolute path of each test file. The override may be needed on windows machines where, for example, the test full path would be `C:/myproject/__tests__/mystest.jsx.jest` and the default pattern would be set as `/C:\myproject\__tests__\mystest.jsx.jest/`.
 
 ### `testRegex` [string]
 (default: `(/__tests__/.*|\\.(test|spec))\\.(js|jsx)$`)
