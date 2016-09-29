@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {CrawlerOptions} from '../types';
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {IgnoreMatcher} from '../types';
 
@@ -19,13 +20,15 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
-
-function find(
-  roots: Array<string>,
+type FindOptions = {
+  callback: Callback,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  callback: Callback,
-): void {
+  roots: Array<string>,
+};
+
+function find(options: FindOptions): void {
+  const {callback, extensions, ignore, roots} = options;
   const result = [];
   let activeCalls = 0;
 
@@ -69,12 +72,8 @@ function find(
   roots.forEach(search);
 }
 
-function findNative(
-  roots: Array<string>,
-  extensions: Array<string>,
-  ignore: IgnoreMatcher,
-  callback: Callback,
-): void {
+function findNative(options: FindOptions): void {
+  const {callback, extensions, ignore, roots} = options;
   const args = [].concat(roots);
   args.push('-type', 'f');
   if (extensions.length) {
@@ -120,12 +119,16 @@ function findNative(
 }
 
 module.exports = function nodeCrawl(
-  roots: Array<string>,
-  extensions: Array<string>,
-  ignore: IgnoreMatcher,
-  data: InternalHasteMap,
-  forceNativeFind: boolean = false,
+  options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
+  const {
+    data,
+    extensions,
+    forceNodeFSApi,
+    ignore,
+    roots,
+  } = options;
+
   return new Promise(resolve => {
     const callback = list => {
       const files = Object.create(null);
@@ -144,10 +147,10 @@ module.exports = function nodeCrawl(
       resolve(data);
     };
 
-    if (process.platform === 'win32' && !forceNativeFind) {
-      find(roots, extensions, ignore, callback);
+    if (forceNodeFSApi || process.platform === 'win32') {
+      find({callback, extensions, ignore, roots});
     } else {
-      findNative(roots, extensions, ignore, callback);
+      findNative({callback, extensions, ignore, roots});
     }
   });
 };
