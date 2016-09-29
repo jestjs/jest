@@ -1,5 +1,39 @@
 ## master
 
+## jest 16.0.0
+
+* Previously failed tests are now always run first.
+* A new concurrent reporter shows currently running tests, a test summary, a progress bar and estimated remaining time if possible.
+* Improved CLI colors.
+* `jest <pattern>` is now case-insensitive.
+* Added `it.only`, `it.skip`, `test.only`, `test.skip` and `xtest`.
+* Added `--testNamePattern=pattern` or `-t <pattern>` to run individual tests in test files.
+* Jest now warns for duplicate mock files.
+* Pressing `a`, `o`, `p`, `q` or `enter` while tests are running in the watch mode, the test run will be interrupted.
+* `--bail` now works together with `--watch`.
+* Added `test.concurrent` for concurrent async tests.
+* Jest now automatically considers files and tests with the `.jsx` extension.
+* Added `jest.clearAllMocks` to clear all mocks manually.
+* Rewrote Jest's snapshot implementation. `jest-snapshot` can now be more easily integrated into other test runners and used in other projects.
+ * This requires most snapshots to be updated when upgrading Jest.
+ * Objects and Arrays in snapshots are now printed with a trailing comma.
+ * Function names are not printed in snapshots any longer to reduce issues with code coverage instrumentation and different Node versions.
+ * Snapshots are now sorted using natural sort order.
+* Finished migration of Jasmine matchers to the new Jest matchers.
+ * Pretty print `toHaveBeenLastCalledWith`, `toHaveBeenCalledWith`,  `lastCalledWith` and `toBeCalledWith` failure messages.
+ * Added `toBeInstanceOf` matcher.
+ * Added `toContainEqual` matcher.
+ * Added `toThrowErrorMatchingSnapshot` matcher.
+ * Snapshots are not marked as obsolete any longer when using `fit` or when an error is thrown in a test.
+* Improved `moduleNameMapper` resolution.
+* Module registry fixes.
+* Fixed invocation of the `setupTestFrameworkScriptFile` script to make it easier to use chai together with Jest.
+* Removed react-native special case in Jest's configuration.
+* Added `--findRelatedTests <fileA> <fileB>` cli option to run tests related to the specified files.
+* Added `jest.deepUnmock` to `babel-plugin-jest-hoist`.
+* Added `jest.runTimersToTime` which is useful together with fake timers.
+* Improved automated mocks for ES modules compiled with babel.
+
 ## jest 15.1.1
 
 * Fixed issues with test paths that include hyphens on Windows.
