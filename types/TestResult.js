@@ -61,6 +61,7 @@ export type AggregatedResult = {|
   startTime: number,
   success: boolean,
   testResults: Array<TestResult>,
+  wasInterrupted: boolean,
 |};
 
 export type Suite = {|
