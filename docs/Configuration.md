@@ -45,7 +45,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
-  - [`collectCoverageFrom` [object]](#collectcoveragefrom-object)
+  - [`collectCoverageFrom` [array]](#collectcoveragefrom-array)
   - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepattern-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
@@ -123,7 +123,7 @@ A list of reporter names that Jest uses when writing coverage reports. Any [ista
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-### `collectCoverageFrom` [object]
+### `collectCoverageFrom` [array]
 (default: `undefined`)
 
 An array of [glob patterns](https://github.com/sindresorhus/multimatch)
