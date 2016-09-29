@@ -12,11 +12,16 @@
 const path = require('path');
 
 let createRuntime;
+const consoleWarn = console.warn;
 
 describe('Runtime', () => {
 
   beforeEach(() => {
     createRuntime = require('createRuntime');
+  });
+
+  afterEach(() => {
+    console.warn = consoleWarn;
   });
 
   describe('requireMock', () => {
@@ -151,11 +156,13 @@ describe('Runtime', () => {
       }),
     );
 
-    it('uses the closest manual mock when duplicates exist', () =>
-      createRuntime(__filename, {
+    it('uses the closest manual mock when duplicates exist', () => {
+      console.warn = jest.fn();
+      return createRuntime(__filename, {
         rootDir:
           path.resolve(path.dirname(__filename), 'test_root_with_dup_mocks'),
       }).then(runtime => {
+        expect(console.warn).toBeCalled();
         const exports1 = runtime.requireMock(
           runtime.__mockRootPath,
           './subdir1/MyModule',
@@ -171,7 +178,7 @@ describe('Runtime', () => {
         expect(exports2.modulePath).toEqual(
           'subdir2/__mocks__/MyModule.js',
         );
-      }),
-    );
+      });
+    });
   });
 });

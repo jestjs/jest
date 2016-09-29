@@ -46,7 +46,8 @@
   "jest": {
     "modulePathIgnorePatterns": [
       "examples/.*",
-      "packages/.*/build"
+      "packages/.*/build",
+      "packages/jest-runtime/src/__tests__/test_root_with_dup_mocks"
     ],
     "collectCoverageFrom": [
       "**/packages/{jest-runtime,jest-matchers,jest-haste-map,jest-file-exists,jest-diff,jest-changed-files}/**/*.js",
@@ -67,9 +68,9 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/examples/",
-      "integration_tests/.*/__tests__",
+      "/integration_tests/.*/__tests__",
       "\\.snap$",
-      "packages/.*/build"
+      "/packages/.*/build"
     ],
     "testRegex": ".*-test\\.js"
   }
