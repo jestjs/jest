@@ -11,25 +11,31 @@
 
 const {EventEmitter} = require('events');
 
-type State = {
+type State = {|
   interrupted: boolean,
-};
+|};
 
 class TestWatcher extends EventEmitter {
   state: State;
+  _isWatchMode: boolean;
 
-  constructor() {
+  constructor({isWatchMode}: {isWatchMode: boolean}) {
     super();
     this.state = {interrupted: false};
+    this._isWatchMode = isWatchMode;
   }
 
   setState(state: State) {
-    this.state = Object.assign({}, this.state, state);
+    Object.assign(this.state, state);
     this.emit('change', this.state);
   }
 
   isInterrupted() {
     return this.state.interrupted;
+  }
+
+  isWatchMode() {
+    return this._isWatchMode;
   }
 
 }
