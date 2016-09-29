@@ -114,7 +114,7 @@ test('first snapshot fails, second passes', () => {
 });
 
 test('does not mark snapshots as obsolete in skipped tests', () => {
-  const filename = 'no-obsolete-if-skipped.js';
+  const filename = 'no-obsolete-if-skipped-test.js';
   const template = makeTemplate(
     `test('snapshots', () => {
       expect(true).toBe(true);
@@ -138,5 +138,23 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(0);
+  }
+});
+
+test('does not accept arguments', () => {
+  const filename = 'does-not-accept-arguments-test.js';
+  const template = makeTemplate(
+    `test('does not accept arguments', () => {
+      expect(true).toMatchSnapshot('foobar');
+    });
+    `,
+  );
+
+  {
+    makeTests(TESTS_DIR, {[filename]: template()});
+    const {stderr, status} = runJest(DIR, [filename]);
+    expect(stderr).toMatch(
+      'Matcher does not accept any arguments.');
+    expect(status).toBe(1);
   }
 });

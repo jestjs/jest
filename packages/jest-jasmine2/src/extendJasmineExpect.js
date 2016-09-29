@@ -9,13 +9,16 @@
 
 const jestExpect = require('jest-matchers').expect;
 const {addMatchers} = require('jest-matchers');
-const {toMatchSnapshot} = require('jest-snapshot');
+const {
+  toMatchSnapshot,
+  toThrowErrorMatchingSnapshot,
+} = require('jest-snapshot');
 
 const jasmineExpect = global.expect;
 
 // extend jasmine matchers with `jest-matchers`
 module.exports = () => {
-  addMatchers({toMatchSnapshot});
+  addMatchers({toMatchSnapshot, toThrowErrorMatchingSnapshot});
   global.expect = actual => {
     const jasmineMatchers = jasmineExpect(actual);
     const jestMatchers = jestExpect(actual);
