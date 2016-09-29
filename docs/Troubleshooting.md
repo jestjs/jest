@@ -11,7 +11,17 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 ### Tests are Failing and You Don't Know Why
 
-Try using the debugger built into >= Node 6.3.
+##### Try using the debugger built into Node
+
+Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
+
+`node debug ./node_modules/.bit/jest -i [any other arguments here]`
+
+This will run debugger with breakpoint set at the first line of Jest CLI script. Use `c` command to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you could use `repl` command to open debugger's repl for evaluation in debugging script's context.
+
+More information on Node debugger can be found here: https://nodejs.org/dist/latest-v4.x/docs/api/debugger.html
+
+##### Try using the inspector built into >= Node 6.3.
 
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
@@ -19,9 +29,10 @@ Place a `debugger;` statement in any of your tests, and then, in your project's 
 
 This will output a link that you can open in Chrome. After opening that link, the Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done simply to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
-*Note: the `-i` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.*
-
 More information on the V8 inspector can be found here: https://nodejs.org/api/debugger.html#debugger_v8_inspector_integration_for_node_js
+
+
+*Note: the `-i` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.*
 
 ### Caching Issues
 
