@@ -75,8 +75,9 @@ const canUseWatchman = ((): boolean => {
   try {
     execSync('watchman version', {stdio: ['ignore']});
     return true;
-  } catch (e) {}
-  return false;
+  } catch (e) {
+    return false;
+  }
 })();
 
 const escapePathSeparator =
