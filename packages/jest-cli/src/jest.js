@@ -33,6 +33,7 @@ const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
+const TestWatcher = require('./TestWatcher');
 
 const CLEAR = '\x1B[2J\x1B[H';
 const VERSION = require('../package.json').version;
@@ -127,7 +128,7 @@ const getWatcher = (
   });
 };
 
-const runJest = (config, argv, pipe, onComplete) => {
+const runJest = (config, argv, pipe, testWatcher, onComplete) => {
   const maxWorkers = getMaxWorkers(argv);
   const localConsole = new Console(pipe, pipe);
   let patternInfo = buildTestPathPatternInfo(argv);
@@ -174,7 +175,7 @@ const runJest = (config, argv, pipe, onComplete) => {
             maxWorkers,
             getTestSummary: () => SearchSource.getTestSummary(patternInfo),
           },
-        ).runTests(data.paths);
+        ).runTests(data.paths, testWatcher);
       })
       .then(runResults => {
         if (config.testResultsProcessor) {
@@ -233,7 +234,6 @@ const runCLI = (
   onComplete: (results: ?AggregatedResult) => void,
 ) => {
   const pipe = argv.json ? process.stderr : process.stdout;
-
   argv = argv || {};
   if (argv.version) {
     pipe.write(`v${VERSION}\n`);
@@ -260,6 +260,7 @@ const runCLI = (
         let currentPattern = '';
         let timer: ?number;
 
+        let testWatcher;
         const writeCurrentPattern = () => {
           clearLine(pipe);
           pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
@@ -270,6 +271,7 @@ const runCLI = (
             return null;
           }
 
+          testWatcher = new TestWatcher();
           pipe.write(CLEAR);
           preRunMessage.print(pipe);
           isRunning = true;
@@ -277,6 +279,7 @@ const runCLI = (
             Object.freeze(Object.assign({}, config, overrideConfig)),
             argv,
             pipe,
+            testWatcher,
             results => {
               isRunning = false;
               /* eslint-disable max-len */
@@ -333,6 +336,17 @@ const runCLI = (
             }
             return;
           }
+
+          // Abort test run
+          if (
+            isRunning &&
+            testWatcher &&
+            [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].includes(key)
+          ) {
+            testWatcher.setState({interrupted: true});
+            return;
+          }
+
           switch (key) {
             case KEYS.Q:
               process.exit(0);
@@ -376,6 +390,9 @@ const runCLI = (
             clearTimeout(timer);
             timer = null;
           }
+          if (testWatcher && testWatcher.isInterrupted()) {
+            return;
+          }
           timer = setTimeout(startRun, WATCHER_DEBOUNCE);
         };
 
@@ -397,7 +414,7 @@ const runCLI = (
         return Promise.resolve();
       } else {
         preRunMessage.print(pipe);
-        return runJest(config, argv, pipe, onComplete);
+        return runJest(config, argv, pipe, new TestWatcher(), onComplete);
       }
     })
     .catch(error => {
