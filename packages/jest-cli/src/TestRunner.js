@@ -194,7 +194,7 @@ class TestRunner {
         testResult,
         aggregatedResults,
       );
-      this._bailIfNeeded(aggregatedResults);
+      this._bailIfNeeded(aggregatedResults, watcher);
     };
 
     const onFailure = (testPath: Path, error: TestError) => {
@@ -388,10 +388,14 @@ class TestRunner {
     }
   }
 
-  _bailIfNeeded(aggregatedResults: AggregatedResult) {
+  _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {
     if (this._config.bail && aggregatedResults.numFailedTests !== 0) {
-      this._dispatcher.onRunComplete(this._config, aggregatedResults);
-      process.exit(1);
+      if (watcher.isWatchMode()) {
+        watcher.setState({interrupted: true});
+      } else {
+        this._dispatcher.onRunComplete(this._config, aggregatedResults);
+        process.exit(1);
+      }
     }
   }
 }

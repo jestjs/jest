@@ -271,7 +271,7 @@ const runCLI = (
             return null;
           }
 
-          testWatcher = new TestWatcher();
+          testWatcher = new TestWatcher({isWatchMode: true});
           pipe.write(CLEAR);
           preRunMessage.print(pipe);
           isRunning = true;
@@ -414,7 +414,8 @@ const runCLI = (
         return Promise.resolve();
       } else {
         preRunMessage.print(pipe);
-        return runJest(config, argv, pipe, new TestWatcher(), onComplete);
+        const testWatcher = new TestWatcher({isWatchMode: false});
+        return runJest(config, argv, pipe, testWatcher, onComplete);
       }
     })
     .catch(error => {
