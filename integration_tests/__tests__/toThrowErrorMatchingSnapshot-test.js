@@ -39,10 +39,10 @@ test('works fine when function throws error', () => {
   }
 });
 
-test("throws the error if tested function didn't throw error", () => {
+test(`throws the error if tested function didn't throw error`, () => {
   const filename = 'throws-if-tested-function-did-not-throw-test.js';
   const template = makeTemplate(
-    `test("throws the error if tested function didn't throw error", () => {
+    `test('throws the error if tested function did not throw error', () => {
       expect(() => {}).toThrowErrorMatchingSnapshot();
     });
     `,
@@ -52,7 +52,8 @@ test("throws the error if tested function didn't throw error", () => {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch(
-      "Expected function should throw error but didn't");
+      `Expected the function to throw an error.`,
+    );
     expect(status).toBe(1);
   }
 });
@@ -71,7 +72,8 @@ test('does not accept arguments', () => {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch(
-      'Matcher does not accept any arguments.');
+      'Matcher does not accept any arguments.',
+    );
     expect(status).toBe(1);
   }
 });
@@ -89,7 +91,8 @@ test('cannot be used with .not', () => {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch(
-      'Jest: `.not` can not be used with `.toThrowErrorMatchingSnapshot()`.');
+      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
+    );
     expect(status).toBe(1);
   }
 });
