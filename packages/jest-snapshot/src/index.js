@@ -62,7 +62,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
 
   if (isNot) {
     throw new Error(
-      'Jest: `.not` can not be used with `.toMatchSnapshot()`.',
+      'Jest: `.not` cannot be used with `.toMatchSnapshot()`.',
     );
   }
 
@@ -111,7 +111,7 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
 
   if (isNot) {
     throw new Error(
-      'Jest: `.not` can not be used with `.toThrowErrorMatchingSnapshot()`.',
+      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
     );
   }
 
@@ -125,8 +125,12 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
     error = e;
   }
 
-  if (error === void 0) {
-    throw new Error("Jest: Expected function should throw error but didn't");
+  if (error === undefined) {
+    throw new Error(
+      matcherHint('.toThrowErrorMatchingSnapshot', '() => {}', '') + '\n\n' +
+      `Expected the function to throw an error.\n` +
+      `But it didn't throw anything.`,
+    );
   }
 
   return toMatchSnapshot.call(this, error.message);
