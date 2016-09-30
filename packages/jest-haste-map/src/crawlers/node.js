@@ -20,15 +20,13 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
-type FindOptions = {
-  callback: Callback,
+
+function find(
+  roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  roots: Array<string>,
-};
-
-function find(options: FindOptions): void {
-  const {callback, extensions, ignore, roots} = options;
+  callback: Callback,
+): void {
   const result = [];
   let activeCalls = 0;
 
@@ -72,8 +70,12 @@ function find(options: FindOptions): void {
   roots.forEach(search);
 }
 
-function findNative(options: FindOptions): void {
-  const {callback, extensions, ignore, roots} = options;
+function findNative(
+  roots: Array<string>,
+  extensions: Array<string>,
+  ignore: IgnoreMatcher,
+  callback: Callback,
+): void {
   const args = [].concat(roots);
   args.push('-type', 'f');
   if (extensions.length) {
@@ -124,7 +126,7 @@ module.exports = function nodeCrawl(
   const {
     data,
     extensions,
-    forceNodeFSApi,
+    forceNodeFilesystemAPI,
     ignore,
     roots,
   } = options;
@@ -147,10 +149,10 @@ module.exports = function nodeCrawl(
       resolve(data);
     };
 
-    if (forceNodeFSApi || process.platform === 'win32') {
-      find({callback, extensions, ignore, roots});
+    if (forceNodeFilesystemAPI || process.platform === 'win32') {
+      find(roots, extensions, ignore, callback);
     } else {
-      findNative({callback, extensions, ignore, roots});
+      findNative(roots, extensions, ignore, callback);
     }
   });
 };

@@ -175,7 +175,7 @@ describe('node crawler', () => {
     });
   });
 
-  it('uses node fs APIs if "forceNodeFSApi" is set to true, regardless of platform', () => {
+  it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', () => {
     process.platform = 'linux';
 
     nodeCrawl = require('../node');
@@ -184,7 +184,7 @@ describe('node crawler', () => {
     return nodeCrawl({
       data: {files},
       extensions: ['js'],
-      forceNodeFSApi: true,
+      forceNodeFilesystemAPI: true,
       ignore: pearMatcher,
       roots: ['/fruits'],
     }).then(data => {

@@ -39,7 +39,7 @@ type Options = {
   cacheDirectory?: string,
   console?: Console,
   extensions: Array<string>,
-  forceNodeFSApi?: boolean,
+  forceNodeFilesystemAPI?: boolean,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern?: string,
@@ -56,7 +56,7 @@ type Options = {
 type InternalOptions = {
   cacheDirectory: string,
   extensions: Array<string>,
-  forceNodeFSApi: boolean,
+  forceNodeFilesystemAPI: boolean,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
@@ -181,7 +181,7 @@ class HasteMap {
     this._options = {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
-      forceNodeFSApi: !!options.forceNodeFSApi,
+      forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern:
@@ -422,7 +422,7 @@ class HasteMap {
         return nodeCrawl({
           data: hasteMap,
           extensions: options.extensions,
-          forceNodeFSApi: options.forceNodeFSApi,
+          forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
           ignore,
           roots: options.roots,
         }).catch(e => {
@@ -441,7 +441,7 @@ class HasteMap {
       return crawl({
         data: hasteMap,
         extensions: options.extensions,
-        forceNodeFSApi: options.forceNodeFSApi,
+        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
         ignore,
         roots: options.roots,
       }).catch(retry);
