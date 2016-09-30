@@ -9,9 +9,8 @@
  */
 'use strict';
 
-import type {CrawlerOptions} from '../types';
 import type {InternalHasteMap} from 'types/HasteMap';
-import type {IgnoreMatcher} from '../types';
+import type {IgnoreMatcher, CrawlerOptions} from '../types';
 
 const H = require('../constants');
 
