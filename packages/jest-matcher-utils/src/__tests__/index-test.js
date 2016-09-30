@@ -67,15 +67,8 @@ describe('.stringify()', () => {
       toJSON,
     };
 
-    let error;
-    try {
-      expect(evilA).toEqual(evilB);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error.message).toMatchSnapshot();
+    expect(() => expect(evilA).toEqual(evilB))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 

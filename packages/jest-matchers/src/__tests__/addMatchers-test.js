@@ -28,13 +28,6 @@ it('is available globally', () => {
   expect(15).toBeDivisibleBy(3);
   expect(15).not.toBeDivisibleBy(6);
 
-  let error;
-  try {
-    expect(15).toBeDivisibleBy(2);
-  } catch (e) {
-    error = e;
-  }
-
-  expect(error).toBeDefined();
-  expect(error.message).toMatch(/to be divisible/);
+  expect(() => expect(15).toBeDivisibleBy(2))
+    .toThrowErrorMatchingSnapshot();
 });
