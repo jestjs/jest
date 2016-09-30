@@ -1,0 +1,1 @@
+exports[`test is available globally 1`] = `"expected 15 to be divisible by 2"`;
