@@ -19,12 +19,12 @@
  * Objects and Arrays in snapshots are now printed with a trailing comma.
  * Function names are not printed in snapshots any longer to reduce issues with code coverage instrumentation and different Node versions.
  * Snapshots are now sorted using natural sort order.
+ * Snapshots are not marked as obsolete any longer when using `fit` or when an error is thrown in a test.
 * Finished migration of Jasmine matchers to the new Jest matchers.
  * Pretty print `toHaveBeenLastCalledWith`, `toHaveBeenCalledWith`,  `lastCalledWith` and `toBeCalledWith` failure messages.
  * Added `toBeInstanceOf` matcher.
  * Added `toContainEqual` matcher.
  * Added `toThrowErrorMatchingSnapshot` matcher.
- * Snapshots are not marked as obsolete any longer when using `fit` or when an error is thrown in a test.
 * Improved `moduleNameMapper` resolution.
 * Module registry fixes.
 * Fixed invocation of the `setupTestFrameworkScriptFile` script to make it easier to use chai together with Jest.
