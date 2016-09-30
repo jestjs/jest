@@ -40,7 +40,11 @@ type SearchResult = {|
 
 type StrOrRegExpPattern = RegExp | string;
 
-type PatternInfo = {|
+type Options = {|
+  lastCommit?: boolean,
+|};
+
+export type PatternInfo = {|
   input?: string,
   findRelatedTests?: boolean,
   lastCommit?: boolean,
@@ -49,10 +53,6 @@ type PatternInfo = {|
   shouldTreatInputAsPattern?: boolean,
   testPathPattern?: string,
   watch?: boolean,
-|};
-
-type Options = {|
-  lastCommit?: boolean,
 |};
 
 const git = changedFiles.git;
@@ -216,17 +216,6 @@ class SearchSource {
       });
   }
 
-  static getTestSummary(patternInfo: PatternInfo) {
-    const testPathPattern = getTestPathPattern(patternInfo);
-    const testInfo = patternInfo.onlyChanged
-      ? ' related to changed files'
-      : patternInfo.input !== ''
-        ? ' matching ' + chalk.bold(testPathPattern)
-        : '';
-
-    return 'Ran all tests' + testInfo + '.';
-  }
-
   getNoTestsFoundMessage(
     patternInfo: PatternInfo,
     config: {[key: string]: string},
@@ -245,7 +234,7 @@ class SearchSource {
       );
     }
 
-    const testPathPattern = getTestPathPattern(patternInfo);
+    const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
     const stats = data.stats || {};
     const statsMessage = Object.keys(stats).map(key => {
       const value = key === 'testPathPattern' ? testPathPattern : config[key];
@@ -285,16 +274,16 @@ class SearchSource {
     }
   }
 
-}
+  static getTestPathPattern(patternInfo: PatternInfo): string {
+    const pattern = patternInfo.testPathPattern;
+    const input = patternInfo.input;
+    const formattedPattern = `/${pattern || ''}/`;
+    const formattedInput = patternInfo.shouldTreatInputAsPattern
+      ? `/${input || ''}/`
+      : `"${input || ''}"`;
+    return (input === pattern) ? formattedInput : formattedPattern;
+  }
 
-const getTestPathPattern = (patternInfo: PatternInfo) => {
-  const pattern = patternInfo.testPathPattern;
-  const input = patternInfo.input;
-  const formattedPattern = `/${pattern || ''}/`;
-  const formattedInput = patternInfo.shouldTreatInputAsPattern
-    ? `/${input || ''}/`
-    : `"${input || ''}"`;
-  return (input === pattern) ? formattedInput : formattedPattern;
-};
+}
 
 module.exports = SearchSource;

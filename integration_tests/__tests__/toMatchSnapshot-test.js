@@ -30,14 +30,14 @@ test('basic support', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template(['{apple: "original value"}'])});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
   {
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
-    expect(stderr).not.toMatch('1 snapshot written in 1 test file.');
+    expect(stderr).not.toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
@@ -50,7 +50,7 @@ test('basic support', () => {
 
   {
     const {stderr, status} = runJest(DIR, [filename, '-u']);
-    expect(stderr).toMatch('1 snapshot updated in 1 test file.');
+    expect(stderr).toMatch('1 snapshot updated in 1 test suite.');
     expect(status).toBe(0);
   }
 });
@@ -68,7 +68,7 @@ test('error thrown before snapshot', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template(['true', '{a: "original"}'])});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 
@@ -99,7 +99,7 @@ test('first snapshot fails, second passes', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template([`'apple'`, `'banana'`])});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('2 snapshots written in 1 test file.');
+    expect(stderr).toMatch('2 snapshots written in 1 test suite.');
     expect(status).toBe(0);
   }
 
@@ -129,7 +129,7 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template(['test'])});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 

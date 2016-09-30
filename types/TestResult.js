@@ -54,6 +54,7 @@ export type AggregatedResult = {|
   numPassedTests: number,
   numPassedTestSuites: number,
   numPendingTests: number,
+  numPendingTestSuites: number,
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
   numTotalTestSuites: number,
@@ -82,6 +83,7 @@ export type TestResult = {|
     end: Milliseconds,
     start: Milliseconds,
   |},
+  skipped: boolean,
   snapshot: {|
     added: number,
     fileDeleted: boolean,

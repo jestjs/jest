@@ -21,12 +21,14 @@ const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 const FAIL = chalk.reset.inverse.bold.red(' FAIL ');
 const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
-module.exports = (testResult: TestResult, config: Config) => {
-  const testPath = testResult.testFilePath;
-  const allTestsPassed = testResult.numFailingTests === 0
-    && !testResult.testExecError;
-  const runTime = testResult.perfStats
-    ? (testResult.perfStats.end - testResult.perfStats.start) / 1000
+module.exports = (result: TestResult, config: Config) => {
+  const testPath = result.testFilePath;
+  const status = (result.numFailingTests > 0 || result.testExecError)
+    ? FAIL
+    : PASS;
+
+  const runTime = result.perfStats
+    ? (result.perfStats.end - result.perfStats.start) / 1000
     : null;
 
   const testDetail = [];
@@ -34,11 +36,13 @@ module.exports = (testResult: TestResult, config: Config) => {
     testDetail.push(LONG_TEST_COLOR(runTime + 's'));
   }
 
-  if (testResult.memoryUsage) {
+  if (result.memoryUsage) {
     const toMB = bytes => Math.floor(bytes / 1024 / 1024);
-    testDetail.push(`${toMB(testResult.memoryUsage)} MB heap size`);
+    testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 
-  return `${allTestsPassed ? PASS : FAIL} ${formatTestPath(config, testPath)}` +
-  (testDetail.length ? ` (${testDetail.join(', ')})` : '');
+  return (
+    `${status} ${formatTestPath(config, testPath)}` +
+    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
+  );
 };

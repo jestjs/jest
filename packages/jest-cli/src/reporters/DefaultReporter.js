@@ -141,24 +141,26 @@ class DefaultReporter extends BaseReporter {
   _printTestFileSummary(
     testPath: Path,
     config: Config,
-    testResult: TestResult,
+    result: TestResult,
   ) {
-    this.log(getResultHeader(testResult, config));
+    if (!result.skipped) {
+      this.log(getResultHeader(result, config));
 
-    const consoleBuffer = testResult.console;
-    if (consoleBuffer && consoleBuffer.length) {
-      this.log(
-        '  ' + TITLE_BULLET + 'Console\n\n' +
-        getConsoleOutput(
-          config.rootDir,
-          !!config.verbose,
-          consoleBuffer,
-        ),
-      );
-    }
+      const consoleBuffer = result.console;
+      if (consoleBuffer && consoleBuffer.length) {
+        this.log(
+          '  ' + TITLE_BULLET + 'Console\n\n' +
+          getConsoleOutput(
+            config.rootDir,
+            !!config.verbose,
+            consoleBuffer,
+          ),
+        );
+      }
 
-    if (testResult.failureMessage) {
-      this.log(testResult.failureMessage);
+      if (result.failureMessage) {
+        this.log(result.failureMessage);
+      }
     }
   }
 }
