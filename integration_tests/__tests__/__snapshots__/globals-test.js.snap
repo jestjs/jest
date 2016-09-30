@@ -12,9 +12,9 @@ exports[`test basic test constructs 1`] = `
 exports[`test basic test constructs 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       4 passed, 4 total
-Snapshots:   0 passed, 0 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests.
+Ran all test suites.
 "
 `;
 
@@ -37,10 +37,10 @@ exports[`test only 1`] = `
 
 exports[`test only 2`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       7 passed, 8 total
-Snapshots:   0 passed, 0 total
+Tests:       1 skipped, 7 passed, 8 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests.
+Ran all test suites.
 "
 `;
 
@@ -64,10 +64,10 @@ exports[`test skips 1`] = `
 
 exports[`test skips 2`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       1 passed, 9 total
-Snapshots:   0 passed, 0 total
+Tests:       8 skipped, 1 passed, 9 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests.
+Ran all test suites.
 "
 `;
 
@@ -82,9 +82,9 @@ exports[`test tests with no implementation 1`] = `
 
 exports[`test tests with no implementation 2`] = `
 "Test Suites: 1 passed, 1 total
-Tests:       1 passed, 3 total
-Snapshots:   0 passed, 0 total
+Tests:       2 skipped, 1 passed, 3 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests.
+Ran all test suites.
 "
 `;

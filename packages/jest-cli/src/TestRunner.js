@@ -157,11 +157,13 @@ class TestRunner {
   _cacheTestResults(aggregatedResults: AggregatedResult) {
     const cache = this._testPerformanceCache;
     aggregatedResults.testResults.forEach(test => {
-      const perf = test && test.perfStats;
-      cache[test.testFilePath] = [
-        test.numFailingTests ? FAIL : SUCCESS,
-        (perf.end - perf.start) || 0,
-      ];
+      if (test && !test.skipped) {
+        const perf = test.perfStats;
+        cache[test.testFilePath] = [
+          test.numFailingTests ? FAIL : SUCCESS,
+          (perf.end - perf.start) || 0,
+        ];
+      }
     });
     fs.writeFileSync(
       this._getTestPerformanceCachePath(),
@@ -407,6 +409,7 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
     numPassedTests: 0,
     numPassedTestSuites: 0,
     numPendingTests: 0,
+    numPendingTestSuites: 0,
     numRuntimeErrorTestSuites: 0,
     numTotalTests: 0,
     numTotalTestSuites,
@@ -441,14 +444,17 @@ const addResult = (
     testResult.numPassingTests +
     testResult.numFailingTests +
     testResult.numPendingTests;
-
   aggregatedResults.numFailedTests += testResult.numFailingTests;
   aggregatedResults.numPassedTests += testResult.numPassingTests;
   aggregatedResults.numPendingTests += testResult.numPendingTests;
+
   if (testResult.testExecError) {
     aggregatedResults.numRuntimeErrorTestSuites++;
   }
-  if (testResult.numFailingTests > 0 || testResult.testExecError) {
+
+  if (testResult.skipped) {
+    aggregatedResults.numPendingTestSuites++;
+  } else if (testResult.numFailingTests > 0 || testResult.testExecError) {
     aggregatedResults.numFailedTestSuites++;
   } else {
     aggregatedResults.numPassedTestSuites++;
@@ -494,6 +500,7 @@ const buildFailureTestResult = (
       end: 0,
       start: 0,
     },
+    skipped: false,
     snapshot: {
       added: 0,
       fileDeleted: false,

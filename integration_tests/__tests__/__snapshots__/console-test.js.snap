@@ -18,9 +18,9 @@ exports[`test console printing 1`] = `
 exports[`test console printing 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
-Snapshots:   0 passed, 0 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests.
+Ran all test suites.
 "
 `;
 
@@ -50,8 +50,8 @@ exports[`test console printing with --verbose 2`] = `
 exports[`test console printing with --verbose 3`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
-Snapshots:   0 passed, 0 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests.
+Ran all test suites.
 "
 `;
