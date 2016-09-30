@@ -46,12 +46,12 @@ class VerboseReporter extends DefaultReporter {
 
   onTestResult(
     config: Config,
-    testResult: TestResult,
+    result: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    super.onTestResult(config, testResult, aggregatedResults);
-    if (!testResult.testExecError) {
-      this._logTestResults(testResult.testResults);
+    super.onTestResult(config, result, aggregatedResults);
+    if (!result.testExecError && !result.skipped) {
+      this._logTestResults(result.testResults);
     }
   }
 

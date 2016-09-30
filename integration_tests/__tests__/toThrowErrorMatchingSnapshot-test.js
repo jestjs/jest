@@ -34,7 +34,7 @@ test('works fine when function throws error', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch('1 snapshot written in 1 test file.');
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 });

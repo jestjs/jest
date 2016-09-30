@@ -11,6 +11,7 @@
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Path} from 'types/Config';
+import type {PatternInfo} from './SearchSource';
 
 require('jest-haste-map').fastpath.replace();
 
@@ -63,7 +64,7 @@ const getMaxWorkers = argv => {
   }
 };
 
-const buildTestPathPatternInfo = argv => {
+const buildTestPathPatternInfo = (argv: Object): PatternInfo => {
   const defaultPattern = {
     input: '',
     testPathPattern: '',
@@ -112,6 +113,29 @@ const buildTestPathPatternInfo = argv => {
     });
   }
   return defaultPattern;
+};
+
+const getTestSummary = (
+  argv: Object,
+  patternInfo: PatternInfo,
+) => {
+  const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
+  const testInfo = patternInfo.onlyChanged
+    ? chalk.dim(' related to changed files')
+    : patternInfo.input !== ''
+      ? chalk.dim(' matching ') + testPathPattern
+      : '';
+
+  const nameInfo = argv.testNamePattern
+    ? chalk.dim(' with tests matching ') + `"${argv.testNamePattern}"`
+    : '';
+
+  return (
+    chalk.dim('Ran all test suites') +
+    testInfo +
+    nameInfo +
+    chalk.dim('.')
+  );
 };
 
 const getWatcher = (
@@ -173,7 +197,7 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
           config,
           {
             maxWorkers,
-            getTestSummary: () => SearchSource.getTestSummary(patternInfo),
+            getTestSummary: () => getTestSummary(argv, patternInfo),
           },
         ).runTests(data.paths, testWatcher);
       })

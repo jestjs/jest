@@ -7,18 +7,18 @@
  */
 'use strict';
 
+const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
 
 skipOnWindows.suite();
 
 test('testNamePattern', () => {
-  const result = runJest.json('testNamePattern', [
+  const {stderr, status} = runJest.json('testNamePattern', [
     '--testNamePattern', 'should match',
   ]);
+  const {summary} = extractSummary(stderr);
 
-  expect(result.status).toBe(0);
-  expect(result.json.numTotalTests).toBe(4);
-  expect(result.json.numPassedTests).toBe(2);
-  expect(result.json.numFailedTests).toBe(0);
+  expect(status).toBe(0);
+  expect(summary).toMatchSnapshot();
 });

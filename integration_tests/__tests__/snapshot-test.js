@@ -99,7 +99,7 @@ describe('Snapshot', () => {
     ).not.toBe(undefined);
 
     const info = result.stderr.toString();
-    expect(info).toMatch('4 snapshots written in 2 test files');
+    expect(info).toMatch('4 snapshots written in 2 test suites');
     expect(extractSummary(info).summary).toMatchSnapshot();
   });
 
@@ -142,7 +142,7 @@ describe('Snapshot', () => {
       fs.writeFileSync(copyOfTestPath, originalTestContent);
     });
 
-    it('deletes the snapshot if the test file has been removed', () => {
+    it('deletes the snapshot if the test suite has been removed', () => {
       const firstRun = runJest.json('snapshot', []);
       fs.unlinkSync(copyOfTestPath);
 
@@ -156,7 +156,7 @@ describe('Snapshot', () => {
 
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('7 snapshots written in 3 test files');
+      expect(infoFR).toMatch('7 snapshots written in 3 test suites');
       expect(infoSR).toMatch('1 snapshot file removed');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
@@ -175,7 +175,7 @@ describe('Snapshot', () => {
       expect(fileExists(snapshotOfCopy)).toBe(false);
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('7 snapshots written in 3 test files');
+      expect(infoFR).toMatch('7 snapshots written in 3 test suites');
       expect(infoSR).toMatch('1 snapshot file removed');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
@@ -216,9 +216,9 @@ describe('Snapshot', () => {
 
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('7 snapshots written in 3 test files');
+      expect(infoFR).toMatch('7 snapshots written in 3 test suites');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
-      expect(infoSR).toMatch('1 snapshot updated in 1 test file');
+      expect(infoSR).toMatch('1 snapshot updated in 1 test suite');
       expect(infoSR).toMatch('1 obsolete snapshot removed');
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
     });

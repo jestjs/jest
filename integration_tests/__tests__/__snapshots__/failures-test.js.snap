@@ -7,11 +7,11 @@ Object {
     
 
 ",
-  "summary": "Test Suites: 1 failed, 0 passed, 1 total
-Tests:       0 passed, 0 total
-Snapshots:   0 passed, 0 total
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests matching \"throw-number-test.js\".
+Ran all test suites matching \"throw-number-test.js\".
 ",
 }
 `;
@@ -25,11 +25,11 @@ Object {
       banana
 
 ",
-  "summary": "Test Suites: 1 failed, 0 passed, 1 total
-Tests:       0 passed, 0 total
-Snapshots:   0 passed, 0 total
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests matching \"throw-string-test.js\".
+Ran all test suites matching \"throw-string-test.js\".
 ",
 }
 `;
@@ -42,11 +42,11 @@ Object {
     Error: No message was provided
 
 ",
-  "summary": "Test Suites: 1 failed, 0 passed, 1 total
-Tests:       0 passed, 0 total
-Snapshots:   0 passed, 0 total
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all tests matching \"throw-object-test.js\".
+Ran all test suites matching \"throw-object-test.js\".
 ",
 }
 `;

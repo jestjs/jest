@@ -132,14 +132,14 @@ class SummareReporter extends BaseReporter {
       if (snapshots.added) {
         this.log(
           SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
-          ` written in ${pluralize('test file', snapshots.filesAdded)}.`,
+          ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
         );
       }
 
       if (snapshots.unmatched) {
         this.log(
           FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
-          ` failed in ${pluralize('test file', snapshots.filesUnmatched)}. ` +
+          ` failed in ${pluralize('test suite', snapshots.filesUnmatched)}. ` +
           SNAPSHOT_NOTE(
             'Inspect your code changes or ' +
             updateCommand + ' to update them.',
@@ -150,7 +150,7 @@ class SummareReporter extends BaseReporter {
       if (snapshots.updated) {
         this.log(
           SNAPSHOT_UPDATED(ARROW + pluralize('snapshot', snapshots.updated)) +
-          ` updated in ${pluralize('test file', snapshots.filesUpdated)}.`,
+          ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
         );
       }
 

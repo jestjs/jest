@@ -84,7 +84,7 @@ const createEmptyPackage = (directory, packageJson) => {
 
 const extractSummary = stdout => {
   const match = stdout.match(
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all tests.*\n*$/gm
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all test suites.*\n*$/gm
   );
   if (!match) {
     throw new Error(`

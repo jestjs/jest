@@ -9,9 +9,9 @@
  */
 'use strict';
 
+const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
-const {extractSummary} = require('../utils');
 
 skipOnWindows.suite();
 

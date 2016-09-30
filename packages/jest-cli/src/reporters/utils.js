@@ -93,27 +93,43 @@ const getSummary = (
   const snapshotsUpdated = snapshotResults.updated;
   const suitesFailed = aggregatedResults.numFailedTestSuites;
   const suitesPassed = aggregatedResults.numPassedTestSuites;
+  const suitesPending = aggregatedResults.numPendingTestSuites;
   const suitesRun = suitesFailed + suitesPassed;
   const suitesTotal = aggregatedResults.numTotalTestSuites;
   const testsFailed = aggregatedResults.numFailedTests;
   const testsPassed = aggregatedResults.numPassedTests;
+  const testsPending = aggregatedResults.numPendingTests;
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
   const suites =
     chalk.bold('Test Suites: ') +
     (suitesFailed ? chalk.bold.red(`${suitesFailed} failed`) + ', ' : '') +
-    chalk.bold.green(`${suitesPassed} passed`) + ', ' +
+    (suitesPending
+      ? chalk.bold.yellow(`${suitesPending} skipped`) + ', '
+      : ''
+    ) +
+    (suitesPassed
+      ? chalk.bold.green(`${suitesPassed} passed`) + ', '
+      : ''
+    ) +
     (suitesRun !== suitesTotal
-      ? suitesRun + '/' + suitesTotal
+      ? suitesRun + ' of ' + suitesTotal
       : suitesTotal
     ) + ` total`;
 
   const tests =
     chalk.bold('Tests:       ') +
     (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
-    chalk.bold.green(`${testsPassed} passed`) +
-    `, ${testsTotal} total`;
+    (testsPending
+      ? chalk.bold.yellow(`${testsPending} skipped`) + ', '
+      : ''
+    ) +
+    (testsPassed
+      ? chalk.bold.green(`${testsPassed} passed`) + ', '
+      : ''
+    ) +
+    `${testsTotal} total`;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +
@@ -129,8 +145,11 @@ const getSummary = (
       ? chalk.bold.green(`${snapshotsAdded} added`) + ', '
       : ''
     ) +
-    chalk.bold.green(`${snapshotsPassed} passed`) +
-    `, ${snapshotsTotal} total`;
+    (snapshotsPassed
+      ? chalk.bold.green(`${snapshotsPassed} passed`) + ', '
+      : ''
+    ) +
+    `${snapshotsTotal} total`;
 
   const time = renderTime(runTime, estimatedTime, width);
   return [suites, tests, snapshots, time].join('\n');
