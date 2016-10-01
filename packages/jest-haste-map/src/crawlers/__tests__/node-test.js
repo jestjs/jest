@@ -94,14 +94,14 @@ describe('node crawler', () => {
       '/vegetables/melon.json',
     ].join('\n');
 
-    const promise = nodeCrawl(
-      ['/fruits', '/vegtables'],
-      ['js', 'json'],
-      pearMatcher,
-      {
+    const promise = nodeCrawl({
+      data: {
         files: Object.create(null),
       },
-    ).then(data => {
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegtables'],
+    }).then(data => {
       expect(childProcess.spawn).lastCalledWith('find', [
         '/fruits',
         '/vegtables',
@@ -140,16 +140,20 @@ describe('node crawler', () => {
     files['/fruits/strawberry.js'] = ['', 30, 1, []];
     files['/fruits/tomato.js'] = tomato;
 
-    return nodeCrawl(['/fruits'], ['js'], pearMatcher, {files})
-      .then(data => {
-        expect(data.files).toEqual({
-          '/fruits/strawberry.js': ['', 32, 0, []],
-          '/fruits/tomato.js': tomato,
-        });
-
-        // Make sure it is the *same* unchanged object.
-        expect(data.files['/fruits/tomato.js']).toBe(tomato);
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      roots: ['/fruits'],
+    }).then(data => {
+      expect(data.files).toEqual({
+        '/fruits/strawberry.js': ['', 32, 0, []],
+        '/fruits/tomato.js': tomato,
       });
+
+      // Make sure it is the *same* unchanged object.
+      expect(data.files['/fruits/tomato.js']).toBe(tomato);
+    });
   });
 
   it('uses node fs APIs on windows', () => {
@@ -158,13 +162,36 @@ describe('node crawler', () => {
     nodeCrawl = require('../node');
 
     const files = Object.create(null);
-    return nodeCrawl(['/fruits'], ['js'], pearMatcher, {files})
-      .then(data => {
-        expect(data.files).toEqual({
-          '/fruits/tomato.js': ['', 32, 0, []],
-          '/fruits/directory/strawberry.js': ['', 33, 0, []],
-        });
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      roots: ['/fruits'],
+    }).then(data => {
+      expect(data.files).toEqual({
+        '/fruits/tomato.js': ['', 32, 0, []],
+        '/fruits/directory/strawberry.js': ['', 33, 0, []],
       });
+    });
   });
 
+  it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', () => {
+    process.platform = 'linux';
+
+    nodeCrawl = require('../node');
+
+    const files = Object.create(null);
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      forceNodeFilesystemAPI: true,
+      ignore: pearMatcher,
+      roots: ['/fruits'],
+    }).then(data => {
+      expect(data.files).toEqual({
+        '/fruits/tomato.js': ['', 32, 0, []],
+        '/fruits/directory/strawberry.js': ['', 33, 0, []],
+      });
+    });
+  });
 });

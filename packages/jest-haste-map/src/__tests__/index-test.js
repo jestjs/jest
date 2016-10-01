@@ -28,7 +28,12 @@ jest.mock('worker-farm', () => {
 
 jest.mock('../crawlers/node');
 jest.mock('../crawlers/watchman', () =>
-  jest.fn((roots, extensions, ignore, data) => {
+  jest.fn(options => {
+    const {
+      data,
+      ignore,
+      roots,
+    } = options;
     data.clocks = mockClocks;
 
     const list = mockChangedFiles || mockFs;
@@ -505,8 +510,9 @@ describe('HasteMap', () => {
     const watchman = require('../crawlers/watchman');
     const mockImpl = watchman.getMockImplementation();
     // Wrap the watchman mock and add an invalid file to the file list.
-    watchman.mockImplementation((roots, extensions, ignore, data) => {
-      return mockImpl(roots, extensions, ignore, data).then(() => {
+    watchman.mockImplementation(options => {
+      return mockImpl(options).then(() => {
+        const {data} = options;
         data.files['/fruits/invalid/file.js'] = ['', 34, 0, []];
         return data;
       });
@@ -548,7 +554,8 @@ describe('HasteMap', () => {
     watchman.mockImplementation(() => {
       throw new Error('watchman error');
     });
-    node.mockImplementation((roots, extensions, ignore, data) => {
+    node.mockImplementation(options => {
+      const {data} = options;
       data.files = object({
         '/fruits/banana.js': ['', 32, 0, []],
       });
@@ -575,7 +582,8 @@ describe('HasteMap', () => {
     watchman.mockImplementation(() => {
       return Promise.reject(new Error('watchman error'));
     });
-    node.mockImplementation((roots, extensions, ignore, data) => {
+    node.mockImplementation(options => {
+      const {data} = options;
       data.files = object({
         '/fruits/banana.js': ['', 32, 0, []],
       });

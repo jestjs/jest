@@ -9,8 +9,8 @@
  */
 'use strict';
 
+import type {CrawlerOptions} from '../types';
 import type {InternalHasteMap} from 'types/HasteMap';
-import type {IgnoreMatcher} from '../types';
 
 const H = require('../constants');
 
@@ -31,11 +31,15 @@ function WatchmanError(error: Error): Error {
 }
 
 module.exports = function watchmanCrawl(
-  roots: Array<string>,
-  extensions: Array<string>,
-  ignore: IgnoreMatcher,
-  data: InternalHasteMap,
+  options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
+  const {
+    data,
+    extensions,
+    ignore,
+    roots,
+  } = options;
+
   return new Promise((resolve, reject) => {
     const client = new watchman.Client();
     client.on('error', error => reject(error));
