@@ -10,7 +10,7 @@
 'use strict';
 
 import type {Error} from 'types/TestResult';
-import type {ModuleMetaData} from 'types/HasteMap';
+import type {InternalHasteMap, ModuleMetaData} from 'types/HasteMap';
 
 export type IgnoreMatcher = (item: string) => boolean;
 
@@ -23,3 +23,11 @@ export type WorkerMetadata = {
   dependencies: ?Array<string>,
 };
 export type WorkerCallback = (error: ?Error, metaData: ?WorkerMetadata) => void;
+
+export type CrawlerOptions = {|
+  data: InternalHasteMap,
+  extensions: Array<string>,
+  forceNodeFilesystemAPI: boolean,
+  ignore: IgnoreMatcher,
+  roots: Array<string>,
+|};

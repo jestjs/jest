@@ -10,7 +10,7 @@
 'use strict';
 
 import type {InternalHasteMap} from 'types/HasteMap';
-import type {IgnoreMatcher} from '../types';
+import type {IgnoreMatcher, CrawlerOptions} from '../types';
 
 const H = require('../constants');
 
@@ -120,11 +120,16 @@ function findNative(
 }
 
 module.exports = function nodeCrawl(
-  roots: Array<string>,
-  extensions: Array<string>,
-  ignore: IgnoreMatcher,
-  data: InternalHasteMap,
+  options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
+  const {
+    data,
+    extensions,
+    forceNodeFilesystemAPI,
+    ignore,
+    roots,
+  } = options;
+
   return new Promise(resolve => {
     const callback = list => {
       const files = Object.create(null);
@@ -143,7 +148,7 @@ module.exports = function nodeCrawl(
       resolve(data);
     };
 
-    if (process.platform === 'win32') {
+    if (forceNodeFilesystemAPI || process.platform === 'win32') {
       find(roots, extensions, ignore, callback);
     } else {
       findNative(roots, extensions, ignore, callback);

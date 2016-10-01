@@ -88,15 +88,15 @@ describe('watchman watch', () => {
     const originalPathRelative = path.relative;
     path.relative = jest.fn(from => '/root-mock' + from);
 
-    return watchmanCrawl(
-      ['/fruits', '/vegetables'],
-      ['js', 'json'],
-      pearMatcher,
-      {
+    return watchmanCrawl({
+      data: {
         clocks: Object.create(null),
         files: Object.create(null),
       },
-    ).then(data => {
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegetables'],
+    }).then(data => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
 
@@ -176,15 +176,15 @@ describe('watchman watch', () => {
       '/vegetables': 'c:fake-clock:2',
     });
 
-    return watchmanCrawl(
-      ['/fruits', '/vegetables'],
-      ['js', 'json'],
-      pearMatcher,
-      {
+    return watchmanCrawl({
+      data: {
         clocks,
         files: mockFiles,
       },
-    ).then(data => {
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegetables'],
+    }).then(data => {
       // The object was reused.
       expect(data.files).toBe(mockFiles);
 
@@ -241,15 +241,15 @@ describe('watchman watch', () => {
       '/vegetables': 'c:fake-clock:2',
     });
 
-    return watchmanCrawl(
-      ['/fruits', '/vegetables'],
-      ['js', 'json'],
-      pearMatcher,
-      {
+    return watchmanCrawl({
+      data: {
         clocks,
         files: mockFiles,
       },
-    ).then(data => {
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegetables'],
+    }).then(data => {
       // The file object was *not* reused.
       expect(data.files).not.toBe(mockFiles);
 
@@ -307,15 +307,15 @@ describe('watchman watch', () => {
       '/vegetables': 'c:fake-clock:2',
     });
 
-    return watchmanCrawl(
-      ['/fruits', '/vegetables'],
-      ['js', 'json'],
-      pearMatcher,
-      {
+    return watchmanCrawl({
+      data: {
         clocks,
         files: mockFiles,
       },
-    ).then(data => {
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      roots: ['/fruits', '/vegetables'],
+    }).then(data => {
       expect(data.clocks).toEqual({
         '/fruits': 'c:fake-clock:3',
         '/vegetables': 'c:fake-clock:4',
@@ -327,5 +327,4 @@ describe('watchman watch', () => {
       });
     });
   });
-
 });
