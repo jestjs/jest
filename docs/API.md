@@ -36,11 +36,15 @@ When you're writing tests, you need to check that values are what you
 expect all the time. That's what you use `expect` for.
 
   - [`expect(value)`](#expect-value)
-  - [`.lastCalledWith(arg1, arg2, ...)`](#lastcalledwith-arg1-arg2)
+  - `.lastCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenLastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.not`](#not)
   - [`.toBe(value)`](#tobe-value)
-  - [`.toBeCalled()`](#tobecalled)
-  - [`.toBeCalledWith(arg1, arg2, ...)`](#tobecalledwith-arg1-arg2)
+  - `.toBeCalled()` is an alias for [`.toHaveBeenCalled()`] (#tohavebeencalled)
+  - `.toBeCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
+  - [`.toHaveBeenCalled()`](#tohavebeencalled)
+  - [`.toHaveBeenCalledTimes(number)`](#tohavebeencalledtimesnumber)
+  - [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
+  - [`.toHaveBeenLastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.toBeCloseTo(number, numDigits)`](#tobecloseto-number-numdigits)
   - [`.toBeDefined()`](#tobedefined)
   - [`.toBeFalsy()`](#tobefalsy)
@@ -59,6 +63,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toMatchSnapshot()`](#tomatchsnapshot)
   - [`.toThrow()`](#tothrow)
   - [`.toThrowError(error)`](#tothrowerror-error)
+  - [`.toThrowErrorMatchingSnapshot()`](#tothrowerrormatchingsnapshot)
 
 #### Mock functions
 
@@ -219,20 +224,6 @@ In this case, `toBe` is the matcher function. There are a lot of different match
 
 The argument to `expect` should be the value that your code produces, and any argument to the matcher should be the correct value. If you mix them up, your tests will still work, but the error messages on failing tests will look strange.
 
-### `.lastCalledWith(arg1, arg2, ...)`
-
-If you have a mock function, you can use `.lastCalledWith` to test what arguments it was last called with. For example, let's say you have a `applyToAllFlavors(f)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the last flavor it operates on is `'mango'`. You can write:
-
-```js
-describe('applying to all flavors', () => {
-  it('does mango last', () => {
-    let drink = jest.fn();
-    applyToAllFlavors(drink);
-    expect(drink).lastCalledWith('mango');
-  });
-});
-```
-
 ### `.not`
 
 If you know how to test something, `.not` lets you test its opposite. For example, this code tests that the best La Croix flavor is not coconut:
@@ -271,9 +262,9 @@ describe('the can', () => {
 
 Don't use `toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
 
-### `.toBeCalled()`
+### `.toHaveBeenCalled()`
 
-Use `.toBeCalled` to ensure that a mock function got called.
+Use `.toHaveBeenCalled` to ensure that a mock function got called.
 
 For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
 
@@ -282,20 +273,36 @@ describe('drinkAll', () => {
   it('drinks something lemon-flavored', () => {
     let drink = jest.fn();
     drinkAll(drink, 'lemon');
-    expect(drink).toBeCalled();
+    expect(drink).toHaveBeenCalled();
   });
 
   it('does not drink something octopus-flavored', () => {
     let drink = jest.fn();
     drinkAll(drink, 'octopus');
-    expect(drink).not.toBeCalled();
+    expect(drink).not.toHaveBeenCalled();
   });
 });
 ```
 
-### `.toBeCalledWith(arg1, arg2, ...)`
+### `.toHaveBeenCalledTimes(number)`
 
-Use `.toBeCalledWith` to ensure that a mock function was called with specific
+Use `.toHaveBeenCalledTimes` to ensure that a mock function got called exact number of times.
+
+For example, let's say you have a `drinkEach(drink, Array<flavor>)` function that takes a `drink` function and applies it to array of passed beverages. You might want to check that drink function was called exact number of times. You can do that with this test suite:
+
+```js
+describe('drinkEach', () => {
+  it('drinks each drink', () => {
+    let drink = jest.fn();
+    drinkEach(drink, ['lemon', 'octopus']);
+    expect(drink).toHaveBeenCalledTimes(2);
+  });
+});
+```
+
+### `.toHaveBeenCalledWith(arg1, arg2, ...)`
+
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific
 arguments.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
@@ -307,7 +314,21 @@ describe('beverage registration', () => {
     register(beverage);
     let f = jest.fn();
     applyToAll(f);
-    expect(f).toBeCalledWith(beverage);
+    expect(f).toHaveBeenCalledWith(beverage);
+  });
+});
+```
+
+### `.toHaveBeenLastCalledWith(arg1, arg2, ...)`
+
+If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test what arguments it was last called with. For example, let's say you have a `applyToAllFlavors(f)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the last flavor it operates on is `'mango'`. You can write:
+
+```js
+describe('applying to all flavors', () => {
+  it('does mango last', () => {
+    let drink = jest.fn();
+    applyToAllFlavors(drink);
+    expect(drink).toHaveBeenLastCalledWith('mango');
   });
 });
 ```
@@ -614,6 +635,41 @@ describe('drinking flavors', () => {
 
 If you don't care what specific error gets thrown, use `.toThrow`.
 
+### `.toThrowErrorMatchingSnapshot()`
+
+Use `.toThrowErrorMatchingSnapshot` to test that a function throws a error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+
+```js
+function drinkFlavor(flavor) {
+  if (flavor == 'octopus') {
+    throw new DisgustingFlavorError('yuck, octopus flavor');
+  }
+  // Do some other stuff
+}
+```
+
+The test for this function will look this way:
+
+```js
+describe('drinking flavors', () => {
+  it('throws on octopus', () => {
+    function drinkOctopus() {
+      drink('octopus');
+    }
+
+    expect(drinkOctopus).toThrowErrorMatchingSnapshot();
+  });
+});
+```
+
+And it will generate the following snapshot:
+
+```
+exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
+```
+
+Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+
 ## Mock Functions
 
 ### `mockFn.mock.calls`
@@ -790,7 +846,7 @@ implementation.
 ```js
   const mockFn = jest.fn();
   mockFn();
-  expect(mockFn).toBeCalled();
+  expect(mockFn).toHaveBeenCalled();
 
   // With a mock implementation:
   const returnsTrue = jest.fn(() => true);
