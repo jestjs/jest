@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -164,17 +163,17 @@ describe('normalize', () => {
     });
   });
 
-  describe('testPathDirs', () => {
+  function testPathArray(key) {
     it('normalizes all paths relative to rootDir', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        testPathDirs: [
+        [key]: [
           'bar/baz',
           'qux/quux/',
         ],
       }, '/root/path');
 
-      expect(config.testPathDirs).toEqual([
+      expect(config[key]).toEqual([
         expectedPathFooBar, expectedPathFooQux,
       ]);
     });
@@ -182,13 +181,13 @@ describe('normalize', () => {
     it('does not change absolute paths', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        testPathDirs: [
+        [key]: [
           '/an/abs/path',
           '/another/abs/path',
         ],
       });
 
-      expect(config.testPathDirs).toEqual([
+      expect(config[key]).toEqual([
         expectedPathAbs, expectedPathAbsAnother,
       ]);
     });
@@ -196,13 +195,21 @@ describe('normalize', () => {
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        testPathDirs: [
+        [key]: [
           '<rootDir>/bar/baz',
         ],
       });
 
-      expect(config.testPathDirs).toEqual([expectedPathFooBar]);
+      expect(config[key]).toEqual([expectedPathFooBar]);
     });
+  }
+
+  describe('testPathDirs', () => {
+    testPathArray('testPathDirs');
+  });
+
+  describe('snapshotSerializers', () => {
+    testPathArray('snapshotSerializers');
   });
 
   describe('scriptPreprocessor', () => {
