@@ -408,6 +408,76 @@ const matchers: MatchersObject = {
   },
 
   toMatchSnapshot,
+
+  toMatchObject(receivedObject: Object, expectedObject: Object) {
+
+    if (typeof receivedObject !== 'object' || receivedObject === null) {
+      throw new Error(
+        matcherHint('[.not].toMatch', 'object', 'expected') + '\n\n' +
+        `${RECEIVED_COLOR('string')} value must be an object.\n` +
+        printWithType('Received', JSON.stringify(receivedObject), printReceived),
+      );
+    }
+
+    if (typeof expectedObject !== 'object' || expectedObject === null) {
+      throw new Error(
+        matcherHint('[.not].toMatch', 'object', 'expected') + '\n\n' +
+        `${RECEIVED_COLOR('string')} value must be an object.\n` +
+        printWithType('Received', JSON.stringify(expectedObject), printReceived),
+      );
+    }
+
+    const compare = (expected: any, actual: any) => {
+
+      if (typeof actual !== typeof expected) {
+        return false;
+      }
+      if (typeof expected !== 'object' || expected === null) {
+        return expected === actual;
+      }
+
+      if (Array.isArray(expected)) {
+        if (!Array.isArray(actual)) {
+          return false;
+        }
+
+        return expected.every(exp => {
+          return actual.some(act => {
+            return compare(exp, act);
+          });
+        });
+      }
+
+      if (expected instanceof Date && actual instanceof Date) {
+        return expected.getTime() === actual.getTime();
+      }
+
+      return Object.keys(expected).every(key => {
+        const exp = expected[key];
+        const act = actual[key];
+        if (typeof exp === 'object' && exp !== null && act !== null) {
+          return compare(exp, act);
+        }
+        return act === exp;
+      });
+    };
+
+    const pass = compare(expectedObject, receivedObject);
+
+    const message = pass
+      ? () => matcherHint('.not.toMatchObject') +
+     `\n\nExpected value not to match object:\n` +
+     `  ${printExpected(JSON.stringify(expectedObject))}` +
+     `\nReceived:\n` +
+     `  ${printReceived(JSON.stringify(receivedObject))}`
+       : () => matcherHint('.toMatchObject') +
+     `\n\nExpected value to match object:\n` +
+     `  ${printExpected(JSON.stringify(expectedObject))}` +
+     `\nReceived:\n` +
+     `  ${printReceived(JSON.stringify(receivedObject))}`;
+
+    return {message, pass};
+  },
 };
 
 module.exports = matchers;

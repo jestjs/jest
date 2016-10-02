@@ -455,3 +455,61 @@ describe('.toMatch()', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
   });
 });
+
+describe('toMatchObject()', () => {
+
+  [
+    [{a: 'b', c: 'd'}, {a: 'b'}],
+    [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
+    [{a: 'b', t: {z: 'z', x: {r: 'r'}}}, {a: 'b', t: {z: 'z'}}],
+    [{a: 'b', t: {z: 'z', x: {r: 'r'}}}, {t: {x: {r: 'r'}}}],
+    [{a: [3, 4, 5], b: 'b'}, {a: [3, 4, 5]}],
+    [{a: [3, 4, 5], b: 'b'}, {a: [3, 4]}],
+    [{a: [3, 4, 'v'], b: 'b'}, {a: ['v']}],
+    [{a: [3, 4, 5, 'v']}, {a: ['v']}],
+    [new Date('2015-11-30'), new Date('2015-11-30')],
+    [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-11-30')}],
+    [{a: null, b: 'b'}, {a: null}],
+    [{a: undefined, b: 'b'}, {a: undefined}],
+  ].forEach(([n1, n2]) => {
+    it('identifies a match: ', () => {
+      jestExpect(n1).toMatchObject(n2);
+      expect(() => jestExpect(n1).not.toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+     [{a: 'b', c: 'd'}, {e: 'b'}],
+     [{a: 'b', c: 'd'}, {a: 'b!', c: 'd'}],
+     [{a: 'b', t: {z: 'z', x: {r: 'r'}}}, {a: 'b', t: {z: [3]}}],
+     [{a: 'b', t: {z: 'z', x: {r: 'r'}}}, {t: {l: {r: 'r'}}}],
+     [{a: [3, 4, 5], b: 'b'}, {a: [3, 4, 5, 6]}],
+     [{a: [3, 4, 5], b: 'b'}, {a: {b: 4}}],
+     [[1, 2], [1, 3]],
+     [new Date('2015-11-30'), new Date('2015-10-10')],
+     [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-10-10')}],
+     [{a: null, b: 'b'}, {a: '4'}],
+     [{a: null, b: 'b'}, {a: undefined}],
+     [{a: undefined}, {a: null}],
+  ].forEach(([n1, n2]) => {
+    it('identified a non-match: ', () => {
+      jestExpect(n1).not.toMatchObject(n2);
+      expect(() => jestExpect(n1).toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+     [null, null],
+     [4, 3],
+     ['44', '44'],
+     [true, true],
+     [undefined, undefined],
+  ].forEach(([n1, n2]) => {
+    it('throws if primitives are passed:', () => {
+      expect(() => jestExpect(n1).toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+});
