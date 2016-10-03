@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "15.1.1",
+  "version": "16.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,9 +10,9 @@
   "dependencies": {
     "graceful-fs": "^4.1.6",
     "jasmine-check": "^0.1.4",
-    "jest-matchers": "^15.1.1",
-    "jest-snapshot": "^15.1.1",
-    "jest-util": "^15.1.1"
+    "jest-matchers": "^16.0.0",
+    "jest-snapshot": "^16.0.0",
+    "jest-util": "^16.0.0"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
