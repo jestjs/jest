@@ -4,7 +4,7 @@ title: Tutorial – jQuery
 layout: docs
 category: Quick Start
 permalink: docs/tutorial-jquery.html
-next: api
+next: migration-guide
 ---
 
 Another class of functions that is often considered difficult to test is code
