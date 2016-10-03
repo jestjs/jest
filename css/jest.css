@@ -193,6 +193,7 @@ h1, h2, h3, h4 {
 
 .projectLogo {
   display: none;
+  pointer-events: none;
 }
 .projectLogo img {
   height: 100px;
@@ -234,10 +235,14 @@ h1, h2, h3, h4 {
   margin: 12px 0;
   padding: 0;
 }
-.mainContainer .wrapper a, .mainContainer .wrapper a:focus {
+.mainContainer .wrapper a,
+.inner .projectIntro a {
   text-decoration: underline;
 }
-.mainContainer .wrapper a:hover, .mainContainer .wrapper a:focus {
+.mainContainer .wrapper a:hover,
+.mainContainer .wrapper a:focus,
+.inner .projectIntro a:hover,
+.inner .projectIntro a:focus {
   text-decoration: none;
 }
 .mainContainer .wrapper em, .mainContainer .wrapper i {
@@ -438,21 +443,6 @@ h1, h2, h3, h4 {
     max-width: 600px;
     padding-right: 40px;
   }
-  .homeContainer .homeWrapper .projectLogo {
-    align-items: center;
-    bottom: 0;
-    display: flex;
-    justify-content: flex-end;
-    left: 0;
-    padding: 2em 20px 4em;
-    position: absolute;
-    right: 20px;
-    top: 0;
-  }
-  .homeContainer .homeWrapper .projectLogo img {
-    height: 100%;
-    max-height: 250px;
-  }
 }
 @media only screen and (min-width: 1024px) {
   .mainContainer .wrapper .post {
@@ -474,6 +464,21 @@ h1, h2, h3, h4 {
 
   .wrapper {
     max-width: 1100px;
+  }
+  .homeContainer .homeWrapper .projectLogo {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    left: 0;
+    padding: 2em 20px 4em;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .homeContainer .homeWrapper .projectLogo img {
+    height: 100%;
+    max-height: 250px;
   }
 }
 @media only screen and (min-width: 1500px) {
@@ -1593,13 +1598,10 @@ table tr th {
 }
 .blogContainer .postHeader .authorPhoto {
   border-radius: 50%;
-  height: 50px;
-  left: 50%;
-  margin-left: -25px;
+  height: 70px;
+  margin: 0 auto;
   overflow: hidden;
-  position: absolute;
-  top: -25px;
-  width: 50px;
+  width: 70px;
 }
 
 .header-link {
