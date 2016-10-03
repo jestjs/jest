@@ -616,7 +616,7 @@ code,
 a code,
 .mainContainer .wrapper a code,
 .mainContainer .wrapper a:focus code {
-  color: #5e9f24;
+  color: #a05757;
   font-family: Hack, monospace;
   font-size: 90%;
   font-weight: 300;
@@ -784,6 +784,11 @@ a:hover code {
   display: flex;
   flex-flow: row wrap;
 }
+.testingFeatures {
+  background: #f4f4f4;
+  border-radius: 10px;
+  margin: 0 8px 8px 0;
+}
 .blockImage {
   max-width: 150px;
   width: 50%;
@@ -863,6 +868,11 @@ a:hover code {
   .gridBlock .twoByGridBlock {
     box-sizing: border-box;
     flex: 1 0 50%;
+    padding: 10px;
+  }
+  .gridBlock .threeByGridBlock {
+    box-sizing: border-box;
+    flex: 1 0 26%;
     padding: 10px;
   }
   .gridBlock .fourByGridBlock {

@@ -84,7 +84,7 @@ npm install <span class="token operator">--</span>save<span class="token operato
 <span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">&#x27;../Link.react&#x27;</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> renderer <span class="token keyword">from</span> <span class="token string">&#x27;react-test-renderer&#x27;</span><span class="token punctuation">;</span>
 
-<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">&#x27;changes the class when hovered&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&#x27;Link changes the class when hovered&#x27;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
   <span class="token keyword">const</span> component <span class="token operator">=</span> renderer<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>
     <span class="token operator">&lt;</span>Link page<span class="token operator">=</span><span class="token string">&quot;http://www.facebook.com&quot;</span><span class="token operator">&gt;</span>Facebook<span class="token operator">&lt;</span><span class="token operator">/</span>Link<span class="token operator">&gt;</span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -108,8 +108,8 @@ exports<span class="token punctuation">[</span><span class="token template-strin
 <span class="token operator">&lt;</span>a
   className<span class="token operator">=</span><span class="token string">&quot;normal&quot;</span>
   href<span class="token operator">=</span><span class="token string">&quot;http://www.facebook.com&quot;</span>
-  onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function bound _onMouseEnter<span class="token punctuation">]</span><span class="token punctuation">}</span>
-  onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function bound _onMouseLeave<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+  onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function<span class="token punctuation">]</span><span class="token punctuation">}</span>
+  onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
   Facebook
 <span class="token operator">&lt;</span><span class="token operator">/</span>a<span class="token operator">&gt;</span>
 <span class="token template-string"><span class="token string">`;
@@ -118,8 +118,8 @@ exports[`</span></span>Link changes the <span class="token keyword">class</span>
 <span class="token operator">&lt;</span>a
   className<span class="token operator">=</span><span class="token string">&quot;hovered&quot;</span>
   href<span class="token operator">=</span><span class="token string">&quot;http://www.facebook.com&quot;</span>
-  onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function bound _onMouseEnter<span class="token punctuation">]</span><span class="token punctuation">}</span>
-  onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function bound _onMouseLeave<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+  onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function<span class="token punctuation">]</span><span class="token punctuation">}</span>
+  onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
   Facebook
 <span class="token operator">&lt;</span><span class="token operator">/</span>a<span class="token operator">&gt;</span>
 <span class="token template-string"><span class="token string">`;
@@ -128,8 +128,8 @@ exports[`</span></span>Link changes the <span class="token keyword">class</span>
 <span class="token operator">&lt;</span>a
   className<span class="token operator">=</span><span class="token string">&quot;normal&quot;</span>
   href<span class="token operator">=</span><span class="token string">&quot;http://www.facebook.com&quot;</span>
-  onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function bound _onMouseEnter<span class="token punctuation">]</span><span class="token punctuation">}</span>
-  onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function bound _onMouseLeave<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
+  onMouseEnter<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function<span class="token punctuation">]</span><span class="token punctuation">}</span>
+  onMouseLeave<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span>Function<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>
   Facebook
 <span class="token operator">&lt;</span><span class="token operator">/</span>a<span class="token operator">&gt;</span>
 `<span class="token punctuation">;</span></pre><p>The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with <code>jest -u</code> to overwrite the existing snapshot.</p><p>The code for this example is available at
