@@ -9,14 +9,11 @@
  */
 'use strict';
 
+import type {ModuleMap as _ModuleMap, FS} from 'jest-haste-map';
 import type {Path} from 'types/Config';
-import type _HasteMapInstance from '../packages/jest-haste-map/src';
-import type _HasteFS from '../packages/jest-haste-map/src/HasteFS';
-import type HasteResolver from '../packages/jest-resolve/src';
-import type _ModuleMap from '../packages/jest-haste-map/src/ModuleMap';
+import type HasteResolver from 'jest-resolve';
 
-export type HasteFS = _HasteFS;
-export type HasteMapInstance = _HasteMapInstance;
+export type HasteFS = FS;
 export type ModuleMap = _ModuleMap;
 
 export type HasteContext = {|

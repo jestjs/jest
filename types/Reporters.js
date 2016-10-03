@@ -9,10 +9,10 @@
  */
 'use strict';
 
-import type HasteFS from '../packages/jest-haste-map/src/HasteFS';
+import type {FS} from 'jest-haste-map';
 
 export type RunnerContext = {|
-  hasteFS: HasteFS,
+  hasteFS: FS,
   getTestSummary: () => string,
 |};
 
