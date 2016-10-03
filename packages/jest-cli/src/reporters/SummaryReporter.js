@@ -64,6 +64,17 @@ class SummareReporter extends BaseReporter {
     this._estimatedTime = 0;
   }
 
+  // If we write more than one character at a time it is possible that
+  // Node.js exits in the middle of printing the result. This was first observed
+  // in Node.js 0.10 and still persists in Node.js 6.7+.
+  // Let's print the test failure summary character by character which is safer
+  // when hundreds of tests are failing.
+  _write(string: string) {
+    for (let i = 0; i < string.length; i++) {
+      process.stderr.write(string.charAt(i));
+    }
+  }
+
   onRunStart(
     config: Config,
     aggregatedResults: AggregatedResult,
@@ -197,9 +208,9 @@ class SummareReporter extends BaseReporter {
       aggregatedResults.testResults.forEach(testResult => {
         const {failureMessage} = testResult;
         if (failureMessage) {
-          this.log(
+          this._write(
             getResultHeader(testResult, config) + '\n' +
-            failureMessage,
+            failureMessage + '\n',
           );
         }
       });

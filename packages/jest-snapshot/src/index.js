@@ -93,7 +93,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
     );
 
     const message =
-      matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
+      () => matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
       `${RECEIVED_COLOR('Received value')} does not match ` +
       `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
       (diffMessage || (

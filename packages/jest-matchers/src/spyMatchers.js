@@ -47,10 +47,11 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
     : received.mock.calls;
   const pass = count > 0;
   const message = pass
-    ? matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') + '\n\n' +
+    ? () => matcherHint('.not' + matcherName, RECEIVED_NAME[type], '') +
+      '\n\n' +
       `Expected ${type} not to be called ` +
       formatReceivedCalls(calls, CALL_PRINT_LIMIT, {sameSentence: true})
-    : matcherHint(matcherName, RECEIVED_NAME[type], '') + '\n\n' +
+    : () => matcherHint(matcherName, RECEIVED_NAME[type], '') + '\n\n' +
       `Expected ${type} to have been called.`;
 
   return {message, pass};
@@ -71,10 +72,10 @@ const createToBeCalledWithMatcher = matcherName =>
     const pass = calls.some(call => equals(call, expected));
 
     const message = pass
-      ? matcherHint('.not' + matcherName, RECEIVED_NAME[type]) + '\n\n' +
+      ? () => matcherHint('.not' + matcherName, RECEIVED_NAME[type]) + '\n\n' +
         `Expected ${type} not to have been called with:\n` +
         `  ${printExpected(expected)}`
-      : matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
+      : () => matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
         `Expected ${type} to have been called with:\n` +
          `  ${printExpected(expected)}\n` +
          formatReceivedCalls(calls, CALL_PRINT_LIMIT);
@@ -97,10 +98,10 @@ const createLastCalledWithMatcher = matcherName =>
     const pass = equals(calls[calls.length - 1], expected);
 
     const message = pass
-      ? matcherHint('.not' + matcherName, RECEIVED_NAME[type]) + '\n\n' +
+      ? () => matcherHint('.not' + matcherName, RECEIVED_NAME[type]) + '\n\n' +
         `Expected ${type} to not have been last called with:\n` +
         `  ${printExpected(expected)}`
-      : matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
+      : () => matcherHint(matcherName, RECEIVED_NAME[type]) + '\n\n' +
         `Expected ${type} to have been last called with:\n` +
          `  ${printExpected(expected)}\n` +
          formatReceivedCalls(calls, LAST_CALL_PRINT_LIMIT, {isLast: true});
@@ -129,7 +130,7 @@ const spyMatchers: MatchersObject = {
       : received.mock.calls.length;
     const pass = count === expected;
     const message = pass
-      ? matcherHint(
+      ? () => matcherHint(
           '.not' +
           matcherName,
           RECEIVED_NAME[type],
@@ -139,7 +140,7 @@ const spyMatchers: MatchersObject = {
         `Expected ${type} not to be called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
         ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
-      : matcherHint(matcherName, RECEIVED_NAME[type], String(expected)) +
+      : () => matcherHint(matcherName, RECEIVED_NAME[type], String(expected)) +
         '\n\n' +
         `Expected ${type} to have been called ` +
         `${EXPECTED_COLOR(pluralize('time', expected))},` +

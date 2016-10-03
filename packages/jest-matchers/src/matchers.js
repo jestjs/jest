@@ -73,7 +73,7 @@ const matchers: MatchersObject = {
     const pass = received === expected;
 
     const message = pass
-      ?  () => matcherHint('.not.toBe') + '\n\n' +
+      ? () => matcherHint('.not.toBe') + '\n\n' +
         `Expected value to not be (using ===):\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
@@ -95,7 +95,7 @@ const matchers: MatchersObject = {
     const pass = equals(received, expected, [iterableEquality]);
 
     const message = pass
-      ?  () => matcherHint('.not.toEqual') + '\n\n' +
+      ? () => matcherHint('.not.toEqual') + '\n\n' +
         `Expected value to not equal:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
@@ -146,10 +146,10 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, '.toBeTruthy');
     const pass = !!actual;
     const message = pass
-      ? matcherHint('.not.toBeTruthy', 'received', '') + '\n\n' +
+      ? () => matcherHint('.not.toBeTruthy', 'received', '') + '\n\n' +
         `Expected value not to be truthy, instead received\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeTruthy', 'received', '') + '\n\n' +
+      : () => matcherHint('.toBeTruthy', 'received', '') + '\n\n' +
         `Expected value to be truthy, instead received\n` +
         `  ${printReceived(actual)}`;
     return {message, pass};
@@ -159,10 +159,10 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, '.toBeFalsy');
     const pass = !actual;
     const message = pass
-      ? matcherHint('.not.toBeFalsy', 'received', '') + '\n\n' +
+      ? () => matcherHint('.not.toBeFalsy', 'received', '') + '\n\n' +
         `Expected value not to be falsy, instead received\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeFalsy', 'received', '') + '\n\n' +
+      : () => matcherHint('.toBeFalsy', 'received', '') + '\n\n' +
         `Expected value to be falsy, instead received\n` +
         `  ${printReceived(actual)}`;
     return {message, pass};
@@ -172,10 +172,10 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, '.toBeNaN');
     const pass = Number.isNaN(actual);
     const message = pass
-      ? matcherHint('.not.toBeNaN', 'received', '') + '\n\n' +
+      ? () => matcherHint('.not.toBeNaN', 'received', '') + '\n\n' +
         `Expected value not to be NaN, instead received\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeNaN', 'received', '') + '\n\n' +
+      : () => matcherHint('.toBeNaN', 'received', '') + '\n\n' +
         `Expected value to be NaN, instead received\n` +
         `  ${printReceived(actual)}`;
     return {message, pass};
@@ -185,10 +185,10 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, '.toBeNull');
     const pass = actual === null;
     const message = pass
-      ? matcherHint('.not.toBeNull', 'received', '') + '\n\n' +
+      ? () => matcherHint('.not.toBeNull', 'received', '') + '\n\n' +
         `Expected value not to be null, instead received\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeNull', 'received', '') + '\n\n' +
+      : () => matcherHint('.toBeNull', 'received', '') + '\n\n' +
         `Expected value to be null, instead received\n` +
         `  ${printReceived(actual)}`;
     return {message, pass};
@@ -198,10 +198,10 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, '.toBeDefined');
     const pass = actual !== void 0;
     const message = pass
-      ? matcherHint('.not.toBeDefined', 'received', '') + '\n\n' +
+      ? () => matcherHint('.not.toBeDefined', 'received', '') + '\n\n' +
         `Expected value not to be defined, instead received\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeDefined', 'received', '') + '\n\n' +
+      : () => matcherHint('.toBeDefined', 'received', '') + '\n\n' +
         `Expected value to be defined, instead received\n` +
         `  ${printReceived(actual)}`;
     return {message, pass};
@@ -211,10 +211,10 @@ const matchers: MatchersObject = {
     ensureNoExpected(expected, '.toBeUndefined');
     const pass = actual === void 0;
     const message = pass
-      ? matcherHint('.not.toBeUndefined', 'received', '') + '\n\n' +
+      ? () => matcherHint('.not.toBeUndefined', 'received', '') + '\n\n' +
         `Expected value not to be undefined, instead received\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeUndefined', 'received', '') + '\n\n' +
+      : () => matcherHint('.toBeUndefined', 'received', '') + '\n\n' +
         `Expected value to be undefined, instead received\n` +
         `  ${printReceived(actual)}`;
 
@@ -225,12 +225,12 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeGreaterThan');
     const pass = actual > expected;
     const message = pass
-      ? matcherHint('.not.toBeGreaterThan') + '\n\n' +
+      ? () => matcherHint('.not.toBeGreaterThan') + '\n\n' +
         `Expected value not to be greater than:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeGreaterThan') + '\n\n' +
+      : () => matcherHint('.toBeGreaterThan') + '\n\n' +
         `Expected value to be greater than:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
@@ -242,12 +242,12 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeGreaterThanOrEqual');
     const pass = actual >= expected;
     const message = pass
-      ? matcherHint('.not.toBeGreaterThanOrEqual') + '\n\n' +
+      ? () => matcherHint('.not.toBeGreaterThanOrEqual') + '\n\n' +
         `Expected value not to be greater than or equal:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeGreaterThanOrEqual') + '\n\n' +
+      : () => matcherHint('.toBeGreaterThanOrEqual') + '\n\n' +
         `Expected value to be greater than or equal:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
@@ -259,12 +259,12 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeLessThan');
     const pass = actual < expected;
     const message = pass
-      ? matcherHint('.not.toBeLessThan') + '\n\n' +
+      ? () => matcherHint('.not.toBeLessThan') + '\n\n' +
         `Expected value not to be less than:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeLessThan') + '\n\n' +
+      : () => matcherHint('.toBeLessThan') + '\n\n' +
         `Expected value to be less than:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
@@ -276,12 +276,12 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeLessThanOrEqual');
     const pass = actual <= expected;
     const message = pass
-      ? matcherHint('.not.toBeLessThanOrEqual') + '\n\n' +
+      ? () => matcherHint('.not.toBeLessThanOrEqual') + '\n\n' +
         `Expected value not to be less than or equal:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
         `  ${printReceived(actual)}`
-      : matcherHint('.toBeLessThanOrEqual') + '\n\n' +
+      : () => matcherHint('.toBeLessThanOrEqual') + '\n\n' +
         `Expected value to be less than or equal:\n` +
         `  ${printExpected(expected)}\n` +
         `Received:\n` +
