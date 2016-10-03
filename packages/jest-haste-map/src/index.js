@@ -69,6 +69,7 @@ type InternalOptions = {
 };
 
 export type ModuleMap = HasteModuleMap;
+export type FS = HasteFS;
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
