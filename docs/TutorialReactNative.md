@@ -123,7 +123,7 @@ exports[`Intro renders correctly 1`] = `
       "alignItems": "center",
       "backgroundColor": "#F5FCFF",
       "flex": 1,
-      "justifyContent": "center"
+      "justifyContent": "center",
     }
   }>
   <Text
@@ -131,7 +131,7 @@ exports[`Intro renders correctly 1`] = `
       Object {
         "fontSize": 20,
         "margin": 10,
-        "textAlign": "center"
+        "textAlign": "center",
       }
     }>
     Welcome to React Native!
@@ -141,7 +141,7 @@ exports[`Intro renders correctly 1`] = `
       Object {
         "color": "#333333",
         "marginBottom": 5,
-        "textAlign": "center"
+        "textAlign": "center",
       }
     }>
     This is a React Native snapshot test.
