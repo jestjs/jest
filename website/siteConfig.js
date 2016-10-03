@@ -15,7 +15,7 @@ var siteConfig = {
       <Button href="/jest/docs/tutorial-react.html">React Testing</Button>
       <Button href="/jest/docs/tutorial-react-native.html">React Native Testing</Button>
       <Button href="/jest/docs/api.html">API Reference</Button>
-      githubButton,
+      {githubButton}
     </div>,
   ],
   features: [
