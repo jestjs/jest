@@ -110,7 +110,7 @@ import React from 'react';
 import Link from '../Link.react';
 import renderer from 'react-test-renderer';
 
-it('changes the class when hovered', () => {
+test('Link changes the class when hovered', () => {
   const component = renderer.create(
     <Link page="http://www.facebook.com">Facebook</Link>
   );
@@ -139,8 +139,8 @@ exports[`Link changes the class when hovered 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function bound _onMouseEnter]}
-  onMouseLeave={[Function bound _onMouseLeave]}>
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}>
   Facebook
 </a>
 `;
@@ -149,8 +149,8 @@ exports[`Link changes the class when hovered 2`] = `
 <a
   className="hovered"
   href="http://www.facebook.com"
-  onMouseEnter={[Function bound _onMouseEnter]}
-  onMouseLeave={[Function bound _onMouseLeave]}>
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}>
   Facebook
 </a>
 `;
@@ -159,8 +159,8 @@ exports[`Link changes the class when hovered 3`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function bound _onMouseEnter]}
-  onMouseLeave={[Function bound _onMouseLeave]}>
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}>
   Facebook
 </a>
 `;

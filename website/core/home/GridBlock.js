@@ -15,6 +15,7 @@ class GridBlock extends React.Component {
       'alignRight': this.props.align === "right",
       'twoByGridBlock': this.props.layout === "twoColumn",
       'fourByGridBlock': this.props.layout === "fourColumn",
+      'threeByGridBlock': this.props.layout === "threeColumn",
       'imageAlignTop': (block.image && this.props.imagealign === "top"),
       'imageAlignSide': (block.image && this.props.imagealign === "side"),
     });

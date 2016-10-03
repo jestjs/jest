@@ -3,7 +3,7 @@ var Button = require('Button');
 var siteConfig = {
   title: "Jest",
   tagline: "Painless JavaScript Testing",
-  description: "Jest is a JavaScript unit testing framework, used by Facebook to test services and React applications.",
+  description: "Jest is a JavaScript testing framework, used by Facebook to test all JavaScript code including React applications.",
   url: "https://facebook.github.io",
   baseUrl: "/jest/",
   repo: "facebook/jest",
@@ -19,18 +19,18 @@ var siteConfig = {
   features: [
     {
       image: "/jest/img/content/adaptable.svg",
-      title: "Adaptable",
-      content: "Jest uses Jasmine assertions by default and Jest is modular, extendible and configurable."
+      title: "Turbocharged",
+      content: "Jest is a complete and easy to setup JavaScript testing solution."
     },
     {
       image: "/jest/img/content/sandboxed.svg",
-      title: "Sandboxed and Fast",
-      content: "Jest virtualizes JavaScript environments, provides browser mocks and runs tests in parallel across workers."
+      title: "Fast and Sandboxed",
+      content: "Jest virtualizes JavaScript environments and runs tests in parallel across worker processes."
     },
     {
       image: "/jest/img/content/snapshots.svg",
       title: "Snapshot Testing",
-      content: "Jest can [capture snapshots](/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to write tests quickly and it provides a seamless update experience."
+      content: "Jest can [capture snapshots](/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to simplify UI testing."
     },
   ]
 };
