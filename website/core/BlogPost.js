@@ -7,6 +7,7 @@
 
 var Marked = require('Marked');
 var React = require('React');
+var siteConfig = require('../siteConfig');
 
 var BlogPost = React.createClass({
   renderContent: function() {
@@ -27,18 +28,21 @@ var BlogPost = React.createClass({
   renderAuthorPhoto: function() {
     var post = this.props.post;
     if (post.authorFBID) {
-      return
+      return (
         <div className="authorPhoto">
-          <img
-            src={"https://graph.facebook.com/"+post.authorFBID+"/picture/"}
-          />
-        </div>;
+          <a href={post.authorURL} target="_blank">
+            <img src={"https://graph.facebook.com/"+post.authorFBID+"/picture/?height=200&width=200"} />
+          </a>
+        </div>
+      );
     }
   },
   renderTitle: function() {
     var post = this.props.post;
     return (
-      <h1><a href={"/jest/blog/"+post.path}>{post.title}</a></h1>
+      <h1>
+        <a href={"/jest/blog/"+post.path}>{post.title}</a>
+      </h1>
     );
   },
   render: function() {
@@ -60,6 +64,9 @@ var BlogPost = React.createClass({
             <a href={post.authorURL} target="_blank">{post.author}</a>
           </p>
           {this.renderTitle()}
+          <p className="post-meta">
+            {siteConfig.githubButton}
+          </p>
           <p className="post-meta">
             {month} {day}, {year}
           </p>

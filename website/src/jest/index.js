@@ -14,6 +14,7 @@ var GridBlock = require('GridBlock');
 
 var siteConfig = require('../../siteConfig.js');
 var gettingStartedContent = require('./docs/getting-started.js').content;
+var blog = require('MetadataBlog');
 
 var index = React.createClass({
   render: function() {
@@ -34,7 +35,7 @@ var index = React.createClass({
 
     return (
       <Site>
-        <HomeSplash />
+        <HomeSplash mostRecentPost={blog.files[0]} />
         <div className="mainContainer">
           <Container background="light" padding={["bottom","top"]}>
             <GridBlock align="center" contents={siteConfig.features} layout="fourColumn" />
