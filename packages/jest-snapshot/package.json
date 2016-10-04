@@ -15,9 +15,7 @@
     "jest-matcher-utils": "^16.0.0",
     "jest-util": "^16.0.0",
     "natural-compare": "^1.4.0",
-    "os-tmpdir": "^1.0.2",
-    "pretty-format": "~4.2.1",
-    "sanitize-filename": "^1.6.1"
+    "pretty-format": "~4.2.1"
   },
   "scripts": {
     "test": "../jest-cli/bin/jest.js"
