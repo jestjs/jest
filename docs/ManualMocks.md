@@ -13,13 +13,18 @@ Manual mocks are defined by writing a module in a `__mocks__/` subdirectory
 immediately adjacent to the module. For example, to mock a module called
 ``user`` in the ``models`` directory, create a file called ``user.js`` and
 put it in the ``models/__mocks__`` directory. If the module you are mocking is
-a node module, the mock should be placed in the same parent directory as the
-``node_modules`` folder. Eg:
+a node module (eg: `fs`), the mock should be placed in the same parent
+directory as the ``node_modules`` folder. Eg:
 
 ```
   node_modules
   __mocks__
+    fs.js
   __tests__
+  models
+    __mocks__
+      user.js
+    user.js
   views
   config
 ```
