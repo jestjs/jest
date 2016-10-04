@@ -26,7 +26,7 @@ var index = React.createClass({
       {content: 'Jest runs previously failed tests first. Together with `--bail` it provides useful signal quickly.'},
       {content: 'Sandboxed test files and automatic global state resets for every test.'},
       {content: 'Integrated support for testing with [promises and async/await](/jest/docs/tutorial-async.html)'},
-      {content: 'Run your tests with in a fake DOM implementation (via [jsdom](https://github.com/tmpvar/jsdom)) on the command line.'},
+      {content: 'Run your tests within a fake DOM implementation (via [jsdom](https://github.com/tmpvar/jsdom)) on the command line.'},
       {content: 'Run tests in parallel processes to minimize test runtime.'},
       {content: 'Jest Work with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io).'},
       {content: 'Integrated [manual mocking library](/jest/docs/mock-functions.html).'},
