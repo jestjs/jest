@@ -20,8 +20,11 @@ const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
 const fs = require('fs');
 const naturalCompare = require('natural-compare');
 const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+const ReactTestComponentToHtmlPlugin = require('./ReactTestComponentToHtml');
+const buildHtmlPreview = require('./buildHtmlPreview');
 
 const PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
+const PLUGINS_HTML = [ReactTestComponentToHtmlPlugin];
 const SNAPSHOT_EXTENSION = 'snap';
 
 const testNameToKey = (testName: string, count: number) =>
@@ -38,6 +41,13 @@ const keyToTestName = (key: string) => {
 const getSnapshotPath = (testPath: Path) => path.join(
   path.join(path.dirname(testPath), '__snapshots__'),
   path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
+);
+
+// The HTML preview will be saved alongside the snapshot file,
+// just with .html extension
+const getHtmlPreviewPath = (snapshotPath: Path): string => path.join(
+  path.dirname(snapshotPath),
+  path.basename(snapshotPath, '.' + SNAPSHOT_EXTENSION) + '.html',
 );
 
 const getSnapshotData = (snapshotPath: Path) => {
@@ -70,6 +80,13 @@ const serialize = (data: any): string => {
 const escape = (string: string) => string.replace(/\`/g, '\\\`');
 const unescape = (string: string) => string.replace(/\\(\"|\\|\')/g, '$1');
 
+const getHtmlSnapshot = (data: any): string => {
+  if (ReactTestComponentToHtmlPlugin.test(data)) {
+    return prettyFormat(data, {plugins: PLUGINS_HTML});
+  }
+  return '<pre class="jest--nonreact">\n' + prettyFormat(data) + '\n</pre>';
+};
+
 const ensureDirectoryExists = (filePath: Path) => {
   try {
     createDirectory(path.join(path.dirname(filePath)));
@@ -90,15 +107,27 @@ const saveSnapshotFile = (
   fs.writeFileSync(snapshotPath, snapshots.join('\n\n') + '\n');
 };
 
+const saveHtmlPreview = (
+  htmlSnapshots: {[key: string]: string},
+  htmlPreviewPath: Path,
+) => {
+  const htmlPreview = buildHtmlPreview(htmlSnapshots);
+  ensureDirectoryExists(htmlPreviewPath);
+  fs.writeFileSync(htmlPreviewPath, htmlPreview);
+};
+
 module.exports = {
   SNAPSHOT_EXTENSION,
   getSnapshotPath,
+  getHtmlPreviewPath,
   getSnapshotData,
   testNameToKey,
   keyToTestName,
   serialize,
+  getHtmlSnapshot,
   ensureDirectoryExists,
   saveSnapshotFile,
+  saveHtmlPreview,
   escape,
   unescape,
 };

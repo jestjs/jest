@@ -14,10 +14,13 @@ import type {Path} from 'types/Config';
 
 const {
   saveSnapshotFile,
+  saveHtmlPreview,
   getSnapshotData,
   getSnapshotPath,
+  getHtmlPreviewPath,
   keyToTestName,
   serialize,
+  getHtmlSnapshot,
   testNameToKey,
   unescape,
 } = require('./utils');
@@ -28,8 +31,10 @@ class SnapshotState {
   _counters: Map<string, number>;
   _index: number;
   _snapshotPath: Path;
+  _htmlPreviewPath: Path;
   _dirty: boolean;
   _snapshotData: {[key: string]: string};
+  _htmlSnapshots: {[key: string]: string};
   _uncheckedKeys: Set<string>;
   added: number;
   failedTests: Set<string>;
@@ -47,6 +52,8 @@ class SnapshotState {
     this._dirty = false;
     this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
     this._snapshotData = getSnapshotData(this._snapshotPath);
+    this._htmlPreviewPath = getHtmlPreviewPath(this._snapshotPath);
+    this._htmlSnapshots = {};
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -82,10 +89,14 @@ class SnapshotState {
 
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
+      saveHtmlPreview(this._htmlSnapshots, this._htmlPreviewPath);
       status.saved = true;
     } else if (isEmpty && fileExists(this._snapshotPath)) {
       if (update) {
         fs.unlinkSync(this._snapshotPath);
+        if (fileExists(this._snapshotPath)) {
+          fs.unlinkSync(this._htmlPreviewPath);
+        }
       }
       status.deleted = true;
     }
@@ -130,6 +141,10 @@ class SnapshotState {
       // flag is set.
       this._snapshotData[key] = receivedSerialized;
     }
+
+    // We keep track of all updated HTML snapshots, but they will only be saved
+    // if the corresponding snapshot is also saved
+    this._htmlSnapshots[key] = getHtmlSnapshot(received);
 
     if (
       !fileExists(this._snapshotPath) || // there's no snapshot file

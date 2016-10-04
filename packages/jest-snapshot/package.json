@@ -8,12 +8,16 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
+    "escape-html": "^1.0.3",
+    "fbjs": "^0.8.5",
     "jest-diff": "^16.0.0",
     "jest-file-exists": "^15.0.0",
     "jest-matcher-utils": "^16.0.0",
     "jest-util": "^16.0.0",
     "natural-compare": "^1.4.0",
-    "pretty-format": "~4.2.1"
+    "os-tmpdir": "^1.0.2",
+    "pretty-format": "~4.2.1",
+    "sanitize-filename": "^1.6.1"
   },
   "scripts": {
     "test": "../jest-cli/bin/jest.js"
