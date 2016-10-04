@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {keyToTestName, testNameToKey, getSnapshotPath} = require('../utils');
+const {keyToTestName, testNameToKey, getSnapshotPath, getHtmlPreviewPath} = require('../utils');
 const path = require('path');
 
 test('keyToTestName()', () => {
@@ -28,5 +28,13 @@ test('getSnapshotPath()', () => {
     '/abc/cde/a-test.js',
   )).toBe(
     path.join('/abc', 'cde', '__snapshots__', 'a-test.js.snap'),
+  );
+});
+
+test('getHtmlPreviewPath()', () => {
+  expect(getHtmlPreviewPath(
+    '/abc/cde/__snapshots__/a-test.js.snap',
+  )).toBe(
+    path.join('/abc', 'cde', '__snapshots__', 'a-test.js.html'),
   );
 });
