@@ -94,7 +94,7 @@ class SnapshotState {
     } else if (isEmpty && fileExists(this._snapshotPath)) {
       if (update) {
         fs.unlinkSync(this._snapshotPath);
-        if (fileExists(this._snapshotPath)) {
+        if (fileExists(this._htmlPreviewPath)) {
           fs.unlinkSync(this._htmlPreviewPath);
         }
       }
