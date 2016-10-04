@@ -4,7 +4,7 @@
 
 jest.mock('../request');
 
-import * as user from '../user';
+const user = require('../user');
 
 // Use `pit` instead of `it` for testing promises.
 // The promise that is being tested should be returned.
