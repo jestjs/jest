@@ -39,7 +39,7 @@ expect all the time. That's what you use `expect` for.
   - `.lastCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenLastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.not`](#not)
   - [`.toBe(value)`](#tobe-value)
-  - `.toBeCalled()` is an alias for [`.toHaveBeenCalled()`] (#tohavebeencalled)
+  - `.toBeCalled()` is an alias for [`.toHaveBeenCalled()`](#tohavebeencalled)
   - `.toBeCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
   - [`.toHaveBeenCalled()`](#tohavebeencalled)
   - [`.toHaveBeenCalledTimes(number)`](#tohavebeencalledtimesnumber)
