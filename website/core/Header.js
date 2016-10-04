@@ -15,7 +15,7 @@ var Header = React.createClass({
 
     var without = "aaaaeeeeiiiioooouuuunc";
 
-    return string
+    var slug = string
       .toString()
 
       // Handle uppercase characters
@@ -26,6 +26,9 @@ var Header = React.createClass({
         new RegExp('[' + accents + ']', 'g'),
         function (c) { return without.charAt(accents.indexOf(c)); })
 
+      // Replace `.` and `(` with blank string like Github does
+      .replace(/\.|\(/g, '')
+
       // Dash special characters
       .replace(/[^a-z0-9]/g, '-')
 
@@ -34,6 +37,13 @@ var Header = React.createClass({
 
       // Trim dashes
       .replace(/^-|-$/g, '');
+
+    // Add trailing `-` if string contains ` ...` in the end like Github does
+    if (/\s[.]{1,}/.test(string)) {
+      slug += '-';
+    }
+
+    return slug;
   },
 
   render: function() {
