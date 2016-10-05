@@ -1,7 +1,7 @@
 {
   "name": "jest-cli",
   "description": "Painless JavaScript Testing.",
-  "version": "16.0.0",
+  "version": "16.0.1",
   "main": "build/jest.js",
   "dependencies": {
     "ansi-escapes": "^1.4.0",
