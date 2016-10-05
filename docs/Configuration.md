@@ -368,7 +368,7 @@ This option allows the use of a custom results processor. This processor must be
 ### `testRunner` [string]
 (default: `jasmine2`)
 
-This option allows use of a custom test runner. The default is jasmine2. Jest also ships with jasmine1 which can enabled by setting this option to `jasmine1`. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 ### `testURL` [string]
 (default: `about:blank`)
