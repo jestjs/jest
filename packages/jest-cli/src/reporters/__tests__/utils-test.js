@@ -23,6 +23,12 @@ describe('wrapAnsiString()', () => {
     expect(wrapAnsiString(string, 10)).toMatchSnapshot();
     expect(stripAnsi(wrapAnsiString(string, 10))).toMatchSnapshot();
   });
+
+  it('returns the string unaltered if given a terminal width of zero', () => {
+    const string = `This string shouldn't cause you any trouble`;
+    expect(wrapAnsiString(string, 0)).toMatchSnapshot();
+    expect(stripAnsi(wrapAnsiString(string, 0))).toMatchSnapshot();
+  });
 });
 
 describe('trimAndFormatPath()', () => {
