@@ -39,7 +39,7 @@ function run(argv?: Object, root?: Path) {
   }
 
   getJest(root).runCLI(argv, root, result => {
-    const {forceExit} = (argv || {}).forceExit || false;
+    const forceExit = argv && argv.forceExit;
     const success = !result || result.success;
 
     process.on('exit', () => process.exit(success ? 0 : 1));
