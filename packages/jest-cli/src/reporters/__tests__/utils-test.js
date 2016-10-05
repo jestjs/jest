@@ -25,7 +25,7 @@ describe('wrapAnsiString()', () => {
   });
 
   it('returns the string unaltered if given a terminal width of zero', () => {
-    const string = "This string shouldn't cause you any trouble";
+    const string = `This string shouldn't cause you any trouble`;
     expect(wrapAnsiString(string, 0)).toMatchSnapshot();
     expect(stripAnsi(wrapAnsiString(string, 0))).toMatchSnapshot();
   });
