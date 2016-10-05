@@ -265,7 +265,8 @@ const options = {
     default: false,
     description:
       'Force Jest to exit after all tests have completed running. ' +
-      'This is useful when resources set up by test code cannot be adequately cleaned up.',
+      'This is useful when resources set up by test code cannot be ' +
+      'adequately cleaned up.',
     type: 'boolean',
   },
 };
