@@ -8,6 +8,10 @@ exports[`trimAndFormatPath() trims dirname 1`] = `"[2m...234567890/[22m[1m123
 
 exports[`trimAndFormatPath() trims dirname and basename 1`] = `"[1m...1234.js[22m"`;
 
+exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 1`] = `"This string shouldn\'t cause you any trouble"`;
+
+exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 2`] = `"This string shouldn\'t cause you any trouble"`;
+
 exports[`wrapAnsiString() wraps a long string containing ansi chars 1`] = `
 "abcde [31m[1mred-
 bold[22m[39m 12344

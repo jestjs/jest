@@ -191,9 +191,14 @@ const renderTime = (
   return time;
 };
 
-// wrap a string that contains ANSI escape sequences. ANSI escape sequences
-// do not add to the string length.
-const wrapAnsiString = (string: string, width: number) => {
+// word-wrap a string that contains ANSI escape sequences.
+// ANSI escape sequences do not add to the string length.
+const wrapAnsiString = (string: string, terminalWidth: number) => {
+  if (terminalWidth === 0) {
+    // if the terminal width is zero, don't bother word-wrapping
+    return string;
+  }
+
   const ANSI_REGEXP = /[\u001b\u009b]\[\d{1,2}m/g;
   const tokens = [];
   let lastIndex = 0;
@@ -218,11 +223,14 @@ const wrapAnsiString = (string: string, width: number) => {
   return tokens.reduce(
     (lines, [kind, token]) => {
       if (kind === 'string') {
-        if (lastLineLength + token.length > width) {
+        if (lastLineLength + token.length > terminalWidth) {
 
           while (token.length) {
-            const chunk = token.slice(0, width - lastLineLength);
-            const remaining = token.slice(width - lastLineLength, token.length);
+            const chunk = token.slice(0, terminalWidth - lastLineLength);
+            const remaining = token.slice(
+              terminalWidth - lastLineLength,
+              token.length,
+            );
             lines[lines.length - 1] += chunk;
             lastLineLength += chunk.length;
             token = remaining;
