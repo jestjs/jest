@@ -16,12 +16,12 @@
             nav.classList.toggle('docsSliderActive');
           };
         </script></nav></div><div class="container mainContainer documentContainer postContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link" href="https://github.com/facebook/jest/edit/master/docs/TutorialWebpack.md" target="_blank">Edit on GitHub</a><h1>Tutorial – webpack</h1></header><article><div><p>Jest can be used in projects that use webpack to manage assets, styles, and compilation.
-webpack <em>does</em> offers some unique challenges over other tools because it
+webpack <em>does</em> offer some unique challenges over other tools because it
 integrates directly with your application to allow managing stylesheets,
 assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript
 languages and tools.</p><p>Let&#x27;s start with a common sort of webpack config file and translate it to a Jest setup.</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// webpack.config.js</span>
-<span class="token punctuation">{</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
   module<span class="token punctuation">:</span> <span class="token punctuation">{</span>
     loaders<span class="token punctuation">:</span> <span class="token punctuation">[</span>
       <span class="token punctuation">{</span> test<span class="token punctuation">:</span> <span class="token regex">/\\.jsx?$/</span><span class="token punctuation">,</span> loader<span class="token punctuation">:</span> <span class="token string">&#x27;babel&#x27;</span><span class="token punctuation">,</span> exclude<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -32,37 +32,43 @@ languages and tools.</p><p>Let&#x27;s start with a common sort of webpack config
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   resolve<span class="token punctuation">:</span> <span class="token punctuation">{</span>
     extensions<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;js&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;jsx&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    modulesDirectories<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;bower_components&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;shared&#x27;</span><span class="token punctuation">]</span>
+    modulesDirectories<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&#x27;node_modules&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;bower_components&#x27;</span><span class="token punctuation">,</span> <span class="token string">&#x27;shared&#x27;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     root<span class="token punctuation">:</span> <span class="token string">&#x27;/shared/vendor/modules&#x27;</span><span class="token punctuation">,</span>
     alias<span class="token punctuation">:</span> <span class="token punctuation">{</span>
       react<span class="token punctuation">:</span> <span class="token string">&#x27;./vendor/react-master&#x27;</span><span class="token punctuation">,</span>
       config$<span class="token punctuation">:</span> <span class="token string">&#x27;./configs/app-config.js&#x27;</span><span class="token punctuation">,</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></pre><p>Any JavaScript specific compilation (in this case via Babel) can be handled with the Jest
-<code>scriptPreprocessor</code> option. If you are using <code>babel-jest</code>, this will work automatically.</p><p>Next let&#x27;s configure Jest to gracefully handle asset files such as stylesheets and images.
-Since these files aren&#x27;t particularly useful in tests anyway we can safely mock them out.</p><pre class="prism language-javascript">
+<span class="token punctuation">}</span></pre><p>For JavaScript files that are transformed by Babel, installing <code>babel-jest</code>
+will teach Jest to pick up your <code>.babelrc</code> config automatically. Non-Babel
+JavaScript transformations can be handled with the Jest <code>scriptPreprocessor</code> option.</p><p>Next let&#x27;s configure Jest to gracefully handle asset files such as stylesheets and images.
+Usually these files aren&#x27;t particularly useful in tests so we can safely mock them out.
+However, if you are using CSS Modules then it&#x27;s better to mock a proxy for your className lookups.</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// package.json</span>
 <span class="token punctuation">{</span>
   <span class="token string">&quot;jest&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
     <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-       <span class="token string">&quot;^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span><span class="token punctuation">,</span>
-      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span>
+       <span class="token string">&quot;^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></pre><p>And the mock file&#x27;s themselves:</p><pre class="prism language-javascript">
-<span spellcheck="true" class="token comment">// test/styleMock.js</span>
+<span spellcheck="true" class="token comment">// __mocks__/styleMock.js</span>
 
-<span spellcheck="true" class="token comment">// Return an object to emulate css modules (if you are using them)</span>
-module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span></pre><p>Alternatively, you can use an <a href="https://github.com/keyanzhang/identity-obj-proxy" target="_blank">ES2015 Proxy</a>
-(<code>npm install --save-dev identity-obj-proxy</code> or create your own) to mock <a href="https://github.com/css-modules/css-modules" target="_blank">CSS Modules</a>; then all your className
-lookups on the styles object will be returned as-is (e.g., <code>styles.foobar === &#x27;foobar&#x27;</code>).</p><p>Notice that Proxy is enabled in Node.js <code>v6.*</code> by default; if you are not on Node <code>v6.*</code> yet,
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span></pre><pre class="prism language-javascript">
+<span spellcheck="true" class="token comment">// __mocks__/fileMock.js</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token string">&#x27;test-file-stub&#x27;</span><span class="token punctuation">;</span></pre><p>For CSS Modules, you can use an <a href="https://github.com/keyanzhang/identity-obj-proxy" target="_blank">ES2015 Proxy</a>
+(<code>npm install --save-dev identity-obj-proxy</code>) to mock
+<a href="https://github.com/css-modules/css-modules" target="_blank">CSS Modules</a>; then all your className
+lookups on the styles object will be returned as-is (e.g., <code>styles.foobar === &#x27;foobar&#x27;</code>).
+This is pretty handy for React snapshot testing.</p><p>Notice that Proxy is enabled in Node.js <code>v6.*</code> by default; if you are not on Node <code>v6.*</code> yet,
 make sure you invoke Jest using <code>node --harmony_proxies node_modules/.bin/jest</code>.</p><pre class="prism language-javascript">
-<span spellcheck="true" class="token comment">// package.json</span>
+<span spellcheck="true" class="token comment">// package.json (for CSS Modules)</span>
 <span class="token punctuation">{</span>
   <span class="token string">&quot;jest&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
     <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-       <span class="token string">&quot;^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;identity-obj-proxy&quot;</span><span class="token punctuation">,</span>
+       <span class="token string">&quot;^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span><span class="token punctuation">,</span>
       <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;identity-obj-proxy&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
@@ -77,8 +83,8 @@ For webpack&#x27;s <code>modulesDirectories</code>, and <code>extensions</code> 
     <span class="token string">&quot;moduleDirectories&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;bower_components&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;shared&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
 
     <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span>
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span><span class="token punctuation">,</span>    
+      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></pre><p>Similarly webpack&#x27;s <code>resolve.root</code> option functions like setting the <code>NODE_PATH</code>
@@ -92,8 +98,8 @@ env variable, which you can set, or make use of the <code>modulePaths</code> opt
     <span class="token string">&quot;moduleFileExtensions&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;js&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;jsx&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     <span class="token string">&quot;moduleDirectories&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;bower_components&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;shared&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     <span class="token string">&quot;moduleNameMapper&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
-      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span>
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span><span class="token punctuation">,</span>    
+      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></pre><p>And finally we just have the webpack <code>alias</code> left to handle. For that we can make use
@@ -111,8 +117,8 @@ of the <code>moduleNameMapper</code> option again.</p><pre class="prism language
       <span class="token string">&quot;^react&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/vendor/react-master&quot;</span><span class="token punctuation">,</span>
       <span class="token string">&quot;^config$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/configs/app-config.js&quot;</span><span class="token punctuation">,</span>
 
-      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/styleMock.js&quot;</span><span class="token punctuation">,</span>    
-      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/test/fileMock.js&quot;</span>
+      <span class="token string">&quot;^.+\\.(css|less)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/styleMock.js&quot;</span><span class="token punctuation">,</span>    
+      <span class="token string">&quot;^.+\\.(gif|ttf|eot|svg)$&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;&lt;rootDir&gt;/__mocks__/fileMock.js&quot;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></pre><p>That&#x27;s it! webpack is a complex and flexible tool, so you may have to make some adjustments
