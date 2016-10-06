@@ -63,7 +63,18 @@ And the mock file's themselves:
 ```js
 // __mocks__/styleMock.js
 
-module.exports = {};
+// Return an object to emulate css modules
+const cssModule = new Proxy({}, {
+  get (_, name) {
+    return name;
+  }
+})
+
+module.exports = new Proxy(cssModule, {
+  get () {
+    return cssModule;
+  }
+})
 ```
 
 ```js
