@@ -58,7 +58,7 @@ However, if you are using CSS Modules then it's better to mock a proxy for your 
 }
 ```
 
-And the mock file's themselves:
+And the mock files themselves:
 
 ```js
 // __mocks__/styleMock.js
