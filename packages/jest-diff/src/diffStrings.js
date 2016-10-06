@@ -14,6 +14,7 @@ const chalk = require('chalk');
 const jsDiff = require('diff');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
+const DIFF_TRIM = 2;
 
 export type DiffOptions = {|
   aAnnotation: string,
@@ -38,12 +39,27 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
     }
 
     const lines = part.value.split('\n');
+    const linesLength = lines.length;
     const color = part.added
       ? chalk.red
       : (part.removed ? chalk.green : chalk.dim);
 
     if (lines[lines.length - 1] === '') {
       lines.pop();
+    }
+
+    if (!part.added && !part.removed && linesLength > DIFF_TRIM * 2) {
+      return lines.map((line, idx) => {
+        if (idx === DIFF_TRIM) {
+          return chalk.yellow('@@ collapsed ')
+            + chalk.yellow(linesLength - DIFF_TRIM * 2)
+            + chalk.yellow(' unchanged lines\n');
+        }
+
+        return idx > DIFF_TRIM && idx < linesLength - DIFF_TRIM
+          ? null
+          : '  ' + color(line) + '\n';
+      }).filter(x => !!x).join('');
     }
 
     return lines.map(line => {
