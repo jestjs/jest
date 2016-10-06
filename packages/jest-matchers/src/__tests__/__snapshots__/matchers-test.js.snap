@@ -1554,6 +1554,16 @@ To contain value:
   [32mArray [][39m"
 `;
 
+exports[`.toContain() '[0, 1]' contains '1' 1`] = `
+"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected object:
+  [31m[0, 1][39m
+Not to contain value:
+  [32m1[39m
+"
+`;
+
 exports[`.toContain() '[1, 2, 3, 4]' contains '1' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
@@ -1609,6 +1619,26 @@ Expected array:
   [31m[undefined, null][39m
 Not to contain value:
   [32mundefined[39m
+"
+`;
+
+exports[`.toContain() '{Symbol(Symbol.iterator): [Function anonymous]}' contains '1' 1`] = `
+"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected object:
+  [31m{Symbol(Symbol.iterator): [Function anonymous]}[39m
+Not to contain value:
+  [32m1[39m
+"
+`;
+
+exports[`.toContain() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
+"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected object:
+  [31mSet {\"abc\", \"def\"}[39m
+Not to contain value:
+  [32m\"abc\"[39m
 "
 `;
 
