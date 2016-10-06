@@ -17,7 +17,7 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 
 ```js
 // webpack.config.js
-{
+module.exports = {
   module: {
     loaders: [
       { test: /\\.jsx?$/, loader: 'babel', exclude: ['node_modules'] },
@@ -28,7 +28,7 @@ Let's start with a common sort of webpack config file and translate it to a Jest
   },
   resolve: {
     extensions: ['', 'js', 'jsx'],
-    modulesDirectories: ['node_modules', 'bower_components', 'shared']
+    modulesDirectories: ['node_modules', 'bower_components', 'shared'],
     root: '/shared/vendor/modules',
     alias: {
       react: './vendor/react-master',
