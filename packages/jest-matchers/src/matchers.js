@@ -301,8 +301,9 @@ const matchers: MatchersObject = {
     const collectionType = getType(collection);
 
     let converted = null;
-    if (typeof collection === 'string') {
+    if (Array.isArray(collection) || typeof collection === 'string') {
       // strings have `indexOf` so we don't need to convert
+      // arrays have `indexOf` and we don't want to make a copy
       converted = collection;
     } else {
       try {
@@ -335,13 +336,17 @@ const matchers: MatchersObject = {
   toContainEqual(collection: ContainIterable, value: any) {
     const collectionType = getType(collection);
     let converted = null;
-    try {
-      converted = Array.from(collection);
-    } catch (e) {
-      throw new Error(
-        `.toContainEqual() only works with array-like structures.\n` +
-        printWithType('Received', collection, printReceived),
-      );
+    if (Array.isArray(collection)) {
+      converted = collection;
+    } else {
+      try {
+        converted = Array.from(collection);
+      } catch (e) {
+        throw new Error(
+          `.toContainEqual() only works with array-like structures.\n` +
+          printWithType('Received', collection, printReceived),
+        );
+      }
     }
 
     const pass =
