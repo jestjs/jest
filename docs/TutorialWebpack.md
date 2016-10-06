@@ -8,7 +8,7 @@ next: tutorial-jquery
 ---
 
 Jest can be used in projects that use webpack to manage assets, styles, and compilation.
-webpack _does_ offers some unique challenges over other tools because it
+webpack _does_ offer some unique challenges over other tools because it
 integrates directly with your application to allow managing stylesheets,
 assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript
 languages and tools.
@@ -38,19 +38,21 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 }
 ```
 
-Any JavaScript specific compilation (in this case via Babel) can be handled with the Jest
-`scriptPreprocessor` option. If you are using `babel-jest`, this will work automatically.
+For JavaScript files that are transformed by Babel, installing `babel-jest`
+will teach Jest to pick up your `.babelrc` config automatically. Non-Babel
+JavaScript transformations can be handled with the Jest `scriptPreprocessor` option.
 
 Next let's configure Jest to gracefully handle asset files such as stylesheets and images.
-Since these files aren't particularly useful in tests anyway we can safely mock them out.
+Usually these files aren't particularly useful in tests so we can safely mock them out.
+However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
 ```js
 // package.json
 {
   "jest": {
     "moduleNameMapper": {
-       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/fileMock.js",
-      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js"
+       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   }
 }
@@ -59,25 +61,32 @@ Since these files aren't particularly useful in tests anyway we can safely mock 
 And the mock file's themselves:
 
 ```js
-// test/styleMock.js
+// __mocks__/styleMock.js
 
-// Return an object to emulate css modules (if you are using them)
 module.exports = {};
 ```
 
-Alternatively, you can use an [ES2015 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
-(`npm install --save-dev identity-obj-proxy` or create your own) to mock [CSS Modules](https://github.com/css-modules/css-modules); then all your className
+```js
+// __mocks__/fileMock.js
+
+module.exports = 'test-file-stub';
+```
+
+For CSS Modules, you can use an [ES2015 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
+(`npm install --save-dev identity-obj-proxy`) to mock
+[CSS Modules](https://github.com/css-modules/css-modules); then all your className
 lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`).
+This is pretty handy for React snapshot testing.
 
 Notice that Proxy is enabled in Node.js `v6.*` by default; if you are not on Node `v6.*` yet,
 make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
 ```js
-// package.json
+// package.json (for CSS Modules)
 {
   "jest": {
     "moduleNameMapper": {
-       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "identity-obj-proxy",
+       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "^.+\\.(css|less)$": "identity-obj-proxy"
     }
   }
@@ -103,8 +112,8 @@ For webpack's `modulesDirectories`, and `extensions` options there are direct an
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
     "moduleNameMapper": {
-      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
+      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   }
 }
@@ -123,8 +132,8 @@ env variable, which you can set, or make use of the `modulePaths` option.
     "moduleFileExtensions": ["js", "jsx"],
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
     "moduleNameMapper": {
-      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
+      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   }
 }
@@ -147,8 +156,8 @@ of the `moduleNameMapper` option again.
       "^react": "<rootDir>/vendor/react-master",
       "^config$": "<rootDir>/configs/app-config.js",
 
-      "^.+\\.(css|less)$": "<rootDir>/test/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/test/fileMock.js"
+      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
+      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   }
 }
