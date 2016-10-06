@@ -66,17 +66,15 @@ And the mock file's themselves:
 // Return an object to emulate css modules
 const cssModule = new Proxy({}, {
   get (_, name) {
-    return name
+    return name;
   }
 })
 
 module.exports = new Proxy(cssModule, {
   get () {
-    return cssModule
+    return cssModule;
   }
 })
-
-module.exports = {};
 ```
 
 ```js
