@@ -8,8 +8,18 @@
 
 'use strict';
 
-const {keyToTestName, testNameToKey, getSnapshotPath} = require('../utils');
+const {
+  getSnapshotPath,
+  keyToTestName,
+  saveSnapshotFile,
+  testNameToKey,
+} = require('../utils');
+const fs = require('fs');
 const path = require('path');
+
+const writeFileSync = fs.writeFileSync;
+beforeEach(() => fs.writeFileSync = jest.fn());
+afterEach(() => fs.writeFileSync = writeFileSync);
 
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
@@ -29,4 +39,15 @@ test('getSnapshotPath()', () => {
   )).toBe(
     path.join('/abc', 'cde', '__snapshots__', 'a-test.js.snap'),
   );
+});
+
+test('saveSnapshotFile()', () => {
+  const filename = path.join(__dirname, 'remove-newlines.snap');
+  const data = {
+    myKey: '<div>\r\n</div>', 
+  };
+
+  saveSnapshotFile(data, filename);
+  expect(fs.writeFileSync)
+    .toBeCalledWith(filename, 'exports[`myKey`] = `<div>\n</div>`;\n');
 });
