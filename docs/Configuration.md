@@ -42,11 +42,11 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`bail` [boolean]](#bail-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
   - [`clearMocks` [boolean]](#clearmocks-boolean)
-  - [`coverageDirectory` [string]](#coveragedirectory-string)
-  - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageFrom` [array]](#collectcoveragefrom-array)
+  - [`coverageDirectory` [string]](#coveragedirectory-string)
   - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepattern-array-string)
+  - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
   - [`mocksPattern` [string]](#mockspattern-string)
@@ -105,18 +105,6 @@ Jest attempts to scan your dependency tree once (up-front) and cache it in order
 
 Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test.
 
-### `coverageDirectory` [string]
-(default: `undefined`)
-
-The directory where Jest should output its coverage files.
-
-### `coverageReporters` [array<string>]
-(default: `['json', 'lcov', 'text']`)
-
-A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be used.
-
-*Note: Setting this option overwrites the default values. Add `'text'` or `'text-summary'` to see a coverage summary in the console output.*
-
 ### `collectCoverage` [boolean]
 (default: `false`)
 
@@ -140,12 +128,24 @@ This will collect coverage information for all the files inside the project's `r
 
 *Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`.*
 
+### `coverageDirectory` [string]
+(default: `undefined`)
+
+The directory where Jest should output its coverage files.
+
 ### `coveragePathIgnorePatterns` [array<string>]
 (default: `['/node_modules/']`)
 
 An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
+
+### `coverageReporters` [array<string>]
+(default: `['json', 'lcov', 'text']`)
+
+A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be used.
+
+*Note: Setting this option overwrites the default values. Add `'text'` or `'text-summary'` to see a coverage summary in the console output.*
 
 ### `coverageThreshold` [object]
 (default: `undefined`)
