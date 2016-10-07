@@ -76,6 +76,9 @@ const ensureDirectoryExists = (filePath: Path) => {
   } catch (e) {}
 };
 
+const normalizeNewlines =
+  string => string.replace(/\r\n/g, '\n');
+
 const saveSnapshotFile = (
   snapshotData: {[key: string]: string},
   snapshotPath: Path,
@@ -83,7 +86,7 @@ const saveSnapshotFile = (
   const snapshots = Object.keys(snapshotData).sort(naturalCompare)
     .map(key =>
       'exports[`' + escape(key) + '`] = `' +
-      escape(snapshotData[key]) + '`;',
+      normalizeNewlines(escape(snapshotData[key])) + '`;',
     );
 
   ensureDirectoryExists(snapshotPath);
