@@ -14,7 +14,7 @@ const chalk = require('chalk');
 const jsDiff = require('diff');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
-const DIFF_TRIM = 2;
+const DIFF_TRIM = 4;
 
 export type DiffOptions = {|
   aAnnotation: string,
@@ -56,7 +56,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
             + chalk.yellow(' unchanged lines\n');
         }
 
-        return idx > DIFF_TRIM && idx < linesLength - DIFF_TRIM
+        return idx > DIFF_TRIM && idx < linesLength - 1 - DIFF_TRIM
           ? null
           : '  ' + color(line) + '\n';
       }).filter(x => !!x).join('');
