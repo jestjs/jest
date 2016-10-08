@@ -14,32 +14,27 @@ const chalk = require('chalk');
 const jsDiff = require('diff');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
-const DIFF_TRIM = 4;
+const DIFF_CONTEXT = 4;
+const IS_EXPANDED =
+  process.argv.indexOf('--expand') !== -1 ||
+  process.argv.indexOf('-e') !== -1;
 
 export type DiffOptions = {|
   aAnnotation: string,
   bAnnotation: string,
 |};
 
-const getAnnotation = options =>
+const getAnnotation = (options: ?DiffOptions): string =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
 
-// diff characters if oneliner and diff lines if multiline
-function diffStrings(a: string, b: string, options: ?DiffOptions): string {
-  let isDifferent = false;
-
-  // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
-  // (where "d" is the edit distance) and can get very slow for large edit
-  // distances. Mitigate the cost by switching to a lower-resolution diff
-  // whenever linebreaks are involved.
-  const result = jsDiff.diffLines(a, b).map(part => {
+const diffLines = (a: string, b: string): string => {
+  return jsDiff.diffLines(a, b).map(part => {
     if (part.added || part.removed) {
       isDifferent = true;
     }
 
     const lines = part.value.split('\n');
-    const linesLength = lines.length;
     const color = part.added
       ? chalk.red
       : (part.removed ? chalk.green : chalk.dim);
@@ -48,27 +43,56 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
       lines.pop();
     }
 
-    if (!part.added && !part.removed && linesLength > DIFF_TRIM * 2) {
-      return lines.map((line, idx) => {
-        if (idx === DIFF_TRIM) {
-          return chalk.yellow('@@ collapsed ')
-            + chalk.yellow(linesLength - DIFF_TRIM * 2)
-            + chalk.yellow(' unchanged lines\n');
-        }
-
-        return idx > DIFF_TRIM && idx < linesLength - 1 - DIFF_TRIM
-          ? null
-          : '  ' + color(line) + '\n';
-      }).filter(x => !!x).join('');
-    }
-
     return lines.map(line => {
       const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
       return mark + ' ' +  color(line) + '\n';
     }).join('');
   }).join('').trim();
+};
+
+const structuredPatch = (a: string, b: string): string => {
+  return jsDiff.structuredPatch(
+    '', '', a, b, '', '', {context: DIFF_CONTEXT},
+  ).hunks.map(hunk => {
+    const diffMarkOld = `-${hunk.oldStart},${hunk.oldLines}`;
+    const diffMarkNew = `+${hunk.newStart},${hunk.newLines}`;
+    const diffMark = chalk.yellow(`@@ ${diffMarkOld} ${diffMarkNew} @@\n`);
+
+    const lines = hunk.lines.map(line => {
+      const added = line[0] === '+';
+      const removed = line[0] === '-';
+
+      const color = added
+        ? chalk.red
+        : (removed ? chalk.green : chalk.dim);
+
+      return color(line) + '\n';
+    }).join('');
+
+    isDifferent = true;
+
+    return diffMark + lines;
+  }).join('').trim();
+};
+
+let isDifferent = false;
+
+// diff characters if oneliner and diff lines if multiline
+function diffStrings(a: string, b: string, options: ?DiffOptions): string {
+  let result;
+  // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
+  // (where "d" is the edit distance) and can get very slow for large edit
+  // distances. Mitigate the cost by switching to a lower-resolution diff
+  // whenever linebreaks are involved.
+
+  if (IS_EXPANDED) {
+    result = diffLines(a, b);
+  } else {
+    result = structuredPatch(a, b);
+  }
 
   if (isDifferent) {
+    isDifferent = false;
     return getAnnotation(options) + result;
   } else {
     return NO_DIFF_MESSAGE;
