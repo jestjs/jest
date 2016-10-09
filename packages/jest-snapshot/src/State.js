@@ -31,6 +31,7 @@ class SnapshotState {
   _dirty: boolean;
   _snapshotData: {[key: string]: string};
   _uncheckedKeys: Set<string>;
+  expand: boolean;
   added: number;
   failedTests: Set<string>;
   matched: number;
@@ -38,11 +39,13 @@ class SnapshotState {
   unmatched: number;
   update: boolean;
   updated: number;
+  static expand: boolean;
 
   constructor(
     testPath: Path,
     update: boolean,
     snapshotPath?: string,
+    expand?: boolean,
   ) {
     this._dirty = false;
     this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
@@ -50,6 +53,7 @@ class SnapshotState {
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
+    this.expand = expand || false;
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;

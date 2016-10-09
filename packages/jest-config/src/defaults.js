@@ -56,4 +56,5 @@ module.exports = ({
   useStderr: false,
   verbose: null,
   watch: false,
+  expand: false,
 }: DefaultConfig);

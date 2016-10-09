@@ -273,6 +273,13 @@ const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  expand: {
+    default: false,
+    alias: 'e',
+    description:
+      'Use this flag to show full snapshot instead of a patch.',
+    type: 'boolean',
+  },
 };
 
 module.exports = {

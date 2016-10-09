@@ -50,6 +50,7 @@ export type DefaultConfig = {|
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
+  expand: boolean,
 |};
 
 export type Config = DefaultConfig & {|

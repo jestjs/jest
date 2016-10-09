@@ -15,13 +15,11 @@ const jsDiff = require('diff');
 
 const {NO_DIFF_MESSAGE} = require('./constants.js');
 const DIFF_CONTEXT = 4;
-const IS_EXPANDED =
-  process.argv.indexOf('--expand') !== -1 ||
-  process.argv.indexOf('-e') !== -1;
 
 export type DiffOptions = {|
   aAnnotation: string,
   bAnnotation: string,
+  expand?: boolean,
 |};
 
 const getAnnotation = (options: ?DiffOptions): string =>
@@ -84,8 +82,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
-
-  if (IS_EXPANDED) {
+  if (options && options.expand) {
     result = diffLines(a, b);
   } else {
     result = structuredPatch(a, b);

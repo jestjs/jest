@@ -53,13 +53,18 @@ const cleanup = (hasteFS: HasteFS, update: boolean) => {
 
 let snapshotState;
 
-const initializeSnapshotState
-  = (testFile: Path, update: boolean) => new SnapshotState(testFile, update);
+const initializeSnapshotState = (
+  testFile: Path,
+  update: boolean,
+  testPath: string,
+  expand: boolean,
+) => new SnapshotState(testFile, update, testPath, expand);
 
 const getSnapshotState = () => snapshotState;
 
 const toMatchSnapshot = function(received: any, expected: void) {
   this.dontThrow();
+
   const {currentTestName, isNot, snapshotState} = this;
 
   if (isNot) {
@@ -91,6 +96,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
       {
         aAnnotation: 'Snapshot',
         bAnnotation: 'Received',
+        expand: snapshotState.expand,
       },
     );
 
