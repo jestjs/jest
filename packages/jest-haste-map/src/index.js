@@ -354,18 +354,24 @@ class HasteMap {
       );
     }
 
+    const cleanup = () => {
+      if (this._workerFarm) {
+        workerFarm.end(this._workerFarm);
+      }
+      this._workerFarm = null;
+      this._workerPromise = null;
+    };
+
     return Promise.all(promises)
-      .then(() => {
-        if (this._workerFarm) {
-          workerFarm.end(this._workerFarm);
-        }
-        this._workerFarm = null;
-        this._workerPromise = null;
-      })
+      .then(cleanup)
       .then(() => {
         hasteMap.map = map;
         hasteMap.mocks = mocks;
         return hasteMap;
+      })
+      .catch(err => {
+        cleanup();
+        return Promise.reject(err);
       });
   }
 
