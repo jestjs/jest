@@ -428,7 +428,7 @@ To compare floating point numbers, you can use `toBeLessThan`. For example, if y
 ```js
 describe('ounces per can', () => {
   it('is less than 20', () => {
-    expect(ouncesPerCan()).toBeLessThan(10);
+    expect(ouncesPerCan()).toBeLessThan(20);
   });
 });
 ```
