@@ -12,6 +12,7 @@
 import type {Console} from 'console';
 import type {Path} from 'types/Config';
 import type {
+  Change,
   HasteMap as HasteMapObject,
   InternalHasteMap,
   ModuleMetaData,
@@ -20,11 +21,11 @@ import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof FastpathType from './fastpath';
 import typeof HType from './constants';
 
+const EventEmitter = require('events').EventEmitter;
 const H = require('./constants');
 const HasteFS = require('./HasteFS');
 const HasteModuleMap = require('./ModuleMap');
 
-const EventEmitter = require('events').EventEmitter;
 const crypto = require('crypto');
 const execSync = require('child_process').execSync;
 const fs = require('graceful-fs');
@@ -44,7 +45,6 @@ type Options = {
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern?: string,
-  monitorForChanges?: boolean,
   name: string,
   platforms: Array<string>,
   providesModuleNodeModules?: Array<string>,
@@ -53,6 +53,8 @@ type Options = {
   roots: Array<string>,
   throwOnModuleCollision?: boolean,
   useWatchman?: boolean,
+  watch?: boolean,
+  watchDebounceTime?: number,
 };
 
 type InternalOptions = {
@@ -67,6 +69,8 @@ type InternalOptions = {
   retainAllFiles: boolean,
   roots: Array<string>,
   useWatchman: boolean,
+  watch: boolean,
+  watchDebounceTime: number,
 };
 
 export type ModuleMap = HasteModuleMap;
@@ -76,6 +80,10 @@ const VERSION = require('../package.json').version;
 
 let Watcher;
 
+const maxWatcherWaitTime = 10000; // ms
+const defaultWatchDebounceTime = 200; // ms
+const changeEvents = ['change', 'add', 'delete'];
+
 const canUseWatchman = ((): boolean => {
   try {
     execSync('watchman version', {stdio: ['ignore']});
@@ -83,8 +91,6 @@ const canUseWatchman = ((): boolean => {
   } catch (e) {}
   return false;
 })();
-
-const maxWatcherWaitTime = 10000; // ms
 
 const escapePathSeparator =
   string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
@@ -175,8 +181,13 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  */
 class HasteMap extends EventEmitter {
   _options: InternalOptions;
+  _batchedUpdates: Array<Change>;
   _cachePath: Path;
   _console: Console;
+  _hasteFS: HasteFS;
+  _moduleMap: ModuleMap;
+  _isUpdateScheduled: boolean;
+  _isWatching: boolean;
   _whitelist: ?RegExp;
   _buildPromise: ?Promise<HasteMapObject>;
   _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
@@ -192,7 +203,6 @@ class HasteMap extends EventEmitter {
       maxWorkers: options.maxWorkers,
       mocksPattern:
         options.mocksPattern ? new RegExp(options.mocksPattern) : null,
-      monitorForChanges: !!options.monitorForChanges,
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
@@ -201,8 +211,16 @@ class HasteMap extends EventEmitter {
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman:
         options.useWatchman == null ? true : options.useWatchman,
+      watch: !!options.watch,
+      watchDebounceTime: typeof options.watchDebounceTime === 'number'
+        ? options.watchDebounceTime
+        : defaultWatchDebounceTime,
     };
     this._console = options.console || global.console;
+
+    this._batchedUpdates = [];
+    this._isUpdateScheduled = false;
+    this._isWatching = false;
 
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
@@ -218,12 +236,9 @@ class HasteMap extends EventEmitter {
     this._workerPromise = null;
     this._workerFarm = null;
 
-    Watcher = canUseWatchman && options.useWatchman ?
-      sane.WatchmanWatcher : sane.NodeWatcher;
-
-    if (options.monitorForChanges) {
-      this._startMonitoring();
-    }
+    Watcher = canUseWatchman && options.useWatchman
+      ? sane.WatchmanWatcher
+      : sane.NodeWatcher;
   }
 
   static getCacheFilePath(tmpdir: Path, name: string): string {
@@ -241,12 +256,17 @@ class HasteMap extends EventEmitter {
       this._buildPromise = this._buildFileMap()
         .then(fileMap => this._buildHasteMap(fileMap))
         .then(internalHasteMap => this._persist(internalHasteMap))
-        .then(internalHasteMap => ({
-          hasteFS: new HasteFS(internalHasteMap.files),
-          moduleMap:
-            new HasteModuleMap(internalHasteMap.map, internalHasteMap.mocks),
-          __hasteMapForTest: isTest && internalHasteMap,
-        }));
+        .then(internalHasteMap => {
+          this._hasteFS = new HasteFS(internalHasteMap.files);
+          this._moduleMap =
+            new HasteModuleMap(internalHasteMap.map, internalHasteMap.mocks);
+          this._startWatching();
+          return {
+            hasteFS: this._hasteFS,
+            moduleMap: this._moduleMap,
+            __hasteMapForTest: isTest && internalHasteMap,
+          };
+        });
     }
     return this._buildPromise;
   }
@@ -454,17 +474,17 @@ class HasteMap extends EventEmitter {
     }
   }
 
-  _createWatcher(dirPath: string): Promise<Watcher> {
-    const watcher = new Watcher(dirPath, {
+  _createWatcher(root: Path): Promise<Watcher> {
+    const watcher = new Watcher(root, {
       glob: this._options.extensions.map(extension => `**/*.${extension}`),
       dot: false,
     });
 
     const watcherTimeoutMessage =
-      `Watcher took too long to load (${Watcher.name})` +
+      `${Watcher.name} took too long to load.` +
       (
         Watcher === sane.WatchmanWatcher ?
-        '\nTry running `watchman version` from your terminal' +
+        '\nTry running `watchman version` from your terminal.' +
         '\nhttps://facebook.github.io/watchman/docs/troubleshooting.html' :
         ''
       );
@@ -482,27 +502,60 @@ class HasteMap extends EventEmitter {
     });
   }
 
-  _startMonitoring(): void {
+  _startWatching(): void {
+    if (!this._options.watch || this._isWatching) {
+      return;
+    }
+
     Promise.all(this._options.roots.map(root => this._createWatcher(root)))
       .then(watchers => {
         watchers.forEach(watcher => {
-          watcher.on('change', (filepath, root, stat) => {
-            this._rebuild();
-          });
-          watcher.on('add', (filepath, root, stat) => {
-            this._rebuild();
-          });
-          watcher.on('delete', (filepath, root, stat) => {
-            this._rebuild();
-          });
+          changeEvents.forEach(changeEvent =>
+            watcher.on(changeEvent, (filepath, root, stat) =>
+              this._batchUpdate([path.resolve(root, filepath), changeEvent])));
         });
+        this._isWatching = true;
       });
+  }
+
+  _batchUpdate(change: Change): void {
+    this._batchedUpdates.push(change);
+    if (!this._isUpdateScheduled) {
+      this._isUpdateScheduled = true;
+      setTimeout(() => this._flushUpdates(), this._options.watchDebounceTime);
+    }
+  }
+
+  _dedupeUpdates(): Array<Change> {
+    const dedupedUpdates = [];
+    const batchedUpdates = this._batchedUpdates;
+    const touchedPaths = [];
+    let change, filePath, i;
+
+    for (i = batchedUpdates.length - 1; i >= 0; i--) {
+      change = batchedUpdates[i];
+      filePath = change[0];
+      if (touchedPaths.indexOf(filePath) !== -1) {
+        continue;
+      }
+      touchedPaths.push(filePath);
+      dedupedUpdates.push(change);
+    }
+
+    this._batchedUpdates = [];
+
+    return dedupedUpdates;
+  }
+
+  _flushUpdates(): void {
+    this._isUpdateScheduled = false;
+    this._rebuild();
   }
 
   _rebuild(): void {
     this._buildPromise = null;
     this.build().then(map => {
-      this.emit('change', map);
+      this.emit('change', map.hasteFS, map.moduleMap, this._dedupeUpdates());
     });
   }
 

@@ -24,6 +24,8 @@ export type HasteContext = {
   resolver: HasteResolver,
 };
 
+type ChangeEvent = 'change' | 'add' | 'delete';
+export type Change = [Path, ChangeEvent];
 export type FileData = {[filepath: Path]: FileMetaData};
 export type MockData = {[id: string]: Path};
 export type ModuleMapData = {[id: string]: ModuleMapItem};
