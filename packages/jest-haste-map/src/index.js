@@ -310,7 +310,7 @@ class HasteMap {
           this._console.warn(
             `jest-haste-map: duplicate manual mock found:\n` +
             `  Module name: ${mockPath}\n` +
-            `  Dupicate Mock path: ${filePath}\nThis warning ` +
+            `  Duplicate Mock path: ${filePath}\nThis warning ` +
             `is caused by two manual mock files with the same file name.\n` +
             `Jest will use the mock file found in: \n` +
             `${filePath}\n` +
