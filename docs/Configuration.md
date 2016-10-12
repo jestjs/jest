@@ -45,7 +45,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageFrom` [array]](#collectcoveragefrom-array)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
-  - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepattern-array-string)
+  - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepatterns-array-string)
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
