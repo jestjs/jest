@@ -24,6 +24,7 @@ const H = require('./constants');
 const HasteFS = require('./HasteFS');
 const HasteModuleMap = require('./ModuleMap');
 
+const EventEmitter = require('events').EventEmitter;
 const crypto = require('crypto');
 const execSync = require('child_process').execSync;
 const fs = require('graceful-fs');
@@ -31,6 +32,7 @@ const getPlatformExtension = require('./lib/getPlatformExtension');
 const nodeCrawl = require('./crawlers/node');
 const os = require('os');
 const path = require('./fastpath');
+const sane = require('sane');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
@@ -43,6 +45,7 @@ type Options = {
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern?: string,
+  monitorForChanges?: boolean,
   name: string,
   platforms: Array<string>,
   providesModuleNodeModules?: Array<string>,
@@ -74,6 +77,8 @@ export type FS = HasteFS;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
 
+let Watcher;
+
 const canUseWatchman = ((): boolean => {
   try {
     execSync('watchman version', {stdio: ['ignore']});
@@ -81,6 +86,8 @@ const canUseWatchman = ((): boolean => {
   } catch (e) {}
   return false;
 })();
+
+const maxWatcherWaitTime = 10000; // ms
 
 const escapePathSeparator =
   string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
@@ -169,7 +176,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-class HasteMap {
+class HasteMap extends EventEmitter {
   _options: InternalOptions;
   _cachePath: Path;
   _console: Console;
@@ -179,6 +186,8 @@ class HasteMap {
   _workerFarm: ?(data: WorkerMessage, callback: WorkerCallback) => void;
 
   constructor(options: Options) {
+    super();
+
     this._options = {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
@@ -187,6 +196,7 @@ class HasteMap {
       maxWorkers: options.maxWorkers,
       mocksPattern:
         options.mocksPattern ? new RegExp(options.mocksPattern) : null,
+      monitorForChanges: !!options.monitorForChanges,
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
@@ -211,6 +221,13 @@ class HasteMap {
     this._buildPromise = null;
     this._workerPromise = null;
     this._workerFarm = null;
+
+    Watcher = canUseWatchman && options.useWatchman ?
+      sane.WatchmanWatcher : sane.NodeWatcher;
+
+    if (options.monitorForChanges) {
+      this._startMonitoring();
+    }
   }
 
   static getCacheFilePath(tmpdir: Path, name: string): string {
@@ -468,6 +485,58 @@ class HasteMap {
     } catch (error) {
       return retry(error);
     }
+  }
+
+  _createWatcher(dirPath: string): Promise<Watcher> {
+    const watcher = new Watcher(dirPath, {
+      glob: this._options.extensions.map(extension => `**/*.${extension}`),
+      dot: false,
+    });
+
+    const watcherTimeoutMessage =
+      `Watcher took too long to load (${Watcher.name})` +
+      (
+        Watcher === sane.WatchmanWatcher ?
+        '\nTry running `watchman version` from your terminal' +
+        '\nhttps://facebook.github.io/watchman/docs/troubleshooting.html' :
+        ''
+      );
+
+    return new Promise((resolve, reject) => {
+      const rejectTimeout = setTimeout(
+        () => reject(new Error(watcherTimeoutMessage)),
+        maxWatcherWaitTime,
+      );
+
+      watcher.once('ready', () => {
+        clearTimeout(rejectTimeout);
+        resolve(watcher);
+      });
+    });
+  }
+
+  _startMonitoring(): void {
+    Promise.all(this._options.roots.map(root => this._createWatcher(root)))
+      .then(watchers => {
+        watchers.forEach(watcher => {
+          watcher.on('change', (filepath, root, stat) => {
+            this._rebuild();
+          });
+          watcher.on('add', (filepath, root, stat) => {
+            this._rebuild();
+          });
+          watcher.on('delete', (filepath, root, stat) => {
+            this._rebuild();
+          });
+        });
+      });
+  }
+
+  _rebuild(): void {
+    this._buildPromise = null;
+    this.build().then(map => {
+      this.emit('change', map);
+    });
   }
 
   _ignore(filePath: Path): boolean {

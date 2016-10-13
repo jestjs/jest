@@ -31,5 +31,5 @@ exports[`HasteMap warns on duplicate module ids 1`] = `
   Duplicate module name: Strawberry
   Paths: /fruits/raspberry.js collides with /fruits/strawberry.js
 
-This warning is caused by a @providesModule declaration with the same name across two different files."
+ This warning is caused by a @providesModule declaration with the same name across two different files."
 `;
