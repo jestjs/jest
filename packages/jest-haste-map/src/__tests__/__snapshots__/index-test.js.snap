@@ -8,14 +8,14 @@ This error is caused by a @providesModule declaration with the same name across 
 
 exports[`HasteMap tries to crawl using node as a fallback 1`] = `
 "jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
-  Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
+  Usually this happens when watchman isn\'t running. Create an empty \`.watchmanconfig\` file in your project\'s root folder or initialize a git or hg repository in your project.
   Error: watchman error"
 `;
 
 exports[`HasteMap warns on duplicate mock files 1`] = `
 "jest-haste-map: duplicate manual mock found:
   Module name: blueberry
-  Dupicate Mock path: /fruits/__mocks__/subdir2/blueberry.js
+  Duplicate Mock path: /fruits/__mocks__/subdir2/blueberry.js
 This warning is caused by two manual mock files with the same file name.
 Jest will use the mock file found in: 
 /fruits/__mocks__/subdir2/blueberry.js
