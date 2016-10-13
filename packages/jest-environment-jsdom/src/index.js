@@ -34,7 +34,7 @@ class JSDOMEnvironment {
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global, config.globals);
 
-    this.moduleMocker = new ModuleMocker();
+    this.moduleMocker = new ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
   }
 

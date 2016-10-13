@@ -38,3 +38,4 @@ exports.parent = module.parent;
 exports.paths = module.paths;
 exports.filename = module.filename;
 exports.jest = jest;
+exports.object = {};
