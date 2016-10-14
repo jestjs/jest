@@ -261,23 +261,30 @@ function normalize(config, argv) {
   }
 
   let babelJest;
-  if (config.scriptPreprocessor) {
-    config.scriptPreprocessor =
-      _replaceRootDirTags(config.rootDir, config.scriptPreprocessor);
-    if (
-      config.scriptPreprocessor.includes(
-        constants.NODE_MODULES + 'babel-jest',
-      )
-      || config.scriptPreprocessor.includes('packages/babel-jest')
-  ) {
-      babelJest = config.scriptPreprocessor;
+  if (config.transform) {
+    const customJSPattern = Object.keys(config.transform).find(regex => {
+      const pattern = new RegExp(regex);
+      return pattern.test('foobar.js') || pattern.test('foobar.jsx');
+    });
+
+    if (customJSPattern) {
+      const jsTransformer = config.transform[customJSPattern];
+      if (
+        jsTransformer.includes(
+          constants.NODE_MODULES + 'babel-jest',
+        ) || jsTransformer.includes('packages/babel-jest')
+      ) {
+        babelJest = jsTransformer;
+      }
     }
   } else {
     babelJest = Resolver.findNodeModule('babel-jest', {
       basedir: config.rootDir,
     });
     if (babelJest) {
-      config.scriptPreprocessor = babelJest;
+      config.transform = {
+        [constants.DEFAULT_JS_PATTERN]: babelJest,
+      };
     }
   }
 
@@ -333,7 +340,6 @@ function normalize(config, argv) {
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
-      case 'scriptPreprocessor':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -349,11 +355,20 @@ function normalize(config, argv) {
           _replaceRootDirTags(config.rootDir, config[key][regex]),
         ]);
         break;
+      case 'transform':
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          path.resolve(
+            config.rootDir,
+            _replaceRootDirTags(config.rootDir, config[key][regex]),
+          ),
+        ]);
+        break;
 
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
-      case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
+      case 'transformIgnorePatterns':
       case 'unmockedModulePathPatterns':
         // _replaceRootDirTags is specifically well-suited for substituting
         // <rootDir> in paths (it deals with properly interpreting relative path
