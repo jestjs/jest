@@ -15,6 +15,7 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 const JasmineReporter = require('./reporter');
+const AddMatchersAdapter = require('./jasmineAddMatcherAdapter');
 
 const jasmineAsync = require('./jasmine-async');
 const fs = require('graceful-fs');
@@ -85,6 +86,12 @@ function jasmine2(
   });
 
   env.addReporter(reporter);
+
+  // Adapter for coercing jasmine `addMatcher` api into using
+  // jest's `expect.extend` API.
+  runtime.requireInternalModule(
+    path.resolve(__dirname, './jasmineAddMatcherAdapter.js'),
+  )(jasmine);
 
   // `jest-matchers` should be required inside test environment (vm).
   // Otherwise if they throw, the `Error` class will differ from the `Error`

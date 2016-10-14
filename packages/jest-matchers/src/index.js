@@ -106,7 +106,7 @@ const makeThrowingMatcher = (
   };
 };
 
-const addMatchers = (matchersObj: MatchersObject): void => {
+expect.extend = (matchersObj: MatchersObject): void => {
   Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
 };
 
@@ -136,12 +136,12 @@ const setState = (state: MatcherState) => {
 const getState = () => global[GLOBAL_STATE].state;
 
 // add default jest matchers
-addMatchers(matchers);
-addMatchers(spyMatchers);
-addMatchers(toThrowMatchers);
+expect.extend(matchers);
+expect.extend(spyMatchers);
+expect.extend(toThrowMatchers);
 
 module.exports = {
-  addMatchers,
+  addMatchers: expect.extend, // TODO: remove!
   expect,
   getState,
   setState,

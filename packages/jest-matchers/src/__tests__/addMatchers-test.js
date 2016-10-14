@@ -10,9 +10,7 @@
 
 'use strict';
 
-const addMatchers = require('../').addMatchers;
-
-addMatchers({
+expect.extend({
   toBeDivisibleBy(actual, expected) {
     const pass = actual % expected === 0;
     const message = pass
