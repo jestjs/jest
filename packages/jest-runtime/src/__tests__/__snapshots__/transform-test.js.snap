@@ -13,7 +13,7 @@ exports[`transform uses the supplied preprocessor 1`] = `
           const TRANSFORMED = {
             filename: \'/fruits/banana.js\',
             script: \'module.exports = \"banana\";\',
-            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"preprocessorIgnorePatterns\":[\"/node_modules/\"],\"rootDir\":\"/\",\"scriptPreprocessor\":\"test-preprocessor\"}\',
+            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"transformIgnorePatterns\":[\"/node_modules/\"],\"rootDir\":\"/\",\"transform\":[[\"^.+\\\\.js$\",\"test-preprocessor\"]]}\',
           };
         
 }});"

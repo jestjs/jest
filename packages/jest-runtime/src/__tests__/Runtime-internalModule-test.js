@@ -23,7 +23,7 @@ describe('Runtime', () => {
   describe('internalModule', () => {
     it('loads modules and applies transforms', () =>
       createRuntime(__filename, {
-        scriptPreprocessor: './test-preprocessor',
+        transform: {'^.+\\.js$': './test-preprocessor'},
       }).then(runtime => {
         const modulePath = path.resolve(
           path.dirname(runtime.__mockRootPath),
@@ -37,7 +37,7 @@ describe('Runtime', () => {
 
     it('loads internal modules without applying transforms', () =>
       createRuntime(__filename, {
-        scriptPreprocessor: './test-preprocessor',
+        transform: {'^.+\\.js$': './test-preprocessor'},
       }).then(runtime => {
         const modulePath = path.resolve(
           path.dirname(runtime.__mockRootPath),
