@@ -459,19 +459,23 @@ class Runtime {
       const config = this._config;
       const relative = filePath => path.relative(config.rootDir, filePath);
       if (e.constructor.name === 'SyntaxError') {
-        const hasPreprocessor = config.scriptPreprocessor;
+        const hasPreprocessor = config.transform &&
+          config.transform.length &&
+          config.transform.find(
+            ([regex, _]) => new RegExp(regex).test(filename),
+          );
         const preprocessorInfo = hasPreprocessor
-          ? relative(config.scriptPreprocessor)
+          ? relative(hasPreprocessor[1])
           : `No preprocessor specified, consider installing 'babel-jest'`;
         const babelInfo = config.usesBabelJest
           ? `Make sure your '.babelrc' is set up correctly, ` +
             `for example it should include the 'es2015' preset.\n`
           : '';
         /* eslint-disable max-len */
-        throw new SyntaxError(
+        throw new SyntaxError( // FIXME
           `${e.message} in file '${relative(filename)}'.\n\n` +
           `Make sure your preprocessor is set up correctly and ensure ` +
-          `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/configuration.html#preprocessorignorepatterns-array-string\n` +
+          `your 'transformIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/configuration.html#preprocessorignorepatterns-array-string\n` +
           'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
           `Preprocessor: ${preprocessorInfo}.\n${babelInfo}`,
         );
