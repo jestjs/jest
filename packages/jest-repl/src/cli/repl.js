@@ -50,13 +50,22 @@ const isRecoverableError = error => {
   return false;
 };
 
-if (jestConfig.scriptPreprocessor) {
-  /* $FlowFixMe */
-  preprocessor = require(jestConfig.scriptPreprocessor);
-  if (typeof preprocessor.process !== 'function') {
-    throw new TypeError(
-      'Jest: a preprocessor must export a `process` function.',
-    );
+if (jestConfig.transform) {
+  let preprocessorPath = null;
+  for (let i = 0; i < jestConfig.transform.length; i++) {
+    if (new RegExp(jestConfig.transform[i][0]).test('foobar.js')) {
+      preprocessorPath = jestConfig.transform[i][1];
+      break;
+    }
+  }
+  if (preprocessorPath) {
+    /* $FlowFixMe */
+    preprocessor = require(preprocessorPath);
+    if (typeof preprocessor.process !== 'function') {
+      throw new TypeError(
+        'Jest: a preprocessor must export a `process` function.',
+      );
+    }
   }
 }
 
