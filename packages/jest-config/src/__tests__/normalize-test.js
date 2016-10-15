@@ -672,6 +672,25 @@ describe('normalize', () => {
 
       expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     });
+
+    it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {
+      const config = normalize({
+        rootDir: '/root/path/foo',
+        scriptPreprocessor: 'bar/baz',
+        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
+      });
+
+      expect(config.transform).toEqual([['.*', expectedPathFooBar]]);
+      expect(config.transformIgnorePatterns).toEqual([
+        joinForPattern('bar', 'baz'),
+        joinForPattern('qux', 'quux'),
+      ]);
+
+      expect(config.scriptPreprocessor).toBe(undefined);
+      expect(config.preprocessorIgnorePatterns).toBe(undefined);
+
+      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    });
   });
 
 });

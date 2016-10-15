@@ -111,6 +111,8 @@ function getTestEnvironment(config) {
   );
 }
 
+let shouldWarnAboutPreprocessor = false;
+
 function normalize(config, argv) {
   if (!argv) {
     argv = {};
@@ -156,6 +158,30 @@ function normalize(config, argv) {
         `Jest: Preset '${presetPath}' not found.`,
       );
     }
+  }
+
+  if (config.scriptPreprocessor) {
+    config.transform = config.transform || {};
+    config.transform['.*'] = config.scriptPreprocessor;
+    shouldWarnAboutPreprocessor = true;
+  }
+
+  if (config.preprocessorIgnorePatterns) {
+    config.transformIgnorePatterns = config.preprocessorIgnorePatterns;
+    shouldWarnAboutPreprocessor = true;
+  }
+
+  if (shouldWarnAboutPreprocessor) {
+    logConfigurationWarning(
+      'The settings `scriptPreprocessor` and `preprocessorIgnorePatterns` ' +
+      'will be replaced by `transform` and `transformIgnorePatterns` ' +
+      'which support multiple preprocessors. ' +
+      'Jest now treats your current settings as: \n' +
+      '  "transform": { ".*": "current-scriptPreprocessor" },\n' +
+      '  "transformIgnorePatterns": "current-preprocessorIgnorePatterns"\n' +
+      'Please update your configuration.',
+    );
+    // TODO: link to API page/blog post?
   }
 
   if (!config.name) {
@@ -418,6 +444,11 @@ function normalize(config, argv) {
       case 'verbose':
       case 'watchman':
         value = config[key];
+        break;
+
+      case 'scriptPreprocessor':
+      case 'preprocessorIgnorePatterns':
+        // TODO Remove when we make it a breaking change (#1917)
         break;
 
       default:
