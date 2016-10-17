@@ -78,4 +78,5 @@ export type Config = DefaultConfig & {|
   updateSnapshot: boolean,
   usesBabelJest: boolean,
   watchman: boolean,
+  forceExit: boolean,
 |};
