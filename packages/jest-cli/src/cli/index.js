@@ -39,7 +39,11 @@ function run(argv?: Object, root?: Path) {
   }
 
   getJest(root).runCLI(argv, root, result => {
-    process.on('exit', () => process.exit(!result || result.success ? 0 : 1));
+    const code = !result || result.success ? 0 : 1;
+    process.on('exit', () => process.exit(code));
+    if (argv && argv.forceExit) {
+      process.exit(code);
+    }
   });
 }
 
