@@ -10,6 +10,10 @@ install:
   - npm --version
   - npm install
 
+cache:
+  - node_modules
+  - .eslintcache
+
 test_script:
   - npm run build
   # Some snapshot tests don't currently work on Windows, so the tests are
