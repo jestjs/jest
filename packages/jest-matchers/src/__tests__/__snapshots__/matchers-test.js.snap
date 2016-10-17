@@ -1506,6 +1506,19 @@ Matcher does not accept any arguments.
 Got: [32mnull[39m"
 `;
 
+exports[`.toChange() fails for 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toChange([22m[32mexpected[39m[2m)[22m
+
+Expected resolved value to change (using ===):
+  0
+Received:
+  0
+
+Difference:
+
+[2mCompared values have no visual difference.[22m"
+`;
+
 exports[`.toContain() '"11112111"' contains '"2"' 1`] = `
 "[2mexpect([22m[31mstring[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
