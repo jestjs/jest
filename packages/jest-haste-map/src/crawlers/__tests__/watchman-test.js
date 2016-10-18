@@ -84,7 +84,7 @@ describe('watchman watch', () => {
   it('returns a list of all files when there are no clocks', () => {
     const watchman = require('fb-watchman');
 
-    const path = require('../../fastpath');
+    const path = require('path');
     const originalPathRelative = path.relative;
     path.relative = jest.fn(from => '/root-mock' + from);
 
