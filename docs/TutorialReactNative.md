@@ -12,8 +12,6 @@ applications.
 
 Get a deeper insight into testing a working example React Native app reading the following series: [Part 1: Jest – Snapshot come into play](https://blog.callstack.io/unit-testing-react-native-with-the-new-jest-i-snapshots-come-into-play-68ba19b1b9fe#.12zbnbgwc) and [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://blog.callstack.io/unit-testing-react-native-with-the-new-jest-ii-redux-snapshots-for-your-actions-and-reducers-8559f6f8050b).
 
-*Note: react-native support is experimental. Please create [issues](https://github.com/facebook/jest/issues) with an open source repository attached when you run into problems or send pull requests to help improve the integration.*
-
 ## Setup
 
 We'll need to use the `jest-react-native` preset and we are going to use the `babel-jest` package as a preprocessor
