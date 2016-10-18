@@ -20,7 +20,7 @@ const H = require('./constants');
 const docblock = require('./lib/docblock');
 const extractRequires = require('./lib/extractRequires');
 const fs = require('graceful-fs');
-const path = require('./fastpath');
+const path = require('path');
 
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
