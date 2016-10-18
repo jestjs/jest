@@ -13,8 +13,6 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Path} from 'types/Config';
 import type {PatternInfo} from './SearchSource';
 
-require('jest-haste-map').fastpath.replace();
-
 const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);

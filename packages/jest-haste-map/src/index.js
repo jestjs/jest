@@ -17,7 +17,6 @@ import type {
   ModuleMetaData,
 } from 'types/HasteMap';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
-import typeof FastpathType from './fastpath';
 import typeof HType from './constants';
 
 const H = require('./constants');
@@ -30,7 +29,7 @@ const fs = require('graceful-fs');
 const getPlatformExtension = require('./lib/getPlatformExtension');
 const nodeCrawl = require('./crawlers/node');
 const os = require('os');
-const path = require('./fastpath');
+const path = require('path');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
@@ -500,10 +499,8 @@ class HasteMap {
   }
 
   static H: HType;
-  static fastpath: FastpathType;
 }
 
 HasteMap.H = H;
-HasteMap.fastpath = path;
 
 module.exports = HasteMap;

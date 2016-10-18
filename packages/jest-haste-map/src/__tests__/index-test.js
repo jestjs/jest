@@ -162,8 +162,7 @@ describe('HasteMap', () => {
     fs.writeFileSync = writeFileSync;
   });
 
-  it('exports fastpath and constants', () => {
-    expect(HasteMap.fastpath).toBe(require('../fastpath'));
+  it('exports constants', () => {
     expect(HasteMap.H).toBe(require('../constants'));
   });
 
