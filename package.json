@@ -34,7 +34,7 @@
     "clean-all": "rm -rf ./packages/*/node_modules; rm -rf ./integration_tests/*/*/node_modules; npm run build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "npm run jest -- --coverage",
-    "lint": "eslint .",
+    "lint": "eslint . --cache",
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js",
     "publish": "npm run build-clean && npm run build && lerna publish",
     "test": "npm run typecheck && npm run lint && npm run build && npm run jest && npm run test-examples",
