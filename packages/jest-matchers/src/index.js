@@ -57,7 +57,7 @@ const makeThrowingMatcher = (
   isNot: boolean,
   actual: any,
 ): ThrowingMatcherFn => {
-  return function throwingMatcher(expected, ...rest) {
+  return function throwingMatcher(...args) {
     let throws = true;
     const matcherContext: MatcherContext = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
@@ -74,7 +74,7 @@ const makeThrowingMatcher = (
     try {
       result = matcher.apply(
         matcherContext,
-        [actual, expected].concat(rest),
+        [actual].concat(args),
       );
     } catch (error) {
       // Remove this and deeper functions from the stack trace frame.
