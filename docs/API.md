@@ -453,7 +453,7 @@ Use `.toBeInstanceOf(Class)` to check that an object is an instance of a class. 
 class A {}
 
 expect(new A()).toBeInstanceOf(A);
-expect(() => {}).toBeinstanceOf(Function);
+expect(() => {}).toBeInstanceOf(Function);
 expect(new A()).toBeInstanceOf(Function); // throws
 ```
 
