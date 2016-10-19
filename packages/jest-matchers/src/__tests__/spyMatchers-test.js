@@ -126,12 +126,19 @@ describe('toHaveBeenCalledTimes', () => {
   const getFunction = () => {
     return mockName === 'jest.fn' ? jest.fn() : jasmine.createSpy('fn');
   };
-  test(`${calledWith} works with ${mockName} and no arguments`, () => {
+
+  test(`${calledWith} works with ${mockName} when not called`, () => {
     const fn = getFunction();
     jestExpect(fn).not[calledWith]('foo', 'bar');
 
     expect(() => jestExpect(fn)[calledWith]('foo', 'bar'))
       .toThrowErrorMatchingSnapshot();
+  });
+
+  test(`${calledWith} works with ${mockName} and no arguments`, () => {
+    const fn = getFunction();
+    fn();
+    jestExpect(fn)[calledWith]();
   });
 
   test(`${calledWith} works with ${mockName} and arguments that don't match`, () => {
