@@ -45,7 +45,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageFrom` [array]](#collectcoveragefrom-array)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
-  - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepattern-array-string)
+  - [`coveragePathIgnorePatterns` [array<string>]](#coveragepathignorepatterns-array-string)
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
@@ -86,7 +86,7 @@ This option is disabled by default. If you are introducing Jest to a large organ
 ### `browser` [boolean]
 (default: false)
 
-Respect the Browserify's [`"browser"`](https://github.com/substack/browserify-handbook#browser-field) field in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
+Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `bail` [boolean]
 (default: false)
@@ -241,6 +241,7 @@ Example:
     "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
 ```
+*Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub.*
 
 ### `notify` [boolean]
 (default: `false`)

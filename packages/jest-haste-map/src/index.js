@@ -17,7 +17,6 @@ import type {
   ModuleMetaData,
 } from 'types/HasteMap';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
-import typeof FastpathType from './fastpath';
 import typeof HType from './constants';
 
 const H = require('./constants');
@@ -30,7 +29,7 @@ const fs = require('graceful-fs');
 const getPlatformExtension = require('./lib/getPlatformExtension');
 const nodeCrawl = require('./crawlers/node');
 const os = require('os');
-const path = require('./fastpath');
+const path = require('path');
 const watchmanCrawl = require('./crawlers/watchman');
 const worker = require('./worker');
 const workerFarm = require('worker-farm');
@@ -310,7 +309,7 @@ class HasteMap {
           this._console.warn(
             `jest-haste-map: duplicate manual mock found:\n` +
             `  Module name: ${mockPath}\n` +
-            `  Dupicate Mock path: ${filePath}\nThis warning ` +
+            `  Duplicate Mock path: ${filePath}\nThis warning ` +
             `is caused by two manual mock files with the same file name.\n` +
             `Jest will use the mock file found in: \n` +
             `${filePath}\n` +
@@ -354,18 +353,24 @@ class HasteMap {
       );
     }
 
+    const cleanup = () => {
+      if (this._workerFarm) {
+        workerFarm.end(this._workerFarm);
+      }
+      this._workerFarm = null;
+      this._workerPromise = null;
+    };
+
     return Promise.all(promises)
-      .then(() => {
-        if (this._workerFarm) {
-          workerFarm.end(this._workerFarm);
-        }
-        this._workerFarm = null;
-        this._workerPromise = null;
-      })
+      .then(cleanup)
       .then(() => {
         hasteMap.map = map;
         hasteMap.mocks = mocks;
         return hasteMap;
+      })
+      .catch(err => {
+        cleanup();
+        return Promise.reject(err);
       });
   }
 
@@ -494,10 +499,8 @@ class HasteMap {
   }
 
   static H: HType;
-  static fastpath: FastpathType;
 }
 
 HasteMap.H = H;
-HasteMap.fastpath = path;
 
 module.exports = HasteMap;

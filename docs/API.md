@@ -428,7 +428,7 @@ To compare floating point numbers, you can use `toBeLessThan`. For example, if y
 ```js
 describe('ounces per can', () => {
   it('is less than 20', () => {
-    expect(ouncesPerCan()).toBeLessThan(10);
+    expect(ouncesPerCan()).toBeLessThan(20);
   });
 });
 ```
@@ -453,7 +453,7 @@ Use `.toBeInstanceOf(Class)` to check that an object is an instance of a class. 
 class A {}
 
 expect(new A()).toBeInstanceOf(A);
-expect(() => {}).toBeinstanceOf(Function);
+expect(() => {}).toBeInstanceOf(Function);
 expect(new A()).toBeInstanceOf(Function); // throws
 ```
 

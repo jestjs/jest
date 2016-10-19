@@ -261,6 +261,14 @@ const options = {
       'Will run all tests affected by file changes in the last commit made.',
     type: 'boolean',
   },
+  forceExit: {
+    default: false,
+    description:
+      'Force Jest to exit after all tests have completed running. ' +
+      'This is useful when resources set up by test code cannot be ' +
+      'adequately cleaned up.',
+    type: 'boolean',
+  },
 };
 
 module.exports = {
