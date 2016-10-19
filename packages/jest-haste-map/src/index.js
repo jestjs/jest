@@ -8,6 +8,7 @@
  * @flow
  */
 'use strict';
+const util = require('util');
 
 import type {Console} from 'console';
 import type {Path} from 'types/Config';
@@ -16,6 +17,7 @@ import type {
   HasteMap as HasteMapObject,
   InternalHasteMap,
   ModuleMetaData,
+  PendingChanges,
 } from 'types/HasteMap';
 import type {WorkerMessage, WorkerMetadata, WorkerCallback} from './types';
 import typeof FastpathType from './fastpath';
@@ -83,6 +85,10 @@ let Watcher;
 const maxWatcherWaitTime = 10000; // ms
 const defaultWatchDebounceTime = 200; // ms
 const changeEvents = ['change', 'add', 'delete'];
+
+function isSubpath(parent: Path, child: Path): boolean {
+  return !child.indexOf(parent);
+}
 
 const canUseWatchman = ((): boolean => {
   try {
@@ -180,16 +186,15 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *
  */
 class HasteMap extends EventEmitter {
-  _options: InternalOptions;
-  _batchedUpdates: Array<Change>;
+  _buildPromise: ?Promise<HasteMapObject>;
   _cachePath: Path;
   _console: Console;
-  _hasteFS: HasteFS;
-  _moduleMap: ModuleMap;
-  _isUpdateScheduled: boolean;
+  _internalHasteMap: InternalHasteMap;
   _isWatching: boolean;
+  _options: InternalOptions;
+  _pendingChanges: PendingChanges;
+  _updateTimer: ?number;
   _whitelist: ?RegExp;
-  _buildPromise: ?Promise<HasteMapObject>;
   _workerPromise: ?(message: WorkerMessage) => Promise<WorkerMetadata>;
   _workerFarm: ?(data: WorkerMessage, callback: WorkerCallback) => void;
 
@@ -218,9 +223,9 @@ class HasteMap extends EventEmitter {
     };
     this._console = options.console || global.console;
 
-    this._batchedUpdates = [];
-    this._isUpdateScheduled = false;
     this._isWatching = false;
+    this._pendingChanges = {dirs: {}, files: {}};
+    this._updateTimer = null;
 
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
@@ -253,17 +258,15 @@ class HasteMap extends EventEmitter {
   build(): Promise<HasteMapObject> {
     if (!this._buildPromise) {
       const isTest = process.env.NODE_ENV === 'test';
-      this._buildPromise = this._buildFileMap()
-        .then(fileMap => this._buildHasteMap(fileMap))
+      this._buildPromise = this._initHasteMap()
+        .then(internalHasteMap => this._buildHasteMap(internalHasteMap))
         .then(internalHasteMap => this._persist(internalHasteMap))
         .then(internalHasteMap => {
-          this._hasteFS = new HasteFS(internalHasteMap.files);
-          this._moduleMap =
-            new HasteModuleMap(internalHasteMap.map, internalHasteMap.mocks);
           this._startWatching();
           return {
-            hasteFS: this._hasteFS,
-            moduleMap: this._moduleMap,
+            hasteFS: new HasteFS(internalHasteMap.files),
+            moduleMap:
+              new HasteModuleMap(internalHasteMap.map, internalHasteMap.mocks),
             __hasteMapForTest: isTest && internalHasteMap,
           };
         });
@@ -286,7 +289,7 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  _buildFileMap(): Promise<InternalHasteMap> {
+  _initHasteMap(): Promise<InternalHasteMap> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
 
     return Promise.resolve()
@@ -392,9 +395,155 @@ class HasteMap extends EventEmitter {
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
+  persist(): void {
+    this._persist(this._internalHasteMap);
+  }
+
   _persist(hasteMap: InternalHasteMap): InternalHasteMap {
+    this._internalHasteMap = hasteMap;
     fs.writeFileSync(this._cachePath, JSON.stringify(hasteMap), 'utf8');
     return hasteMap;
+  }
+
+  /*
+   * Watch for changes.
+   */
+  _createWatcher(root: Path): Promise<[Watcher, Path]> {
+    const watcher = new Watcher(root, {
+      glob: this._options.extensions.map(extension => `**/*.${extension}`),
+      dot: false,
+    });
+
+    const watcherTimeoutMessage =
+      `${Watcher.name} took too long to load.` +
+      (
+        Watcher === sane.WatchmanWatcher ?
+        '\nTry running `watchman version` from your terminal.' +
+        '\nhttps://facebook.github.io/watchman/docs/troubleshooting.html' :
+        ''
+      );
+
+    return new Promise((resolve, reject) => {
+      const rejectTimeout = setTimeout(
+        () => reject(new Error(watcherTimeoutMessage)),
+        maxWatcherWaitTime,
+      );
+
+      watcher.once('ready', () => {
+        clearTimeout(rejectTimeout);
+        resolve([watcher, root]);
+      });
+    });
+  }
+
+  _createWatchers(): Promise<Array<[Watcher, Path]>> {
+    return Promise.all(this._options.roots.map(root =>
+      this._createWatcher(root))
+    );
+  }
+
+  _startWatching(): void {
+    if (!this._options.watch || this._isWatching) {
+      return;
+    }
+
+    this._createWatchers().then(watchers => {
+      watchers.forEach(watcher => {
+        changeEvents.forEach(event =>
+          watcher[0].on(event, (changedPath, watchRoot, stat) => {
+            this._queueChange([watcher[1] + path.sep + changedPath, event]);
+          }));
+      });
+      this._isWatching = true;
+    });
+  }
+
+  _queueChange(change: Change): void {
+    const changePath = change[0];
+    const changeEvent = change[1];
+    const isFile = !!path.extname(changePath);
+
+    if (isFile) {
+      this._pendingChanges.files[changePath] = changeEvent;
+    } else {
+      this._pendingChanges.dirs[changePath] = changeEvent;
+    }
+
+    if (this._updateTimer) {
+      return;
+    }
+
+    this._updateTimer = setTimeout(
+      () => this._update(),
+      this._options.watchDebounceTime,
+    );
+  }
+
+  /*
+   * Update the `HasteMap` to reflect watched changes.
+   */
+  _update(): void {
+    this._updateTimer = null;
+
+    Promise.resolve()
+      .then(() => this._flushChanges())
+      .then(changes => {
+        this.emit(
+          'change',
+          new HasteFS(this._internalHasteMap.files),
+          new HasteModuleMap(this._internalHasteMap.map, this._internalHasteMap.mocks),
+          changes,
+        );
+      });
+  }
+
+  _flushChanges(): Promise<any> {
+    const changes = this._pendingChanges;
+    const dirChanges = changes.dirs;
+    const fileChanges = changes.files;
+    const additiveUpdates = [];
+
+    // perform deletions of entire dirs to correct for missing 'delete' events
+    Object.keys(this._internalHasteMap.files).forEach(filePath => {
+      Object.keys(dirChanges).forEach(dirPath => {
+        if (isSubpath(dirPath, filePath)) {
+          delete this._internalHasteMap.files[filePath];
+        }
+      });
+    });
+
+    // perform individual file deletions and collect additive updates
+    for (const filePath in fileChanges) {
+      if (fileChanges[filePath] === 'delete') {
+        delete this._internalHasteMap[filePath];
+        continue;
+      }
+      additiveUpdates.push(filePath);
+    }
+
+    this._pendingChanges = {dirs: {}, files: {}};
+
+    // perform additive updates - 'add'/'change'
+    return this._getFilesDeps(additiveUpdates).then(filesDependencies => {
+      filesDependencies.forEach((fileDependencies, index) => {
+        if (!fileDependencies) {
+          return;
+        }
+        const filePath = additiveUpdates[index];
+        const dependencies = filesDependencies[index].dependencies;
+        this._internalHasteMap.files[filePath] =
+          ['', fs.lstatSync(filePath).mtime.getTime(), 1, dependencies];
+
+      });
+
+      return fileChanges;
+    });
+  }
+
+  _getFilesDeps(files: Array<Path>): Promise<Array<{dependencies: Array<string>}>> {
+    return Promise.all(files.map(filePath =>
+      this._getWorker()({filePath}).catch(() => {/* noop */})
+    ));
   }
 
   /**
@@ -472,91 +621,6 @@ class HasteMap extends EventEmitter {
     } catch (error) {
       return retry(error);
     }
-  }
-
-  _createWatcher(root: Path): Promise<Watcher> {
-    const watcher = new Watcher(root, {
-      glob: this._options.extensions.map(extension => `**/*.${extension}`),
-      dot: false,
-    });
-
-    const watcherTimeoutMessage =
-      `${Watcher.name} took too long to load.` +
-      (
-        Watcher === sane.WatchmanWatcher ?
-        '\nTry running `watchman version` from your terminal.' +
-        '\nhttps://facebook.github.io/watchman/docs/troubleshooting.html' :
-        ''
-      );
-
-    return new Promise((resolve, reject) => {
-      const rejectTimeout = setTimeout(
-        () => reject(new Error(watcherTimeoutMessage)),
-        maxWatcherWaitTime,
-      );
-
-      watcher.once('ready', () => {
-        clearTimeout(rejectTimeout);
-        resolve(watcher);
-      });
-    });
-  }
-
-  _startWatching(): void {
-    if (!this._options.watch || this._isWatching) {
-      return;
-    }
-
-    Promise.all(this._options.roots.map(root => this._createWatcher(root)))
-      .then(watchers => {
-        watchers.forEach(watcher => {
-          changeEvents.forEach(changeEvent =>
-            watcher.on(changeEvent, (filepath, root, stat) =>
-              this._batchUpdate([path.resolve(root, filepath), changeEvent])));
-        });
-        this._isWatching = true;
-      });
-  }
-
-  _batchUpdate(change: Change): void {
-    this._batchedUpdates.push(change);
-    if (!this._isUpdateScheduled) {
-      this._isUpdateScheduled = true;
-      setTimeout(() => this._flushUpdates(), this._options.watchDebounceTime);
-    }
-  }
-
-  _dedupeUpdates(): Array<Change> {
-    const dedupedUpdates = [];
-    const batchedUpdates = this._batchedUpdates;
-    const touchedPaths = [];
-    let change, filePath, i;
-
-    for (i = batchedUpdates.length - 1; i >= 0; i--) {
-      change = batchedUpdates[i];
-      filePath = change[0];
-      if (touchedPaths.indexOf(filePath) !== -1) {
-        continue;
-      }
-      touchedPaths.push(filePath);
-      dedupedUpdates.push(change);
-    }
-
-    this._batchedUpdates = [];
-
-    return dedupedUpdates;
-  }
-
-  _flushUpdates(): void {
-    this._isUpdateScheduled = false;
-    this._rebuild();
-  }
-
-  _rebuild(): void {
-    this._buildPromise = null;
-    this.build().then(map => {
-      this.emit('change', map.hasteFS, map.moduleMap, this._dedupeUpdates());
-    });
   }
 
   _ignore(filePath: Path): boolean {
