@@ -1,6 +1,6 @@
 {
   "name": "jest-matchers",
-  "version": "16.0.0",
+  "version": "16.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,7 +10,7 @@
   "dependencies": {
     "jest-diff": "^16.0.0",
     "jest-matcher-utils": "^16.0.0",
-    "jest-util": "^16.0.0"
+    "jest-util": "^16.0.2"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
