@@ -93,9 +93,15 @@ class Resolver {
   ): Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
-    const extensions = this._options.extensions;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
+    const defaultPlatform = this._options.defaultPlatform;
+    let exts = ['.' + NATIVE_PLATFORM + '.js'].concat(
+      this._options.extensions || [],
+    );
+    if (defaultPlatform) {
+      exts = ['.' + defaultPlatform + '.js'].concat(exts);
+    }
 
     // 0. If we have already resolved this module for this directory name,
     //    return a value from the cache.
@@ -115,7 +121,7 @@ class Resolver {
       module = Resolver.findNodeModule(moduleName, {
         basedir: dirname,
         browser: this._options.browser,
-        extensions,
+        extensions: exts,
         moduleDirectory,
         paths,
       });

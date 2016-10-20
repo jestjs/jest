@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "haste": {
+      "defaultPlatform": "android"
+    }
+  }
+}
