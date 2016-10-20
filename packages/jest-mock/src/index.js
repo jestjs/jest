@@ -430,6 +430,7 @@ class ModuleMocker {
     if (!type) {
       return null;
     }
+
     const metadata: MockFunctionMetadata = {type};
     if (
       type === 'constant' ||
