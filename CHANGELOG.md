@@ -1,5 +1,15 @@
 ## master
 
+## jest 16.0.2
+
+* Symbols are now properly mocked when using `jest-mock`.
+* `toHaveBeenCalledWith()` works without arguments again.
+* Newlines in snapshots are now normalized across different operating systems.
+
+## jest 16.0.1
+
+* Fix infinite loop.
+
 ## jest 16.0.0
 
 * Previously failed tests are now always run first.
