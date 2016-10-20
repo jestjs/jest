@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "16.0.0",
+  "version": "16.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
