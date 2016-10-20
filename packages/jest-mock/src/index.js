@@ -91,7 +91,12 @@ function getType(ref?: any): string|null {
     return 'array';
   } else if (isA('Object', ref)) {
     return 'object';
-  } else if (isA('Number', ref) || isA('String', ref) || isA('Boolean', ref)) {
+  } else if (
+    isA('Number', ref) ||
+    isA('String', ref) ||
+    isA('Boolean', ref) ||
+    isA('Symbol', ref)
+  ) {
     return 'constant';
   } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
     return 'collection';
