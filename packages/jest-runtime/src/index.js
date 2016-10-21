@@ -25,7 +25,10 @@ const fs = require('graceful-fs');
 const path = require('path');
 const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
-const utils = require('jest-util');
+const {
+  createDirectory,
+  replacePathSepForRegex,
+} = require('jest-util');
 
 type Module = {|
   children?: Array<any>,
@@ -114,7 +117,7 @@ class Runtime {
     this._mocksPattern =
       config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
-    this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
+    this._testRegex = new RegExp(replacePathSepForRegex(config.testRegex));
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -171,7 +174,7 @@ class Runtime {
       maxWorkers: number,
     },
   ): Promise<HasteContext> {
-    utils.createDirectory(config.cacheDirectory);
+    createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
       maxWorkers: options.maxWorkers,
