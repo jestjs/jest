@@ -984,6 +984,36 @@ Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
 
+### CLI options
+
+Run `jest --help` to view the various options available.
+
+It is possible to run suites from particular files by providing a pattern. Only the files that the pattern matches will be picked up and executed.
+
+If you have a suite in a file named `Component-snapshot-test.js` somewhere in the file hierarchy, you can run only that test by adding a pattern right after `jest` command:
+
+```bash
+jest Component-snapshot
+```
+
+It is possible to further reduce amount of tests that will be run by using `--testNamePattern` (or simply `-t`) flag.
+
+```bash
+jest Component-snapshot -t "is selected"
+```
+
+It is possible to combine `--updateSnapshot` (`-u`) flag with the options above in order to re-record snapshots for particular suites or tests only:
+
+Update snapshots for all files matching the pattern:
+```bash
+jest -u Component-snapshot
+```
+
+Only update snapshots for tests matching the pattern
+```bash
+jest -u Component-snapshot -t "is selected"
+```
+
 ## Miscellaneous
 
 ### `check`
