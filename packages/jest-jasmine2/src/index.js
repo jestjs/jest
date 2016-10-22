@@ -89,7 +89,7 @@ function jasmine2(
   // Adapter for coercing jasmine `addMatcher` api into using
   // jest's `expect.extend` API.
   runtime.requireInternalModule(
-    path.resolve(__dirname, './jasmineAddMatcherAdapter.js'),
+    path.resolve(__dirname, './jasmine-add-matchers-adapter.js'),
   )(jasmine);
 
   // `jest-matchers` should be required inside test environment (vm).
