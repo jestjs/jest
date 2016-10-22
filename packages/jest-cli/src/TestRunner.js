@@ -225,8 +225,7 @@ class TestRunner {
       )
     );
 
-    const finalizeResults = () => {
-      // Update snapshot state.
+    const updateSnapshotState = () => {
       const status =
         snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
@@ -240,8 +239,9 @@ class TestRunner {
       );
 
       aggregatedResults.wasInterrupted = watcher.isInterrupted();
+    };
 
-      // Check if the test run was successful or not.
+    const determineSuccessful = () => {
       const anyTestFailures = !(
         aggregatedResults.numFailedTests === 0 &&
         aggregatedResults.numRuntimeErrorTestSuites === 0
@@ -278,8 +278,9 @@ class TestRunner {
         }
       })
       .then(() => {
-        finalizeResults();
+        updateSnapshotState();
         this._dispatcher.onRunComplete(config, aggregatedResults);
+        determineSuccessful();
         this._cacheTestResults(aggregatedResults);
         return aggregatedResults;
       });
