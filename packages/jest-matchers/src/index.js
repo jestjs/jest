@@ -141,7 +141,6 @@ expect.extend(spyMatchers);
 expect.extend(toThrowMatchers);
 
 module.exports = {
-  addMatchers: expect.extend, // TODO: remove!
   expect,
   getState,
   setState,

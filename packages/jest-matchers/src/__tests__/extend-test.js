@@ -10,7 +10,9 @@
 
 'use strict';
 
-expect.extend({
+const jestExpect = require('../').expect;
+
+jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
     const pass = actual % expected === 0;
     const message = pass
@@ -22,10 +24,10 @@ expect.extend({
 });
 
 it('is available globally', () => {
-  expect(15).toBeDivisibleBy(5);
-  expect(15).toBeDivisibleBy(3);
-  expect(15).not.toBeDivisibleBy(6);
+  jestExpect(15).toBeDivisibleBy(5);
+  jestExpect(15).toBeDivisibleBy(3);
+  jestExpect(15).not.toBeDivisibleBy(6);
 
-  expect(() => expect(15).toBeDivisibleBy(2))
+  jestExpect(() => jestExpect(15).toBeDivisibleBy(2))
     .toThrowErrorMatchingSnapshot();
 });

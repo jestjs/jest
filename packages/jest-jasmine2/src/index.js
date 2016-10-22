@@ -15,7 +15,6 @@ import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
 const JasmineReporter = require('./reporter');
-const AddMatchersAdapter = require('./jasmineAddMatcherAdapter');
 
 const jasmineAsync = require('./jasmine-async');
 const fs = require('graceful-fs');
@@ -97,7 +96,7 @@ function jasmine2(
   // Otherwise if they throw, the `Error` class will differ from the `Error`
   // class of the test and `error instanceof Error` will return `false`.
   runtime.requireInternalModule(
-    path.resolve(__dirname, './extendJasmineExpect.js'),
+    path.resolve(__dirname, './expose-jest-expect.js'),
   )();
 
   const snapshotState = runtime.requireInternalModule(

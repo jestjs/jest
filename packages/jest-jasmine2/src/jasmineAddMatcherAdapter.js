@@ -7,21 +7,34 @@
  */
 'use strict';
 
+import type {
+  RawMatcherFn,
+  MatchersObject,
+} from 'jest-matchers';
+
+type JamineMatcher = {
+  compare: RawMatcherFn,
+  negativeCompare: ?RawMatcherFn,
+};
+type JasmineMatcherObject = {
+  [id:string]: JasmineMatcher,
+};
+
 module.exports = jasmine => {
-  jasmine.addMatchers = function addMatcherAlias(jasmineMatchersObject) {
-    const jestMatchersObject = Object.create(null);
+  jasmine.addMatchers = (jasmineMatchersObject:JasmineMatchersObject) => {
+    const jestMatchersObject:MatchersObject = Object.create(null);
 
     Object.keys(jasmineMatchersObject).forEach(name => {
-      jestMatchersObject[name] = function() {
-        const jasmineMatcherResult = jasmineMatchersObject[name](
+      jestMatchersObject[name] = function aliasedMatcher() : RawMatcherFn => {
+        const jasmineMatcherResult:JasmineMatcher = jasmineMatchersObject[name](
           jasmine.matchersUtil,
            // We don't have access to custom equality matchers
            // but it doesn't seem like this feature is used a lot anywhere
           null,
         );
 
-      // if there is no 'negativeCompare', both should be handled by `compare`
-        const negativeCompare =
+        // if there is no 'negativeCompare', both should be handled by `compare`
+        const negativeCompare:RawMatcherFn =
           jasmineMatcherResult.negativeCompare || jasmineMatcherResult.compare;
 
         return this.isNot
@@ -32,5 +45,4 @@ module.exports = jasmine => {
 
     expect.extend(jestMatchersObject);
   };
-
 };

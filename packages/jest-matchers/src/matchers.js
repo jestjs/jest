@@ -15,6 +15,10 @@ import type {
   MatchersObject,
 } from './types';
 
+const {
+  toMatchSnapshot,
+} = require('jest-snapshot');
+
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-util');
 const {
@@ -398,6 +402,8 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
+
+  toMatchSnapshot,
 };
 
 module.exports = matchers;
