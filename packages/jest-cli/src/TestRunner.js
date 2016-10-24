@@ -237,22 +237,6 @@ class TestRunner {
           aggregatedResults.snapshot.filesRemoved
         )
       );
-
-      aggregatedResults.wasInterrupted = watcher.isInterrupted();
-    };
-
-    const determineSuccessful = () => {
-      const anyTestFailures = !(
-        aggregatedResults.numFailedTests === 0 &&
-        aggregatedResults.numRuntimeErrorTestSuites === 0
-      );
-      const anyReporterErrors = this._dispatcher.hasErrors();
-
-      aggregatedResults.success = !(
-        anyTestFailures ||
-        aggregatedResults.snapshot.failure ||
-        anyReporterErrors
-      );
     };
 
     const runInBand = shouldRunInBand();
@@ -279,8 +263,22 @@ class TestRunner {
       })
       .then(() => {
         updateSnapshotState();
+        aggregatedResults.wasInterrupted = watcher.isInterrupted();
+
         this._dispatcher.onRunComplete(config, aggregatedResults);
-        determineSuccessful();
+
+        const anyTestFailures = !(
+          aggregatedResults.numFailedTests === 0 &&
+          aggregatedResults.numRuntimeErrorTestSuites === 0
+        );
+        const anyReporterErrors = this._dispatcher.hasErrors();
+
+        aggregatedResults.success = !(
+          anyTestFailures ||
+          aggregatedResults.snapshot.failure ||
+          anyReporterErrors
+        );
+
         this._cacheTestResults(aggregatedResults);
         return aggregatedResults;
       });
