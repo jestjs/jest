@@ -591,7 +591,7 @@ Use `.toThrow` to test that a function throws when it is called. For example, if
 describe('drinking flavors', () => {
   it('throws on octopus', () => {
     expect(() => {
-      drink('octopus');
+      drinkFlavor('octopus');
     }).toThrow();
   });
 });
@@ -619,7 +619,7 @@ We could test this error gets thrown in several ways:
 describe('drinking flavors', () => {
   it('throws on octopus', () => {
     function drinkOctopus() {
-      drink('octopus');
+      drinkFlavor('octopus');
     }
     // Test the exact error message
     expect(drinkOctopus).toThrowError('yuck, octopus flavor');
@@ -654,7 +654,7 @@ The test for this function will look this way:
 describe('drinking flavors', () => {
   it('throws on octopus', () => {
     function drinkOctopus() {
-      drink('octopus');
+      drinkFlavor('octopus');
     }
 
     expect(drinkOctopus).toThrowErrorMatchingSnapshot();
