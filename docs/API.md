@@ -100,6 +100,10 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
 
+### The Jest CLI
+
+  - [Jest CLI Options](#jestclioptions)
+
 -----
 
 
@@ -984,79 +988,32 @@ Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
 
-### CLI options
+### Jest CLI options
 
 Run `jest --help` to view the various options available.
 
-It is possible to run suites from particular files by providing a pattern. Only the files that the pattern matches will be picked up and executed.
+It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed.
 
-If you have a suite in a file named `Component-snapshot-test.js` somewhere in the file hierarchy, you can run only that test by adding a pattern right after `jest` command:
+If you have a test suite in a file named `Component-snapshot-test.js` somewhere in the file hierarchy, you can run only that test by adding a pattern right after the `jest` command:
 
 ```bash
 jest Component-snapshot
 ```
 
-It is possible to further reduce amount of tests that will be run by using `--testNamePattern` (or simply `-t`) flag.
+It is possible to further limit the tests that will be run by using the `--testNamePattern` (or simply `-t`) flag.
 
 ```bash
 jest Component-snapshot -t "is selected"
 ```
 
-It is possible to combine `--updateSnapshot` (`-u`) flag with the options above in order to re-record snapshots for particular suites or tests only:
+It is possible to combine the `--updateSnapshot` (`-u`) flag with the options above in order to re-record snapshots for particular test suites or tests only:
 
 Update snapshots for all files matching the pattern:
 ```bash
 jest -u Component-snapshot
 ```
 
-Only update snapshots for tests matching the pattern
+Only update snapshots for tests matching the pattern:
 ```bash
 jest -u Component-snapshot -t "is selected"
 ```
-
-## Miscellaneous
-
-### `check`
-
-Jest supports property testing with the
-[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
-the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
-
-### `check.it(name, [options], generators, fn)`
-Creates a property test. Test cases will be created by the given `generators`
-and passed as arguments to `fn`. If any test case fails, a shrunken failing
-value will be given in the test output. For example:
-
-```js
-const { check, gen } = require('jest-check');
-
-check.it('can recover encoded URIs',
-  [gen.string],
-  s => expect(s).toBe(decodeURI(encodeURI(s))));
-```
-
-If `options` are provided, they override the corresponding command-line options.
-The possible options are:
-
-```
-{
-  times: number;   // The number of test cases to run. Default: 100.
-  maxSize: number; // The maximum size of sized data such as numbers
-                   // (their magnitude) or arrays (their length). This can be
-                   // overridden with `gen.resize`. Default: 200.
-  seed: number;    // The random number seed. Defaults to a random value.
-}
-```
-
-### `check.fit(name, [options], generators, fn)`
-
-Executes this test and skips all others. Like `fit`, but for property tests.
-
-### `check.xit(name, [options], generators, fn)`
-
-Skips this test. Like `xit`, but for property tests.
-
-### `gen`
-
-A library of generators for property tests. See the
-[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
