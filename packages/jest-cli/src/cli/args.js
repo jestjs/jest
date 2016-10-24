@@ -226,7 +226,11 @@ const options = {
   updateSnapshot: {
     alias: 'u',
     default: false,
-    description: 'Use this flag to re-record snapshots.',
+    description:
+      'Use this flag to re-record snapshots. ' +
+      'Can be used together with a test suite pattern or with ' +
+      '`--testNamePattern` to re-record snapshot for test matching ' +
+      'the pattern',
     type: 'boolean',
   },
   testcheckTimes: {
