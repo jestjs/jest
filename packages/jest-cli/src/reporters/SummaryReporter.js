@@ -168,7 +168,7 @@ class SummareReporter extends BaseReporter {
       if (snapshots.filesRemoved) {
         this.log(
           SNAPSHOT_REMOVED(ARROW + pluralize(
-            'snapshot file',
+            'obsolete snapshot file',
             snapshots.filesRemoved,
           )) +
           (snapshots.didUpdate
