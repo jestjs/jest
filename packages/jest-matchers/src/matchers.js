@@ -95,6 +95,32 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toChange(received: Function, expected: Function) {
+    const beforeValue = expected();
+    received();
+    const newValue = expected();
+
+    const pass = beforeValue !== expected();
+
+    const message = pass
+      ? () => matcherHint('.not.toChange') + '\n\n' +
+        `Expected resolved value not to change:\n` +
+        `  ${beforeValue}\n` +
+        `Received:\n` +
+        `  ${newValue}`
+      : () => {
+        const diffString = diff(newValue, beforeValue);
+        return matcherHint('.toChange') + '\n\n' +
+        `Expected resolved value to change (using ===):\n` +
+        `  ${beforeValue}\n` +
+        `Received:\n` +
+        `  ${newValue}` +
+        (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+      };
+
+    return {message, pass};
+  },
+
   toEqual(received: any, expected: any) {
     const pass = equals(received, expected, [iterableEquality]);
 

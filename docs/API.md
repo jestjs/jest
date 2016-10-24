@@ -543,6 +543,26 @@ describe('my beverage', () => {
 });
 ```
 
+### `.toChange(fn)`
+
+`toChange` checks if the value returned from a function was changed due to the expectation. It uses `===` to check
+strict equality.
+
+For example, this code will validate changes in the of the `beverages` array:
+
+```js
+describe('beverages', () => {
+  it('can get more beverages', () => {
+    const beverages = ['soda'];
+
+    expect(() => {
+      beverages.push('juice');
+    }).toChange(() => beverages.length);
+  });
+});
+```
+
+Don't use `toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
 ### `.toEqual(value)`
 
 Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
