@@ -102,7 +102,7 @@ These methods help create mocks and let you control Jest's overall behavior.
 
 ### The Jest CLI
 
-  - [Jest CLI Options](#jestclioptions)
+  - [Jest CLI Options](#jest-cli-options)
 
 -----
 
