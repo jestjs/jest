@@ -11,7 +11,7 @@
 
 'use strict';
 
-import type {MatchersObject} from './types';
+import type {MatchersObject} from 'types/Matchers';
 
 const {
   escapeStrForRegex,
@@ -25,10 +25,6 @@ const {
   printExpected,
   printWithType,
 } = require('jest-matcher-utils');
-
-const {
-  toThrowErrorMatchingSnapshot,
-} = require('jest-snapshot');
 
 const equals = global.jasmine.matchersUtil.equals;
 
@@ -78,7 +74,6 @@ const createMatcher = matcherName =>
 const matchers: MatchersObject = {
   toThrow: createMatcher('.toThrow'),
   toThrowError: createMatcher('.toThrowError'),
-  toThrowErrorMatchingSnapshot,
 };
 
 const toThrowMatchingStringOrRegexp = (

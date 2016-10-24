@@ -13,7 +13,7 @@
 
 import type {
   MatchersObject,
-} from './types';
+} from 'types/Matchers';
 
 const {
   toMatchSnapshot,

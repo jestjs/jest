@@ -86,23 +86,13 @@ function jasmine2(
 
   env.addReporter(reporter);
 
-  // Adapter for coercing jasmine `addMatcher` api into using
-  // jest's `expect.extend` API.
   runtime.requireInternalModule(
-    path.resolve(__dirname, './jasmine-add-matchers-adapter.js'),
-  )(jasmine);
-
-  // `jest-matchers` should be required inside test environment (vm).
-  // Otherwise if they throw, the `Error` class will differ from the `Error`
-  // class of the test and `error instanceof Error` will return `false`.
-  runtime.requireInternalModule(
-    path.resolve(__dirname, './expose-jest-expect.js'),
+    path.resolve(__dirname, './jest-expect.js'),
   )();
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
   )({testPath, config});
-
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);

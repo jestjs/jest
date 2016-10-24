@@ -19,7 +19,7 @@ import type {
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
-} from './types';
+} from 'types/Matchers';
 
 const matchers = require('./matchers');
 const spyMatchers = require('./spyMatchers');

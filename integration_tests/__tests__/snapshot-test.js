@@ -157,7 +157,7 @@ describe('Snapshot', () => {
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
       expect(infoFR).toMatch('7 snapshots written in 3 test suites');
-      expect(infoSR).toMatch('1 snapshot file removed');
+      expect(infoSR).toMatch('1 obsolete snapshot file removed');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
     });
@@ -176,7 +176,7 @@ describe('Snapshot', () => {
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
       expect(infoFR).toMatch('7 snapshots written in 3 test suites');
-      expect(infoSR).toMatch('1 snapshot file removed');
+      expect(infoSR).toMatch('1 obsolete snapshot file removed');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
 
