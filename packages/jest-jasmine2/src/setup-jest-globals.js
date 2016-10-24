@@ -71,8 +71,8 @@ type Options = {
 module.exports = ({testPath, config}: Options) => {
   setState({testPath});
   patchJasmine();
-  const snapshotState
-    = initializeSnapshotState(testPath, config.updateSnapshot);
+  const snapshotState =
+    initializeSnapshotState(testPath, config.updateSnapshot);
   setState({snapshotState});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

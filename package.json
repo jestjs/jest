@@ -21,7 +21,7 @@
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jsdom": "^9.8.0",
-    "lerna": "2.0.0-beta.28",
+    "lerna": "2.0.0-beta.30",
     "minimatch": "^3.0.3",
     "mkdirp": "^0.5.1",
     "progress": "^1.1.8",

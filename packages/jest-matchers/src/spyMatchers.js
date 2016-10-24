@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {MatchersObject} from './types';
+import type {MatchersObject} from 'types/Matchers';
 
 const CALL_PRINT_LIMIT = 3;
 const LAST_CALL_PRINT_LIMIT = 1;

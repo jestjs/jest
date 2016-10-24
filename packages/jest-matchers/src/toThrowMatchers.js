@@ -11,7 +11,7 @@
 
 'use strict';
 
-import type {MatchersObject} from './types';
+import type {MatchersObject} from 'types/Matchers';
 
 const {
   escapeStrForRegex,

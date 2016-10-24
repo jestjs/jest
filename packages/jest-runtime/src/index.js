@@ -728,12 +728,9 @@ class Runtime {
     };
 
     const runtime = {
-      addMatchers: (matchers: Object) => {
-        const jasmine = this._environment.global.jasmine;
-        const addMatchers =
-          jasmine.addMatchers || jasmine.getEnv().currentSpec.addMatchers;
-        addMatchers(matchers);
-      },
+      addMatchers:
+        (matchers: Object) =>
+          this._environment.global.jasmine.addMatchers(matchers),
 
       autoMockOff: disableAutomock,
       disableAutomock,
