@@ -189,6 +189,25 @@ describe('moduleMocker', () => {
         expect(fn.mock.instances[1]).toBe(instance2);
       });
 
+      it('supports clearing mock calls', () => {
+        const fn = moduleMocker.getMockFunction();
+        expect(fn.mock.calls).toEqual([]);
+
+
+        fn(1, 2, 3);
+        expect(fn.mock.calls).toEqual([[1, 2, 3]]);
+
+        fn.mockReturnValue('abcd');
+
+        fn.mockClearCalls();
+        expect(fn.mock.calls).toEqual([]);
+
+        fn('a', 'b', 'c');
+        expect(fn.mock.calls).toEqual([['a', 'b', 'c']]);
+
+        expect(fn()).toEqual('abcd');
+      });
+
       it('supports clearing mocks', () => {
         const fn = moduleMocker.getMockFunction();
         expect(fn.mock.calls).toEqual([]);
