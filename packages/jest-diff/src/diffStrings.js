@@ -82,10 +82,10 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
-  if (options && options.expand) {
-    result = diffLines(a, b);
-  } else {
+  if (options && options.expand === false) {
     result = structuredPatch(a, b);
+  } else {
+    result = diffLines(a, b);
   }
 
   if (isDifferent) {
