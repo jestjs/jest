@@ -11,7 +11,9 @@ cache:
     - "node_modules"
     - ".eslintcache"
 
-before_install: curl -o- -L https://yarnpkg.com/install.sh | bash
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - ~/.yarn/bin/yarn global add npm@latest
 
 install: ~/.yarn/bin/yarn
 
