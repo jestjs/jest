@@ -31,7 +31,7 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./packages/*/node_modules; rm -rf ./integration_tests/*/*/node_modules; npm run build-clean",
+    "clean-all": "rm -rf ./node_modules; rm -rf ./packages/*/node_modules; rm -rf ./integration_tests/*/*/node_modules; npm run build-clean",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "npm run jest -- --coverage",
     "lint": "eslint . --cache",
