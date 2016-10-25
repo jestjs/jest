@@ -15,6 +15,7 @@ import type {
   CodeCoverageFormatter,
   CodeCoverageReporter,
   TestResult,
+  AssertionResult,
 } from 'types/TestResult';
 import type {Config} from 'types/Config';
 
@@ -45,12 +46,27 @@ const formatResult = (
     output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
   }
 
+  output.assertionResults = testResult.testResults.map(formatTestAssertion);
+
   if (testResult.failureMessage) {
     output.message = testResult.failureMessage;
   }
 
   return output;
 };
+
+function formatTestAssertion(
+  assertion: AssertionResult,
+): Object {
+  const result: any = {
+    title: assertion.title,
+    status: assertion.status,
+  };
+  if (assertion.failureMessages) {
+    result.failureMessages = assertion.failureMessages;
+  }
+  return result;
+}
 
 function formatTestResults(
   results: AggregatedResult,
