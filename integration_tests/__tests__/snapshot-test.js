@@ -39,6 +39,10 @@ const snapshotEscapeSnapshotDir =
   path.resolve(snapshotEscapeDir, '__snapshots__');
 const snapshotEscapeFile =
   path.resolve(snapshotEscapeSnapshotDir, 'snapshot-test.js.snap');
+const snapshotEscapeSubstitutionFile = path.resolve(
+  snapshotEscapeSnapshotDir,
+  'snapshot-escape-substitution-test.js.snap',
+);
 
 const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
 
@@ -65,6 +69,7 @@ describe('Snapshot', () => {
       snapshotOfCopy,
       copyOfTestPath,
       snapshotEscapeFile,
+      snapshotEscapeSubstitutionFile,
     ].forEach(file => {
       if (fileExists(file)) {
         fs.unlinkSync(file);
@@ -105,7 +110,7 @@ describe('Snapshot', () => {
 
   it('works with escaped characters', () => {
     // Write the first snapshot
-    let result = runJest('snapshot-escape');
+    let result = runJest('snapshot-escape', ['snapshot-test.js']);
     let stderr = result.stderr.toString();
 
     expect(stderr).toMatch('1 snapshot written');
@@ -119,7 +124,7 @@ describe('Snapshot', () => {
     const newTestData = initialTestData + testData;
     fs.writeFileSync(snapshotEscapeTestFile, newTestData, 'utf8');
 
-    result = runJest('snapshot-escape');
+    result = runJest('snapshot-escape', ['snapshot-test.js']);
     stderr = result.stderr.toString();
 
     expect(stderr).toMatch('1 snapshot written');
@@ -128,10 +133,35 @@ describe('Snapshot', () => {
 
     // Now let's check again if everything still passes.
     // If this test doesn't pass, some snapshot data was not properly escaped.
-    result = runJest('snapshot-escape');
+    result = runJest('snapshot-escape', ['snapshot-test.js']);
     stderr = result.stderr.toString();
 
     expect(stderr).not.toMatch('Snapshot Summary');
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(result.status).toBe(0);
+  });
+
+  it('works with template literal subsitutions', () => {
+    // Write the first snapshot
+    let result = runJest(
+      'snapshot-escape',
+      ['snapshot-escape-substitution-test.js'],
+    );
+    let stderr = result.stderr.toString();
+
+    expect(stderr).toMatch('1 snapshot written');
+    expect(result.status).toBe(0);
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+
+    result = runJest(
+     'snapshot-escape',
+     ['snapshot-escape-substitution-test.js'],
+   );
+    stderr = result.stderr.toString();
+
+    // Make sure we aren't writing a snapshot this time which would
+    // indicate that the snapshot couldn't be loaded properly.
+    expect(stderr).not.toMatch('1 snapshot written');
     expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(0);
   });
