@@ -28,7 +28,7 @@ var index = React.createClass({
       {content: 'Integrated support for testing with [promises and async/await](/jest/docs/tutorial-async.html)'},
       {content: 'Run your tests within a fake DOM implementation (via [jsdom](https://github.com/tmpvar/jsdom)) on the command line.'},
       {content: 'Run tests in parallel processes to minimize test runtime.'},
-      {content: 'Jest Work with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io).'},
+      {content: 'Jest works with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io).'},
       {content: 'Integrated [manual mocking library](/jest/docs/mock-functions.html).'},
       {content: 'Can run [asynchronous code synchronously](/jest/docs/timer-mocks.html).'},
     ];
