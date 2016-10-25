@@ -15,4 +15,4 @@ before_install: curl -o- -L https://yarnpkg.com/install.sh | bash
 
 install: ~/.yarn/bin/yarn
 
-script: yarn run test-ci
+script: ~/.yarn/bin/yarn run test-ci
