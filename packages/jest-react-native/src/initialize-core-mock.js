@@ -8,7 +8,6 @@
  *
  * Sets up global variables typical in most JavaScript environments.
  *
- * @flow
  */
 
 /* eslint strict: 0 */
