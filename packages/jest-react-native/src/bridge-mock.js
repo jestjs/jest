@@ -13,7 +13,7 @@ module.exports = {
   "remoteModuleConfig": [
     null,
     [
-      "RCTStatusBarManager",
+      "StatusBarManager",
       [
         "getHeight",
         "setStyle",
@@ -24,19 +24,19 @@ module.exports = {
       ]
     ],
     [
-      "RCTSourceCode",
+      "SourceCode",
       {
         "scriptURL": "http:\/\/localhost:8081\/index.ios.bundle?platform=ios&dev=true&minify=false"
       }
     ],
     [
-      "RCTAlertManager",
+      "AlertManager",
       [
         "alertWithArgs"
       ]
     ],
     [
-      "RCTExceptionsManager",
+      "ExceptionsManager",
       [
         "reportSoftException",
         "reportFatalException",
@@ -45,14 +45,14 @@ module.exports = {
       ]
     ],
     [
-      "RCTDevMenu",
+      "DevMenu",
       [
         "show",
         "reload"
       ]
     ],
     [
-      "RCTAsyncLocalStorage",
+      "AsyncLocalStorage",
       [
         "multiGet",
         "multiSet",
@@ -63,7 +63,7 @@ module.exports = {
       ]
     ],
     [
-      "RCTViewManager",
+      "ViewManager",
       {
         "forceTouchAvailable": false
       }
@@ -74,7 +74,7 @@ module.exports = {
     null,
     null,
     [
-      "RCTScrollViewManager",
+      "ScrollViewManager",
       [
         "getContentSize",
         "calculateChildFrames",
@@ -84,7 +84,7 @@ module.exports = {
     ],
     null,
     [
-      "RCTAccessibilityManager",
+      "AccessibilityManager",
       [
         "setAccessibilityContentSizeMultipliers",
         "getMultiplier",
@@ -92,21 +92,21 @@ module.exports = {
       ]
     ],
     [
-      "RCTDevLoadingView",
+      "DevLoadingView",
       [
         "showMessage",
         "hide"
       ]
     ],
     [
-      "RCTTiming",
+      "Timing",
       [
         "createTimer",
         "deleteTimer"
       ]
     ],
     [
-      "RCTAppState",
+      "AppState",
       [
         "getCurrentAppState",
         "addListener",
@@ -114,14 +114,14 @@ module.exports = {
       ]
     ],
     [
-      "RCTJSCExecutor",
+      "JSCExecutor",
       [
         "setContextName"
       ]
     ],
     null,
     [
-      "RCTClipboard",
+      "Clipboard",
       [
         "setString",
         "getString"
@@ -133,7 +133,7 @@ module.exports = {
     null,
     null,
     [
-      "RCTKeyboardObserver",
+      "KeyboardObserver",
       [
         "addListener",
         "removeListeners"
@@ -142,7 +142,7 @@ module.exports = {
     null,
     null,
     [
-      "RCTWebViewManager",
+      "WebViewManager",
       [
         "goBack",
         "goForward",
@@ -155,7 +155,7 @@ module.exports = {
     null,
     null,
     [
-      "RCTRedBox",
+      "RedBox",
       [
         "dismiss"
       ]
@@ -163,7 +163,7 @@ module.exports = {
     null,
     null,
     [
-      "RCTUIManager",
+      "UIManager",
       {
         "RCTTextView": {
           "Manager": "RCTTextViewManager",
@@ -949,20 +949,20 @@ module.exports = {
       ]
     ],
     [
-      "RCTNavigatorManager",
+      "NavigatorManager",
       [
         "requestSchedulingJavaScriptNavigation"
       ]
     ],
     [
-      "RCTActionSheetManager",
+      "ActionSheetManager",
       [
         "showActionSheetWithOptions",
         "showShareActionSheetWithOptions"
       ]
     ],
     [
-      "RCTLocationObserver",
+      "LocationObserver",
       [
         "startObserving",
         "stopObserving",
@@ -972,7 +972,7 @@ module.exports = {
       ]
     ],
     [
-      "RCTImageStoreManager",
+      "ImageStoreManager",
       [
         "removeImageForTag",
         "hasImageForTag",
@@ -981,7 +981,7 @@ module.exports = {
       ]
     ],
     [
-      "RCTImageViewManager",
+      "ImageViewManager",
       [
         "getSize",
         "prefetchImage"
@@ -993,14 +993,14 @@ module.exports = {
     null,
     null,
     [
-      "RCTImageEditingManager",
+      "ImageEditingManager",
       [
         "cropImage"
       ]
     ],
     null,
     [
-      "RCTLinkingManager",
+      "LinkingManager",
       [
         "openURL",
         "canOpenURL",
@@ -1017,7 +1017,7 @@ module.exports = {
     null,
     null,
     [
-      "RCTNetInfo",
+      "NetInfo",
       [
         "getCurrentConnectivity",
         "addListener",
@@ -1028,7 +1028,7 @@ module.exports = {
       ]
     ],
     [
-      "RCTNetworking",
+      "Networking",
       [
         "sendRequest",
         "abortRequest",
@@ -1038,7 +1038,7 @@ module.exports = {
     ],
     null,
     [
-      "RCTSettingsManager",
+      "SettingsManager",
       {
         "settings": {
           "NSInterfaceStyle": "macintosh",
@@ -1104,13 +1104,13 @@ module.exports = {
     null,
     null,
     [
-      "RCTVibration",
+      "Vibration",
       [
         "vibrate"
       ]
     ],
     [
-      "RCTWebSocketModule",
+      "WebSocketModule",
       [
         "connect",
         "send",
