@@ -17,6 +17,8 @@ const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
 const SnapshotState = require('./State');
+const {getPlugins, addPlugins} = require('./plugins');
+
 const {
  EXPECTED_COLOR,
  ensureNoExpected,
@@ -144,4 +146,6 @@ module.exports = {
   initializeSnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
+  getPlugins,
+  addPlugins,
 };
