@@ -308,14 +308,8 @@ function normalize(config, argv) {
         break;
 
       case 'setupFiles':
-      case 'testPathDirs':
-        value = config[key].map(filePath => path.resolve(
-          config.rootDir,
-          _replaceRootDirTags(config.rootDir, filePath),
-        ));
-        break;
-
       case 'snapshotSerializers':
+      case 'testPathDirs':
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, filePath),

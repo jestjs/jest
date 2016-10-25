@@ -139,13 +139,13 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
 };
 
 module.exports = {
-  EXTENSION: SNAPSHOT_EXTENSION,
-  SnapshotState,
+  addPlugins,
   cleanup,
+  EXTENSION: SNAPSHOT_EXTENSION,
+  getPlugins,
   getSnapshotState,
   initializeSnapshotState,
+  SnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
-  getPlugins,
-  addPlugins,
 };

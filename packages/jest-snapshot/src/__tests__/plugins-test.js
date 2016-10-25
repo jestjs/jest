@@ -24,12 +24,12 @@ const testPath = serializers => {
   expect(plugins).toEqual(expected);
 };
 
-it('should get plugins', () => {
+it('gets plugins', () => {
   const {getPlugins} = require('../plugins');
   const plugins = getPlugins();
   expect(plugins.length).toBe(2);
 });
 
-it('should add plugins from an empty array', () => testPath([]));
-it('should add a single plugin path', () =>  testPath(['foo']));
-it('should add multiple plugin paths', () => testPath(['foo', 'bar']));
+it('adds plugins from an empty array', () => testPath([]));
+it('adds a single plugin path', () =>  testPath(['foo']));
+it('adds multiple plugin paths', () => testPath(['foo', 'bar']));
