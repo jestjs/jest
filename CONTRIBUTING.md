@@ -35,20 +35,22 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
     ```
 
 3. If you've added code that should be tested, add tests. You
-   can use watch mode to make your life easier.
+   can use watch mode that continuously transforms chagned files
+   to make your life easier.
 
    ```sh
-   node ./packages/jest-cli/bin/jest.js --watch
+   # in the background
+   npm run watch
    ``` 
 
 4. If you've changed APIs, update the documentation.
-5. Ensure the test suite passes via `npm run jest`. To run the test suite you
+5. Ensure the test suite passes via `npm test`. To run the test suite you
    may need to install Mercurial (`hg`). On macOS, this can be done
    using [homebrew](http://brew.sh/): `brew install hg`.
 
    ```sh
    brew install hg # maybe
-   npm run jest
+   npm test
    ```
 6. If you haven't already, complete the CLA.
 
