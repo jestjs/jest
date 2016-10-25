@@ -1,9 +1,10 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
  */
 
 'use strict';
@@ -314,6 +315,12 @@ function normalize(config, argv) {
         ));
         break;
 
+      case 'snapshotSerializers':
+        value = config[key].map(filePath => path.resolve(
+          config.rootDir,
+          _replaceRootDirTags(config.rootDir, filePath),
+        ));
+        break;
       case 'collectCoverageFrom':
         if (!config[key]) {
           value = [];

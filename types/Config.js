@@ -40,6 +40,7 @@ export type DefaultConfig = {|
   preprocessorIgnorePatterns: Array<string>,
   preset: ?string,
   resetModules: boolean,
+  snapshotSerializers: Array<Path>,
   testEnvironment: string,
   testPathDirs: Array<Path>,
   testPathIgnorePatterns: Array<string>,

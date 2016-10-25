@@ -13,7 +13,7 @@
 import type {Config, Path} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
-const {initializeSnapshotState} = require('jest-snapshot');
+const {initializeSnapshotState, addPlugins} = require('jest-snapshot');
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -69,6 +69,7 @@ type Options = {
 };
 
 module.exports = ({testPath, config}: Options) => {
+  addPlugins(config.snapshotSerializers);
   setState({testPath});
   patchJasmine();
   const snapshotState =

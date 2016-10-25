@@ -63,6 +63,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
   - [`setupFiles` [array]](#setupfiles-array)
   - [`setupTestFrameworkScriptFile` [string]](#setuptestframeworkscriptfile-string)
+  - [`snapshotSerializers` [array<string>]](#snapshotserializers-array-string)
   - [`testEnvironment` [string]](#testenvironment-string)
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
@@ -298,6 +299,63 @@ It's worth noting that this code will execute *before* [`setupTestFrameworkScrip
 The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+
+### `snapshotSerializers` [array<string>]
+(default: `[]`)
+
+A list of paths to snapshot serializer modules Jest should use for snapshot
+testing.
+
+Jest has default serializers for built-in javascript types and for react
+elements. See [snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test) for more information.
+
+Example serializer module:
+
+```js
+// my-serializer-module
+module.exports = {
+  test: function(val) {
+    return val && val.hasOwnProperty('foo');
+  },
+  print: function(val, serialize, indent) {
+    return 'Pretty foo: ' + serialize(val.foo);
+  }
+};
+```
+
+`serialize` is a function that serializes a value using existing plugins.
+
+To use `my-serializer-module` as a serializer, configuration would be as
+follows:
+
+```json
+{
+  "json": {
+    "snapshotSerializers": ["<rootDir>/node_modules/my-serializer-module"]
+  }
+}
+```
+
+Finally tests would look as follows:
+
+```js
+test(() => {
+  const bar = {
+    foo: {x: 1, y: 2}
+  };
+
+  expect(foo).toMatchSnapshot();
+});
+```
+
+Rendered snapshot:
+
+```
+Pretty foo: Object {
+  "x": 1,
+  "y": 2,
+}
+```
 
 ### `testEnvironment` [string]
 (default: `'jsdom'`)

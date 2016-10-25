@@ -16,12 +16,10 @@ const createDirectory = require('jest-util').createDirectory;
 const fileExists = require('jest-file-exists');
 const path = require('path');
 const prettyFormat = require('pretty-format');
-const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
 const fs = require('fs');
 const naturalCompare = require('natural-compare');
-const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+const getPlugins = require('./plugins').getPlugins;
 
-const PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 const SNAPSHOT_EXTENSION = 'snap';
 
 const testNameToKey = (testName: string, count: number) =>
@@ -62,7 +60,7 @@ const addExtraLineBreaks =
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(prettyFormat(data, {
-    plugins: PLUGINS,
+    plugins: getPlugins(),
     printFunctionName: false,
   }));
 };
