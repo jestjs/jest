@@ -81,6 +81,7 @@ Object.defineProperty(mockNativeModules, 'ImageLoader', mockImageLoader);
 Object.defineProperty(mockNativeModules, 'ImageViewManager', mockImageLoader);
 
 jest
+  .mock('InitializeCore', () => require('./initialize-core-mock'))
   .doMock('NativeModules', () => mockNativeModules)
   .doMock('ReactNativePropRegistry', () => ({
     register: id => id,
