@@ -46,10 +46,9 @@ function defineProperty<T>(
   const descriptor = Object.getOwnPropertyDescriptor(object, name);
   if (descriptor) {
     const backupName = `original${name[0].toUpperCase()}${name.substr(1)}`;
-    Object.defineProperty(object, backupName, {
-      ...descriptor,
+    Object.defineProperty(object, backupName, Object.assign({}, descriptor, {
       value: object[name],
-    });
+    }));
   }
 
   const {enumerable, writable, configurable} = descriptor || {};
