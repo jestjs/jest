@@ -65,8 +65,8 @@ const serialize = (data: any): string => {
   }));
 };
 
-const escape = (string: string) => string.replace(/\`/g, '\\\`');
-const unescape = (string: string) => string.replace(/\\(\"|\\|\')/g, '$1');
+const escape = (string: string) => string.replace(/(\`|\${)/g, '\\$1');
+const unescape = (string: string) => string.replace(/\\(\"|\\|\'|\${)/g, '$1');
 
 const ensureDirectoryExists = (filePath: Path) => {
   try {
