@@ -16,11 +16,8 @@ const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestCompone
 
 let PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 
-exports.addPlugins = (plugins: Array<Path>) => {
-  PLUGINS = PLUGINS.concat(plugins.map(p => {
-    /* $FlowFixMe */
-    return require(p);
-  }));
-};
+exports.addPlugins = (plugins: Array<Path>) =>
+  // $FlowFixMe
+  PLUGINS = PLUGINS.concat(plugins.map(p => require(p)));
 
 exports.getPlugins = () => PLUGINS;

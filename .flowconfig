@@ -4,11 +4,6 @@
 .*/examples/.*
 .*/website/.*
 
-[include]
-
 [options]
 module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'
 module.name_mapper='\(jest-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
-
-suppress_type=$FlowFixMe
-suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-7]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*www[a-z,_]*\\)?)\\)
