@@ -35,7 +35,7 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
     ```
 
 3. If you've added code that should be tested, add tests. You
-   can use watch mode that continuously transforms chagned files
+   can use watch mode that continuously transforms changed files
    to make your life easier.
 
    ```sh
