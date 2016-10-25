@@ -319,9 +319,19 @@ class ModuleMocker {
         set: val => this._mockRegistry.set(f, val),
       });
 
+      f.mockClearCalls = () => {
+        f.mock.calls.length = 0;
+        f.mock.instances.length = 0;
+      };
+
       f.mockClear = () => {
         f.mock.calls.length = 0;
         f.mock.instances.length = 0;
+        isReturnValueLastSet = false;
+        defaultReturnValue = undefined;
+        mockImpl = undefined;
+        specificReturnValues.length = 0;
+        specificMockImpls.length = 0;
       };
 
       f.mockReturnValueOnce = value => {

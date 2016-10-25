@@ -72,6 +72,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mock.calls`](#mockfnmockcalls)
   - [`mockFn.mock.instances`](#mockfnmockinstances)
   - [`mockFn.mockClear()`](#mockfnmockclear)
+  - [`mockFn.mockClearCalls()`](#mockfnmockclearcalls)
   - [`mockFn.mockImplementation(fn)`](#mockfnmockimplementationfn)
   - [`mockFn.mockImplementationOnce(fn)`](#mockfnmockimplementationoncefn)
   - [`mockFn.mockReturnThis()`](#mockfnmockreturnthis)
@@ -704,6 +705,11 @@ mockFn.mock.instances[1] === b; // true
 ```
 
 ### `mockFn.mockClear()`
+Resets all information stored in the mock
+
+This is useful when you want to completely restore a mock back to its initial state.
+
+### `mockFn.mockClearCalls()`
 Resets all information stored in the [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances) arrays.
 
 Often this is useful when you want to clean up a mock's usage data between two assertions.
