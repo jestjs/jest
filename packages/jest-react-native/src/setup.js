@@ -11,7 +11,8 @@
 const mockReactNative = require('./index');
 
 jest
-.mock('ReactNativeDefaultInjection')
+  .mock('ReactNativeDefaultInjection')
+  .mock('setupDevtools')
   .mock('Image', () => mockReactNative.mockComponent('Image'))
   .mock('Text', () => mockReactNative.mockComponent('Text'))
   .mock('TextInput', () => mockReactNative.mockComponent('TextInput'))
@@ -81,7 +82,6 @@ Object.defineProperty(mockNativeModules, 'ImageLoader', mockImageLoader);
 Object.defineProperty(mockNativeModules, 'ImageViewManager', mockImageLoader);
 
 jest
-  .mock('setupDevtools')
   .doMock('NativeModules', () => mockNativeModules)
   .doMock('ReactNativePropRegistry', () => ({
     register: id => id,
