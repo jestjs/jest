@@ -51,8 +51,8 @@ However, if you are using CSS Modules then it's better to mock a proxy for your 
 {
   "jest": {
     "moduleNameMapper": {
-       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   }
 }
@@ -86,8 +86,8 @@ make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 {
   "jest": {
     "moduleNameMapper": {
-       "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "^.+\\.(css|less)$": "identity-obj-proxy"
+       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "identity-obj-proxy"
     }
   }
 }
@@ -112,8 +112,8 @@ For webpack's `modulesDirectories`, and `extensions` options there are direct an
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
     "moduleNameMapper": {
-      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   }
 }
@@ -132,8 +132,8 @@ env variable, which you can set, or make use of the `modulePaths` option.
     "moduleFileExtensions": ["js", "jsx"],
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
     "moduleNameMapper": {
-      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   }
 }
@@ -153,11 +153,11 @@ of the `moduleNameMapper` option again.
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
     "moduleNameMapper": {
-      "^react": "<rootDir>/vendor/react-master",
+      "^react(.*)$": "<rootDir>/vendor/react-master$1",
       "^config$": "<rootDir>/configs/app-config.js",
 
-      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
-      "^.+\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",    
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   }
 }
