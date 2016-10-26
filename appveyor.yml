@@ -5,23 +5,24 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  - npm i -g npm@latest
+  - choco install yarn
+  - refreshenv
   - node --version
-  - npm --version
-  - npm install
+  - yarn --version
+  - yarn install
 
 cache:
   - node_modules
   - .eslintcache
 
 test_script:
-  - npm run build
+  - yarn run build
   # Some snapshot tests don't currently work on Windows, so the tests are
   # commented out. Jest complains that obsolete snapshot files exist, so the
   # "-u" will just delete those snapshots when running in the AppVeyor run,
   # instead of failing the build. Note that this means that all snapshot tests
   # WILL ALWAYS PASS, as it updates the snapshots.
-  - npm run jest -- -u --color
+  - yarn run jest -- -u --color
 
 # Don't actually build.
 build: off
