@@ -1017,3 +1017,9 @@ Only update snapshots for tests matching the pattern:
 ```bash
 jest -u Component-snapshot -t "is selected"
 ```
+
+It is possible to specify which files the coverage report will be generated for.
+
+```bash
+jest --collectCoverageFrom='["packages/**/index.js", "!**/vendor/**"]' --coverage
+```
