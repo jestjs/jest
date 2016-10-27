@@ -67,8 +67,7 @@ const makeThrowingMatcher = (
       // failures in a test.
       {dontThrow: () => throws = false},
       global[GLOBAL_STATE].state,
-      {isNot},
-      {matcherUtils},
+      {isNot, matcherUtils},
     );
     let result: ExpectationResult;
 
