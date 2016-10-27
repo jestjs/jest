@@ -11,6 +11,7 @@
 'use strict';
 
 const jestExpect = require('../').expect;
+const matcherUtils = require('jest-matcher-utils');
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
@@ -30,4 +31,19 @@ it('is available globally', () => {
 
   jestExpect(() => jestExpect(15).toBeDivisibleBy(2))
     .toThrowErrorMatchingSnapshot();
+});
+
+it('exposes matcherUtils in context', () => {
+  jestExpect.extend({
+    _shouldNotError(actual, expected) {
+      const pass = this.utils === matcherUtils;
+      const message = pass
+        ? `expected this.utils to be defined in an extend call`
+        : `expected this.utils not to be defined in an extend call`;
+
+      return {pass, message};
+    },
+  });
+
+  jestExpect()._shouldNotError();
 });

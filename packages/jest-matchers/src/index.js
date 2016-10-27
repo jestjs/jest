@@ -25,7 +25,7 @@ const matchers = require('./matchers');
 const spyMatchers = require('./spyMatchers');
 const toThrowMatchers = require('./toThrowMatchers');
 
-const {stringify} = require('jest-matcher-utils');
+const utils = require('jest-matcher-utils');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
@@ -67,7 +67,10 @@ const makeThrowingMatcher = (
       // failures in a test.
       {dontThrow: () => throws = false},
       global[GLOBAL_STATE].state,
-      {isNot},
+      {
+        isNot,
+        utils,
+      },
     );
     let result: ExpectationResult;
 
@@ -124,7 +127,7 @@ const _validateResult = result => {
       'Matcher functions should ' +
       'return an object in the following format:\n' +
       '  {message: string | function, pass: boolean}\n' +
-      `'${stringify(result)}' was returned`,
+      `'${utils.stringify(result)}' was returned`,
     );
   }
 };
