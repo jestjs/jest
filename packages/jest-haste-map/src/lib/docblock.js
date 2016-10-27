@@ -12,13 +12,13 @@
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
+const lineCommentRe = /\/\/*([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
 const multilineRe =
   /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
 const stringStartRe = /(\r?\n|^) *\*/g;
 const wsRe = /[\t ]+/g;
-const lineCommentRe = /\/\/*([^\r\n]*)/g;
 
 function extract(contents: string): string {
   const match = contents.match(docblockRe);
