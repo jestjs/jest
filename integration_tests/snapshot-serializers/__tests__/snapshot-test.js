@@ -31,4 +31,29 @@ describe('snapshot serializers', () => {
     };
     expect(test).toMatchSnapshot();
   });
+
+  it('works with default serializers', () => {
+    const test = {
+      $$typeof: Symbol.for('react.test.json'),
+      type: 'div',
+      children: null,
+      props: {
+        id: 'foo',
+      },
+    };
+    expect(test).toMatchSnapshot();
+  });
+  
+  it('works with prepended plugins and default serializers', () => {
+    const test = {
+      $$typeof: Symbol.for('react.test.json'),
+      type: 'div',
+      children: null,
+      props: {
+        aProp: {a: 6},
+        bProp: {foo: 8},
+      },
+    };
+    expect(test).toMatchSnapshot();
+  });
 });
