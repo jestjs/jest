@@ -39,11 +39,11 @@ it('exposes matcherUtils in context', () => {
       const pass = this.matcherUtils === matcherUtils;
       const message = pass
         ? `expected this.matcherUtils to be defined in an extend call`
-        : `expected this.matcherUtils not to be defined in an extend call`
+        : `expected this.matcherUtils not to be defined in an extend call`;
 
       return {pass, message};
     },
-  })
+  });
 
   jestExpect()._shouldNotError();
 });
