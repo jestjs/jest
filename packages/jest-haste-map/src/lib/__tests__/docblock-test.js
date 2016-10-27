@@ -16,15 +16,6 @@ const docblock = require('../docblock');
 
 describe('docblock', () => {
 
-  it('extracts valid docblock with one asterisk', () => {
-    const code =
-      '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
-      'const x = foo;';
-    expect(docblock.extract(code)).toBe(
-      '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
-    );
-  });
-
   it('extracts valid docblock with line comment', () => {
     const code =
       '/**' + os.EOL + ' * @providesModule foo' + os.EOL +
@@ -54,11 +45,13 @@ describe('docblock', () => {
     );
   });
 
-  it('returns nothing for no docblock', () => {
+  it('extracts from invalid docblock', () => {
     const code =
       '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
-      'const x = foo;' + os.EOL + '/**foo*/';
-    expect(docblock.extract(code)).toBe('');
+      'const x = foo;';
+    expect(docblock.extract(code)).toBe(
+      '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
+    );
   });
 
   it('returns extract and parsedocblock', () => {
