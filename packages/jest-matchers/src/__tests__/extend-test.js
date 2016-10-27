@@ -36,14 +36,14 @@ it('is available globally', () => {
 it('exposes matcherUtils in context', () => {
   jestExpect.extend({
     _shouldNotError(actual, expected) {
-      const pass = this.matcherUtils === matcherUtils;
+      const pass = this.utils === matcherUtils;
       const message = pass
-        ? `expected this.matcherUtils to be defined in an extend call`
-        : `expected this.matcherUtils not to be defined in an extend call`
+        ? `expected this.utils to be defined in an extend call`
+        : `expected this.utils not to be defined in an extend call`;
 
       return {pass, message};
     },
-  })
+  });
 
   jestExpect()._shouldNotError();
 });
