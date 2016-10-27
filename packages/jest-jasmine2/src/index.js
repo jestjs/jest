@@ -79,8 +79,8 @@ function jasmine2(
       runtime.resetModules();
     }
 
-    if (config.clearMocks) {
-      runtime.clearAllMocks();
+    if (config.resetMocks) {
+      runtime.resetAllMocks();
     }
   });
 

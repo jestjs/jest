@@ -199,7 +199,7 @@ describe('moduleMocker', () => {
 
         fn.mockReturnValue('abcd');
 
-        fn.mockClearCalls();
+        fn.mockClear();
         expect(fn.mock.calls).toEqual([]);
 
         fn('a', 'b', 'c');
@@ -222,64 +222,68 @@ describe('moduleMocker', () => {
         expect(fn.mock.calls).toEqual([['a', 'b', 'c']]);
       });
 
-      it('supports clearing mock return values', () => {
+      it('supports resetting mock return values', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockReturnValue('abcd');
         
         const before = fn();
         expect(before).toEqual('abcd');
 
-        fn.mockClear();
+        fn.mockReset();
 
         const after = fn();
         expect(after).not.toEqual('abcd');
       });
 
-      it('supports clearing single use mock return values', () => {
+      it('supports resetting single use mock return values', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockReturnValueOnce('abcd');
         
-        fn.mockClear();
+        fn.mockReset();
 
         const after = fn();
         expect(after).not.toEqual('abcd');
       });
 
-      it('supports clearing mock implementations', () => {
+      it('supports resetting mock implementations', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockImplementation(() => 'abcd');
         
         const before = fn();
         expect(before).toEqual('abcd');
 
-        fn.mockClear();
+        fn.mockReset();
 
         const after = fn();
         expect(after).not.toEqual('abcd');
       });
 
-      it('supports clearing single use mock implementations', () => {
+      it('supports resetting single use mock implementations', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockImplementationOnce(() => 'abcd');
         
-        fn.mockClear();
+        fn.mockReset();
 
         const after = fn();
         expect(after).not.toEqual('abcd');
       });
 
-      it('supports clearing all mocks', () => {
+      it('supports resetting all mocks', () => {
         const fn1 = moduleMocker.getMockFunction();
+        fn1.mockImplementation(() => 'abcd');
         fn1(1, 2, 3);
         expect(fn1.mock.calls).toEqual([[1, 2, 3]]);
 
         const fn2 = moduleMocker.getMockFunction();
+        fn2.mockReturnValue('abcd');
         fn2('a', 'b', 'c');
         expect(fn2.mock.calls).toEqual([['a', 'b', 'c']]);
 
-        moduleMocker.clearAllMocks();
+        moduleMocker.resetAllMocks();
         expect(fn1.mock.calls).toEqual([]);
         expect(fn2.mock.calls).toEqual([]);
+        expect(fn1()).not.toEqual('abcd');
+        expect(fn2()).not.toEqual('abcd');
       });
     });
   });

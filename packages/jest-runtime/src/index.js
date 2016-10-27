@@ -408,8 +408,8 @@ class Runtime {
     this._mockFactories[moduleID] = mockFactory;
   }
 
-  clearAllMocks() {
-    this._moduleMocker.clearAllMocks();
+  resetAllMocks() {
+    this._moduleMocker.resetAllMocks();
   }
 
   _resolveModule(from: Path, to?: ?string) {
@@ -713,8 +713,8 @@ class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
-    const clearAllMocks = () => {
-      this.clearAllMocks();
+    const resetAllMocks = () => {
+      this.resetAllMocks();
       return runtime;
     };
     const useFakeTimers = () => {
@@ -764,7 +764,7 @@ class Runtime {
       doMock: mock,
       mock,
 
-      clearAllMocks,
+      resetAllMocks,
 
       resetModules,
       resetModuleRegistry: resetModules,

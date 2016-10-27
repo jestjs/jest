@@ -408,7 +408,7 @@ describe('HasteMap', () => {
         // cache file and five times for the files in the system.
         expect(fs.readFileSync.mock.calls.length).toBe(6);
 
-        fs.readFileSync.mockClearCalls();
+        fs.readFileSync.mockClear();
 
         // Explicitly mock that no files have changed.
         mockChangedFiles = Object.create(null);
@@ -434,7 +434,7 @@ describe('HasteMap', () => {
   it('only does minimal file system access when files change', () => {
     return new HasteMap(defaultConfig).build()
       .then(({__hasteMapForTest: initialData}) => {
-        fs.readFileSync.mockClearCalls();
+        fs.readFileSync.mockClear();
 
         // Let's assume one JS file has changed.
         mockChangedFiles = object({
@@ -478,7 +478,7 @@ describe('HasteMap', () => {
   it('correctly handles file deletions', () => {
     return new HasteMap(defaultConfig).build()
       .then(({__hasteMapForTest: initialData}) => {
-        fs.readFileSync.mockClearCalls();
+        fs.readFileSync.mockClear();
 
         // Let's assume one JS file was removed.
         delete mockFs['/fruits/banana.js'];

@@ -372,7 +372,6 @@ function normalize(config, argv) {
       case 'bail':
       case 'browser':
       case 'cache':
-      case 'clearMocks':
       case 'collectCoverage':
       case 'colors':
       case 'coverageCollector':
@@ -392,6 +391,7 @@ function normalize(config, argv) {
       case 'persistModuleRegistryBetweenSpecs':
       case 'preset':
       case 'replname':
+      case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
       case 'testEnvironment':

@@ -13,7 +13,7 @@ jest.mock('../');
 const importedFn = require('../');
 const localFn = jest.fn();
 
-describe('without an explicit clear', () => {
+describe('without an explicit reset', () => {
   test('first test', () => {
     importedFn();
     localFn();
@@ -31,9 +31,9 @@ describe('without an explicit clear', () => {
   });
 });
 
-describe('with an explicit clear', () => {
+describe('with an explicit reset', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   test('first test', () => {

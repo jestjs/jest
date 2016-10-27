@@ -41,7 +41,6 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`browser` [boolean]](#browser-boolean)
   - [`bail` [boolean]](#bail-boolean)
   - [`cacheDirectory` [string]](#cachedirectory-string)
-  - [`clearMocks` [boolean]](#clearmocks-boolean)
   - [`collectCoverage` [boolean]](#collectcoverage-boolean)
   - [`collectCoverageFrom` [array]](#collectcoveragefrom-array)
   - [`coverageDirectory` [string]](#coveragedirectory-string)
@@ -58,6 +57,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`notify` [boolean]](#notify-boolean)
   - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
   - [`preset` [string]](#preset-string)
+  - [`resetMocks` [boolean]](#resetmocks-boolean)
   - [`resetModules` [boolean]](#resetmodules-boolean)
   - [`rootDir` [string]](#rootdir-string)
   - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
@@ -100,11 +100,6 @@ By default, Jest runs all tests and produces all errors into the console upon co
 The directory where Jest should store its cached dependency information.
 
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
-
-### `clearMocks` [boolean]
-(default: false)
-
-Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test.
 
 ### `collectCoverage` [boolean]
 (default: `false`)
@@ -253,6 +248,11 @@ Activates notifications for test results.
 (default: `undefined`)
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
+
+### `resetMocks` [boolean]
+(default: false)
+
+Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test.
 
 ### `resetModules` [boolean]
 (default: `false`)
