@@ -12,7 +12,6 @@ const mockReactNative = require('./index');
 
 jest
   .mock('ReactNativeDefaultInjection')
-  .mock('setupDevtools')
   .mock('Image', () => mockReactNative.mockComponent('Image'))
   .mock('Text', () => mockReactNative.mockComponent('Text'))
   .mock('TextInput', () => mockReactNative.mockComponent('TextInput'))

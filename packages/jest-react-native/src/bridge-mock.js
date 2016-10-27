@@ -14,6 +14,7 @@ module.exports = {
     null,
     [
       "StatusBarManager",
+      null,
       [
         "getHeight",
         "setStyle",
@@ -31,12 +32,14 @@ module.exports = {
     ],
     [
       "AlertManager",
+      null,
       [
         "alertWithArgs"
       ]
     ],
     [
       "ExceptionsManager",
+      null,
       [
         "reportSoftException",
         "reportFatalException",
@@ -46,6 +49,7 @@ module.exports = {
     ],
     [
       "DevMenu",
+      null,
       [
         "show",
         "reload"
@@ -53,6 +57,7 @@ module.exports = {
     ],
     [
       "AsyncLocalStorage",
+      null,
       [
         "multiGet",
         "multiSet",
@@ -75,6 +80,7 @@ module.exports = {
     null,
     [
       "ScrollViewManager",
+      null,
       [
         "getContentSize",
         "calculateChildFrames",
@@ -85,6 +91,7 @@ module.exports = {
     null,
     [
       "AccessibilityManager",
+      null,
       [
         "setAccessibilityContentSizeMultipliers",
         "getMultiplier",
@@ -93,6 +100,7 @@ module.exports = {
     ],
     [
       "DevLoadingView",
+      null,
       [
         "showMessage",
         "hide"
@@ -100,6 +108,7 @@ module.exports = {
     ],
     [
       "Timing",
+      null,
       [
         "createTimer",
         "deleteTimer"
@@ -107,6 +116,7 @@ module.exports = {
     ],
     [
       "AppState",
+      null,
       [
         "getCurrentAppState",
         "addListener",
@@ -115,6 +125,7 @@ module.exports = {
     ],
     [
       "JSCExecutor",
+      null,
       [
         "setContextName"
       ]
@@ -122,6 +133,7 @@ module.exports = {
     null,
     [
       "Clipboard",
+      null,
       [
         "setString",
         "getString"
@@ -134,6 +146,7 @@ module.exports = {
     null,
     [
       "KeyboardObserver",
+      null,
       [
         "addListener",
         "removeListeners"
@@ -143,6 +156,7 @@ module.exports = {
     null,
     [
       "WebViewManager",
+      null,
       [
         "goBack",
         "goForward",
@@ -156,6 +170,7 @@ module.exports = {
     null,
     [
       "RedBox",
+      null,
       [
         "dismiss"
       ]
@@ -950,12 +965,14 @@ module.exports = {
     ],
     [
       "NavigatorManager",
+      null,
       [
         "requestSchedulingJavaScriptNavigation"
       ]
     ],
     [
       "ActionSheetManager",
+      null,
       [
         "showActionSheetWithOptions",
         "showShareActionSheetWithOptions"
@@ -963,6 +980,7 @@ module.exports = {
     ],
     [
       "LocationObserver",
+      null,
       [
         "startObserving",
         "stopObserving",
@@ -973,6 +991,7 @@ module.exports = {
     ],
     [
       "ImageStoreManager",
+      null,
       [
         "removeImageForTag",
         "hasImageForTag",
@@ -982,6 +1001,7 @@ module.exports = {
     ],
     [
       "ImageViewManager",
+      null,
       [
         "getSize",
         "prefetchImage"
@@ -994,6 +1014,7 @@ module.exports = {
     null,
     [
       "ImageEditingManager",
+      null,
       [
         "cropImage"
       ]
@@ -1001,6 +1022,7 @@ module.exports = {
     null,
     [
       "LinkingManager",
+      null,
       [
         "openURL",
         "canOpenURL",
@@ -1018,6 +1040,7 @@ module.exports = {
     null,
     [
       "NetInfo",
+      null,
       [
         "getCurrentConnectivity",
         "addListener",
@@ -1029,6 +1052,7 @@ module.exports = {
     ],
     [
       "Networking",
+      null,
       [
         "sendRequest",
         "abortRequest",
@@ -1105,12 +1129,14 @@ module.exports = {
     null,
     [
       "Vibration",
+      null,
       [
         "vibrate"
       ]
     ],
     [
       "WebSocketModule",
+      null,
       [
         "connect",
         "send",
