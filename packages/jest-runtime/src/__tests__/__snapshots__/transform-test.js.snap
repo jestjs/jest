@@ -8,12 +8,38 @@ exports[`transform transforms a file properly 2`] = `
 }});"
 `;
 
+exports[`transform uses multiple preprocessors 1`] = `
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
+          const TRANSFORMED = {
+            filename: \'/fruits/banana.js\',
+            script: \'module.exports = \"banana\";\',
+            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"transformIgnorePatterns\":[\"/node_modules/\"],\"rootDir\":\"/\",\"transform\":[[\"^.+\\\\.js$\",\"test-preprocessor\"],[\"^.+\\\\.css$\",\"css-preprocessor\"]]}\',
+          };
+        
+}});"
+`;
+
+exports[`transform uses multiple preprocessors 2`] = `
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
+          module.exports = {
+            filename: /styles/App.css,
+            rawFirstLine: root {,
+          };
+        
+}});"
+`;
+
+exports[`transform uses multiple preprocessors 3`] = `
+"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \"react\";
+}});"
+`;
+
 exports[`transform uses the supplied preprocessor 1`] = `
 "({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
           const TRANSFORMED = {
             filename: \'/fruits/banana.js\',
             script: \'module.exports = \"banana\";\',
-            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"preprocessorIgnorePatterns\":[\"/node_modules/\"],\"rootDir\":\"/\",\"scriptPreprocessor\":\"test-preprocessor\"}\',
+            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"transformIgnorePatterns\":[\"/node_modules/\"],\"rootDir\":\"/\",\"transform\":[[\"^.+\\\\.js$\",\"test-preprocessor\"]]}\',
           };
         
 }});"

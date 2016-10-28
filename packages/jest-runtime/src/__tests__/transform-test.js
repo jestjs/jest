@@ -40,6 +40,24 @@ jest.mock(
   {virtual: true},
 );
 
+jest.mock(
+  'css-preprocessor',
+  () => {
+    return {
+      getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
+      process: (content, filename, config) => {
+        return (`
+          module.exports = {
+            filename: ${filename},
+            rawFirstLine: ${content.split('\n')[0]},
+          };
+        `);
+      },
+    };
+  },
+  {virtual: true},
+);
+
 const getCachePath = (fs, config) => {
   for (const path in mockFs) {
     if (path.startsWith(config.cacheDirectory)) {
@@ -75,6 +93,11 @@ describe('transform', () => {
       '/node_modules/react.js': [
         'module.exports = "react";',
       ].join('\n'),
+      '/styles/App.css': [
+        'root {',
+        '  font-family: Helvetica;',
+        '}',
+      ].join('\n'),
     });
 
     fs = require('graceful-fs');
@@ -104,7 +127,7 @@ describe('transform', () => {
       cache: true,
       cacheDirectory: '/cache/',
       name: 'test',
-      preprocessorIgnorePatterns: ['/node_modules/'],
+      transformIgnorePatterns: ['/node_modules/'],
       rootDir: '/',
     };
 
@@ -150,7 +173,7 @@ describe('transform', () => {
 
   it('uses the supplied preprocessor', () => {
     config = Object.assign(config, {
-      scriptPreprocessor: 'test-preprocessor',
+      transform: [['^.+\\.js$', 'test-preprocessor']],
     });
 
     transform('/fruits/banana.js', config);
@@ -164,12 +187,33 @@ describe('transform', () => {
     expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
   });
 
+  it('uses multiple preprocessors', () => {
+    config = Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'test-preprocessor'],
+        ['^.+\\.css$', 'css-preprocessor'],
+      ],
+    });
+
+    transform('/fruits/banana.js', config);
+    transform('/styles/App.css', config);
+
+    expect(require('test-preprocessor').getCacheKey).toBeCalled();
+    expect(require('css-preprocessor').getCacheKey).toBeCalled();
+    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+
+    transform('/node_modules/react.js', config);
+    // ignores preprocessor
+    expect(vm.Script.mock.calls[2][0]).toMatchSnapshot();
+  });
+
   it('reads values from the cache', () => {
     if (skipOnWindows.test()) {
       return;
     }
     const transformConfig = Object.assign(config, {
-      scriptPreprocessor: 'test-preprocessor',
+      transform: [['^.+\\.js$', 'test-preprocessor']],
     });
     transform('/fruits/banana.js', transformConfig);
 

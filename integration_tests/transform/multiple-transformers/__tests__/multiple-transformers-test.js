@@ -6,9 +6,14 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-const path = require('path');
+import App from '../src/App';
 
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.DEFAULT_JS_PATTERN = '^.+\\.(js|jsx)$';
+it('generates a snapshot with correctly transformed dependencies', () => {
+  const tree = renderer.create(
+    <App/>
+  ).toJSON();
+  expect(tree).toMatchSnapshot();
+});

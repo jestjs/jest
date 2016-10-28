@@ -10,5 +10,10 @@
 
 const path = require('path');
 
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.DEFAULT_JS_PATTERN = '^.+\\.(js|jsx)$';
+module.exports = {
+  process(src, filename, config, options) {
+    return `
+      module.exports = '${path.basename(filename)}';
+    `;
+  },
+};

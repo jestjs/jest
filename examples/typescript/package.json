@@ -13,7 +13,9 @@
   },
   "jest": {
     "moduleFileExtensions": ["ts", "tsx", "js"],
-    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+    },
     "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
   }
 }

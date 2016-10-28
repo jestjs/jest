@@ -1,6 +1,8 @@
 {
   "jest": {
-    "scriptPreprocessor": "<rootDir>/../packages/babel-jest",
+    "transform": {
+      "^.+\\.js$": "<rootDir>/../packages/babel-jest"
+    },
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "<rootDir>/(?:.+?)/__tests__/"

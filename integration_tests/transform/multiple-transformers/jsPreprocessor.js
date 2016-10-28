@@ -6,9 +6,4 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-const path = require('path');
-
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.DEFAULT_JS_PATTERN = '^.+\\.(js|jsx)$';
+module.exports = require('babel-jest');

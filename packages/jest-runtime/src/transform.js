@@ -43,7 +43,7 @@ const removeFile = (path: Path) => {
 
 const getCacheKey = (
   fileData: string,
-  filePath: Path,
+  filename: Path,
   config: Config,
   instrument: boolean,
 ): string => {
@@ -60,17 +60,17 @@ const getCacheKey = (
       mocksPattern: config.mocksPattern,
       moduleFileExtensions: config.moduleFileExtensions,
       moduleNameMapper: config.moduleNameMapper,
-      preprocessorIgnorePatterns: config.preprocessorIgnorePatterns,
+      transformIgnorePatterns: config.transformIgnorePatterns,
       rootDir: config.rootDir,
       testPathDirs: config.testPathDirs,
       testRegex: config.testRegex,
     }));
   }
   const confStr = configToJsonMap.get(config) || '';
-  const preprocessor = getPreprocessor(config);
+  const preprocessor = getPreprocessor(filename, config);
 
   if (preprocessor && typeof preprocessor.getCacheKey === 'function') {
-    return preprocessor.getCacheKey(fileData, filePath, confStr, {instrument});
+    return preprocessor.getCacheKey(fileData, filename, confStr, {instrument});
   } else {
     return crypto.createHash('md5')
       .update(fileData)
@@ -96,7 +96,7 @@ const wrap = content =>
   content +
   '\n}});';
 
-const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
+const readCacheFile = (filename: Path, cachePath: Path): ?string => {
   if (!fileExists(cachePath)) {
     return null;
   }
@@ -126,20 +126,20 @@ const getScriptCacheKey = (filename, config, instrument: boolean) => {
 
 const shouldPreprocess = (filename: Path, config: Config): boolean => {
   if (!ignoreCache.has(config)) {
-    if (!config.preprocessorIgnorePatterns) {
+    if (!config.transformIgnorePatterns) {
       ignoreCache.set(config, null);
     } else {
       ignoreCache.set(
         config,
-        new RegExp(config.preprocessorIgnorePatterns.join('|')),
+        new RegExp(config.transformIgnorePatterns.join('|')),
       );
     }
   }
 
   const ignoreRegexp = ignoreCache.get(config);
   const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return !!config.scriptPreprocessor && (
-    !config.preprocessorIgnorePatterns.length ||
+  return !!config.transform && !!config.transform.length && (
+    !config.transformIgnorePatterns.length ||
     !isIgnored
   );
 };
@@ -168,25 +168,42 @@ const getFileCachePath = (
   return cachePath;
 };
 
-const preprocessorCache = new WeakMap();
+const preprocessorCache: WeakMap<Config, Map<Path, ?Preprocessor>> =
+  new WeakMap();
 
-const getPreprocessor = (config: Config): ?Preprocessor => {
-  if (preprocessorCache.has(config)) {
-    return preprocessorCache.get(config);
+const getPreprocessor = (filename: string, config: Config): ?Preprocessor => {
+  if (
+    preprocessorCache.has(config) &&
+    preprocessorCache.get(config).get(filename)
+  ) {
+    return preprocessorCache.get(config).get(filename);
   } else {
     let preprocessor;
-    if (!config.scriptPreprocessor) {
+    if (!config.transform || !config.transform.length) {
       preprocessor = null;
     } else {
-      // $FlowFixMe
-      preprocessor = require(config.scriptPreprocessor);
-      if (typeof preprocessor.process !== 'function') {
-        throw new TypeError(
-          'Jest: a preprocessor must export a `process` function.',
-        );
+      let preprocessorPath = null;
+      for (let i = 0; i < config.transform.length; i++) {
+        if (new RegExp(config.transform[i][0]).test(filename)) {
+          preprocessorPath = config.transform[i][1];
+          break;
+        }
+      }
+      if (preprocessorPath) {
+        // $FlowFixMe
+        preprocessor = require(preprocessorPath);
+        if (typeof preprocessor.process !== 'function') {
+          throw new TypeError(
+            'Jest: a preprocessor must export a `process` function.',
+          );
+        }
       }
     }
-    preprocessorCache.set(config, preprocessor);
+    if (!preprocessorCache.has(config)) {
+      preprocessorCache.set(config, new Map());
+    }
+
+    preprocessorCache.get(config).set(filename, preprocessor);
     return preprocessor;
   }
 };
@@ -234,7 +251,7 @@ const transformSource = (
   content: string,
   instrument: boolean,
 ): string => {
-  const preprocessor = getPreprocessor(config);
+  const preprocessor = getPreprocessor(filename, config);
   const cacheFilePath = getFileCachePath(filename, config, content, instrument);
   // Ignore cache if `config.cache` is set (--no-cache)
   let result = config.cache ? readCacheFile(filename, cacheFilePath) : null;

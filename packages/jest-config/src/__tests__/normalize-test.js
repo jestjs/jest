@@ -14,6 +14,9 @@ const path = require('path');
 const utils = require('jest-util');
 const normalize = require('../normalize');
 
+const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
+const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
+
 describe('normalize', () => {
   let root;
   let expectedPathFooBar;
@@ -212,32 +215,50 @@ describe('normalize', () => {
     testPathArray('snapshotSerializers');
   });
 
-  describe('scriptPreprocessor', () => {
+  describe('transform', () => {
     it('normalizes the path according to rootDir', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        scriptPreprocessor: 'bar/baz',
+        transform: {
+          [DEFAULT_JS_PATTERN]: 'bar/baz',
+          [DEFAULT_CSS_PATTERN]: 'qux/quux',
+        },
       }, '/root/path');
 
-      expect(config.scriptPreprocessor).toEqual(expectedPathFooBar);
+      expect(config.transform).toEqual([
+        [DEFAULT_JS_PATTERN, expectedPathFooBar],
+        [DEFAULT_CSS_PATTERN, expectedPathFooQux],
+      ]);
     });
 
     it('does not change absolute paths', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        scriptPreprocessor: '/an/abs/path',
+        transform: {
+          [DEFAULT_JS_PATTERN]: '/an/abs/path',
+          [DEFAULT_CSS_PATTERN]: '/an/abs/path',
+        },
       });
 
-      expect(config.scriptPreprocessor).toEqual(expectedPathAbs);
+      expect(config.transform).toEqual([
+        [DEFAULT_JS_PATTERN, expectedPathAbs],
+        [DEFAULT_CSS_PATTERN, expectedPathAbs],
+      ]);
     });
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        scriptPreprocessor: '<rootDir>/bar/baz',
+        transform: {
+          [DEFAULT_JS_PATTERN]: '<rootDir>/bar/baz',
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/qux/quux',
+        },
       });
 
-      expect(config.scriptPreprocessor).toEqual(expectedPathFooBar);
+      expect(config.transform).toEqual([
+        [DEFAULT_JS_PATTERN, expectedPathFooBar],
+        [DEFAULT_CSS_PATTERN, expectedPathFooQux],
+      ]);
     });
   });
 
@@ -525,7 +546,9 @@ describe('normalize', () => {
     let Resolver;
     beforeEach(() => {
       Resolver = require('jest-resolve');
-      Resolver.findNodeModule = jest.fn(name => 'node_modules/' + name);
+      Resolver.findNodeModule = jest.fn(
+        name => 'node_modules' + path.sep + name,
+      );
     });
 
     it('correctly identifies and uses babel-jest', () => {
@@ -534,8 +557,29 @@ describe('normalize', () => {
       });
 
       expect(config.usesBabelJest).toBe(true);
-      const preprocessorPath = uniformPath(config.scriptPreprocessor);
-      expect(preprocessorPath).toEqual('/root/node_modules/babel-jest');
+      const jsTransformerPath = uniformPath(config.transform[0][1]);
+      expect(config.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
+      expect(jsTransformerPath).toEqual('/root/node_modules/babel-jest');
+      expect(config.setupFiles.map(uniformPath))
+        .toEqual(['/root/node_modules/babel-polyfill']);
+    });
+
+    it('uses babel-jest if babel-jest is explicitly specified in a custom transform config', () => {
+      const customJSPattern = '^.+\\.js$';
+      const ROOT_DIR = '<rootDir>' + path.sep;
+      const config = normalize({
+        rootDir: '/root',
+        transform: {
+          [customJSPattern]: ROOT_DIR + Resolver.findNodeModule(
+            'babel-jest',
+          ),
+        },
+      });
+
+      expect(config.usesBabelJest).toBe(true);
+      const jsTransformerPath = uniformPath(config.transform[0][1]);
+      expect(config.transform[0][0]).toBe(customJSPattern);
+      expect(jsTransformerPath).toEqual('/root/node_modules/babel-jest');
       expect(config.setupFiles.map(uniformPath))
         .toEqual(['/root/node_modules/babel-polyfill']);
     });
@@ -548,15 +592,20 @@ describe('normalize', () => {
       });
 
       expect(config.usesBabelJest).toEqual(undefined);
-      expect(config.scriptPreprocessor).toEqual(undefined);
+      expect(config.transform).toEqual(undefined);
       expect(config.setupFiles).toEqual([]);
     });
 
     it('uses polyfills if babel-jest is explicitly specified', () => {
+      const ROOT_DIR = '<rootDir>' + path.sep;
+
       const config = normalize({
         rootDir: '/root',
-        scriptPreprocessor:
-          '<rootDir>/' + Resolver.findNodeModule('babel-jest'),
+        transform: {
+          [DEFAULT_JS_PATTERN]: ROOT_DIR + Resolver.findNodeModule(
+            'babel-jest',
+          ),
+        },
       });
 
       expect(config.usesBabelJest).toBe(true);
@@ -631,6 +680,25 @@ describe('normalize', () => {
         rootDir: '/root',
         unmockedModulePathPatterns: [],
       });
+
+      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    });
+
+    it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {
+      const config = normalize({
+        rootDir: '/root/path/foo',
+        scriptPreprocessor: 'bar/baz',
+        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
+      });
+
+      expect(config.transform).toEqual([['.*', expectedPathFooBar]]);
+      expect(config.transformIgnorePatterns).toEqual([
+        joinForPattern('bar', 'baz'),
+        joinForPattern('qux', 'quux'),
+      ]);
+
+      expect(config.scriptPreprocessor).toBe(undefined);
+      expect(config.preprocessorIgnorePatterns).toBe(undefined);
 
       expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     });

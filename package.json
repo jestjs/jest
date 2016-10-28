@@ -61,7 +61,9 @@
     "coverageReporters": [
       "json"
     ],
-    "scriptPreprocessor": "<rootDir>/packages/babel-jest",
+    "transform": {
+      "^.+\\.js$": "<rootDir>/packages/babel-jest"
+    },
     "setupTestFrameworkScriptFile": "<rootDir>/testSetupFile.js",
     "testEnvironment": "./packages/jest-environment-node",
     "testPathIgnorePatterns": [
