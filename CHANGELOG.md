@@ -1,5 +1,7 @@
 ## master
 
+* `--json` now includes information about individual tests inside a file. 
+
 ## jest 16.0.2
 
 * Symbols are now properly mocked when using `jest-mock`.
