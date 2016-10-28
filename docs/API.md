@@ -17,6 +17,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - `beforeAll(fn)`
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expectvalue)
+  - [`expect.extend(matchers)`](#extending-jest-matchers)
   - [`it(name, fn)`](#basic-testing)
   - [`it.only(name, fn)`](#basic-testing)
   - [`it.skip(name, fn)`](#basic-testing)
@@ -675,6 +676,81 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
+
+### Extending Jest Matchers
+
+Using descriptive matchers will help your tests be readable and maintainable. Jest has a simple API for adding your own matchers. Here is an example of adding a matcher:
+
+```js
+expect.extend({
+  toContainLetter(received, expected) {
+    // some defensive programming
+    if (this.utils.getType(received) !== 'string') {
+      throw new Error(
+        this.utils.matcherHint('[.not].toContainLetter') + '\n\n' +
+        `Received value must be a string.\n` +
+        printWithType('Received', received, this.utils.printReceived),
+      );
+    }
+
+    // some defensive programming
+    if (this.utils.getType(expected) !== 'string' || expected.length > 1) {
+      throw new Error(
+        this.utils.matcherHint('[.not].toContainLetter') + '\n\n' +
+        `Expected value must be a single letter string.\n` +
+        printWithType('Expected', expected, this.utils.printExpected),
+      );
+    }
+
+    // assertion
+    const pass = received.split('').some(letter => letter === expected);
+
+
+    // message formatting
+    const message = pass
+      ? () => matcherHint('.not.toContainLetter') + '\n\n' +
+        `Expected value to not contain the letter:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}`
+      : () => matcherHint('.toContainLetter') + '\n\n' +
+        `Expected value to contain the letter:\n` +
+        `  ${printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${printReceived(received)}`
+
+    return { message, pass };
+  }
+});
+
+describe('toContainLetter', () => {
+  it('throws when given the wrong arguments', () => {
+    expect(() => expect(1).toContainLetter('l')).toThrow();
+    expect(() => expect('word').toContainLetter()).toThrow();
+  });
+
+  it('matchers letters inside a word', () => {
+    expect('Jest').toContainLetter('J');
+    expect('Jest').not.toContainLetter('m');
+  });
+});
+```
+
+Jest will give your matchers context to simplify coding. The following can be found on `this` inside a custom matcher:
+
+#### `this.dontThrow`
+
+A function that when called will prevent this matcher from throwing on errors.
+
+#### `this.isNot`
+
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
+
+#### `this.utils`
+
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
+
+
 ## Mock Functions
 
 ### `mockFn.mock.calls`
@@ -993,6 +1069,7 @@ Returns the `jest` object for chaining.
 Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
+
 
 ### Jest CLI options
 
