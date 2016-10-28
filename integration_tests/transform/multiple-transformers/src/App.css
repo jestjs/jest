@@ -6,9 +6,22 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
+root {
+  text-align: center;
+}
 
-const path = require('path');
+header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
 
-exports.NODE_MODULES = path.sep + 'node_modules' + path.sep;
-exports.DEFAULT_JS_PATTERN = '^.+\\.(js|jsx)$';
+logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+intro {
+  font-size: large;
+}

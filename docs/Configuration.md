@@ -55,12 +55,10 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`modulePaths` [array<string>]](#modulepaths-array-string)
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
   - [`notify` [boolean]](#notify-boolean)
-  - [`preprocessorIgnorePatterns` [array<string>]](#preprocessorignorepatterns-array-string)
   - [`preset` [string]](#preset-string)
   - [`resetMocks` [boolean]](#resetmocks-boolean)
   - [`resetModules` [boolean]](#resetmodules-boolean)
   - [`rootDir` [string]](#rootdir-string)
-  - [`scriptPreprocessor` [string]](#scriptpreprocessor-string)
   - [`setupFiles` [array]](#setupfiles-array)
   - [`setupTestFrameworkScriptFile` [string]](#setuptestframeworkscriptfile-string)
   - [`snapshotSerializers` [array<string>]](#snapshotserializers-array-string)
@@ -72,6 +70,8 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testRunner` [string]](#testrunner-string)
   - [`testURL` [string]](#testurl-string)
   - [`timers` [string]](#timers-string)
+  - [`transform` [object<string, string>]](#transform-object-string-string)  
+  - [`transformIgnorePatterns` [array<string>]](#transformignorepatterns-array-string)  
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
 
@@ -268,24 +268,6 @@ Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to wher
 
 *Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
 
-### `scriptPreprocessor` [string]
-(default: `undefined`)
-
-The path to a module that provides a synchronous function from pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 to ES5 here.
-
-Examples of such compilers include [babel](https://babeljs.io/), [typescript](http://www.typescriptlang.org/), and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
-
-*Note: Jest's preprocessor is only ran once per file unless the file has changed. During development of a `scriptPreprocessor` it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](/jest/docs/troubleshooting.html#caching-issues).*
-
-### `preprocessorIgnorePatterns` [array<string>]
-(default: `['/node_modules/']`)
-
-An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
-
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/bower_components/', '<rootDir>/node_modules/']`.
-
-*Note: if this option is not specified by the user and Jest detects the project as a [react-native](https://github.com/facebook/react-native) project, it will ignore the default and process every file. It is common on react-native projects to ship npm modules without pre-compiling JavaScript.*
-
 ### `setupFiles` [array]
 (default: `[]`)
 
@@ -438,6 +420,24 @@ This option sets the URL for the jsdom environment. It is reflected in propertie
 (default: `real`)
 
 Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`.  Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
+
+### `transform` [object<string, string>]
+(default: `undefined`)
+
+A map from regular expressions to paths to preprocessors. A preprocessor is a module that provides a synchronous function for pre-processing source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node (like, for example, ES6 classes), you might plug in one of many transpilers that compile ES6 to ES5 here.
+
+Examples of such compilers include [babel](https://babeljs.io/), [typescript](http://www.typescriptlang.org/), and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
+
+*Note: a preprocessor is only ran once per file unless the file has changed. During development of a preprocessor it can be useful to run Jest with `--no-cache` or to frequently [delete Jest's cache](/jest/docs/troubleshooting.html#caching-issues).*
+
+### `transformIgnorePatterns` [array<string>]
+(default: `['/node_modules/']`)
+
+An array of regexp pattern strings that are matched against all source file paths before preprocessing. If the test path matches any of the patterns, it will not be preprocessed.
+
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/bower_components/', '<rootDir>/node_modules/']`.
+
+*Note: if this option is not specified by the user and Jest detects the project as a [react-native](https://github.com/facebook/react-native) project, it will ignore the default and process every file. It is common on react-native projects to ship npm modules without pre-compiling JavaScript.*
 
 ### `unmockedModulePathPatterns` [array<string>]
 (default: `[]`)

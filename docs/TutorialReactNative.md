@@ -163,14 +163,14 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 Instead of `jsdom`, a simple `node` environment is loaded that is similar to a react-native environment. Because the node environment doesn't load any DOM or browser APIs it improves Jest's startup greatly.
 
-### preprocessorIgnorePatterns customization
+### transformIgnorePatterns customization
 
-The [`preprocessorIgnorePatterns`](api.html#preprocessorignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](api.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by whitelisting modules other than react-native:
 
 ```js
-"preprocessorIgnorePatterns": [
+"transformIgnorePatterns": [
   "node_modules/(?!react-native|my-project|react-native-button)"
 ]
 ```
