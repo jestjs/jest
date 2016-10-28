@@ -90,11 +90,11 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
   }
 };
 
-const wrap = content => '({"' +
-  EVAL_RESULT_VARIABLE +
+const wrap = content =>
+  '({"' + EVAL_RESULT_VARIABLE +
   '":function(module,exports,require,__dirname,__filename,global,jest){' +
-   content +
-   '\n}});';
+  content +
+  '\n}});';
 
 const readCacheFile = (filePath: Path, cachePath: Path): ?string => {
   if (!fileExists(cachePath)) {

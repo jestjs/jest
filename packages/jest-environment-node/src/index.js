@@ -18,26 +18,23 @@ const installCommonGlobals = require('jest-util').installCommonGlobals;
 const ModuleMocker = require('jest-mock');
 const vm = require('vm');
 
-const isNaN = global.isNaN;
-
 class NodeEnvironment {
 
+  context: ?vm$Context;
   fakeTimers: ?FakeTimers;
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
   constructor(config: Config) {
-    const global = this.global = {};
-    vm.createContext(this.global);
+    this.context = vm.createContext();
+    const global = this.global = vm.runInContext('this', this.context);
     global.global = global;
     global.clearInterval = clearInterval;
     global.clearTimeout = clearTimeout;
-    global.setInterval = setInterval;
-    global.setTimeout = setTimeout;
-    global.isNaN = isNaN;
-    global.ArrayBuffer = ArrayBuffer;
     global.JSON = JSON;
     global.Promise = Promise;
+    global.setInterval = setInterval;
+    global.setTimeout = setTimeout;
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new ModuleMocker();
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
@@ -47,13 +44,13 @@ class NodeEnvironment {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
-    this.global = null;
+    this.context = null;
     this.fakeTimers = null;
   }
 
   runScript(script: Script): ?any {
-    if (this.global) {
-      return script.runInContext(this.global);
+    if (this.context) {
+      return script.runInContext(this.context);
     }
     return null;
   }
