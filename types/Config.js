@@ -25,7 +25,7 @@ export type DefaultConfig = {|
   bail: boolean,
   browser: boolean,
   cacheDirectory: Path,
-  clearMocks: boolean,
+  resetMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
   globals: ConfigGlobals,
