@@ -18,6 +18,6 @@ let PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 
 exports.addPlugins = (plugins: Array<Path>) =>
   // $FlowFixMe
-  PLUGINS = plugins.map(p => require(p)).concat(PLUGINS);
+  PLUGINS = plugins.map(plugin => require(plugin)).concat(PLUGINS);
 
 exports.getPlugins = () => PLUGINS;
