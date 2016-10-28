@@ -10,7 +10,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
-import type {Preprocessor} from 'types/Preprocessor';
+import type {Transformer} from 'types/Transform';
 
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
@@ -67,10 +67,10 @@ const getCacheKey = (
     }));
   }
   const confStr = configToJsonMap.get(config) || '';
-  const preprocessor = getPreprocessor(filename, config);
+  const transformer = getTransformer(filename, config);
 
-  if (preprocessor && typeof preprocessor.getCacheKey === 'function') {
-    return preprocessor.getCacheKey(fileData, filename, confStr, {instrument});
+  if (transformer && typeof transformer.getCacheKey === 'function') {
+    return transformer.getCacheKey(fileData, filename, confStr, {instrument});
   } else {
     return crypto.createHash('md5')
       .update(fileData)
@@ -124,7 +124,7 @@ const getScriptCacheKey = (filename, config, instrument: boolean) => {
     (instrument ? '_instrumented' : '');
 };
 
-const shouldPreprocess = (filename: Path, config: Config): boolean => {
+const shouldTransform = (filename: Path, config: Config): boolean => {
   if (!ignoreCache.has(config)) {
     if (!config.transformIgnorePatterns) {
       ignoreCache.set(config, null);
@@ -138,9 +138,13 @@ const shouldPreprocess = (filename: Path, config: Config): boolean => {
 
   const ignoreRegexp = ignoreCache.get(config);
   const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return !!config.transform && !!config.transform.length && (
-    !config.transformIgnorePatterns.length ||
-    !isIgnored
+  return (
+    !!config.transform &&
+    !!config.transform.length &&
+    (
+      !config.transformIgnorePatterns.length ||
+      !isIgnored
+    )
   );
 };
 
@@ -168,43 +172,43 @@ const getFileCachePath = (
   return cachePath;
 };
 
-const preprocessorCache: WeakMap<Config, Map<Path, ?Preprocessor>> =
+const transformCache: WeakMap<Config, Map<Path, ?Transformer>> =
   new WeakMap();
 
-const getPreprocessor = (filename: string, config: Config): ?Preprocessor => {
+const getTransformer = (filename: string, config: Config): ?Transformer => {
   if (
-    preprocessorCache.has(config) &&
-    preprocessorCache.get(config).get(filename)
+    transformCache.has(config) &&
+    transformCache.get(config).get(filename)
   ) {
-    return preprocessorCache.get(config).get(filename);
+    return transformCache.get(config).get(filename);
   } else {
-    let preprocessor;
+    let transform;
     if (!config.transform || !config.transform.length) {
-      preprocessor = null;
+      transform = null;
     } else {
-      let preprocessorPath = null;
+      let transformPath = null;
       for (let i = 0; i < config.transform.length; i++) {
         if (new RegExp(config.transform[i][0]).test(filename)) {
-          preprocessorPath = config.transform[i][1];
+          transformPath = config.transform[i][1];
           break;
         }
       }
-      if (preprocessorPath) {
+      if (transformPath) {
         // $FlowFixMe
-        preprocessor = require(preprocessorPath);
-        if (typeof preprocessor.process !== 'function') {
+        transform = require(transformPath);
+        if (typeof transform.process !== 'function') {
           throw new TypeError(
-            'Jest: a preprocessor must export a `process` function.',
+            'Jest: a transform must export a `process` function.',
           );
         }
       }
     }
-    if (!preprocessorCache.has(config)) {
-      preprocessorCache.set(config, new Map());
+    if (!transformCache.has(config)) {
+      transformCache.set(config, new Map());
     }
 
-    preprocessorCache.get(config).set(filename, preprocessor);
-    return preprocessor;
+    transformCache.get(config).set(filename, transform);
+    return transform;
   }
 };
 
@@ -251,7 +255,7 @@ const transformSource = (
   content: string,
   instrument: boolean,
 ): string => {
-  const preprocessor = getPreprocessor(filename, config);
+  const transform = getTransformer(filename, config);
   const cacheFilePath = getFileCachePath(filename, config, content, instrument);
   // Ignore cache if `config.cache` is set (--no-cache)
   let result = config.cache ? readCacheFile(filename, cacheFilePath) : null;
@@ -262,15 +266,15 @@ const transformSource = (
 
   result = content;
 
-  if (preprocessor && shouldPreprocess(filename, config)) {
-    result = preprocessor.process(result, filename, config, {instrument});
+  if (transform && shouldTransform(filename, config)) {
+    result = transform.process(result, filename, config, {instrument});
   }
 
-  // That means that the preprocessor has a custom instrumentation
+  // That means that the transform has a custom instrumentation
   // logic and will handle it based on `config.collectCoverage` option
-  const preprocessorWillInstrument = preprocessor && preprocessor.canInstrument;
+  const transformWillInstrument = transform && transform.canInstrument;
 
-  if (!preprocessorWillInstrument && instrument) {
+  if (!transformWillInstrument && instrument) {
     result = instrumentFile(result, filename, config);
   }
 
@@ -290,7 +294,7 @@ const transformAndBuildScript = (
 
   if (
     !isInternalModule &&
-      (shouldPreprocess(filename, config) || instrument)
+      (shouldTransform(filename, config) || instrument)
   ) {
     wrappedResult =
       wrap(transformSource(filename, config, content, instrument));

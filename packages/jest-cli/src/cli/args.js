@@ -167,7 +167,7 @@ const options = {
   cache: {
     default: true,
     description:
-      'Whether to use the preprocessor cache. Disable the cache using ' +
+      'Whether to use the transform cache. Disable the cache using ' +
       '--no-cache.',
     type: 'boolean',
   },
