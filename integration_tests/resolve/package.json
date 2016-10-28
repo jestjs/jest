@@ -2,6 +2,7 @@
   "jest": {
     "haste": {
       "defaultPlatform": "android"
-    }
+    },
+    "testEnvironment": "node"
   }
 }

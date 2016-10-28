@@ -21,24 +21,19 @@ const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 
 const BULLET = chalk.bold('\u25cf ');
-const JEST15_MESSAGE = `
+const DEPRECATION_MESSAGE = `
 
-  Jest 15 changed the default configuration for tests and makes Jest easier to
-  use and less confusing for beginners. All previous defaults can be restored
-  if your project depends on it. A comprehensive explanation of the breaking
-  changes and an upgrade guide can be found in the release blog post linked
-  below.
+  Jest changed the default configuration for tests.
 
-  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
   ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/configuration.html
-  ${chalk.bold('Release Blog Post:')} https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
 `;
 const throwConfigurationError = message => {
-  throw new Error(chalk.red(message + JEST15_MESSAGE));
+  throw new Error(chalk.red(message + DEPRECATION_MESSAGE));
 };
 
 const logConfigurationWarning = message => {
-  console.warn(chalk.yellow(BULLET + message + JEST15_MESSAGE));
+  console.warn(chalk.yellow(BULLET + message + DEPRECATION_MESSAGE));
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -112,8 +107,6 @@ function getTestEnvironment(config) {
   );
 }
 
-let shouldWarnAboutPreprocessor = false;
-
 function normalize(config, argv) {
   if (!argv) {
     argv = {};
@@ -161,29 +154,51 @@ function normalize(config, argv) {
     }
   }
 
+  if (config.scriptPreprocessor && config.transform) {
+    throwConfigurationError(
+      'Jest: `scriptPreprocessor` and `transform` cannot be used together. ' +
+      'Please change your configuration to only use `transform`.',
+    );
+  }
+
+  if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
+    throwConfigurationError(
+      'Jest: `preprocessorIgnorePatterns` and `transformIgnorePatterns` ' +
+      'cannot be used together. Please change your configuration to only ' +
+      'use `transformIgnorePatterns`.',
+    );
+  }
+
   if (config.scriptPreprocessor) {
-    config.transform = config.transform || {};
-    config.transform['.*'] = config.scriptPreprocessor;
-    shouldWarnAboutPreprocessor = true;
+    config.transform = {
+      '.*': config.scriptPreprocessor,
+    };
   }
 
   if (config.preprocessorIgnorePatterns) {
     config.transformIgnorePatterns = config.preprocessorIgnorePatterns;
-    shouldWarnAboutPreprocessor = true;
   }
 
-  if (shouldWarnAboutPreprocessor) {
+  if (
+    config.scriptPreprocessor ||
+    config.preprocessorIgnorePatterns
+  ) {
     logConfigurationWarning(
       'The settings `scriptPreprocessor` and `preprocessorIgnorePatterns` ' +
-      'will be replaced by `transform` and `transformIgnorePatterns` ' +
-      'which support multiple preprocessors. ' +
-      'Jest now treats your current settings as: \n' +
-      '  "transform": { ".*": "current-scriptPreprocessor" },\n' +
-      '  "transformIgnorePatterns": "current-preprocessorIgnorePatterns"\n' +
-      'Please update your configuration.',
+      'were replaced by `transform` and `transformIgnorePatterns` ' +
+      'which support multiple preprocessors.\n\n' +
+      '  Jest now treats your current settings as: \n\n' +
+      `    "transform": {".*": "${config.scriptPreprocessor}"}\n` +
+      (config.transformIgnorePatterns
+        ? `    "transformIgnorePatterns": "${config.transformIgnorePatterns}"`
+        : ''
+      ) +
+      '\n\n  Please update your configuration.',
     );
-    // TODO: link to API page/blog post?
   }
+
+  delete config.scriptPreprocessor;
+  delete config.preprocessorIgnorePatterns;
 
   if (!config.name) {
     config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
@@ -191,70 +206,6 @@ function normalize(config, argv) {
 
   if (!config.setupFiles) {
     config.setupFiles = [];
-  }
-
-  // Warn or throw for deprecated or removed configuration options.
-  if (config.automock === false) {
-    logConfigurationWarning(
-      'Automocking was disabled by default in Jest. The setting ' +
-      '`"automock": false` can safely be removed from Jest\'s config.',
-    );
-  }
-
-  if (
-    config.unmockedModulePathPatterns &&
-    (
-      !('automock' in config) ||
-      config.automock === false
-    )
-  ) {
-    logConfigurationWarning(
-      'The `unmockedModulePathPatterns` setting is defined but automocking ' +
-      'is disabled in Jest. Please either remove ' +
-      '`unmockedModulePathPatterns` from your configuration or explicitly ' +
-      'set `"automock": true` in your configuration if you wish to use ' +
-      'automocking.',
-    );
-  }
-
-  if (config.setupEnvScriptFile) {
-    throwConfigurationError(
-      'The setting `setupEnvScriptFile` was removed from Jest. Instead, use ' +
-      'the `setupFiles` setting:\n\n' +
-      '    "setupFiles": [' + JSON.stringify(config.setupEnvScriptFile) + ']',
-    );
-  }
-
-  if ('persistModuleRegistryBetweenSpecs' in config) {
-    throwConfigurationError(
-      'The setting `persistModuleRegistryBetweenSpecs` was removed from ' +
-      'Jest. ' + (
-        config.persistModuleRegistryBetweenSpecs
-          ? 'This configuration option can safely be removed.'
-          : 'Set `"resetModules": true` in your configuration to retain the ' +
-            'previous behavior'
-      ),
-    );
-  }
-
-  if (config.testDirectoryName || config.testFileExtensions) {
-    const moduleFileExtensions =
-      config.moduleFileExtensions ||
-      DEFAULT_CONFIG_VALUES.moduleFileExtensions;
-    const extensions = Array.from(
-      new Set((config.testFileExtensions || [])
-        .concat(moduleFileExtensions),
-    ));
-
-    const testRegex =
-      '(/' + (config.testDirectoryName || '__tests__') + '/' +
-      '.*|\\\\.(test|spec))\\\\.(' + extensions.join('|') + ')$';
-
-    throw throwConfigurationError(
-      'The settings `testDirectoryName` and `testFileExtensions` were ' +
-      'removed from Jest. Instead, use `testRegex` like this:\n' +
-      '    "testRegex": "' + testRegex + '"',
-    );
   }
 
   if (argv.testRunner) {
@@ -445,11 +396,6 @@ function normalize(config, argv) {
       case 'verbose':
       case 'watchman':
         value = config[key];
-        break;
-
-      case 'scriptPreprocessor':
-      case 'preprocessorIgnorePatterns':
-        // TODO Remove when we make it a breaking change (#1917)
         break;
 
       default:

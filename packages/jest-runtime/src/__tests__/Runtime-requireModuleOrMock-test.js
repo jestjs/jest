@@ -20,17 +20,10 @@ const moduleNameMapper = {
 };
 
 let createRuntime;
-let consoleWarn;
 
 beforeEach(() => {
-  consoleWarn = console.warn;
-  console.warn = jest.fn();
 
   createRuntime = require('createRuntime');
-});
-
-afterEach(() => {
-  console.warn = consoleWarn;
 });
 
 it('mocks modules by default when using automocking', () =>
@@ -177,20 +170,5 @@ it('automocking is disabled by default', () =>
       'RegularModule',
     );
     expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
-  }),
-);
-
-it('warns when calling unmock when automocking is disabled', () =>
-  createRuntime(__filename, {
-    moduleNameMapper,
-  }).then(runtime => {
-    const root = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      './root.js',
-    );
-
-    root.jest.unmock('RegularModule');
-
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   }),
 );

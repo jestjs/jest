@@ -678,20 +678,6 @@ class Runtime {
     };
     const unmock = (moduleName: string) => {
       const moduleID = this._normalizeID(from, moduleName);
-      if (
-        !this._shouldAutoMock &&
-        this._config.automock === false &&
-        this._explicitShouldMock[moduleID] !== true
-      ) {
-        this._environment.global.console.warn(
-          `jest.unmock('${moduleName}') was called but automocking is ` +
-          `disabled. Remove the unnecessary call to \`jest.unmock\` or ` +
-          `enable automocking for this test via \`jest.enableAutomock();\`. ` +
-          `This warning is likely a result of a default configuration change ` +
-          `in Jest 15.\n\n` +
-          `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html`,
-        );
-      }
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };

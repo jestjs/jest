@@ -17,10 +17,10 @@ Place a `debugger;` statement in any of your tests, and then, in your project's 
 
 `node --debug-brk ./node_modules/.bin/jest -i [any other arguments here]`
 
-This will run Jest in a Node process that an external debugger can connect to. Note that the process 
+This will run Jest in a Node process that an external debugger can connect to. Note that the process
 will pause until the debugger has connected to it.
 
-For example, to connect the [Node Inspector](https://github.com/node-inspector/node-inspector) 
+For example, to connect the [Node Inspector](https://github.com/node-inspector/node-inspector)
 debugger to the paused process, you would first install it (if you don't have it installed already):
 
 `npm install -g node-inspector`
@@ -37,13 +37,13 @@ More information on Node debugging can be found here: https://nodejs.org/api/deb
 
 ### Caching Issues
 
-The preprocessor script was changed or babel was updated and the changes aren't
+The transform script was changed or babel was updated and the changes aren't
 being recognized by Jest?
 
 Retry with `--no-cache`.
 
 Explanation: Jest caches transformed module files to speed up test execution.
-If you are using your own custom preprocessor, consider adding a `getCacheKey`
+If you are using your own custom transformer, consider adding a `getCacheKey`
 function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/master/scripts/jest/preprocessor.js#L63-L67).
 
 ### Unresolved Promises

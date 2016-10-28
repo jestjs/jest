@@ -193,7 +193,6 @@ describe('moduleMocker', () => {
         const fn = moduleMocker.getMockFunction();
         expect(fn.mock.calls).toEqual([]);
 
-
         fn(1, 2, 3);
         expect(fn.mock.calls).toEqual([[1, 2, 3]]);
 
@@ -225,7 +224,7 @@ describe('moduleMocker', () => {
       it('supports resetting mock return values', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockReturnValue('abcd');
-        
+
         const before = fn();
         expect(before).toEqual('abcd');
 
@@ -238,7 +237,7 @@ describe('moduleMocker', () => {
       it('supports resetting single use mock return values', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockReturnValueOnce('abcd');
-        
+
         fn.mockReset();
 
         const after = fn();
@@ -248,7 +247,7 @@ describe('moduleMocker', () => {
       it('supports resetting mock implementations', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockImplementation(() => 'abcd');
-        
+
         const before = fn();
         expect(before).toEqual('abcd');
 
@@ -261,7 +260,7 @@ describe('moduleMocker', () => {
       it('supports resetting single use mock implementations', () => {
         const fn = moduleMocker.getMockFunction();
         fn.mockImplementationOnce(() => 'abcd');
-        
+
         fn.mockReset();
 
         const after = fn();

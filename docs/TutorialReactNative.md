@@ -14,7 +14,7 @@ Get a deeper insight into testing a working example React Native app reading the
 
 ## Setup
 
-We'll need to use the `jest-react-native` preset and we are going to use the `babel-jest` package as a preprocessor
+We'll need to use the `jest-react-native` preset and we are going to use the `babel-jest` package as a transformer
 for Jest. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
 
 Run the following command to install the necessary dependencies:
