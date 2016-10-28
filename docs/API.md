@@ -72,6 +72,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mock.calls`](#mockfnmockcalls)
   - [`mockFn.mock.instances`](#mockfnmockinstances)
   - [`mockFn.mockClear()`](#mockfnmockclear)
+  - [`mockFn.mockReset()`](#mockfnmockreset)
   - [`mockFn.mockImplementation(fn)`](#mockfnmockimplementationfn)
   - [`mockFn.mockImplementationOnce(fn)`](#mockfnmockimplementationoncefn)
   - [`mockFn.mockReturnThis()`](#mockfnmockreturnthis)
@@ -82,7 +83,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 
 These methods help create mocks and let you control Jest's overall behavior.
 
-  - [`jest.clearAllMocks()`](#jestclearallmocks)
+  - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
   - [`jest.enableAutomock()`](#jestenableautomock)
@@ -708,6 +709,11 @@ Resets all information stored in the [`mockFn.mock.calls`](#mockfn-mock-calls) a
 
 Often this is useful when you want to clean up a mock's usage data between two assertions.
 
+### `mockFn.mockReset()`
+Resets all information stored in the mock
+
+This is useful when you want to completely restore a mock back to its initial state.
+
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
@@ -813,8 +819,8 @@ jest.fn(() => {
 
 ## The `jest` object
 
-### `jest.clearAllMocks()`
-Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
+### `jest.resetAllMocks()`
+Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
 
 Returns the `jest` object for chaining.
 

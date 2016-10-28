@@ -14,12 +14,12 @@ const skipOnWindows = require('skipOnWindows');
 
 skipOnWindows.suite();
 
-test('suite with auto-clear', () => {
-  const result = runJest('auto-clear-mocks/with-auto-clear');
+test('suite with auto-reset', () => {
+  const result = runJest('auto-reset-mocks/with-auto-reset');
   expect(result.status).toBe(0);
 });
 
-test('suite without auto-clear', () => {
-  const result = runJest('auto-clear-mocks/without-auto-clear');
+test('suite without auto-reset', () => {
+  const result = runJest('auto-reset-mocks/without-auto-reset');
   expect(result.status).toBe(0);
 });
