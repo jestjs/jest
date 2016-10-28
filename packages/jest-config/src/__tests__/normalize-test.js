@@ -539,7 +539,9 @@ describe('normalize', () => {
     let Resolver;
     beforeEach(() => {
       Resolver = require('jest-resolve');
-      Resolver.findNodeModule = jest.fn(name => 'node_modules/' + name);
+      Resolver.findNodeModule = jest.fn(
+        name => 'node_modules' + path.sep + name,
+      );
     });
 
     it('correctly identifies and uses babel-jest', () => {
@@ -557,11 +559,11 @@ describe('normalize', () => {
 
     it('uses babel-jest if babel-jest is explicitly specified in a custom transform config', () => {
       const customJSPattern = '^.+\\.js$';
-
+      const ROOT_DIR = '<rootDir>' + path.sep;
       const config = normalize({
         rootDir: '/root',
         transform: {
-          [customJSPattern]: '<rootDir>/' + Resolver.findNodeModule(
+          [customJSPattern]: ROOT_DIR + Resolver.findNodeModule(
             'babel-jest',
           ),
         },
@@ -588,10 +590,12 @@ describe('normalize', () => {
     });
 
     it('uses polyfills if babel-jest is explicitly specified', () => {
+      const ROOT_DIR = '<rootDir>' + path.sep;
+
       const config = normalize({
         rootDir: '/root',
         transform: {
-          [DEFAULT_JS_PATTERN]: '<rootDir>/' + Resolver.findNodeModule(
+          [DEFAULT_JS_PATTERN]: ROOT_DIR + Resolver.findNodeModule(
             'babel-jest',
           ),
         },
