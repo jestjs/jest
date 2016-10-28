@@ -66,15 +66,23 @@ const getCacheKey = (
       testRegex: config.testRegex,
     }));
   }
-  const confStr = configToJsonMap.get(config) || '';
+  const configString = configToJsonMap.get(config) || '';
   const transformer = getTransformer(filename, config);
 
   if (transformer && typeof transformer.getCacheKey === 'function') {
-    return transformer.getCacheKey(fileData, filename, confStr, {instrument});
+    return transformer.getCacheKey(
+      fileData,
+      filename,
+      configString,
+      {
+        instrument,
+        watch: config.watch,
+      },
+    );
   } else {
     return crypto.createHash('md5')
       .update(fileData)
-      .update(confStr)
+      .update(configString)
       .update(instrument ? 'instrument' : '')
       .digest('hex');
   }
@@ -267,7 +275,10 @@ const transformSource = (
   result = content;
 
   if (transform && shouldTransform(filename, config)) {
-    result = transform.process(result, filename, config, {instrument});
+    result = transform.process(result, filename, config, {
+      instrument,
+      watch: config.watch,
+    });
   }
 
   // That means that the transform has a custom instrumentation

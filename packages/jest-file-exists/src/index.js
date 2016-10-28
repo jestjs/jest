@@ -18,13 +18,4 @@ const fs = require('fs');
 module.exports = (
   filePath: Path,
   hasteFS: ?HasteFS,
-): boolean => {
-  if (hasteFS && hasteFS.exists(filePath)) {
-    return true;
-  }
-
-  try {
-    return fs.statSync(filePath).isFile();
-  } catch (e) {}
-  return false;
-};
+): boolean => (hasteFS && hasteFS.exists(filePath)) || fs.existsSync(filePath);

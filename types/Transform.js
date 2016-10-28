@@ -13,6 +13,7 @@ import type {Config, Path} from 'types/Config';
 
 export type TransformOptions = {|
   instrument: boolean,
+  watch: boolean,
 |};
 
 export type Transformer = {|
