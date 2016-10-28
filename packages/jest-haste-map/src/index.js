@@ -199,7 +199,7 @@ class HasteMap {
 
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
-      this._options.name,
+      `haste-map-${this._options.name}`,
       VERSION,
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
