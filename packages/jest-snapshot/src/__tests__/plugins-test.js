@@ -20,7 +20,7 @@ const testPath = serializers => {
 
   const plugins = getPlugins();
   expect(plugins.length).toBe(serializers.length + 2);
-  plugins.splice(0, 2);
+  plugins.splice(-2, 2);
   expect(plugins).toEqual(expected);
 };
 
