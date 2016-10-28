@@ -40,7 +40,7 @@ module.exports = {
 
 For JavaScript files that are transformed by Babel, installing `babel-jest`
 will teach Jest to pick up your `.babelrc` config automatically. Non-Babel
-JavaScript transformations can be handled with the Jest `scriptPreprocessor` option.
+JavaScript transformations can be handled with the Jest `transform` option.
 
 Next let's configure Jest to gracefully handle asset files such as stylesheets and images.
 Usually these files aren't particularly useful in tests so we can safely mock them out.

@@ -267,7 +267,7 @@ module.exports = {
 
 Don't forget to install the `babel-core` and `babel-preset-jest` packages for this example to work.
 
-To make this work with Jest you need to update your Jest configuration with this: `"scriptPreprocessor": "path/to/custom-preprocessor.js"`.
+To make this work with Jest you need to update your Jest configuration with this: `"transform": {"^.+\\.js$": "path/to/custom-preprocessor.js"}`.
 
 If you'd like to build a preprocessor with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
 
