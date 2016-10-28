@@ -618,18 +618,6 @@ describe('normalize', () => {
 
     let consoleWarn;
 
-    const throwAndMatchErrorSnapshot = fn => {
-      try {
-        fn();
-      } catch (e) {
-        expect(e.message).toMatchSnapshot();
-        return;
-      }
-
-      // failure case
-      expect(() => {}).toThrow();
-    };
-
     beforeEach(() => {
       consoleWarn = console.warn;
       console.warn = jest.fn();
@@ -637,51 +625,6 @@ describe('normalize', () => {
 
     afterEach(() => {
       console.warn = consoleWarn;
-    });
-
-    it('logs a warning when automocking is explicitly disabled', () => {
-      normalize({
-        automock: false,
-        rootDir: '/root',
-      });
-
-      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-    });
-
-    it('throws when using old configuration options', () => {
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        persistModuleRegistryBetweenSpecs: false,
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        persistModuleRegistryBetweenSpecs: true,
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        setupEnvScriptFile: '<rootDir>/setup.js',
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        testDirectoryName: 'test',
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        testFileExtensions: ['js', 'ts'],
-      }));
-    });
-
-    it('logs a warning when automocking is disabled and unmockedModulePathPatterns is used', () => {
-      normalize({
-        rootDir: '/root',
-        unmockedModulePathPatterns: [],
-      });
-
-      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     });
 
     it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {

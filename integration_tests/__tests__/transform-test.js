@@ -59,7 +59,7 @@ describe('no babel-jest', () => {
   });
 });
 
-describe('custom preprocessor', () => {
+describe('custom transformer', () => {
   const dir = path.resolve(
     __dirname,
     '..',

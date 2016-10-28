@@ -18,13 +18,13 @@ const path = require('path');
 const repl = require('repl');
 const vm = require('vm');
 
-let preprocessor;
+let transformer;
 
 const evalCommand = (cmd, context, filename, callback, config) => {
   let result;
   try {
-    if (preprocessor) {
-      cmd = preprocessor.process(
+    if (transformer) {
+      cmd = transformer.process(
         cmd,
         jestConfig.replname || 'jest.js',
         jestConfig,
@@ -51,19 +51,19 @@ const isRecoverableError = error => {
 };
 
 if (jestConfig.transform) {
-  let preprocessorPath = null;
+  let transformerPath = null;
   for (let i = 0; i < jestConfig.transform.length; i++) {
     if (new RegExp(jestConfig.transform[i][0]).test('foobar.js')) {
-      preprocessorPath = jestConfig.transform[i][1];
+      transformerPath = jestConfig.transform[i][1];
       break;
     }
   }
-  if (preprocessorPath) {
+  if (transformerPath) {
     /* $FlowFixMe */
-    preprocessor = require(preprocessorPath);
-    if (typeof preprocessor.process !== 'function') {
+    transformer = require(transformerPath);
+    if (typeof transformer.process !== 'function') {
       throw new TypeError(
-        'Jest: a preprocessor must export a `process` function.',
+        'Jest: a transformer must export a `process` function.',
       );
     }
   }

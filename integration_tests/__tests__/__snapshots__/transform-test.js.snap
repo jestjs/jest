@@ -8,7 +8,7 @@ All files   |    83.33 |      100 |       50 |    83.33 |                |
 "
 `;
 
-exports[`custom preprocessor instruments files 1`] = `
+exports[`custom transformer instruments files 1`] = `
 "----------|----------|----------|----------|----------|----------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ----------|----------|----------|----------|----------|----------------|

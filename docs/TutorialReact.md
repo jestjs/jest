@@ -240,12 +240,12 @@ it('CheckboxWithLabel changes the text after click', () => {
 The code for this example is available at
 [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
 
-### Custom preprocessors
+### Custom transformers
 
-If you need more advanced functionality, you can also build your own preprocessor. Instead of using babel-jest, here is an example of using babel:
+If you need more advanced functionality, you can also build your own transformer. Instead of using babel-jest, here is an example of using babel:
 
 ```javascript
-// custom-preprocessor.js
+// custom-transformer.js
 'use strict';
 
 const babel = require('babel-core');
@@ -267,9 +267,9 @@ module.exports = {
 
 Don't forget to install the `babel-core` and `babel-preset-jest` packages for this example to work.
 
-To make this work with Jest you need to update your Jest configuration with this: `"transform": {"^.+\\.js$": "path/to/custom-preprocessor.js"}`.
+To make this work with Jest you need to update your Jest configuration with this: `"transform": {"^.+\\.js$": "path/to/custom-transformer.js"}`.
 
-If you'd like to build a preprocessor with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
+If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
 
 ```javascript
 const babelJest = require('babelJest');

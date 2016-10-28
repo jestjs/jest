@@ -11,24 +11,24 @@
 
 import type {Config, Path} from 'types/Config';
 
-export type PreprocessorOptions = {|
+export type TransformOptions = {|
   instrument: boolean,
 |};
 
-export type Preprocessor = {|
+export type Transformer = {|
   canInstrument?: boolean,
 
   getCacheKey: (
     fileData: string,
     filePath: Path,
     configStr: string,
-    options: PreprocessorOptions,
+    options: TransformOptions,
   ) => string,
 
   process: (
     sourceText: string,
     sourcePath: Path,
     config: Config,
-    options?: PreprocessorOptions,
+    options?: TransformOptions,
   ) => string,
 |};

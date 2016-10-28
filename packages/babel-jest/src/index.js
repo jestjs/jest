@@ -11,7 +11,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
-import type {PreprocessorOptions} from 'types/Preprocessor';
+import type {TransformOptions} from 'types/Transform';
 
 const babel = require('babel-core');
 const jestPreset = require('babel-preset-jest');
@@ -30,11 +30,11 @@ const createTransformer = (options: any) => {
       src: string,
       filename: Path,
       config: Config,
-      preprocessorOptions: PreprocessorOptions,
+      transformOptions: TransformOptions,
     ): string {
       let plugins = options.plugins || [];
 
-      if (preprocessorOptions && preprocessorOptions.instrument) {
+      if (transformOptions && transformOptions.instrument) {
         plugins = plugins.concat(require('babel-plugin-istanbul').default);
       }
 
