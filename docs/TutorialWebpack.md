@@ -40,7 +40,8 @@ module.exports = {
 
 For JavaScript files that are transformed by Babel, installing `babel-jest`
 will teach Jest to pick up your `.babelrc` config automatically. Non-Babel
-JavaScript transformations can be handled with the Jest `transform` option.
+JavaScript transformations can be handled with Jest's
+[`transform`](/jest/docs/configuration.html#transform-object-string-string) config option.
 
 Next let's configure Jest to gracefully handle asset files such as stylesheets and images.
 Usually these files aren't particularly useful in tests so we can safely mock them out.
@@ -51,7 +52,7 @@ However, if you are using CSS Modules then it's better to mock a proxy for your 
 {
   "jest": {
     "moduleNameMapper": {
-       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   }
@@ -86,8 +87,44 @@ make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 {
   "jest": {
     "moduleNameMapper": {
-       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "identity-obj-proxy"
+    }
+  }
+}
+```
+
+If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's
+[`transform`](/jest/docs/configuration.html#transform-object-string-string)
+config option to specify how assets are transformed. For example, a transformer that
+returns the basename of a file
+(such that `require('logo.jpg');` returns `'logo'`) can be written as:
+
+```js
+// fileTransformer.js
+const path = require('path');
+
+module.exports = {
+  process(src, filename, config, options) {
+    return `
+      module.exports = '${path.basename(filename)}';
+    `;
+  },
+  getCacheKey(fileData, filename, configString, options) {
+    return filename;
+  },
+};
+```
+
+```js
+// package.json (for custom transformers and CSS Modules)
+{
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "transform": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
     }
   }
 }
