@@ -682,56 +682,20 @@ Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016
 Using descriptive matchers will help your tests be readable and maintainable. Jest has a simple API for adding your own matchers. Here is an example of adding a matcher:
 
 ```js
+const five = require('five');
+
 expect.extend({
-  toContainLetter(received, expected) {
-    // some defensive programming
-    if (this.utils.getType(received) !== 'string') {
-      throw new Error(
-        this.utils.matcherHint('[.not].toContainLetter') + '\n\n' +
-        `Received value must be a string.\n` +
-        printWithType('Received', received, this.utils.printReceived),
-      );
-    }
-
-    // some defensive programming
-    if (this.utils.getType(expected) !== 'string' || expected.length > 1) {
-      throw new Error(
-        this.utils.matcherHint('[.not].toContainLetter') + '\n\n' +
-        `Expected value must be a single letter string.\n` +
-        printWithType('Expected', expected, this.utils.printExpected),
-      );
-    }
-
-    // assertion
-    const pass = received.split('').some(letter => letter === expected);
-
-
-    // message formatting
-    const message = pass
-      ? () => matcherHint('.not.toContainLetter') + '\n\n' +
-        `Expected value to not contain the letter:\n` +
-        `  ${printExpected(expected)}\n` +
-        `Received:\n` +
-        `  ${printReceived(received)}`
-      : () => matcherHint('.toContainLetter') + '\n\n' +
-        `Expected value to contain the letter:\n` +
-        `  ${printExpected(expected)}\n` +
-        `Received:\n` +
-        `  ${printReceived(received)}`
-
-    return { message, pass };
+  toBeNumber(received, actual) {
+    const pass = received === actual;
+    const message = `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
+    return {message, pass};
   }
 });
 
-describe('toContainLetter', () => {
-  it('throws when given the wrong arguments', () => {
-    expect(() => expect(1).toContainLetter('l')).toThrow();
-    expect(() => expect('word').toContainLetter()).toThrow();
-  });
-
-  it('matchers letters inside a word', () => {
-    expect('Jest').toContainLetter('J');
-    expect('Jest').not.toContainLetter('m');
+describe('toBe5', () => {
+  it('matchers the letter 5', () => {
+    expect(five()).toBeNumber(5);
+    expect('Jest').not.toBeNumber(5);
   });
 });
 ```
