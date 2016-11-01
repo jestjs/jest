@@ -36,7 +36,7 @@ class NodeEnvironment {
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
     installCommonGlobals(global, config.globals);
-    this.moduleMocker = new ModuleMocker();
+    this.moduleMocker = new ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
   }
 

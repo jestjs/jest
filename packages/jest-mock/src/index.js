@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Global} from 'types/Global';
+
 type Mock = any;
 export type MockFunctionMetadata = {
   ref?: any,
@@ -170,55 +172,18 @@ function getSlots(object?: Object): Array<string> {
   return Object.keys(slots);
 }
 
-function createMockFunction(
-  metadata: MockFunctionMetadata,
-  mockConstructor: () => any,
-): any {
-  let name = metadata.name;
-  // Special case functions named `mockConstructor` to guard for infinite loops.
-  if (!name || name === MOCK_CONSTRUCTOR_NAME) {
-    return mockConstructor;
-  }
-
-  // Preserve `name` property of mocked function.
-  const boundFunctionPrefix = 'bound ';
-  let bindCall = '';
-  // if-do-while for perf reasons. The common case is for the if to fail.
-  if (name && name.startsWith(boundFunctionPrefix)) {
-    do {
-      name = name.substring(boundFunctionPrefix.length);
-      // Call bind() just to alter the function name.
-      bindCall = '.bind(null)';
-    } while (name && name.startsWith(boundFunctionPrefix));
-  }
-
-  // It's a syntax error to define functions with a reserved keyword
-  // as name.
-  if (RESERVED_KEYWORDS[name]) {
-    name = '$' + name;
-  }
-
-  // It's also a syntax error to define a function with a reserved character
-  // as part of it's name.
-  if (/[\s-]/.test(name)) {
-    name = name.replace(/[\s-]/g, '$');
-  }
-
-  /* eslint-disable no-new-func */
-  return new Function(
-    MOCK_CONSTRUCTOR_NAME,
-    'return function ' + name + '() {' +
-      'return ' + MOCK_CONSTRUCTOR_NAME + '.apply(this,arguments);' +
-    '}' + bindCall,
-  )(mockConstructor);
-  /* eslint-enable no-new-func */
-}
-
 
 class ModuleMocker {
+  _environmentGlobal: Global;
   _mockRegistry: WeakMap<Function, MockFunctionState>;
 
-  constructor() {
+  /**
+   * @see README.md
+   * @param global Global object of the test environment, used to create
+   * mocks
+   */
+  constructor(global: Global) {
+    this._environmentGlobal = global;
     this._mockRegistry = new WeakMap();
   }
 
@@ -232,7 +197,7 @@ class ModuleMocker {
   _defaultMockState(): MockFunctionState {
     return {
       public: {
-        calls: [], 
+        calls: [],
         instances: [],
       },
       private: {
@@ -247,11 +212,11 @@ class ModuleMocker {
 
   _makeComponent(metadata: MockFunctionMetadata): Mock {
     if (metadata.type === 'object') {
-      return {};
+      return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
-      return [];
+      return new this._environmentGlobal.Array();
     } else if (metadata.type === 'regexp') {
-      return new RegExp('');
+      return new this._environmentGlobal.RegExp('');
     } else if (
       metadata.type === 'constant' ||
       metadata.type === 'collection' ||
@@ -290,7 +255,7 @@ class ModuleMocker {
 
           // Run the mock constructor implementation
           return (
-            mockState.private.mockImpl && 
+            mockState.private.mockImpl &&
             mockState.private.mockImpl.apply(this, arguments)
           );
         }
@@ -328,7 +293,7 @@ class ModuleMocker {
         return returnValue;
       };
 
-      f = createMockFunction(metadata, mockConstructor);
+      f = this._createMockFunction(metadata, mockConstructor);
       f._isMockFunction = true;
       f.getMockImplementation = () => this._ensureMock(f).private.mockImpl;
 
@@ -399,6 +364,52 @@ class ModuleMocker {
       const unknownType = metadata.type || 'undefined type';
       throw new Error('Unrecognized type ' + unknownType);
     }
+  }
+
+  _createMockFunction(
+    metadata: MockFunctionMetadata,
+    mockConstructor: () => any,
+  ): any {
+    let name = metadata.name;
+    // Special case functions named `mockConstructor` to guard for infinite
+    // loops.
+    if (!name || name === MOCK_CONSTRUCTOR_NAME) {
+      return mockConstructor;
+    }
+
+    // Preserve `name` property of mocked function.
+    const boundFunctionPrefix = 'bound ';
+    let bindCall = '';
+    // if-do-while for perf reasons. The common case is for the if to fail.
+    if (name && name.startsWith(boundFunctionPrefix)) {
+      do {
+        name = name.substring(boundFunctionPrefix.length);
+        // Call bind() just to alter the function name.
+        bindCall = '.bind(null)';
+      } while (name && name.startsWith(boundFunctionPrefix));
+    }
+
+    // It's a syntax error to define functions with a reserved keyword
+    // as name.
+    if (RESERVED_KEYWORDS[name]) {
+      name = '$' + name;
+    }
+
+    // It's also a syntax error to define a function with a reserved character
+    // as part of it's name.
+    if (/[\s-]/.test(name)) {
+      name = name.replace(/[\s-]/g, '$');
+    }
+
+    const body =
+      'return function ' + name + '() {' +
+        'return ' + MOCK_CONSTRUCTOR_NAME + '.apply(this,arguments);' +
+      '}' + bindCall;
+    const createConstructor = new this._environmentGlobal.Function(
+      MOCK_CONSTRUCTOR_NAME,
+      body,
+    );
+    return createConstructor(mockConstructor);
   }
 
   _generateMock(
