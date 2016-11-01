@@ -10,6 +10,7 @@
 'use strict';
 
 const skipOnWindows = require('skipOnWindows');
+const vm = require('vm');
 
 describe('FakeTimers', () => {
   let FakeTimers, moduleMocker;
@@ -17,7 +18,8 @@ describe('FakeTimers', () => {
   beforeEach(() => {
     FakeTimers = require('../FakeTimers');
     const ModuleMocker = require('jest-mock');
-    moduleMocker = new ModuleMocker();
+    const global = vm.runInNewContext('this');
+    moduleMocker = new ModuleMocker(global);
   });
 
   describe('construction', () => {

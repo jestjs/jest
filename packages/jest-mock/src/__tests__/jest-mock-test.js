@@ -9,12 +9,15 @@
  */
 'use strict';
 
+const vm = require('vm');
+
 describe('moduleMocker', () => {
   let moduleMocker;
 
   beforeEach(() => {
     const ModuleMocker = require('../');
-    moduleMocker = new ModuleMocker();
+    const global = vm.runInNewContext('this');
+    moduleMocker = new ModuleMocker(global);
   });
 
   describe('getMetadata', () => {

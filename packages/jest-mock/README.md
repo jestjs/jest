@@ -2,6 +2,11 @@
 
 ## API
 
+### `constructor(global)`
+
+Creates a new module mocker that generates mocks as if they were created in an
+environment with the given global object.
+
 ### `generateFromMetadata(metadata)`
 
 Generates a mock based on the given metadata (Metadata for the mock in
