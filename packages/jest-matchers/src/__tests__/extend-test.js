@@ -47,3 +47,14 @@ it('exposes matcherUtils in context', () => {
 
   jestExpect()._shouldNotError();
 });
+
+it('is ok if there is no message specified', () => {
+  jestExpect.extend({
+    toFailWithoutMessage(expected) {
+      return {pass: false};
+    },
+  });
+
+  expect(() => jestExpect(true).toFailWithoutMessage())
+    .toThrowErrorMatchingSnapshot();
+});
