@@ -5,8 +5,6 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  - choco install yarn
-  - refreshenv
   - node --version
   - yarn --version
   - yarn install
