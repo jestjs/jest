@@ -12,7 +12,7 @@
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
-const lineCommentRe = /\/\/*([^\r\n]*)/g;
+const lineCommentRe = /\/\/([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
 const multilineRe =
   /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *([^@\r\n\s][^@\r\n]+?) *\r?\n/g;

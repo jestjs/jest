@@ -123,4 +123,14 @@ describe('docblock', () => {
       'preserve-whitespace': '',
     });
   });
+
+  it('supports slashes in @providesModule directive', () => {
+    const code =
+      '/**' + os.EOL + '' +
+      ' * @providesModule apple/banana' + os.EOL + '' +
+      ' */';
+    expect(docblock.parse(code)).toEqual({
+      'providesModule': 'apple/banana',
+    });
+  });
 });
