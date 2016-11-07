@@ -83,7 +83,9 @@ const matchers: MatchersObject = {
         `Received:\n` +
         `  ${printReceived(received)}`
       : () => {
-        const diffString = diff(expected, received);
+        const diffString = diff(expected, received, {
+          expand: this.expand,
+        });
         return matcherHint('.toBe') + '\n\n' +
         `Expected value to be (using ===):\n` +
         `  ${printExpected(expected)}\n` +
@@ -105,7 +107,9 @@ const matchers: MatchersObject = {
         `Received:\n` +
         `  ${printReceived(received)}`
       : () => {
-        const diffString = diff(expected, received);
+        const diffString = diff(expected, received, {
+          expand: this.expand,
+        });
         return matcherHint('.toEqual') + '\n\n' +
         `Expected value to equal:\n` +
         `  ${printExpected(expected)}\n` +

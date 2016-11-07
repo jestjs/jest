@@ -9,16 +9,15 @@
  */
 'use strict';
 
-const {expect} = require('jest-matchers');
+import type {Config} from 'types/Config';
+import type {RawMatcherFn} from 'types/Matchers';
+
+const {expect, setState} = require('jest-matchers');
 
 const {
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 } = require('jest-snapshot');
-
-import type {
-  RawMatcherFn,
-} from 'types/Matchers';
 
 type JasmineMatcher = {
   (): JasmineMatcher,
@@ -27,8 +26,11 @@ type JasmineMatcher = {
 };
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
-module.exports = () => {
+module.exports = (config: Config) => {
   global.expect = expect;
+  setState({
+    expand: config.expand,
+  });
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
 
   const jasmine = global.jasmine;

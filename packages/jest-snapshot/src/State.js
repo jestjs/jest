@@ -26,12 +26,13 @@ const fs = require('fs');
 
 class SnapshotState {
   _counters: Map<string, number>;
-  _index: number;
-  _snapshotPath: Path;
   _dirty: boolean;
+  _index: number;
   _snapshotData: {[key: string]: string};
+  _snapshotPath: Path;
   _uncheckedKeys: Set<string>;
   added: number;
+  expand: boolean;
   failedTests: Set<string>;
   matched: number;
   skippedTests: Set<string>;
@@ -43,6 +44,7 @@ class SnapshotState {
     testPath: Path,
     update: boolean,
     snapshotPath?: string,
+    expand?: boolean,
   ) {
     this._dirty = false;
     this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
@@ -50,6 +52,7 @@ class SnapshotState {
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
+    this.expand = expand || false;
     this.added = 0;
     this.matched = 0;
     this.unmatched = 0;
