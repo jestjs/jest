@@ -19,7 +19,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const jasmineRequire = require('../vendor/jasmine-2.4.1.js');
+const jasmineRequire = require('../vendor/jasmine-2.5.2.js');
 const jasmine = jasmineRequire.core(jasmineRequire);
 const {formatResultsErrors, JasmineFormatter} = require('jest-util');
 
