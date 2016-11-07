@@ -21,7 +21,7 @@ const fs = require('graceful-fs');
 const path = require('path');
 const vm = require('vm');
 
-const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
+const JASMINE_PATH = require.resolve('../vendor/jasmine-2.5.2.js');
 const JASMINE_CHECK_PATH = require.resolve('./jasmine-check');
 
 const jasmineScript = new vm.Script(fs.readFileSync(JASMINE_PATH, 'utf8'), {
