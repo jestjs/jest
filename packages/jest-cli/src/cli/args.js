@@ -273,6 +273,12 @@ const options = {
       'adequately cleaned up.',
     type: 'boolean',
   },
+  expand: {
+    alias: 'e',
+    default: false,
+    description: 'Use this flag to show full diffs instead of a patch.',
+    type: 'boolean',
+  },
 };
 
 module.exports = {

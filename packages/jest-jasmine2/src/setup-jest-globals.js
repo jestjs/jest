@@ -72,8 +72,12 @@ module.exports = ({testPath, config}: Options) => {
   addPlugins(config.snapshotSerializers);
   setState({testPath});
   patchJasmine();
-  const snapshotState =
-    initializeSnapshotState(testPath, config.updateSnapshot);
+  const snapshotState = initializeSnapshotState(
+    testPath,
+    config.updateSnapshot,
+    '',
+    config.expand,
+  );
   setState({snapshotState});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

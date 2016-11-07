@@ -69,6 +69,10 @@ function setFromArgv(config, argv) {
     config.watch = true;
   }
 
+  if (argv.expand) {
+    config.expand = argv.expand;
+  }
+
   config.noStackTrace = argv.noStackTrace;
 
   config.testcheckOptions = {

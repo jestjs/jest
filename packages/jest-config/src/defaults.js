@@ -24,9 +24,9 @@ module.exports = ({
   bail: false,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
-  resetMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  expand: false,
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -44,6 +44,7 @@ module.exports = ({
   noStackTrace: false,
   notify: false,
   preset: null,
+  resetMocks: false,
   resetModules: false,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
