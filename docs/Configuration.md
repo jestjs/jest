@@ -209,7 +209,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 (default: `[]`)
 
 An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to
-additional locations to search when resolving modules.
+additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory. Example: `["<rootDir>/app/"]`.
 
 ### `moduleDirectories` [array<string>]
 (default: `['node_modules']`)
