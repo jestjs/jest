@@ -25,9 +25,9 @@ export type DefaultConfig = {|
   bail: boolean,
   browser: boolean,
   cacheDirectory: Path,
-  resetMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
+  expand: boolean,
   globals: ConfigGlobals,
   haste: HasteConfig,
   mocksPattern: string,
@@ -38,6 +38,7 @@ export type DefaultConfig = {|
   noStackTrace: boolean,
   notify: boolean,
   preset: ?string,
+  resetMocks: boolean,
   resetModules: boolean,
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
@@ -50,7 +51,6 @@ export type DefaultConfig = {|
   useStderr: boolean,
   verbose: ?boolean,
   watch: boolean,
-  expand: boolean,
 |};
 
 export type Config = DefaultConfig & {|

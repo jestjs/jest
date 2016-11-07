@@ -274,10 +274,9 @@ const options = {
     type: 'boolean',
   },
   expand: {
-    default: false,
     alias: 'e',
-    description:
-      'Use this flag to show full snapshot instead of a patch.',
+    default: false,
+    description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
 };

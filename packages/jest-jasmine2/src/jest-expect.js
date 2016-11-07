@@ -9,16 +9,14 @@
  */
 'use strict';
 
+import type {RawMatcherFn} from 'types/Matchers';
+
 const {expect} = require('jest-matchers');
 
 const {
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 } = require('jest-snapshot');
-
-import type {
-  RawMatcherFn,
-} from 'types/Matchers';
 
 type JasmineMatcher = {
   (): JasmineMatcher,

@@ -26,20 +26,19 @@ const fs = require('fs');
 
 class SnapshotState {
   _counters: Map<string, number>;
-  _index: number;
-  _snapshotPath: Path;
   _dirty: boolean;
+  _index: number;
   _snapshotData: {[key: string]: string};
+  _snapshotPath: Path;
   _uncheckedKeys: Set<string>;
-  expand: boolean;
   added: number;
+  expand: boolean;
   failedTests: Set<string>;
   matched: number;
   skippedTests: Set<string>;
   unmatched: number;
   update: boolean;
   updated: number;
-  static expand: boolean;
 
   constructor(
     testPath: Path,
