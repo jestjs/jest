@@ -9,8 +9,6 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
-
 jest.mock('child_process', () => ({
   // If this does not throw, we'll use the (mocked) watchman crawler
   execSync() {},
@@ -51,6 +49,22 @@ jest.mock('../crawlers/watchman', () =>
   }),
 );
 
+jest.mock('sane', () => {
+  const watcher = jest.fn(root => {
+    mockEmitters[root] = new EventEmitter();
+    mockEmitters[root].close = jest.fn(callback => callback());
+    setTimeout(() => mockEmitters[root].emit('ready'), 0);
+    return mockEmitters[root];
+  });
+  return {
+    WatchmanWatcher: watcher,
+    NodeWatcher: watcher,
+  };
+});
+
+const EventEmitter = require('events').EventEmitter;
+const skipOnWindows = require('skipOnWindows');
+
 const cacheFilePath = '/cache-file';
 let consoleWarn;
 let defaultConfig;
@@ -59,6 +73,7 @@ let H;
 let HasteMap;
 let mockChangedFiles;
 let mockClocks;
+let mockEmitters;
 let mockFs;
 let object;
 let readFileSync;
@@ -73,6 +88,7 @@ describe('HasteMap', () => {
 
     object = data => Object.assign(Object.create(null), data);
 
+    mockEmitters = Object.create(null);
     mockFs = object({
       '/fruits/pear.js': [
         '/**',
@@ -337,7 +353,7 @@ describe('HasteMap', () => {
     return new HasteMap(defaultConfig).build()
       .then(({__hasteMapForTest: data}) => {
         expect(data.map.Strawberry[H.GENERIC_PLATFORM][0])
-          .toEqual('/fruits/strawberry.js');
+          .toEqual('/fruits/raspberry.js');
 
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
       });
@@ -604,13 +620,13 @@ describe('HasteMap', () => {
     const watchman = require('../crawlers/watchman');
     const node = require('../crawlers/node');
 
-    watchman.mockImplementation(() => {
-      return Promise.reject(new Error('watchman error'));
-    });
+    watchman.mockImplementation(() =>
+      Promise.reject(new Error('watchman error')),
+    );
 
-    node.mockImplementation((roots, extensions, ignore, data) => {
-      return Promise.reject(new Error('node error'));
-    });
+    node.mockImplementation((roots, extensions, ignore, data) =>
+      Promise.reject(new Error('node error')),
+    );
 
     return new HasteMap(defaultConfig).build()
       .then(
@@ -623,6 +639,129 @@ describe('HasteMap', () => {
           );
         },
       );
+  });
+
+  it('watches for file system changes', done => {
+    const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
+      watch: true,
+    }));
+
+    const addErrorHandler = fn => {
+      return function() {
+        try {
+          fn.apply(null, arguments);
+        } catch (error) {
+          hasteMap.end();
+          done.fail(error);
+        }
+      };
+    };
+
+    hasteMap.build()
+      .then(({hasteFS: initialHasteFS, moduleMap: initialModuleMap}) => {
+        const filePath = '/fruits/banana.js';
+        expect(initialHasteFS.getModuleName(filePath)).toBeDefined();
+        expect(initialModuleMap.getModule('Banana')).toBe(filePath);
+
+        const next = () => {
+          if (!tests.length) {
+            hasteMap.end();
+            done();
+            return;
+          }
+
+          tests.shift()();
+        };
+
+        const statObject = {mtime: {getTime: () => 45}};
+        const tests = [
+          () => {
+            mockEmitters['/fruits'].emit(
+              'all',
+              'delete',
+              'banana.js',
+              '/fruits',
+              undefined,
+            );
+
+            hasteMap.once(
+              'change',
+              addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                expect(eventsQueue).toEqual([{
+                  type: 'delete',
+                  filePath,
+                  stat: undefined,
+                }]);
+                // Verify we didn't change the original map.
+                expect(initialHasteFS.getModuleName(filePath)).toBeDefined();
+                expect(initialModuleMap.getModule('Banana')).toBe(filePath);
+
+                expect(hasteFS.getModuleName(filePath)).toBeNull();
+                expect(moduleMap.getModule('Banana')).toBeNull();
+
+                next();
+              }),
+            );
+          },
+          () => {
+            mockFs['/fruits/tomato.js'] = [
+              '/**',
+              ' * @providesModule Tomato',
+              ' */',
+            ].join('\n');
+            mockFs['/fruits/pear.js'] = [
+              '/**',
+              ' * @providesModule Kiwi',
+              ' */',
+            ].join('\n');
+
+            mockEmitters['/fruits'].emit(
+              'all',
+              'add',
+              'tomato.js',
+              '/fruits',
+              statObject,
+            );
+            mockEmitters['/fruits'].emit(
+              'all',
+              'change',
+              'pear.js',
+              '/fruits',
+              statObject,
+            );
+
+            hasteMap.once(
+              'change',
+              addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                expect(eventsQueue).toEqual([
+                  {
+                    type: 'add',
+                    filePath: '/fruits/tomato.js',
+                    stat: statObject,
+                  },
+                  {
+                    type: 'change',
+                    filePath: '/fruits/pear.js',
+                    stat: statObject,
+                  },
+                ]);
+
+                expect(hasteFS.getModuleName('/fruits/tomato.js'))
+                  .toBeDefined();
+                expect(moduleMap.getModule('Tomato')).toBeDefined();
+                expect(moduleMap.getModule('Pear')).toBeNull();
+                expect(moduleMap.getModule('Kiwi')).toBe('/fruits/pear.js');
+                next();
+              }),
+            );
+          },
+        ];
+
+        next();
+      })
+      .catch(addErrorHandler(error => {
+        throw error;
+      }));
   });
 
 });

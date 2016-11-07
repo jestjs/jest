@@ -146,6 +146,11 @@ function normalize(config, argv) {
           config.moduleNameMapper,
         );
       }
+      // Don't show deprecation warnings if the setting comes from the preset.
+      if (preset.preprocessorIgnorePatterns) {
+        preset.transformIgnorePatterns = preset.preprocessorIgnorePatterns;
+        delete preset.preprocessorIgnorePatterns;
+      }
       config = Object.assign({}, preset, config);
     } else {
       throw new Error(
@@ -188,9 +193,9 @@ function normalize(config, argv) {
       'were replaced by `transform` and `transformIgnorePatterns` ' +
       'which support multiple preprocessors.\n\n' +
       '  Jest now treats your current settings as: \n\n' +
-      `    "transform": {".*": "${config.scriptPreprocessor}"}\n` +
+      `    "transform": {".*": "${config.scriptPreprocessor}"}` +
       (config.transformIgnorePatterns
-        ? `    "transformIgnorePatterns": "${config.transformIgnorePatterns}"`
+        ? `\n    "transformIgnorePatterns": "${config.transformIgnorePatterns}"`
         : ''
       ) +
       '\n\n  Please update your configuration.',
