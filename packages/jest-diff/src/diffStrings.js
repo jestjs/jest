@@ -17,8 +17,8 @@ const {NO_DIFF_MESSAGE} = require('./constants.js');
 const DIFF_CONTEXT = 5;
 
 export type DiffOptions = {|
-  aAnnotation: string,
-  bAnnotation: string,
+  aAnnotation?: string,
+  bAnnotation?: string,
   expand?: boolean,
 |};
 
@@ -57,8 +57,16 @@ const diffLines = (a: string, b: string): Diff => {
 const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
+  // Make sure the strings end with a newline.
+  if (!a.endsWith('\n')) {
+    a += '\n';
+  }
+  if (!b.endsWith('\n')) {
+    b += '\n';
+  }
+
   return {
-    diff: diff.structuredPatch('', '', a + '\n', b + '\n', '', '', options)
+    diff: diff.structuredPatch('', '', a, b, '', '', options)
       .hunks.map(hunk => {
         const diffMarkOld = `-${hunk.oldStart},${hunk.oldLines}`;
         const diffMarkNew = `+${hunk.newStart},${hunk.newLines}`;
