@@ -58,8 +58,8 @@ const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
   return {
-    diff: diff.structuredPatch('', '', a + '\n', b + '\n', '', '', options).hunks
-      .map(hunk => {
+    diff: diff.structuredPatch('', '', a + '\n', b + '\n', '', '', options)
+      .hunks.map(hunk => {
         const diffMarkOld = `-${hunk.oldStart},${hunk.oldLines}`;
         const diffMarkNew = `+${hunk.newStart},${hunk.newLines}`;
         const diffMark = chalk.yellow(`@@ ${diffMarkOld} ${diffMarkNew} @@\n`);
