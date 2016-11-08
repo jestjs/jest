@@ -2981,9 +2981,9 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
     while (size--) {
       key = aKeys[size];
+
       // Deep compare each member
-      // CUSTOM JEST CHANGE: don't check for keys here.
-      result = /*has(b, key) && */eq(a[key], b[key], aStack, bStack, customTesters);
+      result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters);
 
       if (!result) {
         return false;
@@ -2996,16 +2996,16 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return result;
 
     function keys(obj, isArray) {
-      var allKeys = Object.keys ? Object.keys(obj) :
-        (function(o) {
-            var keys = [];
-            for (var key in o) {
-                if (has(o, key)) {
-                    keys.push(key);
-                }
-            }
-            return keys;
-        })(obj);
+      // CUSTOM JEST CHANGE: don't consider undefined keys.
+      var allKeys = (function(o) {
+          var keys = [];
+          for (var key in o) {
+              if (has(o, key)) {
+                  keys.push(key);
+              }
+          }
+          return keys;
+      })(obj);
 
       if (!isArray) {
         return allKeys;
