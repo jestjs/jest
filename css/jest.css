@@ -110,6 +110,12 @@ a {
   text-decoration: none;
 }
 
+a.anchor {
+  display: block;
+  position: relative;
+  top: -62px;
+}
+
 a.hash-link {
   opacity: 0;
   transition: opacity 0.3s;
