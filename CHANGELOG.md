@@ -8,7 +8,7 @@
 * Updated to Jasmine 2.5.2.
 * Big diffs are now collapsed by default in snapshots and assertions. Added `--expand` (or `-e`) to show the full diff.
 * Replaced `scriptPreprocessor` with the new `transform` option.
-* Added `jest.resetMocks` which replaces `jest.clearAllMocks`.
+* Added `jest.resetAllMocks` which replaces `jest.clearAllMocks`.
 * Fixes for react-native preset.
 * Fixes for global built in objects in `jest-environment-node`.
 * Create mock objects in the vm context instead of the parent context.
