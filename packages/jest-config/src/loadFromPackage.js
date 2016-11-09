@@ -17,7 +17,7 @@ function loadFromPackage(filePath, argv) {
   return promisify(fs.access)(filePath, fs.R_OK).then(
     () => {
       const packageData = require(filePath);
-      const config = packageData.jest || {};
+      const config = packageData.jest || (packageData.config && packageData.config.jest) || {};
       const root = path.dirname(filePath);
       config.rootDir =
         config.rootDir ? path.resolve(root, config.rootDir) : root;
