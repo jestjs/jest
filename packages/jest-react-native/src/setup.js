@@ -20,19 +20,19 @@ jest
   .mock('ScrollView', () => mockReactNative.mockComponent('ScrollView'))
   .mock(
     'TouchableOpacity',
-    () => mockReactNative.mockComponent('TouchableOpacity')
+    () => mockReactNative.mockComponent('TouchableOpacity'),
   )
   .mock(
     'TouchableHighlight',
-    () => mockReactNative.mockComponent('TouchableHighlight')
+    () => mockReactNative.mockComponent('TouchableHighlight'),
   )
   .mock(
     'TouchableWithoutFeedback',
-    () => mockReactNative.mockComponent('TouchableWithoutFeedback')
+    () => mockReactNative.mockComponent('TouchableWithoutFeedback'),
   )
   .mock(
     'TouchableNativeFeedback',
-    () => mockReactNative.mockComponent('TouchableNativeFeedback')
+    () => mockReactNative.mockComponent('TouchableNativeFeedback'),
   )
   .mock(
     'ActivityIndicator',
