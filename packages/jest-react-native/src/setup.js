@@ -10,34 +10,16 @@
 
 const mockReactNative = require('./index');
 
+[
+  'Image', 'Text', 'TextInput', 'Modal', 'View', 'ScrollView',
+  'TouchableOpacity', 'TouchableHighlight', 'TouchableWithoutFeedback',
+  'TouchableNativeFeedback', 'ActivityIndicator',
+].forEach(item => {
+  jest.mock(item, () => mockReactNative.mockComponent(item));
+});
+
 jest
   .mock('ReactNativeDefaultInjection')
-  .mock('Image', () => mockReactNative.mockComponent('Image'))
-  .mock('Text', () => mockReactNative.mockComponent('Text'))
-  .mock('TextInput', () => mockReactNative.mockComponent('TextInput'))
-  .mock('Modal', () => mockReactNative.mockComponent('Modal'))
-  .mock('View', () => mockReactNative.mockComponent('View'))
-  .mock('ScrollView', () => mockReactNative.mockComponent('ScrollView'))
-  .mock(
-    'TouchableOpacity',
-    () => mockReactNative.mockComponent('TouchableOpacity'),
-  )
-  .mock(
-    'TouchableHighlight',
-    () => mockReactNative.mockComponent('TouchableHighlight'),
-  )
-  .mock(
-    'TouchableWithoutFeedback',
-    () => mockReactNative.mockComponent('TouchableWithoutFeedback'),
-  )
-  .mock(
-    'TouchableNativeFeedback',
-    () => mockReactNative.mockComponent('TouchableNativeFeedback'),
-  )
-  .mock(
-    'ActivityIndicator',
-    () => mockReactNative.mockComponent('ActivityIndicator'),
-  )
   .mock('ListView', () => {
     const RealListView = require.requireActual('ListView');
     const ListView = mockReactNative.mockComponent('ListView');
