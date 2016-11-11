@@ -78,11 +78,13 @@ const getType = (value: any): ValueType => {
 const stringify = (object: any): string => {
   try {
     return prettyFormat(object, {
+      maxDepth: 10,
       min: true,
     });
   } catch (e) {
     return prettyFormat(object, {
       callToJSON: false,
+      maxDepth: 10,
       min: true,
     });
   }
