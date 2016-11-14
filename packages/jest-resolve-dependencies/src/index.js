@@ -103,8 +103,8 @@ class DependencyResolver {
     }
 
     const modules = this._hasteFS.getAllFiles().map(file => ({
-      file,
       dependencies: this.resolve(file, options),
+      file,
     }));
     return Array.from(collectModules(relatedPaths, modules, changed));
   }

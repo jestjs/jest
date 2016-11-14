@@ -69,7 +69,7 @@ const relativePath = (config: Config, testPath: Path) => {
   testPath = path.relative(config.rootDir, testPath);
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
-  return {dirname, basename};
+  return {basename, dirname};
 };
 
 const pluralize = (word: string, count: number) =>

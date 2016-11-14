@@ -52,8 +52,8 @@ describe('JasmineFormatter', () => {
       const map = new Map([['foo', {
         bar: 'baz',
         set: new Set(['a', 'b', {
-          foo: 'bar',
           baz: 'foo',
+          foo: 'bar',
         }]),
       }]]);
       const printed = formatter.prettyPrint(map);

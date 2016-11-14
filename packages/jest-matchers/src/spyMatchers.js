@@ -27,8 +27,8 @@ const {
 } = require('jest-matcher-utils');
 
 const RECEIVED_NAME = {
-  spy: 'spy',
   'mock function': 'jest.fn()',
+  spy: 'spy',
 };
 
 const equals = global.jasmine.matchersUtil.equals;
@@ -110,14 +110,10 @@ const createLastCalledWithMatcher = matcherName =>
   };
 
 const spyMatchers: MatchersObject = {
-  toBeCalled: createToBeCalledMatcher('.toBeCalled'),
-  toHaveBeenCalled: createToBeCalledMatcher('.toHaveBeenCalled'),
-  toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
-  toHaveBeenCalledWith: createToBeCalledWithMatcher('.toHaveBeenCalledWith'),
-  toHaveBeenLastCalledWith:
-    createLastCalledWithMatcher('.toHaveBeenLastCalledWith'),
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
-
+  toBeCalled: createToBeCalledMatcher('.toBeCalled'),
+  toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
+  toHaveBeenCalled: createToBeCalledMatcher('.toHaveBeenCalled'),
   toHaveBeenCalledTimes(received: any, expected: number) {
     const matcherName = '.toHaveBeenCalledTimes';
     ensureExpectedIsNumber(expected, matcherName);
@@ -148,6 +144,9 @@ const spyMatchers: MatchersObject = {
 
     return {message, pass};
   },
+  toHaveBeenCalledWith: createToBeCalledWithMatcher('.toHaveBeenCalledWith'),
+  toHaveBeenLastCalledWith:
+    createLastCalledWithMatcher('.toHaveBeenLastCalledWith'),
 };
 
 const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';

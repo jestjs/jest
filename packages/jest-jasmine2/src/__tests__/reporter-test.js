@@ -25,9 +25,9 @@ describe('Jasmine2Reporter', () => {
 
     it('reports nested suites', () => {
       const makeSpec = name => ({
-        fullName: name,
         description: 'description',
         failedExpectations: [],
+        fullName: name,
       });
       reporter.suiteStarted({description: 'parent'});
       reporter.suiteStarted({description: 'child'});
@@ -53,7 +53,6 @@ describe('Jasmine2Reporter', () => {
     function getFailedResult(actualResult, expectedResult) {
       const desc = 'comparing ' + actualResult + ' to ' + expectedResult;
       return {
-        fullName: desc,
         description: desc,
         failedExpectations: [
           {
@@ -63,6 +62,7 @@ describe('Jasmine2Reporter', () => {
             passed: false,
           },
         ],
+        fullName: desc,
       };
     }
 

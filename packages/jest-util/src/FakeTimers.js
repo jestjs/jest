@@ -378,8 +378,8 @@ class FakeTimers {
     const uuid = String(this._uuidCounter++);
 
     this._ticks.push({
-      uuid,
       callback: () => callback.apply(null, args),
+      uuid,
     });
 
     const cancelledTicks = this._cancelledTicks;
@@ -406,8 +406,8 @@ class FakeTimers {
     const uuid = this._uuidCounter++;
 
     this._immediates.push({
-      uuid: String(uuid),
       callback: () => callback.apply(null, args),
+      uuid: String(uuid),
     });
 
     const cancelledImmediates = this._cancelledImmediates;
@@ -439,10 +439,10 @@ class FakeTimers {
     const uuid = this._uuidCounter++;
 
     this._timers[String(uuid)] = {
-      type: 'interval',
       callback: () => callback.apply(null, args),
       expiry: this._now + intervalDelay,
       interval: intervalDelay,
+      type: 'interval',
     };
 
     return uuid;
@@ -465,10 +465,10 @@ class FakeTimers {
     const uuid = this._uuidCounter++;
 
     this._timers[String(uuid)] = {
-      type: 'timeout',
       callback: () => callback.apply(null, args),
       expiry: this._now + delay,
       interval: null,
+      type: 'timeout',
     };
 
     return uuid;

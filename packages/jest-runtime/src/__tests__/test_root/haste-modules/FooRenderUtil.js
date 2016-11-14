@@ -11,11 +11,11 @@
 'use strict';
 
 module.exports = {
-  getHeaderHeight() {
+  getBodyHeight() {
     return 5;
   },
 
-  getBodyHeight() {
+  getHeaderHeight() {
     return 5;
   },
 };

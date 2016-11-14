@@ -160,10 +160,10 @@ class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          count,
-          pass: false,
-          expected,
           actual: receivedUnescaped,
+          count,
+          expected,
+          pass: false,
         };
       } else {
         this.matched++;

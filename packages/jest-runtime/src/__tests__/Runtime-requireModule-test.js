@@ -220,8 +220,8 @@ describe('Runtime requireModule', () => {
       }),
       createRuntime(__filename, {
         haste: {
-          platforms: ['ios', 'android'],
           defaultPlatform: 'ios',
+          platforms: ['ios', 'android'],
         },
       }).then(runtime => {
         const exports = runtime.requireModule(
@@ -245,8 +245,8 @@ describe('Runtime requireModule', () => {
       }),
       createRuntime(__filename, {
         haste: {
-          platforms: ['ios', 'android'],
           defaultPlatform: 'android',
+          platforms: ['ios', 'android'],
         },
       }).then(runtime => {
         const exports = runtime.requireModule(
@@ -258,8 +258,8 @@ describe('Runtime requireModule', () => {
       }),
       createRuntime(__filename, {
         haste: {
-          platforms: ['ios', 'android', 'native', 'windows'],
           defaultPlatform: 'windows',
+          platforms: ['ios', 'android', 'native', 'windows'],
         },
       }).then(runtime => {
         const exports = runtime.requireModule(

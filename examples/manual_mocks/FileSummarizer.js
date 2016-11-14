@@ -5,10 +5,7 @@
 const fs = require('fs');
 
 function summarizeFilesInDirectorySync(directory) {
-  return fs.readdirSync(directory).map(fileName => ({
-    fileName,
-    directory,
-  }));
+  return fs.readdirSync(directory).map(fileName => ({directory, fileName}));
 }
 
 exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;

@@ -33,7 +33,7 @@ class VerboseReporter extends DefaultReporter {
       for (const title of testResult.ancestorTitles) {
         let matchingSuite = targetSuite.suites.find(s => s.title === title);
         if (!matchingSuite) {
-          matchingSuite = {title, suites: [], tests: []};
+          matchingSuite = {suites: [], tests: [], title};
           targetSuite.suites.push(matchingSuite);
         }
         targetSuite = matchingSuite;

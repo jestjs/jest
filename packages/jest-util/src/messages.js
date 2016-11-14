@@ -156,7 +156,7 @@ const formatResultsErrors = (
 ): ?string => {
   const failedResults = testResults.reduce(
     (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({result, content}));
+      result.failureMessages.forEach(content => errors.push({content, result}));
       return errors;
     },
     [],

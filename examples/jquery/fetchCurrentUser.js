@@ -6,16 +6,16 @@ const $ = require('jquery');
 
 function parseJSON(user) {
   return {
-    loggedIn: true,
     fullName: user.firstName + ' ' + user.lastName,
+    loggedIn: true,
   };
 }
 
 function fetchCurrentUser(callback) {
   return $.ajax({
+    success: user => callback(parseJSON(user)),
     type: 'GET',
     url: 'http://example.com/currentUser',
-    success: user => callback(parseJSON(user)),
   });
 }
 

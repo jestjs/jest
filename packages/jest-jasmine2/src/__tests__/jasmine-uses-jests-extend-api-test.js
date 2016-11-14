@@ -30,8 +30,8 @@ describe('addMatcher Adapter', () => {
     expect.extend({
       __specialExtend() {
         return {
-          pass: true,
           message: '',
+          pass: true,
         };
       },
     });

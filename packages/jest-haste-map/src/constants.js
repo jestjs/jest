@@ -7,6 +7,7 @@
  *
  * @flow
  */
+/* eslint-disable sort-keys */
 
 /*
  * This file exports a set of constants that are used for Jest's haste map

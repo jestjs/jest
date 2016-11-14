@@ -21,7 +21,7 @@ module.exports = function createRuntime(filename, config) {
 
   const environment = new NodeEnvironment(config);
   environment.global.console = console;
-  return Runtime.createHasteMap(config, {resetCache: false, maxWorkers: 1})
+  return Runtime.createHasteMap(config, {maxWorkers: 1, resetCache: false})
     .build()
     .then(hasteMap => {
       const runtime = new Runtime(
