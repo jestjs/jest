@@ -96,11 +96,12 @@ class Resolver {
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
-    let exts = ['.' + NATIVE_PLATFORM + '.js'].concat(
-      this._options.extensions || [],
-    );
+    const extensions = this._options.extensions;
+    if (this._supportsNativePlatform()) {
+      extensions.unshift('.' + NATIVE_PLATFORM + '.js');
+    }
     if (defaultPlatform) {
-      exts = ['.' + defaultPlatform + '.js'].concat(exts);
+      extensions.unshift('.' + defaultPlatform + '.js');
     }
 
     // 0. If we have already resolved this module for this directory name,
@@ -121,7 +122,7 @@ class Resolver {
       module = Resolver.findNodeModule(moduleName, {
         basedir: dirname,
         browser: this._options.browser,
-        extensions: exts,
+        extensions,
         moduleDirectory,
         paths,
       });
