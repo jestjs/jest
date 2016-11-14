@@ -22,8 +22,8 @@ it('displays a user after a click', () => {
   // its callback with some data
   fetchCurrentUser.mockImplementation(cb =>  {
     cb({
-      loggedIn: true,
       fullName: 'Johnny Cash',
+      loggedIn: true,
     });
   });
 

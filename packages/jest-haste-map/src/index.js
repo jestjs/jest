@@ -615,12 +615,12 @@ class HasteMap extends EventEmitter {
           },
         );
         if (promise) {
-          promise.then(() => eventsQueue.push({type, filePath, stat}));
+          promise.then(() => eventsQueue.push({filePath, stat, type}));
         }
         // Cleanup
         this._workerPromise = null;
       } else {
-        eventsQueue.push({type, filePath, stat});
+        eventsQueue.push({filePath, stat, type});
       }
     };
 

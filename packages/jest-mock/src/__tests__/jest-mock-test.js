@@ -94,11 +94,11 @@ describe('moduleMocker', () => {
 
     it('does not mock non-enumerable getters', () => {
       const foo = Object.defineProperties({}, {
-        nonEnumMethod: {
-          value: () => {},
-        },
         nonEnumGetter: {
           get: () => { throw new Error(); },
+        },
+        nonEnumMethod: {
+          value: () => {},
         },
       });
       const mock = moduleMocker.generateFromMetadata(

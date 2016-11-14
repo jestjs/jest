@@ -127,8 +127,8 @@ describe('transform', () => {
       cache: true,
       cacheDirectory: '/cache/',
       name: 'test',
-      transformIgnorePatterns: ['/node_modules/'],
       rootDir: '/',
+      transformIgnorePatterns: ['/node_modules/'],
     };
 
     transform = require('../transform');

@@ -53,7 +53,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
         result.numPassingTests +
         result.numFailingTests +
         result.numPendingTests;
-      result.perfStats = {start, end: Date.now()};
+      result.perfStats = {end: Date.now(), start};
       result.testFilePath = path;
       result.coverage = runtime.getAllCoverageInfo();
       result.console = testConsole.getBuffer();

@@ -36,8 +36,8 @@ module.exports = {
 
 it('generates an empty coverage object for a file without running it', () => {
   expect(generateEmptyCoverage(src, '/sum.js', {
-    rootDir: os.tmpdir(),
     baseCacheDir: os.tmpdir(),
     cacheDirectory: os.tmpdir(),
+    rootDir: os.tmpdir(),
   })).toMatchSnapshot();
 });

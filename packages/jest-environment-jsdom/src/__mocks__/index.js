@@ -13,9 +13,9 @@ const JSDOMEnvironment = jest.genMockFromModule('../index');
 
 JSDOMEnvironment.mockImplementation(function(config) {
   this.global = {
+    JSON,
     console: {},
     mockClearTimers: jest.genMockFn(),
-    JSON,
   };
 
   const globalValues = Object.assign({}, config.globals);
@@ -27,8 +27,8 @@ JSDOMEnvironment.mockImplementation(function(config) {
 JSDOMEnvironment.prototype.runSourceText.mockImplementation(
   function(sourceText, filename) {
     return vm.runInNewContext(sourceText, this.global, {
-      filename,
       displayErrors: false,
+      filename,
     });
   },
 );

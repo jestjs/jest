@@ -103,7 +103,7 @@ const extractSummary = stdout => {
     // remove all timestamps
     .replace(/\s*\(.*ms\)/gm, '');
 
-  return {summary, rest};
+  return {rest, summary};
 };
 
 module.exports = {

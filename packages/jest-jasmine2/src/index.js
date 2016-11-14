@@ -92,7 +92,7 @@ function jasmine2(
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
-  )({testPath, config});
+  )({config, testPath});
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);

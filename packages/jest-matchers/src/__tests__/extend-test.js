@@ -41,7 +41,7 @@ it('exposes matcherUtils in context', () => {
         ? `expected this.utils to be defined in an extend call`
         : `expected this.utils not to be defined in an extend call`;
 
-      return {pass, message};
+      return {message, pass};
     },
   });
 

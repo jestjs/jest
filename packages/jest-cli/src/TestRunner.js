@@ -324,8 +324,8 @@ class TestRunner {
     const farm = workerFarm({
       autoStart: true,
       maxConcurrentCallsPerWorker: 1,
-      maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._options.maxWorkers,
+      maxRetries: 2, // Allow for a couple of transient errors.
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
     // Send test suites to workers continuously instead of all at once to track
@@ -335,7 +335,7 @@ class TestRunner {
         return Promise.reject();
       }
       this._dispatcher.onTestStart(config, path);
-      return promisify(farm)({path, config});
+      return promisify(farm)({config, path});
     });
 
     const onError = (err, path) => {
@@ -358,7 +358,7 @@ class TestRunner {
     });
 
     const runAllTests = Promise.all(testPaths.map(path => {
-      return runTestInWorker({path, config})
+      return runTestInWorker({config, path})
         .then(testResult => onResult(path, testResult))
         .catch(error => onError(error, path));
     }));
@@ -403,15 +403,15 @@ class TestRunner {
 
 const createAggregatedResults = (numTotalTestSuites: number) => {
   return {
-    numFailedTests: 0,
     numFailedTestSuites: 0,
-    numPassedTests: 0,
+    numFailedTests: 0,
     numPassedTestSuites: 0,
-    numPendingTests: 0,
+    numPassedTests: 0,
     numPendingTestSuites: 0,
+    numPendingTests: 0,
     numRuntimeErrorTestSuites: 0,
-    numTotalTests: 0,
     numTotalTestSuites,
+    numTotalTests: 0,
     snapshot: {
       added: 0,
       didUpdate: false, // is set only after the full run
@@ -522,7 +522,7 @@ class ReporterDispatcher {
   _runnerContext: RunnerContext;
 
   constructor(hasteFS: HasteFS, getTestSummary: () => string) {
-    this._runnerContext = {hasteFS, getTestSummary};
+    this._runnerContext = {getTestSummary, hasteFS};
     this._reporters = [];
   }
 

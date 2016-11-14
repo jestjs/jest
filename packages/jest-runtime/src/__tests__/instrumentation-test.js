@@ -23,8 +23,8 @@ it('instruments files', () => {
   const vm = require('vm');
   const transform = require('../transform');
   const config = {
-    cacheDirectory: os.tmpdir(),
     cache: false,
+    cacheDirectory: os.tmpdir(),
     collectCoverage: true,
     rootDir: '/',
   };

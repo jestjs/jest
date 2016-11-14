@@ -35,18 +35,18 @@ describe('onRunComplete', () => {
 
   beforeEach(() => {
     mockAggResults = {
-      success: true,
-      startTime: 0,
-      numTotalTestSuites: 1,
-      numPassedTestSuites: 1,
       numFailedTestSuites: 0,
-      numRuntimeErrorTestSuites: 0,
-      numTotalTests: 1,
+      numFailedTests: 0,
+      numPassedTestSuites: 1,
       numPassedTests: 1,
       numPendingTests: 0,
-      numFailedTests: 0,
-      testResults: [],
+      numRuntimeErrorTestSuites: 0,
+      numTotalTestSuites: 1,
+      numTotalTests: 1,
+      startTime: 0,
+      success: true,
       testFilePath: 'foo',
+      testResults: [],
     };
 
     libCoverage.createCoverageMap = jest.fn(() => {
@@ -55,10 +55,10 @@ describe('onRunComplete', () => {
           return {
             toJSON() {
               return {
-                branches: {total: 0, covered: 0, skipped: 0, pct: 0},
-                functions: {total: 0, covered: 0, skipped: 0, pct: 0},
-                lines: {total: 0, covered: 0, skipped: 0, pct: 0},
-                statements: {total: 0, covered: 0, skipped: 0, pct: 50},
+                branches: {covered: 0, pct: 0, skipped: 0, total: 0},
+                functions: {covered: 0, pct: 0, skipped: 0, total: 0},
+                lines: {covered: 0, pct: 0, skipped: 0, total: 0},
+                statements: {covered: 0, pct: 50, skipped: 0, total: 0},
               };
             },
           };

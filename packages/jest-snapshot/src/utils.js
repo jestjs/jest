@@ -93,13 +93,13 @@ const saveSnapshotFile = (
 
 module.exports = {
   SNAPSHOT_EXTENSION,
-  getSnapshotPath,
-  getSnapshotData,
-  testNameToKey,
-  keyToTestName,
-  serialize,
   ensureDirectoryExists,
-  saveSnapshotFile,
   escape,
+  getSnapshotData,
+  getSnapshotPath,
+  keyToTestName,
+  saveSnapshotFile,
+  serialize,
+  testNameToKey,
   unescape,
 };

@@ -55,6 +55,21 @@ const createTransformer = (options: any) => {
 
   return {
     canInstrument: true,
+    getCacheKey(
+      fileData: string,
+      filename: Path,
+      configString: string,
+      {instrument, watch}: TransformOptions,
+    ): string {
+      return crypto.createHash('md5')
+        .update(fileData)
+        .update(configString)
+        // Don't use the in-memory cache in watch mode because the .babelrc
+        // file may be modified.
+        .update(getBabelRC(filename, {useCache: !watch}))
+        .update(instrument ? 'instrument' : '')
+        .digest('hex');
+    },
     process(
       src: string,
       filename: Path,
@@ -74,21 +89,6 @@ const createTransformer = (options: any) => {
         ).code;
       }
       return src;
-    },
-    getCacheKey(
-      fileData: string,
-      filename: Path,
-      configString: string,
-      {instrument, watch}: TransformOptions,
-    ): string {
-      return crypto.createHash('md5')
-        .update(fileData)
-        .update(configString)
-        // Don't use the in-memory cache in watch mode because the .babelrc
-        // file may be modified.
-        .update(getBabelRC(filename, {useCache: !watch}))
-        .update(instrument ? 'instrument' : '')
-        .digest('hex');
     },
   };
 };

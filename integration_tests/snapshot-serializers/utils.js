@@ -10,7 +10,7 @@
 
 exports.createPlugin = prop => {
   return {
-    test: val => val && val.hasOwnProperty(prop),
     print: (val, serialize) => `${prop}: ${serialize(val[prop])}`,
+    test: val => val && val.hasOwnProperty(prop),
   };
 };

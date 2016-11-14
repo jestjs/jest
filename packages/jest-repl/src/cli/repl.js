@@ -70,9 +70,9 @@ if (jestConfig.transform) {
 }
 
 const replInstance = repl.start({
+  eval: evalCommand,
   prompt: '\u203A ',
   useGlobal: true,
-  eval: evalCommand,
 });
 
 replInstance.context.require = moduleName => {

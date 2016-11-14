@@ -8,8 +8,8 @@ module.exports = {
       return tsc.transpile(
         src,
         {
-          module: tsc.ModuleKind.CommonJS,
           jsx: tsc.JsxEmit.React,
+          module: tsc.ModuleKind.CommonJS,
         },
         path,
         []

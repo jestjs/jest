@@ -97,8 +97,8 @@ describe('normalize', () => {
       const consoleWarn = console.warn;
       console.warn = jest.fn();
       const config = normalize({
-        rootDir: '/root/path/foo',
         automock: false,
+        rootDir: '/root/path/foo',
       });
 
       expect(config.automock).toBe(false);
@@ -110,8 +110,8 @@ describe('normalize', () => {
   describe('browser', () => {
     it('falsy browser is not overwritten', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         browser: true,
+        rootDir: '/root/path/foo',
       });
 
       expect(config.browser).toBe(true);
@@ -121,11 +121,11 @@ describe('normalize', () => {
   describe('collectCoverageOnlyFrom', () => {
     it('normalizes all paths relative to rootDir', () => {
       const config = normalize({
-        rootDir: '/root/path/foo/',
         collectCoverageOnlyFrom: {
           'bar/baz': true,
           'qux/quux/': true,
         },
+        rootDir: '/root/path/foo/',
       }, '/root/path');
 
       const expected = {};
@@ -137,11 +137,11 @@ describe('normalize', () => {
 
     it('does not change absolute paths', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '/an/abs/path': true,
           '/another/abs/path': true,
         },
+        rootDir: '/root/path/foo',
       });
 
       const expected = {};
@@ -153,10 +153,10 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '<rootDir>/bar/baz': true,
         },
+        rootDir: '/root/path/foo',
       });
 
       const expected = {};
@@ -169,11 +169,11 @@ describe('normalize', () => {
   function testPathArray(key) {
     it('normalizes all paths relative to rootDir', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         [key]: [
           'bar/baz',
           'qux/quux/',
         ],
+        rootDir: '/root/path/foo',
       }, '/root/path');
 
       expect(config[key]).toEqual([
@@ -183,11 +183,11 @@ describe('normalize', () => {
 
     it('does not change absolute paths', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         [key]: [
           '/an/abs/path',
           '/another/abs/path',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config[key]).toEqual([
@@ -197,10 +197,10 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         [key]: [
           '<rootDir>/bar/baz',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config[key]).toEqual([expectedPathFooBar]);
@@ -220,14 +220,14 @@ describe('normalize', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
         transform: {
-          [DEFAULT_JS_PATTERN]: 'bar/baz',
           [DEFAULT_CSS_PATTERN]: 'qux/quux',
+          [DEFAULT_JS_PATTERN]: 'bar/baz',
         },
       }, '/root/path');
 
       expect(config.transform).toEqual([
-        [DEFAULT_JS_PATTERN, expectedPathFooBar],
         [DEFAULT_CSS_PATTERN, expectedPathFooQux],
+        [DEFAULT_JS_PATTERN, expectedPathFooBar],
       ]);
     });
 
@@ -235,14 +235,14 @@ describe('normalize', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
         transform: {
-          [DEFAULT_JS_PATTERN]: '/an/abs/path',
           [DEFAULT_CSS_PATTERN]: '/an/abs/path',
+          [DEFAULT_JS_PATTERN]: '/an/abs/path',
         },
       });
 
       expect(config.transform).toEqual([
-        [DEFAULT_JS_PATTERN, expectedPathAbs],
         [DEFAULT_CSS_PATTERN, expectedPathAbs],
+        [DEFAULT_JS_PATTERN, expectedPathAbs],
       ]);
     });
 
@@ -250,14 +250,14 @@ describe('normalize', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
         transform: {
-          [DEFAULT_JS_PATTERN]: '<rootDir>/bar/baz',
           [DEFAULT_CSS_PATTERN]: '<rootDir>/qux/quux',
+          [DEFAULT_JS_PATTERN]: '<rootDir>/bar/baz',
         },
       });
 
       expect(config.transform).toEqual([
-        [DEFAULT_JS_PATTERN, expectedPathFooBar],
         [DEFAULT_CSS_PATTERN, expectedPathFooQux],
+        [DEFAULT_JS_PATTERN, expectedPathFooBar],
       ]);
     });
   });
@@ -325,11 +325,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         coveragePathIgnorePatterns: [
           'bar/baz',
           'qux/quux',
         ],
+        rootDir: '/root/path/foo',
       }, '/root/path');
 
       expect(config.coveragePathIgnorePatterns).toEqual([
@@ -342,11 +342,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         coveragePathIgnorePatterns: [
           'bar/baz',
           'qux/quux/',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.coveragePathIgnorePatterns).toEqual([
@@ -357,11 +357,11 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         coveragePathIgnorePatterns: [
           'hasNoToken',
           '<rootDir>/hasAToken',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.coveragePathIgnorePatterns).toEqual([
@@ -427,11 +427,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
           'qux/quux',
         ],
+        rootDir: '/root/path/foo',
       }, '/root/path');
 
       expect(config.modulePathIgnorePatterns).toEqual([
@@ -444,11 +444,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
           'qux/quux/',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.modulePathIgnorePatterns).toEqual([
@@ -459,11 +459,11 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'hasNoToken',
           '<rootDir>/hasAToken',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.modulePathIgnorePatterns).toEqual([
@@ -629,9 +629,9 @@ describe('normalize', () => {
 
     it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {
       const config = normalize({
+        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
         rootDir: '/root/path/foo',
         scriptPreprocessor: 'bar/baz',
-        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
       });
 
       expect(config.transform).toEqual([['.*', expectedPathFooBar]]);
