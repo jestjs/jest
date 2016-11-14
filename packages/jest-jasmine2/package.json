@@ -9,7 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "graceful-fs": "^4.1.6",
-    "jasmine-check": "^0.1.4",
     "jest-matchers": "^17.0.1",
     "jest-snapshot": "^17.0.1",
     "jest-util": "^17.0.0"
