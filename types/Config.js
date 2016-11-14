@@ -73,7 +73,6 @@ export type Config = DefaultConfig & {|
   setupFiles: Array<Path>,
   setupTestFrameworkScriptFile: Path,
   silent: boolean,
-  testcheckOptions: {},
   testNamePattern: string,
   transform: Array<[string, Path]>,
   unmockedModulePathPatterns: Array<string>,
