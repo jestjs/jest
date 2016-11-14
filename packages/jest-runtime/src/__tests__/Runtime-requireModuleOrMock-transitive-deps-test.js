@@ -12,10 +12,10 @@
 let createRuntime;
 
 const moduleNameMapper = {
-  '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
   '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
-  'mappedToPath': '<rootDir>/GlobalImageStub.js',
+  '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
   'mappedToDirectory': '<rootDir>/MyDirectoryModule',
+  'mappedToPath': '<rootDir>/GlobalImageStub.js',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
 

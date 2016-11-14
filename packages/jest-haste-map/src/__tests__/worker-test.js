@@ -26,18 +26,18 @@ describe('worker', () => {
 
   beforeEach(() => {
     mockFs = {
+      '/fruits/banana.js': [
+        '/**',
+        ' * @providesModule Banana',
+        ' */',
+        'const Strawberry = require("Strawberry");',
+      ].join('\n'),
       '/fruits/pear.js': [
         '/**',
         ' * @providesModule Pear',
         ' */',
         'const Banana = require("Banana");',
         'const Strawberry = require(`Strawberry`);',
-      ].join('\n'),
-      '/fruits/banana.js': [
-        '/**',
-        ' * @providesModule Banana',
-        ' */',
-        'const Strawberry = require("Strawberry");',
       ].join('\n'),
       '/fruits/strawberry.js': [
         '/**',
@@ -83,9 +83,9 @@ describe('worker', () => {
 
     expect(workerError).toBe(null);
     expect(moduleData).toEqual({
+      dependencies: ['Banana', 'Strawberry'],
       id: 'Pear',
       module: ['/fruits/pear.js', H.MODULE],
-      dependencies: ['Banana', 'Strawberry'],
     });
 
     callback = createCallback();
@@ -95,9 +95,9 @@ describe('worker', () => {
 
     expect(workerError).toBe(null);
     expect(moduleData).toEqual({
+      dependencies: [],
       id: 'Strawberry',
       module: ['/fruits/strawberry.js', H.MODULE],
-      dependencies: [],
     });
   });
 
@@ -109,9 +109,9 @@ describe('worker', () => {
 
     expect(workerError).toBe(null);
     expect(moduleData).toEqual({
+      dependencies: undefined,
       id: 'haste-package',
       module: ['/package.json', H.PACKAGE],
-      dependencies: undefined,
     });
   });
 

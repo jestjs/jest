@@ -33,8 +33,8 @@ class JasmineFormatter {
     /* $FlowFixMe */
     this._diffableMatchers = Object.assign(Object.create(null), {
       toBe: true,
-      toNotBe: true,
       toEqual: true,
+      toNotBe: true,
       toNotEqual: true,
     });
   }

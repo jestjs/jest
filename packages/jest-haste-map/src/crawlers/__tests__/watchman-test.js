@@ -39,38 +39,38 @@ describe('watchman watch', () => {
 
     mockResponse = {
       '/fruits': {
-        version: '4.5.0',
         clock: 'c:fake-clock:1',
-        is_fresh_instance: true,
         files: [
           {
-            name: 'strawberry.js',
             exists: true,
             mtime_ms: {toNumber: () => 30},
+            name: 'strawberry.js',
           },
           {
-            name: 'tomato.js',
             exists: true,
             mtime_ms: {toNumber: () => 31},
+            name: 'tomato.js',
           },
           {
-            name: 'pear.js',
             exists: true,
             mtime_ms: {toNumber: () => 32},
+            name: 'pear.js',
           },
         ],
+        is_fresh_instance: true,
+        version: '4.5.0',
       },
       '/vegetables': {
-        version: '4.5.0',
         clock: 'c:fake-clock:2',
-        is_fresh_instance: true,
         files: [
           {
-            name: 'melon.json',
             exists: true,
             mtime_ms: {toNumber: () => 33},
+            name: 'melon.json',
           },
         ],
+        is_fresh_instance: true,
+        version: '4.5.0',
       },
     };
 
@@ -148,26 +148,26 @@ describe('watchman watch', () => {
   it('updates the file object when the clock is given', () => {
     mockResponse = {
       '/fruits': {
-        version: '4.5.0',
         clock: 'c:fake-clock:3',
-        is_fresh_instance: false,
         files: [
           {
-            name: 'kiwi.js',
             exists: true,
             mtime_ms: {toNumber: () => 42},
+            name: 'kiwi.js',
           },
           {
-            name: 'tomato.js',
             exists: false,
             mtime_ms: null,
+            name: 'tomato.js',
           },
         ],
+        is_fresh_instance: false,
+        version: '4.5.0',
       },
       '/vegetables': {
-        version: '4.5.0',
         clock: 'c:fake-clock:4',
         files: [],
+        version: '4.5.0',
       },
     };
 
@@ -194,8 +194,8 @@ describe('watchman watch', () => {
       });
 
       expect(data.files).toEqual({
-        '/fruits/strawberry.js': ['', 30, 0, []],
         '/fruits/kiwi.js': ['', 42, 0, []],
+        '/fruits/strawberry.js': ['', 30, 0, []],
         '/vegetables/melon.json': ['', 33, 0, []],
       });
     });
@@ -204,32 +204,32 @@ describe('watchman watch', () => {
   it('resets the file object when watchman is restarted', () => {
     mockResponse = {
       '/fruits': {
-        version: '4.5.0',
         clock: 'c:fake-clock:5',
-        is_fresh_instance: true,
         files: [
           {
-            name: 'kiwi.js',
             exists: true,
             mtime_ms: {toNumber: () => 42},
+            name: 'kiwi.js',
           },
           {
-            name: 'banana.js',
             exists: true,
             mtime_ms: {toNumber: () => 41},
+            name: 'banana.js',
           },
           {
-            name: 'tomato.js',
             exists: true,
             mtime_ms: {toNumber: () => 31},
+            name: 'tomato.js',
           },
         ],
+        is_fresh_instance: true,
+        version: '4.5.0',
       },
       '/vegetables': {
-        version: '4.5.0',
         clock: 'c:fake-clock:6',
-        is_fresh_instance: true,
         files: [],
+        is_fresh_instance: true,
+        version: '4.5.0',
       },
     };
 
@@ -260,8 +260,8 @@ describe('watchman watch', () => {
 
       // /fruits/strawberry.js was removed from the file list.
       expect(data.files).toEqual({
-        '/fruits/kiwi.js': ['', 42, 0, []],
         '/fruits/banana.js': mockMetadata,
+        '/fruits/kiwi.js': ['', 42, 0, []],
         '/fruits/tomato.js': mockFiles['/fruits/tomato.js'],
       });
 
@@ -277,28 +277,28 @@ describe('watchman watch', () => {
   it('properly resets the file map when only one watcher is reset', () => {
     mockResponse = {
       '/fruits': {
-        version: '4.5.0',
         clock: 'c:fake-clock:3',
-        is_fresh_instance: false,
         files: [
           {
-            name: 'kiwi.js',
             exists: true,
             mtime_ms: {toNumber: () => 42},
+            name: 'kiwi.js',
           },
         ],
+        is_fresh_instance: false,
+        version: '4.5.0',
       },
       '/vegetables': {
-        version: '4.5.0',
         clock: 'c:fake-clock:4',
-        is_fresh_instance: true,
         files: [
           {
-            name: 'melon.json',
             exists: true,
             mtime_ms: {toNumber: () => 33},
+            name: 'melon.json',
           },
         ],
+        is_fresh_instance: true,
+        version: '4.5.0',
       },
     };
 

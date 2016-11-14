@@ -52,7 +52,6 @@ const createMatcher = matcherName =>
     } else if (expected === undefined) {
       const pass = error !== undefined;
       return {
-        pass,
         message: pass
           ? () => matcherHint('.not' + matcherName, 'function', '') + '\n\n' +
             'Expected the function not to throw an error.\n' +
@@ -60,6 +59,7 @@ const createMatcher = matcherName =>
           : () => matcherHint(matcherName, 'function', getType(value)) + '\n\n' +
             'Expected the function to throw an error.\n' +
             printActualErrorMessage(error),
+        pass,
       };
     } else {
       throw new Error(
@@ -97,7 +97,7 @@ const toThrowMatchingStringOrRegexp = (
       `  ${printExpected(value)}\n` +
       printActualErrorMessage(error);
 
-  return {pass, message};
+  return {message, pass};
 };
 
 const toThrowMatchingErrorInstance = (
@@ -120,7 +120,7 @@ const toThrowMatchingErrorInstance = (
       `  ${printExpected(expectedError)}\n` +
       printActualErrorMessage(error);
 
-  return {pass, message};
+  return {message, pass};
 };
 
 const toThrowMatchingError = (
@@ -139,7 +139,7 @@ const toThrowMatchingError = (
       `  ${printExpected(ErrorClass.name)}\n` +
       printActualErrorMessage(error);
 
-  return {pass, message};
+  return {message, pass};
 };
 
 const printActualErrorMessage = error => {

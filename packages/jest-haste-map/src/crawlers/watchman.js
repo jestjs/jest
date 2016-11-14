@@ -88,8 +88,8 @@ module.exports = function watchmanCrawl(
             // Otherwise use the `suffix` generator
             : {expression, fields, suffix: extensions};
           return cmd(['query', root, query]).then(response => ({
-            root,
             response,
+            root,
           }));
         })).then(pairs => {
           // Reset the file map if watchman was restarted and sends us a list of

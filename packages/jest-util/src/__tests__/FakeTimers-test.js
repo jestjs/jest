@@ -85,8 +85,8 @@ describe('FakeTimers', () => {
       const origSetImmediate = () => {};
       const origClearImmediate = () => {};
       const global = {
-        setImmediate: origSetImmediate,
         clearImmediate: origClearImmediate,
+        setImmediate: origSetImmediate,
       };
       const timers = new FakeTimers(global, moduleMocker);
       timers.useFakeTimers();
@@ -524,10 +524,10 @@ describe('FakeTimers', () => {
 
     it('resets all pending ticks callbacks & immediates', () => {
       const global = {
-        setImmediate: () => {},
         process: {
           nextTick: () => {},
         },
+        setImmediate: () => {},
       };
       const timers = new FakeTimers(global, moduleMocker);
       timers.useFakeTimers();
@@ -762,10 +762,10 @@ describe('FakeTimers', () => {
       const nativeClearInterval = jest.genMockFn();
 
       const global = {
-        setTimeout: nativeSetTimeout,
-        setInterval: nativeSetInterval,
-        clearTimeout: nativeClearTimeout,
         clearInterval: nativeClearInterval,
+        clearTimeout: nativeClearTimeout,
+        setInterval: nativeSetInterval,
+        setTimeout: nativeSetTimeout,
       };
       const timers = new FakeTimers(global, moduleMocker);
       timers.useFakeTimers();
@@ -808,8 +808,8 @@ describe('FakeTimers', () => {
       const nativeClearImmediate = jest.genMockFn();
 
       const global = {
-        setImmediate: nativeSetImmediate,
         clearImmediate: nativeClearImmediate,
+        setImmediate: nativeSetImmediate,
       };
       const timers = new FakeTimers(global, moduleMocker);
       timers.useFakeTimers();
@@ -834,10 +834,10 @@ describe('FakeTimers', () => {
       const nativeClearInterval = jest.genMockFn();
 
       const global = {
-        setTimeout: nativeSetTimeout,
-        setInterval: nativeSetInterval,
-        clearTimeout: nativeClearTimeout,
         clearInterval: nativeClearInterval,
+        clearTimeout: nativeClearTimeout,
+        setInterval: nativeSetInterval,
+        setTimeout: nativeSetTimeout,
       };
       const timers = new FakeTimers(global, moduleMocker);
       timers.useRealTimers();
@@ -880,8 +880,8 @@ describe('FakeTimers', () => {
       const nativeClearImmediate = jest.genMockFn();
 
       const global = {
-        setImmediate: nativeSetImmediate,
         clearImmediate: nativeClearImmediate,
+        setImmediate: nativeSetImmediate,
       };
       const fakeTimers = new FakeTimers(global, moduleMocker);
       fakeTimers.useRealTimers();

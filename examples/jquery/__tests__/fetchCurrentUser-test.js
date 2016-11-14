@@ -15,9 +15,9 @@ it('calls into $.ajax with the correct params', () => {
   // Now make sure that $.ajax was properly called during the previous
   // 2 lines
   expect($.ajax).toBeCalledWith({
+    success: jasmine.any(Function),
     type: 'GET',
     url: 'http://example.com/currentUser',
-    success: jasmine.any(Function),
   });
 });
 
@@ -39,7 +39,7 @@ it('calls the callback when $.ajax requests are finished', () => {
   // And finally we assert that this emulated call by `$.ajax` incurred a
   // call back into the mock function we provided as a callback
   expect(callback.mock.calls[0/*first call*/][0/*first arg*/]).toEqual({
-    loggedIn: true,
     fullName: 'Bobby ");DROP TABLE Users;--',
+    loggedIn: true,
   });
 });

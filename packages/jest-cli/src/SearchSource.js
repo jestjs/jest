@@ -105,11 +105,11 @@ class SearchSource {
 
     this._testPathCases = {
       testPathDirs: path => this._testPathDirPattern.test(path),
-      testRegex: path => this._testRegex.test(path),
       testPathIgnorePatterns: path => (
         !this._testIgnorePattern ||
         !this._testIgnorePattern.test(path)
       ),
+      testRegex: path => this._testRegex.test(path),
     };
   }
 

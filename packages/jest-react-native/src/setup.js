@@ -87,10 +87,10 @@ const mockImageLoader = {
   configurable: true,
   enumerable: true,
   get: () => ({
-    prefetchImage: jest.fn(),
     getSize: jest.fn(
       (uri, success) => process.nextTick(() => success(320, 240)),
     ),
+    prefetchImage: jest.fn(),
   }),
 };
 Object.defineProperty(mockNativeModules, 'ImageLoader', mockImageLoader);
@@ -99,6 +99,6 @@ Object.defineProperty(mockNativeModules, 'ImageViewManager', mockImageLoader);
 jest
   .doMock('NativeModules', () => mockNativeModules)
   .doMock('ReactNativePropRegistry', () => ({
-    register: id => id,
     getByID: () => mockEmptyObject,
+    register: id => id,
   }));
