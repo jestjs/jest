@@ -75,12 +75,6 @@ function setFromArgv(config, argv) {
 
   config.noStackTrace = argv.noStackTrace;
 
-  config.testcheckOptions = {
-    maxSize: argv.testcheckMaxSize,
-    seed: argv.testcheckSeed,
-    times: argv.testcheckTimes,
-  };
-
   return config;
 }
 
