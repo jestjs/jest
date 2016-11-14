@@ -31,6 +31,7 @@ const FORMAT_OPTIONS = {
 };
 const FALLBACK_FORMAT_OPTIONS = {
   callToJSON: false,
+  maxDepth: 10,
   plugins: PLUGINS,
 };
 
