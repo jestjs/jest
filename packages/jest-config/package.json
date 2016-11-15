@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "17.0.1",
+  "version": "17.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,12 +10,12 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "istanbul": "^0.4.5",
-    "jest-environment-jsdom": "^17.0.0",
-    "jest-environment-node": "^17.0.0",
-    "jest-jasmine2": "^17.0.1",
-    "jest-mock": "^17.0.0",
-    "jest-resolve": "^17.0.1",
-    "jest-util": "^17.0.0",
+    "jest-environment-jsdom": "^17.0.2",
+    "jest-environment-node": "^17.0.2",
+    "jest-jasmine2": "^17.0.2",
+    "jest-mock": "^17.0.2",
+    "jest-resolve": "^17.0.2",
+    "jest-util": "^17.0.2",
     "json-stable-stringify": "^1.0.0"
   },
   "scripts": {
