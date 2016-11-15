@@ -64,7 +64,7 @@ describe('no visual difference', () => {
     );
   });
 
-  test("Map key order should not matter", () => {
+  test('Map key order should not matter', () => {
     const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 

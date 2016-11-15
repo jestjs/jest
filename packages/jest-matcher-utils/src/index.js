@@ -21,6 +21,7 @@ export type ValueType =
   | 'number'
   | 'object'
   | 'regexp'
+  | 'map'
   | 'string'
   | 'symbol'
   | 'undefined';

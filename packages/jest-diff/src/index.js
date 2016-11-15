@@ -82,21 +82,22 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
       options,
     );
   } catch (e) {
-      hasThrown = true;
+    hasThrown = true;
   }
 
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
-      diffMessage = diffStrings(
-          prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
-          prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
-          options,
-      );
-      if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
-          diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
-      }
+    diffMessage = diffStrings(
+      prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
+      prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
+      options,
+    );
+    if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
+      diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
+    }
   }
+
   return diffMessage;
 }
 
