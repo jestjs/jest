@@ -63,6 +63,15 @@ describe('no visual difference', () => {
       },
     );
   });
+
+  test("Map key order should not matter", () => {
+    const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
+    const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
+
+    expect(stripAnsi(diff(arg1, arg2))).toBe(
+        'Compared values have no visual difference.',
+    );
+  });
 });
 
 test('oneline strings', () => {
