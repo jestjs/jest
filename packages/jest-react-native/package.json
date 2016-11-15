@@ -1,6 +1,6 @@
 {
   "name": "jest-react-native",
-  "version": "17.0.1",
+  "version": "17.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
