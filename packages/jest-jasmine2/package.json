@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "17.0.1",
+  "version": "17.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,9 +9,9 @@
   "main": "build/index.js",
   "dependencies": {
     "graceful-fs": "^4.1.6",
-    "jest-matchers": "^17.0.1",
-    "jest-snapshot": "^17.0.1",
-    "jest-util": "^17.0.0"
+    "jest-matchers": "^17.0.2",
+    "jest-snapshot": "^17.0.2",
+    "jest-util": "^17.0.2"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
