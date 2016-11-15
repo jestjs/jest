@@ -1,8 +1,20 @@
 language: node_js
+
 node_js:
   - "4"
   - "6"
+
 sudo: false
-before_install: npm i -g npm@latest
-script:
-  - npm run test-ci
+
+cache:
+  directories:
+    - "node_modules"
+    - ".eslintcache"
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - ~/.yarn/bin/yarn global add npm@latest
+
+install: ~/.yarn/bin/yarn
+
+script: ~/.yarn/bin/yarn run test-ci

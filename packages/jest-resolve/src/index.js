@@ -93,9 +93,16 @@ class Resolver {
   ): Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
-    const extensions = this._options.extensions;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
+    const defaultPlatform = this._options.defaultPlatform;
+    const extensions = this._options.extensions.slice();
+    if (this._supportsNativePlatform()) {
+      extensions.unshift('.' + NATIVE_PLATFORM + '.js');
+    }
+    if (defaultPlatform) {
+      extensions.unshift('.' + defaultPlatform + '.js');
+    }
 
     // 0. If we have already resolved this module for this directory name,
     //    return a value from the cache.

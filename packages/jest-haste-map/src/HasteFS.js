@@ -28,8 +28,12 @@ class HasteFS {
     this._files = files;
   }
 
+  getModuleName(file: Path): ?string {
+    return this._files[file] && this._files[file][H.ID] || null;
+  }
+
   getDependencies(file: Path): ?Array<string> {
-    return this._files[file] && this._files[file][H.DEPENDENCIES];
+    return this._files[file] && this._files[file][H.DEPENDENCIES] || null;
   }
 
   exists(file: Path): boolean {

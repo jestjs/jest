@@ -16,6 +16,17 @@ const docblock = require('../docblock');
 
 describe('docblock', () => {
 
+  it('extracts valid docblock with line comment', () => {
+    const code =
+      '/**' + os.EOL + ' * @providesModule foo' + os.EOL +
+      '* // TODO: test' + os.EOL + '*/' + os.EOL +
+      'const x = foo;';
+    expect(docblock.extract(code)).toBe(
+      '/**' + os.EOL + ' * @providesModule foo' + os.EOL +
+      '* // TODO: test' + os.EOL + '*/',
+    );
+  });
+
   it('extracts valid docblock', () => {
     const code =
       '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
@@ -34,11 +45,13 @@ describe('docblock', () => {
     );
   });
 
-  it('returns nothing for no docblock', () => {
+  it('extracts from invalid docblock', () => {
     const code =
       '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/' + os.EOL +
-      'const x = foo;' + os.EOL + '/**foo*/';
-    expect(docblock.extract(code)).toBe('');
+      'const x = foo;';
+    expect(docblock.extract(code)).toBe(
+      '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
+    );
   });
 
   it('returns extract and parsedocblock', () => {
@@ -60,9 +73,9 @@ describe('docblock', () => {
       ' * @preserve-whitespace' + os.EOL + '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'providesModule': 'foo',
       'css': 'a b',
       'preserve-whitespace': '',
+      'providesModule': 'foo',
     });
   });
 
@@ -77,9 +90,20 @@ describe('docblock', () => {
       ' * @preserve-whitespace' + os.EOL + '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'providesModule': 'foo',
       'css': 'a b',
       'preserve-whitespace': '',
+      'providesModule': 'foo',
+    });
+  });
+
+  it('parses directives out of a docblock with line comments', () => {
+    const code =
+      '/**' + os.EOL + '' +
+      ' * @providesModule foo' + os.EOL + '' +
+      ' * // TODO: test' + os.EOL + '' +
+      ' */';
+    expect(docblock.parse(code)).toEqual({
+      'providesModule': 'foo',
     });
   });
 
@@ -97,6 +121,16 @@ describe('docblock', () => {
       'class': 'A long declaration of a class goes here, ' +
         'so we can read it and enjoy',
       'preserve-whitespace': '',
+    });
+  });
+
+  it('supports slashes in @providesModule directive', () => {
+    const code =
+      '/**' + os.EOL + '' +
+      ' * @providesModule apple/banana' + os.EOL + '' +
+      ' */';
+    expect(docblock.parse(code)).toEqual({
+      'providesModule': 'apple/banana',
     });
   });
 });

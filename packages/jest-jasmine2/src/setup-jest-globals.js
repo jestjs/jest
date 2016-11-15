@@ -13,7 +13,7 @@
 import type {Config, Path} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
-const {initializeSnapshotState} = require('jest-snapshot');
+const {initializeSnapshotState, addPlugins} = require('jest-snapshot');
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -25,11 +25,11 @@ const addSuppressedErrors = result => {
     result.status = 'failed';
 
     result.failedExpectations = suppressedErrors.map(error => ({
-      message: error.message,
-      stack: error.stack,
-      passed: false,
-      expected: '',
       actual: '',
+      expected: '',
+      message: error.message,
+      passed: false,
+      stack: error.stack,
     }));
   }
 };
@@ -69,10 +69,15 @@ type Options = {
 };
 
 module.exports = ({testPath, config}: Options) => {
+  addPlugins(config.snapshotSerializers);
   setState({testPath});
   patchJasmine();
-  const snapshotState
-    = initializeSnapshotState(testPath, config.updateSnapshot);
+  const snapshotState = initializeSnapshotState(
+    testPath,
+    config.updateSnapshot,
+    '',
+    config.expand,
+  );
   setState({snapshotState});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

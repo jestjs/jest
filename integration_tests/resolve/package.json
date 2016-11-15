@@ -1,0 +1,9 @@
+{
+  "jest": {
+    "haste": {
+      "platforms": ["native"],
+      "defaultPlatform": "android"
+    },
+    "testEnvironment": "node"
+  }
+}

@@ -82,9 +82,9 @@ describe('SearchSource', () => {
 
     it('finds tests matching a pattern', () => {
       const config = normalizeConfig({
+        moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
-        moduleFileExtensions: ['js', 'jsx', 'txt'],
         testRegex: 'not-really-a-test',
       });
       return findMatchingTests(config).then(data => {
@@ -99,9 +99,9 @@ describe('SearchSource', () => {
 
     it('finds tests matching a JS pattern', () => {
       const config = normalizeConfig({
+        moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
-        moduleFileExtensions: ['js', 'jsx'],
         testRegex: 'test\.jsx?',
       });
       return findMatchingTests(config).then(data => {
@@ -134,10 +134,10 @@ describe('SearchSource', () => {
 
     it('finds tests with similar but custom file extensions', () => {
       const config = normalizeConfig({
+        moduleFileExtensions: ['jsx'],
         name,
         rootDir,
         testRegex,
-        moduleFileExtensions: ['jsx'],
       });
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -151,10 +151,10 @@ describe('SearchSource', () => {
 
     it('finds tests with totally custom foobar file extensions', () => {
       const config = normalizeConfig({
+        moduleFileExtensions: ['foobar'],
         name,
         rootDir,
         testRegex,
-        moduleFileExtensions: ['foobar'],
       });
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -167,10 +167,10 @@ describe('SearchSource', () => {
     });
     it('finds tests with many kinds of file extensions', () => {
       const config = normalizeConfig({
+        moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
         testRegex,
-        moduleFileExtensions: ['js', 'jsx'],
       });
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -230,10 +230,10 @@ describe('SearchSource', () => {
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(done => {
       const config = normalizeConfig({
+        moduleFileExtensions: ['js', 'jsx', 'foobar'],
         name,
         rootDir,
         testRegex,
-        moduleFileExtensions: ['js', 'jsx', 'foobar'],
       });
       Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);

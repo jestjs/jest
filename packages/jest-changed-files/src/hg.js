@@ -70,6 +70,6 @@ function isHGRepository(cwd: string): Promise<?string> {
 }
 
 module.exports = {
-  isHGRepository,
   findChangedFiles,
+  isHGRepository,
 };

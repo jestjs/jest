@@ -34,7 +34,7 @@ class BufferedConsole extends Console {
   ) {
     const call = callsites()[level != null ? level : 2];
     const origin = call.getFileName() + ':' + call.getLineNumber();
-    buffer.push({type, message, origin});
+    buffer.push({message, origin, type});
     return buffer;
   }
 

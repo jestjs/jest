@@ -11,7 +11,8 @@
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
-const docblockRe = /^\s*(\/\*\*(.|\r?\n)*?\*\/)/;
+const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
+const lineCommentRe = /\/\/([^\r\n]*)/g;
 const ltrimRe = /^\s*/;
 const multilineRe =
   /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
@@ -29,6 +30,7 @@ function parse(docblock: string): { [key: string]: string } {
     .replace(commentStartRe, '')
     .replace(commentEndRe, '')
     .replace(wsRe, ' ')
+    .replace(lineCommentRe, '')
     .replace(stringStartRe, '$1');
 
   // Normalize multi-line directives

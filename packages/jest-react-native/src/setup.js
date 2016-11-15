@@ -11,13 +11,29 @@
 const mockReactNative = require('./index');
 
 jest
-.mock('ReactNativeDefaultInjection')
+  .mock('ReactNativeDefaultInjection')
   .mock('Image', () => mockReactNative.mockComponent('Image'))
   .mock('Text', () => mockReactNative.mockComponent('Text'))
   .mock('TextInput', () => mockReactNative.mockComponent('TextInput'))
   .mock('Modal', () => mockReactNative.mockComponent('Modal'))
   .mock('View', () => mockReactNative.mockComponent('View'))
   .mock('ScrollView', () => mockReactNative.mockComponent('ScrollView'))
+  .mock(
+    'TouchableOpacity',
+    () => mockReactNative.mockComponent('TouchableOpacity'),
+  )
+  .mock(
+    'TouchableHighlight',
+    () => mockReactNative.mockComponent('TouchableHighlight'),
+  )
+  .mock(
+    'TouchableWithoutFeedback',
+    () => mockReactNative.mockComponent('TouchableWithoutFeedback'),
+  )
+  .mock(
+    'TouchableNativeFeedback',
+    () => mockReactNative.mockComponent('TouchableNativeFeedback'),
+  )
   .mock(
     'ActivityIndicator',
     () => mockReactNative.mockComponent('ActivityIndicator'),
@@ -71,10 +87,10 @@ const mockImageLoader = {
   configurable: true,
   enumerable: true,
   get: () => ({
-    prefetchImage: jest.fn(),
     getSize: jest.fn(
       (uri, success) => process.nextTick(() => success(320, 240)),
     ),
+    prefetchImage: jest.fn(),
   }),
 };
 Object.defineProperty(mockNativeModules, 'ImageLoader', mockImageLoader);
@@ -83,6 +99,6 @@ Object.defineProperty(mockNativeModules, 'ImageViewManager', mockImageLoader);
 jest
   .doMock('NativeModules', () => mockNativeModules)
   .doMock('ReactNativePropRegistry', () => ({
-    register: id => id,
     getByID: () => mockEmptyObject,
+    register: id => id,
   }));

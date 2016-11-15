@@ -69,7 +69,7 @@ const relativePath = (config: Config, testPath: Path) => {
   testPath = path.relative(config.rootDir, testPath);
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
-  return {dirname, basename};
+  return {basename, dirname};
 };
 
 const pluralize = (word: string, count: number) =>
@@ -162,7 +162,7 @@ const renderTime = (
 ) => {
   // If we are more than one second over the estimated time, highlight it.
   const renderedTime = (estimatedTime && runTime >= estimatedTime + 1)
-    ? chalk.bold.red(runTime + 's')
+    ? chalk.bold.yellow(runTime + 's')
     : runTime + 's';
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
   if (runTime < estimatedTime) {

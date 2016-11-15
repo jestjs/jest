@@ -30,7 +30,6 @@ const generateEmptyCoverage = require('../generateEmptyCoverage');
 const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
 
-const COVERAGE_SUMMARY = chalk.bold;
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
@@ -65,25 +64,18 @@ class CoverageReporter extends BaseReporter {
       if (config.coverageDirectory) {
         reporter.dir = config.coverageDirectory;
       }
-      reporter.addAll(config.coverageReporters || []);
-      reporter.write(this._coverageMap);
 
+      let coverageReporters = config.coverageReporters || [];
       if (
-        config.coverageReporters &&
-        config.coverageReporters.length &&
-        config.coverageReporters.indexOf('text') === -1
+        !config.useStderr &&
+        coverageReporters.length &&
+        coverageReporters.indexOf('text') === -1
       ) {
-        const results = this._coverageMap.getCoverageSummary().toJSON();
-        const format = percent => percent + (percent === 'Unknown' ? '' : '%');
-        this.log(
-          '\n' + COVERAGE_SUMMARY('Coverage Summary') + ' (add "text" to the ' +
-          '"coverageReporters" setting to receive a full report)\n' +
-          ' \u203A Statements: ' + format(results.statements.pct) + '\n' +
-          ' \u203A Branches: ' + format(results.branches.pct) + '\n' +
-          ' \u203A Lines: ' + format(results.lines.pct) + '\n' +
-          ' \u203A Functions: ' + format(results.functions.pct) + '\n',
-        );
+        coverageReporters = coverageReporters.concat(['text-summary']);
       }
+
+      reporter.addAll(coverageReporters);
+      reporter.write(this._coverageMap);
     } catch (e) {
       console.error(chalk.red(`
         Failed to write coverage reports:

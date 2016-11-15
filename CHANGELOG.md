@@ -1,5 +1,33 @@
 ## master
 
+## jest 17.0.0
+
+* Added `expect.extend`.
+* Properly resolve modules with platform extensions on react-native.
+* Added support for custom snapshots serializers.
+* Updated to Jasmine 2.5.2.
+* Big diffs are now collapsed by default in snapshots and assertions. Added `--expand` (or `-e`) to show the full diff.
+* Replaced `scriptPreprocessor` with the new `transform` option.
+* Added `jest.resetAllMocks` which replaces `jest.clearAllMocks`.
+* Fixes for react-native preset.
+* Fixes for global built in objects in `jest-environment-node`.
+* Create mock objects in the vm context instead of the parent context.
+* `.babelrc` is now part of the transform cache key in `babel-jest`.
+* Fixes for docblock parsing with haste modules.
+* Exit with the proper code when the coverage threshold is not reached.
+* Implemented file watching in `jest-haste-map`.
+* `--json` now includes information about individual tests inside a file.
+
+## jest 16.0.2
+
+* Symbols are now properly mocked when using `jest-mock`.
+* `toHaveBeenCalledWith()` works without arguments again.
+* Newlines in snapshots are now normalized across different operating systems.
+
+## jest 16.0.1
+
+* Fix infinite loop.
+
 ## jest 16.0.0
 
 * Previously failed tests are now always run first.

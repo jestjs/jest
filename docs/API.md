@@ -72,6 +72,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mock.calls`](#mockfnmockcalls)
   - [`mockFn.mock.instances`](#mockfnmockinstances)
   - [`mockFn.mockClear()`](#mockfnmockclear)
+  - [`mockFn.mockReset()`](#mockfnmockreset)
   - [`mockFn.mockImplementation(fn)`](#mockfnmockimplementationfn)
   - [`mockFn.mockImplementationOnce(fn)`](#mockfnmockimplementationoncefn)
   - [`mockFn.mockReturnThis()`](#mockfnmockreturnthis)
@@ -82,7 +83,7 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 
 These methods help create mocks and let you control Jest's overall behavior.
 
-  - [`jest.clearAllMocks()`](#jestclearallmocks)
+  - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
   - [`jest.enableAutomock()`](#jestenableautomock)
@@ -99,6 +100,10 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.unmock(moduleName)`](#jestunmockmodulename)
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
+
+### The Jest CLI
+
+  - [Jest CLI Options](#jest-cli-options)
 
 -----
 
@@ -428,7 +433,7 @@ To compare floating point numbers, you can use `toBeLessThan`. For example, if y
 ```js
 describe('ounces per can', () => {
   it('is less than 20', () => {
-    expect(ouncesPerCan()).toBeLessThan(10);
+    expect(ouncesPerCan()).toBeLessThan(20);
   });
 });
 ```
@@ -453,7 +458,7 @@ Use `.toBeInstanceOf(Class)` to check that an object is an instance of a class. 
 class A {}
 
 expect(new A()).toBeInstanceOf(A);
-expect(() => {}).toBeinstanceOf(Function);
+expect(() => {}).toBeInstanceOf(Function);
 expect(new A()).toBeInstanceOf(Function); // throws
 ```
 
@@ -591,7 +596,7 @@ Use `.toThrow` to test that a function throws when it is called. For example, if
 describe('drinking flavors', () => {
   it('throws on octopus', () => {
     expect(() => {
-      drink('octopus');
+      drinkFlavor('octopus');
     }).toThrow();
   });
 });
@@ -619,7 +624,7 @@ We could test this error gets thrown in several ways:
 describe('drinking flavors', () => {
   it('throws on octopus', () => {
     function drinkOctopus() {
-      drink('octopus');
+      drinkFlavor('octopus');
     }
     // Test the exact error message
     expect(drinkOctopus).toThrowError('yuck, octopus flavor');
@@ -654,7 +659,7 @@ The test for this function will look this way:
 describe('drinking flavors', () => {
   it('throws on octopus', () => {
     function drinkOctopus() {
-      drink('octopus');
+      drinkFlavor('octopus');
     }
 
     expect(drinkOctopus).toThrowErrorMatchingSnapshot();
@@ -703,6 +708,11 @@ mockFn.mock.instances[1] === b; // true
 Resets all information stored in the [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances) arrays.
 
 Often this is useful when you want to clean up a mock's usage data between two assertions.
+
+### `mockFn.mockReset()`
+Resets all information stored in the mock
+
+This is useful when you want to completely restore a mock back to its initial state.
 
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
@@ -809,8 +819,8 @@ jest.fn(() => {
 
 ## The `jest` object
 
-### `jest.clearAllMocks()`
-Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
+### `jest.resetAllMocks()`
+Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
 
 Returns the `jest` object for chaining.
 
@@ -984,49 +994,38 @@ Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
 
-## Miscellaneous
+### Jest CLI options
 
-### `check`
+Run `jest --help` to view the various options available.
 
-Jest supports property testing with the
-[testcheck-js](https://github.com/leebyron/testcheck-js) library. The API is
-the same as that of [jasmine-check](https://github.com/leebyron/jasmine-check):
+It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed.
 
-### `check.it(name, [options], generators, fn)`
-Creates a property test. Test cases will be created by the given `generators`
-and passed as arguments to `fn`. If any test case fails, a shrunken failing
-value will be given in the test output. For example:
+If you have a test suite in a file named `Component-snapshot-test.js` somewhere in the file hierarchy, you can run only that test by adding a pattern right after the `jest` command:
 
-```js
-const { check, gen } = require('jest-check');
-
-check.it('can recover encoded URIs',
-  [gen.string],
-  s => expect(s).toBe(decodeURI(encodeURI(s))));
+```bash
+jest Component-snapshot
 ```
 
-If `options` are provided, they override the corresponding command-line options.
-The possible options are:
+It is possible to further limit the tests that will be run by using the `--testNamePattern` (or simply `-t`) flag.
 
-```
-{
-  times: number;   // The number of test cases to run. Default: 100.
-  maxSize: number; // The maximum size of sized data such as numbers
-                   // (their magnitude) or arrays (their length). This can be
-                   // overridden with `gen.resize`. Default: 200.
-  seed: number;    // The random number seed. Defaults to a random value.
-}
+```bash
+jest Component-snapshot -t "is selected"
 ```
 
-### `check.fit(name, [options], generators, fn)`
+It is possible to combine the `--updateSnapshot` (`-u`) flag with the options above in order to re-record snapshots for particular test suites or tests only:
 
-Executes this test and skips all others. Like `fit`, but for property tests.
+Update snapshots for all files matching the pattern:
+```bash
+jest -u Component-snapshot
+```
 
-### `check.xit(name, [options], generators, fn)`
+Only update snapshots for tests matching the pattern:
+```bash
+jest -u Component-snapshot -t "is selected"
+```
 
-Skips this test. Like `xit`, but for property tests.
+It is possible to specify which files the coverage report will be generated for.
 
-### `gen`
-
-A library of generators for property tests. See the
-[`testcheck` documentation](https://github.com/leebyron/testcheck-js).
+```bash
+jest --collectCoverageFrom='["packages/**/index.js", "!**/vendor/**"]' --coverage
+```

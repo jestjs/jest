@@ -15,6 +15,7 @@ import type {
   CodeCoverageFormatter,
   CodeCoverageReporter,
   TestResult,
+  AssertionResult,
 } from 'types/TestResult';
 import type {Config} from 'types/Config';
 
@@ -25,9 +26,9 @@ const formatResult = (
   reporter: CodeCoverageReporter,
 ): Object => {
   const output = ({
+    message: '',
     name: testResult.testFilePath,
     summary: '',
-    message: '',
   }: any);
 
   if (testResult.testExecError) {
@@ -45,12 +46,27 @@ const formatResult = (
     output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
   }
 
+  output.assertionResults = testResult.testResults.map(formatTestAssertion);
+
   if (testResult.failureMessage) {
     output.message = testResult.failureMessage;
   }
 
   return output;
 };
+
+function formatTestAssertion(
+  assertion: AssertionResult,
+): Object {
+  const result: any = {
+    status: assertion.status,
+    title: assertion.title,
+  };
+  if (assertion.failureMessages) {
+    result.failureMessages = assertion.failureMessages;
+  }
+  return result;
+}
 
 function formatTestResults(
   results: AggregatedResult,
@@ -68,14 +84,14 @@ function formatTestResults(
   ));
 
   return {
-    success: results.success,
-    startTime: results.startTime,
-    numTotalTests: results.numTotalTests,
-    numTotalTestSuites: results.numTotalTestSuites,
-    numRuntimeErrorTestSuites: results.numRuntimeErrorTestSuites,
-    numPassedTests: results.numPassedTests,
     numFailedTests: results.numFailedTests,
+    numPassedTests: results.numPassedTests,
     numPendingTests: results.numPendingTests,
+    numRuntimeErrorTestSuites: results.numRuntimeErrorTestSuites,
+    numTotalTestSuites: results.numTotalTestSuites,
+    numTotalTests: results.numTotalTests,
+    startTime: results.startTime,
+    success: results.success,
     testResults,
   };
 }

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @emails oncall+jsinfra
  */
 'use strict';
 
@@ -14,6 +13,9 @@ jest.mock('jest-resolve');
 const path = require('path');
 const utils = require('jest-util');
 const normalize = require('../normalize');
+
+const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
+const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
 describe('normalize', () => {
   let root;
@@ -95,8 +97,8 @@ describe('normalize', () => {
       const consoleWarn = console.warn;
       console.warn = jest.fn();
       const config = normalize({
-        rootDir: '/root/path/foo',
         automock: false,
+        rootDir: '/root/path/foo',
       });
 
       expect(config.automock).toBe(false);
@@ -108,8 +110,8 @@ describe('normalize', () => {
   describe('browser', () => {
     it('falsy browser is not overwritten', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         browser: true,
+        rootDir: '/root/path/foo',
       });
 
       expect(config.browser).toBe(true);
@@ -119,11 +121,11 @@ describe('normalize', () => {
   describe('collectCoverageOnlyFrom', () => {
     it('normalizes all paths relative to rootDir', () => {
       const config = normalize({
-        rootDir: '/root/path/foo/',
         collectCoverageOnlyFrom: {
           'bar/baz': true,
           'qux/quux/': true,
         },
+        rootDir: '/root/path/foo/',
       }, '/root/path');
 
       const expected = {};
@@ -135,11 +137,11 @@ describe('normalize', () => {
 
     it('does not change absolute paths', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '/an/abs/path': true,
           '/another/abs/path': true,
         },
+        rootDir: '/root/path/foo',
       });
 
       const expected = {};
@@ -151,10 +153,10 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         collectCoverageOnlyFrom: {
           '<rootDir>/bar/baz': true,
         },
+        rootDir: '/root/path/foo',
       });
 
       const expected = {};
@@ -164,73 +166,99 @@ describe('normalize', () => {
     });
   });
 
-  describe('testPathDirs', () => {
+  function testPathArray(key) {
     it('normalizes all paths relative to rootDir', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
-        testPathDirs: [
+        [key]: [
           'bar/baz',
           'qux/quux/',
         ],
+        rootDir: '/root/path/foo',
       }, '/root/path');
 
-      expect(config.testPathDirs).toEqual([
+      expect(config[key]).toEqual([
         expectedPathFooBar, expectedPathFooQux,
       ]);
     });
 
     it('does not change absolute paths', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
-        testPathDirs: [
+        [key]: [
           '/an/abs/path',
           '/another/abs/path',
         ],
+        rootDir: '/root/path/foo',
       });
 
-      expect(config.testPathDirs).toEqual([
+      expect(config[key]).toEqual([
         expectedPathAbs, expectedPathAbsAnother,
       ]);
     });
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
-        testPathDirs: [
+        [key]: [
           '<rootDir>/bar/baz',
         ],
+        rootDir: '/root/path/foo',
       });
 
-      expect(config.testPathDirs).toEqual([expectedPathFooBar]);
+      expect(config[key]).toEqual([expectedPathFooBar]);
     });
+  }
+
+  describe('testPathDirs', () => {
+    testPathArray('testPathDirs');
   });
 
-  describe('scriptPreprocessor', () => {
+  describe('snapshotSerializers', () => {
+    testPathArray('snapshotSerializers');
+  });
+
+  describe('transform', () => {
     it('normalizes the path according to rootDir', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        scriptPreprocessor: 'bar/baz',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: 'qux/quux',
+          [DEFAULT_JS_PATTERN]: 'bar/baz',
+        },
       }, '/root/path');
 
-      expect(config.scriptPreprocessor).toEqual(expectedPathFooBar);
+      expect(config.transform).toEqual([
+        [DEFAULT_CSS_PATTERN, expectedPathFooQux],
+        [DEFAULT_JS_PATTERN, expectedPathFooBar],
+      ]);
     });
 
     it('does not change absolute paths', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        scriptPreprocessor: '/an/abs/path',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '/an/abs/path',
+          [DEFAULT_JS_PATTERN]: '/an/abs/path',
+        },
       });
 
-      expect(config.scriptPreprocessor).toEqual(expectedPathAbs);
+      expect(config.transform).toEqual([
+        [DEFAULT_CSS_PATTERN, expectedPathAbs],
+        [DEFAULT_JS_PATTERN, expectedPathAbs],
+      ]);
     });
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
         rootDir: '/root/path/foo',
-        scriptPreprocessor: '<rootDir>/bar/baz',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/qux/quux',
+          [DEFAULT_JS_PATTERN]: '<rootDir>/bar/baz',
+        },
       });
 
-      expect(config.scriptPreprocessor).toEqual(expectedPathFooBar);
+      expect(config.transform).toEqual([
+        [DEFAULT_CSS_PATTERN, expectedPathFooQux],
+        [DEFAULT_JS_PATTERN, expectedPathFooBar],
+      ]);
     });
   });
 
@@ -297,11 +325,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         coveragePathIgnorePatterns: [
           'bar/baz',
           'qux/quux',
         ],
+        rootDir: '/root/path/foo',
       }, '/root/path');
 
       expect(config.coveragePathIgnorePatterns).toEqual([
@@ -314,11 +342,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         coveragePathIgnorePatterns: [
           'bar/baz',
           'qux/quux/',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.coveragePathIgnorePatterns).toEqual([
@@ -329,11 +357,11 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         coveragePathIgnorePatterns: [
           'hasNoToken',
           '<rootDir>/hasAToken',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.coveragePathIgnorePatterns).toEqual([
@@ -399,11 +427,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
           'qux/quux',
         ],
+        rootDir: '/root/path/foo',
       }, '/root/path');
 
       expect(config.modulePathIgnorePatterns).toEqual([
@@ -416,11 +444,11 @@ describe('normalize', () => {
       // This is a list of patterns, so we can't assume any of them are
       // directories
       const config = normalize({
-        rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'bar/baz',
           'qux/quux/',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.modulePathIgnorePatterns).toEqual([
@@ -431,11 +459,11 @@ describe('normalize', () => {
 
     it('substitutes <rootDir> tokens', () => {
       const config = normalize({
-        rootDir: '/root/path/foo',
         modulePathIgnorePatterns: [
           'hasNoToken',
           '<rootDir>/hasAToken',
         ],
+        rootDir: '/root/path/foo',
       });
 
       expect(config.modulePathIgnorePatterns).toEqual([
@@ -518,7 +546,9 @@ describe('normalize', () => {
     let Resolver;
     beforeEach(() => {
       Resolver = require('jest-resolve');
-      Resolver.findNodeModule = jest.fn(name => 'node_modules/' + name);
+      Resolver.findNodeModule = jest.fn(
+        name => 'node_modules' + path.sep + name,
+      );
     });
 
     it('correctly identifies and uses babel-jest', () => {
@@ -527,8 +557,29 @@ describe('normalize', () => {
       });
 
       expect(config.usesBabelJest).toBe(true);
-      const preprocessorPath = uniformPath(config.scriptPreprocessor);
-      expect(preprocessorPath).toEqual('/root/node_modules/babel-jest');
+      const jsTransformerPath = uniformPath(config.transform[0][1]);
+      expect(config.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
+      expect(jsTransformerPath).toEqual('/root/node_modules/babel-jest');
+      expect(config.setupFiles.map(uniformPath))
+        .toEqual(['/root/node_modules/babel-polyfill']);
+    });
+
+    it('uses babel-jest if babel-jest is explicitly specified in a custom transform config', () => {
+      const customJSPattern = '^.+\\.js$';
+      const ROOT_DIR = '<rootDir>' + path.sep;
+      const config = normalize({
+        rootDir: '/root',
+        transform: {
+          [customJSPattern]: ROOT_DIR + Resolver.findNodeModule(
+            'babel-jest',
+          ),
+        },
+      });
+
+      expect(config.usesBabelJest).toBe(true);
+      const jsTransformerPath = uniformPath(config.transform[0][1]);
+      expect(config.transform[0][0]).toBe(customJSPattern);
+      expect(jsTransformerPath).toEqual('/root/node_modules/babel-jest');
       expect(config.setupFiles.map(uniformPath))
         .toEqual(['/root/node_modules/babel-polyfill']);
     });
@@ -541,15 +592,20 @@ describe('normalize', () => {
       });
 
       expect(config.usesBabelJest).toEqual(undefined);
-      expect(config.scriptPreprocessor).toEqual(undefined);
+      expect(config.transform).toEqual(undefined);
       expect(config.setupFiles).toEqual([]);
     });
 
     it('uses polyfills if babel-jest is explicitly specified', () => {
+      const ROOT_DIR = '<rootDir>' + path.sep;
+
       const config = normalize({
         rootDir: '/root',
-        scriptPreprocessor:
-          '<rootDir>/' + Resolver.findNodeModule('babel-jest'),
+        transform: {
+          [DEFAULT_JS_PATTERN]: ROOT_DIR + Resolver.findNodeModule(
+            'babel-jest',
+          ),
+        },
       });
 
       expect(config.usesBabelJest).toBe(true);
@@ -562,18 +618,6 @@ describe('normalize', () => {
 
     let consoleWarn;
 
-    const throwAndMatchErrorSnapshot = fn => {
-      try {
-        fn();
-      } catch (e) {
-        expect(e.message).toMatchSnapshot();
-        return;
-      }
-
-      // failure case
-      expect(() => {}).toThrow();
-    };
-
     beforeEach(() => {
       consoleWarn = console.warn;
       console.warn = jest.fn();
@@ -583,47 +627,21 @@ describe('normalize', () => {
       console.warn = consoleWarn;
     });
 
-    it('logs a warning when automocking is explicitly disabled', () => {
-      normalize({
-        automock: false,
-        rootDir: '/root',
+    it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {
+      const config = normalize({
+        preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
+        rootDir: '/root/path/foo',
+        scriptPreprocessor: 'bar/baz',
       });
 
-      expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-    });
+      expect(config.transform).toEqual([['.*', expectedPathFooBar]]);
+      expect(config.transformIgnorePatterns).toEqual([
+        joinForPattern('bar', 'baz'),
+        joinForPattern('qux', 'quux'),
+      ]);
 
-    it('throws when using old configuration options', () => {
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        persistModuleRegistryBetweenSpecs: false,
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        persistModuleRegistryBetweenSpecs: true,
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        setupEnvScriptFile: '<rootDir>/setup.js',
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        testDirectoryName: 'test',
-      }));
-
-      throwAndMatchErrorSnapshot(() => normalize({
-        rootDir: '/root',
-        testFileExtensions: ['js', 'ts'],
-      }));
-    });
-
-    it('logs a warning when automocking is disabled and unmockedModulePathPatterns is used', () => {
-      normalize({
-        rootDir: '/root',
-        unmockedModulePathPatterns: [],
-      });
+      expect(config.scriptPreprocessor).toBe(undefined);
+      expect(config.preprocessorIgnorePatterns).toBe(undefined);
 
       expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
     });

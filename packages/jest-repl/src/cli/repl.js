@@ -18,13 +18,13 @@ const path = require('path');
 const repl = require('repl');
 const vm = require('vm');
 
-let preprocessor;
+let transformer;
 
 const evalCommand = (cmd, context, filename, callback, config) => {
   let result;
   try {
-    if (preprocessor) {
-      cmd = preprocessor.process(
+    if (transformer) {
+      cmd = transformer.process(
         cmd,
         jestConfig.replname || 'jest.js',
         jestConfig,
@@ -50,20 +50,29 @@ const isRecoverableError = error => {
   return false;
 };
 
-if (jestConfig.scriptPreprocessor) {
-  /* $FlowFixMe */
-  preprocessor = require(jestConfig.scriptPreprocessor);
-  if (typeof preprocessor.process !== 'function') {
-    throw new TypeError(
-      'Jest: a preprocessor must export a `process` function.',
-    );
+if (jestConfig.transform) {
+  let transformerPath = null;
+  for (let i = 0; i < jestConfig.transform.length; i++) {
+    if (new RegExp(jestConfig.transform[i][0]).test('foobar.js')) {
+      transformerPath = jestConfig.transform[i][1];
+      break;
+    }
+  }
+  if (transformerPath) {
+    /* $FlowFixMe */
+    transformer = require(transformerPath);
+    if (typeof transformer.process !== 'function') {
+      throw new TypeError(
+        'Jest: a transformer must export a `process` function.',
+      );
+    }
   }
 }
 
 const replInstance = repl.start({
+  eval: evalCommand,
   prompt: '\u203A ',
   useGlobal: true,
-  eval: evalCommand,
 });
 
 replInstance.context.require = moduleName => {

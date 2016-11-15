@@ -16,12 +16,10 @@ const createDirectory = require('jest-util').createDirectory;
 const fileExists = require('jest-file-exists');
 const path = require('path');
 const prettyFormat = require('pretty-format');
-const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
 const fs = require('fs');
 const naturalCompare = require('natural-compare');
-const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+const getPlugins = require('./plugins').getPlugins;
 
-const PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 const SNAPSHOT_EXTENSION = 'snap';
 
 const testNameToKey = (testName: string, count: number) =>
@@ -62,19 +60,22 @@ const addExtraLineBreaks =
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(prettyFormat(data, {
-    plugins: PLUGINS,
+    plugins: getPlugins(),
     printFunctionName: false,
   }));
 };
 
-const escape = (string: string) => string.replace(/\`/g, '\\\`');
-const unescape = (string: string) => string.replace(/\\(\"|\\|\')/g, '$1');
+const escape = (string: string) => string.replace(/(\`|\${)/g, '\\$1');
+const unescape = (string: string) => string.replace(/\\(\"|\\|\'|\${)/g, '$1');
 
 const ensureDirectoryExists = (filePath: Path) => {
   try {
     createDirectory(path.join(path.dirname(filePath)));
   } catch (e) {}
 };
+
+const normalizeNewlines =
+  string => string.replace(/\r\n/g, '\n');
 
 const saveSnapshotFile = (
   snapshotData: {[key: string]: string},
@@ -83,7 +84,7 @@ const saveSnapshotFile = (
   const snapshots = Object.keys(snapshotData).sort(naturalCompare)
     .map(key =>
       'exports[`' + escape(key) + '`] = `' +
-      escape(snapshotData[key]) + '`;',
+      normalizeNewlines(escape(snapshotData[key])) + '`;',
     );
 
   ensureDirectoryExists(snapshotPath);
@@ -92,13 +93,13 @@ const saveSnapshotFile = (
 
 module.exports = {
   SNAPSHOT_EXTENSION,
-  getSnapshotPath,
-  getSnapshotData,
-  testNameToKey,
-  keyToTestName,
-  serialize,
   ensureDirectoryExists,
-  saveSnapshotFile,
   escape,
+  getSnapshotData,
+  getSnapshotPath,
+  keyToTestName,
+  saveSnapshotFile,
+  serialize,
+  testNameToKey,
   unescape,
 };

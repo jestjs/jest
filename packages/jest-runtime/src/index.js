@@ -25,7 +25,10 @@ const fs = require('graceful-fs');
 const path = require('path');
 const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
-const utils = require('jest-util');
+const {
+  createDirectory,
+  replacePathSepForRegex,
+} = require('jest-util');
 
 type Module = {|
   children?: Array<any>,
@@ -114,7 +117,7 @@ class Runtime {
     this._mocksPattern =
       config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
-    this._testRegex = new RegExp(config.testRegex.replace(/\//g, path.sep));
+    this._testRegex = new RegExp(replacePathSepForRegex(config.testRegex));
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -171,7 +174,7 @@ class Runtime {
       maxWorkers: number,
     },
   ): Promise<HasteContext> {
-    utils.createDirectory(config.cacheDirectory);
+    createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
       maxWorkers: options.maxWorkers,
@@ -405,8 +408,8 @@ class Runtime {
     this._mockFactories[moduleID] = mockFactory;
   }
 
-  clearAllMocks() {
-    this._moduleMocker.clearAllMocks();
+  resetAllMocks() {
+    this._moduleMocker.resetAllMocks();
   }
 
   _resolveModule(from: Path, to?: ?string) {
@@ -459,10 +462,15 @@ class Runtime {
       const config = this._config;
       const relative = filePath => path.relative(config.rootDir, filePath);
       if (e.constructor.name === 'SyntaxError') {
-        const hasPreprocessor = config.scriptPreprocessor;
-        const preprocessorInfo = hasPreprocessor
-          ? relative(config.scriptPreprocessor)
-          : `No preprocessor specified, consider installing 'babel-jest'`;
+        const maybePreprocessor = config.transform &&
+          config.transform.length &&
+          config.transform.find(
+            ([regex, _]) => new RegExp(regex).test(filename),
+          );
+        const preprocessorInfo = maybePreprocessor ? (
+          `Preprocessor for ${maybePreprocessor[0]}: ` +
+          `${relative(maybePreprocessor[1])}`
+        ) : `No preprocessor specified, consider installing 'babel-jest'`;
         const babelInfo = config.usesBabelJest
           ? `Make sure your '.babelrc' is set up correctly, ` +
             `for example it should include the 'es2015' preset.\n`
@@ -470,10 +478,10 @@ class Runtime {
         /* eslint-disable max-len */
         throw new SyntaxError(
           `${e.message} in file '${relative(filename)}'.\n\n` +
-          `Make sure your preprocessor is set up correctly and ensure ` +
-          `your 'preprocessorIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/configuration.html#preprocessorignorepatterns-array-string\n` +
-          'If you are currently setting up Jest or modifying your preprocessor, try `jest --no-cache`.\n' +
-          `Preprocessor: ${preprocessorInfo}.\n${babelInfo}`,
+          `Make sure your transform config is set up correctly and ensure ` +
+          `your 'transformIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/configuration.html#transformignorepatterns-array-string\n` +
+          'If you are currently setting up Jest or modifying your transform config, try `jest --no-cache`.\n' +
+          `${preprocessorInfo}.\n${babelInfo}`,
         );
         /* eslint-enable max-len */
       }
@@ -670,20 +678,6 @@ class Runtime {
     };
     const unmock = (moduleName: string) => {
       const moduleID = this._normalizeID(from, moduleName);
-      if (
-        !this._shouldAutoMock &&
-        this._config.automock === false &&
-        this._explicitShouldMock[moduleID] !== true
-      ) {
-        this._environment.global.console.warn(
-          `jest.unmock('${moduleName}') was called but automocking is ` +
-          `disabled. Remove the unnecessary call to \`jest.unmock\` or ` +
-          `enable automocking for this test via \`jest.enableAutomock();\`. ` +
-          `This warning is likely a result of a default configuration change ` +
-          `in Jest 15.\n\n` +
-          `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html`,
-        );
-      }
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
@@ -710,8 +704,8 @@ class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
-    const clearAllMocks = () => {
-      this.clearAllMocks();
+    const resetAllMocks = () => {
+      this.resetAllMocks();
       return runtime;
     };
     const useFakeTimers = () => {
@@ -728,30 +722,18 @@ class Runtime {
     };
 
     const runtime = {
-      addMatchers: (matchers: Object) => {
-        const jasmine = this._environment.global.jasmine;
-        const addMatchers =
-          jasmine.addMatchers || jasmine.getEnv().currentSpec.addMatchers;
-        addMatchers(matchers);
-      },
+      addMatchers:
+        (matchers: Object) =>
+          this._environment.global.jasmine.addMatchers(matchers),
 
       autoMockOff: disableAutomock,
-      disableAutomock,
-
       autoMockOn: enableAutomock,
-      enableAutomock,
-
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
-
+      deepUnmock,
+      disableAutomock,
+      doMock: mock,
       dontMock: unmock,
-      unmock,
-
-      genMockFromModule: (moduleName: string) => {
-        return this._generateMock(from, moduleName);
-      },
-      genMockFunction:
-        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
-      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      enableAutomock,
       fn: (impl: ?Function) => {
         const fn = this._moduleMocker.getMockFunction();
         if (impl) {
@@ -759,28 +741,30 @@ class Runtime {
         }
         return fn;
       },
+      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      genMockFromModule:
+        (moduleName: string) => this._generateMock(from, moduleName),
+      genMockFunction:
+        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
       isMockFunction: this._moduleMocker.isMockFunction,
 
-      doMock: mock,
       mock,
-
-      clearAllMocks,
-
-      resetModules,
+      resetAllMocks,
       resetModuleRegistry: resetModules,
+      resetModules,
 
-      runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
+      runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
-      runTimersToTime: (msToRun: number) =>
-        this._environment.fakeTimers.runTimersToTime(msToRun),
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
+      runTimersToTime: (msToRun: number) =>
+        this._environment.fakeTimers.runTimersToTime(msToRun),
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
 
-      deepUnmock,
+      unmock,
 
       useFakeTimers,
       useRealTimers,

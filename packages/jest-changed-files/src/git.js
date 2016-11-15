@@ -64,6 +64,6 @@ function isGitRepository(cwd: string): Promise<?string> {
 }
 
 module.exports = {
-  isGitRepository,
   findChangedFiles,
+  isGitRepository,
 };

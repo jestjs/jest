@@ -1,9 +1,10 @@
 /**
- * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
  */
 
 'use strict';
@@ -20,24 +21,19 @@ const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 
 const BULLET = chalk.bold('\u25cf ');
-const JEST15_MESSAGE = `
+const DEPRECATION_MESSAGE = `
 
-  Jest 15 changed the default configuration for tests and makes Jest easier to
-  use and less confusing for beginners. All previous defaults can be restored
-  if your project depends on it. A comprehensive explanation of the breaking
-  changes and an upgrade guide can be found in the release blog post linked
-  below.
+  Jest changed the default configuration for tests.
 
-  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
   ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/configuration.html
-  ${chalk.bold('Release Blog Post:')} https://facebook.github.io/jest/blog/2016/09/01/jest-15.html
+  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
 `;
 const throwConfigurationError = message => {
-  throw new Error(chalk.red(message + JEST15_MESSAGE));
+  throw new Error(chalk.red(message + DEPRECATION_MESSAGE));
 };
 
 const logConfigurationWarning = message => {
-  console.warn(chalk.yellow(BULLET + message + JEST15_MESSAGE));
+  console.warn(chalk.yellow(BULLET + message + DEPRECATION_MESSAGE));
 };
 
 function _replaceRootDirTags(rootDir, config) {
@@ -150,6 +146,11 @@ function normalize(config, argv) {
           config.moduleNameMapper,
         );
       }
+      // Don't show deprecation warnings if the setting comes from the preset.
+      if (preset.preprocessorIgnorePatterns) {
+        preset.transformIgnorePatterns = preset.preprocessorIgnorePatterns;
+        delete preset.preprocessorIgnorePatterns;
+      }
       config = Object.assign({}, preset, config);
     } else {
       throw new Error(
@@ -158,76 +159,58 @@ function normalize(config, argv) {
     }
   }
 
+  if (config.scriptPreprocessor && config.transform) {
+    throwConfigurationError(
+      'Jest: `scriptPreprocessor` and `transform` cannot be used together. ' +
+      'Please change your configuration to only use `transform`.',
+    );
+  }
+
+  if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
+    throwConfigurationError(
+      'Jest: `preprocessorIgnorePatterns` and `transformIgnorePatterns` ' +
+      'cannot be used together. Please change your configuration to only ' +
+      'use `transformIgnorePatterns`.',
+    );
+  }
+
+  if (config.scriptPreprocessor) {
+    config.transform = {
+      '.*': config.scriptPreprocessor,
+    };
+  }
+
+  if (config.preprocessorIgnorePatterns) {
+    config.transformIgnorePatterns = config.preprocessorIgnorePatterns;
+  }
+
+  if (
+    config.scriptPreprocessor ||
+    config.preprocessorIgnorePatterns
+  ) {
+    logConfigurationWarning(
+      'The settings `scriptPreprocessor` and `preprocessorIgnorePatterns` ' +
+      'were replaced by `transform` and `transformIgnorePatterns` ' +
+      'which support multiple preprocessors.\n\n' +
+      '  Jest now treats your current settings as: \n\n' +
+      `    "transform": {".*": "${config.scriptPreprocessor}"}` +
+      (config.transformIgnorePatterns
+        ? `\n    "transformIgnorePatterns": "${config.transformIgnorePatterns}"`
+        : ''
+      ) +
+      '\n\n  Please update your configuration.',
+    );
+  }
+
+  delete config.scriptPreprocessor;
+  delete config.preprocessorIgnorePatterns;
+
   if (!config.name) {
     config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
   }
 
   if (!config.setupFiles) {
     config.setupFiles = [];
-  }
-
-  // Warn or throw for deprecated or removed configuration options.
-  if (config.automock === false) {
-    logConfigurationWarning(
-      'Automocking was disabled by default in Jest. The setting ' +
-      '`"automock": false` can safely be removed from Jest\'s config.',
-    );
-  }
-
-  if (
-    config.unmockedModulePathPatterns &&
-    (
-      !('automock' in config) ||
-      config.automock === false
-    )
-  ) {
-    logConfigurationWarning(
-      'The `unmockedModulePathPatterns` setting is defined but automocking ' +
-      'is disabled in Jest. Please either remove ' +
-      '`unmockedModulePathPatterns` from your configuration or explicitly ' +
-      'set `"automock": true` in your configuration if you wish to use ' +
-      'automocking.',
-    );
-  }
-
-  if (config.setupEnvScriptFile) {
-    throwConfigurationError(
-      'The setting `setupEnvScriptFile` was removed from Jest. Instead, use ' +
-      'the `setupFiles` setting:\n\n' +
-      '    "setupFiles": [' + JSON.stringify(config.setupEnvScriptFile) + ']',
-    );
-  }
-
-  if ('persistModuleRegistryBetweenSpecs' in config) {
-    throwConfigurationError(
-      'The setting `persistModuleRegistryBetweenSpecs` was removed from ' +
-      'Jest. ' + (
-        config.persistModuleRegistryBetweenSpecs
-          ? 'This configuration option can safely be removed.'
-          : 'Set `"resetModules": true` in your configuration to retain the ' +
-            'previous behavior'
-      ),
-    );
-  }
-
-  if (config.testDirectoryName || config.testFileExtensions) {
-    const moduleFileExtensions =
-      config.moduleFileExtensions ||
-      DEFAULT_CONFIG_VALUES.moduleFileExtensions;
-    const extensions = Array.from(
-      new Set((config.testFileExtensions || [])
-        .concat(moduleFileExtensions),
-    ));
-
-    const testRegex =
-      '(/' + (config.testDirectoryName || '__tests__') + '/' +
-      '.*|\\\\.(test|spec))\\\\.(' + extensions.join('|') + ')$';
-
-    throw throwConfigurationError(
-      'The settings `testDirectoryName` and `testFileExtensions` were ' +
-      'removed from Jest. Instead, use `testRegex` like this:\n' +
-      '    "testRegex": "' + testRegex + '"',
-    );
   }
 
   if (argv.testRunner) {
@@ -261,23 +244,30 @@ function normalize(config, argv) {
   }
 
   let babelJest;
-  if (config.scriptPreprocessor) {
-    config.scriptPreprocessor =
-      _replaceRootDirTags(config.rootDir, config.scriptPreprocessor);
-    if (
-      config.scriptPreprocessor.includes(
-        constants.NODE_MODULES + 'babel-jest',
-      )
-      || config.scriptPreprocessor.includes('packages/babel-jest')
-  ) {
-      babelJest = config.scriptPreprocessor;
+  if (config.transform) {
+    const customJSPattern = Object.keys(config.transform).find(regex => {
+      const pattern = new RegExp(regex);
+      return pattern.test('foobar.js') || pattern.test('foobar.jsx');
+    });
+
+    if (customJSPattern) {
+      const jsTransformer = config.transform[customJSPattern];
+      if (
+        jsTransformer.includes(
+          constants.NODE_MODULES + 'babel-jest',
+        ) || jsTransformer.includes('packages/babel-jest')
+      ) {
+        babelJest = jsTransformer;
+      }
     }
   } else {
     babelJest = Resolver.findNodeModule('babel-jest', {
       basedir: config.rootDir,
     });
     if (babelJest) {
-      config.scriptPreprocessor = babelJest;
+      config.transform = {
+        [constants.DEFAULT_JS_PATTERN]: babelJest,
+      };
     }
   }
 
@@ -307,13 +297,13 @@ function normalize(config, argv) {
         break;
 
       case 'setupFiles':
+      case 'snapshotSerializers':
       case 'testPathDirs':
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, filePath),
         ));
         break;
-
       case 'collectCoverageFrom':
         if (!config[key]) {
           value = [];
@@ -333,7 +323,6 @@ function normalize(config, argv) {
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
-      case 'scriptPreprocessor':
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -349,11 +338,20 @@ function normalize(config, argv) {
           _replaceRootDirTags(config.rootDir, config[key][regex]),
         ]);
         break;
+      case 'transform':
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          path.resolve(
+            config.rootDir,
+            _replaceRootDirTags(config.rootDir, config[key][regex]),
+          ),
+        ]);
+        break;
 
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
-      case 'preprocessorIgnorePatterns':
       case 'testPathIgnorePatterns':
+      case 'transformIgnorePatterns':
       case 'unmockedModulePathPatterns':
         // _replaceRootDirTags is specifically well-suited for substituting
         // <rootDir> in paths (it deals with properly interpreting relative path
@@ -371,7 +369,6 @@ function normalize(config, argv) {
       case 'bail':
       case 'browser':
       case 'cache':
-      case 'clearMocks':
       case 'collectCoverage':
       case 'colors':
       case 'coverageCollector':
@@ -391,6 +388,7 @@ function normalize(config, argv) {
       case 'persistModuleRegistryBetweenSpecs':
       case 'preset':
       case 'replname':
+      case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
       case 'testEnvironment':

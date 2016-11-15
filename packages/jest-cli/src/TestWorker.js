@@ -34,15 +34,15 @@ const formatError = error => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
-      stack,
       message,
+      stack,
       type: 'Error',
     };
   }
 
   return {
-    stack: error.stack,
     message: error.message,
+    stack: error.stack,
     type: error.type || 'Error',
   };
 };

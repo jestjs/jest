@@ -59,7 +59,7 @@ describe('no babel-jest', () => {
   });
 });
 
-describe('custom preprocessor', () => {
+describe('custom transformer', () => {
   const dir = path.resolve(
     __dirname,
     '..',
@@ -80,5 +80,28 @@ describe('custom preprocessor', () => {
     // coverage should be empty because there's no real instrumentation
     expect(stdout).toMatchSnapshot();
     expect(status).toBe(0);
+  });
+});
+
+describe('multiple-transformers', () => {
+  const dir = path.resolve(
+    __dirname,
+    '..',
+    'transform/multiple-transformers',
+  );
+
+  beforeEach(() => {
+    if (process.platform !== 'win32') {
+      run('npm install', dir);
+      linkJestPackage('babel-jest', dir);
+    }
+  });
+
+  it('transforms dependencies using specific transformers', () => {
+    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+
+    expect(stderr).toMatch(/PASS/);
+    expect(json.numTotalTests).toBe(1);
+    expect(json.numPassedTests).toBe(1);
   });
 });

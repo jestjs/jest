@@ -17,6 +17,8 @@ const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
 const SnapshotState = require('./State');
+const {getPlugins, addPlugins} = require('./plugins');
+
 const {
  EXPECTED_COLOR,
  ensureNoExpected,
@@ -51,13 +53,18 @@ const cleanup = (hasteFS: HasteFS, update: boolean) => {
 
 let snapshotState;
 
-const initializeSnapshotState
-  = (testFile: Path, update: boolean) => new SnapshotState(testFile, update);
+const initializeSnapshotState = (
+  testFile: Path,
+  update: boolean,
+  testPath: string,
+  expand: boolean,
+) => new SnapshotState(testFile, update, testPath, expand);
 
 const getSnapshotState = () => snapshotState;
 
 const toMatchSnapshot = function(received: any, expected: void) {
   this.dontThrow();
+
   const {currentTestName, isNot, snapshotState} = this;
 
   if (isNot) {
@@ -76,7 +83,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
   const {pass} = result;
 
   if (pass) {
-    return {pass: true, message: ''};
+    return {message: '', pass: true};
   } else {
     const {count, expected, actual} = result;
 
@@ -89,6 +96,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
       {
         aAnnotation: 'Snapshot',
         bAnnotation: 'Received',
+        expand: snapshotState.expand,
       },
     );
 
@@ -101,7 +109,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
         EXPECTED_COLOR('+ ' + actualString)
       ));
 
-    return {pass: false, message};
+    return {message, pass: false};
   }
 };
 
@@ -139,7 +147,9 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
 module.exports = {
   EXTENSION: SNAPSHOT_EXTENSION,
   SnapshotState,
+  addPlugins,
   cleanup,
+  getPlugins,
   getSnapshotState,
   initializeSnapshotState,
   toMatchSnapshot,

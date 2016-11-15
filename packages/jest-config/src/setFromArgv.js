@@ -69,13 +69,11 @@ function setFromArgv(config, argv) {
     config.watch = true;
   }
 
-  config.noStackTrace = argv.noStackTrace;
+  if (argv.expand) {
+    config.expand = argv.expand;
+  }
 
-  config.testcheckOptions = {
-    times: argv.testcheckTimes,
-    maxSize: argv.testcheckMaxSize,
-    seed: argv.testcheckSeed,
-  };
+  config.noStackTrace = argv.noStackTrace;
 
   return config;
 }

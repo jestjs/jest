@@ -13,8 +13,6 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Path} from 'types/Config';
 import type {PatternInfo} from './SearchSource';
 
-require('jest-haste-map').fastpath.replace();
-
 const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
@@ -67,8 +65,8 @@ const getMaxWorkers = argv => {
 const buildTestPathPatternInfo = (argv: Object): PatternInfo => {
   const defaultPattern = {
     input: '',
-    testPathPattern: '',
     shouldTreatInputAsPattern: false,
+    testPathPattern: '',
   };
   const validatePattern = patternInfo => {
     const {testPathPattern} = patternInfo;
@@ -99,17 +97,17 @@ const buildTestPathPatternInfo = (argv: Object): PatternInfo => {
   if (argv.testPathPattern) {
     return validatePattern({
       input: argv.testPathPattern,
-      testPathPattern: argv.testPathPattern,
       shouldTreatInputAsPattern: true,
+      testPathPattern: argv.testPathPattern,
     });
   }
   if (argv._ && argv._.length) {
     return validatePattern({
-      input: argv._.join(' '),
       findRelatedTests: argv.findRelatedTests,
+      input: argv._.join(' '),
       paths: argv._,
-      testPathPattern: argv._.join('|'),
       shouldTreatInputAsPattern: false,
+      testPathPattern: argv._.join('|'),
     });
   }
   return defaultPattern;
@@ -196,8 +194,8 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
           hasteMap,
           config,
           {
-            maxWorkers,
             getTestSummary: () => getTestSummary(argv, patternInfo),
+            maxWorkers,
           },
         ).runTests(data.paths, testWatcher);
       })
@@ -451,9 +449,9 @@ const runCLI = (
 };
 
 module.exports = {
+  SearchSource,
+  TestRunner,
   getVersion: () => VERSION,
   run,
   runCLI,
-  SearchSource,
-  TestRunner,
 };

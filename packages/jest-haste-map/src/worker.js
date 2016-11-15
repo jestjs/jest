@@ -20,7 +20,7 @@ const H = require('./constants');
 const docblock = require('./lib/docblock');
 const extractRequires = require('./lib/extractRequires');
 const fs = require('graceful-fs');
-const path = require('./fastpath');
+const path = require('path');
 
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
@@ -28,15 +28,15 @@ const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 const formatError = (error: string|Error): Error => {
   if (typeof error === 'string') {
     return {
-      stack: null,
       message: error,
+      stack: null,
       type: 'Error',
     };
   }
 
   return {
-    stack: error.stack,
     message: error.message,
+    stack: error.stack,
     type: error.type || 'Error',
   };
 };
@@ -64,7 +64,7 @@ module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
       }
     }
 
-    callback(null, {id, module, dependencies});
+    callback(null, {dependencies, id, module});
   } catch (error) {
     callback(formatError(error));
   }

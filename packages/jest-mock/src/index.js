@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Global} from 'types/Global';
+
 type Mock = any;
 export type MockFunctionMetadata = {
   ref?: any,
@@ -22,62 +24,71 @@ export type MockFunctionMetadata = {
 };
 
 type MockFunctionState = {
-  instances: Array<any>,
-  calls: Array<Array<any>>,
+  public: {
+    instances: Array<any>,
+    calls: Array<Array<any>>,
+  },
+  private: {
+    isReturnValueLastSet: boolean,
+    defaultReturnValue: any,
+    mockImpl: any,
+    specificReturnValues: Array<any>,
+    specificMockImpls: Array<any>,
+  },
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
 
 // $FlowFixMe
 const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
-  do: true,
-  if: true,
-  in: true,
-  for: true,
-  let: true,
-  new: true,
-  try: true,
-  var: true,
-  case: true,
-  else: true,
-  enum: true,
-  eval: true,
-  null: true,
-  this: true,
-  true: true,
-  void: true,
-  with: true,
+  arguments: true,
   await: true,
   break: true,
+  case: true,
   catch: true,
   class: true,
   const: true,
-  false: true,
-  super: true,
-  throw: true,
-  while: true,
-  yield: true,
+  continue: true,
+  debugger: true,
+  default: true,
   delete: true,
+  do: true,
+  else: true,
+  enum: true,
+  eval: true,
   export: true,
+  extends: true,
+  false: true,
+  finally: true,
+  for: true,
+  function: true,
+  if: true,
+  implements: true,
   import: true,
+  in: true,
+  instanceof: true,
+  interface: true,
+  let: true,
+  new: true,
+  null: true,
+  package: true,
+  private: true,
+  protected: true,
   public: true,
   return: true,
   static: true,
+  super: true,
   switch: true,
+  this: true,
+  throw: true,
+  true: true,
+  try: true,
   typeof: true,
-  default: true,
-  extends: true,
-  finally: true,
-  package: true,
-  private: true,
-  continue: true,
-  debugger: true,
-  function: true,
-  arguments: true,
-  interface: true,
-  protected: true,
-  implements: true,
-  instanceof: true,
+  var: true,
+  void: true,
+  while: true,
+  with: true,
+  yield: true,
 });
 
 function isA(typeName: string, value: any): boolean {
@@ -91,7 +102,12 @@ function getType(ref?: any): string|null {
     return 'array';
   } else if (isA('Object', ref)) {
     return 'object';
-  } else if (isA('Number', ref) || isA('String', ref) || isA('Boolean', ref)) {
+  } else if (
+    isA('Number', ref) ||
+    isA('String', ref) ||
+    isA('Boolean', ref) ||
+    isA('Symbol', ref)
+  ) {
     return 'constant';
   } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
     return 'collection';
@@ -156,65 +172,51 @@ function getSlots(object?: Object): Array<string> {
   return Object.keys(slots);
 }
 
-function createMockFunction(
-  metadata: MockFunctionMetadata,
-  mockConstructor: () => any,
-): any {
-  let name = metadata.name;
-  // Special case functions named `mockConstructor` to guard for infinite loops.
-  if (!name || name === MOCK_CONSTRUCTOR_NAME) {
-    return mockConstructor;
-  }
-
-  // Preserve `name` property of mocked function.
-  const boundFunctionPrefix = 'bound ';
-  let bindCall = '';
-  // if-do-while for perf reasons. The common case is for the if to fail.
-  if (name && name.startsWith(boundFunctionPrefix)) {
-    do {
-      name = name.substring(boundFunctionPrefix.length);
-      // Call bind() just to alter the function name.
-      bindCall = '.bind(null)';
-    } while (name && name.startsWith(boundFunctionPrefix));
-  }
-
-  // It's a syntax error to define functions with a reserved keyword
-  // as name.
-  if (RESERVED_KEYWORDS[name]) {
-    name = '$' + name;
-  }
-
-  // It's also a syntax error to define a function with a reserved character
-  // as part of it's name.
-  if (/[\s-]/.test(name)) {
-    name = name.replace(/[\s-]/g, '$');
-  }
-
-  /* eslint-disable no-new-func */
-  return new Function(
-    MOCK_CONSTRUCTOR_NAME,
-    'return function ' + name + '() {' +
-      'return ' + MOCK_CONSTRUCTOR_NAME + '.apply(this,arguments);' +
-    '}' + bindCall,
-  )(mockConstructor);
-  /* eslint-enable no-new-func */
-}
-
 
 class ModuleMocker {
+  _environmentGlobal: Global;
   _mockRegistry: WeakMap<Function, MockFunctionState>;
 
-  constructor() {
+  /**
+   * @see README.md
+   * @param global Global object of the test environment, used to create
+   * mocks
+   */
+  constructor(global: Global) {
+    this._environmentGlobal = global;
     this._mockRegistry = new WeakMap();
+  }
+
+  _ensureMock(f: Mock): MockFunctionState {
+    if (!this._mockRegistry.has(f)) {
+      this._mockRegistry.set(f, this._defaultMockState());
+    }
+    return this._mockRegistry.get(f);
+  }
+
+  _defaultMockState(): MockFunctionState {
+    return {
+      private: {
+        defaultReturnValue: undefined,
+        isReturnValueLastSet: false,
+        mockImpl: undefined,
+        specificMockImpls: [],
+        specificReturnValues: [],
+      },
+      public: {
+        calls: [],
+        instances: [],
+      },
+    };
   }
 
   _makeComponent(metadata: MockFunctionMetadata): Mock {
     if (metadata.type === 'object') {
-      return {};
+      return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
-      return [];
+      return new this._environmentGlobal.Array();
     } else if (metadata.type === 'regexp') {
-      return new RegExp('');
+      return new this._environmentGlobal.RegExp('');
     } else if (
       metadata.type === 'constant' ||
       metadata.type === 'collection' ||
@@ -223,14 +225,9 @@ class ModuleMocker {
     ) {
       return metadata.value;
     } else if (metadata.type === 'function') {
-      let isReturnValueLastSet = false;
-      let defaultReturnValue;
-      let mockImpl;
       /* eslint-disable prefer-const */
       let f;
-      /* eslint-enable perfer-const */
-      const specificReturnValues = [];
-      const specificMockImpls = [];
+      /* eslint-enable prefer-const */
 
       const prototype = (
         metadata.members &&
@@ -240,8 +237,9 @@ class ModuleMocker {
       const prototypeSlots = getSlots(prototype);
       const mocker = this;
       const mockConstructor = function() {
-        f.mock.instances.push(this);
-        f.mock.calls.push(Array.prototype.slice.call(arguments));
+        const mockState = mocker._ensureMock(f);
+        mockState.public.instances.push(this);
+        mockState.public.calls.push(Array.prototype.slice.call(arguments));
         if (this instanceof f) {
           // This is probably being called as a constructor
           prototypeSlots.forEach(slot => {
@@ -256,7 +254,10 @@ class ModuleMocker {
           });
 
           // Run the mock constructor implementation
-          return mockImpl && mockImpl.apply(this, arguments);
+          return (
+            mockState.private.mockImpl &&
+            mockState.private.mockImpl.apply(this, arguments)
+          );
         }
 
         let returnValue;
@@ -264,10 +265,10 @@ class ModuleMocker {
         // mockReturnValueOnce()/mockReturnValue() is called and no
         // mockImplementationOnce()/mockImplementation() is called after that.
         // use the set return value.
-        if (isReturnValueLastSet) {
-          returnValue = specificReturnValues.shift();
+        if (mockState.private.isReturnValueLastSet) {
+          returnValue = mockState.private.specificReturnValues.shift();
           if (returnValue === undefined) {
-            returnValue = defaultReturnValue;
+            returnValue = mockState.private.defaultReturnValue;
           }
         }
 
@@ -275,9 +276,9 @@ class ModuleMocker {
         // or specific return values are used up, use the mock implementation.
         let specificMockImpl;
         if (returnValue === undefined) {
-          specificMockImpl = specificMockImpls.shift();
+          specificMockImpl = mockState.private.specificMockImpls.shift();
           if (specificMockImpl === undefined) {
-            specificMockImpl = mockImpl;
+            specificMockImpl = mockState.private.mockImpl;
           }
           if (specificMockImpl) {
             return specificMockImpl.apply(this, arguments);
@@ -292,59 +293,60 @@ class ModuleMocker {
         return returnValue;
       };
 
-      f = createMockFunction(metadata, mockConstructor);
+      f = this._createMockFunction(metadata, mockConstructor);
       f._isMockFunction = true;
-      f.getMockImplementation = () => mockImpl;
+      f.getMockImplementation = () => this._ensureMock(f).private.mockImpl;
 
-      this._mockRegistry.set(f, {calls: [], instances: []});
+      this._mockRegistry.set(f, this._defaultMockState());
 
       // $FlowFixMe - defineProperty getters not supported
       Object.defineProperty(f, 'mock', {
         configurable: false,
         enumerable: true,
-
-        get: () => {
-          if (!this._mockRegistry.has(f)) {
-            this._mockRegistry.set(f, {calls: [], instances: []});
-          }
-
-          return this._mockRegistry.get(f);
-        },
-
-        set: val => this._mockRegistry.set(f, val),
+        get: () => this._ensureMock(f).public,
+        set: val => this._ensureMock(f).public = val,
       });
 
       f.mockClear = () => {
-        f.mock.calls.length = 0;
-        f.mock.instances.length = 0;
+        const publicState = this._ensureMock(f).public;
+        publicState.calls.length = 0;
+        publicState.instances.length = 0;
+      };
+
+      f.mockReset = () => {
+        this._mockRegistry.delete(f);
       };
 
       f.mockReturnValueOnce = value => {
         // next function call will return this value or default return value
-        isReturnValueLastSet = true;
-        specificReturnValues.push(value);
+        const privateState = this._ensureMock(f).private;
+        privateState.isReturnValueLastSet = true;
+        privateState.specificReturnValues.push(value);
         return f;
       };
 
       f.mockReturnValue = value => {
         // next function call will return specified return value or this one
-        isReturnValueLastSet = true;
-        defaultReturnValue = value;
+        const privateState = this._ensureMock(f).private;
+        privateState.isReturnValueLastSet = true;
+        privateState.defaultReturnValue = value;
         return f;
       };
 
       f.mockImplementationOnce = fn => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
-        isReturnValueLastSet = false;
-        specificMockImpls.push(fn);
+        const privateState = this._ensureMock(f).private;
+        privateState.isReturnValueLastSet = false;
+        privateState.specificMockImpls.push(fn);
         return f;
       };
 
       f.mockImplementation = f.mockImpl = fn => {
         // next function call will use mock implementation return value
-        isReturnValueLastSet = false;
-        mockImpl = fn;
+        const privateState = this._ensureMock(f).private;
+        privateState.isReturnValueLastSet = false;
+        privateState.mockImpl = fn;
         return f;
       };
 
@@ -362,6 +364,52 @@ class ModuleMocker {
       const unknownType = metadata.type || 'undefined type';
       throw new Error('Unrecognized type ' + unknownType);
     }
+  }
+
+  _createMockFunction(
+    metadata: MockFunctionMetadata,
+    mockConstructor: () => any,
+  ): any {
+    let name = metadata.name;
+    // Special case functions named `mockConstructor` to guard for infinite
+    // loops.
+    if (!name || name === MOCK_CONSTRUCTOR_NAME) {
+      return mockConstructor;
+    }
+
+    // Preserve `name` property of mocked function.
+    const boundFunctionPrefix = 'bound ';
+    let bindCall = '';
+    // if-do-while for perf reasons. The common case is for the if to fail.
+    if (name && name.startsWith(boundFunctionPrefix)) {
+      do {
+        name = name.substring(boundFunctionPrefix.length);
+        // Call bind() just to alter the function name.
+        bindCall = '.bind(null)';
+      } while (name && name.startsWith(boundFunctionPrefix));
+    }
+
+    // It's a syntax error to define functions with a reserved keyword
+    // as name.
+    if (RESERVED_KEYWORDS[name]) {
+      name = '$' + name;
+    }
+
+    // It's also a syntax error to define a function with a reserved character
+    // as part of it's name.
+    if (/[\s-]/.test(name)) {
+      name = name.replace(/[\s-]/g, '$');
+    }
+
+    const body =
+      'return function ' + name + '() {' +
+        'return ' + MOCK_CONSTRUCTOR_NAME + '.apply(this,arguments);' +
+      '}' + bindCall;
+    const createConstructor = new this._environmentGlobal.Function(
+      MOCK_CONSTRUCTOR_NAME,
+      body,
+    );
+    return createConstructor(mockConstructor);
   }
 
   _generateMock(
@@ -509,7 +557,7 @@ class ModuleMocker {
     return this.getMockFunction();
   }
 
-  clearAllMocks() {
+  resetAllMocks() {
     this._mockRegistry = new WeakMap();
   }
 }

@@ -225,8 +225,7 @@ class TestRunner {
       )
     );
 
-    const finalizeResults = () => {
-      // Update snapshot state.
+    const updateSnapshotState = () => {
       const status =
         snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
@@ -237,21 +236,6 @@ class TestRunner {
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved
         )
-      );
-
-      aggregatedResults.wasInterrupted = watcher.isInterrupted();
-
-      // Check if the test run was successful or not.
-      const anyTestFailures = !(
-        aggregatedResults.numFailedTests === 0 &&
-        aggregatedResults.numRuntimeErrorTestSuites === 0
-      );
-      const anyReporterErrors = this._dispatcher.hasErrors();
-
-      aggregatedResults.success = !(
-        anyTestFailures ||
-        aggregatedResults.snapshot.failure ||
-        anyReporterErrors
       );
     };
 
@@ -278,8 +262,23 @@ class TestRunner {
         }
       })
       .then(() => {
-        finalizeResults();
+        updateSnapshotState();
+        aggregatedResults.wasInterrupted = watcher.isInterrupted();
+
         this._dispatcher.onRunComplete(config, aggregatedResults);
+
+        const anyTestFailures = !(
+          aggregatedResults.numFailedTests === 0 &&
+          aggregatedResults.numRuntimeErrorTestSuites === 0
+        );
+        const anyReporterErrors = this._dispatcher.hasErrors();
+
+        aggregatedResults.success = !(
+          anyTestFailures ||
+          aggregatedResults.snapshot.failure ||
+          anyReporterErrors
+        );
+
         this._cacheTestResults(aggregatedResults);
         return aggregatedResults;
       });
@@ -325,8 +324,8 @@ class TestRunner {
     const farm = workerFarm({
       autoStart: true,
       maxConcurrentCallsPerWorker: 1,
-      maxRetries: 2, // Allow for a couple of transient errors.
       maxConcurrentWorkers: this._options.maxWorkers,
+      maxRetries: 2, // Allow for a couple of transient errors.
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
     // Send test suites to workers continuously instead of all at once to track
@@ -336,7 +335,7 @@ class TestRunner {
         return Promise.reject();
       }
       this._dispatcher.onTestStart(config, path);
-      return promisify(farm)({path, config});
+      return promisify(farm)({config, path});
     });
 
     const onError = (err, path) => {
@@ -359,7 +358,7 @@ class TestRunner {
     });
 
     const runAllTests = Promise.all(testPaths.map(path => {
-      return runTestInWorker({path, config})
+      return runTestInWorker({config, path})
         .then(testResult => onResult(path, testResult))
         .catch(error => onError(error, path));
     }));
@@ -404,15 +403,15 @@ class TestRunner {
 
 const createAggregatedResults = (numTotalTestSuites: number) => {
   return {
-    numFailedTests: 0,
     numFailedTestSuites: 0,
-    numPassedTests: 0,
+    numFailedTests: 0,
     numPassedTestSuites: 0,
-    numPendingTests: 0,
+    numPassedTests: 0,
     numPendingTestSuites: 0,
+    numPendingTests: 0,
     numRuntimeErrorTestSuites: 0,
-    numTotalTests: 0,
     numTotalTestSuites,
+    numTotalTests: 0,
     snapshot: {
       added: 0,
       didUpdate: false, // is set only after the full run
@@ -523,7 +522,7 @@ class ReporterDispatcher {
   _runnerContext: RunnerContext;
 
   constructor(hasteFS: HasteFS, getTestSummary: () => string) {
-    this._runnerContext = {hasteFS, getTestSummary};
+    this._runnerContext = {getTestSummary, hasteFS};
     this._reporters = [];
   }
 

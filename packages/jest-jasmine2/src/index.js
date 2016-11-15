@@ -21,8 +21,7 @@ const fs = require('graceful-fs');
 const path = require('path');
 const vm = require('vm');
 
-const JASMINE_PATH = require.resolve('../vendor/jasmine-2.4.1.js');
-const JASMINE_CHECK_PATH = require.resolve('./jasmine-check');
+const JASMINE_PATH = require.resolve('../vendor/jasmine-2.5.2.js');
 
 const jasmineScript = new vm.Script(fs.readFileSync(JASMINE_PATH, 'utf8'), {
   displayErrors: true,
@@ -60,43 +59,25 @@ function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (!jasmine || !env) {
-    throw new Error('jasmine2 could not be initialized by Jest');
-  }
-
-  runtime.setMock(
-    '',
-    'jest-check',
-    () => {
-      const jasmineCheck = runtime.requireInternalModule(JASMINE_CHECK_PATH);
-      return jasmineCheck(environment.global, config.testcheckOptions);
-    },
-    {virtual: true},
-  );
-
   env.beforeEach(() => {
     if (config.resetModules) {
       runtime.resetModules();
     }
 
-    if (config.clearMocks) {
-      runtime.clearAllMocks();
+    if (config.resetMocks) {
+      runtime.resetAllMocks();
     }
   });
 
   env.addReporter(reporter);
 
-  // `jest-matchers` should be required inside test environment (vm).
-  // Otherwise if they throw, the `Error` class will differ from the `Error`
-  // class of the test and `error instanceof Error` will return `false`.
   runtime.requireInternalModule(
-    path.resolve(__dirname, './extendJasmineExpect.js'),
-  )();
+    path.resolve(__dirname, './jest-expect.js'),
+  )(config);
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
-  )({testPath, config});
-
+  )({config, testPath});
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
