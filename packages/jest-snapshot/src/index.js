@@ -62,7 +62,7 @@ const initializeSnapshotState = (
 
 const getSnapshotState = () => snapshotState;
 
-const toMatchSnapshot = function(received: any, expected: void) {
+const toMatchSnapshot = function(received: any, testName?: string) {
   this.dontThrow && this.dontThrow();
 
   const {currentTestName, isNot, snapshotState} = this;
@@ -73,13 +73,11 @@ const toMatchSnapshot = function(received: any, expected: void) {
     );
   }
 
-  ensureNoExpected(expected, '.toMatchSnapshot');
-
   if (!snapshotState) {
     throw new Error('Jest: snapshot state must be initialized.');
   }
 
-  const result = snapshotState.match(currentTestName, received);
+  const result = snapshotState.match(testName || currentTestName, received);
   const {pass} = result;
 
   if (pass) {
