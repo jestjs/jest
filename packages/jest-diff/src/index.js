@@ -60,34 +60,51 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
     case 'number':
     case 'boolean':
       return null;
+    case 'map':
+      return compareObjects(sortMap(a), sortMap(b), options);
+    case 'set':
+      return compareObjects(sortSet(a), sortSet(b), options);
     default:
-      let diffMessage;
-      let hasThrown = false;
-
-      try {
-        diffMessage = diffStrings(
-          prettyFormat(a, FORMAT_OPTIONS),
-          prettyFormat(b, FORMAT_OPTIONS),
-          options,
-        );
-      } catch (e) {
-        hasThrown = true;
-      }
-
-      // If the comparison yields no results, compare again but this time
-      // without calling `toJSON`. It's also possible that toJSON might throw.
-      if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
-        diffMessage = diffStrings(
-          prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
-          prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
-          options,
-        );
-        if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
-          diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
-        }
-      }
-      return diffMessage;
+      return compareObjects(a, b, options);
   }
+}
+
+function sortMap(map) {
+  return new Map(Array.from(map.entries()).sort());
+}
+
+function sortSet(set) {
+  return new Set(Array.from(set.values()).sort());
+}
+
+function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
+  let diffMessage;
+  let hasThrown = false;
+
+  try {
+    diffMessage = diffStrings(
+      prettyFormat(a, FORMAT_OPTIONS),
+      prettyFormat(b, FORMAT_OPTIONS),
+      options,
+    );
+  } catch (e) {
+    hasThrown = true;
+  }
+
+  // If the comparison yields no results, compare again but this time
+  // without calling `toJSON`. It's also possible that toJSON might throw.
+  if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
+    diffMessage = diffStrings(
+      prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
+      prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
+      options,
+    );
+    if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
+      diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
+    }
+  }
+
+  return diffMessage;
 }
 
 module.exports = diff;

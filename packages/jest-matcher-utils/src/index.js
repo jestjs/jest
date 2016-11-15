@@ -21,6 +21,8 @@ export type ValueType =
   | 'number'
   | 'object'
   | 'regexp'
+  | 'map'
+  | 'set'
   | 'string'
   | 'symbol'
   | 'undefined';
@@ -65,6 +67,10 @@ const getType = (value: any): ValueType => {
   } else if (typeof value === 'object') {
     if (value.constructor === RegExp) {
       return 'regexp';
+    } else if (value.constructor === Map) {
+      return 'map';
+    } else if (value.constructor === Set) {
+      return 'set';
     }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
