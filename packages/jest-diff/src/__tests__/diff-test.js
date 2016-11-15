@@ -69,7 +69,7 @@ describe('no visual difference', () => {
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 
     expect(stripAnsi(diff(arg1, arg2))).toBe(
-        'Compared values have no visual difference.',
+      'Compared values have no visual difference.',
     );
   });
 });
