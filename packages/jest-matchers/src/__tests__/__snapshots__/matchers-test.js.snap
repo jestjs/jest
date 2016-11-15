@@ -1624,11 +1624,11 @@ Not to contain value:
 "
 `;
 
-exports[`.toContain() '{Symbol(Symbol.iterator): [Function anonymous]}' contains '1' 1`] = `
+exports[`.toContain() '{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}' contains '1' 1`] = `
 "[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
 Expected object:
-  [31m{Symbol(Symbol.iterator): [Function anonymous]}[39m
+  [31m{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}[39m
 Not to contain value:
   [32m1[39m
 "
