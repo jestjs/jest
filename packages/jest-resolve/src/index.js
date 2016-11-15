@@ -96,7 +96,7 @@ class Resolver {
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
-    const extensions = this._options.extensions;
+    const extensions = this._options.extensions.slice();
     if (this._supportsNativePlatform()) {
       extensions.unshift('.' + NATIVE_PLATFORM + '.js');
     }
