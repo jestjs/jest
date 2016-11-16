@@ -1721,6 +1721,141 @@ Received:
   [31mtrue[39m"
 `;
 
+exports[`.toHaveLength error cases 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have a \'length\' prorerty that is a number. Received:
+  [31m{\"a\": 9}[39m
+received.length:
+  [31mundefined[39m"
+`;
+
+exports[`.toHaveLength error cases 2`] = `
+"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have a \'length\' prorerty that is a number. Received:
+  [31m0[39m
+"
+`;
+
+exports[`.toHaveLength error cases 3`] = `
+"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have a \'length\' prorerty that is a number. Received:
+  [31mundefined[39m
+"
+`;
+
+exports[`.toHaveLength expect("").toHaveLength(0) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to not have length:
+  [32m0[39m
+Received:
+  [31m\"\"[39m
+received.length:
+  [31m0[39m"
+`;
+
+exports[`.toHaveLength expect("").toHaveLength(1) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have length:
+  [32m1[39m
+Received:
+  [31m\"\"[39m
+received.length:
+  [31m0[39m"
+`;
+
+exports[`.toHaveLength expect("abc").toHaveLength(3) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to not have length:
+  [32m3[39m
+Received:
+  [31m\"abc\"[39m
+received.length:
+  [31m3[39m"
+`;
+
+exports[`.toHaveLength expect("abc").toHaveLength(66) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have length:
+  [32m66[39m
+Received:
+  [31m\"abc\"[39m
+received.length:
+  [31m3[39m"
+`;
+
+exports[`.toHaveLength expect(["a", "b"]).toHaveLength(2) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to not have length:
+  [32m2[39m
+Received:
+  [31m[\"a\", \"b\"][39m
+received.length:
+  [31m2[39m"
+`;
+
+exports[`.toHaveLength expect(["a", "b"]).toHaveLength(99) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have length:
+  [32m99[39m
+Received:
+  [31m[\"a\", \"b\"][39m
+received.length:
+  [31m2[39m"
+`;
+
+exports[`.toHaveLength expect([1, 2]).toHaveLength(2) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to not have length:
+  [32m2[39m
+Received:
+  [31m[1, 2][39m
+received.length:
+  [31m2[39m"
+`;
+
+exports[`.toHaveLength expect([1, 2]).toHaveLength(3) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have length:
+  [32m3[39m
+Received:
+  [31m[1, 2][39m
+received.length:
+  [31m2[39m"
+`;
+
+exports[`.toHaveLength expect(Array []).toHaveLength(0) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to not have length:
+  [32m0[39m
+Received:
+  [31mArray [][39m
+received.length:
+  [31m0[39m"
+`;
+
+exports[`.toHaveLength expect(Array []).toHaveLength(1) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toHaveLength([22m[32mlength[39m[2m)[22m
+
+Expected value to have length:
+  [32m1[39m
+Received:
+  [31mArray [][39m
+received.length:
+  [31m0[39m"
+`;
+
 exports[`.toMatch() passes: [Foo bar, /^foo/i] 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toMatch([22m[32mexpected[39m[2m)[22m
 
