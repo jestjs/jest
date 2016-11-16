@@ -62,13 +62,19 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
       return null;
     case 'map':
       return compareObjects(sortMap(a), sortMap(b), options);
+    case 'set':
+      return compareObjects(sortSet(a), sortSet(b), options);
     default:
       return compareObjects(a, b, options);
   }
 }
 
-function sortMap(map) {
+function sortMap(map: Map): Map {
   return new Map([...map.entries()].sort());
+}
+
+function sortSet(set: Set): Set {
+  return new Set([...set.values()].sort());
 }
 
 function compareObjects(a: Object, b: Object, options: ?DiffOptions) {

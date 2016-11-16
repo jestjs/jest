@@ -1635,9 +1635,9 @@ Not to contain value:
 `;
 
 exports[`.toContain() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+"[2mexpect([22m[31mset[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
-Expected object:
+Expected set:
   [31mSet {\"abc\", \"def\"}[39m
 Not to contain value:
   [32m\"abc\"[39m
@@ -1741,9 +1741,9 @@ Not to contain a value equal to:
 `;
 
 exports[`.toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
+"[2mexpect([22m[31mset[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
-Expected object:
+Expected set:
   [31mSet {1, 2, 3, 4}[39m
 Not to contain a value equal to:
   [32m1[39m

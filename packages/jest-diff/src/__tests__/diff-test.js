@@ -64,7 +64,7 @@ describe('no visual difference', () => {
     );
   });
 
-  test('Map key order should not matter', () => {
+  test('Map key order should be irrelevant', () => {
     const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
     const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
 
@@ -72,6 +72,15 @@ describe('no visual difference', () => {
       'Compared values have no visual difference.',
     );
   });
+
+  test('Set value order should be irrelevant', () => {
+    const arg1 = new Set([1, 2]);
+    const arg2 = new Set([2, 1]);
+
+    expect(stripAnsi(diff(arg1, arg2))).toBe(
+      'Compared values have no visual difference.',
+    );
+  })
 });
 
 test('oneline strings', () => {
