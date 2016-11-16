@@ -316,7 +316,8 @@ const matchers: MatchersObject = {
         converted = Array.from(collection);
       } catch (e) {
         throw new Error(
-          `.toContain() only works with strings and array-like structures.\n` +
+          matcherHint('[.not].toContainEqual', 'collection', 'value') + '\n\n' +
+          `Expected ${RECEIVED_COLOR('collection')} to be an array-like structure.\n` +
           printWithType('Received', collection, printReceived),
         );
       }
@@ -349,7 +350,8 @@ const matchers: MatchersObject = {
         converted = Array.from(collection);
       } catch (e) {
         throw new Error(
-          `.toContainEqual() only works with array-like structures.\n` +
+          matcherHint('[.not].toContainEqual', 'collection', 'value') + '\n\n' +
+          `Expected ${RECEIVED_COLOR('collection')} to be an array-like structure.\n` +
           printWithType('Received', collection, printReceived),
         );
       }

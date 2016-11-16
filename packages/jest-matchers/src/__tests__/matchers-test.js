@@ -351,6 +351,11 @@ describe('.toContain()', () => {
         .toThrowErrorMatchingSnapshot();
     });
   });
+
+  test('error cases', () => {
+    expect(() => jestExpect(null).toContain(1))
+      .toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('.toContainEqual()', () => {
@@ -371,6 +376,8 @@ describe('.toContainEqual()', () => {
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
       jestExpect(list).toContainEqual(v);
+      expect(() => jestExpect(list).not.toContainEqual(v))
+        .toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -383,6 +390,11 @@ describe('.toContainEqual()', () => {
       expect(() => jestExpect(list).toContainEqual(v))
         .toThrowErrorMatchingSnapshot();
     });
+  });
+
+  test('error cases', () => {
+    expect(() => jestExpect(null).toContainEqual(1))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 
