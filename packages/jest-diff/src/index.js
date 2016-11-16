@@ -70,11 +70,11 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
 }
 
 function sortMap(map) {
-  return new Map([...map.entries()].sort());
+  return new Map(Array.from(map.entries()).sort());
 }
 
 function sortSet(set) {
-  return new Set([...set.values()].sort());
+  return new Set(Array.from(set.values()).sort());
 }
 
 function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
