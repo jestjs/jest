@@ -69,11 +69,11 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
   }
 }
 
-function sortMap(map: Map): Map {
+function sortMap(map) {
   return new Map([...map.entries()].sort());
 }
 
-function sortSet(set: Set): Set {
+function sortSet(set) {
   return new Set([...set.values()].sort());
 }
 

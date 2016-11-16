@@ -80,7 +80,7 @@ describe('no visual difference', () => {
     expect(stripAnsi(diff(arg1, arg2))).toBe(
       'Compared values have no visual difference.',
     );
-  })
+  });
 });
 
 test('oneline strings', () => {
