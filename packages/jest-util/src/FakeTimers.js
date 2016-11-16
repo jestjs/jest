@@ -53,6 +53,7 @@ class FakeTimers {
   _global: Global;
   _immediates: Array<Tick>;
   _maxLoops: number;
+  _moduleMocker: ModuleMocker;
   _now: number;
   _ticks: Array<Tick>;
   _timerAPIs: TimerAPI;
@@ -70,8 +71,7 @@ class FakeTimers {
     this._config = config;
     this._maxLoops = maxLoops || 100000;
     this._uuidCounter = 1;
-
-    this.reset();
+    this._moduleMocker = moduleMocker;
 
     // Store original timer APIs for future reference
     this._timerAPIs = {
@@ -83,24 +83,15 @@ class FakeTimers {
       setTimeout: global.setTimeout,
     };
 
-    const fn = impl => moduleMocker.getMockFn().mockImpl(impl);
-
-    this._fakeTimerAPIs = {
-      clearImmediate: fn(this._fakeClearImmediate.bind(this)),
-      clearInterval: fn(this._fakeClearTimer.bind(this)),
-      clearTimeout: fn(this._fakeClearTimer.bind(this)),
-      setImmediate: fn(this._fakeSetImmediate.bind(this)),
-      setInterval: fn(this._fakeSetInterval.bind(this)),
-      setTimeout: fn(this._fakeSetTimeout.bind(this)),
-    };
-
     // If there's a process.nextTick on the global, mock it out
     // (only applicable to node/node-emulating environments)
     if (typeof global.process === 'object'
       && typeof global.process.nextTick === 'function') {
       this._timerAPIs.nextTick = global.process.nextTick;
-      this._fakeTimerAPIs.nextTick = fn(this._fakeNextTick.bind(this));
     }
+
+    this.reset();
+    this._createMocks();
 
     // These globally-accessible function are now deprecated!
     // They will go away very soon, so do not use them!
@@ -330,6 +321,8 @@ class FakeTimers {
       typeof this._global.process === 'object'
       && typeof this._global.process.nextTick === 'function';
 
+    this._createMocks();
+
     this._global.clearImmediate = this._fakeTimerAPIs.clearImmediate;
     this._global.clearInterval = this._fakeTimerAPIs.clearInterval;
     this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
@@ -352,6 +345,25 @@ class FakeTimers {
         `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
         `Stack Trace:\n` + formatStackTrace(new Error().stack, this._config),
       );
+    }
+  }
+
+  _createMocks() {
+    const fn = impl => this._moduleMocker.getMockFn().mockImpl(impl);
+
+    this._fakeTimerAPIs = {
+      clearImmediate: fn(this._fakeClearImmediate.bind(this)),
+      clearInterval: fn(this._fakeClearTimer.bind(this)),
+      clearTimeout: fn(this._fakeClearTimer.bind(this)),
+      setImmediate: fn(this._fakeSetImmediate.bind(this)),
+      setInterval: fn(this._fakeSetInterval.bind(this)),
+      setTimeout: fn(this._fakeSetTimeout.bind(this)),
+    };
+
+    // If there's a process.nextTick on the global, mock it out
+    // (only applicable to node/node-emulating environments)
+    if (this._timerAPIs.nextTick) {
+      this._fakeTimerAPIs.nextTick = fn(this._fakeNextTick.bind(this));
     }
   }
 
