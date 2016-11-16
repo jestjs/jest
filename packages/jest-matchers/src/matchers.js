@@ -370,6 +370,44 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toHaveLength(received: any, length: number) {
+    if (
+      typeof received !== 'string' &&
+      (!received || typeof received.length !== 'number')
+    ) {
+      throw new Error(
+        matcherHint('[.not].toHaveLength', 'received', 'length') + '\n\n' +
+        `Expected value to have a 'length' prorerty that is a number. ` +
+        `Received:\n` +
+        `  ${printReceived(received)}\n` +
+        (
+          received
+            ? `received.length:\n  ${printReceived(received.length)}`
+            : ''
+        ),
+      );
+    }
+
+    const pass = received.length === length;
+    const message = pass
+    ? () => matcherHint('.not.toHaveLength', 'received', 'length') + '\n\n' +
+      `Expected value to not have length:\n` +
+      `  ${printExpected(length)}\n` +
+      `Received:\n` +
+      `  ${printReceived(received)}\n` +
+      `received.length:\n` +
+      `  ${printReceived(received.length)}`
+    : () => matcherHint('.toHaveLength', 'received', 'length') + '\n\n' +
+      `Expected value to have length:\n` +
+      `  ${printExpected(length)}\n` +
+      `Received:\n` +
+      `  ${printReceived(received)}\n` +
+      `received.length:\n` +
+      `  ${printReceived(received.length)}`;
+
+    return {message, pass};
+  },
+
   toMatch(received: string, expected: string | RegExp) {
     if (typeof received !== 'string') {
       throw new Error(
