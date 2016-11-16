@@ -410,7 +410,7 @@ exports[`toHaveBeenCalledTimes accepts only numbers 5`] = `
 
 Expected value must be a number.
 Got:
-  object: [32mMap {}[39m"
+  map: [32mMap {}[39m"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 6`] = `
