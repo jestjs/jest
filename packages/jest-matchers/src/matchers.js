@@ -33,6 +33,14 @@ const {
   printWithType,
 } = require('jest-matcher-utils');
 
+type ContainIterable = (
+  Array<any> |
+  Set<any> |
+  NodeList<any> |
+  DOMTokenList |
+  HTMLCollection<any>
+);
+
 const IteratorSymbol = Symbol.iterator;
 const equals = global.jasmine.matchersUtil.equals;
 
@@ -295,16 +303,28 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContain(collection: Array<any> | string, value: any) {
+  toContain(collection: ContainIterable | string, value: any) {
     const collectionType = getType(collection);
-    if (!Array.isArray(collection) && typeof collection !== 'string') {
-      throw new Error(
-        `.toContain() only works with arrays and strings.\n` +
-        printWithType('Received', collection, printReceived),
-      );
-    }
 
-    const pass = collection.indexOf(value) != -1;
+    let converted = null;
+    if (Array.isArray(collection) || typeof collection === 'string') {
+      // strings have `indexOf` so we don't need to convert
+      // arrays have `indexOf` and we don't want to make a copy
+      converted = collection;
+    } else {
+      try {
+        converted = Array.from(collection);
+      } catch (e) {
+        throw new Error(
+          matcherHint('[.not].toContainEqual', 'collection', 'value') + '\n\n' +
+          `Expected ${RECEIVED_COLOR('collection')} to be an array-like structure.\n` +
+          printWithType('Received', collection, printReceived),
+        );
+      }
+    }
+    // At this point, we're either a string or an Array,
+    // which was converted from an array-like structure.
+    const pass = converted.indexOf(value) != -1;
     const message = pass
       ? () => matcherHint('.not.toContain', collectionType, 'value') + '\n\n' +
         `Expected ${collectionType}:\n` +
@@ -320,17 +340,25 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContainEqual(collection: Array<any>, value: any) {
+  toContainEqual(collection: ContainIterable, value: any) {
     const collectionType = getType(collection);
-    if (!Array.isArray(collection)) {
-      throw new Error(
-        `.toContainEqual() only works with arrays.\n` +
-        printWithType('Received', collection, printReceived),
-      );
+    let converted = null;
+    if (Array.isArray(collection)) {
+      converted = collection;
+    } else {
+      try {
+        converted = Array.from(collection);
+      } catch (e) {
+        throw new Error(
+          matcherHint('[.not].toContainEqual', 'collection', 'value') + '\n\n' +
+          `Expected ${RECEIVED_COLOR('collection')} to be an array-like structure.\n` +
+          printWithType('Received', collection, printReceived),
+        );
+      }
     }
 
     const pass =
-      collection.findIndex(item => equals(item, value, [iterableEquality])) !== -1;
+      converted.findIndex(item => equals(item, value, [iterableEquality])) !== -1;
     const message = pass
       ? () => matcherHint('.not.toContainEqual', collectionType, 'value') + '\n\n' +
         `Expected ${collectionType}:\n` +

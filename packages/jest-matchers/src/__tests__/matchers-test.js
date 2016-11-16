@@ -13,6 +13,25 @@
 const jestExpect = require('../').expect;
 const {stringify} = require('jest-matcher-utils');
 
+const setupContain = () => {
+  const typedArray = new Int8Array(2);
+  typedArray[0] = 0;
+  typedArray[1] = 1;
+
+  const iterable = {
+    *[Symbol.iterator]() {
+      yield 1;
+      yield 2;
+      yield 3;
+    },
+  };
+
+  return {
+    iterable,
+    typedArray,
+  };
+};
+
 describe('.toBe()', () => {
   it('does not throw', () => {
     jestExpect('a').not.toBe('b');
@@ -295,6 +314,10 @@ describe(
 );
 
 describe('.toContain()', () => {
+  const {
+    iterable,
+    typedArray,
+  } = setupContain();
   [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
@@ -303,6 +326,9 @@ describe('.toContain()', () => {
     [[Symbol.for('a')], Symbol.for('a')],
     ['abcdef', 'abc'],
     ['11112111', '2'],
+    [new Set(['abc', 'def']), 'abc'],
+    [typedArray, 1],
+    [iterable, 1],
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
       jestExpect(list).toContain(v);
@@ -325,9 +351,18 @@ describe('.toContain()', () => {
         .toThrowErrorMatchingSnapshot();
     });
   });
+
+  test('error cases', () => {
+    expect(() => jestExpect(null).toContain(1))
+      .toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('.toContainEqual()', () => {
+  const {
+    iterable,
+    typedArray,
+  } = setupContain();
   [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
@@ -335,9 +370,14 @@ describe('.toContainEqual()', () => {
     [[undefined, null], undefined],
     [[Symbol.for('a')], Symbol.for('a')],
     [[{a:'b'}, {a:'c'}], {a:'b'}],
+    [new Set([1, 2, 3, 4]), 1],
+    [typedArray, 1],
+    [iterable, 1],
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
       jestExpect(list).toContainEqual(v);
+      expect(() => jestExpect(list).not.toContainEqual(v))
+        .toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -350,6 +390,11 @@ describe('.toContainEqual()', () => {
       expect(() => jestExpect(list).toContainEqual(v))
         .toThrowErrorMatchingSnapshot();
     });
+  });
+
+  test('error cases', () => {
+    expect(() => jestExpect(null).toContainEqual(1))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 

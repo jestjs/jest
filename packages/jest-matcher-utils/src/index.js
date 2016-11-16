@@ -95,8 +95,8 @@ const printExpected = (value: any) => EXPECTED_COLOR(stringify(value));
 
 const printWithType = (
   name: string,
-  received: string,
-  print: (value: string) => string,
+  received: any,
+  print: (value: any) => string,
 ) => {
   const type = getType(received);
   return (
