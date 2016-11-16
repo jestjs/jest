@@ -13,6 +13,25 @@
 const jestExpect = require('../').expect;
 const {stringify} = require('jest-matcher-utils');
 
+const setupContain = () => {
+  const typedArray = new Int8Array(2);
+  typedArray[0] = 0;
+  typedArray[1] = 1;
+
+  const iterable = {
+    *[Symbol.iterator]() {
+      yield 1;
+      yield 2;
+      yield 3;
+    },
+  };
+
+  return {
+    iterable,
+    typedArray,
+  };
+};
+
 describe('.toBe()', () => {
   it('does not throw', () => {
     jestExpect('a').not.toBe('b');
@@ -295,6 +314,10 @@ describe(
 );
 
 describe('.toContain()', () => {
+  const {
+    iterable,
+    typedArray,
+  } = setupContain();
   [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
@@ -303,6 +326,9 @@ describe('.toContain()', () => {
     [[Symbol.for('a')], Symbol.for('a')],
     ['abcdef', 'abc'],
     ['11112111', '2'],
+    [new Set(['abc', 'def']), 'abc'],
+    [typedArray, 1],
+    [iterable, 1],
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
       jestExpect(list).toContain(v);
@@ -325,9 +351,18 @@ describe('.toContain()', () => {
         .toThrowErrorMatchingSnapshot();
     });
   });
+
+  test('error cases', () => {
+    expect(() => jestExpect(null).toContain(1))
+      .toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('.toContainEqual()', () => {
+  const {
+    iterable,
+    typedArray,
+  } = setupContain();
   [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
@@ -335,9 +370,14 @@ describe('.toContainEqual()', () => {
     [[undefined, null], undefined],
     [[Symbol.for('a')], Symbol.for('a')],
     [[{a:'b'}, {a:'c'}], {a:'b'}],
+    [new Set([1, 2, 3, 4]), 1],
+    [typedArray, 1],
+    [iterable, 1],
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
       jestExpect(list).toContainEqual(v);
+      expect(() => jestExpect(list).not.toContainEqual(v))
+        .toThrowErrorMatchingSnapshot();
     });
   });
 
@@ -350,6 +390,11 @@ describe('.toContainEqual()', () => {
       expect(() => jestExpect(list).toContainEqual(v))
         .toThrowErrorMatchingSnapshot();
     });
+  });
+
+  test('error cases', () => {
+    expect(() => jestExpect(null).toContainEqual(1))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -453,5 +498,44 @@ describe('.toMatch()', () => {
 
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
+  });
+});
+
+describe('.toHaveLength', () => {
+  [
+    [[1, 2], 2],
+    [[], 0],
+    [['a', 'b'], 2],
+    ['abc', 3],
+    ['', 0],
+  ].forEach(([received, length]) => {
+    test(`expect(${stringify(received)}).toHaveLength(${length})`, () => {
+      jestExpect(received).toHaveLength(length);
+      expect(() => jestExpect(received).not.toHaveLength(length))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+    [[1, 2], 3],
+    [[], 1],
+    [['a', 'b'], 99],
+    ['abc', 66],
+    ['', 1],
+  ].forEach(([received, length]) => {
+    test(`expect(${stringify(received)}).toHaveLength(${length})`, () => {
+      jestExpect(received).not.toHaveLength(length);
+      expect(() => jestExpect(received).toHaveLength(length))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  test('error cases', () => {
+    expect(() => jestExpect({a: 9}).toHaveLength(1))
+      .toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(0).toHaveLength(1))
+      .toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect(undefined).toHaveLength(1))
+      .toThrowErrorMatchingSnapshot();
   });
 });
