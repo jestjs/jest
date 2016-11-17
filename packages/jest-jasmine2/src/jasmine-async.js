@@ -76,6 +76,10 @@ function promisifyLifeCycleFunction(originalFn: Function, env) {
 
 function makeConcurrent(originalFn: Function, env) {
   return function(specName, fn, timeout) {
+    if (env != null && !env.specFilter({getFullName: () => specName || ''})) {
+      return originalFn.call(env, specName, () => Promise.resolve(), timeout);
+    }
+
     let promise;
 
     try {
