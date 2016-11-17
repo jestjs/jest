@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "17.0.2",
+  "version": "17.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-file-exists": "^17.0.0",
-    "jest-resolve": "^17.0.2"
+    "jest-resolve": "^17.0.3"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
