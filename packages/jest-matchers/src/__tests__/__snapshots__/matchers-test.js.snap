@@ -1508,7 +1508,7 @@ Matcher does not accept any arguments.
 Got: [32mnull[39m"
 `;
 
-exports[`.toContain() '"11112111"' contains '"2"' 1`] = `
+exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
 "[2mexpect([22m[31mstring[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
 Expected string:
@@ -1518,7 +1518,7 @@ Not to contain value:
 "
 `;
 
-exports[`.toContain() '"abcdef"' contains '"abc"' 1`] = `
+exports[`.toContain(), .toContainEqual() '"abcdef"' contains '"abc"' 1`] = `
 "[2mexpect([22m[31mstring[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
 Expected string:
@@ -1528,7 +1528,7 @@ Not to contain value:
 "
 `;
 
-exports[`.toContain() '["a", "b", "c", "d"]' contains '"a"' 1`] = `
+exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains '"a"' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1538,120 +1538,7 @@ Not to contain value:
 "
 `;
 
-exports[`.toContain() '[{}, Array []]' does not contain '{}' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[{}, Array []][39m
-To contain value:
-  [32m{}[39m"
-`;
-
-exports[`.toContain() '[{}, Array []]' does not contain 'Array []' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[{}, Array []][39m
-To contain value:
-  [32mArray [][39m"
-`;
-
-exports[`.toContain() '[0, 1]' contains '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected object:
-  [31m[0, 1][39m
-Not to contain value:
-  [32m1[39m
-"
-`;
-
-exports[`.toContain() '[1, 2, 3, 4]' contains '1' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[1, 2, 3, 4][39m
-Not to contain value:
-  [32m1[39m
-"
-`;
-
-exports[`.toContain() '[1, 2, 3]' does not contain '4' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[1, 2, 3][39m
-To contain value:
-  [32m4[39m"
-`;
-
-exports[`.toContain() '[Symbol(a)]' contains 'Symbol(a)' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[Symbol(a)][39m
-Not to contain value:
-  [32mSymbol(a)[39m
-"
-`;
-
-exports[`.toContain() '[null, undefined]' does not contain '1' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[null, undefined][39m
-To contain value:
-  [32m1[39m"
-`;
-
-exports[`.toContain() '[undefined, null]' contains 'null' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[undefined, null][39m
-Not to contain value:
-  [32mnull[39m
-"
-`;
-
-exports[`.toContain() '[undefined, null]' contains 'undefined' 1`] = `
-"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected array:
-  [31m[undefined, null][39m
-Not to contain value:
-  [32mundefined[39m
-"
-`;
-
-exports[`.toContain() '{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}' contains '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected object:
-  [31m{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}[39m
-Not to contain value:
-  [32m1[39m
-"
-`;
-
-exports[`.toContain() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected object:
-  [31mSet {\"abc\", \"def\"}[39m
-Not to contain value:
-  [32m\"abc\"[39m
-"
-`;
-
-exports[`.toContain() error cases 1`] = `
-"[2mexpect([22m[31mcollection[39m[2m)[.not].toContainEqual([22m[32mvalue[39m[2m)[22m
-
-Expected [31mcollection[39m to be an array-like structure.
-Received: [31mnull[39m"
-`;
-
-exports[`.toContainEqual() '["a", "b", "c", "d"]' contains a value equal to '"a"' 1`] = `
+exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains a value equal to '"a"' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1661,7 +1548,7 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '[{"a": "b"}, {"a": "c"}]' contains a value equal to '{"a": "b"}' 1`] = `
+exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' contains a value equal to '{"a": "b"}' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1671,7 +1558,7 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '[{"a": "b"}, {"a": "c"}]' does not contain a value equal to'{"a": "d"}' 1`] = `
+exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' does not contain a value equal to'{"a": "d"}' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1680,7 +1567,35 @@ To contain a value equal to:
   [32m{\"a\": \"d\"}[39m"
 `;
 
-exports[`.toContainEqual() '[0, 1]' contains a value equal to '1' 1`] = `
+exports[`.toContain(), .toContainEqual() '[{}, Array []]' does not contain '{}' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[{}, Array []][39m
+To contain value:
+  [32m{}[39m"
+`;
+
+exports[`.toContain(), .toContainEqual() '[{}, Array []]' does not contain 'Array []' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[{}, Array []][39m
+To contain value:
+  [32mArray [][39m"
+`;
+
+exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `
+"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected object:
+  [31m[0, 1][39m
+Not to contain value:
+  [32m1[39m
+"
+`;
+
+exports[`.toContain(), .toContainEqual() '[0, 1]' contains a value equal to '1' 1`] = `
 "[2mexpect([22m[31mobject[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected object:
@@ -1690,7 +1605,17 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '[1, 2, 3, 4]' contains a value equal to '1' 1`] = `
+exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains '1' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[1, 2, 3, 4][39m
+Not to contain value:
+  [32m1[39m
+"
+`;
+
+exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains a value equal to '1' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1700,7 +1625,26 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '[Symbol(a)]' contains a value equal to 'Symbol(a)' 1`] = `
+exports[`.toContain(), .toContainEqual() '[1, 2, 3]' does not contain '4' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[1, 2, 3][39m
+To contain value:
+  [32m4[39m"
+`;
+
+exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains 'Symbol(a)' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[Symbol(a)][39m
+Not to contain value:
+  [32mSymbol(a)[39m
+"
+`;
+
+exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains a value equal to 'Symbol(a)' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1710,7 +1654,36 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '[undefined, null]' contains a value equal to 'null' 1`] = `
+exports[`.toContain(), .toContainEqual() '[null, undefined]' does not contain '1' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[null, undefined][39m
+To contain value:
+  [32m1[39m"
+`;
+
+exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'null' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[undefined, null][39m
+Not to contain value:
+  [32mnull[39m
+"
+`;
+
+exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'undefined' 1`] = `
+"[2mexpect([22m[31marray[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+
+Expected array:
+  [31m[undefined, null][39m
+Not to contain value:
+  [32mundefined[39m
+"
+`;
+
+exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'null' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1720,7 +1693,7 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '[undefined, null]' contains a value equal to 'undefined' 1`] = `
+exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'undefined' 1`] = `
 "[2mexpect([22m[31marray[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected array:
@@ -1730,17 +1703,17 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() '{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}' contains a value equal to '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
+exports[`.toContain(), .toContainEqual() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
+"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
 Expected object:
-  [31m{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}[39m
-Not to contain a value equal to:
-  [32m1[39m
+  [31mSet {\"abc\", \"def\"}[39m
+Not to contain value:
+  [32m\"abc\"[39m
 "
 `;
 
-exports[`.toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
+exports[`.toContain(), .toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
 "[2mexpect([22m[31mobject[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected object:
@@ -1750,7 +1723,14 @@ Not to contain a value equal to:
 "
 `;
 
-exports[`.toContainEqual() error cases 1`] = `
+exports[`.toContain(), .toContainEqual() error cases 1`] = `
+"[2mexpect([22m[31mcollection[39m[2m)[.not].toContainEqual([22m[32mvalue[39m[2m)[22m
+
+Expected [31mcollection[39m to be an array-like structure.
+Received: [31mnull[39m"
+`;
+
+exports[`.toContain(), .toContainEqual() error cases 2`] = `
 "[2mexpect([22m[31mcollection[39m[2m)[.not].toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected [31mcollection[39m to be an array-like structure.

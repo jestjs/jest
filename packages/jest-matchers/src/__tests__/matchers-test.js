@@ -13,25 +13,6 @@
 const jestExpect = require('../').expect;
 const {stringify} = require('jest-matcher-utils');
 
-const setupContain = () => {
-  const typedArray = new Int8Array(2);
-  typedArray[0] = 0;
-  typedArray[1] = 1;
-
-  const iterable = {
-    *[Symbol.iterator]() {
-      yield 1;
-      yield 2;
-      yield 3;
-    },
-  };
-
-  return {
-    iterable,
-    typedArray,
-  };
-};
-
 describe('.toBe()', () => {
   it('does not throw', () => {
     jestExpect('a').not.toBe('b');
@@ -313,11 +294,31 @@ describe(
   },
 );
 
-describe('.toContain()', () => {
-  const {
-    iterable,
-    typedArray,
-  } = setupContain();
+describe('.toContain(), .toContainEqual()', () => {
+  const typedArray = new Int8Array(2);
+  typedArray[0] = 0;
+  typedArray[1] = 1;
+
+  test('iterable', () => {
+    // different node versions print iterable differently, so we can't
+    // use snapshots here.
+    const iterable = {
+      *[Symbol.iterator]() {
+        yield 1;
+        yield 2;
+        yield 3;
+      },
+    };
+
+    jestExpect(iterable).toContain(2);
+    jestExpect(iterable).toContainEqual(2);
+    expect(() => jestExpect(iterable).not.toContain(1))
+      .toThrowError('toContain');
+    expect(() => jestExpect(iterable).not.toContainEqual(1))
+      .toThrowError('toContainEqual');
+
+  });
+
   [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
@@ -328,7 +329,6 @@ describe('.toContain()', () => {
     ['11112111', '2'],
     [new Set(['abc', 'def']), 'abc'],
     [typedArray, 1],
-    [iterable, 1],
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
       jestExpect(list).toContain(v);
@@ -356,13 +356,7 @@ describe('.toContain()', () => {
     expect(() => jestExpect(null).toContain(1))
       .toThrowErrorMatchingSnapshot();
   });
-});
 
-describe('.toContainEqual()', () => {
-  const {
-    iterable,
-    typedArray,
-  } = setupContain();
   [
     [[1, 2, 3, 4], 1],
     [['a', 'b', 'c', 'd'], 'a'],
@@ -372,7 +366,6 @@ describe('.toContainEqual()', () => {
     [[{a:'b'}, {a:'c'}], {a:'b'}],
     [new Set([1, 2, 3, 4]), 1],
     [typedArray, 1],
-    [iterable, 1],
   ].forEach(([list, v]) => {
     it(`'${stringify(list)}' contains a value equal to '${stringify(v)}'`, () => {
       jestExpect(list).toContainEqual(v);
