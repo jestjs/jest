@@ -1634,16 +1634,6 @@ Not to contain value:
 "
 `;
 
-exports[`.toContain() '{Symbol(Symbol.iterator): [Function anonymous]}' contains '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
-
-Expected object:
-  [31m{Symbol(Symbol.iterator): [Function anonymous]}[39m
-Not to contain value:
-  [32m1[39m
-"
-`;
-
 exports[`.toContain() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
 "[2mexpect([22m[31mset[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
@@ -1745,16 +1735,6 @@ exports[`.toContainEqual() '{Symbol(Symbol.iterator): [Function [Symbol.iterator
 
 Expected object:
   [31m{Symbol(Symbol.iterator): [Function [Symbol.iterator]]}[39m
-Not to contain a value equal to:
-  [32m1[39m
-"
-`;
-
-exports[`.toContainEqual() '{Symbol(Symbol.iterator): [Function anonymous]}' contains a value equal to '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
-
-Expected object:
-  [31m{Symbol(Symbol.iterator): [Function anonymous]}[39m
 Not to contain a value equal to:
   [32m1[39m
 "
