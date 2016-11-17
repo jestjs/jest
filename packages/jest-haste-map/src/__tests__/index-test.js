@@ -683,10 +683,19 @@ describe('HasteMap', () => {
               '/fruits',
               undefined,
             );
+            mockEmitters['/fruits'].emit(
+              'all',
+              'delete',
+              'banana.js',
+              '/fruits',
+              undefined,
+            );
 
             hasteMap.once(
               'change',
               addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                expect(eventsQueue).toHaveLength(1);
+
                 expect(eventsQueue).toEqual([{
                   filePath,
                   stat: undefined,
@@ -751,6 +760,29 @@ describe('HasteMap', () => {
                 expect(moduleMap.getModule('Tomato')).toBeDefined();
                 expect(moduleMap.getModule('Pear')).toBeNull();
                 expect(moduleMap.getModule('Kiwi')).toBe('/fruits/pear.js');
+                next();
+              }),
+            );
+          },
+          () => {
+            mockEmitters['/fruits'].emit(
+              'all',
+              'change',
+              'tomato.js',
+              '/fruits',
+              statObject,
+            );
+            mockEmitters['/fruits'].emit(
+              'all',
+              'change',
+              'tomato.js',
+              '/fruits',
+              statObject,
+            );
+            hasteMap.once(
+              'change',
+              addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                expect(eventsQueue).toHaveLength(1);
                 next();
               }),
             );
