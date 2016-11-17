@@ -205,14 +205,13 @@ class HasteMap extends EventEmitter {
       platforms: options.platforms,
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
-      roots: options.roots,
+      roots: Array.from(new Set(options.roots)),
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman:
         options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
-
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.name}`,
