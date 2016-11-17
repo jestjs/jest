@@ -187,7 +187,7 @@ exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5]
 
 Expected value not to be close to (with [32m5[39m-digit precision):
   [32m0.000004[39m
-Received:
+Received: 
   [31m0[39m"
 `;
 
@@ -196,7 +196,7 @@ exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1
 
 Expected value not to be close to (with [32m3[39m-digit precision):
   [32m0.0001[39m
-Received:
+Received: 
   [31m0[39m"
 `;
 
@@ -205,7 +205,7 @@ exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] 
 
 Expected value not to be close to (with [32m0[39m-digit precision):
   [32m0.1[39m
-Received:
+Received: 
   [31m0[39m"
 `;
 
@@ -214,7 +214,7 @@ exports[`.toBeCloseTo() passes: [0, 0.001] 1`] = `
 
 Expected value not to be close to (with [32m2[39m-digit precision):
   [32m0.001[39m
-Received:
+Received: 
   [31m0[39m"
 `;
 
@@ -223,7 +223,7 @@ exports[`.toBeCloseTo() passes: [0, 0] 1`] = `
 
 Expected value not to be close to (with [32m2[39m-digit precision):
   [32m0[39m
-Received:
+Received: 
   [31m0[39m"
 `;
 
@@ -232,7 +232,7 @@ exports[`.toBeCloseTo() passes: [1.23, 1.225] 1`] = `
 
 Expected value not to be close to (with [32m2[39m-digit precision):
   [32m1.225[39m
-Received:
+Received: 
   [31m1.23[39m"
 `;
 
@@ -241,7 +241,7 @@ exports[`.toBeCloseTo() passes: [1.23, 1.226] 1`] = `
 
 Expected value not to be close to (with [32m2[39m-digit precision):
   [32m1.226[39m
-Received:
+Received: 
   [31m1.23[39m"
 `;
 
@@ -250,7 +250,7 @@ exports[`.toBeCloseTo() passes: [1.23, 1.229] 1`] = `
 
 Expected value not to be close to (with [32m2[39m-digit precision):
   [32m1.229[39m
-Received:
+Received: 
   [31m1.23[39m"
 `;
 
@@ -259,7 +259,7 @@ exports[`.toBeCloseTo() passes: [1.23, 1.234] 1`] = `
 
 Expected value not to be close to (with [32m2[39m-digit precision):
   [32m1.234[39m
-Received:
+Received: 
   [31m1.23[39m"
 `;
 
@@ -268,7 +268,7 @@ exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
 
 Expected value to be close to (with [32m2[39m-digit precision):
   [32m0.01[39m
-Received:
+Received: 
   [31m0[39m"
 `;
 
@@ -277,7 +277,7 @@ exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
 
 Expected value to be close to (with [32m2[39m-digit precision):
   [32m1.23[39m
-Received:
+Received: 
   [31m1[39m"
 `;
 
@@ -286,7 +286,7 @@ exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
 
 Expected value to be close to (with [32m2[39m-digit precision):
   [32m1.2249999[39m
-Received:
+Received: 
   [31m1.23[39m"
 `;
 
@@ -1704,9 +1704,9 @@ Not to contain a value equal to:
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
+"[2mexpect([22m[31mset[39m[2m).not.toContain([22m[32mvalue[39m[2m)[22m
 
-Expected object:
+Expected set:
   [31mSet {\"abc\", \"def\"}[39m
 Not to contain value:
   [32m\"abc\"[39m
@@ -1714,7 +1714,7 @@ Not to contain value:
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
-"[2mexpect([22m[31mobject[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
+"[2mexpect([22m[31mset[39m[2m).not.toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected set:
   [31mSet {1, 2, 3, 4}[39m
