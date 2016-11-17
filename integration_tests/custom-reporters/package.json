@@ -1,0 +1,8 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "reporters": [
+      ["<rootDir>/../../packages/jest-cli/build/reporters/XUnitReporter", {"file": "<rootDir>/../../xunit.xml"}]
+    ]
+  }
+}

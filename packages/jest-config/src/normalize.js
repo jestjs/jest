@@ -365,6 +365,18 @@ function normalize(config, argv) {
           ),
         );
         break;
+      case 'reporters':
+        if (!Array.isArray(config[key])) {
+          throw new Error(`
+            jest: "reporters" config must be an array.
+            Example:
+              "reporters": [
+                ['jest-cli/build/reporters/xunit', {"file": "report.xml"}]
+              ]
+          `);
+        }
+        value = _replaceRootDirTags(config.rootDir, config[key]);
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
