@@ -7,6 +7,7 @@
  *
  * @emails oncall+jsinfra
  */
+ /* eslint-disable max-len */
 
 'use strict';
 
@@ -530,5 +531,93 @@ describe('.toHaveLength', () => {
       .toThrowErrorMatchingSnapshot();
     expect(() => jestExpect(undefined).toHaveLength(1))
       .toThrowErrorMatchingSnapshot();
+  });
+});
+
+
+describe('.toHaveProperty()', () => {
+  [
+    [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
+    [{a: 0}, 'a', 0],
+    [{a: {b: undefined}}, 'a.b', undefined],
+    [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
+  ].forEach(([obj, path, value]) => {
+    test(
+      `{pass: true} expect(${stringify(obj)}).toHaveProperty('${path}', ${stringify(value)})`,
+      () => {
+        jestExpect(obj).toHaveProperty(path, value);
+        expect(() => jestExpect(obj).not.toHaveProperty(path, value))
+          .toThrowErrorMatchingSnapshot();
+      },
+    );
+  });
+
+  [
+    [{a: {b: {c: {d: 1}}}}, 'a.b.ttt.d', 1],
+    [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
+    [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
+    [{a: 1}, 'a.b.c.d', 5],
+    [{}, 'a', 'test'],
+    [{a: {b: 3}}, 'a.b', undefined],
+    [1, 'a.b.c', 'test'],
+    ['abc', 'a.b.c', {a: 5}],
+    [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
+  ].forEach(([obj, path, value]) => {
+    test(
+      `{pass: false} expect(${stringify(obj)}).toHaveProperty('${path}', ${stringify(value)})`,
+      () => {
+        expect(() => jestExpect(obj).toHaveProperty(path, value))
+          .toThrowErrorMatchingSnapshot();
+        jestExpect(obj).not.toHaveProperty(path, value);
+      },
+    );
+  });
+
+  [
+    [{a: {b: {c: {d: 1}}}}, 'a.b.c.d'],
+    [{a: 0}, 'a'],
+    [{a: {b: undefined}}, 'a.b'],
+  ].forEach(([obj, path]) => {
+    test(
+      `{pass: true} expect(${stringify(obj)}).toHaveProperty('${path}')'`,
+      () => {
+        jestExpect(obj).toHaveProperty(path);
+        expect(() => jestExpect(obj).not.toHaveProperty(path))
+          .toThrowErrorMatchingSnapshot();
+      },
+    );
+  });
+
+  [
+    [{a: {b: {c: {}}}}, 'a.b.c.d'],
+    [{a: 1}, 'a.b.c.d'],
+    [{}, 'a'],
+    [1, 'a.b.c'],
+    ['abc', 'a.b.c'],
+  ].forEach(([obj, path]) => {
+    test(
+      `{pass: false} expect(${stringify(obj)}).toHaveProperty('${path}')`,
+      () => {
+        expect(() => jestExpect(obj).toHaveProperty(path))
+          .toThrowErrorMatchingSnapshot();
+        jestExpect(obj).not.toHaveProperty(path);
+      },
+    );
+  });
+
+  [
+    [null, 'a.b'],
+    [undefined, 'a'],
+    [{a: {b: {}}}, undefined],
+    [{a: {b: {}}}, null],
+    [{a: {b: {}}}, 1],
+  ].forEach(([obj, path]) => {
+    test(
+      `{error} expect(${stringify(obj)}).toHaveProperty('${path}')`,
+      () => {
+        expect(() => jestExpect(obj).toHaveProperty(path))
+          .toThrowErrorMatchingSnapshot();
+      },
+    );
   });
 });

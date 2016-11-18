@@ -21,6 +21,7 @@ const {
 
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-util');
+const {getPath} = require('./utils');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -432,6 +433,69 @@ const matchers: MatchersObject = {
       `  ${printReceived(received)}\n` +
       `received.length:\n` +
       `  ${printReceived(received.length)}`;
+
+    return {message, pass};
+  },
+
+  toHaveProperty(object: Object, propPath: string, value?: any) {
+    const valuePassed = arguments.length === 3;
+
+    if (!object && typeof object !== 'string' && typeof object !== 'number') {
+      throw new Error(
+        matcherHint('[.not].toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+        `Expected ${RECEIVED_COLOR('object')} to be an object. Received:\n` +
+        `  ${getType(object)}: ${printReceived(object)}`,
+      );
+    }
+
+    if (getType(propPath) !== 'string') {
+      throw new Error(
+        matcherHint('[.not].toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+        `Expected ${EXPECTED_COLOR('path')} to be a string. Received:\n` +
+        `  ${getType(propPath)}: ${printReceived(propPath)}`,
+      );
+    }
+
+    const result = getPath(object, propPath);
+    const {lastTraversedObject, hasEndProp} = result;
+
+    let diffString;
+
+    if (valuePassed && result.hasOwnProperty('value')) {
+      diffString = diff(value, result.value, {
+        expand: this.expand,
+      });
+    }
+
+    const pass = valuePassed
+      ? equals(result.value, value, [iterableEquality])
+      : hasEndProp;
+
+    if (result.hasOwnProperty('value')) {
+      // we don't diff numbers. So instead we'll show the object that contains the resulting value.
+      // And to get that object we need to go up a level.
+      result.traversedPath.pop();
+    }
+    const traversedPath = result.traversedPath.join('.');
+
+    const message = pass
+      ? matcherHint('.not.toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+        `Expected the object:\n` +
+        `  ${printReceived(object)}\n` +
+        `Not to have a nested property:\n` +
+        `  ${printExpected(propPath)}\n` +
+        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
+      : matcherHint('.toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+        `Expected the object:\n` +
+        `  ${printReceived(object)}\n` +
+        `To have a nested property:\n` +
+        `  ${printExpected(propPath)}\n` +
+        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '') +
+        (traversedPath ? `Received:\n  ${RECEIVED_COLOR('object')}.${traversedPath}: ${printReceived(lastTraversedObject)}` : '') +
+        (diffString ? `\nDifference:\n\n${diffString}` : '');
+    if (pass === undefined) {
+      throw new Error('pass must be initialized');
+    }
 
     return {message, pass};
   },
