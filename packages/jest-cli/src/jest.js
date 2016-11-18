@@ -45,10 +45,10 @@ const KEYS = {
   CONTROL_D: '04',
   ENTER: '0d',
   ESCAPE: '1b',
-  QUESTION_MARK: '3f',
   O: '6f',
   P: '70',
   Q: '71',
+  QUESTION_MARK: '3f',
   U: '75',
 };
 
@@ -175,7 +175,7 @@ const usage = (
   ];
   /* eslint-enable max-len */
   return messages.filter(message => !!message).join(delimiter);
-}
+};
 
 const runJest = (config, argv, pipe, testWatcher, onComplete) => {
   const maxWorkers = getMaxWorkers(argv);
@@ -333,7 +333,7 @@ const runCLI = (
             results => {
               isRunning = false;
               didLastFail = !!results.snapshot.failure;
-              if(!process.env.JEST_HIDE_USAGE) {
+              if (!process.env.JEST_HIDE_USAGE) {
                 console.log(usage(argv, didLastFail));
               }
             },
