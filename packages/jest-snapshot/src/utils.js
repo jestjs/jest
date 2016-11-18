@@ -60,6 +60,7 @@ const addExtraLineBreaks =
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(prettyFormat(data, {
+    escapeRegex: true,
     plugins: getPlugins(),
     printFunctionName: false,
   }));

@@ -18,7 +18,7 @@
     "jest-haste-map": "^17.0.3",
     "jest-mock": "^17.0.2",
     "jest-resolve": "^17.0.3",
-    "jest-snapshot": "^17.0.3",
+    "jest-snapshot": "^17.0.4",
     "jest-util": "^17.0.2",
     "json-stable-stringify": "^1.0.0",
     "multimatch": "^2.1.0",
