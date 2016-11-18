@@ -45,6 +45,7 @@ const KEYS = {
   CONTROL_D: '04',
   ENTER: '0d',
   ESCAPE: '1b',
+  QUESTION_MARK: '3f',
   O: '6f',
   P: '70',
   Q: '71',
@@ -149,6 +150,32 @@ const getWatcher = (
     callback(watcher);
   });
 };
+
+const usage = (
+  argv,
+  snapshotFailure,
+  delimiter = '\n',
+) => {
+  /* eslint-disable max-len */
+  const messages = [
+    '\n' + chalk.bold('Watch Usage'),
+    argv.watch
+      ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
+      : null,
+    (argv.watchAll || argv._) && !argv.noSCM
+      ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
+      : null,
+    snapshotFailure
+      ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
+      : null,
+    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
+    chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
+    chalk.dim(' \u203A Press ') + '?' + chalk.dim(' to display usage.'),
+  ];
+  /* eslint-enable max-len */
+  return messages.filter(message => !!message).join(delimiter);
+}
 
 const runJest = (config, argv, pipe, testWatcher, onComplete) => {
   const maxWorkers = getMaxWorkers(argv);
@@ -278,6 +305,7 @@ const runCLI = (
         });
 
         let isRunning = false;
+        let didLastFail = false;
         let isEnteringPattern = false;
         let currentPattern = '';
         let timer: ?number;
@@ -304,24 +332,10 @@ const runCLI = (
             testWatcher,
             results => {
               isRunning = false;
-              /* eslint-disable max-len */
-              const messages = [
-                '\n' + chalk.bold('Watch Usage'),
-                argv.watch
-                  ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
-                  : null,
-                (argv.watchAll || argv._) && !argv.noSCM
-                  ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
-                  : null,
-                results.snapshot.failure
-                  ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
-                  : null,
-                chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
-                chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
-                chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
-              ];
-              /* eslint-enable max-len */
-              console.log(messages.filter(message => !!message).join('\n'));
+              didLastFail = !!results.snapshot.failure;
+              if(!process.env.JEST_HIDE_USAGE) {
+                console.log(usage(argv, didLastFail));
+              }
             },
           ).then(
             () => {},
@@ -392,6 +406,9 @@ const runCLI = (
               currentPattern = '';
               pipe.write('\n');
               writeCurrentPattern();
+              break;
+            case KEYS.QUESTION_MARK:
+              console.log(usage(argv, didLastFail));
               break;
           }
         };
