@@ -63,7 +63,7 @@ const initializeSnapshotState = (
 const getSnapshotState = () => snapshotState;
 
 const toMatchSnapshot = function(received: any, expected: void) {
-  this.dontThrow();
+  this.dontThrow && this.dontThrow();
 
   const {currentTestName, isNot, snapshotState} = this;
 
@@ -87,7 +87,6 @@ const toMatchSnapshot = function(received: any, expected: void) {
   } else {
     const {count, expected, actual} = result;
 
-
     const expectedString = expected.trim();
     const actualString = actual.trim();
     const diffMessage = diff(
@@ -100,21 +99,24 @@ const toMatchSnapshot = function(received: any, expected: void) {
       },
     );
 
-    const message =
-      () => matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
-      `${RECEIVED_COLOR('Received value')} does not match ` +
+    const report =
+      () => `${RECEIVED_COLOR('Received value')} does not match ` +
       `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
       (diffMessage || (
         RECEIVED_COLOR('- ' + expectedString) + '\n' +
         EXPECTED_COLOR('+ ' + actualString)
       ));
 
-    return {message, pass: false};
+    const message =
+      () => matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
+      report();
+
+    return {message, pass: false, report};
   }
 };
 
 const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
-  this.dontThrow();
+  this.dontThrow && this.dontThrow();
   const {isNot} = this;
 
   if (isNot) {
