@@ -160,11 +160,14 @@ const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
+  secondArgument?: ?string,
 ) => {
   return (
     chalk.dim('expect(') + RECEIVED_COLOR(received) +
     chalk.dim(')' + matcherName + '(') +
-    EXPECTED_COLOR(expected) + chalk.dim(')')
+    EXPECTED_COLOR(expected) +
+    (secondArgument ? `, ${EXPECTED_COLOR(secondArgument)}` : '') +
+    chalk.dim(')')
   );
 };
 
