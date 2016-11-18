@@ -23,4 +23,8 @@ describe('listFilesInDirectorySync', () => {
 
     expect(fileSummary.length).toBe(2);
   });
+
+  afterAll(() => {
+    jest.unmock('fs');
+  });
 });
