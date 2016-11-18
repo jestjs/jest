@@ -25,4 +25,6 @@ test('throwing not Error objects', () => {
   expect(extractSummary(stderr)).toMatchSnapshot();
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
   expect(extractSummary(stderr)).toMatchSnapshot();
+  stderr = runJest(dir, ['assertion-count-test.js']).stderr;
+  expect(extractSummary(stderr)).toMatchSnapshot();
 });

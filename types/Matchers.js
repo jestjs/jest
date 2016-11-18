@@ -27,6 +27,8 @@ export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
   currentTestName?: string,
   testPath?: Path,
+  assertionsExpected?: ?number,
+  assertionsMade?: number,
 };
 export type MatchersObject = {[id:string]: RawMatcherFn};
 export type Expect = (expected: any) => ExpectationObject;

@@ -34,21 +34,38 @@ const addSuppressedErrors = result => {
   }
 };
 
+const addAssertionErrors = result => {
+  const {assertionsMade, assertionsExpected} = getState();
+  setState({assertionsExpected: null, assertionsMade: 0});
+  if (
+    typeof assertionsExpected === 'number' && 
+    assertionsMade !== assertionsExpected
+  ) {
+    result.status = 'failed';
+    result.failedExpectations.push({
+      actual: assertionsMade,
+      expected: assertionsExpected,
+      message: `Excpected ${assertionsExpected} assertions, ` + 
+               `received ${assertionsMade} assertions`,
+      passed: false,
+    });
+  }
+};
+
 const patchJasmine = () => {
   global.jasmine.Spec = (realSpec => {
     const Spec = function Spec(attr) {
       const resultCallback = attr.resultCallback;
       attr.resultCallback = function(result) {
         addSuppressedErrors(result);
+        addAssertionErrors(result);
         resultCallback.call(attr, result);
       };
-
       const onStart = attr.onStart;
       attr.onStart = context => {
         setState({currentTestName: context.getFullName()});
         onStart && onStart.call(attr, context);
       };
-
       realSpec.call(this, attr);
     };
 
