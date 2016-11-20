@@ -1,19 +1,19 @@
 {
- "dependencies": {
-   "react": "15.3.0"
- },
- "devDependencies": {
-   "babel-jest": "*",
-   "babel-polyfill": "*",
-   "babel-preset-es2015": "*",
-   "babel-preset-react": "*",
-   "jest-cli": "*",
-   "react-test-renderer": "*"
- },
- "scripts": {
-   "test": "jest"
- },
- "jest": {
-   "testEnvironment": "node"
- }
+  "dependencies": {
+    "react": "^15.4.0"
+  },
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-polyfill": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "jest-cli": "*",
+    "react-test-renderer": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
 }

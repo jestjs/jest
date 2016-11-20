@@ -63,6 +63,24 @@ describe('no visual difference', () => {
       },
     );
   });
+
+  test('Map key order should be irrelevant', () => {
+    const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
+    const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
+
+    expect(stripAnsi(diff(arg1, arg2))).toBe(
+      'Compared values have no visual difference.',
+    );
+  });
+
+  test('Set value order should be irrelevant', () => {
+    const arg1 = new Set([1, 2]);
+    const arg2 = new Set([2, 1]);
+
+    expect(stripAnsi(diff(arg1, arg2))).toBe(
+      'Compared values have no visual difference.',
+    );
+  });
 });
 
 test('oneline strings', () => {
@@ -73,14 +91,14 @@ test('oneline strings', () => {
 });
 
 test('falls back to not call toJSON if objects look identical', () => {
-  const a = {toJSON, line: 1};
-  const b = {toJSON, line: 2};
+  const a = {line: 1, toJSON};
+  const b = {line: 2, toJSON};
   expect(diff(a, b)).toMatchSnapshot();
 });
 
 test('prints a fallback message if two objects truly look identical', () => {
-  const a = {toJSON, line: 2};
-  const b = {toJSON, line: 2};
+  const a = {line: 2, toJSON};
+  const b = {line: 2, toJSON};
   expect(diff(a, b)).toMatchSnapshot();
 });
 
@@ -121,18 +139,18 @@ test('booleans', () => {
 test('React elements', () => {
   const result = diff({
     $$typeof: Symbol.for('react.element'),
-    type: 'div',
     props: {
-      className: 'fun',
       children: 'Hello',
+      className: 'fun',
     },
+    type: 'div',
   }, {
     $$typeof: Symbol.for('react.element'),
-    type: 'div',
     className: 'fun',
     props: {
       children: 'Goodbye',
     },
+    type: 'div',
   });
   expect(stripAnsi(result)).toMatch(/<div[\s\S]+className="fun">/);
   expect(stripAnsi(result)).toMatch(/\-\s+Hello/);

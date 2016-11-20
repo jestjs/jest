@@ -84,4 +84,5 @@ describe('.getType()', () => {
   test('boolean', () => expect(getType(true)).toBe('boolean'));
   test('symbol', () => expect(getType(Symbol.for('a'))).toBe('symbol'));
   test('regexp', () => expect(getType(/abc/)).toBe('regexp'));
+  test('map', () => expect(getType(new Map())).toBe('map'));
 });

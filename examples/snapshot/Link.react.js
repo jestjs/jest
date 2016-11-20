@@ -3,8 +3,8 @@
 import React from 'react';
 
 const STATUS = {
-  NORMAL: 'normal',
   HOVERED: 'hovered',
+  NORMAL: 'normal',
 };
 
 export default class Link extends React.Component {

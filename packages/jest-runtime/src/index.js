@@ -727,22 +727,13 @@ class Runtime {
           this._environment.global.jasmine.addMatchers(matchers),
 
       autoMockOff: disableAutomock,
-      disableAutomock,
-
       autoMockOn: enableAutomock,
-      enableAutomock,
-
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
-
+      deepUnmock,
+      disableAutomock,
+      doMock: mock,
       dontMock: unmock,
-      unmock,
-
-      genMockFromModule: (moduleName: string) => {
-        return this._generateMock(from, moduleName);
-      },
-      genMockFunction:
-        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
-      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      enableAutomock,
       fn: (impl: ?Function) => {
         const fn = this._moduleMocker.getMockFunction();
         if (impl) {
@@ -750,28 +741,30 @@ class Runtime {
         }
         return fn;
       },
+      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      genMockFromModule:
+        (moduleName: string) => this._generateMock(from, moduleName),
+      genMockFunction:
+        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
       isMockFunction: this._moduleMocker.isMockFunction,
 
-      doMock: mock,
       mock,
-
       resetAllMocks,
-
-      resetModules,
       resetModuleRegistry: resetModules,
+      resetModules,
 
-      runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
+      runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
       runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
-      runTimersToTime: (msToRun: number) =>
-        this._environment.fakeTimers.runTimersToTime(msToRun),
       runOnlyPendingTimers: () =>
         this._environment.fakeTimers.runOnlyPendingTimers(),
+      runTimersToTime: (msToRun: number) =>
+        this._environment.fakeTimers.runTimersToTime(msToRun),
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
 
-      deepUnmock,
+      unmock,
 
       useFakeTimers,
       useRealTimers,

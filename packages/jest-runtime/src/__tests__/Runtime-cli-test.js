@@ -16,8 +16,8 @@ const path = require('path');
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 
 const run = args => spawnSync(JEST_RUNTIME, args, {
-  encoding: 'utf8',
   cwd: process.cwd(),
+  encoding: 'utf8',
   env: process.env,
 });
 

@@ -17,8 +17,8 @@ skipOnWindows.suite();
 test('config as JSON', () => {
   const result = runJest('verbose_reporter', [
     '--config=' + JSON.stringify({
-      testRegex: 'banana strawbery kiwi',
       testEnvironment: 'node',
+      testRegex: 'banana strawbery kiwi',
     }),
   ]);
   const stdout = result.stdout.toString();

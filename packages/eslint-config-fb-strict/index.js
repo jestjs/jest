@@ -34,8 +34,8 @@ module.exports = Object.assign({}, fbjsConfig, {
     'eol-last': [2],
     'max-len': [2, {
       'code': 80,
-      'ignoreUrls': true,
       'ignorePattern': maxLenIgnorePattern,
+      'ignoreUrls': true,
     }],
     'no-const-assign': [2],
     'no-extra-parens': [2, 'functions'],
@@ -47,10 +47,11 @@ module.exports = Object.assign({}, fbjsConfig, {
     'prefer-arrow-callback': [2],
     'prefer-const': [2],
     'quotes': [2, 'single', {
-      'avoidEscape': true,
       'allowTemplateLiterals': true,
+      'avoidEscape': true,
     }],
     'semi': [2, 'always'],
+    'sort-keys': [2],
     'space-before-blocks': [2],
     'space-before-function-paren': [2, 'never'],
     'space-in-parens': [2, 'never'],

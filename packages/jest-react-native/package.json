@@ -1,6 +1,6 @@
 {
   "name": "jest-react-native",
-  "version": "16.1.0",
+  "version": "17.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "peerDependencies": {
     "react-native": ">=0.36.0",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^2.0.0"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"

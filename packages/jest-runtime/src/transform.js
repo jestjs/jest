@@ -60,10 +60,10 @@ const getCacheKey = (
       mocksPattern: config.mocksPattern,
       moduleFileExtensions: config.moduleFileExtensions,
       moduleNameMapper: config.moduleNameMapper,
-      transformIgnorePatterns: config.transformIgnorePatterns,
       rootDir: config.rootDir,
       testPathDirs: config.testPathDirs,
       testRegex: config.testRegex,
+      transformIgnorePatterns: config.transformIgnorePatterns,
     }));
   }
   const configString = configToJsonMap.get(config) || '';
@@ -241,19 +241,19 @@ const instrumentFile = (
   const babelPluginIstanbul = require('babel-plugin-istanbul').default;
 
   return babel.transform(content, {
-    filename,
     auxiliaryCommentBefore: ' istanbul ignore next ',
+    babelrc: false,
+    filename,
     plugins: [
       [
         babelPluginIstanbul,
         {
-          exclude: [],
           cwd: config.rootDir, // files outside `cwd` will not be instrumented
+          exclude: [],
         },
       ],
     ],
     retainLines: true,
-    babelrc: false,
   }).code;
 };
 

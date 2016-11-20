@@ -50,6 +50,7 @@ jest.mock('fs', () => {
     }), 0);
   };
   return {
+    lstat: jest.fn(stat),
     readdir: jest.fn((dir, callback) => {
       if (dir === '/fruits') {
         setTimeout(() => callback(null, ['directory', 'tomato.js']), 0);
@@ -57,7 +58,6 @@ jest.mock('fs', () => {
         setTimeout(() => callback(null, ['strawberry.js']), 0);
       }
     }),
-    lstat: jest.fn(stat),
     stat: jest.fn(stat),
   };
 });
@@ -169,8 +169,8 @@ describe('node crawler', () => {
       roots: ['/fruits'],
     }).then(data => {
       expect(data.files).toEqual({
-        '/fruits/tomato.js': ['', 32, 0, []],
         '/fruits/directory/strawberry.js': ['', 33, 0, []],
+        '/fruits/tomato.js': ['', 32, 0, []],
       });
     });
   });
@@ -189,8 +189,8 @@ describe('node crawler', () => {
       roots: ['/fruits'],
     }).then(data => {
       expect(data.files).toEqual({
-        '/fruits/tomato.js': ['', 32, 0, []],
         '/fruits/directory/strawberry.js': ['', 33, 0, []],
+        '/fruits/tomato.js': ['', 32, 0, []],
       });
     });
   });

@@ -21,6 +21,8 @@ export type ValueType =
   | 'number'
   | 'object'
   | 'regexp'
+  | 'map'
+  | 'set'
   | 'string'
   | 'symbol'
   | 'undefined';
@@ -65,6 +67,10 @@ const getType = (value: any): ValueType => {
   } else if (typeof value === 'object') {
     if (value.constructor === RegExp) {
       return 'regexp';
+    } else if (value.constructor === Map) {
+      return 'map';
+    } else if (value.constructor === Set) {
+      return 'set';
     }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
@@ -78,11 +84,13 @@ const getType = (value: any): ValueType => {
 const stringify = (object: any): string => {
   try {
     return prettyFormat(object, {
+      maxDepth: 10,
       min: true,
     });
   } catch (e) {
     return prettyFormat(object, {
       callToJSON: false,
+      maxDepth: 10,
       min: true,
     });
   }
@@ -93,8 +101,8 @@ const printExpected = (value: any) => EXPECTED_COLOR(stringify(value));
 
 const printWithType = (
   name: string,
-  received: string,
-  print: (value: string) => string,
+  received: any,
+  print: (value: any) => string,
 ) => {
   const type = getType(received);
   return (
@@ -152,11 +160,14 @@ const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
+  secondArgument?: ?string,
 ) => {
   return (
     chalk.dim('expect(') + RECEIVED_COLOR(received) +
     chalk.dim(')' + matcherName + '(') +
-    EXPECTED_COLOR(expected) + chalk.dim(')')
+    EXPECTED_COLOR(expected) +
+    (secondArgument ? `, ${EXPECTED_COLOR(secondArgument)}` : '') +
+    chalk.dim(')')
   );
 };
 

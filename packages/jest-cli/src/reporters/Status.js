@@ -34,7 +34,7 @@ class CurrentTestList {
 
   add(testPath, config) {
     const index = this._array.indexOf(null);
-    const record = {testPath, config};
+    const record = {config, testPath};
     if (index !== -1) {
       this._array[index] = record;
     } else {
@@ -129,7 +129,7 @@ class Status {
     }
 
     if (this._done) {
-      return {content: '', clear: ''};
+      return {clear: '', content: ''};
     }
 
     // $FlowFixMe
@@ -170,7 +170,7 @@ class Status {
     }
 
     const clear = '\r\x1B[K\r\x1B[1A'.repeat(height);
-    return this._cache = {content, clear};
+    return this._cache = {clear, content};
   }
 
   _emit() {

@@ -83,7 +83,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
   const {pass} = result;
 
   if (pass) {
-    return {pass: true, message: ''};
+    return {message: '', pass: true};
   } else {
     const {count, expected, actual} = result;
 
@@ -109,7 +109,7 @@ const toMatchSnapshot = function(received: any, expected: void) {
         EXPECTED_COLOR('+ ' + actualString)
       ));
 
-    return {pass: false, message};
+    return {message, pass: false};
   }
 };
 
@@ -145,13 +145,13 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
 };
 
 module.exports = {
+  EXTENSION: SNAPSHOT_EXTENSION,
+  SnapshotState,
   addPlugins,
   cleanup,
-  EXTENSION: SNAPSHOT_EXTENSION,
   getPlugins,
   getSnapshotState,
   initializeSnapshotState,
-  SnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 };

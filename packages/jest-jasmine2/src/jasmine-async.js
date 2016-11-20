@@ -76,12 +76,18 @@ function promisifyLifeCycleFunction(originalFn: Function, env) {
 
 function makeConcurrent(originalFn: Function, env) {
   return function(specName, fn, timeout) {
+    if (env != null && !env.specFilter({getFullName: () => specName || ''})) {
+      return originalFn.call(env, specName, () => Promise.resolve(), timeout);
+    }
+
     let promise;
 
     try {
       promise = fn();
       if (!isPromise(promise)) {
-        throw new Error('Jest: concurrent tests must return a Promise.');
+        throw new Error(
+          `Jest: concurrent test "${specName}" must return a Promise.`,
+        );
       }
     } catch (error) {
       return originalFn.call(env, Promise.reject(error));

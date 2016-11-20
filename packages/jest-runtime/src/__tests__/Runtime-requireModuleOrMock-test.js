@@ -10,13 +10,13 @@
 'use strict';
 
 const moduleNameMapper = {
-  '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
-  '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
-  'mappedToPath': '<rootDir>/GlobalImageStub.js',
-  'mappedToModule': '<rootDir>/TestModuleNameMapperResolution',
-  'mappedToDirectory': '<rootDir>/MyDirectoryModule',
-  'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
   '\\.css$': '<rootDir>/__mocks__/ManuallyMocked',
+  '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
+  '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+  'mappedToDirectory': '<rootDir>/MyDirectoryModule',
+  'mappedToModule': '<rootDir>/TestModuleNameMapperResolution',
+  'mappedToPath': '<rootDir>/GlobalImageStub.js',
+  'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
 
 let createRuntime;
@@ -108,8 +108,8 @@ it('does not use manual mock when automocking is off and a real module is availa
 
 it('resolves mapped module names and unmocks them by default', () =>
   createRuntime(__filename, {
-    moduleNameMapper,
     moduleFileExtensions: ['js', 'jsx'],
+    moduleNameMapper,
   }).then(runtime => {
     let exports = runtime.requireModuleOrMock(
       runtime.__mockRootPath,

@@ -19,7 +19,7 @@ const util = require('util');
 
 const isDarwin = process.platform === 'darwin';
 
-const ICON = path.resolve(__dirname, '../assets/jest_logo.png');
+const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 class NotifyReporter extends BaseReporter {
   onRunComplete(config: Config, result: AggregatedResult): void {
@@ -27,7 +27,6 @@ class NotifyReporter extends BaseReporter {
     let message;
     const success = result.numFailedTests === 0 &&
       result.numRuntimeErrorTestSuites === 0;
-
 
     if (success) {
       title = util.format('%d%% Passed', 100);
@@ -47,7 +46,7 @@ class NotifyReporter extends BaseReporter {
       );
     }
 
-    notifier.notify({title, message, icon: ICON});
+    notifier.notify({icon, message, title});
   }
 }
 

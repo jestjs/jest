@@ -25,11 +25,11 @@ const addSuppressedErrors = result => {
     result.status = 'failed';
 
     result.failedExpectations = suppressedErrors.map(error => ({
-      message: error.message,
-      stack: error.stack,
-      passed: false,
-      expected: '',
       actual: '',
+      expected: '',
+      message: error.message,
+      passed: false,
+      stack: error.stack,
     }));
   }
 };

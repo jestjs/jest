@@ -73,9 +73,9 @@ describe('docblock', () => {
       ' * @preserve-whitespace' + os.EOL + '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'providesModule': 'foo',
       'css': 'a b',
       'preserve-whitespace': '',
+      'providesModule': 'foo',
     });
   });
 
@@ -90,9 +90,9 @@ describe('docblock', () => {
       ' * @preserve-whitespace' + os.EOL + '' +
       ' */';
     expect(docblock.parse(code)).toEqual({
-      'providesModule': 'foo',
       'css': 'a b',
       'preserve-whitespace': '',
+      'providesModule': 'foo',
     });
   });
 

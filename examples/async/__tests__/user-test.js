@@ -6,7 +6,6 @@ jest.mock('../request');
 
 import * as user from '../user';
 
-// Use `pit` instead of `it` for testing promises.
 // The promise that is being tested should be returned.
 it('works with promises', () => {
   return user.getUserName(5)
