@@ -485,7 +485,7 @@ const matchers: MatchersObject = {
          `  ${printReceived(receivedObject)}` +
          `\nDifference:\n` +
          (diffString ? `${diffString}` : '');
-     };
+       };
 
     return {message, pass};
   },

@@ -469,7 +469,7 @@ describe('toMatchObject()', () => {
     [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-11-30')}],
     [{a: null, b: 'b'}, {a: null}],
     [{a: undefined, b: 'b'}, {a: undefined}],
-    [{a: [{a: 'a', b: 'b'}]}, {a:[{ a: 'a' }]}],
+    [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'a'}]}],
     [[1, 2], [1, 2]],
   ].forEach(([n1, n2]) => {
     it('identifies a match: ', () => {
@@ -494,7 +494,7 @@ describe('toMatchObject()', () => {
      [{a: null, b: 'b'}, {a: '4'}],
      [{a: null, b: 'b'}, {a: undefined}],
      [{a: undefined}, {a: null}],
-     [{a: [{a: 'a', b: 'b'}]}, {a:[{ a: 'c' }]}]
+     [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'c'}]}],
   ].forEach(([n1, n2]) => {
     it('identified a non-match: ', () => {
       jestExpect(n1).not.toMatchObject(n2);
