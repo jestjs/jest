@@ -596,12 +596,13 @@ const houseForSale = {
 		amenities: ['oven', 'stove', 'washer'],
 		area: 20,
 		wallColor: 'white'
-	}
+	},
+  bedrooms: 4
 }
 const desiredHouse = {
 	bath: true,
 	kitchen: {
-		amenities: ['stove', 'washer'],
+		amenities: ['oven', 'stove', 'washer'],
 		wallColor: 'white'
 	}
 }

@@ -413,17 +413,17 @@ const matchers: MatchersObject = {
 
     if (typeof receivedObject !== 'object' || receivedObject === null) {
       throw new Error(
-        matcherHint('[.not].toMatch', 'object', 'expected') + '\n\n' +
-        `${RECEIVED_COLOR('string')} value must be an object.\n` +
-        printWithType('Received', JSON.stringify(receivedObject), printReceived),
+        matcherHint('[.not].toMatchObject', 'object', 'expected') + '\n\n' +
+        `${RECEIVED_COLOR('received')} value must be an object.\n` +
+        printWithType('Received', receivedObject, printReceived),
       );
     }
 
     if (typeof expectedObject !== 'object' || expectedObject === null) {
       throw new Error(
-        matcherHint('[.not].toMatch', 'object', 'expected') + '\n\n' +
-        `${RECEIVED_COLOR('string')} value must be an object.\n` +
-        printWithType('Received', JSON.stringify(expectedObject), printReceived),
+        matcherHint('[.not].toMatchObject', 'object', 'expected') + '\n\n' +
+        `${EXPECTED_COLOR('expected')} value must be an object.\n` +
+        printWithType('Expected', expectedObject, printExpected),
       );
     }
 
@@ -438,6 +438,10 @@ const matchers: MatchersObject = {
 
       if (Array.isArray(expected)) {
         if (!Array.isArray(actual)) {
+          return false;
+        }
+
+        if (expected.length !== actual.length) {
           return false;
         }
 
@@ -467,14 +471,21 @@ const matchers: MatchersObject = {
     const message = pass
       ? () => matcherHint('.not.toMatchObject') +
      `\n\nExpected value not to match object:\n` +
-     `  ${printExpected(JSON.stringify(expectedObject))}` +
+     `  ${printExpected(expectedObject)}` +
      `\nReceived:\n` +
-     `  ${printReceived(JSON.stringify(receivedObject))}`
-       : () => matcherHint('.toMatchObject') +
-     `\n\nExpected value to match object:\n` +
-     `  ${printExpected(JSON.stringify(expectedObject))}` +
-     `\nReceived:\n` +
-     `  ${printReceived(JSON.stringify(receivedObject))}`;
+     `  ${printReceived(receivedObject)}`
+       : () => {
+         const diffString = diff(expectedObject, receivedObject, {
+           expand: this.expand,
+         });
+         return matcherHint('.toMatchObject') +
+         `\n\nExpected value to match object:\n` +
+         `  ${printExpected(expectedObject)}` +
+         `\nReceived:\n` +
+         `  ${printReceived(receivedObject)}` +
+         `\nDifference:\n` +
+         (diffString ? `${diffString}` : '');
+     };
 
     return {message, pass};
   },
