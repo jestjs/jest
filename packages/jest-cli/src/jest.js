@@ -451,6 +451,7 @@ const runCLI = (
 module.exports = {
   SearchSource,
   TestRunner,
+  TestWatcher,
   getVersion: () => VERSION,
   run,
   runCLI,
