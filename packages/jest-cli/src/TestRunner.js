@@ -221,7 +221,7 @@ class TestRunner {
       testPaths.length <= 1 ||
       (
         testPaths.length <= 20 &&
-        timings.every(timing => timing < SLOW_TEST_TIME)
+        timings.length > 0 && timings.every(timing => timing < SLOW_TEST_TIME)
       )
     );
 
