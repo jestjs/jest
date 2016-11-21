@@ -81,19 +81,26 @@ const getType = (value: any): ValueType => {
   throw new Error(`value of unknown type: ${value}`);
 };
 
-const stringify = (object: any): string => {
+const stringify = (object: any, maxDepth?: number = 10): string => {
+  const MAX_LENGTH = 10000;
+  let result;
+
   try {
-    return prettyFormat(object, {
-      maxDepth: 10,
+    result = prettyFormat(object, {
+      maxDepth,
       min: true,
     });
   } catch (e) {
-    return prettyFormat(object, {
+    result = prettyFormat(object, {
       callToJSON: false,
-      maxDepth: 10,
+      maxDepth,
       min: true,
     });
   }
+
+  return result.length >= MAX_LENGTH && maxDepth > 1
+    ? stringify(object, Math.floor(maxDepth / 2))
+    : result;
 };
 
 const printReceived = (object: any) => RECEIVED_COLOR(stringify(object));
