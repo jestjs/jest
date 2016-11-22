@@ -272,7 +272,7 @@ To make this work with Jest you need to update your Jest configuration with this
 If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
 
 ```javascript
-const babelJest = require('babelJest');
+const babelJest = require('babel-jest');
 
 module.exports = babelJest.createTransformer({
   presets: ['my-custom-preset'],
