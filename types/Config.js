@@ -65,6 +65,7 @@ export type Config = DefaultConfig & {|
     },
   },
   logHeapUsage: boolean,
+  logTransformErrors: ?boolean,
   moduleLoader: Path,
   moduleNameMapper: Array<string>,
   modulePaths: Array<string>,

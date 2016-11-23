@@ -377,6 +377,7 @@ function normalize(config, argv) {
       case 'globals':
       case 'haste':
       case 'logHeapUsage':
+      case 'logTransformErrors':
       case 'mocksPattern':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
