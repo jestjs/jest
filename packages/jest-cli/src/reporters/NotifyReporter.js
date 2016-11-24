@@ -35,7 +35,7 @@ class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       );
     } else {
-      let failed = result.numFailedTests / result.numTotalTests;
+      const failed = result.numFailedTests / result.numTotalTests;
 
       title = util.format(
         '%d%% Failed',
