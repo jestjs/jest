@@ -80,7 +80,7 @@ with fast SSDs, it may be slow on certain setups as our users [have](https://git
 [discovered](https://github.com/facebook/jest/issues/1524#issuecomment-260246008).
 
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), 
-one way to mitigate this issue and improve the speed by 50% is to run tests sequentially.
+one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
 In order to do this you have to provide `--runInBand` switch like so:
 
