@@ -88,7 +88,7 @@ const createTransformer = (options: any) => {
               cwd: config.rootDir,
               exclude: [],
             },
-          ]
+          ],
         );
       }
 
