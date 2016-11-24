@@ -35,9 +35,11 @@ class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       );
     } else {
+      const failed = result.numFailedTests / result.numTotalTests;
+
       title = util.format(
         '%d%% Failed',
-        Math.ceil((result.numFailedTests / result.numTotalTests) * 100),
+        Math.ceil(Number.isNaN(failed) ? 0 : failed * 100),
       );
       message = util.format(
         (isDarwin ? '\u26D4\uFE0F ' : '') + '%d of %d tests failed',
