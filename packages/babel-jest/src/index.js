@@ -84,7 +84,8 @@ const createTransformer = (options: any) => {
           [
             require('babel-plugin-istanbul').default,
             {
-              cwd: config.rootDir, // files outside `cwd` will not be instrumented
+              // files outside `cwd` will not be instrumented
+              cwd: config.rootDir,
               exclude: [],
             },
           ]
