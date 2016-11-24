@@ -661,6 +661,7 @@ describe('toMatchObject()', () => {
      [{a: null, b: 'b'}, {a: undefined}],
      [{a: undefined}, {a: null}],
      [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'c'}]}],
+     [{a: 1, b: 1, c: 1, d: {e: {f: 555}}}, {d: {e: {f: 222}}}],
   ].forEach(([n1, n2]) => {
     it('identified a non-match: ', () => {
       jestExpect(n1).not.toMatchObject(n2);

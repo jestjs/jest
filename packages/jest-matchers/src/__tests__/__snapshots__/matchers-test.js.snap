@@ -2406,18 +2406,18 @@ exports[`toMatchObject() identified a non-match:  1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"e\": \"b\"}[39m
+  [32m{"e": "b"}[39m
 Received:
-  [31m{\"a\": \"b\", \"c\": \"d\"}[39m
+  [31m{"a": "b", "c": "d"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
 [33m@@ -1,3 +1,4 @@
 [39m[2m Object {[22m
-[32m-  \"e\": \"b\",[39m
-[31m+  \"a\": \"b\",[39m
-[31m+  \"c\": \"d\",[39m
+[32m-  "e": "b",[39m
+[31m+  "a": "b",[39m
+[31m+  "c": "d",[39m
 [2m }[22m"
 `;
 
@@ -2425,18 +2425,18 @@ exports[`toMatchObject() identified a non-match:  2`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": \"b!\", \"c\": \"d\"}[39m
+  [32m{"a": "b!", "c": "d"}[39m
 Received:
-  [31m{\"a\": \"b\", \"c\": \"d\"}[39m
+  [31m{"a": "b", "c": "d"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
 [33m@@ -1,4 +1,4 @@
 [39m[2m Object {[22m
-[32m-  \"a\": \"b!\",[39m
-[31m+  \"a\": \"b\",[39m
-[2m   \"c\": \"d\",[22m
+[32m-  "a": "b!",[39m
+[31m+  "a": "b",[39m
+[2m   "c": "d",[22m
 [2m }[22m"
 `;
 
@@ -2444,24 +2444,21 @@ exports[`toMatchObject() identified a non-match:  3`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": \"b\", \"t\": {\"z\": [3]}}[39m
+  [32m{"a": "b", "t": {"z": [3]}}[39m
 Received:
-  [31m{\"a\": \"b\", \"t\": {\"x\": {\"r\": \"r\"}, \"z\": \"z\"}}[39m
+  [31m{"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,8 +1,9 @@
+[33m@@ -1,8 +1,6 @@
 [39m[2m Object {[22m
-[2m   \"a\": \"b\",[22m
-[2m   \"t\": Object {[22m
-[32m-    \"z\": Array [[39m
+[2m   "a": "b",[22m
+[2m   "t": Object {[22m
+[32m-    "z": Array [[39m
 [32m-      3,[39m
 [32m-    ],[39m
-[31m+    \"x\": Object {[39m
-[31m+      \"r\": \"r\",[39m
-[31m+    },[39m
-[31m+    \"z\": \"z\",[39m
+[31m+    "z": "z",[39m
 [2m   },[22m
 [2m }[22m"
 `;
@@ -2470,22 +2467,21 @@ exports[`toMatchObject() identified a non-match:  4`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"t\": {\"l\": {\"r\": \"r\"}}}[39m
+  [32m{"t": {"l": {"r": "r"}}}[39m
 Received:
-  [31m{\"a\": \"b\", \"t\": {\"x\": {\"r\": \"r\"}, \"z\": \"z\"}}[39m
+  [31m{"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,7 +1,9 @@
+[33m@@ -1,7 +1,8 @@
 [39m[2m Object {[22m
-[31m+  \"a\": \"b\",[39m
-[2m   \"t\": Object {[22m
-[32m-    \"l\": Object {[39m
-[31m+    \"x\": Object {[39m
-[2m       \"r\": \"r\",[22m
+[2m   "t": Object {[22m
+[32m-    "l": Object {[39m
+[31m+    "x": Object {[39m
+[2m       "r": "r",[22m
 [2m     },[22m
-[31m+    \"z\": \"z\",[39m
+[31m+    "z": "z",[39m
 [2m   },[22m
 [2m }[22m"
 `;
@@ -2494,22 +2490,21 @@ exports[`toMatchObject() identified a non-match:  5`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": [3, 4, 5, 6]}[39m
+  [32m{"a": [3, 4, 5, 6]}[39m
 Received:
-  [31m{\"a\": [3, 4, 5], \"b\": \"b\"}[39m
+  [31m{"a": [3, 4, 5], "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,8 +1,8 @@
+[33m@@ -1,8 +1,7 @@
 [39m[2m Object {[22m
-[2m   \"a\": Array [[22m
+[2m   "a": Array [[22m
 [2m     3,[22m
 [2m     4,[22m
 [2m     5,[22m
 [32m-    6,[39m
 [2m   ],[22m
-[31m+  \"b\": \"b\",[39m
 [2m }[22m"
 `;
 
@@ -2517,21 +2512,20 @@ exports[`toMatchObject() identified a non-match:  6`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": [3, 4]}[39m
+  [32m{"a": [3, 4]}[39m
 Received:
-  [31m{\"a\": [3, 4, 5], \"b\": \"b\"}[39m
+  [31m{"a": [3, 4, 5], "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,6 +1,8 @@
+[33m@@ -1,6 +1,7 @@
 [39m[2m Object {[22m
-[2m   \"a\": Array [[22m
+[2m   "a": Array [[22m
 [2m     3,[22m
 [2m     4,[22m
 [31m+    5,[39m
 [2m   ],[22m
-[31m+  \"b\": \"b\",[39m
 [2m }[22m"
 `;
 
@@ -2539,21 +2533,20 @@ exports[`toMatchObject() identified a non-match:  7`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": [\"v\"]}[39m
+  [32m{"a": ["v"]}[39m
 Received:
-  [31m{\"a\": [3, 4, \"v\"], \"b\": \"b\"}[39m
+  [31m{"a": [3, 4, "v"], "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,5 +1,8 @@
+[33m@@ -1,5 +1,7 @@
 [39m[2m Object {[22m
-[2m   \"a\": Array [[22m
+[2m   "a": Array [[22m
 [31m+    3,[39m
 [31m+    4,[39m
-[2m     \"v\",[22m
+[2m     "v",[22m
 [2m   ],[22m
-[31m+  \"b\": \"b\",[39m
 [2m }[22m"
 `;
 
@@ -2561,24 +2554,23 @@ exports[`toMatchObject() identified a non-match:  8`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": {\"b\": 4}}[39m
+  [32m{"a": {"b": 4}}[39m
 Received:
-  [31m{\"a\": [3, 4, 5], \"b\": \"b\"}[39m
+  [31m{"a": [3, 4, 5], "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,5 +1,8 @@
+[33m@@ -1,5 +1,7 @@
 [39m[2m Object {[22m
-[32m-  \"a\": Object {[39m
-[32m-    \"b\": 4,[39m
+[32m-  "a": Object {[39m
+[32m-    "b": 4,[39m
 [32m-  },[39m
-[31m+  \"a\": Array [[39m
+[31m+  "a": Array [[39m
 [31m+    3,[39m
 [31m+    4,[39m
 [31m+    5,[39m
 [31m+  ],[39m
-[31m+  \"b\": \"b\",[39m
 [2m }[22m"
 `;
 
@@ -2621,18 +2613,17 @@ exports[`toMatchObject() identified a non-match:  11`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": 2015-10-10T00:00:00.000Z}[39m
+  [32m{"a": 2015-10-10T00:00:00.000Z}[39m
 Received:
-  [31m{\"a\": 2015-11-30T00:00:00.000Z, \"b\": \"b\"}[39m
+  [31m{"a": 2015-11-30T00:00:00.000Z, "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,3 +1,4 @@
+[33m@@ -1,3 +1,3 @@
 [39m[2m Object {[22m
-[32m-  \"a\": 2015-10-10T00:00:00.000Z,[39m
-[31m+  \"a\": 2015-11-30T00:00:00.000Z,[39m
-[31m+  \"b\": \"b\",[39m
+[32m-  "a": 2015-10-10T00:00:00.000Z,[39m
+[31m+  "a": 2015-11-30T00:00:00.000Z,[39m
 [2m }[22m"
 `;
 
@@ -2640,18 +2631,17 @@ exports[`toMatchObject() identified a non-match:  12`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": \"4\"}[39m
+  [32m{"a": "4"}[39m
 Received:
-  [31m{\"a\": null, \"b\": \"b\"}[39m
+  [31m{"a": null, "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,3 +1,4 @@
+[33m@@ -1,3 +1,3 @@
 [39m[2m Object {[22m
-[32m-  \"a\": \"4\",[39m
-[31m+  \"a\": null,[39m
-[31m+  \"b\": \"b\",[39m
+[32m-  "a": "4",[39m
+[31m+  "a": null,[39m
 [2m }[22m"
 `;
 
@@ -2659,18 +2649,17 @@ exports[`toMatchObject() identified a non-match:  13`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": undefined}[39m
+  [32m{"a": undefined}[39m
 Received:
-  [31m{\"a\": null, \"b\": \"b\"}[39m
+  [31m{"a": null, "b": "b"}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,3 +1,4 @@
+[33m@@ -1,3 +1,3 @@
 [39m[2m Object {[22m
-[32m-  \"a\": undefined,[39m
-[31m+  \"a\": null,[39m
-[31m+  \"b\": \"b\",[39m
+[32m-  "a": undefined,[39m
+[31m+  "a": null,[39m
 [2m }[22m"
 `;
 
@@ -2678,17 +2667,17 @@ exports[`toMatchObject() identified a non-match:  14`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": null}[39m
+  [32m{"a": null}[39m
 Received:
-  [31m{\"a\": undefined}[39m
+  [31m{"a": undefined}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
 [33m@@ -1,3 +1,3 @@
 [39m[2m Object {[22m
-[32m-  \"a\": null,[39m
-[31m+  \"a\": undefined,[39m
+[32m-  "a": null,[39m
+[31m+  "a": undefined,[39m
 [2m }[22m"
 `;
 
@@ -2696,22 +2685,43 @@ exports[`toMatchObject() identified a non-match:  15`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
 Expected value to match object:
-  [32m{\"a\": [{\"a\": \"c\"}]}[39m
+  [32m{"a": [{"a": "c"}]}[39m
 Received:
-  [31m{\"a\": [{\"a\": \"a\", \"b\": \"b\"}]}[39m
+  [31m{"a": [{"a": "a", "b": "b"}]}[39m
 Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,7 +1,8 @@
+[33m@@ -1,7 +1,7 @@
 [39m[2m Object {[22m
-[2m   \"a\": Array [[22m
+[2m   "a": Array [[22m
 [2m     Object {[22m
-[32m-      \"a\": \"c\",[39m
-[31m+      \"a\": \"a\",[39m
-[31m+      \"b\": \"b\",[39m
+[32m-      "a": "c",[39m
+[31m+      "a": "a",[39m
 [2m     },[22m
 [2m   ],[22m
+[2m }[22m"
+`;
+
+exports[`toMatchObject() identified a non-match:  16`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{"d": {"e": {"f": 222}}}[39m
+Received:
+  [31m{"a": 1, "b": 1, "c": 1, "d": {"e": {"f": 555}}}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,7 +1,7 @@
+[39m[2m Object {[22m
+[2m   "d": Object {[22m
+[2m     "e": Object {[22m
+[32m-      "f": 222,[39m
+[31m+      "f": 555,[39m
+[2m     },[22m
+[2m   },[22m
 [2m }[22m"
 `;
 
@@ -2843,7 +2853,7 @@ exports[`toMatchObject() throws if primitives are passed as the actual value: 3`
 
 [31mreceived[39m value must be an object.
 Received:
-  string: [31m\"44\"[39m"
+  string: [31m"44"[39m"
 `;
 
 exports[`toMatchObject() throws if primitives are passed as the actual value: 4`] = `
@@ -2881,7 +2891,7 @@ exports[`toMatchObject() throws if primitives are passed as the expected value: 
 
 [32mexpected[39m value must be an object.
 Expected:
-  string: [32m\"some string\"[39m"
+  string: [32m"some string"[39m"
 `;
 
 exports[`toMatchObject() throws if primitives are passed as the expected value: 4`] = `

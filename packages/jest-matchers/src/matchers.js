@@ -555,7 +555,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    const compare = (expected: any, actual: any) => {
+    const compare = (expected: any, actual: any): boolean => {
 
       if (typeof actual !== typeof expected) {
         return false;
@@ -594,6 +594,55 @@ const matchers: MatchersObject = {
       });
     };
 
+    const findMatchObject = (expected: Object, actual: Object)  => {
+
+      if (Array.isArray(actual)) {
+        if (!Array.isArray(expected)) {
+          return actual;
+        }
+
+        if (expected.length !== actual.length) {
+          return actual;
+        }
+
+        const matchArray = [];
+        for (let i = 0; i < expected.length; i++) {
+          matchArray.push(findMatchObject(expected[i], actual[i]));
+        }
+
+        return matchArray;
+      } else if (actual instanceof Date) {
+        return actual;
+      } else if (typeof actual === 'object' && actual !== null && typeof expected === 'object' && expected !== null) {
+
+        const matchedObject = {};
+
+        let match = false;
+        Object.keys(expected).forEach(key => {
+          if (actual.hasOwnProperty(key)) {
+            match = true;
+
+            const exp = expected[key];
+            const act = actual[key];
+
+            if (typeof exp === 'object' && exp !== null) {
+              matchedObject[key] = findMatchObject(exp, act);
+            } else {
+              matchedObject[key] = act;
+            }
+          }
+        });
+
+        if (match) {
+          return matchedObject;
+        } else {
+          return actual;
+        }
+      } else {
+        return actual;
+      }
+    };
+
     const pass = compare(expectedObject, receivedObject);
 
     const message = pass
@@ -603,7 +652,7 @@ const matchers: MatchersObject = {
      `\nReceived:\n` +
      `  ${printReceived(receivedObject)}`
        : () => {
-         const diffString = diff(expectedObject, receivedObject, {
+         const diffString = diff(expectedObject, findMatchObject(expectedObject, receivedObject), {
            expand: this.expand,
          });
          return matcherHint('.toMatchObject') +
@@ -617,7 +666,7 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
-  
+
   toMatchSnapshot,
 
 };
