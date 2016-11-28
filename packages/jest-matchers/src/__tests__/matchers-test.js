@@ -623,7 +623,6 @@ describe('.toHaveProperty()', () => {
 });
 
 describe('toMatchObject()', () => {
-
   [
     [{a: 'b', c: 'd'}, {a: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
@@ -637,8 +636,9 @@ describe('toMatchObject()', () => {
     [{a: undefined, b: 'b'}, {a: undefined}],
     [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'a'}]}],
     [[1, 2], [1, 2]],
+    [{a: undefined}, {a: undefined}],
   ].forEach(([n1, n2]) => {
-    it('identifies a match: ', () => {
+    it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).toMatchObject(n2);
       expect(() => jestExpect(n1).not.toMatchObject(n2))
         .toThrowErrorMatchingSnapshot();
@@ -662,8 +662,9 @@ describe('toMatchObject()', () => {
      [{a: undefined}, {a: null}],
      [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'c'}]}],
      [{a: 1, b: 1, c: 1, d: {e: {f: 555}}}, {d: {e: {f: 222}}}],
+     [{}, {a: undefined}],
   ].forEach(([n1, n2]) => {
-    it('identified a non-match: ', () => {
+    it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).not.toMatchObject(n2);
       expect(() => jestExpect(n1).toMatchObject(n2))
         .toThrowErrorMatchingSnapshot();
@@ -676,21 +677,13 @@ describe('toMatchObject()', () => {
      ['44', {}],
      [true, {}],
      [undefined, {}],
-  ].forEach(([n1, n2]) => {
-    it('throws if primitives are passed as the actual value:', () => {
-      expect(() => jestExpect(n1).toMatchObject(n2))
-        .toThrowErrorMatchingSnapshot();
-    });
-  });
-
-  [
      [{}, null],
      [{}, 4],
      [{}, 'some string'],
      [{}, true],
      [{}, undefined],
   ].forEach(([n1, n2]) => {
-    it('throws if primitives are passed as the expected value:', () => {
+    it(`throws expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       expect(() => jestExpect(n1).toMatchObject(n2))
         .toThrowErrorMatchingSnapshot();
     });

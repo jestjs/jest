@@ -555,38 +555,41 @@ const matchers: MatchersObject = {
       );
     }
 
-    const compare = (expected: any, actual: any): boolean => {
+    const compare = (expected: any, received: any): boolean => {
 
-      if (typeof actual !== typeof expected) {
+      if (typeof received !== typeof expected) {
         return false;
       }
       if (typeof expected !== 'object' || expected === null) {
-        return expected === actual;
+        return expected === received;
       }
 
       if (Array.isArray(expected)) {
-        if (!Array.isArray(actual)) {
+        if (!Array.isArray(received)) {
           return false;
         }
 
-        if (expected.length !== actual.length) {
+        if (expected.length !== received.length) {
           return false;
         }
 
         return expected.every(exp => {
-          return actual.some(act => {
+          return received.some(act => {
             return compare(exp, act);
           });
         });
       }
 
-      if (expected instanceof Date && actual instanceof Date) {
-        return expected.getTime() === actual.getTime();
+      if (expected instanceof Date && received instanceof Date) {
+        return expected.getTime() === received.getTime();
       }
 
       return Object.keys(expected).every(key => {
+        if (!received.hasOwnProperty(key)) {
+          return false;
+        }
         const exp = expected[key];
-        const act = actual[key];
+        const act = received[key];
         if (typeof exp === 'object' && exp !== null && act !== null) {
           return compare(exp, act);
         }
@@ -594,36 +597,37 @@ const matchers: MatchersObject = {
       });
     };
 
-    const findMatchObject = (expected: Object, actual: Object)  => {
-
-      if (Array.isArray(actual)) {
+    // Strip properties form received object that are not present in the expected
+    // object. We need it to print the diff without adding a lot of unrelated noise.
+    const findMatchObject = (expected: Object, received: Object)  => {
+      if (Array.isArray(received)) {
         if (!Array.isArray(expected)) {
-          return actual;
+          return received;
         }
 
-        if (expected.length !== actual.length) {
-          return actual;
+        if (expected.length !== received.length) {
+          return received;
         }
 
         const matchArray = [];
         for (let i = 0; i < expected.length; i++) {
-          matchArray.push(findMatchObject(expected[i], actual[i]));
+          matchArray.push(findMatchObject(expected[i], received[i]));
         }
 
         return matchArray;
-      } else if (actual instanceof Date) {
-        return actual;
-      } else if (typeof actual === 'object' && actual !== null && typeof expected === 'object' && expected !== null) {
+      } else if (received instanceof Date) {
+        return received;
+      } else if (typeof received === 'object' && received !== null && typeof expected === 'object' && expected !== null) {
 
         const matchedObject = {};
 
         let match = false;
         Object.keys(expected).forEach(key => {
-          if (actual.hasOwnProperty(key)) {
+          if (received.hasOwnProperty(key)) {
             match = true;
 
             const exp = expected[key];
-            const act = actual[key];
+            const act = received[key];
 
             if (typeof exp === 'object' && exp !== null) {
               matchedObject[key] = findMatchObject(exp, act);
@@ -636,10 +640,10 @@ const matchers: MatchersObject = {
         if (match) {
           return matchedObject;
         } else {
-          return actual;
+          return received;
         }
       } else {
-        return actual;
+        return received;
       }
     };
 
@@ -660,8 +664,7 @@ const matchers: MatchersObject = {
          `  ${printExpected(expectedObject)}` +
          `\nReceived:\n` +
          `  ${printReceived(receivedObject)}` +
-         `\nDifference:\n` +
-         (diffString ? `${diffString}` : '');
+         (diffString ? `\nDifference:\n${diffString}` : '');
        };
 
     return {message, pass};
