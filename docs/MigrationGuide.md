@@ -23,7 +23,7 @@ Install Jest Codemods with `npm` by running:
 npm install -g jest-codemods
 ```
 
-To get transform your existing tests, navigate to the project containing the tests and run:
+To transform your existing tests, navigate to the project containing the tests and run:
 
 ```
 jest-codemods
