@@ -621,3 +621,78 @@ describe('.toHaveProperty()', () => {
     );
   });
 });
+
+describe('toMatchObject()', () => {
+
+  [
+    [{a: 'b', c: 'd'}, {a: 'b'}],
+    [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
+    [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {a: 'b', t: {z: 'z'}}],
+    [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {t: {x: {r: 'r'}}}],
+    [{a: [3, 4, 5], b: 'b'}, {a: [3, 4, 5]}],
+    [{a: [3, 4, 5, 'v'], b: 'b'}, {a: [3, 4, 5, 'v']}],
+    [new Date('2015-11-30'), new Date('2015-11-30')],
+    [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-11-30')}],
+    [{a: null, b: 'b'}, {a: null}],
+    [{a: undefined, b: 'b'}, {a: undefined}],
+    [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'a'}]}],
+    [[1, 2], [1, 2]],
+  ].forEach(([n1, n2]) => {
+    it('identifies a match: ', () => {
+      jestExpect(n1).toMatchObject(n2);
+      expect(() => jestExpect(n1).not.toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+     [{a: 'b', c: 'd'}, {e: 'b'}],
+     [{a: 'b', c: 'd'}, {a: 'b!', c: 'd'}],
+     [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {a: 'b', t: {z: [3]}}],
+     [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {t: {l: {r: 'r'}}}],
+     [{a: [3, 4, 5], b: 'b'}, {a: [3, 4, 5, 6]}],
+     [{a: [3, 4, 5], b: 'b'}, {a: [3, 4]}],
+     [{a: [3, 4, 'v'], b: 'b'}, {a: ['v']}],
+     [{a: [3, 4, 5], b: 'b'}, {a: {b: 4}}],
+     [[1, 2], [1, 3]],
+     [new Date('2015-11-30'), new Date('2015-10-10')],
+     [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-10-10')}],
+     [{a: null, b: 'b'}, {a: '4'}],
+     [{a: null, b: 'b'}, {a: undefined}],
+     [{a: undefined}, {a: null}],
+     [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'c'}]}],
+     [{a: 1, b: 1, c: 1, d: {e: {f: 555}}}, {d: {e: {f: 222}}}],
+  ].forEach(([n1, n2]) => {
+    it('identified a non-match: ', () => {
+      jestExpect(n1).not.toMatchObject(n2);
+      expect(() => jestExpect(n1).toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+     [null, {}],
+     [4, {}],
+     ['44', {}],
+     [true, {}],
+     [undefined, {}],
+  ].forEach(([n1, n2]) => {
+    it('throws if primitives are passed as the actual value:', () => {
+      expect(() => jestExpect(n1).toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+     [{}, null],
+     [{}, 4],
+     [{}, 'some string'],
+     [{}, true],
+     [{}, undefined],
+  ].forEach(([n1, n2]) => {
+    it('throws if primitives are passed as the expected value:', () => {
+      expect(() => jestExpect(n1).toMatchObject(n2))
+        .toThrowErrorMatchingSnapshot();
+    });
+  });
+});
