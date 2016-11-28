@@ -9,8 +9,17 @@
 
 module.exports = {
   mockComponent: moduleName => {
-    const RealComponent = require.requireActual(moduleName);
     const React = require('react');
+    
+    let RealComponent;
+    
+    if (typeof moduleName === 'function' || typeof moduleName === 'object') {
+      // react component is passed
+      RealComponent = moduleName;
+    } else {
+      RealComponent = require.requireActual(moduleName);
+    }
+      
     const Component = class extends RealComponent {
       render() {
         return React.createElement(
