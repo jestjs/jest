@@ -537,7 +537,138 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toMatchObject(receivedObject: Object, expectedObject: Object) {
+
+    if (typeof receivedObject !== 'object' || receivedObject === null) {
+      throw new Error(
+        matcherHint('[.not].toMatchObject', 'object', 'expected') + '\n\n' +
+        `${RECEIVED_COLOR('received')} value must be an object.\n` +
+        printWithType('Received', receivedObject, printReceived),
+      );
+    }
+
+    if (typeof expectedObject !== 'object' || expectedObject === null) {
+      throw new Error(
+        matcherHint('[.not].toMatchObject', 'object', 'expected') + '\n\n' +
+        `${EXPECTED_COLOR('expected')} value must be an object.\n` +
+        printWithType('Expected', expectedObject, printExpected),
+      );
+    }
+
+    const compare = (expected: any, actual: any): boolean => {
+
+      if (typeof actual !== typeof expected) {
+        return false;
+      }
+      if (typeof expected !== 'object' || expected === null) {
+        return expected === actual;
+      }
+
+      if (Array.isArray(expected)) {
+        if (!Array.isArray(actual)) {
+          return false;
+        }
+
+        if (expected.length !== actual.length) {
+          return false;
+        }
+
+        return expected.every(exp => {
+          return actual.some(act => {
+            return compare(exp, act);
+          });
+        });
+      }
+
+      if (expected instanceof Date && actual instanceof Date) {
+        return expected.getTime() === actual.getTime();
+      }
+
+      return Object.keys(expected).every(key => {
+        const exp = expected[key];
+        const act = actual[key];
+        if (typeof exp === 'object' && exp !== null && act !== null) {
+          return compare(exp, act);
+        }
+        return act === exp;
+      });
+    };
+
+    const findMatchObject = (expected: Object, actual: Object)  => {
+
+      if (Array.isArray(actual)) {
+        if (!Array.isArray(expected)) {
+          return actual;
+        }
+
+        if (expected.length !== actual.length) {
+          return actual;
+        }
+
+        const matchArray = [];
+        for (let i = 0; i < expected.length; i++) {
+          matchArray.push(findMatchObject(expected[i], actual[i]));
+        }
+
+        return matchArray;
+      } else if (actual instanceof Date) {
+        return actual;
+      } else if (typeof actual === 'object' && actual !== null && typeof expected === 'object' && expected !== null) {
+
+        const matchedObject = {};
+
+        let match = false;
+        Object.keys(expected).forEach(key => {
+          if (actual.hasOwnProperty(key)) {
+            match = true;
+
+            const exp = expected[key];
+            const act = actual[key];
+
+            if (typeof exp === 'object' && exp !== null) {
+              matchedObject[key] = findMatchObject(exp, act);
+            } else {
+              matchedObject[key] = act;
+            }
+          }
+        });
+
+        if (match) {
+          return matchedObject;
+        } else {
+          return actual;
+        }
+      } else {
+        return actual;
+      }
+    };
+
+    const pass = compare(expectedObject, receivedObject);
+
+    const message = pass
+      ? () => matcherHint('.not.toMatchObject') +
+     `\n\nExpected value not to match object:\n` +
+     `  ${printExpected(expectedObject)}` +
+     `\nReceived:\n` +
+     `  ${printReceived(receivedObject)}`
+       : () => {
+         const diffString = diff(expectedObject, findMatchObject(expectedObject, receivedObject), {
+           expand: this.expand,
+         });
+         return matcherHint('.toMatchObject') +
+         `\n\nExpected value to match object:\n` +
+         `  ${printExpected(expectedObject)}` +
+         `\nReceived:\n` +
+         `  ${printReceived(receivedObject)}` +
+         `\nDifference:\n` +
+         (diffString ? `${diffString}` : '');
+       };
+
+    return {message, pass};
+  },
+
   toMatchSnapshot,
+
 };
 
 module.exports = matchers;

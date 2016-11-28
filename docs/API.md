@@ -61,6 +61,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toEqual(value)`](#toequalvalue)
   - [`.toHaveLength(number)`](#tohavelengthnumber)
   - [`.toMatch(regexp)`](#tomatchregexp)
+  - [`.toMatchObject(object)`](#tomatchobjectobject)
   - [`.toMatchSnapshot()`](#tomatchsnapshot)
   - [`.toThrow()`](#tothrow)
   - [`.toThrowError(error)`](#tothrowerrorerror)
@@ -596,6 +597,36 @@ describe('an essay on the best flavor', () => {
 ```
 
 This matcher also accepts a string, which it converts to a RegExp.
+
+### `.toMatchObject(object)`
+
+Use `.toMatchObject` to check that a javascript object matches a subset of the properties of an object.
+
+```js
+const houseForSale = {
+	bath: true,
+	kitchen: {
+		amenities: ['oven', 'stove', 'washer'],
+		area: 20,
+		wallColor: 'white'
+	},
+  bedrooms: 4
+}
+const desiredHouse = {
+	bath: true,
+	kitchen: {
+		amenities: ['oven', 'stove', 'washer'],
+		wallColor: 'white'
+	}
+}
+
+describe('looking for a new house', () => {
+	it('the house has my desired features', () => {
+		expect(houseForSale).toMatchObject(desiredHouse);
+	}
+}
+```
+
 
 ### `.toMatchSnapshot()`
 
