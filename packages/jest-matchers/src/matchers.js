@@ -442,7 +442,7 @@ const matchers: MatchersObject = {
 
     if (!object && typeof object !== 'string' && typeof object !== 'number') {
       throw new Error(
-        matcherHint('[.not].toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+        matcherHint('[.not].toHaveProperty', 'object', 'path', {secondArgument: (valuePassed ? 'value' : null)}) + '\n\n' +
         `Expected ${RECEIVED_COLOR('object')} to be an object. Received:\n` +
         `  ${getType(object)}: ${printReceived(object)}`,
       );
@@ -450,7 +450,7 @@ const matchers: MatchersObject = {
 
     if (getType(propPath) !== 'string') {
       throw new Error(
-        matcherHint('[.not].toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+        matcherHint('[.not].toHaveProperty', 'object', 'path', {secondArgument: (valuePassed ? 'value' : null)}) + '\n\n' +
         `Expected ${EXPECTED_COLOR('path')} to be a string. Received:\n` +
         `  ${getType(propPath)}: ${printReceived(propPath)}`,
       );
@@ -479,13 +479,13 @@ const matchers: MatchersObject = {
     const traversedPath = result.traversedPath.join('.');
 
     const message = pass
-      ? matcherHint('.not.toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+      ? matcherHint('.not.toHaveProperty', 'object', 'path', {secondArgument: (valuePassed ? 'value' : null)}) + '\n\n' +
         `Expected the object:\n` +
         `  ${printReceived(object)}\n` +
         `Not to have a nested property:\n` +
         `  ${printExpected(propPath)}\n` +
         (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
-      : matcherHint('.toHaveProperty', 'object', 'path', (valuePassed ? 'value' : null)) + '\n\n' +
+      : matcherHint('.toHaveProperty', 'object', 'path', {secondArgument: (valuePassed ? 'value' : null)}) + '\n\n' +
         `Expected the object:\n` +
         `  ${printReceived(object)}\n` +
         `To have a nested property:\n` +

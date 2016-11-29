@@ -14,6 +14,12 @@ import type {Config, Path} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
 const {initializeSnapshotState, addPlugins} = require('jest-snapshot');
+const {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
+  matcherHint,
+  pluralize,
+} = require('jest-matcher-utils');
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -38,15 +44,19 @@ const addAssertionErrors = result => {
   const {assertionsMade, assertionsExpected} = getState();
   setState({assertionsExpected: null, assertionsMade: 0});
   if (
-    typeof assertionsExpected === 'number' && 
+    typeof assertionsExpected === 'number' &&
     assertionsMade !== assertionsExpected
   ) {
+    const expected = EXPECTED_COLOR(pluralize('assertion', assertionsExpected));
     result.status = 'failed';
     result.failedExpectations.push({
       actual: assertionsMade,
       expected: assertionsExpected,
-      message: `Excpected ${assertionsExpected} assertions, ` + 
-               `received ${assertionsMade} assertions`,
+      message: matcherHint('.assertions', '', assertionsExpected, {
+        isDirectExpectCall: true,
+      }) + '\n\n' +
+        `Expected: ${expected}\n` +
+        `Received: ${RECEIVED_COLOR(pluralize('assertion', assertionsMade))}`,
       passed: false,
     });
   }

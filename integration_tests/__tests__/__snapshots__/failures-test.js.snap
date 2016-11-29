@@ -66,7 +66,10 @@ Object {
   ● .assertions() › throws
 
     Error
-      Excpected 2 assertions, received 1 assertions
+      expect.assertions(2)
+      
+      Expected: two assertions
+      Received: one assertion
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -80,7 +83,10 @@ Object {
   ● .assertions() › throws on assertion
 
     Error
-      Excpected 0 assertions, received 1 assertions
+      expect.assertions(0)
+      
+      Expected: zero assertions
+      Received: one assertion
 
   .assertions()
     ✕ throws
