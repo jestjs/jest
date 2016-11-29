@@ -63,6 +63,14 @@ jest
     };
     return DataSource;
   })
+  .mock('AsyncStorage', () => ({
+    setItem: () => Promise.resolve,
+    removeItem: () => Promise.resolve,
+    clear: () => Promise.resolve,
+    flushAllGetRequests: () => {},
+    multiSet: () => Promise.resolve,
+    multiRemove: () => Promise.resolve,
+  }))
   .mock('ensureComponentIsNative', () => () => true);
 
 global.__DEV__ = true;
