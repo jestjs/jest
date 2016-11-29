@@ -25,10 +25,10 @@ export type RawMatcherFn = (
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
-  currentTestName?: string,
-  testPath?: Path,
   assertionsExpected?: ?number,
   assertionsMade?: number,
+  currentTestName?: string,
+  testPath?: Path,
 };
 export type MatchersObject = {[id:string]: RawMatcherFn};
 export type Expect = (expected: any) => ExpectationObject;
