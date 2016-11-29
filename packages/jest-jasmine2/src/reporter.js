@@ -19,9 +19,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const jasmineRequire = require('../vendor/jasmine-2.5.2.js');
-const jasmine = jasmineRequire.core(jasmineRequire);
-const {formatResultsErrors, JasmineFormatter} = require('jest-util');
+const {formatResultsErrors} = require('jest-util');
 
 type Suite = {
   description: string,
@@ -39,7 +37,6 @@ type SpecResult = {
 type Microseconds = number;
 
 class Jasmine2Reporter {
-  _formatter: JasmineFormatter;
   _testResults: Array<AssertionResult>;
   _config: Config;
   _currentSuites: Array<string>;
@@ -49,7 +46,6 @@ class Jasmine2Reporter {
   _testPath: Path;
 
   constructor(config: Config, environment: Environment, testPath: Path) {
-    this._formatter = new JasmineFormatter(jasmine, environment, config);
     this._config = config;
     this._testPath = testPath;
     this._testResults = [];
@@ -121,10 +117,6 @@ class Jasmine2Reporter {
     this._resolve(testResult);
   }
 
-  getFormatter(): JasmineFormatter {
-    return this._formatter;
-  }
-
   getResults(): Promise<TestResult> {
     return this._resultsPromise;
   }
@@ -148,12 +140,9 @@ class Jasmine2Reporter {
     };
 
     specResult.failedExpectations.forEach(failed => {
-      let message;
-      if (!failed.matcherName && failed.stack) {
-        message = failed.stack;
-      } else {
-        message = this._formatter.formatMatchFailure(failed);
-      }
+      const message = (!failed.matcherName && failed.stack)
+        ? failed.stack
+        : failed.message || '';
       results.failureMessages.push(message);
     });
 
