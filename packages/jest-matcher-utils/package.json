@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "chalk": "^1.1.3",
-    "pretty-format": "~4.2.1"
+    "pretty-format": "~4.3.1"
   }
 }
