@@ -79,7 +79,17 @@ const createTransformer = (options: any) => {
       let plugins = options.plugins || [];
 
       if (transformOptions && transformOptions.instrument) {
-        plugins = plugins.concat(require('babel-plugin-istanbul').default);
+        // Copied from jest-runtime transform.js
+        plugins = plugins.concat([
+          [
+            require('babel-plugin-istanbul').default,
+            {
+              // files outside `cwd` will not be instrumented
+              cwd: config.rootDir,
+              exclude: [],
+            },
+          ],
+        ]);
       }
 
       if (babel.util.canCompile(filename)) {
