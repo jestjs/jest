@@ -68,8 +68,8 @@ const STATUS = {
 
 export default class Link extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this._onMouseEnter = this._onMouseEnter.bind(this);
     this._onMouseLeave = this._onMouseLeave.bind(this);
