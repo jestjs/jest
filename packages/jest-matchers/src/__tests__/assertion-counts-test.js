@@ -19,7 +19,7 @@ describe('.assertions()', () => {
     jestExpect('a').toBe('a');
   });
 
-  it('redeclares differnent assertion count', () => {
+  it('redeclares different assertion count', () => {
     jestExpect.assertions(3);
     jestExpect('a').not.toBe('b');
     jestExpect('a').toBe('a');
