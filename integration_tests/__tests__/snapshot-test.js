@@ -39,6 +39,8 @@ const snapshotEscapeSnapshotDir =
   path.resolve(snapshotEscapeDir, '__snapshots__');
 const snapshotEscapeFile =
   path.resolve(snapshotEscapeSnapshotDir, 'snapshot-test.js.snap');
+const snapshotEscapeRegexFile =
+  path.resolve(snapshotEscapeSnapshotDir, 'snapshot-escape-regex.js.snap');
 const snapshotEscapeSubstitutionFile = path.resolve(
   snapshotEscapeSnapshotDir,
   'snapshot-escape-substitution-test.js.snap',
@@ -69,6 +71,7 @@ describe('Snapshot', () => {
       snapshotOfCopy,
       copyOfTestPath,
       snapshotEscapeFile,
+      snapshotEscapeRegexFile,
       snapshotEscapeSubstitutionFile,
     ].forEach(file => {
       if (fileExists(file)) {
@@ -136,6 +139,25 @@ describe('Snapshot', () => {
     result = runJest('snapshot-escape', ['snapshot-test.js']);
     stderr = result.stderr.toString();
 
+    expect(stderr).not.toMatch('Snapshot Summary');
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(result.status).toBe(0);
+  });
+
+  it('works with escaped regex', () => {
+    // Write the first snapshot
+    let result = runJest('snapshot-escape', ['snapshot-escape-regex.js']);
+    let stderr = result.stderr.toString();
+
+    expect(stderr).toMatch('2 snapshots written in 1 test suite.');
+    expect(result.status).toBe(0);
+    expect(extractSummary(stderr).summary).toMatchSnapshot();
+
+    result = runJest('snapshot-escape', ['snapshot-escape-regex.js']);
+    stderr = result.stderr.toString();
+
+    // Make sure we aren't writing a snapshot this time which would
+    // indicate that the snapshot couldn't be loaded properly.
     expect(stderr).not.toMatch('Snapshot Summary');
     expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(0);
