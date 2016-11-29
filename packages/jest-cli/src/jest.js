@@ -376,7 +376,7 @@ const runCLI = (
           if (
             isRunning &&
             testWatcher &&
-            [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].includes(key)
+            [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].indexOf(key) !== -1
           ) {
             testWatcher.setState({interrupted: true});
             return;
