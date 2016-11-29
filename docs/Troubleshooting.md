@@ -73,6 +73,25 @@ to `false`.
 
 Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
 
+### Tests are Extremely Slow on Docker and/or Continuous Integration server.
+
+While Jest is most of the time extremely fast on modern multi-core computers
+with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/facebook/jest/issues/1395) 
+[discovered](https://github.com/facebook/jest/issues/1524#issuecomment-260246008).
+
+Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), 
+one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
+
+In order to do this you have to provide `--runInBand` switch like so:
+
+```bash
+# Using Jest CLI
+jest --runInBand
+
+# Using npm test (e.g. with create-react-app)
+npm test -- --runInBand
+```
+
 ### I'm using npm3 and my node_modules aren't properly loading.
 
 Upgrade `jest-cli` to `0.9.0` or above.
