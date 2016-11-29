@@ -141,11 +141,11 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
   }
 });
 
-test('does not accept arguments', () => {
-  const filename = 'does-not-accept-arguments-test.js';
+test('accepts custom snapshot name', () => {
+  const filename = 'accept-custom-snapshot-name-test.js';
   const template = makeTemplate(
-    `test('does not accept arguments', () => {
-      expect(true).toMatchSnapshot('foobar');
+    `test('accepts custom snapshot name', () => {
+      expect(true).toMatchSnapshot('custom-name');
     });
     `,
   );
@@ -154,8 +154,8 @@ test('does not accept arguments', () => {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
     expect(stderr).toMatch(
-      'Matcher does not accept any arguments.',
+      '1 snapshot written in 1 test suite.'
     );
-    expect(status).toBe(1);
+    expect(status).toBe(0);
   }
 });
