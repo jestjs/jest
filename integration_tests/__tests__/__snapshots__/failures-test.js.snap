@@ -50,3 +50,55 @@ Ran all test suites matching \"throw-object-test.js\".
 ",
 }
 `;
+
+exports[`test throwing not Error objects 4`] = `
+Object {
+  "rest": " FAIL  __tests__/assertion-count-test.js
+  ● .assertions() › throws
+
+    expect(received).toBeTruthy()
+    
+    Expected value to be truthy, instead received
+      false
+      
+      at Object.throws (__tests__/assertion-count-test.js:14:17)
+
+  ● .assertions() › throws
+
+    Error
+      expect.assertions(2)
+      
+      Expected: two assertions
+      Received: one assertion
+
+  ● .assertions() › throws on redeclare of assertion count
+
+    expect(received).toBeTruthy()
+    
+    Expected value to be truthy, instead received
+      false
+      
+      at Object.redeclare (__tests__/assertion-count-test.js:18:17)
+
+  ● .assertions() › throws on assertion
+
+    Error
+      expect.assertions(0)
+      
+      Expected: zero assertions
+      Received: one assertion
+
+  .assertions()
+    ✕ throws
+    ✕ throws on redeclare of assertion count
+    ✕ throws on assertion
+
+",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       3 failed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching \"assertion-count-test.js\".
+",
+}
+`;

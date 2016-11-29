@@ -12,7 +12,6 @@
 
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
-const JasmineFormatter = require('./JasmineFormatter');
 const NullConsole = require('./NullConsole');
 
 const {
@@ -90,7 +89,6 @@ const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
 module.exports = {
   Console,
   FakeTimers,
-  JasmineFormatter,
   NullConsole,
   clearLine,
   createDirectory,

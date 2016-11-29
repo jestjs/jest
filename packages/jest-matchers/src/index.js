@@ -35,7 +35,14 @@ if (!global[GLOBAL_STATE]) {
   Object.defineProperty(
     global,
     GLOBAL_STATE,
-    {value: {matchers: Object.create(null), state: {suppressedErrors: []}}},
+    {value: {
+      matchers: Object.create(null), 
+      state: {
+        assertionsExpected: null, 
+        assertionsMade: 0, 
+        suppressedErrors: [],
+      },
+    }},
   );
 }
 
@@ -50,6 +57,21 @@ const expect: Expect = (actual: any): ExpectationObject => {
   });
 
   return expectation;
+};
+
+const getMessage = message => {
+  // for performance reasons some of the messages are evaluated
+  // lazily
+  if (typeof message === 'function') {
+    message = message();
+  }
+
+  if (!message) {
+    message = utils.RECEIVED_COLOR(
+      'No message was specified for this matcher.',
+    );
+  }
+  return message;
 };
 
 const makeThrowingMatcher = (
@@ -87,21 +109,10 @@ const makeThrowingMatcher = (
 
     _validateResult(result);
 
+    global[GLOBAL_STATE].state.assertionsMade++;
+
     if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
-      let message = result.message;
-
-      // for performance reasons some of the messages are evaluated
-      // lazily
-      if (typeof message === 'function') {
-        message = message();
-      }
-
-      if (!message) {
-        message = utils.RECEIVED_COLOR(
-          'No message was specified for this matcher.',
-        );
-      }
-
+      const message = getMessage(result.message);
       const error = new JestAssertionError(message);
       // Remove this function from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
@@ -151,6 +162,10 @@ const getState = () => global[GLOBAL_STATE].state;
 expect.extend(matchers);
 expect.extend(spyMatchers);
 expect.extend(toThrowMatchers);
+
+expect.assertions = (expected: number) => (
+  global[GLOBAL_STATE].state.assertionsExpected = expected
+);
 
 module.exports = {
   expect,
