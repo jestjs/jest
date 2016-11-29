@@ -14,34 +14,20 @@ Get a deeper insight into testing a working example React Native app reading the
 
 ## Setup
 
-We'll need to use the `jest-react-native` preset and we are going to use the `babel-jest` package as a transformer
-for Jest. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
-
-Run the following command to install the necessary dependencies:
-```
-npm install --save-dev jest babel-jest jest-react-native babel-preset-react-native react-test-renderer
-```
-
-Add the following configuration to your package.json file:
+Starting from react-native version 0.38, a Jest setup is included by default when running `react-native init`. The following configuration should be automatically added to your package.json file:
 ```javascript
 // package.json
   "scripts": {
     "test": "jest"
   },
   "jest": {
-    "preset": "jest-react-native"
+    "preset": "react-native"
   }
 ```
 
-And create a `.babelrc` file with the following contents, if you haven't already:
-```javascript
-// .babelrc
-{
-  "presets": ["react-native"]
-}
-```
+*Note: If you are upgrading your react-native application and previously used the `jest-react-native` preset, remove the dependency from your `package.json` file and change the preset to `react-native` instead.*
 
-**And you're good to go!**
+Simply run `npm test` to run tests with Jest.
 
 ## Snapshot Test
 
