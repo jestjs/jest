@@ -171,7 +171,6 @@ const usage = (
     chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
-    chalk.dim(' \u203A Press ') + '?' + chalk.dim(' to display usage.'),
   ];
   /* eslint-enable max-len */
   return messages.filter(message => !!message).join(delimiter);
@@ -304,13 +303,13 @@ const runCLI = (
           pattern: argv._,
         });
 
-        let isRunning = false;
-        let didLastFail = false;
-        let isEnteringPattern = false;
         let currentPattern = '';
-        let timer: ?number;
-
+        let hasSnapshotFailure = false;
+        let isEnteringPattern = false;
+        let isRunning = false;
         let testWatcher;
+        let timer;
+
         const writeCurrentPattern = () => {
           clearLine(pipe);
           pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
@@ -332,9 +331,9 @@ const runCLI = (
             testWatcher,
             results => {
               isRunning = false;
-              didLastFail = !!results.snapshot.failure;
+              hasSnapshotFailure = !!results.snapshot.failure;
               if (!process.env.JEST_HIDE_USAGE) {
-                console.log(usage(argv, didLastFail));
+                console.log(usage(argv, hasSnapshotFailure));
               }
             },
           ).then(
@@ -408,7 +407,9 @@ const runCLI = (
               writeCurrentPattern();
               break;
             case KEYS.QUESTION_MARK:
-              console.log(usage(argv, didLastFail));
+              if (process.env.JEST_HIDE_USAGE) {
+                console.log(usage(argv, hasSnapshotFailure));
+              }
               break;
           }
         };
