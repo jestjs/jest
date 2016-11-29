@@ -635,6 +635,9 @@ This ensures that a value matches the most recent snapshot. Check out [the React
 You can also specify an optional snapshot name. Otherwise, the name is inferred
 from the test.
 
+*Note: While snapshot testing is most commonly used with React components, any
+serializable value can be used as a snapshot.*
+
 ### `.toThrow()`
 
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
