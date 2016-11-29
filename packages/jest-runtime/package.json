@@ -10,7 +10,7 @@
   "dependencies": {
     "babel-core": "^6.0.0",
     "babel-jest": "^17.0.2",
-    "babel-plugin-istanbul": "^2.0.0",
+    "babel-plugin-istanbul": "^3.0.0",
     "chalk": "^1.1.3",
     "graceful-fs": "^4.1.6",
     "jest-config": "^17.0.3",

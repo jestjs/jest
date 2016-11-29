@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "babel-core": "^6.0.0",
-    "babel-plugin-istanbul": "^2.0.0",
+    "babel-plugin-istanbul": "^3.0.0",
     "babel-preset-jest": "^17.0.2"
   }
 }

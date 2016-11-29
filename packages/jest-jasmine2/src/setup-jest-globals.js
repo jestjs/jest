@@ -14,6 +14,12 @@ import type {Config, Path} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
 const {initializeSnapshotState, addPlugins} = require('jest-snapshot');
+const {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
+  matcherHint,
+  pluralize,
+} = require('jest-matcher-utils');
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -34,21 +40,42 @@ const addSuppressedErrors = result => {
   }
 };
 
+const addAssertionErrors = result => {
+  const {assertionsMade, assertionsExpected} = getState();
+  setState({assertionsExpected: null, assertionsMade: 0});
+  if (
+    typeof assertionsExpected === 'number' &&
+    assertionsMade !== assertionsExpected
+  ) {
+    const expected = EXPECTED_COLOR(pluralize('assertion', assertionsExpected));
+    result.status = 'failed';
+    result.failedExpectations.push({
+      actual: assertionsMade,
+      expected: assertionsExpected,
+      message: matcherHint('.assertions', '', assertionsExpected, {
+        isDirectExpectCall: true,
+      }) + '\n\n' +
+        `Expected: ${expected}\n` +
+        `Received: ${RECEIVED_COLOR(pluralize('assertion', assertionsMade))}`,
+      passed: false,
+    });
+  }
+};
+
 const patchJasmine = () => {
   global.jasmine.Spec = (realSpec => {
     const Spec = function Spec(attr) {
       const resultCallback = attr.resultCallback;
       attr.resultCallback = function(result) {
         addSuppressedErrors(result);
+        addAssertionErrors(result);
         resultCallback.call(attr, result);
       };
-
       const onStart = attr.onStart;
       attr.onStart = context => {
         setState({currentTestName: context.getFullName()});
         onStart && onStart.call(attr, context);
       };
-
       realSpec.call(this, attr);
     };
 
