@@ -219,7 +219,7 @@ class HasteMap extends EventEmitter {
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
-      options.mocksPattern,
+      options.mocksPattern || '',
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;

@@ -3,13 +3,12 @@
     "defaultPlatform": "ios",
     "platforms": ["android", "ios", "native"],
     "providesModuleNodeModules": [
-      "react",
       "react-native"
     ]
   },
   "moduleNameMapper": {
-    "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
-    "^[./a-zA-Z0-9$_-]+\\.(bmp|gif|jpg|jpeg|png|psd|svg|webp)$": "RelativeImageStub"
+    "^[./a-zA-Z0-9$_-]+\\.(bmp|gif|jpg|jpeg|png|psd|svg|webp)$": "RelativeImageStub",
+    "^React$": "<rootDir>node_modules/react"
   },
   "modulePathIgnorePatterns": [
     "<rootDir>/node_modules/react-native/Libraries/react-native/",
@@ -19,7 +18,7 @@
     "node_modules/(?!(jest-)?react-native|react-clone-referenced-element)"
   ],
   "setupFiles": [
-    "<rootDir>/node_modules/jest-react-native/build/setup.js"
+    "<rootDir>/node_modules/react-native/jest/setup.js"
   ],
   "testEnvironment": "node"
 }
