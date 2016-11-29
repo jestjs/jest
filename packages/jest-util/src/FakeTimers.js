@@ -35,7 +35,7 @@ type TimerAPI = {
   clearImmediate(timeoutId?: any): void,
   clearInterval(intervalId?: number): void,
   clearTimeout(timeoutId?: any): void,
-  nextTick?: (callback: Callback) => void,
+  nextTick: (callback: Callback) => void,
   setImmediate(callback: any, ms?: number, ...args: Array<any>): number,
   setInterval(callback: any, ms?: number, ...args: Array<any>): number,
   setTimeout(callback: any, ms?: number, ...args: Array<any>): number,
@@ -44,7 +44,6 @@ type TimerAPI = {
 const MS_IN_A_YEAR = 31536000000;
 
 class FakeTimers {
-
   _cancelledImmediates: {[key: TimerID]: boolean};
   _cancelledTicks: {[key: TimerID]: boolean};
   _config: Config;
@@ -53,6 +52,7 @@ class FakeTimers {
   _global: Global;
   _immediates: Array<Tick>;
   _maxLoops: number;
+  _moduleMocker: ModuleMocker;
   _now: number;
   _ticks: Array<Tick>;
   _timerAPIs: TimerAPI;
@@ -70,37 +70,21 @@ class FakeTimers {
     this._config = config;
     this._maxLoops = maxLoops || 100000;
     this._uuidCounter = 1;
-
-    this.reset();
+    this._moduleMocker = moduleMocker;
 
     // Store original timer APIs for future reference
     this._timerAPIs = {
       clearImmediate: global.clearImmediate,
       clearInterval: global.clearInterval,
       clearTimeout: global.clearTimeout,
+      nextTick: global.process && global.process.nextTick,
       setImmediate: global.setImmediate,
       setInterval: global.setInterval,
       setTimeout: global.setTimeout,
     };
 
-    const fn = impl => moduleMocker.getMockFn().mockImpl(impl);
-
-    this._fakeTimerAPIs = {
-      clearImmediate: fn(this._fakeClearImmediate.bind(this)),
-      clearInterval: fn(this._fakeClearTimer.bind(this)),
-      clearTimeout: fn(this._fakeClearTimer.bind(this)),
-      setImmediate: fn(this._fakeSetImmediate.bind(this)),
-      setInterval: fn(this._fakeSetInterval.bind(this)),
-      setTimeout: fn(this._fakeSetTimeout.bind(this)),
-    };
-
-    // If there's a process.nextTick on the global, mock it out
-    // (only applicable to node/node-emulating environments)
-    if (typeof global.process === 'object'
-      && typeof global.process.nextTick === 'function') {
-      this._timerAPIs.nextTick = global.process.nextTick;
-      this._fakeTimerAPIs.nextTick = fn(this._fakeNextTick.bind(this));
-    }
+    this.reset();
+    this._createMocks();
 
     // These globally-accessible function are now deprecated!
     // They will go away very soon, so do not use them!
@@ -270,18 +254,13 @@ class FakeTimers {
   }
 
   runWithRealTimers(cb: Callback) {
-    const hasNextTick =
-      typeof this._global.process === 'object'
-      && typeof this._global.process.nextTick === 'function';
-
     const prevClearImmediate = this._global.clearImmediate;
     const prevClearInterval = this._global.clearInterval;
     const prevClearTimeout = this._global.clearTimeout;
+    const prevNextTick = this._global.process.nextTick;
     const prevSetImmediate = this._global.setImmediate;
     const prevSetInterval = this._global.setInterval;
     const prevSetTimeout = this._global.setTimeout;
-
-    const prevNextTick = hasNextTick ? this._global.process.nextTick : null;
 
     this.useRealTimers();
 
@@ -297,12 +276,10 @@ class FakeTimers {
     this._global.clearImmediate = prevClearImmediate;
     this._global.clearInterval = prevClearInterval;
     this._global.clearTimeout = prevClearTimeout;
+    this._global.process.nextTick = prevNextTick;
     this._global.setImmediate = prevSetImmediate;
     this._global.setInterval = prevSetInterval;
     this._global.setTimeout = prevSetTimeout;
-    if (hasNextTick) {
-      this._global.process.nextTick = prevNextTick;
-    }
 
     if (errThrown) {
       throw cbErr;
@@ -310,35 +287,25 @@ class FakeTimers {
   }
 
   useRealTimers() {
-    const hasNextTick =
-      typeof this._global.process === 'object'
-      && typeof this._global.process.nextTick === 'function';
-
     this._global.clearImmediate = this._timerAPIs.clearImmediate;
     this._global.clearInterval = this._timerAPIs.clearInterval;
     this._global.clearTimeout = this._timerAPIs.clearTimeout;
+    this._global.process.nextTick = this._timerAPIs.nextTick;
     this._global.setImmediate = this._timerAPIs.setImmediate;
     this._global.setInterval = this._timerAPIs.setInterval;
     this._global.setTimeout = this._timerAPIs.setTimeout;
-    if (hasNextTick) {
-      this._global.process.nextTick = this._timerAPIs.nextTick;
-    }
   }
 
   useFakeTimers() {
-    const hasNextTick =
-      typeof this._global.process === 'object'
-      && typeof this._global.process.nextTick === 'function';
+    this._createMocks();
 
     this._global.clearImmediate = this._fakeTimerAPIs.clearImmediate;
     this._global.clearInterval = this._fakeTimerAPIs.clearInterval;
     this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
+    this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
     this._global.setImmediate = this._fakeTimerAPIs.setImmediate;
     this._global.setInterval = this._fakeTimerAPIs.setInterval;
     this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
-    if (hasNextTick) {
-      this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
-    }
   }
 
   _checkFakeTimers() {
@@ -353,6 +320,20 @@ class FakeTimers {
         `Stack Trace:\n` + formatStackTrace(new Error().stack, this._config),
       );
     }
+  }
+
+  _createMocks() {
+    const fn = impl => this._moduleMocker.getMockFn().mockImpl(impl);
+
+    this._fakeTimerAPIs = {
+      clearImmediate: fn(this._fakeClearImmediate.bind(this)),
+      clearInterval: fn(this._fakeClearTimer.bind(this)),
+      clearTimeout: fn(this._fakeClearTimer.bind(this)),
+      nextTick: fn(this._fakeNextTick.bind(this)),
+      setImmediate: fn(this._fakeSetImmediate.bind(this)),
+      setInterval: fn(this._fakeSetInterval.bind(this)),
+      setTimeout: fn(this._fakeSetTimeout.bind(this)),
+    };
   }
 
   _fakeClearTimer(uuid: TimerID) {
@@ -383,7 +364,7 @@ class FakeTimers {
     });
 
     const cancelledTicks = this._cancelledTicks;
-    this._timerAPIs.nextTick && this._timerAPIs.nextTick(() => {
+    this._timerAPIs.nextTick(() => {
       if (this._blocked) {return;}
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
