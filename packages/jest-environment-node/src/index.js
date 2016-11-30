@@ -31,7 +31,6 @@ class NodeEnvironment {
     global.global = global;
     global.clearInterval = clearInterval;
     global.clearTimeout = clearTimeout;
-    global.JSON = JSON;
     global.Promise = Promise;
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
