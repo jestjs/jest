@@ -612,20 +612,20 @@ const houseForSale = {
 		wallColor: 'white'
 	},
   bedrooms: 4
-}
+};
 const desiredHouse = {
 	bath: true,
 	kitchen: {
 		amenities: ['oven', 'stove', 'washer'],
 		wallColor: 'white'
 	}
-}
+};
 
 describe('looking for a new house', () => {
 	it('the house has my desired features', () => {
 		expect(houseForSale).toMatchObject(desiredHouse);
-	}
-}
+	});
+});
 ```
 
 
@@ -737,7 +737,8 @@ const five = require('five');
 expect.extend({
   toBeNumber(received, actual) {
     const pass = received === actual;
-    const message = `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
+    const message =
+      () => `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
     return {message, pass};
   }
 });
@@ -752,10 +753,6 @@ describe('toBe5', () => {
 
 Jest will give your matchers context to simplify coding. The following can be found on `this` inside a custom matcher:
 
-#### `this.dontThrow`
-
-A function that when called will prevent this matcher from throwing on errors.
-
 #### `this.isNot`
 
 A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
@@ -764,6 +761,47 @@ A boolean to let you know this matcher was called with the negated `.not` modifi
 
 There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
 
+The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
+
+```js
+const diff = require('jest-diff');
+expect.extend({
+  toBe(received, actual) {
+    const pass = received === expected;
+
+    const message = pass
+      ? () => this.utils.matcherHint('.not.toBe') + '\n\n' +
+        `Expected value to not be (using ===):\n` +
+        `  ${this.utils.printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${this.utils.printReceived(received)}`
+      : () => {
+        const diffString = diff(expected, received, {
+          expand: this.expand,
+        });
+        return this.utils.matcherHint('.toBe') + '\n\n' +
+        `Expected value to be (using ===):\n` +
+        `  ${this.utils.printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${this.utils.printReceived(received)}` +
+        (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+      };
+  },
+});
+```
+
+This will print something like this:
+
+```
+  expect(received).toBe(expected)
+
+    Expected value to be (using ===):
+      "banana"
+    Received:
+      "apple"
+```
+
+When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
 
 ## Mock Functions
 
