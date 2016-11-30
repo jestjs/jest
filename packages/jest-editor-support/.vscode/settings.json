@@ -1,0 +1,5 @@
+{
+  // To start using VS Code Jest, open just this folder in VS Code
+  // then run the command "Start Jest Runner".
+  "jest.pathToJest": "npm test --"
+}
