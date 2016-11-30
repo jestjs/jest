@@ -14,7 +14,6 @@ import type {Config, Path} from 'types/Config';
 import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
-import type {Script} from 'vm';
 import type {ModuleMap} from 'jest-haste-map';
 import type ModuleMocker, {MockFunctionMetadata} from 'jest-mock';
 
@@ -437,7 +436,9 @@ class Runtime {
 
     const script = transform(filename, this._config, {isInternalModule});
 
-    const wrapper = this._runScript(script, filename);
+    const wrapper = this._environment.runScript(script)[
+      transform.EVAL_RESULT_VARIABLE
+    ];
     wrapper.call(
       localModule.exports, // module context
       localModule, // module object
@@ -451,42 +452,6 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
-  }
-
-  _runScript(script: Script, filename: string) {
-    try {
-      return this._environment.runScript(script)[
-        transform.EVAL_RESULT_VARIABLE
-      ];
-    } catch (e) {
-      const config = this._config;
-      const relative = filePath => path.relative(config.rootDir, filePath);
-      if (e.constructor.name === 'SyntaxError') {
-        const maybePreprocessor = config.transform &&
-          config.transform.length &&
-          config.transform.find(
-            ([regex, _]) => new RegExp(regex).test(filename),
-          );
-        const preprocessorInfo = maybePreprocessor ? (
-          `Preprocessor for ${maybePreprocessor[0]}: ` +
-          `${relative(maybePreprocessor[1])}`
-        ) : `No preprocessor specified, consider installing 'babel-jest'`;
-        const babelInfo = config.usesBabelJest
-          ? `Make sure your '.babelrc' is set up correctly, ` +
-            `for example it should include the 'es2015' preset.\n`
-          : '';
-        /* eslint-disable max-len */
-        throw new SyntaxError(
-          `${e.message} in file '${relative(filename)}'.\n\n` +
-          `Make sure your transform config is set up correctly and ensure ` +
-          `your 'transformIgnorePatterns' configuration is correct: http://facebook.github.io/jest/docs/configuration.html#transformignorepatterns-array-string\n` +
-          'If you are currently setting up Jest or modifying your transform config, try `jest --no-cache`.\n' +
-          `${preprocessorInfo}.\n${babelInfo}`,
-        );
-        /* eslint-enable max-len */
-      }
-      throw e;
-    }
   }
 
   _generateMock(from: Path, moduleName: string) {

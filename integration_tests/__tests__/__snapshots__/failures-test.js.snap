@@ -4,7 +4,6 @@ Object {
   ● Test suite failed to run
 
     Expected an Error, but \"1\" was thrown
-    
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
