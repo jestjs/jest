@@ -744,7 +744,7 @@ expect.extend({
 });
 
 describe('toBe5', () => {
-  it('matchers the letter 5', () => {
+  it('matchers the number 5', () => {
     expect(five()).toBeNumber(5);
     expect('Jest').not.toBeNumber(5);
   });
