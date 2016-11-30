@@ -52,8 +52,8 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
   - [`moduleNameMapper` [object<string, string>]](#modulenamemapper-object-string-string)
-  - [`modulePaths` [array<string>]](#modulepaths-array-string)
   - [`modulePathIgnorePatterns` [array<string>]](#modulepathignorepatterns-array-string)
+  - [`modulePaths` [array<string>]](#modulepaths-array-string)
   - [`notify` [boolean]](#notify-boolean)
   - [`preset` [string]](#preset-string)
   - [`resetMocks` [boolean]](#resetmocks-boolean)
@@ -198,19 +198,6 @@ An array of file extensions your modules use. If you require modules without spe
 
 If you are using TypeScript this should be `['js', 'jsx', 'json', 'ts', 'tsx']`
 
-### `modulePathIgnorePatterns` [array<string>]
-(default: `[]`)
-
-An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
-
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/']`.
-
-### `modulePaths` [array<string>]
-(default: `[]`)
-
-An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to
-additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory. Example: `["<rootDir>/app/"]`.
-
 ### `moduleDirectories` [array<string>]
 (default: `['node_modules']`)
 
@@ -238,6 +225,19 @@ Example:
   }
 ```
 *Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub.*
+
+### `modulePathIgnorePatterns` [array<string>]
+(default: `[]`)
+
+An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
+
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/']`.
+
+### `modulePaths` [array<string>]
+(default: `[]`)
+
+An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to
+additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory. Example: `["<rootDir>/app/"]`.
 
 ### `notify` [boolean]
 (default: `false`)
