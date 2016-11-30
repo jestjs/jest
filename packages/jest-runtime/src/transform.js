@@ -303,17 +303,24 @@ const transformAndBuildScript = (
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
   let wrappedResult;
 
-  if (
-    !isInternalModule &&
+  try {
+    if (
+      !isInternalModule &&
       (shouldTransform(filename, config) || instrument)
-  ) {
-    wrappedResult =
-      wrap(transformSource(filename, config, content, instrument));
-  } else {
-    wrappedResult = wrap(content);
-  }
+    ) {
+      wrappedResult =
+        wrap(transformSource(filename, config, content, instrument));
+    } else {
+      wrappedResult = wrap(content);
+    }
 
-  return new vm.Script(wrappedResult, {displayErrors: true, filename});
+    return new vm.Script(wrappedResult, {displayErrors: true, filename});
+  } catch (e) {
+    if (e.codeFrame) {
+      e.stack = e.codeFrame;
+    }
+    throw e;
+  }
 };
 
 module.exports = (

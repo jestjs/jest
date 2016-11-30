@@ -67,22 +67,22 @@ const formatExecError = (
   if (separated.message.indexOf(trim(message)) !== -1) {
     // Often stack trace already contains the duplicate of the message
     message = separated.message;
-  } else {
-    message = message + '\n' + separated.message;
   }
 
   message = message.split(/\n/).map(line => MESSAGE_INDENT + line).join('\n');
-
   stack = stack && !config.noStackTrace
-    ? '\n' + STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath))
+    ? '\n' + formatStackTrace(stack, config, testPath)
     : '';
 
   if (message.match(/^\s*$/) && stack.match(/^\s*$/)) {
     // this can happen if an empty object is thrown.
     message = MESSAGE_INDENT + 'Error: No message was provided';
   }
-  return TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
-    message  + stack + '\n';
+
+  return (
+    TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
+    message + stack + '\n'
+  );
 };
 
 const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
