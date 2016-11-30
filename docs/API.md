@@ -17,6 +17,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - `beforeAll(fn)`
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expectvalue)
+  - [`expect.extend(matchers)`](#extending-jest-matchers)
   - [`it(name, fn)`](#basic-testing)
   - [`it.only(name, fn)`](#basic-testing)
   - [`it.skip(name, fn)`](#basic-testing)
@@ -725,6 +726,45 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
+
+### Extending Jest Matchers
+
+Using descriptive matchers will help your tests be readable and maintainable. Jest has a simple API for adding your own matchers. Here is an example of adding a matcher:
+
+```js
+const five = require('five');
+
+expect.extend({
+  toBeNumber(received, actual) {
+    const pass = received === actual;
+    const message = `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
+    return {message, pass};
+  }
+});
+
+describe('toBe5', () => {
+  it('matchers the letter 5', () => {
+    expect(five()).toBeNumber(5);
+    expect('Jest').not.toBeNumber(5);
+  });
+});
+```
+
+Jest will give your matchers context to simplify coding. The following can be found on `this` inside a custom matcher:
+
+#### `this.dontThrow`
+
+A function that when called will prevent this matcher from throwing on errors.
+
+#### `this.isNot`
+
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
+
+#### `this.utils`
+
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
+
+
 ## Mock Functions
 
 ### `mockFn.mock.calls`
@@ -1043,6 +1083,7 @@ Returns the `jest` object for chaining.
 Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
+
 
 ### Jest CLI options
 
