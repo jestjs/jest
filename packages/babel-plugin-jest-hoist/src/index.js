@@ -79,7 +79,7 @@ const FUNCTIONS = Object.create(null);
 FUNCTIONS.mock = args => {
   if (args.length === 1) {
     return args[0].isStringLiteral();
-  } else if (args.length === 2) {
+  } else if (args.length === 2 || args.length === 3) {
     const moduleFactory = args[1];
     invariant(
       moduleFactory.isFunction(),
@@ -108,7 +108,7 @@ FUNCTIONS.mock = args => {
           (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
           /^mock/.test(name) ||
           // Allow istanbul's coverage variable to pass.
-          //^(?:__)?cov/.test(name),
+          /^(?:__)?cov/.test(name),
           'The module factory of `jest.mock()` is not allowed to ' +
           'reference any out-of-scope variables.\n' +
           'Invalid variable access: ' + name + '\n' +
