@@ -1,6 +1,11 @@
 // @flow
 'use strict';
 
+export type Location = {
+    line: number,
+    column: number,
+}
+
 export type JestFileResults = {
     name: string,
     summary: string,

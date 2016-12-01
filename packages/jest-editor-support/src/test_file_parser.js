@@ -1,15 +1,12 @@
 // @flow
 'use strict';
 
-import {readFile} from 'fs';
-import * as babylon from 'babylon';
+const readFile = require('fs').readFile;
+const babylon = require('babylon');
 
-interface Location {
-    line: number,
-    column: number,
-}
+import type {Location} from './types';
 
-export class Expect {
+class Expect {
   start: Location;
   end: Location;
   file: string;
@@ -20,7 +17,7 @@ export class Expect {
   }
 }
 
-export class ItBlock {
+class ItBlock {
   name: string;
   file: string;
   start: Location;
@@ -33,21 +30,18 @@ export class ItBlock {
   }
 }
 
-export class TestFileParser {
+class TestFileParser {
   itBlocks: ItBlock[];
   expects: Expect[];
 
-  async run(file: string): Promise<any> {
+  run(file: string): Promise<any> {
     this.itBlocks = [];
     this.expects = [];
 
-    try {
-      const data = await this.generateAST(file);
+    return this.generateAST(file).then(data => {
       this.findItBlocksInBody(data['program'], file);
       return data;
-    } catch (error) {
-      throw error;
-    }
+    });
   }
 
   // When we want to show an inline assertion, the only bit of
@@ -181,3 +175,9 @@ export class TestFileParser {
     });
   }
 }
+
+module.exports = {
+  Expect,
+  ItBlock,
+  TestFileParser,
+};
