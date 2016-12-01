@@ -1,45 +1,50 @@
-it('passes', () => {
-  expect('it').toEqual('it');
+'use strict';
+
+import type {TestReconcilationState} from '../types';
+
+const TestReconciler = require('../test_reconciler');
+const fs = require('fs');
+const path = require('path');
+const fixtures = path.resolve(__dirname, 'fixtures');
+
+const reconcilerWithFile = (file: string): TestReconciler => {
+  const parser = new TestReconciler();
+  const exampleJSON = fs.readFileSync(`${fixtures}/failing_jsons/${file}`);
+  const json = JSON.parse(exampleJSON.toString());
+  parser.updateFileWithJestStatus(json);
+  return parser;
+};
+
+describe('Test Reconciler', () => {
+  let parser: TestReconciler;
+  const dangerFilePath = 
+    '/Users/orta/dev/projects/danger/' + 
+    'danger-js/source/ci_source/_tests/_travis.test.js';
+
+  describe('for a simple project', () => {
+    it('passes a passing method', () => {
+      parser = reconcilerWithFile('failing_jest_json.json');
+      const testName = 'does not validate without josh';
+      const status = parser.stateForTestAssertion(dangerFilePath, testName);
+      expect(status.status).toEqual('KnownSuccess');
+      expect(status.line).toBeNull();
+    });
+
+    it('fails a failing method in the same file', () => {
+      parser = reconcilerWithFile('failing_jest_json.json');
+      const testName = 
+      'validates when all Travis environment' + 
+      ' vars are set and Josh K says so';
+
+      const status = parser.stateForTestAssertion(dangerFilePath, testName);
+      expect(status.status).toEqual('KnownFail');
+      expect(status.line).toEqual(12);
+      const errorMessage = 'Expected value to be falsy, instead received true'; 
+      expect(status.terseMessage).toEqual(errorMessage);
+      expect(status.shortMessage).toEqual(`Error: expect(received).toBeFalsy()
+
+Expected value to be falsy, instead received
+  true`);
+    });
+  });
 });
-
-  // import * as assert from 'assert';
-  // import { TestReconciler, TestReconcilationState } from '../src/lib/test_reconciler';
-  // import * as fs from "fs";
-
-  // const reconcilerWithFile = (file: string): TestReconciler => {
-  //   const parser = new TestReconciler();
-  //   const exampleJSON = fs.readFileSync(__dirname + "/../../test/fixtures/failing_jsons/" + file);
-  //   const json = JSON.parse(exampleJSON.toString());
-  //   parser.updateFileWithJestStatus(json);
-  //   return parser;
-  // };
-
-  // suite("Test Reconciler", () => {
-  //     let parser: TestReconciler;
-  //     const dangerFilePath = "/Users/orta/dev/projects/danger/danger-js/source/ci_source/_tests/_travis.test.js";
-
-  //     suite("for a simple project", () => {
-  //       test("passes a passing method", () => {
-  //         parser = reconcilerWithFile("failing_jest_json.json");
-  //         const status = parser.stateForTestAssertion(dangerFilePath, "does not validate without josh");
-  //         expect(status.status, TestReconcilationState.KnownSuccess);
-  //         expect(status.line, null);
-  //       });
-
-  //       test("fails a failing method in the same file", () => {
-  //         parser = reconcilerWithFile("failing_jest_json.json");
-  //         const status = parser.stateForTestAssertion(dangerFilePath, "validates when all Travis environment vars are set and Josh K says so");
-  //         expect(status.status, TestReconcilationState.KnownFail);
-  //         expect(status.line, 12);
-  //         expect(status.terseMessage, "Expected value to be falsy, instead received true");
-  //         expect(status.shortMessage, `Error: expect(received).toBeFalsy()
-
-  // Expected value to be falsy, instead received
-  //   true`);
-  //       });
-  //     });
-
-  //     suite("for a non-trivial failing json", () => {
-  //     });
-
-  // });

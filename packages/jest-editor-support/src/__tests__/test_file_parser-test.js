@@ -1,9 +1,12 @@
+'use strict';
+
 const TestFileParser = require('../test_file_parser').TestFileParser;
 
 const path = require('path');
 const fixtures = path.resolve(__dirname, 'fixtures');
 
 describe('File Parsing for it blocks', () => {
+  
   it('For the simplest it cases', async () => {
     const parser = new TestFileParser();
     await parser.run(`${fixtures}/global_its.example`);

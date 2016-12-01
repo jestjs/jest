@@ -1,7 +1,8 @@
 // @flow
 'use strict';
 
-import {basename} from 'path';
+const path = require('path');
+
 import type {
   JestTotalResults, 
   JestAssertionResults, 
@@ -18,7 +19,7 @@ import type {
  *  at a file level, generating useful error messages and providing a nice API. 
  */
 
-export class TestReconciler {
+module.exports = class TestReconciler {
   fileStatuses: any;
   fails: TestFileAssertionStatus[];
   passes: TestFileAssertionStatus[];
@@ -107,8 +108,10 @@ export class TestReconciler {
   }
 
   // Pull the line out from the stack trace
-  lineOfError(string: string, filename: string): ?number {
-    return parseInt(string.split(basename(filename), 2)[1].split(':')[1], 1);
+  lineOfError(message: string, filePath: string): ?number {
+    const filename = path.basename(filePath);
+    const restOfTrace = message.split(filename, 2)[1];
+    return parseInt(restOfTrace.split(':')[1], 10);
   }
 
   statusToReconcilationState(status: string): TestReconcilationState {
@@ -132,4 +135,4 @@ export class TestReconciler {
     if (!assertion) { return null; }
     return assertion; 
   }
-}
+};
