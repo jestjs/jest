@@ -21,6 +21,9 @@ import c from '../__test_modules__/c';
 import d from '../__test_modules__/d';
 import e from '../__test_modules__/e';
 
+// The virtual mock call below will be hoisted above this `require` call.
+const virtualModule = require('virtual-module');
+
 // These will all be hoisted above imports
 jest.unmock('react');
 jest.deepUnmock('../__test_modules__/Unmocked');
@@ -44,6 +47,7 @@ jest.mock('../__test_modules__/e', () => {
     },
   };
 });
+jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 
 // These will not be hoisted
 jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');
@@ -116,5 +120,9 @@ describe('babel-plugin-jest-hoist', () => {
     require('../mock-file');
     const mock = require('../banana');
     expect(mock).toEqual('apple');
+  });
+
+  it('works with virtual modules', () => {
+    expect(virtualModule).toBe('kiwi');
   });
 });
