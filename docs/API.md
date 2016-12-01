@@ -593,7 +593,7 @@ For example, you might not know what exactly `essayOnTheBestFlavor()` returns, b
 describe('an essay on the best flavor', () => {
   it('mentions grapefruit', () => {
     expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
-    expect(essayOnTheBestFlavor()).toMatch(new RegExp("grapefruit"));
+    expect(essayOnTheBestFlavor()).toMatch(new RegExp('grapefruit'));
   })
 })
 ```
@@ -603,7 +603,7 @@ This matcher also accepts a string, which it will try to match:
 ```js
 describe('grapefruits are healthy', () => {
   it('grapefruits are a fruit', () => {
-    expect("grapefruits").toMatch("fruit");
+    expect('grapefruits').toMatch('fruit');
   })
 })
 ```
