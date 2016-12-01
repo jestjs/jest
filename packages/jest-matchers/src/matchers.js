@@ -103,7 +103,7 @@ const matchers: MatchersObject = {
         (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
 
-    return {message, pass};
+    return {actual: received, expected, message, name: 'toBe', pass};
   },
 
   toBeCloseTo(
@@ -396,7 +396,7 @@ const matchers: MatchersObject = {
         (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
 
-    return {message, pass};
+    return {actual: received, expected, message, name: 'toEqual', pass};
   },
 
   toHaveLength(received: any, length: number) {
