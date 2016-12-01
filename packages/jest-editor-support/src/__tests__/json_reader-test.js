@@ -1,3 +1,7 @@
+it('passes', () => {
+  expect('it').toEqual('it');
+});
+
   // import * as assert from 'assert';
   // import { TestReconciler, TestReconcilationState } from '../src/lib/test_reconciler';
   // import * as fs from "fs";
