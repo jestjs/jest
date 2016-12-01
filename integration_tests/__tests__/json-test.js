@@ -12,5 +12,5 @@ test('JSON is available in the global scope', () => {
 });
 
 test('JSON.parse creates objects from within this context', () => {
-  expect(JSON.parse("{}").constructor).toBe(Object);
+  expect(JSON.parse('{}').constructor).toBe(Object);
 });
