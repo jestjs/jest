@@ -1,8 +1,6 @@
 'use strict';
 
-import type {TestReconcilationState} from '../types';
-
-const TestReconciler = require('../test_reconciler');
+const TestReconciler = require('../TestReconciler');
 const fs = require('fs');
 const path = require('path');
 const fixtures = path.resolve(__dirname, 'fixtures');

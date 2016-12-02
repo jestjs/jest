@@ -1,5 +1,20 @@
 // @flow
 'use strict';
 
-// I think this file should provide all the exports from the other files?
+// This file represents the public API for jest-editor-support
 
+const JestProcess = require('./JestProcess');
+const JestRunner = require('./JestRunner');
+const JestSettings = require('./JestSettings');
+const ProjectWorkspace = require('./ProjectWorkspace');
+const TestFileParser = require('./TestFileParser');
+const TestReconciler =  require('./TestReconciler');
+
+module.exports = {
+  JestProcess,  
+  JestRunner,
+  JestSettings,
+  ProjectWorkspace,
+  TestFileParser,
+  TestReconciler,
+};

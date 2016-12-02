@@ -1,45 +1,46 @@
 // @flow
 'use strict';
 
-import {ChildProcess} from 'child_process';
-import {readFile} from 'fs';
-import {tmpdir} from 'os';
-import EventEmitter from 'events';
-import {ProjectWorkspace} from './project_workspace';
-import {jestChildProcessWithArgs} from './jest_process';
+const {ChildProcess} = require('child_process');
+const {readFile} = require('fs');
+const {tmpdir} = require('os');
+const {EventEmitter} = require('events');
+const ProjectWorkspace = require('./ProjectWorkspace');
+const {jestChildProcessWithArgs} = require('./JestProcess');
 
 // This class represents the running process, and
 // passes out events when it understands what data is being
 // pass sent out of the process
 
-export class JestRunner extends EventEmitter {
+module.exports = class JestRunner extends EventEmitter {
   debugprocess: ChildProcess;
   workspace: ProjectWorkspace;
-    
+  jsonFilePath: string;
+
   constructor(workspace: ProjectWorkspace) {
     super();
     this.workspace = workspace;
+    this.jsonFilePath = tmpdir() + '/vscode-jest_runner.json';
   }
 
   start() {
-    const tempJSON = tmpdir() + '/vscode-jest_runner.json';
     const args = [
       '--json', 
       '--useStderr', 
       '--watch', 
       '--jsonOutputFile', 
-      tempJSON,
+      this.jsonFilePath,
     ];
-    this.debugprocess = jestChildProcessWithArgs(this.workspace, args);
 
+    this.debugprocess = jestChildProcessWithArgs(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       // Make jest save to a file, otherwise we get chunked data 
       // and it can be hard to put it back together.
       const stringValue = data.toString().replace(/\n$/, '').trim();
       if (stringValue.startsWith('Test results written to')) {
-        readFile(tempJSON, 'utf8', (err, data) => {
+        readFile(this.jsonFilePath, 'utf8', (err, data) => {
           if (err) {
-            const message = `JSON test overview file not found at ${tempJSON}`;
+            const message = `JSON report not found at ${this.jsonFilePath}`;
             this.emit('terminalError', message); 
           } else { 
             this.emit('executableJSON', JSON.parse(data)); 
@@ -78,4 +79,4 @@ export class JestRunner extends EventEmitter {
   closeProcess() {
     this.debugprocess.kill();
   }
-}
+};

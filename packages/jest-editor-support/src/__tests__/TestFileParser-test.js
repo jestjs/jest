@@ -1,6 +1,6 @@
 'use strict';
 
-const TestFileParser = require('../test_file_parser').TestFileParser;
+const TestFileParser = require('../TestFileParser').TestFileParser;
 
 const path = require('path');
 const fixtures = path.resolve(__dirname, 'fixtures');
@@ -52,22 +52,41 @@ describe('File Parsing for it blocks', () => {
   it('For a danger test file (which has flow annotations)', async () => {
     const parser = new TestFileParser();
     await parser.run(`${fixtures}/dangerjs/travis-ci.example`);
-    expect(parser.itBlocks.length, 7);
+    expect(parser.itBlocks.length).toEqual(7);
   });
 
   it('For a danger flow test file ', async () => {
     const parser = new TestFileParser();
     await parser.run(`${fixtures}/dangerjs/github.example`);
-    expect(parser.itBlocks.length, 2);
+    expect(parser.itBlocks.length).toEqual(2);
   });
 
   it('For a metaphysics test file', async () => {
     const parser = new TestFileParser();
     await parser.run(`${fixtures}/metaphysics/partner_show.example`);
-    expect(parser.itBlocks.length, 8);
+    expect(parser.itBlocks.length).toEqual(8);
   });
 });
 
 describe('File Parsing for expects', () => {
-  // TODO
+
+  it('finds Expects in a danger test file', async () => {
+    const parser = new TestFileParser();
+    await parser.run(`${fixtures}/dangerjs/travis-ci.example`);
+    expect(parser.expects.length).toEqual(7);
+  });
+
+  // These two expect 0s are weird to me
+
+  it('finds Expects in a danger flow test file ', async () => {
+    const parser = new TestFileParser();
+    await parser.run(`${fixtures}/dangerjs/github.example`);
+    expect(parser.expects.length).toEqual(0);
+  });
+
+  it('finds Expects in a metaphysics test file', async () => {
+    const parser = new TestFileParser();
+    await parser.run(`${fixtures}/metaphysics/partner_show.example`);
+    expect(parser.expects.length).toEqual(0);
+  });
 });

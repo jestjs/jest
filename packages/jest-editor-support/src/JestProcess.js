@@ -1,8 +1,8 @@
 // @flow
 'use strict';
 
-import {ChildProcess, spawn} from 'child_process';
-import {ProjectWorkspace} from './project_workspace';
+const {ChildProcess, spawn} =  require('child_process');
+const ProjectWorkspace = require('./ProjectWorkspace');
 
 /**
  * Spawns and returns a Jest process with specific args 

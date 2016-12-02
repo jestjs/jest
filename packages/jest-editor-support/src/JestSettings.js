@@ -4,16 +4,16 @@
 import {ChildProcess} from 'child_process';
 import EventEmitter from 'events';
 import {EOL} from 'os';
-import {ProjectWorkspace} from './project_workspace';
-import {jestChildProcessWithArgs} from './jest_process';
+import ProjectWorkspace from './ProjectWorkspace';
+import {jestChildProcessWithArgs} from './JestProcess';
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
 // the interface below can be used to show what we use, as currently the whole
 // settings object will be in memory.
 
-// Ideally anything you care about adding should have a default in 
-// the constructor see https://facebook.github.io/jest/docs/configuration.html 
+// Ideally anything you care about adding should have a default in
+// the constructor see https://facebook.github.io/jest/docs/configuration.html
 // for full deets
 
 // For now, this is all we care about inside the config
@@ -24,10 +24,10 @@ export type JestConfigRepresentation = {
 module.exports = class JestSettings extends EventEmitter {
   debugprocess: ChildProcess;
   workspace: ProjectWorkspace;
-    
+
   settings: JestConfigRepresentation;
   jestVersionMajor: number | null;
-    
+
   constructor(workspace: ProjectWorkspace) {
     super();
     this.workspace = workspace;
@@ -35,7 +35,7 @@ module.exports = class JestSettings extends EventEmitter {
       // Defaults for a Jest project
     this.settings = {
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
-    }; 
+    };
   }
 
   getConfig(completed: any) {
