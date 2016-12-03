@@ -1,6 +1,7 @@
 {
   "scripts": {
     "start": "node server/server.js",
+    "test": "node server/generate.js",
     "gh-pages": "node publish-gh-pages.js"
   },
   "dependencies": {
