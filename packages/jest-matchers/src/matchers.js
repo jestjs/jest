@@ -573,8 +573,8 @@ const matchers: MatchersObject = {
           return false;
         }
 
-        for (let i=0; i<expected.length; i++) {
-          if (compare(expected[i], received[i])===false) {
+        for (let i = 0; i < expected.length; i++) {
+          if (compare(expected[i], received[i]) === false) {
             return false;
           }
         }
