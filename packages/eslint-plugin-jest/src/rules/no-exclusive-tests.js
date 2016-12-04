@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(context) {
-  var jestTestFunctions = [
+  const jestTestFunctions = [
     'it',
     'describe',
     'test',
@@ -36,8 +36,8 @@ module.exports = function(context) {
   }
 
   return {
-    CallExpression: function(node) {
-      var callee = node.callee;
+    CallExpression(node) {
+      const callee = node.callee;
       if (!callee) {
         return;
       }

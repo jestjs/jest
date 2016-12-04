@@ -1,6 +1,6 @@
 'use strict';
 
-var describeAliases = [
+const describeAliases = [
   'describe',
   'xdescribe',
   'describe.only',
@@ -8,7 +8,7 @@ var describeAliases = [
   'fdescribe',
 ];
 
-var testCaseNames = [
+const testCaseNames = [
   'it',
   'it.only',
   'it.skip',
@@ -41,7 +41,7 @@ function isTestCase(node) {
 function newDescribeContext() {
   return {
     describeTitles: [],
-    testTitles: []
+    testTitles: [],
   };
 }
 
@@ -49,8 +49,8 @@ function handlTestCaseTitles(context, titles, node, title) {
   if (isTestCase(node)) {
     if (titles.indexOf(title) !== -1) {
       context.report({
-        node: node,
-        message: 'Test title is used multiple times in the same test suite.'
+        node,
+        message: 'Test title is used multiple times in the same test suite.',
       });
     }
     titles.push(title);
@@ -63,8 +63,8 @@ function handlTestSuiteTitles(context, titles, node, title) {
   }
   if (titles.indexOf(title) !== -1) {
     context.report({
-      node: node,
-      message: 'Test suite title is used multiple times.'
+      node,
+      message: 'Test suite title is used multiple times.',
     });
   }
   titles.push(title);
@@ -75,12 +75,12 @@ function isFirstArgLiteral(node) {
 }
 
 module.exports = function(context) {
-  var contexts = [
-    newDescribeContext()
+  const contexts = [
+    newDescribeContext(),
   ];
   return {
-    CallExpression: function(node) {
-      var currentLayer = contexts[contexts.length - 1];
+    CallExpression(node) {
+      const currentLayer = contexts[contexts.length - 1];
       if (isDescribe(node)) {
         contexts.push(newDescribeContext());
       }
@@ -88,14 +88,14 @@ module.exports = function(context) {
         return;
       }
 
-      var title = node.arguments[0].value;
+      const title = node.arguments[0].value;
       handlTestCaseTitles(context, currentLayer.testTitles, node, title);
       handlTestSuiteTitles(context, currentLayer.describeTitles, node, title);
     },
-    'CallExpression:exit': function(node) {
+    'CallExpression:exit'(node) {
       if (isDescribe(node)) {
         contexts.pop();
       }
-    }
+    },
   };
 };
