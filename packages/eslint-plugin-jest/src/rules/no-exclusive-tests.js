@@ -44,16 +44,16 @@ module.exports = function(context) {
 
       if (isCallToJestOnlyFunction(callee)) {
         context.report({
-          node: callee.property,
           message: 'Unexpected exclusive test.',
+          node: callee.property,
         });
         return;
       }
 
       if (isCallToExclusiveJestFunction(callee)) {
         context.report({
-          node: callee,
           message: 'Unexpected exclusive test.',
+          node: callee,
         });
         return;
       }

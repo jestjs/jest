@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 'use strict';
 
 const RuleTester = require('eslint').RuleTester;

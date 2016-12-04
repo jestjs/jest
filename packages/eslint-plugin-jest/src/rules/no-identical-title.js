@@ -49,8 +49,8 @@ function handlTestCaseTitles(context, titles, node, title) {
   if (isTestCase(node)) {
     if (titles.indexOf(title) !== -1) {
       context.report({
-        node,
         message: 'Test title is used multiple times in the same test suite.',
+        node,
       });
     }
     titles.push(title);
@@ -63,15 +63,19 @@ function handlTestSuiteTitles(context, titles, node, title) {
   }
   if (titles.indexOf(title) !== -1) {
     context.report({
-      node,
       message: 'Test suite title is used multiple times.',
+      node,
     });
   }
   titles.push(title);
 }
 
 function isFirstArgLiteral(node) {
-  return node.arguments && node.arguments[0] && node.arguments[0].type === 'Literal';
+  return (
+    node.arguments &&
+    node.arguments[0] &&
+    node.arguments[0].type === 'Literal'
+  );
 }
 
 module.exports = function(context) {
