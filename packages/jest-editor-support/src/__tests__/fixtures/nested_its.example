@@ -9,3 +9,8 @@ describe('some other context', () => {
   it('3', () => {
   });
 });
+
+describe('with old functions', function() {
+  it('4', () => {
+  });
+});
