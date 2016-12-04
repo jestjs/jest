@@ -573,11 +573,13 @@ const matchers: MatchersObject = {
           return false;
         }
 
-        return expected.every(exp => {
-          return received.some(act => {
-            return compare(exp, act);
-          });
-        });
+        for (let i=0; i<expected.length; i++) {
+          if (compare(expected[i], received[i])===false) {
+            return false;
+          }
+        }
+
+        return true;
       }
 
       if (expected instanceof Date && received instanceof Date) {
