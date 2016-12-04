@@ -64,6 +64,11 @@ describe('.toEqual()', () => {
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
+    [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
+    [[1, 3], jestExpect.arrayContaining([1, 2])],
+    ['abd', jestExpect.stringMatching(/bc/i)],
+    [undefined, jestExpect.anything()],
+    [undefined, jestExpect.any(Function)],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).toEqual(b))
@@ -76,6 +81,20 @@ describe('.toEqual()', () => {
     [1, 1],
     ['abc', 'abc'],
     [{a: 99}, {a: 99}],
+    [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
+    [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
+    ['abcd', jestExpect.stringMatching('bc')],
+    [true, jestExpect.anything()],
+    [() => {}, jestExpect.any(Function)],
+    [{
+      a: 1,
+      b: () => {},
+      c: true,
+    }, {
+      a: 1,
+      b: jestExpect.any(Function),
+      c: jestExpect.anything(),
+    }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).not.toEqual(b))
