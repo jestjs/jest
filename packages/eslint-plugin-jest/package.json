@@ -16,7 +16,7 @@
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
-  "main": "lib/index.js",
+  "main": "build/index.js",
   "peerDependencies": {
     "eslint": ">=3.6"
   },
