@@ -244,6 +244,7 @@ function normalize(config, argv) {
   }
 
   let babelJest;
+  let tsJest;
   if (config.transform) {
     const customJSPattern = Object.keys(config.transform).find(regex => {
       const pattern = new RegExp(regex);
@@ -260,14 +261,40 @@ function normalize(config, argv) {
         babelJest = jsTransformer;
       }
     }
+
+    const customTSPattern = Object.keys(config.transform).find(regex => {
+      const pattern = new RegExp(regex);
+      return pattern.test('foobar.ts') || pattern.test('foobar.tsx');
+    });
+    
+    if (customTSPattern) {
+      const tsTransformer = config.transform[customTSPattern];
+      if (
+        tsTransformer.includes(
+          constants.NODE_MODULES + 'ts-jest'
+        )
+      ) {
+        tsJest = Resolver.findNodeModule('ts-jest', {
+          basedir: config.rootDir,
+        });
+      }
+    }
   } else {
     babelJest = Resolver.findNodeModule('babel-jest', {
       basedir: config.rootDir,
     });
+    tsJest = Resolver.findNodeModule('ts-jest', {
+      basedir: config.rootDir,
+    });
     if (babelJest) {
-      config.transform = {
+      config.transform = Object.assign({}, config.transform, {
         [constants.DEFAULT_JS_PATTERN]: babelJest,
-      };
+      });
+    }
+    if (tsJest) {
+      config.transform = Object.assign({}, config.transform, {
+        [constants.DEFAULT_TS_PATTERN]: tsJest + '/preprocessor.js',
+      });
     }
   }
 
@@ -281,6 +308,15 @@ function normalize(config, argv) {
     }
     config.usesBabelJest = true;
   }
+
+  if (tsJest) {
+    if (!config.testResultsProcessor) {
+      config.testResultsProcessor = tsJest + '/coverageprocessor.js';
+    }
+    if (!config.moduleFileExtensions) {
+      config.moduleFileExtensions = ['js', 'jsx', 'json', 'ts', 'tsx'];
+    }
+  }  
 
   Object.keys(config).reduce((newConfig, key) => {
     let value;
