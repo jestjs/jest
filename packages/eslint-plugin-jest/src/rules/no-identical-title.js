@@ -45,7 +45,7 @@ function newDescribeContext() {
   };
 }
 
-function handlTestCaseTitles(context, titles, node, title) {
+function handleTestCaseTitles(context, titles, node, title) {
   if (isTestCase(node)) {
     if (titles.indexOf(title) !== -1) {
       context.report({
@@ -57,7 +57,7 @@ function handlTestCaseTitles(context, titles, node, title) {
   }
 }
 
-function handlTestSuiteTitles(context, titles, node, title) {
+function handleTestSuiteTitles(context, titles, node, title) {
   if (!isDescribe(node)) {
     return;
   }
@@ -93,8 +93,8 @@ module.exports = function(context) {
       }
 
       const title = node.arguments[0].value;
-      handlTestCaseTitles(context, currentLayer.testTitles, node, title);
-      handlTestSuiteTitles(context, currentLayer.describeTitles, node, title);
+      handleTestCaseTitles(context, currentLayer.testTitles, node, title);
+      handleTestSuiteTitles(context, currentLayer.describeTitles, node, title);
     },
     'CallExpression:exit'(node) {
       if (isDescribe(node)) {
