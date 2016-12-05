@@ -637,6 +637,8 @@ describe('normalize', () => {
         .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
       expect(config.moduleFileExtensions)
         .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
     });
 
     it('uses ts-jest if ts-jest is explicitly specified in a custom transform config', () => {
@@ -659,6 +661,8 @@ describe('normalize', () => {
         .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
       expect(config.moduleFileExtensions)
         .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
     });
 
     it(`doesn't use ts-jest if its not available`, () => {
@@ -672,6 +676,8 @@ describe('normalize', () => {
       expect(config.testResultsProcessor).toEqual(undefined);
       expect(config.moduleFileExtensions)
         .toEqual(['js', 'json', 'jsx', 'node']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.jsx?$');
     });
 
     it(`doesn't use ts-jest coverage proccessor if another is defined`, () => {
@@ -689,6 +695,8 @@ describe('normalize', () => {
         .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
       expect(config.moduleFileExtensions)
         .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
     });
 
     it(`doesn't use ts module extensions nor defalut if another is defined`, () => {
@@ -707,6 +715,28 @@ describe('normalize', () => {
         .toEqual(['js', 'json', 'jsx', 'node']);
       expect(config.moduleFileExtensions).not
         .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+    });
+
+    it(`doesn't use ts test Regex nor defalut if another is defined`, () => {
+      const config = normalize({
+        rootDir: '/root',
+        testRegex: '\\.spec\\.tsx?$',
+      });
+      const tsTransformerPath = uniformPath(config.transform[1][1]);
+      const testResultsProcessorPath = uniformPath(config.testResultsProcessor);
+      expect(config.transform[1][0]).toBe(DEFAULT_TS_PATTERN);
+      expect(tsTransformerPath)
+        .toEqual('/root/node_modules/ts-jest/preprocessor.js');
+      expect(testResultsProcessorPath)
+        .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
+      expect(config.moduleFileExtensions)
+        .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex).not
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+      expect(config.testRegex).not
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.jsx?$');
     });
   });
 

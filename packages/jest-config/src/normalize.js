@@ -316,6 +316,9 @@ function normalize(config, argv) {
     if (!config.moduleFileExtensions) {
       config.moduleFileExtensions = ['js', 'jsx', 'json', 'ts', 'tsx'];
     }
+    if (!config.testRegex) {
+      config.testRegex = '(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$';
+    }
   }  
 
   Object.keys(config).reduce((newConfig, key) => {
