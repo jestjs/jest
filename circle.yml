@@ -1,0 +1,34 @@
+general:
+  branches:
+    ignore:
+      - gh-pages # list of branches to ignore
+machine:
+  node:
+    version: 6.2.0
+dependencies:
+  override:
+    - cd website && npm install
+  cache_directories:
+    - "website/node_modules"
+
+test:
+  override:
+    - cd website && npm run test
+
+deployment:
+  production:
+    branch: /master/
+    commands:
+      # generate docs website
+      - git config --global user.email "jest-bot@users.noreply.github.com"
+      - git config --global user.name "Website Deployment Script"
+      - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
+      - cd website && GIT_USER=jest-bot DEPLOY_USER=facebook npm run gh-pages
+  staging:
+    branch: /new-docs/
+    commands:
+      # generate docs website
+      - git config --global user.email "jest-bot@users.noreply.github.com"
+      - git config --global user.name "Website Deployment Script"
+      - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc
+      - cd website && GIT_USER=jest-bot DEPLOY_USER=jest-bot npm run gh-pages

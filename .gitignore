@@ -6,6 +6,7 @@
 /packages/*/node_modules/
 /packages/*/build/
 /packages/*/coverage/
+/website/build
 /website/node_modules
 /integration_tests/transform/*/coverage
 /integration_tests/transform/*/node_modules

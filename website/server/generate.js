@@ -1,4 +1,3 @@
-
 var request = require('request');
 var glob = require('glob');
 var fs = require('fs.extra');
@@ -57,7 +56,6 @@ glob('src/**/*.*', function(er, files) {
 
   queue.push(function(cb) {
     server.close();
-    console.log('It is live at: https://facebook.github.io/jest/')
     cb();
   });
 });
