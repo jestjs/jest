@@ -12,18 +12,11 @@ const fs = require('fs');
 const normalize = require('./normalize');
 const path = require('path');
 const promisify = require('./lib/promisify');
+const parseFileContents = require('./parseFileContents');
 
 function loadFromFile(filePath, argv) {
   return promisify(fs.readFile)(filePath).then(data => {
-    const parse = () => {
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        throw new Error(`Jest: Failed to parse config file ${filePath}.`);
-      }
-    };
-
-    const config = parse();
+    const config = parseFileContents(filePath, data);
     config.rootDir = config.rootDir
       ? path.resolve(path.dirname(filePath), config.rootDir)
       : process.cwd();

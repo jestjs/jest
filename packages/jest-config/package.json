@@ -16,7 +16,8 @@
     "jest-mock": "^15.0.0",
     "jest-resolve": "^15.0.1",
     "jest-util": "^15.1.1",
-    "json-stable-stringify": "^1.0.0"
+    "json-stable-stringify": "^1.0.0",
+    "jsonlint": "^1.6.2"
   },
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"

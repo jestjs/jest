@@ -3,6 +3,7 @@
 .*/node_modules/fbjs/.*
 .*/examples/.*
 .*/website/.*
+.*/node_modules/jsonlint/.*
 
 [include]
 
