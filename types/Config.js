@@ -77,7 +77,6 @@ export type Config = DefaultConfig & {|
   transform: Array<[string, Path]>,
   unmockedModulePathPatterns: Array<string>,
   updateSnapshot: boolean,
-  usesBabelJest: boolean,
   watchman: boolean,
   forceExit: boolean,
 |};
