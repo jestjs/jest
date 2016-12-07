@@ -310,9 +310,10 @@ module.exports = {
 To use `my-serializer-module` as a serializer, configuration would be as
 follows:
 
-```json
+```js
 {
-  "json": {
+  ...
+  "jest": {
     "snapshotSerializers": ["<rootDir>/node_modules/my-serializer-module"]
   }
 }
