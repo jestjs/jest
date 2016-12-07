@@ -232,8 +232,8 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
           processor(runResults);
         }
         if (argv.json) {
-          if (argv.jsonOutputFile) {
-            const outputFile = path.resolve(process.cwd(), argv.jsonOutputFile);
+          if (argv.outputFile) {
+            const outputFile = path.resolve(process.cwd(), argv.outputFile);
 
             fs.writeFileSync(
               outputFile,

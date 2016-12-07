@@ -125,11 +125,6 @@ const options = {
       'other test output and user messages to stderr.',
     type: 'boolean',
   },
-  jsonOutputFile: {
-    description:
-      'Write test results to a file when the --json option is also specified.',
-    type: 'string',
-  },
   lastCommit: {
     default: false,
     description:
@@ -166,6 +161,11 @@ const options = {
       'changed in the current repository. Only works if you\'re running ' +
       'tests in a git repository at the moment.',
     type: 'boolean',
+  },
+  outputFile: {
+    description:
+      'Write test results to a file when the --json option is also specified.',
+    type: 'string',
   },
   runInBand: {
     alias: 'i',
