@@ -28,7 +28,7 @@ module.exports = class JestRunner extends EventEmitter {
       '--json', 
       '--useStderr', 
       '--watch', 
-      '--jsonOutputFile', 
+      '--outputFile', 
       this.jsonFilePath,
     ];
 
