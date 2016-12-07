@@ -406,7 +406,7 @@ const matchers: MatchersObject = {
     ) {
       throw new Error(
         matcherHint('[.not].toHaveLength', 'received', 'length') + '\n\n' +
-        `Expected value to have a 'length' prorerty that is a number. ` +
+        `Expected value to have a 'length' property that is a number. ` +
         `Received:\n` +
         `  ${printReceived(received)}\n` +
         (
