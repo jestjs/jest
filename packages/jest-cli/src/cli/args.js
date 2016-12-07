@@ -199,6 +199,14 @@ const options = {
       'paths before executing the test.',
     type: 'string',
   },
+  testResultsProcessor: {
+    default: undefined,
+    description:
+      'Allows the use of a custom results processor. ' +
+      'This processor must be a node module that exports ' +
+      'a function expecting as the first argument the result object',
+    type: 'string',
+  },
   testRunner: {
     description:
       'Allows to specify a custom test runner. Jest ships with Jasmine ' +

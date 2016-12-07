@@ -83,7 +83,7 @@ function formatTestResults(
     reporter,
   ));
 
-  return {
+  return Object.assign({}, results, {
     numFailedTests: results.numFailedTests,
     numPassedTests: results.numPassedTests,
     numPendingTests: results.numPendingTests,
@@ -93,7 +93,7 @@ function formatTestResults(
     startTime: results.startTime,
     success: results.success,
     testResults,
-  };
+  });
 }
 
 module.exports = formatTestResults;
