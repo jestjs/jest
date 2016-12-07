@@ -309,6 +309,7 @@ const runCLI = (
         let isRunning = false;
         let testWatcher;
         let timer;
+        let displayHelp = true;
 
         const writeCurrentPattern = () => {
           clearLine(pipe);
@@ -332,8 +333,9 @@ const runCLI = (
             results => {
               isRunning = false;
               hasSnapshotFailure = !!results.snapshot.failure;
-              if (!process.env.JEST_HIDE_USAGE) {
+              if (displayHelp) {
                 console.log(usage(argv, hasSnapshotFailure));
+                displayHelp = !process.env.JEST_HIDE_USAGE;
               }
             },
           ).then(
