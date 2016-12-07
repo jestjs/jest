@@ -1838,7 +1838,7 @@ Received:
 exports[`.toHaveLength error cases 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveLength([22m[32mlength[39m[2m)[22m
 
-Expected value to have a \'length\' prorerty that is a number. Received:
+Expected value to have a \'length\' property that is a number. Received:
   [31m{\"a\": 9}[39m
 received.length:
   [31mundefined[39m"
@@ -1847,7 +1847,7 @@ received.length:
 exports[`.toHaveLength error cases 2`] = `
 "[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveLength([22m[32mlength[39m[2m)[22m
 
-Expected value to have a \'length\' prorerty that is a number. Received:
+Expected value to have a \'length\' property that is a number. Received:
   [31m0[39m
 "
 `;
@@ -1855,7 +1855,7 @@ Expected value to have a \'length\' prorerty that is a number. Received:
 exports[`.toHaveLength error cases 3`] = `
 "[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveLength([22m[32mlength[39m[2m)[22m
 
-Expected value to have a \'length\' prorerty that is a number. Received:
+Expected value to have a \'length\' property that is a number. Received:
   [31mundefined[39m
 "
 `;
