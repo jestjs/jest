@@ -29,7 +29,7 @@ describe('JSON Reporter', () => {
   it('writes test result to sum.result.json', () => {
     let jsonResult;
 
-    runJest('json_reporter', ['--json', `--jsonOutputFile=${outputFileName}`]);
+    runJest('json_reporter', ['--json', `--outputFile=${outputFileName}`]);
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
 
     try {
