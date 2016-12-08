@@ -20,10 +20,8 @@ const maxLenIgnorePattern = String.raw`(^\s*it\(|${importPattern})`;
 module.exports = Object.assign({}, fbjsConfig, {
   'rules': Object.assign({}, fbjsConfig.rules, {
     'array-bracket-spacing': [2, 'never'],
+    'arrow-parens': [2, 'as-needed'],
     'arrow-spacing': [2],
-    'babel/arrow-parens': [2, 'as-needed'],
-    'babel/flow-object-type': [2, 'comma'],
-    'babel/func-params-comma-dangle': [2, 'always-multiline'],
     'brace-style': [2, '1tbs', {
       'allowSingleLine': true,
     }],
@@ -32,6 +30,7 @@ module.exports = Object.assign({}, fbjsConfig, {
     'comma-style': [2, 'last'],
     'computed-property-spacing': [2, 'never'],
     'eol-last': [2],
+    'flowtype/object-type-delimiter': [2, 'comma'],
     'max-len': [2, {
       'code': 80,
       'ignorePattern': maxLenIgnorePattern,
