@@ -15,6 +15,7 @@ const utils = require('jest-util');
 const normalize = require('../normalize');
 
 const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
+const DEFAULT_TS_PATTERN = require('../constants').DEFAULT_TS_PATTERN;
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
 describe('normalize', () => {
@@ -611,6 +612,131 @@ describe('normalize', () => {
       expect(config.usesBabelJest).toBe(true);
       expect(config.setupFiles.map(uniformPath))
         .toEqual(['/root/node_modules/babel-polyfill']);
+    });
+  });
+
+  describe('ts-jest', () => {
+    let Resolver;
+    beforeEach(() => {
+      Resolver = require('jest-resolve');
+      Resolver.findNodeModule = jest.fn(
+        name => 'node_modules' + path.sep + name,
+      );
+    });
+
+    it('correctly identifies and uses ts-jest', () => {
+      const config = normalize({
+        rootDir: '/root',
+      });
+      const tsTransformerPath = uniformPath(config.transform[1][1]);
+      const testResultsProcessorPath = uniformPath(config.testResultsProcessor);
+      expect(config.transform[1][0]).toBe(DEFAULT_TS_PATTERN);
+      expect(tsTransformerPath)
+        .toEqual('/root/node_modules/ts-jest/preprocessor.js');
+      expect(testResultsProcessorPath)
+        .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
+      expect(config.moduleFileExtensions)
+        .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+    });
+
+    it('uses ts-jest if ts-jest is explicitly specified in a custom transform config', () => {
+      const customTSPattern = '^.+\\.ts$';
+      const ROOT_DIR = '<rootDir>' + path.sep;
+      const config = normalize({
+        rootDir: '/root',
+        transform: {
+          [customTSPattern]: (ROOT_DIR + Resolver.findNodeModule(
+            'ts-jest',
+          ) + path.sep + 'preprocessor.js'),
+        },
+      });
+      const tsTransformerPath = uniformPath(config.transform[0][1]);
+      const testResultsProcessorPath = uniformPath(config.testResultsProcessor);
+      expect(config.transform[0][0]).toBe(customTSPattern);
+      expect(tsTransformerPath)
+        .toEqual('/root/node_modules/ts-jest/preprocessor.js');
+      expect(testResultsProcessorPath)
+        .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
+      expect(config.moduleFileExtensions)
+        .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+    });
+
+    it(`doesn't use ts-jest if its not available`, () => {
+      Resolver.findNodeModule.mockImplementation(() => null);
+
+      const config = normalize({
+        rootDir: '/root',
+      });
+      
+      expect(config.transform).toEqual(undefined);
+      expect(config.testResultsProcessor).toEqual(undefined);
+      expect(config.moduleFileExtensions)
+        .toEqual(['js', 'json', 'jsx', 'node']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.jsx?$');
+    });
+
+    it(`doesn't use ts-jest coverage proccessor if another is defined`, () => {
+      const ROOT_DIR = '<rootDir>' + path.sep;
+      const config = normalize({
+        rootDir: '/root',
+        testResultsProcessor: ROOT_DIR + 'anotherProcessor.js',
+      });
+      const tsTransformerPath = uniformPath(config.transform[1][1]);
+      const testResultsProcessorPath = uniformPath(config.testResultsProcessor);
+      expect(config.transform[1][0]).toBe(DEFAULT_TS_PATTERN);
+      expect(tsTransformerPath)
+        .toEqual('/root/node_modules/ts-jest/preprocessor.js');
+      expect(testResultsProcessorPath).not
+        .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
+      expect(config.moduleFileExtensions)
+        .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+    });
+
+    it(`doesn't use ts module extensions nor defalut if another is defined`, () => {
+      const config = normalize({
+        moduleFileExtensions: ['js', 'ts'],
+        rootDir: '/root',
+      });
+      const tsTransformerPath = uniformPath(config.transform[1][1]);
+      const testResultsProcessorPath = uniformPath(config.testResultsProcessor);
+      expect(config.transform[1][0]).toBe(DEFAULT_TS_PATTERN);
+      expect(tsTransformerPath)
+        .toEqual('/root/node_modules/ts-jest/preprocessor.js');
+      expect(testResultsProcessorPath)
+        .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
+      expect(config.moduleFileExtensions).not
+        .toEqual(['js', 'json', 'jsx', 'node']);
+      expect(config.moduleFileExtensions).not
+        .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex)
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+    });
+
+    it(`doesn't use ts test Regex nor defalut if another is defined`, () => {
+      const config = normalize({
+        rootDir: '/root',
+        testRegex: '\\.spec\\.tsx?$',
+      });
+      const tsTransformerPath = uniformPath(config.transform[1][1]);
+      const testResultsProcessorPath = uniformPath(config.testResultsProcessor);
+      expect(config.transform[1][0]).toBe(DEFAULT_TS_PATTERN);
+      expect(tsTransformerPath)
+        .toEqual('/root/node_modules/ts-jest/preprocessor.js');
+      expect(testResultsProcessorPath)
+        .toEqual('/root/node_modules/ts-jest/coverageprocessor.js');
+      expect(config.moduleFileExtensions)
+        .toEqual(['js', 'jsx', 'json', 'ts', 'tsx']);
+      expect(config.testRegex).not
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.(j|t)sx?$');
+      expect(config.testRegex).not
+        .toEqual('(/__tests__/.*|\\.(test|spec))\\.jsx?$');
     });
   });
 
