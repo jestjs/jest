@@ -34,7 +34,7 @@ const sane = require('sane');
 const which = require('which');
 const TestWatcher = require('./TestWatcher');
 
-const CLEAR = '\x1B[2J\x1B[H';
+const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const VERSION = require('../package.json').version;
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
