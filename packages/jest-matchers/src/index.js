@@ -133,6 +133,12 @@ expect.extend = (matchersObj: MatchersObject): void => {
   Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
 };
 
+expect.anything = global.jasmine.anything;
+expect.any = global.jasmine.any;
+expect.objectContaining = global.jasmine.objectContaining;
+expect.arrayContaining = global.jasmine.arrayContaining;
+expect.stringMatching = global.jasmine.stringMatching;
+
 const _validateResult = result => {
   if (
     typeof result !== 'object' ||
