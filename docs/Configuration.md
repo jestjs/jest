@@ -70,8 +70,8 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testRunner` [string]](#testrunner-string)
   - [`testURL` [string]](#testurl-string)
   - [`timers` [string]](#timers-string)
-  - [`transform` [object<string, string>]](#transform-object-string-string)  
-  - [`transformIgnorePatterns` [array<string>]](#transformignorepatterns-array-string)  
+  - [`transform` [object<string, string>]](#transform-object-string-string)
+  - [`transformIgnorePatterns` [array<string>]](#transformignorepatterns-array-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
 
@@ -314,7 +314,7 @@ follows:
 {
   ...
   "jest": {
-    "snapshotSerializers": ["<rootDir>/node_modules/my-serializer-module"]
+    "snapshotSerializers": ["my-serializer-module"]
   }
 }
 ```

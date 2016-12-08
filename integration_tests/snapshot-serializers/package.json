@@ -2,7 +2,7 @@
   "jest": {
     "testEnvironment": "node",
     "snapshotSerializers": [
-      "<rootDir>/plugins/foo",
+      "./plugins/foo",
       "<rootDir>/plugins/bar"
     ]
   }

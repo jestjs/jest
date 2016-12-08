@@ -8,5 +8,5 @@
  */
 'use strict';
 
-const createPlugin = require('../utils').createPlugin;
+const createPlugin = require('../../utils').createPlugin;
 module.exports = createPlugin('foo');
