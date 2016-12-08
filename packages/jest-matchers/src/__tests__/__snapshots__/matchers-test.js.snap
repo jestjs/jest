@@ -1812,13 +1812,13 @@ Received:
   [31m[Function anonymous][39m"
 `;
 
-exports[`.toEqual() expect({"a": 1, "b": [Function anonymous], "c": true}).not.toEqual({"a": 1, "b": {"expectedObject": [Function Function]}, "c": {}}) 1`] = `
+exports[`.toEqual() expect({"a": 1, "b": [Function b], "c": true}).not.toEqual({"a": 1, "b": {"expectedObject": [Function Function]}, "c": {}}) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
 Expected value to not equal:
   [32m{\"a\": 1, \"b\": {\"expectedObject\": [Function Function]}, \"c\": {}}[39m
 Received:
-  [31m{\"a\": 1, \"b\": [Function anonymous], \"c\": true}[39m"
+  [31m{\"a\": 1, \"b\": [Function b], \"c\": true}[39m"
 `;
 
 exports[`.toEqual() expect({"a": 1, "b": 2}).not.toEqual({"sample": {"a": 1}}) 1`] = `
