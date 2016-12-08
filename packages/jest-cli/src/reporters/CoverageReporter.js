@@ -9,16 +9,9 @@
 */
 'use strict';
 
-import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {RunnerContext} from 'types/Reporters';
-
-type CoverageMap = {|
-  merge: (data: Object) => void,
-  getCoverageSummary: () => Object,
-  data: Object,
-  addFileCoverage: (fileCoverage: Object) => void,
-|};
 
 const BaseReporter = require('./BaseReporter');
 
@@ -48,8 +41,10 @@ class CoverageReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    if (testResult.coverage) {
+    if (testResult.coverage && typeof testResult.coverage !== 'string') {
       this._coverageMap.merge(testResult.coverage);
+      // Remove coverage data to free up some memory.
+      delete testResult.coverage;
     }
   }
 
@@ -76,6 +71,7 @@ class CoverageReporter extends BaseReporter {
 
       reporter.addAll(coverageReporters);
       reporter.write(this._coverageMap);
+      aggregatedResults.coverageMap = this._coverageMap;
     } catch (e) {
       console.error(chalk.red(`
         Failed to write coverage reports:
