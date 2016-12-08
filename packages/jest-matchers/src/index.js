@@ -116,6 +116,9 @@ const makeThrowingMatcher = (
     if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
       const message = getMessage(result.message);
       const error = new JestAssertionError(message);
+      // Passing the result of the matcher with the error so that a custom
+      // reporter could access the actual and expected objects of the result
+      // for example in order to display a custom visual diff
       error.matcherResult = result;
       // Remove this function from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
