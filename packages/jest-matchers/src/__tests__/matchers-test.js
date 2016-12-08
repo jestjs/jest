@@ -637,6 +637,7 @@ describe('toMatchObject()', () => {
     [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'a'}]}],
     [[1, 2], [1, 2]],
     [{a: undefined}, {a: undefined}],
+    [[], []],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).toMatchObject(n2);
@@ -663,6 +664,8 @@ describe('toMatchObject()', () => {
      [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'c'}]}],
      [{a: 1, b: 1, c: 1, d: {e: {f: 555}}}, {d: {e: {f: 222}}}],
      [{}, {a: undefined}],
+     [[1, 2, 3], [2, 3, 1]],
+     [[1, 2, 3], [1, 2, 2]],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).not.toMatchObject(n2);

@@ -573,11 +573,7 @@ const matchers: MatchersObject = {
           return false;
         }
 
-        return expected.every(exp => {
-          return received.some(act => {
-            return compare(exp, act);
-          });
-        });
+        return expected.every((exp, i) => compare(exp, received[i]));
       }
 
       if (expected instanceof Date && received instanceof Date) {
@@ -609,12 +605,8 @@ const matchers: MatchersObject = {
           return received;
         }
 
-        const matchArray = [];
-        for (let i = 0; i < expected.length; i++) {
-          matchArray.push(findMatchObject(expected[i], received[i]));
-        }
-
-        return matchArray;
+        return expected.map((exp, i) => findMatchObject(exp, received[i]));
+        
       } else if (received instanceof Date) {
         return received;
       } else if (typeof received === 'object' && received !== null && typeof expected === 'object' && expected !== null) {
