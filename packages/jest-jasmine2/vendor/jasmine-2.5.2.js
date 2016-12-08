@@ -1612,7 +1612,9 @@ getJasmineRequireObj().buildExpectationResult = function() {
       matcherName: options.matcherName,
       message: message(),
       stack: stack(),
-      passed: options.passed
+      passed: options.passed,
+      // CUSTOM JEST CHANGE: we pass error message to the result.
+      error: options.error
     };
 
     if(!result.passed) {
