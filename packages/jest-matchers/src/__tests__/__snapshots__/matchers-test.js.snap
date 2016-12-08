@@ -1746,6 +1746,30 @@ Received:
   [31m\"abc\"[39m"
 `;
 
+exports[`.toEqual() expect("abcd").not.toEqual({"regexp": /bc/}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\"regexp\": /bc/}[39m
+Received:
+  [31m\"abcd\"[39m"
+`;
+
+exports[`.toEqual() expect("abd").toEqual({"regexp": /bc/i}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\"regexp\": /bc/i}[39m
+Received:
+  [31m\"abd\"[39m
+
+Difference:
+
+Comparing two different types of values:
+  Expected: [32mobject[39m
+  Received: [31mstring[39m"
+`;
+
 exports[`.toEqual() expect("banana").toEqual("apple") 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1753,6 +1777,81 @@ Expected value to equal:
   [32m\"apple\"[39m
 Received:
   [31m\"banana\"[39m"
+`;
+
+exports[`.toEqual() expect([1, 2, 3]).not.toEqual({"sample": [2, 3]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\"sample\": [2, 3]}[39m
+Received:
+  [31m[1, 2, 3][39m"
+`;
+
+exports[`.toEqual() expect([1, 3]).toEqual({"sample": [1, 2]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\"sample\": [1, 2]}[39m
+Received:
+  [31m[1, 3][39m
+
+Difference:
+
+Comparing two different types of values:
+  Expected: [32mobject[39m
+  Received: [31marray[39m"
+`;
+
+exports[`.toEqual() expect([Function anonymous]).not.toEqual({"expectedObject": [Function Function]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\"expectedObject\": [Function Function]}[39m
+Received:
+  [31m[Function anonymous][39m"
+`;
+
+exports[`.toEqual() expect({"a": 1, "b": [Function anonymous], "c": true}).not.toEqual({"a": 1, "b": {"expectedObject": [Function Function]}, "c": {}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\"a\": 1, \"b\": {\"expectedObject\": [Function Function]}, \"c\": {}}[39m
+Received:
+  [31m{\"a\": 1, \"b\": [Function anonymous], \"c\": true}[39m"
+`;
+
+exports[`.toEqual() expect({"a": 1, "b": 2}).not.toEqual({"sample": {"a": 1}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\"sample\": {\"a\": 1}}[39m
+Received:
+  [31m{\"a\": 1, \"b\": 2}[39m"
+`;
+
+exports[`.toEqual() expect({"a": 1, "b": 2}).toEqual({"sample": {"a": 2}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\"sample\": {\"a\": 2}}[39m
+Received:
+  [31m{\"a\": 1, \"b\": 2}[39m
+
+Difference:
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,5 +1,4 @@
+[39m[32m-ObjectContaining {[39m
+[32m-  \"sample\": Object {[39m
+[32m-    \"a\": 2,[39m
+[32m-  },[39m
+[31m+Object {[39m
+[31m+  \"a\": 1,[39m
+[31m+  \"b\": 2,[39m
+[2m }[22m"
 `;
 
 exports[`.toEqual() expect({"a": 5}).toEqual({"b": 6}) 1`] = `
@@ -1817,6 +1916,15 @@ Comparing two different types of values:
   Received: [31mnull[39m"
 `;
 
+exports[`.toEqual() expect(true).not.toEqual({}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{}[39m
+Received:
+  [31mtrue[39m"
+`;
+
 exports[`.toEqual() expect(true).not.toEqual(true) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1833,6 +1941,36 @@ Expected value to equal:
   [32mfalse[39m
 Received:
   [31mtrue[39m"
+`;
+
+exports[`.toEqual() expect(undefined).toEqual({"expectedObject": [Function Function]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\"expectedObject\": [Function Function]}[39m
+Received:
+  [31mundefined[39m
+
+Difference:
+
+Comparing two different types of values:
+  Expected: [32mobject[39m
+  Received: [31mundefined[39m"
+`;
+
+exports[`.toEqual() expect(undefined).toEqual({}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{}[39m
+Received:
+  [31mundefined[39m
+
+Difference:
+
+Comparing two different types of values:
+  Expected: [32mobject[39m
+  Received: [31mundefined[39m"
 `;
 
 exports[`.toHaveLength error cases 1`] = `

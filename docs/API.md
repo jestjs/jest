@@ -18,6 +18,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expectvalue)
   - [`expect.extend(matchers)`](#extending-jest-matchers)
+  - [`expect.<asymmetric-match>()`](#asymmetric-jest-matchers)
   - [`it(name, fn)`](#basic-testing)
   - [`it.only(name, fn)`](#basic-testing)
   - [`it.skip(name, fn)`](#basic-testing)
@@ -811,6 +812,54 @@ This will print something like this:
 ```
 
 When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
+
+### Asymmetric Jest Matchers
+
+Sometimes you don't want to check equality of entire object. You just need to assert that value is not empty or has some expected type. For example, we want to check the shape of some message entity:
+
+```
+  expect({
+    timestamp: 1480807810388,
+    text: 'Some text content, but we care only about *this part*'
+  }).toEqual({
+    timestamp: expect.any(Number),
+    text: expect.stringMatching('*this part*')
+  });
+```
+
+There some special values with specific comparing behavior that you can use as a part of expectation. They are useful for asserting some types of data, like timestamps, or long text resources, where only part of it is important for testing. Currently, Jest has the following asymmetric matches:
+  
+  * `expect.anything()` - matches everything, except `null` and `undefined`
+  * `expect.any(<constructor>)` - checks, that actual value is instance of provided `<constructor>`.
+  * `expect.objectContaining(<object>)` - compares only keys, that exist in provided object. All other keys of `actual` value will be ignored.
+  * `expect.arrayContaining(<array>)` - checks that all items from the provided `array` are exist in `actual` value. It allows to have more values in `actual`.
+  * `expect.stringMatching(<string|Regexp>)` - checks that actual value has matches of provided expectation.
+
+These expressions can be used as an argument in `.toEqual` and `.toBeCalledWith`:
+
+```
+  expect(callback).toEqual(expect.any(Function));
+  
+  expect(mySpy).toBeCalledWith(expect.any(Number), expect.any(String))
+```
+
+They can be also used as object keys and may be nested into each other:
+
+```
+  expect(myObject).toEqual(expect.objectContaining({
+    items: expect.arrayContaining([
+      expect.any(Number)
+    ])
+  }));
+```
+
+The example above will match the following object. Array may contain more items, as well as object itself may also have some extra keys:
+  
+```
+{
+  items: [1]
+}
+```
 
 ## Mock Functions
 
