@@ -29,17 +29,19 @@ const utils = require('jest-matcher-utils');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
-class JestAssertionError extends Error {}
+class JestAssertionError extends Error {
+  matcherResult: any
+}
 
 if (!global[GLOBAL_STATE]) {
   Object.defineProperty(
     global,
     GLOBAL_STATE,
     {value: {
-      matchers: Object.create(null), 
+      matchers: Object.create(null),
       state: {
-        assertionsExpected: null, 
-        assertionsMade: 0, 
+        assertionsExpected: null,
+        assertionsMade: 0,
         suppressedErrors: [],
       },
     }},
@@ -114,6 +116,7 @@ const makeThrowingMatcher = (
     if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
       const message = getMessage(result.message);
       const error = new JestAssertionError(message);
+      error.matcherResult = result;
       // Remove this function from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
 
