@@ -19,3 +19,7 @@ lerna-debug.log
 npm-debug.log*
 coverage
 .eslintcache
+
+### IntelliJ IDEA ###
+.idea
+*.iml

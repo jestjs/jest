@@ -247,4 +247,22 @@ describe('transform', () => {
     expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
     expect(fs.writeFileSync).toBeCalled();
   });
+
+  it('respects negation in transformIgnorePatterns', () => {
+    const transformConfig = Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'test-preprocessor'],
+        ['^.+\\.css$', 'css-preprocessor'],
+      ],
+      transformIgnorePatterns: ['!\\.css$'],
+    });
+
+    transform('/fruits/banana.js', transformConfig);
+    transform('/styles/App.css', transformConfig);
+
+    expect(require('test-preprocessor').getCacheKey).not.toBeCalled();
+    expect(require('css-preprocessor').getCacheKey).toBeCalled();
+    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+  });
 });
