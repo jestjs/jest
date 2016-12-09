@@ -1,10 +1,10 @@
 {
   "devDependencies": {
-    "babel-jest": "^9.0.0",
+    "babel-jest": "^17.0.0",
     "babel-plugin-transform-async-to-generator": "^6.5.0",
     "babel-polyfill": "*",
     "babel-preset-es2015": "*",
-    "jest-cli": "*"
+    "jest-cli": "^17.0.0"
   },
   "scripts": {
     "test": "jest"
