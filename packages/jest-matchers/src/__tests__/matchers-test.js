@@ -64,6 +64,11 @@ describe('.toEqual()', () => {
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
+    [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
+    [[1, 3], jestExpect.arrayContaining([1, 2])],
+    ['abd', jestExpect.stringMatching(/bc/i)],
+    [undefined, jestExpect.anything()],
+    [undefined, jestExpect.any(Function)],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).toEqual(b))
@@ -76,6 +81,20 @@ describe('.toEqual()', () => {
     [1, 1],
     ['abc', 'abc'],
     [{a: 99}, {a: 99}],
+    [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
+    [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
+    ['abcd', jestExpect.stringMatching('bc')],
+    [true, jestExpect.anything()],
+    [() => {}, jestExpect.any(Function)],
+    [{
+      a: 1,
+      b: () => {},
+      c: true,
+    }, {
+      a: 1,
+      b: jestExpect.any(Function),
+      c: jestExpect.anything(),
+    }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).not.toEqual(b))
@@ -637,6 +656,7 @@ describe('toMatchObject()', () => {
     [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'a'}]}],
     [[1, 2], [1, 2]],
     [{a: undefined}, {a: undefined}],
+    [[], []],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).toMatchObject(n2);
@@ -663,6 +683,8 @@ describe('toMatchObject()', () => {
      [{a: [{a: 'a', b: 'b'}]}, {a:[{a: 'c'}]}],
      [{a: 1, b: 1, c: 1, d: {e: {f: 555}}}, {d: {e: {f: 222}}}],
      [{}, {a: undefined}],
+     [[1, 2, 3], [2, 3, 1]],
+     [[1, 2, 3], [1, 2, 2]],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).not.toMatchObject(n2);

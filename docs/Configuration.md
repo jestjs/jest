@@ -70,8 +70,8 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testRunner` [string]](#testrunner-string)
   - [`testURL` [string]](#testurl-string)
   - [`timers` [string]](#timers-string)
-  - [`transform` [object<string, string>]](#transform-object-string-string)  
-  - [`transformIgnorePatterns` [array<string>]](#transformignorepatterns-array-string)  
+  - [`transform` [object<string, string>]](#transform-object-string-string)
+  - [`transformIgnorePatterns` [array<string>]](#transformignorepatterns-array-string)
   - [`unmockedModulePathPatterns` [array<string>]](#unmockedmodulepathpatterns-array-string)
   - [`verbose` [boolean]](#verbose-boolean)
 
@@ -310,10 +310,11 @@ module.exports = {
 To use `my-serializer-module` as a serializer, configuration would be as
 follows:
 
-```json
+```js
 {
-  "json": {
-    "snapshotSerializers": ["<rootDir>/node_modules/my-serializer-module"]
+  ...
+  "jest": {
+    "snapshotSerializers": ["my-serializer-module"]
   }
 }
 ```
@@ -425,7 +426,7 @@ Setting this value to `fake` allows the use of fake timers for functions such as
 ### `transform` [object<string, string>]
 (default: `undefined`)
 
-A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](/jest/examples/typescript/package.json#L16) example.
+A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](/jest/examples/typescript/package.json#L16) example or the [webpack tutorial](/jest/docs/tutorial-webpack.html).
 
 Examples of such compilers include [babel](https://babeljs.io/), [typescript](http://www.typescriptlang.org/), and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
 

@@ -125,11 +125,6 @@ const options = {
       'other test output and user messages to stderr.',
     type: 'boolean',
   },
-  jsonOutputFile: {
-    description:
-      'Write test results to a file when the --json option is also specified.',
-    type: 'string',
-  },
   lastCommit: {
     default: false,
     description:
@@ -167,6 +162,11 @@ const options = {
       'tests in a git repository at the moment.',
     type: 'boolean',
   },
+  outputFile: {
+    description:
+      'Write test results to a file when the --json option is also specified.',
+    type: 'string',
+  },
   runInBand: {
     alias: 'i',
     description:
@@ -197,6 +197,14 @@ const options = {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
+    type: 'string',
+  },
+  testResultsProcessor: {
+    default: undefined,
+    description:
+      'Allows the use of a custom results processor. ' +
+      'This processor must be a node module that exports ' +
+      'a function expecting as the first argument the result object',
     type: 'string',
   },
   testRunner: {

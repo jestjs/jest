@@ -34,7 +34,7 @@ const sane = require('sane');
 const which = require('which');
 const TestWatcher = require('./TestWatcher');
 
-const CLEAR = '\x1B[2J\x1B[H';
+const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const VERSION = require('../package.json').version;
 const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
@@ -232,8 +232,8 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
           processor(runResults);
         }
         if (argv.json) {
-          if (argv.jsonOutputFile) {
-            const outputFile = path.resolve(process.cwd(), argv.jsonOutputFile);
+          if (argv.outputFile) {
+            const outputFile = path.resolve(process.cwd(), argv.outputFile);
 
             fs.writeFileSync(
               outputFile,
@@ -309,6 +309,7 @@ const runCLI = (
         let isRunning = false;
         let testWatcher;
         let timer;
+        let displayHelp = true;
 
         const writeCurrentPattern = () => {
           clearLine(pipe);
@@ -332,8 +333,9 @@ const runCLI = (
             results => {
               isRunning = false;
               hasSnapshotFailure = !!results.snapshot.failure;
-              if (!process.env.JEST_HIDE_USAGE) {
+              if (displayHelp) {
                 console.log(usage(argv, hasSnapshotFailure));
+                displayHelp = !process.env.JEST_HIDE_USAGE;
               }
             },
           ).then(

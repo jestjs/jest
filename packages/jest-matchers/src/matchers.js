@@ -103,7 +103,10 @@ const matchers: MatchersObject = {
         (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
 
-    return {message, pass};
+    // Passing the the actual and expected objects so that a custom reporter
+    // could access them, for example in order to display a custom visual diff,
+    // or create a different error message
+    return {actual: received, expected, message, name: 'toBe', pass};
   },
 
   toBeCloseTo(
@@ -396,7 +399,10 @@ const matchers: MatchersObject = {
         (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
 
-    return {message, pass};
+    // Passing the the actual and expected objects so that a custom reporter
+    // could access them, for example in order to display a custom visual diff,
+    // or create a different error message
+    return {actual: received, expected, message, name: 'toEqual', pass};
   },
 
   toHaveLength(received: any, length: number) {
@@ -406,7 +412,7 @@ const matchers: MatchersObject = {
     ) {
       throw new Error(
         matcherHint('[.not].toHaveLength', 'received', 'length') + '\n\n' +
-        `Expected value to have a 'length' prorerty that is a number. ` +
+        `Expected value to have a 'length' property that is a number. ` +
         `Received:\n` +
         `  ${printReceived(received)}\n` +
         (
@@ -573,11 +579,7 @@ const matchers: MatchersObject = {
           return false;
         }
 
-        return expected.every(exp => {
-          return received.some(act => {
-            return compare(exp, act);
-          });
-        });
+        return expected.every((exp, i) => compare(exp, received[i]));
       }
 
       if (expected instanceof Date && received instanceof Date) {
@@ -609,12 +611,8 @@ const matchers: MatchersObject = {
           return received;
         }
 
-        const matchArray = [];
-        for (let i = 0; i < expected.length; i++) {
-          matchArray.push(findMatchObject(expected[i], received[i]));
-        }
-
-        return matchArray;
+        return expected.map((exp, i) => findMatchObject(exp, received[i]));
+        
       } else if (received instanceof Date) {
         return received;
       } else if (typeof received === 'object' && received !== null && typeof expected === 'object' && expected !== null) {

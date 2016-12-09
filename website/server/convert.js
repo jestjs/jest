@@ -40,10 +40,13 @@ function rmFile(file) {
 }
 
 function backtickify(str) {
-  const escaped = '`' + str.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`';
+  let escaped = '`' + str.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`';
   // Replace require( with require\( so node-haste doesn't replace example
   // require calls in the docs
-  return escaped.replace(/require\(/g, 'require\\(');
+  escaped = escaped.replace(/require\(/g, 'require\\(');
+
+  // Replace ${var} with \${var} so we can use place holders
+  return escaped.replace(/\$\{([\w\s\d\'\:\.\(\)\?]*)\}/g,'\\${$1}');
 }
 
 

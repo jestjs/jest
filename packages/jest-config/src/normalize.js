@@ -36,7 +36,24 @@ const logConfigurationWarning = message => {
   console.warn(chalk.yellow(BULLET + message + DEPRECATION_MESSAGE));
 };
 
-function _replaceRootDirTags(rootDir, config) {
+const resolve = (rootDir, key, filePath) => {
+  const module = Resolver.findNodeModule(
+    _replaceRootDirTags(rootDir, filePath),
+    {
+      basedir: rootDir,
+    },
+  );
+
+  if (!module) {
+    throw new Error(
+      `Jest: Module "${filePath}" in the "${key}" option was not found.`
+    );
+  }
+
+  return module;
+};
+
+const _replaceRootDirTags = (rootDir, config) => {
   switch (typeof config) {
     case 'object':
       if (config instanceof RegExp) {
@@ -69,7 +86,7 @@ function _replaceRootDirTags(rootDir, config) {
       );
   }
   return config;
-}
+};
 
 /**
  * Finds the test environment to use:
@@ -224,15 +241,7 @@ function normalize(config, argv) {
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
-    try {
-      config.testRunner = path.resolve(
-        config.testRunner.replace(/<rootDir>/g, config.rootDir),
-      );
-    } catch (e) {
-      throw new Error(
-        `Jest: Invalid testRunner path: ${config.testRunner}`,
-      );
-    }
+    config.testRunner = resolve(config, 'testRunner', config.testRunner);
   }
 
   if (argv.env) {
@@ -245,17 +254,20 @@ function normalize(config, argv) {
 
   let babelJest;
   if (config.transform) {
-    const customJSPattern = Object.keys(config.transform).find(regex => {
-      const pattern = new RegExp(regex);
-      return pattern.test('foobar.js') || pattern.test('foobar.jsx');
+    const customJSPattern = Object.keys(config.transform).find(pattern => {
+      const regex = new RegExp(pattern);
+      return regex.test('a.js') || regex.test('a.jsx');
     });
 
     if (customJSPattern) {
-      const jsTransformer = config.transform[customJSPattern];
+      const jsTransformer = Resolver.findNodeModule(
+        config.transform[customJSPattern], {
+          basedir: config.rootDir,
+        },
+      );
       if (
-        jsTransformer.includes(
-          constants.NODE_MODULES + 'babel-jest',
-        ) || jsTransformer.includes('packages/babel-jest')
+        jsTransformer &&
+        jsTransformer.includes(constants.NODE_MODULES + 'babel-jest')
       ) {
         babelJest = jsTransformer;
       }
@@ -266,20 +278,17 @@ function normalize(config, argv) {
     });
     if (babelJest) {
       config.transform = {
-        [constants.DEFAULT_JS_PATTERN]: babelJest,
+        [constants.DEFAULT_JS_PATTERN]: 'babel-jest',
       };
     }
   }
 
+  let polyfillPath;
   if (babelJest) {
-    const polyfillPath =
+    polyfillPath =
       Resolver.findNodeModule('babel-polyfill', {
         basedir: config.rootDir,
       });
-    if (polyfillPath) {
-      config.setupFiles.unshift(polyfillPath);
-    }
-    config.usesBabelJest = true;
   }
 
   Object.keys(config).reduce((newConfig, key) => {
@@ -298,6 +307,8 @@ function normalize(config, argv) {
 
       case 'setupFiles':
       case 'snapshotSerializers':
+        value = config[key].map(resolve.bind(null, config.rootDir, key));
+        break;
       case 'testPathDirs':
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
@@ -308,7 +319,6 @@ function normalize(config, argv) {
         if (!config[key]) {
           value = [];
         }
-
 
         if (!Array.isArray(config[key])) {
           try {
@@ -323,15 +333,15 @@ function normalize(config, argv) {
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
-      case 'setupTestFrameworkScriptFile':
-      case 'testResultsProcessor':
-      case 'testRunner':
         value = path.resolve(
           config.rootDir,
           _replaceRootDirTags(config.rootDir, config[key]),
         );
         break;
-
+      case 'setupTestFrameworkScriptFile':
+      case 'testResultsProcessor':
+        value = resolve(config.rootDir, key, config[key]);
+        break;
       case 'moduleNameMapper':
         value = Object.keys(config[key]).map(regex => [
           regex,
@@ -341,13 +351,9 @@ function normalize(config, argv) {
       case 'transform':
         value = Object.keys(config[key]).map(regex => [
           regex,
-          path.resolve(
-            config.rootDir,
-            _replaceRootDirTags(config.rootDir, config[key][regex]),
-          ),
+          resolve(config.rootDir, key, config[key][regex]),
         ]);
         break;
-
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':
@@ -394,10 +400,10 @@ function normalize(config, argv) {
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
+      case 'testRunner':
       case 'testURL':
       case 'timers':
       case 'updateSnapshot':
-      case 'usesBabelJest':
       case 'verbose':
       case 'watchman':
         value = config[key];
@@ -413,6 +419,10 @@ function normalize(config, argv) {
     newConfig[key] = value;
     return newConfig;
   }, newConfig);
+
+  if (polyfillPath) {
+    newConfig.setupFiles.unshift(polyfillPath);
+  }
 
   // If any config entries weren't specified but have default values, apply the
   // default values

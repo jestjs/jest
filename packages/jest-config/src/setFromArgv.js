@@ -73,6 +73,10 @@ function setFromArgv(config, argv) {
     config.expand = argv.expand;
   }
 
+  if (argv.testResultsProcessor) {
+    config.testResultsProcessor = argv.testResultsProcessor;
+  }
+
   config.noStackTrace = argv.noStackTrace;
 
   return config;

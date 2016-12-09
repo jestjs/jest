@@ -90,7 +90,7 @@ function makeConcurrent(originalFn: Function, env) {
         );
       }
     } catch (error) {
-      return originalFn.call(env, Promise.reject(error));
+      return originalFn.call(env, specName, () => Promise.reject(error));
     }
 
     return originalFn.call(env, specName, () => promise, timeout);

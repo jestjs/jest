@@ -29,17 +29,19 @@ const utils = require('jest-matcher-utils');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
-class JestAssertionError extends Error {}
+class JestAssertionError extends Error {
+  matcherResult: any
+}
 
 if (!global[GLOBAL_STATE]) {
   Object.defineProperty(
     global,
     GLOBAL_STATE,
     {value: {
-      matchers: Object.create(null), 
+      matchers: Object.create(null),
       state: {
-        assertionsExpected: null, 
-        assertionsMade: 0, 
+        assertionsExpected: null,
+        assertionsMade: 0,
         suppressedErrors: [],
       },
     }},
@@ -114,6 +116,10 @@ const makeThrowingMatcher = (
     if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
       const message = getMessage(result.message);
       const error = new JestAssertionError(message);
+      // Passing the result of the matcher with the error so that a custom
+      // reporter could access the actual and expected objects of the result
+      // for example in order to display a custom visual diff
+      error.matcherResult = result;
       // Remove this function from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
 
@@ -129,6 +135,12 @@ const makeThrowingMatcher = (
 expect.extend = (matchersObj: MatchersObject): void => {
   Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
 };
+
+expect.anything = global.jasmine.anything;
+expect.any = global.jasmine.any;
+expect.objectContaining = global.jasmine.objectContaining;
+expect.arrayContaining = global.jasmine.arrayContaining;
+expect.stringMatching = global.jasmine.stringMatching;
 
 const _validateResult = result => {
   if (

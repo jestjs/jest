@@ -13,7 +13,7 @@
 const {getPath} = require('../utils');
 
 describe('getPath()', () => {
-  test('prorerty exists', () => {
+  test('property exists', () => {
     expect(getPath({a: {b: {c: 5}}}, 'a.b.c')).toEqual({
       hasEndProp: true,
       lastTraversedObject: {c: 5},
@@ -29,7 +29,7 @@ describe('getPath()', () => {
     });
   });
 
-  test('prorerty doesnt exist', () => {
+  test('property doesnt exist', () => {
     expect(getPath({a: {b: {}}}, 'a.b.c')).toEqual({
       hasEndProp: false,
       lastTraversedObject: {},
@@ -38,7 +38,7 @@ describe('getPath()', () => {
     });
   });
 
-  test('prorerty exist but undefined', () => {
+  test('property exist but undefined', () => {
     expect(getPath({a: {b: {c: undefined}}}, 'a.b.c')).toEqual({
       hasEndProp: true,
       lastTraversedObject: {c: undefined},
