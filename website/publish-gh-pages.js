@@ -47,7 +47,7 @@ cd(`build/${CIRCLE_PROJECT_REPONAME}-gh-pages`)
 
 exec(`git add --all`);
 exec(`git commit -m "update website"`)
-exec(`git push origin gh-pages`)
+exec(`git push https://${GIT_USER}@github.com/${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`)
 cd(`../..`);
 
 echo(`Website is live at: https://${CIRCLE_PROJECT_USERNAME}.github.io/${CIRCLE_PROJECT_REPONAME}/`)
