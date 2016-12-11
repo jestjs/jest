@@ -10,7 +10,7 @@ describe('File Parsing for it blocks', () => {
   it('For the simplest it cases', async () => {
     const data = parse(`${fixtures}/global_its.example`);
 
-    expect(data.itBlocks.length).toEqual(3);
+    expect(data.itBlocks.length).toEqual(5);
 
     const firstIt = data.itBlocks[0];
     expect(firstIt.name).toEqual('works with old functions');
@@ -21,12 +21,27 @@ describe('File Parsing for it blocks', () => {
     expect(secondIt.name).toEqual('works with new functions');
     expect(secondIt.start).toEqual({column: 0, line: 5});
     expect(secondIt.end).toEqual({column: 2, line: 7});
+
+    const thirdIt = data.itBlocks[2];
+    expect(thirdIt.name).toEqual('works with flow functions');
+    expect(thirdIt.start).toEqual({column: 0, line: 9});
+    expect(thirdIt.end).toEqual({column: 2, line: 11});
+
+    const fourthIt = data.itBlocks[3];
+    expect(fourthIt.name).toEqual('works with it.only');
+    expect(fourthIt.start).toEqual({column: 0, line: 13});
+    expect(fourthIt.end).toEqual({column: 2, line: 15});
+
+    const fifthIt = data.itBlocks[4];
+    expect(fifthIt.name).toEqual('works with fit');
+    expect(fifthIt.start).toEqual({column: 0, line: 17});
+    expect(fifthIt.end).toEqual({column: 2, line: 19});
   });
     
   it('For its inside describes', async () => {
     const data = parse(`${fixtures}/nested_its.example`);
 
-    expect(data.itBlocks.length, 4);
+    expect(data.itBlocks.length, 5);
         
     const firstIt = data.itBlocks[0];
     expect(firstIt.name).toEqual('1');
@@ -47,6 +62,11 @@ describe('File Parsing for it blocks', () => {
     expect(fourthIt.name).toEqual('4');
     expect(fourthIt.start).toEqual({column: 2, line: 13});
     expect(fourthIt.end).toEqual({column: 4, line: 14});
+
+    const fifthIt = data.itBlocks[4];
+    expect(fifthIt.name).toEqual('5');
+    expect(fifthIt.start).toEqual({column: 2, line: 18});
+    expect(fifthIt.end).toEqual({column: 4, line: 19});
   });
 
   // These tests act more like linters that we don't raise on non-trivial files
@@ -75,8 +95,6 @@ describe('File Parsing for expects', () => {
     expect(data.expects.length).toEqual(7);
   });
 
-  // These two expect 0s are weird to me
-
   it('finds Expects in a danger flow test file ', async () => {
     const data = parse(`${fixtures}/dangerjs/github.example`);
     expect(data.expects.length).toEqual(2);
@@ -84,6 +102,6 @@ describe('File Parsing for expects', () => {
 
   it('finds Expects in a metaphysics test file', async () => {
     const data = parse(`${fixtures}/metaphysics/partner_show.example`);
-    expect(data.expects.length).toEqual(0);
+    expect(data.expects.length).toEqual(0); // not currently checking inside function calls
   });
 });
