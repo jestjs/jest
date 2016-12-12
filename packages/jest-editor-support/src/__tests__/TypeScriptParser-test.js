@@ -6,7 +6,7 @@ const path = require('path');
 const fixtures = path.resolve(__dirname, 'fixtures');
 
 describe('File Parsing for it blocks', () => {
-  
+
   it('For the simplest it cases', async () => {
     const data = parse(`${fixtures}/global_its.example`);
 
@@ -37,12 +37,12 @@ describe('File Parsing for it blocks', () => {
     expect(fifthIt.start).toEqual({column: 0, line: 17});
     expect(fifthIt.end).toEqual({column: 2, line: 19});
   });
-    
+
   it('For its inside describes', async () => {
     const data = parse(`${fixtures}/nested_its.example`);
 
     expect(data.itBlocks.length, 5);
-        
+
     const firstIt = data.itBlocks[0];
     expect(firstIt.name).toEqual('1');
     expect(firstIt.start).toEqual({column: 2, line: 1});
@@ -102,6 +102,7 @@ describe('File Parsing for expects', () => {
 
   it('finds Expects in a metaphysics test file', async () => {
     const data = parse(`${fixtures}/metaphysics/partner_show.example`);
-    expect(data.expects.length).toEqual(0); // not currently checking inside function calls
+    // Not currently checking inside function calls
+    expect(data.expects.length).toEqual(0);
   });
 });
