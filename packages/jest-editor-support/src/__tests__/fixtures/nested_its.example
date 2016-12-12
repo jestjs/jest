@@ -19,3 +19,8 @@ fdescribe('with fdescribe', () => {
   it('5', () => {
   });
 });
+
+describe.only('with describe.only', () => {
+  it('6', () => {
+  });
+});
