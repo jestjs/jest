@@ -20,7 +20,9 @@ class ItBlock extends Node {
 
 const identifiers = [
   'describe',
+  'fdescribe',
   'it',
+  'fit',
   'test',
   'expect',
 ];
@@ -42,20 +44,24 @@ function parse(file: string) {
       return;
     }
     const callExpression = node.expression;
-    let identifier = callExpression.expression;
+    const identifier = callExpression.expression;
     if (identifier.kind !== ts.SyntaxKind.Identifier &&
-      identifier.kind !== ts.SyntaxKind.PropertyAccessExpression) {
+      !isPropertyAccessExpression(identifier)) {
       return;
     }
-    if (identifier.kind === ts.SyntaxKind.PropertyAccessExpression &&
+    let text = identifier.text;
+    if (isPropertyAccessExpression(identifier) &&
       identifier.expression.kind === ts.SyntaxKind.CallExpression) {
-      identifier = identifier.expression.expression;
+      text = identifier.expression.expression.text;
+    } else if (isPropertyAccessExpression(identifier) &&
+      identifier.name.kind === ts.SyntaxKind.Identifier &&
+      identifier.name.text === 'only') {
+      text = identifier.expression.text;
     }
-    const {text} = identifier;
     if (identifiers.indexOf(text) === -1) {
       return;
     }
-    if (text === 'it' || text === 'test') {
+    if (text === 'it' || text === 'test' || text === 'fit') {
       const position = getNode(sourceFile, callExpression, new ItBlock());
       position.name = callExpression.arguments[0].text;
       itBlocks.push(position);
@@ -74,6 +80,10 @@ function parse(file: string) {
     expects,
     itBlocks,
   };
+}
+
+function isPropertyAccessExpression(node) {
+  return node.kind === ts.SyntaxKind.PropertyAccessExpression;
 }
 
 function getNode<T: Node>(
