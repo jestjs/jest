@@ -16,14 +16,17 @@ const constants = require('./constants');
 const os = require('os');
 const path = require('path');
 const {replacePathSepForRegex} = require('jest-util');
+const findCacheDir = require('find-cache-dir');
 
+const cacheDir = findCacheDir({name: 'jest'});
+const fallbackCacheDir = path.join(os.tmpdir(), 'jest');
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
 module.exports = ({
   automock: false,
   bail: false,
   browser: false,
-  cacheDirectory: path.join(os.tmpdir(), 'jest'),
+  cacheDirectory: cacheDir || fallbackCacheDir,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,

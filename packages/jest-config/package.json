@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^1.1.1",
+    "find-cache-dir": "^0.1.1",
     "jest-environment-jsdom": "^17.0.2",
     "jest-environment-node": "^17.0.2",
     "jest-jasmine2": "^17.0.3",
