@@ -10,6 +10,4 @@
 
 const ESCAPED_CHARACTERS = /(\\|\"|\')/g;
 
-module.exports = function printString(val) {
-  return val.replace(ESCAPED_CHARACTERS, '\\$1');
-}
+module.exports = val => val.replace(ESCAPED_CHARACTERS, '\\$1');

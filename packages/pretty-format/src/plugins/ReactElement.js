@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
+/* eslint-disable max-len */
 'use strict';
 
 const printString = require('../printString');
@@ -68,7 +68,7 @@ function printElement(element, print, indent, colors, opts) {
 
   const opaqueChildren = element.props.children;
   if (opaqueChildren) {
-    let flatChildren = [];
+    const flatChildren = [];
     traverseChildren(opaqueChildren, child => {
       flatChildren.push(child);
     });
@@ -82,10 +82,10 @@ function printElement(element, print, indent, colors, opts) {
 }
 
 module.exports = {
+  print(val, print, indent, opts, colors) {
+    return printElement(val, print, indent, colors, opts);
+  },
   test(object) {
     return object && object.$$typeof === reactElement;
   },
-  print(val, print, indent, opts, colors) {
-    return printElement(val, print, indent, colors, opts);
-  }
 };

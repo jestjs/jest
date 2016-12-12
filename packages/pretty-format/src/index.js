@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+/* eslint-disable max-len */
 
 'use strict';
 
@@ -40,7 +41,9 @@ function isToStringedArrayType(toStringed) {
 }
 
 function printNumber(val) {
-  if (val != +val) return 'NaN';
+  if (val != +val) {
+    return 'NaN';
+  }
   const isNegativeZero = val === 0 && (1 / val) < 0;
   return isNegativeZero ? '-0' : '' + val;
 }
@@ -49,7 +52,7 @@ function printFunction(val, printFunctionName) {
   if (!printFunctionName) {
     return '[Function]';
   } else if (val.name === '') {
-    return '[Function anonymous]'
+    return '[Function anonymous]';
   } else {
     return '[Function ' + val.name + ']';
   }
@@ -64,35 +67,67 @@ function printError(val) {
 }
 
 function printBasicValue(val, printFunctionName, escapeRegex) {
-  if (val === true || val === false) return '' + val;
-  if (val === undefined) return 'undefined';
-  if (val === null) return 'null';
+  if (val === true || val === false) {
+    return '' + val;
+  }
+  if (val === undefined) {
+    return 'undefined';
+  }
+  if (val === null) {
+    return 'null';
+  }
 
   const typeOf = typeof val;
 
-  if (typeOf === 'number') return printNumber(val);
-  if (typeOf === 'string') return '"' + printString(val) + '"';
-  if (typeOf === 'function') return printFunction(val, printFunctionName);
-  if (typeOf === 'symbol') return printSymbol(val);
+  if (typeOf === 'number') {
+    return printNumber(val);
+  }
+  if (typeOf === 'string') {
+    return '"' + printString(val) + '"';
+  }
+  if (typeOf === 'function') {
+    return printFunction(val, printFunctionName);
+  }
+  if (typeOf === 'symbol') {
+    return printSymbol(val);
+  }
 
   const toStringed = toString.call(val);
 
-  if (toStringed === '[object WeakMap]') return 'WeakMap {}';
-  if (toStringed === '[object WeakSet]') return 'WeakSet {}';
-  if (toStringed === '[object Function]' || toStringed === '[object GeneratorFunction]') return printFunction(val, printFunctionName);
-  if (toStringed === '[object Symbol]') return printSymbol(val);
-  if (toStringed === '[object Date]') return toISOString.call(val);
-  if (toStringed === '[object Error]') return printError(val);
+  if (toStringed === '[object WeakMap]') {
+    return 'WeakMap {}';
+  }
+  if (toStringed === '[object WeakSet]') {
+    return 'WeakSet {}';
+  }
+  if (toStringed === '[object Function]' || toStringed === '[object GeneratorFunction]') {
+    return printFunction(val, printFunctionName);
+  }
+  if (toStringed === '[object Symbol]') {
+    return printSymbol(val);
+  }
+  if (toStringed === '[object Date]') {
+    return toISOString.call(val);
+  }
+  if (toStringed === '[object Error]') {
+    return printError(val);
+  }
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
       return printString(regExpToString.call(val));
     }
     return regExpToString.call(val);
-  };
-  if (toStringed === '[object Arguments]' && val.length === 0) return 'Arguments []';
-  if (isToStringedArrayType(toStringed) && val.length === 0) return val.constructor.name + ' []';
+  }
+  if (toStringed === '[object Arguments]' && val.length === 0) {
+    return 'Arguments []';
+  }
+  if (isToStringedArrayType(toStringed) && val.length === 0) {
+    return val.constructor.name + ' []';
+  }
 
-  if (val instanceof Error) return printError(val);
+  if (val instanceof Error) {
+    return printError(val);
+  }
 
   return false;
 }
@@ -242,9 +277,9 @@ function printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, 
     return hitMaxDepth ? '[Map]' : printMap(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex);
   } else if (toStringed === '[object Set]') {
     return hitMaxDepth ? '[Set]' : printSet(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex);
-  } else if (typeof val === 'object') {
-    return hitMaxDepth ? '[Object]' : printObject(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex);
   }
+
+  return hitMaxDepth ? '[Object]' : printObject(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex);
 }
 
 function printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
@@ -274,37 +309,41 @@ function printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDep
   }
 
   const opts = {
-    edgeSpacing: edgeSpacing,
-    spacing: spacing
+    edgeSpacing,
+    spacing,
   };
   return plugin.print(val, boundPrint, boundIndent, opts, colors);
 }
 
 function print(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
   const basic = printBasicValue(val, printFunctionName, escapeRegex);
-  if (basic) return basic;
+  if (basic) {
+    return basic;
+  }
 
   const plugin = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
-  if (plugin) return plugin;
+  if (plugin) {
+    return plugin;
+  }
 
   return printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex);
 }
 
 const DEFAULTS = {
   callToJSON: true,
+  escapeRegex: false,
+  highlight: false,
   indent: 2,
   maxDepth: Infinity,
   min: false,
   plugins: [],
   printFunctionName: true,
-  escapeRegex: false,
-  highlight: false,
   theme: {
-    tag: 'cyan',
     content: 'reset',
     prop: 'yellow',
-    value: 'green'
-  }
+    tag: 'cyan',
+    value: 'green',
+  },
 };
 
 function validateOptions(opts) {
@@ -341,16 +380,16 @@ function prettyFormat(val, opts) {
   if (!opts) {
     opts = DEFAULTS;
   } else {
-    validateOptions(opts)
+    validateOptions(opts);
     opts = normalizeOptions(opts);
   }
 
-  let colors = {};
+  const colors = {};
   Object.keys(opts.theme).forEach(key => {
     if (opts.highlight) {
       colors[key] = style[opts.theme[key]];
     } else {
-      colors[key] = {open: '', close: ''};
+      colors[key] = {close: '', open: ''};
     }
   });
 
@@ -364,15 +403,23 @@ function prettyFormat(val, opts) {
   if (opts && opts.plugins.length) {
     indent = createIndent(opts.indent);
     refs = [];
-    var pluginsResult = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, opts.maxDepth, currentDepth, opts.plugins, opts.min, opts.callToJSON, opts.printFunctionName, opts.escapeRegex, colors);
-    if (pluginsResult) return pluginsResult;
+    const pluginsResult = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, opts.maxDepth, currentDepth, opts.plugins, opts.min, opts.callToJSON, opts.printFunctionName, opts.escapeRegex, colors);
+    if (pluginsResult) {
+      return pluginsResult;
+    }
   }
 
-  var basicResult = printBasicValue(val, opts.printFunctionName, opts.escapeRegex);
-  if (basicResult) return basicResult;
+  const basicResult = printBasicValue(val, opts.printFunctionName, opts.escapeRegex);
+  if (basicResult) {
+    return basicResult;
+  }
 
-  if (!indent) indent = createIndent(opts.indent);
-  if (!refs) refs = [];
+  if (!indent) {
+    indent = createIndent(opts.indent);
+  }
+  if (!refs) {
+    refs = [];
+  }
   return printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, opts.maxDepth, currentDepth, opts.plugins, opts.min, opts.callToJSON, opts.printFunctionName, opts.escapeRegex);
 }
 

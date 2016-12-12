@@ -17,8 +17,8 @@ const React = require('react');
 const ReactTestRenderer = require('react/lib/ReactTestRenderer');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
 
-const TIMES_TO_RUN = 100000;
 const NANOSECONDS = 1000000000;
+let TIMES_TO_RUN = 100000;
 
 function testCase(name, fn) {
   let result, error, time, total;
@@ -30,61 +30,69 @@ function testCase(name, fn) {
   }
 
   if (!error) {
-    var start = process.hrtime();
+    const start = process.hrtime();
 
-    for (var i = 0; i < TIMES_TO_RUN; i++) {
+    for (let i = 0; i < TIMES_TO_RUN; i++) {
       fn();
     }
 
-    var diff = process.hrtime(start);
+    const diff = process.hrtime(start);
 
     total = diff[0] * 1e9 + diff[1];
     time = Math.round(total / TIMES_TO_RUN);
   }
 
   return {
-    name: name,
-    result: result,
-    error: error,
-    total: total,
-    time: time,
+    error,
+    name,
+    result,
+    time,
+    total,
   };
 }
 
 function test(name, value, ignoreResult, prettyFormatOpts) {
-  var formatted = testCase('prettyFormat()  ', function() {
-    return prettyFormat(value, prettyFormatOpts);
-  });
+  const formatted = testCase(
+    'prettyFormat()  ',
+    () => prettyFormat(value, prettyFormatOpts),
+  );
 
-  var inspected = testCase('util.inspect()  ', function() {
+  const inspected = testCase('util.inspect()  ', () => {
     return util.inspect(value, {
+      depth: null,
       showHidden: true,
-      depth: null
     });
   });
 
-  var stringified = testCase('JSON.stringify()', function() {
+  const stringified = testCase('JSON.stringify()', () => {
     return JSON.stringify(value, null, '  ');
   });
 
-  var results = [formatted, inspected, stringified].sort(function(a, b) {
+  const results = [formatted, inspected, stringified].sort((a, b) => {
     return a.time - b.time;
   });
 
-  var winner = results[0];
-  var loser  = results[results.length - 1];
-
-  results.forEach(function(item, index) {
+  const winner = results[0];
+  
+  results.forEach((item, index) => {
     item.isWinner = index === 0;
     item.isLoser  = index === results.length - 1;
   });
 
   function log(current) {
-    var message = current.name;
+    let message = current.name;
 
-    if (current.time)   message += ' - ' + leftPad(current.time, 6) + 'ns';
-    if (current.total)  message += ' - ' + (current.total / NANOSECONDS) + 's total (' + TIMES_TO_RUN + ' runs)';
-    if (current.error)  message += ' - Error: ' + current.error.message;
+    if (current.time) {
+      message += ' - ' + leftPad(current.time, 6) + 'ns';
+    }
+    if (current.total) {
+      message +=
+        ' - ' + (current.total / NANOSECONDS) + 's total (' +
+        TIMES_TO_RUN + ' runs)';
+    }
+    if (current.error) {
+      message += ' - Error: ' + current.error.message;
+    }
 
     if (!ignoreResult && current.result) {
       message += ' - ' + JSON.stringify(current.result);
@@ -92,9 +100,11 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
 
     message = ' ' + message + ' ';
 
-    if (current.error) message = chalk.dim(message);
+    if (current.error) {
+      message = chalk.dim(message);
+    }
 
-    var diff = (current.time - winner.time);
+    const diff = (current.time - winner.time);
 
     if (diff > (winner.time * 0.85)) {
       message = chalk.bgRed.black(message);
@@ -129,14 +139,17 @@ test('true', true);
 test('false', false);
 test('an error', new Error());
 test('a typed error with a message', new TypeError('message'));
+/* eslint-disable no-new-func */
 test('a function constructor', new Function());
-test('an anonymous function', function() {});
-test('a named function', function named() {});
+/* eslint-enable no-new-func */
+test('an anonymous function', () => {});
+function named() {}
+test('a named function', named);
 test('Infinity', Infinity);
 test('-Infinity', -Infinity);
 test('an empty map', new Map());
-var mapWithValues = new Map();
-var mapWithNonStringKeys = new Map();
+const mapWithValues = new Map();
+const mapWithNonStringKeys = new Map();
 mapWithValues.set('prop1', 'value1');
 mapWithValues.set('prop2', 'value2');
 mapWithNonStringKeys.set({prop: 'value'}, {prop: 'value'});
@@ -148,15 +161,15 @@ test('a number', 123);
 test('a date', new Date(10e11));
 test('an empty object', {});
 test('an object with properties', {prop1: 'value1', prop2: 'value2'});
-var objectWithPropsAndSymbols = {prop: 'value1'};
+const objectWithPropsAndSymbols = {prop: 'value1'};
 objectWithPropsAndSymbols[Symbol('symbol1')] = 'value2';
 objectWithPropsAndSymbols[Symbol('symbol2')] = 'value3';
 test('an object with properties and symbols', objectWithPropsAndSymbols);
-test('an object with sorted properties', { b: 1, a: 2 });
+test('an object with sorted properties', {a: 2, b: 1});
 test('regular expressions from constructors', new RegExp('regexp'));
 test('regular expressions from literals', /regexp/ig);
 test('an empty set', new Set());
-var setWithValues = new Set();
+const setWithValues = new Set();
 setWithValues.add('value1');
 setWithValues.add('value2');
 test('a set with values', setWithValues);
@@ -166,31 +179,35 @@ test('undefined', undefined);
 test('a WeakMap', new WeakMap());
 test('a WeakSet', new WeakSet());
 test('deeply nested objects', {prop: {prop: {prop: 'value'}}});
-var circularReferences = {};
+const circularReferences = {};
 circularReferences.prop = circularReferences;
 test('circular references', circularReferences);
-var parallelReferencesInner = {};
-var parallelReferences = {
+const parallelReferencesInner = {};
+const parallelReferences = {
   prop1: parallelReferencesInner,
   prop2: parallelReferencesInner,
 };
 test('parallel references', parallelReferences);
 test('able to customize indent', {prop: 'value'});
-var bigObj = {};
-for (var i = 0; i < 50; i++) bigObj[i] = i;
+const bigObj = {};
+for (let i = 0; i < 50; i++) {
+  bigObj[i] = i;
+}
 test('big object', bigObj);
 
-var jsx = React.createElement('div', {prop: {a: 1, b: 2}, onClick: function() {} },
+const element = React.createElement(
+  'div',
+  {onClick: () => {}, prop: {a: 1, b: 2}},
   React.createElement('div', {prop: {a: 1, b: 2}}),
   React.createElement('div'),
   React.createElement('div', {prop: {a: 1, b: 2}},
     React.createElement('div', null,
-      React.createElement('div')
-    )
-  )
+      React.createElement('div'),
+    ),
+  ),
 );
 
-test('react', ReactTestRenderer.create(jsx).toJSON(), false, {
+test('react', ReactTestRenderer.create(element).toJSON(), false, {
   plugins: [ReactTestComponent],
 });
 
