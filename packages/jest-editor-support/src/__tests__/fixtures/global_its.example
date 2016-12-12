@@ -18,3 +18,11 @@ it.only('works with it.only', () => {
 fit('works with fit', () => {
 
 });
+
+test('works with test', () => {
+
+});
+
+test.only('works with test.only', () => {
+
+});
