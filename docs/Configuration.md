@@ -84,6 +84,8 @@ These options let you control Jest's behavior in your `package.json` file. The J
 
 This option is disabled by default. If you are introducing Jest to a large organization with an existing codebase but few tests, enabling this option can be helpful to introduce unit tests gradually. Modules can be explicitly auto-mocked using `jest.mock(moduleName)`.
 
+*Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`.*
+
 ### `browser` [boolean]
 (default: false)
 
