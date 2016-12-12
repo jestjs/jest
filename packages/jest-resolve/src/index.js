@@ -156,7 +156,13 @@ class Resolver {
   }
 
   isCoreModule(moduleName: string): boolean {
-    return this._options.hasCoreModules && resolve.isCore(moduleName);
+    return (
+      this._options.hasCoreModules &&
+      (
+        resolve.isCore(moduleName) ||
+        moduleName === 'v8'
+      )
+    );
   }
 
   getModule(name: string): ?Path {
