@@ -10,3 +10,11 @@ it('works with new functions', () => {
 it('works with flow functions', () => {
   function foo(x: string): string { return x; }
 });
+
+it.only('works with it.only', () => {
+
+});
+
+fit('works with fit', () => {
+
+});

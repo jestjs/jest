@@ -14,3 +14,8 @@ describe('with old functions', function() {
   it('4', () => {
   });
 });
+
+fdescribe('with fdescribe', () => {
+  it('5', () => {
+  });
+});
