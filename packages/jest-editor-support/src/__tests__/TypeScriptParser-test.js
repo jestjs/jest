@@ -10,7 +10,7 @@ describe('File Parsing for it blocks', () => {
   it('For the simplest it cases', async () => {
     const data = parse(`${fixtures}/global_its.example`);
 
-    expect(data.itBlocks.length).toEqual(5);
+    expect(data.itBlocks.length, 7);
 
     const firstIt = data.itBlocks[0];
     expect(firstIt.name).toEqual('works with old functions');
@@ -36,12 +36,22 @@ describe('File Parsing for it blocks', () => {
     expect(fifthIt.name).toEqual('works with fit');
     expect(fifthIt.start).toEqual({column: 0, line: 17});
     expect(fifthIt.end).toEqual({column: 2, line: 19});
+
+    const sixthIt = data.itBlocks[5];
+    expect(sixthIt.name).toEqual('works with test');
+    expect(sixthIt.start).toEqual({column: 0, line: 21});
+    expect(sixthIt.end).toEqual({column: 2, line: 23});
+
+    const seventhIt = data.itBlocks[6];
+    expect(seventhIt.name).toEqual('works with test.only');
+    expect(seventhIt.start).toEqual({column: 0, line: 25});
+    expect(seventhIt.end).toEqual({column: 2, line: 27});
   });
 
   it('For its inside describes', async () => {
     const data = parse(`${fixtures}/nested_its.example`);
 
-    expect(data.itBlocks.length, 5);
+    expect(data.itBlocks.length, 6);
 
     const firstIt = data.itBlocks[0];
     expect(firstIt.name).toEqual('1');
@@ -67,6 +77,11 @@ describe('File Parsing for it blocks', () => {
     expect(fifthIt.name).toEqual('5');
     expect(fifthIt.start).toEqual({column: 2, line: 18});
     expect(fifthIt.end).toEqual({column: 4, line: 19});
+
+    const sixthIt = data.itBlocks[5];
+    expect(sixthIt.name).toEqual('6');
+    expect(sixthIt.start).toEqual({column: 2, line: 23});
+    expect(sixthIt.end).toEqual({column: 4, line: 24});
   });
 
   // These tests act more like linters that we don't raise on non-trivial files
