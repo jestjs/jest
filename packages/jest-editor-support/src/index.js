@@ -14,14 +14,17 @@ const Process = require('./Process');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const Runner = require('./Runner');
 const Settings = require('./Settings');
-const TestFileParser = require('./TypeScriptParser');
+const {parse, Expect, ItBlock, Node} = require('./TypeScriptParser');
 const TestReconciler =  require('./TestReconciler');
 
 module.exports = {
+  Expect,
+  ItBlock,
+  Node,
   Process,
   ProjectWorkspace,
   Runner,
   Settings,
-  TestFileParser,
   TestReconciler,
+  parse,
 };
