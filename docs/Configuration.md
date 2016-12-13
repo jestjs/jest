@@ -441,8 +441,10 @@ Examples of such compilers include [babel](https://babeljs.io/), [typescript](ht
 (default: `['/node_modules/']`)
 
 An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed.
+ 
+If you need to negate the sense of an expression, prefix it with `!`. Note that this is not standard regexp syntax.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/bower_components/', '<rootDir>/node_modules/']`.
+Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/bower_components/', '<rootDir>/node_modules/']`.
 
 ### `unmockedModulePathPatterns` [array<string>]
 (default: `[]`)

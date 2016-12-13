@@ -33,7 +33,7 @@ const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 const cache: Map<string, vm.Script> = new Map();
 const configToJsonMap = new Map();
 // Cache regular expressions to test whether the file needs to be preprocessed
-const ignoreCache: WeakMap<Config, ?RegExp> = new WeakMap();
+const ignoreCache: WeakMap<Config, ?(string) => boolean> = new WeakMap();
 
 const removeFile = (path: Path) => {
   try {
@@ -137,15 +137,18 @@ const shouldTransform = (filename: Path, config: Config): boolean => {
     if (!config.transformIgnorePatterns) {
       ignoreCache.set(config, null);
     } else {
+      const nonEmpty = config.transformIgnorePatterns.filter(each => !!each);
       ignoreCache.set(
-        config,
-        new RegExp(config.transformIgnorePatterns.join('|')),
+        config, filename => nonEmpty.some(pattern =>
+          pattern[0] === '!'
+            ? !filename.match(pattern.substr(1))
+            : filename.match(pattern))
       );
     }
   }
 
-  const ignoreRegexp = ignoreCache.get(config);
-  const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
+  const ignoreFn = ignoreCache.get(config);
+  const isIgnored = ignoreFn ? ignoreFn(filename) : false;
   return (
     !!config.transform &&
     !!config.transform.length &&
