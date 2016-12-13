@@ -1,4 +1,13 @@
-// @flow
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+
 'use strict';
 
 const {ChildProcess} = require('child_process');
@@ -6,44 +15,43 @@ const {readFile} = require('fs');
 const {tmpdir} = require('os');
 const {EventEmitter} = require('events');
 const ProjectWorkspace = require('./ProjectWorkspace');
-const {jestChildProcessWithArgs} = require('./JestProcess');
+const {jestChildProcessWithArgs} = require('./Process');
 
 // This class represents the running process, and
 // passes out events when it understands what data is being
 // pass sent out of the process
-
-module.exports = class JestRunner extends EventEmitter {
+module.exports = class Runner extends EventEmitter {
   debugprocess: ChildProcess;
   workspace: ProjectWorkspace;
-  jsonFilePath: string;
+  outputPath: string;
 
   constructor(workspace: ProjectWorkspace) {
     super();
     this.workspace = workspace;
-    this.jsonFilePath = tmpdir() + '/vscode-jest_runner.json';
+    this.outputPath = tmpdir() + '/jest_runner.json';
   }
 
   start() {
     const args = [
-      '--json', 
-      '--useStderr', 
-      '--watch', 
-      '--outputFile', 
-      this.jsonFilePath,
+      '--json',
+      '--useStderr',
+      '--watch',
+      '--outputFile',
+      this.outputPath,
     ];
 
     this.debugprocess = jestChildProcessWithArgs(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
-      // Make jest save to a file, otherwise we get chunked data 
+      // Make jest save to a file, otherwise we get chunked data
       // and it can be hard to put it back together.
       const stringValue = data.toString().replace(/\n$/, '').trim();
       if (stringValue.startsWith('Test results written to')) {
-        readFile(this.jsonFilePath, 'utf8', (err, data) => {
+        readFile(this.outputPath, 'utf8', (err, data) => {
           if (err) {
-            const message = `JSON report not found at ${this.jsonFilePath}`;
-            this.emit('terminalError', message); 
-          } else { 
-            this.emit('executableJSON', JSON.parse(data)); 
+            const message = `JSON report not found at ${this.outputPath}`;
+            this.emit('terminalError', message);
+          } else {
+            this.emit('executableJSON', JSON.parse(data));
           }
         });
       } else {

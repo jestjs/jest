@@ -1,20 +1,27 @@
-// @flow
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+
 'use strict';
 
-// This file represents the public API for jest-editor-support
-
-const JestProcess = require('./JestProcess');
-const JestRunner = require('./JestRunner');
-const JestSettings = require('./JestSettings');
+const Process = require('./Process');
 const ProjectWorkspace = require('./ProjectWorkspace');
+const Runner = require('./Runner');
+const Settings = require('./Settings');
 const TestFileParser = require('./TypeScriptParser');
 const TestReconciler =  require('./TestReconciler');
 
 module.exports = {
-  JestProcess,  
-  JestRunner,
-  JestSettings,
+  Process,
   ProjectWorkspace,
+  Runner,
+  Settings,
   TestFileParser,
   TestReconciler,
 };
