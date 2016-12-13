@@ -88,7 +88,7 @@ describe('.toEqual()', () => {
     [() => {}, jestExpect.any(Function)],
     [{
       a: 1,
-      b: () => {},
+      b: function b() {},
       c: true,
     }, {
       a: 1,
