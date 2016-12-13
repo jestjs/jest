@@ -54,14 +54,14 @@ describe('events', () => {
     const data = jest.fn();
     runner.on('executableJSON', data);
 
-    runner.jsonFilePath = `${fixtures}/failing_jsons/failing_jest_json.json`;
+    runner.outputPath = `${fixtures}/failing_jsons/failing_jest_json.json`;
 
     // Emitting data through stdout should trigger sending JSON
     fakeProcess.stdout.emit('data', 'Test results written to file');
     expect(data).toBeCalled();
 
     // And lets check what we emit
-    const dataAtPath = readFileSync(runner.jsonFilePath);
+    const dataAtPath = readFileSync(runner.outputPath);
     const storedJSON = JSON.parse(dataAtPath);
     expect(data.mock.calls[0][0]).toEqual(storedJSON);
   });
