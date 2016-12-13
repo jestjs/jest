@@ -362,11 +362,12 @@ An array of regexp pattern strings that are matched against all test paths befor
 These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
 
 ### `testRegex` [string]
-(default: `(/__tests__/.*|\\.(test|spec))\\.jsx?$`)
+(default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`)
 
 The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files
 inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec`
-(e.g. `Component.test.js` or `Component.spec.js`).
+(e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
+or `spec.js`.
 
 ### `testResultsProcessor` [string]
 (default: `undefined`)
