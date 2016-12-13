@@ -1,4 +1,13 @@
-// @flow
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+
 'use strict';
 
 const ts = require('typescript');
@@ -45,17 +54,23 @@ function parse(file: string) {
     }
     const callExpression = node.expression;
     const identifier = callExpression.expression;
-    if (identifier.kind !== ts.SyntaxKind.Identifier &&
-      !isPropertyAccessExpression(identifier)) {
+    if (
+      identifier.kind !== ts.SyntaxKind.Identifier &&
+      !isPropertyAccessExpression(identifier)
+    ) {
       return;
     }
     let text = identifier.text;
-    if (isPropertyAccessExpression(identifier) &&
-      identifier.expression.kind === ts.SyntaxKind.CallExpression) {
+    if (
+      isPropertyAccessExpression(identifier) &&
+      identifier.expression.kind === ts.SyntaxKind.CallExpression
+    ) {
       text = identifier.expression.expression.text;
-    } else if (isPropertyAccessExpression(identifier) &&
+    } else if (
+      isPropertyAccessExpression(identifier) &&
       identifier.name.kind === ts.SyntaxKind.Identifier &&
-      identifier.name.text === 'only') {
+      identifier.name.text === 'only'
+    ) {
       text = identifier.expression.text;
     }
     if (identifiers.indexOf(text) === -1) {
@@ -70,8 +85,10 @@ function parse(file: string) {
       expects.push(position);
     }
     callExpression.arguments
-      .filter(arg => arg.kind === ts.SyntaxKind.ArrowFunction
-                  || arg.kind === ts.SyntaxKind.FunctionExpression)
+      .filter(arg => (
+        arg.kind === ts.SyntaxKind.ArrowFunction ||
+        arg.kind === ts.SyntaxKind.FunctionExpression
+      ))
       .forEach(arg => ts.forEachChild(arg.body, searchForItBlocks));
   }
 
