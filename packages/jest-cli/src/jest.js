@@ -333,6 +333,7 @@ const runCLI = (
             results => {
               isRunning = false;
               hasSnapshotFailure = !!results.snapshot.failure;
+              testWatcher.setState({interrupted: false});
               if (displayHelp) {
                 console.log(usage(argv, hasSnapshotFailure));
                 displayHelp = !process.env.JEST_HIDE_USAGE;
