@@ -302,12 +302,11 @@ const transformAndBuildScript = (
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
   let wrappedResult;
+  const willTransform = !isInternalModule
+    && (shouldTransform(filename, config) || instrument);
 
   try {
-    if (
-      !isInternalModule &&
-      (shouldTransform(filename, config) || instrument)
-    ) {
+    if (willTransform) {
       wrappedResult =
         wrap(transformSource(filename, config, content, instrument));
     } else {
@@ -319,6 +318,17 @@ const transformAndBuildScript = (
     if (e.codeFrame) {
       e.stack = e.codeFrame;
     }
+
+    if (config.logTransformErrors) {
+      console.error(
+        `FILENAME: ${filename}\n` +
+        `TRANSFORM: ${willTransform.toString()}\n` +
+        `INSTRUMENT: ${instrument.toString()}\n` +
+        `SOURCE:\n` +
+        String(wrappedResult),
+      );
+    }
+
     throw e;
   }
 };
