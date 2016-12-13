@@ -2,6 +2,7 @@
 
 ## jest 18.0.0
 
+* Fixed re-running tests when `--bail` is used together with `--watch`.
 * `pretty-format` is now merged into Jest.
 * `require('v8')` now works properly in a test context.
 * Jest now clears the entire scrollback in watch mode.
