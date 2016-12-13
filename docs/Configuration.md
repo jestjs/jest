@@ -80,24 +80,24 @@ These options let you control Jest's behavior in your `package.json` file. The J
 ## Jest options
 
 ### `automock` [boolean]
-(default: false)
+(default: `false`)
 
 This option is disabled by default. If you are introducing Jest to a large organization with an existing codebase but few tests, enabling this option can be helpful to introduce unit tests gradually. Modules can be explicitly auto-mocked using `jest.mock(moduleName)`.
 
 *Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`.*
 
 ### `browser` [boolean]
-(default: false)
+(default: `false`)
 
 Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `bail` [boolean]
-(default: false)
+(default: `false`)
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
 ### `cacheDirectory` [string]
-(default: '/tmp/<path>')
+(default: `"/tmp/<path>"`)
 
 The directory where Jest should store its cached dependency information.
 
@@ -118,7 +118,7 @@ this file and it's never required in the test suite.
 
 Example:
 ```js
-collectCoverageFrom: ['**/*.{js,jsx}', '!**/node_modules/**', '!**/vendor/**']
+collectCoverageFrom: ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"]
 ```
 
 This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match
@@ -132,18 +132,18 @@ This will collect coverage information for all the files inside the project's `r
 The directory where Jest should output its coverage files.
 
 ### `coveragePathIgnorePatterns` [array<string>]
-(default: `['/node_modules/']`)
+(default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
 ### `coverageReporters` [array<string>]
-(default: `['json', 'lcov', 'text']`)
+(default: `["json", "lcov", "text"]`)
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/gotwarlost/istanbul/tree/master/lib/report) can be used.
 
-*Note: Setting this option overwrites the default values. Add `'text'` or `'text-summary'` to see a coverage summary in the console output.*
+*Note: Setting this option overwrites the default values. Add `"text"` or `"text-summary"` to see a coverage summary in the console output.*
 
 ### `coverageThreshold` [object]
 (default: `undefined`)
@@ -194,18 +194,18 @@ Note that, if you specify a global reference value (like an object or array) her
 A pattern that is matched against file paths to determine which folder contains manual mocks.
 
 ### `moduleFileExtensions` [array<string>]
-(default: `['js', 'json', 'jsx', 'node']`)
+(default: `["js", "json", "jsx", "node"]`)
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
 
-If you are using TypeScript this should be `['js', 'jsx', 'json', 'ts', 'tsx']`
+If you are using TypeScript this should be `["js", "jsx", "json", "ts", "tsx"]`
 
 ### `moduleDirectories` [array<string>]
-(default: `['node_modules']`)
+(default: `["node_modules"]`)
 
 An array of directory names to be searched recursively up from the requiring module's location. Setting this option
 will _override_ the default, if you wish to still search `node_modules` for packages include it
-along with any other options: `['node_modules', 'bower_components']`
+along with any other options: `["node_modules", "bower_components"]`
 
 ### `moduleNameMapper` [object<string, string>]
 (default: `null`)
@@ -233,7 +233,7 @@ Example:
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/']`.
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]`.
 
 ### `modulePaths` [array<string>]
 (default: `[]`)
@@ -252,7 +252,7 @@ Activates notifications for test results.
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
 
 ### `resetMocks` [boolean]
-(default: false)
+(default: `false`)
 
 Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test.
 
@@ -268,7 +268,7 @@ The root directory that Jest should scan for tests and modules within. If you pu
 
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
-*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `['<rootDir>/env-setup.js']`.*
+*Note that using `'<rootDir>'` as a string token in any other path-based config settings to refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `["<rootDir>/env-setup.js"]`.*
 
 ### `setupFiles` [array]
 (default: `[]`)
@@ -343,23 +343,23 @@ Pretty foo: Object {
 ```
 
 ### `testEnvironment` [string]
-(default: `'jsdom'`)
+(default: `"jsdom"`)
 
 The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
 
 ### `testPathDirs` [array<string>]
-(default: `['<rootDir>']`)
+(default: `["<rootDir>"]`)
 
 A list of paths to directories that Jest should use to search for tests in.
 
 There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
 
 ### `testPathIgnorePatterns` [array<string>]
-(default: `['/node_modules/']`)
+(default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/build/', '<rootDir>/node_modules/']`.
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
 ### `testRegex` [string]
 (default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`)
@@ -438,11 +438,11 @@ Examples of such compilers include [babel](https://babeljs.io/), [typescript](ht
 *Note: if you are using the `babel-jest` transformer and want to use an additional code preprocessor, keep in mind that when "transform" is overwritten in any way the `babel-jest` is not loaded automatically anymore. If you want to use it to compile JavaScript code it has to be explicitly defined. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)*
 
 ### `transformIgnorePatterns` [array<string>]
-(default: `['/node_modules/']`)
+(default: `["/node_modules/"]`)
 
 An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `['<rootDir>/bower_components/', '<rootDir>/node_modules/']`.
+These pattern strings match against the full path. Use the `<rootDir>` string token to  include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
 ### `unmockedModulePathPatterns` [array<string>]
 (default: `[]`)
