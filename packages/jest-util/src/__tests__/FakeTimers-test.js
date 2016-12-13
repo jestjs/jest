@@ -101,12 +101,8 @@ describe('FakeTimers', () => {
       timers.useFakeTimers();
 
       const runOrder = [];
-      const mock1 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock1');
-      });
-      const mock2 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock2');
-      });
+      const mock1 = jest.fn(() => runOrder.push('mock1'));
+      const mock2 = jest.fn(() => runOrder.push('mock2'));
 
       global.process.nextTick(mock1);
       global.process.nextTick(mock2);
@@ -304,18 +300,10 @@ describe('FakeTimers', () => {
       timers.useFakeTimers();
 
       const runOrder = [];
-      const mock1 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock1');
-      });
-      const mock2 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock2');
-      });
-      const mock3 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock3');
-      });
-      const mock4 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock4');
-      });
+      const mock1 = jest.fn(() => runOrder.push('mock1'));
+      const mock2 = jest.fn(() => runOrder.push('mock2'));
+      const mock3 = jest.fn(() => runOrder.push('mock3'));
+      const mock4 = jest.fn(() => runOrder.push('mock4'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
@@ -428,18 +416,10 @@ describe('FakeTimers', () => {
       timers.useFakeTimers();
 
       const runOrder = [];
-      const mock1 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock1');
-      });
-      const mock2 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock2');
-      });
-      const mock3 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock3');
-      });
-      const mock4 = jest.genMockFn().mockImpl(() => {
-        runOrder.push('mock4');
-      });
+      const mock1 = jest.fn(() => runOrder.push('mock1'));
+      const mock2 = jest.fn(() => runOrder.push('mock2'));
+      const mock3 = jest.fn(() => runOrder.push('mock3'));
+      const mock4 = jest.fn(() => runOrder.push('mock4'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
