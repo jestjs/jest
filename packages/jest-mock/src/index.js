@@ -342,7 +342,7 @@ class ModuleMocker {
         return f;
       };
 
-      f.mockImplementation = f.mockImpl = fn => {
+      f.mockImplementation = fn => {
         // next function call will use mock implementation return value
         const privateState = this._ensureMock(f).private;
         privateState.isReturnValueLastSet = false;

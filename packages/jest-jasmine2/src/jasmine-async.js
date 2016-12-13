@@ -101,7 +101,7 @@ function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
-  global.pit = env.it = promisifyIt(env.it, env);
+  env.it = promisifyIt(env.it, env);
   env.fit = promisifyIt(env.fit, env);
   global.it.concurrent = makeConcurrent(env.it, env);
   global.it.concurrent.only = makeConcurrent(env.fit, env);
