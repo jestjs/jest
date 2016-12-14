@@ -41,7 +41,7 @@ class CoverageReporter extends BaseReporter {
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    if (testResult.coverage && typeof testResult.coverage !== 'string') {
+    if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
       // Remove coverage data to free up some memory.
       delete testResult.coverage;
