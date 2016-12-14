@@ -5,7 +5,7 @@
  * JestUnitTestEngine
  */
 class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
-  const PROCESSOR = 'jest/packages/jest-phabricator-coverage/index.js';
+  const PROCESSOR = 'jest/packages/jest-phabricator-coverage/build/index.js';
   const JEST_PATH = 'jest/packages/jest/bin/jest.js';
 
   private function getRoot() {
@@ -74,12 +74,13 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
       $futures[] = new ExecFuture("{$bin} {$options} %Ls", $paths);
     }
 
-    $this->console = PhutilConsole::getConsole();
+    $console = PhutilConsole::getConsole();
 
     // Pass stderr through so we can give the user updates on test
     // status as tests run.
     $completed = array();
-    foreach (Futures($futures)->setUpdateInterval(0.2) as $_) {
+    $iterator = new FutureIterator($futures);
+    foreach ($iterator->setUpdateInterval(0.2) as $_) {
       foreach ($futures as $key => $future) {
         if (isset($completed[$key])) {
           continue;
@@ -88,7 +89,7 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
           $completed[$key] = true;
         }
         list(, $stderr) = $future->read();
-        $this->console->writeErr('%s', $stderr);
+        $console->writeErr('%s', $stderr);
         break;
       }
     }
@@ -96,7 +97,7 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
     foreach ($futures as $key => $future) {
       if (!isset($completed[$key])) {
         list(, $stderr) = $future->read();
-        $this->console->writeErr('%s', $stderr);
+        $console->writeErr('%s', $stderr);
       }
     }
     $results = array();
@@ -108,7 +109,6 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
   }
 
   private function runJSTests() {
-
     $console = PhutilConsole::getConsole();
     $root = $this->getRoot();
 

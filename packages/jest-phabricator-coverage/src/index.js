@@ -60,9 +60,9 @@ function summarize(coverageMap) {
 
 module.exports = function(results) {
   const report = results.testResults.map(
-    test => formatResults(test, results.coverage)
+    test => formatResults(test, results.coverageMap)
   );
 
-  delete results.coverage;
+  delete results.coverageMap;
   results.phabricatorReport = report;
 };
