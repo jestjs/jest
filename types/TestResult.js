@@ -17,6 +17,13 @@ export type Coverage = {|
   sourceText: string,
 |};
 
+export type CoverageMap = {|
+  merge: (data: Object) => void,
+  getCoverageSummary: () => Object,
+  data: Object,
+  addFileCoverage: (fileCoverage: Object) => void,
+|};
+
 export type Error = {|
   message: string,
   stack: ?string,
@@ -49,6 +56,7 @@ export type AssertionResult = {|
 |};
 
 export type AggregatedResult = {|
+  coverageMap?: CoverageMap,
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
