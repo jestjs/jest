@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "17.0.2",
+  "version": "18.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,8 +8,8 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-mock": "^17.0.2",
-    "jest-util": "^17.0.2",
+    "jest-mock": "^18.0.0",
+    "jest-util": "^18.0.0",
     "jsdom": "^9.8.1"
   }
 }
