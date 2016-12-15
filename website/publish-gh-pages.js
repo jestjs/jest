@@ -1,3 +1,5 @@
+/* eslint-disable: max-len */
+
 'use strict';
 
 require(`shelljs/global`);
@@ -18,7 +20,7 @@ rm(`-rf`, `build`);
 mkdir(`-p`, `build`);
 
 // Build site here
-cd(`build`)
+cd(`build`);
 
 if (exec(`git clone ${remoteBranch} ${CIRCLE_PROJECT_REPONAME}-gh-pages`).code !== 0) {
   echo(`Error: Git clone failed`);
@@ -35,7 +37,7 @@ if (exec(`git checkout origin/gh-pages`).code +
   exit(1);
 }
 
-cd(`../..`)
+cd(`../..`);
 
 if (exec(`node server/generate.js`).code) {
   echo(`Error: generate failed`);
@@ -43,11 +45,11 @@ if (exec(`node server/generate.js`).code) {
 }
 
 cp(`-R`, `build/${CIRCLE_PROJECT_REPONAME}/*`, `build/${CIRCLE_PROJECT_REPONAME}-gh-pages/`);
-cd(`build/${CIRCLE_PROJECT_REPONAME}-gh-pages`)
+cd(`build/${CIRCLE_PROJECT_REPONAME}-gh-pages`);
 
 exec(`git add --all`);
-exec(`git commit -m "update website"`)
-exec(`git push https://${GIT_USER}@github.com/${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`)
+exec(`git commit -m "update website"`);
+exec(`git push git@github.com:${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`);
 cd(`../..`);
 
-echo(`Website is live at: https://${CIRCLE_PROJECT_USERNAME}.github.io/${CIRCLE_PROJECT_REPONAME}/`)
+echo(`Website is live at: https://${CIRCLE_PROJECT_USERNAME}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
