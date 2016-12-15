@@ -35,14 +35,12 @@ type ParserReturn = {
  * collection of it and expects.
  */
 function parse(file: string): ParserReturn {
-  if (file.endsWith('.js')) {
-    return babylonParser(file);
-  } else if (file.endsWith('.ts')) {
-    // This require is done here so that it can be optional
+  if (file.match(/\.ts?$/)) {
+    // This require is done here so that it can be optional for clients
     const {typescriptParser} = require('./parsers/TypeScriptParser');
     return typescriptParser(file);
   } else {
-    throw new Error('Can only parse JS/TS files');
+    return babylonParser(file);
   }
 }
 
