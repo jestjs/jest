@@ -22,10 +22,10 @@ const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
 const {Console, clearLine} = require('jest-util');
+const {formatTestResults} = require('jest-util');
 const {run} = require('./cli');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const formatTestResults = require('./lib/formatTestResults');
 const os = require('os');
 const path = require('path');
 const preRunMessage = require('./preRunMessage');
@@ -236,7 +236,7 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
 
             fs.writeFileSync(
               outputFile,
-              JSON.stringify(formatTestResults(runResults, config)),
+              JSON.stringify(formatTestResults(runResults)),
             );
             process.stdout.write(
               `Test results written to: ` +
@@ -244,7 +244,7 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
             );
           } else {
             process.stdout.write(
-              JSON.stringify(formatTestResults(runResults, config)),
+              JSON.stringify(formatTestResults(runResults)),
             );
           }
         }
