@@ -9,7 +9,7 @@
  */
 
 'use strict';
-
+/* $FlowFixMe */
 const ts = require('typescript');
 const {readFileSync} = require('fs');
 

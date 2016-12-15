@@ -8,124 +8,141 @@
 
 'use strict';
 
-const {typescriptParser} = require('../../parsers/TypeScriptParser');
+let hasTypeScript = false;
+let typescriptParser = null;
 
-const path = require('path');
-const fixture = path.resolve(__dirname, '../fixtures');
+try {
+  typescriptParser = require('../../parsers/TypeScriptParser').typescriptParser;
+  hasTypeScript = true;
+} catch (e) {
+  // NO-OP, there are legit reasons for not having typescript
+  // inside the node_modules.
+}
 
-describe('File Parsing for it blocks', () => {
+if (hasTypeScript) {
+  const parse = typescriptParser;
+  const path = require('path');
+  const fixture = path.resolve(__dirname, '../fixtures');
 
-  it('For the simplest it cases', async () => {
-    const data = typescriptParser(`${fixture}/global_its.example`);
+  describe('File Parsing for it blocks', () => {
 
-    expect(data.itBlocks.length, 7);
+    it('For the simplest it cases', async () => {
+      const data = parse(`${fixture}/global_its.example`);
 
-    const firstIt = data.itBlocks[0];
-    expect(firstIt.name).toEqual('works with old functions');
-    expect(firstIt.start).toEqual({column: 0, line: 1});
-    expect(firstIt.end).toEqual({column: 2, line: 3});
+      expect(data.itBlocks.length, 7);
 
-    const secondIt = data.itBlocks[1];
-    expect(secondIt.name).toEqual('works with new functions');
-    expect(secondIt.start).toEqual({column: 0, line: 5});
-    expect(secondIt.end).toEqual({column: 2, line: 7});
+      const firstIt = data.itBlocks[0];
+      expect(firstIt.name).toEqual('works with old functions');
+      expect(firstIt.start).toEqual({column: 0, line: 1});
+      expect(firstIt.end).toEqual({column: 2, line: 3});
 
-    const thirdIt = data.itBlocks[2];
-    expect(thirdIt.name).toEqual('works with flow functions');
-    expect(thirdIt.start).toEqual({column: 0, line: 9});
-    expect(thirdIt.end).toEqual({column: 2, line: 11});
+      const secondIt = data.itBlocks[1];
+      expect(secondIt.name).toEqual('works with new functions');
+      expect(secondIt.start).toEqual({column: 0, line: 5});
+      expect(secondIt.end).toEqual({column: 2, line: 7});
 
-    const fourthIt = data.itBlocks[3];
-    expect(fourthIt.name).toEqual('works with it.only');
-    expect(fourthIt.start).toEqual({column: 0, line: 13});
-    expect(fourthIt.end).toEqual({column: 2, line: 15});
+      const thirdIt = data.itBlocks[2];
+      expect(thirdIt.name).toEqual('works with flow functions');
+      expect(thirdIt.start).toEqual({column: 0, line: 9});
+      expect(thirdIt.end).toEqual({column: 2, line: 11});
 
-    const fifthIt = data.itBlocks[4];
-    expect(fifthIt.name).toEqual('works with fit');
-    expect(fifthIt.start).toEqual({column: 0, line: 17});
-    expect(fifthIt.end).toEqual({column: 2, line: 19});
+      const fourthIt = data.itBlocks[3];
+      expect(fourthIt.name).toEqual('works with it.only');
+      expect(fourthIt.start).toEqual({column: 0, line: 13});
+      expect(fourthIt.end).toEqual({column: 2, line: 15});
 
-    const sixthIt = data.itBlocks[5];
-    expect(sixthIt.name).toEqual('works with test');
-    expect(sixthIt.start).toEqual({column: 0, line: 21});
-    expect(sixthIt.end).toEqual({column: 2, line: 23});
+      const fifthIt = data.itBlocks[4];
+      expect(fifthIt.name).toEqual('works with fit');
+      expect(fifthIt.start).toEqual({column: 0, line: 17});
+      expect(fifthIt.end).toEqual({column: 2, line: 19});
 
-    const seventhIt = data.itBlocks[6];
-    expect(seventhIt.name).toEqual('works with test.only');
-    expect(seventhIt.start).toEqual({column: 0, line: 25});
-    expect(seventhIt.end).toEqual({column: 2, line: 27});
+      const sixthIt = data.itBlocks[5];
+      expect(sixthIt.name).toEqual('works with test');
+      expect(sixthIt.start).toEqual({column: 0, line: 21});
+      expect(sixthIt.end).toEqual({column: 2, line: 23});
+
+      const seventhIt = data.itBlocks[6];
+      expect(seventhIt.name).toEqual('works with test.only');
+      expect(seventhIt.start).toEqual({column: 0, line: 25});
+      expect(seventhIt.end).toEqual({column: 2, line: 27});
+    });
+
+    it('For its inside describes', async () => {
+      const data = parse(`${fixture}/nested_its.example`);
+
+      expect(data.itBlocks.length, 6);
+
+      const firstIt = data.itBlocks[0];
+      expect(firstIt.name).toEqual('1');
+      expect(firstIt.start).toEqual({column: 2, line: 1});
+      expect(firstIt.end).toEqual({column: 4, line: 2});
+
+      const secondIt = data.itBlocks[1];
+      expect(secondIt.name).toEqual('2');
+      expect(secondIt.start).toEqual({column: 2, line: 3});
+      expect(secondIt.end).toEqual({column: 4, line: 4});
+
+      const thirdIt = data.itBlocks[2];
+      expect(thirdIt.name).toEqual('3');
+      expect(thirdIt.start).toEqual({column: 2, line: 8});
+      expect(thirdIt.end).toEqual({column: 4, line: 9});
+
+      const fourthIt = data.itBlocks[3];
+      expect(fourthIt.name).toEqual('4');
+      expect(fourthIt.start).toEqual({column: 2, line: 13});
+      expect(fourthIt.end).toEqual({column: 4, line: 14});
+
+      const fifthIt = data.itBlocks[4];
+      expect(fifthIt.name).toEqual('5');
+      expect(fifthIt.start).toEqual({column: 2, line: 18});
+      expect(fifthIt.end).toEqual({column: 4, line: 19});
+
+      const sixthIt = data.itBlocks[5];
+      expect(sixthIt.name).toEqual('6');
+      expect(sixthIt.start).toEqual({column: 2, line: 23});
+      expect(sixthIt.end).toEqual({column: 4, line: 24});
+    });
+
+    // These tests act more like linters that we don't raise on 
+    // non-trivial files taken from some Artsy codebases, 
+    // which are MIT licensed.
+
+    it('For a danger test file (which has flow annotations)', () => {
+      const data = parse(`${fixture}/dangerjs/travis-ci.example`);
+      expect(data.itBlocks.length).toEqual(7);
+    });
+
+    it('For a danger flow test file ', () => {
+      const data = parse(`${fixture}/dangerjs/github.example`);
+      expect(data.itBlocks.length).toEqual(2);
+    });
+
+    it('For a metaphysics test file', () => {
+      const data = parse(`${fixture}/metaphysics/partner_show.example`);
+      expect(data.itBlocks.length).toEqual(8);
+    });
   });
 
-  it('For its inside describes', async () => {
-    const data = typescriptParser(`${fixture}/nested_its.example`);
+  describe('File Parsing for expects', () => {
 
-    expect(data.itBlocks.length, 6);
+    it('finds Expects in a danger test file', () => {
+      const data = parse(`${fixture}/dangerjs/travis-ci.example`);
+      expect(data.expects.length).toEqual(7);
+    });
 
-    const firstIt = data.itBlocks[0];
-    expect(firstIt.name).toEqual('1');
-    expect(firstIt.start).toEqual({column: 2, line: 1});
-    expect(firstIt.end).toEqual({column: 4, line: 2});
+    it('finds Expects in a danger flow test file ', () => {
+      const data = parse(`${fixture}/dangerjs/github.example`);
+      expect(data.expects.length).toEqual(2);
+    });
 
-    const secondIt = data.itBlocks[1];
-    expect(secondIt.name).toEqual('2');
-    expect(secondIt.start).toEqual({column: 2, line: 3});
-    expect(secondIt.end).toEqual({column: 4, line: 4});
-
-    const thirdIt = data.itBlocks[2];
-    expect(thirdIt.name).toEqual('3');
-    expect(thirdIt.start).toEqual({column: 2, line: 8});
-    expect(thirdIt.end).toEqual({column: 4, line: 9});
-
-    const fourthIt = data.itBlocks[3];
-    expect(fourthIt.name).toEqual('4');
-    expect(fourthIt.start).toEqual({column: 2, line: 13});
-    expect(fourthIt.end).toEqual({column: 4, line: 14});
-
-    const fifthIt = data.itBlocks[4];
-    expect(fifthIt.name).toEqual('5');
-    expect(fifthIt.start).toEqual({column: 2, line: 18});
-    expect(fifthIt.end).toEqual({column: 4, line: 19});
-
-    const sixthIt = data.itBlocks[5];
-    expect(sixthIt.name).toEqual('6');
-    expect(sixthIt.start).toEqual({column: 2, line: 23});
-    expect(sixthIt.end).toEqual({column: 4, line: 24});
+    it('finds Expects in a metaphysics test file',  () => {
+      const data = parse(`${fixture}/metaphysics/partner_show.example`);
+      // Not currently checking inside function calls
+      expect(data.expects.length).toEqual(0);
+    });
   });
-
-  // These tests act more like linters that we don't raise on non-trivial files
-  // taken from some Artsy codebases, which are MIT licensed.
-
-  it('For a danger test file (which has flow annotations)', () => {
-    const data = typescriptParser(`${fixture}/dangerjs/travis-ci.example`);
-    expect(data.itBlocks.length).toEqual(7);
+} else {
+  it("doesn't fail the tests", () => {
+    expect(true).toBeTruthy();
   });
-
-  it('For a danger flow test file ', () => {
-    const data = typescriptParser(`${fixture}/dangerjs/github.example`);
-    expect(data.itBlocks.length).toEqual(2);
-  });
-
-  it('For a metaphysics test file', () => {
-    const data = typescriptParser(`${fixture}/metaphysics/partner_show.example`);
-    expect(data.itBlocks.length).toEqual(8);
-  });
-});
-
-describe('File Parsing for expects', () => {
-
-  it('finds Expects in a danger test file', () => {
-    const data = typescriptParser(`${fixture}/dangerjs/travis-ci.example`);
-    expect(data.expects.length).toEqual(7);
-  });
-
-  it('finds Expects in a danger flow test file ', () => {
-    const data = typescriptParser(`${fixture}/dangerjs/github.example`);
-    expect(data.expects.length).toEqual(2);
-  });
-
-  it('finds Expects in a metaphysics test file',  () => {
-    const data = typescriptParser(`${fixture}/metaphysics/partner_show.example`);
-    // Not currently checking inside function calls
-    expect(data.expects.length).toEqual(0);
-  });
-});
+}
