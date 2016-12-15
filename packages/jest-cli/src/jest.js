@@ -228,8 +228,7 @@ const runJest = (config, argv, pipe, testWatcher, onComplete) => {
       .then(runResults => {
         if (config.testResultsProcessor) {
           /* $FlowFixMe */
-          const processor = require(config.testResultsProcessor);
-          processor(runResults);
+          runResults = require(config.testResultsProcessor)(runResults);
         }
         if (argv.json) {
           if (argv.outputFile) {
