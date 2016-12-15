@@ -17,11 +17,39 @@ export type Coverage = {|
   sourceText: string,
 |};
 
+type FileCoverageTotal = {|
+  total: number,
+  covered: number,
+  skipped: number,
+  pct?: number,
+|};
+
+type CoverageSummary = {|
+  lines: FileCoverageTotal,
+  statements: FileCoverageTotal,
+  branches: FileCoverageTotal,
+  functions: FileCoverageTotal,
+|};
+
+export type FileCoverage = {|
+  getLineCoverage: () => Object,
+  getUncoveredLines: () => Array<number>,
+  getBranchCoverageByLine: () => Object,
+  toJSON: () => Object,
+  merge: (other: Object) => void,
+  computeSimpleTotals: (property: string) => FileCoverageTotal,
+  computeBranchTotals: () => FileCoverageTotal,
+  resetHits: () => void,
+  toSummary: () => CoverageSummary
+|};
+
 export type CoverageMap = {|
   merge: (data: Object) => void,
-  getCoverageSummary: () => Object,
+  getCoverageSummary: () => FileCoverage,
   data: Object,
   addFileCoverage: (fileCoverage: Object) => void,
+  files: () => Array<string>,
+  fileCoverageFor: (file: string) => FileCoverage,
 |};
 
 export type Error = {|
@@ -111,7 +139,6 @@ export type CodeCoverageFormatter = (
   coverage: ?Coverage,
   reporter?: CodeCoverageReporter,
 ) => ?Object;
-
 
 export type SnapshotSummary = {|
   added: number,

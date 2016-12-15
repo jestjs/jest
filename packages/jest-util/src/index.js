@@ -13,7 +13,6 @@
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
-
 const {
   formatExecError,
   formatResultsErrors,

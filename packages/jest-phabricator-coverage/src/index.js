@@ -4,13 +4,26 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ * @flow
  */
 
 'use strict';
 
-function formatResults(testResult, coverageMap) {
+import type {
+  AggregatedResult,
+  CoverageMap,
+  TestResult
+} from 'types/TestResult';
+
+type PhabricatorReport = {
+  phabricatorReport: Array<Object>
+};
+
+function formatResults(
+  testResult: TestResult, coverageMap?: CoverageMap
+): Object {
   const file = testResult.testFilePath;
-  const output = {
+  const output: Object = {
     coverage: {},
     message: '',
     name: file,
@@ -27,13 +40,17 @@ function formatResults(testResult, coverageMap) {
     output.status = allTestsPassed ? 'passed' : 'failed';
     output.startTime = testResult.perfStats.start;
     output.endTime = testResult.perfStats.end;
-    output.coverage = summarize(coverageMap);
+    if (coverageMap) {
+      output.coverage = summarize(coverageMap);
+    } else {
+      output.coverage = Object.create(null);
+    }
   }
 
   return output;
 }
 
-function summarize(coverageMap) {
+function summarize(coverageMap: CoverageMap) {
   const summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
@@ -58,11 +75,14 @@ function summarize(coverageMap) {
   return summaries;
 }
 
-module.exports = function(results) {
+module.exports = function(results: AggregatedResult): PhabricatorReport {
+
   const report = results.testResults.map(
     test => formatResults(test, results.coverageMap)
   );
 
-  delete results.coverageMap;
-  results.phabricatorReport = report;
+  return Object.assign({}, {
+    phabricatorReport: report
+  }, results, {coverageMap: null});
+
 };
