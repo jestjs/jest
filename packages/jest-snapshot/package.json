@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "17.0.3",
+  "version": "18.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,12 +8,12 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-diff": "^17.0.3",
+    "jest-diff": "^18.0.0",
     "jest-file-exists": "^17.0.0",
-    "jest-matcher-utils": "^17.0.3",
-    "jest-util": "^17.0.2",
+    "jest-matcher-utils": "^18.0.0",
+    "jest-util": "^18.0.0",
     "natural-compare": "^1.4.0",
-    "pretty-format": "~17.0.3"
+    "pretty-format": "^18.0.0"
   },
   "scripts": {
     "test": "../jest-cli/bin/jest.js"

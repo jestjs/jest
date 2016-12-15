@@ -222,6 +222,13 @@ h1, h2, h3, h4 {
   width: 100%;
 }
 
+iframe.jest-repl {
+  display: block;
+  margin: 0 auto 10px;
+  min-height: 620px;
+  width: 90%;
+}
+
 .center {
   display: block;
   text-align: center;
@@ -309,7 +316,6 @@ h1, h2, h3, h4 {
 }
 .mainContainer .wrapper ol li, .mainContainer .wrapper ul li {
   padding-bottom: 4px;
-  padding-left: 6px;
 }
 .mainContainer .wrapper strong {
   font-weight: bold;
