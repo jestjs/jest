@@ -33,6 +33,7 @@ const readConfig = require('jest-config').readConfig;
 const sane = require('sane');
 const which = require('which');
 const TestWatcher = require('./TestWatcher');
+const {createDirectory} = require('jest-util');
 
 const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const VERSION = require('../package.json').version;
@@ -313,6 +314,19 @@ const runCLI = (
         let testWatcher;
         let timer;
         let displayHelp = true;
+        const maxWorkers = getMaxWorkers(argv);
+        const localConsole = new Console(pipe,
+           pipe);
+         createDirectory(config.cacheDirectory);
+         const instance = Runtime.createHasteMap(config, {
+           console: localConsole,
+           maxWorkers,
+           resetCache: !config.cache,
+           watch: config.watch
+         });
+         instance.build().then(hasteMap => {
+           instance.on('change', startRun)
+         })
 
         const writeCurrentPattern = () => {
           clearLine(pipe);
@@ -460,8 +474,8 @@ const runCLI = (
           });
           watcher.on('all', onFileChange);
         };
-        getWatcher(config, root, callback, {useWatchman: true});
-        startRun();
+        // getWatcher(config, root, callback, {useWatchman: true});
+        // startRun();
         return Promise.resolve();
       } else {
         preRunMessage.print(pipe);
