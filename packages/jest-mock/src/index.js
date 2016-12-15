@@ -188,10 +188,12 @@ class ModuleMocker {
   }
 
   _ensureMock(f: Mock): MockFunctionState {
-    if (!this._mockRegistry.has(f)) {
-      this._mockRegistry.set(f, this._defaultMockState());
+    let state = this._mockRegistry.get(f);
+    if (!state) {
+      state = this._defaultMockState();
+      this._mockRegistry.set(f, state);
     }
-    return this._mockRegistry.get(f);
+    return state;
   }
 
   _defaultMockState(): MockFunctionState {
