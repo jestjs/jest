@@ -8,15 +8,15 @@
 
 'use strict';
 
-const {parse} = require('../TypeScriptParser');
+const {typescriptParser} = require('../../parsers/TypeScriptParser');
 
 const path = require('path');
-const fixtures = path.resolve(__dirname, 'fixtures');
+const fixture = path.resolve(__dirname, '../fixtures');
 
 describe('File Parsing for it blocks', () => {
 
   it('For the simplest it cases', async () => {
-    const data = parse(`${fixtures}/global_its.example`);
+    const data = typescriptParser(`${fixture}/global_its.example`);
 
     expect(data.itBlocks.length, 7);
 
@@ -57,7 +57,7 @@ describe('File Parsing for it blocks', () => {
   });
 
   it('For its inside describes', async () => {
-    const data = parse(`${fixtures}/nested_its.example`);
+    const data = typescriptParser(`${fixture}/nested_its.example`);
 
     expect(data.itBlocks.length, 6);
 
@@ -95,36 +95,36 @@ describe('File Parsing for it blocks', () => {
   // These tests act more like linters that we don't raise on non-trivial files
   // taken from some Artsy codebases, which are MIT licensed.
 
-  it('For a danger test file (which has flow annotations)', async () => {
-    const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
+  it('For a danger test file (which has flow annotations)', () => {
+    const data = typescriptParser(`${fixture}/dangerjs/travis-ci.example`);
     expect(data.itBlocks.length).toEqual(7);
   });
 
-  it('For a danger flow test file ', async () => {
-    const data = parse(`${fixtures}/dangerjs/github.example`);
+  it('For a danger flow test file ', () => {
+    const data = typescriptParser(`${fixture}/dangerjs/github.example`);
     expect(data.itBlocks.length).toEqual(2);
   });
 
-  it('For a metaphysics test file', async () => {
-    const data = parse(`${fixtures}/metaphysics/partner_show.example`);
+  it('For a metaphysics test file', () => {
+    const data = typescriptParser(`${fixture}/metaphysics/partner_show.example`);
     expect(data.itBlocks.length).toEqual(8);
   });
 });
 
 describe('File Parsing for expects', () => {
 
-  it('finds Expects in a danger test file', async () => {
-    const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
+  it('finds Expects in a danger test file', () => {
+    const data = typescriptParser(`${fixture}/dangerjs/travis-ci.example`);
     expect(data.expects.length).toEqual(7);
   });
 
-  it('finds Expects in a danger flow test file ', async () => {
-    const data = parse(`${fixtures}/dangerjs/github.example`);
+  it('finds Expects in a danger flow test file ', () => {
+    const data = typescriptParser(`${fixture}/dangerjs/github.example`);
     expect(data.expects.length).toEqual(2);
   });
 
-  it('finds Expects in a metaphysics test file', async () => {
-    const data = parse(`${fixtures}/metaphysics/partner_show.example`);
+  it('finds Expects in a metaphysics test file',  () => {
+    const data = typescriptParser(`${fixture}/metaphysics/partner_show.example`);
     // Not currently checking inside function calls
     expect(data.expects.length).toEqual(0);
   });
