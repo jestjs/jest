@@ -2,6 +2,9 @@
 
 ## jest 18.0.0
 
+See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
+
+* The testResultsProcessor function is now required to return the modified results.
 * Removed `pit` and `mockImpl`. Use `it` or `mockImplementation` instead.
 * Fixed re-running tests when `--bail` is used together with `--watch`.
 * `pretty-format` is now merged into Jest.
