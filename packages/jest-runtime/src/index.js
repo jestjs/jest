@@ -43,6 +43,7 @@ type HasteMapOptions = {|
   console?: Console,
   maxWorkers: number,
   resetCache: boolean,
+  watch?: boolean,
 |};
 
 type InternalModuleOptions = {|
@@ -171,6 +172,7 @@ class Runtime {
     options: {
       console?: Console,
       maxWorkers: number,
+      watch?: boolean,
     },
   ): Promise<HasteContext> {
     createDirectory(config.cacheDirectory);
@@ -178,6 +180,7 @@ class Runtime {
       console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
+      watch: options.watch
     });
     return instance.build().then(
       hasteMap => ({
@@ -212,6 +215,7 @@ class Runtime {
       retainAllFiles: false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
+      watch: (options && options.watch),
     });
   }
 
