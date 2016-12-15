@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "17.0.3",
+  "version": "18.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,7 +10,7 @@
   "dependencies": {
     "browser-resolve": "^1.11.2",
     "jest-file-exists": "^17.0.0",
-    "jest-haste-map": "^17.0.3",
+    "jest-haste-map": "^18.0.0",
     "resolve": "^1.1.6"
   },
   "scripts": {

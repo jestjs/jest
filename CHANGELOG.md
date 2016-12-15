@@ -1,5 +1,55 @@
 ## master
 
+## jest 18.0.0
+
+See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html
+
+* The testResultsProcessor function is now required to return the modified results.
+* Removed `pit` and `mockImpl`. Use `it` or `mockImplementation` instead.
+* Fixed re-running tests when `--bail` is used together with `--watch`.
+* `pretty-format` is now merged into Jest.
+* `require('v8')` now works properly in a test context.
+* Jest now clears the entire scrollback in watch mode.
+* Added `expect.any`, `expect.anything`, `expect.objectContaining`, `expect.arrayContaining`, `expect.stringMatching`.
+* Properly resolve `snapshotSerializers`, `setupFiles`, `transform`, `testRunner` and `testResultsProcessor` instead of using `path.resolve`.
+* `--testResultsProcessor` is now exposed through the cli.
+* Renamed `--jsonOutputFile` to `--outputFile`.
+* Added `jest-editor-support` for vscode and Nuclide integration.
+* Fixed `test.concurrent` unhandled promise rejections.
+* The Jest website is now auto-deployed when merging into master.
+* Updated `testRegex` to include `test.js` and `spec.js` files.
+* Fixes for `babel-plugin-jest-hoist` when using `jest.mock` with three arguments.
+* The `JSON` global in `jest-environment-node` now comes from the vm context instead of the parent context.
+* Jest does not print stack traces from babel any longer.
+* Fake timers are reset when `FakeTimers.useTimers()` is called.
+* Usage of Jest in watch mode can be hidden through `JEST_HIDE_USAGE`.
+* Added `expect.assertions(number)` which will ensure that a specified amount of assertions is made in one test.
+* Added `.toMatchSnapshot(?string)` feature to give snapshots a name.
+* Escape regex in snapshots.
+* `jest-react-native` was deprecated and now forwards `react-native`.
+* Added `.toMatchObject` matcher.
+* Further improve printing of large objects.
+* Fixed `NaN% Failed` in the OS notification when using `--notify`.
+* The first test run without cached timings will now use separate processes instead of running in band.
+* Added `.toHaveProperty` matcher.
+* Fixed `Map`/`Set` comparisons.
+* `test.concurrent` now works with `--testNamePattern`.
+
+## jest 17.0.3
+
+* Improved file-watching feature in jest-haste-map.
+* Added `.toHaveLength` matcher.
+* Improved `.toContain` matcher.
+
+## jest 17.0.2
+
+* Fixed performance regression in module resolution.
+
+## jest 17.0.1
+
+* Fixed pretty printing of big objects.
+* Fixed resolution of `.native.js` files in react-native projects.
+
 ## jest 17.0.0
 
 * Added `expect.extend`.

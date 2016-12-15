@@ -5,15 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
 'use strict';
 
-describe('pit alias', () => {
-  pit('will run', () => {
-    return Promise.resolve();
-  });
-
-  pit('will run and fail', () => {
-    return Promise.reject();
-  });
-});
+// This test shouldn't run
+test('stub', () => expect(1).toBe(2));

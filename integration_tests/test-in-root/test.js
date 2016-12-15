@@ -5,10 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
 'use strict';
 
-module.exports = function(results) {
-  results.processed = true;
-  return results;
-};
+// This test should run
+test('stub', () => expect(1).toBe(1));

@@ -184,40 +184,44 @@ const transformCache: WeakMap<Config, Map<Path, ?Transformer>> =
   new WeakMap();
 
 const getTransformer = (filename: string, config: Config): ?Transformer => {
-  if (
-    transformCache.has(config) &&
-    transformCache.get(config).get(filename)
-  ) {
-    return transformCache.get(config).get(filename);
-  } else {
-    let transform;
-    if (!config.transform || !config.transform.length) {
-      transform = null;
-    } else {
-      let transformPath = null;
-      for (let i = 0; i < config.transform.length; i++) {
-        if (new RegExp(config.transform[i][0]).test(filename)) {
-          transformPath = config.transform[i][1];
-          break;
-        }
-      }
-      if (transformPath) {
-        // $FlowFixMe
-        transform = require(transformPath);
-        if (typeof transform.process !== 'function') {
-          throw new TypeError(
-            'Jest: a transform must export a `process` function.',
-          );
-        }
-      }
-    }
-    if (!transformCache.has(config)) {
-      transformCache.set(config, new Map());
-    }
+  const transformData = transformCache.get(config);
+  const transformFileData = transformData ? transformData.get(filename) : null;
 
-    transformCache.get(config).set(filename, transform);
-    return transform;
+  if (transformFileData) {
+    return transformFileData;
   }
+
+  let transform;
+  if (!config.transform || !config.transform.length) {
+    transform = null;
+  } else {
+    let transformPath = null;
+    for (let i = 0; i < config.transform.length; i++) {
+      if (new RegExp(config.transform[i][0]).test(filename)) {
+        transformPath = config.transform[i][1];
+        break;
+      }
+    }
+    if (transformPath) {
+      // $FlowFixMe
+      transform = require(transformPath);
+      if (typeof transform.process !== 'function') {
+        throw new TypeError(
+          'Jest: a transform must export a `process` function.',
+        );
+      }
+    }
+  }
+  if (!transformCache.has(config)) {
+    transformCache.set(config, new Map());
+  }
+
+  const cache = transformCache.get(config);
+  // This is definitely set at this point but Flow requires this check.
+  if (cache) {
+    cache.set(filename, transform);
+  }
+  return transform;
 };
 
 const stripShebang = content => {
@@ -302,12 +306,11 @@ const transformAndBuildScript = (
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
   let wrappedResult;
+  const willTransform = !isInternalModule
+    && (shouldTransform(filename, config) || instrument);
 
   try {
-    if (
-      !isInternalModule &&
-      (shouldTransform(filename, config) || instrument)
-    ) {
+    if (willTransform) {
       wrappedResult =
         wrap(transformSource(filename, config, content, instrument));
     } else {
@@ -319,6 +322,17 @@ const transformAndBuildScript = (
     if (e.codeFrame) {
       e.stack = e.codeFrame;
     }
+
+    if (config.logTransformErrors) {
+      console.error(
+        `FILENAME: ${filename}\n` +
+        `TRANSFORM: ${willTransform.toString()}\n` +
+        `INSTRUMENT: ${instrument.toString()}\n` +
+        `SOURCE:\n` +
+        String(wrappedResult),
+      );
+    }
+
     throw e;
   }
 };

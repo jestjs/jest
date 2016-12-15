@@ -12,7 +12,10 @@ Painless JavaScript Testing
 ## Getting Started
 
 <generated_getting_started_start />
-Install Jest with `npm` by running `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
+Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!
+<iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
+
+Install Jest with `yarn` or `npm` by running `yarn add -D jest` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
 module.exports = (a, b) => a + b;
@@ -35,7 +38,7 @@ Add the following to your `package.json`:
 }
 ```
 
-Run `npm test` and Jest will print this message: `PASS __tests__/sum-test.js`. You just successfully wrote your first test using Jest!
+Run `yarn test` and Jest will print this message: `PASS __tests__/sum-test.js`. You just successfully wrote your first test using Jest!
 
 **You are ready to use Jest! Here are some more resources to help you get started:**
 
@@ -46,9 +49,17 @@ Run `npm test` and Jest will print this message: `PASS __tests__/sum-test.js`. Y
 * Introductory guide at [Plotly Academy](https://academy.plot.ly/react/6-testing) that walks you through testing a React and Redux application.
 * The [React](https://github.com/facebook/react/tree/master/src/renderers/shared/stack/reconciler/__tests__), [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and [react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__) repositories have excellent examples of tests written by Facebook engineers.
 
+**...or watch a video to get started with Jest:**
+<div class="video">
+  <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
+</div>
+<div class="video-shoutout">
+  <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a> by <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a> hosted by <a href="https://egghead.io">Egghead</a>.
+</div>
+
 ### Babel Integration
 
-If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled: `npm install --save-dev babel-jest babel-polyfill`.
+If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled: `yarn add -D babel-jest babel-polyfill`.
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES2015 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 
@@ -66,7 +77,7 @@ It will not use `development` section like Babel does by default when no `NODE_E
 
 ### React, React Native and Snapshot Testing
 
-Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases. You can use React's test renderer (`npm install --save-dev react-test-renderer`) to capture snapshots with Jest's snapshot feature and the `toMatchSnapshot` matcher:
+Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases. You can use React's test renderer (`yarn add -D react-test-renderer`) to capture snapshots with Jest's snapshot feature and the `toMatchSnapshot` matcher:
 
 ```js
 import renderer from 'react-test-renderer';
