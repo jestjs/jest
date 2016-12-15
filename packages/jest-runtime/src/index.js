@@ -27,6 +27,7 @@ const transform = require('./transform');
 const {
   createDirectory,
   replacePathSepForRegex,
+  escapeStrForRegex,
 } = require('jest-util');
 
 type Module = {|
@@ -195,7 +196,9 @@ class Runtime {
     options?: HasteMapOptions,
   ): HasteMap {
     const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
+      [escapeStrForRegex(config.cacheDirectory)]
+        .concat(config.modulePathIgnorePatterns)
+        .join('|'),
     );
 
     return new HasteMap({
