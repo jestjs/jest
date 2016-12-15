@@ -19,6 +19,7 @@ const {
   formatResultsErrors,
   formatStackTrace,
 } = require('./messages');
+const formatTestResults = require('./formatTestResults');
 const clearLine = require('./clearLine');
 const fileExists = require('jest-file-exists');
 const installCommonGlobals = require('./installCommonGlobals');
@@ -97,6 +98,7 @@ module.exports = {
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
+  formatTestResults,
   getPackageRoot,
   installCommonGlobals,
   replacePathSepForRegex,
