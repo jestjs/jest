@@ -34,6 +34,9 @@ const sane = require('sane');
 const which = require('which');
 const TestWatcher = require('./TestWatcher');
 const {createDirectory} = require('jest-util');
+const runJest = require('./runjest');
+const getMaxWorkers = require('./lib/getMaxWorkers');
+const setWatchMode = require('./lib/setWatchMode');
 
 const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const VERSION = require('../package.json').version;
@@ -55,68 +58,6 @@ const KEYS = {
   Q: '71',
   QUESTION_MARK: '3f',
   U: '75',
-};
-
-const getMaxWorkers = argv => {
-  if (argv.runInBand) {
-    return 1;
-  } else if (argv.maxWorkers) {
-    return parseInt(argv.maxWorkers, 10);
-  } else {
-    const cpus = os.cpus().length;
-    return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
-  }
-};
-
-const buildTestPathPatternInfo = (argv: Object): PatternInfo => {
-  const defaultPattern = {
-    input: '',
-    shouldTreatInputAsPattern: false,
-    testPathPattern: '',
-  };
-  const validatePattern = patternInfo => {
-    const {testPathPattern} = patternInfo;
-    if (testPathPattern) {
-      try {
-        /* eslint-disable no-new */
-        new RegExp(testPathPattern);
-        /* eslint-enable no-new */
-      } catch (error) {
-        clearLine(process.stdout);
-        console.log(chalk.red(
-          'Invalid testPattern ' + String(testPathPattern) + ' supplied. ' +
-          'Running all tests instead.',
-        ));
-        return defaultPattern;
-      }
-    }
-    return patternInfo;
-  };
-  if (argv.onlyChanged) {
-    return {
-      input: '',
-      lastCommit: argv.lastCommit,
-      onlyChanged: true,
-      watch: argv.watch,
-    };
-  }
-  if (argv.testPathPattern) {
-    return validatePattern({
-      input: argv.testPathPattern,
-      shouldTreatInputAsPattern: true,
-      testPathPattern: argv.testPathPattern,
-    });
-  }
-  if (argv._ && argv._.length) {
-    return validatePattern({
-      findRelatedTests: argv.findRelatedTests,
-      input: argv._.join(' '),
-      paths: argv._,
-      shouldTreatInputAsPattern: false,
-      testPathPattern: argv._.join('|'),
-    });
-  }
-  return defaultPattern;
 };
 
 const getTestSummary = (
@@ -181,104 +122,30 @@ const usage = (
   return messages.filter(message => !!message).join(delimiter);
 };
 
-const runJest = (config, argv, pipe, testWatcher, onComplete) => {
-  const maxWorkers = getMaxWorkers(argv);
-  const localConsole = new Console(pipe, pipe);
-  let patternInfo = buildTestPathPatternInfo(argv);
-  return Runtime.createHasteContext(config, {
-    console: localConsole,
-    maxWorkers,
-  }).then(hasteMap => {
-    const source = new SearchSource(hasteMap, config);
-    return source.getTestPaths(patternInfo)
-      .then(data => {
-        if (!data.paths.length) {
-          if (patternInfo.onlyChanged && data.noSCM) {
-            if (config.watch) {
-              // Run all the tests
-              setWatchMode(argv, 'watchAll', {
-                noSCM: true,
-              });
-              patternInfo = buildTestPathPatternInfo(argv);
-              return source.getTestPaths(patternInfo);
-            } else {
-              localConsole.log(
-                'Jest can only find uncommitted changed files in a git or hg ' +
-                'repository. If you make your project a git or hg repository ' +
-                '(`git init` or `hg init`), Jest will be able to only ' +
-                'run tests related to files changed since the last commit.',
-              );
-            }
-          }
-
-          localConsole.log(
-            source.getNoTestsFoundMessage(patternInfo, config, data),
-          );
-        }
-        return data;
-      }).then(data => {
-        if (data.paths.length === 1 && config.verbose !== false) {
-          config = Object.assign({}, config, {verbose: true});
-        }
-
-        return new TestRunner(
-          hasteMap,
-          config,
-          {
-            getTestSummary: () => getTestSummary(argv, patternInfo),
-            maxWorkers,
-          },
-        ).runTests(data.paths, testWatcher);
-      })
-      .then(runResults => {
-        if (config.testResultsProcessor) {
-          /* $FlowFixMe */
-          runResults = require(config.testResultsProcessor)(runResults);
-        }
-        if (argv.json) {
-          if (argv.outputFile) {
-            const outputFile = path.resolve(process.cwd(), argv.outputFile);
-
-            fs.writeFileSync(
-              outputFile,
-              JSON.stringify(formatTestResults(runResults)),
-            );
-            process.stdout.write(
-              `Test results written to: ` +
-              `${path.relative(process.cwd(), outputFile)}\n`,
-            );
-          } else {
-            process.stdout.write(
-              JSON.stringify(formatTestResults(runResults)),
-            );
-          }
-        }
-        return onComplete && onComplete(runResults);
-      }).catch(error => {
-        throw error;
-      });
+const getHasteMapAndHasteContext = (config, options) => {
+  createDirectory(config.cacheDirectory);
+  const jestHasteMap = Runtime.createHasteMap(config, {
+    console: options.console,
+    maxWorkers: options.maxWorkers,
+    resetCache: !config.cache,
+    watch: options.watch
   });
-};
 
-const setWatchMode = (argv, mode: 'watch' | 'watchAll', options) => {
-  if (mode === 'watch') {
-    argv.watch = true;
-    argv.watchAll = false;
-  } else if (mode === 'watchAll') {
-    argv.watch = false;
-    argv.watchAll = true;
-  }
-
-  // Reset before setting these to the new values
-  argv._ = (options && options.pattern) || '';
-  argv.onlyChanged = false;
-  argv.onlyChanged =
-    buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
-
-  if (options && options.noSCM) {
-    argv.noSCM = true;
-  }
-};
+  return jestHasteMap.build().then(
+    hasteMap => ({
+      hasteFS: hasteMap.hasteFS,
+      resolver: Runtime.createResolver(config, hasteMap.moduleMap),
+    }),
+    error => {
+      throw error;
+    },
+  )
+  .then(hasteMap => ({
+    config,
+    hasteMap,
+    jestHasteMap,
+  }));
+}
 
 const runCLI = (
   argv: Object,
@@ -294,7 +161,14 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then(config => {
+    .then(config => getHasteMapAndHasteContext(config,  {
+      console: new Console(pipe, pipe),
+      maxWorkers: getMaxWorkers(argv),
+      resetCache: !config.cache,
+      watch: config.watch,
+    }))
+    .then(({config, jestHasteMap, hasteMap}) => {
+      let hasteMapFS = hasteMap;
       if (argv.debug) {
         /* $FlowFixMe */
         const testFramework = require(config.testRunner);
@@ -314,19 +188,11 @@ const runCLI = (
         let testWatcher;
         let timer;
         let displayHelp = true;
-        const maxWorkers = getMaxWorkers(argv);
-        const localConsole = new Console(pipe,
-           pipe);
-         createDirectory(config.cacheDirectory);
-         const instance = Runtime.createHasteMap(config, {
-           console: localConsole,
-           maxWorkers,
-           resetCache: !config.cache,
-           watch: config.watch
-         });
-         instance.build().then(hasteMap => {
-           instance.on('change', startRun)
-         })
+
+        jestHasteMap.on('change', ({hasteFS}) => {
+          // hasteMapFS = hasteFS;
+          startRun();
+        });
 
         const writeCurrentPattern = () => {
           clearLine(pipe);
@@ -343,6 +209,7 @@ const runCLI = (
           preRunMessage.print(pipe);
           isRunning = true;
           return runJest(
+            hasteMapFS,
             Object.freeze(Object.assign({}, config, overrideConfig)),
             argv,
             pipe,
@@ -475,12 +342,13 @@ const runCLI = (
           watcher.on('all', onFileChange);
         };
         // getWatcher(config, root, callback, {useWatchman: true});
-        // startRun();
+        startRun();
         return Promise.resolve();
       } else {
         preRunMessage.print(pipe);
         const testWatcher = new TestWatcher({isWatchMode: false});
-        return runJest(config, argv, pipe, testWatcher, onComplete);
+        return runJest(hasteMap, config, argv, pipe, testWatcher,
+          onComplete);
       }
     })
     .catch(error => {
