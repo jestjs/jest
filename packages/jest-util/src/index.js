@@ -73,7 +73,7 @@ const getPackageRoot = () => {
 };
 
 const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
-  const yargsSpecialOptions = ['$0', '_', 'help'];
+  const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce((acc, option) => (
     acc
       .add(option)
