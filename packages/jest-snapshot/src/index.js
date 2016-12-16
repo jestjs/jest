@@ -109,7 +109,17 @@ const toMatchSnapshot = function(received: any, testName?: string) {
       () => matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
       report();
 
-    return {message, pass: false, report};
+    // Passing the the actual and expected objects so that a custom reporter
+    // could access them, for example in order to display a custom visual diff,
+    // or create a different error message
+    return {
+      actual: actualString,
+      expected: expectedString,
+      message,
+      name: 'toMatchSnapshot',
+      pass: false,
+      report,
+    };
   }
 };
 

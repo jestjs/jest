@@ -32,6 +32,8 @@ const addSuppressedErrors = result => {
 
     result.failedExpectations = suppressedErrors.map(error => ({
       actual: '',
+      // passing error for custom test reporters
+      error,
       expected: '',
       message: error.message,
       passed: false,
