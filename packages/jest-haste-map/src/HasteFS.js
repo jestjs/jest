@@ -17,7 +17,7 @@ import type {
 
 const H: HType = require('./constants');
 
-const multimatch = require('multimatch');
+const micromatch = require('micromatch');
 const path = require('path');
 
 class HasteFS {
@@ -64,7 +64,7 @@ class HasteFS {
     const files = new Set();
     for (const file in this._files) {
       const filePath = root ? path.relative(root, file) : file;
-      if (multimatch([filePath], globs).length) {
+      if (micromatch([filePath], globs).length) {
         files.add(file);
       }
     }

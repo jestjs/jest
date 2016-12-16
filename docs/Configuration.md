@@ -111,7 +111,7 @@ Indicates whether the coverage information should be collected while executing t
 ### `collectCoverageFrom` [array]
 (default: `undefined`)
 
-An array of [glob patterns](https://github.com/sindresorhus/multimatch)
+An array of [glob patterns](https://github.com/jonschlinkert/micromatch)
 indicating a set of files for which coverage information should be collected. If a file matches
 the specified glob pattern, coverage information will be collected for it even if no tests exist for
 this file and it's never required in the test suite.

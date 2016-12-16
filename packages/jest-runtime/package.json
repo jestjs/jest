@@ -21,7 +21,7 @@
     "jest-snapshot": "^18.0.0",
     "jest-util": "^18.0.0",
     "json-stable-stringify": "^1.0.0",
-    "multimatch": "^2.1.0",
+    "micromatch": "^2.3.11",
     "yargs": "^6.3.0"
   },
   "bin": {
