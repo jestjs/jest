@@ -9,7 +9,7 @@
     "chalk": "^1.1.1",
     "graceful-fs": "^4.1.6",
     "is-ci": "^1.0.9",
-    "istanbul-api": "^1.0.0-alpha.14",
+    "istanbul-api": "^1.1.0-alpha.1",
     "istanbul-lib-coverage": "^1.0.0",
     "istanbul-lib-instrument": "^1.1.1",
     "jest-changed-files": "^17.0.2",
