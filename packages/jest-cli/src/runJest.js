@@ -10,6 +10,7 @@
 'use strict';
 
 import type {PatternInfo} from './SearchSource';
+import type {HasteContext} from 'types/HasteMap';
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
@@ -49,12 +50,19 @@ const getTestSummary = (
   );
 };
 
-const runJest = (hasteMap, config, argv, pipe, testWatcher, onComplete) => {
+const runJest = (
+  hasteContext: HasteContext,
+  config: any,
+  argv: Object,
+  pipe: stream$Writable | tty$WriteStream,
+  testWatcher: any,
+  onComplete: (testResults: any) => void,
+) => {
   const maxWorkers = getMaxWorkers(argv);
   const localConsole = new Console(pipe, pipe);
   let patternInfo = buildTestPathPatternInfo(argv);
   return Promise.resolve().then(() => {
-    const source = new SearchSource(hasteMap, config);
+    const source = new SearchSource(hasteContext, config);
     return source.getTestPaths(patternInfo)
       .then(data => {
         if (!data.paths.length) {
@@ -87,7 +95,7 @@ const runJest = (hasteMap, config, argv, pipe, testWatcher, onComplete) => {
         }
 
         return new TestRunner(
-          hasteMap,
+          hasteContext,
           config,
           {
             getTestSummary: () => getTestSummary(argv, patternInfo),

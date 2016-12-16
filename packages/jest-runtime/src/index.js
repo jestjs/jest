@@ -180,7 +180,7 @@ class Runtime {
       console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
-      watch: options.watch
+      watch: options.watch,
     });
     return instance.build().then(
       hasteMap => ({

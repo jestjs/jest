@@ -9,6 +9,8 @@
  */
 'use strict';
 
+import type {HasteContext} from 'types/HasteMap';
+
 const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
@@ -20,6 +22,7 @@ const preRunMessage = require('./preRunMessage');
 const TestWatcher = require('./TestWatcher');
 const runJest = require('./runjest');
 const setWatchMode = require('./lib/setWatchMode');
+const HasteMap = require('jest-haste-map');
 
 const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const KEYS = {
@@ -41,7 +44,13 @@ const KEYS = {
 };
 
 
-const watch = (config, pipe, argv, jestHasteMap, hasteMapFS) => {
+const watch = (
+  config: any,
+  pipe: stream$Writable | tty$WriteStream,
+  argv: Object,
+  jestHasteMap: HasteMap,
+  hasteContext: HasteContext,
+) => {
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
     pattern: argv._,
   });
@@ -54,7 +63,7 @@ const watch = (config, pipe, argv, jestHasteMap, hasteMapFS) => {
   let displayHelp = true;
 
   jestHasteMap.on('change', ({hasteFS}) => {
-    // hasteMapFS = hasteFS;
+    // hasteContext = hasteFS;
     startRun();
   });
 
@@ -73,7 +82,7 @@ const watch = (config, pipe, argv, jestHasteMap, hasteMapFS) => {
     preRunMessage.print(pipe);
     isRunning = true;
     return runJest(
-      hasteMapFS,
+      hasteContext,
       Object.freeze(Object.assign({}, config, overrideConfig)),
       argv,
       pipe,
