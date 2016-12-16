@@ -319,6 +319,11 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'unmockedModulePathPatterns':
         value = normalizeUnmockedModulePathPatterns(config, key);
         break;
+
+      case 'testRegex':
+        value = config[key];
+        break;
+
       case 'automock':
       case 'bail':
       case 'browser':
@@ -345,8 +350,8 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
+      case 'testGlob':
       case 'testEnvironment':
-      case 'testRegex':
       case 'testReporter':
       case 'testRunner':
       case 'testURL':
@@ -369,6 +374,11 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     if (polyfillPath) {
       newConfig.setupFiles.unshift(polyfillPath);
     }
+  }
+
+  if (config.testRegex && (!config.testGlob || config.testGlob.length === 0)) {
+    // Prevent default glob conflicting with any explicit `testRegex` value
+    newConfig.testGlob = [];
   }
 
   // If argv.json is set, coverageReporters shouldn't print a text report.

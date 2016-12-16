@@ -311,6 +311,17 @@ The test environment that will be used for testing. The default environment in J
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
 
+### `testGlob` [array<string>]
+(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)' ]`)
+
+The glob patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files
+inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec`
+(e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
+or `spec.js`.
+
+See the [micromatch](https://github.com/jonschlinkert/micromatch) package
+for details of the patterns you can specify.
+
 ### `testPathDirs` [array<string>]
 Default: `["<rootDir>"]`
 

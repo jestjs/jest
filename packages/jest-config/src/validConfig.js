@@ -65,6 +65,7 @@ module.exports = ({
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
+  testGlob: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],

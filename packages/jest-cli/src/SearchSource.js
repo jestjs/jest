@@ -12,8 +12,10 @@
 
 import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
-import type {Path} from 'types/Config';
+import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'jest-resolve';
+
+const mm = require('micromatch');
 
 const DependencyResolver = require('jest-resolve-dependencies');
 
@@ -26,6 +28,7 @@ const {
 } = require('jest-util');
 
 type SearchSourceConfig = {
+  testGlob: Array<Glob>,
   testPathDirs: Array<Path>,
   testRegex: string,
   testPathIgnorePatterns: Array<string>,
@@ -69,14 +72,33 @@ const pluralize = (
   ending: string,
 ) => `${count} ${word}${count === 1 ? '' : ending}`;
 
+const globsToMatcher = (globs: ?Array<Glob>) => {
+  if (globs == null || globs.length === 0) {
+    return () => true;
+  }
+
+  const matchers = globs.map(each => mm.matcher(each));
+
+  return (path: Path) => matchers.some(each => each(path));
+};
+
+const regexToMatcher = (testRegex: string) => {
+  if (!testRegex.length) {
+    return () => true;
+  }
+
+  const regex = new RegExp(pathToRegex(testRegex));
+  return (path: Path) => regex.test(path);
+};
+
 class SearchSource {
   _hasteContext: HasteContext;
   _config: SearchSourceConfig;
   _options: ResolveModuleConfig;
   _testPathDirPattern: RegExp;
-  _testRegex: RegExp;
   _testIgnorePattern: ?RegExp;
   _testPathCases: {
+    testGlob: (path: Path) => boolean,
     testPathDirs: (path: Path) => boolean,
     testRegex: (path: Path) => boolean,
     testPathIgnorePatterns: (path: Path) => boolean,
@@ -98,18 +120,18 @@ class SearchSource {
         dir => escapePathForRegex(dir),
       ).join('|'));
 
-    this._testRegex = new RegExp(pathToRegex(config.testRegex));
     const ignorePattern = config.testPathIgnorePatterns;
     this._testIgnorePattern =
       ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
 
     this._testPathCases = {
+      testGlob: globsToMatcher(config.testGlob),
       testPathDirs: path => this._testPathDirPattern.test(path),
       testPathIgnorePatterns: path => (
         !this._testIgnorePattern ||
         !this._testIgnorePattern.test(path)
       ),
-      testRegex: path => this._testRegex.test(path),
+      testRegex: regexToMatcher(config.testRegex),
     };
   }
 

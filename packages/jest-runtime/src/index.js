@@ -27,7 +27,6 @@ const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
   createDirectory,
-  replacePathSepForRegex,
 } = require('jest-util');
 
 type Module = {|
@@ -90,7 +89,6 @@ class Runtime {
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _testRegex: RegExp;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
@@ -115,7 +113,6 @@ class Runtime {
     this._mocksPattern =
       config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
-    this._testRegex = new RegExp(replacePathSepForRegex(config.testRegex));
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);

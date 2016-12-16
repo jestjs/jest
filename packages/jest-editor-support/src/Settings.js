@@ -27,8 +27,11 @@ const {jestChildProcessWithArgs} = require('./Process');
 
 // For now, this is all we care about inside the config
 
+type Glob = string;
+
 type ConfigRepresentation = {
   testRegex: string,
+  testGlob: Array<Glob>
 }
 
 module.exports = class Settings extends EventEmitter {
@@ -44,6 +47,10 @@ module.exports = class Settings extends EventEmitter {
 
     // Defaults for a Jest project
     this.settings = {
+      testGlob: [
+        '**/__tests__/**/*.js?(x)',
+        '**/?(*.)(spec|test).js?(x)',
+      ],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
   }
@@ -67,7 +74,7 @@ module.exports = class Settings extends EventEmitter {
           .trim();
         this.jestVersionMajor = parseInt(version, 10);
       }
-      
+
       // Pull out the data for the config
       if (string.includes('config =')) {
         const jsonString = string.split('config =')

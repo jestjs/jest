@@ -23,6 +23,11 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
     return false;
   }
 
+  if (config.testGlob && config.testGlob.length
+    && micromatch.any(filename, config.testGlob)) {
+    return false;
+  }
+
   if (
     // This configuration field contains an object in the form of:
     // {'path/to/file.js': true}
