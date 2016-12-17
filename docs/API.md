@@ -776,7 +776,7 @@ The most useful ones are `matcherHint`, `printExpected` and `printReceived` to f
 ```js
 const diff = require('jest-diff');
 expect.extend({
-  toBe(received, actual) {
+  toBe(received, expected) {
     const pass = received === expected;
 
     const message = pass
@@ -796,6 +796,8 @@ expect.extend({
         `  ${this.utils.printReceived(received)}` +
         (diffString ? `\n\nDifference:\n\n${diffString}` : '');
       };
+
+    return {actual: received, message, pass};
   },
 });
 ```
@@ -828,7 +830,7 @@ Sometimes you don't want to check equality of entire object. You just need to as
 ```
 
 There some special values with specific comparing behavior that you can use as a part of expectation. They are useful for asserting some types of data, like timestamps, or long text resources, where only part of it is important for testing. Currently, Jest has the following asymmetric matches:
-  
+
   * `expect.anything()` - matches everything, except `null` and `undefined`
   * `expect.any(<constructor>)` - checks, that actual value is instance of provided `<constructor>`.
   * `expect.objectContaining(<object>)` - compares only keys, that exist in provided object. All other keys of `actual` value will be ignored.
@@ -839,7 +841,7 @@ These expressions can be used as an argument in `.toEqual` and `.toBeCalledWith`
 
 ```
   expect(callback).toEqual(expect.any(Function));
-  
+
   expect(mySpy).toBeCalledWith(expect.any(Number), expect.any(String))
 ```
 
@@ -854,7 +856,7 @@ They can be also used as object keys and may be nested into each other:
 ```
 
 The example above will match the following object. Array may contain more items, as well as object itself may also have some extra keys:
-  
+
 ```
 {
   items: [1]
