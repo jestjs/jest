@@ -13,7 +13,7 @@
 const ts = require('typescript');
 const {readFileSync} = require('fs');
 
-import type {Location} from './types';
+import type {Location} from '../types';
 
 class Node {
   start: Location;
@@ -34,8 +34,8 @@ function parse(file: string) {
     ts.ScriptTarget.ES3
   );
 
-  const itBlocks: ItBlock[] = [];
-  const expects: Expect[] = [];
+  const itBlocks: Array<ItBlock> = [];
+  const expects: Array<Expect> = [];
   function searchForItBlocks(node: ts.Node) {
     const callExpression = node.expression || {};
     const identifier = callExpression.expression || {};

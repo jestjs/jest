@@ -14,29 +14,46 @@ const {readFileSync} = require('fs');
 const babylon = require('babylon');
 const {Expect, ItBlock} = require('../ScriptParser');
 
-function babylonParser(file: string) {
+const path = require('path');
+const fs = require('fs');
+
+const BABELRC_FILENAME = '.babelrc';
+const cache = Object.create(null);
+
+// This is an exact copy of babel-jest's parser
+const getBabelRC = (filename, {useCache}) => {
+  const paths = [];
+  let directory = filename;
+  while (directory !== (directory = path.dirname(directory))) {
+    if (useCache && cache[directory]) {
+      break;
+    }
+
+    paths.push(directory);
+    const configFilePath = path.join(directory, BABELRC_FILENAME);
+    if (fs.existsSync(configFilePath)) {
+      cache[directory] = fs.readFileSync(configFilePath, 'utf8');
+      break;
+    }
+  }
+  paths.forEach(directoryPath => {
+    cache[directoryPath] = cache[directory];
+  });
+
+  return cache[directory] || '';
+};
+
+const babylonParser = (file: string) => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
 
   const data = readFileSync(file).toString();
-  const plugins: babylon.PluginName[] = [
-    'jsx', 
-    'flow', 
-    'asyncFunctions', 
-    'classConstructorCall', 
-    'doExpressions',
-    'trailingFunctionCommas', 
-    'objectRestSpread', 
-    'decorators', 
-    'classProperties', 
-    'exportExtensions',
-    'exponentiationOperator', 
-    'asyncGenerators', 
-    'functionBind', 
-    'functionSent',
-  ];
+  const babelRC = getBabelRC(file, {useCache: true});
+  const babel = JSON.parse(babelRC);
 
-  const ast = babylon.parse(data, {plugins, sourceType: 'module'});
+  const plugins = babel.plugins.concat(['flow']);
+  const config = {plugins, sourceType: 'module'};
+  const ast = babylon.parse(data, config);
 
   // An `it`/`test` was found in the AST
   // So take the AST node and create an object for us
@@ -150,7 +167,7 @@ function babylonParser(file: string) {
     expects,
     itBlocks,
   };
-}
+};
 
 module.exports = {
   babylonParser,

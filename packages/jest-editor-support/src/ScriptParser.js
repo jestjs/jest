@@ -25,10 +25,7 @@ class ItBlock extends Node {
   name: string;
 }
 
-type ParserReturn = {
-  itBlocks: Array<ItBlock>, 
-  expects: Array<Expect>
-}
+type ParserReturn = { itBlocks: any,  expects: any }
 
 /**
  * Converts the file into an AST, then passes out a
@@ -37,8 +34,8 @@ type ParserReturn = {
 function parse(file: string): ParserReturn {
   if (file.match(/\.ts?$/)) {
     // This require is done here so that it can be optional for clients
-    const {typescriptParser} = require('./parsers/TypeScriptParser');
-    return typescriptParser(file);
+    const {parse} = require('./parsers/TypeScriptParser');
+    return parse(file);
   } else {
     return babylonParser(file);
   }

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Travis from "../travis.js"
+// import Travis from "../travis.js"
 
 let correctEnv = {
   "HAS_JOSH_K_SEAL_OF_APPROVAL": "true",

@@ -1,8 +1,8 @@
 // @flow
 /* eslint-disable */
 
-import { GitHub } from "../GitHub"
-import Fake from "../../ci_source/Fake"
+// import { GitHub } from "../GitHub"
+// import Fake from "../../ci_source/Fake"
 
 // Gets a mocked out GitHub class for checking a get path
 const mockGitHubWithGetForPath = (expectedPath): GitHub => {
