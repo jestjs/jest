@@ -24,6 +24,19 @@ export type DiffOptions = {|
 
 type Diff = {diff: string, isDifferent: boolean};
 
+const getColor = (added: boolean, removed: boolean): chalk =>
+  added
+    ? chalk.red
+    : (removed ? chalk.green : chalk.dim);
+
+const getBgColor = (added: boolean, removed: boolean): chalk =>
+  added
+    ? chalk.bgRed
+    : (removed ? chalk.bgGreen : chalk.dim);
+
+const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
+  line.replace(/\s+$/, bgColor('$&'));
+
 const getAnnotation = (options: ?DiffOptions): string =>
   chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +
   chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
@@ -32,22 +45,23 @@ const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
   return {
     diff: diff.diffLines(a, b).map(part => {
+      const {added, removed} = part;
       if (part.added || part.removed) {
         isDifferent = true;
       }
 
       const lines = part.value.split('\n');
-      const color = part.added
-        ? chalk.red
-        : (part.removed ? chalk.green : chalk.dim);
+      const color = getColor(added, removed);
+      const bgColor = getBgColor(added, removed);
 
       if (lines[lines.length - 1] === '') {
         lines.pop();
       }
 
       return lines.map(line => {
+        const highlightedLine = highlightTrailingWhitespace(line, bgColor);
         const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
-        return mark + ' ' +  color(line) + '\n';
+        return mark + ' ' +  color(highlightedLine) + '\n';
       }).join('');
     }).join('').trim(),
     isDifferent,
@@ -76,11 +90,11 @@ const structuredPatch = (a: string, b: string): Diff => {
           const added = line[0] === '+';
           const removed = line[0] === '-';
 
-          const color = added
-            ? chalk.red
-            : (removed ? chalk.green : chalk.dim);
+          const color = getColor(added, removed);
+          const bgColor = getBgColor(added, removed);
 
-          return color(line) + '\n';
+          const highlightedLine = highlightTrailingWhitespace(line, bgColor);
+          return color(highlightedLine) + '\n';
         }).join('');
 
         isDifferent = true;

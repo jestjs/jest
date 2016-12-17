@@ -24,7 +24,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const getPackages = require('./_getPackages');
 const glob = require('glob');
-const minimatch = require('minimatch');
+const micromatch = require('micromatch');
 const path = require('path');
 const spawnSync = require('child_process').spawnSync;
 
@@ -70,13 +70,13 @@ function buildFile(file, silent) {
   const destPath = path.resolve(packageBuildPath, relativeToSrcPath);
 
   spawnSync('mkdir', ['-p', path.dirname(destPath)]);
-  if (minimatch(file, IGNORE_PATTERN)) {
+  if (micromatch.isMatch(file, IGNORE_PATTERN)) {
     silent || process.stdout.write(
       chalk.dim('  \u2022 ') +
       path.relative(PACKAGES_DIR, file) +
       ' (ignore)\n'
     );
-  } else if (!minimatch(file, JS_FILES_PATTERN)) {
+  } else if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent || process.stdout.write(
       chalk.red('  \u2022 ') +

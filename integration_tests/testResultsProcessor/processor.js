@@ -10,4 +10,5 @@
 
 module.exports = function(results) {
   results.processed = true;
+  return results;
 };
