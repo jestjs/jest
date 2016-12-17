@@ -97,7 +97,7 @@ describe('File Parsing for it blocks', () => {
 
   it('For a danger test file (which has flow annotations)', async () => {
     const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
-    expect(data.itBlocks.length).toEqual(7);
+    expect(data.itBlocks.length).toEqual(8);
   });
 
   it('For a danger flow test file ', async () => {
@@ -115,17 +115,16 @@ describe('File Parsing for expects', () => {
 
   it('finds Expects in a danger test file', async () => {
     const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
-    expect(data.expects.length).toEqual(7);
+    expect(data.expects.length).toEqual(8);
   });
 
   it('finds Expects in a danger flow test file ', async () => {
     const data = parse(`${fixtures}/dangerjs/github.example`);
-    expect(data.expects.length).toEqual(2);
+    expect(data.expects.length).toEqual(3);
   });
 
   it('finds Expects in a metaphysics test file', async () => {
     const data = parse(`${fixtures}/metaphysics/partner_show.example`);
-    // Not currently checking inside function calls
-    expect(data.expects.length).toEqual(0);
+    expect(data.expects.length).toEqual(10);
   });
 });

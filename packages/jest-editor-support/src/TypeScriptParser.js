@@ -27,15 +27,6 @@ class ItBlock extends Node {
   name: string;
 }
 
-const identifiers = [
-  'describe',
-  'fdescribe',
-  'it',
-  'fit',
-  'test',
-  'expect',
-];
-
 function parse(file: string) {
   const sourceFile = ts.createSourceFile(
     file,
@@ -46,50 +37,19 @@ function parse(file: string) {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
   function searchForItBlocks(node: ts.Node) {
-    if (node.kind !== ts.SyntaxKind.ExpressionStatement) {
-      return;
-    }
-    if (node.expression.kind !== ts.SyntaxKind.CallExpression) {
-      return;
-    }
-    const callExpression = node.expression;
-    const identifier = callExpression.expression;
-    if (
-      identifier.kind !== ts.SyntaxKind.Identifier &&
-      !isPropertyAccessExpression(identifier)
-    ) {
-      return;
-    }
-    let text = identifier.text;
-    if (
-      isPropertyAccessExpression(identifier) &&
-      identifier.expression.kind === ts.SyntaxKind.CallExpression
-    ) {
-      text = identifier.expression.expression.text;
-    } else if (
-      isPropertyAccessExpression(identifier) &&
-      identifier.name.kind === ts.SyntaxKind.Identifier &&
-      identifier.name.text === 'only'
-    ) {
-      text = identifier.expression.text;
-    }
-    if (identifiers.indexOf(text) === -1) {
-      return;
-    }
+    const callExpression = node.expression || {};
+    const identifier = callExpression.expression || {};
+    const {text} = identifier;
     if (text === 'it' || text === 'test' || text === 'fit') {
-      const position = getNode(sourceFile, callExpression, new ItBlock());
-      position.name = callExpression.arguments[0].text;
+      const isOnlyNode = !callExpression.arguments ? node : callExpression;
+      const position = getNode(sourceFile, isOnlyNode, new ItBlock());
+      position.name = isOnlyNode.arguments[0].text;
       itBlocks.push(position);
     } else if (text === 'expect') {
       const position = getNode(sourceFile, callExpression, new Expect());
       expects.push(position);
     }
-    callExpression.arguments
-      .filter(arg => (
-        arg.kind === ts.SyntaxKind.ArrowFunction ||
-        arg.kind === ts.SyntaxKind.FunctionExpression
-      ))
-      .forEach(arg => ts.forEachChild(arg.body, searchForItBlocks));
+    ts.forEachChild(node, searchForItBlocks);
   }
 
   ts.forEachChild(sourceFile, searchForItBlocks);
@@ -97,10 +57,6 @@ function parse(file: string) {
     expects,
     itBlocks,
   };
-}
-
-function isPropertyAccessExpression(node) {
-  return node.kind === ts.SyntaxKind.PropertyAccessExpression;
 }
 
 function getNode<T: Node>(
