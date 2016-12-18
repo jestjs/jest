@@ -84,84 +84,104 @@ const babylonParser = (file: string) => {
     expects.push(expect);
   };
 
-  // When given a node in the AST, does this represent
-  // the start of an it/test block?
-  const isAnIt = node => {
+  const isFunctionCall = node => {
     return (
       node.type === 'ExpressionStatement' &&
       node.expression.type === 'CallExpression'
-    )
-    &&
-    (
-      node.expression.callee.name === 'it' ||
-      node.expression.callee.name === 'fit' ||
-      node.expression.callee.name === 'test'
+    );
+  };
+
+  const isFunctionDeclaration = (nodeType: string) => {
+    return (
+      nodeType === 'ArrowFunctionExpression' ||
+      nodeType === 'FunctionExpression'
+    );
+  };
+
+  // Pull out the name of a CallExpression (describe/it)
+  // handle cases where it's a member expression (.only)
+  const getNameForNode = node => {
+    if (!isFunctionCall(node)) {
+      return false;
+    }
+    let {name} = node.expression.callee;
+    if (!name && node.expression.callee.object) {
+      name = node.expression.callee.object.name;
+    }
+    return name;
+  };
+
+  // When given a node in the AST, does this represent
+  // the start of an it/test block?
+  const isAnIt = node => {
+    const name = getNameForNode(node);
+    return (
+      name === 'it' ||
+      name === 'fit' ||
+      name === 'test'
     );
   };
 
   // When given a node in the AST, does this represent
   // the start of an expect expression?
   const isAnExpect = node => {
-    return (
-      node.type === 'ExpressionStatement' &&
-      node.expression.type === 'CallExpression' &&
-      node.expression.callee &&
-      node.expression.callee.object &&
-      node.expression.callee.object.callee
-    )
-    &&
-    (
-      node.expression.callee.object.callee.name === 'expect'
-    );
+    if (!isFunctionCall(node)) {
+      return false;
+    }
+    let name: string;
+    let element = node.expression.callee;
+    while (!name) {
+      name = element.name;
+      // Because expect may have acccessors taked on (.to.be) or
+      // nothing (expect()) we have to check mulitple levels for the name
+      element = element.object || element.callee;
+    }
+    return name === 'expect';
   };
 
-  // We know that its/expects can go inside a describe, so recurse through
-  // these when we see them. 
-  const isADescribe = node => {
-    return (
-      node.type === 'ExpressionStatement' &&
-      node.expression.type === 'CallExpression')
-    && (
-      node.expression.callee.name === 'describe' ||
-      node.expression.callee.name === 'fdescribe'
-    );      
-  };
-
-    // A recursive AST parser
-  const findItBlocksInBody = (root: any, file: string) => {
+  // A recursive AST parser
+  const searchNodes = (root: any, file: string) => {
     // Look through the node's children
     for (const node in root.body) {
-      if (root.body.hasOwnProperty(node)) {
+      if (!root.body.hasOwnProperty(node)) {
+        return;
+      }
         
-        // Pull out the node
-        const element = root.body[node];
+      // Pull out the node
+      const element = root.body[node];
 
-        // if it's a describe dig deeper
-        if (isADescribe(element)) {
-          if (element.expression.arguments.length === 2) {
-            const newBody = element.expression.arguments[1].body;
-            findItBlocksInBody(newBody, file);
-          }
-        }
-
-        // if it's an it/test dig deeper
-        if (isAnIt(element)) {
-          foundItNode(element, file);
-          if (element.expression.arguments.length === 2) {
-            const newBody = element.expression.arguments[1].body;
-            findItBlocksInBody(newBody, file);
-          }
-        }
-
-        // if it's an expect store it
-        if (isAnExpect(element)) {
-          foundExpectNode(element, file);
-        }
+      if (isAnIt(element)) {
+        foundItNode(element, file);
+      } else if (isAnExpect(element)) {
+        foundExpectNode(element, file);
+      } else if (element.type === 'VariableDeclaration') {
+        element.declarations
+          .filter(declaration => isFunctionDeclaration(declaration.init.type))
+          .forEach(declaration => searchNodes(declaration.init.body, file));
+      } else if (
+        element.type === 'ExpressionStatement' &&
+        element.expression.type === 'AssignmentExpression' &&
+        isFunctionDeclaration(element.expression.right.type)
+      ) {
+        searchNodes(element.expression.right.body, file);
+      } else if (
+        element.type === 'ReturnStatement' &&
+        element.argument.arguments
+      ) {
+        element.argument.arguments
+          .filter(argument => isFunctionDeclaration(argument.type))
+          .forEach(argument => searchNodes(argument.body, file));
+      }
+      
+      if (isFunctionCall(element)) {
+        element.expression.arguments
+          .filter(argument => isFunctionDeclaration(argument.type))
+          .forEach(argument => searchNodes(argument.body, file));
       }
     }
   };
 
-  findItBlocksInBody(ast['program'], file);
+  searchNodes(ast['program'], file);
 
   return {
     expects,
