@@ -12,20 +12,7 @@
 
 const ts = require('typescript');
 const {readFileSync} = require('fs');
-
-import type {Location} from '../types';
-
-class Node {
-  start: Location;
-  end: Location;
-  file: string;
-}
-
-class Expect extends Node {}
-
-class ItBlock extends Node {
-  name: string;
-}
+const {Expect, ItBlock, Node} = require('../ScriptParser');
 
 function parse(file: string) {
   const sourceFile = ts.createSourceFile(
@@ -36,7 +23,7 @@ function parse(file: string) {
 
   const itBlocks: Array<ItBlock> = [];
   const expects: Array<Expect> = [];
-  function searchForItBlocks(node: ts.Node) {
+  function searchNodes(node: ts.Node) {
     const callExpression = node.expression || {};
     const identifier = callExpression.expression || {};
     const {text} = identifier;
@@ -49,10 +36,10 @@ function parse(file: string) {
       const position = getNode(sourceFile, callExpression, new Expect());
       expects.push(position);
     }
-    ts.forEachChild(node, searchForItBlocks);
+    ts.forEachChild(node, searchNodes);
   }
 
-  ts.forEachChild(sourceFile, searchForItBlocks);
+  ts.forEachChild(sourceFile, searchNodes);
   return {
     expects,
     itBlocks,
@@ -79,8 +66,5 @@ function getNode<T: Node>(
 }
 
 module.exports = {
-  Expect,
-  ItBlock,
-  Node,
   parse,
 };
