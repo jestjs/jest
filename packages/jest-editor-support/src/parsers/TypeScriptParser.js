@@ -12,7 +12,7 @@
 
 const ts = require('typescript');
 const {readFileSync} = require('fs');
-const {Expect, ItBlock, Node} = require('../ScriptParser');
+const {Expect, ItBlock, Node} = require('./ParserNodes');
 
 function parse(file: string) {
   const sourceFile = ts.createSourceFile(

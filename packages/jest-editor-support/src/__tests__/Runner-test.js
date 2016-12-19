@@ -11,6 +11,7 @@
 const {EventEmitter} = require('events');
 const path = require('path');
 const fixtures = path.resolve(__dirname, 'fixtures');
+const ProjectWorkspace = require('../ProjectWorkspace');
 
 const {readFileSync} = require('fs');
 
@@ -40,7 +41,8 @@ describe('events', () => {
   let fakeProcess;
 
   beforeEach(() => {
-    runner = new Runner();
+    const workspace = new ProjectWorkspace('.', 'node_modules/.bin/jest', 18);
+    runner = new Runner(workspace);
     fakeProcess = new EventEmitter();
     fakeProcess.stdout = new EventEmitter();
     fakeProcess.stderr = new EventEmitter();
