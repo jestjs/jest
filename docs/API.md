@@ -11,24 +11,24 @@ next: configuration
 
 In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
 
-  - `afterEach(fn)`
-  - `beforeEach(fn)`
   - `afterAll(fn)`
+  - `afterEach(fn)`
   - `beforeAll(fn)`
+  - `beforeEach(fn)`
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expectvalue)
   - [`expect.extend(matchers)`](#extending-jest-matchers)
   - [`expect.<asymmetric-match>()`](#asymmetric-jest-matchers)
+  - `fdescribe(name, fn)`
+  - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`it(name, fn)`](#basic-testing)
   - [`it.only(name, fn)`](#basic-testing)
   - [`it.skip(name, fn)`](#basic-testing)
-  - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`jest`](#the-jest-object)
   - [`require.requireActual(moduleName)`](#requirerequireactualmodulename)
   - [`require.requireMock(moduleName)`](#requirerequiremockmodulename)
   - [`test(name, fn)`](#basic-testing) is an alias for `it`
   - `xdescribe(name, fn)`
-  - `fdescribe(name, fn)`
   - `xit(name, fn)`
   - `xtest(name, fn)`
 
@@ -43,10 +43,6 @@ expect all the time. That's what you use `expect` for.
   - [`.toBe(value)`](#tobevalue)
   - `.toBeCalled()` is an alias for [`.toHaveBeenCalled()`](#tohavebeencalled)
   - `.toBeCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
-  - [`.toHaveBeenCalled()`](#tohavebeencalled)
-  - [`.toHaveBeenCalledTimes(number)`](#tohavebeencalledtimesnumber)
-  - [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
-  - [`.toHaveBeenLastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.toBeCloseTo(number, numDigits)`](#tobeclosetonumber-numdigits)
   - [`.toBeDefined()`](#tobedefined)
   - [`.toBeFalsy()`](#tobefalsy)
@@ -61,6 +57,10 @@ expect all the time. That's what you use `expect` for.
   - [`.toContain(item)`](#tocontainitem)
   - [`.toContainEqual(item)`](#tocontainequalitem)
   - [`.toEqual(value)`](#toequalvalue)
+  - [`.toHaveBeenCalled()`](#tohavebeencalled)
+  - [`.toHaveBeenCalledTimes(number)`](#tohavebeencalledtimesnumber)
+  - [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
+  - [`.toHaveBeenLastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.toHaveLength(number)`](#tohavelengthnumber)
   - [`.toMatch(regexp)`](#tomatchregexp)
   - [`.toMatchObject(object)`](#tomatchobjectobject)
@@ -76,9 +76,9 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mock.calls`](#mockfnmockcalls)
   - [`mockFn.mock.instances`](#mockfnmockinstances)
   - [`mockFn.mockClear()`](#mockfnmockclear)
-  - [`mockFn.mockReset()`](#mockfnmockreset)
   - [`mockFn.mockImplementation(fn)`](#mockfnmockimplementationfn)
   - [`mockFn.mockImplementationOnce(fn)`](#mockfnmockimplementationoncefn)
+  - [`mockFn.mockReset()`](#mockfnmockreset)
   - [`mockFn.mockReturnThis()`](#mockfnmockreturnthis)
   - [`mockFn.mockReturnValue(value)`](#mockfnmockreturnvaluevalue)
   - [`mockFn.mockReturnValueOnce(value)`](#mockfnmockreturnvalueoncevalue)
@@ -87,7 +87,6 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 
 These methods help create mocks and let you control Jest's overall behavior.
 
-  - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
   - [`jest.enableAutomock()`](#jestenableautomock)
@@ -95,6 +94,7 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
   - [`jest.mock(moduleName, ?factory, ?options)`](#jestmockmodulename-factory-options)
+  - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
   - [`jest.runAllTicks()`](#jestrunallticks)
   - [`jest.runAllTimers()`](#jestrunalltimers)
