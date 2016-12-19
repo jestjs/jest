@@ -21,8 +21,10 @@ function loadFromFile(filePath, argv) {
         return JSON.parse(data);
       } catch (e) {
         const error = jsonlint.errors(data.toString());
-        throw new Error(`Jest: Failed to parse config file ${filePath}
-                        ${error}`);
+        throw new Error(
+          `Jest: Failed to parse config file ${filePath}\n` +
+          `  ${error}`,
+        );
       }
     };
 
