@@ -18,7 +18,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expectvalue)
   - [`expect.extend(matchers)`](#extending-jest-matchers)
-  - [`expect.<asymmetric-match>()`](#asymmetric-jest-matchers)
+  - [`expect.<asymmetric-match>()`](#asymmetric-matchers)
   - `fdescribe(name, fn)`
   - `fit(name, fn)` executes only this test. Useful when investigating a failure
   - [`it(name, fn)`](#basic-testing)
@@ -815,7 +815,7 @@ This will print something like this:
 
 When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
 
-### Asymmetric Jest Matchers
+### Asymmetric Matchers
 
 Sometimes you don't want to check equality of entire object. You just need to assert that value is not empty or has some expected type. For example, we want to check the shape of some message entity:
 
@@ -829,7 +829,7 @@ Sometimes you don't want to check equality of entire object. You just need to as
   });
 ```
 
-There some special values with specific comparing behavior that you can use as a part of expectation. They are useful for asserting some types of data, like timestamps, or long text resources, where only part of it is important for testing. Currently, Jest has the following asymmetric matches:
+There some special values with specific comparing behavior that you can use as a part of expectation. They are useful for asserting some types of data, like timestamps, or long text resources, where only part of it is important for testing. Currently, Jest has the following asymmetric matchers:
 
   * `expect.anything()` - matches everything, except `null` and `undefined`
   * `expect.any(<constructor>)` - checks, that actual value is instance of provided `<constructor>`.
