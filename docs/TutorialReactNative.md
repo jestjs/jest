@@ -145,13 +145,13 @@ The code for this example is available at
 
 The preset sets up the environment and is very opinionated and based on what we found to be useful at Facebook. All of the configuration options can be overwritten just as they can be customized when no preset is used.
 
-### Node Environment
+### Environment
 
-Instead of `jsdom`, a simple `node` environment is loaded that is similar to a react-native environment. Because the node environment doesn't load any DOM or browser APIs it improves Jest's startup greatly.
+`react-native` ships with a Jest preset, so the `jest.preset` field of your `package.json` should point to `react-native`. The preset is a node environment that mimics the environment of a React Native app. Because it doesn't load any DOM or browser APIs, it greatly improves Jest's startup time.
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](api.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by whitelisting modules other than react-native:
 
@@ -163,11 +163,11 @@ By default the jest-react-native preset only processes the project's own source 
 
 ### setupFiles
 
-If you'd like to provide additional configuration for every test file, the [`setupFiles`](api.html#setupfiles-array) configuration option can be used to specify setup scripts.
+If you'd like to provide additional configuration for every test file, the [`setupFiles` configuration option](configuration.html#setupfiles-array) can be used to specify setup scripts.
 
 ### moduleNameMapper
 
-The [`moduleNameMapper`](api.html#modulenamemapper-object-string-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
+The [`moduleNameMapper`](configuration.html#modulenamemapper-object-string-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```js
 "moduleNameMapper": {
@@ -179,7 +179,7 @@ The [`moduleNameMapper`](api.html#modulenamemapper-object-string-string) can be 
 
 ### Mock native modules using jest.mock
 
-The jest-react-native preset comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
+The Jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
 For example, if your code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
 
