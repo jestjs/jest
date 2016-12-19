@@ -62,9 +62,9 @@ module.exports = class Settings extends EventEmitter {
       // the config object
       if (string.includes('jest version =')) {
         const version = string.split('jest version =')
-                              .pop()
-                              .split(EOL)[0]
-                              .trim();
+          .pop()
+          .split(EOL)[0]
+          .trim();
         this.jestVersionMajor = parseInt(version, 10);
       }
       
