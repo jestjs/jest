@@ -5,7 +5,7 @@
 * LICENSE file in the root directory of this source tree. An additional grant
 * of patent rights can be found in the PATENTS file in the same directory.
 *
-* @flow
+* @emails oncall+jsinfra
 */
 
 const getMaxWorkers = require('../getMaxWorkers');
@@ -18,7 +18,7 @@ describe('getMaxWorkers', () => {
   it('Returns 1 when runInBand', () => {
     const argv = {runInBand: true};
     expect(getMaxWorkers(argv)).toBe(1);
-  })
+  });
 
   it('Returns the `maxWorkers` when specified', () => {
     const argv = {maxWorkers: 8};
@@ -29,4 +29,4 @@ describe('getMaxWorkers', () => {
     expect(getMaxWorkers({})).toBe(3);
     expect(getMaxWorkers({watch: true})).toBe(2);
   });
-})
+});

@@ -82,7 +82,7 @@ const runCLI = (
           return runJest(hasteContext, config, argv, pipe, testWatcher,
             onComplete);
         }
-      })
+      });
     })
     .catch(error => {
       clearLine(process.stderr);

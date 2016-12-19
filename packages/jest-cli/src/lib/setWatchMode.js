@@ -14,7 +14,7 @@ const buildTestPathPatternInfo = require('./buildTestPathPatternInfo');
 const setWatchMode = (
   argv: Object,
   mode: 'watch' | 'watchAll',
-  options: Object,
+  options?: Object,
 ) => {
   if (mode === 'watch') {
     argv.watch = true;
