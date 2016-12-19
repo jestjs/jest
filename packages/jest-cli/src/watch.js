@@ -21,7 +21,7 @@ const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const preRunMessage = require('./preRunMessage');
 const TestWatcher = require('./TestWatcher');
-const runJest = require('./runjest');
+const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
 const HasteMap = require('jest-haste-map');
 
