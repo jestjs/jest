@@ -30,6 +30,13 @@ module.exports.jestChildProcessWithArgs = (
   const [command, ...initialArgs] = runtimeExecutable.split(' ');
   const runtimeArgs = [...initialArgs, ...args];
 
+  // If a path to configuration file was defined, push it to runtimeArgs
+  const configPath = workspace.pathToConfig;
+  if (configPath !== '') {
+    runtimeArgs.push('--config');
+    runtimeArgs.push(configPath);
+  }
+
   // To use our own commands in create-react, we need to tell the command that
   // we're in a CI environment, or it will always append --watch
   const env = process.env;

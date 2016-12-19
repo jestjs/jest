@@ -34,7 +34,7 @@ module.exports = class Runner extends EventEmitter {
   start() {
     // Handle the arg change on v18
     const belowEighteen = this.workspace.localJestMajorVersion < 18;
-    const outputArg = belowEighteen ? 'jsonOutputFile' : 'outputFile';
+    const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
 
     const args = [
       '--json',

@@ -36,6 +36,13 @@ module.exports = class ProjectWorkspace {
 
 
   /**
+   * Path to a local Jest config file.
+   * 
+   * @type {string}
+   */
+  pathToConfig: string;
+
+  /**
    * local Jest major release version, as the runner could run against
    * any version of Jest.
    * 
@@ -46,9 +53,11 @@ module.exports = class ProjectWorkspace {
   constructor(
     rootPath: string, 
     pathToJest: string, 
+    pathToConfig: string,
     localJestMajorVersion: number) {
     this.rootPath = rootPath;
     this.pathToJest = pathToJest;
+    this.pathToConfig = pathToConfig;
     this.localJestMajorVersion = localJestMajorVersion;
   }
 };
