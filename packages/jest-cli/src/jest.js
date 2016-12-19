@@ -27,37 +27,11 @@ const chalk = require('chalk');
 const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
 const TestWatcher = require('./TestWatcher');
-const {createDirectory} = require('jest-util');
 const runJest = require('./runJest');
 const watch = require('./watch');
 const getMaxWorkers = require('./lib/getMaxWorkers');
 
 const VERSION = require('../package.json').version;
-
-const getHasteMapAndHasteContext = (config, options) => {
-  createDirectory(config.cacheDirectory);
-  const jestHasteMap = Runtime.createHasteMap(config, {
-    console: options.console,
-    maxWorkers: options.maxWorkers,
-    resetCache: !config.cache,
-    watch: options.watch,
-  });
-
-  return jestHasteMap.build().then(
-    hasteMap => ({
-      hasteFS: hasteMap.hasteFS,
-      resolver: Runtime.createResolver(config, hasteMap.moduleMap),
-    }),
-    error => {
-      throw error;
-    },
-  )
-  .then(hasteContext => ({
-    config,
-    hasteContext,
-    jestHasteMap,
-  }));
-};
 
 const runCLI = (
   argv: Object,
@@ -73,28 +47,30 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then(config => getHasteMapAndHasteContext(config,  {
-      console: new Console(pipe, pipe),
-      maxWorkers: getMaxWorkers(argv),
-      resetCache: !config.cache,
-      watch: config.watch,
-    }))
-    .then(({config, jestHasteMap, hasteContext}) => {
-      if (argv.debug) {
-        /* $FlowFixMe */
-        const testFramework = require(config.testRunner);
-        pipe.write('jest version = ' + VERSION + '\n');
-        pipe.write('test framework = ' + testFramework.name + '\n');
-        pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
-      }
-      if (argv.watch || argv.watchAll) {
-        return watch(config, pipe, argv, jestHasteMap, hasteContext);
-      } else {
-        preRunMessage.print(pipe);
-        const testWatcher = new TestWatcher({isWatchMode: false});
-        return runJest(hasteContext, config, argv, pipe, testWatcher,
-          onComplete);
-      }
+    .then(config => {
+      return Runtime.createHasteContext(config, {
+        console: new Console(pipe, pipe),
+        maxWorkers: getMaxWorkers(argv),
+        resetCache: !config.cache,
+        watch: config.watch,
+      })
+      .then(hasteContext => {
+        if (argv.debug) {
+          /* $FlowFixMe */
+          const testFramework = require(config.testRunner);
+          pipe.write('jest version = ' + VERSION + '\n');
+          pipe.write('test framework = ' + testFramework.name + '\n');
+          pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
+        }
+        if (argv.watch || argv.watchAll) {
+          return watch(config, pipe, argv, hasteContext);
+        } else {
+          preRunMessage.print(pipe);
+          const testWatcher = new TestWatcher({isWatchMode: false});
+          return runJest(hasteContext, config, argv, pipe, testWatcher,
+            onComplete);
+        }
+      });
     })
     .catch(error => {
       clearLine(process.stderr);
