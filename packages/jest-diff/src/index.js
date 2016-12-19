@@ -12,8 +12,8 @@
 
 import type {DiffOptions} from './diffStrings';
 
-const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
-const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
+const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
 
 const chalk = require('chalk');
 const diffStrings = require('./diffStrings');

@@ -19,6 +19,7 @@ const {
   formatResultsErrors,
   formatStackTrace,
 } = require('./messages');
+const formatTestResults = require('./formatTestResults');
 const clearLine = require('./clearLine');
 const fileExists = require('jest-file-exists');
 const installCommonGlobals = require('./installCommonGlobals');
@@ -72,7 +73,7 @@ const getPackageRoot = () => {
 };
 
 const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
-  const yargsSpecialOptions = ['$0', '_', 'help'];
+  const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce((acc, option) => (
     acc
       .add(option)
@@ -97,6 +98,7 @@ module.exports = {
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
+  formatTestResults,
   getPackageRoot,
   installCommonGlobals,
   replacePathSepForRegex,

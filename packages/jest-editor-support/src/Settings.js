@@ -1,11 +1,20 @@
-// @flow
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+
 'use strict';
 
-import {ChildProcess} from 'child_process';
-import EventEmitter from 'events';
-import {EOL} from 'os';
-import ProjectWorkspace from './ProjectWorkspace';
-import {jestChildProcessWithArgs} from './JestProcess';
+const {ChildProcess} = require('child_process');
+const EventEmitter = require('events');
+const {EOL} = require('os');
+const ProjectWorkspace = require('./ProjectWorkspace');
+const {jestChildProcessWithArgs} = require('./Process');
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
@@ -17,22 +26,23 @@ import {jestChildProcessWithArgs} from './JestProcess';
 // for full deets
 
 // For now, this is all we care about inside the config
-export type JestConfigRepresentation = {
+
+type ConfigRepresentation = {
   testRegex: string,
 }
 
-module.exports = class JestSettings extends EventEmitter {
+module.exports = class Settings extends EventEmitter {
   debugprocess: ChildProcess;
   workspace: ProjectWorkspace;
 
-  settings: JestConfigRepresentation;
+  settings: ConfigRepresentation;
   jestVersionMajor: number | null;
 
   constructor(workspace: ProjectWorkspace) {
     super();
     this.workspace = workspace;
 
-      // Defaults for a Jest project
+    // Defaults for a Jest project
     this.settings = {
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
@@ -52,6 +62,7 @@ module.exports = class JestSettings extends EventEmitter {
         const version = string.split('jest version =').pop().split(EOL)[0];
         this.jestVersionMajor = parseInt(version, 1);
       }
+      
       // Pull out the data for the config
       if (string.includes('config =')) {
         const jsonString = string.split('config =')

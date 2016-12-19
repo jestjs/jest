@@ -1,38 +1,47 @@
-// @flow
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+
 'use strict';
 
 export type Location = {
-    line: number,
-    column: number,
+  line: number,
+  column: number,
 }
 
 export type JestFileResults = {
-    name: string,
-    summary: string,
-    message: string,
-    status: "failed" | "passed",
-    startTime:number,
-    endTime:number,
-    assertionResults: JestAssertionResults[],
+  name: string,
+  summary: string,
+  message: string,
+  status: "failed" | "passed",
+  startTime:number,
+  endTime:number,
+  assertionResults: Array<JestAssertionResults>,
 }
 
 export type JestAssertionResults = {
-    name: string,
-    title: string,
-    status: "failed" | "passed",
-    failureMessages: string[],
+  name: string,
+  title: string,
+  status: "failed" | "passed",
+  failureMessages: string[],
 }
 
 export type JestTotalResults = {
-    success:boolean,
-    startTime:number,
-    numTotalTests:number,
-    numTotalTestSuites:number,
-    numRuntimeErrorTestSuites:number,
-    numPassedTests:number,
-    numFailedTests:number,
-    numPendingTests:number,
-    testResults: JestFileResults[],
+  success:boolean,
+  startTime:number,
+  numTotalTests:number,
+  numTotalTestSuites:number,
+  numRuntimeErrorTestSuites:number,
+  numPassedTests:number,
+  numFailedTests:number,
+  numPendingTests:number,
+  testResults: Array<JestFileResults>,
 }
 
 /**
@@ -49,19 +58,19 @@ export type TestReconcilationState =
 /**
  * The Jest Extension's version of a status for
  * whether the file passed or not
- * 
+ *
  */
 export type TestFileAssertionStatus = {
   file: string,
   message: string,
   status: TestReconcilationState,
-  assertions: TestAssertionStatus[],
+  assertions: Array<TestAssertionStatus>,
 }
 
 /**
  * The Jest Extension's version of a status for
  * individual assertion fails
- * 
+ *
  */
 export type TestAssertionStatus = {
   title: string,

@@ -11,8 +11,8 @@
 
 import type {Path} from 'types/Config';
 
-const ReactElementPlugin = require('pretty-format/plugins/ReactElement');
-const ReactTestComponentPlugin = require('pretty-format/plugins/ReactTestComponent');
+const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
+const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
 
 let PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 
