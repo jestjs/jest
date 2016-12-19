@@ -112,8 +112,7 @@ module.exports = class TestReconciler {
       .splice(2)
       .join('')
       .replace('  ', ' ')
-      .replace(/\[\d\dm/g, '')
-      .replace('Received:', ' Received:')
+      .replace('Received:', ' Received:')
       .replace('Difference:', ' Difference:');
   }
 

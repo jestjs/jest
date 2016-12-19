@@ -12,7 +12,7 @@
 
 const {readFileSync} = require('fs');
 const babylon = require('babylon');
-const {Expect, ItBlock} = require('../ScriptParser');
+const {Expect, ItBlock} = require('./ParserNodes');
 
 const path = require('path');
 const fs = require('fs');
