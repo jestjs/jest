@@ -54,7 +54,8 @@ module.exports = class ProjectWorkspace {
     rootPath: string, 
     pathToJest: string, 
     pathToConfig: string,
-    localJestMajorVersion: number) {
+    localJestMajorVersion: number,
+  ) {
     this.rootPath = rootPath;
     this.pathToJest = pathToJest;
     this.pathToConfig = pathToConfig;
