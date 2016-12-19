@@ -10,7 +10,10 @@
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   },
-  "dependencies": {
+  "optionalDependencies": {
     "typescript": "^2.0.10"
+  },
+  "dependencies": {
+    "babylon": "^6.13.0"
   }
 }
