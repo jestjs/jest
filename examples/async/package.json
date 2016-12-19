@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "babel-jest": "^9.0.0",
+    "babel-jest": "*",
     "babel-plugin-transform-async-to-generator": "^6.5.0",
     "babel-polyfill": "*",
     "babel-preset-es2015": "*",

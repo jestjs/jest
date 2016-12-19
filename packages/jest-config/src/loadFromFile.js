@@ -10,6 +10,7 @@
 
 const fs = require('fs');
 const normalize = require('./normalize');
+const jsonlint = require('./vendor/jsonlint');
 const path = require('path');
 const promisify = require('./lib/promisify');
 
@@ -19,7 +20,11 @@ function loadFromFile(filePath, argv) {
       try {
         return JSON.parse(data);
       } catch (e) {
-        throw new Error(`Jest: Failed to parse config file ${filePath}.`);
+        const error = jsonlint.errors(data.toString());
+        throw new Error(
+          `Jest: Failed to parse config file ${filePath}\n` +
+          `  ${error}`,
+        );
       }
     };
 

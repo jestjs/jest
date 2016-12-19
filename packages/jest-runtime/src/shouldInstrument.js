@@ -11,7 +11,7 @@
 
 import type {Config, Path} from 'types/Config';
 
-const multimatch = require('multimatch');
+const micromatch = require('micromatch');
 const path = require('path');
 
 const shouldInstrument = (filename: Path, config: Config): boolean => {
@@ -35,7 +35,7 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (
     !config.collectCoverageOnlyFrom && // still cover if `only` is specified
     config.collectCoverageFrom &&
-    !multimatch(
+    !micromatch(
       [path.relative(config.rootDir, filename)],
       config.collectCoverageFrom,
     ).length

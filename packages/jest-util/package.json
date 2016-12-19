@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "17.0.2",
+  "version": "18.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -12,7 +12,7 @@
     "diff": "^3.0.0",
     "graceful-fs": "^4.1.6",
     "jest-file-exists": "^17.0.0",
-    "jest-mock": "^17.0.2",
+    "jest-mock": "^18.0.0",
     "mkdirp": "^0.5.1"
   },
   "scripts": {
