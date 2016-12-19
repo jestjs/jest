@@ -179,7 +179,7 @@ The [`moduleNameMapper`](configuration.html#modulenamemapper-object-string-strin
 
 ### Mock native modules using jest.mock
 
-The jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
+The Jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
 For example, if your code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
 
