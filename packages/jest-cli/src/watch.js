@@ -16,12 +16,14 @@ const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
 const {clearLine} = require('jest-util');
+const Runtime = require('jest-runtime');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const preRunMessage = require('./preRunMessage');
 const TestWatcher = require('./TestWatcher');
 const runJest = require('./runjest');
 const setWatchMode = require('./lib/setWatchMode');
+const HasteMap = require('jest-haste-map');
 
 const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const KEYS = {
@@ -47,6 +49,7 @@ const watch = (
   config: any,
   pipe: stream$Writable | tty$WriteStream,
   argv: Object,
+  jestHasteMap: HasteMap,
   hasteContext: HasteContext,
 ) => {
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
@@ -59,6 +62,16 @@ const watch = (
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
+
+  jestHasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+    if (eventsQueue.find(({type}) => type !== 'change')) {
+      hasteContext = {
+        hasteFS,
+        resolver: Runtime.createResolver(config, moduleMap),
+      };
+    }
+    startRun();
+  });
 
   const writeCurrentPattern = () => {
     clearLine(pipe);

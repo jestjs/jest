@@ -27,6 +27,7 @@ const chalk = require('chalk');
 const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
 const TestWatcher = require('./TestWatcher');
+const {createDirectory} = require('jest-util');
 const runJest = require('./runJest');
 const watch = require('./watch');
 const getMaxWorkers = require('./lib/getMaxWorkers');
@@ -48,12 +49,23 @@ const runCLI = (
 
   readConfig(argv, root)
     .then(config => {
-      return Runtime.createHasteContext(config, {
+      createDirectory(config.cacheDirectory);
+      const jestHasteMap = Runtime.createHasteMap(config, {
         console: new Console(pipe, pipe),
         maxWorkers: getMaxWorkers(argv),
         resetCache: !config.cache,
         watch: config.watch,
-      })
+      });
+
+      return jestHasteMap.build().then(
+        hasteMap => ({
+          hasteFS: hasteMap.hasteFS,
+          resolver: Runtime.createResolver(config, hasteMap.moduleMap),
+        }),
+        error => {
+          throw error;
+        },
+      )
       .then(hasteContext => {
         if (argv.debug) {
           /* $FlowFixMe */
@@ -63,14 +75,14 @@ const runCLI = (
           pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
         }
         if (argv.watch || argv.watchAll) {
-          return watch(config, pipe, argv, hasteContext);
+          return watch(config, pipe, argv, jestHasteMap, hasteContext);
         } else {
           preRunMessage.print(pipe);
           const testWatcher = new TestWatcher({isWatchMode: false});
           return runJest(hasteContext, config, argv, pipe, testWatcher,
             onComplete);
         }
-      });
+      })
     })
     .catch(error => {
       clearLine(process.stderr);
