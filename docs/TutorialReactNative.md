@@ -147,7 +147,7 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### Environment
 
-`react-native` ships with a jest preset, so the `jest.preset` field of your `package.json` should point to `react-native`. The preset is a node environment that mimics the environment of a React Native app. Because it doesn't load any DOM or browser APIs, it greatly improves Jest's startup time.
+`react-native` ships with a Jest preset, so the `jest.preset` field of your `package.json` should point to `react-native`. The preset is a node environment that mimics the environment of a React Native app. Because it doesn't load any DOM or browser APIs, it greatly improves Jest's startup time.
 
 ### transformIgnorePatterns customization
 
