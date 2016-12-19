@@ -117,15 +117,6 @@ describe('async jasmine', () => {
     expect(message).toMatch('fails if a custom timeout is exceeded');
   });
 
-  it('works with pit', () => {
-    const result = runJest.json('jasmine_async', ['pit-test.js']);
-    const json = result.json;
-    expect(json.numTotalTests).toBe(2);
-    expect(json.numPassedTests).toBe(1);
-    expect(json.numFailedTests).toBe(1);
-    expect(json.testResults[0].message).toMatch(/will run and fail/);
-  });
-
   it('works with concurrent', () => {
     const result = runJest.json('jasmine_async', ['concurrent-test.js']);
     const json = result.json;

@@ -1,6 +1,6 @@
 {
   "name": "jest-editor-support",
-  "version": "17.0.3",
+  "version": "18.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,7 +10,10 @@
   "scripts": {
     "test": "../../packages/jest-cli/bin/jest.js"
   },
-  "dependencies": {
+  "optionalDependencies": {
     "typescript": "^2.0.10"
+  },
+  "dependencies": {
+    "babylon": "^6.13.0"
   }
 }

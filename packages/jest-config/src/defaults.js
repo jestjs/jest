@@ -50,7 +50,7 @@ module.exports = ({
   testEnvironment: 'jest-environment-jsdom',
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testURL: 'about:blank',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP],

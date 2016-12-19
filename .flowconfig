@@ -1,6 +1,7 @@
 [ignore]
 .*/node_modules/react-native/.*
 .*/node_modules/fbjs/.*
+.*/vendor/jsonlint/.*
 .*/examples/.*
 .*/website/.*
 

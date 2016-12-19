@@ -22,6 +22,7 @@ function run(argv?: Object, root?: Path) {
   argv = yargs(argv || process.argv.slice(2))
     .usage(args.usage)
     .help()
+    .alias('help', 'h')
     .options(args.options)
     .check(args.check)
     .argv;

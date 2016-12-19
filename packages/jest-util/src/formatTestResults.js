@@ -17,11 +17,9 @@ import type {
   TestResult,
   AssertionResult,
 } from 'types/TestResult';
-import type {Config} from 'types/Config';
 
 const formatResult = (
   testResult: TestResult,
-  config: Config,
   codeCoverageFormatter: CodeCoverageFormatter,
   reporter: CodeCoverageReporter,
 ): Object => {
@@ -70,7 +68,6 @@ function formatTestAssertion(
 
 function formatTestResults(
   results: AggregatedResult,
-  config: Config,
   codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
 ): Object {
@@ -78,7 +75,6 @@ function formatTestResults(
 
   const testResults = results.testResults.map(testResult => formatResult(
     testResult,
-    config,
     formatter,
     reporter,
   ));
