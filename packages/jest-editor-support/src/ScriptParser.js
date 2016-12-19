@@ -11,19 +11,7 @@
 'use strict';
 
 const {babylonParser} = require('./parsers/BabylonParser');
-import type {Location} from './types';
-
-class Node {
-  start: Location;
-  end: Location;
-  file: string;
-}
-
-class Expect extends Node {}
-
-class ItBlock extends Node {
-  name: string;
-}
+const {ItBlock, Expect} = require('./parsers/ParserNodes.js');
 
 export type ParserReturn = {
   itBlocks: Array<ItBlock>,
@@ -45,8 +33,5 @@ function parse(file: string): ParserReturn {
 }
 
 module.exports = {
-  Expect,
-  ItBlock,
-  Node,
   parse,
 };

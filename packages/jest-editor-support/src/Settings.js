@@ -65,7 +65,7 @@ module.exports = class Settings extends EventEmitter {
                               .pop()
                               .split(EOL)[0]
                               .trim();
-        this.jestVersionMajor = parseInt(version, 1);
+        this.jestVersionMajor = parseInt(version, 10);
       }
       
       // Pull out the data for the config
