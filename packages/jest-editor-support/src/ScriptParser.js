@@ -23,7 +23,7 @@ export type ParserReturn = {
  * collection of it and expects.
  */
 function parse(file: string): ParserReturn {
-  if (file.match(/\.ts?$/)) {
+  if (file.match(/\.tsx?$/)) {
     // This require is done here so that it can be optional for clients
     const {parse} = require('./parsers/TypeScriptParser');
     return parse(file);
