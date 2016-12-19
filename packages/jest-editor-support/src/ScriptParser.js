@@ -25,7 +25,10 @@ class ItBlock extends Node {
   name: string;
 }
 
-export type ParserReturn = { itBlocks: Array<ItBlock>,  expects: Array<Expect> }
+export type ParserReturn = {
+  itBlocks: Array<ItBlock>,
+  expects: Array<Expect>,
+};
 
 /**
  * Converts the file into an AST, then passes out a
