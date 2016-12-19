@@ -71,8 +71,8 @@ module.exports = class Settings extends EventEmitter {
       // Pull out the data for the config
       if (string.includes('config =')) {
         const jsonString = string.split('config =')
-                                 .pop()
-                                 .split('No tests found')[0];
+          .pop()
+          .split('No tests found')[0];
         this.settings = JSON.parse(jsonString);
         completed();
       }
