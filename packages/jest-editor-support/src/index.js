@@ -14,7 +14,7 @@ const Process = require('./Process');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const Runner = require('./Runner');
 const Settings = require('./Settings');
-const {parse, Expect, ItBlock, Node} = require('./TypeScriptParser');
+const {parse, Expect, ItBlock, Node} = require('./ScriptParser');
 const TestReconciler =  require('./TestReconciler');
 
 module.exports = {
