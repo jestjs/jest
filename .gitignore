@@ -3,6 +3,7 @@
 .DS_STORE
 /node_modules
 /examples/*/node_modules/
+/examples/*/lib/
 /packages/*/node_modules/
 /packages/*/build/
 /packages/*/coverage/
