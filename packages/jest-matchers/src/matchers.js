@@ -28,8 +28,10 @@ const {
   printReceived,
   printExpected,
   printWithType,
-  equals,
 } = require('jest-matcher-utils');
+const {
+  equals,
+} = require('./jasmine-utils');
 
 type ContainIterable = (
   Array<any> |
