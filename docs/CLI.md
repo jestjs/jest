@@ -1,8 +1,8 @@
 ---
 id: cli
-title: Jest CLI
+title: Jest CLI Options
 layout: docs
-category: Reference
+category: API Reference
 permalink: docs/cli.html
 ---
 
