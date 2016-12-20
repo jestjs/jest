@@ -2,9 +2,9 @@
 id: mock-functions
 title: Mock Functions
 layout: docs
-category: Introduction
+category: Guides
 permalink: docs/mock-functions.html
-next: timer-mocks
+next: manual-mocks
 ---
 
 Mock functions make it easy to test the links between code by erasing the actual

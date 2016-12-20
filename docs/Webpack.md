@@ -1,9 +1,9 @@
 ---
-id: tutorial-webpack
+id: webpack
 title: Webpack
 layout: docs
 category: Guides
-permalink: docs/tutorial-webpack.html
+permalink: docs/webpack.html
 next: migration-guide
 ---
 

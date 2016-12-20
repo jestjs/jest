@@ -4,7 +4,7 @@ title: Async Tests
 layout: docs
 category: Introduction
 permalink: docs/tutorial-async.html
-next: mock-functions
+next: more-resources
 ---
 
 *Note: make sure to install `babel-jest` and the async/await feature for this
