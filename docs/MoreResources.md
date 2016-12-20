@@ -7,6 +7,8 @@ permalink: docs/more-resources.html
 next: tutorial-react
 ---
 
+> **Note**: This is a placeholder.
+
 * _some link to the first guide under Guides_
 * [API Reference](/jest/docs/api.html)
 * [Learn by example](https://github.com/facebook/jest/tree/master/examples).

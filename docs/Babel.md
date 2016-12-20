@@ -7,6 +7,8 @@ permalink: docs/babel.html
 next: webpack
 ---
 
+> **Note**: This is a placeholder.
+
 ### Babel Integration
 
 If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled: `npm install --save-dev babel-jest babel-polyfill`.

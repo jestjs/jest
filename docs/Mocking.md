@@ -7,7 +7,7 @@ permalink: docs/mocking.html
 next: tutorial-async
 ---
 
-### Editor's Note
+> **Note**: This is a placeholder.
 
 This should be an introduction to mocking. Not as in-depth as [Mock Functions](/jest/docs/mock-functions.html), just one specific use of mocking that would be useful in a simple test case.
 
