@@ -164,12 +164,6 @@ const _validateResult = result => {
   }
 };
 
-const setState = (state: MatcherState) => {
-  Object.assign(global[GLOBAL_STATE].state, state);
-};
-
-const getState = () => global[GLOBAL_STATE].state;
-
 // add default jest matchers
 expect.extend(matchers);
 expect.extend(spyMatchers);
@@ -179,8 +173,10 @@ expect.assertions = (expected: number) => (
   global[GLOBAL_STATE].state.assertionsExpected = expected
 );
 
-module.exports = {
-  expect,
-  getState,
-  setState,
+expect.setState = (state: MatcherState) => {
+  Object.assign(global[GLOBAL_STATE].state, state);
 };
+
+expect.getState = () => global[GLOBAL_STATE].state;
+
+module.exports = expect;
