@@ -3,7 +3,7 @@ id: snapshot-testing
 title: Snapshot Testing
 layout: docs
 category: Guides
-permalink: docs/getting-started.html
+permalink: docs/snapshot-testing.html
 next: tutorial-jquery
 ---
 
