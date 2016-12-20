@@ -1,10 +1,10 @@
 ---
 id: tutorial-async
-title: Tutorial – Async
+title: Async Tests
 layout: docs
-category: Quick Start
+category: Introduction
 permalink: docs/tutorial-async.html
-next: tutorial-webpack
+next: mock-functions
 ---
 
 *Note: make sure to install `babel-jest` and the async/await feature for this
