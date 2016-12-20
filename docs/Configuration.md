@@ -2,12 +2,10 @@
 id: configuration
 title: Configuring package.json
 layout: docs
-category: Reference
+category: API Reference
 permalink: docs/configuration.html
 next: cli
 ---
-
-#### The Jest configuration options
 
 Jest's configuration can be defined in the `package.json` file of your project
 or through the `--config <path/to/json>` option. If you'd like to use
