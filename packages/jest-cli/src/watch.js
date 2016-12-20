@@ -12,19 +12,15 @@
 import type {HasteContext} from 'types/HasteMap';
 import type {Config} from 'types/Config';
 
-const realFs = require('fs');
-const fs = require('graceful-fs');
-fs.gracefulify(realFs);
-
-const {clearLine} = require('jest-util');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const preRunMessage = require('./preRunMessage');
-const TestWatcher = require('./TestWatcher');
-const runJest = require('./runJest');
-const setWatchMode = require('./lib/setWatchMode');
+const {clearLine} = require('jest-util');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
+const preRunMessage = require('./preRunMessage');
+const runJest = require('./runJest');
+const setWatchMode = require('./lib/setWatchMode');
+const TestWatcher = require('./TestWatcher');
 
 const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const KEYS = {

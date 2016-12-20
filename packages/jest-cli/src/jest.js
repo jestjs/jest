@@ -20,19 +20,18 @@ const Runtime = require('jest-runtime');
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
-const {Console, clearLine} = require('jest-util');
-const {formatTestResults} = require('jest-util');
-const {run} = require('./cli');
 const chalk = require('chalk');
+const {Console, clearLine} = require('jest-util');
+const {createDirectory} = require('jest-util');
+const createHasteContext = require('./lib/createHasteContext');
+const getMaxWorkers = require('./lib/getMaxWorkers');
+const logDebugMessages = require('./lib/logDebugMessages');
 const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
-const TestWatcher = require('./TestWatcher');
-const {createDirectory} = require('jest-util');
+const {run} = require('./cli');
 const runJest = require('./runJest');
+const TestWatcher = require('./TestWatcher');
 const watch = require('./watch');
-const getMaxWorkers = require('./lib/getMaxWorkers');
-const createHasteContext = require('./lib/createHasteContext');
-const logDebugMessages = require('./lib/logDebugMessages');
 
 const VERSION = require('../package.json').version;
 

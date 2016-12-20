@@ -10,6 +10,7 @@
 'use strict';
 
 import type {PatternInfo} from '../SearchSource';
+
 const {clearLine} = require('jest-util');
 const chalk = require('chalk');
 

@@ -12,20 +12,17 @@
 import type {PatternInfo} from './SearchSource';
 import type {HasteContext} from 'types/HasteMap';
 
-const realFs = require('fs');
 const fs = require('graceful-fs');
-fs.gracefulify(realFs);
 
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
-const {Console} = require('jest-util');
-const chalk = require('chalk');
-const formatTestResults = require('jest-util');
-const path = require('path');
-const getMaxWorkers = require('./lib/getMaxWorkers');
-const setWatchMode = require('./lib/setWatchMode');
 const buildTestPathPatternInfo = require('./lib/buildTestPathPatternInfo');
+const chalk = require('chalk');
+const {Console, formatTestResults} = require('jest-util');
+const getMaxWorkers = require('./lib/getMaxWorkers');
+const path = require('path');
+const setWatchMode = require('./lib/setWatchMode');
 
 const getTestSummary = (
   argv: Object,
