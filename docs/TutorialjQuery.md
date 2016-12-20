@@ -4,7 +4,7 @@ title: DOM Manipulation
 layout: docs
 category: Guides
 permalink: docs/tutorial-jquery.html
-next: manual-mocks
+next: mock-functions
 ---
 
 Another class of functions that is often considered difficult to test is code

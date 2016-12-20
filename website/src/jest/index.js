@@ -45,9 +45,6 @@ var index = React.createClass({
             <GridBlock className="responsiveList testingFeatures" contents={whyJest} layout="threeColumn" />
           </Container>
           <Container padding={["bottom"]}>
-            <p>You can try out a real version of Jest through <a href="https://repl.it">repl.it</a>. Just edit your test and hit the run button!</p>
-            <iframe className="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
-
             <h2>
               <a className="anchor" name="getting-started"></a>
               Getting Started
