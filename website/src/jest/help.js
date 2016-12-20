@@ -18,7 +18,7 @@ var support = React.createClass({
         title: 'Browse the docs',
         content: 'Find what you\'re looking for in our detailed documentation and guides.\r\n\r\n\
 - Learn how to [get started](/jest/docs/getting-started.html) with Jest.\r\n\
-- Read the [troubleshooting](/jest/docs/troubleshooting.html) documentation page.\r\n\
+- [Troubleshoot](/jest/docs/troubleshooting.html) problems with Jest.\r\n\
 - Learn how to [configure Jest](/jest/docs/configuration.html).\r\n\
 - Look at the full [API Reference](/jest/docs/api.html).\r\n',
       },
@@ -45,10 +45,11 @@ var support = React.createClass({
               <header className="postHeader">
                 <h2>Need help?</h2>
               </header>
-              Jest is worked on full-time by Facebook's
-              product infrastructure engineering teams. They're often around
-              and available for questions.
-
+              <p>
+                Jest is worked on full-time by Facebook's
+                JavaScript Tools team. Team members are often around
+                and available for questions.
+              </p>
               <GridBlock contents={supportLinks} layout="threeColumn" />
             </div>
           </Container>
