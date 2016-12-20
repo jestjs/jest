@@ -136,11 +136,11 @@ beforeEach(() => {
   jest.resetModules();
 });
 
-it('works', () => {
+test('works', () => {
   const sum = require('../sum');
 });
 
-it('works too', () => {
+test('works too', () => {
   const sum = require('../sum');
   // sum is a different copy of the sum module from the previous test.
 });

@@ -33,7 +33,7 @@ module.exports = timerGame;
 
 jest.useFakeTimers();
 
-it('waits 1 second before ending the game', () => {
+test('waits 1 second before ending the game', () => {
   const timerGame = require('../timerGame');
   timerGame();
 
@@ -51,7 +51,7 @@ callback is called after 1 second. To do this, we're going to use Jest's timer
 control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
-  it('calls the callback after 1 second', () => {
+  test('calls the callback after 1 second', () => {
     const timerGame = require('../timerGame');
     const callback = jest.fn();
 
@@ -105,7 +105,7 @@ module.exports = infiniteTimerGame;
 jest.useFakeTimers();
 
 describe('infiniteTimerGame', () => {
-  it('schedules a 10-second timer after 1 second', () => {
+  test('schedules a 10-second timer after 1 second', () => {
     const infiniteTimerGame = require('../infiniteTimerGame');
     const callback = jest.fn();
 
