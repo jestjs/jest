@@ -7,7 +7,7 @@ permalink: docs/jest-object.html
 next: configuration
 ---
 
-The methods in the global `jest` object help create mocks and let you control Jest's overall behavior.
+The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
 
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
