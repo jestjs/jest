@@ -9,38 +9,180 @@ next: expect
 
 In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
 
-  - `afterAll(fn)`
-  - `afterEach(fn)`
-  - `beforeAll(fn)`
-  - `beforeEach(fn)`
-  - [`describe(name, fn)`](#basic-testing)
-  - `fdescribe(name, fn)`
-  - `fit(name, fn)` executes only this test. Useful when investigating a failure
-  - [`it(name, fn)`](#basic-testing)
-  - [`it.only(name, fn)`](#basic-testing)
-  - [`it.skip(name, fn)`](#basic-testing)
+  - [`afterAll(fn)`](#afterallfn)
+  - [`afterEach(fn)`](#aftereachfn)
+  - [`beforeAll(fn)`](#beforeallfn)
+  - [`beforeEach(fn)`](#beforeeachfn)
+  - [`describe(name, fn)`](#describename-fn)
+  - [`describe.only(name, fn)`](#describeonlyname-fn)
+  - [`describe.skip(name, fn)`](#describeskipname-fn)
+  - [`fdescribe(name, fn)`](#describeonlyname-fn)
+  - [`fit(name, fn)`](#testonlyname-fn)
+  - [`it(name, fn)`](#testname-fn)
+  - [`it.only(name, fn)`](#testonlyname-fn)
+  - [`it.skip(name, fn)`](#testskipname-fn)
   - [`require.requireActual(moduleName)`](#requirerequireactualmodulename)
   - [`require.requireMock(moduleName)`](#requirerequiremockmodulename)
-  - [`test(name, fn)`](#basic-testing) is an alias for `it`
-  - `xdescribe(name, fn)`
-  - `xit(name, fn)`
-  - `xtest(name, fn)`
+  - [`test(name, fn)`](#testname-fn)
+  - [`test.only(name, fn)`](#testonlyname-fn)
+  - [`test.skip(name, fn)`](#testskipname-fn)
+  - [`xdescribe(name, fn)`](#xdescribename-fn)
+  - [`xit(name, fn)`](#testskipname-fn)
+  - [`xtest(name, fn)`](#testskipname-fn)
 
 -----
 
-### Basic Testing
+### `afterAll(fn)`
 
-All you need in a test file is the `it` method which runs a test. The convention is to name your test so that your code reads like a sentence - that's why the name of the core testing function is `it`. For example, let's say there's a function `inchesOfRain()` that should be zero. Your whole test file could be:
+Runs a function after all the tests in this file have completed. If the function returns a promise, Jest waits for that promise to resolve before continuing.
+
+This is often useful if you want to clean up some global setup state that is shared across tests.
+
+For example:
 
 ```js
-it('did not rain', () => {
-  expect(inchesOfRain()).toBe(0);
-});
+let globalDatabase = makeGlobalDatabase();
+
+function cleanUpDatabase(db) {
+  db.cleanUp();
+}
+
+afterAll(() => {
+  cleanUpDatabase(globalDatabase);
+})
+
+test('can find things', () => {
+  return globalDatabase.find('thing', {}, (results) => {
+    expect(results.length).toBeGreaterThan(0)
+  })
+})
+
+test('can insert a thing', () => {
+  return globalDatabase.insert('thing', makeThing(), (response) => {
+    expect(response.success).toBeTruthy();
+  })
+})
 ```
 
-The first argument is the test name; the second argument is a function that contains the expectations to test.
+Here the `afterAll` ensures that `cleanUpDatabase` is called after all tests run.
 
-It's often handy to group together several related tests in one "test suite". For example, if you have a `myBeverage` object that is supposed to be delicious but not sour, you could test it with:
+If `afterAll` is inside a `describe` block, it runs at the end of the describe block.
+
+If you want to run some cleanup after every test instead of after all tests, use `afterEach` instead.
+
+### `afterEach(fn)`
+
+Runs a function after each one of the tests in this file completes. If the function returns a promise, Jest waits for that promise to resolve before continuing.
+
+This is often useful if you want to clean up some temporary state that is created by each test.
+
+For example:
+
+```js
+let globalDatabase = makeGlobalDatabase();
+
+function cleanUpDatabase(db) {
+  db.cleanUp();
+}
+
+afterEach(() => {
+  cleanUpDatabase(globalDatabase);
+})
+
+test('can find things', () => {
+  return globalDatabase.find('thing', {}, (results) => {
+    expect(results.length).toBeGreaterThan(0);
+  })
+})
+
+test('can insert a thing', () => {
+  return globalDatabase.insert('thing', makeThing(), (response) => {
+    expect(response.success).toBeTruthy();
+  })
+})
+```
+
+Here the `afterEach` ensures that `cleanUpDatabase` is called after each test runs.
+
+If `afterEach` is inside a `describe` block, it only runs after the tests that are inside this describe block.
+
+If you want to run some cleanup just once, after all of the tests run, use `afterAll` instead.
+
+### `beforeAll(fn)`
+
+Runs a function before any of the tests in this file run. If the function returns a promise, Jest waits for that promise to resolve before running tests.
+
+This is often useful if you want to set up some global state that will be used by many tests.
+
+For example:
+
+```js
+let globalDatabase = makeGlobalDatabase();
+
+beforeAll(() => {
+  // Clears the database and adds some testing data.
+  // Jest will wait for this promise to resolve before running tests.
+  return globalDatabase.clear().then(() => {
+    return globalDatabase.insert({ testData: 'foo' })
+  })
+})
+
+// Since we only set up the database once in this example, it's important
+// that our tests don't modify it.
+test('can find things', () => {
+  return globalDatabase.find('thing', {}, (results) => {
+    expect(results.length).toBeGreaterThan(0);
+  })
+})
+```
+
+Here the `beforeAll` ensures that the database is set up before tests run. If setup was synchronous, you could just do this without `beforeAll`. The key is that Jest will wait for a promise to resolve, so you can have asynchronous setup as well.
+
+If `beforeAll` is inside a `describe` block, it runs at the beginning of the describe block.
+
+If you want to run something before every test instead of before any test runs, use `beforeEach` instead.
+
+### `beforeEach(fn)`
+
+Runs a function before each of the tests in this file runs. If the function returns a promise, Jest waits for that promise to resolve before running the test.
+
+This is often useful if you want to reset some global state that will be used by many tests.
+
+For example:
+
+```js
+let globalDatabase = makeGlobalDatabase();
+
+beforeEach(() => {
+  // Clears the database and adds some testing data.
+  // Jest will wait for this promise to resolve before running tests.
+  return globalDatabase.clear().then(() => {
+    return globalDatabase.insert({ testData: 'foo' })
+  })
+})
+
+test('can find things', () => {
+  return globalDatabase.find('thing', {}, (results) => {
+    expect(results.length).toBeGreaterThan(0);
+  })
+})
+
+test('can insert a thing', () => {
+  return globalDatabase.insert('thing', makeThing(), (response) => {
+    expect(response.success).toBeTruthy();
+  })
+})
+```
+
+Here the `beforeEach` ensures that the database is reset for each test.
+
+If `beforeEach` is inside a `describe` block, it runs for each test in the describe block.
+
+If you only need to run some setup code once, before any tests run, use `beforeAll` instead.
+
+### `describe(name, fn)`
+
+`describe(name, fn)` creates a block that groups together several related tests in one "test suite". For example, if you have a `myBeverage` object that is supposed to be delicious but not sour, you could test it with:
 
 ```js
 const myBeverage = {
@@ -49,43 +191,31 @@ const myBeverage = {
 };
 
 describe('my beverage', () => {
-  it('is delicious', () => {
+  test('is delicious', () => {
     expect(myBeverage.delicious).toBeTruthy();
   });
 
-  it('is not sour', () => {
+  test('is not sour', () => {
     expect(myBeverage.sour).toBeFalsy();
   });
 });
 ```
 
-To test an asynchronous function, just return a promise from `it`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
+This isn't required - you can just write the `test` blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.
 
-You can also return a promise from `beforeEach`, `afterEach`, `beforeAll` or `afterAll` functions.
+### `describe.only(name, fn)`
 
-For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
+Also under the alias: `fdescribe(name, fn)`
 
-```js
-describe('my beverage list', () => {
-  it('has lemon in it', () => {
-    return fetchBeverageList().then((list) => {
-      expect(list).toContain('lemon');
-    });
-  });
-});
-```
-
-Even though the call to `it` will return right away, the test doesn't complete until the promise resolves as well.
-
-You can use `.only` if you want to run only one test or describe block:
+You can use `describe.only` if you want to run only one describe block:
 
 ```js
 describe.only('my beverage', () => {
-  it('is delicious', () => {
+  test('is delicious', () => {
     expect(myBeverage.delicious).toBeTruthy();
   });
 
-  it('is not sour', () => {
+  test('is not sour', () => {
     expect(myBeverage.sour).toBeFalsy();
   });
 });
@@ -95,26 +225,29 @@ describe('my other beverage', () => {
 });
 ```
 
-or
+### `describe.skip(name, fn)`
+
+Also under the alias: `xdescribe(name, fn)`
+
+You can use `describe.skip` if you do not want to run a particular describe block:
 
 ```js
-it.only('will run', () => { /* ... */ });
-it('will be skipped', () => { /* ... */ });
+describe('my beverage', () => {
+  test('is delicious', () => {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+
+  test('is not sour', () => {
+    expect(myBeverage.sour).toBeFalsy();
+  });
+});
+
+describe.skip('my other beverage', () => {
+  // ... will be skipped
+});
 ```
 
-Or you can use `.skip` if you want to skip a test or a describe block:
-```js
-it.skip('will be skipped', () => { /* ... */ });
-it('will run', () => { /* ... */ });
-```
-
-Alternatively you can use `test` instead of `it`. `test` is just an alias for `it` and
-works exactly the same.
-```js
-test('something works', () => { /* ... */ });
-test.skip('this test is skipped', () => { /* ... */ });
-test.only('this test will run');
-```
+Using `describe.skip` is often just an easier alternative to temporarily commenting out a chunk of tests.
 
 ### `require.requireActual(moduleName)`
 
@@ -125,3 +258,75 @@ module should receive a mock implementation or not.
 
 Returns a mock module instead of the actual module, bypassing all checks on
 whether the module should be required normally or not.
+
+### `test(name, fn)`
+
+Also under the alias: `it(name, fn)`
+
+All you need in a test file is the `test` method which runs a test. For example, let's say there's a function `inchesOfRain()` that should be zero. Your whole test could be:
+
+```js
+test('did not rain', () => {
+  expect(inchesOfRain()).toBe(0);
+});
+```
+
+The first argument is the test name; the second argument is a function that contains the expectations to test.
+
+To test an asynchronous function, just return a promise from `test`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
+
+For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
+
+```js
+test('has lemon in it', () => {
+  return fetchBeverageList().then((list) => {
+    expect(list).toContain('lemon');
+  });
+});
+```
+
+Even though the call to `test` will return right away, the test doesn't complete until the promise resolves as well.
+
+### `test.only(name, fn)`
+
+Also under the aliases: `it.only(name, fn)` or `fit(name, fn)`
+
+When you are debugging a large codebase, you will often only want to run a subset of tests. You can use `.only` to specify which tests are the only ones you want to run.
+
+For example, let's say you had these tests:
+
+```js
+test.only('it is raining', () => {
+  expect(inchesOfRain()).toBeGreaterThan(0);
+})
+
+test('it is not snowing', () => {
+  expect(inchesOfSnow()).toBe(0);
+})
+```
+
+Only the "it is raining" test will run, since it is run with `test.only`.
+
+Usually you wouldn't check code using `test.only` into source control - you would use it just for debugging, and remove it once you have fixed the broken tests.
+
+### `test.skip(name, fn)`
+
+Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or `xtest(name, fn)`
+
+When you are maintaining a large codebase, you may sometimes find a test that is temporarily broken for some reason. If you want to skip running this test, but you don't want to just delete this code, you can use `test.skip` to specify some tests to skip.
+
+For example, let's say you had these tests:
+
+```js
+test('it is raining', () => {
+  expect(inchesOfRain()).toBeGreaterThan(0);
+})
+
+test.skip('it is not snowing', () => {
+  expect(inchesOfSnow()).toBe(0);
+})
+```
+
+Only the "it is raining" test will run, since the other test is run with `test.skip`.
+
+You could simply comment the test out, but it's often a bit nicer to use `test.skip` because it will maintain indentation and syntax highlighting.
