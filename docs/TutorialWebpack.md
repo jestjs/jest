@@ -1,10 +1,10 @@
 ---
 id: tutorial-webpack
-title: Tutorial – webpack
+title: Webpack
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/tutorial-webpack.html
-next: tutorial-jquery
+next: migration-guide
 ---
 
 Jest can be used in projects that use webpack to manage assets, styles, and compilation.

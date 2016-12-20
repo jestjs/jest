@@ -2,9 +2,9 @@
 id: troubleshooting
 title: Troubleshooting
 layout: docs
-category: Reference
+category: Guides
 permalink: docs/troubleshooting.html
-next: mock-functions
+next: api
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.

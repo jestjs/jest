@@ -2,9 +2,9 @@
 id: getting-started
 title: Getting Started
 layout: docs
-category: Quick Start
+category: Introduction
 permalink: docs/getting-started.html
-next: tutorial-react
+next: tutorial-async
 ---
 
 Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!

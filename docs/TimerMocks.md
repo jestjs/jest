@@ -1,9 +1,10 @@
 ---
 id: timer-mocks
-title: Timer mocks
+title: Timer Mocks
 layout: docs
-category: Reference
+category: Introduction
 permalink: docs/timer-mocks.html
+next: tutorial-react
 ---
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,

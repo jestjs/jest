@@ -1,10 +1,10 @@
 ---
 id: configuration
-title: Configuration
+title: Configuring package.json
 layout: docs
 category: Reference
 permalink: docs/configuration.html
-next: troubleshooting
+next: cli
 ---
 
 #### The Jest configuration options
