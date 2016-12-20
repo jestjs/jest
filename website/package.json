@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "connect": "2.8.3",
+    "feed": "0.3.0",
     "fs.extra": "*",
     "glob": "*",
     "mkdirp": "*",

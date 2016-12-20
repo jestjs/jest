@@ -19,6 +19,8 @@ var Head = React.createClass({
         <meta property="og:image" content="https://facebook.github.io/jest/img/opengraph.png" />
         <meta property="og:description" content={this.props.description} />
 
+        <link rel="alternate" type="application/atom+xml" href="/jest/blog/atom.xml" title="Jest Blog ATOM Feed" />
+        <link rel="alternate" type="application/rss+xml" href="/jest/blog/feed.xml" title="Jest Blog RSS Feed" />
         <link rel="shortcut icon" href="/jest/img/favicon.png" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" />
         <link rel="stylesheet" href="/jest/css/jest.css" />
