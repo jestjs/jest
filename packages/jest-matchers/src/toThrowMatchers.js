@@ -24,9 +24,8 @@ const {
   matcherHint,
   printExpected,
   printWithType,
+  equals,
 } = require('jest-matcher-utils');
-
-const equals = global.jasmine.matchersUtil.equals;
 
 const createMatcher = matcherName =>
   (actual: Function, expected: string | Error | RegExp) => {

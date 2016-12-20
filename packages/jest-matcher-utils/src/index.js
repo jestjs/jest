@@ -12,6 +12,7 @@
 
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
+const equals = require('./equals');
 
 export type ValueType =
   | 'array'
@@ -191,6 +192,7 @@ module.exports = {
   ensureExpectedIsNumber,
   ensureNoExpected,
   ensureNumbers,
+  equals,
   getType,
   matcherHint,
   pluralize,
