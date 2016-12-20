@@ -1,10 +1,12 @@
 'use strict';
 
+const feed = require('./feed');
 const fs = require('fs')
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const optimist = require('optimist');
 const path = require('path');
+
 const argv = optimist.argv;
 
 function splitHeader(content) {
@@ -202,6 +204,9 @@ function execute() {
       'module.exports = ' + JSON.stringify(metadatas, null, 2) + ';'
     );
   });
+
+  fs.writeFileSync('src/jest/blog/feed.xml', feed('rss'));
+  fs.writeFileSync('src/jest/blog/atom.xml', feed('atom'));
 }
 
 if (argv.convert) {

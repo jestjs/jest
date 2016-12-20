@@ -58,16 +58,21 @@ module.exports = class Settings extends EventEmitter {
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       const string = data.toString();
       // We can give warnings to versions under 17 now
+      // See https://github.com/facebook/jest/issues/2343 for moving this into 
+      // the config object
       if (string.includes('jest version =')) {
-        const version = string.split('jest version =').pop().split(EOL)[0];
-        this.jestVersionMajor = parseInt(version, 1);
+        const version = string.split('jest version =')
+          .pop()
+          .split(EOL)[0]
+          .trim();
+        this.jestVersionMajor = parseInt(version, 10);
       }
       
       // Pull out the data for the config
       if (string.includes('config =')) {
         const jsonString = string.split('config =')
-                                 .pop()
-                                 .split('No tests found')[0];
+          .pop()
+          .split('No tests found')[0];
         this.settings = JSON.parse(jsonString);
         completed();
       }

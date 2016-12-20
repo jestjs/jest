@@ -12,7 +12,7 @@
   "devDependencies": {
     "babel-jest": "*",
     "babel-preset-react-native": "^1.9.0",
-    "jest-cli": "*",
+    "jest": "*",
     "jest-react-native": "*",
     "react-test-renderer": "*"
   },
