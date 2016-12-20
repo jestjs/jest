@@ -10,9 +10,13 @@ next: mock-function-api
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
   - [`expect(value)`](#expectvalue)
+  - `expect.anything()`
+  - `expect.any(constructor)`
+  - `expect.arrayContaining(array)`
   - `expect.assertions(number)`
-  - [`expect.extend(matchers)`](#extending-jest-matchers)
-  - [`expect.<asymmetric-match>()`](#asymmetric-matchers)
+  - [`expect.extend(matchers)`](#expectextendmatchers)
+  - `expect.stringMatching(regexp)`
+  - `expect.objectContaining(object)`
   - [`.lastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.not`](#not)
   - [`.toBe(value)`](#tobevalue)
@@ -147,8 +151,7 @@ describe('drinkEach', () => {
 
 Also under the alias: `.toBeCalledWith`
 
-Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific
-arguments.
+Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific arguments.
 
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
@@ -476,7 +479,6 @@ describe('looking for a new house', () => {
 });
 ```
 
-
 ### `.toMatchSnapshot(?string)`
 
 This ensures that a value matches the most recent snapshot. Check out [the React + Jest tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more information on snapshot testing.
@@ -574,10 +576,9 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
+### `expect.extend(matchers)`
 
-### Extending Jest Matchers
-
-Using descriptive matchers will help your tests be readable and maintainable. Jest has a simple API for adding your own matchers. Here is an example of adding a matcher:
+You can use `expect.extend` to add your own matchers to Jest. For example:
 
 ```js
 const five = require('five');
@@ -653,50 +654,101 @@ This will print something like this:
 
 When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
 
-### Asymmetric Matchers
+### `expect.anything()`
 
-Sometimes you don't want to check equality of entire object. You just need to assert that value is not empty or has some expected type. For example, we want to check the shape of some message entity:
+`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
 
-```
-  expect({
-    timestamp: 1480807810388,
-    text: 'Some text content, but we care only about *this part*'
-  }).toEqual({
-    timestamp: expect.any(Number),
-    text: expect.stringMatching('*this part*')
-  });
+```js
+test('map calls its argument with a non-null argument', () => {
+  let mock = jest.fn();
+  [1].map(mock);
+  expect(mock).toBeCalledWith(expect.anything());
+})
 ```
 
-There some special values with specific comparing behavior that you can use as a part of expectation. They are useful for asserting some types of data, like timestamps, or long text resources, where only part of it is important for testing. Currently, Jest has the following asymmetric matchers:
+### `expect.any(constructor)`
 
-  * `expect.anything()` - matches everything, except `null` and `undefined`
-  * `expect.any(<constructor>)` - checks, that actual value is instance of provided `<constructor>`.
-  * `expect.objectContaining(<object>)` - compares only keys, that exist in provided object. All other keys of `actual` value will be ignored.
-  * `expect.arrayContaining(<array>)` - checks that all items from the provided `array` are exist in `actual` value. It allows to have more values in `actual`.
-  * `expect.stringMatching(<string|Regexp>)` - checks that actual value has matches of provided expectation.
+`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
 
-These expressions can be used as an argument in `.toEqual` and `.toBeCalledWith`:
-
-```
-  expect(callback).toEqual(expect.any(Function));
-
-  expect(mySpy).toBeCalledWith(expect.any(Number), expect.any(String))
-```
-
-They can be also used as object keys and may be nested into each other:
-
-```
-  expect(myObject).toEqual(expect.objectContaining({
-    items: expect.arrayContaining([
-      expect.any(Number)
-    ])
-  }));
-```
-
-The example above will match the following object. Array may contain more items, as well as object itself may also have some extra keys:
-
-```
-{
-  items: [1]
+```js
+function randocall(fn) {
+  return fn(Math.floor(Math.random() * 6 + 1));
 }
+
+test('randocall calls its callback with a number', () => {
+  let mock = jest.fn();
+  randocall(mock);
+  expect(mock).toBeCalledWith(expect.any(Number));
+})
+```
+
+### `expect.arrayContaining(array)`
+
+`expect.arrayContaining(array)` matches any array made up entirely of elements in the provided array. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, this code checks that `rollDice` returns only valid numbers:
+
+```js
+// Rolls n virtual dice
+function rollDice(n) {
+  let answer = [];
+  for (let i = 0; i < n; i++) {
+    answer.push(Math.floor(Math.random() * 6 + 1));
+  }
+  return answer;
+}
+
+test('rollDice only returns valid numbers', () => {
+  expect(rollDice(100)).toEqual(expect.arrayContaining([1, 2, 3, 4, 5, 6]));
+})
+```
+
+### `expect.assertions(number)`
+
+### `expect.stringMatching(regexp)`
+
+`expect.stringMatching(regexp)` matches any string that matches the provided regexp. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, let's say you want to test that `randomCoolNames()` only returns names that are cool:
+
+```js
+function randomCoolName() {
+  // Generate a last name
+  let lastName = (
+    'TRFGBNMPLZ'[Math.floor(Math.random() * 10)] +
+    'aeiou'[Math.floor(Math.random() * 5)] +
+    'mnbvxdstrp'[Math.floor(Math.random() * 10)]);
+  return 'Kevin ' + lastName;
+}
+
+function randomCoolNames() {
+  let answer = [];
+  for (let i = 0; i < 100; i++) {
+    answer.push(randomCoolName());
+  }
+  return answer;
+}
+
+test('randomCoolNames only returns cool names', () => {
+  // A reasonable proxy for whether a name is cool or not
+  let coolRegex = /^Kevin/;
+
+  expect(randomCoolNames).toEqual(
+    expect.arrayContaining(expect.stringMatching(coolRegex)));
+});
+```
+
+This example also shows how you can nest multiple asymmetric matchers, with `expect.stringMatching` inside the `expect.arrayContaining`.
+
+### `expect.objectContaining(object)`
+
+`expect.objectContaining(object)` matches any object that recursively matches the provided keys. This is often handy in conjunction with other asymmetric matchers.
+
+For example, let's say that we expect an `onPress` function to be called with an `Event` object, and all we need to verify is that the event has `event.x` and `event.y` properties. We can do that with:
+
+```js
+test('onPress gets called with the right thing', () => {
+  let onPress = jest.fn();
+  simulatePresses(onPress);
+  expect(onPress).toBeCalledWith(expect.objectContaining({
+    x: expect.any(Number),
+    y: expect.any(Number),
+  }));
+})
 ```
