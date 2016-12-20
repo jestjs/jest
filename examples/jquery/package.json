@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "jest-cli": "*"
+    "jest": "*"
   },
   "dependencies": {
     "jquery": "*"
