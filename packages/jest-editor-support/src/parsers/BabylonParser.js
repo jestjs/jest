@@ -64,10 +64,7 @@ const babylonParser = (file: string) => {
     block.start = node.loc.start;
     block.end =  node.loc.end;
     
-    // This makes it consistent with TypeScript's parser output
-    block.start.line -= 1;
-    block.end.line -= 1;
-    block.end.column -= 1;
+    block.start.column += 1;
 
     block.file = file;
     itBlocks.push(block);
@@ -80,6 +77,10 @@ const babylonParser = (file: string) => {
     const expect = new Expect();
     expect.start = node.loc.start;
     expect.end =  node.loc.end;
+
+    expect.start.column += 1;
+    expect.end.column += 1;
+
     expect.file = file;
     expects.push(expect);
   };
