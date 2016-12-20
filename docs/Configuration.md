@@ -2,7 +2,7 @@
 id: configuration
 title: Configuring package.json
 layout: docs
-category: Reference
+category: API Reference
 permalink: docs/configuration.html
 next: cli
 ---
