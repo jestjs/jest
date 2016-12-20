@@ -8,7 +8,7 @@
     "babel-polyfill": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
-    "jest-cli": "*",
+    "jest": "*",
     "react-addons-test-utils": "~15.3.1"
   },
   "scripts": {
