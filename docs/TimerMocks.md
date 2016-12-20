@@ -4,6 +4,7 @@ title: Timer mocks
 layout: docs
 category: Reference
 permalink: docs/timer-mocks.html
+next: snapshot-testing
 ---
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,

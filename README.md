@@ -12,10 +12,13 @@ Painless JavaScript Testing
 ## Getting Started
 
 <generated_getting_started_start />
-Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!
-<iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
+Install Jest using `npm`:
 
-Install Jest with `yarn` or `npm` by running `yarn add -D jest` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
+```
+npm install --save-dev jest
+```
+
+Let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
 module.exports = (a, b) => a + b;
@@ -38,7 +41,7 @@ Add the following to your `package.json`:
 }
 ```
 
-Run `yarn test` and Jest will print this message: `PASS __tests__/sum-test.js`. You just successfully wrote your first test using Jest!
+Run `npm test` and Jest will print this message: `PASS __tests__/sum-test.js`. You just successfully wrote your first test using Jest!
 
 **You are ready to use Jest! Here are some more resources to help you get started:**
 
@@ -57,53 +60,11 @@ Run `yarn test` and Jest will print this message: `PASS __tests__/sum-test.js`. 
   <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a> by <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a> hosted by <a href="https://egghead.io">Egghead</a>.
 </div>
 
-### Babel Integration
 
-If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled: `yarn add -D babel-jest babel-polyfill`.
+### grab bag
 
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES2015 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
-
-```js
-{
-  "presets": ["es2015", "react"]
-}
-```
-
-You are now set up to use all ES2015 features and React specific syntax.
-
-*Note: If you are using a more complicated Babel configuration, using Babel's `env` option,
-keep in mind that Jest will automatically define `NODE_ENV` as `test`.
-It will not use `development` section like Babel does by default when no `NODE_ENV` is set.*
-
-### React, React Native and Snapshot Testing
-
-Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases. You can use React's test renderer (`yarn add -D react-test-renderer`) to capture snapshots with Jest's snapshot feature and the `toMatchSnapshot` matcher:
-
-```js
-import renderer from 'react-test-renderer';
-test('Link renders correctly', () => {
-  const tree = renderer.create(
-    <Link page="http://www.facebook.com">Facebook</Link>
-  ).toJSON();
-  expect(tree).toMatchSnapshot();
-});
-```
-
-and it will produce a snapshot like this:
-
-```js
-exports[`Link renders correctly 1`] = `
-<a
-  className="normal"
-  href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
-  Facebook
-</a>
-`;
-```
-
-On subsequent test runs, Jest will compare the stored snapshot with the rendered output and highlight differences. If there are differences, Jest will ask you to fix your mistake and can be re-run with `-u` or `--updateSnapshot` to update an outdated snapshot.
+Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!
+<iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
 <generated_getting_started_end />
 
 ## API & Configuration
