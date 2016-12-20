@@ -4,7 +4,7 @@ title: More Resources
 layout: docs
 category: Introduction
 permalink: docs/more-resources.html
-next: snapshot-testing
+next: tutorial-react
 ---
 
 * _some link to the first guide under Guides_
