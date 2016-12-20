@@ -7,19 +7,16 @@ permalink: docs/expect.html
 next: mock-function-api
 ---
 
-#### Writing assertions with `expect`
-
-When you're writing tests, you need to check that values are what you
-expect all the time. That's what you use `expect` for.
+When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
   - [`expect(value)`](#expectvalue)
   - [`expect.extend(matchers)`](#extending-jest-matchers)
   - [`expect.<asymmetric-match>()`](#asymmetric-matchers)
-  - `.lastCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenLastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
+  - [`.lastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.not`](#not)
   - [`.toBe(value)`](#tobevalue)
-  - `.toBeCalled()` is an alias for [`.toHaveBeenCalled()`](#tohavebeencalled)
-  - `.toBeCalledWith(arg1, arg2, ...)` is an alias for [`.toHaveBeenCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
+  - [`.toBeCalled()`](#tohavebeencalled)
+  - [`.toBeCalledWith(arg1, arg2, ...)`](#tohavebeencalledwitharg1-arg2-)
   - [`.toBeCloseTo(number, numDigits)`](#tobeclosetonumber-numdigits)
   - [`.toBeDefined()`](#tobedefined)
   - [`.toBeFalsy()`](#tobefalsy)
@@ -45,8 +42,6 @@ expect all the time. That's what you use `expect` for.
   - [`.toThrow()`](#tothrow)
   - [`.toThrowError(error)`](#tothrowerrorerror)
   - [`.toThrowErrorMatchingSnapshot()`](#tothrowerrormatchingsnapshot)
-
-## Writing assertions with `expect`
 
 ### `expect(value)`
 
@@ -107,6 +102,8 @@ Don't use `toBe` with floating-point numbers. For example, due to rounding, in J
 
 ### `.toHaveBeenCalled()`
 
+Also under the alias: `.toBeCalled()`
+
 Use `.toHaveBeenCalled` to ensure that a mock function got called.
 
 For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
@@ -145,6 +142,8 @@ describe('drinkEach', () => {
 
 ### `.toHaveBeenCalledWith(arg1, arg2, ...)`
 
+Also under the alias: `.toBeCalledWith`
+
 Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific
 arguments.
 
@@ -163,6 +162,8 @@ describe('beverage registration', () => {
 ```
 
 ### `.toHaveBeenLastCalledWith(arg1, arg2, ...)`
+
+Also under the alias: `.lastCalledWith(arg1, arg2, ...)`
 
 If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test what arguments it was last called with. For example, let's say you have a `applyToAllFlavors(f)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the last flavor it operates on is `'mango'`. You can write:
 

@@ -7,17 +7,15 @@ permalink: docs/jest-object.html
 next: configuration
 ---
 
-#### The `jest` object
-
-These methods help create mocks and let you control Jest's overall behavior.
+The methods in the global `jest` object help create mocks and let you control Jest's overall behavior.
 
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
   - [`jest.enableAutomock()`](#jestenableautomock)
-  - [`jest.fn(?implementation)`](#jestfnimplementation)
+  - [`jest.fn(implementation)`](#jestfnimplementation)
   - [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
-  - [`jest.mock(moduleName, ?factory, ?options)`](#jestmockmodulename-factory-options)
+  - [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
   - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
   - [`jest.runAllTicks()`](#jestrunallticks)
@@ -29,8 +27,6 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
 
-
-## The `jest` object
 
 ### `jest.resetAllMocks()`
 Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
@@ -62,9 +58,8 @@ Returns the `jest` object for chaining.
 
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
-### `jest.fn(?implementation)`
-Returns a new, unused [mock function](#mock-functions). Optionally takes a mock
-implementation.
+### `jest.fn(implementation)`
+Returns a new, unused [mock function](#mock-functions). Optionally takes a mock implementation.
 
 ```js
   const mockFn = jest.fn();
@@ -84,8 +79,8 @@ Given the name of a module, use the automatic mocking system to generate a mocke
 
 This is useful when you want to create a [manual mock](/jest/docs/manual-mocks.html) that extends the automatic mock's behavior.
 
-### `jest.mock(moduleName, ?factory, ?options)`
-Mocks a module with an auto-mocked version when it is being required:
+### `jest.mock(moduleName, factory, options)`
+Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
 
 ```js
 // banana.js

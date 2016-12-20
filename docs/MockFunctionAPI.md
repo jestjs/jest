@@ -7,8 +7,6 @@ permalink: docs/mock-function-api.html
 next: jest-object
 ---
 
-#### Mock functions
-
 Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. You can create a mock function with `jest.fn()`.
 
   - [`mockFn.mock.calls`](#mockfnmockcalls)
@@ -20,8 +18,6 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mockReturnThis()`](#mockfnmockreturnthis)
   - [`mockFn.mockReturnValue(value)`](#mockfnmockreturnvaluevalue)
   - [`mockFn.mockReturnValueOnce(value)`](#mockfnmockreturnvalueoncevalue)
-
-## Mock Functions
 
 ### `mockFn.mock.calls`
 An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
