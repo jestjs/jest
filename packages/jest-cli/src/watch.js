@@ -10,19 +10,20 @@
 'use strict';
 
 import type {HasteContext} from 'types/HasteMap';
+import type {Config} from 'types/Config';
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
 fs.gracefulify(realFs);
 
 const {clearLine} = require('jest-util');
-const Runtime = require('jest-runtime');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const preRunMessage = require('./preRunMessage');
 const TestWatcher = require('./TestWatcher');
 const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
+const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 
 const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
@@ -46,10 +47,10 @@ const KEYS = {
 
 
 const watch = (
-  config: any,
+  config: Config,
   pipe: stream$Writable | tty$WriteStream,
   argv: Object,
-  jestHasteMap: HasteMap,
+  hasteMap: HasteMap,
   hasteContext: HasteContext,
 ) => {
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
@@ -63,12 +64,9 @@ const watch = (
   let testWatcher;
   let displayHelp = true;
 
-  jestHasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+  hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     if (eventsQueue.find(({type}) => type !== 'change')) {
-      hasteContext = {
-        hasteFS,
-        resolver: Runtime.createResolver(config, moduleMap),
-      };
+      hasteContext = createHasteContext(config, {hasteFS, moduleMap});
     }
     startRun();
   });

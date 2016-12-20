@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Path} from 'types/Config';
+import type {Path, Config} from 'types/Config';
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
@@ -31,6 +31,8 @@ const {createDirectory} = require('jest-util');
 const runJest = require('./runJest');
 const watch = require('./watch');
 const getMaxWorkers = require('./lib/getMaxWorkers');
+const createHasteContext = require('./lib/createHasteContext');
+const logDebugMessages = require('./lib/logDebugMessages');
 
 const VERSION = require('../package.json').version;
 
@@ -48,7 +50,11 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then(config => {
+    .then((config: Config) => {
+      if (argv.debug) {
+        logDebugMessages(config, pipe);
+      }
+
       createDirectory(config.cacheDirectory);
       const jestHasteMap = Runtime.createHasteMap(config, {
         console: new Console(pipe, pipe),
@@ -58,22 +64,12 @@ const runCLI = (
       });
 
       return jestHasteMap.build().then(
-        hasteMap => ({
-          hasteFS: hasteMap.hasteFS,
-          resolver: Runtime.createResolver(config, hasteMap.moduleMap),
-        }),
+        hasteMap => createHasteContext(config, hasteMap),
         error => {
           throw error;
         },
       )
       .then(hasteContext => {
-        if (argv.debug) {
-          /* $FlowFixMe */
-          const testFramework = require(config.testRunner);
-          pipe.write('jest version = ' + VERSION + '\n');
-          pipe.write('test framework = ' + testFramework.name + '\n');
-          pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
-        }
         if (argv.watch || argv.watchAll) {
           return watch(config, pipe, argv, jestHasteMap, hasteContext);
         } else {

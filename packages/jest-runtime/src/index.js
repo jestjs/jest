@@ -215,7 +215,7 @@ class Runtime {
       retainAllFiles: false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
-      watch: (options && options.watch),
+      watch: options && options.watch,
     });
   }
 

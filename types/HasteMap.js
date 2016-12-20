@@ -35,7 +35,7 @@ export type InternalHasteMap = {|
 export type HasteMap = {|
   hasteFS: HasteFS,
   moduleMap: ModuleMap,
-  __hasteMapForTest: ?InternalHasteMap,
+  __hasteMapForTest?: ?InternalHasteMap,
 |};
 
 export type FileMetaData = [
