@@ -4,7 +4,7 @@
     "react-dom": "*"
   },
   "devDependencies": {
-    "jest-cli": "*",
+    "jest": "*",
     "react-addons-test-utils": "*",
     "typescript": ">=1.6.2"
   },

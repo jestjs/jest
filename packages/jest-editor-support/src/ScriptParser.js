@@ -11,19 +11,7 @@
 'use strict';
 
 const {babylonParser} = require('./parsers/BabylonParser');
-import type {Location} from './types';
-
-class Node {
-  start: Location;
-  end: Location;
-  file: string;
-}
-
-class Expect extends Node {}
-
-class ItBlock extends Node {
-  name: string;
-}
+const {ItBlock, Expect} = require('./parsers/ParserNodes.js');
 
 export type ParserReturn = {
   itBlocks: Array<ItBlock>,
@@ -35,7 +23,7 @@ export type ParserReturn = {
  * collection of it and expects.
  */
 function parse(file: string): ParserReturn {
-  if (file.match(/\.ts?$/)) {
+  if (file.match(/\.tsx?$/)) {
     // This require is done here so that it can be optional for clients
     const {parse} = require('./parsers/TypeScriptParser');
     return parse(file);
@@ -45,8 +33,5 @@ function parse(file: string): ParserReturn {
 }
 
 module.exports = {
-  Expect,
-  ItBlock,
-  Node,
   parse,
 };

@@ -11,8 +11,8 @@
 'use strict';
 
 export type Location = {
-  line: number,
   column: number,
+  line: number,
 }
 
 export type JestFileResults = {

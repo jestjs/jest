@@ -12,7 +12,7 @@
 
 const ts = require('typescript');
 const {readFileSync} = require('fs');
-const {Expect, ItBlock, Node} = require('../ScriptParser');
+const {Expect, ItBlock, Node} = require('./ParserNodes');
 
 function parse(file: string) {
   const sourceFile = ts.createSourceFile(
@@ -24,17 +24,33 @@ function parse(file: string) {
   const itBlocks: Array<ItBlock> = [];
   const expects: Array<Expect> = [];
   function searchNodes(node: ts.Node) {
-    const callExpression = node.expression || {};
-    const identifier = callExpression.expression || {};
-    const {text} = identifier;
-    if (text === 'it' || text === 'test' || text === 'fit') {
-      const isOnlyNode = !callExpression.arguments ? node : callExpression;
-      const position = getNode(sourceFile, isOnlyNode, new ItBlock());
-      position.name = isOnlyNode.arguments[0].text;
-      itBlocks.push(position);
-    } else if (text === 'expect') {
-      const position = getNode(sourceFile, callExpression, new Expect());
-      expects.push(position);
+    if (node.kind === ts.SyntaxKind.CallExpression) {
+      let {text} = node.expression;
+      if (!text) {
+        // Property access (it.only)
+        text = node.expression.expression.text;
+      }
+      if (text === 'it' || text === 'test' || text === 'fit') {
+        const position = getNode(sourceFile, node, new ItBlock());
+        position.name = node.arguments[0].text;
+        itBlocks.push(position);
+      } else {
+        let element = node.expression;
+        let expectText: string;
+        while (!expectText) {
+          expectText = element.text;
+          element = element.expression;
+        }
+        if (expectText === 'expect') {
+          const position = getNode(sourceFile, node, new Expect());
+          if (!expects.some(e => (
+              e.start.line === position.start.line &&
+              e.start.column === position.start.column
+            ))) {
+            expects.push(position);
+          }
+        }
+      }
     }
     ts.forEachChild(node, searchNodes);
   }
@@ -52,14 +68,15 @@ function getNode<T: Node>(
   node: T
 ): T {
   const start = file.getLineAndCharacterOfPosition(expression.getStart(file));
+  // TypeScript parser is 0 based, so we have to increment by 1 to normalize
   node.start = {
-    column: start.character,
-    line: start.line,
+    column: start.character + 1,
+    line: start.line + 1,
   };
   const end = file.getLineAndCharacterOfPosition(expression.getEnd());
   node.end = {
-    column: end.character,
-    line: end.line,
+    column: end.character + 1,
+    line: end.line + 1,
   };
   node.file = file.fileName;
   return node;
