@@ -80,11 +80,11 @@ expect.extend({
         pass: true,
         message: () => `expected ${received} not to be divisible by ${argument}`,
       }
-    }
-  } else {
-    return {
-      pass: false,
-      message: () => `expected ${received} to be divisible by ${argument}`,
+    } else {
+      return {
+        pass: false,
+        message: () => `expected ${received} to be divisible by ${argument}`,
+      }
     }
   }
 });
