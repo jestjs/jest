@@ -1,10 +1,10 @@
 ---
 id: tutorial-jquery
-title: Tutorial – jQuery
+title: DOM Manipulation
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/tutorial-jquery.html
-next: migration-guide
+next: manual-mocks
 ---
 
 Another class of functions that is often considered difficult to test is code
@@ -70,7 +70,7 @@ it('displays a user after a click', () => {
 ```
 
 The function being tested adds an event listener on the `#button` DOM element,
-so we need to setup our DOM correctly for the test. Jest ships with `jsdom`
+so we need to set up our DOM correctly for the test. Jest ships with `jsdom`
 which simulates a DOM environment as if you were in the browser. This means that
 every DOM API that we call can be observed in the same way it would be observed
 in a browser!

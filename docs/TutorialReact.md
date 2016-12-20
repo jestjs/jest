@@ -1,8 +1,8 @@
 ---
 id: tutorial-react
-title: Tutorial – React
+title: Testing React Apps
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/tutorial-react.html
 next: tutorial-react-native
 ---

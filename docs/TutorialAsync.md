@@ -1,10 +1,10 @@
 ---
 id: tutorial-async
-title: Tutorial – Async
+title: Async Tests
 layout: docs
-category: Quick Start
+category: Introduction
 permalink: docs/tutorial-async.html
-next: tutorial-webpack
+next: more-resources
 ---
 
 *Note: make sure to install `babel-jest` and the async/await feature for this
@@ -104,34 +104,3 @@ To enable async/await in your project, install
 [`babel-plugin-transform-async-to-generator`](http://babeljs.io/docs/plugins/transform-async-to-generator/) or
 [`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/)
 and enable the feature in your `.babelrc` file.
-
-### Error handling
-
-Errors can be handled in the standard JavaScript way: Either using `.catch()`
-directly on a Promise or through `try-catch` when using async/await. Note that
-if a Promise throws and the error is not handled, the test will fail.
-
-```js
-// Testing for async errors can be done using `catch`.
-it('tests error with promises', () => {
-  return user.getUserName(3)
-    .catch(e => expect(e).toEqual({
-      error: 'User with 3 not found.',
-    }));
-});
-
-// Or try-catch.
-it('tests error with async/await', async () => {
-  try {
-    await user.getUserName(2);
-  } catch (object) {
-    expect(object.error).toEqual('User with 2 not found.');
-  }
-});
-```
-
-The code for this example is available at
-[examples/async](https://github.com/facebook/jest/tree/master/examples/async).
-
-*Note: If you'd like to test timers, like `setTimeout`, take a look at the
-[Timer mocks](/jest/docs/timer-mocks.html) documentation.*

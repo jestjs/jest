@@ -1,10 +1,10 @@
 ---
 id: tutorial-react-native
-title: Tutorial – React Native
+title: Testing React Native Apps
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/tutorial-react-native.html
-next: tutorial-async
+next: tutorial-jquery
 ---
 
 At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/)

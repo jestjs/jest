@@ -4,7 +4,7 @@ title: Babel Integration
 layout: docs
 category: Guides
 permalink: docs/babel.html
-next: tutorial-webpack
+next: webpack
 ---
 
 ### Babel Integration
