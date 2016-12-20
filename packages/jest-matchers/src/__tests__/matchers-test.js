@@ -11,7 +11,7 @@
 
 'use strict';
 
-const jestExpect = require('../').expect;
+const jestExpect = require('../');
 const {stringify} = require('jest-matcher-utils');
 
 describe('.toBe()', () => {

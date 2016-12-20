@@ -10,7 +10,7 @@
 /* eslint-disable max-len */
 'use strict';
 
-const jestExpect = require('../').expect;
+const jestExpect = require('../');
 
 [
   ['toHaveBeenCalled', 'jasmine.createSpy'],
