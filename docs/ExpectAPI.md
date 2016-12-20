@@ -703,6 +703,22 @@ test('rollDice only returns valid numbers', () => {
 
 ### `expect.assertions(number)`
 
+`expect.assertions(number)` verifies that a certain number of assertions are called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.
+
+For example, let's say that we have a few functions that all deal with state. `prepareState` calls a callback with a state object, `validateState` runs on that state object, and `waitOnState` returns a promise that waits until all `prepareState` callbacks complete. We can test this with:
+
+```js
+test('prepareState prepares a valid state', () => {
+  expect.assertions(1);
+  prepareState((state) => {
+    expect(validateState(state)).toBeTruthy();
+  })
+  return waitOnState();
+})
+```
+
+The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
+
 ### `expect.stringMatching(regexp)`
 
 `expect.stringMatching(regexp)` matches any string that matches the provided regexp. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, let's say you want to test that `randomCoolNames()` only returns names that are cool:
