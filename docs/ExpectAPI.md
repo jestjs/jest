@@ -10,13 +10,13 @@ next: mock-function-api
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.
 
   - [`expect(value)`](#expectvalue)
-  - `expect.anything()`
-  - `expect.any(constructor)`
-  - `expect.arrayContaining(array)`
-  - `expect.assertions(number)`
+  - [`expect.anything()`](#expectanything)
+  - [`expect.any(constructor)`](#expectanyconstructor)
+  - [`expect.arrayContaining(array)`](#expectarraycontainingarray)
+  - [`expect.assertions(number)`](#expectassertionsnumber)
   - [`expect.extend(matchers)`](#expectextendmatchers)
-  - `expect.stringMatching(regexp)`
-  - `expect.objectContaining(object)`
+  - [`expect.stringMatching(regexp)`](#expectstringmatchingregexp)
+  - [`expect.objectContaining(object)`](#expectobjectcontainingobject)
   - [`.lastCalledWith(arg1, arg2, ...)`](#tohavebeenlastcalledwitharg1-arg2-)
   - [`.not`](#not)
   - [`.toBe(value)`](#tobevalue)
@@ -68,6 +68,199 @@ describe('the best La Croix flavor', () => {
 In this case, `toBe` is the matcher function. There are a lot of different matcher functions, documented below, to help you test different things.
 
 The argument to `expect` should be the value that your code produces, and any argument to the matcher should be the correct value. If you mix them up, your tests will still work, but the error messages on failing tests will look strange.
+
+### `expect.extend(matchers)`
+
+You can use `expect.extend` to add your own matchers to Jest. For example:
+
+```js
+const five = require('five');
+
+expect.extend({
+  toBeNumber(received, actual) {
+    const pass = received === actual;
+    const message =
+      () => `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
+    return {message, pass};
+  }
+});
+
+describe('toBe5', () => {
+  it('matches the number 5', () => {
+    expect(five()).toBeNumber(5);
+    expect('Jest').not.toBeNumber(5);
+  });
+});
+```
+
+Jest will give your matchers context to simplify coding. The following can be found on `this` inside a custom matcher:
+
+#### `this.isNot`
+
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
+
+#### `this.utils`
+
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
+
+The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
+
+```js
+const diff = require('jest-diff');
+expect.extend({
+  toBe(received, expected) {
+    const pass = received === expected;
+
+    const message = pass
+      ? () => this.utils.matcherHint('.not.toBe') + '\n\n' +
+        `Expected value to not be (using ===):\n` +
+        `  ${this.utils.printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${this.utils.printReceived(received)}`
+      : () => {
+        const diffString = diff(expected, received, {
+          expand: this.expand,
+        });
+        return this.utils.matcherHint('.toBe') + '\n\n' +
+        `Expected value to be (using ===):\n` +
+        `  ${this.utils.printExpected(expected)}\n` +
+        `Received:\n` +
+        `  ${this.utils.printReceived(received)}` +
+        (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+      };
+
+    return {actual: received, message, pass};
+  },
+});
+```
+
+This will print something like this:
+
+```
+  expect(received).toBe(expected)
+
+    Expected value to be (using ===):
+      "banana"
+    Received:
+      "apple"
+```
+
+When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
+
+### `expect.anything()`
+
+`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
+
+```js
+test('map calls its argument with a non-null argument', () => {
+  let mock = jest.fn();
+  [1].map(mock);
+  expect(mock).toBeCalledWith(expect.anything());
+})
+```
+
+### `expect.any(constructor)`
+
+`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
+
+```js
+function randocall(fn) {
+  return fn(Math.floor(Math.random() * 6 + 1));
+}
+
+test('randocall calls its callback with a number', () => {
+  let mock = jest.fn();
+  randocall(mock);
+  expect(mock).toBeCalledWith(expect.any(Number));
+})
+```
+
+### `expect.arrayContaining(array)`
+
+`expect.arrayContaining(array)` matches any array made up entirely of elements in the provided array. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, this code checks that `rollDice` returns only valid numbers:
+
+```js
+// Rolls n virtual dice
+function rollDice(n) {
+  let answer = [];
+  for (let i = 0; i < n; i++) {
+    answer.push(Math.floor(Math.random() * 6 + 1));
+  }
+  return answer;
+}
+
+test('rollDice only returns valid numbers', () => {
+  expect(rollDice(100)).toEqual(expect.arrayContaining([1, 2, 3, 4, 5, 6]));
+})
+```
+
+### `expect.assertions(number)`
+
+`expect.assertions(number)` verifies that a certain number of assertions are called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.
+
+For example, let's say that we have a few functions that all deal with state. `prepareState` calls a callback with a state object, `validateState` runs on that state object, and `waitOnState` returns a promise that waits until all `prepareState` callbacks complete. We can test this with:
+
+```js
+test('prepareState prepares a valid state', () => {
+  expect.assertions(1);
+  prepareState((state) => {
+    expect(validateState(state)).toBeTruthy();
+  })
+  return waitOnState();
+})
+```
+
+The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
+
+### `expect.stringMatching(regexp)`
+
+`expect.stringMatching(regexp)` matches any string that matches the provided regexp. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, let's say you want to test that `randomCoolNames()` only returns names that are cool:
+
+```js
+function randomCoolName() {
+  // Generate a last name
+  let lastName = (
+    'TRFGBNMPLZ'[Math.floor(Math.random() * 10)] +
+    'aeiou'[Math.floor(Math.random() * 5)] +
+    'mnbvxdstrp'[Math.floor(Math.random() * 10)]);
+  return 'Kevin ' + lastName;
+}
+
+function randomCoolNames() {
+  let answer = [];
+  for (let i = 0; i < 100; i++) {
+    answer.push(randomCoolName());
+  }
+  return answer;
+}
+
+test('randomCoolNames only returns cool names', () => {
+  // A reasonable proxy for whether a name is cool or not
+  let coolRegex = /^Kevin/;
+
+  expect(randomCoolNames).toEqual(
+    expect.arrayContaining(expect.stringMatching(coolRegex)));
+});
+```
+
+This example also shows how you can nest multiple asymmetric matchers, with `expect.stringMatching` inside the `expect.arrayContaining`.
+
+### `expect.objectContaining(object)`
+
+`expect.objectContaining(object)` matches any object that recursively matches the provided keys. This is often handy in conjunction with other asymmetric matchers.
+
+For example, let's say that we expect an `onPress` function to be called with an `Event` object, and all we need to verify is that the event has `event.x` and `event.y` properties. We can do that with:
+
+```js
+test('onPress gets called with the right thing', () => {
+  let onPress = jest.fn();
+  simulatePresses(onPress);
+  expect(onPress).toBeCalledWith(expect.objectContaining({
+    x: expect.any(Number),
+    y: expect.any(Number),
+  }));
+})
+```
 
 ### `.not`
 
@@ -575,196 +768,3 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
 Check out [React Tree Snapshot Testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
-
-### `expect.extend(matchers)`
-
-You can use `expect.extend` to add your own matchers to Jest. For example:
-
-```js
-const five = require('five');
-
-expect.extend({
-  toBeNumber(received, actual) {
-    const pass = received === actual;
-    const message =
-      () => `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
-    return {message, pass};
-  }
-});
-
-describe('toBe5', () => {
-  it('matches the number 5', () => {
-    expect(five()).toBeNumber(5);
-    expect('Jest').not.toBeNumber(5);
-  });
-});
-```
-
-Jest will give your matchers context to simplify coding. The following can be found on `this` inside a custom matcher:
-
-#### `this.isNot`
-
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
-
-#### `this.utils`
-
-There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
-
-The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
-
-```js
-const diff = require('jest-diff');
-expect.extend({
-  toBe(received, expected) {
-    const pass = received === expected;
-
-    const message = pass
-      ? () => this.utils.matcherHint('.not.toBe') + '\n\n' +
-        `Expected value to not be (using ===):\n` +
-        `  ${this.utils.printExpected(expected)}\n` +
-        `Received:\n` +
-        `  ${this.utils.printReceived(received)}`
-      : () => {
-        const diffString = diff(expected, received, {
-          expand: this.expand,
-        });
-        return this.utils.matcherHint('.toBe') + '\n\n' +
-        `Expected value to be (using ===):\n` +
-        `  ${this.utils.printExpected(expected)}\n` +
-        `Received:\n` +
-        `  ${this.utils.printReceived(received)}` +
-        (diffString ? `\n\nDifference:\n\n${diffString}` : '');
-      };
-
-    return {actual: received, message, pass};
-  },
-});
-```
-
-This will print something like this:
-
-```
-  expect(received).toBe(expected)
-
-    Expected value to be (using ===):
-      "banana"
-    Received:
-      "apple"
-```
-
-When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
-
-### `expect.anything()`
-
-`expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
-
-```js
-test('map calls its argument with a non-null argument', () => {
-  let mock = jest.fn();
-  [1].map(mock);
-  expect(mock).toBeCalledWith(expect.anything());
-})
-```
-
-### `expect.any(constructor)`
-
-`expect.any(constructor)` matches anything that was created with the given constructor. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a number:
-
-```js
-function randocall(fn) {
-  return fn(Math.floor(Math.random() * 6 + 1));
-}
-
-test('randocall calls its callback with a number', () => {
-  let mock = jest.fn();
-  randocall(mock);
-  expect(mock).toBeCalledWith(expect.any(Number));
-})
-```
-
-### `expect.arrayContaining(array)`
-
-`expect.arrayContaining(array)` matches any array made up entirely of elements in the provided array. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, this code checks that `rollDice` returns only valid numbers:
-
-```js
-// Rolls n virtual dice
-function rollDice(n) {
-  let answer = [];
-  for (let i = 0; i < n; i++) {
-    answer.push(Math.floor(Math.random() * 6 + 1));
-  }
-  return answer;
-}
-
-test('rollDice only returns valid numbers', () => {
-  expect(rollDice(100)).toEqual(expect.arrayContaining([1, 2, 3, 4, 5, 6]));
-})
-```
-
-### `expect.assertions(number)`
-
-`expect.assertions(number)` verifies that a certain number of assertions are called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.
-
-For example, let's say that we have a few functions that all deal with state. `prepareState` calls a callback with a state object, `validateState` runs on that state object, and `waitOnState` returns a promise that waits until all `prepareState` callbacks complete. We can test this with:
-
-```js
-test('prepareState prepares a valid state', () => {
-  expect.assertions(1);
-  prepareState((state) => {
-    expect(validateState(state)).toBeTruthy();
-  })
-  return waitOnState();
-})
-```
-
-The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
-
-### `expect.stringMatching(regexp)`
-
-`expect.stringMatching(regexp)` matches any string that matches the provided regexp. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, let's say you want to test that `randomCoolNames()` only returns names that are cool:
-
-```js
-function randomCoolName() {
-  // Generate a last name
-  let lastName = (
-    'TRFGBNMPLZ'[Math.floor(Math.random() * 10)] +
-    'aeiou'[Math.floor(Math.random() * 5)] +
-    'mnbvxdstrp'[Math.floor(Math.random() * 10)]);
-  return 'Kevin ' + lastName;
-}
-
-function randomCoolNames() {
-  let answer = [];
-  for (let i = 0; i < 100; i++) {
-    answer.push(randomCoolName());
-  }
-  return answer;
-}
-
-test('randomCoolNames only returns cool names', () => {
-  // A reasonable proxy for whether a name is cool or not
-  let coolRegex = /^Kevin/;
-
-  expect(randomCoolNames).toEqual(
-    expect.arrayContaining(expect.stringMatching(coolRegex)));
-});
-```
-
-This example also shows how you can nest multiple asymmetric matchers, with `expect.stringMatching` inside the `expect.arrayContaining`.
-
-### `expect.objectContaining(object)`
-
-`expect.objectContaining(object)` matches any object that recursively matches the provided keys. This is often handy in conjunction with other asymmetric matchers.
-
-For example, let's say that we expect an `onPress` function to be called with an `Event` object, and all we need to verify is that the event has `event.x` and `event.y` properties. We can do that with:
-
-```js
-test('onPress gets called with the right thing', () => {
-  let onPress = jest.fn();
-  simulatePresses(onPress);
-  expect(onPress).toBeCalledWith(expect.objectContaining({
-    x: expect.any(Number),
-    y: expect.any(Number),
-  }));
-})
-```

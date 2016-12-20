@@ -29,11 +29,6 @@ The methods in the global `jest` object help create mocks and let you control Je
 
 -----
 
-### `jest.resetAllMocks()`
-Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
-
-Returns the `jest` object for chaining.
-
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
 
@@ -115,6 +110,11 @@ jest.mock('../moduleName', () => {
 ```
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
+
+Returns the `jest` object for chaining.
+
+### `jest.resetAllMocks()`
+Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
 
 Returns the `jest` object for chaining.
 
