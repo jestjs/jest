@@ -19,6 +19,8 @@ Mock functions are also known as "spies", because they let you spy on the behavi
   - [`mockFn.mockReturnValue(value)`](#mockfnmockreturnvaluevalue)
   - [`mockFn.mockReturnValueOnce(value)`](#mockfnmockreturnvalueoncevalue)
 
+-----
+
 ### `mockFn.mock.calls`
 An array that represents all calls that have been made into this mock function. Each call is represented by an array of arguments that were passed during the call.
 

@@ -7,8 +7,6 @@ permalink: docs/configuration.html
 next: cli
 ---
 
-#### The Jest configuration options
-
 Jest's configuration can be defined in the `package.json` file of your project
 or through the `--config <path/to/json>` option. If you'd like to use
 your `package.json` to store Jest's config, the "jest" key should be used on the

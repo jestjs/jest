@@ -44,6 +44,8 @@ When you're writing tests, you often need to check that values meet certain cond
   - [`.toThrowError(error)`](#tothrowerrorerror)
   - [`.toThrowErrorMatchingSnapshot()`](#tothrowerrormatchingsnapshot)
 
+-----
+
 ### `expect(value)`
 
 The `expect` function is used every time you want to test a value. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about a value.

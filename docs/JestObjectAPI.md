@@ -27,6 +27,7 @@ The methods in the global `jest` object help create mocks and let you control Je
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
 
+-----
 
 ### `jest.resetAllMocks()`
 Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
