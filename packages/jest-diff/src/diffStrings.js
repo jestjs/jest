@@ -24,6 +24,14 @@ export type DiffOptions = {|
 
 type Diff = {diff: string, isDifferent: boolean};
 
+type Hunk = {|
+  lines: Array<string>,
+  newLines: number,
+  newStart: number,
+  oldLines: number,
+  oldStart: number,
+|}
+
 const getColor = (added: boolean, removed: boolean): chalk =>
   added
     ? chalk.red
@@ -68,23 +76,24 @@ const diffLines = (a: string, b: string): Diff => {
   };
 };
 
+const showPatchMarks = (hunk: Hunk, a: string): boolean => {
+  const oldLines: Array<string> = a.match(/\n/g) || [];
+  return oldLines.length > hunk.oldLines;
+};
+
 const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
   // Make sure the strings end with a newline.
-  if (!a.endsWith('\n')) {
-    a += '\n';
-  }
-  if (!b.endsWith('\n')) {
-    b += '\n';
-  }
+  a = a.endsWith('\n') ? a : a + '\n';
+  b = b.endsWith('\n') ? b : b + '\n';
 
   return {
     diff: diff.structuredPatch('', '', a, b, '', '', options)
-      .hunks.map(hunk => {
-        const diffMarkOld = `-${hunk.oldStart},${hunk.oldLines}`;
-        const diffMarkNew = `+${hunk.newStart},${hunk.newLines}`;
-        const diffMark = chalk.yellow(`@@ ${diffMarkOld} ${diffMarkNew} @@\n`);
+      .hunks.map((hunk: Hunk) => {
+        const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
+        const markNew = `+${hunk.newStart},${hunk.newLines}`;
+        const patchMark = chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
 
         const lines = hunk.lines.map(line => {
           const added = line[0] === '+';
@@ -98,7 +107,9 @@ const structuredPatch = (a: string, b: string): Diff => {
         }).join('');
 
         isDifferent = true;
-        return diffMark + lines;
+        return showPatchMarks(hunk, a)
+          ? patchMark + lines
+          : lines;
       }).join('').trim(),
     isDifferent,
   };
