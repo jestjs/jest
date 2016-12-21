@@ -4,7 +4,7 @@ title: Mocking
 layout: docs
 category: Introduction
 permalink: docs/mocking.html
-next: tutorial-async
+next: more-resources
 ---
 
 > **Note**: This is a placeholder.
