@@ -18,8 +18,10 @@ const {clearLine} = require('jest-util');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
+const printTypeahead = require('./printTypeahead');
 const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
+const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
 const {KEYS, CLEAR} = require('./constants');
 
@@ -48,8 +50,11 @@ const watch = (
   });
 
   const writeCurrentPattern = () => {
+    const {paths} = new SearchSource(hasteContext, config)
+      .findMatchingTests(currentPattern);
+
     clearLine(pipe);
-    pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
+    printTypeahead(config, pipe, currentPattern, paths);
   };
 
   const startRun = (overrideConfig: Object = {}) => {
