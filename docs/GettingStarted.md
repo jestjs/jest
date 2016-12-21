@@ -4,7 +4,7 @@ title: Getting Started
 layout: docs
 category: Introduction
 permalink: docs/getting-started.html
-next: mocking
+next: using-matchers
 ---
 
 Install Jest using `npm`:
@@ -16,14 +16,18 @@ npm install --save-dev jest
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
 ```javascript
-module.exports = (a, b) => a + b;
+function sum(a, b) {
+  return a + b;
+}
+module.exports = sum;
 ```
 
 Then, create a file named `sum.test.js`. This will contain our actual test:
 
 ```javascript
+const sum = require('./sum');
+
 test('adds 1 + 2 to equal 3', () => {
-  const sum = require('./sum');
   expect(sum(1, 2)).toBe(3);
 });
 ```
@@ -45,4 +49,4 @@ PASS  ./sum.test.js
 
 You just successfully wrote your first test using Jest!
 
-You are now ready to use Jest in your project. There's more to Jest, of course. To write tests for code with dependencies whose implementation does not need to be tested, you'll need to [learn about mocking](/jest/docs/mocking.html).
+This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](/jest/docs/using-matchers.html).
