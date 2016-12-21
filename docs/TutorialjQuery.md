@@ -35,7 +35,7 @@ Again, we create a test file in the `__tests__/` folder:
 
 jest.mock('../fetchCurrentUser');
 
-it('displays a user after a click', () => {
+test('displays a user after a click', () => {
   // Set up our document body
   document.body.innerHTML =
     '<div>' +

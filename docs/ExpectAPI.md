@@ -58,10 +58,8 @@ It's easier to understand this with an example. Let's say you have a method `bes
 Here's how you would test that:
 
 ```js
-describe('the best La Croix flavor', () => {
-  it('is grapefruit', () => {
-    expect(bestLaCroixFlavor()).toBe('grapefruit');
-  });
+test('the best flavor is grapefruit', () => {
+  expect(bestLaCroixFlavor()).toBe('grapefruit');
 });
 ```
 
@@ -71,29 +69,35 @@ The argument to `expect` should be the value that your code produces, and any ar
 
 ### `expect.extend(matchers)`
 
-You can use `expect.extend` to add your own matchers to Jest. For example:
+You can use `expect.extend` to add your own matchers to Jest. For example, let's say that you're testing a number theory library and you're frequently asserting that numbers are divisible by other numbers. You could abstract that into a `toBeDivisibleBy` matcher:
 
 ```js
-const five = require('five');
-
 expect.extend({
-  toBeNumber(received, actual) {
-    const pass = received === actual;
-    const message =
-      () => `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
-    return {message, pass};
+  toBeDivisibleBy(received, argument) {
+    const pass = (received % argument == 0);
+    if (pass) {
+      return {
+        pass: true,
+        message: () => `expected ${received} not to be divisible by ${argument}`,
+      }
+    } else {
+      return {
+        pass: false,
+        message: () => `expected ${received} to be divisible by ${argument}`,
+      }
+    }
   }
 });
 
-describe('toBe5', () => {
-  it('matches the number 5', () => {
-    expect(five()).toBeNumber(5);
-    expect('Jest').not.toBeNumber(5);
-  });
+test('even and odd numbers', () => {
+  expect(100).toBeDivisibleBy(2);
+  expect(101).not.toBeDivisibleBy(2);
 });
 ```
 
-Jest will give your matchers context to simplify coding. The following can be found on `this` inside a custom matcher:
+Matchers should return an object with two keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
+
+These helper functions can be found on `this` inside a custom matcher:
 
 #### `this.isNot`
 
@@ -145,7 +149,7 @@ This will print something like this:
       "apple"
 ```
 
-When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. It's usually recommended to spend a lot of time crafting a great failure message to make sure users of your custom assertions have a good developer experience.
+When an assertion fails, the error message should give as much signal as necessary to the user so they can resolve their issue quickly. You should craft a precise failure message to make sure users of your custom assertions have a good developer experience.
 
 ### `expect.anything()`
 
@@ -268,7 +272,7 @@ If you know how to test something, `.not` lets you test its opposite. For exampl
 
 ```js
 describe('the best La Croix flavor', () => {
-  it('is not coconut', () => {
+  test('is not coconut', () => {
     expect(bestLaCroixFlavor()).not.toBe('coconut');
   });
 });
@@ -288,11 +292,11 @@ const can = {
 };
 
 describe('the can', () => {
-  it('has 12 ounces', () => {
+  test('has 12 ounces', () => {
     expect(can.ounces).toBe(12);
   });
 
-  it('has a sophisticated name', () => {
+  test('has a sophisticated name', () => {
     expect(can.name).toBe('pamplemousse');
   });
 });
@@ -310,13 +314,13 @@ For example, let's say you have a `drinkAll(drink, flavor)` function that takes 
 
 ```js
 describe('drinkAll', () => {
-  it('drinks something lemon-flavored', () => {
+  test('drinks something lemon-flavored', () => {
     let drink = jest.fn();
     drinkAll(drink, 'lemon');
     expect(drink).toHaveBeenCalled();
   });
 
-  it('does not drink something octopus-flavored', () => {
+  test('does not drink something octopus-flavored', () => {
     let drink = jest.fn();
     drinkAll(drink, 'octopus');
     expect(drink).not.toHaveBeenCalled();
@@ -332,7 +336,7 @@ For example, let's say you have a `drinkEach(drink, Array<flavor>)` function tha
 
 ```js
 describe('drinkEach', () => {
-  it('drinks each drink', () => {
+  test('drinks each drink', () => {
     let drink = jest.fn();
     drinkEach(drink, ['lemon', 'octopus']);
     expect(drink).toHaveBeenCalledTimes(2);
@@ -350,7 +354,7 @@ For example, let's say that you can register a beverage with a `register` functi
 
 ```js
 describe('beverage registration', () => {
-  it('applies correctly to orange La Croix', () => {
+  test('applies correctly to orange La Croix', () => {
     let beverage = new LaCroix('orange');
     register(beverage);
     let f = jest.fn();
@@ -368,7 +372,7 @@ If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test wha
 
 ```js
 describe('applying to all flavors', () => {
-  it('does mango last', () => {
+  test('does mango last', () => {
     let drink = jest.fn();
     applyToAllFlavors(drink);
     expect(drink).toHaveBeenLastCalledWith('mango');
@@ -382,7 +386,7 @@ Using exact equality with floating point numbers is a bad idea. Rounding means t
 
 ```js
 describe('adding numbers', () => {
-  it('works sanely with simple decimals', () => {
+  test('works sanely with simple decimals', () => {
     expect(0.2 + 0.1).toBe(0.3); // Fails!
   });
 });
@@ -394,7 +398,7 @@ Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after th
 
 ```js
 describe('adding numbers', () => {
-  it('works sanely with simple decimals', () => {
+  test('works sanely with simple decimals', () => {
     expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
   });
 });
@@ -408,7 +412,7 @@ Use `.toBeDefined` to check that a variable is not undefined. For example, if yo
 
 ```js
 describe('fetching new flavor ideas', () => {
-  it('returns something', () => {
+  test('returns something', () => {
     expect(fetchNewFlavorIdea()).toBeDefined();
   });
 });
@@ -431,7 +435,7 @@ You may not care what `getErrors` returns, specifically - it might return `false
 
 ```js
 describe('drinking some La Croix', () => {
-  it('does not lead to errors', () => {
+  test('does not lead to errors', () => {
     drinkSomeLaCroix();
     expect(getErrors()).toBeFalsy();
   });
@@ -446,7 +450,7 @@ To compare floating point numbers, you can use `toBeGreaterThan`. For example, i
 
 ```js
 describe('ounces per can', () => {
-  it('is more than 10', () => {
+  test('is more than 10', () => {
     expect(ouncesPerCan()).toBeGreaterThan(10);
   });
 });
@@ -458,7 +462,7 @@ To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For exa
 
 ```js
 describe('ounces per can', () => {
-  it('is at least 12', () => {
+  test('is at least 12', () => {
     expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
   });
 });
@@ -470,7 +474,7 @@ To compare floating point numbers, you can use `toBeLessThan`. For example, if y
 
 ```js
 describe('ounces per can', () => {
-  it('is less than 20', () => {
+  test('is less than 20', () => {
     expect(ouncesPerCan()).toBeLessThan(20);
   });
 });
@@ -482,7 +486,7 @@ To compare floating point numbers, you can use `toBeLessThanOrEqual`. For exampl
 
 ```js
 describe('ounces per can', () => {
-  it('is at most 12', () => {
+  test('is at most 12', () => {
     expect(ouncesPerCan()).toBeLessThanOrEqual(12);
   });
 });
@@ -510,7 +514,7 @@ function bloop() {
 }
 
 describe('bloop', () => {
-  it('returns null', () => {
+  test('returns null', () => {
     expect(bloop()).toBeNull();
   });
 })
@@ -531,7 +535,7 @@ You may not care what `thirstInfo` returns, specifically - it might return `true
 
 ```js
 describe('drinking some La Croix', () => {
-  it('leads to having thirst info', () => {
+  test('leads to having thirst info', () => {
     drinkSomeLaCroix();
     expect(thirstInfo()).toBeTruthy();
   });
@@ -546,7 +550,7 @@ Use `.toBeUndefined` to check that a variable is undefined. For example, if you 
 
 ```js
 describe('the best drink', () => {
-  it('for octopus flavor is undefined', () => {
+  test('for octopus flavor is undefined', () => {
     expect(bestDrinkForFlavor('octopus')).toBeUndefined();
   });
 });
@@ -562,7 +566,7 @@ For example, if `getAllFlavors()` returns a list of flavors and you want to be s
 
 ```js
 describe('the list of all flavors', () => {
-  it('contains lime', () => {
+  test('contains lime', () => {
     expect(getAllFlavors()).toContain('lime');
   });
 });
@@ -575,7 +579,7 @@ For testing the items in the list, this  matcher recursively checks the equality
 
 ```js
 describe('my beverage', () => {
-  it('is delicious and not sour', () => {
+  test('is delicious and not sour', () => {
     const myBeverage = {delicious: true, sour: false};
     expect(myBeverages()).toContainEqual(myBeverage);
   });
@@ -597,10 +601,10 @@ const can2 = {
 };
 
 describe('the La Croix cans on my desk', () => {
-  it('have all the same properties', () => {
+  test('have all the same properties', () => {
     expect(can1).toEqual(can2);
   });
-  it('are not the exact same can', () => {
+  test('are not the exact same can', () => {
     expect(can1).not.toBe(can2);
   });
 });
@@ -626,7 +630,7 @@ For example, you might not know what exactly `essayOnTheBestFlavor()` returns, b
 
 ```js
 describe('an essay on the best flavor', () => {
-  it('mentions grapefruit', () => {
+  test('mentions grapefruit', () => {
     expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
     expect(essayOnTheBestFlavor()).toMatch(new RegExp('grapefruit'));
   })
@@ -637,7 +641,7 @@ This matcher also accepts a string, which it will try to match:
 
 ```js
 describe('grapefruits are healthy', () => {
-  it('grapefruits are a fruit', () => {
+  test('grapefruits are a fruit', () => {
     expect('grapefruits').toMatch('fruit');
   })
 })
@@ -666,7 +670,7 @@ const desiredHouse = {
 };
 
 describe('looking for a new house', () => {
-	it('the house has my desired features', () => {
+	test('the house has my desired features', () => {
 		expect(houseForSale).toMatchObject(desiredHouse);
 	});
 });
@@ -688,7 +692,7 @@ Use `.toThrow` to test that a function throws when it is called. For example, if
 
 ```js
 describe('drinking flavors', () => {
-  it('throws on octopus', () => {
+  test('throws on octopus', () => {
     expect(() => {
       drinkFlavor('octopus');
     }).toThrow();
@@ -716,7 +720,7 @@ We could test this error gets thrown in several ways:
 
 ```js
 describe('drinking flavors', () => {
-  it('throws on octopus', () => {
+  test('throws on octopus', () => {
     function drinkOctopus() {
       drinkFlavor('octopus');
     }
@@ -751,7 +755,7 @@ The test for this function will look this way:
 
 ```js
 describe('drinking flavors', () => {
-  it('throws on octopus', () => {
+  test('throws on octopus', () => {
     function drinkOctopus() {
       drinkFlavor('octopus');
     }
