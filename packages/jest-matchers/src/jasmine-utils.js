@@ -361,10 +361,17 @@ ArrayContaining.prototype.asymmetricMatch = function(other) {
   return true;
 };
 
-ArrayContaining.prototype.jasmineToString = function () {
-  return '<jasmine.arrayContaining(' + prettyFormat(this.sample) +')>';
+ArrayContaining.prototype.toString = function () {
+  return 'ArrayContaining';
 };
 
+ArrayContaining.prototype.jasmineToString = function () {
+  return '<jasmine.arrayContaining(' + prettyFormat(this.sample, {min: true}) +')>';
+};
+
+ArrayContaining.prototype.jasmineToPrettyString = function (options) {
+  return '<jasmine.arrayContaining(' + prettyFormat(this.sample, options) +')>';
+};
 
 function ObjectContaining(sample) {
   this.sample = sample;
@@ -411,10 +418,17 @@ ObjectContaining.prototype.asymmetricMatch = function(other) {
   return true;
 };
 
-ObjectContaining.prototype.jasmineToString = function() {
-  return '<jasmine.objectContaining(' + prettyFormat(this.sample) + ')>';
+ObjectContaining.prototype.toString = function() {
+  return 'ObjectContaining';
 };
 
+ObjectContaining.prototype.jasmineToString = function() {
+  return '<jasmine.objectContaining(' + prettyFormat(this.sample, {min: true}) + ')>';
+};
+
+ObjectContaining.prototype.jasmineToPrettyString = function(options) {
+  return '<jasmine.objectContaining(' + prettyFormat(this.sample, options) + ')>';
+};
 
 function StringMatching(expected) {
   if (!isA('String', expected) && !isA('RegExp', expected)) {
@@ -433,7 +447,7 @@ StringMatching.prototype.asymmetricMatch = function(other) {
 };
 
 StringMatching.prototype.jasmineToString = function() {
-  return '<jasmine.stringMatching(' + this.regexp + ')>';
+  return '<jasmine.stringMatching(' + prettyFormat(this.regexp, {min: true}) + ')>';
 };
 
 module.exports = {

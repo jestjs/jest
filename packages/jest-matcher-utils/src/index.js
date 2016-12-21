@@ -50,6 +50,7 @@ const NUMBERS = [
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
 const getType = (value: any): ValueType => {
+  console.log(value, typeof value);
   if (typeof value === 'undefined') {
     return 'undefined';
   } else if (value === null) {
@@ -71,6 +72,8 @@ const getType = (value: any): ValueType => {
       return 'map';
     } else if (value.constructor === Set) {
       return 'set';
+    } else if (value.toString() === 'ArrayContaining') {
+      return 'array';
     }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
@@ -96,6 +99,10 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
       maxDepth,
       min: true,
     });
+  }
+
+  if (object && object.jasmineToString) {
+    result = object.jasmineToString();
   }
 
   return result.length >= MAX_LENGTH && maxDepth > 1

@@ -83,7 +83,9 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
 
   try {
     diffMessage = diffStrings(
-      prettyFormat(a, FORMAT_OPTIONS),
+      a.jasmineToPrettyString
+        ? a.jasmineToPrettyString(FORMAT_OPTIONS)
+        : prettyFormat(a, FORMAT_OPTIONS),
       prettyFormat(b, FORMAT_OPTIONS),
       options,
     );
@@ -95,7 +97,9 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
     diffMessage = diffStrings(
-      prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
+      a.jasmineToPrettyString
+        ? a.jasmineToPrettyString(FALLBACK_FORMAT_OPTIONS)
+        : prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
       prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
       options,
     );
