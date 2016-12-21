@@ -24,8 +24,6 @@ const NODE_VERSION = Number(process.version.match(/^v(\d+\.\d+)/)[1]);
 const SKIP_ON_OLD_NODE = ['react-native'];
 const VERSION = require('../lerna').version;
 
-const YARN = process.env.CI ? '~/.yarn/bin/yarn' : 'yarn';
-
 const packages = getPackages();
 
 const examples = fs.readdirSync(EXAMPLES_DIR)
@@ -41,7 +39,7 @@ function runExampleTests(exampleDirectory) {
     return;
   }
 
-  runCommands(YARN + ' install --pure-lockfile', exampleDirectory);
+  runCommands('yarn install --pure-lockfile', exampleDirectory);
   packages.forEach(pkg => {
     const name = path.basename(pkg);
     const directory = path.resolve(exampleDirectory, 'node_modules', name);
@@ -75,7 +73,7 @@ function runExampleTests(exampleDirectory) {
     exampleDirectory
   );
 
-  runCommands(YARN + ' test', exampleDirectory);
+  runCommands('yarn test', exampleDirectory);
 }
 
 examples.forEach(runExampleTests);
