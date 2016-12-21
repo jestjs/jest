@@ -24,8 +24,10 @@ const {
   matcherHint,
   printExpected,
   printWithType,
-  equals,
 } = require('jest-matcher-utils');
+const {
+  equals,
+} = require('./jasmine-utils');
 
 const createMatcher = matcherName =>
   (actual: Function, expected: string | Error | RegExp) => {

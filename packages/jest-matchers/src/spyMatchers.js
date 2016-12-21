@@ -24,8 +24,10 @@ const {
   printReceived,
   printWithType,
   RECEIVED_COLOR,
-  equals,
 } = require('jest-matcher-utils');
+const {
+  equals,
+} = require('./jasmine-utils');
 
 const RECEIVED_NAME = {
   'mock function': 'jest.fn()',
