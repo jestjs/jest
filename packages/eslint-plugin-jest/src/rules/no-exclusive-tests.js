@@ -1,6 +1,9 @@
+// @flow
 'use strict';
 
-module.exports = function(context) {
+import type {EslintContext, EslintNode} from './types';
+
+module.exports = function(context: EslintContext) {
   const jestTestFunctions = [
     'it',
     'describe',
@@ -36,7 +39,7 @@ module.exports = function(context) {
   }
 
   return {
-    CallExpression(node) {
+    CallExpression(node: EslintNode) {
       const callee = node.callee;
       if (!callee) {
         return;

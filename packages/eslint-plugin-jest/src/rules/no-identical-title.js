@@ -1,4 +1,7 @@
+// @flow
 'use strict';
+
+import type {EslintContext, EslintNode} from './types';
 
 const describeAliases = [
   'describe',
@@ -78,12 +81,12 @@ function isFirstArgLiteral(node) {
   );
 }
 
-module.exports = function(context) {
+module.exports = function(context: EslintContext) {
   const contexts = [
     newDescribeContext(),
   ];
   return {
-    CallExpression(node) {
+    CallExpression(node: EslintNode) {
       const currentLayer = contexts[contexts.length - 1];
       if (isDescribe(node)) {
         contexts.push(newDescribeContext());
@@ -96,7 +99,7 @@ module.exports = function(context) {
       handleTestCaseTitles(context, currentLayer.testTitles, node, title);
       handleTestSuiteTitles(context, currentLayer.describeTitles, node, title);
     },
-    'CallExpression:exit'(node) {
+    'CallExpression:exit'(node: EslintNode) {
       if (isDescribe(node)) {
         contexts.pop();
       }

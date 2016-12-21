@@ -1,3 +1,4 @@
+// @flow
 /* eslint-disable sort-keys */
 'use strict';
 
