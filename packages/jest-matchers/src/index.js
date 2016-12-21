@@ -26,6 +26,13 @@ const spyMatchers = require('./spyMatchers');
 const toThrowMatchers = require('./toThrowMatchers');
 
 const utils = require('jest-matcher-utils');
+const {
+  any,
+  anything,
+  arrayContaining,
+  objectContaining,
+  stringMatching,
+} = require('./jasmine-utils');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
@@ -136,11 +143,11 @@ expect.extend = (matchersObj: MatchersObject): void => {
   Object.assign(global[GLOBAL_STATE].matchers, matchersObj);
 };
 
-expect.anything = global.jasmine.anything;
-expect.any = global.jasmine.any;
-expect.objectContaining = global.jasmine.objectContaining;
-expect.arrayContaining = global.jasmine.arrayContaining;
-expect.stringMatching = global.jasmine.stringMatching;
+expect.anything = anything;
+expect.any = any;
+expect.objectContaining = objectContaining;
+expect.arrayContaining = arrayContaining;
+expect.stringMatching = stringMatching;
 
 const _validateResult = result => {
   if (

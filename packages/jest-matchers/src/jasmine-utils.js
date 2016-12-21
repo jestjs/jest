@@ -25,10 +25,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 'use strict';
 
+const prettyFormat = require('pretty-format');
+
 // Extracted out of jasmine 2.5.2
 function equals(a, b, customTesters) {
   customTesters = customTesters || [];
   return eq(a, b, [], [], customTesters);
+}
+
+function contains(haystack, needle, customTesters) {
+  customTesters = customTesters || [];
+
+  if ((Object.prototype.toString.apply(haystack) === '[object Array]') ||
+    (!!haystack && !haystack.indexOf))
+  {
+    for (var i = 0; i < haystack.length; i++) {
+      if (eq(haystack[i], needle, [], [], customTesters)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return !!haystack && haystack.indexOf(needle) >= 0;
 }
 
 function isAsymmetric(obj) {
@@ -252,4 +271,176 @@ function isDomNode(obj) {
   return obj.nodeType > 0;
 }
 
-module.exports = equals;
+function fnNameFor(func) {
+  if (func.name) {
+    return func.name;
+  }
+
+  var matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+  return matches ? matches[1] : '<anonymous>';
+}
+
+
+function Any(expectedObject) {
+  if (typeof expectedObject === 'undefined') {
+    throw new TypeError(
+      'jasmine.any() expects to be passed a constructor function. ' +
+      'Please pass one or use jasmine.anything() to match any object.'
+    );
+  }
+  this.expectedObject = expectedObject;
+}
+
+function any(expectedObject) {
+  return new Any(expectedObject);
+}
+
+Any.prototype.asymmetricMatch = function(other) {
+  if (this.expectedObject == String) {
+    return typeof other == 'string' || other instanceof String;
+  }
+
+  if (this.expectedObject == Number) {
+    return typeof other == 'number' || other instanceof Number;
+  }
+
+  if (this.expectedObject == Function) {
+    return typeof other == 'function' || other instanceof Function;
+  }
+
+  if (this.expectedObject == Object) {
+    return typeof other == 'object';
+  }
+
+  if (this.expectedObject == Boolean) {
+    return typeof other == 'boolean';
+  }
+
+  return other instanceof this.expectedObject;
+};
+
+Any.prototype.jasmineToString = function() {
+  return '<jasmine.any(' + fnNameFor(this.expectedObject) + ')>';
+};
+
+
+function Anything() {}
+
+function anything() {
+  return new Anything();
+}
+
+Anything.prototype.asymmetricMatch = function(other) {
+  return !isUndefined(other) && other !== null;
+};
+
+Anything.prototype.jasmineToString = function() {
+  return '<jasmine.anything>';
+};
+
+
+function ArrayContaining(sample) {
+  this.sample = sample;
+}
+
+function arrayContaining(sample) {
+  return new ArrayContaining(sample);
+}
+
+ArrayContaining.prototype.asymmetricMatch = function(other) {
+  var className = Object.prototype.toString.call(this.sample);
+  if (className !== '[object Array]') { throw new Error('You must provide an array to arrayContaining, not \'' + this.sample + '\'.'); }
+
+  for (var i = 0; i < this.sample.length; i++) {
+    var item = this.sample[i];
+    if (!contains(other, item)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+ArrayContaining.prototype.jasmineToString = function () {
+  return '<jasmine.arrayContaining(' + prettyFormat(this.sample) +')>';
+};
+
+
+function ObjectContaining(sample) {
+  this.sample = sample;
+}
+
+function objectContaining(sample) {
+  return new ObjectContaining(sample);
+}
+
+function getPrototype(obj) {
+  if (Object.getPrototypeOf) {
+    return Object.getPrototypeOf(obj);
+  }
+
+  if (obj.constructor.prototype == obj) {
+    return null;
+  }
+
+  return obj.constructor.prototype;
+}
+
+function hasProperty(obj, property) {
+  if (!obj) {
+    return false;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(obj, property)) {
+    return true;
+  }
+
+  return hasProperty(getPrototype(obj), property);
+}
+
+ObjectContaining.prototype.asymmetricMatch = function(other) {
+  if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
+
+  for (var property in this.sample) {
+    if (!hasProperty(other, property) ||
+        !equals(this.sample[property], other[property])) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+ObjectContaining.prototype.jasmineToString = function() {
+  return '<jasmine.objectContaining(' + prettyFormat(this.sample) + ')>';
+};
+
+
+function StringMatching(expected) {
+  if (!isA('String', expected) && !isA('RegExp', expected)) {
+    throw new Error('Expected is not a String or a RegExp');
+  }
+
+  this.regexp = new RegExp(expected);
+}
+
+function stringMatching(expected) {
+  return new StringMatching(expected);
+}
+
+StringMatching.prototype.asymmetricMatch = function(other) {
+  return this.regexp.test(other);
+};
+
+StringMatching.prototype.jasmineToString = function() {
+  return '<jasmine.stringMatching(' + this.regexp + ')>';
+};
+
+module.exports = {
+  any,
+  anything,
+  arrayContaining,
+  equals,
+  objectContaining,
+  stringMatching,
+};
