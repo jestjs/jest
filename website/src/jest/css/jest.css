@@ -984,6 +984,8 @@ a:hover code {
   overflow: hidden;
   padding: 0 10px;
   text-align: left;
+  padding-top: 90px;
+  height: 90px;
 }
 .footerContainer .footerWrapper {
   border-top: 1px solid #ca461a;
@@ -1313,11 +1315,18 @@ a:hover code {
 }
 
 nav.toc {
-  position: relative;
+  position: fixed;
+  overflow-y: auto;
+  bottom: 0;
+  top: 92px;
+  width: 240px;
 }
 nav.toc section {
   padding: 0px;
   position: relative;
+}
+nav.toc:last-child {
+  padding-bottom: 100px;
 }
 .docsNavContainer nav.toc .navWrapper {
   padding: 0;
@@ -1519,7 +1528,7 @@ nav.toc .toggleNav .navBreadcrumb h2 {
   .docMainWrapper {
     display: flex;
     flex-flow: row nowrap;
-    margin-bottom: 40px;
+    margin-bottom: -90px;
   }
   .docMainWrapper .wrapper {
     padding-left: 0;
