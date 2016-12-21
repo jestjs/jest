@@ -212,7 +212,7 @@ class ModuleMocker {
     };
   }
 
-  _makeComponent(metadata: MockFunctionMetadata): Mock {
+  _makeComponent(metadata: MockFunctionMetadata, restore?: () => void): Mock {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
@@ -360,6 +360,8 @@ class ModuleMocker {
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
       }
+
+      f.mockRestore = restore ? restore : () => {};
 
       return f;
     } else {
@@ -545,6 +547,24 @@ class ModuleMocker {
 
   isMockFunction(fn: any): boolean {
     return !!fn._isMockFunction;
+  }
+
+  spyOn(object: any, methodName: any): any {
+    const original = object[methodName];
+
+    if (!this.isMockFunction(original)) {
+      if (typeof original !== 'function') {
+        throw new Error(
+          'Cannot spyOn the ' + methodName + ' property; it is not a function',
+        );
+      }
+
+      object[methodName] = this._makeComponent({type: 'function'}, () => {
+        object[methodName] = original;
+      });
+    }
+
+    return object[methodName];
   }
 
   /**

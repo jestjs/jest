@@ -342,4 +342,37 @@ describe('moduleMocker', () => {
     expect(moduleMocker.isMockFunction(() => {})).toBe(false);
     expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
   });
+
+  describe('spyOn', () => {
+    it('should work', () => {
+      let isOriginalCalled = false;
+      const obj = {method: () => {
+        isOriginalCalled = true;
+      }};
+
+      const spy = moduleMocker.spyOn(obj, 'method');
+
+      obj.method();
+      expect(isOriginalCalled).toBe(false);
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockReset();
+      spy.mockRestore();
+      obj.method();
+      expect(isOriginalCalled).toBe(true);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should throw on invalid input', () => {
+      expect(() => {
+        moduleMocker.spyOn(null, 'method');
+      }).toThrow();
+      expect(() => {
+        moduleMocker.spyOn({}, 'method');
+      }).toThrow();
+      expect(() => {
+        moduleMocker.spyOn({method: 10}, 'method');
+      }).toThrow();
+    });
+  });
 });
