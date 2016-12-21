@@ -155,5 +155,3 @@ test('compiling android goes as expected', () => {
 ### And More
 
 This is just a taste. For a complete list of matchers, check out the [reference docs](/jest/docs/expect.html).
-
-All of these examples test synchronous code. To learn about testing asynchronous code, see [Callbacks and Promises](/jest/docs/callbacks-and-promises.html).
