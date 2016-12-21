@@ -12,7 +12,6 @@
 import type {
   AggregatedResult,
   CoverageMap,
-  TestResult
 } from 'types/TestResult';
 
 type PhabricatorReport = {
@@ -61,6 +60,7 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
 
   let coverageMap;
   if (results.coverageMap) {
+    // eslint-disable-next-line no-unused-vars
     const coverageMap = summarize(results.coverageMap, filterBy);
   }
 
@@ -71,7 +71,7 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
   const report = formatTestResults(results, formatter);
 
   return Object.assign({}, {
-    phabricatorReport: report.testResults
+    phabricatorReport: report.testResults,
   }, results, {coverageMap: null});
 
 };
