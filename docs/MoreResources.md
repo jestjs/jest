@@ -4,7 +4,7 @@ title: More Resources
 layout: docs
 category: Introduction
 permalink: docs/more-resources.html
-next: tutorial-react
+next: mock-functions
 ---
 
 > **Note**: This is a placeholder.

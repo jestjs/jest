@@ -53,9 +53,7 @@ Your `package.json` should look something like this (where `<current-version>` i
 
 ### Snapshot Testing
 
-Snapshot testing was introduced in Jest 14.0. More information on how it works and why we built it can be found on the [release blog post](/jest/blog/2016/07/27/jest-14.html).
-
-Let's build a Link component in React that renders hyperlinks:
+Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a Link component that renders hyperlinks:
 
 ```javascript
 // Link.react.js
