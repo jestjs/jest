@@ -10,22 +10,27 @@
 
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {Config, Path} from 'types/Config';
 
 const {formatTestPath} = require('./reporters/utils')
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 
-const getMatchingFilesText = (total) => {
+const getMatchingFilesText = (total: number) => {
   const files = total === 1 ? 'file' : 'files';
   return `Pattern matches ${total} ${files}...`;
 }
 
-const printTypeahead = (config, pipe, pattern, allResults, max = 10) => {
+const printTypeahead = (
+  config: Config,
+  pipe: stream$Writable | tty$WriteStream,
+  pattern: string,
+  allResults: Array<Path>,
+  max: number = 10) => {
   const total = allResults.length;
   const results = allResults.slice(0, max);
-
-  pipe.write(`${chalk.dim(' pattern \u203A ')} ${pattern}`);
+  pipe.write(ansiEscapes.eraseDown);
+  pipe.write(`${chalk.dim(' pattern \u203A')} ${pattern}`);
   pipe.write(ansiEscapes.cursorSavePosition);
   if (pattern) {
     pipe.write(`\n${getMatchingFilesText(total)}`);

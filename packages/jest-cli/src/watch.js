@@ -106,6 +106,7 @@ const watch = (
           break;
         case KEYS.ESCAPE:
           isEnteringPattern = false;
+          pipe.write(ansiEscapes.eraseDown);
           pipe.write(ansiEscapes.eraseLines(2));
           currentPattern = argv._[0];
           break;
