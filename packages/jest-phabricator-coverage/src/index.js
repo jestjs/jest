@@ -19,39 +19,10 @@ type PhabricatorReport = {
   phabricatorReport: Array<Object>
 };
 
-function formatResults(
-  testResult: TestResult, coverageMap?: CoverageMap
-): Object {
-  const file = testResult.testFilePath;
-  const output: Object = {
-    coverage: {},
-    message: '',
-    name: file,
-    summary: '',
-  };
+const {formatTestResults} = require('jest-util');
 
-  if (testResult.testExecError) {
-    const currTime = Date.now();
-    output.status = 'fatal';
-    output.startTime = currTime;
-    output.endTime = currTime;
-  } else {
-    const allTestsPassed = testResult.numFailingTests === 0;
-    output.status = allTestsPassed ? 'passed' : 'failed';
-    output.startTime = testResult.perfStats.start;
-    output.endTime = testResult.perfStats.end;
-    if (coverageMap) {
-      output.coverage = summarize(coverageMap);
-    } else {
-      output.coverage = Object.create(null);
-    }
-  }
-
-  return output;
-}
-
-function summarize(coverageMap: CoverageMap) {
-  const summaries = Object.create(null);
+function summarize(coverageMap: CoverageMap, filterBy: Array<string>) {
+  let summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
     const covered = [];
@@ -72,17 +43,35 @@ function summarize(coverageMap: CoverageMap) {
 
     summaries[file] = covered.join('');
   });
+
+  if (filterBy.length) {
+    summaries = filterBy.reduce((result, file) => {
+      result[file] = summaries[file];
+      return result;
+    }, {});
+  }
   return summaries;
 }
 
 module.exports = function(results: AggregatedResult): PhabricatorReport {
-
-  const report = results.testResults.map(
-    test => formatResults(test, results.coverageMap)
+  // use findRelatedTests to understand which file we want to have coverage
+  const filterBy = (
+    process.argv.slice(process.argv.indexOf('--findRelatedTests'))
   );
 
+  let coverageMap;
+  if (results.coverageMap) {
+    const coverageMap = summarize(results.coverageMap, filterBy);
+  }
+
+  const formatter = (coverage, reporter) => {
+    return coverageMap;
+  };
+
+  const report = formatTestResults(results, formatter);
+
   return Object.assign({}, {
-    phabricatorReport: report
+    phabricatorReport: report.testResults
   }, results, {coverageMap: null});
 
 };
