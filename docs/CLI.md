@@ -8,7 +8,7 @@ permalink: docs/cli.html
 
 The `jest` command line tool has a number of useful options, although you might never need any of them. You can run `jest --help` to view the options available. This document will also provide a brief overview.
 
-If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm` and the Jest arguments. So instead of:
+If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments. So instead of:
 
 ```bash
 jest -u -t="ColorPicker"
