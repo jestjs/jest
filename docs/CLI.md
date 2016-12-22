@@ -154,4 +154,4 @@ Watch files for changes and rerun all tests when something changes. If you want 
 
 ### `jest --watchman`
 
-Whether to use watchman for file crawling. Defaults to true. Disable using --no-watchman.
+Whether to use watchman for file crawling. Defaults to true. Disable using `--no-watchman`.
