@@ -47,7 +47,7 @@ If `done()` is never called, the test will fail, which is what you want to happe
 
 ### Promises
 
-If your code uses promises, there is a simpler way to handle asynchronous tests. Just return a promises from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+If your code uses promises, there is a simpler way to handle asynchronous tests. Just return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
 For example, let's say that `fetchData`, instead of using a callback, returns a promise that is supposed to resolve to the string `"peanut butter"`. We could test it with:
 
