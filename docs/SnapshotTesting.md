@@ -44,6 +44,8 @@ exports[`Link renders correctly 1`] = `
 
 The snapshot artifact should be committed alongside code changes. Jest uses [pretty-format](https://github.com/thejameskyle/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will simply compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
+More information on how snapshot testing works and why we built it can be found on the [release blog post](https://facebook.github.io/jest/blog/2016/07/27/jest-14.html). We also recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing.
+
 ### Updating Snapshots
 
 It's straightforward to spot when a snapshot test fails after a bug has been introduced. When that happens, go ahead and fix the issue and make sure your snapshot tests are passing again. Now, let's talk about the case when a snapshot test is failing due to an intentional implementation change.
@@ -80,7 +82,7 @@ You can try out this functionality by cloning the [snapshot example](https://git
 
 ### Tests Should Be Deterministic
 
-Snapshots must not include platform specific or other non-deterministic data.
+Your tests should be deterministic. That is, running the same tests multiple times on a component that has not changed should produce the same results every time. You're responsible for making sure your generated snapshots do not include platform specific or other non-deterministic data.
 
 For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](/jest/docs/mock-functions.html) to return a consistent value every time the test is run:
 
@@ -88,8 +90,13 @@ For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/
 Date.now = jest.fn(() => 1482363367071);
 ```
 
-Now, every time the snapshot test case runs, `Date.now()` will return the same value of `1482363367071`. This will result in the same snapshot being generated for this component regardless of when the test is run.
+Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
 
-### React, React Native and Snapshot Testing
+## React, React Native and Snapshot Testing
 
-As you've learned, snapshot testing was built to make it easier to write tests for React and React Native. Check out the [React tutorial](/jest/docs/tutorial-react.html) and the [React Native tutorial](/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases.
+As you've learned, snapshot testing was built to make it easier to write tests for React and React Native. Check out the [React tutorial](/jest/docs/tutorial-react.html) and the [React Native tutorial](/jest/docs/tutorial-react-native.html) to get started with snapshot testing on your React or React Native application.
+
+## Additional Uses
+
+Snapshots can capture any serializable value. Common examples are [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console-test.js
+) or API responses.
