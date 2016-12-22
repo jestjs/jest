@@ -21,7 +21,7 @@ var index = React.createClass({
     var whyJest = [
       {content: 'Fast interactive mode with `--watch`.'},
       {content: 'Create coverage reports with `--coverage`. No additional setup or libraries needed!'},
-      {content: 'Automatically find tests related to changed files to execute in your project with `-o`.'},
+      {content: 'Automatically find tests related to changed files to execute in your project with `--onlyChanged`.'},
       {content: 'Error messages are helpful and color coded. Stack traces point to the source of problems quickly.'},
       {content: 'Jest runs previously failed tests first. Together with `--bail` it provides useful signal quickly.'},
       {content: 'Sandboxed test files and automatic global state resets for every test.'},
@@ -30,7 +30,7 @@ var index = React.createClass({
       {content: 'Run tests in parallel processes to minimize test runtime.'},
       {content: 'Jest works with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io).'},
       {content: 'Integrated [manual mocking library](/jest/docs/mock-functions.html).'},
-      {content: 'Can run [asynchronous code synchronously](/jest/docs/timer-mocks.html).'},
+      {content: 'Can run [asynchronous code synchronously](/jest/docs/asynchronous.html).'},
     ];
 
     return (
