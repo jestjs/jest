@@ -60,7 +60,7 @@ The test environment used for all tests. This can point to any file or node modu
 
 Alias: `-e`. Use this flag to show full diffs instead of a patch.
 
-### `jest --findRelatedTests=<listOfSourceFiles`
+### `jest --findRelatedTests=<listOfSourceFiles>`
 
 Find the tests that cover a list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary.
 
