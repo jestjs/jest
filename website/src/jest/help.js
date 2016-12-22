@@ -2,18 +2,18 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var Site = require('Site');
-var center = require('center');
-var Container = require('Container');
-var Header = require('Header');
-var GridBlock = require('GridBlock');
+/* eslint-disable sort-keys, max-len, no-multi-str */
+
+const React = require('React');
+const Site = require('Site');
+const Container = require('Container');
+const GridBlock = require('GridBlock');
 
 
-var support = React.createClass({
-  render: function() {
+const support = React.createClass({
+  render() {
 
-    var supportLinks = [
+    const supportLinks = [
       {
         title: 'Browse the docs',
         content: 'Find what you\'re looking for in our detailed documentation and guides.\r\n\r\n\
@@ -57,7 +57,7 @@ var support = React.createClass({
 
       </Site>
     );
-  }
+  },
 });
 
 module.exports = support;

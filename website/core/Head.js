@@ -2,11 +2,12 @@
  * @providesModule Head
  * @jsx React.DOM
  */
+ /* eslint-disable max-len */
 
-var React = require('React');
+const React = require('React');
 
-var Head = React.createClass({
-  render: function() {
+const Head = React.createClass({
+  render() {
     return (
       <head>
         <meta charSet="utf-8" />
@@ -24,13 +25,13 @@ var Head = React.createClass({
         <link rel="shortcut icon" href="/jest/img/favicon.png" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" />
         <link rel="stylesheet" href="/jest/css/jest.css" />
-        <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css' />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css" />
 
         <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
         <script type="text/javascript">{'try{Typekit.load();}catch(e){}'}</script>
       </head>
     );
-  }
+  },
 });
 
 module.exports = Head;

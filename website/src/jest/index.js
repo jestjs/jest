@@ -2,23 +2,23 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var Site = require('Site');
-var Prism = require('Prism');
-var Marked = require('Marked');
-var unindent = require('unindent');
+/* eslint-disable max-len */
 
-var Container = require('Container');
-var HomeSplash = require('HomeSplash');
-var GridBlock = require('GridBlock');
+const React = require('React');
+const Site = require('Site');
+const Marked = require('Marked');
 
-var siteConfig = require('../../siteConfig.js');
-var gettingStartedContent = require('./docs/getting-started.js').content;
-var blog = require('MetadataBlog');
+const Container = require('Container');
+const HomeSplash = require('HomeSplash');
+const GridBlock = require('GridBlock');
 
-var index = React.createClass({
-  render: function() {
-    var whyJest = [
+const siteConfig = require('../../siteConfig.js');
+const gettingStartedContent = require('./docs/getting-started.js').content;
+const blog = require('MetadataBlog');
+
+const index = React.createClass({
+  render() {
+    const whyJest = [
       {content: 'Fast interactive mode with `--watch`.'},
       {content: 'Create coverage reports with `--coverage`. No additional setup or libraries needed!'},
       {content: 'Automatically find tests related to changed files to execute in your project with `--onlyChanged`.'},
@@ -37,14 +37,14 @@ var index = React.createClass({
       <Site>
         <HomeSplash mostRecentPost={blog.files[0]} />
         <div className="mainContainer">
-          <Container background="light" padding={["bottom","top"]}>
+          <Container background="light" padding={['bottom', 'top']}>
             <GridBlock align="center" contents={siteConfig.features} layout="fourColumn" />
           </Container>
-          <Container padding={["bottom","top"]}>
+          <Container padding={['bottom', 'top']}>
             <h2>Jest's Testing Features</h2>
             <GridBlock className="responsiveList testingFeatures" contents={whyJest} layout="threeColumn" />
           </Container>
-          <Container padding={["bottom"]}>
+          <Container padding={['bottom']}>
             <h2>
               <a className="anchor" name="getting-started"></a>
               Getting Started
@@ -55,7 +55,7 @@ var index = React.createClass({
         </div>
       </Site>
     );
-  }
+  },
 });
 
 module.exports = index;
