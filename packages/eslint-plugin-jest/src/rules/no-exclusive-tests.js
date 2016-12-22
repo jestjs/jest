@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {EslintContext, EslintNode} from './types';
+import type {EslintContext, CallExpression} from './types';
 
 module.exports = function(context: EslintContext) {
   const jestTestFunctions = [
@@ -35,25 +35,26 @@ module.exports = function(context: EslintContext) {
   }
 
   function isCallToJestOnlyFunction(callee) {
-    return callee.type === 'MemberExpression' && (
+    return (
       matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property)
     );
   }
 
   function isCallToExclusiveJestFunction(callee) {
-    return callee.type === 'Identifier' && (
-      matchesExclusiveTestFunction(callee)
-    );
+    return matchesExclusiveTestFunction(callee);
   }
 
   return {
-    CallExpression(node: EslintNode) {
+    CallExpression(node: CallExpression) {
       const callee = node.callee;
       if (!callee) {
         return;
       }
 
-      if (isCallToJestOnlyFunction(callee)) {
+      if (
+        callee.type === 'MemberExpression' &&
+        isCallToJestOnlyFunction(callee)
+      ) {
         context.report({
           message: 'Unexpected exclusive test.',
           node: callee.property,
@@ -61,7 +62,10 @@ module.exports = function(context: EslintContext) {
         return;
       }
 
-      if (isCallToExclusiveJestFunction(callee)) {
+      if (
+        callee.type === 'Identifier' &&
+        isCallToExclusiveJestFunction(callee)
+      ) {
         context.report({
           message: 'Unexpected exclusive test.',
           node: callee,

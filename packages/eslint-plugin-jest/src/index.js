@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
@@ -8,6 +7,9 @@
  *
  * @flow
  */
+
+/* eslint-disable global-require */
+
 'use strict';
 
 module.exports.rules = {

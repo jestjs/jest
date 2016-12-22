@@ -5,7 +5,7 @@ Eslint plugin for Jest
 ## Installation
 
 ```
-$ yarn install eslint eslint-plugin-jest --dev
+$ yarn add --dev eslint eslint-plugin-jest
 ```
 
 **Note:** If you installed ESLint globally then you must also install `eslint-plugin-jest` globally.
@@ -28,8 +28,8 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
   "rules": {
-    "jest/no-exclusive-tests": 2,
-    "jest/no-identical-title": 2
+    "jest/no-exclusive-tests": "error",
+    "jest/no-identical-title": "error"
   }
 }
 ```

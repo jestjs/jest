@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-jest",
-  "version": "17.0.0",
+  "version": "18.0.0",
   "description": "Eslint rules for Jest",
   "keywords": [
     "eslint",
@@ -20,5 +20,5 @@
   "peerDependencies": {
     "eslint": ">=3.6"
   },
-  "license": "ISC"
+  "license": "BSD-3-Clause"
 }

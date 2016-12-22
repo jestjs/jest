@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {EslintContext, EslintNode} from './types';
+import type {EslintContext, CallExpression} from './types';
 
 const describeAliases = [
   'describe',
@@ -94,7 +94,7 @@ module.exports = function(context: EslintContext) {
     newDescribeContext(),
   ];
   return {
-    CallExpression(node: EslintNode) {
+    CallExpression(node: CallExpression) {
       const currentLayer = contexts[contexts.length - 1];
       if (isDescribe(node)) {
         contexts.push(newDescribeContext());
@@ -107,7 +107,7 @@ module.exports = function(context: EslintContext) {
       handleTestCaseTitles(context, currentLayer.testTitles, node, title);
       handleTestSuiteTitles(context, currentLayer.describeTitles, node, title);
     },
-    'CallExpression:exit'(node: EslintNode) {
+    'CallExpression:exit'(node: CallExpression) {
       if (isDescribe(node)) {
         contexts.pop();
       }

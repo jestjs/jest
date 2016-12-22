@@ -7,7 +7,9 @@
  *
  * @flow
  */
+
 /* eslint-disable no-template-curly-in-string, sort-keys, max-len */
+
 'use strict';
 
 const RuleTester = require('eslint').RuleTester;
