@@ -58,7 +58,7 @@ The test environment used for all tests. This can point to any file or node modu
 
 ### `jest --expand`
 
-Alias: `jest -e`. Use this flag to show full diffs instead of a patch.
+Alias: `-e`. Use this flag to show full diffs instead of a patch.
 
 ### `jest --findRelatedTests=<listOfSourceFiles`
 
