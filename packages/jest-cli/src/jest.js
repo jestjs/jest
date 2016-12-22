@@ -40,6 +40,10 @@ const WATCHER_DEBOUNCE = 200;
 const WATCHMAN_BIN = 'watchman';
 const KEYS = {
   A: '61',
+  ARROW_DOWN: '1b5b42',
+  ARROW_LEFT: '1b5b44',
+  ARROW_RIGHT: '1b5b43',
+  ARROW_UP: '1b5b41',
   BACKSPACE: process.platform === 'win32' ? '08' : '7f',
   CONTROL_C: '03',
   CONTROL_D: '04',
@@ -362,6 +366,11 @@ const runCLI = (
                 isEnteringPattern = false;
                 pipe.write(ansiEscapes.eraseLines(2));
                 currentPattern = argv._[0];
+                break;
+              case KEYS.ARROW_DOWN:
+              case KEYS.ARROW_LEFT:
+              case KEYS.ARROW_RIGHT:
+              case KEYS.ARROW_UP:
                 break;
               default:
                 const char = new Buffer(key, 'hex').toString();
