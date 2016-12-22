@@ -4,7 +4,7 @@ title: Testing React Native Apps
 layout: docs
 category: Guides
 permalink: docs/tutorial-react-native.html
-next: snapshot-testing
+next: babel
 ---
 
 At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/)
@@ -31,9 +31,7 @@ Simply run `npm test` to run tests with Jest.
 
 ## Snapshot Test
 
-Snapshot testing was introduced in Jest 14.0. More information on how it works and why we built it can be found on the [release blog post](/jest/blog/2016/07/27/jest-14.html).
-
-Let's build a small intro component with a few views and text components and some styles.
+Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a small intro component with a few views and text components and some styles:
 
 ```javascript
 // Intro.js
