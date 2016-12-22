@@ -11,9 +11,8 @@ var siteConfig = {
   githubButton: githubButton,
   homepagePromos: [
     <div className="pluginRowBlock">
-      <Button href="#getting-started">Get Started</Button>
-      <Button href="/jest/docs/tutorial-react.html">React Testing</Button>
-      <Button href="/jest/docs/tutorial-react-native.html">React Native Testing</Button>
+      <Button href="/jest/docs/getting-started.html">Get Started</Button>
+      <Button href="/jest/docs/snapshot-testing.html">Snapshot Testing</Button>
       <Button href="/jest/docs/api.html">API Reference</Button>
       {githubButton}
     </div>,
@@ -21,12 +20,12 @@ var siteConfig = {
   features: [
     {
       image: "/jest/img/content/adaptable.svg",
-      title: "Turbocharged",
+      title: "Easy and Familiar",
       content: "Jest is a complete and easy to setup JavaScript testing solution."
     },
     {
       image: "/jest/img/content/sandboxed.svg",
-      title: "Fast and Sandboxed",
+      title: "Performance",
       content: "Jest virtualizes JavaScript environments and runs tests in parallel across worker processes."
     },
     {

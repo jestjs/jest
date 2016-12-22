@@ -73,7 +73,7 @@ module.exports = {};
 module.exports = 'test-file-stub';
 ```
 
-For CSS Modules, you can use an [ES2015 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
+For CSS Modules, you can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
 (`npm install --save-dev identity-obj-proxy`) to mock
 [CSS Modules](https://github.com/css-modules/css-modules); then all your className
 lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`).

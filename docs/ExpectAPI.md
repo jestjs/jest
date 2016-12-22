@@ -44,8 +44,8 @@ When you're writing tests, you often need to check that values meet certain cond
   - [`.toMatch(regexp)`](#tomatchregexp)
   - [`.toMatchObject(object)`](#tomatchobjectobject)
   - [`.toMatchSnapshot()`](#tomatchsnapshot)
-  - [`.toThrow()`](#tothrow)
-  - [`.toThrowError(error)`](#tothrowerrorerror)
+  - [`.toThrow(error)`](#tothrowerror)
+  - [`.toThrowError(error)`](#tothrowerror)
   - [`.toThrowErrorMatchingSnapshot()`](#tothrowerrormatchingsnapshot)
 
 -----
@@ -271,10 +271,8 @@ test('onPress gets called with the right thing', () => {
 If you know how to test something, `.not` lets you test its opposite. For example, this code tests that the best La Croix flavor is not coconut:
 
 ```js
-describe('the best La Croix flavor', () => {
-  test('is not coconut', () => {
-    expect(bestLaCroixFlavor()).not.toBe('coconut');
-  });
+test('the best flavor is not coconut', () => {
+  expect(bestLaCroixFlavor()).not.toBe('coconut');
 });
 ```
 
@@ -335,12 +333,10 @@ Use `.toHaveBeenCalledTimes` to ensure that a mock function got called exact num
 For example, let's say you have a `drinkEach(drink, Array<flavor>)` function that takes a `drink` function and applies it to array of passed beverages. You might want to check that drink function was called exact number of times. You can do that with this test suite:
 
 ```js
-describe('drinkEach', () => {
-  test('drinks each drink', () => {
-    let drink = jest.fn();
-    drinkEach(drink, ['lemon', 'octopus']);
-    expect(drink).toHaveBeenCalledTimes(2);
-  });
+test('drinkEach drinks each drink', () => {
+  let drink = jest.fn();
+  drinkEach(drink, ['lemon', 'octopus']);
+  expect(drink).toHaveBeenCalledTimes(2);
 });
 ```
 
@@ -353,14 +349,12 @@ Use `.toHaveBeenCalledWith` to ensure that a mock function was called with speci
 For example, let's say that you can register a beverage with a `register` function, and `applyToAll(f)` should apply the function `f` to all registered beverages. To make sure this works, you could write:
 
 ```js
-describe('beverage registration', () => {
-  test('applies correctly to orange La Croix', () => {
-    let beverage = new LaCroix('orange');
-    register(beverage);
-    let f = jest.fn();
-    applyToAll(f);
-    expect(f).toHaveBeenCalledWith(beverage);
-  });
+test('registration applies correctly to orange La Croix', () => {
+  let beverage = new LaCroix('orange');
+  register(beverage);
+  let f = jest.fn();
+  applyToAll(f);
+  expect(f).toHaveBeenCalledWith(beverage);
 });
 ```
 
@@ -371,12 +365,10 @@ Also under the alias: `.lastCalledWith(arg1, arg2, ...)`
 If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test what arguments it was last called with. For example, let's say you have a `applyToAllFlavors(f)` function that applies `f` to a bunch of flavors, and you want to ensure that when you call it, the last flavor it operates on is `'mango'`. You can write:
 
 ```js
-describe('applying to all flavors', () => {
-  test('does mango last', () => {
-    let drink = jest.fn();
-    applyToAllFlavors(drink);
-    expect(drink).toHaveBeenLastCalledWith('mango');
-  });
+test('applying to all flavors does mango last', () => {
+  let drink = jest.fn();
+  applyToAllFlavors(drink);
+  expect(drink).toHaveBeenLastCalledWith('mango');
 });
 ```
 
@@ -385,10 +377,8 @@ describe('applying to all flavors', () => {
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
 
 ```js
-describe('adding numbers', () => {
-  test('works sanely with simple decimals', () => {
-    expect(0.2 + 0.1).toBe(0.3); // Fails!
-  });
+test('adding works sanely with simple decimals', () => {
+  expect(0.2 + 0.1).toBe(0.3); // Fails!
 });
 ```
 
@@ -397,10 +387,8 @@ It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. S
 Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
 
 ```js
-describe('adding numbers', () => {
-  test('works sanely with simple decimals', () => {
-    expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
-  });
+test('adding works sanely with simple decimals', () => {
+  expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```
 
@@ -411,10 +399,8 @@ The default for `numDigits` is 2, which has proved to be a good default in most 
 Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns *something*, you can write:
 
 ```js
-describe('fetching new flavor ideas', () => {
-  test('returns something', () => {
-    expect(fetchNewFlavorIdea()).toBeDefined();
-  });
+test('there is a new flavor idea', () => {
+  expect(fetchNewFlavorIdea()).toBeDefined();
 });
 ```
 
@@ -434,11 +420,9 @@ if (!getErrors()) {
 You may not care what `getErrors` returns, specifically - it might return `false`, `null`, or `0`, and your code would still work. So if you want to test there are no errors after drinking some La Croix, you could write:
 
 ```js
-describe('drinking some La Croix', () => {
-  test('does not lead to errors', () => {
-    drinkSomeLaCroix();
-    expect(getErrors()).toBeFalsy();
-  });
+test('drinking La Croix does not lead to errors', () => {
+  drinkSomeLaCroix();
+  expect(getErrors()).toBeFalsy();
 });
 ```
 
@@ -449,10 +433,8 @@ In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefine
 To compare floating point numbers, you can use `toBeGreaterThan`. For example, if you want to test that `ouncesPerCan()` returns a value of more than 10 ounces, write:
 
 ```js
-describe('ounces per can', () => {
-  test('is more than 10', () => {
-    expect(ouncesPerCan()).toBeGreaterThan(10);
-  });
+test('ounces per can is more than 10', () => {
+  expect(ouncesPerCan()).toBeGreaterThan(10);
 });
 ```
 
@@ -461,10 +443,8 @@ describe('ounces per can', () => {
 To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
 
 ```js
-describe('ounces per can', () => {
-  test('is at least 12', () => {
-    expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
-  });
+test('ounces per can is at least 12', () => {
+  expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
 });
 ```
 
@@ -473,10 +453,8 @@ describe('ounces per can', () => {
 To compare floating point numbers, you can use `toBeLessThan`. For example, if you want to test that `ouncesPerCan()` returns a value of less than 20 ounces, write:
 
 ```js
-describe('ounces per can', () => {
-  test('is less than 20', () => {
-    expect(ouncesPerCan()).toBeLessThan(20);
-  });
+test('ounces per can is less than 20', () => {
+  expect(ouncesPerCan()).toBeLessThan(20);
 });
 ```
 
@@ -485,10 +463,8 @@ describe('ounces per can', () => {
 To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
 
 ```js
-describe('ounces per can', () => {
-  test('is at most 12', () => {
-    expect(ouncesPerCan()).toBeLessThanOrEqual(12);
-  });
+test('ounces per can is at most 12', () => {
+  expect(ouncesPerCan()).toBeLessThanOrEqual(12);
 });
 ```
 
@@ -513,11 +489,9 @@ function bloop() {
   return null;
 }
 
-describe('bloop', () => {
-  test('returns null', () => {
-    expect(bloop()).toBeNull();
-  });
-})
+test('bloop returns null', () => {
+  expect(bloop()).toBeNull();
+});
 ```
 
 ### `.toBeTruthy()`
@@ -534,11 +508,9 @@ if (thirstInfo()) {
 You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you just want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
 
 ```js
-describe('drinking some La Croix', () => {
-  test('leads to having thirst info', () => {
-    drinkSomeLaCroix();
-    expect(thirstInfo()).toBeTruthy();
-  });
+test('drinking La Croix leads to having thirst info', () => {
+  drinkSomeLaCroix();
+  expect(thirstInfo()).toBeTruthy();
 });
 ```
 
@@ -549,10 +521,8 @@ In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefine
 Use `.toBeUndefined` to check that a variable is undefined. For example, if you want to check that a function `bestDrinkForFlavor(flavor)` returns `undefined` for the `'octopus'` flavor, because there is no good octopus-flavored drink:
 
 ```js
-describe('the best drink', () => {
-  test('for octopus flavor is undefined', () => {
-    expect(bestDrinkForFlavor('octopus')).toBeUndefined();
-  });
+test('the best drink for octopus flavor is undefined', () => {
+  expect(bestDrinkForFlavor('octopus')).toBeUndefined();
 });
 ```
 
@@ -565,10 +535,8 @@ Use `.toContain` when you want to check that an item is in a list. For testing t
 For example, if `getAllFlavors()` returns a list of flavors and you want to be sure that `lime` is in there, you can write:
 
 ```js
-describe('the list of all flavors', () => {
-  test('contains lime', () => {
-    expect(getAllFlavors()).toContain('lime');
-  });
+test('the flavor list contains lime', () => {
+  expect(getAllFlavors()).toContain('lime');
 });
 ```
 
@@ -669,10 +637,8 @@ const desiredHouse = {
 	}
 };
 
-describe('looking for a new house', () => {
-	test('the house has my desired features', () => {
-		expect(houseForSale).toMatchObject(desiredHouse);
-	});
+test('the house has my desired features', () => {
+  expect(houseForSale).toMatchObject(desiredHouse);
 });
 ```
 
@@ -680,32 +646,25 @@ describe('looking for a new house', () => {
 
 This ensures that a value matches the most recent snapshot. Check out [the React + Jest tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more information on snapshot testing.
 
-You can also specify an optional snapshot name. Otherwise, the name is inferred
-from the test.
+You can also specify an optional snapshot name. Otherwise, the name is inferred from the test.
 
-*Note: While snapshot testing is most commonly used with React components, any
-serializable value can be used as a snapshot.*
+*Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot.*
 
-### `.toThrow()`
+### `.toThrow(error)`
+
+Also under the alias: `.toThrowError(error)`
 
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
 ```js
-describe('drinking flavors', () => {
-  test('throws on octopus', () => {
-    expect(() => {
-      drinkFlavor('octopus');
-    }).toThrow();
-  });
+test('throws on octopus', () => {
+  expect(() => {
+    drinkFlavor('octopus');
+  }).toThrow();
 });
 ```
 
-If you want to test that a specific error gets thrown, use `.toThrowError`.
-
-### `.toThrowError(error)`
-
-Use `.toThrowError` to test that a function throws a specific error when it
-is called. The argument can be a string for the error message, a class for the error, or a regex that should match the error. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`.  The argument can be a string for the error message, a class for the error, or a regex that should match the error. For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -719,24 +678,21 @@ function drinkFlavor(flavor) {
 We could test this error gets thrown in several ways:
 
 ```js
-describe('drinking flavors', () => {
-  test('throws on octopus', () => {
-    function drinkOctopus() {
-      drinkFlavor('octopus');
-    }
-    // Test the exact error message
-    expect(drinkOctopus).toThrowError('yuck, octopus flavor');
+test('throws on octopus', () => {
+  function drinkOctopus() {
+    drinkFlavor('octopus');
+  }
 
-    // Test that the error message says "yuck" somewhere
-    expect(drinkOctopus).toThrowError(/yuck/);
+  // Test the exact error message
+  expect(drinkOctopus).toThrowError('yuck, octopus flavor');
 
-    // Test that we get a DisgustingFlavorError
-    expect(drinkOctopus).toThrowError(DisgustingFlavorError);
-  });
+  // Test that the error message says "yuck" somewhere
+  expect(drinkOctopus).toThrowError(/yuck/);
+
+  // Test that we get a DisgustingFlavorError
+  expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 ```
-
-If you don't care what specific error gets thrown, use `.toThrow`.
 
 ### `.toThrowErrorMatchingSnapshot()`
 
@@ -754,14 +710,12 @@ function drinkFlavor(flavor) {
 The test for this function will look this way:
 
 ```js
-describe('drinking flavors', () => {
-  test('throws on octopus', () => {
-    function drinkOctopus() {
-      drinkFlavor('octopus');
-    }
+test('throws on octopus', () => {
+  function drinkOctopus() {
+    drinkFlavor('octopus');
+  }
 
-    expect(drinkOctopus).toThrowErrorMatchingSnapshot();
-  });
+  expect(drinkOctopus).toThrowErrorMatchingSnapshot();
 });
 ```
 
