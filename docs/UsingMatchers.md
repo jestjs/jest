@@ -4,7 +4,7 @@ title: Using Matchers
 layout: docs
 category: Introduction
 permalink: docs/using-matchers.html
-next: mocking
+next: asynchronous
 ---
 
 Jest uses "matchers" to let you test values in different ways. There too many different matchers to memorize them all, so this document will only try to introduce the most useful ones.
@@ -155,3 +155,5 @@ test('compiling android goes as expected', () => {
 ### And More
 
 This is just a taste. For a complete list of matchers, check out the [reference docs](/jest/docs/expect.html).
+
+Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you [test asynchronous code](/jest/docs/asynchronous.html).
