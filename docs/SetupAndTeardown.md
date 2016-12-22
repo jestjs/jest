@@ -13,7 +13,7 @@ Often while writing tests you have some setup work that needs to happen before t
 
 If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach`.
 
-For example, let's say that several tests that interact with a database of cities. You have a method `initializeCityDatabase()` that must be called before each of these tests, and a method `clearCityDatabase()` that must be called after each of these tests. You can do this with:
+For example, let's say that several tests interact with a database of cities. You have a method `initializeCityDatabase()` that must be called before each of these tests, and a method `clearCityDatabase()` that must be called after each of these tests. You can do this with:
 
 ```js
 beforeEach(() => {
