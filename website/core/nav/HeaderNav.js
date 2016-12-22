@@ -3,7 +3,9 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
+/* eslint-disable sort-keys */
+
+const React = require('React');
 
 class HeaderNav extends React.Component {
   constructor() {
@@ -31,7 +33,7 @@ class HeaderNav extends React.Component {
         <div className="headerWrapper wrapper">
           <header>
             <a href={this.props.baseUrl}>
-              <img src={this.props.baseUrl + "img/jest-outline.svg"} />
+              <img src={this.props.baseUrl + 'img/jest-outline.svg'} />
               <h2>{this.props.title}</h2>
             </a>
             {this.renderResponsiveNav()}
@@ -75,7 +77,7 @@ class HeaderNav extends React.Component {
       </div>
     );
   }
-};
+}
 
 HeaderNav.defaultProps = {
   linksInternal: [

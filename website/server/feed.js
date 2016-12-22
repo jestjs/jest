@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 const fs = require('fs');
 const path = require('path');
 const Feed = require('feed');
@@ -9,7 +11,7 @@ const jestImage = (
   'master/packages/jest-cli/src/assets/jest_logo.png'
 );
 
-const getURLFromFile = (file) => {
+const getURLFromFile = file => {
   const url = (
     file.substring(0, 11).split('-').join('/') +
     file.substring(11).replace(/\.md$/, '.html')
@@ -17,9 +19,9 @@ const getURLFromFile = (file) => {
   return (
     `${blogRootURL}${url}`
   );
-}
+};
 
-const retrieveMetaData = (file) => {
+const retrieveMetaData = file => {
   const postPieces = String(
     fs.readFileSync(
       path.join(blogFolder, file)
@@ -48,7 +50,7 @@ const retrieveMetaData = (file) => {
           return metadata;
         }, {
           url: getURLFromFile(file),
-          description: postExcerpt
+          description: postExcerpt,
         }
       )
   );
@@ -75,17 +77,17 @@ module.exports = function(type) {
     updated: new Date(allPosts[0] + 'T06:00:00'),
   });
 
-  allPosts.forEach( key => {
+  allPosts.forEach(key => {
     const post = posts[key];
     feed.addItem({
       title: post.title,
       link: post.url,
       author: [{
         name: post.author,
-        link: post.authorURL
+        link: post.authorURL,
       }],
       date: new Date(key + 'T06:00:00'),
-      description: post.description
+      description: post.description,
     });
   });
 

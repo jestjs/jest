@@ -3,10 +3,8 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var classNames = require('classnames');
-
-var Marked = require('Marked');
+const React = require('React');
+const classNames = require('classnames');
 
 class SideNav extends React.Component {
   render() {
@@ -46,7 +44,7 @@ class SideNav extends React.Component {
           {category.links.map(this.renderItemLink, this)}
         </ul>
       </div>
-    )
+    );
   }
 
   getLink(metadata) {
@@ -59,14 +57,16 @@ class SideNav extends React.Component {
     if (metadata.path) {
       return '/jest/blog/' + metadata.path;
     }
+
+    return null;
   }
 
   renderItemLink(link) {
-    var itemClasses = classNames("navListItem", {
-      "navListItemActive": (link.id === this.props.current.id),
+    const itemClasses = classNames('navListItem', {
+      'navListItemActive': (link.id === this.props.current.id),
     });
-    var linkClasses = classNames("navItem", {
-      "navItemActive": (link.id === this.props.current.id),
+    const linkClasses = classNames('navItem', {
+      'navItemActive': (link.id === this.props.current.id),
     });
     return (
       <li className={itemClasses}>
@@ -76,10 +76,10 @@ class SideNav extends React.Component {
           {link.title}
         </a>
       </li>
-    )
+    );
   }
 
-};
+}
 
 SideNav.defaultProps = {
   contents: [],
