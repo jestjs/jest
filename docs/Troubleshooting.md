@@ -108,7 +108,7 @@ jest.dontMock('foo');
 import foo from './foo';
 ```
 
-In ES2015, import statements get hoisted before all other
+In ES6, import statements get hoisted before all other
 
 ```js
 var foo = require('foo');

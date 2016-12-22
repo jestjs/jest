@@ -4,7 +4,7 @@ title: An Async Example
 layout: docs
 category: Guides
 permalink: docs/tutorial-async.html
-next: babel
+next: webpack
 ---
 
 *Note: make sure to install `babel-jest` and the async/await feature for this
