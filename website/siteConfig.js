@@ -32,7 +32,7 @@ var siteConfig = {
     {
       image: "/jest/img/content/snapshots.svg",
       title: "Snapshot Testing",
-      content: "Jest can [capture snapshots](/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to simplify UI testing."
+      content: "Jest can [capture snapshots](/jest/docs/snapshot-testing.html) of React trees or other serializable values to simplify UI testing."
     },
   ]
 };
