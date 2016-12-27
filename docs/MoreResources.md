@@ -14,7 +14,6 @@ By now you should have a good idea of how Jest can make it easy to test your app
 - Learn about [Snapshot Testing](/jest/docs/snapshot-testing.html).
 - Migrate your existing tests to Jest by following our [migration guide](https://facebook.github.io/jest/docs/migration-guide.html).
 - Learn how to [configure Jest](/jest/docs/configuration.html).
-- Enable support for [Babel](/jest/docs/babel.html).
 - Look at the full [API Reference](/jest/docs/api.html).
 - [Troubleshoot](/jest/docs/troubleshooting.html) problems with Jest.
 
