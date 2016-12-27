@@ -644,7 +644,7 @@ test('the house has my desired features', () => {
 
 ### `.toMatchSnapshot(?string)`
 
-This ensures that a value matches the most recent snapshot. Check out [the React + Jest tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) for more information on snapshot testing.
+This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](/jest/docs/snapshot-testing.html) for more information.
 
 You can also specify an optional snapshot name. Otherwise, the name is inferred from the test.
 
