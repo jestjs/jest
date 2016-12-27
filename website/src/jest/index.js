@@ -50,6 +50,9 @@ const index = React.createClass({
               Getting Started
               <a className="hash-link" href="#getting-started"></a>
             </h2>
+            Try out.
+            Video.
+            Install.
             <Marked>{gettingStartedContent}</Marked>
           </Container>
         </div>

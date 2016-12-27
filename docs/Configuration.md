@@ -30,8 +30,7 @@ When using the --config option, the JSON file must not contain a "jest" key:
 }
 ```
 
-
-#### [Configuration Options](#configuration)
+## Options
 
 These options let you control Jest's behavior in your `package.json` file. The Jest philosophy is to work great by default, but sometimes you just need more configuration power.
 
@@ -39,7 +38,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
 
 -----
 
-## Jest options
+## Reference
 
 ### `automock` [boolean]
 Default: `false`

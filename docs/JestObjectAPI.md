@@ -9,6 +9,8 @@ next: configuration
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
 
+## Methods
+
   - [`jest.clearAllTimers()`](#jestclearalltimers)
   - [`jest.disableAutomock()`](#jestdisableautomock)
   - [`jest.enableAutomock()`](#jestenableautomock)
@@ -28,6 +30,8 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.useRealTimers()`](#jestuserealtimers)
 
 -----
+
+## Reference
 
 ### `jest.clearAllTimers()`
 Removes any pending timers from the timer system.
