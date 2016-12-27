@@ -10,7 +10,7 @@
 
 'use strict';
 
-const jestExpect = require('../').expect;
+const jestExpect = require('../');
 const skipOnWindows = require('skipOnWindows');
 
 // Custom Error class because node versions have different stack trace strings.
