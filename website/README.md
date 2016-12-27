@@ -1,3 +1,5 @@
+You will need Node 6 or newer in order to build the Jest website.
+
 # Run the server
 
 The first time, get all the dependencies loaded via
