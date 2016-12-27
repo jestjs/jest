@@ -236,7 +236,6 @@ iframe.jest-repl {
 
 .mainContainer {
   background: #f9f9f9;
-  overflow: auto;
 }
 .mainContainer .wrapper {
   text-align: left;

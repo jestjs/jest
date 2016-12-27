@@ -168,9 +168,7 @@ Received:
 
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mundefined[39m
-  Received: [31mnull[39m"
+  Comparing two different types of values. Expected [32mundefined[39m but received [31mnull[39m."
 `;
 
 exports[`.toBe() fails for: true and false 1`] = `
@@ -1765,9 +1763,7 @@ Received:
 
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mobject[39m
-  Received: [31mstring[39m"
+  Comparing two different types of values. Expected [32mobject[39m but received [31mstring[39m."
 `;
 
 exports[`.toEqual() expect("banana").toEqual("apple") 1`] = `
@@ -1798,9 +1794,7 @@ Received:
 
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mobject[39m
-  Received: [31marray[39m"
+  Comparing two different types of values. Expected [32mobject[39m but received [31marray[39m."
 `;
 
 exports[`.toEqual() expect([Function anonymous]).not.toEqual({"expectedObject": [Function Function]}) 1`] = `
@@ -1911,9 +1905,7 @@ Received:
 
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mundefined[39m
-  Received: [31mnull[39m"
+  Comparing two different types of values. Expected [32mundefined[39m but received [31mnull[39m."
 `;
 
 exports[`.toEqual() expect(true).not.toEqual({}) 1`] = `
@@ -1953,9 +1945,7 @@ Received:
 
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mobject[39m
-  Received: [31mundefined[39m"
+  Comparing two different types of values. Expected [32mobject[39m but received [31mundefined[39m."
 `;
 
 exports[`.toEqual() expect(undefined).toEqual({}) 1`] = `
@@ -1968,9 +1958,7 @@ Received:
 
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mobject[39m
-  Received: [31mundefined[39m"
+  Comparing two different types of values. Expected [32mobject[39m but received [31mundefined[39m."
 `;
 
 exports[`.toHaveLength error cases 1`] = `
@@ -2251,9 +2239,7 @@ Received:
   [31mobject[39m.a: [31m{\"b\": 3}[39m
 Difference:
 
-Comparing two different types of values:
-  Expected: [32mundefined[39m
-  Received: [31mnumber[39m"
+  Comparing two different types of values. Expected [32mundefined[39m but received [31mnumber[39m."
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d') 1`] = `

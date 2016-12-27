@@ -32,8 +32,8 @@ describe('different types', () => {
 
     test(`'${a}' and '${b}'`, () => {
       expect(stripAnsi(diff(a, b))).toBe(
-        'Comparing two different types of values:\n' +
-        `  Expected: ${typeA}\n  Received: ${typeB}`,
+        '  Comparing two different types of values. ' +
+        `Expected ${typeA} but received ${typeB}.`,
       );
 
     });
