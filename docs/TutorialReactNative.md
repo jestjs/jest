@@ -4,7 +4,7 @@ title: Testing React Native Apps
 layout: docs
 category: Guides
 permalink: docs/tutorial-react-native.html
-next: babel
+next: tutorial-async
 ---
 
 At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/)
