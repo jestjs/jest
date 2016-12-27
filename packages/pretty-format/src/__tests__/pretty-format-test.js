@@ -14,7 +14,7 @@ const prettyFormat = require('../');
 const React = require('react');
 const ReactTestComponent = require('../plugins/ReactTestComponent');
 const ReactElement = require('../plugins/ReactElement');
-const renderer = require('react/lib/ReactTestRenderer');
+const renderer = require('react-test-renderer');
 
 function returnArguments() {
   return arguments;

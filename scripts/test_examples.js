@@ -39,7 +39,7 @@ function runExampleTests(exampleDirectory) {
     return;
   }
 
-  runCommands('npm update', exampleDirectory);
+  runCommands('yarn install --pure-lockfile', exampleDirectory);
   packages.forEach(pkg => {
     const name = path.basename(pkg);
     const directory = path.resolve(exampleDirectory, 'node_modules', name);
@@ -73,7 +73,7 @@ function runExampleTests(exampleDirectory) {
     exampleDirectory
   );
 
-  runCommands('npm test', exampleDirectory);
+  runCommands('yarn test', exampleDirectory);
 }
 
 examples.forEach(runExampleTests);
