@@ -9,6 +9,7 @@
  */
 'use strict';
 
+import type {Console} from 'console';
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {Script} from 'vm';
@@ -20,14 +21,16 @@ const vm = require('vm');
 
 class NodeEnvironment {
 
+  console: ?Console;
   context: ?vm$Context;
   fakeTimers: ?FakeTimers;
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: Config) {
+  constructor(config: Config, createCustomConsole: (x: number) => Console) {
     this.context = vm.createContext();
     const global = this.global = vm.runInContext('this', this.context);
+    global.console = this.console = createCustomConsole(4);
     global.global = global;
     global.clearInterval = clearInterval;
     global.clearTimeout = clearTimeout;
@@ -43,6 +46,7 @@ class NodeEnvironment {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
+    this.console = null;
     this.context = null;
     this.fakeTimers = null;
   }

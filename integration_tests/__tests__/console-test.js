@@ -34,3 +34,14 @@ test('console printing with --verbose', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
+
+test('console printing with jsdom env', () => {
+  const {stderr, stdout, status} =
+        runJest('console', ['--verbose', '--env=jsdom']);
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});

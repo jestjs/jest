@@ -27,7 +27,6 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   /* $FlowFixMe */
   const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
 
-  const env = new TestEnvironment(config);
   const TestConsole =
     config.verbose
       ? Console
@@ -35,16 +34,18 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
         ? NullConsole
         : BufferedConsole
       );
-  const testConsole = env.global.console = new TestConsole(
-    config.useStderr ? process.stderr : process.stdout,
-    process.stderr,
-    (type, message) => getConsoleOutput(
-      config.rootDir,
-      !!config.verbose,
-      // 4 = the console call is burried 4 stack frames deep
-      BufferedConsole.write([], type, message, 4),
-    ),
-  );
+  const createCustomConsole = (stackFrameDepth: number): Object => {
+    return new TestConsole(
+      config.useStderr ? process.stderr : process.stdout,
+      process.stderr,
+      (type, message) => getConsoleOutput(
+        config.rootDir,
+        !!config.verbose,
+        BufferedConsole.write([], type, message, stackFrameDepth),
+      ),
+    );
+  };
+  const env = new TestEnvironment(config, createCustomConsole);
   const runtime = new ModuleLoader(config, env, resolver);
   const start = Date.now();
   return TestRunner(config, env, runtime, path)
@@ -56,7 +57,8 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
       result.perfStats = {end: Date.now(), start};
       result.testFilePath = path;
       result.coverage = runtime.getAllCoverageInfo();
-      result.console = testConsole.getBuffer();
+      result.console = env.console && env.console.getBuffer ?
+        env.console.getBuffer() : null;
       result.skipped = testCount === result.numPendingTests;
       return result;
     })
