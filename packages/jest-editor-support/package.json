@@ -15,5 +15,6 @@
   },
   "dependencies": {
     "babylon": "^6.13.0"
-  }
+  },
+  "typings": "index.d.ts"
 }
