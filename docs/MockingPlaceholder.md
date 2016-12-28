@@ -1,6 +1,6 @@
 ---
 id: mocking
-title: Mocking
+title: Mocking [PLACEHOLDER]
 layout: docs
 category: Introduction
 permalink: docs/mocking.html

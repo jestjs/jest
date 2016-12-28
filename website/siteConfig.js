@@ -14,6 +14,7 @@ const siteConfig = {
   githubButton,
   homepagePromos: [
     <div className="pluginRowBlock">
+      <Button href="#use">Try out Jest</Button>
       <Button href="#getting-started">Get Started</Button>
       <Button href="/jest/docs/snapshot-testing.html">Snapshot Testing</Button>
       <Button href="/jest/docs/api.html">API Reference</Button>

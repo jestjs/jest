@@ -13,7 +13,7 @@ const HomeSplash = require('HomeSplash');
 const GridBlock = require('GridBlock');
 
 const siteConfig = require('../../siteConfig.js');
-const gettingStartedContent = require('./docs/getting-started.js').content;
+const gettingStartedContent = require('./docs/getting-started.js').content.split('<!--truncate-->')[0];
 const blog = require('MetadataBlog');
 
 const index = React.createClass({
@@ -46,14 +46,27 @@ const index = React.createClass({
           </Container>
           <Container padding={['bottom']}>
             <h2>
+              <a className="anchor" name="use"></a>
+              Try Jest
+              <a className="hash-link" href="#use"></a>
+            </h2>
+            <Marked>You can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!</Marked>
+            <iframe className="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
+
+            <Marked>...or watch a video to get started with Jest:</Marked>
+            <div className="video">
+              <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
+            </div>
+            <div className="video-shoutout">
+              <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a> by <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a> hosted by <a href="https://egghead.io">Egghead</a>.
+            </div>
+            <h2>
               <a className="anchor" name="getting-started"></a>
               Getting Started
               <a className="hash-link" href="#getting-started"></a>
             </h2>
-            Try out.
-            Video.
-            Install.
             <Marked>{gettingStartedContent}</Marked>
+            <Marked>Refer to [Additional Configuration](/jest/docs/getting-started.html#additional-configuration) to learn how to use Jest with Babel, webpack, or TypeScript.</Marked>
           </Container>
         </div>
       </Site>
