@@ -8,6 +8,7 @@
  */
 'use strict';
 
+import type {Console} from 'console';
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {Script} from 'vm';
@@ -18,15 +19,21 @@ const ModuleMocker = require('jest-mock');
 
 class JSDOMEnvironment {
 
+  console: ?Console;
   document: ?Object;
   fakeTimers: ?FakeTimers;
   global: ?Global;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: Config): void {
+  constructor(config: Config,
+              createCustomConsole: (x: number) => Console): void {
     // lazy require
-    this.document = require('jsdom').jsdom(/* markup */undefined, {
+    const jsdom = require('jsdom');
+    const console = this.console = createCustomConsole(8);
+    const virtualConsole = jsdom.createVirtualConsole().sendTo(console);
+    this.document = jsdom.jsdom(/* markup */undefined, {
       url: config.testURL,
+      virtualConsole,
     });
     const global = this.global = this.document.defaultView;
     // Node's error-message stack size is limited at 10, but it's pretty useful
@@ -45,6 +52,7 @@ class JSDOMEnvironment {
     if (this.global) {
       this.global.close();
     }
+    this.console = null;
     this.global = null;
     this.document = null;
     this.fakeTimers = null;
