@@ -2,6 +2,7 @@
 
 ## jest 18.1.0
 
+* Fixed console.log and fake timer behavior in node 7.3.
 * Updated istanbul-api.
 * Updated jest-diff equality error message.
 * Disabled arrow keys when entering a pattern in watch mode to prevent broken behavior. Will be improved in a future release.
