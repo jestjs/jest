@@ -77,7 +77,7 @@ const diffLines = (a: string, b: string): Diff => {
 };
 
 const showPatchMarks = (hunk: Hunk, a: string): boolean => {
-  const oldLines: Array<string> = a.match(/\n/g) || [];
+  const oldLines = a.match(/\n/g) || [];
   return oldLines.length > hunk.oldLines;
 };
 
