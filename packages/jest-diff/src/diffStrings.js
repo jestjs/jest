@@ -81,6 +81,12 @@ const showPatchMarks = (hunk: Hunk, a: string): boolean => {
   return oldLines.length > hunk.oldLines;
 };
 
+const createPatchMark = (hunk: Hunk): string => {
+  const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
+  const markNew = `+${hunk.newStart},${hunk.newLines}`;
+  return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
+};
+
 const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
@@ -91,10 +97,6 @@ const structuredPatch = (a: string, b: string): Diff => {
   return {
     diff: diff.structuredPatch('', '', a, b, '', '', options)
       .hunks.map((hunk: Hunk) => {
-        const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
-        const markNew = `+${hunk.newStart},${hunk.newLines}`;
-        const patchMark = chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
-
         const lines = hunk.lines.map(line => {
           const added = line[0] === '+';
           const removed = line[0] === '-';
@@ -108,7 +110,7 @@ const structuredPatch = (a: string, b: string): Diff => {
 
         isDifferent = true;
         return showPatchMarks(hunk, a)
-          ? patchMark + lines
+          ? createPatchMark(hunk) + lines
           : lines;
       }).join('').trim(),
     isDifferent,
