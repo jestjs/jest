@@ -7,7 +7,7 @@
  */
 
 declare module 'jest-editor-support' {
-  import { EventEmitter } from 'events';
+  import {EventEmitter} from 'events';
 
   export class Runner extends EventEmitter {
     constructor(workspace: ProjectWorkspace);
