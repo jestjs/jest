@@ -91,8 +91,12 @@ const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
   // Make sure the strings end with a newline.
-  a = a.endsWith('\n') ? a : a + '\n';
-  b = b.endsWith('\n') ? b : b + '\n';
+  if (!a.endsWith('\n')) {
+    a += '\n';
+  }
+  if (!b.endsWith('\n')) {
+    b += '\n';
+  }
 
   return {
     diff: diff.structuredPatch('', '', a, b, '', '', options)
