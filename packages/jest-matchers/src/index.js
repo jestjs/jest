@@ -32,7 +32,7 @@ const {
   arrayContaining,
   objectContaining,
   stringMatching,
-} = require('./jasmine-utils');
+} = require('./asymmetric-matchers');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 

@@ -50,7 +50,6 @@ const NUMBERS = [
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
 const getType = (value: any): ValueType => {
-  console.log(value, typeof value);
   if (typeof value === 'undefined') {
     return 'undefined';
   } else if (value === null) {
