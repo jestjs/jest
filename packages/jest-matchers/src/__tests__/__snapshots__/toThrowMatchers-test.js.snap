@@ -2,15 +2,15 @@ exports[`.toThrow() error class did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
 
 Expected the function to throw an error of type:
-  [32m\"Err\"[39m
-But it didn\'t throw anything."
+  [32m\\"Err\\"[39m
+But it didn't throw anything."
 `;
 
 exports[`.toThrow() error class threw, but class did not match 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
 
 Expected the function to throw an error of type:
-  [32m\"Err2\"[39m
+  [32m\\"Err2\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -20,7 +20,7 @@ exports[`.toThrow() error class threw, but should not have 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mtype[39m[2m)[22m
 
 Expected the function not to throw an error of type:
-  [32m\"Err\"[39m
+  [32m\\"Err\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -30,9 +30,9 @@ exports[`.toThrow() invalid arguments 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mnumber[39m[2m)[22m
 
 Unexpected argument passed.
-Expected: [32m\"string\"[39m, [32m\"Error (type)\"[39m or [32m\"regexp\"[39m.
+Expected: [32m\\"string\\"[39m, [32m\\"Error (type)\\"[39m or [32m\\"regexp\\"[39m.
 Got:
-  string: [32m\"111\"[39m"
+  string: [32m\\"111\\"[39m"
 `;
 
 exports[`.toThrow() regexp did not throw at all 1`] = `
@@ -40,7 +40,7 @@ exports[`.toThrow() regexp did not throw at all 1`] = `
 
 Expected the function to throw an error matching:
   [32m/apple/[39m
-But it didn\'t throw anything."
+But it didn't throw anything."
 `;
 
 exports[`.toThrow() regexp threw, but message did not match 1`] = `
@@ -67,15 +67,15 @@ exports[`.toThrow() strings did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mstring[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"apple\"[39m
-But it didn\'t throw anything."
+  [32m\\"apple\\"[39m
+But it didn't throw anything."
 `;
 
 exports[`.toThrow() strings threw, but message did not match 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mstring[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"banana\"[39m
+  [32m\\"banana\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -85,7 +85,7 @@ exports[`.toThrow() strings threw, but should not have 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mstring[39m[2m)[22m
 
 Expected the function not to throw an error matching:
-  [32m\"apple\"[39m
+  [32m\\"apple\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -95,15 +95,15 @@ exports[`.toThrowError() error class did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mtype[39m[2m)[22m
 
 Expected the function to throw an error of type:
-  [32m\"Err\"[39m
-But it didn\'t throw anything."
+  [32m\\"Err\\"[39m
+But it didn't throw anything."
 `;
 
 exports[`.toThrowError() error class threw, but class did not match 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mtype[39m[2m)[22m
 
 Expected the function to throw an error of type:
-  [32m\"Err2\"[39m
+  [32m\\"Err2\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -113,7 +113,7 @@ exports[`.toThrowError() error class threw, but should not have 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mtype[39m[2m)[22m
 
 Expected the function not to throw an error of type:
-  [32m\"Err\"[39m
+  [32m\\"Err\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -123,9 +123,9 @@ exports[`.toThrowError() invalid arguments 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mnumber[39m[2m)[22m
 
 Unexpected argument passed.
-Expected: [32m\"string\"[39m, [32m\"Error (type)\"[39m or [32m\"regexp\"[39m.
+Expected: [32m\\"string\\"[39m, [32m\\"Error (type)\\"[39m or [32m\\"regexp\\"[39m.
 Got:
-  string: [32m\"111\"[39m"
+  string: [32m\\"111\\"[39m"
 `;
 
 exports[`.toThrowError() regexp did not throw at all 1`] = `
@@ -133,7 +133,7 @@ exports[`.toThrowError() regexp did not throw at all 1`] = `
 
 Expected the function to throw an error matching:
   [32m/apple/[39m
-But it didn\'t throw anything."
+But it didn't throw anything."
 `;
 
 exports[`.toThrowError() regexp threw, but message did not match 1`] = `
@@ -160,15 +160,15 @@ exports[`.toThrowError() strings did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mstring[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"apple\"[39m
-But it didn\'t throw anything."
+  [32m\\"apple\\"[39m
+But it didn't throw anything."
 `;
 
 exports[`.toThrowError() strings threw, but message did not match 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mstring[39m[2m)[22m
 
 Expected the function to throw an error matching:
-  [32m\"banana\"[39m
+  [32m\\"banana\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
@@ -178,7 +178,7 @@ exports[`.toThrowError() strings threw, but should not have 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mstring[39m[2m)[22m
 
 Expected the function not to throw an error matching:
-  [32m\"apple\"[39m
+  [32m\\"apple\\"[39m
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
