@@ -40,7 +40,7 @@ If you have JavaScript files that are transformed by Babel, you can [enable supp
 
 ### Handling Static Assets
 
-Next let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
+Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
 ```js
 // package.json
