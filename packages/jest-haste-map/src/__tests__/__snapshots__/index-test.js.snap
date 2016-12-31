@@ -14,14 +14,14 @@ exports[`HasteMap tries to crawl using node as a fallback 1`] = `
 
 exports[`HasteMap warns on duplicate mock files 1`] = `
 "jest-haste-map: duplicate manual mock found:
-  Module name: blueberry
-  Duplicate Mock path: /fruits/__mocks__/subdir2/blueberry.js
+  Module name: subdir/blueberry
+  Duplicate Mock path: /fruits2/__mocks__/subdir/blueberry.js
 This warning is caused by two manual mock files with the same file name.
 Jest will use the mock file found in: 
-/fruits/__mocks__/subdir2/blueberry.js
+/fruits2/__mocks__/subdir/blueberry.js
  Please delete one of the following two files: 
- /fruits/__mocks__/subdir1/blueberry.js
-/fruits/__mocks__/subdir2/blueberry.js
+ /fruits1/__mocks__/subdir/blueberry.js
+/fruits2/__mocks__/subdir/blueberry.js
 
 "
 `;

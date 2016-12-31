@@ -80,6 +80,18 @@ let readFileSync;
 let workerFarmMock;
 let writeFileSync;
 
+describe('getMockName', () => {
+  it('extracts mock name from file path', () => {
+    HasteMap = require('../');
+    const {getMockName} = HasteMap;
+
+    expect(getMockName('a/__b__/c.js', /__b__/)).toBe('c');
+    expect(getMockName('a/__b__/index.js', /__b__/)).toBe('index');
+    expect(getMockName('a/__b__/c/d.js', /__b__/)).toBe('c/d');
+    expect(getMockName('a/__b__/c/d/index.js', /__b__/)).toBe('c/d');
+  });
+});
+
 describe('HasteMap', () => {
   skipOnWindows.suite();
 
@@ -322,12 +334,12 @@ describe('HasteMap', () => {
 
   it('warns on duplicate mock files', () => {
     // Duplicate mock files for blueberry
-    mockFs['/fruits/__mocks__/subdir1/blueberry.js'] = [
+    mockFs['/fruits1/__mocks__/subdir/blueberry.js'] = [
       '/**',
       ' * @providesModule Blueberry1',
       ' */',
     ].join('\n');
-    mockFs['/fruits/__mocks__/subdir2/blueberry.js'] = [
+    mockFs['/fruits2/__mocks__/subdir/blueberry.js'] = [
       '/**',
       ' * @providesModule Blueberry2',
       ' */',

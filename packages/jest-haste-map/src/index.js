@@ -95,7 +95,14 @@ const canUseWatchman = ((): boolean => {
 const escapePathSeparator =
   string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
 
-const getMockName = filePath => path.basename(filePath, path.extname(filePath));
+const getMockName = (filePath, mocksPattern) => {
+  const modulePath = filePath.split(mocksPattern)[1];
+  const extractMockName = new RegExp(
+    `^\\${path.sep}?(.*?)(\\${path.sep}index)?\\${path.extname(modulePath)}$`
+  );
+  return extractMockName.exec(modulePath)[1];
+};
+
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
     return new RegExp(
@@ -327,7 +334,7 @@ class HasteMap extends EventEmitter {
       this._options.mocksPattern &&
       this._options.mocksPattern.test(filePath)
     ) {
-      const mockPath = getMockName(filePath);
+      const mockPath = getMockName(filePath, this._options.mocksPattern);
       if (mocks[mockPath]) {
         this._console.warn(
           `jest-haste-map: duplicate manual mock found:\n` +
@@ -617,7 +624,7 @@ class HasteMap extends EventEmitter {
           this._options.mocksPattern &&
           this._options.mocksPattern.test(filePath)
         ) {
-          const mockName = getMockName(filePath);
+          const mockName = getMockName(filePath, this._options.mocksPattern);
           delete hasteMap.mocks[mockName];
         }
 
@@ -701,8 +708,11 @@ class HasteMap extends EventEmitter {
   }
 
   static H: HType;
+
+  static getMockName;
 }
 
 HasteMap.H = H;
+HasteMap.getMockName = getMockName;
 
 module.exports = HasteMap;
