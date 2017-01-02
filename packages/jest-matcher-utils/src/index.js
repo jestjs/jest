@@ -12,6 +12,9 @@
 
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
+const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+
+const PLUGINS = [AsymmetricMatcherPlugin];
 
 export type ValueType =
   | 'array'
@@ -91,17 +94,15 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
     result = prettyFormat(object, {
       maxDepth,
       min: true,
+      plugins: PLUGINS,
     });
   } catch (e) {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,
       min: true,
+      plugins: PLUGINS,
     });
-  }
-
-  if (object && object.jasmineToString) {
-    result = object.jasmineToString();
   }
 
   return result.length >= MAX_LENGTH && maxDepth > 1

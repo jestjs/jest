@@ -14,6 +14,7 @@ import type {DiffOptions} from './diffStrings';
 
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
 const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
+const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
 
 const chalk = require('chalk');
 const diffStrings = require('./diffStrings');
@@ -25,7 +26,11 @@ const {
   SIMILAR_MESSAGE,
 } = require('./constants');
 
-const PLUGINS = [ReactTestComponentPlugin, ReactElementPlugin];
+const PLUGINS = [
+  ReactTestComponentPlugin,
+  ReactElementPlugin,
+  AsymmetricMatcherPlugin,
+];
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };
@@ -83,9 +88,7 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
 
   try {
     diffMessage = diffStrings(
-      a.jasmineToPrettyString
-        ? a.jasmineToPrettyString(FORMAT_OPTIONS)
-        : prettyFormat(a, FORMAT_OPTIONS),
+      prettyFormat(a, FORMAT_OPTIONS),
       prettyFormat(b, FORMAT_OPTIONS),
       options,
     );
@@ -97,9 +100,7 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
     diffMessage = diffStrings(
-      a.jasmineToPrettyString
-        ? a.jasmineToPrettyString(FALLBACK_FORMAT_OPTIONS)
-        : prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
+      prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
       prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
       options,
     );
