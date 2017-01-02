@@ -20,62 +20,80 @@ const {
   isUndefined,
 } = require('./jasmine-utils');
 
-class Any {
-  expectedObject: any;
+class AsymmetricMatcher {
+  $$typeof: Symbol;
 
-  constructor(expectedObject: any) {
-    if (typeof expectedObject === 'undefined') {
+  constructor() {
+    this.$$typeof = Symbol.for('jest.asymmetricMatcher');
+  }
+}
+
+class Any extends AsymmetricMatcher {
+  sample: any;
+
+  constructor(sample: any) {
+    super();
+    if (typeof sample === 'undefined') {
       throw new TypeError(
          'any() expects to be passed a constructor function. ' +
          'Please pass one or use anything() to match any object.'
        );
     }
-    this.expectedObject = expectedObject;
+    this.sample = sample;
   }
 
   asymmetricMatch(other: any) {
-    if (this.expectedObject == String) {
+    if (this.sample == String) {
       return typeof other == 'string' || other instanceof String;
     }
 
-    if (this.expectedObject == Number) {
+    if (this.sample == Number) {
       return typeof other == 'number' || other instanceof Number;
     }
 
-    if (this.expectedObject == Function) {
+    if (this.sample == Function) {
       return typeof other == 'function' || other instanceof Function;
     }
 
-    if (this.expectedObject == Object) {
+    if (this.sample == Object) {
       return typeof other == 'object';
     }
 
-    if (this.expectedObject == Boolean) {
+    if (this.sample == Boolean) {
       return typeof other == 'boolean';
     }
 
-    return other instanceof this.expectedObject;
+    return other instanceof this.sample;
   }
 
-  jasmineToString() {
-    return '<any(' + fnNameFor(this.expectedObject) + ')>';
+  toString() {
+    return 'Any';
+  }
+
+  toAsymmetricMatcher() {
+    return '<any(' + fnNameFor(this.sample) + ')>';
   }
 }
 
-class Anything {
+class Anything extends AsymmetricMatcher {
   asymmetricMatch(other: any) {
     return !isUndefined(other) && other !== null;
   }
 
-  jasmineToString() {
+  toString() {
+    return 'Anything';
+  }
+
+  toAsymmetricMatcher() {
     return '<anything>';
   }
 }
 
-class ArrayContaining {
+class ArrayContaining extends AsymmetricMatcher {
   sample: Array<any>;
 
   constructor(sample: Array<any>) {
+    super();
     this.sample = sample;
   }
 
@@ -102,19 +120,16 @@ class ArrayContaining {
     return 'ArrayContaining';
   }
 
-  jasmineToString() {
-    return '<arrayContaining(' + prettyFormat(this.sample, {min: true}) + ')>';
-  }
-
-  jasmineToPrettyString(options: Object) {
-    return '<arrayContaining(' + prettyFormat(this.sample, options) + ')>';
+  toAsymmetricMatcher(print: Function) {
+    return '<arrayContaining(' + print(this.sample) + ')>';
   }
  }
 
-class ObjectContaining {
+class ObjectContaining extends AsymmetricMatcher {
   sample: Object;
 
   constructor(sample: Object) {
+    super();
     this.sample = sample;
   }
 
@@ -142,32 +157,33 @@ class ObjectContaining {
     return 'ObjectContaining';
   }
 
-  jasmineToString() {
-    return '<objectContaining(' + prettyFormat(this.sample, {min: true}) + ')>';
-  }
-
-  jasmineToPrettyString(options: Object) {
-    return '<objectContaining(' + prettyFormat(this.sample, options) + ')>';
+  toAsymmetricMatcher(print: Function) {
+    return '<objectContaining(' + print(this.sample) + ')>';
   }
 }
 
-class StringMatching {
-  regexp: RegExp;
+class StringMatching extends AsymmetricMatcher {
+  sample: RegExp;
 
-  constructor(expected: string | RegExp) {
-    if (!isA('String', expected) && !isA('RegExp', expected)) {
+  constructor(sample: string | RegExp) {
+    super();
+    if (!isA('String', sample) && !isA('RegExp', sample)) {
       throw new Error('Expected is not a String or a RegExp');
     }
 
-    this.regexp = new RegExp(expected);
+    this.sample = new RegExp(sample);
   }
 
   asymmetricMatch(other: string) {
-    return this.regexp.test(other);
+    return this.sample.test(other);
   }
 
-  jasmineToString() {
-    return '<stringMatching(' + prettyFormat(this.regexp, {min: true}) + ')>';
+  toString() {
+    return 'StringMatching';
+  }
+
+  toAsymmetricMatcher(print: Function) {
+    return '<stringMatching(' + print(this.sample) + ')>';
   }
 }
 
