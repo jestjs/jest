@@ -10,7 +10,6 @@
 
 'use strict';
 
-const prettyFormat = require('pretty-format');
 const {
   contains,
   equals,
