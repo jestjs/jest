@@ -19,5 +19,5 @@ module.exports = {
     opts: Object,
     colors: Object
   ) => val.toAsymmetricMatcher(print),
-  test: (object: any) => object.$$typeof === asymmetricMatcher,
+  test: (object: any) => object && object.$$typeof === asymmetricMatcher,
 };
