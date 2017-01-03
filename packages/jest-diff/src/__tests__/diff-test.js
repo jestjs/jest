@@ -127,12 +127,10 @@ test('objects', () => {
 test('numbers', () => {
   const result = diff(123, 234);
   expect(result).toBe(null);
-  expect(result).toBe(null);
 });
 
 test('booleans', () => {
   const result = diff(true, false);
-  expect(result).toBe(null);
   expect(result).toBe(null);
 });
 
