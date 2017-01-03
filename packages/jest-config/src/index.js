@@ -34,7 +34,7 @@ const readRawConfig = (argv, root) => {
   const rawConfig = parseConfig(argv);
 
   if (typeof rawConfig === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), rawConfig));
+    return loadFromFile(path.resolve(process.cwd(), rawConfig), argv);
   }
 
   if (typeof rawConfig === 'object') {
