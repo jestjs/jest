@@ -310,7 +310,7 @@ function normalize(config, argv) {
           );
           normObj[filePath] = true;
           return normObj;
-        }, {__proto__: null});
+        }, Object.create(null));
         break;
 
       case 'setupFiles':
