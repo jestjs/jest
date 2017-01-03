@@ -1,15 +1,15 @@
 /**
  * @jsx React.DOM
  */
+/* eslint-disable max-len */
 
-var React = require('React');
-var Site = require('Site');
-var center = require('center');
-var Container = require('Container');
-var Header = require('Header');
+const React = require('React');
+const Site = require('Site');
+const Container = require('Container');
+const Header = require('Header');
 
-var support = React.createClass({
-  render: function() {
+const support = React.createClass({
+  render() {
     return (
       <Site section="support">
         <div className="docMainWrapper wrapper">
@@ -39,7 +39,7 @@ var support = React.createClass({
 
       </Site>
     );
-  }
+  },
 });
 
 module.exports = support;

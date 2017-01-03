@@ -3,14 +3,14 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var OpenSourceGlyph = require('OpenSourceGlyph');
+const React = require('React');
+const OpenSourceGlyph = require('OpenSourceGlyph');
 
-var siteConfig = require('../siteConfig.js');
+const siteConfig = require('../siteConfig.js');
 
-var Footer = React.createClass({
-  render: function() {
-    var repo = "https://github.com/" + siteConfig.repo;
+const Footer = React.createClass({
+  render() {
+    const repo = 'https://github.com/' + siteConfig.repo;
     return (
       <div className="footerContainer">
         <div className="wrapper footerWrapper">
@@ -25,13 +25,15 @@ var Footer = React.createClass({
               <a className="footerLink" href="https://twitter.com/fbOpenSource" target="_blank">Twitter</a>
             </div>
             <div className="footerSection rightAlign">
-              <a className="footerLink" href={repo} target="_blank">Contribute on GitHub</a>
+              <a className="footerLink" href={repo} target="_blank">
+                Contribute on GitHub
+              </a>
             </div>
           </div>
         </div>
       </div>
     );
-  }
+  },
 });
 
 module.exports = Footer;

@@ -3,20 +3,22 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var HeaderNav = require('HeaderNav');
-var Head = require('Head');
-var Footer = require('Footer');
+/* eslint-disable max-len */
 
-var siteConfig = require('../siteConfig.js');
+const React = require('React');
+const HeaderNav = require('HeaderNav');
+const Head = require('Head');
+const Footer = require('Footer');
 
-var Site = React.createClass({
-  render: function() {
-    var title = this.props.title
+const siteConfig = require('../siteConfig.js');
+
+const Site = React.createClass({
+  render() {
+    const title = this.props.title
       ? this.props.title + ' · ' + siteConfig.title
       : siteConfig.title + ' · ' + siteConfig.tagline;
-    var description = this.props.description || siteConfig.tagline;
-    var url =
+    const description = this.props.description || siteConfig.tagline;
+    const url =
       siteConfig.url + siteConfig.baseUrl + (this.props.url || 'index.html');
     return (
       <html>
@@ -56,7 +58,7 @@ var Site = React.createClass({
         </body>
       </html>
     );
-  }
+  },
 });
 
 module.exports = Site;
