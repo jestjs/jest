@@ -156,3 +156,13 @@ test('React elements', () => {
   expect(stripAnsi(result)).toMatch(/\-\s+Hello/);
   expect(stripAnsi(result)).toMatch(/\+\s+Goodbye/);
 });
+
+test('collapses big diffs to patch format', () => {
+  const result = diff(
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
+    {expand: false}
+  );
+
+  expect(result).toMatchSnapshot();
+});
