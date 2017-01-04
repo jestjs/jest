@@ -1,8 +1,8 @@
 ---
 id: tutorial-react
-title: Tutorial – React
+title: Testing React Apps
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/tutorial-react.html
 next: tutorial-react-native
 ---
@@ -53,9 +53,7 @@ Your `package.json` should look something like this (where `<current-version>` i
 
 ### Snapshot Testing
 
-Snapshot testing was introduced in Jest 14.0. More information on how it works and why we built it can be found on the [release blog post](/jest/blog/2016/07/27/jest-14.html).
-
-Let's build a Link component in React that renders hyperlinks:
+Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a Link component that renders hyperlinks:
 
 ```javascript
 // Link.react.js
@@ -223,7 +221,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-it('CheckboxWithLabel changes the text after click', () => {
+test('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
   const checkbox = shallow(
     <CheckboxWithLabel labelOn="On" labelOff="Off" />

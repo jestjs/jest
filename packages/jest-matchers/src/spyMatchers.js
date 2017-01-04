@@ -25,13 +25,14 @@ const {
   printWithType,
   RECEIVED_COLOR,
 } = require('jest-matcher-utils');
+const {
+  equals,
+} = require('./jasmine-utils');
 
 const RECEIVED_NAME = {
   'mock function': 'jest.fn()',
   spy: 'spy',
 };
-
-const equals = global.jasmine.matchersUtil.equals;
 
 const createToBeCalledMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);

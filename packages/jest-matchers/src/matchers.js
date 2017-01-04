@@ -15,10 +15,6 @@ import type {
   MatchersObject,
 } from 'types/Matchers';
 
-const {
-  toMatchSnapshot,
-} = require('jest-snapshot');
-
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-util');
 const {getPath} = require('./utils');
@@ -33,6 +29,9 @@ const {
   printExpected,
   printWithType,
 } = require('jest-matcher-utils');
+const {
+  equals,
+} = require('./jasmine-utils');
 
 type ContainIterable = (
   Array<any> |
@@ -43,7 +42,6 @@ type ContainIterable = (
 );
 
 const IteratorSymbol = Symbol.iterator;
-const equals = global.jasmine.matchersUtil.equals;
 
 const hasIterator = object => !!(object != null && object[IteratorSymbol]);
 const iterableEquality = (a, b) => {
@@ -66,7 +64,7 @@ const iterableEquality = (a, b) => {
     const nextB = bIterator.next();
     if (
       nextB.done ||
-      !global.jasmine.matchersUtil.equals(
+      !equals(
         aValue,
         nextB.value,
         [iterableEquality],
@@ -612,7 +610,7 @@ const matchers: MatchersObject = {
         }
 
         return expected.map((exp, i) => findMatchObject(exp, received[i]));
-        
+
       } else if (received instanceof Date) {
         return received;
       } else if (typeof received === 'object' && received !== null && typeof expected === 'object' && expected !== null) {
@@ -667,9 +665,6 @@ const matchers: MatchersObject = {
 
     return {message, pass};
   },
-
-  toMatchSnapshot,
-
 };
 
 module.exports = matchers;

@@ -1,10 +1,10 @@
 ---
 id: migration-guide
-title: Migration Guide
+title: Migrating to Jest
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/migration-guide.html
-next: api
+next: troubleshooting
 ---
 
 If you'd like to try out Jest with an existing codebase, there are a number of ways to convert to Jest:

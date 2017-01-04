@@ -2,18 +2,18 @@
  * @providesModule DocsLayout
  * @jsx React.DOM
  */
+ /* eslint-disable max-len */
 
-var React = require('React');
-var Site = require('Site');
-var Marked = require('Marked');
-var Container = require('Container');
-var Doc = require('Doc');
-var DocsSidebar = require('DocsSidebar');
+const React = require('React');
+const Site = require('Site');
+const Container = require('Container');
+const Doc = require('Doc');
+const DocsSidebar = require('DocsSidebar');
 
-var DocsLayout = React.createClass({
-  render: function() {
-    var metadata = this.props.metadata;
-    var content = this.props.children;
+const DocsLayout = React.createClass({
+  render() {
+    const metadata = this.props.metadata;
+    const content = this.props.children;
     return (
       <Site
         className="sideNavVisible"
@@ -32,7 +32,7 @@ var DocsLayout = React.createClass({
         </div>
       </Site>
     );
-  }
+  },
 });
 
 module.exports = DocsLayout;

@@ -19,13 +19,14 @@ const {
   formatResultsErrors,
   formatStackTrace,
 } = require('./messages');
-const formatTestResults = require('./formatTestResults');
 const clearLine = require('./clearLine');
 const fileExists = require('jest-file-exists');
+const formatTestResults = require('./formatTestResults');
 const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
+const setGlobal = require('./setGlobal');
 
 const escapePathForRegex = (dir: string) => {
   if (path.sep === '\\') {
@@ -103,5 +104,6 @@ module.exports = {
   installCommonGlobals,
   replacePathSepForRegex,
   separateMessageFromStack,
+  setGlobal,
   warnAboutUnrecognizedOptions,
 };

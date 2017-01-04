@@ -12,7 +12,7 @@
 import type {Config} from 'types/Config';
 import type {RawMatcherFn} from 'types/Matchers';
 
-const {expect, setState} = require('jest-matchers');
+const expect = require('jest-matchers');
 
 const {
   toMatchSnapshot,
@@ -28,7 +28,7 @@ type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
 module.exports = (config: Config) => {
   global.expect = expect;
-  setState({
+  expect.setState({
     expand: config.expand,
   });
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
@@ -48,6 +48,14 @@ module.exports = (config: Config) => {
       };
     });
 
-    global.expect.extend(jestMatchersObject);
+    const expect = global.expect;
+
+    jasmine.anything = expect.anything;
+    jasmine.any = expect.any;
+    jasmine.objectContaining = expect.objectContaining;
+    jasmine.arrayContaining = expect.arrayContaining;
+    jasmine.stringMatching = expect.stringMatching;
+
+    expect.extend(jestMatchersObject);
   };
 };
