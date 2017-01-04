@@ -33,7 +33,7 @@ describe('Runtime', () => {
         ).toEqual(mockReference);
 
         expect(
-          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'ManuallyMocked'),
         ).toEqual(mockReference);
       }),
     );
@@ -82,7 +82,7 @@ describe('Runtime', () => {
         ).toBe(mockReference);
 
         expect(
-          runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
+          runtime.requireModuleOrMock(runtime.__mockRootPath, 'ManuallyMocked'),
         ).toBe(mockReference);
       }),
     );
