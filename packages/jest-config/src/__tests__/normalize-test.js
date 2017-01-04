@@ -236,14 +236,14 @@ describe('transform', () => {
         rootDir: '/root/',
         transform: 'string',
       }, '/root/path');
-    }).toThrow();
+    }).toThrowErrorMatchingSnapshot();
 
     expect(() => {
       normalize({
         rootDir: '/root/',
         transform: ['string'],
       }, '/root/path');
-    }).toThrow();
+    }).toThrowErrorMatchingSnapshot();
   });
 });
 

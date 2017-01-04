@@ -14,3 +14,31 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
   [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
 [39m"
 `;
+
+exports[`transform throws for invalid value 1`] = `
+"[31mConfiguration option \`[1mtransform[22m\` must be an object. Use it like this:
+
+[1m  \"transform\": {
+    \"^.+\\\\.js$\": \"string\"
+  }[22m
+
+  Jest changed the default configuration for tests.
+
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
+  [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
+[39m"
+`;
+
+exports[`transform throws for invalid value 2`] = `
+"[31mConfiguration option \`[1mtransform[22m\` must be an object. Use it like this:
+
+[1m  \"transform\": {
+    \"^.+\\\\.js$\": \"<rootDir>/node_modules/babel-jest\"
+  }[22m
+
+  Jest changed the default configuration for tests.
+
+  [1mConfiguration Documentation:[22m https://facebook.github.io/jest/docs/configuration.html
+  [1mJest Issue Tracker:[22m https://github.com/facebook/jest/issues
+[39m"
+`;
