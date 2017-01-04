@@ -350,7 +350,7 @@ The test environment that will be used for testing. The default environment in J
 ### `testPathDirs` [array<string>]
 (default: `["<rootDir>"]`)
 
-A list of paths to directories that Jest should use to search for tests in.
+A list of paths to directories that Jest should use to search for tests and mocks in.
 
 There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
 
