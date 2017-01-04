@@ -270,7 +270,7 @@ function normalize(config, argv) {
         : '<rootDir>/node_modules/babel-jest';
       throwConfigurationError(
         `Configuration option \`${chalk.bold('transform')}\` ` +
-        'should be an Object. Use it like this:\n\n' +
+        'must be an object. Use it like this:\n\n' +
         chalk.bold(
           '  "transform": {\n' +
           `    "^.+\\\\.js$": "${exampleTransform}"\n` +
