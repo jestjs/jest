@@ -14,6 +14,7 @@ import type {Global} from 'types/Global';
 import type ModuleMocker from 'jest-mock';
 
 const {formatStackTrace} = require('./messages');
+const setGlobal = require('./setGlobal');
 
 type Callback = (...args: any) => void;
 
@@ -287,25 +288,29 @@ class FakeTimers {
   }
 
   useRealTimers() {
-    this._global.clearImmediate = this._timerAPIs.clearImmediate;
-    this._global.clearInterval = this._timerAPIs.clearInterval;
-    this._global.clearTimeout = this._timerAPIs.clearTimeout;
-    this._global.process.nextTick = this._timerAPIs.nextTick;
-    this._global.setImmediate = this._timerAPIs.setImmediate;
-    this._global.setInterval = this._timerAPIs.setInterval;
-    this._global.setTimeout = this._timerAPIs.setTimeout;
+    const global = this._global;
+    setGlobal(global, 'clearImmediate', this._timerAPIs.clearImmediate);
+    setGlobal(global, 'clearInterval', this._timerAPIs.clearInterval);
+    setGlobal(global, 'clearTimeout', this._timerAPIs.clearTimeout);
+    setGlobal(global, 'setImmediate', this._timerAPIs.setImmediate);
+    setGlobal(global, 'setInterval', this._timerAPIs.setInterval);
+    setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
+
+    global.process.nextTick = this._timerAPIs.nextTick;
   }
 
   useFakeTimers() {
     this._createMocks();
 
-    this._global.clearImmediate = this._fakeTimerAPIs.clearImmediate;
-    this._global.clearInterval = this._fakeTimerAPIs.clearInterval;
-    this._global.clearTimeout = this._fakeTimerAPIs.clearTimeout;
-    this._global.process.nextTick = this._fakeTimerAPIs.nextTick;
-    this._global.setImmediate = this._fakeTimerAPIs.setImmediate;
-    this._global.setInterval = this._fakeTimerAPIs.setInterval;
-    this._global.setTimeout = this._fakeTimerAPIs.setTimeout;
+    const global = this._global;
+    setGlobal(global, 'clearImmediate', this._fakeTimerAPIs.clearImmediate);
+    setGlobal(global, 'clearInterval', this._fakeTimerAPIs.clearInterval);
+    setGlobal(global, 'clearTimeout', this._fakeTimerAPIs.clearTimeout);
+    setGlobal(global, 'setImmediate', this._fakeTimerAPIs.setImmediate);
+    setGlobal(global, 'setInterval', this._fakeTimerAPIs.setInterval);
+    setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
+
+    global.process.nextTick = this._fakeTimerAPIs.nextTick;
   }
 
   _checkFakeTimers() {

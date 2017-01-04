@@ -238,6 +238,14 @@ function normalize(config, argv) {
     config.collectCoverageFrom = argv.collectCoverageFrom;
   }
 
+  if (argv.collectCoverageOnlyFrom) {
+    const collectCoverageOnlyFrom = Object.create(null);
+    argv.collectCoverageOnlyFrom.forEach(
+      path => collectCoverageOnlyFrom[path] = true
+    );
+    config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
+  }
+
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
@@ -302,7 +310,7 @@ function normalize(config, argv) {
           );
           normObj[filePath] = true;
           return normObj;
-        }, {});
+        }, Object.create(null));
         break;
 
       case 'setupFiles':
