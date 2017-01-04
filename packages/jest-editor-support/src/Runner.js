@@ -10,7 +10,7 @@
 
 'use strict';
 
-const {ChildProcess} = require('child_process');
+const {ChildProcess, spawn} = require('child_process');
 const {readFile} = require('fs');
 const {tmpdir} = require('os');
 const {EventEmitter} = require('events');
@@ -89,6 +89,11 @@ module.exports = class Runner extends EventEmitter {
   }
 
   closeProcess() {
-    this.debugprocess.kill();
+    if (process.platform === 'win32') {
+      // because windows is stupid and doesn't exit when it should
+      spawn('taskkill', ['/pid', this.debugprocess.pid.toString(), '/T', '/F']);
+    } else {
+      this.debugprocess.kill();
+    }
   }
 };
