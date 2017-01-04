@@ -32,6 +32,9 @@ module.exports = class Runner extends EventEmitter {
   }
 
   start() {
+    if (this.debugprocess) {
+      return;
+    }
     // Handle the arg change on v18
     const belowEighteen = this.workspace.localJestMajorVersion < 18;
     const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
@@ -91,9 +94,10 @@ module.exports = class Runner extends EventEmitter {
   closeProcess() {
     if (process.platform === 'win32') {
       // because windows is stupid and doesn't exit when it should
-      spawn('taskkill', ['/pid', this.debugprocess.pid.toString(), '/T', '/F']);
+      spawn('taskkill', ['/pid', '' + this.debugprocess.pid, '/T', '/F']);
     } else {
       this.debugprocess.kill();
     }
+    delete this.debugprocess;
   }
 };
