@@ -66,6 +66,10 @@ const options = {
       'info needs to be collected from.',
     type: 'string',
   },
+  collectCoverageOnlyFrom: {
+    description: 'List of paths coverage will be restricted to.',
+    type: 'array',
+  },
   colors: {
     description:
       'Forces test results output highlighting (even if stdout is not a TTY)',
