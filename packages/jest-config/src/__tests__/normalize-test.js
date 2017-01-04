@@ -229,6 +229,22 @@ describe('transform', () => {
       ['abs-path', '/qux/quux'],
     ]);
   });
+
+  it('throws for invalid value', () => {
+    expect(() => {
+      normalize({
+        rootDir: '/root/',
+        transform: 'string',
+      }, '/root/path');
+    }).toThrowErrorMatchingSnapshot();
+
+    expect(() => {
+      normalize({
+        rootDir: '/root/',
+        transform: ['string'],
+      }, '/root/path');
+    }).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('setupTestFrameworkScriptFile', () => {

@@ -262,6 +262,23 @@ function normalize(config, argv) {
 
   let babelJest;
   if (config.transform) {
+    const toString = Object.prototype.toString;
+    if (toString.call(config.transform) !== '[object Object]') {
+      const isString = typeof config.transform === 'string';
+      const exampleTransform = isString
+        ? config.transform
+        : '<rootDir>/node_modules/babel-jest';
+      throwConfigurationError(
+        `Configuration option \`${chalk.bold('transform')}\` ` +
+        'must be an object. Use it like this:\n\n' +
+        chalk.bold(
+          '  "transform": {\n' +
+          `    "^.+\\\\.js$": "${exampleTransform}"\n` +
+          '  }'
+        )
+      );
+    }
+
     const customJSPattern = Object.keys(config.transform).find(pattern => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
