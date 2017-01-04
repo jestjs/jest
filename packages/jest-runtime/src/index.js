@@ -543,7 +543,9 @@ class Runtime {
     }
 
     const sep = path.delimiter;
-    const id = moduleType + sep + (absolutePath || '') + sep + (mockPath || '');
+    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
+      (mockPath ? (mockPath + sep) : ''));
+
     return normalizedIDCache[key] = id;
   }
 
