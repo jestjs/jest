@@ -28,15 +28,25 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
   "rules": {
-    "jest/no-exclusive-tests": "error",
+    "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error"
+  }
+}
+```
+
+You can also whitelist the environment variables provided by Jest by doing:
+
+```json
+{
+  "env": {
+    "jest/globals": true
   }
 }
 ```
 
 ## Supported Rules
 
-- [no-exclusive-tests](docs/rules/no-exclusive-tests.md) - disallow exclusive tests.
+- [no-focused-tests](docs/rules/no-focused-tests.md) - disallow focused tests.
 - [no-identical-title](docs/rules/no-identical-title.md) - disallow identical titles.
 
 

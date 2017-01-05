@@ -745,6 +745,9 @@ eslint-plugin-flowtype@^2.28.2:
   dependencies:
     lodash "^4.15.0"
 
+"eslint-plugin-jest@file:packages/eslint-plugin-jest":
+  version "18.1.0"
+
 eslint-plugin-react@^6.7.1:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-6.8.0.tgz#741ab5438a094532e5ce1bbb935d6832356f492d"
