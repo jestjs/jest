@@ -8,6 +8,16 @@ All files |      100 |      100 |      100 |      100 |                |
 "
 `;
 
+exports[`test collects coverage only from specified files avoiding dependencies 1`] = `
+"----------|----------|----------|----------|----------|----------------|
+File      |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+----------|----------|----------|----------|----------|----------------|
+All files |      100 |      100 |      100 |      100 |                |
+ sum.js   |      100 |      100 |      100 |      100 |                |
+----------|----------|----------|----------|----------|----------------|
+"
+`;
+
 exports[`test json reporter printing with --coverage 1`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 passed, 2 total
