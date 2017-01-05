@@ -15,6 +15,7 @@ import type {Script} from 'vm';
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
 const ModuleMocker = require('jest-mock');
+const fetch = require('whatwg-fetch');
 
 class JSDOMEnvironment {
 
@@ -32,6 +33,12 @@ class JSDOMEnvironment {
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
+    
+    global.Response = fetch.Response;
+    global.Request = fetch.Request;
+    global.Headers = fetch.Headers;
+    global.fetch = fetch.fetch;
+    
     installCommonGlobals(global, config.globals);
 
     this.moduleMocker = new ModuleMocker(global);
