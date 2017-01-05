@@ -25,26 +25,38 @@ const createLink = (href: string, text: string): string =>
 
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
 
-// New js files should have `@flow` at the top
-// but exclude tests from being flow-ey
-const unFlowedFiles = newJsFiles.filter(path => !path.endsWith('test.js'))
-  .filter(filepath => {
-    const content = fs.readFileSync(filepath).toString();
-    return !content.includes('@flow');
-  });
+// New JS files should have the FB copyright header + flow
+const facebookLicenseHeader = `/\/\*\*
+ \* Copyright \(c\) .*, Facebook, Inc. All rights reserved.
+ \*
+ \* This source code is licensed under the BSD-style license found in the
+ \* LICENSE file in the root directory of this source tree. An additional grant
+ \* of patent rights can be found in the PATENTS file in the same directory.
+ \*
+ \* @flow
+ \*\/
+'use strict'`;
+const licenseRegex = new RegExp(facebookLicenseHeader);
 
-if (unFlowedFiles.length > 0) {
-  const files = linkableFiles(unFlowedFiles);
-  warn(`New JS files do not have Flow enabled: ${files}`);
-}
-
-// New JS files should have the FB copyright header
 const noFBCopyrightFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return !content.includes('Facebook, Inc. All rights reserved');
+  return !content.match(licenseRegex);
 });
 
 if (noFBCopyrightFiles.length > 0) {
   const files = linkableFiles(noFBCopyrightFiles);
   fail(`New JS files do not have the Facebook copyright header: ${files}`);
+}
+
+// No merge from master commmits
+// TODO: blocked by https://github.com/danger/danger-js/issues/81
+
+// Warns if there are changes to package.json without changes to yarn.lock.
+
+const packageChanged = danger.git.modified_files.includes('package.json');
+const lockfileChanged = danger.git.modified_files.includes('yarn.lock');
+if (packageChanged && !lockfileChanged) {
+  const message = 'Changes were made to package.json, but not to yarn.lock';
+  const idea = 'Perhaps you need to run `yarn install`?';
+  warn(`${message} - <i>${idea}</i>`);
 }
