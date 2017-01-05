@@ -22,6 +22,7 @@
     "istanbul-api": "^1.1.0",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
+    "jest-runtime": "file:./packages/jest-runtime/",
     "jsdom": "^9.9.1",
     "left-pad": "^1.1.1",
     "lerna": "2.0.0-beta.32",

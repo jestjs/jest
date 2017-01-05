@@ -14,8 +14,10 @@ const linkableFiles = (paths: Array<string>): string => {
 };
 
 // ["1", "2", "3"] to "1, 2 and 3"
-const toSentence = (array: Array<string>) : string => 
-  array.slice(0, array.length - 1).join(', ') + ' and ' + array.pop();
+const toSentence = (array: Array<string>) : string => {
+  if (array.length === 1) { return array[0]; }
+  return array.slice(0, array.length - 1).join(', ') + ' and ' + array.pop();
+};
 
 // ("/href/thing", "name") to "<a href="/href/thing">name</a>"
 const createLink = (href: string, text: string): string => 
