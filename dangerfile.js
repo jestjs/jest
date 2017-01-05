@@ -1,7 +1,7 @@
 // @flow
 
-import {fail, warn, danger} from 'danger';
-import fs from 'fs';
+// const { danger, fail, warn } = require('danger');
+const fs = require('fs')
 
 // Takes a list of file paths, and converts it into clickable links
 const linkableFiles = (paths: Array<string>): string => {
@@ -26,26 +26,38 @@ const createLink = (href: string, text: string): string =>
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
 
 // New JS files should have the FB copyright header + flow
-const facebookLicenseHeader = `/\/\*\*
- \* Copyright \(c\) .*, Facebook, Inc. All rights reserved.
- \*
- \* This source code is licensed under the BSD-style license found in the
- \* LICENSE file in the root directory of this source tree. An additional grant
- \* of patent rights can be found in the PATENTS file in the same directory.
- \*
- \* @flow
- \*\/
-'use strict'`;
-const licenseRegex = new RegExp(facebookLicenseHeader);
+const facebookLicenseHeaderComponents = [
+  'Copyright \(c\) .*, Facebook, Inc. All rights reserved.',
+  'This source code is licensed under the BSD-style license found in the',
+  'LICENSE file in the root directory of this source tree. An additional grant',
+  'of patent rights can be found in the PATENTS file in the same directory.',
+]
 
 const noFBCopyrightFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return !content.match(licenseRegex);
+  for (const line of facebookLicenseHeaderComponents) {
+    if(!content.match(new RegExp(line))) {
+      return true
+    }
+  }
 });
 
 if (noFBCopyrightFiles.length > 0) {
   const files = linkableFiles(noFBCopyrightFiles);
   fail(`New JS files do not have the Facebook copyright header: ${files}`);
+}
+
+// Ensure the use of Flow and 'use strict';
+const noFlowFiles = newJsFiles.filter(filepath => {
+  const content = fs.readFileSync(filepath).toString();
+  return content.includes('@flow') && content.includes("use strict")
+})
+
+if (noFlowFiles.length > 0) {
+  const files = linkableFiles(noFlowFiles);
+  const flow = '<code>@flow</code>';
+  const strict = "<code>'use strict'</code>";
+  warn(`Please ensure that ${flow} and ${strict} are enabled on: ${files}`);
 }
 
 // No merge from master commmits
