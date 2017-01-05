@@ -8,11 +8,33 @@
  * @flow
  */
 
-/* eslint-disable global-require */
-
 'use strict';
 
-module.exports.rules = {
-  'no-exclusive-tests': require('./rules/no-exclusive-tests'),
-  'no-identical-title': require('./rules/no-identical-title'),
+module.exports = {
+  environments: {
+    globals: {
+      globals: {
+        afterAll: false,
+        afterEach: false,
+        beforeAll: false,
+        beforeEach: false,
+        describe: false,
+        expect: false,
+        fit: false,
+        it: false,
+        jasmine: false,
+        jest: false,
+        pit: false,
+        require: false,
+        test: false,
+        xdescribe: false,
+        xit: false,
+        xtest: false,
+      },
+    },
+  },
+  rules: {
+    'no-focused-tests': require('./rules/no-focused-tests'),
+    'no-identical-title': require('./rules/no-identical-title'),
+  },
 };

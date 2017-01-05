@@ -12,22 +12,23 @@
 import type {EslintContext, CallExpression} from './types';
 
 const describeAliases = [
-  'describe',
-  'xdescribe',
   'describe.only',
   'describe.skip',
+  'describe',
   'fdescribe',
+  'xdescribe',
 ];
 
 const testCaseNames = [
-  'it',
+  'fit',
   'it.only',
   'it.skip',
-  'fit',
-  'test',
+  'it',
   'test.only',
   'test.skip',
-  'ftest',
+  'test',
+  'xit',
+  'xtest',
 ];
 
 function getNodeName(node) {

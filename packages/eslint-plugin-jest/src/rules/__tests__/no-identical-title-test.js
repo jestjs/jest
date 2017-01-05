@@ -8,7 +8,7 @@
  * @flow
  */
 
-/* eslint-disable no-template-curly-in-string, sort-keys, max-len */
+/* eslint-disable sort-keys, max-len */
 
 'use strict';
 
