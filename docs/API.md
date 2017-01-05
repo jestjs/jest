@@ -64,7 +64,7 @@ expect all the time. That's what you use `expect` for.
   - [`.toHaveLength(number)`](#tohavelengthnumber)
   - [`.toMatch(regexp)`](#tomatchregexp)
   - [`.toMatchObject(object)`](#tomatchobjectobject)
-  - [`.toMatchSnapshot()`](#tomatchsnapshot)
+  - [`.toMatchSnapshot(?string)`](#tomatchsnapshotstring)
   - [`.toThrow()`](#tothrow)
   - [`.toThrowError(error)`](#tothrowerrorerror)
   - [`.toThrowErrorMatchingSnapshot()`](#tothrowerrormatchingsnapshot)
