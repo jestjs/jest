@@ -284,35 +284,6 @@ describe('setupTestFrameworkScriptFile', () => {
   });
 });
 
-describe('setupTestFrameworkScriptFile', () => {
-  it('normalizes the path according to rootDir', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: 'bar/baz',
-    }, '/root/path');
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
-  });
-
-  it('does not change absolute paths', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: '/an/abs/path',
-    });
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathAbs);
-  });
-
-  it('substitutes <rootDir> tokens', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
-    });
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
-  });
-});
-
 describe('coveragePathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are

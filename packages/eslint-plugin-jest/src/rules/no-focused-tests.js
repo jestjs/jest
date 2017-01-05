@@ -22,10 +22,10 @@ module.exports = function(context: EslintContext) {
     return object && jestTestFunctions.indexOf(object.name) !== -1;
   }
 
-  function matchesExclusiveTestFunction(object) {
+  function matchesFocusedTestFunction(object) {
     return (
       object &&
-      object.name.charAt(0) === 'f' &&
+      object.name[0] === 'f' &&
       jestTestFunctions.indexOf(object.name.substring(1)) !== -1
     );
   }
@@ -40,8 +40,8 @@ module.exports = function(context: EslintContext) {
     );
   }
 
-  function isCallToExclusiveJestFunction(callee) {
-    return matchesExclusiveTestFunction(callee);
+  function isCallToFocusedJestFunction(callee) {
+    return matchesFocusedTestFunction(callee);
   }
 
   return {
@@ -56,7 +56,7 @@ module.exports = function(context: EslintContext) {
         isCallToJestOnlyFunction(callee)
       ) {
         context.report({
-          message: 'Unexpected exclusive test.',
+          message: 'Unexpected focused test.',
           node: callee.property,
         });
         return;
@@ -64,10 +64,10 @@ module.exports = function(context: EslintContext) {
 
       if (
         callee.type === 'Identifier' &&
-        isCallToExclusiveJestFunction(callee)
+        isCallToFocusedJestFunction(callee)
       ) {
         context.report({
-          message: 'Unexpected exclusive test.',
+          message: 'Unexpected focused test.',
           node: callee,
         });
         return;

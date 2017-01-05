@@ -7,32 +7,33 @@
  *
  * @flow
  */
-export type Identifier = {
+
+export type Identifier = {|
   type: 'Identifier',
   name: string,
   value: string,
-}
+|};
 
-export type MemberExpression = {
+export type MemberExpression = {|
   type: 'MemberExpression',
   name: string,
   expression: CallExpression,
   property: Identifier,
   object: Identifier,
-}
+|};
 
-export type Literal = {
+export type Literal = {|
   type: 'Literal',
   value?: string,
   rawValue?: string,
-}
+|};
 
-export type CallExpression = {
+export type CallExpression = {|
   type: 'CallExpression',
   arguments: [Literal],
   callee: Identifier | MemberExpression,
-}
+|};
 
-export type EslintContext = {
-  report: ({ message: string, node: any }) => void
-}
+export type EslintContext = {|
+  report: ({message: string, node: any}) => void
+|};

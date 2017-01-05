@@ -16,9 +16,9 @@ const RuleTester = require('eslint').RuleTester;
 const rules = require('../../').rules;
 
 const ruleTester = new RuleTester();
-const expectedErrorMessage = 'Unexpected exclusive test.';
+const expectedErrorMessage = 'Unexpected focused test.';
 
-ruleTester.run('no-exclusive-tests', rules['no-exclusive-tests'], {
+ruleTester.run('no-focused-tests', rules['no-focused-tests'], {
   valid: [
     'describe()',
     'it()',
