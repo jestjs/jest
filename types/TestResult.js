@@ -83,6 +83,12 @@ export type AssertionResult = {|
   title: string,
 |};
 
+export type FormattedTestAssertion = {
+  status: Status,
+  title: string,
+  failureMessages: Array<string> | null,
+};
+
 export type AggregatedResult = {|
   coverageMap?: CoverageMap,
   numFailedTests: number,
@@ -132,6 +138,29 @@ export type TestResult = {|
   testFilePath: string,
   testResults: Array<AssertionResult>,
 |};
+
+export type FormattedTestResult = {|
+  message: string,
+  name: string,
+  summary: string,
+  status: 'failed' | 'passed',
+  startTime: number,
+  endTime: number,
+  coverage: any,
+  assertionResults: Array<FormattedTestAssertion>,
+|};
+
+export type FormattedTestResults = AggregatedResult & {
+  numFailedTests: number,
+  numPassedTests: number,
+  numPendingTests: number,
+  numRuntimeErrorTestSuites: number,
+  numTotalTestSuites: number,
+  numTotalTests: number,
+  startTime: number,
+  success: boolean,
+  testResults: FormattedTestResult,
+};
 
 export type CodeCoverageReporter = any;
 

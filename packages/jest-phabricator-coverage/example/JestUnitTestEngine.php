@@ -7,6 +7,8 @@
 class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
   const PROCESSOR = 'jest/packages/jest-phabricator-coverage/build/index.js';
   const JEST_PATH = 'jest/packages/jest/bin/jest.js';
+  const TOO_MANY_FILES_TO_COVER = 100;
+  const GIGANTIC_DIFF_THRESHOLD = 200;
 
   private function getRoot() {
     return $this->getWorkingCopy()->getProjectRoot();
@@ -126,41 +128,53 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
     }
 
     $commands = [];
-    if (count($jest_paths) > 0) {
-      $console->writeOut("Running JavaScript tests.\n");
-      $commands[] = array(
-        'bin' => self::JEST_PATH,
-        'options' => $this->getJestOptions(),
-        'paths' => $jest_paths,
-      );
-    }
+    if (count($jest_paths) > self::GIGANTIC_DIFF_THRESHOLD) {
+      $console->writeOut("Too many files, skipping JavaScript tests.\n");
+      $result_arrays[] = array();
+    } else {
+      if (count($jest_paths) > 0) {
+        $console->writeOut("Running JavaScript tests.\n");
+        $commands[] = array(
+          'bin' => self::JEST_PATH,
+          'options' => $this->getJestOptions($jest_paths),
+          'paths' => $jest_paths,
+        );
+      }
 
-    try {
-      $result_arrays[] = $this->runCommands($commands);
-    } catch (Exception $e) {
-      // Ignore the exception in case of failing tests
-      // As Jest should have already printed the results.
-      $result = new ArcanistUnitTestResult();
-      $result->setName('JavaScript tests');
-      $result->setResult(ArcanistUnitTestResult::RESULT_FAIL);
-      $result->setDuration(0);
-      $result_arrays[] = array($result);
+      try {
+        $result_arrays[] = $this->runCommands($commands);
+      } catch (Exception $e) {
+        // Ignore the exception in case of failing tests
+        // As Jest should have already printed the results.
+        $result = new ArcanistUnitTestResult();
+        $result->setName('JavaScript tests');
+        $result->setResult(ArcanistUnitTestResult::RESULT_FAIL);
+        $result->setDuration(0);
+        $result_arrays[] = array($result);
+      }
     }
 
     $console->writeOut("Finished tests.\n");
     return call_user_func_array('array_merge', $result_arrays);
   }
 
-  private function getJestOptions() {
+  private function getJestOptions($paths) {
     $output_JSON = $this->getOutputJSON();
     $options = array(
       '--colors',
       '--findRelatedTests',
       '--json',
-      '--coverage',
       '--outputFile=' . $output_JSON,
       '--testResultsProcessor=' . self::PROCESSOR
     );
+
+    // Checks for the number of files to cover, in case it's too big skips coverage
+    // A better solution would involve knowing what's the machine buffer size limit
+    // for exec and check if the command can stay within it.
+    if (count($paths) < self::TOO_MANY_FILES_TO_COVER) {
+      $options[] = '--coverage';
+      $options[] = '--collectCoverageOnlyFrom '. join(' ', $paths);
+    }
 
     return $options;
   }
@@ -169,5 +183,4 @@ class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
   public function run() {
     return self::runJSTests();
   }
-
 }

@@ -12,29 +12,34 @@
 
 import type {
   AggregatedResult,
+  AssertionResult,
   CodeCoverageFormatter,
   CodeCoverageReporter,
+  FormattedTestAssertion,
+  FormattedTestResult,
+  FormattedTestResults,
   TestResult,
-  AssertionResult,
 } from 'types/TestResult';
 
 const formatResult = (
   testResult: TestResult,
   codeCoverageFormatter: CodeCoverageFormatter,
   reporter: CodeCoverageReporter,
-): Object => {
-  const output = ({
+): FormattedTestResult => {
+  const currTime = Date.now();
+  const output: FormattedTestResult = {
+    assertionResults: [],
+    coverage: {},
+    endTime: currTime,
     message: '',
     name: testResult.testFilePath,
+    startTime: currTime,
+    status: 'failed',
     summary: '',
-  }: any);
+  };
 
   if (testResult.testExecError) {
-    const currTime = Date.now();
-    output.status = 'failed';
-    output.message = testResult.testExecError;
-    output.startTime = currTime;
-    output.endTime = currTime;
+    output.message = testResult.testExecError.message;
     output.coverage = {};
   } else {
     const allTestsPassed = testResult.numFailingTests === 0;
@@ -55,8 +60,9 @@ const formatResult = (
 
 function formatTestAssertion(
   assertion: AssertionResult,
-): Object {
-  const result: any = {
+): FormattedTestAssertion {
+  const result: FormattedTestAssertion = {
+    failureMessages: null,
     status: assertion.status,
     title: assertion.title,
   };
@@ -70,7 +76,7 @@ function formatTestResults(
   results: AggregatedResult,
   codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
-): Object {
+): FormattedTestResults {
   const formatter = codeCoverageFormatter || (coverage => coverage);
 
   const testResults = results.testResults.map(testResult => formatResult(
@@ -79,7 +85,7 @@ function formatTestResults(
     reporter,
   ));
 
-  return Object.assign({}, results, {
+  return Object.assign((Object.create(null): any), results, {
     numFailedTests: results.numFailedTests,
     numPassedTests: results.numPassedTests,
     numPendingTests: results.numPendingTests,

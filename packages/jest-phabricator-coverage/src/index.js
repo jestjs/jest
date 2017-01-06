@@ -12,16 +12,22 @@
 import type {
   AggregatedResult,
   CoverageMap,
+  FormattedTestResult,
 } from 'types/TestResult';
 
+type SingleReport = AggregatedResult & {
+  phabricatorReport: FormattedTestResult,
+  coverageMap: null,
+};
+
 type PhabricatorReport = {
-  phabricatorReport: Array<Object>
+  phabricatorReport: Array<SingleReport>
 };
 
 const {formatTestResults} = require('jest-util');
 
-function summarize(coverageMap: CoverageMap, filterBy: Array<string>) {
-  let summaries = Object.create(null);
+function summarize(coverageMap: CoverageMap) {
+  const summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
     const covered = [];
@@ -43,35 +49,24 @@ function summarize(coverageMap: CoverageMap, filterBy: Array<string>) {
     summaries[file] = covered.join('');
   });
 
-  if (filterBy.length) {
-    summaries = filterBy.reduce((result, file) => {
-      result[file] = summaries[file];
-      return result;
-    }, {});
-  }
   return summaries;
 }
 
 module.exports = function(results: AggregatedResult): PhabricatorReport {
-  // use findRelatedTests to understand which file we want to have coverage
-  const filterBy = (
-    process.argv.slice(process.argv.indexOf('--findRelatedTests'))
-  );
-
   let coverageMap;
   if (results.coverageMap) {
-    // eslint-disable-next-line no-unused-vars
-    const coverageMap = summarize(results.coverageMap, filterBy);
+    coverageMap = summarize(results.coverageMap);
   }
 
-  const formatter = (coverage, reporter) => {
-    return coverageMap;
-  };
-
+  const formatter = (coverage, reporter) => coverageMap;
   const report = formatTestResults(results, formatter);
 
-  return Object.assign({}, {
-    phabricatorReport: report.testResults,
-  }, results, {coverageMap: null});
-
+  return Object.assign(
+    (Object.create(null): any),
+    results,
+    {
+      coverageMap: null,
+      phabricatorReport: report.testResults,
+    }
+  );
 };
