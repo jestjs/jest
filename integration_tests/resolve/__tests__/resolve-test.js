@@ -13,22 +13,22 @@ function testRequire(filename) {
   return () => platform = require(filename);
 }
 
-test('should resolve filename.<platform>.js', () => {
+test('should explicitly resolve filename.<platform>.js', () => {
   expect(testRequire('../test1.android.js')).not.toThrow();
   expect(platform.extension).toBe('android.js');
 });
 
-test('should resolve filename.native.js', () => {
+test('should explicitly resolve filename.native.js', () => {
   expect(testRequire('../test1.native.js')).not.toThrow();
   expect(platform.extension).toBe('native.js');
 });
 
-test('should resolve filename.js', () => {
+test('should explicitly resolve filename.js', () => {
   expect(testRequire('../test1.js')).not.toThrow();
   expect(platform.extension).toBe('js');
 });
 
-test('should resolve filename.json', () => {
+test('should explicitly resolve filename.json', () => {
   expect(testRequire('../test1.json')).not.toThrow();
   expect(platform.extension).toBe('json');
 });
