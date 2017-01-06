@@ -1,0 +1,14 @@
+exports[`test throwing not Error objects 1`] = `
+Object {
+  "rest": " PASS  tsts/test-111.js
+  ✓ test
+
+",
+  "summary": "Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+",
+}
+`;

@@ -19,24 +19,13 @@ const path = require('path');
 const promisify = require('./lib/promisify');
 
 function loadFromFile(filePath: Path, argv: Object) {
-  return promisify(fs.readFile)(filePath).then(data => {
-    const parse = () => {
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        const error = jsonlint.errors(data.toString());
-        throw new Error(
-          `Jest: Failed to parse config file ${filePath}\n` +
-          `  ${error}`,
-        );
-      }
-    };
-
-    const config = parse();
+  return new Promise(resolve => {
+    // $FlowFixMe
+    const config = require(filePath);
     config.rootDir = config.rootDir
       ? path.resolve(path.dirname(filePath), config.rootDir)
       : process.cwd();
-    return normalize(config, argv);
+    resolve(normalize(config, argv));
   });
 }
 
