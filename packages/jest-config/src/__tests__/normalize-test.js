@@ -229,6 +229,22 @@ describe('transform', () => {
       ['abs-path', '/qux/quux'],
     ]);
   });
+
+  it('throws for invalid value', () => {
+    expect(() => {
+      normalize({
+        rootDir: '/root/',
+        transform: 'string',
+      }, '/root/path');
+    }).toThrowErrorMatchingSnapshot();
+
+    expect(() => {
+      normalize({
+        rootDir: '/root/',
+        transform: ['string'],
+      }, '/root/path');
+    }).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('setupTestFrameworkScriptFile', () => {
@@ -240,35 +256,6 @@ describe('setupTestFrameworkScriptFile', () => {
     );
   });
 
-  it('normalizes the path according to rootDir', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: 'bar/baz',
-    }, '/root/path');
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
-  });
-
-  it('does not change absolute paths', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: '/an/abs/path',
-    });
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathAbs);
-  });
-
-  it('substitutes <rootDir> tokens', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
-    });
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
-  });
-});
-
-describe('setupTestFrameworkScriptFile', () => {
   it('normalizes the path according to rootDir', () => {
     const config = normalize({
       rootDir: '/root/path/foo',

@@ -1728,7 +1728,7 @@ Expected [31mcollection[39m to be an array-like structure.
 Received: [31mnull[39m"
 `;
 
-exports[`.toContain(), .toContainEqual() error cases 2`] = `
+exports[`.toContain(), .toContainEqual() error cases for toContainEqual 1`] = `
 "[2mexpect([22m[31mcollection[39m[2m)[.not].toContainEqual([22m[32mvalue[39m[2m)[22m
 
 Expected [31mcollection[39m to be an array-like structure.
