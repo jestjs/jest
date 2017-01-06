@@ -14,13 +14,15 @@ import type {DefaultConfig} from 'types/Config';
 const chalk = require('chalk');
 const validConfig = require('./validConfig');
 const BULLET = chalk.bold('\u25cf ');
-const DEPRECATION_MESSAGE = `
 
-  Jest changed the default configuration.
-
-  ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/configuration.html
-  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
-`;
+class ConfigurationError extends Error {
+  constructor(message) {
+    super();
+    this.name = chalk.red.bold('Jest Configuration Error');
+    this.message = message;
+    Error.captureStackTrace(this, () => {});
+  }
+}
 
 const toString = Object.prototype.toString;
 
@@ -31,7 +33,7 @@ const prettyPrintType = (value: any) => extractType(toString.call(value));
 
 const invariant = (condition: boolean, message: string) => {
   if (!condition) {
-    throw new Error(chalk.red.bold('Jest Configuration Error: \n') + message);
+    throw new ConfigurationError(chalk.white(message));
   }
 };
 
@@ -41,9 +43,10 @@ const unknownOptionWarning = (config: Object, option: string) => {
   Unknown option ${chalk.bold(option)} with value ${chalk.bold(prettyFormat(config[option], {min:true}))} was found.
   This is either a typing error or a user mistake. Fixing it will remove this message.
 
-  ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/configuration.html
+  ${chalk.bold('Configuration documentation:')}
+  https://facebook.github.io/jest/docs/configuration.html
 `;
-  console.warn(chalk.bold('Jest Configuration Warning: \n') + message);
+  console.warn(chalk.yellow(chalk.bold('Jest Configuration Warning: \n') + message));
 }
 
 const errorMessage = (
@@ -52,9 +55,9 @@ const errorMessage = (
   defaultValue: any
 ) => {
   // lazy load prettyFormat not to slow boot time when not necessary
-  // $FlowFixMe
   const prettyFormat = require('pretty-format');
   return `
+
   Option ${chalk.bold(option)} must be of type:
     ${chalk.green(prettyPrintType(defaultValue))}
   but instead received:
@@ -63,7 +66,11 @@ const errorMessage = (
   Example:
   {
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(prettyFormat(defaultValue, {min: true}))}
-  }`
+  }
+
+  ${chalk.red.bold('Configuration documentation:')}
+  ${chalk.red('https://facebook.github.io/jest/docs/configuration.html')}
+  `
 };
 
 const validate = (config: DefaultConfig) => {

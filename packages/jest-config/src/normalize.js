@@ -16,6 +16,7 @@ const Resolver = require('jest-resolve');
 
 const chalk = require('chalk');
 const constants = require('./constants');
+const validate = require('./validate');
 const path = require('path');
 const utils = require('jest-util');
 
@@ -127,6 +128,8 @@ function getTestEnvironment(config) {
 }
 
 function normalize(config, argv) {
+  validate(config);
+
   if (!argv) {
     argv = {};
   }
@@ -435,13 +438,6 @@ function normalize(config, argv) {
       case 'watchman':
         value = config[key];
         break;
-
-      default:
-        console.error(
-          `Error: Unknown config option "${key}" with value ` +
-          `"${config[key]}". This is either a typing error or a user ` +
-          `mistake and fixing it will remove this message.`,
-        );
     }
     newConfig[key] = value;
     return newConfig;
