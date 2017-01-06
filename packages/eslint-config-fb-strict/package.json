@@ -9,7 +9,8 @@
   "dependencies": {
     "babel-eslint": "^7.0.0",
     "eslint": "^3.3.0",
+    "eslint-config-fbjs": "^2.0.0-alpha.1",
     "eslint-plugin-babel": "^4.0.0",
-    "eslint-config-fbjs": "^1.0.0"
+    "eslint-plugin-jest": "^18.1.0"
   }
 }
