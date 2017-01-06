@@ -1,0 +1,55 @@
+exports[`test pretty prints valid config for Array 1`] = `
+"[31m[1mJest Configuration Error: 
+[22m[39m
+  Option [1mcoverageReporters[22m must be of type:
+    [32mArray[39m
+  but instead received:
+    [31mObject[39m
+
+  Example:
+  {
+    [1m\"coverageReporters\"[22m: [1m[\"json\", \"text\", \"lcov\", \"clover\"][22m
+  }"
+`;
+
+exports[`test pretty prints valid config for Boolean 1`] = `
+"[31m[1mJest Configuration Error: 
+[22m[39m
+  Option [1mautomock[22m must be of type:
+    [32mBoolean[39m
+  but instead received:
+    [31mArray[39m
+
+  Example:
+  {
+    [1m\"automock\"[22m: [1mfalse[22m
+  }"
+`;
+
+exports[`test pretty prints valid config for Object 1`] = `
+"[31m[1mJest Configuration Error: 
+[22m[39m
+  Option [1mhaste[22m must be of type:
+    [32mObject[39m
+  but instead received:
+    [31mNumber[39m
+
+  Example:
+  {
+    [1m\"haste\"[22m: [1m{\"providesModuleNodeModules\": [\"react\", \"react-native\"]}[22m
+  }"
+`;
+
+exports[`test pretty prints valid config for String 1`] = `
+"[31m[1mJest Configuration Error: 
+[22m[39m
+  Option [1mpreset[22m must be of type:
+    [32mString[39m
+  but instead received:
+    [31mNumber[39m
+
+  Example:
+  {
+    [1m\"preset\"[22m: [1m\"react-native\"[22m
+  }"
+`;
