@@ -1,7 +1,7 @@
 // @flow
 
-// const { danger, fail, warn } = require('danger');
-const fs = require('fs')
+const {danger, fail, warn} = require('danger');
+const fs = require('fs');
 
 // Takes a list of file paths, and converts it into clickable links
 const linkableFiles = (paths: Array<string>): string => {
@@ -31,15 +31,16 @@ const facebookLicenseHeaderComponents = [
   'This source code is licensed under the BSD-style license found in the',
   'LICENSE file in the root directory of this source tree. An additional grant',
   'of patent rights can be found in the PATENTS file in the same directory.',
-]
+];
 
 const noFBCopyrightFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
   for (const line of facebookLicenseHeaderComponents) {
-    if(!content.match(new RegExp(line))) {
-      return true
+    if (!content.match(new RegExp(line))) {
+      return true;
     }
   }
+  return false;
 });
 
 if (noFBCopyrightFiles.length > 0) {
@@ -50,8 +51,8 @@ if (noFBCopyrightFiles.length > 0) {
 // Ensure the use of Flow and 'use strict';
 const noFlowFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return content.includes('@flow') && content.includes("use strict")
-})
+  return content.includes('@flow') && content.includes('use strict');
+});
 
 if (noFlowFiles.length > 0) {
   const files = linkableFiles(noFlowFiles);
