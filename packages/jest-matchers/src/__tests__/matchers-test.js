@@ -405,7 +405,7 @@ describe('.toContain(), .toContainEqual()', () => {
     });
   });
 
-  test('error cases', () => {
+  test('error cases for toContainEqual', () => {
     expect(() => jestExpect(null).toContainEqual(1))
       .toThrowErrorMatchingSnapshot();
   });
