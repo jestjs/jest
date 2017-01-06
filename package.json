@@ -14,7 +14,6 @@
     "eslint-plugin-babel": "^4.0.0",
     "eslint-plugin-flow-vars": "^0.5.0",
     "eslint-plugin-flowtype": "^2.28.2",
-    "eslint-plugin-jest": "file:packages/eslint-plugin-jest",
     "eslint-plugin-react": "^6.7.1",
     "flow-bin": "^0.37.0",
     "glob": "^7.1.1",
