@@ -23,20 +23,14 @@ const utils = require('jest-util');
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 
-const BULLET = chalk.bold('\u25cf ');
-const DEPRECATION_MESSAGE = `
+const DOCUMENTATION_NOTE = `
 
-  Jest changed the default configuration for tests.
-
-  ${chalk.bold('Configuration Documentation:')} https://facebook.github.io/jest/docs/configuration.html
-  ${chalk.bold('Jest Issue Tracker:')} https://github.com/facebook/jest/issues
+  ${chalk.bold('Configuration Documentation:')}
+  https://facebook.github.io/jest/docs/configuration.html
 `;
-const throwConfigurationError = message => {
-  throw new Error(chalk.red(message + DEPRECATION_MESSAGE));
-};
 
-const logConfigurationWarning = message => {
-  console.warn(chalk.yellow(BULLET + message + DEPRECATION_MESSAGE));
+const throwRuntimeConfigError = message => {
+  throw new Error(chalk.red(message + DOCUMENTATION_NOTE));
 };
 
 const resolve = (rootDir, key, filePath) => {
@@ -182,14 +176,14 @@ function normalize(config, argv) {
   }
 
   if (config.scriptPreprocessor && config.transform) {
-    throwConfigurationError(
+    throwRuntimeConfigError(
       'Jest: `scriptPreprocessor` and `transform` cannot be used together. ' +
       'Please change your configuration to only use `transform`.',
     );
   }
 
   if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
-    throwConfigurationError(
+    throwRuntimeConfigError(
       'Jest: `preprocessorIgnorePatterns` and `transformIgnorePatterns` ' +
       'cannot be used together. Please change your configuration to only ' +
       'use `transformIgnorePatterns`.',
@@ -205,25 +199,7 @@ function normalize(config, argv) {
   if (config.preprocessorIgnorePatterns) {
     config.transformIgnorePatterns = config.preprocessorIgnorePatterns;
   }
-
-  if (
-    config.scriptPreprocessor ||
-    config.preprocessorIgnorePatterns
-  ) {
-    logConfigurationWarning(
-      'The settings `scriptPreprocessor` and `preprocessorIgnorePatterns` ' +
-      'were replaced by `transform` and `transformIgnorePatterns` ' +
-      'which support multiple preprocessors.\n\n' +
-      '  Jest now treats your current settings as: \n\n' +
-      `    "transform": {".*": "${config.scriptPreprocessor}"}` +
-      (config.transformIgnorePatterns
-        ? `\n    "transformIgnorePatterns": "${config.transformIgnorePatterns}"`
-        : ''
-      ) +
-      '\n\n  Please update your configuration.',
-    );
-  }
-
+  // delete deprecated options
   delete config.scriptPreprocessor;
   delete config.preprocessorIgnorePatterns;
 
@@ -267,23 +243,6 @@ function normalize(config, argv) {
 
   let babelJest;
   if (config.transform) {
-    const toString = Object.prototype.toString;
-    if (toString.call(config.transform) !== '[object Object]') {
-      const isString = typeof config.transform === 'string';
-      const exampleTransform = isString
-        ? config.transform
-        : '<rootDir>/node_modules/babel-jest';
-      throwConfigurationError(
-        `Configuration option \`${chalk.bold('transform')}\` ` +
-        'must be an object. Use it like this:\n\n' +
-        chalk.bold(
-          '  "transform": {\n' +
-          `    "^.+\\\\.js$": "${exampleTransform}"\n` +
-          '  }'
-        )
-      );
-    }
-
     const customJSPattern = Object.keys(config.transform).find(pattern => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
