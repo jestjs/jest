@@ -29,7 +29,8 @@ Then configure the rules you want to use under the rules section.
 {
   "rules": {
     "jest/no-focused-tests": "error",
-    "jest/no-identical-title": "error"
+    "jest/no-identical-title": "error",
+    "jest/no-skipped-tests": "error"
   }
 }
 ```
@@ -48,6 +49,7 @@ You can also whitelist the environment variables provided by Jest by doing:
 
 - [no-focused-tests](docs/rules/no-focused-tests.md) - disallow focused tests.
 - [no-identical-title](docs/rules/no-identical-title.md) - disallow identical titles.
+- [no-skipped-tests](docs/rules/no-skipped-tests.md) - disallow skipped tests.
 
 
 ## Credit
