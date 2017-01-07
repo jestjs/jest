@@ -12,6 +12,7 @@
 
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
+const ImmutablePlugin = require('pretty-format/build/plugins/Inmutable');
 
 export type ValueType =
   | 'array'
@@ -89,6 +90,7 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
     result = prettyFormat(object, {
       maxDepth,
       min: true,
+      plugins: [ImmutablePlugin],
     });
   } catch (e) {
     result = prettyFormat(object, {
