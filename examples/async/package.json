@@ -1,12 +1,21 @@
 {
+  "main": "lib/user",
   "devDependencies": {
+    "babel-cli": "*",
     "babel-jest": "*",
-    "babel-plugin-transform-async-to-generator": "^6.5.0",
-    "babel-polyfill": "*",
+    "babel-plugin-transform-async-to-generator": "*",
+    "babel-plugin-transform-runtime": "*",
     "babel-preset-es2015": "*",
     "jest": "*"
   },
+  "dependencies": {
+    "babel-runtime": "*"
+  },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "babel src --out-dir lib"
+  },
+  "jest": {
+    "rootDir": "src"
   }
 }
