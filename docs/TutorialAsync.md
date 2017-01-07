@@ -4,7 +4,7 @@ title: An Async Example
 layout: docs
 category: Guides
 permalink: docs/tutorial-async.html
-next: mock-functions
+next: timer-mocks
 ---
 
 First, enable Babel support in Jest as documented in the [Getting Started](/jest/docs/getting-started.html#using-babel) guide.
