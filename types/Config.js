@@ -79,6 +79,7 @@ export type Config = {|
   testPathDirs: Array<Path>,
   testPathIgnorePatterns: Array<string>,
   testRegex: string,
+  testRunner: string,
   testURL: string,
   timers: 'real' | 'fake',
   transformIgnorePatterns: Array<Glob>,

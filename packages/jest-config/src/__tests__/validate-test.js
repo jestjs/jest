@@ -27,7 +27,7 @@ test('validates default config', () => {
   });
 });
 
-test(`omits null and undefined config values`, () => {
+test('omits null and undefined config values', () => {
   const config = {
     haste: undefined,
     preset: null,
@@ -35,10 +35,24 @@ test(`omits null and undefined config values`, () => {
   expect(validate(config)).toBe(true);
 });
 
-// to be moved to integration tests
-test(`displays warning for unknown config options`, () => {
-  const config = {
-    unknown: [],
-  };
-  expect(validate(config)).toBe(true);
+test('displays warning for unknown config options', () => {
+  const config = {unknown: []};
+  const warn = console.warn;
+  console.warn = jest.fn();
+
+  validate(config);
+
+  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+  console.warn = warn;
+});
+
+test('displays warning for deprecated config options', () => {
+  const config = {scriptPreprocessor: 'test'};
+  const warn = console.warn;
+  console.warn = jest.fn();
+
+  validate(config);
+
+  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+  console.warn = warn;
 });

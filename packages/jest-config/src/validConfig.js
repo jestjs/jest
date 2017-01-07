@@ -69,6 +69,7 @@ module.exports = ({
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRunner: 'jasmine2',
   testURL: 'about:blank',
   timers: 'real',
   // $FlowFixMe – transform is further normalized into Array<[string, string]>

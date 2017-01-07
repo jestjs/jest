@@ -44,23 +44,6 @@ beforeEach(() => {
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 });
 
-it('errors when an invalid config option is passed in', () => {
-  const error = console.error;
-  console.error = jest.fn();
-  normalize({
-    rootDir: '/root/path/foo',
-    thisIsAnInvalidConfigKey: 'with a value even!',
-  });
-
-  expect(console.error).toBeCalledWith(
-    'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
-    '"with a value even!". This is either a typing error or a user ' +
-    'mistake and fixing it will remove this message.',
-  );
-
-  console.error = error;
-});
-
 it('picks a name based on the rootDir', () => {
   const rootDir = '/root/path/foo';
   const expected = crypto.createHash('md5')
@@ -233,22 +216,6 @@ describe('transform', () => {
       [DEFAULT_JS_PATTERN, 'babel-jest'],
       ['abs-path', '/qux/quux'],
     ]);
-  });
-
-  it('throws for invalid value', () => {
-    expect(() => {
-      normalize({
-        rootDir: '/root/',
-        transform: 'string',
-      }, '/root/path');
-    }).toThrowErrorMatchingSnapshot();
-
-    expect(() => {
-      normalize({
-        rootDir: '/root/',
-        transform: ['string'],
-      }, '/root/path');
-    }).toThrowErrorMatchingSnapshot();
   });
 });
 
