@@ -11,6 +11,14 @@
 'use strict';
 
 module.exports = {
+  configs: {
+    recommended: {
+      rules: {
+        'jest/no-focused-tests': 'error',
+        'jest/no-identical-title': 'error',
+      },
+    },
+  },
   environments: {
     globals: {
       globals: {
