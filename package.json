@@ -55,9 +55,10 @@
       "packages/jest-runtime/src/__tests__/test_root_with_dup_mocks"
     ],
     "collectCoverageFrom": [
-      "**/packages/{jest-runtime,jest-matchers,jest-haste-map,jest-file-exists,jest-diff,jest-changed-files}/**/*.js",
+      "**/packages/**/*.js",
       "!**/bin/**",
       "!**/cli/**",
+      "!**/perf/**",
       "!**/vendor/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
