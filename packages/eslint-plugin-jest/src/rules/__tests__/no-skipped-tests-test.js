@@ -18,7 +18,7 @@ const rules = require('../../').rules;
 const ruleTester = new RuleTester();
 const expectedErrorMessage = 'Unexpected skipped test.';
 
-ruleTester.run('no-skipp-tests', rules['no-skipped-tests'], {
+ruleTester.run('no-skipped-tests', rules['no-skipped-tests'], {
   valid: [
     'describe()',
     'it()',
