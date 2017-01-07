@@ -328,14 +328,16 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
+    const worker = promisify(farm);
+
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = ({path, config}) => mutex(() => {
+    const runTestInWorker = ({config, path}) => mutex(() => {
       if (watcher.isInterrupted()) {
         return Promise.reject();
       }
       this._dispatcher.onTestStart(config, path);
-      return promisify(farm)({config, path});
+      return worker({config, path});
     });
 
     const onError = (err, path) => {

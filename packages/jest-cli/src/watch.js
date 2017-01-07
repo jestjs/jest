@@ -60,10 +60,8 @@ const watch = (
   let testWatcher;
   let displayHelp = true;
 
-  hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-    if (eventsQueue.find(({type}) => type !== 'change')) {
-      hasteContext = createHasteContext(config, {hasteFS, moduleMap});
-    }
+  hasteMap.on('change', ({hasteFS, moduleMap}) => {
+    hasteContext = createHasteContext(config, {hasteFS, moduleMap});
     startRun();
   });
 
@@ -90,9 +88,10 @@ const watch = (
       results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;
-        if (config.bail) {
-          testWatcher.setState({interrupted: false});
-        }
+        // Create a new testWatcher instance so that re-runs won't be blocked.
+        // The old instance that was passed to Jest will still be interrupted
+        // and prevent test runs from the previous run.
+        testWatcher = new TestWatcher({isWatchMode: true});
         if (displayHelp) {
           console.log(usage(argv, hasSnapshotFailure));
           displayHelp = !process.env.JEST_HIDE_USAGE;
