@@ -1,5 +1,5 @@
 ---
-title: new-docs
+title: A Great Developer Experience
 author: Héctor Ramos
 authorURL: http://twitter.com/hectorramos
 authorFBID: 121800083
@@ -17,15 +17,14 @@ Once you feel comfortable using Jest, proceed to the advanced **Guides** section
 
 Finally, we've completely overhauled our API reference docs. You can now find detailed information on all of Jest's [Globals](/jest/docs/api.html), [matchers](/jest/docs/expect.html), and [every flag](/jest/docs/cli.html) supported by the `jest` CLI.
 
-## A User Showcase
+## Who's Using Jest?
 
-We have created a [showcase of users](/jest/users.html) to highlight some of the companies that are using Jest. We're thankful to all of these companies for using Jest to test their websites, mobile apps, and APIs.
+We have created a [showcase of users](/jest/users.html) to highlight some of the companies that are using Jest. We're thankful to all of these companies for using Jest to test their websites, mobile apps, and APIs. If you're using Jest, check out the guidelines on GitHub and send us a pull request!
 
 <div class="miniShowcaseSection">
  <div class="logos">
    <img src="/jest/img/logos/twitter.png" title="Twitter"/>
    <img src="/jest/img/logos/pinterest.png" title="Pinterest"/>
-   <img src="/jest/img/logos/nyt.png" title="The New York Times"/>
    <img src="/jest/img/logos/paypal.png" title="PayPal"/>
    <img src="/jest/img/logos/ibm.png" title="IBM"/>
    <img src="/jest/img/logos/spotify.png" title="Spotify"/>
@@ -38,4 +37,8 @@ As highlighted [last month](/jest/blog/2016/12/15/2016-in-jest.html), it is now 
 
 <iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
 
-This is just the start. We can't wait to share with you what we've been working on.
+## Get Involved
+
+This is just the start. Go ahead and take a look at the docs, and don't hesitate to send any feedback our way. If you find a mistake in the docs or you just want to let us know what needs to be documented better, please tweet at us at [@fbjest](https://twitter.com/fbjest) or [open an issue on GitHub](https://github.com/facebook/jest/issues) and tag it under "Documentation".
+
+We're really excited for the year ahead and can't wait to hear from you!
