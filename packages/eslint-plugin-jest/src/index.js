@@ -36,5 +36,6 @@ module.exports = {
   rules: {
     'no-focused-tests': require('./rules/no-focused-tests'),
     'no-identical-title': require('./rules/no-identical-title'),
+    'no-skipped-tests': require('./rules/no-skipped-tests'),
   },
 };
