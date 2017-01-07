@@ -337,7 +337,13 @@ class TestRunner {
         return Promise.reject();
       }
       this._dispatcher.onTestStart(config, path);
-      return worker({config, path});
+      return worker({
+        config,
+        path,
+        rawModuleMap: watcher.isWatchMode()
+          ? this._hasteContext.moduleMap.getRawModuleMap()
+          : null,
+      });
     });
 
     const onError = (err, path) => {

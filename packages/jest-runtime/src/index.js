@@ -185,6 +185,7 @@ class Runtime {
     return instance.build().then(
       hasteMap => ({
         hasteFS: hasteMap.hasteFS,
+        moduleMap: hasteMap.moduleMap,
         resolver: Runtime.createResolver(config, hasteMap.moduleMap),
       }),
       error => {

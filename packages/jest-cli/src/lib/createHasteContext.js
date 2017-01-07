@@ -20,6 +20,7 @@ const createHasteContext = (
   {hasteFS, moduleMap}: HasteMap,
 ): HasteContext => ({
   hasteFS,
+  moduleMap,
   resolver: Runtime.createResolver(config, moduleMap),
 });
 

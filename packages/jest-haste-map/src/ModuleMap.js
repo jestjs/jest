@@ -15,6 +15,7 @@ import type {
   HTypeValue,
   MockData,
   ModuleMapData,
+  RawModuleMap,
 } from 'types/HasteMap';
 
 const H: HType = require('./constants');
@@ -65,6 +66,13 @@ class ModuleMap {
 
   getMockModule(name: string): ?Path {
     return this._mocks[name];
+  }
+
+  getRawModuleMap(): RawModuleMap {
+    return {
+      map: this._map,
+      mocks: this._mocks,
+    };
   }
 
 }
