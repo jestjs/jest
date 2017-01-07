@@ -4,22 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
-/* eslint-disable jest/no-focused-tests */
+// This file must not use 'use strict'.
+// See https://github.com/facebook/jest/pull/2457#issuecomment-269518622
 
-'use strict';
+import type {Global} from 'types/Global';
 
-describe('promise fit', () => {
-  it('fails but will be skipped', () => {
-    expect(true).toBe(false);
-  });
-
-  fit('will run', () => {
-    return Promise.resolve();
-  });
-
-  fit('will run and fail', () => {
-    return Promise.reject();
-  });
-});
+module.exports =
+  (global: Global, key: string, value: any) => global[key] = value;
