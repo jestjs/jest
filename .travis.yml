@@ -13,7 +13,4 @@ cache:
     - ".eslintcache"
     - "node_modules"
 
-script:
-  - (cd packages/eslint-plugin-jest && yarn link)
-  - yarn link eslint-plugin-jest
-  - yarn run test-ci
+script: yarn run test-ci
