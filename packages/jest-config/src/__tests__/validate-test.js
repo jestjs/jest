@@ -29,8 +29,8 @@ test('validates default config', () => {
 
 test(`omits null and undefined config values`, () => {
   const config = {
-    preset: null,
     haste: undefined,
+    preset: null,
   };
   expect(validate(config)).toBe(true);
 });
