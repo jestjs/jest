@@ -76,17 +76,13 @@ const diffLines = (a: string, b: string): Diff => {
   };
 };
 
-const showPatchMarks = (hunk: Hunk, oldLinesCount: number): boolean => {
-  // We want to only show patch marks ("@@ ... @@") if they're necessary.
-  // That is, only when at least 1 line of the original string was "hidden" by
-  // the `diff.structuredPatch(a, b)`.
-  // To determine this, we need to compare either original string (a) to
-  // `hunk.oldLines` or a new string to `hunk.newLines`. I chose oldLines.
-  // Knowing original `oldLinesCount` is greater than `hunk.oldLines`
-  // we can be sure that at least 1 line have been "hidden" and
-  // we want to show the patch marks.
-  return oldLinesCount > hunk.oldLines;
-};
+// Only show patch marks ("@@ ... @@") if the diff is big.
+// To determine this, we need to compare either the original string (a) to
+// `hunk.oldLines` or a new string to `hunk.newLines`.
+// If the `oldLinesCount` is greater than `hunk.oldLines`
+// we can be sure that at least 1 line has been "hidden".
+const shouldShowPatchMarks =
+  (hunk: Hunk, oldLinesCount: number): boolean => oldLinesCount > hunk.oldLines;
 
 const createPatchMark = (hunk: Hunk): string => {
   const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
@@ -122,7 +118,7 @@ const structuredPatch = (a: string, b: string): Diff => {
         }).join('');
 
         isDifferent = true;
-        return showPatchMarks(hunk, oldLinesCount)
+        return shouldShowPatchMarks(hunk, oldLinesCount)
           ? createPatchMark(hunk) + lines
           : lines;
       }).join('').trim(),
