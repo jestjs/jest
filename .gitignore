@@ -18,4 +18,4 @@ npm-debug.log*
 website/core/metadata*.js
 website/src/jest/blog
 website/src/jest/docs
-yarn-error.log
+/danger/node_modules/
