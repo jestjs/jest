@@ -20,3 +20,5 @@ script:
   - (cd packages/eslint-plugin-jest && yarn link)
   - yarn link eslint-plugin-jest
   - yarn run test-ci
+  - (cd danger && yarn install)
+  - yarn run danger

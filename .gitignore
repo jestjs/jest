@@ -19,3 +19,4 @@ lerna-debug.log
 npm-debug.log*
 coverage
 .eslintcache
+/danger/node_modules/
