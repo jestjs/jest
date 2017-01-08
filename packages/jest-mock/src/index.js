@@ -173,9 +173,10 @@ function getSlots(object?: Object): Array<string> {
 }
 
 
-class ModuleMocker {
+class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockRegistry: WeakMap<Function, MockFunctionState>;
+  ModuleMocker: Class<ModuleMockerClass>;
 
   /**
    * @see README.md
@@ -185,6 +186,7 @@ class ModuleMocker {
   constructor(global: Global) {
     this._environmentGlobal = global;
     this._mockRegistry = new WeakMap();
+    this.ModuleMocker = ModuleMockerClass;
   }
 
   _ensureMock(f: Mock): MockFunctionState {
@@ -564,4 +566,5 @@ class ModuleMocker {
   }
 }
 
-module.exports = ModuleMocker;
+export type ModuleMocker = ModuleMockerClass;
+module.exports = new ModuleMockerClass(global);

@@ -15,9 +15,9 @@ describe('moduleMocker', () => {
   let moduleMocker;
 
   beforeEach(() => {
-    const ModuleMocker = require('../');
+    const mock = require('../');
     const global = vm.runInNewContext('this');
-    moduleMocker = new ModuleMocker(global);
+    moduleMocker = new mock.ModuleMocker(global);
   });
 
   describe('getMetadata', () => {

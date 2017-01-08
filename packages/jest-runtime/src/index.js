@@ -15,7 +15,7 @@ import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {ModuleMap} from 'jest-haste-map';
-import type ModuleMocker, {MockFunctionMetadata} from 'jest-mock';
+import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
@@ -43,6 +43,7 @@ type HasteMapOptions = {|
   console?: Console,
   maxWorkers: number,
   resetCache: boolean,
+  watch?: boolean,
 |};
 
 type InternalModuleOptions = {|
@@ -171,6 +172,7 @@ class Runtime {
     options: {
       console?: Console,
       maxWorkers: number,
+      watch?: boolean,
     },
   ): Promise<HasteContext> {
     createDirectory(config.cacheDirectory);
@@ -178,10 +180,12 @@ class Runtime {
       console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
+      watch: options.watch,
     });
     return instance.build().then(
       hasteMap => ({
         hasteFS: hasteMap.hasteFS,
+        moduleMap: hasteMap.moduleMap,
         resolver: Runtime.createResolver(config, hasteMap.moduleMap),
       }),
       error => {
@@ -212,6 +216,7 @@ class Runtime {
       retainAllFiles: false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
+      watch: options && options.watch,
     });
   }
 
@@ -543,7 +548,9 @@ class Runtime {
     }
 
     const sep = path.delimiter;
-    const id = moduleType + sep + (absolutePath || '') + sep + (mockPath || '');
+    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
+      (mockPath ? (mockPath + sep) : ''));
+
     return normalizedIDCache[key] = id;
   }
 

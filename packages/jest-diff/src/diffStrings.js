@@ -24,6 +24,14 @@ export type DiffOptions = {|
 
 type Diff = {diff: string, isDifferent: boolean};
 
+type Hunk = {|
+  lines: Array<string>,
+  newLines: number,
+  newStart: number,
+  oldLines: number,
+  oldStart: number,
+|}
+
 const getColor = (added: boolean, removed: boolean): chalk =>
   added
     ? chalk.red
@@ -68,6 +76,20 @@ const diffLines = (a: string, b: string): Diff => {
   };
 };
 
+// Only show patch marks ("@@ ... @@") if the diff is big.
+// To determine this, we need to compare either the original string (a) to
+// `hunk.oldLines` or a new string to `hunk.newLines`.
+// If the `oldLinesCount` is greater than `hunk.oldLines`
+// we can be sure that at least 1 line has been "hidden".
+const shouldShowPatchMarks =
+  (hunk: Hunk, oldLinesCount: number): boolean => oldLinesCount > hunk.oldLines;
+
+const createPatchMark = (hunk: Hunk): string => {
+  const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
+  const markNew = `+${hunk.newStart},${hunk.newLines}`;
+  return chalk.yellow(`@@ ${markOld} ${markNew} @@\n`);
+};
+
 const structuredPatch = (a: string, b: string): Diff => {
   const options = {context: DIFF_CONTEXT};
   let isDifferent = false;
@@ -79,13 +101,11 @@ const structuredPatch = (a: string, b: string): Diff => {
     b += '\n';
   }
 
+  const oldLinesCount = (a.match(/\n/g) || []).length;
+
   return {
     diff: diff.structuredPatch('', '', a, b, '', '', options)
-      .hunks.map(hunk => {
-        const diffMarkOld = `-${hunk.oldStart},${hunk.oldLines}`;
-        const diffMarkNew = `+${hunk.newStart},${hunk.newLines}`;
-        const diffMark = chalk.yellow(`@@ ${diffMarkOld} ${diffMarkNew} @@\n`);
-
+      .hunks.map((hunk: Hunk) => {
         const lines = hunk.lines.map(line => {
           const added = line[0] === '+';
           const removed = line[0] === '-';
@@ -98,7 +118,9 @@ const structuredPatch = (a: string, b: string): Diff => {
         }).join('');
 
         isDifferent = true;
-        return diffMark + lines;
+        return shouldShowPatchMarks(hunk, oldLinesCount)
+          ? createPatchMark(hunk) + lines
+          : lines;
       }).join('').trim(),
     isDifferent,
   };

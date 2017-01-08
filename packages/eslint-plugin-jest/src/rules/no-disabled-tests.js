@@ -20,17 +20,17 @@ const testFunctions = Object.assign(Object.create(null), {
 
 const matchesTestFunction = object => object && testFunctions[object.name];
 
-const isCallToFocusedTestFunction = object => (
+const isCallToSkippedTestFunction = object => (
   object &&
-  object.name[0] === 'f' &&
+  object.name[0] === 'x' &&
   testFunctions[object.name.substring(1)]
 );
 
-const isPropertyNamedOnly = property =>
-  property && (property.name === 'only' || property.value === 'only');
+const isPropertyNamedSkip = property =>
+  property && (property.name === 'skip' || property.value === 'skip');
 
-const isCallToTestOnlyFunction = callee => (
-  matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property)
+const isCallToTestSkipFunction = callee => (
+  matchesTestFunction(callee.object) && isPropertyNamedSkip(callee.property)
 );
 
 module.exports = (context: EslintContext) => ({
@@ -42,10 +42,10 @@ module.exports = (context: EslintContext) => ({
 
     if (
       callee.type === 'MemberExpression' &&
-      isCallToTestOnlyFunction(callee)
+      isCallToTestSkipFunction(callee)
     ) {
       context.report({
-        message: 'Unexpected focused test.',
+        message: 'Unexpected disabled test.',
         node: callee.property,
       });
       return;
@@ -53,10 +53,10 @@ module.exports = (context: EslintContext) => ({
 
     if (
       callee.type === 'Identifier' &&
-      isCallToFocusedTestFunction(callee)
+      isCallToSkippedTestFunction(callee)
     ) {
       context.report({
-        message: 'Unexpected focused test.',
+        message: 'Unexpected disabled test.',
         node: callee,
       });
       return;
