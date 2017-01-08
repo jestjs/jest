@@ -11,7 +11,7 @@
 
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
-import type ModuleMocker from 'jest-mock';
+import type {ModuleMocker} from 'jest-mock';
 
 const {formatStackTrace} = require('./messages');
 const setGlobal = require('./setGlobal');
