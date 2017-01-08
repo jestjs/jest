@@ -36,21 +36,23 @@ describe('transitive dependencies', () => {
   };
 
   it('mocks a manually mocked and mapped module', () =>
-      createRuntime(__filename, {
-        automock: false,
-        moduleNameMapper,
-      })
-        .then(runtime => {
-          runtime.setMock(__filename,  './test_root/mapped_dir/moduleInMapped',
-           () => ('mocked_in_mapped'));
+    createRuntime(__filename, {
+      automock: false,
+      moduleNameMapper,
+    }).then(runtime => {
+      runtime.setMock(
+        __filename,
+        './test_root/mapped_dir/moduleInMapped',
+        () => 'mocked_in_mapped',
+      );
 
-          const parentDep = runtime.requireModule(
-              runtime.__mockRootPath,
-                './depOnMappedModule.js',
-             );
-
-          expect(parentDep).toEqual({result: 'mocked_in_mapped'});
-        }));
+      const parentDep = runtime.requireModule(
+        runtime.__mockRootPath,
+        './depOnMappedModule.js',
+      );
+      expect(parentDep).toEqual({result: 'mocked_in_mapped'});
+    }),
+  );
 
   it('unmocks transitive dependencies in node_modules by default', () =>
     createRuntime(__filename, {
