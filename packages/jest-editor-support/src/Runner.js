@@ -93,7 +93,7 @@ module.exports = class Runner extends EventEmitter {
 
   closeProcess() {
     if (process.platform === 'win32') {
-      // because windows is stupid and doesn't exit when it should
+      // Windows doesn't exit the process when it should.
       spawn('taskkill', ['/pid', '' + this.debugprocess.pid, '/T', '/F']);
     } else {
       this.debugprocess.kill();
