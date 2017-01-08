@@ -127,12 +127,10 @@ test('objects', () => {
 test('numbers', () => {
   const result = diff(123, 234);
   expect(result).toBe(null);
-  expect(result).toBe(null);
 });
 
 test('booleans', () => {
   const result = diff(true, false);
-  expect(result).toBe(null);
   expect(result).toBe(null);
 });
 
@@ -155,4 +153,14 @@ test('React elements', () => {
   expect(stripAnsi(result)).toMatch(/<div[\s\S]+className="fun">/);
   expect(stripAnsi(result)).toMatch(/\-\s+Hello/);
   expect(stripAnsi(result)).toMatch(/\+\s+Goodbye/);
+});
+
+test('collapses big diffs to patch format', () => {
+  const result = diff(
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+    {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
+    {expand: false}
+  );
+
+  expect(result).toMatchSnapshot();
 });
