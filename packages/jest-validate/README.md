@@ -11,7 +11,7 @@ npm install --save-dev jest-validate
 ```js
 import validate from 'jest-validate';
 
-validate(config: Object, validConfigSample: Object, options: ?Object);
+validate(config: Object, validConfigSample: Object, deprecatedConfig: ?Object, options: ?Object);
 ```
 
 ## Customization
@@ -31,7 +31,7 @@ const options: ValidationOptions = {
 
 ## Examples
 ```js
-validate(config, validConfigSample, {namespace: 'Custom', footer: 'Documentation: http://custom-docs.com'});
+validate(config, validConfigSample, deprecatedConfig, {namespace: 'Custom', footer: '\n\n  Documentation: http://custom-docs.com'});
 ```
 Warning:
 
@@ -58,6 +58,23 @@ Error:
   {
     "transform": {"^.+\\.js$": "<rootDir>/preprocessor.js"}
   }
+
+  Documentation: http://custom-docs.com
+```
+
+Deprecation (based on `deprecatedConfig` object with proper messages):
+
+```
+● Jest Deprecation Warning:
+
+  Option scriptPreprocessor was replaced by transform, which support multiple preprocessors.
+
+  Jest now treats your current configuration as:
+  {
+    "transform": {".*": "xxx""}
+  }
+
+  Please update your configuration.
 
   Documentation: http://custom-docs.com
 ```
