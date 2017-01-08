@@ -328,7 +328,7 @@ class FakeTimers {
   }
 
   _createMocks() {
-    const fn = impl => this._moduleMocker.getMockFn().mockImplementation(impl);
+    const fn = impl => this._moduleMocker.fn().mockImplementation(impl);
 
     this._fakeTimerAPIs = {
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),
