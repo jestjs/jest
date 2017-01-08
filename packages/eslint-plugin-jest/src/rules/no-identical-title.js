@@ -11,53 +11,53 @@
 
 import type {EslintContext, CallExpression} from './types';
 
-const describeAliases = [
-  'describe.only',
-  'describe.skip',
-  'describe',
-  'fdescribe',
-  'xdescribe',
-];
+/* $FlowFixMe */
+const describeAliases = Object.assign(Object.create(null), {
+  'describe': true,
+  'describe.only': true,
+  'describe.skip': true,
+  'fdescribe': true,
+  'xdescribe': true,
+});
 
-const testCaseNames = [
-  'fit',
-  'it.only',
-  'it.skip',
-  'it',
-  'test.only',
-  'test.skip',
-  'test',
-  'xit',
-  'xtest',
-];
+/* $FlowFixMe */
+const testCaseNames = Object.assign(Object.create(null), {
+  'fit': true,
+  'it': true,
+  'it.only': true,
+  'it.skip': true,
+  'test': true,
+  'test.only': true,
+  'test.skip': true,
+  'xit': true,
+  'xtest': true,
+});
 
-function getNodeName(node) {
+const getNodeName = node => {
   if (node.type === 'MemberExpression') {
     return node.object.name + '.' + node.property.name;
   }
   return node.name;
-}
+};
 
-function isDescribe(node) {
-  return node
-    && node.type === 'CallExpression'
-    && describeAliases.indexOf(getNodeName(node.callee)) > -1;
-}
+const isDescribe = node => (
+  node &&
+  node.type === 'CallExpression' &&
+  describeAliases[getNodeName(node.callee)]
+);
 
-function isTestCase(node) {
-  return node
-    && node.type === 'CallExpression'
-    && testCaseNames.indexOf(getNodeName(node.callee)) > -1;
-}
+const isTestCase = node => (
+  node &&
+  node.type === 'CallExpression' &&
+  testCaseNames[getNodeName(node.callee)]
+);
 
-function newDescribeContext() {
-  return {
-    describeTitles: [],
-    testTitles: [],
-  };
-}
+const newDescribeContext = () => ({
+  describeTitles: [],
+  testTitles: [],
+});
 
-function handleTestCaseTitles(context, titles, node, title) {
+const handleTestCaseTitles = (context, titles, node, title) => {
   if (isTestCase(node)) {
     if (titles.indexOf(title) !== -1) {
       context.report({
@@ -67,9 +67,9 @@ function handleTestCaseTitles(context, titles, node, title) {
     }
     titles.push(title);
   }
-}
+};
 
-function handleTestSuiteTitles(context, titles, node, title) {
+const handleTestSuiteTitles = (context, titles, node, title) => {
   if (!isDescribe(node)) {
     return;
   }
@@ -80,17 +80,15 @@ function handleTestSuiteTitles(context, titles, node, title) {
     });
   }
   titles.push(title);
-}
+};
 
-function isFirstArgLiteral(node) {
-  return (
-    node.arguments &&
-    node.arguments[0] &&
-    node.arguments[0].type === 'Literal'
-  );
-}
+const isFirstArgLiteral = node => (
+  node.arguments &&
+  node.arguments[0] &&
+  node.arguments[0].type === 'Literal'
+);
 
-module.exports = function(context: EslintContext) {
+module.exports = (context: EslintContext) => {
   const contexts = [
     newDescribeContext(),
   ];

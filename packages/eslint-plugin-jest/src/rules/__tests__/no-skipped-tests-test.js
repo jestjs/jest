@@ -16,9 +16,9 @@ const RuleTester = require('eslint').RuleTester;
 const rules = require('../../').rules;
 
 const ruleTester = new RuleTester();
-const expectedErrorMessage = 'Unexpected skipped test.';
+const expectedErrorMessage = 'Unexpected disabled test.';
 
-ruleTester.run('no-skipped-tests', rules['no-skipped-tests'], {
+ruleTester.run('no-disabled-tests', rules['no-disabled-tests'], {
   valid: [
     'describe()',
     'it()',

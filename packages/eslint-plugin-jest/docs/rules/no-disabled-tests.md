@@ -1,4 +1,4 @@
-# Disallow Skipped Tests (no-skipped-tests)
+# Disallow Disabled Tests (no-disabled-tests)
 
 Jest has a feature that allows you to skip tests by appending `.skip` or prepending `x` to a test-suite or a test-case.
 Sometimes tests are skipped as part of a debugging process and aren't intended to be committed. This rule reminds you to remove .skip or the x prefix from your tests.
