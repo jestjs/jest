@@ -13,4 +13,8 @@ cache:
     - ".eslintcache"
     - "node_modules"
 
-script: yarn run test-ci
+script: 
+  - yarn run test-ci
+  - (cd danger && yarn install)
+  - yarn run danger
+
