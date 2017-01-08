@@ -10,15 +10,22 @@
 'use strict';
 
 const crypto = require('crypto');
-
-const DEFAULT_CONFIG_VALUES = require('./defaults');
-const Resolver = require('jest-resolve');
-
+import type {Config, DefaultConfig} from 'types/Config';
+const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
 const chalk = require('chalk');
-const constants = require('./constants');
-const validate = require('./validate');
+const DEFAULT_CONFIG = require('./defaults');
 const path = require('path');
+const Resolver = require('jest-resolve');
 const utils = require('jest-util');
+const VALID_CONFIG = require('./validConfig');
+const DEPRECATED_CONFIG = require('./deprecated');
+const validate = require('jest-validate');
+
+const {
+  _replaceRootDirTags,
+  getTestEnvironment,
+  resolve,
+} = require('./utils');
 
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
@@ -33,101 +40,141 @@ const throwRuntimeConfigError = message => {
   throw new Error(chalk.red(message + DOCUMENTATION_NOTE));
 };
 
-const resolve = (rootDir, key, filePath) => {
-  const module = Resolver.findNodeModule(
-    _replaceRootDirTags(rootDir, filePath),
+function setupPreset(config: Config) {
+  const presetPath = _replaceRootDirTags(config.rootDir, config.preset);
+  const presetModule = Resolver.findNodeModule(
+    presetPath.endsWith(JSON_EXTENSION)
+      ? presetPath
+      : path.join(presetPath, PRESET_NAME),
     {
-      basedir: rootDir,
+      basedir: config.rootDir,
     },
   );
-
-  if (!module) {
+  if (presetModule) {
+    const preset = require(presetModule);
+    if (config.setupFiles) {
+      config.setupFiles = preset.setupFiles.concat(config.setupFiles);
+    }
+    if (config.modulePathIgnorePatterns) {
+      config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
+        .concat(config.modulePathIgnorePatterns);
+    }
+    if (config.moduleNameMapper) {
+      config.moduleNameMapper = Object.assign(
+        {},
+        preset.moduleNameMapper,
+        config.moduleNameMapper,
+      );
+    }
+    // Don't show deprecation warnings if the setting comes from the preset.
+    if (preset.preprocessorIgnorePatterns) {
+      preset.transformIgnorePatterns = preset.preprocessorIgnorePatterns;
+      delete preset.preprocessorIgnorePatterns;
+    }
+    config = Object.assign({}, preset, config);
+  } else {
     throw new Error(
-      `Jest: Module "${filePath}" in the "${key}" option was not found.`
+      `Jest: Preset '${presetPath}' not found.`,
     );
   }
+}
 
-  return module;
-};
+function setupBabelJest(config: Config) {
+  let babelJest;
+  const basedir = config.rootDir;
 
-const _replaceRootDirTags = (rootDir, config) => {
-  switch (typeof config) {
-    case 'object':
-      if (config instanceof RegExp) {
-        return config;
-      }
+  if (config.transform) {
+    const customJSPattern = Object.keys(config.transform).find(pattern => {
+      const regex = new RegExp(pattern);
+      return regex.test('a.js') || regex.test('a.jsx');
+    });
 
-      if (Array.isArray(config)) {
-        return config.map(item => _replaceRootDirTags(rootDir, item));
-      }
-
-      if (config !== null) {
-        const newConfig = {};
-        for (const configKey in config) {
-          newConfig[configKey] =
-            configKey === 'rootDir'
-              ? config[configKey]
-              : _replaceRootDirTags(rootDir, config[configKey]);
-        }
-        return newConfig;
-      }
-      break;
-    case 'string':
-      if (!/^<rootDir>/.test(config)) {
-        return config;
-      }
-
-      return path.resolve(
-        rootDir,
-        path.normalize('./' + config.substr('<rootDir>'.length)),
+    if (customJSPattern) {
+      const jsTransformer = Resolver.findNodeModule(
+        config.transform[customJSPattern],
+        {basedir},
       );
-  }
-  return config;
-};
-
-/**
- * Finds the test environment to use:
- *
- * 1. looks for jest-environment-<name> relative to project.
- * 1. looks for jest-environment-<name> relative to Jest.
- * 1. looks for <name> relative to project.
- * 1. looks for <name> relative to Jest.
- */
-function getTestEnvironment(config) {
-  const env = config.testEnvironment;
-  let module = Resolver.findNodeModule(`jest-environment-${env}`, {
-    basedir: config.rootDir,
-  });
-  if (module) {
-    return module;
+      if (
+        jsTransformer && jsTransformer.includes(NODE_MODULES + 'babel-jest')
+      ) {
+        babelJest = jsTransformer;
+      }
+    }
+  } else {
+    babelJest = Resolver.findNodeModule('babel-jest', {basedir});
+    if (babelJest) {
+      config.transform = {
+        [DEFAULT_JS_PATTERN]: 'babel-jest',
+      };
+    }
   }
 
-  try {
-    return require.resolve(`jest-environment-${env}`);
-  } catch (e) {}
+  return babelJest;
+}
 
-  module = Resolver.findNodeModule(env, {basedir: config.rootDir});
-  if (module) {
-    return module;
+function normalizeCollectCoverageOnlyFrom(config: Config, key: string) {
+  return Object.keys(config[key]).reduce((normObj, filePath) => {
+    filePath = path.resolve(
+      config.rootDir,
+      _replaceRootDirTags(config.rootDir, filePath),
+    );
+    normObj[filePath] = true;
+    return normObj;
+  }, Object.create(null));
+}
+
+function normalizeCollectCoverageFrom(config: Config, key: string) {
+  let value;
+  if (!config[key]) {
+    value = [];
   }
 
-  try {
-    return require.resolve(env);
-  } catch (e) {}
+  if (!Array.isArray(config[key])) {
+    try {
+      value = JSON.parse(config[key]);
+    } catch (e) {}
 
-  throw new Error(
-    `Jest: test environment "${env}" cannot be found. Make sure the ` +
-    `"testEnvironment" configuration option points to an existing node module.`,
+    Array.isArray(value) || (value = [config[key]]);
+  } else {
+    value = config[key];
+  }
+
+  return value;
+}
+
+function normalizeUnmockedModulePathPatterns(config: Config, key: string) {
+  // _replaceRootDirTags is specifically well-suited for substituting
+  // <rootDir> in paths (it deals with properly interpreting relative path
+  // separators, etc).
+  //
+  // For patterns, direct global substitution is far more ideal, so we
+  // special case substitutions for patterns here.
+  return config[key].map(pattern =>
+    utils.replacePathSepForRegex(
+      pattern.replace(/<rootDir>/g, config.rootDir),
+    )
   );
 }
 
-function normalize(config, argv) {
-  validate(config);
+function fillNewConfigWithDefaults(newConfig, defaults: DefaultConfig) {
+  // If any config entries weren't specified but have default values, apply the
+  // default values
+  Object.keys(defaults).reduce((newConfig, key) => {
+    if (!(key in newConfig)) {
+      newConfig[key] = defaults[key];
+    }
+    return newConfig;
+  }, newConfig);
+}
+
+function normalize(config: Config, argv: Object) {
+  validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
+
+  const newConfig = {};
 
   if (!argv) {
     argv = {};
   }
-  const newConfig = {};
 
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
@@ -137,42 +184,7 @@ function normalize(config, argv) {
   config.rootDir = path.normalize(config.rootDir);
 
   if (config.preset) {
-    const presetPath = _replaceRootDirTags(config.rootDir, config.preset);
-    const presetModule = Resolver.findNodeModule(
-      presetPath.endsWith(JSON_EXTENSION)
-        ? presetPath
-        : path.join(presetPath, PRESET_NAME),
-      {
-        basedir: config.rootDir,
-      },
-    );
-    if (presetModule) {
-      const preset = require(presetModule);
-      if (config.setupFiles) {
-        config.setupFiles = preset.setupFiles.concat(config.setupFiles);
-      }
-      if (config.modulePathIgnorePatterns) {
-        config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
-          .concat(config.modulePathIgnorePatterns);
-      }
-      if (config.moduleNameMapper) {
-        config.moduleNameMapper = Object.assign(
-          {},
-          preset.moduleNameMapper,
-          config.moduleNameMapper,
-        );
-      }
-      // Don't show deprecation warnings if the setting comes from the preset.
-      if (preset.preprocessorIgnorePatterns) {
-        preset.transformIgnorePatterns = preset.preprocessorIgnorePatterns;
-        delete preset.preprocessorIgnorePatterns;
-      }
-      config = Object.assign({}, preset, config);
-    } else {
-      throw new Error(
-        `Jest: Preset '${presetPath}' not found.`,
-      );
-    }
+    setupPreset(config);
   }
 
   if (config.scriptPreprocessor && config.transform) {
@@ -241,59 +253,21 @@ function normalize(config, argv) {
     config.testEnvironment = getTestEnvironment(config);
   }
 
-  let babelJest;
-  if (config.transform) {
-    const customJSPattern = Object.keys(config.transform).find(pattern => {
-      const regex = new RegExp(pattern);
-      return regex.test('a.js') || regex.test('a.jsx');
-    });
-
-    if (customJSPattern) {
-      const jsTransformer = Resolver.findNodeModule(
-        config.transform[customJSPattern], {
-          basedir: config.rootDir,
-        },
-      );
-      if (
-        jsTransformer &&
-        jsTransformer.includes(constants.NODE_MODULES + 'babel-jest')
-      ) {
-        babelJest = jsTransformer;
-      }
-    }
-  } else {
-    babelJest = Resolver.findNodeModule('babel-jest', {
-      basedir: config.rootDir,
-    });
-    if (babelJest) {
-      config.transform = {
-        [constants.DEFAULT_JS_PATTERN]: 'babel-jest',
-      };
-    }
-  }
+  const babelJest = setupBabelJest(config);
 
   let polyfillPath;
   if (babelJest) {
-    polyfillPath =
-      Resolver.findNodeModule('babel-polyfill', {
-        basedir: config.rootDir,
-      });
+    polyfillPath = Resolver.findNodeModule('babel-polyfill', {
+      basedir: config.rootDir,
+    });
   }
 
-  Object.keys(config).reduce((newConfig, key) => {
+  Object.keys(config).reduce((newConfig, key: string) => {
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
-        value = Object.keys(config[key]).reduce((normObj, filePath) => {
-          filePath = path.resolve(
-            config.rootDir,
-            _replaceRootDirTags(config.rootDir, filePath),
-          );
-          normObj[filePath] = true;
-          return normObj;
-        }, Object.create(null));
+        value = normalizeCollectCoverageOnlyFrom(config, key);
         break;
-
       case 'setupFiles':
       case 'snapshotSerializers':
         value = config[key].map(resolve.bind(null, config.rootDir, key));
@@ -305,20 +279,7 @@ function normalize(config, argv) {
         ));
         break;
       case 'collectCoverageFrom':
-        if (!config[key]) {
-          value = [];
-        }
-
-        if (!Array.isArray(config[key])) {
-          try {
-            value = JSON.parse(config[key]);
-          } catch (e) {}
-
-          Array.isArray(value) || (value = [config[key]]);
-        } else {
-          value = config[key];
-        }
-
+        value = normalizeCollectCoverageFrom(config, key);
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
@@ -348,17 +309,7 @@ function normalize(config, argv) {
       case 'testPathIgnorePatterns':
       case 'transformIgnorePatterns':
       case 'unmockedModulePathPatterns':
-        // _replaceRootDirTags is specifically well-suited for substituting
-        // <rootDir> in paths (it deals with properly interpreting relative path
-        // separators, etc).
-        //
-        // For patterns, direct global substitution is far more ideal, so we
-        // special case substitutions for patterns here.
-        value = config[key].map(pattern =>
-          utils.replacePathSepForRegex(
-            pattern.replace(/<rootDir>/g, config.rootDir),
-          ),
-        );
+        value = normalizeUnmockedModulePathPatterns(config, key);
         break;
       case 'automock':
       case 'bail':
@@ -406,14 +357,7 @@ function normalize(config, argv) {
     newConfig.setupFiles.unshift(polyfillPath);
   }
 
-  // If any config entries weren't specified but have default values, apply the
-  // default values
-  Object.keys(DEFAULT_CONFIG_VALUES).reduce((newConfig, key) => {
-    if (!(key in newConfig)) {
-      newConfig[key] = DEFAULT_CONFIG_VALUES[key];
-    }
-    return newConfig;
-  }, newConfig);
+  fillNewConfigWithDefaults(newConfig, DEFAULT_CONFIG);
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
