@@ -85,3 +85,18 @@ test('works with custom errors', () => {
   expect(() => validate(config, validConfig, {}, options))
     .toThrowErrorMatchingSnapshot();
 });
+
+test('works with custom deprecations', () => {
+  const config = {scriptPreprocessor: 'test'};
+  const options = {
+    footer: '\n\n  custom footer',
+    namespace: 'My Custom',
+  };
+  const warn = console.warn;
+  console.warn = jest.fn();
+
+  validate(config, validConfig, deprecatedConfig, options);
+
+  expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+  console.warn = warn;
+});

@@ -10,8 +10,11 @@
 
 'use strict';
 
+import type {ValidationOptions} from './types';
+
 const chalk = require('chalk');
-const DEPRECATED = 'Jest Deprecation Warning';
+const JEST = 'Jest';
+const DEPRECATED = 'Deprecation Warning';
 const DOCUMENTATION_NOTE = `
 
   ${chalk.bold('Configuration documentation:')}
@@ -19,10 +22,17 @@ const DOCUMENTATION_NOTE = `
 `;
 const BULLET = chalk.bold('\u25cf ');
 
-const deprecationMessage = (message: string) => {
+const deprecationMessage = (message: string, options: ValidationOptions) => {
+  const footer = options && options.footer
+    ? options.footer
+    : DOCUMENTATION_NOTE;
+
   console.warn(
     chalk.yellow(
-      chalk.bold(BULLET + DEPRECATED + ':') + message + DOCUMENTATION_NOTE
+      options && options.namespace
+      ? chalk.bold(BULLET + options.namespace + ' ' + DEPRECATED + ':') +
+        message + footer
+      : chalk.bold(BULLET + JEST + ' ' + DEPRECATED + ':') + message + footer
     )
   );
 };
@@ -30,10 +40,11 @@ const deprecationMessage = (message: string) => {
 const deprecateWarning = (
   config: Object,
   option: string,
-  deprecatedOptions: Object
+  deprecatedOptions: Object,
+  options: ValidationOptions
 ) => {
   if (option in deprecatedOptions) {
-    deprecationMessage(deprecatedOptions[option](config));
+    deprecationMessage(deprecatedOptions[option](config), options);
   }
 };
 

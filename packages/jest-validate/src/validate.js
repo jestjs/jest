@@ -46,7 +46,7 @@ const validate = (
         );
       }
     } else if (deprecatedConfig && option in deprecatedConfig) {
-      options.deprecate(config, option, deprecatedConfig);
+      options.deprecate(config, option, deprecatedConfig, options);
     } else {
       options.unknown(config, option, options);
     }
