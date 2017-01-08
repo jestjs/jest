@@ -14,7 +14,6 @@ const TestRunner = require('../TestRunner');
 const TestWatcher = require('../TestWatcher');
 const SummaryReporter = require('../reporters/SummaryReporter');
 
-let worker;
 let workerFarmMock;
 
 jest.mock('worker-farm', () => {
@@ -56,9 +55,10 @@ describe('_createInBandTestRun()', () => {
     ).then(() => {
       expect(workerFarmMock.mock.calls).toEqual([
         [{config, path: './file-test.js', rawModuleMap}, jasmine.any(Function)],
+        // eslint-disable-next-line max-len
         [{config, path: './file2-test.js', rawModuleMap}, jasmine.any(Function)],
       ]);
-    })
+    });
   });
 
   test('does not inject the rawModuleMap in non watch mode', () => {
@@ -73,9 +73,11 @@ describe('_createInBandTestRun()', () => {
       () => {},
     ).then(() => {
       expect(workerFarmMock.mock.calls).toEqual([
+        /* eslint-disable max-len */
         [{config, path: './file-test.js', rawModuleMap: null}, jasmine.any(Function)],
         [{config, path: './file2-test.js', rawModuleMap: null}, jasmine.any(Function)],
+        /* eslint-enable max-len */
       ]);
-    })
+    });
   });
 });

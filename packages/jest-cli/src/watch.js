@@ -21,26 +21,7 @@ const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
 const TestWatcher = require('./TestWatcher');
-
-const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
-const KEYS = {
-  A: '61',
-  ARROW_DOWN: '1b5b42',
-  ARROW_LEFT: '1b5b44',
-  ARROW_RIGHT: '1b5b43',
-  ARROW_UP: '1b5b41',
-  BACKSPACE: process.platform === 'win32' ? '08' : '7f',
-  CONTROL_C: '03',
-  CONTROL_D: '04',
-  ENTER: '0d',
-  ESCAPE: '1b',
-  O: '6f',
-  P: '70',
-  Q: '71',
-  QUESTION_MARK: '3f',
-  U: '75',
-};
-
+const {KEYS, CLEAR} = require('./constants');
 
 const watch = (
   config: Config,
@@ -48,6 +29,7 @@ const watch = (
   argv: Object,
   hasteMap: HasteMap,
   hasteContext: HasteContext,
+  stdin?: stream$Readable | tty$ReadStream = process.stdin
 ) => {
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
     pattern: argv._,
@@ -93,7 +75,7 @@ const watch = (
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
         if (displayHelp) {
-          console.log(usage(argv, hasSnapshotFailure));
+          pipe.write(usage(argv, hasSnapshotFailure));
           displayHelp = !process.env.JEST_HIDE_USAGE;
         }
       },
@@ -174,17 +156,17 @@ const watch = (
         break;
       case KEYS.QUESTION_MARK:
         if (process.env.JEST_HIDE_USAGE) {
-          console.log(usage(argv, hasSnapshotFailure));
+          pipe.write(usage(argv, hasSnapshotFailure));
         }
         break;
     }
   };
 
-  if (typeof process.stdin.setRawMode === 'function') {
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-    process.stdin.setEncoding('hex');
-    process.stdin.on('data', onKeypress);
+  if (typeof stdin.setRawMode === 'function') {
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding('hex');
+    stdin.on('data', onKeypress);
   }
 
   startRun();
