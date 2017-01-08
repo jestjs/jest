@@ -28,9 +28,9 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
   "rules": {
+    "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
-    "jest/no-skipped-tests": "warn"
   }
 }
 ```
@@ -47,9 +47,9 @@ You can also whitelist the environment variables provided by Jest by doing:
 
 ## Supported Rules
 
+- [no-disabled-tests](docs/rules/no-disabled-tests.md) - disallow disabled tests.
 - [no-focused-tests](docs/rules/no-focused-tests.md) - disallow focused tests.
 - [no-identical-title](docs/rules/no-identical-title.md) - disallow identical titles.
-- [no-skipped-tests](docs/rules/no-skipped-tests.md) - disallow skipped tests.
 
 ## Shareable configurations
 
@@ -69,6 +69,7 @@ See [ESLint documentation](http://eslint.org/docs/user-guide/configuring#extendi
 
 The rules enabled in this configuration are:
 
+- [jest/no-disabled-tests](docs/rules/no-disabled-tests.md)
 - [jest/no-focused-tests](docs/rules/no-focused-tests.md)
 - [jest/no-identical-title](docs/rules/no-identical-title.md)
 
