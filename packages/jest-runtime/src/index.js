@@ -555,7 +555,7 @@ class Runtime {
   }
 
   _getVirtualMockPath(from: Path, moduleName: string) {
-    if (moduleName[0] !== '.' && moduleName[0] !== '/') {
+    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }
     return path.normalize(path.dirname(from) + '/' + moduleName);
