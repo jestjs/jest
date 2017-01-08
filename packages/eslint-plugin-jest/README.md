@@ -29,7 +29,8 @@ Then configure the rules you want to use under the rules section.
 {
   "rules": {
     "jest/no-focused-tests": "error",
-    "jest/no-identical-title": "error"
+    "jest/no-identical-title": "error",
+    "jest/no-skipped-tests": "warn"
   }
 }
 ```
@@ -48,7 +49,28 @@ You can also whitelist the environment variables provided by Jest by doing:
 
 - [no-focused-tests](docs/rules/no-focused-tests.md) - disallow focused tests.
 - [no-identical-title](docs/rules/no-identical-title.md) - disallow identical titles.
+- [no-skipped-tests](docs/rules/no-skipped-tests.md) - disallow skipped tests.
 
+## Shareable configurations
+
+### Recommended
+
+This plugin exports a recommended configuration that enforces good testing practices.
+
+To enable this configuration use the `extends` property in your `.eslintrc` config file:
+
+```js
+{
+  "extends": ["plugin:jest/recommended"]
+}
+```
+
+See [ESLint documentation](http://eslint.org/docs/user-guide/configuring#extending-configuration-files) for more information about extending configuration files.
+
+The rules enabled in this configuration are:
+
+- [jest/no-focused-tests](docs/rules/no-focused-tests.md)
+- [jest/no-identical-title](docs/rules/no-identical-title.md)
 
 ## Credit
 
