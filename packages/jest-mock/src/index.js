@@ -551,6 +551,14 @@ class ModuleMockerClass {
     return !!fn._isMockFunction;
   }
 
+  fn(implementation?: any): any {
+    const fn = this._makeComponent({type: 'function'});
+    if (implementation) {
+      fn.mockImplementation(implementation);
+    }
+    return fn;
+  }
+
   spyOn(object: any, methodName: any): any {
     const original = object[methodName];
 
@@ -567,18 +575,6 @@ class ModuleMockerClass {
     }
 
     return object[methodName];
-  }
-
-  /**
-   * @see README.md
-   */
-  getMockFunction(): any {
-    return this._makeComponent({type: 'function'});
-  }
-
-  // Just a short-hand alias
-  getMockFn(): any {
-    return this.getMockFunction();
   }
 
   resetAllMocks() {
