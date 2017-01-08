@@ -95,6 +95,14 @@ function.
 
 Sets the default return value for the function.
 
+##### `.mockResolveValue(value)`
+
+Sets the default return value to be `Promise.resolve(value)` for the function.
+
+##### `.mockRejectError(error)`
+
+Sets the default return value to be `Promise.reject(error)` for the function.
+
 ##### `.mockImplementationOnce(function)`
 
 Pushes the given mock implementation onto a FIFO queue of mock

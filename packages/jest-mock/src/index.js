@@ -335,6 +335,16 @@ class ModuleMocker {
         return f;
       };
 
+      f.mockResolveValue = value => {
+        // next function call will resolve specified value or this one
+        return f.mockReturnValue(Promise.resolve(value));
+      };
+
+      f.mockRejectError = error => {
+        // next function call will reject specified error or this one
+        return f.mockReturnValue(Promise.reject(error));
+      };
+
       f.mockImplementationOnce = fn => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
