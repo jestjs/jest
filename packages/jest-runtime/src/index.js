@@ -692,6 +692,7 @@ class Runtime {
       this.resetModules();
       return runtime;
     };
+    const fn = this._moduleMocker.fn.bind(this._moduleMocker);
 
     const runtime = {
       addMatchers:
@@ -706,18 +707,11 @@ class Runtime {
       doMock: mock,
       dontMock: unmock,
       enableAutomock,
-      fn: (impl: ?Function) => {
-        const fn = this._moduleMocker.getMockFunction();
-        if (impl) {
-          return fn.mockImplementation(impl);
-        }
-        return fn;
-      },
-      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      fn,
+      genMockFn: fn,
       genMockFromModule:
         (moduleName: string) => this._generateMock(from, moduleName),
-      genMockFunction:
-        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
 
       mock,

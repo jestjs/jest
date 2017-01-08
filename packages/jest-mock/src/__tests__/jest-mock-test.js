@@ -171,7 +171,7 @@ describe('moduleMocker', () => {
 
     describe('mocked functions', () => {
       it('tracks calls to mocks', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         expect(fn.mock.calls).toEqual([]);
 
         fn(1, 2, 3);
@@ -182,7 +182,7 @@ describe('moduleMocker', () => {
       });
 
       it('tracks instances made by mocks', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         expect(fn.mock.instances).toEqual([]);
 
         const instance1 = new fn();
@@ -193,7 +193,7 @@ describe('moduleMocker', () => {
       });
 
       it('supports clearing mock calls', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         expect(fn.mock.calls).toEqual([]);
 
         fn(1, 2, 3);
@@ -211,7 +211,7 @@ describe('moduleMocker', () => {
       });
 
       it('supports clearing mocks', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         expect(fn.mock.calls).toEqual([]);
 
         fn(1, 2, 3);
@@ -225,7 +225,7 @@ describe('moduleMocker', () => {
       });
 
       it('supports resetting mock return values', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         fn.mockReturnValue('abcd');
 
         const before = fn();
@@ -238,7 +238,7 @@ describe('moduleMocker', () => {
       });
 
       it('supports resetting single use mock return values', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         fn.mockReturnValueOnce('abcd');
 
         fn.mockReset();
@@ -248,7 +248,7 @@ describe('moduleMocker', () => {
       });
 
       it('supports resetting mock implementations', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         fn.mockImplementation(() => 'abcd');
 
         const before = fn();
@@ -261,7 +261,7 @@ describe('moduleMocker', () => {
       });
 
       it('supports resetting single use mock implementations', () => {
-        const fn = moduleMocker.getMockFunction();
+        const fn = moduleMocker.fn();
         fn.mockImplementationOnce(() => 'abcd');
 
         fn.mockReset();
@@ -271,12 +271,12 @@ describe('moduleMocker', () => {
       });
 
       it('supports resetting all mocks', () => {
-        const fn1 = moduleMocker.getMockFunction();
+        const fn1 = moduleMocker.fn();
         fn1.mockImplementation(() => 'abcd');
         fn1(1, 2, 3);
         expect(fn1.mock.calls).toEqual([[1, 2, 3]]);
 
-        const fn2 = moduleMocker.getMockFunction();
+        const fn2 = moduleMocker.fn();
         fn2.mockReturnValue('abcd');
         fn2('a', 'b', 'c');
         expect(fn2.mock.calls).toEqual([['a', 'b', 'c']]);
@@ -292,7 +292,7 @@ describe('moduleMocker', () => {
 
   describe('getMockImplementation', () => {
     it('should mock calls to a mock function', () => {
-      const mockFn = moduleMocker.getMockFunction();
+      const mockFn = moduleMocker.fn();
 
       mockFn.mockImplementation(() => {
         return 'Foo';
@@ -305,7 +305,7 @@ describe('moduleMocker', () => {
 
   describe('mockImplementationOnce', () => {
     it('should mock single call to a mock function', () => {
-      const mockFn = moduleMocker.getMockFunction();
+      const mockFn = moduleMocker.fn();
 
       mockFn.mockImplementationOnce(() => {
         return 'Foo';
@@ -319,7 +319,7 @@ describe('moduleMocker', () => {
     });
 
     it('should fallback to default mock function when no specific mock is available', () => {
-      const mockFn = moduleMocker.getMockFunction();
+      const mockFn = moduleMocker.fn();
 
       mockFn.mockImplementationOnce(() => {
         return 'Foo';
@@ -337,7 +337,7 @@ describe('moduleMocker', () => {
   });
 
   it('should recognize a mocked function', () => {
-    const mockFn = moduleMocker.getMockFunction();
+    const mockFn = moduleMocker.fn();
 
     expect(moduleMocker.isMockFunction(() => {})).toBe(false);
     expect(moduleMocker.isMockFunction(mockFn)).toBe(true);
