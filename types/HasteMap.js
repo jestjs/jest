@@ -18,6 +18,7 @@ export type ModuleMap = _ModuleMap;
 
 export type HasteContext = {|
   hasteFS: HasteFS,
+  moduleMap: ModuleMap,
   resolver: HasteResolver,
 |};
 
@@ -32,10 +33,16 @@ export type InternalHasteMap = {|
   map: ModuleMapData,
   mocks: MockData,
 |};
+
 export type HasteMap = {|
   hasteFS: HasteFS,
   moduleMap: ModuleMap,
-  __hasteMapForTest: ?InternalHasteMap,
+  __hasteMapForTest?: ?InternalHasteMap,
+|};
+
+export type RawModuleMap = {|
+  map: ModuleMapData,
+  mocks: MockData,
 |};
 
 export type FileMetaData = [

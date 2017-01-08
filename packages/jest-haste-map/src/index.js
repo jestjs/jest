@@ -701,8 +701,10 @@ class HasteMap extends EventEmitter {
   }
 
   static H: HType;
+  static ModuleMap: Class<HasteModuleMap>;
 }
 
 HasteMap.H = H;
+HasteMap.ModuleMap = HasteModuleMap;
 
 module.exports = HasteMap;
