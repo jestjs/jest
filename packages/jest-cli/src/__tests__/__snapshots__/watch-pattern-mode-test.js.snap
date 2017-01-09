@@ -1,0 +1,191 @@
+exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p
+[MOCK - cursorSavePosition]
+
+Pattern matches 11 files...
+
+ › path/to/file1-test.js
+
+ › path/to/file2-test.js
+
+ › path/to/file3-test.js
+
+ › path/to/file4-test.js
+
+ › path/to/file5-test.js
+
+ › path/to/file6-test.js
+
+ › path/to/file7-test.js
+
+ › path/to/file8-test.js
+
+ › path/to/file9-test.js
+
+ › path/to/file10-test.js
+
+› + 1 more file
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.
+[MOCK - cursorSavePosition]
+
+Pattern matches 11 files...
+
+ › path/to/file1-test.js
+
+ › path/to/file2-test.js
+
+ › path/to/file3-test.js
+
+ › path/to/file4-test.js
+
+ › path/to/file5-test.js
+
+ › path/to/file6-test.js
+
+ › path/to/file7-test.js
+
+ › path/to/file8-test.js
+
+ › path/to/file9-test.js
+
+ › path/to/file10-test.js
+
+› + 1 more file
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.*
+[MOCK - cursorSavePosition]
+
+Pattern matches 11 files...
+
+ › path/to/file1-test.js
+
+ › path/to/file2-test.js
+
+ › path/to/file3-test.js
+
+ › path/to/file4-test.js
+
+ › path/to/file5-test.js
+
+ › path/to/file6-test.js
+
+ › path/to/file7-test.js
+
+ › path/to/file8-test.js
+
+ › path/to/file9-test.js
+
+ › path/to/file10-test.js
+
+› + 1 more file
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.*1
+[MOCK - cursorSavePosition]
+
+Pattern matches 3 files...
+
+ › path/to/file1-test.js
+
+ › path/to/file10-test.js
+
+ › path/to/file11-test.js
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.*10
+[MOCK - cursorSavePosition]
+
+Pattern matches 1 file...
+
+ › path/to/file10-test.js
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.*1
+[MOCK - cursorSavePosition]
+
+Pattern matches 3 files...
+
+ › path/to/file1-test.js
+
+ › path/to/file10-test.js
+
+ › path/to/file11-test.js
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.*
+[MOCK - cursorSavePosition]
+
+Pattern matches 11 files...
+
+ › path/to/file1-test.js
+
+ › path/to/file2-test.js
+
+ › path/to/file3-test.js
+
+ › path/to/file4-test.js
+
+ › path/to/file5-test.js
+
+ › path/to/file6-test.js
+
+ › path/to/file7-test.js
+
+ › path/to/file8-test.js
+
+ › path/to/file9-test.js
+
+ › path/to/file10-test.js
+
+› + 1 more file
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
+"[999D[K
+[MOCK - eraseDown]
+ pattern › p.*3
+[MOCK - cursorSavePosition]
+
+Pattern matches 1 file...
+
+ › path/to/file3-test.js
+[MOCK - eraseDown]
+[MOCK - cursorRestorePosition]"
+`;

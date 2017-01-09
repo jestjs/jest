@@ -50,8 +50,14 @@ const watch = (
   });
 
   const writeCurrentPattern = () => {
-    const {paths} = new SearchSource(hasteContext, config)
-      .findMatchingTests(currentPattern);
+    let regex;
+
+    try {
+      regex = new RegExp(currentPattern, 'i');
+    } catch (e) {}
+
+    const paths = regex ? new SearchSource(hasteContext, config)
+      .findMatchingTests(currentPattern).paths : [];
 
     clearLine(pipe);
     printTypeahead(config, pipe, currentPattern, paths);
