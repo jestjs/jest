@@ -31,14 +31,14 @@ const toSentence = (array: Array<string>) : string => {
 };
 
 // ("/href/thing", "name") to "<a href="/href/thing">name</a>"
-const createLink = (href: string, text: string): string => 
+const createLink = (href: string, text: string): string =>
   `<a href='${href}'>${text}</a>`;
 
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
 
 // New JS files should have the FB copyright header + flow
 const facebookLicenseHeaderComponents = [
-  'Copyright \(c\) .*, Facebook, Inc. All rights reserved.',
+  'Copyright \\(c\\) .*, Facebook, Inc. All rights reserved.',
   'This source code is licensed under the BSD-style license found in the',
   'LICENSE file in the root directory of this source tree. An additional grant',
   'of patent rights can be found in the PATENTS file in the same directory.',
@@ -62,7 +62,7 @@ if (noFBCopyrightFiles.length > 0) {
 // Ensure the use of Flow and 'use strict';
 const noFlowFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return includes(content, '@flow') && includes(content, 'use strict');
+  return !(includes(content, '@flow') && includes(content, 'use strict'));
 });
 
 if (noFlowFiles.length > 0) {
