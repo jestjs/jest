@@ -346,20 +346,38 @@ describe('moduleMocker', () => {
   describe('spyOn', () => {
     it('should work', () => {
       let isOriginalCalled = false;
-      const obj = {method: () => {
+      let originalCallThis;
+      let originalCallArguments;
+      const obj = {method() {
         isOriginalCalled = true;
+        originalCallThis = this;
+        originalCallArguments = arguments;
       }};
 
       const spy = moduleMocker.spyOn(obj, 'method');
 
-      obj.method();
-      expect(isOriginalCalled).toBe(false);
+      const thisArg = {this: true};
+      const firstArg = {first: true};
+      const secondArg = {second: true};
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).toHaveBeenCalled();
 
+      isOriginalCalled = false;
+      originalCallThis = null;
+      originalCallArguments = null;
       spy.mockReset();
       spy.mockRestore();
-      obj.method();
+      obj.method.call(thisArg, firstArg, secondArg);
       expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
     });
 
