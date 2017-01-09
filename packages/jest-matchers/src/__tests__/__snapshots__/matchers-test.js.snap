@@ -1795,8 +1795,7 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,4 +1,4 @@
-[39m[32m-<arrayContaining(Array [[39m
+[32m-<arrayContaining(Array [[39m
 [31m+Array [[39m
 [2m   1,[22m
 [32m-  2,[39m
@@ -1845,8 +1844,7 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,3 +1,4 @@
-[39m[32m-<objectContaining(Object {[39m
+[32m-<objectContaining(Object {[39m
 [32m-  \"a\": 2,[39m
 [32m-})>[39m
 [31m+Object {[39m

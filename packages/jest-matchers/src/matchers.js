@@ -118,12 +118,12 @@ const matchers: MatchersObject = {
       ? () => matcherHint('.not.toBeCloseTo', 'received', 'expected, precision') + '\n\n' +
         `Expected value not to be close to (with ${printExpected(precision)}-digit precision):\n` +
         `  ${printExpected(expected)}\n` +
-        `Received: \n` +
+        `Received:\n` +
         `  ${printReceived(actual)}`
       : () => matcherHint('.toBeCloseTo', 'received', 'expected, precision') + '\n\n' +
         `Expected value to be close to (with ${printExpected(precision)}-digit precision):\n` +
         `  ${printExpected(expected)}\n` +
-        `Received: \n` +
+        `Received:\n` +
         `  ${printReceived(actual)}`;
 
     return {message, pass};
