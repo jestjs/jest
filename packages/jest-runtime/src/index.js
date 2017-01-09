@@ -693,6 +693,7 @@ class Runtime {
       return runtime;
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
+    const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const runtime = {
       addMatchers:
@@ -729,6 +730,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
+      spyOn,
 
       unmock,
 
