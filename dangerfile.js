@@ -11,8 +11,10 @@
 'use strict';
 
 const {danger, fail, warn} = require('danger');
-const {includes} = require('lodash.includes');
 const fs = require('fs');
+// As danger's deps are inside a sub-folder, need to resolve via relative paths
+const includes = require('./danger/node_modules/lodash.includes/index');
+
 
 // Takes a list of file paths, and converts it into clickable links
 const linkableFiles = (paths: Array<string>): string => {
