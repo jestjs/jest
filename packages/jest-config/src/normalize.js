@@ -4,16 +4,17 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
+ * @flow
  */
 
 'use strict';
 
-const crypto = require('crypto');
-import type {Config, DefaultConfig} from 'types/Config';
+import type {DefaultConfig} from 'types/Config';
+
 const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
 const chalk = require('chalk');
-const DEFAULT_CONFIG = require('./defaults');
+const crypto = require('crypto');
+const DEFAULT_CONFIG: DefaultConfig = require('./defaults');
 const path = require('path');
 const Resolver = require('jest-resolve');
 const utils = require('jest-util');
@@ -22,6 +23,7 @@ const DEPRECATED_CONFIG = require('./deprecated');
 const validate = require('jest-validate');
 
 const {
+  _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
   resolve,
@@ -40,8 +42,8 @@ const throwRuntimeConfigError = message => {
   throw new Error(chalk.red(message + DOCUMENTATION_NOTE));
 };
 
-function setupPreset(config: Config) {
-  const presetPath = _replaceRootDirTags(config.rootDir, config.preset);
+const setupPreset = (config: Object) => {
+  const presetPath = _replaceRootDirInPath(config.rootDir, config.preset);
   const presetModule = Resolver.findNodeModule(
     presetPath.endsWith(JSON_EXTENSION)
       ? presetPath
@@ -51,6 +53,7 @@ function setupPreset(config: Config) {
     },
   );
   if (presetModule) {
+    // $FlowFixMe
     const preset = require(presetModule);
     if (config.setupFiles) {
       config.setupFiles = preset.setupFiles.concat(config.setupFiles);
@@ -69,17 +72,16 @@ function setupPreset(config: Config) {
     // Don't show deprecation warnings if the setting comes from the preset.
     if (preset.preprocessorIgnorePatterns) {
       preset.transformIgnorePatterns = preset.preprocessorIgnorePatterns;
-      delete preset.preprocessorIgnorePatterns;
     }
-    config = Object.assign({}, preset, config);
+    return Object.assign({}, preset, config);
   } else {
     throw new Error(
       `Jest: Preset '${presetPath}' not found.`,
     );
   }
-}
+};
 
-function setupBabelJest(config: Config) {
+const setupBabelJest = (config: Object) => {
   let babelJest;
   const basedir = config.rootDir;
 
@@ -110,64 +112,9 @@ function setupBabelJest(config: Config) {
   }
 
   return babelJest;
-}
+};
 
-function normalizeCollectCoverageOnlyFrom(config: Config, key: string) {
-  return Object.keys(config[key]).reduce((normObj, filePath) => {
-    filePath = path.resolve(
-      config.rootDir,
-      _replaceRootDirTags(config.rootDir, filePath),
-    );
-    normObj[filePath] = true;
-    return normObj;
-  }, Object.create(null));
-}
-
-function normalizeCollectCoverageFrom(config: Config, key: string) {
-  let value;
-  if (!config[key]) {
-    value = [];
-  }
-
-  if (!Array.isArray(config[key])) {
-    try {
-      value = JSON.parse(config[key]);
-    } catch (e) {}
-
-    Array.isArray(value) || (value = [config[key]]);
-  } else {
-    value = config[key];
-  }
-
-  return value;
-}
-
-function normalizeUnmockedModulePathPatterns(config: Config, key: string) {
-  // _replaceRootDirTags is specifically well-suited for substituting
-  // <rootDir> in paths (it deals with properly interpreting relative path
-  // separators, etc).
-  //
-  // For patterns, direct global substitution is far more ideal, so we
-  // special case substitutions for patterns here.
-  return config[key].map(pattern =>
-    utils.replacePathSepForRegex(
-      pattern.replace(/<rootDir>/g, config.rootDir),
-    )
-  );
-}
-
-function fillNewConfigWithDefaults(newConfig, defaults: DefaultConfig) {
-  // If any config entries weren't specified but have default values, apply the
-  // default values
-  Object.keys(defaults).reduce((newConfig, key) => {
-    if (!(key in newConfig)) {
-      newConfig[key] = defaults[key];
-    }
-    return newConfig;
-  }, newConfig);
-}
-
-function normalize(config: Config, argv: Object) {
+function normalize(config: Object, argv: Object) {
   validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
 
   const newConfig = {};
@@ -184,7 +131,7 @@ function normalize(config: Config, argv: Object) {
   config.rootDir = path.normalize(config.rootDir);
 
   if (config.preset) {
-    setupPreset(config);
+    config = setupPreset(config);
   }
 
   if (config.scriptPreprocessor && config.transform) {
@@ -211,7 +158,7 @@ function normalize(config: Config, argv: Object) {
   if (config.preprocessorIgnorePatterns) {
     config.transformIgnorePatterns = config.preprocessorIgnorePatterns;
   }
-  // delete deprecated options
+
   delete config.scriptPreprocessor;
   delete config.preprocessorIgnorePatterns;
 
@@ -242,7 +189,8 @@ function normalize(config: Config, argv: Object) {
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
-    config.testRunner = resolve(config, 'testRunner', config.testRunner);
+    config.testRunner =
+      resolve(config.rootDir, 'testRunner', config.testRunner);
   }
 
   if (argv.env) {
@@ -257,12 +205,68 @@ function normalize(config: Config, argv: Object) {
 
   let polyfillPath;
   if (babelJest) {
-    polyfillPath = Resolver.findNodeModule('babel-polyfill', {
-      basedir: config.rootDir,
-    });
+    polyfillPath =
+      Resolver.findNodeModule('babel-polyfill', {
+        basedir: config.rootDir,
+      });
   }
 
-  Object.keys(config).reduce((newConfig, key: string) => {
+  const normalizeCollectCoverageOnlyFrom = (config: Object, key: string) => {
+    return Object.keys(config[key]).reduce((normObj, filePath) => {
+      filePath = path.resolve(
+        config.rootDir,
+        _replaceRootDirInPath(config.rootDir, filePath),
+      );
+      normObj[filePath] = true;
+      return normObj;
+    }, Object.create(null));
+  };
+
+  const normalizeCollectCoverageFrom = (config: Object, key: string) => {
+    let value;
+    if (!config[key]) {
+      value = [];
+    }
+
+    if (!Array.isArray(config[key])) {
+      try {
+        value = JSON.parse(config[key]);
+      } catch (e) {}
+
+      Array.isArray(value) || (value = [config[key]]);
+    } else {
+      value = config[key];
+    }
+
+    return value;
+  };
+
+  const normalizeUnmockedModulePathPatterns = (config: Object, key: string) => {
+    // _replaceRootDirTags is specifically well-suited for substituting
+    // <rootDir> in paths (it deals with properly interpreting relative path
+    // separators, etc).
+    //
+    // For patterns, direct global substitution is far more ideal, so we
+    // special case substitutions for patterns here.
+    return config[key].map(pattern =>
+      utils.replacePathSepForRegex(
+        pattern.replace(/<rootDir>/g, config.rootDir),
+      )
+    );
+  };
+
+  const fillNewConfigWithDefaults = (newConfig, defaults: DefaultConfig) => {
+    // If any config entries weren't specified but have default values,
+    // apply the default values
+    Object.keys(defaults).reduce((newConfig, key) => {
+      if (!(key in newConfig)) {
+        newConfig[key] = defaults[key];
+      }
+      return newConfig;
+    }, newConfig);
+  };
+
+  Object.keys(config).reduce((newConfig, key) => {
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
@@ -275,7 +279,7 @@ function normalize(config: Config, argv: Object) {
       case 'testPathDirs':
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
-          _replaceRootDirTags(config.rootDir, filePath),
+          _replaceRootDirInPath(config.rootDir, filePath),
         ));
         break;
       case 'collectCoverageFrom':
@@ -285,7 +289,7 @@ function normalize(config: Config, argv: Object) {
       case 'coverageDirectory':
         value = path.resolve(
           config.rootDir,
-          _replaceRootDirTags(config.rootDir, config[key]),
+          _replaceRootDirInPath(config.rootDir, config[key]),
         );
         break;
       case 'setupTestFrameworkScriptFile':
@@ -361,7 +365,7 @@ function normalize(config: Config, argv: Object) {
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
-    newConfig.coverageReporters = newConfig.coverageReporters
+    newConfig.coverageReporters = (newConfig.coverageReporters || [])
       .filter(reporter => reporter !== 'text');
   }
 

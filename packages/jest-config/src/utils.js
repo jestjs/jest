@@ -5,18 +5,19 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ * @flow
  */
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path} from 'types/Config';
 
 const Resolver = require('jest-resolve');
 const path = require('path');
 
 const resolve = (rootDir: string, key: string, filePath: Path) => {
   const module = Resolver.findNodeModule(
-    _replaceRootDirTags(rootDir, filePath),
+    _replaceRootDirInPath(rootDir, filePath),
     {
       basedir: rootDir,
     },
@@ -31,7 +32,18 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
   return module;
 };
 
-const _replaceRootDirTags = (rootDir: string, config: Config) => {
+const _replaceRootDirInPath = (rootDir: string, filePath: Path): string => {
+  if (!/^<rootDir>/.test(filePath)) {
+    return filePath;
+  }
+
+  return path.resolve(
+    rootDir,
+    path.normalize('./' + filePath.substr('<rootDir>'.length)),
+  );
+};
+
+const _replaceRootDirTags = (rootDir: string, config: any) => {
   switch (typeof config) {
     case 'object':
       if (config instanceof RegExp) {
@@ -45,23 +57,15 @@ const _replaceRootDirTags = (rootDir: string, config: Config) => {
       if (config !== null) {
         const newConfig = {};
         for (const configKey in config) {
-          newConfig[configKey] =
-            configKey === 'rootDir'
-              ? config[configKey]
-              : _replaceRootDirTags(rootDir, config[configKey]);
+          newConfig[configKey] = configKey === 'rootDir'
+            ? config[configKey]
+            : _replaceRootDirTags(rootDir, config[configKey]);
         }
         return newConfig;
       }
       break;
     case 'string':
-      if (!/^<rootDir>/.test(config)) {
-        return config;
-      }
-
-      return path.resolve(
-        rootDir,
-        path.normalize('./' + config.substr('<rootDir>'.length)),
-      );
+      return _replaceRootDirInPath(rootDir, config);
   }
   return config;
 };
@@ -74,7 +78,7 @@ const _replaceRootDirTags = (rootDir: string, config: Config) => {
  * 1. looks for <name> relative to project.
  * 1. looks for <name> relative to Jest.
  */
-const getTestEnvironment = (config: Config) => {
+const getTestEnvironment = (config: Object) => {
   const env = config.testEnvironment;
   let module = Resolver.findNodeModule(`jest-environment-${env}`, {
     basedir: config.rootDir,
@@ -103,6 +107,7 @@ const getTestEnvironment = (config: Config) => {
 };
 
 module.exports = {
+  _replaceRootDirInPath,
   _replaceRootDirTags,
   getTestEnvironment,
   resolve,

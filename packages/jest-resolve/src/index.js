@@ -32,8 +32,8 @@ type ResolverConfig = {|
 type FindNodeModuleConfig = {|
   basedir: Path,
   browser?: boolean,
-  extensions: Array<string>,
-  moduleDirectory: Array<string>,
+  extensions?: Array<string>,
+  moduleDirectory?: Array<string>,
   paths?: Array<Path>,
 |};
 

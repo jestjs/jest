@@ -574,3 +574,50 @@ describe('Upgrade help', () => {
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   });
 });
+
+describe('preset', () => {
+  jest.mock(
+    '/node_modules/react-native/jest-preset.json',
+    () => ({
+      moduleNameMapper: {b: 'b'},
+      modulePathIgnorePatterns: ['b'],
+      setupFiles: ['b'],
+    }),
+    {virtual: true}
+  );
+
+  test('throws when preset not found', () => {
+    expect(() => {
+      normalize({
+        preset: 'doesnt-exist',
+        rootDir: '/root/path/foo',
+      });
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with "react-native"', () => {
+    expect(() => {
+      normalize({
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      });
+    }).not.toThrow();
+  });
+
+  test('merges with config', () => {
+    const config = normalize({
+      moduleNameMapper: {a: 'a'},
+      modulePathIgnorePatterns: ['a'],
+      preset: 'react-native',
+      rootDir: '/root/path/foo',
+      setupFiles: ['a'],
+    });
+    expect(config).toEqual(expect.objectContaining({
+      moduleNameMapper: expect.arrayContaining([['a', 'a'], ['b', 'b']]),
+      modulePathIgnorePatterns: expect.arrayContaining(['a', 'b']),
+      setupFiles: expect.arrayContaining(
+        ['/node_modules/a', '/node_modules/b']
+      ),
+    }));
+  });
+});

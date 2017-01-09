@@ -14,3 +14,5 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
   https://facebook.github.io/jest/docs/configuration.html
 [39m"
 `;
+
+exports[`preset throws when preset not found 1`] = `"Cannot find module \'/node_modules/doesnt-exist/jest-preset.json\' from \'normalize.js\'"`;
