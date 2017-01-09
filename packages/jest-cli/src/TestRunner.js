@@ -371,10 +371,12 @@ class TestRunner {
         .catch(error => onError(error, path));
     }));
 
+    const cleanup = () => workerFarm.end(farm);
+
     return Promise.race([
       runAllTests,
       onInterrupt,
-    ]).then(() => workerFarm.end(farm));
+    ]).then(cleanup, cleanup);
   }
 
   _setupReporters() {
