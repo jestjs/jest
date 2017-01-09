@@ -30,13 +30,6 @@ jest.doMock('../runJest', () => (...args) => {
 
 const watch = require('../watch');
 
-const USAGE_MESSAGE = `
-Watch Usage
- › Press o to only run tests related to changed files.
- › Press p to filter by a filename regex pattern.
- › Press q to quit watch mode.
- › Press Enter to trigger a test run.`;
-
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
@@ -60,7 +53,7 @@ describe('Watch mode flows', () => {
     watch(config, pipe, argv, hasteMap, hasteContext, stdin);
     expect(runJestMock).toBeCalledWith(hasteContext, config, argv, pipe,
       new TestWatcher({isWatchMode: true}), jasmine.any(Function));
-    expect(pipe.write).toBeCalledWith(USAGE_MESSAGE);
+    expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
 
   it('Pressing "o" runs test in "only changed files" mode', () => {
