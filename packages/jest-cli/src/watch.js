@@ -195,7 +195,7 @@ const usage = (
     chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
   ];
   /* eslint-enable max-len */
-  return messages.filter(message => !!message).join(delimiter);
+  return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
 module.exports = watch;
