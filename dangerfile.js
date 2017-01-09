@@ -11,6 +11,7 @@
 'use strict';
 
 const {danger, fail, warn} = require('danger');
+const {includes} = require('lodash.includes');
 const fs = require('fs');
 
 // Takes a list of file paths, and converts it into clickable links
@@ -61,7 +62,7 @@ if (noFBCopyrightFiles.length > 0) {
 // Ensure the use of Flow and 'use strict';
 const noFlowFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return content.includes('@flow') && content.includes('use strict');
+  return includes(content, '@flow') && includes(content, 'use strict');
 });
 
 if (noFlowFiles.length > 0) {
@@ -76,8 +77,8 @@ if (noFlowFiles.length > 0) {
 
 // Warns if there are changes to package.json without changes to yarn.lock.
 
-const packageChanged = danger.git.modified_files.includes('package.json');
-const lockfileChanged = danger.git.modified_files.includes('yarn.lock');
+const packageChanged = includes(danger.git.modified_files, 'package.json');
+const lockfileChanged = includes(danger.git.modified_files, 'yarn.lock');
 if (packageChanged && !lockfileChanged) {
   const message = 'Changes were made to package.json, but not to yarn.lock';
   const idea = 'Perhaps you need to run `yarn install`?';
