@@ -3,17 +3,30 @@ general:
     ignore:
       - gh-pages # list of branches to ignore
 machine:
+  environment:
+    YARN_VERSION: 0.18.1
+    PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
     version: 6.2.0
 dependencies:
-  override:
-    - cd website && npm install
+  pre:
+    - |
+      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
+        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+      fi
   cache_directories:
+    - ~/.yarn
+    - ~/.cache/yarn
     - "website/node_modules"
-
+  override:
+    - yarn install
+    - cd website && yarn install
 test:
   override:
-    - cd website && npm run test
+    - cd website && yarn run test
+    - yarn run test-ci
+    - (cd danger && yarn install)
+    - yarn run danger
 
 deployment:
   website:
