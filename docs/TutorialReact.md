@@ -265,7 +265,7 @@ module.exports = {
 
 Don't forget to install the `babel-core` and `babel-preset-jest` packages for this example to work.
 
-To make this work with Jest you need to update your Jest configuration with this: `"transform": {"^.+\\.js$": "path/to/custom-transformer.js"}`.
+To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 
 If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
 
