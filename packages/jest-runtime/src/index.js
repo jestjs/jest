@@ -213,7 +213,7 @@ class Runtime {
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
-      retainAllFiles: config.haste.retainAllFiles,
+      retainAllFiles: config.haste.retainAllFiles || false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
       watch: options && options.watch,
