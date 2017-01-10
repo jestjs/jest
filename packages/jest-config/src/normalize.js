@@ -401,7 +401,6 @@ function normalize(config, argv) {
       case 'browser':
       case 'cache':
       case 'collectCoverage':
-      case 'colors':
       case 'coverageCollector':
       case 'coverageReporters':
       case 'coverageThreshold':
