@@ -80,18 +80,6 @@ let readFileSync;
 let workerFarmMock;
 let writeFileSync;
 
-describe('getMockName', () => {
-  it('extracts mock name from file path', () => {
-    HasteMap = require('../');
-    const {getMockName} = HasteMap;
-
-    expect(getMockName('a/__b__/c.js', /__b__/)).toBe('c');
-    expect(getMockName('a/__b__/index.js', /__b__/)).toBe('index');
-    expect(getMockName('a/__b__/c/d.js', /__b__/)).toBe('c/d');
-    expect(getMockName('a/__b__/c/d/index.js', /__b__/)).toBe('c/d');
-  });
-});
-
 describe('HasteMap', () => {
   skipOnWindows.suite();
 

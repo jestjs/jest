@@ -23,6 +23,7 @@ const {EventEmitter} = require('events');
 const H = require('./constants');
 const HasteFS = require('./HasteFS');
 const HasteModuleMap = require('./ModuleMap');
+const getMockName = require('./getMockName');
 
 const crypto = require('crypto');
 const execSync = require('child_process').execSync;
@@ -94,14 +95,6 @@ const canUseWatchman = ((): boolean => {
 
 const escapePathSeparator =
   string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
-
-const getMockName = (filePath, mocksPattern) => {
-  const modulePath = filePath.split(mocksPattern)[1];
-  const extractMockName = new RegExp(
-    `^\\${path.sep}?(.*?)(\\${path.sep}index)?\\${path.extname(modulePath)}$`
-  );
-  return extractMockName.exec(modulePath)[1];
-};
 
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
@@ -708,11 +701,8 @@ class HasteMap extends EventEmitter {
   }
 
   static H: HType;
-
-  static getMockName;
 }
 
 HasteMap.H = H;
-HasteMap.getMockName = getMockName;
 
 module.exports = HasteMap;
