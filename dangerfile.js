@@ -15,7 +15,6 @@ const fs = require('fs');
 // As danger's deps are inside a sub-folder, need to resolve via relative paths
 const includes = require('./danger/node_modules/lodash.includes/index');
 
-
 // Takes a list of file paths, and converts it into clickable links
 const linkableFiles = (paths: Array<string>): string => {
   const repoURL = danger.github.pr.head.repo.html_url;
@@ -36,7 +35,22 @@ const toSentence = (array: Array<string>) : string => {
 const createLink = (href: string, text: string): string =>
   `<a href='${href}'>${text}</a>`;
 
+// Raise about missing code inside files
+const raiseIssueAboutPaths = (
+  type: Function, 
+  paths: string[], 
+  codeToInclude: string) => {
+    
+  if (paths.length > 0) {
+    const files = linkableFiles(paths);
+    const strict = '<code>' + codeToInclude + '</code>';
+    type(`Please ensure that ${strict} is enabled on: ${files}`);
+  }
+};
+
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
+const isNotInTestFiles = path => !includes(path, '__tests__') 
+                                 || !includes(path, '__mocks__');
 
 // New JS files should have the FB copyright header + flow
 const facebookLicenseHeaderComponents = [
@@ -61,18 +75,25 @@ if (noFBCopyrightFiles.length > 0) {
   fail(`New JS files do not have the Facebook copyright header: ${files}`);
 }
 
-// Ensure the use of Flow and 'use strict';
-const noFlowFiles = newJsFiles.filter(filepath => {
+// Ensure the majority of all files use Flow
+// Does not run for test files, and also offers a warning not an error.
+const noFlowFiles = newJsFiles
+  .filter(isNotInTestFiles)
+  .filter(filepath => {
+    const content = fs.readFileSync(filepath).toString();
+    return !includes(content, '@flow');
+  });
+
+raiseIssueAboutPaths(warn, noFlowFiles, '@flow');
+
+
+// Ensure the use of 'use strict'; on all files
+const noStrictFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return !(includes(content, '@flow') && includes(content, 'use strict'));
+  return !includes(content, 'use strict');
 });
 
-if (noFlowFiles.length > 0) {
-  const files = linkableFiles(noFlowFiles);
-  const flow = '<code>@flow</code>';
-  const strict = "<code>'use strict'</code>";
-  warn(`Please ensure that ${flow} and ${strict} are enabled on: ${files}`);
-}
+raiseIssueAboutPaths(fail, noStrictFiles, "'use strict'");
 
 // No merge from master commmits
 // TODO: blocked by https://github.com/danger/danger-js/issues/81
