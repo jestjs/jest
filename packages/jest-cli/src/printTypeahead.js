@@ -30,7 +30,6 @@ const printTypeahead = (
   const total = allResults.length;
   const results = allResults.slice(0, max);
 
-  pipe.write(ansiEscapes.eraseDown);
   pipe.write(`${chalk.dim(' pattern \u203A')} ${pattern}`);
   pipe.write(ansiEscapes.cursorSavePosition);
 
@@ -53,7 +52,6 @@ const printTypeahead = (
     }
   }
 
-  pipe.write(ansiEscapes.eraseDown);
   pipe.write(ansiEscapes.cursorRestorePosition);
 };
 

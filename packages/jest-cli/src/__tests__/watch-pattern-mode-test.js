@@ -16,9 +16,11 @@ const {KEYS} = require('../constants');
 const runJestMock = jest.fn();
 
 jest.mock('ansi-escapes', () => ({
+  clearScreen: '[MOCK - clearScreen]',
+  cursorHide: '[MOCK - cursorHide]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
-  eraseDown: '[MOCK - eraseDown]',
+  cursorShow: '[MOCK - cursorShow]',
 }));
 
 jest.mock('../SearchSource', () => class {

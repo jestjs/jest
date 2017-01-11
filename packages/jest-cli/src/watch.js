@@ -36,7 +36,6 @@ const watch = (
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
     pattern: argv._,
   });
-
   let currentPattern = '';
   let hasSnapshotFailure = false;
   let isEnteringPattern = false;
@@ -63,8 +62,13 @@ const watch = (
     const paths = regex ?
       searchSource.findMatchingTests(currentPattern).paths : [];
 
-    clearLine(pipe);
+    pipe.write(ansiEscapes.cursorHide);
+    pipe.write(ansiEscapes.clearScreen);
+    pipe.write(usage(argv, hasSnapshotFailure));
+    pipe.write('\n');
     printTypeahead(config, pipe, currentPattern, paths);
+    pipe.write(ansiEscapes.cursorShow);
+
   };
 
   const startRun = (overrideConfig: Object = {}) => {
@@ -168,7 +172,6 @@ const watch = (
       case KEYS.P:
         isEnteringPattern = true;
         currentPattern = '';
-        pipe.write('\n');
         writeCurrentPattern();
         break;
       case KEYS.QUESTION_MARK:

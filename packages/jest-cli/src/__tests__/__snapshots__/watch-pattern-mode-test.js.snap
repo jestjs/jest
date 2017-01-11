@@ -1,6 +1,15 @@
 exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p
 [MOCK - cursorSavePosition]
 
@@ -28,13 +37,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.
 [MOCK - cursorSavePosition]
 
@@ -62,13 +80,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.*
 [MOCK - cursorSavePosition]
 
@@ -96,13 +123,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.*1
 [MOCK - cursorSavePosition]
 
@@ -114,13 +150,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
   › path/to/file10-test.js
 
   › path/to/file11-test.js
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.*10
 [MOCK - cursorSavePosition]
 
@@ -128,13 +173,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
  Pattern matches 1 file...
 
   › path/to/file10-test.js
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.*1
 [MOCK - cursorSavePosition]
 
@@ -146,13 +200,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
   › path/to/file10-test.js
 
   › path/to/file11-test.js
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.*
 [MOCK - cursorSavePosition]
 
@@ -180,13 +243,22 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
-"[999D[K
-[MOCK - eraseDown]
+"[MOCK - cursorHide]
+[MOCK - clearScreen]
+
+Watch Usage
+ › Press o to only run tests related to changed files.
+ › Press p to filter by a filename regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+
+
+
  pattern › p.*3
 [MOCK - cursorSavePosition]
 
@@ -194,6 +266,6 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
  Pattern matches 1 file...
 
   › path/to/file3-test.js
-[MOCK - eraseDown]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
+[MOCK - cursorShow]"
 `;
