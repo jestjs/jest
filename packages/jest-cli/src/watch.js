@@ -43,11 +43,13 @@ const watch = (
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
+  let searchSource = new SearchSource(hasteContext, config);
 
   hasteMap.on('change', ({hasteFS, moduleMap}) => {
     hasteContext = createHasteContext(config, {hasteFS, moduleMap});
     currentPattern = '';
     isEnteringPattern = false;
+    searchSource = new SearchSource(hasteContext, config);
     startRun();
   });
 
@@ -58,10 +60,8 @@ const watch = (
       regex = new RegExp(currentPattern, 'i');
     } catch (e) {}
 
-    const paths = regex
-      ? new SearchSource(hasteContext, config)
-          .findMatchingTests(currentPattern).paths
-      : [];
+    const paths = regex ?
+      searchSource.findMatchingTests(currentPattern).paths : [];
 
     clearLine(pipe);
     printTypeahead(config, pipe, currentPattern, paths);

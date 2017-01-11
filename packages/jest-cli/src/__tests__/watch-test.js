@@ -44,7 +44,7 @@ describe('Watch mode flows', () => {
     hasteMap = {on: () => {}};
     argv = {};
     hasteContext = {};
-    config = {};
+    config = {testPathDirs: [], testPathIgnorePatterns: [], testRegex: ''};
     stdin = new MockStdin();
   });
 
@@ -98,7 +98,12 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.U);
 
-    expect(runJestMock.mock.calls[0][1]).toEqual({updateSnapshot: true});
+    expect(runJestMock.mock.calls[0][1]).toEqual({
+      testPathDirs: [],
+      testPathIgnorePatterns: [],
+      testRegex: '',
+      updateSnapshot: true,
+    });
   });
 });
 
