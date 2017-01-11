@@ -12,6 +12,7 @@ jest.mock('jest-resolve');
 
 jest.mock('path', () => require.requireActual('path').posix);
 
+const crypto = require('crypto');
 const path = require('path');
 const utils = require('jest-util');
 const normalize = require('../normalize');
@@ -61,9 +62,13 @@ it('errors when an invalid config option is passed in', () => {
 });
 
 it('picks a name based on the rootDir', () => {
+  const rootDir = '/root/path/foo';
+  const expected = crypto.createHash('md5')
+    .update('/root/path/foo')
+    .digest('hex');
   expect(normalize({
-    rootDir: '/root/path/foo',
-  }).name).toBe('-root-path-foo');
+    rootDir,
+  }).name).toBe(expected);
 });
 
 it('keeps custom names based on the rootDir', () => {
