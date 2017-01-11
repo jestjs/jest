@@ -70,9 +70,15 @@ const options = {
     description: 'List of paths coverage will be restricted to.',
     type: 'array',
   },
+  color: {
+    description:
+      'Forces test results output color highlighting (even if stdout is not ' +
+      'a TTY). Set to false if you would like to have no colors.',
+    type: 'boolean',
+  },
   colors: {
     description:
-      'Forces test results output highlighting (even if stdout is not a TTY)',
+      'Alias for `--color`.',
     type: 'boolean',
   },
   config: {
