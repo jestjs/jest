@@ -397,6 +397,42 @@ class TestRunner {
     if (this._config.notify) {
       this.addReporter(new NotifyReporter());
     }
+
+    // Add custom reporters
+    if (this._config.reporters) {
+      this._config.reporters.forEach(entry => {
+        let config;
+        let reporterPath;
+
+        if (Array.isArray(entry)) {
+          config = entry[1];
+          reporterPath = entry[0];
+        } else {
+          if (typeof entry !== 'string') {
+            throw new Error(`
+              Unexpected custom reporter configuration.
+              Expected to get either a path string or an array of [path, config]
+              got: ${entry}
+            `);
+          }
+          reporterPath = entry;
+        }
+
+        try {
+          // $FlowFixMe dynamic paths
+          const reporter = require(reporterPath);
+          this.addReporter(new reporter(config || {}));
+        } catch (error) {
+          console.error(`
+            Failed to setup reporter:
+              ${JSON.stringify(reporterPath)}
+            Config:
+              ${JSON.stringify(this._config.reporters)}
+          `);
+          throw error;
+        }
+      });
+    }
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {

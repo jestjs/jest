@@ -70,6 +70,7 @@ export type Config = DefaultConfig & {|
   moduleNameMapper: Array<string>,
   modulePaths: Array<string>,
   name: string,
+  reporters: Array<string | Array<string | Object>>,
   rootDir: Path,
   setupFiles: Array<Path>,
   setupTestFrameworkScriptFile: Path,
