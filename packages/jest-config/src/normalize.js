@@ -156,7 +156,7 @@ const normalizeUnmockedModulePathPatterns = (config: Object, key: string) => {
   );
 };
 
-const preprocessorBackwardCompatibility = (config: Object) => {
+const normalizePreprocessor = (config: Object) => {
   if (config.scriptPreprocessor && config.transform) {
     throwRuntimeConfigError(
       'Jest: `scriptPreprocessor` and `transform` cannot be used together. ' +
@@ -186,24 +186,7 @@ const preprocessorBackwardCompatibility = (config: Object) => {
   delete config.preprocessorIgnorePatterns;
 };
 
-function normalize(config: Object, argv: Object = {}) {
-  validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
-
-  const newConfig = Object.assign({}, DEFAULT_CONFIG);
-
-  // Assert that there *is* a rootDir
-  if (!config.hasOwnProperty('rootDir')) {
-    throw new Error(`Jest: 'rootDir' config value must be specified.`);
-  }
-
-  config.rootDir = path.normalize(config.rootDir);
-
-  preprocessorBackwardCompatibility(config);
-
-  if (config.preset) {
-    config = setupPreset(config);
-  }
-
+const normalizeMissingOptions = (config: Object) => {
   if (!config.name) {
     config.name = crypto.createHash('md5').update(config.rootDir).digest('hex');
   }
@@ -212,6 +195,25 @@ function normalize(config: Object, argv: Object = {}) {
     config.setupFiles = [];
   }
 
+  if (!config.testRunner || config.testRunner === 'jasmine2') {
+    config.testRunner = require.resolve('jest-jasmine2');
+  } else {
+    config.testRunner =
+      resolve(config.rootDir, 'testRunner', config.testRunner);
+  }
+
+  return config;
+};
+
+const normalizeRootDir = (config: Object) => {
+  // Assert that there *is* a rootDir
+  if (!config.hasOwnProperty('rootDir')) {
+    throw new Error(`Jest: 'rootDir' config value must be specified.`);
+  }
+  config.rootDir = path.normalize(config.rootDir);
+};
+
+const normalizeArgv = (config: Object, argv: Object) => {
   if (argv.testRunner) {
     config.testRunner = argv.testRunner;
   }
@@ -228,22 +230,28 @@ function normalize(config: Object, argv: Object = {}) {
     config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }
 
-  if (!config.testRunner || config.testRunner === 'jasmine2') {
-    config.testRunner = require.resolve('jest-jasmine2');
-  } else {
-    config.testRunner =
-      resolve(config.rootDir, 'testRunner', config.testRunner);
-  }
-
   if (argv.env) {
     config.testEnvironment = argv.env;
   }
+};
 
+function normalize(config: Object, argv: Object = {}) {
+  validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
+
+  normalizePreprocessor(config);
+  normalizeRootDir(config);
+  normalizeMissingOptions(config);
+  normalizeArgv(config, argv);
+
+  if (config.preset) {
+    config = setupPreset(config);
+  }
   if (config.testEnvironment) {
     config.testEnvironment = getTestEnvironment(config);
   }
 
   const babelJest = setupBabelJest(config);
+  const newConfig = Object.assign({}, DEFAULT_CONFIG);
 
   Object.keys(config).reduce((newConfig, key) => {
     let value;
