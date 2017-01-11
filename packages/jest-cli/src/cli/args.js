@@ -78,7 +78,7 @@ const options = {
   },
   colors: {
     description:
-      'The same as color',
+      'Alias for `--color`.',
     type: 'boolean',
   },
   config: {
