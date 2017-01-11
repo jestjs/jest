@@ -46,6 +46,8 @@ const watch = (
 
   hasteMap.on('change', ({hasteFS, moduleMap}) => {
     hasteContext = createHasteContext(config, {hasteFS, moduleMap});
+    currentPattern = '';
+    isEnteringPattern = false;
     startRun();
   });
 
