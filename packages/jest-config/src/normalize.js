@@ -8,6 +8,8 @@
 
 'use strict';
 
+const crypto = require('crypto');
+
 const DEFAULT_CONFIG_VALUES = require('./defaults');
 const Resolver = require('jest-resolve');
 
@@ -159,7 +161,7 @@ function normalize(config, argv) {
   }
 
   if (!config.name) {
-    config.name = config.rootDir.replace(/[/\\]|\s/g, '-');
+    config.name = crypto.createHash('md5').update(config.rootDir).digest('hex');
   }
 
   if (!config.setupFiles) {
