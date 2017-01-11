@@ -12,10 +12,11 @@
 
 import type {Config, Path} from 'types/Config';
 
-const {formatTestPath} = require('./reporters/utils');
-const highlight = require('./lib/highlight');
+const {relativePath} = require('./reporters/utils');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
+const highlight = require('./lib/highlight');
+const path = require('path');
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
@@ -34,8 +35,9 @@ const printTypeahead = (
 
   if (pattern) {
     pipe.write(`\nPattern matches ${total} ${pluralizeFile(total)}...`);
-    results.forEach(path => {
-      const formattedPath = highlight(formatTestPath(config, path), pattern);
+    results.forEach(filePath => {
+      const {basename, dirname} = relativePath(config, filePath);
+      const formattedPath = highlight(dirname + path.sep + basename, pattern);
       pipe.write(`\n ${chalk.dim('\u203A')} ${formattedPath}`);
     });
     if (total > max) {

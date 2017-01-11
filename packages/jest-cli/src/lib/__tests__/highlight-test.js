@@ -10,15 +10,16 @@
 
 'use strict';
 
-const {dim} = require('chalk');
+const {dim, reset} = require('chalk');
 const highlight = require('../highlight');
 
 it('Highlight only the matching part and dims the rest', () => {
-  expect(highlight('path/to/test', 't.*s'))
-    .toEqual(`${dim('pa')}th/to/tes${dim('t')}`);
+  let highlighted = `${dim('pa')}${reset('th/to/tes')}${dim('t')}`;
+  expect(highlight('path/to/test', 't.*s') === highlighted).toBeTruthy();
 
-  expect(highlight('path/to/test', 'path/to/test'))
-    .toEqual(`path/to/test`);
+  highlighted = reset(`path/to/test`);
+  expect(highlight('path/to/test', 'path/to/test') === highlighted)
+    .toBeTruthy();
 });
 
 it('Returns the a dimmed string when nothing matches', () => {

@@ -25,18 +25,19 @@ const highlight = (str: string, pattern: string) => {
   }
 
   const match = regexp.exec(str);
-
   if (!match) {
     return miss(str);
   }
 
   const {index} = match;
-
   const startMatch = match.index;
   const endMatch = startMatch + match[0].length;
 
-  return miss(str.slice(0, index)) + hit(str.slice(startMatch, endMatch)) +
-    miss(str.slice(endMatch));
+  return (
+    miss(str.slice(0, index)) +
+    hit(str.slice(startMatch, endMatch)) +
+    miss(str.slice(endMatch))
+  );
 };
 
 module.exports = highlight;
