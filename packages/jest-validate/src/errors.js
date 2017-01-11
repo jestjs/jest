@@ -61,5 +61,6 @@ const errorMessage = (
 };
 
 module.exports = {
+  ValidationError,
   errorMessage,
 };

@@ -71,7 +71,7 @@ describe('rootDir', () => {
   it('throws if the config is missing a rootDir property', () => {
     expect(() => {
       normalize({});
-    }).toThrow(new Error(`Jest: 'rootDir' config value must be specified.`));
+    }).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -470,11 +470,7 @@ describe('testEnvironment', () => {
     expect(() => normalize({
       rootDir: '/root',
       testEnvironment: 'phantom',
-    })).toThrow(new Error(
-      `Jest: test environment "phantom" cannot be found. Make sure the ` +
-      `"testEnvironment" configuration option points to an existing node ` +
-      `module.`,
-    ));
+    })).toThrowErrorMatchingSnapshot();
   });
 });
 

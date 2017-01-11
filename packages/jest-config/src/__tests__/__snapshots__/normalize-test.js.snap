@@ -15,4 +15,24 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 [39m"
 `;
 
-exports[`preset throws when preset not found 1`] = `"Cannot find module \'/node_modules/doesnt-exist/jest-preset.json\' from \'normalize.js\'"`;
+exports[`preset throws when preset not found 1`] = `
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m[37m
+
+  Preset [1mdoesnt-exist[22m not found.[39m"
+`;
+
+exports[`rootDir throws if the config is missing a rootDir property 1`] = `
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m
+[37m
+  Configuration option [1mrootDir[22m must be specified.[39m
+
+  [1mConfiguration Documentation:[22m
+  https://facebook.github.io/jest/docs/configuration.html
+"
+`;
+
+exports[`testEnvironment throws on invalid environment names 1`] = `
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m[37m
+
+  Test environment [1mphantom[22m cannot be found. Make sure the [1mtestEnvironment[22m configuration option points to an existing node module.[39m"
+`;

@@ -12,8 +12,17 @@
 
 import type {Path} from 'types/Config';
 
+const {ValidationError} = require('jest-validate');
 const Resolver = require('jest-resolve');
 const path = require('path');
+const chalk = require('chalk');
+
+const throwValidationError = (message: string) => {
+  throw new ValidationError(
+    null,
+    chalk.white(`\n\n  ${message}`)
+  );
+};
 
 const resolve = (rootDir: string, key: string, filePath: Path) => {
   const module = Resolver.findNodeModule(
@@ -24,9 +33,11 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
   );
 
   if (!module) {
-    throw new Error(
-      `Jest: Module "${filePath}" in the "${key}" option was not found.`
+    /* eslint-disable max-len */
+    return throwValidationError(
+      `Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`
     );
+    /* eslint-disable max-len */
   }
 
   return module;
@@ -100,10 +111,11 @@ const getTestEnvironment = (config: Object) => {
     return require.resolve(env);
   } catch (e) {}
 
-  throw new Error(
-    `Jest: test environment "${env}" cannot be found. Make sure the ` +
-    `"testEnvironment" configuration option points to an existing node module.`,
+  /* eslint-disable max-len */
+  return throwValidationError(
+    `Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`
   );
+  /* eslint-disable max-len */
 };
 
 module.exports = {

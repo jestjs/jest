@@ -9,7 +9,7 @@ npm install --save-dev jest-validate
 ## Usage
 
 ```js
-import validate from 'jest-validate';
+import {validate} from 'jest-validate';
 
 validate(config: Object, validConfigSample: Object, deprecatedConfig: ?Object, options: ?Object);
 ```

@@ -10,4 +10,8 @@
 
 'use strict';
 
-module.exports = require('./validate');
+module.exports = {
+  ValidationError: require('./errors').ValidationError,
+  validate: require('./validate'),
+  warnings: require('./warnings'),
+};
