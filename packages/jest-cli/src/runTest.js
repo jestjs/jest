@@ -72,7 +72,9 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
           }
           result.memoryUsage = process.memoryUsage().heapUsed;
         }
-        return result;
+
+        // Delay the resolution to allow log messages to be output.
+        return new Promise(resolve => setImmediate(() => resolve(result)));
       }),
       err => Promise.resolve().then(() => {
         env.dispose();
