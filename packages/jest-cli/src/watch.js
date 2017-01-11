@@ -14,7 +14,6 @@ import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const {clearLine} = require('jest-util');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
@@ -64,11 +63,9 @@ const watch = (
 
     pipe.write(ansiEscapes.cursorHide);
     pipe.write(ansiEscapes.clearScreen);
-    pipe.write(usage(argv, hasSnapshotFailure));
-    pipe.write('\n');
+    pipe.write(patternUsage());
     printTypeahead(config, pipe, currentPattern, paths);
     pipe.write(ansiEscapes.cursorShow);
-
   };
 
   const startRun = (overrideConfig: Object = {}) => {
@@ -121,8 +118,10 @@ const watch = (
           break;
         case KEYS.ESCAPE:
           isEnteringPattern = false;
-          pipe.write(ansiEscapes.eraseDown);
-          pipe.write(ansiEscapes.eraseLines(2));
+          pipe.write(ansiEscapes.cursorHide);
+          pipe.write(ansiEscapes.clearScreen);
+          pipe.write(usage(argv, hasSnapshotFailure));
+          pipe.write(ansiEscapes.cursorShow);
           currentPattern = argv._[0];
           break;
         case KEYS.ARROW_DOWN:
@@ -191,6 +190,15 @@ const watch = (
 
   startRun();
   return Promise.resolve();
+};
+
+const patternUsage = (delimiter = '\n') => {
+  const messages = [
+    `\n ${chalk.bold('Pattern Mode Usage')}`,
+    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
+  ];
+
+  return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
 const usage = (

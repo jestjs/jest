@@ -35,9 +35,9 @@ const printTypeahead = (
 
   if (pattern) {
     if (total) {
-      pipe.write(`\n\n Pattern matches ${total} ${pluralizeFile(total)}...`);
+      pipe.write(`\n\n Pattern matches ${total} ${pluralizeFile(total)}.`);
     } else {
-      pipe.write(`\n\n Pattern matches no files...`);
+      pipe.write(`\n\n Pattern matches no files.`);
     }
     results.forEach(filePath => {
       const {basename, dirname} = relativePath(config, filePath);
@@ -50,6 +50,9 @@ const printTypeahead = (
         `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeFile(more)}`)}`,
       );
     }
+  } else {
+    // eslint-disable-next-line max-len
+    pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`);
   }
 
   pipe.write(ansiEscapes.cursorRestorePosition);
