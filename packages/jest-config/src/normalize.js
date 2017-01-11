@@ -114,6 +114,61 @@ const setupBabelJest = (config: Object) => {
   return babelJest;
 };
 
+const normalizeCollectCoverageOnlyFrom = (config: Object, key: string) => {
+  return Object.keys(config[key]).reduce((normObj, filePath) => {
+    filePath = path.resolve(
+      config.rootDir,
+      _replaceRootDirInPath(config.rootDir, filePath),
+    );
+    normObj[filePath] = true;
+    return normObj;
+  }, Object.create(null));
+};
+
+const normalizeCollectCoverageFrom = (config: Object, key: string) => {
+  let value;
+  if (!config[key]) {
+    value = [];
+  }
+
+  if (!Array.isArray(config[key])) {
+    try {
+      value = JSON.parse(config[key]);
+    } catch (e) {}
+
+    Array.isArray(value) || (value = [config[key]]);
+  } else {
+    value = config[key];
+  }
+
+  return value;
+};
+
+const normalizeUnmockedModulePathPatterns = (config: Object, key: string) => {
+  // _replaceRootDirTags is specifically well-suited for substituting
+  // <rootDir> in paths (it deals with properly interpreting relative path
+  // separators, etc).
+  //
+  // For patterns, direct global substitution is far more ideal, so we
+  // special case substitutions for patterns here.
+  return config[key].map(pattern =>
+    utils.replacePathSepForRegex(
+      pattern.replace(/<rootDir>/g, config.rootDir),
+    )
+  );
+};
+
+const fillNewConfigWithDefaults = (newConfig, defaults: DefaultConfig) => {
+  // If any config entries weren't specified but have default values,
+  // apply the default values
+  Object.keys(defaults).reduce((newConfig, key) => {
+    if (!(key in newConfig)) {
+      newConfig[key] = defaults[key];
+    }
+    return newConfig;
+  }, newConfig);
+};
+
 function normalize(config: Object, argv: Object) {
   validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
 
@@ -210,61 +265,6 @@ function normalize(config: Object, argv: Object) {
         basedir: config.rootDir,
       });
   }
-
-  const normalizeCollectCoverageOnlyFrom = (config: Object, key: string) => {
-    return Object.keys(config[key]).reduce((normObj, filePath) => {
-      filePath = path.resolve(
-        config.rootDir,
-        _replaceRootDirInPath(config.rootDir, filePath),
-      );
-      normObj[filePath] = true;
-      return normObj;
-    }, Object.create(null));
-  };
-
-  const normalizeCollectCoverageFrom = (config: Object, key: string) => {
-    let value;
-    if (!config[key]) {
-      value = [];
-    }
-
-    if (!Array.isArray(config[key])) {
-      try {
-        value = JSON.parse(config[key]);
-      } catch (e) {}
-
-      Array.isArray(value) || (value = [config[key]]);
-    } else {
-      value = config[key];
-    }
-
-    return value;
-  };
-
-  const normalizeUnmockedModulePathPatterns = (config: Object, key: string) => {
-    // _replaceRootDirTags is specifically well-suited for substituting
-    // <rootDir> in paths (it deals with properly interpreting relative path
-    // separators, etc).
-    //
-    // For patterns, direct global substitution is far more ideal, so we
-    // special case substitutions for patterns here.
-    return config[key].map(pattern =>
-      utils.replacePathSepForRegex(
-        pattern.replace(/<rootDir>/g, config.rootDir),
-      )
-    );
-  };
-
-  const fillNewConfigWithDefaults = (newConfig, defaults: DefaultConfig) => {
-    // If any config entries weren't specified but have default values,
-    // apply the default values
-    Object.keys(defaults).reduce((newConfig, key) => {
-      if (!(key in newConfig)) {
-        newConfig[key] = defaults[key];
-      }
-      return newConfig;
-    }, newConfig);
-  };
 
   Object.keys(config).reduce((newConfig, key) => {
     let value;
