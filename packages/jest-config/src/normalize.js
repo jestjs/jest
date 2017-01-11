@@ -9,12 +9,10 @@
 
 'use strict';
 
-import type {DefaultConfig} from 'types/Config';
-
 const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
 const chalk = require('chalk');
 const crypto = require('crypto');
-const DEFAULT_CONFIG: DefaultConfig = require('./defaults');
+const DEFAULT_CONFIG = require('./defaults');
 const path = require('path');
 const Resolver = require('jest-resolve');
 const utils = require('jest-util');
@@ -158,37 +156,7 @@ const normalizeUnmockedModulePathPatterns = (config: Object, key: string) => {
   );
 };
 
-const fillNewConfigWithDefaults = (newConfig, defaults: DefaultConfig) => {
-  // If any config entries weren't specified but have default values,
-  // apply the default values
-  Object.keys(defaults).reduce((newConfig, key) => {
-    if (!(key in newConfig)) {
-      newConfig[key] = defaults[key];
-    }
-    return newConfig;
-  }, newConfig);
-};
-
-function normalize(config: Object, argv: Object) {
-  validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
-
-  const newConfig = {};
-
-  if (!argv) {
-    argv = {};
-  }
-
-  // Assert that there *is* a rootDir
-  if (!config.hasOwnProperty('rootDir')) {
-    throw new Error(`Jest: 'rootDir' config value must be specified.`);
-  }
-
-  config.rootDir = path.normalize(config.rootDir);
-
-  if (config.preset) {
-    config = setupPreset(config);
-  }
-
+const preprocessorBackwardCompatibility = (config: Object) => {
   if (config.scriptPreprocessor && config.transform) {
     throwRuntimeConfigError(
       'Jest: `scriptPreprocessor` and `transform` cannot be used together. ' +
@@ -216,6 +184,25 @@ function normalize(config: Object, argv: Object) {
 
   delete config.scriptPreprocessor;
   delete config.preprocessorIgnorePatterns;
+};
+
+function normalize(config: Object, argv: Object = {}) {
+  validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
+
+  const newConfig = Object.assign({}, DEFAULT_CONFIG);
+
+  // Assert that there *is* a rootDir
+  if (!config.hasOwnProperty('rootDir')) {
+    throw new Error(`Jest: 'rootDir' config value must be specified.`);
+  }
+
+  config.rootDir = path.normalize(config.rootDir);
+
+  preprocessorBackwardCompatibility(config);
+
+  if (config.preset) {
+    config = setupPreset(config);
+  }
 
   if (!config.name) {
     config.name = crypto.createHash('md5').update(config.rootDir).digest('hex');
@@ -257,14 +244,6 @@ function normalize(config: Object, argv: Object) {
   }
 
   const babelJest = setupBabelJest(config);
-
-  let polyfillPath;
-  if (babelJest) {
-    polyfillPath =
-      Resolver.findNodeModule('babel-polyfill', {
-        basedir: config.rootDir,
-      });
-  }
 
   Object.keys(config).reduce((newConfig, key) => {
     let value;
@@ -357,11 +336,15 @@ function normalize(config: Object, argv: Object) {
     return newConfig;
   }, newConfig);
 
-  if (polyfillPath) {
-    newConfig.setupFiles.unshift(polyfillPath);
-  }
+  if (babelJest) {
+    const polyfillPath = Resolver.findNodeModule('babel-polyfill', {
+      basedir: config.rootDir,
+    });
 
-  fillNewConfigWithDefaults(newConfig, DEFAULT_CONFIG);
+    if (polyfillPath) {
+      newConfig.setupFiles.unshift(polyfillPath);
+    }
+  }
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
