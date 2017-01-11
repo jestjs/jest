@@ -84,7 +84,7 @@ describe('Watch mode flows', () => {
       pipe.write.mockReset();
       stdin.emit(hex);
       expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
-    }
+    };
 
     const toHex = char => Number(char.charCodeAt(0)).toString(16);
 

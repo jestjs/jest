@@ -9,8 +9,9 @@
  */
 'use strict';
 
-import type {PatternInfo} from './SearchSource';
+import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
+import type {PatternInfo} from './SearchSource';
 
 const fs = require('graceful-fs');
 
@@ -49,7 +50,7 @@ const getTestSummary = (
 
 const runJest = (
   hasteContext: HasteContext,
-  config: any,
+  config: Config,
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: any,
@@ -88,6 +89,7 @@ const runJest = (
         return data;
       }).then(data => {
         if (data.paths.length === 1 && config.verbose !== false) {
+          // $FlowFixMe
           config = Object.assign({}, config, {verbose: true});
         }
 

@@ -56,8 +56,10 @@ const watch = (
       regex = new RegExp(currentPattern, 'i');
     } catch (e) {}
 
-    const paths = regex ? new SearchSource(hasteContext, config)
-      .findMatchingTests(currentPattern).paths : [];
+    const paths = regex
+      ? new SearchSource(hasteContext, config)
+          .findMatchingTests(currentPattern).paths
+      : [];
 
     clearLine(pipe);
     printTypeahead(config, pipe, currentPattern, paths);
@@ -74,6 +76,7 @@ const watch = (
     isRunning = true;
     return runJest(
       hasteContext,
+      // $FlowFixMe
       Object.freeze(Object.assign({}, config, overrideConfig)),
       argv,
       pipe,

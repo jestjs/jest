@@ -12,7 +12,7 @@
 
 import type {Config, Path} from 'types/Config';
 
-const {formatTestPath} = require('./reporters/utils')
+const {formatTestPath} = require('./reporters/utils');
 const highlight = require('./lib/highlight');
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
