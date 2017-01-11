@@ -25,7 +25,8 @@ const printTypeahead = (
   pipe: stream$Writable | tty$WriteStream,
   pattern: string,
   allResults: Array<Path>,
-  max: number = 10) => {
+  max: number = 10
+) => {
   const total = allResults.length;
   const results = allResults.slice(0, max);
 
@@ -34,15 +35,21 @@ const printTypeahead = (
   pipe.write(ansiEscapes.cursorSavePosition);
 
   if (pattern) {
-    pipe.write(`\nPattern matches ${total} ${pluralizeFile(total)}...`);
+    if (total) {
+      pipe.write(`\n\n Pattern matches ${total} ${pluralizeFile(total)}...`);
+    } else {
+      pipe.write(`\n\n Pattern matches no files...`);
+    }
     results.forEach(filePath => {
       const {basename, dirname} = relativePath(config, filePath);
       const formattedPath = highlight(dirname + path.sep + basename, pattern);
-      pipe.write(`\n ${chalk.dim('\u203A')} ${formattedPath}`);
+      pipe.write(`\n  ${chalk.dim('\u203A')} ${formattedPath}`);
     });
     if (total > max) {
       const more = total - max;
-      pipe.write(`\n\u203A + ${more} more ${pluralizeFile(more)}`);
+      pipe.write(
+        `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeFile(more)}`)}`,
+      );
     }
   }
 
