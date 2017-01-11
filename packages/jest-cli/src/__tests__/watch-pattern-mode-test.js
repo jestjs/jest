@@ -42,8 +42,9 @@ jest.mock('../SearchSource', () => class {
 });
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
-jest.doMock('../runJest', () => (...args) => {
-  runJestMock(...args);
+jest.doMock('../runJest', () => function() {
+  const args = Array.from(arguments);
+  runJestMock.apply(null, args);
 
   // Call the callback
   args[args.length - 1]({snapshot: {}});
