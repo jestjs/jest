@@ -19,8 +19,9 @@ it(`matcher returns matcher name, expected and actual values`, () => {
 
   const matcherResult = matcher({a: 1});
 
-  expect(matcherResult).toBeTruthy();
-  expect(matcherResult.name).toBe('toMatchSnapshot');
-  expect(matcherResult.actual).toEqual(actual);
-  expect(matcherResult.expected).toEqual(expected);
+  expect(matcherResult).toEqual(expect.objectContaining({
+    actual,
+    expected,
+    name: 'toMatchSnapshot',
+  }));
 });
