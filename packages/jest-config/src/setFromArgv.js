@@ -74,7 +74,7 @@ function setFromArgv(config, argv) {
   }
 
   if (argv.testResultsProcessor) {
-    config.testResultsProcessor = argv.testResultsProcessor;
+    config.testResultsProcessor = argv.testResultsProcessor.split(',');
   }
 
   config.noStackTrace = argv.noStackTrace;

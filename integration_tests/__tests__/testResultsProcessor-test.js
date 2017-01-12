@@ -12,7 +12,7 @@ const skipOnWindows = require('skipOnWindows');
 
 skipOnWindows.suite();
 
-test('testNamePattern', () => {
+test('testResultsProcessor', () => {
   const path = require('path');
   const processorPath = path.resolve(
     __dirname,
@@ -24,4 +24,23 @@ test('testNamePattern', () => {
   ]);
   const json = result.json;
   expect(json.processed).toBe(true);
+});
+
+test('multiple testResultsProcessor', () => {
+  const path = require('path');
+  const processorPath = path.resolve(
+    __dirname,
+    '../testResultsProcessor/processor.js'
+  );
+  const secondProcessorPath = path.resolve(
+    __dirname,
+    '../testResultsProcessor/secondProcessor.js'
+  );
+  const result = runJest.json('testResultsProcessor', [
+    '--json',
+    `--testResultsProcessor=${processorPath},${secondProcessorPath}`,
+  ]);
+  const json = result.json;
+  expect(json.processed).toBe(true);
+  expect(json.count).toEqual(1);
 });

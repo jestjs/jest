@@ -214,7 +214,8 @@ const options = {
     description:
       'Allows the use of a custom results processor. ' +
       'This processor must be a node module that exports ' +
-      'a function expecting as the first argument the result object',
+      'a function expecting as the first argument the result object' +
+      'multiple processor can be specified via , separator.',
     type: 'string',
   },
   testRunner: {
