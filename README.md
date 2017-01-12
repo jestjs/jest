@@ -15,7 +15,7 @@ Painless JavaScript Testing
 Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!
 <iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
 
-Install Jest with `yarn` or `npm` by running `yarn add -D jest` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
+Install Jest with `yarn` or `npm` by running `yarn add jest -D` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
 module.exports = (a, b) => a + b;
@@ -77,7 +77,7 @@ It will not use `development` section like Babel does by default when no `NODE_E
 
 ### React, React Native and Snapshot Testing
 
-Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases. You can use React's test renderer (`yarn add -D react-test-renderer`) to capture snapshots with Jest's snapshot feature and the `toMatchSnapshot` matcher:
+Check out the [React tutorial](https://facebook.github.io/jest/docs/tutorial-react.html) and the [React Native tutorial](https://facebook.github.io/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases. You can use React's test renderer (`yarn add react-test-renderer -D`) to capture snapshots with Jest's snapshot feature and the `toMatchSnapshot` matcher:
 
 ```js
 import renderer from 'react-test-renderer';
