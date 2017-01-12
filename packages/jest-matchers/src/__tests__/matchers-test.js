@@ -63,11 +63,11 @@ describe('.toBe()', () => {
     try {
       jestExpect(actual).toBe(expected);
     } catch (error) {
-      const matcherResult = error.matcherResult;
-      expect(matcherResult).toBeTruthy();
-      expect(matcherResult.name).toBe('toBe');
-      expect(matcherResult.actual).toEqual(actual);
-      expect(matcherResult.expected).toEqual(expected);
+      expect(error.matcherResult).toEqual(expect.objectContaining({
+        actual,
+        expected,
+        name: 'toBe',
+      }));
     }
   });
 });
@@ -124,11 +124,11 @@ describe('.toEqual()', () => {
     try {
       jestExpect(actual).toEqual(expected);
     } catch (error) {
-      const matcherResult = error.matcherResult;
-      expect(matcherResult).toBeTruthy();
-      expect(matcherResult.name).toBe('toEqual');
-      expect(matcherResult.actual).toEqual(actual);
-      expect(matcherResult.expected).toEqual(expected);
+      expect(error.matcherResult).toEqual(expect.objectContaining({
+        actual,
+        expected,
+        name: 'toEqual',
+      }));
     }
   });
 });
