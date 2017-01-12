@@ -1643,6 +1643,12 @@ minimist@^1.1.3:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
+mitm@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/mitm/-/mitm-1.3.2.tgz#188d8620601a1569133d9e7085fcf011e799265d"
+  dependencies:
+    underscore ">= 1.1.6 < 1.6"
+
 mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
@@ -2281,6 +2287,10 @@ uglify-js@^2.6:
 uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
+
+"underscore@>= 1.1.6 < 1.6":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.5.2.tgz#1335c5e4f5e6d33bbb4b006ba8c86a00f556de08"
 
 urlgrey@>=0.4.0:
   version "0.4.4"

@@ -164,6 +164,11 @@ const options = {
     description: 'Activates notifications for test results.',
     type: 'boolean',
   },
+  offline: {
+    default: false,
+    description: 'Restricts network access during test run',
+    type: 'boolean',
+  },
   onlyChanged: {
     alias: 'o',
     description:
