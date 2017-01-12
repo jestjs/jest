@@ -55,6 +55,21 @@ describe('.toBe()', () => {
     expect(() => jestExpect(obj).toBe({}))
       .toThrowErrorMatchingSnapshot();
   });
+
+  test(`assertion error matcherResult property contains 
+  matcher name, expected and actual values`, () => {
+    const actual = {a: 1};
+    const expected = {a: 2};
+    try {
+      jestExpect(actual).toBe(expected);
+    } catch (error) {
+      const matcherResult = error.matcherResult;
+      expect(matcherResult).toBeTruthy();
+      expect(matcherResult.name).toBe('toBe');
+      expect(matcherResult.actual).toEqual(actual);
+      expect(matcherResult.expected).toEqual(expected);
+    }
+  });
 });
 
 describe('.toEqual()', () => {
@@ -100,6 +115,21 @@ describe('.toEqual()', () => {
       expect(() => jestExpect(a).not.toEqual(b))
         .toThrowErrorMatchingSnapshot();
     });
+  });
+
+  test(`assertion error matcherResult property contains 
+  matcher name, expected and actual values`, () => {
+    const actual = {a: 1};
+    const expected = {a: 2};
+    try {
+      jestExpect(actual).toEqual(expected);
+    } catch (error) {
+      const matcherResult = error.matcherResult;
+      expect(matcherResult).toBeTruthy();
+      expect(matcherResult.name).toBe('toEqual');
+      expect(matcherResult.actual).toEqual(actual);
+      expect(matcherResult.expected).toEqual(expected);
+    }
   });
 });
 
