@@ -56,8 +56,7 @@ describe('.toBe()', () => {
       .toThrowErrorMatchingSnapshot();
   });
 
-  test(`assertion error matcherResult property contains 
-  matcher name, expected and actual values`, () => {
+  test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
     const expected = {a: 2};
     try {
@@ -117,8 +116,7 @@ describe('.toEqual()', () => {
     });
   });
 
-  test(`assertion error matcherResult property contains 
-  matcher name, expected and actual values`, () => {
+  test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
     const expected = {a: 2};
     try {
