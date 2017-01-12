@@ -745,10 +745,10 @@ Using descriptive matchers will help your tests be readable and maintainable. Je
 const five = require('five');
 
 expect.extend({
-  toBeNumber(received, actual) {
-    const pass = received === actual;
+  toBeNumber(received, expected) {
+    const pass = received === expected;
     const message =
-      () => `expected ${received} ${pass ? 'not ' : ''} to be ${actual}`;
+      () => `expected ${received} ${pass ? 'not ' : ''} to be ${expected}`;
     return {message, pass};
   }
 });
