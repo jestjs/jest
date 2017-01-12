@@ -40,11 +40,11 @@ test('Any.asymmetricMatch()', () => {
 });
 
 test('Any.toAsymmetricMatcher()', () => {
-  jestExpect(any(Number).toAsymmetricMatcher()).toBe('<any(Number)>');
+  jestExpect(any(Number).toAsymmetricMatcher()).toBe('Any<Number>');
 });
 
 test('Any throws when called with empty constructor', () => {
-  expect(() => any()).toThrow();
+  jestExpect(() => any()).toThrow();
 });
 
 test('Anything matches any type', () => {
@@ -70,7 +70,7 @@ test('Anything does not match null and undefined', () => {
 });
 
 test('Anything.toAsymmetricMatcher()', () => {
-  jestExpect(anything().toAsymmetricMatcher()).toBe('<anything>');
+  jestExpect(anything().toAsymmetricMatcher()).toBe('Anything');
 });
 
 test('ArrayContaining matches', () => {
@@ -96,7 +96,7 @@ test('ArrayContaining throws for non-arrays', () => {
 
 test('ArrayContaining.toAsymmetricMatcher()', () => {
   jestExpect(arrayContaining(['foo', 'bar']).toAsymmetricMatcher(print))
-    .toBe('<arrayContaining(["foo", "bar"])>');
+    .toBe('ArrayContaining ["foo", "bar"]');
 });
 
 test('ObjectContaining matches', () => {
@@ -123,7 +123,7 @@ test('ObjectContaining does not match', () => {
 test('ObjectContaining matches defined properties', () => {
   const definedPropertyObject = {};
   Object.defineProperty(definedPropertyObject, 'foo', {get: () => 'bar'});
-  expect(objectContaining({foo: 'bar'}).asymmetricMatch(definedPropertyObject)).toBe(true);
+  jestExpect(objectContaining({foo: 'bar'}).asymmetricMatch(definedPropertyObject)).toBe(true);
 });
 
 test('ObjectContaining matches prototype properties', () => {
@@ -138,7 +138,7 @@ test('ObjectContaining matches prototype properties', () => {
     Foo.prototype.constructor = Foo;
     obj = new Foo();
   }
-  expect(objectContaining({foo: 'bar'}).asymmetricMatch(obj)).toBe(true);
+  jestExpect(objectContaining({foo: 'bar'}).asymmetricMatch(obj)).toBe(true);
 });
 
 test('ObjectContaining throws for non-objects', () => {
@@ -147,7 +147,7 @@ test('ObjectContaining throws for non-objects', () => {
 
 test('ObjectContaining.toAsymmetricMatcher()', () => {
   jestExpect(objectContaining({super: 'trooper'}).toAsymmetricMatcher(print))
-    .toBe('<objectContaining({"super": "trooper"})>');
+    .toBe('ObjectContaining {"super": "trooper"}');
 });
 
 test('StringMatching matches string against regexp', () => {
@@ -168,5 +168,5 @@ test('StringMatching throws for non-strings and non-regexps', () => {
 
 test('StringMatching.toAsymmetricMatcher()', () => {
   jestExpect(stringMatching(/(foo|bar)/).toAsymmetricMatcher(print))
-    .toBe('<stringMatching(/(foo|bar)/)>');
+    .toBe('StringMatching /(foo|bar)/');
 });

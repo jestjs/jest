@@ -70,7 +70,7 @@ class Any extends AsymmetricMatcher {
   }
 
   toAsymmetricMatcher() {
-    return '<any(' + fnNameFor(this.sample) + ')>';
+    return 'Any<' + fnNameFor(this.sample) + '>';
   }
 }
 
@@ -84,7 +84,7 @@ class Anything extends AsymmetricMatcher {
   }
 
   toAsymmetricMatcher() {
-    return '<anything>';
+    return 'Anything';
   }
 }
 
@@ -97,10 +97,9 @@ class ArrayContaining extends AsymmetricMatcher {
   }
 
   asymmetricMatch(other: Array<any>) {
-    const className = Object.prototype.toString.call(this.sample);
-    if (className !== '[object Array]') {
+    if (!Array.isArray(this.sample)) {
       throw new Error(
-        'You must provide an array to arrayContaining, not \'' +
+        'You must provide an array to ArrayContaining, not \'' +
         typeof this.sample + '\'.'
        );
     }
@@ -120,9 +119,9 @@ class ArrayContaining extends AsymmetricMatcher {
   }
 
   toAsymmetricMatcher(print: Function) {
-    return '<arrayContaining(' + print(this.sample) + ')>';
+    return 'ArrayContaining ' + print(this.sample).replace(/Array\s+/, '');
   }
- }
+}
 
 class ObjectContaining extends AsymmetricMatcher {
   sample: Object;
@@ -135,7 +134,7 @@ class ObjectContaining extends AsymmetricMatcher {
   asymmetricMatch(other: Object) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        'You must provide an object to objectContaining, not \'' +
+        'You must provide an object to ObjectContaining, not \'' +
         typeof this.sample + '\'.'
        );
     }
@@ -157,7 +156,7 @@ class ObjectContaining extends AsymmetricMatcher {
   }
 
   toAsymmetricMatcher(print: Function) {
-    return '<objectContaining(' + print(this.sample) + ')>';
+    return 'ObjectContaining ' + print(this.sample).replace(/Object\s+/, '');
   }
 }
 
@@ -182,7 +181,7 @@ class StringMatching extends AsymmetricMatcher {
   }
 
   toAsymmetricMatcher(print: Function) {
-    return '<stringMatching(' + print(this.sample) + ')>';
+    return 'StringMatching ' + print(this.sample).replace(/Object/, '');
   }
 }
 

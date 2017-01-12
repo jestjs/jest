@@ -12,7 +12,6 @@
 
 const prettyFormat = require('../');
 const AsymmetricMatcher = require('../plugins/AsymmetricMatcher');
-const jestExpect = require('jest-matchers');
 let options;
 
 function fnNameFor(func) {
@@ -40,80 +39,80 @@ beforeEach(() => {
   function namedFuntction() {},
 ].forEach(type => {
   test(`supports any(${fnNameFor(type)})`, () => {
-    const result = prettyFormat(jestExpect.any(type), options);
-    expect(result).toEqual(`<any(${fnNameFor(type)})>`);
+    const result = prettyFormat(expect.any(type), options);
+    expect(result).toEqual(`Any<${fnNameFor(type)}>`);
   });
 
   test(`supports nested any(${fnNameFor(type)})`, () => {
     const result = prettyFormat({
       test: {
-        nested: jestExpect.any(type),
+        nested: expect.any(type),
       },
     }, options);
-    expect(result).toEqual(`Object {\n  "test": Object {\n    "nested": <any(${fnNameFor(type)})>,\n  },\n}`);
+    expect(result).toEqual(`Object {\n  "test": Object {\n    "nested": Any<${fnNameFor(type)}>,\n  },\n}`);
   });
 });
 
 test(`anything()`, () => {
-  const result = prettyFormat(jestExpect.anything(), options);
-  expect(result).toEqual('<anything>');
+  const result = prettyFormat(expect.anything(), options);
+  expect(result).toEqual('Anything');
 });
 
 test(`arrayContaining()`, () => {
-  const result = prettyFormat(jestExpect.arrayContaining([1, 2]), options);
+  const result = prettyFormat(expect.arrayContaining([1, 2]), options);
   expect(result).toEqual(
-`<arrayContaining(Array [
+`ArrayContaining [
   1,
   2,
-])>`
+]`
   );
 });
 
 test(`objectContaining()`, () => {
-  const result = prettyFormat(jestExpect.objectContaining({a: 'test'}), options);
+  const result = prettyFormat(expect.objectContaining({a: 'test'}), options);
   expect(result).toEqual(
-`<objectContaining(Object {
+`ObjectContaining {
   "a": "test",
-})>`
+}`
   );
 });
 
 test(`stringMatching(string)`, () => {
-  const result = prettyFormat(jestExpect.stringMatching('jest'), options);
-  expect(result).toEqual('<stringMatching(/jest/)>');
+  const result = prettyFormat(expect.stringMatching('jest'), options);
+  expect(result).toEqual('StringMatching /jest/');
 });
 
 test(`stringMatching(regexp)`, () => {
-  const result = prettyFormat(jestExpect.stringMatching(/(jest|niema).*/), options);
-  expect(result).toEqual('<stringMatching(/(jest|niema).*/)>');
+  const result = prettyFormat(expect.stringMatching(/(jest|niema).*/), options);
+  expect(result).toEqual('StringMatching /(jest|niema).*/');
 });
 
 test(`supports multiple nested asymmetric matchers`, () => {
   const result = prettyFormat({
     test: {
-      nested: jestExpect.objectContaining({
-        a: jestExpect.arrayContaining([1]),
-        b: jestExpect.anything(),
-        c: jestExpect.any(String),
-        d: jestExpect.stringMatching('jest'),
-        e: jestExpect.objectContaining({test: 'case'}),
+      nested: expect.objectContaining({
+        a: expect.arrayContaining([1]),
+        b: expect.anything(),
+        c: expect.any(String),
+        d: expect.stringMatching('jest'),
+        e: expect.objectContaining({test: 'case'}),
       }),
     },
   }, options);
   expect(result).toEqual(
 `Object {
   "test": Object {
-    "nested": <objectContaining(Object {
-      "a": <arrayContaining(Array [
+    "nested": ObjectContaining {
+      "a": ArrayContaining [
         1,
-      ])>,
-      "b": <anything>,
-      "c": <any(String)>,
-      "d": <stringMatching(/jest/)>,
-      "e": <objectContaining(Object {
+      ],
+      "b": Anything,
+      "c": Any<String>,
+      "d": StringMatching /jest/,
+      "e": ObjectContaining {
         "test": "case",
-      })>,
-    })>,
+      },
+    },
   },
 }`
   );
@@ -123,16 +122,16 @@ test(`supports minified output`, () => {
   options.min = true;
   const result = prettyFormat({
     test: {
-      nested: jestExpect.objectContaining({
-        a: jestExpect.arrayContaining([1]),
-        b: jestExpect.anything(),
-        c: jestExpect.any(String),
-        d: jestExpect.stringMatching('jest'),
-        e: jestExpect.objectContaining({test: 'case'}),
+      nested: expect.objectContaining({
+        a: expect.arrayContaining([1]),
+        b: expect.anything(),
+        c: expect.any(String),
+        d: expect.stringMatching('jest'),
+        e: expect.objectContaining({test: 'case'}),
       }),
     },
   }, options);
   expect(result).toEqual(
-`{"test": {"nested": <objectContaining({"a": <arrayContaining([1])>, "b": <anything>, "c": <any(String)>, "d": <stringMatching(/jest/)>, "e": <objectContaining({"test": "case"})>})>}}`
+`{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringMatching /jest/, "e": ObjectContaining {"test": "case"}}}}`
   );
 });
