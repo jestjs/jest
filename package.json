@@ -56,7 +56,9 @@
       "packages/jest-runtime/src/__tests__/test_root_with_dup_mocks"
     ],
     "collectCoverageFrom": [
-      "**/packages/**/*.js",
+      "**/packages/jest-*/**/*.js",
+      "**/packages/eslint-*/**/*.js",
+      "**/packages/pretty-format/**/*.js",
       "!**/bin/**",
       "!**/cli/**",
       "!**/perf/**",
