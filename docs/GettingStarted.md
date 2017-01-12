@@ -10,7 +10,7 @@ next: tutorial-react
 Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!
 <iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
 
-Install Jest with `yarn` or `npm` by running `yarn add -D jest` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
+Install Jest with `yarn` or `npm` by running `yarn add jest -D` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
 
 ```javascript
 module.exports = (a, b) => a + b;
