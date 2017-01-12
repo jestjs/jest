@@ -55,11 +55,9 @@ const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
-    const moduleNameMapper = Object.create(null);
-    config.moduleNameMapper.forEach(
-      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
-    );
-    return moduleNameMapper;
+    return config.moduleNameMapper.map(([regex, moduleName]) => {
+      return {moduleName, regex: new RegExp(regex)};
+    });
   }
   return null;
 };
