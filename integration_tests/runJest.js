@@ -12,7 +12,7 @@ const spawnSync = require('child_process').spawnSync;
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
-// return the result of the spawned proccess:
+// return the result of the spawned process:
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
 //    'envPairs', 'options', 'args', 'file' ]
 function runJest(dir, args) {
