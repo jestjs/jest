@@ -17,10 +17,11 @@ const runJestMock = jest.fn();
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
-  cursorHide: '[MOCK - cursorHide]',
+  cursorHide: '[MOCK - ucursorHide]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
   cursorShow: '[MOCK - cursorShow]',
+  cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
 }));
 
 jest.mock('../SearchSource', () => class {
