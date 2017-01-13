@@ -51,6 +51,13 @@ const watch = (
     startRun();
   });
 
+  process.on('exit', () => {
+    if (isEnteringPattern) {
+      pipe.write(ansiEscapes.cursorDown());
+      pipe.write(ansiEscapes.eraseDown);
+    }
+  });
+
   const writeCurrentPattern = () => {
     let regex;
 

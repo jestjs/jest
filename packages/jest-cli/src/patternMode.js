@@ -21,7 +21,7 @@ const path = require('path');
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
-const usage = (delimiter = '\n') => {
+const usage = (delimiter: string = '\n') => {
   const messages = [
     `\n ${chalk.bold('Pattern Mode Usage')}`,
     ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
