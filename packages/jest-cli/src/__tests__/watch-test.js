@@ -16,9 +16,7 @@ const {KEYS} = require('../constants');
 
 const runJestMock = jest.fn();
 
-jest.mock('jest-util', () => ({clearLine: () => {}}));
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
-jest.doMock('../constants', () => ({CLEAR: '', KEYS}));
 jest.doMock('../runJest', () => function() {
   const args = Array.from(arguments);
   runJestMock.apply(null, args);
@@ -46,7 +44,7 @@ describe('Watch mode flows', () => {
     hasteMap = {on: () => {}};
     argv = {};
     hasteContext = {};
-    config = {};
+    config = {testPathDirs: [], testPathIgnorePatterns: [], testRegex: ''};
     stdin = new MockStdin();
   });
 
@@ -87,33 +85,6 @@ describe('Watch mode flows', () => {
     });
   });
 
-  it('Pressing "P" enters pattern mode', () => {
-    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
-
-    // Write a enter pattern mode
-    stdin.emit(KEYS.P);
-    expect(pipe.write).toBeCalledWith(' pattern › ');
-
-    // Write a pattern
-    stdin.emit(KEYS.P);
-    stdin.emit(KEYS.O);
-    stdin.emit(KEYS.A);
-    expect(pipe.write).toBeCalledWith(' pattern › poa');
-
-    //Runs Jest again
-    runJestMock.mockReset();
-    stdin.emit(KEYS.ENTER);
-    expect(runJestMock).toBeCalled();
-
-    //Argv is updated with the current pattern
-    expect(argv).toEqual({
-      '_': ['poa'],
-      onlyChanged: false,
-      watch: true,
-      watchAll: false,
-    });
-  });
-
   it('Pressing "ENTER" reruns the tests', () => {
     watch(config, pipe, argv, hasteMap, hasteContext, stdin);
     expect(runJestMock).toHaveBeenCalledTimes(1);
@@ -127,7 +98,12 @@ describe('Watch mode flows', () => {
 
     stdin.emit(KEYS.U);
 
-    expect(runJestMock.mock.calls[0][1]).toEqual({updateSnapshot: true});
+    expect(runJestMock.mock.calls[0][1]).toEqual({
+      testPathDirs: [],
+      testPathIgnorePatterns: [],
+      testRegex: '',
+      updateSnapshot: true,
+    });
   });
 });
 

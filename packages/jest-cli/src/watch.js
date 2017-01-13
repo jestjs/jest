@@ -14,12 +14,13 @@ import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const {clearLine} = require('jest-util');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
+const printTypeahead = require('./printTypeahead');
 const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
+const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
 const {KEYS, CLEAR} = require('./constants');
 
@@ -34,22 +35,37 @@ const watch = (
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
     pattern: argv._,
   });
-
   let currentPattern = '';
   let hasSnapshotFailure = false;
   let isEnteringPattern = false;
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
+  let searchSource = new SearchSource(hasteContext, config);
 
   hasteMap.on('change', ({hasteFS, moduleMap}) => {
     hasteContext = createHasteContext(config, {hasteFS, moduleMap});
+    currentPattern = '';
+    isEnteringPattern = false;
+    searchSource = new SearchSource(hasteContext, config);
     startRun();
   });
 
   const writeCurrentPattern = () => {
-    clearLine(pipe);
-    pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
+    let regex;
+
+    try {
+      regex = new RegExp(currentPattern, 'i');
+    } catch (e) {}
+
+    const paths = regex ?
+      searchSource.findMatchingTests(currentPattern).paths : [];
+
+    pipe.write(ansiEscapes.cursorHide);
+    pipe.write(ansiEscapes.clearScreen);
+    pipe.write(patternUsage());
+    printTypeahead(config, pipe, currentPattern, paths);
+    pipe.write(ansiEscapes.cursorShow);
   };
 
   const startRun = (overrideConfig: Object = {}) => {
@@ -63,6 +79,7 @@ const watch = (
     isRunning = true;
     return runJest(
       hasteContext,
+      // $FlowFixMe
       Object.freeze(Object.assign({}, config, overrideConfig)),
       argv,
       pipe,
@@ -101,7 +118,10 @@ const watch = (
           break;
         case KEYS.ESCAPE:
           isEnteringPattern = false;
-          pipe.write(ansiEscapes.eraseLines(2));
+          pipe.write(ansiEscapes.cursorHide);
+          pipe.write(ansiEscapes.clearScreen);
+          pipe.write(usage(argv, hasSnapshotFailure));
+          pipe.write(ansiEscapes.cursorShow);
           currentPattern = argv._[0];
           break;
         case KEYS.ARROW_DOWN:
@@ -151,7 +171,6 @@ const watch = (
       case KEYS.P:
         isEnteringPattern = true;
         currentPattern = '';
-        pipe.write('\n');
         writeCurrentPattern();
         break;
       case KEYS.QUESTION_MARK:
@@ -171,6 +190,15 @@ const watch = (
 
   startRun();
   return Promise.resolve();
+};
+
+const patternUsage = (delimiter = '\n') => {
+  const messages = [
+    `\n ${chalk.bold('Pattern Mode Usage')}`,
+    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
+  ];
+
+  return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
 const usage = (
