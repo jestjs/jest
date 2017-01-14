@@ -35,7 +35,7 @@ const deprecationMessage = (message: string, options: ValidationOptions) => {
   );
 };
 
-const deprecateWarning = (
+const deprecationWarning = (
   config: Object,
   option: string,
   deprecatedOptions: Object,
@@ -47,5 +47,5 @@ const deprecateWarning = (
 };
 
 module.exports = {
-  deprecateWarning,
+  deprecationWarning,
 };

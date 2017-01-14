@@ -12,14 +12,14 @@
 
 import type {ValidationOptions} from './types';
 
-const {deprecateWarning} = require('./deprecated');
+const {deprecationWarning} = require('./deprecated');
 const {unknownOptionWarning} = require('./warnings');
 const {errorMessage} = require('./errors');
 const validationCondition = require('./condition');
 
 const defaultOptions: ValidationOptions = {
   condition: validationCondition,
-  deprecate: deprecateWarning,
+  deprecate: deprecationWarning,
   error: errorMessage,
   footer: null,
   namespace: null,
