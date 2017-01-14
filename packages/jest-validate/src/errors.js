@@ -55,8 +55,8 @@ const errorMessage = (
   throw new ValidationError(
     options && options.namespace,
     options && options.footer
-    ? chalk.white(message) + chalk.red(options.footer)
-    : chalk.white(message) + chalk.red(DOCUMENTATION_NOTE)
+    ? chalk.reset(message) + chalk.red(options.footer)
+    : chalk.reset(message) + chalk.red(DOCUMENTATION_NOTE)
   );
 };
 

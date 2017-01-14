@@ -41,7 +41,7 @@ const DOCUMENTATION_NOTE = `
 const throwRuntimeConfigError = message => {
   throw new ValidationError(
     null,
-    '\n' + chalk.white(message) + DOCUMENTATION_NOTE
+    '\n' + chalk.reset(message) + DOCUMENTATION_NOTE
   );
 };
 
@@ -63,7 +63,7 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
   } catch (error) {
     throw new ValidationError(
       null,
-      chalk.white(`\n\n  Preset ${chalk.bold(presetPath)} not found.`)
+      chalk.reset(`\n\n  Preset ${chalk.bold(presetPath)} not found.`)
     );
   }
 

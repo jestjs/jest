@@ -27,17 +27,17 @@ exports[`test displays warning for unknown config options 1`] = `
 `;
 
 exports[`test pretty prints valid config for Array 1`] = `
-"[31m[1m[1m● [1mJest Validation Error:[22m[39m[37m
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mcoverageReporters[22m must be of type:
-    [32mArray[37m
+    [32mArray[39m
   but instead received:
-    [31mObject[37m
+    [31mObject[39m
 
   Example:
   {
     [1m\"coverageReporters\"[22m: [1m[\"json\", \"text\", \"lcov\", \"clover\"][22m
-  }[39m[31m
+  }[0m[31m
 
   [1mConfiguration documentation:[22m
   https://facebook.github.io/jest/docs/configuration.html
@@ -45,17 +45,17 @@ exports[`test pretty prints valid config for Array 1`] = `
 `;
 
 exports[`test pretty prints valid config for Boolean 1`] = `
-"[31m[1m[1m● [1mJest Validation Error:[22m[39m[37m
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mautomock[22m must be of type:
-    [32mBoolean[37m
+    [32mBoolean[39m
   but instead received:
-    [31mArray[37m
+    [31mArray[39m
 
   Example:
   {
     [1m\"automock\"[22m: [1mfalse[22m
-  }[39m[31m
+  }[0m[31m
 
   [1mConfiguration documentation:[22m
   https://facebook.github.io/jest/docs/configuration.html
@@ -63,17 +63,17 @@ exports[`test pretty prints valid config for Boolean 1`] = `
 `;
 
 exports[`test pretty prints valid config for Object 1`] = `
-"[31m[1m[1m● [1mJest Validation Error:[22m[39m[37m
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mhaste[22m must be of type:
-    [32mObject[37m
+    [32mObject[39m
   but instead received:
-    [31mNumber[37m
+    [31mNumber[39m
 
   Example:
   {
     [1m\"haste\"[22m: [1m{\"providesModuleNodeModules\": [\"react\", \"react-native\"]}[22m
-  }[39m[31m
+  }[0m[31m
 
   [1mConfiguration documentation:[22m
   https://facebook.github.io/jest/docs/configuration.html
@@ -81,17 +81,17 @@ exports[`test pretty prints valid config for Object 1`] = `
 `;
 
 exports[`test pretty prints valid config for String 1`] = `
-"[31m[1m[1m● [1mJest Validation Error:[22m[39m[37m
+"[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mpreset[22m must be of type:
-    [32mString[37m
+    [32mString[39m
   but instead received:
-    [31mNumber[37m
+    [31mNumber[39m
 
   Example:
   {
     [1m\"preset\"[22m: [1m\"react-native\"[22m
-  }[39m[31m
+  }[0m[31m
 
   [1mConfiguration documentation:[22m
   https://facebook.github.io/jest/docs/configuration.html
@@ -114,17 +114,17 @@ exports[`test works with custom deprecations 1`] = `
 `;
 
 exports[`test works with custom errors 1`] = `
-"[31m[1m[1m● [1mMy Custom Validation Error:[22m[39m[37m
+"[31m[1m[1m● [1mMy Custom Validation Error:[22m[39m[0m
 
   Option [1mtest[22m must be of type:
-    [32mArray[37m
+    [32mArray[39m
   but instead received:
-    [31mString[37m
+    [31mString[39m
 
   Example:
   {
     [1m\"test\"[22m: [1m[1, 2][22m
-  }[39m[31m
+  }[0m[31m
 
   custom footer[39m"
 `;
