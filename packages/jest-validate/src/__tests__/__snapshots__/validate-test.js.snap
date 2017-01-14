@@ -30,9 +30,9 @@ exports[`test pretty prints valid config for Array 1`] = `
 "[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mcoverageReporters[22m must be of type:
-    [32mArray[39m
+    [32marray[39m
   but instead received:
-    [31mObject[39m
+    [31mobject[39m
 
   Example:
   {
@@ -48,9 +48,9 @@ exports[`test pretty prints valid config for Boolean 1`] = `
 "[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mautomock[22m must be of type:
-    [32mBoolean[39m
+    [32mboolean[39m
   but instead received:
-    [31mArray[39m
+    [31marray[39m
 
   Example:
   {
@@ -66,9 +66,9 @@ exports[`test pretty prints valid config for Object 1`] = `
 "[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mhaste[22m must be of type:
-    [32mObject[39m
+    [32mobject[39m
   but instead received:
-    [31mNumber[39m
+    [31mnumber[39m
 
   Example:
   {
@@ -84,9 +84,9 @@ exports[`test pretty prints valid config for String 1`] = `
 "[31m[1m[1m● [1mJest Validation Error:[22m[39m[0m
 
   Option [1mpreset[22m must be of type:
-    [32mString[39m
+    [32mstring[39m
   but instead received:
-    [31mNumber[39m
+    [31mnumber[39m
 
   Example:
   {
@@ -117,9 +117,9 @@ exports[`test works with custom errors 1`] = `
 "[31m[1m[1m● [1mMy Custom Validation Error:[22m[39m[0m
 
   Option [1mtest[22m must be of type:
-    [32mArray[39m
+    [32marray[39m
   but instead received:
-    [31mString[39m
+    [31mstring[39m
 
   Example:
   {

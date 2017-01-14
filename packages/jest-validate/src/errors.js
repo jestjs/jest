@@ -13,7 +13,8 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format, prettyPrintType} = require('./utils');
+const {format} = require('./utils');
+const {getType} = require('jest-matcher-utils');
 const BULLET: string = chalk.bold('\u25cf ');
 const JEST = 'Jest';
 const ERROR = 'Validation Error';
@@ -43,9 +44,9 @@ const errorMessage = (
   const message = `
 
   Option ${chalk.bold(option)} must be of type:
-    ${chalk.green(prettyPrintType(defaultValue))}
+    ${chalk.green(getType(defaultValue))}
   but instead received:
-    ${chalk.red(prettyPrintType(received))}
+    ${chalk.red(getType(received))}
 
   Example:
   {
