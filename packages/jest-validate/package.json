@@ -10,8 +10,5 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "pretty-format": "^18.1.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }
