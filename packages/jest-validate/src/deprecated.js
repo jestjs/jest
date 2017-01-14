@@ -23,9 +23,7 @@ const DOCUMENTATION_NOTE = `
 const BULLET = chalk.bold('\u25cf ');
 
 const deprecationMessage = (message: string, options: ValidationOptions) => {
-  const footer = options && options.footer
-    ? options.footer
-    : DOCUMENTATION_NOTE;
+  const footer = (options && options.footer) || DOCUMENTATION_NOTE;
 
   console.warn(
     chalk.yellow(
