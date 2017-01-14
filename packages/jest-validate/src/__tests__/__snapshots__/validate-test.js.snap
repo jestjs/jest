@@ -5,7 +5,7 @@ exports[`test displays warning for deprecated config options 1`] = `
 
   Jest now treats your current configuration as:
   {
-    [1m\"transform\"[22m: [1m{\".*\": \"test\"\"}[22m
+    [1m\"transform\"[22m: [1m{\".*\": \"test\"}[22m
   }
 
   Please update your configuration.
@@ -105,7 +105,7 @@ exports[`test works with custom deprecations 1`] = `
 
   Jest now treats your current configuration as:
   {
-    [1m\"transform\"[22m: [1m{\".*\": \"test\"\"}[22m
+    [1m\"transform\"[22m: [1m{\".*\": \"test\"}[22m
   }
 
   Please update your configuration.
