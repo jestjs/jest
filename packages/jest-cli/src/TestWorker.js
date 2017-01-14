@@ -77,11 +77,15 @@ module.exports = (
   {config, path, rawModuleMap}: WorkerData,
   callback: WorkerCallback,
 ) => {
+  let parentExited = false;
+
+  process.on('disconnect', () => parentExited = true);
+
   try {
     runTest(path, config, getResolver(config, rawModuleMap))
       .then(
-        result => callback(null, result),
-        error => callback(formatError(error)),
+        result => !parentExited && callback(null, result),
+        error => !parentExited && callback(formatError(error)),
       );
   } catch (error) {
     callback(formatError(error));
