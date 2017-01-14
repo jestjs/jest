@@ -1,6 +1,6 @@
 # jest-validate
 
-Provides handy validation errors and warnings for given configuration object.
+Generic configuration validation tool that helps you with warnings, errors and deprecation messages as well as showing users examples of correct configuration.
 
 ```
 npm install --save-dev jest-validate
@@ -16,7 +16,7 @@ validate(config: Object, validConfigSample: Object, deprecatedConfig: ?Object, o
 
 ## Customization
 
-By default `jest-validate` will print errors and warnings specific to Jest. You can however customize this behavior by providing `options` object as a last argument:
+By default `jest-validate` will print generic warning and error messages. You can however customize this behavior by providing `options` object as a fourth argument:
 
 ```js
 const options: ValidationOptions = {
