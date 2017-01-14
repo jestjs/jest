@@ -32,7 +32,7 @@ const deprecatedOptions = {
 
   Jest now treats your current configuration as:
   {
-    ${chalk.bold('"transform"')}: ${chalk.bold(`{".*": ${format(config.scriptPreprocessor)}"}`)}
+    ${chalk.bold('"transform"')}: ${chalk.bold(`{".*": ${format(config.scriptPreprocessor)}}`)}
   }
 
   Please update your configuration.`,

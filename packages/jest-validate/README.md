@@ -71,7 +71,7 @@ Deprecation (based on `deprecatedConfig` object with proper messages):
 
   Jest now treats your current configuration as:
   {
-    "transform": {".*": "xxx""}
+    "transform": {".*": "xxx"}
   }
 
   Please update your configuration.
