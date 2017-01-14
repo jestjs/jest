@@ -274,4 +274,24 @@ describe('Runtime requireModule', () => {
     ]),
   );
 
+  it('finds modules encoded in UTF-8 *with BOM*', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        './UTF8WithBOM.js',
+      );
+      expect(exports).toBe('isModuleEncodedInUTF8WithBOM');
+    }),
+  );
+
+  it('finds and loads JSON files encoded in UTF-8 *with BOM*', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(
+        runtime.__mockRootPath,
+        './UTF8WithBOM.json',
+      );
+      expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
+    }),
+  );
+
 });
