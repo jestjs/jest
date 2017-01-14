@@ -14,11 +14,23 @@ import type {Config, Path} from 'types/Config';
 
 const {relativePath} = require('./reporters/utils');
 const ansiEscapes = require('ansi-escapes');
+const stringLength = require('string-length');
 const chalk = require('chalk');
 const highlight = require('./lib/highlight');
 const path = require('path');
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
+
+const usage = (delimiter: string = '\n') => {
+  const messages = [
+    `\n ${chalk.bold('Pattern Mode Usage')}`,
+    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
+  ];
+
+  return messages.filter(message => !!message).join(delimiter) + '\n';
+};
+
+const usageRows = usage().split('\n').length;
 
 const printTypeahead = (
   config: Config,
@@ -29,8 +41,10 @@ const printTypeahead = (
 ) => {
   const total = allResults.length;
   const results = allResults.slice(0, max);
+  const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
-  pipe.write(`${chalk.dim(' pattern \u203A')} ${pattern}`);
+  pipe.write(ansiEscapes.eraseDown);
+  pipe.write(inputText);
   pipe.write(ansiEscapes.cursorSavePosition);
 
   if (pattern) {
@@ -55,7 +69,11 @@ const printTypeahead = (
     pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`);
   }
 
+  pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));
   pipe.write(ansiEscapes.cursorRestorePosition);
 };
 
-module.exports = printTypeahead;
+module.exports = {
+  printTypeahead,
+  usage,
+};

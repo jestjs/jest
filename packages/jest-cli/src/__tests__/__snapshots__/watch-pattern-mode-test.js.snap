@@ -1,9 +1,5 @@
 exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p
@@ -33,16 +29,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(12, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.
@@ -72,16 +64,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(13, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.*
@@ -111,16 +99,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(14, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.*1
@@ -134,16 +118,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
   › path/to/file10-test.js
 
   › path/to/file11-test.js
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(15, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.*10
@@ -153,16 +133,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
  Pattern matches 1 file.
 
   › path/to/file10-test.js
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(16, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.*1
@@ -176,16 +152,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
   › path/to/file10-test.js
 
   › path/to/file11-test.js
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(15, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.*
@@ -215,16 +187,12 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(14, 4)]
+[MOCK - cursorRestorePosition]"
 `;
 
 exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
-"[MOCK - cursorHide]
-[MOCK - clearScreen]
-
- Pattern Mode Usage
- › Press ESC to exit pattern mode.
+"
 
 
  pattern › p.*3
@@ -234,6 +202,6 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
  Pattern matches 1 file.
 
   › path/to/file3-test.js
-[MOCK - cursorRestorePosition]
-[MOCK - cursorShow]"
+[MOCK - cursorTo(15, 4)]
+[MOCK - cursorRestorePosition]"
 `;

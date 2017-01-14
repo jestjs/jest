@@ -21,6 +21,7 @@ jest.mock('ansi-escapes', () => ({
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
   cursorShow: '[MOCK - cursorShow]',
+  cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
 }));
 
 jest.mock('../SearchSource', () => class {
