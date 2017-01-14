@@ -572,6 +572,9 @@ class ModuleMockerClass {
       object[methodName] = this._makeComponent({type: 'function'}, () => {
         object[methodName] = original;
       });
+      object[methodName].mockImplementation(function() {
+        return original.apply(this, arguments);
+      });
     }
 
     return object[methodName];
