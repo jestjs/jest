@@ -17,7 +17,7 @@ const runJestMock = jest.fn();
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
-  cursorHide: '[MOCK - ucursorHide]',
+  cursorHide: '[MOCK - cursorHide]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
   cursorShow: '[MOCK - cursorShow]',
