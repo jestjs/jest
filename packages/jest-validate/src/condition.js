@@ -18,7 +18,7 @@ const validationCondition = (
 ): boolean => {
   return (
     option === null ||
-    typeof option === 'undefined' ||
+    option === undefined ||
     toString.call(option) === toString.call(validOption)
   );
 };
