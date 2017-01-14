@@ -81,10 +81,6 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
       config.moduleNameMapper,
     );
   }
-  // Don't show deprecation warnings if the setting comes from the preset.
-  if (preset.preprocessorIgnorePatterns) {
-    preset.transformIgnorePatterns = preset.preprocessorIgnorePatterns;
-  }
   return Object.assign({}, preset, config);
 };
 
