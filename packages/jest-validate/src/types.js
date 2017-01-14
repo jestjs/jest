@@ -14,7 +14,9 @@ export type ValidationOptions = {|
   condition: Function,
   deprecate: Function,
   error: Function,
-  namespace: ?string,
-  footer: ?string,
+  footer: string,
+  titleDeprecation: string,
+  titleError: string,
+  titleWarning: string,
   unknown: Function,
 |};

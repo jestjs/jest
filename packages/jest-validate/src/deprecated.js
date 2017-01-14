@@ -12,27 +12,13 @@
 
 import type {ValidationOptions} from './types';
 
-const chalk = require('chalk');
-const JEST = 'Jest';
-const DEPRECATED = 'Deprecation Warning';
-const DOCUMENTATION_NOTE = `
-
-  ${chalk.bold('Configuration documentation:')}
-  https://facebook.github.io/jest/docs/configuration.html
-`;
-const BULLET = chalk.bold('\u25cf ');
+const {logValidationWarning} = require('./utils');
 
 const deprecationMessage = (message: string, options: ValidationOptions) => {
-  const footer = (options && options.footer) || DOCUMENTATION_NOTE;
+  const footer = options.footer;
+  const name = options.titleDeprecation;
 
-  console.warn(
-    chalk.yellow(
-      options && options.namespace
-      ? chalk.bold(BULLET + options.namespace + ' ' + DEPRECATED + ':') +
-        message + footer
-      : chalk.bold(BULLET + JEST + ' ' + DEPRECATED + ':') + message + footer
-    )
-  );
+  logValidationWarning(name, message, footer);
 };
 
 const deprecationWarning = (

@@ -11,6 +11,14 @@
 
 import type {InitialConfig} from 'types/Config';
 
+const {
+  BULLET,
+  DOCUMENTATION_NOTE,
+  _replaceRootDirInPath,
+  _replaceRootDirTags,
+  getTestEnvironment,
+  resolve,
+} = require('./utils');
 const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
 const {ValidationError, validate} = require('jest-validate');
 const chalk = require('chalk');
@@ -21,28 +29,12 @@ const Resolver = require('jest-resolve');
 const utils = require('jest-util');
 const VALID_CONFIG = require('./validConfig');
 const DEPRECATED_CONFIG = require('./deprecated');
-
-const {
-  _replaceRootDirInPath,
-  _replaceRootDirTags,
-  getTestEnvironment,
-  resolve,
-} = require('./utils');
-
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
+const ERROR = `${BULLET}Validation Error`;
 
-const DOCUMENTATION_NOTE = `
-
-  ${chalk.bold('Configuration Documentation:')}
-  https://facebook.github.io/jest/docs/configuration.html
-`;
-
-const throwRuntimeConfigError = message => {
-  throw new ValidationError(
-    null,
-    '\n' + chalk.reset(message) + DOCUMENTATION_NOTE
-  );
+const runtimeConfigError = message => {
+  return new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 };
 
 const setupPreset = (config: InitialConfig, configPreset: string) => {
@@ -61,9 +53,8 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
     // $FlowFixMe
     preset = require(presetModule);
   } catch (error) {
-    throw new ValidationError(
-      null,
-      chalk.reset(`\n\n  Preset ${chalk.bold(presetPath)} not found.`)
+    throw runtimeConfigError(
+      `  Preset ${chalk.bold(presetPath)} not found.`
     );
   }
 
@@ -171,15 +162,15 @@ const normalizeUnmockedModulePathPatterns = (
 const normalizePreprocessor = (config: InitialConfig) => {
   /* eslint-disable max-len */
   if (config.scriptPreprocessor && config.transform) {
-    throwRuntimeConfigError(`
-  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+    throw runtimeConfigError(
+`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transform')}.`
     );
   }
 
   if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
-    throwRuntimeConfigError(`
-  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
+    throw runtimeConfigError(
+`  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`
     );
   }
@@ -221,8 +212,8 @@ const normalizeMissingOptions = (config: InitialConfig) => {
 const normalizeRootDir = (config: InitialConfig) => {
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
-    throwRuntimeConfigError(
-      `\n  Configuration option ${chalk.bold('rootDir')} must be specified.`
+    throw runtimeConfigError(
+      `  Configuration option ${chalk.bold('rootDir')} must be specified.`
     );
   }
   config.rootDir = path.normalize(config.rootDir);
@@ -251,7 +242,9 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
 };
 
 function normalize(config: InitialConfig, argv: Object = {}) {
-  validate(config, VALID_CONFIG, DEPRECATED_CONFIG);
+  validate(config, VALID_CONFIG, DEPRECATED_CONFIG, {
+    footer: DOCUMENTATION_NOTE,
+  });
 
   normalizePreprocessor(config);
   normalizeRootDir(config);

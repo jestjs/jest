@@ -16,13 +16,16 @@ const {deprecationWarning} = require('./deprecated');
 const {unknownOptionWarning} = require('./warnings');
 const {errorMessage} = require('./errors');
 const validationCondition = require('./condition');
+const {BULLET} = require('./utils');
 
 const defaultOptions: ValidationOptions = {
   condition: validationCondition,
   deprecate: deprecationWarning,
   error: errorMessage,
-  footer: null,
-  namespace: null,
+  footer: '',
+  titleDeprecation: `${BULLET}Deprecation Warning`,
+  titleError: `${BULLET}Validation Error`,
+  titleWarning: `${BULLET}Validation Warning`,
   unknown: unknownOptionWarning,
 };
 
@@ -30,7 +33,7 @@ const validate = (
   config: Object,
   validConfig: Object,
   deprecatedConfig: ?Object,
-  options: ?ValidationOptions
+  options: ?Object,
 ) => {
   options = Object.assign(defaultOptions, options);
 
@@ -38,17 +41,15 @@ const validate = (
     options.error('validConfig', validConfig, {}, options);
   }
 
-  for (const option in config) {
-    if (hasOwnProperty.call(validConfig, option)) {
-      if (!options.condition(config[option], validConfig[option])) {
-        options.error(
-          option, config[option], validConfig[option], options
-        );
+  for (const key in config) {
+    if (hasOwnProperty.call(validConfig, key)) {
+      if (!options.condition(config[key], validConfig[key])) {
+        options.error(key, config[key], validConfig[key], options);
       }
-    } else if (deprecatedConfig && option in deprecatedConfig) {
-      options.deprecate(config, option, deprecatedConfig, options);
+    } else if (deprecatedConfig && key in deprecatedConfig) {
+      options.deprecate(config, key, deprecatedConfig, options);
     } else {
-      options.unknown(config, option, options);
+      options.unknown(config, key, options);
     }
   }
 

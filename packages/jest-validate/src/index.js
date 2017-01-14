@@ -12,6 +12,6 @@
 
 module.exports = {
   ValidationError: require('./errors').ValidationError,
+  logValidationWarning: require('./utils').logValidationWarning,
   validate: require('./validate'),
-  warnings: require('./warnings'),
 };

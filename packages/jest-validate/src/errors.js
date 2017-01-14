@@ -13,52 +13,30 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format} = require('./utils');
+const {format, ValidationError} = require('./utils');
 const {getType} = require('jest-matcher-utils');
-const BULLET: string = chalk.bold('\u25cf ');
-const JEST = 'Jest';
-const ERROR = 'Validation Error';
-const DOCUMENTATION_NOTE = `
-
-  ${chalk.bold('Configuration documentation:')}
-  https://facebook.github.io/jest/docs/configuration.html
-`;
-
-class ValidationError extends Error {
-  constructor(name: ?string, message: string) {
-    super();
-    this.name = '';
-    this.message = chalk.red.bold(
-      `${BULLET}${name || JEST} ${ERROR}:`
-    ) + message;
-    Error.captureStackTrace(this, () => {});
-  }
-}
 
 const errorMessage = (
   option: string,
   received: any,
   defaultValue: any,
-  options: ?ValidationOptions,
+  options: ValidationOptions,
 ) => {
-  const message = `
-
-  Option ${chalk.bold(option)} must be of type:
-    ${chalk.green(getType(defaultValue))}
+  const message =
+`  Option ${chalk.bold(option)} must be of type:
+    ${chalk.bold.green(getType(defaultValue))}
   but instead received:
-    ${chalk.red(getType(received))}
+    ${chalk.bold.red(getType(received))}
 
   Example:
   {
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(format(defaultValue))}
   }`;
 
-  throw new ValidationError(
-    options && options.namespace,
-    options && options.footer
-    ? chalk.reset(message) + chalk.red(options.footer)
-    : chalk.reset(message) + chalk.red(DOCUMENTATION_NOTE)
-  );
+  const footer = options && options.footer;
+  const name = options && options.titleError;
+
+  throw new ValidationError(name, message, footer);
 };
 
 module.exports = {

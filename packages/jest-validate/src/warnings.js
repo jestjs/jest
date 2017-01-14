@@ -13,40 +13,23 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format} = require('./utils');
-const JEST = 'Jest';
-const WARNING = 'Validation Warning';
-const BULLET = chalk.bold('\u25cf ');
-const DOCUMENTATION_NOTE = `
-
-  ${chalk.bold('Configuration documentation:')}
-  https://facebook.github.io/jest/docs/configuration.html
-`;
+const {format, logValidationWarning} = require('./utils');
 
 const unknownOptionWarning = (
   config: Object,
   option: string,
-  options: ?ValidationOptions
+  options: ValidationOptions
 ) => {
   /* eslint-disable max-len */
-  const message = `
-
-  Unknown option ${chalk.bold(option)} with value ${chalk.bold(format(config[option]))} was found.
+  const message =
+`  Unknown option ${chalk.bold(option)} with value ${chalk.bold(format(config[option]))} was found.
   This is either a typing error or a user mistake. Fixing it will remove this message.`;
   /* eslint-enable max-len */
 
-  const footer = options && options.footer
-    ? options.footer
-    : DOCUMENTATION_NOTE;
+  const footer = options.footer;
+  const name = options.titleWarning;
 
-  console.warn(
-    chalk.yellow(
-      options && options.namespace
-      ? chalk.bold(BULLET + options.namespace + ' ' + WARNING + ':') + message +
-        footer
-      : chalk.bold(BULLET + JEST + ' ' + WARNING + ':') + message + footer
-    )
-  );
+  logValidationWarning(name, message, footer);
 };
 
 module.exports = {

@@ -11,7 +11,12 @@ npm install --save-dev jest-validate
 ```js
 import {validate} from 'jest-validate';
 
-validate(config: Object, validConfigSample: Object, deprecatedConfig: ?Object, options: ?Object);
+validate(
+  config: Object,
+  validConfigSample: Object,
+  deprecatedConfig: ?Object,
+  options: ?Object
+);
 ```
 
 ## Customization
@@ -24,19 +29,26 @@ const options: ValidationOptions = {
   deprecate: (config: Object, option: string): void,
   error: (option: string, configOption: string, validConfigOption: string, options: ValidationOptions): void // throws ValidationError,
   footer: string,
-  namespace: string,
+  titleDeprecation: string,
+  titleError: string,
+  titleWarning: string,
   unknown: (config: Object, option: string, options: ValidationOptions),
 }
 ```
 
 ## Examples
 ```js
-validate(config, validConfigSample, deprecatedConfig, {namespace: 'Custom', footer: '\n\n  Documentation: http://custom-docs.com'});
+validate(config, validConfigSample, deprecatedConfig, {
+  titleDeprecation: 'Custom Deprecation',
+  titleError: 'Custom Error',
+  titleWarning: 'Custom Warning',
+  footer: '  Documentation: http://custom-docs.com'
+});
 ```
 Warning:
 
 ```
-● Custom Validation Warning:
+● Custom Warning:
 
   Unknown option transformx with value "<rootDir>/node_modules/babel-jest" was found.
   This is either a typing error or a user mistake. Fixing it will remove this message.
@@ -47,12 +59,12 @@ Warning:
 Error:
 
 ```
-● Custom Validation Error:
+● Custom Error:
 
   Option transform must be of type:
-    Object
+    object
   but instead received:
-    String
+    string
 
   Example:
   {
@@ -62,10 +74,10 @@ Error:
   Documentation: http://custom-docs.com
 ```
 
-Deprecation (based on `deprecatedConfig` object with proper messages):
+Deprecation (based on `deprecatedConfig` object with proper deprecation messages):
 
 ```
-● Jest Deprecation Warning:
+● Custom Deprecation:
 
   Option scriptPreprocessor was replaced by transform, which support multiple preprocessors.
 
