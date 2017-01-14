@@ -31,7 +31,7 @@ describe('Runtime', () => {
 
         obj.method();
 
-        expect(isOriginalCalled).toBe(false);
+        expect(isOriginalCalled).toBe(true);
         expect(spy).toHaveBeenCalled();
       }),
     );
