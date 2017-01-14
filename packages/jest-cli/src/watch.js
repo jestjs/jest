@@ -17,7 +17,7 @@ const chalk = require('chalk');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
-const printTypeahead = require('./printTypeahead');
+const patternMode = require('./patternMode');
 const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
 const SearchSource = require('./SearchSource');
@@ -51,6 +51,13 @@ const watch = (
     startRun();
   });
 
+  process.on('exit', () => {
+    if (isEnteringPattern) {
+      pipe.write(ansiEscapes.cursorDown());
+      pipe.write(ansiEscapes.eraseDown);
+    }
+  });
+
   const writeCurrentPattern = () => {
     let regex;
 
@@ -61,11 +68,9 @@ const watch = (
     const paths = regex ?
       searchSource.findMatchingTests(currentPattern).paths : [];
 
-    pipe.write(ansiEscapes.cursorHide);
-    pipe.write(ansiEscapes.clearScreen);
-    pipe.write(patternUsage());
-    printTypeahead(config, pipe, currentPattern, paths);
-    pipe.write(ansiEscapes.cursorShow);
+    pipe.write(ansiEscapes.eraseLine);
+    pipe.write(ansiEscapes.cursorLeft);
+    patternMode.printTypeahead(config, pipe, currentPattern, paths);
   };
 
   const startRun = (overrideConfig: Object = {}) => {
@@ -171,6 +176,10 @@ const watch = (
       case KEYS.P:
         isEnteringPattern = true;
         currentPattern = '';
+        pipe.write(ansiEscapes.cursorHide);
+        pipe.write(ansiEscapes.clearScreen);
+        pipe.write(patternMode.usage());
+        pipe.write(ansiEscapes.cursorShow);
         writeCurrentPattern();
         break;
       case KEYS.QUESTION_MARK:
@@ -190,15 +199,6 @@ const watch = (
 
   startRun();
   return Promise.resolve();
-};
-
-const patternUsage = (delimiter = '\n') => {
-  const messages = [
-    `\n ${chalk.bold('Pattern Mode Usage')}`,
-    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
-  ];
-
-  return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
 const usage = (
