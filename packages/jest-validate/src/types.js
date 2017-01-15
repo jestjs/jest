@@ -14,7 +14,7 @@ export type ValidationOptions = {|
   condition: Function,
   deprecate: Function,
   error: Function,
-  footer: string,
+  comment: string,
   titleDeprecation: string,
   titleError: string,
   titleWarning: string,

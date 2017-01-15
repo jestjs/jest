@@ -19,10 +19,10 @@ const validationCondition = require('./condition');
 const {BULLET} = require('./utils');
 
 const defaultOptions: ValidationOptions = {
+  comment: '',
   condition: validationCondition,
   deprecate: deprecationWarning,
   error: errorMessage,
-  footer: '',
   titleDeprecation: `${BULLET}Deprecation Warning`,
   titleError: `${BULLET}Validation Error`,
   titleWarning: `${BULLET}Validation Warning`,

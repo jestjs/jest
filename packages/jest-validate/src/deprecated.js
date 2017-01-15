@@ -15,10 +15,10 @@ import type {ValidationOptions} from './types';
 const {logValidationWarning} = require('./utils');
 
 const deprecationMessage = (message: string, options: ValidationOptions) => {
-  const footer = options.footer;
+  const comment = options.comment;
   const name = options.titleDeprecation;
 
-  logValidationWarning(name, message, footer);
+  logValidationWarning(name, message, comment);
 };
 
 const deprecationWarning = (

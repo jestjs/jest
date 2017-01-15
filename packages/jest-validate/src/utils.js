@@ -20,20 +20,24 @@ class ValidationError extends Error {
   name: string;
   message: string;
 
-  constructor(name: string, message: string, footer: ?string) {
+  constructor(name: string, message: string, comment: ?string) {
     super();
-    footer = footer ? '\n\n' + footer : '\n';
+    comment = comment ? '\n\n' + comment : '\n';
     this.name = '';
     this.message =
-      chalk.red.bold(name) + ':\n\n' + message + chalk.red(footer);
+      chalk.red.bold(name) + ':\n\n' + message + chalk.red(comment);
     Error.captureStackTrace(this, () => {});
   }
 }
 
-function logValidationWarning(name: string, message: string, footer?: ?string) {
-  footer = footer ? '\n\n' + footer : '\n';
-  console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + footer));
-}
+const logValidationWarning = (
+  name: string,
+  message: string,
+  comment?: ?string,
+) => {
+  comment = comment ? '\n\n' + comment : '\n';
+  console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
+};
 
 module.exports = {
   BULLET,

@@ -28,7 +28,7 @@ const options: ValidationOptions = {
   condition: (option: string, validOption: string): boolean,
   deprecate: (config: Object, option: string): void,
   error: (option: string, configOption: string, validConfigOption: string, options: ValidationOptions): void // throws ValidationError,
-  footer: string,
+  comment: string,
   titleDeprecation: string,
   titleError: string,
   titleWarning: string,
@@ -42,7 +42,7 @@ validate(config, validConfigSample, deprecatedConfig, {
   titleDeprecation: 'Custom Deprecation',
   titleError: 'Custom Error',
   titleWarning: 'Custom Warning',
-  footer: '  Documentation: http://custom-docs.com'
+  comment: '  Documentation: http://custom-docs.com'
 });
 ```
 Warning:

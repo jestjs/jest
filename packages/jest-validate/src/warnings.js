@@ -26,10 +26,10 @@ const unknownOptionWarning = (
   This is either a typing error or a user mistake. Fixing it will remove this message.`;
   /* eslint-enable max-len */
 
-  const footer = options.footer;
+  const comment = options.comment;
   const name = options.titleWarning;
 
-  logValidationWarning(name, message, footer);
+  logValidationWarning(name, message, comment);
 };
 
 module.exports = {

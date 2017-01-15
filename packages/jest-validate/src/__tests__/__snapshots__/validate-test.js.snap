@@ -92,7 +92,7 @@ exports[`test works with custom deprecations 1`] = `
 
   Please update your configuration.
 
-My custom footer[39m"
+My custom comment[39m"
 `;
 
 exports[`test works with custom errors 1`] = `
@@ -108,7 +108,7 @@ exports[`test works with custom errors 1`] = `
     [1m\"test\"[22m: [1m[1, 2][22m
   }[31m
 
-My custom footer[39m"
+My custom comment[39m"
 `;
 
 exports[`test works with custom warnings 1`] = `
@@ -117,5 +117,5 @@ exports[`test works with custom warnings 1`] = `
   Unknown option [1munknown[22m with value [1m\"string\"[22m was found.
   This is either a typing error or a user mistake. Fixing it will remove this message.
 
-My custom footer[39m"
+My custom comment[39m"
 `;

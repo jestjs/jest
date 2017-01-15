@@ -63,7 +63,7 @@ test('works with custom warnings', () => {
   const validConfig = {test: [1, 2]};
   const warn = console.warn;
   const options = {
-    footer: 'My custom footer',
+    comment: 'My custom comment',
     titleWarning: 'My Custom Warning',
   };
   console.warn = jest.fn();
@@ -78,7 +78,7 @@ test('works with custom errors', () => {
   const config = {test: 'string'};
   const validConfig = {test: [1, 2]};
   const options = {
-    footer: 'My custom footer',
+    comment: 'My custom comment',
     titleError: 'My Custom Error',
   };
 
@@ -89,7 +89,7 @@ test('works with custom errors', () => {
 test('works with custom deprecations', () => {
   const config = {scriptPreprocessor: 'test'};
   const options = {
-    footer: 'My custom footer',
+    comment: 'My custom comment',
     titleDeprecation: 'My Custom Deprecation Warning',
   };
   const warn = console.warn;

@@ -33,10 +33,10 @@ const errorMessage = (
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(format(defaultValue))}
   }`;
 
-  const footer = options && options.footer;
+  const comment = options && options.comment;
   const name = options && options.titleError;
 
-  throw new ValidationError(name, message, footer);
+  throw new ValidationError(name, message, comment);
 };
 
 module.exports = {
