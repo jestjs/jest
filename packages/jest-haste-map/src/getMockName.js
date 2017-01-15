@@ -1,13 +1,10 @@
 const path = require('path');
 
-const getMockName = (filePath, mocksPattern) => {
-  const modulePath = filePath.split(mocksPattern)[1];
+const mocksPattern = '__mocks__';
 
-  const extractMockName = new RegExp(
-    `^\\${path.sep}?(.*?)(\\${path.sep}index)?\\${path.extname(modulePath)}$`
-  );
-
-  return extractMockName.exec(modulePath)[1];
+const getMockName = (filePath: string) => {
+  const mockPath = filePath.split(mocksPattern)[1];
+  return mockPath.substring(1, mockPath.lastIndexOf(path.extname(mockPath)));
 };
 
 module.exports = getMockName;

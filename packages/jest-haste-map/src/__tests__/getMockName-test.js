@@ -4,19 +4,11 @@ const getMockName = require('../getMockName');
 describe('getMockName', () => {
   it('extracts mock name from file path', () => {
     expect(
-      getMockName(path.join('a', '__b__', 'c.js'), /__b__/)
+      getMockName(path.join('a', '__mocks__', 'c.js'))
     ).toBe('c');
 
     expect(
-      getMockName(path.join('a', '__b__', 'index.js'), /__b__/)
-    ).toBe('index');
-
-    expect(
-      getMockName(path.join('a', '__b__', 'c', 'd.js'), /__b__/)
-    ).toBe(path.join('c', 'd'));
-
-    expect(
-      getMockName(path.join('a', '__b__', 'c', 'd', 'index.js'), /__b__/)
+      getMockName(path.join('a', '__mocks__', 'c', 'd.js'))
     ).toBe(path.join('c', 'd'));
   });
 });
