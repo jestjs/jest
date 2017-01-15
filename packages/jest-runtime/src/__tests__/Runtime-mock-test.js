@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const path = require('path');
+
 let createRuntime;
 
 describe('Runtime', () => {
@@ -27,6 +29,7 @@ describe('Runtime', () => {
 
         root.jest.mock('RegularModule', () => mockReference);
         root.jest.mock('ManuallyMocked', () => mockReference);
+        root.jest.mock(path.join('nested1', 'nested2', 'nested3'));
 
         expect(
           runtime.requireModuleOrMock(runtime.__mockRootPath, 'RegularModule'),
@@ -34,6 +37,12 @@ describe('Runtime', () => {
 
         expect(
           runtime.requireModuleOrMock(runtime.__mockRootPath, 'ManuallyMocked'),
+        ).toEqual(mockReference);
+
+        expect(
+          runtime.requireModuleOrMock(
+            runtime.__mockRootPath, path.join('nested1', 'nested2', 'nested3')
+          ),
         ).toEqual(mockReference);
       }),
     );
