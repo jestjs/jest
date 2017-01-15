@@ -44,7 +44,11 @@ jest.mock('../SearchSource', () => class {
   }
 });
 
-jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+jest.doMock('chalk', () => Object.assign(
+  new chalk.constructor({enabled: false}),
+  {stripColor: str => str},
+));
+
 jest.doMock('../runJest', () => function() {
   const args = Array.from(arguments);
   runJestMock.apply(null, args);

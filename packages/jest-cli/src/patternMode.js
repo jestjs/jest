@@ -12,12 +12,11 @@
 
 import type {Config, Path} from 'types/Config';
 
-const {relativePath} = require('./reporters/utils');
 const ansiEscapes = require('ansi-escapes');
-const stringLength = require('string-length');
 const chalk = require('chalk');
 const highlight = require('./lib/highlight');
-const path = require('path');
+const stringLength = require('string-length');
+const {trimAndFormatPath} = require('./reporters/utils');
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
@@ -53,11 +52,19 @@ const printTypeahead = (
     } else {
       pipe.write(`\n\n Pattern matches no files.`);
     }
-    results.forEach(filePath => {
-      const {basename, dirname} = relativePath(config, filePath);
-      const formattedPath = highlight(dirname + path.sep + basename, pattern);
-      pipe.write(`\n  ${chalk.dim('\u203A')} ${formattedPath}`);
-    });
+
+    // $FlowFixMe
+    const width: number = process.stdout.columns;
+    const prefix = `  ${chalk.dim('\u203A')} `;
+    const padding = stringLength(prefix) + 2;
+
+    results
+    .map(rawPath => {
+      const filePath = trimAndFormatPath(padding, config, rawPath, width);
+      return highlight(rawPath, filePath, pattern, config.rootDir);
+    })
+    .forEach(filePath => pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
+
     if (total > max) {
       const more = total - max;
       pipe.write(
