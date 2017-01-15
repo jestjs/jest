@@ -13,8 +13,5 @@
     "jest-matchers": "^18.1.0",
     "jest-snapshot": "^18.1.0",
     "jest-util": "^18.1.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }

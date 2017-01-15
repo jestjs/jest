@@ -9,10 +9,6 @@
   "description": "Stringify any JavaScript value.",
   "main": "build/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js",
-    "perf": "node perf/test.js"
-  },
   "dependencies": {
     "ansi-styles": "^2.2.1"
   }

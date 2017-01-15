@@ -10,8 +10,5 @@
   "dependencies": {
     "jest-mock": "^18.0.0",
     "jest-util": "^18.1.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }

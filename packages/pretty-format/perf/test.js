@@ -14,7 +14,7 @@ const chalk = require('chalk');
 const leftPad = require('left-pad');
 const worldGeoJson = require('./world.geo.json');
 const React = require('react');
-const ReactTestRenderer = require('react/lib/ReactTestRenderer');
+const ReactTestRenderer = require('react-test-renderer');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
 
 const NANOSECONDS = 1000000000;
@@ -54,7 +54,7 @@ function testCase(name, fn) {
 function test(name, value, ignoreResult, prettyFormatOpts) {
   const formatted = testCase(
     'prettyFormat()  ',
-    () => prettyFormat(value, prettyFormatOpts),
+    () => prettyFormat(value, prettyFormatOpts)
   );
 
   const inspected = testCase('util.inspect()  ', () => {
@@ -73,7 +73,7 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
   });
 
   const winner = results[0];
-  
+
   results.forEach((item, index) => {
     item.isWinner = index === 0;
     item.isLoser  = index === results.length - 1;
@@ -202,9 +202,9 @@ const element = React.createElement(
   React.createElement('div'),
   React.createElement('div', {prop: {a: 1, b: 2}},
     React.createElement('div', null,
-      React.createElement('div'),
-    ),
-  ),
+      React.createElement('div')
+    )
+  )
 );
 
 test('react', ReactTestRenderer.create(element).toJSON(), false, {
