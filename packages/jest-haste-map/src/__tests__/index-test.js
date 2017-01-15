@@ -322,12 +322,12 @@ describe('HasteMap', () => {
 
   it('warns on duplicate mock files', () => {
     // Duplicate mock files for blueberry
-    mockFs['/fruits/__mocks__/subdir1/blueberry.js'] = [
+    mockFs['/fruits1/__mocks__/subdir/blueberry.js'] = [
       '/**',
       ' * @providesModule Blueberry1',
       ' */',
     ].join('\n');
-    mockFs['/fruits/__mocks__/subdir2/blueberry.js'] = [
+    mockFs['/fruits2/__mocks__/subdir/blueberry.js'] = [
       '/**',
       ' * @providesModule Blueberry2',
       ' */',
