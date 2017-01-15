@@ -10,14 +10,42 @@
 'use strict';
 
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
+const SPACE = ' ';
+
+class ArrayContaining extends Array {}
+class ObjectContaining extends Object {}
+
+const printAsymmetricMatcher = (
+  val: any,
+  print: Function,
+  indent: Function,
+  opts: Object,
+  colors: Object
+) => {
+  const stringedValue = val.toString();
+
+  if (stringedValue === 'ArrayContaining') {
+    const array = ArrayContaining.from(val.sample);
+    return opts.spacing === SPACE
+      ? stringedValue + SPACE + print(array)
+      : print(array);
+  }
+
+  if (stringedValue === 'ObjectContaining') {
+    const object = Object.assign(new ObjectContaining(), val.sample);
+    return opts.spacing === SPACE
+      ? stringedValue + SPACE + print(object)
+      : print(object);
+  }
+
+  if (stringedValue === 'StringMatching') {
+    return stringedValue + SPACE + print(val.sample);
+  }
+
+  return val.toAsymmetricMatcher();
+};
 
 module.exports = {
-  print: (
-    val: any,
-    print: Function,
-    indent: Function,
-    opts: Object,
-    colors: Object
-  ) => val.toAsymmetricMatcher(print),
+  print: printAsymmetricMatcher,
   test: (object: any) => object && object.$$typeof === asymmetricMatcher,
 };

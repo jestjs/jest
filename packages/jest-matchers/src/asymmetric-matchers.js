@@ -117,10 +117,6 @@ class ArrayContaining extends AsymmetricMatcher {
   toString() {
     return 'ArrayContaining';
   }
-
-  toAsymmetricMatcher(print: Function) {
-    return 'ArrayContaining ' + print(this.sample).replace(/Array\s+/, '');
-  }
 }
 
 class ObjectContaining extends AsymmetricMatcher {
@@ -154,10 +150,6 @@ class ObjectContaining extends AsymmetricMatcher {
   toString() {
     return 'ObjectContaining';
   }
-
-  toAsymmetricMatcher(print: Function) {
-    return 'ObjectContaining ' + print(this.sample).replace(/Object\s+/, '');
-  }
 }
 
 class StringMatching extends AsymmetricMatcher {
@@ -178,10 +170,6 @@ class StringMatching extends AsymmetricMatcher {
 
   toString() {
     return 'StringMatching';
-  }
-
-  toAsymmetricMatcher(print: Function) {
-    return 'StringMatching ' + print(this.sample).replace(/Object/, '');
   }
 }
 

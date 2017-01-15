@@ -94,11 +94,6 @@ test('ArrayContaining throws for non-arrays', () => {
   }).toThrow();
 });
 
-test('ArrayContaining.toAsymmetricMatcher()', () => {
-  jestExpect(arrayContaining(['foo', 'bar']).toAsymmetricMatcher(print))
-    .toBe('ArrayContaining ["foo", "bar"]');
-});
-
 test('ObjectContaining matches', () => {
   [
     objectContaining({}).asymmetricMatch('jest'),
@@ -145,11 +140,6 @@ test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
 });
 
-test('ObjectContaining.toAsymmetricMatcher()', () => {
-  jestExpect(objectContaining({super: 'trooper'}).toAsymmetricMatcher(print))
-    .toBe('ObjectContaining {"super": "trooper"}');
-});
-
 test('StringMatching matches string against regexp', () => {
   jestExpect(stringMatching(/en/).asymmetricMatch('queen')).toBe(true);
   jestExpect(stringMatching(/en/).asymmetricMatch('queue')).toBe(false);
@@ -164,9 +154,4 @@ test('StringMatching throws for non-strings and non-regexps', () => {
   jestExpect(() => {
     stringMatching([1]).asymmetricMatch('queen');
   }).toThrow();
-});
-
-test('StringMatching.toAsymmetricMatcher()', () => {
-  jestExpect(stringMatching(/(foo|bar)/).toAsymmetricMatcher(print))
-    .toBe('StringMatching /(foo|bar)/');
 });
