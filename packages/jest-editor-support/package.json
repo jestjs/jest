@@ -7,9 +7,6 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
-  },
   "optionalDependencies": {
     "typescript": "^2.0.10"
   },

@@ -15,8 +15,5 @@
   },
   "bin": {
     "jest-repl": "./bin/jest-repl.js"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }
