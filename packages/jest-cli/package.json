@@ -44,9 +44,6 @@
     "type": "git",
     "url": "https://github.com/facebook/jest"
   },
-  "scripts": {
-    "test": "./bin/jest.js"
-  },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
   },
