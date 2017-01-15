@@ -22,7 +22,7 @@ const DOCUMENTATION_NOTE =
   https://facebook.github.io/jest/docs/configuration.html
 `;
 
-const validationError = (message: string) => {
+const createValidationError = (message: string) => {
   return new ValidationError(
     `${BULLET}Validation Error`,
     message,
@@ -40,7 +40,7 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
 
   if (!module) {
     /* eslint-disable max-len */
-    throw validationError(
+    throw createValidationError(
       `  Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`
     );
     /* eslint-disable max-len */
@@ -118,7 +118,7 @@ const getTestEnvironment = (config: Object) => {
   } catch (e) {}
 
   /* eslint-disable max-len */
-  throw validationError(
+  throw createValidationError(
     `  Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`
   );
   /* eslint-disable max-len */
