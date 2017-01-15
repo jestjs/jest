@@ -22,6 +22,7 @@ const Resolver = require('jest-resolve');
 
 const fs = require('graceful-fs');
 const path = require('path');
+const stripBOM = require('strip-bom');
 const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
@@ -290,7 +291,7 @@ class Runtime {
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
-          fs.readFileSync(modulePath, 'utf8'),
+          stripBOM(fs.readFileSync(modulePath, 'utf8'))
         );
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
