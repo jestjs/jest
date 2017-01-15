@@ -22,6 +22,20 @@ const {
 const getConsoleOutput = require('./reporters/getConsoleOutput');
 
 function runTest(path: Path, config: Config, resolver: Resolver) {
+  if (config.offline === true) {
+    // Intercept all network requests for offline mode
+    const Mitm = require('mitm');
+    const mitm = Mitm();
+
+    mitm.on('request', (req, res) => {
+      res.statusCode = 502;
+      res.end(
+        'Jest is in offline mode and this response is mocked. ' +
+        'Please mock your network requests or disable offline mode.'
+      );
+    });
+  }
+
   /* $FlowFixMe */
   const TestEnvironment = require(config.testEnvironment);
   /* $FlowFixMe */

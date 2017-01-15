@@ -418,6 +418,7 @@ function normalize(config, argv) {
       case 'name':
       case 'noStackTrace':
       case 'notify':
+      case 'offline':
       case 'persistModuleRegistryBetweenSpecs':
       case 'preset':
       case 'replname':

@@ -21,6 +21,10 @@ function setFromArgv(config, argv) {
     config.notify = argv.notify;
   }
 
+  if (argv.offline) {
+    config.offline = argv.offline;
+  }
+
   if (argv.bail) {
     config.bail = argv.bail;
   }
