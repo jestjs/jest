@@ -33,9 +33,8 @@ const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const ERROR = `${BULLET}Validation Error`;
 
-const runtimeConfigError = message => {
-  return new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
-};
+const createConfigError =
+  message => new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
 const setupPreset = (config: InitialConfig, configPreset: string) => {
   let preset;
@@ -53,7 +52,7 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
     // $FlowFixMe
     preset = require(presetModule);
   } catch (error) {
-    throw runtimeConfigError(
+    throw createConfigError(
       `  Preset ${chalk.bold(presetPath)} not found.`
     );
   }
@@ -162,14 +161,14 @@ const normalizeUnmockedModulePathPatterns = (
 const normalizePreprocessor = (config: InitialConfig) => {
   /* eslint-disable max-len */
   if (config.scriptPreprocessor && config.transform) {
-    throw runtimeConfigError(
+    throw createConfigError(
 `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transform')}.`
     );
   }
 
   if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
-    throw runtimeConfigError(
+    throw createConfigError(
 `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
   Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`
     );
@@ -212,7 +211,7 @@ const normalizeMissingOptions = (config: InitialConfig) => {
 const normalizeRootDir = (config: InitialConfig) => {
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
-    throw runtimeConfigError(
+    throw createConfigError(
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`
     );
   }
