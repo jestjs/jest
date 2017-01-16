@@ -13,7 +13,7 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format, ValidationError} = require('./utils');
+const {format, ValidationError, ERROR} = require('./utils');
 const {getType} = require('jest-matcher-utils');
 
 const errorMessage = (
@@ -21,7 +21,7 @@ const errorMessage = (
   received: any,
   defaultValue: any,
   options: ValidationOptions,
-) => {
+): void => {
   const message =
 `  Option ${chalk.bold(option)} must be of type:
     ${chalk.bold.green(getType(defaultValue))}
@@ -33,8 +33,8 @@ const errorMessage = (
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(format(defaultValue))}
   }`;
 
-  const comment = options && options.comment;
-  const name = options && options.titleError;
+  const comment = options.comment;
+  const name = options.title && options.title.error || ERROR;
 
   throw new ValidationError(name, message, comment);
 };

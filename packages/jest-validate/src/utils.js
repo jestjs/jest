@@ -11,7 +11,10 @@
 'use strict';
 
 const chalk = require('chalk');
-const BULLET: string = chalk.bold('\u25cf ');
+const BULLET: string = chalk.bold('\u25cf');
+const DEPRECATION = `${BULLET} Deprecation Warning`;
+const ERROR = `${BULLET} Validation Error`;
+const WARNING = `${BULLET} Validation Warning`;
 
 const format = (value: string): string =>
   require('pretty-format')(value, {min: true});
@@ -24,8 +27,7 @@ class ValidationError extends Error {
     super();
     comment = comment ? '\n\n' + comment : '\n';
     this.name = '';
-    this.message =
-      chalk.red.bold(name) + ':\n\n' + message + chalk.red(comment);
+    this.message = chalk.red(chalk.bold(name) + ':\n\n' + message + comment);
     Error.captureStackTrace(this, () => {});
   }
 }
@@ -40,8 +42,10 @@ const logValidationWarning = (
 };
 
 module.exports = {
-  BULLET,
+  DEPRECATION,
+  ERROR,
   ValidationError,
+  WARNING,
   format,
   logValidationWarning,
 };

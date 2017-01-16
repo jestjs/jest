@@ -12,46 +12,41 @@
 
 import type {ValidationOptions} from './types';
 
-const {deprecationWarning} = require('./deprecated');
-const {unknownOptionWarning} = require('./warnings');
-const {errorMessage} = require('./errors');
-const validationCondition = require('./condition');
-const {BULLET} = require('./utils');
+const defaultConfig = require('./defaultConfig');
 
-const defaultOptions: ValidationOptions = {
-  comment: '',
-  condition: validationCondition,
-  deprecate: deprecationWarning,
-  error: errorMessage,
-  titleDeprecation: `${BULLET}Deprecation Warning`,
-  titleError: `${BULLET}Validation Error`,
-  titleWarning: `${BULLET}Validation Warning`,
-  unknown: unknownOptionWarning,
-};
-
-const validate = (
-  config: Object,
-  validConfig: Object,
-  deprecatedConfig: ?Object,
-  options: ?Object,
-) => {
-  options = Object.assign(defaultOptions, options);
-
-  if (!validConfig) {
-    options.error('validConfig', validConfig, {}, options);
-  }
-
+const _validate = (config: Object, options: ValidationOptions) => {
   for (const key in config) {
-    if (hasOwnProperty.call(validConfig, key)) {
-      if (!options.condition(config[key], validConfig[key])) {
-        options.error(key, config[key], validConfig[key], options);
+    if (hasOwnProperty.call(options.exampleConfig, key)) {
+      if (
+        typeof options.condition === 'function' &&
+        typeof options.error === 'function' &&
+        !options.condition(config[key], options.exampleConfig[key])
+      ) {
+        options.error(key, config[key], options.exampleConfig[key], options);
       }
-    } else if (deprecatedConfig && key in deprecatedConfig) {
-      options.deprecate(config, key, deprecatedConfig, options);
+    } else if (
+      options.deprecatedConfig &&
+      key in options.deprecatedConfig &&
+      typeof options.deprecate === 'function'
+    ) {
+      options.deprecate(config, key, options.deprecatedConfig, options);
     } else {
-      options.unknown(config, key, options);
+      options.unknown && options.unknown(config, key, options);
     }
   }
+};
+
+const validate = (config: Object, options: ValidationOptions) => {
+  _validate(options, defaultConfig); // validate against jest-validate config
+
+  const defaultedOptions: ValidationOptions = Object.assign(
+    {},
+    defaultConfig,
+    options,
+    {title: Object.assign({}, defaultConfig.title, options.title)},
+  );
+
+  _validate(config, defaultedOptions);
 
   return true;
 };

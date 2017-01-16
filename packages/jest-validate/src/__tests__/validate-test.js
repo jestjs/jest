@@ -12,9 +12,17 @@
 const validate = require('../validate');
 const defaultConfig = require('jest-config').defaults;
 const {validConfig, deprecatedConfig} = require('jest-config');
+const jestValidateExampleConfig = require('../exampleConfig');
+const jestValidateDefaultConfig = require('../defaultConfig');
 
-test('validates default config', () => {
-  expect(validate(defaultConfig, validConfig)).toBe(true);
+test('validates default Jest config', () => {
+  expect(validate(defaultConfig, {exampleConfig: validConfig})).toBe(true);
+});
+
+test('validates default jest-validate config', () => {
+  expect(validate(jestValidateDefaultConfig, {
+    exampleConfig: jestValidateExampleConfig,
+  })).toBe(true);
 });
 
 [
@@ -24,7 +32,8 @@ test('validates default config', () => {
   [{haste: 42}, 'Object'],
 ].forEach(([config, type]) => {
   test(`pretty prints valid config for ${type}`, () => {
-    expect(() => validate(config, validConfig)).toThrowErrorMatchingSnapshot();
+    expect(() => validate(config, {exampleConfig: validConfig}))
+      .toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -33,7 +42,7 @@ test('omits null and undefined config values', () => {
     haste: undefined,
     preset: null,
   };
-  expect(validate(config, validConfig)).toBe(true);
+  expect(validate(config, {exampleConfig: validConfig})).toBe(true);
 });
 
 test('displays warning for unknown config options', () => {
@@ -41,7 +50,7 @@ test('displays warning for unknown config options', () => {
   const warn = console.warn;
   console.warn = jest.fn();
 
-  validate(config, validConfig);
+  validate(config, {exampleConfig: validConfig});
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;
@@ -52,7 +61,7 @@ test('displays warning for deprecated config options', () => {
   const warn = console.warn;
   console.warn = jest.fn();
 
-  validate(config, validConfig, deprecatedConfig);
+  validate(config, {deprecatedConfig, exampleConfig: validConfig});
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;
@@ -64,11 +73,15 @@ test('works with custom warnings', () => {
   const warn = console.warn;
   const options = {
     comment: 'My custom comment',
-    titleWarning: 'My Custom Warning',
+    deprecatedConfig,
+    exampleConfig: validConfig,
+    title: {
+      warning: 'My Custom Warning',
+    },
   };
   console.warn = jest.fn();
 
-  validate(config, validConfig, {}, options);
+  validate(config, options);
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;
@@ -79,23 +92,30 @@ test('works with custom errors', () => {
   const validConfig = {test: [1, 2]};
   const options = {
     comment: 'My custom comment',
-    titleError: 'My Custom Error',
+    deprecatedConfig,
+    exampleConfig: validConfig,
+    title: {
+      error: 'My Custom Error',
+    },
   };
 
-  expect(() => validate(config, validConfig, {}, options))
-    .toThrowErrorMatchingSnapshot();
+  expect(() => validate(config, options)).toThrowErrorMatchingSnapshot();
 });
 
 test('works with custom deprecations', () => {
   const config = {scriptPreprocessor: 'test'};
+  const warn = console.warn;
   const options = {
     comment: 'My custom comment',
-    titleDeprecation: 'My Custom Deprecation Warning',
+    deprecatedConfig,
+    exampleConfig: validConfig,
+    title: {
+      deprecation: 'My Custom Deprecation Warning',
+    },
   };
-  const warn = console.warn;
   console.warn = jest.fn();
 
-  validate(config, validConfig, deprecatedConfig, options);
+  validate(config, options);
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;

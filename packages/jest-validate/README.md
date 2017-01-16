@@ -13,42 +13,75 @@ import {validate} from 'jest-validate';
 
 validate(
   config: Object,
-  validConfigSample: Object,
-  deprecatedConfig: ?Object,
-  options: ?Object
+  options: ValidationOptions,
 );
 ```
+
+Where `ValidationOptions` are:
+```js
+export type ValidationOptions = {
+  comment?: string,
+  condition?: (option: any, validOption: any) => boolean,
+  deprecate?: (
+    config: Object,
+    option: string,
+    deprecatedOptions: Object,
+    options: ValidationOptions
+  ) => void,
+  deprecatedConfig?: Object,
+  error?: (
+    option: string,
+    received: any,
+    defaultValue: any,
+    options: ValidationOptions,
+  ) => void,
+  exampleConfig: Object,
+  title?: Title,
+  unknown?: (
+    config: Object,
+    option: string,
+    options: ValidationOptions
+  ) => void,
+}
+```
+`exampleConfig` is the only option required.
 
 ## Customization
 
 By default `jest-validate` will print generic warning and error messages. You can however customize this behavior by providing `options` object as a fourth argument:
 
 ```js
-const options: ValidationOptions = {
-  condition: (option: string, validOption: string): boolean,
-  deprecate: (config: Object, option: string): void,
-  error: (option: string, configOption: string, validConfigOption: string, options: ValidationOptions): void // throws ValidationError,
-  comment: string,
-  titleDeprecation: string,
-  titleError: string,
-  titleWarning: string,
+type ValidationOptions = {|
+  condition?: (option: string, validOption: string): boolean,
+  deprecate?: (config: Object, option: string): void,
+  error?: (option: string, configOption: string, validConfigOption: string, options: ValidationOptions): void // throws ValidationError,
+  comment?: string,
+  title?: {|
+    deprecation?: string,
+    error?: string,
+    warning?: string,
+  |},
   unknown: (config: Object, option: string, options: ValidationOptions),
-}
+|}
 ```
+Any of the options listed above can be overwritten to suite your needs.
 
-## Examples
+## Example
 ```js
-validate(config, validConfigSample, deprecatedConfig, {
-  titleDeprecation: 'Custom Deprecation',
-  titleError: 'Custom Error',
-  titleWarning: 'Custom Warning',
-  comment: '  Documentation: http://custom-docs.com'
+validate(config, {
+  comment: '  Documentation: http://custom-docs.com',
+  exampleConfig,
+  deprecatedConfig,
+  title: {
+    deprecation: 'Custom Deprecation',
+    // leaving 'error' and 'warning' as default
+  }
 });
 ```
 Warning:
 
 ```
-● Custom Warning:
+● Validation Warning:
 
   Unknown option transformx with value "<rootDir>/node_modules/babel-jest" was found.
   This is either a typing error or a user mistake. Fixing it will remove this message.
@@ -59,7 +92,7 @@ Warning:
 Error:
 
 ```
-● Custom Error:
+● Validation Error:
 
   Option transform must be of type:
     object
@@ -77,7 +110,7 @@ Error:
 Deprecation (based on `deprecatedConfig` object with proper deprecation messages):
 
 ```
-● Custom Deprecation:
+Custom Deprecation:
 
   Option scriptPreprocessor was replaced by transform, which support multiple preprocessors.
 

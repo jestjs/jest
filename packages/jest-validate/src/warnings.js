@@ -13,13 +13,13 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format, logValidationWarning} = require('./utils');
+const {format, logValidationWarning, WARNING} = require('./utils');
 
 const unknownOptionWarning = (
   config: Object,
   option: string,
   options: ValidationOptions
-) => {
+): void => {
   /* eslint-disable max-len */
   const message =
 `  Unknown option ${chalk.bold(option)} with value ${chalk.bold(format(config[option]))} was found.
@@ -27,7 +27,7 @@ const unknownOptionWarning = (
   /* eslint-enable max-len */
 
   const comment = options.comment;
-  const name = options.titleWarning;
+  const name = options.title && options.title.warning || WARNING;
 
   logValidationWarning(name, message, comment);
 };

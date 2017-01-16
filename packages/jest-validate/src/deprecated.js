@@ -12,11 +12,11 @@
 
 import type {ValidationOptions} from './types';
 
-const {logValidationWarning} = require('./utils');
+const {logValidationWarning, DEPRECATION} = require('./utils');
 
 const deprecationMessage = (message: string, options: ValidationOptions) => {
   const comment = options.comment;
-  const name = options.titleDeprecation;
+  const name = options.title && options.title.deprecation || DEPRECATION;
 
   logValidationWarning(name, message, comment);
 };
@@ -26,7 +26,7 @@ const deprecationWarning = (
   option: string,
   deprecatedOptions: Object,
   options: ValidationOptions
-) => {
+): void => {
   if (option in deprecatedOptions) {
     deprecationMessage(deprecatedOptions[option](config), options);
   }

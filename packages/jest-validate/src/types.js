@@ -10,13 +10,33 @@
 
 'use strict';
 
-export type ValidationOptions = {|
-  condition: Function,
-  deprecate: Function,
-  error: Function,
-  comment: string,
-  titleDeprecation: string,
-  titleError: string,
-  titleWarning: string,
-  unknown: Function,
-|};
+type Title = {|
+  deprecation?: string,
+  error?: string,
+  warning?: string,
+|}
+
+export type ValidationOptions = {
+  comment?: string,
+  condition?: (option: any, validOption: any) => boolean,
+  deprecate?: (
+    config: Object,
+    option: string,
+    deprecatedOptions: Object,
+    options: ValidationOptions
+  ) => void,
+  deprecatedConfig?: {[key: string]: Function},
+  error?: (
+    option: string,
+    received: any,
+    defaultValue: any,
+    options: ValidationOptions,
+  ) => void,
+  exampleConfig: Object,
+  title?: Title,
+  unknown?: (
+    config: Object,
+    option: string,
+    options: ValidationOptions
+  ) => void,
+}
