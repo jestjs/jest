@@ -3,7 +3,7 @@
 Generic configuration validation tool that helps you with warnings, errors and deprecation messages as well as showing users examples of correct configuration.
 
 ```
-npm install --save-dev jest-validate
+npm install --save jest-validate
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ validate(
 
 Where `ValidationOptions` are:
 ```js
-export type ValidationOptions = {
+type ValidationOptions = {
   comment?: string,
   condition?: (option: any, validOption: any) => boolean,
   deprecate?: (
@@ -28,7 +28,7 @@ export type ValidationOptions = {
     deprecatedOptions: Object,
     options: ValidationOptions
   ) => void,
-  deprecatedConfig?: Object,
+  deprecatedConfig?: {[key: string]: Function},
   error?: (
     option: string,
     received: any,
@@ -43,30 +43,43 @@ export type ValidationOptions = {
     options: ValidationOptions
   ) => void,
 }
-```
-`exampleConfig` is the only option required.
 
-## Customization
-
-By default `jest-validate` will print generic warning and error messages. You can however customize this behavior by providing `options` object as a fourth argument:
-
-```js
-type ValidationOptions = {|
-  condition?: (option: string, validOption: string): boolean,
-  deprecate?: (config: Object, option: string): void,
-  error?: (option: string, configOption: string, validConfigOption: string, options: ValidationOptions): void // throws ValidationError,
-  comment?: string,
-  title?: {|
-    deprecation?: string,
-    error?: string,
-    warning?: string,
-  |},
-  unknown: (config: Object, option: string, options: ValidationOptions),
+type Title = {|
+  deprecation?: string,
+  error?: string,
+  warning?: string,
 |}
 ```
-Any of the options listed above can be overwritten to suite your needs.
 
-## Example
+`exampleConfig` is the only option required.
+
+## API
+
+By default `jest-validate` will print generic warning and error messages. You can however customize this behavior by providing `options: ValidationOptions` object as a second argument:
+
+Almost anything can be overwritten to suite your needs.
+
+### Options
+
+* `comment` – optional string to be rendered bellow error/warning message.
+* `condition` – an optional function with validation condition.
+* `deprecate`, `error`, `unknown` – optional functions responsible for displaying warning and error messages.
+* `deprecatedConfig` – optional object with deprecated config keys.
+* `exampleConfig` – the only **required** option with configuration against which you'd like to test.
+* `title` – optional object of titles for errors and messages.
+
+You will find examples of `condition`, `deprecate`, `error`, `unknown`, and `deprecatedConfig` inside source of this repository, named respectively.
+
+## Examples
+
+Minimal example:
+
+```js
+validate(config, {exampleConfig});
+```
+
+Example with slight modifications:
+
 ```js
 validate(config, {
   comment: '  Documentation: http://custom-docs.com',
@@ -78,7 +91,10 @@ validate(config, {
   }
 });
 ```
-Warning:
+
+This will output:
+
+#### Warning:
 
 ```
 ● Validation Warning:
@@ -89,7 +105,7 @@ Warning:
   Documentation: http://custom-docs.com
 ```
 
-Error:
+#### Error:
 
 ```
 ● Validation Error:
@@ -107,7 +123,8 @@ Error:
   Documentation: http://custom-docs.com
 ```
 
-Deprecation (based on `deprecatedConfig` object with proper deprecation messages):
+#### Deprecation
+Based on `deprecatedConfig` object with proper deprecation messages. Note custom title:
 
 ```
 Custom Deprecation:
