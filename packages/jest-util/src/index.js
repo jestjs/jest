@@ -13,12 +13,14 @@
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
+const {ValidationError, format} = require('jest-validate');
 
 const {
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
 } = require('./messages');
+const chalk = require('chalk');
 const clearLine = require('./clearLine');
 const fileExists = require('jest-file-exists');
 const formatTestResults = require('./formatTestResults');
@@ -27,6 +29,7 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 const setGlobal = require('./setGlobal');
+const BULLET: string = chalk.bold('\u25cf');
 
 const escapePathForRegex = (dir: string) => {
   if (path.sep === '\\') {
@@ -73,7 +76,7 @@ const getPackageRoot = () => {
   return root;
 };
 
-const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
+const validateCLIOptions = (argv: Object, options: Object) => {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const allowedOptions = Object.keys(options).reduce((acc, option) => (
     acc
@@ -84,7 +87,14 @@ const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
     !allowedOptions.has(arg)
   ));
   if (unrecognizedOptions.length) {
-    console.warn('Unrecognized options: ' + unrecognizedOptions.join(', '));
+    const title = `${BULLET} Unrecognized CLI Options Error`;
+    const message =
+      `  These options were not recognized by Jest:\n` +
+      `  ${chalk.bold(format(unrecognizedOptions))}`;
+    const comment =
+      `  ${chalk.bold('CLI Options Documentation')}:\n` +
+      `  http://facebook.github.io/jest/docs/api.html#jest-cli-options\n`;
+    throw new ValidationError(title, message, comment);
   }
 };
 
@@ -105,5 +115,5 @@ module.exports = {
   replacePathSepForRegex,
   separateMessageFromStack,
   setGlobal,
-  warnAboutUnrecognizedOptions,
+  validateCLIOptions,
 };

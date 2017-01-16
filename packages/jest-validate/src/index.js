@@ -13,6 +13,7 @@
 module.exports = {
   ValidationError: require('./errors').ValidationError,
   createDidYouMeanMessage: require('./utils').createDidYouMeanMessage,
+  format: require('./utils').format,
   logValidationWarning: require('./utils').logValidationWarning,
   validate: require('./validate'),
 };

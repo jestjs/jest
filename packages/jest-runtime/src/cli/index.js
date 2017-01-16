@@ -20,7 +20,7 @@ const {
   Console,
   getPackageRoot,
   setGlobal,
-  warnAboutUnrecognizedOptions,
+  validateCLIOptions,
 } = require('jest-util');
 const readConfig = require('jest-config').readConfig;
 const Runtime = require('../');
@@ -37,7 +37,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
       .options(args.options)
       .argv;
 
-    warnAboutUnrecognizedOptions(argv, args.options);
+    validateCLIOptions(argv, args.options);
   }
 
   if (argv.help) {
