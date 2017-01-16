@@ -20,8 +20,19 @@ import type {
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const isWindows = process.platform === 'win32';
+const SKIPPED_TESTS = chalk.dim('skipped tests');
 
 class VerboseReporter extends DefaultReporter {
+  _config: Config;
+
+  constructor(config: Config) {
+    super();
+    this._config = config;
+  }
+
+  static filterTestResults(testResults: Array<AssertionResult>) {
+    return testResults.filter(({status}) => status !== 'pending');
+  }
 
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
     const root = {suites: [], tests: [], title: ''};
@@ -65,7 +76,8 @@ class VerboseReporter extends DefaultReporter {
       this._logLine(suite.title, indentLevel);
     }
 
-    suite.tests.forEach(test => this._logTest(test, indentLevel + 1));
+    this._logTests(suite.tests, indentLevel + 1);
+
     suite.suites.forEach(suite => this._logSuite(suite, indentLevel + 1));
   }
 
@@ -85,6 +97,30 @@ class VerboseReporter extends DefaultReporter {
       ? ` (${test.duration.toFixed(0)}ms)`
       : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
+  }
+
+  _logTests(tests: Array<AssertionResult>, indentLevel: number) {
+    const config = this._config;
+
+    if (config.expand) {
+      tests.forEach(test => this._logTest(test, indentLevel));
+    } else {
+      const skippedCount = tests.reduce((result, test) => {
+        if (test.status === 'pending') {
+          result += 1;
+        } else {
+          this._logTest(test, indentLevel);
+        }
+
+        return result;
+      }, 0);
+
+      if (skippedCount > 0) {
+        const icon = this._getIcon('pending');
+
+        this._logLine(`${icon} ${skippedCount} ${SKIPPED_TESTS}`, indentLevel);
+      }
+    }
   }
 
   _logLine(str?: string, indentLevel?: number) {
