@@ -14,19 +14,19 @@ import type {ValidationOptions} from './types';
 
 const config: ValidationOptions = {
   comment: '  A comment',
-  condition: () => false,
-  deprecate: () => {},
+  condition: (option, validOption) => true,
+  deprecate: (config, option, deprecatedOptions, options) => {},
   deprecatedConfig: {
-    key: () => {},
+    key: config => {},
   },
-  error: () => {},
+  error: (option, received, defaultValue, options) => {},
   exampleConfig: {key: 'value', test: 'case'},
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',
     warning: 'Validation Warning',
   },
-  unknown: () => {},
+  unknown: (config, option, options) => {},
 };
 
 module.exports = config;

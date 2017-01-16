@@ -37,6 +37,13 @@ test('validates default jest-validate config', () => {
   });
 });
 
+test(`pretty prints valid config for Function`, () => {
+  const config = {fn: 'test'};
+  const validConfig = {fn: (config, option, deprecatedOptions) => true};
+  expect(() => validate(config, {exampleConfig: validConfig}))
+    .toThrowErrorMatchingSnapshot();
+});
+
 test('omits null and undefined config values', () => {
   const config = {
     haste: undefined,
