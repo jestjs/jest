@@ -14,7 +14,7 @@ type Title = {|
   deprecation?: string,
   error?: string,
   warning?: string,
-|}
+|};
 
 export type ValidationOptions = {
   comment?: string,
@@ -39,4 +39,4 @@ export type ValidationOptions = {
     option: string,
     options: ValidationOptions
   ) => void,
-}
+};
