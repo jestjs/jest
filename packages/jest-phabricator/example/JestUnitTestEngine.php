@@ -5,7 +5,7 @@
  * JestUnitTestEngine
  */
 class JestUnitTestEngine extends ArcanistBaseUnitTestEngine {
-  const PROCESSOR = 'jest/packages/jest-phabricator-coverage/build/index.js';
+  const PROCESSOR = 'jest/packages/jest-phabricator/build/index.js';
   const JEST_PATH = 'jest/packages/jest/bin/jest.js';
   const TOO_MANY_FILES_TO_COVER = 100;
   const GIGANTIC_DIFF_THRESHOLD = 200;

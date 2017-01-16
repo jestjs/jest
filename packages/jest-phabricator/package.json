@@ -1,5 +1,5 @@
 {
-  "name": "jest-phabricator-coverage",
+  "name": "jest-phabricator",
   "version": "18.0.0",
   "repository": {
     "type": "git",

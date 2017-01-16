@@ -15,13 +15,8 @@ import type {
   FormattedTestResult,
 } from 'types/TestResult';
 
-type SingleReport = AggregatedResult & {
-  phabricatorReport: FormattedTestResult,
-  coverageMap: null,
-};
-
-type PhabricatorReport = {
-  phabricatorReport: Array<SingleReport>
+type PhabricatorReport = AggregatedResult & {
+  phabricatorReport: Array<FormattedTestResult>
 };
 
 const {formatTestResults} = require('jest-util');
@@ -53,10 +48,7 @@ function summarize(coverageMap: CoverageMap) {
 }
 
 module.exports = function(results: AggregatedResult): PhabricatorReport {
-  let coverageMap;
-  if (results.coverageMap) {
-    coverageMap = summarize(results.coverageMap);
-  }
+  const coverageMap = results.coverageMap && summarize(results.coverageMap);
 
   const formatter = (coverage, reporter) => coverageMap;
   const report = formatTestResults(results, formatter);
@@ -65,7 +57,7 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
     (Object.create(null): any),
     results,
     {
-      coverageMap: null,
+      coverageMap: null, // this can be big and phabricator doesn't need it.
       phabricatorReport: report.testResults,
     }
   );

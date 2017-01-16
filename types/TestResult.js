@@ -83,14 +83,14 @@ export type AssertionResult = {|
   title: string,
 |};
 
-export type FormattedTestAssertion = {
+export type FormattedAssertionResult = {
   status: Status,
   title: string,
   failureMessages: Array<string> | null,
 };
 
-export type AggregatedResult = {|
-  coverageMap?: CoverageMap,
+export type AggregatedResult = {
+  coverageMap?: ?CoverageMap,
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -105,7 +105,7 @@ export type AggregatedResult = {|
   success: boolean,
   testResults: Array<TestResult>,
   wasInterrupted: boolean,
-|};
+};
 
 export type Suite = {|
   title: string,
@@ -139,7 +139,7 @@ export type TestResult = {|
   testResults: Array<AssertionResult>,
 |};
 
-export type FormattedTestResult = {|
+export type FormattedTestResult = {
   message: string,
   name: string,
   summary: string,
@@ -147,19 +147,25 @@ export type FormattedTestResult = {|
   startTime: number,
   endTime: number,
   coverage: any,
-  assertionResults: Array<FormattedTestAssertion>,
-|};
+  assertionResults: Array<FormattedAssertionResult>,
+};
 
-export type FormattedTestResults = AggregatedResult & {
+export type FormattedTestResults = {
+  coverageMap?: ?CoverageMap,
   numFailedTests: number,
+  numFailedTestSuites: number,
   numPassedTests: number,
+  numPassedTestSuites: number,
   numPendingTests: number,
+  numPendingTestSuites: number,
   numRuntimeErrorTestSuites: number,
-  numTotalTestSuites: number,
   numTotalTests: number,
+  numTotalTestSuites: number,
+  snapshot: SnapshotSummary,
   startTime: number,
   success: boolean,
-  testResults: FormattedTestResult,
+  testResults: Array<FormattedTestResult>,
+  wasInterrupted: boolean,
 };
 
 export type CodeCoverageReporter = any;

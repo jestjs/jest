@@ -15,7 +15,7 @@ import type {
   AssertionResult,
   CodeCoverageFormatter,
   CodeCoverageReporter,
-  FormattedTestAssertion,
+  FormattedAssertionResult,
   FormattedTestResult,
   FormattedTestResults,
   TestResult,
@@ -60,8 +60,8 @@ const formatResult = (
 
 function formatTestAssertion(
   assertion: AssertionResult,
-): FormattedTestAssertion {
-  const result: FormattedTestAssertion = {
+): FormattedAssertionResult {
+  const result: FormattedAssertionResult = {
     failureMessages: null,
     status: assertion.status,
     title: assertion.title,
@@ -86,14 +86,6 @@ function formatTestResults(
   ));
 
   return Object.assign((Object.create(null): any), results, {
-    numFailedTests: results.numFailedTests,
-    numPassedTests: results.numPassedTests,
-    numPendingTests: results.numPendingTests,
-    numRuntimeErrorTestSuites: results.numRuntimeErrorTestSuites,
-    numTotalTestSuites: results.numTotalTestSuites,
-    numTotalTests: results.numTotalTests,
-    startTime: results.startTime,
-    success: results.success,
     testResults,
   });
 }
