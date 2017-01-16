@@ -50,6 +50,21 @@ exports[`test pretty prints valid config for Boolean 1`] = `
 [39m"
 `;
 
+exports[`test pretty prints valid config for Function 1`] = `
+"[31m[1m[1m●[1m Validation Error[22m:
+
+  Option [1mfn[22m must be of type:
+    [1m[32mfunction[31m[22m
+  but instead received:
+    [1m[31mstring[31m[22m
+
+  Example:
+  {
+    [1m\"fn\"[22m: [1m(config, option, deprecatedOptions) => true[22m
+  }
+[39m"
+`;
+
 exports[`test pretty prints valid config for Object 1`] = `
 "[31m[1m[1m●[1m Validation Error[22m:
 
