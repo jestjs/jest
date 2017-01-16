@@ -23,7 +23,7 @@ exports[`test only 1`] = `
   ✓ test.only
   ✓ it.only
   ✓ fit
-  ○ 1 skipped tests
+  ○ skipped 1 test
   fdescribe
     ✓ it
     ✓ test
@@ -73,13 +73,13 @@ Ran all test suites.
 exports[`test skips 1`] = `
 " PASS  __tests__/skips-constructs-test.js
   ✓ it
-  ○ 4 skipped tests
+  ○ skipped 4 tests
   xdescribe
-    ○ 2 skipped tests
+    ○ skipped 2 tests
   describe.skip
-    ○ 1 skipped tests
+    ○ skipped 1 test
     describe
-      ○ 1 skipped tests
+      ○ skipped 1 test
 
 "
 `;
@@ -123,7 +123,7 @@ Ran all test suites.
 exports[`test tests with no implementation 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ it
-  ○ 2 skipped tests
+  ○ skipped 2 tests
 
 "
 `;

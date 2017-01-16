@@ -10,7 +10,9 @@
 
 'use strict';
 
-const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
+const isWindows = process.platform === 'win32';
+
+const CLEAR = isWindows ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 
 const KEYS = {
   A: '61',
@@ -18,7 +20,7 @@ const KEYS = {
   ARROW_LEFT: '1b5b44',
   ARROW_RIGHT: '1b5b43',
   ARROW_UP: '1b5b41',
-  BACKSPACE: process.platform === 'win32' ? '08' : '7f',
+  BACKSPACE: isWindows ? '08' : '7f',
   CONTROL_C: '03',
   CONTROL_D: '04',
   ENTER: '0d',
@@ -30,4 +32,10 @@ const KEYS = {
   U: '75',
 };
 
-module.exports = {CLEAR, KEYS};
+const ICONS = {
+  failed: isWindows ? '\u00D7' : '\u2715',
+  pending: '\u25CB',
+  success: isWindows ? '\u221A' : '\u2713',
+};
+
+module.exports = {CLEAR, ICONS, KEYS};

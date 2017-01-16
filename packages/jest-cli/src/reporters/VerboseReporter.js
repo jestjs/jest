@@ -19,8 +19,7 @@ import type {
 
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
-const isWindows = process.platform === 'win32';
-const SKIPPED_TESTS = chalk.dim('skipped tests');
+const {ICONS} = require('../constants');
 
 class VerboseReporter extends DefaultReporter {
   _config: Config;
@@ -83,11 +82,11 @@ class VerboseReporter extends DefaultReporter {
 
   _getIcon(status: string) {
     if (status === 'failed') {
-      return chalk.red(isWindows ? '\u00D7' : '\u2715');
+      return chalk.red(ICONS.failed);
     } else if (status === 'pending') {
-      return chalk.yellow('\u25CB');
+      return chalk.yellow(ICONS.pending);
     } else {
-      return chalk.green(isWindows ? '\u221A' : '\u2713');
+      return chalk.green(ICONS.success);
     }
   }
 
@@ -116,11 +115,15 @@ class VerboseReporter extends DefaultReporter {
       }, 0);
 
       if (skippedCount > 0) {
-        const icon = this._getIcon('pending');
-
-        this._logLine(`${icon} ${skippedCount} ${SKIPPED_TESTS}`, indentLevel);
+        this._logSkippedTests(skippedCount, indentLevel);
       }
     }
+  }
+
+  _logSkippedTests(count: number, indentLevel: number) {
+    const text = `skipped ${count} test${count === 1 ? '' : 's'}`;
+
+    this._logLine(chalk.dim(`${ICONS.pending} ${text}`), indentLevel);
   }
 
   _logLine(str?: string, indentLevel?: number) {
