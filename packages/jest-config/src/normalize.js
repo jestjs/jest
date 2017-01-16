@@ -241,8 +241,10 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
 };
 
 function normalize(config: InitialConfig, argv: Object = {}) {
-  validate(config, VALID_CONFIG, DEPRECATED_CONFIG, {
+  validate(config, {
     comment: DOCUMENTATION_NOTE,
+    deprecatedConfig: DEPRECATED_CONFIG,
+    exampleConfig: VALID_CONFIG,
   });
 
   normalizePreprocessor(config);
