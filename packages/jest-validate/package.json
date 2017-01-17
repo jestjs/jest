@@ -11,8 +11,5 @@
     "chalk": "^1.1.1",
     "jest-matcher-utils": "^18.1.0",
     "pretty-format": "^18.1.0"
-  },
-  "devDependencies": {
-    "jest-config": "^18.1.0"
   }
 }
