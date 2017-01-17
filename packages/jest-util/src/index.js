@@ -13,14 +13,12 @@
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
-const {ValidationError, format} = require('jest-validate');
 
 const {
   formatExecError,
   formatResultsErrors,
   formatStackTrace,
 } = require('./messages');
-const chalk = require('chalk');
 const clearLine = require('./clearLine');
 const fileExists = require('jest-file-exists');
 const formatTestResults = require('./formatTestResults');
@@ -29,7 +27,7 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 const setGlobal = require('./setGlobal');
-const BULLET: string = chalk.bold('\u25cf');
+const validateCLIOptions = require('./validateCLIOptions');
 
 const escapePathForRegex = (dir: string) => {
   if (path.sep === '\\') {
@@ -74,59 +72,6 @@ const getPackageRoot = () => {
   }
 
   return root;
-};
-
-const createCLIValidationError = (
-  unrecognizedOptions: Array<string>,
-  allowedOptions: Set<string>,
-) => {
-  let title = `${BULLET} Unrecognized CLI Parameter`;
-  let message;
-  const comment =
-  `  ${chalk.bold('CLI Options Documentation')}:\n` +
-  `  http://facebook.github.io/jest/docs/cli.html\n`;
-
-  if (unrecognizedOptions.length === 1) {
-    const leven = require('leven');
-    const unrecognized = unrecognizedOptions[0];
-    let suggestion;
-
-    allowedOptions.forEach(option => {
-      const steps = leven(option, unrecognized);
-      if (steps < 3) {
-        suggestion = option;
-      }
-    });
-
-    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.`;
-    if (suggestion) {
-      message += ` Did you mean ${chalk.bold(format(suggestion))}?`;
-    }
-  } else {
-    title += 's';
-    message =
-      `  Following options were not recognized by Jest:\n` +
-      `  ${chalk.bold(format(unrecognizedOptions))}`;
-  }
-
-  return new ValidationError(title, message, comment);
-};
-
-const validateCLIOptions = (argv: Object, options: Object) => {
-  const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const allowedOptions = Object.keys(options).reduce((acc, option) =>
-    acc
-      .add(option)
-      .add(options[option].alias || option),
-    new Set(yargsSpecialOptions)
-  );
-  const unrecognizedOptions = Object.keys(argv).filter(arg => (
-    !allowedOptions.has(arg)
-  ));
-
-  if (unrecognizedOptions.length) {
-    throw createCLIValidationError(unrecognizedOptions, allowedOptions);
-  }
 };
 
 module.exports = {
