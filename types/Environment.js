@@ -12,7 +12,7 @@
 import type {Config} from './Config';
 import type {Global} from './Global';
 import type {Script} from 'vm';
-import type ModuleMocker from 'jest-mock';
+import type {ModuleMocker} from 'jest-mock';
 
 export type Environment = {|
   constructor(config: Config): void;

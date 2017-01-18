@@ -15,7 +15,7 @@ const variableNamePattern = String.raw`\s*[a-zA-Z_$][a-zA-Z_$\d]*\s*`;
 const importPattern = String.raw`^(?:var|let|const|import type)\s+` +
   '{?' + variableNamePattern + '(?:,' + variableNamePattern + ')*}?' +
   String.raw`\s*(?:=\s*require\(|from)[a-zA-Z_+./''\s\d\-]+\)?[^;\n]*[;\n]`;
-const maxLenIgnorePattern = String.raw`(^\s*it\(|${importPattern})`;
+const maxLenIgnorePattern = String.raw`(^\s*(it|test)\(|${importPattern})`;
 
 delete fbjsConfig.rules['babel/flow-object-type'];
 

@@ -10,8 +10,5 @@
   "dependencies": {
     "jest-file-exists": "^17.0.0",
     "jest-resolve": "^18.1.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }

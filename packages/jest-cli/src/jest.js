@@ -10,8 +10,7 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Path} from 'types/Config';
-import type {PatternInfo} from './SearchSource';
+import type {Path, Config} from 'types/Config';
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
@@ -21,263 +20,20 @@ const Runtime = require('jest-runtime');
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
-const {Console, clearLine} = require('jest-util');
-const {formatTestResults} = require('jest-util');
-const {run} = require('./cli');
-const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const os = require('os');
-const path = require('path');
+const {Console, clearLine} = require('jest-util');
+const {createDirectory} = require('jest-util');
+const createHasteContext = require('./lib/createHasteContext');
+const getMaxWorkers = require('./lib/getMaxWorkers');
+const logDebugMessages = require('./lib/logDebugMessages');
 const preRunMessage = require('./preRunMessage');
 const readConfig = require('jest-config').readConfig;
-const sane = require('sane');
-const which = require('which');
+const {run} = require('./cli');
+const runJest = require('./runJest');
 const TestWatcher = require('./TestWatcher');
+const watch = require('./watch');
 
-const CLEAR = process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H';
 const VERSION = require('../package.json').version;
-const WATCHER_DEBOUNCE = 200;
-const WATCHMAN_BIN = 'watchman';
-const KEYS = {
-  A: '61',
-  ARROW_DOWN: '1b5b42',
-  ARROW_LEFT: '1b5b44',
-  ARROW_RIGHT: '1b5b43',
-  ARROW_UP: '1b5b41',
-  BACKSPACE: process.platform === 'win32' ? '08' : '7f',
-  CONTROL_C: '03',
-  CONTROL_D: '04',
-  ENTER: '0d',
-  ESCAPE: '1b',
-  O: '6f',
-  P: '70',
-  Q: '71',
-  QUESTION_MARK: '3f',
-  U: '75',
-};
-
-const getMaxWorkers = argv => {
-  if (argv.runInBand) {
-    return 1;
-  } else if (argv.maxWorkers) {
-    return parseInt(argv.maxWorkers, 10);
-  } else {
-    const cpus = os.cpus().length;
-    return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
-  }
-};
-
-const buildTestPathPatternInfo = (argv: Object): PatternInfo => {
-  const defaultPattern = {
-    input: '',
-    shouldTreatInputAsPattern: false,
-    testPathPattern: '',
-  };
-  const validatePattern = patternInfo => {
-    const {testPathPattern} = patternInfo;
-    if (testPathPattern) {
-      try {
-        /* eslint-disable no-new */
-        new RegExp(testPathPattern);
-        /* eslint-enable no-new */
-      } catch (error) {
-        clearLine(process.stdout);
-        console.log(chalk.red(
-          'Invalid testPattern ' + String(testPathPattern) + ' supplied. ' +
-          'Running all tests instead.',
-        ));
-        return defaultPattern;
-      }
-    }
-    return patternInfo;
-  };
-  if (argv.onlyChanged) {
-    return {
-      input: '',
-      lastCommit: argv.lastCommit,
-      onlyChanged: true,
-      watch: argv.watch,
-    };
-  }
-  if (argv.testPathPattern) {
-    return validatePattern({
-      input: argv.testPathPattern,
-      shouldTreatInputAsPattern: true,
-      testPathPattern: argv.testPathPattern,
-    });
-  }
-  if (argv._ && argv._.length) {
-    return validatePattern({
-      findRelatedTests: argv.findRelatedTests,
-      input: argv._.join(' '),
-      paths: argv._,
-      shouldTreatInputAsPattern: false,
-      testPathPattern: argv._.join('|'),
-    });
-  }
-  return defaultPattern;
-};
-
-const getTestSummary = (
-  argv: Object,
-  patternInfo: PatternInfo,
-) => {
-  const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
-  const testInfo = patternInfo.onlyChanged
-    ? chalk.dim(' related to changed files')
-    : patternInfo.input !== ''
-      ? chalk.dim(' matching ') + testPathPattern
-      : '';
-
-  const nameInfo = argv.testNamePattern
-    ? chalk.dim(' with tests matching ') + `"${argv.testNamePattern}"`
-    : '';
-
-  return (
-    chalk.dim('Ran all test suites') +
-    testInfo +
-    nameInfo +
-    chalk.dim('.')
-  );
-};
-
-const getWatcher = (
-  config,
-  packageRoot,
-  callback,
-  options,
-) => {
-  which(WATCHMAN_BIN, (err, resolvedPath) => {
-    const watchman = !err && options.useWatchman && resolvedPath;
-    const glob = config.moduleFileExtensions.map(ext => '**/*' + ext);
-    const watcher = sane(packageRoot, {glob, watchman});
-    callback(watcher);
-  });
-};
-
-const usage = (
-  argv,
-  snapshotFailure,
-  delimiter = '\n',
-) => {
-  /* eslint-disable max-len */
-  const messages = [
-    '\n' + chalk.bold('Watch Usage'),
-    argv.watch
-      ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
-      : null,
-    (argv.watchAll || argv._) && !argv.noSCM
-      ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
-      : null,
-    snapshotFailure
-      ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
-      : null,
-    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
-    chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
-    chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
-  ];
-  /* eslint-enable max-len */
-  return messages.filter(message => !!message).join(delimiter);
-};
-
-const runJest = (config, argv, pipe, testWatcher, onComplete) => {
-  const maxWorkers = getMaxWorkers(argv);
-  const localConsole = new Console(pipe, pipe);
-  let patternInfo = buildTestPathPatternInfo(argv);
-  return Runtime.createHasteContext(config, {
-    console: localConsole,
-    maxWorkers,
-  }).then(hasteMap => {
-    const source = new SearchSource(hasteMap, config);
-    return source.getTestPaths(patternInfo)
-      .then(data => {
-        if (!data.paths.length) {
-          if (patternInfo.onlyChanged && data.noSCM) {
-            if (config.watch) {
-              // Run all the tests
-              setWatchMode(argv, 'watchAll', {
-                noSCM: true,
-              });
-              patternInfo = buildTestPathPatternInfo(argv);
-              return source.getTestPaths(patternInfo);
-            } else {
-              localConsole.log(
-                'Jest can only find uncommitted changed files in a git or hg ' +
-                'repository. If you make your project a git or hg repository ' +
-                '(`git init` or `hg init`), Jest will be able to only ' +
-                'run tests related to files changed since the last commit.',
-              );
-            }
-          }
-
-          localConsole.log(
-            source.getNoTestsFoundMessage(patternInfo, config, data),
-          );
-        }
-        return data;
-      }).then(data => {
-        if (data.paths.length === 1 && config.verbose !== false) {
-          config = Object.assign({}, config, {verbose: true});
-        }
-
-        return new TestRunner(
-          hasteMap,
-          config,
-          {
-            getTestSummary: () => getTestSummary(argv, patternInfo),
-            maxWorkers,
-          },
-        ).runTests(data.paths, testWatcher);
-      })
-      .then(runResults => {
-        if (config.testResultsProcessor) {
-          /* $FlowFixMe */
-          runResults = require(config.testResultsProcessor)(runResults);
-        }
-        if (argv.json) {
-          if (argv.outputFile) {
-            const outputFile = path.resolve(process.cwd(), argv.outputFile);
-
-            fs.writeFileSync(
-              outputFile,
-              JSON.stringify(formatTestResults(runResults)),
-            );
-            process.stdout.write(
-              `Test results written to: ` +
-              `${path.relative(process.cwd(), outputFile)}\n`,
-            );
-          } else {
-            process.stdout.write(
-              JSON.stringify(formatTestResults(runResults)),
-            );
-          }
-        }
-        return onComplete && onComplete(runResults);
-      }).catch(error => {
-        throw error;
-      });
-  });
-};
-
-const setWatchMode = (argv, mode: 'watch' | 'watchAll', options) => {
-  if (mode === 'watch') {
-    argv.watch = true;
-    argv.watchAll = false;
-  } else if (mode === 'watchAll') {
-    argv.watch = false;
-    argv.watchAll = true;
-  }
-
-  // Reset before setting these to the new values
-  argv._ = (options && options.pattern) || '';
-  argv.onlyChanged = false;
-  argv.onlyChanged =
-    buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
-
-  if (options && options.noSCM) {
-    argv.noSCM = true;
-  }
-};
 
 const runCLI = (
   argv: Object,
@@ -293,181 +49,35 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then(config => {
+    .then((config: Config) => {
       if (argv.debug) {
-        /* $FlowFixMe */
-        const testFramework = require(config.testRunner);
-        pipe.write('jest version = ' + VERSION + '\n');
-        pipe.write('test framework = ' + testFramework.name + '\n');
-        pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
+        logDebugMessages(config, pipe);
       }
-      if (argv.watch || argv.watchAll) {
-        setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
-          pattern: argv._,
-        });
 
-        let currentPattern = '';
-        let hasSnapshotFailure = false;
-        let isEnteringPattern = false;
-        let isRunning = false;
-        let testWatcher;
-        let timer;
-        let displayHelp = true;
+      createDirectory(config.cacheDirectory);
+      const jestHasteMap = Runtime.createHasteMap(config, {
+        console: new Console(pipe, pipe),
+        maxWorkers: getMaxWorkers(argv),
+        resetCache: !config.cache,
+        watch: config.watch,
+      });
 
-        const writeCurrentPattern = () => {
-          clearLine(pipe);
-          pipe.write(chalk.dim(' pattern \u203A ') + currentPattern);
-        };
-
-        const startRun = (overrideConfig: Object = {}) => {
-          if (isRunning) {
-            return null;
-          }
-
-          testWatcher = new TestWatcher({isWatchMode: true});
-          pipe.write(CLEAR);
+      return jestHasteMap.build().then(
+        hasteMap => createHasteContext(config, hasteMap),
+        error => {
+          throw error;
+        },
+      )
+      .then(hasteContext => {
+        if (argv.watch || argv.watchAll) {
+          return watch(config, pipe, argv, jestHasteMap, hasteContext);
+        } else {
           preRunMessage.print(pipe);
-          isRunning = true;
-          return runJest(
-            Object.freeze(Object.assign({}, config, overrideConfig)),
-            argv,
-            pipe,
-            testWatcher,
-            results => {
-              isRunning = false;
-              hasSnapshotFailure = !!results.snapshot.failure;
-              testWatcher.setState({interrupted: false});
-              if (displayHelp) {
-                console.log(usage(argv, hasSnapshotFailure));
-                displayHelp = !process.env.JEST_HIDE_USAGE;
-              }
-            },
-          ).then(
-            () => {},
-            error => console.error(chalk.red(error.stack)),
-          );
-        };
-
-        const onKeypress = (key: string) => {
-          if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
-            process.exit(0);
-            return;
-          }
-          if (isEnteringPattern) {
-            switch (key) {
-              case KEYS.ENTER:
-                isEnteringPattern = false;
-                setWatchMode(argv, 'watch', {
-                  pattern: [currentPattern],
-                });
-                startRun();
-                break;
-              case KEYS.ESCAPE:
-                isEnteringPattern = false;
-                pipe.write(ansiEscapes.eraseLines(2));
-                currentPattern = argv._[0];
-                break;
-              case KEYS.ARROW_DOWN:
-              case KEYS.ARROW_LEFT:
-              case KEYS.ARROW_RIGHT:
-              case KEYS.ARROW_UP:
-                break;
-              default:
-                const char = new Buffer(key, 'hex').toString();
-                currentPattern = key === KEYS.BACKSPACE
-                  ? currentPattern.slice(0, -1)
-                  : currentPattern + char;
-                writeCurrentPattern();
-                break;
-            }
-            return;
-          }
-
-          // Abort test run
-          if (
-            isRunning &&
-            testWatcher &&
-            [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].indexOf(key) !== -1
-          ) {
-            testWatcher.setState({interrupted: true});
-            return;
-          }
-
-          switch (key) {
-            case KEYS.Q:
-              process.exit(0);
-              return;
-            case KEYS.ENTER:
-              startRun();
-              break;
-            case KEYS.U:
-              startRun({updateSnapshot: true});
-              break;
-            case KEYS.A:
-              setWatchMode(argv, 'watchAll');
-              startRun();
-              break;
-            case KEYS.O:
-              setWatchMode(argv, 'watch');
-              startRun();
-              break;
-            case KEYS.P:
-              isEnteringPattern = true;
-              currentPattern = '';
-              pipe.write('\n');
-              writeCurrentPattern();
-              break;
-            case KEYS.QUESTION_MARK:
-              if (process.env.JEST_HIDE_USAGE) {
-                console.log(usage(argv, hasSnapshotFailure));
-              }
-              break;
-          }
-        };
-
-        const onFileChange = (_, filePath: string) => {
-          filePath = path.join(root, filePath);
-          const coverageDirectory =
-            config.coverageDirectory ||
-            path.resolve(config.rootDir, 'coverage');
-          const isValidPath =
-            config.testPathDirs.some(dir => filePath.startsWith(dir)) &&
-            !filePath.includes(coverageDirectory);
-
-          if (!isValidPath) {
-            return;
-          }
-          if (timer) {
-            clearTimeout(timer);
-            timer = null;
-          }
-          if (testWatcher && testWatcher.isInterrupted()) {
-            return;
-          }
-          timer = setTimeout(startRun, WATCHER_DEBOUNCE);
-        };
-
-        if (typeof process.stdin.setRawMode === 'function') {
-          process.stdin.setRawMode(true);
-          process.stdin.resume();
-          process.stdin.setEncoding('hex');
-          process.stdin.on('data', onKeypress);
+          const testWatcher = new TestWatcher({isWatchMode: false});
+          return runJest(hasteContext, config, argv, pipe, testWatcher,
+            onComplete);
         }
-        const callback = watcher => {
-          watcher.on('error', error => {
-            watcher.close();
-            getWatcher(config, root, callback, {useWatchman: false});
-          });
-          watcher.on('all', onFileChange);
-        };
-        getWatcher(config, root, callback, {useWatchman: true});
-        startRun();
-        return Promise.resolve();
-      } else {
-        preRunMessage.print(pipe);
-        const testWatcher = new TestWatcher({isWatchMode: false});
-        return runJest(config, argv, pipe, testWatcher, onComplete);
-      }
+      });
     })
     .catch(error => {
       clearLine(process.stderr);

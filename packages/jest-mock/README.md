@@ -12,7 +12,7 @@ environment with the given global object.
 Generates a mock based on the given metadata (Metadata for the mock in
 the schema returned by the getMetadata method of this module). Mocks treat
 functions specially, and all mock functions have additional members, described
-in the documentation for getMockFunction in this module.
+in the documentation for `fn` in this module.
 
 
 One important note: function prototypes are handled specially by this
@@ -72,7 +72,7 @@ For instance, this metadata blob:
 
 defines an object with a slot named `self` that refers back to the object.
 
-### `getMockFunction`
+### `fn`
 
 Generates a stand-alone function with members that help drive unit tests or
 confirm expectations. Specifically, functions returned by this method have

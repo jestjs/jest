@@ -15,8 +15,7 @@ Difference:
 [32m- Expected[39m
 [31m+ Received[39m
 
-[33m@@ -1,4 +1,4 @@
-[39m[2m Object {[22m
+[2m Object {[22m
 [32m-  \"b\": 1,[39m
 [31m+  \"a\": 1,[39m
 [2m   \"toJSON\": [Function toJSON],[22m

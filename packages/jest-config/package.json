@@ -15,9 +15,8 @@
     "jest-mock": "^18.0.0",
     "jest-resolve": "^18.1.0",
     "jest-util": "^18.1.0",
-    "json-stable-stringify": "^1.0.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
+    "jest-validate": "^18.1.0",
+    "json-stable-stringify": "^1.0.0",
+    "pretty-format": "^18.1.0"
   }
 }

@@ -24,7 +24,7 @@ type ResolverConfig = {|
   extensions: Array<string>,
   hasCoreModules: boolean,
   moduleDirectories: Array<string>,
-  moduleNameMapper: ?{[key: string]: RegExp},
+  moduleNameMapper: ?Array<ModuleNameMapperConfig>,
   modulePaths: Array<Path>,
   platforms?: Array<string>,
 |};
@@ -32,9 +32,14 @@ type ResolverConfig = {|
 type FindNodeModuleConfig = {|
   basedir: Path,
   browser?: boolean,
-  extensions: Array<string>,
-  moduleDirectory: Array<string>,
+  extensions?: Array<string>,
+  moduleDirectory?: Array<string>,
   paths?: Array<Path>,
+|};
+
+type ModuleNameMapperConfig = {|
+  regex: RegExp,
+  moduleName: string
 |};
 
 export type ResolveModuleConfig = {|
@@ -215,8 +220,7 @@ class Resolver {
 
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper) {
-      for (const mappedModuleName in moduleNameMapper) {
-        const regex = moduleNameMapper[mappedModuleName];
+      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
         if (regex.test(moduleName)) {
           const matches = moduleName.match(regex);
           if (!matches) {

@@ -28,7 +28,7 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    git checkout -b my_branch
    ```
 
-2. Run `npm install`. It is recommended to use `npm3`.
+2. Run `npm install`. We recommend that you use `npm` version 3 or later.
 
     ```sh
     npm install

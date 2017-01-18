@@ -13,10 +13,8 @@ cache:
     - ".eslintcache"
     - "node_modules"
 
-before_install:
-  - npm install npm@latest
-
-script:
-  - (cd packages/eslint-plugin-jest && yarn link)
-  - yarn link eslint-plugin-jest
+script: 
   - yarn run test-ci
+  - (cd danger && yarn install)
+  - yarn run danger
+
