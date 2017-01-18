@@ -23,7 +23,7 @@ exports[`test only 1`] = `
   ✓ test.only
   ✓ it.only
   ✓ fit
-  ○ it
+  ○ skipped 1 test
   fdescribe
     ✓ it
     ✓ test
@@ -44,7 +44,56 @@ Ran all test suites.
 "
 `;
 
+exports[`test only with expand arg 1`] = `
+" PASS  __tests__/only-constructs-test.js
+  ✓ test.only
+  ✓ it.only
+  ✓ fit
+  ○ it
+  fdescribe
+    ✓ it
+    ✓ test
+  describe.only
+    ✓ test
+    describe
+      ✓ test
+
+"
+`;
+
+exports[`test only with expand arg 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 skipped, 7 passed, 8 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
 exports[`test skips 1`] = `
+" PASS  __tests__/skips-constructs-test.js
+  ✓ it
+  ○ skipped 4 tests
+  xdescribe
+    ○ skipped 2 tests
+  describe.skip
+    ○ skipped 1 test
+    describe
+      ○ skipped 1 test
+
+"
+`;
+
+exports[`test skips 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       8 skipped, 1 passed, 9 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`test skips with expand arg 1`] = `
 " PASS  __tests__/skips-constructs-test.js
   ✓ it
   ○ xtest
@@ -62,7 +111,7 @@ exports[`test skips 1`] = `
 "
 `;
 
-exports[`test skips 2`] = `
+exports[`test skips with expand arg 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
@@ -74,13 +123,30 @@ Ran all test suites.
 exports[`test tests with no implementation 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ it
+  ○ skipped 2 tests
+
+"
+`;
+
+exports[`test tests with no implementation 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       2 skipped, 1 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`test tests with no implementation with expand arg 1`] = `
+" PASS  __tests__/only-constructs-test.js
+  ✓ it
   ○ it, no implementation
   ○ test, no implementation
 
 "
 `;
 
-exports[`test tests with no implementation 2`] = `
+exports[`test tests with no implementation with expand arg 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       2 skipped, 1 passed, 3 total
 Snapshots:   0 total

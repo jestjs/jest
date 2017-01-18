@@ -125,3 +125,81 @@ test('tests with no implementation', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
+
+test('skips with expand arg', () => {
+  const filename = 'skips-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    xtest('xtest', () => {});
+    xit('xit', () => {});
+    it.skip('it.skip', () => {});
+    test.skip('test.skip', () => {});
+
+    xdescribe('xdescribe', () => {
+      it('it', () => {});
+      test('test', () => {});
+    });
+
+    describe.skip('describe.skip', () => {
+      test('test', () => {});
+      describe('describe', () => {
+        test('test', () => {});
+      });
+    });
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR, ['--expand']);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
+test('only with expand arg', () => {
+  const filename = 'only-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    test.only('test.only', () => {});
+    it.only('it.only', () => {});
+    fit('fit', () => {});
+
+    fdescribe('fdescribe', () => {
+      it('it', () => {});
+      test('test', () => {});
+    });
+
+    describe.only('describe.only', () => {
+      test('test', () => {});
+      describe('describe', () => {
+        test('test', () => {});
+      });
+    });
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR, ['--expand']);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
+test('tests with no implementation with expand arg', () => {
+  const filename = 'only-constructs-test.js';
+  const content = `
+    it('it', () => {});
+    it('it, no implementation');
+    test('test, no implementation');
+  `;
+
+  makeTests(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR, ['--expand']);
+  expect(status).toBe(0);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
