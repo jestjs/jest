@@ -45,7 +45,7 @@ const index = React.createClass({
         image: 'img/logos/pinterest.png',
       },
       {
-        infoLink: 'http://www.nytimes.com/',
+        infoLink: 'https://www.nytimes.com/',
         caption: 'The New York Times',
         image: 'img/logos/nyt.png',
       },

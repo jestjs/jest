@@ -83,7 +83,7 @@ HeaderNav.defaultProps = {
   linksInternal: [
     {section: 'docs', href: '/jest/docs/getting-started.html', text: 'Docs'},
     {section: 'api', href: '/jest/docs/api.html', text: 'API'},
-    {section: 'help', href: '/jest/users.html', text: 'Users'},
+    {section: 'users', href: '/jest/users.html', text: 'Users'},
     {section: 'help', href: '/jest/help.html', text: 'Help'},
     {section: 'blog', href: '/jest/blog/', text: 'Blog'},
   ],
