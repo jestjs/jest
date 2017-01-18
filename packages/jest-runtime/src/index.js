@@ -15,13 +15,14 @@ import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {ModuleMap} from 'jest-haste-map';
-import type ModuleMocker, {MockFunctionMetadata} from 'jest-mock';
+import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
 
 const fs = require('graceful-fs');
 const path = require('path');
+const stripBOM = require('strip-bom');
 const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
@@ -43,6 +44,7 @@ type HasteMapOptions = {|
   console?: Console,
   maxWorkers: number,
   resetCache: boolean,
+  watch?: boolean,
 |};
 
 type InternalModuleOptions = {|
@@ -54,11 +56,9 @@ const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
-    const moduleNameMapper = Object.create(null);
-    config.moduleNameMapper.forEach(
-      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
-    );
-    return moduleNameMapper;
+    return config.moduleNameMapper.map(([regex, moduleName]) => {
+      return {moduleName, regex: new RegExp(regex)};
+    });
   }
   return null;
 };
@@ -171,6 +171,7 @@ class Runtime {
     options: {
       console?: Console,
       maxWorkers: number,
+      watch?: boolean,
     },
   ): Promise<HasteContext> {
     createDirectory(config.cacheDirectory);
@@ -178,10 +179,12 @@ class Runtime {
       console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
+      watch: options.watch,
     });
     return instance.build().then(
       hasteMap => ({
         hasteFS: hasteMap.hasteFS,
+        moduleMap: hasteMap.moduleMap,
         resolver: Runtime.createResolver(config, hasteMap.moduleMap),
       }),
       error => {
@@ -212,6 +215,7 @@ class Runtime {
       retainAllFiles: false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
+      watch: options && options.watch,
     });
   }
 
@@ -287,7 +291,7 @@ class Runtime {
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
-          fs.readFileSync(modulePath, 'utf8'),
+          stripBOM(fs.readFileSync(modulePath, 'utf8'))
         );
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
@@ -543,12 +547,14 @@ class Runtime {
     }
 
     const sep = path.delimiter;
-    const id = moduleType + sep + (absolutePath || '') + sep + (mockPath || '');
+    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
+      (mockPath ? (mockPath + sep) : ''));
+
     return normalizedIDCache[key] = id;
   }
 
   _getVirtualMockPath(from: Path, moduleName: string) {
-    if (moduleName[0] !== '.' && moduleName[0] !== '/') {
+    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }
     return path.normalize(path.dirname(from) + '/' + moduleName);
@@ -685,6 +691,8 @@ class Runtime {
       this.resetModules();
       return runtime;
     };
+    const fn = this._moduleMocker.fn.bind(this._moduleMocker);
+    const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const runtime = {
       addMatchers:
@@ -699,18 +707,11 @@ class Runtime {
       doMock: mock,
       dontMock: unmock,
       enableAutomock,
-      fn: (impl: ?Function) => {
-        const fn = this._moduleMocker.getMockFunction();
-        if (impl) {
-          return fn.mockImplementation(impl);
-        }
-        return fn;
-      },
-      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      fn,
+      genMockFn: fn,
       genMockFromModule:
         (moduleName: string) => this._generateMock(from, moduleName),
-      genMockFunction:
-        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
 
       mock,
@@ -728,6 +729,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
+      spyOn,
 
       unmock,
 

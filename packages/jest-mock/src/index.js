@@ -173,9 +173,10 @@ function getSlots(object?: Object): Array<string> {
 }
 
 
-class ModuleMocker {
+class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockRegistry: WeakMap<Function, MockFunctionState>;
+  ModuleMocker: Class<ModuleMockerClass>;
 
   /**
    * @see README.md
@@ -185,6 +186,7 @@ class ModuleMocker {
   constructor(global: Global) {
     this._environmentGlobal = global;
     this._mockRegistry = new WeakMap();
+    this.ModuleMocker = ModuleMockerClass;
   }
 
   _ensureMock(f: Mock): MockFunctionState {
@@ -212,7 +214,7 @@ class ModuleMocker {
     };
   }
 
-  _makeComponent(metadata: MockFunctionMetadata): Mock {
+  _makeComponent(metadata: MockFunctionMetadata, restore?: () => void): Mock {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
@@ -360,6 +362,8 @@ class ModuleMocker {
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
       }
+
+      f.mockRestore = restore ? restore : () => {};
 
       return f;
     } else {
@@ -547,16 +551,33 @@ class ModuleMocker {
     return !!fn._isMockFunction;
   }
 
-  /**
-   * @see README.md
-   */
-  getMockFunction(): any {
-    return this._makeComponent({type: 'function'});
+  fn(implementation?: any): any {
+    const fn = this._makeComponent({type: 'function'});
+    if (implementation) {
+      fn.mockImplementation(implementation);
+    }
+    return fn;
   }
 
-  // Just a short-hand alias
-  getMockFn(): any {
-    return this.getMockFunction();
+  spyOn(object: any, methodName: any): any {
+    const original = object[methodName];
+
+    if (!this.isMockFunction(original)) {
+      if (typeof original !== 'function') {
+        throw new Error(
+          'Cannot spyOn the ' + methodName + ' property; it is not a function',
+        );
+      }
+
+      object[methodName] = this._makeComponent({type: 'function'}, () => {
+        object[methodName] = original;
+      });
+      object[methodName].mockImplementation(function() {
+        return original.apply(this, arguments);
+      });
+    }
+
+    return object[methodName];
   }
 
   resetAllMocks() {
@@ -564,4 +585,5 @@ class ModuleMocker {
   }
 }
 
-module.exports = ModuleMocker;
+export type ModuleMocker = ModuleMockerClass;
+module.exports = new ModuleMockerClass(global);

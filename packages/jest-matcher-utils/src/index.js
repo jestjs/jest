@@ -12,6 +12,9 @@
 
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
+const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+
+const PLUGINS = [AsymmetricMatcherPlugin];
 
 export type ValueType =
   | 'array'
@@ -71,6 +74,8 @@ const getType = (value: any): ValueType => {
       return 'map';
     } else if (value.constructor === Set) {
       return 'set';
+    } else if (value.toString() === 'ArrayContaining') {
+      return 'array';
     }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
@@ -89,12 +94,14 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
     result = prettyFormat(object, {
       maxDepth,
       min: true,
+      plugins: PLUGINS,
     });
   } catch (e) {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,
       min: true,
+      plugins: PLUGINS,
     });
   }
 

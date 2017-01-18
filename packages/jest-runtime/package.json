@@ -22,17 +22,15 @@
     "jest-util": "^18.1.0",
     "json-stable-stringify": "^1.0.0",
     "micromatch": "^2.3.11",
+    "strip-bom": "3.0.0",
     "yargs": "^6.3.0"
-  },
-  "bin": {
-    "jest-runtime": "./bin/jest-runtime.js"
   },
   "devDependencies": {
     "jest-config": "^18.1.0",
     "jest-environment-node": "^18.1.0",
     "jest-environment-jsdom": "^18.1.0"
   },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
+  "bin": {
+    "jest-runtime": "./bin/jest-runtime.js"
   }
 }

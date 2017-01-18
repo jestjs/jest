@@ -14,6 +14,7 @@ let createRuntime;
 const moduleNameMapper = {
   '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
   '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
+  '^testMapped/(.*)': '<rootDir>/mapped_dir/$1',
   'mappedToDirectory': '<rootDir>/MyDirectoryModule',
   'mappedToPath': '<rootDir>/GlobalImageStub.js',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
@@ -33,6 +34,25 @@ describe('transitive dependencies', () => {
     expect(moduleData.internalImplementation())
       .toEqual('internal-module-code');
   };
+
+  it('mocks a manually mocked and mapped module', () =>
+    createRuntime(__filename, {
+      automock: false,
+      moduleNameMapper,
+    }).then(runtime => {
+      runtime.setMock(
+        __filename,
+        './test_root/mapped_dir/moduleInMapped',
+        () => 'mocked_in_mapped',
+      );
+
+      const parentDep = runtime.requireModule(
+        runtime.__mockRootPath,
+        './depOnMappedModule.js',
+      );
+      expect(parentDep).toEqual({result: 'mocked_in_mapped'});
+    }),
+  );
 
   it('unmocks transitive dependencies in node_modules by default', () =>
     createRuntime(__filename, {

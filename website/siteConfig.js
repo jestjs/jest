@@ -3,7 +3,7 @@ var Button = require('Button');
 var githubButton = <a className="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-style="mega" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a>;
 var siteConfig = {
   title: "Jest",
-  tagline: "Painless JavaScript Testing",
+  tagline: "🃏 Painless JavaScript Testing",
   description: "Jest is a JavaScript testing framework, used by Facebook to test all JavaScript code including React applications.",
   url: "https://facebook.github.io",
   baseUrl: "/jest/",

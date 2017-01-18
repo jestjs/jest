@@ -10,6 +10,7 @@
 
 'use strict';
 
+import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'jest-resolve';
@@ -25,11 +26,11 @@ const {
   replacePathSepForRegex,
 } = require('jest-util');
 
-type SearchSourceConfig = {|
+type SearchSourceConfig = {
   testPathDirs: Array<Path>,
   testRegex: string,
-  testPathIgnorePatterns: Array<RegExp>,
-|};
+  testPathIgnorePatterns: Array<string>,
+};
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -218,7 +219,7 @@ class SearchSource {
 
   getNoTestsFoundMessage(
     patternInfo: PatternInfo,
-    config: {[key: string]: string},
+    config: Config,
     data: SearchResult,
   ): string {
     if (patternInfo.onlyChanged) {

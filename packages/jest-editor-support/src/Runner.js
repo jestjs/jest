@@ -10,7 +10,7 @@
 
 'use strict';
 
-const {ChildProcess} = require('child_process');
+const {ChildProcess, spawn} = require('child_process');
 const {readFile} = require('fs');
 const {tmpdir} = require('os');
 const {EventEmitter} = require('events');
@@ -32,6 +32,9 @@ module.exports = class Runner extends EventEmitter {
   }
 
   start() {
+    if (this.debugprocess) {
+      return;
+    }
     // Handle the arg change on v18
     const belowEighteen = this.workspace.localJestMajorVersion < 18;
     const outputArg = belowEighteen ? '--jsonOutputFile' : '--outputFile';
@@ -89,6 +92,12 @@ module.exports = class Runner extends EventEmitter {
   }
 
   closeProcess() {
-    this.debugprocess.kill();
+    if (process.platform === 'win32') {
+      // Windows doesn't exit the process when it should.
+      spawn('taskkill', ['/pid', '' + this.debugprocess.pid, '/T', '/F']);
+    } else {
+      this.debugprocess.kill();
+    }
+    delete this.debugprocess;
   }
 };

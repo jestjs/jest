@@ -31,6 +31,12 @@ module.exports = function createRuntime(filename, config) {
       );
 
       runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
+      runtime.__mockSubdirPath = path.join(
+          config.rootDir,
+          'subdir2',
+          'module_dir',
+          'moduleDirModule.js'
+      );
       return runtime;
     });
 };
