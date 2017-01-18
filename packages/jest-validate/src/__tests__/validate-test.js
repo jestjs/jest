@@ -53,7 +53,8 @@ test('omits null and undefined config values', () => {
 });
 
 test('displays warning for unknown config options', () => {
-  const config = {unknown: {}};
+  const config = {unkwon: {}};
+  const validConfig = {unknown: 'string'};
   const warn = console.warn;
   console.warn = jest.fn();
 

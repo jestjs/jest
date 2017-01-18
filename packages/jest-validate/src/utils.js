@@ -43,11 +43,35 @@ const logValidationWarning = (
   console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
 };
 
+const createDidYouMeanMessage = (
+  unrecognized: string,
+  allowedOptions: Array<string>,
+) => {
+  const leven = require('leven');
+  let suggestion;
+
+  allowedOptions.some(option => {
+    const steps = leven(option, unrecognized);
+    if (steps < 3) {
+      suggestion = option;
+      return option;
+    }
+    return null;
+  });
+
+  if (suggestion) {
+    return `Did you mean ${chalk.bold(format(suggestion))}?`;
+  }
+
+  return '';
+};
+
 module.exports = {
   DEPRECATION,
   ERROR,
   ValidationError,
   WARNING,
+  createDidYouMeanMessage,
   format,
   logValidationWarning,
 };
