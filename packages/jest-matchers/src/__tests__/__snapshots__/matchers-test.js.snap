@@ -2583,6 +2583,52 @@ Difference:
 [2m ][22m"
 `;
 
+exports[`toMatchObject() {pass: false} expect({"$$typeof": Symbol(react.test.json), "children": ["received enum"], "props": {"style": {"color": "green", "textDecoration": "line-through"}}, "type": "li"}).toMatchObject({"$$typeof": Symbol(react.test.json), "children": ["expected enum"], "props": {"style": {"textDecoration": "none"}}, "type": "li"}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\"$$typeof\": Symbol(react.test.json), \"children\": [\"expected enum\"], \"props\": {\"style\": {\"textDecoration\": \"none\"}}, \"type\": \"li\"}[39m
+Received:
+  [31m{\"$$typeof\": Symbol(react.test.json), \"children\": [\"received enum\"], \"props\": {\"style\": {\"color\": \"green\", \"textDecoration\": \"line-through\"}}, \"type\": \"li\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m <li[22m
+[2m   style={[22m
+[2m     Object {[22m
+[32m-      \"textDecoration\": \"none\",[39m
+[31m+      \"textDecoration\": \"line-through\",[39m
+[2m     }[22m
+[2m   }>[22m
+[32m-  expected enum[39m
+[31m+  received enum[39m
+[2m </li>[22m"
+`;
+
+exports[`toMatchObject() {pass: false} expect({"$$typeof": Symbol(react.test.json), "children": ["received enum"], "props": {"style": {"color": "green", "textDecoration": "line-through"}}, "type": "li"}).toMatchObject({"children": ["expected non-enum"], "props": {"style": {"textDecoration": "none"}}, "type": "li"}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\"children\": [\"expected non-enum\"], \"props\": {\"style\": {\"textDecoration\": \"none\"}}, \"type\": \"li\"}[39m
+Received:
+  [31m{\"$$typeof\": Symbol(react.test.json), \"children\": [\"received enum\"], \"props\": {\"style\": {\"color\": \"green\", \"textDecoration\": \"line-through\"}}, \"type\": \"li\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m <li[22m
+[2m   style={[22m
+[2m     Object {[22m
+[32m-      \"textDecoration\": \"none\",[39m
+[31m+      \"textDecoration\": \"line-through\",[39m
+[2m     }[22m
+[2m   }>[22m
+[32m-  expected non-enum[39m
+[31m+  received enum[39m
+[2m </li>[22m"
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -2855,6 +2901,52 @@ Difference:
 [32m-  \"a\": null,[39m
 [31m+  \"a\": undefined,[39m
 [2m }[22m"
+`;
+
+exports[`toMatchObject() {pass: false} expect({"children": ["received non-enum"], "props": {"style": {"color": "green", "textDecoration": "line-through"}}, "type": "li"}).toMatchObject({"$$typeof": Symbol(react.test.json), "children": ["expected enum"], "props": {"style": {"textDecoration": "none"}}, "type": "li"}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\"$$typeof\": Symbol(react.test.json), \"children\": [\"expected enum\"], \"props\": {\"style\": {\"textDecoration\": \"none\"}}, \"type\": \"li\"}[39m
+Received:
+  [31m{\"children\": [\"received non-enum\"], \"props\": {\"style\": {\"color\": \"green\", \"textDecoration\": \"line-through\"}}, \"type\": \"li\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m <li[22m
+[2m   style={[22m
+[2m     Object {[22m
+[32m-      \"textDecoration\": \"none\",[39m
+[31m+      \"textDecoration\": \"line-through\",[39m
+[2m     }[22m
+[2m   }>[22m
+[32m-  expected enum[39m
+[31m+  received non-enum[39m
+[2m </li>[22m"
+`;
+
+exports[`toMatchObject() {pass: false} expect({"children": ["received non-enum"], "props": {"style": {"color": "green", "textDecoration": "line-through"}}, "type": "li"}).toMatchObject({"children": ["expected non-enum"], "props": {"style": {"textDecoration": "none"}}, "type": "li"}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\"children\": [\"expected non-enum\"], \"props\": {\"style\": {\"textDecoration\": \"none\"}}, \"type\": \"li\"}[39m
+Received:
+  [31m{\"children\": [\"received non-enum\"], \"props\": {\"style\": {\"color\": \"green\", \"textDecoration\": \"line-through\"}}, \"type\": \"li\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m <li[22m
+[2m   style={[22m
+[2m     Object {[22m
+[32m-      \"textDecoration\": \"none\",[39m
+[31m+      \"textDecoration\": \"line-through\",[39m
+[2m     }[22m
+[2m   }>[22m
+[32m-  expected non-enum[39m
+[31m+  received non-enum[39m
+[2m </li>[22m"
 `;
 
 exports[`toMatchObject() {pass: false} expect({}).toMatchObject({"a": undefined}) 1`] = `

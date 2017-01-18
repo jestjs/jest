@@ -597,7 +597,7 @@ const matchers: MatchersObject = {
       });
     };
 
-    // Strip properties form received object that are not present in the expected
+    // Strip properties from received object that are not present in the expected
     // object. We need it to print the diff without adding a lot of unrelated noise.
     const findMatchObject = (expected: Object, received: Object)  => {
       if (Array.isArray(received)) {
@@ -615,26 +615,46 @@ const matchers: MatchersObject = {
         return received;
       } else if (typeof received === 'object' && received !== null && typeof expected === 'object' && expected !== null) {
 
-        const matchedObject = {};
-
-        let match = false;
-        Object.keys(expected).forEach(key => {
-          if (received.hasOwnProperty(key)) {
-            match = true;
-
-            const exp = expected[key];
-            const act = received[key];
-
-            if (typeof exp === 'object' && exp !== null) {
-              matchedObject[key] = findMatchObject(exp, act);
-            } else {
-              matchedObject[key] = act;
-            }
-          }
+        // Emulate Object.getOwnPropertyDescriptors from ES2017
+        const receivedDescriptors = {};
+        Object.getOwnPropertyNames(received).forEach(key => {
+          receivedDescriptors[key] = Object.getOwnPropertyDescriptor(received, key);
         });
 
-        if (match) {
-          return matchedObject;
+        // Keys that are enumerable in both expected and received.
+        const keys = Object.keys(expected).filter(
+          key => receivedDescriptors[key] && receivedDescriptors[key].enumerable
+        );
+
+        if (keys.length !== 0) {
+          const receivedForDiff = {};
+
+          Object.keys(receivedDescriptors).forEach(key => {
+            const receivedDescriptor = receivedDescriptors[key];
+            if (receivedDescriptor.enumerable) {
+              if (expected.hasOwnProperty(key) && keys.indexOf(key) === -1) {
+                // Key is enumerable in received but non-enumerable in expected.
+                keys.push(key);
+              }
+            } else {
+              // Define property for key that is non-enumerable in received.
+              // For example, $$typeof from react-test-renderer.
+              Object.defineProperty(receivedForDiff, key, receivedDescriptor);
+            }
+          });
+
+          keys.forEach(key => {
+            const expectedValue = expected[key];
+            const receivedValue = received[key];
+
+            if (typeof expectedValue === 'object' && expectedValue !== null) {
+              receivedForDiff[key] = findMatchObject(expectedValue, receivedValue);
+            } else {
+              receivedForDiff[key] = receivedValue;
+            }
+          });
+
+          return receivedForDiff;
         } else {
           return received;
         }

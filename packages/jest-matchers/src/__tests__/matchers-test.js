@@ -693,6 +693,41 @@ describe('toMatchObject()', () => {
     });
   });
 
+  const reactTestInstance = Symbol.for('react.test.json');
+  const expectedNonEnum = {
+    children: ['expected non-enum'],
+    props: {
+      style: {
+        textDecoration: 'none',
+      },
+    },
+    type: 'li',
+  };
+  Object.defineProperty(expectedNonEnum, '$$typeof', {
+    value: reactTestInstance,
+  });
+  const expectedEnum = Object.assign({}, expectedNonEnum, {
+    $$typeof: reactTestInstance,
+    children: ['expected enum'],
+  });
+  const receivedNonEnum = {
+    children: ['received non-enum'],
+    props: {
+      style: {
+        color: 'green',
+        textDecoration: 'line-through',
+      },
+    },
+    type: 'li',
+  };
+  Object.defineProperty(receivedNonEnum, '$$typeof', {
+    value: reactTestInstance,
+  });
+  const receivedEnum = Object.assign({}, receivedNonEnum, {
+    $$typeof: reactTestInstance,
+    children: ['received enum'],
+  });
+
   [
      [{a: 'b', c: 'd'}, {e: 'b'}],
      [{a: 'b', c: 'd'}, {a: 'b!', c: 'd'}],
@@ -713,6 +748,10 @@ describe('toMatchObject()', () => {
      [{}, {a: undefined}],
      [[1, 2, 3], [2, 3, 1]],
      [[1, 2, 3], [1, 2, 2]],
+     [receivedEnum, expectedEnum],
+     [receivedEnum, expectedNonEnum],
+     [receivedNonEnum, expectedEnum],
+     [receivedNonEnum, expectedNonEnum],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(n2)})`, () => {
       jestExpect(n1).not.toMatchObject(n2);
