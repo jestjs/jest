@@ -33,6 +33,43 @@ const index = React.createClass({
       {content: 'Can run [asynchronous code synchronously](/jest/docs/asynchronous.html).'},
     ];
 
+    const users = [
+      {
+        infoLink: 'https://code.facebook.com',
+        caption: 'Facebook',
+        image: 'img/logos/facebook.png',
+      },
+      {
+        infoLink: 'https://www.oculus.com/',
+        caption: 'Oculus',
+        image: 'img/logos/oculus.png',
+      },
+      {
+        infoLink: 'https://www.instagram.com/',
+        caption: 'Instagram',
+        image: 'img/logos/instagram.png',
+      },
+      {
+        infoLink: 'https://www.twitter.com',
+        caption: 'Twitter',
+        image: 'img/logos/twitter.png',
+      },
+      {
+        infoLink: 'https://www.pinterest.com',
+        caption: 'Pinterest',
+        image: 'img/logos/pinterest.png',
+      },
+      {
+        infoLink: 'http://www.nytimes.com/',
+        caption: 'The New York Times',
+        image: 'img/logos/nyt.png',
+      },
+    ];
+
+    const showcase = users.map((user) => {
+      return <a href={user.infoLink}><img src={user.image} title={user.caption}/></a>;
+    });
+
     return (
       <Site>
         <HomeSplash mostRecentPost={blog.files[0]} />
@@ -44,7 +81,7 @@ const index = React.createClass({
             <h2>Jest's Testing Features</h2>
             <GridBlock className="responsiveList testingFeatures" contents={whyJest} layout="threeColumn" />
           </Container>
-          <Container padding={['bottom']}>
+          <Container padding={['bottom', 'top']}>
             <h2>
               <a className="anchor" name="use"></a>
               Try Jest
@@ -67,6 +104,15 @@ const index = React.createClass({
             </h2>
             <Marked>{gettingStartedContent}</Marked>
             <Marked>Refer to [Additional Configuration](/jest/docs/getting-started.html#additional-configuration) to learn how to use Jest with Babel, webpack, or TypeScript.</Marked>
+          </Container>
+          <Container padding={['bottom']}>
+          <div className="miniShowcaseSection">
+              <h2>Who's Using Jest?</h2>
+              <p>Jest is used by <a href="/jests/users.html">teams of all sizes</a> to test websites, mobile apps, and APIs.</p>
+            <div className="logos">
+              {showcase}
+            </div>
+          </div>
           </Container>
         </div>
       </Site>

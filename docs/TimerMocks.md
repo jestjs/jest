@@ -4,7 +4,7 @@ title: Timer Mocks
 layout: docs
 category: Guides
 permalink: docs/timer-mocks.html
-next: webpack
+next: manual-mocks
 ---
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,

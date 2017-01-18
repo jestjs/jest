@@ -4,7 +4,7 @@ title: Setup and Teardown
 layout: docs
 category: Introduction
 permalink: docs/setup-teardown.html
-next: mocking
+next: mock-functions
 ---
 
 Often while writing tests you have some setup work that needs to happen before tests run, and you have some finishing work that needs to happen after tests run. Jest provides helper functions to handle this.

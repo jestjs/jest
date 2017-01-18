@@ -1665,3 +1665,53 @@ div.video-shoutout {
     height: 300px;
   }
 }
+
+.showcaseSection {
+  max-width: 900px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.showcaseSection .prose h1 {
+  color: #b84c20;
+  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  text-align: center;
+  padding: 1.4em 0 0.4em;
+}
+
+.showcaseSection .prose {
+  max-width: 560px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.showcaseSection .logos {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.showcaseSection .logos img {
+  max-height: 150px;
+  max-width: 270px;
+  padding: 20px;
+}
+
+.miniShowcaseSection .logos {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.miniShowcaseSection .logos img {
+  max-height: 110px;
+  max-width: 110px;
+  padding: 20px;
+}
+
+.miniShowcaseSection .button {
+  text-decoration: none !important;
+}
