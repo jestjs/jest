@@ -14,6 +14,7 @@ import type {Config, Path} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
+const {getTerminalWidth} = require('./lib/terminalUtils');
 const highlight = require('./lib/highlight');
 const stringLength = require('string-length');
 const {trimAndFormatPath} = require('./reporters/utils');
@@ -53,8 +54,7 @@ const printTypeahead = (
       pipe.write(`\n\n Pattern matches no files.`);
     }
 
-    // $FlowFixMe
-    const width: number = process.stdout.columns;
+    const width = getTerminalWidth();
     const prefix = `  ${chalk.dim('\u203A')} `;
     const padding = stringLength(prefix) + 2;
 
