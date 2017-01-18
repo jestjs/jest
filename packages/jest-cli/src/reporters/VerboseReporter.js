@@ -121,9 +121,10 @@ class VerboseReporter extends DefaultReporter {
   }
 
   _logSkippedTests(count: number, indentLevel: number) {
-    const text = `skipped ${count} test${count === 1 ? '' : 's'}`;
+    const icon = this._getIcon('pending');
+    const text = chalk.dim(`skipped ${count} test${count === 1 ? '' : 's'}`);
 
-    this._logLine(chalk.dim(`${ICONS.pending} ${text}`), indentLevel);
+    this._logLine(`${icon} ${text}`, indentLevel);
   }
 
   _logLine(str?: string, indentLevel?: number) {
