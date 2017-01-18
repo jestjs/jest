@@ -48,7 +48,6 @@ test('basic test constructs', () => {
   expect(summary).toMatchSnapshot();
 });
 
-
 test('skips', () => {
   const filename = 'skips-constructs-test.js';
   const content = `
