@@ -19,9 +19,19 @@ import type {
 
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
-const isWindows = process.platform === 'win32';
+const {ICONS} = require('../constants');
 
 class VerboseReporter extends DefaultReporter {
+  _config: Config;
+
+  constructor(config: Config) {
+    super();
+    this._config = config;
+  }
+
+  static filterTestResults(testResults: Array<AssertionResult>) {
+    return testResults.filter(({status}) => status !== 'pending');
+  }
 
   static groupTestsBySuites(testResults: Array<AssertionResult>) {
     const root = {suites: [], tests: [], title: ''};
@@ -65,17 +75,18 @@ class VerboseReporter extends DefaultReporter {
       this._logLine(suite.title, indentLevel);
     }
 
-    suite.tests.forEach(test => this._logTest(test, indentLevel + 1));
+    this._logTests(suite.tests, indentLevel + 1);
+
     suite.suites.forEach(suite => this._logSuite(suite, indentLevel + 1));
   }
 
   _getIcon(status: string) {
     if (status === 'failed') {
-      return chalk.red(isWindows ? '\u00D7' : '\u2715');
+      return chalk.red(ICONS.failed);
     } else if (status === 'pending') {
-      return chalk.yellow('\u25CB');
+      return chalk.yellow(ICONS.pending);
     } else {
-      return chalk.green(isWindows ? '\u221A' : '\u2713');
+      return chalk.green(ICONS.success);
     }
   }
 
@@ -85,6 +96,35 @@ class VerboseReporter extends DefaultReporter {
       ? ` (${test.duration.toFixed(0)}ms)`
       : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
+  }
+
+  _logTests(tests: Array<AssertionResult>, indentLevel: number) {
+    const config = this._config;
+
+    if (config.expand) {
+      tests.forEach(test => this._logTest(test, indentLevel));
+    } else {
+      const skippedCount = tests.reduce((result, test) => {
+        if (test.status === 'pending') {
+          result += 1;
+        } else {
+          this._logTest(test, indentLevel);
+        }
+
+        return result;
+      }, 0);
+
+      if (skippedCount > 0) {
+        this._logSkippedTests(skippedCount, indentLevel);
+      }
+    }
+  }
+
+  _logSkippedTests(count: number, indentLevel: number) {
+    const icon = this._getIcon('pending');
+    const text = chalk.dim(`skipped ${count} test${count === 1 ? '' : 's'}`);
+
+    this._logLine(`${icon} ${text}`, indentLevel);
   }
 
   _logLine(str?: string, indentLevel?: number) {
