@@ -380,13 +380,15 @@ class TestRunner {
   }
 
   _setupReporters() {
+    const config = this._config;
+
     this.addReporter(
-      this._config.verbose
-        ? new VerboseReporter()
+      config.verbose
+        ? new VerboseReporter(config)
         : new DefaultReporter(),
     );
 
-    if (this._config.collectCoverage) {
+    if (config.collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
       const CoverageReporter = require('./reporters/CoverageReporter');
@@ -394,7 +396,7 @@ class TestRunner {
     }
 
     this.addReporter(new SummaryReporter());
-    if (this._config.notify) {
+    if (config.notify) {
       this.addReporter(new NotifyReporter());
     }
   }
