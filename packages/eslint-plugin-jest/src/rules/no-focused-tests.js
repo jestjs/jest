@@ -11,67 +11,55 @@
 
 import type {EslintContext, CallExpression} from './types';
 
-module.exports = function(context: EslintContext) {
-  const jestTestFunctions = [
-    'it',
-    'describe',
-    'test',
-  ];
+/* $FlowFixMe */
+const testFunctions = Object.assign(Object.create(null), {
+  describe: true,
+  it: true,
+  test: true,
+});
 
-  function matchesTestFunction(object) {
-    return object && jestTestFunctions.indexOf(object.name) !== -1;
-  }
+const matchesTestFunction = object => object && testFunctions[object.name];
 
-  function matchesFocusedTestFunction(object) {
-    return (
-      object &&
-      object.name[0] === 'f' &&
-      jestTestFunctions.indexOf(object.name.substring(1)) !== -1
-    );
-  }
+const isCallToFocusedTestFunction = object => (
+  object &&
+  object.name[0] === 'f' &&
+  testFunctions[object.name.substring(1)]
+);
 
-  function isPropertyNamedOnly(property) {
-    return property && (property.name === 'only' || property.value === 'only');
-  }
+const isPropertyNamedOnly = property =>
+  property && (property.name === 'only' || property.value === 'only');
 
-  function isCallToJestOnlyFunction(callee) {
-    return (
-      matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property)
-    );
-  }
+const isCallToTestOnlyFunction = callee => (
+  matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property)
+);
 
-  function isCallToFocusedJestFunction(callee) {
-    return matchesFocusedTestFunction(callee);
-  }
+module.exports = (context: EslintContext) => ({
+  CallExpression(node: CallExpression) {
+    const callee = node.callee;
+    if (!callee) {
+      return;
+    }
 
-  return {
-    CallExpression(node: CallExpression) {
-      const callee = node.callee;
-      if (!callee) {
-        return;
-      }
+    if (
+      callee.type === 'MemberExpression' &&
+      isCallToTestOnlyFunction(callee)
+    ) {
+      context.report({
+        message: 'Unexpected focused test.',
+        node: callee.property,
+      });
+      return;
+    }
 
-      if (
-        callee.type === 'MemberExpression' &&
-        isCallToJestOnlyFunction(callee)
-      ) {
-        context.report({
-          message: 'Unexpected focused test.',
-          node: callee.property,
-        });
-        return;
-      }
-
-      if (
-        callee.type === 'Identifier' &&
-        isCallToFocusedJestFunction(callee)
-      ) {
-        context.report({
-          message: 'Unexpected focused test.',
-          node: callee,
-        });
-        return;
-      }
-    },
-  };
-};
+    if (
+      callee.type === 'Identifier' &&
+      isCallToFocusedTestFunction(callee)
+    ) {
+      context.report({
+        message: 'Unexpected focused test.',
+        node: callee,
+      });
+      return;
+    }
+  },
+});

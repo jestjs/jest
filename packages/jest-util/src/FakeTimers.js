@@ -11,7 +11,7 @@
 
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
-import type ModuleMocker from 'jest-mock';
+import type {ModuleMocker} from 'jest-mock';
 
 const {formatStackTrace} = require('./messages');
 const setGlobal = require('./setGlobal');
@@ -328,7 +328,7 @@ class FakeTimers {
   }
 
   _createMocks() {
-    const fn = impl => this._moduleMocker.getMockFn().mockImplementation(impl);
+    const fn = impl => this._moduleMocker.fn().mockImplementation(impl);
 
     this._fakeTimerAPIs = {
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),

@@ -8,9 +8,6 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
-  },
   "dependencies": {
     "chalk": "^1.1.3",
     "pretty-format": "^18.1.0"

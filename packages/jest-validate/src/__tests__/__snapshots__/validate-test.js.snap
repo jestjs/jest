@@ -1,0 +1,136 @@
+exports[`test displays warning for deprecated config options 1`] = `
+"[33m[1m[1m●[1m Deprecation Warning[22m:
+
+  Option [1mscriptPreprocessor[22m was replaced by [1mtransform[22m, which support multiple preprocessors.
+
+  Jest now treats your current configuration as:
+  {
+    [1m\"transform\"[22m: [1m{\".*\": \"test\"}[22m
+  }
+
+  Please update your configuration.
+[39m"
+`;
+
+exports[`test displays warning for unknown config options 1`] = `
+"[33m[1m[1m●[1m Validation Warning[22m:
+
+  Unknown option [1munknown[22m with value [1m{}[22m was found.
+  This is either a typing error or a user mistake. Fixing it will remove this message.
+[39m"
+`;
+
+exports[`test pretty prints valid config for Array 1`] = `
+"[31m[1m[1m●[1m Validation Error[22m:
+
+  Option [1mcoverageReporters[22m must be of type:
+    [1m[32marray[31m[22m
+  but instead received:
+    [1m[31mobject[31m[22m
+
+  Example:
+  {
+    [1m\"coverageReporters\"[22m: [1m[\"json\", \"text\", \"lcov\", \"clover\"][22m
+  }
+[39m"
+`;
+
+exports[`test pretty prints valid config for Boolean 1`] = `
+"[31m[1m[1m●[1m Validation Error[22m:
+
+  Option [1mautomock[22m must be of type:
+    [1m[32mboolean[31m[22m
+  but instead received:
+    [1m[31marray[31m[22m
+
+  Example:
+  {
+    [1m\"automock\"[22m: [1mfalse[22m
+  }
+[39m"
+`;
+
+exports[`test pretty prints valid config for Function 1`] = `
+"[31m[1m[1m●[1m Validation Error[22m:
+
+  Option [1mfn[22m must be of type:
+    [1m[32mfunction[31m[22m
+  but instead received:
+    [1m[31mstring[31m[22m
+
+  Example:
+  {
+    [1m\"fn\"[22m: [1m(config, option, deprecatedOptions) => true[22m
+  }
+[39m"
+`;
+
+exports[`test pretty prints valid config for Object 1`] = `
+"[31m[1m[1m●[1m Validation Error[22m:
+
+  Option [1mhaste[22m must be of type:
+    [1m[32mobject[31m[22m
+  but instead received:
+    [1m[31mnumber[31m[22m
+
+  Example:
+  {
+    [1m\"haste\"[22m: [1m{\"providesModuleNodeModules\": [\"react\", \"react-native\"]}[22m
+  }
+[39m"
+`;
+
+exports[`test pretty prints valid config for String 1`] = `
+"[31m[1m[1m●[1m Validation Error[22m:
+
+  Option [1mpreset[22m must be of type:
+    [1m[32mstring[31m[22m
+  but instead received:
+    [1m[31mnumber[31m[22m
+
+  Example:
+  {
+    [1m\"preset\"[22m: [1m\"react-native\"[22m
+  }
+[39m"
+`;
+
+exports[`test works with custom deprecations 1`] = `
+"[33m[1mMy Custom Deprecation Warning[22m:
+
+  Option [1mscriptPreprocessor[22m was replaced by [1mtransform[22m, which support multiple preprocessors.
+
+  Jest now treats your current configuration as:
+  {
+    [1m\"transform\"[22m: [1m{\".*\": \"test\"}[22m
+  }
+
+  Please update your configuration.
+
+My custom comment[39m"
+`;
+
+exports[`test works with custom errors 1`] = `
+"[31m[1mMy Custom Error[22m:
+
+  Option [1mtest[22m must be of type:
+    [1m[32marray[31m[22m
+  but instead received:
+    [1m[31mstring[31m[22m
+
+  Example:
+  {
+    [1m\"test\"[22m: [1m[1, 2][22m
+  }
+
+My custom comment[39m"
+`;
+
+exports[`test works with custom warnings 1`] = `
+"[33m[1mMy Custom Warning[22m:
+
+  Unknown option [1munknown[22m with value [1m\"string\"[22m was found.
+  This is either a typing error or a user mistake. Fixing it will remove this message.
+
+My custom comment[39m"
+`;

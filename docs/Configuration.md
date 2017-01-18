@@ -329,7 +329,7 @@ test(() => {
     foo: {x: 1, y: 2}
   };
 
-  expect(foo).toMatchSnapshot();
+  expect(bar).toMatchSnapshot();
 });
 ```
 

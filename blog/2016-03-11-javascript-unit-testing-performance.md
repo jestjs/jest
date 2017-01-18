@@ -73,7 +73,7 @@ describe('sum', () => {
 });
 ```
 
-We built a babel transform called [inline-requires](https://github.com/facebook/fbjs/blob/master/scripts/babel-6/inline-requires.js) that removes top-level require statements and inlines them in code. For example, the line `const sum = require('sum');` will be removed from code, but every use of `sum` in the file will be replaced by `require('sum')`. With this transform we can write tests just like you'd expect in Jasmine and the code gets transformed into this:
+We built a babel transform called [inline-requires](https://github.com/facebook/fbjs/blob/master/packages/babel-preset-fbjs/plugins/inline-requires.js) that removes top-level require statements and inlines them in code. For example, the line `const sum = require('sum');` will be removed from code, but every use of `sum` in the file will be replaced by `require('sum')`. With this transform we can write tests just like you'd expect in Jasmine and the code gets transformed into this:
 
 ```js
 describe('sum', () => {

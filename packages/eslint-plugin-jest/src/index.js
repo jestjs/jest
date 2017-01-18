@@ -11,6 +11,15 @@
 'use strict';
 
 module.exports = {
+  configs: {
+    recommended: {
+      rules: {
+        'jest/no-disabled-tests': 'warning',
+        'jest/no-focused-tests': 'error',
+        'jest/no-identical-title': 'error',
+      },
+    },
+  },
   environments: {
     globals: {
       globals: {
@@ -34,6 +43,7 @@ module.exports = {
     },
   },
   rules: {
+    'no-disabled-tests': require('./rules/no-disabled-tests'),
     'no-focused-tests': require('./rules/no-focused-tests'),
     'no-identical-title': require('./rules/no-identical-title'),
   },

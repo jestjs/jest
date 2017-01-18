@@ -25,8 +25,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 'use strict';
 
-const prettyFormat = require('pretty-format');
-
 // Extracted out of jasmine 2.5.2
 function equals(a, b, customTesters) {
   customTesters = customTesters || [];
@@ -247,22 +245,6 @@ function has(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined;
 }
 
-function isFunction(obj) {
-  return typeof obj === 'function';
-}
-
-function isObjectConstructor(ctor) {
-  // aCtor instanceof aCtor is true for the Object and Function
-  // constructors (since a constructor is-a Function and a function is-a
-  // Object). We don't just compare ctor === Object because the constructor
-  // might come from a different frame with different globals.
-  return isFunction(ctor) && ctor instanceof ctor;
-}
-
-function isUndefined(obj) {
-  return obj === void 0;
-}
-
 function isA(typeName, value) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
@@ -276,102 +258,12 @@ function fnNameFor(func) {
     return func.name;
   }
 
-  var matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+  const matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
   return matches ? matches[1] : '<anonymous>';
 }
 
-
-function Any(expectedObject) {
-  if (typeof expectedObject === 'undefined') {
-    throw new TypeError(
-      'jasmine.any() expects to be passed a constructor function. ' +
-      'Please pass one or use jasmine.anything() to match any object.'
-    );
-  }
-  this.expectedObject = expectedObject;
-}
-
-function any(expectedObject) {
-  return new Any(expectedObject);
-}
-
-Any.prototype.asymmetricMatch = function(other) {
-  if (this.expectedObject == String) {
-    return typeof other == 'string' || other instanceof String;
-  }
-
-  if (this.expectedObject == Number) {
-    return typeof other == 'number' || other instanceof Number;
-  }
-
-  if (this.expectedObject == Function) {
-    return typeof other == 'function' || other instanceof Function;
-  }
-
-  if (this.expectedObject == Object) {
-    return typeof other == 'object';
-  }
-
-  if (this.expectedObject == Boolean) {
-    return typeof other == 'boolean';
-  }
-
-  return other instanceof this.expectedObject;
-};
-
-Any.prototype.jasmineToString = function() {
-  return '<jasmine.any(' + fnNameFor(this.expectedObject) + ')>';
-};
-
-
-function Anything() {}
-
-function anything() {
-  return new Anything();
-}
-
-Anything.prototype.asymmetricMatch = function(other) {
-  return !isUndefined(other) && other !== null;
-};
-
-Anything.prototype.jasmineToString = function() {
-  return '<jasmine.anything>';
-};
-
-
-function ArrayContaining(sample) {
-  this.sample = sample;
-}
-
-function arrayContaining(sample) {
-  return new ArrayContaining(sample);
-}
-
-ArrayContaining.prototype.asymmetricMatch = function(other) {
-  var className = Object.prototype.toString.call(this.sample);
-  if (className !== '[object Array]') { throw new Error('You must provide an array to arrayContaining, not \'' + this.sample + '\'.'); }
-
-  for (var i = 0; i < this.sample.length; i++) {
-    var item = this.sample[i];
-    if (!contains(other, item)) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-ArrayContaining.prototype.jasmineToString = function () {
-  return '<jasmine.arrayContaining(' + prettyFormat(this.sample) +')>';
-};
-
-
-function ObjectContaining(sample) {
-  this.sample = sample;
-}
-
-function objectContaining(sample) {
-  return new ObjectContaining(sample);
+function isUndefined(obj) {
+  return obj === void 0;
 }
 
 function getPrototype(obj) {
@@ -398,49 +290,11 @@ function hasProperty(obj, property) {
   return hasProperty(getPrototype(obj), property);
 }
 
-ObjectContaining.prototype.asymmetricMatch = function(other) {
-  if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
-
-  for (var property in this.sample) {
-    if (!hasProperty(other, property) ||
-        !equals(this.sample[property], other[property])) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-ObjectContaining.prototype.jasmineToString = function() {
-  return '<jasmine.objectContaining(' + prettyFormat(this.sample) + ')>';
-};
-
-
-function StringMatching(expected) {
-  if (!isA('String', expected) && !isA('RegExp', expected)) {
-    throw new Error('Expected is not a String or a RegExp');
-  }
-
-  this.regexp = new RegExp(expected);
-}
-
-function stringMatching(expected) {
-  return new StringMatching(expected);
-}
-
-StringMatching.prototype.asymmetricMatch = function(other) {
-  return this.regexp.test(other);
-};
-
-StringMatching.prototype.jasmineToString = function() {
-  return '<jasmine.stringMatching(' + this.regexp + ')>';
-};
-
 module.exports = {
-  any,
-  anything,
-  arrayContaining,
+  contains,
   equals,
-  objectContaining,
-  stringMatching,
+  fnNameFor,
+  hasProperty,
+  isA,
+  isUndefined,
 };

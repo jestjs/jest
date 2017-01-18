@@ -1,0 +1,18 @@
+{
+  "name": "jest-validate",
+  "version": "18.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "license": "BSD-3-Clause",
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "jest-matcher-utils": "^18.1.0",
+    "pretty-format": "^18.1.0"
+  },
+  "devDependencies": {
+    "jest-config": "^18.1.0"
+  }
+}
