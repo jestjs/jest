@@ -19,6 +19,7 @@ let terminalWidth;
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
+  cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
   cursorHide: '[MOCK - cursorHide]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
