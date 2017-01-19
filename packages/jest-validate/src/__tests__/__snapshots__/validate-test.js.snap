@@ -1,7 +1,7 @@
 exports[`test displays warning for deprecated config options 1`] = `
 "[33m[1m[1m●[1m Deprecation Warning[22m:
 
-  Option [1m\"scriptPreprocessor\"[22m was replaced by [1m\"transform\"[22m, which support multiple preprocessors.
+  Option [1mscriptPreprocessor[22m was replaced by [1mtransform[22m, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
@@ -98,7 +98,7 @@ exports[`test pretty prints valid config for String 1`] = `
 exports[`test works with custom deprecations 1`] = `
 "[33m[1mMy Custom Deprecation Warning[22m:
 
-  Option [1m\"scriptPreprocessor\"[22m was replaced by [1m\"transform\"[22m, which support multiple preprocessors.
+  Option [1mscriptPreprocessor[22m was replaced by [1mtransform[22m, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
