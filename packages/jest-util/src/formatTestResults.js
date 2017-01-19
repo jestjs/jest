@@ -26,14 +26,14 @@ const formatResult = (
   codeCoverageFormatter: CodeCoverageFormatter,
   reporter: CodeCoverageReporter,
 ): FormattedTestResult => {
-  const currTime = Date.now();
+  const now = Date.now();
   const output: FormattedTestResult = {
     assertionResults: [],
     coverage: {},
-    endTime: currTime,
+    endTime: now,
     message: '',
     name: testResult.testFilePath,
-    startTime: currTime,
+    startTime: now,
     status: 'failed',
     summary: '',
   };
