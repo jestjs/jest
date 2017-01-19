@@ -59,11 +59,11 @@ const printTypeahead = (
     const padding = stringLength(prefix) + 2;
 
     results
-    .map(rawPath => {
-      const filePath = trimAndFormatPath(padding, config, rawPath, width);
-      return highlight(rawPath, filePath, pattern, config.rootDir);
-    })
-    .forEach(filePath => pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
+      .map(rawPath => {
+        const filePath = trimAndFormatPath(padding, config, rawPath, width);
+        return highlight(rawPath, filePath, pattern, config.rootDir);
+      })
+      .forEach(filePath => pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
 
     if (total > max) {
       const more = total - max;
