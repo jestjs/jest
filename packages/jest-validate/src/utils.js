@@ -48,22 +48,14 @@ const createDidYouMeanMessage = (
   allowedOptions: Array<string>,
 ) => {
   const leven = require('leven');
-  let suggestion;
-
-  allowedOptions.some(option => {
-    const steps = leven(option, unrecognized);
-    if (steps < 3) {
-      suggestion = option;
-      return true;
-    }
-    return false;
+  const suggestion = allowedOptions.find(option => {
+    const steps: number = leven(option, unrecognized);
+    return steps < 3;
   });
 
-  if (suggestion) {
-    return `Did you mean ${chalk.bold(format(suggestion))}?`;
-  }
-
-  return '';
+  return suggestion
+    ? `Did you mean ${chalk.bold(format(suggestion))}?`
+    : '';
 };
 
 module.exports = {
