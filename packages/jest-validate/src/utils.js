@@ -54,9 +54,9 @@ const createDidYouMeanMessage = (
     const steps = leven(option, unrecognized);
     if (steps < 3) {
       suggestion = option;
-      return option;
+      return true;
     }
-    return null;
+    return false;
   });
 
   if (suggestion) {
