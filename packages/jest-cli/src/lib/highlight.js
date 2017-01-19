@@ -28,7 +28,8 @@ const highlight = (
   rawPath: string,
   filePath: string,
   pattern: string,
-  rootDir: string) => {
+  rootDir: string,
+) => {
 
   let regexp;
 
