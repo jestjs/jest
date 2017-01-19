@@ -35,38 +35,38 @@ const index = React.createClass({
 
     const users = [
       {
-        infoLink: 'https://code.facebook.com',
         caption: 'Facebook',
         image: 'img/logos/facebook.png',
+        infoLink: 'https://code.facebook.com',
       },
       {
-        infoLink: 'https://www.oculus.com/',
         caption: 'Oculus',
         image: 'img/logos/oculus.png',
+        infoLink: 'https://www.oculus.com/',
       },
       {
-        infoLink: 'https://www.instagram.com/',
         caption: 'Instagram',
         image: 'img/logos/instagram.png',
+        infoLink: 'https://www.instagram.com/',
       },
       {
-        infoLink: 'https://www.twitter.com',
         caption: 'Twitter',
         image: 'img/logos/twitter.png',
+        infoLink: 'https://www.twitter.com',
       },
       {
-        infoLink: 'https://www.pinterest.com',
         caption: 'Pinterest',
         image: 'img/logos/pinterest.png',
+        infoLink: 'https://www.pinterest.com',
       },
       {
-        infoLink: 'http://www.nytimes.com/',
         caption: 'The New York Times',
         image: 'img/logos/nyt.png',
+        infoLink: 'http://www.nytimes.com/',
       },
     ];
 
-    const showcase = users.map((user) => {
+    const showcase = users.map(user => {
       return <a href={user.infoLink}><img src={user.image} title={user.caption}/></a>;
     });
 

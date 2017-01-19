@@ -23,7 +23,7 @@ export default class Clock extends React.Component {
 
   tick() {
     this.setState({
-      seconds: Date.now() / 1000
+      seconds: Date.now() / 1000,
     });
   }
 
