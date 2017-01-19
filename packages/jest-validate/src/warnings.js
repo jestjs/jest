@@ -26,12 +26,12 @@ const unknownOptionWarning = (
   option: string,
   options: ValidationOptions
 ): void => {
-  const didyoumean =
+  const didYouMean =
     createDidYouMeanMessage(option, Object.keys(exampleConfig));
   /* eslint-disable max-len */
   const message =
   `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
-  (didyoumean && ` ${didyoumean}`) +
+  (didYouMean && ` ${didYouMean}`) +
   `\n  This is either a typing error or a user mistake. Fixing it will remove this message.`;
   /* eslint-enable max-len */
 
