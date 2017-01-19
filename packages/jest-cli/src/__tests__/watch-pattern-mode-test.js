@@ -19,6 +19,7 @@ let terminalWidth;
 
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
+  cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
   cursorHide: '[MOCK - cursorHide]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
@@ -66,14 +67,6 @@ jest.doMock('../lib/terminalUtils', () => ({
 }));
 
 const watch = require('../watch');
-
-const processOn = process.on;
-
-process.on = jest.fn();
-
-afterAll(() => {
-  process.on = processOn;
-});
 
 afterEach(runJestMock.mockReset);
 
