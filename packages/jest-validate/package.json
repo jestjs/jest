@@ -12,8 +12,5 @@
     "jest-matcher-utils": "^18.1.0",
     "leven": "^2.0.0",
     "pretty-format": "^18.1.0"
-  },
-  "devDependencies": {
-    "jest-config": "^18.1.0"
   }
 }
