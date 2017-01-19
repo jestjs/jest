@@ -31,7 +31,8 @@ const _validate = (config: Object, options: ValidationOptions) => {
     ) {
       options.deprecate(config, key, options.deprecatedConfig, options);
     } else {
-      options.unknown && options.unknown(config, key, options);
+      options.unknown &&
+        options.unknown(config, options.exampleConfig, key, options);
     }
   }
 };
