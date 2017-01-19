@@ -10,8 +10,6 @@
 
 'use strict';
 
-import type {DefaultConfig, Config} from 'types/Config';
-
 const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
@@ -25,7 +23,7 @@ const replacePathSepForRegex = (string: string) => {
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-const defaultConfig: DefaultConfig = {
+const defaultConfig = {
   automock: false,
   bail: false,
   browser: false,
@@ -66,7 +64,7 @@ const defaultConfig: DefaultConfig = {
   watch: false,
 };
 
-const validConfig: Config = {
+const validConfig = {
   automock: false,
   bail: false,
   browser: false,
@@ -122,7 +120,6 @@ const validConfig: Config = {
   testRunner: 'jasmine2',
   testURL: 'about:blank',
   timers: 'real',
-  // $FlowFixMe – transform is further normalized into Array<[string, string]>
   transform: {
     '^.+\\.js$': '<rootDir>/preprocessor.js',
   },
