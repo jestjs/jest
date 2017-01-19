@@ -111,56 +111,55 @@ const createLastCalledWithMatcher = matcherName =>
   };
 
 const createCallTimesMatcher = (matcherName, times = null) =>
-	(
-		received: any,
-	  expected: number
-	) => {
+  (
+    received: any,
+    expected: number
+  ) => {
 
-		if (times){
-			ensureNoExpected(expected, matcherName);
-			expected = times;
-		}
+    if (times) {
+      ensureNoExpected(expected, matcherName);
+      expected = times;
+    }
 
-		ensureExpectedIsNumber(expected, matcherName);
-		ensureMock(received, matcherName);
+    ensureExpectedIsNumber(expected, matcherName);
+    ensureMock(received, matcherName);
 
-		const receivedIsSpy = isSpy(received);
-		const type = receivedIsSpy ? 'spy' : 'mock function';
-		const count = receivedIsSpy
-			? received.calls.count()
-			: received.mock.calls.length;
-		const pass = count === expected;
-		const message = pass
-			? () => matcherHint(
-				'.not' +
-				matcherName,
-				RECEIVED_NAME[type],
-				String(expected),
-			) +
-			`\n\n` +
-			`Expected ${type} not to be called ` +
-			`${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
-			` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
-			: () => matcherHint(matcherName, RECEIVED_NAME[type], String(expected)) +
-			'\n\n' +
-			`Expected ${type} to have been called ` +
-			`${EXPECTED_COLOR(pluralize('time', expected))},` +
-			` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
+    const receivedIsSpy = isSpy(received);
+    const type = receivedIsSpy ? 'spy' : 'mock function';
+    const count = receivedIsSpy
+      ? received.calls.count()
+      : received.mock.calls.length;
+    const pass = count === expected;
+    const message = pass
+      ? () => matcherHint(
+        '.not' +
+        matcherName,
+        RECEIVED_NAME[type],
+        String(expected),
+      ) +
+      `\n\n` +
+      `Expected ${type} not to be called ` +
+      `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
+      ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
+      : () => matcherHint(matcherName, RECEIVED_NAME[type], String(expected)) +
+      '\n\n' +
+      `Expected ${type} to have been called ` +
+      `${EXPECTED_COLOR(pluralize('time', expected))},` +
+      ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
 
-		return {message, pass};
-	};
+    return {message, pass};
+  };
 
 const spyMatchers: MatchersObject = {
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
   toBeCalled: createToBeCalledMatcher('.toBeCalled'),
+  toBeCalledFourTimes: createCallTimesMatcher('.toBeCalledFourTimes', 4),
+  toBeCalledOnce: createCallTimesMatcher('.toBeCalledOnce', 1),
+  toBeCalledThrice: createCallTimesMatcher('.toBeCalledThrice', 3),
+  toBeCalledTwice: createCallTimesMatcher('.toBeCalledTwice', 2),
   toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
   toHaveBeenCalled: createToBeCalledMatcher('.toHaveBeenCalled'),
   toHaveBeenCalledTimes: createCallTimesMatcher('.toHaveBeenCalledTimes'),
-	toHaveBeenCalledOnce: createCallTimesMatcher('.toHaveBeenCalledOnce', 1),
-	toHaveBeenCalledTwice: createCallTimesMatcher('.toHaveBeenCalledTwice', 2),
-	toHaveBeenCalledThrice: createCallTimesMatcher('.toHaveBeenCalledThrice', 3),
-	toHaveBeenCalledFourTimes:
-		createCallTimesMatcher('.toHaveBeenCalledFourTimes', 4),
   toHaveBeenCalledWith: createToBeCalledWithMatcher('.toHaveBeenCalledWith'),
   toHaveBeenLastCalledWith:
     createLastCalledWithMatcher('.toHaveBeenLastCalledWith'),
