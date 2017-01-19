@@ -57,7 +57,8 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
     (Object.create(null): any),
     results,
     {
-      coverageMap: null, // this can be big and phabricator doesn't need it.
+      // Remove the coverageMap here as it uses a lot of memory.
+      coverageMap: null,
       phabricatorReport: report.testResults,
     }
   );
