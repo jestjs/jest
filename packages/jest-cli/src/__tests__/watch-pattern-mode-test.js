@@ -67,6 +67,14 @@ jest.doMock('../lib/terminalUtils', () => ({
 
 const watch = require('../watch');
 
+const processOn = process.on;
+
+process.on = jest.fn();
+
+afterAll(() => {
+  process.on = processOn;
+});
+
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
