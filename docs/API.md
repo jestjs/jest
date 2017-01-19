@@ -309,6 +309,20 @@ describe('drinkEach', () => {
 });
 ```
 
+You can use the following shortcut methods: toBeCalledOnce(), toBeCalledTwice(), toBeCalledThrice(), toBeCalledFourTimes() instead of the more verbose toHaveBeenCalledTimes(1), toHaveBeenCalledTimes(2), etc.
+
+For example:
+
+```js
+describe('drinkEach', () => {
+  it('drinks each drink', () => {
+    let drink = jest.fn();
+    drinkEach(drink, ['lemon', 'octopus']);
+    expect(drink).toBeCalledTwice();
+  });
+});
+```
+
 ### `.toHaveBeenCalledWith(arg1, arg2, ...)`
 
 Use `.toHaveBeenCalledWith` to ensure that a mock function was called with specific
