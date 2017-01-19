@@ -23,7 +23,7 @@ const errorMessage = (
   options: ValidationOptions,
 ): void => {
   const message =
-`  Option ${chalk.bold(option)} must be of type:
+`  Option ${chalk.bold(`"${option}"`)} must be of type:
     ${chalk.bold.green(getType(defaultValue))}
   but instead received:
     ${chalk.bold.red(getType(received))}
