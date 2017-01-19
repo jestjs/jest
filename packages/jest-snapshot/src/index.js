@@ -51,16 +51,12 @@ const cleanup = (hasteFS: HasteFS, update: boolean) => {
   };
 };
 
-let snapshotState;
-
 const initializeSnapshotState = (
   testFile: Path,
   update: boolean,
   testPath: string,
   expand: boolean,
 ) => new SnapshotState(testFile, update, testPath, expand);
-
-const getSnapshotState = () => snapshotState;
 
 const toMatchSnapshot = function(received: any, testName?: string) {
   this.dontThrow && this.dontThrow();
@@ -160,7 +156,6 @@ module.exports = {
   addPlugins,
   cleanup,
   getPlugins,
-  getSnapshotState,
   initializeSnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
