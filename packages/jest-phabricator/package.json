@@ -6,7 +6,7 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "dependencies": {
-    "jest-util": "^18.0.0"
+    "jest-util": "^18.1.0"
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js"
