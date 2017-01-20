@@ -27,6 +27,7 @@ const BlogPost = React.createClass({
     }
     return <Marked>{content}</Marked>;
   },
+
   renderAuthorPhoto() {
     const post = this.props.post;
     if (post.authorFBID) {
@@ -49,7 +50,7 @@ const BlogPost = React.createClass({
       </h1>
     );
   },
-  render() {
+  renderPostHeader() {
     const post = this.props.post;
     const match = post.path.match(/([0-9]+)\/([0-9]+)\/([0-9]+)/);
     // Because JavaScript sucks at date handling :(
@@ -60,21 +61,27 @@ const BlogPost = React.createClass({
     ][parseInt(match[2], 10) - 1];
     const day = parseInt(match[3], 10);
 
+    const githubButton = this.props.truncate ? null :
+      <p className="post-meta">{siteConfig.githubButton}</p>;
+
+    return (
+      <header className="postHeader">
+        {this.renderAuthorPhoto()}
+        <p className="post-authorName">
+          <a href={post.authorURL} target="_blank">{post.author}</a>
+        </p>
+        {this.renderTitle()}
+        {githubButton}
+        <p className="post-meta">
+          {month} {day}, {year}
+        </p>
+      </header>
+    );
+  },
+  render() {
     return (
       <div className="post">
-        <header className="postHeader">
-          {this.renderAuthorPhoto()}
-          <p className="post-authorName">
-            <a href={post.authorURL} target="_blank">{post.author}</a>
-          </p>
-          {this.renderTitle()}
-          <p className="post-meta">
-            {siteConfig.githubButton}
-          </p>
-          <p className="post-meta">
-            {month} {day}, {year}
-          </p>
-        </header>
+        {this.renderPostHeader()}
         {this.renderContent()}
       </div>
     );
