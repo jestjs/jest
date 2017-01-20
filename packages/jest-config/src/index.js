@@ -14,9 +14,6 @@ const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
-const defaults = require('./defaults');
-const validConfig = require('./validConfig');
-const deprecatedConfig = require('./deprecated');
 const setFromArgv = require('./setFromArgv');
 
 const readConfig = (argv: Object, packageRoot: string) =>
@@ -51,9 +48,6 @@ const readRawConfig = (argv, root) => {
 };
 
 module.exports = {
-  defaults,
-  deprecatedConfig,
   normalize,
   readConfig,
-  validConfig,
 };

@@ -13,17 +13,26 @@
 import type {ValidationOptions} from './types';
 
 const chalk = require('chalk');
-const {format, logValidationWarning, WARNING} = require('./utils');
+const {
+  format,
+  logValidationWarning,
+  createDidYouMeanMessage,
+  WARNING,
+} = require('./utils');
 
 const unknownOptionWarning = (
   config: Object,
+  exampleConfig: Object,
   option: string,
   options: ValidationOptions
 ): void => {
+  const didYouMean =
+    createDidYouMeanMessage(option, Object.keys(exampleConfig));
   /* eslint-disable max-len */
   const message =
-`  Unknown option ${chalk.bold(option)} with value ${chalk.bold(format(config[option]))} was found.
-  This is either a typing error or a user mistake. Fixing it will remove this message.`;
+  `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
+  (didYouMean && ` ${didYouMean}`) +
+  `\n  This is probably a typing mistake. Fixing it will remove this message.`;
   /* eslint-enable max-len */
 
   const comment = options.comment;
