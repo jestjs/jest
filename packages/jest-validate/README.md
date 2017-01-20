@@ -39,6 +39,7 @@ type ValidationOptions = {
   title?: Title,
   unknown?: (
     config: Object,
+    exampleConfig: Object,
     option: string,
     options: ValidationOptions
   ) => void,

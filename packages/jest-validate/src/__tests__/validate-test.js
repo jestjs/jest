@@ -10,8 +10,11 @@
 'use strict';
 
 const validate = require('../validate');
-const defaultConfig = require('jest-config').defaults;
-const {validConfig, deprecatedConfig} = require('jest-config');
+const {
+  defaultConfig,
+  validConfig,
+  deprecatedConfig,
+} = require('./fixtures/jestConfig');
 const jestValidateExampleConfig = require('../exampleConfig');
 const jestValidateDefaultConfig = require('../defaultConfig');
 
@@ -53,7 +56,8 @@ test('omits null and undefined config values', () => {
 });
 
 test('displays warning for unknown config options', () => {
-  const config = {unknown: {}};
+  const config = {unkwon: {}};
+  const validConfig = {unknown: 'string'};
   const warn = console.warn;
   console.warn = jest.fn();
 

@@ -19,9 +19,6 @@ const {
   objectContaining,
   stringMatching,
 } = require('../asymmetric-matchers');
-const prettyFormat = require('pretty-format');
-
-const print = string => prettyFormat(string, {min: true});
 
 test('Any.asymmetricMatch()', () => {
   const Thing = function() {};
