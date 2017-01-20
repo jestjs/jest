@@ -943,6 +943,8 @@ a:hover code {
   overflow: hidden;
   padding: 0 10px;
   text-align: left;
+  padding-top: 90px;
+  height: 90px;
 }
 .footerContainer .footerWrapper {
   border-top: 1px solid #99424f;
@@ -1272,11 +1274,18 @@ a:hover code {
 }
 
 nav.toc {
-  position: relative;
+  position: fixed;
+  overflow-y: auto;
+  bottom: 0;
+  top: 92px;
+  width: 240px;
 }
 nav.toc section {
   padding: 0px;
   position: relative;
+}
+nav.toc:last-child {
+  padding-bottom: 100px;
 }
 .docsNavContainer nav.toc .navWrapper {
   padding: 0;
@@ -1478,7 +1487,7 @@ nav.toc .toggleNav .navBreadcrumb h2 {
   .docMainWrapper {
     display: flex;
     flex-flow: row nowrap;
-    margin-bottom: 40px;
+    margin-bottom: -90px;
   }
   .docMainWrapper .wrapper {
     padding-left: 0;
@@ -1615,4 +1624,54 @@ div.video-shoutout {
   div.video {
     height: 300px;
   }
+}
+
+.showcaseSection {
+  max-width: 900px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.showcaseSection .prose h1 {
+  color: #b84c20;
+  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  text-align: center;
+  padding: 1.4em 0 0.4em;
+}
+
+.showcaseSection .prose {
+  max-width: 560px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.showcaseSection .logos {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.showcaseSection .logos img {
+  max-height: 150px;
+  max-width: 270px;
+  padding: 20px;
+}
+
+.miniShowcaseSection .logos {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.miniShowcaseSection .logos img {
+  max-height: 110px;
+  max-width: 110px;
+  padding: 20px;
+}
+
+.miniShowcaseSection .button {
+  text-decoration: none !important;
 }

@@ -3,21 +3,21 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var classNames = require('classnames');
+const React = require('React');
+const classNames = require('classnames');
 
-var Marked = require('Marked');
+const Marked = require('Marked');
 
 class GridBlock extends React.Component {
   renderBlock(block) {
-    var blockClasses = classNames('blockElement', this.props.className, {
-      'alignCenter': this.props.align === "center",
-      'alignRight': this.props.align === "right",
-      'twoByGridBlock': this.props.layout === "twoColumn",
-      'fourByGridBlock': this.props.layout === "fourColumn",
-      'threeByGridBlock': this.props.layout === "threeColumn",
-      'imageAlignTop': (block.image && this.props.imagealign === "top"),
-      'imageAlignSide': (block.image && this.props.imagealign === "side"),
+    const blockClasses = classNames('blockElement', this.props.className, {
+      'alignCenter': this.props.align === 'center',
+      'alignRight': this.props.align === 'right',
+      'fourByGridBlock': this.props.layout === 'fourColumn',
+      'imageAlignSide': (block.image && this.props.imagealign === 'side'),
+      'imageAlignTop': (block.image && this.props.imagealign === 'top'),
+      'threeByGridBlock': this.props.layout === 'threeColumn',
+      'twoByGridBlock': this.props.layout === 'twoColumn',
     });
     return (
       <div className={blockClasses}>
@@ -35,12 +35,16 @@ class GridBlock extends React.Component {
       return (
         <div className="blockImage"><img src={image} /></div>
       );
+    } else {
+      return null;
     }
   }
 
   renderBlockTitle(title) {
     if (title) {
       return <h3>{title}</h3>;
+    } else {
+      return null;
     }
   }
 
@@ -51,13 +55,13 @@ class GridBlock extends React.Component {
       </div>
     );
   }
-};
+}
 
 GridBlock.defaultProps = {
-  align: "left",
+  align: 'left',
   contents: [],
-  imagealign: "top",
-  layout: "twoColumn",
+  imagealign: 'top',
+  layout: 'twoColumn',
 };
 
 module.exports = GridBlock;

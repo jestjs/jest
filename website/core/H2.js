@@ -3,13 +3,13 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var Header = require('Header');
+const React = require('React');
+const Header = require('Header');
 
-var H2 = React.createClass({
-  render: function() {
-    return <Header {...this.props} level={2}>{this.props.children}</Header>
-  }
+const H2 = React.createClass({
+  render() {
+    return <Header {...this.props} level={2}>{this.props.children}</Header>;
+  },
 });
 
 module.exports = H2;

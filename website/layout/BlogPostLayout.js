@@ -4,15 +4,16 @@
  * @providesModule BlogPostLayout
  * @jsx React.DOM
  */
+ /* eslint-disable max-len */
 
-var BlogPost = require('BlogPost');
-var BlogSidebar = require('BlogSidebar');
-var Container = require('Container');
-var React = require('React');
-var Site = require('Site');
+const BlogPost = require('BlogPost');
+const BlogSidebar = require('BlogSidebar');
+const Container = require('Container');
+const React = require('React');
+const Site = require('Site');
 
-var BlogPostLayout = React.createClass({
-  render: function() {
+const BlogPostLayout = React.createClass({
+  render() {
     return (
       <Site
         className="sideNavVisible"
@@ -30,7 +31,7 @@ var BlogPostLayout = React.createClass({
         </div>
       </Site>
     );
-  }
+  },
 });
 
 module.exports = BlogPostLayout;

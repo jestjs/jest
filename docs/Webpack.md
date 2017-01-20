@@ -1,17 +1,15 @@
 ---
-id: tutorial-webpack
-title: Tutorial – webpack
+id: webpack
+title: Using with webpack
 layout: docs
-category: Quick Start
-permalink: docs/tutorial-webpack.html
-next: tutorial-jquery
+category: Guides
+permalink: docs/webpack.html
+next: migration-guide
 ---
 
-Jest can be used in projects that use webpack to manage assets, styles, and compilation.
-webpack _does_ offer some unique challenges over other tools because it
-integrates directly with your application to allow managing stylesheets,
-assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript
-languages and tools.
+Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack _does_ offer some unique challenges over other tools because it integrates directly with your application to allow managing stylesheets, assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript languages and tools.
+
+## A webpack example
 
 Let's start with a common sort of webpack config file and translate it to a Jest setup.
 
@@ -38,14 +36,11 @@ module.exports = {
 }
 ```
 
-For JavaScript files that are transformed by Babel, installing `babel-jest`
-will teach Jest to pick up your `.babelrc` config automatically. Non-Babel
-JavaScript transformations can be handled with Jest's
-[`transform`](/jest/docs/configuration.html#transform-object-string-string) config option.
+If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](/jest/docs/getting-started.html#using-babel-with-jest) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](/jest/docs/configuration.html#transform-object-string-string) config option.
 
-Next let's configure Jest to gracefully handle asset files such as stylesheets and images.
-Usually these files aren't particularly useful in tests so we can safely mock them out.
-However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
+### Handling Static Assets
+
+Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
 ```js
 // package.json
@@ -73,14 +68,15 @@ module.exports = {};
 module.exports = 'test-file-stub';
 ```
 
-For CSS Modules, you can use an [ES2015 Proxy](https://github.com/keyanzhang/identity-obj-proxy)
-(`npm install --save-dev identity-obj-proxy`) to mock
-[CSS Modules](https://github.com/css-modules/css-modules); then all your className
-lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`).
-This is pretty handy for React snapshot testing.
+### Mocking CSS Modules
 
-Notice that Proxy is enabled in Node.js `v6.*` by default; if you are not on Node `v6.*` yet,
-make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
+You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to mock [CSS Modules](https://github.com/css-modules/css-modules):
+
+```
+npm install --save-dev identity-obj-proxy
+```
+
+Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](/jest/docs/snapshot-testing.html).
 
 ```js
 // package.json (for CSS Modules)
@@ -93,6 +89,8 @@ make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
   }
 }
 ```
+
+> Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
 If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's
 [`transform`](/jest/docs/configuration.html#transform-object-string-string)
@@ -125,16 +123,21 @@ module.exports = {
 }
 ```
 
-We've told Jest to ignore files matching a stylesheet or image extension, and instead,
-require our mock files. You can adjust the regular expression to match the
-file types your webpack config handles.
+We've told Jest to ignore files matching a stylesheet or image extension, and instead, require our mock files. You can adjust the regular expression to match the file types your webpack config handles.
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them.
-For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest.
+*Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map `.js` files to the babel-jest module.*
 
-*Note: the `modulesDirectories` option in webpack is called `moduleDirectories` in Jest.*
+```
+"transform": {
+  "^.+\\.js$": "babel-jest",
+  "^.+\\.css$": "custom-transformer",
+  ...
+}
+```
 
-*Note: <rootDir> is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your package.json is located unless you specify a custom `rootDir` option in your configuration.*
+### Configuring Jest to find our files
+
+Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
 ```js
 // package.json
@@ -151,8 +154,10 @@ For webpack's `modulesDirectories`, and `extensions` options there are direct an
 }
 ```
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
-env variable, which you can set, or make use of the `modulePaths` option.
+> Note: <rootDir> is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your package.json is located unless you specify a custom `rootDir` option in your configuration.
+
+
+Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
 ```js
 // package.json
@@ -171,8 +176,7 @@ env variable, which you can set, or make use of the `modulePaths` option.
 }
 ```
 
-And finally we just have the webpack `alias` left to handle. For that we can make use
-of the `moduleNameMapper` option again.
+And finally we just have the webpack `alias` left to handle. For that we can make use of the `moduleNameMapper` option again.
 
 ```js
 // package.json
@@ -195,15 +199,12 @@ of the `moduleNameMapper` option again.
 }
 ```
 
-That's it! webpack is a complex and flexible tool, so you may have to make some adjustments
-to handle your specific application's needs. Luckily for most projects, Jest should be more than
-flexible enough to handle your webpack config.
+That's it! webpack is a complex and flexible tool, so you may have to make some adjustments to handle your specific application's needs. Luckily for most projects, Jest should be more than flexible enough to handle your webpack config.
 
-*Note: For more complex webpack configurations, you may also want to investigate
-projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).*
+> Note: For more complex webpack configurations, you may also want to investigate projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
 
 
-## webpack 2
+## Using with webpack 2
 
 webpack 2 offers native support for ES modules. However, Jest runs in Node, and
 thus requires ES modules to be transpiled to CommonJS modules. As such, if you

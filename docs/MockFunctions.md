@@ -1,10 +1,10 @@
 ---
 id: mock-functions
-title: Mock functions
+title: Mock Functions
 layout: docs
-category: Reference
+category: Introduction
 permalink: docs/mock-functions.html
-next: manual-mocks
+next: more-resources
 ---
 
 Mock functions make it easy to test the links between code by erasing the actual
@@ -197,7 +197,7 @@ var myObj = {
 ## Custom Matchers
 
 Finally, in order to make it simpler to assert how mock functions have been
-called, we've added some custom matcher functions to jasmine for you:
+called, we've added some custom matcher functions for you:
 
 ```javascript
 // The mock function was called at least once
@@ -214,7 +214,7 @@ These matchers are really just sugar for common forms of inspecting the `.mock`
 property. You can always do this manually yourself if that's more to your taste
 or if you need to do something more specific:
 
-```jasmine
+```javascript
 // The mock function was called at least once
 expect(mockFunc.mock.calls.length).toBeGreaterThan(0);
 
@@ -230,3 +230,5 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual(
 // (note that there is no sugar helper for this specific of an assertion)
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 ```
+
+For a complete list of matchers, check out the [reference docs](/jest/docs/expect.html).

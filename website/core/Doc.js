@@ -3,8 +3,8 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var Marked = require('Marked');
+const React = require('React');
+const Marked = require('Marked');
 
 class Doc extends React.Component {
   render() {
@@ -18,7 +18,7 @@ class Doc extends React.Component {
           <Marked>{this.props.content}</Marked>
         </article>
       </div>
-    )
+    );
   }
 }
 
