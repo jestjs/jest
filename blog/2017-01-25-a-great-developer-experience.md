@@ -7,6 +7,8 @@ authorFBID: 121800083
 
 We strongly believe that great documentation is crucial to providing a great developer experience. The docs should be clear, concise, and useful to new users and veterans alike. With that in mind, we recently took some time to overhaul the Jest website.
 
+<!--truncate-->
+
 ## Improved Docs
 
 One of the changes you'll notice upon visiting our docs is the updated sidebar. The documentation is now divided into three main areas: an introduction to Jest, advanced guides to Jest's features, and a comprehensive API reference.

@@ -219,7 +219,7 @@ function execute() {
       );
     });
 
-    const perPage = 5;
+    const perPage = 10;
     for (
       let page = 0;
       page < Math.ceil(metadatas.files.length / perPage);
