@@ -17,11 +17,39 @@ export type Coverage = {|
   sourceText: string,
 |};
 
+type FileCoverageTotal = {|
+  total: number,
+  covered: number,
+  skipped: number,
+  pct?: number,
+|};
+
+type CoverageSummary = {|
+  lines: FileCoverageTotal,
+  statements: FileCoverageTotal,
+  branches: FileCoverageTotal,
+  functions: FileCoverageTotal,
+|};
+
+export type FileCoverage = {|
+  getLineCoverage: () => Object,
+  getUncoveredLines: () => Array<number>,
+  getBranchCoverageByLine: () => Object,
+  toJSON: () => Object,
+  merge: (other: Object) => void,
+  computeSimpleTotals: (property: string) => FileCoverageTotal,
+  computeBranchTotals: () => FileCoverageTotal,
+  resetHits: () => void,
+  toSummary: () => CoverageSummary
+|};
+
 export type CoverageMap = {|
   merge: (data: Object) => void,
-  getCoverageSummary: () => Object,
+  getCoverageSummary: () => FileCoverage,
   data: Object,
   addFileCoverage: (fileCoverage: Object) => void,
+  files: () => Array<string>,
+  fileCoverageFor: (file: string) => FileCoverage,
 |};
 
 export type Error = {|
@@ -55,8 +83,14 @@ export type AssertionResult = {|
   title: string,
 |};
 
-export type AggregatedResult = {|
-  coverageMap?: CoverageMap,
+export type FormattedAssertionResult = {
+  status: Status,
+  title: string,
+  failureMessages: Array<string> | null,
+};
+
+export type AggregatedResult = {
+  coverageMap?: ?CoverageMap,
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -71,7 +105,7 @@ export type AggregatedResult = {|
   success: boolean,
   testResults: Array<TestResult>,
   wasInterrupted: boolean,
-|};
+};
 
 export type Suite = {|
   title: string,
@@ -105,13 +139,41 @@ export type TestResult = {|
   testResults: Array<AssertionResult>,
 |};
 
+export type FormattedTestResult = {
+  message: string,
+  name: string,
+  summary: string,
+  status: 'failed' | 'passed',
+  startTime: number,
+  endTime: number,
+  coverage: any,
+  assertionResults: Array<FormattedAssertionResult>,
+};
+
+export type FormattedTestResults = {
+  coverageMap?: ?CoverageMap,
+  numFailedTests: number,
+  numFailedTestSuites: number,
+  numPassedTests: number,
+  numPassedTestSuites: number,
+  numPendingTests: number,
+  numPendingTestSuites: number,
+  numRuntimeErrorTestSuites: number,
+  numTotalTests: number,
+  numTotalTestSuites: number,
+  snapshot: SnapshotSummary,
+  startTime: number,
+  success: boolean,
+  testResults: Array<FormattedTestResult>,
+  wasInterrupted: boolean,
+};
+
 export type CodeCoverageReporter = any;
 
 export type CodeCoverageFormatter = (
   coverage: ?Coverage,
   reporter?: CodeCoverageReporter,
 ) => ?Object;
-
 
 export type SnapshotSummary = {|
   added: number,
