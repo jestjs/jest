@@ -29,14 +29,14 @@ class HomeSplash extends React.Component {
               <img src="/jest/img/jest-outline.svg" alt="Jest" />
             </div>
             <div className="inner">
-              <h2 className="projectTagline">{siteConfig.tagline}</h2>
-              <div className="projectIntro">
-                {siteConfig.description}
-                {mostRecentContent}
-              </div>
+              <h2 className="projectTitle">
+                {siteConfig.title}
+                <small>{siteConfig.tagline}</small>
+              </h2>
               <div className="section promoSection">
                 {siteConfig.homepagePromos.map(this.makePromoElements, this)}
               </div>
+              <div className="githubButton">{siteConfig.githubButton}</div>
             </div>
           </div>
         </div>

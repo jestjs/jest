@@ -115,18 +115,13 @@ h1, h2, h3, h4 {
 }
 
 .homeContainer {
-  background: #99424f;
-  color: #fff;
+  background: #fff;
+  color: #99424f;
+  text-align: center;
 }
-.homeContainer a {
-  color: #fff;
-}
-.homeContainer .homeSplashFade {
-  color: white;
-}
+
 .homeContainer .homeWrapper {
   padding: 2em 10px;
-  text-align: left;
 }
 .homeContainer .homeWrapper .wrapper {
   margin: 0px auto;
@@ -372,14 +367,32 @@ iframe.jest-repl {
   width: 100%;
 }
 
+.projectTitle {
+  font-size: 250%;
+  line-height: 1em;
+  font-weight: 400;
+}
+
+.projectTitle > small {
+  display: block;
+  font-size: 50%;
+  line-height: 1em;
+  font-weight: 300;
+  margin: 0.7em 0 1.3em;
+}
+
 @media only screen and (min-width: 480px) {
   h1#project_title {
     font-size: 500%;
   }
 
-  h2.projectTagline {
-    font-size: 250%;
-    line-height: 1em;
+  .projectTitle {
+    font-size: 300%;
+    margin: 0.3em 0;
+  }
+
+  .projectTitle > small {
+    font-size: 50%;
   }
 
   .projectLogo img {
@@ -666,7 +679,6 @@ a:hover code {
   flex-flow: column wrap;
   font-size: 125%;
   line-height: 1.6em;
-  margin: -10px 0;
   position: relative;
   z-index: 99;
 }
@@ -681,7 +693,8 @@ a:hover code {
 }
 .promoSection .promoRow .pluginRowBlock {
   display: flex;
-  flex-flow: row wrap;
+  flex-wrap: wrap;
+  justify-content: center;
   margin: 0 -2px;
 }
 .promoSection .promoRow .pluginRowBlock .pluginWrapper {
@@ -712,14 +725,13 @@ a:hover code {
 }
 
 .homeContainer .button {
-  border-color: #fff;
   border-width: 1px;
-  margin-right: 4px;
-  color: #fff;
+  margin: 4px;
+  font-weight: 400;
 }
 .homeContainer .button:hover {
-  background: #fff;
-  color: #99424f;
+  color: #fff;
+  background: #99424f;
 }
 
 .blockButton {
