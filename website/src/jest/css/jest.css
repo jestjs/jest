@@ -1727,7 +1727,10 @@ footer .sitemap h5,
 footer .sitemap h6 {
   margin: 0 0 10px;
 }
-footer .sitemap h5,
+footer .sitemap h5 {
+  color: white;
+}
+
 footer .sitemap h6,
 footer .sitemap h5 > a,
 footer .sitemap h6 > a {
