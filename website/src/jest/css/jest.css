@@ -106,14 +106,6 @@ h1, h2, h3, h4 {
   font-weight: 900;
 }
 
-.navPusher {
-  border-top: 52px solid #99424f;
-  height: 100%;
-  left: 0;
-  position: relative;
-  z-index: 99;
-}
-
 .homeContainer {
   background: #fff;
   color: #99424f;
@@ -148,7 +140,7 @@ h1, h2, h3, h4 {
 
 .wrapper {
   margin: 0px auto;
-  max-width: 900px;
+  max-width: 1024px;
   padding: 0 10px;
 }
 
@@ -292,7 +284,7 @@ iframe.jest-repl {
   list-style: decimal outside none;
 }
 .mainContainer .wrapper .post .postHeader {
-  padding: 1em 0;
+  padding: 2em 0 1em;
 }
 .mainContainer .wrapper .post .postHeader h1 {
   font-size: 150%;
@@ -477,9 +469,10 @@ iframe.jest-repl {
   }
 }
 .fixedHeaderContainer {
+  box-sizing: border-box;
   background: #99424f;
   color: #fff;
-  height: 34px;
+  height: 50px;
   padding: 10px 0 8px;
   position: fixed;
   width: 100%;
@@ -518,9 +511,9 @@ input[type="search"] {
 
 .navSearchWrapper {
   align-self: center;
-  position: relative;
-  height: 34px;
-  line-height: 34px;
+  position: absolute;
+  top: 15px;
+  right: 10px;
 }
 .navSearchWrapper::before {
   border: 3px solid #e5e5e5;
@@ -531,8 +524,9 @@ input[type="search"] {
   left: 15px;
   width: 6px;
   position: absolute;
-  top: 10px;
+  top: 50%;
   z-index: 1;
+  transform: translateY(-58%);
 }
 .navSearchWrapper::after {
   background: #e5e5e5;
@@ -541,7 +535,7 @@ input[type="search"] {
   left: 24px;
   position: absolute;
   transform: rotate(-45deg);
-  top: 18px;
+  top: 55%;
   width: 3px;
   z-index: 1;
 }
@@ -1029,10 +1023,6 @@ a:hover code {
   }
 }
 
-.navigationSlider {
-  position: absolute;
-  right: 0px;
-}
 .navigationSlider .navSlideout {
   cursor: pointer;
   padding-top: 4px;
@@ -1043,15 +1033,12 @@ a:hover code {
   z-index: 101;
 }
 .navigationSlider .slidingNav {
-  background: #f9f9f9;
   box-sizing: border-box;
-  height: 0px;
-  padding: 0;
   position: absolute;
-  right: 0px;
-  top: 0;
-  transition: height 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), width 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  width: 0;
+  left: -10px;
+  right: -10px;
+  top: -10px;
+  bottom: auto;
 }
 .navigationSlider .slidingNav.slidingNavActive {
   height: auto;
@@ -1059,27 +1046,41 @@ a:hover code {
   width: 300px;
 }
 .navigationSlider .slidingNav ul {
-  display: none;
-  flex-flow: column nowrap;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
   list-style: none;
-  padding: 10px;
+  margin-top: 50px;
+  width: 100%;
+  padding: 0;
+  background: #7f2c39;
+  color: #fff;
 }
 .navigationSlider .slidingNav.slidingNavActive ul {
   display: block;
 }
 .navigationSlider .slidingNav ul li {
+  flex: 1;
+  text-align: center;
   margin: 0;
-  padding: 2px 0;
 }
 .navigationSlider .slidingNav ul li a {
   color: #99424f;
-  display: inline;
-  margin: 3px 5px;
-  padding: 2px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  height: auto;
+  color: inherit;
   transition: background-color 0.3s;
+  height: 50px;
+  padding: 10px;
+  box-sizing: border-box;
+  font-size: 0.9em;
 }
-.navigationSlider .slidingNav ul li a:focus, .navigationSlider .slidingNav ul li a:hover {
-  border-bottom: 2px solid #99424f;
+.navigationSlider .slidingNav ul li a:focus,
+.navigationSlider .slidingNav ul li a:hover {
+  background: #99424f;
 }
 
 .menuExpand {
@@ -1100,24 +1101,8 @@ a:hover code {
   width: 20px;
 }
 
-.navSlideout.navSlideoutActive {
-  top: -2px;
-}
-.navSlideout.navSlideoutActive .menuExpand span:nth-child(1) {
-  background-color: #393939;
-  top: 16px;
-  transform: rotate(45deg);
-}
-.navSlideout.navSlideoutActive .menuExpand span:nth-child(2) {
-  opacity: 0;
-}
-.navSlideout.navSlideoutActive .menuExpand span:nth-child(3) {
-  background-color: #393939;
-  transform: rotate(-45deg);
-}
-
 .navPusher {
-  border-top: 52px solid #99424f;
+  padding-top: 100px;
   position: relative;
   left: 0;
   z-index: 99;
@@ -1135,6 +1120,13 @@ a:hover code {
   -webkit-transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
   transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
 }
+
+@media only screen and (min-width: 1024px) {
+  .navPusher {
+    padding-top: 50px;
+  }
+}
+
 .sliderActive .navPusher::after {
   width: 100%;
   height: 100%;
@@ -1147,11 +1139,9 @@ a:hover code {
 @media only screen and (max-width: 1023px) {
   .reactNavSearchWrapper::before {
     left: 6px;
-    top: 6px;
   }
   .reactNavSearchWrapper::after {
     left: 15px;
-    top: 14px;
   }
   .reactNavSearchWrapper input#search_input_react {
     box-sizing: border-box;
@@ -1194,6 +1184,15 @@ a:hover code {
   }
 }
 @media only screen and (min-width: 1024px) {
+  .navSearchWrapper {
+    position: relative;
+    top: auto;
+    right: auto;
+    padding-left: 10px;
+  }
+  .navSearchWrapper .algolia-autocomplete {
+    display: block;
+  }
   .navigationSlider {
     height: 34px;
     margin-left: auto;
@@ -1215,13 +1214,8 @@ a:hover code {
     flex-flow: row nowrap;
     margin: 0 -10px;
     padding: 0;
-  }
-  .navigationSlider .slidingNav ul li {
-    padding: 0 10px;
-    display: block;
-  }
-  .navigationSlider ul li.navSearchWrapper {
-    padding: 6px 0 6px 10px;
+    background: none;
+    width: auto;
   }
   .navigationSlider .slidingNav ul li a {
     border: 0;
@@ -1232,6 +1226,9 @@ a:hover code {
     font-size: 16px;
     font-weight: 400;
     line-height: 1.2em;
+    padding: 6px 10px;
+    height: auto;
+    font-size: 1em;
   }
   .navigationSlider .slidingNav ul li a:hover {
     border-bottom: 2px solid #fff;
@@ -1289,7 +1286,7 @@ nav.toc {
   position: fixed;
   overflow-y: auto;
   bottom: 0;
-  top: 92px;
+  top: 100px;
   width: 240px;
 }
 nav.toc section {

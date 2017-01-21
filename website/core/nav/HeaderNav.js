@@ -46,13 +46,6 @@ class HeaderNav extends React.Component {
   renderResponsiveNav() {
     return (
       <div className="navigationWrapper navigationSlider">
-        <div className="navSlideout" onClick={this._handleClick}>
-          <i className="menuExpand">
-            <span />
-            <span />
-            <span />
-          </i>
-        </div>
         <nav className="slidingNav">
           <ul className="nav-site nav-site-internal">
             {this.props.linksInternal.map(this.makeLinks, this)}
@@ -62,18 +55,6 @@ class HeaderNav extends React.Component {
             </li>
           </ul>
         </nav>
-        <script dangerouslySetInnerHTML={{__html: `
-          var triggers = document.getElementsByClassName('menuExpand');
-          var navs = document.getElementsByClassName('navSlideout');
-          for (var i=0; i < triggers.length; i++) {
-            triggers[i].onclick = function() {
-              for (var j=0; j < navs.length; j++) {
-                navs[j].classList.toggle('navSlideoutActive');
-                navs[j].nextSibling.classList.toggle('slidingNavActive');
-              }
-            };
-          }
-        `}} />
       </div>
     );
   }
