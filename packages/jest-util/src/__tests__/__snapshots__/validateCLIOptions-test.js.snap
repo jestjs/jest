@@ -1,7 +1,7 @@
 exports[`test fails for multiple unknown options 1`] = `
 "[31m[1m[1m●[1m Unrecognized CLI Parameters[22m:
 
-  Following options were not recognized by Jest:
+  Following options were not recognized:
   [1m[\"jest\", \"test\"][22m
 
   [1mCLI Options Documentation[22m:

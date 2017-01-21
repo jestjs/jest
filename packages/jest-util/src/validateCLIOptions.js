@@ -11,7 +11,11 @@
 'use strict';
 
 const chalk = require('chalk');
-const {ValidationError, format} = require('jest-validate');
+const {
+  ValidationError,
+  format,
+  createDidYouMeanMessage,
+} = require('jest-validate');
 
 const BULLET: string = chalk.bold('\u25cf');
 
@@ -26,25 +30,13 @@ const createCLIValidationError = (
   `  http://facebook.github.io/jest/docs/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
-    const leven = require('leven');
     const unrecognized = unrecognizedOptions[0];
-    let suggestion;
-
-    allowedOptions.forEach(option => {
-      const steps = leven(option, unrecognized);
-      if (steps < 3) {
-        suggestion = option;
-      }
-    });
-
-    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.`;
-    if (suggestion) {
-      message += ` Did you mean ${chalk.bold(format(suggestion))}?`;
-    }
+    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
+      createDidYouMeanMessage(unrecognized, Array.from(allowedOptions));
   } else {
     title += 's';
     message =
-      `  Following options were not recognized by Jest:\n` +
+      `  Following options were not recognized:\n` +
       `  ${chalk.bold(format(unrecognizedOptions))}`;
   }
 

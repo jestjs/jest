@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {InitialConfig} from 'types/Config';
 
 const constants = require('./constants');
 const {replacePathSepForRegex} = require('jest-util');
@@ -73,7 +73,6 @@ module.exports = ({
   testRunner: 'jasmine2',
   testURL: 'about:blank',
   timers: 'real',
-  // $FlowFixMe – transform is further normalized into Array<[string, string]>
   transform: {
     '^.+\\.js$': '<rootDir>/preprocessor.js',
   },
@@ -84,4 +83,4 @@ module.exports = ({
   verbose: false,
   watch: false,
   watchman: true,
-}: Config);
+}: InitialConfig);
