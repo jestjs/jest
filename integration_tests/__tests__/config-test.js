@@ -18,7 +18,7 @@ test('config as JSON', () => {
   const result = runJest('verbose_reporter', [
     '--config=' + JSON.stringify({
       testEnvironment: 'node',
-      testRegex: 'banana strawbery kiwi',
+      testGlob: ['banana strawbery kiwi'],
     }),
   ]);
   const stdout = result.stdout.toString();

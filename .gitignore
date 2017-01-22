@@ -2,8 +2,6 @@
 .eslintcache
 *.swp
 *~
-.idea
-*.iml
 /examples/*/node_modules/
 /integration_tests/*/node_modules
 /integration_tests/transform/*/coverage

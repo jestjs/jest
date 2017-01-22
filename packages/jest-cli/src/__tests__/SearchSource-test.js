@@ -59,7 +59,7 @@ describe('SearchSource', () => {
         config = normalizeConfig({
           name,
           rootDir: '.',
-          testGlob: [],
+          testGlob: null,
           testPathDirs: [],
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         });
@@ -100,7 +100,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
-        testGlob: [],
+        testGlob: null,
         testRegex: 'not-really-a-test',
       });
       return findMatchingTests(config).then(data => {
@@ -136,7 +136,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
-        testGlob: [],
+        testGlob: null,
         testRegex: 'test\.jsx?',
       });
       return findMatchingTests(config).then(data => {
@@ -173,7 +173,7 @@ describe('SearchSource', () => {
       const config = normalizeConfig({
         name,
         rootDir,
-        testGlob: [],
+        testGlob: null,
         testRegex,
       });
       return findMatchingTests(config).then(data => {
@@ -261,7 +261,7 @@ describe('SearchSource', () => {
       const config = normalizeConfig({
         name,
         rootDir,
-        testGlob: [],
+        testGlob: null,
         testRegex,
       });
       return findMatchingTests(config).then(data => {

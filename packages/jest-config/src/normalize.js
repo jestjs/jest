@@ -319,11 +319,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'unmockedModulePathPatterns':
         value = normalizeUnmockedModulePathPatterns(config, key);
         break;
-
-      case 'testRegex':
-        value = config[key];
-        break;
-
       case 'automock':
       case 'bail':
       case 'browser':
@@ -352,6 +347,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'rootDir':
       case 'testGlob':
       case 'testEnvironment':
+      case 'testRegex':
       case 'testReporter':
       case 'testRunner':
       case 'testURL':
@@ -376,8 +372,9 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     }
   }
 
-  if (config.testRegex && (!config.testGlob || config.testGlob.length === 0)) {
-    // Prevent default glob conflicting with any explicit `testRegex` value
+  if (config.testRegex && (!config.testGlob)) {
+    // Prevent the default testGlob conflicting with any explicitly
+    // configured `testRegex` value
     newConfig.testGlob = [];
   }
 

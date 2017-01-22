@@ -13,7 +13,7 @@ import type {Config, Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
 const chalk = require('chalk');
-const mm = require('micromatch');
+const micromatch = require('micromatch');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 
@@ -121,7 +121,7 @@ const formatPaths = (
   // highlight paths from the current test file
   if (
     (config.testGlob && config.testGlob.length
-      && mm(filePath, config.testGlob)) ||
+      && micromatch(filePath, config.testGlob)) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);

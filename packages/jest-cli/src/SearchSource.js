@@ -15,7 +15,7 @@ import type {HasteContext} from 'types/HasteMap';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'jest-resolve';
 
-const mm = require('micromatch');
+const micromatch = require('micromatch');
 
 const DependencyResolver = require('jest-resolve-dependencies');
 
@@ -77,13 +77,13 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  const matchers = globs.map(each => mm.matcher(each));
+  const matchers = globs.map(each => micromatch.matcher(each));
 
   return (path: Path) => matchers.some(each => each(path));
 };
 
 const regexToMatcher = (testRegex: string) => {
-  if (!testRegex.length) {
+  if (!testRegex) {
     return () => true;
   }
 

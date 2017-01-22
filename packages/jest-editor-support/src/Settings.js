@@ -30,7 +30,6 @@ const {jestChildProcessWithArgs} = require('./Process');
 type Glob = string;
 
 type ConfigRepresentation = {
-  testRegex: string,
   testGlob: Array<Glob>
 }
 
@@ -51,7 +50,6 @@ module.exports = class Settings extends EventEmitter {
         '**/__tests__/**/*.js?(x)',
         '**/?(*.)(spec|test).js?(x)',
       ],
-      testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
   }
 
