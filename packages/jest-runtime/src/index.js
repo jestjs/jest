@@ -27,6 +27,7 @@ const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
   createDirectory,
+  getModulePath,
   replacePathSepForRegex,
 } = require('jest-util');
 
@@ -405,7 +406,7 @@ class Runtime {
     options?: {virtual: boolean},
   ) {
     if (options && options.virtual) {
-      const mockPath = this._getVirtualMockPath(from, moduleName);
+      const mockPath = getModulePath(from, moduleName);
       this._virtualMocks[mockPath] = true;
     }
     const moduleID =
@@ -499,15 +500,8 @@ class Runtime {
     );
   }
 
-  _getVirtualMockPath(from: Path, moduleName: string) {
-    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
-      return moduleName;
-    }
-    return path.normalize(path.dirname(from) + '/' + moduleName);
-  }
-
   _shouldMock(from: Path, moduleName: string) {
-    const mockPath = this._getVirtualMockPath(from, moduleName);
+    const mockPath = getModulePath(from, moduleName);
     if (mockPath in this._virtualMocks) {
       return true;
     }
