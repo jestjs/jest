@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Path} from 'types/Config';
+
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
