@@ -18,8 +18,6 @@ const path = require('path');
 const resolve = require('resolve');
 const browserResolve = require('browser-resolve');
 
-const {getModulePath} = require('jest-util');
-
 type ResolverConfig = {|
   browser?: boolean,
   defaultPlatform: ?string,
@@ -54,6 +52,13 @@ const NATIVE_PLATFORM = 'native';
 
 const nodePaths =
   (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
+
+const getModulePath = (from: Path, moduleName: string) => {
+  if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
+    return moduleName;
+  }
+  return path.normalize(path.dirname(from) + '/' + moduleName);
+};
 
 class Resolver {
   _options: ResolverConfig;
@@ -241,7 +246,7 @@ class Resolver {
     return this._moduleIDCache[key] = id;
   }
 
-  _getModuleType(moduleName: string): 'node'|'user' {
+  _getModuleType(moduleName: string): 'node' | 'user' {
     return this.isCoreModule(moduleName) ? 'node' : 'user';
   }
 
