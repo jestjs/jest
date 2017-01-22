@@ -20,9 +20,9 @@ type Options = {|
   lastCommit?: boolean,
 |};
 
-function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
+function findChangedFiles(cwd: string, options: ?Options): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {
-    const args = options.lastCommit
+    const args = (options && options.lastCommit)
        ? ['show', '--name-only', '--pretty=%b', 'HEAD']
        : ['ls-files', '--other', '--modified', '--exclude-standard'];
     const child = childProcess.spawn('git', args, {cwd});
