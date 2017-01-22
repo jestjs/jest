@@ -19,7 +19,6 @@ const DependencyResolver = require('jest-resolve-dependencies');
 
 const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
-const fileExists = require('jest-file-exists');
 const path = require('path');
 const {
   escapePathForRegex,
@@ -162,13 +161,6 @@ class SearchSource {
   findMatchingTests(
     testPathPattern: StrOrRegExpPattern,
   ): SearchResult {
-    if (testPathPattern && !(testPathPattern instanceof RegExp)) {
-      const maybeFile = path.resolve(process.cwd(), testPathPattern);
-      if (fileExists(maybeFile, this._hasteContext.hasteFS)) {
-        return this._filterTestPathsWithStats([maybeFile]);
-      }
-    }
-
     return this._getAllTestPaths(testPathPattern);
   }
 
