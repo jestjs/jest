@@ -43,52 +43,12 @@ table {
   border-spacing: 0;
 }
 
-@font-face {
-  font-family: 'Lato';
-  src: url('/jest/fonts/LatoLatin-Italic.woff2') format('woff2'),
-    url('/jest/fonts/LatoLatin-Italic.woff') format('woff');
-  font-weight: normal;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('/jest/fonts/LatoLatin-Black.woff2') format('woff2'),
-    url('/jest/fonts/LatoLatin-Black.woff') format('woff');
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('/jest/fonts/LatoLatin-BlackItalic.woff2') format('woff2'),
-    url('/jest/fonts/LatoLatin-BlackItalic.woff') format('woff');
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('/jest/fonts/LatoLatin-Light.woff2') format('woff2'),
-    url('/jest/fonts/LatoLatin-Light.woff') format('woff');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('/jest/fonts/LatoLatin-Regular.woff2') format('woff2'),
-    url('/jest/fonts/LatoLatin-Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
 /* Base */
 
 body {
   background: #f9f9f9;
   color: #393939;
-  font: normal 16px/1.4em "Lato", Calibri, Arial, sans-serif;
+  font: normal 16px/1.4em "Helvetica Neue", Arial, sans-serif;
   height: 100vh;
   text-align: left;
   text-rendering: optimizeLegibility;
@@ -106,7 +66,7 @@ article p img {
 }
 
 a {
-  color: #ca461a;
+  color: #99424f;
   text-decoration: none;
 }
 
@@ -142,12 +102,12 @@ blockquote {
 }
 
 h1, h2, h3, h4 {
-  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 900;
 }
 
 .navPusher {
-  border-top: 52px solid #ca461a;
+  border-top: 52px solid #99424f;
   height: 100%;
   left: 0;
   position: relative;
@@ -155,7 +115,7 @@ h1, h2, h3, h4 {
 }
 
 .homeContainer {
-  background: #ca461a;
+  background: #99424f;
   color: #fff;
 }
 .homeContainer a {
@@ -178,14 +138,14 @@ h1, h2, h3, h4 {
   margin-bottom: 0px;
 }
 .homeContainer .homeWrapper h1#project_title {
-  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 300%;
   letter-spacing: -0.08em;
   line-height: 1em;
   margin-bottom: 80px;
 }
 .homeContainer .homeWrapper h2#project_tagline {
-  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 200%;
   letter-spacing: -0.04em;
   line-height: 1em;
@@ -211,7 +171,7 @@ h1, h2, h3, h4 {
 }
 
 .fbossFontLight {
-  font-family: "Lato", Calibri, Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 300;
   font-style: normal;
 }
@@ -271,8 +231,8 @@ iframe.jest-repl {
   text-align: left;
 }
 .container .wrapper h2 {
-  border-bottom: 1px solid #b84c20;
-  color: #b84c20;
+  border-bottom: 1px solid #99424f;
+  color: #99424f;
   font-size: 22px;
   line-height: 1em;
   margin-bottom: 20px;
@@ -287,14 +247,14 @@ iframe.jest-repl {
   padding: 10px 0;
 }
 .container .wrapper h3 {
-  border-bottom: 1px solid rgba(219, 97, 48, 0.5);
-  color: #ca461a;
+  border-bottom: 1px solid #99424f;
+  color: #99424f;
   font-size: 18px;
   margin: 0 0 10px 0;
   padding: 10px 0;
 }
 .container .wrapper h4 {
-  color: #ca461a;
+  color: #99424f;
   font-size: 16px;
   font-weight: 800;
   margin: 0;
@@ -326,11 +286,11 @@ iframe.jest-repl {
   margin-top: 30px;
 }
 .mainContainer .wrapper .post h2 {
-  border-bottom: 4px solid #ca461a;
+  border-bottom: 2px solid #99424f;
   font-size: 130%;
 }
 .mainContainer .wrapper .post h3 {
-  border-bottom: 1px solid #ca461a;
+  border-bottom: 1px solid #99424f;
   font-size: 110%;
 }
 .mainContainer .wrapper .post ol {
@@ -354,7 +314,7 @@ iframe.jest-repl {
   padding-top: 1em;
 }
 .mainContainer .wrapper .post .docPagination {
-  background: #ca461a;
+  background: #99424f;
   bottom: 0px;
   left: 0px;
   position: absolute;
@@ -504,7 +464,7 @@ iframe.jest-repl {
   }
 }
 .fixedHeaderContainer {
-  background: #ca461a;
+  background: #99424f;
   color: #fff;
   height: 34px;
   padding: 10px 0 8px;
@@ -532,7 +492,7 @@ iframe.jest-repl {
 }
 .fixedHeaderContainer header h2 {
   display: block;
-  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 900;
   line-height: 18px;
   position: relative;
@@ -550,7 +510,7 @@ input[type="search"] {
   line-height: 34px;
 }
 .navSearchWrapper::before {
-  border: 3px solid #f2c4b2;
+  border: 3px solid #e5e5e5;
   border-radius: 50%;
   content: " ";
   display: block;
@@ -562,7 +522,7 @@ input[type="search"] {
   z-index: 1;
 }
 .navSearchWrapper::after {
-  background: #f2c4b2;
+  background: #e5e5e5;
   content: " ";
   height: 7px;
   left: 24px;
@@ -583,15 +543,15 @@ input[type="search"] {
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--category-header {
   background: #f2c4b2;
-  color: #ca461a;
+  color: #99424f;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--category-header .algolia-docsearch-suggestion--highlight {
-  background-color: #ca461a;
+  background-color: #99424f;
   color: #fff;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--title .algolia-docsearch-suggestion--highlight,
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--subcategory-column .algolia-docsearch-suggestion--highlight {
-  color: #ca461a;
+  color: #99424f;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion__secondary,
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--subcategory-column {
@@ -603,7 +563,7 @@ input#search_input_react {
   font-size: 14px;
   line-height: 20px;
   border-radius: 20px;
-  background-color: rgba(242, 196, 178, 0.25);
+  background-color: rgba(0, 0, 0, 0.2);
   border: none;
   color: #fff;
   outline: none;
@@ -617,22 +577,22 @@ input#search_input_react:focus, input#search_input_react:active {
 }
 
 input::-webkit-input-placeholder {
-  color: #f2c4b2;
+  color: #e5e5e5;
 }
 
 input::-moz-placeholder {
-  color: #f2c4b2;
+  color: #e5e5e5;
 }
 
 input::placeholder {
-  color: #f2c4b2;
+  color: #e5e5e5;
 }
 
 code,
 a code,
 .mainContainer .wrapper a code,
 .mainContainer .wrapper a:focus code {
-  color: #a05757;
+  color: #99424f;
   font-family: Hack, monospace;
   font-size: 90%;
   font-weight: 300;
@@ -649,12 +609,12 @@ a:hover code {
   font-family: 'source-code-pro', Menlo, 'Courier New', Consolas, monospace;
   font-size: 13px;
   line-height: 20px;
-  border-left: 4px solid #C63D0F;
+  border-left: 4px solid #99424f;
   overflow-x: scroll;
   -webkit-overflow-scrolling: touch;
   padding: 5px 10px;
   margin: 14px 0 14px 20px;
-  background-color: rgba(226, 142, 50, 0.06);
+  background-color: rgba(153, 66, 79, 0.03);
 }
 
 .prism + .prism {
@@ -735,9 +695,9 @@ a:hover code {
 }
 
 .button {
-  border: 1px solid #ca461a;
+  border: 1px solid #99424f;
   border-radius: 3px;
-  color: #ca461a;
+  color: #99424f;
   display: inline-block;
   font-size: 14px;
   font-weight: 900;
@@ -747,7 +707,7 @@ a:hover code {
   transition: background 0.3s, color 0.3s;
 }
 .button:hover {
-  background: #ca461a;
+  background: #99424f;
   color: #fff;
 }
 
@@ -759,7 +719,7 @@ a:hover code {
 }
 .homeContainer .button:hover {
   background: #fff;
-  color: #ca461a;
+  color: #99424f;
 }
 
 .blockButton {
@@ -920,7 +880,7 @@ a:hover code {
   }
 }
 .poweredByContainer {
-  background: #ca461a;
+  background: #99424f;
   color: #fff;
   margin-bottom: 20px;
 }
@@ -979,13 +939,13 @@ a:hover code {
 }
 .footerContainer {
   background: #f9f9f9;
-  color: #ca461a;
+  color: #99424f;
   overflow: hidden;
   padding: 0 10px;
   text-align: left;
 }
 .footerContainer .footerWrapper {
-  border-top: 1px solid #ca461a;
+  border-top: 1px solid #99424f;
   padding: 0;
 }
 .footerContainer .footerWrapper .footerBlocks {
@@ -1020,7 +980,7 @@ a:hover code {
   width: 31px;
 }
 .footerContainer .footerWrapper .fbOpenSourceFooter .facebookOSSLogoSvg path {
-  fill: #ca461a;
+  fill: #99424f;
 }
 .footerContainer .footerWrapper .fbOpenSourceFooter .facebookOSSLogoSvg .middleRing {
   opacity: 0.7;
@@ -1098,14 +1058,14 @@ a:hover code {
   padding: 2px 0;
 }
 .navigationSlider .slidingNav ul li a {
-  color: #ca461a;
+  color: #99424f;
   display: inline;
   margin: 3px 5px;
   padding: 2px 0px;
   transition: background-color 0.3s;
 }
 .navigationSlider .slidingNav ul li a:focus, .navigationSlider .slidingNav ul li a:hover {
-  border-bottom: 2px solid #ca461a;
+  border-bottom: 2px solid #99424f;
 }
 
 .menuExpand {
@@ -1143,7 +1103,7 @@ a:hover code {
 }
 
 .navPusher {
-  border-top: 52px solid #ca461a;
+  border-top: 52px solid #99424f;
   position: relative;
   left: 0;
   z-index: 99;
@@ -1194,7 +1154,7 @@ a:hover code {
     width: 100%;
   }
   .reactNavSearchWrapper input#search_input_react:focus, .reactNavSearchWrapper input#search_input_react:active {
-    background-color: #ca461a;
+    background-color: #99424f;
     color: #fff;
   }
   .reactNavSearchWrapper .algolia-docsearch-suggestion--subcategory-inline {
@@ -1251,7 +1211,7 @@ a:hover code {
   }
   .navigationSlider .slidingNav ul li a {
     border: 0;
-    color: #f2c4b2;
+    color: #fff;
     display: flex;
     margin: 0;
     padding: 0;
@@ -1412,10 +1372,10 @@ nav.toc .toggleNav .navGroup h3 i:not(:empty) {
   transition: color 0.2s;
 }
 nav.toc .toggleNav .navGroup h3:hover {
-  color: #ca461a;
+  color: #99424f;
 }
 nav.toc .toggleNav .navGroup h3:hover i:not(:empty) {
-  color: #ca461a;
+  color: #99424f;
 }
 nav.toc .toggleNav .navGroup.navGroupActive {
   background: #e0e0e0;
@@ -1427,7 +1387,7 @@ nav.toc .toggleNav .navGroup.navGroupActive ul {
   padding-top: 10px;
 }
 nav.toc .toggleNav .navGroup.navGroupActive h3 {
-  background: #ca461a;
+  background: #99424f;
   color: #fff;
 }
 nav.toc .toggleNav ul {
@@ -1451,10 +1411,10 @@ nav.toc .toggleNav ul li a {
   transition: color 0.3s;
 }
 nav.toc .toggleNav ul li a:hover, nav.toc .toggleNav ul li a:focus {
-  color: #ca461a;
+  color: #99424f;
 }
 nav.toc .toggleNav ul li a.navItemActive {
-  color: #ca461a;
+  color: #99424f;
   font-weight: 900;
 }
 .docsSliderActive nav.toc .navBreadcrumb {
@@ -1574,7 +1534,7 @@ table tr th code, table tr td code {
 table tr th {
   color: #000000;
   font-weight: bold;
-  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   text-transform: uppercase;
 }
 

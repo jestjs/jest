@@ -10,13 +10,13 @@
 
 'use strict';
 
+const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
-const path = require('path');
 const setFromArgv = require('./setFromArgv');
 
-const readConfig = (argv: any, packageRoot: string) =>
+const readConfig = (argv: Object, packageRoot: string) =>
   readRawConfig(argv, packageRoot)
     .then(config => Object.freeze(setFromArgv(config, argv)));
 

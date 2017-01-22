@@ -37,10 +37,10 @@ const createLink = (href: string, text: string): string =>
 
 // Raise about missing code inside files
 const raiseIssueAboutPaths = (
-  type: Function, 
-  paths: string[], 
+  type: Function,
+  paths: string[],
   codeToInclude: string) => {
-    
+
   if (paths.length > 0) {
     const files = linkableFiles(paths);
     const strict = '<code>' + codeToInclude + '</code>';
@@ -49,8 +49,8 @@ const raiseIssueAboutPaths = (
 };
 
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
-const isNotInTestFiles = path => !includes(path, '__tests__') 
-                                 || !includes(path, '__mocks__');
+const isNotInTestFiles = path => !(includes(path, '__tests__')
+                                 || includes(path, '__mocks__'));
 
 // New JS files should have the FB copyright header + flow
 const facebookLicenseHeaderComponents = [

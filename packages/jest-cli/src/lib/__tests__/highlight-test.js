@@ -10,19 +10,41 @@
 
 'use strict';
 
-const {dim, reset} = require('chalk');
 const highlight = require('../highlight');
 
-it('Highlight only the matching part and dims the rest', () => {
-  let highlighted = `${dim('pa')}${reset('th/to/tes')}${dim('t')}`;
-  expect(highlight('path/to/test', 't.*s') === highlighted).toBeTruthy();
+const rootDir = '/Users/foo/dev/jest';
+const rawPath = rootDir + '/jest-cli/__tests__/watch-test.js';
+const relativePaths = [
+  'jest-cli/__tests__/watch-test.js',
+  '...t-cli/__tests__/watch-test.js',
+  '.../__tests__/watch-test.js',
+  '...sts__/watch-test.js',
+  '...watch-test.js',
+  '...-test.js',
+  '....js',
+];
 
-  highlighted = reset(`path/to/test`);
-  expect(highlight('path/to/test', 'path/to/test') === highlighted)
-    .toBeTruthy();
+it('highlight the trimmed part when there is only a rootDir match', () => {
+  relativePaths
+  .map(trimmed => highlight(rawPath, trimmed, 'Users/foo', rootDir))
+  .forEach(output => expect(output).toMatchSnapshot());
 });
 
-it('Returns the a dimmed string when nothing matches', () => {
-  expect(highlight('path/to/test', 'other'))
-    .toEqual(dim('path/to/test'));
+it('highlights the trimmed part there is a non visible match', () => {
+  relativePaths
+  .filter(filePath => filePath.startsWith('...'))
+  .map(trimmed => highlight(rawPath, trimmed, 'jest-cli', rootDir))
+  .forEach(output => expect(output).toMatchSnapshot());
+});
+
+it('dims everything when there is no match', () => {
+  relativePaths
+  .map(trimmed => highlight(rawPath, trimmed, 'nomatch', rootDir))
+  .forEach(output => expect(output).toMatchSnapshot());
+});
+
+it('highlights everything when there is a full match', () => {
+  relativePaths
+  .map(trimmed => highlight(rawPath, trimmed, 'User.*js', rootDir))
+  .forEach(output => expect(output).toMatchSnapshot());
 });

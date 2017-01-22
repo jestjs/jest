@@ -15,8 +15,11 @@ const {KEYS} = require('../constants');
 
 const runJestMock = jest.fn();
 
+let terminalWidth;
+
 jest.mock('ansi-escapes', () => ({
   clearScreen: '[MOCK - clearScreen]',
+  cursorDown: (count = 1) => `[MOCK - cursorDown(${count})]`,
   cursorHide: '[MOCK - cursorHide]',
   cursorRestorePosition: '[MOCK - cursorRestorePosition]',
   cursorSavePosition: '[MOCK - cursorSavePosition]',
@@ -44,7 +47,11 @@ jest.mock('../SearchSource', () => class {
   }
 });
 
-jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+jest.doMock('chalk', () => Object.assign(
+  new chalk.constructor({enabled: false}),
+  {stripColor: str => str},
+));
+
 jest.doMock('../runJest', () => function() {
   const args = Array.from(arguments);
   runJestMock.apply(null, args);
@@ -54,6 +61,10 @@ jest.doMock('../runJest', () => function() {
 
   return Promise.resolve();
 });
+
+jest.doMock('../lib/terminalUtils', () => ({
+  getTerminalWidth: () => terminalWidth,
+}));
 
 const watch = require('../watch');
 
@@ -68,6 +79,7 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
+    terminalWidth = 80;
     pipe = {write: jest.fn()};
     hasteMap = {on: () => {}};
     argv = {};
@@ -115,6 +127,21 @@ describe('Watch mode flows', () => {
       onlyChanged: false,
       watch: true,
       watchAll: false,
+    });
+  });
+
+  it('Results in pattern mode get truncated appropriately', () => {
+    config = {rootDir: ''};
+    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+
+    stdin.emit(KEYS.P);
+
+    [30, 25, 20].forEach(width => {
+      terminalWidth = width;
+      stdin.emit(KEYS.BACKSPACE);
+      pipe.write.mockReset();
+      stdin.emit(KEYS.A);
+      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     });
   });
 });

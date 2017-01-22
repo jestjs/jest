@@ -21,14 +21,14 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 *Before* submitting a pull request, please make sure the following is done…
 
 1. Fork the repo and create your branch from `master`.
-   
+
    ```sh
    git clone https://github.com/facebook/jest
    cd jest
-   git checkout -b my_branch 
+   git checkout -b my_branch
    ```
 
-2. Run `npm install`. It is recommended to use `npm3`.
+2. Run `npm install`. We recommend that you use `npm` version 3 or later.
 
     ```sh
     npm install
@@ -41,7 +41,7 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    ```sh
    # in the background
    npm run watch
-   ``` 
+   ```
 
 4. If you've changed APIs, update the documentation.
 5. Ensure the test suite passes via `npm test`. To run the test suite you

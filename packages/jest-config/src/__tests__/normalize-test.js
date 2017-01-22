@@ -44,23 +44,6 @@ beforeEach(() => {
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 });
 
-it('errors when an invalid config option is passed in', () => {
-  const error = console.error;
-  console.error = jest.fn();
-  normalize({
-    rootDir: '/root/path/foo',
-    thisIsAnInvalidConfigKey: 'with a value even!',
-  });
-
-  expect(console.error).toBeCalledWith(
-    'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
-    '"with a value even!". This is either a typing error or a user ' +
-    'mistake and fixing it will remove this message.',
-  );
-
-  console.error = error;
-});
-
 it('picks a name based on the rootDir', () => {
   const rootDir = '/root/path/foo';
   const expected = crypto.createHash('md5')
@@ -88,7 +71,7 @@ describe('rootDir', () => {
   it('throws if the config is missing a rootDir property', () => {
     expect(() => {
       normalize({});
-    }).toThrow(new Error(`Jest: 'rootDir' config value must be specified.`));
+    }).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -233,22 +216,6 @@ describe('transform', () => {
       [DEFAULT_JS_PATTERN, 'babel-jest'],
       ['abs-path', '/qux/quux'],
     ]);
-  });
-
-  it('throws for invalid value', () => {
-    expect(() => {
-      normalize({
-        rootDir: '/root/',
-        transform: 'string',
-      }, '/root/path');
-    }).toThrowErrorMatchingSnapshot();
-
-    expect(() => {
-      normalize({
-        rootDir: '/root/',
-        transform: ['string'],
-      }, '/root/path');
-    }).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -503,11 +470,7 @@ describe('testEnvironment', () => {
     expect(() => normalize({
       rootDir: '/root',
       testEnvironment: 'phantom',
-    })).toThrow(new Error(
-      `Jest: test environment "phantom" cannot be found. Make sure the ` +
-      `"testEnvironment" configuration option points to an existing node ` +
-      `module.`,
-    ));
+    })).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -605,5 +568,52 @@ describe('Upgrade help', () => {
     expect(config.preprocessorIgnorePatterns).toBe(undefined);
 
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+  });
+});
+
+describe('preset', () => {
+  jest.mock(
+    '/node_modules/react-native/jest-preset.json',
+    () => ({
+      moduleNameMapper: {b: 'b'},
+      modulePathIgnorePatterns: ['b'],
+      setupFiles: ['b'],
+    }),
+    {virtual: true}
+  );
+
+  test('throws when preset not found', () => {
+    expect(() => {
+      normalize({
+        preset: 'doesnt-exist',
+        rootDir: '/root/path/foo',
+      });
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with "react-native"', () => {
+    expect(() => {
+      normalize({
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      });
+    }).not.toThrow();
+  });
+
+  test('merges with config', () => {
+    const config = normalize({
+      moduleNameMapper: {a: 'a'},
+      modulePathIgnorePatterns: ['a'],
+      preset: 'react-native',
+      rootDir: '/root/path/foo',
+      setupFiles: ['a'],
+    });
+    expect(config).toEqual(expect.objectContaining({
+      moduleNameMapper: expect.arrayContaining([['a', 'a'], ['b', 'b']]),
+      modulePathIgnorePatterns: expect.arrayContaining(['a', 'b']),
+      setupFiles: expect.arrayContaining(
+        ['/node_modules/a', '/node_modules/b']
+      ),
+    }));
   });
 });
