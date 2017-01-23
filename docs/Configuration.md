@@ -306,7 +306,9 @@ Pretty foo: Object {
 ### `testEnvironment` [string]
 Default: `"jsdom"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. Combining the test environments is currently not possible but the `jsdom` environment can be seen as a superset of the `node` one.
+
+You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
 
 ### `testPathDirs` [array<string>]
 Default: `["<rootDir>"]`
@@ -376,6 +378,19 @@ This option allows the use of a custom results processor. This processor must be
 Default: `jasmine2`
 
 This option allows use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+
+The test runner module must export a function with the following signature:
+
+```
+function testRunner(
+  config: Config,
+  environment: Environment,
+  runtime: Runtime,
+  testPath: string,
+): Promise<TestResult>
+```
+
+An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
 
 ### `testURL` [string]
 Default: `about:blank`
