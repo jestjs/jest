@@ -306,9 +306,9 @@ Pretty foo: Object {
 ### `testEnvironment` [string]
 Default: `"jsdom"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. Combining the test environments is not possible.
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. Combining the test environments is currently not possible but the `jsdom` environment can be seen as a superset of the `node` one.
 
-You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. You can get the inspiration from the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments.
+You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
 
 ### `testPathDirs` [array<string>]
 Default: `["<rootDir>"]`
