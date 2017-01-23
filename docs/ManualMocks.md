@@ -29,7 +29,7 @@ directory as the ``node_modules`` folder. Eg:
   config
 ```
 
-When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`.
+When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, manual mocks will take precedence over node modules even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
 
 Here's a contrived example where we have a module that provides a summary of
 all the files in a given directory.

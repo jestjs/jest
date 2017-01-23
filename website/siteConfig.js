@@ -18,7 +18,6 @@ const siteConfig = {
       <Button href="#getting-started">Get Started</Button>
       <Button href="/jest/docs/snapshot-testing.html">Snapshot Testing</Button>
       <Button href="/jest/docs/api.html">API Reference</Button>
-      {githubButton}
     </div>,
   ],
   features: [
