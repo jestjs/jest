@@ -518,8 +518,10 @@ class HasteMap extends EventEmitter {
       return Promise.resolve();
     }
 
-    // In watch mode, we'll only warn about module collisions.
+    // In watch mode, we'll only warn about module collisions and we'll retain
+    // all files, even changes to node_modules.
     this._options.throwOnModuleCollision = false;
+    this._options.retainAllFiles = true;
 
     const Watcher = (canUseWatchman && this._options.useWatchman)
       ? sane.WatchmanWatcher
@@ -638,6 +640,9 @@ class HasteMap extends EventEmitter {
           this._workerPromise = null;
           if (promise) {
             return promise.then(add);
+          } else {
+            // If a file in node_modules has changed, emit an event regardless.
+            add();
           }
         } else {
           add();
