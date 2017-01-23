@@ -19,15 +19,14 @@ const Footer = React.createClass({
           <div>
             <h5>Docs</h5>
             <a href="/jest/docs/getting-started.html">Getting Started</a>
-            <a href="/jest/docs/snapshot-testing.html">Snapshot Testing</a>
-            <a href="/jest/docs/migration-guide.html">Migrating to Jest</a>
+            <a href="/jest/docs/snapshot-testing.html">Guides</a>
             <a href="/jest/docs/api.html">API Reference</a>
           </div>
           <div>
             <h5>Community</h5>
             <a href="/jest/users.html">Who's Using Jest?</a>
             <a href="http://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a>
-            <a href="https://discordapp.com/channels/102860784329052160/103622435865104384">#jest</a>
+            <a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a>
             <a href="https://twitter.com/fbjest" target="_blank">Twitter</a>
           </div>
           <div>
