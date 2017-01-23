@@ -586,11 +586,11 @@ class Runtime {
       return this._shouldMockModuleCache[moduleID];
     }
 
-    const manualMock = this._resolver.getMockModule(from, moduleName);
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName);
     } catch (e) {
+      const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache[moduleID] = true;
         return true;
