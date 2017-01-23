@@ -96,6 +96,7 @@ These methods help create mocks and let you control Jest's overall behavior.
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
   - [`jest.mock(moduleName, ?factory, ?options)`](#jestmockmodulename-factory-options)
   - [`jest.resetModules()`](#jestresetmodules)
+  - [`jest.resetModule(moduleName)`](#jestresetmodule)
   - [`jest.runAllTicks()`](#jestrunallticks)
   - [`jest.runAllTimers()`](#jestrunalltimers)
   - [`jest.runTimersToTime(msToRun)`](#jestruntimerstotimemstorun)
@@ -1122,6 +1123,39 @@ it('works', () => {
 it('works too', () => {
   const sum = require('../sum');
   // sum is a different copy of the sum module from the previous test.
+});
+```
+
+Returns the `jest` object for chaining.
+
+
+### `jest.resetModule(moduleName)`
+
+Resets the module registry for a specified module This is useful to isolate a module where local state might conflict between tests.
+
+Example:
+```js
+const sum1 = require('../sum');
+jest.resetModule('../sum');
+const sum2 = require('../sum');
+sum1 === sum2 // false! Both sum modules are separate "instances" of the sum module.
+```
+
+Example in a test:
+```js
+let sum;
+beforeEach(() => {
+  jest.resetModule('../sum');
+  sum = require('../sum');
+});
+
+it('works', () => {
+  sum(1, 2);
+});
+
+it('works too', () => {
+  // sum is a different copy of the sum module from the previous test.
+  sum(1, 2);
 });
 ```
 
