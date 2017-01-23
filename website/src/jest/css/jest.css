@@ -1270,7 +1270,9 @@ a:hover code {
 .navBreadcrumb i {
   padding: 0 3px;
 }
-
+nav.toc {
+  width: 224px;
+}
 nav.toc section {
   padding: 0px;
   position: relative;
