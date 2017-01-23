@@ -49,10 +49,10 @@ class HeaderNav extends React.Component {
         <nav className="slidingNav">
           <ul className="nav-site nav-site-internal">
             {this.props.linksInternal.map(this.makeLinks, this)}
-            {this.props.linksExternal.map(this.makeLinks, this)}
             <li className="navSearchWrapper reactNavSearchWrapper">
               <input id="search_input_react" type="text" placeholder="Search" />
             </li>
+            {this.props.linksExternal.map(this.makeLinks, this)}
           </ul>
         </nav>
       </div>
@@ -64,7 +64,6 @@ HeaderNav.defaultProps = {
   linksInternal: [
     {section: 'docs', href: '/jest/docs/getting-started.html', text: 'Docs'},
     {section: 'api', href: '/jest/docs/api.html', text: 'API'},
-    {section: 'users', href: '/jest/users.html', text: 'Users'},
     {section: 'help', href: '/jest/help.html', text: 'Help'},
     {section: 'blog', href: '/jest/blog/', text: 'Blog'},
   ],
