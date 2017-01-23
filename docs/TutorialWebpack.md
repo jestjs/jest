@@ -132,6 +132,8 @@ file types your webpack config handles.
 Now that Jest knows how to process our files, we need to tell it how to _find_ them.
 For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest.
 
+*Note: if you are migrating from another test setup to Jest, you may need to run `jest --no-cache` while setting things up to ensure you are using the latest test config.*
+
 *Note: the `modulesDirectories` option in webpack is called `moduleDirectories` in Jest.*
 
 *Note: <rootDir> is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your package.json is located unless you specify a custom `rootDir` option in your configuration.*
