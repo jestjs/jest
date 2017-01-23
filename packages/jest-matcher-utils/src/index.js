@@ -113,9 +113,7 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
 };
 
 const highlightTrailingWhitespace = (text: string, bgColor: Function): string =>
-  text.split('\n')
-    .map(text => text.replace(/\s+$/, bgColor('$&')))
-    .join('\n');
+  text.replace(/\s+$/gm, bgColor('$&'));
 
 const printReceived = (object: any) => highlightTrailingWhitespace(
   RECEIVED_COLOR(stringify(object)),
