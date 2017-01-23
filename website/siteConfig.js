@@ -28,8 +28,8 @@ const siteConfig = {
     },
     {
       image: '/jest/img/content/sandboxed.svg',
-      title: 'Fast and Sandboxed',
-      content: 'Jest virtualizes JavaScript environments and runs tests in parallel across worker processes.',
+      title: 'Instant Feedback',
+      content: 'Fast interactive mode and built-in coverage.',
     },
     {
       image: '/jest/img/content/snapshots.svg',
