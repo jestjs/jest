@@ -20,7 +20,7 @@ you could use:
 npm test -- -u -t="ColorPicker"
 ```
 
-The CLI options have preference over [Configuration file](/jest/docs/configuration.html).
+CLI options take precedence over values from the [Configuration](/jest/docs/configuration.html).
 
 ## Options
 
