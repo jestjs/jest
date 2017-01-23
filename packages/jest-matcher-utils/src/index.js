@@ -31,7 +31,9 @@ export type ValueType =
   | 'undefined';
 
 const EXPECTED_COLOR = chalk.green;
+const EXPECTED_BG = chalk.bgGreen;
 const RECEIVED_COLOR = chalk.red;
+const RECEIVED_BG = chalk.bgRed;
 
 const NUMBERS = [
   'zero',
@@ -110,8 +112,19 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
     : result;
 };
 
-const printReceived = (object: any) => RECEIVED_COLOR(stringify(object));
-const printExpected = (value: any) => EXPECTED_COLOR(stringify(value));
+const highlightTrailingWhitespace = (text: string, bgColor: Function): string =>
+  text.split('\n')
+    .map(text => text.replace(/\s+$/, bgColor('$&')))
+    .join('\n');
+
+const printReceived = (object: any) => highlightTrailingWhitespace(
+  RECEIVED_COLOR(stringify(object)),
+  RECEIVED_BG,
+);
+const printExpected = (value: any) => highlightTrailingWhitespace(
+  EXPECTED_COLOR(stringify(value)),
+  EXPECTED_BG,
+);
 
 const printWithType = (
   name: string,
@@ -192,13 +205,16 @@ const matcherHint = (
 };
 
 module.exports = {
+  EXPECTED_BG,
   EXPECTED_COLOR,
+  RECEIVED_BG,
   RECEIVED_COLOR,
   ensureActualIsNumber,
   ensureExpectedIsNumber,
   ensureNoExpected,
   ensureNumbers,
   getType,
+  highlightTrailingWhitespace,
   matcherHint,
   pluralize,
   printExpected,

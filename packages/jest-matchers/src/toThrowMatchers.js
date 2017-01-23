@@ -19,8 +19,10 @@ const {
   separateMessageFromStack,
 } = require('jest-util');
 const {
+  RECEIVED_BG,
   RECEIVED_COLOR,
   getType,
+  highlightTrailingWhitespace,
   matcherHint,
   printExpected,
   printWithType,
@@ -149,7 +151,9 @@ const printActualErrorMessage = error => {
     return (
       `Instead, it threw:\n` +
       RECEIVED_COLOR(
-        '  ' + message + formatStackTrace(stack, {
+        '  ' +
+        highlightTrailingWhitespace(message, RECEIVED_BG) +
+        formatStackTrace(stack, {
           noStackTrace: false,
           rootDir: process.cwd(),
           testRegex: '',
