@@ -321,7 +321,7 @@ describe('HasteMap', () => {
     });
   });
 
-  it('warns on duplicate mock files', () => {
+  it('warns on duplicate global mock files', () => {
     // Duplicate mock files for blueberry
     mockFs['/fruits1/__mocks__/subdir/blueberry.js'] = [
       '/**',
