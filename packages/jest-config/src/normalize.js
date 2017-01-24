@@ -312,6 +312,13 @@ function normalize(config: InitialConfig, argv: Object = {}) {
           resolve(config.rootDir, key, config[key][regex]),
         ]);
         break;
+      case 'globalMocks':
+        //$FlowFixMe
+        value = config[key].map(filePath => path.resolve(
+          config.rootDir,
+          _replaceRootDirInPath(config.rootDir, filePath),
+        ));
+        break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
       case 'testPathIgnorePatterns':
