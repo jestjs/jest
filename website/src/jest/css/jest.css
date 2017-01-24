@@ -250,7 +250,7 @@ iframe.jest-repl {
   padding: 20px 0 0;
 }
 .referenceContainer .wrapper h3 {
-  border-bottom: 1px solid #99424f;
+  border-top: 1px solid #e0e0e0;
 }
 .container .wrapper h4 + p {
   padding-top: 0;
@@ -729,9 +729,9 @@ a:hover code {
 
 .edit-page-link {
   float: right;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: normal;
-  margin-top: 30px;
+  margin-top: 20px;
   text-decoration: none;
 }
 
@@ -1579,9 +1579,9 @@ table tr th {
   margin-top: 60px;
 }
 .blogContainer .posts .post {
-  border: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
   border-radius: 3px;
-  padding: 0 10px 10px;
+  padding: 0 10px 20px;
 }
 .blogContainer .lonePost {
   margin-top: 60px;
