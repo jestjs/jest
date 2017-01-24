@@ -4,6 +4,7 @@ title: Mock Functions
 layout: docs
 category: Introduction
 permalink: docs/mock-functions.html
+previous: setup-teardown
 next: more-resources
 ---
 

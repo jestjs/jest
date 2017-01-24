@@ -4,6 +4,7 @@ title: Testing React Apps
 layout: docs
 category: Guides
 permalink: docs/tutorial-react.html
+previous: snapshot-testing
 next: tutorial-react-native
 ---
 

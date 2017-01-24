@@ -4,6 +4,7 @@ title: More Resources
 layout: docs
 category: Introduction
 permalink: docs/more-resources.html
+previous: mock-functions
 next: snapshot-testing
 ---
 

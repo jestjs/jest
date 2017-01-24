@@ -7,14 +7,15 @@ const React = require('React');
 
 const githubButton = <a className="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a>;
 
-const Footer = React.createClass({
+class Footer extends React.Component {
   render() {
-    var currentYear = (new Date()).getFullYear();
+    const currentYear = (new Date()).getFullYear();
     return (
       <footer className="nav-footer">
         <section className="sitemap">
           <a href="/jest" className="nav-home">
-            <img src="/jest/img/jest-outline.svg" alt="Jest" width="66" height="58" />
+            <img src="/jest/img/jest-outline.svg" alt="Jest" width="66"
+              height="58" />
           </a>
           <div>
             <h5>Docs</h5>
@@ -38,14 +39,15 @@ const Footer = React.createClass({
         </section>
 
         <a href="https://code.facebook.com/projects/" target="_blank" className="fbOpenSource">
-          <img src="/jest/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/>
+          <img src="/jest/img/oss_logo.png"
+            alt="Facebook Open Source" width="170" height="45"/>
         </a>
         <section className="copyright">
           Copyright © {currentYear} Facebook Inc.
         </section>
       </footer>
     );
-  },
-});
+  }
+}
 
 module.exports = Footer;

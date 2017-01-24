@@ -130,13 +130,6 @@ const index = React.createClass({
             <div className="video-shoutout">
               <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a> by <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a> hosted by <a href="https://egghead.io">Egghead</a>.
             </div>
-            <h2>
-              <a className="anchor" name="getting-started"></a>
-              Getting Started
-              <a className="hash-link" href="#getting-started"></a>
-            </h2>
-            <Marked>{gettingStartedContent}</Marked>
-            <Marked>Refer to [Additional Configuration](/jest/docs/getting-started.html#additional-configuration) to learn how to use Jest with Babel, webpack, or TypeScript.</Marked>
           </Container>
           <Container padding={['bottom']}>
           <div className="miniShowcaseSection">
@@ -145,6 +138,7 @@ const index = React.createClass({
             <div className="logos">
               {showcase}
             </div>
+              <a className="button" href="/jest/users.html" target="_self">More Jest Users</a>
           </div>
           </Container>
         </div>

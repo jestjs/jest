@@ -6,17 +6,17 @@
  */
 
  /* eslint-disable sort-keys */
- 
+
 
 const Metadata = require('Metadata');
 const React = require('React');
 const Container = require('Container');
 const SideNav = require('SideNav');
 
-const DocsSidebar = React.createClass({
+class DocsSidebar extends React.Component {
   getCategories() {
     const metadatas = Metadata.files.filter(metadata => {
-      return metadata.layout === 'docs';
+      return metadata.layout === this.props.layout;
     });
 
     // Build a hashmap of article_id -> metadata
@@ -73,20 +73,32 @@ const DocsSidebar = React.createClass({
     categories.push(currentCategory);
 
     return categories;
-  },
+  }
 
   render() {
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
         <SideNav
-          root="/jest/docs/getting-started.html"
-          title="Docs"
+          root={this.props.root}
+          title={this.props.title}
           contents={this.getCategories()}
           current={this.props.metadata}
         />
       </Container>
     );
-  },
-});
+  }
+}
+
+DocsSidebar.propTypes = {
+  layout: React.PropTypes.string,
+  root: React.PropTypes.string,
+  title: React.PropTypes.string,
+};
+
+DocsSidebar.defaultProps = {
+  layout: 'docs',
+  root: '/jest/docs/getting-started.html',
+  title: 'Docs',
+};
 
 module.exports = DocsSidebar;

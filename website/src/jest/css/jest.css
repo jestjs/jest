@@ -223,26 +223,23 @@ iframe.jest-repl {
   text-align: left;
 }
 .container .wrapper h2 {
-  border-bottom: 1px solid #99424f;
   color: #99424f;
   font-size: 22px;
   line-height: 1em;
-  margin-bottom: 20px;
+  margin-top: 20px;
   text-align: left;
   padding: 10px 0;
 }
 .container .wrapper h2.blockHeader {
-  border-bottom: 1px solid white;
   color: white;
   font-size: 22px;
-  margin-bottom: 20px;
+  margin-top: 20px;
   padding: 10px 0;
 }
 .container .wrapper h3 {
-  border-bottom: 1px solid #99424f;
   color: #99424f;
   font-size: 18px;
-  margin: 0 0 10px 0;
+  margin-top: 10px;
   padding: 10px 0;
 }
 .container .wrapper h4 {
@@ -251,6 +248,9 @@ iframe.jest-repl {
   font-weight: 800;
   margin: 0;
   padding: 20px 0 0;
+}
+.referenceContainer .wrapper h3 {
+  border-bottom: 1px solid #99424f;
 }
 .container .wrapper h4 + p {
   padding-top: 0;
@@ -278,18 +278,16 @@ iframe.jest-repl {
   margin-top: 30px;
 }
 .mainContainer .wrapper .post h2 {
-  border-bottom: 2px solid #99424f;
   font-size: 130%;
 }
 .mainContainer .wrapper .post h3 {
-  border-bottom: 1px solid #99424f;
   font-size: 110%;
 }
 .mainContainer .wrapper .post ol {
   list-style: decimal outside none;
 }
 .mainContainer .wrapper .post .postHeader {
-  padding: 2em 0 1em;
+  padding: 2em 0 0;
 }
 .mainContainer .wrapper .post .postHeader h1 {
   font-size: 150%;
@@ -707,30 +705,22 @@ a:hover code {
 }
 
 .button {
+  margin: 4px;
   border: 1px solid #99424f;
   border-radius: 3px;
   color: #99424f;
   display: inline-block;
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 400;
   line-height: 1.2em;
   padding: 10px;
   text-transform: uppercase;
+  text-decoration: none !important;
   transition: background 0.3s, color 0.3s;
 }
 .button:hover {
   background: #99424f;
   color: #fff;
-}
-
-.homeContainer .button {
-  border-width: 1px;
-  margin: 4px;
-  font-weight: 400;
-}
-.homeContainer .button:hover {
-  color: #fff;
-  background: #99424f;
 }
 
 .blockButton {
@@ -1275,6 +1265,12 @@ a:hover code {
 .docs-prevnext {
   margin: 20px 0;
 }
+.docs-next {
+  float: right;
+}
+.docs-prev {
+  float: left;
+}
 .docsNavContainer {
   background: #c6c6c6;
   height: 35px;
@@ -1603,7 +1599,7 @@ table tr th {
 .blogContainer .postHeader .post-authorName {
   color: rgba(57, 57, 57, 0.7);
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 400;
   margin-top: 0;
   padding: 0;
   text-align: center;

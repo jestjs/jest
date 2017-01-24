@@ -15,7 +15,7 @@ const siteConfig = {
   homepagePromos: [
     <div className="pluginRowBlock">
       <Button href="#use">Try out Jest</Button>
-      <Button href="#getting-started">Get Started</Button>
+      <Button href="/jest/docs/getting-started.html">Get Started</Button>
       <Button href="/jest/docs/snapshot-testing.html">Snapshot Testing</Button>
       <Button href="/jest/docs/api.html">API Reference</Button>
     </div>,

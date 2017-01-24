@@ -11,7 +11,7 @@ const Marked = require('Marked');
 const React = require('React');
 const siteConfig = require('../siteConfig');
 
-const BlogPost = React.createClass({
+class BlogPost extends React.Component {
   renderContent() {
     let content = this.props.content;
     if (this.props.truncate) {
@@ -20,13 +20,14 @@ const BlogPost = React.createClass({
         <article className="post-content">
           <Marked>{content}</Marked>
           <div className="read-more">
-            <a href={'/jest/blog/' + this.props.post.path}>Read More</a>
+            <a className="button"
+              href={'/jest/blog/' + this.props.post.path}>Read More</a>
           </div>
         </article>
       );
     }
     return <Marked>{content}</Marked>;
-  },
+  }
 
   renderAuthorPhoto() {
     const post = this.props.post;
@@ -41,7 +42,8 @@ const BlogPost = React.createClass({
     } else {
       return null;
     }
-  },
+  }
+
   renderTitle() {
     const post = this.props.post;
     return (
@@ -49,7 +51,8 @@ const BlogPost = React.createClass({
         <a href={'/jest/blog/' + post.path}>{post.title}</a>
       </h1>
     );
-  },
+  }
+
   renderPostHeader() {
     const post = this.props.post;
     const match = post.path.match(/([0-9]+)\/([0-9]+)\/([0-9]+)/);
@@ -77,7 +80,8 @@ const BlogPost = React.createClass({
         </p>
       </header>
     );
-  },
+  }
+
   render() {
     return (
       <div className="post">
@@ -85,7 +89,7 @@ const BlogPost = React.createClass({
         {this.renderContent()}
       </div>
     );
-  },
-});
+  }
+}
 
 module.exports = BlogPost;
