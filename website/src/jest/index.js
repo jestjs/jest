@@ -19,18 +19,36 @@ const blog = require('MetadataBlog');
 const index = React.createClass({
   render() {
     const whyJest = [
-      {content: 'Fast interactive mode with `--watch`.'},
-      {content: 'Create coverage reports with `--coverage`. No additional setup or libraries needed!'},
-      {content: 'Automatically find tests related to changed files to execute in your project with `--onlyChanged`.'},
-      {content: 'Error messages are helpful and color coded. Stack traces point to the source of problems quickly.'},
-      {content: 'Jest runs previously failed tests first. Together with `--bail` it provides useful signal quickly.'},
-      {content: 'Sandboxed test files and automatic global state resets for every test.'},
-      {content: 'Integrated support for testing with [promises and async/await](/jest/docs/tutorial-async.html)'},
-      {content: 'Run your tests within a fake DOM implementation (via [jsdom](https://github.com/tmpvar/jsdom)) on the command line.'},
-      {content: 'Run tests in parallel processes to minimize test runtime.'},
-      {content: 'Jest works with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io).'},
-      {content: 'Integrated [manual mocking library](/jest/docs/mock-functions.html).'},
-      {content: 'Can run [asynchronous code synchronously](/jest/docs/asynchronous.html).'},
+      {
+        content: 'Create coverage reports with `--coverage`. No additional setup or libraries needed!',
+        image: 'img/content/failedSnapshotTest.png',
+        title: 'Inbuilt Coverage',
+      },
+      {
+        content: 'Zero-config',
+        image: 'img/content/failedSnapshotTest.png',
+        title: 'Zero-config',
+      },
+      {
+        content: 'Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules',
+        image: 'img/content/failedSnapshotTest.png',
+        title: 'Mocking Library',
+      },
+      {
+        content: 'Sandboxed test files and automatic global state resets for every test',
+        image: 'img/content/failedSnapshotTest.png',
+        title: 'Sandboxed',
+      },
+      {
+        content: 'Run your tests within a fake DOM implementation (via [jsdom](https://github.com/tmpvar/jsdom)) on the command line',
+        image: 'img/content/failedSnapshotTest.png',
+        title: 'jsdom',
+      },
+      {
+        content: 'Jest works with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io)',
+        image: 'img/content/failedSnapshotTest.png',
+        title: 'Babel',
+      },
     ];
 
     const users = [
@@ -78,8 +96,7 @@ const index = React.createClass({
             <GridBlock align="center" contents={siteConfig.features} layout="fourColumn" />
           </Container>
           <Container padding={['bottom', 'top']}>
-            <h2>Jest's Testing Features</h2>
-            <GridBlock className="responsiveList testingFeatures" contents={whyJest} layout="threeColumn" />
+            <GridBlock className="responsiveList testingFeatures" contents={whyJest} layout="twoColumn" />
           </Container>
           <Container padding={['bottom', 'top']}>
             <h2>
