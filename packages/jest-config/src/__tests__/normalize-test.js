@@ -589,6 +589,16 @@ describe('testMatch', () => {
 
     expect(config.testRegex).toBe('');
   });
+
+  it('throws if testRegex and testMatch are both specified', () => {
+    expect(() => {
+      normalize({
+        rootDir: '/root',
+        testMatch: ['**/*.js'],
+        testRegex: '.*',
+      });
+    }).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('preset', () => {

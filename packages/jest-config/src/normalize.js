@@ -372,6 +372,13 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     }
   }
 
+  if (config.testRegex && config.testMatch) {
+    throw createConfigError(
+      `  Configuration options ${chalk.bold('testMatch')} and` +
+      ` ${chalk.bold('testRegex')} cannot be used together.`
+    );
+  }
+
   if (config.testRegex && (!config.testMatch)) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
