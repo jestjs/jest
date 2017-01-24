@@ -156,7 +156,7 @@ const printActualErrorMessage = error => {
         formatStackTrace(stack, {
           noStackTrace: false,
           rootDir: process.cwd(),
-          testGlob: [],
+          testMatch: [],
         }),
       )
     );

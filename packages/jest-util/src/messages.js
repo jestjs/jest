@@ -120,8 +120,8 @@ const formatPaths = (
   let filePath = path.relative(config.rootDir, match[2]);
   // highlight paths from the current test file
   if (
-    (config.testGlob && config.testGlob.length
-      && micromatch(filePath, config.testGlob)) ||
+    (config.testMatch && config.testMatch.length
+      && micromatch(filePath, config.testMatch)) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);
@@ -132,7 +132,7 @@ const formatPaths = (
 type StackTraceOptions = {
   noStackTrace: boolean,
   rootDir: string,
-  testGlob: Array<Glob>,
+  testMatch: Array<Glob>,
 };
 
 const formatStackTrace = (

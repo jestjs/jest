@@ -84,6 +84,6 @@
       "\\.snap$",
       "/packages/.*/build"
     ],
-    "testGlob": ["**/*-test.js"]
+    "testMatch": ["**/*-test.js"]
   }
 }

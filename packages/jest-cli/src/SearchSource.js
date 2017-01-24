@@ -28,7 +28,7 @@ const {
 } = require('jest-util');
 
 type SearchSourceConfig = {
-  testGlob: Array<Glob>,
+  testMatch: Array<Glob>,
   testPathDirs: Array<Path>,
   testRegex: string,
   testPathIgnorePatterns: Array<string>,
@@ -98,7 +98,7 @@ class SearchSource {
   _testPathDirPattern: RegExp;
   _testIgnorePattern: ?RegExp;
   _testPathCases: {
-    testGlob: (path: Path) => boolean,
+    testMatch: (path: Path) => boolean,
     testPathDirs: (path: Path) => boolean,
     testRegex: (path: Path) => boolean,
     testPathIgnorePatterns: (path: Path) => boolean,
@@ -125,7 +125,7 @@ class SearchSource {
       ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
 
     this._testPathCases = {
-      testGlob: globsToMatcher(config.testGlob),
+      testMatch: globsToMatcher(config.testMatch),
       testPathDirs: path => this._testPathDirPattern.test(path),
       testPathIgnorePatterns: path => (
         !this._testIgnorePattern ||

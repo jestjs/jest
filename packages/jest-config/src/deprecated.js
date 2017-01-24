@@ -34,11 +34,6 @@ const deprecatedOptions = {
   }
 
   Please update your configuration.`,
-
-  testRegex: (config: Object) =>
-  `  Option ${chalk.bold('testRegex')} was replaced by ${chalk.bold('testGlob')}.
-
-  Please update your configuration.`,
 };
 /* eslint-enable max-len */
 

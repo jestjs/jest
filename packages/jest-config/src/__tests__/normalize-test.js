@@ -569,36 +569,22 @@ describe('Upgrade help', () => {
 
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   });
-
-  it('logs a warning when `testRegex` is used', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      testGlob: [],
-      testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
-    });
-
-    expect(config.testGlob).toEqual([]);
-    expect(config.testRegex)
-      .toEqual('(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$');
-
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-  });
 });
 
-describe('testGlob', () => {
-  it('testGlob default not applied if testRegex is set', () => {
+describe('testMatch', () => {
+  it('testMatch default not applied if testRegex is set', () => {
     const config = normalize({
       rootDir: '/root',
       testRegex: '.*',
     });
 
-    expect(config.testGlob.length).toBe(0);
+    expect(config.testMatch.length).toBe(0);
   });
 
-  it('testRegex default not applied if testGlob is set', () => {
+  it('testRegex default not applied if testMatch is set', () => {
     const config = normalize({
       rootDir: '/root',
-      testGlob: ['**/*.js'],
+      testMatch: ['**/*.js'],
     });
 
     expect(config.testRegex).toBe('');

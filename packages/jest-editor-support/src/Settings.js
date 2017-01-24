@@ -30,7 +30,8 @@ const {jestChildProcessWithArgs} = require('./Process');
 type Glob = string;
 
 type ConfigRepresentation = {
-  testGlob: Array<Glob>
+  testRegex: string,
+  testMatch: Array<Glob>
 }
 
 module.exports = class Settings extends EventEmitter {
@@ -46,10 +47,11 @@ module.exports = class Settings extends EventEmitter {
 
     // Defaults for a Jest project
     this.settings = {
-      testGlob: [
+      testMatch: [
         '**/__tests__/**/*.js?(x)',
         '**/?(*.)(spec|test).js?(x)',
       ],
+      testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
   }
 

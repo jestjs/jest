@@ -24,9 +24,9 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
   }
 
   if (
-    config.testGlob &&
-    config.testGlob.length &&
-    micromatch.any(filename, config.testGlob)) {
+    config.testMatch &&
+    config.testMatch.length &&
+    micromatch.any(filename, config.testMatch)) {
     return false;
   }
 

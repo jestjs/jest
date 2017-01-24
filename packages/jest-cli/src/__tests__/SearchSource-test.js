@@ -16,7 +16,7 @@ const skipOnWindows = require('skipOnWindows');
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
-const testGlob = ['**/__testtests__/**/*'];
+const testMatch = ['**/__testtests__/**/*'];
 const maxWorkers = 1;
 
 let findMatchingTests;
@@ -59,7 +59,7 @@ describe('SearchSource', () => {
         config = normalizeConfig({
           name,
           rootDir: '.',
-          testGlob: null,
+          testMatch: null,
           testPathDirs: [],
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         });
@@ -100,7 +100,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
-        testGlob: null,
+        testMatch: null,
         testRegex: 'not-really-a-test',
       });
       return findMatchingTests(config).then(data => {
@@ -113,12 +113,12 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests matching a pattern via testGlob', () => {
+    it('finds tests matching a pattern via testMatch', () => {
       const config = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
-        testGlob: ['**/not-really-a-test.txt'],
+        testMatch: ['**/not-really-a-test.txt'],
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
@@ -136,7 +136,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
-        testGlob: null,
+        testMatch: null,
         testRegex: 'test\.jsx?',
       });
       return findMatchingTests(config).then(data => {
@@ -155,7 +155,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
-        testGlob: ['**/test.js?(x)'],
+        testMatch: ['**/test.js?(x)'],
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
@@ -173,7 +173,7 @@ describe('SearchSource', () => {
       const config = normalizeConfig({
         name,
         rootDir,
-        testGlob: null,
+        testMatch: null,
         testRegex,
       });
       return findMatchingTests(config).then(data => {
@@ -187,11 +187,11 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with default file extensions using testGlob', () => {
+    it('finds tests with default file extensions using testMatch', () => {
       const config = normalizeConfig({
         name,
         rootDir,
-        testGlob,
+        testMatch,
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
@@ -210,7 +210,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['jsx'],
         name,
         rootDir,
-        testGlob,
+        testMatch,
       });
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -227,7 +227,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['foobar'],
         name,
         rootDir,
-        testGlob,
+        testMatch,
       });
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -244,7 +244,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
-        testGlob,
+        testMatch,
       });
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
@@ -261,7 +261,7 @@ describe('SearchSource', () => {
       const config = normalizeConfig({
         name,
         rootDir,
-        testGlob: null,
+        testMatch: null,
         testRegex,
       });
       return findMatchingTests(config).then(data => {
@@ -279,7 +279,7 @@ describe('SearchSource', () => {
       const config = normalizeConfig({
         name,
         rootDir,
-        testGlob,
+        testMatch,
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
@@ -343,7 +343,7 @@ describe('SearchSource', () => {
         moduleFileExtensions: ['js', 'jsx', 'foobar'],
         name,
         rootDir,
-        testGlob,
+        testMatch,
       });
       Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);

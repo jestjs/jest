@@ -345,7 +345,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
-      case 'testGlob':
+      case 'testMatch':
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
@@ -372,10 +372,10 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     }
   }
 
-  if (config.testRegex && (!config.testGlob)) {
-    // Prevent the default testGlob conflicting with any explicitly
+  if (config.testRegex && (!config.testMatch)) {
+    // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
-    newConfig.testGlob = [];
+    newConfig.testMatch = [];
   }
 
   // If argv.json is set, coverageReporters shouldn't print a text report.

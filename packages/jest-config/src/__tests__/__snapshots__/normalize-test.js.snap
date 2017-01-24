@@ -15,18 +15,6 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 [39m"
 `;
 
-exports[`Upgrade help logs a warning when \`testRegex\` is used 1`] = `
-"[33m[1m[1m●[1m Deprecation Warning[22m:
-
-  Option [1mtestRegex[22m was replaced by [1mtestGlob[22m.
-
-  Please update your configuration.
-
-  [1mConfiguration Documentation:[22m
-  https://facebook.github.io/jest/docs/configuration.html
-[39m"
-`;
-
 exports[`preset throws when preset not found 1`] = `
 "[31m[1m[1m● [1mValidation Error[22m:
 
