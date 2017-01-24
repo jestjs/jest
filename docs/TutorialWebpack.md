@@ -43,8 +43,8 @@ will teach Jest to pick up your `.babelrc` config automatically. Non-Babel
 JavaScript transformations can be handled with Jest's
 [`transform`](/jest/docs/configuration.html#transform-object-string-string) config option.
 
-Next let's configure Jest to gracefully handle asset files such as stylesheets and images.
-Usually these files aren't particularly useful in tests so we can safely mock them out.
+Next, let's configure Jest to gracefully handle asset files such as stylesheets and images.
+Usually, these files aren't particularly useful in tests so we can safely mock them out.
 However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
 ```js
