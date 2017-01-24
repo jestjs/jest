@@ -205,6 +205,7 @@ class Runtime {
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      globalMocks: config.globalMocks,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
       mocksPattern: config.mocksPattern,
