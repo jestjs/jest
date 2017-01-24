@@ -104,6 +104,11 @@ blockquote {
 h1, h2, h3, h4 {
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 300;
+  color: #99424f;
+}
+
+header h2 {
+  color: white;
 }
 
 .homeContainer {
@@ -796,7 +801,7 @@ a:hover code {
   padding: 0;
 }
 .highlightBackground {
-  background: rgba(202,70,26, 0.7);
+  background: rgba(153, 66, 79, 0.7);
   color: #fff;
 }
 .highlightBackground a {
