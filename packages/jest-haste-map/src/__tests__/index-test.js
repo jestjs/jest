@@ -341,6 +341,27 @@ describe('HasteMap', () => {
       });
   });
 
+  it('should use different mock files if they have same filename', () => {
+    // Duplicate mock files for blueberry
+    mockFs['/fruits1/__mocks__/blueberry.js'] = [
+      'exports.blueberry = "blueberry the first";',
+    ].join('\n');
+    mockFs['/fruits2/__mocks__/blueberry.js'] = [
+      'exports.blueberry = "blueberry the second";',
+    ].join('\n');
+
+    return new HasteMap(
+      Object.assign({mocksPattern: '__mocks__'}, defaultConfig),
+    ).build()
+      .then(({__hasteMapForTest: data}) => {
+        const {mocks} = data;
+        
+        expect(console.warn).not.toBeCalled();
+        expect(mocks['/fruits1/__mocks__/blueberry.js']).toBeDefined();
+        expect(mocks['/fruits2/__mocks__/blueberry.js']).toBeDefined();
+      });
+  });
+
   it('warns on duplicate module ids', () => {
     // Raspberry thinks it is a Strawberry
     mockFs['/fruits/raspberry.js'] = [
