@@ -334,8 +334,12 @@ describe('HasteMap', () => {
       ' */',
     ].join('\n');
 
+    const globalMocks = [
+      /\/fruits.\//,
+    ];
+
     return new HasteMap(
-      Object.assign({mocksPattern: '__mocks__'}, defaultConfig),
+      Object.assign({globalMocks, mocksPattern: '__mocks__'}, defaultConfig),
     ).build()
       .then(({__hasteMapForTest: data}) => {
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
