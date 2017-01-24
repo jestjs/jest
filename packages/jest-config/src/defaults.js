@@ -28,6 +28,7 @@ module.exports = ({
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
   globals: {},
+  globalMocks: ['<rootDir>/__mocks__'],
   haste: {
     providesModuleNodeModules: [],
   },
