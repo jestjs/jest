@@ -23,16 +23,19 @@ const siteConfig = {
   features: [
     {
       image: '/jest/img/content/female-technologist.png',
+      imageAlign: 'top',
       title: 'Easy Setup',
       content: 'Jest is a complete and easy to setup JavaScript testing solution.',
     },
     {
       image: '/jest/img/content/runner.png',
+      imageAlign: 'top',
       title: 'Instant Feedback',
       content: 'Fast interactive mode that can switch between running all tests, or only those related to changed files, or even those that match a test pattern. Jest runs failed tests first.',
     },
     {
       image: '/jest/img/content/camera-with-flash.png',
+      imageAlign: 'top',
       title: 'Snapshot Testing',
       content: 'Jest can [capture snapshots](/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to simplify UI testing.',
     },

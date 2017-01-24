@@ -103,7 +103,7 @@ blockquote {
 
 h1, h2, h3, h4 {
   font-family: "Helvetica Neue", Arial, sans-serif;
-  font-weight: 900;
+  font-weight: 300;
 }
 
 .homeContainer {
@@ -499,7 +499,7 @@ iframe.jest-repl {
 .fixedHeaderContainer header h2 {
   display: block;
   font-family: "Helvetica Neue", Arial, sans-serif;
-  font-weight: 900;
+  font-weight: 400;
   line-height: 18px;
   position: relative;
 }
@@ -755,39 +755,42 @@ a:hover code {
 .gridBlock .gridClear {
   clear: both;
 }
-.gridBlock .alignCenter {
+.alignCenter {
   text-align: center;
 }
-.gridBlock .alignRight {
+.alignRight {
   text-align: right;
 }
-.gridBlock .imageAlignSide {
-  align-items: center;
+.imageAlignSide {
   display: flex;
   flex-flow: row wrap;
 }
-.testingFeatures {
-  background: #f4f4f4;
-  border-radius: 10px;
-  margin: 0 8px 8px 0;
-}
 .blockImage {
-  max-width: 150px;
-  width: 50%;
+  max-width: 730px;
+}
+.imageAlignSide .blockImage {
+  max-width: 500px;
+  flex: 0 1 500px;
+  margin-right: 20px;
+}
+.imageAlignSide .blockContent {
+  flex: 1 1;
+}
+.imageAlignBottom .blockImage {
+  max-width: 730px;
+  margin: 0 auto 20px;
+}
+.imageAlignBottom.alignCenter .blockImage {
+  margin-left: auto;
+  margin-right: auto;
 }
 .imageAlignTop .blockImage {
+  max-width: 730px;
   margin-bottom: 20px;
 }
 .imageAlignTop.alignCenter .blockImage {
   margin-left: auto;
   margin-right: auto;
-}
-.imageAlignSide .blockImage {
-  flex: 0 1 100px;
-  margin-right: 20px;
-}
-.imageAlignSide .blockContent {
-  flex: 1 1;
 }
 .container .gridBlock .blockContent p {
   padding: 0;
@@ -884,6 +887,33 @@ a:hover code {
     flex: 1 0 25%;
     padding: 10px 20px;
   }
+}
+.testingFeatures {
+  margin: 0 8px 8px 0;
+}
+.container .wrapper .testingFeatures p {
+  margin-bottom: 40px;
+  max-width: 560px;
+  margin: 0 auto 40px;
+}
+.container .wrapper .alignCenter h2 {
+  text-align: center;
+}
+.container .wrapper .testingFeatures h2 {
+  text-align: center;
+  margin: 0 auto;
+  border-bottom: 0;
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 42px;
+}
+.container .wrapper .imageAlignSide h2 {
+  text-align: left;
+}
+.container .wrapper .imageAlignSide p {
+  margin-bottom: 40px;
+  max-width: 560px;
+  margin: 0;
 }
 .poweredByContainer {
   background: #99424f;
@@ -1224,7 +1254,7 @@ a:hover code {
     margin: 0;
     padding: 0;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.2em;
     padding: 6px 10px;
     height: auto;
@@ -1373,7 +1403,6 @@ nav.toc .toggleNav .navGroup h3 {
   background: #adadad;
   color: #393939;
   font-size: 14px;
-  font-weight: 400;
   line-height: 1.2em;
   margin: 0;
   padding: 10px;
@@ -1422,7 +1451,6 @@ nav.toc .toggleNav ul li a {
   color: #393939;
   display: inline-block;
   font-size: 14px;
-  font-weight: 400;
   line-height: 1.1em;
   margin: 2px 10px 5px;
   padding: 5px 0 2px;
@@ -1433,7 +1461,7 @@ nav.toc .toggleNav ul li a:hover, nav.toc .toggleNav ul li a:focus {
 }
 nav.toc .toggleNav ul li a.navItemActive {
   color: #99424f;
-  font-weight: 900;
+  font-weight: 600;
 }
 .docsSliderActive nav.toc .navBreadcrumb {
   background: #c6c6c6;
@@ -1642,9 +1670,8 @@ div.video-shoutout {
 }
 
 .showcaseSection .prose h1 {
-  color: #b84c20;
-  font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
-  font-weight: 900;
+  color: #99424f;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   text-align: center;
   padding: 1.4em 0 0.4em;
 }
