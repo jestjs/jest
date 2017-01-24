@@ -194,6 +194,10 @@ describe('testPathDirs', () => {
   testPathArray('testPathDirs');
 });
 
+describe('globalMocks', () => {
+  testPathArray('globalMocks');
+});
+
 describe('transform', () => {
   let Resolver;
   beforeEach(() => {
