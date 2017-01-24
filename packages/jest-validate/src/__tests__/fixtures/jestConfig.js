@@ -31,6 +31,7 @@ const defaultConfig = {
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
+  globalMocks: ['<rootDir>/__mocks__'],
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -85,6 +86,7 @@ const validConfig = {
   },
   expand: false,
   forceExit: false,
+  globalMocks: ['<rootDir>/__mocks__'],
   globals: {},
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
