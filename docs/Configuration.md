@@ -48,6 +48,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
+  - [`globalMocks` [array<string>]](#global-mocks-array-string)
   - [`mocksPattern` [string]](#mockspattern-string)
   - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
@@ -187,6 +188,13 @@ For example, the following would create a global `__DEV__` variable set to `true
 ```
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
+
+### `globalMocks` [array<string>]
+(default: `['<rootDir>/__mocks__']`)
+
+Array of directories where mocks are visible for all tests
+
+By default, mocks located in `<rootDir>/__mocks__`, can be used under `<rootDir>/app/src/` 
 
 ### `mocksPattern` [string]
 (default: `(?:[\\/]|^)__mocks__[\\/]`)
