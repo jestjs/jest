@@ -333,7 +333,6 @@ class HasteMap extends EventEmitter {
         pattern => pattern.test(filePath)
       );
       const mockPath = isMockGlobal ? getMockName(filePath) : filePath;
-      console.log(`${filePath} => ${mockPath}`);
 
       if (mocks[mockPath]) {
         this._console.warn(
