@@ -244,6 +244,7 @@ describe('HasteMap', () => {
     ].join('\n');
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
+      globalMocks: [/\/fruits\//],
       mocksPattern: '/__mocks__/',
       providesModuleNodeModules: ['react', 'fbjs'],
     }));
