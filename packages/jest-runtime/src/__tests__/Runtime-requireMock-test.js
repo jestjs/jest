@@ -158,9 +158,12 @@ describe('Runtime', () => {
 
     it('uses the closest manual mock when duplicates exist', () => {
       console.warn = jest.fn();
+      const currentDir =
+        path.resolve(path.dirname(__filename), 'test_root_with_dup_mocks');
+      
       return createRuntime(__filename, {
-        rootDir:
-          path.resolve(path.dirname(__filename), 'test_root_with_dup_mocks'),
+        globalMocks: [currentDir],
+        rootDir: currentDir,
       }).then(runtime => {
         expect(console.warn).toBeCalled();
         const exports1 = runtime.requireMock(
