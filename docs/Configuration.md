@@ -192,9 +192,9 @@ Note that, if you specify a global reference value (like an object or array) her
 ### `globalMocks` [array<string>]
 (default: `['<rootDir>/__mocks__']`)
 
-Array of directories where mocks are visible for all tests
+Array of directories where mocks are visible for all tests (they become *global*)
 
-By default, mocks located in `<rootDir>/__mocks__`, can be used under `<rootDir>/app/src/` 
+For example, mocks located in `<rootDir>/__mocks__`, can be used under `<rootDir>/app/src/` 
 
 ### `mocksPattern` [string]
 (default: `(?:[\\/]|^)__mocks__[\\/]`)
