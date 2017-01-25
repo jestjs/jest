@@ -109,6 +109,7 @@ h1, h2, h3, h4 {
 
 header h2 {
   color: white;
+  font-size: 20px;
 }
 
 .homeContainer {
@@ -173,14 +174,6 @@ header h2 {
   margin-bottom: 20px;
   width: 100%;
 }
-
-iframe.jest-repl {
-  display: block;
-  margin: 0 auto 10px;
-  min-height: 620px;
-  width: 90%;
-}
-
 .center {
   display: block;
   text-align: center;
@@ -780,7 +773,7 @@ a:hover code {
   margin-right: auto;
 }
 .imageAlignTop .blockImage {
-  max-width: 730px;
+  max-width: 80px;
   margin-bottom: 20px;
 }
 .imageAlignTop.alignCenter .blockImage {
@@ -810,6 +803,19 @@ a:hover code {
 .lightBackground {
   background: #e9e9e9;
 }
+.darkBackground {
+  background: #808080;
+  color: #fff;
+}
+.container.darkBackground .wrapper h1,
+.container.darkBackground .wrapper h2,
+.container.darkBackground .wrapper h3,
+.container.darkBackground .wrapper h4,
+.container.darkBackground .wrapper h5 {
+  border-color: white;
+  color: white;
+}
+
 .container.paddingAll {
   padding: 40px;
 }
@@ -889,7 +895,7 @@ a:hover code {
 .container .wrapper .testingFeatures p {
   margin-bottom: 40px;
   max-width: 560px;
-  margin: 0 auto 40px;
+  margin: 0 auto;
 }
 .container .wrapper .alignCenter h2 {
   text-align: center;
@@ -909,6 +915,11 @@ a:hover code {
   margin-bottom: 40px;
   max-width: 560px;
   margin: 0;
+}
+.more-users {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
 }
 .poweredByContainer {
   background: #99424f;
@@ -1629,23 +1640,36 @@ h6:hover .header-link {
   opacity: 1;
 }
 
+div.jest-repl {
+  margin: 0 5%;
+  position: relative;
+  width: 600px;
+}
+div.jest-repl iframe {
+  display: block;
+  margin: 0 auto 10px;
+  min-height: 420px;
+  width: 100%;
+}
+
 div.video {
   margin: 0 5%;
-  height: 600px;
   position: relative;
+  width: 600px;
 }
 
 div.video iframe {
-  height: 100%;
-  position: absolute;
+  display: block;
+  margin: 0 auto 10px;
+  min-height: 300px;
   width: 100%;
 }
 
 div.video-shoutout {
   display: block;
   font-size: 80%;
-  margin: 0 5%;
-  text-align: right;
+  margin: 20px 5%;
+  text-align: center;
 }
 
 @media only screen and (max-width: 1023px) {

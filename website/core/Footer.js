@@ -4,8 +4,7 @@
  */
 
 const React = require('React');
-
-const githubButton = <a className="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-count-api="/repos/facebook/jest#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a>;
+const siteConfig = require('../siteConfig.js');
 
 class Footer extends React.Component {
   render() {
@@ -34,7 +33,7 @@ class Footer extends React.Component {
             <h5>More</h5>
             <a href="/jest/blog">Blog</a>
             <a href="https://github.com/facebook/jest">GitHub</a>
-            {githubButton}
+            {siteConfig.githubButton}
           </div>
         </section>
 

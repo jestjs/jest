@@ -62,7 +62,7 @@ class GridBlock extends React.Component {
   }
 
   renderContainer(block, index) {
-    const background = index % 2 ? 'dark' : 'light';
+    const background = index % 2 ? 'transparent' : 'light';
     return (
       <Container background={background} padding={['bottom', 'top']}>
         {this.renderBlock(block)}
