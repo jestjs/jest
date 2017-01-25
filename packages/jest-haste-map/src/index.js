@@ -683,10 +683,6 @@ class HasteMap extends EventEmitter {
   }
   
   _isMockGlobal(filePath: Path): boolean {
-    // const {globalMocks} = this._options;
-    // const isMockGlobal = globalMocks && globalMocks.some(
-      // pattern => pattern.test(filePath)
-    // );  
     return this._options.globalMocks.some(
       mockPath => filePath.startsWith(mockPath)
     );
