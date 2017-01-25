@@ -199,7 +199,7 @@ class HasteMap extends EventEmitter {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
-      globalMocks: options.globalMocks || [],
+      globalMocks: options.globalMocks ? [].concat(options.globalMocks) : [],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern:
