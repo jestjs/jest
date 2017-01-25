@@ -51,6 +51,9 @@
     "watch": "yarn run build; node ./scripts/watch.js"
   },
   "jest": {
+    "globalMocks": [
+      "<rootDir>/packages/jest-runtime/src/__mocks__/"
+    ],
     "modulePathIgnorePatterns": [
       "examples/.*",
       "packages/.*/build",
