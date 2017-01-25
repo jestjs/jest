@@ -199,7 +199,8 @@ class HasteMap extends EventEmitter {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
-      globalMocks: options.globalMocks ? options.globalMocks.map(globalMockPath => new RegExp(globalMockPath)) : [],
+      globalMocks: options.globalMocks ?
+        options.globalMocks.map(path => new RegExp(path)) : [],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern:
@@ -625,9 +626,9 @@ class HasteMap extends EventEmitter {
           this._options.mocksPattern &&
           this._options.mocksPattern.test(filePath)
         ) {
-          const isMockGlobal = this._options.globalMocks && this._options.globalMocks.some(
-            pattern => pattern.test(filePath)
-          );
+          const isMockGlobal = this._options.globalMocks &&
+            this._options.globalMocks.some(pattern => pattern.test(filePath));
+            
           const mockName = isMockGlobal ? getMockName(filePath) : filePath;
           delete hasteMap.mocks[mockName];
         }
