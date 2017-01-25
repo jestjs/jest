@@ -87,7 +87,7 @@ const index = React.createClass({
           <Container padding={['bottom']}>
             <div className="miniShowcaseSection testingFeatures">
               <h2>Who's using Jest?</h2>
-              <p>Jest is used by <a href="/jest/users.html">teams of all sizes</a> to test websites, mobile apps, and APIs.</p>
+              <p>Jest is used by teams of all sizes to test websites, mobile apps, and APIs.</p>
               <div className="logos">
                 {showcase}
               </div>
