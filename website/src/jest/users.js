@@ -23,7 +23,7 @@ class UserShowcase extends React.Component {
           <Container padding={['bottom', 'top']}>
             <div className="showcaseSection">
               <div className="prose">
-                <h1>Who's Using Jest?</h1>
+                <h1>Who's using Jest?</h1>
                 <p>Jest is used by teams of all sizes to test websites, mobile
                 apps, and APIs.</p>
               </div>

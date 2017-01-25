@@ -25,8 +25,8 @@ const DocsLayout = React.createClass({
           <Container className="mainContainer">
             <Doc content={content} source={metadata.source} title={metadata.title} />
             <div className="docs-prevnext">
-              {metadata.previous && <a className="docs-prev button" href={metadata.previous + '.html#content'}>&larr; Prev</a>}
-              {metadata.next && <a className="docs-next button" href={metadata.next + '.html#content'}>Next &rarr;</a>}
+              {/*{metadata.previous && <a className="docs-prev button" href={metadata.previous + '.html#content'}>&larr; Go Back</a>}*/}
+              {metadata.next && <a className="docs-next button" href={metadata.next + '.html#content'}>Continue Reading &rarr;</a>}
             </div>
           </Container>
         </div>

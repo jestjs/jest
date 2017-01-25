@@ -16,8 +16,7 @@ const siteConfig = {
     <div className="pluginRowBlock">
       <Button href="#use">Try out Jest</Button>
       <Button href="/jest/docs/getting-started.html">Get Started</Button>
-      <Button href="/jest/docs/snapshot-testing.html">Snapshot Testing</Button>
-      <Button href="/jest/docs/api.html">API Reference</Button>
+      <Button href="/jest/docs/snapshot-testing.html">Learn More</Button>
     </div>,
   ],
   topFeatures: [
@@ -25,63 +24,57 @@ const siteConfig = {
       image: '/jest/img/content/female-technologist.png',
       imageAlign: 'top',
       title: 'Easy Setup',
-      content: 'Jest is a complete and easy to setup JavaScript testing solution.',
+      content: 'Jest is a complete and easy to set up JavaScript testing solution. In fact, Jest works out of the box for any React project.',
     },
     {
       image: '/jest/img/content/runner.png',
       imageAlign: 'top',
       title: 'Instant Feedback',
-      content: 'Fast interactive mode that can switch between running all tests, or only those related to changed files, or even those that match a test pattern. Jest runs failed tests first.',
+      content: 'Failed tests run first. Fast interactive mode can switch between running all tests or only test files related to changed files.',
     },
     {
       image: '/jest/img/content/camera-with-flash.png',
       imageAlign: 'top',
       title: 'Snapshot Testing',
-      content: 'Jest can [capture snapshots](/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to simplify UI testing.',
+      content: 'Jest can capture snapshots of React trees or other serializable values to simplify UI testing.',
     },
   ],
   features: [
     {
-      content: 'Create coverage reports with `--coverage`. No additional setup or libraries needed!',
-      image: 'img/content/feature-pattern-mode.png',
-      imageAlign: 'left',
-      title: 'Code Coverage Reports',
-    },
-    {
-      content: 'Jest is a complete and easy to setup JavaScript testing solution.',
+      content: 'Jest is already configured when you use `create-react-app` or `react-native init` to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.',
       image: 'img/content/feature-snapshot-tests.png',
       imageAlign: 'right',
-      title: 'Zero-config',
+      title: 'Zero configuration',
     },
     {
-      content: 'Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules',
+      content: 'Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.',
       image: 'img/content/feature-pattern-mode.png',
       imageAlign: 'left',
-      title: 'Powerful Mocking Library',
+      title: 'Built-in code coverage reports',
     },
     {
-      content: 'Jest works with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io). This is a demonstration of a centered unit with a large image. It does not have to be Babel, especifically.',
-      image: 'img/content/feature-snapshot-tests.png',
-      imageAlign: 'bottom',
-      title: 'Babel',
-    },
-    {
-      content: 'Sandboxed test files and automatic global state resets for every test',
+      content: 'Sandboxed test files and automatic global state resets for every test. Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results.',
       image: 'img/content/feature-snapshot-tests.png',
       imageAlign: 'right',
-      title: 'Sandboxed and Fast',
+      title: 'Sandboxed and fast',
+    },
+    {
+      content: 'Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.',
+      image: 'img/content/feature-pattern-mode.png',
+      imageAlign: 'left',
+      title: 'Powerful mocking library',
+    },
+    {
+      content: 'Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io).',
+      image: 'img/content/feature-snapshot-tests.png',
+      imageAlign: 'right',
+      title: 'Works with TypeScript',
     },
     {
       content: 'Run your tests within a fake DOM implementation (via [jsdom](https://github.com/tmpvar/jsdom)) on the command line. Every DOM API that you call can be observed in the same way it would be observed in a browser.',
       image: 'img/content/feature-pattern-mode.png',
       imageAlign: 'left',
-      title: 'Simulated DOM Environment',
-    },
-    {
-      content: 'Jest works with any compile-to-JS language and integrates seamlessly with [Babel](https://babeljs.io)',
-      image: 'img/content/feature-pattern-mode.png',
-      imageAlign: 'right',
-      title: 'Babel',
+      title: 'Simulated DOM environment',
     },
   ],
   users: [

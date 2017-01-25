@@ -71,18 +71,18 @@ class GridBlock extends React.Component {
   }
 
   render() {
-    let gridBlock = <div className="gridBlock">
+    let block = <div className="gridBlock">
       {this.props.contents.map(this.renderBlock, this)}
     </div>;
 
     if (this.props.alternatingBackground) {
-      gridBlock = <div>
+      block = <div>
         {this.props.contents.map(this.renderContainer, this)}
       </div>;
     }
 
     return (
-      gridBlock
+      block
     );
   }
 }

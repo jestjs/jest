@@ -820,7 +820,7 @@ a:hover code {
   padding: 40px;
 }
 .container.paddingBottom {
-  padding-bottom: 40px;
+  padding-bottom: 80px;
 }
 .container.paddingLeft {
   padding-left: 40px;
@@ -829,7 +829,7 @@ a:hover code {
   padding-right: 40px;
 }
 .container.paddingTop {
-  padding-top: 40px;
+  padding-top: 80px;
 }
 @media only screen and (max-width: 1023px) {
   .responsiveList .blockContent {
@@ -1405,6 +1405,7 @@ nav.toc .toggleNav .navGroup h3 {
   background: #adadad;
   color: #393939;
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.2em;
   margin: 0;
   padding: 10px;
@@ -1709,7 +1710,9 @@ div.video-shoutout {
   max-width: 270px;
   padding: 20px;
 }
-
+.miniShowcaseSection {
+  padding: 20px;
+}
 .miniShowcaseSection .logos {
   align-items: center;
   display: flex;

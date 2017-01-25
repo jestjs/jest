@@ -9,9 +9,9 @@ const classNames = require('classnames');
 class Container extends React.Component {
   render() {
     const containerClasses = classNames('container', this.props.className, {
+      'darkBackground': this.props.background === 'dark',
       'highlightBackground': this.props.background === 'highlight',
       'lightBackground': this.props.background === 'light',
-      'darkBackground': this.props.background === 'dark',
       'paddingAll': this.props.padding.indexOf('all') >= 0,
       'paddingBottom': this.props.padding.indexOf('bottom') >= 0,
       'paddingLeft': this.props.padding.indexOf('left') >= 0,

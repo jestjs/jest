@@ -27,26 +27,36 @@ const index = React.createClass({
       <Site>
         <HomeSplash mostRecentPost={blog.files[0]} />
         <div className="mainContainer">
-          <Container background="light" padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']}>
             <GridBlock align="center" contents={siteConfig.topFeatures} layout="fourColumn" />
           </Container>
-          <Container padding={['bottom', 'top']}>
-            <div className="testingFeatures">
-              <h2>Painless JavaScript Testing</h2>
-              <p>Fast interactive mode that can switch between running all tests, or only those related to changed files, or even those that match a test pattern. Jest runs failed tests first. Yes, we already said that. I'm only copying this text here for demonstration purposes.</p>
+          <Container padding={['bottom']}>
+            <div className="testingFeatures" style={{textAlign: 'center'}}>
+              <h2>Zero configuration testing platform</h2>
+              <Marked>
+                Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in stable and healthy code bases.
+              </Marked>
             </div>
           </Container>
-          <GridBlock className="testingFeatures" contents={siteConfig.features} alternatingBackground/>
+
+          <GridBlock className="testingFeatures"
+            contents={siteConfig.features}
+            alternatingBackground />
+
+          {/*<GridBlock className="testingFeatures"
+            contents={siteConfig.features.slice(0, siteConfig.features.length / 2)}
+            alternatingBackground />
+
           <Container background="dark" padding={['bottom', 'top']}>
             <div className="blockElement testingFeatures imageAlignSide twoByGridBlock">
               <div className="blockContent">
                 <h2>
                   <a className="anchor" name="use"></a>
-                  Try Out Jest
+                  Try it out!
                   <a className="hash-link" href="#use"></a>
                 </h2>
                 <div>
-                  <Marked>You can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!</Marked>
+                  <p>You can try out a real version of Jest right here. Just edit your test and hit the run button!</p>
                 </div>
               </div>
               <div className="jest-repl">
@@ -55,23 +65,28 @@ const index = React.createClass({
               </div>
             </div>
           </Container>
-          <Container background="dark" padding={['bottom', 'top']}>
+
+          <GridBlock className="testingFeatures"
+            contents={siteConfig.features.slice(siteConfig.features.length / 2, siteConfig.features.length)}
+            alternatingBackground />*/}
+
+          {/*<Container background="dark" padding={['bottom', 'top']}>
             <div className="blockElement testingFeatures imageAlignSide twoByGridBlock">
               <div className="video">
                 <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
               </div>
               <div className="blockContent">
-                <h2>Unit Test with Jest</h2>
+                <h2>Unit test with Jest</h2>
                 <div>
-                  <Marked>This video by [Kent C. Dodds](https://twitter.com/kentcdodds) on [Egghead.io](https://egghead.io/) will guide you through installing Jest and writing your first unit test.</Marked>
+                  <Marked>Learn how to install Jest and write your first unit test in this video by [Kent C. Dodds](https://twitter.com/kentcdodds) on [Egghead.io](https://egghead.io/).</Marked>
                 </div>
               </div>
             </div>
-          </Container>
+          </Container>*/}
 
           <Container padding={['bottom']}>
             <div className="miniShowcaseSection testingFeatures">
-              <h2>Who's Using Jest?</h2>
+              <h2>Who's using Jest?</h2>
               <p>Jest is used by <a href="/jest/users.html">teams of all sizes</a> to test websites, mobile apps, and APIs.</p>
               <div className="logos">
                 {showcase}
