@@ -61,7 +61,7 @@ type InternalOptions = {
   cacheDirectory: string,
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
-  globalMocks: Array<RegExp>,
+  globalMocks: Array<string>,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
@@ -199,8 +199,7 @@ class HasteMap extends EventEmitter {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
-      globalMocks: options.globalMocks ?
-        options.globalMocks.map(path => new RegExp(path)) : [],
+      globalMocks: options.globalMocks || [],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern:
@@ -331,11 +330,7 @@ class HasteMap extends EventEmitter {
       this._options.mocksPattern &&
       this._options.mocksPattern.test(filePath)
     ) {
-      const {globalMocks} = this._options;
-      const isMockGlobal = globalMocks && globalMocks.some(
-        pattern => pattern.test(filePath)
-      );
-      const mockPath = isMockGlobal ? getMockName(filePath) : filePath;
+      const mockPath = this._isMockGlobal(filePath) ? getMockName(filePath) : filePath;
 
       if (mocks[mockPath]) {
         this._console.warn(
@@ -626,10 +621,7 @@ class HasteMap extends EventEmitter {
           this._options.mocksPattern &&
           this._options.mocksPattern.test(filePath)
         ) {
-          const isMockGlobal = this._options.globalMocks &&
-            this._options.globalMocks.some(pattern => pattern.test(filePath));
-            
-          const mockName = isMockGlobal ? getMockName(filePath) : filePath;
+          const mockName = this._isMockGlobal(filePath) ? getMockName(filePath) : filePath;
           delete hasteMap.mocks[mockName];
         }
 
@@ -687,6 +679,16 @@ class HasteMap extends EventEmitter {
     return (
       this._options.ignorePattern.test(filePath) ||
       (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
+    );
+  }
+  
+  _isMockGlobal(filePath: Path): boolean {
+    // const {globalMocks} = this._options;
+    // const isMockGlobal = globalMocks && globalMocks.some(
+      // pattern => pattern.test(filePath)
+    // );  
+    return this._options.globalMocks.some(
+      mockPath => filePath.startsWith(mockPath)
     );
   }
 
