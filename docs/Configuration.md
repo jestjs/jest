@@ -48,7 +48,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`coverageReporters` [array<string>]](#coveragereporters-array-string)
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
-  - [`globalMocks` [array<string>]](#global-mocks-array-string)
+  - [`globalMocks` [array<string>]](#globalmocks-array-string)
   - [`mocksPattern` [string]](#mockspattern-string)
   - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
