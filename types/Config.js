@@ -129,7 +129,7 @@ export type InitialConfig = {|
   expand?: boolean,
   forceExit?: boolean,
   globals?: ConfigGlobals,
-  globalMocks: Array<string>,
+  globalMocks?: Array<string>,
   haste?: HasteConfig,
   logHeapUsage?: boolean,
   logTransformErrors?: ?boolean,
