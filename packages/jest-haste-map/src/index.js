@@ -330,7 +330,8 @@ class HasteMap extends EventEmitter {
       this._options.mocksPattern &&
       this._options.mocksPattern.test(filePath)
     ) {
-      const mockPath = this._isMockGlobal(filePath) ? getMockName(filePath) : filePath;
+      const mockPath = this._isMockGlobal(filePath) ?
+        getMockName(filePath) : filePath;
 
       if (mocks[mockPath]) {
         this._console.warn(
@@ -621,7 +622,9 @@ class HasteMap extends EventEmitter {
           this._options.mocksPattern &&
           this._options.mocksPattern.test(filePath)
         ) {
-          const mockName = this._isMockGlobal(filePath) ? getMockName(filePath) : filePath;
+          const mockName = this._isMockGlobal(filePath) ?
+            getMockName(filePath) : filePath;
+            
           delete hasteMap.mocks[mockName];
         }
 
