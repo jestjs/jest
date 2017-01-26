@@ -1,9 +1,10 @@
 ---
 id: configuration
 title: Configuring package.json
-layout: docs
+layout: reference
 category: API Reference
 permalink: docs/configuration.html
+previous: jest-object
 next: cli
 ---
 

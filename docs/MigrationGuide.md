@@ -4,6 +4,7 @@ title: Migrating to Jest
 layout: docs
 category: Guides
 permalink: docs/migration-guide.html
+previous: webpack
 next: troubleshooting
 ---
 

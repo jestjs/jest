@@ -1,9 +1,10 @@
 ---
 id: cli
 title: Jest CLI Options
-layout: docs
+layout: reference
 category: API Reference
 permalink: docs/cli.html
+previous: configuration
 ---
 
 The `jest` command line tool has a number of useful options, although you might never need any of them. You can run `jest --help` to view the options available. This document will also provide a brief overview.

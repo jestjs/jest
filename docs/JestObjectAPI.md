@@ -1,9 +1,10 @@
 ---
 id: jest-object
 title: The Jest Object
-layout: docs
+layout: reference
 category: API Reference
 permalink: docs/jest-object.html
+previous: mock-function-api
 next: configuration
 ---
 

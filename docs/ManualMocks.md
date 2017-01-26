@@ -4,6 +4,7 @@ title: Manual Mocks
 layout: docs
 category: Guides
 permalink: docs/manual-mocks.html
+previous: timer-mocks
 next: webpack
 ---
 

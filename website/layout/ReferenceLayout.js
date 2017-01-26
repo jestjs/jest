@@ -1,5 +1,5 @@
 /**
- * @providesModule DocsLayout
+ * @providesModule ReferenceLayout
  * @jsx React.DOM
  */
  /* eslint-disable max-len */
@@ -10,7 +10,7 @@ const Container = require('Container');
 const Doc = require('Doc');
 const DocsSidebar = require('DocsSidebar');
 
-const DocsLayout = React.createClass({
+const ReferenceLayout = React.createClass({
   render() {
     const metadata = this.props.metadata;
     const content = this.props.children;
@@ -21,13 +21,10 @@ const DocsLayout = React.createClass({
         title={metadata.title}
         description={content.trim().split('\n')[0]}>
         <div className="docMainWrapper wrapper">
-          <DocsSidebar metadata={metadata} />
-          <Container className="mainContainer">
-            <Doc content={content} source={metadata.source} title={metadata.title} />
-            <div className="docs-prevnext">
-              {/*{metadata.previous && <a className="docs-prev button" href={metadata.previous + '.html#content'}>&larr; Go Back</a>}*/}
-              {metadata.next && <a className="docs-next button" href={metadata.next + '.html#content'}>Continue Reading &rarr;</a>}
-            </div>
+          <DocsSidebar metadata={metadata} title="API" root="/jest/docs/api.html" layout="reference" />
+          <Container className="mainContainer referenceContainer">
+            <Doc content={content} source={metadata.source}
+              title={metadata.title} />
           </Container>
         </div>
       </Site>
@@ -35,4 +32,4 @@ const DocsLayout = React.createClass({
   },
 });
 
-module.exports = DocsLayout;
+module.exports = ReferenceLayout;

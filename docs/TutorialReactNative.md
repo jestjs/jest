@@ -4,6 +4,7 @@ title: Testing React Native Apps
 layout: docs
 category: Guides
 permalink: docs/tutorial-react-native.html
+previous: tutorial-react
 next: tutorial-async
 ---
 
