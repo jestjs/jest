@@ -24,6 +24,7 @@ type ResolverConfig = {|
   defaultPlatform: ?string,
   extensions: Array<string>,
   hasCoreModules: boolean,
+  module?: boolean,
   moduleDirectories: Array<string>,
   moduleNameMapper: ?Array<ModuleNameMapperConfig>,
   modulePaths: Array<Path>,
@@ -34,6 +35,7 @@ type FindNodeModuleConfig = {|
   basedir: Path,
   browser?: boolean,
   extensions?: Array<string>,
+  module?: boolean,
   moduleDirectory?: Array<string>,
   paths?: Array<Path>,
 |};
@@ -69,6 +71,7 @@ class Resolver {
       hasCoreModules: options.hasCoreModules === undefined
         ? true
         : options.hasCoreModules,
+      module: options.module,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
@@ -83,13 +86,21 @@ class Resolver {
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const paths = options.paths;
     try {
-      const resv = options.browser ? browserResolve : resolve;
-      return resv.sync(
+      return (options.browser ? browserResolve : resolve).sync(
         path,
         {
           basedir: options.basedir,
           extensions: options.extensions,
           moduleDirectory: options.moduleDirectory,
+          packageFilter: options.module
+                          ? packageJson => {
+                            if (packageJson.module) {
+                              packageJson.main = packageJson.module;
+                            }
+
+                            return packageJson;
+                          }
+                          : x => x,
           paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
         },
       );
@@ -143,6 +154,7 @@ class Resolver {
         basedir: dirname,
         browser: this._options.browser,
         extensions,
+        module: this._options.module,
         moduleDirectory,
         paths,
       });
@@ -320,6 +332,7 @@ class Resolver {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
+              module: this._options.module,
               moduleDirectory,
               paths,
             },

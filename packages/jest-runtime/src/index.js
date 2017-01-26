@@ -218,6 +218,7 @@ class Runtime {
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
       hasCoreModules: true,
+      module: config.module,
       moduleDirectories: config.moduleDirectories,
       moduleNameMapper: getModuleNameMapper(config),
       modulePaths: config.modulePaths,
