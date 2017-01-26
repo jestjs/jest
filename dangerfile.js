@@ -86,11 +86,15 @@ const noFlowFiles = newJsFiles
 
 raiseIssueAboutPaths(warn, noFlowFiles, '@flow');
 
+// based on assumptions from https://github.com/nodejs/node/wiki/ES6-Module-Detection-in-Node
+// basically it needs to contain at least one line with import or export at the
+// beginning of it, followed by a space; any content thereafter doesn't matter
+const esModuleRegex = /^(import|export)\s/g;
 
-// Ensure the use of 'use strict'; on all files
+// Ensure the use of 'use strict' on all non-ES module files
 const noStrictFiles = newJsFiles.filter(filepath => {
   const content = fs.readFileSync(filepath).toString();
-  return !includes(content, 'use strict');
+  return !esModuleRegex.test(content) && !includes(content, 'use strict');
 });
 
 raiseIssueAboutPaths(fail, noStrictFiles, "'use strict'");
