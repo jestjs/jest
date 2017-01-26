@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Path} from 'types/Config';
+
 const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
@@ -74,6 +76,13 @@ const getPackageRoot = () => {
   return root;
 };
 
+const getModulePath = (from: Path, moduleName: string) => {
+  if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
+    return moduleName;
+  }
+  return path.normalize(path.dirname(from) + '/' + moduleName);
+};
+
 module.exports = {
   Console,
   FakeTimers,
@@ -86,6 +95,7 @@ module.exports = {
   formatResultsErrors,
   formatStackTrace,
   formatTestResults,
+  getModulePath,
   getPackageRoot,
   installCommonGlobals,
   replacePathSepForRegex,
