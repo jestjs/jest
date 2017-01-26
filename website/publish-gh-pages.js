@@ -50,9 +50,9 @@ cd(`build/${CIRCLE_PROJECT_REPONAME}-gh-pages`);
 exec(`git add --all`);
 exec(`git commit -m "update website"`);
 if (exec(`git push git@github.com:${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`).code !== 0) {
-  echo(`Website is live at: https://${DEPLOY_USER}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
-  exit(0);
-} else {
   echo(`Error: Git push failed`);
   exit(1);
+} else {
+  echo(`Website is live at: https://${DEPLOY_USER}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
+  exit(0);
 }
