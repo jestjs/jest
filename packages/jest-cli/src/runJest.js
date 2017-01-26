@@ -104,8 +104,11 @@ const runJest = (
       })
       .then(runResults => {
         if (config.testResultsProcessor) {
+          const resultsProcessor = Array.isArray(config.testResultsProcessor) ?
+            config.testResultsProcessor : [config.testResultsProcessor];
+
           /* $FlowFixMe */
-          runResults = require(config.testResultsProcessor)(runResults);
+          resultsProcessor.forEach(p => runResults = require(p)(runResults));
         }
         if (argv.json) {
           if (argv.outputFile) {

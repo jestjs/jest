@@ -9,7 +9,6 @@
 'use strict';
 
 module.exports = function(results) {
-  results.processed = true;
-  results.count = 0;
+  results.count += 1;
   return results;
 };

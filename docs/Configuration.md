@@ -66,7 +66,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`testPathDirs` [array<string>]](#testpathdirs-array-string)
   - [`testPathIgnorePatterns` [array<string>]](#testpathignorepatterns-array-string)
   - [`testRegex` [string]](#testregex-string)
-  - [`testResultsProcessor` [string]](#testresultsprocessor-string)
+  - [`testResultsProcessor` [string, array<string>]](#testresultsprocessor-string)
   - [`testRunner` [string]](#testrunner-string)
   - [`testURL` [string]](#testurl-string)
   - [`timers` [string]](#timers-string)
@@ -369,7 +369,7 @@ inside of `__tests__` folders, as well as any files with a suffix of `.test` or 
 (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
 or `spec.js`.
 
-### `testResultsProcessor` [string]
+### `testResultsProcessor` [string, array<string>]
 (default: `undefined`)
 
 This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument:
@@ -410,6 +410,8 @@ This option allows the use of a custom results processor. This processor must be
   ]
 }
 ```
+
+Multiple results processor can be specified via array of modules. Order of processor will affect process results, as each processor returns processed results back to jest.
 
 ### `testRunner` [string]
 (default: `jasmine2`)
