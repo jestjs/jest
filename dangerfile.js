@@ -8,6 +8,8 @@
  * @flow
  */
 
+// Want to make changes? Check out the README in /danger/README.md for advice
+
 'use strict';
 
 const {danger, fail, warn} = require('danger');
