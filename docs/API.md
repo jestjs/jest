@@ -695,6 +695,11 @@ describe('drinking flavors', () => {
 
     // Test that we get a DisgustingFlavorError
     expect(drinkOctopus).toThrowError(DisgustingFlavorError);
+
+    // Test that we get a DisgustingFlavorError
+    // with error message 'yuck, octopus flavor'
+    expect(drinkOctopus).toThrowError(
+      DisgustingFlavorError, 'yuck, octopus flavor');
   });
 });
 ```
