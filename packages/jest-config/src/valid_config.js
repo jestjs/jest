@@ -49,6 +49,7 @@ export default ({
   json: false,
   lastCommit: false,
   logHeapUsage: true,
+  module: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',

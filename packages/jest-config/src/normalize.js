@@ -496,6 +496,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
+      case 'module':
+      case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':

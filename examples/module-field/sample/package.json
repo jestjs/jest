@@ -1,0 +1,4 @@
+{
+    "main": "wrong.js",
+    "module": "correct.js"
+}

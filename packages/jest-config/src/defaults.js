@@ -46,6 +46,7 @@ export default ({
   haste: {
     providesModuleNodeModules: [],
   },
+  module: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleNameMapper: {},

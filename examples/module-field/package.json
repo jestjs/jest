@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-preset-es2015": "*",
+    "jest": "*"
+  },
+  "jest": {
+    "module": true
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
