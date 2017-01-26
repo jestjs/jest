@@ -1742,11 +1742,11 @@ Received:
   [31m\"abc\"[39m"
 `;
 
-exports[`.toEqual() expect("abcd").not.toEqual(StringMatching /bc/) 1`] = `
+exports[`.toEqual() expect("abcd").not.toEqual(StringMatching "bc") 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
 Expected value to not equal:
-  [32mStringMatching /bc/[39m
+  [32mStringMatching \"bc\"[39m
 Received:
   [31m\"abcd\"[39m"
 `;
