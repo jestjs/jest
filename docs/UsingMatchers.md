@@ -8,7 +8,7 @@ previous: getting-started
 next: asynchronous
 ---
 
-Jest uses "matchers" to let you test values in different ways. There too many different matchers to memorize them all, so this document will only try to introduce the most useful ones.
+Jest uses "matchers" to let you test values in different ways. There are too many different matchers to memorize them all, so this document will only try to introduce the most useful ones.
 
 ### Common Matchers
 
