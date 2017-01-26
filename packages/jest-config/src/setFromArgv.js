@@ -17,6 +17,10 @@ function setFromArgv(config, argv) {
     config.verbose = argv.verbose;
   }
 
+  if (argv.summary) {
+    config.summary = argv.summary;
+  }
+
   if (argv.notify) {
     config.notify = argv.notify;
   }

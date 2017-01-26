@@ -24,6 +24,17 @@ test('console printing', () => {
   expect(summary).toMatchSnapshot();
 });
 
+test('console printing with --summary', () => {
+  const {stderr, stdout, status} =
+    runJest('console', ['--summary', '--no-cache']);
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
 test('console printing with --verbose', () => {
   const {stderr, stdout, status} =
     runJest('console', ['--verbose', '--no-cache']);

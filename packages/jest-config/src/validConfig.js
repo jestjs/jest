@@ -64,6 +64,7 @@ module.exports = ({
   setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
+  summary: false,
   testEnvironment: 'jest-environment-jsdom',
   testNamePattern: 'test signature',
   testPathDirs: ['<rootDir>'],

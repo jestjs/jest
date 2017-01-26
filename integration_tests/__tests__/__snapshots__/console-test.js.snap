@@ -24,6 +24,22 @@ Ran all test suites.
 "
 `;
 
+exports[`test console printing with --summary 1`] = `""`;
+
+exports[`test console printing with --summary 2`] = `
+"
+"
+`;
+
+exports[`test console printing with --summary 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
 exports[`test console printing with --verbose 1`] = `
 "  console.log __tests__/console-test.js:11
     This is a log message.

@@ -47,6 +47,7 @@ module.exports = ({
   resetMocks: false,
   resetModules: false,
   snapshotSerializers: [],
+  summary: null,
   testEnvironment: 'jest-environment-jsdom',
   testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
