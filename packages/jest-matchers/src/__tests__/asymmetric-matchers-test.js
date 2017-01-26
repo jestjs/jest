@@ -145,6 +145,8 @@ test('StringMatching matches string against regexp', () => {
 test('StringMatching matches string against string', () => {
   jestExpect(stringMatching('en').asymmetricMatch('queen')).toBe(true);
   jestExpect(stringMatching('en').asymmetricMatch('queue')).toBe(false);
+  jestExpect(stringMatching('*this* part').asymmetricMatch('*this* part')).toBe(true);
+  jestExpect(stringMatching('*this* part').asymmetricMatch('*that* part')).toBe(false);
 });
 
 test('StringMatching throws for non-strings and non-regexps', () => {
