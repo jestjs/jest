@@ -2,30 +2,37 @@
 id: getting-started
 title: Getting Started
 layout: docs
-category: Quick Start
+category: Introduction
 permalink: docs/getting-started.html
-next: tutorial-react
+next: using-matchers
 ---
 
-Before you install Jest, you can try out a real version of Jest through [repl.it](https://repl.it). Just edit your test and hit the run button!
-<iframe class="jest-repl" src="https://repl.it/languages/jest?lite=true"></iframe>
+Install Jest using `npm`:
 
-Install Jest with `yarn` or `npm` by running `yarn add -D jest` or `npm install --save-dev jest`. Let's get started by writing a test for a hypothetical `sum.js` file:
-
-```javascript
-module.exports = (a, b) => a + b;
+```
+npm install --save-dev jest
 ```
 
-Create a directory `__tests__/` with a file `sum-test.js` or name it `sum.test.js` or `sum.spec.js` and put it anywhere in your project:
+Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
 ```javascript
+function sum(a, b) {
+  return a + b;
+}
+module.exports = sum;
+```
+
+Then, create a file named `sum.test.js`. This will contain our actual test:
+
+```javascript
+const sum = require('./sum');
+
 test('adds 1 + 2 to equal 3', () => {
-  const sum = require('../sum');
   expect(sum(1, 2)).toBe(3);
 });
 ```
 
-Add the following to your `package.json`:
+Add the following section to your `package.json`:
 
 ```js
 "scripts": {
@@ -33,30 +40,30 @@ Add the following to your `package.json`:
 }
 ```
 
-Run `yarn test` and Jest will print this message: `PASS __tests__/sum-test.js`. You just successfully wrote your first test using Jest!
+Finally, run `npm test` and Jest will print this message:
 
-**You are ready to use Jest! Here are some more resources to help you get started:**
+```
+PASS  ./sum.test.js
+✓ adds 1 + 2 to equal 3 (5ms)
+```
 
-* Read the [API Documentation](/jest/docs/api.html) to learn about all available assertions, ways of writing tests and Jest specific APIs.
-* [Jest Configuration](/jest/docs/configuration.html).
-* [Example Code](https://github.com/facebook/jest/tree/master/examples/getting_started).
-* [Migration from other test runners](/jest/docs/migration-guide.html).
-* Introductory guide at [Plotly Academy](https://academy.plot.ly/react/6-testing) that walks you through testing a React and Redux application.
-* The [React](https://github.com/facebook/react/tree/master/src/renderers/shared/stack/reconciler/__tests__), [Relay](https://github.com/facebook/relay/tree/master/src/container/__tests__) and [react-native](https://github.com/facebook/react-native/tree/master/Libraries/Animated/src/__tests__) repositories have excellent examples of tests written by Facebook engineers.
+**You just successfully wrote your first test using Jest!**
 
-**...or watch a video to get started with Jest:**
-<div class="video">
-  <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
-</div>
-<div class="video-shoutout">
-  <a href="https://egghead.io/lessons/javascript-test-javascript-with-jest">Video</a> by <a href="https://twitter.com/kentcdodds">Kent C. Dodds</a> hosted by <a href="https://egghead.io">Egghead</a>.
-</div>
+This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](/jest/docs/using-matchers.html).
 
-### Babel Integration
+<!--truncate-->
 
-If you'd like to use [Babel](http://babeljs.io/), it can easily be enabled: `yarn add -D babel-jest babel-polyfill`.
+## Additional Configuration
 
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES2015 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
+### Using Babel
+
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `babel-polyfill` packages:
+
+```
+npm install --save-dev babel-jest babel-polyfill
+```
+
+Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 
 ```js
 {
@@ -64,38 +71,38 @@ Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file 
 }
 ```
 
-You are now set up to use all ES2015 features and React specific syntax.
+You are now set up to use all ES6 features and React specific syntax.
 
-*Note: If you are using a more complicated Babel configuration, using Babel's `env` option,
+> Note: If you are using a more complicated Babel configuration, using Babel's `env` option,
 keep in mind that Jest will automatically define `NODE_ENV` as `test`.
-It will not use `development` section like Babel does by default when no `NODE_ENV` is set.*
+It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
 
-### React, React Native and Snapshot Testing
+### Using webpack
 
-Check out the [React tutorial](/jest/docs/tutorial-react.html) and the [React Native tutorial](/jest/docs/tutorial-react-native.html) to get started with React or React Native codebases. You can use React's test renderer (`yarn add -D react-test-renderer`) to capture snapshots with Jest's snapshot feature and the `toMatchSnapshot` matcher:
+Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](/jest/docs/webpack.html) to get started.
 
-```js
-import renderer from 'react-test-renderer';
-test('Link renders correctly', () => {
-  const tree = renderer.create(
-    <Link page="http://www.facebook.com">Facebook</Link>
-  ).toJSON();
-  expect(tree).toMatchSnapshot();
-});
+### Using TypeScript
+
+To use TypeScript in your tests, install the `ts-jest` package:
+
+```
+npm install --save-dev test-jest
 ```
 
-and it will produce a snapshot like this:
+then modify your `package.json` so the `jest` section looks something like:
 
-```js
-exports[`Link renders correctly 1`] = `
-<a
-  className="normal"
-  href="http://www.facebook.com"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
-  Facebook
-</a>
-`;
+```json
+{
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  }
+}
 ```
-
-On subsequent test runs, Jest will compare the stored snapshot with the rendered output and highlight differences. If there are differences, Jest will ask you to fix your mistake and can be re-run with `-u` or `--updateSnapshot` to update an outdated snapshot.

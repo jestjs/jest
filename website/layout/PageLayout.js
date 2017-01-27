@@ -2,15 +2,17 @@
  * @providesModule PageLayout
  * @jsx React.DOM
  */
+ /* eslint-disable max-len */
 
-var React = require('React');
-var Site = require('Site');
-var Marked = require('Marked');
+const React = require('React');
+const Site = require('Site');
+const Doc = require('Doc');
+const Container = require('Container');
 
-var support = React.createClass({
-  render: function() {
-    var metadata = this.props.metadata;
-    var content = this.props.children;
+const support = React.createClass({
+  render() {
+    const metadata = this.props.metadata;
+    const content = this.props.children;
     return (
       <Site section={metadata.section}>
         <div className="docMainWrapper wrapper">
@@ -20,7 +22,7 @@ var support = React.createClass({
         </div>
       </Site>
     );
-  }
+  },
 });
 
 module.exports = support;
