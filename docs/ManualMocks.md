@@ -134,3 +134,13 @@ To ensure that a manual mock and its real implementation stay in sync, it might 
 
 The code for this example is available at
 [examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
+
+**Use with ES module imports**
+
+If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
+then you'll normally be inclined to put your `import` statements at the top of
+the test file. But often you need to instruct Jest to use a mock before modules
+use it. For this reason, Jest will automatically hoist `jest.mock` calls to the
+top of the module (before any imports). To learn more about this and see it in
+action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+
