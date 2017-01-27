@@ -13,6 +13,7 @@ import type {Config, Path} from 'types/Config';
 
 const micromatch = require('micromatch');
 const path = require('path');
+const mocksPattern = require('jest-haste-map').mocksPattern;
 
 const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (!config.collectCoverage) {
@@ -51,7 +52,7 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
     return false;
   }
 
-  if (config.mocksPattern && filename.match(config.mocksPattern)) {
+  if (mocksPattern.test(filename)) {
     return false;
   }
 
