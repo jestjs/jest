@@ -152,6 +152,26 @@ class ObjectContaining extends AsymmetricMatcher {
   }
 }
 
+class StringContaining extends AsymmetricMatcher {
+  sample: string;
+
+  constructor(sample: string) {
+    super();
+    if (!isA('String', sample)) {
+      throw new Error('Expected is not a string');
+    }
+    this.sample = sample;
+  }
+
+  asymmetricMatch(other: string) {
+    return other.includes(this.sample);
+  }
+
+  toString() {
+    return 'StringContaining';
+  }
+}
+
 class StringMatching extends AsymmetricMatcher {
   sample: RegExp;
 
@@ -178,5 +198,6 @@ module.exports = {
   anything: () => new Anything(),
   arrayContaining: (sample: Array<any>) => new ArrayContaining(sample),
   objectContaining: (sample: Object) => new ObjectContaining(sample),
+  stringContaining: (expected: string) => new StringContaining(expected),
   stringMatching: (expected: string | RegExp) => new StringMatching(expected),
 };
