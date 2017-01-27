@@ -98,6 +98,37 @@ describe('toHaveBeenCalledTimes', () => {
   });
 });
 
+describe('toBeCalled*', () => {
+
+  it(`fails when called-times shortcuts receive expected value`, () => {
+    const fn = jasmine.createSpy('fn');
+
+    ['toBeCalledOnce',
+      'toBeCalledTwice',
+      'toBeCalledThrice',
+      'toBeCalledFourTimes'].forEach(matcherName =>
+      expect(() => jestExpect(fn)[matcherName](1))
+        .toThrowErrorMatchingSnapshot());
+  });
+
+  it(`passes when calls count match shortcut`, () => {
+    ['toBeCalledOnce',
+      'toBeCalledTwice',
+      'toBeCalledThrice',
+      'toBeCalledFourTimes'].forEach((matcherName, matcherIndx) => {
+
+        matcherIndx += 1;
+        const fn = jasmine.createSpy('fn');
+
+        for (let i = 0; i < matcherIndx; i++) {
+          fn();
+        }
+
+        jestExpect(fn)[matcherName]();
+      });
+  });
+});
+
 [
   'lastCalledWith',
   'toBeCalled',
