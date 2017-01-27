@@ -275,7 +275,7 @@ class Resolver {
     moduleName: string,
   ): Path {
     const virtualMockPath = this.getModulePath(from, moduleName);
-    return virtualMockPath in virtualMocks
+    return virtualMocks[virtualMockPath]
       ? virtualMockPath
       : moduleName ? this.resolveModule(from, moduleName) : from;
   }
