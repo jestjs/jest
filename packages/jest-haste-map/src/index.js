@@ -710,6 +710,7 @@ class HasteMap extends EventEmitter {
 
   static H: HType;
   static ModuleMap: Class<HasteModuleMap>;
+  static mocksPattern: RegExp;
 }
 
 HasteMap.H = H;
