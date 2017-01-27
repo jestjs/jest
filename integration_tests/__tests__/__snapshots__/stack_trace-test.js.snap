@@ -3,7 +3,7 @@ exports[`Stack Trace does not print a stack trace for errors when --noStackTrace
 Tests:       3 failed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"test-error-test.js\".
+Ran all test suites matching \\"test-error-test.js\\".
 "
 `;
 
@@ -12,7 +12,7 @@ exports[`Stack Trace does not print a stack trace for matching errors when --noS
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"stack-trace-test.js\".
+Ran all test suites matching \\"stack-trace-test.js\\".
 "
 `;
 
@@ -21,7 +21,7 @@ exports[`Stack Trace does not print a stack trace for runtime errors when --noSt
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"runtime-error-test.js\".
+Ran all test suites matching \\"runtime-error-test.js\\".
 "
 `;
 
@@ -30,7 +30,7 @@ exports[`Stack Trace prints a stack trace for errors 1`] = `
 Tests:       3 failed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"test-error-test.js\".
+Ran all test suites matching \\"test-error-test.js\\".
 "
 `;
 
@@ -39,7 +39,7 @@ exports[`Stack Trace prints a stack trace for matching errors 1`] = `
 Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"stack-trace-test.js\".
+Ran all test suites matching \\"stack-trace-test.js\\".
 "
 `;
 
@@ -48,6 +48,6 @@ exports[`Stack Trace prints a stack trace for runtime errors 1`] = `
 Tests:       0 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"runtime-error-test.js\".
+Ran all test suites matching \\"runtime-error-test.js\\".
 "
 `;

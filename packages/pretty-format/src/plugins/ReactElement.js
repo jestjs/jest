@@ -8,7 +8,7 @@
 /* eslint-disable max-len */
 'use strict';
 
-const printString = require('../printString');
+const escapeHTML = require('./escapeHTML');
 
 const reactElement = Symbol.for('react.element');
 
@@ -25,7 +25,7 @@ function printChildren(flatChildren, print, indent, colors, opts) {
     if (typeof node === 'object') {
       return printElement(node, print, indent, colors, opts);
     } else if (typeof node === 'string') {
-      return printString(colors.content.open + node + colors.content.close);
+      return colors.content.open + escapeHTML(node) + colors.content.close;
     } else {
       return print(node);
     }
