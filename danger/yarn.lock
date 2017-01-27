@@ -343,17 +343,22 @@ cssom@0.3.x, "cssom@>= 0.3.0 < 0.4.0":
   dependencies:
     cssom "0.3.x"
 
-danger@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/danger/-/danger-0.8.0.tgz#d2f3c0b5f122dc731a77c3f839518deebda98b96"
+danger@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/danger/-/danger-0.10.0.tgz#fb1101fb1daaba0d24cb766de83d3f4e188ffb82"
   dependencies:
     babel-polyfill "^6.20.0"
+    chalk "^1.1.1"
     commander "^2.9.0"
+    debug "^2.6.0"
+    jest-environment-node "^18.1.0"
     jest-runtime "^18.0.0"
+    jsome "^2.3.25"
     lodash.find "^4.6.0"
     lodash.includes "^4.3.0"
     node-fetch "^1.6.3"
     parse-diff "^0.4.0"
+    voca "^1.2.0"
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -361,7 +366,7 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-debug@^2.1.1, debug@^2.2.0:
+debug@^2.1.1, debug@^2.2.0, debug@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
@@ -935,6 +940,14 @@ jsesc@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-1.3.0.tgz#46c3fec8c1892b12b0833db9bc7622176dbab34b"
 
+jsome@^2.3.25:
+  version "2.3.25"
+  resolved "https://registry.yarnpkg.com/jsome/-/jsome-2.3.25.tgz#dfa0a41938bd2852d559ada632cd5c491e97cea2"
+  dependencies:
+    chalk "^1.1.3"
+    json-stringify-safe "^5.0.1"
+    yargs "^4.8.0"
+
 json-schema@0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.2.3.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
@@ -945,7 +958,7 @@ json-stable-stringify@^1.0.0:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-safe@~5.0.1:
+json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
@@ -997,6 +1010,10 @@ load-json-file@^1.0.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
     strip-bom "^2.0.0"
+
+lodash.assign@^4.0.3, lodash.assign@^4.0.6:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
 
 lodash.find@^4.6.0:
   version "4.6.0"
@@ -1496,6 +1513,10 @@ verror@1.3.6:
   dependencies:
     extsprintf "1.0.2"
 
+voca@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/voca/-/voca-1.2.0.tgz#5dd92133eb12cefa80c0eff8c3f8d228e453a6cd"
+
 walker@~1.0.5:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
@@ -1527,6 +1548,10 @@ which-module@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-1.0.0.tgz#bba63ca861948994ff307736089e3b96026c2a4f"
 
+window-size@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.2.0.tgz#b4315bb4214a3d7058ebeee892e13fa24d98b075"
+
 wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
@@ -1557,11 +1582,37 @@ y18n@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.1.tgz#6d15fba884c08679c0d77e88e7759e811e07fa41"
 
+yargs-parser@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-2.4.1.tgz#85568de3cf150ff49fa51825f03a8c880ddcc5c4"
+  dependencies:
+    camelcase "^3.0.0"
+    lodash.assign "^4.0.6"
+
 yargs-parser@^4.2.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-4.2.1.tgz#29cceac0dc4f03c6c87b4a9f217dd18c9f74871c"
   dependencies:
     camelcase "^3.0.0"
+
+yargs@^4.8.0:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-4.8.1.tgz#c0c42924ca4aaa6b0e6da1739dfb216439f9ddc0"
+  dependencies:
+    cliui "^3.2.0"
+    decamelize "^1.1.1"
+    get-caller-file "^1.0.1"
+    lodash.assign "^4.0.3"
+    os-locale "^1.4.0"
+    read-pkg-up "^1.0.1"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^1.0.1"
+    which-module "^1.0.0"
+    window-size "^0.2.0"
+    y18n "^3.2.1"
+    yargs-parser "^2.4.1"
 
 yargs@^6.3.0:
   version "6.6.0"

@@ -5,21 +5,23 @@
  * @jsx React.DOM
  */
 
-var MetadataBlog = require('MetadataBlog');
-var React = require('React');
-var Container = require('Container');
-var SideNav = require('SideNav');
+ /* eslint-disable sort-keys */
 
-var BlogSidebar = React.createClass({
-  render: function() {
-    var contents = [{
-      name: "Recent Posts",
+const MetadataBlog = require('MetadataBlog');
+const React = require('React');
+const Container = require('Container');
+const SideNav = require('SideNav');
+
+const BlogSidebar = React.createClass({
+  render() {
+    const contents = [{
+      name: 'Recent Posts',
       links: MetadataBlog.files,
     }];
     const title = this.props.current && this.props.current.title;
-    var current = {
+    const current = {
       id: title || '',
-      category: "Recent Posts",
+      category: 'Recent Posts',
     };
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
@@ -31,7 +33,7 @@ var BlogSidebar = React.createClass({
         />
       </Container>
     );
-  }
+  },
 });
 
 module.exports = BlogSidebar;

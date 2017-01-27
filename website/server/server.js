@@ -1,4 +1,6 @@
-"use strict";
+/* eslint-disable max-len, sort-keys */
+
+'use strict';
 const connect = require('connect');
 const convert = require('./convert.js');
 const fs = require('fs');
@@ -25,16 +27,16 @@ const buildOptions = {
   useBrowserBuiltins: false,
   logTiming: true,
   useSourceMaps: true,
-  ignorePaths: function(p) {
+  ignorePaths(p) {
     return p.indexOf('__tests__') !== -1;
   },
   serverRender: true,
   dev: argv.dev !== 'false',
-  static: true
+  static: true,
 };
 
 const app = connect()
-  .use(function(req, res, next) {
+  .use((req, res, next) => {
     // convert all the md files on every request. This is not optimal
     // but fast enough that we don't really need to care right now.
     convert();

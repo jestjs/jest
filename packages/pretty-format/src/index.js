@@ -10,7 +10,6 @@
 'use strict';
 
 const style = require('ansi-styles');
-const printString = require('./printString');
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -83,7 +82,7 @@ function printBasicValue(val, printFunctionName, escapeRegex) {
     return printNumber(val);
   }
   if (typeOf === 'string') {
-    return '"' + printString(val) + '"';
+    return '"' + val.replace(/"|\\/g, '\\$&') + '"';
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -114,7 +113,8 @@ function printBasicValue(val, printFunctionName, escapeRegex) {
   }
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
-      return printString(regExpToString.call(val));
+      // https://github.com/benjamingr/RegExp.escape/blob/master/polyfill.js
+      return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
     }
     return regExpToString.call(val);
   }

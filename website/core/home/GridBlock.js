@@ -3,29 +3,42 @@
  * @jsx React.DOM
  */
 
-var React = require('React');
-var classNames = require('classnames');
+const React = require('React');
+const classNames = require('classnames');
+const Container = require('Container');
 
-var Marked = require('Marked');
+const Marked = require('Marked');
 
 class GridBlock extends React.Component {
   renderBlock(block) {
-    var blockClasses = classNames('blockElement', this.props.className, {
-      'alignCenter': this.props.align === "center",
-      'alignRight': this.props.align === "right",
-      'twoByGridBlock': this.props.layout === "twoColumn",
-      'fourByGridBlock': this.props.layout === "fourColumn",
-      'threeByGridBlock': this.props.layout === "threeColumn",
-      'imageAlignTop': (block.image && this.props.imagealign === "top"),
-      'imageAlignSide': (block.image && this.props.imagealign === "side"),
+    const blockClasses = classNames('blockElement', this.props.className, {
+      'alignCenter': this.props.align === 'center',
+      'alignRight': this.props.align === 'right',
+      'fourByGridBlock': this.props.layout === 'fourColumn',
+      'imageAlignBottom': (block.image && block.imageAlign === 'bottom'),
+      'imageAlignSide': (block.image && (block.imageAlign === 'left' ||
+        block.imageAlign === 'right')),
+      'imageAlignTop': (block.image && block.imageAlign === 'top'),
+      'threeByGridBlock': this.props.layout === 'threeColumn',
+      'twoByGridBlock': this.props.layout === 'twoColumn',
     });
+
+    const topLeftImage = (block.imageAlign === 'top' ||
+      block.imageAlign === 'left') &&
+      this.renderBlockImage(block.image);
+
+    const bottomRightImage = (block.imageAlign === 'bottom' ||
+      block.imageAlign === 'right') &&
+      this.renderBlockImage(block.image);
+
     return (
       <div className={blockClasses}>
-        {this.renderBlockImage(block.image)}
+        {topLeftImage}
         <div className="blockContent">
           {this.renderBlockTitle(block.title)}
           <Marked>{block.content}</Marked>
         </div>
+        {bottomRightImage}
       </div>
     );
   }
@@ -35,29 +48,50 @@ class GridBlock extends React.Component {
       return (
         <div className="blockImage"><img src={image} /></div>
       );
+    } else {
+      return null;
     }
   }
 
   renderBlockTitle(title) {
     if (title) {
-      return <h3>{title}</h3>;
+      return <h2>{title}</h2>;
+    } else {
+      return null;
     }
   }
 
-  render() {
+  renderContainer(block, index) {
+    const background = index % 2 ? 'transparent' : 'light';
     return (
-      <div className="gridBlock">
-        {this.props.contents.map(this.renderBlock, this)}
-      </div>
+      <Container background={background} padding={['bottom', 'top']}>
+        {this.renderBlock(block)}
+      </Container>
     );
   }
-};
+
+  render() {
+    let block = <div className="gridBlock">
+      {this.props.contents.map(this.renderBlock, this)}
+    </div>;
+
+    if (this.props.alternatingBackground) {
+      block = <div>
+        {this.props.contents.map(this.renderContainer, this)}
+      </div>;
+    }
+
+    return (
+      block
+    );
+  }
+}
 
 GridBlock.defaultProps = {
-  align: "left",
+  align: 'left',
   contents: [],
-  imagealign: "top",
-  layout: "twoColumn",
+  imagealign: 'top',
+  layout: 'twoColumn',
 };
 
 module.exports = GridBlock;

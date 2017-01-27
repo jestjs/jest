@@ -58,7 +58,8 @@
     "modulePathIgnorePatterns": [
       "examples/.*",
       "packages/.*/build",
-      "packages/jest-runtime/src/__tests__/test_root_with_dup_mocks"
+      "packages/jest-runtime/src/__tests__/test_root.*",
+      "website/.*"
     ],
     "collectCoverageFrom": [
       "**/packages/jest-*/**/*.js",

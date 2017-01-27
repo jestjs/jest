@@ -3,6 +3,6 @@ exports[`test testNamePattern 1`] = `
 Tests:       2 skipped, 2 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites with tests matching \"should match\".
+Ran all test suites with tests matching \\"should match\\".
 "
 `;

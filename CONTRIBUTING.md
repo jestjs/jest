@@ -83,7 +83,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 * 2 spaces for indentation (no tabs).
 * 80 character line length strongly preferred.
 * Prefer `'` over `"`.
-* ES2015 syntax when possible.
+* ES6 syntax when possible.
 * `'use strict';`.
 * Use [Flow types](http://flowtype.org/).
 * Use semicolons;

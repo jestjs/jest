@@ -69,7 +69,6 @@ const mockParentModule = {
   id: 'mockParent',
 };
 
-const normalizedIDCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
 
 type BooleanObject = {[key: string]: boolean};
@@ -135,7 +134,8 @@ class Runtime {
     if (config.automock) {
       config.setupFiles.forEach(filePath => {
         if (filePath && filePath.includes(NODE_MODULES)) {
-          const moduleID = this._normalizeID(filePath);
+          const moduleID =
+            this._resolver.getModuleID(this._virtualMocks, filePath);
           this._transitiveShouldMock[moduleID] = false;
         }
       });
@@ -245,7 +245,8 @@ class Runtime {
     moduleName?: string,
     options: ?InternalModuleOptions,
   ) {
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
     let modulePath;
 
     const moduleRegistry = (!options || !options.isInternalModule) ?
@@ -305,7 +306,8 @@ class Runtime {
   }
 
   requireMock(from: Path, moduleName: string) {
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
 
     if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
@@ -400,10 +402,11 @@ class Runtime {
     options?: {virtual: boolean},
   ) {
     if (options && options.virtual) {
-      const mockPath = this._getVirtualMockPath(from, moduleName);
+      const mockPath = this._resolver.getModulePath(from, moduleName);
       this._virtualMocks[mockPath] = true;
     }
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
     this._explicitShouldMock[moduleID] = true;
     this._mockFactories[moduleID] = mockFactory;
   }
@@ -493,78 +496,15 @@ class Runtime {
     );
   }
 
-  _normalizeID(from: Path, moduleName?: ?string) {
-    if (!moduleName) {
-      moduleName = '';
-    }
-
-    const key = from + path.delimiter + moduleName;
-    if (normalizedIDCache[key]) {
-      return normalizedIDCache[key];
-    }
-
-    let moduleType;
-    let mockPath = null;
-    let absolutePath = null;
-
-    if (this._resolver.isCoreModule(moduleName)) {
-      moduleType = 'node';
-      absolutePath = moduleName;
-    } else {
-      moduleType = 'user';
-      if (
-        !this._resolver.getModule(moduleName) &&
-        !this._resolver.getMockModule(from, moduleName)
-      ) {
-        if (moduleName) {
-          const virtualMockPath = this._getVirtualMockPath(from, moduleName);
-          if (virtualMockPath in this._virtualMocks) {
-            absolutePath = virtualMockPath;
-          }
-        }
-
-        if (absolutePath === null) {
-          absolutePath = this._resolveModule(from, moduleName);
-        }
-      }
-
-      if (absolutePath === null) {
-        const moduleResource = this._resolver.getModule(moduleName);
-        if (moduleResource) {
-          absolutePath = moduleResource;
-        }
-      }
-
-      if (mockPath === null) {
-        const mockResource = this._resolver.getMockModule(from, moduleName);
-        if (mockResource) {
-          mockPath = mockResource;
-        }
-      }
-    }
-
-    const sep = path.delimiter;
-    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
-      (mockPath ? (mockPath + sep) : ''));
-
-    return normalizedIDCache[key] = id;
-  }
-
-  _getVirtualMockPath(from: Path, moduleName: string) {
-    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
-      return moduleName;
-    }
-    return path.normalize(path.dirname(from) + '/' + moduleName);
-  }
-
   _shouldMock(from: Path, moduleName: string) {
-    const mockPath = this._getVirtualMockPath(from, moduleName);
+    const mockPath = this._resolver.getModulePath(from, moduleName);
     if (mockPath in this._virtualMocks) {
       return true;
     }
 
     const explicitShouldMock = this._explicitShouldMock;
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
     const key = from + path.delimiter + moduleID;
 
     if (moduleID in explicitShouldMock) {
@@ -583,11 +523,11 @@ class Runtime {
       return this._shouldMockModuleCache[moduleID];
     }
 
-    const manualMock = this._resolver.getMockModule(from, moduleName);
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName);
     } catch (e) {
+      const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache[moduleID] = true;
         return true;
@@ -601,7 +541,8 @@ class Runtime {
     }
 
     // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID = this._normalizeID(from);
+    const currentModuleID =
+      this._resolver.getModuleID(this._virtualMocks, from);
     if (
       this._transitiveShouldMock[currentModuleID] === false || (
         from.includes(NODE_MODULES) &&
@@ -645,12 +586,14 @@ class Runtime {
       return runtime;
     };
     const unmock = (moduleName: string) => {
-      const moduleID = this._normalizeID(from, moduleName);
+      const moduleID =
+        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
     const deepUnmock = (moduleName: string) => {
-      const moduleID = this._normalizeID(from, moduleName);
+      const moduleID =
+        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
       this._explicitShouldMock[moduleID] = false;
       this._transitiveShouldMock[moduleID] = false;
       return runtime;
@@ -664,7 +607,8 @@ class Runtime {
         return setMockFactory(moduleName, mockFactory, options);
       }
 
-      const moduleID = this._normalizeID(from, moduleName);
+      const moduleID =
+        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
       this._explicitShouldMock[moduleID] = true;
       return runtime;
     };

@@ -697,6 +697,7 @@ describe('HasteMap', () => {
         const statObject = {mtime: {getTime: () => 45}};
         const tests = [
           () => {
+            // Tests that the change event works correctly.
             mockEmitters['/fruits'].emit(
               'all',
               'delete',
@@ -734,6 +735,7 @@ describe('HasteMap', () => {
             );
           },
           () => {
+            // Ensures the event queue can receive multiple events.
             mockFs['/fruits/tomato.js'] = [
               '/**',
               ' * @providesModule Tomato',
@@ -786,6 +788,7 @@ describe('HasteMap', () => {
             );
           },
           () => {
+            // Does not emit duplicate change events.
             mockEmitters['/fruits'].emit(
               'all',
               'change',
@@ -804,6 +807,31 @@ describe('HasteMap', () => {
               'change',
               addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
                 expect(eventsQueue).toHaveLength(1);
+                next();
+              }),
+            );
+          },
+          () => {
+            // Emits a change even if a file in node_modules has changed.
+            mockEmitters['/fruits'].emit(
+              'all',
+              'add',
+              'apple.js',
+              '/fruits/node_modules/',
+              statObject,
+            );
+            hasteMap.once(
+              'change',
+              addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                const filePath = '/fruits/node_modules/apple.js';
+                expect(eventsQueue).toHaveLength(1);
+                expect(eventsQueue).toEqual([{
+                  filePath,
+                  stat: statObject,
+                  type: 'add',
+                }]);
+
+                expect(hasteFS.getModuleName(filePath)).toBeDefined();
                 next();
               }),
             );

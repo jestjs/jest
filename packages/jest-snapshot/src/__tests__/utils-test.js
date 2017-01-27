@@ -44,10 +44,26 @@ test('getSnapshotPath()', () => {
 test('saveSnapshotFile()', () => {
   const filename = path.join(__dirname, 'remove-newlines.snap');
   const data = {
-    myKey: '<div>\r\n</div>', 
+    myKey: '<div>\r\n</div>',
   };
 
   saveSnapshotFile(data, filename);
   expect(fs.writeFileSync)
     .toBeCalledWith(filename, 'exports[`myKey`] = `<div>\n</div>`;\n');
+});
+
+test('escaping', () => {
+  const filename = path.join(__dirname, 'escaping.snap');
+  const data = '"\'\\';
+  saveSnapshotFile({key: data}, filename);
+  const writtenData = fs.writeFileSync.mock.calls[0][1];
+  expect(writtenData).toBe("exports[`key`] = `\"'\\\\`;\n");
+
+  // eslint-disable-next-line no-unused-vars
+  const exports = {};
+  // eslint-disable-next-line no-eval
+  const readData = eval('var exports = {}; ' + writtenData + ' exports');
+  expect(readData).toEqual({key: data});
+  const snapshotData = readData.key;
+  expect(data).toEqual(snapshotData);
 });
