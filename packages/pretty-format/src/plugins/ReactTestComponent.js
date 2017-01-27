@@ -8,7 +8,7 @@
 /* eslint-disable max-len */
 'use strict';
 
-const printString = require('../printString');
+const escapeHTML = require('./escapeHTML');
 
 const reactTestInstance = Symbol.for('react.test.json');
 
@@ -37,7 +37,7 @@ function printInstance(instance, print, indent, colors, opts) {
   if (typeof instance == 'number') {
     return print(instance);
   } else if (typeof instance === 'string') {
-    return printString(colors.content.open + instance + colors.content.close);
+    return colors.content.open + escapeHTML(instance) + colors.content.close;
   }
 
   let result = colors.tag.open + '<' + instance.type + colors.tag.close;

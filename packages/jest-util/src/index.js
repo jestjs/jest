@@ -27,6 +27,7 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 const setGlobal = require('./setGlobal');
+const validateCLIOptions = require('./validateCLIOptions');
 
 const escapePathForRegex = (dir: string) => {
   if (path.sep === '\\') {
@@ -73,21 +74,6 @@ const getPackageRoot = () => {
   return root;
 };
 
-const warnAboutUnrecognizedOptions  = (argv: Object, options: Object) => {
-  const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const allowedOptions = Object.keys(options).reduce((acc, option) => (
-    acc
-      .add(option)
-      .add(options[option].alias)
-  ), new Set(yargsSpecialOptions));
-  const unrecognizedOptions = Object.keys(argv).filter(arg => (
-    !allowedOptions.has(arg)
-  ));
-  if (unrecognizedOptions.length) {
-    console.warn('Unrecognized options: ' + unrecognizedOptions.join(', '));
-  }
-};
-
 module.exports = {
   Console,
   FakeTimers,
@@ -105,5 +91,5 @@ module.exports = {
   replacePathSepForRegex,
   separateMessageFromStack,
   setGlobal,
-  warnAboutUnrecognizedOptions,
+  validateCLIOptions,
 };

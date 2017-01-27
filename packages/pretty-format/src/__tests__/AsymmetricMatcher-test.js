@@ -77,6 +77,11 @@ test(`objectContaining()`, () => {
   );
 });
 
+test(`stringContaining(string)`, () => {
+  const result = prettyFormat(expect.stringContaining('jest'), options);
+  expect(result).toEqual(`StringContaining "jest"`);
+});
+
 test(`stringMatching(string)`, () => {
   const result = prettyFormat(expect.stringMatching('jest'), options);
   expect(result).toEqual('StringMatching /jest/');
@@ -94,8 +99,9 @@ test(`supports multiple nested asymmetric matchers`, () => {
         a: expect.arrayContaining([1]),
         b: expect.anything(),
         c: expect.any(String),
-        d: expect.stringMatching('jest'),
-        e: expect.objectContaining({test: 'case'}),
+        d: expect.stringContaining('jest'),
+        e: expect.stringMatching('jest'),
+        f: expect.objectContaining({test: 'case'}),
       }),
     },
   }, options);
@@ -108,8 +114,9 @@ test(`supports multiple nested asymmetric matchers`, () => {
       ],
       "b": Anything,
       "c": Any<String>,
-      "d": StringMatching /jest/,
-      "e": ObjectContaining {
+      "d": StringContaining "jest",
+      "e": StringMatching /jest/,
+      "f": ObjectContaining {
         "test": "case",
       },
     },
@@ -126,12 +133,13 @@ test(`supports minified output`, () => {
         a: expect.arrayContaining([1]),
         b: expect.anything(),
         c: expect.any(String),
-        d: expect.stringMatching('jest'),
-        e: expect.objectContaining({test: 'case'}),
+        d: expect.stringContaining('jest'),
+        e: expect.stringMatching('jest'),
+        f: expect.objectContaining({test: 'case'}),
       }),
     },
   }, options);
   expect(result).toEqual(
-`{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringMatching /jest/, "e": ObjectContaining {"test": "case"}}}}`
+`{"test": {"nested": ObjectContaining {"a": ArrayContaining [1], "b": Anything, "c": Any<String>, "d": StringContaining "jest", "e": StringMatching /jest/, "f": ObjectContaining {"test": "case"}}}}`
   );
 });

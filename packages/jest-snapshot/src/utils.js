@@ -66,8 +66,9 @@ const serialize = (data: any): string => {
   }));
 };
 
-const escape = (string: string) => string.replace(/(\`|\${)/g, '\\$1');
-const unescape = (string: string) => string.replace(/\\(\"|\\|\'|\${)/g, '$1');
+const printBacktickString = (str: string) => {
+  return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
+};
 
 const ensureDirectoryExists = (filePath: Path) => {
   try {
@@ -84,8 +85,8 @@ const saveSnapshotFile = (
 ) => {
   const snapshots = Object.keys(snapshotData).sort(naturalCompare)
     .map(key =>
-      'exports[`' + escape(key) + '`] = `' +
-      normalizeNewlines(escape(snapshotData[key])) + '`;',
+      'exports[' + printBacktickString(key) + '] = ' +
+        printBacktickString(normalizeNewlines(snapshotData[key])) + ';',
     );
 
   ensureDirectoryExists(snapshotPath);
@@ -95,12 +96,10 @@ const saveSnapshotFile = (
 module.exports = {
   SNAPSHOT_EXTENSION,
   ensureDirectoryExists,
-  escape,
   getSnapshotData,
   getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
   serialize,
   testNameToKey,
-  unescape,
 };

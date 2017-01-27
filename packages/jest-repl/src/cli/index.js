@@ -16,6 +16,7 @@ const Runtime = require('jest-runtime');
 const args = require('./args');
 const path = require('path');
 const yargs = require('yargs');
+const {validateCLIOptions} = require('jest-util');
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 const VERSION = require('../../package.json').version;
@@ -25,6 +26,8 @@ module.exports = function() {
     .usage(args.usage)
     .options(args.options)
     .argv;
+
+  validateCLIOptions(argv, args.options);
 
   argv._ = [REPL_SCRIPT];
 

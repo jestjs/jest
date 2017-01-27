@@ -184,6 +184,11 @@ test('prepareState prepares a valid state', () => {
 
 The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
 
+### `expect.stringContaining(string)`
+
+`expect.stringContaining(string)` matches any string that contains the exact provided string.
+
+
 ### `expect.stringMatching(regexp)`
 
 `expect.stringMatching(regexp)` matches any string that matches the provided regexp. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, let's say you want to test that `randomCoolNames()` only returns names that are cool:
@@ -558,7 +563,7 @@ expect('abc').toHaveLength(3);
 expect('').not.toHaveLength(5);
 ```
 
-### `.toMatch(regexp)`
+### `.toMatch(regexpOrString)`
 
 Use `.toMatch` to check that a string matches a regular expression.
 
@@ -585,7 +590,7 @@ describe('grapefruits are healthy', () => {
 
 ### `.toMatchObject(object)`
 
-Use `.toMatchObject` to check that a javascript object matches a subset of the properties of an object.
+Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object.
 
 ```js
 const houseForSale = {
@@ -610,7 +615,7 @@ test('the house has my desired features', () => {
 });
 ```
 
-### `.toMatchSnapshot(?string)`
+### `.toMatchSnapshot(optionalString)`
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](/jest/docs/snapshot-testing.html) for more information.
 

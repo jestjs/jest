@@ -19,7 +19,6 @@ const {
   keyToTestName,
   serialize,
   testNameToKey,
-  unescape,
 } = require('./utils');
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
@@ -119,9 +118,8 @@ class SnapshotState {
     this._uncheckedKeys.delete(key);
 
     const receivedSerialized = serialize(received);
-    const receivedUnescaped = unescape(receivedSerialized);
     const expected = this._snapshotData[key];
-    const pass = expected === receivedUnescaped;
+    const pass = expected === receivedSerialized;
     const hasSnapshot = this._snapshotData[key] !== undefined;
 
     if (pass) {
@@ -160,7 +158,7 @@ class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: receivedUnescaped,
+          actual: receivedSerialized,
           count,
           expected,
           pass: false,
