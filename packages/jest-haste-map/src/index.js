@@ -84,7 +84,6 @@ const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
-const mocksPattern = /__mocks__/;
 
 const canUseWatchman = ((): boolean => {
   try {
@@ -107,6 +106,8 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
   }
   return null;
 };
+
+const mocksPattern = /__mocks__/;
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
