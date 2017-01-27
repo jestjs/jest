@@ -161,20 +161,11 @@ class StringMatching extends AsymmetricMatcher {
       throw new Error('Expected is not a String or a RegExp');
     }
 
-    try {
-      this.sample = new RegExp(this.sample);
-    } catch (error) {
-    } finally {
-      this.sample = sample;
-    }
+    this.sample = new RegExp(sample);
   }
 
   asymmetricMatch(other: string) {
-    if (this.sample instanceof RegExp) {
-      return this.sample.test(other);
-    }
-
-    return other.indexOf(this.sample) !== -1;
+    return this.sample.test(other);
   }
 
   toString() {
