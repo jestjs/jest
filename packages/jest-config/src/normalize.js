@@ -338,7 +338,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'haste':
       case 'logHeapUsage':
       case 'logTransformErrors':
-      case 'mocksPattern':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'moduleLoader':

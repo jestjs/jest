@@ -57,7 +57,6 @@ const getCacheKey = (
       collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
       coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
       haste: config.haste,
-      mocksPattern: config.mocksPattern,
       moduleFileExtensions: config.moduleFileExtensions,
       moduleNameMapper: config.moduleNameMapper,
       rootDir: config.rootDir,

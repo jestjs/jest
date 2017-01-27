@@ -45,7 +45,6 @@ type Options = {
   globalMocks?: Array<string>,
   ignorePattern: RegExp,
   maxWorkers: number,
-  mocksPattern?: string,
   name: string,
   platforms: Array<string>,
   providesModuleNodeModules?: Array<string>,
@@ -64,7 +63,6 @@ type InternalOptions = {
   globalMocks: Array<string>,
   ignorePattern: RegExp,
   maxWorkers: number,
-  mocksPattern: ?RegExp,
   name: string,
   platforms: Array<string>,
   resetCache: ?boolean,
@@ -202,8 +200,6 @@ class HasteMap extends EventEmitter {
       globalMocks: options.globalMocks ? [].concat(options.globalMocks) : [],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
-      mocksPattern:
-        options.mocksPattern ? new RegExp(options.mocksPattern) : null,
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
@@ -221,8 +217,7 @@ class HasteMap extends EventEmitter {
       VERSION,
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
-      this._options.platforms.join(':'),
-      options.mocksPattern || '',
+      this._options.platforms.join(':')
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;

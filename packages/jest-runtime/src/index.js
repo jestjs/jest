@@ -83,7 +83,6 @@ class Runtime {
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
-  _mocksPattern: ?RegExp;
   _moduleMocker: ModuleMocker;
   _moduleRegistry: {[key: string]: Module};
   _internalModuleRegistry: {[key: string]: Module};
@@ -113,8 +112,6 @@ class Runtime {
     this._explicitShouldMock = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
-    this._mocksPattern =
-      config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._testRegex = new RegExp(replacePathSepForRegex(config.testRegex));
     this._virtualMocks = Object.create(null);
@@ -208,7 +205,6 @@ class Runtime {
       globalMocks: config.globalMocks,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
-      mocksPattern: config.mocksPattern,
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,

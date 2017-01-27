@@ -245,7 +245,6 @@ describe('HasteMap', () => {
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
       globalMocks: ['/fruits/'],
-      mocksPattern: '/__mocks__/',
       providesModuleNodeModules: ['react', 'fbjs'],
     }));
 
@@ -303,7 +302,6 @@ describe('HasteMap', () => {
     ].join('\n');
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
-      mocksPattern: '/__mocks__/',
       retainAllFiles: true,
     }));
 
@@ -340,7 +338,7 @@ describe('HasteMap', () => {
     ];
 
     return new HasteMap(
-      Object.assign({globalMocks, mocksPattern: '__mocks__'}, defaultConfig),
+      Object.assign({globalMocks}, defaultConfig),
     ).build()
       .then(({__hasteMapForTest: data}) => {
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -357,7 +355,7 @@ describe('HasteMap', () => {
     ].join('\n');
 
     return new HasteMap(
-      Object.assign({mocksPattern: '__mocks__'}, defaultConfig),
+      defaultConfig,
     ).build()
       .then(({__hasteMapForTest: data}) => {
         expect(console.warn).not.toBeCalled();

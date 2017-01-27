@@ -36,7 +36,6 @@ const defaultConfig = {
   haste: {
     providesModuleNodeModules: [],
   },
-  mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [
     'js',
@@ -93,7 +92,6 @@ const validConfig = {
   },
   logHeapUsage: true,
   logTransformErrors: true,
-  mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',
