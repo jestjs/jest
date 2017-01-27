@@ -832,10 +832,10 @@ Sometimes you don't want to check equality of entire object. You just need to as
 There some special values with specific comparing behavior that you can use as a part of expectation. They are useful for asserting some types of data, like timestamps, or long text resources, where only part of it is important for testing. Currently, Jest has the following asymmetric matches:
 
   * `expect.anything()` - matches everything, except `null` and `undefined`
-  * `expect.any(<constructor>)` - checks, that actual value is instance of provided `<constructor>`.
+  * `expect.any(<constructor>)` - checks that actual value is instance of provided `<constructor>`.
   * `expect.objectContaining(<object>)` - compares only keys, that exist in provided object. All other keys of `actual` value will be ignored.
   * `expect.arrayContaining(<array>)` - checks that all items from the provided `array` are exist in `actual` value. It allows to have more values in `actual`.
-  * `expect.stringContaining(<string>)` - checks that actual value is found in provided expectation.
+  * `expect.stringContaining(<string>)` - checks that actual value contains exact provided string.
   * `expect.stringMatching(<string|Regexp>)` - checks that actual value has matches of provided expectation.
 
 These expressions can be used as an argument in `.toEqual` and `.toBeCalledWith`:
