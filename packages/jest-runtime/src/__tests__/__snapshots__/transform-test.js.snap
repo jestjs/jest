@@ -1,26 +1,26 @@
 exports[`transform transforms a file properly 1`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \"/fruits/banana.js\",hash = \"04636d4ae73b4b3e24bf6fba39e08c946fd0afb5\",global = new Function(\'return this\')(),gcv = \"__coverage__\",coverageData = { path: \"/fruits/banana.js\", statementMap: { \"0\": { start: { line: 1, column: 0 }, end: { line: 1, column: 26 } } }, fnMap: {}, branchMap: {}, s: { \"0\": 0 }, f: {}, b: {}, _coverageSchema: \"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];module.exports = \"banana\";
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"04636d4ae73b4b3e24bf6fba39e08c946fd0afb5\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 26 } } }, fnMap: {}, branchMap: {}, s: { \\"0\\": 0 }, f: {}, b: {}, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];module.exports = \\"banana\\";
 }});"
 `;
 
 exports[`transform transforms a file properly 2`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_23yvu8etmu = function () {var path = \"/fruits/kiwi.js\",hash = \"fd689b0dc8cb036f0f2381fc209940f4138ade51\",global = new Function(\'return this\')(),gcv = \"__coverage__\",coverageData = { path: \"/fruits/kiwi.js\", statementMap: { \"0\": { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } }, \"1\": { start: { line: 1, column: 23 }, end: { line: 1, column: 29 } } }, fnMap: { \"0\": { name: \"(anonymous_0)\", decl: { start: { line: 1, column: 17 }, end: { line: 1, column: 18 } }, loc: { start: { line: 1, column: 23 }, end: { line: 1, column: 29 } } } }, branchMap: {}, s: { \"0\": 0, \"1\": 0 }, f: { \"0\": 0 }, b: {}, _coverageSchema: \"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_23yvu8etmu.s[0];module.exports = () => {/* istanbul ignore next */++cov_23yvu8etmu.f[0];++cov_23yvu8etmu.s[1];return \"kiwi\";};
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_23yvu8etmu = function () {var path = \\"/fruits/kiwi.js\\",hash = \\"fd689b0dc8cb036f0f2381fc209940f4138ade51\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/kiwi.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } }, \\"1\\": { start: { line: 1, column: 23 }, end: { line: 1, column: 29 } } }, fnMap: { \\"0\\": { name: \\"(anonymous_0)\\", decl: { start: { line: 1, column: 17 }, end: { line: 1, column: 18 } }, loc: { start: { line: 1, column: 23 }, end: { line: 1, column: 29 } } } }, branchMap: {}, s: { \\"0\\": 0, \\"1\\": 0 }, f: { \\"0\\": 0 }, b: {}, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_23yvu8etmu.s[0];module.exports = () => {/* istanbul ignore next */++cov_23yvu8etmu.f[0];++cov_23yvu8etmu.s[1];return \\"kiwi\\";};
 }});"
 `;
 
 exports[`transform uses multiple preprocessors 1`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
           const TRANSFORMED = {
-            filename: \'/fruits/banana.js\',
-            script: \'module.exports = \"banana\";\',
-            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"rootDir\":\"/\",\"transformIgnorePatterns\":[\"/node_modules/\"],\"transform\":[[\"^.+\\\\.js$\",\"test-preprocessor\"],[\"^.+\\\\.css$\",\"css-preprocessor\"]]}\',
+            filename: '/fruits/banana.js',
+            script: 'module.exports = \\"banana\\";',
+            config: '{\\"cache\\":true,\\"cacheDirectory\\":\\"/cache/\\",\\"name\\":\\"test\\",\\"rootDir\\":\\"/\\",\\"transformIgnorePatterns\\":[\\"/node_modules/\\"],\\"transform\\":[[\\"^.+\\\\\\\\.js$\\",\\"test-preprocessor\\"],[\\"^.+\\\\\\\\.css$\\",\\"css-preprocessor\\"]]}',
           };
         
 }});"
 `;
 
 exports[`transform uses multiple preprocessors 2`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
           module.exports = {
             filename: /styles/App.css,
             rawFirstLine: root {,
@@ -30,22 +30,22 @@ exports[`transform uses multiple preprocessors 2`] = `
 `;
 
 exports[`transform uses multiple preprocessors 3`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \"react\";
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
 }});"
 `;
 
 exports[`transform uses the supplied preprocessor 1`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
           const TRANSFORMED = {
-            filename: \'/fruits/banana.js\',
-            script: \'module.exports = \"banana\";\',
-            config: \'{\"cache\":true,\"cacheDirectory\":\"/cache/\",\"name\":\"test\",\"rootDir\":\"/\",\"transformIgnorePatterns\":[\"/node_modules/\"],\"transform\":[[\"^.+\\\\.js$\",\"test-preprocessor\"]]}\',
+            filename: '/fruits/banana.js',
+            script: 'module.exports = \\"banana\\";',
+            config: '{\\"cache\\":true,\\"cacheDirectory\\":\\"/cache/\\",\\"name\\":\\"test\\",\\"rootDir\\":\\"/\\",\\"transformIgnorePatterns\\":[\\"/node_modules/\\"],\\"transform\\":[[\\"^.+\\\\\\\\.js$\\",\\"test-preprocessor\\"]]}',
           };
         
 }});"
 `;
 
 exports[`transform uses the supplied preprocessor 2`] = `
-"({\"Object.<anonymous>\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \"react\";
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
 }});"
 `;

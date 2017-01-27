@@ -23,9 +23,9 @@ Printing internal object structure without calling \`toJSON\` instead.[22m
 [31m+ Received[39m
 
 [2m [22m [2mObject {[22m
-[32m-[39m [32m  \"line\": 1,[39m
-[31m+[39m [31m  \"line\": 2,[39m
-[2m [22m [2m  \"toJSON\": [Function toJSON],[22m
+[32m-[39m [32m  \\"line\\": 1,[39m
+[31m+[39m [31m  \\"line\\": 2,[39m
+[2m [22m [2m  \\"toJSON\\": [Function toJSON],[22m
 [2m [22m [2m}[22m"
 `;
 
