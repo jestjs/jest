@@ -84,6 +84,7 @@ const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const VERSION = require('../package.json').version;
+const mocksPattern = /__mocks__/;
 
 const canUseWatchman = ((): boolean => {
   try {
@@ -322,8 +323,7 @@ class HasteMap extends EventEmitter {
     }
 
     if (
-      this._options.mocksPattern &&
-      this._options.mocksPattern.test(filePath) &&
+      mocksPattern.test(filePath) &&
       this._isMockGlobal(filePath)
     ) {
       const mockPath = getMockName(filePath);
@@ -614,8 +614,7 @@ class HasteMap extends EventEmitter {
         delete hasteMap.files[filePath];
         delete hasteMap.map[moduleName];
         if (
-          this._options.mocksPattern &&
-          this._options.mocksPattern.test(filePath) &&
+          mocksPattern.test(filePath) &&
           this._isMockGlobal(filePath)
         ) {
           const mockName = getMockName(filePath);
@@ -714,5 +713,7 @@ class HasteMap extends EventEmitter {
 
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;
+HasteMap.mocksPattern = mocksPattern;
+
 
 module.exports = HasteMap;
