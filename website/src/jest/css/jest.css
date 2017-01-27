@@ -501,8 +501,63 @@ header h2 {
   font-weight: 400;
   line-height: 18px;
   position: relative;
+  z-index: 9999;
 }
 
+.promoSection {
+  display: flex;
+  flex-flow: column wrap;
+  font-size: 125%;
+  line-height: 1.6em;
+  position: relative;
+  z-index: 99;
+}
+.promoSection .promoRow {
+  padding: 10px 0;
+}
+.promoSection .promoRow .pluginWrapper {
+  display: block;
+}
+.promoSection .promoRow .pluginWrapper.ghWatchWrapper, .promoSection .promoRow .pluginWrapper.ghStarWrapper {
+  height: 28px;
+}
+.promoSection .promoRow .pluginRowBlock {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 -2px;
+}
+.promoSection .promoRow .pluginRowBlock .pluginWrapper {
+  padding: 0 2px;
+}
+.promoSection .promoRow .pluginRowBlock iframe {
+  margin-left: 2px;
+  margin-top: 5px;
+}
+.button {
+  margin: 4px;
+  border: 1px solid #99424f;
+  border-radius: 3px;
+  color: #99424f;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2em;
+  padding: 10px;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  transition: background 0.3s, color 0.3s;
+}
+.button:hover {
+  background: #99424f;
+  color: #fff;
+}
+
+.blockButton {
+  display: block;
+}
+
+/** Search **/
 input[type="search"] {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -566,7 +621,6 @@ input[type="search"] {
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--subcategory-column {
   border-color: rgba(57, 57, 57, 0.3);
 }
-
 input#search_input_react {
   padding-left: 25px;
   font-size: 14px;
@@ -589,7 +643,11 @@ input#search_input_react:focus, input#search_input_react:active {
   color: #fff;
   width: 220px;
 }
-
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .navSearchWrapper {
+    width: 50%;
+  }
+}
 input::-webkit-input-placeholder {
   color: #e5e5e5;
 }
@@ -675,62 +733,7 @@ a:hover code {
   max-width: 20px;
 }
 
-.promoSection {
-  display: flex;
-  flex-flow: column wrap;
-  font-size: 125%;
-  line-height: 1.6em;
-  position: relative;
-  z-index: 99;
-}
-.promoSection .promoRow {
-  padding: 10px 0;
-}
-.promoSection .promoRow .pluginWrapper {
-  display: block;
-}
-.promoSection .promoRow .pluginWrapper.ghWatchWrapper, .promoSection .promoRow .pluginWrapper.ghStarWrapper {
-  height: 28px;
-}
-.promoSection .promoRow .pluginRowBlock {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 0 -2px;
-}
-.promoSection .promoRow .pluginRowBlock .pluginWrapper {
-  padding: 0 2px;
-}
-
-/* GitHub */
-.promoSection .promoRow .pluginRowBlock iframe {
-  margin-left: 2px;
-  margin-top: 5px;
-}
-
-.button {
-  margin: 4px;
-  border: 1px solid #99424f;
-  border-radius: 3px;
-  color: #99424f;
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.2em;
-  padding: 10px;
-  text-transform: uppercase;
-  text-decoration: none !important;
-  transition: background 0.3s, color 0.3s;
-}
-.button:hover {
-  background: #99424f;
-  color: #fff;
-}
-
-.blockButton {
-  display: block;
-}
-
+/** GitHub **/
 .edit-page-link {
   float: right;
   font-size: 10px;
@@ -738,7 +741,11 @@ a:hover code {
   margin-top: 20px;
   text-decoration: none;
 }
-
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .edit-page-link {
+    display: none;
+  }
+}
 /** GridBlock **/
 .gridBlock {
   margin: -5px 0;
@@ -772,6 +779,11 @@ a:hover code {
   max-width: 500px;
   flex: 0 1 500px;
   margin-right: 20px;
+}
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .imageAlignSide .blockImage {
+    display: none;
+  }
 }
 .imageAlignSide .blockContent {
   flex: 1 1;
@@ -848,6 +860,14 @@ a:hover code {
 .container.paddingTop {
   padding-top: 80px;
 }
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .container.paddingBottom {
+    padding-bottom: 40px;
+  }
+  .container.paddingTop {
+    padding-top: 20px;
+  }
+}
 @media only screen and (max-width: 1023px) {
   .responsiveList .blockContent {
     position: relative;
@@ -870,11 +890,6 @@ a:hover code {
   .gridBlock .twoByGridBlock {
     box-sizing: border-box;
     flex: 1 0 50%;
-    padding: 10px;
-  }
-  .gridBlock .threeByGridBlock {
-    box-sizing: border-box;
-    flex: 1 0 26%;
     padding: 10px;
   }
   .gridBlock .fourByGridBlock {
@@ -1126,6 +1141,15 @@ a:hover code {
 .docs-prev {
   float: left;
 }
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .docs-prevnext {
+    height: 40px;
+  }
+  .docs-prev {
+    display: none;
+  }
+}
+
 .docsNavContainer {
   background: #c6c6c6;
   height: 35px;
@@ -1173,6 +1197,14 @@ nav.toc section {
 }
 nav.toc:last-child {
   padding-bottom: 100px;
+}
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  nav.toc {
+    width: 100%;
+  }
+  nav.toc:last-child {
+    padding-bottom: 0;
+  }
 }
 .docsNavContainer nav.toc .navWrapper {
   padding: 0;
@@ -1598,6 +1630,18 @@ h6:hover .header-link {
   max-width: 110px;
   padding: 20px;
 }
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .gridBlock .fourByGridBlock {
+    box-sizing: border-box;
+    flex: 1 0 26%;
+    padding: 10px;
+  }
+  .productShowcaseSection .logos img {
+    max-height: 64px;
+    max-width: 64px;
+    padding: 20px;
+  }
+}
 
 div.jest-repl {
   margin: 0 5%;
@@ -1610,7 +1654,11 @@ div.jest-repl iframe {
   min-height: 420px;
   width: 100%;
 }
-
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  div.jest-repl {
+    display: none;
+  }
+}
 div.video {
   margin: 0 5%;
   position: relative;
@@ -1624,11 +1672,10 @@ div.video iframe {
   width: 100%;
 }
 
-div.video-shoutout {
-  display: block;
-  font-size: 80%;
-  margin: 20px 5%;
-  text-align: center;
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  div.video {
+    display: none;
+  }
 }
 
 @media only screen and (max-width: 1023px) {
@@ -1664,6 +1711,14 @@ div.video-shoutout {
   max-height: 128px;
   max-width: 128px;
   padding: 20px;
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+  .showcaseSection .logos img {
+    max-height: 64px;
+    max-width: 64px;
+    padding: 20px;
+  }
 }
 
 /** Footer **/

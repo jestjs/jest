@@ -77,7 +77,7 @@ const index = React.createClass({
                   Try it out!
                 </h2>
                 <div>
-                  <Marked>You can try out a real version of Jest right here using [repl.it](https://repl.it/languages/jest). Consider a function, `add()`, that adds two numbers. We can use a basic test in `add-test.js` to verify that 1 + 2 equals 3. Hit "run" to try it out!</Marked>
+                  <Marked>You can try out a real version of Jest using [repl.it](https://repl.it/languages/jest). Consider a function, `add()`, that adds two numbers. We can use a basic test in `add-test.js` to verify that 1 + 2 equals 3. Hit "run" to try it out!</Marked>
                 </div>
               </div>
               <div className="jest-repl">
