@@ -1,4 +1,4 @@
-/* eslint-disable: max-len */
+/* eslint-disable */
 
 'use strict';
 
@@ -49,7 +49,10 @@ cd(`build/${CIRCLE_PROJECT_REPONAME}-gh-pages`);
 
 exec(`git add --all`);
 exec(`git commit -m "update website"`);
-exec(`git push git@github.com:${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`);
-cd(`../..`);
-
-echo(`Website is live at: https://${CIRCLE_PROJECT_USERNAME}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
+if (exec(`git push git@github.com:${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`).code !== 0) {
+  echo(`Error: Git push failed`);
+  exit(1);
+} else {
+  echo(`Website is live at: https://${DEPLOY_USER}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
+  exit(0);
+}
