@@ -2,8 +2,9 @@
  * @providesModule OpenSourceGlyph
  * @jsx React.DOM
  */
+ /* eslint-disable max-len */
 
-var React = require('React');
+const React = require('React');
 
 class OpenSourceGlyph extends React.Component {
   render() {
@@ -17,6 +18,6 @@ class OpenSourceGlyph extends React.Component {
       </svg>
     );
   }
-};
+}
 
 module.exports = OpenSourceGlyph;

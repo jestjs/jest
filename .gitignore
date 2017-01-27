@@ -12,6 +12,13 @@
 /packages/*/node_modules/
 /website/build
 /website/node_modules
+/website/core/metadata*.js
+/website/src/jest/docs
+/website/src/jest/blog
+/integration_tests/transform/*/coverage
+/integration_tests/transform/*/node_modules
+/integration_tests/*/node_modules
+npm-debug.log
 coverage
 lerna-debug.log
 npm-debug.log*
