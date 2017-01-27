@@ -835,6 +835,7 @@ There some special values with specific comparing behavior that you can use as a
   * `expect.any(<constructor>)` - checks, that actual value is instance of provided `<constructor>`.
   * `expect.objectContaining(<object>)` - compares only keys, that exist in provided object. All other keys of `actual` value will be ignored.
   * `expect.arrayContaining(<array>)` - checks that all items from the provided `array` are exist in `actual` value. It allows to have more values in `actual`.
+  * `expect.stringContaining(<string>)` - checks that actual value is found in provided expectation.
   * `expect.stringMatching(<string|Regexp>)` - checks that actual value has matches of provided expectation.
 
 These expressions can be used as an argument in `.toEqual` and `.toBeCalledWith`:
