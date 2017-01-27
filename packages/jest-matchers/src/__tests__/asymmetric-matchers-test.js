@@ -17,6 +17,7 @@ const {
   anything,
   arrayContaining,
   objectContaining,
+  stringContaining,
   stringMatching,
 } = require('../asymmetric-matchers');
 
@@ -135,6 +136,17 @@ test('ObjectContaining matches prototype properties', () => {
 
 test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
+});
+
+test('StringContaining matches string against string', () => {
+  jestExpect(stringContaining('en*').asymmetricMatch('queen*')).toBe(true);
+  jestExpect(stringContaining('en').asymmetricMatch('queue')).toBe(false);
+});
+
+test('StringContaining throws for non-strings', () => {
+  jestExpect(() => {
+    stringContaining([1]).asymmetricMatch('queen');
+  }).toThrow();
 });
 
 test('StringMatching matches string against regexp', () => {

@@ -1742,6 +1742,15 @@ Received:
   [31m\"abc\"[39m"
 `;
 
+exports[`.toEqual() expect("abcd").not.toEqual(StringContaining "bc") 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32mStringContaining \"bc\"[39m
+Received:
+  [31m\"abcd\"[39m"
+`;
+
 exports[`.toEqual() expect("abcd").not.toEqual(StringMatching /bc/) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1749,6 +1758,19 @@ Expected value to not equal:
   [32mStringMatching /bc/[39m
 Received:
   [31m\"abcd\"[39m"
+`;
+
+exports[`.toEqual() expect("abd").toEqual(StringContaining "bc") 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mStringContaining \"bc\"[39m
+Received:
+  [31m\"abd\"[39m
+
+Difference:
+
+  Comparing two different types of values. Expected [32mobject[39m but received [31mstring[39m."
 `;
 
 exports[`.toEqual() expect("abd").toEqual(StringMatching /bc/i) 1`] = `
