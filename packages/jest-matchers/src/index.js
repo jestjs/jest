@@ -31,6 +31,7 @@ const {
   anything,
   arrayContaining,
   objectContaining,
+  stringContaining,
   stringMatching,
 } = require('./asymmetric-matchers');
 
@@ -147,6 +148,7 @@ expect.anything = anything;
 expect.any = any;
 expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
+expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
 
 const _validateResult = result => {

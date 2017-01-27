@@ -42,6 +42,10 @@ const printAsymmetricMatcher = (
     return stringedValue + SPACE + print(val.sample);
   }
 
+  if (stringedValue === 'StringContaining') {
+    return stringedValue + SPACE + print(val.sample);
+  }
+
   return val.toAsymmetricMatcher();
 };
 
