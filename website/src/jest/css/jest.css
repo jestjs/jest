@@ -643,7 +643,7 @@ input#search_input_react:focus, input#search_input_react:active {
   color: #fff;
   width: 220px;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .navSearchWrapper {
     width: 50%;
   }
@@ -741,7 +741,7 @@ a:hover code {
   margin-top: 20px;
   text-decoration: none;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .edit-page-link {
     display: none;
   }
@@ -780,7 +780,7 @@ a:hover code {
   flex: 0 1 500px;
   margin-right: 20px;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .imageAlignSide .blockImage {
     display: none;
   }
@@ -860,7 +860,7 @@ a:hover code {
 .container.paddingTop {
   padding-top: 80px;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .container.paddingBottom {
     padding-bottom: 40px;
   }
@@ -1141,7 +1141,7 @@ a:hover code {
 .docs-prev {
   float: left;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .docs-prevnext {
     height: 40px;
   }
@@ -1198,7 +1198,7 @@ nav.toc section {
 nav.toc:last-child {
   padding-bottom: 100px;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   nav.toc {
     width: 100%;
   }
@@ -1630,7 +1630,7 @@ h6:hover .header-link {
   max-width: 110px;
   padding: 20px;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .gridBlock .fourByGridBlock {
     box-sizing: border-box;
     flex: 1 0 26%;
@@ -1654,15 +1654,28 @@ div.jest-repl iframe {
   min-height: 420px;
   width: 100%;
 }
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   div.jest-repl {
     display: none;
   }
 }
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  div.jest-repl {
+    display: none;
+  }
+}
+@media only screen and (max-width: 1023px) {
+  div.jest-repl {
+    display: none;
+  }
+}
+
 div.video {
   margin: 0 5%;
   position: relative;
-  width: 600px;
+  width: 100%;
+  min-width: 300px;
+  max-width: 600px;
 }
 
 div.video iframe {
@@ -1672,15 +1685,14 @@ div.video iframe {
   width: 100%;
 }
 
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   div.video {
     display: none;
   }
 }
-
 @media only screen and (max-width: 1023px) {
   div.video {
-    height: 300px;
+    display: none;
   }
 }
 
@@ -1713,7 +1725,7 @@ div.video iframe {
   padding: 20px;
 }
 
-@media only screen and (min-device-width: 375px) and (max-device-width: 736px) {
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .showcaseSection .logos img {
     max-height: 64px;
     max-width: 64px;
