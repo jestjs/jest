@@ -238,12 +238,15 @@ header h2 {
 .container .wrapper h4 {
   color: #99424f;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 300;
   margin: 0;
-  padding: 20px 0 0;
+  padding: 10px 0 0;
 }
 .referenceContainer .wrapper h3 {
   border-top: 1px solid #e0e0e0;
+}
+.referenceContainer .wrapper h3:first-of-type {
+  border: 0;
 }
 .container .wrapper h4 + p {
   padding-top: 0;
@@ -816,6 +819,12 @@ a:hover code {
   background: #808080;
   color: #fff;
 }
+.darkBackground a {
+  color: #d6b3b8;
+}
+.darkBackground code {
+  color: #d6b3b8;
+}
 .container.darkBackground .wrapper h1,
 .container.darkBackground .wrapper h2,
 .container.darkBackground .wrapper h3,
@@ -1089,7 +1098,7 @@ a:hover code {
   }
   .navigationSlider .slidingNav ul li a {
     border: 0;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.8);
     display: flex;
     margin: 0;
     padding: 0;
@@ -1101,7 +1110,6 @@ a:hover code {
     font-size: 1em;
   }
   .navigationSlider .slidingNav ul li a:hover {
-    border-bottom: 2px solid #fff;
     color: #fff;
   }
   .navigationSlider .slidingNav ul li.navItemActive a {
@@ -1126,7 +1134,6 @@ a:hover code {
   width: 100%;
   z-index: 100;
 }
-
 .docMainWrapper .wrapper {
   padding-left: 0;
   padding-right: 0;
@@ -1163,6 +1170,9 @@ nav.toc {
 nav.toc section {
   padding: 0px;
   position: relative;
+}
+nav.toc:last-child {
+  padding-bottom: 100px;
 }
 .docsNavContainer nav.toc .navWrapper {
   padding: 0;
@@ -1364,6 +1374,7 @@ nav.toc .toggleNav .navBreadcrumb h2 {
     display: flex;
     flex-flow: row nowrap;
     margin-bottom: 50px;
+    /*margin-bottom: -90px*/
   }
   .docMainWrapper .wrapper {
     padding-left: 0;
@@ -1553,8 +1564,14 @@ h6:hover .header-link {
   }
 }
 .productShowcaseSection {
-  padding: 20px 20px 80px;
+  padding: 0 20px 0;
   text-align: center;
+}
+.productShowcaseSection.paddingTop {
+  padding-top: 20px;
+}
+.productShowcaseSection.paddingBottom {
+  padding-bottom: 80px;
 }
 .productShowcaseSection h2 {
   color: #99424f;
@@ -1603,7 +1620,7 @@ div.video {
 div.video iframe {
   display: block;
   margin: 0 auto 10px;
-  min-height: 300px;
+  min-height: 340px;
   width: 100%;
 }
 
@@ -1644,13 +1661,14 @@ div.video-shoutout {
   justify-content: center;
 }
 .showcaseSection .logos img {
-  max-height: 150px;
-  max-width: 270px;
+  max-height: 128px;
+  max-width: 128px;
   padding: 20px;
 }
 
 /** Footer **/
 footer.nav-footer {
+  position: relative;
   box-sizing: border-box;
   border: none;
   font-weight: 400;
