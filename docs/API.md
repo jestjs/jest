@@ -825,7 +825,7 @@ Sometimes you don't want to check equality of entire object. You just need to as
     text: 'Some text content, but we care only about *this part*'
   }).toEqual({
     timestamp: expect.any(Number),
-    text: expect.stringMatching('*this part*')
+    text: expect.stringMatching(/\*this part\*/i)
   });
 ```
 
