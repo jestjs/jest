@@ -30,25 +30,23 @@ const index = React.createClass({
           <Container padding={['bottom', 'top']}>
             <GridBlock align="center" contents={siteConfig.topFeatures} layout="fourColumn" />
           </Container>
-          <Container padding={['bottom']}>
-            <div className="testingFeatures" style={{textAlign: 'center'}}>
-              <h2>Zero configuration testing platform</h2>
-              <Marked>
-                Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in stable and healthy code bases.
-              </Marked>
-            </div>
-          </Container>
+          <div className="productShowcaseSection" style={{textAlign: 'center'}}>
+            <h2>Zero configuration testing platform</h2>
+            <Marked>
+              Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in stable and healthy code bases.
+            </Marked>
+          </div>
 
-          <GridBlock className="testingFeatures"
+          <GridBlock className=""
             contents={siteConfig.features}
             alternatingBackground />
 
-          {/*<GridBlock className="testingFeatures"
+          {/*<GridBlock
             contents={siteConfig.features.slice(0, siteConfig.features.length / 2)}
             alternatingBackground />
 
           <Container background="dark" padding={['bottom', 'top']}>
-            <div className="blockElement testingFeatures imageAlignSide twoByGridBlock">
+            <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="blockContent">
                 <h2>
                   <a className="anchor" name="use"></a>
@@ -66,12 +64,12 @@ const index = React.createClass({
             </div>
           </Container>
 
-          <GridBlock className="testingFeatures"
+          <GridBlock
             contents={siteConfig.features.slice(siteConfig.features.length / 2, siteConfig.features.length)}
             alternatingBackground />*/}
 
           {/*<Container background="dark" padding={['bottom', 'top']}>
-            <div className="blockElement testingFeatures imageAlignSide twoByGridBlock">
+            <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="video">
                 <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
               </div>
@@ -84,8 +82,7 @@ const index = React.createClass({
             </div>
           </Container>*/}
 
-          <Container padding={['bottom']}>
-            <div className="miniShowcaseSection testingFeatures">
+          <div className="productShowcaseSection">
               <h2>Who's using Jest?</h2>
               <p>Jest is used by teams of all sizes to test websites, mobile apps, and APIs.</p>
               <div className="logos">
@@ -94,8 +91,7 @@ const index = React.createClass({
               <div className="more-users">
                 <a className="button" href="/jest/users.html" target="_self">More Jest Users</a>
               </div>
-            </div>
-          </Container>
+          </div>
         </div>
       </Site>
     );
