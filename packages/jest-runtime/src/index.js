@@ -372,6 +372,11 @@ class Runtime {
     }
   }
 
+  resetModule(from: Path, moduleName: String) {
+    const moduleID = this._normalizeID(from, moduleName);
+    delete this._moduleRegistry[moduleID];
+  }
+
   resetModules() {
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
@@ -635,6 +640,10 @@ class Runtime {
       this.resetModules();
       return runtime;
     };
+    const resetModule = (moduleName: string) => {
+      this.resetModule(from, moduleName);
+      return runtime;
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
@@ -662,6 +671,7 @@ class Runtime {
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
+      resetModule,
 
       runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
       runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
