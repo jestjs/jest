@@ -360,11 +360,7 @@ describe('HasteMap', () => {
       Object.assign({mocksPattern: '__mocks__'}, defaultConfig),
     ).build()
       .then(({__hasteMapForTest: data}) => {
-        const {mocks} = data;
-        
         expect(console.warn).not.toBeCalled();
-        expect(mocks['/fruits1/__mocks__/blueberry.js']).toBeDefined();
-        expect(mocks['/fruits2/__mocks__/blueberry.js']).toBeDefined();
       });
   });
 
