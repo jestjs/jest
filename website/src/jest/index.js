@@ -41,7 +41,7 @@ const index = React.createClass({
             <GridBlock contents={[
               {
                 content: 'Sandboxed test files and automatic global state resets for every test. Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results.',
-                image: 'img/content/feature-snapshot-tests.png',
+                image: '/jest/img/content/feature-snapshot-tests.png',
                 imageAlign: 'right',
                 title: 'Sandboxed and fast',
               },
@@ -61,7 +61,7 @@ const index = React.createClass({
             <GridBlock contents={[
               {
                 content: 'Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.',
-                image: 'img/content/feature-snapshot-tests.png',
+                image: '/jest/img/content/feature-snapshot-tests.png',
                 imageAlign: 'right',
                 title: 'Zero configuration',
               },
@@ -110,7 +110,7 @@ const index = React.createClass({
             <GridBlock contents={[
               {
                 content: 'Run your tests within a [fake DOM implementation](https://github.com/tmpvar/jsdom) on the command line. Every DOM API that you call can be observed in the same way it would be observed in a browser.',
-                image: 'img/content/feature-pattern-mode.png',
+                image: '/jest/img/content/feature-pattern-mode.png',
                 imageAlign: 'left',
                 title: 'Simulated DOM environment',
               },
