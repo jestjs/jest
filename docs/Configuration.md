@@ -49,7 +49,6 @@ These options let you control Jest's behavior in your `package.json` file. The J
   - [`coverageThreshold` [object]](#coveragethreshold-object)
   - [`globals` [object]](#globals-object)
   - [`globalMocks` [array<string>]](#globalmocks-array-string)
-  - [`mocksPattern` [string]](#mockspattern-string)
   - [`moduleDirectories` [array<string>]](#moduledirectories-array-string)
   - [`moduleFileExtensions` [array<string>]](#modulefileextensions-array-string)
   - [`moduleNameMapper` [object<string, string>]](#modulenamemapper-object-string-string)
@@ -195,11 +194,6 @@ Note that, if you specify a global reference value (like an object or array) her
 Array of directories where mocks are visible for all tests (they become *global*)
 
 For example, mocks located in `<rootDir>/__mocks__`, can be used under `<rootDir>/app/src/` 
-
-### `mocksPattern` [string]
-(default: `(?:[\\/]|^)__mocks__[\\/]`)
-
-A pattern that is matched against file paths to determine which folder contains manual mocks.
 
 ### `moduleFileExtensions` [array<string>]
 (default: `["js", "json", "jsx", "node"]`)
