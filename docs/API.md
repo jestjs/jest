@@ -18,6 +18,7 @@ In your test files, Jest puts each of these methods and objects into the global 
   - [`describe(name, fn)`](#basic-testing)
   - [`expect(value)`](#expectvalue)
   - [`expect.extend(matchers)`](#extending-jest-matchers)
+  - [`expect.assertions(number)`](#expecting-a-certain-number-of-assertions)
   - [`expect.<asymmetric-match>()`](#asymmetric-jest-matchers)
   - [`it(name, fn)`](#basic-testing)
   - [`it.only(name, fn)`](#basic-testing)
@@ -863,6 +864,30 @@ The example above will match the following object. Array may contain more items,
   items: [1]
 }
 ```
+
+## Expecting a certain number of assertions
+
+`expect.assertions(number)` configures a test to expect a specific
+number of assertions:
+
+```
+  it('passes parameters to a callback', function() {
+    expect.assertions(1);
+
+    var emitter = new EventEmitter();
+
+    emitter.on('consume', function(phrase) {
+      expect(phrase).toEqual('bubbly water');
+    });
+
+    emitter.emit('consume', 'bubbly water');
+  });
+```
+
+This is useful for preventing false positives: tests where an
+assertion may not execute. In the test above, if the event emitter
+fails to invoke the callback, no assertions will run. Without
+`expect.assertions`, the test would otherwise incorrectly pass.
 
 ## Mock Functions
 
