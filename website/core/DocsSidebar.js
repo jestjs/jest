@@ -5,58 +5,67 @@
  * @jsx React.DOM
  */
 
-var Metadata = require('Metadata');
-var React = require('React');
-var Container = require('Container');
-var SideNav = require('SideNav');
+ /* eslint-disable sort-keys */
 
-var DocsSidebar = React.createClass({
-  getCategories: function() {
-    var metadatas = Metadata.files.filter(function(metadata) {
-      return metadata.layout === 'docs';
+
+const Metadata = require('Metadata');
+const React = require('React');
+const Container = require('Container');
+const SideNav = require('SideNav');
+
+class DocsSidebar extends React.Component {
+  getCategories() {
+    const metadatas = Metadata.files.filter(metadata => {
+      return metadata.layout === this.props.layout;
     });
 
     // Build a hashmap of article_id -> metadata
-    var articles = {}
-    for (var i = 0; i < metadatas.length; ++i) {
-      var metadata = metadatas[i];
+    const articles = {};
+    for (let i = 0; i < metadatas.length; ++i) {
+      const metadata = metadatas[i];
       articles[metadata.id] = metadata;
     }
 
     // Build a hashmap of article_id -> previous_id
-    var previous = {};
-    for (var i = 0; i < metadatas.length; ++i) {
-      var metadata = metadatas[i];
+    const previous = {};
+    for (let i = 0; i < metadatas.length; ++i) {
+      const metadata = metadatas[i];
       if (metadata.next) {
         if (!articles[metadata.next]) {
-          throw '`next: ' + metadata.next + '` in ' + metadata.id + ' doesn\'t exist';
+          throw new Error(
+            '`next: ' +
+            metadata.next +
+            '` in ' +
+            metadata.id +
+            ' doesn\'t exist'
+          );
         }
         previous[articles[metadata.next].id] = metadata.id;
       }
     }
 
     // Find the first element which doesn't have any previous
-    var first = null;
-    for (var i = 0; i < metadatas.length; ++i) {
-      var metadata = metadatas[i];
+    let first = null;
+    for (let i = 0; i < metadatas.length; ++i) {
+      const metadata = metadatas[i];
       if (!previous[metadata.id]) {
         first = metadata;
         break;
       }
     }
 
-    var categories = [];
-    var currentCategory = null;
+    const categories = [];
+    let currentCategory = null;
 
-    var metadata = first;
-    var i = 0;
+    let metadata = first;
+    let i = 0;
     while (metadata && i++ < 1000) {
       if (!currentCategory || metadata.category !== currentCategory.name) {
         currentCategory && categories.push(currentCategory);
         currentCategory = {
           name: metadata.category,
-          links: []
-        }
+          links: [],
+        };
       }
       currentCategory.links.push(metadata);
       metadata = articles[metadata.next];
@@ -64,20 +73,32 @@ var DocsSidebar = React.createClass({
     categories.push(currentCategory);
 
     return categories;
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
         <SideNav
-          root="/jest/docs/getting-started.html"
-          title="Docs"
+          root={this.props.root}
+          title={this.props.title}
           contents={this.getCategories()}
           current={this.props.metadata}
         />
       </Container>
     );
   }
-});
+}
+
+DocsSidebar.propTypes = {
+  layout: React.PropTypes.string,
+  root: React.PropTypes.string,
+  title: React.PropTypes.string,
+};
+
+DocsSidebar.defaultProps = {
+  layout: 'docs',
+  root: '/jest/docs/getting-started.html',
+  title: 'Docs',
+};
 
 module.exports = DocsSidebar;
