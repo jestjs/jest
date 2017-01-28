@@ -65,6 +65,7 @@ class TestRunner {
   _hasteContext: HasteContext;
   _config: Config;
   _options: Options;
+  _startRun: () => *;
   _dispatcher: ReporterDispatcher;
   _testPerformanceCache: Object;
 
@@ -72,6 +73,7 @@ class TestRunner {
     hasteContext: HasteContext,
     config: Config,
     options: Options,
+    startRun: () => *
   ) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher(
@@ -80,6 +82,7 @@ class TestRunner {
     );
     this._hasteContext = hasteContext;
     this._options = options;
+    this._startRun = startRun;
     this._setupReporters();
 
     // Map from testFilePath -> time it takes to run the test. Used to
@@ -397,7 +400,7 @@ class TestRunner {
 
     this.addReporter(new SummaryReporter());
     if (config.notify) {
-      this.addReporter(new NotifyReporter());
+      this.addReporter(new NotifyReporter(this._startRun));
     }
   }
 

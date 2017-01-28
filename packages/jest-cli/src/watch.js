@@ -89,6 +89,7 @@ const watch = (
       argv,
       pipe,
       testWatcher,
+      startRun,
       results => {
         isRunning = false;
         hasSnapshotFailure = !!results.snapshot.failure;

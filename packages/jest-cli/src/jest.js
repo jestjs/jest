@@ -72,10 +72,13 @@ const runCLI = (
         if (argv.watch || argv.watchAll) {
           return watch(config, pipe, argv, jestHasteMap, hasteContext);
         } else {
-          preRunMessage.print(pipe);
-          const testWatcher = new TestWatcher({isWatchMode: false});
-          return runJest(hasteContext, config, argv, pipe, testWatcher,
-            onComplete);
+          const startRun = () => {
+            preRunMessage.print(pipe);
+            const testWatcher = new TestWatcher({isWatchMode: false});
+            return runJest(hasteContext, config, argv, pipe, testWatcher,
+              startRun, onComplete);
+          };
+          return startRun();
         }
       });
     })
