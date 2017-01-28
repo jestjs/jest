@@ -9,7 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^1.1.1",
-    "diff": "^3.0.0",
     "graceful-fs": "^4.1.6",
     "jest-file-exists": "^17.0.0",
     "jest-mock": "^18.0.0",
