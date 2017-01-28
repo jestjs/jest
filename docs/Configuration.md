@@ -406,7 +406,7 @@ Setting this value to `fake` allows the use of fake timers for functions such as
 ### `transform` [object<string, string>]
 Default: `undefined`
 
-A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](/jest/examples/typescript/package.json#L16) example or the [webpack tutorial](/jest/docs/tutorial-webpack.html).
+A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16) example or the [webpack tutorial](/jest/docs/tutorial-webpack.html).
 
 Examples of such compilers include [babel](https://babeljs.io/), [typescript](http://www.typescriptlang.org/), and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
 
