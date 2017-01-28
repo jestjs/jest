@@ -54,7 +54,7 @@ PASS  ./sum.test.js
 
 **You just successfully wrote your first test using Jest!**
 
-This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://facebook.github.io/jest/docs/using-matchers.html).
+This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [API Reference](https://facebook.github.io/jest/docs/api.html#writing-assertions-with-expect).
 
 <!--truncate-->
 
@@ -84,7 +84,7 @@ It will not use `development` section like Babel does by default when no `NODE_E
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://facebook.github.io/jest/docs/webpack.html) to get started.
+Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://facebook.github.io/jest/docs/tutorial-webpack.html) to get started.
 
 ### Using TypeScript
 
