@@ -5,36 +5,40 @@
  * @jsx React.DOM
  */
 
-var BlogPost = require('BlogPost');
-var BlogSidebar = require('BlogSidebar');
-var Container = require('Container');
-var MetadataBlog = require('MetadataBlog');
-var React = require('React');
-var Site = require('Site');
+ /* eslint-disable max-len */
 
-var BlogPageLayout = React.createClass({
-  getPageURL: function(page) {
-    var url = '/jest/blog/';
+const BlogPost = require('BlogPost');
+const BlogSidebar = require('BlogSidebar');
+const Container = require('Container');
+const MetadataBlog = require('MetadataBlog');
+const React = require('React');
+const Site = require('Site');
+
+const BlogPageLayout = React.createClass({
+  getPageURL(page) {
+    let url = '/jest/blog/';
     if (page > 0) {
       url += 'page' + (page + 1) + '/';
     }
     return url + '#content';
   },
 
-  render: function() {
-    var perPage = this.props.metadata.perPage;
-    var page = this.props.metadata.page;
+  render() {
+    const perPage = this.props.metadata.perPage;
+    const page = this.props.metadata.page;
     return (
       <Site
         section="blog"
         title="Blog">
         <div className="docMainWrapper wrapper">
           <BlogSidebar />
-          <Container className="mainContainer documentContainer postContainer blogContainer">
+          <Container
+            className="mainContainer documentContainer postContainer blogContainer"
+          >
             <div className="posts">
               {MetadataBlog.files
                 .slice(page * perPage, (page + 1) * perPage)
-                .map((post) => {
+                .map(post => {
                   return (
                     <BlogPost
                       post={post}
@@ -55,7 +59,7 @@ var BlogPageLayout = React.createClass({
         </div>
       </Site>
     );
-  }
+  },
 });
 
 module.exports = BlogPageLayout;

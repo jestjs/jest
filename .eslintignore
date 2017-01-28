@@ -7,4 +7,8 @@ examples/react-native
 flow-typed/**
 packages/*/build/**
 types/**
-website/
+website/build
+website/node_modules
+website/core/metadata*.js
+website/src/jest/docs
+website/src/jest/blog
