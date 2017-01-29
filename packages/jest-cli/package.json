@@ -24,7 +24,6 @@
     "jest-runtime": "^18.1.0",
     "jest-snapshot": "^18.1.0",
     "jest-util": "^18.1.0",
-    "json-stable-stringify": "^1.0.0",
     "node-notifier": "^5.0.1",
     "sane": "~1.4.1",
     "string-length": "^1.0.1",
