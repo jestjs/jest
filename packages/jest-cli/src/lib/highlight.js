@@ -17,7 +17,7 @@ const hit = chalk.reset;
 const miss = chalk.dim;
 
 const trim = '...';
-const relativePathHead = './';
+const relativePathHead = `.${path.sep}`;
 
 const colorize = (str: string, start: number, end: number) => (
   miss(str.slice(0, start)) +
