@@ -18,7 +18,6 @@
     "jest-file-exists": "^17.0.0",
     "jest-haste-map": "^18.1.0",
     "jest-jasmine2": "^18.1.0",
-    "jest-mock": "^18.0.0",
     "jest-resolve": "^18.1.0",
     "jest-resolve-dependencies": "^18.1.0",
     "jest-runtime": "^18.1.0",
