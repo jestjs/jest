@@ -268,6 +268,8 @@ Don't forget to install the `babel-core` and `babel-preset-jest` packages for th
 
 To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 
+Introducing custom transform rules this way will disable the default babel-jest implementation and disable support for ES6 syntax. Please see [the documentation for transform](https://facebook.github.io/jest/docs/configuration.html#transform-object-string-string) for more information.
+
 If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
 
 ```javascript
