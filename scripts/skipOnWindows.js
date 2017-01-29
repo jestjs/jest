@@ -8,6 +8,9 @@
  * @flow
  * @providesModule skipOnWindows
  */
+
+/* eslint-disable jest/no-focused-tests */
+
 'use strict';
 
 const skipOnWindows = {

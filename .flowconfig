@@ -4,6 +4,7 @@
 .*/vendor/jsonlint/.*
 .*/examples/.*
 .*/website/.*
+.*/dangerfile.js
 
 [options]
 module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'

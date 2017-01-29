@@ -4,17 +4,22 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 'use strict';
+
+import type {Path} from 'types/Config';
 
 const fs = require('fs');
 const path = require('path');
 const promisify = require('./lib/promisify');
 
-function requireConfigFile(filePath) {
+function requireConfigFile(filePath: Path) {
   return promisify(fs.access)(filePath, fs.R_OK).then(
     () => {
+      // $FlowFixMe
       const packageData = require(filePath);
       const config = packageData || {};
 
@@ -24,7 +29,7 @@ function requireConfigFile(filePath) {
   );
 }
 
-function tryJestrc(loc) {
+function tryJestrc(loc: Path) {
   const jestrc = path.join(loc, '.jestrc');
 
   return requireConfigFile(jestrc)
@@ -39,7 +44,7 @@ function tryJestrc(loc) {
     });
 }
 
-function tryPackageJson(loc) {
+function tryPackageJson(loc: Path) {
   const packageJson = path.join(loc, 'package.json');
 
   return requireConfigFile(packageJson)
@@ -57,7 +62,7 @@ function tryPackageJson(loc) {
     });
 }
 
-function traverseUpTreeForConfig(loc) {
+function traverseUpTreeForConfig(loc: Path) {
   const configFetchMethods = [
     tryJestrc,
     tryPackageJson,

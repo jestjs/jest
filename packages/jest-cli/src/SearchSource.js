@@ -10,6 +10,7 @@
 
 'use strict';
 
+import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'jest-resolve';
@@ -18,18 +19,17 @@ const DependencyResolver = require('jest-resolve-dependencies');
 
 const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
-const fileExists = require('jest-file-exists');
 const path = require('path');
 const {
   escapePathForRegex,
   replacePathSepForRegex,
 } = require('jest-util');
 
-type SearchSourceConfig = {|
+type SearchSourceConfig = {
   testPathDirs: Array<Path>,
   testRegex: string,
-  testPathIgnorePatterns: Array<RegExp>,
-|};
+  testPathIgnorePatterns: Array<string>,
+};
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -161,13 +161,6 @@ class SearchSource {
   findMatchingTests(
     testPathPattern: StrOrRegExpPattern,
   ): SearchResult {
-    if (testPathPattern && !(testPathPattern instanceof RegExp)) {
-      const maybeFile = path.resolve(process.cwd(), testPathPattern);
-      if (fileExists(maybeFile, this._hasteContext.hasteFS)) {
-        return this._filterTestPathsWithStats([maybeFile]);
-      }
-    }
-
     return this._getAllTestPaths(testPathPattern);
   }
 
@@ -218,7 +211,7 @@ class SearchSource {
 
   getNoTestsFoundMessage(
     patternInfo: PatternInfo,
-    config: {[key: string]: string},
+    config: Config,
     data: SearchResult,
   ): string {
     if (patternInfo.onlyChanged) {

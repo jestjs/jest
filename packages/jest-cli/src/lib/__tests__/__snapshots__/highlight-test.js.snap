@@ -1,0 +1,53 @@
+exports[`test dims everything when there is no match 1`] = `"[2mjest-cli/__tests__/watch-test.js[22m"`;
+
+exports[`test dims everything when there is no match 2`] = `"[2m...t-cli/__tests__/watch-test.js[22m"`;
+
+exports[`test dims everything when there is no match 3`] = `"[2m.../__tests__/watch-test.js[22m"`;
+
+exports[`test dims everything when there is no match 4`] = `"[2m...sts__/watch-test.js[22m"`;
+
+exports[`test dims everything when there is no match 5`] = `"[2m...watch-test.js[22m"`;
+
+exports[`test dims everything when there is no match 6`] = `"[2m...-test.js[22m"`;
+
+exports[`test dims everything when there is no match 7`] = `"[2m....js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 1`] = `"[2mjest-cli/__tests__/watch-test.js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 2`] = `"[0m...[0m[2mt-cli/__tests__/watch-test.js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 3`] = `"[0m...[0m[2m/__tests__/watch-test.js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 4`] = `"[0m...[0m[2msts__/watch-test.js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 5`] = `"[0m...[0m[2mwatch-test.js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 6`] = `"[0m...[0m[2m-test.js[22m"`;
+
+exports[`test highlight the trimmed part when there is only a rootDir match 7`] = `"[0m...[0m[2m.js[22m"`;
+
+exports[`test highlights everything when there is a full match 1`] = `"[0mjest-cli/__tests__/watch-test.js[0m"`;
+
+exports[`test highlights everything when there is a full match 2`] = `"[0m...t-cli/__tests__/watch-test.js[0m"`;
+
+exports[`test highlights everything when there is a full match 3`] = `"[0m.../__tests__/watch-test.js[0m"`;
+
+exports[`test highlights everything when there is a full match 4`] = `"[0m...sts__/watch-test.js[0m"`;
+
+exports[`test highlights everything when there is a full match 5`] = `"[0m...watch-test.js[0m"`;
+
+exports[`test highlights everything when there is a full match 6`] = `"[0m...-test.js[0m"`;
+
+exports[`test highlights everything when there is a full match 7`] = `"[0m....js[0m"`;
+
+exports[`test highlights the trimmed part there is a non visible match 1`] = `"[0m...t-cli[0m[2m/__tests__/watch-test.js[22m"`;
+
+exports[`test highlights the trimmed part there is a non visible match 2`] = `"[0m...[0m[2m/__tests__/watch-test.js[22m"`;
+
+exports[`test highlights the trimmed part there is a non visible match 3`] = `"[0m...[0m[2msts__/watch-test.js[22m"`;
+
+exports[`test highlights the trimmed part there is a non visible match 4`] = `"[0m...[0m[2mwatch-test.js[22m"`;
+
+exports[`test highlights the trimmed part there is a non visible match 5`] = `"[0m...[0m[2m-test.js[22m"`;
+
+exports[`test highlights the trimmed part there is a non visible match 6`] = `"[0m...[0m[2m.js[22m"`;

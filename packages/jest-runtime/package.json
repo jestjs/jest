@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "18.0.0",
+  "version": "18.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -13,26 +13,23 @@
     "babel-plugin-istanbul": "^3.0.0",
     "chalk": "^1.1.3",
     "graceful-fs": "^4.1.6",
-    "jest-config": "^18.0.0",
+    "jest-config": "^18.1.0",
     "jest-file-exists": "^17.0.0",
-    "jest-haste-map": "^18.0.0",
+    "jest-haste-map": "^18.1.0",
     "jest-mock": "^18.0.0",
-    "jest-resolve": "^18.0.0",
-    "jest-snapshot": "^18.0.0",
-    "jest-util": "^18.0.0",
-    "json-stable-stringify": "^1.0.0",
+    "jest-resolve": "^18.1.0",
+    "jest-snapshot": "^18.1.0",
+    "jest-util": "^18.1.0",
     "micromatch": "^2.3.11",
+    "strip-bom": "3.0.0",
     "yargs": "^6.3.0"
+  },
+  "devDependencies": {
+    "jest-config": "^18.1.0",
+    "jest-environment-node": "^18.1.0",
+    "jest-environment-jsdom": "^18.1.0"
   },
   "bin": {
     "jest-runtime": "./bin/jest-runtime.js"
-  },
-  "devDependencies": {
-    "jest-config": "^18.0.0",
-    "jest-environment-node": "^18.0.0",
-    "jest-environment-jsdom": "^18.0.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }

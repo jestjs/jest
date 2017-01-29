@@ -1,5 +1,19 @@
 ## master
 
+## jest 18.1.0
+
+* Fixed console.log and fake timer behavior in node 7.3.
+* Updated istanbul-api.
+* Updated jest-diff equality error message.
+* Disabled arrow keys when entering a pattern in watch mode to prevent broken behavior. Will be improved in a future release.
+* Moved asymmetric matchers and equality functionality from Jasmine into jest-matchers.
+* Removed jasmine and jest-snapshot dependency from jest-matchers.
+* Removed unused global `context` variable.
+* Show a better error message if the config is invalid JSON.
+* Highlight trailing whitespace in assertion diffs and snapshots.
+* Jest now uses micromatch instead of minimatch.
+* Added `-h` as alias for `--help`.
+
 ## jest 18.0.0
 
 See https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html

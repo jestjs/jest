@@ -15,10 +15,18 @@ const variableNamePattern = String.raw`\s*[a-zA-Z_$][a-zA-Z_$\d]*\s*`;
 const importPattern = String.raw`^(?:var|let|const|import type)\s+` +
   '{?' + variableNamePattern + '(?:,' + variableNamePattern + ')*}?' +
   String.raw`\s*(?:=\s*require\(|from)[a-zA-Z_+./''\s\d\-]+\)?[^;\n]*[;\n]`;
-const maxLenIgnorePattern = String.raw`(^\s*it\(|${importPattern})`;
+const maxLenIgnorePattern = String.raw`(^\s*(it|test)\(|${importPattern})`;
+
+delete fbjsConfig.rules['babel/flow-object-type'];
 
 module.exports = Object.assign({}, fbjsConfig, {
-  'rules': Object.assign({}, fbjsConfig.rules, {
+  env: {
+    es6: true,
+    'jest/globals': true,
+    node: true,
+  },
+  plugins: fbjsConfig.plugins.concat(['jest']),
+  rules: Object.assign({}, fbjsConfig.rules, {
     'array-bracket-spacing': [2, 'never'],
     'arrow-parens': [2, 'as-needed'],
     'arrow-spacing': [2],
@@ -31,6 +39,8 @@ module.exports = Object.assign({}, fbjsConfig, {
     'computed-property-spacing': [2, 'never'],
     'eol-last': [2],
     'flowtype/object-type-delimiter': [2, 'comma'],
+    'jest/no-focused-tests': [2],
+    'jest/no-identical-title': [2],
     'max-len': [2, {
       'code': 80,
       'ignorePattern': maxLenIgnorePattern,

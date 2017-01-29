@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-node",
-  "version": "18.0.0",
+  "version": "18.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,9 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-mock": "^18.0.0",
-    "jest-util": "^18.0.0"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
+    "jest-util": "^18.1.0"
   }
 }

@@ -15,13 +15,14 @@ import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {ModuleMap} from 'jest-haste-map';
-import type ModuleMocker, {MockFunctionMetadata} from 'jest-mock';
+import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
 
 const fs = require('graceful-fs');
 const path = require('path');
+const stripBOM = require('strip-bom');
 const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
@@ -43,6 +44,7 @@ type HasteMapOptions = {|
   console?: Console,
   maxWorkers: number,
   resetCache: boolean,
+  watch?: boolean,
 |};
 
 type InternalModuleOptions = {|
@@ -54,11 +56,9 @@ const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: Config) => {
   if (config.moduleNameMapper.length) {
-    const moduleNameMapper = Object.create(null);
-    config.moduleNameMapper.forEach(
-      map => moduleNameMapper[map[1]] = new RegExp(map[0]),
-    );
-    return moduleNameMapper;
+    return config.moduleNameMapper.map(([regex, moduleName]) => {
+      return {moduleName, regex: new RegExp(regex)};
+    });
   }
   return null;
 };
@@ -69,7 +69,6 @@ const mockParentModule = {
   id: 'mockParent',
 };
 
-const normalizedIDCache = Object.create(null);
 const unmockRegExpCache = new WeakMap();
 
 type BooleanObject = {[key: string]: boolean};
@@ -138,7 +137,8 @@ class Runtime {
     if (config.automock) {
       config.setupFiles.forEach(filePath => {
         if (filePath && filePath.includes(NODE_MODULES)) {
-          const moduleID = this._normalizeID(filePath);
+          const moduleID =
+            this._resolver.getModuleID(this._virtualMocks, filePath);
           this._transitiveShouldMock[moduleID] = false;
         }
       });
@@ -171,6 +171,7 @@ class Runtime {
     options: {
       console?: Console,
       maxWorkers: number,
+      watch?: boolean,
     },
   ): Promise<HasteContext> {
     createDirectory(config.cacheDirectory);
@@ -178,10 +179,12 @@ class Runtime {
       console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
+      watch: options.watch,
     });
     return instance.build().then(
       hasteMap => ({
         hasteFS: hasteMap.hasteFS,
+        moduleMap: hasteMap.moduleMap,
         resolver: Runtime.createResolver(config, hasteMap.moduleMap),
       }),
       error => {
@@ -212,6 +215,7 @@ class Runtime {
       retainAllFiles: false,
       roots: config.testPathDirs,
       useWatchman: config.watchman,
+      watch: options && options.watch,
     });
   }
 
@@ -244,7 +248,8 @@ class Runtime {
     moduleName?: string,
     options: ?InternalModuleOptions,
   ) {
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
     let modulePath;
 
     const moduleRegistry = (!options || !options.isInternalModule) ?
@@ -287,7 +292,7 @@ class Runtime {
       moduleRegistry[modulePath] = localModule;
       if (path.extname(modulePath) === '.json') {
         localModule.exports = this._environment.global.JSON.parse(
-          fs.readFileSync(modulePath, 'utf8'),
+          stripBOM(fs.readFileSync(modulePath, 'utf8'))
         );
       } else if (path.extname(modulePath) === '.node') {
         // $FlowFixMe
@@ -304,7 +309,8 @@ class Runtime {
   }
 
   requireMock(from: Path, moduleName: string) {
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
 
     if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
@@ -399,10 +405,11 @@ class Runtime {
     options?: {virtual: boolean},
   ) {
     if (options && options.virtual) {
-      const mockPath = this._getVirtualMockPath(from, moduleName);
+      const mockPath = this._resolver.getModulePath(from, moduleName);
       this._virtualMocks[mockPath] = true;
     }
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
     this._explicitShouldMock[moduleID] = true;
     this._mockFactories[moduleID] = mockFactory;
   }
@@ -492,76 +499,15 @@ class Runtime {
     );
   }
 
-  _normalizeID(from: Path, moduleName?: ?string) {
-    if (!moduleName) {
-      moduleName = '';
-    }
-
-    const key = from + path.delimiter + moduleName;
-    if (normalizedIDCache[key]) {
-      return normalizedIDCache[key];
-    }
-
-    let moduleType;
-    let mockPath = null;
-    let absolutePath = null;
-
-    if (this._resolver.isCoreModule(moduleName)) {
-      moduleType = 'node';
-      absolutePath = moduleName;
-    } else {
-      moduleType = 'user';
-      if (
-        !this._resolver.getModule(moduleName) &&
-        !this._resolver.getMockModule(from, moduleName)
-      ) {
-        if (moduleName) {
-          const virtualMockPath = this._getVirtualMockPath(from, moduleName);
-          if (virtualMockPath in this._virtualMocks) {
-            absolutePath = virtualMockPath;
-          }
-        }
-
-        if (absolutePath === null) {
-          absolutePath = this._resolveModule(from, moduleName);
-        }
-      }
-
-      if (absolutePath === null) {
-        const moduleResource = this._resolver.getModule(moduleName);
-        if (moduleResource) {
-          absolutePath = moduleResource;
-        }
-      }
-
-      if (mockPath === null) {
-        const mockResource = this._resolver.getMockModule(from, moduleName);
-        if (mockResource) {
-          mockPath = mockResource;
-        }
-      }
-    }
-
-    const sep = path.delimiter;
-    const id = moduleType + sep + (absolutePath || '') + sep + (mockPath || '');
-    return normalizedIDCache[key] = id;
-  }
-
-  _getVirtualMockPath(from: Path, moduleName: string) {
-    if (moduleName[0] !== '.' && moduleName[0] !== '/') {
-      return moduleName;
-    }
-    return path.normalize(path.dirname(from) + '/' + moduleName);
-  }
-
   _shouldMock(from: Path, moduleName: string) {
-    const mockPath = this._getVirtualMockPath(from, moduleName);
+    const mockPath = this._resolver.getModulePath(from, moduleName);
     if (mockPath in this._virtualMocks) {
       return true;
     }
 
     const explicitShouldMock = this._explicitShouldMock;
-    const moduleID = this._normalizeID(from, moduleName);
+    const moduleID =
+      this._resolver.getModuleID(this._virtualMocks, from, moduleName);
     const key = from + path.delimiter + moduleID;
 
     if (moduleID in explicitShouldMock) {
@@ -580,11 +526,11 @@ class Runtime {
       return this._shouldMockModuleCache[moduleID];
     }
 
-    const manualMock = this._resolver.getMockModule(from, moduleName);
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName);
     } catch (e) {
+      const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache[moduleID] = true;
         return true;
@@ -598,7 +544,8 @@ class Runtime {
     }
 
     // transitive unmocking for package managers that store flat packages (npm3)
-    const currentModuleID = this._normalizeID(from);
+    const currentModuleID =
+      this._resolver.getModuleID(this._virtualMocks, from);
     if (
       this._transitiveShouldMock[currentModuleID] === false || (
         from.includes(NODE_MODULES) &&
@@ -642,12 +589,14 @@ class Runtime {
       return runtime;
     };
     const unmock = (moduleName: string) => {
-      const moduleID = this._normalizeID(from, moduleName);
+      const moduleID =
+        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
       this._explicitShouldMock[moduleID] = false;
       return runtime;
     };
     const deepUnmock = (moduleName: string) => {
-      const moduleID = this._normalizeID(from, moduleName);
+      const moduleID =
+        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
       this._explicitShouldMock[moduleID] = false;
       this._transitiveShouldMock[moduleID] = false;
       return runtime;
@@ -661,7 +610,8 @@ class Runtime {
         return setMockFactory(moduleName, mockFactory, options);
       }
 
-      const moduleID = this._normalizeID(from, moduleName);
+      const moduleID =
+        this._resolver.getModuleID(this._virtualMocks, from, moduleName);
       this._explicitShouldMock[moduleID] = true;
       return runtime;
     };
@@ -685,6 +635,8 @@ class Runtime {
       this.resetModules();
       return runtime;
     };
+    const fn = this._moduleMocker.fn.bind(this._moduleMocker);
+    const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const runtime = {
       addMatchers:
@@ -699,18 +651,11 @@ class Runtime {
       doMock: mock,
       dontMock: unmock,
       enableAutomock,
-      fn: (impl: ?Function) => {
-        const fn = this._moduleMocker.getMockFunction();
-        if (impl) {
-          return fn.mockImplementation(impl);
-        }
-        return fn;
-      },
-      genMockFn: this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      fn,
+      genMockFn: fn,
       genMockFromModule:
         (moduleName: string) => this._generateMock(from, moduleName),
-      genMockFunction:
-        this._moduleMocker.getMockFunction.bind(this._moduleMocker),
+      genMockFunction: fn,
       isMockFunction: this._moduleMocker.isMockFunction,
 
       mock,
@@ -728,6 +673,7 @@ class Runtime {
 
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
+      spyOn,
 
       unmock,
 

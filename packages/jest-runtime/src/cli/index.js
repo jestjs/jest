@@ -16,9 +16,12 @@ const os = require('os');
 const path = require('path');
 const yargs = require('yargs');
 
-const Console = require('jest-util').Console;
-const getPackageRoot = require('jest-util').getPackageRoot;
-const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
+const {
+  Console,
+  getPackageRoot,
+  setGlobal,
+  validateCLIOptions,
+} = require('jest-util');
 const readConfig = require('jest-config').readConfig;
 const Runtime = require('../');
 
@@ -34,7 +37,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
       .options(args.options)
       .argv;
 
-    warnAboutUnrecognizedOptions(argv, args.options);
+    validateCLIOptions(argv, args.options);
   }
 
   if (argv.help) {
@@ -76,7 +79,11 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
           const TestEnvironment = require(config.testEnvironment);
 
           const env = new TestEnvironment(config);
-          env.global.console = new Console(process.stdout, process.stderr);
+          setGlobal(
+            env.global,
+            'console',
+            new Console(process.stdout, process.stderr),
+          );
           env.global.jestConfig = config;
 
           const runtime = new Runtime(config, env, hasteMap.resolver);

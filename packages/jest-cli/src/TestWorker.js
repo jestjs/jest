@@ -11,8 +11,7 @@
 
 import type {Config, Path} from 'types/Config';
 import type {Error, TestResult} from 'types/TestResult';
-
-const {separateMessageFromStack} = require('jest-util');
+import type {RawModuleMap} from 'types/HasteMap';
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -20,13 +19,17 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
+const {ModuleMap} = require('jest-haste-map');
+const {separateMessageFromStack} = require('jest-util');
+
 const Runtime = require('jest-runtime');
 const runTest = require('./runTest');
 
-type WorkerData = {
+type WorkerData = {|
   config: Config,
   path: Path,
-};
+  rawModuleMap?: RawModuleMap,
+|};
 
 type WorkerCallback = (error: ?Error, result?: TestResult) => void;
 
@@ -48,21 +51,41 @@ const formatError = error => {
 };
 
 const resolvers = Object.create(null);
-
-module.exports = (data: WorkerData, callback: WorkerCallback) => {
-  try {
-    const name = data.config.name;
+const getResolver = (config, rawModuleMap) => {
+  // In watch mode, the raw module map with all haste modules is passed from
+  // the test runner to the watch command. This is because jest-haste-map's
+  // watch mode does not persist the haste map on disk after every file change.
+  // To make this fast and consistent, we pass it from the TestRunner.
+  if (rawModuleMap) {
+    return Runtime.createResolver(
+      config,
+      new ModuleMap(rawModuleMap.map, rawModuleMap.mocks),
+    );
+  } else {
+    const name = config.name;
     if (!resolvers[name]) {
       resolvers[name] = Runtime.createResolver(
-        data.config,
-        Runtime.createHasteMap(data.config).readModuleMap(),
+        config,
+        Runtime.createHasteMap(config).readModuleMap(),
       );
     }
+    return resolvers[name];
+  }
+};
 
-    runTest(data.path, data.config, resolvers[name])
+module.exports = (
+  {config, path, rawModuleMap}: WorkerData,
+  callback: WorkerCallback,
+) => {
+  let parentExited = false;
+
+  process.on('disconnect', () => parentExited = true);
+
+  try {
+    runTest(path, config, getResolver(config, rawModuleMap))
       .then(
-        result => callback(null, result),
-        error => callback(formatError(error)),
+        result => !parentExited && callback(null, result),
+        error => !parentExited && callback(formatError(error)),
       );
   } catch (error) {
     callback(formatError(error));

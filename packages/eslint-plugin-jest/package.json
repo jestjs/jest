@@ -1,0 +1,24 @@
+{
+  "name": "eslint-plugin-jest",
+  "version": "18.1.0",
+  "description": "Eslint rules for Jest",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin"
+  ],
+  "author": {
+    "name": "Jonathan Kim",
+    "email": "hello@jkimbo.com",
+    "url": "jkimbo.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git"
+  },
+  "main": "build/index.js",
+  "peerDependencies": {
+    "eslint": ">=3.6"
+  },
+  "license": "BSD-3-Clause"
+}

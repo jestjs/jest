@@ -10,13 +10,13 @@
 
 'use strict';
 
+const path = require('path');
 const loadFromFile = require('./loadFromFile');
 const traverseUpTreeForConfig = require('./traverseUpTreeForConfig');
 const normalize = require('./normalize');
-const path = require('path');
 const setFromArgv = require('./setFromArgv');
 
-const readConfig = (argv: any, packageRoot: string) =>
+const readConfig = (argv: Object, packageRoot: string) =>
   readRawConfig(argv, packageRoot)
     .then(config => Object.freeze(setFromArgv(config, argv)));
 
@@ -34,7 +34,7 @@ const readRawConfig = (argv, root) => {
   const rawConfig = parseConfig(argv);
 
   if (typeof rawConfig === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), rawConfig));
+    return loadFromFile(path.resolve(process.cwd(), rawConfig), argv);
   }
 
   if (typeof rawConfig === 'object') {

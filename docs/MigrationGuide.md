@@ -1,10 +1,11 @@
 ---
 id: migration-guide
-title: Migration Guide
+title: Migrating to Jest
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/migration-guide.html
-next: api
+previous: webpack
+next: troubleshooting
 ---
 
 If you'd like to try out Jest with an existing codebase, there are a number of ways to convert to Jest:
@@ -15,7 +16,7 @@ If you'd like to try out Jest with an existing codebase, there are a number of w
 
 ### jest-codemods
 
-If you are using [Mocha](https://mochajs.org)), [AVA](https://github.com/avajs/ava), [chai](http://chaijs.com/) or [Tape](https://github.com/substack/tape), you can use the third-party [jest-codemods](https://github.com/skovhus/jest-codemods) to do most of the dirty migration work. It runs a code transformation on your codebase using [jscodeshift](https://github.com/facebook/jscodeshift).
+If you are using [Mocha](https://mochajs.org), [AVA](https://github.com/avajs/ava), [chai](http://chaijs.com/) or [Tape](https://github.com/substack/tape), you can use the third-party [jest-codemods](https://github.com/skovhus/jest-codemods) to do most of the dirty migration work. It runs a code transformation on your codebase using [jscodeshift](https://github.com/facebook/jscodeshift).
 
 Install Jest Codemods with `npm` by running:
 

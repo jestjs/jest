@@ -49,9 +49,7 @@ function jasmine2(
 
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
-  environment.global.test.only = environment.global.fit;
   environment.global.it.skip = environment.global.xit;
-  environment.global.test.skip = environment.global.xit;
   environment.global.xtest = environment.global.xit;
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;

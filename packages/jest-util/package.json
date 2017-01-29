@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "18.0.0",
+  "version": "18.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,13 +9,11 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^1.1.1",
-    "diff": "^3.0.0",
     "graceful-fs": "^4.1.6",
     "jest-file-exists": "^17.0.0",
     "jest-mock": "^18.0.0",
+    "jest-validate": "^18.1.0",
+    "leven": "^2.0.0",
     "mkdirp": "^0.5.1"
-  },
-  "scripts": {
-    "test": "../../packages/jest-cli/bin/jest.js"
   }
 }

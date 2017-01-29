@@ -12,6 +12,9 @@
 
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
+const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+
+const PLUGINS = [AsymmetricMatcherPlugin];
 
 export type ValueType =
   | 'array'
@@ -28,7 +31,9 @@ export type ValueType =
   | 'undefined';
 
 const EXPECTED_COLOR = chalk.green;
+const EXPECTED_BG = chalk.bgGreen;
 const RECEIVED_COLOR = chalk.red;
+const RECEIVED_BG = chalk.bgRed;
 
 const NUMBERS = [
   'zero',
@@ -71,6 +76,8 @@ const getType = (value: any): ValueType => {
       return 'map';
     } else if (value.constructor === Set) {
       return 'set';
+    } else if (value.toString() === 'ArrayContaining') {
+      return 'array';
     }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
@@ -89,12 +96,14 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
     result = prettyFormat(object, {
       maxDepth,
       min: true,
+      plugins: PLUGINS,
     });
   } catch (e) {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,
       min: true,
+      plugins: PLUGINS,
     });
   }
 
@@ -103,8 +112,17 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
     : result;
 };
 
-const printReceived = (object: any) => RECEIVED_COLOR(stringify(object));
-const printExpected = (value: any) => EXPECTED_COLOR(stringify(value));
+const highlightTrailingWhitespace = (text: string, bgColor: Function): string =>
+  text.replace(/\s+$/gm, bgColor('$&'));
+
+const printReceived = (object: any) => highlightTrailingWhitespace(
+  RECEIVED_COLOR(stringify(object)),
+  RECEIVED_BG,
+);
+const printExpected = (value: any) => highlightTrailingWhitespace(
+  EXPECTED_COLOR(stringify(value)),
+  EXPECTED_BG,
+);
 
 const printWithType = (
   name: string,
@@ -185,13 +203,16 @@ const matcherHint = (
 };
 
 module.exports = {
+  EXPECTED_BG,
   EXPECTED_COLOR,
+  RECEIVED_BG,
   RECEIVED_COLOR,
   ensureActualIsNumber,
   ensureExpectedIsNumber,
   ensureNoExpected,
   ensureNumbers,
   getType,
+  highlightTrailingWhitespace,
   matcherHint,
   pluralize,
   printExpected,

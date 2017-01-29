@@ -55,6 +55,20 @@ describe('.toBe()', () => {
     expect(() => jestExpect(obj).toBe({}))
       .toThrowErrorMatchingSnapshot();
   });
+
+  test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
+    const actual = {a: 1};
+    const expected = {a: 2};
+    try {
+      jestExpect(actual).toBe(expected);
+    } catch (error) {
+      expect(error.matcherResult).toEqual(expect.objectContaining({
+        actual,
+        expected,
+        name: 'toBe',
+      }));
+    }
+  });
 });
 
 describe('.toEqual()', () => {
@@ -66,6 +80,7 @@ describe('.toEqual()', () => {
     [null, undefined],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
+    ['abd', jestExpect.stringContaining('bc')],
     ['abd', jestExpect.stringMatching(/bc/i)],
     [undefined, jestExpect.anything()],
     [undefined, jestExpect.any(Function)],
@@ -83,6 +98,7 @@ describe('.toEqual()', () => {
     [{a: 99}, {a: 99}],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
+    ['abcd', jestExpect.stringContaining('bc')],
     ['abcd', jestExpect.stringMatching('bc')],
     [true, jestExpect.anything()],
     [() => {}, jestExpect.any(Function)],
@@ -100,6 +116,20 @@ describe('.toEqual()', () => {
       expect(() => jestExpect(a).not.toEqual(b))
         .toThrowErrorMatchingSnapshot();
     });
+  });
+
+  test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
+    const actual = {a: 1};
+    const expected = {a: 2};
+    try {
+      jestExpect(actual).toEqual(expected);
+    } catch (error) {
+      expect(error.matcherResult).toEqual(expect.objectContaining({
+        actual,
+        expected,
+        name: 'toEqual',
+      }));
+    }
   });
 });
 
@@ -405,7 +435,7 @@ describe('.toContain(), .toContainEqual()', () => {
     });
   });
 
-  test('error cases', () => {
+  test('error cases for toContainEqual', () => {
     expect(() => jestExpect(null).toContainEqual(1))
       .toThrowErrorMatchingSnapshot();
   });

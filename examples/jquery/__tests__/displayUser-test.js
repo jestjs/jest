@@ -1,5 +1,7 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
+/* global document */
+
 'use strict';
 
 jest.mock('../fetchCurrentUser.js');

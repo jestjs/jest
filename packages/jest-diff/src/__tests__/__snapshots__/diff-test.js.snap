@@ -1,3 +1,20 @@
+exports[`test collapses big diffs to patch format 1`] = `
+"[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -6,9 +6,9 @@
+[39m[2m     4,[22m
+[2m     5,[22m
+[2m     6,[22m
+[2m     7,[22m
+[2m     8,[22m
+[31m+    10,[39m
+[2m     9,[22m
+[32m-    10,[39m
+[2m   ],[22m
+[2m }[22m"
+`;
+
 exports[`test falls back to not call toJSON if objects look identical 1`] = `
 "[2mCompared values serialize to the same structure.
 Printing internal object structure without calling \`toJSON\` instead.[22m
@@ -6,9 +23,9 @@ Printing internal object structure without calling \`toJSON\` instead.[22m
 [31m+ Received[39m
 
 [2m [22m [2mObject {[22m
-[32m-[39m [32m  \"line\": 1,[39m
-[31m+[39m [31m  \"line\": 2,[39m
-[2m [22m [2m  \"toJSON\": [Function toJSON],[22m
+[32m-[39m [32m  \\"line\\": 1,[39m
+[31m+[39m [31m  \\"line\\": 2,[39m
+[2m [22m [2m  \\"toJSON\\": [Function toJSON],[22m
 [2m [22m [2m}[22m"
 `;
 

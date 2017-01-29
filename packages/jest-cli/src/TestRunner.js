@@ -328,14 +328,22 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
+    const worker = promisify(farm);
+
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = ({path, config}) => mutex(() => {
+    const runTestInWorker = ({config, path}) => mutex(() => {
       if (watcher.isInterrupted()) {
         return Promise.reject();
       }
       this._dispatcher.onTestStart(config, path);
-      return promisify(farm)({config, path});
+      return worker({
+        config,
+        path,
+        rawModuleMap: watcher.isWatchMode()
+          ? this._hasteContext.moduleMap.getRawModuleMap()
+          : null,
+      });
     });
 
     const onError = (err, path) => {
@@ -363,20 +371,24 @@ class TestRunner {
         .catch(error => onError(error, path));
     }));
 
+    const cleanup = () => workerFarm.end(farm);
+
     return Promise.race([
       runAllTests,
       onInterrupt,
-    ]).then(() => workerFarm.end(farm));
+    ]).then(cleanup, cleanup);
   }
 
   _setupReporters() {
+    const config = this._config;
+
     this.addReporter(
-      this._config.verbose
-        ? new VerboseReporter()
+      config.verbose
+        ? new VerboseReporter(config)
         : new DefaultReporter(),
     );
 
-    if (this._config.collectCoverage) {
+    if (config.collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
       const CoverageReporter = require('./reporters/CoverageReporter');
@@ -384,7 +396,7 @@ class TestRunner {
     }
 
     this.addReporter(new SummaryReporter());
-    if (this._config.notify) {
+    if (config.notify) {
       this.addReporter(new NotifyReporter());
     }
   }

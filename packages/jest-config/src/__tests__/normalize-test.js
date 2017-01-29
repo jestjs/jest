@@ -12,6 +12,7 @@ jest.mock('jest-resolve');
 
 jest.mock('path', () => require.requireActual('path').posix);
 
+const crypto = require('crypto');
 const path = require('path');
 const utils = require('jest-util');
 const normalize = require('../normalize');
@@ -43,27 +44,14 @@ beforeEach(() => {
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 });
 
-it('errors when an invalid config option is passed in', () => {
-  const error = console.error;
-  console.error = jest.fn();
-  normalize({
-    rootDir: '/root/path/foo',
-    thisIsAnInvalidConfigKey: 'with a value even!',
-  });
-
-  expect(console.error).toBeCalledWith(
-    'Error: Unknown config option "thisIsAnInvalidConfigKey" with value ' +
-    '"with a value even!". This is either a typing error or a user ' +
-    'mistake and fixing it will remove this message.',
-  );
-
-  console.error = error;
-});
-
 it('picks a name based on the rootDir', () => {
+  const rootDir = '/root/path/foo';
+  const expected = crypto.createHash('md5')
+    .update('/root/path/foo')
+    .digest('hex');
   expect(normalize({
-    rootDir: '/root/path/foo',
-  }).name).toBe('-root-path-foo');
+    rootDir,
+  }).name).toBe(expected);
 });
 
 it('keeps custom names based on the rootDir', () => {
@@ -83,7 +71,7 @@ describe('rootDir', () => {
   it('throws if the config is missing a rootDir property', () => {
     expect(() => {
       normalize({});
-    }).toThrow(new Error(`Jest: 'rootDir' config value must be specified.`));
+    }).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -240,35 +228,6 @@ describe('setupTestFrameworkScriptFile', () => {
     );
   });
 
-  it('normalizes the path according to rootDir', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: 'bar/baz',
-    }, '/root/path');
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
-  });
-
-  it('does not change absolute paths', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: '/an/abs/path',
-    });
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathAbs);
-  });
-
-  it('substitutes <rootDir> tokens', () => {
-    const config = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
-    });
-
-    expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
-  });
-});
-
-describe('setupTestFrameworkScriptFile', () => {
   it('normalizes the path according to rootDir', () => {
     const config = normalize({
       rootDir: '/root/path/foo',
@@ -511,11 +470,7 @@ describe('testEnvironment', () => {
     expect(() => normalize({
       rootDir: '/root',
       testEnvironment: 'phantom',
-    })).toThrow(new Error(
-      `Jest: test environment "phantom" cannot be found. Make sure the ` +
-      `"testEnvironment" configuration option points to an existing node ` +
-      `module.`,
-    ));
+    })).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -613,5 +568,52 @@ describe('Upgrade help', () => {
     expect(config.preprocessorIgnorePatterns).toBe(undefined);
 
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+  });
+});
+
+describe('preset', () => {
+  jest.mock(
+    '/node_modules/react-native/jest-preset.json',
+    () => ({
+      moduleNameMapper: {b: 'b'},
+      modulePathIgnorePatterns: ['b'],
+      setupFiles: ['b'],
+    }),
+    {virtual: true}
+  );
+
+  test('throws when preset not found', () => {
+    expect(() => {
+      normalize({
+        preset: 'doesnt-exist',
+        rootDir: '/root/path/foo',
+      });
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('works with "react-native"', () => {
+    expect(() => {
+      normalize({
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      });
+    }).not.toThrow();
+  });
+
+  test('merges with config', () => {
+    const config = normalize({
+      moduleNameMapper: {a: 'a'},
+      modulePathIgnorePatterns: ['a'],
+      preset: 'react-native',
+      rootDir: '/root/path/foo',
+      setupFiles: ['a'],
+    });
+    expect(config).toEqual(expect.objectContaining({
+      moduleNameMapper: expect.arrayContaining([['a', 'a'], ['b', 'b']]),
+      modulePathIgnorePatterns: expect.arrayContaining(['a', 'b']),
+      setupFiles: expect.arrayContaining(
+        ['/node_modules/a', '/node_modules/b']
+      ),
+    }));
   });
 });

@@ -24,7 +24,7 @@ type ResolverConfig = {|
   extensions: Array<string>,
   hasCoreModules: boolean,
   moduleDirectories: Array<string>,
-  moduleNameMapper: ?{[key: string]: RegExp},
+  moduleNameMapper: ?Array<ModuleNameMapperConfig>,
   modulePaths: Array<Path>,
   platforms?: Array<string>,
 |};
@@ -32,10 +32,17 @@ type ResolverConfig = {|
 type FindNodeModuleConfig = {|
   basedir: Path,
   browser?: boolean,
-  extensions: Array<string>,
-  moduleDirectory: Array<string>,
+  extensions?: Array<string>,
+  moduleDirectory?: Array<string>,
   paths?: Array<Path>,
 |};
+
+type ModuleNameMapperConfig = {|
+  regex: RegExp,
+  moduleName: string
+|};
+
+type BooleanObject = {[key: string]: boolean};
 
 export type ResolveModuleConfig = {|
   skipNodeResolution?: boolean,
@@ -49,6 +56,7 @@ const nodePaths =
 class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
+  _moduleIDCache : {[key: string]: string};
   _moduleNameCache: {[name: string]: Path};
   _modulePathCache: {[path: Path]: Array<Path>};
 
@@ -65,6 +73,7 @@ class Resolver {
       platforms: options.platforms,
     };
     this._moduleMap = moduleMap;
+    this._moduleIDCache  = Object.create(null);
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
   }
@@ -173,6 +182,13 @@ class Resolver {
     );
   }
 
+  getModulePath(from: Path, moduleName: string) {
+    if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
+      return moduleName;
+    }
+    return path.normalize(path.dirname(from) + '/' + moduleName);
+  }
+
   getPackage(name: string): ?Path {
     return this._moduleMap.getPackage(
       name,
@@ -207,6 +223,70 @@ class Resolver {
     return this._modulePathCache[from];
   }
 
+  getModuleID(
+    virtualMocks: BooleanObject,
+    from: Path,
+    _moduleName?: ?string,
+  ): string {
+    const moduleName = _moduleName || '';
+
+    const key = from + path.delimiter + moduleName;
+    if (this._moduleIDCache[key]) {
+      return this._moduleIDCache[key];
+    }
+
+    const moduleType = this._getModuleType(moduleName);
+    const absolutePath = this._getAbsolutPath(virtualMocks, from, moduleName);
+    const mockPath = this._getMockPath(from, moduleName);
+
+    const sep = path.delimiter;
+    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
+      (mockPath ? (mockPath + sep) : ''));
+
+    return this._moduleIDCache[key] = id;
+  }
+
+  _getModuleType(moduleName: string): 'node' | 'user' {
+    return this.isCoreModule(moduleName) ? 'node' : 'user';
+  }
+
+  _getAbsolutPath(
+    virtualMocks: BooleanObject,
+    from: Path,
+    moduleName: string,
+  ): ?string {
+    if (this.isCoreModule(moduleName)) {
+      return moduleName;
+    }
+    return this._isModuleResolved(from, moduleName)
+      ? this.getModule(moduleName)
+      : this._getVirtualMockPath(virtualMocks, from, moduleName);
+  }
+
+  _getMockPath(from: Path, moduleName: string): ?string {
+    return !this.isCoreModule(moduleName)
+      ? this.getMockModule(from, moduleName)
+      : null;
+  }
+
+  _getVirtualMockPath(
+    virtualMocks: BooleanObject,
+    from: Path,
+    moduleName: string,
+  ): Path {
+    const virtualMockPath = this.getModulePath(from, moduleName);
+    return virtualMocks[virtualMockPath]
+      ? virtualMockPath
+      : moduleName ? this.resolveModule(from, moduleName) : from;
+  }
+
+  _isModuleResolved(from: Path, moduleName: string): boolean {
+    return !!(
+      this.getModule(moduleName) ||
+      this.getMockModule(from, moduleName)
+    );
+  }
+
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
@@ -215,8 +295,7 @@ class Resolver {
 
     const moduleNameMapper = this._options.moduleNameMapper;
     if (moduleNameMapper) {
-      for (const mappedModuleName in moduleNameMapper) {
-        const regex = moduleNameMapper[mappedModuleName];
+      for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
         if (regex.test(moduleName)) {
           const matches = moduleName.match(regex);
           if (!matches) {

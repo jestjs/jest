@@ -15,7 +15,7 @@ import type {Path} from 'types/Config';
 const args = require('./args');
 const getJest = require('./getJest');
 const getPackageRoot = require('jest-util').getPackageRoot;
-const warnAboutUnrecognizedOptions = require('jest-util').warnAboutUnrecognizedOptions;
+const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
 
 function run(argv?: Object, root?: Path) {
@@ -27,7 +27,7 @@ function run(argv?: Object, root?: Path) {
     .check(args.check)
     .argv;
 
-  warnAboutUnrecognizedOptions(argv, args.options);
+  validateCLIOptions(argv, args.options);
 
   if (argv.help) {
     yargs.showHelp();

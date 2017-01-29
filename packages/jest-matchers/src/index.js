@@ -31,8 +31,9 @@ const {
   anything,
   arrayContaining,
   objectContaining,
+  stringContaining,
   stringMatching,
-} = require('./jasmine-utils');
+} = require('./asymmetric-matchers');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
@@ -147,6 +148,7 @@ expect.anything = anything;
 expect.any = any;
 expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
+expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
 
 const _validateResult = result => {

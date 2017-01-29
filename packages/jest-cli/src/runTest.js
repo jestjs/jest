@@ -14,9 +14,11 @@ import type {TestResult} from 'types/TestResult';
 import type Resolver from 'jest-resolve';
 
 const BufferedConsole = require('./lib/BufferedConsole');
-const Console = require('jest-util').Console;
-const NullConsole = require('jest-util').NullConsole;
-
+const {
+  Console,
+  NullConsole,
+  setGlobal,
+} = require('jest-util');
 const getConsoleOutput = require('./reporters/getConsoleOutput');
 
 function runTest(path: Path, config: Config, resolver: Resolver) {
@@ -35,7 +37,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
         ? NullConsole
         : BufferedConsole
       );
-  const testConsole = env.global.console = new TestConsole(
+  const testConsole = new TestConsole(
     config.useStderr ? process.stderr : process.stdout,
     process.stderr,
     (type, message) => getConsoleOutput(
@@ -45,6 +47,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
       BufferedConsole.write([], type, message, 4),
     ),
   );
+  setGlobal(env.global, 'console', testConsole);
   const runtime = new ModuleLoader(config, env, resolver);
   const start = Date.now();
   return TestRunner(config, env, runtime, path)
@@ -69,7 +72,9 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
           }
           result.memoryUsage = process.memoryUsage().heapUsed;
         }
-        return result;
+
+        // Delay the resolution to allow log messages to be output.
+        return new Promise(resolve => setImmediate(() => resolve(result)));
       }),
       err => Promise.resolve().then(() => {
         env.dispose();

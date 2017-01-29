@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+/* eslint-disable jest/no-focused-tests */
+
 'use strict';
 
 describe('promise fit', () => {

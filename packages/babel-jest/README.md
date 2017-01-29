@@ -20,6 +20,6 @@ To explicitly define `babel-jest` as a transformer for your JavaScript code, map
 
 ```json
 "transform": {
-  "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+  "^.+\\.jsx?$": "babel-jest"
 },
 ```
