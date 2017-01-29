@@ -43,9 +43,15 @@ const readRawConfig = (argv, root) => {
     return Promise.resolve(normalize(config, argv));
   }
 
-  return new Promise(resolve => traverseUpTreeForConfig(process.cwd())
+  return new Promise((resolve, reject) => traverseUpTreeForConfig(process.cwd())
     .then(config => resolve(normalize(config, argv)))
-    .catch(() => resolve(normalize({rootDir: root}, argv)))
+    .catch(() => {
+      try {
+        resolve(normalize({rootDir: root}, argv));
+      } catch (e) {
+        reject(e);
+      }
+    })
   );
 };
 
