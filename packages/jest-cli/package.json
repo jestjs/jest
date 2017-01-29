@@ -25,7 +25,6 @@
     "jest-snapshot": "^18.1.0",
     "jest-util": "^18.1.0",
     "node-notifier": "^5.0.1",
-    "sane": "~1.4.1",
     "string-length": "^1.0.1",
     "strip-ansi": "^3.0.1",
     "throat": "^3.0.0",
