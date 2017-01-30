@@ -16,7 +16,6 @@
     "jest-config": "^18.1.0",
     "jest-environment-jsdom": "^18.1.0",
     "jest-haste-map": "^18.1.0",
-    "jest-jasmine2": "^18.1.0",
     "jest-resolve": "^18.1.0",
     "jest-resolve-dependencies": "^18.1.0",
     "jest-runtime": "^18.1.0",
