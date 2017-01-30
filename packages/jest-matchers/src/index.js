@@ -33,6 +33,9 @@ const {
   objectContaining,
   stringMatching,
 } = require('./asymmetric-matchers');
+const {
+  addSerializer,
+} = require('jest-snapshot');
 
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
@@ -148,6 +151,8 @@ expect.any = any;
 expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
 expect.stringMatching = stringMatching;
+
+expect.addSnapshotSerializer = addSerializer;
 
 const _validateResult = result => {
   if (

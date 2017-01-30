@@ -15,6 +15,24 @@ Object {
   }
   bProp={foo: 8} />
 ",
+  "snapshot serializers works with prepended plugins from expect method called once 1": "
+<div
+  aProp={
+    Object {
+      "a": 6,
+    }
+  }
+  bProp={Foo: 8} />
+",
+  "snapshot serializers works with prepended plugins from expect method called twice 1": "
+<div
+  aProp={
+    Object {
+      "a": 6,
+    }
+  }
+  bProp={FOO: 8} />
+",
   "snapshot serializers works with second plugin 1": "bar: 2",
 }
 `;
