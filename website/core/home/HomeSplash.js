@@ -32,6 +32,7 @@ class HomeSplash extends React.Component {
               <div className="section promoSection">
                 {siteConfig.homepagePromos.map(this.makePromoElements, this)}
               </div>
+              <div className="githubButton">{siteConfig.githubButton}</div>
             </div>
           </div>
         </div>
