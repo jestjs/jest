@@ -331,7 +331,7 @@ describe('HasteMap', () => {
       ' * @providesModule Blueberry2',
       ' */',
     ].join('\n');
-    
+
     return new HasteMap(
       Object.assign({globalMocks: true}, defaultConfig),
     ).build()
