@@ -17,12 +17,11 @@ const chalk = require('chalk');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
-const patternMode = require('./patternMode');
 const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
-const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
 const PromptController = require('./lib/PromptController');
+const TestPathPatternModeController = require('./TestPathPatternModeController');
 const {KEYS, CLEAR} = require('./constants');
 
 const SNAPSHOT_EXTENSION = 'snap';
@@ -42,8 +41,16 @@ const watch = (
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
-  let searchSource = new SearchSource(hasteContext, config);
+
   const promptController = new PromptController();
+
+  const testPathPatternModeController = TestPathPatternModeController(
+    config,
+    pipe,
+    promptController,
+  );
+
+  testPathPatternModeController.updateSearchSource(hasteContext);
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
@@ -53,7 +60,7 @@ const watch = (
     if (!hasOnlySnapshotChanges) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
       promptController.abort();
-      searchSource = new SearchSource(hasteContext, config);
+      testPathPatternModeController.updateSearchSource(hasteContext);
       startRun();
     }
   });
@@ -105,6 +112,7 @@ const watch = (
       process.exit(0);
       return;
     }
+
     if (promptController.entering) {
       promptController.put(key);
       return;
@@ -139,15 +147,19 @@ const watch = (
         startRun();
         break;
       case KEYS.P:
-        pipe.write(ansiEscapes.cursorHide);
-        pipe.write(ansiEscapes.clearScreen);
-        pipe.write(patternMode.usage());
-        pipe.write(ansiEscapes.cursorShow);
-
-        promptController.prompt(
-          onChangePromptPattern,
-          onSuccessPromptPattern,
-          onCancelPromptPattern,
+        testPathPatternModeController.run(
+          pattern => {
+            setWatchMode(argv, 'watch', {
+              pattern: [pattern],
+            });
+            startRun();
+          },
+          () => {
+            pipe.write(ansiEscapes.cursorHide);
+            pipe.write(ansiEscapes.clearScreen);
+            pipe.write(usage(argv, hasSnapshotFailure));
+            pipe.write(ansiEscapes.cursorShow);
+          },
         );
         break;
       case KEYS.QUESTION_MARK:
@@ -156,36 +168,6 @@ const watch = (
         }
         break;
     }
-  };
-
-  const onChangePromptPattern = (pattern: string) => {
-    let regex;
-
-    try {
-      regex = new RegExp(pattern, 'i');
-    } catch (e) {}
-
-    const paths = regex ?
-      searchSource.findMatchingTests(pattern).paths : [];
-
-    pipe.write(ansiEscapes.eraseLine);
-    pipe.write(ansiEscapes.cursorLeft);
-    patternMode.printTypeahead(config, pipe, pattern, paths);
-  };
-
-  const onSuccessPromptPattern = (pattern: string) => {
-    setWatchMode(argv, 'watch', {
-      pattern: [pattern],
-    });
-
-    startRun();
-  };
-
-  const onCancelPromptPattern = () => {
-    pipe.write(ansiEscapes.cursorHide);
-    pipe.write(ansiEscapes.clearScreen);
-    pipe.write(usage(argv, hasSnapshotFailure));
-    pipe.write(ansiEscapes.cursorShow);
   };
 
   if (typeof stdin.setRawMode === 'function') {
