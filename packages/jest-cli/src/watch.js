@@ -22,6 +22,7 @@ const runJest = require('./runJest');
 const setWatchMode = require('./lib/setWatchMode');
 const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
+const PromptController = require('./lib/PromptController');
 const {KEYS, CLEAR} = require('./constants');
 
 const SNAPSHOT_EXTENSION = 'snap';
@@ -37,13 +38,12 @@ const watch = (
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
     pattern: argv._,
   });
-  let currentPattern = '';
   let hasSnapshotFailure = false;
-  let isEnteringPattern = false;
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
   let searchSource = new SearchSource(hasteContext, config);
+  const promptController = new PromptController();
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
@@ -52,34 +52,18 @@ const watch = (
 
     if (!hasOnlySnapshotChanges) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
-      currentPattern = '';
-      isEnteringPattern = false;
+      promptController.abort();
       searchSource = new SearchSource(hasteContext, config);
       startRun();
     }
   });
 
   process.on('exit', () => {
-    if (isEnteringPattern) {
+    if (promptController.entering) {
       pipe.write(ansiEscapes.cursorDown());
       pipe.write(ansiEscapes.eraseDown);
     }
   });
-
-  const writeCurrentPattern = () => {
-    let regex;
-
-    try {
-      regex = new RegExp(currentPattern, 'i');
-    } catch (e) {}
-
-    const paths = regex ?
-      searchSource.findMatchingTests(currentPattern).paths : [];
-
-    pipe.write(ansiEscapes.eraseLine);
-    pipe.write(ansiEscapes.cursorLeft);
-    patternMode.printTypeahead(config, pipe, currentPattern, paths);
-  };
 
   const startRun = (overrideConfig: Object = {}) => {
     if (isRunning) {
@@ -121,36 +105,8 @@ const watch = (
       process.exit(0);
       return;
     }
-    if (isEnteringPattern) {
-      switch (key) {
-        case KEYS.ENTER:
-          isEnteringPattern = false;
-          setWatchMode(argv, 'watch', {
-            pattern: [currentPattern],
-          });
-          startRun();
-          break;
-        case KEYS.ESCAPE:
-          isEnteringPattern = false;
-          pipe.write(ansiEscapes.cursorHide);
-          pipe.write(ansiEscapes.clearScreen);
-          pipe.write(usage(argv, hasSnapshotFailure));
-          pipe.write(ansiEscapes.cursorShow);
-          currentPattern = argv._[0];
-          break;
-        case KEYS.ARROW_DOWN:
-        case KEYS.ARROW_LEFT:
-        case KEYS.ARROW_RIGHT:
-        case KEYS.ARROW_UP:
-          break;
-        default:
-          const char = new Buffer(key, 'hex').toString();
-          currentPattern = key === KEYS.BACKSPACE
-            ? currentPattern.slice(0, -1)
-            : currentPattern + char;
-          writeCurrentPattern();
-          break;
-      }
+    if (promptController.entering) {
+      promptController.put(key);
       return;
     }
 
@@ -183,13 +139,16 @@ const watch = (
         startRun();
         break;
       case KEYS.P:
-        isEnteringPattern = true;
-        currentPattern = '';
         pipe.write(ansiEscapes.cursorHide);
         pipe.write(ansiEscapes.clearScreen);
         pipe.write(patternMode.usage());
         pipe.write(ansiEscapes.cursorShow);
-        writeCurrentPattern();
+
+        promptController.prompt(
+          onChangePromptPattern,
+          onSuccessPromptPattern,
+          onCancelPromptPattern,
+        );
         break;
       case KEYS.QUESTION_MARK:
         if (process.env.JEST_HIDE_USAGE) {
@@ -197,6 +156,36 @@ const watch = (
         }
         break;
     }
+  };
+
+  const onChangePromptPattern = (pattern: string) => {
+    let regex;
+
+    try {
+      regex = new RegExp(pattern, 'i');
+    } catch (e) {}
+
+    const paths = regex ?
+      searchSource.findMatchingTests(pattern).paths : [];
+
+    pipe.write(ansiEscapes.eraseLine);
+    pipe.write(ansiEscapes.cursorLeft);
+    patternMode.printTypeahead(config, pipe, pattern, paths);
+  };
+
+  const onSuccessPromptPattern = (pattern: string) => {
+    setWatchMode(argv, 'watch', {
+      pattern: [pattern],
+    });
+
+    startRun();
+  };
+
+  const onCancelPromptPattern = () => {
+    pipe.write(ansiEscapes.cursorHide);
+    pipe.write(ansiEscapes.clearScreen);
+    pipe.write(usage(argv, hasSnapshotFailure));
+    pipe.write(ansiEscapes.cursorShow);
   };
 
   if (typeof stdin.setRawMode === 'function') {
