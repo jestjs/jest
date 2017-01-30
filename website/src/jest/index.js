@@ -30,20 +30,20 @@ const index = React.createClass({
           <Container padding={['bottom', 'top']}>
             <GridBlock align="center" contents={siteConfig.features} layout="fourColumn" />
           </Container>
-          <div className="productShowcaseSection paddingTop paddingBottom" style={{textAlign: 'center'}}>
+          <div className="productShowcaseSection paddingBottom" style={{textAlign: 'center'}}>
             <h2>Zero configuration testing platform</h2>
             <Marked>
-              Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in stable and healthy code bases.
+              Jest is used by Facebook to test all JavaScript code including React applications. One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in more stable and healthy code bases.
             </Marked>
           </div>
 
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock contents={[
               {
-                content: 'Sandboxed test files and automatic global state resets for every test. Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results.',
-                image: '/jest/img/content/feature-snapshot-tests.png',
+                content: 'Jest parallelizes test runs across workers to maximize performance. Console messages are buffered and printed together with test results. Sandboxed test files and automatic global state resets for every test so no two tests conflict with each other.',
+                image: '/jest/img/content/feature-fast.png',
                 imageAlign: 'right',
-                title: 'Sandboxed and fast',
+                title: 'Fast and sandboxed',
               },
             ]} />
           </Container>
@@ -51,7 +51,7 @@ const index = React.createClass({
             <GridBlock contents={[
               {
                 content: 'Easily create code coverage reports using `--coverage`. No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.',
-                image: '/jest/img/content/feature-pattern-mode.png',
+                image: '/jest/img/content/feature-coverage.png',
                 imageAlign: 'left',
                 title: 'Built-in code coverage reports',
               },
@@ -61,7 +61,7 @@ const index = React.createClass({
             <GridBlock contents={[
               {
                 content: 'Jest is already configured when you use [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html) or [`react-native init`](http://facebook.github.io/react-native/docs/getting-started.html) to create your React and React Native projects. Place your tests in a `__tests__` folder, or name your test files with a `.spec.js` or `.test.js` extension. Whatever you prefer, Jest will find and run your tests.',
-                image: '/jest/img/content/feature-snapshot-tests.png',
+                image: '/jest/img/content/feature-config-react.png',
                 imageAlign: 'right',
                 title: 'Zero configuration',
               },
@@ -90,7 +90,7 @@ const index = React.createClass({
             <GridBlock contents={[
               {
                 content: 'Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.',
-                image: '/jest/img/content/feature-pattern-mode.png',
+                image: '/jest/img/content/feature-mocking.png',
                 imageAlign: 'left',
                 title: 'Powerful mocking library',
               },
@@ -99,25 +99,15 @@ const index = React.createClass({
           <Container padding={['bottom', 'top']}>
             <GridBlock contents={[
               {
-                content: 'Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io).',
-                image: '/jest/img/content/feature-snapshot-tests.png',
+                content: 'Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io) and with TypeScript through [ts-jest](https://github.com/kulshekhar/ts-jest).',
+                image: '/jest/img/content/feature-typescript.png',
                 imageAlign: 'right',
                 title: 'Works with TypeScript',
               },
             ]} />
           </Container>
-          <Container padding={['bottom', 'top']} background="light">
-            <GridBlock contents={[
-              {
-                content: 'Run your tests within a [fake DOM implementation](https://github.com/tmpvar/jsdom) on the command line. Every DOM API that you call can be observed in the same way it would be observed in a browser.',
-                image: '/jest/img/content/feature-pattern-mode.png',
-                imageAlign: 'left',
-                title: 'Simulated DOM environment',
-              },
-            ]} />
-          </Container>
 
-          <Container padding={['bottom', 'top']}>
+          <Container className="lightBackground" padding={['bottom', 'top']}>
             <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="video">
                 <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
@@ -133,7 +123,7 @@ const index = React.createClass({
 
           <div className="productShowcaseSection paddingBottom">
               <h2>Who's using Jest?</h2>
-              <p>Jest is used by teams of all sizes to test websites, mobile apps, and APIs.</p>
+              <p>Jest is used by teams of all sizes to test web application, node.js services, mobile apps, and APIs.</p>
               <div className="logos">
                 {showcase}
               </div>
