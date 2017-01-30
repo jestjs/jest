@@ -2,7 +2,7 @@ exports[`Snapshot serializers renders snapshot 1`] = `
 Object {
   "snapshot serializers works with default serializers 1": "
 <div
-  id="foo" />
+  id=\\"foo\\" />
 ",
   "snapshot serializers works with first plugin 1": "foo: 1",
   "snapshot serializers works with nested serializable objects 1": "foo: bar: 2",
@@ -10,7 +10,7 @@ Object {
 <div
   aProp={
     Object {
-      "a": 6,
+      \\"a\\": 6,
     }
   }
   bProp={foo: 8} />
@@ -19,7 +19,7 @@ Object {
 <div
   aProp={
     Object {
-      "a": 6,
+      \\"a\\": 6,
     }
   }
   bProp={Foo: 8} />
@@ -28,7 +28,7 @@ Object {
 <div
   aProp={
     Object {
-      "a": 6,
+      \\"a\\": 6,
     }
   }
   bProp={FOO: 8} />
