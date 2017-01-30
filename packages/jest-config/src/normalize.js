@@ -317,6 +317,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         if (config[key].length === 1 && config[key][0] === '*') {
           value = true;
         } else {
+          //$FlowFixMe
           value = config[key].map(filePath => path.resolve(
             config.rootDir,
             _replaceRootDirInPath(config.rootDir, filePath),
