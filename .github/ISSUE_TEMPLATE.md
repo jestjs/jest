@@ -1,7 +1,7 @@
 <!-- 
 THIS IS NOT A HELP FORUM. 
-If you are experiencing problems with setting up Jest, please make sure to visit our Support page: 
-https://facebook.github.io/jest/support.html
+If you are experiencing problems with setting up Jest, please make sure to visit our Help page: 
+https://facebook.github.io/jest/help.html
 -->
 <!-- 
 Before creating an issue please check the following:
