@@ -314,10 +314,14 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         break;
       case 'globalMocks':
         //$FlowFixMe
-        value = config[key].map(filePath => path.resolve(
-          config.rootDir,
-          _replaceRootDirInPath(config.rootDir, filePath),
-        ));
+        if (config[key].length === 1 && config[key][0] === '*') {
+          value = true;
+        } else {
+          value = config[key].map(filePath => path.resolve(
+            config.rootDir,
+            _replaceRootDirInPath(config.rootDir, filePath),
+          ));
+        }
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
