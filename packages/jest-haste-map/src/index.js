@@ -328,7 +328,6 @@ class HasteMap extends EventEmitter {
       this._isMockGlobal(filePath)
     ) {
       const mockPath = getMockName(filePath);
-
       if (mocks[mockPath]) {
         this._console.warn(
           `jest-haste-map: duplicate manual mock found:\n` +
@@ -621,7 +620,6 @@ class HasteMap extends EventEmitter {
           this._isMockGlobal(filePath)
         ) {
           const mockName = getMockName(filePath);
-            
           delete hasteMap.mocks[mockName];
         }
 
