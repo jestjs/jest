@@ -15,7 +15,6 @@
     "jest-changed-files": "^17.0.2",
     "jest-config": "^18.1.0",
     "jest-environment-jsdom": "^18.1.0",
-    "jest-file-exists": "^17.0.0",
     "jest-haste-map": "^18.1.0",
     "jest-jasmine2": "^18.1.0",
     "jest-resolve": "^18.1.0",
