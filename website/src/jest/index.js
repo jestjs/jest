@@ -86,7 +86,7 @@ const index = React.createClass({
             </div>
           </Container>
 
-          <Container padding={['bottom', 'top']} background="light">
+          <Container padding={['bottom', 'top']}>
             <GridBlock contents={[
               {
                 content: 'Powerful [mocking library](/jest/docs/mock-functions.html) for functions and modules. Mock React Native components using `jest-react-native`.',
@@ -96,7 +96,7 @@ const index = React.createClass({
               },
             ]} />
           </Container>
-          <Container padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']} background="light">
             <GridBlock contents={[
               {
                 content: 'Jest works with any compile-to-JavaScript language and integrates seamlessly with [Babel](https://babeljs.io) and with TypeScript through [ts-jest](https://github.com/kulshekhar/ts-jest).',
@@ -107,7 +107,7 @@ const index = React.createClass({
             ]} />
           </Container>
 
-          <Container className="lightBackground" padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']}>
             <div className="blockElement imageAlignSide twoByGridBlock">
               <div className="video">
                 <iframe src="https://fast.wistia.net/embed/iframe/78j73pyz17"></iframe>
