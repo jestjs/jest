@@ -19,6 +19,10 @@ Finally, we've completely overhauled our API reference docs. You can now find de
 
 <!--truncate-->
 
+## New Colors & Website
+
+The colors in the Jest logo and on the website have felt outdated to us for a while. We changed the color scheme we are using for Jest and changed the landing page significantly to be more inviting. We hope you like the new colors and showcase of Jest's strengths.
+
 ## Who's using Jest?
 
 We have created a [showcase of users](/jest/users.html) to highlight some of the companies that are using Jest. We're thankful to all of these companies for using Jest to test their websites, mobile apps, and APIs. If you're using Jest, check out the guidelines on GitHub and send us a pull request!
