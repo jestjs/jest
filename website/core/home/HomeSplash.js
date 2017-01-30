@@ -17,10 +17,6 @@ class HomeSplash extends React.Component {
   }
 
   render() {
-    const mostRecent = this.props.mostRecentPost;
-    const mostRecentContent = mostRecent
-      ? <p>News: <a href={'blog/' + mostRecent.path}>{mostRecent.title}</a></p>
-      : '';
     return (
       <div className="homeContainer">
         <div className="homeSplashFade">

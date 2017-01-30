@@ -10,7 +10,7 @@ class Footer extends React.Component {
   render() {
     const currentYear = (new Date()).getFullYear();
     return (
-      <footer className="nav-footer">
+      <footer className="nav-footer" id="footer">
         <section className="sitemap">
           <a href="/jest" className="nav-home">
             <img src="/jest/img/jest-outline.svg" alt="Jest" width="66"
