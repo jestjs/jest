@@ -48,17 +48,12 @@ function tryPackageJson(loc: Path) {
   const packageJson = path.join(loc, 'package.json');
 
   return requireConfigFile(packageJson)
-    .then(config => {
-      if (!config || !config.hasOwnProperty('jest')) {
-        throw new Error();
-      }
+    .then(packageData => {
+      const config = packageData.jest || {};
 
       return Object.assign({},
-        config.jest,
-        {
-          rootDir: config.jest.rootDir ?
-            path.resolve(loc, config.jest.rootDir) : loc,
-        });
+        config,
+        {rootDir: config.rootDir ? path.resolve(loc, config.rootDir) : loc});
     });
 }
 
