@@ -51,8 +51,6 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](/jest/docs/using-matchers.html).
 
-<!--truncate-->
-
 ## Additional Configuration
 
 ### Using Babel
