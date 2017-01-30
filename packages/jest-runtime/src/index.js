@@ -15,7 +15,7 @@ import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {ModuleMap} from 'jest-haste-map';
-import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
+import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
