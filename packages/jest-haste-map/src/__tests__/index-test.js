@@ -331,14 +331,9 @@ describe('HasteMap', () => {
       ' * @providesModule Blueberry2',
       ' */',
     ].join('\n');
-
-    const globalMocks = [
-      '/fruits1/',
-      '/fruits2/',
-    ];
-
+    
     return new HasteMap(
-      Object.assign({globalMocks}, defaultConfig),
+      Object.assign({globalMocks: true}, defaultConfig),
     ).build()
       .then(({__hasteMapForTest: data}) => {
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
