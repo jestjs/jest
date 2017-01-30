@@ -199,7 +199,7 @@ class HasteMap extends EventEmitter {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
-      globalMocks: options.globalMocks ? [].concat(options.globalMocks) : [],
+      globalMocks: options.globalMocks || [],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       name: options.name,
@@ -686,6 +686,9 @@ class HasteMap extends EventEmitter {
   }
   
   _isMockGlobal(filePath: Path): boolean {
+    if (this._options.globalMocks === true) {
+      return true;
+    }
     return this._options.globalMocks.some(
       mockPath => filePath.startsWith(mockPath)
     );
