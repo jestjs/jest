@@ -32,7 +32,7 @@ class UserShowcase extends React.Component {
               </div>
               <p>Is your company using Jest?
               </p>
-              <a className="button">Add your company</a>
+              <a href="https://github.com/facebook/jest/edit/master/website/siteConfig.js" className="button">Add your company</a>
             </div>
           </Container>
         </div>
