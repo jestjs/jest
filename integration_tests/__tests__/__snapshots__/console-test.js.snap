@@ -20,7 +20,7 @@ exports[`test console printing 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites matching \\"console-test.js\\".
 "
 `;
 
@@ -52,6 +52,6 @@ exports[`test console printing with --verbose 3`] = `
 Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites matching \\"console-test.js\\".
 "
 `;
