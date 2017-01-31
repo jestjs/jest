@@ -58,7 +58,7 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
   }
 
   if (config.setupFiles) {
-    config.setupFiles = preset.setupFiles.concat(config.setupFiles);
+    config.setupFiles = (preset.setupFiles || []).concat(config.setupFiles);
   }
   if (config.modulePathIgnorePatterns) {
     config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
