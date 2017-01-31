@@ -169,6 +169,11 @@ const users = [
     infoLink: 'http://www.trivago.com/',
   },
   {
+    caption: 'Truffls',
+    image: '/jest/img/logos/truffls.png',
+    infoLink: 'https://truffls.com/',
+  },
+  {
     caption: 'Xing',
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
