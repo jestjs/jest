@@ -572,15 +572,21 @@ describe('Upgrade help', () => {
 });
 
 describe('preset', () => {
-  jest.mock(
-    '/node_modules/react-native/jest-preset.json',
-    () => ({
-      moduleNameMapper: {b: 'b'},
-      modulePathIgnorePatterns: ['b'],
-      setupFiles: ['b'],
-    }),
-    {virtual: true}
-  );
+  beforeAll(() => {
+    jest.mock(
+      '/node_modules/react-native/jest-preset.json',
+      () => ({
+        moduleNameMapper: {b: 'b'},
+        modulePathIgnorePatterns: ['b'],
+        setupFiles: ['b'],
+      }),
+      {virtual: true}
+    );
+  });
+
+  afterAll(() => {
+    jest.unmock('/node_modules/react-native/jest-preset.json');
+  });
 
   test('throws when preset not found', () => {
     expect(() => {
@@ -614,6 +620,33 @@ describe('preset', () => {
       setupFiles: expect.arrayContaining(
         ['/node_modules/a', '/node_modules/b']
       ),
+    }));
+  });
+});
+
+describe('preset without setupFiles', () => {
+  beforeAll(() => {
+    jest.mock(
+      '/node_modules/react-native/jest-preset.json',
+      () => {
+        return {
+          moduleNameMapper: {b: 'b'},
+          modulePathIgnorePatterns: ['b'],
+        };
+      },
+      {virtual: true}
+    );
+  });
+
+  it('should normalize setupFiles correctly', () => {
+    const config = normalize({
+      preset: 'react-native',
+      rootDir: '/root/path/foo',
+      setupFiles: ['a'],
+    });
+
+    expect(config).toEqual(expect.objectContaining({
+      setupFiles: expect.arrayContaining(['/node_modules/a']),
     }));
   });
 });
