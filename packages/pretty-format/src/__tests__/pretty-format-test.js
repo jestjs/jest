@@ -467,7 +467,7 @@ describe('prettyFormat()', () => {
           React.createElement('Mouse'),
           '\\ \\\\'
         ),
-        '<Mouse>\n  &quot;-&quot;\n  <Mouse />\n  \\ \\\\\n</Mouse>'
+        '<Mouse>\n  "-"\n  <Mouse />\n  \\ \\\\\n</Mouse>'
       );
     });
 
