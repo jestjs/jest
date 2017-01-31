@@ -23,6 +23,7 @@ module.exports = ({
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
+  clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
   collectCoverageOnlyFrom: {

@@ -323,6 +323,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'clearMocks':
       case 'collectCoverage':
       case 'coverageCollector':
       case 'coverageReporters':

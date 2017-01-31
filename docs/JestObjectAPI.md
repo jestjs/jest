@@ -19,6 +19,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
   - [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
+  - [`jest.clearAllMocks()`](#jestclearallmocks)
   - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
   - [`jest.runAllTicks()`](#jestrunallticks)
@@ -115,6 +116,11 @@ jest.mock('../moduleName', () => {
 ```
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
+
+Returns the `jest` object for chaining.
+
+### `jest.clearAllMocks()`
+Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
 
 Returns the `jest` object for chaining.
 
