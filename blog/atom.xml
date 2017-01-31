@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://facebook.github.io/jest/blog/</id>
+    <title>Jest Blog</title>
+    <updated>2017-01-30T06:00:00Z</updated>
+    <link rel="alternate" href="https://facebook.github.io/jest/blog/"/>
+    <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
+    <logo>https://cdn.rawgit.com/facebook/jest/master/packages/jest-cli/src/assets/jest_logo.png</logo>
+    <rights>Copyright © 2017 Facebook Inc.</rights>
+    <generator>Feed for Node.js</generator>
+    <entry>
+        <title type="html"><![CDATA[A Great Developer Experience]]></title>
+        <id>https://facebook.github.io/jest/blog/2017/01/30/a-great-developer-experience.html</id>
+        <link href="https://facebook.github.io/jest/blog/2017/01/30/a-great-developer-experience.html">
+        </link>
+        <updated>2017-01-30T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+We strongly believe that great documentation is crucial to providing a great developer experience. The docs should be clear, concise, and useful to new users and veterans alike. With that in mind, we recently took some time to overhaul the Jest website.
+
+## Improved docs
+
+One of the changes you'll notice upon visiting our docs is the updated sidebar. The documentation is now divided into three main areas: an introduction to Jest, detailed guides to Jest's features, and a comprehensive API reference.
+
+The **Introduction** section will guide you from installing Jest and writing your first case, to using Jest's matchers and testing async code. If you're new to Jest or need a quick refresher, these docs should get you up to speed in no time. If you've used Jest before and only need a quick reference on how it's installed, you need to go no further than the [Getting Started](/jest/docs/getting-started.html) guide.
+
+Once you feel comfortable using Jest, proceed to the advanced **Guides** section. The new [Snapshot Testing guide](/jest/docs/snapshot-testing.html) covers everything you need to know about creating and maintaining snapshot test cases.
+
+Finally, we've completely overhauled our API reference docs. You can now find detailed information on all of Jest's [Globals](/jest/docs/api.html), [matchers](/jest/docs/expect.html), and [every flag](/jest/docs/cli.html) supported by the `jest` CLI.
+
+]]></summary>
+        <author>
+            <name>Héctor Ramos</name>
+            <uri>http://twitter.com/hectorramos</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2016 in Jest]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/12/15/2016-in-jest.html">
+        </link>
+        <updated>2016-12-15T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+2016 was a big year for JavaScript testing with Jest. In the first six months of the year we rewrote Jest and built a solid foundation to significantly improve performance and the developer experience of testing JavaScript code. We flow-typed the entire codebase, built a ton of integration tests for Jest itself and adopted [lerna](https://lernajs.io/) to turn Jest from a framework into a [*Painless JavaScript Testing platform*](https://github.com/facebook/jest/tree/master/packages).
+
+The newly created [react-test-renderer](https://www.npmjs.com/package/react-test-renderer) finally enabled testing of react-native components. Through the jest-react-native preset (now merged directly into react-native) Jest now works out of the box for any React project and comes pre-configured in [create-react-app](https://github.com/facebookincubator/create-react-app) and [react-native](https://github.com/facebook/react-native) projects. We integrated core pieces of Jest into [react-native's packager](https://github.com/facebook/react-native/tree/master/packager/react-packager/src) and the completely new snapshot testing feature has since been used outside of Jest: It was integrated with React Storybook as “[storyshots](https://github.com/storybooks/storyshots)” and is being adopted by other test runners like [ava](https://github.com/avajs/ava/pull/1113).
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Jest 16.0: Turbocharged CLI & Community Update]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/10/03/jest-16.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/10/03/jest-16.html">
+        </link>
+        <updated>2016-10-03T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+It's been one month since the last major release and we've made significant improvements to Jest since. In this major release we are updating the snapshot format we are using which will likely require snapshots to be updated when upgrading Jest. We don't make these changes lightly and don't expect this to happen often but we think it is necessary to improve the format from time to time.
+
+## Upgraded CLI
+
+![reporter](/jest/img/blog/16-reporter.gif)
+
+Jest 16 features a new reporter interface that shows running tests as well as a live summary and a progress bar based on the estimated test runtime from previous test runs. We also improved the CLI output to work better with different color schemes. If there were test failures in a previous run, Jest will now always run those tests first to give useful signal to users as quickly as possible.
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Jest 15.0: New Defaults for Jest]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/09/01/jest-15.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/09/01/jest-15.html">
+        </link>
+        <updated>2016-09-01T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+We spent the past year making Jest [faster](http://facebook.github.io/jest/blog/2016/03/11/javascript-unit-testing-performance.html), [easier to configure](http://facebook.github.io/jest/blog/2016/04/12/jest-11.html), [added tons of features](http://facebook.github.io/jest/blog/2016/06/22/jest-13.html) and built [snapshot testing](http://facebook.github.io/jest/blog/2016/07/27/jest-14.html). However, there were two areas where we invested very little: the CLI output and user experience. With Jest 15 we are changing the framework radically to make it easier to use both for beginners and experienced users. We are excited that our investment in Jest is now paying off: we can move fast and improve the framework for Facebook and the open source community at light-speed. Jest's goal is to come with batteries included and to require as little configuration as necessary. We recently got a chance to explain our philosophy on a [create-react-app issue](https://github.com/facebookincubator/create-react-app/pull/250#issuecomment-237098619).
+
+The most important change to talk about is a set of [new defaults](https://github.com/facebook/jest/pull/1511). If you are an existing Jest user you will very likely need to update your configuration for Jest 15. In most cases it will simplify your setup and Jest will provide useful error messages during the upgrade. All of the new defaults can be disabled to suit your needs, but we still consider the disabled features critical for Jest in certain situations and will continue to use and support them at Facebook long-term. Our [API documentation](https://facebook.github.io/jest/docs/api.html) was also completely rewritten to reflect these changes. [This pull request for React](https://github.com/facebook/react/pull/7625/files) highlights some of the changes necessary for existing projects.
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Jest 14.0: React Tree Snapshot Testing]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/07/27/jest-14.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/07/27/jest-14.html">
+        </link>
+        <updated>2016-07-27T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We want to make it as frictionless as possible to write good tests that are useful. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in stable and healthy code bases.
+
+One of the big open questions was how to write React tests efficiently. There are plenty of tools such as [ReactTestUtils](https://facebook.github.io/react/docs/test-utils.html) and [enzyme](http://airbnb.io/enzyme/). Both of these tools are great and are actively being used. However engineers frequently told us that they spend more time writing a test than the component itself. As a result many people stopped writing tests altogether which eventually led to instabilities. Engineers told us all they wanted was to make sure their components don't change unexpectedly.
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Jest 13.0: Flow & REPL]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/06/22/jest-13.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/06/22/jest-13.html">
+        </link>
+        <updated>2016-06-22T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+Today we are happy to announce the next major release of Jest. We have made major changes to Jest which are going to benefit you and all of Facebook's JavaScript test infrastructure. Most importantly, we added static types to all of Jest's code during a recent Jest hackathon at Facebook. Fifteen people worked for a day and night to add [Flow](https://flowtype.org/) types to Jest and to add new features to Jest. The Flow types serve two purposes: First, we believe that code is written to be read. Most of the time, code is written only once but read by dozens of people over the course of years. Adding static types to the project helps document the code and helps explain some of the architecture in Jest. Second, adding static types makes maintenance easier and will allow us to more confidently refactor parts of Jest without fear of breakages.
+
+The Flow project has evolved a lot within Facebook and has been successfully adopted across many of our frameworks and almost all of our product code. Adoption can be parallelized incredibly well – it can be done file-by-file until enough of the codebase is well-typed. Then, Flow provides real value and helps guide through large changes. Through this, many small edge cases and bugs were found.
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Jest 11.0]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/04/12/jest-11.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/04/12/jest-11.html">
+        </link>
+        <updated>2016-04-12T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+Today we're announcing a switch to major revisions for Jest with Jest 11.0 being the first major release. Jest has been used by Facebook engineers and on our continuous integration systems for years and we believe Jest has been way beyond a “1.0 release” for a long time. This is similar to a change [the React team has made](http://facebook.github.io/react/blog/2016/02/19/new-versioning-scheme.html).
+
+If you are using Jest 0.9 or Jest 0.10 the upgrade should be seamless. All changes from the last few months were rolled into Jest 11.0.
+
+### New in Jest 11.0.
+
+#### Babel Integration and Simplified Setup
+
+`babel-jest` was adopted within the newly modularized Jest [repository](https://github.com/facebook/jest/tree/master/packages) and it is now seamlessly integrated into Jest. If you are upgrading from an older version of Jest or are looking to adopt Jest, we recommend reading the [Getting Started guide](http://facebook.github.io/jest/docs/getting-started.html).
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[JavaScript Unit Testing Performance]]></title>
+        <id>https://facebook.github.io/jest/blog/2016/03/11/javascript-unit-testing-performance.html</id>
+        <link href="https://facebook.github.io/jest/blog/2016/03/11/javascript-unit-testing-performance.html">
+        </link>
+        <updated>2016-03-11T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+Jest is running thousands of tests at Facebook at all times, either through continuous integration or invoked by engineers manually during development. This worked well for years even as the people working on Jest moved on to other projects within Facebook.
+
+As engineers added more and more tests though, we noticed the performance of Jest wasn't going to scale. Additionally, in the last year the JavaScript ecosystem has changed dramatically with the introduction of things like npm3 and Babel, which we hadn't anticipated. We formed a new Jest team to address all of these issues and we'll be sharing our progress and plans on this blog from now on.
+
+]]></summary>
+        <author>
+            <name>Christoph Pojer</name>
+            <uri>http://twitter.com/cpojer</uri>
+        </author>
+    </entry>
+</feed>
