@@ -3,6 +3,7 @@ const glob = require('glob');
 const fs = require('fs.extra');
 const mkdirp = require('mkdirp');
 const server = require('./server.js');
+const feed = require('./feed');
 
 // Sadly, our setup fatals when doing multiple concurrent requests
 // I don't have the time to dig into why, it's easier to just serialize
@@ -31,6 +32,13 @@ const queue = (function() {
   return {push};
 })();
 
+queue.push(cb => {
+  fs.writeFileSync('build/jest/blog/feed.xml', feed('rss'));
+  fs.writeFileSync('build/jest/blog/atom.xml', feed('atom'));
+  console.log('Generated RSS feed');
+  cb();
+});
+
 glob('src/**/*.*', (er, files) => {
   files.forEach(file => {
     let targetFile = file.replace(/^src/, 'build');
@@ -53,6 +61,7 @@ glob('src/**/*.*', (er, files) => {
   });
 
   queue.push(cb => {
+    console.log('Generated website');
     server.close();
     cb();
   });
