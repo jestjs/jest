@@ -650,6 +650,7 @@ class Runtime {
 
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
+      clearAllMocks,
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
       deepUnmock,
       disableAutomock,
@@ -664,7 +665,6 @@ class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
 
       mock,
-      clearAllMocks,
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
