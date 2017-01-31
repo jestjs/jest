@@ -2,7 +2,7 @@ exports[`test fails for multiple unknown options 1`] = `
 "[31m[1m[1m●[1m Unrecognized CLI Parameters[22m:
 
   Following options were not recognized:
-  [1m[\"jest\", \"test\"][22m
+  [1m[\\"jest\\", \\"test\\"][22m
 
   [1mCLI Options Documentation[22m:
   http://facebook.github.io/jest/docs/cli.html
@@ -12,7 +12,7 @@ exports[`test fails for multiple unknown options 1`] = `
 exports[`test fails for unknown option 1`] = `
 "[31m[1m[1m●[1m Unrecognized CLI Parameter[22m:
 
-  Unrecognized option [1m\"unknown\"[22m.
+  Unrecognized option [1m\\"unknown\\"[22m.
 
   [1mCLI Options Documentation[22m:
   http://facebook.github.io/jest/docs/cli.html

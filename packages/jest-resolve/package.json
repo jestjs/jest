@@ -9,7 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "browser-resolve": "^1.11.2",
-    "jest-file-exists": "^17.0.0",
     "jest-haste-map": "^18.1.0",
     "resolve": "^1.2.0"
   }

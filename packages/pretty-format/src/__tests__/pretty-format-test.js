@@ -227,6 +227,11 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('"string"');
   });
 
+  it('prints and escape a string', () => {
+    const val = '"\'\\';
+    expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
+  });
+
   it('prints a string with escapes', () => {
     expect(prettyFormat('\"-\"'), '"\\"-\\""');
     expect(prettyFormat('\\ \\\\'), '"\\\\ \\\\\\\\"');
@@ -462,7 +467,7 @@ describe('prettyFormat()', () => {
           React.createElement('Mouse'),
           '\\ \\\\'
         ),
-        '<Mouse>\n  \\"-\\"\n  <Mouse />\n  \\\\ \\\\\\\\\n</Mouse>'
+        '<Mouse>\n  "-"\n  <Mouse />\n  \\ \\\\\n</Mouse>'
       );
     });
 

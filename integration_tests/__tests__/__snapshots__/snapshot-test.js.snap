@@ -66,7 +66,7 @@ exports[`Snapshot works with escaped characters 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   1 added, 1 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-test.js\".
+Ran all test suites matching \\"snapshot-test.js\\".
 "
 `;
 
@@ -75,7 +75,7 @@ exports[`Snapshot works with escaped characters 2`] = `
 Tests:       2 passed, 2 total
 Snapshots:   1 added, 1 passed, 2 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-test.js\".
+Ran all test suites matching \\"snapshot-test.js\\".
 "
 `;
 
@@ -84,7 +84,7 @@ exports[`Snapshot works with escaped characters 3`] = `
 Tests:       2 passed, 2 total
 Snapshots:   2 passed, 2 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-test.js\".
+Ran all test suites matching \\"snapshot-test.js\\".
 "
 `;
 
@@ -93,7 +93,7 @@ exports[`Snapshot works with escaped regex 1`] = `
 Tests:       2 passed, 2 total
 Snapshots:   2 added, 2 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-escape-regex.js\".
+Ran all test suites matching \\"snapshot-escape-regex.js\\".
 "
 `;
 
@@ -102,7 +102,7 @@ exports[`Snapshot works with escaped regex 2`] = `
 Tests:       2 passed, 2 total
 Snapshots:   2 passed, 2 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-escape-regex.js\".
+Ran all test suites matching \\"snapshot-escape-regex.js\\".
 "
 `;
 
@@ -111,7 +111,7 @@ exports[`Snapshot works with template literal subsitutions 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   1 added, 1 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-escape-substitution-test.js\".
+Ran all test suites matching \\"snapshot-escape-substitution-test.js\\".
 "
 `;
 
@@ -120,6 +120,6 @@ exports[`Snapshot works with template literal subsitutions 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   1 passed, 1 total
 Time:        <<REPLACED>>
-Ran all test suites matching \"snapshot-escape-substitution-test.js\".
+Ran all test suites matching \\"snapshot-escape-substitution-test.js\\".
 "
 `;

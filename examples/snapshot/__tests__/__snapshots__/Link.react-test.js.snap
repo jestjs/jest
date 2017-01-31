@@ -34,7 +34,7 @@ exports[`test properly escapes quotes 1`] = `
   href="#"
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}>
-  \"Facebook\" \\\'is \\ \'awesome\'
+  "Facebook" \\'is \\ 'awesome'
 </a>
 `;
 

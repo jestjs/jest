@@ -88,10 +88,9 @@ const noFlowFiles = newJsFiles
 
 raiseIssueAboutPaths(warn, noFlowFiles, '@flow');
 
-// based on assumptions from https://github.com/nodejs/node/wiki/ES6-Module-Detection-in-Node
-// basically it needs to contain at least one line with import or export at the
-// beginning of it, followed by a space; any content thereafter doesn't matter
-const esModuleRegex = /^(import|export)\s/g;
+// detects the presence of ES module import/export syntax, while ignoring the
+// variant introduced by flowtype; examples here: http://regexr.com/3f64p
+const esModuleRegex = /^(import|export)\s(?!type(of\s|\s)(?!from)).*?$/gm;
 
 // Ensure the use of 'use strict' on all non-ES module files
 const noStrictFiles = newJsFiles.filter(filepath => {

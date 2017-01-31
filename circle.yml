@@ -16,8 +16,8 @@ test:
     - cd website && npm run test
 
 deployment:
-  staging:
-    branch: /new-docs/
+  production:
+    branch: /master/
     commands:
       # generate docs website
       - git config --global user.email "jest-bot@users.noreply.github.com"

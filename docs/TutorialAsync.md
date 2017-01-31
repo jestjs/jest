@@ -1,15 +1,14 @@
 ---
 id: tutorial-async
-title: Tutorial – Async
+title: An Async Example
 layout: docs
-category: Quick Start
+category: Guides
 permalink: docs/tutorial-async.html
-next: tutorial-webpack
+previous: tutorial-react-native
+next: timer-mocks
 ---
 
-*Note: make sure to install `babel-jest` and the async/await feature for this
-tutorial. You can follow the [Getting Started](/jest/docs/getting-started.html)
-guide.*
+First, enable Babel support in Jest as documented in the [Getting Started](/jest/docs/getting-started.html#using-babel) guide.
 
 Let's implement a simple module that fetches user data from an API and
 returns the user name.
@@ -133,5 +132,5 @@ it('tests error with async/await', async () => {
 The code for this example is available at
 [examples/async](https://github.com/facebook/jest/tree/master/examples/async).
 
-*Note: If you'd like to test timers, like `setTimeout`, take a look at the
-[Timer mocks](/jest/docs/timer-mocks.html) documentation.*
+If you'd like to test timers, like `setTimeout`, take a look at the
+[Timer mocks](/jest/docs/timer-mocks.html) documentation.

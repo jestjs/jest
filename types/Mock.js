@@ -4,10 +4,12 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
-
 'use strict';
 
-const ESCAPED_CHARACTERS = /(\\|\"|\')/g;
+import type {MockFunctionMetadata as _MockFunctionMetadata, ModuleMocker as _ModuleMocker} from 'jest-mock';
 
-module.exports = val => val.replace(ESCAPED_CHARACTERS, '\\$1');
+export type MockFunctionMetadata = _MockFunctionMetadata;
+export type ModuleMocker = _ModuleMocker;
