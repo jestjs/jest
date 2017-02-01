@@ -60,7 +60,7 @@ Returns the `jest` object for chaining.
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
 ### `jest.fn(implementation)`
-Returns a new, unused [mock function](#mock-functions). Optionally takes a mock implementation.
+Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Optionally takes a mock implementation.
 
 ```js
   const mockFn = jest.fn();
@@ -187,7 +187,7 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-*Note It is recommended to use [`jest.mock()`](#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
+*Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
 ### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
