@@ -31,7 +31,6 @@ module.exports = ({
   haste: {
     providesModuleNodeModules: [],
   },
-  mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [
     'js',

@@ -14,6 +14,8 @@ import type {Config, Path} from 'types/Config';
 const micromatch = require('micromatch');
 const path = require('path');
 
+const MOCKS_PATTERN = path.sep + '__mocks__' + path.sep;
+
 const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (!config.collectCoverage) {
     return false;
@@ -58,7 +60,7 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
     return false;
   }
 
-  if (config.mocksPattern && filename.match(config.mocksPattern)) {
+  if (filename.match(MOCKS_PATTERN)) {
     return false;
   }
 

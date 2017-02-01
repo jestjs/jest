@@ -44,7 +44,6 @@ module.exports = ({
   },
   logHeapUsage: true,
   logTransformErrors: true,
-  mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',

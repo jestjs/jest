@@ -150,11 +150,6 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
-### `mocksPattern` [string]
-Default: `(?:[\\/]|^)__mocks__[\\/]`
-
-A pattern that is matched against file paths to determine which folder contains manual mocks.
-
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`
 
