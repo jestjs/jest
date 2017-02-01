@@ -239,6 +239,27 @@ test('onPress gets called with the right thing', () => {
 })
 ```
 
+### `expect.addSnapshotSerializer(serializer)`
+
+You can call `expect.addSnapshotSerializer` to add a module that formats application-specific data structures.
+
+For an individual test file, an added module precedes any modules from `snapshotSerializers` configuration, which precede the default snapshot serializers for built-in JavaScript types and for React elements. The last module added is the first module tested.
+
+```js
+import serializer from 'my-serializer-module';
+expect.addSnapshotSerializer(serializer);
+
+// affects expect(value).toMatchSnapshot() assertions in the test file
+```
+
+If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
+
+* You make the dependency explicit instead of implicit.
+* You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
+
+
+See [configuring package.json](/jest/docs/configuration.html#snapshotserializers-array-string) for more information.
+
 ### `.not`
 
 If you know how to test something, `.not` lets you test its opposite. For example, this code tests that the best La Croix flavor is not coconut:

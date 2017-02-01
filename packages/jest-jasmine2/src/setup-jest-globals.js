@@ -13,7 +13,7 @@
 import type {Config, Path} from 'types/Config';
 
 const {getState, setState} = require('jest-matchers');
-const {initializeSnapshotState, addPlugins} = require('jest-snapshot');
+const {initializeSnapshotState, addSerializer} = require('jest-snapshot');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -98,7 +98,12 @@ type Options = {
 };
 
 module.exports = ({testPath, config}: Options) => {
-  addPlugins(config.snapshotSerializers);
+  // Jest tests snapshotSerializers in order preceding built-in serializers.
+  // Therefore, add in reverse because the last added is the first tested.
+  config.snapshotSerializers.concat().reverse().forEach(path => {
+    // $FlowFixMe
+    addSerializer(require(path));
+  });
   setState({testPath});
   patchJasmine();
   const snapshotState = initializeSnapshotState(
