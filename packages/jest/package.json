@@ -16,5 +16,32 @@
     "type": "git",
     "url": "https://github.com/facebook/jest"
   },
-  "license": "BSD-3-Clause"
+  "homepage": "http://facebook.github.io/jest/",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "ava",
+    "babel",
+    "coverage",
+    "easy",
+    "expect",
+    "facebook",
+    "immersive",
+    "instant",
+    "jasmine",
+    "jest",
+    "jsdom",
+    "mocha",
+    "mocking",
+    "painless",
+    "qunit",
+    "runner",
+    "sandboxed",
+    "snapshot",
+    "tap",
+    "tape",
+    "test",
+    "testing",
+    "typescript",
+    "watch"
+  ]
 }
