@@ -9,15 +9,14 @@
  */
 'use strict';
 
-import type {Path} from 'types/Config';
-
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
 const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
 
 let PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
 
-exports.addPlugins = (plugins: Array<Path>) =>
-  // $FlowFixMe
-  PLUGINS = plugins.map(plugin => require(plugin)).concat(PLUGINS);
+// Prepend to list so the last added is the first tested.
+exports.addSerializer = (plugin: any) => {
+  PLUGINS = [plugin].concat(PLUGINS);
+};
 
-exports.getPlugins = () => PLUGINS;
+exports.getSerializers = () => PLUGINS;

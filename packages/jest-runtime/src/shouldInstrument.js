@@ -24,6 +24,13 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
   }
 
   if (
+    config.testMatch &&
+    config.testMatch.length &&
+    micromatch.any(filename, config.testMatch)) {
+    return false;
+  }
+
+  if (
     // This configuration field contains an object in the form of:
     // {'path/to/file.js': true}
     config.collectCoverageOnlyFrom &&

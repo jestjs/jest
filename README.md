@@ -1,4 +1,4 @@
-![Jest logo](.github/jest-logo.png?raw=true)
+# Jest
 
 [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest-cli.svg)](http://badge.fury.io/js/jest-cli)
 
@@ -90,7 +90,7 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 To use TypeScript in your tests, install the `ts-jest` package:
 
 ```
-npm install --save-dev test-jest
+npm install --save-dev ts-jest
 ```
 
 then modify your `package.json` so the `jest` section looks something like:

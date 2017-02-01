@@ -10,7 +10,6 @@
   "dependencies": {
     "jest-diff": "^18.1.0",
     "jest-matcher-utils": "^18.1.0",
-    "jest-util": "^18.1.0",
-    "pretty-format": "^18.1.0"
+    "jest-util": "^18.1.0"
   }
 }

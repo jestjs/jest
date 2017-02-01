@@ -84,6 +84,6 @@
       "\\.snap$",
       "/packages/.*/build"
     ],
-    "testRegex": ".*-test\\.js"
+    "testMatch": ["**/*-test.js"]
   }
 }
