@@ -78,7 +78,6 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
   }
 
   const matchers = globs.map(each => micromatch.matcher(each));
-
   return (path: Path) => matchers.some(each => each(path));
 };
 
