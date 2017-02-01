@@ -571,6 +571,36 @@ describe('Upgrade help', () => {
   });
 });
 
+describe('testMatch', () => {
+  it('testMatch default not applied if testRegex is set', () => {
+    const config = normalize({
+      rootDir: '/root',
+      testRegex: '.*',
+    });
+
+    expect(config.testMatch.length).toBe(0);
+  });
+
+  it('testRegex default not applied if testMatch is set', () => {
+    const config = normalize({
+      rootDir: '/root',
+      testMatch: ['**/*.js'],
+    });
+
+    expect(config.testRegex).toBe('');
+  });
+
+  it('throws if testRegex and testMatch are both specified', () => {
+    expect(() => {
+      normalize({
+        rootDir: '/root',
+        testMatch: ['**/*.js'],
+        testRegex: '.*',
+      });
+    }).toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe('preset', () => {
   beforeAll(() => {
     jest.mock(

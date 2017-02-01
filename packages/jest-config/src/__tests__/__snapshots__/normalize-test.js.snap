@@ -44,3 +44,13 @@ exports[`testEnvironment throws on invalid environment names 1`] = `
   https://facebook.github.io/jest/docs/configuration.html
 [39m"
 `;
+
+exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
+"[31m[1m[1m● [1mValidation Error[22m:
+
+  Configuration options [1mtestMatch[22m and [1mtestRegex[22m cannot be used together.
+
+  [1mConfiguration Documentation:[22m
+  https://facebook.github.io/jest/docs/configuration.html
+[39m"
+`;
