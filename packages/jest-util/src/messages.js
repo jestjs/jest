@@ -9,10 +9,11 @@
  */
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Config, Glob, Path} from 'types/Config';
 import type {AssertionResult, TestResult} from 'types/TestResult';
 
 const chalk = require('chalk');
+const micromatch = require('micromatch');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 
@@ -119,7 +120,11 @@ const formatPaths = (
   let filePath = path.relative(config.rootDir, match[2]);
   // highlight paths from the current test file
   if (
-    config.testRegex && new RegExp(config.testRegex).test(filePath) ||
+    (
+      config.testMatch &&
+      config.testMatch.length &&
+      micromatch(filePath, config.testMatch)
+    ) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);
@@ -130,7 +135,7 @@ const formatPaths = (
 type StackTraceOptions = {
   noStackTrace: boolean,
   rootDir: string,
-  testRegex: string,
+  testMatch: Array<Glob>,
 };
 
 const formatStackTrace = (

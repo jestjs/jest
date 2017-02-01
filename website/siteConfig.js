@@ -164,6 +164,11 @@ const users = [
     infoLink: 'https://soundcloud.com/',
   },
   {
+    caption: 'Sprout Social',
+    image: '/jest/img/logos/sproutsocial.png',
+    infoLink: 'https://sproutsocial.com/',
+  },
+  {
     caption: 'Trivago',
     image: '/jest/img/logos/trivago.png',
     infoLink: 'http://www.trivago.com/',

@@ -18,7 +18,7 @@ const path = require('path');
 const prettyFormat = require('pretty-format');
 const fs = require('fs');
 const naturalCompare = require('natural-compare');
-const getPlugins = require('./plugins').getPlugins;
+const getSerializers = require('./plugins').getSerializers;
 
 const SNAPSHOT_EXTENSION = 'snap';
 
@@ -61,7 +61,7 @@ const addExtraLineBreaks =
 const serialize = (data: any): string => {
   return addExtraLineBreaks(prettyFormat(data, {
     escapeRegex: true,
-    plugins: getPlugins(),
+    plugins: getSerializers(),
     printFunctionName: false,
   }));
 };
