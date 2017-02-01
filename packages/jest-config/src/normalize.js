@@ -345,6 +345,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
+      case 'testMatch':
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
@@ -369,6 +370,19 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     if (polyfillPath) {
       newConfig.setupFiles.unshift(polyfillPath);
     }
+  }
+
+  if (config.testRegex && config.testMatch) {
+    throw createConfigError(
+      `  Configuration options ${chalk.bold('testMatch')} and` +
+      ` ${chalk.bold('testRegex')} cannot be used together.`
+    );
+  }
+
+  if (config.testRegex && (!config.testMatch)) {
+    // Prevent the default testMatch conflicting with any explicitly
+    // configured `testRegex` value
+    newConfig.testMatch = [];
   }
 
   // If argv.json is set, coverageReporters shouldn't print a text report.

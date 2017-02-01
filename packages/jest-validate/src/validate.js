@@ -16,7 +16,13 @@ const defaultConfig = require('./defaultConfig');
 
 const _validate = (config: Object, options: ValidationOptions) => {
   for (const key in config) {
-    if (hasOwnProperty.call(options.exampleConfig, key)) {
+    if (
+      options.deprecatedConfig &&
+      key in options.deprecatedConfig &&
+      typeof options.deprecate === 'function'
+    ) {
+      options.deprecate(config, key, options.deprecatedConfig, options);
+    } else if (hasOwnProperty.call(options.exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
         typeof options.error === 'function' &&
@@ -24,12 +30,6 @@ const _validate = (config: Object, options: ValidationOptions) => {
       ) {
         options.error(key, config[key], options.exampleConfig[key], options);
       }
-    } else if (
-      options.deprecatedConfig &&
-      key in options.deprecatedConfig &&
-      typeof options.deprecate === 'function'
-    ) {
-      options.deprecate(config, key, options.deprecatedConfig, options);
     } else {
       options.unknown &&
         options.unknown(config, options.exampleConfig, key, options);

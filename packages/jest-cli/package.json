@@ -23,6 +23,7 @@
     "jest-snapshot": "^18.1.0",
     "jest-util": "^18.1.0",
     "node-notifier": "^5.0.1",
+    "micromatch": "^2.3.11",
     "string-length": "^1.0.1",
     "throat": "^3.0.0",
     "which": "^1.1.1",

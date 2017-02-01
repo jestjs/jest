@@ -4,7 +4,7 @@
     "transform": {
       "^.+\\.(ts|js)$": "<rootDir>/typescript-preprocessor.js"
     },
-    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$",
+    "testMatch": ["**/__tests__/*.(ts|tsx|js)"],
     "testEnvironment": "node",
     "moduleFileExtensions": [
       "ts",
