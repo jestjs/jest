@@ -60,8 +60,8 @@ const getCacheKey = (
       moduleFileExtensions: config.moduleFileExtensions,
       moduleNameMapper: config.moduleNameMapper,
       rootDir: config.rootDir,
+      roots: config.roots,
       testMatch: config.testMatch,
-      testPathDirs: config.testPathDirs,
       testRegex: config.testRegex,
       transformIgnorePatterns: config.transformIgnorePatterns,
     }));

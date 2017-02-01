@@ -207,7 +207,7 @@ class Runtime {
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
-      roots: config.testPathDirs,
+      roots: config.roots,
       useWatchman: config.watchman,
       watch: options && options.watch,
     });

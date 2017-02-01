@@ -190,8 +190,8 @@ function testPathArray(key) {
   });
 }
 
-describe('testPathDirs', () => {
-  testPathArray('testPathDirs');
+describe('roots', () => {
+  testPathArray('roots');
 });
 
 describe('transform', () => {

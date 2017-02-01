@@ -258,6 +258,9 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   if (config.testEnvironment) {
     config.testEnvironment = getTestEnvironment(config);
   }
+  if (!config.roots && config.testPathDirs) {
+    config.roots = config.testPathDirs;
+  }
 
   const babelJest = setupBabelJest(config);
   const newConfig = Object.assign({}, DEFAULT_CONFIG);
@@ -273,7 +276,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         //$FlowFixMe
         value = config[key].map(resolve.bind(null, config.rootDir, key));
         break;
-      case 'testPathDirs':
+      case 'roots':
         //$FlowFixMe
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
