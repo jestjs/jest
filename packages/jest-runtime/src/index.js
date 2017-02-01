@@ -27,6 +27,7 @@ const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
   createDirectory,
+  escapePathForRegex,
 } = require('jest-util');
 
 type Module = {|
@@ -201,7 +202,7 @@ class Runtime {
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
-      mocksPattern: path.sep + '__mocks__' + path.sep,
+      mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
