@@ -245,7 +245,10 @@ You can call `expect.addSnapshotSerializer` to add a module that formats applica
 
 For an individual test file, an added module precedes any modules from `snapshotSerializers` configuration, which precede the default snapshot serializers for built-in JavaScript types and for React elements. The last module added is the first module tested.
 
-If you make the dependency on a snapshot serializer explicit in individual test files, you solve a configuration problem that would cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
+If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
+
+* You make the dependency explicit instead of implicit.
+* You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
 
 
 ```js
