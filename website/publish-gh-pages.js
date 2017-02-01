@@ -5,7 +5,6 @@
 require(`shelljs/global`);
 
 const GIT_USER = process.env.GIT_USER;
-const DEPLOY_USER = process.env.DEPLOY_USER;
 const CIRCLE_PROJECT_USERNAME = process.env.CIRCLE_PROJECT_USERNAME;
 const CIRCLE_PROJECT_REPONAME = process.env.CIRCLE_PROJECT_REPONAME;
 const remoteBranch = `https://${GIT_USER}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git`;
@@ -49,10 +48,10 @@ cd(`build/${CIRCLE_PROJECT_REPONAME}-gh-pages`);
 
 exec(`git add --all`);
 exec(`git commit -m "update website"`);
-if (exec(`git push git@github.com:${DEPLOY_USER}/${CIRCLE_PROJECT_REPONAME}.git gh-pages`).code !== 0) {
+if (exec(`git push origin gh-pages`).code !== 0) {
   echo(`Error: Git push failed`);
   exit(1);
 } else {
-  echo(`Website is live at: https://${DEPLOY_USER}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
+  echo(`Website is live at: https://${CIRCLE_PROJECT_USERNAME}.github.io/${CIRCLE_PROJECT_REPONAME}/`);
   exit(0);
 }
