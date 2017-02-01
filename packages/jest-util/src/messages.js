@@ -120,8 +120,11 @@ const formatPaths = (
   let filePath = path.relative(config.rootDir, match[2]);
   // highlight paths from the current test file
   if (
-    (config.testMatch && config.testMatch.length
-      && micromatch(filePath, config.testMatch)) ||
+    (
+      config.testMatch &&
+      config.testMatch.length &&
+      micromatch(filePath, config.testMatch)
+    ) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);
