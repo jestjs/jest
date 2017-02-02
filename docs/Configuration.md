@@ -345,7 +345,7 @@ Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
 The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files
 inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec`
 (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
-or `spec.js`. See also [array<string>]](#testglob-array-string), but note
+or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note
 that you cannot specify both options.
 
 ### `testResultsProcessor` [string]
