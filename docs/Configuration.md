@@ -51,7 +51,7 @@ This option is disabled by default. If you are introducing Jest to a large organ
 ### `browser` [boolean]
 Default: `false`
 
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
+Respect the [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `bail` [boolean]
 Default: `false`
