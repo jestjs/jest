@@ -252,7 +252,7 @@ Default: `[]`
 A list of paths to snapshot serializer modules Jest should use for snapshot
 testing.
 
-Jest has default serializers for built-in javascript types and for react
+Jest has default serializers for built-in JavaScript types and for React
 elements. See [snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test) for more information.
 
 Example serializer module:
@@ -303,6 +303,8 @@ Pretty foo: Object {
   "y": 2,
 }
 ```
+
+To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](/jest/docs/expect.html#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
 ### `testEnvironment` [string]
 Default: `"jsdom"`
