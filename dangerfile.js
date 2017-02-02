@@ -51,8 +51,7 @@ const raiseIssueAboutPaths = (
 };
 
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
-const isNotInTestFiles = path => !(includes(path, '__tests__')
-                                 || includes(path, '__mocks__'));
+const isSourceFile = path => includes(path, '/src/');
 
 // New JS files should have the FB copyright header + flow
 const facebookLicenseHeaderComponents = [
@@ -80,7 +79,7 @@ if (noFBCopyrightFiles.length > 0) {
 // Ensure the majority of all files use Flow
 // Does not run for test files, and also offers a warning not an error.
 const noFlowFiles = newJsFiles
-  .filter(isNotInTestFiles)
+  .filter(isSourceFile)
   .filter(filepath => {
     const content = fs.readFileSync(filepath).toString();
     return !includes(content, '@flow');
