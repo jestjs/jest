@@ -138,6 +138,32 @@ class Resolver {
 
       if (module) {
         return this._moduleNameCache[key] = module;
+      } else {
+	      // 2a. Check for platform-specific modules, e.g. `import Foo from `../../utils/foo`
+	      // where `../../utils/foo.<defaultPlatform.js` do exist, but
+	      // `../../utils/foo.js` does not.
+	      const parsedPath = path.parse( moduleName );
+
+	      if (parsedPath.ext == '') {
+		      const moduleNameWithDefaultPlatform = path.format({
+			      dir: parsedPath.dir,
+			      root: parsedPath.root,
+			      name: parsedPath.name,
+			      ext: `.${this._options.defaultPlatform}`
+		      } );
+
+		      module = Resolver.findNodeModule(moduleNameWithDefaultPlatform, {
+			      basedir: dirname,
+			      browser: this._options.browser,
+			      extensions,
+			      moduleDirectory,
+			      paths,
+		      });
+
+		      if (module) {
+			      return this._moduleNameCache[key] = module;
+		      }
+	      }
       }
     }
 
