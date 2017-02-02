@@ -313,6 +313,13 @@ Default: `undefined`
 This option allows the use of a custom global teardown module which exports an
 async function that is triggered once after all test suites.
 
+### `module` [boolean]
+Default: `false`
+
+Respect the [`"module"` field](https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md) in `package.json`. Many libraries that contain ES modules ([import/export syntax](http://www.2ality.com/2014/09/es6-modules-final.html)) use this field as a pointer to their untranspiled (ES6+) source, in addition to the ubiquitous `"main"` field that points to precompiled ES5 javascript.
+
+_TL;DR: enable this if your project uses import/export syntax._
+
 ### `moduleFileExtensions` [array<string>]
 
 Default: `["js", "json", "jsx", "node"]`
