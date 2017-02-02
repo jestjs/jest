@@ -108,11 +108,12 @@ and enable the feature in your `.babelrc` file.
 
 Errors can be handled in the standard JavaScript way: Either using `.catch()`
 directly on a Promise or through `try-catch` when using async/await. Note that
-if a Promise throws and the error is not handled, the test will fail.
+if a Promise throws and the error is not handled, the test will fail. `expect.assertion(1)` makes sure that expectation was checked once. In this example it will fail if promise was resolved without throwing.
 
 ```js
 // Testing for async errors can be done using `catch`.
 it('tests error with promises', () => {
+  expect.assertions(1)
   return user.getUserName(3)
     .catch(e => expect(e).toEqual({
       error: 'User with 3 not found.',
@@ -121,6 +122,7 @@ it('tests error with promises', () => {
 
 // Or try-catch.
 it('tests error with async/await', async () => {
+  expect.assertions(1)
   try {
     await user.getUserName(2);
   } catch (object) {
