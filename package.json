@@ -31,7 +31,7 @@
     "react-test-renderer": "^15.4.1",
     "rimraf": "^2.5.4",
     "strip-ansi": "^3.0.1",
-    "timing-stats-cli": "^0.5.7",
+    "timing-stats-cli": "^0.6.0",
     "typescript": "^2.1.4"
   },
   "scripts": {
