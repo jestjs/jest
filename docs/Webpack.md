@@ -228,7 +228,7 @@ ES modules to CommonJS modules only in the `test` environment.
 ```
 
 If you use dynamic imports (`import('some-file.js').then(module => ...)`), you
-need to enable `dynamic-import-node` plugin.
+need to enable the `dynamic-import-node` plugin.
 
 ```json
 // .babelrc
