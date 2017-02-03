@@ -1,0 +1,11 @@
+{
+  "jest": {
+    "haste": {
+      "retainAllFiles": true
+    },
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ]
+  }
+}
