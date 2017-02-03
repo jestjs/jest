@@ -20,7 +20,7 @@ process.on('uncaughtException', err => {
 });
 
 const {ModuleMap} = require('jest-haste-map');
-const {separateMessageFromStack} = require('jest-util');
+const {separateMessageFromStack} = require('jest-message-util');
 
 const Runtime = require('jest-runtime');
 const runTest = require('./runTest');

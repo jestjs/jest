@@ -25,7 +25,7 @@ const path = require('path');
 const {
   escapePathForRegex,
   replacePathSepForRegex,
-} = require('jest-util');
+} = require('jest-regex-util');
 
 type SearchSourceConfig = {
   testMatch: Array<Glob>,

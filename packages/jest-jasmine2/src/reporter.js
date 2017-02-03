@@ -19,7 +19,7 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-const {formatResultsErrors} = require('jest-util');
+const {formatResultsErrors} = require('jest-message-util');
 
 type Suite = {
   description: string,

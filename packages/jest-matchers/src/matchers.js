@@ -16,7 +16,7 @@ import type {
 } from 'types/Matchers';
 
 const diff = require('jest-diff');
-const {escapeStrForRegex} = require('jest-util');
+const {escapeStrForRegex} = require('jest-regex-util');
 const {getPath} = require('./utils');
 const {
   EXPECTED_COLOR,

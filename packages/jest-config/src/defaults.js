@@ -15,7 +15,7 @@ import type {DefaultConfig} from 'types/Config';
 const constants = require('./constants');
 const os = require('os');
 const path = require('path');
-const {replacePathSepForRegex} = require('jest-util');
+const {replacePathSepForRegex} = require('jest-regex-util');
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 

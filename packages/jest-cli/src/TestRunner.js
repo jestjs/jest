@@ -19,7 +19,7 @@ import type {HasteContext, HasteFS} from 'types/HasteMap';
 import type {RunnerContext} from 'types/Reporters';
 import type BaseReporter from './reporters/BaseReporter';
 
-const {formatExecError} = require('jest-util');
+const {formatExecError} = require('jest-message-util');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const DefaultReporter = require('./reporters/DefaultReporter');
