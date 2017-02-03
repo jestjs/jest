@@ -212,7 +212,7 @@ thus requires ES modules to be transpiled to CommonJS modules. As such, if you
 are using webpack 2, you most likely will want to configure Babel to transpile
 ES modules to CommonJS modules only in the `test` environment.
 
-```js
+```json
 // .babelrc
 {
   "presets": [
@@ -222,6 +222,26 @@ ES modules to CommonJS modules only in the `test` environment.
   "env": {
     "test": {
       "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
+}
+```
+
+If you use dynamic imports (`import('some-file.js').then(module => ...)`), you
+need to enable `dynamic-import-node` plugin.
+
+```json
+// .babelrc
+{
+  "presets": [
+    ["es2015", {"modules": false}]
+  ],
+
+  "plugins": ["syntax-dynamic-import"],
+
+  "env": {
+    "test": {
+      "plugins": ["dynamic-import-node"]
     }
   }
 }
