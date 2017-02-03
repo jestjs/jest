@@ -35,8 +35,8 @@ exports[`Link renders correctly 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
-  onMouseEnter={[Function bound _onMouseEnter]}
-  onMouseLeave={[Function bound _onMouseLeave]}>
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}>
   Facebook
 </a>
 `;
