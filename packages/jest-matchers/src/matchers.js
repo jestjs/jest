@@ -31,6 +31,8 @@ const {
 } = require('jest-matcher-utils');
 const {
   equals,
+  asymmetricMatch,
+  isUndefined,
 } = require('./jasmine-utils');
 
 type ContainIterable = (
@@ -560,6 +562,11 @@ const matchers: MatchersObject = {
     }
 
     const compare = (expected: any, received: any): boolean => {
+
+      const asymmetricResult = asymmetricMatch(expected, received);
+      if (!isUndefined(asymmetricResult)) {
+        return asymmetricResult;
+      }
 
       if (typeof received !== typeof expected) {
         return false;

@@ -2605,6 +2605,23 @@ Difference:
 [2m ][22m"
 `;
 
+exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\\"a\\": Any<Number>}[39m
+Received:
+  [31m{\\"a\\": \\"a\\", \\"c\\": \\"d\\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m Object {[22m
+[32m-  \\"a\\": Any<Number>,[39m
+[31m+  \\"a\\": \\"a\\",[39m
+[2m }[22m"
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -2781,6 +2798,29 @@ Difference:
 [2m Object {[22m
 [32m-  \\"a\\": Object {[39m
 [32m-    \\"b\\": 4,[39m
+[32m-  },[39m
+[31m+  \\"a\\": Array [[39m
+[31m+    3,[39m
+[31m+    4,[39m
+[31m+    5,[39m
+[31m+  ],[39m
+[2m }[22m"
+`;
+
+exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": Any<String>}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\\"a\\": {\\"b\\": Any<String>}}[39m
+Received:
+  [31m{\\"a\\": [3, 4, 5], \\"b\\": \\"b\\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m Object {[22m
+[32m-  \\"a\\": Object {[39m
+[32m-    \\"b\\": Any<String>,[39m
 [32m-  },[39m
 [31m+  \\"a\\": Array [[39m
 [31m+    3,[39m
@@ -2981,6 +3021,24 @@ Expected value not to match object:
   [32m{\\"a\\": [3, 4, 5]}[39m
 Received:
   [31m{\\"a\\": [3, 4, 5], \\"b\\": \\"b\\"}[39m"
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": {"x": "x", "y": "y"}}).toMatchObject({"a": {"x": Any<String>}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match object:
+  [32m{\\"a\\": {\\"x\\": Any<String>}}[39m
+Received:
+  [31m{\\"a\\": {\\"x\\": \\"x\\", \\"y\\": \\"y\\"}}[39m"
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": 1, "c": 2}).toMatchObject({"a": Any<Number>}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match object:
+  [32m{\\"a\\": Any<Number>}[39m
+Received:
+  [31m{\\"a\\": 1, \\"c\\": 2}[39m"
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": 2015-11-30T00:00:00.000Z, "b": "b"}).toMatchObject({"a": 2015-11-30T00:00:00.000Z}) 1`] = `
