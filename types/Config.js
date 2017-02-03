@@ -17,6 +17,7 @@ export type HasteConfig = {|
   hasteImplModulePath?: string,
   platforms?: Array<string>,
   providesModuleNodeModules: Array<string>,
+  retainAllFiles?: boolean,
 |};
 
 export type ConfigGlobals = Object;
