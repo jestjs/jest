@@ -8,6 +8,9 @@
 'use strict';
 
 const runJest = require('../runJest');
+const skipOnWindows = require('skipOnWindows');
+
+skipOnWindows.suite();
 
 it('does not run tests in node_modules/', () => {
   const result = runJest.json('haste-retain-all-ignore-paths').json;
