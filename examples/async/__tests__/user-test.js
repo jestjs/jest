@@ -20,6 +20,7 @@ it('works with async/await', async () => {
 
 // Testing for async errors can be done using `catch`.
 it('tests error with promises', () => {
+  expect.assertions(1);
   return user.getUserName(3)
     .catch(e => expect(e).toEqual({
       error: 'User with 3 not found.',
@@ -28,6 +29,7 @@ it('tests error with promises', () => {
 
 // Or try-catch.
 it('tests error with async/await', async () => {
+  expect.assertions(1);
   try {
     await user.getUserName(2);
   } catch (object) {
