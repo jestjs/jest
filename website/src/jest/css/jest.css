@@ -279,6 +279,13 @@ header h2 {
 .mainContainer .wrapper .post h3 {
   font-size: 110%;
 }
+.mainContainer .wrapper .post h5 {
+  font-weight: 300;
+  font-style: italic;
+}
+.mainContainer .wrapper .post h5 strong {
+  font-weight: 400;
+}
 .mainContainer .wrapper .post ol {
   list-style: decimal outside none;
 }
