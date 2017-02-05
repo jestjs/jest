@@ -11,8 +11,7 @@ const chalk = require('chalk');
 const spawnSync = require('child_process').spawnSync;
 
 /**
- * @example `runCommands('npm test', packageDirectory)`
- * @example `runCommands(['npm test', 'npm publish'], packageDirectory)`
+ * @example `runCommands('npm', 'test', packageDirectory)`
  * @param {boolean} options.suppressOutput don't print output to stdout
  */
 module.exports = function runCommand(cmd, args, cwd, options) {
