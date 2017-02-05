@@ -186,6 +186,8 @@ The `expect.assertions(1)` call ensures that the `prepareState` callback actuall
 
 ### `expect.stringContaining(string)`
 
+##### available since: **v19.0.0**
+
 `expect.stringContaining(string)` matches any string that contains the exact provided string.
 
 
