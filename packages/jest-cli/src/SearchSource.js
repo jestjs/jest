@@ -13,7 +13,7 @@
 import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
 import type {Glob, Path} from 'types/Config';
-import type {ResolveModuleConfig} from 'jest-resolve';
+import type {ResolveModuleConfig} from 'types/Resolve';
 
 const micromatch = require('micromatch');
 
