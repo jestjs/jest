@@ -29,7 +29,7 @@ jest.doMock('fs', () => {
 // Let's us use a per-test "jest process"
 let mockDebugProcess =  {};
 const mockJestChildProcessWithArgs = jest.fn(() => mockDebugProcess);
-jest.mock('../Process.js', () => {
+jest.doMock('../Process.js', () => {
   return {
     jestChildProcessWithArgs: mockJestChildProcessWithArgs,
   };

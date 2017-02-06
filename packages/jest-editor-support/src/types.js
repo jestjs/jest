@@ -15,6 +15,13 @@ export type Location = {
   line: number,
 }
 
+import type ProjectWorkspace from './ProjectWorkspace';
+import type {ChildProcess} from 'child_process';
+
+export type Options = {
+  invoker: (workspace: ProjectWorkspace, args: Array<string>) => ChildProcess
+}
+
 export type JestFileResults = {
   name: string,
   summary: string,

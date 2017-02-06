@@ -13,6 +13,9 @@ import type {ParserReturn} from '../../ScriptParser';
 const path = require('path');
 const fixtures = path.resolve(__dirname, '../fixtures');
 
+// silence the no-test error from Jest.
+test();
+
 function parserTests(parse: (file: string) => ParserReturn) {
   describe('File Parsing for it blocks', () => {
 
@@ -93,8 +96,8 @@ function parserTests(parse: (file: string) => ParserReturn) {
       expect(sixthIt.end).toEqual({column: 5, line: 25});
     });
 
-    // These tests act more like linters that we don't raise on 
-    // non-trivial files taken from some Artsy codebases, 
+    // These tests act more like linters that we don't raise on
+    // non-trivial files taken from some Artsy codebases,
     // which are MIT licensed.
 
     it('For a danger test file (which has flow annotations)', () => {

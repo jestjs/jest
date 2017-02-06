@@ -17,16 +17,21 @@ const {EventEmitter} = require('events');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const {jestChildProcessWithArgs} = require('./Process');
 
+import type {Options} from './types';
 // This class represents the running process, and
 // passes out events when it understands what data is being
 // pass sent out of the process
 module.exports = class Runner extends EventEmitter {
   debugprocess: ChildProcess;
-  workspace: ProjectWorkspace;
+  options: Options;
   outputPath: string;
+  workspace: ProjectWorkspace;
 
-  constructor(workspace: ProjectWorkspace) {
+  constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
+    this.options = options || {
+      invoker: jestChildProcessWithArgs,
+    };
     this.workspace = workspace;
     this.outputPath = tmpdir() + '/jest_runner.json';
   }
@@ -47,7 +52,7 @@ module.exports = class Runner extends EventEmitter {
       this.outputPath,
     ];
 
-    this.debugprocess = jestChildProcessWithArgs(this.workspace, args);
+    this.debugprocess = this.options.invoker(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       // Make jest save to a file, otherwise we get chunked data
       // and it can be hard to put it back together.
@@ -85,7 +90,7 @@ module.exports = class Runner extends EventEmitter {
 
   runJestWithUpdateForSnapshots(completion: any) {
     const args = ['--updateSnapshot'];
-    const updateProcess = jestChildProcessWithArgs(this.workspace, args);
+    const updateProcess = this.options.invoker(this.workspace, args);
     updateProcess.on('close', () => {
       completion();
     });
