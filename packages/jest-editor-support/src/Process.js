@@ -19,7 +19,7 @@ const ProjectWorkspace = require('./ProjectWorkspace');
  * @param {string[]} args
  * @returns {ChildProcess}
  */
-module.exports.jestChildProcessWithArgs = (
+module.exports.createProcess = (
   workspace: ProjectWorkspace, args: Array<string>,
 ): ChildProcess => {
 
