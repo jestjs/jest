@@ -413,6 +413,10 @@ class Runtime {
     this._moduleMocker.resetAllMocks();
   }
 
+  clearAllMocks() {
+    this._moduleMocker.clearAllMocks();
+  }
+
   _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
@@ -614,6 +618,10 @@ class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
+    const clearAllMocks = () => {
+      this.clearAllMocks();
+      return runtime;
+    };
     const resetAllMocks = () => {
       this.resetAllMocks();
       return runtime;
@@ -640,6 +648,7 @@ class Runtime {
 
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
+      clearAllMocks,
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
       deepUnmock,
       disableAutomock,
