@@ -14,7 +14,7 @@ jest.mock('path', () => require.requireActual('path').posix);
 
 const crypto = require('crypto');
 const path = require('path');
-const utils = require('jest-util');
+const utils = require('jest-regex-util');
 const normalize = require('../normalize');
 
 const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
@@ -205,14 +205,14 @@ describe('transform', () => {
     const config = normalize({
       rootDir: '/root/',
       transform: {
-        [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-util',
+        [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
         [DEFAULT_JS_PATTERN]: 'babel-jest',
         'abs-path': '/qux/quux',
       },
     }, '/root/path');
 
     expect(config.transform).toEqual([
-      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-util'],
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
       [DEFAULT_JS_PATTERN, 'babel-jest'],
       ['abs-path', '/qux/quux'],
     ]);

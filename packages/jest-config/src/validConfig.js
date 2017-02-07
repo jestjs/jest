@@ -13,7 +13,7 @@
 import type {InitialConfig} from 'types/Config';
 
 const constants = require('./constants');
-const {replacePathSepForRegex} = require('jest-util');
+const {replacePathSepForRegex} = require('jest-regex-util');
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
