@@ -13,9 +13,6 @@ import type {ParserReturn} from '../../ScriptParser';
 const path = require('path');
 const fixtures = path.resolve(__dirname, '../fixtures');
 
-// silence the no-test error from Jest.
-test();
-
 function parserTests(parse: (file: string) => ParserReturn) {
   describe('File Parsing for it blocks', () => {
 
