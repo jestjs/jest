@@ -15,13 +15,23 @@ export type Location = {
   line: number,
 }
 
+import type ProjectWorkspace from './ProjectWorkspace';
+import type {ChildProcess} from 'child_process';
+
+export type Options = {
+  createProcess?: (
+    workspace: ProjectWorkspace,
+    args: Array<string>,
+  ) => ChildProcess
+}
+
 export type JestFileResults = {
   name: string,
   summary: string,
   message: string,
   status: "failed" | "passed",
-  startTime:number,
-  endTime:number,
+  startTime: number,
+  endTime: number,
   assertionResults: Array<JestAssertionResults>,
 }
 
@@ -33,14 +43,14 @@ export type JestAssertionResults = {
 }
 
 export type JestTotalResults = {
-  success:boolean,
-  startTime:number,
-  numTotalTests:number,
-  numTotalTestSuites:number,
-  numRuntimeErrorTestSuites:number,
-  numPassedTests:number,
-  numFailedTests:number,
-  numPendingTests:number,
+  success: boolean,
+  startTime: number,
+  numTotalTests: number,
+  numTotalTestSuites: number,
+  numRuntimeErrorTestSuites: number,
+  numPassedTests: number,
+  numFailedTests: number,
+  numPendingTests: number,
   testResults: Array<JestFileResults>,
 }
 
