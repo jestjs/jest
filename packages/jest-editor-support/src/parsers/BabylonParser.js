@@ -54,6 +54,7 @@ const babylonParser = (file: string) => {
   const plugins = Array.isArray(babel.plugins)
     ? babel.plugins.concat(['flow'])
     : ['flow'];
+
   const config = {plugins, sourceType: 'module'};
   const ast = babylon.parse(data, config);
 
