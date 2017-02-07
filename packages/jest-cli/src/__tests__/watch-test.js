@@ -50,8 +50,15 @@ describe('Watch mode flows', () => {
 
   it('Runs Jest once by default and shows usage', () => {
     watch(config, pipe, argv, hasteMap, hasteContext, stdin);
-    expect(runJestMock).toBeCalledWith(hasteContext, config, argv, pipe,
-      new TestWatcher({isWatchMode: true}), jasmine.any(Function));
+    expect(runJestMock).toBeCalledWith(
+      hasteContext,
+      config,
+      argv,
+      pipe,
+      new TestWatcher({isWatchMode: true}),
+      jasmine.any(Function),
+      jasmine.any(Function),
+    );
     expect(pipe.write.mock.calls.reverse()[0]).toMatchSnapshot();
   });
 
