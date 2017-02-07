@@ -11,11 +11,11 @@
 
 const path = require('path');
 
-const mocksPattern = '__mocks__';
+const MOCKS_PATTERN = path.sep + '__mocks__' + path.sep;
 
 const getMockName = (filePath: string) => {
-  const mockPath = filePath.split(mocksPattern)[1];
-  return mockPath.substring(1, mockPath.lastIndexOf(path.extname(mockPath)));
+  const mockPath = filePath.split(MOCKS_PATTERN)[1];
+  return mockPath.substring(0, mockPath.lastIndexOf(path.extname(mockPath)));
 };
 
 module.exports = getMockName;

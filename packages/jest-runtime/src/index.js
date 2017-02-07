@@ -27,6 +27,7 @@ const shouldInstrument = require('./shouldInstrument');
 const transform = require('./transform');
 const {
   createDirectory,
+  escapePathForRegex,
 } = require('jest-util');
 
 type Module = {|
@@ -81,7 +82,6 @@ class Runtime {
   _mockFactories: {[key: string]: () => any};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata};
   _mockRegistry: {[key: string]: any};
-  _mocksPattern: ?RegExp;
   _moduleMocker: ModuleMocker;
   _moduleRegistry: {[key: string]: Module};
   _internalModuleRegistry: {[key: string]: Module};
@@ -110,8 +110,6 @@ class Runtime {
     this._explicitShouldMock = Object.create(null);
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
-    this._mocksPattern =
-      config.mocksPattern ? new RegExp(config.mocksPattern) : null;
     this._shouldAutoMock = config.automock;
     this._virtualMocks = Object.create(null);
 
@@ -204,13 +202,13 @@ class Runtime {
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
-      mocksPattern: config.mocksPattern,
+      mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
-      roots: config.testPathDirs,
+      roots: config.roots,
       useWatchman: config.watchman,
       watch: options && options.watch,
     });
