@@ -28,10 +28,10 @@ jest.doMock('fs', () => {
 
 // Let's us use a per-test "jest process"
 let mockDebugProcess =  {};
-const mockcreateProcess = jest.fn(() => mockDebugProcess);
+const mockCreateProcess = jest.fn(() => mockDebugProcess);
 jest.doMock('../Process.js', () => {
   return {
-    createProcess: mockcreateProcess,
+    createProcess: mockCreateProcess,
   };
 });
 
@@ -42,7 +42,7 @@ describe('events', () => {
   let fakeProcess;
 
   beforeEach(() => {
-    mockcreateProcess.mockClear();
+    mockCreateProcess.mockClear();
     const workspace = new ProjectWorkspace('.', 'node_modules/.bin/jest', 18);
     runner = new Runner(workspace);
     fakeProcess = new EventEmitter();
@@ -87,12 +87,12 @@ describe('events', () => {
 
   it('should only start one jest process at a time', () => {
     runner.start();
-    expect(mockcreateProcess).toHaveBeenCalledTimes(1);
+    expect(mockCreateProcess).toHaveBeenCalledTimes(1);
   });
 
   it('should start jest process after killing the old process', () => {
     runner.closeProcess();
     runner.start();
-    expect(mockcreateProcess).toHaveBeenCalledTimes(2);
+    expect(mockCreateProcess).toHaveBeenCalledTimes(2);
   });
 });
