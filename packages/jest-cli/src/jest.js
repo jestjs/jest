@@ -75,8 +75,15 @@ const runCLI = (
           const startRun = () => {
             preRunMessage.print(pipe);
             const testWatcher = new TestWatcher({isWatchMode: false});
-            return runJest(hasteContext, config, argv, pipe, testWatcher,
-              startRun, onComplete);
+            return runJest(
+              hasteContext,
+              config,
+              argv,
+              pipe,
+              testWatcher,
+              startRun,
+              onComplete,
+            );
           };
           return startRun();
         }
