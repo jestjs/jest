@@ -63,7 +63,9 @@ class NotifyReporter extends BaseReporter {
         message,
         title,
       }, (err, _, metadata) => {
-        if (err) { return; }
+        if (err) {
+          return;
+        }
         if (metadata.activationValue === quitAnswer) {
           process.exit(0);
           return;
