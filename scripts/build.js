@@ -25,7 +25,7 @@ const fs = require('fs');
 const getPackages = require('./_getPackages');
 const glob = require('glob');
 const micromatch = require('micromatch');
-const mkdir = require('mkdirp');
+const mkdirp = require('mkdirp');
 const path = require('path');
 
 const SRC_DIR = 'src';
@@ -69,7 +69,7 @@ function buildFile(file, silent) {
   const relativeToSrcPath = path.relative(packageSrcPath, file);
   const destPath = path.resolve(packageBuildPath, relativeToSrcPath);
 
-  mkdir.sync(path.dirname(destPath));
+  mkdirp.sync(path.dirname(destPath));
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
     silent || process.stdout.write(
       chalk.dim('  \u2022 ') +
@@ -88,7 +88,6 @@ function buildFile(file, silent) {
     );
   } else {
     const transformed = babel.transformFileSync(file, babelOptions).code;
-    mkdir.sync(path.dirname(destPath));
     fs.writeFileSync(destPath, transformed);
     silent || process.stdout.write(
       chalk.green('  \u2022 ') +

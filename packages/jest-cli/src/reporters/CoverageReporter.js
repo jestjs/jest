@@ -9,7 +9,7 @@
 */
 'use strict';
 
-import type {AggregatedResult, CoverageMap, SourceMapStore, TestResult} from 'types/TestResult';
+import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {RunnerContext} from 'types/Reporters';
 
@@ -22,7 +22,6 @@ const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
-const libSourceMaps = require('istanbul-lib-source-maps');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -31,12 +30,10 @@ const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
-  _sourceMapStore: SourceMapStore;
 
   constructor() {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
-    this._sourceMapStore = libSourceMaps.createSourceMapStore();
   }
 
   onTestResult(
@@ -57,9 +54,13 @@ class CoverageReporter extends BaseReporter {
     runnerContext: RunnerContext,
   ) {
     this._addUntestedFiles(config, runnerContext);
-    const {map, sourceFinder} = config.mapCoverage
-      ? this._sourceMapStore.transformCoverage(this._coverageMap)
-      : {map: this._coverageMap, sourceFinder: undefined};
+    let map = this._coverageMap;
+    let sourceFinder: Object;
+    if (config.mapCoverage) {
+      const libSourceMaps = require('istanbul-lib-source-maps');
+      const sourceMapStore = libSourceMaps.createSourceMapStore();
+      ({map, sourceFinder} = sourceMapStore.transformCoverage(map));
+    }
 
     const reporter = createReporter();
     try {

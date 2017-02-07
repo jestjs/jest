@@ -300,7 +300,7 @@ const transformSource = (
     }
   }
 
-  if (config.mapCoverage === false) {
+  if (!config.mapCoverage) {
     transformed.sourceMap = null;
   }
 

@@ -63,13 +63,6 @@ export type CoverageMap = {|
   fileCoverageFor: (file: string) => FileCoverage,
 |};
 
-export class SourceMapStore {
-  transformCoverage: (coverageMap: CoverageMap) => {
-    map: CoverageMap,
-    sourceFinder: any
-  }
-}
-
 export type Error = {|
   message: string,
   stack: ?string,
