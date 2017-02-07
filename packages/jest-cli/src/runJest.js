@@ -54,6 +54,7 @@ const runJest = (
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
   testWatcher: any,
+  startRun: () => *,
   onComplete: (testResults: any) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
@@ -100,6 +101,7 @@ const runJest = (
             getTestSummary: () => getTestSummary(argv, patternInfo),
             maxWorkers,
           },
+          startRun
         ).runTests(data.paths, testWatcher);
       })
       .then(runResults => {

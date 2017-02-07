@@ -22,33 +22,59 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 class NotifyReporter extends BaseReporter {
+  _startRun: () => *;
+
+  constructor(startRun: () => *) {
+    super();
+    this._startRun = startRun;
+  }
+
   onRunComplete(config: Config, result: AggregatedResult): void {
-    let title;
-    let message;
     const success = result.numFailedTests === 0 &&
       result.numRuntimeErrorTestSuites === 0;
 
     if (success) {
-      title = util.format('%d%% Passed', 100);
-      message = util.format(
+      const title = util.format('%d%% Passed', 100);
+      const message = util.format(
         (isDarwin ? '\u2705 ' : '') + '%d tests passed',
         result.numPassedTests,
       );
+
+      notifier.notify({icon, message, title});
     } else {
       const failed = result.numFailedTests / result.numTotalTests;
 
-      title = util.format(
+      const title = util.format(
         '%d%% Failed',
         Math.ceil(Number.isNaN(failed) ? 0 : failed * 100),
       );
-      message = util.format(
+      const message = util.format(
         (isDarwin ? '\u26D4\uFE0F ' : '') + '%d of %d tests failed',
         result.numFailedTests,
         result.numTotalTests,
       );
-    }
 
-    notifier.notify({icon, message, title});
+      const restartAnswer = 'Run again';
+      const quitAnswer = 'Exit tests';
+      notifier.notify({
+        actions: [restartAnswer, quitAnswer],
+        closeLabel: 'Close',
+        icon,
+        message,
+        title,
+      }, (err, _, metadata) => {
+        if (err) {
+          return;
+        }
+        if (metadata.activationValue === quitAnswer) {
+          process.exit(0);
+          return;
+        }
+        if (metadata.activationValue === restartAnswer) {
+          this._startRun();
+        }
+      });
+    }
   }
 }
 
