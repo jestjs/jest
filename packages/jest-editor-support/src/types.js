@@ -19,7 +19,10 @@ import type ProjectWorkspace from './ProjectWorkspace';
 import type {ChildProcess} from 'child_process';
 
 export type Options = {
-  createProcess: (workspace: ProjectWorkspace, args: Array<string>) => ChildProcess
+  createProcess: (
+    workspace: ProjectWorkspace,
+    args: Array<string>,
+  ) => ChildProcess
 }
 
 export type JestFileResults = {
