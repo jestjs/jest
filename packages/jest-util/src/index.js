@@ -14,39 +14,14 @@ const Console = require('./Console');
 const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
 
-const {
-  formatExecError,
-  formatResultsErrors,
-  formatStackTrace,
-} = require('./messages');
 const clearLine = require('./clearLine');
 const fileExists = require('jest-file-exists');
 const formatTestResults = require('./formatTestResults');
 const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
-const separateMessageFromStack = require('./separateMessageFromStack');
 const setGlobal = require('./setGlobal');
 const validateCLIOptions = require('./validateCLIOptions');
-
-const escapePathForRegex = (dir: string) => {
-  if (path.sep === '\\') {
-    // Replace "\" with "/" so it's not escaped by escapeStrForRegex.
-    // replacePathSepForRegex will convert it back.
-    dir = dir.replace(/\\/g, '/');
-  }
-  return replacePathSepForRegex(escapeStrForRegex(dir));
-};
-
-const escapeStrForRegex =
-  (string: string) => string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
-
-const replacePathSepForRegex = (string: string) => {
-  if (path.sep === '\\') {
-    return string.replace(/(\/|\\(?!\.))/g, '\\\\');
-  }
-  return string;
-};
 
 const createDirectory = (path: string) => {
   try {
@@ -80,16 +55,9 @@ module.exports = {
   NullConsole,
   clearLine,
   createDirectory,
-  escapePathForRegex,
-  escapeStrForRegex,
-  formatExecError,
-  formatResultsErrors,
-  formatStackTrace,
   formatTestResults,
   getPackageRoot,
   installCommonGlobals,
-  replacePathSepForRegex,
-  separateMessageFromStack,
   setGlobal,
   validateCLIOptions,
 };
