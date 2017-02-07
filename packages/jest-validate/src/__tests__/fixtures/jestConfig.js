@@ -28,6 +28,7 @@ const defaultConfig = {
   bail: false,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
+  clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
@@ -69,6 +70,7 @@ const validConfig = {
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
+  clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
   collectCoverageOnlyFrom: {
