@@ -34,6 +34,17 @@ const deprecatedOptions = {
   }
 
   Please update your configuration.`,
+
+  testPathDirs: (config: Object) =>
+  `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold('"roots"')}.
+
+  Jest now treats your current configuration as:
+  {
+    ${chalk.bold('"roots"')}: ${chalk.bold(format(config.testPathDirs))}
+  }
+
+  Please update your configuration.
+  `,
 };
 /* eslint-enable max-len */
 
