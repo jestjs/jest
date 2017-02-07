@@ -20,15 +20,13 @@ import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
 
+const {createDirectory} = require('jest-util');
+const {escapePathForRegex} = require('jest-regex-util');
 const fs = require('graceful-fs');
 const path = require('path');
-const stripBOM = require('strip-bom');
 const shouldInstrument = require('./shouldInstrument');
+const stripBOM = require('strip-bom');
 const transform = require('./transform');
-const {
-  createDirectory,
-  escapePathForRegex,
-} = require('jest-util');
 
 type Module = {|
   children?: Array<any>,

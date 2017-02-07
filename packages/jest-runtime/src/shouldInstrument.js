@@ -11,7 +11,7 @@
 
 import type {Config, Path} from 'types/Config';
 
-const {escapePathForRegex} = require('jest-util');
+const {escapePathForRegex} = require('jest-regex-util');
 const micromatch = require('micromatch');
 const path = require('path');
 
