@@ -17,6 +17,7 @@ const hit = chalk.reset;
 const miss = chalk.dim;
 
 const trim = '...';
+const relativePathHead = `.${path.sep}`;
 
 const colorize = (str: string, start: number, end: number) => (
   miss(str.slice(0, start)) +
@@ -53,6 +54,9 @@ const highlight = (
   if (filePath.startsWith(trim)) {
     offset = rawPath.length - filePath.length;
     trimLength = trim.length;
+  } else if (filePath.startsWith(relativePathHead)) {
+    offset = rawPath.length - filePath.length;
+    trimLength = relativePathHead.length;
   } else {
     offset = rootDir.length + path.sep.length;
     trimLength = 0;

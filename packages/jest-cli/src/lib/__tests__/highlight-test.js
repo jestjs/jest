@@ -22,6 +22,7 @@ const relativePaths = [
   '...watch-test.js',
   '...-test.js',
   '....js',
+  './watch-test.js',
 ];
 
 it('highlight the trimmed part when there is only a rootDir match', () => {
@@ -46,5 +47,11 @@ it('dims everything when there is no match', () => {
 it('highlights everything when there is a full match', () => {
   relativePaths
   .map(trimmed => highlight(rawPath, trimmed, 'User.*js', rootDir))
+  .forEach(output => expect(output).toMatchSnapshot());
+});
+
+it('highlights part of file name when there is a partially match of the file name', () => {
+  relativePaths
+  .map(trimmed => highlight(rawPath, trimmed, 'watch', rootDir))
   .forEach(output => expect(output).toMatchSnapshot());
 });
