@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const runCommands = require('./_runCommands');
+const runCommand = require('./_runCommand');
 const getPackages = require('./_getPackages');
 
 const fs = require('graceful-fs');
@@ -39,7 +39,7 @@ function runExampleTests(exampleDirectory) {
     return;
   }
 
-  runCommands('yarn install --pure-lockfile', exampleDirectory);
+  runCommand('yarn', 'install --pure-lockfile', exampleDirectory);
   packages.forEach(pkg => {
     const name = path.basename(pkg);
     const directory = path.resolve(exampleDirectory, 'node_modules', name);
@@ -47,7 +47,7 @@ function runExampleTests(exampleDirectory) {
     if (fs.existsSync(directory)) {
       rimraf.sync(directory);
       if (LINKED_MODULES.indexOf(name) !== -1) {
-        runCommands(`ln -s ${pkg} ./node_modules/`, exampleDirectory);
+        runCommand('ln', `-s ${pkg} ./node_modules/`, exampleDirectory);
       } else {
         mkdirp.sync(directory);
         // Using `npm link jest-*` can create problems with module resolution,
@@ -68,12 +68,12 @@ function runExampleTests(exampleDirectory) {
 
   // overwrite the jest link and point it to the local jest-cli
   mkdirp.sync(path.resolve(exampleDirectory, './node_modules/.bin'));
-  runCommands(
-    `ln -sf ${JEST_BIN_PATH} ./node_modules/.bin/jest`,
+  runCommand('ln',
+    `-sf ${JEST_BIN_PATH} ./node_modules/.bin/jest`,
     exampleDirectory
   );
 
-  runCommands('yarn test', exampleDirectory);
+  runCommand('yarn', 'test', exampleDirectory);
 }
 
 examples.forEach(runExampleTests);
