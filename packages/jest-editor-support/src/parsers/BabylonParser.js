@@ -51,7 +51,7 @@ const babylonParser = (file: string) => {
   const babelRC = getBabelRC(file, {useCache: true});
   const babel = JSON.parse(babelRC);
 
-  const plugins = babel.plugins.concat(['flow']);
+  const plugins = Array.isArray(babel.plugins) ? babel.plugins.concat(['flow']) : ['flow'];
   const config = {plugins, sourceType: 'module'};
   const ast = babylon.parse(data, config);
 
