@@ -30,7 +30,7 @@ module.exports = class Runner extends EventEmitter {
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.options = options || {
-      invoker: jestChildProcessWithArgs,
+      createProcess: jestChildProcessWithArgs,
     };
     this.workspace = workspace;
     this.outputPath = tmpdir() + '/jest_runner.json';
@@ -52,7 +52,7 @@ module.exports = class Runner extends EventEmitter {
       this.outputPath,
     ];
 
-    this.debugprocess = this.options.invoker(this.workspace, args);
+    this.debugprocess = this.options.createProcess(this.workspace, args);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       // Make jest save to a file, otherwise we get chunked data
       // and it can be hard to put it back together.
@@ -90,7 +90,7 @@ module.exports = class Runner extends EventEmitter {
 
   runJestWithUpdateForSnapshots(completion: any) {
     const args = ['--updateSnapshot'];
-    const updateProcess = this.options.invoker(this.workspace, args);
+    const updateProcess = this.options.createProcess(this.workspace, args);
     updateProcess.on('close', () => {
       completion();
     });

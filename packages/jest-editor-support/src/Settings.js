@@ -46,7 +46,7 @@ module.exports = class Settings extends EventEmitter {
     super();
     this.workspace = workspace;
     this.options = options || {
-      invoker: jestChildProcessWithArgs,
+      createProcess: jestChildProcessWithArgs,
     };
     // Defaults for a Jest project
     this.settings = {
@@ -63,7 +63,7 @@ module.exports = class Settings extends EventEmitter {
     // in a non-existant folder.
     const folderThatDoesntExist = 'hi-there-danger-are-you-following-along';
     const args = ['--debug', folderThatDoesntExist];
-    this.debugprocess = this.options.invoker(this.workspace, args);
+    this.debugprocess = this.options.createProcess(this.workspace, args);
 
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       const string = data.toString();
