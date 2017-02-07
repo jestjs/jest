@@ -23,7 +23,7 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 1. Fork the repo and create your branch from `master`.
 
    ```sh
-   git clone https://github.com/facebook/jest
+   git clone https://github.com/<your_username>/jest
    cd jest
    git checkout -b my_branch
    ```

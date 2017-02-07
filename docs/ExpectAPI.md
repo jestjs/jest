@@ -217,8 +217,11 @@ test('randomCoolNames only returns cool names', () => {
   // A reasonable proxy for whether a name is cool or not
   let coolRegex = /^Kevin/;
 
-  expect(randomCoolNames).toEqual(
-    expect.arrayContaining(expect.stringMatching(coolRegex)));
+  expect(randomCoolNames()).toEqual(
+    expect.arrayContaining([
+      expect.stringMatching(coolRegex)
+    ])
+  );
 });
 ```
 
