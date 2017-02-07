@@ -242,7 +242,6 @@ describe('moduleMocker', () => {
         expect(fn2()).toEqual('abcde');
       });
 
-
       it('supports resetting mock return values', () => {
         const fn = moduleMocker.fn();
         fn.mockReturnValue('abcd');
