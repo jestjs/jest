@@ -14,7 +14,11 @@ const skipOnWindows = require('skipOnWindows');
 jest
   .mock('graceful-fs')
   .mock('jest-file-exists')
-  .mock('jest-util')
+  .mock('jest-util', () => {
+    const util = require.requireActual('jest-util');
+    util.createDirectory = jest.fn();
+    return util;
+  })
   .mock('vm');
 
 jest.mock(

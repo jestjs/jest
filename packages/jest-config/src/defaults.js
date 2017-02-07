@@ -31,7 +31,6 @@ module.exports = ({
   haste: {
     providesModuleNodeModules: [],
   },
-  mocksPattern: '__mocks__',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: [
     'js',
@@ -46,13 +45,13 @@ module.exports = ({
   preset: null,
   resetMocks: false,
   resetModules: false,
+  roots: ['<rootDir>'],
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: [
     '**/__tests__/**/*.js?(x)',
     '**/?(*.)(spec|test).js?(x)',
   ],
-  testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '',
   testResultsProcessor: null,

@@ -51,11 +51,10 @@ const babylonParser = (file: string) => {
   const babelRC = getBabelRC(file, {useCache: true});
   const babel = JSON.parse(babelRC);
 
-  const plugins = (
-    Array.isArray(babel.plugins) ?
-    babel.plugins.concat(['flow']) :
-    ['flow']
-  );
+  const plugins = Array.isArray(babel.plugins)
+    ? babel.plugins.concat(['flow'])
+    : ['flow'];
+
   const config = {plugins, sourceType: 'module'};
   const ast = babylon.parse(data, config);
 
