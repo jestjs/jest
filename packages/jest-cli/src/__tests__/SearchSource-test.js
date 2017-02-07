@@ -43,7 +43,7 @@ describe('SearchSource', () => {
       config = normalizeConfig({
         name,
         rootDir: '.',
-        testPathDirs: [],
+        roots: [],
       });
       Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
@@ -59,8 +59,8 @@ describe('SearchSource', () => {
         config = normalizeConfig({
           name,
           rootDir: '.',
+          roots: [],
           testMatch: null,
-          testPathDirs: [],
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         });
         Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {

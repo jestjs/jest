@@ -19,7 +19,6 @@
     "jest-jasmine2": "^18.1.0",
     "jest-message-util": "^18.1.0",
     "jest-regex-util": "^18.1.0",
-    "jest-resolve": "^18.1.0",
     "jest-resolve-dependencies": "^18.1.0",
     "jest-runtime": "^18.1.0",
     "jest-snapshot": "^18.1.0",

@@ -186,6 +186,8 @@ The `expect.assertions(1)` call ensures that the `prepareState` callback actuall
 
 ### `expect.stringContaining(string)`
 
+##### available in Jest **19.0.0+**
+
 `expect.stringContaining(string)` matches any string that contains the exact provided string.
 
 
@@ -215,8 +217,11 @@ test('randomCoolNames only returns cool names', () => {
   // A reasonable proxy for whether a name is cool or not
   let coolRegex = /^Kevin/;
 
-  expect(randomCoolNames).toEqual(
-    expect.arrayContaining(expect.stringMatching(coolRegex)));
+  expect(randomCoolNames()).toEqual(
+    expect.arrayContaining([
+      expect.stringMatching(coolRegex)
+    ])
+  );
 });
 ```
 

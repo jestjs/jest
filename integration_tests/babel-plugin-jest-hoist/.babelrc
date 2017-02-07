@@ -1,4 +1,12 @@
 {
-  "presets": ["es2015", {"plugins": ["jest-hoist" ]}],
+  "presets": [
+    "es2015",
+    {
+      "plugins": [
+        "jest-hoist",
+        "transform-flow-strip-types"
+      ]
+    }
+  ],
   "retainLines": true
 }

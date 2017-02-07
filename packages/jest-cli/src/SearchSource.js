@@ -13,7 +13,7 @@
 import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
 import type {Glob, Path} from 'types/Config';
-import type {ResolveModuleConfig} from 'jest-resolve';
+import type {ResolveModuleConfig} from 'types/Resolve';
 
 const micromatch = require('micromatch');
 
@@ -28,8 +28,8 @@ const {
 } = require('jest-regex-util');
 
 type SearchSourceConfig = {
+  roots: Array<Path>,
   testMatch: Array<Glob>,
-  testPathDirs: Array<Path>,
   testRegex: string,
   testPathIgnorePatterns: Array<string>,
 };
@@ -94,11 +94,11 @@ class SearchSource {
   _hasteContext: HasteContext;
   _config: SearchSourceConfig;
   _options: ResolveModuleConfig;
-  _testPathDirPattern: RegExp;
+  _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
   _testPathCases: {
+    roots: (path: Path) => boolean,
     testMatch: (path: Path) => boolean,
-    testPathDirs: (path: Path) => boolean,
     testRegex: (path: Path) => boolean,
     testPathIgnorePatterns: (path: Path) => boolean,
   };
@@ -114,8 +114,8 @@ class SearchSource {
       skipNodeResolution: false,
     };
 
-    this._testPathDirPattern =
-      new RegExp(config.testPathDirs.map(
+    this._rootPattern =
+      new RegExp(config.roots.map(
         dir => escapePathForRegex(dir),
       ).join('|'));
 
@@ -124,8 +124,8 @@ class SearchSource {
       ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
 
     this._testPathCases = {
+      roots: path => this._rootPattern.test(path),
       testMatch: globsToMatcher(config.testMatch),
-      testPathDirs: path => this._testPathDirPattern.test(path),
       testPathIgnorePatterns: path => (
         !this._testIgnorePattern ||
         !this._testIgnorePattern.test(path)
@@ -212,7 +212,7 @@ class SearchSource {
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
-    return Promise.all(this._config.testPathDirs.map(determineSCM))
+    return Promise.all(this._config.roots.map(determineSCM))
       .then(repos => {
         if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
           return {

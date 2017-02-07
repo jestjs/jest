@@ -11,8 +11,12 @@
 
 import type {Config, Path} from 'types/Config';
 
+const {escapePathForRegex} = require('jest-util');
 const micromatch = require('micromatch');
 const path = require('path');
+
+const MOCKS_PATTERN =
+  new RegExp(escapePathForRegex(path.sep + '__mocks__' + path.sep));
 
 const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (!config.collectCoverage) {
@@ -58,7 +62,7 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
     return false;
   }
 
-  if (config.mocksPattern && filename.match(config.mocksPattern)) {
+  if (MOCKS_PATTERN.test(filename)) {
     return false;
   }
 

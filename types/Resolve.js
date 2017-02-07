@@ -9,13 +9,7 @@
  */
 'use strict';
 
-const path = require('path');
+import type _Resolver, { ResolveModuleConfig as _ResolveModuleConfig } from 'jest-resolve';
 
-const MOCKS_PATTERN = path.sep + '__mocks__' + path.sep;
-
-const getMockName = (filePath: string) => {
-  const mockPath = filePath.split(MOCKS_PATTERN)[1];
-  return mockPath.substring(0, mockPath.lastIndexOf(path.extname(mockPath)));
-};
-
-module.exports = getMockName;
+export type Resolver = _Resolver;
+export type ResolveModuleConfig = _ResolveModuleConfig;
