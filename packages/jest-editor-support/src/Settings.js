@@ -14,7 +14,7 @@ const {ChildProcess} = require('child_process');
 const EventEmitter = require('events');
 const {EOL} = require('os');
 const ProjectWorkspace = require('./ProjectWorkspace');
-const {jestChildProcessWithArgs} = require('./Process');
+const {createProcess} = require('./Process');
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
@@ -38,16 +38,18 @@ import type {Options} from './types';
 module.exports = class Settings extends EventEmitter {
   debugprocess: ChildProcess;
   jestVersionMajor: number | null;
-  options: Options;
+  _createProcess: (
+    workspace: ProjectWorkspace,
+    args: Array<string>,
+  ) => ChildProcess;
   settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.workspace = workspace;
-    this.options = options || {
-      createProcess: jestChildProcessWithArgs,
-    };
+    this._createProcess = (options && options.createProcess) || createProcess;
+
     // Defaults for a Jest project
     this.settings = {
       testMatch: [
@@ -63,7 +65,7 @@ module.exports = class Settings extends EventEmitter {
     // in a non-existant folder.
     const folderThatDoesntExist = 'hi-there-danger-are-you-following-along';
     const args = ['--debug', folderThatDoesntExist];
-    this.debugprocess = this.options.createProcess(this.workspace, args);
+    this.debugprocess = this._createProcess(this.workspace, args);
 
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       const string = data.toString();
