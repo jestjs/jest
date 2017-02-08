@@ -115,13 +115,8 @@ module.exports = (
           pipe.write(`\n\n Pattern matches no tests.`);
         }
 
-        results
-          .map(
-            testName => formatTestNameByPattern(testName, pattern)
-          )
-          .forEach(
-            testName => pipe.write(`\n  ${chalk.dim('\u203A')} ${testName}`)
-          );
+        results.map(name => formatTestNameByPattern(name, pattern))
+          .forEach(name => pipe.write(`\n  ${chalk.dim('\u203A')} ${name}`));
 
         if (total > max) {
           const more = total - max;
