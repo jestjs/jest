@@ -10,7 +10,12 @@
 'use strict';
 
 const PromptController = require('../PromptController');
-const {KEYS} = require('../../constants');
+let {KEYS} = require('../../constants');
+
+KEYS = Object.assign({}, KEYS, {
+  E: '65',
+  S: '73',
+});
 
 it('should calls handler on change value', () => {
   const promptController = new PromptController();
@@ -20,16 +25,16 @@ it('should calls handler on change value', () => {
 
   expect(onChange).toHaveBeenLastCalledWith('');
 
-  promptController.put('74');
+  promptController.put(KEYS.T);
   expect(onChange).toHaveBeenLastCalledWith('t');
 
-  promptController.put('65');
+  promptController.put(KEYS.E);
   expect(onChange).toHaveBeenLastCalledWith('te');
 
-  promptController.put('73');
+  promptController.put(KEYS.S);
   expect(onChange).toHaveBeenLastCalledWith('tes');
 
-  promptController.put('74');
+  promptController.put(KEYS.T);
   expect(onChange).toHaveBeenLastCalledWith('test');
 
   expect(onChange).toHaveBeenCalledTimes(5);
@@ -41,10 +46,10 @@ it('should calls handler on success prompt', () => {
 
   promptController.prompt(jest.fn(), onSuccess, jest.fn());
 
-  promptController.put('74');
-  promptController.put('65');
-  promptController.put('73');
-  promptController.put('74');
+  promptController.put(KEYS.T);
+  promptController.put(KEYS.E);
+  promptController.put(KEYS.S);
+  promptController.put(KEYS.T);
   promptController.put(KEYS.ENTER);
 
   expect(onSuccess).toHaveBeenCalledWith('test');
@@ -56,10 +61,10 @@ it('should calls handler on cancel prompt', () => {
 
   promptController.prompt(jest.fn(), jest.fn(), onCancel);
 
-  promptController.put('74');
-  promptController.put('65');
-  promptController.put('73');
-  promptController.put('74');
+  promptController.put(KEYS.T);
+  promptController.put(KEYS.E);
+  promptController.put(KEYS.S);
+  promptController.put(KEYS.T);
   promptController.put(KEYS.ESCAPE);
 
   expect(onCancel).toHaveBeenCalled();
