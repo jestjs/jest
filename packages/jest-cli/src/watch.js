@@ -22,6 +22,7 @@ const setWatchMode = require('./lib/setWatchMode');
 const TestWatcher = require('./TestWatcher');
 const PromptController = require('./lib/PromptController');
 const TestPathPatternModeController = require('./TestPathPatternModeController');
+const TestNamePatternModeController = require('./TestNamePatternModeController');
 const {KEYS, CLEAR} = require('./constants');
 
 const SNAPSHOT_EXTENSION = 'snap';
@@ -35,6 +36,7 @@ const watch = (
   stdin?: stream$Readable | tty$ReadStream = process.stdin
 ) => {
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
+    testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern
       || argv._ instanceof Array
         ? argv._.join('|')
@@ -55,6 +57,12 @@ const watch = (
   );
 
   testPathPatternModeController.updateSearchSource(hasteContext);
+
+  const testNamePatternModeController = TestNamePatternModeController(
+    config,
+    pipe,
+    promptController,
+  );
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
@@ -89,6 +97,7 @@ const watch = (
       hasteContext,
       // $FlowFixMe
       Object.freeze(Object.assign({
+        testNamePattern: argv.testNamePattern,
         testPathPattern: argv.testPathPattern,
       }, config, overrideConfig)),
       argv,
@@ -128,7 +137,7 @@ const watch = (
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -146,21 +155,42 @@ const watch = (
         break;
       case KEYS.A:
         setWatchMode(argv, 'watchAll', {
+          testNamePattern: '',
           testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.O:
         setWatchMode(argv, 'watch', {
+          testNamePattern: '',
           testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.P:
         testPathPatternModeController.run(
-          pattern => {
+          testPathPattern => {
             setWatchMode(argv, 'watch', {
-              testPathPattern: pattern,
+              testNamePattern: '',
+              testPathPattern,
+            });
+
+            startRun();
+          },
+          () => {
+            pipe.write(ansiEscapes.cursorHide);
+            pipe.write(ansiEscapes.clearScreen);
+            pipe.write(usage(argv, hasSnapshotFailure));
+            pipe.write(ansiEscapes.cursorShow);
+          },
+        );
+        break;
+      case KEYS.T:
+        testNamePatternModeController.run(
+          testNamePattern => {
+            setWatchMode(argv, 'watch', {
+              testNamePattern,
+              testPathPattern: '',
             });
 
             startRun();
@@ -203,13 +233,14 @@ const usage = (
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv.testPathPattern) && !argv.noSCM
+    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) && !argv.noSCM
       ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
       ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
       : null,
-    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a pathname regex pattern.'),
+    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') + 't' + chalk.dim(' to filter by a testname regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
   ];

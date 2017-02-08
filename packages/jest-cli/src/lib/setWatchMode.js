@@ -28,11 +28,19 @@ const setWatchMode = (
     argv.testPathPattern = options.testPathPattern;
   } else if (options.testPathPattern === '') {
     delete argv.testPathPattern;
+    delete argv._;
+  }
+
+  if (options.testNamePattern) {
+    argv.testNamePattern = options.testNamePattern;
+  } else if (options.testNamePattern === '') {
+    delete argv.testNamePattern;
   }
 
   argv.onlyChanged = false;
-  argv.onlyChanged =
-    buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
+  argv.onlyChanged = buildTestPathPatternInfo(argv).input === ''
+    && !argv.watchAll
+    && !argv.testNamePattern;
 
   if (options.noSCM) {
     argv.noSCM = true;

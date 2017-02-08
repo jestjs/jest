@@ -33,6 +33,10 @@ describe('setWatchMode()', () => {
     setWatchMode(argv, 'watch', {});
     expect(argv.onlyChanged).toBeFalsy();
 
+    argv = {testNamePattern: 'name-test'};
+    setWatchMode(argv, 'watch', {});
+    expect(argv.onlyChanged).toBeFalsy();
+
     argv = {};
     setWatchMode(argv, 'watchAll', {});
     expect(argv.onlyChanged).toBeFalsy();
