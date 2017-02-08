@@ -1,19 +1,24 @@
 exports[`test generates a snapshot with correctly transformed dependencies 1`] = `
 <div
-  className="App-root">
+  className="App-root"
+>
   <div
-    className="App-header">
+    className="App-header"
+  >
     <img
       alt="logo"
       className="App-logo"
-      src="logo.svg" />
+      src="logo.svg"
+    />
     <h2
-      className={undefined}>
+      className={undefined}
+    >
       Welcome to React
     </h2>
   </div>
   <p
-    className="App-intro">
+    className="App-intro"
+  >
     To get started, edit 
     <code>
       src/App.js

@@ -67,15 +67,20 @@ function printElement(element, print, indent, colors, opts) {
   result += printProps(element.props, print, indent, colors, opts);
 
   const opaqueChildren = element.props.children;
+  const hasProps = !!Object.keys(element.props)
+    .filter(propName => propName !== 'children')
+    .length;
+  const closeInNewLine = hasProps && !opts.min;
+
   if (opaqueChildren) {
     const flatChildren = [];
     traverseChildren(opaqueChildren, child => {
       flatChildren.push(child);
     });
     const children = printChildren(flatChildren, print, indent, colors, opts);
-    result += colors.tag.open + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + elementName + '>' + colors.tag.close;
+    result += colors.tag.open + (closeInNewLine ? '\n' : '') + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + elementName + '>' + colors.tag.close;
   } else {
-    result += colors.tag.open + ' />' + colors.tag.close;
+    result += colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
   }
 
   return result;

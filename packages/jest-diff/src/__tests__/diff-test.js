@@ -150,7 +150,9 @@ test('React elements', () => {
     },
     type: 'div',
   });
-  expect(stripAnsi(result)).toMatch(/<div[\s\S]+className="fun">/);
+  expect(stripAnsi(result)).toMatch(/<div\n/);
+  expect(stripAnsi(result)).toMatch(/[\s\S]+className="fun"\n/);
+  expect(stripAnsi(result)).toMatch(/>/);
   expect(stripAnsi(result)).toMatch(/\-\s+Hello/);
   expect(stripAnsi(result)).toMatch(/\+\s+Goodbye/);
 });

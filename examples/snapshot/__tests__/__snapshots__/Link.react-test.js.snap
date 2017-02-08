@@ -3,7 +3,8 @@ exports[`test changes the class when hovered 1`] = `
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
@@ -13,7 +14,8 @@ exports[`test changes the class when hovered 2`] = `
   className="hovered"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
@@ -23,7 +25,8 @@ exports[`test changes the class when hovered 3`] = `
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
@@ -33,7 +36,8 @@ exports[`test properly escapes quotes 1`] = `
   className="normal"
   href="#"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   "Facebook" \\'is \\ 'awesome'
 </a>
 `;
@@ -43,7 +47,8 @@ exports[`test renders as an anchor when no page is set 1`] = `
   className="normal"
   href="#"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
@@ -53,7 +58,8 @@ exports[`test renders correctly 1`] = `
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
