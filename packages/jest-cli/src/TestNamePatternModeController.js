@@ -58,7 +58,7 @@ const formatTestNameByPattern = (testName, pattern) => {
   return colorize(testName, Math.max(start, 0), Math.max(end, end));
 };
 
-const testNamePatternModeController = (
+module.exports = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
   promptController: PromptController,
@@ -160,5 +160,3 @@ const testNamePatternModeController = (
 
   return new TestNamePatternModeController();
 };
-
-module.exports = testNamePatternModeController;

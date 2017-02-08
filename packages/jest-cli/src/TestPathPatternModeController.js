@@ -35,7 +35,7 @@ const usage = (delimiter: string = '\n') => {
 
 const usageRows = usage().split('\n').length;
 
-const testPathPatternModeController = (
+module.exports = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
   promptController: PromptController,
@@ -134,5 +134,3 @@ const testPathPatternModeController = (
 
   return new TestPathPatternModeController();
 };
-
-module.exports = testPathPatternModeController;
