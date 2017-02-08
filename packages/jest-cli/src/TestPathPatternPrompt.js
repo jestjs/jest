@@ -64,7 +64,7 @@ module.exports = (
     }
 
     onChange(
-      pattern: string
+      pattern: string,
     ) {
       let regex;
 

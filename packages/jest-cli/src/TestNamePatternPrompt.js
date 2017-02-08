@@ -87,7 +87,7 @@ module.exports = (
     }
 
     onChange(
-      pattern: string
+      pattern: string,
     ) {
       pipe.write(ansiEscapes.eraseLine);
       pipe.write(ansiEscapes.cursorLeft);
