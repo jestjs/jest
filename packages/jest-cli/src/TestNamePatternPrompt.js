@@ -91,12 +91,12 @@ module.exports = (
     ) {
       pipe.write(ansiEscapes.eraseLine);
       pipe.write(ansiEscapes.cursorLeft);
-      this.printTypeahead(pattern);
+      this.printTypeahead(pattern, 10);
     }
 
     printTypeahead(
       pattern: string,
-      max: number = 10
+      max: number,
     ) {
       const matchedTestNames = this.getMatchedTestNames(pattern);
 

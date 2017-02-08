@@ -77,13 +77,13 @@ module.exports = (
 
       pipe.write(ansiEscapes.eraseLine);
       pipe.write(ansiEscapes.cursorLeft);
-      this.printTypeahead(pattern, paths);
+      this.printTypeahead(pattern, paths, 10);
     }
 
     printTypeahead(
       pattern: string,
       allResults: Array<Path>,
-      max: number = 10
+      max: number,
     ) {
       const total = allResults.length;
       const results = allResults.slice(0, max);
