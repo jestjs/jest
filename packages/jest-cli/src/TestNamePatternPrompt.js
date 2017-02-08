@@ -64,7 +64,7 @@ module.exports = (
   prompt: Prompt,
 ) => {
   class TestNamePatternPrompt {
-    cachedTestNames: Array<string>;
+    _testNames: Array<string>;
 
     constructor() {
       (this:any).onChange = this.onChange.bind(this);
@@ -143,17 +143,22 @@ module.exports = (
         return [];
       }
 
-      return this.cachedTestNames.filter(testName => regex.test(testName));
+      return this._testNames.filter(testName => regex.test(testName));
     }
 
     // $FlowFixMe
-    updateCachedTestNames(testResults = []) {
-      this.cachedTestNames = testResults.reduce((testNames, item) =>
-        [
-          ...testNames,
-          ...item.testResults.map(({title: name}) => name),
-        ]
-      , []);
+    updateCachedTestNames(testResults) {
+      this._testNames = [];
+
+      if (Array.isArray(testResults)) {
+        testResults.forEach(
+          item => this._testNames.push(
+            ...item.testResults.map(
+              ({title: name}) => name
+            ),
+          ),
+        );
+      }
     }
   }
 
