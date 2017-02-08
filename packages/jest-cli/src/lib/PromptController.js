@@ -34,7 +34,7 @@ class PromptController {
   }
 
   put(
-    key: string
+    key: string,
   ) {
     switch (key) {
       case KEYS.ENTER:
