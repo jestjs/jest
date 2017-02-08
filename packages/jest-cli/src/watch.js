@@ -115,7 +115,7 @@ const watch = (
           displayHelp = !process.env.JEST_HIDE_USAGE;
         }
 
-        testNamePatternPrompt.updateCachedTestNames(
+        testNamePatternPrompt.updateCachedTestResults(
           results.testResults
         );
       },

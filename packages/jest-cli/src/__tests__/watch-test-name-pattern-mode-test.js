@@ -12,7 +12,6 @@
 
 const chalk = require('chalk');
 const {KEYS} = require('../constants');
-const TestNamePatternPrompt = require('../constants');
 
 const runJestMock = jest.fn();
 
@@ -47,21 +46,55 @@ jest.doMock('../runJest', () => function() {
   args[args.length - 1]({
     snapshot: {},
     testResults: [
-      {testResults: [{title: 'test 1'}]},
-      {testResults: [{title: 'test 2'}]},
-      {testResults: [{title: 'test 3'}]},
-      {testResults: [{title: 'test 4'}]},
-      {testResults: [{title: 'test 5'}]},
-      {testResults: [{title: 'test 6'}]},
-      {testResults: [{title: 'test 7'}]},
-      {testResults: [{title: 'test 8'}]},
-      {testResults: [{title: 'test 9'}]},
-      {testResults: [{title: 'test 10'}]},
+      {
+        testFilePath: './path/to/file1-test.js',
+        testResults: [{title: 'test 1'}],
+      },
+      {
+        testFilePath: './path/to/file2-test.js',
+        testResults: [{title: 'test 2'}],
+      },
+      {
+        testFilePath: './path/to/file3-test.js',
+        testResults: [{title: 'test 3'}],
+      },
+      {
+        testFilePath: './path/to/file4-test.js',
+        testResults: [{title: 'test 4'}],
+      },
+      {
+        testFilePath: './path/to/file5-test.js',
+        testResults: [{title: 'test 5'}],
+      },
+      {
+        testFilePath: './path/to/file6-test.js',
+        testResults: [{title: 'test 6'}],
+      },
+      {
+        testFilePath: './path/to/file7-test.js',
+        testResults: [{title: 'test 7'}],
+      },
+      {
+        testFilePath: './path/to/file8-test.js',
+        testResults: [{title: 'test 8'}],
+      },
+      {
+        testFilePath: './path/to/file9-test.js',
+        testResults: [{title: 'test 9'}],
+      },
+      {
+        testFilePath: './path/too/file9-test.js',
+        testResults: [{title: 'test 9'}],
+      },
     ],
   });
 
   return Promise.resolve();
 });
+
+jest.doMock('../lib/terminalUtils', () => ({
+  getTerminalWidth: () => terminalWidth,
+}));
 
 const watch = require('../watch');
 
@@ -124,6 +157,21 @@ describe('Watch mode flows', () => {
       testNamePattern: 'test *',
       watch: true,
       watchAll: false,
+    });
+  });
+
+  it('Results in pattern mode get truncated appropriately', () => {
+    config = {rootDir: ''};
+    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+
+    stdin.emit(KEYS.T);
+
+    [50, 30].forEach(width => {
+      terminalWidth = width;
+      stdin.emit(KEYS.BACKSPACE);
+      pipe.write.mockReset();
+      stdin.emit(KEYS.T);
+      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     });
   });
 });

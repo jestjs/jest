@@ -14,7 +14,9 @@ import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
+const {getTerminalWidth} = require('./lib/terminalUtils');
 const stringLength = require('string-length');
+const {trimAndFormatPath} = require('./reporters/utils');
 const Prompt = require('./lib/Prompt');
 
 const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
@@ -51,7 +53,6 @@ const formatTestNameByPattern = (testName, pattern) => {
     return chalk.dim(testName);
   }
 
-  // $FlowFixMe
   const start = match.index;
   const end = start + match[0].length;
 
@@ -64,7 +65,8 @@ module.exports = (
   prompt: Prompt,
 ) => {
   class TestNamePatternPrompt {
-    _testNames: Array<string>;
+    // $FlowFixMe
+    _cachedTestResults;
 
     constructor() {
       (this:any).onChange = this.onChange.bind(this);
@@ -98,10 +100,10 @@ module.exports = (
       pattern: string,
       max: number,
     ) {
-      const matchedTestNames = this.getMatchedTestNames(pattern);
+      const matchedTests = this.getMatchedTests(pattern);
 
-      const total = matchedTestNames.length;
-      const results = matchedTestNames.slice(0, max);
+      const total = matchedTests.length;
+      const results = matchedTests.slice(0, max);
       const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
       pipe.write(ansiEscapes.eraseDown);
@@ -115,8 +117,20 @@ module.exports = (
           pipe.write(`\n\n Pattern matches no tests.`);
         }
 
-        results.map(name => formatTestNameByPattern(name, pattern))
-          .forEach(name => pipe.write(`\n  ${chalk.dim('\u203A')} ${name}`));
+        const width = getTerminalWidth();
+
+        results.forEach(({name, pathname}) => {
+          let testName = formatTestNameByPattern(name, pattern);
+
+          testName = ` ${chalk.dim('\u203A')} ${testName}`;
+
+          testName = chalk.dim(chalk.stripColor(
+            // eslint-disable-next-line max-len
+            trimAndFormatPath(0, config, pathname, width - chalk.stripColor(testName).length),
+          )) + testName;
+
+          pipe.write(`\n${testName}`);
+        });
 
         if (total > max) {
           const more = total - max;
@@ -134,7 +148,7 @@ module.exports = (
       pipe.write(ansiEscapes.cursorRestorePosition);
     }
 
-    getMatchedTestNames(pattern: string) {
+    getMatchedTests(pattern: string) {
       let regex;
 
       try {
@@ -143,22 +157,25 @@ module.exports = (
         return [];
       }
 
-      return this._testNames.filter(testName => regex.test(testName));
+      const matchedTests = [];
+
+      this._cachedTestResults.forEach(
+        ({testResults, testFilePath: pathname}) =>
+          testResults.forEach(
+            ({title: name}) => {
+              if (regex.test(name)) {
+                matchedTests.push({name, pathname});
+              }
+            },
+          )
+      );
+
+      return matchedTests;
     }
 
     // $FlowFixMe
-    updateCachedTestNames(testResults) {
-      this._testNames = [];
-
-      if (Array.isArray(testResults)) {
-        testResults.forEach(
-          item => this._testNames.push(
-            ...item.testResults.map(
-              ({title: name}) => name
-            ),
-          ),
-        );
-      }
+    updateCachedTestResults(testResults) {
+      this._cachedTestResults = testResults || [];
     }
   }
 
