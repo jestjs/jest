@@ -416,28 +416,28 @@ describe('prettyFormat()', () => {
     it('supports props with strings', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {style: 'color:red'}),
-        '<Mouse\n  style="color:red" />'
+        '<Mouse\n  style="color:red"\n/>'
       );
     });
 
     it('supports props with numbers', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {size: 5}),
-        '<Mouse\n  size={5} />'
+        '<Mouse\n  size={5}\n/>'
       );
     });
 
     it('supports a single element with a function prop', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {onclick: function onclick() {}}),
-        '<Mouse\n  onclick={[Function onclick]} />'
+        '<Mouse\n  onclick={[Function onclick]}\n/>'
       );
     });
 
     it('supports a single element with a object prop', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {customProp: {one: '1', two: 2}}),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  } />'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n/>'
       );
     });
 
@@ -446,7 +446,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {customProp: {one: '1', two: 2}},
           React.createElement('Mouse')
         ),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }>\n  <Mouse />\n</Mouse>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n>\n  <Mouse />\n</Mouse>'
       );
     });
 
@@ -456,7 +456,7 @@ describe('prettyFormat()', () => {
           'HELLO',
           React.createElement('Mouse'), 'CIAO'
         ),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}>\n  HELLO\n  <Mouse />\n  CIAO\n</Mouse>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}\n>\n  HELLO\n  <Mouse />\n  CIAO\n</Mouse>'
       );
     });
 
@@ -482,7 +482,7 @@ describe('prettyFormat()', () => {
           ),
           'CIAO'
         ),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}>\n  HELLO\n  <Mouse\n    customProp={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    onclick={[Function onclick]}>\n    HELLO\n    <Mouse />\n    CIAO\n  </Mouse>\n  CIAO\n</Mouse>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}\n>\n  HELLO\n  <Mouse\n    customProp={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    onclick={[Function onclick]}\n  >\n    HELLO\n    <Mouse />\n    CIAO\n  </Mouse>\n  CIAO\n</Mouse>'
       );
     });
 
@@ -510,7 +510,7 @@ describe('prettyFormat()', () => {
             'NESTED'
           )
         ),
-        '<Mouse\n  abc={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  zeus="kentaromiura watched me fix this">\n  <Mouse\n    acbd={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    xyz={123}>\n    NESTED\n  </Mouse>\n</Mouse>'
+        '<Mouse\n  abc={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  zeus="kentaromiura watched me fix this"\n>\n  <Mouse\n    acbd={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    xyz={123}\n  >\n    NESTED\n  </Mouse>\n</Mouse>'
       );
       /* eslint-enable sort-keys */
     });
@@ -520,7 +520,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div'),
         }),
-        '<Mouse\n  prop={<div />} />'
+        '<Mouse\n  prop={<div />}\n/>'
       );
     });
 
@@ -529,7 +529,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div', {foo: 'bar'}),
         }),
-        '<Mouse\n  prop={\n    <div\n      foo="bar" />\n  } />'
+        '<Mouse\n  prop={\n    <div\n      foo="bar"\n    />\n  }\n/>'
       );
     });
 
@@ -541,7 +541,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {foo: 'bar'}),
         }),
-        '<Mouse\n  prop={\n    <Cat\n      foo="bar" />\n  } />'
+        '<Mouse\n  prop={\n    <Cat\n      foo="bar"\n    />\n  }\n/>'
       );
     });
 
@@ -553,7 +553,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {}, React.createElement('div')),
         }),
-        '<Mouse\n  prop={\n    <Cat>\n      <div />\n    </Cat>\n  } />'
+        '<Mouse\n  prop={\n    <Cat>\n      <div />\n    </Cat>\n  }\n/>'
       );
     });
 
@@ -562,7 +562,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div', null, 'mouse'),
         }),
-        '<Mouse\n  prop={\n    <div>\n      mouse\n    </div>\n  } />'
+        '<Mouse\n  prop={\n    <div>\n      mouse\n    </div>\n  }\n/>'
       );
     });
 
@@ -571,7 +571,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div', null, 'mouse', React.createElement('span', null, 'rat')),
         }),
-        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n    </div>\n  } />'
+        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n    </div>\n  }\n/>'
       );
     });
 
@@ -586,7 +586,7 @@ describe('prettyFormat()', () => {
             ],
           ),
         }),
-        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n      <span>\n        cat\n      </span>\n    </div>\n  } />'
+        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n      <span>\n        cat\n      </span>\n    </div>\n  }\n/>'
       );
     });
 
