@@ -24,6 +24,8 @@ const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
 const {KEYS, CLEAR} = require('./constants');
 
+const SNAPSHOT_EXTENSION = 'snap';
+
 const watch = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
@@ -43,12 +45,18 @@ const watch = (
   let displayHelp = true;
   let searchSource = new SearchSource(hasteContext, config);
 
-  hasteMap.on('change', ({hasteFS, moduleMap}) => {
-    hasteContext = createHasteContext(config, {hasteFS, moduleMap});
-    currentPattern = '';
-    isEnteringPattern = false;
-    searchSource = new SearchSource(hasteContext, config);
-    startRun();
+  hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+    const onlySnapFileEvents = eventsQueue.every(({filePath}) => {
+      return filePath.endsWith(`.${SNAPSHOT_EXTENSION}`);
+    });
+
+    if (!onlySnapFileEvents) {
+      hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
+      currentPattern = '';
+      isEnteringPattern = false;
+      searchSource = new SearchSource(hasteContext, config);
+      startRun();
+    }
   });
 
   process.on('exit', () => {
