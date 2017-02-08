@@ -8,7 +8,8 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "babel-core": "^6.0.0",
+    "babel-core": "6.18.2",
+    "babel-generator": "6.18.0",
     "babel-jest": "^18.0.0",
     "babel-plugin-istanbul": "^3.0.0",
     "chalk": "^1.1.3",
