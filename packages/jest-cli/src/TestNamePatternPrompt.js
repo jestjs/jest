@@ -79,7 +79,7 @@ module.exports = (
       pipe.write(usage());
       pipe.write(ansiEscapes.cursorShow);
 
-      prompt.prompt(
+      prompt.enter(
         this.onChange,
         onSuccess,
         onCancel,

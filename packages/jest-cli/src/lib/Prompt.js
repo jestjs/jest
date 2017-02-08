@@ -19,7 +19,7 @@ class Prompt {
   _onSuccess: Function;
   _onCancel: Function;
 
-  prompt(
+  enter(
     onChange: Function,
     onSuccess: Function,
     onCancel: Function,

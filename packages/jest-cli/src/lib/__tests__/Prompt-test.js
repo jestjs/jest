@@ -21,7 +21,7 @@ it('calls handler on change value', () => {
   const prompt = new Prompt();
   const onChange = jest.fn();
 
-  prompt.prompt(onChange, jest.fn(), jest.fn());
+  prompt.enter(onChange, jest.fn(), jest.fn());
 
   expect(onChange).toHaveBeenLastCalledWith('');
 
@@ -44,7 +44,7 @@ it('calls handler on success prompt', () => {
   const prompt = new Prompt();
   const onSuccess = jest.fn();
 
-  prompt.prompt(jest.fn(), onSuccess, jest.fn());
+  prompt.enter(jest.fn(), onSuccess, jest.fn());
 
   prompt.put(KEYS.T);
   prompt.put(KEYS.E);
@@ -59,7 +59,7 @@ it('calls handler on cancel prompt', () => {
   const prompt = new Prompt();
   const onCancel = jest.fn();
 
-  prompt.prompt(jest.fn(), jest.fn(), onCancel);
+  prompt.enter(jest.fn(), jest.fn(), onCancel);
 
   prompt.put(KEYS.T);
   prompt.put(KEYS.E);
