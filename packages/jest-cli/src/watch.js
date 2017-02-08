@@ -115,6 +115,10 @@ const watch = (
           pipe.write(usage(argv, hasSnapshotFailure));
           displayHelp = !process.env.JEST_HIDE_USAGE;
         }
+
+        testNamePatternModeController.updateCachedTestNames(
+          results.testResults
+        );
       },
     ).then(
       () => {},
