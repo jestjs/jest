@@ -17,7 +17,7 @@ KEYS = Object.assign({}, KEYS, {
   S: '73',
 });
 
-it('should calls handler on change value', () => {
+it('calls handler on change value', () => {
   const promptController = new PromptController();
   const onChange = jest.fn();
 
@@ -40,7 +40,7 @@ it('should calls handler on change value', () => {
   expect(onChange).toHaveBeenCalledTimes(5);
 });
 
-it('should calls handler on success prompt', () => {
+it('calls handler on success prompt', () => {
   const promptController = new PromptController();
   const onSuccess = jest.fn();
 
@@ -55,7 +55,7 @@ it('should calls handler on success prompt', () => {
   expect(onSuccess).toHaveBeenCalledWith('test');
 });
 
-it('should calls handler on cancel prompt', () => {
+it('calls handler on cancel prompt', () => {
   const promptController = new PromptController();
   const onCancel = jest.fn();
 
