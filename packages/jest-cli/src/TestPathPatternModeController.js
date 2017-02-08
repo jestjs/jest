@@ -43,6 +43,10 @@ module.exports = (
   class TestPathPatternModeController {
     searchSource: SearchSource;
 
+    constructor() {
+      (this:any).onChange = this.onChange.bind(this);
+    }
+
     run(
       onSuccess: Function,
       onCancel: Function,
@@ -53,7 +57,7 @@ module.exports = (
       pipe.write(ansiEscapes.cursorShow);
 
       promptController.prompt(
-        this.onChange.bind(this),
+        this.onChange,
         onSuccess,
         onCancel,
       );
