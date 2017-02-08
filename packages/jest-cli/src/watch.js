@@ -35,8 +35,12 @@ const watch = (
   stdin?: stream$Readable | tty$ReadStream = process.stdin
 ) => {
   setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
-    pattern: argv._,
+    testPathPattern: argv.testPathPattern
+      || argv._ instanceof Array
+        ? argv._.join('|')
+        : '',
   });
+
   let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
@@ -84,7 +88,9 @@ const watch = (
     return runJest(
       hasteContext,
       // $FlowFixMe
-      Object.freeze(Object.assign({}, config, overrideConfig)),
+      Object.freeze(Object.assign({
+        testPathPattern: argv.testPathPattern,
+      }, config, overrideConfig)),
       argv,
       pipe,
       testWatcher,
@@ -139,19 +145,24 @@ const watch = (
         startRun({updateSnapshot: true});
         break;
       case KEYS.A:
-        setWatchMode(argv, 'watchAll');
+        setWatchMode(argv, 'watchAll', {
+          testPathPattern: '',
+        });
         startRun();
         break;
       case KEYS.O:
-        setWatchMode(argv, 'watch');
+        setWatchMode(argv, 'watch', {
+          testPathPattern: '',
+        });
         startRun();
         break;
       case KEYS.P:
         testPathPatternModeController.run(
           pattern => {
             setWatchMode(argv, 'watch', {
-              pattern: [pattern],
+              testPathPattern: pattern,
             });
+
             startRun();
           },
           () => {
@@ -192,13 +203,13 @@ const usage = (
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv._) && !argv.noSCM
+    (argv.watchAll || argv.testPathPattern) && !argv.noSCM
       ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
       ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
       : null,
-    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a pathname regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
   ];

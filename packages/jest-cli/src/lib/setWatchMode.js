@@ -14,7 +14,7 @@ const buildTestPathPatternInfo = require('./buildTestPathPatternInfo');
 const setWatchMode = (
   argv: Object,
   mode: 'watch' | 'watchAll',
-  options?: Object,
+  options?: Object = {},
 ) => {
   if (mode === 'watch') {
     argv.watch = true;
@@ -24,13 +24,17 @@ const setWatchMode = (
     argv.watchAll = true;
   }
 
-  // Reset before setting these to the new values
-  argv._ = (options && options.pattern) || '';
+  if (options.testPathPattern) {
+    argv.testPathPattern = options.testPathPattern;
+  } else if (options.testPathPattern === '') {
+    delete argv.testPathPattern;
+  }
+
   argv.onlyChanged = false;
   argv.onlyChanged =
     buildTestPathPatternInfo(argv).input === '' && !argv.watchAll;
 
-  if (options && options.noSCM) {
+  if (options.noSCM) {
     argv.noSCM = true;
   }
 };
