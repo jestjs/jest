@@ -18,7 +18,7 @@ const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
-const setWatchMode = require('./lib/setWatchMode');
+const setState = require('./lib/setState');
 const TestWatcher = require('./TestWatcher');
 const PromptController = require('./lib/PromptController');
 const TestPathPatternModeController = require('./TestPathPatternModeController');
@@ -35,7 +35,7 @@ const watch = (
   hasteContext: HasteContext,
   stdin?: stream$Readable | tty$ReadStream = process.stdin
 ) => {
-  setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
+  setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern
       || argv._ instanceof Array
@@ -158,14 +158,14 @@ const watch = (
         startRun({updateSnapshot: true});
         break;
       case KEYS.A:
-        setWatchMode(argv, 'watchAll', {
+        setState(argv, 'watchAll', {
           testNamePattern: '',
           testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.O:
-        setWatchMode(argv, 'watch', {
+        setState(argv, 'watch', {
           testNamePattern: '',
           testPathPattern: '',
         });
@@ -174,7 +174,7 @@ const watch = (
       case KEYS.P:
         testPathPatternModeController.run(
           testPathPattern => {
-            setWatchMode(argv, 'watch', {
+            setState(argv, 'watch', {
               testNamePattern: '',
               testPathPattern,
             });
@@ -192,7 +192,7 @@ const watch = (
       case KEYS.T:
         testNamePatternModeController.run(
           testNamePattern => {
-            setWatchMode(argv, 'watch', {
+            setState(argv, 'watch', {
               testNamePattern,
               testPathPattern: '',
             });

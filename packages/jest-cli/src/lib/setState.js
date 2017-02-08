@@ -11,7 +11,7 @@
 
 const buildTestPathPatternInfo = require('./buildTestPathPatternInfo');
 
-const setWatchMode = (
+module.exports = (
   argv: Object,
   mode: 'watch' | 'watchAll',
   options?: Object = {},
@@ -46,5 +46,3 @@ const setWatchMode = (
     argv.noSCM = true;
   }
 };
-
-module.exports = setWatchMode;
