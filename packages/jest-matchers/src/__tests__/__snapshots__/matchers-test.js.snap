@@ -1901,6 +1901,19 @@ Received:
   [31m{\\"a\\": 99}[39m"
 `;
 
+exports[`.toEqual() expect(0).toEqual(-0) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m-0[39m
+Received:
+  [31m0[39m
+
+Difference:
+
+[2mCompared values have no visual difference.[22m"
+`;
+
 exports[`.toEqual() expect(1).not.toEqual(1) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1917,6 +1930,28 @@ Expected value to equal:
   [32m2[39m
 Received:
   [31m1[39m"
+`;
+
+exports[`.toEqual() expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32mSet {1, 2}[39m
+Received:
+  [31mSet {1, 2}[39m"
+`;
+
+exports[`.toEqual() expect(Set {1, 2}).toEqual(Set {2, 1}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mSet {2, 1}[39m
+Received:
+  [31mSet {1, 2}[39m
+
+Difference:
+
+[2mCompared values have no visual difference.[22m"
 `;
 
 exports[`.toEqual() expect(null).toEqual(undefined) 1`] = `
@@ -2549,6 +2584,23 @@ Received:
   [31m\\"bar\\"[39m"
 `;
 
+exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m[-0][39m
+Received:
+  [31m[0][39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m Array [[22m
+[32m-  -0,[39m
+[31m+  0,[39m
+[2m ][22m"
+`;
+
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([1, 2, 2]) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -2951,6 +3003,17 @@ Difference:
 [31m+2015-11-30T00:00:00.000Z[39m"
 `;
 
+exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2, 1}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32mSet {2, 1}[39m
+Received:
+  [31mSet {1, 2}[39m
+Difference:
+[2mCompared values have no visual difference.[22m"
+`;
+
 exports[`toMatchObject() {pass: true} expect([1, 2]).toMatchObject([1, 2]) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -3093,6 +3156,15 @@ Expected value not to match object:
   [32mArray [][39m
 Received:
   [31mArray [][39m"
+`;
+
+exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {1, 2}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match object:
+  [32mSet {1, 2}[39m
+Received:
+  [31mSet {1, 2}[39m"
 `;
 
 exports[`toMatchObject() throws expect("44").toMatchObject({}) 1`] = `
