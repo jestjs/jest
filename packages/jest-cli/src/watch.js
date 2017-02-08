@@ -181,12 +181,7 @@ const watch = (
 
             startRun();
           },
-          () => {
-            pipe.write(ansiEscapes.cursorHide);
-            pipe.write(ansiEscapes.clearScreen);
-            pipe.write(usage(argv, hasSnapshotFailure));
-            pipe.write(ansiEscapes.cursorShow);
-          },
+          onCancelPatternMode,
         );
         break;
       case KEYS.T:
@@ -199,12 +194,7 @@ const watch = (
 
             startRun();
           },
-          () => {
-            pipe.write(ansiEscapes.cursorHide);
-            pipe.write(ansiEscapes.clearScreen);
-            pipe.write(usage(argv, hasSnapshotFailure));
-            pipe.write(ansiEscapes.cursorShow);
-          },
+          onCancelPatternMode,
         );
         break;
       case KEYS.QUESTION_MARK:
@@ -213,6 +203,13 @@ const watch = (
         }
         break;
     }
+  };
+
+  const onCancelPatternMode = () => {
+    pipe.write(ansiEscapes.cursorHide);
+    pipe.write(ansiEscapes.clearScreen);
+    pipe.write(usage(argv, hasSnapshotFailure));
+    pipe.write(ansiEscapes.cursorShow);
   };
 
   if (typeof stdin.setRawMode === 'function') {
