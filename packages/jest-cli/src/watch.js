@@ -37,10 +37,9 @@ const watch = (
 ) => {
   setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
-    testPathPattern: argv.testPathPattern
-      || argv._ instanceof Array
-        ? argv._.join('|')
-        : '',
+    testPathPattern: argv.testPathPattern || Array.isArray(argv._)
+      ? argv._.join('|')
+      : '',
   });
 
   let hasSnapshotFailure = false;
