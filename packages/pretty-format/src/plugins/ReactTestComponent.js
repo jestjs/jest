@@ -46,11 +46,13 @@ function printInstance(instance, print, indent, colors, opts) {
     result += printProps(instance.props, print, indent, colors, opts);
   }
 
+  const closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
+
   if (instance.children) {
     const children = printChildren(instance.children, print, indent, colors, opts);
-    result += colors.tag.open + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + instance.type + '>' + colors.tag.close;
+    result += colors.tag.open + (closeInNewLine ? '\n' : '') + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + instance.type + '>' + colors.tag.close;
   } else {
-    result += colors.tag.open + ' />' + colors.tag.close;
+    result += colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
   }
 
   return result;

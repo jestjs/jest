@@ -310,6 +310,7 @@ function printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDep
 
   const opts = {
     edgeSpacing,
+    min,
     spacing,
   };
   return plugin.print(val, boundPrint, boundIndent, opts, colors);
