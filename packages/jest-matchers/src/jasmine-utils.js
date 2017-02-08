@@ -297,5 +297,4 @@ module.exports = {
   hasProperty,
   isA,
   isUndefined,
-  asymmetricMatch,
 };
