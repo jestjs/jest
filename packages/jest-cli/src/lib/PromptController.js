@@ -54,11 +54,8 @@ class PromptController {
         const char = new Buffer(key, 'hex').toString();
 
         this.value = key === KEYS.BACKSPACE
-          ?
-          this.value.slice(0, -1)
-          :
-          this.value + char
-        ;
+          ? this.value.slice(0, -1)
+          : this.value + char;
 
         this.onChange(this.value);
         break;
