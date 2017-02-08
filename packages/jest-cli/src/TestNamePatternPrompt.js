@@ -127,7 +127,7 @@ module.exports = (
         }
       } else {
         // eslint-disable-next-line max-len
-        pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a testname regex pattern.')}`);
+        pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`);
       }
 
       pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));
