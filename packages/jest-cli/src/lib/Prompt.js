@@ -13,24 +13,24 @@
 const {KEYS} = require('../constants');
 
 class Prompt {
-  entering: boolean;
-  value: string;
-  onChange: Function;
-  onSuccess: Function;
-  onCancel: Function;
+  _entering: boolean;
+  _value: string;
+  _onChange: Function;
+  _onSuccess: Function;
+  _onCancel: Function;
 
   prompt(
     onChange: Function,
     onSuccess: Function,
     onCancel: Function,
   ) {
-    this.entering = true;
-    this.value = '';
-    this.onChange = onChange;
-    this.onSuccess = onSuccess;
-    this.onCancel = onCancel;
+    this._entering = true;
+    this._value = '';
+    this._onChange = onChange;
+    this._onSuccess = onSuccess;
+    this._onCancel = onCancel;
 
-    onChange(this.value);
+    onChange(this._value);
   }
 
   put(
@@ -38,12 +38,12 @@ class Prompt {
   ) {
     switch (key) {
       case KEYS.ENTER:
-        this.entering = false;
-        this.onSuccess(this.value);
+        this._entering = false;
+        this._onSuccess(this._value);
         break;
       case KEYS.ESCAPE:
-        this.entering = false;
-        this.onCancel(this.value);
+        this._entering = false;
+        this._onCancel(this._value);
         break;
       case KEYS.ARROW_DOWN:
       case KEYS.ARROW_LEFT:
@@ -53,18 +53,22 @@ class Prompt {
       default:
         const char = new Buffer(key, 'hex').toString();
 
-        this.value = key === KEYS.BACKSPACE
-          ? this.value.slice(0, -1)
-          : this.value + char;
+        this._value = key === KEYS.BACKSPACE
+          ? this._value.slice(0, -1)
+          : this._value + char;
 
-        this.onChange(this.value);
+        this._onChange(this._value);
         break;
     }
   }
 
   abort() {
-    this.entering = false;
-    this.value = '';
+    this._entering = false;
+    this._value = '';
+  }
+
+  isEntering() {
+    return this._entering;
   }
 }
 

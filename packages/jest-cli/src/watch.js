@@ -77,7 +77,7 @@ const watch = (
   });
 
   process.on('exit', () => {
-    if (prompt.entering) {
+    if (prompt.isEntering()) {
       pipe.write(ansiEscapes.cursorDown());
       pipe.write(ansiEscapes.eraseDown);
     }
@@ -131,7 +131,7 @@ const watch = (
       return;
     }
 
-    if (prompt.entering) {
+    if (prompt.isEntering()) {
       prompt.put(key);
       return;
     }
