@@ -9,7 +9,7 @@
 */
 'use strict';
 
-const PromptController = require('../PromptController');
+const Prompt = require('../Prompt');
 let {KEYS} = require('../../constants');
 
 KEYS = Object.assign({}, KEYS, {
@@ -18,54 +18,54 @@ KEYS = Object.assign({}, KEYS, {
 });
 
 it('calls handler on change value', () => {
-  const promptController = new PromptController();
+  const prompt = new Prompt();
   const onChange = jest.fn();
 
-  promptController.prompt(onChange, jest.fn(), jest.fn());
+  prompt.prompt(onChange, jest.fn(), jest.fn());
 
   expect(onChange).toHaveBeenLastCalledWith('');
 
-  promptController.put(KEYS.T);
+  prompt.put(KEYS.T);
   expect(onChange).toHaveBeenLastCalledWith('t');
 
-  promptController.put(KEYS.E);
+  prompt.put(KEYS.E);
   expect(onChange).toHaveBeenLastCalledWith('te');
 
-  promptController.put(KEYS.S);
+  prompt.put(KEYS.S);
   expect(onChange).toHaveBeenLastCalledWith('tes');
 
-  promptController.put(KEYS.T);
+  prompt.put(KEYS.T);
   expect(onChange).toHaveBeenLastCalledWith('test');
 
   expect(onChange).toHaveBeenCalledTimes(5);
 });
 
 it('calls handler on success prompt', () => {
-  const promptController = new PromptController();
+  const prompt = new Prompt();
   const onSuccess = jest.fn();
 
-  promptController.prompt(jest.fn(), onSuccess, jest.fn());
+  prompt.prompt(jest.fn(), onSuccess, jest.fn());
 
-  promptController.put(KEYS.T);
-  promptController.put(KEYS.E);
-  promptController.put(KEYS.S);
-  promptController.put(KEYS.T);
-  promptController.put(KEYS.ENTER);
+  prompt.put(KEYS.T);
+  prompt.put(KEYS.E);
+  prompt.put(KEYS.S);
+  prompt.put(KEYS.T);
+  prompt.put(KEYS.ENTER);
 
   expect(onSuccess).toHaveBeenCalledWith('test');
 });
 
 it('calls handler on cancel prompt', () => {
-  const promptController = new PromptController();
+  const prompt = new Prompt();
   const onCancel = jest.fn();
 
-  promptController.prompt(jest.fn(), jest.fn(), onCancel);
+  prompt.prompt(jest.fn(), jest.fn(), onCancel);
 
-  promptController.put(KEYS.T);
-  promptController.put(KEYS.E);
-  promptController.put(KEYS.S);
-  promptController.put(KEYS.T);
-  promptController.put(KEYS.ESCAPE);
+  prompt.put(KEYS.T);
+  prompt.put(KEYS.E);
+  prompt.put(KEYS.S);
+  prompt.put(KEYS.T);
+  prompt.put(KEYS.ESCAPE);
 
   expect(onCancel).toHaveBeenCalled();
 });

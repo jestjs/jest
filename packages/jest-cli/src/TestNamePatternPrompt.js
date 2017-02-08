@@ -15,7 +15,7 @@ import type {Config} from 'types/Config';
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const stringLength = require('string-length');
-const PromptController = require('./lib/PromptController');
+const Prompt = require('./lib/Prompt');
 
 const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
 
@@ -61,9 +61,9 @@ const formatTestNameByPattern = (testName, pattern) => {
 module.exports = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
-  promptController: PromptController,
+  prompt: Prompt,
 ) => {
-  class TestNamePatternModeController {
+  class TestNamePatternPrompt {
     cachedTestNames: Array<string>;
 
     constructor() {
@@ -79,7 +79,7 @@ module.exports = (
       pipe.write(usage());
       pipe.write(ansiEscapes.cursorShow);
 
-      promptController.prompt(
+      prompt.prompt(
         this.onChange,
         onSuccess,
         onCancel,
@@ -162,5 +162,5 @@ module.exports = (
     }
   }
 
-  return new TestNamePatternModeController();
+  return new TestNamePatternPrompt();
 };

@@ -20,9 +20,9 @@ const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
 const setState = require('./lib/setState');
 const TestWatcher = require('./TestWatcher');
-const PromptController = require('./lib/PromptController');
-const TestPathPatternModeController = require('./TestPathPatternModeController');
-const TestNamePatternModeController = require('./TestNamePatternModeController');
+const Prompt = require('./lib/Prompt');
+const TestPathPatternPrompt = require('./TestPathPatternPrompt');
+const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
 const SNAPSHOT_EXTENSION = 'snap';
@@ -47,20 +47,20 @@ const watch = (
   let testWatcher;
   let displayHelp = true;
 
-  const promptController = new PromptController();
+  const prompt = new Prompt();
 
-  const testPathPatternModeController = TestPathPatternModeController(
+  const testPathPatternPrompt = TestPathPatternPrompt(
     config,
     pipe,
-    promptController,
+    prompt,
   );
 
-  testPathPatternModeController.updateSearchSource(hasteContext);
+  testPathPatternPrompt.updateSearchSource(hasteContext);
 
-  const testNamePatternModeController = TestNamePatternModeController(
+  const testNamePatternPrompt = TestNamePatternPrompt(
     config,
     pipe,
-    promptController,
+    prompt,
   );
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
@@ -70,14 +70,14 @@ const watch = (
 
     if (!hasOnlySnapshotChanges) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
-      promptController.abort();
+      prompt.abort();
       testPathPatternModeController.updateSearchSource(hasteContext);
       startRun();
     }
   });
 
   process.on('exit', () => {
-    if (promptController.entering) {
+    if (prompt.entering) {
       pipe.write(ansiEscapes.cursorDown());
       pipe.write(ansiEscapes.eraseDown);
     }
@@ -115,7 +115,7 @@ const watch = (
           displayHelp = !process.env.JEST_HIDE_USAGE;
         }
 
-        testNamePatternModeController.updateCachedTestNames(
+        testNamePatternPrompt.updateCachedTestNames(
           results.testResults
         );
       },
@@ -131,8 +131,8 @@ const watch = (
       return;
     }
 
-    if (promptController.entering) {
-      promptController.put(key);
+    if (prompt.entering) {
+      prompt.put(key);
       return;
     }
 
@@ -171,7 +171,7 @@ const watch = (
         startRun();
         break;
       case KEYS.P:
-        testPathPatternModeController.run(
+        testPathPatternPrompt.run(
           testPathPattern => {
             setState(argv, 'watch', {
               testNamePattern: '',
@@ -180,11 +180,11 @@ const watch = (
 
             startRun();
           },
-          onCancelPatternMode,
+          onCancelPatternPrompt,
         );
         break;
       case KEYS.T:
-        testNamePatternModeController.run(
+        testNamePatternPrompt.run(
           testNamePattern => {
             setState(argv, 'watch', {
               testNamePattern,
@@ -193,7 +193,7 @@ const watch = (
 
             startRun();
           },
-          onCancelPatternMode,
+          onCancelPatternPrompt,
         );
         break;
       case KEYS.QUESTION_MARK:
@@ -204,7 +204,7 @@ const watch = (
     }
   };
 
-  const onCancelPatternMode = () => {
+  const onCancelPatternPrompt = () => {
     pipe.write(ansiEscapes.cursorHide);
     pipe.write(ansiEscapes.clearScreen);
     pipe.write(usage(argv, hasSnapshotFailure));

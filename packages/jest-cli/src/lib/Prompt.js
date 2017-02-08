@@ -12,7 +12,7 @@
 
 const {KEYS} = require('../constants');
 
-class PromptController {
+class Prompt {
   entering: boolean;
   value: string;
   onChange: Function;
@@ -68,4 +68,4 @@ class PromptController {
   }
 }
 
-module.exports = PromptController;
+module.exports = Prompt;

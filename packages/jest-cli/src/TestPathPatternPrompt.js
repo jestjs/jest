@@ -20,7 +20,7 @@ const highlight = require('./lib/highlight');
 const stringLength = require('string-length');
 const {trimAndFormatPath} = require('./reporters/utils');
 const SearchSource = require('./SearchSource');
-const PromptController = require('./lib/PromptController');
+const Prompt = require('./lib/Prompt');
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
@@ -38,9 +38,9 @@ const usageRows = usage().split('\n').length;
 module.exports = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
-  promptController: PromptController,
+  prompt: Prompt,
 ) => {
-  class TestPathPatternModeController {
+  class TestPathPatternPrompt {
     searchSource: SearchSource;
 
     constructor() {
@@ -56,7 +56,7 @@ module.exports = (
       pipe.write(usage());
       pipe.write(ansiEscapes.cursorShow);
 
-      promptController.prompt(
+      prompt.prompt(
         this.onChange,
         onSuccess,
         onCancel,
@@ -136,5 +136,5 @@ module.exports = (
     }
   }
 
-  return new TestPathPatternModeController();
+  return new TestPathPatternPrompt();
 };
