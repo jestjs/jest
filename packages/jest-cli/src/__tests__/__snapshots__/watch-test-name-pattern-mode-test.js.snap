@@ -1,0 +1,277 @@
+exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
+"
+
+
+ pattern › t
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(12, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
+"
+
+
+ pattern › te
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(13, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
+"
+
+
+ pattern › tes
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(14, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
+"
+
+
+ pattern › test
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(15, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
+"
+
+
+ pattern › test 
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(16, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
+"
+
+
+ pattern › test 1
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 2 tests.
+
+  › test 1
+
+  › test 10
+[MOCK - cursorTo(17, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
+"
+
+
+ pattern › test 12
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches no tests.
+[MOCK - cursorTo(18, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
+"
+
+
+ pattern › test 1
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 2 tests.
+
+  › test 1
+
+  › test 10
+[MOCK - cursorTo(17, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
+"
+
+
+ pattern › test 
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(16, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 10`] = `
+"
+
+
+ pattern › test *
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 10 tests.
+
+  › test 1
+
+  › test 2
+
+  › test 3
+
+  › test 4
+
+  › test 5
+
+  › test 6
+
+  › test 7
+
+  › test 8
+
+  › test 9
+
+  › test 10
+[MOCK - cursorTo(17, 4)]
+[MOCK - cursorRestorePosition]"
+`;
