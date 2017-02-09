@@ -66,11 +66,8 @@ const serialize = (data: any): string => {
   }));
 };
 
-const unescape = (data: any): string => {
-  return data
-    .replace(/\\(")/g, '$1') // unescape double quotes
-    .replace(/\\([\\^$*+?.()|[\]{}])/g, '$1'); // then unescape RegExp
-};
+const unescape = (data: any): string =>
+  data.replace(/\\(")/g, '$1'); // unescape double quotes
 
 const printBacktickString = (str: string) => {
   return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
