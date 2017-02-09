@@ -83,8 +83,6 @@
       "\\.snap$",
       "/packages/.*/build"
     ],
-    "testMatch": [
-      "**/*-test.js"
-    ]
+    "testMatch": ["**/*-test.js"]
   }
 }
