@@ -46,11 +46,11 @@ const watch = (
   let searchSource = new SearchSource(hasteContext, config);
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-    const onlySnapFileEvents = eventsQueue.every(({filePath}) => {
+    const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
       return filePath.endsWith(`.${SNAPSHOT_EXTENSION}`);
     });
 
-    if (!onlySnapFileEvents) {
+    if (!hasOnlySnapshotChanges) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
       currentPattern = '';
       isEnteringPattern = false;
