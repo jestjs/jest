@@ -99,7 +99,7 @@ class VerboseReporter extends DefaultReporter {
   }
 
   _logTest(test: AssertionResult, indentLevel: number) {
-    const tagConsole = this._getTagConsole(test.tags);
+    const tagConsole = test.tags ? this._getTagConsole(test.tags) : "";
     const status = this._getIcon(test.status);
     const time = test.duration ?
     ` (${ test.duration.toFixed(0) }ms)` :

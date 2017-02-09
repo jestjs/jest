@@ -931,11 +931,10 @@ getJasmineRequireObj().Env = function(j$) {
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
-
       if (!self.specFilter(spec)) {
         spec.disable();
       }
-      else if (!isTagsMatching(process.jestConfig.tags,spec.getTags())) {
+      else if (process.jestConfig.tags && !isTagsMatching(process.jestConfig.tags,spec.getTags())) {
         spec.pend("Testcase not matched with tags.");
       }
       return spec;
