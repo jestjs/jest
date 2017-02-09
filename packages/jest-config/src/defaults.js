@@ -48,6 +48,7 @@ module.exports = ({
   resetModules: false,
   roots: ['<rootDir>'],
   snapshotSerializers: [],
+  summary: null,
   testEnvironment: 'jest-environment-jsdom',
   testMatch: [
     '**/__tests__/**/*.js?(x)',

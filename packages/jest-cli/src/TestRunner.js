@@ -385,11 +385,11 @@ class TestRunner {
   _setupReporters() {
     const config = this._config;
 
-    this.addReporter(
-      config.verbose
-        ? new VerboseReporter(config)
-        : new DefaultReporter(),
-    );
+    if (config.verbose) {
+      this.addReporter(new VerboseReporter(config));
+    } else if (!config.summary) {
+      this.addReporter(new DefaultReporter());
+    }
 
     if (config.collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't

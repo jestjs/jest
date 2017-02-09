@@ -197,6 +197,11 @@ const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  summary: {
+    default: false,
+    description: 'Limits console output to only the test summary.',
+    type: 'boolean',
+  },
   testNamePattern: {
     alias: 't',
     description:
