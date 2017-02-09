@@ -131,6 +131,45 @@ describe('infiniteTimerGame', () => {
   });
 });
 ```
+
+## Run Timers to Time
+
+Another possibility is use the `jest.runTimersToTime()`. When this API is called, all pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed within msToRun milliseconds will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within msToRun milliseconds.
+
+```javascript
+// timerGame.js
+'use strict';
+
+function timerGame(callback) {
+  console.log('Ready....go!');
+  setTimeout(() => {
+    console.log('Times up -- stop!');
+    callback && callback();
+  }, 1000);
+}
+
+module.exports = timerGame;
+```
+
+```javascript
+it('calls the callback after 1 second via runTimersToTime', () => {
+    const timerGame = require('../timerGame');
+    const callback = jest.fn();
+
+    timerGame(callback);
+
+    // At this point in time, the callback should not have been called yet
+    expect(callback).not.toBeCalled();
+
+    // Fast-forward until all timers have been executed
+    jest.runTimersToTime(1000);
+
+    // Now our callback should have been called!
+    expect(callback).toBeCalled();
+    expect(callback.mock.calls.length).toBe(1);
+  });
+```
+
 Lastly, it may occasionally be useful in some tests to be able to clear all of
 the pending timers. For this, we have `jest.clearAllTimers()`.
 
