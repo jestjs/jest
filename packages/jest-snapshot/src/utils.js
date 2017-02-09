@@ -83,7 +83,7 @@ const ensureDirectoryExists = (filePath: Path) => {
 };
 
 const normalizeNewlines =
-  string => string.replace(/\r\n/g, '\n');
+  string => string.replace(/\r\n|\r/g, '\n');
 
 const saveSnapshotFile = (
   snapshotData: {[key: string]: string},
