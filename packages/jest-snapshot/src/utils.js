@@ -66,6 +66,12 @@ const serialize = (data: any): string => {
   }));
 };
 
+const unescape = (data: any): string => {
+  return data
+    .replace(/\\(")/g, '$1') // unescape double quotes
+    .replace(/\\([\\^$*+?.()|[\]{}])/g, '$1'); // then unescape RegExp
+};
+
 const printBacktickString = (str: string) => {
   return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
 };
@@ -102,4 +108,5 @@ module.exports = {
   saveSnapshotFile,
   serialize,
   testNameToKey,
+  unescape,
 };

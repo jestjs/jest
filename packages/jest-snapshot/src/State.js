@@ -19,6 +19,7 @@ const {
   keyToTestName,
   serialize,
   testNameToKey,
+  unescape,
 } = require('./utils');
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
@@ -158,9 +159,9 @@ class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: receivedSerialized,
+          actual: unescape(receivedSerialized),
           count,
-          expected,
+          expected: unescape(expected),
           pass: false,
         };
       } else {
