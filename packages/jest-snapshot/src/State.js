@@ -158,7 +158,7 @@ class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: receivedSerialized,
+          actual: receivedSerialized.replace(/\\"/g, '"'),
           count,
           expected,
           pass: false,
