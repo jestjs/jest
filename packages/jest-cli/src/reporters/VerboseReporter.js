@@ -90,12 +90,21 @@ class VerboseReporter extends DefaultReporter {
     }
   }
 
+  _getTagConsole(tags) {
+    var tagConsole = "";
+    for (var i of tags) {
+      tagConsole+=chalk.bold.black.bgYellow(" "+i+" ")+" ";
+    }
+    return tagConsole;
+  }
+
   _logTest(test: AssertionResult, indentLevel: number) {
+    const tagConsole = this._getTagConsole(test.tags);
     const status = this._getIcon(test.status);
-    const time = test.duration
-      ? ` (${test.duration.toFixed(0)}ms)`
-      : '';
-    this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
+    const time = test.duration ?
+    ` (${ test.duration.toFixed(0) }ms)` :
+    '';
+    this._logLine(status + ' ' + tagConsole +chalk.dim(test.title + time), indentLevel);
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {

@@ -137,6 +137,7 @@ class Jasmine2Reporter {
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
       status,
       title: specResult.description,
+      tags: specResult.tags,
     };
 
     specResult.failedExpectations.forEach(failed => {

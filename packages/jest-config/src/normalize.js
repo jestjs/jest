@@ -394,6 +394,13 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       .filter(reporter => reporter !== 'text');
   }
 
+  if (argv.tags) {
+    var tags = argv.tags.split(",");
+    newConfig.tags = tags.map(function(i) {
+      return i.toLowerCase();
+    })
+  }
+  
   return _replaceRootDirTags(newConfig.rootDir, newConfig);
 }
 
