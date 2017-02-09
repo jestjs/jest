@@ -150,6 +150,19 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
+### `mapCoverage` [boolean]
+
+##### available in Jest **19.0.0+**
+
+Default: `true`
+
+If you have [transformers](#transform-object-string-string) configured that emit
+source maps, Jest will use them to map code coverage against the original source
+code when writing [reports](#coveragereporters-array-string) and checking
+[thresholds](#coveragethreshold-object). This can be resource-intensive. If Jest
+consumes large amounts of memory while calculating coverage, try setting this
+option to `false`.
+
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`
 
