@@ -642,10 +642,8 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (suiteFullName !== '') {
         fullName.unshift(suiteFullName);
-      // CUSTOM JEST CHANGE: we append "test" at the top level for snapshots.
-      } else if (!suite.parentSuite) {
-        fullName.unshift('test');
       }
+
       return fullName.join(' ');
     };
 
