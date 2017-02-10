@@ -60,24 +60,6 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 
 [Complete your CLA here.](https://code.facebook.com/cla)
 
-### Bugs
-
-### Where to Find Known Issues
-
-We will be using GitHub Issues for our public bugs. We will keep a close eye on this and try to make it clear when we have an internal fix in progress. Before filing a new issue, try to make sure your problem doesn't already exist.
-
-### Reporting New Issues
-
-The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
-
-### Security Bugs
-
-Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined on that page.
-
-## How to Get in Touch
-
-* Discord - [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) on [Reactiflux](http://www.reactiflux.com/)
-
 ## How to try a development build of Jest in another project
 
 To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
@@ -108,9 +90,7 @@ cd /path/to/another/project
 jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
-* For more information about options, see `test` under `scripts` in the `package.json` file for that project.
-
-* You can still `npm test` to compare the installed version of Jest to the development build.
+* To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
 
 To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
 
@@ -118,7 +98,25 @@ To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a developmen
 npm unlink --global jest-cli
 ```
 
-### Code Conventions
+## Bugs
+
+### Where to Find Known Issues
+
+We will be using GitHub Issues for our public bugs. We will keep a close eye on this and try to make it clear when we have an internal fix in progress. Before filing a new issue, try to make sure your problem doesn't already exist.
+
+### Reporting New Issues
+
+The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
+
+### Security Bugs
+
+Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined on that page.
+
+## How to Get in Touch
+
+* Discord - [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) on [Reactiflux](http://www.reactiflux.com/)
+
+## Code Conventions
 
 * 2 spaces for indentation (no tabs).
 * 80 character line length strongly preferred.
