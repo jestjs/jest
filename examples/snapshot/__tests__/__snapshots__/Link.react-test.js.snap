@@ -1,4 +1,4 @@
-exports[`test changes the class when hovered 1`] = `
+exports[`changes the class when hovered 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
@@ -9,7 +9,7 @@ exports[`test changes the class when hovered 1`] = `
 </a>
 `;
 
-exports[`test changes the class when hovered 2`] = `
+exports[`changes the class when hovered 2`] = `
 <a
   className="hovered"
   href="http://www.facebook.com"
@@ -20,7 +20,7 @@ exports[`test changes the class when hovered 2`] = `
 </a>
 `;
 
-exports[`test changes the class when hovered 3`] = `
+exports[`changes the class when hovered 3`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
@@ -31,7 +31,7 @@ exports[`test changes the class when hovered 3`] = `
 </a>
 `;
 
-exports[`test properly escapes quotes 1`] = `
+exports[`properly escapes quotes 1`] = `
 <a
   className="normal"
   href="#"
@@ -42,7 +42,7 @@ exports[`test properly escapes quotes 1`] = `
 </a>
 `;
 
-exports[`test renders as an anchor when no page is set 1`] = `
+exports[`renders as an anchor when no page is set 1`] = `
 <a
   className="normal"
   href="#"
@@ -53,7 +53,7 @@ exports[`test renders as an anchor when no page is set 1`] = `
 </a>
 `;
 
-exports[`test renders correctly 1`] = `
+exports[`renders correctly 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
