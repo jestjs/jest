@@ -60,7 +60,45 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 
 [Complete your CLA here.](https://code.facebook.com/cla)
 
-### Bugs
+## How to try a development build of Jest in another project
+
+To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
+
+```sh
+cd /path/to/your/Jest_clone/packages/jest-cli
+npm link
+```
+
+To build Jest:
+
+```sh
+cd /path/to/your/Jest_clone
+
+# Do one of the following:
+
+# Check out a commit from another contributor, and then
+npm run build
+
+# Save your changes to Jest, and then
+npm test # which also builds Jest
+```
+
+To run tests in another project with the development build of Jest:
+
+```sh
+cd /path/to/another/project
+jest [options] # run jest-cli/bin/jest.js in the development build
+```
+
+* To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
+
+To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
+
+```sh
+npm unlink --global jest-cli
+```
+
+## Bugs
 
 ### Where to Find Known Issues
 
@@ -78,7 +116,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 * Discord - [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) on [Reactiflux](http://www.reactiflux.com/)
 
-### Code Conventions
+## Code Conventions
 
 * 2 spaces for indentation (no tabs).
 * 80 character line length strongly preferred.
