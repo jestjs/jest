@@ -1,4 +1,4 @@
-exports[`test collapses big diffs to patch format 1`] = `
+exports[`collapses big diffs to patch format 1`] = `
 "[32m- Expected[39m
 [31m+ Received[39m
 
@@ -15,7 +15,7 @@ exports[`test collapses big diffs to patch format 1`] = `
 [2m }[22m"
 `;
 
-exports[`test falls back to not call toJSON if objects look identical 1`] = `
+exports[`falls back to not call toJSON if objects look identical 1`] = `
 "[2mCompared values serialize to the same structure.
 Printing internal object structure without calling \`toJSON\` instead.[22m
 
@@ -29,4 +29,4 @@ Printing internal object structure without calling \`toJSON\` instead.[22m
 [2m [22m [2m}[22m"
 `;
 
-exports[`test prints a fallback message if two objects truly look identical 1`] = `"[2mCompared values have no visual difference.[22m"`;
+exports[`prints a fallback message if two objects truly look identical 1`] = `"[2mCompared values have no visual difference.[22m"`;

@@ -1,4 +1,4 @@
-exports[`test instruments and collects coverage for typescript files 1`] = `
+exports[`instruments and collects coverage for typescript files 1`] = `
 "------------|----------|----------|----------|----------|----------------|
 File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ------------|----------|----------|----------|----------|----------------|

@@ -1,4 +1,4 @@
-exports[`test basic test constructs 1`] = `
+exports[`basic test constructs 1`] = `
 " PASS  __tests__/basic-test-constructs-test.js
   ✓ it
   ✓ test
@@ -9,7 +9,7 @@ exports[`test basic test constructs 1`] = `
 "
 `;
 
-exports[`test basic test constructs 2`] = `
+exports[`basic test constructs 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
@@ -18,7 +18,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test only 1`] = `
+exports[`only 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ test.only
   ✓ it.only
@@ -35,7 +35,7 @@ exports[`test only 1`] = `
 "
 `;
 
-exports[`test only 2`] = `
+exports[`only 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
@@ -44,7 +44,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test only with expand arg 1`] = `
+exports[`only with expand arg 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ test.only
   ✓ it.only
@@ -61,7 +61,7 @@ exports[`test only with expand arg 1`] = `
 "
 `;
 
-exports[`test only with expand arg 2`] = `
+exports[`only with expand arg 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 skipped, 7 passed, 8 total
 Snapshots:   0 total
@@ -70,7 +70,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test skips 1`] = `
+exports[`skips 1`] = `
 " PASS  __tests__/skips-constructs-test.js
   ✓ it
   ○ skipped 4 tests
@@ -84,7 +84,7 @@ exports[`test skips 1`] = `
 "
 `;
 
-exports[`test skips 2`] = `
+exports[`skips 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
@@ -93,7 +93,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test skips with expand arg 1`] = `
+exports[`skips with expand arg 1`] = `
 " PASS  __tests__/skips-constructs-test.js
   ✓ it
   ○ xtest
@@ -111,7 +111,7 @@ exports[`test skips with expand arg 1`] = `
 "
 `;
 
-exports[`test skips with expand arg 2`] = `
+exports[`skips with expand arg 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total
@@ -120,7 +120,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test tests with no implementation 1`] = `
+exports[`tests with no implementation 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ it
   ○ skipped 2 tests
@@ -128,7 +128,7 @@ exports[`test tests with no implementation 1`] = `
 "
 `;
 
-exports[`test tests with no implementation 2`] = `
+exports[`tests with no implementation 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       2 skipped, 1 passed, 3 total
 Snapshots:   0 total
@@ -137,7 +137,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test tests with no implementation with expand arg 1`] = `
+exports[`tests with no implementation with expand arg 1`] = `
 " PASS  __tests__/only-constructs-test.js
   ✓ it
   ○ it, no implementation
@@ -146,7 +146,7 @@ exports[`test tests with no implementation with expand arg 1`] = `
 "
 `;
 
-exports[`test tests with no implementation with expand arg 2`] = `
+exports[`tests with no implementation with expand arg 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       2 skipped, 1 passed, 3 total
 Snapshots:   0 total

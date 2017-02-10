@@ -1,4 +1,4 @@
-exports[`test generates an empty coverage object for a file without running it 1`] = `
+exports[`generates an empty coverage object for a file without running it 1`] = `
 Object {
   "b": Object {
     "0": Array [
