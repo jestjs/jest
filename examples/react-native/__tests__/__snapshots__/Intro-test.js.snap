@@ -1,4 +1,4 @@
-exports[`test renders correctly 1`] = `
+exports[`renders correctly 1`] = `
 <View
   style={
     Object {
@@ -40,7 +40,7 @@ exports[`test renders correctly 1`] = `
 </View>
 `;
 
-exports[`test renders the ActivityIndicator component 1`] = `
+exports[`renders the ActivityIndicator component 1`] = `
 <ActivityIndicator
   animating={true}
   color="#999999"
@@ -49,7 +49,7 @@ exports[`test renders the ActivityIndicator component 1`] = `
 />
 `;
 
-exports[`test renders the Image component 1`] = `
+exports[`renders the Image component 1`] = `
 <Image
   style={
     Object {
@@ -60,7 +60,7 @@ exports[`test renders the Image component 1`] = `
 />
 `;
 
-exports[`test renders the ListView component 1`] = `
+exports[`renders the ListView component 1`] = `
 <ScrollView
   dataSource={
     ListViewDataSource {
@@ -107,7 +107,7 @@ exports[`test renders the ListView component 1`] = `
 </ScrollView>
 `;
 
-exports[`test renders the TextInput component 1`] = `
+exports[`renders the TextInput component 1`] = `
 <TextInput
   autoCorrect={false}
   value="apple banana kiwi"
