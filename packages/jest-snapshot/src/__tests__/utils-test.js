@@ -41,10 +41,21 @@ test('getSnapshotPath()', () => {
   );
 });
 
-test('saveSnapshotFile()', () => {
+test('saveSnapshotFile() works with \r\n', () => {
   const filename = path.join(__dirname, 'remove-newlines.snap');
   const data = {
     myKey: '<div>\r\n</div>',
+  };
+
+  saveSnapshotFile(data, filename);
+  expect(fs.writeFileSync)
+    .toBeCalledWith(filename, 'exports[`myKey`] = `<div>\n</div>`;\n');
+});
+
+test('saveSnapshotFile() works with \r', () => {
+  const filename = path.join(__dirname, 'remove-newlines.snap');
+  const data = {
+    myKey: '<div>\r</div>',
   };
 
   saveSnapshotFile(data, filename);

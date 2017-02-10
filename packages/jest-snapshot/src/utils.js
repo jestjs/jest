@@ -66,6 +66,9 @@ const serialize = (data: any): string => {
   }));
 };
 
+const unescape = (data: any): string =>
+  data.replace(/\\(")/g, '$1'); // unescape double quotes
+
 const printBacktickString = (str: string) => {
   return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
 };
@@ -77,7 +80,7 @@ const ensureDirectoryExists = (filePath: Path) => {
 };
 
 const normalizeNewlines =
-  string => string.replace(/\r\n/g, '\n');
+  string => string.replace(/\r\n|\r/g, '\n');
 
 const saveSnapshotFile = (
   snapshotData: {[key: string]: string},
@@ -102,4 +105,5 @@ module.exports = {
   saveSnapshotFile,
   serialize,
   testNameToKey,
+  unescape,
 };
