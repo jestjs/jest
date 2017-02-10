@@ -19,6 +19,14 @@ class Prompt {
   _onSuccess: Function;
   _onCancel: Function;
 
+  constructor() {
+    (this:any)._onResize = this._onResize.bind(this);
+  }
+
+  _onResize() {
+    this._onChange(this._value);
+  }
+
   enter(
     onChange: Function,
     onSuccess: Function,
@@ -31,6 +39,8 @@ class Prompt {
     this._onCancel = onCancel;
 
     onChange(this._value);
+
+    process.stdout.on('resize', this._onResize);
   }
 
   put(
@@ -40,10 +50,12 @@ class Prompt {
       case KEYS.ENTER:
         this._entering = false;
         this._onSuccess(this._value);
+        this.abort();
         break;
       case KEYS.ESCAPE:
         this._entering = false;
         this._onCancel(this._value);
+        this.abort();
         break;
       case KEYS.ARROW_DOWN:
       case KEYS.ARROW_LEFT:
@@ -65,6 +77,7 @@ class Prompt {
   abort() {
     this._entering = false;
     this._value = '';
+    process.stdout.removeListener('resize', this._onResize);
   }
 
   isEntering() {
