@@ -47,44 +47,34 @@ jest.doMock('../runJest', () => function() {
     snapshot: {},
     testResults: [
       {
-        testFilePath: './path/to/file1-test.js',
-        testResults: [{title: 'test 1'}],
+        testResults: [{title: 'should return the correct index when'}],
       },
       {
-        testFilePath: './path/to/file2-test.js',
-        testResults: [{title: 'test 2'}],
+        testResults: [{title: 'should allow test siblings to modify'}],
       },
       {
-        testFilePath: './path/to/file3-test.js',
-        testResults: [{title: 'test 3'}],
+        testResults: [{title: 'might get confusing'}],
       },
       {
-        testFilePath: './path/to/file4-test.js',
-        testResults: [{title: 'test 4'}],
+        testResults: [{title: 'should handle length properties that cannot'}],
       },
       {
-        testFilePath: './path/to/file5-test.js',
-        testResults: [{title: 'test 5'}],
+        testResults: [{title: 'should recognize various types'}],
       },
       {
-        testFilePath: './path/to/file6-test.js',
-        testResults: [{title: 'test 6'}],
+        testResults: [{title: 'should recognize null and undefined'}],
       },
       {
-        testFilePath: './path/to/file7-test.js',
-        testResults: [{title: 'test 7'}],
+        testResults: [{title: 'should not output colors to pipe'}],
       },
       {
-        testFilePath: './path/to/file8-test.js',
-        testResults: [{title: 'test 8'}],
+        testResults: [{title: 'should convert string to a RegExp'}],
       },
       {
-        testFilePath: './path/to/file9-test.js',
-        testResults: [{title: 'test 9'}],
+        testResults: [{title: 'should escape and convert string to a RegExp'}],
       },
       {
-        testFilePath: './path/too/file9-test.js',
-        testResults: [{title: 'test 9'}],
+        testResults: [{title: 'should convert grep string to a RegExp'}],
       },
     ],
   });
@@ -135,7 +125,7 @@ describe('Watch mode flows', () => {
     const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
     // Write a pattern
-    ['t', 'e', 's', 't', ' ', '1', '2']
+    ['c', 'o', 'n', ' ', '1', '2']
     .map(toHex)
     .forEach(assertPattern);
 
@@ -154,7 +144,7 @@ describe('Watch mode flows', () => {
     // Argv is updated with the current pattern
     expect(argv).toEqual({
       onlyChanged: false,
-      testNamePattern: 'test *',
+      testNamePattern: 'con *',
       watch: true,
       watchAll: false,
     });

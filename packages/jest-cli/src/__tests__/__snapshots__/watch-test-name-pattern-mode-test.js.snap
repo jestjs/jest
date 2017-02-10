@@ -2,31 +2,29 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
 "
 
 
- pattern › t
+ pattern › c
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
+ Pattern matches 9 tests.
 
-path/to/file1-test.js › test 1
+ › should return the correct index when
 
-path/to/file2-test.js › test 2
+ › might get confusing
 
-path/to/file3-test.js › test 3
+ › should handle length properties that cannot
 
-path/to/file4-test.js › test 4
+ › should recognize various types
 
-path/to/file5-test.js › test 5
+ › should recognize null and undefined
 
-path/to/file6-test.js › test 6
+ › should not output colors to pipe
 
-path/to/file7-test.js › test 7
+ › should convert string to a RegExp
 
-path/to/file8-test.js › test 8
+ › should escape and convert string to a RegExp
 
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ › should convert grep string to a RegExp
 [MOCK - cursorTo(12, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -35,31 +33,27 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
 "
 
 
- pattern › te
+ pattern › co
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
+ Pattern matches 8 tests.
 
-path/to/file1-test.js › test 1
+ › should return the correct index when
 
-path/to/file2-test.js › test 2
+ › might get confusing
 
-path/to/file3-test.js › test 3
+ › should recognize various types
 
-path/to/file4-test.js › test 4
+ › should recognize null and undefined
 
-path/to/file5-test.js › test 5
+ › should not output colors to pipe
 
-path/to/file6-test.js › test 6
+ › should convert string to a RegExp
 
-path/to/file7-test.js › test 7
+ › should escape and convert string to a RegExp
 
-path/to/file8-test.js › test 8
-
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ › should convert grep string to a RegExp
 [MOCK - cursorTo(13, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -68,31 +62,19 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
 "
 
 
- pattern › tes
+ pattern › con
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
+ Pattern matches 4 tests.
 
-path/to/file1-test.js › test 1
+ › might get confusing
 
-path/to/file2-test.js › test 2
+ › should convert string to a RegExp
 
-path/to/file3-test.js › test 3
+ › should escape and convert string to a RegExp
 
-path/to/file4-test.js › test 4
-
-path/to/file5-test.js › test 5
-
-path/to/file6-test.js › test 6
-
-path/to/file7-test.js › test 7
-
-path/to/file8-test.js › test 8
-
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ › should convert grep string to a RegExp
 [MOCK - cursorTo(14, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -101,31 +83,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
 "
 
 
- pattern › test
+ pattern › con 
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
-
-path/to/file1-test.js › test 1
-
-path/to/file2-test.js › test 2
-
-path/to/file3-test.js › test 3
-
-path/to/file4-test.js › test 4
-
-path/to/file5-test.js › test 5
-
-path/to/file6-test.js › test 6
-
-path/to/file7-test.js › test 7
-
-path/to/file8-test.js › test 8
-
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ Pattern matches no tests.
 [MOCK - cursorTo(15, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -134,31 +96,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
 "
 
 
- pattern › test 
+ pattern › con 1
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
-
-path/to/file1-test.js › test 1
-
-path/to/file2-test.js › test 2
-
-path/to/file3-test.js › test 3
-
-path/to/file4-test.js › test 4
-
-path/to/file5-test.js › test 5
-
-path/to/file6-test.js › test 6
-
-path/to/file7-test.js › test 7
-
-path/to/file8-test.js › test 8
-
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ Pattern matches no tests.
 [MOCK - cursorTo(16, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -167,13 +109,11 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
 "
 
 
- pattern › test 1
+ pattern › con 12
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 1 test.
-
-path/to/file1-test.js › test 1
+ Pattern matches no tests.
 [MOCK - cursorTo(17, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -182,12 +122,12 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
 "
 
 
- pattern › test 12
+ pattern › con 1
 [MOCK - cursorSavePosition]
 
 
  Pattern matches no tests.
-[MOCK - cursorTo(18, 4)]
+[MOCK - cursorTo(16, 4)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -195,14 +135,12 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
 "
 
 
- pattern › test 1
+ pattern › con 
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 1 test.
-
-path/to/file1-test.js › test 1
-[MOCK - cursorTo(17, 4)]
+ Pattern matches no tests.
+[MOCK - cursorTo(15, 4)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -210,65 +148,20 @@ exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
 "
 
 
- pattern › test 
+ pattern › con *
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
+ Pattern matches 4 tests.
 
-path/to/file1-test.js › test 1
+ › might get confusing
 
-path/to/file2-test.js › test 2
+ › should convert string to a RegExp
 
-path/to/file3-test.js › test 3
+ › should escape and convert string to a RegExp
 
-path/to/file4-test.js › test 4
-
-path/to/file5-test.js › test 5
-
-path/to/file6-test.js › test 6
-
-path/to/file7-test.js › test 7
-
-path/to/file8-test.js › test 8
-
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ › should convert grep string to a RegExp
 [MOCK - cursorTo(16, 4)]
-[MOCK - cursorRestorePosition]"
-`;
-
-exports[`Watch mode flows Pressing "T" enters pattern mode 10`] = `
-"
-
-
- pattern › test *
-[MOCK - cursorSavePosition]
-
-
- Pattern matches 10 tests.
-
-path/to/file1-test.js › test 1
-
-path/to/file2-test.js › test 2
-
-path/to/file3-test.js › test 3
-
-path/to/file4-test.js › test 4
-
-path/to/file5-test.js › test 5
-
-path/to/file6-test.js › test 6
-
-path/to/file7-test.js › test 7
-
-path/to/file8-test.js › test 8
-
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
-[MOCK - cursorTo(17, 4)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -280,27 +173,25 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
+ Pattern matches 9 tests.
 
-path/to/file1-test.js › test 1
+ › should return the correct index when
 
-path/to/file2-test.js › test 2
+ › should allow test siblings to modify
 
-path/to/file3-test.js › test 3
+ › might get confusing
 
-path/to/file4-test.js › test 4
+ › should handle length properties that cannot
 
-path/to/file5-test.js › test 5
+ › should recognize various types
 
-path/to/file6-test.js › test 6
+ › should not output colors to pipe
 
-path/to/file7-test.js › test 7
+ › should convert string to a RegExp
 
-path/to/file8-test.js › test 8
+ › should escape and convert string to a RegExp
 
-path/to/file9-test.js › test 9
-
-path/too/file9-test.js › test 9
+ › should convert grep string to a RegExp
 [MOCK - cursorTo(12, 4)]
 [MOCK - cursorRestorePosition]"
 `;
@@ -313,27 +204,25 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
 [MOCK - cursorSavePosition]
 
 
- Pattern matches 10 tests.
+ Pattern matches 9 tests.
 
-path/to/file1-test.js › test 1
+ › should return the corre...
 
-path/to/file2-test.js › test 2
+ › should allow test sibli...
 
-path/to/file3-test.js › test 3
+ › might get confusing
 
-path/to/file4-test.js › test 4
+ › should handle length pr...
 
-path/to/file5-test.js › test 5
+ › should recognize variou...
 
-path/to/file6-test.js › test 6
+ › should not output color...
 
-path/to/file7-test.js › test 7
+ › should convert string t...
 
-path/to/file8-test.js › test 8
+ › should escape and conve...
 
-path/to/file9-test.js › test 9
-
-.../too/file9-test.js › test 9
+ › should convert grep str...
 [MOCK - cursorTo(12, 4)]
 [MOCK - cursorRestorePosition]"
 `;

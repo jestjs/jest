@@ -71,7 +71,7 @@ const watch = (
     if (!hasOnlySnapshotChanges) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
       prompt.abort();
-      testPathPatternModeController.updateSearchSource(hasteContext);
+      testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();
     }
   });

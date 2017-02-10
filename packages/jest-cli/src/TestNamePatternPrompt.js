@@ -16,8 +16,8 @@ const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const {getTerminalWidth} = require('./lib/terminalUtils');
 const stringLength = require('string-length');
-const {trimAndFormatPath} = require('./reporters/utils');
 const Prompt = require('./lib/Prompt');
+const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
 
 const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
 
@@ -31,33 +31,6 @@ const usage = (delimiter: string = '\n') => {
 };
 
 const usageRows = usage().split('\n').length;
-
-const colorize = (str: string, start: number, end: number) => (
-  chalk.dim(str.slice(0, start)) +
-  chalk.reset(str.slice(start, end)) +
-  chalk.dim(str.slice(end))
-);
-
-const formatTestNameByPattern = (testName, pattern) => {
-  let regexp;
-
-  try {
-    regexp = new RegExp(pattern, 'i');
-  } catch (e) {
-    return chalk.dim(testName);
-  }
-
-  const match = testName.match(regexp);
-
-  if (!match) {
-    return chalk.dim(testName);
-  }
-
-  const start = match.index;
-  const end = start + match[0].length;
-
-  return colorize(testName, Math.max(start, 0), Math.max(end, end));
-};
 
 module.exports = (
   config: Config,
@@ -119,17 +92,10 @@ module.exports = (
 
         const width = getTerminalWidth();
 
-        results.forEach(({name, pathname}) => {
-          let testName = formatTestNameByPattern(name, pattern);
+        results.forEach(name => {
+          const testName = formatTestNameByPattern(name, pattern, width - 4);
 
-          testName = ` ${chalk.dim('\u203A')} ${testName}`;
-
-          testName = chalk.dim(chalk.stripColor(
-            // eslint-disable-next-line max-len
-            trimAndFormatPath(0, config, pathname, width - chalk.stripColor(testName).length),
-          )) + testName;
-
-          pipe.write(`\n${testName}`);
+          pipe.write(`\n ${chalk.dim('\u203A')} ${testName}`);
         });
 
         if (total > max) {
@@ -160,11 +126,11 @@ module.exports = (
       const matchedTests = [];
 
       this._cachedTestResults.forEach(
-        ({testResults, testFilePath: pathname}) =>
+        ({testResults}) =>
           testResults.forEach(
-            ({title: name}) => {
-              if (regex.test(name)) {
-                matchedTests.push({name, pathname});
+            ({title}) => {
+              if (regex.test(title)) {
+                matchedTests.push(title);
               }
             },
           )
