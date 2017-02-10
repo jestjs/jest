@@ -12,18 +12,10 @@
 
 const chalk = require('chalk');
 const path = require('path');
-
-const hit = chalk.reset;
-const miss = chalk.dim;
+const colorize = require('./colorize');
 
 const trim = '...';
 const relativePathHead = `.${path.sep}`;
-
-const colorize = (str: string, start: number, end: number) => (
-  miss(str.slice(0, start)) +
-  hit(str.slice(start, end)) +
-  miss(str.slice(end))
-);
 
 const highlight = (
   rawPath: string,
@@ -37,7 +29,7 @@ const highlight = (
   try {
     regexp = new RegExp(pattern, 'i');
   } catch (e) {
-    return miss(filePath);
+    return chalk.dim(filePath);
   }
 
   rawPath = chalk.stripColor(rawPath);
@@ -45,7 +37,7 @@ const highlight = (
   const match = rawPath.match(regexp);
 
   if (!match) {
-    return miss(filePath);
+    return chalk.dim(filePath);
   }
 
   let offset;
