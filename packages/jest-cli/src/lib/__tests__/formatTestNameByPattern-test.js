@@ -15,12 +15,18 @@ const chalk = require('chalk');
 const formatTestNameByPattern = require('../formatTestNameByPattern');
 
 describe('for multiline test name returns', () => {
-  const testName = 'should name the \nfunction you attach';
+  const testNames = [
+    'should\n name the \nfunction you attach',
+    'should\r\n name the \r\nfunction you attach',
+    'should\r name the \rfunction you attach',
+  ];
 
   it('test name with highlighted pattern and replaced line breaks', () => {
     const pattern = 'name';
 
-    expect(formatTestNameByPattern(testName, pattern, 36)).toMatchSnapshot();
+    testNames.forEach(testName => {
+      expect(formatTestNameByPattern(testName, pattern, 36)).toMatchSnapshot();
+    });
   });
 });
 

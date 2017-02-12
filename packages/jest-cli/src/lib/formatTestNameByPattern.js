@@ -17,7 +17,7 @@ const DOTS = '...';
 const ENTER = '⏎';
 
 module.exports = (testName: string, pattern: string, width: number) => {
-  const inlineTestName = testName.replace(/\n/g, ENTER);
+  const inlineTestName = testName.replace(/(\r\n|\n|\r)/gm, ENTER);
 
   let regexp;
 
