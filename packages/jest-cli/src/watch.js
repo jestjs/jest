@@ -61,7 +61,7 @@ const watch = (
 
   process.on('exit', () => {
     if (isEnteringPattern) {
-      pipe.write(ansiEscapes.cursorDown());
+      pipe.write(ansiEscapes.cursorDown);
       pipe.write(ansiEscapes.eraseDown);
     }
   });
