@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Error} from 'types/TestResult';
+import type {SerializableError} from 'types/TestResult';
 import type {InternalHasteMap, ModuleMetaData} from 'types/HasteMap';
 
 export type IgnoreMatcher = (item: string) => boolean;
@@ -22,7 +22,7 @@ export type WorkerMetadata = {
   module: ?ModuleMetaData,
   dependencies: ?Array<string>,
 };
-export type WorkerCallback = (error: ?Error, metaData: ?WorkerMetadata) => void;
+export type WorkerCallback = (error: ?SerializableError, metaData: ?WorkerMetadata) => void;
 
 export type CrawlerOptions = {|
   data: InternalHasteMap,
