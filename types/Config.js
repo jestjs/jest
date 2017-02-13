@@ -14,6 +14,7 @@ export type Glob = string;
 
 export type HasteConfig = {|
   defaultPlatform?: ?string,
+  hasteImplModulePath?: string,
   platforms?: Array<string>,
   providesModuleNodeModules: Array<string>,
 |};

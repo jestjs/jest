@@ -322,6 +322,16 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'unmockedModulePathPatterns':
         value = normalizeUnmockedModulePathPatterns(config, key);
         break;
+      case 'haste':
+        value = Object.assign({}, config[key]);
+        if (value.hasteImplModulePath != null) {
+          value.hasteImplModulePath = resolve(
+            config.rootDir,
+            'haste.hasteImplModulePath',
+            value.hasteImplModulePath,
+          );
+        }
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
@@ -332,7 +342,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'globals':
-      case 'haste':
       case 'logHeapUsage':
       case 'logTransformErrors':
       case 'moduleDirectories':
