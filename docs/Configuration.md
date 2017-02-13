@@ -154,14 +154,18 @@ Note that, if you specify a global reference value (like an object or array) her
 
 ##### available in Jest **19.0.0+**
 
-Default: `true`
+Default: `false`
 
-If you have [transformers](#transform-object-string-string) configured that emit
-source maps, Jest will use them to map code coverage against the original source
-code when writing [reports](#coveragereporters-array-string) and checking
-[thresholds](#coveragethreshold-object). This can be resource-intensive. If Jest
-consumes large amounts of memory while calculating coverage, try setting this
-option to `false`.
+If you have [transformers](#transform-object-string-string) configured that emit source maps, Jest will use them to map code coverage against the original source code when writing [reports](#coveragereporters-array-string) and checking [thresholds](#coveragethreshold-object). This can be resource-intensive. If Jest is taking a long time to calculate coverage at the end of a test run, try setting this option to `false`.
+
+Both inline source maps and source maps returned directly from a transformer are supported. Source map URLs are not supported because Jest may not be able to locate them. To return source maps from a transformer, the `process` function can return an object like the following. The sourceMap property may either be an object, or a string of JSON.
+
+```js
+return {
+  content: 'the code',
+  sourceMap: 'the source map',
+};
+```
 
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`

@@ -19,7 +19,7 @@ skipOnWindows.suite();
 it('maps code coverage against original source', () => {
   const dir = path.resolve(__dirname, '../coverage-remapping');
   run('npm install', dir);
-  runJest(dir, ['--coverage', '--no-cache']);
+  runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
 
   const coverageMapFile = path.join(
     __dirname,

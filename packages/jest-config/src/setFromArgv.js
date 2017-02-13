@@ -13,6 +13,10 @@ function setFromArgv(config, argv) {
     config.collectCoverage = true;
   }
 
+  if (argv.mapCoverage) {
+    config.mapCoverage = true;
+  }
+
   if (argv.verbose) {
     config.verbose = argv.verbose;
   }

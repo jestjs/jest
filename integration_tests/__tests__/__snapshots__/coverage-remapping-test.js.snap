@@ -1,4 +1,4 @@
-exports[`test maps code coverage against original source 1`] = `
+exports[`maps code coverage against original source 1`] = `
 Object {
   "covered.ts": Object {
     "b": Object {

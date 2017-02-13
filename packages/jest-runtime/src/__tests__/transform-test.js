@@ -10,7 +10,6 @@
 'use strict';
 
 const skipOnWindows = require('skipOnWindows');
-const path = require('path');
 
 jest
   .mock('graceful-fs')
@@ -51,11 +50,9 @@ jest.mock(
 jest.mock(
   'preprocessor-with-sourcemaps',
   () => {
-    const getProcessResult = jest.fn();
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      getProcessResult,
-      process: (content, filename, config) => getProcessResult(),
+      process: jest.fn(),
     };
   },
   {virtual: true},
@@ -230,6 +227,10 @@ describe('transform', () => {
   });
 
   it('instruments with source map if preprocessor supplies it', () => {
+    if (skipOnWindows.test()) { //snapshot has os-dependent path separators
+      return;
+    }
+
     config = Object.assign(config, {
       collectCoverage: true,
       mapCoverage: true,
@@ -241,7 +242,7 @@ describe('transform', () => {
       version: 3, 
     };
 
-    require('preprocessor-with-sourcemaps').getProcessResult.mockReturnValue({
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
       content: 'content',
       sourceMap,
     });
@@ -256,7 +257,9 @@ describe('transform', () => {
   });
 
   it('instruments with source map if preprocessor inlines it', () => {
-    const realFS = require('fs');
+    if (skipOnWindows.test()) { //snapshot has os-dependent path separators
+      return;
+    }
 
     config = Object.assign(config, {
       collectCoverage: true,
@@ -264,18 +267,22 @@ describe('transform', () => {
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
 
-    require('preprocessor-with-sourcemaps').getProcessResult.mockReturnValue({
-      content: realFS.readFileSync(
-        path.resolve(__dirname, './test_root/hasInlineSourceMap.js'),
-        'utf8'
-      ),
+    const sourceMap = JSON.stringify({
+      mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
+      version: 3,
     });
+
+    const content = 'var x = 1;\n' +
+      '//# sourceMappingURL=data:application/json;base64,' +
+      new Buffer(sourceMap).toString('base64');
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
     transform('/fruits/banana.js', config);
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
     expect(fs.writeFileSync).toBeCalledWith(
       '/cache/jest-transform-cache-test/ab/banana_ab.map',
-      expect.stringMatching(/mappings/),
+      sourceMap,
       'utf8',
     );
   });
@@ -292,7 +299,7 @@ describe('transform', () => {
       version: 3, 
     };
 
-    require('preprocessor-with-sourcemaps').getProcessResult.mockReturnValue({
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
       content: 'content',
       sourceMap,
     });

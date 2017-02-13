@@ -4,7 +4,6 @@
 bin/
 docs/
 examples/react-native
-packages/jest-runtime/src/__tests__/test_root/hasInlineSourceMap.js
 flow-typed/**
 packages/*/build/**
 types/**

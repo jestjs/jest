@@ -51,7 +51,9 @@ const raiseIssueAboutPaths = (
 };
 
 const newJsFiles = danger.git.created_files.filter(path => path.endsWith('js'));
-const isSourceFile = path => includes(path, '/src/');
+const isSourceFile = path => 
+  includes(path, '/src/') &&
+  !includes(path, '__tests__');
 
 // New JS files should have the FB copyright header + flow
 const facebookLicenseHeaderComponents = [
