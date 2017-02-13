@@ -22,6 +22,7 @@ const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
+const libSourceMaps = require('istanbul-lib-source-maps');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -30,10 +31,12 @@ const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
+  _sourceMapStore: any;
 
   constructor() {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
+    this._sourceMapStore = libSourceMaps.createSourceMapStore();
   }
 
   onTestResult(
@@ -42,6 +45,15 @@ class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     if (testResult.coverage) {
+      if (config.mapCoverage) {
+        Object.keys(testResult.coverage).map(path => {
+          // $FlowFixMe - ignores null check above
+          const {inputSourceMapPath} = testResult.coverage[path];
+          if (inputSourceMapPath) {
+            this._sourceMapStore.registerURL(path, inputSourceMapPath);
+          }
+        });
+      }
       this._coverageMap.merge(testResult.coverage);
       // Remove coverage data to free up some memory.
       delete testResult.coverage;
@@ -57,9 +69,7 @@ class CoverageReporter extends BaseReporter {
     let map = this._coverageMap;
     let sourceFinder: Object;
     if (config.mapCoverage) {
-      const libSourceMaps = require('istanbul-lib-source-maps');
-      const sourceMapStore = libSourceMaps.createSourceMapStore();
-      ({map, sourceFinder} = sourceMapStore.transformCoverage(map));
+      ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map));
     }
 
     const reporter = createReporter();

@@ -13,17 +13,7 @@ import type {Config, Path} from 'types/Config';
 
 export type TransformedSource = {|
   content: string,
-  sourceMap: ?SourceMap,
-|};
-
-export type SourceMap = {|
-  file: string,
-  mappings: string,
-  names: string[],
-  sourceRoot: string,
-  sources: string[],
-  sourcesContent: string[],
-  version: number,
+  sourceMap: ?Object | string,
 |};
 
 export type TransformOptions = {|

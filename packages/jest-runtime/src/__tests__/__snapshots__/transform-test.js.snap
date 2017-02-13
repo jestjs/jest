@@ -3,8 +3,15 @@ exports[`transform does not instrument with source map if mapCoverage config opt
 }});"
 `;
 
+exports[`transform instruments with source map if preprocessor inlines it 1`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"5dc8e485e00fed337d9101d8fac0e5dd5a88b834\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 12 }, end: { line: 1, column: 24 } } }, fnMap: {}, branchMap: { \\"0\\": { loc: { start: { line: 1, column: 12 }, end: { line: 1, column: 24 } }, type: \\"cond-expr\\", locations: [{ start: { line: 1, column: 19 }, end: { line: 1, column: 20 } }, { start: { line: 1, column: 23 }, end: { line: 1, column: 24 } }] } }, s: { \\"0\\": 0 }, f: {}, b: { \\"0\\": [0, 0] }, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();var value = /* istanbul ignore next */(++cov_25u22311x4.s[0], true ? /* istanbul ignore next */(++cov_25u22311x4.b[0][0], 1) : /* istanbul ignore next */(++cov_25u22311x4.b[0][1], 0));
+;global.__coverage__['/fruits/banana.js'].inputSourceMapPath = '/cache/jest-transform-cache-test/ab/banana_ab.map';
+}});"
+`;
+
 exports[`transform instruments with source map if preprocessor supplies it 1`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"2af15ff13eaa7e17fc0a001b1b75722b8fbeeb74\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 7 } } }, fnMap: {}, branchMap: {}, s: { \\"0\\": 0 }, f: {}, b: {}, inputSourceMap: { mappings: \\";AAAA\\", version: 3 }, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];content;
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */var cov_25u22311x4 = function () {var path = \\"/fruits/banana.js\\",hash = \\"4a81f91764b586e5729481ba491440a08d658002\\",global = new Function('return this')(),gcv = \\"__coverage__\\",coverageData = { path: \\"/fruits/banana.js\\", statementMap: { \\"0\\": { start: { line: 1, column: 0 }, end: { line: 1, column: 7 } } }, fnMap: {}, branchMap: {}, s: { \\"0\\": 0 }, f: {}, b: {}, _coverageSchema: \\"332fd63041d2c1bcb487cc26dd0d5f7d97098a6c\\" },coverage = global[gcv] || (global[gcv] = {});if (coverage[path] && coverage[path].hash === hash) {return coverage[path];}coverageData.hash = hash;return coverage[path] = coverageData;}();++cov_25u22311x4.s[0];content;
+;global.__coverage__['/fruits/banana.js'].inputSourceMapPath = '/cache/jest-transform-cache-test/ab/banana_ab.map';
 }});"
 `;
 

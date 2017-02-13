@@ -10,7 +10,6 @@
 'use strict';
 
 import type {ConsoleBuffer} from './Console';
-import type {SourceMap} from './Transform';
 
 export type RawFileCoverage = {|
   path: string,
@@ -21,7 +20,8 @@ export type RawFileCoverage = {|
   fnMap: { [functionId: number]: any },
   statementMap: { [statementId: number]: any },
   branchMap: { [branchId: number]: any },
-  inputSourceMap?: SourceMap,
+  inputSourceMap?: Object,
+  inputSourceMapPath?: string,
 |};
 
 export type RawCoverage = {

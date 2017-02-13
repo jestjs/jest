@@ -10,10 +10,14 @@
 'use strict';
 
 const skipOnWindows = require('skipOnWindows');
+const path = require('path');
 
 jest
   .mock('graceful-fs')
   .mock('jest-file-exists')
+  .mock('jest-haste-map', () => ({
+    getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
+  }))
   .mock('jest-util', () => {
     const util = require.requireActual('jest-util');
     util.createDirectory = jest.fn();
@@ -47,17 +51,11 @@ jest.mock(
 jest.mock(
   'preprocessor-with-sourcemaps',
   () => {
+    const getProcessResult = jest.fn();
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: (content, filename, config) => {
-        return {
-          content: 'content',
-          sourceMap: {
-            mappings: ';AAAA',
-            version: 3,
-          },
-        };
-      },
+      getProcessResult,
+      process: (content, filename, config) => getProcessResult(),
     };
   },
   {virtual: true},
@@ -238,8 +236,48 @@ describe('transform', () => {
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
 
+    const sourceMap = { 
+      mappings: ';AAAA', 
+      version: 3, 
+    };
+
+    require('preprocessor-with-sourcemaps').getProcessResult.mockReturnValue({
+      content: 'content',
+      sourceMap,
+    });
+
     transform('/fruits/banana.js', config);
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(fs.writeFileSync).toBeCalledWith(
+      '/cache/jest-transform-cache-test/ab/banana_ab.map',
+      JSON.stringify(sourceMap),
+      'utf8',
+    );
+  });
+
+  it('instruments with source map if preprocessor inlines it', () => {
+    const realFS = require('fs');
+
+    config = Object.assign(config, {
+      collectCoverage: true,
+      mapCoverage: true,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    require('preprocessor-with-sourcemaps').getProcessResult.mockReturnValue({
+      content: realFS.readFileSync(
+        path.resolve(__dirname, './test_root/hasInlineSourceMap.js'),
+        'utf8'
+      ),
+    });
+
+    transform('/fruits/banana.js', config);
+    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(fs.writeFileSync).toBeCalledWith(
+      '/cache/jest-transform-cache-test/ab/banana_ab.map',
+      expect.stringMatching(/mappings/),
+      'utf8',
+    );
   });
 
   it('does not instrument with source map if mapCoverage config option is false', () => {
@@ -247,6 +285,16 @@ describe('transform', () => {
       collectCoverage: true,
       mapCoverage: false,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    const sourceMap = { 
+      mappings: ';AAAA', 
+      version: 3, 
+    };
+
+    require('preprocessor-with-sourcemaps').getProcessResult.mockReturnValue({
+      content: 'content',
+      sourceMap,
     });
 
     transform('/fruits/banana.js', config);

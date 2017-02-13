@@ -235,7 +235,7 @@ const stripShebang = content => {
 };
 
 const instrumentFile = (
-  transformedSource: TransformedSource,
+  content: string,
   filename: Path,
   config: Config,
 ): string => {
@@ -243,29 +243,27 @@ const instrumentFile = (
   // time by 2sec if not running in `--coverage` mode
   const babel = require('babel-core');
   const babelPluginIstanbul = require('babel-plugin-istanbul').default;
-  const pluginOptions: any = {
-    cwd: config.rootDir, // files outside `cwd` will not be instrumented
-    exclude: [],
-    useInlineSourceMaps: config.mapCoverage,
-  };
 
-  if (transformedSource.sourceMap && config.mapCoverage) {
-    pluginOptions.inputSourceMap = transformedSource.sourceMap;
-  }
-
-  return babel.transform(transformedSource.content, {
+  return babel.transform(content, {
     auxiliaryCommentBefore: ' istanbul ignore next ',
     babelrc: false,
     filename,
     plugins: [
       [
         babelPluginIstanbul,
-        pluginOptions,
+        {
+          cwd: config.rootDir, // files outside `cwd` will not be instrumented
+          exclude: [],
+          useInlineSourceMaps: false,
+        },
       ],
     ],
     retainLines: true,
   }).code;
 };
+
+const escapePathForJavaScript = (filePath: string) => 
+  filePath.replace(/\\/g, '\\\\');
 
 const transformSource = (
   filename: Path,
@@ -300,7 +298,15 @@ const transformSource = (
     }
   }
 
-  if (!config.mapCoverage) {
+  if (config.mapCoverage) {
+    if (!transformed.sourceMap) {
+      const convert = require('convert-source-map');
+      const inlineSourceMap = convert.fromSource(transformed.content);
+      if (inlineSourceMap) {
+        transformed.sourceMap = inlineSourceMap.toJSON();
+      }
+    }
+  } else {
     transformed.sourceMap = null;
   }
 
@@ -309,9 +315,20 @@ const transformSource = (
   const transformDidInstrument = transform && transform.canInstrument;
 
   if (!transformDidInstrument && instrument) {
-    result = instrumentFile(transformed, filename, config);
+    result = instrumentFile(transformed.content, filename, config);
   } else {
     result = transformed.content;
+  }
+
+  if (instrument && transformed.sourceMap && config.mapCoverage) {
+    const sourceMapContent = typeof transformed.sourceMap === 'string'
+      ? transformed.sourceMap
+      : JSON.stringify(transformed.sourceMap);
+    const sourceMapFilePath = cacheFilePath + '.map';
+    writeCacheFile(sourceMapFilePath, sourceMapContent);
+    result +=
+      `\n;global.__coverage__['${escapePathForJavaScript(filename)}']` + 
+      `.inputSourceMapPath = '${escapePathForJavaScript(sourceMapFilePath)}';`;
   }
 
   writeCacheFile(cacheFilePath, result);
