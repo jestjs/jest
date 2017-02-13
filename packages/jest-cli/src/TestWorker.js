@@ -10,7 +10,7 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
-import type {Error, TestResult} from 'types/TestResult';
+import type {SerializableError, TestResult} from 'types/TestResult';
 import type {RawModuleMap} from 'types/HasteMap';
 
 // Make sure uncaught errors are logged before we exit.
@@ -31,9 +31,9 @@ type WorkerData = {|
   rawModuleMap?: RawModuleMap,
 |};
 
-type WorkerCallback = (error: ?Error, result?: TestResult) => void;
+type WorkerCallback = (error: ?SerializableError, result?: TestResult) => void;
 
-const formatError = error => {
+const formatError = (error: string|Error): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
@@ -46,7 +46,7 @@ const formatError = error => {
   return {
     message: error.message,
     stack: error.stack,
-    type: error.type || 'Error',
+    type: 'Error',
   };
 };
 
