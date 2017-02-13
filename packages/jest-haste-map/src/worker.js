@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Error} from 'types/TestResult';
+import type {SerializableError} from 'types/TestResult';
 import type {
   WorkerMessage,
   WorkerCallback,
@@ -25,7 +25,7 @@ const path = require('path');
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 
-const formatError = (error: string|Error): Error => {
+const formatError = (error: string|Error): SerializableError => {
   if (typeof error === 'string') {
     return {
       message: error,
@@ -37,7 +37,7 @@ const formatError = (error: string|Error): Error => {
   return {
     message: error.message,
     stack: error.stack,
-    type: error.type || 'Error',
+    type: 'Error',
   };
 };
 
