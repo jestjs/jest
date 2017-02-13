@@ -47,15 +47,37 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
     return NO_DIFF_MESSAGE;
   }
 
-  if (getType(a) !== getType(b)) {
+  const aType = getType(a);
+  let expectedType = aType;
+  let omitDifference = false;
+  if (aType === 'object' && typeof a.asymmetricMatch === 'function') {
+    if (a.$$typeof !== Symbol.for('jest.asymmetricMatcher')) {
+      // Do not know expected type of user-defined asymmetric matcher.
+      return null;
+    }
+    if (typeof a.expectedType !== 'function') {
+      // For example, expect.anything() matches either null or undefined
+      return null;
+    }
+    expectedType = a.expectedType();
+    // Primitive types boolean and number omit difference below.
+    // For example, omit difference for expect.stringMatching(regexp)
+    omitDifference = expectedType === 'string';
+  }
+
+  if (expectedType !== getType(b)) {
     return (
       '  Comparing two different types of values.' +
-      ` Expected ${chalk.green(getType(a))} but ` +
+      ` Expected ${chalk.green(expectedType)} but ` +
       `received ${chalk.red(getType(b))}.`
     );
   }
 
-  switch (getType(a)) {
+  if (omitDifference) {
+    return null;
+  }
+
+  switch (aType) {
     case 'string':
       const multiline = a.match(/[\r\n]/) !== -1 && b.indexOf('\n') !== -1;
       if (multiline) {
