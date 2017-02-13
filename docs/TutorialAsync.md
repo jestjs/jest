@@ -113,7 +113,7 @@ if a Promise throws and the error is not handled, the test will fail. `expect.as
 ```js
 // Testing for async errors can be done using `catch`.
 it('tests error with promises', () => {
-  expect.assertions(1)
+  expect.assertions(1); // to be sure that `Promise` rejected and `expect` has been called once
   return user.getUserName(3)
     .catch(e => expect(e).toEqual({
       error: 'User with 3 not found.',
@@ -122,7 +122,7 @@ it('tests error with promises', () => {
 
 // Or try-catch.
 it('tests error with async/await', async () => {
-  expect.assertions(1)
+  expect.assertions(1); // to be sure that `await` throws error and `expect` has been called once
   try {
     await user.getUserName(2);
   } catch (object) {
