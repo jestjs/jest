@@ -188,6 +188,11 @@ const users = [
     image: '/jest/img/logos/wowair.png',
     infoLink: 'https://wowair.com/',
   },
+  {
+    caption: 'Audiense',
+    image: '/jest/img/logos/audiense.png',
+    infoLink: 'https://audiense.com/',
+  },
 ];
 
 const siteConfig = {
