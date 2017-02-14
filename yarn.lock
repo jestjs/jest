@@ -2283,6 +2283,10 @@ through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
+timing-stats-cli@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/timing-stats-cli/-/timing-stats-cli-0.6.0.tgz#8174b50bc9335386405f9a9af3b6aae5358d0d5f"
+
 to-fast-properties@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/to-fast-properties/-/to-fast-properties-1.0.2.tgz#f3f5c0c3ba7299a7ef99427e44633257ade43320"
