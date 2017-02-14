@@ -9,42 +9,46 @@
 */
 'use strict';
 
-const setWatchMode = require('../setWatchMode');
+const setState = require('../setState');
 
-describe('setWatchMode()', () => {
+describe('setState()', () => {
   it('Sets watch and watchAll flags based on the mode', () => {
     let argv = {};
-    setWatchMode(argv, 'watch', {});
+    setState(argv, 'watch', {});
     expect(argv.watch).toBeTruthy();
     expect(argv.watchAll).toBeFalsy();
 
     argv = {};
-    setWatchMode(argv, 'watchAll', {});
+    setState(argv, 'watchAll', {});
     expect(argv.watch).toBeFalsy();
     expect(argv.watchAll).toBeTruthy();
   });
 
   it('Sets the onlyChanged flag then in watch and with no pattern', () => {
     let argv = {};
-    setWatchMode(argv, 'watch', {});
+    setState(argv, 'watch', {});
     expect(argv.onlyChanged).toBeTruthy();
 
     argv = {testPathPattern: 'jest-cli'};
-    setWatchMode(argv, 'watch', {});
+    setState(argv, 'watch', {});
+    expect(argv.onlyChanged).toBeFalsy();
+
+    argv = {testNamePattern: 'name-test'};
+    setState(argv, 'watch', {});
     expect(argv.onlyChanged).toBeFalsy();
 
     argv = {};
-    setWatchMode(argv, 'watchAll', {});
+    setState(argv, 'watchAll', {});
     expect(argv.onlyChanged).toBeFalsy();
   });
 
   it('Sets the noSCM flag when the options specify it', () => {
     let argv = {};
-    setWatchMode(argv, 'watch', {noSCM: true});
+    setState(argv, 'watch', {noSCM: true});
     expect(argv.noSCM).toBeTruthy();
 
     argv = {};
-    setWatchMode(argv, 'watch', {noSCM: false});
+    setState(argv, 'watch', {noSCM: false});
     expect(argv.noSCM).toBeFalsy();
   });
 });

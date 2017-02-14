@@ -1,0 +1,228 @@
+exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
+"
+
+
+ pattern › c
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 9 tests.
+
+ › should return the correct index when
+
+ › might get confusing
+
+ › should handle length properties that cannot
+
+ › should recognize various types
+
+ › should recognize null and undefined
+
+ › should not output colors to pipe
+
+ › should convert string to a RegExp
+
+ › should escape and convert string to a RegExp
+
+ › should convert grep string to a RegExp
+[MOCK - cursorTo(12, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
+"
+
+
+ pattern › co
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 8 tests.
+
+ › should return the correct index when
+
+ › might get confusing
+
+ › should recognize various types
+
+ › should recognize null and undefined
+
+ › should not output colors to pipe
+
+ › should convert string to a RegExp
+
+ › should escape and convert string to a RegExp
+
+ › should convert grep string to a RegExp
+[MOCK - cursorTo(13, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
+"
+
+
+ pattern › con
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 4 tests.
+
+ › might get confusing
+
+ › should convert string to a RegExp
+
+ › should escape and convert string to a RegExp
+
+ › should convert grep string to a RegExp
+[MOCK - cursorTo(14, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
+"
+
+
+ pattern › con 
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches no tests.
+[MOCK - cursorTo(15, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
+"
+
+
+ pattern › con 1
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches no tests.
+[MOCK - cursorTo(16, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
+"
+
+
+ pattern › con 12
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches no tests.
+[MOCK - cursorTo(17, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
+"
+
+
+ pattern › con 1
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches no tests.
+[MOCK - cursorTo(16, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
+"
+
+
+ pattern › con 
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches no tests.
+[MOCK - cursorTo(15, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
+"
+
+
+ pattern › con *
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 4 tests.
+
+ › might get confusing
+
+ › should convert string to a RegExp
+
+ › should escape and convert string to a RegExp
+
+ › should convert grep string to a RegExp
+[MOCK - cursorTo(16, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`] = `
+"
+
+
+ pattern › t
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 9 tests.
+
+ › should return the correct index when
+
+ › should allow test siblings to modify
+
+ › might get confusing
+
+ › should handle length properties that cannot
+
+ › should recognize various types
+
+ › should not output colors to pipe
+
+ › should convert string to a RegExp
+
+ › should escape and convert string to a RegExp
+
+ › should convert grep string to a RegExp
+[MOCK - cursorTo(12, 4)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`] = `
+"
+
+
+ pattern › t
+[MOCK - cursorSavePosition]
+
+
+ Pattern matches 9 tests.
+
+ › should return the corre...
+
+ › should allow test sibli...
+
+ › might get confusing
+
+ › should handle length pr...
+
+ › should recognize variou...
+
+ › should not output color...
+
+ › should convert string t...
+
+ › should escape and conve...
+
+ › should convert grep str...
+[MOCK - cursorTo(12, 4)]
+[MOCK - cursorRestorePosition]"
+`;

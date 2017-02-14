@@ -96,6 +96,11 @@ const options = {
       'reported in the output.',
     type: 'boolean',
   },
+  coverageDirectory: {
+    default: undefined,
+    description: 'The directory where Jest should output its coverage files.',
+    type: 'string',
+  },
   debug: {
     description: 'Print debugging info about your jest config.',
     type: 'boolean',
