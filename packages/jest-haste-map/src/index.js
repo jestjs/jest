@@ -42,6 +42,7 @@ type Options = {
   console?: Console,
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
+  hasteImplModulePath?: string,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern?: string,
@@ -60,6 +61,7 @@ type InternalOptions = {
   cacheDirectory: string,
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
+  hasteImplModulePath?: string,
   ignorePattern: RegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
@@ -197,6 +199,7 @@ class HasteMap extends EventEmitter {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
+      hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern:
@@ -354,7 +357,10 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)({filePath}).then(
+    return this._getWorker(workerOptions)({
+      filePath,
+      hasteImplModulePath: this._options.hasteImplModulePath,
+    }).then(
       metadata => {
         // `1` for truthy values instead of `true` to save cache space.
         fileMetadata[H.VISITED] = 1;

@@ -14,6 +14,7 @@ const skipOnWindows = require('skipOnWindows');
 const worker = require('../worker');
 
 const fs = require('graceful-fs');
+const path = require('path');
 
 let createCallback;
 let mockFs;
@@ -99,6 +100,25 @@ describe('worker', () => {
       id: 'Strawberry',
       module: ['/fruits/strawberry.js', H.MODULE],
     });
+  });
+
+  it('delegates to hasteImplModulePath for getting the id', () => {
+    const callback = createCallback();
+    worker({
+      filePath: '/fruits/strawberry.js',
+      hasteImplModulePath: path.resolve(__dirname, 'hasteImpl.js'),
+    }, callback);
+
+    // Worker is synchronous. callback must have been called by now
+    expect(callback).toBeCalled();
+
+    expect(workerError).toBe(null);
+    expect(moduleData.id).toBe('strawberry');
+    expect(moduleData).toEqual(expect.objectContaining({
+      dependencies: expect.any(Array),
+      id: expect.any(String),
+      module: expect.any(Array),
+    }));
   });
 
   it('parses package.json files as haste packages', () => {
