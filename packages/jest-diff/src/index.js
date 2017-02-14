@@ -55,11 +55,11 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
       // Do not know expected type of user-defined asymmetric matcher.
       return null;
     }
-    if (typeof a.expectedType !== 'function') {
+    if (typeof a.getExpectedType !== 'function') {
       // For example, expect.anything() matches either null or undefined
       return null;
     }
-    expectedType = a.expectedType();
+    expectedType = a.getExpectedType();
     // Primitive types boolean and number omit difference below.
     // For example, omit difference for expect.stringMatching(regexp)
     omitDifference = expectedType === 'string';
