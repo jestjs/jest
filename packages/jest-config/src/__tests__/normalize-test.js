@@ -501,7 +501,7 @@ describe('babel-jest', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(
-      name => '/node_modules' + path.sep + name,
+      name => path.sep + 'node_modules' + path.sep + name,
     );
   });
 
@@ -512,9 +512,9 @@ describe('babel-jest', () => {
 
     expect(config.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
     expect(config.transform[0][1])
-      .toEqual('/node_modules' + path.sep + 'babel-jest');
+      .toEqual(path.sep + 'node_modules' + path.sep + 'babel-jest');
     expect(config.setupFiles)
-      .toEqual(['/node_modules' + path.sep + 'babel-polyfill']);
+      .toEqual([path.sep + 'node_modules' + path.sep + 'babel-polyfill']);
   });
 
   it('uses babel-jest if babel-jest is explicitly specified in a custom transform config', () => {
@@ -529,7 +529,7 @@ describe('babel-jest', () => {
     expect(config.transform[0][0]).toBe(customJSPattern);
     expect(config.transform[0][1]).toEqual('/node_modules/babel-jest');
     expect(config.setupFiles)
-      .toEqual(['/node_modules' + path.sep + 'babel-polyfill']);
+      .toEqual([path.sep + 'node_modules' + path.sep + 'babel-polyfill']);
   });
 
   it(`doesn't use babel-jest if its not available`, () => {
@@ -556,7 +556,7 @@ describe('babel-jest', () => {
     });
 
     expect(config.setupFiles)
-      .toEqual(['/node_modules' + path.sep + 'babel-polyfill']);
+      .toEqual([path.sep + 'node_modules' + path.sep + 'babel-polyfill']);
   });
 });
 
@@ -677,6 +677,14 @@ describe('preset', () => {
 });
 
 describe('preset without setupFiles', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(
+      name => path.sep + 'node_modules' + path.sep + name,
+    );
+  });
+
   beforeAll(() => {
     jest.mock(
       '/node_modules/react-native/jest-preset.json',
