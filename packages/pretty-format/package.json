@@ -10,6 +10,6 @@
   "main": "build/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "ansi-styles": "^2.2.1"
+    "ansi-styles": "^3.0.0"
   }
 }

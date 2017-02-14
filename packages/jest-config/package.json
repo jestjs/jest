@@ -14,7 +14,7 @@
     "jest-jasmine2": "^18.1.0",
     "jest-regex-util": "^18.1.0",
     "jest-resolve": "^18.1.0",
-    "jest-validate": "^18.1.0",
+    "jest-validate": "^18.2.0",
     "pretty-format": "^18.1.0"
   }
 }
