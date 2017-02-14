@@ -219,6 +219,28 @@ describe('transform', () => {
   });
 });
 
+describe('haste', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => name);
+  });
+
+  it('normalizes the path for hasteImplModulePath', () => {
+    const config = normalize({
+      haste: {
+        hasteImplModulePath: '<rootDir>/hasteImpl.js',
+      },
+      rootDir: '/root/',
+    });
+
+    expect(config.haste).toEqual({
+      hasteImplModulePath: '/root/hasteImpl.js',
+    });
+  });
+});
+
+
 describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
   beforeEach(() => {

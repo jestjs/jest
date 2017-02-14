@@ -11,6 +11,7 @@
 
 import type {SerializableError} from 'types/TestResult';
 import type {
+  HasteImpl,
   WorkerMessage,
   WorkerCallback,
 } from './types';
@@ -24,6 +25,9 @@ const path = require('path');
 
 const JSON_EXTENSION = '.json';
 const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
+
+let hasteImpl: ?HasteImpl = null;
+let hasteImplModulePath: ?string = null;
 
 const formatError = (error: string|Error): SerializableError => {
   if (typeof error === 'string') {
@@ -43,6 +47,21 @@ const formatError = (error: string|Error): SerializableError => {
 
 module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
   try {
+    if (
+      data.hasteImplModulePath &&
+      data.hasteImplModulePath !== hasteImplModulePath
+    ) {
+      if (hasteImpl) {
+        throw new Error('jest-haste-map: hasteImplModulePath changed');
+      }
+      hasteImplModulePath = data.hasteImplModulePath;
+      hasteImpl = (
+        // $FlowFixMe: dynamic require
+        require(hasteImplModulePath)
+          : HasteImpl
+      );
+    }
+
     const filePath = data.filePath;
     const content = fs.readFileSync(filePath, 'utf8');
     let module;
@@ -56,8 +75,12 @@ module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
         module = [filePath, H.PACKAGE];
       }
     } else if (!filePath.endsWith(JSON_EXTENSION)) {
-      const doc = docblock.parse(docblock.extract(content));
-      id = doc.providesModule || doc.provides;
+      if (hasteImpl) {
+        id = hasteImpl.getHasteName(filePath);
+      } else {
+        const doc = docblock.parse(docblock.extract(content));
+        id = doc.providesModule || doc.provides;
+      }
       dependencies = extractRequires(content);
       if (id) {
         module = [filePath, H.MODULE];
