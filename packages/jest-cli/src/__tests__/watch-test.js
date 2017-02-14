@@ -70,7 +70,6 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock).toBeCalled();
     expect(argv).toEqual({
-      '_': '',
       onlyChanged: true,
       watch: true,
       watchAll: false,
@@ -85,7 +84,6 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock).toBeCalled();
     expect(argv).toEqual({
-      '_': '',
       onlyChanged: false,
       watch: false,
       watchAll: true,

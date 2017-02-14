@@ -123,8 +123,8 @@ describe('Watch mode flows', () => {
 
     // Argv is updated with the current pattern
     expect(argv).toEqual({
-      '_': ['p.*3'],
       onlyChanged: false,
+      testPathPattern: 'p.*3',
       watch: true,
       watchAll: false,
     });

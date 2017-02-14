@@ -1,0 +1,25 @@
+exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 1`] = `"[2mshould⏎ [22m[0mname[0m[2m the ⏎function you at...[22m"`;
+
+exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 2`] = `"[2mshould⏎ [22m[0mname[0m[2m the ⏎function you at...[22m"`;
+
+exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 3`] = `"[2mshould⏎ [22m[0mname[0m[2m the ⏎function you at...[22m"`;
+
+exports[`for one line test name pattern in the middle test name with cutted tail and cutted highlighted pattern 1`] = `"[2mshould [22m[0mnam...[0m"`;
+
+exports[`for one line test name pattern in the middle test name with cutted tail and highlighted pattern 1`] = `"[2mshould [22m[0mname[0m[2m the functi...[22m"`;
+
+exports[`for one line test name pattern in the middle test name with highlighted cutted 1`] = `"[2msho[22m[0m...[0m"`;
+
+exports[`for one line test name pattern in the middle test name with highlighted pattern returns 1`] = `"[2mshould [22m[0mname[0m[2m the function you attach[22m"`;
+
+exports[`for one line test name pattern in the tail returns test name with cutted tail and cutted highlighted pattern 1`] = `"[2mshould name the function you [22m[0ma...[0m"`;
+
+exports[`for one line test name pattern in the tail returns test name with highlighted cutted 1`] = `"[2msho[22m[0m...[0m"`;
+
+exports[`for one line test name pattern in the tail returns test name with highlighted pattern 1`] = `"[2mshould name the function you [22m[0mattach[0m"`;
+
+exports[`for one line test name with pattern in the head returns test name with cutted tail and cutted highlighted pattern 1`] = `"[0mshoul...[0m"`;
+
+exports[`for one line test name with pattern in the head returns test name with cutted tail and highlighted pattern 1`] = `"[0mshould[0m[2m name the function yo...[22m"`;
+
+exports[`for one line test name with pattern in the head returns test name with highlighted pattern 1`] = `"[0mshould[0m[2m name the function you attach[22m"`;
