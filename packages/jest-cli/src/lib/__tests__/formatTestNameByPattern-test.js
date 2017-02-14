@@ -10,8 +10,6 @@
 
 'use strict';
 
-const chalk = require('chalk');
-
 const formatTestNameByPattern = require('../formatTestNameByPattern');
 
 describe('for multiline test name returns', () => {

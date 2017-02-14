@@ -10,6 +10,6 @@
   "dependencies": {
     "jest-mock": "^18.0.0",
     "jest-util": "^18.1.0",
-    "jsdom": "^9.9.1"
+    "jsdom": "^9.11.0"
   }
 }

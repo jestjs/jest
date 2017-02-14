@@ -62,7 +62,7 @@ function promisifyLifeCycleFunction(originalFn: Function, env) {
       const originalBodyFn = fn;
       fn = function(done) {
         const returnValue = originalBodyFn.apply(this, arguments);
-        if (isPromise(returnValue)) {
+        if (returnValue && isPromise(returnValue)) {
           returnValue.then(done, done.fail);
         } else {
           done();

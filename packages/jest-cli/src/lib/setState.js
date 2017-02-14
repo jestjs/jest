@@ -14,7 +14,7 @@ const buildTestPathPatternInfo = require('./buildTestPathPatternInfo');
 module.exports = (
   argv: Object,
   mode: 'watch' | 'watchAll',
-  options?: Object,
+  options?: {},
 ) => {
   options = options || {};
 
@@ -28,7 +28,6 @@ module.exports = (
 
   if (options.testPathPattern) {
     argv.testPathPattern = options.testPathPattern;
-  // $FlowFixMe
   } else if (options.testPathPattern === '') {
     delete argv.testPathPattern;
     delete argv._;
@@ -36,7 +35,6 @@ module.exports = (
 
   if (options.testNamePattern) {
     argv.testNamePattern = options.testNamePattern;
-  // $FlowFixMe
   } else if (options.testNamePattern === '') {
     delete argv.testNamePattern;
   }
