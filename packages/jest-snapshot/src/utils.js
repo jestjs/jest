@@ -90,6 +90,7 @@ const getSnapshotPath = (testPath: Path) => path.join(
 const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   const data = Object.create(null);
   let snapshotContents;
+  let dirty = false;
 
   if (fileExists(snapshotPath)) {
     try {
@@ -103,7 +104,15 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   if (!update && snapshotContents) {
     validateSnapshotVersion(snapshotContents);
   }
-  return data;
+
+  if (update && snapshotContents) {
+    try {
+      validateSnapshotVersion(snapshotContents);
+    } catch (error) {
+      dirty = true;
+    }
+  }
+  return {data, dirty};
 };
 
 // Extra line breaks at the beginning and at the end of the snapshot are useful
