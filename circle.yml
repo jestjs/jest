@@ -4,10 +4,10 @@ general:
       - gh-pages # list of branches to ignore
 machine:
   environment:
-    YARN_VERSION: 0.18.1
+    YARN_VERSION: 0.20.3
     PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 4.7.3
+    version: 4
 dependencies:
   pre:
     - |
