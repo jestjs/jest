@@ -193,6 +193,11 @@ const users = [
     image: '/jest/img/logos/audiense.png',
     infoLink: 'https://audiense.com/',
   },
+  {
+    caption: 'Coursera',
+    image: '/jest/img/logos/coursera.png',
+    infoLink: 'https://coursera.org/',
+  }
 ];
 
 const siteConfig = {
