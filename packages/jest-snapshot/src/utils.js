@@ -22,10 +22,11 @@ const getSerializers = require('./plugins').getSerializers;
 
 const SNAPSHOT_EXTENSION = 'snap';
 const SNAPSHOT_VERSION = '1';
-const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+)/g;
+const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
+const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
 
 const writeSnapshotVersion = () =>
-  `// Jest Snapshot v${SNAPSHOT_VERSION}`;
+  `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
@@ -123,6 +124,7 @@ const saveSnapshotFile = (
 
 module.exports = {
   SNAPSHOT_EXTENSION,
+  SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   ensureDirectoryExists,
   getSnapshotData,

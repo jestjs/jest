@@ -14,6 +14,7 @@ const {
   keyToTestName,
   saveSnapshotFile,
   testNameToKey,
+  SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
 } = require('../utils');
 const fs = require('fs');
@@ -62,7 +63,8 @@ test('saveSnapshotFile() works with \r\n', () => {
   expect(fs.writeFileSync)
     .toBeCalledWith(
       filename,
-      '// Jest Snapshot v1\n\nexports[`myKey`] = `<div>\n</div>`;\n'
+      `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+        'exports[`myKey`] = `<div>\n</div>`;\n'
     );
 });
 
@@ -76,7 +78,8 @@ test('saveSnapshotFile() works with \r', () => {
   expect(fs.writeFileSync)
     .toBeCalledWith(
       filename,
-      '// Jest Snapshot v1\n\nexports[`myKey`] = `<div>\n</div>`;\n'
+      `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+        'exports[`myKey`] = `<div>\n</div>`;\n'
     );
 });
 
@@ -95,7 +98,8 @@ test('getSnapshotData() throws when no snapshot version', () => {
 test('getSnapshotData() throws for older snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
   fs.readFileSync = jest.fn(() =>
-    '// Jest Snapshot v0.99\n\nexports[`myKey`] = `<div>\n</div>`;\n'
+    `// Jest Snapshot v0.99, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+      'exports[`myKey`] = `<div>\n</div>`;\n'
   );
   const update = false;
 
@@ -122,7 +126,10 @@ test('escaping', () => {
   saveSnapshotFile({key: data}, filename);
   const writtenData = fs.writeFileSync.mock.calls[0][1];
   expect(writtenData)
-    .toBe("// Jest Snapshot v1\n\nexports[`key`] = `\"'\\\\`;\n");
+    .toBe(
+      `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+        "exports[`key`] = `\"'\\\\`;\n"
+    );
 
   // eslint-disable-next-line no-unused-vars
   const exports = {};

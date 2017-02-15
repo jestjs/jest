@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`babel-jest instruments only specific files and collects coverage 1`] = `
 "------------|----------|----------|----------|----------|----------------|

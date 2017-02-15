@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
 [Error: jest-haste-map: @providesModule naming collision:

@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`is available globally 1`] = `"expected 15 to be divisible by 2"`;
 

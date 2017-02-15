@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`for multiline test name returns test name with highlighted pattern and replaced line breaks 1`] = `"[2mshould⏎ [22m[0mname[0m[2m the ⏎function you at...[22m"`;
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`dims everything when there is no match 1`] = `"[2mjest-cli/__tests__/watch-test.js[22m"`;
 

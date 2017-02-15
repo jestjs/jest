@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.stringify() reduces maxDepth if stringifying very large objects 1`] = `"{\\"a\\": 1, \\"b\\": [Object]}"`;
 

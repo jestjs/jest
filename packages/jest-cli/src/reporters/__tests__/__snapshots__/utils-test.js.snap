@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`trimAndFormatPath() does not trim anything 1`] = `"[2m1234567890/1234567890/[22m[1m1234.js[22m"`;
 

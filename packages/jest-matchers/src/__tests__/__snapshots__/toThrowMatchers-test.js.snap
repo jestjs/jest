@@ -1,4 +1,4 @@
-// Jest Snapshot v1
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.toThrow() error class did not throw at all 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
