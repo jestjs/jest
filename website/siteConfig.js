@@ -197,6 +197,11 @@ const users = [
     caption: 'Coursera',
     image: '/jest/img/logos/coursera.png',
     infoLink: 'https://coursera.org/',
+  },
+  {
+    caption: 'Algolia',
+    image: '/jest/img/logos/algolia.svg',
+    infoLink: 'https://algolia.com',
   }
 ];
 
