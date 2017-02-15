@@ -130,7 +130,7 @@ test('getSnapshotData() throws for newer snapshot version', () => {
     `that this project is meant to be used with a newer version of Jest. ` +
     `The snapshot file version ensures that all people on a project ` +
     `are using the same version of Jest. ` +
-    `Please update your version of Jest and re-run the tests.` +
+    `Please update your version of Jest and re-run the tests.\n\n` +
     `Expected: v${SNAPSHOT_VERSION}\n` +
     `Received: v2`
   );
