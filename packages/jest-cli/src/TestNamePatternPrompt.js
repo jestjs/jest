@@ -24,7 +24,8 @@ const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
 const usage = (delimiter: string = '\n') => {
   const messages = [
     `\n ${chalk.bold('Pattern Mode Usage')}`,
-    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
+    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}`,
+    ` ${chalk.dim('\u203A Press')} ENTER ${chalk.dim('to apply pattern to all tests.')}\n`,
   ];
 
   return messages.filter(message => !!message).join(delimiter) + '\n';
@@ -85,10 +86,12 @@ module.exports = (
 
       if (pattern) {
         if (total) {
-          pipe.write(`\n\n Pattern matches ${total} ${pluralizeTest(total)}.`);
+          pipe.write(`\n\n Pattern matches ${total} ${pluralizeTest(total)}`);
         } else {
-          pipe.write(`\n\n Pattern matches no tests.`);
+          pipe.write(`\n\n Pattern matches no tests`);
         }
+
+        pipe.write(' from cached test suites.');
 
         const width = getTerminalWidth();
 
