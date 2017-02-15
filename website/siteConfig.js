@@ -202,6 +202,11 @@ const users = [
     caption: 'Algolia',
     image: '/jest/img/logos/algolia.svg',
     infoLink: 'https://algolia.com',
+  },
+  {
+    caption: 'Help.com',
+    image: '/jest/img/logos/Help-Clean.png',
+    infoLink: 'https://help.com',
   }
 ];
 
