@@ -24,19 +24,49 @@ const SNAPSHOT_EXTENSION = 'snap';
 const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
+const SNAPSHOT_VERSION_WARNING =
+  `Warning: It is advised to revert any local changes to tests or ` +
+  `other code during this upgrade to ensure that no invalid state ` +
+  `is stored as a snapshot.`;
 
 const writeSnapshotVersion = () =>
   `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = (versionTest && versionTest[1]) || '0';
+  const version = (versionTest && versionTest[1]);
+
+  if (!version) {
+    throw new Error(
+      `Outdated snapshot: No snapshot header found. ` +
+      `Jest 19 introduced versioned snapshots to ensure all people on ` +
+      `a project are using the same version of Jest. ` +
+      `Please update all snapshots during this upgrade of Jest.\n\n` +
+      SNAPSHOT_VERSION_WARNING
+    );
+  }
 
   if (version < SNAPSHOT_VERSION) {
     throw new Error(
-      `Stored snapshot version is outdated.\n` +
-      `Expected: v${SNAPSHOT_VERSION}, but received: v${version}\n` +
-      `Update the snapshot to remove this error.`
+      `Outdated snapshot: The version of the snapshot file associated ` +
+      `with this test is outdated. The snapshot file version ensures that ` +
+      `all people on a project are using the same version of Jest. ` +
+      `Please update all snapshots during this upgrade of Jest.\n\n` +
+      `Expected: v${SNAPSHOT_VERSION}\n` +
+      `Received: v${version}\n\n` +
+      SNAPSHOT_VERSION_WARNING
+    );
+  }
+
+  if (version > SNAPSHOT_VERSION) {
+    throw new Error(
+      `Outdated Jest version: the version of this snapshot file indicates ` +
+      `that this project is meant to be used with a newer version of Jest. ` +
+      `The snapshot file version ensures that all people on a project ` +
+      `are using the same version of Jest. ` +
+      `Please update your version of Jest and re-run the tests.` +
+      `Expected: v${SNAPSHOT_VERSION}\n` +
+      `Received: v${version}`
     );
   }
 };
@@ -126,6 +156,7 @@ module.exports = {
   SNAPSHOT_EXTENSION,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
+  SNAPSHOT_VERSION_WARNING,
   ensureDirectoryExists,
   getSnapshotData,
   getSnapshotPath,

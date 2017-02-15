@@ -16,6 +16,7 @@ const {
   testNameToKey,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
+  SNAPSHOT_VERSION_WARNING,
 } = require('../utils');
 const fs = require('fs');
 const path = require('path');
@@ -89,9 +90,11 @@ test('getSnapshotData() throws when no snapshot version', () => {
   const update = false;
 
   expect(() => getSnapshotData(filename, update)).toThrowError(
-    `Stored snapshot version is outdated.\n` +
-    `Expected: v${SNAPSHOT_VERSION}, but received: v0\n` +
-    `Update the snapshot to remove this error.`
+    `Outdated snapshot: No snapshot header found. ` +
+    `Jest 19 introduced versioned snapshots to ensure all people on ` +
+    `a project are using the same version of Jest. ` +
+    `Please update all snapshots during this upgrade of Jest.\n\n` +
+    SNAPSHOT_VERSION_WARNING
   );
 });
 
@@ -104,9 +107,32 @@ test('getSnapshotData() throws for older snapshot version', () => {
   const update = false;
 
   expect(() => getSnapshotData(filename, update)).toThrowError(
-    `Stored snapshot version is outdated.\n` +
-    `Expected: v${SNAPSHOT_VERSION}, but received: v0.99\n` +
-    `Update the snapshot to remove this error.`
+    `Outdated snapshot: The version of the snapshot file associated ` +
+    `with this test is outdated. The snapshot file version ensures that ` +
+    `all people on a project are using the same version of Jest. ` +
+    `Please update all snapshots during this upgrade of Jest.\n\n` +
+    `Expected: v${SNAPSHOT_VERSION}\n` +
+    `Received: v0.99\n\n` +
+    SNAPSHOT_VERSION_WARNING
+  );
+});
+
+test('getSnapshotData() throws for newer snapshot version', () => {
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  fs.readFileSync = jest.fn(() =>
+    `// Jest Snapshot v2, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+      'exports[`myKey`] = `<div>\n</div>`;\n'
+  );
+  const update = false;
+
+  expect(() => getSnapshotData(filename, update)).toThrowError(
+    `Outdated Jest version: the version of this snapshot file indicates ` +
+    `that this project is meant to be used with a newer version of Jest. ` +
+    `The snapshot file version ensures that all people on a project ` +
+    `are using the same version of Jest. ` +
+    `Please update your version of Jest and re-run the tests.` +
+    `Expected: v${SNAPSHOT_VERSION}\n` +
+    `Received: v2`
   );
 });
 
