@@ -9,17 +9,28 @@
 'use strict';
 
 const {
+  getSnapshotData,
   getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
   testNameToKey,
+  SNAPSHOT_VERSION,
 } = require('../utils');
 const fs = require('fs');
 const path = require('path');
 
 const writeFileSync = fs.writeFileSync;
-beforeEach(() => fs.writeFileSync = jest.fn());
-afterEach(() => fs.writeFileSync = writeFileSync);
+const readFileSync = fs.readFileSync;
+beforeEach(() => {
+  fs.writeFileSync = jest.fn();
+  fs.readFileSync = jest.fn();
+});
+afterEach(() => {
+  fs.writeFileSync = writeFileSync;
+  fs.readFileSync = readFileSync;
+});
+
+jest.mock('jest-file-exists', () => () => true);
 
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
@@ -49,7 +60,10 @@ test('saveSnapshotFile() works with \r\n', () => {
 
   saveSnapshotFile(data, filename);
   expect(fs.writeFileSync)
-    .toBeCalledWith(filename, 'exports[`myKey`] = `<div>\n</div>`;\n');
+    .toBeCalledWith(
+      filename,
+      '// Jest Snapshot v1\n\nexports[`myKey`] = `<div>\n</div>`;\n'
+    );
 });
 
 test('saveSnapshotFile() works with \r', () => {
@@ -60,7 +74,46 @@ test('saveSnapshotFile() works with \r', () => {
 
   saveSnapshotFile(data, filename);
   expect(fs.writeFileSync)
-    .toBeCalledWith(filename, 'exports[`myKey`] = `<div>\n</div>`;\n');
+    .toBeCalledWith(
+      filename,
+      '// Jest Snapshot v1\n\nexports[`myKey`] = `<div>\n</div>`;\n'
+    );
+});
+
+test('getSnapshotData() throws when no snapshot version', () => {
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  fs.readFileSync = jest.fn(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+  const update = false;
+
+  expect(() => getSnapshotData(filename, update)).toThrowError(
+    `Stored snapshot version is outdated.\n` +
+    `Expected: v${SNAPSHOT_VERSION}, but received: v0\n` +
+    `Update the snapshot to remove this error.`
+  );
+});
+
+test('getSnapshotData() throws for older snapshot version', () => {
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  fs.readFileSync = jest.fn(() =>
+    '// Jest Snapshot v0.99\n\nexports[`myKey`] = `<div>\n</div>`;\n'
+  );
+  const update = false;
+
+  expect(() => getSnapshotData(filename, update)).toThrowError(
+    `Stored snapshot version is outdated.\n` +
+    `Expected: v${SNAPSHOT_VERSION}, but received: v0.99\n` +
+    `Update the snapshot to remove this error.`
+  );
+});
+
+test('getSnapshotData() does not throw for when updating', () => {
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  fs.readFileSync = jest.fn(() =>
+    'exports[`myKey`] = `<div>\n</div>`;\n'
+  );
+  const update = true;
+
+  expect(() => getSnapshotData(filename, update)).not.toThrow();
 });
 
 test('escaping', () => {
@@ -68,7 +121,8 @@ test('escaping', () => {
   const data = '"\'\\';
   saveSnapshotFile({key: data}, filename);
   const writtenData = fs.writeFileSync.mock.calls[0][1];
-  expect(writtenData).toBe("exports[`key`] = `\"'\\\\`;\n");
+  expect(writtenData)
+    .toBe("// Jest Snapshot v1\n\nexports[`key`] = `\"'\\\\`;\n");
 
   // eslint-disable-next-line no-unused-vars
   const exports = {};

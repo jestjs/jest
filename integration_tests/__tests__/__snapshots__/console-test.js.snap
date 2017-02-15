@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`console printing 1`] = `
 " PASS  __tests__/console-test.js
   ● Console

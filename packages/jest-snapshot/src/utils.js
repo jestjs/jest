@@ -21,6 +21,24 @@ const naturalCompare = require('natural-compare');
 const getSerializers = require('./plugins').getSerializers;
 
 const SNAPSHOT_EXTENSION = 'snap';
+const SNAPSHOT_VERSION = '1';
+const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+)/g;
+
+const writeSnapshotVersion = () =>
+  `// Jest Snapshot v${SNAPSHOT_VERSION}`;
+
+const validateSnapshotVersion = (snapshotContents: string) => {
+  const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
+  const version = versionTest && versionTest[1] || '0';
+
+  if (version < SNAPSHOT_VERSION) {
+    throw new Error(
+      `Stored snapshot version is outdated.\n` +
+      `Expected: v${SNAPSHOT_VERSION}, but received: v${version}\n` +
+      `Update the snapshot to remove this error.`
+    );
+  }
+};
 
 const testNameToKey = (testName: string, count: number) =>
   testName + ' ' + count;
@@ -38,18 +56,22 @@ const getSnapshotPath = (testPath: Path) => path.join(
   path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
 );
 
-const getSnapshotData = (snapshotPath: Path) => {
+const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   const data = Object.create(null);
+  let snapshotContents;
 
   if (fileExists(snapshotPath)) {
     try {
-      delete require.cache[require.resolve(snapshotPath)];
-      /* eslint-disable no-useless-call */
-      Object.assign(data, require.call(null, snapshotPath));
-      /* eslint-enable no-useless-call */
+      snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
+      // eslint-disable-next-line no-new-func
+      const populate = new Function('exports', snapshotContents);
+      populate(data);
     } catch (e) {}
   }
 
+  if (!update && snapshotContents) {
+    validateSnapshotVersion(snapshotContents);
+  }
   return data;
 };
 
@@ -89,15 +111,19 @@ const saveSnapshotFile = (
   const snapshots = Object.keys(snapshotData).sort(naturalCompare)
     .map(key =>
       'exports[' + printBacktickString(key) + '] = ' +
-        printBacktickString(normalizeNewlines(snapshotData[key])) + ';',
+      printBacktickString(normalizeNewlines(snapshotData[key])) + ';',
     );
 
   ensureDirectoryExists(snapshotPath);
-  fs.writeFileSync(snapshotPath, snapshots.join('\n\n') + '\n');
+  fs.writeFileSync(
+    snapshotPath,
+    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n'
+  );
 };
 
 module.exports = {
   SNAPSHOT_EXTENSION,
+  SNAPSHOT_VERSION,
   ensureDirectoryExists,
   getSnapshotData,
   getSnapshotPath,

@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
 [Error: jest-haste-map: @providesModule naming collision:
   Duplicate module name: Strawberry
@@ -8,7 +10,7 @@ This error is caused by a @providesModule declaration with the same name across 
 
 exports[`HasteMap tries to crawl using node as a fallback 1`] = `
 "jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
-  Usually this happens when watchman isn\'t running. Create an empty \`.watchmanconfig\` file in your project\'s root folder or initialize a git or hg repository in your project.
+  Usually this happens when watchman isn't running. Create an empty \`.watchmanconfig\` file in your project's root folder or initialize a git or hg repository in your project.
   Error: watchman error"
 `;
 

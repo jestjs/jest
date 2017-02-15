@@ -98,7 +98,7 @@ describe('multiple-transformers', () => {
   });
 
   it('transforms dependencies using specific transformers', () => {
-    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+    const {json, stderr} = runJest.json(dir, ['--no-cache', '-u']);
 
     expect(stderr).toMatch(/PASS/);
     expect(json.numTotalTests).toBe(1);

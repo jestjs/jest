@@ -48,7 +48,7 @@ class SnapshotState {
   ) {
     this._dirty = false;
     this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
-    this._snapshotData = getSnapshotData(this._snapshotPath);
+    this._snapshotData = getSnapshotData(this._snapshotPath, update);
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -83,7 +83,7 @@ class SnapshotState {
 
     const isEmpty = Object.keys(this._snapshotData).length === 0;
 
-    if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
+    if ((this._dirty || this._uncheckedKeys.size || update) && !isEmpty) {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
       status.saved = true;
     } else if (isEmpty && fileExists(this._snapshotPath)) {

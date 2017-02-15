@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`testNamePattern 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       2 skipped, 2 passed, 4 total

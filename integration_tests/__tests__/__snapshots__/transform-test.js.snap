@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`babel-jest instruments only specific files and collects coverage 1`] = `
 "------------|----------|----------|----------|----------|----------------|
 File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |

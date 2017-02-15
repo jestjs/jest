@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`changes the class when hovered 1`] = `
 <a
   className="normal"

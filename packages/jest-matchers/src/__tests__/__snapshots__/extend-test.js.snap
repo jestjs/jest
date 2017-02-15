@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`is available globally 1`] = `"expected 15 to be divisible by 2"`;
 
 exports[`is ok if there is no message specified 1`] = `"[31mNo message was specified for this matcher.[39m"`;

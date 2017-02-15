@@ -1,3 +1,5 @@
+// Jest Snapshot v1
+
 exports[`.toBe() does not crash on circular references 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
 
