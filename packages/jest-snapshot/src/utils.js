@@ -30,7 +30,7 @@ const writeSnapshotVersion = () =>
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = versionTest && versionTest[1] || '0';
+  const version = (versionTest && versionTest[1]) || '0';
 
   if (version < SNAPSHOT_VERSION) {
     throw new Error(
