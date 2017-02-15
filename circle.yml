@@ -27,6 +27,7 @@ test:
     - yarn run test-ci
     - (cd danger && yarn install)
     - yarn run danger
+    - cd website && yarn run test
 
 deployment:
   website:
