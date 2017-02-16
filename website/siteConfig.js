@@ -207,6 +207,11 @@ const users = [
     caption: 'Help.com',
     image: '/jest/img/logos/Help-Clean.png',
     infoLink: 'https://help.com',
+  },
+  {
+    caption: 'Hudl',
+    image: '/jest/img/logos/hudl.png',
+    infoLink: 'https://www.hudl.com/',
   }
 ];
 
