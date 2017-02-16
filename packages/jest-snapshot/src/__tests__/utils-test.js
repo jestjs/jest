@@ -146,6 +146,27 @@ test('getSnapshotData() does not throw for when updating', () => {
   expect(() => getSnapshotData(filename, update)).not.toThrow();
 });
 
+test('getSnapshotData() marks invalid snapshot dirty when updating', () => {
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  fs.readFileSync = jest.fn(() =>
+    'exports[`myKey`] = `<div>\n</div>`;\n'
+  );
+  const update = true;
+
+  expect(getSnapshotData(filename, update)).toMatchObject({dirty: true});
+});
+
+test('getSnapshotData() marks valid snapshot not dirty when updating', () => {
+  const filename = path.join(__dirname, 'old-snapshot.snap');
+  fs.readFileSync = jest.fn(() =>
+    `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}\n\n` +
+    'exports[`myKey`] = `<div>\n</div>`;\n'
+  );
+  const update = true;
+
+  expect(getSnapshotData(filename, update)).toMatchObject({dirty: false});
+});
+
 test('escaping', () => {
   const filename = path.join(__dirname, 'escaping.snap');
   const data = '"\'\\';
