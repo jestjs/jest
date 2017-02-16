@@ -26,7 +26,10 @@ const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
 const usage = () =>
   `\n ${chalk.bold('Pattern Mode Usage')}\n` +
-  ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n\n`;
+  ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
+  ` ${chalk.dim('\u203A Press')} Enter ` +
+  `${chalk.dim('to apply pattern to all filenames.')}\n` +
+  `\n`;
 
 const usageRows = usage().split('\n').length;
 
