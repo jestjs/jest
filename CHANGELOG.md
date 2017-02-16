@@ -27,7 +27,7 @@
 * Improved printing of skipped tests in verbose mode.
 * Improved resolution code in jest-resolve.
 * Improved to only show patch marks in assertion errors when the comparison results in large objects.
-* New --collectCoverageFrom cli argument.
+* New `--collectCoverageFrom` cli argument.
 * New `--coverageDirectory` cli argument.
 * New `expect.addSnapshotSerializer` to add custom snapshot serializers for tests.
 * New `jest.spyOn`.
