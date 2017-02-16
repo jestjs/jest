@@ -13,8 +13,14 @@
 const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
 const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+const ImmutableOrderedSetPlugin = require('pretty-format/build/plugins/ImmutableOrderedSet');
+const ImmutableListPlugin = require('pretty-format/build/plugins/ImmutableList');
 
-const PLUGINS = [AsymmetricMatcherPlugin];
+const PLUGINS = [
+  AsymmetricMatcherPlugin, 
+  ImmutableOrderedSetPlugin, 
+  ImmutableListPlugin,
+];
 
 export type ValueType =
   | 'array'

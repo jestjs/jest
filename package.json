@@ -30,7 +30,8 @@
     "react-test-renderer": "^15.4.1",
     "rimraf": "^2.5.4",
     "strip-ansi": "^3.0.1",
-    "typescript": "^2.1.4"
+    "typescript": "^2.1.4",
+    "immutable": "^3.8.1"
   },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build",
