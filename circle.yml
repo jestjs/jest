@@ -20,15 +20,16 @@ dependencies:
     - ~/.yarn
     - ~/.cache/yarn
     - "website/node_modules"
+    - "danger/node_modules"
   override:
-    - yarn install
-    - cd website && yarn install
+    - yarn install --no-progress
+    - cd website && yarn install --no-progress
+    - cd danger && yarn install --no-progress
 test:
   override:
     - yarn run test-ci:
         parallel: true
     - nvm alias default 7
-    - (cd danger && yarn install)
     - yarn run danger
     - cd website && yarn run test
 
