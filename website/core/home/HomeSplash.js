@@ -8,9 +8,9 @@ const React = require('React');
 const siteConfig = require('../../siteConfig.js');
 
 class HomeSplash extends React.Component {
-  makePromoElements(promoEl) {
+  makePromoElements(promoEl, index) {
     return (
-      <div className="promoRow">
+      <div className="promoRow" key={index}>
         {promoEl}
       </div>
     );
