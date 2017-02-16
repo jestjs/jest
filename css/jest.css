@@ -1634,7 +1634,7 @@ h6:hover .header-link {
 }
 .productShowcaseSection .logos img {
   max-height: 110px;
-  width: 110px;
+  max-width: 110px;
   padding: 20px;
 }
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
@@ -1645,7 +1645,7 @@ h6:hover .header-link {
   }
   .productShowcaseSection .logos img {
     max-height: 64px;
-    width: 64px;
+    max-width: 64px;
     padding: 20px;
   }
 }
@@ -1728,14 +1728,14 @@ div.video iframe {
 }
 .showcaseSection .logos img {
   max-height: 128px;
-  width: 128px;
+  max-width: 128px;
   padding: 20px;
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
   .showcaseSection .logos img {
     max-height: 64px;
-    width: 64px;
+    max-width: 64px;
     padding: 20px;
   }
 }
