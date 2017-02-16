@@ -21,15 +21,12 @@ const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
 
 const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
 
-const usage = (delimiter: string = '\n') => {
-  const messages = [
-    `\n ${chalk.bold('Pattern Mode Usage')}`,
-    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}`,
-    ` ${chalk.dim('\u203A Press')} ENTER ${chalk.dim('to apply pattern to all tests.')}\n`,
-  ];
-
-  return messages.filter(message => !!message).join(delimiter) + '\n';
-};
+const usage = () =>
+  `\n ${chalk.bold('Pattern Mode Usage')}\n` +
+  ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n` +
+  ` ${chalk.dim('\u203A Press')} ENTER ` +
+  `${chalk.dim('to apply pattern to all tests.')}\n` +
+  `\n`;
 
 const usageRows = usage().split('\n').length;
 
