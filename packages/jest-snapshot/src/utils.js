@@ -103,11 +103,11 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
     } catch (e) {}
   }
 
-  const validatedSnapshot = validateSnapshotVersion(snapshotContents);
-  const isInvalid = snapshotContents && typeof validatedSnapshot !== 'boolean';
+  const validationResult = validateSnapshotVersion(snapshotContents);
+  const isInvalid = snapshotContents && typeof validationResult !== 'boolean';
 
   if (!update && isInvalid) {
-    throw validatedSnapshot;
+    throw validationResult;
   }
 
   if (update && isInvalid) {
