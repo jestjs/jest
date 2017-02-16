@@ -32,7 +32,7 @@ const SNAPSHOT_VERSION_WARNING =
 const writeSnapshotVersion = () =>
   `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
-const validateSnapshotVersion = (snapshotContents: string): boolean | Error => {
+const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
   const version = (versionTest && versionTest[1]);
 
@@ -70,7 +70,7 @@ const validateSnapshotVersion = (snapshotContents: string): boolean | Error => {
     );
   }
 
-  return true;
+  return null;
 };
 
 const testNameToKey = (testName: string, count: number) =>
@@ -104,7 +104,7 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   }
 
   const validationResult = validateSnapshotVersion(snapshotContents);
-  const isInvalid = snapshotContents && typeof validationResult !== 'boolean';
+  const isInvalid = snapshotContents && validationResult;
 
   if (!update && isInvalid) {
     throw validationResult;
