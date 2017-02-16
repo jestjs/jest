@@ -10,17 +10,17 @@
 'use strict';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
-const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
+const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
 
-const isList = (maybeList: Object) => {
-  return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
+const isStack = (maybeStack: Object) => {
+  return !!(maybeStack && maybeStack[IS_STACK_SENTINEL]);
 };
 
-const printImmutableList = (val: Object) => {  
+const printImmutableStack = (val: Object) => {
   return IMMUTABLE_NAMESPACE + val.toString();
 };
 
 module.exports = {
-  print: printImmutableList,
-  test: (object: Object) => object && isList(object),
+  print: printImmutableStack,
+  test: (object: Object) => object && isStack(object),
 };

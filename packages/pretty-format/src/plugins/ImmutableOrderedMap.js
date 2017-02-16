@@ -10,26 +10,26 @@
 'use strict';
 
 const IMMUTABLE_NAMESPACE = 'Immutable.';
-const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
+const IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
-const isSet = (maybeSet: Object) => {
-  return !!(maybeSet && maybeSet[IS_SET_SENTINEL]);
+const isMap = (maybeMap: Object) => {
+  return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
 };
 
 const isOrdered = (maybeOrdered: Object) => {
   return !!(maybeOrdered && maybeOrdered[IS_ORDERED_SENTINEL]);
 };
 
-const isOrderedSet = (maybeOrderedSet: Object) => {
-  return isSet(maybeOrderedSet) && isOrdered(maybeOrderedSet);
+const isOrderedMap = (maybeOrderedMap: Object) => {
+  return isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
 };
 
-const printImmutableOrderedSet = (val: Object) => {  
+const printImmutableOrderedMap = (val: Object) => {
   return IMMUTABLE_NAMESPACE + val.toString();
 };
 
 module.exports = {
-  print: printImmutableOrderedSet,
-  test: (object: Object) => object && isOrderedSet(object),
+  print: printImmutableOrderedMap,
+  test: (object: Object) => object && isOrderedMap(object),
 };

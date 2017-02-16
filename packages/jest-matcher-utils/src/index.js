@@ -15,11 +15,19 @@ const prettyFormat = require('pretty-format');
 const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
 const ImmutableOrderedSetPlugin = require('pretty-format/build/plugins/ImmutableOrderedSet');
 const ImmutableListPlugin = require('pretty-format/build/plugins/ImmutableList');
+const ImmutableMapPlugin = require('pretty-format/build/plugins/ImmutableMap');
+const ImmutableOrderedMapPlugin = require('pretty-format/build/plugins/ImmutableOrderedMap');
+const ImmutableSetPlugin = require('pretty-format/build/plugins/ImmutableSet');
+const ImmutableStackPlugin = require('pretty-format/build/plugins/ImmutableStack');
 
 const PLUGINS = [
   AsymmetricMatcherPlugin, 
   ImmutableOrderedSetPlugin, 
   ImmutableListPlugin,
+  ImmutableMapPlugin,
+  ImmutableOrderedMapPlugin,
+  ImmutableSetPlugin,
+  ImmutableStackPlugin,
 ];
 
 export type ValueType =

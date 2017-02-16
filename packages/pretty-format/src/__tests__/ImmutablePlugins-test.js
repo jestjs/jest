@@ -12,11 +12,22 @@ const prettyFormat = require('../');
 const Immutable = require('immutable');
 const ImmutableOrderedSet = require('../plugins/ImmutableOrderedSet');
 const ImmutableList = require('../plugins/ImmutableList');
+const ImmutableStack = require('../plugins/ImmutableStack');
+const ImmutableSet = require('../plugins/ImmutableSet');
+const ImmutableMap = require('../plugins/ImmutableMap');
+const ImmutableOrderedMap = require('../plugins/ImmutableOrderedMap');
 
 function assertImmutableObject(actual, expected, opts) {
   expect(
     prettyFormat(actual, Object.assign({
-      plugins: [ImmutableOrderedSet, ImmutableList],
+      plugins: [
+        ImmutableOrderedSet, 
+        ImmutableList, 
+        ImmutableStack,
+        ImmutableSet,
+        ImmutableMap,
+        ImmutableOrderedMap,
+      ],
     }, opts))
   ).toEqual(expected);
 }
@@ -91,6 +102,126 @@ describe('ImmutableList plugin', () => {
     assertImmutableObject(
       Immutable.List([1, 2, 3]),
       'Immutable.List [ 1, 2, 3 ]'
+    );
+  });
+});
+
+describe('ImmutableStack plugin', () => {
+  it('supports an empty set', () => {
+    assertImmutableObject(
+      Immutable.Stack([]),
+      'Immutable.Stack []'
+    );
+  });
+
+  it('supports a single string element', () => {
+    assertImmutableObject(
+      Immutable.Stack(['foo']),
+      'Immutable.Stack [ "foo" ]'
+    );
+  });
+
+  it('supports a single integer element', () => {
+    assertImmutableObject(
+      Immutable.Stack([1]),
+      'Immutable.Stack [ 1 ]'
+    );
+  });
+
+  it('supports multiple string elements', () => {
+    assertImmutableObject(
+      Immutable.Stack(['jhon', 'mike', 'cristian']),
+      'Immutable.Stack [ "jhon", "mike", "cristian" ]'
+    );
+  });
+
+  it('supports multiple integer elements', () => {
+    assertImmutableObject(
+      Immutable.Stack([1, 2, 3]),
+      'Immutable.Stack [ 1, 2, 3 ]'
+    );
+  });
+});
+
+describe('ImmutableSet plugin', () => {
+  it('supports an empty set', () => {
+    assertImmutableObject(
+      Immutable.Set([]),
+      'Immutable.Set {}'
+    );
+  });
+
+  it('supports a single string element', () => {
+    assertImmutableObject(
+      Immutable.Set(['foo']),
+      'Immutable.Set { "foo" }'
+    );
+  });
+
+  it('supports a single integer element', () => {
+    assertImmutableObject(
+      Immutable.Set([1]),
+      'Immutable.Set { 1 }'
+    );
+  });
+
+  it('supports multiple string elements', () => {
+    assertImmutableObject(
+      Immutable.Set(['jhon', 'mike', 'cristian']),
+      'Immutable.Set { "jhon", "mike", "cristian" }'
+    );
+  });
+
+  it('supports multiple integer elements', () => {
+    assertImmutableObject(
+      Immutable.Set([1, 2, 3]),
+      'Immutable.Set { 1, 2, 3 }'
+    );
+  });
+});
+
+describe('ImmutableMap plugin', () => {
+  it('supports an empty set', () => {
+    assertImmutableObject(
+      Immutable.Map({}),
+      'Immutable.Map {}'
+    );
+  });
+
+  it('supports an object with single key', () => {
+    assertImmutableObject(
+      Immutable.Map({a: 1}),
+      'Immutable.Map { "a": 1 }'
+    );
+  });
+
+  it('supports an object with multiple keys', () => {
+    assertImmutableObject(
+      Immutable.Map({a: 1, b: 2, c: 3}),
+      'Immutable.Map { "a": 1, "b": 2, "c": 3 }'
+    );
+  });
+});
+
+describe('ImmutableOrderedMap plugin', () => {
+  it('supports an empty set', () => {
+    assertImmutableObject(
+      Immutable.OrderedMap({}),
+      'Immutable.OrderedMap {}'
+    );
+  });
+
+  it('supports an object with single key', () => {
+    assertImmutableObject(
+      Immutable.OrderedMap({a: 1}),
+      'Immutable.OrderedMap { "a": 1 }'
+    );
+  });
+
+  it('supports an object with multiple keys', () => {
+    assertImmutableObject(
+      Immutable.OrderedMap({a: 1, b: 2, c: 3}),
+      'Immutable.OrderedMap { "a": 1, "b": 2, "c": 3 }'
     );
   });
 });
