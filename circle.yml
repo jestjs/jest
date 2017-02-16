@@ -7,13 +7,15 @@ machine:
     YARN_VERSION: 0.20.3
     PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 4
+    version: 7
 dependencies:
   pre:
     - |
       if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
         curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
       fi
+    - case $CIRCLE_NODE_INDEX in 0) NODE_VERSION=4 ;; 1) NODE_VERSION=6 ;; 2) NODE_VERSION=7 ;; esac; nvm install $NODE_VERSION && nvm alias default $NODE_VERSION
+
   cache_directories:
     - ~/.yarn
     - ~/.cache/yarn
@@ -23,8 +25,9 @@ dependencies:
     - cd website && yarn install
 test:
   override:
-    - cd website && yarn run test
-    - yarn run test-ci
+    - yarn run test-ci:
+        parallel: true
+    - nvm alias default 7
     - (cd danger && yarn install)
     - yarn run danger
     - cd website && yarn run test
