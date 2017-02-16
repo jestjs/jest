@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`collapses big diffs to patch format 1`] = `
 "[32m- Expected[39m
 [31m+ Received[39m

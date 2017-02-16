@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`trimAndFormatPath() does not trim anything 1`] = `"[2m1234567890/1234567890/[22m[1m1234.js[22m"`;
 
 exports[`trimAndFormatPath() split at the path.sep index 1`] = `"[2m.../[22m[1m1234.js[22m"`;
@@ -8,9 +10,9 @@ exports[`trimAndFormatPath() trims dirname 1`] = `"[2m...234567890/[22m[1m123
 
 exports[`trimAndFormatPath() trims dirname and basename 1`] = `"[1m...1234.js[22m"`;
 
-exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 1`] = `"This string shouldn\'t cause you any trouble"`;
+exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 1`] = `"This string shouldn't cause you any trouble"`;
 
-exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 2`] = `"This string shouldn\'t cause you any trouble"`;
+exports[`wrapAnsiString() returns the string unaltered if given a terminal width of zero 2`] = `"This string shouldn't cause you any trouble"`;
 
 exports[`wrapAnsiString() wraps a long string containing ansi chars 1`] = `
 "abcde [31m[1mred-
