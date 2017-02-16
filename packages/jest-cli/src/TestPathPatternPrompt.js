@@ -24,14 +24,9 @@ const Prompt = require('./lib/Prompt');
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
-const usage = (delimiter: string = '\n') => {
-  const messages = [
-    `\n ${chalk.bold('Pattern Mode Usage')}`,
-    ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n`,
-  ];
-
-  return messages.filter(message => !!message).join(delimiter) + '\n';
-};
+const usage = () =>
+  `\n ${chalk.bold('Pattern Mode Usage')}\n` +
+  ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n\n`;
 
 const usageRows = usage().split('\n').length;
 
