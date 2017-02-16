@@ -213,6 +213,11 @@ const users = [
     image: '/jest/img/logos/hudl.png',
     infoLink: 'https://www.hudl.com/',
   },
+  {
+    caption: 'Jane',
+    image: '/jest/img/logos/jane.svg',
+    infoLink: 'https://jane.com'
+  },
 ];
 
 const siteConfig = {
