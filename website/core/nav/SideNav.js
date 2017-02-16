@@ -69,7 +69,7 @@ class SideNav extends React.Component {
       'navItemActive': (link.id === this.props.current.id),
     });
     return (
-      <li className={itemClasses}>
+      <li className={itemClasses} key={link.id}>
         <a
           className={linkClasses}
           href={this.getLink(link)}>

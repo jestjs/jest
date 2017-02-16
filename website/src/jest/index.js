@@ -20,7 +20,7 @@ const index = React.createClass({
     const showcase = siteConfig.users.filter(user => {
       return user.pinned;
     }).map(user => {
-      return <a href={user.infoLink}><img src={user.image} title={user.caption}/></a>;
+      return <a href={user.infoLink} key={user.image}><img src={user.image} title={user.caption}/></a>;
     });
 
     return (
