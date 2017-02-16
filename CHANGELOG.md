@@ -1,5 +1,50 @@
 ## master
 
+## jest 19.0.0
+
+* Breaking Change: Added a version for snapshots.
+* Breaking Change: Removed the `mocksPattern` configuration option, it never worked correctly.
+* Breaking Change: Renamed `testPathDirs` to `roots` to avoid confusion when configuring Jest.
+* Breaking Change: Updated printing of React elements to cause fewer changes when props change.
+* Breaking Change: Updated snapshot format to properly escape data.
+* Fixed --color to be recognized correctly again.
+* Fixed `babel-plugin-jest-hoist` to work properly with type annotations in tests.
+* Fixed behavior for console.log calls and fixed a memory leak (#2539).
+* Fixed cache directory path for Jest to avoid ENAMETOOLONG errors.
+* Fixed change events to be emitted in jest-haste-map's watch mode. This fixes issues with Jest's new watch mode and react-native-packager.
+* Fixed cli arguments to be used when loading the config from file, they were previously ignored.
+* Fixed Jest to load json files that include a BOM.
+* Fixed Jest to throw errors instead of ignoring invalid cli options.
+* Fixed mocking behavior for virtual modules.
+* Fixed mocking behavior with transitive dependencies.
+* Fixed support for asymmetric matchers in `toMatchObject`.
+* Fixed test interruption and `--bail` behavior.
+* Fixed watch mode to clean up worker processes when a test run gets interrupted.
+* Fixed whitespace to be highlighted in snapshots and assertion errors.
+* Improved `babel-jest` plugin: babel is loaded lazily, istanbul comments are only added when coverage is used.
+* Improved error for invalid transform config.
+* Improved moduleNameMapper to not overwrite mocks when many patterns map to the same file.
+* Improved printing of skipped tests in verbose mode.
+* Improved resolution code in jest-resolve.
+* Improved to only show patch marks in assertion errors when the comparison results in large objects.
+* New --collectCoverageFrom cli argument.
+* New `--coverageDirectory` cli argument.
+* New `expect.addSnapshotSerializer` to add custom snapshot serializers for tests.
+* New `jest.spyOn`.
+* New `testMatch` configuration option that accepts glob patterns.
+* New eslint-plugin-jest with no-disabled-tests, no-focuses-tests and no-identical-title rules and default configuration and globals.
+* New expect.stringContaining asymmetric matcher.
+* New feature to make manual mocks with nested folders work. For example `__mocks__/react-native/Library/Text.js` will now work as expected.
+* New jest-phabricator package to integrate Jest code coverage in phabriactor.
+* New jest-validate package to improve configuration errors, help with suggestions of correct configuration and to be adopted in other libraries.
+* New pretty-printing for asymmetric matchers.
+* New RSS feed for Jest's blog.
+* New typeahead to filter cached test names added to watch mode.
+* New typeahead to filter file names added to watch mode (#2324).
+* New way to provide a reducer to extract haste module ids.
+* New website, new documentation, new color scheme and new homepage.
+* Rewritten watch mode for instant feedback, better code quality and to build new features on top of it (#2362).
+
 ## jest 18.1.0
 
 * Fixed console.log and fake timer behavior in node 7.3.
