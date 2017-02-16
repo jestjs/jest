@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`generates a snapshot with correctly transformed dependencies 1`] = `
 <div
   className="App-root"

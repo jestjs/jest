@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`basic test constructs 1`] = `
 " PASS  __tests__/basic-test-constructs-test.js
   ✓ it

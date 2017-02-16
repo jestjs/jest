@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`Stack Trace does not print a stack trace for errors when --noStackTrace is given 1`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       3 failed, 3 total
