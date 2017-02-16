@@ -21,7 +21,31 @@ function isPromise(obj) {
   return obj && typeof obj.then === 'function';
 }
 
-// return a wrapping function: `env.fit = promisifyIt(env.it, env)`
+function promisifyFunction(fn, typeName) {
+  const hasDoneCallback = fn.length;
+
+  if (hasDoneCallback) {
+    // Jasmine will handle it
+    return fn;
+  }
+
+  // We make *all* functions async and run `done` right away if they
+  // didn't return a promise.
+  return function(done) {
+    const returnValue = fn.apply(this, arguments);
+
+    if (isPromise(returnValue)) {
+      returnValue.then(done, done.fail);
+    } else if (returnValue === undefined) {
+      done();
+    } else {
+      done.fail(new Error(
+        'Jest: ' + typeName + ' must return either a Promise or undefined.',
+      ));
+    }
+  };
+}
+
 function promisifyIt(originalFn, env) {
   return function(specName, fn, timeout) {
     if (!fn) {
@@ -30,47 +54,18 @@ function promisifyIt(originalFn, env) {
       return spec;
     }
 
-    const isAsync = fn.length; // `done` was passed
+    const promiseFn = promisifyFunction(fn, '`it` and `test`');
 
-    if (isAsync) {
-      // jasmine will handle it
-      return originalFn.call(env, specName, fn, timeout);
-    } else {
-      // we make *all* tests async and run `done` right away if they
-      // didn't return a promise.
-      return originalFn.call(env, specName, function(done) {
-        const returnValue = fn.apply(this, arguments);
-
-        if (isPromise(returnValue)) {
-          returnValue.then(done).catch(done.fail);
-        } else if (returnValue === undefined) {
-          done();
-        } else {
-          done.fail(new Error(
-            'Jest: `it` must return either a Promise or undefined.',
-          ));
-        }
-      }, timeout);
-    }
+    return originalFn.call(env, specName, promiseFn, timeout);
   };
 }
 
-function promisifyLifeCycleFunction(originalFn: Function, env) {
+function promisifyLifeCycleFunction(originalFn, env) {
   return function(fn, timeout) {
-    const hasDoneCallback = fn.length;
-    if (!hasDoneCallback) {
-      const originalBodyFn = fn;
-      fn = function(done) {
-        const returnValue = originalBodyFn.apply(this, arguments);
-        if (returnValue && isPromise(returnValue)) {
-          returnValue.then(done, done.fail);
-        } else {
-          done();
-        }
-      };
-    }
+    const typeName = '`beforeAll`, `afterAll`, `beforeEach`, and `afterEach`';
+    const promiseFn = promisifyFunction(fn, typeName);
 
-    return originalFn.call(env, fn, timeout);
+    return originalFn.call(env, promiseFn, timeout);
   };
 }
 
