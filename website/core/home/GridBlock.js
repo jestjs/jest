@@ -31,7 +31,7 @@ class GridBlock extends React.Component {
       this.renderBlockImage(block.image);
 
     return (
-      <div className={blockClasses}>
+      <div className={blockClasses} key={block.title}>
         {topLeftImage}
         <div className="blockContent">
           {this.renderBlockTitle(block.title)}

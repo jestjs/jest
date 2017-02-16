@@ -44,6 +44,7 @@ const BlogPageLayout = React.createClass({
                       post={post}
                       content={post.content}
                       truncate={true}
+                      key={post.path + post.title}
                     />
                   );
                 })
