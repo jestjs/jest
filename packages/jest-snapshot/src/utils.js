@@ -32,12 +32,12 @@ const SNAPSHOT_VERSION_WARNING =
 const writeSnapshotVersion = () =>
   `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
 
-const validateSnapshotVersion = (snapshotContents: string) => {
+const validateSnapshotVersion = (snapshotContents: string): boolean | Error => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
   const version = (versionTest && versionTest[1]);
 
   if (!version) {
-    throw new Error(
+    return new Error(
       `Outdated snapshot: No snapshot header found. ` +
       `Jest 19 introduced versioned snapshots to ensure all people on ` +
       `a project are using the same version of Jest. ` +
@@ -47,7 +47,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   }
 
   if (version < SNAPSHOT_VERSION) {
-    throw new Error(
+    return new Error(
       `Outdated snapshot: The version of the snapshot file associated ` +
       `with this test is outdated. The snapshot file version ensures that ` +
       `all people on a project are using the same version of Jest. ` +
@@ -59,7 +59,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   }
 
   if (version > SNAPSHOT_VERSION) {
-    throw new Error(
+    return new Error(
       `Outdated Jest version: the version of this snapshot file indicates ` +
       `that this project is meant to be used with a newer version of Jest. ` +
       `The snapshot file version ensures that all people on a project ` +
@@ -69,6 +69,8 @@ const validateSnapshotVersion = (snapshotContents: string) => {
       `Received: v${version}`
     );
   }
+
+  return true;
 };
 
 const testNameToKey = (testName: string, count: number) =>
@@ -89,7 +91,7 @@ const getSnapshotPath = (testPath: Path) => path.join(
 
 const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   const data = Object.create(null);
-  let snapshotContents;
+  let snapshotContents = '';
   let dirty = false;
 
   if (fileExists(snapshotPath)) {
@@ -101,17 +103,17 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
     } catch (e) {}
   }
 
-  if (!update && snapshotContents) {
-    validateSnapshotVersion(snapshotContents);
+  const validatedSnapshot = validateSnapshotVersion(snapshotContents);
+  const isInvalid = snapshotContents && typeof validatedSnapshot !== 'boolean';
+
+  if (!update && isInvalid) {
+    throw validatedSnapshot;
   }
 
-  if (update && snapshotContents) {
-    try {
-      validateSnapshotVersion(snapshotContents);
-    } catch (error) {
-      dirty = true;
-    }
+  if (update && isInvalid) {
+    dirty = true;
   }
+
   return {data, dirty};
 };
 
