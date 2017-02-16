@@ -523,6 +523,7 @@ const buildFailureTestResult = (
       unmatched: 0,
       updated: 0,
     },
+    sourceMaps: {},
     testExecError: err,
     testFilePath: testPath,
     testResults: [],

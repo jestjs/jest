@@ -156,7 +156,7 @@ describe('transform', () => {
 
   it('transforms a file properly', () => {
     config.collectCoverage = true;
-    const response = transform('/fruits/banana.js', config);
+    const response = transform('/fruits/banana.js', config).script;
 
     expect(response instanceof vm.Script).toBe(true);
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
@@ -166,7 +166,7 @@ describe('transform', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const response2 = transform('/fruits/banana.js', config);
+    const response2 = transform('/fruits/banana.js', config).script;
     expect(response2).toBe(response);
 
     transform('/fruits/kiwi.js', config);
@@ -227,40 +227,32 @@ describe('transform', () => {
   });
 
   it('instruments with source map if preprocessor supplies it', () => {
-    if (skipOnWindows.test()) { //snapshot has os-dependent path separators
-      return;
-    }
-
     config = Object.assign(config, {
       collectCoverage: true,
       mapCoverage: true,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
 
-    const sourceMap = { 
+    const map = { 
       mappings: ';AAAA', 
       version: 3, 
     };
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      content: 'content',
-      sourceMap,
+      code: 'content',
+      map,
     });
 
-    transform('/fruits/banana.js', config);
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    const result = transform('/fruits/banana.js', config);
+    expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(fs.writeFileSync).toBeCalledWith(
-      '/cache/jest-transform-cache-test/ab/banana_ab.map',
-      JSON.stringify(sourceMap),
+      result.sourceMapPath,
+      JSON.stringify(map),
       'utf8',
     );
   });
 
   it('instruments with source map if preprocessor inlines it', () => {
-    if (skipOnWindows.test()) { //snapshot has os-dependent path separators
-      return;
-    }
-
     config = Object.assign(config, {
       collectCoverage: true,
       mapCoverage: true,
@@ -278,10 +270,10 @@ describe('transform', () => {
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
-    transform('/fruits/banana.js', config);
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    const result = transform('/fruits/banana.js', config);
+    expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(fs.writeFileSync).toBeCalledWith(
-      '/cache/jest-transform-cache-test/ab/banana_ab.map',
+      result.sourceMapPath,
       sourceMap,
       'utf8',
     );
@@ -304,8 +296,9 @@ describe('transform', () => {
       sourceMap,
     });
 
-    transform('/fruits/banana.js', config);
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    const result = transform('/fruits/banana.js', config);
+    expect(result.sourceMapPath).toBeFalsy();
+    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
   });
 
   it('reads values from the cache', () => {

@@ -145,6 +145,7 @@ export type TestResult = {|
     unmatched: number,
     updated: number,
   |},
+  sourceMaps: {[sourcePath: string]: string},
   testExecError?: Error,
   testFilePath: string,
   testResults: Array<AssertionResult>,

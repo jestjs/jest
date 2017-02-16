@@ -24,8 +24,8 @@ module.exports = {
         }
       );
       return {
-        content: result.outputText,
-        sourceMap: JSON.parse(result.sourceMapText),
+        code: result.outputText,
+        map: JSON.parse(result.sourceMapText),
       };
     }
     return src;

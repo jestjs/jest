@@ -39,5 +39,5 @@ it('generates an empty coverage object for a file without running it', () => {
     baseCacheDir: os.tmpdir(),
     cacheDirectory: os.tmpdir(),
     rootDir: os.tmpdir(),
-  })).toMatchSnapshot();
+  }).coverage).toMatchSnapshot();
 });

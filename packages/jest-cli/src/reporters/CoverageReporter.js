@@ -45,18 +45,16 @@ class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     if (testResult.coverage) {
-      if (config.mapCoverage) {
-        Object.keys(testResult.coverage).map(path => {
-          // $FlowFixMe - ignores null check above
-          const {inputSourceMapPath} = testResult.coverage[path];
-          if (inputSourceMapPath) {
-            this._sourceMapStore.registerURL(path, inputSourceMapPath);
-          }
-        });
-      }
       this._coverageMap.merge(testResult.coverage);
       // Remove coverage data to free up some memory.
       delete testResult.coverage;
+
+      Object.keys(testResult.sourceMaps).forEach(sourcePath => {
+        this._sourceMapStore.registerURL(
+          sourcePath,
+          testResult.sourceMaps[sourcePath]
+        );
+      });
     }
   }
 
@@ -117,9 +115,15 @@ class CoverageReporter extends BaseReporter {
         if (!this._coverageMap.data[filename]) {
           try {
             const source = fs.readFileSync(filename).toString();
-            const coverage = generateEmptyCoverage(source, filename, config);
-            if (coverage) {
-              this._coverageMap.addFileCoverage(coverage);
+            const result = generateEmptyCoverage(source, filename, config);
+            if (result) {
+              this._coverageMap.addFileCoverage(result.coverage);
+              if (result.sourceMapPath) {
+                this._sourceMapStore.registerURL(
+                  filename,
+                  result.sourceMapPath
+                );
+              }
             }
           } catch (e) {
             console.error(chalk.red(`

@@ -10,10 +10,16 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
+import type {Script} from 'vm';
 
 export type TransformedSource = {|
-  content: string,
-  sourceMap: ?Object | string,
+  code: string,
+  map: ?Object | string,
+|};
+
+export type BuiltTransformResult = {|
+  script: Script,
+  sourceMapPath: ?string,
 |};
 
 export type TransformOptions = {|
