@@ -12,6 +12,4 @@ cache:
     - "node_modules"
 
 script:
-  - yarn run test-ci
-  - (cd danger && yarn install)
-  - yarn run danger
+  - yarn run test-ci-partial
