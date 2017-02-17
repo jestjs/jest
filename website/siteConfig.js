@@ -209,14 +209,14 @@ const users = [
     infoLink: 'https://truffls.com/',
   },
   {
-    caption: 'Xing',
-    image: '/jest/img/logos/xing.png',
-    infoLink: 'https://www.xing.com/',
-  },
-  {
     caption: 'WOW air',
     image: '/jest/img/logos/wowair.png',
     infoLink: 'https://wowair.com/',
+  },
+  {
+    caption: 'Xing',
+    image: '/jest/img/logos/xing.png',
+    infoLink: 'https://www.xing.com/',
   },
 ];
 
