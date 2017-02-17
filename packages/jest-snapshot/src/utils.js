@@ -39,7 +39,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   if (!version) {
     return new Error(
       `Outdated snapshot: No snapshot header found. ` +
-      `Jest 19 introduced versioned snapshots to ensure all people on ` +
+      `Jest 19 introduced versioned snapshots to ensure all users of ` +
       `a project are using the same version of Jest. ` +
       `Please update all snapshots during this upgrade of Jest.\n\n` +
       SNAPSHOT_VERSION_WARNING
@@ -50,7 +50,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       `Outdated snapshot: The version of the snapshot file associated ` +
       `with this test is outdated. The snapshot file version ensures that ` +
-      `all people on a project are using the same version of Jest. ` +
+      `all users of a project are using the same version of Jest. ` +
       `Please update all snapshots during this upgrade of Jest.\n\n` +
       `Expected: v${SNAPSHOT_VERSION}\n` +
       `Received: v${version}\n\n` +
@@ -62,7 +62,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       `Outdated Jest version: the version of this snapshot file indicates ` +
       `that this project is meant to be used with a newer version of Jest. ` +
-      `The snapshot file version ensures that all people on a project ` +
+      `The snapshot file version ensures that all users of a project ` +
       `are using the same version of Jest. ` +
       `Please update your version of Jest and re-run the tests.\n\n` +
       `Expected: v${SNAPSHOT_VERSION}\n` +
