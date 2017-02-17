@@ -91,7 +91,7 @@ test('getSnapshotData() throws when no snapshot version', () => {
 
   expect(() => getSnapshotData(filename, update)).toThrowError(
     `Outdated snapshot: No snapshot header found. ` +
-    `Jest 19 introduced versioned snapshots to ensure all people on ` +
+    `Jest 19 introduced versioned snapshots to ensure all users of ` +
     `a project are using the same version of Jest. ` +
     `Please update all snapshots during this upgrade of Jest.\n\n` +
     SNAPSHOT_VERSION_WARNING
@@ -109,7 +109,7 @@ test('getSnapshotData() throws for older snapshot version', () => {
   expect(() => getSnapshotData(filename, update)).toThrowError(
     `Outdated snapshot: The version of the snapshot file associated ` +
     `with this test is outdated. The snapshot file version ensures that ` +
-    `all people on a project are using the same version of Jest. ` +
+    `all users of a project are using the same version of Jest. ` +
     `Please update all snapshots during this upgrade of Jest.\n\n` +
     `Expected: v${SNAPSHOT_VERSION}\n` +
     `Received: v0.99\n\n` +
@@ -128,7 +128,7 @@ test('getSnapshotData() throws for newer snapshot version', () => {
   expect(() => getSnapshotData(filename, update)).toThrowError(
     `Outdated Jest version: the version of this snapshot file indicates ` +
     `that this project is meant to be used with a newer version of Jest. ` +
-    `The snapshot file version ensures that all people on a project ` +
+    `The snapshot file version ensures that all users of a project ` +
     `are using the same version of Jest. ` +
     `Please update your version of Jest and re-run the tests.\n\n` +
     `Expected: v${SNAPSHOT_VERSION}\n` +
