@@ -89,7 +89,9 @@ describe('.toEqual()', () => {
     [undefined, jestExpect.anything()],
     [undefined, jestExpect.any(Function)],
     ['Eve', {
-      asymmetricMatch: who => who === 'Alice' || who === 'Bob',
+      asymmetricMatch: function asymmetricMatch(who) {
+        return who === 'Alice' || who === 'Bob';
+      },
     }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
@@ -120,7 +122,9 @@ describe('.toEqual()', () => {
       c: jestExpect.anything(),
     }],
     ['Alice', {
-      asymmetricMatch: who => who === 'Alice' || who === 'Bob',
+      asymmetricMatch: function asymmetricMatch(who) {
+        return who === 'Alice' || who === 'Bob';
+      },
     }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
