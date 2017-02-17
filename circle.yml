@@ -2,6 +2,8 @@ machine:
   environment:
     YARN_VERSION: 0.20.3
     PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+  node:
+    version: 7
 dependencies:
   pre:
     - |
@@ -10,7 +12,6 @@ dependencies:
       fi
     - nvm install 4
     - nvm install 6
-    - nvm install 7
 
   cache_directories:
     - ~/.yarn
