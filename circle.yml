@@ -25,11 +25,11 @@ dependencies:
 test:
   override:
     - nvm alias default 6
-    - yarn run test-ci
-    #- nvm alias default 4 dies unexpectedly
-    #- yarn run test-ci-partial
+    - yarn run test-ci -- -- --maxWorkers 3
+    - nvm alias default 4
+    - yarn run test-ci-partial -- -- --maxWorkers 3
     - nvm alias default 7
-    - yarn run test-ci-partial
+    - yarn run test-ci-partial -- -- --maxWorkers 3
     - DANGER_GITHUB_API_TOKEN="af6ef0d15709bc91d""06a6217a5a826a226fb57b7" yarn run danger
     - cd website && yarn run test
 
