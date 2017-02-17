@@ -62,12 +62,15 @@ describe('SearchSource', () => {
           testMatch: null,
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         });
-        return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
-          searchSource = new SearchSource(hasteMap, config);
+        return Runtime.createHasteContext(config, {maxWorkers})
+          .then(hasteMap => {
+            searchSource = new SearchSource(hasteMap, config);
 
-          const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-          expect(searchSource.isTestFilePath(path)).toEqual(true);
-        });
+            const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+            expect(searchSource.isTestFilePath(path)).toEqual(true);
+          });
+      } else {
+        return undefined;
       }
     });
 
