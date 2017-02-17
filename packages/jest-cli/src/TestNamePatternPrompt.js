@@ -23,8 +23,8 @@ const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
 
 const usage = () =>
   `\n ${chalk.bold('Pattern Mode Usage')}\n` +
-  ` ${chalk.dim('\u203A Press')} ESC ${chalk.dim('to exit pattern mode.')}\n` +
-  ` ${chalk.dim('\u203A Press')} ENTER ` +
+  ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
+  ` ${chalk.dim('\u203A Press')} Enter ` +
   `${chalk.dim('to apply pattern to all tests.')}\n` +
   `\n`;
 
