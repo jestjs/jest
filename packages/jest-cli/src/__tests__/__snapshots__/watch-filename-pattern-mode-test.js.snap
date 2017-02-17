@@ -31,7 +31,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorTo(12, 4)]
+[MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -66,7 +66,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorTo(13, 4)]
+[MOCK - cursorTo(13, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -101,7 +101,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorTo(14, 4)]
+[MOCK - cursorTo(14, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -120,7 +120,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
   › path/to/file10-test.js
 
   › path/to/file11-test.js
-[MOCK - cursorTo(15, 4)]
+[MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -135,7 +135,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
  Pattern matches 1 file.
 
   › path/to/file10-test.js
-[MOCK - cursorTo(16, 4)]
+[MOCK - cursorTo(16, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -154,7 +154,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
   › path/to/file10-test.js
 
   › path/to/file11-test.js
-[MOCK - cursorTo(15, 4)]
+[MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -189,7 +189,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorTo(14, 4)]
+[MOCK - cursorTo(14, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -204,7 +204,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
  Pattern matches 1 file.
 
   › path/to/file3-test.js
-[MOCK - cursorTo(15, 4)]
+[MOCK - cursorTo(15, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -239,7 +239,7 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 1`
   › path/to/file10-test.js
 
   › and 1 more file
-[MOCK - cursorTo(12, 4)]
+[MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -274,7 +274,7 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 2`
   › ...o/file10-test.js
 
   › and 1 more file
-[MOCK - cursorTo(12, 4)]
+[MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
 
@@ -309,6 +309,6 @@ exports[`Watch mode flows Results in pattern mode get truncated appropriately 3`
   › ...t.js
 
   › and 1 more file
-[MOCK - cursorTo(12, 4)]
+[MOCK - cursorTo(12, 5)]
 [MOCK - cursorRestorePosition]"
 `;
