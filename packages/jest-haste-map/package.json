@@ -8,10 +8,10 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "fb-watchman": "^1.9.0",
+    "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.6",
     "micromatch": "^2.3.11",
-    "sane": "~1.4.1",
+    "sane": "~1.5.0",
     "worker-farm": "^1.3.1"
   }
 }

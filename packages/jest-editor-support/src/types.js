@@ -29,7 +29,7 @@ export type JestFileResults = {
   name: string,
   summary: string,
   message: string,
-  status: "failed" | "passed",
+  status: 'failed' | 'passed',
   startTime: number,
   endTime: number,
   assertionResults: Array<JestAssertionResults>,
@@ -38,7 +38,7 @@ export type JestFileResults = {
 export type JestAssertionResults = {
   name: string,
   title: string,
-  status: "failed" | "passed",
+  status: 'failed' | 'passed',
   failureMessages: string[],
 }
 
@@ -57,13 +57,13 @@ export type JestTotalResults = {
 /**
  *  Did the thing pass, fail or was it not run?
  */
-export type TestReconcilationState =
+export type TestReconciliationState =
   /** This could be the file has not changed, so the watcher didn't hit it */
-  | "Unknown"
+  | 'Unknown'
   /** Definitely failed */
-  | "KnownFail"
+  | 'KnownFail'
   /** Definitely passed */
-  | "KnownSuccess"
+  | 'KnownSuccess'
 
 /**
  * The Jest Extension's version of a status for
@@ -73,7 +73,7 @@ export type TestReconcilationState =
 export type TestFileAssertionStatus = {
   file: string,
   message: string,
-  status: TestReconcilationState,
+  status: TestReconciliationState,
   assertions: Array<TestAssertionStatus>,
 }
 
@@ -84,7 +84,7 @@ export type TestFileAssertionStatus = {
  */
 export type TestAssertionStatus = {
   title: string,
-  status: TestReconcilationState,
+  status: TestReconciliationState,
   message: string,
   shortMessage: ?string,
   terseMessage: ?string,

@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`.toBe() does not crash on circular references 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
 
@@ -1733,6 +1735,24 @@ Expected [31mcollection[39m to be an array-like structure.
 Received: [31mnull[39m"
 `;
 
+exports[`.toEqual() expect("Alice").not.toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\\"asymmetricMatch\\": [Function asymmetricMatch]}[39m
+Received:
+  [31m\\"Alice\\"[39m"
+`;
+
+exports[`.toEqual() expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\\"asymmetricMatch\\": [Function asymmetricMatch]}[39m
+Received:
+  [31m\\"Eve\\"[39m"
+`;
+
 exports[`.toEqual() expect("abc").not.toEqual("abc") 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1766,11 +1786,7 @@ exports[`.toEqual() expect("abd").toEqual(StringContaining "bc") 1`] = `
 Expected value to equal:
   [32mStringContaining \\"bc\\"[39m
 Received:
-  [31m\\"abd\\"[39m
-
-Difference:
-
-  Comparing two different types of values. Expected [32mobject[39m but received [31mstring[39m."
+  [31m\\"abd\\"[39m"
 `;
 
 exports[`.toEqual() expect("abd").toEqual(StringMatching /bc/i) 1`] = `
@@ -1779,11 +1795,7 @@ exports[`.toEqual() expect("abd").toEqual(StringMatching /bc/i) 1`] = `
 Expected value to equal:
   [32mStringMatching /bc/i[39m
 Received:
-  [31m\\"abd\\"[39m
-
-Difference:
-
-  Comparing two different types of values. Expected [32mobject[39m but received [31mstring[39m."
+  [31m\\"abd\\"[39m"
 `;
 
 exports[`.toEqual() expect("banana").toEqual("apple") 1`] = `
@@ -1932,6 +1944,19 @@ Received:
   [31m1[39m"
 `;
 
+exports[`.toEqual() expect(1).toEqual(ArrayContaining [1, 2]) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mArrayContaining [1, 2][39m
+Received:
+  [31m1[39m
+
+Difference:
+
+  Comparing two different types of values. Expected [32marray[39m but received [31mnumber[39m."
+`;
+
 exports[`.toEqual() expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1952,6 +1977,19 @@ Received:
 Difference:
 
 [2mCompared values have no visual difference.[22m"
+`;
+
+exports[`.toEqual() expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mObjectContaining {\\"a\\": 2}[39m
+Received:
+  [31mfalse[39m
+
+Difference:
+
+  Comparing two different types of values. Expected [32mobject[39m but received [31mboolean[39m."
 `;
 
 exports[`.toEqual() expect(null).toEqual(undefined) 1`] = `
@@ -2004,7 +2042,7 @@ Received:
 
 Difference:
 
-  Comparing two different types of values. Expected [32mobject[39m but received [31mundefined[39m."
+  Comparing two different types of values. Expected [32mfunction[39m but received [31mundefined[39m."
 `;
 
 exports[`.toEqual() expect(undefined).toEqual(Anything) 1`] = `
@@ -2013,11 +2051,7 @@ exports[`.toEqual() expect(undefined).toEqual(Anything) 1`] = `
 Expected value to equal:
   [32mAnything[39m
 Received:
-  [31mundefined[39m
-
-Difference:
-
-  Comparing two different types of values. Expected [32mobject[39m but received [31mundefined[39m."
+  [31mundefined[39m"
 `;
 
 exports[`.toHaveLength error cases 1`] = `

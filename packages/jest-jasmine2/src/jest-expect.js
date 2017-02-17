@@ -22,8 +22,8 @@ const {
 
 type JasmineMatcher = {
   (): JasmineMatcher,
-  compare: RawMatcherFn,
-  negativeCompare: ?RawMatcherFn,
+  compare: () => RawMatcherFn,
+  negativeCompare: () => RawMatcherFn,
 };
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 

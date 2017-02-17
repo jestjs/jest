@@ -12,6 +12,7 @@
 
 import type {Path} from 'types/Config';
 
+const chalk = require('chalk');
 const createDirectory = require('jest-util').createDirectory;
 const fileExists = require('jest-file-exists');
 const path = require('path');
@@ -21,6 +22,66 @@ const naturalCompare = require('natural-compare');
 const getSerializers = require('./plugins').getSerializers;
 
 const SNAPSHOT_EXTENSION = 'snap';
+const SNAPSHOT_VERSION = '1';
+const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
+const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
+const SNAPSHOT_VERSION_WARNING = chalk.yellow(
+  `${chalk.bold('Warning')}: It is advised to revert any local changes to ` +
+  `tests or other code during this upgrade to ensure that no invalid state ` +
+  `is stored as a snapshot.`
+);
+
+const writeSnapshotVersion = () =>
+  `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}`;
+
+const validateSnapshotVersion = (snapshotContents: string) => {
+  const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
+  const version = (versionTest && versionTest[1]);
+
+  if (!version) {
+    return new Error(
+      chalk.red(
+        `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
+        `Jest 19 introduced versioned snapshots to ensure all developers on ` +
+        `a project are using the same version of Jest. ` +
+        `Please update all snapshots during this upgrade of Jest.\n\n`
+      ) +
+      SNAPSHOT_VERSION_WARNING
+    );
+  }
+
+  if (version < SNAPSHOT_VERSION) {
+    return new Error(
+      chalk.red(
+        `${chalk.red.bold('Outdated snapshot')}: The version of the snapshot ` +
+        `file associated with this test is outdated. The snapshot file ` +
+        `version ensures that all developers on a project are using ` +
+        `the same version of Jest. ` +
+        `Please update all snapshots during this upgrade of Jest.\n\n`
+      ) +
+      `Expected: v${SNAPSHOT_VERSION}\n` +
+      `Received: v${version}\n\n` +
+      SNAPSHOT_VERSION_WARNING
+    );
+  }
+
+  if (version > SNAPSHOT_VERSION) {
+    return new Error(
+      chalk.red(
+        `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
+        `snapshot file indicates that this project is meant to be used ` +
+        `with a newer version of Jest. ` +
+        `The snapshot file version ensures that all developers on a project ` +
+        `are using the same version of Jest. ` +
+        `Please update your version of Jest and re-run the tests.\n\n`
+      ) +
+      `Expected: v${SNAPSHOT_VERSION}\n` +
+      `Received: v${version}`
+    );
+  }
+
+  return null;
+};
 
 const testNameToKey = (testName: string, count: number) =>
   testName + ' ' + count;
@@ -38,19 +99,32 @@ const getSnapshotPath = (testPath: Path) => path.join(
   path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
 );
 
-const getSnapshotData = (snapshotPath: Path) => {
+const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   const data = Object.create(null);
+  let snapshotContents = '';
+  let dirty = false;
 
   if (fileExists(snapshotPath)) {
     try {
-      delete require.cache[require.resolve(snapshotPath)];
-      /* eslint-disable no-useless-call */
-      Object.assign(data, require.call(null, snapshotPath));
-      /* eslint-enable no-useless-call */
+      snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
+      // eslint-disable-next-line no-new-func
+      const populate = new Function('exports', snapshotContents);
+      populate(data);
     } catch (e) {}
   }
 
-  return data;
+  const validationResult = validateSnapshotVersion(snapshotContents);
+  const isInvalid = snapshotContents && validationResult;
+
+  if (!update && isInvalid) {
+    throw validationResult;
+  }
+
+  if (update && isInvalid) {
+    dirty = true;
+  }
+
+  return {data, dirty};
 };
 
 // Extra line breaks at the beginning and at the end of the snapshot are useful
@@ -89,15 +163,21 @@ const saveSnapshotFile = (
   const snapshots = Object.keys(snapshotData).sort(naturalCompare)
     .map(key =>
       'exports[' + printBacktickString(key) + '] = ' +
-        printBacktickString(normalizeNewlines(snapshotData[key])) + ';',
+      printBacktickString(normalizeNewlines(snapshotData[key])) + ';',
     );
 
   ensureDirectoryExists(snapshotPath);
-  fs.writeFileSync(snapshotPath, snapshots.join('\n\n') + '\n');
+  fs.writeFileSync(
+    snapshotPath,
+    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n'
+  );
 };
 
 module.exports = {
   SNAPSHOT_EXTENSION,
+  SNAPSHOT_GUIDE_LINK,
+  SNAPSHOT_VERSION,
+  SNAPSHOT_VERSION_WARNING,
   ensureDirectoryExists,
   getSnapshotData,
   getSnapshotPath,

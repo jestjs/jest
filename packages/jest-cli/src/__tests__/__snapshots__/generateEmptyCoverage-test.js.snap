@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`generates an empty coverage object for a file without running it 1`] = `
 Object {
   "b": Object {

@@ -193,6 +193,31 @@ const users = [
     image: '/jest/img/logos/audiense.png',
     infoLink: 'https://audiense.com/',
   },
+  {
+    caption: 'Coursera',
+    image: '/jest/img/logos/coursera.png',
+    infoLink: 'https://coursera.org/',
+  },
+  {
+    caption: 'Algolia',
+    image: '/jest/img/logos/algolia.svg',
+    infoLink: 'https://algolia.com',
+  },
+  {
+    caption: 'Help.com',
+    image: '/jest/img/logos/Help-Clean.png',
+    infoLink: 'https://help.com',
+  },
+  {
+    caption: 'Hudl',
+    image: '/jest/img/logos/hudl.png',
+    infoLink: 'https://www.hudl.com/',
+  },
+  {
+    caption: 'Jane',
+    image: '/jest/img/logos/jane.svg',
+    infoLink: 'https://jane.com',
+  },
 ];
 
 const siteConfig = {

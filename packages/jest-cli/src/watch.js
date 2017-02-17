@@ -17,11 +17,12 @@ const chalk = require('chalk');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
 const preRunMessage = require('./preRunMessage');
-const patternMode = require('./patternMode');
 const runJest = require('./runJest');
-const setWatchMode = require('./lib/setWatchMode');
-const SearchSource = require('./SearchSource');
+const setState = require('./lib/setState');
 const TestWatcher = require('./TestWatcher');
+const Prompt = require('./lib/Prompt');
+const TestPathPatternPrompt = require('./TestPathPatternPrompt');
+const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
 const SNAPSHOT_EXTENSION = 'snap';
@@ -34,16 +35,33 @@ const watch = (
   hasteContext: HasteContext,
   stdin?: stream$Readable | tty$ReadStream = process.stdin
 ) => {
-  setWatchMode(argv, argv.watch ? 'watch' : 'watchAll', {
-    pattern: argv._,
+  setState(argv, argv.watch ? 'watch' : 'watchAll', {
+    testNamePattern: argv.testNamePattern,
+    testPathPattern: argv.testPathPattern || (Array.isArray(argv._)
+      ? argv._.join('|')
+      : ''),
   });
-  let currentPattern = '';
+
   let hasSnapshotFailure = false;
-  let isEnteringPattern = false;
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
-  let searchSource = new SearchSource(hasteContext, config);
+
+  const prompt = new Prompt();
+
+  const testPathPatternPrompt = TestPathPatternPrompt(
+    config,
+    pipe,
+    prompt,
+  );
+
+  testPathPatternPrompt.updateSearchSource(hasteContext);
+
+  const testNamePatternPrompt = TestNamePatternPrompt(
+    config,
+    pipe,
+    prompt,
+  );
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
@@ -52,34 +70,18 @@ const watch = (
 
     if (!hasOnlySnapshotChanges) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
-      currentPattern = '';
-      isEnteringPattern = false;
-      searchSource = new SearchSource(hasteContext, config);
+      prompt.abort();
+      testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();
     }
   });
 
   process.on('exit', () => {
-    if (isEnteringPattern) {
+    if (prompt.isEntering()) {
       pipe.write(ansiEscapes.cursorDown());
       pipe.write(ansiEscapes.eraseDown);
     }
   });
-
-  const writeCurrentPattern = () => {
-    let regex;
-
-    try {
-      regex = new RegExp(currentPattern, 'i');
-    } catch (e) {}
-
-    const paths = regex ?
-      searchSource.findMatchingTests(currentPattern).paths : [];
-
-    pipe.write(ansiEscapes.eraseLine);
-    pipe.write(ansiEscapes.cursorLeft);
-    patternMode.printTypeahead(config, pipe, currentPattern, paths);
-  };
 
   const startRun = (overrideConfig: Object = {}) => {
     if (isRunning) {
@@ -93,7 +95,10 @@ const watch = (
     return runJest(
       hasteContext,
       // $FlowFixMe
-      Object.freeze(Object.assign({}, config, overrideConfig)),
+      Object.freeze(Object.assign({
+        testNamePattern: argv.testNamePattern,
+        testPathPattern: argv.testPathPattern,
+      }, config, overrideConfig)),
       argv,
       pipe,
       testWatcher,
@@ -109,6 +114,10 @@ const watch = (
           pipe.write(usage(argv, hasSnapshotFailure));
           displayHelp = !process.env.JEST_HIDE_USAGE;
         }
+
+        testNamePatternPrompt.updateCachedTestResults(
+          results.testResults
+        );
       },
     ).then(
       () => {},
@@ -121,36 +130,9 @@ const watch = (
       process.exit(0);
       return;
     }
-    if (isEnteringPattern) {
-      switch (key) {
-        case KEYS.ENTER:
-          isEnteringPattern = false;
-          setWatchMode(argv, 'watch', {
-            pattern: [currentPattern],
-          });
-          startRun();
-          break;
-        case KEYS.ESCAPE:
-          isEnteringPattern = false;
-          pipe.write(ansiEscapes.cursorHide);
-          pipe.write(ansiEscapes.clearScreen);
-          pipe.write(usage(argv, hasSnapshotFailure));
-          pipe.write(ansiEscapes.cursorShow);
-          currentPattern = argv._[0];
-          break;
-        case KEYS.ARROW_DOWN:
-        case KEYS.ARROW_LEFT:
-        case KEYS.ARROW_RIGHT:
-        case KEYS.ARROW_UP:
-          break;
-        default:
-          const char = new Buffer(key, 'hex').toString();
-          currentPattern = key === KEYS.BACKSPACE
-            ? currentPattern.slice(0, -1)
-            : currentPattern + char;
-          writeCurrentPattern();
-          break;
-      }
+
+    if (prompt.isEntering()) {
+      prompt.put(key);
       return;
     }
 
@@ -158,7 +140,7 @@ const watch = (
     if (
       isRunning &&
       testWatcher &&
-      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P].indexOf(key) !== -1
+      [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
     ) {
       testWatcher.setState({interrupted: true});
       return;
@@ -175,21 +157,44 @@ const watch = (
         startRun({updateSnapshot: true});
         break;
       case KEYS.A:
-        setWatchMode(argv, 'watchAll');
+        setState(argv, 'watchAll', {
+          testNamePattern: '',
+          testPathPattern: '',
+        });
         startRun();
         break;
       case KEYS.O:
-        setWatchMode(argv, 'watch');
+        setState(argv, 'watch', {
+          testNamePattern: '',
+          testPathPattern: '',
+        });
         startRun();
         break;
       case KEYS.P:
-        isEnteringPattern = true;
-        currentPattern = '';
-        pipe.write(ansiEscapes.cursorHide);
-        pipe.write(ansiEscapes.clearScreen);
-        pipe.write(patternMode.usage());
-        pipe.write(ansiEscapes.cursorShow);
-        writeCurrentPattern();
+        testPathPatternPrompt.run(
+          testPathPattern => {
+            setState(argv, 'watch', {
+              testNamePattern: '',
+              testPathPattern,
+            });
+
+            startRun();
+          },
+          onCancelPatternPrompt,
+        );
+        break;
+      case KEYS.T:
+        testNamePatternPrompt.run(
+          testNamePattern => {
+            setState(argv, 'watch', {
+              testNamePattern,
+              testPathPattern: '',
+            });
+
+            startRun();
+          },
+          onCancelPatternPrompt,
+        );
         break;
       case KEYS.QUESTION_MARK:
         if (process.env.JEST_HIDE_USAGE) {
@@ -197,6 +202,13 @@ const watch = (
         }
         break;
     }
+  };
+
+  const onCancelPatternPrompt = () => {
+    pipe.write(ansiEscapes.cursorHide);
+    pipe.write(ansiEscapes.clearScreen);
+    pipe.write(usage(argv, hasSnapshotFailure));
+    pipe.write(ansiEscapes.cursorShow);
   };
 
   if (typeof stdin.setRawMode === 'function') {
@@ -221,13 +233,14 @@ const usage = (
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv._) && !argv.noSCM
+    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) && !argv.noSCM
       ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
       ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
       : null,
     chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') + 't' + chalk.dim(' to filter by a test name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
   ];

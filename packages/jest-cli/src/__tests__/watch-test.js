@@ -48,6 +48,40 @@ describe('Watch mode flows', () => {
     stdin = new MockStdin();
   });
 
+  it('Correctly passing test path pattern', () => {
+    argv.testPathPattern = 'test-*';
+    config.testPathPattern = 'test-*';
+
+    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+
+    expect(runJestMock).toBeCalledWith(
+      hasteContext,
+      config,
+      argv,
+      pipe,
+      new TestWatcher({isWatchMode: true}),
+      jasmine.any(Function),
+      jasmine.any(Function),
+    );
+  });
+
+  it('Correctly passing test name pattern', () => {
+    argv.testNamePattern = 'test-*';
+    config.testNamePattern = 'test-*';
+
+    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+
+    expect(runJestMock).toBeCalledWith(
+      hasteContext,
+      config,
+      argv,
+      pipe,
+      new TestWatcher({isWatchMode: true}),
+      jasmine.any(Function),
+      jasmine.any(Function),
+    );
+  });
+
   it('Runs Jest once by default and shows usage', () => {
     watch(config, pipe, argv, hasteMap, hasteContext, stdin);
     expect(runJestMock).toBeCalledWith(
@@ -70,7 +104,6 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock).toBeCalled();
     expect(argv).toEqual({
-      '_': '',
       onlyChanged: true,
       watch: true,
       watchAll: false,
@@ -85,7 +118,6 @@ describe('Watch mode flows', () => {
 
     expect(runJestMock).toBeCalled();
     expect(argv).toEqual({
-      '_': '',
       onlyChanged: false,
       watch: false,
       watchAll: true,

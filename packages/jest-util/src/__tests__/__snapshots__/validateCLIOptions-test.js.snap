@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`fails for multiple unknown options 1`] = `
 "[31m[1m[1m●[1m Unrecognized CLI Parameters[22m:
 

@@ -90,8 +90,6 @@ const getType = (value: any): ValueType => {
       return 'map';
     } else if (value.constructor === Set) {
       return 'set';
-    } else if (value.toString() === 'ArrayContaining') {
-      return 'array';
     }
     return 'object';
   // $FlowFixMe https://github.com/facebook/flow/issues/1015
