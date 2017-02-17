@@ -120,7 +120,7 @@ module.exports = class TestReconciler {
   lineOfError(message: string, filePath: string): ?number {
     const filename = path.basename(filePath);
     const restOfTrace = message.split(filename, 2)[1];
-    return parseInt(restOfTrace.split(':')[1], 10);
+    return restOfTrace ? parseInt(restOfTrace.split(':')[1], 10) : null;
   }
 
   statusToReconcilationState(status: string): TestReconciliationState {
