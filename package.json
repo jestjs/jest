@@ -43,6 +43,7 @@
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js && (cd packages/eslint-plugin-jest && yarn link) && yarn link eslint-plugin-jest",
     "publish": "yarn run build-clean && yarn run build && lerna publish",
     "test-ci": "yarn run typecheck && yarn run lint && yarn run build && yarn run jest-coverage -- -i && yarn run test-examples && node scripts/mapCoverage.js && codecov",
+    "test-ci-partial": "yarn run build && yarn run jest && yarn run test-examples",
     "test-examples": "node scripts/test_examples.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test": "yarn run typecheck && yarn run lint && yarn run build && yarn run jest && yarn run test-examples",
