@@ -39,15 +39,14 @@ describe('SearchSource', () => {
   describe('isTestFilePath', () => {
     let config;
 
-    beforeEach(done => {
+    beforeEach(() => {
       config = normalizeConfig({
         name,
         rootDir: '.',
         roots: [],
       });
-      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+      return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
-        done();
       });
     });
 
@@ -63,7 +62,7 @@ describe('SearchSource', () => {
           testMatch: null,
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         });
-        Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+        return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
           searchSource = new SearchSource(hasteMap, config);
 
           const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
