@@ -216,7 +216,7 @@ const users = [
   {
     caption: 'Jane',
     image: '/jest/img/logos/jane.svg',
-    infoLink: 'https://jane.com'
+    infoLink: 'https://jane.com',
   },
 ];
 

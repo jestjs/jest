@@ -17,7 +17,7 @@ import type {
   JestAssertionResults,
   TestFileAssertionStatus,
   TestAssertionStatus,
-  TestReconcilationState,
+  TestReconciliationState,
 } from './types';
 
 /**
@@ -123,7 +123,7 @@ module.exports = class TestReconciler {
     return parseInt(restOfTrace.split(':')[1], 10);
   }
 
-  statusToReconcilationState(status: string): TestReconcilationState {
+  statusToReconcilationState(status: string): TestReconciliationState {
     switch (status) {
       case 'passed':
         return 'KnownSuccess';
@@ -134,7 +134,7 @@ module.exports = class TestReconciler {
     }
   }
 
-  stateForTestFile(file: string): TestReconcilationState {
+  stateForTestFile(file: string): TestReconciliationState {
     const results = this.fileStatuses[file];
     if (!results) {
       return 'Unknown';
