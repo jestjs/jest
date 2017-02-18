@@ -35,6 +35,16 @@ const watch = (
   hasteContext: HasteContext,
   stdin?: stream$Readable | tty$ReadStream = process.stdin
 ) => {
+  if (global.hasDeprecationWarnings) {
+    return handleDeprecationWarnings(pipe, stdin)
+      .then(() => {
+        global.hasDeprecationWarnings = false;
+
+        watch(config, pipe, argv, hasteMap, hasteContext);
+      })
+      .catch(() => process.exit(0));
+  }
+
   setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern || (Array.isArray(argv._)
@@ -220,6 +230,41 @@ const watch = (
 
   startRun();
   return Promise.resolve();
+};
+
+const handleDeprecationWarnings = (
+  pipe: stream$Writable | tty$WriteStream,
+  stdin: stream$Readable | tty$ReadStream = process.stdin,
+) => {
+  return new Promise((resolve, reject) => {
+    if (typeof stdin.setRawMode === 'function') {
+      const messages = [
+        chalk.red('There are deprecation warnings.\n'),
+        chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to continue.'),
+        chalk.dim(' \u203A Press ') + 'Esc' + chalk.dim(' to exit.'),
+      ];
+
+      pipe.write(messages.join('\n'));
+
+      // $FlowFixMe
+      stdin.setRawMode(true);
+      stdin.resume();
+      stdin.setEncoding('hex');
+      stdin.on('data', (key: string) => {
+        if (key === KEYS.ENTER) {
+          resolve();
+        } else if ([
+          KEYS.ESCAPE,
+          KEYS.CONTROL_C,
+          KEYS.CONTROL_D,
+        ].indexOf(key) !== -1) {
+          reject();
+        }
+      });
+    } else {
+      resolve();
+    }
+  });
 };
 
 const usage = (

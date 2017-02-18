@@ -29,6 +29,8 @@ const deprecationWarning = (
 ): void => {
   if (option in deprecatedOptions) {
     deprecationMessage(deprecatedOptions[option](config), options);
+
+    global.hasDeprecationWarnings = true;
   }
 };
 
