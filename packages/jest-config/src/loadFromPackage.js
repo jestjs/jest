@@ -22,7 +22,7 @@ function loadFromPackage(filePath: Path, argv: Object) {
     () => {
       // $FlowFixMe
       const packageData = require(filePath);
-      const config = packageData.jest || {};
+      const config = packageData.jest || (packageData.config && packageData.config.jest) || {};
       const root = path.dirname(filePath);
       config.rootDir =
         config.rootDir ? path.resolve(root, config.rootDir) : root;
