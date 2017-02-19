@@ -56,7 +56,7 @@ One such situation can arise if we intentionally change the address the Link com
 // Updated test case with a Link to a different address
 it('renders correctly', () => {
   const tree = renderer.create(
-    <Link page="https://facebook.github.io/jest/">Jest</Link>
+    <Link page="http://www.instagram.com">Instagram</Link>
   ).toJSON();
   expect(tree).toMatchSnapshot();
 });
