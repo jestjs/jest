@@ -15,7 +15,7 @@ import type {ValidationOptions} from './types';
 const config: ValidationOptions = {
   comment: '  A comment',
   condition: (option, validOption) => true,
-  deprecate: (config, option, deprecatedOptions, options) => {},
+  deprecate: (config, option, deprecatedOptions, options) => false,
   deprecatedConfig: {
     key: config => {},
   },

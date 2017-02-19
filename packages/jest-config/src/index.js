@@ -18,7 +18,10 @@ const setFromArgv = require('./setFromArgv');
 
 const readConfig = (argv: Object, packageRoot: string) =>
   readRawConfig(argv, packageRoot)
-    .then(config => Object.freeze(setFromArgv(config, argv)));
+    .then(({config, hasDeprecationWarnings}) => ({
+      config: Object.freeze(setFromArgv(config, argv)),
+      hasDeprecationWarnings,
+    }));
 
 const parseConfig = argv => {
   if (argv.config && typeof argv.config === 'string') {
@@ -44,7 +47,16 @@ const readRawConfig = (argv, root) => {
   }
 
   return loadFromPackage(path.join(root, 'package.json'), argv)
-    .then(config => config || normalize({rootDir: root}, argv));
+    .then(({config, hasDeprecationWarnings}) => {
+      if (config) {
+        return {
+          config,
+          hasDeprecationWarnings,
+        };
+      }
+
+      return normalize({rootDir: root}, argv);
+    });
 };
 
 module.exports = {

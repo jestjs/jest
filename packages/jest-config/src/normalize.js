@@ -241,7 +241,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
 };
 
 function normalize(config: InitialConfig, argv: Object = {}) {
-  validate(config, {
+  const {hasDeprecationWarnings} = validate(config, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
@@ -403,7 +403,10 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       .filter(reporter => reporter !== 'text');
   }
 
-  return _replaceRootDirTags(newConfig.rootDir, newConfig);
+  return {
+    config: _replaceRootDirTags(newConfig.rootDir, newConfig),
+    hasDeprecationWarnings,
+  };
 }
 
 module.exports = normalize;

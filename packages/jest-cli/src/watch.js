@@ -33,13 +33,12 @@ const watch = (
   argv: Object,
   hasteMap: HasteMap,
   hasteContext: HasteContext,
-  stdin?: stream$Readable | tty$ReadStream = process.stdin
+  hasDeprecationWarnings?: boolean,
+  stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
-  if (global.hasDeprecationWarnings) {
-    return handleDeprecationWarnings(pipe, stdin)
+  if (hasDeprecationWarnings) {
+    return handleDeprecatedWarnings(pipe, stdin)
       .then(() => {
-        global.hasDeprecationWarnings = false;
-
         watch(config, pipe, argv, hasteMap, hasteContext);
       })
       .catch(() => process.exit(0));
@@ -232,7 +231,7 @@ const watch = (
   return Promise.resolve();
 };
 
-const handleDeprecationWarnings = (
+const handleDeprecatedWarnings = (
   pipe: stream$Writable | tty$WriteStream,
   stdin: stream$Readable | tty$ReadStream = process.stdin,
 ) => {

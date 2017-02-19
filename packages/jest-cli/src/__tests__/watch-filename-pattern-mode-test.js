@@ -76,6 +76,7 @@ describe('Watch mode flows', () => {
   let argv;
   let hasteContext;
   let config;
+  let hasDeprecationWarnings;
   let stdin;
 
   beforeEach(() => {
@@ -85,12 +86,21 @@ describe('Watch mode flows', () => {
     argv = {};
     hasteContext = {};
     config = {};
+    hasDeprecationWarnings = false;
     stdin = new MockStdin();
   });
 
   it('Pressing "P" enters pattern mode', () => {
     config = {rootDir: ''};
-    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+    watch(
+      config,
+      pipe,
+      argv,
+      hasteMap,
+      hasteContext,
+      hasDeprecationWarnings,
+      stdin,
+    );
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -132,7 +142,15 @@ describe('Watch mode flows', () => {
 
   it('Results in pattern mode get truncated appropriately', () => {
     config = {rootDir: ''};
-    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+    watch(
+      config,
+      pipe,
+      argv,
+      hasteMap,
+      hasteContext,
+      hasDeprecationWarnings,
+      stdin,
+    );
 
     stdin.emit(KEYS.P);
 
