@@ -12,7 +12,7 @@
 
 const path = require('path');
 const loadFromFile = require('./loadFromFile');
-const loadFromPackage = require('./loadFromPackage');
+const traverseUpTreeForConfig = require('./traverseUpTreeForConfig');
 const normalize = require('./normalize');
 const setFromArgv = require('./setFromArgv');
 
@@ -43,8 +43,16 @@ const readRawConfig = (argv, root) => {
     return Promise.resolve(normalize(config, argv));
   }
 
-  return loadFromPackage(path.join(root, 'package.json'), argv)
-    .then(config => config || normalize({rootDir: root}, argv));
+  return new Promise((resolve, reject) => traverseUpTreeForConfig(process.cwd())
+    .then(config => resolve(normalize(config, argv)))
+    .catch(() => {
+      try {
+        resolve(normalize({rootDir: root}, argv));
+      } catch (e) {
+        reject(e);
+      }
+    })
+  );
 };
 
 module.exports = {
