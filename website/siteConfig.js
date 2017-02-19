@@ -94,9 +94,19 @@ const users = [
     infoLink: 'http://www.cisco.com/',
   },
   {
+    caption: 'Algolia',
+    image: '/jest/img/logos/algolia.svg',
+    infoLink: 'https://algolia.com',
+  },
+  {
     caption: 'Artsy',
     image: '/jest/img/logos/artsy.png',
     infoLink: 'https://www.artsy.net/',
+  },
+  {
+    caption: 'Audiense',
+    image: '/jest/img/logos/audiense.png',
+    infoLink: 'https://audiense.com/',
   },
   {
     caption: 'Automattic',
@@ -107,6 +117,11 @@ const users = [
     caption: 'Coinbase',
     image: '/jest/img/logos/coinbase.png',
     infoLink: 'https://www.coinbase.com/',
+  },
+  {
+    caption: 'Coursera',
+    image: '/jest/img/logos/coursera.png',
+    infoLink: 'https://coursera.org/',
   },
   {
     caption: 'Discord',
@@ -134,9 +149,24 @@ const users = [
     infoLink: 'http://www.globo.com/',
   },
   {
+    caption: 'Help.com',
+    image: '/jest/img/logos/Help-Clean.png',
+    infoLink: 'https://help.com',
+  },
+  {
+    caption: 'Hudl',
+    image: '/jest/img/logos/hudl.png',
+    infoLink: 'https://www.hudl.com/',
+  },
+  {
     caption: 'Intercom',
     image: '/jest/img/logos/intercom.png',
     infoLink: 'https://www.intercom.com/',
+  },
+  {
+    caption: 'Jane',
+    image: '/jest/img/logos/jane.svg',
+    infoLink: 'https://jane.com',
   },
   {
     caption: 'KLM Royal Dutch Airlines',
@@ -179,44 +209,14 @@ const users = [
     infoLink: 'https://truffls.com/',
   },
   {
-    caption: 'Xing',
-    image: '/jest/img/logos/xing.png',
-    infoLink: 'https://www.xing.com/',
-  },
-  {
     caption: 'WOW air',
     image: '/jest/img/logos/wowair.png',
     infoLink: 'https://wowair.com/',
   },
   {
-    caption: 'Audiense',
-    image: '/jest/img/logos/audiense.png',
-    infoLink: 'https://audiense.com/',
-  },
-  {
-    caption: 'Coursera',
-    image: '/jest/img/logos/coursera.png',
-    infoLink: 'https://coursera.org/',
-  },
-  {
-    caption: 'Algolia',
-    image: '/jest/img/logos/algolia.svg',
-    infoLink: 'https://algolia.com',
-  },
-  {
-    caption: 'Help.com',
-    image: '/jest/img/logos/Help-Clean.png',
-    infoLink: 'https://help.com',
-  },
-  {
-    caption: 'Hudl',
-    image: '/jest/img/logos/hudl.png',
-    infoLink: 'https://www.hudl.com/',
-  },
-  {
-    caption: 'Jane',
-    image: '/jest/img/logos/jane.svg',
-    infoLink: 'https://jane.com',
+    caption: 'Xing',
+    image: '/jest/img/logos/xing.png',
+    infoLink: 'https://www.xing.com/',
   },
 ];
 
