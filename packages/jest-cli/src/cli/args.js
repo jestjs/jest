@@ -276,6 +276,12 @@ const options = {
       '--no-watchman.',
     type: 'boolean',
   },
+  tags: {
+    default: '',
+    description:
+      'Run the cases which are matched the given tags',
+    type: 'string' 
+  },
 };
 
 module.exports = {

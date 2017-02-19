@@ -50,6 +50,7 @@ const runCLI = (
 
   readConfig(argv, root)
     .then((config: Config) => {
+      process.jestConfig = config;
       if (argv.debug) {
         logDebugMessages(config, pipe);
       }

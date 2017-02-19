@@ -320,6 +320,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.userContext = attrs.userContext || function() { return {}; };
     this.onStart = attrs.onStart || function() {};
     this.getSpecName = attrs.getSpecName || function() { return ''; };
+    this.getTags = attrs.getTags || function() { return []; };
     this.expectationResultFactory = attrs.expectationResultFactory || function() { };
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
@@ -335,7 +336,8 @@ getJasmineRequireObj().Spec = function(j$) {
       fullName: this.getFullName(),
       failedExpectations: [],
       passedExpectations: [],
-      pendingReason: ''
+      pendingReason: '',   
+      tags: this.getTags(),   
     };
   }
 
@@ -913,6 +915,9 @@ getJasmineRequireObj().Env = function(j$) {
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
         },
+        getTags: function () {
+          return suite.tags;
+        },
         onStart: specStarted,
         description: description,
         expectationResultFactory: expectationResultFactory,
@@ -924,11 +929,12 @@ getJasmineRequireObj().Env = function(j$) {
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
-
       if (!self.specFilter(spec)) {
         spec.disable();
       }
-
+      else if (process.jestConfig.tags && !isTagsMatching(process.jestConfig.tags,spec.getTags())) {
+        spec.pend("Testcase not matched with tags.");
+      }
       return spec;
 
       function specResultCallback(result) {
@@ -941,6 +947,17 @@ getJasmineRequireObj().Env = function(j$) {
         currentSpec = spec;
         defaultResourcesForRunnable(spec.id, suite.id);
         reporter.specStarted(spec.result);
+      }
+
+      function isTagsMatching(tagsNeedToBeRun,testCaseTags) {
+        if (tagsNeedToBeRun && tagsNeedToBeRun.length > 0) {
+          for (var i of testCaseTags) {
+            if (tagsNeedToBeRun.indexOf(i.toLowerCase()) != -1) {
+              return true;
+            }
+          }
+        }
+        return false;
       }
     };
 
@@ -958,6 +975,11 @@ getJasmineRequireObj().Env = function(j$) {
       spec.pend('Temporarily disabled with xit');
       return spec;
     };
+
+    this.tag = function () {
+      currentDeclarationSuite.tags = arguments;
+      return this;
+    }
 
     this.fit = function(description, fn, timeout){
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
@@ -1731,7 +1753,7 @@ getJasmineRequireObj().MockDate = function() {
       FakeDate.parse = GlobalDate.parse;
       FakeDate.UTC = GlobalDate.UTC;
     }
-	}
+  }
 
   return MockDate;
 };
@@ -3602,6 +3624,10 @@ getJasmineRequireObj().interface = function(jasmine, env) {
 
     xit: function() {
       return env.xit.apply(env, arguments);
+    },
+
+    tag: function() {
+      return env.tag.apply(env,arguments)
     },
 
     fit: function() {
