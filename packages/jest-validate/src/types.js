@@ -24,7 +24,7 @@ export type ValidationOptions = {
     option: string,
     deprecatedOptions: Object,
     options: ValidationOptions
-  ) => void,
+  ) => boolean,
   deprecatedConfig?: {[key: string]: Function},
   error?: (
     option: string,
