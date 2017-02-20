@@ -41,12 +41,12 @@ function printInstance(instance, print, indent, colors, opts) {
   }
 
   let result = colors.tag.open + '<' + instance.type + colors.tag.close;
+  let closeInNewLine = false;
 
   if (instance.props) {
     result += printProps(instance.props, print, indent, colors, opts);
+    closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
   }
-
-  const closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
 
   if (instance.children) {
     const children = printChildren(instance.children, print, indent, colors, opts);
