@@ -49,7 +49,13 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then((config: Config) => {
+    .then(({
+      config,
+      hasDeprecationWarnings,
+    } : {
+      config: Config,
+      hasDeprecationWarnings: boolean,
+    }) => {
       if (argv.debug) {
         logDebugMessages(config, pipe);
       }
@@ -70,7 +76,14 @@ const runCLI = (
       )
       .then(hasteContext => {
         if (argv.watch || argv.watchAll) {
-          return watch(config, pipe, argv, jestHasteMap, hasteContext);
+          return watch(
+            config,
+            pipe,
+            argv,
+            jestHasteMap,
+            hasteContext,
+            hasDeprecationWarnings,
+          );
         } else {
           const startRun = () => {
             preRunMessage.print(pipe);
