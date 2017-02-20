@@ -89,7 +89,7 @@ const VERSION = require('../package.json').version;
 
 const canUseWatchman = ((): boolean => {
   try {
-    execSync('watchman version', {stdio: ['ignore']});
+    execSync('watchman --version', {stdio: ['ignore']});
     return true;
   } catch (e) {}
   return false;
