@@ -16,6 +16,7 @@ const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
+const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
 const setState = require('./lib/setState');
@@ -25,7 +26,6 @@ const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
-const SNAPSHOT_EXTENSION = 'snap';
 
 const watch = (
   config: Config,
@@ -73,11 +73,11 @@ const watch = (
   );
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-    const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
-      return filePath.endsWith(`.${SNAPSHOT_EXTENSION}`);
+    const validPaths = eventsQueue.filter(({filePath}) => {
+      return isValidPath(config, filePath);
     });
 
-    if (!hasOnlySnapshotChanges) {
+    if (validPaths.length) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
