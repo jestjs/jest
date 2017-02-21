@@ -217,9 +217,9 @@ Returns the `jest` object for chaining.
 
 ### `jest.spyOn(object, methodName)`
 ##### available in Jest **19.0.0+**
-Similarily to `jest.fn` it tracks calls to `object[methodName]`. `jest.spyOn` also calls the *spied* method.
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
 
-Returns a mock function.
+*Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`*
 
 Example:
 
