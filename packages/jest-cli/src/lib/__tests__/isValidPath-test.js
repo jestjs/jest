@@ -23,7 +23,7 @@ it('is valid when it is a file inside roots', () => {
   expect(isValidPath(config, '/root/src/lib/something.js')).toBe(true);
 });
 
-it('is not valid when it is a file .snap', () => {
+it('is not valid when it is a snapshot file', () => {
   expect(isValidPath(config, '/root/src/index.js.snap')).toBe(false);
   expect(isValidPath(config, '/root/src/components/Link.js.snap')).toBe(false);
   expect(isValidPath(config, '/root/src/lib/something.js.snap')).toBe(false);
