@@ -2,12 +2,43 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://facebook.github.io/jest/blog/</id>
     <title>Jest Blog</title>
-    <updated>2017-01-30T06:00:00Z</updated>
+    <updated>2017-02-21T06:00:00Z</updated>
     <link rel="alternate" href="https://facebook.github.io/jest/blog/"/>
     <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
     <logo>https://cdn.rawgit.com/facebook/jest/master/packages/jest-cli/src/assets/jest_logo.png</logo>
     <rights>Copyright © 2017 Facebook Inc.</rights>
     <generator>Feed for Node.js</generator>
+    <entry>
+        <title type="html"><![CDATA[🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements]]></title>
+        <id>https://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html</id>
+        <link href="https://facebook.github.io/jest/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html">
+        </link>
+        <updated>2017-02-21T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+
+Today we are pleased to ship version 19 of the Jest testing platform. It's the biggest Jest release we have shipped so far and we are quite excited to show you what we've built over the last two months:
+
+## Immersive Watch Mode
+
+We [completely rewrote the watch mode](https://github.com/facebook/jest/pull/2362) to make it instant and more extensible. As a result, the experience of using it really is immersive: tests re-run instantly after a file change and we added a typeahead to make it easy to select the right tests.
+
+### Filename pattern typeahead
+
+Filtering by filename now has a typeahead. This is particularly useful in large codebases to tell to exactly which files match your current pattern.
+
+![typeahead-pattern](/jest/img/blog/19-typeahead-pattern.gif)
+
+### Cached test name pattern typeahead.
+
+After running tests once, Jest knows which specific tests are available so we also added a typeahead for running specific tests within test suites:
+![typeahead-name](/jest/img/blog/19-typeahead-name.gif)
+
+]]></summary>
+        <author>
+            <name>Rogelio Guzman</name>
+            <uri>http://twitter.com/rogeliog</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[A Great Developer Experience]]></title>
         <id>https://facebook.github.io/jest/blog/2017/01/30/a-great-developer-experience.html</id>
