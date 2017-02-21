@@ -193,7 +193,7 @@ Sometimes you need to provide a more complex manual mock. For example if you'd l
 ```js
 jest.mock('path/to/MyNativeComponent', () => {
   const jestReactNative = require('jest-react-native');
-  return jestReactNative.mockComponent('path/to/MyNativeComponent');
+  return jestReactNative('path/to/MyNativeComponent');
 });
 ```
 
