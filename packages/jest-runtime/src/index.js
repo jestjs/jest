@@ -188,6 +188,10 @@ class Runtime {
     config: Config,
     options?: HasteMapOptions,
   ): HasteMap {
+    const testPathIgnorePattern =
+      config.testPathIgnorePatterns.length 
+      ? new RegExp(config.testPathIgnorePatterns.join('|'))
+      : null;
     const ignorePattern = new RegExp(
       [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
     );
@@ -206,6 +210,7 @@ class Runtime {
       resetCache: options && options.resetCache,
       retainAllFiles: false,
       roots: config.roots,
+      testPathIgnorePattern,
       useWatchman: config.watchman,
       watch: options && options.watch,
     });
