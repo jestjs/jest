@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const buildTestPathPatternInfo = require('./buildTestPathPatternInfo');
+const getTestPathPatternInfo = require('./getTestPathPatternInfo');
 
 module.exports = (
   argv: Object,
@@ -40,7 +40,7 @@ module.exports = (
   }
 
   argv.onlyChanged = false;
-  argv.onlyChanged = buildTestPathPatternInfo(argv).input === ''
+  argv.onlyChanged = getTestPathPatternInfo(argv).input === ''
     && !argv.watchAll
     && !argv.testNamePattern;
 
