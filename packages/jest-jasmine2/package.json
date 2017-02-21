@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "18.1.0",
+  "version": "19.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,9 +9,9 @@
   "main": "build/index.js",
   "dependencies": {
     "graceful-fs": "^4.1.6",
-    "jest-matcher-utils": "^18.1.0",
-    "jest-matchers": "^18.1.0",
-    "jest-message-util": "^18.1.0",
-    "jest-snapshot": "^18.1.0"
+    "jest-matcher-utils": "^19.0.0",
+    "jest-matchers": "^19.0.0",
+    "jest-message-util": "^19.0.0",
+    "jest-snapshot": "^19.0.0"
   }
 }
