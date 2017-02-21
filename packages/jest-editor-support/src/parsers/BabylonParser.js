@@ -160,7 +160,9 @@ const babylonParser = (file: string) => {
         foundExpectNode(element, file);
       } else if (element.type === 'VariableDeclaration') {
         element.declarations
-          .filter(declaration => isFunctionDeclaration(declaration.init.type))
+          .filter(declaration => (
+            declaration.init && isFunctionDeclaration(declaration.init.type))
+          )
           .forEach(declaration => searchNodes(declaration.init.body, file));
       } else if (
         element.type === 'ExpressionStatement' &&
