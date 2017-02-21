@@ -126,7 +126,7 @@ With the latest release, manual mocks now finally work with nested folders. For 
 
 ## Breaking Changes
 
-As a part of our cleanups and fixes we removed the `mocksPattern` configuration option which was never officially supported. We also renamed the `testPathDirs` configuration option to `roots` which better explains what the option can be used for. The default configuration for `roots` is `["<rootDir"]` and can be customized to include any number of directories. The rootDir configuration option has always been used mostly as a token for other configuration options and this rename should make configuring Jest clearer.
+As a part of our cleanups and fixes we removed the `mocksPattern` configuration option which was never officially supported. We also renamed the `testPathDirs` configuration option to `roots` which better explains what the option can be used for. The default configuration for `roots` is `["<rootDir>"]` and can be customized to include any number of directories. The rootDir configuration option has always been used mostly as a token for other configuration options and this rename should make configuring Jest clearer.
 
 ## Revamped documentation
 
