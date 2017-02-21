@@ -19,8 +19,7 @@ function isValidPath(config: Config, filePath: string) {
   const coverageDirectory = config.coverageDirectory ||
     path.resolve(config.rootDir, 'coverage');
     
-  return config.roots.some(dir => filePath.startsWith(dir)) &&
-    !filePath.includes(coverageDirectory) &&
+  return !filePath.includes(coverageDirectory) &&
     !filePath.endsWith(`.${SNAPSHOT_EXTENSION}`);
 }
 
