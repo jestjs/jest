@@ -50,37 +50,36 @@ const getCacheKey = (
   if (!configToJsonMap.has(config)) {
     // We only need this set of config options that can likely influence
     // cached output instead of all config options.
-    configToJsonMap.set(config, stableStringify({
-      cacheDirectory: config.cacheDirectory,
-      collectCoverage: config.collectCoverage,
-      collectCoverageFrom: config.collectCoverageFrom,
-      collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
-      coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
-      haste: config.haste,
-      moduleFileExtensions: config.moduleFileExtensions,
-      moduleNameMapper: config.moduleNameMapper,
-      rootDir: config.rootDir,
-      roots: config.roots,
-      testMatch: config.testMatch,
-      testRegex: config.testRegex,
-      transformIgnorePatterns: config.transformIgnorePatterns,
-    }));
+    configToJsonMap.set(
+      config,
+      stableStringify({
+        cacheDirectory: config.cacheDirectory,
+        collectCoverage: config.collectCoverage,
+        collectCoverageFrom: config.collectCoverageFrom,
+        collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
+        coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
+        haste: config.haste,
+        moduleFileExtensions: config.moduleFileExtensions,
+        moduleNameMapper: config.moduleNameMapper,
+        rootDir: config.rootDir,
+        roots: config.roots,
+        testMatch: config.testMatch,
+        testRegex: config.testRegex,
+        transformIgnorePatterns: config.transformIgnorePatterns,
+      }),
+    );
   }
   const configString = configToJsonMap.get(config) || '';
   const transformer = getTransformer(filename, config);
 
   if (transformer && typeof transformer.getCacheKey === 'function') {
-    return transformer.getCacheKey(
-      fileData,
-      filename,
-      configString,
-      {
-        instrument,
-        watch: config.watch,
-      },
-    );
+    return transformer.getCacheKey(fileData, filename, configString, {
+      instrument,
+      watch: config.watch,
+    });
   } else {
-    return crypto.createHash('md5')
+    return crypto
+      .createHash('md5')
       .update(fileData)
       .update(configString)
       .update(instrument ? 'instrument' : '')
@@ -99,7 +98,8 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
 };
 
 const wrap = content =>
-  '({"' + EVAL_RESULT_VARIABLE +
+  '({"' +
+  EVAL_RESULT_VARIABLE +
   '":function(module,exports,require,__dirname,__filename,global,jest){' +
   content +
   '\n}});';
@@ -128,8 +128,7 @@ const readCacheFile = (filename: Path, cachePath: Path): ?string => {
 
 const getScriptCacheKey = (filename, config, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
-  return filename + '_' + mtime.getTime() +
-    (instrument ? '_instrumented' : '');
+  return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
 const shouldTransform = (filename: Path, config: Config): boolean => {
@@ -180,8 +179,7 @@ const getFileCachePath = (
   return cachePath;
 };
 
-const transformCache: WeakMap<Config, Map<Path, ?Transformer>> =
-  new WeakMap();
+const transformCache: WeakMap<Config, Map<Path, ?Transformer>> = new WeakMap();
 
 const getTransformer = (filename: string, config: Config): ?Transformer => {
   const transformData = transformCache.get(config);
@@ -306,13 +304,14 @@ const transformAndBuildScript = (
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
   let wrappedResult;
-  const willTransform = !isInternalModule
-    && (shouldTransform(filename, config) || instrument);
+  const willTransform = !isInternalModule &&
+    (shouldTransform(filename, config) || instrument);
 
   try {
     if (willTransform) {
-      wrappedResult =
-        wrap(transformSource(filename, config, content, instrument));
+      wrappedResult = wrap(
+        transformSource(filename, config, content, instrument),
+      );
     } else {
       wrappedResult = wrap(content);
     }
@@ -326,10 +325,10 @@ const transformAndBuildScript = (
     if (config.logTransformErrors) {
       console.error(
         `FILENAME: ${filename}\n` +
-        `TRANSFORM: ${willTransform.toString()}\n` +
-        `INSTRUMENT: ${instrument.toString()}\n` +
-        `SOURCE:\n` +
-        String(wrappedResult),
+          `TRANSFORM: ${willTransform.toString()}\n` +
+          `INSTRUMENT: ${instrument.toString()}\n` +
+          `SOURCE:\n` +
+          String(wrappedResult),
       );
     }
 

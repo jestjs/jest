@@ -30,24 +30,22 @@ type Hunk = {|
   newStart: number,
   oldLines: number,
   oldStart: number,
-|}
+|};
 
 const getColor = (added: boolean, removed: boolean): chalk =>
-  added
-    ? chalk.red
-    : (removed ? chalk.green : chalk.dim);
+  added ? chalk.red : removed ? chalk.green : chalk.dim;
 
 const getBgColor = (added: boolean, removed: boolean): chalk =>
-  added
-    ? chalk.bgRed
-    : (removed ? chalk.bgGreen : chalk.dim);
+  added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
 
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 const getAnnotation = (options: ?DiffOptions): string =>
-  chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +
-  chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
+  chalk.green('- ' + (options && options.aAnnotation || 'Expected')) +
+  '\n' +
+  chalk.red('+ ' + (options && options.bAnnotation || 'Received')) +
+  '\n\n';
 
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
@@ -81,8 +79,8 @@ const diffLines = (a: string, b: string): Diff => {
 // `hunk.oldLines` or a new string to `hunk.newLines`.
 // If the `oldLinesCount` is greater than `hunk.oldLines`
 // we can be sure that at least 1 line has been "hidden".
-const shouldShowPatchMarks =
-  (hunk: Hunk, oldLinesCount: number): boolean => oldLinesCount > hunk.oldLines;
+const shouldShowPatchMarks = (hunk: Hunk, oldLinesCount: number): boolean =>
+  oldLinesCount > hunk.oldLines;
 
 const createPatchMark = (hunk: Hunk): string => {
   const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
@@ -131,7 +129,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
-  const result = (options && options.expand === false)
+  const result = options && options.expand === false
     ? structuredPatch(a, b)
     : diffLines(a, b);
 

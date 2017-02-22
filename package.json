@@ -25,6 +25,7 @@
     "lerna": "2.0.0-beta.37",
     "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
+    "prettier": "^0.18.0",
     "progress": "^1.1.8",
     "react": "^15.4.1",
     "react-test-renderer": "^15.4.1",

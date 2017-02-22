@@ -37,7 +37,6 @@ class TestWatcher extends EventEmitter {
   isWatchMode() {
     return this._isWatchMode;
   }
-
 }
 
 module.exports = TestWatcher;

@@ -26,7 +26,6 @@ const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
-
 const watch = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
@@ -46,9 +45,8 @@ const watch = (
 
   setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
-    testPathPattern: argv.testPathPattern || (Array.isArray(argv._)
-      ? argv._.join('|')
-      : ''),
+    testPathPattern: argv.testPathPattern ||
+      (Array.isArray(argv._) ? argv._.join('|') : ''),
   });
 
   let hasSnapshotFailure = false;
@@ -58,19 +56,11 @@ const watch = (
 
   const prompt = new Prompt();
 
-  const testPathPatternPrompt = TestPathPatternPrompt(
-    config,
-    pipe,
-    prompt,
-  );
+  const testPathPatternPrompt = TestPathPatternPrompt(config, pipe, prompt);
 
   testPathPatternPrompt.updateSearchSource(hasteContext);
 
-  const testNamePatternPrompt = TestNamePatternPrompt(
-    config,
-    pipe,
-    prompt,
-  );
+  const testNamePatternPrompt = TestNamePatternPrompt(config, pipe, prompt);
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const validPaths = eventsQueue.filter(({filePath}) => {
@@ -78,7 +68,7 @@ const watch = (
     });
 
     if (validPaths.length) {
-      hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
+      hasteContext = createHasteContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();
@@ -104,10 +94,17 @@ const watch = (
     return runJest(
       hasteContext,
       // $FlowFixMe
-      Object.freeze(Object.assign({
-        testNamePattern: argv.testNamePattern,
-        testPathPattern: argv.testPathPattern,
-      }, config, overrideConfig)),
+      Object.freeze(
+        // $FlowFixMe
+        Object.assign(
+          {
+            testNamePattern: argv.testNamePattern,
+            testPathPattern: argv.testPathPattern,
+          },
+          config,
+          overrideConfig,
+        ),
+      ),
       argv,
       pipe,
       testWatcher,
@@ -124,14 +121,9 @@ const watch = (
           displayHelp = !process.env.JEST_HIDE_USAGE;
         }
 
-        testNamePatternPrompt.updateCachedTestResults(
-          results.testResults
-        );
+        testNamePatternPrompt.updateCachedTestResults(results.testResults);
       },
-    ).then(
-      () => {},
-      error => console.error(chalk.red(error.stack)),
-    );
+    ).then(() => {}, error => console.error(chalk.red(error.stack)));
   };
 
   const onKeypress = (key: string) => {
@@ -252,11 +244,9 @@ const handleDeprecatedWarnings = (
       stdin.on('data', (key: string) => {
         if (key === KEYS.ENTER) {
           resolve();
-        } else if ([
-          KEYS.ESCAPE,
-          KEYS.CONTROL_C,
-          KEYS.CONTROL_D,
-        ].indexOf(key) !== -1) {
+        } else if (
+          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].indexOf(key) !== -1
+        ) {
           reject();
         }
       });
@@ -266,27 +256,34 @@ const handleDeprecatedWarnings = (
   });
 };
 
-const usage = (
-  argv,
-  snapshotFailure,
-  delimiter = '\n',
-) => {
+const usage = (argv, snapshotFailure, delimiter = '\n') => {
   /* eslint-disable max-len */
   const messages = [
     '\n' + chalk.bold('Watch Usage'),
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) && !argv.noSCM
-      ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
+    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) &&
+      !argv.noSCM
+      ? chalk.dim(' \u203A Press ') +
+          'o' +
+          chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
-      ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
+      ? chalk.dim(' \u203A Press ') +
+          'u' +
+          chalk.dim(' to update failing snapshots.')
       : null,
-    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
-    chalk.dim(' \u203A Press ') + 't' + chalk.dim(' to filter by a test name regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      'p' +
+      chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      't' +
+      chalk.dim(' to filter by a test name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
-    chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
+    chalk.dim(' \u203A Press ') +
+      'Enter' +
+      chalk.dim(' to trigger a test run.'),
   ];
   /* eslint-enable max-len */
   return messages.filter(message => !!message).join(delimiter) + '\n';

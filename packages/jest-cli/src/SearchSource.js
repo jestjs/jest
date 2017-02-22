@@ -61,16 +61,11 @@ export type PatternInfo = {|
 const git = changedFiles.git;
 const hg = changedFiles.hg;
 
-const determineSCM = path => Promise.all([
-  git.isGitRepository(path),
-  hg.isHGRepository(path),
-]);
+const determineSCM = path =>
+  Promise.all([git.isGitRepository(path), hg.isHGRepository(path)]);
 const pathToRegex = p => replacePathSepForRegex(p);
-const pluralize = (
-  word: string,
-  count: number,
-  ending: string,
-) => `${count} ${word}${count === 1 ? '' : ending}`;
+const pluralize = (word: string, count: number, ending: string) =>
+  `${count} ${word}${count === 1 ? '' : ending}`;
 
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
@@ -295,9 +290,8 @@ class SearchSource {
     const formattedInput = patternInfo.shouldTreatInputAsPattern
       ? `/${input || ''}/`
       : `"${input || ''}"`;
-    return (input === pattern) ? formattedInput : formattedPattern;
+    return input === pattern ? formattedInput : formattedPattern;
   }
-
 }
 
 module.exports = SearchSource;

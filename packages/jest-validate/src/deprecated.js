@@ -25,7 +25,7 @@ const deprecationWarning = (
   config: Object,
   option: string,
   deprecatedOptions: Object,
-  options: ValidationOptions
+  options: ValidationOptions,
 ): boolean => {
   if (option in deprecatedOptions) {
     deprecationMessage(deprecatedOptions[option](config), options);

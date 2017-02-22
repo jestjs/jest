@@ -31,8 +31,8 @@ type Glob = string;
 
 type ConfigRepresentation = {
   testRegex: string,
-  testMatch: Array<Glob>
-}
+  testMatch: Array<Glob>,
+};
 import type {Options} from './types';
 
 module.exports = class Settings extends EventEmitter {
@@ -48,14 +48,11 @@ module.exports = class Settings extends EventEmitter {
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.workspace = workspace;
-    this._createProcess = (options && options.createProcess) || createProcess;
+    this._createProcess = options && options.createProcess || createProcess;
 
     // Defaults for a Jest project
     this.settings = {
-      testMatch: [
-        '**/__tests__/**/*.js?(x)',
-        '**/?(*.)(spec|test).js?(x)',
-      ],
+      testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
   }
@@ -73,16 +70,18 @@ module.exports = class Settings extends EventEmitter {
       // See https://github.com/facebook/jest/issues/2343 for moving this into
       // the config object
       if (string.includes('jest version =')) {
-        const version = string.split('jest version =')
+        const version = string
+          .split('jest version =')
           .pop()
-          .split(EOL)[0]
-          .trim();
+          .split(EOL)
+          [0].trim();
         this.jestVersionMajor = parseInt(version, 10);
       }
 
       // Pull out the data for the config
       if (string.includes('config =')) {
-        const jsonString = string.split('config =')
+        const jsonString = string
+          .split('config =')
           .pop()
           .split('No tests found')[0];
         this.settings = JSON.parse(jsonString);

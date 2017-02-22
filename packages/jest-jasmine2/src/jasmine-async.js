@@ -8,7 +8,7 @@
  * @flow
  */
 
- /**
+/**
  * This module adds ability to test async promise code with jasmine by
  * returning a promise from `it\fit` and `beforeEach/afterEach` blocks.
  */
@@ -38,19 +38,26 @@ function promisifyIt(originalFn, env) {
     } else {
       // we make *all* tests async and run `done` right away if they
       // didn't return a promise.
-      return originalFn.call(env, specName, function(done) {
-        const returnValue = fn.apply(this, arguments);
+      return originalFn.call(
+        env,
+        specName,
+        function(done) {
+          const returnValue = fn.apply(this, arguments);
 
-        if (isPromise(returnValue)) {
-          returnValue.then(done).catch(done.fail);
-        } else if (returnValue === undefined) {
-          done();
-        } else {
-          done.fail(new Error(
-            'Jest: `it` must return either a Promise or undefined.',
-          ));
-        }
-      }, timeout);
+          if (isPromise(returnValue)) {
+            returnValue.then(done).catch(done.fail);
+          } else if (returnValue === undefined) {
+            done();
+          } else {
+            done.fail(
+              new Error(
+                'Jest: `it` must return either a Promise or undefined.',
+              ),
+            );
+          }
+        },
+        timeout,
+      );
     }
   };
 }

@@ -49,15 +49,9 @@ type Options = {|
   getTestSummary: () => string,
 |};
 
-type OnRunFailure = (
-  path: string,
-  err: TestError,
-) => void;
+type OnRunFailure = (path: string, err: TestError) => void;
 
-type OnTestResult = (
-  path: string,
-  result: TestResult,
-) => void;
+type OnTestResult = (path: string, result: TestResult) => void;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -73,7 +67,7 @@ class TestRunner {
     hasteContext: HasteContext,
     config: Config,
     options: Options,
-    startRun: () => *
+    startRun: () => *,
   ) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher(
@@ -114,10 +108,9 @@ class TestRunner {
     // fastest results.
     try {
       if (this._config.cache) {
-        this._testPerformanceCache = JSON.parse(fs.readFileSync(
-          this._getTestPerformanceCachePath(),
-          'utf8',
-        ));
+        this._testPerformanceCache = JSON.parse(
+          fs.readFileSync(this._getTestPerformanceCachePath(), 'utf8'),
+        );
       } else {
         this._testPerformanceCache = {};
       }
@@ -132,20 +125,19 @@ class TestRunner {
       stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
     const getTestRunTime = filePath => {
       if (cache[filePath]) {
-        return (cache[filePath][0] === FAIL) ? Infinity : cache[filePath][1];
+        return cache[filePath][0] === FAIL ? Infinity : cache[filePath][1];
       }
       return null;
     };
 
-    testPaths = testPaths
-      .sort((pathA, pathB) => {
-        const timeA = getTestRunTime(pathA);
-        const timeB = getTestRunTime(pathB);
-        if (timeA != null && timeB != null) {
-          return timeA < timeB ? 1 : -1;
-        }
-        return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
-      });
+    testPaths = testPaths.sort((pathA, pathB) => {
+      const timeA = getTestRunTime(pathA);
+      const timeB = getTestRunTime(pathB);
+      if (timeA != null && timeB != null) {
+        return timeA < timeB ? 1 : -1;
+      }
+      return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
+    });
 
     testPaths.forEach(filePath => {
       const timing = cache[filePath] && cache[filePath][1];
@@ -164,7 +156,7 @@ class TestRunner {
         const perf = test.perfStats;
         cache[test.testFilePath] = [
           test.numFailingTests ? FAIL : SUCCESS,
-          (perf.end - perf.start) || 0,
+          perf.end - perf.start || 0,
         ];
       }
     });
@@ -178,8 +170,9 @@ class TestRunner {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
-    const estimatedTime =
-      Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
+    const estimatedTime = Math.ceil(
+      getEstimatedTime(timings, this._options.maxWorkers) / 1000,
+    );
 
     const onResult = (testPath: Path, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
@@ -194,11 +187,7 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
-        config,
-        testResult,
-        aggregatedResults,
-      );
+      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
       this._bailIfNeeded(aggregatedResults, watcher);
     };
 
@@ -209,54 +198,42 @@ class TestRunner {
       const testResult = buildFailureTestResult(testPath, error);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
-        config,
-        testResult,
-        aggregatedResults,
-      );
+      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
     };
 
     // Run in band if we only have one test or one worker available.
     // If we are confident from previous runs that the tests will finish quickly
     // we also run in band to reduce the overhead of spawning workers.
-    const shouldRunInBand = () => (
+    const shouldRunInBand = () =>
       this._options.maxWorkers <= 1 ||
       testPaths.length <= 1 ||
-      (
-        testPaths.length <= 20 &&
-        timings.length > 0 && timings.every(timing => timing < SLOW_TEST_TIME)
-      )
-    );
+      testPaths.length <= 20 &&
+        timings.length > 0 &&
+        timings.every(timing => timing < SLOW_TEST_TIME);
 
     const updateSnapshotState = () => {
-      const status =
-        snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
+      const status = snapshot.cleanup(
+        this._hasteContext.hasteFS,
+        config.updateSnapshot,
+      );
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(
-        !aggregatedResults.snapshot.didUpdate && (
-          aggregatedResults.snapshot.unchecked ||
+      aggregatedResults.snapshot.failure = !!(!aggregatedResults.snapshot.didUpdate &&
+        (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
-          aggregatedResults.snapshot.filesRemoved
-        )
-      );
+          aggregatedResults.snapshot.filesRemoved));
     };
 
     const runInBand = shouldRunInBand();
 
-    this._dispatcher.onRunStart(
-      config,
-      aggregatedResults,
-      {
-        estimatedTime,
-        showStatus: !runInBand,
-      },
-    );
+    this._dispatcher.onRunStart(config, aggregatedResults, {
+      estimatedTime,
+      showStatus: !runInBand,
+    });
 
-    const testRun =
-      runInBand
-        ? this._createInBandTestRun(testPaths, watcher, onResult, onFailure)
-        : this._createParallelTestRun(testPaths, watcher, onResult, onFailure);
+    const testRun = runInBand
+      ? this._createInBandTestRun(testPaths, watcher, onResult, onFailure)
+      : this._createParallelTestRun(testPaths, watcher, onResult, onFailure);
 
     return testRun
       .catch(error => {
@@ -270,17 +247,13 @@ class TestRunner {
 
         this._dispatcher.onRunComplete(config, aggregatedResults);
 
-        const anyTestFailures = !(
-          aggregatedResults.numFailedTests === 0 &&
-          aggregatedResults.numRuntimeErrorTestSuites === 0
-        );
+        const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
+          aggregatedResults.numRuntimeErrorTestSuites === 0);
         const anyReporterErrors = this._dispatcher.hasErrors();
 
-        aggregatedResults.success = !(
-          anyTestFailures ||
+        aggregatedResults.success = !(anyTestFailures ||
           aggregatedResults.snapshot.failure ||
-          anyReporterErrors
-        );
+          anyReporterErrors);
 
         this._cacheTestResults(aggregatedResults);
         return aggregatedResults;
@@ -295,24 +268,17 @@ class TestRunner {
   ) {
     const mutex = throat(1);
     return testPaths.reduce(
-      (promise, path) =>
-        mutex(() =>
-          promise
-            .then(() => {
-              if (watcher.isInterrupted()) {
-                throw new CancelRun();
-              }
+      (promise, path) => mutex(() => promise
+        .then(() => {
+          if (watcher.isInterrupted()) {
+            throw new CancelRun();
+          }
 
-              this._dispatcher.onTestStart(this._config, path);
-              return runTest(
-                path,
-                this._config,
-                this._hasteContext.resolver,
-              );
-            })
-            .then(result => onResult(path, result))
-            .catch(err => onFailure(path, err)),
-        ),
+          this._dispatcher.onTestStart(this._config, path);
+          return runTest(path, this._config, this._hasteContext.resolver);
+        })
+        .then(result => onResult(path, result))
+        .catch(err => onFailure(path, err))),
       Promise.resolve(),
     );
   }
@@ -324,12 +290,15 @@ class TestRunner {
     onFailure: OnRunFailure,
   ) {
     const config = this._config;
-    const farm = workerFarm({
-      autoStart: true,
-      maxConcurrentCallsPerWorker: 1,
-      maxConcurrentWorkers: this._options.maxWorkers,
-      maxRetries: 2, // Allow for a couple of transient errors.
-    }, TEST_WORKER_PATH);
+    const farm = workerFarm(
+      {
+        autoStart: true,
+        maxConcurrentCallsPerWorker: 1,
+        maxConcurrentWorkers: this._options.maxWorkers,
+        maxRetries: 2, // Allow for a couple of transient errors.
+      },
+      TEST_WORKER_PATH,
+    );
     const mutex = throat(this._options.maxWorkers);
     const worker = promisify(farm);
 
@@ -354,7 +323,7 @@ class TestRunner {
       if (err.type === 'ProcessTerminatedError') {
         console.error(
           'A worker process has quit unexpectedly! ' +
-          'Most likely this an initialization error.',
+            'Most likely this an initialization error.',
         );
         process.exit(1);
       }
@@ -368,27 +337,24 @@ class TestRunner {
       });
     });
 
-    const runAllTests = Promise.all(testPaths.map(path => {
-      return runTestInWorker({config, path})
-        .then(testResult => onResult(path, testResult))
-        .catch(error => onError(error, path));
-    }));
+    const runAllTests = Promise.all(
+      testPaths.map(path => {
+        return runTestInWorker({config, path})
+          .then(testResult => onResult(path, testResult))
+          .catch(error => onError(error, path));
+      }),
+    );
 
     const cleanup = () => workerFarm.end(farm);
 
-    return Promise.race([
-      runAllTests,
-      onInterrupt,
-    ]).then(cleanup, cleanup);
+    return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
   _setupReporters() {
     const config = this._config;
 
     this.addReporter(
-      config.verbose
-        ? new VerboseReporter(config)
-        : new DefaultReporter(),
+      config.verbose ? new VerboseReporter(config) : new DefaultReporter(),
     );
 
     if (config.collectCoverage) {
@@ -454,8 +420,7 @@ const addResult = (
   testResult: TestResult,
 ): void => {
   aggregatedResults.testResults.push(testResult);
-  aggregatedResults.numTotalTests +=
-    testResult.numPassingTests +
+  aggregatedResults.numTotalTests += testResult.numPassingTests +
     testResult.numFailingTests +
     testResult.numPendingTests;
   aggregatedResults.numFailedTests += testResult.numFailingTests;
@@ -493,8 +458,7 @@ const addResult = (
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
-  aggregatedResults.snapshot.total +=
-    testResult.snapshot.added +
+  aggregatedResults.snapshot.total += testResult.snapshot.added +
     testResult.snapshot.matched +
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
@@ -553,36 +517,22 @@ class ReporterDispatcher {
 
   onTestResult(config, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(
-        config,
-        testResult,
-        results,
-        this._runnerContext,
-      ),
-    );
+      reporter.onTestResult(config, testResult, results, this._runnerContext));
   }
 
   onTestStart(config, path) {
     this._reporters.forEach(reporter =>
-      reporter.onTestStart(config, path, this._runnerContext),
-    );
+      reporter.onTestStart(config, path, this._runnerContext));
   }
 
   onRunStart(config, results, options) {
-    this._reporters.forEach(
-      reporter => reporter.onRunStart(
-        config,
-        results,
-        this._runnerContext,
-        options,
-      ),
-    );
+    this._reporters.forEach(reporter =>
+      reporter.onRunStart(config, results, this._runnerContext, options));
   }
 
   onRunComplete(config, results) {
     this._reporters.forEach(reporter =>
-      reporter.onRunComplete(config, results, this._runnerContext),
-    );
+      reporter.onRunComplete(config, results, this._runnerContext));
   }
 
   // Return a list of last errors for every reporter
@@ -611,10 +561,7 @@ const getEstimatedTime = (timings, workers) => {
     return max;
   }
 
-  return Math.max(
-    timings.reduce((sum, time) => sum + time) / workers,
-    max,
-  );
+  return Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
 };
 
 module.exports = TestRunner;

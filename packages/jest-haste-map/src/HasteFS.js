@@ -10,10 +10,7 @@
 'use strict';
 
 import type {Glob, Path} from 'types/Config';
-import type {
-  FileData,
-  HType,
-} from 'types/HasteMap';
+import type {FileData, HType} from 'types/HasteMap';
 
 const H: HType = require('./constants');
 
@@ -21,7 +18,6 @@ const micromatch = require('micromatch');
 const path = require('path');
 
 class HasteFS {
-
   _files: FileData;
 
   constructor(files: FileData) {
@@ -57,10 +53,7 @@ class HasteFS {
     return files;
   }
 
-  matchFilesWithGlob(
-    globs: Array<Glob>,
-    root: ?Path,
-  ): Set<Path> {
+  matchFilesWithGlob(globs: Array<Glob>, root: ?Path): Set<Path> {
     const files = new Set();
     for (const file in this._files) {
       const filePath = root ? path.relative(root, file) : file;
@@ -70,7 +63,6 @@ class HasteFS {
     }
     return files;
   }
-
 }
 
 module.exports = HasteFS;

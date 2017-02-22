@@ -18,7 +18,7 @@ export type MockFunctionMetadata = {
   members?: {[key: string]: MockFunctionMetadata},
   mockImpl?: () => any,
   name?: string,
-  refID?: string|number,
+  refID?: string | number,
   type?: string,
   value?: any,
 };
@@ -26,7 +26,7 @@ export type MockFunctionMetadata = {
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
-}
+};
 
 type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
@@ -94,7 +94,7 @@ function isA(typeName: string, value: any): boolean {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
-function getType(ref?: any): string|null {
+function getType(ref?: any): string | null {
   if (isA('Function', ref)) {
     return 'function';
   } else if (Array.isArray(ref)) {
@@ -122,27 +122,17 @@ function getType(ref?: any): string|null {
 }
 
 function isReadonlyProp(object: any, prop: string): boolean {
-  return (
-    (
-      (
-        prop === 'arguments' ||
-        prop === 'caller' ||
-        prop === 'callee' ||
-        prop === 'name' ||
-        prop === 'length'
-      ) &&
-      isA('Function', object)
-    ) ||
-    (
-      (
-        prop === 'source' ||
-        prop === 'global' ||
-        prop === 'ignoreCase' ||
-        prop === 'multiline'
-      ) &&
-      isA('RegExp', object)
-    )
-  );
+  return (prop === 'arguments' ||
+    prop === 'caller' ||
+    prop === 'callee' ||
+    prop === 'name' ||
+    prop === 'length') &&
+    isA('Function', object) ||
+    (prop === 'source' ||
+      prop === 'global' ||
+      prop === 'ignoreCase' ||
+      prop === 'multiline') &&
+      isA('RegExp', object);
 }
 
 function getSlots(object?: Object): Array<string> {
@@ -170,7 +160,6 @@ function getSlots(object?: Object): Array<string> {
   } while (object && (parent = Object.getPrototypeOf(object)) !== null);
   return Object.keys(slots);
 }
-
 
 class ModuleMockerClass {
   _environmentGlobal: Global;
@@ -244,11 +233,9 @@ class ModuleMockerClass {
       let f;
       /* eslint-enable prefer-const */
 
-      const prototype = (
-        metadata.members &&
+      const prototype = metadata.members &&
         metadata.members.prototype &&
-        metadata.members.prototype.members
-      ) || {};
+        metadata.members.prototype.members || {};
       const prototypeSlots = getSlots(prototype);
       const mocker = this;
       const mockConstructor = function() {
@@ -366,10 +353,9 @@ class ModuleMockerClass {
         return f;
       };
 
-      f.mockReturnThis = () =>
-        f.mockImplementation(function() {
-          return this;
-        });
+      f.mockReturnThis = () => f.mockImplementation(function() {
+        return this;
+      });
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
@@ -419,10 +405,14 @@ class ModuleMockerClass {
       name = name.replace(/[\s-]/g, '$');
     }
 
-    const body =
-      'return function ' + name + '() {' +
-        'return ' + MOCK_CONSTRUCTOR_NAME + '.apply(this,arguments);' +
-      '}' + bindCall;
+    const body = 'return function ' +
+      name +
+      '() {' +
+      'return ' +
+      MOCK_CONSTRUCTOR_NAME +
+      '.apply(this,arguments);' +
+      '}' +
+      bindCall;
     const createConstructor = new this._environmentGlobal.Function(
       MOCK_CONSTRUCTOR_NAME,
       body,
@@ -477,10 +467,7 @@ class ModuleMockerClass {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata(
-    component: any,
-    _refs?: Map<any, any>,
-  ): ?MockFunctionMetadata {
+  getMetadata(component: any, _refs?: Map<any, any>): ?MockFunctionMetadata {
     const refs = _refs || new Map();
     const ref = refs.get(component);
     if (ref != null) {
@@ -525,9 +512,9 @@ class ModuleMockerClass {
           }
 
           if (
-            (!component.hasOwnProperty && component[slot] !== undefined) ||
-            (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-            (type === 'object' && component[slot] != Object.prototype[slot])
+            !component.hasOwnProperty && component[slot] !== undefined ||
+            component.hasOwnProperty && component.hasOwnProperty(slot) ||
+            type === 'object' && component[slot] != Object.prototype[slot]
           ) {
             const slotMetadata = this.getMetadata(component[slot], refs);
             if (slotMetadata) {

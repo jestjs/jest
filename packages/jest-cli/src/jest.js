@@ -49,13 +49,15 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then(({
-      config,
-      hasDeprecationWarnings,
-    } : {
-      config: Config,
-      hasDeprecationWarnings: boolean,
-    }) => {
+    .then((
+      {
+        config,
+        hasDeprecationWarnings,
+      }: {
+        config: Config,
+        hasDeprecationWarnings: boolean,
+      },
+    ) => {
       if (argv.debug) {
         logDebugMessages(config, pipe);
       }
@@ -68,39 +70,38 @@ const runCLI = (
         watch: config.watch,
       });
 
-      return jestHasteMap.build().then(
-        hasteMap => createHasteContext(config, hasteMap),
-        error => {
+      return jestHasteMap
+        .build()
+        .then(hasteMap => createHasteContext(config, hasteMap), error => {
           throw error;
-        },
-      )
-      .then(hasteContext => {
-        if (argv.watch || argv.watchAll) {
-          return watch(
-            config,
-            pipe,
-            argv,
-            jestHasteMap,
-            hasteContext,
-            hasDeprecationWarnings,
-          );
-        } else {
-          const startRun = () => {
-            preRunMessage.print(pipe);
-            const testWatcher = new TestWatcher({isWatchMode: false});
-            return runJest(
-              hasteContext,
+        })
+        .then(hasteContext => {
+          if (argv.watch || argv.watchAll) {
+            return watch(
               config,
-              argv,
               pipe,
-              testWatcher,
-              startRun,
-              onComplete,
+              argv,
+              jestHasteMap,
+              hasteContext,
+              hasDeprecationWarnings,
             );
-          };
-          return startRun();
-        }
-      });
+          } else {
+            const startRun = () => {
+              preRunMessage.print(pipe);
+              const testWatcher = new TestWatcher({isWatchMode: false});
+              return runJest(
+                hasteContext,
+                config,
+                argv,
+                pipe,
+                testWatcher,
+                startRun,
+                onComplete,
+              );
+            };
+            return startRun();
+          }
+        });
     })
     .catch(error => {
       clearLine(process.stderr);
