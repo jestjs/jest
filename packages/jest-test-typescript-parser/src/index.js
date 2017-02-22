@@ -11,7 +11,7 @@
 'use strict';
 
 const {parse: babylonParser, ItBlock, Expect} = require('jest-editor-support');
-const {parse: typeScriptParser} = require('./TypeScriptParser');
+const TypeScriptParser = require('./TypeScriptParser');
 export type ParserReturn = {
   itBlocks: Array<ItBlock>,
   expects: Array<Expect>,
@@ -23,12 +23,13 @@ export type ParserReturn = {
  */
 function parse(file: string): ParserReturn {
   if (file.match(/\.tsx?$/)) {
-    return typeScriptParser(file);
+    return TypeScriptParser.parse(file);
   } else {
     return babylonParser(file);
   }
 }
 
 module.exports = {
+  TypeScriptParser,
   parse,
 };
