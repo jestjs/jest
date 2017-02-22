@@ -15,6 +15,7 @@ import type {AggregatedResult} from 'types/TestResult';
 
 const chalk = require('chalk');
 const path = require('path');
+const slash = require('slash');
 
 type SummaryOptions = {|
   estimatedTime?: number,
@@ -37,7 +38,7 @@ const trimAndFormatPath = (
 
   // length is ok
   if ((dirname + path.sep + basename).length <= maxLength) {
-    return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+    return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
   }
 
   // we can fit trimmed dirname and full basename
@@ -46,18 +47,18 @@ const trimAndFormatPath = (
     const dirnameLength = maxLength - 4 - basenameLength;
     dirname = '...' +
       dirname.slice(dirname.length - dirnameLength, dirname.length);
-    return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+    return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
   }
 
   if (basenameLength + 4 === maxLength) {
-    return chalk.dim('...' + path.sep) + chalk.bold(basename);
+    return slash(chalk.dim('...' + path.sep) + chalk.bold(basename));
   }
 
   // can't fit dirname, but can fit trimmed basename
-  return chalk.bold(
+  return slash(chalk.bold(
     '...' +
     basename.slice(basename.length - maxLength - 4, basename.length),
-  );
+  ));
 };
 
 const formatTestPath = (config: Config, testPath: Path) => {
