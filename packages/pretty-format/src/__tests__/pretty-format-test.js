@@ -303,6 +303,23 @@ describe('prettyFormat()', () => {
     })).toEqual('class Foo');
   });
 
+  it('supports plugins that return empty string', () => {
+    const val = {
+      payload: '',
+    };
+    const options = {
+      plugins: [{
+        print(val) {
+          return val.payload;
+        },
+        test(val) {
+          return val && typeof val.payload === 'string';
+        },
+      }],
+    };
+    expect(prettyFormat(val, options)).toEqual('');
+  });
+
   it('supports plugins with deeply nested arrays (#24)', () => {
     const val = [[1, 2], [3, 4]];
     expect(prettyFormat(val, {
@@ -628,26 +645,6 @@ describe('prettyFormat()', () => {
           plugins: [ReactTestComponent, ReactElement],
         })
       ).toMatchSnapshot();
-    });
-  });
-
-  describe('plugin', () => {
-    it('returns empty string', () => {
-      const plugin = {
-        print(val) {
-          return val.payload;
-        },
-        test(val) {
-          return val && typeof val.payload === 'string';
-        },
-      };
-      const val = {
-        payload: '',
-      };
-      const options = {
-        plugins: [plugin],
-      };
-      expect(prettyFormat(val, options)).toEqual('');
     });
   });
 });
