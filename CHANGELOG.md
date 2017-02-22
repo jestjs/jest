@@ -1,5 +1,14 @@
 ## master
 
+## jest 19.0.1
+
+* Fix infinite loop when using `--watch` with `--coverage`.
+* Fixed `watchman` config option.
+* Fixed a bug in the jest-editor-support static analysis.
+* Fixed eslint plugin warning.
+* Fixed missing space in front of "Did you mean …?".
+* Fixed path printing in the reporter on Windows.
+
 ## jest 19.0.0
 
 * Breaking Change: Added a version for snapshots.

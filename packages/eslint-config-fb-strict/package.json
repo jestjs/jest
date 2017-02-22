@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-fb-strict",
-  "version": "19.0.0",
+  "version": "19.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,7 +10,7 @@
     "babel-eslint": "^7.0.0",
     "eslint-config-fbjs": "^2.0.0-alpha.1",
     "eslint-plugin-babel": "^4.0.0",
-    "eslint-plugin-jest": "^19.0.0"
+    "eslint-plugin-jest": "^19.0.1"
   },
   "peerDependencies": {
     "eslint": "^3.3.0"

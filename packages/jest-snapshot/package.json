@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "19.0.0",
+  "version": "19.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -12,7 +12,7 @@
     "jest-diff": "^19.0.0",
     "jest-file-exists": "^19.0.0",
     "jest-matcher-utils": "^19.0.0",
-    "jest-util": "^19.0.0",
+    "jest-util": "^19.0.1",
     "natural-compare": "^1.4.0",
     "pretty-format": "^19.0.0"
   }
