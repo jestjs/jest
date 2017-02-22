@@ -63,7 +63,7 @@ class NotifyReporter extends BaseReporter {
         message,
         title,
       }, (err, _, metadata) => {
-        if (err) {
+        if (err || !metadata) {
           return;
         }
         if (metadata.activationValue === quitAnswer) {
