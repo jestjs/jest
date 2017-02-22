@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 /* eslint-disable max-len */
 
@@ -22,7 +24,7 @@ const NEWLINE_REGEXP = /\n/ig;
 
 const getSymbols = Object.getOwnPropertySymbols || (obj => []);
 
-function isToStringedArrayType(toStringed) {
+function isToStringedArrayType(toStringed: string): boolean {
   return (
     toStringed === '[object Array]' ||
     toStringed === '[object ArrayBuffer]' ||
@@ -39,7 +41,7 @@ function isToStringedArrayType(toStringed) {
   );
 }
 
-function printNumber(val) {
+function printNumber(val: number): string {
   if (val != +val) {
     return 'NaN';
   }
@@ -47,7 +49,7 @@ function printNumber(val) {
   return isNegativeZero ? '-0' : '' + val;
 }
 
-function printFunction(val, printFunctionName) {
+function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
   } else if (val.name === '') {
@@ -57,15 +59,15 @@ function printFunction(val, printFunctionName) {
   }
 }
 
-function printSymbol(val) {
+function printSymbol(val: Symbol): string {
   return symbolToString.call(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
 }
 
-function printError(val) {
+function printError(val: Error): string {
   return '[' + errorToString.call(val) + ']';
 }
 
-function printBasicValue(val, printFunctionName, escapeRegex) {
+function printBasicValue(val: any, printFunctionName: boolean, escapeRegex: boolean): StringOrNull {
   if (val === true || val === false) {
     return '' + val;
   }
@@ -129,10 +131,10 @@ function printBasicValue(val, printFunctionName, escapeRegex) {
     return printError(val);
   }
 
-  return false;
+  return null;
 }
 
-function printList(list, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printList(list: any, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   let body = '';
 
   if (list.length) {
@@ -154,15 +156,15 @@ function printList(list, indent, prevIndent, spacing, edgeSpacing, refs, maxDept
   return '[' + body + ']';
 }
 
-function printArguments(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printArguments(val: any, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   return (min ? '' : 'Arguments ') + printList(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
 }
 
-function printArray(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printArray(val: any, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   return (min ? '' : val.constructor.name + ' ') + printList(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
 }
 
-function printMap(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printMap(val: Map<any, any>, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   let result = 'Map {';
   const iterator = val.entries();
   let current = iterator.next();
@@ -191,7 +193,7 @@ function printMap(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth,
   return result + '}';
 }
 
-function printObject(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printObject(val: Object, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   const constructor = min ? '' : (val.constructor ?  val.constructor.name + ' ' : 'Object ');
   let result = constructor + '{';
   let keys = Object.keys(val).sort();
@@ -199,6 +201,7 @@ function printObject(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDep
 
   if (symbols.length) {
     keys = keys
+      // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
       .filter(key => !(typeof key === 'symbol' || toString.call(key) === '[object Symbol]'))
       .concat(symbols);
   }
@@ -226,7 +229,7 @@ function printObject(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDep
   return result + '}';
 }
 
-function printSet(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printSet(val: Set<any>, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   let result = 'Set {';
   const iterator = val.entries();
   let current = iterator.next();
@@ -252,7 +255,7 @@ function printSet(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth,
   return result + '}';
 }
 
-function printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function printComplexValue(val: any, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   refs = refs.slice();
   if (refs.indexOf(val) > -1) {
     return '[Circular]';
@@ -282,21 +285,19 @@ function printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, 
   return hitMaxDepth ? '[Object]' : printObject(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
 }
 
-function printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
-  let match = false;
+function printPlugin(val, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): StringOrNull {
   let plugin;
 
   for (let p = 0; p < plugins.length; p++) {
-    plugin = plugins[p];
 
-    if (plugin.test(val)) {
-      match = true;
+    if (plugins[p].test(val)) {
+      plugin = plugins[p];
       break;
     }
   }
 
-  if (!match) {
-    return false;
+  if (!plugin) {
+    return null;
   }
 
   function boundPrint(val) {
@@ -316,21 +317,67 @@ function printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDep
   return plugin.print(val, boundPrint, boundIndent, opts, colors);
 }
 
-function print(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
+function print(val: any, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
   const basic = printBasicValue(val, printFunctionName, escapeRegex);
-  if (basic) {
+  if (basic !== null) {
     return basic;
   }
 
   const plugin = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
-  if (plugin) {
+  if (plugin !== null) {
     return plugin;
   }
 
   return printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
 }
 
-const DEFAULTS = {
+type Colors = Object;
+type Indent = (str: string) => string;
+type Refs = Array<any>;
+type Serialize = (val: any) => string;
+type StringOrNull = string | null; // but disallow undefined, unlike ?string
+
+type Plugin = {
+  print: (val: any, serialize: Serialize, indent: Indent, opts: Object, colors: Colors) => string,
+  test: Function,
+}
+type Plugins = Array<Plugin>;
+
+type InitialOptions = {|
+  callToJSON?: boolean,
+  escapeRegex?: boolean,
+  highlight?: boolean,
+  indent?: number,
+  maxDepth?: number,
+  min?: boolean,
+  plugins?: Plugins,
+  printFunctionName?: boolean,
+  theme?: {
+    content: string,
+    prop: string,
+    tag: string,
+    value: string,
+  },
+|};
+
+type Options = {|
+  callToJSON: boolean,
+  escapeRegex: boolean,
+  highlight: boolean,
+  indent: number,
+  maxDepth: number,
+  min: boolean,
+  plugins: Plugins,
+  printFunctionName: boolean,
+  theme: {
+    content: string,
+    prop: string,
+    tag: string,
+    value: string,
+  },
+|};
+
+const DEFAULTS: Options = {
   callToJSON: true,
   escapeRegex: false,
   highlight: false,
@@ -347,7 +394,7 @@ const DEFAULTS = {
   },
 };
 
-function validateOptions(opts) {
+function validateOptions(opts: InitialOptions) {
   Object.keys(opts).forEach(key => {
     if (!DEFAULTS.hasOwnProperty(key)) {
       throw new Error('prettyFormat: Invalid option: ' + key);
@@ -359,7 +406,7 @@ function validateOptions(opts) {
   }
 }
 
-function normalizeOptions(opts) {
+function normalizeOptions(opts: InitialOptions): Options {
   const result = {};
 
   Object.keys(DEFAULTS).forEach(key =>
@@ -370,19 +417,23 @@ function normalizeOptions(opts) {
     result.indent = 0;
   }
 
-  return result;
+  // The type cast below means YOU are responsible to verify the code above.
+
+  // $FlowFixMe object literal. Inexact type is incompatible with exact type
+  return (result: Options);
 }
 
-function createIndent(indent) {
+function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-function prettyFormat(val, opts) {
-  if (!opts) {
+function prettyFormat(val: any, initialOptions?: InitialOptions): string {
+  let opts: Options;
+  if (!initialOptions) {
     opts = DEFAULTS;
   } else {
-    validateOptions(opts);
-    opts = normalizeOptions(opts);
+    validateOptions(initialOptions);
+    opts = normalizeOptions(initialOptions);
   }
 
   const colors = {};
@@ -405,13 +456,13 @@ function prettyFormat(val, opts) {
     indent = createIndent(opts.indent);
     refs = [];
     const pluginsResult = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, opts.maxDepth, currentDepth, opts.plugins, opts.min, opts.callToJSON, opts.printFunctionName, opts.escapeRegex, colors);
-    if (pluginsResult) {
+    if (pluginsResult !== null) {
       return pluginsResult;
     }
   }
 
   const basicResult = printBasicValue(val, opts.printFunctionName, opts.escapeRegex);
-  if (basicResult) {
+  if (basicResult !== null) {
     return basicResult;
   }
 

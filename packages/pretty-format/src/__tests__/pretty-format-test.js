@@ -630,4 +630,24 @@ describe('prettyFormat()', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('plugin', () => {
+    it('returns empty string', () => {
+      const plugin = {
+        print(val) {
+          return val.payload;
+        },
+        test(val) {
+          return val && typeof val.payload === 'string';
+        },
+      };
+      const val = {
+        payload: '',
+      };
+      const options = {
+        plugins: [plugin],
+      };
+      expect(prettyFormat(val, options)).toEqual('');
+    });
+  });
 });
