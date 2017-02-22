@@ -37,7 +37,7 @@ There is an alternate form of `test` that fixes this. Instead of putting the tes
 test('the data is peanut butter', (done) => {
   function callback(data) {
     expect(data).toBe('peanut butter');
-    done();
+    done(); // or done.fail(new Error('Test failed')); 
   }
 
   fetchData(callback);
