@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-editor-support": "19.0.1",
+    "jest-editor-support": "^19.0.1",
     "typescript": "^2.0.10"
   }
 }
