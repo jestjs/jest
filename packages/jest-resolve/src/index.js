@@ -127,7 +127,16 @@ class Resolver {
 
     // 2. Check if the module is a node module and resolve it based on
     //    the node module resolution algorithm.
-    if (!options || !options.skipNodeResolution) {
+    // If skipNodeResolution is given we ignore all modules that look like
+    // node modules (ie. are not relative requires). This enables us to speed
+    // up resolution when we build a dependency graph because we don't have
+    // to look at modules that may not exist and aren't mocked.
+    const skipResolution =
+      options &&
+      options.skipNodeResolution &&
+      !moduleName.includes(path.sep);
+
+    if (!skipResolution) {
       module = Resolver.findNodeModule(moduleName, {
         basedir: dirname,
         browser: this._options.browser,
