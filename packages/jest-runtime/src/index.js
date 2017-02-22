@@ -222,6 +222,7 @@ class Runtime {
       moduleNameMapper: getModuleNameMapper(config),
       modulePaths: config.modulePaths,
       platforms: config.haste.platforms,
+      resolver: config.resolver,
     });
   }
 
