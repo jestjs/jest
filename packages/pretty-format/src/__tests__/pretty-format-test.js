@@ -177,9 +177,10 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object with properties and symbols', () => {
-    const val = {prop: 'value1'};
+    const val = {};
     val[Symbol('symbol1')] = 'value2';
     val[Symbol('symbol2')] = 'value3';
+    val.prop = 'value1';
     expect(prettyFormat(val)).toEqual('Object {\n  "prop": "value1",\n  Symbol(symbol1): "value2",\n  Symbol(symbol2): "value3",\n}');
   });
 
