@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {parse} = require('../../parsers/TypeScriptParser');
-const {parserTests} = require('./parserTests');
+const {parse} = require('../TypeScriptParser');
+const {parserTests} = require('../../../jest-editor-support/src/__tests__/parsers/parserTests');
 
 parserTests(parse);

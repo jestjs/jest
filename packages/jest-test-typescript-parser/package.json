@@ -1,5 +1,5 @@
 {
-  "name": "jest-editor-support",
+  "name": "jest-test-typescript-parser",
   "version": "19.0.1",
   "repository": {
     "type": "git",
@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "babylon": "^6.13.0"
-  },
-  "typings": "index.d.ts"
+    "jest-editor-support": "19.0.1",
+    "typescript": "^2.0.10"
+  }
 }
