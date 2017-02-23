@@ -11,6 +11,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
 const childProcess = require('child_process');
 
 const tmpdir = path.resolve(os.tmpdir(), 'jest-changed-files-git');
@@ -26,7 +27,7 @@ describe('git', () => {
 
   beforeEach(() => {
     git = require('../git');
-    childProcess.spawnSync('mkdir', ['-p', tmpdirNested]);
+    mkdirp.sync(tmpdirNested);
   });
 
   afterEach(() => rimraf.sync(tmpdir));
