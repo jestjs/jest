@@ -12,7 +12,7 @@
 
 const ts = require('typescript');
 const {readFileSync} = require('fs');
-const {Expect, ItBlock, Node} = require('./ParserNodes');
+const {Expect, ItBlock, Node} = require('jest-editor-support');
 
 function parse(file: string) {
   const sourceFile = ts.createSourceFile(

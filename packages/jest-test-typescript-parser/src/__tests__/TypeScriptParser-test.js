@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {parse} = require('../../parsers/TypeScriptParser');
-const {parserTests} = require('./parserTests');
+const {parse} = require('../TypeScriptParser');
+const {parserTests} = require('../../../../fixtures/parserTests');
 
 parserTests(parse);
