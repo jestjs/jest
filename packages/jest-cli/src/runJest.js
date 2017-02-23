@@ -25,10 +25,7 @@ const getMaxWorkers = require('./lib/getMaxWorkers');
 const path = require('path');
 const setState = require('./lib/setState');
 
-const getTestSummary = (
-  argv: Object,
-  patternInfo: PatternInfo,
-) => {
+const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
   const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
   const testInfo = patternInfo.onlyChanged
     ? chalk.dim(' related to changed files')
@@ -101,7 +98,7 @@ const runJest = (
             getTestSummary: () => getTestSummary(argv, patternInfo),
             maxWorkers,
           },
-          startRun
+          startRun,
         ).runTests(data.paths, testWatcher);
       })
       .then(runResults => {

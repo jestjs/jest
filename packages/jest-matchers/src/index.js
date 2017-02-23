@@ -38,7 +38,7 @@ const {
 const GLOBAL_STATE = Symbol.for('$$jest-matchers-object');
 
 class JestAssertionError extends Error {
-  matcherResult: any
+  matcherResult: any;
 }
 
 if (!global[GLOBAL_STATE]) {

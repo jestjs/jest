@@ -16,7 +16,7 @@ import type {
 } from 'types/TestResult';
 
 type PhabricatorReport = AggregatedResult & {
-  phabricatorReport: Array<FormattedTestResult>
+  phabricatorReport: Array<FormattedTestResult>,
 };
 
 const {formatTestResults} = require('jest-util');
@@ -30,7 +30,7 @@ function summarize(coverageMap: CoverageMap) {
 
     Object.keys(lineCoverage).forEach(lineNumber => {
       // Line numbers start at one
-      const number = (parseInt(lineNumber, 10) - 1);
+      const number = parseInt(lineNumber, 10) - 1;
       const visited = !!lineCoverage[lineNumber];
       covered[number] = visited ? 'C' : 'U';
     });

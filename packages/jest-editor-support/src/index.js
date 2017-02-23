@@ -16,7 +16,7 @@ const Runner = require('./Runner');
 const Settings = require('./Settings');
 const {Expect, ItBlock, Node} = require('./parsers/ParserNodes');
 const {parse} = require('./ScriptParser');
-const TestReconciler =  require('./TestReconciler');
+const TestReconciler = require('./TestReconciler');
 
 module.exports = {
   Expect,
