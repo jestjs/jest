@@ -30,17 +30,13 @@ type Hunk = {|
   newStart: number,
   oldLines: number,
   oldStart: number,
-|}
+|};
 
 const getColor = (added: boolean, removed: boolean): chalk =>
-  added
-    ? chalk.red
-    : (removed ? chalk.green : chalk.dim);
+  added ? chalk.red : removed ? chalk.green : chalk.dim;
 
 const getBgColor = (added: boolean, removed: boolean): chalk =>
-  added
-    ? chalk.bgRed
-    : (removed ? chalk.bgGreen : chalk.dim);
+  added ? chalk.bgRed : removed ? chalk.bgGreen : chalk.dim;
 
 const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
@@ -131,7 +127,7 @@ function diffStrings(a: string, b: string, options: ?DiffOptions): string {
   // (where "d" is the edit distance) and can get very slow for large edit
   // distances. Mitigate the cost by switching to a lower-resolution diff
   // whenever linebreaks are involved.
-  const result = (options && options.expand === false)
+  const result = options && options.expand === false
     ? structuredPatch(a, b)
     : diffLines(a, b);
 

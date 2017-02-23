@@ -23,7 +23,7 @@ export type ValidationOptions = {
     config: Object,
     option: string,
     deprecatedOptions: Object,
-    options: ValidationOptions
+    options: ValidationOptions,
   ) => boolean,
   deprecatedConfig?: {[key: string]: Function},
   error?: (
@@ -38,6 +38,6 @@ export type ValidationOptions = {
     config: Object,
     exampleConfig: Object,
     option: string,
-    options: ValidationOptions
+    options: ValidationOptions,
   ) => void,
 };

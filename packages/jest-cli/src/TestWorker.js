@@ -33,7 +33,7 @@ type WorkerData = {|
 
 type WorkerCallback = (error: ?SerializableError, result?: TestResult) => void;
 
-const formatError = (error: string|Error): SerializableError => {
+const formatError = (error: string | Error): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {

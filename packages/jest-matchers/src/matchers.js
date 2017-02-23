@@ -7,13 +7,11 @@
  *
  * @flow
  */
- /* eslint-disable max-len */
+/* eslint-disable max-len */
 
 'use strict';
 
-import type {
-  MatchersObject,
-} from 'types/Matchers';
+import type {MatchersObject} from 'types/Matchers';
 
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-regex-util');

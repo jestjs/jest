@@ -140,7 +140,7 @@ class Jasmine2Reporter {
     };
 
     specResult.failedExpectations.forEach(failed => {
-      const message = (!failed.matcherName && failed.stack)
+      const message = !failed.matcherName && failed.stack
         ? failed.stack
         : failed.message || '';
       results.failureMessages.push(message);

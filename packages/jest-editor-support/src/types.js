@@ -13,7 +13,7 @@
 export type Location = {
   column: number,
   line: number,
-}
+};
 
 import type ProjectWorkspace from './ProjectWorkspace';
 import type {ChildProcess} from 'child_process';
@@ -22,8 +22,8 @@ export type Options = {
   createProcess?: (
     workspace: ProjectWorkspace,
     args: Array<string>,
-  ) => ChildProcess
-}
+  ) => ChildProcess,
+};
 
 export type JestFileResults = {
   name: string,
@@ -33,14 +33,14 @@ export type JestFileResults = {
   startTime: number,
   endTime: number,
   assertionResults: Array<JestAssertionResults>,
-}
+};
 
 export type JestAssertionResults = {
   name: string,
   title: string,
   status: 'failed' | 'passed',
   failureMessages: string[],
-}
+};
 
 export type JestTotalResults = {
   success: boolean,
@@ -52,18 +52,18 @@ export type JestTotalResults = {
   numFailedTests: number,
   numPendingTests: number,
   testResults: Array<JestFileResults>,
-}
+};
 
 /**
  *  Did the thing pass, fail or was it not run?
  */
 export type TestReconciliationState =
-  /** This could be the file has not changed, so the watcher didn't hit it */
-  | 'Unknown'
-  /** Definitely failed */
-  | 'KnownFail'
-  /** Definitely passed */
-  | 'KnownSuccess'
+  | /** This could be the file has not changed, so the watcher didn't hit it */
+  'Unknown'
+  | /** Definitely failed */
+  'KnownFail'
+  | /** Definitely passed */
+  'KnownSuccess';
 
 /**
  * The Jest Extension's version of a status for
@@ -75,7 +75,7 @@ export type TestFileAssertionStatus = {
   message: string,
   status: TestReconciliationState,
   assertions: Array<TestAssertionStatus>,
-}
+};
 
 /**
  * The Jest Extension's version of a status for
@@ -89,4 +89,4 @@ export type TestAssertionStatus = {
   shortMessage: ?string,
   terseMessage: ?string,
   line: ?number,
-}
+};

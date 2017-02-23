@@ -24,7 +24,7 @@ const unknownOptionWarning = (
   config: Object,
   exampleConfig: Object,
   option: string,
-  options: ValidationOptions
+  options: ValidationOptions,
 ): void => {
   const didYouMean =
     createDidYouMeanMessage(option, Object.keys(exampleConfig));
@@ -36,7 +36,7 @@ const unknownOptionWarning = (
   /* eslint-enable max-len */
 
   const comment = options.comment;
-  const name = options.title && options.title.warning || WARNING;
+  const name = (options.title && options.title.warning) || WARNING;
 
   logValidationWarning(name, message, comment);
 };
