@@ -56,8 +56,7 @@ const initializeSnapshotState = (
   update: boolean,
   testPath: string,
   expand: boolean,
-) =>
-  new SnapshotState(testFile, update, testPath, expand);
+) => new SnapshotState(testFile, update, testPath, expand);
 
 const toMatchSnapshot = function(received: any, testName?: string) {
   this.dontThrow && this.dontThrow();
