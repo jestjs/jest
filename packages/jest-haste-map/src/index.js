@@ -77,7 +77,7 @@ type InternalOptions = {
 
 type Watcher = {
   close(callback: () => void): void,
-}
+};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;
@@ -95,14 +95,19 @@ const canUseWatchman = ((): boolean => {
   return false;
 })();
 
-const escapePathSeparator =
-  string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
+const escapePathSeparator = string =>
+  path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string;
 
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
     return new RegExp(
-      '(' + escapePathSeparator(NODE_MODULES) +
-      '(?:' + list.join('|') + ')(?=$|' + escapePathSeparator(path.sep) + '))',
+      '(' +
+        escapePathSeparator(NODE_MODULES) +
+        '(?:' +
+        list.join('|') +
+        ')(?=$|' +
+        escapePathSeparator(path.sep) +
+        '))',
       'g',
     );
   }
@@ -202,16 +207,16 @@ class HasteMap extends EventEmitter {
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
-      mocksPattern:
-        options.mocksPattern ? new RegExp(options.mocksPattern) : null,
+      mocksPattern: options.mocksPattern
+        ? new RegExp(options.mocksPattern)
+        : null,
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: Array.from(new Set(options.roots)),
       throwOnModuleCollision: !!options.throwOnModuleCollision,
-      useWatchman:
-        options.useWatchman == null ? true : options.useWatchman,
+      useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
@@ -242,14 +247,16 @@ class HasteMap extends EventEmitter {
 
   build(): Promise<HasteMapObject> {
     if (!this._buildPromise) {
-      this._buildPromise = this._buildFileMap()
+      this._buildPromise = this
+        ._buildFileMap()
         .then(fileMap => this._buildHasteMap(fileMap))
         .then(hasteMap => {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
           const moduleMap = new HasteModuleMap(hasteMap.map, hasteMap.mocks);
-          const __hasteMapForTest =
-            (process.env.NODE_ENV === 'test' && hasteMap) || null;
+          const __hasteMapForTest = process.env.NODE_ENV === 'test' &&
+            hasteMap ||
+            null;
           return this._watch(hasteMap, hasteFS, moduleMap).then(() => ({
             __hasteMapForTest,
             hasteFS,
@@ -299,12 +306,11 @@ class HasteMap extends EventEmitter {
         map[id] = Object.create(null);
       }
       const moduleMap = map[id];
-      const platform =
-        getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
+      const platform = getPlatformExtension(module[H.PATH]) ||
+        H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const message =
-          `jest-haste-map: @providesModule naming collision:\n` +
+        const message = `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\nThis ` +
@@ -327,20 +333,19 @@ class HasteMap extends EventEmitter {
     }
 
     if (
-      this._options.mocksPattern &&
-      this._options.mocksPattern.test(filePath)
+      this._options.mocksPattern && this._options.mocksPattern.test(filePath)
     ) {
       const mockPath = getMockName(filePath);
       if (mocks[mockPath]) {
         this._console.warn(
           `jest-haste-map: duplicate manual mock found:\n` +
-          `  Module name: ${mockPath}\n` +
-          `  Duplicate Mock path: ${filePath}\nThis warning ` +
-          `is caused by two manual mock files with the same file name.\n` +
-          `Jest will use the mock file found in: \n` +
-          `${filePath}\n` +
-          ` Please delete one of the following two files: \n ` +
-          `${mocks[mockPath]}\n${filePath}\n\n`,
+            `  Module name: ${mockPath}\n` +
+            `  Duplicate Mock path: ${filePath}\nThis warning ` +
+            `is caused by two manual mock files with the same file name.\n` +
+            `Jest will use the mock file found in: \n` +
+            `${filePath}\n` +
+            ` Please delete one of the following two files: \n ` +
+            `${mocks[mockPath]}\n${filePath}\n\n`,
         );
       }
       mocks[mockPath] = filePath;
@@ -357,27 +362,29 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)({
-      filePath,
-      hasteImplModulePath: this._options.hasteImplModulePath,
-    }).then(
-      metadata => {
-        // `1` for truthy values instead of `true` to save cache space.
-        fileMetadata[H.VISITED] = 1;
-        const metadataId = metadata.id;
-        const metadataModule = metadata.module;
-        if (metadataId && metadataModule) {
-          fileMetadata[H.ID] = metadataId;
-          setModule(metadataId, metadataModule);
-        }
-        fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
-      },
-      error => {
-        // If a file cannot be read we remove it from the file list and
-        // ignore the failure silently.
-        delete hasteMap.files[filePath];
-      },
-    );
+    return this
+      ._getWorker(workerOptions)({
+        filePath,
+        hasteImplModulePath: this._options.hasteImplModulePath,
+      })
+      .then(
+        metadata => {
+          // `1` for truthy values instead of `true` to save cache space.
+          fileMetadata[H.VISITED] = 1;
+          const metadataId = metadata.id;
+          const metadataModule = metadata.module;
+          if (metadataId && metadataModule) {
+            fileMetadata[H.ID] = metadataId;
+            setModule(metadataId, metadataModule);
+          }
+          fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+        },
+        error => {
+          // If a file cannot be read we remove it from the file list and
+          // ignore the failure silently.
+          delete hasteMap.files[filePath];
+        },
+      );
   }
 
   _buildHasteMap(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
@@ -428,10 +435,7 @@ class HasteMap extends EventEmitter {
   ): (message: WorkerMessage) => Promise<WorkerMetadata> {
     if (!this._workerPromise) {
       let workerFn;
-      if (
-        (options && options.forceInBand) ||
-        this._options.maxWorkers <= 1
-      ) {
+      if (options && options.forceInBand || this._options.maxWorkers <= 1) {
         workerFn = worker;
       } else {
         this._workerFarm = workerFarm(
@@ -443,15 +447,17 @@ class HasteMap extends EventEmitter {
         workerFn = this._workerFarm;
       }
 
-      this._workerPromise = (message: WorkerMessage) => new Promise(
-        (resolve, reject) => workerFn(message, (error, metadata) => {
+      this._workerPromise = (message: WorkerMessage) => new Promise((
+        resolve,
+        reject,
+      ) =>
+        workerFn(message, (error, metadata) => {
           if (error || !metadata) {
             reject(error);
           } else {
             resolve(metadata);
           }
-        }),
-      );
+        }));
     }
 
     return this._workerPromise;
@@ -468,18 +474,20 @@ class HasteMap extends EventEmitter {
   _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl =
-      (canUseWatchman && this._options.useWatchman) ? watchmanCrawl : nodeCrawl;
+    const crawl = canUseWatchman && this._options.useWatchman
+      ? watchmanCrawl
+      : nodeCrawl;
 
     const retry = error => {
       if (crawl === watchmanCrawl) {
         this._console.warn(
           `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
-          `crawler.\n` +
-          `  Usually this happens when watchman isn't running. Create an ` +
-          `empty \`.watchmanconfig\` file in your project's root folder or ` +
-          `initialize a git or hg repository in your project.\n` +
-          `  ` + error,
+            `crawler.\n` +
+            `  Usually this happens when watchman isn't running. Create an ` +
+            `empty \`.watchmanconfig\` file in your project's root folder or ` +
+            `initialize a git or hg repository in your project.\n` +
+            `  ` +
+            error,
         );
         return nodeCrawl({
           data: hasteMap,
@@ -490,8 +498,8 @@ class HasteMap extends EventEmitter {
         }).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
-            `  Original error: ${error.message}\n` +
-            `  Retry error: ${e.message}\n`,
+              `  Original error: ${error.message}\n` +
+              `  Retry error: ${e.message}\n`,
           );
         });
       }
@@ -529,7 +537,7 @@ class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
-    const Watcher = (canUseWatchman && this._options.useWatchman)
+    const Watcher = canUseWatchman && this._options.useWatchman
       ? sane.WatchmanWatcher
       : sane.NodeWatcher;
     const extensions = this._options.extensions;
@@ -586,79 +594,77 @@ class HasteMap extends EventEmitter {
         return;
       }
 
-      changeQueue = changeQueue.then(() => {
-        // If we get duplicate events for the same file, ignore them.
-        if (
-          eventsQueue.find(event => (
-            event.type === type &&
-            event.filePath === filePath && (
-              (!event.stat && !stat) ||
-              (
-                event.stat &&
-                stat &&
-                event.stat.mtime.getTime() === stat.mtime.getTime()
-              )
+      changeQueue = changeQueue
+        .then(() => {
+          // If we get duplicate events for the same file, ignore them.
+          if (
+            eventsQueue.find(
+              event =>
+                event.type === type &&
+                event.filePath === filePath &&
+                (!event.stat && !stat ||
+                  event.stat &&
+                    stat &&
+                    event.stat.mtime.getTime() === stat.mtime.getTime()),
             )
-          ))
-        ) {
-          return null;
-        }
+          ) {
+            return null;
+          }
 
-        if (mustCopy) {
-          mustCopy = false;
-          hasteMap = {
-            clocks: copy(hasteMap.clocks),
-            files: copy(hasteMap.files),
-            map: copy(hasteMap.map),
-            mocks: copy(hasteMap.mocks),
-          };
-        }
+          if (mustCopy) {
+            mustCopy = false;
+            hasteMap = {
+              clocks: copy(hasteMap.clocks),
+              files: copy(hasteMap.files),
+              map: copy(hasteMap.map),
+              mocks: copy(hasteMap.mocks),
+            };
+          }
 
-        const add = () => eventsQueue.push({filePath, stat, type});
+          const add = () => eventsQueue.push({filePath, stat, type});
 
-        // Delete the file and all of its metadata.
-        const moduleName =
-          hasteMap.files[filePath] && hasteMap.files[filePath][H.ID];
-        delete hasteMap.files[filePath];
-        delete hasteMap.map[moduleName];
-        if (
-          this._options.mocksPattern &&
-          this._options.mocksPattern.test(filePath)
-        ) {
-          const mockName = getMockName(filePath);
-          delete hasteMap.mocks[mockName];
-        }
+          // Delete the file and all of its metadata.
+          const moduleName = hasteMap.files[filePath] &&
+            hasteMap.files[filePath][H.ID];
+          delete hasteMap.files[filePath];
+          delete hasteMap.map[moduleName];
+          if (
+            this._options.mocksPattern &&
+            this._options.mocksPattern.test(filePath)
+          ) {
+            const mockName = getMockName(filePath);
+            delete hasteMap.mocks[mockName];
+          }
 
-        // If the file was added or changed, parse it and update the haste map.
-        if (type === 'add' || type === 'change') {
-          const fileMetadata = ['', stat.mtime.getTime(), 0, []];
-          hasteMap.files[filePath] = fileMetadata;
-          const promise = this._processFile(
-            hasteMap,
-            hasteMap.map,
-            hasteMap.mocks,
-            filePath,
-            {
-              forceInBand: true,
-            },
-          );
-          // Cleanup
-          this._workerPromise = null;
-          if (promise) {
-            return promise.then(add);
+          // If the file was added/changed, parse it and update the haste map.
+          if (type === 'add' || type === 'change') {
+            const fileMetadata = ['', stat.mtime.getTime(), 0, []];
+            hasteMap.files[filePath] = fileMetadata;
+            const promise = this._processFile(
+              hasteMap,
+              hasteMap.map,
+              hasteMap.mocks,
+              filePath,
+              {
+                forceInBand: true,
+              },
+            );
+            // Cleanup
+            this._workerPromise = null;
+            if (promise) {
+              return promise.then(add);
+            } else {
+              // If a file in node_modules changed, emit an event regardless.
+              add();
+            }
           } else {
-            // If a file in node_modules has changed, emit an event regardless.
             add();
           }
-        } else {
-          add();
-        }
-        return null;
-      }).catch(error => {
-        this._console.error(
-          `jest-haste-map: watch error:\n  ${error}\n`,
-        );
-      });
+          return null;
+        })
+        .catch(error => {
+          this._console.error(`jest-haste-map: watch error:\n  ${error}\n`);
+        });
     };
 
     this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
@@ -674,19 +680,21 @@ class HasteMap extends EventEmitter {
       return Promise.resolve();
     }
 
-    return Promise.all(this._watchers.map(
-      watcher => new Promise(resolve => watcher.close(resolve)),
-    )).then(() => this._watchers = []);
+    return Promise
+      .all(
+        this._watchers.map(
+          watcher => new Promise(resolve => watcher.close(resolve)),
+        ),
+      )
+      .then(() => this._watchers = []);
   }
 
   /**
    * Helpers
    */
   _ignore(filePath: Path): boolean {
-    return (
-      this._options.ignorePattern.test(filePath) ||
-      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
-    );
+    return this._options.ignorePattern.test(filePath) ||
+      !this._options.retainAllFiles && this._isNodeModulesDir(filePath);
   }
 
   _isNodeModulesDir(filePath: Path): boolean {

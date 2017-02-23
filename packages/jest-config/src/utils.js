@@ -17,8 +17,7 @@ const Resolver = require('jest-resolve');
 const path = require('path');
 const chalk = require('chalk');
 const BULLET: string = chalk.bold('\u25cf ');
-const DOCUMENTATION_NOTE =
-`  ${chalk.bold('Configuration Documentation:')}
+const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
   https://facebook.github.io/jest/docs/configuration.html
 `;
 
@@ -26,7 +25,7 @@ const createValidationError = (message: string) => {
   return new ValidationError(
     `${BULLET}Validation Error`,
     message,
-    DOCUMENTATION_NOTE
+    DOCUMENTATION_NOTE,
   );
 };
 
@@ -41,7 +40,9 @@ const resolve = (rootDir: string, key: string, filePath: Path) => {
   if (!module) {
     /* eslint-disable max-len */
     throw createValidationError(
-      `  Module ${chalk.bold(filePath)} in the ${chalk.bold(key)} option was not found.`
+      `  Module ${chalk.bold(filePath)} in the ${chalk.bold(
+        key,
+      )} option was not found.`,
     );
     /* eslint-disable max-len */
   }
@@ -119,7 +120,11 @@ const getTestEnvironment = (config: Object) => {
 
   /* eslint-disable max-len */
   throw createValidationError(
-    `  Test environment ${chalk.bold(env)} cannot be found. Make sure the ${chalk.bold('testEnvironment')} configuration option points to an existing node module.`
+    `  Test environment ${chalk.bold(
+      env,
+    )} cannot be found. Make sure the ${chalk.bold(
+      'testEnvironment',
+    )} configuration option points to an existing node module.`,
   );
   /* eslint-disable max-len */
 };

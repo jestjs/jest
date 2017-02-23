@@ -49,8 +49,8 @@ const getBabelRC = (filename, {useCache}) => {
 
 const createTransformer = (options: any) => {
   options = Object.assign({}, options, {
-    plugins: (options && options.plugins) || [],
-    presets: ((options && options.presets) || []).concat([jestPreset]),
+    plugins: options && options.plugins || [],
+    presets: (options && options.presets || []).concat([jestPreset]),
     retainLines: true,
   });
   delete options.cacheDirectory;
@@ -64,7 +64,8 @@ const createTransformer = (options: any) => {
       configString: string,
       {instrument, watch}: TransformOptions,
     ): string {
-      return crypto.createHash('md5')
+      return crypto
+        .createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
         .update(fileData)

@@ -33,7 +33,7 @@ type WorkerData = {|
 
 type WorkerCallback = (error: ?SerializableError, result?: TestResult) => void;
 
-const formatError = (error: string|Error): SerializableError => {
+const formatError = (error: string | Error): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
@@ -79,26 +79,25 @@ module.exports = (
 ) => {
   let parentExited = false;
   const disconnectCallback = () => parentExited = true;
-  const removeListener =
-    () => process.removeListener('disconnect', disconnectCallback);
+  const removeListener = () =>
+    process.removeListener('disconnect', disconnectCallback);
   process.on('disconnect', disconnectCallback);
 
   try {
-    runTest(path, config, getResolver(config, rawModuleMap))
-      .then(
-        result => {
-          removeListener();
-          if (!parentExited) {
-            callback(null, result);
-          }
-        },
-        error => {
-          removeListener();
-          if (!parentExited) {
-            callback(formatError(error));
-          }
-        },
-      );
+    runTest(path, config, getResolver(config, rawModuleMap)).then(
+      result => {
+        removeListener();
+        if (!parentExited) {
+          callback(null, result);
+        }
+      },
+      error => {
+        removeListener();
+        if (!parentExited) {
+          callback(formatError(error));
+        }
+      },
+    );
   } catch (error) {
     callback(formatError(error));
   }

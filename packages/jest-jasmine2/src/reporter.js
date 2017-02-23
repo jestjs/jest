@@ -126,9 +126,10 @@ class Jasmine2Reporter {
     ancestorTitles: Array<string>,
   ): AssertionResult {
     const start = this._startTimes.get(specResult.id);
-    const duration = start ? (Date.now() - start) : undefined;
-    const status =
-      (specResult.status === 'disabled') ? 'pending' : specResult.status;
+    const duration = start ? Date.now() - start : undefined;
+    const status = specResult.status === 'disabled'
+      ? 'pending'
+      : specResult.status;
     const results = {
       ancestorTitles,
       duration,
@@ -140,7 +141,7 @@ class Jasmine2Reporter {
     };
 
     specResult.failedExpectations.forEach(failed => {
-      const message = (!failed.matcherName && failed.stack)
+      const message = !failed.matcherName && failed.stack
         ? failed.stack
         : failed.message || '';
       results.failureMessages.push(message);

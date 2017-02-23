@@ -40,37 +40,25 @@ module.exports = (
     _cachedTestResults;
 
     constructor() {
-      (this:any).onChange = this.onChange.bind(this);
+      (this: any).onChange = this.onChange.bind(this);
     }
 
-    run(
-      onSuccess: Function,
-      onCancel: Function,
-    ) {
+    run(onSuccess: Function, onCancel: Function) {
       pipe.write(ansiEscapes.cursorHide);
       pipe.write(ansiEscapes.clearScreen);
       pipe.write(usage());
       pipe.write(ansiEscapes.cursorShow);
 
-      prompt.enter(
-        this.onChange,
-        onSuccess,
-        onCancel,
-      );
+      prompt.enter(this.onChange, onSuccess, onCancel);
     }
 
-    onChange(
-      pattern: string,
-    ) {
+    onChange(pattern: string) {
       pipe.write(ansiEscapes.eraseLine);
       pipe.write(ansiEscapes.cursorLeft);
       this.printTypeahead(pattern, 10);
     }
 
-    printTypeahead(
-      pattern: string,
-      max: number,
-    ) {
+    printTypeahead(pattern: string, max: number) {
       const matchedTests = this.getMatchedTests(pattern);
 
       const total = matchedTests.length;
@@ -102,12 +90,18 @@ module.exports = (
           const more = total - max;
           pipe.write(
             // eslint-disable-next-line max-len
-            `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
+            `\n  ${chalk.dim(
+              `\u203A and ${more} more ${pluralizeTest(more)}`,
+            )}`,
           );
         }
       } else {
         // eslint-disable-next-line max-len
-        pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`);
+        pipe.write(
+          `\n\n ${chalk.italic.yellow(
+            'Start typing to filter by a test name regex pattern.',
+          )}`,
+        );
       }
 
       pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));
@@ -125,16 +119,13 @@ module.exports = (
 
       const matchedTests = [];
 
-      this._cachedTestResults.forEach(
-        ({testResults}) =>
-          testResults.forEach(
-            ({title}) => {
-              if (regex.test(title)) {
-                matchedTests.push(title);
-              }
-            },
-          )
-      );
+      this._cachedTestResults.forEach(({testResults}) => testResults.forEach((
+        {title},
+      ) => {
+        if (regex.test(title)) {
+          matchedTests.push(title);
+        }
+      }));
 
       return matchedTests;
     }

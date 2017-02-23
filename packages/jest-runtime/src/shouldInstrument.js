@@ -15,8 +15,9 @@ const {escapePathForRegex} = require('jest-regex-util');
 const micromatch = require('micromatch');
 const path = require('path');
 
-const MOCKS_PATTERN =
-  new RegExp(escapePathForRegex(path.sep + '__mocks__' + path.sep));
+const MOCKS_PATTERN = new RegExp(
+  escapePathForRegex(path.sep + '__mocks__' + path.sep),
+);
 
 const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (!config.collectCoverage) {
@@ -30,15 +31,15 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
   if (
     config.testMatch &&
     config.testMatch.length &&
-    micromatch.any(filename, config.testMatch)) {
+    micromatch.any(filename, config.testMatch)
+  ) {
     return false;
   }
 
   if (
     // This configuration field contains an object in the form of:
     // {'path/to/file.js': true}
-    config.collectCoverageOnlyFrom &&
-    !config.collectCoverageOnlyFrom[filename]
+    config.collectCoverageOnlyFrom && !config.collectCoverageOnlyFrom[filename]
   ) {
     return false;
   }
@@ -54,7 +55,6 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
     return false;
   }
 
-
   if (
     config.coveragePathIgnorePatterns &&
     config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
@@ -68,6 +68,5 @@ const shouldInstrument = (filename: Path, config: Config): boolean => {
 
   return true;
 };
-
 
 module.exports = shouldInstrument;

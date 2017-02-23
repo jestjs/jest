@@ -33,7 +33,7 @@ module.exports = class Runner extends EventEmitter {
 
   constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
-    this._createProcess = (options && options.createProcess) || createProcess;
+    this._createProcess = options && options.createProcess || createProcess;
     this.workspace = workspace;
     this.outputPath = tmpdir() + '/jest_runner.json';
   }

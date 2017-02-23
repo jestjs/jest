@@ -33,8 +33,8 @@ const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const ERROR = `${BULLET}Validation Error`;
 
-const createConfigError =
-  message => new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+const createConfigError = message =>
+  new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
 const setupPreset = (config: InitialConfig, configPreset: string) => {
   let preset;
@@ -52,17 +52,16 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
     // $FlowFixMe
     preset = require(presetModule);
   } catch (error) {
-    throw createConfigError(
-      `  Preset ${chalk.bold(presetPath)} not found.`
-    );
+    throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
   if (config.setupFiles) {
     config.setupFiles = (preset.setupFiles || []).concat(config.setupFiles);
   }
   if (config.modulePathIgnorePatterns) {
-    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
-      .concat(config.modulePathIgnorePatterns);
+    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
+      config.modulePathIgnorePatterns,
+    );
   }
   if (config.moduleNameMapper) {
     config.moduleNameMapper = Object.assign(
@@ -110,16 +109,19 @@ const setupBabelJest = (config: InitialConfig) => {
 
 const normalizeCollectCoverageOnlyFrom = (
   config: InitialConfig,
-  key: string
+  key: string,
 ) => {
-  return Object.keys(config[key]).reduce((normObj, filePath) => {
-    filePath = path.resolve(
-      config.rootDir,
-      _replaceRootDirInPath(config.rootDir, filePath),
-    );
-    normObj[filePath] = true;
-    return normObj;
-  }, Object.create(null));
+  return Object.keys(config[key]).reduce(
+    (normObj, filePath) => {
+      filePath = path.resolve(
+        config.rootDir,
+        _replaceRootDirInPath(config.rootDir, filePath),
+      );
+      normObj[filePath] = true;
+      return normObj;
+    },
+    Object.create(null),
+  );
 };
 
 const normalizeCollectCoverageFrom = (config: InitialConfig, key: string) => {
@@ -143,7 +145,7 @@ const normalizeCollectCoverageFrom = (config: InitialConfig, key: string) => {
 
 const normalizeUnmockedModulePathPatterns = (
   config: InitialConfig,
-  key: string
+  key: string,
 ) => {
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
@@ -154,23 +156,28 @@ const normalizeUnmockedModulePathPatterns = (
   return config[key].map(pattern =>
     utils.replacePathSepForRegex(
       pattern.replace(/<rootDir>/g, config.rootDir),
-    )
-  );
+    ));
 };
 
 const normalizePreprocessor = (config: InitialConfig) => {
   /* eslint-disable max-len */
   if (config.scriptPreprocessor && config.transform) {
     throw createConfigError(
-`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`
+      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
+        'transform',
+      )} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transform')}.`,
     );
   }
 
   if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
     throw createConfigError(
-`  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`
+      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold(
+        'transformIgnorePatterns',
+      )} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+        'transformIgnorePatterns',
+      )}.`,
     );
   }
   /* eslint-enable max-len */
@@ -201,8 +208,11 @@ const normalizeMissingOptions = (config: InitialConfig) => {
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
-    config.testRunner =
-      resolve(config.rootDir, 'testRunner', config.testRunner);
+    config.testRunner = resolve(
+      config.rootDir,
+      'testRunner',
+      config.testRunner,
+    );
   }
 
   return config;
@@ -212,7 +222,7 @@ const normalizeRootDir = (config: InitialConfig) => {
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
     throw createConfigError(
-      `  Configuration option ${chalk.bold('rootDir')} must be specified.`
+      `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
   config.rootDir = path.normalize(config.rootDir);
@@ -230,7 +240,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
   if (argv.collectCoverageOnlyFrom) {
     const collectCoverageOnlyFrom = Object.create(null);
     argv.collectCoverageOnlyFrom.forEach(
-      path => collectCoverageOnlyFrom[path] = true
+      path => collectCoverageOnlyFrom[path] = true,
     );
     config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }
@@ -387,11 +397,11 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   if (config.testRegex && config.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
-      ` ${chalk.bold('testRegex')} cannot be used together.`
+        ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (config.testRegex && (!config.testMatch)) {
+  if (config.testRegex && !config.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newConfig.testMatch = [];
@@ -399,8 +409,9 @@ function normalize(config: InitialConfig, argv: Object = {}) {
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
-    newConfig.coverageReporters = (newConfig.coverageReporters || [])
-      .filter(reporter => reporter !== 'text');
+    newConfig.coverageReporters = (newConfig.coverageReporters || []).filter(
+      reporter => reporter !== 'text',
+    );
   }
 
   return {

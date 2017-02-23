@@ -39,7 +39,7 @@ type FindNodeModuleConfig = {|
 
 type ModuleNameMapperConfig = {|
   regex: RegExp,
-  moduleName: string
+  moduleName: string,
 |};
 
 type BooleanObject = {[key: string]: boolean};
@@ -50,13 +50,14 @@ export type ResolveModuleConfig = {|
 
 const NATIVE_PLATFORM = 'native';
 
-const nodePaths =
-  (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
+const nodePaths = process.env.NODE_PATH
+  ? process.env.NODE_PATH.split(path.delimiter)
+  : null;
 
 class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
-  _moduleIDCache : {[key: string]: string};
+  _moduleIDCache: {[key: string]: string};
   _moduleNameCache: {[name: string]: Path};
   _modulePathCache: {[path: Path]: Array<Path>};
 
@@ -65,15 +66,16 @@ class Resolver {
       browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
-      hasCoreModules:
-        options.hasCoreModules === undefined ? true : options.hasCoreModules,
+      hasCoreModules: options.hasCoreModules === undefined
+        ? true
+        : options.hasCoreModules,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
       platforms: options.platforms,
     };
     this._moduleMap = moduleMap;
-    this._moduleIDCache  = Object.create(null);
+    this._moduleIDCache = Object.create(null);
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
   }
@@ -174,13 +176,8 @@ class Resolver {
   }
 
   isCoreModule(moduleName: string): boolean {
-    return (
-      this._options.hasCoreModules &&
-      (
-        resolve.isCore(moduleName) ||
-        moduleName === 'v8'
-      )
-    );
+    return this._options.hasCoreModules &&
+      (resolve.isCore(moduleName) || moduleName === 'v8');
   }
 
   getModule(name: string): ?Path {
@@ -249,8 +246,10 @@ class Resolver {
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
-    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
-      (mockPath ? (mockPath + sep) : ''));
+    const id = moduleType +
+      sep +
+      (absolutePath ? absolutePath + sep : '') +
+      (mockPath ? mockPath + sep : '');
 
     return this._moduleIDCache[key] = id;
   }
@@ -290,10 +289,8 @@ class Resolver {
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
-    return !!(
-      this.getModule(moduleName) ||
-      this.getMockModule(from, moduleName)
-    );
+    return !!(this.getModule(moduleName) ||
+      this.getMockModule(from, moduleName));
   }
 
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
@@ -315,16 +312,14 @@ class Resolver {
               (_, index) => matches[parseInt(index, 10)],
             );
           }
-          return this.getModule(moduleName) || Resolver.findNodeModule(
-            moduleName,
-            {
+          return this.getModule(moduleName) ||
+            Resolver.findNodeModule(moduleName, {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
               moduleDirectory,
               paths,
-            },
-          );
+            });
         }
       }
     }
@@ -334,7 +329,6 @@ class Resolver {
   _supportsNativePlatform() {
     return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
-
 }
 
 module.exports = Resolver;

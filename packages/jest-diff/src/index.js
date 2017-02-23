@@ -66,11 +66,9 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
   }
 
   if (expectedType !== getType(b)) {
-    return (
-      '  Comparing two different types of values.' +
+    return '  Comparing two different types of values.' +
       ` Expected ${chalk.green(expectedType)} but ` +
-      `received ${chalk.red(getType(b))}.`
-    );
+      `received ${chalk.red(getType(b))}.`;
   }
 
   if (omitDifference) {

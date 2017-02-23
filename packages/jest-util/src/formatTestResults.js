@@ -79,11 +79,8 @@ function formatTestResults(
 ): FormattedTestResults {
   const formatter = codeCoverageFormatter || (coverage => coverage);
 
-  const testResults = results.testResults.map(testResult => formatResult(
-    testResult,
-    formatter,
-    reporter,
-  ));
+  const testResults = results.testResults.map(testResult =>
+    formatResult(testResult, formatter, reporter));
 
   return Object.assign((Object.create(null): any), results, {
     testResults,

@@ -56,7 +56,8 @@ const addAssertionErrors = result => {
       expected: assertionsExpected,
       message: matcherHint('.assertions', '', assertionsExpected, {
         isDirectExpectCall: true,
-      }) + '\n\n' +
+      }) +
+        '\n\n' +
         `Expected: ${expected}\n` +
         `Received: ${RECEIVED_COLOR(pluralize('assertion', assertionsMade))}`,
       passed: false,
@@ -88,7 +89,6 @@ const patchJasmine = () => {
       }
     }
     return Spec;
-
   })(global.jasmine.Spec);
 };
 

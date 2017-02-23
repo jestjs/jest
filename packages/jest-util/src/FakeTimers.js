@@ -40,7 +40,7 @@ type TimerAPI = {
   setImmediate(callback: any, ms?: number, ...args: Array<any>): number,
   setInterval(callback: any, ms?: number, ...args: Array<any>): number,
   setTimeout(callback: any, ms?: number, ...args: Array<any>): number,
-}
+};
 
 const MS_IN_A_YEAR = 31536000000;
 
@@ -66,7 +66,6 @@ class FakeTimers {
     config: Config,
     maxLoops?: number,
   ) {
-
     this._global = global;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
@@ -99,9 +98,8 @@ class FakeTimers {
   }
 
   clearAllTimers() {
-    this._immediates.forEach(
-      immediate => this._fakeClearImmediate(immediate.uuid),
-    );
+    this._immediates.forEach(immediate =>
+      this._fakeClearImmediate(immediate.uuid));
     for (const uuid in this._timers) {
       delete this._timers[uuid];
     }
@@ -142,8 +140,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops + ' ticks, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' ticks, and there are still more! ' +
+          "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -162,9 +162,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops +
-        ' immediates, and there are still more! Assuming ' +
-        'we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' immediates, and there are still more! Assuming ' +
+          "we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -205,8 +206,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops + ' timers, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' timers, and there are still more! ' +
+          "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -240,7 +243,7 @@ class FakeTimers {
         this._now += msToRun;
         break;
       } else {
-        msToRun -= (nextTimerExpiry - this._now);
+        msToRun -= nextTimerExpiry - this._now;
         this._now = nextTimerExpiry;
         this._runTimerHandle(timerHandle);
       }
@@ -248,8 +251,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops + ' timers, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' timers, and there are still more! ' +
+          "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -317,12 +322,15 @@ class FakeTimers {
     if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
-        `mocked with fake timers. Call \`jest.useFakeTimers()\` in this test ` +
-        `or enable fake timers globally by setting \`"timers": "fake"\` in ` +
-        `the configuration file. This warning is likely a result of a ` +
-        `default configuration change in Jest 15.\n\n` +
-        `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
-        `Stack Trace:\n` + formatStackTrace(new Error().stack, this._config),
+          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
+          `test or enable fake timers globally by setting `+
+          `\`"timers": "fake"\` ` +
+          `in the configuration file. This warning is likely a result of a ` +
+          `default configuration change in Jest 15.\n\n` +
+          `Release Blog Post: ` +
+          `https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
+          `Stack Trace:\n` +
+          formatStackTrace(new Error().stack, this._config),
       );
     }
   }
@@ -361,7 +369,7 @@ class FakeTimers {
       args.push(arguments[ii]);
     }
 
-    const uuid = String(this._uuidCounter++);
+    const uuid = String((this._uuidCounter++));
 
     this._ticks.push({
       callback: () => callback.apply(null, args),
@@ -370,7 +378,9 @@ class FakeTimers {
 
     const cancelledTicks = this._cancelledTicks;
     this._timerAPIs.nextTick(() => {
-      if (this._blocked) {return;}
+      if (this._blocked) {
+        return;
+      }
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
@@ -499,7 +509,6 @@ class FakeTimers {
         throw new Error('Unexpected timer type: ' + timer.type);
     }
   }
-
 }
 
 module.exports = FakeTimers;

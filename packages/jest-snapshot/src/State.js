@@ -136,7 +136,7 @@ class SnapshotState {
 
     if (
       !fileExists(this._snapshotPath) || // there's no snapshot file
-      (hasSnapshot && this.update) || // there is a file, but we're updating
+      hasSnapshot && this.update || // there is a file, but we're updating
       !hasSnapshot // there is a file, but it doesn't have this snaphsot
     ) {
       if (this.update) {
