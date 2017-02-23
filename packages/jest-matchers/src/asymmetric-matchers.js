@@ -69,6 +69,30 @@ class Any extends AsymmetricMatcher {
     return 'Any';
   }
 
+  getExpectedType() {
+    if (this.sample == String) {
+      return 'string';
+    }
+
+    if (this.sample == Number) {
+      return 'number';
+    }
+
+    if (this.sample == Function) {
+      return 'function';
+    }
+
+    if (this.sample == Object) {
+      return 'object';
+    }
+
+    if (this.sample == Boolean) {
+      return 'boolean';
+    }
+
+    return fnNameFor(this.sample);
+  }
+
   toAsymmetricMatcher() {
     return 'Any<' + fnNameFor(this.sample) + '>';
   }
@@ -82,6 +106,8 @@ class Anything extends AsymmetricMatcher {
   toString() {
     return 'Anything';
   }
+
+  // No getExpectedType method, because it matches either null or undefined.
 
   toAsymmetricMatcher() {
     return 'Anything';
@@ -117,6 +143,10 @@ class ArrayContaining extends AsymmetricMatcher {
   toString() {
     return 'ArrayContaining';
   }
+
+  getExpectedType() {
+    return 'array';
+  }
 }
 
 class ObjectContaining extends AsymmetricMatcher {
@@ -150,6 +180,10 @@ class ObjectContaining extends AsymmetricMatcher {
   toString() {
     return 'ObjectContaining';
   }
+
+  getExpectedType() {
+    return 'object';
+  }
 }
 
 class StringContaining extends AsymmetricMatcher {
@@ -169,6 +203,10 @@ class StringContaining extends AsymmetricMatcher {
 
   toString() {
     return 'StringContaining';
+  }
+
+  getExpectedType() {
+    return 'string';
   }
 }
 
@@ -190,6 +228,10 @@ class StringMatching extends AsymmetricMatcher {
 
   toString() {
     return 'StringMatching';
+  }
+
+  getExpectedType() {
+    return 'string';
   }
 }
 

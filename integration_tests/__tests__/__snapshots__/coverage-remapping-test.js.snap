@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`maps code coverage against original source 1`] = `
 Object {
   "covered.ts": Object {

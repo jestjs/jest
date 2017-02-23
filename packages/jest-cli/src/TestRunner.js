@@ -11,7 +11,7 @@
 
 import type {
   AggregatedResult,
-  Error as TestError,
+  SerializableError as TestError,
   TestResult,
 } from 'types/TestResult';
 import type {Config, Path} from 'types/Config';

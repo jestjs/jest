@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
 "[2mexpect([22m[31mjest.fn()[39m[2m)[.not].lastCalledWith([22m[2m)[22m
 

@@ -63,10 +63,10 @@ export type CoverageMap = {|
   fileCoverageFor: (file: string) => FileCoverage,
 |};
 
-export type Error = {|
+export type SerializableError = {|
   message: string,
   stack: ?string,
-  type?: ?string,
+  type?: string,
 |};
 
 export type FailedAssertion = {|
@@ -146,7 +146,7 @@ export type TestResult = {|
     updated: number,
   |},
   sourceMaps: {[sourcePath: string]: string},
-  testExecError?: Error,
+  testExecError?: SerializableError,
   testFilePath: string,
   testResults: Array<AssertionResult>,
 |};

@@ -1,25 +1,44 @@
-general:
-  branches:
-    ignore:
-      - gh-pages # list of branches to ignore
 machine:
+  environment:
+    YARN_VERSION: 0.20.3
+    PATH: "${PATH}:${HOME}/.yarn/bin:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 6.2.0
+    version: 7
 dependencies:
-  override:
-    - cd website && npm install
-  cache_directories:
-    - "website/node_modules"
+  pre:
+    - |
+      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
+        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+      fi
+    - nvm install 4
+    - nvm install 6
 
+  cache_directories:
+    - ~/.yarn
+    - ~/.cache/yarn
+    - "website/node_modules"
+    - "danger/node_modules"
+  override:
+    - yarn install --no-progress
+    - cd website && yarn install --no-progress
+    - cd danger && yarn install --no-progress
 test:
   override:
-    - cd website && npm run test
+    - nvm alias default 6
+    - yarn run test-ci
+    - nvm alias default 4
+    - yarn run test-ci-partial
+    - nvm alias default 7
+    - yarn run test-ci-partial
+    - DANGER_GITHUB_API_TOKEN="ab0c4d396c935d3abce""fc213176da6bb7b2996ff" yarn run danger
+    - cd website && yarn run test
 
 deployment:
-  production:
-    branch: /master/
+  website:
+    branch: master
+    owner: facebook
     commands:
-      # generate docs website
+      # Deploy Jest website
       - git config --global user.email "jest-bot@users.noreply.github.com"
       - git config --global user.name "Website Deployment Script"
       - echo "machine github.com login jest-bot password $GITHUB_TOKEN" > ~/.netrc

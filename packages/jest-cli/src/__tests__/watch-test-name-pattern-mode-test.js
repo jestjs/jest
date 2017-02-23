@@ -29,21 +29,7 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock('../SearchSource', () => class {
   findMatchingTests(pattern) {
-    const paths = [
-      './path/to/file1-test.js',
-      './path/to/file2-test.js',
-      './path/to/file3-test.js',
-      './path/to/file4-test.js',
-      './path/to/file5-test.js',
-      './path/to/file6-test.js',
-      './path/to/file7-test.js',
-      './path/to/file8-test.js',
-      './path/to/file9-test.js',
-      './path/to/file10-test.js',
-      './path/to/file11-test.js',
-    ].filter(path =>  path.match(pattern));
-
-    return {paths};
+    return {paths: []};
   }
 });
 
@@ -57,7 +43,41 @@ jest.doMock('../runJest', () => function() {
   runJestMock.apply(null, args);
 
   // Call the callback
-  args[args.length - 1]({snapshot: {}});
+  args[args.length - 1]({
+    snapshot: {},
+    testResults: [
+      {
+        testResults: [{title: 'should return the correct index when'}],
+      },
+      {
+        testResults: [{title: 'should allow test siblings to modify'}],
+      },
+      {
+        testResults: [{title: 'might get confusing'}],
+      },
+      {
+        testResults: [{title: 'should handle length properties that cannot'}],
+      },
+      {
+        testResults: [{title: 'should recognize various types'}],
+      },
+      {
+        testResults: [{title: 'should recognize null and undefined'}],
+      },
+      {
+        testResults: [{title: 'should not output colors to pipe'}],
+      },
+      {
+        testResults: [{title: 'should convert string to a RegExp'}],
+      },
+      {
+        testResults: [{title: 'should escape and convert string to a RegExp'}],
+      },
+      {
+        testResults: [{title: 'should convert grep string to a RegExp'}],
+      },
+    ],
+  });
 
   return Promise.resolve();
 });
@@ -76,6 +96,7 @@ describe('Watch mode flows', () => {
   let argv;
   let hasteContext;
   let config;
+  let hasDeprecationWarnings;
   let stdin;
 
   beforeEach(() => {
@@ -85,15 +106,24 @@ describe('Watch mode flows', () => {
     argv = {};
     hasteContext = {};
     config = {};
+    hasDeprecationWarnings = false;
     stdin = new MockStdin();
   });
 
-  it('Pressing "P" enters pattern mode', () => {
+  it('Pressing "T" enters pattern mode', () => {
     config = {rootDir: ''};
-    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+    watch(
+      config,
+      pipe,
+      argv,
+      hasteMap,
+      hasteContext,
+      hasDeprecationWarnings,
+      stdin,
+    );
 
     // Write a enter pattern mode
-    stdin.emit(KEYS.P);
+    stdin.emit(KEYS.T);
     expect(pipe.write).toBeCalledWith(' pattern › ');
 
     const assertPattern = hex => {
@@ -105,14 +135,14 @@ describe('Watch mode flows', () => {
     const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
     // Write a pattern
-    ['p', '.', '*', '1', '0']
+    ['c', 'o', 'n', ' ', '1', '2']
     .map(toHex)
     .forEach(assertPattern);
 
     [KEYS.BACKSPACE, KEYS.BACKSPACE]
     .forEach(assertPattern);
 
-    ['3']
+    ['*']
     .map(toHex)
     .forEach(assertPattern);
 
@@ -123,8 +153,8 @@ describe('Watch mode flows', () => {
 
     // Argv is updated with the current pattern
     expect(argv).toEqual({
-      '_': ['p.*3'],
       onlyChanged: false,
+      testNamePattern: 'con *',
       watch: true,
       watchAll: false,
     });
@@ -132,15 +162,23 @@ describe('Watch mode flows', () => {
 
   it('Results in pattern mode get truncated appropriately', () => {
     config = {rootDir: ''};
-    watch(config, pipe, argv, hasteMap, hasteContext, stdin);
+    watch(
+      config,
+      pipe,
+      argv,
+      hasteMap,
+      hasteContext,
+      hasDeprecationWarnings,
+      stdin,
+    );
 
-    stdin.emit(KEYS.P);
+    stdin.emit(KEYS.T);
 
-    [30, 25, 20].forEach(width => {
+    [50, 30].forEach(width => {
       terminalWidth = width;
       stdin.emit(KEYS.BACKSPACE);
       pipe.write.mockReset();
-      stdin.emit(KEYS.A);
+      stdin.emit(KEYS.T);
       expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
     });
   });

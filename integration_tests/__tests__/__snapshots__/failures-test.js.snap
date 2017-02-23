@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`throwing not Error objects 1`] = `
 Object {
   "rest": " FAIL  __tests__/throw-number-test.js

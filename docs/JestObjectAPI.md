@@ -30,6 +30,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.unmock(moduleName)`](#jestunmockmodulename)
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
+  - [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
 
 -----
 
@@ -213,3 +214,39 @@ Returns the `jest` object for chaining.
 Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
+
+### `jest.spyOn(object, methodName)`
+##### available in Jest **19.0.0+**
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
+
+*Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`*
+
+Example:
+
+```js
+const video = {
+  play: function () {
+    return true;
+  }
+};
+
+module.exports = video;
+```
+
+Example test:
+```js
+const video = require('./video');
+
+test('plays video', () => {
+  const spy = jest.spyOn(video, 'play')
+  const isPlaying = video.play();
+
+  expect(spy).toHaveBeenCalled();
+  expect(isPlaying).toBe(true);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+```
+
+

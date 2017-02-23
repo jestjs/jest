@@ -26,10 +26,14 @@ const deprecationWarning = (
   option: string,
   deprecatedOptions: Object,
   options: ValidationOptions
-): void => {
+): boolean => {
   if (option in deprecatedOptions) {
     deprecationMessage(deprecatedOptions[option](config), options);
+
+    return true;
   }
+
+  return false;
 };
 
 module.exports = {

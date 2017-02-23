@@ -200,6 +200,7 @@ class Runtime {
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
       mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),

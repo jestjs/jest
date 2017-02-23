@@ -81,11 +81,18 @@ describe('.toEqual()', () => {
     [null, undefined],
     [new Set([1, 2]), new Set([2, 1])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
+    [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
+    [1, jestExpect.arrayContaining([1, 2])],
     ['abd', jestExpect.stringContaining('bc')],
     ['abd', jestExpect.stringMatching(/bc/i)],
     [undefined, jestExpect.anything()],
     [undefined, jestExpect.any(Function)],
+    ['Eve', {
+      asymmetricMatch: function asymmetricMatch(who) {
+        return who === 'Alice' || who === 'Bob';
+      },
+    }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).toEqual(b))
@@ -113,6 +120,11 @@ describe('.toEqual()', () => {
       a: 1,
       b: jestExpect.any(Function),
       c: jestExpect.anything(),
+    }],
+    ['Alice', {
+      asymmetricMatch: function asymmetricMatch(who) {
+        return who === 'Alice' || who === 'Bob';
+      },
     }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {

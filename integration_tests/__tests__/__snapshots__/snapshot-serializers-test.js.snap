@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`Snapshot serializers renders snapshot 1`] = `
 Object {
   "snapshot serializers works with default serializers 1": "
