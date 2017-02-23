@@ -27,8 +27,10 @@ module.exports.createProcess = (
   // as they can only be the first command, so take out the command, and add
   // any other bits into the args
   const runtimeExecutable = workspace.pathToJest;
-  const [command, ...initialArgs] = runtimeExecutable.split(' ');
-  const runtimeArgs = [...initialArgs, ...args];
+  const parameters = runtimeExecutable.split(' ');
+  const command = parameters[0];
+  const initialArgs = parameters.slice(1);
+  const runtimeArgs = [].concat(initialArgs, args);
 
   // If a path to configuration file was defined, push it to runtimeArgs
   const configPath = workspace.pathToConfig;
