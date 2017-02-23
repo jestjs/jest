@@ -24,8 +24,9 @@ function loadFromPackage(filePath: Path, argv: Object) {
       const packageData = require(filePath);
       const config = packageData.jest || {};
       const root = path.dirname(filePath);
-      config.rootDir =
-        config.rootDir ? path.resolve(root, config.rootDir) : root;
+      config.rootDir = config.rootDir
+        ? path.resolve(root, config.rootDir)
+        : root;
       return normalize(config, argv);
     },
     () => null,

@@ -37,5 +37,5 @@ export type CrawlerOptions = {|
 |};
 
 export type HasteImpl = {
-  getHasteName(filePath: string): (string | void),
-}
+  getHasteName(filePath: string): string | void,
+};

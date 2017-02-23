@@ -26,7 +26,6 @@ const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
-
 const watch = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,

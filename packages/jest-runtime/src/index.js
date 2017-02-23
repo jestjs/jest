@@ -91,11 +91,7 @@ class Runtime {
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
 
-  constructor(
-    config: Config,
-    environment: Environment,
-    resolver: Resolver,
-  ) {
+  constructor(config: Config, environment: Environment, resolver: Resolver) {
     this._moduleRegistry = Object.create(null);
     this._internalModuleRegistry = Object.create(null);
     this._mockRegistry = Object.create(null);

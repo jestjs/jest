@@ -36,7 +36,7 @@ const writeSnapshotVersion = () =>
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = (versionTest && versionTest[1]);
+  const version = versionTest && versionTest[1];
 
   if (!version) {
     return new Error(
@@ -169,7 +169,7 @@ const saveSnapshotFile = (
   ensureDirectoryExists(snapshotPath);
   fs.writeFileSync(
     snapshotPath,
-    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n'
+    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
 };
 
