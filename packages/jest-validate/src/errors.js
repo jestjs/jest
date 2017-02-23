@@ -22,8 +22,7 @@ const errorMessage = (
   defaultValue: any,
   options: ValidationOptions,
 ): void => {
-  const message =
-`  Option ${chalk.bold(`"${option}"`)} must be of type:
+  const message = `  Option ${chalk.bold(`"${option}"`)} must be of type:
     ${chalk.bold.green(getType(defaultValue))}
   but instead received:
     ${chalk.bold.red(getType(received))}
@@ -34,7 +33,7 @@ const errorMessage = (
   }`;
 
   const comment = options.comment;
-  const name = options.title && options.title.error || ERROR;
+  const name = (options.title && options.title.error) || ERROR;
 
   throw new ValidationError(name, message, comment);
 };

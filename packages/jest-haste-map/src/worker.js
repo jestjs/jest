@@ -10,11 +10,7 @@
 'use strict';
 
 import type {SerializableError} from 'types/TestResult';
-import type {
-  HasteImpl,
-  WorkerMessage,
-  WorkerCallback,
-} from './types';
+import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
 
 const H = require('./constants');
 
@@ -29,7 +25,7 @@ const PACKAGE_JSON = path.sep + 'package' + JSON_EXTENSION;
 let hasteImpl: ?HasteImpl = null;
 let hasteImplModulePath: ?string = null;
 
-const formatError = (error: string|Error): SerializableError => {
+const formatError = (error: string | Error): SerializableError => {
   if (typeof error === 'string') {
     return {
       message: error,

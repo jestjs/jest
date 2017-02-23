@@ -10,7 +10,7 @@
 
 'use strict';
 
-const {ChildProcess, spawn} =  require('child_process');
+const {ChildProcess, spawn} = require('child_process');
 const ProjectWorkspace = require('./ProjectWorkspace');
 
 /**
@@ -20,9 +20,9 @@ const ProjectWorkspace = require('./ProjectWorkspace');
  * @returns {ChildProcess}
  */
 module.exports.createProcess = (
-  workspace: ProjectWorkspace, args: Array<string>,
+  workspace: ProjectWorkspace,
+  args: Array<string>,
 ): ChildProcess => {
-
   // A command could look like `npm run test`, which we cannot use as a command
   // as they can only be the first command, so take out the command, and add
   // any other bits into the args
@@ -44,5 +44,5 @@ module.exports.createProcess = (
   const env = process.env;
   env['CI'] = 'true';
 
-  return spawn(command, runtimeArgs,  {cwd: workspace.rootPath, env});
+  return spawn(command, runtimeArgs, {cwd: workspace.rootPath, env});
 };

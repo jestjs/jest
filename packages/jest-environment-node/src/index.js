@@ -20,7 +20,6 @@ const mock = require('jest-mock');
 const vm = require('vm');
 
 class NodeEnvironment {
-
   context: ?vm$Context;
   fakeTimers: ?FakeTimers;
   global: ?Global;
@@ -54,7 +53,6 @@ class NodeEnvironment {
     }
     return null;
   }
-
 }
 
 module.exports = NodeEnvironment;

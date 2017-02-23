@@ -18,7 +18,6 @@ const installCommonGlobals = require('jest-util').installCommonGlobals;
 const mock = require('jest-mock');
 
 class JSDOMEnvironment {
-
   document: ?Object;
   fakeTimers: ?FakeTimers;
   global: ?Global;
@@ -26,7 +25,7 @@ class JSDOMEnvironment {
 
   constructor(config: Config): void {
     // lazy require
-    this.document = require('jsdom').jsdom(/* markup */undefined, {
+    this.document = require('jsdom').jsdom(/* markup */ undefined, {
       url: config.testURL,
     });
     const global = this.global = this.document.defaultView;
@@ -57,7 +56,6 @@ class JSDOMEnvironment {
     }
     return null;
   }
-
 }
 
 module.exports = JSDOMEnvironment;

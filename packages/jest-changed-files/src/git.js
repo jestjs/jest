@@ -25,9 +25,9 @@ function findChangedFiles(
   options?: Options,
 ): Promise<Array<Path>> {
   return new Promise((resolve, reject) => {
-    const args = (options && options.lastCommit)
-       ? ['show', '--name-only', '--pretty=%b', 'HEAD']
-       : ['ls-files', '--other', '--modified', '--exclude-standard'];
+    const args = options && options.lastCommit
+      ? ['show', '--name-only', '--pretty=%b', 'HEAD']
+      : ['ls-files', '--other', '--modified', '--exclude-standard'];
     const child = childProcess.spawn('git', args, {cwd});
     let stdout = '';
     let stderr = '';
@@ -40,9 +40,11 @@ function findChangedFiles(
         if (stdout === '') {
           resolve([]);
         } else {
-          resolve(stdout.split('\n').map(
-            changedPath => path.resolve(cwd, changedPath),
-          ));
+          resolve(
+            stdout
+              .split('\n')
+              .map(changedPath => path.resolve(cwd, changedPath)),
+          );
         }
       } else {
         reject(code + ': ' + stderr);
