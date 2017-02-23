@@ -15,9 +15,11 @@ import type {MatchersObject} from 'types/Matchers';
 
 const {
   escapeStrForRegex,
+} = require('jest-regex-util');
+const {
   formatStackTrace,
   separateMessageFromStack,
-} = require('jest-util');
+} = require('jest-message-util');
 const {
   RECEIVED_BG,
   RECEIVED_COLOR,
@@ -156,7 +158,7 @@ const printActualErrorMessage = error => {
         formatStackTrace(stack, {
           noStackTrace: false,
           rootDir: process.cwd(),
-          testRegex: '',
+          testMatch: [],
         }),
       )
     );

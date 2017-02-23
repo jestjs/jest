@@ -34,7 +34,7 @@ describe('logDebugMessages', () => {
     logDebugMessages({
       automock: false,
       rootDir: '/path/to/dir',
-      testPathDirs: ['path/to/dir/test'],
+      roots: ['path/to/dir/test'],
       testRunner: 'myRunner',
       watch: true,
     }, pipe);
@@ -42,7 +42,7 @@ describe('logDebugMessages', () => {
       `config = {
   "automock": false,
   "rootDir": "/path/to/dir",
-  "testPathDirs": [
+  "roots": [
     "path/to/dir/test"
   ],
   "testRunner": "myRunner",

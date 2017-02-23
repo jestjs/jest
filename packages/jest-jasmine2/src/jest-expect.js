@@ -15,14 +15,15 @@ import type {RawMatcherFn} from 'types/Matchers';
 const expect = require('jest-matchers');
 
 const {
+  addSerializer,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
 } = require('jest-snapshot');
 
 type JasmineMatcher = {
   (): JasmineMatcher,
-  compare: RawMatcherFn,
-  negativeCompare: ?RawMatcherFn,
+  compare: () => RawMatcherFn,
+  negativeCompare: () => RawMatcherFn,
 };
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
@@ -32,6 +33,8 @@ module.exports = (config: Config) => {
     expand: config.expand,
   });
   expect.extend({toMatchSnapshot, toThrowErrorMatchingSnapshot});
+
+  expect.addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine;
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {

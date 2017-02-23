@@ -49,7 +49,13 @@ const runCLI = (
   }
 
   readConfig(argv, root)
-    .then((config: Config) => {
+    .then(({
+      config,
+      hasDeprecationWarnings,
+    } : {
+      config: Config,
+      hasDeprecationWarnings: boolean,
+    }) => {
       if (argv.debug) {
         logDebugMessages(config, pipe);
       }
@@ -70,12 +76,29 @@ const runCLI = (
       )
       .then(hasteContext => {
         if (argv.watch || argv.watchAll) {
-          return watch(config, pipe, argv, jestHasteMap, hasteContext);
+          return watch(
+            config,
+            pipe,
+            argv,
+            jestHasteMap,
+            hasteContext,
+            hasDeprecationWarnings,
+          );
         } else {
-          preRunMessage.print(pipe);
-          const testWatcher = new TestWatcher({isWatchMode: false});
-          return runJest(hasteContext, config, argv, pipe, testWatcher,
-            onComplete);
+          const startRun = () => {
+            preRunMessage.print(pipe);
+            const testWatcher = new TestWatcher({isWatchMode: false});
+            return runJest(
+              hasteContext,
+              config,
+              argv,
+              pipe,
+              testWatcher,
+              startRun,
+              onComplete,
+            );
+          };
+          return startRun();
         }
       });
     })

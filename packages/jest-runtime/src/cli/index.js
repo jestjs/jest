@@ -65,7 +65,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
   readConfig(argv, root)
-    .then(config => {
+    .then(({config}) => {
       // Always disable automocking in scripts.
       config = Object.assign({}, config, {
         automock: false,

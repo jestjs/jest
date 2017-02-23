@@ -1,4 +1,6 @@
-exports[`test console printing 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`console printing 1`] = `
 " PASS  __tests__/console-test.js
   ● Console
 
@@ -15,7 +17,7 @@ exports[`test console printing 1`] = `
 "
 `;
 
-exports[`test console printing 2`] = `
+exports[`console printing 2`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
@@ -24,7 +26,7 @@ Ran all test suites.
 "
 `;
 
-exports[`test console printing with --verbose 1`] = `
+exports[`console printing with --verbose 1`] = `
 "  console.log __tests__/console-test.js:11
     This is a log message.
 
@@ -40,14 +42,14 @@ exports[`test console printing with --verbose 1`] = `
 "
 `;
 
-exports[`test console printing with --verbose 2`] = `
+exports[`console printing with --verbose 2`] = `
 " PASS  __tests__/console-test.js
   ✓ works just fine
 
 "
 `;
 
-exports[`test console printing with --verbose 3`] = `
+exports[`console printing with --verbose 3`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total

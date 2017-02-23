@@ -15,20 +15,18 @@ import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
 import type {HasteContext} from 'types/HasteMap';
 import type {ModuleMap} from 'jest-haste-map';
-import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
+import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
 const HasteMap = require('jest-haste-map');
 const Resolver = require('jest-resolve');
 
+const {createDirectory} = require('jest-util');
+const {escapePathForRegex} = require('jest-regex-util');
 const fs = require('graceful-fs');
 const path = require('path');
-const stripBOM = require('strip-bom');
 const shouldInstrument = require('./shouldInstrument');
+const stripBOM = require('strip-bom');
 const transform = require('./transform');
-const {
-  createDirectory,
-  replacePathSepForRegex,
-} = require('jest-util');
 
 type Module = {|
   children?: Array<any>,
@@ -89,7 +87,6 @@ class Runtime {
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _testRegex: RegExp;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
@@ -112,7 +109,6 @@ class Runtime {
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
     this._shouldAutoMock = config.automock;
-    this._testRegex = new RegExp(replacePathSepForRegex(config.testRegex));
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -203,14 +199,16 @@ class Runtime {
       console: options && options.console,
       extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
       globalMocks: config.globalMocks,
+      hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
+      mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
-      roots: config.testPathDirs,
+      roots: config.roots,
       useWatchman: config.watchman,
       watch: options && options.watch,
     });
@@ -415,6 +413,10 @@ class Runtime {
     this._moduleMocker.resetAllMocks();
   }
 
+  clearAllMocks() {
+    this._moduleMocker.clearAllMocks();
+  }
+
   _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
@@ -616,6 +618,10 @@ class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return runtime;
     };
+    const clearAllMocks = () => {
+      this.clearAllMocks();
+      return runtime;
+    };
     const resetAllMocks = () => {
       this.resetAllMocks();
       return runtime;
@@ -642,6 +648,7 @@ class Runtime {
 
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
+      clearAllMocks,
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
       deepUnmock,
       disableAutomock,

@@ -1,4 +1,6 @@
-exports[`test instruments and collects coverage for typescript files 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`instruments and collects coverage for typescript files 1`] = `
 "------------|----------|----------|----------|----------|----------------|
 File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
 ------------|----------|----------|----------|----------|----------------|

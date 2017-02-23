@@ -15,45 +15,55 @@ export type Location = {
   line: number,
 }
 
+import type ProjectWorkspace from './ProjectWorkspace';
+import type {ChildProcess} from 'child_process';
+
+export type Options = {
+  createProcess?: (
+    workspace: ProjectWorkspace,
+    args: Array<string>,
+  ) => ChildProcess
+}
+
 export type JestFileResults = {
   name: string,
   summary: string,
   message: string,
-  status: "failed" | "passed",
-  startTime:number,
-  endTime:number,
+  status: 'failed' | 'passed',
+  startTime: number,
+  endTime: number,
   assertionResults: Array<JestAssertionResults>,
 }
 
 export type JestAssertionResults = {
   name: string,
   title: string,
-  status: "failed" | "passed",
+  status: 'failed' | 'passed',
   failureMessages: string[],
 }
 
 export type JestTotalResults = {
-  success:boolean,
-  startTime:number,
-  numTotalTests:number,
-  numTotalTestSuites:number,
-  numRuntimeErrorTestSuites:number,
-  numPassedTests:number,
-  numFailedTests:number,
-  numPendingTests:number,
+  success: boolean,
+  startTime: number,
+  numTotalTests: number,
+  numTotalTestSuites: number,
+  numRuntimeErrorTestSuites: number,
+  numPassedTests: number,
+  numFailedTests: number,
+  numPendingTests: number,
   testResults: Array<JestFileResults>,
 }
 
 /**
  *  Did the thing pass, fail or was it not run?
  */
-export type TestReconcilationState =
+export type TestReconciliationState =
   /** This could be the file has not changed, so the watcher didn't hit it */
-  | "Unknown"
+  | 'Unknown'
   /** Definitely failed */
-  | "KnownFail"
+  | 'KnownFail'
   /** Definitely passed */
-  | "KnownSuccess"
+  | 'KnownSuccess'
 
 /**
  * The Jest Extension's version of a status for
@@ -63,7 +73,7 @@ export type TestReconcilationState =
 export type TestFileAssertionStatus = {
   file: string,
   message: string,
-  status: TestReconcilationState,
+  status: TestReconciliationState,
   assertions: Array<TestAssertionStatus>,
 }
 
@@ -74,7 +84,7 @@ export type TestFileAssertionStatus = {
  */
 export type TestAssertionStatus = {
   title: string,
-  status: TestReconcilationState,
+  status: TestReconciliationState,
   message: string,
   shortMessage: ?string,
   terseMessage: ?string,

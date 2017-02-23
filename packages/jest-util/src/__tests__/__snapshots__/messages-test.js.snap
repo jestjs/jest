@@ -1,9 +1,0 @@
-exports[`test should exclude jasmine from stack trace for windows paths 1`] = `
-"[1m[31m  [1m● [1mwindows test[39m[22m
-
-      at stack (..\\\\jest-jasmine2\\\\vendor\\\\jasmine-2.4.1.js:1580:17)
-[2m      
-      [2mat Object.addResult ([2m..\\\\jest-jasmine2\\\\vendor\\\\jasmine-2.4.1.js[2m:1550:14)[2m
-      [2mat Object.it ([2mbuild\\\\__tests__\\\\messages-test.js[2m:45:41)[2m[22m
-"
-`;

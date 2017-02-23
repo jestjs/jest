@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`prettyFormat() ReactTestComponent and ReactElement plugins ReactElement plugin highlights syntax 1`] = `
 "[36m<Mouse[39m
   [33mprop[39m=[32m{
@@ -7,7 +9,8 @@ exports[`prettyFormat() ReactTestComponent and ReactElement plugins ReactElement
         [0mrat[0m
       [36m</span>[39m
     [36m</div>[39m
-  }[39m[36m />[39m"
+  }[39m[36m
+/>[39m"
 `;
 
 exports[`prettyFormat() ReactTestComponent and ReactElement plugins ReactTestComponent plugin highlights syntax 1`] = `
@@ -19,5 +22,6 @@ exports[`prettyFormat() ReactTestComponent and ReactElement plugins ReactTestCom
         [0mrat[0m
       [36m</span>[39m
     [36m</div>[39m
-  }[39m[36m />[39m"
+  }[39m[36m
+/>[39m"
 `;

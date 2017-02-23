@@ -19,6 +19,7 @@ const {
   keyToTestName,
   serialize,
   testNameToKey,
+  unescape,
 } = require('./utils');
 const fileExists = require('jest-file-exists');
 const fs = require('fs');
@@ -45,9 +46,10 @@ class SnapshotState {
     snapshotPath?: string,
     expand?: boolean,
   ) {
-    this._dirty = false;
     this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
-    this._snapshotData = getSnapshotData(this._snapshotPath);
+    const {data, dirty} = getSnapshotData(this._snapshotPath, update);
+    this._snapshotData = data;
+    this._dirty = dirty;
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -158,9 +160,9 @@ class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: receivedSerialized,
+          actual: unescape(receivedSerialized),
           count,
-          expected,
+          expected: unescape(expected),
           pass: false,
         };
       } else {

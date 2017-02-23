@@ -59,6 +59,10 @@ function jasmine2(
       runtime.resetModules();
     }
 
+    if (config.clearMocks) {
+      runtime.clearAllMocks();
+    }
+
     if (config.resetMocks) {
       runtime.resetAllMocks();
     }
@@ -83,7 +87,7 @@ function jasmine2(
   }
 
   if (config.testNamePattern) {
-    const testNameRegex = new RegExp(config.testNamePattern);
+    const testNameRegex = new RegExp(config.testNamePattern, 'i');
     env.specFilter = spec => testNameRegex.test(spec.getFullName());
   }
 

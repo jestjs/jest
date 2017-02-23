@@ -1,13 +1,13 @@
 {
   "name": "jest-editor-support",
-  "version": "18.1.0",
+  "version": "19.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "optionalDependencies": {
+  "peerDependencies": {
     "typescript": "^2.0.10"
   },
   "dependencies": {

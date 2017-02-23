@@ -4,6 +4,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 /* eslint-disable max-len */
 'use strict';
@@ -12,11 +14,20 @@ const escapeHTML = require('./escapeHTML');
 
 const reactTestInstance = Symbol.for('react.test.json');
 
-function printChildren(children, print, indent, colors, opts) {
+type ReactTestObject = {|
+  $$typeof: Symbol,
+  type: string,
+  props?: Object,
+  children?: null | Array<ReactTestChild>,
+|};
+// Child can be `number` in Stack renderer but not in Fiber renderer.
+type ReactTestChild = ReactTestObject | string | number;
+
+function printChildren(children: Array<ReactTestChild>, print, indent, colors, opts) {
   return children.map(child => printInstance(child, print, indent, colors, opts)).join(opts.edgeSpacing);
 }
 
-function printProps(props, print, indent, colors, opts) {
+function printProps(props: Object, print, indent, colors, opts) {
   return Object.keys(props).sort().map(name => {
     const prop = props[name];
     let printed = print(prop);
@@ -33,34 +44,38 @@ function printProps(props, print, indent, colors, opts) {
   }).join('');
 }
 
-function printInstance(instance, print, indent, colors, opts) {
+function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
   if (typeof instance == 'number') {
     return print(instance);
   } else if (typeof instance === 'string') {
     return colors.content.open + escapeHTML(instance) + colors.content.close;
   }
 
+  let closeInNewLine = false;
   let result = colors.tag.open + '<' + instance.type + colors.tag.close;
 
   if (instance.props) {
+    // If assignments are in opposite order, Flow 0.39.0 finds incorrect error:
+    // element of Object.keys. Expected object instead of possibly undefined value
+    closeInNewLine = !!Object.keys(instance.props).length && !opts.min;
     result += printProps(instance.props, print, indent, colors, opts);
   }
 
   if (instance.children) {
     const children = printChildren(instance.children, print, indent, colors, opts);
-    result += colors.tag.open + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + instance.type + '>' + colors.tag.close;
+    result += colors.tag.open + (closeInNewLine ? '\n' : '') + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + instance.type + '>' + colors.tag.close;
   } else {
-    result += colors.tag.open + ' />' + colors.tag.close;
+    result += colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
   }
 
   return result;
 }
 
 module.exports = {
-  print(val, print, indent, opts, colors) {
+  print(val: ReactTestObject, print: (val: any) => string, indent: (str: string) => string, opts: Object, colors: Object) {
     return printInstance(val, print, indent, colors, opts);
   },
-  test(object) {
+  test(object: Object) {
     return object && object.$$typeof === reactTestInstance;
   },
 };

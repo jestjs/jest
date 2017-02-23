@@ -11,7 +11,7 @@ class UserShowcase extends React.Component {
   render() {
     const showcase = siteConfig.users.map(user => {
       return (
-        <a href={user.infoLink}>
+        <a href={user.infoLink} key={user.image}>
           <img src={user.image} title={user.caption}/>
         </a>
       );
@@ -30,11 +30,9 @@ class UserShowcase extends React.Component {
               <div className="logos">
                 {showcase}
               </div>
-              <p>Is your company using Jest?<br/>
-                Edit this page with a <a
-                href="https://github.com/facebook/jest/edit/website/src/jest/users.js">
-                Pull Request
-              </a> to add your logo.</p>
+              <p>Is your company using Jest?
+              </p>
+              <a href="https://github.com/facebook/jest/edit/master/website/siteConfig.js" className="button">Add your company</a>
             </div>
           </Container>
         </div>

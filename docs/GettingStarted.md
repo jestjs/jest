@@ -51,8 +51,6 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](/jest/docs/using-matchers.html).
 
-<!--truncate-->
-
 ## Additional Configuration
 
 ### Using Babel
@@ -86,7 +84,7 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 To use TypeScript in your tests, install the `ts-jest` package:
 
 ```
-npm install --save-dev test-jest
+npm install --save-dev ts-jest
 ```
 
 then modify your `package.json` so the `jest` section looks something like:

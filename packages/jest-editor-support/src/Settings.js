@@ -14,7 +14,7 @@ const {ChildProcess} = require('child_process');
 const EventEmitter = require('events');
 const {EOL} = require('os');
 const ProjectWorkspace = require('./ProjectWorkspace');
-const {jestChildProcessWithArgs} = require('./Process');
+const {createProcess} = require('./Process');
 
 // This class represents the the configuration of Jest's process
 // we want to start with the defaults then override whatever they output
@@ -27,23 +27,35 @@ const {jestChildProcessWithArgs} = require('./Process');
 
 // For now, this is all we care about inside the config
 
+type Glob = string;
+
 type ConfigRepresentation = {
   testRegex: string,
+  testMatch: Array<Glob>
 }
+import type {Options} from './types';
 
 module.exports = class Settings extends EventEmitter {
   debugprocess: ChildProcess;
+  jestVersionMajor: number | null;
+  _createProcess: (
+    workspace: ProjectWorkspace,
+    args: Array<string>,
+  ) => ChildProcess;
+  settings: ConfigRepresentation;
   workspace: ProjectWorkspace;
 
-  settings: ConfigRepresentation;
-  jestVersionMajor: number | null;
-
-  constructor(workspace: ProjectWorkspace) {
+  constructor(workspace: ProjectWorkspace, options?: Options) {
     super();
     this.workspace = workspace;
+    this._createProcess = (options && options.createProcess) || createProcess;
 
     // Defaults for a Jest project
     this.settings = {
+      testMatch: [
+        '**/__tests__/**/*.js?(x)',
+        '**/?(*.)(spec|test).js?(x)',
+      ],
       testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
     };
   }
@@ -53,12 +65,12 @@ module.exports = class Settings extends EventEmitter {
     // in a non-existant folder.
     const folderThatDoesntExist = 'hi-there-danger-are-you-following-along';
     const args = ['--debug', folderThatDoesntExist];
-    this.debugprocess = jestChildProcessWithArgs(this.workspace, args);
+    this.debugprocess = this._createProcess(this.workspace, args);
 
     this.debugprocess.stdout.on('data', (data: Buffer) => {
       const string = data.toString();
       // We can give warnings to versions under 17 now
-      // See https://github.com/facebook/jest/issues/2343 for moving this into 
+      // See https://github.com/facebook/jest/issues/2343 for moving this into
       // the config object
       if (string.includes('jest version =')) {
         const version = string.split('jest version =')
@@ -67,7 +79,7 @@ module.exports = class Settings extends EventEmitter {
           .trim();
         this.jestVersionMajor = parseInt(version, 10);
       }
-      
+
       // Pull out the data for the config
       if (string.includes('config =')) {
         const jsonString = string.split('config =')

@@ -1,4 +1,6 @@
-exports[`test throwing not Error objects 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`throwing not Error objects 1`] = `
 Object {
   "rest": " FAIL  __tests__/throw-number-test.js
   ● Test suite failed to run
@@ -15,7 +17,7 @@ Ran all test suites matching \\"throw-number-test.js\\".
 }
 `;
 
-exports[`test throwing not Error objects 2`] = `
+exports[`throwing not Error objects 2`] = `
 Object {
   "rest": " FAIL  __tests__/throw-string-test.js
   ● Test suite failed to run
@@ -33,7 +35,7 @@ Ran all test suites matching \\"throw-string-test.js\\".
 }
 `;
 
-exports[`test throwing not Error objects 3`] = `
+exports[`throwing not Error objects 3`] = `
 Object {
   "rest": " FAIL  __tests__/throw-object-test.js
   ● Test suite failed to run
@@ -50,7 +52,7 @@ Ran all test suites matching \\"throw-object-test.js\\".
 }
 `;
 
-exports[`test throwing not Error objects 4`] = `
+exports[`throwing not Error objects 4`] = `
 Object {
   "rest": " FAIL  __tests__/assertion-count-test.js
   ● .assertions() › throws

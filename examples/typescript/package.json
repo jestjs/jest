@@ -16,6 +16,6 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
     },
-    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
+    "testMatch": ["**/__tests__/*.(ts|tsx|js)"]
   }
 }

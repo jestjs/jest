@@ -75,15 +75,24 @@ describe('.toEqual()', () => {
   [
     [true, false],
     [1, 2],
+    [0, -0],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
+    [new Set([1, 2]), new Set([2, 1])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
+    [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
+    [1, jestExpect.arrayContaining([1, 2])],
     ['abd', jestExpect.stringContaining('bc')],
     ['abd', jestExpect.stringMatching(/bc/i)],
     [undefined, jestExpect.anything()],
     [undefined, jestExpect.any(Function)],
+    ['Eve', {
+      asymmetricMatch: function asymmetricMatch(who) {
+        return who === 'Alice' || who === 'Bob';
+      },
+    }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).toEqual(b))
@@ -96,6 +105,7 @@ describe('.toEqual()', () => {
     [1, 1],
     ['abc', 'abc'],
     [{a: 99}, {a: 99}],
+    [new Set([1, 2]), new Set([1, 2])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
     ['abcd', jestExpect.stringContaining('bc')],
@@ -110,6 +120,11 @@ describe('.toEqual()', () => {
       a: 1,
       b: jestExpect.any(Function),
       c: jestExpect.anything(),
+    }],
+    ['Alice', {
+      asymmetricMatch: function asymmetricMatch(who) {
+        return who === 'Alice' || who === 'Bob';
+      },
     }],
   ].forEach(([a, b]) => {
     test(`expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
@@ -679,6 +694,9 @@ describe('toMatchObject()', () => {
     [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {t: {x: {r: 'r'}}}],
     [{a: [3, 4, 5], b: 'b'}, {a: [3, 4, 5]}],
     [{a: [3, 4, 5, 'v'], b: 'b'}, {a: [3, 4, 5, 'v']}],
+    [{a: 1, c: 2}, {a: jestExpect.any(Number)}],
+    [{a: {x: 'x', y: 'y'}}, {a: {x: jestExpect.any(String)}}],
+    [new Set([1, 2]), new Set([1, 2])],
     [new Date('2015-11-30'), new Date('2015-11-30')],
     [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-11-30')}],
     [{a: null, b: 'b'}, {a: null}],
@@ -698,13 +716,17 @@ describe('toMatchObject()', () => {
   [
      [{a: 'b', c: 'd'}, {e: 'b'}],
      [{a: 'b', c: 'd'}, {a: 'b!', c: 'd'}],
+     [{a: 'a', c: 'd'}, {a: jestExpect.any(Number)}],
      [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {a: 'b', t: {z: [3]}}],
      [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {t: {l: {r: 'r'}}}],
      [{a: [3, 4, 5], b: 'b'}, {a: [3, 4, 5, 6]}],
      [{a: [3, 4, 5], b: 'b'}, {a: [3, 4]}],
      [{a: [3, 4, 'v'], b: 'b'}, {a: ['v']}],
      [{a: [3, 4, 5], b: 'b'}, {a: {b: 4}}],
+     [{a: [3, 4, 5], b: 'b'}, {a: {b: jestExpect.any(String)}}],
      [[1, 2], [1, 3]],
+     [[0], [-0]],
+     [new Set([1, 2]), new Set([2, 1])],
      [new Date('2015-11-30'), new Date('2015-10-10')],
      [{a: new Date('2015-11-30'), b: 'b'}, {a: new Date('2015-10-10')}],
      [{a: null, b: 'b'}, {a: '4'}],

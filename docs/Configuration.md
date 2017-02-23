@@ -215,6 +215,11 @@ Default: `undefined`
 
 A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` module on its top level.
 
+### `clearMocks` [boolean]
+Default: `false`
+
+Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test.
+
 ### `resetMocks` [boolean]
 Default: `false`
 
@@ -233,6 +238,15 @@ The root directory that Jest should scan for tests and modules within. If you pu
 Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to where in your repository the code is stored.
 
 *Note that using `'<rootDir>'` as a string token in any other path-based config settings will refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `["<rootDir>/env-setup.js"]`.*
+
+### `roots` [array<string>]
+Default: `["<rootDir>"]`
+
+A list of paths to directories that Jest should use to search for files in.
+
+There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but prevent it from accessing the rest of the repo.
+
+*Note: While `rootDir` is mostly used as a token to be re-used in other configuration options, `roots` is used by the internals of Jest to locate **test files and source files**. By default, `roots` has a single entry `<rootDir>` but there are cases where you want to have multiple roots within one project, for example `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`.*
 
 ### `setupFiles` [array]
 Default: `[]`
@@ -254,7 +268,7 @@ Default: `[]`
 A list of paths to snapshot serializer modules Jest should use for snapshot
 testing.
 
-Jest has default serializers for built-in javascript types and for react
+Jest has default serializers for built-in JavaScript types and for React
 elements. See [snapshot test tutorial](/jest/docs/tutorial-react-native.html#snapshot-test) for more information.
 
 Example serializer module:
@@ -306,6 +320,8 @@ Pretty foo: Object {
 }
 ```
 
+To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](/jest/docs/expect.html#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
+
 ### `testEnvironment` [string]
 Default: `"jsdom"`
 
@@ -313,12 +329,22 @@ The test environment that will be used for testing. The default environment in J
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
 
-### `testPathDirs` [array<string>]
-Default: `["<rootDir>"]`
+### `testMatch` [array<string>]
 
-A list of paths to directories that Jest should use to search for tests in.
+##### available in Jest **19.0.0+**
 
-There are times where you only want Jest to search in a single sub-directory (such as cases where you have a `src/` directory in your repo), but not the rest of the repo.
+(default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)' ]`)
+
+The glob patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files
+inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec`
+(e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
+or `spec.js`.
+
+See the [micromatch](https://github.com/jonschlinkert/micromatch) package
+for details of the patterns you can specify.
+
+See also [`testRegex` [string]](#testregex-string), but note that you
+cannot specify both options.
 
 ### `testPathIgnorePatterns` [array<string>]
 Default: `["/node_modules/"]`
@@ -333,7 +359,8 @@ Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
 The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files
 inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec`
 (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js`
-or `spec.js`.
+or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note
+that you cannot specify both options.
 
 ### `testResultsProcessor` [string]
 Default: `undefined`

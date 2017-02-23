@@ -8,9 +8,9 @@ const React = require('React');
 const siteConfig = require('../../siteConfig.js');
 
 class HomeSplash extends React.Component {
-  makePromoElements(promoEl) {
+  makePromoElements(promoEl, index) {
     return (
-      <div className="promoRow">
+      <div className="promoRow" key={index}>
         {promoEl}
       </div>
     );
@@ -32,6 +32,7 @@ class HomeSplash extends React.Component {
               <div className="section promoSection">
                 {siteConfig.homepagePromos.map(this.makePromoElements, this)}
               </div>
+              <div className="githubButton">{siteConfig.githubButton}</div>
             </div>
           </div>
         </div>

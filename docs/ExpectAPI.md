@@ -149,21 +149,35 @@ test('randocall calls its callback with a number', () => {
 
 ### `expect.arrayContaining(array)`
 
-`expect.arrayContaining(array)` matches any array made up entirely of elements in the provided array. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, this code checks that `rollDice` returns only valid numbers:
+`expect.arrayContaining(array)` matches a received array which contains all of the elements in the expected array. That is, the expected array is a **subset** of the received array. Therefore, it matches a received array which contains elements that are **not** in the expected array.
+
+You can use it instead of a literal value:
+
+* in `toEqual` or `toBeCalledWith`
+* to match a property in `objectContaining` or `toMatchObject`
 
 ```js
-// Rolls n virtual dice
-function rollDice(n) {
-  let answer = [];
-  for (let i = 0; i < n; i++) {
-    answer.push(Math.floor(Math.random() * 6 + 1));
-  }
-  return answer;
-}
+describe('arrayContaining', () => {
+  const expected = ['Alice', 'Bob'];
+  it('matches even if received contains additional elements', () => {
+    expect(['Alice', 'Bob', 'Eve']).toEqual(expect.arrayContaining(expected));
+  });
+  it('does not match if received does not contain expected elements', () => {
+    expect(['Bob', 'Eve']).not.toEqual(expect.arrayContaining(expected));
+  });
+});
+```
 
-test('rollDice only returns valid numbers', () => {
-  expect(rollDice(100)).toEqual(expect.arrayContaining([1, 2, 3, 4, 5, 6]));
-})
+```js
+describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
+  const expected = [1, 2, 3, 4, 5, 6];
+  it('matches even with an unexpected number 7', () => {
+    expect([4, 1, 6, 7, 3, 5, 2, 5, 4, 6]).toEqual(expect.arrayContaining(expected));
+  });
+  it('does not match without an expected number 2', () => {
+    expect([4, 1, 6, 7, 3, 5, 7, 5, 4, 6]).not.toEqual(expect.arrayContaining(expected));
+  });
+});
 ```
 
 ### `expect.assertions(number)`
@@ -184,47 +198,11 @@ test('prepareState prepares a valid state', () => {
 
 The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
 
-### `expect.stringContaining(string)`
-
-`expect.stringContaining(string)` matches any string that contains the exact provided string.
-
-
-### `expect.stringMatching(regexp)`
-
-`expect.stringMatching(regexp)` matches any string that matches the provided regexp. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, let's say you want to test that `randomCoolNames()` only returns names that are cool:
-
-```js
-function randomCoolName() {
-  // Generate a last name
-  let lastName = (
-    'TRFGBNMPLZ'[Math.floor(Math.random() * 10)] +
-    'aeiou'[Math.floor(Math.random() * 5)] +
-    'mnbvxdstrp'[Math.floor(Math.random() * 10)]);
-  return 'Kevin ' + lastName;
-}
-
-function randomCoolNames() {
-  let answer = [];
-  for (let i = 0; i < 100; i++) {
-    answer.push(randomCoolName());
-  }
-  return answer;
-}
-
-test('randomCoolNames only returns cool names', () => {
-  // A reasonable proxy for whether a name is cool or not
-  let coolRegex = /^Kevin/;
-
-  expect(randomCoolNames).toEqual(
-    expect.arrayContaining(expect.stringMatching(coolRegex)));
-});
-```
-
-This example also shows how you can nest multiple asymmetric matchers, with `expect.stringMatching` inside the `expect.arrayContaining`.
-
 ### `expect.objectContaining(object)`
 
-`expect.objectContaining(object)` matches any object that recursively matches the provided keys. This is often handy in conjunction with other asymmetric matchers.
+`expect.objectContaining(object)` matches any received object that recursively matches the expected properties. That is, the expected object is a **subset** of the received object. Therefore, it matches a received object which contains properties that are **not** in the expected object.
+
+Instead of literal property values in the expected object, you can use matchers `expect.anything()` and so on.
 
 For example, let's say that we expect an `onPress` function to be called with an `Event` object, and all we need to verify is that the event has `event.x` and `event.y` properties. We can do that with:
 
@@ -238,6 +216,59 @@ test('onPress gets called with the right thing', () => {
   }));
 })
 ```
+
+### `expect.stringContaining(string)`
+
+##### available in Jest **19.0.0+**
+
+`expect.stringContaining(string)` matches any received string that contains the exact expected string.
+
+### `expect.stringMatching(regexp)`
+
+`expect.stringMatching(regexp)` matches any received string that matches the expected regexp.
+
+You can use it instead of a literal value:
+
+* in `toEqual` or `toBeCalledWith`
+* to match an element in `arrayContaining`
+* to match a property in `objectContaining` or `toMatchObject`
+
+This example also shows how you can nest multiple asymmetric matchers, with `expect.stringMatching` inside the `expect.arrayContaining`.
+
+```js
+describe('stringMatching in arrayContaining', () => {
+  const expected = [
+    expect.stringMatching(/^Alic/),
+    expect.stringMatching(/^[BR]ob/),
+  ];
+  it('matches even if received contains additional elements', () => {
+    expect(['Alicia', 'Roberto', 'Evelina']).toEqual(expect.arrayContaining(expected));
+  });
+  it('does not match if received does not contain expected elements', () => {
+    expect(['Roberto', 'Evelina']).not.toEqual(expect.arrayContaining(expected));
+  });
+});
+```
+
+### `expect.addSnapshotSerializer(serializer)`
+
+You can call `expect.addSnapshotSerializer` to add a module that formats application-specific data structures.
+
+For an individual test file, an added module precedes any modules from `snapshotSerializers` configuration, which precede the default snapshot serializers for built-in JavaScript types and for React elements. The last module added is the first module tested.
+
+```js
+import serializer from 'my-serializer-module';
+expect.addSnapshotSerializer(serializer);
+
+// affects expect(value).toMatchSnapshot() assertions in the test file
+```
+
+If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
+
+* You make the dependency explicit instead of implicit.
+* You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
+
+See [configuring package.json](/jest/docs/configuration.html#snapshotserializers-array-string) for more information.
 
 ### `.not`
 

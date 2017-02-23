@@ -19,13 +19,21 @@ const jestValidateExampleConfig = require('../exampleConfig');
 const jestValidateDefaultConfig = require('../defaultConfig');
 
 test('validates default Jest config', () => {
-  expect(validate(defaultConfig, {exampleConfig: validConfig})).toBe(true);
+  expect(validate(defaultConfig, {
+    exampleConfig: validConfig,
+  })).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
 });
 
 test('validates default jest-validate config', () => {
   expect(validate(jestValidateDefaultConfig, {
     exampleConfig: jestValidateExampleConfig,
-  })).toBe(true);
+  })).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
 });
 
 [
@@ -52,7 +60,10 @@ test('omits null and undefined config values', () => {
     haste: undefined,
     preset: null,
   };
-  expect(validate(config, {exampleConfig: validConfig})).toBe(true);
+  expect(validate(config, {exampleConfig: validConfig})).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
 });
 
 test('displays warning for unknown config options', () => {
@@ -72,7 +83,13 @@ test('displays warning for deprecated config options', () => {
   const warn = console.warn;
   console.warn = jest.fn();
 
-  validate(config, {deprecatedConfig, exampleConfig: validConfig});
+  expect(validate(config, {
+    deprecatedConfig,
+    exampleConfig: validConfig,
+  })).toEqual({
+    hasDeprecationWarnings: true,
+    isValid: true,
+  });
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;

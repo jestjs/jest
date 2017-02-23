@@ -1,13 +1,15 @@
-# [Jest](http://facebook.github.io/jest/) [![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest-cli.svg)](http://badge.fury.io/js/jest-cli)
+# Jest
 
+[![CircleCI Build Status](https://circleci.com/gh/facebook/jest.svg?style=shield)](https://circleci.com/gh/facebook/jest)
+[![Travis Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
 
-Painless JavaScript Testing
+🃏 Painless JavaScript Testing
 
-- **Adaptable**: Jest uses Jasmine assertions by default and Jest is modular, extendible and configurable.
+- **👩🏻‍💻 Easy Setup**: Jest is a complete and easy to set up JavaScript testing solution. In fact, Jest works out of the box for any React project.
 
-- **Sandboxed and Fast**: Jest virtualizes JavaScript environments, provides browser mocks and runs tests in parallel across workers.
+- **🏃🏽 Instant Feedback**: Failed tests run first. Fast interactive mode can switch between running all tests or only test files related to changed files.
 
-- **Snapshot Testing**: Jest can [capture snapshots](http://facebook.github.io/jest/docs/tutorial-react.html#snapshot-testing) of React trees or other serializable values to write tests quickly and it provides a seamless update experience.
+- **📸 Snapshot Testing**: Jest can [capture snapshots](http://facebook.github.io/jest/docs/snapshot-testing.html) of React trees or other serializable values to simplify UI testing.
 
 ## Getting Started
 
@@ -56,8 +58,6 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://facebook.github.io/jest/docs/using-matchers.html).
 
-<!--truncate-->
-
 ## Additional Configuration
 
 ### Using Babel
@@ -91,7 +91,7 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 To use TypeScript in your tests, install the `ts-jest` package:
 
 ```
-npm install --save-dev test-jest
+npm install --save-dev ts-jest
 ```
 
 then modify your `package.json` so the `jest` section looks something like:
@@ -113,7 +113,17 @@ then modify your `package.json` so the `jest` section looks something like:
 ```
 <generated_getting_started_end />
 
-## API & Configuration
+## Documentation
 
+Learn more about using Jest at http://facebook.github.io/jest
+
+* [Getting Started](http://facebook.github.io/jest/docs/getting-started.html)
+* [Guides](http://facebook.github.io/jest/docs/snapshot-testing.html)
 * [API Reference](http://facebook.github.io/jest/docs/api.html)
-* [Configuration](http://facebook.github.io/jest/docs/configuration.html)
+* [Configuring package.json](http://facebook.github.io/jest/docs/configuration.html)
+
+## Contributing
+
+Send issues and pull requests with your ideas. For more information about contributing PRs and issues, see our [Contribution Guidelines](https://github.com/facebook/jest/blob/master/CONTRIBUTING.md).
+
+[Good First Task](https://github.com/facebook/jest/labels/Good%20First%20Task) is a great starting point for PRs.

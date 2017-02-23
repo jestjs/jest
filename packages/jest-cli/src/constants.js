@@ -29,6 +29,7 @@ const KEYS = {
   P: '70',
   Q: '71',
   QUESTION_MARK: '3f',
+  T: '74',
   U: '75',
 };
 

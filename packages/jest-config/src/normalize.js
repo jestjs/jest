@@ -26,7 +26,7 @@ const crypto = require('crypto');
 const DEFAULT_CONFIG = require('./defaults');
 const path = require('path');
 const Resolver = require('jest-resolve');
-const utils = require('jest-util');
+const utils = require('jest-regex-util');
 const VALID_CONFIG = require('./validConfig');
 const DEPRECATED_CONFIG = require('./deprecated');
 const JSON_EXTENSION = '.json';
@@ -58,7 +58,7 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
   }
 
   if (config.setupFiles) {
-    config.setupFiles = preset.setupFiles.concat(config.setupFiles);
+    config.setupFiles = (preset.setupFiles || []).concat(config.setupFiles);
   }
   if (config.modulePathIgnorePatterns) {
     config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
@@ -241,7 +241,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
 };
 
 function normalize(config: InitialConfig, argv: Object = {}) {
-  validate(config, {
+  const {hasDeprecationWarnings} = validate(config, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
@@ -258,6 +258,9 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   if (config.testEnvironment) {
     config.testEnvironment = getTestEnvironment(config);
   }
+  if (!config.roots && config.testPathDirs) {
+    config.roots = config.testPathDirs;
+  }
 
   const babelJest = setupBabelJest(config);
   const newConfig = Object.assign({}, DEFAULT_CONFIG);
@@ -273,7 +276,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         //$FlowFixMe
         value = config[key].map(resolve.bind(null, config.rootDir, key));
         break;
-      case 'testPathDirs':
+      case 'roots':
         //$FlowFixMe
         value = config[key].map(filePath => path.resolve(
           config.rootDir,
@@ -331,16 +334,26 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'unmockedModulePathPatterns':
         value = normalizeUnmockedModulePathPatterns(config, key);
         break;
+      case 'haste':
+        value = Object.assign({}, config[key]);
+        if (value.hasteImplModulePath != null) {
+          value.hasteImplModulePath = resolve(
+            config.rootDir,
+            'haste.hasteImplModulePath',
+            value.hasteImplModulePath,
+          );
+        }
+        break;
       case 'automock':
       case 'bail':
       case 'browser':
       case 'cache':
+      case 'clearMocks':
       case 'collectCoverage':
       case 'coverageCollector':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'globals':
-      case 'haste':
       case 'logHeapUsage':
       case 'logTransformErrors':
       case 'moduleDirectories':
@@ -356,6 +369,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
+      case 'testMatch':
       case 'testEnvironment':
       case 'testRegex':
       case 'testReporter':
@@ -382,13 +396,29 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     }
   }
 
+  if (config.testRegex && config.testMatch) {
+    throw createConfigError(
+      `  Configuration options ${chalk.bold('testMatch')} and` +
+      ` ${chalk.bold('testRegex')} cannot be used together.`
+    );
+  }
+
+  if (config.testRegex && (!config.testMatch)) {
+    // Prevent the default testMatch conflicting with any explicitly
+    // configured `testRegex` value
+    newConfig.testMatch = [];
+  }
+
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {
     newConfig.coverageReporters = (newConfig.coverageReporters || [])
       .filter(reporter => reporter !== 'text');
   }
 
-  return _replaceRootDirTags(newConfig.rootDir, newConfig);
+  return {
+    config: _replaceRootDirTags(newConfig.rootDir, newConfig),
+    hasDeprecationWarnings,
+  };
 }
 
 module.exports = normalize;

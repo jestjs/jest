@@ -23,36 +23,42 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 1. Fork the repo and create your branch from `master`.
 
    ```sh
-   git clone https://github.com/facebook/jest
+   git clone https://github.com/<your_username>/jest
    cd jest
    git checkout -b my_branch
    ```
 
-2. Run `npm install`. We recommend that you use `npm` version 3 or later.
+2. Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360)
+   for running development scripts. If you haven't already done so,
+   please [install yarn](https://yarnpkg.com/en/docs/install).
+
+3. Run `yarn install`.
 
     ```sh
-    npm install
+    yarn install
     ```
 
-3. If you've added code that should be tested, add tests. You
+4. If you've added code that should be tested, add tests. You
    can use watch mode that continuously transforms changed files
    to make your life easier.
 
    ```sh
    # in the background
-   npm run watch
+   yarn run watch
    ```
 
-4. If you've changed APIs, update the documentation.
-5. Ensure the test suite passes via `npm test`. To run the test suite you
+5. If you've changed APIs, update the documentation.
+
+6. Ensure the test suite passes via `yarn test`. To run the test suite you
    may need to install Mercurial (`hg`). On macOS, this can be done
    using [homebrew](http://brew.sh/): `brew install hg`.
 
    ```sh
    brew install hg # maybe
-   npm test
+   yarn test
    ```
-6. If you haven't already, complete the CLA.
+
+7. If you haven't already, complete the CLA.
 
 ### Contributor License Agreement (CLA)
 
@@ -60,7 +66,45 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 
 [Complete your CLA here.](https://code.facebook.com/cla)
 
-### Bugs
+## How to try a development build of Jest in another project
+
+To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
+
+```sh
+cd /path/to/your/Jest_clone/packages/jest-cli
+yarn link
+```
+
+To build Jest:
+
+```sh
+cd /path/to/your/Jest_clone
+
+# Do one of the following:
+
+# Check out a commit from another contributor, and then
+yarn run build
+
+# Or, save your changes to Jest, and then
+yarn test # which also builds Jest
+```
+
+To run tests in another project with the development build of Jest:
+
+```sh
+cd /path/to/another/project
+jest [options] # run jest-cli/bin/jest.js in the development build
+```
+
+* To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
+
+To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
+
+```sh
+yarn unlink jest-cli
+```
+
+## Bugs
 
 ### Where to Find Known Issues
 
@@ -78,7 +122,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 * Discord - [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) on [Reactiflux](http://www.reactiflux.com/)
 
-### Code Conventions
+## Code Conventions
 
 * 2 spaces for indentation (no tabs).
 * 80 character line length strongly preferred.

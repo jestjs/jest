@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`.toBe() does not crash on circular references 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
 
@@ -1733,6 +1735,24 @@ Expected [31mcollection[39m to be an array-like structure.
 Received: [31mnull[39m"
 `;
 
+exports[`.toEqual() expect("Alice").not.toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32m{\\"asymmetricMatch\\": [Function asymmetricMatch]}[39m
+Received:
+  [31m\\"Alice\\"[39m"
+`;
+
+exports[`.toEqual() expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m{\\"asymmetricMatch\\": [Function asymmetricMatch]}[39m
+Received:
+  [31m\\"Eve\\"[39m"
+`;
+
 exports[`.toEqual() expect("abc").not.toEqual("abc") 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1766,11 +1786,7 @@ exports[`.toEqual() expect("abd").toEqual(StringContaining "bc") 1`] = `
 Expected value to equal:
   [32mStringContaining \\"bc\\"[39m
 Received:
-  [31m\\"abd\\"[39m
-
-Difference:
-
-  Comparing two different types of values. Expected [32mobject[39m but received [31mstring[39m."
+  [31m\\"abd\\"[39m"
 `;
 
 exports[`.toEqual() expect("abd").toEqual(StringMatching /bc/i) 1`] = `
@@ -1779,11 +1795,7 @@ exports[`.toEqual() expect("abd").toEqual(StringMatching /bc/i) 1`] = `
 Expected value to equal:
   [32mStringMatching /bc/i[39m
 Received:
-  [31m\\"abd\\"[39m
-
-Difference:
-
-  Comparing two different types of values. Expected [32mobject[39m but received [31mstring[39m."
+  [31m\\"abd\\"[39m"
 `;
 
 exports[`.toEqual() expect("banana").toEqual("apple") 1`] = `
@@ -1901,6 +1913,19 @@ Received:
   [31m{\\"a\\": 99}[39m"
 `;
 
+exports[`.toEqual() expect(0).toEqual(-0) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32m-0[39m
+Received:
+  [31m0[39m
+
+Difference:
+
+[2mCompared values have no visual difference.[22m"
+`;
+
 exports[`.toEqual() expect(1).not.toEqual(1) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
 
@@ -1917,6 +1942,54 @@ Expected value to equal:
   [32m2[39m
 Received:
   [31m1[39m"
+`;
+
+exports[`.toEqual() expect(1).toEqual(ArrayContaining [1, 2]) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mArrayContaining [1, 2][39m
+Received:
+  [31m1[39m
+
+Difference:
+
+  Comparing two different types of values. Expected [32marray[39m but received [31mnumber[39m."
+`;
+
+exports[`.toEqual() expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to not equal:
+  [32mSet {1, 2}[39m
+Received:
+  [31mSet {1, 2}[39m"
+`;
+
+exports[`.toEqual() expect(Set {1, 2}).toEqual(Set {2, 1}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mSet {2, 1}[39m
+Received:
+  [31mSet {1, 2}[39m
+
+Difference:
+
+[2mCompared values have no visual difference.[22m"
+`;
+
+exports[`.toEqual() expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+
+Expected value to equal:
+  [32mObjectContaining {\\"a\\": 2}[39m
+Received:
+  [31mfalse[39m
+
+Difference:
+
+  Comparing two different types of values. Expected [32mobject[39m but received [31mboolean[39m."
 `;
 
 exports[`.toEqual() expect(null).toEqual(undefined) 1`] = `
@@ -1969,7 +2042,7 @@ Received:
 
 Difference:
 
-  Comparing two different types of values. Expected [32mobject[39m but received [31mundefined[39m."
+  Comparing two different types of values. Expected [32mfunction[39m but received [31mundefined[39m."
 `;
 
 exports[`.toEqual() expect(undefined).toEqual(Anything) 1`] = `
@@ -1978,11 +2051,7 @@ exports[`.toEqual() expect(undefined).toEqual(Anything) 1`] = `
 Expected value to equal:
   [32mAnything[39m
 Received:
-  [31mundefined[39m
-
-Difference:
-
-  Comparing two different types of values. Expected [32mobject[39m but received [31mundefined[39m."
+  [31mundefined[39m"
 `;
 
 exports[`.toHaveLength error cases 1`] = `
@@ -2549,6 +2618,23 @@ Received:
   [31m\\"bar\\"[39m"
 `;
 
+exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m[-0][39m
+Received:
+  [31m[0][39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m Array [[22m
+[32m-  -0,[39m
+[31m+  0,[39m
+[2m ][22m"
+`;
+
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([1, 2, 2]) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -2603,6 +2689,23 @@ Difference:
 [32m-  3,[39m
 [31m+  2,[39m
 [2m ][22m"
+`;
+
+exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\\"a\\": Any<Number>}[39m
+Received:
+  [31m{\\"a\\": \\"a\\", \\"c\\": \\"d\\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m Object {[22m
+[32m-  \\"a\\": Any<Number>,[39m
+[31m+  \\"a\\": \\"a\\",[39m
+[2m }[22m"
 `;
 
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
@@ -2790,6 +2893,29 @@ Difference:
 [2m }[22m"
 `;
 
+exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": Any<String>}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32m{\\"a\\": {\\"b\\": Any<String>}}[39m
+Received:
+  [31m{\\"a\\": [3, 4, 5], \\"b\\": \\"b\\"}[39m
+Difference:
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m Object {[22m
+[32m-  \\"a\\": Object {[39m
+[32m-    \\"b\\": Any<String>,[39m
+[32m-  },[39m
+[31m+  \\"a\\": Array [[39m
+[31m+    3,[39m
+[31m+    4,[39m
+[31m+    5,[39m
+[31m+  ],[39m
+[2m }[22m"
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": 1, "b": 1, "c": 1, "d": {"e": {"f": 555}}}).toMatchObject({"d": {"e": {"f": 222}}}) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -2911,6 +3037,17 @@ Difference:
 [31m+2015-11-30T00:00:00.000Z[39m"
 `;
 
+exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2, 1}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value to match object:
+  [32mSet {2, 1}[39m
+Received:
+  [31mSet {1, 2}[39m
+Difference:
+[2mCompared values have no visual difference.[22m"
+`;
+
 exports[`toMatchObject() {pass: true} expect([1, 2]).toMatchObject([1, 2]) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -2983,6 +3120,24 @@ Received:
   [31m{\\"a\\": [3, 4, 5], \\"b\\": \\"b\\"}[39m"
 `;
 
+exports[`toMatchObject() {pass: true} expect({"a": {"x": "x", "y": "y"}}).toMatchObject({"a": {"x": Any<String>}}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match object:
+  [32m{\\"a\\": {\\"x\\": Any<String>}}[39m
+Received:
+  [31m{\\"a\\": {\\"x\\": \\"x\\", \\"y\\": \\"y\\"}}[39m"
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": 1, "c": 2}).toMatchObject({"a": Any<Number>}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match object:
+  [32m{\\"a\\": Any<Number>}[39m
+Received:
+  [31m{\\"a\\": 1, \\"c\\": 2}[39m"
+`;
+
 exports[`toMatchObject() {pass: true} expect({"a": 2015-11-30T00:00:00.000Z, "b": "b"}).toMatchObject({"a": 2015-11-30T00:00:00.000Z}) 1`] = `
 "[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
 
@@ -3035,6 +3190,15 @@ Expected value not to match object:
   [32mArray [][39m
 Received:
   [31mArray [][39m"
+`;
+
+exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {1, 2}) 1`] = `
+"[2mexpect([22m[31mreceived[39m[2m).not.toMatchObject([22m[32mexpected[39m[2m)[22m
+
+Expected value not to match object:
+  [32mSet {1, 2}[39m
+Received:
+  [31mSet {1, 2}[39m"
 `;
 
 exports[`toMatchObject() throws expect("44").toMatchObject({}) 1`] = `

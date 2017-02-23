@@ -5,7 +5,6 @@
 
 const React = require('React');
 const classNames = require('classnames');
-const Container = require('Container');
 
 const Marked = require('Marked');
 
@@ -32,7 +31,7 @@ class GridBlock extends React.Component {
       this.renderBlockImage(block.image);
 
     return (
-      <div className={blockClasses}>
+      <div className={blockClasses} key={block.title}>
         {topLeftImage}
         <div className="blockContent">
           {this.renderBlockTitle(block.title)}
@@ -61,28 +60,11 @@ class GridBlock extends React.Component {
     }
   }
 
-  renderContainer(block, index) {
-    const background = index % 2 ? 'transparent' : 'light';
-    return (
-      <Container background={background} padding={['bottom', 'top']}>
-        {this.renderBlock(block)}
-      </Container>
-    );
-  }
-
   render() {
-    let block = <div className="gridBlock">
-      {this.props.contents.map(this.renderBlock, this)}
-    </div>;
-
-    if (this.props.alternatingBackground) {
-      block = <div>
-        {this.props.contents.map(this.renderContainer, this)}
-      </div>;
-    }
-
     return (
-      block
+      <div className="gridBlock">
+        {this.props.contents.map(this.renderBlock, this)}
+      </div>
     );
   }
 }

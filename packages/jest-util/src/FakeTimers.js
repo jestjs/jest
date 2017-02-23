@@ -13,7 +13,7 @@ import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
-const {formatStackTrace} = require('./messages');
+const {formatStackTrace} = require('jest-message-util');
 const setGlobal = require('./setGlobal');
 
 type Callback = (...args: any) => void;

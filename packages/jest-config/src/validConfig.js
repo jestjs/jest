@@ -13,7 +13,7 @@
 import type {InitialConfig} from 'types/Config';
 
 const constants = require('./constants');
-const {replacePathSepForRegex} = require('jest-util');
+const {replacePathSepForRegex} = require('jest-regex-util');
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
@@ -23,6 +23,7 @@ module.exports = ({
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
+  clearMocks: false,
   collectCoverage: true,
   collectCoverageFrom: ['src', '!public'],
   collectCoverageOnlyFrom: {
@@ -60,13 +61,14 @@ module.exports = ({
   resetMocks: false,
   resetModules: false,
   rootDir: '/',
+  roots: ['<rootDir>'],
   setupFiles: ['<rootDir>/setup.js'],
   setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   silent: true,
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
+  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)'],
   testNamePattern: 'test signature',
-  testPathDirs: ['<rootDir>'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   testResultsProcessor: 'processor-node-module',

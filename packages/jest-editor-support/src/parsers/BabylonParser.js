@@ -51,7 +51,10 @@ const babylonParser = (file: string) => {
   const babelRC = getBabelRC(file, {useCache: true});
   const babel = JSON.parse(babelRC);
 
-  const plugins = babel.plugins.concat(['flow']);
+  const plugins = Array.isArray(babel.plugins)
+    ? babel.plugins.concat(['flow'])
+    : ['flow'];
+
   const config = {plugins, sourceType: 'module'};
   const ast = babylon.parse(data, config);
 
@@ -63,7 +66,7 @@ const babylonParser = (file: string) => {
     block.name = node.expression.arguments[0].value;
     block.start = node.loc.start;
     block.end =  node.loc.end;
-    
+
     block.start.column += 1;
 
     block.file = file;
@@ -72,7 +75,7 @@ const babylonParser = (file: string) => {
 
   // An `expect` was found in the AST
   // So take the AST node and create an object for us
-  // to store for later usage 
+  // to store for later usage
   const foundExpectNode = (node: any, file: string) => {
     const expect = new Expect();
     expect.start = node.loc.start;
@@ -147,7 +150,7 @@ const babylonParser = (file: string) => {
       if (!root.body.hasOwnProperty(node)) {
         return;
       }
-        
+
       // Pull out the node
       const element = root.body[node];
 
@@ -157,7 +160,9 @@ const babylonParser = (file: string) => {
         foundExpectNode(element, file);
       } else if (element.type === 'VariableDeclaration') {
         element.declarations
-          .filter(declaration => isFunctionDeclaration(declaration.init.type))
+          .filter(declaration => (
+            declaration.init && isFunctionDeclaration(declaration.init.type))
+          )
           .forEach(declaration => searchNodes(declaration.init.body, file));
       } else if (
         element.type === 'ExpressionStatement' &&
@@ -173,7 +178,7 @@ const babylonParser = (file: string) => {
           .filter(argument => isFunctionDeclaration(argument.type))
           .forEach(argument => searchNodes(argument.body, file));
       }
-      
+
       if (isFunctionCall(element)) {
         element.expression.arguments
           .filter(argument => isFunctionDeclaration(argument.type))

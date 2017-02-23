@@ -17,7 +17,7 @@ const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
 const SnapshotState = require('./State');
-const {getPlugins, addPlugins} = require('./plugins');
+const {addSerializer, getSerializers} = require('./plugins');
 
 const {
  EXPECTED_COLOR,
@@ -153,9 +153,9 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
 module.exports = {
   EXTENSION: SNAPSHOT_EXTENSION,
   SnapshotState,
-  addPlugins,
+  addSerializer,
   cleanup,
-  getPlugins,
+  getSerializers,
   initializeSnapshotState,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,

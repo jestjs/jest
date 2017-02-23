@@ -19,6 +19,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
   - [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
   - [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
+  - [`jest.clearAllMocks()`](#jestclearallmocks)
   - [`jest.resetAllMocks()`](#jestresetallmocks)
   - [`jest.resetModules()`](#jestresetmodules)
   - [`jest.runAllTicks()`](#jestrunallticks)
@@ -29,6 +30,7 @@ The `jest` object is automatically in scope within every test file. The methods 
   - [`jest.unmock(moduleName)`](#jestunmockmodulename)
   - [`jest.useFakeTimers()`](#jestusefaketimers)
   - [`jest.useRealTimers()`](#jestuserealtimers)
+  - [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
 
 -----
 
@@ -60,7 +62,7 @@ Returns the `jest` object for chaining.
 *Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior.*
 
 ### `jest.fn(implementation)`
-Returns a new, unused [mock function](#mock-functions). Optionally takes a mock implementation.
+Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Optionally takes a mock implementation.
 
 ```js
   const mockFn = jest.fn();
@@ -115,6 +117,11 @@ jest.mock('../moduleName', () => {
 ```
 
 *Note: When using `babel-jest`, calls to `mock` will automatically be hoisted to the top of the code block. Use `doMock` if you want to explicitly avoid this behavior.*
+
+Returns the `jest` object for chaining.
+
+### `jest.clearAllMocks()`
+Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
 
 Returns the `jest` object for chaining.
 
@@ -187,7 +194,7 @@ In these rare scenarios you can use this API to manually fill the slot in the mo
 
 Returns the `jest` object for chaining.
 
-*Note It is recommended to use [`jest.mock()`](#jest-mock-modulename-factory) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
+*Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object.*
 
 ### `jest.unmock(moduleName)`
 Indicates that the module system should never return a mocked version of the specified module from `require()` (e.g. that it should always return the real module).
@@ -207,3 +214,39 @@ Returns the `jest` object for chaining.
 Instructs Jest to use the real versions of the standard timer functions.
 
 Returns the `jest` object for chaining.
+
+### `jest.spyOn(object, methodName)`
+##### available in Jest **19.0.0+**
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
+
+*Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`*
+
+Example:
+
+```js
+const video = {
+  play: function () {
+    return true;
+  }
+};
+
+module.exports = video;
+```
+
+Example test:
+```js
+const video = require('./video');
+
+test('plays video', () => {
+  const spy = jest.spyOn(video, 'play')
+  const isPlaying = video.play();
+
+  expect(spy).toHaveBeenCalled();
+  expect(isPlaying).toBe(true);
+
+  spy.mockReset();
+  spy.mockRestore();
+});
+```
+
+

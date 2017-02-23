@@ -12,8 +12,10 @@
 
 import type {Config} from 'types/Config';
 import type {HasteContext} from 'types/HasteMap';
-import type {Path} from 'types/Config';
-import type {ResolveModuleConfig} from 'jest-resolve';
+import type {Glob, Path} from 'types/Config';
+import type {ResolveModuleConfig} from 'types/Resolve';
+
+const micromatch = require('micromatch');
 
 const DependencyResolver = require('jest-resolve-dependencies');
 
@@ -23,10 +25,11 @@ const path = require('path');
 const {
   escapePathForRegex,
   replacePathSepForRegex,
-} = require('jest-util');
+} = require('jest-regex-util');
 
 type SearchSourceConfig = {
-  testPathDirs: Array<Path>,
+  roots: Array<Path>,
+  testMatch: Array<Glob>,
   testRegex: string,
   testPathIgnorePatterns: Array<string>,
 };
@@ -69,15 +72,33 @@ const pluralize = (
   ending: string,
 ) => `${count} ${word}${count === 1 ? '' : ending}`;
 
+const globsToMatcher = (globs: ?Array<Glob>) => {
+  if (globs == null || globs.length === 0) {
+    return () => true;
+  }
+
+  const matchers = globs.map(each => micromatch.matcher(each));
+  return (path: Path) => matchers.some(each => each(path));
+};
+
+const regexToMatcher = (testRegex: string) => {
+  if (!testRegex) {
+    return () => true;
+  }
+
+  const regex = new RegExp(pathToRegex(testRegex));
+  return (path: Path) => regex.test(path);
+};
+
 class SearchSource {
   _hasteContext: HasteContext;
   _config: SearchSourceConfig;
   _options: ResolveModuleConfig;
-  _testPathDirPattern: RegExp;
-  _testRegex: RegExp;
+  _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
   _testPathCases: {
-    testPathDirs: (path: Path) => boolean,
+    roots: (path: Path) => boolean,
+    testMatch: (path: Path) => boolean,
     testRegex: (path: Path) => boolean,
     testPathIgnorePatterns: (path: Path) => boolean,
   };
@@ -93,23 +114,23 @@ class SearchSource {
       skipNodeResolution: false,
     };
 
-    this._testPathDirPattern =
-      new RegExp(config.testPathDirs.map(
+    this._rootPattern =
+      new RegExp(config.roots.map(
         dir => escapePathForRegex(dir),
       ).join('|'));
 
-    this._testRegex = new RegExp(pathToRegex(config.testRegex));
     const ignorePattern = config.testPathIgnorePatterns;
     this._testIgnorePattern =
       ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
 
     this._testPathCases = {
-      testPathDirs: path => this._testPathDirPattern.test(path),
+      roots: path => this._rootPattern.test(path),
+      testMatch: globsToMatcher(config.testMatch),
       testPathIgnorePatterns: path => (
         !this._testIgnorePattern ||
         !this._testIgnorePattern.test(path)
       ),
-      testRegex: path => this._testRegex.test(path),
+      testRegex: regexToMatcher(config.testRegex),
     };
   }
 
@@ -191,7 +212,7 @@ class SearchSource {
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
-    return Promise.all(this._config.testPathDirs.map(determineSCM))
+    return Promise.all(this._config.roots.map(determineSCM))
       .then(repos => {
         if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
           return {

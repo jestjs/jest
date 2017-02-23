@@ -13,15 +13,17 @@
 import type {Config, Path} from 'types/Config';
 import type {TransformOptions} from 'types/Transform';
 
-const babel = require('babel-core');
 const crypto = require('crypto');
 const fs = require('fs');
 const jestPreset = require('babel-preset-jest');
 const path = require('path');
 
 const BABELRC_FILENAME = '.babelrc';
+const THIS_FILE = fs.readFileSync(__filename);
 
 const cache = Object.create(null);
+
+let babel;
 
 const getBabelRC = (filename, {useCache}) => {
   const paths = [];
@@ -47,11 +49,12 @@ const getBabelRC = (filename, {useCache}) => {
 
 const createTransformer = (options: any) => {
   options = Object.assign({}, options, {
-    auxiliaryCommentBefore: ' istanbul ignore next ',
+    plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
     retainLines: true,
   });
   delete options.cacheDirectory;
+  delete options.filename;
 
   return {
     canInstrument: true,
@@ -62,11 +65,16 @@ const createTransformer = (options: any) => {
       {instrument, watch}: TransformOptions,
     ): string {
       return crypto.createHash('md5')
+        .update(THIS_FILE)
+        .update('\0', 'utf8')
         .update(fileData)
+        .update('\0', 'utf8')
         .update(configString)
+        .update('\0', 'utf8')
         // Don't use the in-memory cache in watch mode because the .babelrc
         // file may be modified.
         .update(getBabelRC(filename, {useCache: !watch}))
+        .update('\0', 'utf8')
         .update(instrument ? 'instrument' : '')
         .digest('hex');
     },
@@ -76,11 +84,20 @@ const createTransformer = (options: any) => {
       config: Config,
       transformOptions: TransformOptions,
     ): string {
-      let plugins = options.plugins || [];
+      if (!babel) {
+        babel = require('babel-core');
+      }
+
+      if (!babel.util.canCompile(filename)) {
+        return src;
+      }
+
+      const theseOptions = Object.assign({filename}, options);
 
       if (transformOptions && transformOptions.instrument) {
+        theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
-        plugins = plugins.concat([
+        theseOptions.plugins = theseOptions.plugins.concat([
           [
             require('babel-plugin-istanbul').default,
             {
@@ -92,13 +109,7 @@ const createTransformer = (options: any) => {
         ]);
       }
 
-      if (babel.util.canCompile(filename)) {
-        return babel.transform(
-          src,
-          Object.assign({}, options, {filename, plugins}),
-        ).code;
-      }
-      return src;
+      return babel.transform(src, theseOptions).code;
     },
   };
 };

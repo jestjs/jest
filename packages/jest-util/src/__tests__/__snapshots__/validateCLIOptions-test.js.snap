@@ -1,4 +1,6 @@
-exports[`test fails for multiple unknown options 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fails for multiple unknown options 1`] = `
 "[31m[1m[1m●[1m Unrecognized CLI Parameters[22m:
 
   Following options were not recognized:
@@ -9,7 +11,7 @@ exports[`test fails for multiple unknown options 1`] = `
 [39m"
 `;
 
-exports[`test fails for unknown option 1`] = `
+exports[`fails for unknown option 1`] = `
 "[31m[1m[1m●[1m Unrecognized CLI Parameter[22m:
 
   Unrecognized option [1m\\"unknown\\"[22m.

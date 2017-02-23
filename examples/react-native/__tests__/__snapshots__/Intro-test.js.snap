@@ -1,4 +1,6 @@
-exports[`test renders correctly 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
 <View
   style={
     Object {
@@ -7,7 +9,8 @@ exports[`test renders correctly 1`] = `
       "flex": 1,
       "justifyContent": "center",
     }
-  }>
+  }
+>
   <Text
     accessible={true}
     allowFontScaling={true}
@@ -18,7 +21,8 @@ exports[`test renders correctly 1`] = `
         "margin": 10,
         "textAlign": "center",
       }
-    }>
+    }
+  >
     Welcome to React Native!
   </Text>
   <Text
@@ -31,31 +35,34 @@ exports[`test renders correctly 1`] = `
         "marginBottom": 5,
         "textAlign": "center",
       }
-    }>
+    }
+  >
     This is a React Native snapshot test.
   </Text>
 </View>
 `;
 
-exports[`test renders the ActivityIndicator component 1`] = `
+exports[`renders the ActivityIndicator component 1`] = `
 <ActivityIndicator
   animating={true}
   color="#999999"
   hidesWhenStopped={true}
-  size="small" />
+  size="small"
+/>
 `;
 
-exports[`test renders the Image component 1`] = `
+exports[`renders the Image component 1`] = `
 <Image
   style={
     Object {
       "height": 240,
       "width": 320,
     }
-  } />
+  }
+/>
 `;
 
-exports[`test renders the ListView component 1`] = `
+exports[`renders the ListView component 1`] = `
 <ScrollView
   dataSource={
     ListViewDataSource {
@@ -76,30 +83,35 @@ exports[`test renders the ListView component 1`] = `
   renderRow={[Function]}
   scrollEventThrottle={50}
   scrollRenderAheadDistance={1000}
-  stickyHeaderIndices={Array []}>
+  stickyHeaderIndices={Array []}
+>
   <Text
     accessible={true}
     allowFontScaling={true}
-    ellipsizeMode="tail">
+    ellipsizeMode="tail"
+  >
     apple
   </Text>
   <Text
     accessible={true}
     allowFontScaling={true}
-    ellipsizeMode="tail">
+    ellipsizeMode="tail"
+  >
     banana
   </Text>
   <Text
     accessible={true}
     allowFontScaling={true}
-    ellipsizeMode="tail">
+    ellipsizeMode="tail"
+  >
     kiwi
   </Text>
 </ScrollView>
 `;
 
-exports[`test renders the TextInput component 1`] = `
+exports[`renders the TextInput component 1`] = `
 <TextInput
   autoCorrect={false}
-  value="apple banana kiwi" />
+  value="apple banana kiwi"
+/>
 `;

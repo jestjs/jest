@@ -24,17 +24,16 @@ export type MockFunctionMetadata = {
 };
 
 type MockFunctionState = {
-  public: {
-    instances: Array<any>,
-    calls: Array<Array<any>>,
-  },
-  private: {
-    isReturnValueLastSet: boolean,
-    defaultReturnValue: any,
-    mockImpl: any,
-    specificReturnValues: Array<any>,
-    specificMockImpls: Array<any>,
-  },
+  instances: Array<any>,
+  calls: Array<Array<any>>,
+}
+
+type MockFunctionConfig = {
+  isReturnValueLastSet: boolean,
+  defaultReturnValue: any,
+  mockImpl: any,
+  specificReturnValues: Array<any>,
+  specificMockImpls: Array<any>,
 };
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
@@ -175,7 +174,8 @@ function getSlots(object?: Object): Array<string> {
 
 class ModuleMockerClass {
   _environmentGlobal: Global;
-  _mockRegistry: WeakMap<Function, MockFunctionState>;
+  _mockState: WeakMap<Function, MockFunctionState>;
+  _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   ModuleMocker: Class<ModuleMockerClass>;
 
   /**
@@ -185,32 +185,43 @@ class ModuleMockerClass {
    */
   constructor(global: Global) {
     this._environmentGlobal = global;
-    this._mockRegistry = new WeakMap();
+    this._mockState = new WeakMap();
+    this._mockConfigRegistry = new WeakMap();
     this.ModuleMocker = ModuleMockerClass;
   }
 
-  _ensureMock(f: Mock): MockFunctionState {
-    let state = this._mockRegistry.get(f);
+  _ensureMockConfig(f: Mock): MockFunctionConfig {
+    let config = this._mockConfigRegistry.get(f);
+    if (!config) {
+      config = this._defaultMockConfig();
+      this._mockConfigRegistry.set(f, config);
+    }
+    return config;
+  }
+
+  _ensureMockState(f: Mock): MockFunctionState {
+    let state = this._mockState.get(f);
     if (!state) {
       state = this._defaultMockState();
-      this._mockRegistry.set(f, state);
+      this._mockState.set(f, state);
     }
     return state;
   }
 
+  _defaultMockConfig(): MockFunctionConfig {
+    return {
+      defaultReturnValue: undefined,
+      isReturnValueLastSet: false,
+      mockImpl: undefined,
+      specificMockImpls: [],
+      specificReturnValues: [],
+    };
+  }
+
   _defaultMockState(): MockFunctionState {
     return {
-      private: {
-        defaultReturnValue: undefined,
-        isReturnValueLastSet: false,
-        mockImpl: undefined,
-        specificMockImpls: [],
-        specificReturnValues: [],
-      },
-      public: {
-        calls: [],
-        instances: [],
-      },
+      calls: [],
+      instances: [],
     };
   }
 
@@ -241,9 +252,10 @@ class ModuleMockerClass {
       const prototypeSlots = getSlots(prototype);
       const mocker = this;
       const mockConstructor = function() {
-        const mockState = mocker._ensureMock(f);
-        mockState.public.instances.push(this);
-        mockState.public.calls.push(Array.prototype.slice.call(arguments));
+        const mockState = mocker._ensureMockState(f);
+        const mockConfig = mocker._ensureMockConfig(f);
+        mockState.instances.push(this);
+        mockState.calls.push(Array.prototype.slice.call(arguments));
         if (this instanceof f) {
           // This is probably being called as a constructor
           prototypeSlots.forEach(slot => {
@@ -259,8 +271,8 @@ class ModuleMockerClass {
 
           // Run the mock constructor implementation
           return (
-            mockState.private.mockImpl &&
-            mockState.private.mockImpl.apply(this, arguments)
+            mockConfig.mockImpl &&
+            mockConfig.mockImpl.apply(this, arguments)
           );
         }
 
@@ -269,10 +281,10 @@ class ModuleMockerClass {
         // mockReturnValueOnce()/mockReturnValue() is called and no
         // mockImplementationOnce()/mockImplementation() is called after that.
         // use the set return value.
-        if (mockState.private.isReturnValueLastSet) {
-          returnValue = mockState.private.specificReturnValues.shift();
+        if (mockConfig.isReturnValueLastSet) {
+          returnValue = mockConfig.specificReturnValues.shift();
           if (returnValue === undefined) {
-            returnValue = mockState.private.defaultReturnValue;
+            returnValue = mockConfig.defaultReturnValue;
           }
         }
 
@@ -280,9 +292,9 @@ class ModuleMockerClass {
         // or specific return values are used up, use the mock implementation.
         let specificMockImpl;
         if (returnValue === undefined) {
-          specificMockImpl = mockState.private.specificMockImpls.shift();
+          specificMockImpl = mockConfig.specificMockImpls.shift();
           if (specificMockImpl === undefined) {
-            specificMockImpl = mockState.private.mockImpl;
+            specificMockImpl = mockConfig.mockImpl;
           }
           if (specificMockImpl) {
             return specificMockImpl.apply(this, arguments);
@@ -299,58 +311,58 @@ class ModuleMockerClass {
 
       f = this._createMockFunction(metadata, mockConstructor);
       f._isMockFunction = true;
-      f.getMockImplementation = () => this._ensureMock(f).private.mockImpl;
+      f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl;
 
-      this._mockRegistry.set(f, this._defaultMockState());
+      this._mockState.set(f, this._defaultMockState());
+      this._mockConfigRegistry.set(f, this._defaultMockConfig());
 
       // $FlowFixMe - defineProperty getters not supported
       Object.defineProperty(f, 'mock', {
         configurable: false,
         enumerable: true,
-        get: () => this._ensureMock(f).public,
-        set: val => this._ensureMock(f).public = val,
+        get: () => this._ensureMockState(f),
+        set: val => this._mockState.set(f, val),
       });
 
       f.mockClear = () => {
-        const publicState = this._ensureMock(f).public;
-        publicState.calls.length = 0;
-        publicState.instances.length = 0;
+        this._mockState.delete(f);
       };
 
       f.mockReset = () => {
-        this._mockRegistry.delete(f);
+        this._mockState.delete(f);
+        this._mockConfigRegistry.delete(f);
       };
 
       f.mockReturnValueOnce = value => {
         // next function call will return this value or default return value
-        const privateState = this._ensureMock(f).private;
-        privateState.isReturnValueLastSet = true;
-        privateState.specificReturnValues.push(value);
+        const mockConfig = this._ensureMockConfig(f);
+        mockConfig.isReturnValueLastSet = true;
+        mockConfig.specificReturnValues.push(value);
         return f;
       };
 
       f.mockReturnValue = value => {
         // next function call will return specified return value or this one
-        const privateState = this._ensureMock(f).private;
-        privateState.isReturnValueLastSet = true;
-        privateState.defaultReturnValue = value;
+        const mockConfig = this._ensureMockConfig(f);
+        mockConfig.isReturnValueLastSet = true;
+        mockConfig.defaultReturnValue = value;
         return f;
       };
 
       f.mockImplementationOnce = fn => {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
-        const privateState = this._ensureMock(f).private;
-        privateState.isReturnValueLastSet = false;
-        privateState.specificMockImpls.push(fn);
+        const mockConfig = this._ensureMockConfig(f);
+        mockConfig.isReturnValueLastSet = false;
+        mockConfig.specificMockImpls.push(fn);
         return f;
       };
 
       f.mockImplementation = fn => {
         // next function call will use mock implementation return value
-        const privateState = this._ensureMock(f).private;
-        privateState.isReturnValueLastSet = false;
-        privateState.mockImpl = fn;
+        const mockConfig = this._ensureMockConfig(f);
+        mockConfig.isReturnValueLastSet = false;
+        mockConfig.mockImpl = fn;
         return f;
       };
 
@@ -580,8 +592,13 @@ class ModuleMockerClass {
     return object[methodName];
   }
 
+  clearAllMocks() {
+    this._mockState = new WeakMap();
+  }
+
   resetAllMocks() {
-    this._mockRegistry = new WeakMap();
+    this._mockConfigRegistry = new WeakMap();
+    this._mockState = new WeakMap();
   }
 }
 

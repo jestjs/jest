@@ -43,6 +43,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   globalMocks?: Array<string> | true,
+  hasteImplModulePath?: string,
   ignorePattern: RegExp,
   maxWorkers: number,
   name: string,
@@ -61,6 +62,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   globalMocks: Array<string> | true,
+  hasteImplModulePath?: string,
   ignorePattern: RegExp,
   maxWorkers: number,
   name: string,
@@ -87,7 +89,7 @@ const VERSION = require('../package.json').version;
 
 const canUseWatchman = ((): boolean => {
   try {
-    execSync('watchman version', {stdio: ['ignore']});
+    execSync('watchman --version', {stdio: ['ignore']});
     return true;
   } catch (e) {}
   return false;
@@ -200,6 +202,7 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       globalMocks: options.globalMocks || [],
+      hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       name: options.name,
@@ -354,7 +357,10 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    return this._getWorker(workerOptions)({filePath}).then(
+    return this._getWorker(workerOptions)({
+      filePath,
+      hasteImplModulePath: this._options.hasteImplModulePath,
+    }).then(
       metadata => {
         // `1` for truthy values instead of `true` to save cache space.
         fileMetadata[H.VISITED] = 1;

@@ -15,7 +15,7 @@ import type {DefaultConfig} from 'types/Config';
 const constants = require('./constants');
 const os = require('os');
 const path = require('path');
-const {replacePathSepForRegex} = require('jest-util');
+const {replacePathSepForRegex} = require('jest-regex-util');
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 
@@ -24,6 +24,7 @@ module.exports = ({
   bail: false,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
+  clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
@@ -46,11 +47,15 @@ module.exports = ({
   preset: null,
   resetMocks: false,
   resetModules: false,
+  roots: ['<rootDir>'],
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
-  testPathDirs: ['<rootDir>'],
+  testMatch: [
+    '**/__tests__/**/*.js?(x)',
+    '**/?(*.)(spec|test).js?(x)',
+  ],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRegex: '',
   testResultsProcessor: null,
   testURL: 'about:blank',
   timers: 'real',

@@ -1,10 +1,10 @@
 {
   "name": "jest",
   "description": "Painless JavaScript Testing.",
-  "version": "18.1.0",
+  "version": "19.0.1",
   "main": "build/jest.js",
   "dependencies": {
-    "jest-cli": "^18.1.0"
+    "jest-cli": "^19.0.1"
   },
   "bin": {
     "jest": "./bin/jest.js"
@@ -16,5 +16,32 @@
     "type": "git",
     "url": "https://github.com/facebook/jest"
   },
-  "license": "BSD-3-Clause"
+  "homepage": "http://facebook.github.io/jest/",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "ava",
+    "babel",
+    "coverage",
+    "easy",
+    "expect",
+    "facebook",
+    "immersive",
+    "instant",
+    "jasmine",
+    "jest",
+    "jsdom",
+    "mocha",
+    "mocking",
+    "painless",
+    "qunit",
+    "runner",
+    "sandboxed",
+    "snapshot",
+    "tap",
+    "tape",
+    "test",
+    "testing",
+    "typescript",
+    "watch"
+  ]
 }

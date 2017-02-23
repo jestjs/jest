@@ -28,7 +28,7 @@ const execSync = require('child_process').execSync;
 const getPackages = require('./_getPackages');
 const os = require('os');
 const path = require('path');
-const runCommands = require('./_runCommands');
+const runCommand = require('./_runCommand');
 
 const TMP = path.resolve(os.tmpdir(), 'jest_npm_package_test');
 const packages = getPackages();
@@ -53,13 +53,13 @@ const tars = packages.map(p => {
 
 console.log('');
 
-runCommands(`rm -rf ${TMP}`);
-runCommands(`mkdir -p ${path.resolve(TMP, 'node_modules')}`);
+runCommand('rm', `-rf ${TMP}`);
+runCommand('mkdir', `-p ${path.resolve(TMP, 'node_modules')}`);
 
-runCommands(`npm i ${tars.join(' ')}`, TMP);
-runCommands(`rm ${tars.join(' ')}`); // clean up
+runCommand('npm', `i ${tars.join(' ')}`, TMP);
+runCommand('rm', tars.join(' ')); // clean up
 
 const JEST_CLI = path.resolve(TMP, 'node_modules/jest-cli/bin/jest.js');
 
-runCommands(`${JEST_CLI}`, path.resolve(__dirname, '../integration_tests'));
-runCommands(`rm -rf ${TMP}`);
+runCommand(JEST_CLI, '', path.resolve(__dirname, '../integration_tests'));
+runCommand('rm', `-rf ${TMP}`);

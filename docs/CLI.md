@@ -87,7 +87,7 @@ Show some helpful information, similar to this page.
 
 Prints the test results in JSON. This mode will send all other test output and user messages to stderr.
 
-### `--jsonOutputFile=<filename>`
+### `--outputFile=<filename>`
 
 Write test results to a file when the `--json` option is also specified.
 

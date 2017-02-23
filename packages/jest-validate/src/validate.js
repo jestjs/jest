@@ -15,8 +15,23 @@ import type {ValidationOptions} from './types';
 const defaultConfig = require('./defaultConfig');
 
 const _validate = (config: Object, options: ValidationOptions) => {
+  let hasDeprecationWarnings = false;
+
   for (const key in config) {
-    if (hasOwnProperty.call(options.exampleConfig, key)) {
+    if (
+      options.deprecatedConfig &&
+      key in options.deprecatedConfig &&
+      typeof options.deprecate === 'function'
+    ) {
+      const isDeprecatedKey = options.deprecate(
+        config,
+        key,
+        options.deprecatedConfig,
+        options,
+      );
+
+      hasDeprecationWarnings = hasDeprecationWarnings || isDeprecatedKey;
+    } else if (hasOwnProperty.call(options.exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
         typeof options.error === 'function' &&
@@ -24,17 +39,13 @@ const _validate = (config: Object, options: ValidationOptions) => {
       ) {
         options.error(key, config[key], options.exampleConfig[key], options);
       }
-    } else if (
-      options.deprecatedConfig &&
-      key in options.deprecatedConfig &&
-      typeof options.deprecate === 'function'
-    ) {
-      options.deprecate(config, key, options.deprecatedConfig, options);
     } else {
       options.unknown &&
         options.unknown(config, options.exampleConfig, key, options);
     }
   }
+
+  return {hasDeprecationWarnings};
 };
 
 const validate = (config: Object, options: ValidationOptions) => {
@@ -47,9 +58,12 @@ const validate = (config: Object, options: ValidationOptions) => {
     {title: Object.assign({}, defaultConfig.title, options.title)},
   );
 
-  _validate(config, defaultedOptions);
+  const {hasDeprecationWarnings} = _validate(config, defaultedOptions);
 
-  return true;
+  return {
+    hasDeprecationWarnings,
+    isValid: true,
+  };
 };
 
 module.exports = validate;
