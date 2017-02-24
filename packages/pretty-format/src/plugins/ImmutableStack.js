@@ -9,7 +9,7 @@
 
 'use strict';
 
-const traverseImmutable = require('./traverseImmutable');
+const printImmutable = require('./printImmutable');
 const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
 
 const isStack = (maybeStack: Object) => {
@@ -23,7 +23,7 @@ const printImmutableStack = (
   opts: Object,
   colors: Object
 ) => {
-  return traverseImmutable(val, print, indent, opts, colors);
+  return printImmutable(val, print, indent, opts, colors, 'Stack');
 };
 
 module.exports = {

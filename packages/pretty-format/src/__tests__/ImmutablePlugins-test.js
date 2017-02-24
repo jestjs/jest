@@ -25,55 +25,55 @@ function assertImmutableObject(actual, expected, opts) {
       plugins: [
         ImmutableOrderedSet, 
         ImmutableList, 
-        ImmutableStack,
-        ImmutableSet,
-        ImmutableMap,
         ImmutableOrderedMap,
+        ImmutableMap,
+        ImmutableSet,
+        ImmutableStack,
       ],
     }, opts))
   ).toEqual(expected);
 }
 
-describe('ImmutableOrderedSet plugin', () => {
+describe('Immutable.OrderedSet plugin', () => {
   it('supports an empty set', () => {
     assertImmutableObject(
       Immutable.OrderedSet([]),
-      'Immutable.OrderedSet {}'
+      'Immutable.OrderedSet []'
     );
   });
 
   it('supports a single string element', () => {
     assertImmutableObject(
       Immutable.OrderedSet(['foo']),
-      'Immutable.OrderedSet { "foo" }'
+      'Immutable.OrderedSet [ "foo" ]'
     );
   });
 
   it('supports a single integer element', () => {
     assertImmutableObject(
       Immutable.OrderedSet([1]),
-      'Immutable.OrderedSet { 1 }'
+      'Immutable.OrderedSet [ 1 ]'
     );
   });
 
   it('supports multiple string elements', () => {
     assertImmutableObject(
       Immutable.OrderedSet(['jhon', 'mike', 'cristian']),
-      'Immutable.OrderedSet { "jhon", "mike", "cristian" }'
+      'Immutable.OrderedSet [ "jhon", "mike", "cristian" ]'
     );
   });
 
   it('supports multiple integer elements', () => {
     assertImmutableObject(
       Immutable.OrderedSet([1, 2, 3]),
-      'Immutable.OrderedSet { 1, 2, 3 }'
+      'Immutable.OrderedSet [ 1, 2, 3 ]'
     );
   });
 
   it('supports object elements', () => {
     assertImmutableObject(
       Immutable.OrderedSet([{a: 1, b: 2, c: 3}]),
-      'Immutable.OrderedSet { \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+      'Immutable.OrderedSet [ Object {\n  \"a\": 1,\n  \"b\": 2,\n  \"c\": 3,\n} ]'
     );
   });
 
@@ -81,12 +81,12 @@ describe('ImmutableOrderedSet plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.OrderedSet([reactComponent, reactComponent]),
-      'Immutable.OrderedSet { \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+      'Immutable.OrderedSet [ <Mouse>\n  Hello World\n</Mouse> ]'
     );
   });
 });
 
-describe('ImmutableList plugin', () => {
+describe('Immutable.List plugin', () => {
   it('supports an empty set', () => {
     assertImmutableObject(
       Immutable.List([]),
@@ -125,7 +125,7 @@ describe('ImmutableList plugin', () => {
   it('supports object elements', () => {
     assertImmutableObject(
       Immutable.List([{a: 1, b: 2, c: 3}]),
-      'Immutable.List [ \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" ]'
+      'Immutable.List [ Object {\n  \"a\": 1,\n  \"b\": 2,\n  \"c\": 3,\n} ]'
     );
   });
 
@@ -133,12 +133,12 @@ describe('ImmutableList plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.List([reactComponent, reactComponent]),
-      'Immutable.List [ \"<Mouse>\\n  Hello World\\n</Mouse>\", \"<Mouse>\\n  Hello World\\n</Mouse>\" ]'
+      'Immutable.List [ <Mouse>\n  Hello World\n</Mouse>, <Mouse>\n  Hello World\n</Mouse> ]'
     );
   });
 });
 
-describe('ImmutableStack plugin', () => {
+describe('Immutable.Stack plugin', () => {
   it('supports an empty set', () => {
     assertImmutableObject(
       Immutable.Stack([]),
@@ -177,7 +177,7 @@ describe('ImmutableStack plugin', () => {
   it('supports object elements', () => {
     assertImmutableObject(
       Immutable.Stack([{a: 1, b: 2, c: 3}]),
-      'Immutable.Stack [ \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" ]'
+      'Immutable.Stack [ Object {\n  \"a\": 1,\n  \"b\": 2,\n  \"c\": 3,\n} ]'
     );
   });
 
@@ -185,51 +185,51 @@ describe('ImmutableStack plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.Stack([reactComponent, reactComponent]),
-      'Immutable.Stack [ \"<Mouse>\\n  Hello World\\n</Mouse>\", \"<Mouse>\\n  Hello World\\n</Mouse>\" ]'
+      'Immutable.Stack [ <Mouse>\n  Hello World\n</Mouse>, <Mouse>\n  Hello World\n</Mouse> ]'
     );
   });
 });
 
-describe('ImmutableSet plugin', () => {
+describe('Immutable.Set plugin', () => {
   it('supports an empty set', () => {
     assertImmutableObject(
       Immutable.Set([]),
-      'Immutable.Set {}'
+      'Immutable.Set []'
     );
   });
 
   it('supports a single string element', () => {
     assertImmutableObject(
       Immutable.Set(['foo']),
-      'Immutable.Set { "foo" }'
+      'Immutable.Set [ "foo" ]'
     );
   });
 
   it('supports a single integer element', () => {
     assertImmutableObject(
       Immutable.Set([1]),
-      'Immutable.Set { 1 }'
+      'Immutable.Set [ 1 ]'
     );
   });
 
   it('supports multiple string elements', () => {
     assertImmutableObject(
       Immutable.Set(['jhon', 'mike', 'cristian']),
-      'Immutable.Set { "jhon", "mike", "cristian" }'
+      'Immutable.Set [ "jhon", "mike", "cristian" ]'
     );
   });
 
   it('supports multiple integer elements', () => {
     assertImmutableObject(
       Immutable.Set([1, 2, 3]),
-      'Immutable.Set { 1, 2, 3 }'
+      'Immutable.Set [ 1, 2, 3 ]'
     );
   });
 
   it('supports object elements', () => {
     assertImmutableObject(
       Immutable.Set([{a: 1, b: 2, c: 3}]),
-      'Immutable.Set { \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+      'Immutable.Set [ Object {\n  \"a\": 1,\n  \"b\": 2,\n  \"c\": 3,\n} ]'
     );
   });
 
@@ -237,37 +237,37 @@ describe('ImmutableSet plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.Set([reactComponent, reactComponent]),
-      'Immutable.Set { \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+      'Immutable.Set [ <Mouse>\n  Hello World\n</Mouse> ]'
     );
   });
 });
 
-describe('ImmutableMap plugin', () => {
+describe('Immutable.Map plugin', () => {
   it('supports an empty set', () => {
     assertImmutableObject(
       Immutable.Map({}),
-      'Immutable.Map {}'
+      'Immutable.Map []'
     );
   });
 
   it('supports an object with single key', () => {
     assertImmutableObject(
       Immutable.Map({a: 1}),
-      'Immutable.Map { "a": 1 }'
+      'Immutable.Map [ a: 1 ]'
     );
   });
 
   it('supports an object with multiple keys', () => {
     assertImmutableObject(
       Immutable.Map({a: 1, b: 2, c: 3}),
-      'Immutable.Map { "a": 1, "b": 2, "c": 3 }'
+      'Immutable.Map [ a: 1, b: 2, c: 3 ]'
     );
   });
 
   it('supports object elements', () => {
     assertImmutableObject(
       Immutable.Map({key: {a: 1, b: 2, c: 3}}),
-      'Immutable.Map { \"key\": \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+      'Immutable.Map [ key: Object {\n  \"a\": 1,\n  \"b\": 2,\n  \"c\": 3,\n} ]'
     );
   });
 
@@ -275,37 +275,37 @@ describe('ImmutableMap plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.Map({a: reactComponent, b: reactComponent}),
-      'Immutable.Map { \"a\": \"<Mouse>\\n  Hello World\\n</Mouse>\", \"b\": \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+      'Immutable.Map [ a: <Mouse>\n  Hello World\n</Mouse>, b: <Mouse>\n  Hello World\n</Mouse> ]'
     );
   });
 });
 
-describe('ImmutableOrderedMap plugin', () => {
+describe('Immutable.OrderedMap plugin', () => {
   it('supports an empty set', () => {
     assertImmutableObject(
       Immutable.OrderedMap({}),
-      'Immutable.OrderedMap {}'
+      'Immutable.OrderedMap []'
     );
   });
 
   it('supports an object with single key', () => {
     assertImmutableObject(
       Immutable.OrderedMap({a: 1}),
-      'Immutable.OrderedMap { "a": 1 }'
+      'Immutable.OrderedMap [ a: 1 ]'
     );
   });
 
   it('supports an object with multiple keys', () => {
     assertImmutableObject(
       Immutable.OrderedMap({a: 1, b: 2, c: 3}),
-      'Immutable.OrderedMap { "a": 1, "b": 2, "c": 3 }'
+      'Immutable.OrderedMap [ a: 1, b: 2, c: 3 ]'
     );
   });
 
   it('supports object elements', () => {
     assertImmutableObject(
       Immutable.OrderedMap({key: {a: 1, b: 2, c: 3}}),
-      'Immutable.OrderedMap { \"key\": \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+      'Immutable.OrderedMap [ key: Object {\n  \"a\": 1,\n  \"b\": 2,\n  \"c\": 3,\n} ]'
     );
   });
 
@@ -313,7 +313,7 @@ describe('ImmutableOrderedMap plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.OrderedMap({a: reactComponent, b: reactComponent}),
-      'Immutable.OrderedMap { \"a\": \"<Mouse>\\n  Hello World\\n</Mouse>\", \"b\": \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+      'Immutable.OrderedMap [ a: <Mouse>\n  Hello World\n</Mouse>, b: <Mouse>\n  Hello World\n</Mouse> ]'
     );
   });
 });

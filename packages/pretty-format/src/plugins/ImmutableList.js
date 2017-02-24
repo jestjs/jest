@@ -9,7 +9,7 @@
 
 'use strict';
 
-const traverseImmutable = require('./traverseImmutable');
+const printImmutable = require('./printImmutable');
 const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
 
 const isList = (maybeList: Object) => {
@@ -23,7 +23,7 @@ const printImmutableList = (
   opts: Object,
   colors: Object
 ) => {
-  return traverseImmutable(val, print, indent, opts, colors);
+  return printImmutable(val, print, indent, opts, colors, 'List');
 };
 
 module.exports = {

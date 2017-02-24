@@ -9,7 +9,7 @@
 
 'use strict';
 
-const traverseImmutable = require('./traverseImmutable');
+const printImmutable = require('./printImmutable');
 const IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
 
 const isMap = (maybeMap: Object) => {
@@ -23,7 +23,7 @@ const printImmutableMap = (
   opts: Object,
   colors: Object
 ) => {
-  return traverseImmutable(val, print, indent, opts, colors);
+  return printImmutable(val, print, indent, opts, colors, 'Map', true);
 };
 
 module.exports = {

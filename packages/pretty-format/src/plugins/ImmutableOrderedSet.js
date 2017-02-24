@@ -9,7 +9,7 @@
 
 'use strict';
 
-const traverseImmutable = require('./traverseImmutable');
+const printImmutable = require('./printImmutable');
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
@@ -32,7 +32,7 @@ const printImmutableOrderedSet = (
   opts: Object,
   colors: Object
 ) => {
-  return traverseImmutable(val, print, indent, opts, colors);
+  return printImmutable(val, print, indent, opts, colors, 'OrderedSet');
 };
 
 module.exports = {

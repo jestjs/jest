@@ -24,8 +24,8 @@ const PLUGINS = [
   AsymmetricMatcherPlugin, 
   ImmutableOrderedSetPlugin, 
   ImmutableListPlugin,
-  ImmutableMapPlugin,
   ImmutableOrderedMapPlugin,
+  ImmutableMapPlugin,
   ImmutableSetPlugin,
   ImmutableStackPlugin,
 ];
