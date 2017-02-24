@@ -18,7 +18,7 @@ const readPkg = require('read-pkg');
 
 function loadFromPackage(root: Path, argv: Object) {
   return readPkg(root).then(
-    (packageData) => {
+    packageData => {
       const config = packageData.jest || {};
       config.rootDir = config.rootDir
         ? path.resolve(root, config.rootDir)

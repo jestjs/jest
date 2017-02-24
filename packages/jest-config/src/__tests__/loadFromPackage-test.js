@@ -15,17 +15,17 @@ const loadFromPackage = require('../loadFromPackage');
 
 describe('loadFromPackage', () => {
   const MOCK_FILE_INFO = {
+    '.': `{
+      "jest": {
+        "testMatch": ["match.js"]
+      }
+    }`,
     'broken': `{
       "jest": {
         "testMatch": ["match.js"
       }
     }`,
     'withoutJest': `{
-    }`,
-    '.': `{
-      "jest": {
-        "testMatch": ["match.js"]
-      }
     }`,
     'withRootDir': `{
       "jest": {
