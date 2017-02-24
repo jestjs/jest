@@ -17,6 +17,7 @@ const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
 const resolve = require('resolve');
 const browserResolve = require('browser-resolve');
+const isBuiltinModule = require('is-builtin-module');
 
 type ResolverConfig = {|
   browser?: boolean,
@@ -177,10 +178,7 @@ class Resolver {
   isCoreModule(moduleName: string): boolean {
     return (
       this._options.hasCoreModules &&
-      (
-        resolve.isCore(moduleName) ||
-        moduleName === 'v8'
-      )
+      isBuiltinModule(moduleName)
     );
   }
 
