@@ -226,7 +226,7 @@ describe('transform', () => {
     expect(vm.Script.mock.calls[2][0]).toMatchSnapshot();
   });
 
-  it('instruments with source map if preprocessor supplies it', () => {
+  it('writes source map if preprocessor supplies it', () => {
     config = Object.assign(config, {
       collectCoverage: true,
       mapCoverage: true,
@@ -252,7 +252,7 @@ describe('transform', () => {
     );
   });
 
-  it('instruments with source map if preprocessor inlines it', () => {
+  it('writes source map if preprocessor inlines it', () => {
     config = Object.assign(config, {
       collectCoverage: true,
       mapCoverage: true,
@@ -279,21 +279,21 @@ describe('transform', () => {
     );
   });
 
-  it('does not instrument with source map if mapCoverage config option is false', () => {
+  it('does not write source map if mapCoverage config option is false', () => {
     config = Object.assign(config, {
       collectCoverage: true,
       mapCoverage: false,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
 
-    const sourceMap = { 
+    const map = { 
       mappings: ';AAAA', 
       version: 3, 
     };
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      content: 'content',
-      sourceMap,
+      code: 'content',
+      map,
     });
 
     const result = transform('/fruits/banana.js', config);

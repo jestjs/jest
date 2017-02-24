@@ -21,7 +21,6 @@ export type RawFileCoverage = {|
   statementMap: { [statementId: number]: any },
   branchMap: { [branchId: number]: any },
   inputSourceMap?: Object,
-  inputSourceMapPath?: string,
 |};
 
 export type RawCoverage = {
