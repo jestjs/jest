@@ -22,8 +22,8 @@ const printImmutable = (
   indent: Function,
   opts: Object,
   colors: Object,
-  immutableDataStructureName: String,
-  isMap: Boolean,
+  immutableDataStructureName: string,
+  isMap: boolean,
 ) : string => {
   let result = IMMUTABLE_NAMESPACE + immutableDataStructureName;
   
@@ -31,7 +31,7 @@ const printImmutable = (
     return result + ' []';
   }
 
-  result += " [ ";
+  result += ' [ ';
   
   val.forEach((item: any, key: any) => {
     if (reactPlugin.test(item)) {

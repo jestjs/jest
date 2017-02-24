@@ -23,7 +23,7 @@ const printImmutableStack = (
   opts: Object,
   colors: Object
 ) => {
-  return printImmutable(val, print, indent, opts, colors, 'Stack');
+  return printImmutable(val, print, indent, opts, colors, 'Stack', false);
 };
 
 module.exports = {

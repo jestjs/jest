@@ -23,7 +23,7 @@ const printImmutableList = (
   opts: Object,
   colors: Object
 ) => {
-  return printImmutable(val, print, indent, opts, colors, 'List');
+  return printImmutable(val, print, indent, opts, colors, 'List', false);
 };
 
 module.exports = {

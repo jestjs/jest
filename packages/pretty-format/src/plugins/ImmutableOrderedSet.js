@@ -32,7 +32,7 @@ const printImmutableOrderedSet = (
   opts: Object,
   colors: Object
 ) => {
-  return printImmutable(val, print, indent, opts, colors, 'OrderedSet');
+  return printImmutable(val, print, indent, opts, colors, 'OrderedSet', false);
 };
 
 module.exports = {
