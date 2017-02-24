@@ -25,12 +25,12 @@ describe('loadFromPackage', () => {
         "testMatch": ["match.js"
       }
     }`,
-    'withoutJest': `{
-    }`,
     'withRootDir': `{
       "jest": {
         "rootDir": "testDir"
       }
+    }`,
+    'withoutJest': `{
     }`,
   };
 
