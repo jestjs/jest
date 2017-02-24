@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "browser-resolve": "^1.11.2",
+    "is-builtin-module": "^1.0.0",
     "jest-haste-map": "^19.0.0",
     "resolve": "^1.2.0"
   }
