@@ -64,7 +64,8 @@ const createTransformer = (options: any) => {
       configString: string,
       {instrument, watch}: TransformOptions,
     ): string {
-      return crypto.createHash('md5')
+      return crypto
+        .createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
         .update(fileData)

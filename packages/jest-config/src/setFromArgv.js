@@ -33,7 +33,7 @@ function setFromArgv(config, argv) {
     config.cache = argv.cache;
   }
 
-  if (argv.watchman !== null) {
+  if (config.watchman === undefined && argv.watchman !== null) {
     config.watchman = argv.watchman;
   }
 

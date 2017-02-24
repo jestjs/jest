@@ -39,7 +39,7 @@ type FindNodeModuleConfig = {|
 
 type ModuleNameMapperConfig = {|
   regex: RegExp,
-  moduleName: string
+  moduleName: string,
 |};
 
 type BooleanObject = {[key: string]: boolean};
@@ -56,7 +56,7 @@ const nodePaths =
 class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
-  _moduleIDCache : {[key: string]: string};
+  _moduleIDCache: {[key: string]: string};
   _moduleNameCache: {[name: string]: Path};
   _modulePathCache: {[path: Path]: Array<Path>};
 
@@ -65,15 +65,16 @@ class Resolver {
       browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
-      hasCoreModules:
-        options.hasCoreModules === undefined ? true : options.hasCoreModules,
+      hasCoreModules: options.hasCoreModules === undefined
+        ? true
+        : options.hasCoreModules,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
       platforms: options.platforms,
     };
     this._moduleMap = moduleMap;
-    this._moduleIDCache  = Object.create(null);
+    this._moduleIDCache = Object.create(null);
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
   }
@@ -127,7 +128,16 @@ class Resolver {
 
     // 2. Check if the module is a node module and resolve it based on
     //    the node module resolution algorithm.
-    if (!options || !options.skipNodeResolution) {
+    // If skipNodeResolution is given we ignore all modules that look like
+    // node modules (ie. are not relative requires). This enables us to speed
+    // up resolution when we build a dependency graph because we don't have
+    // to look at modules that may not exist and aren't mocked.
+    const skipResolution =
+      options &&
+      options.skipNodeResolution &&
+      !moduleName.includes(path.sep);
+
+    if (!skipResolution) {
       module = Resolver.findNodeModule(moduleName, {
         basedir: dirname,
         browser: this._options.browser,
@@ -325,7 +335,6 @@ class Resolver {
   _supportsNativePlatform() {
     return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
-
 }
 
 module.exports = Resolver;

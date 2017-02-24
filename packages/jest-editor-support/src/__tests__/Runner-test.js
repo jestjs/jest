@@ -10,7 +10,7 @@
 
 const {EventEmitter} = require('events');
 const path = require('path');
-const fixtures = path.resolve(__dirname, 'fixtures');
+const fixtures = path.resolve(__dirname, '../../../../fixtures');
 const ProjectWorkspace = require('../ProjectWorkspace');
 
 const {readFileSync} = require('fs');

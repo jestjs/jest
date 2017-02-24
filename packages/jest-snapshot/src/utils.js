@@ -26,9 +26,9 @@ const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
 const SNAPSHOT_VERSION_WARNING = chalk.yellow(
-  `${chalk.bold('Warning')}: It is advised to revert any local changes to ` +
-  `tests or other code during this upgrade to ensure that no invalid state ` +
-  `is stored as a snapshot.`
+  `${chalk.bold('Warning')}: Before you upgrade snapshots, ` +
+  `we recommend that you revert any local changes to tests or other code, ` +
+  `to ensure that you do not store invalid state.`
 );
 
 const writeSnapshotVersion = () =>
@@ -36,7 +36,7 @@ const writeSnapshotVersion = () =>
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = (versionTest && versionTest[1]);
+  const version = versionTest && versionTest[1];
 
   if (!version) {
     return new Error(
@@ -169,7 +169,7 @@ const saveSnapshotFile = (
   ensureDirectoryExists(snapshotPath);
   fs.writeFileSync(
     snapshotPath,
-    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n'
+    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
 };
 

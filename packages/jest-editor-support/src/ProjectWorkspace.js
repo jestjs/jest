@@ -34,7 +34,6 @@ module.exports = class ProjectWorkspace {
    */
   pathToJest: string;
 
-
   /**
    * Path to a local Jest config file.
    *

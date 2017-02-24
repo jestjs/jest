@@ -20,10 +20,10 @@ const SnapshotState = require('./State');
 const {addSerializer, getSerializers} = require('./plugins');
 
 const {
- EXPECTED_COLOR,
- ensureNoExpected,
- matcherHint,
- RECEIVED_COLOR,
+  EXPECTED_COLOR,
+  ensureNoExpected,
+  matcherHint,
+  RECEIVED_COLOR,
 } = require('jest-matcher-utils');
 const {SNAPSHOT_EXTENSION} = require('./utils');
 
@@ -64,9 +64,7 @@ const toMatchSnapshot = function(received: any, testName?: string) {
   const {currentTestName, isNot, snapshotState} = this;
 
   if (isNot) {
-    throw new Error(
-      'Jest: `.not` cannot be used with `.toMatchSnapshot()`.',
-    );
+    throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
   }
 
   if (!snapshotState) {

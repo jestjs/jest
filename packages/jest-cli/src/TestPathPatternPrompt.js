@@ -42,47 +42,35 @@ module.exports = (
     searchSource: SearchSource;
 
     constructor() {
-      (this:any).onChange = this.onChange.bind(this);
+      (this: any).onChange = this.onChange.bind(this);
     }
 
-    run(
-      onSuccess: Function,
-      onCancel: Function,
-    ) {
+    run(onSuccess: Function, onCancel: Function) {
       pipe.write(ansiEscapes.cursorHide);
       pipe.write(ansiEscapes.clearScreen);
       pipe.write(usage());
       pipe.write(ansiEscapes.cursorShow);
 
-      prompt.enter(
-        this.onChange,
-        onSuccess,
-        onCancel,
-      );
+      prompt.enter(this.onChange, onSuccess, onCancel);
     }
 
-    onChange(
-      pattern: string,
-    ) {
+    onChange(pattern: string) {
       let regex;
 
       try {
         regex = new RegExp(pattern, 'i');
       } catch (e) {}
 
-      const paths = regex ?
-        this.searchSource.findMatchingTests(pattern).paths : [];
+      const paths = regex
+        ? this.searchSource.findMatchingTests(pattern).paths
+        : [];
 
       pipe.write(ansiEscapes.eraseLine);
       pipe.write(ansiEscapes.cursorLeft);
       this.printTypeahead(pattern, paths, 10);
     }
 
-    printTypeahead(
-      pattern: string,
-      allResults: Array<Path>,
-      max: number,
-    ) {
+    printTypeahead(pattern: string, allResults: Array<Path>, max: number) {
       const total = allResults.length;
       const results = allResults.slice(0, max);
       const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
@@ -107,9 +95,8 @@ module.exports = (
             const filePath = trimAndFormatPath(padding, config, rawPath, width);
             return highlight(rawPath, filePath, pattern, config.rootDir);
           })
-          .forEach(
-            filePath => pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`)
-          );
+          .forEach(filePath =>
+            pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
 
         if (total > max) {
           const more = total - max;
@@ -127,9 +114,7 @@ module.exports = (
       pipe.write(ansiEscapes.cursorRestorePosition);
     }
 
-    updateSearchSource(
-      hasteContext: HasteContext,
-    ) {
+    updateSearchSource(hasteContext: HasteContext) {
       this.searchSource = new SearchSource(hasteContext, config);
     }
   }

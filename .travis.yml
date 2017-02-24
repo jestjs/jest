@@ -1,8 +1,6 @@
 language: node_js
 
 node_js:
-  - "4"
-  - "6"
   - "7"
 
 sudo: false
@@ -13,8 +11,5 @@ cache:
     - ".eslintcache"
     - "node_modules"
 
-script: 
-  - yarn run test-ci
-  - (cd danger && yarn install)
-  - yarn run danger
-
+script:
+  - yarn run test-ci-partial

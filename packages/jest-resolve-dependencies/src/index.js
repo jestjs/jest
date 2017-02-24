@@ -40,10 +40,7 @@ class DependencyResolver {
     this._hasteFS = hasteFS;
   }
 
-  resolve(
-    file: Path,
-    options?: ResolveModuleConfig,
-  ): Array<Path> {
+  resolve(file: Path, options?: ResolveModuleConfig): Array<Path> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
       return [];
@@ -108,7 +105,6 @@ class DependencyResolver {
     }));
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
-
 }
 
 module.exports = DependencyResolver;
