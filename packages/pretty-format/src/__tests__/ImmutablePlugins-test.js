@@ -5,9 +5,11 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+ /* eslint-disable max-len */
 
 'use strict';
 
+const React = require('react');
 const prettyFormat = require('../');
 const Immutable = require('immutable');
 const ImmutableOrderedSet = require('../plugins/ImmutableOrderedSet');
@@ -67,6 +69,21 @@ describe('ImmutableOrderedSet plugin', () => {
       'Immutable.OrderedSet { 1, 2, 3 }'
     );
   });
+
+  it('supports object elements', () => {
+    assertImmutableObject(
+      Immutable.OrderedSet([{a: 1, b: 2, c: 3}]),
+      'Immutable.OrderedSet { \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+    );
+  });
+
+  it('supports React components', () => {
+    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+    assertImmutableObject(
+      Immutable.OrderedSet([reactComponent, reactComponent]),
+      'Immutable.OrderedSet { \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+    );
+  });
 });
 
 describe('ImmutableList plugin', () => {
@@ -102,6 +119,21 @@ describe('ImmutableList plugin', () => {
     assertImmutableObject(
       Immutable.List([1, 2, 3]),
       'Immutable.List [ 1, 2, 3 ]'
+    );
+  });
+
+  it('supports object elements', () => {
+    assertImmutableObject(
+      Immutable.List([{a: 1, b: 2, c: 3}]),
+      'Immutable.List [ \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" ]'
+    );
+  });
+
+  it('supports React components', () => {
+    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+    assertImmutableObject(
+      Immutable.List([reactComponent, reactComponent]),
+      'Immutable.List [ \"<Mouse>\\n  Hello World\\n</Mouse>\", \"<Mouse>\\n  Hello World\\n</Mouse>\" ]'
     );
   });
 });
@@ -141,6 +173,21 @@ describe('ImmutableStack plugin', () => {
       'Immutable.Stack [ 1, 2, 3 ]'
     );
   });
+
+  it('supports object elements', () => {
+    assertImmutableObject(
+      Immutable.Stack([{a: 1, b: 2, c: 3}]),
+      'Immutable.Stack [ \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" ]'
+    );
+  });
+
+  it('supports React components', () => {
+    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+    assertImmutableObject(
+      Immutable.Stack([reactComponent, reactComponent]),
+      'Immutable.Stack [ \"<Mouse>\\n  Hello World\\n</Mouse>\", \"<Mouse>\\n  Hello World\\n</Mouse>\" ]'
+    );
+  });
 });
 
 describe('ImmutableSet plugin', () => {
@@ -178,6 +225,21 @@ describe('ImmutableSet plugin', () => {
       'Immutable.Set { 1, 2, 3 }'
     );
   });
+
+  it('supports object elements', () => {
+    assertImmutableObject(
+      Immutable.Set([{a: 1, b: 2, c: 3}]),
+      'Immutable.Set { \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+    );
+  });
+
+  it('supports React components', () => {
+    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+    assertImmutableObject(
+      Immutable.Set([reactComponent, reactComponent]),
+      'Immutable.Set { \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+    );
+  });
 });
 
 describe('ImmutableMap plugin', () => {
@@ -201,6 +263,21 @@ describe('ImmutableMap plugin', () => {
       'Immutable.Map { "a": 1, "b": 2, "c": 3 }'
     );
   });
+
+  it('supports object elements', () => {
+    assertImmutableObject(
+      Immutable.Map({key: {a: 1, b: 2, c: 3}}),
+      'Immutable.Map { \"key\": \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+    );
+  });
+
+  it('supports React components', () => {
+    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+    assertImmutableObject(
+      Immutable.Map({a: reactComponent, b: reactComponent}),
+      'Immutable.Map { \"a\": \"<Mouse>\\n  Hello World\\n</Mouse>\", \"b\": \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
+    );
+  });
 });
 
 describe('ImmutableOrderedMap plugin', () => {
@@ -222,6 +299,21 @@ describe('ImmutableOrderedMap plugin', () => {
     assertImmutableObject(
       Immutable.OrderedMap({a: 1, b: 2, c: 3}),
       'Immutable.OrderedMap { "a": 1, "b": 2, "c": 3 }'
+    );
+  });
+
+  it('supports object elements', () => {
+    assertImmutableObject(
+      Immutable.OrderedMap({key: {a: 1, b: 2, c: 3}}),
+      'Immutable.OrderedMap { \"key\": \"Object {\\n  \\\"a\\\": 1,\\n  \\\"b\\\": 2,\\n  \\\"c\\\": 3,\\n}\" }'
+    );
+  });
+
+  it('supports React components', () => {
+    const reactComponent = React.createElement('Mouse', null, 'Hello World');
+    assertImmutableObject(
+      Immutable.OrderedMap({a: reactComponent, b: reactComponent}),
+      'Immutable.OrderedMap { \"a\": \"<Mouse>\\n  Hello World\\n</Mouse>\", \"b\": \"<Mouse>\\n  Hello World\\n</Mouse>\" }'
     );
   });
 });

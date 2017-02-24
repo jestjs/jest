@@ -9,15 +9,21 @@
 
 'use strict';
 
-const IMMUTABLE_NAMESPACE = 'Immutable.';
+const traverseImmutable = require('./traverseImmutable');
 const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
 
 const isStack = (maybeStack: Object) => {
   return !!(maybeStack && maybeStack[IS_STACK_SENTINEL]);
 };
 
-const printImmutableStack = (val: Object) => {
-  return IMMUTABLE_NAMESPACE + val.toString();
+const printImmutableStack = (
+  val: Object, 
+  print: Function,
+  indent: Function,
+  opts: Object,
+  colors: Object
+) => {
+  return traverseImmutable(val, print, indent, opts, colors);
 };
 
 module.exports = {

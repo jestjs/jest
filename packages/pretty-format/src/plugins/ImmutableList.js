@@ -9,15 +9,21 @@
 
 'use strict';
 
-const IMMUTABLE_NAMESPACE = 'Immutable.';
+const traverseImmutable = require('./traverseImmutable');
 const IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
 
 const isList = (maybeList: Object) => {
   return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
 };
 
-const printImmutableList = (val: Object) => {  
-  return IMMUTABLE_NAMESPACE + val.toString();
+const printImmutableList = (
+  val: Object, 
+  print: Function,
+  indent: Function,
+  opts: Object,
+  colors: Object
+) => {
+  return traverseImmutable(val, print, indent, opts, colors);
 };
 
 module.exports = {

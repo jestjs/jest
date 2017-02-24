@@ -9,15 +9,21 @@
 
 'use strict';
 
-const IMMUTABLE_NAMESPACE = 'Immutable.';
+const traverseImmutable = require('./traverseImmutable');
 const IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
 
 const isMap = (maybeMap: Object) => {
   return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
 };
 
-const printImmutableMap = (val: Object) => {
-  return IMMUTABLE_NAMESPACE + val.toString();
+const printImmutableMap = (
+  val: Object, 
+  print: Function,
+  indent: Function,
+  opts: Object,
+  colors: Object
+) => {
+  return traverseImmutable(val, print, indent, opts, colors);
 };
 
 module.exports = {

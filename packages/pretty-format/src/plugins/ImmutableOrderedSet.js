@@ -9,7 +9,7 @@
 
 'use strict';
 
-const IMMUTABLE_NAMESPACE = 'Immutable.';
+const traverseImmutable = require('./traverseImmutable');
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
 
@@ -25,8 +25,14 @@ const isOrderedSet = (maybeOrderedSet: Object) => {
   return isSet(maybeOrderedSet) && isOrdered(maybeOrderedSet);
 };
 
-const printImmutableOrderedSet = (val: Object) => {  
-  return IMMUTABLE_NAMESPACE + val.toString();
+const printImmutableOrderedSet = (
+  val: Object, 
+  print: Function,
+  indent: Function,
+  opts: Object,
+  colors: Object
+) => {
+  return traverseImmutable(val, print, indent, opts, colors);
 };
 
 module.exports = {
