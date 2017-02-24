@@ -24,7 +24,7 @@ describe('isCoreModule', () => {
     expect(isCore).toEqual(false);
   });
 
-  it('returns true if `hasCoreModules` is false and `moduleName` is a core module.', () => {
+  it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
     const moduleMap = new ModuleMap();
     const resolver = new Resolver(moduleMap, {
       browser: false,
@@ -33,7 +33,7 @@ describe('isCoreModule', () => {
     expect(isCore).toEqual(true);
   });
 
-  it('returns false if `hasCoreModules` is false and `moduleName` is not a core module.', () => {
+  it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
     const moduleMap = new ModuleMap();
     const resolver = new Resolver(moduleMap, {
       browser: false,
