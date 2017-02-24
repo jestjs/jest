@@ -43,7 +43,7 @@ const getBabelRC = (filename, {useCache}) => {
   return cache[directory] || '';
 };
 
-const babylonParser = (file: string) => {
+const parse = (file: string) => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
 
@@ -196,5 +196,5 @@ const babylonParser = (file: string) => {
 };
 
 module.exports = {
-  babylonParser,
+  parse,
 };

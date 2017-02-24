@@ -40,7 +40,7 @@ type TimerAPI = {
   setImmediate(callback: any, ms?: number, ...args: Array<any>): number,
   setInterval(callback: any, ms?: number, ...args: Array<any>): number,
   setTimeout(callback: any, ms?: number, ...args: Array<any>): number,
-}
+};
 
 const MS_IN_A_YEAR = 31536000000;
 
@@ -66,7 +66,6 @@ class FakeTimers {
     config: Config,
     maxLoops?: number,
   ) {
-
     this._global = global;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
@@ -99,9 +98,8 @@ class FakeTimers {
   }
 
   clearAllTimers() {
-    this._immediates.forEach(
-      immediate => this._fakeClearImmediate(immediate.uuid),
-    );
+    this._immediates.forEach(immediate =>
+      this._fakeClearImmediate(immediate.uuid));
     for (const uuid in this._timers) {
       delete this._timers[uuid];
     }
@@ -240,7 +238,7 @@ class FakeTimers {
         this._now += msToRun;
         break;
       } else {
-        msToRun -= (nextTimerExpiry - this._now);
+        msToRun -= nextTimerExpiry - this._now;
         this._now = nextTimerExpiry;
         this._runTimerHandle(timerHandle);
       }
@@ -370,7 +368,9 @@ class FakeTimers {
 
     const cancelledTicks = this._cancelledTicks;
     this._timerAPIs.nextTick(() => {
-      if (this._blocked) {return;}
+      if (this._blocked) {
+        return;
+      }
       if (!cancelledTicks.hasOwnProperty(uuid)) {
         // Callback may throw, so update the map prior calling.
         cancelledTicks[uuid] = true;
@@ -499,7 +499,6 @@ class FakeTimers {
         throw new Error('Unexpected timer type: ' + timer.type);
     }
   }
-
 }
 
 module.exports = FakeTimers;

@@ -21,7 +21,6 @@ import type {
 const H: HType = require('./constants');
 
 class ModuleMap {
-
   _map: ModuleMapData;
   _mocks: MockData;
 
@@ -74,7 +73,6 @@ class ModuleMap {
       mocks: this._mocks,
     };
   }
-
 }
 
 module.exports = ModuleMap;

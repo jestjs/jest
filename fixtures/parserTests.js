@@ -8,12 +8,9 @@
 
 'use strict';
 
-import type {ParserReturn} from '../../ScriptParser';
+const fixtures = __dirname;
 
-const path = require('path');
-const fixtures = path.resolve(__dirname, '../fixtures');
-
-function parserTests(parse: (file: string) => ParserReturn) {
+function parserTests(parse: (file: string) => any) {
   describe('File parsing without throwing', () => {
     it('Should not throw', () => {
       expect(() => {

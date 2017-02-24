@@ -88,7 +88,6 @@ const patchJasmine = () => {
       }
     }
     return Spec;
-
   })(global.jasmine.Spec);
 };
 

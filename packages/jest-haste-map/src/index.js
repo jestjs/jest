@@ -77,7 +77,7 @@ type InternalOptions = {
 
 type Watcher = {
   close(callback: () => void): void,
-}
+};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;

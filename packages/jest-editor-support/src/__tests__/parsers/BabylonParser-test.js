@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {babylonParser} = require('../../parsers/BabylonParser');
-const {parserTests} = require('./parserTests');
+const {parse} = require('../../parsers/BabylonParser');
+const {parserTests} = require('../../../../../fixtures/parserTests');
 
-parserTests(babylonParser);
+parserTests(parse);

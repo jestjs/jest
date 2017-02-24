@@ -49,15 +49,9 @@ type Options = {|
   getTestSummary: () => string,
 |};
 
-type OnRunFailure = (
-  path: string,
-  err: TestError,
-) => void;
+type OnRunFailure = (path: string, err: TestError) => void;
 
-type OnTestResult = (
-  path: string,
-  result: TestResult,
-) => void;
+type OnTestResult = (path: string, result: TestResult) => void;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -73,7 +67,7 @@ class TestRunner {
     hasteContext: HasteContext,
     config: Config,
     options: Options,
-    startRun: () => *
+    startRun: () => *,
   ) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher(
@@ -132,7 +126,7 @@ class TestRunner {
       stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
     const getTestRunTime = filePath => {
       if (cache[filePath]) {
-        return (cache[filePath][0] === FAIL) ? Infinity : cache[filePath][1];
+        return cache[filePath][0] === FAIL ? Infinity : cache[filePath][1];
       }
       return null;
     };
@@ -164,7 +158,7 @@ class TestRunner {
         const perf = test.perfStats;
         cache[test.testFilePath] = [
           test.numFailingTests ? FAIL : SUCCESS,
-          (perf.end - perf.start) || 0,
+          perf.end - perf.start || 0,
         ];
       }
     });
@@ -582,8 +576,7 @@ class ReporterDispatcher {
 
   onRunComplete(config, results) {
     this._reporters.forEach(reporter =>
-      reporter.onRunComplete(config, results, this._runnerContext),
-    );
+      reporter.onRunComplete(config, results, this._runnerContext));
   }
 
   // Return a list of last errors for every reporter
@@ -612,10 +605,7 @@ const getEstimatedTime = (timings, workers) => {
     return max;
   }
 
-  return Math.max(
-    timings.reduce((sum, time) => sum + time) / workers,
-    max,
-  );
+  return Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
 };
 
 module.exports = TestRunner;

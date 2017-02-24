@@ -44,9 +44,11 @@ function findChangedFiles(cwd: string, options: Options): Promise<Array<Path>> {
         if (stdout === '') {
           resolve([]);
         } else {
-          resolve(stdout.split('\n').map(
-            changedPath => path.resolve(cwd, changedPath),
-          ));
+          resolve(
+            stdout
+              .split('\n')
+              .map(changedPath => path.resolve(cwd, changedPath)),
+          );
         }
       } else {
         reject(code + ': ' + stderr);

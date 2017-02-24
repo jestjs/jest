@@ -39,7 +39,7 @@ type FindNodeModuleConfig = {|
 
 type ModuleNameMapperConfig = {|
   regex: RegExp,
-  moduleName: string
+  moduleName: string,
 |};
 
 type BooleanObject = {[key: string]: boolean};
@@ -56,7 +56,7 @@ const nodePaths =
 class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
-  _moduleIDCache : {[key: string]: string};
+  _moduleIDCache: {[key: string]: string};
   _moduleNameCache: {[name: string]: Path};
   _modulePathCache: {[path: Path]: Array<Path>};
 
@@ -65,15 +65,16 @@ class Resolver {
       browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
-      hasCoreModules:
-        options.hasCoreModules === undefined ? true : options.hasCoreModules,
+      hasCoreModules: options.hasCoreModules === undefined
+        ? true
+        : options.hasCoreModules,
       moduleDirectories: options.moduleDirectories || ['node_modules'],
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
       platforms: options.platforms,
     };
     this._moduleMap = moduleMap;
-    this._moduleIDCache  = Object.create(null);
+    this._moduleIDCache = Object.create(null);
     this._moduleNameCache = Object.create(null);
     this._modulePathCache = Object.create(null);
   }
@@ -334,7 +335,6 @@ class Resolver {
   _supportsNativePlatform() {
     return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
-
 }
 
 module.exports = Resolver;

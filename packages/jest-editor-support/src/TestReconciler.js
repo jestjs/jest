@@ -75,11 +75,13 @@ module.exports = class TestReconciler {
   // is useful enough to make it for ourselves
 
   mapAssertions(
-    filename:string,
+    filename: string,
     assertions: Array<JestAssertionResults>,
   ): Array<TestAssertionStatus> {
     // Is it jest < 17? e.g. Before I added this to the JSON
-    if (!assertions) { return []; }
+    if (!assertions) {
+      return [];
+    }
 
     // Change all failing assertions into structured data
     return assertions.map(assertion => {
@@ -108,7 +110,8 @@ module.exports = class TestReconciler {
 
   // Do everything we can to try make a one-liner from the error report
   sanitizeShortErrorMessage(string: string): string {
-    return string.split('\n')
+    return string
+      .split('\n')
       .splice(2)
       .join('')
       .replace('  ', ' ')

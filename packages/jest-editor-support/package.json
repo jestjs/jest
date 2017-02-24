@@ -7,9 +7,6 @@
   },
   "license": "BSD-3-Clause",
   "main": "build/index.js",
-  "peerDependencies": {
-    "typescript": "^2.0.10"
-  },
   "dependencies": {
     "babylon": "^6.13.0"
   },

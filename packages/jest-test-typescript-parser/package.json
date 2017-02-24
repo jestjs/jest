@@ -1,6 +1,6 @@
 {
-  "name": "jest-validate",
-  "version": "19.0.2",
+  "name": "jest-test-typescript-parser",
+  "version": "19.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,9 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "chalk": "^1.1.1",
-    "jest-matcher-utils": "^19.0.0",
-    "leven": "^2.0.0",
-    "pretty-format": "^19.0.0"
+    "jest-editor-support": "^19.0.1",
+    "typescript": "^2.0.10"
   }
 }

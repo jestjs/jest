@@ -78,7 +78,7 @@ const getType = (value: any): ValueType => {
       return 'set';
     }
     return 'object';
-  // $FlowFixMe https://github.com/facebook/flow/issues/1015
+    // $FlowFixMe https://github.com/facebook/flow/issues/1015
   } else if (typeof value === 'symbol') {
     return 'symbol';
   }

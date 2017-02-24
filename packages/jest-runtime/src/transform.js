@@ -83,7 +83,8 @@ const getCacheKey = (
       },
     );
   } else {
-    return crypto.createHash('md5')
+    return crypto
+      .createHash('md5')
       .update(fileData)
       .update(configString)
       .update(instrument ? 'instrument' : '')
@@ -102,7 +103,8 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
 };
 
 const wrap = content =>
-  '({"' + EVAL_RESULT_VARIABLE +
+  '({"' +
+  EVAL_RESULT_VARIABLE +
   '":function(module,exports,require,__dirname,__filename,global,jest){' +
   content +
   '\n}});';
@@ -131,8 +133,7 @@ const readCacheFile = (filename: Path, cachePath: Path): ?string => {
 
 const getScriptCacheKey = (filename, config, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
-  return filename + '_' + mtime.getTime() +
-    (instrument ? '_instrumented' : '');
+  return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
 const shouldTransform = (filename: Path, config: Config): boolean => {
@@ -183,8 +184,7 @@ const getFileCachePath = (
   return cachePath;
 };
 
-const transformCache: WeakMap<Config, Map<Path, ?Transformer>> =
-  new WeakMap();
+const transformCache: WeakMap<Config, Map<Path, ?Transformer>> = new WeakMap();
 
 const getTransformer = (filename: string, config: Config): ?Transformer => {
   const transformData = transformCache.get(config);

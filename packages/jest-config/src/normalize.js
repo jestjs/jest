@@ -143,7 +143,7 @@ const normalizeCollectCoverageFrom = (config: InitialConfig, key: string) => {
 
 const normalizeUnmockedModulePathPatterns = (
   config: InitialConfig,
-  key: string
+  key: string,
 ) => {
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
