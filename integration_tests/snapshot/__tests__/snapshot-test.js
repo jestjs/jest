@@ -36,4 +36,9 @@ describe('snapshot', () => {
       'Jest: `.not` cannot be used with `.toMatchSnapshot()`.'
     );
   });
+
+  // Issue reported here: https://github.com/facebook/jest/issues/2969
+  it('works with \\r\\n', () => {
+    expect('<div>\r\n</div>').toMatchSnapshot();
+  });
 });
