@@ -15,6 +15,7 @@ import type {Path} from 'types/Config';
 const args = require('./args');
 const getJest = require('./getJest');
 const getPackageRoot = require('jest-util').getPackageRoot;
+const path = require('path');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
 
@@ -42,7 +43,9 @@ function run(argv?: Object, root?: Path) {
   getJest(root).runCLI(argv, root, result => {
     const code = !result || result.success ? 0 : 1;
     process.on('exit', () => process.exit(code));
-    if (argv && argv.forceExit) {
+    const packageJSONPath = path.join(root, 'package.json');
+    const packageJSON = require(packageJSONPath);
+    if (argv && argv.forceExit || packageJSON.jest && packageJSON.jest.forceExit) {
       process.exit(code);
     }
   });
