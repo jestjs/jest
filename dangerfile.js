@@ -94,8 +94,8 @@ const esModuleRegex = /^(import|export)\s(?!type(of\s|\s)(?!from)).*?$/gm;
 
 // Ensure the use of 'use strict' on all non-ES module files
 const noStrictFiles = newJsFiles.filter(filepath => {
-  const content = fs.readFileSync(filepath).toString();
-  return !esModuleRegex.test(content) && !includes(content, 'use strict');
+  const content = fs.readFileSync(filepath, 'utf8');
+  return !content.match(esModuleRegex) && !includes(content, 'use strict');
 });
 
 raiseIssueAboutPaths(fail, noStrictFiles, "'use strict'");
