@@ -57,3 +57,20 @@ Time:        <<REPLACED>>
 Ran all test suites.
 "
 `;
+
+exports[`does not print to console with --silent 1`] = `""`;
+
+exports[`does not print to console with --silent 2`] = `
+" PASS  __tests__/console-test.js
+
+"
+`;
+
+exports[`does not print to console with --silent 3`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
