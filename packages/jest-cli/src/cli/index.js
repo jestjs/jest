@@ -43,9 +43,11 @@ function run(argv?: Object, root?: Path) {
   getJest(root).runCLI(argv, root, result => {
     const code = !result || result.success ? 0 : 1;
     process.on('exit', () => process.exit(code));
-    const packageJSONPath = path.join(root, 'package.json');
+    const packageJSONPath = path.join(root || __dirname, 'package.json');
+    /* $FlowFixMe */
     const packageJSON = require(packageJSONPath);
-    if (argv && argv.forceExit || packageJSON.jest && packageJSON.jest.forceExit) {
+    if (argv && argv.forceExit ||
+      packageJSON.jest && packageJSON.jest.forceExit) {
       process.exit(code);
     }
   });
