@@ -110,6 +110,7 @@ describe('SearchSource', () => {
           path.relative(rootDir, absPath)
         ));
         expect(relPaths).toEqual([
+          path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
         ]);
       });
@@ -128,6 +129,7 @@ describe('SearchSource', () => {
           path.relative(rootDir, absPath)
         ));
         expect(relPaths).toEqual([
+          path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
         ]);
       });
