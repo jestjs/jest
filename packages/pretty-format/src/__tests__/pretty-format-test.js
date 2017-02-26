@@ -317,6 +317,20 @@ describe('prettyFormat()', () => {
     })).toEqual('1 - 2 - 3 - 4');
   });
 
+  it('should call plugins on nested basic values', () => {
+    const val = {prop: 42};
+    expect(prettyFormat(val, {
+      plugins: [{
+        print(val, print) {
+          return '[called]';
+        },
+        test(val) {
+          return typeof val === 'string' || typeof val === 'number';
+        },
+      }],
+    })).toEqual('Object {\n  [called]: [called],\n}');
+  });
+
   it('prints objects with no constructor', () => {
     expect(prettyFormat(Object.create(null))).toEqual('Object {}');
   });
