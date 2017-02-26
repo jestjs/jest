@@ -71,9 +71,9 @@ The test environment used for all tests. This can point to any file or node modu
 
 Alias: `-e`. Use this flag to show full diffs instead of a patch.
 
-### `--findRelatedTests=<listOfSourceFiles>`
+### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
-Find the tests that cover a list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary.
+Find and run the tests that cover a space separated list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary.
 
 ### `--forceExit`
 
