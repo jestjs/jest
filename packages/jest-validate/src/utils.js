@@ -53,9 +53,7 @@ const createDidYouMeanMessage = (
     return steps < 3;
   });
 
-  return suggestion
-    ? `Did you mean ${chalk.bold(format(suggestion))}?`
-    : '';
+  return suggestion ? `Did you mean ${chalk.bold(format(suggestion))}?` : '';
 };
 
 module.exports = {

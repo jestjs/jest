@@ -66,13 +66,17 @@ function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
     }
+
+    if (config.timers === 'fake') {
+      environment.fakeTimers.useFakeTimers();
+    }
   });
 
   env.addReporter(reporter);
 
-  runtime.requireInternalModule(
-    path.resolve(__dirname, './jest-expect.js'),
-  )(config);
+  runtime.requireInternalModule(path.resolve(__dirname, './jest-expect.js'))(
+    config,
+  );
 
   const snapshotState = runtime.requireInternalModule(
     path.resolve(__dirname, './setup-jest-globals.js'),
@@ -80,10 +84,6 @@ function jasmine2(
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
-
-  if (config.timers === 'fake') {
-    environment.fakeTimers.useFakeTimers();
   }
 
   if (config.testNamePattern) {

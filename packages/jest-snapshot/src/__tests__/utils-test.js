@@ -13,6 +13,7 @@ const {
   getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
+  serialize,
   testNameToKey,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
@@ -194,4 +195,12 @@ test('escaping', () => {
   expect(readData).toEqual({key: data});
   const snapshotData = readData.key;
   expect(data).toEqual(snapshotData);
+});
+
+test('serialize handles \\r\\n', () => {
+  const data = '<div>\r\n</div>';
+  const serializedData = serialize(data);
+
+  expect(serializedData)
+    .toBe('\n\"<div>\n</div>\"\n');
 });

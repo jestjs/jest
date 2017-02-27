@@ -36,7 +36,7 @@ const writeSnapshotVersion = () =>
 
 const validateSnapshotVersion = (snapshotContents: string) => {
   const versionTest = SNAPSHOT_VERSION_REGEXP.exec(snapshotContents);
-  const version = (versionTest && versionTest[1]);
+  const version = versionTest && versionTest[1];
 
   if (!version) {
     return new Error(
@@ -133,11 +133,13 @@ const addExtraLineBreaks =
   string => string.includes('\n') ? `\n${string}\n` : string;
 
 const serialize = (data: any): string => {
-  return addExtraLineBreaks(prettyFormat(data, {
-    escapeRegex: true,
-    plugins: getSerializers(),
-    printFunctionName: false,
-  }));
+  return addExtraLineBreaks(normalizeNewlines(
+    prettyFormat(data, {
+      escapeRegex: true,
+      plugins: getSerializers(),
+      printFunctionName: false,
+    })
+  ));
 };
 
 const unescape = (data: any): string =>
@@ -169,7 +171,7 @@ const saveSnapshotFile = (
   ensureDirectoryExists(snapshotPath);
   fs.writeFileSync(
     snapshotPath,
-    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n'
+    writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
 };
 

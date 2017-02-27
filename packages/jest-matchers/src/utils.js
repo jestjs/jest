@@ -11,7 +11,7 @@
 'use strict';
 
 type GetPath = {
-  hasEndProp?: bool,
+  hasEndProp?: boolean,
   lastTraversedObject: ?Object,
   traversedPath: Array<string>,
   value?: any,
@@ -71,8 +71,10 @@ const getObjectSubset = (object: Object, subset: Object) => {
   } else if (object instanceof Date) {
     return object;
   } else if (
-    typeof object === 'object' && object !== null &&
-    typeof subset === 'object' && subset !== null
+    typeof object === 'object' &&
+    object !== null &&
+    typeof subset === 'object' &&
+    subset !== null
   ) {
     const trimmed = {};
     Object.keys(subset)
@@ -85,7 +87,6 @@ const getObjectSubset = (object: Object, subset: Object) => {
   }
   return object;
 };
-
 
 module.exports = {
   getObjectSubset,

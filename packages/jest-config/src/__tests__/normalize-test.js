@@ -518,8 +518,15 @@ describe('babel-jest', () => {
     expect(config.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
     expect(config.transform[0][1])
       .toEqual(path.sep + 'node_modules' + path.sep + 'babel-jest');
-    expect(config.setupFiles)
-      .toEqual([path.sep + 'node_modules' + path.sep + 'babel-polyfill']);
+    expect(config.setupFiles).toEqual([
+      path.sep +
+        'node_modules' +
+        path.sep +
+        'regenerator-runtime' +
+        path.sep +
+        'runtime',
+    ]);
+
   });
 
   it('uses babel-jest if babel-jest is explicitly specified in a custom transform config', () => {
@@ -533,8 +540,15 @@ describe('babel-jest', () => {
 
     expect(config.transform[0][0]).toBe(customJSPattern);
     expect(config.transform[0][1]).toEqual('/node_modules/babel-jest');
-    expect(config.setupFiles)
-      .toEqual([path.sep + 'node_modules' + path.sep + 'babel-polyfill']);
+    expect(config.setupFiles).toEqual([
+      path.sep +
+        'node_modules' +
+        path.sep +
+        'regenerator-runtime' +
+        path.sep +
+        'runtime',
+    ]);
+
   });
 
   it(`doesn't use babel-jest if its not available`, () => {
@@ -548,7 +562,7 @@ describe('babel-jest', () => {
     expect(config.setupFiles).toEqual([]);
   });
 
-  it('uses polyfills if babel-jest is explicitly specified', () => {
+  it('uses regenerator if babel-jest is explicitly specified', () => {
     const ROOT_DIR = '<rootDir>' + path.sep;
 
     const {config} = normalize({
@@ -560,8 +574,15 @@ describe('babel-jest', () => {
       },
     });
 
-    expect(config.setupFiles)
-      .toEqual([path.sep + 'node_modules' + path.sep + 'babel-polyfill']);
+    expect(config.setupFiles).toEqual([
+      path.sep +
+        'node_modules' +
+        path.sep +
+        'regenerator-runtime' +
+        path.sep +
+        'runtime',
+    ]);
+
   });
 });
 

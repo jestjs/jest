@@ -18,7 +18,7 @@ export type MockFunctionMetadata = {
   members?: {[key: string]: MockFunctionMetadata},
   mockImpl?: () => any,
   name?: string,
-  refID?: string|number,
+  refID?: string | number,
   type?: string,
   value?: any,
 };
@@ -26,7 +26,7 @@ export type MockFunctionMetadata = {
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
-}
+};
 
 type MockFunctionConfig = {
   isReturnValueLastSet: boolean,
@@ -94,7 +94,7 @@ function isA(typeName: string, value: any): boolean {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
-function getType(ref?: any): string|null {
+function getType(ref?: any): string | null {
   if (isA('Function', ref)) {
     return 'function';
   } else if (Array.isArray(ref)) {
@@ -441,7 +441,7 @@ class ModuleMockerClass {
     }
 
     getSlots(metadata.members).forEach(slot => {
-      const slotMetadata = metadata.members && metadata.members[slot] || {};
+      const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(() => mock[slot] = refs[slotMetadata.ref]);
       } else {
@@ -477,10 +477,7 @@ class ModuleMockerClass {
    * @see README.md
    * @param component The component for which to retrieve metadata.
    */
-  getMetadata(
-    component: any,
-    _refs?: Map<any, any>,
-  ): ?MockFunctionMetadata {
+  getMetadata(component: any, _refs?: Map<any, any>): ?MockFunctionMetadata {
     const refs = _refs || new Map();
     const ref = refs.get(component);
     if (ref != null) {

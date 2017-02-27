@@ -95,8 +95,8 @@ describe('Snapshot', () => {
     const result = runJest.json('snapshot', []);
     const json = result.json;
 
-    expect(json.numTotalTests).toBe(4);
-    expect(json.numPassedTests).toBe(4);
+    expect(json.numTotalTests).toBe(5);
+    expect(json.numPassedTests).toBe(5);
     expect(json.numFailedTests).toBe(0);
     expect(json.numPendingTests).toBe(0);
     expect(result.status).toBe(0);
@@ -107,7 +107,7 @@ describe('Snapshot', () => {
     ).not.toBe(undefined);
 
     const info = result.stderr.toString();
-    expect(info).toMatch('4 snapshots written in 2 test suites');
+    expect(info).toMatch('5 snapshots written in 2 test suites');
     expect(extractSummary(info).summary).toMatchSnapshot();
   });
 
@@ -194,6 +194,25 @@ describe('Snapshot', () => {
       fs.writeFileSync(copyOfTestPath, originalTestContent);
     });
 
+    it('works on subsequent runs without `-u`', () => {
+      const firstRun = runJest.json('snapshot', []);
+
+      const content = require(snapshotOfCopy);
+      expect(content).not.toBe(undefined);
+      const secondRun = runJest.json('snapshot', []);
+
+      expect(firstRun.json.numTotalTests).toBe(9);
+      expect(secondRun.json.numTotalTests).toBe(9);
+      expect(secondRun.json.success).toBe(true);
+
+      const infoFR = firstRun.stderr.toString();
+      const infoSR = secondRun.stderr.toString();
+      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
+      expect(infoSR).toMatch('9 passed, 9 total');
+      expect(extractSummary(infoFR).summary).toMatchSnapshot();
+      expect(extractSummary(infoSR).summary).toMatchSnapshot();
+    });
+
     it('deletes the snapshot if the test suite has been removed', () => {
       const firstRun = runJest.json('snapshot', []);
       fs.unlinkSync(copyOfTestPath);
@@ -202,13 +221,13 @@ describe('Snapshot', () => {
       expect(content).not.toBe(undefined);
       const secondRun = runJest.json('snapshot', ['-u']);
 
-      expect(firstRun.json.numTotalTests).toBe(7);
-      expect(secondRun.json.numTotalTests).toBe(4);
+      expect(firstRun.json.numTotalTests).toBe(9);
+      expect(secondRun.json.numTotalTests).toBe(5);
       expect(fileExists(snapshotOfCopy)).toBe(false);
 
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('7 snapshots written in 3 test suites');
+      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
       expect(infoSR).toMatch('1 obsolete snapshot file removed');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
@@ -221,13 +240,13 @@ describe('Snapshot', () => {
       const secondRun = runJest.json('snapshot', ['-u']);
       fs.unlinkSync(copyOfTestPath);
 
-      expect(firstRun.json.numTotalTests).toBe(7);
-      expect(secondRun.json.numTotalTests).toBe(5);
+      expect(firstRun.json.numTotalTests).toBe(9);
+      expect(secondRun.json.numTotalTests).toBe(6);
 
       expect(fileExists(snapshotOfCopy)).toBe(false);
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('7 snapshots written in 3 test suites');
+      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
       expect(infoSR).toMatch('1 obsolete snapshot file removed');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(extractSummary(infoSR).summary).toMatchSnapshot();
@@ -246,8 +265,8 @@ describe('Snapshot', () => {
       const secondRun = runJest.json('snapshot', ['-u']);
       fs.unlinkSync(copyOfTestPath);
 
-      expect(firstRun.json.numTotalTests).toBe(7);
-      expect(secondRun.json.numTotalTests).toBe(7);
+      expect(firstRun.json.numTotalTests).toBe(9);
+      expect(secondRun.json.numTotalTests).toBe(9);
       expect(fileExists(snapshotOfCopy)).toBe(true);
       const afterRemovingSnapshot = getSnapshotOfCopy();
 
@@ -268,7 +287,7 @@ describe('Snapshot', () => {
 
       const infoFR = firstRun.stderr.toString();
       const infoSR = secondRun.stderr.toString();
-      expect(infoFR).toMatch('7 snapshots written in 3 test suites');
+      expect(infoFR).toMatch('9 snapshots written in 3 test suites');
       expect(extractSummary(infoFR).summary).toMatchSnapshot();
       expect(infoSR).toMatch('1 snapshot updated in 1 test suite');
       expect(infoSR).toMatch('1 obsolete snapshot removed');

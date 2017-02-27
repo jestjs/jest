@@ -17,8 +17,7 @@ const Resolver = require('jest-resolve');
 const path = require('path');
 const chalk = require('chalk');
 const BULLET: string = chalk.bold('\u25cf ');
-const DOCUMENTATION_NOTE =
-`  ${chalk.bold('Configuration Documentation:')}
+const DOCUMENTATION_NOTE = `  ${chalk.bold('Configuration Documentation:')}
   https://facebook.github.io/jest/docs/configuration.html
 `;
 
@@ -26,7 +25,7 @@ const createValidationError = (message: string) => {
   return new ValidationError(
     `${BULLET}Validation Error`,
     message,
-    DOCUMENTATION_NOTE
+    DOCUMENTATION_NOTE,
   );
 };
 
