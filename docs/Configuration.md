@@ -238,6 +238,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 }
 ```
 
+The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
+
 ### `rootDir` [string]
 Default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
