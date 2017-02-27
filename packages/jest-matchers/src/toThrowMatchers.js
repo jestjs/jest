@@ -42,7 +42,7 @@ const createMatcher = matcherName =>
       throw new Error(
         matcherHint(matcherName, 'function', getType(value)) +
           '\n\n' +
-          'Expected the matcher to call a function, but instead ' +
+          'Received value must be a function, but instead ' +
           `"${getType(actual)}" was found`
       );
     }

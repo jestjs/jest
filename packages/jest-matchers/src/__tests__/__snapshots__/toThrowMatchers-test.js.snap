@@ -31,7 +31,7 @@ Instead, it threw:
 exports[`.toThrow() invalid actual 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mundefined[39m[2m)[22m
 
-Expected the matcher to call a function, but instead \\"string\\" was found"
+Received value must be a function, but instead \\"string\\" was found"
 `;
 
 exports[`.toThrow() invalid arguments 1`] = `
@@ -130,7 +130,7 @@ Instead, it threw:
 exports[`.toThrowError() invalid actual 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mundefined[39m[2m)[22m
 
-Expected the matcher to call a function, but instead \\"string\\" was found"
+Received value must be a function, but instead \\"string\\" was found"
 `;
 
 exports[`.toThrowError() invalid arguments 1`] = `
