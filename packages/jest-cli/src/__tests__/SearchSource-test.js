@@ -108,10 +108,11 @@ describe('SearchSource', () => {
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
-        ));
+        )).sort();
         expect(relPaths).toEqual([
+          path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
-        ]);
+        ].sort());
       });
     });
 
@@ -126,10 +127,11 @@ describe('SearchSource', () => {
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
-        ));
+        )).sort();
         expect(relPaths).toEqual([
+          path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
-        ]);
+        ].sort());
       });
     });
 
