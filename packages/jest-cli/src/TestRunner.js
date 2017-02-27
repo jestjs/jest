@@ -26,7 +26,7 @@ const DefaultReporter = require('./reporters/DefaultReporter');
 const NotifyReporter = require('./reporters/NotifyReporter');
 const SummaryReporter = require('./reporters/SummaryReporter');
 const VerboseReporter = require('./reporters/VerboseReporter');
-const promisify = require('./lib/promisify');
+const pify = require('pify');
 const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
 const throat = require('throat');
@@ -325,7 +325,7 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
-    const worker = promisify(farm);
+    const worker = pify(farm);
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
