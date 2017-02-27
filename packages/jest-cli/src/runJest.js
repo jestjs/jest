@@ -86,9 +86,11 @@ const runJest = (
         }
         return data;
       }).then(data => {
-        if (data.paths.length === 1 && config.verbose !== false) {
-          // $FlowFixMe
-          config = Object.assign({}, config, {verbose: true});
+        if (data.paths.length === 1) {
+          if (config.silent !== true && config.verbose !== false) {
+            // $FlowFixMe
+            config = Object.assign({}, config, {verbose: true});
+          }
         }
 
         return new TestRunner(
