@@ -133,11 +133,13 @@ const addExtraLineBreaks =
   string => string.includes('\n') ? `\n${string}\n` : string;
 
 const serialize = (data: any): string => {
-  return addExtraLineBreaks(prettyFormat(data, {
-    escapeRegex: true,
-    plugins: getSerializers(),
-    printFunctionName: false,
-  }));
+  return addExtraLineBreaks(normalizeNewlines(
+    prettyFormat(data, {
+      escapeRegex: true,
+      plugins: getSerializers(),
+      printFunctionName: false,
+    })
+  ));
 };
 
 const unescape = (data: any): string =>
