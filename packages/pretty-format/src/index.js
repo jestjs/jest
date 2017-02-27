@@ -317,14 +317,14 @@ function printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDep
 }
 
 function print(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors) {
-  const basic = printBasicValue(val, printFunctionName, escapeRegex);
-  if (basic) {
-    return basic;
-  }
-
   const plugin = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
   if (plugin) {
     return plugin;
+  }
+
+  const basic = printBasicValue(val, printFunctionName, escapeRegex);
+  if (basic) {
+    return basic;
   }
 
   return printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
