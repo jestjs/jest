@@ -2,9 +2,9 @@
   "devDependencies": {
     "babel-jest": "*",
     "babel-plugin-transform-async-to-generator": "^6.5.0",
-    "babel-polyfill": "*",
     "babel-preset-es2015": "*",
-    "jest": "*"
+    "jest": "*",
+    "regenerator-runtime": "*"
   },
   "scripts": {
     "test": "jest"

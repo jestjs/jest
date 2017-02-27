@@ -4,11 +4,11 @@
   },
   "devDependencies": {
     "babel-jest": "*",
-    "babel-polyfill": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
     "jest": "*",
-    "react-test-renderer": "*"
+    "react-test-renderer": "*",
+    "regenerator-runtime": "*"
   },
   "scripts": {
     "test": "jest"
