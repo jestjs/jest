@@ -46,7 +46,7 @@ const readRawConfig = (argv, root) => {
     return Promise.resolve(normalize(config, argv));
   }
 
-  return loadFromPackage(path.join(root, 'package.json'), argv)
+  return loadFromPackage(root, argv)
     .then(({config, hasDeprecationWarnings}) => {
       if (config) {
         return {
