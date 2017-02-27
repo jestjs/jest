@@ -18,7 +18,7 @@ const fs = require('graceful-fs');
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 
-const buildTestPathPatternInfo = require('./lib/buildTestPathPatternInfo');
+const getTestPathPatternInfo = require('./lib/getTestPathPatternInfo');
 const chalk = require('chalk');
 const {Console, formatTestResults} = require('jest-util');
 const getMaxWorkers = require('./lib/getMaxWorkers');
@@ -56,7 +56,7 @@ const runJest = (
 ) => {
   const maxWorkers = getMaxWorkers(argv);
   const localConsole = new Console(pipe, pipe);
-  let patternInfo = buildTestPathPatternInfo(argv);
+  let patternInfo = getTestPathPatternInfo(argv);
   return Promise.resolve().then(() => {
     const source = new SearchSource(hasteContext, config);
     return source.getTestPaths(patternInfo)
@@ -68,7 +68,7 @@ const runJest = (
               setState(argv, 'watchAll', {
                 noSCM: true,
               });
-              patternInfo = buildTestPathPatternInfo(argv);
+              patternInfo = getTestPathPatternInfo(argv);
               return source.getTestPaths(patternInfo);
             } else {
               localConsole.log(
