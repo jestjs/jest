@@ -318,14 +318,14 @@ function printPlugin(val, indent: string, prevIndent: string, spacing: string, e
 }
 
 function print(val: any, indent: string, prevIndent: string, spacing: string, edgeSpacing: string, refs: Refs, maxDepth: number, currentDepth: number, plugins: Plugins, min: boolean, callToJSON: boolean, printFunctionName: boolean, escapeRegex: boolean, colors: Colors): string {
-  const basic = printBasicValue(val, printFunctionName, escapeRegex);
-  if (basic !== null) {
-    return basic;
+  const basicResult = printBasicValue(val, printFunctionName, escapeRegex);
+  if (basicResult !== null) {
+    return basicResult;
   }
 
-  const plugin = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
-  if (plugin !== null) {
-    return plugin;
+  const pluginsResult = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
+  if (typeof pluginsResult === 'string') {
+    return pluginsResult;
   }
 
   return printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
@@ -369,12 +369,12 @@ type Options = {|
   min: boolean,
   plugins: Plugins,
   printFunctionName: boolean,
-  theme: {
+  theme: {|
     content: string,
     prop: string,
     tag: string,
     value: string,
-  },
+  |},
 |};
 
 const DEFAULTS: Options = {
@@ -456,7 +456,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     indent = createIndent(opts.indent);
     refs = [];
     const pluginsResult = printPlugin(val, indent, prevIndent, spacing, edgeSpacing, refs, opts.maxDepth, currentDepth, opts.plugins, opts.min, opts.callToJSON, opts.printFunctionName, opts.escapeRegex, colors);
-    if (pluginsResult !== null) {
+    if (typeof pluginsResult === 'string') {
       return pluginsResult;
     }
   }
