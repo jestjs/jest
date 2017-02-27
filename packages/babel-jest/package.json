@@ -1,6 +1,6 @@
 {
   "name": "babel-jest",
-  "description": "Babel jest plugin",
+  "description": "Jest plugin to use babel for transformation.",
   "version": "19.0.0",
   "repository": {
     "type": "git",
