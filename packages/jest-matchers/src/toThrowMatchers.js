@@ -38,6 +38,10 @@ const createMatcher = matcherName =>
     const value = expected;
     let error;
 
+    if (typeof actual !== 'function') {
+      throw createNotAFunctionError(matcherName, value, actual);
+    }
+
     try {
       actual();
     } catch (e) {
@@ -79,6 +83,15 @@ const createMatcher = matcherName =>
 const matchers: MatchersObject = {
   toThrow: createMatcher('.toThrow'),
   toThrowError: createMatcher('.toThrowError'),
+};
+
+const createNotAFunctionError = (matcherName, value, actual) => {
+  return new Error(
+    matcherHint(matcherName, 'function', getType(value)) +
+      '\n\n' +
+      'Expected the matcher to call a function, but instead ' +
+      `"${getType(actual)}" was found`
+  );
 };
 
 const toThrowMatchingStringOrRegexp = (
