@@ -55,7 +55,8 @@
       "examples/.*",
       "packages/.*/build",
       "packages/jest-runtime/src/__tests__/test_root.*",
-      "website/.*"
+      "website/.*",
+      "integration_tests/runtime-internal-module-registry/__mocks__"
     ],
     "collectCoverageFrom": [
       "**/packages/jest-*/**/*.js",

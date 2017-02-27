@@ -15,6 +15,7 @@
     "jest-regex-util": "^19.0.0",
     "jest-resolve": "^19.0.2",
     "jest-validate": "^19.0.2",
+    "pify": "^2.3.0",
     "pretty-format": "^19.0.0",
     "read-pkg": "^1.0.0"
   }
