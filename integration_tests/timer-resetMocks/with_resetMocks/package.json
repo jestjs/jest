@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "resetMocks": true,
+    "timers": "fake"
+  }
+}

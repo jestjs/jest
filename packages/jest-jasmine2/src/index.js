@@ -66,6 +66,10 @@ function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
     }
+
+    if (config.timers === 'fake') {
+      environment.fakeTimers.useFakeTimers();
+    }
   });
 
   env.addReporter(reporter);
@@ -80,10 +84,6 @@ function jasmine2(
 
   if (config.setupTestFrameworkScriptFile) {
     runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
-
-  if (config.timers === 'fake') {
-    environment.fakeTimers.useFakeTimers();
   }
 
   if (config.testNamePattern) {
