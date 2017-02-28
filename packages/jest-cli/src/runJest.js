@@ -74,13 +74,8 @@ const runJest = (
               setState(argv, 'watchAll', {
                 noSCM: true,
               });
-<<<<<<< HEAD
-              patternInfo = buildTestPathPatternInfo(argv);
-              return source.getTestAndBenchmarkPaths(patternInfo);
-=======
               patternInfo = getTestPathPatternInfo(argv);
-              return source.getTestPaths(patternInfo);
->>>>>>> upstream/master
+              return source.getTestAndBenchmarkPaths(patternInfo);
             } else {
               localConsole.log(
                 'Jest can only find uncommitted changed files in a git or hg ' +
