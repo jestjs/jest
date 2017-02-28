@@ -647,13 +647,13 @@ test('the house has my desired features', () => {
 });
 ```
 
-### `toHaveProperty(propPath, value)`
+### `toHaveProperty(refKey, value)`
 
-Use `.toHaveProperty` to check if property at `propPath` exists for an object. 
-For checking deeply nested properties in an object use [dot notation]((https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors)) for deep references.
+Use `.toHaveProperty` to check if property at provided reference `refKey` exists for an object. 
+For checking deeply nested properties in an object use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) for deep references.
 
 You can also provide a value to check if it's strictly equal to the `value` present
-at `propPath` on the target object.
+at `refKey` on the target object.
 
 The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty`
 to check for the existence and values of some properties in the object.
