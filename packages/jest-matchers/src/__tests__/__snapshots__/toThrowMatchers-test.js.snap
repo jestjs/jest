@@ -28,6 +28,12 @@ Instead, it threw:
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
 `;
 
+exports[`.toThrow() invalid actual 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mundefined[39m[2m)[22m
+
+Received value must be a function, but instead \\"string\\" was found"
+`;
+
 exports[`.toThrow() invalid arguments 1`] = `
 "[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mnumber[39m[2m)[22m
 
@@ -119,6 +125,12 @@ Expected the function not to throw an error of type:
 Instead, it threw:
 [31m  Error      
       [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+`;
+
+exports[`.toThrowError() invalid actual 1`] = `
+"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mundefined[39m[2m)[22m
+
+Received value must be a function, but instead \\"string\\" was found"
 `;
 
 exports[`.toThrowError() invalid arguments 1`] = `

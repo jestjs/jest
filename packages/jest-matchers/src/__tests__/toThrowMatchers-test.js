@@ -140,6 +140,11 @@ class Error {
       expect(() => jestExpect(() => {})[toThrow](111))
         .toThrowErrorMatchingSnapshot();
     });
+
+    test('invalid actual', () => {
+      expect(() => jestExpect('a string')[toThrow]())
+        .toThrowErrorMatchingSnapshot();
+    });
   });
 
 });
