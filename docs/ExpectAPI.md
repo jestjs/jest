@@ -649,14 +649,14 @@ test('the house has my desired features', () => {
 
 ### `toHaveProperty(propPath, value)`
 
-Use `.toHaveProperty` to check if target has the property at the
-deep reference `propPath` using **[dot notaion](https://stackoverflow.com/questions/20736758/difference-between-dot-notation-and-bracket-notation-in-javascript)**.
+Use `.toHaveProperty` to check if property at `propPath` exists for an object. 
+For checking deeply nested properties use [dot notation]((https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors)) for deep references.
 
 You can also provide a value to check if it's strictly equal to the `value`
 at `propPath`.
 
-The following example contains a `houseForSale` with nested properties. We are testing `houseForSale` properties using `toHaveProperty` to check if certain properties exist, we are also performing checks on the values of certain properties, if they are strictly equal to the desired value.
-
+The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty`
+to check for the existence and values of some properties in the object.
 ```js
 // Object containing house features to be tested
 const houseForSale = {
