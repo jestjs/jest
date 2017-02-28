@@ -417,12 +417,12 @@ function normalizeTheme(themeOption: mixed) {
   const themeDefaults = DEFAULTS.theme;
   return Object.keys(themeDefaults).reduce((theme, key) => {
     // $FlowFixMe Method cannot be called on mixed
-    if (themeOption.hasOwnProperty(key)) {
+    theme[key] = themeOption.hasOwnProperty(key)
       // $FlowFixMe Computed property/element cannot be accessed on mixed
-      theme[key] = themeOption[key];
-    }
+      ? themeOption[key]
+      : themeDefaults[key];
     return theme;
-  }, Object.assign({}, themeDefaults)); // override a copy of default theme
+  }, {});
 }
 
 function normalizeOptions(opts: InitialOptions): Options {
