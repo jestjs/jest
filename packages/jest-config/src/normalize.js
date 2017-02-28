@@ -222,6 +222,9 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
   if (argv.testRunner) {
     config.testRunner = argv.testRunner;
   }
+  if (argv.benchRunner) {
+    config.benchRunner = argv.benchRunner;
+  }
 
   if (argv.collectCoverageFrom) {
     config.collectCoverageFrom = argv.collectCoverageFrom;
@@ -257,6 +260,9 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   }
   if (config.testEnvironment) {
     config.testEnvironment = getTestEnvironment(config);
+  }
+  if (config.benchEnvironment) {
+    config.benchEnvironment = getTestEnvironment(config);
   }
   if (!config.roots && config.testPathDirs) {
     config.roots = config.testPathDirs;
@@ -396,6 +402,19 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     // configured `testRegex` value
     newConfig.testMatch = [];
   }
+
+  if (config.benchRegex && config.benchMatch) {
+    throw createConfigError(
+      `  Configuration options ${chalk.bold('benchMatch')} and` +
+      ` ${chalk.bold('benchRegex')} cannot be used together.`
+    );
+  }
+
+  if (config.benchRegex && (!config.benchMatch)) {
+    // Prevent the default benchMatch conflicting with any explicitly
+    // configured `benchRegex` value
+    newConfig.benchMatch = [];
+  }  
 
   // If argv.json is set, coverageReporters shouldn't print a text report.
   if (argv.json) {

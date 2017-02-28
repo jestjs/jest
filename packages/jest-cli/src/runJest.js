@@ -17,6 +17,7 @@ const fs = require('graceful-fs');
 
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
+const BenchmarkRunner = require('./BenchmarkRunner');
 
 const buildTestPathPatternInfo = require('./lib/buildTestPathPatternInfo');
 const chalk = require('chalk');
@@ -62,9 +63,14 @@ const runJest = (
   let patternInfo = buildTestPathPatternInfo(argv);
   return Promise.resolve().then(() => {
     const source = new SearchSource(hasteContext, config);
-    return source.getTestPaths(patternInfo)
+    return source.getTestAndBenchmarkPaths(patternInfo)
       .then(data => {
-        if (!data.paths.length) {
+        let noTestsFound = false;
+        let noBenchesFound = false;
+        // TODO for now we only do this for tests, not benchmarks
+        // do we need to do this for benchmarks too?
+        if (!data.testPaths.length) {
+          noTestsFound = true;
           if (patternInfo.onlyChanged && data.noSCM) {
             if (config.watch) {
               // Run all the tests
@@ -72,7 +78,7 @@ const runJest = (
                 noSCM: true,
               });
               patternInfo = buildTestPathPatternInfo(argv);
-              return source.getTestPaths(patternInfo);
+              return source.getTestAndBenchmarkPaths(patternInfo);
             } else {
               localConsole.log(
                 'Jest can only find uncommitted changed files in a git or hg ' +
@@ -82,32 +88,48 @@ const runJest = (
               );
             }
           }
-
+        }
+        if (!data.benchPaths || !data.benchPaths.length) {
+          noBenchesFound = true;
+        }
+        if (noTestsFound && noBenchesFound) {
           localConsole.log(
-            source.getNoTestsFoundMessage(patternInfo, config, data),
+            source.getNoTestsOrBenchmarksFoundMessage(
+              patternInfo,
+              config,
+              data,
+              noTestsFound,
+              noBenchesFound,
+            ),
           );
         }
         return data;
       }).then(data => {
-        if (data.paths.length === 1 && config.verbose !== false) {
+        if (data.testPaths.length === 1 && config.verbose !== false) {
           // $FlowFixMe
           config = Object.assign({}, config, {verbose: true});
         }
 
-        return new TestRunner(
-          hasteContext,
-          config,
-          {
-            getTestSummary: () => getTestSummary(argv, patternInfo),
-            maxWorkers,
-          },
-          startRun
-        ).runTests(data.paths, testWatcher);
+        return Promise.all([
+          new TestRunner(
+            hasteContext,
+            config,
+            {
+              getTestSummary: () => getTestSummary(argv, patternInfo),
+              maxWorkers,
+            },
+            startRun,
+          ).runTests(data.testPaths, testWatcher),
+          new BenchmarkRunner(
+            hasteContext,
+            config,
+          ).runBenches(data.benchPaths),
+        ]);
       })
-      .then(runResults => {
+      .then(([testRunResults]) => {
         if (config.testResultsProcessor) {
           /* $FlowFixMe */
-          runResults = require(config.testResultsProcessor)(runResults);
+          testRunResults = require(config.testResultsProcessor)(testRunResults);
         }
         if (argv.json) {
           if (argv.outputFile) {
@@ -115,7 +137,7 @@ const runJest = (
 
             fs.writeFileSync(
               outputFile,
-              JSON.stringify(formatTestResults(runResults)),
+              JSON.stringify(formatTestResults(testRunResults)),
             );
             process.stdout.write(
               `Test results written to: ` +
@@ -123,11 +145,11 @@ const runJest = (
             );
           } else {
             process.stdout.write(
-              JSON.stringify(formatTestResults(runResults)),
+              JSON.stringify(formatTestResults(testRunResults)),
             );
           }
         }
-        return onComplete && onComplete(runResults);
+        return onComplete && onComplete(testRunResults);
       }).catch(error => {
         throw error;
       });
