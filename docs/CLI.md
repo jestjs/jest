@@ -9,6 +9,45 @@ previous: configuration
 
 The `jest` command line tool has a number of useful options, although you might never need any of them. You can run `jest --help` to view the options available. This document will also provide a brief overview.
 
+## Running from command line
+
+Run all tests (default):
+```bash
+jest
+```
+
+Run only the tests that were specified with a pattern or filename:
+```bash
+jest my-test #or
+jest path/to/my-test.js
+```
+
+Run tests related to changed files based on hg/git (uncommitted files):
+```bash
+jest -o
+```
+
+Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
+```bash
+jest --findRelatedTests path/to/fileA.js path/to/fileB.js
+```
+
+Run tests that match this spec name (match against the name in describe and it, basically).
+```bash
+jest -t name-of-spec
+```
+
+Run watch mode:
+```bash
+jest --watch #runs jest -o by default
+jest --watchAll #runs all tests
+```
+
+Watch mode also enables to specify the or path to a file to focus on a specific set of files.
+You can of course mix most of the options together, unless they're mutually exclusive (which should throw a descriptive error).
+
+## Using with npm scripts
+
 If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments. So instead of:
 
 ```bash
