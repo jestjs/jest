@@ -1,3 +1,4 @@
+
 ---
 id: expect
 title: Expect
@@ -644,6 +645,46 @@ const desiredHouse = {
 test('the house has my desired features', () => {
   expect(houseForSale).toMatchObject(desiredHouse);
 });
+```
+
+### `toHaveProperty(propPath, ?value)`
+
+Use `.toHaveProperty` to check if target has the property at the
+deep reference `propPath` using **[dot notaion](https://stackoverflow.com/questions/20736758/difference-between-dot-notation-and-bracket-notation-in-javascript)**.
+
+You can also provide a value to check if it's strictly equal to the `value`
+at `propPath`.
+
+The following example contains a `houseForSale` object with properties both with simple
+as well as deep nesting. 
+
+```js
+// Object containing house features to be tested
+const houseForSale = {
+	bath: true,
+	kitchen: {
+		amenities: ['oven', 'stove', 'washer'],
+		area: 20,
+		wallColor: 'white'
+	},
+  bedrooms: 4
+};
+
+describe('Property features', () => {
+  test('this house has my desired features', () => {
+    // Simple Referencing in toHaveProperty 
+    expect(houseForSale).toHaveProperty('bath')
+    expect(houseForSale).toHaveProperty('bedrooms', 4)
+
+    expect(houseForSale).not.toHaveProperty('pool')
+
+    // Deep referencing using dot notation
+    expect(houseForSale).toHaveProperty('kitchen.area', 20)
+    expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer'])
+
+    expect(hosueForSale).not.toHaveProperty('kitchen.open')
+  })
+})
 ```
 
 ### `.toMatchSnapshot(optionalString)`
