@@ -153,7 +153,7 @@ const ensureActualIsNumber = (actual: any, matcherName: string) => {
   if (typeof actual !== 'number') {
     throw new Error(
       matcherHint('[.not]' + matcherName) + '\n\n' +
-      `Actual value must be a number.\n` +
+      `Received value must be a number.\n` +
       printWithType('Received', actual, printReceived),
     );
   }
