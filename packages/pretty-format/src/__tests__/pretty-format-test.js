@@ -177,9 +177,10 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object with properties and symbols', () => {
-    const val = {prop: 'value1'};
+    const val = {};
     val[Symbol('symbol1')] = 'value2';
     val[Symbol('symbol2')] = 'value3';
+    val.prop = 'value1';
     expect(prettyFormat(val)).toEqual('Object {\n  "prop": "value1",\n  Symbol(symbol1): "value2",\n  Symbol(symbol2): "value3",\n}');
   });
 
@@ -303,6 +304,23 @@ describe('prettyFormat()', () => {
     })).toEqual('class Foo');
   });
 
+  it('supports plugins that return empty string', () => {
+    const val = {
+      payload: '',
+    };
+    const options = {
+      plugins: [{
+        print(val) {
+          return val.payload;
+        },
+        test(val) {
+          return val && typeof val.payload === 'string';
+        },
+      }],
+    };
+    expect(prettyFormat(val, options)).toEqual('');
+  });
+
   it('supports plugins with deeply nested arrays (#24)', () => {
     const val = [[1, 2], [3, 4]];
     expect(prettyFormat(val, {
@@ -315,6 +333,20 @@ describe('prettyFormat()', () => {
         },
       }],
     })).toEqual('1 - 2 - 3 - 4');
+  });
+
+  it('should call plugins on nested basic values', () => {
+    const val = {prop: 42};
+    expect(prettyFormat(val, {
+      plugins: [{
+        print(val, print) {
+          return '[called]';
+        },
+        test(val) {
+          return typeof val === 'string' || typeof val === 'number';
+        },
+      }],
+    })).toEqual('Object {\n  [called]: [called],\n}');
   });
 
   it('prints objects with no constructor', () => {

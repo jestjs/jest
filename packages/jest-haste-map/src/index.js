@@ -77,7 +77,7 @@ type InternalOptions = {
 
 type Watcher = {
   close(callback: () => void): void,
-}
+};
 
 export type ModuleMap = HasteModuleMap;
 export type FS = HasteFS;
@@ -89,7 +89,7 @@ const VERSION = require('../package.json').version;
 
 const canUseWatchman = ((): boolean => {
   try {
-    execSync('watchman version', {stdio: ['ignore']});
+    execSync('watchman --version', {stdio: ['ignore']});
     return true;
   } catch (e) {}
   return false;

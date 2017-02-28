@@ -38,6 +38,15 @@ const createMatcher = matcherName =>
     const value = expected;
     let error;
 
+    if (typeof actual !== 'function') {
+      throw new Error(
+        matcherHint(matcherName, 'function', getType(value)) +
+          '\n\n' +
+          'Received value must be a function, but instead ' +
+          `"${getType(actual)}" was found`
+      );
+    }
+
     try {
       actual();
     } catch (e) {

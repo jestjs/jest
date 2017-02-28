@@ -16,6 +16,7 @@ const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const createHasteContext = require('./lib/createHasteContext');
 const HasteMap = require('jest-haste-map');
+const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
 const setState = require('./lib/setState');
@@ -25,16 +26,23 @@ const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
-const SNAPSHOT_EXTENSION = 'snap';
-
 const watch = (
   config: Config,
   pipe: stream$Writable | tty$WriteStream,
   argv: Object,
   hasteMap: HasteMap,
   hasteContext: HasteContext,
-  stdin?: stream$Readable | tty$ReadStream = process.stdin
+  hasDeprecationWarnings?: boolean,
+  stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
+  if (hasDeprecationWarnings) {
+    return handleDeprecatedWarnings(pipe, stdin)
+      .then(() => {
+        watch(config, pipe, argv, hasteMap, hasteContext);
+      })
+      .catch(() => process.exit(0));
+  }
+
   setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern || (Array.isArray(argv._)
@@ -64,11 +72,11 @@ const watch = (
   );
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-    const hasOnlySnapshotChanges = eventsQueue.every(({filePath}) => {
-      return filePath.endsWith(`.${SNAPSHOT_EXTENSION}`);
+    const validPaths = eventsQueue.filter(({filePath}) => {
+      return isValidPath(config, filePath);
     });
 
-    if (!hasOnlySnapshotChanges) {
+    if (validPaths.length) {
       hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
@@ -220,6 +228,41 @@ const watch = (
 
   startRun();
   return Promise.resolve();
+};
+
+const handleDeprecatedWarnings = (
+  pipe: stream$Writable | tty$WriteStream,
+  stdin: stream$Readable | tty$ReadStream = process.stdin,
+) => {
+  return new Promise((resolve, reject) => {
+    if (typeof stdin.setRawMode === 'function') {
+      const messages = [
+        chalk.red('There are deprecation warnings.\n'),
+        chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to continue.'),
+        chalk.dim(' \u203A Press ') + 'Esc' + chalk.dim(' to exit.'),
+      ];
+
+      pipe.write(messages.join('\n'));
+
+      // $FlowFixMe
+      stdin.setRawMode(true);
+      stdin.resume();
+      stdin.setEncoding('hex');
+      stdin.on('data', (key: string) => {
+        if (key === KEYS.ENTER) {
+          resolve();
+        } else if ([
+          KEYS.ESCAPE,
+          KEYS.CONTROL_C,
+          KEYS.CONTROL_D,
+        ].indexOf(key) !== -1) {
+          reject();
+        }
+      });
+    } else {
+      resolve();
+    }
+  });
 };
 
 const usage = (

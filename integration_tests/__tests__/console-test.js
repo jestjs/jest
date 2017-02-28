@@ -34,3 +34,21 @@ test('console printing with --verbose', () => {
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
+
+test('does not print to console with --silent', () => {
+  const {stderr, stdout, status} =
+    runJest('console', [
+      // Need to pass --config because console test specifies `verbose: false`
+      '--config=' + JSON.stringify({
+        testEnvironment: 'node',
+      }),
+      '--silent',
+      '--no-cache',
+    ]);
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(stdout).toMatchSnapshot();
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});

@@ -39,15 +39,14 @@ describe('SearchSource', () => {
   describe('isTestFilePath', () => {
     let config;
 
-    beforeEach(done => {
+    beforeEach(() => {
       config = normalizeConfig({
         name,
         rootDir: '.',
         roots: [],
-      });
-      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+      }).config;
+      return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
-        done();
       });
     });
 
@@ -62,13 +61,16 @@ describe('SearchSource', () => {
           roots: [],
           testMatch: null,
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
-        });
-        Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
-          searchSource = new SearchSource(hasteMap, config);
+        }).config;
+        return Runtime.createHasteContext(config, {maxWorkers})
+          .then(hasteMap => {
+            searchSource = new SearchSource(hasteMap, config);
 
-          const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-          expect(searchSource.isTestFilePath(path)).toEqual(true);
-        });
+            const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+            expect(searchSource.isTestFilePath(path)).toEqual(true);
+          });
+      } else {
+        return undefined;
       }
     });
 
@@ -96,7 +98,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a pattern via testRegex', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
@@ -106,15 +108,16 @@ describe('SearchSource', () => {
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
-        ));
+        )).sort();
         expect(relPaths).toEqual([
+          path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
-        ]);
+        ].sort());
       });
     });
 
     it('finds tests matching a pattern via testMatch', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx', 'txt'],
         name,
         rootDir,
@@ -124,15 +127,16 @@ describe('SearchSource', () => {
       return findMatchingTests(config).then(data => {
         const relPaths = data.paths.map(absPath => (
           path.relative(rootDir, absPath)
-        ));
+        )).sort();
         expect(relPaths).toEqual([
+          path.normalize('.hiddenFolder/not-really-a-test.txt'),
           path.normalize('__testtests__/not-really-a-test.txt'),
-        ]);
+        ].sort());
       });
     });
 
     it('finds tests matching a JS regex pattern', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
@@ -151,7 +155,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests matching a JS glob pattern', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
@@ -170,7 +174,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with default file extensions using testRegex', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         name,
         rootDir,
         testMatch: null,
@@ -188,7 +192,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with default file extensions using testMatch', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         name,
         rootDir,
         testMatch,
@@ -206,7 +210,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with similar but custom file extensions', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['jsx'],
         name,
         rootDir,
@@ -223,7 +227,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with totally custom foobar file extensions', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['foobar'],
         name,
         rootDir,
@@ -240,7 +244,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests with many kinds of file extensions', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx'],
         name,
         rootDir,
@@ -258,7 +262,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests using a regex only', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         name,
         rootDir,
         testMatch: null,
@@ -276,7 +280,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests using a glob only', () => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         name,
         rootDir,
         testMatch,
@@ -308,7 +312,7 @@ describe('SearchSource', () => {
     const rootPath = path.join(rootDir, 'root.js');
 
     beforeEach(done => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
@@ -339,7 +343,7 @@ describe('SearchSource', () => {
 
   describe('findRelatedTestsFromPattern', () => {
     beforeEach(done => {
-      const config = normalizeConfig({
+      const {config} = normalizeConfig({
         moduleFileExtensions: ['js', 'jsx', 'foobar'],
         name,
         rootDir,

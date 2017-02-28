@@ -40,37 +40,25 @@ module.exports = (
     _cachedTestResults;
 
     constructor() {
-      (this:any).onChange = this.onChange.bind(this);
+      (this: any).onChange = this.onChange.bind(this);
     }
 
-    run(
-      onSuccess: Function,
-      onCancel: Function,
-    ) {
+    run(onSuccess: Function, onCancel: Function) {
       pipe.write(ansiEscapes.cursorHide);
       pipe.write(ansiEscapes.clearScreen);
       pipe.write(usage());
       pipe.write(ansiEscapes.cursorShow);
 
-      prompt.enter(
-        this.onChange,
-        onSuccess,
-        onCancel,
-      );
+      prompt.enter(this.onChange, onSuccess, onCancel);
     }
 
-    onChange(
-      pattern: string,
-    ) {
+    onChange(pattern: string) {
       pipe.write(ansiEscapes.eraseLine);
       pipe.write(ansiEscapes.cursorLeft);
       this.printTypeahead(pattern, 10);
     }
 
-    printTypeahead(
-      pattern: string,
-      max: number,
-    ) {
+    printTypeahead(pattern: string, max: number) {
       const matchedTests = this.getMatchedTests(pattern);
 
       const total = matchedTests.length;

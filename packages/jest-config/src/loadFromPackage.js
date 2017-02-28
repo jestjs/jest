@@ -12,20 +12,17 @@
 
 import type {Path} from 'types/Config';
 
-const fs = require('fs');
 const normalize = require('./normalize');
 const path = require('path');
-const promisify = require('./lib/promisify');
+const readPkg = require('read-pkg');
 
-function loadFromPackage(filePath: Path, argv: Object) {
-  return promisify(fs.access)(filePath, fs.R_OK).then(
-    () => {
-      // $FlowFixMe
-      const packageData = require(filePath);
+function loadFromPackage(root: Path, argv: Object) {
+  return readPkg(root).then(
+    packageData => {
       const config = packageData.jest || {};
-      const root = path.dirname(filePath);
-      config.rootDir =
-        config.rootDir ? path.resolve(root, config.rootDir) : root;
+      config.rootDir = config.rootDir
+        ? path.resolve(root, config.rootDir)
+        : root;
       return normalize(config, argv);
     },
     () => null,

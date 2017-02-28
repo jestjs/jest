@@ -50,7 +50,7 @@ const support = React.createClass({
                 JavaScript Tools team. Team members are often around
                 and available for questions.
               </p>
-              <GridBlock contents={supportLinks} layout="threeColumn" />
+              <GridBlock contents={supportLinks} layout="fourColumn" />
             </div>
           </Container>
         </div>

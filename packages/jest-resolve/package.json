@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "18.1.0",
+  "version": "19.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,7 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "browser-resolve": "^1.11.2",
-    "jest-haste-map": "^18.1.0",
+    "is-builtin-module": "^1.0.0",
+    "jest-haste-map": "^19.0.0",
     "resolve": "^1.2.0"
   }
 }

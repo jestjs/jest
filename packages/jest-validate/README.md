@@ -14,7 +14,7 @@ import {validate} from 'jest-validate';
 validate(
   config: Object,
   options: ValidationOptions,
-);
+); // => {hasDeprecationWarnings: boolean, isValid: boolean}
 ```
 
 Where `ValidationOptions` are:
@@ -27,7 +27,7 @@ type ValidationOptions = {
     option: string,
     deprecatedOptions: Object,
     options: ValidationOptions
-  ) => void,
+  ) => true,
   deprecatedConfig?: {[key: string]: Function},
   error?: (
     option: string,

@@ -143,7 +143,7 @@ const normalizeCollectCoverageFrom = (config: InitialConfig, key: string) => {
 
 const normalizeUnmockedModulePathPatterns = (
   config: InitialConfig,
-  key: string
+  key: string,
 ) => {
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
@@ -244,7 +244,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
 };
 
 function normalize(config: InitialConfig, argv: Object = {}) {
-  validate(config, {
+  const {hasDeprecationWarnings} = validate(config, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
@@ -381,12 +381,13 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   }, newConfig);
 
   if (babelJest) {
-    const polyfillPath = Resolver.findNodeModule('babel-polyfill', {
-      basedir: config.rootDir,
-    });
+    const regeneratorRuntimePath = Resolver.findNodeModule(
+      'regenerator-runtime/runtime',
+      {basedir: config.rootDir},
+    );
 
-    if (polyfillPath) {
-      newConfig.setupFiles.unshift(polyfillPath);
+    if (regeneratorRuntimePath) {
+      newConfig.setupFiles.unshift(regeneratorRuntimePath);
     }
   }
 
@@ -422,7 +423,10 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       .filter(reporter => reporter !== 'text');
   }
 
-  return _replaceRootDirTags(newConfig.rootDir, newConfig);
+  return {
+    config: _replaceRootDirTags(newConfig.rootDir, newConfig),
+    hasDeprecationWarnings,
+  };
 }
 
 module.exports = normalize;

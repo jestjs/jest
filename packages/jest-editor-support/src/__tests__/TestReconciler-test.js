@@ -11,7 +11,7 @@
 const TestReconciler = require('../TestReconciler');
 const fs = require('fs');
 const path = require('path');
-const fixtures = path.resolve(__dirname, 'fixtures');
+const fixtures = path.resolve(__dirname, '../../../../fixtures');
 
 const reconcilerWithFile = (file: string): TestReconciler => {
   const parser = new TestReconciler();

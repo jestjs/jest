@@ -26,7 +26,7 @@ const DefaultReporter = require('./reporters/DefaultReporter');
 const NotifyReporter = require('./reporters/NotifyReporter');
 const SummaryReporter = require('./reporters/SummaryReporter');
 const VerboseReporter = require('./reporters/VerboseReporter');
-const promisify = require('./lib/promisify');
+const pify = require('pify');
 const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
 const throat = require('throat');
@@ -49,15 +49,9 @@ type Options = {|
   getTestSummary: () => string,
 |};
 
-type OnRunFailure = (
-  path: string,
-  err: TestError,
-) => void;
+type OnRunFailure = (path: string, err: TestError) => void;
 
-type OnTestResult = (
-  path: string,
-  result: TestResult,
-) => void;
+type OnTestResult = (path: string, result: TestResult) => void;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -73,7 +67,7 @@ class TestRunner {
     hasteContext: HasteContext,
     config: Config,
     options: Options,
-    startRun: () => *
+    startRun: () => *,
   ) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher(
@@ -132,7 +126,7 @@ class TestRunner {
       stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
     const getTestRunTime = filePath => {
       if (cache[filePath]) {
-        return (cache[filePath][0] === FAIL) ? Infinity : cache[filePath][1];
+        return cache[filePath][0] === FAIL ? Infinity : cache[filePath][1];
       }
       return null;
     };
@@ -164,7 +158,7 @@ class TestRunner {
         const perf = test.perfStats;
         cache[test.testFilePath] = [
           test.numFailingTests ? FAIL : SUCCESS,
-          (perf.end - perf.start) || 0,
+          perf.end - perf.start || 0,
         ];
       }
     });
@@ -331,7 +325,7 @@ class TestRunner {
       maxRetries: 2, // Allow for a couple of transient errors.
     }, TEST_WORKER_PATH);
     const mutex = throat(this._options.maxWorkers);
-    const worker = promisify(farm);
+    const worker = pify(farm);
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
@@ -581,8 +575,7 @@ class ReporterDispatcher {
 
   onRunComplete(config, results) {
     this._reporters.forEach(reporter =>
-      reporter.onRunComplete(config, results, this._runnerContext),
-    );
+      reporter.onRunComplete(config, results, this._runnerContext));
   }
 
   // Return a list of last errors for every reporter
@@ -611,10 +604,7 @@ const getEstimatedTime = (timings, workers) => {
     return max;
   }
 
-  return Math.max(
-    timings.reduce((sum, time) => sum + time) / workers,
-    max,
-  );
+  return Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
 };
 
 module.exports = TestRunner;

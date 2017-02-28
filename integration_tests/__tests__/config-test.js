@@ -38,3 +38,15 @@ test('works with sane config JSON', () => {
   expect(result.status).toBe(1);
   expect(stderr).toMatch('works just fine');
 });
+
+test('watchman config option is respected over default argv', () => {
+  const {stdout} = runJest('verbose_reporter', [
+    '--config=' + JSON.stringify({
+      testEnvironment: 'node',
+      watchman: false,
+    }),
+    '--debug',
+  ]);
+
+  expect(stdout).toMatch('\"watchman\": false,');
+});

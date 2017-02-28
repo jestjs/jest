@@ -5,12 +5,12 @@
   },
   "devDependencies": {
     "babel-jest": "*",
-    "babel-polyfill": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
     "enzyme": "~2.4.1",
     "jest": "*",
-    "react-addons-test-utils": "15.3.2"
+    "react-addons-test-utils": "15.3.2",
+    "regenerator-runtime": "*"
   },
   "scripts": {
     "test": "jest"

@@ -1,6 +1,7 @@
 # Jest
 
-[![Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest-cli.svg)](http://badge.fury.io/js/jest-cli)
+[![CircleCI Build Status](https://circleci.com/gh/facebook/jest.svg?style=shield)](https://circleci.com/gh/facebook/jest)
+[![Travis Build Status](https://travis-ci.org/facebook/jest.svg?branch=master)](https://travis-ci.org/facebook/jest) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true)](https://ci.appveyor.com/project/Daniel15/jest/branch/master) [![npm version](https://badge.fury.io/js/jest.svg)](http://badge.fury.io/js/jest)
 
 🃏 Painless JavaScript Testing
 
@@ -61,11 +62,13 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `babel-polyfill` packages:
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
 ```
-npm install --save-dev babel-jest babel-polyfill
+npm install --save-dev babel-jest regenerator-runtime
 ```
+
+*Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn*
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 

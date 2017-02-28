@@ -1,5 +1,14 @@
 ## master
 
+## jest 19.0.1
+
+* Fix infinite loop when using `--watch` with `--coverage`.
+* Fixed `watchman` config option.
+* Fixed a bug in the jest-editor-support static analysis.
+* Fixed eslint plugin warning.
+* Fixed missing space in front of "Did you mean …?".
+* Fixed path printing in the reporter on Windows.
+
 ## jest 19.0.0
 
 * Breaking Change: Added a version for snapshots.
@@ -35,6 +44,7 @@
 * New eslint-plugin-jest with no-disabled-tests, no-focuses-tests and no-identical-title rules and default configuration and globals.
 * New expect.stringContaining asymmetric matcher.
 * New feature to make manual mocks with nested folders work. For example `__mocks__/react-native/Library/Text.js` will now work as expected.
+* New feature to re-run tests through the notification when using `--notify`.
 * New jest-phabricator package to integrate Jest code coverage in phabriactor.
 * New jest-validate package to improve configuration errors, help with suggestions of correct configuration and to be adopted in other libraries.
 * New pretty-printing for asymmetric matchers.

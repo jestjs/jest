@@ -78,7 +78,7 @@ const getType = (value: any): ValueType => {
       return 'set';
     }
     return 'object';
-  // $FlowFixMe https://github.com/facebook/flow/issues/1015
+    // $FlowFixMe https://github.com/facebook/flow/issues/1015
   } else if (typeof value === 'symbol') {
     return 'symbol';
   }
@@ -153,7 +153,7 @@ const ensureActualIsNumber = (actual: any, matcherName: string) => {
   if (typeof actual !== 'number') {
     throw new Error(
       matcherHint('[.not]' + matcherName) + '\n\n' +
-      `Actual value must be a number.\n` +
+      `Received value must be a number.\n` +
       printWithType('Received', actual, printReceived),
     );
   }
