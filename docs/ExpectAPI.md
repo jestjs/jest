@@ -1,4 +1,3 @@
-
 ---
 id: expect
 title: Expect
@@ -657,6 +656,7 @@ at `refKey` on the target object.
 
 The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty`
 to check for the existence and values of some properties in the object.
+
 ```js
 // Object containing house features to be tested
 const houseForSale = {
@@ -666,23 +666,21 @@ const houseForSale = {
 		area: 20,
 		wallColor: 'white'
 	},
-  bedrooms: 4
+  bedrooms: 4,
 };
 
-describe('Property features', () => {
-  test('this house has my desired features', () => {
-    // Simple Referencing 
-    expect(houseForSale).toHaveProperty('bath');
-    expect(houseForSale).toHaveProperty('bedrooms', 4);
+test('this house has my desired features', () => {
+  // Simple Referencing 
+  expect(houseForSale).toHaveProperty('bath');
+  expect(houseForSale).toHaveProperty('bedrooms', 4);
 
-    expect(houseForSale).not.toHaveProperty('pool');
+  expect(houseForSale).not.toHaveProperty('pool');
 
-    // Deep referencing using dot notation
-    expect(houseForSale).toHaveProperty('kitchen.area', 20);
-    expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer']);
+  // Deep referencing using dot notation
+  expect(houseForSale).toHaveProperty('kitchen.area', 20);
+  expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer']);
 
-    expect(hosueForSale).not.toHaveProperty('kitchen.open');
-  });
+  expect(hosueForSale).not.toHaveProperty('kitchen.open');
 });
 ```
 
