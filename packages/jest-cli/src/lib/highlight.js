@@ -50,7 +50,6 @@ const highlight = (
     offset = rawPath.length - filePath.length;
     trimLength = relativePathHead.length;
   } else {
-    // Will always be `rootDir.length` + 1.
     offset = rootDir.length + path.sep.length;
     trimLength = 0;
   }
