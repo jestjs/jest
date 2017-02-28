@@ -661,5 +661,69 @@ describe('prettyFormat()', () => {
         })
       ).toMatchSnapshot();
     });
+
+    it('throws if theme option is null', () => {
+      const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+      expect(() => {
+        prettyFormat(jsx, {
+          highlight: true,
+          plugins: [ReactElement],
+          theme: null,
+        });
+      }).toThrow('pretty-format: Option "theme" must not be null');
+    });
+
+    it('throws if theme option is not of type "object"', () => {
+      expect(() => {
+        const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+        prettyFormat(jsx, {
+          highlight: true,
+          plugins: [ReactElement],
+          theme: 'beautiful',
+        });
+      }).toThrow('pretty-format: Option "theme" must be of type object but instead received string');
+    });
+
+    it('throws if theme option has value that is undefined in ansi-styles', () => {
+      expect(() => {
+        const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+        prettyFormat(jsx, {
+          highlight: true,
+          plugins: [ReactElement],
+          theme: {
+            content: 'unknown',
+            prop: 'yellow',
+            tag: 'cyan',
+            value: 'green',
+          },
+        });
+      }).toThrow('pretty-format: Option "theme" has a key "content" whose value "unknown" is undefined in ansi-styles');
+    });
+
+    it('ReactElement plugin highlights syntax with color from theme option', () => {
+      const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+      expect(
+        prettyFormat(jsx, {
+          highlight: true,
+          plugins: [ReactElement],
+          theme: {
+            value: 'red',
+          },
+        })
+      ).toMatchSnapshot();
+    });
+
+    it('ReactTestComponent plugin highlights syntax with color from theme option', () => {
+      const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+      expect(
+        prettyFormat(renderer.create(jsx).toJSON(), {
+          highlight: true,
+          plugins: [ReactTestComponent, ReactElement],
+          theme: {
+            value: 'red',
+          },
+        })
+      ).toMatchSnapshot();
+    });
   });
 });
