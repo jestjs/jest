@@ -672,18 +672,18 @@ const houseForSale = {
 describe('Property features', () => {
   test('this house has my desired features', () => {
     // Simple Referencing 
-    expect(houseForSale).toHaveProperty('bath')
-    expect(houseForSale).toHaveProperty('bedrooms', 4)
+    expect(houseForSale).toHaveProperty('bath');
+    expect(houseForSale).toHaveProperty('bedrooms', 4);
 
-    expect(houseForSale).not.toHaveProperty('pool')
+    expect(houseForSale).not.toHaveProperty('pool');
 
     // Deep referencing using dot notation
-    expect(houseForSale).toHaveProperty('kitchen.area', 20)
-    expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer'])
+    expect(houseForSale).toHaveProperty('kitchen.area', 20);
+    expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer']);
 
-    expect(hosueForSale).not.toHaveProperty('kitchen.open')
-  })
-})
+    expect(hosueForSale).not.toHaveProperty('kitchen.open');
+  });
+});
 ```
 
 ### `.toMatchSnapshot(optionalString)`
