@@ -65,10 +65,11 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 If you are making changes to the website or documentation, test the website folder 
 and run the server to check if your changes are being displayed accurately. 
 
-1. Locate to the website directory and perform a `yarn install` to install 
-   any website specific dependencies. Following steps are to be followed
-   for this purpose
+1. Locate to the website directory and install any website specific dependencies
+   by typing in `yarn`. Following steps are to be followed
+   for this purpose from the root directory.
    ```sh
+   cd website       # Only needed if you are not already in the website directory
    yarn
    yarn test
    ```
