@@ -7,7 +7,7 @@
  * @flow
  */
  
- 'use strict'
+'use strict';
 
 const ImmutableOrderedSetPlugin = require('./ImmutableOrderedSet');
 const ImmutableListPlugin = require('./ImmutableList');
