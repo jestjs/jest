@@ -12,7 +12,7 @@
     "istanbul-api": "^1.1.0-alpha.1",
     "istanbul-lib-coverage": "^1.0.0",
     "istanbul-lib-instrument": "^1.1.1",
-    "jest-benchmark": "^18.1.0",
+    "jest-benchmark": "^19.0.2",
     "jest-changed-files": "^19.0.2",
     "jest-config": "^19.0.2",
     "jest-environment-jsdom": "^19.0.2",
