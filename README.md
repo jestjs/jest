@@ -60,15 +60,15 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running from command line
 
-You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `npm install -g jest`) with variety of handy options.
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `npm install -g jest`) with variety of useful options.
 
-Here's how to run Jest on files matching `my-test` RegExp, using `config.json` as a configuration file and display native OS notification after the run:
+Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
 
 ```bash
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through command line, take a look at [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
 
 ## Additional Configuration
 
