@@ -60,6 +60,21 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 
 7. If you haven't already, complete the CLA.
 
+#### Additional Workflow for any changes made to website or docs
+
+If you are making changes to the website or documentation, test the website folder 
+and run the server to check if your changes are being displayed accurately. 
+
+1. Locate to the website directory and perform a `yarn install` to install 
+   any website specific dependencies. Following steps are to be followed
+   for this purpose
+   ```sh
+   yarn
+   yarn run test
+   ```
+2. You can run a development server to check if the changes you made are being
+   displayed accurately by running `yarn run start` in the website directory.
+
 ### Contributor License Agreement (CLA)
 
 In order to accept your pull request, we need you to submit a CLA. You only need to do this once, so if you've done this for another Facebook open source project, you're good to go. If you are submitting a pull request for the first time, just let us know that you have completed the CLA and we can cross-check with your GitHub username.
