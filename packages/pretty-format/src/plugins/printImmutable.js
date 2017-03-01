@@ -9,8 +9,8 @@
 
 'use strict';
 
-const reactPlugin = require('./ReactElement');
 const IMMUTABLE_NAMESPACE = 'Immutable.';
+const SPACE = ' ';
 
 const addKey = (isMap, key) => {
   return isMap ? (key + ': ') : '';
@@ -26,24 +26,27 @@ const printImmutable = (
   isMap: boolean,
 ) : string => {
   let result = IMMUTABLE_NAMESPACE + immutableDataStructureName;
+  const openTag = isMap ? '{' : '[';
+  const closeTag = isMap ? '}' : ']';
   
   if (val.isEmpty()) {
-    return result + ' []';
+    return result + SPACE + openTag + closeTag;
   }
 
-  result += ' [ ';
-  
+  result += SPACE + openTag + opts.edgeSpacing;
   val.forEach((item: any, key: any) => {
-    if (reactPlugin.test(item)) {
-      result += addKey(isMap, key) + 
-        reactPlugin.print(item, print, indent, opts, colors) + ', ';
-    } else {
-      result += addKey(isMap, key) + 
-        print(item, print, indent, opts, colors) + ', ';
-    }
+    result += indent(
+        addKey(isMap, key) + print(item, print, indent, opts, colors)
+      ) + ',' + opts.spacing;
   });
   
-  return result.slice(0, -2) + ' ]';
+  if (opts.min) {
+    //remove last comma and last spacing
+    return result.slice(0, -2) + opts.edgeSpacing + closeTag;
+  } else {
+    //remove last spacing
+    return result.slice(0, -1) + opts.edgeSpacing + closeTag;
+  }
 };
 
 module.exports = printImmutable;

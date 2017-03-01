@@ -11,8 +11,13 @@
 
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
 const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
+const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
 
-let PLUGINS = [ReactElementPlugin, ReactTestComponentPlugin];
+let PLUGINS = [
+  ReactElementPlugin, 
+  ReactTestComponentPlugin,
+  ...ImmutablePlugins,
+];
 
 // Prepend to list so the last added is the first tested.
 exports.addSerializer = (plugin: any) => {
