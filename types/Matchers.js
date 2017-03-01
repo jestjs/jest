@@ -25,8 +25,8 @@ export type RawMatcherFn = (
 export type ThrowingMatcherFn = (actual: any) => void;
 export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
+  assertionCalls?: number,
   assertionsExpected?: ?number,
-  assertionsMade?: number,
   currentTestName?: string,
   testPath?: Path,
 };
