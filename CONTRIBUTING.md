@@ -70,10 +70,10 @@ and run the server to check if your changes are being displayed accurately.
    for this purpose
    ```sh
    yarn
-   yarn run test
+   yarn test
    ```
 2. You can run a development server to check if the changes you made are being
-   displayed accurately by running `yarn run start` in the website directory.
+   displayed accurately by running `yarn start` in the website directory.
 
 ### Contributor License Agreement (CLA)
 
