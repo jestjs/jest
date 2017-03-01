@@ -19,8 +19,7 @@ const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins')
 const PLUGINS = [
   AsymmetricMatcherPlugin, 
   ReactElementPlugin,
-  ...ImmutablePlugins,
-];
+].concat(ImmutablePlugins);
 
 export type ValueType =
   | 'array'

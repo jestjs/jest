@@ -31,8 +31,7 @@ const PLUGINS = [
   ReactTestComponentPlugin,
   ReactElementPlugin,
   AsymmetricMatcherPlugin,
-  ...ImmutablePlugins,
-];
+].concat(ImmutablePlugins);
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };

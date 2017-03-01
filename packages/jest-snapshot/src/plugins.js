@@ -16,8 +16,7 @@ const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins')
 let PLUGINS = [
   ReactElementPlugin, 
   ReactTestComponentPlugin,
-  ...ImmutablePlugins,
-];
+].concat(ImmutablePlugins);
 
 // Prepend to list so the last added is the first tested.
 exports.addSerializer = (plugin: any) => {
