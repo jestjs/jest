@@ -58,6 +58,18 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://facebook.github.io/jest/docs/using-matchers.html).
 
+## Running from command line
+
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `npm install -g jest`) with variety of useful options.
+
+Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
+
+```bash
+jest my-test --notify --config=config.json
+```
+
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
+
 ## Additional Configuration
 
 ### Using Babel
