@@ -670,7 +670,7 @@ describe('prettyFormat()', () => {
           plugins: [ReactElement],
           theme: null,
         });
-      }).toThrow('pretty-format: Option "theme" must not be null');
+      }).toThrow('pretty-format: Option "theme" must not be null.');
     });
 
     it('throws if theme option is not of type "object"', () => {
@@ -681,7 +681,7 @@ describe('prettyFormat()', () => {
           plugins: [ReactElement],
           theme: 'beautiful',
         });
-      }).toThrow('pretty-format: Option "theme" must be of type object but instead received string');
+      }).toThrow('pretty-format: Option "theme" must be of type "object" but instead received "string".');
     });
 
     it('throws if theme option has value that is undefined in ansi-styles', () => {
@@ -697,7 +697,7 @@ describe('prettyFormat()', () => {
             value: 'green',
           },
         });
-      }).toThrow('pretty-format: Option "theme" has a key "content" whose value "unknown" is undefined in ansi-styles');
+      }).toThrow('pretty-format: Option "theme" has a key "content" whose value "unknown" is undefined in ansi-styles.');
     });
 
     it('ReactElement plugin highlights syntax with color from theme option', () => {

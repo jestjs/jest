@@ -353,10 +353,10 @@ type InitialOptions = {|
   plugins?: Plugins,
   printFunctionName?: boolean,
   theme?: {
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
+    content?: string,
+    prop?: string,
+    tag?: string,
+    value?: string,
   },
 |};
 
@@ -397,32 +397,13 @@ const DEFAULTS: Options = {
 function validateOptions(opts: InitialOptions) {
   Object.keys(opts).forEach(key => {
     if (!DEFAULTS.hasOwnProperty(key)) {
-      throw new Error(`pretty-format: Unknown option "${key}"`);
+      throw new Error(`pretty-format: Unknown option "${key}".`);
     }
   });
 
   if (opts.min && opts.indent !== undefined && opts.indent !== 0) {
-    throw new Error('pretty-format: Options "min" and "indent" cannot be used together');
+    throw new Error('pretty-format: Options "min" and "indent" cannot be used together.');
   }
-}
-
-function normalizeTheme(themeOption: mixed) {
-  if (themeOption === null) {
-    throw new Error(`pretty-format: Option "theme" must not be null`);
-  }
-  if (typeof themeOption !== 'object') {
-    throw new Error(`pretty-format: Option "theme" must be of type object but instead received ${typeof themeOption}`);
-  }
-
-  const themeDefaults = DEFAULTS.theme;
-  return Object.keys(themeDefaults).reduce((theme, key) => {
-    // $FlowFixMe Method cannot be called on mixed
-    theme[key] = themeOption.hasOwnProperty(key)
-      // $FlowFixMe Computed property/element cannot be accessed on mixed
-      ? themeOption[key]
-      : themeDefaults[key];
-    return theme;
-  }, {});
 }
 
 function normalizeOptions(opts: InitialOptions): Options {
@@ -447,6 +428,26 @@ function normalizeOptions(opts: InitialOptions): Options {
   return (result: Options);
 }
 
+function normalizeTheme(themeOption: ?Object) {
+  if (themeOption === null) {
+    throw new Error(`pretty-format: Option "theme" must not be null.`);
+  }
+  if (typeof themeOption !== 'object') {
+    throw new Error(`pretty-format: Option "theme" must be of type "object" but instead received "${typeof themeOption}".`);
+  }
+
+  // Silently ignore any keys in `theme` that are not in defaults.
+  const themeDefaults = DEFAULTS.theme;
+  return Object.keys(themeDefaults).reduce((theme, key) => {
+    // Avoid Flow error Method cannot be called on possibly null or undefined value
+    theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
+      // $FlowFixMe Computed property/element cannot be accessed on mixed
+      ? themeOption[key]
+      : themeDefaults[key];
+    return theme;
+  }, {});
+}
+
 function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
@@ -465,7 +466,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     if (opts.highlight) {
       const color = colors[key] = style[opts.theme[key]];
       if (!color || typeof color.close !== 'string' || typeof color.open !== 'string') {
-        throw new Error(`pretty-format: Option "theme" has a key "${key}" whose value "${opts.theme[key]}" is undefined in ansi-styles`);
+        throw new Error(`pretty-format: Option "theme" has a key "${key}" whose value "${opts.theme[key]}" is undefined in ansi-styles.`);
       }
     } else {
       colors[key] = {close: '', open: ''};
