@@ -16,6 +16,9 @@ import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
 
 const fileExists = require('jest-file-exists');
 
+const isSnapshotPath = (path: string): boolean =>
+  !!path.match(/\/__snapshots__\//);
+
 function compact(array: Array<?Path>): Array<Path> {
   const result = [];
   for (let i = 0; i < array.length; ++i) {
@@ -91,9 +94,14 @@ class DependencyResolver {
       if (fileExists(path, this._hasteFS)) {
         const module = this._hasteFS.exists(path);
         if (module) {
-          changed.add(path);
-          if (filter(path)) {
-            relatedPaths.add(path);
+          // /path/to/__snapshots__/test.js.snap is always adjacent to
+          // /path/to/test.js
+          const modulePath = isSnapshotPath(path)
+            ? path.replace(/__snapshots__\/(.*)\.snap/, '$1')
+            : path;
+          changed.add(modulePath);
+          if (filter(modulePath)) {
+            relatedPaths.add(modulePath);
           }
         }
       }
