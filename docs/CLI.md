@@ -7,9 +7,9 @@ permalink: docs/cli.html
 previous: configuration
 ---
 
-The `jest` command line tool has a number of useful options, although you might never need any of them. You can run `jest --help` to view the options available. This document will also provide a brief overview.
+The `jest` command line runner has a number of useful options. You can run `jest --help` to view all available options. Many of the options shown below can also be used together to run tests exactly the way you want. Here is a brief overview:
 
-## Running from command line
+## Running from the command line
 
 Run all tests (default):
 ```bash
@@ -43,18 +43,17 @@ jest --watch #runs jest -o by default
 jest --watchAll #runs all tests
 ```
 
-Watch mode also enables to specify the or path to a file to focus on a specific set of files.
-You can of course mix most of the options together, unless they're mutually exclusive (which should throw a descriptive error).
+Watch mode also enables to specify the name or path to a file to focus on a specific set of tests.
 
 ## Using with npm scripts
 
-If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments. So instead of:
+If you run Jest via `npm test`, you can still use the command line arguments by inserting a `--` between `npm test` and the Jest arguments. Instead of:
 
 ```bash
 jest -u -t="ColorPicker"
 ```
 
-you could use:
+you can use:
 
 ```bash
 npm test -- -u -t="ColorPicker"
@@ -72,15 +71,15 @@ CLI options take precedence over values from the [Configuration](/jest/docs/conf
 
 ### `jest <regexForTestFiles>`
 
-When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed.
+When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Note: depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern`.
 
 ### `--bail`
 
-Alias: `-b`. Exit the test suite immediately upon the first failing test.
+Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
 
 ### `--cache`
 
-Whether to use the transform cache. Defaults to true. Disable the cache using `--no-cache`.
+Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. *Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at last two times slower.*
 
 ### `--collectCoverageFrom=<glob>`
 
@@ -108,7 +107,7 @@ The test environment used for all tests. This can point to any file or node modu
 
 ### `--expand`
 
-Alias: `-e`. Use this flag to show full diffs instead of a patch.
+Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
@@ -116,11 +115,11 @@ Find and run the tests that cover a space separated list of source files that we
 
 ### `--forceExit`
 
-Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up.
+Force Jest to exit after all tests have completed running. This is useful when resources set up by test code cannot be adequately cleaned up. *Note: This feature is an escape-hatch. If Jest doesn't exit at the end of a test run, it means external resources are still being held on to or timers are still pending in your code. It is advised to tear down external resources after each test to make sure Jest can shut down cleanly.*
 
 ### `--help`
 
-Show some helpful information, similar to this page.
+Show the help information, similar to this page.
 
 ### `--json`
 
@@ -140,7 +139,7 @@ Logs the heap usage after every test. Useful to debug memory leaks. Use together
 
 ### `--maxWorkers=<num>`
 
-Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. Overriding this is rarely a good idea.
+Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.
 
 ### `--noStackTrace`
 
@@ -152,11 +151,11 @@ Activates notifications for test results. Good for when you don't want your cons
 
 ### `--onlyChanged`
 
-Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git repository at the moment.
+Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
 ### `--runInBand`
 
-Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This is sometimes useful for debugging, but generally discouraged.
+Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
 
 ### `--setupTestFrameworkScriptFile=<file>`
 
