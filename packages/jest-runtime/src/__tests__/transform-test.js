@@ -9,7 +9,6 @@
  */
 'use strict';
 
-const skipOnWindows = require('skipOnWindows');
 const slash = require('slash');
 
 jest
@@ -215,9 +214,6 @@ describe('transform', () => {
   });
 
   it('reads values from the cache', () => {
-    // if (skipOnWindows.test()) {
-    //   return;
-    // }
     const transformConfig = Object.assign(config, {
       transform: [['^.+\\.js$', 'test-preprocessor']],
     });
