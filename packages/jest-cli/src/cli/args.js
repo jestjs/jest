@@ -45,6 +45,7 @@ const check = (argv: Object) => {
 };
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
+const docs = 'Documentation: https://facebook.github.io/jest/';
 
 const options = {
   bail: {
@@ -280,6 +281,7 @@ const options = {
 
 module.exports = {
   check,
+  docs,
   options,
   usage,
 };
