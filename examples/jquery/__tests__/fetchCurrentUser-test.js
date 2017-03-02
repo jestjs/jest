@@ -2,7 +2,9 @@
 
 jest.mock('jquery');
 
-beforeEach(() => jest.resetModules());
+beforeEach(() => {
+  jest.resetModules();
+});
 
 it('calls into $.ajax with the correct params', () => {
   const $ = require('jquery');

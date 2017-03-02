@@ -8,7 +8,9 @@
  */
 'use strict';
 
-beforeEach(() => jest.resetModules());
+beforeEach(() => {
+  jest.resetModules();
+});
 
 const testPath = names => {
   const {addSerializer, getSerializers} = require('../plugins');

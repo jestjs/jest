@@ -18,7 +18,9 @@ const skipOnWindows = require('skipOnWindows');
 const DIR = path.resolve(__dirname, '../coverage_report');
 
 if (process.platform !== 'win32') {
-  beforeEach(() => linkJestPackage('babel-jest', DIR));
+  beforeEach(() => {
+    linkJestPackage('babel-jest', DIR);
+  });
 }
 
 skipOnWindows.suite();
