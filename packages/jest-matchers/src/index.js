@@ -48,8 +48,8 @@ if (!global[GLOBAL_STATE]) {
     {value: {
       matchers: Object.create(null),
       state: {
+        assertionCalls: 0,
         assertionsExpected: null,
-        assertionsMade: 0,
         suppressedErrors: [],
       },
     }},
@@ -119,7 +119,7 @@ const makeThrowingMatcher = (
 
     _validateResult(result);
 
-    global[GLOBAL_STATE].state.assertionsMade++;
+    global[GLOBAL_STATE].state.assertionCalls++;
 
     if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
       const message = getMessage(result.message);

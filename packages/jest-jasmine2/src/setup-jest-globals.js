@@ -43,22 +43,29 @@ const addSuppressedErrors = result => {
 };
 
 const addAssertionErrors = result => {
-  const {assertionsMade, assertionsExpected} = getState();
-  setState({assertionsExpected: null, assertionsMade: 0});
+  const {assertionCalls, assertionsExpected} = getState();
+  setState({
+    assertionCalls: 0,
+    assertionsExpected: null,
+  });
   if (
     typeof assertionsExpected === 'number' &&
-    assertionsMade !== assertionsExpected
+    assertionCalls !== assertionsExpected
   ) {
     const expected = EXPECTED_COLOR(pluralize('assertion', assertionsExpected));
+    const message = new Error(
+      matcherHint('.assertions', '', assertionsExpected, {
+        isDirectExpectCall: true,
+      }) +
+      '\n\n' +
+      `Expected ${expected} to be called but only received ` +
+      `${RECEIVED_COLOR(pluralize('assertion call', assertionCalls))}.`,
+    ).stack;
     result.status = 'failed';
     result.failedExpectations.push({
-      actual: assertionsMade,
+      actual: assertionCalls,
       expected: assertionsExpected,
-      message: matcherHint('.assertions', '', assertionsExpected, {
-        isDirectExpectCall: true,
-      }) + '\n\n' +
-        `Expected: ${expected}\n` +
-        `Received: ${RECEIVED_COLOR(pluralize('assertion', assertionsMade))}`,
+      message,
       passed: false,
     });
   }
