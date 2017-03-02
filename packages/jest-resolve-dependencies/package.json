@@ -9,5 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-file-exists": "^19.0.0"
+  },
+  "devDependencies": {
+    "slash": "^1.0.0"
   }
 }
