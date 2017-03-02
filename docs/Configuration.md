@@ -51,7 +51,7 @@ This option is disabled by default. If you are introducing Jest to a large organ
 ### `browser` [boolean]
 Default: `false`
 
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
+Respect the [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
 ### `bail` [boolean]
 Default: `false`
@@ -149,6 +149,13 @@ For example, the following would create a global `__DEV__` variable set to `true
 ```
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
+
+### `module` [boolean]
+Default: `false`
+
+Respect the [`"module"` field](https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md) in `package.json`. Many libraries that contain ES modules ([import/export syntax](http://www.2ality.com/2014/09/es6-modules-final.html)) use this field as a pointer to their untranspiled (ES6+) source, in addition to the ubiquitous `"main"` field that points to precompiled ES5 javascript.
+
+_TL;DR: enable this if your project uses import/export syntax._
 
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`

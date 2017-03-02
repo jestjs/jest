@@ -344,6 +344,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'globals':
       case 'logHeapUsage':
       case 'logTransformErrors':
+      case 'module':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'moduleLoader':

@@ -385,6 +385,17 @@ describe('testPathIgnorePatterns', () => {
   });
 });
 
+describe('module', () => {
+  it('falsy module is not overwritten', () => {
+    const config = normalize({
+      module: true,
+      rootDir: '/root/path/foo',
+    });
+
+    expect(config.module).toBe(true);
+  });
+});
+
 describe('modulePathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are
