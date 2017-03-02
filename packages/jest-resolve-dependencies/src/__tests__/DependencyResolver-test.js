@@ -1,0 +1,94 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+'use strict';
+
+const DependencyResolver = require('../index');
+const normalizeConfig = require('jest-config').normalize;
+const path = require('path');
+
+const maxWorkers = 1;
+let dependencyResolver;
+let Runtime;
+let config;
+const cases = {
+  fancyCondition: jest.fn(path => path.length > 10),
+  testRegex: jest.fn(path => /-test.js$/.test(path)),
+};
+const filter = path => {
+  return Object.keys(cases).every(key => cases[key](path));
+};
+
+beforeEach(() => {
+  Runtime = require('jest-runtime');
+  config = normalizeConfig({
+    rootDir: '.',
+    roots: ['./packages/jest-resolve-dependencies'],
+  }).config;
+  return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+    dependencyResolver = new DependencyResolver(
+      hasteMap.resolver,
+      hasteMap.hasteFS,
+    );
+  });
+});
+
+test('resolves no dependencies for non-existent path', () => {
+  const resolved = dependencyResolver.resolve('/non/existent/path');
+  expect(resolved.length).toEqual(0);
+});
+
+test('resolves dependencies for existing path', () => {
+  const resolved = dependencyResolver.resolve(
+    path.resolve(__dirname, '__fixtures__', 'file.js'),
+  );
+  expect(resolved).toEqual([
+    expect.stringContaining('jest-resolve-dependencies'),
+    expect.stringContaining('jest-file-exists'),
+  ]);
+});
+
+test('resolves no inverse dependencies for empty paths set', () => {
+  const paths = new Set();
+  const resolved = dependencyResolver.resolveInverse(paths, filter);
+  expect(resolved.length).toEqual(0);
+});
+
+test('resolves no inverse dependencies for set of non-existent paths', () => {
+  const paths = new Set(['/non/existent/path', '/another/one']);
+  const resolved = dependencyResolver.resolveInverse(paths, filter);
+  expect(resolved.length).toEqual(0);
+});
+
+test('resolves inverse dependencies for existing path', () => {
+  const paths = new Set([path.resolve(__dirname, '__fixtures__/file.js')]);
+  const resolved = dependencyResolver.resolveInverse(paths, filter);
+  expect(resolved).toEqual([
+    expect.stringContaining(
+      path.join('__tests__', '__fixtures__', 'file-test.js'),
+    ),
+  ]);
+});
+
+test('resolves inverse dependencies from available snapshot', () => {
+  const paths = new Set([
+    path.resolve(__dirname, '__fixtures__/file.js'),
+    path.resolve(__dirname, '__fixtures__/__snapshots__/related-test.js.snap'),
+  ]);
+  const resolved = dependencyResolver.resolveInverse(paths, filter);
+  expect(resolved).toEqual(
+    expect.arrayContaining([
+      expect.stringContaining(
+        path.join('__tests__', '__fixtures__', 'file-test.js'),
+      ),
+      expect.stringContaining(
+        path.join('__tests__', '__fixtures__', 'related-test.js'),
+      ),
+    ]),
+  );
+});
