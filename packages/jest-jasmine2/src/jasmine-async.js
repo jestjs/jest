@@ -10,7 +10,7 @@
 
  /**
  * This module adds ability to test async promise code with jasmine by
- * returning a promise from `it\fit` and `beforeEach/afterEach` blocks.
+ * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
 'use strict';
@@ -21,7 +21,37 @@ function isPromise(obj) {
   return obj && typeof obj.then === 'function';
 }
 
-// return a wrapping function: `env.fit = promisifyIt(env.it, env)`
+function promisifyLifeCycleFunction(originalFn, env) {
+  return function(fn, timeout) {
+    if (!fn) {
+      return originalFn.call(env);
+    }
+
+    const hasDoneCallback = fn.length > 0;
+
+    if (hasDoneCallback) {
+      // Jasmine will handle it
+      return originalFn.call(env, fn, timeout);
+    }
+
+    // We make *all* functions async and run `done` right away if they
+    // didn't return a promise.
+    const asyncFn = function(done) {
+      const returnValue = fn.call(this);
+
+      if (isPromise(returnValue)) {
+        returnValue.then(done, done.fail);
+      } else {
+        done();
+      }
+    };
+
+    return originalFn.call(env, asyncFn, timeout);
+  };
+}
+
+// Similar to promisifyLifeCycleFunction but throws an error
+// when the return value is neither a Promise nor `undefined`
 function promisifyIt(originalFn, env) {
   return function(specName, fn, timeout) {
     if (!fn) {
@@ -30,47 +60,27 @@ function promisifyIt(originalFn, env) {
       return spec;
     }
 
-    const isAsync = fn.length; // `done` was passed
+    const hasDoneCallback = fn.length > 0;
 
-    if (isAsync) {
-      // jasmine will handle it
+    if (hasDoneCallback) {
       return originalFn.call(env, specName, fn, timeout);
-    } else {
-      // we make *all* tests async and run `done` right away if they
-      // didn't return a promise.
-      return originalFn.call(env, specName, function(done) {
-        const returnValue = fn.apply(this, arguments);
-
-        if (isPromise(returnValue)) {
-          returnValue.then(done).catch(done.fail);
-        } else if (returnValue === undefined) {
-          done();
-        } else {
-          done.fail(new Error(
-            'Jest: `it` must return either a Promise or undefined.',
-          ));
-        }
-      }, timeout);
-    }
-  };
-}
-
-function promisifyLifeCycleFunction(originalFn: Function, env) {
-  return function(fn, timeout) {
-    const hasDoneCallback = fn.length;
-    if (!hasDoneCallback) {
-      const originalBodyFn = fn;
-      fn = function(done) {
-        const returnValue = originalBodyFn.apply(this, arguments);
-        if (returnValue && isPromise(returnValue)) {
-          returnValue.then(done, done.fail);
-        } else {
-          done();
-        }
-      };
     }
 
-    return originalFn.call(env, fn, timeout);
+    const asyncFn = function(done) {
+      const returnValue = fn.call(this);
+
+      if (isPromise(returnValue)) {
+        returnValue.then(done, done.fail);
+      } else if (returnValue === undefined) {
+        done();
+      } else {
+        done.fail(new Error(
+          'Jest: `it` and `test` must return either a Promise or undefined.'
+        ));
+      }
+    };
+
+    return originalFn.call(env, specName, asyncFn, timeout);
   };
 }
 
