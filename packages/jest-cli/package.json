@@ -15,6 +15,7 @@
     "istanbul-lib-source-maps": "^1.1.0",
     "jest-changed-files": "^19.0.2",
     "jest-config": "^19.0.2",
+    "jest-docblock": "^19.0.2",
     "jest-environment-jsdom": "^19.0.2",
     "jest-haste-map": "^19.0.0",
     "jest-jasmine2": "^19.0.2",
