@@ -15,17 +15,11 @@ Platform:
 
 npm manifest: 
   {
-    "dependencies": {
-      "react": "~15.3.1",
-      "react-dom": "~15.3.1"
-    },
     "devDependencies": {
       "babel-jest": "*",
+      "babel-plugin-transform-async-to-generator": "^6.5.0",
       "babel-preset-es2015": "*",
-      "babel-preset-react": "*",
-      "enzyme": "~2.4.1",
       "jest": "*",
-      "react-addons-test-utils": "15.3.2",
       "regenerator-runtime": "*"
     },
     "scripts": {
