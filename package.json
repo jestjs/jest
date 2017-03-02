@@ -44,7 +44,7 @@
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn run jest -- --coverage",
     "lint": "eslint . --cache",
-    "lint-docs": "eslint --rule \"{'no-undef': 0}\" --no-ignore --ext md ./docs/*.md",
+    "lint-docs": "eslint --rule \"{'no-undef': 0, 'consistent-return': 0, 'no-unused-vars': 0}\" --no-ignore --ext md ./docs/*.md",
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js && (cd packages/eslint-plugin-jest && yarn link) && yarn link eslint-plugin-jest",
     "publish": "yarn run build-clean && yarn run build && lerna publish",
     "test-ci": "yarn run typecheck && yarn run lint && yarn run lint-docs && yarn run build && yarn run jest-coverage -- -i && yarn run test-examples && node scripts/mapCoverage.js && codecov",

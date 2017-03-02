@@ -1,0 +1,43 @@
+Arguments: 
+  /home/hannan/.nvm/versions/node/v7.4.0/bin/node /home/hannan/.nvm/versions/node/v7.4.0/bin/yarn install --pure-lockfile
+
+PATH: 
+  /home/hannan/Programming/jest/node_modules/.bin:/home/hannan/.config/yarn/link/node_modules/.bin:/home/hannan/Programming/jest/node_modules/.bin:/home/hannan/.config/yarn/link/node_modules/.bin:/home/hannan/.nvm/versions/node/v7.4.0/lib/node_modules/yarn/bin/node-gyp-bin:/home/hannan/Programming/jest/node_modules/.bin:/home/hannan/.config/yarn/link/node_modules/.bin:/home/hannan/Programming/jest/node_modules/.bin:/home/hannan/.config/yarn/link/node_modules/.bin:/home/hannan/.nvm/versions/node/v7.4.0/lib/node_modules/yarn/bin/node-gyp-bin:/home/hannan/.gvm/bin:/home/hannan/.nvm/versions/node/v7.4.0/bin:/home/hannan/bin:/home/hannan/.local/bin:/home/hannan/.gvm/bin:/home/hannan/bin:/home/hannan/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/hannan/.rvm/bin:/snap/bin:/home/hannan/.rvm/bin:/home/hannan/.rvm/bin:/home/hannan/.rvm/bin
+
+Yarn version: 
+  0.20.3
+
+Node version: 
+  7.4.0
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "dependencies": {
+      "react": "~15.3.1",
+      "react-dom": "~15.3.1"
+    },
+    "devDependencies": {
+      "babel-jest": "*",
+      "babel-preset-es2015": "*",
+      "babel-preset-react": "*",
+      "enzyme": "~2.4.1",
+      "jest": "*",
+      "react-addons-test-utils": "15.3.2",
+      "regenerator-runtime": "*"
+    },
+    "scripts": {
+      "test": "jest"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: ENOENT: no such file or directory, open '/home/hannan/.cache/yarn/npm-whatwg-fetch-2.0.3-9c84ec2dcf68187ff00bc64e1274b442176e1c84/.yarn-metadata.json'
