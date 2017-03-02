@@ -14,7 +14,7 @@ exports[`HasteMap tries to crawl using node as a fallback 1`] = `
   Error: watchman error"
 `;
 
-exports[`HasteMap warns on duplicate mock files 1`] = `
+exports[`HasteMap warns on duplicate global mock files 1`] = `
 "jest-haste-map: duplicate manual mock found:
   Module name: subdir/blueberry
   Duplicate Mock path: /fruits2/__mocks__/subdir/blueberry.js

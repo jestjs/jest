@@ -28,6 +28,7 @@ module.exports = ({
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
+  globalMocks: ['<rootDir>/__mocks__'],
   globals: {},
   haste: {
     providesModuleNodeModules: [],

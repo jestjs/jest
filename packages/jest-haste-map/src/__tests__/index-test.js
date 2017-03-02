@@ -244,7 +244,7 @@ describe('HasteMap', () => {
     ].join('\n');
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
-      mocksPattern: '/__mocks__/',
+      globalMocks: ['/fruits/'],
       providesModuleNodeModules: ['react', 'fbjs'],
     }));
 
@@ -302,7 +302,6 @@ describe('HasteMap', () => {
     ].join('\n');
 
     const hasteMap = new HasteMap(Object.assign({}, defaultConfig, {
-      mocksPattern: '/__mocks__/',
       retainAllFiles: true,
     }));
 
@@ -320,7 +319,7 @@ describe('HasteMap', () => {
     });
   });
 
-  it('warns on duplicate mock files', () => {
+  it('warns on duplicate global mock files', () => {
     // Duplicate mock files for blueberry
     mockFs['/fruits1/__mocks__/subdir/blueberry.js'] = [
       '/**',
@@ -334,10 +333,27 @@ describe('HasteMap', () => {
     ].join('\n');
 
     return new HasteMap(
-      Object.assign({mocksPattern: '__mocks__'}, defaultConfig),
+      Object.assign({globalMocks: true}, defaultConfig),
     ).build()
       .then(({__hasteMapForTest: data}) => {
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+      });
+  });
+
+  it('should use different mock files if they have same filename', () => {
+    // Duplicate mock files for blueberry
+    mockFs['/fruits1/__mocks__/blueberry.js'] = [
+      'exports.blueberry = "blueberry the first";',
+    ].join('\n');
+    mockFs['/fruits2/__mocks__/blueberry.js'] = [
+      'exports.blueberry = "blueberry the second";',
+    ].join('\n');
+
+    return new HasteMap(
+      defaultConfig,
+    ).build()
+      .then(({__hasteMapForTest: data}) => {
+        expect(console.warn).not.toBeCalled();
       });
   });
 

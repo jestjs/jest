@@ -42,10 +42,10 @@ type Options = {
   console?: Console,
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
+  globalMocks?: Array<string> | true,
   hasteImplModulePath?: string,
   ignorePattern: RegExp,
   maxWorkers: number,
-  mocksPattern?: string,
   name: string,
   platforms: Array<string>,
   providesModuleNodeModules?: Array<string>,
@@ -61,10 +61,10 @@ type InternalOptions = {
   cacheDirectory: string,
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
+  globalMocks: Array<string> | true,
   hasteImplModulePath?: string,
   ignorePattern: RegExp,
   maxWorkers: number,
-  mocksPattern: ?RegExp,
   name: string,
   platforms: Array<string>,
   resetCache: ?boolean,
@@ -108,6 +108,8 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
   }
   return null;
 };
+
+const mocksPattern = /__mocks__/;
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -199,11 +201,10 @@ class HasteMap extends EventEmitter {
       cacheDirectory: options.cacheDirectory || os.tmpdir(),
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
+      globalMocks: options.globalMocks || [],
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
-      mocksPattern:
-        options.mocksPattern ? new RegExp(options.mocksPattern) : null,
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
@@ -221,8 +222,7 @@ class HasteMap extends EventEmitter {
       VERSION,
       this._options.roots.join(':'),
       this._options.extensions.join(':'),
-      this._options.platforms.join(':'),
-      options.mocksPattern || '',
+      this._options.platforms.join(':')
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -327,8 +327,8 @@ class HasteMap extends EventEmitter {
     }
 
     if (
-      this._options.mocksPattern &&
-      this._options.mocksPattern.test(filePath)
+      mocksPattern.test(filePath) &&
+      this._isMockGlobal(filePath)
     ) {
       const mockPath = getMockName(filePath);
       if (mocks[mockPath]) {
@@ -622,8 +622,8 @@ class HasteMap extends EventEmitter {
         delete hasteMap.files[filePath];
         delete hasteMap.map[moduleName];
         if (
-          this._options.mocksPattern &&
-          this._options.mocksPattern.test(filePath)
+          mocksPattern.test(filePath) &&
+          this._isMockGlobal(filePath)
         ) {
           const mockName = getMockName(filePath);
           delete hasteMap.mocks[mockName];
@@ -688,6 +688,15 @@ class HasteMap extends EventEmitter {
       (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
     );
   }
+  
+  _isMockGlobal(filePath: Path): boolean {
+    if (this._options.globalMocks === true) {
+      return true;
+    }
+    return this._options.globalMocks.some(
+      mockPath => filePath.startsWith(mockPath)
+    );
+  }
 
   _isNodeModulesDir(filePath: Path): boolean {
     if (!filePath.includes(NODE_MODULES)) {
@@ -713,9 +722,12 @@ class HasteMap extends EventEmitter {
 
   static H: HType;
   static ModuleMap: Class<HasteModuleMap>;
+  static mocksPattern: RegExp;
 }
 
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;
+HasteMap.mocksPattern = mocksPattern;
+
 
 module.exports = HasteMap;

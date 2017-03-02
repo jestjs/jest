@@ -39,6 +39,7 @@ module.exports = ({
   },
   expand: false,
   forceExit: false,
+  globalMocks: ['<rootDir>/__mocks__'],
   globals: {},
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],

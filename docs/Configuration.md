@@ -150,6 +150,13 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
+### `globalMocks` [array<string>]
+(default: `['<rootDir>/__mocks__']`)
+
+Array of directories where mocks are visible for all tests (they become *global*)
+
+For example, mocks located in `<rootDir>/__mocks__`, can be used under `<rootDir>/app/src/` 
+
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`
 

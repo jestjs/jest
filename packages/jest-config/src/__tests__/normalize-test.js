@@ -200,6 +200,19 @@ describe('roots', () => {
   testPathArray('roots');
 });
 
+describe('globalMocks', () => {
+  testPathArray('globalMocks');
+  
+  it('should accept ["*"] value as well', () => {
+    const config = normalize({
+      globalMocks: ['*'],
+      rootDir: '/root/path/foo',
+    });
+
+    expect(config.globalMocks).toEqual(true);
+  });
+});
+
 describe('transform', () => {
   let Resolver;
   beforeEach(() => {
