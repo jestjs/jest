@@ -13,6 +13,54 @@
 
 const style = require('ansi-styles');
 
+type Colors = Object;
+type Indent = (str: string) => string;
+type Refs = Array<any>;
+type Serialize = (val: any) => string;
+type StringOrNull = string | null; // but disallow undefined, unlike ?string
+
+type Plugin = {
+  print: (val: any, serialize: Serialize, indent: Indent, opts: Object, colors: Colors) => string,
+  test: Function,
+}
+type Plugins = Array<Plugin>;
+
+type Theme = {|
+  content?: string,
+  prop?: string,
+  tag?: string,
+  value?: string,
+|};
+
+type InitialOptions = {|
+  callToJSON?: boolean,
+  escapeRegex?: boolean,
+  highlight?: boolean,
+  indent?: number,
+  maxDepth?: number,
+  min?: boolean,
+  plugins?: Plugins,
+  printFunctionName?: boolean,
+  theme?: Theme,
+|};
+
+type Options = {|
+  callToJSON: boolean,
+  escapeRegex: boolean,
+  highlight: boolean,
+  indent: number,
+  maxDepth: number,
+  min: boolean,
+  plugins: Plugins,
+  printFunctionName: boolean,
+  theme: {|
+    content: string,
+    prop: string,
+    tag: string,
+    value: string,
+  |},
+|};
+
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
@@ -331,52 +379,6 @@ function print(val: any, indent: string, prevIndent: string, spacing: string, ed
   return printComplexValue(val, indent, prevIndent, spacing, edgeSpacing, refs, maxDepth, currentDepth, plugins, min, callToJSON, printFunctionName, escapeRegex, colors);
 }
 
-type Colors = Object;
-type Indent = (str: string) => string;
-type Refs = Array<any>;
-type Serialize = (val: any) => string;
-type StringOrNull = string | null; // but disallow undefined, unlike ?string
-
-type Plugin = {
-  print: (val: any, serialize: Serialize, indent: Indent, opts: Object, colors: Colors) => string,
-  test: Function,
-}
-type Plugins = Array<Plugin>;
-
-type InitialOptions = {|
-  callToJSON?: boolean,
-  escapeRegex?: boolean,
-  highlight?: boolean,
-  indent?: number,
-  maxDepth?: number,
-  min?: boolean,
-  plugins?: Plugins,
-  printFunctionName?: boolean,
-  theme?: {
-    content?: string,
-    prop?: string,
-    tag?: string,
-    value?: string,
-  },
-|};
-
-type Options = {|
-  callToJSON: boolean,
-  escapeRegex: boolean,
-  highlight: boolean,
-  indent: number,
-  maxDepth: number,
-  min: boolean,
-  plugins: Plugins,
-  printFunctionName: boolean,
-  theme: {|
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
-  |},
-|};
-
 const DEFAULTS: Options = {
   callToJSON: true,
   escapeRegex: false,
@@ -422,27 +424,25 @@ function normalizeOptions(opts: InitialOptions): Options {
     result.indent = 0;
   }
 
-  // The type cast below means YOU are responsible to verify the code above.
-
-  // $FlowFixMe object literal. Inexact type is incompatible with exact type
+  // $FlowFixMe the type cast below means YOU are responsible to verify the code above.
   return (result: Options);
 }
 
-function normalizeTheme(themeOption: ?Object) {
-  if (themeOption === null) {
+function normalizeTheme(themeOption: ?Theme) {
+  if (!themeOption) {
     throw new Error(`pretty-format: Option "theme" must not be null.`);
   }
+
   if (typeof themeOption !== 'object') {
     throw new Error(`pretty-format: Option "theme" must be of type "object" but instead received "${typeof themeOption}".`);
   }
 
   // Silently ignore any keys in `theme` that are not in defaults.
+  const themeRefined = themeOption;
   const themeDefaults = DEFAULTS.theme;
   return Object.keys(themeDefaults).reduce((theme, key) => {
-    // Avoid Flow error Method cannot be called on possibly null or undefined value
     theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
-      // $FlowFixMe Computed property/element cannot be accessed on mixed
-      ? themeOption[key]
+      ? themeRefined[key]
       : themeDefaults[key];
     return theme;
   }, {});
