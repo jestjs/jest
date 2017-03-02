@@ -51,7 +51,7 @@
     "test-ci-partial": "yarn run build && yarn run jest -- -i && yarn run test-examples",
     "test-examples": "node scripts/test_examples.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
-    "test": "yarn run typecheck && yarn run lint && yarn run build && yarn run jest && yarn run test-examples",
+    "test": "yarn run typecheck && yarn run lint && yarn run build && yarn run jest && yarn run test-examples && yarn run lint-docs",
     "typecheck": "flow check",
     "watch": "yarn run build; node ./scripts/watch.js"
   },
