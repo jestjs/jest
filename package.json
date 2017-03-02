@@ -35,7 +35,7 @@
     "typescript": "^2.1.4"
   },
   "scripts": {
-    "build-clean": "rimraf ./packages/*/build",
+    "build-clean": "rm -rf ./packages/*/build",
     "build": "node ./scripts/build.js",
     "clean-all": "rm -rf ./node_modules; rm -rf ./packages/*/node_modules; rm -rf ./integration_tests/*/*/node_modules; yarn run build-clean",
     "danger": "node ./danger/node_modules/.bin/danger",
