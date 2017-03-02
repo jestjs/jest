@@ -12,7 +12,7 @@
 'use strict';
 
 const os = require('os');
-const docblock = require('../docblock');
+const docblock = require('../');
 
 describe('docblock', () => {
 
