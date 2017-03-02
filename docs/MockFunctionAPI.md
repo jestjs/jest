@@ -8,7 +8,7 @@ previous: expect
 next: jest-object
 ---
 
-Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. You can create a mock function with `jest.fn()`.
+Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
 ## Methods
 
@@ -31,7 +31,7 @@ For example: A mock function `f` that has been called twice, with the arguments 
 ```
 
 ### `mockFn.mock.instances`
-An array that contains all the object instances that have been instantiated from this mock function.
+An array that contains all the object instances that have been instantiated from this mock function using `new`.
 
 For example: A mock function that has been instantiated twice would have the following `mock.instances` array:
 
@@ -50,10 +50,14 @@ Resets all information stored in the [`mockFn.mock.calls`](#mockfn-mock-calls) a
 
 Often this is useful when you want to clean up a mock's usage data between two assertions.
 
+Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
+
 ### `mockFn.mockReset()`
-Resets all information stored in the mock
+Resets all information stored in the mock, including any inital implementation given.
 
 This is useful when you want to completely restore a mock back to its initial state.
+
+Beware that `mockReset` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
