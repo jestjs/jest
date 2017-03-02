@@ -21,6 +21,7 @@ const path = require('path');
 const shouldInstrument = require('./shouldInstrument');
 const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
+const slash = require('slash');
 
 const VERSION = require('../package.json').version;
 
@@ -172,10 +173,10 @@ const getFileCachePath = (
   // Create sub folders based on the cacheKey to avoid creating one
   // directory with many files.
   const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
-  const cachePath = path.join(
+  const cachePath = slash(path.join(
     cacheDir,
     path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-  );
+  ));
   createDirectory(cacheDir);
 
   return cachePath;
