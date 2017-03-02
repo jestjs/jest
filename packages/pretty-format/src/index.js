@@ -353,10 +353,10 @@ type InitialOptions = {|
   plugins?: Plugins,
   printFunctionName?: boolean,
   theme?: {
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
+    content?: string,
+    prop?: string,
+    tag?: string,
+    value?: string,
   },
 |};
 
@@ -397,12 +397,12 @@ const DEFAULTS: Options = {
 function validateOptions(opts: InitialOptions) {
   Object.keys(opts).forEach(key => {
     if (!DEFAULTS.hasOwnProperty(key)) {
-      throw new Error('prettyFormat: Invalid option: ' + key);
+      throw new Error(`pretty-format: Unknown option "${key}".`);
     }
   });
 
   if (opts.min && opts.indent !== undefined && opts.indent !== 0) {
-    throw new Error('prettyFormat: Cannot run with min option and indent');
+    throw new Error('pretty-format: Options "min" and "indent" cannot be used together.');
   }
 }
 
@@ -410,7 +410,12 @@ function normalizeOptions(opts: InitialOptions): Options {
   const result = {};
 
   Object.keys(DEFAULTS).forEach(key =>
-    result[key] = opts.hasOwnProperty(key) ? opts[key] : DEFAULTS[key]
+    result[key] = opts.hasOwnProperty(key)
+      ? (key === 'theme'
+          ? normalizeTheme(opts.theme)
+          : opts[key]
+        )
+      : DEFAULTS[key]
   );
 
   if (result.min) {
@@ -421,6 +426,26 @@ function normalizeOptions(opts: InitialOptions): Options {
 
   // $FlowFixMe object literal. Inexact type is incompatible with exact type
   return (result: Options);
+}
+
+function normalizeTheme(themeOption: ?Object) {
+  if (themeOption === null) {
+    throw new Error(`pretty-format: Option "theme" must not be null.`);
+  }
+  if (typeof themeOption !== 'object') {
+    throw new Error(`pretty-format: Option "theme" must be of type "object" but instead received "${typeof themeOption}".`);
+  }
+
+  // Silently ignore any keys in `theme` that are not in defaults.
+  const themeDefaults = DEFAULTS.theme;
+  return Object.keys(themeDefaults).reduce((theme, key) => {
+    // Avoid Flow error Method cannot be called on possibly null or undefined value
+    theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
+      // $FlowFixMe Computed property/element cannot be accessed on mixed
+      ? themeOption[key]
+      : themeDefaults[key];
+    return theme;
+  }, {});
 }
 
 function createIndent(indent: number): string {
@@ -436,10 +461,13 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
     opts = normalizeOptions(initialOptions);
   }
 
-  const colors = {};
+  const colors: Colors = {};
   Object.keys(opts.theme).forEach(key => {
     if (opts.highlight) {
-      colors[key] = style[opts.theme[key]];
+      const color = colors[key] = style[opts.theme[key]];
+      if (!color || typeof color.close !== 'string' || typeof color.open !== 'string') {
+        throw new Error(`pretty-format: Option "theme" has a key "${key}" whose value "${opts.theme[key]}" is undefined in ansi-styles.`);
+      }
     } else {
       colors[key] = {close: '', open: ''};
     }
