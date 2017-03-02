@@ -19,11 +19,11 @@ There are two ways to get your hands on mock functions: Either by
 or by explicitly requesting one from `jest.fn()` in your test:
 
 ```javascript
-var myMock = jest.fn();
+const myMock = jest.fn();
 myMock('1');
 myMock('a', 'b');
 console.log(myMock.mock.calls);
-> [ [1], ['a', 'b'] ]
+// > [ [1], ['a', 'b'] ]
 ```
 
 ## `.mock` property
@@ -33,15 +33,15 @@ how the function has been called is kept. The `.mock` property also tracks the
 value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
-var myMock = jest.fn();
+const myMock = jest.fn();
 
-var a = new myMock();
-var b = {};
-var bound = myMock.bind(b);
+const a = new myMock();
+const b = {};
+const bound = myMock.bind(b);
 bound();
 
 console.log(myMock.mock.instances);
-> [ <a>, <b> ]
+// > [ <a>, <b> ]
 ```
 
 These mock members are very useful in tests to assert how these functions get
@@ -71,16 +71,16 @@ Mock functions can also be used to inject test values into your code during a
 test:
 
 ```javascript
-var myMock = jest.fn();
-console.log( myMock() );
-> undefined
+const myMock = jest.fn();
+console.log(myMock());
+// > undefined
 
 myMock.mockReturnValueOnce(10)
  .mockReturnValueOnce('x')
  .mockReturnValue(true);
 
 console.log(myMock(), myMock(), myMock(), myMock());
-> 10, 'x', true, true
+// > 10, 'x', true, true
 ```
 
 Mock functions are also very effective in code that uses a functional
@@ -90,7 +90,7 @@ in for, in favor of injecting values directly into the test right before they're
 used.
 
 ```javascript
-var filterTestFn = jest.fn();
+const filterTestFn = jest.fn();
 
 // Make the mock return `true` for the first call,
 // and `false` for the second call
@@ -98,12 +98,12 @@ filterTestFn
   .mockReturnValueOnce(true)
   .mockReturnValueOnce(false);
 
-var result = [11, 12].filter(filterTestFn);
+const result = [11, 12].filter(filterTestFn);
 
 console.log(result);
-> [11]
+// > [11]
 console.log(filterTestFn.mock.calls);
-> [ [11], [12] ]
+// > [ [11], [12] ]
 ```
 
 Most real-world examples actually involve getting ahold of a mock function on a
@@ -119,13 +119,13 @@ can be done with `jest.fn` or the `mockImplementationOnce` method
 on mock functions.
 
 ```javascript
-var myMockFn = jest.fn(cb => cb(null, true));
+const myMockFn = jest.fn(cb => cb(null, true));
 
 myMockFn((err, val) => console.log(val));
-> true
+// > true
 
 myMockFn((err, val) => console.log(val));
-> true
+// > true
 ```
 
 The `mockImplementation` method is useful when you need to define the default
@@ -144,7 +144,7 @@ const foo = require('../foo');
 // foo is a mock function
 foo.mockImplementation(() => 42);
 foo();
-> 42
+// > 42
 ```
 
 
@@ -153,15 +153,15 @@ multiple function calls produce different results, use the
 `mockImplementationOnce` method:
 
 ```javascript
-var myMockFn = jest.fn()
+const myMockFn = jest.fn()
   .mockImplementationOnce(cb => cb(null, true))
   .mockImplementationOnce(cb => cb(null, false));
 
 myMockFn((err, val) => console.log(val));
-> true
+// > true
 
 myMockFn((err, val) => console.log(val));
-> false
+// > false
 ```
 
 When the mocked function runs out of implementations defined with
@@ -169,12 +169,12 @@ When the mocked function runs out of implementations defined with
 set with `jest.fn` (if it is defined):
 
 ```javascript
-var myMockFn = jest.fn(() => 'default')
+const myMockFn = jest.fn(() => 'default')
   .mockImplementationOnce(() => 'first call')
   .mockImplementationOnce(() => 'second call');
 
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
-> 'first call', 'second call', 'default', 'default'
+// > 'first call', 'second call', 'default', 'default'
 ```
 
 For cases where we have methods that are typically chained (and thus always need
@@ -182,16 +182,16 @@ to return `this`), we have a sugary API to simplify this in the form of a
 `.mockReturnThis()` function that also sits on all mocks:
 
 ```javascript
-var myObj = {
-  myMethod: jest.fn().mockReturnThis()
+const myObj = {
+  myMethod: jest.fn().mockReturnThis(),
 };
 
 // is the same as
 
-var myObj = {
-  myMethod = jest.fn(function() {
+const otherObj = {
+  myMethod: jest.fn(function() {
     return this;
-  });
+  }),
 };
 ```
 

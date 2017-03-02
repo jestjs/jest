@@ -107,6 +107,8 @@ describe('matching cities to foods', () => {
 If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. In Jest it's simple to run only one test - just temporarily change that `test` command to a `test.only`:
 
 ```js
+/* eslint jest/no-focused-tests: "off" */
+
 test.only('this will be the only test that runs', () => {
   expect(true).toBe(false);
 });
