@@ -19,22 +19,22 @@ Let's start with a common sort of webpack config file and translate it to a Jest
 module.exports = {
   module: {
     loaders: [
-      { test: /\\.jsx?$/, loader: 'babel', exclude: ['node_modules'] },
-      { test: /\\.css$/,  loader: "style-loader!css-loader" },
-      { test: /\\.gif$/, loader: "url-loader" },
-      { test: /\\.(ttf|eot|svg)$/, loader: "file-loader" },
-    ]
+      {exclude: ['node_modules'], loader: 'babel', test: /\\.jsx?$/},
+      {loader: 'style-loader!css-loader', test: /\\.css$/},
+      {loader: 'url-loader', test: /\\.gif$/},
+      {loader: 'file-loader', test: /\\.(ttf|eot|svg)$/},
+    ],
   },
   resolve: {
+    alias: {
+      config$: './configs/app-config.js',
+      react: './vendor/react-master',
+    },
     extensions: ['', 'js', 'jsx'],
     modulesDirectories: ['node_modules', 'bower_components', 'shared'],
     root: '/shared/vendor/modules',
-    alias: {
-      react: './vendor/react-master',
-      config$: './configs/app-config.js',
-    },
-  }
-}
+  },
+};
 ```
 
 If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](/jest/docs/getting-started.html#using-babel-with-jest) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](/jest/docs/configuration.html#transform-object-string-string) config option.
@@ -43,7 +43,7 @@ If you have JavaScript files that are transformed by Babel, you can [enable supp
 
 Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
-```js
+```json
 // package.json
 {
   "jest": {
@@ -79,7 +79,7 @@ npm install --save-dev identity-obj-proxy
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](/jest/docs/snapshot-testing.html).
 
-```js
+```json
 // package.json (for CSS Modules)
 {
   "jest": {
@@ -110,7 +110,7 @@ module.exports = {
 };
 ```
 
-```js
+```json
 // package.json (for custom transformers and CSS Modules)
 {
   "jest": {
@@ -128,7 +128,7 @@ We've told Jest to ignore files matching a stylesheet or image extension, and in
 
 *Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map `.js` files to the babel-jest module.*
 
-```
+```json
 "transform": {
   "^.+\\.js$": "babel-jest",
   "^.+\\.css$": "custom-transformer",
@@ -140,7 +140,7 @@ We've told Jest to ignore files matching a stylesheet or image extension, and in
 
 Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
-```js
+```json
 // package.json
 {
   "jest": {
@@ -160,7 +160,7 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
-```js
+```json
 // package.json
 {
   "jest": {
@@ -179,7 +179,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 
 And finally we just have the webpack `alias` left to handle. For that we can make use of the `moduleNameMapper` option again.
 
-```js
+```json
 // package.json
 {
   "jest": {
