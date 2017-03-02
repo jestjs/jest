@@ -15,9 +15,16 @@ import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
 
 const fileExists = require('jest-file-exists');
+const {replacePathSepForRegex} = require('jest-regex-util');
 
+const snapshotDirRegex = new RegExp(
+  replacePathSepForRegex('\/__snapshots__\/'),
+);
+const snapshotFileRegex = new RegExp(
+  replacePathSepForRegex('__snapshots__\/(.*)\.snap'),
+);
 const isSnapshotPath = (path: string): boolean =>
-  !!path.match(/\/__snapshots__\//);
+  !!path.match(snapshotDirRegex);
 
 function compact(array: Array<?Path>): Array<Path> {
   const result = [];
@@ -97,7 +104,7 @@ class DependencyResolver {
           // /path/to/__snapshots__/test.js.snap is always adjacent to
           // /path/to/test.js
           const modulePath = isSnapshotPath(path)
-            ? path.replace(/__snapshots__\/(.*)\.snap/, '$1')
+            ? path.replace(snapshotFileRegex, '$1')
             : path;
           changed.add(modulePath);
           if (filter(modulePath)) {
