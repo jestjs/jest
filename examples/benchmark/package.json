@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "react": "~15.3.1",
+    "react-dom": "~15.3.1"
+  },
+  "devDependencies": {
+    "babel-jest": "*",
+    "babel-polyfill": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "enzyme": "~2.4.1",
+    "jest": "*",
+    "react-addons-test-utils": "15.3.2"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

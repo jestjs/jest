@@ -28,6 +28,8 @@ const {
 } = require('jest-regex-util');
 
 type SearchSourceConfig = {
+  benchMatch: Array<Glob>,
+  benchRegex: string,
   roots: Array<Path>,
   testMatch: Array<Glob>,
   testRegex: string,
@@ -35,8 +37,9 @@ type SearchSourceConfig = {
 };
 
 type SearchResult = {|
+  benchPaths?: Array<Path>,
   noSCM?: boolean,
-  paths: Array<Path>,
+  testPaths: Array<Path>,
   stats?: {[key: string]: number},
   total?: number,
 |};
@@ -48,6 +51,7 @@ type Options = {|
 |};
 
 export type PatternInfo = {|
+  benchPathPattern?: string,
   input?: string,
   findRelatedTests?: boolean,
   lastCommit?: boolean,
@@ -102,6 +106,12 @@ class SearchSource {
     testRegex: (path: Path) => boolean,
     testPathIgnorePatterns: (path: Path) => boolean,
   };
+  _benchPathCases: {
+    benchMatch: (path: Path) => boolean,
+    benchPathIgnorePatterns: (path: Path) => boolean,
+    benchRegex: (path: Path) => boolean,
+    roots: (path: Path) => boolean,
+  };
 
   constructor(
     hasteMap: HasteContext,
@@ -132,15 +142,26 @@ class SearchSource {
       ),
       testRegex: regexToMatcher(config.testRegex),
     };
+    this._benchPathCases = {
+      benchMatch: globsToMatcher(config.benchMatch),
+      benchPathIgnorePatterns: path => (
+        !this._testIgnorePattern ||
+        !this._testIgnorePattern.test(path)
+      ),
+      benchRegex: regexToMatcher(config.benchRegex),
+      roots: path => this._rootPattern.test(path),
+    };
   }
 
-  _filterTestPathsWithStats(
+  _filterTestAndBenchPathsWithStats(
     allPaths: Array<Path>,
     testPathPattern?: StrOrRegExpPattern,
+    benchPathPattern?: StrOrRegExpPattern,
   ): SearchResult {
     const data = {
-      paths: [],
+      benchPaths: [],
       stats: {},
+      testPaths: [],
       total: allPaths.length,
     };
 
@@ -149,10 +170,34 @@ class SearchSource {
       const regex = new RegExp(testPathPattern, 'i');
       testCases.testPathPattern = path => regex.test(path);
     }
+    data.testPaths = this._getFilteredDataPathsAndApplyStats(
+      data,
+      testCases,
+      allPaths,
+    );
 
-    data.paths = allPaths.filter(path => {
-      return Object.keys(testCases).reduce((flag, key) => {
-        if (testCases[key](path)) {
+    const benchCases = Object.assign({}, this._benchPathCases);
+    if (benchPathPattern) {
+      const regex = new RegExp(benchPathPattern, 'i');
+      benchCases.benchPathPattern = path => regex.test(path);
+    }
+    data.benchPaths = this._getFilteredDataPathsAndApplyStats(
+      data,
+      benchCases,
+      allPaths,
+    );
+
+    return data;
+  }
+
+  _getFilteredDataPathsAndApplyStats(
+    data: Object,
+    cases: Object,
+    allPaths: any
+  ) {
+    return allPaths.filter(path => {
+      return Object.keys(cases).reduce((flag, key) => {
+        if (cases[key](path)) {
           data.stats[key] = ++data.stats[key] || 1;
           return flag && true;
         }
@@ -160,16 +205,16 @@ class SearchSource {
         return false;
       }, true);
     });
-
-    return data;
   }
 
-  _getAllTestPaths(
-    testPathPattern: StrOrRegExpPattern,
+  _getAllTestAndBenchmarkPaths(
+    testPathPattern?: StrOrRegExpPattern,
+    benchPathPattern?: StrOrRegExpPattern,
   ): SearchResult {
-    return this._filterTestPathsWithStats(
+    return this._filterTestAndBenchPathsWithStats(
       this._hasteContext.hasteFS.getAllFiles(),
       testPathPattern,
+      benchPathPattern,
     );
   }
 
@@ -179,10 +224,14 @@ class SearchSource {
     ));
   }
 
-  findMatchingTests(
-    testPathPattern: StrOrRegExpPattern,
+  findMatchingTestsAndBenchmarks(
+    testPathPattern?: StrOrRegExpPattern,
+    benchPathPattern?: StrOrRegExpPattern,
   ): SearchResult {
-    return this._getAllTestPaths(testPathPattern);
+    return this._getAllTestAndBenchmarkPaths(
+      testPathPattern,
+      benchPathPattern
+    );
   }
 
   findRelatedTests(allPaths: Set<Path>): SearchResult {
@@ -191,7 +240,7 @@ class SearchSource {
       this._hasteContext.hasteFS,
     );
     return {
-      paths: dependencyResolver.resolveInverse(
+      testPaths: dependencyResolver.resolveInverse(
         allPaths,
         this.isTestFilePath.bind(this),
         {
@@ -208,7 +257,10 @@ class SearchSource {
       const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
       return this.findRelatedTests(new Set(resolvedPaths));
     }
-    return {paths: []};
+    return {
+      benchPaths: [],
+      testPaths: [],
+    };
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
@@ -216,8 +268,9 @@ class SearchSource {
       .then(repos => {
         if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
           return {
+            benchPaths: [],
             noSCM: true,
-            paths: [],
+            testPaths: [],
           };
         }
         return Promise.all(Array.from(repos).map(([gitRepo, hgRepo]) => {
@@ -230,10 +283,12 @@ class SearchSource {
       });
   }
 
-  getNoTestsFoundMessage(
+  getNoTestsOrBenchmarksFoundMessage(
     patternInfo: PatternInfo,
     config: Config,
     data: SearchResult,
+    noTestsFound: boolean,
+    noBenchesFound: boolean,
   ): string {
     if (patternInfo.onlyChanged) {
       return (
@@ -260,7 +315,14 @@ class SearchSource {
     }).filter(line => line).join('\n');
 
     return (
-      chalk.bold('No tests found') + '\n' +
+      (noTestsFound 
+        ? chalk.bold('No tests found') + '\n'
+        : ''
+      ) +
+      (noBenchesFound 
+        ? chalk.bold('No benches found') + '\n'
+        : ''
+      ) +
       (data.total
         ? `  ${pluralize('file', data.total || 0, 's')} checked.\n` +
           statsMessage
@@ -272,19 +334,20 @@ class SearchSource {
     );
   }
 
-  getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
+  getTestAndBenchmarkPaths(patternInfo: PatternInfo): Promise<SearchResult> {
     if (patternInfo.onlyChanged) {
       return this.findChangedTests({lastCommit: patternInfo.lastCommit});
     } else if (patternInfo.findRelatedTests && patternInfo.paths) {
       return Promise.resolve(
         this.findRelatedTestsFromPattern(patternInfo.paths),
       );
-    } else if (patternInfo.testPathPattern != null) {
-      return Promise.resolve(
-        this.findMatchingTests(patternInfo.testPathPattern),
-      );
     } else {
-      return Promise.resolve({paths: []});
+      return Promise.resolve(
+        this.findMatchingTestsAndBenchmarks(
+          patternInfo.testPathPattern,
+          patternInfo.benchPathPattern,
+        )
+      );
     }
   }
 

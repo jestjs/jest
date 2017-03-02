@@ -23,6 +23,10 @@ export type ConfigGlobals = Object;
 
 export type DefaultConfig = {|
   automock: boolean,
+  benchEnvironment: string,
+  benchMatch: Array<Glob>,
+  benchRegex: string,
+  benchRunner: string,
   bail: boolean,
   browser: boolean,
   cacheDirectory: Path,
@@ -59,6 +63,9 @@ export type DefaultConfig = {|
 export type Config = {|
   automock: boolean,
   bail: boolean,
+  benchMatch: Array<Glob>,
+  benchRegex: string,
+  benchRunner: string,
   browser: boolean,
   cache: boolean,
   cacheDirectory: Path,
@@ -117,6 +124,10 @@ export type Config = {|
 export type InitialConfig = {|
   automock?: boolean,
   bail?: boolean,
+  benchEnvironment?: string,
+  benchMatch?: Array<Glob>,
+  benchRegex?: string,
+  benchRunner?: string,
   browser?: boolean,
   cache?: boolean,
   cacheDirectory?: Path,

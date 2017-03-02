@@ -20,6 +20,10 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(constants.NODE_MODULES);
 module.exports = ({
   automock: false,
   bail: false,
+  benchEnvironment: 'jest-environment-jsdom',
+  benchMatch: ['**/__benches__/**/*.js?(x)', '**/?(*.)(spec|bench).js?(x)'],
+  benchRegex: '(/__benches__/.*|(\\.|/)(bench|spec))\\.jsx?$',
+  benchRunner: 'jest-benchmark',
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
