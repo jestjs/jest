@@ -34,7 +34,7 @@ test('adds 1 + 2 to equal 3', () => {
 
 Add the following section to your `package.json`:
 
-```js
+```json
 "scripts": {
   "test": "jest"
 }
@@ -77,7 +77,7 @@ npm install --save-dev babel-jest regenerator-runtime
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 
-```js
+```json
 {
   "presets": ["es2015", "react"]
 }
