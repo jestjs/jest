@@ -17,6 +17,7 @@ const H = require('../constants');
 const fs = require('fs');
 const path = require('path');
 const spawn = require('child_process').spawn;
+const slash = require('slash');
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
 
@@ -35,7 +36,7 @@ function find(
       activeCalls--;
 
       names.forEach(file => {
-        file = path.join(directory, file);
+        file = slash(path.join(directory, file));
         if (ignore(file)) {
           return;
         }
