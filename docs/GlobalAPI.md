@@ -195,6 +195,8 @@ Also under the alias: `fdescribe(name, fn)`
 You can use `describe.only` if you want to run only one describe block:
 
 ```js
+
+/* eslint jest/no-focused-tests: "off" */
 describe.only('my beverage', () => {
   test('is delicious', () => {
     expect(myBeverage.delicious).toBeTruthy();
@@ -264,7 +266,7 @@ For example, let's say `fetchBeverageList()` returns a promise that is supposed 
 
 ```js
 test('has lemon in it', () => {
-  return fetchBeverageList().then((list) => {
+  return fetchBeverageList().then(list => {
     expect(list).toContain('lemon');
   });
 });
@@ -281,13 +283,15 @@ When you are debugging a large codebase, you will often only want to run a subse
 For example, let's say you had these tests:
 
 ```js
+/* eslint jest/no-focused-tests: "off" */
+
 test.only('it is raining', () => {
   expect(inchesOfRain()).toBeGreaterThan(0);
-})
+});
 
 test('it is not snowing', () => {
   expect(inchesOfSnow()).toBe(0);
-})
+});
 ```
 
 Only the "it is raining" test will run, since it is run with `test.only`.
@@ -305,11 +309,11 @@ For example, let's say you had these tests:
 ```js
 test('it is raining', () => {
   expect(inchesOfRain()).toBeGreaterThan(0);
-})
+});
 
 test.skip('it is not snowing', () => {
   expect(inchesOfSnow()).toBe(0);
-})
+});
 ```
 
 Only the "it is raining" test will run, since the other test is run with `test.skip`.
