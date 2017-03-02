@@ -52,7 +52,6 @@ type Options = {
   resetCache?: boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  testPathIgnorePattern: RegExp | null,
   throwOnModuleCollision?: boolean,
   useWatchman?: boolean,
   watch?: boolean,
@@ -71,7 +70,6 @@ type InternalOptions = {
   resetCache: ?boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  testPathIgnorePattern: RegExp | null,
   throwOnModuleCollision: boolean,
   useWatchman: boolean,
   watch: boolean,
@@ -212,7 +210,6 @@ class HasteMap extends EventEmitter {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: Array.from(new Set(options.roots)),
-      testPathIgnorePattern: options.testPathIgnorePattern,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
@@ -536,7 +533,7 @@ class HasteMap extends EventEmitter {
       ? sane.WatchmanWatcher
       : sane.NodeWatcher;
     const extensions = this._options.extensions;
-    const ignorePattern = this._options.testPathIgnorePattern;
+    const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
     let eventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
