@@ -646,6 +646,44 @@ test('the house has my desired features', () => {
 });
 ```
 
+### `toHaveProperty(keyPath, value)`
+
+Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. 
+For checking deeply nested properties in an object use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) for deep references.
+
+Optionally, you can provide a value to check if it's strictly equal to the `value` present
+at `keyPath` on the target object.
+
+The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty`
+to check for the existence and values of various properties in the object.
+
+```js
+// Object containing house features to be tested
+const houseForSale = {
+	bath: true,
+	kitchen: {
+		amenities: ['oven', 'stove', 'washer'],
+		area: 20,
+		wallColor: 'white'
+	},
+  bedrooms: 4,
+};
+
+test('this house has my desired features', () => {
+  // Simple Referencing 
+  expect(houseForSale).toHaveProperty('bath');
+  expect(houseForSale).toHaveProperty('bedrooms', 4);
+
+  expect(houseForSale).not.toHaveProperty('pool');
+
+  // Deep referencing using dot notation
+  expect(houseForSale).toHaveProperty('kitchen.area', 20);
+  expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer']);
+
+  expect(hosueForSale).not.toHaveProperty('kitchen.open');
+});
+```
+
 ### `.toMatchSnapshot(optionalString)`
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](/jest/docs/snapshot-testing.html) for more information.
