@@ -11,7 +11,6 @@
 const DependencyResolver = require('../index');
 const normalizeConfig = require('jest-config').normalize;
 const path = require('path');
-const slash = require('slash');
 
 const maxWorkers = 1;
 let dependencyResolver;
@@ -70,7 +69,9 @@ test('resolves inverse dependencies for existing path', () => {
   const paths = new Set([path.resolve(__dirname, '__fixtures__/file.js')]);
   const resolved = dependencyResolver.resolveInverse(paths, filter);
   expect(resolved).toEqual([
-    expect.stringContaining(slash('__tests__/__fixtures__/file-test.js')),
+    expect.stringContaining(
+      path.join('__tests__', '__fixtures__', 'file-test.js'),
+    ),
   ]);
 });
 
@@ -82,8 +83,12 @@ test('resolves inverse dependencies from available snapshot', () => {
   const resolved = dependencyResolver.resolveInverse(paths, filter);
   expect(resolved).toEqual(
     expect.arrayContaining([
-      expect.stringContaining(slash('__tests__/__fixtures__/file-test.js')),
-      expect.stringContaining(slash('__tests__/__fixtures__/related-test.js')),
+      expect.stringContaining(
+        path.join('__tests__', '__fixtures__', 'file-test.js'),
+      ),
+      expect.stringContaining(
+        path.join('__tests__', '__fixtures__', 'related-test.js'),
+      ),
     ]),
   );
 });
