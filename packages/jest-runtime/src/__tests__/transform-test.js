@@ -10,6 +10,7 @@
 'use strict';
 
 const skipOnWindows = require('skipOnWindows');
+const slash = require('slash');
 
 jest
   .mock('graceful-fs')
@@ -116,7 +117,8 @@ describe('transform', () => {
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
       expect(options).toBe('utf8');
-      mockFs[path] = data;
+      const normalizedPath = slash(path);
+      mockFs[normalizedPath] = data;
     });
 
     fs.unlinkSync = jest.fn();
@@ -213,9 +215,9 @@ describe('transform', () => {
   });
 
   it('reads values from the cache', () => {
-    if (skipOnWindows.test()) {
-      return;
-    }
+    // if (skipOnWindows.test()) {
+    //   return;
+    // }
     const transformConfig = Object.assign(config, {
       transform: [['^.+\\.js$', 'test-preprocessor']],
     });
