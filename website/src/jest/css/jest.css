@@ -1373,10 +1373,6 @@ nav.toc .toggleNav .navBreadcrumb h2 {
 }
 
 @media only screen and (min-width: 900px) {
-  .docsNavContainer nav.toc .navBreadcrumb {
-    padding: 5px 0;
-  }
-
   nav.toc section .navGroups {
     padding: 40px 0 0;
   }
