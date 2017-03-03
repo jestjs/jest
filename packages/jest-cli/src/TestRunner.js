@@ -49,9 +49,15 @@ type Options = {|
   getTestSummary: () => string,
 |};
 
-type OnRunFailure = (path: string, err: TestError) => void;
+type OnRunFailure = (
+  path: string,
+  err: TestError,
+) => Promise<void>;
 
-type OnTestResult = (path: string, result: TestResult) => void;
+type OnTestResult = (
+  path: string,
+  result: TestResult,
+) => Promise<void>;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
@@ -168,14 +174,14 @@ class TestRunner {
     );
   }
 
-  runTests(paths: Array<string>, watcher: TestWatcher) {
+  async runTests(paths: Array<string>, watcher: TestWatcher) {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
     const estimatedTime =
       Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
 
-    const onResult = (testPath: Path, testResult: TestResult) => {
+    const onResult = async (testPath: Path, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
         return;
       }
@@ -188,22 +194,22 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
+      await this._dispatcher.onTestResult(
         config,
         testResult,
         aggregatedResults,
       );
-      this._bailIfNeeded(aggregatedResults, watcher);
+      await this._bailIfNeeded(aggregatedResults, watcher);
     };
 
-    const onFailure = (testPath: Path, error: TestError) => {
+    const onFailure = async (testPath: Path, error: TestError) => {
       if (watcher.isInterrupted()) {
         return;
       }
       const testResult = buildFailureTestResult(testPath, error);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
+      await this._dispatcher.onTestResult(
         config,
         testResult,
         aggregatedResults,
@@ -238,7 +244,7 @@ class TestRunner {
 
     const runInBand = shouldRunInBand();
 
-    this._dispatcher.onRunStart(
+    await this._dispatcher.onRunStart(
       config,
       aggregatedResults,
       {
@@ -258,11 +264,11 @@ class TestRunner {
           throw error;
         }
       })
-      .then(() => {
+      .then(async () => {
         updateSnapshotState();
         aggregatedResults.wasInterrupted = watcher.isInterrupted();
 
-        this._dispatcher.onRunComplete(config, aggregatedResults);
+        await this._dispatcher.onRunComplete(config, aggregatedResults);
 
         const anyTestFailures = !(
           aggregatedResults.numFailedTests === 0 &&
@@ -292,12 +298,12 @@ class TestRunner {
       (promise, path) =>
         mutex(() =>
           promise
-            .then(() => {
+            .then(async () => {
               if (watcher.isInterrupted()) {
                 throw new CancelRun();
               }
 
-              this._dispatcher.onTestStart(this._config, path);
+              await this._dispatcher.onTestStart(this._config, path);
               return runTest(
                 path,
                 this._config,
@@ -329,11 +335,11 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = ({config, path}) => mutex(() => {
+    const runTestInWorker = ({config, path}) => mutex(async () => {
       if (watcher.isInterrupted()) {
         return Promise.reject();
       }
-      this._dispatcher.onTestStart(config, path);
+      await this._dispatcher.onTestStart(config, path);
       return worker({
         config,
         path,
@@ -398,12 +404,15 @@ class TestRunner {
     }
   }
 
-  _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {
+  async _bailIfNeeded(
+    aggregatedResults: AggregatedResult,
+    watcher: TestWatcher,
+  ) {
     if (this._config.bail && aggregatedResults.numFailedTests !== 0) {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
-        this._dispatcher.onRunComplete(this._config, aggregatedResults);
+        await this._dispatcher.onRunComplete(this._config, aggregatedResults);
         process.exit(1);
       }
     }
@@ -546,37 +555,33 @@ class ReporterDispatcher {
     );
   }
 
-  onTestResult(config, testResult, results) {
-    this._reporters.forEach(reporter =>
-      reporter.onTestResult(
+  async onTestResult(config, testResult, results) {
+    for (let reporter of this._reporters) {
+      await reporter.onTestResult(
         config,
         testResult,
         results,
         this._runnerContext,
-      ),
-    );
+      );
+    }
   }
 
-  onTestStart(config, path) {
-    this._reporters.forEach(reporter =>
-      reporter.onTestStart(config, path, this._runnerContext),
-    );
+  async onTestStart(config, path) {
+    for (let reporter of this._reporters) {
+      await reporter.onTestStart(config, path, this._runnerContext);
+    }
   }
 
-  onRunStart(config, results, options) {
-    this._reporters.forEach(
-      reporter => reporter.onRunStart(
-        config,
-        results,
-        this._runnerContext,
-        options,
-      ),
-    );
+  async onRunStart(config, results, options) {
+    for (let reporter of this._reporters) {
+      await reporter.onRunStart(config, results, this._runnerContext, options);
+    }
   }
 
-  onRunComplete(config, results) {
-    this._reporters.forEach(reporter =>
-      reporter.onRunComplete(config, results, this._runnerContext));
+  async onRunComplete(config, results) {
+    for (let reporter of this._reporters) {
+      await reporter.onRunComplete(config, results, this._runnerContext);
+    }
   }
 
   // Return a list of last errors for every reporter
