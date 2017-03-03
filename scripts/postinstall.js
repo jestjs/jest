@@ -17,6 +17,6 @@ const lernaCmd = path.resolve(
   __dirname,
   '../node_modules/.bin/' + lerna
 );
-const args = 'bootstrap';
+const args = 'bootstrap --concurrency=1';
 
 runCommand(lernaCmd, args, path.resolve(__dirname, '..'));
