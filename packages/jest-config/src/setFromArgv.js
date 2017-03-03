@@ -17,6 +17,10 @@ function setFromArgv(config, argv) {
     config.coverageDirectory = argv.coverageDirectory;
   }
 
+  if (argv.mapCoverage) {
+    config.mapCoverage = true;
+  }
+
   if (argv.verbose) {
     config.verbose = argv.verbose;
   }

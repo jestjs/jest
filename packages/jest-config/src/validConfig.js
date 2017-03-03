@@ -45,6 +45,7 @@ module.exports = ({
   },
   logHeapUsage: true,
   logTransformErrors: true,
+  mapCoverage: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',

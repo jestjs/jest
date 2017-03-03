@@ -14,6 +14,9 @@ const slash = require('slash');
 jest
   .mock('graceful-fs')
   .mock('jest-file-exists')
+  .mock('jest-haste-map', () => ({
+    getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
+  }))
   .mock('jest-util', () => {
     const util = require.requireActual('jest-util');
     util.createDirectory = jest.fn();
@@ -39,6 +42,17 @@ jest.mock(
           };
         `);
       },
+    };
+  },
+  {virtual: true},
+);
+
+jest.mock(
+  'preprocessor-with-sourcemaps',
+  () => {
+    return {
+      getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
+      process: jest.fn(),
     };
   },
   {virtual: true},
@@ -143,7 +157,7 @@ describe('transform', () => {
 
   it('transforms a file properly', () => {
     config.collectCoverage = true;
-    const response = transform('/fruits/banana.js', config);
+    const response = transform('/fruits/banana.js', config).script;
 
     expect(response instanceof vm.Script).toBe(true);
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
@@ -153,7 +167,7 @@ describe('transform', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const response2 = transform('/fruits/banana.js', config);
+    const response2 = transform('/fruits/banana.js', config).script;
     expect(response2).toBe(response);
 
     transform('/fruits/kiwi.js', config);
@@ -211,6 +225,81 @@ describe('transform', () => {
     transform('/node_modules/react.js', config);
     // ignores preprocessor
     expect(vm.Script.mock.calls[2][0]).toMatchSnapshot();
+  });
+
+  it('writes source map if preprocessor supplies it', () => {
+    config = Object.assign(config, {
+      collectCoverage: true,
+      mapCoverage: true,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    const map = { 
+      mappings: ';AAAA', 
+      version: 3, 
+    };
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map,
+    });
+
+    const result = transform('/fruits/banana.js', config);
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(fs.writeFileSync).toBeCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(map),
+      'utf8',
+    );
+  });
+
+  it('writes source map if preprocessor inlines it', () => {
+    config = Object.assign(config, {
+      collectCoverage: true,
+      mapCoverage: true,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    const sourceMap = JSON.stringify({
+      mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
+      version: 3,
+    });
+
+    const content = 'var x = 1;\n' +
+      '//# sourceMappingURL=data:application/json;base64,' +
+      new Buffer(sourceMap).toString('base64');
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+
+    const result = transform('/fruits/banana.js', config);
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(fs.writeFileSync).toBeCalledWith(
+      result.sourceMapPath,
+      sourceMap,
+      'utf8',
+    );
+  });
+
+  it('does not write source map if mapCoverage config option is false', () => {
+    config = Object.assign(config, {
+      collectCoverage: true,
+      mapCoverage: false,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    });
+
+    const map = { 
+      mappings: ';AAAA', 
+      version: 3, 
+    };
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map,
+    });
+
+    const result = transform('/fruits/banana.js', config);
+    expect(result.sourceMapPath).toBeFalsy();
+    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
   });
 
   it('reads values from the cache', () => {

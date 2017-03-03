@@ -59,6 +59,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
       result.perfStats = {end: Date.now(), start};
       result.testFilePath = path;
       result.coverage = runtime.getAllCoverageInfo();
+      result.sourceMaps = runtime.getSourceMapInfo();
       result.console = testConsole.getBuffer();
       result.skipped = testCount === result.numPendingTests;
       return result;
