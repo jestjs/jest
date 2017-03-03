@@ -43,7 +43,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp,
+  ignorePattern: RegExp | Function,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -62,7 +62,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp,
+  ignorePattern: RegExp | Function,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -688,7 +688,13 @@ class HasteMap extends EventEmitter {
    * Helpers
    */
   _ignore(filePath: Path): boolean {
-    return this._options.ignorePattern.test(filePath) ||
+    const ignorePattern = this._options.ignorePattern;
+    const ignoreMatched =
+      Object.prototype.toString.call(ignorePattern) === '[object RegExp]'
+      ? ignorePattern.test(filePath) // $FlowFixMe
+      : ignorePattern(filePath);
+
+    return ignoreMatched ||
       (!this._options.retainAllFiles && this._isNodeModulesDir(filePath));
   }
 
