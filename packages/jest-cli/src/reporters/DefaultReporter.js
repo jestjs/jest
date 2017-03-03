@@ -23,7 +23,7 @@ const {clearLine} = require('jest-util');
 const chalk = require('chalk');
 const getConsoleOutput = require('./getConsoleOutput');
 const getResultHeader = require('./getResultHeader');
-const isCI = require('is-ci');
+const {isCI} = require('../utils');
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 

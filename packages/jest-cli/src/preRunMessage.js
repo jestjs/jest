@@ -12,7 +12,7 @@
 
 const {clearLine} = require('jest-util');
 const chalk = require('chalk');
-const isCI = require('is-ci');
+const {isCI} = require('./utils');
 
 const print = (stream: stream$Writable | tty$WriteStream) => {
   if (process.stdout.isTTY && !isCI) {
