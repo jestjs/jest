@@ -54,9 +54,7 @@ One such situation can arise if we intentionally change the address the Link com
 
 ```javascript
 // Updated test case with a Link to a different address
-it('renders correctly', () => {
-  /* eslint react/react-in-jsx-scope: "off", react/jsx-no-undef: "off" */
-  
+it('renders correctly', () => {  
   const tree = renderer.create(
     <Link page="http://www.instagram.com">Instagram</Link>
   ).toJSON();

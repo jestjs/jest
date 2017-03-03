@@ -195,8 +195,6 @@ Also under the alias: `fdescribe(name, fn)`
 You can use `describe.only` if you want to run only one describe block:
 
 ```js
-
-/* eslint jest/no-focused-tests: "off" */
 describe.only('my beverage', () => {
   test('is delicious', () => {
     expect(myBeverage.delicious).toBeTruthy();
@@ -283,8 +281,6 @@ When you are debugging a large codebase, you will often only want to run a subse
 For example, let's say you had these tests:
 
 ```js
-/* eslint jest/no-focused-tests: "off" */
-
 test.only('it is raining', () => {
   expect(inchesOfRain()).toBeGreaterThan(0);
 });
