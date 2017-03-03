@@ -683,10 +683,7 @@ class HasteMap extends EventEmitter {
    * Helpers
    */
   _ignore(filePath: Path): boolean {
-    return (
-      this._options.ignorePattern.test(filePath) ||
-      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
-    );
+    return this._options.ignorePattern.test(filePath);
   }
 
   _isNodeModulesDir(filePath: Path): boolean {
