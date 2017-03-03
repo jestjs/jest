@@ -95,7 +95,9 @@ module.exports = (
         }
       } else {
         // eslint-disable-next-line max-len
-        pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`);
+        pipe.write(
+          `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`,
+        );
       }
 
       pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));
@@ -113,16 +115,13 @@ module.exports = (
 
       const matchedTests = [];
 
-      this._cachedTestResults.forEach(
-        ({testResults}) =>
-          testResults.forEach(
-            ({title}) => {
-              if (regex.test(title)) {
-                matchedTests.push(title);
-              }
-            },
-          )
-      );
+      this._cachedTestResults.forEach(({testResults}) => testResults.forEach((
+        {title},
+      ) => {
+        if (regex.test(title)) {
+          matchedTests.push(title);
+        }
+      }));
 
       return matchedTests;
     }

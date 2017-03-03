@@ -34,13 +34,12 @@ const {
   equals,
 } = require('./jasmine-utils');
 
-type ContainIterable = (
-  Array<any> |
-  Set<any> |
-  NodeList<any> |
-  DOMTokenList |
-  HTMLCollection<any>
-);
+type ContainIterable =
+  | Array<any>
+  | Set<any>
+  | NodeList<any>
+  | DOMTokenList
+  | HTMLCollection<any>;
 
 const IteratorSymbol = Symbol.iterator;
 
@@ -63,14 +62,7 @@ const iterableEquality = (a, b) => {
 
   for (const aValue of a) {
     const nextB = bIterator.next();
-    if (
-      nextB.done ||
-      !equals(
-        aValue,
-        nextB.value,
-        [iterableEquality],
-      )
-    ) {
+    if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
       return false;
     }
   }

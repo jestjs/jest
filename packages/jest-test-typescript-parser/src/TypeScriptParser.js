@@ -18,7 +18,7 @@ function parse(file: string) {
   const sourceFile = ts.createSourceFile(
     file,
     readFileSync(file).toString(),
-    ts.ScriptTarget.ES3
+    ts.ScriptTarget.ES3,
   );
 
   const itBlocks: Array<ItBlock> = [];
@@ -43,10 +43,13 @@ function parse(file: string) {
         }
         if (expectText === 'expect') {
           const position = getNode(sourceFile, node, new Expect());
-          if (!expects.some(e => (
-              e.start.line === position.start.line &&
-              e.start.column === position.start.column
-            ))) {
+          if (
+            !expects.some(
+              e =>
+                e.start.line === position.start.line &&
+                e.start.column === position.start.column,
+            )
+          ) {
             expects.push(position);
           }
         }
@@ -65,7 +68,7 @@ function parse(file: string) {
 function getNode<T: Node>(
   file: ts.SourceFile,
   expression: ts.CallExpression,
-  node: T
+  node: T,
 ): T {
   const start = file.getLineAndCharacterOfPosition(expression.getStart(file));
   // TypeScript parser is 0 based, so we have to increment by 1 to normalize

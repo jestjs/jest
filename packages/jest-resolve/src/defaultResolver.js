@@ -26,15 +26,12 @@ type ResolverOptions = {|
 function defaultResolver(path: Path, options: ResolverOptions) {
   const resv = options.browser ? browserResolve : resolve;
 
-  return resv.sync(
-    path,
-    {
-      basedir: options.basedir,
-      extensions: options.extensions,
-      moduleDirectory: options.moduleDirectory,
-      paths: options.paths,
-    }
-  );
+  return resv.sync(path, {
+    basedir: options.basedir,
+    extensions: options.extensions,
+    moduleDirectory: options.moduleDirectory,
+    paths: options.paths,
+  });
 }
 
 module.exports = defaultResolver;

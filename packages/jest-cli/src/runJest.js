@@ -29,20 +29,16 @@ const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
   const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
   const testInfo = patternInfo.onlyChanged
     ? chalk.dim(' related to changed files')
-    : patternInfo.input !== ''
-      ? chalk.dim(' matching ') + testPathPattern
-      : '';
+    : patternInfo.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
 
   const nameInfo = argv.testNamePattern
     ? chalk.dim(' with tests matching ') + `"${argv.testNamePattern}"`
     : '';
 
-  return (
-    chalk.dim('Ran all test suites') +
+  return chalk.dim('Ran all test suites') +
     testInfo +
     nameInfo +
-    chalk.dim('.')
-  );
+    chalk.dim('.');
 };
 
 const runJest = (
@@ -59,7 +55,8 @@ const runJest = (
   let patternInfo = getTestPathPatternInfo(argv);
   return Promise.resolve().then(() => {
     const source = new SearchSource(hasteContext, config);
-    return source.getTestPaths(patternInfo)
+    return source
+      .getTestPaths(patternInfo)
       .then(data => {
         if (!data.paths.length) {
           if (patternInfo.onlyChanged && data.noSCM) {
@@ -73,9 +70,9 @@ const runJest = (
             } else {
               localConsole.log(
                 'Jest can only find uncommitted changed files in a git or hg ' +
-                'repository. If you make your project a git or hg repository ' +
-                '(`git init` or `hg init`), Jest will be able to only ' +
-                'run tests related to files changed since the last commit.',
+                  'repository. If you make your project a git or hg repository ' +
+                  '(`git init` or `hg init`), Jest will be able to only ' +
+                  'run tests related to files changed since the last commit.',
               );
             }
           }
@@ -85,7 +82,8 @@ const runJest = (
           );
         }
         return data;
-      }).then(data => {
+      })
+      .then(data => {
         if (data.paths.length === 1) {
           if (config.silent !== true && config.verbose !== false) {
             // $FlowFixMe
@@ -118,16 +116,15 @@ const runJest = (
             );
             process.stdout.write(
               `Test results written to: ` +
-              `${path.relative(process.cwd(), outputFile)}\n`,
+                `${path.relative(process.cwd(), outputFile)}\n`,
             );
           } else {
-            process.stdout.write(
-              JSON.stringify(formatTestResults(runResults)),
-            );
+            process.stdout.write(JSON.stringify(formatTestResults(runResults)));
           }
         }
         return onComplete && onComplete(runResults);
-      }).catch(error => {
+      })
+      .catch(error => {
         throw error;
       });
   });

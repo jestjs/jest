@@ -42,28 +42,28 @@ class JestAssertionError extends Error {
 }
 
 if (!global[GLOBAL_STATE]) {
-  Object.defineProperty(
-    global,
-    GLOBAL_STATE,
-    {value: {
+  Object.defineProperty(global, GLOBAL_STATE, {
+    value: {
       matchers: Object.create(null),
       state: {
         assertionCalls: 0,
         assertionsExpected: null,
         suppressedErrors: [],
       },
-    }},
-  );
+    },
+  });
 }
 
 const expect: Expect = (actual: any): ExpectationObject => {
   const allMatchers = global[GLOBAL_STATE].matchers;
   const expectation = {not: {}};
   Object.keys(allMatchers).forEach(name => {
-    expectation[name] =
-      makeThrowingMatcher(allMatchers[name], false, actual);
-    expectation.not[name] =
-      makeThrowingMatcher(allMatchers[name], true, actual);
+    expectation[name] = makeThrowingMatcher(allMatchers[name], false, actual);
+    expectation.not[name] = makeThrowingMatcher(
+      allMatchers[name],
+      true,
+      actual,
+    );
   });
 
   return expectation;
@@ -107,10 +107,7 @@ const makeThrowingMatcher = (
     let result: ExpectationResult;
 
     try {
-      result = matcher.apply(
-        matcherContext,
-        [actual].concat(args),
-      );
+      result = matcher.apply(matcherContext, [actual].concat(args));
     } catch (error) {
       // Remove this and deeper functions from the stack trace frame.
       Error.captureStackTrace(error, throwingMatcher);
@@ -121,7 +118,8 @@ const makeThrowingMatcher = (
 
     global[GLOBAL_STATE].state.assertionCalls++;
 
-    if ((result.pass && isNot) || (!result.pass && !isNot)) { // XOR
+    if ((result.pass && isNot) || (!result.pass && !isNot)) {
+      // XOR
       const message = getMessage(result.message);
       const error = new JestAssertionError(message);
       // Passing the result of the matcher with the error so that a custom
@@ -155,20 +153,16 @@ const _validateResult = result => {
   if (
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
-    (
-      result.message &&
-      (
-        typeof result.message !== 'string' &&
-        typeof result.message !== 'function'
-      )
-    )
+    (result.message &&
+      (typeof result.message !== 'string' &&
+        typeof result.message !== 'function'))
   ) {
     throw new Error(
       'Unexpected return from a matcher function.\n' +
-      'Matcher functions should ' +
-      'return an object in the following format:\n' +
-      '  {message?: string | function, pass: boolean}\n' +
-      `'${utils.stringify(result)}' was returned`,
+        'Matcher functions should ' +
+        'return an object in the following format:\n' +
+        '  {message?: string | function, pass: boolean}\n' +
+        `'${utils.stringify(result)}' was returned`,
     );
   }
 };
@@ -178,9 +172,8 @@ expect.extend(matchers);
 expect.extend(spyMatchers);
 expect.extend(toThrowMatchers);
 
-expect.assertions = (expected: number) => (
-  global[GLOBAL_STATE].state.assertionsExpected = expected
-);
+expect.assertions = (expected: number) =>
+  global[GLOBAL_STATE].state.assertionsExpected = expected;
 
 expect.setState = (state: MatcherState) => {
   Object.assign(global[GLOBAL_STATE].state, state);
