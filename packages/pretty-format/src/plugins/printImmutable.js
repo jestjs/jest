@@ -37,7 +37,11 @@ const printImmutable = (
     );
   });
   
-  result += immutableArray.join(',' + opts.spacing);
+  if (opts.min) {
+    result += immutableArray.join(',' + opts.spacing);
+  } else {
+    result += immutableArray.join(',' + opts.spacing) + ',';
+  }
 
   return result + opts.edgeSpacing + closeTag;
 };

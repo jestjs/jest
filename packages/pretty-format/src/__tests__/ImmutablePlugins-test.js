@@ -63,7 +63,7 @@ describe('Immutable.OrderedSet plugin', () => {
   it('supports multiple string elements {min: false}', () => {
     assertImmutableObject(
       Immutable.OrderedSet(['jhon', 'mike', 'cristian']),
-      'Immutable.OrderedSet [\n  "jhon",\n  "mike",\n  "cristian"\n]'
+      'Immutable.OrderedSet [\n  "jhon",\n  "mike",\n  "cristian",\n]'
     );
   });
 
@@ -78,7 +78,7 @@ describe('Immutable.OrderedSet plugin', () => {
   it('supports multiple integer elements {min: false}', () => {
     assertImmutableObject(
       Immutable.OrderedSet([1, 2, 3]),
-      'Immutable.OrderedSet [\n  1,\n  2,\n  3\n]'
+      'Immutable.OrderedSet [\n  1,\n  2,\n  3,\n]'
     );
   });
 
@@ -93,7 +93,7 @@ describe('Immutable.OrderedSet plugin', () => {
   it('supports object elements {min: false}', () => {
     assertImmutableObject(
       Immutable.OrderedSet([{a: 1, b: 2, c: 3}]),
-      'Immutable.OrderedSet [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  }\n]'
+      'Immutable.OrderedSet [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  },\n]'
     );
   });
 
@@ -110,7 +110,7 @@ describe('Immutable.OrderedSet plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.OrderedSet([reactComponent, reactComponent]),
-      'Immutable.OrderedSet [\n  <Mouse>\n    Hello World\n  </Mouse>\n]'
+      'Immutable.OrderedSet [\n  <Mouse>\n    Hello World\n  </Mouse>,\n]'
     );
   });
 });
@@ -151,7 +151,7 @@ describe('Immutable.List plugin', () => {
   it('supports multiple string elements {min: false}', () => {
     assertImmutableObject(
       Immutable.List(['jhon', 'mike', 'cristian']),
-      'Immutable.List [\n  "jhon",\n  "mike",\n  "cristian"\n]'
+      'Immutable.List [\n  "jhon",\n  "mike",\n  "cristian",\n]'
     );
   });
 
@@ -166,7 +166,7 @@ describe('Immutable.List plugin', () => {
   it('supports multiple integer elements {min: false}', () => {
     assertImmutableObject(
       Immutable.List([1, 2, 3]),
-      'Immutable.List [\n  1,\n  2,\n  3\n]'
+      'Immutable.List [\n  1,\n  2,\n  3,\n]'
     );
   });
 
@@ -181,7 +181,7 @@ describe('Immutable.List plugin', () => {
   it('supports object elements {min: false}', () => {
     assertImmutableObject(
       Immutable.List([{a: 1, b: 2, c: 3}]),
-      'Immutable.List [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  }\n]'
+      'Immutable.List [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  },\n]'
     );
   });
 
@@ -198,7 +198,7 @@ describe('Immutable.List plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.List([reactComponent, reactComponent]),
-      'Immutable.List [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>\n]'
+      'Immutable.List [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>,\n]'
     );
   });
 });
@@ -239,7 +239,7 @@ describe('Immutable.Stack plugin', () => {
   it('supports multiple string elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Stack(['jhon', 'mike', 'cristian']),
-      'Immutable.Stack [\n  "jhon",\n  "mike",\n  "cristian"\n]'
+      'Immutable.Stack [\n  "jhon",\n  "mike",\n  "cristian",\n]'
     );
   });
 
@@ -254,7 +254,7 @@ describe('Immutable.Stack plugin', () => {
   it('supports multiple integer elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Stack([1, 2, 3]),
-      'Immutable.Stack [\n  1,\n  2,\n  3\n]'
+      'Immutable.Stack [\n  1,\n  2,\n  3,\n]'
     );
   });
 
@@ -269,7 +269,7 @@ describe('Immutable.Stack plugin', () => {
   it('supports object elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Stack([{a: 1, b: 2, c: 3}]),
-      'Immutable.Stack [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  }\n]'
+      'Immutable.Stack [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  },\n]'
     );
   });
 
@@ -286,7 +286,7 @@ describe('Immutable.Stack plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.Stack([reactComponent, reactComponent]),
-      'Immutable.Stack [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>\n]'
+      'Immutable.Stack [\n  <Mouse>\n    Hello World\n  </Mouse>,\n  <Mouse>\n    Hello World\n  </Mouse>,\n]'
     );
   });
 });
@@ -327,7 +327,7 @@ describe('Immutable.Set plugin', () => {
   it('supports multiple string elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Set(['jhon', 'mike', 'cristian']),
-      'Immutable.Set [\n  "jhon",\n  "mike",\n  "cristian"\n]'
+      'Immutable.Set [\n  "jhon",\n  "mike",\n  "cristian",\n]'
     );
   });
 
@@ -342,7 +342,7 @@ describe('Immutable.Set plugin', () => {
   it('supports multiple integer elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Set([1, 2, 3]),
-      'Immutable.Set [\n  1,\n  2,\n  3\n]'
+      'Immutable.Set [\n  1,\n  2,\n  3,\n]'
     );
   });
 
@@ -357,7 +357,7 @@ describe('Immutable.Set plugin', () => {
   it('supports object elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Set([{a: 1, b: 2, c: 3}]),
-      'Immutable.Set [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  }\n]'
+      'Immutable.Set [\n  Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  },\n]'
     );
   });
 
@@ -374,7 +374,7 @@ describe('Immutable.Set plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.Set([reactComponent, reactComponent]),
-      'Immutable.Set [\n  <Mouse>\n    Hello World\n  </Mouse>\n]'
+      'Immutable.Set [\n  <Mouse>\n    Hello World\n  </Mouse>,\n]'
     );
   });
 });
@@ -407,7 +407,7 @@ describe('Immutable.Map plugin', () => {
   it('supports an object with multiple keys {min: false}', () => {
     assertImmutableObject(
       Immutable.Map({a: 1, b: 2, c: 3}),
-      'Immutable.Map {\n  a: 1,\n  b: 2,\n  c: 3\n}'
+      'Immutable.Map {\n  a: 1,\n  b: 2,\n  c: 3,\n}'
     );
   });
 
@@ -422,7 +422,7 @@ describe('Immutable.Map plugin', () => {
   it('supports object elements {min: false}', () => {
     assertImmutableObject(
       Immutable.Map({key: {a: 1, b: 2, c: 3}}),
-      'Immutable.Map {\n  key: Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  }\n}'
+      'Immutable.Map {\n  key: Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  },\n}'
     );
   });
 
@@ -439,7 +439,7 @@ describe('Immutable.Map plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.Map({a: reactComponent, b: reactComponent}),
-      'Immutable.Map {\n  a: <Mouse>\n    Hello World\n  </Mouse>,\n  b: <Mouse>\n    Hello World\n  </Mouse>\n}'
+      'Immutable.Map {\n  a: <Mouse>\n    Hello World\n  </Mouse>,\n  b: <Mouse>\n    Hello World\n  </Mouse>,\n}'
     );
   });
 });
@@ -472,7 +472,7 @@ describe('Immutable.OrderedMap plugin', () => {
   it('supports an object with multiple keys {min: false}', () => {
     assertImmutableObject(
       Immutable.OrderedMap({a: 1, b: 2, c: 3}),
-      'Immutable.OrderedMap {\n  a: 1,\n  b: 2,\n  c: 3\n}'
+      'Immutable.OrderedMap {\n  a: 1,\n  b: 2,\n  c: 3,\n}'
     );
   });
 
@@ -487,7 +487,7 @@ describe('Immutable.OrderedMap plugin', () => {
   it('supports object elements {min: false}', () => {
     assertImmutableObject(
       Immutable.OrderedMap({key: {a: 1, b: 2, c: 3}}),
-      'Immutable.OrderedMap {\n  key: Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  }\n}'
+      'Immutable.OrderedMap {\n  key: Object {\n    \"a\": 1,\n    \"b\": 2,\n    \"c\": 3,\n  },\n}'
     );
   });
 
@@ -504,7 +504,7 @@ describe('Immutable.OrderedMap plugin', () => {
     const reactComponent = React.createElement('Mouse', null, 'Hello World');
     assertImmutableObject(
       Immutable.OrderedMap({a: reactComponent, b: reactComponent}),
-      'Immutable.OrderedMap {\n  a: <Mouse>\n    Hello World\n  </Mouse>,\n  b: <Mouse>\n    Hello World\n  </Mouse>\n}'
+      'Immutable.OrderedMap {\n  a: <Mouse>\n    Hello World\n  </Mouse>,\n  b: <Mouse>\n    Hello World\n  </Mouse>,\n}'
     );
   });
 });
