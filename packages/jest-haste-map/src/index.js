@@ -43,7 +43,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp,
+  ignorePattern: RegExp | Function,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -62,7 +62,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp,
+  ignorePattern: RegExp | Function,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -533,6 +533,7 @@ class HasteMap extends EventEmitter {
       ? sane.WatchmanWatcher
       : sane.NodeWatcher;
     const extensions = this._options.extensions;
+    const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
     let eventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
@@ -544,6 +545,7 @@ class HasteMap extends EventEmitter {
       const watcher = new Watcher(root, {
         dot: false,
         glob: extensions.map(extension => '**/*.' + extension),
+        ignored: ignorePattern,
       });
 
       return new Promise((resolve, reject) => {
@@ -686,7 +688,13 @@ class HasteMap extends EventEmitter {
    * Helpers
    */
   _ignore(filePath: Path): boolean {
-    return this._options.ignorePattern.test(filePath) ||
+    const ignorePattern = this._options.ignorePattern;
+    const ignoreMatched =
+      Object.prototype.toString.call(ignorePattern) === '[object RegExp]'
+      ? ignorePattern.test(filePath) // $FlowFixMe
+      : ignorePattern(filePath);
+
+    return ignoreMatched ||
       (!this._options.retainAllFiles && this._isNodeModulesDir(filePath));
   }
 
