@@ -26,13 +26,14 @@ const unknownOptionWarning = (
   option: string,
   options: ValidationOptions,
 ): void => {
-  const didYouMean =
-    createDidYouMeanMessage(option, Object.keys(exampleConfig));
+  const didYouMean = createDidYouMeanMessage(
+    option,
+    Object.keys(exampleConfig),
+  );
   /* eslint-disable max-len */
-  const message =
-  `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
-  (didYouMean && ` ${didYouMean}`) +
-  `\n  This is probably a typing mistake. Fixing it will remove this message.`;
+  const message = `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(format(config[option]))} was found.` +
+    (didYouMean && ` ${didYouMean}`) +
+    `\n  This is probably a typing mistake. Fixing it will remove this message.`;
   /* eslint-enable max-len */
 
   const comment = options.comment;

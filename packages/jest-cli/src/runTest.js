@@ -30,13 +30,9 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   const ModuleLoader = require(config.moduleLoader || 'jest-runtime');
 
   const env = new TestEnvironment(config);
-  const TestConsole =
-    config.verbose
-      ? Console
-      : (config.silent
-        ? NullConsole
-        : BufferedConsole
-      );
+  const TestConsole = config.verbose
+    ? Console
+    : config.silent ? NullConsole : BufferedConsole;
   const testConsole = new TestConsole(
     config.useStderr ? process.stderr : process.stdout,
     process.stderr,
@@ -52,8 +48,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   const start = Date.now();
   return TestRunner(config, env, runtime, path)
     .then((result: TestResult) => {
-      const testCount =
-        result.numPassingTests +
+      const testCount = result.numPassingTests +
         result.numFailingTests +
         result.numPendingTests;
       result.perfStats = {end: Date.now(), start};

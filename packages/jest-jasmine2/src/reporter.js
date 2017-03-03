@@ -126,9 +126,10 @@ class Jasmine2Reporter {
     ancestorTitles: Array<string>,
   ): AssertionResult {
     const start = this._startTimes.get(specResult.id);
-    const duration = start ? (Date.now() - start) : undefined;
-    const status =
-      (specResult.status === 'disabled') ? 'pending' : specResult.status;
+    const duration = start ? Date.now() - start : undefined;
+    const status = specResult.status === 'disabled'
+      ? 'pending'
+      : specResult.status;
     const results = {
       ancestorTitles,
       duration,

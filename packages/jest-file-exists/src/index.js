@@ -15,7 +15,5 @@ import type {HasteFS} from 'types/HasteMap';
 
 const fs = require('fs');
 
-module.exports = (
-  filePath: Path,
-  hasteFS: ?HasteFS,
-): boolean => (hasteFS && hasteFS.exists(filePath)) || fs.existsSync(filePath);
+module.exports = (filePath: Path, hasteFS: ?HasteFS): boolean =>
+  (hasteFS && hasteFS.exists(filePath)) || fs.existsSync(filePath);

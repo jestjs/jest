@@ -140,8 +140,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops + ' ticks, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' ticks, and there are still more! ' +
+          "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -160,9 +162,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops +
-        ' immediates, and there are still more! Assuming ' +
-        'we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' immediates, and there are still more! Assuming ' +
+          "we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -203,8 +206,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops + ' timers, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' timers, and there are still more! ' +
+          "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -246,8 +251,10 @@ class FakeTimers {
 
     if (i === this._maxLoops) {
       throw new Error(
-        'Ran ' + this._maxLoops + ' timers, and there are still more! ' +
-        'Assuming we\'ve hit an infinite recursion and bailing out...',
+        'Ran ' +
+          this._maxLoops +
+          ' timers, and there are still more! ' +
+          "Assuming we've hit an infinite recursion and bailing out...",
       );
     }
   }
@@ -315,12 +322,14 @@ class FakeTimers {
     if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
-        `mocked with fake timers. Call \`jest.useFakeTimers()\` in this test ` +
-        `or enable fake timers globally by setting \`"timers": "fake"\` in ` +
-        `the configuration file. This warning is likely a result of a ` +
-        `default configuration change in Jest 15.\n\n` +
-        `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
-        `Stack Trace:\n` + formatStackTrace(new Error().stack, this._config),
+          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
+          `test or enable fake timers globally by setting ` +
+          `\`"timers": "fake"\` in ` +
+          `the configuration file. This warning is likely a result of a ` +
+          `default configuration change in Jest 15.\n\n` +
+          `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +
+          `Stack Trace:\n` +
+          formatStackTrace(new Error().stack, this._config),
       );
     }
   }

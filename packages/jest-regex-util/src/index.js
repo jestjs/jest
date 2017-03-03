@@ -21,8 +21,8 @@ const escapePathForRegex = (dir: string) => {
   return replacePathSepForRegex(escapeStrForRegex(dir));
 };
 
-const escapeStrForRegex =
-  (string: string) => string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
+const escapeStrForRegex = (string: string) =>
+  string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
 
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {

@@ -34,9 +34,9 @@ class Any extends AsymmetricMatcher {
     super();
     if (typeof sample === 'undefined') {
       throw new TypeError(
-         'any() expects to be passed a constructor function. ' +
-         'Please pass one or use anything() to match any object.'
-       );
+        'any() expects to be passed a constructor function. ' +
+          'Please pass one or use anything() to match any object.',
+      );
     }
     this.sample = sample;
   }
@@ -125,9 +125,10 @@ class ArrayContaining extends AsymmetricMatcher {
   asymmetricMatch(other: Array<any>) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
-        'You must provide an array to ArrayContaining, not \'' +
-        typeof this.sample + '\'.'
-       );
+        "You must provide an array to ArrayContaining, not '" +
+          typeof this.sample +
+          "'.",
+      );
     }
 
     for (let i = 0; i < this.sample.length; i++) {
@@ -160,9 +161,10 @@ class ObjectContaining extends AsymmetricMatcher {
   asymmetricMatch(other: Object) {
     if (typeof this.sample !== 'object') {
       throw new Error(
-        'You must provide an object to ObjectContaining, not \'' +
-        typeof this.sample + '\'.'
-       );
+        "You must provide an object to ObjectContaining, not '" +
+          typeof this.sample +
+          "'.",
+      );
     }
 
     for (const property in this.sample) {
