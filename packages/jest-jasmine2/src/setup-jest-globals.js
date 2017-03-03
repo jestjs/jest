@@ -57,9 +57,9 @@ const addAssertionErrors = result => {
       matcherHint('.assertions', '', assertionsExpected, {
         isDirectExpectCall: true,
       }) +
-      '\n\n' +
-      `Expected ${expected} to be called but only received ` +
-      `${RECEIVED_COLOR(pluralize('assertion call', assertionCalls))}.`,
+        '\n\n' +
+        `Expected ${expected} to be called but only received ` +
+        `${RECEIVED_COLOR(pluralize('assertion call', assertionCalls))}.`,
     ).stack;
     result.status = 'failed';
     result.failedExpectations.push({

@@ -42,32 +42,40 @@ const highlightTrailingWhitespace = (line: string, bgColor: Function): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 const getAnnotation = (options: ?DiffOptions): string =>
-  chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) + '\n' +
-  chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) + '\n\n';
+  chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) +
+  '\n' +
+  chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) +
+  '\n\n';
 
 const diffLines = (a: string, b: string): Diff => {
   let isDifferent = false;
   return {
-    diff: diff.diffLines(a, b).map(part => {
-      const {added, removed} = part;
-      if (part.added || part.removed) {
-        isDifferent = true;
-      }
+    diff: diff
+      .diffLines(a, b)
+      .map(part => {
+        const {added, removed} = part;
+        if (part.added || part.removed) {
+          isDifferent = true;
+        }
 
-      const lines = part.value.split('\n');
-      const color = getColor(added, removed);
-      const bgColor = getBgColor(added, removed);
+        const lines = part.value.split('\n');
+        const color = getColor(added, removed);
+        const bgColor = getBgColor(added, removed);
 
-      if (lines[lines.length - 1] === '') {
-        lines.pop();
-      }
+        if (lines[lines.length - 1] === '') {
+          lines.pop();
+        }
 
-      return lines.map(line => {
-        const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-        const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
-        return mark + ' ' +  color(highlightedLine) + '\n';
-      }).join('');
-    }).join('').trim(),
+        return lines
+          .map(line => {
+            const highlightedLine = highlightTrailingWhitespace(line, bgColor);
+            const mark = color(part.added ? '+' : part.removed ? '-' : ' ');
+            return mark + ' ' + color(highlightedLine) + '\n';
+          })
+          .join('');
+      })
+      .join('')
+      .trim(),
     isDifferent,
   };
 };
@@ -77,8 +85,8 @@ const diffLines = (a: string, b: string): Diff => {
 // `hunk.oldLines` or a new string to `hunk.newLines`.
 // If the `oldLinesCount` is greater than `hunk.oldLines`
 // we can be sure that at least 1 line has been "hidden".
-const shouldShowPatchMarks =
-  (hunk: Hunk, oldLinesCount: number): boolean => oldLinesCount > hunk.oldLines;
+const shouldShowPatchMarks = (hunk: Hunk, oldLinesCount: number): boolean =>
+  oldLinesCount > hunk.oldLines;
 
 const createPatchMark = (hunk: Hunk): string => {
   const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
@@ -100,24 +108,29 @@ const structuredPatch = (a: string, b: string): Diff => {
   const oldLinesCount = (a.match(/\n/g) || []).length;
 
   return {
-    diff: diff.structuredPatch('', '', a, b, '', '', options)
+    diff: diff
+      .structuredPatch('', '', a, b, '', '', options)
       .hunks.map((hunk: Hunk) => {
-        const lines = hunk.lines.map(line => {
-          const added = line[0] === '+';
-          const removed = line[0] === '-';
+        const lines = hunk.lines
+          .map(line => {
+            const added = line[0] === '+';
+            const removed = line[0] === '-';
 
-          const color = getColor(added, removed);
-          const bgColor = getBgColor(added, removed);
+            const color = getColor(added, removed);
+            const bgColor = getBgColor(added, removed);
 
-          const highlightedLine = highlightTrailingWhitespace(line, bgColor);
-          return color(highlightedLine) + '\n';
-        }).join('');
+            const highlightedLine = highlightTrailingWhitespace(line, bgColor);
+            return color(highlightedLine) + '\n';
+          })
+          .join('');
 
         isDifferent = true;
         return shouldShowPatchMarks(hunk, oldLinesCount)
           ? createPatchMark(hunk) + lines
           : lines;
-      }).join('').trim(),
+      })
+      .join('')
+      .trim(),
     isDifferent,
   };
 };
