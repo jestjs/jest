@@ -689,9 +689,8 @@ class HasteMap extends EventEmitter {
    */
   _ignore(filePath: Path): boolean {
     const ignorePattern = this._options.ignorePattern;
-    const ignoreMatched =
-      Object.prototype.toString.call(ignorePattern) === '[object RegExp]'
-      ? ignorePattern.test(filePath) // $FlowFixMe
+    const ignoreMatched = ignorePattern instanceof RegExp
+      ? ignorePattern.test(filePath)
       : ignorePattern(filePath);
 
     return ignoreMatched ||
