@@ -11,7 +11,7 @@
 'use strict';
 
 import type {Path} from 'types/Config';
-import type {ModuleMap} from 'jest-haste-map';
+import type {ModuleMap} from 'types/HasteMap';
 
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
