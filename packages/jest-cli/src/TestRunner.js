@@ -396,6 +396,65 @@ class TestRunner {
     if (config.notify) {
       this.addReporter(new NotifyReporter(this._startRun));
     }
+
+    if (Array.isArray(config.reporters)) {
+      this._addCustomReporters(config.reporters)
+    } else {
+      throw new Error(
+        `Unexpected value found for reporters
+         Expected to get an array of reporters, got: ${reporters}`
+      );
+    }
+  }
+
+  /**
+   * Add Custom reporters to Jest
+   * Custom reporters can be added to Jest using the reporters option in Jest
+   * Config. The format for adding a custom reporter is following:
+   *
+   * Format for the custom reporters
+   *
+   * "reporters": [
+   *    ["reporterPath/packageName", { option1: 'fasklj' }], 
+   *    // Format if we want to specify options
+   *    
+   *    "reporterName"
+   *    // Format if we don't want to specify any options
+   * ]
+   */
+  _addCustomReporters(reporters: Array<string>) {
+      let reporterPath, reporterConfig;
+
+      reporters.forEach(entry => {
+        if (Array.isArray(entry)) {
+          [reporterPath, reporterConfig] = entry;
+        } else {
+          if (typeof entry !== 'string') {
+            throw new Error(`
+              Unexpected custom reporter configuration.
+              Expected to get either a path string or an array of [path, confg]
+              got: ${entry}
+            `);
+          }
+
+          reporterPath = entry;
+        }
+
+        try {
+          const reporter = require(reporterPath);
+          this.addReporter(new reporter(reporterConfig || {}));
+        } catch (error) {
+          console.error(`
+            Failed to set up reporter:
+              ${JSON.stringify(reporterPath)}
+            Config:
+              ${JSON.stringify(reporterConfig)}
+          `);
+
+          throw error;
+        }
+      });
+    }
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {
