@@ -12,7 +12,6 @@
     "graceful-fs": "^4.1.6",
     "micromatch": "^2.3.11",
     "sane": "~1.5.0",
-    "slash": "^1.0.0",
     "worker-farm": "^1.3.1"
   }
 }

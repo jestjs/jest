@@ -9,6 +9,8 @@
  */
 'use strict';
 
+const skipOnWindows = require('skipOnWindows');
+
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
     let closeCallback;
@@ -67,6 +69,8 @@ let nodeCrawl;
 let childProcess;
 
 describe('node crawler', () => {
+  skipOnWindows.suite();
+
   beforeEach(() => {
     jest.resetModules();
 
