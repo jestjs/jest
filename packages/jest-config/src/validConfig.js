@@ -60,6 +60,7 @@ module.exports = ({
   preset: 'react-native',
   resetMocks: false,
   resetModules: false,
+  resolver: '<rootDir>/resolver.js',
   rootDir: '/',
   roots: ['<rootDir>'],
   setupFiles: ['<rootDir>/setup.js'],

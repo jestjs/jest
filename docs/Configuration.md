@@ -240,6 +240,23 @@ Default: `false`
 
 If enabled, the module registry for every test file will be reset before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
 
+### `resolver` [string]
+Default: `undefined`
+
+This option allows the use of a custom resolver. This resolver must be a node module that exports a function expecting a string as the first argument for the path to resolve and an object with the following structure as the second argument:
+
+```
+{
+  "basedir": string,
+  "browser": bool,
+  "extensions": [string],
+  "moduleDirectory": [string],
+  "paths": [string]
+}
+```
+
+The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
+
 ### `rootDir` [string]
 Default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
