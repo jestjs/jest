@@ -49,18 +49,15 @@ const watch = (
       (Array.isArray(argv._) ? argv._.join('|') : ''),
   });
 
+  const prompt = new Prompt();
+  const testPathPatternPrompt = TestPathPatternPrompt(config, pipe, prompt);
+  const testNamePatternPrompt = TestNamePatternPrompt(config, pipe, prompt);
   let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
   let displayHelp = true;
 
-  const prompt = new Prompt();
-
-  const testPathPatternPrompt = TestPathPatternPrompt(config, pipe, prompt);
-
   testPathPatternPrompt.updateSearchSource(hasteContext);
-
-  const testNamePatternPrompt = TestNamePatternPrompt(config, pipe, prompt);
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const validPaths = eventsQueue.filter(({filePath}) => {
@@ -95,6 +92,7 @@ const watch = (
       hasteContext,
       // $FlowFixMe
       Object.freeze(
+        // $FlowFixMe
         Object.assign(
           {
             testNamePattern: argv.testNamePattern,

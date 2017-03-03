@@ -444,12 +444,12 @@ class HasteMap extends EventEmitter {
         resolve,
         reject,
       ) => workerFn(message, (error, metadata) => {
-          if (error || !metadata) {
-            reject(error);
-          } else {
-            resolve(metadata);
-          }
-        }));
+        if (error || !metadata) {
+          reject(error);
+        } else {
+          resolve(metadata);
+        }
+      }));
     }
 
     return this._workerPromise;

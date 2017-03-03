@@ -322,8 +322,9 @@ class FakeTimers {
     if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
-          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this test ` +
-          `or enable fake timers globally by setting \`"timers": "fake"\` in ` +
+          `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +
+          `test or enable fake timers globally by setting ` +
+          `\`"timers": "fake"\` in ` +
           `the configuration file. This warning is likely a result of a ` +
           `default configuration change in Jest 15.\n\n` +
           `Release Blog Post: https://facebook.github.io/jest/blog/2016/09/01/jest-15.html\n` +

@@ -94,8 +94,8 @@ module.exports = (
           );
         }
       } else {
-        // eslint-disable-next-line max-len
         pipe.write(
+          // eslint-disable-next-line max-len
           `\n\n ${chalk.italic.yellow('Start typing to filter by a test name regex pattern.')}`,
         );
       }

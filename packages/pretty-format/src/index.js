@@ -415,9 +415,9 @@ function printObject(
 
   if (symbols.length) {
     keys = keys
-      // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
       .filter(
         key =>
+          // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
           !(typeof key === 'symbol' ||
             toString.call(key) === '[object Symbol]'),
       )

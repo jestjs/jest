@@ -70,9 +70,10 @@ const runJest = (
             } else {
               localConsole.log(
                 'Jest can only find uncommitted changed files in a git or hg ' +
-                  'repository. If you make your project a git or hg repository ' +
-                  '(`git init` or `hg init`), Jest will be able to only ' +
-                  'run tests related to files changed since the last commit.',
+                  'repository. If you make your project a git or hg ' +
+                  'repository (`git init` or `hg init`), Jest will be able ' +
+                  'to only run tests related to files changed since the last ' +
+                  'commit.',
               );
             }
           }
