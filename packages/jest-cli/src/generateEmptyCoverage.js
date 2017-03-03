@@ -20,10 +20,13 @@ module.exports = function(source: string, filename: Path, config: Config) {
   if (shouldInstrument(filename, config)) {
     // Transform file without instrumentation first, to make sure produced
     // source code is ES6 (no flowtypes etc.) and can be instrumented
-    source = transformSource(filename, config, source, false);
+    const transformResult = transformSource(filename, config, source, false);
     const instrumenter = IstanbulInstrument.createInstrumenter();
-    instrumenter.instrumentSync(source, filename);
-    return instrumenter.fileCoverage;
+    instrumenter.instrumentSync(transformResult.code, filename);
+    return {
+      coverage: instrumenter.fileCoverage,
+      sourceMapPath: transformResult.sourceMapPath,
+    };
   } else {
     return null;
   }

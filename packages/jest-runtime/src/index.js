@@ -87,6 +87,7 @@ class Runtime {
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
+  _sourceMapRegistry: {[key: string]: string};
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
@@ -95,6 +96,7 @@ class Runtime {
     this._moduleRegistry = Object.create(null);
     this._internalModuleRegistry = Object.create(null);
     this._mockRegistry = Object.create(null);
+    this._sourceMapRegistry = Object.create(null);
     this._config = config;
     this._environment = environment;
     this._resolver = resolver;
@@ -388,6 +390,15 @@ class Runtime {
     return this._environment.global.__coverage__;
   }
 
+  getSourceMapInfo() {
+    return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
+      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+        result[sourcePath] = this._sourceMapRegistry[sourcePath];
+      }
+      return result;
+    }, {});
+  }
+
   setMock(
     from: string,
     moduleName: string,
@@ -435,9 +446,17 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
 
-    const script = transform(filename, this._config, {isInternalModule});
+    const transformedFile = transform(
+      filename,
+      this._config,
+      {isInternalModule}
+    );
 
-    const wrapper = this._environment.runScript(script)[
+    if (transformedFile.sourceMapPath) {
+      this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
+    }
+
+    const wrapper = this._environment.runScript(transformedFile.script)[
       transform.EVAL_RESULT_VARIABLE
     ];
     wrapper.call(

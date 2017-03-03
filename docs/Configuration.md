@@ -150,6 +150,23 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
 
+### `mapCoverage` [boolean]
+
+##### available in Jest **20.0.0+**
+
+Default: `false`
+
+If you have [transformers](#transform-object-string-string) configured that emit source maps, Jest will use them to try and map code coverage against the original source code when writing [reports](#coveragereporters-array-string) and checking [thresholds](#coveragethreshold-object). This is done on a best-effort basis as some compile-to-JavaScript languages may provide more accurate source maps than others. This can also be resource-intensive. If Jest is taking a long time to calculate coverage at the end of a test run, try setting this option to `false`.
+
+Both inline source maps and source maps returned directly from a transformer are supported. Source map URLs are not supported because Jest may not be able to locate them. To return source maps from a transformer, the `process` function can return an object like the following. The `map` property may either be the source map object, or the source map object as a JSON string.
+
+```js
+return {
+  code: 'the code',
+  map: 'the source map',
+};
+```
+
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`
 

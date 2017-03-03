@@ -12,9 +12,11 @@
 jest
   .mock('fs')
   .mock('istanbul-lib-coverage')
+  .mock('istanbul-lib-source-maps')
   .mock('istanbul-api');
 
 let libCoverage;
+let libSourceMaps;
 let CoverageReporter;
 let istanbulApi;
 
@@ -27,6 +29,7 @@ beforeEach(() => {
 
   CoverageReporter = require('../CoverageReporter');
   libCoverage = require('istanbul-lib-coverage');
+  libSourceMaps = require('istanbul-lib-source-maps');
 });
 
 describe('onRunComplete', () => {
@@ -62,6 +65,14 @@ describe('onRunComplete', () => {
               };
             },
           };
+        },
+      };
+    });
+
+    libSourceMaps.createSourceMapStore = jest.fn(() => {
+      return {
+        transformCoverage(map) {
+          return {map};
         },
       };
     });

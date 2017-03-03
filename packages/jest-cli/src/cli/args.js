@@ -153,6 +153,12 @@ const options = {
       'leaks. Use together with `--runInBand` and `--expose-gc` in node.',
     type: 'boolean',
   },
+  mapCoverage: {
+    description:
+      'Maps code coverage reports against original source code when ' +
+      'transformers supply source maps.',
+    type: 'boolean',
+  },
   maxWorkers: {
     alias: 'w',
     description:
