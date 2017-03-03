@@ -352,7 +352,18 @@ To make a dependency explicit instead of implicit, you can call [`expect.addSnap
 ### `testEnvironment` [string]
 Default: `"jsdom"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. Combining the test environments is currently not possible but the `jsdom` environment can be seen as a superset of the `node` one.
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. If some tests require another environment, you can add a `@jest-environment` docblock.
+
+```js
+/**
+ * @jest-environment jsdom
+ */
+
+test('use jsdom in this test file', () => {
+  const element = document.createElement('div');
+  expect(element).not.toBeNull();
+});
+```
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
 
