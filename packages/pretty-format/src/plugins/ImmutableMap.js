@@ -16,7 +16,9 @@ const isMap = (maybeMap: Object) => {
   return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
 };
 
-const printImmutableMap = (
+const test = (object: Object) => object && isMap(object);
+
+const print = (
   val: Object, 
   print: Function,
   indent: Function,
@@ -26,7 +28,4 @@ const printImmutableMap = (
   return printImmutable(val, print, indent, opts, colors, 'Map', true);
 };
 
-module.exports = {
-  print: printImmutableMap,
-  test: (object: Object) => object && isMap(object),
-};
+module.exports = {print, test};

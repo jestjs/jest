@@ -25,7 +25,9 @@ const isOrderedSet = (maybeOrderedSet: Object) => {
   return isSet(maybeOrderedSet) && isOrdered(maybeOrderedSet);
 };
 
-const printImmutableOrderedSet = (
+const test = (object: Object) => object && isOrderedSet(object);
+
+const print = (
   val: Object, 
   print: Function,
   indent: Function,
@@ -35,7 +37,4 @@ const printImmutableOrderedSet = (
   return printImmutable(val, print, indent, opts, colors, 'OrderedSet', false);
 };
 
-module.exports = {
-  print: printImmutableOrderedSet,
-  test: (object: Object) => object && isOrderedSet(object),
-};
+module.exports = {print, test};

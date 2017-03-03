@@ -25,7 +25,9 @@ const isOrderedMap = (maybeOrderedMap: Object) => {
   return isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
 };
 
-const printImmutableOrderedMap = (
+const test = (object: Object) => object && isOrderedMap(object);
+
+const print = (
   val: Object, 
   print: Function,
   indent: Function,
@@ -35,7 +37,4 @@ const printImmutableOrderedMap = (
   return printImmutable(val, print, indent, opts, colors, 'OrderedMap', true);
 };
 
-module.exports = {
-  print: printImmutableOrderedMap,
-  test: (object: Object) => object && isOrderedMap(object),
-};
+module.exports = {print, test};

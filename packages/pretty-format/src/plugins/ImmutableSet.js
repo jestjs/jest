@@ -16,7 +16,9 @@ const isSet = (maybeSet: Object) => {
   return !!(maybeSet && maybeSet[IS_SET_SENTINEL]);
 };
 
-const printImmutableSet = (
+const test = (object: Object) => object && isSet(object);
+
+const print = (
   val: Object, 
   print: Function,
   indent: Function,
@@ -26,7 +28,4 @@ const printImmutableSet = (
   return printImmutable(val, print, indent, opts, colors, 'Set', false);
 };
 
-module.exports = {
-  print: printImmutableSet,
-  test: (object: Object) => object && isSet(object),
-};
+module.exports = {print, test};

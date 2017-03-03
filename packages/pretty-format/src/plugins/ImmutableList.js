@@ -16,7 +16,9 @@ const isList = (maybeList: Object) => {
   return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
 };
 
-const printImmutableList = (
+const test = (object: Object) => object && isList(object);
+
+const print = (
   val: Object, 
   print: Function,
   indent: Function,
@@ -26,7 +28,4 @@ const printImmutableList = (
   return printImmutable(val, print, indent, opts, colors, 'List', false);
 };
 
-module.exports = {
-  print: printImmutableList,
-  test: (object: Object) => object && isList(object),
-};
+module.exports = {print, test};

@@ -25,28 +25,21 @@ const printImmutable = (
   immutableDataStructureName: string,
   isMap: boolean,
 ) : string => {
-  let result = IMMUTABLE_NAMESPACE + immutableDataStructureName;
   const openTag = isMap ? '{' : '[';
   const closeTag = isMap ? '}' : ']';
-  
-  if (val.isEmpty()) {
-    return result + SPACE + openTag + closeTag;
-  }
+  let result = IMMUTABLE_NAMESPACE + immutableDataStructureName + 
+    SPACE + openTag + opts.edgeSpacing;
 
-  result += SPACE + openTag + opts.edgeSpacing;
+  const immutableArray = [];
   val.forEach((item: any, key: any) => {
-    result += indent(
-        addKey(isMap, key) + print(item, print, indent, opts, colors)
-      ) + ',' + opts.spacing;
+    immutableArray.push(
+      indent(addKey(isMap, key) + print(item, print, indent, opts, colors))
+    );
   });
   
-  if (opts.min) {
-    //remove last comma and last spacing
-    return result.slice(0, -2) + opts.edgeSpacing + closeTag;
-  } else {
-    //remove last spacing
-    return result.slice(0, -1) + opts.edgeSpacing + closeTag;
-  }
+  result += immutableArray.join(',' + opts.spacing);
+
+  return result + opts.edgeSpacing + closeTag;
 };
 
 module.exports = printImmutable;

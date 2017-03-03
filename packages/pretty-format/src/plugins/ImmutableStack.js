@@ -16,7 +16,9 @@ const isStack = (maybeStack: Object) => {
   return !!(maybeStack && maybeStack[IS_STACK_SENTINEL]);
 };
 
-const printImmutableStack = (
+const test = (object: Object) => object && isStack(object);
+
+const print = (
   val: Object, 
   print: Function,
   indent: Function,
@@ -26,7 +28,4 @@ const printImmutableStack = (
   return printImmutable(val, print, indent, opts, colors, 'Stack', false);
 };
 
-module.exports = {
-  print: printImmutableStack,
-  test: (object: Object) => object && isStack(object),
-};
+module.exports = {print, test};
