@@ -19,11 +19,35 @@ const {
   NullConsole,
   setGlobal,
 } = require('jest-util');
+
+const {getTestEnvironment} = require('jest-config');
+const fs = require('fs');
+const docblock = require('jest-docblock');
 const getConsoleOutput = require('./reporters/getConsoleOutput');
 
 function runTest(path: Path, config: Config, resolver: Resolver) {
+  let testSource;
+
+  try {
+    testSource = fs.readFileSync(path, 'utf8');
+  } catch (e) {
+    return Promise.reject(e);
+  }
+
+  const parsedDocblock = docblock.parse(docblock.extract(testSource));
+  const customEnvironment = parsedDocblock['jest-environment'];
+  let testEnvironment = config.testEnvironment;
+
+  if (customEnvironment) {
+    testEnvironment = getTestEnvironment(
+      Object.assign({}, config, {
+        testEnvironment: customEnvironment,
+      })
+    );
+  }
+
   /* $FlowFixMe */
-  const TestEnvironment = require(config.testEnvironment);
+  const TestEnvironment = require(testEnvironment);
   /* $FlowFixMe */
   const TestRunner = require(config.testRunner);
   /* $FlowFixMe */
@@ -39,7 +63,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
     (type, message) => getConsoleOutput(
       config.rootDir,
       !!config.verbose,
-      // 4 = the console call is burried 4 stack frames deep
+      // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
     ),
   );

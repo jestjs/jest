@@ -15,6 +15,7 @@ const loadFromFile = require('./loadFromFile');
 const loadFromPackage = require('./loadFromPackage');
 const normalize = require('./normalize');
 const setFromArgv = require('./setFromArgv');
+const {getTestEnvironment} = require('./utils');
 
 const readConfig = (argv: Object, packageRoot: string) =>
   readRawConfig(argv, packageRoot)
@@ -60,6 +61,7 @@ const readRawConfig = (argv, root) => {
 };
 
 module.exports = {
+  getTestEnvironment,
   normalize,
   readConfig,
 };
