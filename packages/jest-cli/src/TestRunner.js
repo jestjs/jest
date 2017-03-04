@@ -379,6 +379,10 @@ class TestRunner {
   _setupReporters() {
     const config = this._config;
 
+    if (config.reporters) {
+      return this._addCustomReporters(config.reporters);
+    }
+
     this.addReporter(
       config.verbose
         ? new VerboseReporter(config)
@@ -397,14 +401,7 @@ class TestRunner {
       this.addReporter(new NotifyReporter(this._startRun));
     }
 
-    if (Array.isArray(config.reporters)) {
-      this._addCustomReporters(config.reporters)
-    } else {
-      throw new Error(
-        `Unexpected value found for reporters
-         Expected to get an array of reporters, got: ${reporters}`
-      );
-    }
+    return undefined;
   }
 
   /**
@@ -422,39 +419,38 @@ class TestRunner {
    *    // Format if we don't want to specify any options
    * ]
    */
-  _addCustomReporters(reporters: Array<string>) {
-      let reporterPath, reporterConfig;
+  _addCustomReporters(reporters: any) {
+    let reporterPath, reporterConfig;
 
-      reporters.forEach(entry => {
-        if (Array.isArray(entry)) {
-          [reporterPath, reporterConfig] = entry;
-        } else {
-          if (typeof entry !== 'string') {
-            throw new Error(`
-              Unexpected custom reporter configuration.
-              Expected to get either a path string or an array of [path, confg]
-              got: ${entry}
-            `);
-          }
-
-          reporterPath = entry;
-        }
-
-        try {
-          const reporter = require(reporterPath);
-          this.addReporter(new reporter(reporterConfig || {}));
-        } catch (error) {
-          console.error(`
-            Failed to set up reporter:
-              ${JSON.stringify(reporterPath)}
-            Config:
-              ${JSON.stringify(reporterConfig)}
+    reporters.forEach(entry => {
+      if (Array.isArray(entry)) {
+        [reporterPath, reporterConfig] = entry;
+      } else {
+        if (typeof entry !== 'string') {
+          throw new Error(`
+            Unexpected custom reporter configuration.
+            Expected to get either a path string or an array of [path, confg]
+            got: ${JSON.stringify(entry)}
           `);
-
-          throw error;
         }
-      });
-    }
+
+        reporterPath = entry;
+      }
+
+      try {
+        const reporter = require(reporterPath);
+        this.addReporter(new reporter(reporterConfig || {}));
+      } catch (error) {
+        console.error(`
+          Failed to set up reporter:
+            ${JSON.stringify(reporterPath)}
+          Config:
+            ${JSON.stringify(reporterConfig)}
+        `);
+
+        throw error;
+      }
+    });
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {

@@ -354,6 +354,9 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'persistModuleRegistryBetweenSpecs':
       case 'preset':
       case 'replname':
+      case 'reporters':
+        value = _replaceRootDirTags(config.rootDir, config[key]);
+        break;
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':
