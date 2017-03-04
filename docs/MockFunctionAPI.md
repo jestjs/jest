@@ -26,8 +26,8 @@ For example: A mock function `f` that has been called twice, with the arguments 
 ```js
 [
   ['arg1', 'arg2'],
-  ['arg3', 'arg4']
-]
+  ['arg3', 'arg4'],
+];
 ```
 
 ### `mockFn.mock.instances`
@@ -36,10 +36,10 @@ An array that contains all the object instances that have been instantiated from
 For example: A mock function that has been instantiated twice would have the following `mock.instances` array:
 
 ```js
-var mockFn = jest.fn();
+const mockFn = jest.fn();
 
-var a = new mockFn();
-var b = new mockFn();
+const a = new mockFn();
+const b = new mockFn();
 
 mockFn.mock.instances[0] === a; // true
 mockFn.mock.instances[1] === b; // true
@@ -153,7 +153,7 @@ jest.genMockFunction().mockImplementation(() => value);
 Just a simple sugar function for:
 
 ```js
-const valueReturned = false;
+let valueReturned = false;
 jest.fn(() => {
   if (!valueReturned) {
     valueReturned = true;

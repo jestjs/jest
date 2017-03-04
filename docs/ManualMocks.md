@@ -17,17 +17,17 @@ put it in the ``models/__mocks__`` directory. If the module you are mocking is
 a node module (eg: `fs`), the mock should be placed in the same parent
 directory as the ``node_modules`` folder. Eg:
 
-```
-  node_modules
-  __mocks__
-    fs.js
-  __tests__
-  models
-    __mocks__
-      user.js
-    user.js
-  views
-  config
+```bash
+.
+├── config
+├── fs.js
+├── __mocks__
+├── models
+│   ├── __mocks__
+│   │   └── user.js
+│   └── user.js
+├── node_modules
+└── views
 ```
 
 When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, manual mocks will take precedence over node modules even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
@@ -43,8 +43,8 @@ const fs = require('fs');
 
 function summarizeFilesInDirectorySync(directory) {
   return fs.readdirSync(directory).map(fileName => ({
-    fileName,
     directory,
+    fileName,
   }));
 }
 

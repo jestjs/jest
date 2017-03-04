@@ -45,16 +45,18 @@ expect.extend({
     const pass = (received % argument == 0);
     if (pass) {
       return {
+        message: () => (
+          `expected ${received} not to be divisible by ${argument}`
+        ),
         pass: true,
-        message: () => `expected ${received} not to be divisible by ${argument}`,
-      }
+      };
     } else {
       return {
+        message: () => (`expected ${received} to be divisible by ${argument}`),
         pass: false,
-        message: () => `expected ${received} to be divisible by ${argument}`,
-      }
+      };
     }
-  }
+  },
 });
 
 test('even and odd numbers', () => {
@@ -125,10 +127,10 @@ When an assertion fails, the error message should give as much signal as necessa
 
 ```js
 test('map calls its argument with a non-null argument', () => {
-  let mock = jest.fn();
+  const mock = jest.fn();
   [1].map(mock);
   expect(mock).toBeCalledWith(expect.anything());
-})
+});
 ```
 
 ### `expect.any(constructor)`
@@ -141,10 +143,10 @@ function randocall(fn) {
 }
 
 test('randocall calls its callback with a number', () => {
-  let mock = jest.fn();
+  const mock = jest.fn();
   randocall(mock);
   expect(mock).toBeCalledWith(expect.any(Number));
-})
+});
 ```
 
 ### `expect.arrayContaining(array)`
@@ -172,10 +174,12 @@ describe('arrayContaining', () => {
 describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
   const expected = [1, 2, 3, 4, 5, 6];
   it('matches even with an unexpected number 7', () => {
-    expect([4, 1, 6, 7, 3, 5, 2, 5, 4, 6]).toEqual(expect.arrayContaining(expected));
+    expect([4, 1, 6, 7, 3, 5, 2, 5, 4, 6])
+      .toEqual(expect.arrayContaining(expected));
   });
   it('does not match without an expected number 2', () => {
-    expect([4, 1, 6, 7, 3, 5, 7, 5, 4, 6]).not.toEqual(expect.arrayContaining(expected));
+    expect([4, 1, 6, 7, 3, 5, 7, 5, 4, 6])
+      .not.toEqual(expect.arrayContaining(expected));
   });
 });
 ```
@@ -189,11 +193,11 @@ For example, let's say that we have a few functions that all deal with state. `p
 ```js
 test('prepareState prepares a valid state', () => {
   expect.assertions(1);
-  prepareState((state) => {
+  prepareState(state => {
     expect(validateState(state)).toBeTruthy();
-  })
+  });
   return waitOnState();
-})
+});
 ```
 
 The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
@@ -208,13 +212,13 @@ For example, let's say that we expect an `onPress` function to be called with an
 
 ```js
 test('onPress gets called with the right thing', () => {
-  let onPress = jest.fn();
+  const onPress = jest.fn();
   simulatePresses(onPress);
   expect(onPress).toBeCalledWith(expect.objectContaining({
     x: expect.any(Number),
     y: expect.any(Number),
   }));
-})
+});
 ```
 
 ### `expect.stringContaining(string)`
@@ -242,10 +246,12 @@ describe('stringMatching in arrayContaining', () => {
     expect.stringMatching(/^[BR]ob/),
   ];
   it('matches even if received contains additional elements', () => {
-    expect(['Alicia', 'Roberto', 'Evelina']).toEqual(expect.arrayContaining(expected));
+    expect(['Alicia', 'Roberto', 'Evelina'])
+      .toEqual(expect.arrayContaining(expected));
   });
   it('does not match if received does not contain expected elements', () => {
-    expect(['Roberto', 'Evelina']).not.toEqual(expect.arrayContaining(expected));
+    expect(['Roberto', 'Evelina'])
+      .not.toEqual(expect.arrayContaining(expected));
   });
 });
 ```
@@ -289,8 +295,8 @@ For example, this code will validate some properties of the `beverage` object:
 
 ```js
 const can = {
-  ounces: 12,
   name: 'pamplemousse',
+  ounces: 12,
 };
 
 describe('the can', () => {
@@ -317,13 +323,13 @@ For example, let's say you have a `drinkAll(drink, flavor)` function that takes 
 ```js
 describe('drinkAll', () => {
   test('drinks something lemon-flavored', () => {
-    let drink = jest.fn();
+    const drink = jest.fn();
     drinkAll(drink, 'lemon');
     expect(drink).toHaveBeenCalled();
   });
 
   test('does not drink something octopus-flavored', () => {
-    let drink = jest.fn();
+    const drink = jest.fn();
     drinkAll(drink, 'octopus');
     expect(drink).not.toHaveBeenCalled();
   });
@@ -338,7 +344,7 @@ For example, let's say you have a `drinkEach(drink, Array<flavor>)` function tha
 
 ```js
 test('drinkEach drinks each drink', () => {
-  let drink = jest.fn();
+  const drink = jest.fn();
   drinkEach(drink, ['lemon', 'octopus']);
   expect(drink).toHaveBeenCalledTimes(2);
 });
@@ -354,9 +360,9 @@ For example, let's say that you can register a beverage with a `register` functi
 
 ```js
 test('registration applies correctly to orange La Croix', () => {
-  let beverage = new LaCroix('orange');
+  const beverage = new LaCroix('orange');
   register(beverage);
-  let f = jest.fn();
+  const f = jest.fn();
   applyToAll(f);
   expect(f).toHaveBeenCalledWith(beverage);
 });
@@ -370,7 +376,7 @@ If you have a mock function, you can use `.toHaveBeenLastCalledWith` to test wha
 
 ```js
 test('applying to all flavors does mango last', () => {
-  let drink = jest.fn();
+  const drink = jest.fn();
   applyToAllFlavors(drink);
   expect(drink).toHaveBeenLastCalledWith('mango');
 });
@@ -605,8 +611,8 @@ describe('an essay on the best flavor', () => {
   test('mentions grapefruit', () => {
     expect(essayOnTheBestFlavor()).toMatch(/grapefruit/);
     expect(essayOnTheBestFlavor()).toMatch(new RegExp('grapefruit'));
-  })
-})
+  });
+});
 ```
 
 This matcher also accepts a string, which it will try to match:
@@ -615,8 +621,8 @@ This matcher also accepts a string, which it will try to match:
 describe('grapefruits are healthy', () => {
   test('grapefruits are a fruit', () => {
     expect('grapefruits').toMatch('fruit');
-  })
-})
+  });
+});
 ```
 
 ### `.toMatchObject(object)`
@@ -625,20 +631,20 @@ Use `.toMatchObject` to check that a JavaScript object matches a subset of the p
 
 ```js
 const houseForSale = {
-	bath: true,
-	kitchen: {
-		amenities: ['oven', 'stove', 'washer'],
-		area: 20,
-		wallColor: 'white'
-	},
-  bedrooms: 4
+  bath: true,
+  bedrooms: 4,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    area: 20,
+    wallColor: 'white',
+  },
 };
 const desiredHouse = {
-	bath: true,
-	kitchen: {
-		amenities: ['oven', 'stove', 'washer'],
-		wallColor: 'white'
-	}
+  bath: true,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    wallColor: 'white',
+  },
 };
 
 test('the house has my desired features', () => {
