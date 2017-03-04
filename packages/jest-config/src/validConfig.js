@@ -57,6 +57,9 @@ module.exports = ({
   noStackTrace: false,
   notify: false,
   preset: 'react-native',
+  reporters: [
+    ['./here-it-goes.js', {option1: true}]
+  ],
   resetMocks: false,
   resetModules: false,
   rootDir: '/',
