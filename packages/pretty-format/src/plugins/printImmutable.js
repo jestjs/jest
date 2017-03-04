@@ -12,8 +12,12 @@
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
 
-const addKey = (isMap, key) => {
+const addKey = (isMap: boolean, key: any) => {
   return isMap ? (key + ': ') : '';
+};
+
+const addFinalEdgeSpacing = (length: number, edgeSpacing: string) => {
+  return length > 0 ? edgeSpacing : '';
 };
 
 const printImmutable = (
@@ -37,13 +41,15 @@ const printImmutable = (
     );
   });
   
-  if (opts.min) {
-    result += immutableArray.join(',' + opts.spacing);
-  } else {
+  if (!opts.min && immutableArray.length > 0) {
     result += immutableArray.join(',' + opts.spacing) + ',';
+  } else {
+    result += immutableArray.join(',' + opts.spacing);
   }
 
-  return result + opts.edgeSpacing + closeTag;
+  return result + 
+    addFinalEdgeSpacing(immutableArray.length, opts.edgeSpacing) + 
+    closeTag;
 };
 
 module.exports = printImmutable;
