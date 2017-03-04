@@ -71,7 +71,7 @@ Returns a new, unused [mock function](/jest/docs/mock-function-api.html). Option
 
   // With a mock implementation:
   const returnsTrue = jest.fn(() => true);
-  console.log(returnsTrue()) // true;
+  console.log(returnsTrue()); // true;
 ```
 
 ### `jest.isMockFunction(fn)`
@@ -112,7 +112,10 @@ The third argument can be used to create virtual mocks – mocks of modules that
 
 ```js
 jest.mock('../moduleName', () => {
-  // custom implementation of a module that doesn't exist in JS, like a generated module or a native module in react-native.
+  /*
+   * Custom implementation of a module that doesn't exist in JS, 
+   * like a generated module or a native module in react-native.
+   */
 }, {virtual: true});
 ```
 
@@ -139,7 +142,8 @@ Example:
 const sum1 = require('../sum');
 jest.resetModules();
 const sum2 = require('../sum');
-sum1 === sum2 // false! Both sum modules are separate "instances" of the sum module.
+sum1 === sum2;
+// > false (Both sum modules are separate "instances" of the sum module.)
 ```
 
 Example in a test:
@@ -225,9 +229,9 @@ Example:
 
 ```js
 const video = {
-  play: function () {
+  play() {
     return true;
-  }
+  },
 };
 
 module.exports = video;
@@ -238,7 +242,7 @@ Example test:
 const video = require('./video');
 
 test('plays video', () => {
-  const spy = jest.spyOn(video, 'play')
+  const spy = jest.spyOn(video, 'play');
   const isPlaying = video.play();
 
   expect(spy).toHaveBeenCalled();

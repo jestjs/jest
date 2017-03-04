@@ -13,7 +13,7 @@ or through the `--config <path/to/json>` option. If you'd like to use
 your `package.json` to store Jest's config, the "jest" key should be used on the
 top level so Jest will know how to find your settings:
 
-```js
+```json
 {
   "name": "my-project",
   "jest": {
@@ -24,7 +24,7 @@ top level so Jest will know how to find your settings:
 
 When using the --config option, the JSON file must not contain a "jest" key:
 
-```js
+```json
 {
   "bail": true,
   "verbose": true
@@ -79,8 +79,10 @@ the specified glob pattern, coverage information will be collected for it even i
 this file and it's never required in the test suite.
 
 Example:
-```js
-collectCoverageFrom: ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"]
+```json
+{
+  "collectCoverageFrom" : ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"]
+}
 ```
 
 This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match
@@ -114,7 +116,7 @@ This will be used to configure minimum threshold enforcement for coverage result
 
 For example, statements: 90 implies minimum statement coverage is 90%. statements: -10 implies that no more than 10 uncovered statements are allowed.
 
-```js
+```json
 {
   ...
   "jest": {
@@ -137,7 +139,7 @@ A set of global variables that need to be available in all test environments.
 
 For example, the following would create a global `__DEV__` variable set to `true` in all test environments:
 
-```js
+```json
 {
   ...
   "jest": {
@@ -193,12 +195,14 @@ Use `<rootDir>` string token to refer to [`rootDir`](#rootdir-string) value if y
 Additionally, you can substitute captured regex groups using numbered backreferences.
 
 Example:
-```js
+```json
+{
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\.png$": "<rootDir>/RelativeImageStub.js",
     "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
+}
 ```
 *Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub.*
 
@@ -303,12 +307,14 @@ Example serializer module:
 ```js
 // my-serializer-module
 module.exports = {
-  test: function(val) {
+  print(val, serialize, indent) {
+    return 'Pretty foo: ' + serialize(val.foo);
+  },
+
+  test(val) {
     return val && val.hasOwnProperty('foo');
   },
-  print: function(val, serialize, indent) {
-    return 'Pretty foo: ' + serialize(val.foo);
-  }
+
 };
 ```
 
@@ -317,7 +323,7 @@ module.exports = {
 To use `my-serializer-module` as a serializer, configuration would be as
 follows:
 
-```js
+```json
 {
   ...
   "jest": {
@@ -331,7 +337,10 @@ Finally tests would look as follows:
 ```js
 test(() => {
   const bar = {
-    foo: {x: 1, y: 2}
+    foo: {
+      x: 1,
+      y: 2,
+    },
   };
 
   expect(bar).toMatchSnapshot();
