@@ -31,6 +31,7 @@ Then configure the rules you want to use under the rules section.
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
+    "jest/valid-expect": "error",
   }
 }
 ```
@@ -50,6 +51,7 @@ You can also whitelist the environment variables provided by Jest by doing:
 - [no-disabled-tests](/packages/eslint-plugin-jest/docs/rules/no-disabled-tests.md) - disallow disabled tests.
 - [no-focused-tests](/packages/eslint-plugin-jest/docs/rules/no-focused-tests.md) - disallow focused tests.
 - [no-identical-title](/packages/eslint-plugin-jest/docs/rules/no-identical-title.md) - disallow identical titles.
+- [valid-expect](/packages/eslint-plugin-jest/docs/rules/valid-expect.md) - disallow identical titles.
 
 ## Shareable configurations
 
@@ -72,6 +74,7 @@ The rules enabled in this configuration are:
 - [jest/no-disabled-tests](/packages/eslint-plugin-jest/docs/rules/no-disabled-tests.md)
 - [jest/no-focused-tests](/packages/eslint-plugin-jest/docs/rules/no-focused-tests.md)
 - [jest/no-identical-title](/packages/eslint-plugin-jest/docs/rules/no-identical-title.md)
+- [jest/valid-expect](/packages/eslint-plugin-jest/docs/rules/valid-expect.md)
 
 ## Credit
 

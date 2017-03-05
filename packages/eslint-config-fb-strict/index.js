@@ -41,6 +41,7 @@ module.exports = Object.assign({}, fbjsConfig, {
     'flowtype/object-type-delimiter': [2, 'comma'],
     'jest/no-focused-tests': [2],
     'jest/no-identical-title': [2],
+    'jest/valid-expect': [2],
     'max-len': [2, {
       'code': 80,
       'ignorePattern': maxLenIgnorePattern,

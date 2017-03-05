@@ -32,6 +32,7 @@ export type CallExpression = {|
   type: 'CallExpression',
   arguments: [Literal],
   callee: Identifier | MemberExpression,
+  parent: any,
 |};
 
 export type EslintContext = {|
