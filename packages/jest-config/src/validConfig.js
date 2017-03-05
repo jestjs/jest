@@ -54,6 +54,7 @@ module.exports = ({
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
   name: 'string',
+  noDefaultReporters: false,
   noStackTrace: false,
   notify: false,
   preset: 'react-native',

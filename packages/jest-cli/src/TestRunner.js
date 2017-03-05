@@ -383,6 +383,13 @@ class TestRunner {
       return this._addCustomReporters(config.reporters);
     }
 
+    // if config.noDefaultReporters is true
+    // the function exits sooner, and no default reporters 
+    // are added
+    if (config.noDefaultReporters) {
+      return false;
+    }
+
     this.addReporter(
       config.verbose
         ? new VerboseReporter(config)
