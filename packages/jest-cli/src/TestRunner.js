@@ -414,9 +414,7 @@ class TestRunner {
   /**
    * Add Custom reporters to Jest
    * Custom reporters can be added to Jest using the reporters option in Jest
-   * Config. The format for adding a custom reporter is following:
-   *
-   * Format for the custom reporters
+   * Config. The format for adding a custom reporter is following
    *
    * "reporters": [
    *    ["reporterPath/packageName", { option1: 'fasklj' }], 

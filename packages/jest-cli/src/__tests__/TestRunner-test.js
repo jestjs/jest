@@ -38,6 +38,79 @@ test('.addReporter() .removeReporter()', () => {
   expect(runner._dispatcher._reporters).not.toContain(reporter);
 });
 
+// Checking for the method _addCustomReporters
+// Custom reporters used here are the reporters within the package
+// No extra reporters are included to be used
+describe('_addCustomReporters', () => {
+  // Paths for the given reporters
+  const SUMMARY_REPORTER_PATH = './reporters/SummaryReporter.js';
+  const VERBOSE_REPORTER_PATH = './reporters/VerboseReporter.js';
+  const DEFAULT_REPORTER_PATH = './reporters/DefaultReporter.js';
+
+  // Requiring constructors of the given reporters
+  // to check against the reporters added
+  const summaryReporter = require('.' + SUMMARY_REPORTER_PATH);
+  const verboseReporter = require('.' + VERBOSE_REPORTER_PATH);
+  const defaultReporter = require('.' + DEFAULT_REPORTER_PATH);
+
+  let runner;
+
+  beforeEach(() => {
+    runner = new TestRunner({}, {}, {});
+
+    // Removing all the reporters we previously have in the 
+    // Dispatcher. Helps in removing inconsistencies in Tests.
+    runner._dispatcher._reporters = [];
+  });
+
+  it('adds reporter using 2D Array format', () => {
+    const reporters = [
+      [SUMMARY_REPORTER_PATH, {}],
+    ];
+
+    expect(runner._dispatcher._reporters).toHaveLength(0);
+    expect(runner._dispatcher._reporters[0]).toBeUndefined();
+
+    runner._addCustomReporters(reporters);
+
+    expect(runner._dispatcher._reporters).toHaveLength(1);
+    expect(runner._dispatcher._reporters.pop()).toBeInstanceOf(summaryReporter);
+  });
+
+  it('adds reporter using 2D syntax with no configuration object', () => {
+    const reporters = [
+      [SUMMARY_REPORTER_PATH],
+    ];
+
+    runner._addCustomReporters(reporters);
+
+    expect(runner._dispatcher._reporters).toHaveLength(1);
+    expect(runner._dispatcher._reporters.pop()).toBeInstanceOf(SummaryReporter);
+  });
+
+  it('adds reporter using string syntax (no custom configuration)', () => {
+    const reporters = [
+      SUMMARY_REPORTER_PATH,
+    ];
+    runner._addCustomReporters(reporters);
+
+    expect(runner._dispatcher._reporters).toHaveLength(1);
+    expect(runner._dispatcher._reporters.pop()).toBeInstanceOf(summaryReporter);
+  });
+
+  it('adds two reporters with variable format', () => {
+    const reporters = [
+      VERBOSE_REPORTER_PATH,
+      [DEFAULT_REPORTER_PATH, {}],
+    ];
+    runner._addCustomReporters(reporters);
+
+    expect(runner._dispatcher._reporters).toHaveLength(2);
+
+    expect(runner._dispatcher._reporters[0]).toBeInstanceOf(verboseReporter);
+    expect(runner._dispatcher._reporters[1]).toBeInstanceOf(defaultReporter);
+  });
+});
 
 describe('_createInBandTestRun()', () => {
   test('injects the rawModuleMap to each the worker in watch mode', () => {
