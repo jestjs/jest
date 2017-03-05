@@ -19,6 +19,7 @@ import type {
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
+  PromiseMatcherFn,
 } from 'types/Matchers';
 
 const matchers = require('./matchers');
@@ -41,6 +42,12 @@ class JestAssertionError extends Error {
   matcherResult: any;
 }
 
+const isPromise = obj => {
+  return !!obj &&
+    (typeof obj === 'object' || typeof obj === 'function') &&
+    typeof obj.then === 'function';
+};
+
 if (!global[GLOBAL_STATE]) {
   Object.defineProperty(global, GLOBAL_STATE, {
     value: {
@@ -56,7 +63,12 @@ if (!global[GLOBAL_STATE]) {
 
 const expect: Expect = (actual: any): ExpectationObject => {
   const allMatchers = global[GLOBAL_STATE].matchers;
-  const expectation = {not: {}};
+  const expectation = {
+    not: {},
+    rejects: {not: {}},
+    resolves: {not: {}},
+  };
+
   Object.keys(allMatchers).forEach(name => {
     expectation[name] = makeThrowingMatcher(allMatchers[name], false, actual);
     expectation.not[name] = makeThrowingMatcher(
@@ -65,6 +77,24 @@ const expect: Expect = (actual: any): ExpectationObject => {
       actual,
     );
   });
+
+  const resolveExpectation = {not: {}};
+  Object.keys(allMatchers).forEach(name => {
+    resolveExpectation[name] =
+      makeResolveMatcher(name, allMatchers[name], false, actual);
+    resolveExpectation.not[name] =
+      makeResolveMatcher(name, allMatchers[name], true, actual);
+  });
+  expectation.resolves = resolveExpectation;
+
+  const rejectExpectation = {not: {}};
+  Object.keys(allMatchers).forEach(name => {
+    rejectExpectation[name] =
+      makeRejectMatcher(name, allMatchers[name], false, actual);
+    rejectExpectation.not[name] =
+      makeRejectMatcher(name, allMatchers[name], true, actual);
+  });
+  expectation.rejects = rejectExpectation;
 
   return expectation;
 };
@@ -82,6 +112,65 @@ const getMessage = message => {
     );
   }
   return message;
+};
+
+const makeResolveMatcher = (
+  matcherName: string,
+  matcher: RawMatcherFn,
+  isNot: boolean,
+  actual: Promise<any>
+): PromiseMatcherFn => async (...args) => {
+  const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
+  if (!isPromise(actual)) {
+    throw new JestAssertionError(
+      utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
+      `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
+      utils.printWithType('Received', actual, utils.printReceived),
+    );
+  }
+
+  let result;
+  try {
+    result = await actual;
+  } catch (e) {
+    throw new JestAssertionError(
+      utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
+      `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+      'instead it rejected to value\n' +
+      `  ${utils.printReceived(result)}`
+    );
+  }
+  return makeThrowingMatcher(matcher, isNot, result)(...args);
+};
+
+const makeRejectMatcher = (
+  matcherName: string,
+  matcher: RawMatcherFn,
+  isNot: boolean,
+  actual: Promise<any>
+): PromiseMatcherFn => async (...args) => {
+  const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
+  if (!isPromise(actual)) {
+    throw new JestAssertionError(
+      utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
+      `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
+      utils.printWithType('Received', actual, utils.printReceived),
+    );
+  }
+
+  let result;
+  try {
+    result = await actual;
+  } catch (e) {
+    return makeThrowingMatcher(matcher, isNot, e)(...args);
+  }
+
+  throw new JestAssertionError(
+    utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
+    `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+    'instead it resolved to value\n' +
+    `  ${utils.printReceived(result)}`
+  );
 };
 
 const makeThrowingMatcher = (
