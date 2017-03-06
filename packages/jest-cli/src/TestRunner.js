@@ -380,21 +380,15 @@ class TestRunner {
     const config = this._config;
 
     if (config.reporters) {
-      return this._addCustomReporters(config.reporters);
+      this._addCustomReporters(config.reporters);
     }
 
-    // if config.noDefaultReporters is true
-    // the function exits sooner, and no default reporters 
-    // are added
-    if (config.noDefaultReporters) {
-      return false;
+    // Default Reporters are setup when
+    // noDefaultReporters is false, which is false by default
+    // and can be set to true in configuration.
+    if (!config.noDefaultReporters) {
+      this._setupDefaultReporters();
     }
-
-    this.addReporter(
-      config.verbose
-        ? new VerboseReporter(config)
-        : new DefaultReporter(),
-    );
 
     if (config.collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
@@ -403,12 +397,25 @@ class TestRunner {
       this.addReporter(new CoverageReporter());
     }
 
-    this.addReporter(new SummaryReporter());
     if (config.notify) {
       this.addReporter(new NotifyReporter(this._startRun));
     }
+  }
 
-    return undefined;
+  /**
+   * _setupDefaultReporters
+   * Method for setting up the default reporters
+   */
+  _setupDefaultReporters() {
+    const config = this._config;
+
+    this.addReporter(
+      config.verbose
+        ? new VerboseReporter(config)
+        : new DefaultReporter()
+    );
+
+    this.addReporter(new SummaryReporter());
   }
 
   /**
