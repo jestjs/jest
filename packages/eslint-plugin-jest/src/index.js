@@ -17,6 +17,7 @@ module.exports = {
         'jest/no-disabled-tests': 'warn',
         'jest/no-focused-tests': 'error',
         'jest/no-identical-title': 'error',
+        'jest/valid-expect': 'error',
       },
     },
   },
@@ -46,5 +47,6 @@ module.exports = {
     'no-disabled-tests': require('./rules/no-disabled-tests'),
     'no-focused-tests': require('./rules/no-focused-tests'),
     'no-identical-title': require('./rules/no-identical-title'),
+    'valid-expect': require('./rules/valid-expect'),
   },
 };

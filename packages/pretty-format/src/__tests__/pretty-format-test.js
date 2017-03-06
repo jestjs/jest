@@ -234,8 +234,8 @@ describe('prettyFormat()', () => {
   });
 
   it('prints a string with escapes', () => {
-    expect(prettyFormat('\"-\"'), '"\\"-\\""');
-    expect(prettyFormat('\\ \\\\'), '"\\\\ \\\\\\\\"');
+    expect(prettyFormat('\"-\"')).toEqual('"\\"-\\""');
+    expect(prettyFormat('\\ \\\\')).toEqual('"\\\\ \\\\\\\\"');
   });
 
   it('prints a symbol', () => {
