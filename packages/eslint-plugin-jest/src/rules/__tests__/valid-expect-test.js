@@ -85,5 +85,13 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
         },
       ],
     },
+    {
+      code: 'expect(true).nope.toBeDefined;',
+      errors: [
+        {
+          message: '"nope" is not a valid property of expect.',
+        },
+      ],
+    },
   ],
 });

@@ -42,12 +42,19 @@ module.exports = (context: EslintContext) => {
           let propertyName = node.parent.property.name;
           let grandParentType = node.parent.parent.type;
 
-          // `not` is used, get the next property
-          if (
-            propertyName === 'not' && grandParentType === 'MemberExpression'
-          ) {
-            propertyName = node.parent.parent.property.name;
-            grandParentType = node.parent.parent.parent.type;
+          // a property is accessed, get the next node
+          if (grandParentType === 'MemberExpression') {
+            // `not` is used, just get the next one
+            if (propertyName === 'not') {
+              propertyName = node.parent.parent.property.name;
+              grandParentType = node.parent.parent.parent.type;
+            } else {
+              // only `not` is allowed
+              context.report({
+                message: `"${propertyName}" is not a valid property of expect.`,
+                node,
+              });
+            }
           }
 
           // matcher was not called
