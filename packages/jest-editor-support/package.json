@@ -8,7 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "babylon": "^6.13.0"
+    "babylon": "^6.14.1"
   },
   "typings": "index.d.ts"
 }
