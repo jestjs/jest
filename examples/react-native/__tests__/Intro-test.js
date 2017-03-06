@@ -30,7 +30,7 @@ it('renders the Image component', done => {
   const Image = require('Image');
   Image.getSize('path.jpg', (width, height) => {
     const tree = renderer.create(
-      <Image style={{width, height}} />
+      <Image style={{height, width}} />
     ).toJSON();
     expect(tree).toMatchSnapshot();
     done();
@@ -59,7 +59,7 @@ it('renders the ListView component', () => {
   const tree = renderer.create(
     <ListView
       dataSource={dataSource}
-      renderRow={(rowData) => <Text>{rowData}</Text>}
+      renderRow={rowData => <Text>{rowData}</Text>}
     />
   ).toJSON();
   expect(tree).toMatchSnapshot();
