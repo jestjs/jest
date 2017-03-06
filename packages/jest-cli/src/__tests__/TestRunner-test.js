@@ -38,6 +38,25 @@ test('.addReporter() .removeReporter()', () => {
   expect(runner._dispatcher._reporters).not.toContain(reporter);
 });
 
+describe('noDefaultReporters option', () => {
+  let runner;
+  
+  test('does not add reporters if true', () => {
+    runner = new TestRunner({}, {noDefaultReporters: true}, {});
+    expect(runner._dispatcher._reporters).toHaveLength(0);
+  });
+
+  test('adds reporters if undefined', () => {
+    runner = new TestRunner({}, {}, {});
+    expect(runner._dispatcher._reporters).toHaveLength(2);
+  });
+
+  test('adds reporters if false', () => {
+    runner = new TestRunner({}, {noDefaultReporters: false}, {});
+    expect(runner._dispatcher._reporters).toHaveLength(2);
+  });
+});
+
 // Checking for the method _addCustomReporters
 // Custom reporters used here are the reporters within the package
 // No extra reporters are included to be used
@@ -56,11 +75,7 @@ describe('_addCustomReporters', () => {
   let runner;
 
   beforeEach(() => {
-    runner = new TestRunner({}, {}, {});
-
-    // Removing all the reporters we previously have in the 
-    // Dispatcher. Helps in removing inconsistencies in Tests.
-    runner._dispatcher._reporters = [];
+    runner = new TestRunner({}, {noDefaultReporters: true}, {});
   });
 
   test('adds reporter using 2D Array format', () => {
@@ -175,3 +190,4 @@ describe('_createInBandTestRun()', () => {
     });
   });
 });
+
