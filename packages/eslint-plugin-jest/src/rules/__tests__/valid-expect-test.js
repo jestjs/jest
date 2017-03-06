@@ -8,11 +8,6 @@
  * @flow
  */
 
-/*
- * This implementation is ported from from eslint-plugin-jasmine.
- * MIT license, Tom Vincent.
- */
-
 /* eslint-disable sort-keys */
 
 'use strict';
