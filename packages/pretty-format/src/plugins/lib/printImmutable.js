@@ -13,7 +13,7 @@
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
 
-const addKey = (isMap: boolean, key: any) => isMap ? (key + ': ') : '';
+const addKey = (isMap: boolean, key: any) => isMap ? key + ': ' : '';
 
 const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
   length > 0 ? edgeSpacing : '';
@@ -26,17 +26,19 @@ const printImmutable = (
   colors: Object,
   immutableDataStructureName: string,
   isMap: boolean,
-) : string => {
+): string => {
   const [openTag, closeTag] = isMap ? ['{', '}'] : ['[', ']'];
-  let result = IMMUTABLE_NAMESPACE + immutableDataStructureName +
-    SPACE + openTag + opts.edgeSpacing;
+  let result = IMMUTABLE_NAMESPACE +
+    immutableDataStructureName +
+    SPACE +
+    openTag +
+    opts.edgeSpacing;
 
   const immutableArray = [];
   val.forEach((item, key) =>
     immutableArray.push(
-      indent(addKey(isMap, key) + print(item, print, indent, opts, colors))
-    ),
-  );
+      indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
+    ));
 
   result += immutableArray.join(',' + opts.spacing);
   if (!opts.min && immutableArray.length > 0) {

@@ -7,6 +7,7 @@
  *
  * @flow
  */
+'use strict';
 
 export type Colors = Object;
 export type Indent = (string) => string;

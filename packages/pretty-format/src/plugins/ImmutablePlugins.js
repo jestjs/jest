@@ -12,9 +12,9 @@
 
 module.exports = [
   require('./ImmutableOrderedSet'),
-  require('./ImmutableList'),
-  require('./ImmutableMap'),
   require('./ImmutableOrderedMap'),
+  require('./ImmutableList'),
   require('./ImmutableSet'),
+  require('./ImmutableMap'),
   require('./ImmutableStack'),
 ];

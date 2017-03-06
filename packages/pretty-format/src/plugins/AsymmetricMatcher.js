@@ -20,7 +20,7 @@ const printAsymmetricMatcher = (
   print: Function,
   indent: Function,
   opts: Object,
-  colors: Object
+  colors: Object,
 ) => {
   const stringedValue = val.toString();
 

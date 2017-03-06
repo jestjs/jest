@@ -46,7 +46,7 @@
     "jest-coverage": "yarn run jest -- --coverage",
     "lint": "eslint . --cache && yarn run lint-docs",
     "lint-docs": "eslint --config ./.eslintrc-docs.json --no-ignore --ext md ./docs/*.md",
-    "prettier": "prettier --write 'packages/*/src/**.js' --single-quote --trailing-comma=all --bracket-spacing=false",
+    "prettier": "prettier --write 'packages/*/src/**/*.js' --single-quote --trailing-comma=all --bracket-spacing=false",
     "postinstall": "node ./scripts/postinstall.js && node ./scripts/build.js && (cd packages/eslint-plugin-jest && yarn link) && yarn link eslint-plugin-jest",
     "publish": "yarn run build-clean && yarn run build && lerna publish",
     "test-ci": "yarn run typecheck && yarn run lint && yarn run build && yarn run jest-coverage -- -i && yarn run test-examples && node scripts/mapCoverage.js && codecov",
