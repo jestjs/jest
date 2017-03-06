@@ -63,7 +63,7 @@ describe('_addCustomReporters', () => {
     runner._dispatcher._reporters = [];
   });
 
-  it('adds reporter using 2D Array format', () => {
+  test('adds reporter using 2D Array format', () => {
     const reporters = [
       [SUMMARY_REPORTER_PATH, {}],
     ];
@@ -77,7 +77,7 @@ describe('_addCustomReporters', () => {
     expect(runner._dispatcher._reporters.pop()).toBeInstanceOf(summaryReporter);
   });
 
-  it('adds reporter using 2D syntax with no configuration object', () => {
+  test('adds reporter using 2D syntax with no configuration object', () => {
     const reporters = [
       [SUMMARY_REPORTER_PATH],
     ];
@@ -88,17 +88,18 @@ describe('_addCustomReporters', () => {
     expect(runner._dispatcher._reporters.pop()).toBeInstanceOf(SummaryReporter);
   });
 
-  it('adds reporter using string syntax (no custom configuration)', () => {
+  test('adds reporter using string syntax (no custom configuration)', () => {
     const reporters = [
       SUMMARY_REPORTER_PATH,
     ];
+
     runner._addCustomReporters(reporters);
 
     expect(runner._dispatcher._reporters).toHaveLength(1);
     expect(runner._dispatcher._reporters.pop()).toBeInstanceOf(summaryReporter);
   });
 
-  it('adds two reporters with variable format', () => {
+  test('adds two reporters with variable format', () => {
     const reporters = [
       VERBOSE_REPORTER_PATH,
       [DEFAULT_REPORTER_PATH, {}],
@@ -109,6 +110,26 @@ describe('_addCustomReporters', () => {
 
     expect(runner._dispatcher._reporters[0]).toBeInstanceOf(verboseReporter);
     expect(runner._dispatcher._reporters[1]).toBeInstanceOf(defaultReporter);
+  });
+
+  test('throws on invalid file path', () => {
+    const reporters = [
+      ['ohthisisnotgoingtobearealpath.sadfslj', {}],
+    ];
+
+    const addInvalidReporters = () => {
+      runner._addCustomReporters(reporters);    
+    };
+
+    expect(addInvalidReporters).toThrow();
+    expect(addInvalidReporters).toThrow(/Cannot find module/);
+    expect(runner._dispatcher._reporters).toHaveLength(0);
+  });
+
+  test('throws on invalid argument to reporter', () => {
+    expect(() => {
+      runner._addCustomReporters('This should be an array obviously');
+    }).toThrow();
   });
 });
 
