@@ -108,10 +108,9 @@ class TestRunner {
     // fastest results.
     try {
       if (this._config.cache) {
-        this._testPerformanceCache = JSON.parse(fs.readFileSync(
-          this._getTestPerformanceCachePath(),
-          'utf8',
-        ));
+        this._testPerformanceCache = JSON.parse(
+          fs.readFileSync(this._getTestPerformanceCachePath(), 'utf8'),
+        );
       } else {
         this._testPerformanceCache = {};
       }
@@ -172,8 +171,9 @@ class TestRunner {
     const config = this._config;
     const {testPaths, timings} = this._sortTests(paths);
     const aggregatedResults = createAggregatedResults(testPaths.length);
-    const estimatedTime =
-      Math.ceil(getEstimatedTime(timings, this._options.maxWorkers) / 1000);
+    const estimatedTime = Math.ceil(
+      getEstimatedTime(timings, this._options.maxWorkers) / 1000,
+    );
 
     const onResult = (testPath: Path, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
@@ -188,11 +188,7 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
-        config,
-        testResult,
-        aggregatedResults,
-      );
+      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
       this._bailIfNeeded(aggregatedResults, watcher);
     };
 
@@ -203,11 +199,7 @@ class TestRunner {
       const testResult = buildFailureTestResult(testPath, error);
       testResult.failureMessage = formatExecError(testResult, config, testPath);
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(
-        config,
-        testResult,
-        aggregatedResults,
-      );
+      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
     };
 
     // Run in band if we only have one test or one worker available.
@@ -223,8 +215,10 @@ class TestRunner {
     );
 
     const updateSnapshotState = () => {
-      const status =
-        snapshot.cleanup(this._hasteContext.hasteFS, config.updateSnapshot);
+      const status = snapshot.cleanup(
+        this._hasteContext.hasteFS,
+        config.updateSnapshot,
+      );
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
       aggregatedResults.snapshot.failure = !!(
@@ -238,19 +232,14 @@ class TestRunner {
 
     const runInBand = shouldRunInBand();
 
-    this._dispatcher.onRunStart(
-      config,
-      aggregatedResults,
-      {
-        estimatedTime,
-        showStatus: !runInBand,
-      },
-    );
+    this._dispatcher.onRunStart(config, aggregatedResults, {
+      estimatedTime,
+      showStatus: !runInBand,
+    });
 
-    const testRun =
-      runInBand
-        ? this._createInBandTestRun(testPaths, watcher, onResult, onFailure)
-        : this._createParallelTestRun(testPaths, watcher, onResult, onFailure);
+    const testRun = runInBand
+      ? this._createInBandTestRun(testPaths, watcher, onResult, onFailure)
+      : this._createParallelTestRun(testPaths, watcher, onResult, onFailure);
 
     return testRun
       .catch(error => {
@@ -348,7 +337,7 @@ class TestRunner {
       if (err.type === 'ProcessTerminatedError') {
         console.error(
           'A worker process has quit unexpectedly! ' +
-          'Most likely this an initialization error.',
+            'Most likely this an initialization error.',
         );
         process.exit(1);
       }
@@ -370,19 +359,13 @@ class TestRunner {
 
     const cleanup = () => workerFarm.end(farm);
 
-    return Promise.race([
-      runAllTests,
-      onInterrupt,
-    ]).then(cleanup, cleanup);
+    return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
   _setupReporters() {
     const config = this._config;
-
-    if (config.reporters) {
-      this._addCustomReporters(config.reporters);
-    }
-
+    
+    
     // Default Reporters are setup when
     // noDefaultReporters is false, which is false by default
     // and can be set to true in configuration.
@@ -584,6 +567,7 @@ const buildFailureTestResult = (
       unmatched: 0,
       updated: 0,
     },
+    sourceMaps: {},
     testExecError: err,
     testFilePath: testPath,
     testResults: [],
@@ -614,30 +598,17 @@ class ReporterDispatcher {
 
   onTestResult(config, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(
-        config,
-        testResult,
-        results,
-        this._runnerContext,
-      ),
-    );
+      reporter.onTestResult(config, testResult, results, this._runnerContext));
   }
 
   onTestStart(config, path) {
     this._reporters.forEach(reporter =>
-      reporter.onTestStart(config, path, this._runnerContext),
-    );
+      reporter.onTestStart(config, path, this._runnerContext));
   }
 
   onRunStart(config, results, options) {
-    this._reporters.forEach(
-      reporter => reporter.onRunStart(
-        config,
-        results,
-        this._runnerContext,
-        options,
-      ),
-    );
+    this._reporters.forEach(reporter =>
+      reporter.onRunStart(config, results, this._runnerContext, options));
   }
 
   onRunComplete(config, results) {

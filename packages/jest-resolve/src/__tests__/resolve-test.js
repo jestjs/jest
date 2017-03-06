@@ -10,6 +10,7 @@
 
 'use strict';
 
+const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');
 
@@ -35,5 +36,36 @@ describe('isCoreModule', () => {
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('not-a-core-module');
     expect(isCore).toEqual(false);
+  });
+});
+
+describe('findNodeModule', () => {
+  it('is possible to override the default resolver', () => {
+    const nodePaths = process.env.NODE_PATH
+      ? process.env.NODE_PATH.split(path.delimiter)
+      : null;
+
+    jest.mock('../__mocks__/userResolver');
+    const userResolver = require('../__mocks__/userResolver');
+    userResolver.mockImplementation(() => 'module');
+
+    const newPath = Resolver.findNodeModule('test', {
+      basedir: '/',
+      browser: true,
+      extensions: ['js'],
+      moduleDirectory: ['node_modules'],
+      paths: ['/something'],
+      resolver: require.resolve('../__mocks__/userResolver'),
+    });
+
+    expect(newPath).toBe('module');
+    expect(userResolver.mock.calls[0][0]).toBe('test');
+    expect(userResolver.mock.calls[0][1]).toEqual({
+      basedir: '/',
+      browser: true,
+      extensions: ['js'],
+      moduleDirectory: ['node_modules'],
+      paths: (nodePaths || []).concat(['/something']),
+    });
   });
 });

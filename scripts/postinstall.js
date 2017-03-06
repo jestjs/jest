@@ -13,10 +13,7 @@ const runCommand = require('./_runCommand');
 
 console.log(`Setting up Jest's development environment...`);
 const lerna = isWindows ? 'lerna.cmd' : 'lerna';
-const lernaCmd = path.resolve(
-  __dirname,
-  '../node_modules/.bin/' + lerna
-);
-const args = 'bootstrap';
+const lernaCmd = path.resolve(__dirname, '../node_modules/.bin/' + lerna);
+const args = process.env.CI ? 'bootstrap --concurrency=1' : 'bootstrap';
 
 runCommand(lernaCmd, args, path.resolve(__dirname, '..'));

@@ -115,7 +115,7 @@ import foo from './foo';
 In ES6, import statements get hoisted before all other
 
 ```js
-var foo = require('foo');
+const foo = require('foo');
 jest.dontMock('foo'); // Oops!
 ```
 

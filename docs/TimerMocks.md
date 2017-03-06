@@ -153,21 +153,21 @@ module.exports = timerGame;
 
 ```javascript
 it('calls the callback after 1 second via runTimersToTime', () => {
-    const timerGame = require('../timerGame');
-    const callback = jest.fn();
+  const timerGame = require('../timerGame');
+  const callback = jest.fn();
 
-    timerGame(callback);
+  timerGame(callback);
 
-    // At this point in time, the callback should not have been called yet
-    expect(callback).not.toBeCalled();
+  // At this point in time, the callback should not have been called yet
+  expect(callback).not.toBeCalled();
 
-    // Fast-forward until all timers have been executed
-    jest.runTimersToTime(1000);
+  // Fast-forward until all timers have been executed
+  jest.runTimersToTime(1000);
 
-    // Now our callback should have been called!
-    expect(callback).toBeCalled();
-    expect(callback.mock.calls.length).toBe(1);
-  });
+  // Now our callback should have been called!
+  expect(callback).toBeCalled();
+  expect(callback.mock.calls.length).toBe(1);
+});
 ```
 
 Lastly, it may occasionally be useful in some tests to be able to clear all of

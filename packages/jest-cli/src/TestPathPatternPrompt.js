@@ -106,8 +106,10 @@ module.exports = (
           );
         }
       } else {
-        // eslint-disable-next-line max-len
-        pipe.write(`\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`);
+        pipe.write(
+          // eslint-disable-next-line max-len
+          `\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`,
+        );
       }
 
       pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));

@@ -45,6 +45,7 @@ const check = (argv: Object) => {
 };
 
 const usage = 'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
+const docs = 'Documentation: https://facebook.github.io/jest/';
 
 const options = {
   bail: {
@@ -150,6 +151,12 @@ const options = {
     description:
       'Logs the heap usage after every test. Useful to debug memory ' +
       'leaks. Use together with `--runInBand` and `--expose-gc` in node.',
+    type: 'boolean',
+  },
+  mapCoverage: {
+    description:
+      'Maps code coverage reports against original source code when ' +
+      'transformers supply source maps.',
     type: 'boolean',
   },
   maxWorkers: {
@@ -280,6 +287,7 @@ const options = {
 
 module.exports = {
   check,
+  docs,
   options,
   usage,
 };

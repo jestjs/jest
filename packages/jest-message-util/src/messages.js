@@ -106,11 +106,7 @@ const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
   });
 };
 
-const formatPaths = (
-  config: StackTraceOptions,
-  relativeTestPath,
-  line,
-) => {
+const formatPaths = (config: StackTraceOptions, relativeTestPath, line) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -120,11 +116,9 @@ const formatPaths = (
   let filePath = path.relative(config.rootDir, match[2]);
   // highlight paths from the current test file
   if (
-    (
-      config.testMatch &&
+    (config.testMatch &&
       config.testMatch.length &&
-      micromatch(filePath, config.testMatch)
-    ) ||
+      micromatch(filePath, config.testMatch)) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);
@@ -148,7 +142,8 @@ const formatStackTrace = (
     ? path.relative(config.rootDir, testPath)
     : null;
   lines = removeInternalStackEntries(lines, config);
-  return lines.map(trimPaths)
+  return lines
+    .map(trimPaths)
     .map(formatPaths.bind(null, config, relativeTestPath))
     .map(line => STACK_INDENT + line)
     .join('\n');

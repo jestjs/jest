@@ -24,6 +24,7 @@ function run(argv?: Object, root?: Path) {
     .help()
     .alias('help', 'h')
     .options(args.options)
+    .epilogue(args.docs)
     .check(args.check)
     .argv;
 

@@ -19,13 +19,13 @@ If you have an existing application you'll need to install a few packages to mak
 
 Run
 
-```javascript
+```bash
 npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
 
-```javascript
+```json
 // package.json
   "dependencies": {
     "react": "<current-version>",
@@ -43,7 +43,7 @@ Your `package.json` should look something like this (where `<current-version>` i
   }
 ```
 
-```javascript
+```json
 // .babelrc
 {
   "presets": ["es2015", "react"]
@@ -61,8 +61,8 @@ Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a Link comp
 import React from 'react';
 
 const STATUS = {
-  NORMAL: 'normal',
   HOVERED: 'hovered',
+  NORMAL: 'normal',
 };
 
 export default class Link extends React.Component {

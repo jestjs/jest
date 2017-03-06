@@ -16,7 +16,7 @@ Get a deeper insight into testing a working example React Native app reading the
 ## Setup
 
 Starting from react-native version 0.38, a Jest setup is included by default when running `react-native init`. The following configuration should be automatically added to your package.json file:
-```javascript
+```json
 // package.json
   "scripts": {
     "test": "jest"
@@ -40,25 +40,25 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  instructions: {
+    color: '#333333',
+    marginBottom: 5,
+    textAlign: 'center',
   },
   welcome: {
     fontSize: 20,
-    textAlign: 'center',
     margin: 10,
-  },
-  instructions: {
     textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 
@@ -154,7 +154,7 @@ The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by whitelisting modules other than react-native:
 
-```js
+```json
 "transformIgnorePatterns": [
   "node_modules/(?!react-native|my-project|react-native-button)"
 ]
@@ -168,7 +168,7 @@ If you'd like to provide additional configuration for every test file, the [`set
 
 The [`moduleNameMapper`](configuration.html#modulenamemapper-object-string-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
-```js
+```json
 "moduleNameMapper": {
   "my-module.js": "<rootDir>/path/to/my-module.js"
 }
@@ -230,7 +230,7 @@ import renderer from 'react-test-renderer';
 ### `@providesModule`
 If you'd like to use Facebook's `@providesModule` module system through an npm package, the default haste config option must be overwritten and npm modules must be added to `providesModuleNodeModules`:
 
-```js
+```json
 "haste": {
   "defaultPlatform": "ios",
   "platforms": ["android", "ios"],

@@ -11,12 +11,10 @@
 'use strict';
 
 import type {Path} from 'types/Config';
-import type {ModuleMap} from 'jest-haste-map';
+import type {ModuleMap} from 'types/HasteMap';
 
 const nodeModulesPaths = require('resolve/lib/node-modules-paths');
 const path = require('path');
-const resolve = require('resolve');
-const browserResolve = require('browser-resolve');
 const isBuiltinModule = require('is-builtin-module');
 
 type ResolverConfig = {|
@@ -28,6 +26,7 @@ type ResolverConfig = {|
   moduleNameMapper: ?Array<ModuleNameMapperConfig>,
   modulePaths: Array<Path>,
   platforms?: Array<string>,
+  resolver: ?Path,
 |};
 
 type FindNodeModuleConfig = {|
@@ -36,6 +35,7 @@ type FindNodeModuleConfig = {|
   extensions?: Array<string>,
   moduleDirectory?: Array<string>,
   paths?: Array<Path>,
+  resolver?: ?Path,
 |};
 
 type ModuleNameMapperConfig = {|
@@ -51,8 +51,9 @@ export type ResolveModuleConfig = {|
 
 const NATIVE_PLATFORM = 'native';
 
-const nodePaths =
-  (process.env.NODE_PATH ? process.env.NODE_PATH.split(path.delimiter) : null);
+const nodePaths = process.env.NODE_PATH
+  ? process.env.NODE_PATH.split(path.delimiter)
+  : null;
 
 class Resolver {
   _options: ResolverConfig;
@@ -73,6 +74,7 @@ class Resolver {
       moduleNameMapper: options.moduleNameMapper,
       modulePaths: options.modulePaths,
       platforms: options.platforms,
+      resolver: options.resolver,
     };
     this._moduleMap = moduleMap;
     this._moduleIDCache = Object.create(null);
@@ -81,18 +83,18 @@ class Resolver {
   }
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
+    /* $FlowFixMe */
+    const resolver = require(options.resolver || './defaultResolver.js');
     const paths = options.paths;
+
     try {
-      const resv = options.browser ? browserResolve : resolve;
-      return resv.sync(
-        path,
-        {
-          basedir: options.basedir,
-          extensions: options.extensions,
-          moduleDirectory: options.moduleDirectory,
-          paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
-        },
-      );
+      return resolver(path, {
+        basedir: options.basedir,
+        browser: options.browser,
+        extensions: options.extensions,
+        moduleDirectory: options.moduleDirectory,
+        paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
+      });
     } catch (e) {}
     return null;
   }
@@ -133,8 +135,7 @@ class Resolver {
     // node modules (ie. are not relative requires). This enables us to speed
     // up resolution when we build a dependency graph because we don't have
     // to look at modules that may not exist and aren't mocked.
-    const skipResolution =
-      options &&
+    const skipResolution = options &&
       options.skipNodeResolution &&
       !moduleName.includes(path.sep);
 
@@ -145,6 +146,7 @@ class Resolver {
         extensions,
         moduleDirectory,
         paths,
+        resolver: this._options.resolver,
       });
 
       if (module) {
@@ -176,10 +178,7 @@ class Resolver {
   }
 
   isCoreModule(moduleName: string): boolean {
-    return (
-      this._options.hasCoreModules &&
-      isBuiltinModule(moduleName)
-    );
+    return this._options.hasCoreModules && isBuiltinModule(moduleName);
   }
 
   getModule(name: string): ?Path {
@@ -248,8 +247,10 @@ class Resolver {
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
-    const id = (moduleType + sep + (absolutePath ? (absolutePath + sep) : '') +
-      (mockPath ? (mockPath + sep) : ''));
+    const id = moduleType +
+      sep +
+      (absolutePath ? absolutePath + sep : '') +
+      (mockPath ? mockPath + sep : '');
 
     return this._moduleIDCache[key] = id;
   }
@@ -289,10 +290,8 @@ class Resolver {
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
-    return !!(
-      this.getModule(moduleName) ||
-      this.getMockModule(from, moduleName)
-    );
+    return !!(this.getModule(moduleName) ||
+      this.getMockModule(from, moduleName));
   }
 
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
@@ -314,16 +313,14 @@ class Resolver {
               (_, index) => matches[parseInt(index, 10)],
             );
           }
-          return this.getModule(moduleName) || Resolver.findNodeModule(
-            moduleName,
-            {
+          return this.getModule(moduleName) ||
+            Resolver.findNodeModule(moduleName, {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
               moduleDirectory,
               paths,
-            },
-          );
+            });
         }
       }
     }

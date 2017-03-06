@@ -34,14 +34,14 @@ The problem is that the test will complete as soon as `fetchData` completes, bef
 There is an alternate form of `test` that fixes this. Instead of putting the test in a function with an empty argument, use a single argument called `done`. Jest will wait until the `done` callback is called before finishing the test.
 
 ```js
-test('the data is peanut butter', (done) => {
+test('the data is peanut butter', done => {
   function callback(data) {
     expect(data).toBe('peanut butter');
     done();
   }
 
   fetchData(callback);
-})
+});
 ```
 
 If `done()` is never called, the test will fail, which is what you want to happen.
@@ -54,10 +54,10 @@ For example, let's say that `fetchData`, instead of using a callback, returns a 
 
 ```js
 test('the data is peanut butter', () => {
-  return fetchData().then((data) => {
+  return fetchData().then(data => {
     expect(data).toBe('peanut butter');
   });
-})
+});
 ```
 
 Be sure to return the promise - if you omit this `return` statement, your test will complete before `fetchData` completes.
@@ -68,9 +68,9 @@ If your code uses `async` and `await`, you can use these in your tests as well. 
 
 ```js
 test('the data is peanut butter', async () => {
-  let data = await fetchData();
+  const data = await fetchData();
   expect(data).toBe('peanut butter');
-})
+});
 ```
 
 In this case, `async` and `await` are effectively just syntactic sugar for the same logic as the promises example uses.

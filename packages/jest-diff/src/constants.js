@@ -12,11 +12,11 @@
 
 const chalk = require('chalk');
 
-exports.NO_DIFF_MESSAGE =
-  chalk.dim('Compared values have no visual difference.');
+exports.NO_DIFF_MESSAGE = chalk.dim(
+  'Compared values have no visual difference.',
+);
 
-exports.SIMILAR_MESSAGE =
-  chalk.dim(
-    'Compared values serialize to the same structure.\n' +
+exports.SIMILAR_MESSAGE = chalk.dim(
+  'Compared values serialize to the same structure.\n' +
     'Printing internal object structure without calling `toJSON` instead.',
-  );
+);

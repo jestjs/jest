@@ -66,11 +66,11 @@ Object {
 
   ● .assertions() › throws
 
-    Error
-      expect.assertions(2)
+    expect.assertions(2)
+    
+    Expected two assertions to be called but only received one assertion call.
       
-      Expected: two assertions
-      Received: one assertion
+      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -83,11 +83,11 @@ Object {
 
   ● .assertions() › throws on assertion
 
-    Error
-      expect.assertions(0)
+    expect.assertions(0)
+    
+    Expected zero assertions to be called but only received one assertion call.
       
-      Expected: zero assertions
-      Received: one assertion
+      at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
 
   .assertions()
     ✕ throws

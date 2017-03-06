@@ -41,7 +41,7 @@ test('adds 1 + 2 to equal 3', () => {
 
 Add the following section to your `package.json`:
 
-```js
+```json
 "scripts": {
   "test": "jest"
 }
@@ -58,6 +58,18 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://facebook.github.io/jest/docs/using-matchers.html).
 
+## Running from command line
+
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `npm install -g jest`) with variety of useful options.
+
+Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
+
+```bash
+jest my-test --notify --config=config.json
+```
+
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://facebook.github.io/jest/docs/cli.html) page.
+
 ## Additional Configuration
 
 ### Using Babel
@@ -72,7 +84,7 @@ npm install --save-dev babel-jest regenerator-runtime
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-es2015`](https://babeljs.io/docs/plugins/preset-es2015/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
 
-```js
+```json
 {
   "presets": ["es2015", "react"]
 }

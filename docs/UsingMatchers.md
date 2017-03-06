@@ -17,7 +17,7 @@ The simplest way to test a value is with exact equality.
 ```js
 test('two plus two is four', () => {
   expect(2 + 2).toBe(4);
-})
+});
 ```
 
 In this code, `expect(2 + 2)` returns an "expectation" object. You typically won't do much with these expectation objects except call matchers on them. In this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.
@@ -26,10 +26,10 @@ In this code, `expect(2 + 2)` returns an "expectation" object. You typically won
 
 ```js
 test('object assignment', () => {
-  let data = { one: 1 };
+  const data = {one: 1};
   data['two'] = 2;
-  expect(data).toEqual({ one: 1, two: 2 });
-})
+  expect(data).toEqual({one: 1, two: 2});
+});
 ```
 
 `toEqual` recursively checks every field of an object or array.
@@ -43,7 +43,7 @@ test('adding positive numbers is not zero', () => {
       expect(a + b).not.toBe(0);
     }
   }
-})
+});
 ```
 
 ### Truthiness
@@ -60,7 +60,7 @@ For example:
 
 ```js
 test('null', () => {
-  let n = null;
+  const n = null;
   expect(n).toBeNull();
   expect(n).toBeDefined();
   expect(n).not.toBeUndefined();
@@ -69,7 +69,7 @@ test('null', () => {
 });
 
 test('zero', () => {
-  let z = 0;
+  const z = 0;
   expect(z).not.toBeNull();
   expect(z).toBeDefined();
   expect(z).not.toBeUndefined();
@@ -86,7 +86,7 @@ Most ways of comparing numbers have matcher equivalents.
 
 ```js
 test('two plus two', () => {
-  let value = 2 + 2;
+  const value = 2 + 2;
   expect(value).toBeGreaterThan(3);
   expect(value).toBeGreaterThanOrEqual(3.5);
   expect(value).toBeLessThan(5);
@@ -102,10 +102,10 @@ For floating point equality, use `toBeCloseTo` instead of `toEqual`, because you
 
 ```js
 test('adding floating point numbers', () => {
-  let value = 0.1 + 0.2;
+  const value = 0.1 + 0.2;
   expect(value).not.toBe(0.3);    // It isn't! Because rounding error
   expect(value).toBeCloseTo(0.3); // This works.
-})
+});
 ```
 
 ### Strings
@@ -119,7 +119,7 @@ test('there is no I in team', () => {
 
 test('but there is a "stop" in Christoph', () => {
   expect('Christoph').toMatch(/stop/);
-})
+});
 ```
 
 ### Arrays
@@ -127,11 +127,17 @@ test('but there is a "stop" in Christoph', () => {
 You can check if an array contains a particular item using `toContain`:
 
 ```js
-let shoppingList = ['diapers', 'kleenex', 'trash bags', 'paper towels', 'beer'];
+const shoppingList = [
+  'diapers',
+  'kleenex', 
+  'trash bags', 
+  'paper towels', 
+  'beer',
+];
 
 test('the shopping list has beer on it', () => {
   expect(shoppingList).toContain('beer');
-})
+});
 ```
 
 ### Exceptions
@@ -150,7 +156,7 @@ test('compiling android goes as expected', () => {
   // You can also use the exact error message or a regexp
   expect(compileAndroidCode).toThrow('you are using the wrong JDK');
   expect(compileAndroidCode).toThrow(/JDK/);
-})
+});
 ```
 
 ### And More

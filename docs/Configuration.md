@@ -13,7 +13,7 @@ or through the `--config <path/to/json>` option. If you'd like to use
 your `package.json` to store Jest's config, the "jest" key should be used on the
 top level so Jest will know how to find your settings:
 
-```js
+```json
 {
   "name": "my-project",
   "jest": {
@@ -24,7 +24,7 @@ top level so Jest will know how to find your settings:
 
 When using the --config option, the JSON file must not contain a "jest" key:
 
-```js
+```json
 {
   "bail": true,
   "verbose": true
@@ -79,8 +79,10 @@ the specified glob pattern, coverage information will be collected for it even i
 this file and it's never required in the test suite.
 
 Example:
-```js
-collectCoverageFrom: ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"]
+```json
+{
+  "collectCoverageFrom" : ["**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"]
+}
 ```
 
 This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match
@@ -114,7 +116,7 @@ This will be used to configure minimum threshold enforcement for coverage result
 
 For example, statements: 90 implies minimum statement coverage is 90%. statements: -10 implies that no more than 10 uncovered statements are allowed.
 
-```js
+```json
 {
   ...
   "jest": {
@@ -137,7 +139,7 @@ A set of global variables that need to be available in all test environments.
 
 For example, the following would create a global `__DEV__` variable set to `true` in all test environments:
 
-```js
+```json
 {
   ...
   "jest": {
@@ -149,6 +151,23 @@ For example, the following would create a global `__DEV__` variable set to `true
 ```
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will *not* be persisted across test runs for other test files.
+
+### `mapCoverage` [boolean]
+
+##### available in Jest **20.0.0+**
+
+Default: `false`
+
+If you have [transformers](#transform-object-string-string) configured that emit source maps, Jest will use them to try and map code coverage against the original source code when writing [reports](#coveragereporters-array-string) and checking [thresholds](#coveragethreshold-object). This is done on a best-effort basis as some compile-to-JavaScript languages may provide more accurate source maps than others. This can also be resource-intensive. If Jest is taking a long time to calculate coverage at the end of a test run, try setting this option to `false`.
+
+Both inline source maps and source maps returned directly from a transformer are supported. Source map URLs are not supported because Jest may not be able to locate them. To return source maps from a transformer, the `process` function can return an object like the following. The `map` property may either be the source map object, or the source map object as a JSON string.
+
+```js
+return {
+  code: 'the code',
+  map: 'the source map',
+};
+```
 
 ### `moduleFileExtensions` [array<string>]
 Default: `["js", "json", "jsx", "node"]`
@@ -176,12 +195,14 @@ Use `<rootDir>` string token to refer to [`rootDir`](#rootdir-string) value if y
 Additionally, you can substitute captured regex groups using numbered backreferences.
 
 Example:
-```js
+```json
+{
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\.png$": "<rootDir>/RelativeImageStub.js",
     "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
   }
+}
 ```
 *Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub.*
 
@@ -222,6 +243,23 @@ Automatically reset mock state between every test. Equivalent to calling `jest.r
 Default: `false`
 
 If enabled, the module registry for every test file will be reset before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
+
+### `resolver` [string]
+Default: `undefined`
+
+This option allows the use of a custom resolver. This resolver must be a node module that exports a function expecting a string as the first argument for the path to resolve and an object with the following structure as the second argument:
+
+```
+{
+  "basedir": string,
+  "browser": bool,
+  "extensions": [string],
+  "moduleDirectory": [string],
+  "paths": [string]
+}
+```
+
+The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
 ### `rootDir` [string]
 Default: The root of the directory containing the `package.json` *or* the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
@@ -269,12 +307,14 @@ Example serializer module:
 ```js
 // my-serializer-module
 module.exports = {
-  test: function(val) {
+  print(val, serialize, indent) {
+    return 'Pretty foo: ' + serialize(val.foo);
+  },
+
+  test(val) {
     return val && val.hasOwnProperty('foo');
   },
-  print: function(val, serialize, indent) {
-    return 'Pretty foo: ' + serialize(val.foo);
-  }
+
 };
 ```
 
@@ -283,7 +323,7 @@ module.exports = {
 To use `my-serializer-module` as a serializer, configuration would be as
 follows:
 
-```js
+```json
 {
   ...
   "jest": {
@@ -297,7 +337,10 @@ Finally tests would look as follows:
 ```js
 test(() => {
   const bar = {
-    foo: {x: 1, y: 2}
+    foo: {
+      x: 1,
+      y: 2,
+    },
   };
 
   expect(bar).toMatchSnapshot();
@@ -318,7 +361,18 @@ To make a dependency explicit instead of implicit, you can call [`expect.addSnap
 ### `testEnvironment` [string]
 Default: `"jsdom"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. Combining the test environments is currently not possible but the `jsdom` environment can be seen as a superset of the `node` one.
+The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. If some tests require another environment, you can add a `@jest-environment` docblock.
+
+```js
+/**
+ * @jest-environment jsdom
+ */
+
+test('use jsdom in this test file', () => {
+  const element = document.createElement('div');
+  expect(element).not.toBeNull();
+});
+```
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `runScript` and `dispose` methods. See the [node](https://github.com/facebook/jest/blob/master/packages/jest-environment-node/src/index.js) or [jsdom](https://github.com/facebook/jest/blob/master/packages/jest-environment-jsdom/src/index.js) environments as examples.
 

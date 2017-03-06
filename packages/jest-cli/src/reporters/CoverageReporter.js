@@ -22,6 +22,7 @@ const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
 const isCI = require('is-ci');
 const istanbulCoverage = require('istanbul-lib-coverage');
+const libSourceMaps = require('istanbul-lib-source-maps');
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -30,10 +31,12 @@ const isInteractive = process.stdout.isTTY && !isCI;
 
 class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
+  _sourceMapStore: any;
 
   constructor() {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
+    this._sourceMapStore = libSourceMaps.createSourceMapStore();
   }
 
   onTestResult(
@@ -45,6 +48,13 @@ class CoverageReporter extends BaseReporter {
       this._coverageMap.merge(testResult.coverage);
       // Remove coverage data to free up some memory.
       delete testResult.coverage;
+
+      Object.keys(testResult.sourceMaps).forEach(sourcePath => {
+        this._sourceMapStore.registerURL(
+          sourcePath,
+          testResult.sourceMaps[sourcePath]
+        );
+      });
     }
   }
 
@@ -54,6 +64,12 @@ class CoverageReporter extends BaseReporter {
     runnerContext: RunnerContext,
   ) {
     this._addUntestedFiles(config, runnerContext);
+    let map = this._coverageMap;
+    let sourceFinder: Object;
+    if (config.mapCoverage) {
+      ({map, sourceFinder} = this._sourceMapStore.transformCoverage(map));
+    }
+
     const reporter = createReporter();
     try {
       if (config.coverageDirectory) {
@@ -70,8 +86,8 @@ class CoverageReporter extends BaseReporter {
       }
 
       reporter.addAll(coverageReporters);
-      reporter.write(this._coverageMap);
-      aggregatedResults.coverageMap = this._coverageMap;
+      reporter.write(map, sourceFinder && {sourceFinder});
+      aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(chalk.red(`
         Failed to write coverage reports:
@@ -80,7 +96,7 @@ class CoverageReporter extends BaseReporter {
       `));
     }
 
-    this._checkThreshold(config);
+    this._checkThreshold(map, config);
   }
 
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
@@ -99,9 +115,15 @@ class CoverageReporter extends BaseReporter {
         if (!this._coverageMap.data[filename]) {
           try {
             const source = fs.readFileSync(filename).toString();
-            const coverage = generateEmptyCoverage(source, filename, config);
-            if (coverage) {
-              this._coverageMap.addFileCoverage(coverage);
+            const result = generateEmptyCoverage(source, filename, config);
+            if (result) {
+              this._coverageMap.addFileCoverage(result.coverage);
+              if (result.sourceMapPath) {
+                this._sourceMapStore.registerURL(
+                  filename,
+                  result.sourceMapPath
+                );
+              }
             }
           } catch (e) {
             console.error(chalk.red(`
@@ -118,9 +140,9 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  _checkThreshold(config: Config) {
+  _checkThreshold(map: CoverageMap, config: Config) {
     if (config.coverageThreshold) {
-      const results = this._coverageMap.getCoverageSummary().toJSON();
+      const results = map.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
         return [
