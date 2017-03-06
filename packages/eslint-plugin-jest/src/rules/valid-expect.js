@@ -23,21 +23,27 @@ module.exports = (context: EslintContext) => {
         // checking "expect()" arguments
         if (node.arguments.length > 1) {
           context.report({
-            message: 'More than one argument passed to expect()',
+            message: 'More than one argument was passed to expect().',
             node,
           });
         } else if (node.arguments.length === 0) {
-          context.report({message: 'No arguments passed to expect()', node});
+          context.report({
+            message: 'No arguments were passed to expect().',
+            node,
+          });
         }
 
         // matcher was not called
         if (
           node.parent &&
+          node.parent.type === 'MemberExpression' &&
           node.parent.parent &&
-          node.parent.parent.type !== 'CallExpression' &&
-          node.parent.parent.type !== 'MemberExpression'
+          node.parent.parent.type === 'ExpressionStatement'
         ) {
-          context.report({message: 'Matcher was not called', node});
+          context.report({
+            message: `"${node.parent.property.name}" was not called.`,
+            node,
+          });
         }
       }
     },
@@ -48,7 +54,7 @@ module.exports = (context: EslintContext) => {
         node.callee.name === 'expect' &&
         node.parent.type === 'ExpressionStatement'
       ) {
-        context.report({message: 'Nothing called on expect()', node});
+        context.report({message: 'No assertion was called on expect().', node});
       }
     },
   };

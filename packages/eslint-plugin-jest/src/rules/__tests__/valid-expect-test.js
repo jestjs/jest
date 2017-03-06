@@ -30,7 +30,7 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       code: 'expect().toBe(true);',
       errors: [
         {
-          message: 'No arguments passed to expect()',
+          message: 'No arguments were passed to expect().',
         },
       ],
     },
@@ -38,7 +38,7 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       code: 'expect().toEqual("something");',
       errors: [
         {
-          message: 'No arguments passed to expect()',
+          message: 'No arguments were passed to expect().',
         },
       ],
     },
@@ -46,7 +46,7 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       code: 'expect("something", "else").toEqual("something");',
       errors: [
         {
-          message: 'More than one argument passed to expect()',
+          message: 'More than one argument was passed to expect().',
         },
       ],
     },
@@ -54,10 +54,7 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       code: 'expect("something");',
       errors: [
         {
-          message: 'Matcher was not called',
-        },
-        {
-          message: 'Nothing called on expect()',
+          message: 'No assertion was called on expect().',
         },
       ],
     },
@@ -65,13 +62,10 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       code: 'expect();',
       errors: [
         {
-          message: 'No arguments passed to expect()',
+          message: 'No arguments were passed to expect().',
         },
         {
-          message: 'Matcher was not called',
-        },
-        {
-          message: 'Nothing called on expect()',
+          message: 'No assertion was called on expect().',
         },
       ],
     },
@@ -79,7 +73,7 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       code: 'expect(true).toBeDefined;',
       errors: [
         {
-          message: 'Matcher was not called',
+          message: '"toBeDefined" was not called.',
         },
       ],
     },
