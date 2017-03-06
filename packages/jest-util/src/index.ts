@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+export {default as addInstanceOfAlias} from './add_instance_of_alias';
 export {default as clearLine} from './clearLine';
 export {default as createDirectory} from './createDirectory';
 export {default as ErrorWithStack} from './ErrorWithStack';
