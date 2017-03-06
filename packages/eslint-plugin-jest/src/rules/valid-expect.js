@@ -33,17 +33,30 @@ module.exports = (context: EslintContext) => {
           });
         }
 
-        // matcher was not called
+        // something was called on `expect()`
         if (
           node.parent &&
           node.parent.type === 'MemberExpression' &&
-          node.parent.parent &&
-          node.parent.parent.type === 'ExpressionStatement'
+          node.parent.parent
         ) {
-          context.report({
-            message: `"${node.parent.property.name}" was not called.`,
-            node,
-          });
+          let propertyName = node.parent.property.name;
+          let grandParentType = node.parent.parent.type;
+
+          // `not` is used, get the next property
+          if (
+            propertyName === 'not' && grandParentType === 'MemberExpression'
+          ) {
+            propertyName = node.parent.parent.property.name;
+            grandParentType = node.parent.parent.parent.type;
+          }
+
+          // matcher was not called
+          if (grandParentType === 'ExpressionStatement') {
+            context.report({
+              message: `"${propertyName}" was not called.`,
+              node,
+            });
+          }
         }
       }
     },

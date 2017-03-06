@@ -77,5 +77,13 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
         },
       ],
     },
+    {
+      code: 'expect(true).not.toBeDefined;',
+      errors: [
+        {
+          message: '"toBeDefined" was not called.',
+        },
+      ],
+    },
   ],
 });
