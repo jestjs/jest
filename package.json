@@ -19,6 +19,7 @@
     "flow-bin": "^0.39.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
+    "immutable": "^3.8.1",
     "istanbul-api": "^1.1.0",
     "istanbul-lib-coverage": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
