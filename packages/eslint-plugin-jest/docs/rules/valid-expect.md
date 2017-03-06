@@ -9,7 +9,7 @@ It would also issue a warning if there is nothing called on `expect()`, e.g.:
 
 ```js
 expect();
-expect("something");
+expect('something');
 ```
 
 or when a matcher function was not called, e.g.:
@@ -26,16 +26,16 @@ The following patterns are considered warnings:
 
 ```js
 expect();
-expect().toEqual("something");
-expect("something", "else");
-expect("something");
+expect().toEqual('something');
+expect('something', 'else');
+expect('something');
 expect(true).toBeDefined;
 ```
 
 The following patterns are not warnings:
 
 ```js
-expect("something").toEqual("something");
+expect('something').toEqual('something');
 expect([1, 2, 3]).toEqual([1, 2, 3]);
 expect(true).toBeDefined();
 ```
