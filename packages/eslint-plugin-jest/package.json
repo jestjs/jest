@@ -17,6 +17,9 @@
     "url": "https://github.com/facebook/jest.git"
   },
   "main": "build/index.js",
+  "dependencies": {
+    "jest-matchers": "^19.0.0"
+  },
   "peerDependencies": {
     "eslint": ">=3.6"
   },
