@@ -9,10 +9,10 @@
  */
 'use strict';
 
-// This implementation is copied from eslint-plugin-jasmine.
-// Credits goes to Alexander Afanasyev
-// TODO: Should license at the top be MIT, as that's what the code in
-// eslint-plugin-jasmine is?
+/*
+ * This implementation is ported from from eslint-plugin-jasmine.
+ * MIT license, Tom Vincent.
+ */
 
 import type {EslintContext, CallExpression} from './types';
 
