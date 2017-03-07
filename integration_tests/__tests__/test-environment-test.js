@@ -10,9 +10,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 const testFixturePackage = require('../test-environment/package.json');
 

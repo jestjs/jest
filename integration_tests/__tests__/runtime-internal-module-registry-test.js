@@ -10,11 +10,8 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 describe('Runtime Internal Module Registry', () => {
-  skipOnWindows.suite();
-
   // Previously, if Jest required a module (e.g. requiring `mkdirp` from
   // `jest-util`) and the project *using* Jest also required that module, Jest
   // wouldn't re-require it and thus ignored any mocks that the module may have
