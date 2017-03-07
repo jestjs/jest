@@ -10,9 +10,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('suite with auto-reset', () => {
   const result = runJest('auto-reset-mocks/with-auto-reset');

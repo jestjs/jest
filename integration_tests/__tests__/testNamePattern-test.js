@@ -9,9 +9,6 @@
 
 const {extractSummary} = require('../utils');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('testNamePattern', () => {
   const {stderr, status} = runJest.json('testNamePattern', [
