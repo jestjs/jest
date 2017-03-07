@@ -65,7 +65,7 @@ const parse = (file: string) => {
     const block = new ItBlock();
     block.name = node.expression.arguments[0].value;
     block.start = node.loc.start;
-    block.end =  node.loc.end;
+    block.end = node.loc.end;
 
     block.start.column += 1;
 
@@ -79,7 +79,7 @@ const parse = (file: string) => {
   const foundExpectNode = (node: any, file: string) => {
     const expect = new Expect();
     expect.start = node.loc.start;
-    expect.end =  node.loc.end;
+    expect.end = node.loc.end;
 
     expect.start.column += 1;
     expect.end.column += 1;
@@ -89,17 +89,13 @@ const parse = (file: string) => {
   };
 
   const isFunctionCall = node => {
-    return (
-      node.type === 'ExpressionStatement' &&
-      node.expression.type === 'CallExpression'
-    );
+    return node.type === 'ExpressionStatement' &&
+      node.expression.type === 'CallExpression';
   };
 
   const isFunctionDeclaration = (nodeType: string) => {
-    return (
-      nodeType === 'ArrowFunctionExpression' ||
-      nodeType === 'FunctionExpression'
-    );
+    return nodeType === 'ArrowFunctionExpression' ||
+      nodeType === 'FunctionExpression';
   };
 
   // Pull out the name of a CallExpression (describe/it)
@@ -119,11 +115,7 @@ const parse = (file: string) => {
   // the start of an it/test block?
   const isAnIt = node => {
     const name = getNameForNode(node);
-    return (
-      name === 'it' ||
-      name === 'fit' ||
-      name === 'test'
-    );
+    return name === 'it' || name === 'fit' || name === 'test';
   };
 
   // When given a node in the AST, does this represent
@@ -160,8 +152,9 @@ const parse = (file: string) => {
         foundExpectNode(element, file);
       } else if (element.type === 'VariableDeclaration') {
         element.declarations
-          .filter(declaration => (
-            declaration.init && isFunctionDeclaration(declaration.init.type))
+          .filter(
+            declaration =>
+              declaration.init && isFunctionDeclaration(declaration.init.type),
           )
           .forEach(declaration => searchNodes(declaration.init.body, file));
       } else if (
@@ -171,8 +164,7 @@ const parse = (file: string) => {
       ) {
         searchNodes(element.expression.right.body, file);
       } else if (
-        element.type === 'ReturnStatement' &&
-        element.argument.arguments
+        element.type === 'ReturnStatement' && element.argument.arguments
       ) {
         element.argument.arguments
           .filter(argument => isFunctionDeclaration(argument.type))

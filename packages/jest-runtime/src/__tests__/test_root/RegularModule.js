@@ -25,11 +25,11 @@ function getModuleStateValue() {
   return moduleStateValue;
 }
 
-() => {
+(() => {
   // Make sure ModuleWithSideEffects is part of the module map for
   // RegularModule.
   require('ModuleWithSideEffects');
-};
+});
 
 exports.getModuleStateValue = getModuleStateValue;
 exports.isRealModule = true;

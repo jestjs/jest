@@ -41,5 +41,5 @@ export type CallExpression = {
 };
 
 export type EslintContext = {|
-  report: ({message: string, node: any}) => void
+  report: ({message: string, node: any}) => void,
 |};

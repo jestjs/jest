@@ -54,10 +54,7 @@ describe('moduleMocker', () => {
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo['foo-bar']),
       );
-      expect(
-        !mock.name ||
-        mock.name === 'foo$bar',
-      ).toBeTruthy();
+      expect(!mock.name || mock.name === 'foo$bar').toBeTruthy();
     });
 
     it('special cases the mockConstructor name', () => {
@@ -66,10 +63,7 @@ describe('moduleMocker', () => {
         moduleMocker.getMetadata(mockConstructor),
       );
       // Depends on node version
-      expect(
-        !mock.name ||
-        mock.name === 'mockConstructor',
-      ).toBeTruthy();
+      expect(!mock.name || mock.name === 'mockConstructor').toBeTruthy();
     });
 
     it('wont interfere with previous mocks on a shared prototype', () => {
@@ -325,11 +319,13 @@ describe('moduleMocker', () => {
     it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.fn();
 
-      mockFn.mockImplementationOnce(() => {
-        return 'Foo';
-      }).mockImplementationOnce(() => {
-        return 'Bar';
-      });
+      mockFn
+        .mockImplementationOnce(() => {
+          return 'Foo';
+        })
+        .mockImplementationOnce(() => {
+          return 'Bar';
+        });
 
       expect(mockFn()).toBe('Foo');
       expect(mockFn()).toBe('Bar');
@@ -339,13 +335,16 @@ describe('moduleMocker', () => {
     it('should fallback to default mock function when no specific mock is available', () => {
       const mockFn = moduleMocker.fn();
 
-      mockFn.mockImplementationOnce(() => {
-        return 'Foo';
-      }).mockImplementationOnce(() => {
-        return 'Bar';
-      }).mockImplementation(() => {
-        return 'Default';
-      });
+      mockFn
+        .mockImplementationOnce(() => {
+          return 'Foo';
+        })
+        .mockImplementationOnce(() => {
+          return 'Bar';
+        })
+        .mockImplementation(() => {
+          return 'Default';
+        });
 
       expect(mockFn()).toBe('Foo');
       expect(mockFn()).toBe('Bar');
@@ -366,11 +365,13 @@ describe('moduleMocker', () => {
       let isOriginalCalled = false;
       let originalCallThis;
       let originalCallArguments;
-      const obj = {method() {
-        isOriginalCalled = true;
-        originalCallThis = this;
-        originalCallArguments = arguments;
-      }};
+      const obj = {
+        method() {
+          isOriginalCalled = true;
+          originalCallThis = this;
+          originalCallArguments = arguments;
+        },
+      };
 
       const spy = moduleMocker.spyOn(obj, 'method');
 

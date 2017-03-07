@@ -20,18 +20,14 @@ const testFunctions = Object.assign(Object.create(null), {
 
 const matchesTestFunction = object => object && testFunctions[object.name];
 
-const isCallToSkippedTestFunction = object => (
-  object &&
-  object.name[0] === 'x' &&
-  testFunctions[object.name.substring(1)]
-);
+const isCallToSkippedTestFunction = object =>
+  object && object.name[0] === 'x' && testFunctions[object.name.substring(1)];
 
 const isPropertyNamedSkip = property =>
   property && (property.name === 'skip' || property.value === 'skip');
 
-const isCallToTestSkipFunction = callee => (
-  matchesTestFunction(callee.object) && isPropertyNamedSkip(callee.property)
-);
+const isCallToTestSkipFunction = callee =>
+  matchesTestFunction(callee.object) && isPropertyNamedSkip(callee.property);
 
 module.exports = (context: EslintContext) => ({
   CallExpression(node: CallExpression) {
@@ -41,8 +37,7 @@ module.exports = (context: EslintContext) => ({
     }
 
     if (
-      callee.type === 'MemberExpression' &&
-      isCallToTestSkipFunction(callee)
+      callee.type === 'MemberExpression' && isCallToTestSkipFunction(callee)
     ) {
       context.report({
         message: 'Unexpected disabled test.',
@@ -51,10 +46,7 @@ module.exports = (context: EslintContext) => ({
       return;
     }
 
-    if (
-      callee.type === 'Identifier' &&
-      isCallToSkippedTestFunction(callee)
-    ) {
+    if (callee.type === 'Identifier' && isCallToSkippedTestFunction(callee)) {
       context.report({
         message: 'Unexpected disabled test.',
         node: callee,

@@ -101,8 +101,13 @@ const escapePathSeparator = string =>
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
     return new RegExp(
-      '(' + escapePathSeparator(NODE_MODULES) +
-      '(?:' + list.join('|') + ')(?=$|' + escapePathSeparator(path.sep) + '))',
+      '(' +
+        escapePathSeparator(NODE_MODULES) +
+        '(?:' +
+        list.join('|') +
+        ')(?=$|' +
+        escapePathSeparator(path.sep) +
+        '))',
       'g',
     );
   }
@@ -300,12 +305,11 @@ class HasteMap extends EventEmitter {
         map[id] = Object.create(null);
       }
       const moduleMap = map[id];
-      const platform =
-        getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
+      const platform = getPlatformExtension(module[H.PATH]) ||
+        H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const message =
-          `jest-haste-map: @providesModule naming collision:\n` +
+        const message = `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\nThis ` +

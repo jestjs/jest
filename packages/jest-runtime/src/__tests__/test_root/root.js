@@ -16,10 +16,10 @@ require('ModuleWithSideEffects');
 require('RegularModule');
 
 // We only care about the static analysis, not about the runtime.
-() => {
+(() => {
   require('image!not-really-a-module');
   require('cat.png');
   require('dog.png');
-};
+});
 
 exports.jest = jest;

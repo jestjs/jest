@@ -79,26 +79,25 @@ module.exports = (
 ) => {
   let parentExited = false;
   const disconnectCallback = () => parentExited = true;
-  const removeListener =
-    () => process.removeListener('disconnect', disconnectCallback);
+  const removeListener = () =>
+    process.removeListener('disconnect', disconnectCallback);
   process.on('disconnect', disconnectCallback);
 
   try {
-    runTest(path, config, getResolver(config, rawModuleMap))
-      .then(
-        result => {
-          removeListener();
-          if (!parentExited) {
-            callback(null, result);
-          }
-        },
-        error => {
-          removeListener();
-          if (!parentExited) {
-            callback(formatError(error));
-          }
-        },
-      );
+    runTest(path, config, getResolver(config, rawModuleMap)).then(
+      result => {
+        removeListener();
+        if (!parentExited) {
+          callback(null, result);
+        }
+      },
+      error => {
+        removeListener();
+        if (!parentExited) {
+          callback(formatError(error));
+        }
+      },
+    );
   } catch (error) {
     callback(formatError(error));
   }

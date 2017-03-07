@@ -23,25 +23,42 @@ type ReactTestObject = {|
 // Child can be `number` in Stack renderer but not in Fiber renderer.
 type ReactTestChild = ReactTestObject | string | number;
 
-function printChildren(children: Array<ReactTestChild>, print, indent, colors, opts) {
-  return children.map(child => printInstance(child, print, indent, colors, opts)).join(opts.edgeSpacing);
+function printChildren(
+  children: Array<ReactTestChild>,
+  print,
+  indent,
+  colors,
+  opts,
+) {
+  return children
+    .map(child => printInstance(child, print, indent, colors, opts))
+    .join(opts.edgeSpacing);
 }
 
 function printProps(props: Object, print, indent, colors, opts) {
-  return Object.keys(props).sort().map(name => {
-    const prop = props[name];
-    let printed = print(prop);
+  return Object.keys(props)
+    .sort()
+    .map(name => {
+      const prop = props[name];
+      let printed = print(prop);
 
-    if (typeof prop !== 'string') {
-      if (printed.indexOf('\n') !== -1) {
-        printed = '{' + opts.edgeSpacing + indent(indent(printed) + opts.edgeSpacing + '}');
-      } else {
-        printed = '{' + printed + '}';
+      if (typeof prop !== 'string') {
+        if (printed.indexOf('\n') !== -1) {
+          printed = '{' +
+            opts.edgeSpacing +
+            indent(indent(printed) + opts.edgeSpacing + '}');
+        } else {
+          printed = '{' + printed + '}';
+        }
       }
-    }
 
-    return opts.spacing + indent(colors.prop.open + name + colors.prop.close + '=') + colors.value.open + printed + colors.value.close;
-  }).join('');
+      return opts.spacing +
+        indent(colors.prop.open + name + colors.prop.close + '=') +
+        colors.value.open +
+        printed +
+        colors.value.close;
+    })
+    .join('');
 }
 
 function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
@@ -62,17 +79,43 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
   }
 
   if (instance.children) {
-    const children = printChildren(instance.children, print, indent, colors, opts);
-    result += colors.tag.open + (closeInNewLine ? '\n' : '') + '>' + colors.tag.close + opts.edgeSpacing + indent(children) + opts.edgeSpacing + colors.tag.open + '</' + instance.type + '>' + colors.tag.close;
+    const children = printChildren(
+      instance.children,
+      print,
+      indent,
+      colors,
+      opts,
+    );
+    result += colors.tag.open +
+      (closeInNewLine ? '\n' : '') +
+      '>' +
+      colors.tag.close +
+      opts.edgeSpacing +
+      indent(children) +
+      opts.edgeSpacing +
+      colors.tag.open +
+      '</' +
+      instance.type +
+      '>' +
+      colors.tag.close;
   } else {
-    result += colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
+    result += colors.tag.open +
+      (closeInNewLine ? '\n' : ' ') +
+      '/>' +
+      colors.tag.close;
   }
 
   return result;
 }
 
 module.exports = {
-  print(val: ReactTestObject, print: (val: any) => string, indent: (str: string) => string, opts: Object, colors: Object) {
+  print(
+    val: ReactTestObject,
+    print: (val: any) => string,
+    indent: (str: string) => string,
+    opts: Object,
+    colors: Object,
+  ) {
     return printInstance(val, print, indent, colors, opts);
   },
   test(object: Object) {

@@ -25,7 +25,11 @@ const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
   // eslint-disable-next-line max-len
-  console.log(chalk.red(`  Invalid testPattern ${testPathPattern} supplied. Running all tests instead.`));
+  console.log(
+    chalk.red(
+      `  Invalid testPattern ${testPathPattern} supplied. Running all tests instead.`,
+    ),
+  );
 };
 
 module.exports = (argv: Object): PatternInfo => {

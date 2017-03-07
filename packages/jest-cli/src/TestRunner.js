@@ -130,15 +130,14 @@ class TestRunner {
       return null;
     };
 
-    testPaths = testPaths
-      .sort((pathA, pathB) => {
-        const timeA = getTestRunTime(pathA);
-        const timeB = getTestRunTime(pathB);
-        if (timeA != null && timeB != null) {
-          return timeA < timeB ? 1 : -1;
-        }
-        return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
-      });
+    testPaths = testPaths.sort((pathA, pathB) => {
+      const timeA = getTestRunTime(pathA);
+      const timeB = getTestRunTime(pathB);
+      if (timeA != null && timeB != null) {
+        return timeA < timeB ? 1 : -1;
+      }
+      return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
+    });
 
     testPaths.forEach(filePath => {
       const timing = cache[filePath] && cache[filePath][1];
@@ -205,14 +204,12 @@ class TestRunner {
     // Run in band if we only have one test or one worker available.
     // If we are confident from previous runs that the tests will finish quickly
     // we also run in band to reduce the overhead of spawning workers.
-    const shouldRunInBand = () => (
+    const shouldRunInBand = () =>
       this._options.maxWorkers <= 1 ||
       testPaths.length <= 1 ||
-      (
-        testPaths.length <= 20 &&
-        timings.length > 0 && timings.every(timing => timing < SLOW_TEST_TIME)
-      )
-    );
+      (testPaths.length <= 20 &&
+        timings.length > 0 &&
+        timings.every(timing => timing < SLOW_TEST_TIME));
 
     const updateSnapshotState = () => {
       const status = snapshot.cleanup(
@@ -221,13 +218,10 @@ class TestRunner {
       );
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(
-        !aggregatedResults.snapshot.didUpdate && (
-          aggregatedResults.snapshot.unchecked ||
+      aggregatedResults.snapshot.failure = !!(!aggregatedResults.snapshot.didUpdate &&
+        (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
-          aggregatedResults.snapshot.filesRemoved
-        )
-      );
+          aggregatedResults.snapshot.filesRemoved));
     };
 
     const runInBand = shouldRunInBand();
@@ -253,17 +247,13 @@ class TestRunner {
 
         this._dispatcher.onRunComplete(config, aggregatedResults);
 
-        const anyTestFailures = !(
-          aggregatedResults.numFailedTests === 0 &&
-          aggregatedResults.numRuntimeErrorTestSuites === 0
-        );
+        const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
+          aggregatedResults.numRuntimeErrorTestSuites === 0);
         const anyReporterErrors = this._dispatcher.hasErrors();
 
-        aggregatedResults.success = !(
-          anyTestFailures ||
+        aggregatedResults.success = !(anyTestFailures ||
           aggregatedResults.snapshot.failure ||
-          anyReporterErrors
-        );
+          anyReporterErrors);
 
         this._cacheTestResults(aggregatedResults);
         return aggregatedResults;
@@ -278,24 +268,17 @@ class TestRunner {
   ) {
     const mutex = throat(1);
     return testPaths.reduce(
-      (promise, path) =>
-        mutex(() =>
-          promise
-            .then(() => {
-              if (watcher.isInterrupted()) {
-                throw new CancelRun();
-              }
+      (promise, path) => mutex(() => promise
+        .then(() => {
+          if (watcher.isInterrupted()) {
+            throw new CancelRun();
+          }
 
-              this._dispatcher.onTestStart(this._config, path);
-              return runTest(
-                path,
-                this._config,
-                this._hasteContext.resolver,
-              );
-            })
-            .then(result => onResult(path, result))
-            .catch(err => onFailure(path, err)),
-        ),
+          this._dispatcher.onTestStart(this._config, path);
+          return runTest(path, this._config, this._hasteContext.resolver);
+        })
+        .then(result => onResult(path, result))
+        .catch(err => onFailure(path, err))),
       Promise.resolve(),
     );
   }
@@ -307,12 +290,15 @@ class TestRunner {
     onFailure: OnRunFailure,
   ) {
     const config = this._config;
-    const farm = workerFarm({
-      autoStart: true,
-      maxConcurrentCallsPerWorker: 1,
-      maxConcurrentWorkers: this._options.maxWorkers,
-      maxRetries: 2, // Allow for a couple of transient errors.
-    }, TEST_WORKER_PATH);
+    const farm = workerFarm(
+      {
+        autoStart: true,
+        maxConcurrentCallsPerWorker: 1,
+        maxConcurrentWorkers: this._options.maxWorkers,
+        maxRetries: 2, // Allow for a couple of transient errors.
+      },
+      TEST_WORKER_PATH,
+    );
     const mutex = throat(this._options.maxWorkers);
     const worker = pify(farm);
 
@@ -351,11 +337,13 @@ class TestRunner {
       });
     });
 
-    const runAllTests = Promise.all(testPaths.map(path => {
-      return runTestInWorker({config, path})
-        .then(testResult => onResult(path, testResult))
-        .catch(error => onError(error, path));
-    }));
+    const runAllTests = Promise.all(
+      testPaths.map(path => {
+        return runTestInWorker({config, path})
+          .then(testResult => onResult(path, testResult))
+          .catch(error => onError(error, path));
+      }),
+    );
 
     const cleanup = () => workerFarm.end(farm);
 
@@ -432,8 +420,7 @@ const addResult = (
   testResult: TestResult,
 ): void => {
   aggregatedResults.testResults.push(testResult);
-  aggregatedResults.numTotalTests +=
-    testResult.numPassingTests +
+  aggregatedResults.numTotalTests += testResult.numPassingTests +
     testResult.numFailingTests +
     testResult.numPendingTests;
   aggregatedResults.numFailedTests += testResult.numFailingTests;
@@ -471,8 +458,7 @@ const addResult = (
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
-  aggregatedResults.snapshot.total +=
-    testResult.snapshot.added +
+  aggregatedResults.snapshot.total += testResult.snapshot.added +
     testResult.snapshot.matched +
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;

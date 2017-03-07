@@ -45,11 +45,7 @@ describe('worker', () => {
         ' * @providesModule Strawberry',
         ' */',
       ].join('\n'),
-      '/package.json': [
-        '{',
-        '  "name": "haste-package"',
-        '}',
-      ].join('\n'),
+      '/package.json': ['{', '  "name": "haste-package"', '}'].join('\n'),
     };
 
     readFileSync = fs.readFileSync;
@@ -104,21 +100,26 @@ describe('worker', () => {
 
   it('delegates to hasteImplModulePath for getting the id', () => {
     const callback = createCallback();
-    worker({
-      filePath: '/fruits/strawberry.js',
-      hasteImplModulePath: path.resolve(__dirname, 'hasteImpl.js'),
-    }, callback);
+    worker(
+      {
+        filePath: '/fruits/strawberry.js',
+        hasteImplModulePath: path.resolve(__dirname, 'hasteImpl.js'),
+      },
+      callback,
+    );
 
     // Worker is synchronous. callback must have been called by now
     expect(callback).toBeCalled();
 
     expect(workerError).toBe(null);
     expect(moduleData.id).toBe('strawberry');
-    expect(moduleData).toEqual(expect.objectContaining({
-      dependencies: expect.any(Array),
-      id: expect.any(String),
-      module: expect.any(Array),
-    }));
+    expect(moduleData).toEqual(
+      expect.objectContaining({
+        dependencies: expect.any(Array),
+        id: expect.any(String),
+        module: expect.any(Array),
+      }),
+    );
   });
 
   it('parses package.json files as haste packages', () => {
@@ -145,5 +146,4 @@ describe('worker', () => {
     expect(workerError.type).toEqual('Error');
     expect(workerError.message).toEqual(`Cannot read path '/kiwi.js'.`);
   });
-
 });

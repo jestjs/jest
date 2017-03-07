@@ -20,17 +20,17 @@ describe('loadFromPackage', () => {
         "testMatch": ["match.js"]
       }
     }`,
-    'broken': `{
+    broken: `{
       "jest": {
         "testMatch": ["match.js"
       }
     }`,
-    'withRootDir': `{
+    withRootDir: `{
       "jest": {
         "rootDir": "testDir"
       }
     }`,
-    'withoutJest': `{
+    withoutJest: `{
     }`,
   };
 

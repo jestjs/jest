@@ -8,7 +8,7 @@
  * @flow
  */
 
- /* global stream$Writable, tty$WriteStream */
+/* global stream$Writable, tty$WriteStream */
 
 'use strict';
 

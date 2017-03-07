@@ -25,8 +25,7 @@ function run(argv?: Object, root?: Path) {
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    .check(args.check)
-    .argv;
+    .check(args.check).argv;
 
   validateCLIOptions(argv, args.options);
 

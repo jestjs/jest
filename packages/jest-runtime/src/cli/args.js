@@ -15,8 +15,7 @@ const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 const options = {
   cache: {
     default: true,
-    description:
-      'Whether to use the preprocessor cache. Disable the cache using ' +
+    description: 'Whether to use the preprocessor cache. Disable the cache using ' +
       '--no-cache.',
     type: 'boolean',
   },
@@ -36,8 +35,7 @@ const options = {
   },
   watchman: {
     default: true,
-    description:
-      'Whether to use watchman for file crawling. Disable using ' +
+    description: 'Whether to use watchman for file crawling. Disable using ' +
       '--no-watchman.',
     type: 'boolean',
   },

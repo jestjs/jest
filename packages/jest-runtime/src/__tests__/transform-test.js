@@ -34,13 +34,13 @@ jest.mock(
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
       process: (content, filename, config) => {
-        return (`
+        return `
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
             config: '${escapeStrings(JSON.stringify(config))}',
           };
-        `);
+        `;
       },
     };
   },
@@ -64,12 +64,12 @@ jest.mock(
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
       process: (content, filename, config) => {
-        return (`
+        return `
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
           };
-        `);
+        `;
       },
     };
   },
@@ -93,7 +93,6 @@ let transform;
 let vm;
 
 describe('transform', () => {
-
   const reset = () => {
     jest.resetModules();
 
@@ -102,20 +101,12 @@ describe('transform', () => {
     vm = require('vm');
 
     mockFs = object({
-      '/fruits/banana.js': [
-        'module.exports = "banana";',
-      ].join('\n'),
-      '/fruits/kiwi.js': [
-        'module.exports = () => "kiwi";',
-      ].join('\n'),
-      '/node_modules/react.js': [
-        'module.exports = "react";',
-      ].join('\n'),
-      '/styles/App.css': [
-        'root {',
-        '  font-family: Helvetica;',
-        '}',
-      ].join('\n'),
+      '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
+      '/fruits/kiwi.js': ['module.exports = () => "kiwi";'].join('\n'),
+      '/node_modules/react.js': ['module.exports = "react";'].join('\n'),
+      '/styles/App.css': ['root {', '  font-family: Helvetica;', '}'].join(
+        '\n',
+      ),
     });
 
     fs = require('graceful-fs');
@@ -234,9 +225,9 @@ describe('transform', () => {
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
 
-    const map = { 
-      mappings: ';AAAA', 
-      version: 3, 
+    const map = {
+      mappings: ';AAAA',
+      version: 3,
     };
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
@@ -287,9 +278,9 @@ describe('transform', () => {
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     });
 
-    const map = { 
-      mappings: ';AAAA', 
-      version: 3, 
+    const map = {
+      mappings: ';AAAA',
+      version: 3,
     };
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({

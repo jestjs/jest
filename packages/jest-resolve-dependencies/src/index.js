@@ -76,17 +76,22 @@ class DependencyResolver {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();
       while (changed.size) {
-        changed = new Set(moduleMap.filter(module => (
-          !visitedModules.has(module.file) &&
-          module.dependencies.some(dep => dep && changed.has(dep))
-        )).map(module => {
-          const file = module.file;
-          if (filter(file)) {
-            relatedPaths.add(file);
-          }
-          visitedModules.add(file);
-          return module.file;
-        }));
+        changed = new Set(
+          moduleMap
+            .filter(
+              module =>
+                !visitedModules.has(module.file) &&
+                module.dependencies.some(dep => dep && changed.has(dep)),
+            )
+            .map(module => {
+              const file = module.file;
+              if (filter(file)) {
+                relatedPaths.add(file);
+              }
+              visitedModules.add(file);
+              return module.file;
+            }),
+        );
       }
       return relatedPaths;
     };

@@ -33,7 +33,6 @@ describe('git', () => {
   afterEach(() => rimraf.sync(tmpdir));
 
   describe('isGitRepository', () => {
-
     it('returns null for non git repo folder', () => {
       return git.isGitRepository(tmpdir).then(res => {
         expect(res).toBeNull();
@@ -54,7 +53,6 @@ describe('git', () => {
   });
 
   describe('findChangedFiles', () => {
-
     beforeEach(() => {
       childProcess.spawnSync('git', ['init', tmpdir]);
     });
