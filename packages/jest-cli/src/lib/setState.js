@@ -11,11 +11,7 @@
 
 const getTestPathPatternInfo = require('./getTestPathPatternInfo');
 
-module.exports = (
-  argv: Object,
-  mode: 'watch' | 'watchAll',
-  options?: {},
-) => {
+module.exports = (argv: Object, mode: 'watch' | 'watchAll', options?: {}) => {
   options = options || {};
 
   if (mode === 'watch') {
@@ -40,9 +36,9 @@ module.exports = (
   }
 
   argv.onlyChanged = false;
-  argv.onlyChanged = getTestPathPatternInfo(argv).input === ''
-    && !argv.watchAll
-    && !argv.testNamePattern;
+  argv.onlyChanged = getTestPathPatternInfo(argv).input === '' &&
+    !argv.watchAll &&
+    !argv.testNamePattern;
 
   if (options.noSCM) {
     argv.noSCM = true;

@@ -13,7 +13,6 @@
 let getPlatformExtension;
 
 describe('getPlatformExtension', () => {
-
   beforeEach(() => {
     getPlatformExtension = require('../getPlatformExtension');
   });

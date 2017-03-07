@@ -28,8 +28,8 @@ test('fails for unknown option', () => {
     $0: true,
     unknown: 'unknown',
   };
-  expect(() => validateCLIOptions(argv, options))
-    .toThrowErrorMatchingSnapshot();
+  expect(() =>
+    validateCLIOptions(argv, options)).toThrowErrorMatchingSnapshot();
 });
 
 test('fails for multiple unknown options', () => {
@@ -39,6 +39,6 @@ test('fails for multiple unknown options', () => {
     jest: 'cool',
     test: 'unknown',
   };
-  expect(() => validateCLIOptions(argv, options))
-    .toThrowErrorMatchingSnapshot();
+  expect(() =>
+    validateCLIOptions(argv, options)).toThrowErrorMatchingSnapshot();
 });

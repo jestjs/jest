@@ -22,14 +22,26 @@ function returnArguments() {
 
 function assertPrintedJSX(actual, expected, opts) {
   expect(
-    prettyFormat(actual, Object.assign({
-      plugins: [ReactElement],
-    }, opts))
+    prettyFormat(
+      actual,
+      Object.assign(
+        {
+          plugins: [ReactElement],
+        },
+        opts,
+      ),
+    ),
   ).toEqual(expected);
   expect(
-    prettyFormat(renderer.create(actual).toJSON(), Object.assign({
-      plugins: [ReactTestComponent, ReactElement],
-    }, opts))
+    prettyFormat(
+      renderer.create(actual).toJSON(),
+      Object.assign(
+        {
+          plugins: [ReactTestComponent, ReactElement],
+        },
+        opts,
+      ),
+    ),
   ).toEqual(expected);
 }
 
@@ -66,7 +78,9 @@ describe('prettyFormat()', () => {
 
   it('prints a nested array', () => {
     const val = [[1, 2, 3]];
-    expect(prettyFormat(val)).toEqual('Array [\n  Array [\n    1,\n    2,\n    3,\n  ],\n]');
+    expect(prettyFormat(val)).toEqual(
+      'Array [\n  Array [\n    1,\n    2,\n    3,\n  ],\n]',
+    );
   });
 
   it('prints true', () => {
@@ -101,8 +115,7 @@ describe('prettyFormat()', () => {
     const formatted = prettyFormat(val);
     // Node 6.5 infers function names
     expect(
-      formatted === '[Function anonymous]' ||
-      formatted === '[Function val]'
+      formatted === '[Function anonymous]' || formatted === '[Function val]',
     ).toBeTruthy();
   });
 
@@ -113,9 +126,11 @@ describe('prettyFormat()', () => {
 
   it('can customize function names', () => {
     const val = function named() {};
-    expect(prettyFormat(val, {
-      printFunctionName: false,
-    })).toEqual('[Function]');
+    expect(
+      prettyFormat(val, {
+        printFunctionName: false,
+      }),
+    ).toEqual('[Function]');
   });
 
   it('prints Infinity', () => {
@@ -137,13 +152,17 @@ describe('prettyFormat()', () => {
     const val = new Map();
     val.set('prop1', 'value1');
     val.set('prop2', 'value2');
-    expect(prettyFormat(val)).toEqual('Map {\n  "prop1" => "value1",\n  "prop2" => "value2",\n}');
+    expect(prettyFormat(val)).toEqual(
+      'Map {\n  "prop1" => "value1",\n  "prop2" => "value2",\n}',
+    );
   });
 
   it('prints a map with non-string keys', () => {
     const val = new Map();
     val.set({prop: 'value'}, {prop: 'value'});
-    expect(prettyFormat(val)).toEqual('Map {\n  Object {\n    "prop": "value",\n  } => Object {\n    "prop": "value",\n  },\n}');
+    expect(prettyFormat(val)).toEqual(
+      'Map {\n  Object {\n    "prop": "value",\n  } => Object {\n    "prop": "value",\n  },\n}',
+    );
   });
 
   it('prints NaN', () => {
@@ -173,7 +192,9 @@ describe('prettyFormat()', () => {
 
   it('prints an object with properties', () => {
     const val = {prop1: 'value1', prop2: 'value2'};
-    expect(prettyFormat(val)).toEqual('Object {\n  "prop1": "value1",\n  "prop2": "value2",\n}');
+    expect(prettyFormat(val)).toEqual(
+      'Object {\n  "prop1": "value1",\n  "prop2": "value2",\n}',
+    );
   });
 
   it('prints an object with properties and symbols', () => {
@@ -181,7 +202,9 @@ describe('prettyFormat()', () => {
     val[Symbol('symbol1')] = 'value2';
     val[Symbol('symbol2')] = 'value3';
     val.prop = 'value1';
-    expect(prettyFormat(val)).toEqual('Object {\n  "prop": "value1",\n  Symbol(symbol1): "value2",\n  Symbol(symbol2): "value3",\n}');
+    expect(prettyFormat(val)).toEqual(
+      'Object {\n  "prop": "value1",\n  Symbol(symbol1): "value2",\n  Symbol(symbol2): "value3",\n}',
+    );
   });
 
   it('prints an object with sorted properties', () => {
@@ -208,7 +231,9 @@ describe('prettyFormat()', () => {
 
   it('escapes regular expressions nested inside object', () => {
     const obj = {test: /regexp\d/ig};
-    expect(prettyFormat(obj, {escapeRegex: true})).toEqual('Object {\n  "test": /regexp\\\\d/gi,\n}');
+    expect(prettyFormat(obj, {escapeRegex: true})).toEqual(
+      'Object {\n  "test": /regexp\\\\d/gi,\n}',
+    );
   });
 
   it('prints an empty set', () => {
@@ -234,7 +259,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints a string with escapes', () => {
-    expect(prettyFormat('\"-\"')).toEqual('"\\"-\\""');
+    expect(prettyFormat('"-"')).toEqual('"\\"-\\""');
     expect(prettyFormat('\\ \\\\')).toEqual('"\\\\ \\\\\\\\"');
   });
 
@@ -260,7 +285,9 @@ describe('prettyFormat()', () => {
 
   it('prints deeply nested objects', () => {
     const val = {prop: {prop: {prop: 'value'}}};
-    expect(prettyFormat(val)).toEqual('Object {\n  "prop": Object {\n    "prop": Object {\n      "prop": "value",\n    },\n  },\n}');
+    expect(prettyFormat(val)).toEqual(
+      'Object {\n  "prop": Object {\n    "prop": Object {\n      "prop": "value",\n    },\n  },\n}',
+    );
   });
 
   it('prints circular references', () => {
@@ -272,17 +299,23 @@ describe('prettyFormat()', () => {
   it('prints parallel references', () => {
     const inner = {};
     const val = {prop1: inner, prop2: inner};
-    expect(prettyFormat(val)).toEqual('Object {\n  "prop1": Object {},\n  "prop2": Object {},\n}');
+    expect(prettyFormat(val)).toEqual(
+      'Object {\n  "prop1": Object {},\n  "prop2": Object {},\n}',
+    );
   });
 
   it('can customize indent', () => {
     const val = {prop: 'value'};
-    expect(prettyFormat(val, {indent: 4})).toEqual('Object {\n    "prop": "value",\n}');
+    expect(prettyFormat(val, {indent: 4})).toEqual(
+      'Object {\n    "prop": "value",\n}',
+    );
   });
 
   it('can customize the max depth', () => {
     const val = {prop: {prop: {prop: {}}}};
-    expect(prettyFormat(val, {maxDepth: 2})).toEqual('Object {\n  "prop": Object {\n    "prop": [Object],\n  },\n}');
+    expect(prettyFormat(val, {maxDepth: 2})).toEqual(
+      'Object {\n  "prop": Object {\n    "prop": [Object],\n  },\n}',
+    );
   });
 
   it('throws on invalid options', () => {
@@ -294,14 +327,18 @@ describe('prettyFormat()', () => {
   it('supports plugins', () => {
     function Foo() {}
 
-    expect(prettyFormat(new Foo(), {
-      plugins: [{
-        print: () => 'class Foo',
-        test(object) {
-          return object.constructor.name === 'Foo';
-        },
-      }],
-    })).toEqual('class Foo');
+    expect(
+      prettyFormat(new Foo(), {
+        plugins: [
+          {
+            print: () => 'class Foo',
+            test(object) {
+              return object.constructor.name === 'Foo';
+            },
+          },
+        ],
+      }),
+    ).toEqual('class Foo');
   });
 
   it('supports plugins that return empty string', () => {
@@ -309,44 +346,54 @@ describe('prettyFormat()', () => {
       payload: '',
     };
     const options = {
-      plugins: [{
-        print(val) {
-          return val.payload;
+      plugins: [
+        {
+          print(val) {
+            return val.payload;
+          },
+          test(val) {
+            return val && typeof val.payload === 'string';
+          },
         },
-        test(val) {
-          return val && typeof val.payload === 'string';
-        },
-      }],
+      ],
     };
     expect(prettyFormat(val, options)).toEqual('');
   });
 
   it('supports plugins with deeply nested arrays (#24)', () => {
     const val = [[1, 2], [3, 4]];
-    expect(prettyFormat(val, {
-      plugins: [{
-        print(val, print) {
-          return val.map(item => print(item)).join(' - ');
-        },
-        test(val) {
-          return Array.isArray(val);
-        },
-      }],
-    })).toEqual('1 - 2 - 3 - 4');
+    expect(
+      prettyFormat(val, {
+        plugins: [
+          {
+            print(val, print) {
+              return val.map(item => print(item)).join(' - ');
+            },
+            test(val) {
+              return Array.isArray(val);
+            },
+          },
+        ],
+      }),
+    ).toEqual('1 - 2 - 3 - 4');
   });
 
   it('should call plugins on nested basic values', () => {
     const val = {prop: 42};
-    expect(prettyFormat(val, {
-      plugins: [{
-        print(val, print) {
-          return '[called]';
-        },
-        test(val) {
-          return typeof val === 'string' || typeof val === 'number';
-        },
-      }],
-    })).toEqual('Object {\n  [called]: [called],\n}');
+    expect(
+      prettyFormat(val, {
+        plugins: [
+          {
+            print(val, print) {
+              return '[called]';
+            },
+            test(val) {
+              return typeof val === 'string' || typeof val === 'number';
+            },
+          },
+        ],
+      }),
+    ).toEqual('Object {\n  [called]: [called],\n}');
   });
 
   it('prints objects with no constructor', () => {
@@ -354,31 +401,39 @@ describe('prettyFormat()', () => {
   });
 
   it('calls toJSON and prints its return value', () => {
-    expect(prettyFormat({
-      toJSON: () => ({value: false}),
-      value: true,
-    })).toEqual('Object {\n  "value": false,\n}');
+    expect(
+      prettyFormat({
+        toJSON: () => ({value: false}),
+        value: true,
+      }),
+    ).toEqual('Object {\n  "value": false,\n}');
   });
 
   it('calls toJSON and prints an internal representation.', () => {
-    expect(prettyFormat({
-      toJSON: () => '[Internal Object]',
-      value: true,
-    })).toEqual('"[Internal Object]"');
+    expect(
+      prettyFormat({
+        toJSON: () => '[Internal Object]',
+        value: true,
+      }),
+    ).toEqual('"[Internal Object]"');
   });
 
   it('calls toJSON only on functions', () => {
-    expect(prettyFormat({
-      toJSON: false,
-      value: true,
-    })).toEqual('Object {\n  "toJSON": false,\n  "value": true,\n}');
+    expect(
+      prettyFormat({
+        toJSON: false,
+        value: true,
+      }),
+    ).toEqual('Object {\n  "toJSON": false,\n  "value": true,\n}');
   });
 
   it('calls toJSON recursively', () => {
-    expect(prettyFormat({
-      toJSON: () => ({toJSON: () => ({value: true})}),
-      value: false,
-    })).toEqual('Object {\n  "value": true,\n}');
+    expect(
+      prettyFormat({
+        toJSON: () => ({toJSON: () => ({value: true})}),
+        value: false,
+      }),
+    ).toEqual('Object {\n  "value": true,\n}');
   });
 
   it('calls toJSON on Sets', () => {
@@ -392,9 +447,15 @@ describe('prettyFormat()', () => {
     const name = value.toJSON.name || 'anonymous';
     const set = new Set([value]);
     set.toJSON = jest.fn(() => 'map');
-    expect(prettyFormat(set, {
-      callToJSON: false,
-    })).toEqual('Set {\n  Object {\n    \"apple\": \"banana\",\n    \"toJSON\": [Function ' + name + '],\n  },\n}');
+    expect(
+      prettyFormat(set, {
+        callToJSON: false,
+      }),
+    ).toEqual(
+      'Set {\n  Object {\n    "apple": "banana",\n    "toJSON": [Function ' +
+        name +
+        '],\n  },\n}',
+    );
     expect(set.toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
   });
@@ -402,9 +463,11 @@ describe('prettyFormat()', () => {
   describe('min', () => {
     it('prints in min mode', () => {
       const val = {prop: [1, 2, Infinity, new Set([1, 2, 3])]};
-      expect(prettyFormat(val, {
-        min: true,
-      })).toEqual('{"prop": [1, 2, Infinity, Set {1, 2, 3}]}');
+      expect(
+        prettyFormat(val, {
+          min: true,
+        }),
+      ).toEqual('{"prop": [1, 2, Infinity, Set {1, 2, 3}]}');
     });
 
     it('does not allow indent !== 0 in min mode', () => {
@@ -416,105 +479,116 @@ describe('prettyFormat()', () => {
 
   describe('ReactTestComponent and ReactElement plugins', () => {
     it('supports a single element with no props or children', () => {
-      assertPrintedJSX(
-        React.createElement('Mouse'),
-        '<Mouse />'
-      );
+      assertPrintedJSX(React.createElement('Mouse'), '<Mouse />');
     });
 
     it('supports a single element with no props', () => {
       assertPrintedJSX(
         React.createElement('Mouse', null, 'Hello World'),
-        '<Mouse>\n  Hello World\n</Mouse>'
+        '<Mouse>\n  Hello World\n</Mouse>',
       );
     });
 
     it('supports a single element with number children', () => {
       assertPrintedJSX(
         React.createElement('Mouse', null, 4),
-        '<Mouse>\n  4\n</Mouse>'
+        '<Mouse>\n  4\n</Mouse>',
       );
     });
 
     it('supports a single element with mixed children', () => {
       assertPrintedJSX(
-        React.createElement('Mouse', null,
-          [[1, null], 2, undefined, [false, [3]]]
-        ),
-        '<Mouse>\n  1\n  2\n  3\n</Mouse>'
+        React.createElement('Mouse', null, [
+          [1, null],
+          2,
+          undefined,
+          [false, [3]],
+        ]),
+        '<Mouse>\n  1\n  2\n  3\n</Mouse>',
       );
     });
 
     it('supports props with strings', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {style: 'color:red'}),
-        '<Mouse\n  style="color:red"\n/>'
+        '<Mouse\n  style="color:red"\n/>',
       );
     });
 
     it('supports props with numbers', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {size: 5}),
-        '<Mouse\n  size={5}\n/>'
+        '<Mouse\n  size={5}\n/>',
       );
     });
 
     it('supports a single element with a function prop', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {onclick: function onclick() {}}),
-        '<Mouse\n  onclick={[Function onclick]}\n/>'
+        '<Mouse\n  onclick={[Function onclick]}\n/>',
       );
     });
 
     it('supports a single element with a object prop', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {customProp: {one: '1', two: 2}}),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n/>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n/>',
       );
     });
 
     it('supports an element with and object prop and children', () => {
       assertPrintedJSX(
-        React.createElement('Mouse', {customProp: {one: '1', two: 2}},
-          React.createElement('Mouse')
+        React.createElement(
+          'Mouse',
+          {customProp: {one: '1', two: 2}},
+          React.createElement('Mouse'),
         ),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n>\n  <Mouse />\n</Mouse>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n>\n  <Mouse />\n</Mouse>',
       );
     });
 
     it('supports an element with complex props and mixed children', () => {
       assertPrintedJSX(
-        React.createElement('Mouse', {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
+        React.createElement(
+          'Mouse',
+          {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
           'HELLO',
-          React.createElement('Mouse'), 'CIAO'
+          React.createElement('Mouse'),
+          'CIAO',
         ),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}\n>\n  HELLO\n  <Mouse />\n  CIAO\n</Mouse>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}\n>\n  HELLO\n  <Mouse />\n  CIAO\n</Mouse>',
       );
     });
 
     it('escapes children properly', () => {
       assertPrintedJSX(
-        React.createElement('Mouse', null,
-          '\"-\"',
+        React.createElement(
+          'Mouse',
+          null,
+          '"-"',
           React.createElement('Mouse'),
-          '\\ \\\\'
+          '\\ \\\\',
         ),
-        '<Mouse>\n  "-"\n  <Mouse />\n  \\ \\\\\n</Mouse>'
+        '<Mouse>\n  "-"\n  <Mouse />\n  \\ \\\\\n</Mouse>',
       );
     });
 
     it('supports everything all together', () => {
       assertPrintedJSX(
-        React.createElement('Mouse', {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
+        React.createElement(
+          'Mouse',
+          {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
           'HELLO',
-          React.createElement('Mouse', {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
+          React.createElement(
+            'Mouse',
+            {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
             'HELLO',
             React.createElement('Mouse'),
-            'CIAO'
+            'CIAO',
           ),
-          'CIAO'
+          'CIAO',
         ),
-        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}\n>\n  HELLO\n  <Mouse\n    customProp={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    onclick={[Function onclick]}\n  >\n    HELLO\n    <Mouse />\n    CIAO\n  </Mouse>\n  CIAO\n</Mouse>'
+        '<Mouse\n  customProp={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  onclick={[Function onclick]}\n>\n  HELLO\n  <Mouse\n    customProp={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    onclick={[Function onclick]}\n  >\n    HELLO\n    <Mouse />\n    CIAO\n  </Mouse>\n  CIAO\n</Mouse>',
       );
     });
 
@@ -539,10 +613,10 @@ describe('prettyFormat()', () => {
                 two: 2,
               },
             },
-            'NESTED'
-          )
+            'NESTED',
+          ),
         ),
-        '<Mouse\n  abc={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  zeus="kentaromiura watched me fix this"\n>\n  <Mouse\n    acbd={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    xyz={123}\n  >\n    NESTED\n  </Mouse>\n</Mouse>'
+        '<Mouse\n  abc={\n    Object {\n      "one": "1",\n      "two": 2,\n    }\n  }\n  zeus="kentaromiura watched me fix this"\n>\n  <Mouse\n    acbd={\n      Object {\n        "one": "1",\n        "two": 2,\n      }\n    }\n    xyz={123}\n  >\n    NESTED\n  </Mouse>\n</Mouse>',
       );
       /* eslint-enable sort-keys */
     });
@@ -552,7 +626,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div'),
         }),
-        '<Mouse\n  prop={<div />}\n/>'
+        '<Mouse\n  prop={<div />}\n/>',
       );
     });
 
@@ -561,7 +635,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div', {foo: 'bar'}),
         }),
-        '<Mouse\n  prop={\n    <div\n      foo="bar"\n    />\n  }\n/>'
+        '<Mouse\n  prop={\n    <div\n      foo="bar"\n    />\n  }\n/>',
       );
     });
 
@@ -573,7 +647,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {foo: 'bar'}),
         }),
-        '<Mouse\n  prop={\n    <Cat\n      foo="bar"\n    />\n  }\n/>'
+        '<Mouse\n  prop={\n    <Cat\n      foo="bar"\n    />\n  }\n/>',
       );
     });
 
@@ -585,7 +659,7 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {}, React.createElement('div')),
         }),
-        '<Mouse\n  prop={\n    <Cat>\n      <div />\n    </Cat>\n  }\n/>'
+        '<Mouse\n  prop={\n    <Cat>\n      <div />\n    </Cat>\n  }\n/>',
       );
     });
 
@@ -594,53 +668,64 @@ describe('prettyFormat()', () => {
         React.createElement('Mouse', {
           prop: React.createElement('div', null, 'mouse'),
         }),
-        '<Mouse\n  prop={\n    <div>\n      mouse\n    </div>\n  }\n/>'
+        '<Mouse\n  prop={\n    <div>\n      mouse\n    </div>\n  }\n/>',
       );
     });
 
     it('supports a single element with React elements with children', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {
-          prop: React.createElement('div', null, 'mouse', React.createElement('span', null, 'rat')),
+          prop: React.createElement(
+            'div',
+            null,
+            'mouse',
+            React.createElement('span', null, 'rat'),
+          ),
         }),
-        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n    </div>\n  }\n/>'
+        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n    </div>\n  }\n/>',
       );
     });
 
     it('supports a single element with React elements with array children', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {
-          prop: React.createElement('div', null,
-            'mouse',
-            [
-              React.createElement('span', {key: 1}, 'rat'),
-              React.createElement('span', {key: 2}, 'cat'),
-            ],
-          ),
+          prop: React.createElement('div', null, 'mouse', [
+            React.createElement('span', {key: 1}, 'rat'),
+            React.createElement('span', {key: 2}, 'cat'),
+          ]),
         }),
-        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n      <span>\n        cat\n      </span>\n    </div>\n  }\n/>'
+        '<Mouse\n  prop={\n    <div>\n      mouse\n      <span>\n        rat\n      </span>\n      <span>\n        cat\n      </span>\n    </div>\n  }\n/>',
       );
     });
 
     it('uses the supplied line seperator for min mode', () => {
       assertPrintedJSX(
-        React.createElement('Mouse', {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
+        React.createElement(
+          'Mouse',
+          {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
           'HELLO',
-          React.createElement('Mouse', {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
+          React.createElement(
+            'Mouse',
+            {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
             'HELLO',
             React.createElement('Mouse'),
-            'CIAO'
+            'CIAO',
           ),
-          'CIAO'
+          'CIAO',
         ),
         '<Mouse customProp={{"one": "1", "two": 2}} onclick={[Function onclick]}>HELLO<Mouse customProp={{"one": "1", "two": 2}} onclick={[Function onclick]}>HELLO<Mouse />CIAO</Mouse>CIAO</Mouse>',
-        {min: true}
+        {min: true},
       );
     });
 
     it('ReactElement plugin highlights syntax', () => {
       const jsx = React.createElement('Mouse', {
-        prop: React.createElement('div', null, 'mouse', React.createElement('span', null, 'rat')),
+        prop: React.createElement(
+          'div',
+          null,
+          'mouse',
+          React.createElement('span', null, 'rat'),
+        ),
       });
       expect(
         prettyFormat(jsx, {
@@ -652,18 +737,27 @@ describe('prettyFormat()', () => {
 
     it('ReactTestComponent plugin highlights syntax', () => {
       const jsx = React.createElement('Mouse', {
-        prop: React.createElement('div', null, 'mouse', React.createElement('span', null, 'rat')),
+        prop: React.createElement(
+          'div',
+          null,
+          'mouse',
+          React.createElement('span', null, 'rat'),
+        ),
       });
       expect(
         prettyFormat(renderer.create(jsx).toJSON(), {
           highlight: true,
           plugins: [ReactTestComponent, ReactElement],
-        })
+        }),
       ).toMatchSnapshot();
     });
 
     it('throws if theme option is null', () => {
-      const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+      const jsx = React.createElement(
+        'Mouse',
+        {style: 'color:red'},
+        'Hello, Mouse!',
+      );
       expect(() => {
         prettyFormat(jsx, {
           highlight: true,
@@ -675,18 +769,28 @@ describe('prettyFormat()', () => {
 
     it('throws if theme option is not of type "object"', () => {
       expect(() => {
-        const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+        const jsx = React.createElement(
+          'Mouse',
+          {style: 'color:red'},
+          'Hello, Mouse!',
+        );
         prettyFormat(jsx, {
           highlight: true,
           plugins: [ReactElement],
           theme: 'beautiful',
         });
-      }).toThrow('pretty-format: Option "theme" must be of type "object" but instead received "string".');
+      }).toThrow(
+        'pretty-format: Option "theme" must be of type "object" but instead received "string".',
+      );
     });
 
     it('throws if theme option has value that is undefined in ansi-styles', () => {
       expect(() => {
-        const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+        const jsx = React.createElement(
+          'Mouse',
+          {style: 'color:red'},
+          'Hello, Mouse!',
+        );
         prettyFormat(jsx, {
           highlight: true,
           plugins: [ReactElement],
@@ -697,11 +801,17 @@ describe('prettyFormat()', () => {
             value: 'green',
           },
         });
-      }).toThrow('pretty-format: Option "theme" has a key "content" whose value "unknown" is undefined in ansi-styles.');
+      }).toThrow(
+        'pretty-format: Option "theme" has a key "content" whose value "unknown" is undefined in ansi-styles.',
+      );
     });
 
     it('ReactElement plugin highlights syntax with color from theme option', () => {
-      const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+      const jsx = React.createElement(
+        'Mouse',
+        {style: 'color:red'},
+        'Hello, Mouse!',
+      );
       expect(
         prettyFormat(jsx, {
           highlight: true,
@@ -709,12 +819,16 @@ describe('prettyFormat()', () => {
           theme: {
             value: 'red',
           },
-        })
+        }),
       ).toMatchSnapshot();
     });
 
     it('ReactTestComponent plugin highlights syntax with color from theme option', () => {
-      const jsx = React.createElement('Mouse', {style: 'color:red'}, 'Hello, Mouse!');
+      const jsx = React.createElement(
+        'Mouse',
+        {style: 'color:red'},
+        'Hello, Mouse!',
+      );
       expect(
         prettyFormat(renderer.create(jsx).toJSON(), {
           highlight: true,
@@ -722,7 +836,7 @@ describe('prettyFormat()', () => {
           theme: {
             value: 'red',
           },
-        })
+        }),
       ).toMatchSnapshot();
     });
   });

@@ -31,13 +31,16 @@ describe('logDebugMessages', () => {
 
   it('Prints the config object', () => {
     const pipe = getPipe();
-    logDebugMessages({
-      automock: false,
-      rootDir: '/path/to/dir',
-      roots: ['path/to/dir/test'],
-      testRunner: 'myRunner',
-      watch: true,
-    }, pipe);
+    logDebugMessages(
+      {
+        automock: false,
+        rootDir: '/path/to/dir',
+        roots: ['path/to/dir/test'],
+        testRunner: 'myRunner',
+        watch: true,
+      },
+      pipe,
+    );
     expect(pipe.write).toHaveBeenCalledWith(
       `config = {
   "automock": false,
@@ -47,7 +50,7 @@ describe('logDebugMessages', () => {
   ],
   "testRunner": "myRunner",
   "watch": true
-}\n`
+}\n`,
     );
   });
 });

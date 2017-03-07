@@ -46,8 +46,9 @@ describe('.stringify()', () => {
       },
     };
     expect(stringify(evil)).toBe('{"toJSON": [Function toJSON]}');
-    expect(stringify({a: {b: {evil}}}))
-      .toBe('{"a": {"b": {"evil": {"toJSON": [Function toJSON]}}}}');
+    expect(stringify({a: {b: {evil}}})).toBe(
+      '{"a": {"b": {"evil": {"toJSON": [Function toJSON]}}}}',
+    );
 
     function Evil() {}
     Evil.toJSON = evil.toJSON;
@@ -67,8 +68,7 @@ describe('.stringify()', () => {
       toJSON,
     };
 
-    expect(() => expect(evilA).toEqual(evilB))
-      .toThrowErrorMatchingSnapshot();
+    expect(() => expect(evilA).toEqual(evilB)).toThrowErrorMatchingSnapshot();
   });
 
   test('reduces maxDepth if stringifying very large objects', () => {
@@ -86,7 +86,6 @@ describe('.stringify()', () => {
     expect(stringify(small)).toMatchSnapshot();
   });
 });
-
 
 describe('.getType()', () => {
   test('null', () => expect(getType(null)).toBe('null'));

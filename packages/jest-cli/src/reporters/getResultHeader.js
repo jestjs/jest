@@ -23,7 +23,7 @@ const PASS = chalk.reset.inverse.bold.green(' PASS ');
 
 module.exports = (result: TestResult, config: Config) => {
   const testPath = result.testFilePath;
-  const status = (result.numFailingTests > 0 || result.testExecError)
+  const status = result.numFailingTests > 0 || result.testExecError
     ? FAIL
     : PASS;
 
@@ -41,8 +41,6 @@ module.exports = (result: TestResult, config: Config) => {
     testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 
-  return (
-    `${status} ${formatTestPath(config, testPath)}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
-  );
+  return `${status} ${formatTestPath(config, testPath)}` +
+    (testDetail.length ? ` (${testDetail.join(', ')})` : '');
 };

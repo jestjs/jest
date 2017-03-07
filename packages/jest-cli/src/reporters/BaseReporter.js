@@ -37,11 +37,7 @@ class BaseReporter {
     results: AggregatedResult,
   ) {}
 
-  onTestStart(
-    config: Config,
-    path: Path,
-    runnerContext: RunnerContext,
-  ) {}
+  onTestStart(config: Config, path: Path, runnerContext: RunnerContext) {}
 
   onRunComplete(
     config: Config,

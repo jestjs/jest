@@ -13,16 +13,15 @@ const moduleNameMapper = {
   '\\.css$': '<rootDir>/__mocks__/ManuallyMocked',
   '^[./a-zA-Z0-9$_-]+\.png$': 'RelativeImageStub',
   '^image![a-zA-Z0-9$_-]+$': 'GlobalImageStub',
-  'mappedToDirectory': '<rootDir>/MyDirectoryModule',
-  'mappedToModule': '<rootDir>/TestModuleNameMapperResolution',
-  'mappedToPath': '<rootDir>/GlobalImageStub.js',
+  mappedToDirectory: '<rootDir>/MyDirectoryModule',
+  mappedToModule: '<rootDir>/TestModuleNameMapperResolution',
+  mappedToPath: '<rootDir>/GlobalImageStub.js',
   'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
 };
 
 let createRuntime;
 
 beforeEach(() => {
-
   createRuntime = require('createRuntime');
 });
 
@@ -36,11 +35,11 @@ it('mocks modules by default when using automocking', () =>
       'RegularModule',
     );
     expect(exports.setModuleStateValue._isMockFunction).toBe(true);
-  }),
-);
+  }));
 
-it(`doesn't mock modules when explicitly unmocked when using automocking`, () =>
-  createRuntime(__filename, {
+it(
+  `doesn't mock modules when explicitly unmocked when using automocking`,
+  () => createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
   }).then(runtime => {
@@ -54,8 +53,9 @@ it(`doesn't mock modules when explicitly unmocked when using automocking`, () =>
   }),
 );
 
-it(`doesn't mock modules when explicitly unmocked via a different denormalized module name`, () =>
-  createRuntime(__filename, {
+it(
+  `doesn't mock modules when explicitly unmocked via a different name`,
+  () => createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
   }).then(runtime => {
@@ -69,8 +69,9 @@ it(`doesn't mock modules when explicitly unmocked via a different denormalized m
   }),
 );
 
-it(`doesn't mock modules when disableAutomock() has been called`, () =>
-  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+it(
+  `doesn't mock modules when disableAutomock() has been called`,
+  () => createRuntime(__filename, {moduleNameMapper}).then(runtime => {
     const root = runtime.requireModule(runtime.__mockRootPath);
     root.jest.disableAutomock();
     const exports = runtime.requireModuleOrMock(
@@ -91,8 +92,7 @@ it('uses manual mock when automocking on and mock is available', () =>
       'ManuallyMocked',
     );
     expect(exports.isManualMockModule).toBe(true);
-  }),
-);
+  }));
 
 it('does not use manual mock when automocking is off and a real module is available', () =>
   createRuntime(__filename, {moduleNameMapper}).then(runtime => {
@@ -103,8 +103,7 @@ it('does not use manual mock when automocking is off and a real module is availa
       'ManuallyMocked',
     );
     expect(exports.isManualMockModule).toBe(false);
-  }),
-);
+  }));
 
 it('resolves mapped module names and unmocks them by default', () =>
   createRuntime(__filename, {
@@ -135,10 +134,7 @@ it('resolves mapped module names and unmocks them by default', () =>
     );
     expect(exports.isIndex).toBe(true);
 
-    exports = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      'cat.png',
-    );
+    exports = runtime.requireModuleOrMock(runtime.__mockRootPath, 'cat.png');
     expect(exports.isRelativeImageStub).toBe(true);
 
     exports = runtime.requireModuleOrMock(
@@ -158,17 +154,14 @@ it('resolves mapped module names and unmocks them by default', () =>
       'subdir1/style.css',
     );
     expect(exports.isManualMockModule).toBe(true);
-  }),
-);
+  }));
 
-it('automocking is disabled by default', () =>
-  createRuntime(__filename, {
-    moduleNameMapper,
-  }).then(runtime => {
-    const exports = runtime.requireModuleOrMock(
-      runtime.__mockRootPath,
-      'RegularModule',
-    );
-    expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
-  }),
-);
+it('automocking is disabled by default', () => createRuntime(__filename, {
+  moduleNameMapper,
+}).then(runtime => {
+  const exports = runtime.requireModuleOrMock(
+    runtime.__mockRootPath,
+    'RegularModule',
+  );
+  expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
+}));

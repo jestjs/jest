@@ -25,7 +25,7 @@ function extract(contents: string): string {
   return match ? match[0].replace(ltrimRe, '') || '' : '';
 }
 
-function parse(docblock: string): { [key: string]: string } {
+function parse(docblock: string): {[key: string]: string} {
   docblock = docblock
     .replace(commentStartRe, '')
     .replace(commentEndRe, '')

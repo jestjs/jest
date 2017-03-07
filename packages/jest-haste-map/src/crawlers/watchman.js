@@ -26,7 +26,7 @@ function isDescendant(root: string, child: string): boolean {
 function WatchmanError(error: Error): Error {
   return new Error(
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
-    `is running for this project. See ${watchmanURL}.`,
+      `is running for this project. See ${watchmanURL}.`,
   );
 }
 
@@ -114,8 +114,8 @@ module.exports = function watchmanCrawl(
                 const mtime = typeof fileData.mtime_ms === 'number'
                   ? fileData.mtime_ms
                   : fileData.mtime_ms.toNumber();
-                const isNew =
-                  !data.files[name] || data.files[name][H.MTIME] !== mtime;
+                const isNew = !data.files[name] ||
+                  data.files[name][H.MTIME] !== mtime;
                 if (isNew) {
                   // See ../constants.js
                   files[name] = ['', mtime, 0, []];

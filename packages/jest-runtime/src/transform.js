@@ -352,8 +352,8 @@ const transformAndBuildScript = (
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
   let wrappedCode: string;
   let sourceMapPath: ?string = null;
-  const willTransform = !isInternalModule
-    && (shouldTransform(filename, config) || instrument);
+  const willTransform = !isInternalModule &&
+    (shouldTransform(filename, config) || instrument);
 
   try {
     if (willTransform) {
@@ -361,7 +361,7 @@ const transformAndBuildScript = (
         filename,
         config,
         content,
-        instrument
+        instrument,
       );
 
       wrappedCode = wrap(transformedSource.code);
@@ -382,10 +382,10 @@ const transformAndBuildScript = (
     if (config.logTransformErrors) {
       console.error(
         `FILENAME: ${filename}\n` +
-        `TRANSFORM: ${willTransform.toString()}\n` +
-        `INSTRUMENT: ${instrument.toString()}\n` +
-        `SOURCE:\n` +
-        String(wrappedCode),
+          `TRANSFORM: ${willTransform.toString()}\n` +
+          `INSTRUMENT: ${instrument.toString()}\n` +
+          `SOURCE:\n` +
+          String(wrappedCode),
       );
     }
 

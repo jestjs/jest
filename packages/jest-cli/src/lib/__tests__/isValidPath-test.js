@@ -23,24 +23,48 @@ const config = {
 };
 
 it('is valid when it is a file inside roots', () => {
-  expect(isValidPath(config, path.resolve(rootDir, 'src', 'index.js'))).toBe(true);
-  expect(isValidPath(config, path.resolve(rootDir, 'src', 'components', 'Link.js'))).toBe(true);
-  expect(isValidPath(config, path.resolve(rootDir, 'src', 'lib', 'something.js'))).toBe(true);
+  expect(isValidPath(config, path.resolve(rootDir, 'src', 'index.js'))).toBe(
+    true,
+  );
+  expect(
+    isValidPath(config, path.resolve(rootDir, 'src', 'components', 'Link.js')),
+  ).toBe(true);
+  expect(
+    isValidPath(config, path.resolve(rootDir, 'src', 'lib', 'something.js')),
+  ).toBe(true);
 });
 
 it('is not valid when it is a snapshot file', () => {
-  expect(isValidPath(config, path.resolve(rootDir, 'src', 'index.js.snap'))).toBe(false);
-  expect(isValidPath(config, path.resolve(rootDir, 'src', 'components', 'Link.js.snap'))).toBe(false);
-  expect(isValidPath(config, path.resolve(rootDir, 'src', 'lib', 'something.js.snap'))).toBe(false);
+  expect(
+    isValidPath(config, path.resolve(rootDir, 'src', 'index.js.snap')),
+  ).toBe(false);
+  expect(
+    isValidPath(
+      config,
+      path.resolve(rootDir, 'src', 'components', 'Link.js.snap'),
+    ),
+  ).toBe(false);
+  expect(
+    isValidPath(
+      config,
+      path.resolve(rootDir, 'src', 'lib', 'something.js.snap'),
+    ),
+  ).toBe(false);
 });
 
 it('is not valid when it is a file in the coverage dir', () => {
-  expect(isValidPath(config, path.resolve(rootDir, 'coverage', 'lib', 'index.js'))).toBe(false);
-  
+  expect(
+    isValidPath(config, path.resolve(rootDir, 'coverage', 'lib', 'index.js')),
+  ).toBe(false);
+
   const configWithCoverage = Object.assign({}, config, {
     coverageDirectory: 'cov-dir',
   });
-  
-  expect(isValidPath(configWithCoverage, path.resolve(rootDir, 'src', 'cov-dir', 'lib', 'index.js')))
-    .toBe(false);
+
+  expect(
+    isValidPath(
+      configWithCoverage,
+      path.resolve(rootDir, 'src', 'cov-dir', 'lib', 'index.js'),
+    ),
+  ).toBe(false);
 });
