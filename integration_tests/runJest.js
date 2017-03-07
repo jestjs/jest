@@ -8,7 +8,7 @@
 
 const {fileExists} = require('./utils');
 const path = require('path');
-const spawnSync = require('cross-spawn').sync;// require('child_process').spawnSync;
+const spawnSync = require('cross-spawn').sync;
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
