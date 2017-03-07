@@ -9,7 +9,6 @@
 'use strict';
 
 const path = require('path');
-const skipOnWindows = require('skipOnWindows');
 const {cleanup} = require('../utils');
 const runJest = require('../runJest');
 
@@ -28,8 +27,6 @@ const runAndAssert = () => {
 };
 
 describe('Snapshot serializers', () => {
-  skipOnWindows.suite();
-
   beforeEach(() => cleanup(snapshotsDir));
   afterEach(() => cleanup(snapshotsDir));
 
