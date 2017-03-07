@@ -37,7 +37,8 @@ const check = (argv: Object) => {
   if (argv.findRelatedTests && argv._.length === 0) {
     throw new Error(
       'The --findRelatedTests option requires file paths to be specified.\n' +
-        'Example usage: jest --findRelatedTests ./src/source.js ./src/index.js.',
+        'Example usage: jest --findRelatedTests ./src/source.js ' +
+        './src/index.js.',
     );
   }
 
@@ -55,13 +56,13 @@ const options = {
   },
   cache: {
     default: true,
-    description: 'Whether to use the transform cache. Disable the cache using ' +
-      '--no-cache.',
+    description: 'Whether to use the transform cache. Disable the cache ' +
+      'using --no-cache.',
     type: 'boolean',
   },
   collectCoverageFrom: {
-    description: 'relative to <rootDir> glob pattern matching the files that coverage ' +
-      'info needs to be collected from.',
+    description: 'relative to <rootDir> glob pattern matching the files ' +
+      'that coverage info needs to be collected from.',
     type: 'string',
   },
   collectCoverageOnlyFrom: {
@@ -69,8 +70,8 @@ const options = {
     type: 'array',
   },
   color: {
-    description: 'Forces test results output color highlighting (even if stdout is not ' +
-      'a TTY). Set to false if you would like to have no colors.',
+    description: 'Forces test results output color highlighting (even if ' +
+      'stdout is not a TTY). Set to false if you would like to have no colors.',
     type: 'boolean',
   },
   colors: {
@@ -79,15 +80,15 @@ const options = {
   },
   config: {
     alias: 'c',
-    description: 'The path to a jest config file specifying how to find and execute ' +
-      'tests. If no rootDir is set in the config, the current directory ' +
-      'is assumed to be the rootDir for the project. This can also be a JSON' +
-      'encoded value which Jest will use as configuration.',
+    description: 'The path to a jest config file specifying how to find ' +
+      'and execute tests. If no rootDir is set in the config, the current ' +
+      'directory is assumed to be the rootDir for the project. This can also ' +
+      'be a JSON encoded value which Jest will use as configuration.',
     type: 'string',
   },
   coverage: {
-    description: 'Indicates that test coverage information should be collected and ' +
-      'reported in the output.',
+    description: 'Indicates that test coverage information should be ' +
+      'collected and reported in the output.',
     type: 'boolean',
   },
   coverageDirectory: {
@@ -101,8 +102,8 @@ const options = {
   },
   env: {
     default: undefined,
-    description: 'The test environment used for all tests. This can point to any file ' +
-      'or node module. Examples: `jsdom`, `node` or ' +
+    description: 'The test environment used for all tests. This can point to ' +
+      'any file or node module. Examples: `jsdom`, `node` or ' +
       '`path/to/my-environment.js`',
     type: 'string',
   },
@@ -113,9 +114,9 @@ const options = {
     type: 'boolean',
   },
   findRelatedTests: {
-    description: 'Find related tests for a list of source files that were passed in ' +
-      'as arguments. Useful for pre-commit hook integration to run the ' +
-      'minimal amount of tests necessary.',
+    description: 'Find related tests for a list of source files that were ' +
+      'passed in as arguments. Useful for pre-commit hook integration to run ' +
+      'the minimal amount of tests necessary.',
     type: 'boolean',
   },
   forceExit: {
@@ -132,25 +133,27 @@ const options = {
   },
   lastCommit: {
     default: false,
-    description: 'Will run all tests affected by file changes in the last commit made.',
+    description: 'Will run all tests affected by file changes in the last ' +
+      'commit made.',
     type: 'boolean',
   },
   logHeapUsage: {
-    description: 'Logs the heap usage after every test. Useful to debug memory ' +
-      'leaks. Use together with `--runInBand` and `--expose-gc` in node.',
+    description: 'Logs the heap usage after every test. Useful to debug ' +
+      'memory leaks. Use together with `--runInBand` and `--expose-gc` in ' +
+      'node.',
     type: 'boolean',
   },
   mapCoverage: {
-    description: 'Maps code coverage reports against original source code when ' +
-      'transformers supply source maps.',
+    description: 'Maps code coverage reports against original source code ' +
+      'when transformers supply source maps.',
     type: 'boolean',
   },
   maxWorkers: {
     alias: 'w',
-    description: 'Specifies the maximum number of workers the worker-pool will ' +
-      'spawn for running tests. This defaults to the number of the cores ' +
-      'available on your machine. (its usually best not to override this ' +
-      'default)',
+    description: 'Specifies the maximum number of workers the worker-pool ' +
+      'will spawn for running tests. This defaults to the number of the ' +
+      'cores available on your machine. (its usually best not to override ' +
+      'this default)',
     type: 'string', // no, yargs -- its a number.. :(
   },
   noStackTrace: {
@@ -163,13 +166,14 @@ const options = {
   },
   onlyChanged: {
     alias: 'o',
-    description: 'Attempts to identify which tests to run based on which files have ' +
-      "changed in the current repository. Only works if you're running " +
-      'tests in a git repository at the moment.',
+    description: 'Attempts to identify which tests to run based on which ' +
+      "files have changed in the current repository. Only works if you're " +
+      'running tests in a git repository at the moment.',
     type: 'boolean',
   },
   outputFile: {
-    description: 'Write test results to a file when the --json option is also specified.',
+    description: 'Write test results to a file when the --json option is ' +
+      'also specified.',
     type: 'string',
   },
   runInBand: {
@@ -181,8 +185,8 @@ const options = {
     type: 'boolean',
   },
   setupTestFrameworkScriptFile: {
-    description: 'The path to a module that runs some code to configure or set up ' +
-      'the testing framework before each test.',
+    description: 'The path to a module that runs some code to configure or ' +
+      'set up the testing framework before each test.',
     type: 'string',
   },
   silent: {
@@ -208,10 +212,8 @@ const options = {
     type: 'string',
   },
   testRunner: {
-    description: 'Allows to specify a custom test runner. Jest ships with Jasmine ' +
-      '1 and 2 which can be enabled by setting this option to ' +
-      '`jasmine1` or `jasmine2`. The default is `jasmine2`. A path to a ' +
-      'custom test runner can be provided: ' +
+    description: 'Allows to specify a custom test runner. The default is ' +
+      ' `jasmine2`. A path to a custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
     type: 'string',
   },
@@ -229,7 +231,8 @@ const options = {
     type: 'boolean',
   },
   verbose: {
-    description: 'Display individual test results with the test suite hierarchy.',
+    description: 'Display individual test results with the test suite ' +
+      'hierarchy.',
     type: 'boolean',
   },
   version: {
@@ -238,14 +241,14 @@ const options = {
     type: 'boolean',
   },
   watch: {
-    description: 'Watch files for changes and rerun tests related to changed files. ' +
-      'If you want to re-run all tests when a file has changed, use the ' +
-      '`--watchAll` option.',
+    description: 'Watch files for changes and rerun tests related to ' +
+      'changed files. If you want to re-run all tests when a file has ' +
+      'changed, use the `--watchAll` option.',
     type: 'boolean',
   },
   watchAll: {
-    description: 'Watch files for changes and rerun all tests. If you want to re-run ' +
-      'only the tests related to the changed files, use the ' +
+    description: 'Watch files for changes and rerun all tests. If you want ' +
+      'to re-run only the tests related to the changed files, use the ' +
       '`--watch` option.',
     type: 'boolean',
   },

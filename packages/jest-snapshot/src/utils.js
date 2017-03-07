@@ -42,8 +42,8 @@ const validateSnapshotVersion = (snapshotContents: string) => {
     return new Error(
       chalk.red(
         `${chalk.bold('Outdated snapshot')}: No snapshot header found. ` +
-          `Jest 19 introduced versioned snapshots to ensure all developers on ` +
-          `a project are using the same version of Jest. ` +
+          `Jest 19 introduced versioned snapshots to ensure all developers ` +
+          `on a project are using the same version of Jest. ` +
           `Please update all snapshots during this upgrade of Jest.\n\n`,
       ) + SNAPSHOT_VERSION_WARNING,
     );
@@ -69,10 +69,9 @@ const validateSnapshotVersion = (snapshotContents: string) => {
       chalk.red(
         `${chalk.red.bold('Outdated Jest version')}: The version of this ` +
           `snapshot file indicates that this project is meant to be used ` +
-          `with a newer version of Jest. ` +
-          `The snapshot file version ensures that all developers on a project ` +
-          `are using the same version of Jest. ` +
-          `Please update your version of Jest and re-run the tests.\n\n`,
+          `with a newer version of Jest. The snapshot file version ensures ` +
+          `that all developers on a project are using the same version of ` +
+          `Jest. Please update your version of Jest and re-run the tests.\n\n`,
       ) +
         `Expected: v${SNAPSHOT_VERSION}\n` +
         `Received: v${version}`,
@@ -144,7 +143,8 @@ const serialize = (data: any): string => {
   );
 };
 
-const unescape = (data: any): string => data.replace(/\\(")/g, '$1'); // unescape double quotes
+// unescape double quotes
+const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
 const printBacktickString = (str: string) => {
   return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';

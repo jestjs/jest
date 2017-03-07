@@ -158,7 +158,7 @@ describe('Runtime requireModule', () => {
   }));
 
   it(
-    `doesn't override real modules with manual mocks when explicitly marked with .unmock()`,
+    `doesn't override real modules with manual mocks when explicitly unmocked`,
     () => createRuntime(__filename, {
       automock: true,
     }).then(runtime => {

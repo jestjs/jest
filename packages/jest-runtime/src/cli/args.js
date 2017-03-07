@@ -15,8 +15,8 @@ const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 const options = {
   cache: {
     default: true,
-    description: 'Whether to use the preprocessor cache. Disable the cache using ' +
-      '--no-cache.',
+    description: 'Whether to use the preprocessor cache. Disable ' +
+      'the cache using --no-cache.',
     type: 'boolean',
   },
   config: {

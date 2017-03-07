@@ -79,7 +79,8 @@ describe('getObjectSubset()', () => {
     [new Date('2015-11-30'), new Date('2016-12-30'), new Date('2015-11-30')],
   ].forEach(([object, subset, expected]) => {
     test(
-      `expect(getObjectSubset(${stringify(object)}, ${stringify(subset)})).toEqual(${stringify(expected)})`,
+      `expect(getObjectSubset(${stringify(object)}, ${stringify(subset)}))` +
+      `.toEqual(${stringify(expected)})`,
       () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },

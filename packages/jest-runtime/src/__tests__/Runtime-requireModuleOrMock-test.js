@@ -54,7 +54,7 @@ it(
 );
 
 it(
-  `doesn't mock modules when explicitly unmocked via a different denormalized module name`,
+  `doesn't mock modules when explicitly unmocked via a different name`,
   () => createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
