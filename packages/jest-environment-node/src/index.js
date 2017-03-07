@@ -27,7 +27,7 @@ class NodeEnvironment {
 
   constructor(config: Config) {
     this.context = vm.createContext();
-    const global = this.global = vm.runInContext('this', this.context);
+    const global = (this.global = vm.runInContext('this', this.context));
     global.global = global;
     global.clearInterval = clearInterval;
     global.clearTimeout = clearTimeout;

@@ -13,15 +13,12 @@ beforeEach(() => jest.resetModules());
 const testPath = names => {
   const {addSerializer, getSerializers} = require('../plugins');
   const prev = getSerializers();
-  const added = names.map(
-    name => require(require.resolve(`./plugins/${name}`))
-  );
+  const added = names.map(name =>
+    require(require.resolve(`./plugins/${name}`)));
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  added.concat().reverse().forEach(
-    serializer => addSerializer(serializer)
-  );
+  added.concat().reverse().forEach(serializer => addSerializer(serializer));
 
   const next = getSerializers();
   expect(next.length).toBe(added.length + prev.length);
@@ -35,5 +32,5 @@ it('gets plugins', () => {
 });
 
 it('adds plugins from an empty array', () => testPath([]));
-it('adds a single plugin path', () =>  testPath(['foo']));
+it('adds a single plugin path', () => testPath(['foo']));
 it('adds multiple plugin paths', () => testPath(['foo', 'bar']));

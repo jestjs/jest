@@ -53,5 +53,4 @@ describe('addMatcher Adapter', () => {
     expect(1)._toBeValue(1);
     expect(1).not._toBeValue(2);
   });
-
 });

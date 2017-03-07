@@ -139,26 +139,20 @@ class Status {
       if (record) {
         const {config, testPath} = record;
         content += wrapAnsiString(
-          RUNNING + trimAndFormatPath(
-            RUNNING_TEXT.length + 1,
-            config,
-            testPath,
-            width,
-          ),
+          RUNNING +
+            trimAndFormatPath(RUNNING_TEXT.length + 1, config, testPath, width),
           width,
         ) + '\n';
       }
     });
 
     if (this._showStatus && this._aggregatedResults) {
-      content += '\n' + getSummary(
-        this._aggregatedResults,
-        {
+      content += '\n' +
+        getSummary(this._aggregatedResults, {
           estimatedTime: this._estimatedTime,
           roundTime: true,
           width,
-        },
-      );
+        });
     }
 
     let height = 0;
@@ -170,7 +164,7 @@ class Status {
     }
 
     const clear = '\r\x1B[K\r\x1B[1A'.repeat(height);
-    return this._cache = {clear, content};
+    return (this._cache = {clear, content});
   }
 
   _emit() {
@@ -184,17 +178,19 @@ class Status {
       // Perf optimization to avoid two separate renders When
       // one test finishes and another test starts executing.
       this._emitScheduled = true;
-      setTimeout(() => {
-        this._emit();
-        this._emitScheduled = false;
-      }, 100);
+      setTimeout(
+        () => {
+          this._emit();
+          this._emitScheduled = false;
+        },
+        100,
+      );
     }
   }
 
   _tick() {
     this._debouncedEmit();
   }
-
 }
 
 module.exports = Status;

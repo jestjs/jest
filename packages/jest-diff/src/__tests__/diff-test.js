@@ -33,11 +33,9 @@ describe('different types', () => {
     test(`'${a}' and '${b}'`, () => {
       expect(stripAnsi(diff(a, b))).toBe(
         '  Comparing two different types of values. ' +
-        `Expected ${typeA} but received ${typeB}.`,
+          `Expected ${typeA} but received ${typeB}.`,
       );
-
     });
-
   });
 });
 
@@ -104,11 +102,11 @@ test('prints a fallback message if two objects truly look identical', () => {
 
 test('multiline strings', () => {
   const result = diff(
-`line 1
+    `line 1
 line 2
 line 3
 line 4`,
-`line 1
+    `line 1
 line  2
 line 3
 line 4`,
@@ -135,21 +133,24 @@ test('booleans', () => {
 });
 
 test('React elements', () => {
-  const result = diff({
-    $$typeof: Symbol.for('react.element'),
-    props: {
-      children: 'Hello',
+  const result = diff(
+    {
+      $$typeof: Symbol.for('react.element'),
+      props: {
+        children: 'Hello',
+        className: 'fun',
+      },
+      type: 'div',
+    },
+    {
+      $$typeof: Symbol.for('react.element'),
       className: 'fun',
+      props: {
+        children: 'Goodbye',
+      },
+      type: 'div',
     },
-    type: 'div',
-  }, {
-    $$typeof: Symbol.for('react.element'),
-    className: 'fun',
-    props: {
-      children: 'Goodbye',
-    },
-    type: 'div',
-  });
+  );
   expect(stripAnsi(result)).toMatch(/<div\n/);
   expect(stripAnsi(result)).toMatch(/[\s\S]+className="fun"\n/);
   expect(stripAnsi(result)).toMatch(/>/);
@@ -161,7 +162,7 @@ test('collapses big diffs to patch format', () => {
   const result = diff(
     {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
     {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
-    {expand: false}
+    {expand: false},
   );
 
   expect(result).toMatchSnapshot();

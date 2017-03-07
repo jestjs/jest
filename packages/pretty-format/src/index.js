@@ -384,7 +384,7 @@ function printObject(
     keys = keys
       .filter(
         key =>
-          // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
+        // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
           !(typeof key === 'symbol' ||
             toString.call(key) === '[object Symbol]'),
       )
@@ -858,7 +858,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
   const colors: Colors = {};
   Object.keys(opts.theme).forEach(key => {
     if (opts.highlight) {
-      const color = colors[key] = style[opts.theme[key]];
+      const color = (colors[key] = style[opts.theme[key]]);
       if (
         !color ||
         typeof color.close !== 'string' ||

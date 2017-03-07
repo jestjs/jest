@@ -16,10 +16,9 @@ const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricM
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
 const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
 
-const PLUGINS = [
-  AsymmetricMatcherPlugin, 
-  ReactElementPlugin,
-].concat(ImmutablePlugins);
+const PLUGINS = [AsymmetricMatcherPlugin, ReactElementPlugin].concat(
+  ImmutablePlugins,
+);
 
 export type ValueType =
   | 'array'
@@ -118,14 +117,10 @@ const stringify = (object: any, maxDepth?: number = 10): string => {
 const highlightTrailingWhitespace = (text: string, bgColor: Function): string =>
   text.replace(/\s+$/gm, bgColor('$&'));
 
-const printReceived = (object: any) => highlightTrailingWhitespace(
-  RECEIVED_COLOR(stringify(object)),
-  RECEIVED_BG,
-);
-const printExpected = (value: any) => highlightTrailingWhitespace(
-  EXPECTED_COLOR(stringify(value)),
-  EXPECTED_BG,
-);
+const printReceived = (object: any) =>
+  highlightTrailingWhitespace(RECEIVED_COLOR(stringify(object)), RECEIVED_BG);
+const printExpected = (value: any) =>
+  highlightTrailingWhitespace(EXPECTED_COLOR(stringify(value)), EXPECTED_BG);
 
 const printWithType = (
   name: string,
@@ -133,13 +128,10 @@ const printWithType = (
   print: (value: any) => string,
 ) => {
   const type = getType(received);
-  return (
-    name + ':' +
-    (type !== 'null' && type !== 'undefined'
-      ? '\n  ' + type + ': '
-      : ' ') +
-    print(received)
-  );
+  return name +
+    ':' +
+    (type !== 'null' && type !== 'undefined' ? '\n  ' + type + ': ' : ' ') +
+    print(received);
 };
 
 const ensureNoExpected = (expected: any, matcherName: string) => {
@@ -180,9 +172,8 @@ const ensureNumbers = (actual: any, expected: any, matcherName: string) => {
   ensureExpectedIsNumber(expected, matcherName);
 };
 
-const pluralize =
-  (word: string, count: number) =>
-    (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
+const pluralize = (word: string, count: number) =>
+  (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
 
 const matcherHint = (
   matcherName: string,
@@ -195,14 +186,12 @@ const matcherHint = (
 ) => {
   const secondArgument = options && options.secondArgument;
   const isDirectExpectCall = options && options.isDirectExpectCall;
-  return (
-    chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
+  return chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
     RECEIVED_COLOR(received) +
     chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(') +
     EXPECTED_COLOR(expected) +
     (secondArgument ? `, ${EXPECTED_COLOR(secondArgument)}` : '') +
-    chalk.dim(')')
-  );
+    chalk.dim(')');
 };
 
 module.exports = {

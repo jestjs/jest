@@ -28,7 +28,7 @@ class JSDOMEnvironment {
     this.document = require('jsdom').jsdom(/* markup */ undefined, {
       url: config.testURL,
     });
-    const global = this.global = this.document.defaultView;
+    const global = (this.global = this.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;

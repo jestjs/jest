@@ -42,7 +42,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
         testEnvironment: customEnvironment,
-      })
+      }),
     );
   }
 

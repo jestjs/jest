@@ -92,9 +92,7 @@ class VerboseReporter extends DefaultReporter {
 
   _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    const time = test.duration
-      ? ` (${test.duration.toFixed(0)}ms)`
-      : '';
+    const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
@@ -131,7 +129,6 @@ class VerboseReporter extends DefaultReporter {
     const indentation = '  '.repeat(indentLevel || 0);
     this.log(indentation + (str || ''));
   }
-
 }
 
 module.exports = VerboseReporter;
