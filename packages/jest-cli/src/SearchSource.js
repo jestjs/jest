@@ -150,8 +150,10 @@ class SearchSource {
       testCases.testPathPattern = path => regex.test(path);
     }
 
+    const testCasesKeys = Object.keys(testCases);
+
     data.paths = allPaths.filter(path => {
-      return Object.keys(testCases).reduce((flag, key) => {
+      return testCasesKeys.reduce((flag, key) => {
         if (testCases[key](path)) {
           data.stats[key] = ++data.stats[key] || 1;
           return flag && true;
