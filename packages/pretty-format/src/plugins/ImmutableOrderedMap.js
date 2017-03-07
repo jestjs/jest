@@ -4,37 +4,30 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * @flow
  */
 
 'use strict';
 
-const printImmutable = require('./printImmutable');
-const IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
-const IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+import type {Colors, Indent, Options, Print} from '../types.js';
 
-const isMap = (maybeMap: Object) => {
-  return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
-};
+const printImmutable = require('./lib/printImmutable');
 
-const isOrdered = (maybeOrdered: Object) => {
-  return !!(maybeOrdered && maybeOrdered[IS_ORDERED_SENTINEL]);
-};
+const IS_MAP = '@@__IMMUTABLE_MAP__@@';
+const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
+const isMap = (maybeMap: any) => !!maybeMap[IS_MAP];
+const isOrdered = (maybeOrdered: any) => !!maybeOrdered[IS_ORDERED];
 
-const isOrderedMap = (maybeOrderedMap: Object) => {
-  return isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
-};
-
-const test = (object: Object) => object && isOrderedMap(object);
+const test = (maybeOrderedMap: any) =>
+  maybeOrderedMap && isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
 
 const print = (
-  val: Object, 
-  print: Function,
-  indent: Function,
-  opts: Object,
-  colors: Object
-) => {
-  return printImmutable(val, print, indent, opts, colors, 'OrderedMap', true);
-};
+  val: any,
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
+) => printImmutable(val, print, indent, opts, colors, 'OrderedMap', true);
 
 module.exports = {print, test};

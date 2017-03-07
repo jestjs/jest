@@ -11,25 +11,9 @@
 
 'use strict';
 
+import type {Colors, Refs, StringOrNull, Plugins, Options} from './types.js';
+
 const style = require('ansi-styles');
-
-type Colors = Object;
-type Indent = (str: string) => string;
-type Refs = Array<any>;
-type Serialize = (val: any) => string;
-type StringOrNull = string | null; // but disallow undefined, unlike ?string
-
-type Plugin = {
-  print: (
-    val: any,
-    serialize: Serialize,
-    indent: Indent,
-    opts: Object,
-    colors: Colors,
-  ) => string,
-  test: Function,
-};
-type Plugins = Array<Plugin>;
 
 type Theme = {|
   content?: string,
@@ -48,23 +32,6 @@ type InitialOptions = {|
   plugins?: Plugins,
   printFunctionName?: boolean,
   theme?: Theme,
-|};
-
-type Options = {|
-  callToJSON: boolean,
-  escapeRegex: boolean,
-  highlight: boolean,
-  indent: number,
-  maxDepth: number,
-  min: boolean,
-  plugins: Plugins,
-  printFunctionName: boolean,
-  theme: {|
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
-  |},
 |};
 
 const toString = Object.prototype.toString;

@@ -8,7 +8,7 @@
 /* eslint-disable max-len */
 'use strict';
 
-const escapeHTML = require('./escapeHTML');
+const escapeHTML = require('./lib/escapeHTML');
 
 const reactElement = Symbol.for('react.element');
 
