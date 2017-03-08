@@ -1,4 +1,7 @@
 {
   "extends": "./packages/eslint-config-fb-strict/index.js",
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
+  "rules": {
+    "no-multiple-empty-lines": 1
+  }
 }
