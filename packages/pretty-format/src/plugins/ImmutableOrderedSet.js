@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Colors, Indent, Options, Print} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
 
 const printImmutable = require('./lib/printImmutable');
 
@@ -30,4 +30,4 @@ const print = (
   colors: Colors,
 ) => printImmutable(val, print, indent, opts, colors, 'OrderedSet', false);
 
-module.exports = {print, test};
+module.exports = ({print, test}: Plugin);

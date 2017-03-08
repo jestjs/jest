@@ -10,12 +10,17 @@
 
 'use strict';
 
-import type {Colors, Indent, Options, Print} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
 
 const printImmutable = require('./lib/printImmutable');
 
 const IS_MAP = '@@__IMMUTABLE_MAP__@@';
-const test = (maybeMap: any) => !!(maybeMap && maybeMap[IS_MAP]);
+const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
+const isMap = (maybeMap: any) => !!maybeMap[IS_MAP];
+const isNotOrdered = (maybeOrdered: any) => !maybeOrdered[IS_ORDERED];
+
+const test = (maybeMap: any) => 
+  !!(maybeMap && isMap(maybeMap) && isNotOrdered(maybeMap));
 
 const print = (
   val: any,
@@ -25,4 +30,4 @@ const print = (
   colors: Colors,
 ) => printImmutable(val, print, indent, opts, colors, 'Map', true);
 
-module.exports = {print, test};
+module.exports = ({print, test}: Plugin);

@@ -10,12 +10,17 @@
 
 'use strict';
 
-import type {Colors, Indent, Options, Print} from '../types.js';
+import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
 
 const printImmutable = require('./lib/printImmutable');
 
 const IS_SET = '@@__IMMUTABLE_SET__@@';
-const test = (maybeSet: any) => !!(maybeSet && maybeSet[IS_SET]);
+const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
+const isSet = (maybeSet: any) => !!maybeSet[IS_SET];
+const isNotOrdered = (maybeOrdered: any) => !maybeOrdered[IS_ORDERED];
+
+const test = (maybeSet: any) => 
+  !!(maybeSet && isSet(maybeSet) && isNotOrdered(maybeSet));
 
 const print = (
   val: any,
@@ -25,4 +30,4 @@ const print = (
   colors: Colors,
 ) => printImmutable(val, print, indent, opts, colors, 'Set', false);
 
-module.exports = {print, test};
+module.exports = ({print, test}: Plugin);
