@@ -9,4 +9,4 @@
 'use strict';
 
 require('jest-resolve-dependencies');
-require('jest-file-exists');
+require('jest-regex-util');
