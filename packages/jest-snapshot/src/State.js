@@ -21,7 +21,6 @@ const {
   testNameToKey,
   unescape,
 } = require('./utils');
-const fileExists = require('jest-file-exists');
 const fs = require('fs');
 
 class SnapshotState {
@@ -87,7 +86,7 @@ class SnapshotState {
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
       saveSnapshotFile(this._snapshotData, this._snapshotPath);
       status.saved = true;
-    } else if (isEmpty && fileExists(this._snapshotPath)) {
+    } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
       if (update) {
         fs.unlinkSync(this._snapshotPath);
       }
@@ -135,7 +134,7 @@ class SnapshotState {
     }
 
     if (
-      !fileExists(this._snapshotPath) || // there's no snapshot file
+      !fs.existsSync(this._snapshotPath) || // there's no snapshot file
       (hasSnapshot && this.update) || // there is a file, but we're updating
       !hasSnapshot // there is a file, but it doesn't have this snaphsot
     ) {

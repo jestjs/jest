@@ -15,11 +15,11 @@ const FakeTimers = require('./FakeTimers');
 const NullConsole = require('./NullConsole');
 
 const clearLine = require('./clearLine');
-const fileExists = require('jest-file-exists');
 const formatTestResults = require('./formatTestResults');
 const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const path = require('path');
+const fs = require('fs');
 const setGlobal = require('./setGlobal');
 const validateCLIOptions = require('./validateCLIOptions');
 
@@ -38,7 +38,7 @@ const getPackageRoot = () => {
 
   // Is the cwd somewhere within an npm package?
   let root = cwd;
-  while (!fileExists(path.join(root, 'package.json'))) {
+  while (!fs.existsSync(path.join(root, 'package.json'))) {
     if (root === '/' || root.match(/^[A-Z]:\\/)) {
       root = cwd;
       break;

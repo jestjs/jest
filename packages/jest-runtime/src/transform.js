@@ -17,7 +17,6 @@ import type {
 } from 'types/Transform';
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
-const fileExists = require('jest-file-exists');
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const path = require('path');
@@ -111,7 +110,7 @@ const wrap = content =>
   '\n}});';
 
 const readCacheFile = (filename: Path, cachePath: Path): ?string => {
-  if (!fileExists(cachePath)) {
+  if (!fs.existsSync(cachePath)) {
     return null;
   }
 
