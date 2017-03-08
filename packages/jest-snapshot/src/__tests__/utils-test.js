@@ -25,16 +25,17 @@ const path = require('path');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;
+const existsSync = fs.existsSync;
 beforeEach(() => {
   fs.writeFileSync = jest.fn();
   fs.readFileSync = jest.fn();
+  fs.existsSync = jest.fn(() => true);
 });
 afterEach(() => {
   fs.writeFileSync = writeFileSync;
   fs.readFileSync = readFileSync;
+  fs.existsSync = existsSync;
 });
-
-jest.mock('jest-file-exists', () => () => true);
 
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');

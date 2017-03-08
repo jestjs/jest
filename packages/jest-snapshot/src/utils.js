@@ -14,7 +14,6 @@ import type {Path} from 'types/Config';
 
 const chalk = require('chalk');
 const createDirectory = require('jest-util').createDirectory;
-const fileExists = require('jest-file-exists');
 const path = require('path');
 const prettyFormat = require('pretty-format');
 const fs = require('fs');
@@ -103,7 +102,7 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
   let snapshotContents = '';
   let dirty = false;
 
-  if (fileExists(snapshotPath)) {
+  if (fs.existsSync(snapshotPath)) {
     try {
       snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
       // eslint-disable-next-line no-new-func

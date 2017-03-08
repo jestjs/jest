@@ -10,7 +10,6 @@
   "dependencies": {
     "chalk": "^1.1.1",
     "graceful-fs": "^4.1.6",
-    "jest-file-exists": "^19.0.0",
     "jest-mock": "^19.0.0",
     "jest-validate": "^19.0.2",
     "jest-message-util": "^19.0.0",
