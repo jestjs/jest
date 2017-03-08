@@ -10,7 +10,6 @@
 'use strict';
 
 describe('iterators', () => {
-
   it('works for arrays', () => {
     const mixedArray = [1, {}, []];
 
@@ -60,7 +59,9 @@ describe('iterators', () => {
     const keyValuePairs = [['key1', 'value1'], ['key2', 'value2']];
     const smallerKeyValuePairs = [['key1', 'value1']];
     const biggerKeyValuePairs = [
-      ['key1', 'value1'], ['key2', 'value2'], ['key3', 'value3'],
+      ['key1', 'value1'],
+      ['key2', 'value2'],
+      ['key3', 'value3'],
     ];
     const map = new Map(keyValuePairs);
     expect(map).not.toEqual(smallerKeyValuePairs);
@@ -71,5 +72,4 @@ describe('iterators', () => {
     expect(map).not.toBe(keyValuePairs);
     expect(map).toEqual(new Map(keyValuePairs));
   });
-
 });

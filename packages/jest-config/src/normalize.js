@@ -110,7 +110,7 @@ const setupBabelJest = (config: InitialConfig) => {
 
 const normalizeCollectCoverageOnlyFrom = (
   config: InitialConfig,
-  key: string
+  key: string,
 ) => {
   return Object.keys(config[key]).reduce((normObj, filePath) => {
     filePath = path.resolve(
@@ -296,6 +296,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         break;
       case 'setupTestFrameworkScriptFile':
       case 'testResultsProcessor':
+      case 'resolver':
         //$FlowFixMe
         value = resolve(config.rootDir, key, config[key]);
         break;
@@ -344,6 +345,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'globals':
       case 'logHeapUsage':
       case 'logTransformErrors':
+      case 'mapCoverage':
       case 'moduleDirectories':
       case 'moduleFileExtensions':
       case 'moduleLoader':
@@ -388,11 +390,11 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   if (config.testRegex && config.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
-      ` ${chalk.bold('testRegex')} cannot be used together.`
+        ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (config.testRegex && (!config.testMatch)) {
+  if (config.testRegex && !config.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newConfig.testMatch = [];

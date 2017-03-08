@@ -28,7 +28,7 @@ it('instruments files', () => {
     collectCoverage: true,
     rootDir: '/',
   };
-  const instrumented = transform(FILE_PATH_TO_INSTRUMENT, config);
+  const instrumented = transform(FILE_PATH_TO_INSTRUMENT, config).script;
   expect(instrumented instanceof vm.Script).toBe(true);
   // We can't really snapshot the resulting coverage, because it depends on
   // absolute path of the file, which will be different on different

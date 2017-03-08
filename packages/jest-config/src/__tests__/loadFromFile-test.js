@@ -37,8 +37,8 @@ describe('loadFromFile', () => {
   });
 
   it('throws if the file at `filePath` cannot be parsed as JSON.', () => {
-    return loadFromFile('brokenConfig.js', {})
-      .catch(e => expect(e).toBeInstanceOf(Error));
+    return loadFromFile('brokenConfig.js', {}).catch(e =>
+      expect(e).toBeInstanceOf(Error));
   });
 
   it('uses the current working directory if `rootDir` is not defined.', async () => {

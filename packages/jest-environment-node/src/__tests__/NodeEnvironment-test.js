@@ -10,7 +10,6 @@
 const NodeEnvironment = require.requireActual('../');
 
 describe('NodeEnvironment', () => {
-
   it('uses a copy of the process object', () => {
     const env1 = new NodeEnvironment({});
     const env2 = new NodeEnvironment({});
@@ -29,5 +28,4 @@ describe('NodeEnvironment', () => {
 
     expect(env1.global.global).toBe(env1.global);
   });
-
 });

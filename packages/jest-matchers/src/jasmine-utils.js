@@ -34,9 +34,10 @@ function equals(a, b, customTesters) {
 function contains(haystack, needle, customTesters) {
   customTesters = customTesters || [];
 
-  if ((Object.prototype.toString.apply(haystack) === '[object Array]') ||
-    (!!haystack && !haystack.indexOf))
-  {
+  if (
+    Object.prototype.toString.apply(haystack) === '[object Array]' ||
+    (!!haystack && !haystack.indexOf)
+  ) {
     for (var i = 0; i < haystack.length; i++) {
       if (eq(haystack[i], needle, [], [], customTesters)) {
         return true;
@@ -53,8 +54,7 @@ function isAsymmetric(obj) {
 }
 
 function asymmetricMatch(a, b) {
-  var asymmetricA = isAsymmetric(a),
-      asymmetricB = isAsymmetric(b);
+  var asymmetricA = isAsymmetric(a), asymmetricB = isAsymmetric(b);
 
   if (asymmetricA && asymmetricB) {
     return undefined;
@@ -92,11 +92,17 @@ function eq(a, b, aStack, bStack, customTesters) {
 
   // Identical objects are equal. `0 === -0`, but they aren't identical.
   // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
-  if (a === b) { return a !== 0 || 1 / a == 1 / b; }
+  if (a === b) {
+    return a !== 0 || 1 / a == 1 / b;
+  }
   // A strict comparison is necessary because `null == undefined`.
-  if (a === null || b === null) { return a === b; }
+  if (a === null || b === null) {
+    return a === b;
+  }
   var className = Object.prototype.toString.call(a);
-  if (className != Object.prototype.toString.call(b)) { return false; }
+  if (className != Object.prototype.toString.call(b)) {
+    return false;
+  }
   switch (className) {
     // Strings, numbers, dates, and booleans are compared by value.
     case '[object String]':
@@ -106,7 +112,7 @@ function eq(a, b, aStack, bStack, customTesters) {
     case '[object Number]':
       // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
       // other numeric values.
-      return a != +a ? b != +b : (a === 0 ? 1 / a == 1 / b : a == +b);
+      return a != +a ? b != +b : a === 0 ? 1 / a == 1 / b : a == +b;
     case '[object Date]':
     case '[object Boolean]':
       // Coerce dates and booleans to numeric primitive values. Dates are compared by their
@@ -120,7 +126,9 @@ function eq(a, b, aStack, bStack, customTesters) {
         a.multiline == b.multiline &&
         a.ignoreCase == b.ignoreCase;
   }
-  if (typeof a != 'object' || typeof b != 'object') { return false; }
+  if (typeof a != 'object' || typeof b != 'object') {
+    return false;
+  }
 
   var aIsDomNode = isDomNode(a);
   var bIsDomNode = isDomNode(b);
@@ -150,7 +158,9 @@ function eq(a, b, aStack, bStack, customTesters) {
   while (length--) {
     // Linear search. Performance is inversely proportional to the number of
     // unique nested structures.
-    if (aStack[length] == a) { return bStack[length] == b; }
+    if (aStack[length] == a) {
+      return bStack[length] == b;
+    }
   }
   // Add the first object to the stack of traversed objects.
   aStack.push(a);
@@ -171,7 +181,6 @@ function eq(a, b, aStack, bStack, customTesters) {
       }
     }
   } else {
-
     // Objects with different constructors are not equivalent, but `Object`s
     // or `Array`s from different frames are.
     // CUSTOM JEST CHANGE:
@@ -190,7 +199,9 @@ function eq(a, b, aStack, bStack, customTesters) {
   size = aKeys.length;
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  if (keys(b, className == '[object Array]').length !== size) { return false; }
+  if (keys(b, className == '[object Array]').length !== size) {
+    return false;
+  }
 
   while (size--) {
     key = aKeys[size];
@@ -212,13 +223,13 @@ function eq(a, b, aStack, bStack, customTesters) {
 function keys(obj, isArray) {
   // CUSTOM JEST CHANGE: don't consider undefined keys.
   var allKeys = (function(o) {
-      var keys = [];
-      for (var key in o) {
-          if (has(o, key)) {
-              keys.push(key);
-          }
+    var keys = [];
+    for (var key in o) {
+      if (has(o, key)) {
+        keys.push(key);
       }
-      return keys;
+    }
+    return keys;
   })(obj);
 
   if (!isArray) {
@@ -227,13 +238,13 @@ function keys(obj, isArray) {
 
   var extraKeys = [];
   if (allKeys.length === 0) {
-      return allKeys;
+    return allKeys;
   }
 
   for (var x = 0; x < allKeys.length; x++) {
-      if (!allKeys[x].match(/^[0-9]+$/)) {
-          extraKeys.push(allKeys[x]);
-      }
+    if (!allKeys[x].match(/^[0-9]+$/)) {
+      extraKeys.push(allKeys[x]);
+    }
   }
 
   return extraKeys;
@@ -242,7 +253,8 @@ function keys(obj, isArray) {
 function has(obj, key) {
   // CUSTOM JEST CHANGE:
   // TODO(cpojer): remove the `obj[key] !== undefined` check.
-  return Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined;
+  return Object.prototype.hasOwnProperty.call(obj, key) &&
+    obj[key] !== undefined;
 }
 
 function isA(typeName, value) {

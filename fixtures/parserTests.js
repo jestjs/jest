@@ -24,7 +24,7 @@ function parserTests(parse: (file: string) => any) {
     it('For the simplest it cases', () => {
       const data = parse(`${fixtures}/global_its.example`);
 
-      expect(data.itBlocks.length).toEqual(7);
+      expect(data.itBlocks.length).toEqual(8);
 
       const firstIt = data.itBlocks[0];
       expect(firstIt.name).toEqual('works with old functions');
@@ -41,25 +41,30 @@ function parserTests(parse: (file: string) => any) {
       expect(thirdIt.start).toEqual({column: 1, line: 10});
       expect(thirdIt.end).toEqual({column: 3, line: 12});
 
-      const fourthIt = data.itBlocks[3];
-      expect(fourthIt.name).toEqual('works with it.only');
-      expect(fourthIt.start).toEqual({column: 1, line: 14});
-      expect(fourthIt.end).toEqual({column: 3, line: 16});
+      const fourthIt = data.itBlocks[2];
+      expect(fourthIt.name).toEqual('works with flow functions');
+      expect(fourthIt.start).toEqual({column: 1, line: 10});
+      expect(fourthIt.end).toEqual({column: 3, line: 12});
 
       const fifthIt = data.itBlocks[4];
-      expect(fifthIt.name).toEqual('works with fit');
+      expect(fifthIt.name).toEqual('works with it.only');
       expect(fifthIt.start).toEqual({column: 1, line: 18});
       expect(fifthIt.end).toEqual({column: 3, line: 20});
 
       const sixthIt = data.itBlocks[5];
-      expect(sixthIt.name).toEqual('works with test');
+      expect(sixthIt.name).toEqual('works with fit');
       expect(sixthIt.start).toEqual({column: 1, line: 22});
       expect(sixthIt.end).toEqual({column: 3, line: 24});
 
       const seventhIt = data.itBlocks[6];
-      expect(seventhIt.name).toEqual('works with test.only');
+      expect(seventhIt.name).toEqual('works with test');
       expect(seventhIt.start).toEqual({column: 1, line: 26});
       expect(seventhIt.end).toEqual({column: 3, line: 28});
+
+      const eigthIt = data.itBlocks[7];
+      expect(eigthIt.name).toEqual('works with test.only');
+      expect(eigthIt.start).toEqual({column: 1, line: 30});
+      expect(eigthIt.end).toEqual({column: 3, line: 32});
     });
 
     it('For its inside describes', () => {

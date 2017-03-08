@@ -25,18 +25,19 @@ describe('resolve', () => {
         'jest-resolve-test',
       );
       expect(exports.isBrowser).toBe(true);
-    }),
-  );
+    }));
 
-  it(`doesn't resolve "browser" dependency by default`, () =>
-    createRuntime(__filename, {}, {
+  it(`doesn't resolve "browser" dependency by default`, () => createRuntime(
+    __filename,
+    {},
+    {
       browser: false,
-    }).then(runtime => {
-      const exports = runtime.requireModuleOrMock(
-        runtime.__mockRootPath,
-        'jest-resolve-test',
-      );
-      expect(exports.isBrowser).toBe(false);
-    }),
-  );
+    },
+  ).then(runtime => {
+    const exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'jest-resolve-test',
+    );
+    expect(exports.isBrowser).toBe(false);
+  }));
 });

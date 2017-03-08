@@ -45,31 +45,20 @@ const watch = (
 
   setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
-    testPathPattern: argv.testPathPattern || (Array.isArray(argv._)
-      ? argv._.join('|')
-      : ''),
+    testPathPattern: argv.testPathPattern ||
+      (Array.isArray(argv._) ? argv._.join('|') : ''),
   });
 
+  const prompt = new Prompt();
+  const testPathPatternPrompt = TestPathPatternPrompt(config, pipe, prompt);
+  const testNamePatternPrompt = TestNamePatternPrompt(config, pipe, prompt);
   let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
-  let displayHelp = true;
-
-  const prompt = new Prompt();
-
-  const testPathPatternPrompt = TestPathPatternPrompt(
-    config,
-    pipe,
-    prompt,
-  );
+  let shouldDisplayWatchUsage = true;
+  let isWatchUsageDisplayed = false;
 
   testPathPatternPrompt.updateSearchSource(hasteContext);
-
-  const testNamePatternPrompt = TestNamePatternPrompt(
-    config,
-    pipe,
-    prompt,
-  );
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const validPaths = eventsQueue.filter(({filePath}) => {
@@ -77,7 +66,7 @@ const watch = (
     });
 
     if (validPaths.length) {
-      hasteContext =  createHasteContext(config, {hasteFS, moduleMap});
+      hasteContext = createHasteContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();
@@ -103,10 +92,17 @@ const watch = (
     return runJest(
       hasteContext,
       // $FlowFixMe
-      Object.freeze(Object.assign({
-        testNamePattern: argv.testNamePattern,
-        testPathPattern: argv.testPathPattern,
-      }, config, overrideConfig)),
+      Object.freeze(
+        // $FlowFixMe
+        Object.assign(
+          {
+            testNamePattern: argv.testNamePattern,
+            testPathPattern: argv.testPathPattern,
+          },
+          config,
+          overrideConfig,
+        ),
+      ),
       argv,
       pipe,
       testWatcher,
@@ -118,19 +114,19 @@ const watch = (
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
-        if (displayHelp) {
+        if (shouldDisplayWatchUsage) {
           pipe.write(usage(argv, hasSnapshotFailure));
-          displayHelp = !process.env.JEST_HIDE_USAGE;
+          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+          isWatchUsageDisplayed = true;
+        } else {
+          pipe.write(showToggleUsagePrompt());
+          shouldDisplayWatchUsage = false;
+          isWatchUsageDisplayed = false;
         }
 
-        testNamePatternPrompt.updateCachedTestResults(
-          results.testResults
-        );
+        testNamePatternPrompt.updateCachedTestResults(results.testResults);
       },
-    ).then(
-      () => {},
-      error => console.error(chalk.red(error.stack)),
-    );
+    ).then(() => {}, error => console.error(chalk.red(error.stack)));
   };
 
   const onKeypress = (key: string) => {
@@ -205,8 +201,14 @@ const watch = (
         );
         break;
       case KEYS.QUESTION_MARK:
-        if (process.env.JEST_HIDE_USAGE) {
+        break;
+      case KEYS.W:
+        if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
+          pipe.write(ansiEscapes.cursorUp());
+          pipe.write(ansiEscapes.eraseDown);
           pipe.write(usage(argv, hasSnapshotFailure));
+          isWatchUsageDisplayed = true;
+          shouldDisplayWatchUsage = false;
         }
         break;
     }
@@ -251,11 +253,9 @@ const handleDeprecatedWarnings = (
       stdin.on('data', (key: string) => {
         if (key === KEYS.ENTER) {
           resolve();
-        } else if ([
-          KEYS.ESCAPE,
-          KEYS.CONTROL_C,
-          KEYS.CONTROL_D,
-        ].indexOf(key) !== -1) {
+        } else if (
+          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].indexOf(key) !== -1
+        ) {
           reject();
         }
       });
@@ -265,30 +265,44 @@ const handleDeprecatedWarnings = (
   });
 };
 
-const usage = (
-  argv,
-  snapshotFailure,
-  delimiter = '\n',
-) => {
+const usage = (argv, snapshotFailure, delimiter = '\n') => {
   /* eslint-disable max-len */
   const messages = [
     '\n' + chalk.bold('Watch Usage'),
     argv.watch
       ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
-    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) && !argv.noSCM
-      ? chalk.dim(' \u203A Press ') + 'o' + chalk.dim(' to only run tests related to changed files.')
+    (argv.watchAll || argv.testPathPattern || argv.testNamePattern) &&
+      !argv.noSCM
+      ? chalk.dim(' \u203A Press ') +
+          'o' +
+          chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
-      ? chalk.dim(' \u203A Press ') + 'u' + chalk.dim(' to update failing snapshots.')
+      ? chalk.dim(' \u203A Press ') +
+          'u' +
+          chalk.dim(' to update failing snapshots.')
       : null,
-    chalk.dim(' \u203A Press ') + 'p' + chalk.dim(' to filter by a filename regex pattern.'),
-    chalk.dim(' \u203A Press ') + 't' + chalk.dim(' to filter by a test name regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      'p' +
+      chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      't' +
+      chalk.dim(' to filter by a test name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
-    chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to trigger a test run.'),
+    chalk.dim(' \u203A Press ') +
+      'Enter' +
+      chalk.dim(' to trigger a test run.'),
   ];
   /* eslint-enable max-len */
   return messages.filter(message => !!message).join(delimiter) + '\n';
 };
+
+const showToggleUsagePrompt = () =>
+  '\n' +
+  chalk.bold('Watch Usage: ') +
+  chalk.dim('Press ') +
+  'w' +
+  chalk.dim(' to show more.');
 
 module.exports = watch;

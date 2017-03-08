@@ -10,9 +10,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('suite with auto-clear', () => {
   const result = runJest('auto-clear-mocks/with-auto-clear');

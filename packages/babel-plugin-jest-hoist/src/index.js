@@ -107,17 +107,20 @@ FUNCTIONS.mock = args => {
       if (!found) {
         invariant(
           (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
-          /^mock/.test(name) ||
-          // Allow istanbul's coverage variable to pass.
-          /^(?:__)?cov/.test(name),
+            /^mock/.test(name) ||
+            // Allow istanbul's coverage variable to pass.
+            /^(?:__)?cov/.test(name),
           'The module factory of `jest.mock()` is not allowed to ' +
-          'reference any out-of-scope variables.\n' +
-          'Invalid variable access: ' + name + '\n' +
-          'Whitelisted objects: ' +
-          Object.keys(WHITELISTED_IDENTIFIERS).join(', ') + '.\n' +
-          'Note: This is a precaution to guard against uninitialized mock ' +
-          'variables. If it is ensured that the mock is required lazily, ' +
-          'variable names prefixed with `mock` are permitted.',
+            'reference any out-of-scope variables.\n' +
+            'Invalid variable access: ' +
+            name +
+            '\n' +
+            'Whitelisted objects: ' +
+            Object.keys(WHITELISTED_IDENTIFIERS).join(', ') +
+            '.\n' +
+            'Note: This is a precaution to guard against uninitialized mock ' +
+            'variables. If it is ensured that the mock is required lazily, ' +
+            'variable names prefixed with `mock` are permitted.',
         );
       }
     }
@@ -130,15 +133,13 @@ FUNCTIONS.mock = args => {
 FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 
-FUNCTIONS.disableAutomock =
-  FUNCTIONS.enableAutomock =
-    args => args.length === 0;
+FUNCTIONS.disableAutomock = (FUNCTIONS.enableAutomock = args =>
+  args.length === 0);
 
 module.exports = babel => {
-  const isJest = callee => (
+  const isJest = callee =>
     callee.get('object').isIdentifier(JEST_GLOBAL) ||
-    (callee.isMemberExpression() && isJest(callee.get('object')))
-  );
+    (callee.isMemberExpression() && isJest(callee.get('object')));
   const shouldHoistExpression = expr => {
     if (!expr.isCallExpression()) {
       return false;
@@ -147,15 +148,11 @@ module.exports = babel => {
     const callee = expr.get('callee');
     const object = callee.get('object');
     const property = callee.get('property');
-    return (
-      property.isIdentifier() &&
+    return property.isIdentifier() &&
       FUNCTIONS[property.node.name] &&
-      (
-        object.isIdentifier(JEST_GLOBAL) ||
-        callee.isMemberExpression() && shouldHoistExpression(object)
-      ) &&
-      FUNCTIONS[property.node.name](expr.get('arguments'))
-    );
+      (object.isIdentifier(JEST_GLOBAL) ||
+        (callee.isMemberExpression() && shouldHoistExpression(object))) &&
+      FUNCTIONS[property.node.name](expr.get('arguments'));
   };
   return {
     visitor: {

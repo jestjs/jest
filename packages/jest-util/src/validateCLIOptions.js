@@ -25,9 +25,8 @@ const createCLIValidationError = (
 ) => {
   let title = `${BULLET} Unrecognized CLI Parameter`;
   let message;
-  const comment =
-  `  ${chalk.bold('CLI Options Documentation')}:\n` +
-  `  http://facebook.github.io/jest/docs/cli.html\n`;
+  const comment = `  ${chalk.bold('CLI Options Documentation')}:\n` +
+    `  http://facebook.github.io/jest/docs/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -48,15 +47,13 @@ const createCLIValidationError = (
 
 const validateCLIOptions = (argv: Object, options: Object) => {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const allowedOptions = Object.keys(options).reduce((acc, option) =>
-    acc
-      .add(option)
-      .add(options[option].alias || option),
-    new Set(yargsSpecialOptions)
+  const allowedOptions = Object.keys(options).reduce(
+    (acc, option) => acc.add(option).add(options[option].alias || option),
+    new Set(yargsSpecialOptions),
   );
-  const unrecognizedOptions = Object.keys(argv).filter(arg => (
-    !allowedOptions.has(arg)
-  ));
+  const unrecognizedOptions = Object.keys(argv).filter(
+    arg => !allowedOptions.has(arg),
+  );
 
   if (unrecognizedOptions.length) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);

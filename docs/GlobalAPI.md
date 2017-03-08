@@ -26,7 +26,7 @@ This is often useful if you want to clean up some global setup state that is sha
 For example:
 
 ```js
-let globalDatabase = makeGlobalDatabase();
+const globalDatabase = makeGlobalDatabase();
 
 function cleanUpDatabase(db) {
   db.cleanUp();
@@ -34,19 +34,19 @@ function cleanUpDatabase(db) {
 
 afterAll(() => {
   cleanUpDatabase(globalDatabase);
-})
+});
 
 test('can find things', () => {
-  return globalDatabase.find('thing', {}, (results) => {
-    expect(results.length).toBeGreaterThan(0)
-  })
-})
+  return globalDatabase.find('thing', {}, results => {
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
 
 test('can insert a thing', () => {
-  return globalDatabase.insert('thing', makeThing(), (response) => {
+  return globalDatabase.insert('thing', makeThing(), response => {
     expect(response.success).toBeTruthy();
-  })
-})
+  });
+});
 ```
 
 Here the `afterAll` ensures that `cleanUpDatabase` is called after all tests run.
@@ -64,7 +64,7 @@ This is often useful if you want to clean up some temporary state that is create
 For example:
 
 ```js
-let globalDatabase = makeGlobalDatabase();
+const globalDatabase = makeGlobalDatabase();
 
 function cleanUpDatabase(db) {
   db.cleanUp();
@@ -72,19 +72,19 @@ function cleanUpDatabase(db) {
 
 afterEach(() => {
   cleanUpDatabase(globalDatabase);
-})
+});
 
 test('can find things', () => {
-  return globalDatabase.find('thing', {}, (results) => {
+  return globalDatabase.find('thing', {}, results => {
     expect(results.length).toBeGreaterThan(0);
-  })
-})
+  });
+});
 
 test('can insert a thing', () => {
-  return globalDatabase.insert('thing', makeThing(), (response) => {
+  return globalDatabase.insert('thing', makeThing(), response => {
     expect(response.success).toBeTruthy();
-  })
-})
+  });
+});
 ```
 
 Here the `afterEach` ensures that `cleanUpDatabase` is called after each test runs.
@@ -102,23 +102,23 @@ This is often useful if you want to set up some global state that will be used b
 For example:
 
 ```js
-let globalDatabase = makeGlobalDatabase();
+const globalDatabase = makeGlobalDatabase();
 
 beforeAll(() => {
   // Clears the database and adds some testing data.
   // Jest will wait for this promise to resolve before running tests.
   return globalDatabase.clear().then(() => {
-    return globalDatabase.insert({ testData: 'foo' })
-  })
-})
+    return globalDatabase.insert({testData: 'foo'});
+  });
+});
 
 // Since we only set up the database once in this example, it's important
 // that our tests don't modify it.
 test('can find things', () => {
-  return globalDatabase.find('thing', {}, (results) => {
+  return globalDatabase.find('thing', {}, results => {
     expect(results.length).toBeGreaterThan(0);
-  })
-})
+  });
+});
 ```
 
 Here the `beforeAll` ensures that the database is set up before tests run. If setup was synchronous, you could just do this without `beforeAll`. The key is that Jest will wait for a promise to resolve, so you can have asynchronous setup as well.
@@ -136,27 +136,27 @@ This is often useful if you want to reset some global state that will be used by
 For example:
 
 ```js
-let globalDatabase = makeGlobalDatabase();
+const globalDatabase = makeGlobalDatabase();
 
 beforeEach(() => {
   // Clears the database and adds some testing data.
   // Jest will wait for this promise to resolve before running tests.
   return globalDatabase.clear().then(() => {
-    return globalDatabase.insert({ testData: 'foo' })
-  })
-})
+    return globalDatabase.insert({testData: 'foo'});
+  });
+});
 
 test('can find things', () => {
-  return globalDatabase.find('thing', {}, (results) => {
+  return globalDatabase.find('thing', {}, results => {
     expect(results.length).toBeGreaterThan(0);
-  })
-})
+  });
+});
 
 test('can insert a thing', () => {
-  return globalDatabase.insert('thing', makeThing(), (response) => {
+  return globalDatabase.insert('thing', makeThing(), response => {
     expect(response.success).toBeTruthy();
-  })
-})
+  });
+});
 ```
 
 Here the `beforeEach` ensures that the database is reset for each test.
@@ -264,7 +264,7 @@ For example, let's say `fetchBeverageList()` returns a promise that is supposed 
 
 ```js
 test('has lemon in it', () => {
-  return fetchBeverageList().then((list) => {
+  return fetchBeverageList().then(list => {
     expect(list).toContain('lemon');
   });
 });
@@ -283,11 +283,11 @@ For example, let's say you had these tests:
 ```js
 test.only('it is raining', () => {
   expect(inchesOfRain()).toBeGreaterThan(0);
-})
+});
 
 test('it is not snowing', () => {
   expect(inchesOfSnow()).toBe(0);
-})
+});
 ```
 
 Only the "it is raining" test will run, since it is run with `test.only`.
@@ -305,11 +305,11 @@ For example, let's say you had these tests:
 ```js
 test('it is raining', () => {
   expect(inchesOfRain()).toBeGreaterThan(0);
-})
+});
 
 test.skip('it is not snowing', () => {
   expect(inchesOfSnow()).toBe(0);
-})
+});
 ```
 
 Only the "it is raining" test will run, since the other test is run with `test.skip`.

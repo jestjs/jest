@@ -52,7 +52,7 @@ const runCLI = (
     .then(({
       config,
       hasDeprecationWarnings,
-    } : {
+    }: {
       config: Config,
       hasDeprecationWarnings: boolean,
     }) => {

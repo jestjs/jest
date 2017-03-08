@@ -15,17 +15,17 @@ applications.
 
 If you are just getting started with React, we recommend using [create-react-app](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)!
 
-If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [babel integration](/jest/docs/getting-started.html#babel-integration).
+If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](/jest/docs/getting-started.html#using-babel).
 
 Run
 
-```javascript
+```bash
 npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
 
-```javascript
+```json
 // package.json
   "dependencies": {
     "react": "<current-version>",
@@ -43,7 +43,7 @@ Your `package.json` should look something like this (where `<current-version>` i
   }
 ```
 
-```javascript
+```json
 // .babelrc
 {
   "presets": ["es2015", "react"]
@@ -61,8 +61,8 @@ Let's create a [snapshot test](/jest/docs/snapshot-testing.html) for a Link comp
 import React from 'react';
 
 const STATUS = {
-  NORMAL: 'normal',
   HOVERED: 'hovered',
+  NORMAL: 'normal',
 };
 
 export default class Link extends React.Component {

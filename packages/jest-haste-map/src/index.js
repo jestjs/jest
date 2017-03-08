@@ -43,7 +43,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp,
+  ignorePattern: RegExp | Function,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -62,7 +62,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: RegExp,
+  ignorePattern: RegExp | Function,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -95,14 +95,19 @@ const canUseWatchman = ((): boolean => {
   return false;
 })();
 
-const escapePathSeparator =
-  string => (path.sep === '\\') ? string.replace(/(\/|\\)/g, '\\\\') : string;
+const escapePathSeparator = string =>
+  path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string;
 
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
     return new RegExp(
-      '(' + escapePathSeparator(NODE_MODULES) +
-      '(?:' + list.join('|') + ')(?=$|' + escapePathSeparator(path.sep) + '))',
+      '(' +
+        escapePathSeparator(NODE_MODULES) +
+        '(?:' +
+        list.join('|') +
+        ')(?=$|' +
+        escapePathSeparator(path.sep) +
+        '))',
       'g',
     );
   }
@@ -202,16 +207,16 @@ class HasteMap extends EventEmitter {
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
-      mocksPattern:
-        options.mocksPattern ? new RegExp(options.mocksPattern) : null,
+      mocksPattern: options.mocksPattern
+        ? new RegExp(options.mocksPattern)
+        : null,
       name: options.name,
       platforms: options.platforms,
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: Array.from(new Set(options.roots)),
       throwOnModuleCollision: !!options.throwOnModuleCollision,
-      useWatchman:
-        options.useWatchman == null ? true : options.useWatchman,
+      useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
@@ -248,8 +253,9 @@ class HasteMap extends EventEmitter {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
           const moduleMap = new HasteModuleMap(hasteMap.map, hasteMap.mocks);
-          const __hasteMapForTest =
-            (process.env.NODE_ENV === 'test' && hasteMap) || null;
+          const __hasteMapForTest = (process.env.NODE_ENV === 'test' &&
+            hasteMap) ||
+            null;
           return this._watch(hasteMap, hasteFS, moduleMap).then(() => ({
             __hasteMapForTest,
             hasteFS,
@@ -299,12 +305,11 @@ class HasteMap extends EventEmitter {
         map[id] = Object.create(null);
       }
       const moduleMap = map[id];
-      const platform =
-        getPlatformExtension(module[H.PATH]) || H.GENERIC_PLATFORM;
+      const platform = getPlatformExtension(module[H.PATH]) ||
+        H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const message =
-          `jest-haste-map: @providesModule naming collision:\n` +
+        const message = `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\nThis ` +
@@ -327,20 +332,19 @@ class HasteMap extends EventEmitter {
     }
 
     if (
-      this._options.mocksPattern &&
-      this._options.mocksPattern.test(filePath)
+      this._options.mocksPattern && this._options.mocksPattern.test(filePath)
     ) {
       const mockPath = getMockName(filePath);
       if (mocks[mockPath]) {
         this._console.warn(
           `jest-haste-map: duplicate manual mock found:\n` +
-          `  Module name: ${mockPath}\n` +
-          `  Duplicate Mock path: ${filePath}\nThis warning ` +
-          `is caused by two manual mock files with the same file name.\n` +
-          `Jest will use the mock file found in: \n` +
-          `${filePath}\n` +
-          ` Please delete one of the following two files: \n ` +
-          `${mocks[mockPath]}\n${filePath}\n\n`,
+            `  Module name: ${mockPath}\n` +
+            `  Duplicate Mock path: ${filePath}\nThis warning ` +
+            `is caused by two manual mock files with the same file name.\n` +
+            `Jest will use the mock file found in: \n` +
+            `${filePath}\n` +
+            ` Please delete one of the following two files: \n ` +
+            `${mocks[mockPath]}\n${filePath}\n\n`,
         );
       }
       mocks[mockPath] = filePath;
@@ -428,10 +432,7 @@ class HasteMap extends EventEmitter {
   ): (message: WorkerMessage) => Promise<WorkerMetadata> {
     if (!this._workerPromise) {
       let workerFn;
-      if (
-        (options && options.forceInBand) ||
-        this._options.maxWorkers <= 1
-      ) {
+      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         workerFn = worker;
       } else {
         this._workerFarm = workerFarm(
@@ -443,15 +444,16 @@ class HasteMap extends EventEmitter {
         workerFn = this._workerFarm;
       }
 
-      this._workerPromise = (message: WorkerMessage) => new Promise(
-        (resolve, reject) => workerFn(message, (error, metadata) => {
-          if (error || !metadata) {
-            reject(error);
-          } else {
-            resolve(metadata);
-          }
-        }),
-      );
+      this._workerPromise = (message: WorkerMessage) => new Promise((
+        resolve,
+        reject,
+      ) => workerFn(message, (error, metadata) => {
+        if (error || !metadata) {
+          reject(error);
+        } else {
+          resolve(metadata);
+        }
+      }));
     }
 
     return this._workerPromise;
@@ -468,18 +470,20 @@ class HasteMap extends EventEmitter {
   _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl =
-      (canUseWatchman && this._options.useWatchman) ? watchmanCrawl : nodeCrawl;
+    const crawl = canUseWatchman && this._options.useWatchman
+      ? watchmanCrawl
+      : nodeCrawl;
 
     const retry = error => {
       if (crawl === watchmanCrawl) {
         this._console.warn(
           `jest-haste-map: Watchman crawl failed. Retrying once with node ` +
-          `crawler.\n` +
-          `  Usually this happens when watchman isn't running. Create an ` +
-          `empty \`.watchmanconfig\` file in your project's root folder or ` +
-          `initialize a git or hg repository in your project.\n` +
-          `  ` + error,
+            `crawler.\n` +
+            `  Usually this happens when watchman isn't running. Create an ` +
+            `empty \`.watchmanconfig\` file in your project's root folder or ` +
+            `initialize a git or hg repository in your project.\n` +
+            `  ` +
+            error,
         );
         return nodeCrawl({
           data: hasteMap,
@@ -490,8 +494,8 @@ class HasteMap extends EventEmitter {
         }).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
-            `  Original error: ${error.message}\n` +
-            `  Retry error: ${e.message}\n`,
+              `  Original error: ${error.message}\n` +
+              `  Retry error: ${e.message}\n`,
           );
         });
       }
@@ -529,10 +533,11 @@ class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
-    const Watcher = (canUseWatchman && this._options.useWatchman)
+    const Watcher = canUseWatchman && this._options.useWatchman
       ? sane.WatchmanWatcher
       : sane.NodeWatcher;
     const extensions = this._options.extensions;
+    const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
     let eventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
@@ -544,6 +549,7 @@ class HasteMap extends EventEmitter {
       const watcher = new Watcher(root, {
         dot: false,
         glob: extensions.map(extension => '**/*.' + extension),
+        ignored: ignorePattern,
       });
 
       return new Promise((resolve, reject) => {
@@ -662,10 +668,11 @@ class HasteMap extends EventEmitter {
     };
 
     this._changeInterval = setInterval(emitChange, CHANGE_INTERVAL);
-    return Promise.all(this._options.roots.map(createWatcher))
-      .then(watchers => {
-        this._watchers = watchers;
-      });
+    return Promise.all(
+      this._options.roots.map(createWatcher),
+    ).then(watchers => {
+      this._watchers = watchers;
+    });
   }
 
   end() {
@@ -674,19 +681,24 @@ class HasteMap extends EventEmitter {
       return Promise.resolve();
     }
 
-    return Promise.all(this._watchers.map(
-      watcher => new Promise(resolve => watcher.close(resolve)),
-    )).then(() => this._watchers = []);
+    return Promise.all(
+      this._watchers.map(
+        watcher => new Promise(resolve => watcher.close(resolve)),
+      ),
+    ).then(() => this._watchers = []);
   }
 
   /**
    * Helpers
    */
   _ignore(filePath: Path): boolean {
-    return (
-      this._options.ignorePattern.test(filePath) ||
-      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
-    );
+    const ignorePattern = this._options.ignorePattern;
+    const ignoreMatched = ignorePattern instanceof RegExp
+      ? ignorePattern.test(filePath)
+      : ignorePattern(filePath);
+
+    return ignoreMatched ||
+      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath));
   }
 
   _isNodeModulesDir(filePath: Path): boolean {

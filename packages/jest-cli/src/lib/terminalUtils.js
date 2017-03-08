@@ -13,7 +13,6 @@
 /* $FlowFixMe */
 const getTerminalWidth = (): nubmer => process.stdout.columns;
 
-
 module.exports = {
   getTerminalWidth,
 };

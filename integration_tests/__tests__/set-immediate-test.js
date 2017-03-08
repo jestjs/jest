@@ -10,9 +10,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('setImmediate', () => {
   const result = runJest('set_immediate', ['--verbose']);

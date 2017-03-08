@@ -11,7 +11,6 @@
 
 describe('matchers', () => {
   it('proxies matchers to jest-matchers', () => {
-    expect(() => expect(1).toBe(2))
-      .toThrowErrorMatchingSnapshot();
+    expect(() => expect(1).toBe(2)).toThrowErrorMatchingSnapshot();
   });
 });

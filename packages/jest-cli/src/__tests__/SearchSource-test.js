@@ -62,13 +62,14 @@ describe('SearchSource', () => {
           testMatch: null,
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         }).config;
-        return Runtime.createHasteContext(config, {maxWorkers})
-          .then(hasteMap => {
-            searchSource = new SearchSource(hasteMap, config);
+        return Runtime.createHasteContext(config, {
+          maxWorkers,
+        }).then(hasteMap => {
+          searchSource = new SearchSource(hasteMap, config);
 
-            const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
-            expect(searchSource.isTestFilePath(path)).toEqual(true);
-          });
+          const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
+          expect(searchSource.isTestFilePath(path)).toEqual(true);
+        });
       } else {
         return undefined;
       }
@@ -92,9 +93,10 @@ describe('SearchSource', () => {
   describe('testPathsMatching', () => {
     beforeEach(() => {
       findMatchingTests = config =>
-        Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap =>
-          new SearchSource(hasteMap, config).findMatchingTests(),
-        );
+        Runtime.createHasteContext(config, {
+          maxWorkers,
+        }).then(hasteMap =>
+          new SearchSource(hasteMap, config).findMatchingTests());
     });
 
     it('finds tests matching a pattern via testRegex', () => {
@@ -106,13 +108,15 @@ describe('SearchSource', () => {
         testRegex: 'not-really-a-test',
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        )).sort();
-        expect(relPaths).toEqual([
-          path.normalize('.hiddenFolder/not-really-a-test.txt'),
-          path.normalize('__testtests__/not-really-a-test.txt'),
-        ].sort());
+        const relPaths = data.paths
+          .map(absPath => path.relative(rootDir, absPath))
+          .sort();
+        expect(relPaths).toEqual(
+          [
+            path.normalize('.hiddenFolder/not-really-a-test.txt'),
+            path.normalize('__testtests__/not-really-a-test.txt'),
+          ].sort(),
+        );
       });
     });
 
@@ -125,13 +129,15 @@ describe('SearchSource', () => {
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        )).sort();
-        expect(relPaths).toEqual([
-          path.normalize('.hiddenFolder/not-really-a-test.txt'),
-          path.normalize('__testtests__/not-really-a-test.txt'),
-        ].sort());
+        const relPaths = data.paths
+          .map(absPath => path.relative(rootDir, absPath))
+          .sort();
+        expect(relPaths).toEqual(
+          [
+            path.normalize('.hiddenFolder/not-really-a-test.txt'),
+            path.normalize('__testtests__/not-really-a-test.txt'),
+          ].sort(),
+        );
       });
     });
 
@@ -144,9 +150,8 @@ describe('SearchSource', () => {
         testRegex: 'test\.jsx?',
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -163,9 +168,8 @@ describe('SearchSource', () => {
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -181,9 +185,8 @@ describe('SearchSource', () => {
         testRegex,
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -199,9 +202,8 @@ describe('SearchSource', () => {
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -217,12 +219,9 @@ describe('SearchSource', () => {
         testMatch,
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
-        expect(relPaths).toEqual([
-          path.normalize('__testtests__/test.jsx'),
-        ]);
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
+        expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
       });
     });
 
@@ -234,12 +233,9 @@ describe('SearchSource', () => {
         testMatch,
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
-        expect(relPaths).toEqual([
-          path.normalize('__testtests__/test.foobar'),
-        ]);
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
+        expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
       });
     });
 
@@ -251,9 +247,8 @@ describe('SearchSource', () => {
         testMatch,
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -269,9 +264,8 @@ describe('SearchSource', () => {
         testRegex,
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -287,9 +281,8 @@ describe('SearchSource', () => {
         testRegex: '',
       });
       return findMatchingTests(config).then(data => {
-        const relPaths = data.paths.map(absPath => (
-          path.relative(rootDir, absPath)
-        ));
+        const relPaths = data.paths.map(absPath =>
+          path.relative(rootDir, absPath));
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -357,29 +350,25 @@ describe('SearchSource', () => {
 
     it('returns empty search result for empty input', () => {
       const input = [];
-      const data = searchSource
-        .findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([]);
     });
 
     it('returns empty search result for invalid input', () => {
       const input = ['non-existend.js'];
-      const data = searchSource
-        .findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([]);
     });
 
     it('returns empty search result if no related tests were found', () => {
       const input = ['no tests.js'];
-      const data = searchSource
-        .findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.paths).toEqual([]);
     });
 
     it('finds tests for a single file', () => {
       const input = ['packages/jest-cli/src/__tests__/test_root/module.jsx'];
-      const data = searchSource
-        .findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.paths.sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
@@ -391,8 +380,7 @@ describe('SearchSource', () => {
         'packages/jest-cli/src/__tests__/test_root/module.jsx',
         'packages/jest-cli/src/__tests__/test_root/module.foobar',
       ];
-      const data = searchSource
-        .findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.paths.sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.foobar'),
         path.join(rootDir, '__testtests__', 'test.js'),

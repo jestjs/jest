@@ -11,11 +11,21 @@
 
 import type {ConsoleBuffer} from './Console';
 
-export type Coverage = {|
-  coveredSpans: Array<Object>,
-  uncoveredSpans: Array<Object>,
-  sourceText: string,
+export type RawFileCoverage = {|
+  path: string,
+  s: { [statementId: number]: number },
+  b: { [branchId: number]: number },
+  f: { [functionId: number]: number },
+  l: { [lineId: number]: number },
+  fnMap: { [functionId: number]: any },
+  statementMap: { [statementId: number]: any },
+  branchMap: { [branchId: number]: any },
+  inputSourceMap?: Object,
 |};
+
+export type RawCoverage = {
+  [filePath: string]: RawFileCoverage,
+};
 
 type FileCoverageTotal = {|
   total: number,
@@ -46,8 +56,8 @@ export type FileCoverage = {|
 export type CoverageMap = {|
   merge: (data: Object) => void,
   getCoverageSummary: () => FileCoverage,
-  data: Object,
-  addFileCoverage: (fileCoverage: Object) => void,
+  data: RawCoverage,
+  addFileCoverage: (fileCoverage: RawFileCoverage) => void,
   files: () => Array<string>,
   fileCoverageFor: (file: string) => FileCoverage,
 |};
@@ -115,7 +125,7 @@ export type Suite = {|
 
 export type TestResult = {|
   console: ?ConsoleBuffer,
-  coverage?: Coverage,
+  coverage?: RawCoverage,
   memoryUsage?: Bytes,
   failureMessage: ?string,
   numFailingTests: number,
@@ -134,6 +144,7 @@ export type TestResult = {|
     unmatched: number,
     updated: number,
   |},
+  sourceMaps: {[sourcePath: string]: string},
   testExecError?: SerializableError,
   testFilePath: string,
   testResults: Array<AssertionResult>,
@@ -171,7 +182,7 @@ export type FormattedTestResults = {
 export type CodeCoverageReporter = any;
 
 export type CodeCoverageFormatter = (
-  coverage: ?Coverage,
+  coverage: ?RawCoverage,
   reporter?: CodeCoverageReporter,
 ) => ?Object;
 

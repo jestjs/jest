@@ -29,8 +29,8 @@ it('is available globally', () => {
   jestExpect(15).toBeDivisibleBy(3);
   jestExpect(15).not.toBeDivisibleBy(6);
 
-  jestExpect(() => jestExpect(15).toBeDivisibleBy(2))
-    .toThrowErrorMatchingSnapshot();
+  jestExpect(() =>
+    jestExpect(15).toBeDivisibleBy(2)).toThrowErrorMatchingSnapshot();
 });
 
 it('exposes matcherUtils in context', () => {
@@ -55,6 +55,6 @@ it('is ok if there is no message specified', () => {
     },
   });
 
-  expect(() => jestExpect(true).toFailWithoutMessage())
-    .toThrowErrorMatchingSnapshot();
+  expect(() =>
+    jestExpect(true).toFailWithoutMessage()).toThrowErrorMatchingSnapshot();
 });

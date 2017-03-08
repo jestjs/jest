@@ -15,7 +15,7 @@ const path = require('path');
 const colorize = require('./colorize');
 
 const trim = '...';
-const relativePathHead = `.${path.sep}`;
+const relativePathHead = './';
 
 const highlight = (
   rawPath: string,
@@ -23,7 +23,6 @@ const highlight = (
   pattern: string,
   rootDir: string,
 ) => {
-
   let regexp;
 
   try {

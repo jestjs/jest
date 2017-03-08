@@ -53,13 +53,9 @@ module.exports = function(results: AggregatedResult): PhabricatorReport {
   const formatter = (coverage, reporter) => coverageMap;
   const report = formatTestResults(results, formatter);
 
-  return Object.assign(
-    (Object.create(null): any),
-    results,
-    {
-      // Remove the coverageMap here as it uses a lot of memory.
-      coverageMap: null,
-      phabricatorReport: report.testResults,
-    }
-  );
+  return Object.assign((Object.create(null): any), results, {
+    // Remove the coverageMap here as it uses a lot of memory.
+    coverageMap: null,
+    phabricatorReport: report.testResults,
+  });
 };

@@ -17,18 +17,18 @@ describe('Runtime', () => {
   });
 
   describe('requireModule', () => {
-    it('emulates a node stack trace during module load', () =>
-      createRuntime(__filename).then(runtime => {
-        let hasThrown = false;
-        try {
-          runtime.requireModule(runtime.__mockRootPath, './throwing.js');
-        } catch (err) {
-          hasThrown = true;
-          expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
-        }
-        expect(hasThrown).toBe(true);
-      }),
-    );
+    it('emulates a node stack trace during module load', () => createRuntime(
+      __filename,
+    ).then(runtime => {
+      let hasThrown = false;
+      try {
+        runtime.requireModule(runtime.__mockRootPath, './throwing.js');
+      } catch (err) {
+        hasThrown = true;
+        expect(err.stack).toMatch(/^Error: throwing\s+at Object.<anonymous>/);
+      }
+      expect(hasThrown).toBe(true);
+    }));
 
     it('emulates a node stack trace during function execution', () =>
       createRuntime(__filename).then(runtime => {
@@ -55,7 +55,6 @@ describe('Runtime', () => {
           /* eslint-enable max-len */
         }
         expect(hasThrown).toBe(true);
-      }),
-    );
+      }));
   });
 });

@@ -3,5 +3,8 @@
   "parser": "babel-eslint",
   "rules": {
     "no-multiple-empty-lines": 1
-  }
+  },
+  "plugins": [
+    "markdown"
+  ]
 }

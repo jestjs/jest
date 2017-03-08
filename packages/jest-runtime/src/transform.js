@@ -10,8 +10,11 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
-import type {Transformer} from 'types/Transform';
-
+import type {
+  Transformer,
+  TransformedSource,
+  BuiltTransformResult,
+} from 'types/Transform';
 const createDirectory = require('jest-util').createDirectory;
 const crypto = require('crypto');
 const fileExists = require('jest-file-exists');
@@ -21,6 +24,7 @@ const path = require('path');
 const shouldInstrument = require('./shouldInstrument');
 const stableStringify = require('json-stable-stringify');
 const vm = require('vm');
+const slash = require('slash');
 
 const VERSION = require('../package.json').version;
 
@@ -30,7 +34,7 @@ type Options = {|
 
 const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
-const cache: Map<string, vm.Script> = new Map();
+const cache: Map<string, BuiltTransformResult> = new Map();
 const configToJsonMap = new Map();
 // Cache regular expressions to test whether the file needs to be preprocessed
 const ignoreCache: WeakMap<Config, ?RegExp> = new WeakMap();
@@ -172,10 +176,10 @@ const getFileCachePath = (
   // Create sub folders based on the cacheKey to avoid creating one
   // directory with many files.
   const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
-  const cachePath = path.join(
+  const cachePath = slash(path.join(
     cacheDir,
     path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-  );
+  ));
   createDirectory(cacheDir);
 
   return cachePath;
@@ -254,6 +258,7 @@ const instrumentFile = (
         {
           cwd: config.rootDir, // files outside `cwd` will not be instrumented
           exclude: [],
+          useInlineSourceMaps: false,
         },
       ],
     ],
@@ -266,35 +271,75 @@ const transformSource = (
   config: Config,
   content: string,
   instrument: boolean,
-): string => {
+) => {
   const transform = getTransformer(filename, config);
   const cacheFilePath = getFileCachePath(filename, config, content, instrument);
+  let sourceMapPath = cacheFilePath + '.map';
   // Ignore cache if `config.cache` is set (--no-cache)
-  let result = config.cache ? readCacheFile(filename, cacheFilePath) : null;
+  let code = config.cache ? readCacheFile(filename, cacheFilePath) : null;
 
-  if (result) {
-    return result;
+  if (code) {
+    return {
+      code,
+      sourceMapPath,
+    };
   }
 
-  result = content;
+  let transformed: TransformedSource = {
+    code: content,
+    map: null,
+  };
 
   if (transform && shouldTransform(filename, config)) {
-    result = transform.process(result, filename, config, {
+    const processed = transform.process(content, filename, config, {
       instrument,
       watch: config.watch,
     });
+
+    if (typeof processed === 'string') {
+      transformed.code = processed;
+    } else {
+      transformed = processed;
+    }
+  }
+
+  if (config.mapCoverage) {
+    if (!transformed.map) {
+      const convert = require('convert-source-map');
+      const inlineSourceMap = convert.fromSource(transformed.code);
+      if (inlineSourceMap) {
+        transformed.map = inlineSourceMap.toJSON();
+      }
+    }
+  } else {
+    transformed.map = null;
   }
 
   // That means that the transform has a custom instrumentation
   // logic and will handle it based on `config.collectCoverage` option
-  const transformWillInstrument = transform && transform.canInstrument;
+  const transformDidInstrument = transform && transform.canInstrument;
 
-  if (!transformWillInstrument && instrument) {
-    result = instrumentFile(result, filename, config);
+  if (!transformDidInstrument && instrument) {
+    code = instrumentFile(transformed.code, filename, config);
+  } else {
+    code = transformed.code;
   }
 
-  writeCacheFile(cacheFilePath, result);
-  return result;
+  if (instrument && transformed.map && config.mapCoverage) {
+    const sourceMapContent = typeof transformed.map === 'string'
+      ? transformed.map
+      : JSON.stringify(transformed.map);
+    writeCacheFile(sourceMapPath, sourceMapContent);
+  } else {
+    sourceMapPath = null;
+  }
+
+  writeCacheFile(cacheFilePath, code);
+
+  return {
+    code,
+    sourceMapPath,
+  };
 };
 
 const transformAndBuildScript = (
@@ -302,22 +347,33 @@ const transformAndBuildScript = (
   config: Config,
   options: ?Options,
   instrument: boolean,
-): vm.Script => {
+): BuiltTransformResult => {
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fs.readFileSync(filename, 'utf8'));
-  let wrappedResult;
-  const willTransform = !isInternalModule
-    && (shouldTransform(filename, config) || instrument);
+  let wrappedCode: string;
+  let sourceMapPath: ?string = null;
+  const willTransform = !isInternalModule &&
+    (shouldTransform(filename, config) || instrument);
 
   try {
     if (willTransform) {
-      wrappedResult =
-        wrap(transformSource(filename, config, content, instrument));
+      const transformedSource = transformSource(
+        filename,
+        config,
+        content,
+        instrument,
+      );
+
+      wrappedCode = wrap(transformedSource.code);
+      sourceMapPath = transformedSource.sourceMapPath;
     } else {
-      wrappedResult = wrap(content);
+      wrappedCode = wrap(content);
     }
 
-    return new vm.Script(wrappedResult, {displayErrors: true, filename});
+    return {
+      script: new vm.Script(wrappedCode, {displayErrors: true, filename}),
+      sourceMapPath,
+    };
   } catch (e) {
     if (e.codeFrame) {
       e.stack = e.codeFrame;
@@ -326,10 +382,10 @@ const transformAndBuildScript = (
     if (config.logTransformErrors) {
       console.error(
         `FILENAME: ${filename}\n` +
-        `TRANSFORM: ${willTransform.toString()}\n` +
-        `INSTRUMENT: ${instrument.toString()}\n` +
-        `SOURCE:\n` +
-        String(wrappedResult),
+          `TRANSFORM: ${willTransform.toString()}\n` +
+          `INSTRUMENT: ${instrument.toString()}\n` +
+          `SOURCE:\n` +
+          String(wrappedCode),
       );
     }
 
@@ -341,16 +397,16 @@ module.exports = (
   filename: Path,
   config: Config,
   options: Options,
-): vm.Script => {
+): BuiltTransformResult => {
   const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
-  let script = cache.get(scriptCacheKey);
-  if (script) {
-    return script;
+  let result = cache.get(scriptCacheKey);
+  if (result) {
+    return result;
   } else {
-    script = transformAndBuildScript(filename, config, options, instrument);
-    cache.set(scriptCacheKey, script);
-    return script;
+    result = transformAndBuildScript(filename, config, options, instrument);
+    cache.set(scriptCacheKey, result);
+    return result;
   }
 };
 

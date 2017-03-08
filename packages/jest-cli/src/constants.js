@@ -31,6 +31,7 @@ const KEYS = {
   QUESTION_MARK: '3f',
   T: '74',
   U: '75',
+  W: '77',
 };
 
 const ICONS = {

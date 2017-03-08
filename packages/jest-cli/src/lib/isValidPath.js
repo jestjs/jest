@@ -18,7 +18,7 @@ const SNAPSHOT_EXTENSION = 'snap';
 function isValidPath(config: Config, filePath: string) {
   const coverageDirectory = config.coverageDirectory ||
     path.resolve(config.rootDir, 'coverage');
-    
+
   return !filePath.includes(coverageDirectory) &&
     !filePath.endsWith(`.${SNAPSHOT_EXTENSION}`);
 }

@@ -10,6 +10,17 @@
 'use strict';
 
 import type {Config, Path} from 'types/Config';
+import type {Script} from 'vm';
+
+export type TransformedSource = {|
+  code: string,
+  map: ?Object | string,
+|};
+
+export type BuiltTransformResult = {|
+  script: Script,
+  sourceMapPath: ?string,
+|};
 
 export type TransformOptions = {|
   instrument: boolean,
@@ -31,5 +42,5 @@ export type Transformer = {|
     sourcePath: Path,
     config: Config,
     options?: TransformOptions,
-  ) => string,
+  ) => string | TransformedSource,
 |};

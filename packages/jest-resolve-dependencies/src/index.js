@@ -15,6 +15,16 @@ import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
 
 const fileExists = require('jest-file-exists');
+const {replacePathSepForRegex} = require('jest-regex-util');
+
+const snapshotDirRegex = new RegExp(
+  replacePathSepForRegex('\/__snapshots__\/'),
+);
+const snapshotFileRegex = new RegExp(
+  replacePathSepForRegex('__snapshots__\/(.*)\.snap'),
+);
+const isSnapshotPath = (path: string): boolean =>
+  !!path.match(snapshotDirRegex);
 
 function compact(array: Array<?Path>): Array<Path> {
   const result = [];
@@ -66,17 +76,22 @@ class DependencyResolver {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();
       while (changed.size) {
-        changed = new Set(moduleMap.filter(module => (
-          !visitedModules.has(module.file) &&
-          module.dependencies.some(dep => dep && changed.has(dep))
-        )).map(module => {
-          const file = module.file;
-          if (filter(file)) {
-            relatedPaths.add(file);
-          }
-          visitedModules.add(file);
-          return module.file;
-        }));
+        changed = new Set(
+          moduleMap
+            .filter(
+              module =>
+                !visitedModules.has(module.file) &&
+                module.dependencies.some(dep => dep && changed.has(dep)),
+            )
+            .map(module => {
+              const file = module.file;
+              if (filter(file)) {
+                relatedPaths.add(file);
+              }
+              visitedModules.add(file);
+              return module.file;
+            }),
+        );
       }
       return relatedPaths;
     };
@@ -91,9 +106,14 @@ class DependencyResolver {
       if (fileExists(path, this._hasteFS)) {
         const module = this._hasteFS.exists(path);
         if (module) {
-          changed.add(path);
-          if (filter(path)) {
-            relatedPaths.add(path);
+          // /path/to/__snapshots__/test.js.snap is always adjacent to
+          // /path/to/test.js
+          const modulePath = isSnapshotPath(path)
+            ? path.replace(snapshotFileRegex, '$1')
+            : path;
+          changed.add(modulePath);
+          if (filter(modulePath)) {
+            relatedPaths.add(modulePath);
           }
         }
       }

@@ -22,10 +22,7 @@ const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 const VERSION = require('../../package.json').version;
 
 module.exports = function() {
-  const argv = yargs
-    .usage(args.usage)
-    .options(args.options)
-    .argv;
+  const argv = yargs.usage(args.usage).options(args.options).argv;
 
   validateCLIOptions(argv, args.options);
 

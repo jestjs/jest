@@ -16,7 +16,6 @@ const cwd = process.cwd();
 let createLocalRuntime;
 
 describe('Runtime', () => {
-
   beforeEach(() => {
     jest.resetModules();
 
@@ -50,8 +49,11 @@ describe('Runtime', () => {
   });
 
   it('finds modules in NODE_PATH containing multiple paths', () => {
-    const nodePath =
-      cwd + '/some/other/path' + path.delimiter + __dirname + '/NODE_PATH_dir';
+    const nodePath = cwd +
+      '/some/other/path' +
+      path.delimiter +
+      __dirname +
+      '/NODE_PATH_dir';
     return createLocalRuntime(nodePath).then(runtime => {
       const exports = runtime.requireModuleOrMock(
         runtime.__mockRootPath,
@@ -62,18 +64,19 @@ describe('Runtime', () => {
   });
 
   it('does not find modules if NODE_PATH is relative', () => {
-    const nodePath =
-      cwd.substr(path.sep.length) + 'src/Runtime/__tests__/NODE_PATH_dir';
+    const nodePath = cwd.substr(path.sep.length) +
+      'src/Runtime/__tests__/NODE_PATH_dir';
     return createLocalRuntime(nodePath).then(runtime => {
       expect(() => {
         runtime.requireModuleOrMock(
           runtime.__mockRootPath,
           'RegularModuleInNodePath',
         );
-      }).toThrow(new Error(
-        `Cannot find module 'RegularModuleInNodePath' from 'root.js'`,
-      ));
+      }).toThrow(
+        new Error(
+          `Cannot find module 'RegularModuleInNodePath' from 'root.js'`,
+        ),
+      );
     });
   });
-
 });

@@ -14,7 +14,7 @@ import type {HasteImpl, WorkerMessage, WorkerCallback} from './types';
 
 const H = require('./constants');
 
-const docblock = require('./lib/docblock');
+const docblock = require('jest-docblock');
 const extractRequires = require('./lib/extractRequires');
 const fs = require('graceful-fs');
 const path = require('path');
@@ -51,11 +51,9 @@ module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
         throw new Error('jest-haste-map: hasteImplModulePath changed');
       }
       hasteImplModulePath = data.hasteImplModulePath;
-      hasteImpl = (
+      hasteImpl =
         // $FlowFixMe: dynamic require
-        require(hasteImplModulePath)
-          : HasteImpl
-      );
+        (require(hasteImplModulePath): HasteImpl);
     }
 
     const filePath = data.filePath;

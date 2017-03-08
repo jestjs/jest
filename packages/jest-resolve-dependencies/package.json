@@ -8,6 +8,7 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "jest-file-exists": "^19.0.0"
+    "jest-file-exists": "^19.0.0",
+    "jest-regex-util": "^19.0.0"
   }
 }

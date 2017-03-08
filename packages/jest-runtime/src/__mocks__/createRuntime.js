@@ -14,10 +14,15 @@ module.exports = function createRuntime(filename, config) {
 
   const {normalize} = require('jest-config');
 
-  config = normalize(Object.assign({
-    name: 'Runtime-' + filename.replace(/\W/, '-') + '-tests',
-    rootDir: path.resolve(path.dirname(filename), 'test_root'),
-  }, config)).config;
+  config = normalize(
+    Object.assign(
+      {
+        name: 'Runtime-' + filename.replace(/\W/, '-') + '-tests',
+        rootDir: path.resolve(path.dirname(filename), 'test_root'),
+      },
+      config,
+    ),
+  ).config;
 
   const environment = new NodeEnvironment(config);
   environment.global.console = console;
@@ -32,10 +37,10 @@ module.exports = function createRuntime(filename, config) {
 
       runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
       runtime.__mockSubdirPath = path.join(
-          config.rootDir,
-          'subdir2',
-          'module_dir',
-          'moduleDirModule.js'
+        config.rootDir,
+        'subdir2',
+        'module_dir',
+        'moduleDirModule.js',
       );
       return runtime;
     });
