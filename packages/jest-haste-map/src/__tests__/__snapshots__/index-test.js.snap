@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
+exports[`HasteMap throws on duplicate module ids 1`] = `
 [Error: jest-haste-map: @providesModule naming collision:
   Duplicate module name: Strawberry
   Paths: /fruits/raspberry.js collides with /fruits/strawberry.js
 
-This error is caused by a @providesModule declaration with the same name across two different files.]
+This error is caused by a @providesModule declaration with the same name across several different files.]
 `;
 
 exports[`HasteMap tries to crawl using node as a fallback 1`] = `
@@ -26,12 +26,4 @@ Jest will use the mock file found in:
 /fruits2/__mocks__/subdir/blueberry.js
 
 "
-`;
-
-exports[`HasteMap warns on duplicate module ids 1`] = `
-"jest-haste-map: @providesModule naming collision:
-  Duplicate module name: Strawberry
-  Paths: /fruits/raspberry.js collides with /fruits/strawberry.js
-
-This warning is caused by a @providesModule declaration with the same name across two different files."
 `;
