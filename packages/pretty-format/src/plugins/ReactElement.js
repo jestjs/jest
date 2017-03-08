@@ -8,6 +8,8 @@
 /* eslint-disable max-len */
 'use strict';
 
+import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+
 const escapeHTML = require('./lib/escapeHTML');
 
 const reactElement = Symbol.for('react.element');
@@ -24,7 +26,7 @@ function printChildren(flatChildren, print, indent, colors, opts) {
   return flatChildren
     .map(node => {
       if (typeof node === 'object') {
-        return printElement(node, print, indent, colors, opts);
+        return print(node, print, indent, colors, opts);
       } else if (typeof node === 'string') {
         return colors.content.open + escapeHTML(node) + colors.content.close;
       } else {
@@ -64,7 +66,13 @@ function printProps(props, print, indent, colors, opts) {
     .join('');
 }
 
-function printElement(element, print, indent, colors, opts) {
+const print = (
+  element: any,
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
+) => {
   let result = colors.tag.open + '<';
   let elementName;
   if (typeof element.type === 'string') {
@@ -109,13 +117,8 @@ function printElement(element, print, indent, colors, opts) {
   }
 
   return result;
-}
-
-module.exports = {
-  print(val, print, indent, opts, colors) {
-    return printElement(val, print, indent, colors, opts);
-  },
-  test(object) {
-    return object && object.$$typeof === reactElement;
-  },
 };
+
+const test = (object: any) => object && object.$$typeof === reactElement;
+
+module.exports = ({print, test}: Plugin);

@@ -17,6 +17,7 @@ export type StringOrNull = string | null;
 
 export type Options = {|
   callToJSON: boolean,
+  edgeSpacing: string,
   escapeRegex: boolean,
   highlight: boolean,
   indent: number,
@@ -24,6 +25,7 @@ export type Options = {|
   min: boolean,
   plugins: Plugins,
   printFunctionName: boolean,
+  spacing: string,
   theme: {|
     content: string,
     prop: string,
@@ -44,3 +46,13 @@ export type Plugin = {
 };
 
 export type Plugins = Array<Plugin>;
+
+export type ReactTestObject = {|
+  $$typeof: Symbol,
+  type: string,
+  props?: Object,
+  children?: null | Array<ReactTestChild>,
+|};
+
+// Child can be `number` in Stack renderer but not in Fiber renderer.
+export type ReactTestChild = ReactTestObject | string | number;
