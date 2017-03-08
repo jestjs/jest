@@ -10,16 +10,16 @@ immediately adjacent to the module. For example, to mock a module called
 put it in the <code>models/__mocks__</code> directory. If the module you are mocking is
 a node module (eg: <code>fs</code>), the mock should be placed in the same parent
 directory as the <code>node_modules</code> folder. Eg:</p><pre class="prism language-javascript">
-  node_modules
-  __mocks__
-    fs<span class="token punctuation">.</span>js
-  __tests__
-  models
-    __mocks__
-      user<span class="token punctuation">.</span>js
-    user<span class="token punctuation">.</span>js
-  views
-  config</pre><p>When a manual mock exists for a given module, Jest&#x27;s module system will use that module when explicitly calling <code>jest.mock(&#x27;moduleName&#x27;)</code>. However, manual mocks will take precedence over node modules even if <code>jest.mock(&#x27;moduleName&#x27;)</code> is not called. To opt out of this behavior you will need to explicitly call <code>jest.unmock(&#x27;moduleName&#x27;)</code> in tests that should use the actual module implementation.</p><p>Here&#x27;s a contrived example where we have a module that provides a summary of
+<span class="token punctuation">.</span>
+├── config
+├── fs<span class="token punctuation">.</span>js
+├── __mocks__
+├── models
+│   ├── __mocks__
+│   │   └── user<span class="token punctuation">.</span>js
+│   └── user<span class="token punctuation">.</span>js
+├── node_modules
+└── views</pre><p>When a manual mock exists for a given module, Jest&#x27;s module system will use that module when explicitly calling <code>jest.mock(&#x27;moduleName&#x27;)</code>. However, manual mocks will take precedence over node modules even if <code>jest.mock(&#x27;moduleName&#x27;)</code> is not called. To opt out of this behavior you will need to explicitly call <code>jest.unmock(&#x27;moduleName&#x27;)</code> in tests that should use the actual module implementation.</p><p>Here&#x27;s a contrived example where we have a module that provides a summary of
 all the files in a given directory.</p><pre class="prism language-javascript">
 <span spellcheck="true" class="token comment">// FileSummarizer.js</span>
 <span class="token string">&#x27;use strict&#x27;</span><span class="token punctuation">;</span>
@@ -28,8 +28,8 @@ all the files in a given directory.</p><pre class="prism language-javascript">
 
 <span class="token keyword">function</span> <span class="token function">summarizeFilesInDirectorySync</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">return</span> fs<span class="token punctuation">.</span><span class="token function">readdirSync</span><span class="token punctuation">(</span>directory<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>fileName <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-    fileName<span class="token punctuation">,</span>
     directory<span class="token punctuation">,</span>
+    fileName<span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 
