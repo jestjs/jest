@@ -369,11 +369,7 @@ class TestRunner {
 
   _setupReporters() {
     const config = this._config;
-    
-    
-    // Default Reporters are setup when
-    // noDefaultReporters is false, which is false by default
-    // and can be set to true in configuration.
+
     if (!config.noDefaultReporters) {
       this._setupDefaultReporters();
     }
