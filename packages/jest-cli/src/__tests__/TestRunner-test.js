@@ -31,8 +31,6 @@ jest.mock('../reporters/DefaultReporter');
 
 test('.addReporter() .removeReporter()', () => {
   const runner = new TestRunner({}, {}, {});
-  runner._dispatcher._reporters = [];
-
   const reporter = new SummaryReporter();
 
   expect(runner._dispatcher._reporters).toHaveLength(2);
