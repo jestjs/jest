@@ -11,10 +11,10 @@
 'use strict';
 
 module.exports = [
-  require('./ImmutableOrderedSet'),
-  require('./ImmutableOrderedMap'),
   require('./ImmutableList'),
   require('./ImmutableSet'),
   require('./ImmutableMap'),
   require('./ImmutableStack'),
+  require('./ImmutableOrderedSet'),
+  require('./ImmutableOrderedMap'),
 ];

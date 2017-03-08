@@ -10,18 +10,19 @@
 /* eslint-disable max-len */
 'use strict';
 
+import type {
+  Colors, 
+  Indent, 
+  Options, 
+  Print, 
+  Plugin, 
+  ReactTestObject, 
+  ReactTestChild,
+} from '../types.js';
+
 const escapeHTML = require('./lib/escapeHTML');
 
 const reactTestInstance = Symbol.for('react.test.json');
-
-type ReactTestObject = {|
-  $$typeof: Symbol,
-  type: string,
-  props?: Object,
-  children?: null | Array<ReactTestChild>,
-|};
-// Child can be `number` in Stack renderer but not in Fiber renderer.
-type ReactTestChild = ReactTestObject | string | number;
 
 function printChildren(
   children: Array<ReactTestChild>,
@@ -108,17 +109,15 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
   return result;
 }
 
-module.exports = {
-  print(
-    val: ReactTestObject,
-    print: (val: any) => string,
-    indent: (str: string) => string,
-    opts: Object,
-    colors: Object,
-  ) {
-    return printInstance(val, print, indent, colors, opts);
-  },
-  test(object: Object) {
-    return object && object.$$typeof === reactTestInstance;
-  },
-};
+const print = (
+  val: ReactTestObject,
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
+) => printInstance(val, print, indent, colors, opts);
+
+const test = (object: Object) => 
+  object && object.$$typeof === reactTestInstance;
+
+module.exports = ({print, test}: Plugin);

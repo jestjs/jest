@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {Colors, Indent, Options, Print} from '../../types.js';
+
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
 
@@ -19,11 +21,11 @@ const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
   length > 0 ? edgeSpacing : '';
 
 const printImmutable = (
-  val: Object,
-  print: Function,
-  indent: Function,
-  opts: Object,
-  colors: Object,
+  val: any,
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
   immutableDataStructureName: string,
   isMap: boolean,
 ): string => {
