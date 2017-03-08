@@ -49,7 +49,7 @@ test('resolves dependencies for existing path', () => {
   );
   expect(resolved).toEqual([
     expect.stringContaining('jest-resolve-dependencies'),
-    expect.stringContaining('jest-file-exists'),
+    expect.stringContaining('jest-regex-util'),
   ]);
 });
 
