@@ -76,25 +76,17 @@ const expect: Expect = (actual: any): ExpectationObject => {
       true,
       actual,
     );
-  });
 
-  const resolveExpectation = {not: {}};
-  Object.keys(allMatchers).forEach(name => {
-    resolveExpectation[name] =
+    expectation.resolves[name] =
       makeResolveMatcher(name, allMatchers[name], false, actual);
-    resolveExpectation.not[name] =
+    expectation.resolves.not[name] =
       makeResolveMatcher(name, allMatchers[name], true, actual);
-  });
-  expectation.resolves = resolveExpectation;
 
-  const rejectExpectation = {not: {}};
-  Object.keys(allMatchers).forEach(name => {
-    rejectExpectation[name] =
+    expectation.rejects[name] =
       makeRejectMatcher(name, allMatchers[name], false, actual);
-    rejectExpectation.not[name] =
+    expectation.rejects.not[name] =
       makeRejectMatcher(name, allMatchers[name], true, actual);
   });
-  expectation.rejects = rejectExpectation;
 
   return expectation;
 };
