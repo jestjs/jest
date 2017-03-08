@@ -42,7 +42,7 @@ const addSuppressedErrors = result => {
   }
 };
 
-const addAssertionErrors = result => {
+function addAssertionErrors(result) {
   const {assertionCalls, assertionsExpected} = getState();
   setState({
     assertionCalls: 0,
