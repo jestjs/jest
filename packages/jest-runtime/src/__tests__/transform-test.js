@@ -13,7 +13,6 @@ const slash = require('slash');
 
 jest
   .mock('graceful-fs')
-  .mock('jest-file-exists')
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
   }))
@@ -131,7 +130,7 @@ describe('transform', () => {
       mtime: {getTime: () => 42},
     }));
 
-    require('jest-file-exists').mockImplementation(path => !!mockFs[path]);
+    fs.existsSync = jest.fn(path => !!mockFs[path]);
 
     config = {
       cache: true,

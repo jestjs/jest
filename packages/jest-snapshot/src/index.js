@@ -13,7 +13,6 @@ import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 
 const diff = require('jest-diff');
-const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
 const SnapshotState = require('./State');
@@ -26,6 +25,9 @@ const {
   RECEIVED_COLOR,
 } = require('jest-matcher-utils');
 const {SNAPSHOT_EXTENSION} = require('./utils');
+
+const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
+  hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 const cleanup = (hasteFS: HasteFS, update: boolean) => {
   const pattern = '\\.' + SNAPSHOT_EXTENSION + '$';
