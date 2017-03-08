@@ -69,7 +69,7 @@ function addAssertionErrors(result) {
       passed: false,
     });
   }
-};
+}
 
 const patchJasmine = () => {
   global.jasmine.Spec = (realSpec => {
