@@ -132,12 +132,11 @@ describe('_addCustomReporters', () => {
       ['ohthisisnotgoingtobearealpath.sadfslj', {}],
     ];
 
-    const addInvalidReporters = () => {
+    const addNonexistentReporters = () => {
       runner._addCustomReporters(reporters);    
     };
 
-    expect(addInvalidReporters).toThrow();
-    expect(addInvalidReporters).toThrow(/Cannot find module/);
+    expect(addNonexistentReporters).toThrow(/Failed to set up reporter/);
     expect(runner._dispatcher._reporters).toHaveLength(0);
   });
 

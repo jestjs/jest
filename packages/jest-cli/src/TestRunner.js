@@ -20,6 +20,10 @@ import type {RunnerContext} from 'types/Reporters';
 import type BaseReporter from './reporters/BaseReporter';
 
 const {formatExecError} = require('jest-message-util');
+const {getType} = require('jest-matcher-utils');
+const prettyFormat = require('pretty-format');
+
+
 const fs = require('graceful-fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const DefaultReporter = require('./reporters/DefaultReporter');
@@ -27,6 +31,7 @@ const NotifyReporter = require('./reporters/NotifyReporter');
 const SummaryReporter = require('./reporters/SummaryReporter');
 const VerboseReporter = require('./reporters/VerboseReporter');
 const pify = require('pify');
+const chalk = require('chalk');
 const runTest = require('./runTest');
 const snapshot = require('jest-snapshot');
 const throat = require('throat');
@@ -422,11 +427,13 @@ class TestRunner {
         [reporterPath, reporterConfig] = entry;
       } else {
         if (typeof entry !== 'string') {
-          throw new Error(`
-            Unexpected custom reporter configuration.
-            Expected to get either a path string or an array of [path, confg]
-            got: ${JSON.stringify(entry)}
-          `);
+          throw new Error(
+            'Unexpected Custom Reporter Entry\n' +
+            'Report Entry should be of type:\n' +
+            `\t\t ${chalk.bold(chalk.green('String / Array'))}\n` +
+            'Received:\n' +
+            `\t\t ${chalk.bold(chalk.red(getType(entry)))}`
+          )
         }
 
         reporterPath = entry;
@@ -436,14 +443,13 @@ class TestRunner {
         const reporter = require(reporterPath);
         this.addReporter(new reporter(reporterConfig || {}));
       } catch (error) {
-        console.error(`
-          Failed to set up reporter:
-            ${JSON.stringify(reporterPath)}
-          Config:
-            ${JSON.stringify(reporterConfig)}
-        `);
-
-        throw error;
+        throw new Error(
+          `Failed to set up reporter: \n` +
+          `Reporter Path:\n` +
+          `\t\t${prettyFormat(reporterPath)}` + 
+          'Reporter Configuration:\n' +
+          `\t\t${prettyFormat(reporterConfig)}`
+        );
       }
     });
   }
