@@ -95,10 +95,5 @@
     "testMatch": [
       "**/*-test.js"
     ]
-  },
-  "dependencies": {
-    "ansi-styles": "^3.0.0",
-    "babel-plugin-istanbul": "^4.0.0",
-    "pretty-format": "^19.0.0"
   }
 }
