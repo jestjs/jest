@@ -40,7 +40,7 @@
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build",
     "build": "node ./scripts/build.js",
-    "clean-all": "rm -rf ./node_modules; rm -rf ./packages/*/node_modules; rm -rf ./integration_tests/*/*/node_modules; yarn run build-clean",
+    "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && rm -rf ./integration_tests/*/*/node_modules && yarn run build-clean",
     "danger": "node ./danger/node_modules/.bin/danger",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn run jest -- --coverage",
@@ -55,7 +55,7 @@
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test": "yarn run typecheck && yarn run lint && yarn run build && yarn run jest && yarn run test-examples",
     "typecheck": "flow check",
-    "watch": "yarn run build; node ./scripts/watch.js"
+    "watch": "yarn run build && node ./scripts/watch.js"
   },
   "jest": {
     "modulePathIgnorePatterns": [
