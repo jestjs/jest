@@ -14,9 +14,9 @@ import type {Path} from 'types/Config';
 
 const args = require('./args');
 const getJest = require('./getJest');
-const getPackageRoot = require('jest-util').getPackageRoot;
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
+const pkgDir = require('pkg-dir');
 
 function run(argv?: Object, root?: Path) {
   argv = yargs(argv || process.argv.slice(2))
@@ -36,7 +36,7 @@ function run(argv?: Object, root?: Path) {
   }
 
   if (!root) {
-    root = getPackageRoot();
+    root = pkgDir.sync();
   }
 
   getJest(root).runCLI(argv, root, result => {
