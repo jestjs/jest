@@ -8,7 +8,6 @@
     "callsites": "^2.0.0",
     "chalk": "^1.1.1",
     "graceful-fs": "^4.1.6",
-    "is-ci": "^1.0.9",
     "istanbul-api": "^1.1.0-alpha.1",
     "istanbul-lib-coverage": "^1.0.0",
     "istanbul-lib-instrument": "^1.1.1",
@@ -31,7 +30,6 @@
     "slash": "^1.0.0",
     "string-length": "^1.0.1",
     "throat": "^3.0.0",
-    "which": "^1.1.1",
     "worker-farm": "^1.3.1",
     "yargs": "^6.3.0"
   },

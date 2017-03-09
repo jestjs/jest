@@ -20,7 +20,7 @@ const {createReporter} = require('istanbul-api');
 const chalk = require('chalk');
 const fs = require('fs');
 const generateEmptyCoverage = require('../generateEmptyCoverage');
-const isCI = require('is-ci');
+const {isCI} = require('../utils');
 const istanbulCoverage = require('istanbul-lib-coverage');
 const libSourceMaps = require('istanbul-lib-source-maps');
 
