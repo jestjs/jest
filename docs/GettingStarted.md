@@ -95,7 +95,7 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-To use TypeScript in your tests, install the `ts-jest` package and the types of `jest`
+To use TypeScript in your tests, install the `ts-jest` package and the types for Jest.
 
 ```
 npm install --save-dev ts-jest @types/jest
