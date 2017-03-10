@@ -19,7 +19,7 @@ const {getTestEnvironment} = require('./utils');
 
 async function readConfig(argv: Object, packageRoot: string) {
   const rawConfig = await readRawConfig(argv, packageRoot);
-  const {config, hasDeprecationWarnings} = normalize(rawConfig);
+  const {config, hasDeprecationWarnings} = normalize(rawConfig, argv);
   return {
     config: Object.freeze(setFromArgv(config, argv)),
     hasDeprecationWarnings,
