@@ -1,138 +1,138 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`displays warning for deprecated config options 1`] = `
-"[33m[1m[1m●[1m Deprecation Warning[22m:
+"<bold><bold>●<bold> Deprecation Warning:
 
-  Option [1mscriptPreprocessor[22m was replaced by [1mtransform[22m, which support multiple preprocessors.
+  Option <bold>scriptPreprocessor was replaced by <bold>transform, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    [1m\\"transform\\"[22m: [1m{\\".*\\": \\"test\\"}[22m
+    <bold>\\"transform\\": <bold>{\\".*\\": \\"test\\"}
   }
 
   Please update your configuration.
-[39m"
+</>"
 `;
 
 exports[`displays warning for unknown config options 1`] = `
-"[33m[1m[1m●[1m Validation Warning[22m:
+"<bold><bold>●<bold> Validation Warning:
 
-  Unknown option [1m\\"unkwon\\"[22m with value [1m{}[22m was found. Did you mean [1m\\"unknown\\"[22m?
+  Unknown option <bold>\\"unkwon\\" with value <bold>{} was found. Did you mean <bold>\\"unknown\\"?
   This is probably a typing mistake. Fixing it will remove this message.
-[39m"
+</>"
 `;
 
 exports[`pretty prints valid config for Array 1`] = `
-"<red>● Validation Error:
+"<red><bold><bold>●<bold> Validation Error:
 
-  Option \\"coverageReporters\\" must be of type:
-    <green>array<red>
+  Option <bold>\\"coverageReporters\\" must be of type:
+    <bold><green>array<red>
   but instead received:
-    <red>object<red>
+    <bold><red>object<red>
 
   Example:
   {
-    \\"coverageReporters\\": [\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"]
+    <bold>\\"coverageReporters\\": <bold>[\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"]
   }
 </>"
 `;
 
 exports[`pretty prints valid config for Boolean 1`] = `
-"<red>● Validation Error:
+"<red><bold><bold>●<bold> Validation Error:
 
-  Option \\"automock\\" must be of type:
-    <green>boolean<red>
+  Option <bold>\\"automock\\" must be of type:
+    <bold><green>boolean<red>
   but instead received:
-    <red>array<red>
+    <bold><red>array<red>
 
   Example:
   {
-    \\"automock\\": false
+    <bold>\\"automock\\": <bold>false
   }
 </>"
 `;
 
 exports[`pretty prints valid config for Function 1`] = `
-"<red>● Validation Error:
+"<red><bold><bold>●<bold> Validation Error:
 
-  Option \\"fn\\" must be of type:
-    <green>function<red>
+  Option <bold>\\"fn\\" must be of type:
+    <bold><green>function<red>
   but instead received:
-    <red>string<red>
+    <bold><red>string<red>
 
   Example:
   {
-    \\"fn\\": (config, option, deprecatedOptions) => true
+    <bold>\\"fn\\": <bold>(config, option, deprecatedOptions) => true
   }
 </>"
 `;
 
 exports[`pretty prints valid config for Object 1`] = `
-"<red>● Validation Error:
+"<red><bold><bold>●<bold> Validation Error:
 
-  Option \\"haste\\" must be of type:
-    <green>object<red>
+  Option <bold>\\"haste\\" must be of type:
+    <bold><green>object<red>
   but instead received:
-    <red>number<red>
+    <bold><red>number<red>
 
   Example:
   {
-    \\"haste\\": {\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}
+    <bold>\\"haste\\": <bold>{\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}
   }
 </>"
 `;
 
 exports[`pretty prints valid config for String 1`] = `
-"<red>● Validation Error:
+"<red><bold><bold>●<bold> Validation Error:
 
-  Option \\"preset\\" must be of type:
-    <green>string<red>
+  Option <bold>\\"preset\\" must be of type:
+    <bold><green>string<red>
   but instead received:
-    <red>number<red>
+    <bold><red>number<red>
 
   Example:
   {
-    \\"preset\\": \\"react-native\\"
+    <bold>\\"preset\\": <bold>\\"react-native\\"
   }
 </>"
 `;
 
 exports[`works with custom deprecations 1`] = `
-"[33m[1mMy Custom Deprecation Warning[22m:
+"<bold>My Custom Deprecation Warning:
 
-  Option [1mscriptPreprocessor[22m was replaced by [1mtransform[22m, which support multiple preprocessors.
+  Option <bold>scriptPreprocessor was replaced by <bold>transform, which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    [1m\\"transform\\"[22m: [1m{\\".*\\": \\"test\\"}[22m
+    <bold>\\"transform\\": <bold>{\\".*\\": \\"test\\"}
   }
 
   Please update your configuration.
 
-My custom comment[39m"
+My custom comment</>"
 `;
 
 exports[`works with custom errors 1`] = `
-"<red>My Custom Error:
+"<red><bold>My Custom Error:
 
-  Option \\"test\\" must be of type:
-    <green>array<red>
+  Option <bold>\\"test\\" must be of type:
+    <bold><green>array<red>
   but instead received:
-    <red>string<red>
+    <bold><red>string<red>
 
   Example:
   {
-    \\"test\\": [1, 2]
+    <bold>\\"test\\": <bold>[1, 2]
   }
 
 My custom comment</>"
 `;
 
 exports[`works with custom warnings 1`] = `
-"[33m[1mMy Custom Warning[22m:
+"<bold>My Custom Warning:
 
-  Unknown option [1m\\"unknown\\"[22m with value [1m\\"string\\"[22m was found.
+  Unknown option <bold>\\"unknown\\" with value <bold>\\"string\\" was found.
   This is probably a typing mistake. Fixing it will remove this message.
 
-My custom comment[39m"
+My custom comment</>"
 `;

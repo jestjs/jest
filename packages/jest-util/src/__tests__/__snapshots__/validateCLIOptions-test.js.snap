@@ -1,22 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`fails for multiple unknown options 1`] = `
-"<red>● Unrecognized CLI Parameters:
+"<red><bold><bold>●<bold> Unrecognized CLI Parameters:
 
   Following options were not recognized:
-  [\\"jest\\", \\"test\\"]
+  <bold>[\\"jest\\", \\"test\\"]
 
-  CLI Options Documentation:
+  <bold>CLI Options Documentation:
   http://facebook.github.io/jest/docs/cli.html
 </>"
 `;
 
 exports[`fails for unknown option 1`] = `
-"<red>● Unrecognized CLI Parameter:
+"<red><bold><bold>●<bold> Unrecognized CLI Parameter:
 
-  Unrecognized option \\"unknown\\".
+  Unrecognized option <bold>\\"unknown\\".
 
-  CLI Options Documentation:
+  <bold>CLI Options Documentation:
   http://facebook.github.io/jest/docs/cli.html
 </>"
 `;

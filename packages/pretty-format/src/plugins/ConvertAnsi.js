@@ -12,25 +12,33 @@
 
 import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
 
+const ansiRegex = require('ansi-regex');
+
 const toHumanReadableAnsi = text => {
   const style = require('ansi-styles');
-  const reg = require('ansi-regex');
-  return text.replace(reg(), (match, offset, string) => {
+  return text.replace(ansiRegex(), (match, offset, string) => {
     switch (match) {
       case style.red.close:
       case style.green.close:
+      case style.reset.open:
+      case style.reset.close:
         return '</>';
       case style.red.open:
         return '<red>';
       case style.green.open:
         return '<green>';
+      case style.dim.open:
+        return '<dim>';
+      case style.bold.open:
+        return '<bold>';
       default:
         return '';
     }
   });
 };
 
-const test = (value: any) => value[Symbol.for('toThrowErrorMatchingSnapshot')];
+const test = (value: any) =>
+  typeof value === 'string' && value.match(ansiRegex());
 
 const print = (
   val: any,
