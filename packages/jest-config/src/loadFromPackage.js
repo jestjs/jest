@@ -15,7 +15,7 @@ import type {Path} from 'types/Config';
 const path = require('path');
 const readPkg = require('read-pkg');
 
-function loadFromPackage(root: Path, argv: Object) {
+function loadFromPackage(root: Path) {
   return readPkg(root).then(
     packageData => {
       const config = packageData.jest || {};

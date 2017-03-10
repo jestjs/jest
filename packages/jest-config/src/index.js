@@ -49,7 +49,7 @@ const readRawConfig = (argv, root) => {
     return Promise.resolve(config);
   }
 
-  return loadFromPackage(root, argv)
+  return loadFromPackage(root)
     .then(config => {
       if (config) {
         return config;
