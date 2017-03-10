@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should exclude jasmine from stack trace for windows paths 1`] = `
-"[1m[31m  [1m● [1mwindows test[39m[22m
+"<bold><red>  <bold>● <bold>windows test</>
 
       at stack (..\\\\jest-jasmine2\\\\vendor\\\\jasmine-2.4.1.js:1580:17)
-[2m      
-      [2mat Object.addResult ([2m..\\\\jest-jasmine2\\\\vendor\\\\jasmine-2.4.1.js[2m:1550:14)[2m
-      [2mat Object.it ([2mbuild\\\\__tests__\\\\messages-test.js[2m:45:41)[2m[22m
+<dim>      
+      <dim>at Object.addResult (<dim>..\\\\jest-jasmine2\\\\vendor\\\\jasmine-2.4.1.js<dim>:1550:14)<dim>
+      <dim>at Object.it (<dim>build\\\\__tests__\\\\messages-test.js<dim>:45:41)<dim>
 "
 `;
