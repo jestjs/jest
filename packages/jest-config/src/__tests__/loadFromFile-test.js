@@ -32,7 +32,7 @@ describe('loadFromFile', () => {
   });
 
   it('loads configuration from a file at `filePath`.', async () => {
-    const {config} = await loadFromFile('config.js', {});
+    const config = await loadFromFile('config.js', {});
     expect(config.testMatch).toEqual(['match.js']);
   });
 
@@ -42,12 +42,7 @@ describe('loadFromFile', () => {
   });
 
   it('uses the current working directory if `rootDir` is not defined.', async () => {
-    const {config} = await loadFromFile('config.js', {});
+    const config = await loadFromFile('config.js', {});
     expect(config.rootDir).toEqual(process.cwd());
-  });
-
-  it('resolves `rootDir` if defined.', async () => {
-    const {config} = await loadFromFile('configWithRootDir.js', {});
-    expect(path.basename(config.rootDir)).toEqual('testDir');
   });
 });
