@@ -49,13 +49,7 @@ const readRawConfig = (argv, root) => {
     return Promise.resolve(config);
   }
 
-  return loadFromPackage(root)
-    .then(config => {
-      if (config) {
-        return config;
-      }
-      return {rootDir: root};
-    });
+  return loadFromPackage(root).then(config => config || {rootDir: root});
 };
 
 module.exports = {
