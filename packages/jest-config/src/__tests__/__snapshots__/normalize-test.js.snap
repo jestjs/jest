@@ -18,41 +18,41 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 `;
 
 exports[`preset throws when preset not found 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red>● Validation Error:
 
-  Preset [1mdoesnt-exist[22m not found.
+  Preset doesnt-exist not found.
 
-  [1mConfiguration Documentation:[22m
+  Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`rootDir throws if the config is missing a rootDir property 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red>● Validation Error:
 
-  Configuration option [1mrootDir[22m must be specified.
+  Configuration option rootDir must be specified.
 
-  [1mConfiguration Documentation:[22m
+  Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`testEnvironment throws on invalid environment names 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red>● Validation Error:
 
-  Test environment [1mphantom[22m cannot be found. Make sure the [1mtestEnvironment[22m configuration option points to an existing node module.
+  Test environment phantom cannot be found. Make sure the testEnvironment configuration option points to an existing node module.
 
-  [1mConfiguration Documentation:[22m
+  Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red>● Validation Error:
 
-  Configuration options [1mtestMatch[22m and [1mtestRegex[22m cannot be used together.
+  Configuration options testMatch and testRegex cannot be used together.
 
-  [1mConfiguration Documentation:[22m
+  Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;

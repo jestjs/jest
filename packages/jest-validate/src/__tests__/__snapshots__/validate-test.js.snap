@@ -23,78 +23,78 @@ exports[`displays warning for unknown config options 1`] = `
 `;
 
 exports[`pretty prints valid config for Array 1`] = `
-"[31m[1m[1m●[1m Validation Error[22m:
+"<red>● Validation Error:
 
-  Option [1m\\"coverageReporters\\"[22m must be of type:
-    [1m[32marray[31m[22m
+  Option \\"coverageReporters\\" must be of type:
+    <green>array<red>
   but instead received:
-    [1m[31mobject[31m[22m
+    <red>object<red>
 
   Example:
   {
-    [1m\\"coverageReporters\\"[22m: [1m[\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"][22m
+    \\"coverageReporters\\": [\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"]
   }
-[39m"
+</>"
 `;
 
 exports[`pretty prints valid config for Boolean 1`] = `
-"[31m[1m[1m●[1m Validation Error[22m:
+"<red>● Validation Error:
 
-  Option [1m\\"automock\\"[22m must be of type:
-    [1m[32mboolean[31m[22m
+  Option \\"automock\\" must be of type:
+    <green>boolean<red>
   but instead received:
-    [1m[31marray[31m[22m
+    <red>array<red>
 
   Example:
   {
-    [1m\\"automock\\"[22m: [1mfalse[22m
+    \\"automock\\": false
   }
-[39m"
+</>"
 `;
 
 exports[`pretty prints valid config for Function 1`] = `
-"[31m[1m[1m●[1m Validation Error[22m:
+"<red>● Validation Error:
 
-  Option [1m\\"fn\\"[22m must be of type:
-    [1m[32mfunction[31m[22m
+  Option \\"fn\\" must be of type:
+    <green>function<red>
   but instead received:
-    [1m[31mstring[31m[22m
+    <red>string<red>
 
   Example:
   {
-    [1m\\"fn\\"[22m: [1m(config, option, deprecatedOptions) => true[22m
+    \\"fn\\": (config, option, deprecatedOptions) => true
   }
-[39m"
+</>"
 `;
 
 exports[`pretty prints valid config for Object 1`] = `
-"[31m[1m[1m●[1m Validation Error[22m:
+"<red>● Validation Error:
 
-  Option [1m\\"haste\\"[22m must be of type:
-    [1m[32mobject[31m[22m
+  Option \\"haste\\" must be of type:
+    <green>object<red>
   but instead received:
-    [1m[31mnumber[31m[22m
+    <red>number<red>
 
   Example:
   {
-    [1m\\"haste\\"[22m: [1m{\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}[22m
+    \\"haste\\": {\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}
   }
-[39m"
+</>"
 `;
 
 exports[`pretty prints valid config for String 1`] = `
-"[31m[1m[1m●[1m Validation Error[22m:
+"<red>● Validation Error:
 
-  Option [1m\\"preset\\"[22m must be of type:
-    [1m[32mstring[31m[22m
+  Option \\"preset\\" must be of type:
+    <green>string<red>
   but instead received:
-    [1m[31mnumber[31m[22m
+    <red>number<red>
 
   Example:
   {
-    [1m\\"preset\\"[22m: [1m\\"react-native\\"[22m
+    \\"preset\\": \\"react-native\\"
   }
-[39m"
+</>"
 `;
 
 exports[`works with custom deprecations 1`] = `
@@ -113,19 +113,19 @@ My custom comment[39m"
 `;
 
 exports[`works with custom errors 1`] = `
-"[31m[1mMy Custom Error[22m:
+"<red>My Custom Error:
 
-  Option [1m\\"test\\"[22m must be of type:
-    [1m[32marray[31m[22m
+  Option \\"test\\" must be of type:
+    <green>array<red>
   but instead received:
-    [1m[31mstring[31m[22m
+    <red>string<red>
 
   Example:
   {
-    [1m\\"test\\"[22m: [1m[1, 2][22m
+    \\"test\\": [1, 2]
   }
 
-My custom comment[39m"
+My custom comment</>"
 `;
 
 exports[`works with custom warnings 1`] = `

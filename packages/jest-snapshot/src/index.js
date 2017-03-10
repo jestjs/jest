@@ -146,8 +146,12 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
       `But it didn't throw anything.`,
     );
   }
+  // eslint-disable-next-line no-new-wrappers
+  const errorMessage = new String(error.message);
+  // $FlowFixMe
+  errorMessage[Symbol.for('toThrowErrorMatchingSnapshot')] = true;
 
-  return toMatchSnapshot.call(this, error.message);
+  return toMatchSnapshot.call(this, errorMessage);
 };
 
 module.exports = {

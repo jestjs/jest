@@ -1,199 +1,199 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.toThrow() error class did not throw at all 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>type</>)
 
 Expected the function to throw an error of type:
-  [32m\\"Err\\"[39m
+  <green>\\"Err\\"</>
 But it didn't throw anything."
 `;
 
 exports[`.toThrow() error class threw, but class did not match 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mtype[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>type</>)
 
 Expected the function to throw an error of type:
-  [32m\\"Err2\\"[39m
+  <green>\\"Err2\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrow() error class threw, but should not have 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mtype[39m[2m)[22m
+"expect(<red>function</>).not.toThrow(<green>type</>)
 
 Expected the function not to throw an error of type:
-  [32m\\"Err\\"[39m
+  <green>\\"Err\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrow() invalid actual 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mundefined[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>undefined</>)
 
 Received value must be a function, but instead \\"string\\" was found"
 `;
 
 exports[`.toThrow() invalid arguments 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mnumber[39m[2m)[22m
+"expect(<red>function</>).not.toThrow(<green>number</>)
 
 Unexpected argument passed.
-Expected: [32m\\"string\\"[39m, [32m\\"Error (type)\\"[39m or [32m\\"regexp\\"[39m.
+Expected: <green>\\"string\\"</>, <green>\\"Error (type)\\"</> or <green>\\"regexp\\"</>.
 Got:
-  string: [32m\\"111\\"[39m"
+  string: <green>\\"111\\"</>"
 `;
 
 exports[`.toThrow() regexp did not throw at all 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mregexp[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>regexp</>)
 
 Expected the function to throw an error matching:
-  [32m/apple/[39m
+  <green>/apple/</>
 But it didn't throw anything."
 `;
 
 exports[`.toThrow() regexp threw, but message did not match 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mregexp[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>regexp</>)
 
 Expected the function to throw an error matching:
-  [32m/banana/[39m
+  <green>/banana/</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrow() regexp threw, but should not have 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mregexp[39m[2m)[22m
+"expect(<red>function</>).not.toThrow(<green>regexp</>)
 
 Expected the function not to throw an error matching:
-  [32m/apple/[39m
+  <green>/apple/</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrow() strings did not throw at all 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mstring[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>string</>)
 
 Expected the function to throw an error matching:
-  [32m\\"apple\\"[39m
+  <green>\\"apple\\"</>
 But it didn't throw anything."
 `;
 
 exports[`.toThrow() strings threw, but message did not match 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrow([22m[32mstring[39m[2m)[22m
+"expect(<red>function</>).toThrow(<green>string</>)
 
 Expected the function to throw an error matching:
-  [32m\\"banana\\"[39m
+  <green>\\"banana\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrow() strings threw, but should not have 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrow([22m[32mstring[39m[2m)[22m
+"expect(<red>function</>).not.toThrow(<green>string</>)
 
 Expected the function not to throw an error matching:
-  [32m\\"apple\\"[39m
+  <green>\\"apple\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrowError() error class did not throw at all 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mtype[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>type</>)
 
 Expected the function to throw an error of type:
-  [32m\\"Err\\"[39m
+  <green>\\"Err\\"</>
 But it didn't throw anything."
 `;
 
 exports[`.toThrowError() error class threw, but class did not match 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mtype[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>type</>)
 
 Expected the function to throw an error of type:
-  [32m\\"Err2\\"[39m
+  <green>\\"Err2\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrowError() error class threw, but should not have 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mtype[39m[2m)[22m
+"expect(<red>function</>).not.toThrowError(<green>type</>)
 
 Expected the function not to throw an error of type:
-  [32m\\"Err\\"[39m
+  <green>\\"Err\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrowError() invalid actual 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mundefined[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>undefined</>)
 
 Received value must be a function, but instead \\"string\\" was found"
 `;
 
 exports[`.toThrowError() invalid arguments 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mnumber[39m[2m)[22m
+"expect(<red>function</>).not.toThrowError(<green>number</>)
 
 Unexpected argument passed.
-Expected: [32m\\"string\\"[39m, [32m\\"Error (type)\\"[39m or [32m\\"regexp\\"[39m.
+Expected: <green>\\"string\\"</>, <green>\\"Error (type)\\"</> or <green>\\"regexp\\"</>.
 Got:
-  string: [32m\\"111\\"[39m"
+  string: <green>\\"111\\"</>"
 `;
 
 exports[`.toThrowError() regexp did not throw at all 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mregexp[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>regexp</>)
 
 Expected the function to throw an error matching:
-  [32m/apple/[39m
+  <green>/apple/</>
 But it didn't throw anything."
 `;
 
 exports[`.toThrowError() regexp threw, but message did not match 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mregexp[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>regexp</>)
 
 Expected the function to throw an error matching:
-  [32m/banana/[39m
+  <green>/banana/</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrowError() regexp threw, but should not have 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mregexp[39m[2m)[22m
+"expect(<red>function</>).not.toThrowError(<green>regexp</>)
 
 Expected the function not to throw an error matching:
-  [32m/apple/[39m
+  <green>/apple/</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrowError() strings did not throw at all 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mstring[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>string</>)
 
 Expected the function to throw an error matching:
-  [32m\\"apple\\"[39m
+  <green>\\"apple\\"</>
 But it didn't throw anything."
 `;
 
 exports[`.toThrowError() strings threw, but message did not match 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).toThrowError([22m[32mstring[39m[2m)[22m
+"expect(<red>function</>).toThrowError(<green>string</>)
 
 Expected the function to throw an error matching:
-  [32m\\"banana\\"[39m
+  <green>\\"banana\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;
 
 exports[`.toThrowError() strings threw, but should not have 1`] = `
-"[2mexpect([22m[31mfunction[39m[2m).not.toThrowError([22m[32mstring[39m[2m)[22m
+"expect(<red>function</>).not.toThrowError(<green>string</>)
 
 Expected the function not to throw an error matching:
-  [32m\\"apple\\"[39m
+  <green>\\"apple\\"</>
 Instead, it threw:
-[31m  Error      
-      [2mat jestExpect ([22mpackages/jest-matchers/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m[39m"
+<red>  Error      
+      at jestExpect (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)</>"
 `;

@@ -12,10 +12,5 @@
     "jest-matcher-utils": "^19.0.0",
     "jest-message-util": "^19.0.0",
     "jest-regex-util": "^19.0.0"
-  },
-  "devDependencies": {
-    "ansi-regex": "^2.1.1",
-    "ansi-styles": "^3.0.0",
-    "jest-snapshot": "^19.0.0"
   }
 }
