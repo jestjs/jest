@@ -17,12 +17,14 @@ const normalize = require('./normalize');
 const setFromArgv = require('./setFromArgv');
 const {getTestEnvironment} = require('./utils');
 
-const readConfig = (argv: Object, packageRoot: string) =>
-  readRawConfig(argv, packageRoot)
-    .then(({config, hasDeprecationWarnings}) => ({
-      config: Object.freeze(setFromArgv(config, argv)),
-      hasDeprecationWarnings,
-    }));
+async function readConfig(argv: Object, packageRoot: string) {
+  const rawConfig = await readRawConfig(argv, packageRoot);
+  const {config, hasDeprecationWarnings} = normalize(rawConfig, argv);
+  return {
+    config: Object.freeze(setFromArgv(config, argv)),
+    hasDeprecationWarnings,
+  };
+}
 
 const parseConfig = argv => {
   if (argv.config && typeof argv.config === 'string') {
@@ -38,26 +40,16 @@ const readRawConfig = (argv, root) => {
   const rawConfig = parseConfig(argv);
 
   if (typeof rawConfig === 'string') {
-    return loadFromFile(path.resolve(process.cwd(), rawConfig), argv);
+    return loadFromFile(path.resolve(process.cwd(), rawConfig));
   }
 
   if (typeof rawConfig === 'object') {
     const config = Object.assign({}, rawConfig);
     config.rootDir = config.rootDir || root;
-    return Promise.resolve(normalize(config, argv));
+    return Promise.resolve(config);
   }
 
-  return loadFromPackage(root, argv)
-    .then(({config, hasDeprecationWarnings}) => {
-      if (config) {
-        return {
-          config,
-          hasDeprecationWarnings,
-        };
-      }
-
-      return normalize({rootDir: root}, argv);
-    });
+  return loadFromPackage(root).then(config => config || {rootDir: root});
 };
 
 module.exports = {
