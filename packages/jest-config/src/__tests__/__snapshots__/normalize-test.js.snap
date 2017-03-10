@@ -1,58 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
-"[33m[1m[1m●[1m Deprecation Warning[22m:
+"<bold><bold>●<bold> Deprecation Warning:
 
-  Option [1m\\"preprocessorIgnorePatterns\\"[22m was replaced by [1m\\"transformIgnorePatterns\\"[22m, which support multiple preprocessors.
+  Option <bold>\\"preprocessorIgnorePatterns\\" was replaced by <bold>\\"transformIgnorePatterns\\", which support multiple preprocessors.
 
   Jest now treats your current configuration as:
   {
-    [1m\\"transformIgnorePatterns\\"[22m: [1m[\\"bar/baz\\", \\"qux/quux\\"][22m
+    <bold>\\"transformIgnorePatterns\\": <bold>[\\"bar/baz\\", \\"qux/quux\\"]
   }
 
   Please update your configuration.
 
-  [1mConfiguration Documentation:[22m
+  <bold>Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`preset throws when preset not found 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red><bold><bold>● <bold>Validation Error:
 
-  Preset [1mdoesnt-exist[22m not found.
+  Preset <bold>doesnt-exist not found.
 
-  [1mConfiguration Documentation:[22m
+  <bold>Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`rootDir throws if the config is missing a rootDir property 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red><bold><bold>● <bold>Validation Error:
 
-  Configuration option [1mrootDir[22m must be specified.
+  Configuration option <bold>rootDir must be specified.
 
-  [1mConfiguration Documentation:[22m
+  <bold>Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`testEnvironment throws on invalid environment names 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red><bold><bold>● <bold>Validation Error:
 
-  Test environment [1mphantom[22m cannot be found. Make sure the [1mtestEnvironment[22m configuration option points to an existing node module.
+  Test environment <bold>phantom cannot be found. Make sure the <bold>testEnvironment configuration option points to an existing node module.
 
-  [1mConfiguration Documentation:[22m
+  <bold>Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;
 
 exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
-"[31m[1m[1m● [1mValidation Error[22m:
+"<red><bold><bold>● <bold>Validation Error:
 
-  Configuration options [1mtestMatch[22m and [1mtestRegex[22m cannot be used together.
+  Configuration options <bold>testMatch and <bold>testRegex cannot be used together.
 
-  [1mConfiguration Documentation:[22m
+  <bold>Configuration Documentation:
   https://facebook.github.io/jest/docs/configuration.html
-[39m"
+</>"
 `;

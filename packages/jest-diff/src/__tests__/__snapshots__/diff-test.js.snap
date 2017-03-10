@@ -1,34 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`collapses big diffs to patch format 1`] = `
-"[32m- Expected[39m
-[31m+ Received[39m
+"<green>- Expected</>
+<red>+ Received</>
 
-[33m@@ -6,9 +6,9 @@
-[39m[2m     4,[22m
-[2m     5,[22m
-[2m     6,[22m
-[2m     7,[22m
-[2m     8,[22m
-[31m+    10,[39m
-[2m     9,[22m
-[32m-    10,[39m
-[2m   ],[22m
-[2m }[22m"
+@@ -6,9 +6,9 @@
+</><dim>     4,
+<dim>     5,
+<dim>     6,
+<dim>     7,
+<dim>     8,
+<red>+    10,</>
+<dim>     9,
+<green>-    10,</>
+<dim>   ],
+<dim> }"
 `;
 
 exports[`falls back to not call toJSON if objects look identical 1`] = `
-"[2mCompared values serialize to the same structure.
-Printing internal object structure without calling \`toJSON\` instead.[22m
+"<dim>Compared values serialize to the same structure.
+Printing internal object structure without calling \`toJSON\` instead.
 
-[32m- Expected[39m
-[31m+ Received[39m
+<green>- Expected</>
+<red>+ Received</>
 
-[2m [22m [2mObject {[22m
-[32m-[39m [32m  \\"line\\": 1,[39m
-[31m+[39m [31m  \\"line\\": 2,[39m
-[2m [22m [2m  \\"toJSON\\": [Function toJSON],[22m
-[2m [22m [2m}[22m"
+<dim>  <dim>Object {
+<green>-</> <green>  \\"line\\": 1,</>
+<red>+</> <red>  \\"line\\": 2,</>
+<dim>  <dim>  \\"toJSON\\": [Function toJSON],
+<dim>  <dim>}"
 `;
 
-exports[`prints a fallback message if two objects truly look identical 1`] = `"[2mCompared values have no visual difference.[22m"`;
+exports[`prints a fallback message if two objects truly look identical 1`] = `"<dim>Compared values have no visual difference."`;

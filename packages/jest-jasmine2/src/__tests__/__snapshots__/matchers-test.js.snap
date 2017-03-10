@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`matchers proxies matchers to jest-matchers 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).toBe([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>).toBe(<green>expected</><dim>)
 
 Expected value to be (using ===):
-  [32m2[39m
+  <green>2</>
 Received:
-  [31m1[39m"
+  <red>1</>"
 `;
