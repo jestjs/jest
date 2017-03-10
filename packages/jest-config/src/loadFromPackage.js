@@ -12,7 +12,6 @@
 
 import type {Path} from 'types/Config';
 
-const normalize = require('./normalize');
 const path = require('path');
 const readPkg = require('read-pkg');
 
@@ -23,7 +22,7 @@ function loadFromPackage(root: Path, argv: Object) {
       config.rootDir = config.rootDir
         ? path.resolve(root, config.rootDir)
         : root;
-      return normalize(config, argv);
+      return config;
     },
     () => null,
   );
