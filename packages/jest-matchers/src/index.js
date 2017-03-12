@@ -132,7 +132,7 @@ const makeResolveMatcher = (
       `  ${utils.printReceived(result)}`
     );
   }
-  return makeThrowingMatcher(matcher, isNot, result)(...args);
+  return makeThrowingMatcher(matcher, isNot, result).apply(null, args);
 };
 
 const makeRejectMatcher = (
@@ -154,7 +154,7 @@ const makeRejectMatcher = (
   try {
     result = await actual;
   } catch (e) {
-    return makeThrowingMatcher(matcher, isNot, e)(...args);
+    return makeThrowingMatcher(matcher, isNot, e).apply(null, args);
   }
 
   throw new JestAssertionError(

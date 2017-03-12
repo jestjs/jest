@@ -18,6 +18,8 @@ describe('.rejects', () => {
   it('should reject', async () => {
     await jestExpect(Promise.reject(4)).rejects.toBe(4);
     await jestExpect(Promise.reject(4)).rejects.not.toBe(5);
+    await jestExpect(Promise.reject(4.2)).rejects.toBeCloseTo(4.2, 5);
+    await jestExpect(Promise.reject((3))).rejects.not.toBeCloseTo(4.2, 5);
     await jestExpect(Promise.reject({a: 1, b: 2})).rejects.toMatchObject({a: 1});
     await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({c: 1});
     await jestExpect(Promise.reject(() => {throw new Error();})).rejects.toThrow();
@@ -61,6 +63,8 @@ describe('.resolves', () => {
   it('should resolve', async () => {
     await jestExpect(Promise.resolve(4)).resolves.toBe(4);
     await jestExpect(Promise.resolve(4)).resolves.not.toBe(5);
+    await jestExpect(Promise.resolve(4.2)).resolves.toBeCloseTo(4.2, 5);
+    await jestExpect(Promise.resolve((3))).resolves.not.toBeCloseTo(4.2, 5);
     await jestExpect(Promise.resolve({a: 1, b: 2})).resolves.toMatchObject({a: 1});
     await jestExpect(Promise.resolve({a: 1, b: 2})).resolves.not.toMatchObject({c: 1});
     await jestExpect(Promise.resolve(() => {throw new Error();})).resolves.toThrow();
