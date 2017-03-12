@@ -1,141 +1,141 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.rejects fails for promise that resolves 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBe([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBe(<dim>)
 
-Expected [31mreceived[39m Promise to reject, instead it resolved to value
-  [31m4[39m"
+Expected <red>received</> Promise to reject, instead it resolved to value
+  <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value "a" 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  string: [31m\\"a\\"[39m"
+  string: <red>\\"a\\"</>"
 `;
 
 exports[`.rejects fails non-promise value [1] 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  array: [31m[1][39m"
+  array: <red>[1]</>"
 `;
 
 exports[`.rejects fails non-promise value [Function anonymous] 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  function: [31m[Function anonymous][39m"
+  function: <red>[Function anonymous]</>"
 `;
 
 exports[`.rejects fails non-promise value {"a": 1} 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  object: [31m{\\"a\\": 1}[39m"
+  object: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.rejects fails non-promise value 4 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  number: [31m4[39m"
+  number: <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value null 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
-Received: [31mnull[39m"
+<red>received</> value must be a Promise.
+Received: <red>null</>"
 `;
 
 exports[`.rejects fails non-promise value true 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  boolean: [31mtrue[39m"
+  boolean: <red>true</>"
 `;
 
 exports[`.rejects fails non-promise value undefined 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).rejects.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).rejects.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
-Received: [31mundefined[39m"
+<red>received</> value must be a Promise.
+Received: <red>undefined</>"
 `;
 
 exports[`.resolves fails for promise that rejects 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBe([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBe(<dim>)
 
-Expected [31mreceived[39m Promise to resolve, instead it rejected to value
-  [31mundefined[39m"
+Expected <red>received</> Promise to resolve, instead it rejected to value
+  <red>undefined</>"
 `;
 
 exports[`.resolves fails non-promise value "a" 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  string: [31m\\"a\\"[39m"
+  string: <red>\\"a\\"</>"
 `;
 
 exports[`.resolves fails non-promise value [1] 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  array: [31m[1][39m"
+  array: <red>[1]</>"
 `;
 
 exports[`.resolves fails non-promise value [Function anonymous] 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  function: [31m[Function anonymous][39m"
+  function: <red>[Function anonymous]</>"
 `;
 
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  object: [31m{\\"a\\": 1}[39m"
+  object: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.resolves fails non-promise value 4 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  number: [31m4[39m"
+  number: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value null 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
-Received: [31mnull[39m"
+<red>received</> value must be a Promise.
+Received: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value true 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
+<red>received</> value must be a Promise.
 Received:
-  boolean: [31mtrue[39m"
+  boolean: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value undefined 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).resolves.toBeDefined([22m[2m)[22m
+"<dim>expect(<red>received</><dim>).resolves.toBeDefined(<dim>)
 
-[31mreceived[39m value must be a Promise.
-Received: [31mundefined[39m"
+<red>received</> value must be a Promise.
+Received: <red>undefined</>"
 `;
 
 exports[`.toBe() does not crash on circular references 1`] = `
