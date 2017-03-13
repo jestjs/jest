@@ -148,7 +148,7 @@ const makeResolveMatcher = (
           '\n\n' +
           `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
           'instead it rejected to value\n' +
-          `  ${utils.printReceived(result)}`,
+          `  ${utils.printReceived(e)}`,
       );
     }
     return makeThrowingMatcher(matcher, isNot, result).apply(null, args);

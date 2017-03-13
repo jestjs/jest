@@ -73,7 +73,7 @@ exports[`.resolves fails for promise that rejects 1`] = `
 "<dim>expect(<red>received</><dim>).resolves.toBe(<dim>)
 
 Expected <red>received</> Promise to resolve, instead it rejected to value
-  <red>undefined</>"
+  <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value "a" 1`] = `
