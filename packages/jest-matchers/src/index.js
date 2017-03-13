@@ -77,15 +77,31 @@ const expect: Expect = (actual: any): ExpectationObject => {
       actual,
     );
 
-    expectation.resolves[name] =
-      makeResolveMatcher(name, allMatchers[name], false, actual);
-    expectation.resolves.not[name] =
-      makeResolveMatcher(name, allMatchers[name], true, actual);
+    expectation.resolves[name] = makeResolveMatcher(
+      name,
+      allMatchers[name],
+      false,
+      actual,
+    );
+    expectation.resolves.not[name] = makeResolveMatcher(
+      name,
+      allMatchers[name],
+      true,
+      actual,
+    );
 
-    expectation.rejects[name] =
-      makeRejectMatcher(name, allMatchers[name], false, actual);
-    expectation.rejects.not[name] =
-      makeRejectMatcher(name, allMatchers[name], true, actual);
+    expectation.rejects[name] = makeRejectMatcher(
+      name,
+      allMatchers[name],
+      false,
+      actual,
+    );
+    expectation.rejects.not[name] = makeRejectMatcher(
+      name,
+      allMatchers[name],
+      true,
+      actual,
+    );
   });
 
   return expectation;
@@ -110,60 +126,66 @@ const makeResolveMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
-  actual: Promise<any>
-): PromiseMatcherFn => async (...args) => {
-  const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
-  if (!isPromise(actual)) {
-    throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
-      `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
-      utils.printWithType('Received', actual, utils.printReceived),
-    );
-  }
+  actual: Promise<any>,
+): PromiseMatcherFn =>
+  async (...args) => {
+    const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
+    if (!isPromise(actual)) {
+      throw new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
+          utils.printWithType('Received', actual, utils.printReceived),
+      );
+    }
 
-  let result;
-  try {
-    result = await actual;
-  } catch (e) {
-    throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
-      `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
-      'instead it rejected to value\n' +
-      `  ${utils.printReceived(result)}`
-    );
-  }
-  return makeThrowingMatcher(matcher, isNot, result).apply(null, args);
-};
+    let result;
+    try {
+      result = await actual;
+    } catch (e) {
+      throw new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
+          'instead it rejected to value\n' +
+          `  ${utils.printReceived(result)}`,
+      );
+    }
+    return makeThrowingMatcher(matcher, isNot, result).apply(null, args);
+  };
 
 const makeRejectMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
-  actual: Promise<any>
-): PromiseMatcherFn => async (...args) => {
-  const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
-  if (!isPromise(actual)) {
+  actual: Promise<any>,
+): PromiseMatcherFn =>
+  async (...args) => {
+    const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
+    if (!isPromise(actual)) {
+      throw new JestAssertionError(
+        utils.matcherHint(matcherStatement, 'received', '') +
+          '\n\n' +
+          `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
+          utils.printWithType('Received', actual, utils.printReceived),
+      );
+    }
+
+    let result;
+    try {
+      result = await actual;
+    } catch (e) {
+      return makeThrowingMatcher(matcher, isNot, e).apply(null, args);
+    }
+
     throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
-      `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
-      utils.printWithType('Received', actual, utils.printReceived),
+      utils.matcherHint(matcherStatement, 'received', '') +
+        '\n\n' +
+        `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
+        'instead it resolved to value\n' +
+        `  ${utils.printReceived(result)}`,
     );
-  }
-
-  let result;
-  try {
-    result = await actual;
-  } catch (e) {
-    return makeThrowingMatcher(matcher, isNot, e).apply(null, args);
-  }
-
-  throw new JestAssertionError(
-    utils.matcherHint(matcherStatement, 'received', '') + '\n\n' +
-    `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
-    'instead it resolved to value\n' +
-    `  ${utils.printReceived(result)}`
-  );
-};
+  };
 
 const makeThrowingMatcher = (
   matcher: RawMatcherFn,
