@@ -64,7 +64,6 @@ test('error thrown before snapshot', () => {
     });`,
   );
 
-
   {
     makeTests(TESTS_DIR, {[filename]: template(['true', '{a: "original"}'])});
     const {stderr, status} = runJest(DIR, [filename]);
@@ -77,7 +76,6 @@ test('error thrown before snapshot', () => {
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(status).toBe(0);
   }
-
 
   {
     makeTests(TESTS_DIR, {[filename]: template(['false', '{a: "original"}'])});
@@ -153,9 +151,7 @@ test('accepts custom snapshot name', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch(
-      '1 snapshot written in 1 test suite.'
-    );
+    expect(stderr).toMatch('1 snapshot written in 1 test suite.');
     expect(status).toBe(0);
   }
 });

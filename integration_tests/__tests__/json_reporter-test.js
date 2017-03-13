@@ -19,7 +19,7 @@ describe('JSON Reporter', () => {
   const outputFilePath = path.join(
     process.cwd(),
     'integration_tests/json_reporter/',
-    outputFileName
+    outputFileName,
   );
 
   afterAll(() => {
@@ -36,7 +36,7 @@ describe('JSON Reporter', () => {
       jsonResult = JSON.parse(testOutput);
     } catch (err) {
       throw new Error(
-        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`
+        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
       );
     }
 
@@ -61,7 +61,7 @@ describe('JSON Reporter', () => {
       jsonResult = JSON.parse(stdout);
     } catch (err) {
       throw new Error(
-        'Can\'t parse the JSON result from stdout' + err.toString()
+        "Can't parse the JSON result from stdout" + err.toString(),
       );
     }
 

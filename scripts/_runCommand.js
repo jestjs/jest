@@ -14,20 +14,24 @@ module.exports = function runCommand(cmd, args, cwd) {
   if (!cwd) {
     cwd = __dirname;
   }
-  args = args.split(' ');
 
+  const callArgs = args.split(' ');
   console.log(
     chalk.dim('$ cd ' + cwd) +
       '\n' +
-      chalk.dim('  $ ' + cmd + ' ' + args.join(' ')) +
+      chalk.dim(
+        '  $ ' +
+          cmd +
+          ' ' +
+          (args.length > 1000 ? args.slice(0, 1000) + '...' : args)
+      ) +
       '\n'
   );
-  const result = spawn(cmd, args, {cwd});
+  const result = spawn(cmd, callArgs, {
+    cwd,
+    stdio: 'inherit',
+  });
   if (result.error || result.status !== 0) {
-    const stdout = result.stdout.toString();
-    const stderr = result.stderr.toString();
-    stdout && console.log(stdout);
-    stderr && console.log(chalk.red(stderr));
     const message = 'Error running command.';
     const error = new Error(message);
     error.stack = message;
