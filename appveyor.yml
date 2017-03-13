@@ -14,13 +14,7 @@ cache:
   - .eslintcache
 
 test_script:
-  - yarn run build
-  # Some snapshot tests don't currently work on Windows, so the tests are
-  # commented out. Jest complains that obsolete snapshot files exist, so the
-  # "-u" will just delete those snapshots when running in the AppVeyor run,
-  # instead of failing the build. Note that this means that all snapshot tests
-  # WILL ALWAYS PASS, as it updates the snapshots.
-  - yarn run jest -- -u --color
+  - yarn run jest -- --color
 
 # Don't actually build.
 build: off
