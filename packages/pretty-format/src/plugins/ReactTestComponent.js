@@ -11,12 +11,12 @@
 'use strict';
 
 import type {
-  Colors, 
-  Indent, 
-  Options, 
-  Print, 
-  Plugin, 
-  ReactTestObject, 
+  Colors,
+  Indent,
+  Options,
+  Print,
+  Plugin,
+  ReactTestObject,
   ReactTestChild,
 } from '../types.js';
 
@@ -117,7 +117,7 @@ const print = (
   colors: Colors,
 ) => printInstance(val, print, indent, colors, opts);
 
-const test = (object: Object) => 
+const test = (object: Object) =>
   object && object.$$typeof === reactTestInstance;
 
 module.exports = ({print, test}: Plugin);

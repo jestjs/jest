@@ -56,24 +56,27 @@ class NotifyReporter extends BaseReporter {
 
       const restartAnswer = 'Run again';
       const quitAnswer = 'Exit tests';
-      notifier.notify({
-        actions: [restartAnswer, quitAnswer],
-        closeLabel: 'Close',
-        icon,
-        message,
-        title,
-      }, (err, _, metadata) => {
-        if (err || !metadata) {
-          return;
-        }
-        if (metadata.activationValue === quitAnswer) {
-          process.exit(0);
-          return;
-        }
-        if (metadata.activationValue === restartAnswer) {
-          this._startRun();
-        }
-      });
+      notifier.notify(
+        {
+          actions: [restartAnswer, quitAnswer],
+          closeLabel: 'Close',
+          icon,
+          message,
+          title,
+        },
+        (err, _, metadata) => {
+          if (err || !metadata) {
+            return;
+          }
+          if (metadata.activationValue === quitAnswer) {
+            process.exit(0);
+            return;
+          }
+          if (metadata.activationValue === restartAnswer) {
+            this._startRun();
+          }
+        },
+      );
     }
   }
 }

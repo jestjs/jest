@@ -80,10 +80,13 @@ const formatExecError = (
     message = MESSAGE_INDENT + 'Error: No message was provided';
   }
 
-  return (
-    TITLE_INDENT + TITLE_BULLET + EXEC_ERROR_MESSAGE + '\n\n' +
-    message + stack + '\n'
-  );
+  return TITLE_INDENT +
+    TITLE_BULLET +
+    EXEC_ERROR_MESSAGE +
+    '\n\n' +
+    message +
+    stack +
+    '\n';
 };
 
 const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
@@ -166,26 +169,29 @@ const formatResultsErrors = (
     return null;
   }
 
-  return failedResults.map(({result, content}) => {
-    let {message, stack} = separateMessageFromStack(content);
-    stack = config.noStackTrace
-      ? ''
-      : STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath)) + '\n';
+  return failedResults
+    .map(({result, content}) => {
+      let {message, stack} = separateMessageFromStack(content);
+      stack = config.noStackTrace
+        ? ''
+        : STACK_TRACE_COLOR(formatStackTrace(stack, config, testPath)) + '\n';
 
-    message = message
-      .split(/\n/)
-      .map(line => MESSAGE_INDENT + line)
-      .join('\n');
+      message = message
+        .split(/\n/)
+        .map(line => MESSAGE_INDENT + line)
+        .join('\n');
 
-    const title = chalk.bold.red(
-      TITLE_INDENT + TITLE_BULLET +
-      result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-      (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-      result.title,
-    ) + '\n';
+      const title = chalk.bold.red(
+        TITLE_INDENT +
+          TITLE_BULLET +
+          result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+          result.title,
+      ) + '\n';
 
-    return title + '\n' + message + '\n' + stack;
-  }).join('\n');
+      return title + '\n' + message + '\n' + stack;
+    })
+    .join('\n');
 };
 
 module.exports = {

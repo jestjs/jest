@@ -77,10 +77,13 @@ class DefaultReporter extends BaseReporter {
         doFlush();
       } else {
         if (!timeout) {
-          timeout = setTimeout(() => {
-            doFlush();
-            timeout = null;
-          }, 100);
+          timeout = setTimeout(
+            () => {
+              doFlush();
+              timeout = null;
+            },
+            100,
+          );
         }
       }
     };
@@ -138,23 +141,17 @@ class DefaultReporter extends BaseReporter {
     this._printTestFileSummary(testResult.testFilePath, config, testResult);
   }
 
-  _printTestFileSummary(
-    testPath: Path,
-    config: Config,
-    result: TestResult,
-  ) {
+  _printTestFileSummary(testPath: Path, config: Config, result: TestResult) {
     if (!result.skipped) {
       this.log(getResultHeader(result, config));
 
       const consoleBuffer = result.console;
       if (consoleBuffer && consoleBuffer.length) {
         this.log(
-          '  ' + TITLE_BULLET + 'Console\n\n' +
-          getConsoleOutput(
-            config.rootDir,
-            !!config.verbose,
-            consoleBuffer,
-          ),
+          '  ' +
+            TITLE_BULLET +
+            'Console\n\n' +
+            getConsoleOutput(config.rootDir, !!config.verbose, consoleBuffer),
         );
       }
 

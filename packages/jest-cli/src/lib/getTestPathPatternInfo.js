@@ -28,7 +28,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
-      `Running all tests instead.`,
+        `Running all tests instead.`,
     ),
   );
 };

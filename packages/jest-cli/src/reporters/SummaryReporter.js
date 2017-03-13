@@ -56,7 +56,6 @@ const NPM_EVENTS = new Set([
 ]);
 
 class SummareReporter extends BaseReporter {
-
   _estimatedTime: number;
 
   constructor() {
@@ -114,7 +113,9 @@ class SummareReporter extends BaseReporter {
         this.log(
           getSummary(aggregatedResults, {
             estimatedTime: this._estimatedTime,
-          }) + '\n' + testSummary,
+          }) +
+            '\n' +
+            testSummary,
         );
       }
     }
@@ -143,51 +144,56 @@ class SummareReporter extends BaseReporter {
       if (snapshots.added) {
         this.log(
           SNAPSHOT_ADDED(ARROW + pluralize('snapshot', snapshots.added)) +
-          ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
+            ` written in ${pluralize('test suite', snapshots.filesAdded)}.`,
         );
       }
 
       if (snapshots.unmatched) {
         this.log(
           FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
-          ` failed in ${pluralize('test suite', snapshots.filesUnmatched)}. ` +
-          SNAPSHOT_NOTE(
-            'Inspect your code changes or ' +
-            updateCommand + ' to update them.',
-          ),
+            ` failed in ${pluralize('test suite', snapshots.filesUnmatched)}. ` +
+            SNAPSHOT_NOTE(
+              'Inspect your code changes or ' +
+                updateCommand +
+                ' to update them.',
+            ),
         );
       }
 
       if (snapshots.updated) {
         this.log(
           SNAPSHOT_UPDATED(ARROW + pluralize('snapshot', snapshots.updated)) +
-          ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
+            ` updated in ${pluralize('test suite', snapshots.filesUpdated)}.`,
         );
       }
 
       if (snapshots.filesRemoved) {
         this.log(
-          SNAPSHOT_REMOVED(ARROW + pluralize(
-            'obsolete snapshot file',
-            snapshots.filesRemoved,
-          )) +
-          (snapshots.didUpdate
-            ? ' removed.'
-            : ' found, ' + updateCommand + ' to remove ' +
-              (snapshots.filesRemoved === 1 ? 'it' : 'them.') + '.'),
+          SNAPSHOT_REMOVED(
+            ARROW + pluralize('obsolete snapshot file', snapshots.filesRemoved),
+          ) +
+            (snapshots.didUpdate
+              ? ' removed.'
+              : ' found, ' +
+                  updateCommand +
+                  ' to remove ' +
+                  (snapshots.filesRemoved === 1 ? 'it' : 'them.') +
+                  '.'),
         );
       }
 
       if (snapshots.unchecked) {
         this.log(
-          FAIL_COLOR(ARROW + pluralize(
-            'obsolete snapshot',
-            snapshots.unchecked,
-          )) +
-          (snapshots.didUpdate
-            ? ' removed.'
-            : ' found, ' + updateCommand + ' to remove ' +
-              (snapshots.filesRemoved === 1 ? 'it' : 'them') + '.'),
+          FAIL_COLOR(
+            ARROW + pluralize('obsolete snapshot', snapshots.unchecked),
+          ) +
+            (snapshots.didUpdate
+              ? ' removed.'
+              : ' found, ' +
+                  updateCommand +
+                  ' to remove ' +
+                  (snapshots.filesRemoved === 1 ? 'it' : 'them') +
+                  '.'),
         );
       }
 
@@ -209,8 +215,7 @@ class SummareReporter extends BaseReporter {
         const {failureMessage} = testResult;
         if (failureMessage) {
           this._write(
-            getResultHeader(testResult, config) + '\n' +
-            failureMessage + '\n',
+            getResultHeader(testResult, config) + '\n' + failureMessage + '\n',
           );
         }
       });

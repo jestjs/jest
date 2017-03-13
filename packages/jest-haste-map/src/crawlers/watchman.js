@@ -44,15 +44,16 @@ module.exports = function watchmanCrawl(
     const client = new watchman.Client();
     client.on('error', error => reject(error));
 
-    const cmd = args => new Promise((resolve, reject) => {
-      client.command(args, (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
+    const cmd = args =>
+      new Promise((resolve, reject) => {
+        client.command(args, (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
       });
-    });
 
     const clocks = data.clocks;
     let files = data.files;
@@ -62,36 +63,38 @@ module.exports = function watchmanCrawl(
         const watchmanRoots = Array.from(
           new Set(responses.map(response => response.watch)),
         );
-        return Promise.all(watchmanRoots.map(root => {
-          // Build up an expression to filter the output by the relevant roots.
-          const dirExpr = (['anyof']: Array<string|Array<string>>);
-          roots.forEach(subRoot => {
-            if (isDescendant(root, subRoot)) {
-              dirExpr.push(['dirname', path.relative(root, subRoot)]);
+        return Promise.all(
+          watchmanRoots.map(root => {
+            // Build up an expression to filter the output by the relevant roots.
+            const dirExpr = (['anyof']: Array<string | Array<string>>);
+            roots.forEach(subRoot => {
+              if (isDescendant(root, subRoot)) {
+                dirExpr.push(['dirname', path.relative(root, subRoot)]);
+              }
+            });
+            const expression = [
+              'allof',
+              ['type', 'f'],
+              ['anyof'].concat(
+                extensions.map(extension => ['suffix', extension]),
+              ),
+            ];
+            if (dirExpr.length > 1) {
+              expression.push(dirExpr);
             }
-          });
-          const expression = [
-            'allof',
-            ['type', 'f'],
-            ['anyof'].concat(extensions.map(
-              extension => ['suffix', extension],
-            )),
-          ];
-          if (dirExpr.length > 1) {
-            expression.push(dirExpr);
-          }
-          const fields = ['name', 'exists', 'mtime_ms'];
+            const fields = ['name', 'exists', 'mtime_ms'];
 
-          const query = clocks[root]
-            // Use the `since` generator if we have a clock available
-            ? {expression, fields, since: clocks[root]}
-            // Otherwise use the `suffix` generator
-            : {expression, fields, suffix: extensions};
-          return cmd(['query', root, query]).then(response => ({
-            response,
-            root,
-          }));
-        })).then(pairs => {
+            const query = clocks[root]
+              ? // Use the `since` generator if we have a clock available
+                {expression, fields, since: clocks[root]}
+              : // Otherwise use the `suffix` generator
+                {expression, fields, suffix: extensions};
+            return cmd(['query', root, query]).then(response => ({
+              response,
+              root,
+            }));
+          }),
+        ).then(pairs => {
           // Reset the file map if watchman was restarted and sends us a list of
           // files.
           if (pairs.some(pair => pair.response.is_fresh_instance)) {

@@ -269,17 +269,19 @@ class TestRunner {
   ) {
     const mutex = throat(1);
     return testPaths.reduce(
-      (promise, path) => mutex(() => promise
-        .then(() => {
-          if (watcher.isInterrupted()) {
-            throw new CancelRun();
-          }
+      (promise, path) =>
+        mutex(() =>
+          promise
+            .then(() => {
+              if (watcher.isInterrupted()) {
+                throw new CancelRun();
+              }
 
-          this._dispatcher.onTestStart(this._config, path);
-          return runTest(path, this._config, this._hasteContext.resolver);
-        })
-        .then(result => onResult(path, result))
-        .catch(err => onFailure(path, err))),
+              this._dispatcher.onTestStart(this._config, path);
+              return runTest(path, this._config, this._hasteContext.resolver);
+            })
+            .then(result => onResult(path, result))
+            .catch(err => onFailure(path, err))),
       Promise.resolve(),
     );
   }
@@ -305,19 +307,20 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = ({config, path}) => mutex(() => {
-      if (watcher.isInterrupted()) {
-        return Promise.reject();
-      }
-      this._dispatcher.onTestStart(config, path);
-      return worker({
-        config,
-        path,
-        rawModuleMap: watcher.isWatchMode()
-          ? this._hasteContext.moduleMap.getRawModuleMap()
-          : null,
+    const runTestInWorker = ({config, path}) =>
+      mutex(() => {
+        if (watcher.isInterrupted()) {
+          return Promise.reject();
+        }
+        this._dispatcher.onTestStart(config, path);
+        return worker({
+          config,
+          path,
+          rawModuleMap: watcher.isWatchMode()
+            ? this._hasteContext.moduleMap.getRawModuleMap()
+            : null,
+        });
       });
-    });
 
     const onError = (err, path) => {
       onFailure(path, err);

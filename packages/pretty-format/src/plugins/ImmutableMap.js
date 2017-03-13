@@ -16,7 +16,7 @@ const printImmutable = require('./lib/printImmutable');
 
 const IS_MAP = '@@__IMMUTABLE_MAP__@@';
 const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
-const test = (maybeMap: any) => 
+const test = (maybeMap: any) =>
   !!(maybeMap && maybeMap[IS_MAP] && !maybeMap[IS_ORDERED]);
 
 const print = (

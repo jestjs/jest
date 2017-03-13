@@ -122,12 +122,11 @@ class Runtime {
 
     this._unmockList = unmockRegExpCache.get(config);
     if (
-      !this._unmockList &&
-      config.automock &&
-      config.unmockedModulePathPatterns
+      !this._unmockList && config.automock && config.unmockedModulePathPatterns
     ) {
-      this._unmockList =
-        new RegExp(config.unmockedModulePathPatterns.join('|'));
+      this._unmockList = new RegExp(
+        config.unmockedModulePathPatterns.join('|'),
+      );
       unmockRegExpCache.set(config, this._unmockList);
     }
 
@@ -250,9 +249,9 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry = (!options || !options.isInternalModule) ?
-      this._moduleRegistry :
-      this._internalModuleRegistry;
+    const moduleRegistry = !options || !options.isInternalModule
+      ? this._moduleRegistry
+      : this._internalModuleRegistry;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
@@ -403,12 +402,15 @@ class Runtime {
   }
 
   getSourceMapInfo() {
-    return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
-      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
-        result[sourcePath] = this._sourceMapRegistry[sourcePath];
-      }
-      return result;
-    }, {});
+    return Object.keys(this._sourceMapRegistry).reduce(
+      (result, sourcePath) => {
+        if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+          result[sourcePath] = this._sourceMapRegistry[sourcePath];
+        }
+        return result;
+      },
+      {},
+    );
   }
 
   setMock(
@@ -584,14 +586,11 @@ class Runtime {
       from,
     );
     if (
-      this._transitiveShouldMock[currentModuleID] === false || (
-        from.includes(NODE_MODULES) &&
+      this._transitiveShouldMock[currentModuleID] === false ||
+      (from.includes(NODE_MODULES) &&
         modulePath.includes(NODE_MODULES) &&
-        (
-          (this._unmockList && this._unmockList.test(from)) ||
-          explicitShouldMock[currentModuleID] === false
-        )
-      )
+        ((this._unmockList && this._unmockList.test(from)) ||
+          explicitShouldMock[currentModuleID] === false))
     ) {
       this._transitiveShouldMock[moduleID] = false;
       this._shouldUnmockTransitiveDependenciesCache[key] = true;
