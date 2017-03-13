@@ -29,67 +29,69 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock(
   '../SearchSource',
-  () => class {
-    findMatchingTests(pattern) {
-      return {paths: []};
-    }
-  },
+  () =>
+    class {
+      findMatchingTests(pattern) {
+        return {paths: []};
+      }
+    },
 );
 
-jest.doMock('chalk', () => Object.assign(
-  new chalk.constructor({enabled: false}),
-  {
+jest.doMock('chalk', () =>
+  Object.assign(new chalk.constructor({enabled: false}), {
     stripColor: str => str,
-  },
-));
+  }));
 
 jest.doMock(
   '../runJest',
-  () => function() {
-    const args = Array.from(arguments);
-    runJestMock.apply(null, args);
+  () =>
+    function() {
+      const args = Array.from(arguments);
+      runJestMock.apply(null, args);
 
-    // Call the callback
-    args[args.length - 1]({
-      snapshot: {},
-      testResults: [
-        {
-          testResults: [{title: 'should return the correct index when'}],
-        },
-        {
-          testResults: [{title: 'should allow test siblings to modify'}],
-        },
-        {
-          testResults: [{title: 'might get confusing'}],
-        },
-        {
-          testResults: [{title: 'should handle length properties that cannot'}],
-        },
-        {
-          testResults: [{title: 'should recognize various types'}],
-        },
-        {
-          testResults: [{title: 'should recognize null and undefined'}],
-        },
-        {
-          testResults: [{title: 'should not output colors to pipe'}],
-        },
-        {
-          testResults: [{title: 'should convert string to a RegExp'}],
-        },
-        {
-          testResults: [
-            {title: 'should escape and convert string to a RegExp'},
-          ],
-        },
-        {
-          testResults: [{title: 'should convert grep string to a RegExp'}],
-        },
-      ],
-    });
+      // Call the callback
+      args[args.length - 1]({
+        snapshot: {},
+        testResults: [
+          {
+            testResults: [{title: 'should return the correct index when'}],
+          },
+          {
+            testResults: [{title: 'should allow test siblings to modify'}],
+          },
+          {
+            testResults: [{title: 'might get confusing'}],
+          },
+          {
+            testResults: [
+              {title: 'should handle length properties that cannot'},
+            ],
+          },
+          {
+            testResults: [{title: 'should recognize various types'}],
+          },
+          {
+            testResults: [{title: 'should recognize null and undefined'}],
+          },
+          {
+            testResults: [{title: 'should not output colors to pipe'}],
+          },
+          {
+            testResults: [{title: 'should convert string to a RegExp'}],
+          },
+          {
+            testResults: [
+              {title: 'should escape and convert string to a RegExp'},
+            ],
+          },
+          {
+            testResults: [{title: 'should convert grep string to a RegExp'}],
+          },
+        ],
+      });
 
-    return Promise.resolve();
-  },
+      return Promise.resolve();
+    },
 );
 
 jest.doMock('../lib/terminalUtils', () => ({

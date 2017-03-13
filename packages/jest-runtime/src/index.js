@@ -49,6 +49,9 @@ type InternalModuleOptions = {|
   isInternalModule: boolean,
 |};
 
+type BooleanObject = {[key: string]: boolean};
+type CacheFS = {[path: Path]: string};
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
@@ -69,9 +72,8 @@ const mockParentModule = {
 
 const unmockRegExpCache = new WeakMap();
 
-type BooleanObject = {[key: string]: boolean};
-
 class Runtime {
+  _cacheFS: CacheFS;
   _config: Config;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
@@ -96,7 +98,7 @@ class Runtime {
     config: Config,
     environment: Environment,
     resolver: Resolver,
-    cacheFS?: {[path: string]: string}
+    cacheFS?: CacheFS,
   ) {
     this._moduleRegistry = Object.create(null);
     this._internalModuleRegistry = Object.create(null);
@@ -122,12 +124,11 @@ class Runtime {
 
     this._unmockList = unmockRegExpCache.get(config);
     if (
-      !this._unmockList &&
-      config.automock &&
-      config.unmockedModulePathPatterns
+      !this._unmockList && config.automock && config.unmockedModulePathPatterns
     ) {
-      this._unmockList =
-        new RegExp(config.unmockedModulePathPatterns.join('|'));
+      this._unmockList = new RegExp(
+        config.unmockedModulePathPatterns.join('|'),
+      );
       unmockRegExpCache.set(config, this._unmockList);
     }
 
@@ -250,9 +251,9 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry = (!options || !options.isInternalModule) ?
-      this._moduleRegistry :
-      this._internalModuleRegistry;
+    const moduleRegistry = !options || !options.isInternalModule
+      ? this._moduleRegistry
+      : this._internalModuleRegistry;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
@@ -403,12 +404,15 @@ class Runtime {
   }
 
   getSourceMapInfo() {
-    return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
-      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
-        result[sourcePath] = this._sourceMapRegistry[sourcePath];
-      }
-      return result;
-    }, {});
+    return Object.keys(this._sourceMapRegistry).reduce(
+      (result, sourcePath) => {
+        if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+          result[sourcePath] = this._sourceMapRegistry[sourcePath];
+        }
+        return result;
+      },
+      {},
+    );
   }
 
   setMock(
@@ -467,9 +471,8 @@ class Runtime {
       {
         isInternalModule,
       },
-      this._cacheFS[filename]
+      this._cacheFS[filename],
     );
-
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
@@ -584,14 +587,11 @@ class Runtime {
       from,
     );
     if (
-      this._transitiveShouldMock[currentModuleID] === false || (
-        from.includes(NODE_MODULES) &&
+      this._transitiveShouldMock[currentModuleID] === false ||
+      (from.includes(NODE_MODULES) &&
         modulePath.includes(NODE_MODULES) &&
-        (
-          (this._unmockList && this._unmockList.test(from)) ||
-          explicitShouldMock[currentModuleID] === false
-        )
-      )
+        ((this._unmockList && this._unmockList.test(from)) ||
+          explicitShouldMock[currentModuleID] === false))
     ) {
       this._transitiveShouldMock[moduleID] = false;
       this._shouldUnmockTransitiveDependenciesCache[key] = true;

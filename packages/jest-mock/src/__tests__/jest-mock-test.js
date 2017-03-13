@@ -87,14 +87,19 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock non-enumerable getters', () => {
-      const foo = Object.defineProperties({}, {
-        nonEnumGetter: {
-          get: () => { throw new Error(); },
+      const foo = Object.defineProperties(
+        {},
+        {
+          nonEnumGetter: {
+            get: () => {
+              throw new Error();
+            },
+          },
+          nonEnumMethod: {
+            value: () => {},
+          },
         },
-        nonEnumMethod: {
-          value: () => {},
-        },
-      });
+      );
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo),
       );
@@ -106,15 +111,18 @@ describe('moduleMocker', () => {
     });
 
     it('mocks getters of ES modules', () => {
-      const foo = Object.defineProperties({}, {
-        __esModule: {
-          value: true,
+      const foo = Object.defineProperties(
+        {},
+        {
+          __esModule: {
+            value: true,
+          },
+          enumGetter: {
+            enumerable: true,
+            get: () => 10,
+          },
         },
-        enumGetter: {
-          enumerable: true,
-          get: () => 10,
-        },
-      });
+      );
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo),
       );
@@ -158,9 +166,10 @@ describe('moduleMocker', () => {
     });
 
     it('mocks regexp instances', () => {
-      expect(
-        () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
-      ).not.toThrow();
+      expect(() =>
+        moduleMocker.generateFromMetadata(
+          moduleMocker.getMetadata(/a/),
+        )).not.toThrow();
     });
 
     describe('mocked functions', () => {

@@ -41,17 +41,17 @@ expect.extend({
           `Received:\n` +
           `  ${this.utils.printReceived(prettyPrintImmutable)}`
       : () => {
-        const diffString = diff(expected, prettyPrintImmutable, {
-          expand: this.expand,
-        });
-        return this.utils.matcherHint('.toBe') +
-          '\n\n' +
-          `Expected value to be:\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(prettyPrintImmutable)}` +
-          (diffString ? `\n\nDifference:\n\n${diffString}` : '');
-      };
+          const diffString = diff(expected, prettyPrintImmutable, {
+            expand: this.expand,
+          });
+          return this.utils.matcherHint('.toBe') +
+            '\n\n' +
+            `Expected value to be:\n` +
+            `  ${this.utils.printExpected(expected)}\n` +
+            `Received:\n` +
+            `  ${this.utils.printReceived(prettyPrintImmutable)}` +
+            (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+        };
 
     return {actual: prettyPrintImmutable, message, pass};
   },

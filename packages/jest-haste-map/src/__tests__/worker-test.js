@@ -61,10 +61,11 @@ describe('worker', () => {
 
     moduleData = null;
     workerError = null;
-    createCallback = () => jest.fn((error, data) => {
-      workerError = error;
-      moduleData = data;
-    });
+    createCallback = () =>
+      jest.fn((error, data) => {
+        workerError = error;
+        moduleData = data;
+      });
   });
 
   afterEach(() => {

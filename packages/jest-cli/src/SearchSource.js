@@ -61,16 +61,11 @@ export type PatternInfo = {|
 const git = changedFiles.git;
 const hg = changedFiles.hg;
 
-const determineSCM = path => Promise.all([
-  git.isGitRepository(path),
-  hg.isHGRepository(path),
-]);
+const determineSCM = path =>
+  Promise.all([git.isGitRepository(path), hg.isHGRepository(path)]);
 const pathToRegex = p => replacePathSepForRegex(p);
-const pluralize = (
-  word: string,
-  count: number,
-  ending: string,
-) => `${count} ${word}${count === 1 ? '' : ending}`;
+const pluralize = (word: string, count: number, ending: string) =>
+  `${count} ${word}${count === 1 ? '' : ending}`;
 
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
@@ -114,22 +109,20 @@ class SearchSource {
       skipNodeResolution: false,
     };
 
-    this._rootPattern =
-      new RegExp(config.roots.map(
-        dir => escapePathForRegex(dir),
-      ).join('|'));
+    this._rootPattern = new RegExp(
+      config.roots.map(dir => escapePathForRegex(dir)).join('|'),
+    );
 
     const ignorePattern = config.testPathIgnorePatterns;
-    this._testIgnorePattern =
-      ignorePattern.length ? new RegExp(ignorePattern.join('|')) : null;
+    this._testIgnorePattern = ignorePattern.length
+      ? new RegExp(ignorePattern.join('|'))
+      : null;
 
     this._testPathCases = {
       roots: path => this._rootPattern.test(path),
       testMatch: globsToMatcher(config.testMatch),
-      testPathIgnorePatterns: path => (
-        !this._testIgnorePattern ||
-        !this._testIgnorePattern.test(path)
-      ),
+      testPathIgnorePatterns: path =>
+        !this._testIgnorePattern || !this._testIgnorePattern.test(path),
       testRegex: regexToMatcher(config.testRegex),
     };
   }
@@ -153,22 +146,23 @@ class SearchSource {
     const testCasesKeys = Object.keys(testCases);
 
     data.paths = allPaths.filter(path => {
-      return testCasesKeys.reduce((flag, key) => {
-        if (testCases[key](path)) {
-          data.stats[key] = ++data.stats[key] || 1;
-          return flag && true;
-        }
-        data.stats[key] = data.stats[key] || 0;
-        return false;
-      }, true);
+      return testCasesKeys.reduce(
+        (flag, key) => {
+          if (testCases[key](path)) {
+            data.stats[key] = ++data.stats[key] || 1;
+            return flag && true;
+          }
+          data.stats[key] = data.stats[key] || 0;
+          return false;
+        },
+        true,
+      );
     });
 
     return data;
   }
 
-  _getAllTestPaths(
-    testPathPattern: StrOrRegExpPattern,
-  ): SearchResult {
+  _getAllTestPaths(testPathPattern: StrOrRegExpPattern): SearchResult {
     return this._filterTestPathsWithStats(
       this._hasteContext.hasteFS.getAllFiles(),
       testPathPattern,
@@ -176,14 +170,11 @@ class SearchSource {
   }
 
   isTestFilePath(path: Path): boolean {
-    return Object.keys(this._testPathCases).every(key => (
-      this._testPathCases[key](path)
-    ));
+    return Object.keys(this._testPathCases).every(key =>
+      this._testPathCases[key](path));
   }
 
-  findMatchingTests(
-    testPathPattern: StrOrRegExpPattern,
-  ): SearchResult {
+  findMatchingTests(testPathPattern: StrOrRegExpPattern): SearchResult {
     return this._getAllTestPaths(testPathPattern);
   }
 
@@ -203,9 +194,7 @@ class SearchSource {
     };
   }
 
-  findRelatedTestsFromPattern(
-    paths: Array<Path>,
-  ): SearchResult {
+  findRelatedTestsFromPattern(paths: Array<Path>): SearchResult {
     if (Array.isArray(paths) && paths.length) {
       const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
       return this.findRelatedTests(new Set(resolvedPaths));
@@ -214,22 +203,24 @@ class SearchSource {
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
-    return Promise.all(this._config.roots.map(determineSCM))
-      .then(repos => {
-        if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
-          return {
-            noSCM: true,
-            paths: [],
-          };
-        }
-        return Promise.all(Array.from(repos).map(([gitRepo, hgRepo]) => {
+    return Promise.all(this._config.roots.map(determineSCM)).then(repos => {
+      if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
+        return {
+          noSCM: true,
+          paths: [],
+        };
+      }
+      return Promise.all(
+        Array.from(repos).map(([gitRepo, hgRepo]) => {
           return gitRepo
             ? git.findChangedFiles(gitRepo, options)
             : hg.findChangedFiles(hgRepo, options);
-        })).then(changedPathSets => this.findRelatedTests(
+        }),
+      ).then(changedPathSets =>
+        this.findRelatedTests(
           new Set(Array.prototype.concat.apply([], changedPathSets)),
         ));
-      });
+    });
   }
 
   getNoTestsFoundMessage(
@@ -238,40 +229,40 @@ class SearchSource {
     data: SearchResult,
   ): string {
     if (patternInfo.onlyChanged) {
-      return (
-        chalk.bold(
-          'No tests found related to files changed since last commit.\n',
-        ) +
+      return chalk.bold(
+        'No tests found related to files changed since last commit.\n',
+      ) +
         chalk.dim(
-          patternInfo.watch ?
-            'Press `a` to run all tests, or run Jest with `--watchAll`.' :
-            'Run Jest without `-o` to run all tests.',
-        )
-      );
+          patternInfo.watch
+            ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
+            : 'Run Jest without `-o` to run all tests.',
+        );
     }
 
     const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
     const stats = data.stats || {};
-    const statsMessage = Object.keys(stats).map(key => {
-      const value = key === 'testPathPattern' ? testPathPattern : config[key];
-      if (value) {
-        const matches = pluralize('match', stats[key], 'es');
-        return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
-      }
-      return null;
-    }).filter(line => line).join('\n');
+    const statsMessage = Object.keys(stats)
+      .map(key => {
+        const value = key === 'testPathPattern' ? testPathPattern : config[key];
+        if (value) {
+          const matches = pluralize('match', stats[key], 'es');
+          return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
+        }
+        return null;
+      })
+      .filter(line => line)
+      .join('\n');
 
-    return (
-      chalk.bold('No tests found') + '\n' +
+    return chalk.bold('No tests found') +
+      '\n' +
       (data.total
         ? `  ${pluralize('file', data.total || 0, 's')} checked.\n` +
-          statsMessage
+            statsMessage
         : `No files found in ${config.rootDir}.\n` +
-          `Make sure Jest's configuration does not exclude this directory.\n` +
-          `To set up Jest, make sure a package.json file exists.\n` +
-          `Jest Documentation: facebook.github.io/jest/docs/configuration.html`
-      )
-    );
+            `Make sure Jest's configuration does not exclude this directory.` +
+            `\nTo set up Jest, make sure a package.json file exists.\n` +
+            `Jest Documentation: ` +
+            `facebook.github.io/jest/docs/configuration.html`);
   }
 
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
@@ -297,9 +288,8 @@ class SearchSource {
     const formattedInput = patternInfo.shouldTreatInputAsPattern
       ? `/${input || ''}/`
       : `"${input || ''}"`;
-    return (input === pattern) ? formattedInput : formattedPattern;
+    return input === pattern ? formattedInput : formattedPattern;
   }
-
 }
 
 module.exports = SearchSource;

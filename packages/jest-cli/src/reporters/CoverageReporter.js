@@ -52,7 +52,7 @@ class CoverageReporter extends BaseReporter {
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
         this._sourceMapStore.registerURL(
           sourcePath,
-          testResult.sourceMaps[sourcePath]
+          testResult.sourceMaps[sourcePath],
         );
       });
     }
@@ -89,11 +89,15 @@ class CoverageReporter extends BaseReporter {
       reporter.write(map, sourceFinder && {sourceFinder});
       aggregatedResults.coverageMap = map;
     } catch (e) {
-      console.error(chalk.red(`
+      console.error(
+        chalk.red(
+          `
         Failed to write coverage reports:
         ERROR: ${e.toString()}
         STACK: ${e.stack}
-      `));
+      `,
+        ),
+      );
     }
 
     this._checkThreshold(map, config);
@@ -102,9 +106,9 @@ class CoverageReporter extends BaseReporter {
   _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
     if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
       if (isInteractive) {
-        process.stderr.write(RUNNING_TEST_COLOR(
-          'Running coverage on untested files...',
-        ));
+        process.stderr.write(
+          RUNNING_TEST_COLOR('Running coverage on untested files...'),
+        );
       }
       const files = runnerContext.hasteFS.matchFilesWithGlob(
         config.collectCoverageFrom,
@@ -121,16 +125,20 @@ class CoverageReporter extends BaseReporter {
               if (result.sourceMapPath) {
                 this._sourceMapStore.registerURL(
                   filename,
-                  result.sourceMapPath
+                  result.sourceMapPath,
                 );
               }
             }
           } catch (e) {
-            console.error(chalk.red(`
+            console.error(
+              chalk.red(
+                `
               Failed to collect coverage from ${filename}
               ERROR: ${e}
               STACK: ${e.stack}
-            `));
+            `,
+              ),
+            );
           }
         }
       });
@@ -145,39 +153,33 @@ class CoverageReporter extends BaseReporter {
       const results = map.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
-        return [
-          'statements',
-          'branches',
-          'lines',
-          'functions',
-        ].reduce((errors, key) => {
-          const actual = actuals[key].pct;
-          const actualUncovered = actuals[key].total - actuals[key].covered;
-          const threshold = thresholds[key];
+        return ['statements', 'branches', 'lines', 'functions'].reduce(
+          (errors, key) => {
+            const actual = actuals[key].pct;
+            const actualUncovered = actuals[key].total - actuals[key].covered;
+            const threshold = thresholds[key];
 
-          if (threshold != null) {
-            if (threshold < 0) {
-              if (threshold * -1 < actualUncovered) {
+            if (threshold != null) {
+              if (threshold < 0) {
+                if (threshold * -1 < actualUncovered) {
+                  errors.push(
+                    `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                      `exceeds ${name} threshold (${-1 * threshold})`,
+                  );
+                }
+              } else if (actual < threshold) {
                 errors.push(
-                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                  `exceeds ${name} threshold (${-1 * threshold})`,
+                  `Jest: Coverage for ${key} (${actual}` +
+                    `%) does not meet ${name} threshold (${threshold}%)`,
                 );
               }
-            } else if (actual < threshold) {
-              errors.push(
-                `Jest: Coverage for ${key} (${actual}` +
-                `%) does not meet ${name} threshold (${threshold}%)`,
-              );
             }
-          }
-          return errors;
-        }, []);
+            return errors;
+          },
+          [],
+        );
       }
-      const errors = check(
-        'global',
-        config.coverageThreshold.global,
-        results,
-      );
+      const errors = check('global', config.coverageThreshold.global, results);
 
       if (errors.length > 0) {
         this.log(`${FAIL_COLOR(errors.join('\n'))}`);

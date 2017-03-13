@@ -102,15 +102,18 @@ class VerboseReporter extends DefaultReporter {
     if (config.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
-      const skippedCount = tests.reduce((result, test) => {
-        if (test.status === 'pending') {
-          result += 1;
-        } else {
-          this._logTest(test, indentLevel);
-        }
+      const skippedCount = tests.reduce(
+        (result, test) => {
+          if (test.status === 'pending') {
+            result += 1;
+          } else {
+            this._logTest(test, indentLevel);
+          }
 
-        return result;
-      }, 0);
+          return result;
+        },
+        0,
+      );
 
       if (skippedCount > 0) {
         this._logSkippedTests(skippedCount, indentLevel);
