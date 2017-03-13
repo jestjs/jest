@@ -16,7 +16,7 @@ const printImmutable = require('./lib/printImmutable');
 
 const IS_SET = '@@__IMMUTABLE_SET__@@';
 const IS_ORDERED = '@@__IMMUTABLE_ORDERED__@@';
-const test = (maybeSet: any) => 
+const test = (maybeSet: any) =>
   !!(maybeSet && maybeSet[IS_SET] && !maybeSet[IS_ORDERED]);
 
 const print = (

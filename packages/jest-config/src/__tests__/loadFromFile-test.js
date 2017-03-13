@@ -10,8 +10,6 @@
 
 jest.mock('fs');
 
-const path = require('path');
-
 const loadFromFile = require('../loadFromFile');
 
 describe('loadFromFile', () => {

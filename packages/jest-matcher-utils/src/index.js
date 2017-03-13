@@ -138,9 +138,10 @@ const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
     throw new Error(
-      matcherHint('[.not]' + matcherName, undefined, '') + '\n\n' +
-      'Matcher does not accept any arguments.\n' +
-      printWithType('Got', expected, printExpected),
+      matcherHint('[.not]' + matcherName, undefined, '') +
+        '\n\n' +
+        'Matcher does not accept any arguments.\n' +
+        printWithType('Got', expected, printExpected),
     );
   }
 };
@@ -149,9 +150,10 @@ const ensureActualIsNumber = (actual: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) + '\n\n' +
-      `Received value must be a number.\n` +
-      printWithType('Received', actual, printReceived),
+      matcherHint('[.not]' + matcherName) +
+        '\n\n' +
+        `Received value must be a number.\n` +
+        printWithType('Received', actual, printReceived),
     );
   }
 };
@@ -160,9 +162,10 @@ const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) + '\n\n' +
-      `Expected value must be a number.\n` +
-      printWithType('Got', expected, printExpected),
+      matcherHint('[.not]' + matcherName) +
+        '\n\n' +
+        `Expected value must be a number.\n` +
+        printWithType('Got', expected, printExpected),
     );
   }
 };

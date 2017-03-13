@@ -53,35 +53,33 @@ const getCacheKey = (
   if (!configToJsonMap.has(config)) {
     // We only need this set of config options that can likely influence
     // cached output instead of all config options.
-    configToJsonMap.set(config, stableStringify({
-      cacheDirectory: config.cacheDirectory,
-      collectCoverage: config.collectCoverage,
-      collectCoverageFrom: config.collectCoverageFrom,
-      collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
-      coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
-      haste: config.haste,
-      moduleFileExtensions: config.moduleFileExtensions,
-      moduleNameMapper: config.moduleNameMapper,
-      rootDir: config.rootDir,
-      roots: config.roots,
-      testMatch: config.testMatch,
-      testRegex: config.testRegex,
-      transformIgnorePatterns: config.transformIgnorePatterns,
-    }));
+    configToJsonMap.set(
+      config,
+      stableStringify({
+        cacheDirectory: config.cacheDirectory,
+        collectCoverage: config.collectCoverage,
+        collectCoverageFrom: config.collectCoverageFrom,
+        collectCoverageOnlyFrom: config.collectCoverageOnlyFrom,
+        coveragePathIgnorePatterns: config.coveragePathIgnorePatterns,
+        haste: config.haste,
+        moduleFileExtensions: config.moduleFileExtensions,
+        moduleNameMapper: config.moduleNameMapper,
+        rootDir: config.rootDir,
+        roots: config.roots,
+        testMatch: config.testMatch,
+        testRegex: config.testRegex,
+        transformIgnorePatterns: config.transformIgnorePatterns,
+      }),
+    );
   }
   const configString = configToJsonMap.get(config) || '';
   const transformer = getTransformer(filename, config);
 
   if (transformer && typeof transformer.getCacheKey === 'function') {
-    return transformer.getCacheKey(
-      fileData,
-      filename,
-      configString,
-      {
-        instrument,
-        watch: config.watch,
-      },
-    );
+    return transformer.getCacheKey(fileData, filename, configString, {
+      instrument,
+      watch: config.watch,
+    });
   } else {
     return crypto
       .createHash('md5')
@@ -150,14 +148,9 @@ const shouldTransform = (filename: Path, config: Config): boolean => {
 
   const ignoreRegexp = ignoreCache.get(config);
   const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return (
-    !!config.transform &&
+  return !!config.transform &&
     !!config.transform.length &&
-    (
-      !config.transformIgnorePatterns.length ||
-      !isIgnored
-    )
-  );
+    (!config.transformIgnorePatterns.length || !isIgnored);
 };
 
 const getFileCachePath = (
@@ -175,10 +168,12 @@ const getFileCachePath = (
   // Create sub folders based on the cacheKey to avoid creating one
   // directory with many files.
   const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
-  const cachePath = slash(path.join(
-    cacheDir,
-    path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-  ));
+  const cachePath = slash(
+    path.join(
+      cacheDir,
+      path.basename(filename, path.extname(filename)) + '_' + cacheKey,
+    ),
+  );
   createDirectory(cacheDir);
 
   return cachePath;
@@ -346,7 +341,7 @@ const transformAndBuildScript = (
   config: Config,
   options: ?Options,
   instrument: boolean,
-  fileSource?: string
+  fileSource?: string,
 ): BuiltTransformResult => {
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fileSource || fs.readFileSync(filename, 'utf8'));
@@ -397,7 +392,7 @@ module.exports = (
   filename: Path,
   config: Config,
   options: Options,
-  fileSource?: string
+  fileSource?: string,
 ): BuiltTransformResult => {
   const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
@@ -410,7 +405,7 @@ module.exports = (
       config,
       options,
       instrument,
-      fileSource
+      fileSource,
     );
     cache.set(scriptCacheKey, result);
     return result;

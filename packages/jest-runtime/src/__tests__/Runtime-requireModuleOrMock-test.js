@@ -37,9 +37,8 @@ it('mocks modules by default when using automocking', () =>
     expect(exports.setModuleStateValue._isMockFunction).toBe(true);
   }));
 
-it(
-  `doesn't mock modules when explicitly unmocked when using automocking`,
-  () => createRuntime(__filename, {
+it(`doesn't mock modules when explicitly unmocked when using automocking`, () =>
+  createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
   }).then(runtime => {
@@ -50,12 +49,10 @@ it(
       'RegularModule',
     );
     expect(exports.isRealModule).toBe(true);
-  }),
-);
+  }));
 
-it(
-  `doesn't mock modules when explicitly unmocked via a different name`,
-  () => createRuntime(__filename, {
+it(`doesn't mock modules when explicitly unmocked via a different name`, () =>
+  createRuntime(__filename, {
     automock: true,
     moduleNameMapper,
   }).then(runtime => {
@@ -66,12 +63,10 @@ it(
       'RegularModule',
     );
     expect(exports.isRealModule).toBe(true);
-  }),
-);
+  }));
 
-it(
-  `doesn't mock modules when disableAutomock() has been called`,
-  () => createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+it(`doesn't mock modules when disableAutomock() has been called`, () =>
+  createRuntime(__filename, {moduleNameMapper}).then(runtime => {
     const root = runtime.requireModule(runtime.__mockRootPath);
     root.jest.disableAutomock();
     const exports = runtime.requireModuleOrMock(
@@ -79,8 +74,7 @@ it(
       'RegularModule',
     );
     expect(exports.isRealModule).toBe(true);
-  }),
-);
+  }));
 
 it('uses manual mock when automocking on and mock is available', () =>
   createRuntime(__filename, {
@@ -156,12 +150,13 @@ it('resolves mapped module names and unmocks them by default', () =>
     expect(exports.isManualMockModule).toBe(true);
   }));
 
-it('automocking is disabled by default', () => createRuntime(__filename, {
-  moduleNameMapper,
-}).then(runtime => {
-  const exports = runtime.requireModuleOrMock(
-    runtime.__mockRootPath,
-    'RegularModule',
-  );
-  expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
-}));
+it('automocking is disabled by default', () =>
+  createRuntime(__filename, {
+    moduleNameMapper,
+  }).then(runtime => {
+    const exports = runtime.requireModuleOrMock(
+      runtime.__mockRootPath,
+      'RegularModule',
+    );
+    expect(exports.setModuleStateValue._isMockFunction).toBe(undefined);
+  }));

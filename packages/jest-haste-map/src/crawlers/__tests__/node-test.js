@@ -39,19 +39,20 @@ jest.mock('fs', () => {
   let mtime = 32;
   const stat = (path, callback) => {
     setTimeout(
-      () => callback(null, {
-        isDirectory() {
-          return path.endsWith('/directory');
-        },
-        isSymbolicLink() {
-          return false;
-        },
-        mtime: {
-          getTime() {
-            return mtime++;
+      () =>
+        callback(null, {
+          isDirectory() {
+            return path.endsWith('/directory');
           },
-        },
-      }),
+          isSymbolicLink() {
+            return false;
+          },
+          mtime: {
+            getTime() {
+              return mtime++;
+            },
+          },
+        }),
       0,
     );
   };

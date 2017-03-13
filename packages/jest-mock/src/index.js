@@ -351,9 +351,10 @@ class ModuleMockerClass {
         return f;
       };
 
-      f.mockReturnThis = () => f.mockImplementation(function() {
-        return this;
-      });
+      f.mockReturnThis = () =>
+        f.mockImplementation(function() {
+          return this;
+        });
 
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);

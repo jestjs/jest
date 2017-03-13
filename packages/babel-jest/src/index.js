@@ -64,20 +64,22 @@ const createTransformer = (options: any) => {
       configString: string,
       {instrument, watch}: TransformOptions,
     ): string {
-      return crypto
-        .createHash('md5')
-        .update(THIS_FILE)
-        .update('\0', 'utf8')
-        .update(fileData)
-        .update('\0', 'utf8')
-        .update(configString)
-        .update('\0', 'utf8')
-        // Don't use the in-memory cache in watch mode because the .babelrc
-        // file may be modified.
-        .update(getBabelRC(filename, {useCache: !watch}))
-        .update('\0', 'utf8')
-        .update(instrument ? 'instrument' : '')
-        .digest('hex');
+      return (
+        crypto
+          .createHash('md5')
+          .update(THIS_FILE)
+          .update('\0', 'utf8')
+          .update(fileData)
+          .update('\0', 'utf8')
+          .update(configString)
+          .update('\0', 'utf8')
+          // Don't use the in-memory cache in watch mode because the .babelrc
+          // file may be modified.
+          .update(getBabelRC(filename, {useCache: !watch}))
+          .update('\0', 'utf8')
+          .update(instrument ? 'instrument' : '')
+          .digest('hex')
+      );
     },
     process(
       src: string,
