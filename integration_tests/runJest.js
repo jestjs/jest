@@ -24,12 +24,14 @@ function runJest(dir, args) {
 
   const localPackageJson = path.resolve(dir, 'package.json');
   if (!fileExists(localPackageJson)) {
-    throw new Error(`
+    throw new Error(
+      `
       Make sure you have a local package.json file at
         "${localPackageJson}".
       Otherwise Jest will try to traverse the directory tree and find the
       the global package.json, which will send Jest into infinite loop.
-    `);
+    `,
+    );
   }
 
   const result = spawnSync(JEST_PATH, args || [], {
@@ -52,12 +54,14 @@ runJest.json = function(dir, args) {
   try {
     result.json = JSON.parse((result.stdout || '').toString());
   } catch (e) {
-    throw new Error(`
+    throw new Error(
+      `
       Can't parse JSON.
       ERROR: ${e.name} ${e.message}
       STDOUT: ${result.stdout}
       STDERR: ${result.stderr}
-    `);
+    `,
+    );
   }
   return result;
 };

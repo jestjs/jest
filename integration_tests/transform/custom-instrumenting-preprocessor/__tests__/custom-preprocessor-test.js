@@ -8,7 +8,6 @@
 
 'use strict';
 
-
 require('../src');
 
 it('instruments by setting global.__INSTRUMENTED__', () => {

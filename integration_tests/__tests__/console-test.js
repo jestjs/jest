@@ -25,8 +25,10 @@ test('console printing', () => {
 });
 
 test('console printing with --verbose', () => {
-  const {stderr, stdout, status} =
-    runJest('console', ['--verbose', '--no-cache']);
+  const {stderr, stdout, status} = runJest('console', [
+    '--verbose',
+    '--no-cache',
+  ]);
   const {summary, rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
@@ -36,15 +38,15 @@ test('console printing with --verbose', () => {
 });
 
 test('does not print to console with --silent', () => {
-  const {stderr, stdout, status} =
-    runJest('console', [
-      // Need to pass --config because console test specifies `verbose: false`
-      '--config=' + JSON.stringify({
+  const {stderr, stdout, status} = runJest('console', [
+    // Need to pass --config because console test specifies `verbose: false`
+    '--config=' +
+      JSON.stringify({
         testEnvironment: 'node',
       }),
-      '--silent',
-      '--no-cache',
-    ]);
+    '--silent',
+    '--no-cache',
+  ]);
   const {summary, rest} = extractSummary(stderr);
 
   expect(status).toBe(0);

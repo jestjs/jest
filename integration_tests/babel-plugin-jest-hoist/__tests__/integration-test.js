@@ -27,9 +27,7 @@ const virtualModule = require('virtual-module');
 // These will all be hoisted above imports
 jest.unmock('react');
 jest.deepUnmock('../__test_modules__/Unmocked');
-jest
-  .unmock('../__test_modules__/c')
-  .unmock('../__test_modules__/d');
+jest.unmock('../__test_modules__/c').unmock('../__test_modules__/d');
 jest.mock('../__test_modules__/e', () => {
   if (!global.CALLS) {
     global.CALLS = 0;
@@ -49,8 +47,9 @@ jest.mock('../__test_modules__/e', () => {
 });
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.
-jest.mock('has-flow-types', () =>
-  (props: {children: mixed}) => 3, {virtual: true});
+jest.mock('has-flow-types', () => (props: {children: mixed}) => 3, {
+  virtual: true,
+});
 
 // These will not be hoisted
 jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');
@@ -62,7 +61,6 @@ const myObject = {mock: () => {}};
 myObject.mock('apple', 27);
 
 describe('babel-plugin-jest-hoist', () => {
-
   it('does not throw during transform', () => {
     const object = {};
     object.__defineGetter__('foo', () => 'bar');
@@ -76,7 +74,7 @@ describe('babel-plugin-jest-hoist', () => {
 
   it('hoists unmocked modules before imports', () => {
     expect(Unmocked._isMockFunction).toBe(undefined);
-    expect((new Unmocked()).isUnmocked).toEqual(true);
+    expect(new Unmocked().isUnmocked).toEqual(true);
 
     expect(c._isMockFunction).toBe(undefined);
     expect(c()).toEqual('unmocked');
@@ -110,7 +108,7 @@ describe('babel-plugin-jest-hoist', () => {
 
   it('does not hoist dontMock calls before imports', () => {
     expect(Mocked._isMockFunction).toBe(true);
-    expect((new Mocked()).isMocked).toEqual(undefined);
+    expect(new Mocked().isMocked).toEqual(undefined);
 
     expect(a._isMockFunction).toBe(true);
     expect(a()).toEqual(undefined);

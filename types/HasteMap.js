@@ -45,18 +45,16 @@ export type RawModuleMap = {|
   mocks: MockData,
 |};
 
+// prettier-ignore
 export type FileMetaData = [
   /* id */ string,
   /* mtime */ number,
-  /* visited */ 0|1,
+  /* visited */ 0 | 1,
   /* dependencies */ Array<string>,
 ];
 
 type ModuleMapItem = {[platform: string]: ModuleMetaData};
-export type ModuleMetaData = [
-  Path,
-  /* type */ number,
-];
+export type ModuleMetaData = [Path, /* type */ number];
 
 export type HType = {|
   ID: 0,

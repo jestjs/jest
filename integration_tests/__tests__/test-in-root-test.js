@@ -22,9 +22,9 @@ it('runs tests in only test.js and spec.js', () => {
   expect(result.numTotalTests).toBe(2);
 
   const testNames = result.testResults
-      .map(res => res.name)
-      .map(name => path.basename(name))
-      .sort();
+    .map(res => res.name)
+    .map(name => path.basename(name))
+    .sort();
 
   expect(testNames.length).toBe(2);
   expect(testNames[0]).toBe('spec.js');

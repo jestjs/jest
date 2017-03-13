@@ -7,17 +7,14 @@
  */
 'use strict';
 
-throw new Error(`
-  this error should not be a problem because
-  this file is never required or executed
-`);
+throw new Error(
+  `this error should not be a problem because` +
+  `this file is never required or executed`
+);
 
 // Flow annotations to make sure istanbul can instrument non ES6 source
 /* eslint-disable no-unreachable */
-module.exports = function(
-  j: string,
-  d: string
-): string {
+module.exports = function(j: string, d: string): string {
   if (j) {
     return d;
   } else {

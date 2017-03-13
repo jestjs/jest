@@ -12,7 +12,8 @@ const runJest = require('../runJest');
 
 test('testNamePattern', () => {
   const {stderr, status} = runJest.json('testNamePattern', [
-    '--testNamePattern', 'should match',
+    '--testNamePattern',
+    'should match',
   ]);
   const {summary} = extractSummary(stderr);
 

@@ -22,12 +22,10 @@ describe('Runtime Internal Module Registry', () => {
   // Jest to require any internal modules used when setting up the test
   // environment, and a "normal" module registry that's used by the actual test
   // code (and can safely be cleared after every test)
-  it('correctly makes use of internal module registry when requiring modules',
-    () => {
-      const {json} = runJest.json('runtime-internal-module-registry', []);
+  it('correctly makes use of internal module registry when requiring modules', () => {
+    const {json} = runJest.json('runtime-internal-module-registry', []);
 
-      expect(json.numTotalTests).toBe(1);
-      expect(json.numPassedTests).toBe(1);
-    }
-  );
+    expect(json.numTotalTests).toBe(1);
+    expect(json.numPassedTests).toBe(1);
+  });
 });
