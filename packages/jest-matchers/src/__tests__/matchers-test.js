@@ -19,22 +19,21 @@ describe('.rejects', () => {
     await jestExpect(Promise.reject(4)).rejects.toBe(4);
     await jestExpect(Promise.reject(4)).rejects.not.toBe(5);
     await jestExpect(Promise.reject(4.2)).rejects.toBeCloseTo(4.2, 5);
-    await jestExpect(Promise.reject((3))).rejects.not.toBeCloseTo(4.2, 5);
-    await jestExpect(Promise.reject({a: 1, b: 2})).rejects.toMatchObject({a: 1});
-    await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({c: 1});
-    await jestExpect(Promise.reject(() => {throw new Error();})).rejects.toThrow();
+    await jestExpect(Promise.reject(3)).rejects.not.toBeCloseTo(4.2, 5);
+    await jestExpect(Promise.reject({a: 1, b: 2})).rejects.toMatchObject({
+      a: 1,
+    });
+    await jestExpect(Promise.reject({a: 1, b: 2})).rejects.not.toMatchObject({
+      c: 1,
+    });
+    await jestExpect(
+      Promise.reject(() => {
+        throw new Error();
+      }),
+    ).rejects.toThrow();
   });
 
-  [
-    4,
-    [1],
-    {a: 1},
-    'a',
-    true,
-    null,
-    undefined,
-    () => {},
-  ].forEach(value => {
+  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
@@ -64,22 +63,21 @@ describe('.resolves', () => {
     await jestExpect(Promise.resolve(4)).resolves.toBe(4);
     await jestExpect(Promise.resolve(4)).resolves.not.toBe(5);
     await jestExpect(Promise.resolve(4.2)).resolves.toBeCloseTo(4.2, 5);
-    await jestExpect(Promise.resolve((3))).resolves.not.toBeCloseTo(4.2, 5);
-    await jestExpect(Promise.resolve({a: 1, b: 2})).resolves.toMatchObject({a: 1});
-    await jestExpect(Promise.resolve({a: 1, b: 2})).resolves.not.toMatchObject({c: 1});
-    await jestExpect(Promise.resolve(() => {throw new Error();})).resolves.toThrow();
+    await jestExpect(Promise.resolve(3)).resolves.not.toBeCloseTo(4.2, 5);
+    await jestExpect(Promise.resolve({a: 1, b: 2})).resolves.toMatchObject({
+      a: 1,
+    });
+    await jestExpect(Promise.resolve({a: 1, b: 2})).resolves.not.toMatchObject({
+      c: 1,
+    });
+    await jestExpect(
+      Promise.resolve(() => {
+        throw new Error();
+      }),
+    ).resolves.toThrow();
   });
 
-  [
-    4,
-    [1],
-    {a: 1},
-    'a',
-    true,
-    null,
-    undefined,
-    () => {},
-  ].forEach(value => {
+  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
