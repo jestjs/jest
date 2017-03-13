@@ -346,9 +346,10 @@ const transformAndBuildScript = (
   config: Config,
   options: ?Options,
   instrument: boolean,
+  fileSource?: string
 ): BuiltTransformResult => {
   const isInternalModule = !!(options && options.isInternalModule);
-  const content = stripShebang(fs.readFileSync(filename, 'utf8'));
+  const content = stripShebang(fileSource || fs.readFileSync(filename, 'utf8'));
   let wrappedCode: string;
   let sourceMapPath: ?string = null;
   const willTransform = !isInternalModule &&
@@ -396,6 +397,7 @@ module.exports = (
   filename: Path,
   config: Config,
   options: Options,
+  fileSource?: string
 ): BuiltTransformResult => {
   const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
@@ -403,7 +405,13 @@ module.exports = (
   if (result) {
     return result;
   } else {
-    result = transformAndBuildScript(filename, config, options, instrument);
+    result = transformAndBuildScript(
+      filename,
+      config,
+      options,
+      instrument,
+      fileSource
+    );
     cache.set(scriptCacheKey, result);
     return result;
   }
