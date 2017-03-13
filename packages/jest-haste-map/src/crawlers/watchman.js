@@ -65,7 +65,7 @@ module.exports = function watchmanCrawl(
         );
         return Promise.all(
           watchmanRoots.map(root => {
-            // Build up an expression to filter the output by the relevant roots.
+            // Build an expression to filter the output by the relevant roots.
             const dirExpr = (['anyof']: Array<string | Array<string>>);
             roots.forEach(subRoot => {
               if (isDescendant(root, subRoot)) {

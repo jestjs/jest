@@ -10,7 +10,6 @@
 
 jest.mock('read-pkg');
 
-const path = require('path');
 const loadFromPackage = require('../loadFromPackage');
 
 describe('loadFromPackage', () => {

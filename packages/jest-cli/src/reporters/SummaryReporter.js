@@ -151,7 +151,8 @@ class SummareReporter extends BaseReporter {
       if (snapshots.unmatched) {
         this.log(
           FAIL_COLOR(ARROW + pluralize('snapshot test', snapshots.unmatched)) +
-            ` failed in ${pluralize('test suite', snapshots.filesUnmatched)}. ` +
+            ` failed in ` +
+            `${pluralize('test suite', snapshots.filesUnmatched)}. ` +
             SNAPSHOT_NOTE(
               'Inspect your code changes or ' +
                 updateCommand +

@@ -633,7 +633,8 @@ class HasteMap extends EventEmitter {
             delete hasteMap.mocks[mockName];
           }
 
-          // If the file was added or changed, parse it and update the haste map.
+          // If the file was added or changed,
+          // parse it and update the haste map.
           if (type === 'add' || type === 'change') {
             const fileMetadata = ['', stat.mtime.getTime(), 0, []];
             hasteMap.files[filePath] = fileMetadata;
@@ -651,7 +652,8 @@ class HasteMap extends EventEmitter {
             if (promise) {
               return promise.then(add);
             } else {
-              // If a file in node_modules has changed, emit an event regardless.
+              // If a file in node_modules has changed,
+              // emit an event regardless.
               add();
             }
           } else {

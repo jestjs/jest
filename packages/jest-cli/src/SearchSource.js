@@ -259,9 +259,10 @@ class SearchSource {
         ? `  ${pluralize('file', data.total || 0, 's')} checked.\n` +
             statsMessage
         : `No files found in ${config.rootDir}.\n` +
-            `Make sure Jest's configuration does not exclude this directory.\n` +
-            `To set up Jest, make sure a package.json file exists.\n` +
-            `Jest Documentation: facebook.github.io/jest/docs/configuration.html`);
+            `Make sure Jest's configuration does not exclude this directory.` +
+            `\nTo set up Jest, make sure a package.json file exists.\n` +
+            `Jest Documentation: ` +
+            `facebook.github.io/jest/docs/configuration.html`);
   }
 
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
