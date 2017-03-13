@@ -92,11 +92,17 @@ class Runtime {
   _unmockList: ?RegExp;
   _virtualMocks: BooleanObject;
 
-  constructor(config: Config, environment: Environment, resolver: Resolver) {
+  constructor(
+    config: Config,
+    environment: Environment,
+    resolver: Resolver,
+    cacheFS?: {[path: string]: string}
+  ) {
     this._moduleRegistry = Object.create(null);
     this._internalModuleRegistry = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._sourceMapRegistry = Object.create(null);
+    this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._environment = environment;
     this._resolver = resolver;
@@ -455,9 +461,15 @@ class Runtime {
     localModule.paths = this._resolver.getModulePaths(dirname);
     localModule.require = this._createRequireImplementation(filename, options);
 
-    const transformedFile = transform(filename, this._config, {
-      isInternalModule,
-    });
+    const transformedFile = transform(
+      filename,
+      this._config,
+      {
+        isInternalModule,
+      },
+      this._cacheFS[filename]
+    );
+
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;

@@ -67,8 +67,9 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
       BufferedConsole.write([], type, message, 4),
     ),
   );
+  const cacheFS = {[path]: testSource};
   setGlobal(env.global, 'console', testConsole);
-  const runtime = new ModuleLoader(config, env, resolver);
+  const runtime = new ModuleLoader(config, env, resolver, cacheFS);
   const start = Date.now();
   return TestRunner(config, env, runtime, path)
     .then((result: TestResult) => {
