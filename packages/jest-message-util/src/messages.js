@@ -18,10 +18,10 @@ const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE =
-  /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const STACK_TRACE_IGNORE =
-  /^\s+at.*?jest(-.*?)?(\/|\\)(vendor|build|node_modules|packages)(\/|\\)/;
+/* eslint-disable max-len */
+const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(vendor|build|node_modules|packages)(\/|\\)/;
+/* eslint-enable max-len */
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';

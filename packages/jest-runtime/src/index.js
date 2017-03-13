@@ -471,9 +471,8 @@ class Runtime {
       {
         isInternalModule,
       },
-      this._cacheFS[filename]
+      this._cacheFS[filename],
     );
-
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;

@@ -218,8 +218,7 @@ class TestRunner {
       );
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
       aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
-      aggregatedResults.snapshot.failure =
-        !!(!aggregatedResults.snapshot.didUpdate &&
+      aggregatedResults.snapshot.failure = !!(!config.updateSnapshot &&
         (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved));

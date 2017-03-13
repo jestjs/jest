@@ -341,7 +341,7 @@ const transformAndBuildScript = (
   config: Config,
   options: ?Options,
   instrument: boolean,
-  fileSource?: string
+  fileSource?: string,
 ): BuiltTransformResult => {
   const isInternalModule = !!(options && options.isInternalModule);
   const content = stripShebang(fileSource || fs.readFileSync(filename, 'utf8'));
@@ -392,7 +392,7 @@ module.exports = (
   filename: Path,
   config: Config,
   options: Options,
-  fileSource?: string
+  fileSource?: string,
 ): BuiltTransformResult => {
   const instrument = shouldInstrument(filename, config);
   const scriptCacheKey = getScriptCacheKey(filename, config, instrument);
@@ -405,7 +405,7 @@ module.exports = (
       config,
       options,
       instrument,
-      fileSource
+      fileSource,
     );
     cache.set(scriptCacheKey, result);
     return result;
