@@ -49,6 +49,9 @@ type InternalModuleOptions = {|
   isInternalModule: boolean,
 |};
 
+type BooleanObject = {[key: string]: boolean};
+type CacheFS = {[path: Path]: string};
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
@@ -69,9 +72,8 @@ const mockParentModule = {
 
 const unmockRegExpCache = new WeakMap();
 
-type BooleanObject = {[key: string]: boolean};
-
 class Runtime {
+  _cacheFS: CacheFS;
   _config: Config;
   _currentlyExecutingModulePath: string;
   _environment: Environment;
@@ -96,7 +98,7 @@ class Runtime {
     config: Config,
     environment: Environment,
     resolver: Resolver,
-    cacheFS?: {[path: string]: string}
+    cacheFS?: CacheFS,
   ) {
     this._moduleRegistry = Object.create(null);
     this._internalModuleRegistry = Object.create(null);
