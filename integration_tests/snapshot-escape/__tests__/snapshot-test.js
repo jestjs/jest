@@ -7,4 +7,5 @@
  */
 'use strict';
 
+// prettier-ignore
 test('escape strings', () => expect('one: \\\'').toMatchSnapshot());

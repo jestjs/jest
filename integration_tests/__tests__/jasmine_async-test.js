@@ -15,10 +15,7 @@ describe('async jasmine', () => {
   skipOnWindows.suite();
 
   it('works with beforeAll', () => {
-    const result = runJest.json(
-      'jasmine_async',
-      ['promise_beforeAll-test.js'],
-    );
+    const result = runJest.json('jasmine_async', ['promise_beforeAll-test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(2);
@@ -32,10 +29,9 @@ describe('async jasmine', () => {
   });
 
   it('works with beforeEach', () => {
-    const result = runJest.json(
-      'jasmine_async',
-      ['promise_beforeEach-test.js'],
-    );
+    const result = runJest.json('jasmine_async', [
+      'promise_beforeEach-test.js',
+    ]);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(1);
@@ -55,9 +51,7 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(0);
     expect(json.testResults[0].message).toBe('');
 
-    expect(
-      (result.stderr.match(/unset flag/g) || []).length
-    ).toBe(1);
+    expect((result.stderr.match(/unset flag/g) || []).length).toBe(1);
   });
 
   it('works with afterEach', () => {

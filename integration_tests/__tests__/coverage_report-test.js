@@ -50,22 +50,19 @@ test('collects coverage only from specified files', () => {
   expect(stdout).toMatchSnapshot();
 });
 
-test(
-  'collects coverage only from specified files avoiding dependencies',
-  () => {
-    const {stdout} = runJest(DIR, [
-      '--no-cache',
-      '--coverage',
-      '--collectCoverageOnlyFrom',
-      'sum.js',
-      '--',
-      'sum-test.js',
-    ]);
+test('collects coverage only from specified files avoiding dependencies', () => {
+  const {stdout} = runJest(DIR, [
+    '--no-cache',
+    '--coverage',
+    '--collectCoverageOnlyFrom',
+    'sum.js',
+    '--',
+    'sum-test.js',
+  ]);
 
-    // Coverage report should only have `sum.js` coverage info
-    expect(stdout).toMatchSnapshot();
-  }
-);
+  // Coverage report should only have `sum.js` coverage info
+  expect(stdout).toMatchSnapshot();
+});
 
 test('json reporter printing with --coverage', () => {
   const {stderr, status} = runJest('json_reporter', ['--coverage']);
@@ -81,8 +78,6 @@ test('outputs coverage report as json', () => {
   try {
     JSON.parse(stdout);
   } catch (err) {
-    throw new Error(
-      'Can\'t parse the JSON result from stdout' + err.toString()
-    );
+    throw new Error("Can't parse the JSON result from stdout" + err.toString());
   }
 });

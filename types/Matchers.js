@@ -13,7 +13,7 @@ import type {Path} from 'types/Config';
 
 export type ExpectationResult = {
   pass: boolean,
-  message: string | () => string,
+  message: string | (() => string),
 };
 
 export type RawMatcherFn = (
@@ -31,9 +31,10 @@ export type MatcherState = {
   currentTestName?: string,
   testPath?: Path,
 };
-export type MatchersObject = {[id:string]: RawMatcherFn};
+export type MatchersObject = {[id: string]: RawMatcherFn};
 export type Expect = (expected: any) => ExpectationObject;
 export type ExpectationObject = {
+  [id: string]: ThrowingMatcherFn,
   resolves: {
     [id: string]: PromiseMatcherFn,
     not: {[id: string]: PromiseMatcherFn},
@@ -42,6 +43,5 @@ export type ExpectationObject = {
     [id: string]: PromiseMatcherFn,
     not: {[id: string]: PromiseMatcherFn},
   },
-  [id: string]: ThrowingMatcherFn,
   not: {[id: string]: ThrowingMatcherFn},
 };

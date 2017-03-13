@@ -48,9 +48,7 @@ test(`throws the error if tested function didn't throw error`, () => {
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch(
-      `Expected the function to throw an error.`,
-    );
+    expect(stderr).toMatch(`Expected the function to throw an error.`);
     expect(status).toBe(1);
   }
 });
@@ -68,9 +66,7 @@ test('does not accept arguments', () => {
   {
     makeTests(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, [filename]);
-    expect(stderr).toMatch(
-      'Matcher does not accept any arguments.',
-    );
+    expect(stderr).toMatch('Matcher does not accept any arguments.');
     expect(status).toBe(1);
   }
 });

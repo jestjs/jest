@@ -63,7 +63,7 @@ describe('custom transformer', () => {
   const dir = path.resolve(
     __dirname,
     '..',
-    'transform/custom-instrumenting-preprocessor'
+    'transform/custom-instrumenting-preprocessor',
   );
 
   it('proprocesses files', () => {
@@ -84,11 +84,7 @@ describe('custom transformer', () => {
 });
 
 describe('multiple-transformers', () => {
-  const dir = path.resolve(
-    __dirname,
-    '..',
-    'transform/multiple-transformers',
-  );
+  const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
