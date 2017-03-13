@@ -11,7 +11,7 @@
     "jest-runtime": "^19.0.2",
     "jest-util": "^19.0.2",
     "repl": "^0.1.3",
-    "yargs": "^6.3.0"
+    "yargs": "^7.0.2"
   },
   "bin": {
     "jest-repl": "./bin/jest-repl.js"
