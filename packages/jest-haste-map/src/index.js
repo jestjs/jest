@@ -52,7 +52,6 @@ type Options = {
   resetCache?: boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  throwOnModuleCollision?: boolean,
   useWatchman?: boolean,
   watch?: boolean,
 };
@@ -70,7 +69,6 @@ type InternalOptions = {
   resetCache: ?boolean,
   retainAllFiles: boolean,
   roots: Array<string>,
-  throwOnModuleCollision: boolean,
   useWatchman: boolean,
   watch: boolean,
 };
@@ -215,7 +213,6 @@ class HasteMap extends EventEmitter {
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       roots: Array.from(new Set(options.roots)),
-      throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
@@ -234,6 +231,8 @@ class HasteMap extends EventEmitter {
     this._workerPromise = null;
     this._workerFarm = null;
     this._watchers = [];
+    this._moduleIDsByFilePath = new Map();
+    this._moduleArraysByIDAndPlatform = new Map();
   }
 
   static getCacheFilePath(tmpdir: Path, name: string): string {
@@ -290,6 +289,9 @@ class HasteMap extends EventEmitter {
       .then(hasteMap => this._crawl(hasteMap));
   }
 
+  _moduleIDsByFilePath: Map<string, string>;
+  _moduleArraysByIDAndPlatform: Map<string, Map<string, Array<ModuleMetaData>>>;
+
   /**
    * 3. parse and extract metadata from changed files.
    */
@@ -299,30 +301,66 @@ class HasteMap extends EventEmitter {
     mocks: Object,
     filePath: Path,
     workerOptions: ?{forceInBand: boolean},
-  ): ?Promise<void> {
-    const setModule = (id: string, module: ModuleMetaData) => {
+  ): ?Promise<?{id: string, candidates: Array<ModuleMetaData>}> {
+
+    const updateModuleFromCandidates = (
+      id: string,
+      platform: string,
+      candidates: Array<ModuleMetaData>,
+    ) => {
       if (!map[id]) {
         map[id] = Object.create(null);
       }
-      const moduleMap = map[id];
-      const platform = getPlatformExtension(module[H.PATH]) ||
-        H.GENERIC_PLATFORM;
-      const existingModule = moduleMap[platform];
-      if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const message = `jest-haste-map: @providesModule naming collision:\n` +
-          `  Duplicate module name: ${id}\n` +
-          `  Paths: ${module[H.PATH]} collides with ` +
-          `${existingModule[H.PATH]}\n\nThis ` +
-          `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
-          `is caused by a @providesModule declaration ` +
-          `with the same name across two different files.`;
-        if (this._options.throwOnModuleCollision) {
-          throw new Error(message);
+      const modulesByPlatform = map[id];
+      if (candidates.length === 1) {
+        modulesByPlatform[platform] = candidates[0];
+      } else {
+        delete modulesByPlatform[platform];
+      }
+      return {id, candidates};
+    }
+
+    const setModule = (id: string, module: ModuleMetaData) => {
+
+      const moduleFilePath = module[H.PATH];
+      const platform =
+        getPlatformExtension(moduleFilePath) || H.GENERIC_PLATFORM;
+
+      const existingID = this._moduleIDsByFilePath.get(moduleFilePath);
+      if (existingID != null) {
+        const moduleArraysByPlatform = this._moduleArraysByIDAndPlatform.get(existingID);
+        if (moduleArraysByPlatform == null) {
+          throw new Error('could not find data for existing ID');
         }
-        this._console.warn(message);
+        const modules = moduleArraysByPlatform.get(platform);
+        if (modules == null) {
+          throw new Error('could not find candidate modules for existing ID and platform');
+        }
+        const existingModuleIx =
+          modules.findIndex(m => m[H.PATH] == moduleFilePath);
+        if (existingModuleIx < 0) {
+          throw new Error('could not find module for existing ID, platform and path');
+        }
+        modules.splice(existingModuleIx, 1);
+        updateModuleFromCandidates(existingID, platform, modules);
       }
 
-      moduleMap[platform] = module;
+      this._moduleIDsByFilePath.set(moduleFilePath, id);
+
+      let moduleArraysByPlatform = this._moduleArraysByIDAndPlatform.get(id);
+      if (moduleArraysByPlatform == null) {
+        moduleArraysByPlatform = new Map();
+        this._moduleArraysByIDAndPlatform.set(id, moduleArraysByPlatform);
+      }
+
+      let modules = moduleArraysByPlatform.get(platform);
+      if (modules == null) {
+        moduleArraysByPlatform.set(platform, modules = []);
+      }
+
+      modules.push(module);
+      return updateModuleFromCandidates(id, platform, modules);
+
     };
 
     // If we retain all files in the virtual HasteFS representation, we avoid
@@ -366,15 +404,17 @@ class HasteMap extends EventEmitter {
       hasteImplModulePath: this._options.hasteImplModulePath,
     }).then(
       metadata => {
+        let processingResult = null;
         // `1` for truthy values instead of `true` to save cache space.
         fileMetadata[H.VISITED] = 1;
         const metadataId = metadata.id;
         const metadataModule = metadata.module;
         if (metadataId && metadataModule) {
           fileMetadata[H.ID] = metadataId;
-          setModule(metadataId, metadataModule);
+          processingResult = setModule(metadataId, metadataModule);
         }
         fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+        return processingResult;
       },
       error => {
         // If a file cannot be read we remove it from the file list and
@@ -391,9 +431,22 @@ class HasteMap extends EventEmitter {
 
     for (const filePath in hasteMap.files) {
       const promise = this._processFile(hasteMap, map, mocks, filePath);
-      if (promise) {
-        promises.push(promise);
+      if (!promise) {
+        continue;
       }
+      promises.push(promise.then(result => {
+        if (result == null || result.candidates.length <= 1) {
+          return;
+        }
+        throw new Error(
+          `jest-haste-map: @providesModule naming collision:\n` +
+            `  Duplicate module name: ${result.id}\n` +
+            `  Paths: ${result.candidates[1][H.PATH]} collides with ` +
+            `${result.candidates[0][H.PATH]}\n\nThis error ` +
+            `is caused by a @providesModule declaration ` +
+            `with the same name across several different files.`,
+        );
+      }));
     }
 
     const cleanup = () => {
@@ -528,9 +581,7 @@ class HasteMap extends EventEmitter {
       return Promise.resolve();
     }
 
-    // In watch mode, we'll only warn about module collisions and we'll retain
-    // all files, even changes to node_modules.
-    this._options.throwOnModuleCollision = false;
+    // In watch mode, we'll retain all files, even changes to node_modules.
     this._options.retainAllFiles = true;
 
     const Watcher = canUseWatchman && this._options.useWatchman

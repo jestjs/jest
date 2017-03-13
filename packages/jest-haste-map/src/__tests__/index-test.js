@@ -341,7 +341,7 @@ describe('HasteMap', () => {
       });
   });
 
-  it('warns on duplicate module ids', () => {
+  it('throws on duplicate module ids', () => {
     // Raspberry thinks it is a Strawberry
     mockFs['/fruits/raspberry.js'] = [
       '/**',
@@ -350,27 +350,7 @@ describe('HasteMap', () => {
       'const Banana = require("Banana");',
     ].join('\n');
 
-    return new HasteMap(defaultConfig).build()
-      .then(({__hasteMapForTest: data}) => {
-        expect(data.map.Strawberry[H.GENERIC_PLATFORM][0])
-          .toEqual('/fruits/raspberry.js');
-
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
-      });
-  });
-
-  it('throws on duplicate module ids if "throwOnModuleCollision" is set to true', () => {
-    // Raspberry thinks it is a Strawberry
-    mockFs['/fruits/raspberry.js'] = [
-      '/**',
-      ' * @providesModule Strawberry',
-      ' */',
-      'const Banana = require("Banana");',
-    ].join('\n');
-
-    return new HasteMap(
-      Object.assign({throwOnModuleCollision: true}, defaultConfig),
-    ).build().catch(err => {
+    return new HasteMap(defaultConfig).build().catch(err => {
       expect(err).toMatchSnapshot();
     });
   });
@@ -815,6 +795,62 @@ describe('HasteMap', () => {
               }),
             );
           },
+          () => {
+            mockFs['/fruits/pear.js'] = [
+              '/**',
+              ' * @providesModule Pear',
+              ' */',
+            ].join('\n');
+            mockFs['/fruits/blueberry.js'] = [
+              '/**',
+              ' * @providesModule Pear',
+              ' */',
+            ].join('\n');
+
+            mockEmitters['/fruits'].emit(
+              'all',
+              'change',
+              'pear.js',
+              '/fruits',
+              statObject,
+            );
+            mockEmitters['/fruits'].emit(
+              'all',
+              'add',
+              'blueberry.js',
+              '/fruits',
+              statObject,
+            );
+
+            hasteMap.once(
+              'change',
+              addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                expect(moduleMap.getModule('Pear')).toBe(null);
+                expect(hasteFS.exists('/fruits/blueberry.js')).toBe(true);
+
+                mockFs['/fruits/blueberry.js'] = [
+                  '/**',
+                  ' * @providesModule Blueberry',
+                  ' */',
+                ].join('\n');
+                mockEmitters['/fruits'].emit(
+                  'all',
+                  'change',
+                  'blueberry.js',
+                  '/fruits',
+                  statObject,
+                );
+                hasteMap.once(
+                  'change',
+                  addErrorHandler(({eventsQueue, hasteFS, moduleMap}) => {
+                    expect(moduleMap.getModule('Pear')).toBe("/fruits/pear.js");
+                    expect(moduleMap.getModule('Blueberry')).toBe("/fruits/blueberry.js");
+                    next();
+                  }),
+                );
+              }),
+            );
+          }
         ];
 
         next();
