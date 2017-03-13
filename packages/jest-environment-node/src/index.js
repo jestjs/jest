@@ -16,6 +16,7 @@ import type {ModuleMocker} from 'jest-mock';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
+const setPrepareStackTrace = require('jest-util').setPrepareStackTrace;
 const mock = require('jest-mock');
 const vm = require('vm');
 
@@ -35,6 +36,8 @@ class NodeEnvironment {
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
     installCommonGlobals(global, config.globals);
+    setPrepareStackTrace(global.Error);
+
     this.moduleMocker = new mock.ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);
   }

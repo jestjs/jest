@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should exclude jasmine from stack trace for windows paths 1`] = `
+"  at stack (..\\\\jest-jasmine2\\\\vendor\\\\jasmine-2.4.1.js:1580:17)
+  at Object.it (build\\\\__tests__\\\\messages-test.js:45:41)"
+`;

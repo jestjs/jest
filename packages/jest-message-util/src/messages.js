@@ -17,11 +17,6 @@ const micromatch = require('micromatch');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
 
-// filter for noisy stack trace lines
-/* eslint-disable max-len */
-const JASMINE_IGNORE = /^\s+at(?:(?:.*?vendor\/|jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const STACK_TRACE_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(vendor|build|node_modules|packages)(\/|\\)/;
-/* eslint-enable max-len */
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -89,26 +84,6 @@ const formatExecError = (
     '\n';
 };
 
-const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
-  let pathCounter = 0;
-
-  return lines.filter(line => {
-    const isPath = STACK_PATH_REGEXP.test(line);
-    if (!isPath) {
-      return true;
-    }
-    if (JASMINE_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (++pathCounter === 1) {
-      return true; // always keep the first line even if it's from Jest
-    }
-
-    return !(STACK_TRACE_IGNORE.test(line) || config.noStackTrace);
-  });
-};
-
 const formatPaths = (config: StackTraceOptions, relativeTestPath, line) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
@@ -140,11 +115,11 @@ const formatStackTrace = (
   config: StackTraceOptions,
   testPath: ?Path,
 ) => {
-  let lines = stack.split(/\n/);
+  const lines = stack.split(/\n/);
   const relativeTestPath = testPath
     ? path.relative(config.rootDir, testPath)
     : null;
-  lines = removeInternalStackEntries(lines, config);
+
   return lines
     .map(trimPaths)
     .map(formatPaths.bind(null, config, relativeTestPath))
