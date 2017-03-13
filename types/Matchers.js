@@ -23,6 +23,7 @@ export type RawMatcherFn = (
 ) => ExpectationResult;
 
 export type ThrowingMatcherFn = (actual: any) => void;
+export type PromiseMatcherFn = (actual: any) => Promise<void>;
 export type MatcherContext = {isNot: boolean};
 export type MatcherState = {
   assertionCalls?: number,
@@ -33,6 +34,14 @@ export type MatcherState = {
 export type MatchersObject = {[id:string]: RawMatcherFn};
 export type Expect = (expected: any) => ExpectationObject;
 export type ExpectationObject = {
+  resolves: {
+    [id: string]: PromiseMatcherFn,
+    not: {[id: string]: PromiseMatcherFn},
+  },
+  rejects: {
+    [id: string]: PromiseMatcherFn,
+    not: {[id: string]: PromiseMatcherFn},
+  },
   [id: string]: ThrowingMatcherFn,
   not: {[id: string]: ThrowingMatcherFn},
 };
