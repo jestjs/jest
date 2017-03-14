@@ -14,11 +14,11 @@ const args = require('./args');
 const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
+const pkgDir = require('pkg-dir');
 const yargs = require('yargs');
 
 const {
   Console,
-  getPackageRoot,
   setGlobal,
   validateCLIOptions,
 } = require('jest-util');
@@ -54,7 +54,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     return;
   }
 
-  const root = getPackageRoot();
+  const root = pkgDir.sync();
   const testFilePath = path.resolve(process.cwd(), argv._[0]);
 
   if (argv.debug) {
