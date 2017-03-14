@@ -14,8 +14,8 @@ const args = require('./args');
 const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
-const yargs = require('yargs');
 const pkgDir = require('pkg-dir');
+const yargs = require('yargs');
 
 const {
   Console,
