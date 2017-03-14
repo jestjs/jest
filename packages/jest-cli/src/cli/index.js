@@ -14,9 +14,9 @@ import type {Path} from 'types/Config';
 
 const args = require('./args');
 const getJest = require('./getJest');
+const pkgDir = require('pkg-dir');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
-const pkgDir = require('pkg-dir');
 
 function run(argv?: Object, root?: Path) {
   argv = yargs(argv || process.argv.slice(2))
