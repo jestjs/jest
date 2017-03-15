@@ -23,13 +23,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
+const formatErrorMsg = function() {
+  function generateErrorMsg(domain, usage) {
+    const usageDefinition = usage ? '\nUsage: ' + usage : '';
+
+    return function errorMsg(msg) {
+      return domain + ' : ' + msg + usageDefinition;
+    };
+  }
+
+  return generateErrorMsg;
+};
+
+class ExpectationFailed extends Error {}
+
 exports.create = function() {
   const j$ = {};
 
   exports.base(j$);
-  j$.util = exports.util();
-  j$.errors = exports.errors();
-  j$.formatErrorMsg = exports.formatErrorMsg();
   j$.CallTracker = exports.CallTracker(j$);
   j$.Env = exports.Env(j$);
   j$.ExceptionFormatter = exports.ExceptionFormatter();
@@ -44,7 +55,6 @@ exports.create = function() {
   j$.Timer = exports.Timer();
   j$.TreeProcessor = exports.TreeProcessor();
   j$.version = exports.version();
-  j$.Order = exports.Order();
 
   return j$;
 };
@@ -56,19 +66,6 @@ exports.base = function(j$) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
-  };
-
-  j$.isArray_ = function(value) {
-    return j$.isA_('Array', value);
-  };
-
-  j$.isFunction_ = function(value) {
-    return j$.isA_('Function', value);
-  };
-
-  j$.isA_ = function(typeName, value) {
-    return Object.prototype.toString.apply(value) ===
-      '[object ' + typeName + ']';
   };
 
   j$.createSpy = function(name, originalFn) {
@@ -119,12 +116,12 @@ exports.base = function(j$) {
   };
 
   j$.createSpyObj = function(baseName, methodNames) {
-    if (j$.isArray_(baseName) && j$.util.isUndefined(methodNames)) {
+    if (Array.isArray(baseName) && methodNames === void 0) {
       methodNames = baseName;
       baseName = 'unknown';
     }
 
-    if (!j$.isArray_(methodNames) || methodNames.length === 0) {
+    if (!Array.isArray(methodNames) || methodNames.length === 0) {
       throw new Error(
         'createSpyObj requires a non-empty array of method names to ' +
           'create spies for',
@@ -136,32 +133,6 @@ exports.base = function(j$) {
     }
     return obj;
   };
-};
-
-exports.util = function() {
-  const util = {};
-
-  util.isUndefined = function(obj) {
-    return obj === void 0;
-  };
-
-  util.clone = function(obj) {
-    if (Object.prototype.toString.apply(obj) === '[object Array]') {
-      return obj.slice();
-    }
-
-    const cloned = {};
-    for (const prop in obj) {
-      // @ccarlesso allows looping on objects without `Object.prototype`.
-      if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-        cloned[prop] = obj[prop];
-      }
-    }
-
-    return cloned;
-  };
-
-  return util;
 };
 
 exports.Spec = function(j$) {
@@ -215,7 +186,7 @@ exports.Spec = function(j$) {
       this.result.failedExpectations.push(expectationResult);
 
       if (this.throwOnExpectationFailure && !isError) {
-        throw new j$.errors.ExpectationFailed();
+        throw new ExpectationFailed();
       }
     }
   };
@@ -258,7 +229,7 @@ exports.Spec = function(j$) {
       return;
     }
 
-    if (e instanceof j$.errors.ExpectationFailed) {
+    if (e instanceof ExpectationFailed) {
       return;
     }
 
@@ -335,16 +306,6 @@ exports.Spec = function(j$) {
   };
 
   return Spec;
-};
-
-/*jshint bitwise: false*/
-
-exports.Order = function() {
-  function Order(options) {
-    this.sort = items => items;
-  }
-
-  return Order;
 };
 
 exports.Env = function(j$) {
@@ -545,11 +506,6 @@ exports.Env = function(j$) {
         }
       }
 
-      const order = new j$.Order({
-        random,
-        seed,
-      });
-
       const processor = new j$.TreeProcessor({
         tree: topSuite,
         runnableIds: runnablesToRun,
@@ -565,9 +521,6 @@ exports.Env = function(j$) {
           }
           currentlyExecutingSuites.pop();
           reporter.suiteDone(result);
-        },
-        orderChildren(node) {
-          return order.sort(node.children);
         },
       });
 
@@ -589,7 +542,6 @@ exports.Env = function(j$) {
         currentlyExecutingSuites.pop();
 
         reporter.jasmineDone({
-          order,
           failedExpectations: topSuite.result.failedExpectations,
         });
       });
@@ -943,27 +895,8 @@ exports.JsApiReporter = function() {
 exports.CallTracker = function(j$) {
   function CallTracker() {
     let calls = [];
-    const opts = {};
-
-    function argCloner(context) {
-      const clonedArgs = [];
-      const argsAsArray = Array.from(context.args);
-      for (let i = 0; i < argsAsArray.length; i++) {
-        if (
-          Object.prototype.toString.apply(argsAsArray[i]).match(/^\[object/)
-        ) {
-          clonedArgs.push(j$.util.clone(argsAsArray[i]));
-        } else {
-          clonedArgs.push(argsAsArray[i]);
-        }
-      }
-      context.args = clonedArgs;
-    }
 
     this.track = function(context) {
-      if (opts.cloneArgs) {
-        argCloner(context);
-      }
       calls.push(context);
     };
 
@@ -1003,10 +936,6 @@ exports.CallTracker = function(j$) {
 
     this.reset = function() {
       calls = [];
-    };
-
-    this.saveArgumentsByValue = function() {
-      opts.cloneArgs = true;
     };
   }
 
@@ -1269,7 +1198,7 @@ exports.ReportDispatcher = function() {
 };
 
 exports.SpyRegistry = function(j$) {
-  const getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = formatErrorMsg(
     '<spyOn>',
     'spyOn(<object>, <methodName>)',
   );
@@ -1286,7 +1215,7 @@ exports.SpyRegistry = function(j$) {
     };
 
     this.spyOn = function(obj, methodName) {
-      if (j$.util.isUndefined(obj)) {
+      if (obj === void 0) {
         throw new Error(
           getErrorMsg(
             'could not find an object to spy upon for ' + methodName + '()',
@@ -1294,11 +1223,11 @@ exports.SpyRegistry = function(j$) {
         );
       }
 
-      if (j$.util.isUndefined(methodName)) {
+      if (methodName === void 0) {
         throw new Error(getErrorMsg('No method name supplied'));
       }
 
-      if (j$.util.isUndefined(obj[methodName])) {
+      if (obj[methodName] === void 0) {
         throw new Error(getErrorMsg(methodName + '() method does not exist'));
       }
 
@@ -1412,7 +1341,7 @@ exports.SpyStrategy = function(j$) {
     };
 
     this.callFake = function(fn) {
-      if (!j$.isFunction_(fn)) {
+      if (typeof fn !== 'function') {
         throw new Error(
           'Argument passed to callFake should be a function, got ' + fn,
         );
@@ -1540,7 +1469,7 @@ exports.Suite = function(j$) {
   };
 
   Suite.prototype.onException = function() {
-    if (arguments[0] instanceof j$.errors.ExpectationFailed) {
+    if (arguments[0] instanceof ExpectationFailed) {
       return;
     }
 
@@ -1566,7 +1495,7 @@ exports.Suite = function(j$) {
       const data = arguments[1];
       this.result.failedExpectations.push(this.expectationResultFactory(data));
       if (this.throwOnExpectationFailure) {
-        throw new j$.errors.ExpectationFailed();
+        throw new ExpectationFailed();
       }
     } else {
       for (let i = 0; i < this.children.length; i++) {
@@ -1623,10 +1552,6 @@ exports.TreeProcessor = function() {
     const queueRunnerFactory = attrs.queueRunnerFactory;
     const nodeStart = attrs.nodeStart || function() {};
     const nodeComplete = attrs.nodeComplete || function() {};
-    const orderChildren = attrs.orderChildren ||
-      function(node) {
-        return node.children;
-      };
     const defaultMin = Infinity;
     const defaultMax = 1 - Infinity;
     let processed = false;
@@ -1693,10 +1618,10 @@ exports.TreeProcessor = function() {
       } else {
         let hasExecutableChild = false;
 
-        const orderedChildren = orderChildren(node);
+        const children = node.children;
 
-        for (let i = 0; i < orderedChildren.length; i++) {
-          const child = orderedChildren[i];
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i];
 
           processNode(child, parentEnabled);
 
@@ -1713,7 +1638,7 @@ exports.TreeProcessor = function() {
           executable: hasExecutableChild,
         };
 
-        segmentChildren(node, orderedChildren, stats[node.id], executableIndex);
+        segmentChildren(node, children, stats[node.id], executableIndex);
 
         if (!node.canBeReentered() && stats[node.id].segments.length > 1) {
           stats = {valid: false};
@@ -1731,7 +1656,7 @@ exports.TreeProcessor = function() {
 
     function segmentChildren(
       node,
-      orderedChildren,
+      children,
       nodeStats,
       executableIndex,
     ) {
@@ -1743,7 +1668,7 @@ exports.TreeProcessor = function() {
         max: startingMax(executableIndex),
       };
       const result = [currentSegment];
-      const orderedChildSegments = orderChildSegments(orderedChildren);
+      const orderedChildSegments = orderChildSegments(children);
       let lastMax = defaultMax;
 
       function isSegmentBoundary(minIndex) {
@@ -1850,28 +1775,6 @@ exports.TreeProcessor = function() {
   }
 
   return TreeProcessor;
-};
-
-exports.errors = function() {
-  function ExpectationFailed() {}
-
-  ExpectationFailed.prototype = new Error();
-  ExpectationFailed.prototype.constructor = ExpectationFailed;
-
-  return {
-    ExpectationFailed,
-  };
-};
-exports.formatErrorMsg = function() {
-  function generateErrorMsg(domain, usage) {
-    const usageDefinition = usage ? '\nUsage: ' + usage : '';
-
-    return function errorMsg(msg) {
-      return domain + ' : ' + msg + usageDefinition;
-    };
-  }
-
-  return generateErrorMsg;
 };
 
 exports.interface = function(jasmine, env) {
