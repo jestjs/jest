@@ -11,7 +11,6 @@
 'use strict';
 
 const jestExpect = require('../');
-const skipOnWindows = require('skipOnWindows');
 
 // Custom Error class because node versions have different stack trace strings.
 class Error {
@@ -26,8 +25,6 @@ class Error {
 
 ['toThrowError', 'toThrow'].forEach(toThrow => {
   describe('.' + toThrow + '()', () => {
-    skipOnWindows.suite();
-
     class Err extends Error {}
     class Err2 extends Error {}
 

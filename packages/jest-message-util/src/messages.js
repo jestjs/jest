@@ -16,6 +16,7 @@ const chalk = require('chalk');
 const micromatch = require('micromatch');
 const path = require('path');
 const separateMessageFromStack = require('./separateMessageFromStack');
+const slash = require('slash');
 
 // filter for noisy stack trace lines
 /* eslint-disable max-len */
@@ -116,7 +117,7 @@ const formatPaths = (config: StackTraceOptions, relativeTestPath, line) => {
     return line;
   }
 
-  let filePath = path.relative(config.rootDir, match[2]);
+  let filePath = slash(path.relative(config.rootDir, match[2]));
   // highlight paths from the current test file
   if (
     (config.testMatch &&
@@ -142,7 +143,7 @@ const formatStackTrace = (
 ) => {
   let lines = stack.split(/\n/);
   const relativeTestPath = testPath
-    ? path.relative(config.rootDir, testPath)
+    ? slash(path.relative(config.rootDir, testPath))
     : null;
   lines = removeInternalStackEntries(lines, config);
   return lines
