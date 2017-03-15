@@ -11,7 +11,6 @@
     "jest-diff": "^19.0.0",
     "jest-matcher-utils": "^19.0.0",
     "jest-message-util": "^19.0.0",
-    "jest-regex-util": "^19.0.0",
-    "slash": "^1.0.0"
+    "jest-regex-util": "^19.0.0"
   }
 }
