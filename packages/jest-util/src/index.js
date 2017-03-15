@@ -17,6 +17,7 @@ const NullConsole = require('./NullConsole');
 const clearLine = require('./clearLine');
 const formatTestResults = require('./formatTestResults');
 const installCommonGlobals = require('./installCommonGlobals');
+const setPrepareStackTrace = require('./stacktrace').setPrepareStackTrace;
 const mkdirp = require('mkdirp');
 const setGlobal = require('./setGlobal');
 const validateCLIOptions = require('./validateCLIOptions');
@@ -40,5 +41,6 @@ module.exports = {
   formatTestResults,
   installCommonGlobals,
   setGlobal,
+  setPrepareStackTrace,
   validateCLIOptions,
 };

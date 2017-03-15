@@ -15,6 +15,7 @@ import type {ModuleMocker} from 'jest-mock';
 
 const FakeTimers = require('jest-util').FakeTimers;
 const installCommonGlobals = require('jest-util').installCommonGlobals;
+const setPrepareStackTrace = require('jest-util').setPrepareStackTrace;
 const mock = require('jest-mock');
 
 class JSDOMEnvironment {
@@ -33,6 +34,7 @@ class JSDOMEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global, config.globals);
+    setPrepareStackTrace(global.Error);
 
     this.moduleMocker = new mock.ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);

@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const {formatResultsErrors} = require('../messages');
+const {toDiscard} = require('../stacktrace');
 
 const windowsStackTrace = `  ` +
   `at stack (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1580:17)
@@ -24,18 +24,11 @@ const windowsStackTrace = `  ` +
   at attemptAsync (..\\jest-jasmine2\\vendor\\jasmine-2.4.1.js:1919:24)`;
 
 it('should exclude jasmine from stack trace for windows paths', () => {
-  const messages = formatResultsErrors(
-    [
-      {
-        ancestorTitles: [],
-        failureMessages: [windowsStackTrace],
-        title: 'windows test',
-      },
-    ],
-    {
-      rootDir: '',
-    },
-  );
+  const messages = windowsStackTrace.split('\n');
 
-  expect(messages).toMatchSnapshot();
+  expect(
+    messages
+      .filter((filename, index) => !toDiscard(filename, index))
+      .join('\n'),
+  ).toMatchSnapshot();
 });
