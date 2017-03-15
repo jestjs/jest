@@ -48,6 +48,8 @@ This option is disabled by default. If you are introducing Jest to a large organ
 
 *Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`.*
 
+*Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround.*
+
 ### `browser` [boolean]
 Default: `false`
 
