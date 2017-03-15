@@ -20,9 +20,11 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+/* eslint-disable sort-keys */
+'use strict';
 
 exports.create = function() {
-  var j$ = {};
+  const j$ = {};
 
   exports.base(j$);
   j$.util = exports.util();
@@ -51,7 +53,7 @@ exports.base = function(j$) {
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
   j$.getEnv = function(options) {
-    var env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
+    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };
@@ -70,31 +72,32 @@ exports.base = function(j$) {
   };
 
   j$.createSpy = function(name, originalFn) {
-    var spyStrategy = new j$.SpyStrategy({
-      name: name,
+    const spyStrategy = new j$.SpyStrategy({
+      name,
       fn: originalFn,
-      getSpy: function() {
+      getSpy() {
         return spy;
       },
-    }),
-      callTracker = new j$.CallTracker(),
-      spy = function() {
-        var callData = {
-          object: this,
-          args: Array.prototype.slice.apply(arguments),
-        };
-
-        callTracker.track(callData);
-        var returnValue = spyStrategy.exec.apply(this, arguments);
-        callData.returnValue = returnValue;
-
-        return returnValue;
+    });
+    const callTracker = new j$.CallTracker();
+    const spy = function() {
+      const callData = {
+        object: this,
+        args: Array.prototype.slice.apply(arguments),
       };
 
-    for (var prop in originalFn) {
+      callTracker.track(callData);
+      const returnValue = spyStrategy.exec.apply(this, arguments);
+      callData.returnValue = returnValue;
+
+      return returnValue;
+    };
+
+    for (const prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
         throw new Error(
-          "Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon",
+          "Jasmine spies would overwrite the 'and' and 'calls' properties " +
+            'on the object being spied upon',
         );
       }
 
@@ -122,10 +125,13 @@ exports.base = function(j$) {
     }
 
     if (!j$.isArray_(methodNames) || methodNames.length === 0) {
-      throw 'createSpyObj requires a non-empty array of method names to create spies for';
+      throw new Error(
+        'createSpyObj requires a non-empty array of method names to ' +
+          'create spies for',
+      );
     }
-    var obj = {};
-    for (var i = 0; i < methodNames.length; i++) {
+    const obj = {};
+    for (let i = 0; i < methodNames.length; i++) {
       obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
     }
     return obj;
@@ -133,7 +139,7 @@ exports.base = function(j$) {
 };
 
 exports.util = function() {
-  var util = {};
+  const util = {};
 
   util.isUndefined = function(obj) {
     return obj === void 0;
@@ -144,8 +150,8 @@ exports.util = function() {
       return obj.slice();
     }
 
-    var cloned = {};
-    for (var prop in obj) {
+    const cloned = {};
+    for (const prop in obj) {
       // @ccarlesso allows looping on objects without `Object.prototype`.
       if (Object.prototype.hasOwnProperty.call(obj, prop)) {
         cloned[prop] = obj[prop];
@@ -202,7 +208,7 @@ exports.Spec = function(j$) {
   }
 
   Spec.prototype.addExpectationResult = function(passed, data, isError) {
-    var expectationResult = this.expectationResultFactory(data);
+    const expectationResult = this.expectationResultFactory(data);
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
     } else {
@@ -215,7 +221,7 @@ exports.Spec = function(j$) {
   };
 
   Spec.prototype.execute = function(onComplete, enabled) {
-    var self = this;
+    const self = this;
 
     this.onStart(this);
 
@@ -224,12 +230,12 @@ exports.Spec = function(j$) {
       return;
     }
 
-    var fns = this.beforeAndAfterFns();
-    var allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
+    const fns = this.beforeAndAfterFns();
+    const allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
 
     this.queueRunnerFactory({
       queueableFns: allFns,
-      onException: function() {
+      onException() {
         self.onException.apply(self, arguments);
       },
       onComplete: complete,
@@ -309,11 +315,13 @@ exports.Spec = function(j$) {
     return this.getSpecName(this);
   };
 
-  var extractCustomPendingMessage = function(e) {
-    var fullMessage = e.toString(),
-      boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
-      boilerplateEnd = boilerplateStart +
-        Spec.pendingSpecExceptionMessage.length;
+  const extractCustomPendingMessage = function(e) {
+    const fullMessage = e.toString();
+    const boilerplateStart = fullMessage.indexOf(
+      Spec.pendingSpecExceptionMessage,
+    );
+    const boilerplateEnd = boilerplateStart +
+      Spec.pendingSpecExceptionMessage.length;
 
     return fullMessage.substr(boilerplateEnd);
   };
@@ -333,43 +341,7 @@ exports.Spec = function(j$) {
 
 exports.Order = function() {
   function Order(options) {
-    this.random = 'random' in options ? options.random : true;
-    var seed = (this.seed = options.seed || generateSeed());
-    this.sort = this.random ? randomOrder : naturalOrder;
-
-    function naturalOrder(items) {
-      return items;
-    }
-
-    function randomOrder(items) {
-      var copy = items.slice();
-      copy.sort(function(a, b) {
-        return jenkinsHash(seed + a.id) - jenkinsHash(seed + b.id);
-      });
-      return copy;
-    }
-
-    function generateSeed() {
-      return String(Math.random()).slice(-5);
-    }
-
-    // Bob Jenkins One-at-a-Time Hash algorithm is a non-cryptographic hash function
-    // used to get a different output when the key changes slighly.
-    // We use your return to sort the children randomly in a consistent way when
-    // used in conjunction with a seed
-
-    function jenkinsHash(key) {
-      var hash, i;
-      for (hash = (i = 0); i < key.length; ++i) {
-        hash += key.charCodeAt(i);
-        hash += hash << 10;
-        hash ^= hash >> 6;
-      }
-      hash += hash << 3;
-      hash ^= hash >> 11;
-      hash += hash << 15;
-      return hash;
-    }
+    this.sort = items => items;
   }
 
   return Order;
@@ -379,33 +351,33 @@ exports.Env = function(j$) {
   function Env(options) {
     options = options || {};
 
-    var self = this;
+    const self = this;
 
-    var totalSpecsDefined = 0;
+    let totalSpecsDefined = 0;
 
-    var catchExceptions = true;
+    let catchExceptions = true;
 
-    var realSetTimeout = global.setTimeout;
-    var realClearTimeout = global.clearTimeout;
+    const realSetTimeout = global.setTimeout;
+    const realClearTimeout = global.clearTimeout;
 
-    var runnableResources = {};
+    const runnableResources = {};
 
-    var currentSpec = null;
-    var currentlyExecutingSuites = [];
-    var currentDeclarationSuite = null;
-    var throwOnExpectationFailure = false;
-    var random = false;
-    var seed = null;
+    let currentSpec = null;
+    const currentlyExecutingSuites = [];
+    let currentDeclarationSuite = null;
+    let throwOnExpectationFailure = false;
+    let random = false;
+    let seed = null;
 
-    var currentSuite = function() {
+    const currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
     };
 
-    var currentRunnable = function() {
+    const currentRunnable = function() {
       return currentSpec || currentSuite();
     };
 
-    var reporter = new j$.ReportDispatcher([
+    const reporter = new j$.ReportDispatcher([
       'jasmineStarted',
       'jasmineDone',
       'suiteStarted',
@@ -418,20 +390,20 @@ exports.Env = function(j$) {
       return true;
     };
 
-    var nextSpecId = 0;
-    var getNextSpecId = function() {
+    let nextSpecId = 0;
+    const getNextSpecId = function() {
       return 'spec' + nextSpecId++;
     };
 
-    var nextSuiteId = 0;
-    var getNextSuiteId = function() {
+    let nextSuiteId = 0;
+    const getNextSuiteId = function() {
       return 'suite' + nextSuiteId++;
     };
 
-    var expectationFactory = function(actual, spec) {
+    const expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
-        actual: actual,
-        addExpectationResult: addExpectationResult,
+        actual,
+        addExpectationResult,
       });
 
       function addExpectationResult(passed, result) {
@@ -439,20 +411,21 @@ exports.Env = function(j$) {
       }
     };
 
-    var defaultResourcesForRunnable = function(id, parentRunnableId) {
-      var resources = {spies: []};
+    const defaultResourcesForRunnable = function(id, parentRunnableId) {
+      const resources = {spies: []};
 
       runnableResources[id] = resources;
     };
 
-    var clearResourcesForRunnable = function(id) {
+    const clearResourcesForRunnable = function(id) {
       spyRegistry.clearSpies();
       delete runnableResources[id];
     };
 
-    var beforeAndAfterFns = function(suite) {
+    const beforeAndAfterFns = function(suite) {
       return function() {
-        var befores = [], afters = [];
+        let afters = [];
+        let befores = [];
 
         while (suite) {
           befores = befores.concat(suite.beforeFns);
@@ -463,13 +436,14 @@ exports.Env = function(j$) {
 
         return {
           befores: befores.reverse(),
-          afters: afters,
+          afters,
         };
       };
     };
 
-    var getSpecName = function(spec, suite) {
-      var fullName = [spec.description], suiteFullName = suite.getFullName();
+    const getSpecName = function(spec, suite) {
+      const fullName = [spec.description];
+      const suiteFullName = suite.getFullName();
 
       if (suiteFullName !== '') {
         fullName.unshift(suiteFullName);
@@ -478,17 +452,15 @@ exports.Env = function(j$) {
       return fullName.join(' ');
     };
 
-    // TODO: we may just be able to pass in the fn instead of wrapping here
-    var buildExpectationResult = j$.buildExpectationResult,
-      exceptionFormatter = new j$.ExceptionFormatter(),
-      expectationResultFactory = function(attrs) {
-        attrs.messageFormatter = exceptionFormatter.message;
-        attrs.stackFormatter = exceptionFormatter.stack;
+    const buildExpectationResult = j$.buildExpectationResult;
+    const exceptionFormatter = new j$.ExceptionFormatter();
+    const expectationResultFactory = function(attrs) {
+      attrs.messageFormatter = exceptionFormatter.message;
+      attrs.stackFormatter = exceptionFormatter.stack;
 
-        return buildExpectationResult(attrs);
-      };
+      return buildExpectationResult(attrs);
+    };
 
-    // TODO: fix this naming, and here's where the value comes in
     this.catchExceptions = function(value) {
       catchExceptions = !!value;
       return catchExceptions;
@@ -498,8 +470,8 @@ exports.Env = function(j$) {
       return catchExceptions;
     };
 
-    var maximumSpecCallbackDepth = 20;
-    var currentSpecCallbackDepth = 0;
+    const maximumSpecCallbackDepth = 20;
+    let currentSpecCallbackDepth = 0;
 
     function clearStack(fn) {
       currentSpecCallbackDepth++;
@@ -511,7 +483,7 @@ exports.Env = function(j$) {
       }
     }
 
-    var catchException = function(e) {
+    const catchException = function(e) {
       return j$.Spec.isPendingSpecException(e) || catchExceptions;
     };
 
@@ -538,7 +510,7 @@ exports.Env = function(j$) {
       return seed;
     };
 
-    var queueRunnerFactory = function(options) {
+    const queueRunnerFactory = function(options) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {
@@ -550,12 +522,12 @@ exports.Env = function(j$) {
       new j$.QueueRunner(options).execute();
     };
 
-    var topSuite = new j$.Suite({
+    const topSuite = new j$.Suite({
       env: this,
       id: getNextSuiteId(),
       description: 'test',
-      expectationFactory: expectationFactory,
-      expectationResultFactory: expectationResultFactory,
+      expectationFactory,
+      expectationResultFactory,
     });
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
@@ -573,50 +545,51 @@ exports.Env = function(j$) {
         }
       }
 
-      var order = new j$.Order({
-        random: random,
-        seed: seed,
+      const order = new j$.Order({
+        random,
+        seed,
       });
 
-      var processor = new j$.TreeProcessor({
+      const processor = new j$.TreeProcessor({
         tree: topSuite,
         runnableIds: runnablesToRun,
-        queueRunnerFactory: queueRunnerFactory,
-        nodeStart: function(suite) {
+        queueRunnerFactory,
+        nodeStart(suite) {
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
           reporter.suiteStarted(suite.result);
         },
-        nodeComplete: function(suite, result) {
+        nodeComplete(suite, result) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
           }
           currentlyExecutingSuites.pop();
           reporter.suiteDone(result);
         },
-        orderChildren: function(node) {
+        orderChildren(node) {
           return order.sort(node.children);
         },
       });
 
       if (!processor.processTree().valid) {
         throw new Error(
-          'Invalid order: would cause a beforeAll or afterAll to be run multiple times',
+          'Invalid order: would cause a beforeAll or afterAll to be ' +
+            'run multiple times',
         );
       }
 
       reporter.jasmineStarted({
-        totalSpecsDefined: totalSpecsDefined,
+        totalSpecsDefined,
       });
 
       currentlyExecutingSuites.push(topSuite);
 
-      processor.execute(function() {
+      processor.execute(() => {
         clearResourcesForRunnable(topSuite.id);
         currentlyExecutingSuites.pop();
 
         reporter.jasmineDone({
-          order: order,
+          order,
           failedExpectations: topSuite.result.failedExpectations,
         });
       });
@@ -634,8 +607,8 @@ exports.Env = function(j$) {
       reporter.clearReporters();
     };
 
-    var spyRegistry = new j$.SpyRegistry({
-      currentSpies: function() {
+    const spyRegistry = new j$.SpyRegistry({
+      currentSpies() {
         if (!currentRunnable()) {
           throw new Error(
             'Spies must be created in a before function or a spec',
@@ -653,22 +626,22 @@ exports.Env = function(j$) {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
-    var suiteFactory = function(description) {
-      var suite = new j$.Suite({
+    const suiteFactory = function(description) {
+      const suite = new j$.Suite({
         env: self,
         id: getNextSuiteId(),
-        description: description,
+        description,
         parentSuite: currentDeclarationSuite,
-        expectationFactory: expectationFactory,
-        expectationResultFactory: expectationResultFactory,
-        throwOnExpectationFailure: throwOnExpectationFailure,
+        expectationFactory,
+        expectationResultFactory,
+        throwOnExpectationFailure,
       });
 
       return suite;
     };
 
     this.describe = function(description, specDefinitions) {
-      var suite = suiteFactory(description);
+      const suite = suiteFactory(description);
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
@@ -680,16 +653,16 @@ exports.Env = function(j$) {
     };
 
     this.xdescribe = function(description, specDefinitions) {
-      var suite = suiteFactory(description);
+      const suite = suiteFactory(description);
       suite.pend();
       addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
 
-    var focusedRunnables = [];
+    const focusedRunnables = [];
 
     this.fdescribe = function(description, specDefinitions) {
-      var suite = suiteFactory(description);
+      const suite = suiteFactory(description);
       suite.isFocused = true;
 
       focusedRunnables.push(suite.id);
@@ -700,11 +673,11 @@ exports.Env = function(j$) {
     };
 
     function addSpecsToSuite(suite, specDefinitions) {
-      var parentSuite = currentDeclarationSuite;
+      const parentSuite = currentDeclarationSuite;
       parentSuite.addChild(suite);
       currentDeclarationSuite = suite;
 
-      var declarationError = null;
+      let declarationError = null;
       try {
         specDefinitions.call(suite);
       } catch (e) {
@@ -712,7 +685,7 @@ exports.Env = function(j$) {
       }
 
       if (declarationError) {
-        self.it('encountered a declaration exception', function() {
+        self.it('encountered a declaration exception', () => {
           throw declarationError;
         });
       }
@@ -732,9 +705,9 @@ exports.Env = function(j$) {
     }
 
     function unfocusAncestor() {
-      var focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
+      const focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
       if (focusedAncestor) {
-        for (var i = 0; i < focusedRunnables.length; i++) {
+        for (let i = 0; i < focusedRunnables.length; i++) {
           if (focusedRunnables[i] === focusedAncestor) {
             focusedRunnables.splice(i, 1);
             break;
@@ -743,30 +716,30 @@ exports.Env = function(j$) {
       }
     }
 
-    var specFactory = function(description, fn, suite, timeout) {
+    const specFactory = function(description, fn, suite, timeout) {
       totalSpecsDefined++;
-      var spec = new j$.Spec({
+      const spec = new j$.Spec({
         id: getNextSpecId(),
         beforeAndAfterFns: beforeAndAfterFns(suite),
-        expectationFactory: expectationFactory,
+        expectationFactory,
         resultCallback: specResultCallback,
-        getSpecName: function(spec) {
+        getSpecName(spec) {
           return getSpecName(spec, suite);
         },
         onStart: specStarted,
-        description: description,
-        expectationResultFactory: expectationResultFactory,
-        queueRunnerFactory: queueRunnerFactory,
-        userContext: function() {
+        description,
+        expectationResultFactory,
+        queueRunnerFactory,
+        userContext() {
           return suite.clonedSharedUserContext();
         },
         queueableFn: {
-          fn: fn,
-          timeout: function() {
+          fn,
+          timeout() {
             return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
           },
         },
-        throwOnExpectationFailure: throwOnExpectationFailure,
+        throwOnExpectationFailure,
       });
 
       if (!self.specFilter(spec)) {
@@ -789,7 +762,12 @@ exports.Env = function(j$) {
     };
 
     this.it = function(description, fn, timeout) {
-      var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
+      const spec = specFactory(
+        description,
+        fn,
+        currentDeclarationSuite,
+        timeout,
+      );
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
       }
@@ -798,13 +776,18 @@ exports.Env = function(j$) {
     };
 
     this.xit = function() {
-      var spec = this.it.apply(this, arguments);
+      const spec = this.it.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
       return spec;
     };
 
     this.fit = function(description, fn, timeout) {
-      var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
+      const spec = specFactory(
+        description,
+        fn,
+        currentDeclarationSuite,
+        timeout,
+      );
       currentDeclarationSuite.addChild(spec);
       focusedRunnables.push(spec.id);
       unfocusAncestor();
@@ -814,7 +797,7 @@ exports.Env = function(j$) {
     this.beforeEach = function(beforeEachFunction, timeout) {
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
-        timeout: function() {
+        timeout() {
           return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
         },
       });
@@ -823,7 +806,7 @@ exports.Env = function(j$) {
     this.beforeAll = function(beforeAllFunction, timeout) {
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
-        timeout: function() {
+        timeout() {
           return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
         },
       });
@@ -832,7 +815,7 @@ exports.Env = function(j$) {
     this.afterEach = function(afterEachFunction, timeout) {
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
-        timeout: function() {
+        timeout() {
           return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
         },
       });
@@ -841,14 +824,14 @@ exports.Env = function(j$) {
     this.afterAll = function(afterAllFunction, timeout) {
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
-        timeout: function() {
+        timeout() {
           return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
 
     this.pending = function(message) {
-      var fullMessage = j$.Spec.pendingSpecExceptionMessage;
+      let fullMessage = j$.Spec.pendingSpecExceptionMessage;
       if (message) {
         fullMessage += message;
       }
@@ -856,7 +839,7 @@ exports.Env = function(j$) {
     };
 
     this.fail = function(error) {
-      var message = 'Failed';
+      let message = 'Failed';
       if (error) {
         message += ': ';
         message += error.message || error;
@@ -867,7 +850,7 @@ exports.Env = function(j$) {
         passed: false,
         expected: '',
         actual: '',
-        message: message,
+        message,
         error: error && error.message ? error : null,
       });
     };
@@ -877,15 +860,16 @@ exports.Env = function(j$) {
 };
 
 exports.JsApiReporter = function() {
-  var noopTimer = {
-    start: function() {},
-    elapsed: function() {
+  const noopTimer = {
+    start() {},
+    elapsed() {
       return 0;
     },
   };
 
   function JsApiReporter(options) {
-    var timer = options.timer || noopTimer, status = 'loaded';
+    const timer = options.timer || noopTimer;
+    let status = 'loaded';
 
     this.started = false;
     this.finished = false;
@@ -897,7 +881,7 @@ exports.JsApiReporter = function() {
       timer.start();
     };
 
-    var executionTime;
+    let executionTime;
 
     this.jasmineDone = function(runDetails) {
       this.finished = true;
@@ -910,7 +894,8 @@ exports.JsApiReporter = function() {
       return status;
     };
 
-    var suites = [], suites_hash = {};
+    const suites = [];
+    const suites_hash = {};
 
     this.suiteStarted = function(result) {
       suites_hash[result.id] = result;
@@ -933,7 +918,7 @@ exports.JsApiReporter = function() {
       return suites_hash;
     };
 
-    var specs = [];
+    const specs = [];
 
     this.specDone = function(result) {
       specs.push(result);
@@ -957,13 +942,13 @@ exports.JsApiReporter = function() {
 
 exports.CallTracker = function(j$) {
   function CallTracker() {
-    var calls = [];
-    var opts = {};
+    let calls = [];
+    const opts = {};
 
     function argCloner(context) {
-      var clonedArgs = [];
-      var argsAsArray = Array.from(context.args);
-      for (var i = 0; i < argsAsArray.length; i++) {
+      const clonedArgs = [];
+      const argsAsArray = Array.from(context.args);
+      for (let i = 0; i < argsAsArray.length; i++) {
         if (
           Object.prototype.toString.apply(argsAsArray[i]).match(/^\[object/)
         ) {
@@ -991,7 +976,7 @@ exports.CallTracker = function(j$) {
     };
 
     this.argsFor = function(index) {
-      var call = calls[index];
+      const call = calls[index];
       return call ? call.args : [];
     };
 
@@ -1000,8 +985,8 @@ exports.CallTracker = function(j$) {
     };
 
     this.allArgs = function() {
-      var callArgs = [];
-      for (var i = 0; i < calls.length; i++) {
+      const callArgs = [];
+      for (let i = 0; i < calls.length; i++) {
         callArgs.push(calls[i].args);
       }
 
@@ -1031,7 +1016,7 @@ exports.CallTracker = function(j$) {
 exports.ExceptionFormatter = function() {
   function ExceptionFormatter() {
     this.message = function(error) {
-      var message = '';
+      let message = '';
 
       if (error.name && error.message) {
         message += error.name + ': ' + error.message;
@@ -1058,13 +1043,12 @@ exports.ExceptionFormatter = function() {
   return ExceptionFormatter;
 };
 
-//TODO: expectation result may make more sense as a presentation of an expectation.
 exports.buildExpectationResult = function() {
   function buildExpectationResult(options) {
-    var messageFormatter = options.messageFormatter || function() {},
-      stackFormatter = options.stackFormatter || function() {};
+    const messageFormatter = options.messageFormatter || function() {};
+    const stackFormatter = options.stackFormatter || function() {};
 
-    var result = {
+    const result = {
       matcherName: options.matcherName,
       message: message(),
       stack: stack(),
@@ -1096,7 +1080,7 @@ exports.buildExpectationResult = function() {
         return '';
       }
 
-      var error = options.error;
+      let error = options.error;
       if (!error) {
         try {
           throw new Error(message());
@@ -1113,7 +1097,7 @@ exports.buildExpectationResult = function() {
 
 exports.QueueRunner = function(j$) {
   function once(fn) {
-    var called = false;
+    let called = false;
     return function() {
       if (!called) {
         called = true;
@@ -1137,8 +1121,8 @@ exports.QueueRunner = function(j$) {
       };
     this.userContext = attrs.userContext || {};
     this.timeout = attrs.timeout || {
-      setTimeout: setTimeout,
-      clearTimeout: clearTimeout,
+      setTimeout,
+      clearTimeout,
     };
     this.fail = attrs.fail || function() {};
   }
@@ -1148,14 +1132,16 @@ exports.QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
-    var length = queueableFns.length, self = this, iterativeIndex;
+    const length = queueableFns.length;
+    const self = this;
+    let iterativeIndex;
 
     for (
       iterativeIndex = recursiveIndex;
       iterativeIndex < length;
       iterativeIndex++
     ) {
-      var queueableFn = queueableFns[iterativeIndex];
+      const queueableFn = queueableFns[iterativeIndex];
       if (queueableFn.fn.length > 0) {
         attemptAsync(queueableFn);
         return;
@@ -1164,7 +1150,7 @@ exports.QueueRunner = function(j$) {
       }
     }
 
-    var runnerDone = iterativeIndex >= length;
+    const runnerDone = iterativeIndex >= length;
 
     if (runnerDone) {
       this.clearStack(this.onComplete);
@@ -1179,17 +1165,17 @@ exports.QueueRunner = function(j$) {
     }
 
     function attemptAsync(queueableFn) {
-      var clearTimeout = function() {
+      const clearTimeout = function() {
         Function.prototype.apply.apply(self.timeout.clearTimeout, [
           global,
           [timeoutId],
         ]);
-      },
-        next = once(function() {
-          clearTimeout(timeoutId);
-          self.run(queueableFns, iterativeIndex + 1);
-        }),
-        timeoutId;
+      };
+      const next = once(() => {
+        clearTimeout(timeoutId);
+        self.run(queueableFns, iterativeIndex + 1);
+      });
+      let timeoutId;
 
       next.fail = function() {
         self.fail.apply(null, arguments);
@@ -1201,8 +1187,9 @@ exports.QueueRunner = function(j$) {
           global,
           [
             function() {
-              var error = new Error(
-                'Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+              const error = new Error(
+                'Timeout - Async callback was not invoked within ' +
+                  'timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
               );
               onException(error);
               next();
@@ -1227,8 +1214,6 @@ exports.QueueRunner = function(j$) {
     function handleException(e, queueableFn) {
       onException(e);
       if (!self.catchException(e)) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
         throw e;
       }
     }
@@ -1239,10 +1224,10 @@ exports.QueueRunner = function(j$) {
 
 exports.ReportDispatcher = function() {
   function ReportDispatcher(methods) {
-    var dispatchedMethods = methods || [];
+    const dispatchedMethods = methods || [];
 
-    for (var i = 0; i < dispatchedMethods.length; i++) {
-      var method = dispatchedMethods[i];
+    for (let i = 0; i < dispatchedMethods.length; i++) {
+      const method = dispatchedMethods[i];
       this[method] = (function(m) {
         return function() {
           dispatch(m, arguments);
@@ -1250,8 +1235,8 @@ exports.ReportDispatcher = function() {
       })(method);
     }
 
-    var reporters = [];
-    var fallbackReporter = null;
+    let reporters = [];
+    let fallbackReporter = null;
 
     this.addReporter = function(reporter) {
       reporters.push(reporter);
@@ -1271,8 +1256,8 @@ exports.ReportDispatcher = function() {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }
-      for (var i = 0; i < reporters.length; i++) {
-        var reporter = reporters[i];
+      for (let i = 0; i < reporters.length; i++) {
+        const reporter = reporters[i];
         if (reporter[method]) {
           reporter[method].apply(reporter, args);
         }
@@ -1284,14 +1269,14 @@ exports.ReportDispatcher = function() {
 };
 
 exports.SpyRegistry = function(j$) {
-  var getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = j$.formatErrorMsg(
     '<spyOn>',
     'spyOn(<object>, <methodName>)',
   );
 
   function SpyRegistry(options) {
     options = options || {};
-    var currentSpies = options.currentSpies ||
+    const currentSpies = options.currentSpies ||
       function() {
         return [];
       };
@@ -1318,7 +1303,7 @@ exports.SpyRegistry = function(j$) {
       }
 
       if (obj[methodName] && j$.isSpy(obj[methodName])) {
-        if (!!this.respy) {
+        if (this.respy) {
           return obj[methodName];
         } else {
           throw new Error(
@@ -1327,7 +1312,7 @@ exports.SpyRegistry = function(j$) {
         }
       }
 
-      var descriptor;
+      let descriptor;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
       } catch (e) {
@@ -1342,9 +1327,9 @@ exports.SpyRegistry = function(j$) {
         );
       }
 
-      var originalMethod = obj[methodName],
-        spiedMethod = j$.createSpy(methodName, originalMethod),
-        restoreStrategy;
+      const originalMethod = obj[methodName];
+      const spiedMethod = j$.createSpy(methodName, originalMethod);
+      let restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, methodName)) {
         restoreStrategy = function() {
@@ -1368,9 +1353,9 @@ exports.SpyRegistry = function(j$) {
     };
 
     this.clearSpies = function() {
-      var spies = currentSpies();
-      for (var i = spies.length - 1; i >= 0; i--) {
-        var spyEntry = spies[i];
+      const spies = currentSpies();
+      for (let i = spies.length - 1; i >= 0; i--) {
+        const spyEntry = spies[i];
         spyEntry.restoreObjectToOriginalState();
       }
     };
@@ -1383,10 +1368,10 @@ exports.SpyStrategy = function(j$) {
   function SpyStrategy(options) {
     options = options || {};
 
-    var identity = options.name || 'unknown',
-      originalFn = options.fn || function() {},
-      getSpy = options.getSpy || function() {},
-      plan = function() {};
+    const identity = options.name || 'unknown';
+    const originalFn = options.fn || function() {};
+    const getSpy = options.getSpy || function() {};
+    let plan = function() {};
 
     this.identity = function() {
       return identity;
@@ -1409,7 +1394,7 @@ exports.SpyStrategy = function(j$) {
     };
 
     this.returnValues = function() {
-      var values = Array.prototype.slice.call(arguments);
+      const values = Array.prototype.slice.call(arguments);
       plan = function() {
         return values.shift();
       };
@@ -1417,7 +1402,9 @@ exports.SpyStrategy = function(j$) {
     };
 
     this.throwError = function(something) {
-      var error = something instanceof Error ? something : new Error(something);
+      const error = something instanceof Error
+        ? something
+        : new Error(something);
       plan = function() {
         throw error;
       };
@@ -1470,9 +1457,9 @@ exports.Suite = function(j$) {
   }
 
   Suite.prototype.getFullName = function() {
-    var fullName = [];
+    const fullName = [];
     for (
-      var parentSuite = this;
+      let parentSuite = this;
       parentSuite;
       parentSuite = parentSuite.parentSuite
     ) {
@@ -1542,16 +1529,14 @@ exports.Suite = function(j$) {
 
   Suite.prototype.sharedUserContext = function() {
     if (!this.sharedContext) {
-      this.sharedContext = this.parentSuite
-        ? clone(this.parentSuite.sharedUserContext())
-        : {};
+      this.sharedContext = {};
     }
 
     return this.sharedContext;
   };
 
   Suite.prototype.clonedSharedUserContext = function() {
-    return clone(this.sharedUserContext());
+    return this.sharedUserContext();
   };
 
   Suite.prototype.onException = function() {
@@ -1560,7 +1545,7 @@ exports.Suite = function(j$) {
     }
 
     if (isAfterAll(this.children)) {
-      var data = {
+      const data = {
         matcherName: '',
         passed: false,
         expected: '',
@@ -1569,8 +1554,8 @@ exports.Suite = function(j$) {
       };
       this.result.failedExpectations.push(this.expectationResultFactory(data));
     } else {
-      for (var i = 0; i < this.children.length; i++) {
-        var child = this.children[i];
+      for (let i = 0; i < this.children.length; i++) {
+        const child = this.children[i];
         child.onException.apply(child, arguments);
       }
     }
@@ -1578,14 +1563,14 @@ exports.Suite = function(j$) {
 
   Suite.prototype.addExpectationResult = function() {
     if (isAfterAll(this.children) && isFailure(arguments)) {
-      var data = arguments[1];
+      const data = arguments[1];
       this.result.failedExpectations.push(this.expectationResultFactory(data));
       if (this.throwOnExpectationFailure) {
         throw new j$.errors.ExpectationFailed();
       }
     } else {
-      for (var i = 0; i < this.children.length; i++) {
-        var child = this.children[i];
+      for (let i = 0; i < this.children.length; i++) {
+        const child = this.children[i];
         try {
           child.addExpectationResult.apply(child, arguments);
         } catch (e) {
@@ -1603,23 +1588,11 @@ exports.Suite = function(j$) {
     return !args[0];
   }
 
-  function clone(obj) {
-    var clonedObj = {};
-    for (var prop in obj) {
-      // @ccarlesso allows looping on objects without `Object.prototype`.
-      if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-        cloned[prop] = obj[prop];
-      }
-    }
-
-    return clonedObj;
-  }
-
   return Suite;
 };
 
 exports.Timer = function() {
-  var defaultNow = (function(Date) {
+  const defaultNow = (function(Date) {
     return function() {
       return new Date().getTime();
     };
@@ -1628,7 +1601,8 @@ exports.Timer = function() {
   function Timer(options) {
     options = options || {};
 
-    var now = options.now || defaultNow, startTime;
+    const now = options.now || defaultNow;
+    let startTime;
 
     this.start = function() {
       startTime = now();
@@ -1644,19 +1618,19 @@ exports.Timer = function() {
 
 exports.TreeProcessor = function() {
   function TreeProcessor(attrs) {
-    var tree = attrs.tree,
-      runnableIds = attrs.runnableIds,
-      queueRunnerFactory = attrs.queueRunnerFactory,
-      nodeStart = attrs.nodeStart || function() {},
-      nodeComplete = attrs.nodeComplete || function() {},
-      orderChildren = attrs.orderChildren ||
-        function(node) {
-          return node.children;
-        },
-      stats = {valid: true},
-      processed = false,
-      defaultMin = Infinity,
-      defaultMax = 1 - Infinity;
+    const tree = attrs.tree;
+    const runnableIds = attrs.runnableIds;
+    const queueRunnerFactory = attrs.queueRunnerFactory;
+    const nodeStart = attrs.nodeStart || function() {};
+    const nodeComplete = attrs.nodeComplete || function() {};
+    const orderChildren = attrs.orderChildren ||
+      function(node) {
+        return node.children;
+      };
+    const defaultMin = Infinity;
+    const defaultMax = 1 - Infinity;
+    let processed = false;
+    let stats = {valid: true};
 
     this.processTree = function() {
       processNode(tree, false);
@@ -1670,15 +1644,15 @@ exports.TreeProcessor = function() {
       }
 
       if (!stats.valid) {
-        throw 'invalid order';
+        throw new Error('invalid order');
       }
 
-      var childFns = wrapChildren(tree, 0);
+      const childFns = wrapChildren(tree, 0);
 
       queueRunnerFactory({
         queueableFns: childFns,
         userContext: tree.sharedUserContext(),
-        onException: function() {
+        onException() {
           tree.onException.apply(tree, arguments);
         },
         onComplete: done,
@@ -1686,15 +1660,16 @@ exports.TreeProcessor = function() {
     };
 
     function runnableIndex(id) {
-      for (var i = 0; i < runnableIds.length; i++) {
+      for (let i = 0; i < runnableIds.length; i++) {
         if (runnableIds[i] === id) {
           return i;
         }
       }
+      return void 0;
     }
 
     function processNode(node, parentEnabled) {
-      var executableIndex = runnableIndex(node.id);
+      const executableIndex = runnableIndex(node.id);
 
       if (executableIndex !== undefined) {
         parentEnabled = true;
@@ -1716,12 +1691,12 @@ exports.TreeProcessor = function() {
           ],
         };
       } else {
-        var hasExecutableChild = false;
+        let hasExecutableChild = false;
 
-        var orderedChildren = orderChildren(node);
+        const orderedChildren = orderChildren(node);
 
-        for (var i = 0; i < orderedChildren.length; i++) {
-          var child = orderedChildren[i];
+        for (let i = 0; i < orderedChildren.length; i++) {
+          const child = orderedChildren[i];
 
           processNode(child, parentEnabled);
 
@@ -1729,7 +1704,7 @@ exports.TreeProcessor = function() {
             return;
           }
 
-          var childStats = stats[child.id];
+          const childStats = stats[child.id];
 
           hasExecutableChild = hasExecutableChild || childStats.executable;
         }
@@ -1760,16 +1735,16 @@ exports.TreeProcessor = function() {
       nodeStats,
       executableIndex,
     ) {
-      var currentSegment = {
+      let currentSegment = {
         index: 0,
         owner: node,
         nodes: [],
         min: startingMin(executableIndex),
         max: startingMax(executableIndex),
-      },
-        result = [currentSegment],
-        lastMax = defaultMax,
-        orderedChildSegments = orderChildSegments(orderedChildren);
+      };
+      const result = [currentSegment];
+      const orderedChildSegments = orderChildSegments(orderedChildren);
+      let lastMax = defaultMax;
 
       function isSegmentBoundary(minIndex) {
         return lastMax !== defaultMax &&
@@ -1777,10 +1752,10 @@ exports.TreeProcessor = function() {
           lastMax < minIndex - 1;
       }
 
-      for (var i = 0; i < orderedChildSegments.length; i++) {
-        var childSegment = orderedChildSegments[i],
-          maxIndex = childSegment.max,
-          minIndex = childSegment.min;
+      for (let i = 0; i < orderedChildSegments.length; i++) {
+        const childSegment = orderedChildSegments[i];
+        const maxIndex = childSegment.max;
+        const minIndex = childSegment.min;
 
         if (isSegmentBoundary(minIndex)) {
           currentSegment = {
@@ -1803,13 +1778,15 @@ exports.TreeProcessor = function() {
     }
 
     function orderChildSegments(children) {
-      var specifiedOrder = [], unspecifiedOrder = [];
+      const specifiedOrder = [];
+      const unspecifiedOrder = [];
 
-      for (var i = 0; i < children.length; i++) {
-        var child = children[i], segments = stats[child.id].segments;
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const segments = stats[child.id].segments;
 
-        for (var j = 0; j < segments.length; j++) {
-          var seg = segments[j];
+        for (let j = 0; j < segments.length; j++) {
+          const seg = segments[j];
 
           if (seg.min === defaultMin) {
             unspecifiedOrder.push(seg);
@@ -1819,7 +1796,7 @@ exports.TreeProcessor = function() {
         }
       }
 
-      specifiedOrder.sort(function(a, b) {
+      specifiedOrder.sort((a, b) => {
         return a.min - b.min;
       });
 
@@ -1829,17 +1806,17 @@ exports.TreeProcessor = function() {
     function executeNode(node, segmentNumber) {
       if (node.children) {
         return {
-          fn: function(done) {
+          fn(done) {
             nodeStart(node);
 
             queueRunnerFactory({
-              onComplete: function() {
+              onComplete() {
                 nodeComplete(node, node.getResult());
                 done();
               },
               queueableFns: wrapChildren(node, segmentNumber),
               userContext: node.sharedUserContext(),
-              onException: function() {
+              onException() {
                 node.onException.apply(node, arguments);
               },
             });
@@ -1847,7 +1824,7 @@ exports.TreeProcessor = function() {
         };
       } else {
         return {
-          fn: function(done) {
+          fn(done) {
             node.execute(done, stats[node.id].executable);
           },
         };
@@ -1855,10 +1832,10 @@ exports.TreeProcessor = function() {
     }
 
     function wrapChildren(node, segmentNumber) {
-      var result = [],
-        segmentChildren = stats[node.id].segments[segmentNumber].nodes;
+      const result = [];
+      const segmentChildren = stats[node.id].segments[segmentNumber].nodes;
 
-      for (var i = 0; i < segmentChildren.length; i++) {
+      for (let i = 0; i < segmentChildren.length; i++) {
         result.push(
           executeNode(segmentChildren[i].owner, segmentChildren[i].index),
         );
@@ -1882,12 +1859,12 @@ exports.errors = function() {
   ExpectationFailed.prototype.constructor = ExpectationFailed;
 
   return {
-    ExpectationFailed: ExpectationFailed,
+    ExpectationFailed,
   };
 };
 exports.formatErrorMsg = function() {
   function generateErrorMsg(domain, usage) {
-    var usageDefinition = usage ? '\nUsage: ' + usage : '';
+    const usageDefinition = usage ? '\nUsage: ' + usage : '';
 
     return function errorMsg(msg) {
       return domain + ' : ' + msg + usageDefinition;
@@ -1898,56 +1875,56 @@ exports.formatErrorMsg = function() {
 };
 
 exports.interface = function(jasmine, env) {
-  var jasmineInterface = {
-    describe: function(description, specDefinitions) {
+  const jasmineInterface = {
+    describe(description, specDefinitions) {
       return env.describe(description, specDefinitions);
     },
 
-    xdescribe: function(description, specDefinitions) {
+    xdescribe(description, specDefinitions) {
       return env.xdescribe(description, specDefinitions);
     },
 
-    fdescribe: function(description, specDefinitions) {
+    fdescribe(description, specDefinitions) {
       return env.fdescribe(description, specDefinitions);
     },
 
-    it: function() {
+    it() {
       return env.it.apply(env, arguments);
     },
 
-    xit: function() {
+    xit() {
       return env.xit.apply(env, arguments);
     },
 
-    fit: function() {
+    fit() {
       return env.fit.apply(env, arguments);
     },
 
-    beforeEach: function() {
+    beforeEach() {
       return env.beforeEach.apply(env, arguments);
     },
 
-    afterEach: function() {
+    afterEach() {
       return env.afterEach.apply(env, arguments);
     },
 
-    beforeAll: function() {
+    beforeAll() {
       return env.beforeAll.apply(env, arguments);
     },
 
-    afterAll: function() {
+    afterAll() {
       return env.afterAll.apply(env, arguments);
     },
 
-    pending: function() {
+    pending() {
       return env.pending.apply(env, arguments);
     },
 
-    fail: function() {
+    fail() {
       return env.fail.apply(env, arguments);
     },
 
-    spyOn: function(obj, methodName) {
+    spyOn(obj, methodName) {
       return env.spyOn(obj, methodName);
     },
 
@@ -1955,7 +1932,7 @@ exports.interface = function(jasmine, env) {
       timer: new jasmine.Timer(),
     }),
 
-    jasmine: jasmine,
+    jasmine,
   };
 
   return jasmineInterface;
