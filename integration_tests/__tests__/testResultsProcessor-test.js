@@ -8,9 +8,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('testNamePattern', () => {
   const path = require('path');
