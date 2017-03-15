@@ -11,9 +11,6 @@
 
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 it('runs tests in only test.js and spec.js', () => {
   const result = runJest.json('test-in-root').json;

@@ -11,12 +11,9 @@
 const {makeTemplate, makeTests, cleanup} = require('../utils');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 const DIR = path.resolve(__dirname, '../toMatchSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
-
-skipOnWindows.suite();
 
 beforeEach(() => cleanup(TESTS_DIR));
 afterAll(() => cleanup(TESTS_DIR));

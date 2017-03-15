@@ -10,13 +10,10 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 const getLog = result => result.stdout.toString().split('\n')[1].trim();
 
 describe('Environment override', () => {
-  skipOnWindows.suite();
-
   it('uses jsdom when specified', () => {
     const result = runJest('env-test', ['--env=jsdom']);
     expect(result.status).toBe(0);

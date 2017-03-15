@@ -10,11 +10,8 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 describe('Coverage Report', () => {
-  skipOnWindows.suite();
-
   it('outputs coverage report', () => {
     const result = runJest('coverage_report', ['not-a-valid-test']);
     const stdout = result.stdout.toString();
