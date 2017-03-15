@@ -10,11 +10,8 @@
 const fs = require('fs');
 const path = require('path');
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
 
 describe('JSON Reporter', () => {
-  skipOnWindows.suite();
-
   const outputFileName = 'sum.result.json';
   const outputFilePath = path.join(
     process.cwd(),
