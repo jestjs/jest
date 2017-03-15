@@ -1,6 +1,5 @@
 **/coverage/**
 **/node_modules/**
-**/vendor/**
 bin/
 docs/
 flow-typed/**

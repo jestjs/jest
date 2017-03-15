@@ -19,7 +19,7 @@ const JasmineReporter = require('./reporter');
 const jasmineAsync = require('./jasmine-async');
 const path = require('path');
 
-const JASMINE_PATH = require.resolve('../vendor/jasmine-2.5.2.js');
+const JASMINE_PATH = require.resolve('./jasmine-2.5.2.js');
 
 function jasmine2(
   config: Config,
