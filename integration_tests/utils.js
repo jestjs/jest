@@ -11,6 +11,7 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const rimraf = require('rimraf');
+const slash = require('slash');
 
 const run = (cmd, cwd) => {
   const args = cmd.split(/\s/).slice(1);
@@ -59,9 +60,9 @@ const makeTemplate = string => {
 const cleanup = (directory: string) => rimraf.sync(directory);
 
 const makeTests = (directory: string, tests: {[filename: string]: string}) => {
-  mkdirp.sync(directory);
+  mkdirp.sync(slash(directory));
   Object.keys(tests).forEach(filename => {
-    fs.writeFileSync(path.resolve(directory, filename), tests[filename]);
+    fs.writeFileSync(slash(path.resolve(directory, filename)), tests[filename]);
   });
 };
 
