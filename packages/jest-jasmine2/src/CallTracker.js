@@ -23,52 +23,50 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function(j$) {
-  function CallTracker() {
-    let calls = [];
+function CallTracker() {
+  let calls = [];
 
-    this.track = function(context) {
-      calls.push(context);
-    };
+  this.track = function(context) {
+    calls.push(context);
+  };
 
-    this.any = function() {
-      return !!calls.length;
-    };
+  this.any = function() {
+    return !!calls.length;
+  };
 
-    this.count = function() {
-      return calls.length;
-    };
+  this.count = function() {
+    return calls.length;
+  };
 
-    this.argsFor = function(index) {
-      const call = calls[index];
-      return call ? call.args : [];
-    };
+  this.argsFor = function(index) {
+    const call = calls[index];
+    return call ? call.args : [];
+  };
 
-    this.all = function() {
-      return calls;
-    };
+  this.all = function() {
+    return calls;
+  };
 
-    this.allArgs = function() {
-      const callArgs = [];
-      for (let i = 0; i < calls.length; i++) {
-        callArgs.push(calls[i].args);
-      }
+  this.allArgs = function() {
+    const callArgs = [];
+    for (let i = 0; i < calls.length; i++) {
+      callArgs.push(calls[i].args);
+    }
 
-      return callArgs;
-    };
+    return callArgs;
+  };
 
-    this.first = function() {
-      return calls[0];
-    };
+  this.first = function() {
+    return calls[0];
+  };
 
-    this.mostRecent = function() {
-      return calls[calls.length - 1];
-    };
+  this.mostRecent = function() {
+    return calls[calls.length - 1];
+  };
 
-    this.reset = function() {
-      calls = [];
-    };
-  }
+  this.reset = function() {
+    calls = [];
+  };
+}
 
-  return CallTracker;
-};
+module.exports = CallTracker;
