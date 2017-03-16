@@ -23,8 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function() {
-  function ExceptionFormatter() {
+function ExceptionFormatter() {
     this.message = function(error) {
       let message = '';
 
@@ -50,5 +49,4 @@ module.exports = function() {
     };
   }
 
-  return ExceptionFormatter;
-};
+module.exports = ExceptionFormatter;

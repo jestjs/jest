@@ -23,8 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function() {
-  function TreeProcessor(attrs) {
+function TreeProcessor(attrs) {
     const tree = attrs.tree;
     const runnableIds = attrs.runnableIds;
     const queueRunnerFactory = attrs.queueRunnerFactory;
@@ -252,5 +251,4 @@ module.exports = function() {
     }
   }
 
-  return TreeProcessor;
-};
+module.exports = TreeProcessor;

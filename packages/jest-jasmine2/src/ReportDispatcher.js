@@ -23,8 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function() {
-  function ReportDispatcher(methods) {
+function ReportDispatcher(methods) {
     const dispatchedMethods = methods || [];
 
     for (let i = 0; i < dispatchedMethods.length; i++) {
@@ -66,5 +65,4 @@ module.exports = function() {
     }
   }
 
-  return ReportDispatcher;
-};
+module.exports = ReportDispatcher;

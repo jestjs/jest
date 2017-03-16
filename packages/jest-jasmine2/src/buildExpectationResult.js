@@ -23,54 +23,52 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function() {
-  function buildExpectationResult(options) {
-    const messageFormatter = options.messageFormatter || function() {};
-    const stackFormatter = options.stackFormatter || function() {};
+function buildExpectationResult(options) {
+  const messageFormatter = options.messageFormatter || function() {};
+  const stackFormatter = options.stackFormatter || function() {};
 
-    const result = {
-      matcherName: options.matcherName,
-      message: message(),
-      stack: stack(),
-      passed: options.passed,
-      // CUSTOM JEST CHANGE: we pass error message to the result.
-      error: options.error,
-    };
+  const result = {
+    matcherName: options.matcherName,
+    message: message(),
+    stack: stack(),
+    passed: options.passed,
+    // CUSTOM JEST CHANGE: we pass error message to the result.
+    error: options.error,
+  };
 
-    if (!result.passed) {
-      result.expected = options.expected;
-      result.actual = options.actual;
+  if (!result.passed) {
+    result.expected = options.expected;
+    result.actual = options.actual;
+  }
+
+  return result;
+
+  function message() {
+    if (options.passed) {
+      return 'Passed.';
+    } else if (options.message) {
+      return options.message;
+    } else if (options.error) {
+      return messageFormatter(options.error);
     }
+    return '';
+  }
 
-    return result;
-
-    function message() {
-      if (options.passed) {
-        return 'Passed.';
-      } else if (options.message) {
-        return options.message;
-      } else if (options.error) {
-        return messageFormatter(options.error);
-      }
+  function stack() {
+    if (options.passed) {
       return '';
     }
 
-    function stack() {
-      if (options.passed) {
-        return '';
+    let error = options.error;
+    if (!error) {
+      try {
+        throw new Error(message());
+      } catch (e) {
+        error = e;
       }
-
-      let error = options.error;
-      if (!error) {
-        try {
-          throw new Error(message());
-        } catch (e) {
-          error = e;
-        }
-      }
-      return stackFormatter(error);
     }
+    return stackFormatter(error);
   }
+}
 
-  return buildExpectationResult;
-};
+module.exports = buildExpectationResult;

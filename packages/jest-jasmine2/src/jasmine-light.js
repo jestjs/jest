@@ -41,19 +41,19 @@ exports.create = function() {
   const j$ = {};
 
   exports.base(j$);
-  j$.buildExpectationResult = buildExpectationResult();
+  j$.buildExpectationResult = buildExpectationResult;
   j$.CallTracker = CallTracker(j$);
   j$.Env = Env(j$);
-  j$.ExceptionFormatter = ExceptionFormatter();
-  j$.JsApiReporter = JsApiReporter();
+  j$.ExceptionFormatter = ExceptionFormatter;
+  j$.JsApiReporter = JsApiReporter;
   j$.QueueRunner = QueueRunner(j$);
-  j$.ReportDispatcher = ReportDispatcher();
+  j$.ReportDispatcher = ReportDispatcher;
   j$.Spec = Spec(j$);
   j$.SpyRegistry = SpyRegistry(j$);
   j$.SpyStrategy = SpyStrategy(j$);
   j$.Suite = Suite(j$);
-  j$.Timer = Timer();
-  j$.TreeProcessor = TreeProcessor();
+  j$.Timer = Timer;
+  j$.TreeProcessor = TreeProcessor;
   j$.version = '2.5.2-light';
 
   return j$;
