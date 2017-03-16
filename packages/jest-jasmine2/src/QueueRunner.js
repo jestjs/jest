@@ -146,4 +146,4 @@ QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
   }
 };
 
-module.exports = QueueRunner
+module.exports = QueueRunner;
