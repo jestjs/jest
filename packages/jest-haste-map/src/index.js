@@ -305,7 +305,7 @@ class HasteMap extends EventEmitter {
         map[id] = Object.create(null);
       }
       const moduleMap = map[id];
-      const platform = getPlatformExtension(module[H.PATH]) ||
+      const platform = getPlatformExtension(module[H.PATH], this._options.platforms) ||
         H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
