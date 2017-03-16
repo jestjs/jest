@@ -15,6 +15,7 @@ import type {Path} from 'types/Config';
 const args = require('./args');
 const getJest = require('./getJest');
 const pkgDir = require('pkg-dir');
+const runCLI = require('./runCLI');
 const validateCLIOptions = require('jest-util').validateCLIOptions;
 const yargs = require('yargs');
 
@@ -49,3 +50,4 @@ function run(argv?: Object, root?: Path) {
 }
 
 exports.run = run;
+exports.runCLI = runCLI;
