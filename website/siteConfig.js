@@ -218,6 +218,11 @@ const users = [
     image: '/jest/img/logos/xing.png',
     infoLink: 'https://www.xing.com/',
   },
+  {
+    caption: 'Deezer',
+    image: '/jest/img/logos/deezer.png',
+    infoLink: 'https://www.deezer.com/',
+  },
 ];
 
 const siteConfig = {
