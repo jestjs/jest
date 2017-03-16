@@ -85,17 +85,27 @@ class TestRunner {
   }
 
   async runTests(tests: Tests, watcher: TestWatcher) {
-    const config = this._config;
     const timings = [];
     tests.forEach(test => {
       if (test.duration) {
         timings.push(test.duration);
       }
     });
+
+    const config = this._config;
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
       getEstimatedTime(timings, this._options.maxWorkers) / 1000,
     );
+
+    // Run in band if we only have one test or one worker available.
+    // If we are confident from previous runs that the tests will finish quickly
+    // we also run in band to reduce the overhead of spawning workers.
+    const runInBand = this._options.maxWorkers <= 1 ||
+      tests.length <= 1 ||
+      (tests.length <= 20 &&
+        timings.length > 0 &&
+        timings.every(timing => timing < SLOW_TEST_TIME));
 
     const onResult = (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
@@ -128,16 +138,6 @@ class TestRunner {
       this._dispatcher.onTestResult(config, testResult, aggregatedResults);
     };
 
-    // Run in band if we only have one test or one worker available.
-    // If we are confident from previous runs that the tests will finish quickly
-    // we also run in band to reduce the overhead of spawning workers.
-    const shouldRunInBand = () =>
-      this._options.maxWorkers <= 1 ||
-      tests.length <= 1 ||
-      (tests.length <= 20 &&
-        timings.length > 0 &&
-        timings.every(timing => timing < SLOW_TEST_TIME));
-
     const updateSnapshotState = () => {
       const status = snapshot.cleanup(
         this._hasteContext.hasteFS,
@@ -150,8 +150,6 @@ class TestRunner {
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved));
     };
-
-    const runInBand = shouldRunInBand();
 
     this._dispatcher.onRunStart(config, aggregatedResults, {
       estimatedTime,
@@ -415,8 +413,6 @@ const buildFailureTestResult = (
   };
 };
 
-// Proxy class that holds all reporter and dispatchers events to each
-// of them.
 class ReporterDispatcher {
   _disabled: boolean;
   _reporters: Array<BaseReporter>;
@@ -479,11 +475,9 @@ const getEstimatedTime = (timings, workers) => {
   }
 
   const max = Math.max.apply(null, timings);
-  if (timings.length <= workers) {
-    return max;
-  }
-
-  return Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
+  return timings.length <= workers
+    ? max
+    : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
 };
 
 module.exports = TestRunner;
