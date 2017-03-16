@@ -13,7 +13,7 @@
 import type {Config, Path} from 'types/Config';
 import type {Console} from 'console';
 import type {Environment} from 'types/Environment';
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
@@ -166,14 +166,14 @@ class Runtime {
     return transform.transformSource(filename, config, content, instrument);
   }
 
-  static createHasteContext(
+  static createContext(
     config: Config,
     options: {
       console?: Console,
       maxWorkers: number,
       watch?: boolean,
     },
-  ): Promise<HasteContext> {
+  ): Promise<Context> {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
@@ -183,6 +183,7 @@ class Runtime {
     });
     return instance.build().then(
       hasteMap => ({
+        config,
         hasteFS: hasteMap.hasteFS,
         moduleMap: hasteMap.moduleMap,
         resolver: Runtime.createResolver(config, hasteMap.moduleMap),

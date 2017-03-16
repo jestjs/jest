@@ -15,7 +15,8 @@ import type {
   TestResult,
 } from 'types/TestResult';
 import type {Config} from 'types/Config';
-import type {HasteContext, HasteFS} from 'types/HasteMap';
+import type {Context} from 'types/Context';
+import type {HasteFS} from 'types/HasteMap';
 import type {RunnerContext} from 'types/Reporters';
 import type {Test, Tests} from 'types/TestRunner';
 import type BaseReporter from './reporters/BaseReporter';
@@ -53,14 +54,14 @@ type OnTestSuccess = (test: Test, result: TestResult) => void;
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
-  _hasteContext: HasteContext;
+  _context: Context;
   _config: Config;
   _options: Options;
   _startRun: () => *;
   _dispatcher: ReporterDispatcher;
 
   constructor(
-    hasteContext: HasteContext,
+    hasteContext: Context,
     config: Config,
     options: Options,
     startRun: () => *,
@@ -70,7 +71,7 @@ class TestRunner {
       hasteContext.hasteFS,
       options.getTestSummary,
     );
-    this._hasteContext = hasteContext;
+    this._context = hasteContext;
     this._options = options;
     this._startRun = startRun;
     this._setupReporters();
@@ -140,7 +141,7 @@ class TestRunner {
 
     const updateSnapshotState = () => {
       const status = snapshot.cleanup(
-        this._hasteContext.hasteFS,
+        this._context.hasteFS,
         config.updateSnapshot,
       );
       aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
@@ -190,17 +191,19 @@ class TestRunner {
   ) {
     const mutex = throat(1);
     return tests.reduce(
-      (promise, test) => mutex(() => promise
-        .then(() => {
-          if (watcher.isInterrupted()) {
-            throw new CancelRun();
-          }
+      (promise, test) =>
+        mutex(() =>
+          promise
+            .then(() => {
+              if (watcher.isInterrupted()) {
+                throw new CancelRun();
+              }
 
-          this._dispatcher.onTestStart(test.config, test.path);
-          return runTest(test.path, test.config, this._hasteContext.resolver);
-        })
-        .then(result => onResult(test, result))
-        .catch(err => onFailure(test, err))),
+              this._dispatcher.onTestStart(test.config, test.path);
+              return runTest(test.path, test.config, this._context.resolver);
+            })
+            .then(result => onResult(test, result))
+            .catch(err => onFailure(test, err))),
       Promise.resolve(),
     );
   }
@@ -225,19 +228,20 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = ({config, path}) => mutex(() => {
-      if (watcher.isInterrupted()) {
-        return Promise.reject();
-      }
-      this._dispatcher.onTestStart(config, path);
-      return worker({
-        config,
-        path,
-        rawModuleMap: watcher.isWatchMode()
-          ? this._hasteContext.moduleMap.getRawModuleMap()
-          : null,
+    const runTestInWorker = ({config, path}) =>
+      mutex(() => {
+        if (watcher.isInterrupted()) {
+          return Promise.reject();
+        }
+        this._dispatcher.onTestStart(config, path);
+        return worker({
+          config,
+          path,
+          rawModuleMap: watcher.isWatchMode()
+            ? this._context.moduleMap.getRawModuleMap()
+            : null,
+        });
       });
-    });
 
     const onError = (err, test) => {
       onFailure(test, err);

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {Config, Path} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
@@ -116,8 +116,8 @@ module.exports = (
       pipe.write(ansiEscapes.cursorRestorePosition);
     }
 
-    updateSearchSource(hasteContext: HasteContext) {
-      this.searchSource = new SearchSource(hasteContext, config);
+    updateSearchSource(context: Context) {
+      this.searchSource = new SearchSource(context, config);
     }
   }
 

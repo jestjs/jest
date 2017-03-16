@@ -7,21 +7,15 @@
  *
  * @flow
  */
-
 'use strict';
 
-import type {Config} from 'types/Config';
-import type {HasteMap, HasteContext} from 'types/HasteMap';
+import type {Config} from './Config';
+import type {HasteFS, ModuleMap} from './HasteMap';
+import type HasteResolver from 'jest-resolve';
 
-const Runtime = require('jest-runtime');
-
-const createHasteContext = (
+export type Context = {|
   config: Config,
-  {hasteFS, moduleMap}: HasteMap,
-): HasteContext => ({
-  hasteFS,
-  moduleMap,
-  resolver: Runtime.createResolver(config, moduleMap),
-});
-
-module.exports = createHasteContext;
+  hasteFS: HasteFS,
+  moduleMap: ModuleMap,
+  resolver: HasteResolver,
+|};
