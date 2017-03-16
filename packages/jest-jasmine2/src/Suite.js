@@ -25,163 +25,161 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const ExpectationFailed = require('./ExpectationFailed');
 
-module.exports = function(j$) {
-  function Suite(attrs) {
-    this.env = attrs.env;
-    this.id = attrs.id;
-    this.parentSuite = attrs.parentSuite;
-    this.description = attrs.description;
-    this.expectationFactory = attrs.expectationFactory;
-    this.expectationResultFactory = attrs.expectationResultFactory;
-    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+function Suite(attrs) {
+  this.env = attrs.env;
+  this.id = attrs.id;
+  this.parentSuite = attrs.parentSuite;
+  this.description = attrs.description;
+  this.expectationFactory = attrs.expectationFactory;
+  this.expectationResultFactory = attrs.expectationResultFactory;
+  this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
-    this.beforeFns = [];
-    this.afterFns = [];
-    this.beforeAllFns = [];
-    this.afterAllFns = [];
-    this.disabled = false;
+  this.beforeFns = [];
+  this.afterFns = [];
+  this.beforeAllFns = [];
+  this.afterAllFns = [];
+  this.disabled = false;
 
-    this.children = [];
+  this.children = [];
 
-    this.result = {
-      id: this.id,
-      description: this.description,
-      fullName: this.getFullName(),
-      failedExpectations: [],
-    };
+  this.result = {
+    id: this.id,
+    description: this.description,
+    fullName: this.getFullName(),
+    failedExpectations: [],
+  };
+}
+
+Suite.prototype.getFullName = function() {
+  const fullName = [];
+  for (
+    let parentSuite = this;
+    parentSuite;
+    parentSuite = parentSuite.parentSuite
+  ) {
+    if (parentSuite.parentSuite) {
+      fullName.unshift(parentSuite.description);
+    }
   }
-
-  Suite.prototype.getFullName = function() {
-    const fullName = [];
-    for (
-      let parentSuite = this;
-      parentSuite;
-      parentSuite = parentSuite.parentSuite
-    ) {
-      if (parentSuite.parentSuite) {
-        fullName.unshift(parentSuite.description);
-      }
-    }
-    return fullName.join(' ');
-  };
-
-  Suite.prototype.disable = function() {
-    this.disabled = true;
-  };
-
-  Suite.prototype.pend = function(message) {
-    this.markedPending = true;
-  };
-
-  Suite.prototype.beforeEach = function(fn) {
-    this.beforeFns.unshift(fn);
-  };
-
-  Suite.prototype.beforeAll = function(fn) {
-    this.beforeAllFns.push(fn);
-  };
-
-  Suite.prototype.afterEach = function(fn) {
-    this.afterFns.unshift(fn);
-  };
-
-  Suite.prototype.afterAll = function(fn) {
-    this.afterAllFns.push(fn);
-  };
-
-  Suite.prototype.addChild = function(child) {
-    this.children.push(child);
-  };
-
-  Suite.prototype.status = function() {
-    if (this.disabled) {
-      return 'disabled';
-    }
-
-    if (this.markedPending) {
-      return 'pending';
-    }
-
-    if (this.result.failedExpectations.length > 0) {
-      return 'failed';
-    } else {
-      return 'finished';
-    }
-  };
-
-  Suite.prototype.isExecutable = function() {
-    return !this.disabled;
-  };
-
-  Suite.prototype.canBeReentered = function() {
-    return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
-  };
-
-  Suite.prototype.getResult = function() {
-    this.result.status = this.status();
-    return this.result;
-  };
-
-  Suite.prototype.sharedUserContext = function() {
-    if (!this.sharedContext) {
-      this.sharedContext = {};
-    }
-
-    return this.sharedContext;
-  };
-
-  Suite.prototype.clonedSharedUserContext = function() {
-    return this.sharedUserContext();
-  };
-
-  Suite.prototype.onException = function() {
-    if (arguments[0] instanceof ExpectationFailed) {
-      return;
-    }
-
-    if (isAfterAll(this.children)) {
-      const data = {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        error: arguments[0],
-      };
-      this.result.failedExpectations.push(this.expectationResultFactory(data));
-    } else {
-      for (let i = 0; i < this.children.length; i++) {
-        const child = this.children[i];
-        child.onException.apply(child, arguments);
-      }
-    }
-  };
-
-  Suite.prototype.addExpectationResult = function() {
-    if (isAfterAll(this.children) && isFailure(arguments)) {
-      const data = arguments[1];
-      this.result.failedExpectations.push(this.expectationResultFactory(data));
-      if (this.throwOnExpectationFailure) {
-        throw new ExpectationFailed();
-      }
-    } else {
-      for (let i = 0; i < this.children.length; i++) {
-        const child = this.children[i];
-        try {
-          child.addExpectationResult.apply(child, arguments);
-        } catch (e) {
-          // keep going
-        }
-      }
-    }
-  };
-
-  function isAfterAll(children) {
-    return children && children[0].result.status;
-  }
-
-  function isFailure(args) {
-    return !args[0];
-  }
-
-  return Suite;
+  return fullName.join(' ');
 };
+
+Suite.prototype.disable = function() {
+  this.disabled = true;
+};
+
+Suite.prototype.pend = function(message) {
+  this.markedPending = true;
+};
+
+Suite.prototype.beforeEach = function(fn) {
+  this.beforeFns.unshift(fn);
+};
+
+Suite.prototype.beforeAll = function(fn) {
+  this.beforeAllFns.push(fn);
+};
+
+Suite.prototype.afterEach = function(fn) {
+  this.afterFns.unshift(fn);
+};
+
+Suite.prototype.afterAll = function(fn) {
+  this.afterAllFns.push(fn);
+};
+
+Suite.prototype.addChild = function(child) {
+  this.children.push(child);
+};
+
+Suite.prototype.status = function() {
+  if (this.disabled) {
+    return 'disabled';
+  }
+
+  if (this.markedPending) {
+    return 'pending';
+  }
+
+  if (this.result.failedExpectations.length > 0) {
+    return 'failed';
+  } else {
+    return 'finished';
+  }
+};
+
+Suite.prototype.isExecutable = function() {
+  return !this.disabled;
+};
+
+Suite.prototype.canBeReentered = function() {
+  return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
+};
+
+Suite.prototype.getResult = function() {
+  this.result.status = this.status();
+  return this.result;
+};
+
+Suite.prototype.sharedUserContext = function() {
+  if (!this.sharedContext) {
+    this.sharedContext = {};
+  }
+
+  return this.sharedContext;
+};
+
+Suite.prototype.clonedSharedUserContext = function() {
+  return this.sharedUserContext();
+};
+
+Suite.prototype.onException = function() {
+  if (arguments[0] instanceof ExpectationFailed) {
+    return;
+  }
+
+  if (isAfterAll(this.children)) {
+    const data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: arguments[0],
+    };
+    this.result.failedExpectations.push(this.expectationResultFactory(data));
+  } else {
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      child.onException.apply(child, arguments);
+    }
+  }
+};
+
+Suite.prototype.addExpectationResult = function() {
+  if (isAfterAll(this.children) && isFailure(arguments)) {
+    const data = arguments[1];
+    this.result.failedExpectations.push(this.expectationResultFactory(data));
+    if (this.throwOnExpectationFailure) {
+      throw new ExpectationFailed();
+    }
+  } else {
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      try {
+        child.addExpectationResult.apply(child, arguments);
+      } catch (e) {
+        // keep going
+      }
+    }
+  }
+};
+
+function isAfterAll(children) {
+  return children && children[0].result.status;
+}
+
+function isFailure(args) {
+  return !args[0];
+}
+
+module.exports = Suite;

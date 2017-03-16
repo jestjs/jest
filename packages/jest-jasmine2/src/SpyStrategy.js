@@ -23,8 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function(j$) {
-  function SpyStrategy(options) {
+function SpyStrategy(options) {
     options = options || {};
 
     const identity = options.name || 'unknown';
@@ -86,5 +85,4 @@ module.exports = function(j$) {
     };
   }
 
-  return SpyStrategy;
-};
+module.exports = SpyStrategy;
