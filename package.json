@@ -75,7 +75,6 @@
       "!**/bin/**",
       "!**/cli/**",
       "!**/perf/**",
-      "!**/vendor/**",
       "!**/__mocks__/**",
       "!**/__tests__/**",
       "!integration_tests/**"
