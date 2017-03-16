@@ -31,24 +31,6 @@ function equals(a, b, customTesters) {
   return eq(a, b, [], [], customTesters);
 }
 
-function contains(haystack, needle, customTesters) {
-  customTesters = customTesters || [];
-
-  if (
-    Object.prototype.toString.apply(haystack) === '[object Array]' ||
-    (!!haystack && !haystack.indexOf)
-  ) {
-    for (var i = 0; i < haystack.length; i++) {
-      if (eq(haystack[i], needle, [], [], customTesters)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  return !!haystack && haystack.indexOf(needle) >= 0;
-}
-
 function isAsymmetric(obj) {
   return obj && isA('Function', obj.asymmetricMatch);
 }
@@ -303,7 +285,6 @@ function hasProperty(obj, property) {
 }
 
 module.exports = {
-  contains,
   equals,
   fnNameFor,
   hasProperty,
