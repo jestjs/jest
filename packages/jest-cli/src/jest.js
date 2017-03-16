@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Path, Config} from 'types/Config';
+import type {Path} from 'types/Config';
 
 const realFs = require('fs');
 const fs = require('graceful-fs');
@@ -48,68 +48,54 @@ const runCLI = (
     return;
   }
 
-  readConfig(argv, root)
-    .then(({
-      config,
-      hasDeprecationWarnings,
-    }: {
-      config: Config,
-      hasDeprecationWarnings: boolean,
-    }) => {
-      if (argv.debug) {
-        logDebugMessages(config, pipe);
-      }
+  const _run = async ({config, hasDeprecationWarnings}) => {
+    if (argv.debug) {
+      logDebugMessages(config, pipe);
+    }
 
-      createDirectory(config.cacheDirectory);
-      const jestHasteMap = Runtime.createHasteMap(config, {
-        console: new Console(pipe, pipe),
-        maxWorkers: getMaxWorkers(argv),
-        resetCache: !config.cache,
-        watch: config.watch,
-      });
-
-      return jestHasteMap
-        .build()
-        .then(
-          hasteMap => createHasteContext(config, hasteMap),
-          error => {
-            throw error;
-          },
-        )
-        .then(hasteContext => {
-          if (argv.watch || argv.watchAll) {
-            return watch(
-              config,
-              pipe,
-              argv,
-              jestHasteMap,
-              hasteContext,
-              hasDeprecationWarnings,
-            );
-          } else {
-            const startRun = () => {
-              preRunMessage.print(pipe);
-              const testWatcher = new TestWatcher({isWatchMode: false});
-              return runJest(
-                hasteContext,
-                config,
-                argv,
-                pipe,
-                testWatcher,
-                startRun,
-                onComplete,
-              );
-            };
-            return startRun();
-          }
-        });
-    })
-    .catch(error => {
-      clearLine(process.stderr);
-      clearLine(process.stdout);
-      console.error(chalk.red(error.stack));
-      process.exit(1);
+    createDirectory(config.cacheDirectory);
+    const hasteMapInstance = Runtime.createHasteMap(config, {
+      console: new Console(pipe, pipe),
+      maxWorkers: getMaxWorkers(argv),
+      resetCache: !config.cache,
+      watch: config.watch,
     });
+
+    const hasteMap = await hasteMapInstance.build();
+    const hasteContext = createHasteContext(config, hasteMap);
+    if (argv.watch || argv.watchAll) {
+      return watch(
+        config,
+        pipe,
+        argv,
+        hasteMapInstance,
+        hasteContext,
+        hasDeprecationWarnings,
+      );
+    } else {
+      const startRun = () => {
+        preRunMessage.print(pipe);
+        const testWatcher = new TestWatcher({isWatchMode: false});
+        return runJest(
+          hasteContext,
+          config,
+          argv,
+          pipe,
+          testWatcher,
+          startRun,
+          onComplete,
+        );
+      };
+      return startRun();
+    }
+  };
+
+  readConfig(argv, root).then(_run).catch(error => {
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    console.error(chalk.red(error.stack));
+    process.exit(1);
+  });
 };
 
 module.exports = {

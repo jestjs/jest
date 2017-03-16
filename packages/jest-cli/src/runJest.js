@@ -41,7 +41,7 @@ const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
     chalk.dim('.');
 };
 
-const runJest = (
+const runJest = async (
   hasteContext: HasteContext,
   config: Config,
   argv: Object,
@@ -93,7 +93,7 @@ const runJest = (
     return data;
   };
 
-  const runTests = data => new TestRunner(
+  const runTests = async data => new TestRunner(
     hasteContext,
     config,
     {
@@ -127,14 +127,9 @@ const runJest = (
     return onComplete && onComplete(runResults);
   };
 
-  return source
-    .getTestPaths(patternInfo)
-    .then(processTests)
-    .then(runTests)
-    .then(processResults)
-    .catch(error => {
-      throw error;
-    });
+  const data = await source.getTestPaths(patternInfo);
+  processTests(data);
+  return processResults(await runTests(data));
 };
 
 module.exports = runJest;
