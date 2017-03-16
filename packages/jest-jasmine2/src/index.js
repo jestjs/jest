@@ -19,7 +19,7 @@ const JasmineReporter = require('./reporter');
 const jasmineAsync = require('./jasmine-async');
 const path = require('path');
 
-const JASMINE_PATH = require.resolve('./jasmine-2.5.2.js');
+const JASMINE = require.resolve('./jasmine-light.js');
 
 function jasmine2(
   config: Config,
@@ -28,7 +28,7 @@ function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(config, environment, testPath);
-  const jasmineFactory = runtime.requireInternalModule(JASMINE_PATH);
+  const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create();
 
   const env = jasmine.getEnv();

@@ -1842,5 +1842,5 @@ exports.interface = function(jasmine, env) {
 };
 
 exports.version = function() {
-  return '2.5.2-custom';
+  return '2.5.2-light';
 };
