@@ -23,27 +23,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function() {
-  const defaultNow = (function(Date) {
-    return function() {
-      return new Date().getTime();
-    };
-  })(Date);
+const defaultNow = (function(Date) {
+  return function() {
+    return new Date().getTime();
+  };
+})(Date);
 
-  function Timer(options) {
-    options = options || {};
+function Timer(options) {
+  options = options || {};
 
-    const now = options.now || defaultNow;
-    let startTime;
+  const now = options.now || defaultNow;
+  let startTime;
 
-    this.start = function() {
-      startTime = now();
-    };
+  this.start = function() {
+    startTime = now();
+  };
 
-    this.elapsed = function() {
-      return now() - startTime;
-    };
-  }
+  this.elapsed = function() {
+    return now() - startTime;
+  };
+}
 
-  return Timer;
-};
+module.exports = Timer;

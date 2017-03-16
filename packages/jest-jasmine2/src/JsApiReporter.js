@@ -23,83 +23,81 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-module.exports = function() {
-  const noopTimer = {
-    start() {},
-    elapsed() {
-      return 0;
-    },
+const noopTimer = {
+  start() {},
+  elapsed() {
+    return 0;
+  },
+};
+
+function JsApiReporter(options) {
+  const timer = options.timer || noopTimer;
+  let status = 'loaded';
+
+  this.started = false;
+  this.finished = false;
+  this.runDetails = {};
+
+  this.jasmineStarted = function() {
+    this.started = true;
+    status = 'started';
+    timer.start();
   };
 
-  function JsApiReporter(options) {
-    const timer = options.timer || noopTimer;
-    let status = 'loaded';
+  let executionTime;
 
-    this.started = false;
-    this.finished = false;
-    this.runDetails = {};
+  this.jasmineDone = function(runDetails) {
+    this.finished = true;
+    this.runDetails = runDetails;
+    executionTime = timer.elapsed();
+    status = 'done';
+  };
 
-    this.jasmineStarted = function() {
-      this.started = true;
-      status = 'started';
-      timer.start();
-    };
+  this.status = function() {
+    return status;
+  };
 
-    let executionTime;
+  const suites = [];
+  const suites_hash = {};
 
-    this.jasmineDone = function(runDetails) {
-      this.finished = true;
-      this.runDetails = runDetails;
-      executionTime = timer.elapsed();
-      status = 'done';
-    };
+  this.suiteStarted = function(result) {
+    suites_hash[result.id] = result;
+  };
 
-    this.status = function() {
-      return status;
-    };
+  this.suiteDone = function(result) {
+    storeSuite(result);
+  };
 
-    const suites = [];
-    const suites_hash = {};
+  this.suiteResults = function(index, length) {
+    return suites.slice(index, index + length);
+  };
 
-    this.suiteStarted = function(result) {
-      suites_hash[result.id] = result;
-    };
-
-    this.suiteDone = function(result) {
-      storeSuite(result);
-    };
-
-    this.suiteResults = function(index, length) {
-      return suites.slice(index, index + length);
-    };
-
-    function storeSuite(result) {
-      suites.push(result);
-      suites_hash[result.id] = result;
-    }
-
-    this.suites = function() {
-      return suites_hash;
-    };
-
-    const specs = [];
-
-    this.specDone = function(result) {
-      specs.push(result);
-    };
-
-    this.specResults = function(index, length) {
-      return specs.slice(index, index + length);
-    };
-
-    this.specs = function() {
-      return specs;
-    };
-
-    this.executionTime = function() {
-      return executionTime;
-    };
+  function storeSuite(result) {
+    suites.push(result);
+    suites_hash[result.id] = result;
   }
 
-  return JsApiReporter;
-};
+  this.suites = function() {
+    return suites_hash;
+  };
+
+  const specs = [];
+
+  this.specDone = function(result) {
+    specs.push(result);
+  };
+
+  this.specResults = function(index, length) {
+    return specs.slice(index, index + length);
+  };
+
+  this.specs = function() {
+    return specs;
+  };
+
+  this.executionTime = function() {
+    return executionTime;
+  };
+}
+
+module.exports = JsApiReporter;
