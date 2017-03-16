@@ -61,17 +61,17 @@ class TestRunner {
   _dispatcher: ReporterDispatcher;
 
   constructor(
-    hasteContext: Context,
+    context: Context,
     config: Config,
     options: Options,
     startRun: () => *,
   ) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher(
-      hasteContext.hasteFS,
+      context.hasteFS,
       options.getTestSummary,
     );
-    this._context = hasteContext;
+    this._context = context;
     this._options = options;
     this._startRun = startRun;
     this._setupReporters();
@@ -93,7 +93,6 @@ class TestRunner {
       }
     });
 
-    const config = this._config;
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
       getEstimatedTime(timings, this._options.maxWorkers) / 1000,
@@ -140,6 +139,7 @@ class TestRunner {
     };
 
     const updateSnapshotState = () => {
+      const config = this._config;
       const status = snapshot.cleanup(
         this._context.hasteFS,
         config.updateSnapshot,
@@ -152,7 +152,7 @@ class TestRunner {
           aggregatedResults.snapshot.filesRemoved));
     };
 
-    this._dispatcher.onRunStart(config, aggregatedResults, {
+    this._dispatcher.onRunStart(this._config, aggregatedResults, {
       estimatedTime,
       showStatus: !runInBand,
     });
@@ -170,7 +170,7 @@ class TestRunner {
     updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
 
-    this._dispatcher.onRunComplete(config, aggregatedResults);
+    this._dispatcher.onRunComplete(this._config, aggregatedResults);
 
     const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
       aggregatedResults.numRuntimeErrorTestSuites === 0);

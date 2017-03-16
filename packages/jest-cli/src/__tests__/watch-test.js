@@ -39,7 +39,7 @@ describe('Watch mode flows', () => {
   let pipe;
   let hasteMap;
   let argv;
-  let hasteContext;
+  let context;
   let config;
   let hasDeprecationWarnings;
   let stdin;
@@ -48,7 +48,7 @@ describe('Watch mode flows', () => {
     pipe = {write: jest.fn()};
     hasteMap = {on: () => {}};
     argv = {};
-    hasteContext = {};
+    context = {};
     config = {roots: [], testPathIgnorePatterns: [], testRegex: ''};
     hasDeprecationWarnings = false;
     stdin = new MockStdin();
@@ -58,19 +58,10 @@ describe('Watch mode flows', () => {
     argv.testPathPattern = 'test-*';
     config.testPathPattern = 'test-*';
 
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
 
     expect(runJestMock).toBeCalledWith(
-      hasteContext,
-      config,
+      [context],
       argv,
       pipe,
       new TestWatcher({isWatchMode: true}),
@@ -83,19 +74,10 @@ describe('Watch mode flows', () => {
     argv.testNamePattern = 'test-*';
     config.testNamePattern = 'test-*';
 
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
 
     expect(runJestMock).toBeCalledWith(
-      hasteContext,
-      config,
+      [context],
       argv,
       pipe,
       new TestWatcher({isWatchMode: true}),
@@ -105,18 +87,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest once by default and shows usage', () => {
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
     expect(runJestMock).toBeCalledWith(
-      hasteContext,
-      config,
+      [context],
       argv,
       pipe,
       new TestWatcher({isWatchMode: true}),
@@ -127,15 +100,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "o" runs test in "only changed files" mode', () => {
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.O);
@@ -149,15 +114,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "a" runs test in "watch all" mode', () => {
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.A);
@@ -171,35 +128,19 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "ENTER" reruns the tests', () => {
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
     expect(runJestMock).toHaveBeenCalledTimes(1);
     stdin.emit(KEYS.ENTER);
     expect(runJestMock).toHaveBeenCalledTimes(2);
   });
 
   it('Pressing "u" reruns the tests in "update snapshot" mode', () => {
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    watch(config, pipe, argv, hasteMap, context, hasDeprecationWarnings, stdin);
     runJestMock.mockReset();
 
     stdin.emit(KEYS.U);
 
-    expect(runJestMock.mock.calls[0][1]).toEqual({
+    expect(runJestMock.mock.calls[0][0][0].config).toEqual({
       roots: [],
       testPathIgnorePatterns: [],
       testRegex: '',

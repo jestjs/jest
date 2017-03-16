@@ -33,14 +33,14 @@ const watch = (
   pipe: stream$Writable | tty$WriteStream,
   argv: Object,
   hasteMap: HasteMap,
-  hasteContext: Context,
+  context: Context,
   hasDeprecationWarnings?: boolean,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
   if (hasDeprecationWarnings) {
     return handleDeprecatedWarnings(pipe, stdin)
       .then(() => {
-        watch(config, pipe, argv, hasteMap, hasteContext);
+        watch(config, pipe, argv, hasteMap, context);
       })
       .catch(() => process.exit(0));
   }
@@ -60,7 +60,7 @@ const watch = (
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
 
-  testPathPatternPrompt.updateSearchSource(hasteContext);
+  testPathPatternPrompt.updateSearchSource(context);
 
   hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
     const validPaths = eventsQueue.filter(({filePath}) => {
@@ -68,9 +68,9 @@ const watch = (
     });
 
     if (validPaths.length) {
-      hasteContext = createContext(config, {hasteFS, moduleMap});
+      context = createContext(config, {hasteFS, moduleMap});
       prompt.abort();
-      testPathPatternPrompt.updateSearchSource(hasteContext);
+      testPathPatternPrompt.updateSearchSource(context);
       startRun();
     }
   });
@@ -91,44 +91,37 @@ const watch = (
     isInteractive && pipe.write(CLEAR);
     preRunMessage.print(pipe);
     isRunning = true;
-    return runJest(
-      hasteContext,
+    // $FlowFixMe
+    context.config = Object.freeze(
       // $FlowFixMe
-      Object.freeze(
-        // $FlowFixMe
-        Object.assign(
-          {
-            testNamePattern: argv.testNamePattern,
-            testPathPattern: argv.testPathPattern,
-          },
-          config,
-          overrideConfig,
-        ),
+      Object.assign(
+        {
+          testNamePattern: argv.testNamePattern,
+          testPathPattern: argv.testPathPattern,
+        },
+        config,
+        overrideConfig,
       ),
-      argv,
-      pipe,
-      testWatcher,
-      startRun,
-      results => {
-        isRunning = false;
-        hasSnapshotFailure = !!results.snapshot.failure;
-        // Create a new testWatcher instance so that re-runs won't be blocked.
-        // The old instance that was passed to Jest will still be interrupted
-        // and prevent test runs from the previous run.
-        testWatcher = new TestWatcher({isWatchMode: true});
-        if (shouldDisplayWatchUsage) {
-          pipe.write(usage(argv, hasSnapshotFailure));
-          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-          isWatchUsageDisplayed = true;
-        } else {
-          pipe.write(showToggleUsagePrompt());
-          shouldDisplayWatchUsage = false;
-          isWatchUsageDisplayed = false;
-        }
+    );
+    return runJest([context], argv, pipe, testWatcher, startRun, results => {
+      isRunning = false;
+      hasSnapshotFailure = !!results.snapshot.failure;
+      // Create a new testWatcher instance so that re-runs won't be blocked.
+      // The old instance that was passed to Jest will still be interrupted
+      // and prevent test runs from the previous run.
+      testWatcher = new TestWatcher({isWatchMode: true});
+      if (shouldDisplayWatchUsage) {
+        pipe.write(usage(argv, hasSnapshotFailure));
+        shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+        isWatchUsageDisplayed = true;
+      } else {
+        pipe.write(showToggleUsagePrompt());
+        shouldDisplayWatchUsage = false;
+        isWatchUsageDisplayed = false;
+      }
 
-        testNamePatternPrompt.updateCachedTestResults(results.testResults);
-      },
-    ).then(() => {}, error => console.error(chalk.red(error.stack)));
+      testNamePatternPrompt.updateCachedTestResults(results.testResults);
+    }).then(() => {}, error => console.error(chalk.red(error.stack)));
   };
 
   const onKeypress = (key: string) => {

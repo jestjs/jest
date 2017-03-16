@@ -9,9 +9,10 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {Test} from 'types/TestRunner';
 import type {PatternInfo} from './SearchSource';
+import type TestWatcher from './TestWatcher';
 
 const fs = require('graceful-fs');
 
@@ -42,74 +43,70 @@ const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
     chalk.dim('.');
 };
 
+const getTestPaths = async (context, patternInfo, argv, pipe) => {
+  const source = new SearchSource(context, context.config);
+  let data = await source.getTestPaths(patternInfo);
+  if (!data.paths.length) {
+    const localConsole = new Console(pipe, pipe);
+    if (patternInfo.onlyChanged && data.noSCM) {
+      if (context.config.watch) {
+        // Run all the tests
+        setState(argv, 'watchAll', {
+          noSCM: true,
+        });
+        patternInfo = getTestPathPatternInfo(argv);
+        data = await source.getTestPaths(patternInfo);
+      } else {
+        localConsole.log(
+          'Jest can only find uncommitted changed files in a git or hg ' +
+            'repository. If you make your project a git or hg ' +
+            'repository (`git init` or `hg init`), Jest will be able ' +
+            'to only run tests related to files changed since the last ' +
+            'commit.',
+        );
+      }
+    }
+
+    localConsole.log(
+      source.getNoTestsFoundMessage(patternInfo, context.config, data),
+    );
+  }
+
+  return {
+    data,
+    patternInfo,
+  };
+};
+
 const runJest = async (
-  hasteContext: Context,
-  config: Config,
+  contexts: Array<Context>,
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
-  testWatcher: any,
+  testWatcher: TestWatcher,
   startRun: () => *,
   onComplete: (testResults: any) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
-  const source = new SearchSource(hasteContext, config);
-  const testRunnerOptions = {
-    getTestSummary: () => getTestSummary(argv, patternInfo),
-    maxWorkers,
-  };
-  let patternInfo = getTestPathPatternInfo(argv);
-
-  const processTests = data => {
-    if (!data.paths.length) {
-      const localConsole = new Console(pipe, pipe);
-      if (patternInfo.onlyChanged && data.noSCM) {
-        if (config.watch) {
-          // Run all the tests
-          setState(argv, 'watchAll', {
-            noSCM: true,
-          });
-          patternInfo = getTestPathPatternInfo(argv);
-          return source.getTestPaths(patternInfo);
-        } else {
-          localConsole.log(
-            'Jest can only find uncommitted changed files in a git or hg ' +
-              'repository. If you make your project a git or hg ' +
-              'repository (`git init` or `hg init`), Jest will be able ' +
-              'to only run tests related to files changed since the last ' +
-              'commit.',
-          );
-        }
-      }
-
-      localConsole.log(
-        source.getNoTestsFoundMessage(patternInfo, config, data),
+  const context = contexts[0];
+  const testRunData = await Promise.all(
+    contexts.map(async context => {
+      const {data, patternInfo} = await getTestPaths(
+        context,
+        getTestPathPatternInfo(argv),
+        argv,
+        pipe,
       );
-    }
 
-    if (
-      data.paths.length === 1 &&
-      hasteContext.config.silent !== true &&
-      hasteContext.config.verbose !== false
-    ) {
-      // $FlowFixMe
-      config = (hasteContext.config = Object.assign({}, hasteContext.config, {
-        verbose: true,
-      }));
-    }
-
-    return data;
-  };
-
-  const runTests = async tests =>
-    new TestRunner(hasteContext, config, testRunnerOptions, startRun).runTests(
-      tests,
-      testWatcher,
-    );
+      const sequencer = new TestSequencer(context);
+      const tests = sequencer.sort(data.paths);
+      return {context, patternInfo, sequencer, tests};
+    }),
+  );
 
   const processResults = runResults => {
-    if (config.testResultsProcessor) {
+    if (context.config.testResultsProcessor) {
       /* $FlowFixMe */
-      runResults = require(config.testResultsProcessor)(runResults);
+      runResults = require(context.config.testResultsProcessor)(runResults);
     }
     if (argv.json) {
       if (argv.outputFile) {
@@ -130,17 +127,40 @@ const runJest = async (
     return onComplete && onComplete(runResults);
   };
 
-  const data = await source.getTestPaths(patternInfo);
-  if (config.updateSnapshot === true) {
-    hasteContext.config = Object.assign({}, hasteContext.config, {
+  const allTests = testRunData
+    .reduce((tests, testRun) => tests.concat(testRun.tests), [])
+    .sort((a: Test, b: Test) => {
+      if (a.duration != null && b.duration != null) {
+        return a.duration < b.duration ? 1 : -1;
+      }
+      return a.duration == null ? 1 : 0;
+    });
+
+  if (
+    allTests.length === 1 &&
+    context.config.silent !== true &&
+    context.config.verbose !== false
+  ) {
+    context.config = Object.assign({}, context.config, {verbose: true});
+  }
+
+  if (context.config.updateSnapshot === true) {
+     context.config = Object.assign({}, context.config, {
       updateSnapshot: true,
     });
   }
-  processTests(data);
-  const sequencer = new TestSequencer(hasteContext);
-  const tests = sequencer.sort(data.paths);
-  const results = await runTests(tests);
-  sequencer.cacheResults(tests, results);
+
+  const results = await new TestRunner(
+    context,
+    context.config,
+    {
+      getTestSummary: () => getTestSummary(argv, testRunData[0].patternInfo),
+      maxWorkers,
+    },
+    startRun,
+  ).runTests(allTests, testWatcher);
+  testRunData.forEach(({sequencer, tests}) =>
+    sequencer.cacheResults(tests, results));
   return processResults(results);
 };
 
