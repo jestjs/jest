@@ -51,84 +51,90 @@ const runJest = (
   onComplete: (testResults: any) => void,
 ) => {
   const maxWorkers = getMaxWorkers(argv);
-  const localConsole = new Console(pipe, pipe);
+  const source = new SearchSource(hasteContext, config);
   let patternInfo = getTestPathPatternInfo(argv);
-  return Promise.resolve().then(() => {
-    const source = new SearchSource(hasteContext, config);
-    return source
-      .getTestPaths(patternInfo)
-      .then(data => {
-        if (!data.paths.length) {
-          if (patternInfo.onlyChanged && data.noSCM) {
-            if (config.watch) {
-              // Run all the tests
-              setState(argv, 'watchAll', {
-                noSCM: true,
-              });
-              patternInfo = getTestPathPatternInfo(argv);
-              return source.getTestPaths(patternInfo);
-            } else {
-              localConsole.log(
-                'Jest can only find uncommitted changed files in a git or hg ' +
-                  'repository. If you make your project a git or hg ' +
-                  'repository (`git init` or `hg init`), Jest will be able ' +
-                  'to only run tests related to files changed since the last ' +
-                  'commit.',
-              );
-            }
-          }
 
+  const processTests = data => {
+    if (!data.paths.length) {
+      const localConsole = new Console(pipe, pipe);
+      if (patternInfo.onlyChanged && data.noSCM) {
+        if (config.watch) {
+          // Run all the tests
+          setState(argv, 'watchAll', {
+            noSCM: true,
+          });
+          patternInfo = getTestPathPatternInfo(argv);
+          return source.getTestPaths(patternInfo);
+        } else {
           localConsole.log(
-            source.getNoTestsFoundMessage(patternInfo, config, data),
+            'Jest can only find uncommitted changed files in a git or hg ' +
+              'repository. If you make your project a git or hg ' +
+              'repository (`git init` or `hg init`), Jest will be able ' +
+              'to only run tests related to files changed since the last ' +
+              'commit.',
           );
         }
-        return data;
-      })
-      .then(data => {
-        if (data.paths.length === 1) {
-          if (config.silent !== true && config.verbose !== false) {
-            // $FlowFixMe
-            config = Object.assign({}, config, {verbose: true});
-          }
-        }
+      }
 
-        return new TestRunner(
-          hasteContext,
-          config,
-          {
-            getTestSummary: () => getTestSummary(argv, patternInfo),
-            maxWorkers,
-          },
-          startRun,
-        ).runTests(data.paths, testWatcher);
-      })
-      .then(runResults => {
-        if (config.testResultsProcessor) {
-          /* $FlowFixMe */
-          runResults = require(config.testResultsProcessor)(runResults);
-        }
-        if (argv.json) {
-          if (argv.outputFile) {
-            const outputFile = path.resolve(process.cwd(), argv.outputFile);
+      localConsole.log(
+        source.getNoTestsFoundMessage(patternInfo, config, data),
+      );
+    }
 
-            fs.writeFileSync(
-              outputFile,
-              JSON.stringify(formatTestResults(runResults)),
-            );
-            process.stdout.write(
-              `Test results written to: ` +
-                `${path.relative(process.cwd(), outputFile)}\n`,
-            );
-          } else {
-            process.stdout.write(JSON.stringify(formatTestResults(runResults)));
-          }
-        }
-        return onComplete && onComplete(runResults);
-      })
-      .catch(error => {
-        throw error;
-      });
-  });
+    if (
+      data.paths.length === 1 &&
+      config.silent !== true &&
+      config.verbose !== false
+    ) {
+      // $FlowFixMe
+      config = Object.assign({}, config, {verbose: true});
+    }
+
+    return data;
+  };
+
+  const runTests = data => new TestRunner(
+    hasteContext,
+    config,
+    {
+      getTestSummary: () => getTestSummary(argv, patternInfo),
+      maxWorkers,
+    },
+    startRun,
+  ).runTests(data.paths, testWatcher);
+
+  const processResults = runResults => {
+    if (config.testResultsProcessor) {
+      /* $FlowFixMe */
+      runResults = require(config.testResultsProcessor)(runResults);
+    }
+    if (argv.json) {
+      if (argv.outputFile) {
+        const outputFile = path.resolve(process.cwd(), argv.outputFile);
+
+        fs.writeFileSync(
+          outputFile,
+          JSON.stringify(formatTestResults(runResults)),
+        );
+        process.stdout.write(
+          `Test results written to: ` +
+            `${path.relative(process.cwd(), outputFile)}\n`,
+        );
+      } else {
+        process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+      }
+    }
+    return onComplete && onComplete(runResults);
+  };
+
+  return source
+    .getTestPaths(patternInfo)
+    .then(processTests)
+    .then(runTests)
+    .then(processResults)
+    .catch(error => {
+      throw error;
+    });
 };
 
 module.exports = runJest;
