@@ -17,7 +17,10 @@ const SUPPORTED_PLATFORM_EXTS = {
 };
 
 // Extract platform extension: index.ios.js -> ios
-function getPlatformExtension(file: string, platforms?: Array<string>): ?string {
+function getPlatformExtension(
+  file: string,
+  platforms?: Array<string>,
+): ?string {
   const last = file.lastIndexOf('.');
   const secondToLast = file.lastIndexOf('.', last - 1);
   if (secondToLast === -1) {
