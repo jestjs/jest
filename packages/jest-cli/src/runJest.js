@@ -17,6 +17,7 @@ const fs = require('graceful-fs');
 
 const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
+const TestSequencer = require('./TestSequencer');
 
 const getTestPathPatternInfo = require('./lib/getTestPathPatternInfo');
 const chalk = require('chalk');
@@ -93,7 +94,7 @@ const runJest = async (
     return data;
   };
 
-  const runTests = async data => new TestRunner(
+  const runTests = async tests => new TestRunner(
     hasteContext,
     config,
     {
@@ -101,7 +102,7 @@ const runJest = async (
       maxWorkers,
     },
     startRun,
-  ).runTests(data.paths, testWatcher);
+  ).runTests(tests, testWatcher);
 
   const processResults = runResults => {
     if (config.testResultsProcessor) {
@@ -129,7 +130,10 @@ const runJest = async (
 
   const data = await source.getTestPaths(patternInfo);
   processTests(data);
-  return processResults(await runTests(data));
+  const sequencer = new TestSequencer(config);
+  const results = await runTests(sequencer.sort(data.paths));
+  sequencer.cacheResults(results);
+  return processResults(results);
 };
 
 module.exports = runJest;
