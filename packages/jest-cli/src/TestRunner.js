@@ -84,7 +84,7 @@ class TestRunner {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  runTests(tests: Tests, watcher: TestWatcher) {
+  async runTests(tests: Tests, watcher: TestWatcher) {
     const config = this._config;
     const timings = [];
     tests.forEach(test => {
@@ -158,32 +158,30 @@ class TestRunner {
       showStatus: !runInBand,
     });
 
-    const testRun = runInBand
-      ? this._createInBandTestRun(tests, watcher, onResult, onFailure)
-      : this._createParallelTestRun(tests, watcher, onResult, onFailure);
+    try {
+      await (runInBand
+        ? this._createInBandTestRun(tests, watcher, onResult, onFailure)
+        : this._createParallelTestRun(tests, watcher, onResult, onFailure));
+    } catch (error) {
+      if (!watcher.isInterrupted()) {
+        throw error;
+      }
+    }
 
-    return testRun
-      .catch(error => {
-        if (!watcher.isInterrupted()) {
-          throw error;
-        }
-      })
-      .then(() => {
-        updateSnapshotState();
-        aggregatedResults.wasInterrupted = watcher.isInterrupted();
+    updateSnapshotState();
+    aggregatedResults.wasInterrupted = watcher.isInterrupted();
 
-        this._dispatcher.onRunComplete(config, aggregatedResults);
+    this._dispatcher.onRunComplete(config, aggregatedResults);
 
-        const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
-          aggregatedResults.numRuntimeErrorTestSuites === 0);
-        const anyReporterErrors = this._dispatcher.hasErrors();
+    const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
+      aggregatedResults.numRuntimeErrorTestSuites === 0);
+    const anyReporterErrors = this._dispatcher.hasErrors();
 
-        aggregatedResults.success = !(anyTestFailures ||
-          aggregatedResults.snapshot.failure ||
-          anyReporterErrors);
+    aggregatedResults.success = !(anyTestFailures ||
+      aggregatedResults.snapshot.failure ||
+      anyReporterErrors);
 
-        return aggregatedResults;
-      });
+    return aggregatedResults;
   }
 
   _createInBandTestRun(
@@ -263,15 +261,13 @@ class TestRunner {
     });
 
     const runAllTests = Promise.all(
-      tests.map(test => {
-        return runTestInWorker(test)
+      tests.map(test =>
+        runTestInWorker(test)
           .then(testResult => onResult(test, testResult))
-          .catch(error => onError(error, test));
-      }),
+          .catch(error => onError(error, test))),
     );
 
     const cleanup = () => workerFarm.end(farm);
-
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
