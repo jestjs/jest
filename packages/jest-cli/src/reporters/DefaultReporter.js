@@ -14,6 +14,7 @@
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
+import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
@@ -119,8 +120,8 @@ class DefaultReporter extends BaseReporter {
     this._status.runStarted(aggregatedResults, options);
   }
 
-  onTestStart(config: Config, testPath: Path) {
-    this._status.testStarted(testPath, config);
+  onTestStart(test: Test) {
+    this._status.testStarted(test.path, test.context.config);
   }
 
   onRunComplete() {
@@ -133,12 +134,20 @@ class DefaultReporter extends BaseReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this._status.testFinished(config, testResult, aggregatedResults);
-    this._printTestFileSummary(testResult.testFilePath, config, testResult);
+    this._status.testFinished(
+      test.context.config,
+      testResult,
+      aggregatedResults,
+    );
+    this._printTestFileSummary(
+      testResult.testFilePath,
+      test.context.config,
+      testResult,
+    );
   }
 
   _printTestFileSummary(testPath: Path, config: Config, result: TestResult) {

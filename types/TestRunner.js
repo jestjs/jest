@@ -9,10 +9,11 @@
  */
 'use strict';
 
-import type {Config, Path} from './Config';
+import type {Context} from './Context';
+import type {Path} from './Config';
 
 export type Test = {
-  config: Config,
+  context: Context,
   path: Path,
   duration?: number,
 };

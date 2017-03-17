@@ -10,7 +10,8 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
+import type {Config} from 'types/Config';
+import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
 
 const preRunMessage = require('../preRunMessage');
@@ -31,13 +32,9 @@ class BaseReporter {
     preRunMessage.remove(process.stderr);
   }
 
-  onTestResult(
-    config: Config,
-    testResult: TestResult,
-    results: AggregatedResult,
-  ) {}
+  onTestResult(test: Test, testResult: TestResult, results: AggregatedResult) {}
 
-  onTestStart(config: Config, path: Path, runnerContext: RunnerContext) {}
+  onTestStart(test: Test) {}
 
   onRunComplete(
     config: Config,
