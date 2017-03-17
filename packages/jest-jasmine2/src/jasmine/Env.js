@@ -199,7 +199,6 @@ module.exports = function(j$) {
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
-      description: 'test',
       expectationResultFactory,
     });
     defaultResourcesForRunnable(topSuite.id);

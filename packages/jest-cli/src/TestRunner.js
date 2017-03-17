@@ -357,7 +357,9 @@ class TestRunner {
     const config = this._config;
 
     this.addReporter(
-      config.verbose ? new VerboseReporter(config) : new DefaultReporter(),
+      config.verbose
+        ? new VerboseReporter({expand: config.expand})
+        : new DefaultReporter(),
     );
 
     if (config.collectCoverage) {
