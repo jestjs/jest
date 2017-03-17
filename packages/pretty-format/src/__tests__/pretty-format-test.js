@@ -640,9 +640,7 @@ describe('prettyFormat()', () => {
     });
 
     it('supports a single element with custom React elements with props', () => {
-      function Cat() {
-        return React.createElement('div');
-      }
+      const Cat = () => React.createElement('div');
       assertPrintedJSX(
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {foo: 'bar'}),
@@ -651,16 +649,42 @@ describe('prettyFormat()', () => {
       );
     });
 
+    it('supports a single element with custom React elements with props (using displayName)', () => {
+      const Cat = () => React.createElement('div');
+      Cat.displayName = 'CatDisplayName';
+      assertPrintedJSX(
+        React.createElement('Mouse', {
+          prop: React.createElement(Cat, {foo: 'bar'}),
+        }),
+        '<Mouse\n  prop={\n    <CatDisplayName\n      foo="bar"\n    />\n  }\n/>',
+      );
+    });
+
+    it('supports a single element with custom React elements with props (using anonymous function)', () => {
+      assertPrintedJSX(
+        React.createElement('Mouse', {
+          prop: React.createElement(() => React.createElement('div'), {foo: 'bar'}),
+        }),
+        '<Mouse\n  prop={\n    <Unknown\n      foo="bar"\n    />\n  }\n/>',
+      );
+    });
+
     it('supports a single element with custom React elements with a child', () => {
-      function Cat(props) {
-        return React.createElement('div', props);
-      }
+      const Cat = (props: Object) => React.createElement('div', props);
       assertPrintedJSX(
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {}, React.createElement('div')),
         }),
         '<Mouse\n  prop={\n    <Cat>\n      <div />\n    </Cat>\n  }\n/>',
       );
+    });
+
+    it('supports Unknown element', () => {
+      expect(
+        prettyFormat(React.createElement(undefined), {
+          plugins: [ReactElement],
+        })
+      ).toEqual('<Unknown />');
     });
 
     it('supports a single element with React elements with a child', () => {
