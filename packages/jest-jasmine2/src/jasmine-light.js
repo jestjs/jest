@@ -1654,12 +1654,7 @@ exports.TreeProcessor = function() {
       return executableIndex === undefined ? defaultMax : executableIndex;
     }
 
-    function segmentChildren(
-      node,
-      children,
-      nodeStats,
-      executableIndex,
-    ) {
+    function segmentChildren(node, children, nodeStats, executableIndex) {
       let currentSegment = {
         index: 0,
         owner: node,
