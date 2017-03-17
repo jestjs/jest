@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
-// This file is a heavily modified fork of Jasmine. The original license of the code:
+// This file is a heavily modified fork of Jasmine. Original license:
 /*
 Copyright (c) 2008-2016 Pivotal Labs
 
@@ -42,7 +41,6 @@ const QueueRunner = require('./QueueRunner');
 const ReportDispatcher = require('./ReportDispatcher');
 const Spec = require('./Spec');
 const SpyRegistry = require('./SpyRegistry');
-const SpyStrategy = require('./SpyStrategy');
 const Suite = require('./Suite');
 const Timer = require('./Timer');
 const TreeProcessor = require('./TreeProcessor');

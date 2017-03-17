@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
-// This file is a heavily modified fork of Jasmine. The original license of the code:
+// This file is a heavily modified fork of Jasmine. Original license:
 /*
 Copyright (c) 2008-2016 Pivotal Labs
 
@@ -55,12 +54,9 @@ function isSpy(putativeSpy) {
   }
   return putativeSpy.and instanceof SpyStrategy &&
     putativeSpy.calls instanceof CallTracker;
-};
+}
 
-const getErrorMsg = formatErrorMsg(
-  '<spyOn>',
-  'spyOn(<object>, <methodName>)',
-);
+const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 
 function SpyRegistry(options) {
   options = options || {};
@@ -109,9 +105,7 @@ function SpyRegistry(options) {
 
     if (descriptor && !(descriptor.writable || descriptor.set)) {
       throw new Error(
-        getErrorMsg(
-          methodName + ' is not declared writable or has no setter',
-        ),
+        getErrorMsg(methodName + ' is not declared writable or has no setter'),
       );
     }
 
