@@ -14,42 +14,49 @@ const ansiStyle = require('ansi-styles');
 const ConvertAnsiPlugin = require('../plugins/ConvertAnsi');
 
 const prettyFormatResult = (val: string) => {
-  return prettyFormat(
-    val,
-    {
-      plugins: [ConvertAnsiPlugin],
-    },
-  );
+  return prettyFormat(val, {
+    plugins: [ConvertAnsiPlugin],
+  });
 };
 
 describe('ConvertAnsi plugin', () => {
   it('supports style.red', () => {
-    expect(prettyFormatResult(`${ansiStyle.red.open} foo content ${ansiStyle.red.close}`))
-      .toEqual('\"<red> foo content </>\"');
+    expect(
+      prettyFormatResult(
+        `${ansiStyle.red.open} foo content ${ansiStyle.red.close}`,
+      ),
+    ).toEqual('"<red> foo content </>"');
   });
 
   it('supports style.green', () => {
-    expect(prettyFormatResult(`${ansiStyle.green.open} foo content ${ansiStyle.green.close}`))
-      .toEqual('\"<green> foo content </>\"');
+    expect(
+      prettyFormatResult(
+        `${ansiStyle.green.open} foo content ${ansiStyle.green.close}`,
+      ),
+    ).toEqual('"<green> foo content </>"');
   });
 
   it('supports style.reset', () => {
-    expect(prettyFormatResult(`${ansiStyle.reset.open} foo content ${ansiStyle.reset.close}`))
-      .toEqual('\"</> foo content </>\"');
+    expect(
+      prettyFormatResult(
+        `${ansiStyle.reset.open} foo content ${ansiStyle.reset.close}`,
+      ),
+    ).toEqual('"</> foo content </>"');
   });
 
   it('supports style.bold', () => {
-    expect(prettyFormatResult(`${ansiStyle.bold.open} foo content`))
-      .toEqual('\"<bold> foo content\"');
+    expect(prettyFormatResult(`${ansiStyle.bold.open} foo content`)).toEqual(
+      '"<bold> foo content"',
+    );
   });
 
   it('supports style.dim', () => {
-    expect(prettyFormatResult(`${ansiStyle.dim.open} foo content`))
-      .toEqual('\"<dim> foo content\"');
+    expect(prettyFormatResult(`${ansiStyle.dim.open} foo content`)).toEqual(
+      '"<dim> foo content"',
+    );
   });
 
   it('does not support other colors', () => {
-    expect(prettyFormatResult(`${ansiStyle.cyan.open}`))
-      .toEqual('\"\"');
+    expect(prettyFormatResult(`${ansiStyle.cyan.open}`)).toEqual('""');
   });
 });

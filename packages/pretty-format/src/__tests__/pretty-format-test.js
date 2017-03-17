@@ -668,7 +668,12 @@ describe('prettyFormat()', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {
           /* eslint-disable prefer-arrow-callback */
-          prop: React.createElement(function() { React.createElement('div'); }, {foo: 'bar'}),
+          prop: React.createElement(
+            function() {
+              React.createElement('div');
+            },
+            {foo: 'bar'},
+          ),
           /* eslint-enable prefer-arrow-callback */
         }),
         '<Mouse\n  prop={\n    <Unknown\n      foo="bar"\n    />\n  }\n/>',
@@ -691,7 +696,7 @@ describe('prettyFormat()', () => {
       expect(
         prettyFormat(React.createElement(undefined), {
           plugins: [ReactElement],
-        })
+        }),
       ).toEqual('<Unknown />');
     });
 
