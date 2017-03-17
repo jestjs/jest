@@ -48,7 +48,7 @@ describe('_createInBandTestRun()', () => {
 
     return runner
       ._createParallelTestRun(
-        ['./file-test.js', './file2-test.js'],
+        [{config, path: './file-test.js'}, {config, path: './file2-test.js'}],
         new TestWatcher({isWatchMode: config.watch}),
         () => {},
         () => {},
@@ -75,7 +75,7 @@ describe('_createInBandTestRun()', () => {
 
     return runner
       ._createParallelTestRun(
-        ['./file-test.js', './file2-test.js'],
+        [{config, path: './file-test.js'}, {config, path: './file2-test.js'}],
         new TestWatcher({isWatchMode: config.watch}),
         () => {},
         () => {},
