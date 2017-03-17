@@ -76,17 +76,6 @@ module.exports = function(j$) {
       return 'suite' + nextSuiteId++;
     };
 
-    const expectationFactory = function(actual, spec) {
-      return j$.Expectation.Factory({
-        actual,
-        addExpectationResult,
-      });
-
-      function addExpectationResult(passed, result) {
-        return spec.addExpectationResult(passed, result);
-      }
-    };
-
     const defaultResourcesForRunnable = function(id, parentRunnableId) {
       const resources = {spies: []};
 
@@ -199,10 +188,8 @@ module.exports = function(j$) {
     };
 
     const topSuite = new j$.Suite({
-      env: this,
       id: getNextSuiteId(),
       description: 'test',
-      expectationFactory,
       expectationResultFactory,
     });
     defaultResourcesForRunnable(topSuite.id);
@@ -295,11 +282,9 @@ module.exports = function(j$) {
 
     const suiteFactory = function(description) {
       const suite = new j$.Suite({
-        env: self,
         id: getNextSuiteId(),
         description,
         parentSuite: currentDeclarationSuite,
-        expectationFactory,
         expectationResultFactory,
         throwOnExpectationFailure,
       });
@@ -388,7 +373,6 @@ module.exports = function(j$) {
       const spec = new j$.Spec({
         id: getNextSpecId(),
         beforeAndAfterFns: beforeAndAfterFns(suite),
-        expectationFactory,
         resultCallback: specResultCallback,
         getSpecName(spec) {
           return getSpecName(spec, suite);

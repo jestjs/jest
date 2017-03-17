@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 'use strict';
 
 const buildExpectationResult = require('./buildExpectationResult');
-const CallTracker = require('./CallTracker');
+const createSpy = require('./createSpy');
 const Env = require('./Env');
 const ExceptionFormatter = require('./ExceptionFormatter');
 const JsApiReporter = require('./JsApiReporter');
@@ -40,26 +40,6 @@ const TreeProcessor = require('./TreeProcessor');
 exports.create = function() {
   const j$ = {};
 
-  exports.base(j$);
-  j$.buildExpectationResult = buildExpectationResult;
-  j$.CallTracker = CallTracker;
-  j$.Env = Env(j$);
-  j$.ExceptionFormatter = ExceptionFormatter;
-  j$.JsApiReporter = JsApiReporter;
-  j$.QueueRunner = QueueRunner;
-  j$.ReportDispatcher = ReportDispatcher;
-  j$.Spec = Spec;
-  j$.SpyRegistry = SpyRegistry(j$);
-  j$.SpyStrategy = SpyStrategy;
-  j$.Suite = Suite;
-  j$.Timer = Timer;
-  j$.TreeProcessor = TreeProcessor;
-  j$.version = '2.5.2-light';
-
-  return j$;
-};
-
-exports.base = function(j$) {
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
   j$.getEnv = function(options) {
@@ -67,72 +47,21 @@ exports.base = function(j$) {
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };
+  j$.buildExpectationResult = buildExpectationResult;
+  j$.createSpy = createSpy;
+  j$.Env = Env(j$);
+  j$.ExceptionFormatter = ExceptionFormatter;
+  j$.JsApiReporter = JsApiReporter;
+  j$.QueueRunner = QueueRunner;
+  j$.ReportDispatcher = ReportDispatcher;
+  j$.Spec = Spec;
+  j$.SpyRegistry = SpyRegistry;
+  j$.Suite = Suite;
+  j$.Timer = Timer;
+  j$.TreeProcessor = TreeProcessor;
+  j$.version = '2.5.2-light';
 
-  j$.createSpy = function(name, originalFn) {
-    const spyStrategy = new j$.SpyStrategy({
-      name,
-      fn: originalFn,
-      getSpy() {
-        return spy;
-      },
-    });
-    const callTracker = new j$.CallTracker();
-    const spy = function() {
-      const callData = {
-        object: this,
-        args: Array.prototype.slice.apply(arguments),
-      };
-
-      callTracker.track(callData);
-      const returnValue = spyStrategy.exec.apply(this, arguments);
-      callData.returnValue = returnValue;
-
-      return returnValue;
-    };
-
-    for (const prop in originalFn) {
-      if (prop === 'and' || prop === 'calls') {
-        throw new Error(
-          "Jasmine spies would overwrite the 'and' and 'calls' properties " +
-            'on the object being spied upon',
-        );
-      }
-
-      spy[prop] = originalFn[prop];
-    }
-
-    spy.and = spyStrategy;
-    spy.calls = callTracker;
-
-    return spy;
-  };
-
-  j$.isSpy = function(putativeSpy) {
-    if (!putativeSpy) {
-      return false;
-    }
-    return putativeSpy.and instanceof j$.SpyStrategy &&
-      putativeSpy.calls instanceof j$.CallTracker;
-  };
-
-  j$.createSpyObj = function(baseName, methodNames) {
-    if (Array.isArray(baseName) && methodNames === void 0) {
-      methodNames = baseName;
-      baseName = 'unknown';
-    }
-
-    if (!Array.isArray(methodNames) || methodNames.length === 0) {
-      throw new Error(
-        'createSpyObj requires a non-empty array of method names to ' +
-          'create spies for',
-      );
-    }
-    const obj = {};
-    for (let i = 0; i < methodNames.length; i++) {
-      obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
-    }
-    return obj;
-  };
+  return j$;
 };
 
 exports.interface = function(jasmine, env) {

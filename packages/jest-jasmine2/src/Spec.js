@@ -26,7 +26,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 const ExpectationFailed = require('./ExpectationFailed');
 
 function Spec(attrs) {
-  this.expectationFactory = attrs.expectationFactory;
   this.resultCallback = attrs.resultCallback || function() {};
   this.id = attrs.id;
   this.description = attrs.description || '';
@@ -47,10 +46,6 @@ function Spec(attrs) {
   this.expectationResultFactory = attrs.expectationResultFactory ||
     function() {};
   this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
-  this.catchingExceptions = attrs.catchingExceptions ||
-    function() {
-      return true;
-    };
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
   if (!this.queueableFn.fn) {

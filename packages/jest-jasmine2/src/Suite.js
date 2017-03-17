@@ -26,11 +26,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 const ExpectationFailed = require('./ExpectationFailed');
 
 function Suite(attrs) {
-  this.env = attrs.env;
   this.id = attrs.id;
   this.parentSuite = attrs.parentSuite;
   this.description = attrs.description;
-  this.expectationFactory = attrs.expectationFactory;
   this.expectationResultFactory = attrs.expectationResultFactory;
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
