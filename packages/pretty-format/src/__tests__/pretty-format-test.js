@@ -640,7 +640,9 @@ describe('prettyFormat()', () => {
     });
 
     it('supports a single element with custom React elements with props', () => {
-      const Cat = () => React.createElement('div');
+      function Cat() {
+        return React.createElement('div');
+      }
       assertPrintedJSX(
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {foo: 'bar'}),
@@ -650,7 +652,9 @@ describe('prettyFormat()', () => {
     });
 
     it('supports a single element with custom React elements with props (using displayName)', () => {
-      const Cat = () => React.createElement('div');
+      function Cat() {
+        return React.createElement('div');
+      }
       Cat.displayName = 'CatDisplayName';
       assertPrintedJSX(
         React.createElement('Mouse', {
@@ -663,14 +667,18 @@ describe('prettyFormat()', () => {
     it('supports a single element with custom React elements with props (using anonymous function)', () => {
       assertPrintedJSX(
         React.createElement('Mouse', {
-          prop: React.createElement(() => React.createElement('div'), {foo: 'bar'}),
+          /* eslint-disable prefer-arrow-callback */
+          prop: React.createElement(function() { React.createElement('div'); }, {foo: 'bar'}),
+          /* eslint-enable prefer-arrow-callback */
         }),
         '<Mouse\n  prop={\n    <Unknown\n      foo="bar"\n    />\n  }\n/>',
       );
     });
 
     it('supports a single element with custom React elements with a child', () => {
-      const Cat = (props: Object) => React.createElement('div', props);
+      function Cat(props) {
+        return React.createElement('div', props);
+      }
       assertPrintedJSX(
         React.createElement('Mouse', {
           prop: React.createElement(Cat, {}, React.createElement('div')),
