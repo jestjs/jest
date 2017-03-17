@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
-// This file is a heavily modified fork of Jasmine. The original license of the code:
+// This file is a heavily modified fork of Jasmine. Original license:
 /*
 Copyright (c) 2008-2016 Pivotal Labs
 
@@ -34,45 +33,45 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 'use strict';
 
 function ReportDispatcher(methods) {
-    const dispatchedMethods = methods || [];
+  const dispatchedMethods = methods || [];
 
-    for (let i = 0; i < dispatchedMethods.length; i++) {
-      const method = dispatchedMethods[i];
-      this[method] = (function(m) {
-        return function() {
-          dispatch(m, arguments);
-        };
-      })(method);
+  for (let i = 0; i < dispatchedMethods.length; i++) {
+    const method = dispatchedMethods[i];
+    this[method] = (function(m) {
+      return function() {
+        dispatch(m, arguments);
+      };
+    })(method);
+  }
+
+  let reporters = [];
+  let fallbackReporter = null;
+
+  this.addReporter = function(reporter) {
+    reporters.push(reporter);
+  };
+
+  this.provideFallbackReporter = function(reporter) {
+    fallbackReporter = reporter;
+  };
+
+  this.clearReporters = function() {
+    reporters = [];
+  };
+
+  return this;
+
+  function dispatch(method, args) {
+    if (reporters.length === 0 && fallbackReporter !== null) {
+      reporters.push(fallbackReporter);
     }
-
-    let reporters = [];
-    let fallbackReporter = null;
-
-    this.addReporter = function(reporter) {
-      reporters.push(reporter);
-    };
-
-    this.provideFallbackReporter = function(reporter) {
-      fallbackReporter = reporter;
-    };
-
-    this.clearReporters = function() {
-      reporters = [];
-    };
-
-    return this;
-
-    function dispatch(method, args) {
-      if (reporters.length === 0 && fallbackReporter !== null) {
-        reporters.push(fallbackReporter);
-      }
-      for (let i = 0; i < reporters.length; i++) {
-        const reporter = reporters[i];
-        if (reporter[method]) {
-          reporter[method].apply(reporter, args);
-        }
+    for (let i = 0; i < reporters.length; i++) {
+      const reporter = reporters[i];
+      if (reporter[method]) {
+        reporter[method].apply(reporter, args);
       }
     }
   }
+}
 
 module.exports = ReportDispatcher;

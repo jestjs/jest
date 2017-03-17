@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
-// This file is a heavily modified fork of Jasmine. The original license of the code:
+// This file is a heavily modified fork of Jasmine. Original license:
 /*
 Copyright (c) 2008-2016 Pivotal Labs
 
@@ -34,29 +33,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 'use strict';
 
 function ExceptionFormatter() {
-    this.message = function(error) {
-      let message = '';
+  this.message = function(error) {
+    let message = '';
 
-      if (error.name && error.message) {
-        message += error.name + ': ' + error.message;
-      } else {
-        message += error.toString() + ' thrown';
-      }
+    if (error.name && error.message) {
+      message += error.name + ': ' + error.message;
+    } else {
+      message += error.toString() + ' thrown';
+    }
 
-      if (error.fileName || error.sourceURL) {
-        message += ' in ' + (error.fileName || error.sourceURL);
-      }
+    if (error.fileName || error.sourceURL) {
+      message += ' in ' + (error.fileName || error.sourceURL);
+    }
 
-      if (error.line || error.lineNumber) {
-        message += ' (line ' + (error.line || error.lineNumber) + ')';
-      }
+    if (error.line || error.lineNumber) {
+      message += ' (line ' + (error.line || error.lineNumber) + ')';
+    }
 
-      return message;
-    };
+    return message;
+  };
 
-    this.stack = function(error) {
-      return error ? error.stack : null;
-    };
-  }
+  this.stack = function(error) {
+    return error ? error.stack : null;
+  };
+}
 
 module.exports = ExceptionFormatter;

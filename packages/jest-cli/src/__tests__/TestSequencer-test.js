@@ -39,10 +39,11 @@ test('sorts by file size if there is no timing information', () => {
 });
 
 test('sorts based on timing information', () => {
-  fs.readFileSync = jest.fn(() => JSON.stringify({
-    '/test-a.js': [SUCCESS, 5],
-    '/test-ab.js': [SUCCESS, 3],
-  }));
+  fs.readFileSync = jest.fn(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [SUCCESS, 3],
+    }));
   expect(sequencer.sort(['/test-a.js', '/test-ab.js'])).toEqual([
     {config, duration: 5, path: '/test-a.js'},
     {config, duration: 3, path: '/test-ab.js'},
@@ -50,12 +51,13 @@ test('sorts based on timing information', () => {
 });
 
 test('sorts based on failures and timing information', () => {
-  fs.readFileSync = jest.fn(() => JSON.stringify({
-    '/test-a.js': [SUCCESS, 5],
-    '/test-ab.js': [FAIL, 0],
-    '/test-c.js': [FAIL, 6],
-    '/test-d.js': [SUCCESS, 2],
-  }));
+  fs.readFileSync = jest.fn(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [FAIL, 0],
+      '/test-c.js': [FAIL, 6],
+      '/test-d.js': [SUCCESS, 2],
+    }));
   expect(
     sequencer.sort(['/test-a.js', '/test-ab.js', '/test-c.js', '/test-d.js']),
   ).toEqual([
@@ -67,13 +69,14 @@ test('sorts based on failures and timing information', () => {
 });
 
 test('sorts based on failures, timing information and file size', () => {
-  fs.readFileSync = jest.fn(() => JSON.stringify({
-    '/test-a.js': [SUCCESS, 5],
-    '/test-ab.js': [FAIL, 1],
-    '/test-c.js': [FAIL],
-    '/test-d.js': [SUCCESS, 2],
-    '/test-efg.js': [FAIL],
-  }));
+  fs.readFileSync = jest.fn(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [FAIL, 1],
+      '/test-c.js': [FAIL],
+      '/test-d.js': [SUCCESS, 2],
+      '/test-efg.js': [FAIL],
+    }));
   expect(
     sequencer.sort([
       '/test-a.js',
@@ -92,11 +95,12 @@ test('sorts based on failures, timing information and file size', () => {
 });
 
 test('writes the cache based on the results', () => {
-  fs.readFileSync = jest.fn(() => JSON.stringify({
-    '/test-a.js': [SUCCESS, 5],
-    '/test-b.js': [FAIL, 1],
-    '/test-c.js': [FAIL],
-  }));
+  fs.readFileSync = jest.fn(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-b.js': [FAIL, 1],
+      '/test-c.js': [FAIL],
+    }));
 
   const testPaths = ['/test-a.js', '/test-b.js', '/test-c.js'];
   const tests = sequencer.sort(testPaths);

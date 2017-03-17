@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
-// This file is a heavily modified fork of Jasmine. The original license of the code:
+// This file is a heavily modified fork of Jasmine. Original license:
 /*
 Copyright (c) 2008-2016 Pivotal Labs
 
@@ -34,65 +33,63 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 'use strict';
 
 function SpyStrategy(options) {
-    options = options || {};
+  options = options || {};
 
-    const identity = options.name || 'unknown';
-    const originalFn = options.fn || function() {};
-    const getSpy = options.getSpy || function() {};
-    let plan = function() {};
+  const identity = options.name || 'unknown';
+  const originalFn = options.fn || function() {};
+  const getSpy = options.getSpy || function() {};
+  let plan = function() {};
 
-    this.identity = function() {
-      return identity;
+  this.identity = function() {
+    return identity;
+  };
+
+  this.exec = function() {
+    return plan.apply(this, arguments);
+  };
+
+  this.callThrough = function() {
+    plan = originalFn;
+    return getSpy();
+  };
+
+  this.returnValue = function(value) {
+    plan = function() {
+      return value;
     };
+    return getSpy();
+  };
 
-    this.exec = function() {
-      return plan.apply(this, arguments);
+  this.returnValues = function() {
+    const values = Array.prototype.slice.call(arguments);
+    plan = function() {
+      return values.shift();
     };
+    return getSpy();
+  };
 
-    this.callThrough = function() {
-      plan = originalFn;
-      return getSpy();
+  this.throwError = function(something) {
+    const error = something instanceof Error ? something : new Error(something);
+    plan = function() {
+      throw error;
     };
+    return getSpy();
+  };
 
-    this.returnValue = function(value) {
-      plan = function() {
-        return value;
-      };
-      return getSpy();
-    };
+  this.callFake = function(fn) {
+    if (typeof fn !== 'function') {
+      throw new Error(
+        'Argument passed to callFake should be a function, got ' + fn,
+      );
+    }
+    plan = fn;
+    return getSpy();
+  };
 
-    this.returnValues = function() {
-      const values = Array.prototype.slice.call(arguments);
-      plan = function() {
-        return values.shift();
-      };
-      return getSpy();
-    };
-
-    this.throwError = function(something) {
-      const error = something instanceof Error
-        ? something
-        : new Error(something);
-      plan = function() {
-        throw error;
-      };
-      return getSpy();
-    };
-
-    this.callFake = function(fn) {
-      if (typeof fn !== 'function') {
-        throw new Error(
-          'Argument passed to callFake should be a function, got ' + fn,
-        );
-      }
-      plan = fn;
-      return getSpy();
-    };
-
-    this.stub = function(fn) {
-      plan = function() {};
-      return getSpy();
-    };
-  }
+  this.stub = function(fn) {
+    plan = function() {};
+    return getSpy();
+  };
+}
 
 module.exports = SpyStrategy;
