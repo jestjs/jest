@@ -1,3 +1,13 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+// This file is a heavily modified fork of Jasmine. The original license of the code:
 /*
 Copyright (c) 2008-2016 Pivotal Labs
 
@@ -23,30 +33,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-function ExceptionFormatter() {
-    this.message = function(error) {
-      let message = '';
+const defaultNow = (function(Date) {
+  return function() {
+    return new Date().getTime();
+  };
+})(Date);
 
-      if (error.name && error.message) {
-        message += error.name + ': ' + error.message;
-      } else {
-        message += error.toString() + ' thrown';
-      }
+function Timer(options) {
+  options = options || {};
 
-      if (error.fileName || error.sourceURL) {
-        message += ' in ' + (error.fileName || error.sourceURL);
-      }
+  const now = options.now || defaultNow;
+  let startTime;
 
-      if (error.line || error.lineNumber) {
-        message += ' (line ' + (error.line || error.lineNumber) + ')';
-      }
+  this.start = function() {
+    startTime = now();
+  };
 
-      return message;
-    };
+  this.elapsed = function() {
+    return now() - startTime;
+  };
+}
 
-    this.stack = function(error) {
-      return error ? error.stack : null;
-    };
-  }
-
-module.exports = ExceptionFormatter;
+module.exports = Timer;
