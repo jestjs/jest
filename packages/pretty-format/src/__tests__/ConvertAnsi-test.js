@@ -48,7 +48,7 @@ describe('ConvertAnsi plugin', () => {
       .toEqual('\"<dim> foo content\"');
   });
 
-  it('don\'t support other colors', () => {
+  it('does not support other colors', () => {
     expect(prettyFormatResult(`${ansiStyle.cyan.open}`))
       .toEqual('\"\"');
   });
