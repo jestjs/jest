@@ -192,7 +192,6 @@ exports.interface = function(jasmine, env) {
     jsApiReporter: new jasmine.JsApiReporter({
       timer: new jasmine.Timer(),
     }),
-
     jasmine,
   };
 

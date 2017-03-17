@@ -174,6 +174,11 @@ const users = [
     infoLink: 'https://www.klm.com/',
   },
   {
+    caption: 'NHL',
+    image: '/jest/img/logos/nhl.png',
+    infoLink: 'https://www.nhl.com/',
+  },
+  {
     caption: 'Quiqup',
     image: '/jest/img/logos/quiqup.png',
     infoLink: 'https://www.quiqup.com/',
