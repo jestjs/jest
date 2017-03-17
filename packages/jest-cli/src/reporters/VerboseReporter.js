@@ -21,12 +21,16 @@ const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const {ICONS} = require('../constants');
 
-class VerboseReporter extends DefaultReporter {
-  _config: Config;
+type Options = {|
+  expand: boolean,
+|};
 
-  constructor(config: Config) {
+class VerboseReporter extends DefaultReporter {
+  _options: Options;
+
+  constructor(options: Options) {
     super();
-    this._config = config;
+    this._options = options;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {
@@ -97,9 +101,7 @@ class VerboseReporter extends DefaultReporter {
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {
-    const config = this._config;
-
-    if (config.expand) {
+    if (this._options.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
       const skippedCount = tests.reduce(
