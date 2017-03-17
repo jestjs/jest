@@ -651,6 +651,35 @@ describe('prettyFormat()', () => {
       );
     });
 
+    it('supports a single element with custom React elements with props (using displayName)', () => {
+      function Cat() {
+        return React.createElement('div');
+      }
+      Cat.displayName = 'CatDisplayName';
+      assertPrintedJSX(
+        React.createElement('Mouse', {
+          prop: React.createElement(Cat, {foo: 'bar'}),
+        }),
+        '<Mouse\n  prop={\n    <CatDisplayName\n      foo="bar"\n    />\n  }\n/>',
+      );
+    });
+
+    it('supports a single element with custom React elements with props (using anonymous function)', () => {
+      assertPrintedJSX(
+        React.createElement('Mouse', {
+          /* eslint-disable prefer-arrow-callback */
+          prop: React.createElement(
+            function() {
+              React.createElement('div');
+            },
+            {foo: 'bar'},
+          ),
+          /* eslint-enable prefer-arrow-callback */
+        }),
+        '<Mouse\n  prop={\n    <Unknown\n      foo="bar"\n    />\n  }\n/>',
+      );
+    });
+
     it('supports a single element with custom React elements with a child', () => {
       function Cat(props) {
         return React.createElement('div', props);
@@ -661,6 +690,14 @@ describe('prettyFormat()', () => {
         }),
         '<Mouse\n  prop={\n    <Cat>\n      <div />\n    </Cat>\n  }\n/>',
       );
+    });
+
+    it('supports Unknown element', () => {
+      expect(
+        prettyFormat(React.createElement(undefined), {
+          plugins: [ReactElement],
+        }),
+      ).toEqual('<Unknown />');
     });
 
     it('supports a single element with React elements with a child', () => {
