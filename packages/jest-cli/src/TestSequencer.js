@@ -46,16 +46,11 @@ class TestSequencer {
   sort(testPaths: Array<string>): Tests {
     const config = this._config;
     const stats = {};
-    const getFileSize = filePath =>
+    const fileSize = filePath =>
       stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
-    const getTestRunTime = filePath => {
-      if (this._cache[filePath]) {
-        return this._cache[filePath][0] === FAIL
-          ? Infinity
-          : this._cache[filePath][1];
-      }
-      return null;
-    };
+    const failed = filePath =>
+      this._cache[filePath] && this._cache[filePath][0] === FAIL;
+    const time = filePath => this._cache[filePath] && this._cache[filePath][1];
 
     this._cache = {};
     try {
@@ -67,12 +62,23 @@ class TestSequencer {
     } catch (e) {}
 
     testPaths = testPaths.sort((pathA, pathB) => {
-      const timeA = getTestRunTime(pathA);
-      const timeB = getTestRunTime(pathB);
-      if (timeA != null && timeB != null) {
+      const failedA = failed(pathA);
+      const failedB = failed(pathB);
+      if (failedA !== failedB) {
+        return failedA ? -1 : 1;
+      }
+      const timeA = time(pathA);
+      const timeB = time(pathB);
+      const hasTimeA = timeA != null;
+      const hasTimeB = timeB != null;
+      // Check if only one of two tests has timing information
+      if (hasTimeA != hasTimeB) {
+        return hasTimeA ? 1 : -1;
+      }
+      if (timeA != null && !timeB != null) {
         return timeA < timeB ? 1 : -1;
       }
-      return getFileSize(pathA) < getFileSize(pathB) ? 1 : -1;
+      return fileSize(pathA) < fileSize(pathB) ? 1 : -1;
     });
 
     return testPaths.map(path => ({
@@ -82,13 +88,15 @@ class TestSequencer {
     }));
   }
 
-  cacheResults(results: AggregatedResult) {
+  cacheResults(tests: Tests, results: AggregatedResult) {
     const cache = this._cache;
-    results.testResults.forEach(test => {
-      if (test && !test.skipped) {
-        const perf = test.perfStats;
-        cache[test.testFilePath] = [
-          test.numFailingTests ? FAIL : SUCCESS,
+    const map = Object.create(null);
+    tests.forEach(({path}) => map[path] = true);
+    results.testResults.forEach(testResult => {
+      if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
+        const perf = testResult.perfStats;
+        cache[testResult.testFilePath] = [
+          testResult.numFailingTests ? FAIL : SUCCESS,
           perf.end - perf.start || 0,
         ];
       }

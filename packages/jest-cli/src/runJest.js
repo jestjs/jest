@@ -131,8 +131,9 @@ const runJest = async (
   const data = await source.getTestPaths(patternInfo);
   processTests(data);
   const sequencer = new TestSequencer(config);
-  const results = await runTests(sequencer.sort(data.paths));
-  sequencer.cacheResults(results);
+  const tests = sequencer.sort(data.paths);
+  const results = await runTests(tests);
+  sequencer.cacheResults(tests, results);
   return processResults(results);
 };
 
