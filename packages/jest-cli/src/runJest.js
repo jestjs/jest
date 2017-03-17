@@ -10,7 +10,7 @@
 'use strict';
 
 import type {Config} from 'types/Config';
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {PatternInfo} from './SearchSource';
 
 const fs = require('graceful-fs');
@@ -43,7 +43,7 @@ const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
 };
 
 const runJest = async (
-  hasteContext: HasteContext,
+  hasteContext: Context,
   config: Config,
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
@@ -94,15 +94,16 @@ const runJest = async (
     return data;
   };
 
-  const runTests = async tests => new TestRunner(
-    hasteContext,
-    config,
-    {
-      getTestSummary: () => getTestSummary(argv, patternInfo),
-      maxWorkers,
-    },
-    startRun,
-  ).runTests(tests, testWatcher);
+  const runTests = async tests =>
+    new TestRunner(
+      hasteContext,
+      config,
+      {
+        getTestSummary: () => getTestSummary(argv, patternInfo),
+        maxWorkers,
+      },
+      startRun,
+    ).runTests(tests, testWatcher);
 
   const processResults = runResults => {
     if (config.testResultsProcessor) {

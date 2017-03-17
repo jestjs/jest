@@ -17,7 +17,7 @@ const Runtime = require('jest-runtime');
 const chalk = require('chalk');
 const {Console, clearLine} = require('jest-util');
 const {createDirectory} = require('jest-util');
-const createHasteContext = require('../lib/createHasteContext');
+const createContext = require('../lib/createContext');
 const getMaxWorkers = require('../lib/getMaxWorkers');
 const logDebugMessages = require('../lib/logDebugMessages');
 const preRunMessage = require('../preRunMessage');
@@ -59,14 +59,14 @@ module.exports = (
     });
 
     const hasteMap = await hasteMapInstance.build();
-    const hasteContext = createHasteContext(config, hasteMap);
+    const context = createContext(config, hasteMap);
     if (argv.watch || argv.watchAll) {
       return watch(
         config,
         pipe,
         argv,
         hasteMapInstance,
-        hasteContext,
+        context,
         hasDeprecationWarnings,
       );
     } else {
@@ -74,7 +74,7 @@ module.exports = (
         preRunMessage.print(pipe);
         const testWatcher = new TestWatcher({isWatchMode: false});
         return runJest(
-          hasteContext,
+          context,
           config,
           argv,
           pipe,
