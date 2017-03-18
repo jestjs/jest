@@ -10,7 +10,6 @@
 
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
@@ -19,7 +18,6 @@ const micromatch = require('micromatch');
 
 const DependencyResolver = require('jest-resolve-dependencies');
 
-const chalk = require('chalk');
 const changedFiles = require('jest-changed-files');
 const path = require('path');
 const {
@@ -64,8 +62,6 @@ const hg = changedFiles.hg;
 const determineSCM = path =>
   Promise.all([git.isGitRepository(path), hg.isHGRepository(path)]);
 const pathToRegex = p => replacePathSepForRegex(p);
-const pluralize = (word: string, count: number, ending: string) =>
-  `${count} ${word}${count === 1 ? '' : ending}`;
 
 const globsToMatcher = (globs: ?Array<Glob>) => {
   if (globs == null || globs.length === 0) {
@@ -221,48 +217,6 @@ class SearchSource {
           new Set(Array.prototype.concat.apply([], changedPathSets)),
         ));
     });
-  }
-
-  getNoTestsFoundMessage(
-    patternInfo: PatternInfo,
-    config: Config,
-    data: SearchResult,
-  ): string {
-    if (patternInfo.onlyChanged) {
-      return chalk.bold(
-        'No tests found related to files changed since last commit.\n',
-      ) +
-        chalk.dim(
-          patternInfo.watch
-            ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
-            : 'Run Jest without `-o` to run all tests.',
-        );
-    }
-
-    const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
-    const stats = data.stats || {};
-    const statsMessage = Object.keys(stats)
-      .map(key => {
-        const value = key === 'testPathPattern' ? testPathPattern : config[key];
-        if (value) {
-          const matches = pluralize('match', stats[key], 'es');
-          return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
-        }
-        return null;
-      })
-      .filter(line => line)
-      .join('\n');
-
-    return chalk.bold('No tests found') +
-      '\n' +
-      (data.total
-        ? `  ${pluralize('file', data.total || 0, 's')} checked.\n` +
-            statsMessage
-        : `No files found in ${config.rootDir}.\n` +
-            `Make sure Jest's configuration does not exclude this directory.` +
-            `\nTo set up Jest, make sure a package.json file exists.\n` +
-            `Jest Documentation: ` +
-            `facebook.github.io/jest/docs/configuration.html`);
   }
 
   getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {

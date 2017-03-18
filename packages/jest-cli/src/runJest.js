@@ -27,11 +27,11 @@ const getMaxWorkers = require('./lib/getMaxWorkers');
 const path = require('path');
 const setState = require('./lib/setState');
 
-const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
-  const testPathPattern = SearchSource.getTestPathPattern(patternInfo);
-  const testInfo = patternInfo.onlyChanged
+const getTestSummary = (argv: Object, pattern: PatternInfo) => {
+  const testPathPattern = SearchSource.getTestPathPattern(pattern);
+  const testInfo = pattern.onlyChanged
     ? chalk.dim(' related to changed files')
-    : patternInfo.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
+    : pattern.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
 
   const nameInfo = argv.testNamePattern
     ? chalk.dim(' with tests matching ') + `"${argv.testNamePattern}"`
@@ -43,19 +43,69 @@ const getTestSummary = (argv: Object, patternInfo: PatternInfo) => {
     chalk.dim('.');
 };
 
-const getTestPaths = async (context, patternInfo, argv, pipe) => {
+const getNoTestsFoundMessage = (testRunData, pattern) => {
+  if (pattern.onlyChanged) {
+    return chalk.bold(
+      'No tests found related to files changed since last commit.\n',
+    ) +
+      chalk.dim(
+        pattern.watch
+          ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
+          : 'Run Jest without `-o` to run all tests.',
+      );
+  }
+
+  const pluralize = (word: string, count: number, ending: string) =>
+    `${count} ${word}${count === 1 ? '' : ending}`;
+  const testPathPattern = SearchSource.getTestPathPattern(pattern);
+  const individualResults = testRunData.map(testRun => {
+    const stats = testRun.matches.stats || {};
+    const config = testRun.context.config;
+    const statsMessage = Object.keys(stats)
+      .map(key => {
+        if (key === 'roots' && config.roots.length === 1) {
+          return null;
+        }
+        const value = config[key];
+        if (value) {
+          const matches = pluralize('match', stats[key], 'es');
+          return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
+        }
+        return null;
+      })
+      .filter(line => line)
+      .join('\n');
+
+    return testRun.matches.total
+      ? `In ${chalk.bold(config.rootDir)}\n` +
+          `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
+          statsMessage
+      : `No files found in ${config.rootDir}.\n` +
+          `Make sure Jest's configuration does not exclude this directory.` +
+          `\nTo set up Jest, make sure a package.json file exists.\n` +
+          `Jest Documentation: ` +
+          `facebook.github.io/jest/docs/configuration.html`;
+  });
+  return chalk.bold('No tests found') +
+    '\n' +
+    individualResults.join('\n') +
+    '\n' +
+    `Pattern: ${chalk.yellow(testPathPattern)} - 0 matches`;
+};
+
+const getTestPaths = async (context, pattern, argv, pipe) => {
   const source = new SearchSource(context, context.config);
-  let data = await source.getTestPaths(patternInfo);
+  let data = await source.getTestPaths(pattern);
   if (!data.paths.length) {
     const localConsole = new Console(pipe, pipe);
-    if (patternInfo.onlyChanged && data.noSCM) {
+    if (pattern.onlyChanged && data.noSCM) {
       if (context.config.watch) {
         // Run all the tests
         setState(argv, 'watchAll', {
           noSCM: true,
         });
-        patternInfo = getTestPathPatternInfo(argv);
-        data = await source.getTestPaths(patternInfo);
+        pattern = getTestPathPatternInfo(argv);
+        data = await source.getTestPaths(pattern);
       } else {
         localConsole.log(
           'Jest can only find uncommitted changed files in a git or hg ' +
@@ -66,16 +116,9 @@ const getTestPaths = async (context, patternInfo, argv, pipe) => {
         );
       }
     }
-
-    localConsole.log(
-      source.getNoTestsFoundMessage(patternInfo, context.config, data),
-    );
   }
 
-  return {
-    data,
-    patternInfo,
-  };
+  return data;
 };
 
 const runJest = async (
@@ -90,16 +133,10 @@ const runJest = async (
   const context = contexts[0];
   const testRunData = await Promise.all(
     contexts.map(async context => {
-      const {data, patternInfo} = await getTestPaths(
-        context,
-        getTestPathPatternInfo(argv),
-        argv,
-        pipe,
-      );
-
+      const matches = await getTestPaths(context, pattern, argv, pipe);
       const sequencer = new TestSequencer(context);
-      const tests = sequencer.sort(data.paths);
-      return {context, patternInfo, sequencer, tests};
+      const tests = sequencer.sort(matches.paths);
+      return {context, matches, sequencer, tests};
     }),
   );
 
@@ -136,12 +173,20 @@ const runJest = async (
       return a.duration == null ? 1 : 0;
     });
 
+  if (!allTests.length) {
+    const localConsole = new Console(pipe, pipe);
+    localConsole.log(getNoTestsFoundMessage(testRunData, pattern));
+  }
+
   if (
     allTests.length === 1 &&
     context.config.silent !== true &&
     context.config.verbose !== false
   ) {
-    context.config = Object.assign({}, context.config, {verbose: true});
+    contexts.forEach(
+      context =>
+        context.config = Object.assign({}, context.config, {verbose: true}),
+    );
   }
 
   if (context.config.updateSnapshot === true) {
@@ -151,10 +196,9 @@ const runJest = async (
   }
 
   const results = await new TestRunner(
-    context,
     context.config,
     {
-      getTestSummary: () => getTestSummary(argv, testRunData[0].patternInfo),
+      getTestSummary: () => getTestSummary(argv, pattern),
       maxWorkers,
     },
     startRun,
