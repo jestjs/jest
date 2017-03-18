@@ -45,7 +45,7 @@ type Options = {|
   lastCommit?: boolean,
 |};
 
-export type PatternInfo = {|
+export type PathPattern = {|
   input?: string,
   findRelatedTests?: boolean,
   lastCommit?: boolean,
@@ -219,30 +219,16 @@ class SearchSource {
     });
   }
 
-  getTestPaths(patternInfo: PatternInfo): Promise<SearchResult> {
-    if (patternInfo.onlyChanged) {
-      return this.findChangedTests({lastCommit: patternInfo.lastCommit});
-    } else if (patternInfo.findRelatedTests && patternInfo.paths) {
-      return Promise.resolve(
-        this.findRelatedTestsFromPattern(patternInfo.paths),
-      );
-    } else if (patternInfo.testPathPattern != null) {
-      return Promise.resolve(
-        this.findMatchingTests(patternInfo.testPathPattern),
-      );
+  getTestPaths(pattern: PathPattern): Promise<SearchResult> {
+    if (pattern.onlyChanged) {
+      return this.findChangedTests({lastCommit: pattern.lastCommit});
+    } else if (pattern.findRelatedTests && pattern.paths) {
+      return Promise.resolve(this.findRelatedTestsFromPattern(pattern.paths));
+    } else if (pattern.testPathPattern != null) {
+      return Promise.resolve(this.findMatchingTests(pattern.testPathPattern));
     } else {
       return Promise.resolve({paths: []});
     }
-  }
-
-  static getTestPathPattern(patternInfo: PatternInfo): string {
-    const pattern = patternInfo.testPathPattern;
-    const input = patternInfo.input;
-    const formattedPattern = `/${pattern || ''}/`;
-    const formattedInput = patternInfo.shouldTreatInputAsPattern
-      ? `/${input || ''}/`
-      : `"${input || ''}"`;
-    return input === pattern ? formattedInput : formattedPattern;
   }
 }
 

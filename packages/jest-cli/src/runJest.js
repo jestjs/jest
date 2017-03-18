@@ -11,7 +11,7 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {PatternInfo} from './SearchSource';
+import type {PathPattern} from './SearchSource';
 import type TestWatcher from './TestWatcher';
 
 const fs = require('graceful-fs');
@@ -20,26 +20,45 @@ const SearchSource = require('./SearchSource');
 const TestRunner = require('./TestRunner');
 const TestSequencer = require('./TestSequencer');
 
-const getTestPathPatternInfo = require('./lib/getTestPathPatternInfo');
+const getTestPathPattern = require('./lib/getTestPathPattern');
 const chalk = require('chalk');
 const {Console, formatTestResults} = require('jest-util');
 const getMaxWorkers = require('./lib/getMaxWorkers');
 const path = require('path');
 const setState = require('./lib/setState');
 
-const getTestSummary = (argv: Object, pattern: PatternInfo) => {
-  const testPathPattern = SearchSource.getTestPathPattern(pattern);
+const formatTestPathPattern = pattern => {
+  const testPattern = pattern.testPathPattern;
+  const input = pattern.input;
+  const formattedPattern = `/${testPattern || ''}/`;
+  const formattedInput = pattern.shouldTreatInputAsPattern
+    ? `/${input || ''}/`
+    : `"${input || ''}"`;
+  return input === testPattern ? formattedInput : formattedPattern;
+};
+
+const getTestSummary = (
+  contexts: Array<Context>,
+  pattern: PathPattern,
+  testPathPattern: string,
+  testNamePattern: string,
+) => {
   const testInfo = pattern.onlyChanged
     ? chalk.dim(' related to changed files')
     : pattern.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
 
-  const nameInfo = argv.testNamePattern
-    ? chalk.dim(' with tests matching ') + `"${argv.testNamePattern}"`
+  const nameInfo = testNamePattern
+    ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
+    : '';
+
+  const contextInfo = contexts.length > 1
+    ? chalk.dim(' in ') + contexts.length + chalk.dim(' projects')
     : '';
 
   return chalk.dim('Ran all test suites') +
     testInfo +
     nameInfo +
+    contextInfo +
     chalk.dim('.');
 };
 
@@ -57,7 +76,7 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
 
   const pluralize = (word: string, count: number, ending: string) =>
     `${count} ${word}${count === 1 ? '' : ending}`;
-  const testPathPattern = SearchSource.getTestPathPattern(pattern);
+  const testPathPattern = formatTestPathPattern(pattern);
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || {};
     const config = testRun.context.config;
@@ -104,7 +123,7 @@ const getTestPaths = async (context, pattern, argv, pipe) => {
         setState(argv, 'watchAll', {
           noSCM: true,
         });
-        pattern = getTestPathPatternInfo(argv);
+        pattern = getTestPathPattern(argv);
         data = await source.getTestPaths(pattern);
       } else {
         localConsole.log(
@@ -198,7 +217,13 @@ const runJest = async (
   const results = await new TestRunner(
     context.config,
     {
-      getTestSummary: () => getTestSummary(argv, pattern),
+      getTestSummary: () =>
+        getTestSummary(
+          contexts,
+          pattern,
+          formatTestPathPattern(pattern),
+          argv.testNamePattern,
+        ),
       maxWorkers,
     },
     startRun,
