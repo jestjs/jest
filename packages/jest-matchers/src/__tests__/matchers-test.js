@@ -183,7 +183,7 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
+    test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -221,7 +221,7 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
+    test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(b)})`, () => {
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -310,7 +310,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
 });
 
 describe('.toBeNaN()', () => {
-  it('passes', () => {
+  it('{pass: true} expect(NaN).toBeNaN()', () => {
     [NaN, Math.sqrt(-1), Infinity - Infinity, 0 / 0].forEach(v => {
       jestExpect(v).toBeNaN();
 
@@ -383,16 +383,36 @@ describe(
       [0o11, 0o22],
       [0.1, 0.2],
     ].forEach(([small, big]) => {
-      it(`passes: [${small}, ${big}]`, () => {
+      it(`{pass: true} expect(${small}).toBeLessThan(${big})`, () => {
         jestExpect(small).toBeLessThan(big);
-        jestExpect(small).not.toBeGreaterThan(big);
-        jestExpect(big).toBeGreaterThan(small);
-        jestExpect(big).not.toBeLessThan(small);
+      });
 
+      it(`{pass: false} expect(${big}).toBeLessThan(${small})`, () => {
+        jestExpect(big).not.toBeLessThan(small);
+      });
+
+      it(`{pass: true} expect(${big}).toBeGreaterThan(${small})`, () => {
+        jestExpect(big).toBeGreaterThan(small);
+      });
+
+      it(`{pass: false} expect(${small}).toBeGreaterThan(${big})`, () => {
+        jestExpect(small).not.toBeGreaterThan(big);
+      });
+
+      it(`{pass: true} expect(${small}).toBeLessThanOrEqual(${big})`, () => {
         jestExpect(small).toBeLessThanOrEqual(big);
-        jestExpect(small).not.toBeGreaterThanOrEqual(big);
-        jestExpect(big).toBeGreaterThanOrEqual(small);
+      });
+
+      it(`{pass: false} expect(${big}).toBeLessThanOrEqual(${small})`, () => {
         jestExpect(big).not.toBeLessThanOrEqual(small);
+      });
+
+      it(`{pass: true} expect(${big}).toBeGreaterThanOrEqual(${small})`, () => {
+        jestExpect(big).toBeGreaterThanOrEqual(small);
+      });
+
+      it(`{pass: false} expect(${small}).toBeGreaterThanOrEqual(${big})`, () => {
+        jestExpect(small).not.toBeGreaterThanOrEqual(big);
       });
 
       it(`throws: [${small}, ${big}]`, () => {
@@ -565,7 +585,7 @@ describe('.toBeCloseTo()', () => {
     [1.23, 1.225],
     [1.23, 1.234],
   ].forEach(([n1, n2]) => {
-    it(`passes: [${n1}, ${n2}]`, () => {
+    it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
       jestExpect(n1).toBeCloseTo(n2);
 
       expect(() =>
@@ -594,7 +614,7 @@ describe('.toBeCloseTo()', () => {
 
 describe('.toMatch()', () => {
   [['foo', 'foo'], ['Foo bar', /^foo/i]].forEach(([n1, n2]) => {
-    it(`passes: [${n1}, ${n2}]`, () => {
+    it(`{pass: true} expect(${n1}).toMatch(${n2})`, () => {
       jestExpect(n1).toMatch(n2);
 
       expect(() =>
@@ -653,7 +673,7 @@ describe('.toHaveLength', () => {
     received,
     length,
   ]) => {
-    test(`expect(${stringify(received)}).toHaveLength(${length})`, () => {
+    test(`{pass: true} expect(${stringify(received)}).toHaveLength(${length})`, () => {
       jestExpect(received).toHaveLength(length);
       expect(() =>
         jestExpect(received).not.toHaveLength(
@@ -666,7 +686,7 @@ describe('.toHaveLength', () => {
     received,
     length,
   ]) => {
-    test(`expect(${stringify(received)}).toHaveLength(${length})`, () => {
+    test(`{pass: false} expect(${stringify(received)}).toHaveLength(${length})`, () => {
       jestExpect(received).not.toHaveLength(length);
       expect(() =>
         jestExpect(received).toHaveLength(
