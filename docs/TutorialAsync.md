@@ -68,7 +68,7 @@ export default function request(url) {
 }
 ```
 
-Now let's write a test for our async functionality. Using the `resolves` keyword 
+Now let's write a test for our async functionality. Using the `resolves` keyword
 ```js
 // __tests__/user-test.js
 jest.mock('../request');
@@ -77,7 +77,7 @@ import * as user from '../user';
 
 // The promise that is being tested should be returned.
 it('works with promises', () => {
-  return expect(user.getUserName(5)).resolves.toEqual('Paul'));
+  return expect(user.getUserName(5)).resolves.toEqual('Paul');
 });
 ```
 

@@ -318,7 +318,7 @@ For example, this code tests that the Promise returned by `fetchData()` rejects 
 test('fetchData() rejects to be error', () => {
   //make sure to add a return statement
   return expect(fetchData()).rejects.toEqual({
-    error: "User not found"
+    error: 'User not found',
   });
 });
 ```
@@ -328,9 +328,9 @@ Alternatively, you can use `async/await` in combination with `.rejects`:
 ```js
 test('fetchData() rejects to be error', async () => {
   await expect(fetchData()).rejects.toEqual({
-    error: "User not found"
+    error: 'User not found',
   });
-  await expect(fetchData()).rejects.not.toBe("Mark");
+  await expect(fetchData()).rejects.not.toBe('Mark');
 });
 ```
 
