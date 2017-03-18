@@ -11,13 +11,18 @@
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {Config} from 'types/Config';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {Context} from 'types/Context';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 
 const {getSummary, pluralize} = require('./utils');
 const chalk = require('chalk');
 const getResultHeader = require('./getResultHeader');
+
+type Options = {|
+  getTestSummary: () => string,
+|};
 
 const ARROW = ' \u203A ';
 const FAIL_COLOR = chalk.bold.red;
@@ -55,11 +60,13 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
-class SummareReporter extends BaseReporter {
+class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
+  _options: Options;
 
-  constructor() {
+  constructor(options: Options) {
     super();
+    this._options = options;
     this._estimatedTime = 0;
   }
 
@@ -77,17 +84,16 @@ class SummareReporter extends BaseReporter {
   onRunStart(
     config: Config,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
-    super.onRunStart(config, aggregatedResults, runnerContext, options);
+    super.onRunStart(config, aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
   onRunComplete(
+    contexts: Set<Context>,
     config: Config,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
   ) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
@@ -109,7 +115,7 @@ class SummareReporter extends BaseReporter {
       if (numTotalTestSuites) {
         const testSummary = wasInterrupted
           ? chalk.bold.red('Test run was interrupted.')
-          : runnerContext.getTestSummary();
+          : this._options.getTestSummary();
         this.log(
           getSummary(aggregatedResults, {
             estimatedTime: this._estimatedTime,
@@ -229,4 +235,4 @@ class SummareReporter extends BaseReporter {
   }
 }
 
-module.exports = SummareReporter;
+module.exports = SummaryReporter;

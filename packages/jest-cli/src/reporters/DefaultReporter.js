@@ -15,7 +15,7 @@
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 const Status = require('./Status');
@@ -114,7 +114,6 @@ class DefaultReporter extends BaseReporter {
   onRunStart(
     config: Config,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
     this._status.runStarted(aggregatedResults, options);
