@@ -288,6 +288,8 @@ test('the best flavor is not coconut', () => {
 
 ### `.resolves`
 
+##### available in Jest **20.0.0+**
+
 If your code uses Promises, use the `.resolves` keyword, and Jest will wait for the Promise to resolve and then run an assertion on the resulting value.
 
 For example, this code tests that the Promise returned by `fetchData()` resolves and that the resulting value is peanut butter:
@@ -309,6 +311,8 @@ test('fetchData() resolves and is peanut butter', async () => {
 ```
 
 ### `.rejects`
+
+##### available in Jest **20.0.0+**
 
 If your code uses Promises, use the `.rejects` keyword, and Jest will wait for that Promise to reject and then run an assertion on the resulting value.
 
