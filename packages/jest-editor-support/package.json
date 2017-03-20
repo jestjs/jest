@@ -8,7 +8,8 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babylon": "^6.14.1"
+    "babylon": "^6.14.1",
+    "jest-snapshot": "^19.0.2"
   },
   "typings": "index.d.ts"
 }

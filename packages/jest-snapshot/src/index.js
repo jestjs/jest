@@ -22,7 +22,7 @@ import {
 } from 'jest-matcher-utils';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
-import {SNAPSHOT_EXTENSION} from './utils';
+import utils, {SNAPSHOT_EXTENSION} from './utils';
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
@@ -155,4 +155,5 @@ module.exports = {
   getSerializers,
   toMatchSnapshot,
   toThrowErrorMatchingSnapshot,
+  utils,
 };
