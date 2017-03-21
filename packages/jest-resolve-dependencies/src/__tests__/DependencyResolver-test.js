@@ -30,7 +30,7 @@ beforeEach(() => {
     rootDir: '.',
     roots: ['./packages/jest-resolve-dependencies'],
   }).config;
-  return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+  return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,
       hasteMap.hasteFS,

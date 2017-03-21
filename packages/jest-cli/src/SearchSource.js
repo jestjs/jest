@@ -11,7 +11,7 @@
 'use strict';
 
 import type {Config} from 'types/Config';
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
 
@@ -86,7 +86,7 @@ const regexToMatcher = (testRegex: string) => {
 };
 
 class SearchSource {
-  _hasteContext: HasteContext;
+  _context: Context;
   _config: SearchSourceConfig;
   _options: ResolveModuleConfig;
   _rootPattern: RegExp;
@@ -99,11 +99,11 @@ class SearchSource {
   };
 
   constructor(
-    hasteMap: HasteContext,
+    context: Context,
     config: SearchSourceConfig,
     options?: ResolveModuleConfig,
   ) {
-    this._hasteContext = hasteMap;
+    this._context = context;
     this._config = config;
     this._options = options || {
       skipNodeResolution: false,
@@ -164,7 +164,7 @@ class SearchSource {
 
   _getAllTestPaths(testPathPattern: StrOrRegExpPattern): SearchResult {
     return this._filterTestPathsWithStats(
-      this._hasteContext.hasteFS.getAllFiles(),
+      this._context.hasteFS.getAllFiles(),
       testPathPattern,
     );
   }
@@ -180,8 +180,8 @@ class SearchSource {
 
   findRelatedTests(allPaths: Set<Path>): SearchResult {
     const dependencyResolver = new DependencyResolver(
-      this._hasteContext.resolver,
-      this._hasteContext.hasteFS,
+      this._context.resolver,
+      this._context.hasteFS,
     );
     return {
       paths: dependencyResolver.resolveInverse(

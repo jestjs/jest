@@ -9,12 +9,12 @@
  */
 'use strict';
 
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const createHasteContext = require('./lib/createHasteContext');
+const createTestContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
@@ -31,7 +31,7 @@ const watch = (
   pipe: stream$Writable | tty$WriteStream,
   argv: Object,
   hasteMap: HasteMap,
-  hasteContext: HasteContext,
+  hasteContext: Context,
   hasDeprecationWarnings?: boolean,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
@@ -66,7 +66,7 @@ const watch = (
     });
 
     if (validPaths.length) {
-      hasteContext = createHasteContext(config, {hasteFS, moduleMap});
+      hasteContext = createTestContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();

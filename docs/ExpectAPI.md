@@ -566,7 +566,7 @@ describe('my beverage', () => {
 
 ### `.toEqual(value)`
 
-Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity—this is also known as "deep equal". For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
 
 ```js
 const can1 = {
