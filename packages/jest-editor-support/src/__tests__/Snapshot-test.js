@@ -17,8 +17,15 @@ test('nodescribe.example', () => {
   const filePath = path.join(snapshotFixturePath, 'nodescribe.example');
   const results = snapshotHelper.getMetadata(filePath);
   const allAssertion = [
-    'fit', 'it', 'it.only', 'it.skip', 'test',
-    'test.only', 'test.skip', 'xit', 'xtest',
+    'fit',
+    'it',
+    'it.only',
+    'it.skip',
+    'test',
+    'test.only',
+    'test.skip',
+    'xit',
+    'xtest',
   ];
 
   const expectations = Object.create(null);
@@ -41,9 +48,9 @@ test('nodescribe.example', () => {
   });
 
   expect(
-    Object.keys(expectations).map(key => expectations[key]).filter(
-      expectation => !expectation.checked
-    ).length
+    Object.keys(expectations)
+      .map(key => expectations[key])
+      .filter(expectation => !expectation.checked).length,
   ).toBe(0);
 });
 
@@ -51,18 +58,28 @@ test('describe.example', () => {
   const filePath = path.join(snapshotFixturePath, 'describe.example');
   const results = snapshotHelper.getMetadata(filePath);
   const allDescribe = [
-    'describe', 'describe.only', 'describe.skip', 'fdescribe', 'xdescribe',
+    'describe',
+    'describe.only',
+    'describe.skip',
+    'fdescribe',
+    'xdescribe',
   ];
   const allAssertion = [
-    'fit', 'it', 'it.only', 'it.skip', 'test',
-    'test.only', 'test.skip', 'xit', 'xtest',
+    'fit',
+    'it',
+    'it.only',
+    'it.skip',
+    'test',
+    'test.only',
+    'test.skip',
+    'xit',
+    'xtest',
   ];
 
   const expectations = Object.create(null);
 
   allDescribe.forEach(describe => {
     allAssertion.forEach(assertion => {
-
       expectations[describe.toUpperCase() + ' ' + assertion + ' 1'] = {
         assertion,
         checked: false,
@@ -81,15 +98,13 @@ test('describe.example', () => {
 
   results.forEach(result => {
     const check = expectations[result.name];
-    if(!check) console.log(result)
-    check.checked = (
-      result.content === `${check.number} ${check.assertion} ${check.describe}`
-    );
+    check.checked = result.content ===
+      `${check.number} ${check.assertion} ${check.describe}`;
   });
   expect(
-    Object.keys(expectations).map(key => expectations[key]).filter(
-      expectation => !expectation.checked
-    ).length
+    Object.keys(expectations)
+      .map(key => expectations[key])
+      .filter(expectation => !expectation.checked).length,
   ).toBe(0);
 });
 
@@ -100,14 +115,14 @@ test('nested.example', () => {
   expect(results[1].content).toBe('second nested');
 
   expect(results[0].name).toBe(
-    'outer describe outer it inner describe inner it 1'
+    'outer describe outer it inner describe inner it 1',
   );
   expect(results[1].name).toBe(
-    'outer describe outer it inner describe inner it 2'
+    'outer describe outer it inner describe inner it 2',
   );
 
-  expect(results[0].node.loc.start).toEqual({column:21, line: 5});
-  expect(results[0].node.loc.end).toEqual({column:36, line:5});
-  expect(results[1].node.loc.start).toEqual({column:21, line: 6});
-  expect(results[1].node.loc.end).toEqual({column:36, line:6});
+  expect(results[0].node.loc.start).toEqual({column: 21, line: 5});
+  expect(results[0].node.loc.end).toEqual({column: 36, line: 5});
+  expect(results[1].node.loc.start).toEqual({column: 21, line: 6});
+  expect(results[1].node.loc.end).toEqual({column: 36, line: 6});
 });

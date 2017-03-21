@@ -7,24 +7,27 @@
  * @flow
  */
 
-import {readFileSync} from 'fs';
+import { readFileSync } from 'fs';
 
-import {parse as babylonParse} from 'babylon';
-import {Expect, ItBlock} from './parser_nodes';
+import { parse as babylonParse } from 'babylon';
+import { Expect, ItBlock } from './parser_nodes';
 
 export type BabylonParserResult = {
   expects: Array<Expect>,
   itBlocks: Array<ItBlock>,
 };
 
+export const getASTfor = (file: string): BabylonParserResult => {
+  const data = readFileSync(file).toString();
+  const config = { plugins: ['*'], sourceType: 'module' };
+  return babylonParse(data, config);
+};
+
 export const parse = (file: string): BabylonParserResult => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
 
-  const data = readFileSync(file).toString();
-
-  const config = {plugins: ['*'], sourceType: 'module'};
-  const ast = babylonParse(data, config);
+  const ast = getASTfor(file);
 
   // An `it`/`test` was found in the AST
   // So take the AST node and create an object for us
