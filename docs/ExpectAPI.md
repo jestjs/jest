@@ -296,7 +296,7 @@ For example, this code tests that the Promise returned by `fetchData()` resolves
 
 ```js
 test('fetchData() resolves and is peanut butter', () => {
-  //make sure to add a return statement
+  // make sure to add a return statement
   return expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
@@ -320,7 +320,7 @@ For example, this code tests that the Promise returned by `fetchData()` rejects 
 
 ```js
 test('fetchData() rejects to be error', () => {
-  //make sure to add a return statement
+  // make sure to add a return statement
   return expect(fetchData()).rejects.toEqual({
     error: 'User not found',
   });
