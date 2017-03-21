@@ -169,6 +169,11 @@ const users = [
     infoLink: 'https://jane.com',
   },
   {
+    caption: 'Kickstarter',
+    image: '/jest/img/logos/kickstarter.png',
+    infoLink: 'https://www.kickstarter.com',
+  },
+  {
     caption: 'KLM Royal Dutch Airlines',
     image: '/jest/img/logos/klm.png',
     infoLink: 'https://www.klm.com/',
