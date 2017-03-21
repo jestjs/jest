@@ -81,6 +81,7 @@ test('describe.example', () => {
 
   results.forEach(result => {
     const check = expectations[result.name];
+    if(!check) console.log(result)
     check.checked = (
       result.content === `${check.number} ${check.assertion} ${check.describe}`
     );

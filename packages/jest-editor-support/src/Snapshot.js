@@ -11,7 +11,7 @@
 'use strict';
 
 const fs = require('fs');
-const walker = require('./walker');
+const traverse = require('babel-traverse').default;
 const {utils} = require('jest-snapshot');
 
 type Node = any;
@@ -65,6 +65,16 @@ const isValidParent = parent => (
   )
 );
 
+const getArrayOfParents = path => {
+  const result = [];
+  let parent = path.parentPath;
+  while (parent) {
+    result.unshift(parent.node);
+    parent = parent.parentPath;
+  }
+  return result;
+}
+
 const buildname: (
   toMatchSnapshot: Node,
   parents: Array<Node>,
@@ -105,14 +115,26 @@ module.exports = class Snapshot {
     const state = {
       found: [],
     };
+    const tocheck = {
+      found: []
+    };
 
-    walker(fileNode, {
-      Identifier(node, state, parents) {
-        if (node.name === 'toMatchSnapshot') {
-          state.found.push({node, parents});
+    const Visitors = {
+      Identifier(path, state) {
+        if (path.node.name === 'toMatchSnapshot') {
+          state.found.push({node: path.node, parents: getArrayOfParents(path)})
         }
-      },
-    }, state);
+      }
+    }
+
+    traverse(fileNode, {
+      enter: function(path) {
+        const visitor = Visitors[path.node.type];
+        if (visitor != null) {
+          visitor(path, state);
+        }
+      }
+    });
 
     let lastParent = null;
     let count = 1;
@@ -120,7 +142,7 @@ module.exports = class Snapshot {
     const snapshotPath = utils.getSnapshotPath(filePath);
     const snapshots = utils.getSnapshotData(snapshotPath, false).data;
 
-    return state.found.map(toMatchSnapshot => {
+    return state.found.map((toMatchSnapshot, index) => {
 
       const parents = toMatchSnapshot.parents.filter(isValidParent);
       const innerAssertion = parents[parents.length - 1];
@@ -149,7 +171,6 @@ module.exports = class Snapshot {
         result.exists = true;
         result.content = snapshots[result.name];
       }
-
       return result;
     });
   }
