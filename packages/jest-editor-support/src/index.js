@@ -14,6 +14,7 @@ const Process = require('./Process');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const Runner = require('./Runner');
 const Settings = require('./Settings');
+const Snapshot = require('./Snapshot');
 const {Expect, ItBlock, Node} = require('./parsers/ParserNodes');
 const {parse} = require('./parsers/BabylonParser');
 const TestReconciler = require('./TestReconciler');
@@ -26,6 +27,7 @@ module.exports = {
   ProjectWorkspace,
   Runner,
   Settings,
+  Snapshot,
   TestReconciler,
   parse,
 };

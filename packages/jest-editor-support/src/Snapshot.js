@@ -10,8 +10,8 @@
 
 'use strict';
 
-const fs = require('fs');
 const traverse = require('babel-traverse').default;
+const {getASTfor} = require('./parsers/BabylonParser');
 const {utils} = require('jest-snapshot');
 
 type Node = any;
@@ -23,47 +23,48 @@ type SnapshotMetadata = {
   content?: string,
 };
 
-// create a lookup table from an array.
-const lookupFromArray = array => array.reduce(
-  (table: any, prop) => {
-    table[prop] = true;
-    return table;
+const describeVariants = Object.assign(
+  (Object.create(null): {[string]: boolean}),
+  {
+    describe: true,
+    fdescribe: true,
+    xdescribe: true,
   },
-  Object.create(null)
 );
-
-const describeVariants = lookupFromArray([
-  'describe',
-  'fdescribe',
-  'xdescribe',
-]);
-const base = lookupFromArray(['describe', 'it', 'test']);
-const decorators = lookupFromArray(['only', 'skip']);
+const base = Object.assign((Object.create(null): {[string]: boolean}), {
+  describe: true,
+  it: true,
+  test: true,
+});
+const decorators = Object.assign((Object.create(null): {[string]: boolean}), {
+  only: true,
+  skip: true,
+});
 
 const validParents = Object.assign(
   (Object.create(null): any),
   base,
   describeVariants,
-  lookupFromArray(['xtest', 'xit', 'fit'])
+  Object.assign((Object.create(null): {[string]: boolean}), {
+    fit: true,
+    xit: true,
+    xtest: true,
+  }),
 );
 
-const isValidMemberExpression = node => (
-  node.object && base[node.object.name] &&
-  node.property && decorators[node.property.name]
-);
+const isValidMemberExpression = node =>
+  node.object &&
+  base[node.object.name] &&
+  node.property &&
+  decorators[node.property.name];
 
-const isDescribe = node => (
-  describeVariants[node.name] || (
-  isValidMemberExpression(node) && node.object.name === 'describe'
-));
+const isDescribe = node =>
+  describeVariants[node.name] ||
+  (isValidMemberExpression(node) && node.object.name === 'describe');
 
-const isValidParent = parent => (
+const isValidParent = parent =>
   parent.callee &&
-  (
-    validParents[parent.callee.name] ||
-    isValidMemberExpression(parent.callee)
-  )
-);
+  (validParents[parent.callee.name] || isValidMemberExpression(parent.callee));
 
 const getArrayOfParents = path => {
   const result = [];
@@ -73,20 +74,19 @@ const getArrayOfParents = path => {
     parent = parent.parentPath;
   }
   return result;
-}
+};
 
-const buildname: (
-  toMatchSnapshot: Node,
+const buildName: (
+  snapshotNode: Node,
   parents: Array<Node>,
   position: number,
-) => string = (toMatchSnapshot, parents, position) => {
-
+) => string = (snapshotNode, parents, position) => {
   const fullName = parents.map(parent => parent.arguments[0].value).join(' ');
 
   let describeLess = '';
   if (!isDescribe(parents[0].callee)) {
-    // if `it` or `test` exists without a surrounding `describe`
-    // then `test ` is prepended to the snapshot fullName
+    // If `it` or `test` exists without a surrounding `describe`
+    // then `test ` is prepended to the snapshot fullName.
     describeLess = 'test ';
   }
 
@@ -95,56 +95,43 @@ const buildname: (
 
 module.exports = class Snapshot {
   _parser: Function;
-  _parserOptions: any;
-
-  constructor(parser: any, parserOptions: any) {
-    this._parser = parser || require('babylon').parse;
-    this._parserOptions = parserOptions || {
-      plugins: [
-        'jsx', 'flow', 'objectRestSpread', 'classProperties',
-      ],
-      sourceType: 'module',
-    };
+  _matchers: Array<string>;
+  constructor(parser: any, customMatchers?: Array<string>) {
+    this._parser = parser || getASTfor;
+    this._matchers = ['toMatchSnapshot', 'toThrowErrorMatchingSnapshot'].concat(
+      customMatchers || [],
+    );
   }
 
   getMetadata(filePath: string): Array<SnapshotMetadata> {
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-
-    const fileNode = this._parser(fileContent, this._parserOptions);
-
+    const fileNode = this._parser(filePath);
     const state = {
       found: [],
     };
-    const tocheck = {
-      found: []
+    const Visitors = {
+      Identifier(path, state, matchers) {
+        if (matchers.includes(path.node.name)) {
+          state.found.push({node: path.node, parents: getArrayOfParents(path)});
+        }
+      },
     };
 
-    const Visitors = {
-      Identifier(path, state) {
-        if (path.node.name === 'toMatchSnapshot') {
-          state.found.push({node: path.node, parents: getArrayOfParents(path)})
-        }
-      }
-    }
-
     traverse(fileNode, {
-      enter: function(path) {
+      enter: path => {
         const visitor = Visitors[path.node.type];
         if (visitor != null) {
-          visitor(path, state);
+          visitor(path, state, this._matchers);
         }
-      }
+      },
     });
-
-    let lastParent = null;
-    let count = 1;
 
     const snapshotPath = utils.getSnapshotPath(filePath);
     const snapshots = utils.getSnapshotData(snapshotPath, false).data;
+    let lastParent = null;
+    let count = 1;
 
-    return state.found.map((toMatchSnapshot, index) => {
-
-      const parents = toMatchSnapshot.parents.filter(isValidParent);
+    return state.found.map((snapshotNode, index) => {
+      const parents = snapshotNode.parents.filter(isValidParent);
       const innerAssertion = parents[parents.length - 1];
 
       if (lastParent !== innerAssertion) {
@@ -157,15 +144,15 @@ module.exports = class Snapshot {
         count: count++,
         exists: false,
         name: '',
-        node: toMatchSnapshot.node,
+        node: snapshotNode.node,
       };
 
       if (!innerAssertion || isDescribe(innerAssertion.callee)) {
-        // an expectation inside a describe never get executed.
+        // An expectation inside describe never gets executed.
         return result;
       }
 
-      result.name = buildname(toMatchSnapshot, parents, result.count);
+      result.name = buildName(snapshotNode, parents, result.count);
 
       if (snapshots[result.name]) {
         result.exists = true;
