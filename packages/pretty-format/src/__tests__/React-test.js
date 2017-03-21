@@ -41,9 +41,6 @@ function assertPrintedJSX(actual, expected, opts) {
   ).toEqual(expected);
 }
 
-// suppress React errors globally
-console.error = jest.fn();
-
 test('supports a single element with no props or children', () => {
   assertPrintedJSX(React.createElement('Mouse'), '<Mouse />');
 });
@@ -252,11 +249,15 @@ test('supports a single element with custom React elements with a child', () => 
 });
 
 test('supports Unknown element', () => {
+  // Suppress React.createElement(undefined) console error
+  const consoleError = console.error;
+  console.error = jest.fn();
   expect(
     prettyFormat(React.createElement(undefined), {
       plugins: [ReactElement],
     }),
   ).toEqual('<Unknown />');
+  console.error = consoleError;
 });
 
 test('supports a single element with React elements with a child', () => {
