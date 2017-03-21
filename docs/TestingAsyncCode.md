@@ -48,15 +48,13 @@ If `done()` is never called, the test will fail, which is what you want to happe
 
 ### Promises
 
-If your code uses promises, there is a simpler way to handle asynchronous tests. Just return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+If your code uses promises, there is a simpler way to handle asynchronous tests. Just use the `resolves` keyword in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
 For example, let's say that `fetchData`, instead of using a callback, returns a promise that is supposed to resolve to the string `"peanut butter"`. We could test it with:
 
 ```js
 test('the data is peanut butter', () => {
-  return fetchData().then(data => {
-    expect(data).toBe('peanut butter');
-  });
+  return expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
 
@@ -68,8 +66,7 @@ If your code uses `async` and `await`, you can use these in your tests as well. 
 
 ```js
 test('the data is peanut butter', async () => {
-  const data = await fetchData();
-  expect(data).toBe('peanut butter');
+  await expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
 

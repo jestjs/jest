@@ -286,6 +286,58 @@ test('the best flavor is not coconut', () => {
 });
 ```
 
+### `.resolves`
+
+##### available in Jest **20.0.0+**
+
+If your code uses Promises, use the `.resolves` keyword, and Jest will wait for the Promise to resolve and then run an assertion on the resulting value.
+
+For example, this code tests that the Promise returned by `fetchData()` resolves and that the resulting value is peanut butter:
+
+```js
+test('fetchData() resolves and is peanut butter', () => {
+  // make sure to add a return statement
+  return expect(fetchData()).resolves.toBe('peanut butter');
+});
+```
+
+Alternatively, you can use `async/await` in combination with `.resolves`:
+
+```js
+test('fetchData() resolves and is peanut butter', async () => {
+  await expect(fetchData()).resolves.toBe('peanut butter');
+  await expect(fetchData()).resolves.not.toBe('coconut');
+});
+```
+
+### `.rejects`
+
+##### available in Jest **20.0.0+**
+
+If your code uses Promises, use the `.rejects` keyword, and Jest will wait for that Promise to reject and then run an assertion on the resulting value.
+
+For example, this code tests that the Promise returned by `fetchData()` rejects and that the resulting value is an error:
+
+```js
+test('fetchData() rejects to be error', () => {
+  // make sure to add a return statement
+  return expect(fetchData()).rejects.toEqual({
+    error: 'User not found',
+  });
+});
+```
+
+Alternatively, you can use `async/await` in combination with `.rejects`:
+
+```js
+test('fetchData() rejects to be error', async () => {
+  await expect(fetchData()).rejects.toEqual({
+    error: 'User not found',
+  });
+  await expect(fetchData()).rejects.not.toBe('Mark');
+});
+```
+
 ### `.toBe(value)`
 
 `toBe` just checks that a value is what you expect. It uses `===` to check
