@@ -28,7 +28,8 @@ function getPlatformExtension(
   }
   const platform = file.substring(secondToLast + 1, last);
   // If an overriding platform array is passed, check that first
-  if (platforms && platforms.includes(platform)) {
+
+  if (platforms && platforms.indexOf(platform) !== -1) {
     return platform;
   }
   return SUPPORTED_PLATFORM_EXTS[platform] ? platform : null;
