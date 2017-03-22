@@ -57,4 +57,16 @@ describe('expectationResultFactory', () => {
     const result = expectationResultFactory(options);
     expect(result.message).toEqual('Error: Expected `Pass`, recieved `Fail`.');
   });
+
+  it('returns the result if failed (with `error` as a string).', () => {
+    const options = {
+      actual: 'Fail',
+      error: 'Expected `Pass`, recieved `Fail`.',
+      expected: 'Pass',
+      matcherName: 'testMatcher',
+      passed: false,
+    };
+    const result = expectationResultFactory(options);
+    expect(result.message).toEqual('Expected `Pass`, recieved `Fail`. thrown');
+  });
 });
