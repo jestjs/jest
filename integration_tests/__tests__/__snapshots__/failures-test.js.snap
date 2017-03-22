@@ -71,6 +71,7 @@ Object {
     Expected two assertions to be called but only received one assertion call.
       
       at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
+          at Generator.next (<anonymous>)
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -88,6 +89,7 @@ Object {
     Expected zero assertions to be called but only received one assertion call.
       
       at addAssertionErrors (../../packages/jest-jasmine2/build/setup-jest-globals.js:56:21)
+          at Generator.next (<anonymous>)
 
   .assertions()
     ✕ throws
