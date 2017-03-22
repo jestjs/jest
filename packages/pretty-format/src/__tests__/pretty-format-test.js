@@ -693,11 +693,15 @@ describe('prettyFormat()', () => {
     });
 
     it('supports Unknown element', () => {
+      //mocking console.error because React.createElement(undefined) prints an error to the console
+      const consoleError = console.error;
+      console.error = jest.fn();
       expect(
         prettyFormat(React.createElement(undefined), {
           plugins: [ReactElement],
         }),
       ).toEqual('<Unknown />');
+      console.error = consoleError;
     });
 
     it('supports a single element with React elements with a child', () => {
