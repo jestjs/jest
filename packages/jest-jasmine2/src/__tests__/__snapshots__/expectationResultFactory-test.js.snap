@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`expectationResultFactory returns the result if passed. 1`] = `
+Object {
+  "error": undefined,
+  "matcherName": "testMatcher",
+  "message": "Passed.",
+  "passed": true,
+  "stack": "",
+}
+`;
