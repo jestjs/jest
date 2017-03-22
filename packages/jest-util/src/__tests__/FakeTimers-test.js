@@ -327,7 +327,7 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers(global, moduleMocker, {rootDir: __dirname});
       timers.runAllTimers();
       expect(
-        console.warn.mock.calls[0][0].split('\n').slice(0, -4).join('\n'),
+        console.warn.mock.calls[0][0].split('\nStack Trace')[0],
       ).toMatchSnapshot();
       console.warn = consoleWarn;
     });
