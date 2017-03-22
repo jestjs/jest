@@ -126,15 +126,6 @@ module.exports = function(j$) {
       return fullName.join(' ');
     };
 
-    const buildExpectationResult = j$.buildExpectationResult;
-    const exceptionFormatter = new j$.ExceptionFormatter();
-    const expectationResultFactory = function(attrs) {
-      attrs.messageFormatter = exceptionFormatter.message;
-      attrs.stackFormatter = exceptionFormatter.stack;
-
-      return buildExpectationResult(attrs);
-    };
-
     this.catchExceptions = function(value) {
       catchExceptions = !!value;
       return catchExceptions;
@@ -198,7 +189,6 @@ module.exports = function(j$) {
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
-      expectationResultFactory,
     });
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
@@ -293,7 +283,6 @@ module.exports = function(j$) {
         id: getNextSuiteId(),
         description,
         parentSuite: currentDeclarationSuite,
-        expectationResultFactory,
         throwOnExpectationFailure,
       });
 
@@ -387,7 +376,6 @@ module.exports = function(j$) {
         },
         onStart: specStarted,
         description,
-        expectationResultFactory,
         queueRunnerFactory,
         userContext() {
           return suite.clonedSharedUserContext();
