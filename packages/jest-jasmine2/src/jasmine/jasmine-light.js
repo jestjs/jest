@@ -32,10 +32,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-const buildExpectationResult = require('./buildExpectationResult');
 const createSpy = require('./createSpy');
 const Env = require('./Env');
-const ExceptionFormatter = require('./ExceptionFormatter');
 const JsApiReporter = require('./JsApiReporter');
 const QueueRunner = require('./QueueRunner');
 const ReportDispatcher = require('./ReportDispatcher');
@@ -55,10 +53,8 @@ exports.create = function() {
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };
-  j$.buildExpectationResult = buildExpectationResult;
   j$.createSpy = createSpy;
   j$.Env = Env(j$);
-  j$.ExceptionFormatter = ExceptionFormatter;
   j$.JsApiReporter = JsApiReporter;
   j$.QueueRunner = QueueRunner;
   j$.ReportDispatcher = ReportDispatcher;

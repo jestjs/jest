@@ -32,13 +32,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-const ExpectationFailed = require('./ExpectationFailed');
+const ExpectationFailed = require('../ExpectationFailed');
+const expectationResultFactory = require('../expectationResultFactory');
 
 function Suite(attrs) {
   this.id = attrs.id;
   this.parentSuite = attrs.parentSuite;
   this.description = attrs.description;
-  this.expectationResultFactory = attrs.expectationResultFactory;
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
   this.beforeFns = [];
@@ -153,7 +153,7 @@ Suite.prototype.onException = function() {
       actual: '',
       error: arguments[0],
     };
-    this.result.failedExpectations.push(this.expectationResultFactory(data));
+    this.result.failedExpectations.push(expectationResultFactory(data));
   } else {
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
@@ -165,7 +165,7 @@ Suite.prototype.onException = function() {
 Suite.prototype.addExpectationResult = function() {
   if (isAfterAll(this.children) && isFailure(arguments)) {
     const data = arguments[1];
-    this.result.failedExpectations.push(this.expectationResultFactory(data));
+    this.result.failedExpectations.push(expectationResultFactory(data));
     if (this.throwOnExpectationFailure) {
       throw new ExpectationFailed();
     }

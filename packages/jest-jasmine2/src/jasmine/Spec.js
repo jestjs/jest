@@ -32,7 +32,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-const ExpectationFailed = require('./ExpectationFailed');
+const ExpectationFailed = require('../ExpectationFailed');
+const expectationResultFactory = require('../expectationResultFactory');
 
 function Spec(attrs) {
   this.resultCallback = attrs.resultCallback || function() {};
@@ -52,14 +53,8 @@ function Spec(attrs) {
     function() {
       return '';
     };
-  this.expectationResultFactory = attrs.expectationResultFactory ||
-    function() {};
   this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
   this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
-
-  if (!this.queueableFn.fn) {
-    this.pend();
-  }
 
   this.result = {
     id: this.id,
@@ -72,7 +67,7 @@ function Spec(attrs) {
 }
 
 Spec.prototype.addExpectationResult = function(passed, data, isError) {
-  const expectationResult = this.expectationResultFactory(data);
+  const expectationResult = expectationResultFactory(data);
   if (passed) {
     this.result.passedExpectations.push(expectationResult);
   } else {
