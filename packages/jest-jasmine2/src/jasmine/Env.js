@@ -166,7 +166,9 @@ module.exports = function(j$) {
 
     const queueRunnerFactory = function(options) {
       options.catchException = catchException;
+      options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
+      options.setTimeout = realSetTimeout;
       queueRunner(options);
     };
 

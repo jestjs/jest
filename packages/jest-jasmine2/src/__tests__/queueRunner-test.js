@@ -17,6 +17,7 @@ describe('queueRunner', () => {
     const fnTwo = jest.fn(next => next());
     const onComplete = jest.fn();
     const options = {
+      clearTimeout,
       fail: () => {},
       onComplete,
       onException: () => {},
@@ -25,6 +26,7 @@ describe('queueRunner', () => {
       }, {
         fn: fnTwo,
       }],
+      setTimeout,
     };
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
@@ -38,6 +40,7 @@ describe('queueRunner', () => {
     const fnTwo = jest.fn(next => next());
     const onComplete = jest.fn();
     const options = {
+      clearTimeout,
       fail,
       onComplete,
       onException: () => {},
@@ -46,6 +49,7 @@ describe('queueRunner', () => {
       }, {
         fn: fnTwo,
       }],
+      setTimeout,
     };
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
@@ -64,6 +68,7 @@ describe('queueRunner', () => {
     const onComplete = jest.fn();
     const onException = jest.fn();
     const options = {
+      clearTimeout,
       fail: () => {},
       onComplete,
       onException,
@@ -72,6 +77,7 @@ describe('queueRunner', () => {
       }, {
         fn: fnTwo,
       }],
+      setTimeout,
     };
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
@@ -87,6 +93,7 @@ describe('queueRunner', () => {
     const onComplete = jest.fn();
     const onException = jest.fn();
     const options = {
+      clearTimeout,
       fail: () => {},
       onComplete,
       onException,
@@ -97,6 +104,7 @@ describe('queueRunner', () => {
       }, {
         fn: fnTwo,
       }],
+      setTimeout,
     };
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();

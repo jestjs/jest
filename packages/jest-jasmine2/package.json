@@ -14,7 +14,6 @@
     "jest-message-util": "^19.0.0",
     "jest-snapshot": "^19.0.2",
     "once": "^1.4.0",
-    "p-map": "^1.1.1",
-    "p-timeout": "^1.0.0"
+    "p-map": "^1.1.1"
   }
 }

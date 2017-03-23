@@ -11,13 +11,15 @@
 
 const once = require('once');
 const pMap = require('p-map');
-const pTimeout = require('p-timeout');
+const pTimeout = require('./p-timeout');
 
 type Options = {
+  clearTimeout: (timeoutID: number) => void,
   fail: () => void;
   onComplete: () => void;
   onException: () => void;
   queueableFns: Array<QueueableFn>,
+  setTimeout: (func: () => void, delay: number) => number,
   userContext: any,
 };
 
@@ -44,13 +46,19 @@ async function queueRunner(options: Options) {
     if (!timeout) {
       return promise;
     }
-    return pTimeout(promise, timeout(), () => {
-      const error = new Error(
-        'Timeout - Async callback was not invoked within timeout specified ' +
-        'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
-      );
-      options.onException(error);
-    });
+    return pTimeout(
+      promise,
+      timeout(),
+      options.clearTimeout,
+      options.setTimeout,
+      () => {
+        const error = new Error(
+          'Timeout - Async callback was not invoked within timeout specified ' +
+          'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+        );
+        options.onException(error);
+      },
+    );
   }
 
   await pMap(options.queueableFns, mapper, {concurrency: 1});
