@@ -40,6 +40,7 @@ module.exports = {
         xdescribe: false,
         xit: false,
         xtest: false,
+        spyOn: false,
       },
     },
   },
