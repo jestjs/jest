@@ -28,7 +28,7 @@ type QueueableFn = {
   timeout?: () => number,
 };
 
-async function queueRunner(options: Options) {
+function queueRunner(options: Options) {
   const mapper = ({fn, timeout}) => {
     const promise = new Promise(resolve => {
       const next = once(resolve);
@@ -61,8 +61,8 @@ async function queueRunner(options: Options) {
     );
   };
 
-  await pMap(options.queueableFns, mapper, {concurrency: 1});
-  options.onComplete();
+  return pMap(options.queueableFns, mapper, {concurrency: 1})
+    .then(options.onComplete);
 }
 
 module.exports = queueRunner;
