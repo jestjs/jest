@@ -35,7 +35,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 const createSpy = require('./createSpy');
 const Env = require('./Env');
 const JsApiReporter = require('./JsApiReporter');
-const QueueRunner = require('./QueueRunner');
 const ReportDispatcher = require('./ReportDispatcher');
 const Spec = require('./Spec');
 const SpyRegistry = require('./SpyRegistry');
@@ -56,7 +55,6 @@ exports.create = function() {
   j$.createSpy = createSpy;
   j$.Env = Env(j$);
   j$.JsApiReporter = JsApiReporter;
-  j$.QueueRunner = QueueRunner;
   j$.ReportDispatcher = ReportDispatcher;
   j$.Spec = Spec;
   j$.SpyRegistry = SpyRegistry;
