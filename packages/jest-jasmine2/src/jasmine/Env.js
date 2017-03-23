@@ -32,6 +32,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
+const queueRunner = require('../queueRunner');
+
 module.exports = function(j$) {
   function Env(options) {
     options = options || {};
@@ -135,19 +137,6 @@ module.exports = function(j$) {
       return catchExceptions;
     };
 
-    const maximumSpecCallbackDepth = 20;
-    let currentSpecCallbackDepth = 0;
-
-    function clearStack(fn) {
-      currentSpecCallbackDepth++;
-      if (currentSpecCallbackDepth >= maximumSpecCallbackDepth) {
-        currentSpecCallbackDepth = 0;
-        realSetTimeout(fn, 0);
-      } else {
-        fn();
-      }
-    }
-
     const catchException = function(e) {
       return j$.Spec.isPendingSpecException(e) || catchExceptions;
     };
@@ -177,14 +166,10 @@ module.exports = function(j$) {
 
     const queueRunnerFactory = function(options) {
       options.catchException = catchException;
-      options.clearStack = options.clearStack || clearStack;
-      options.timeout = {
-        setTimeout: realSetTimeout,
-        clearTimeout: realClearTimeout,
-      };
+      options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
-
-      new j$.QueueRunner(options).execute();
+      options.setTimeout = realSetTimeout;
+      queueRunner(options);
     };
 
     const topSuite = new j$.Suite({
