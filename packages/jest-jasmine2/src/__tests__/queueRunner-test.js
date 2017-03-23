@@ -60,7 +60,7 @@ describe('queueRunner', () => {
   });
 
   it('passes errors to `onException`.', async () => {
-    const error = new Error('The error a test throws.')
+    const error = new Error('The error a test throws.');
     const fnOne = jest.fn(() => {
       throw error;
     });

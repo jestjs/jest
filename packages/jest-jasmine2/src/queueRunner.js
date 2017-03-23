@@ -15,9 +15,9 @@ const pTimeout = require('./p-timeout');
 
 type Options = {
   clearTimeout: (timeoutID: number) => void,
-  fail: () => void;
-  onComplete: () => void;
-  onException: () => void;
+  fail: () => void,
+  onComplete: () => void,
+  onException: () => void,
   queueableFns: Array<QueueableFn>,
   setTimeout: (func: () => void, delay: number) => number,
   userContext: any,
@@ -35,10 +35,10 @@ async function queueRunner(options: Options) {
       next.fail = (...args) => {
         options.fail(...args);
         resolve();
-      }
+      };
       try {
         fn.call(options.userContext, next);
-      } catch(e) {
+      } catch (e) {
         options.onException(e);
         resolve();
       }
@@ -59,7 +59,7 @@ async function queueRunner(options: Options) {
         options.onException(error);
       },
     );
-  }
+  };
 
   await pMap(options.queueableFns, mapper, {concurrency: 1});
   options.onComplete();
