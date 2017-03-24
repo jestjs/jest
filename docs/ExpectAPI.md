@@ -308,23 +308,23 @@ test('the best flavor is not coconut', () => {
 
 ##### available in Jest **20.0.0+**
 
-If your code uses Promises, use the `.resolves` keyword, and Jest will wait for the Promise to resolve and then run an assertion on the resulting value.
+Use `resolves` to unwrap the value of a fulfilled promise so any other matcher can be chained. If the promise is rejected the assertion fails.
 
-For example, this code tests that the Promise returned by `fetchData()` resolves and that the resulting value is peanut butter:
+For example, this code tests that the promise resolves and that the resulting value is `'lemon'`:
 
 ```js
-test('fetchData() resolves and is peanut butter', () => {
+test('resolves to lemon', () => {
   // make sure to add a return statement
-  return expect(fetchData()).resolves.toBe('peanut butter');
+  return expect(Promise.resolve('lemon')).resolves.toBe('lemon');
 });
 ```
 
 Alternatively, you can use `async/await` in combination with `.resolves`:
 
 ```js
-test('fetchData() resolves and is peanut butter', async () => {
-  await expect(fetchData()).resolves.toBe('peanut butter');
-  await expect(fetchData()).resolves.not.toBe('coconut');
+test('resolves to lemon', async () => {
+  await expect(Promise.resolve('lemon')).resolves.toBe('lemon');
+  await expect(Promise.resolve('lemon')).resolves.not.toBe('octopus');
 });
 ```
 
@@ -332,27 +332,27 @@ test('fetchData() resolves and is peanut butter', async () => {
 
 ##### available in Jest **20.0.0+**
 
-If your code uses Promises, use the `.rejects` keyword, and Jest will wait for that Promise to reject and then run an assertion on the resulting value.
+Use `.rejects` to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is fulfilled the assertion fails.
 
-For example, this code tests that the Promise returned by `fetchData()` rejects and that the resulting value is an error:
+For example, this code tests that the promise rejects with a reason:
 
 ```js
 test('fetchData() rejects to be error', () => {
   // make sure to add a return statement
-  return expect(fetchData()).rejects.toEqual({
-    error: 'User not found',
-  });
+  return expect(Promise.reject('octopus')).rejects.toBeDefined();
 });
 ```
 
-Alternatively, you can use `async/await` in combination with `.rejects`:
+Alternatively, you can use `async/await` in combination with `.rejects`.
+Moreover, this code tests that the returned reason includes 'octopus'`:
 
 ```js
 test('fetchData() rejects to be error', async () => {
-  await expect(fetchData()).rejects.toEqual({
-    error: 'User not found',
-  });
-  await expect(fetchData()).rejects.not.toBe('Mark');
+  const drinkOctopus = new Promise(() => {
+    throw 'yuck, octopus flavor'
+  })
+
+  await expect(drinkOctopus).rejects.toMatch('octopus');
 });
 ```
 

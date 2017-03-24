@@ -6,33 +6,27 @@ jest.mock('../request');
 
 import * as user from '../user';
 
-// The promise that is being tested should be returned.
+// The assertion for a promise must be returned.
 it('works with promises', () => {
-  return user.getUserName(5).then(name => expect(name).toEqual('Paul'));
+  return expect(user.getUserName(5)).resolves.toEqual('Paul'));
 });
 
 // async/await can also be used.
 it('works with async/await', async () => {
-  const userName = await user.getUserName(4);
-  expect(userName).toEqual('Mark');
+  await expect(user.getUserName(4)).resolves.toEqual('Mark');
 });
 
-// Testing for async errors can be done using `catch`.
+// Testing for async errors can be done using `rejects`.
 it('tests error with promises', () => {
   expect.assertions(1);
-  return user.getUserName(3).catch(e =>
-    expect(e).toEqual({
-      error: 'User with 3 not found.',
-    })
-  );
+  return expect(user.getUserName(3)).rejects.toEqual({
+    error: 'User with 3 not found.',
+  });
 });
 
-// Or try-catch.
+// Or using async/await.
 it('tests error with async/await', async () => {
-  expect.assertions(1);
-  try {
-    await user.getUserName(2);
-  } catch (object) {
-    expect(object.error).toEqual('User with 2 not found.');
-  }
+  await expect(user.getUserName(2)).rejects.toEqual({
+    error: 'User with 2 not found.',
+  });
 });

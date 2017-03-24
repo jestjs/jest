@@ -75,7 +75,7 @@ jest.mock('../request');
 
 import * as user from '../user';
 
-// The promise that is being tested should be returned.
+// The assertion for a promise must be returned.
 it('works with promises', () => {
   return expect(user.getUserName(5)).resolves.toEqual('Paul');
 });
@@ -106,17 +106,17 @@ and enable the feature in your `.babelrc` file.
 Errors can be handled using the keyword `rejects` in your expect statement. This will verify that the promise rejects and perform an assertion on the resulting error.
 
 ```js
-// Testing for async errors can be done using `catch`.
+// Testing for async errors can be done using `rejects`.
 it('tests error with promises', () => {
   return expect(user.getUserName(3)).rejects.toEqual({
     error: 'User with 3 not found.',
   });
 });
 
-// Or try-catch.
+// Or using async/await.
 it('tests error with async/await', async () => {
-  await expect(user.getUserName(3)).rejects.toEqual({
-    error: 'User with 3 not found.',
+  await expect(user.getUserName(2)).rejects.toEqual({
+    error: 'User with 2 not found.',
   });
 });
 ```
