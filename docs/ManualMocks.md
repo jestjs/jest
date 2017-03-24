@@ -13,9 +13,9 @@ Manual mocks are used to stub out functionality with mock data. For example, ins
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory
 immediately adjacent to the module. For example, to mock a module called
 ``user`` in the ``models`` directory, create a file called ``user.js`` and
-put it in the ``models/__mocks__`` directory. If the module you are mocking is
-a node module (eg: `fs`), the it should be placed in a mock folder in the same 
-parent directory as the ``node_modules`` folder. Eg:
+put it in the ``models/__mocks__`` directory. If the module you are mocking 
+is a node module (eg: `fs`), the mock should be placed in the ``__mocks__`` 
+folder adjacent to node_modules. Eg:
 
 ```bash
 .
