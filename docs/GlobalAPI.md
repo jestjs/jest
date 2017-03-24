@@ -258,19 +258,7 @@ test('did not rain', () => {
 
 The first argument is the test name; the second argument is a function that contains the expectations to test.
 
-To test an asynchronous function, just return a promise from `test`. When running tests, Jest will wait for the promise to resolve before letting the test complete.
-
-For example, let's say `fetchBeverageList()` returns a promise that is supposed to resolve to a list that has `lemon` in it. You can test this with:
-
-```js
-test('has lemon in it', () => {
-  return fetchBeverageList().then(list => {
-    expect(list).toContain('lemon');
-  });
-});
-```
-
-Even though the call to `test` will return right away, the test doesn't complete until the promise resolves as well.
+If a promise is returned from `test`, Jest will wait for the promise to resolve before letting the test complete.
 
 ### `test.only(name, fn)`
 

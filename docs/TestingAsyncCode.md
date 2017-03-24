@@ -74,7 +74,7 @@ test('the data is peanut butter', () => {
 
 Be sure to return the assertion—if you omit this `return` statement, your test will complete before `fetchData` completes.
 
-If you expect a promise to be rejected use the .rejects` matcher. It works analogically to the .resolves` matcher. If the promise is fulfilled, the test will automatically fail.
+If you expect a promise to be rejected use the `.rejects` matcher. It works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
 
 ```js
 test('the fetch fails with an error', () => {

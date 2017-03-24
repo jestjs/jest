@@ -188,19 +188,23 @@ describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
 
 `expect.assertions(number)` verifies that a certain number of assertions are called during a test. This is often useful when testing asynchronous code, in order to make sure that assertions in a callback actually got called.
 
-For example, let's say that we have a few functions that all deal with state. `prepareState` calls a callback with a state object, `validateState` runs on that state object, and `waitOnState` returns a promise that waits until all `prepareState` callbacks complete. We can test this with:
+For example, let's say that we have a function `doAsync` that receives two callbacks `callback1` and `callback2`, it will asynchronously call both of them in an unknown order. We can test this with:
 
 ```js
-test('prepareState prepares a valid state', () => {
-  expect.assertions(1);
-  prepareState(state => {
-    expect(validateState(state)).toBeTruthy();
-  });
-  return waitOnState();
+test('doAsync calls both callbacks', () => {
+  expect.assertions(2);
+  function callback1(data) {
+    expect(data).toBeTruthy();
+  }
+  function callback2(data) {
+    expect(data).toBeTruthy();
+  }
+
+  doAsync(callback1, callback2);
 });
 ```
 
-The `expect.assertions(1)` call ensures that the `prepareState` callback actually gets called.
+The `expect.assertions(2)` call ensures that both callbacks actually get called.
 
 ### `expect.hasAssertions()`
 
@@ -349,8 +353,8 @@ Moreover, this code tests that the returned reason includes 'octopus'`:
 ```js
 test('fetchData() rejects to be error', async () => {
   const drinkOctopus = new Promise(() => {
-    throw 'yuck, octopus flavor'
-  })
+      throw new DisgustingFlavorError('yuck, octopus flavor');
+  });
 
   await expect(drinkOctopus).rejects.toMatch('octopus');
 });

@@ -8,7 +8,7 @@ import * as user from '../user';
 
 // The assertion for a promise must be returned.
 it('works with promises', () => {
-  return expect(user.getUserName(5)).resolves.toEqual('Paul'));
+  return expect(user.getUserName(5)).resolves.toEqual('Paul');
 });
 
 // async/await can also be used.
