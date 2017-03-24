@@ -15,7 +15,7 @@ immediately adjacent to the module. For example, to mock a module called
 ``user`` in the ``models`` directory, create a file called ``user.js`` and
 put it in the ``models/__mocks__`` directory. If the module you are mocking 
 is a node module (eg: `fs`), the mock should be placed in the ``__mocks__`` 
-folder adjacent to node_modules. Eg:
+folder adjacent to ``node_modules``. Eg:
 
 ```bash
 .
