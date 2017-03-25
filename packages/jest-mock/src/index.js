@@ -95,7 +95,7 @@ function isA(typeName: string, value: any): boolean {
 }
 
 function getType(ref?: any): string | null {
-  if (isA('Function', ref)) {
+  if (isA('Function', ref) || isA('AsyncFunction', ref)) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
@@ -127,7 +127,7 @@ function isReadonlyProp(object: any, prop: string): boolean {
     prop === 'callee' ||
     prop === 'name' ||
     prop === 'length') &&
-    isA('Function', object)) ||
+    (isA('Function', object) || isA('AsyncFunction', object))) ||
     ((prop === 'source' ||
       prop === 'global' ||
       prop === 'ignoreCase' ||
