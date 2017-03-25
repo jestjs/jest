@@ -28,7 +28,7 @@ describe('pTimeout', () => {
     const promise = Promise.reject();
     try {
       await pTimeout(promise, 1000, clearTimeout, setTimeout, onTimeout);
-    } catch (e) { }
+    } catch (e) {}
     expect(setTimeout).toHaveBeenCalled();
     expect(clearTimeout).toHaveBeenCalled();
     expect(onTimeout).not.toHaveBeenCalled();
@@ -38,8 +38,13 @@ describe('pTimeout', () => {
     const onTimeout = jest.fn();
     // A Promise that never resolves or rejects.
     const promise = new Promise(() => {});
-    const timeoutPromise =
-      pTimeout(promise, 1000, clearTimeout, setTimeout, onTimeout);
+    const timeoutPromise = pTimeout(
+      promise,
+      1000,
+      clearTimeout,
+      setTimeout,
+      onTimeout,
+    );
     jest.runAllTimers();
     await timeoutPromise;
     expect(setTimeout).toHaveBeenCalled();
