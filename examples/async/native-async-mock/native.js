@@ -1,5 +1,7 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
+'use strict';
+
 function awaitable() {
   return Promise.resolve();
 }
