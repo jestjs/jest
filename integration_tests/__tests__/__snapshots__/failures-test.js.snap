@@ -57,12 +57,11 @@ Object {
   "rest": " FAIL  __tests__/assertion-count-test.js
   ● .assertions() › throws
 
-    expect(received).toBeTruthy()
-    
-    Expected value to be truthy, instead received
-      false
+    Error
+      Error: expect(received).toBeTruthy()
       
-      at Object.throws (__tests__/assertion-count-test.js:14:17)
+      Expected value to be truthy, instead received
+        false
 
   ● .assertions() › throws
 
@@ -74,12 +73,11 @@ Object {
 
   ● .assertions() › throws on redeclare of assertion count
 
-    expect(received).toBeTruthy()
-    
-    Expected value to be truthy, instead received
-      false
+    Error
+      Error: expect(received).toBeTruthy()
       
-      at Object.redeclare (__tests__/assertion-count-test.js:18:17)
+      Expected value to be truthy, instead received
+        false
 
   ● .assertions() › throws on assertion
 
@@ -109,51 +107,91 @@ Object {
   "rest": " FAIL  __tests__/node-assertion-error-test.js
   ● assert
 
-    AssertionError: false == true
-      
-      at Object.test (__tests__/node-assertion-error-test.js:16:3)
+    Error
+      AssertionError: false == true
 
   ● assert with a message
 
-    AssertionError: this is a message
-      
-      at Object.test (__tests__/node-assertion-error-test.js:20:3)
+    Error
+      AssertionError: this is a message
 
   ● assert.ok
 
-    AssertionError: false == true
-      
-      at Object.test (__tests__/node-assertion-error-test.js:24:10)
+    Error
+      AssertionError: false == true
 
   ● assert.ok with a message
 
-    AssertionError: this is a message
-      
-      at Object.test (__tests__/node-assertion-error-test.js:28:10)
+    Error
+      AssertionError: this is a message
 
   ● assert.equal
 
-    AssertionError: 1 == 2
+    Error
+      expect(received).toBe(expected)
       
-      at Object.test (__tests__/node-assertion-error-test.js:32:10)
+      Expected value to be (using ===):
+        2
+      Received:
+        1
 
   ● assert.equal with a message
 
-    AssertionError: this is a message
+    Error
+      expect(received).toBe(expected)
       
-      at Object.test (__tests__/node-assertion-error-test.js:36:10)
+      Expected value to be (using ===):
+        2
+      Received:
+        1
 
   ● assert.deepEqual
 
-    AssertionError: { a: { b: { c: 5 } } } deepEqual { a: { b: { c: 6 } } }
+    Error
+      expect(received).toBe(expected)
       
-      at Object.test (__tests__/node-assertion-error-test.js:40:10)
+      Expected value to be (using ===):
+        {\\"a\\": {\\"b\\": {\\"c\\": 6}}}
+      Received:
+        {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
+      
+      Difference:
+      
+      - Expected
+      + Received
+      
+      Object {
+          \\"a\\": Object {
+            \\"b\\": Object {
+      -       \\"c\\": 6,
+      +       \\"c\\": 5,
+            },
+          },
+        }
 
   ● assert.deepEqual with a message
 
-    AssertionError: this is a message
+    Error
+      expect(received).toBe(expected)
       
-      at Object.test (__tests__/node-assertion-error-test.js:44:10)
+      Expected value to be (using ===):
+        {\\"a\\": {\\"b\\": {\\"c\\": 7}}}
+      Received:
+        {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
+      
+      Difference:
+      
+      - Expected
+      + Received
+      
+      Object {
+          \\"a\\": Object {
+            \\"b\\": Object {
+      -       \\"c\\": 7,
+      +       \\"c\\": 5,
+            },
+          },
+        }
 
   ✕ assert
   ✕ assert with a message

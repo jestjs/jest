@@ -32,6 +32,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
+const diff = require('jest-diff');
+const {
+  matcherHint,
+  printReceived,
+  printExpected,
+} = require('jest-matcher-utils');
 const ExpectationFailed = require('../ExpectationFailed');
 const expectationResultFactory = require('../expectationResultFactory');
 
@@ -121,10 +127,26 @@ Spec.prototype.onException = function onException(e) {
     return;
   }
 
+  const {expected, actual} = e || {};
+  let message;
+  if (expected && actual) {
+    const diffString = diff(expected, actual, {
+      expand: this.expand,
+    });
+    message = matcherHint('.toBe') +
+      '\n\n' +
+      `Expected value to be (using ===):\n` +
+      `  ${printExpected(expected)}\n` +
+      `Received:\n` +
+      `  ${printReceived(actual)}` +
+      (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+  }
+
   this.addExpectationResult(
     false,
     {
-      matcherName: '',
+      matcherName: 'blah',
+      message,
       passed: false,
       expected: '',
       actual: '',
