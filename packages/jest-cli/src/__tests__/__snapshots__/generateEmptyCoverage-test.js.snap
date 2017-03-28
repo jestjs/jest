@@ -10,7 +10,6 @@ Object {
   },
   "branchMap": Object {
     "0": Object {
-      "line": 5,
       "loc": Object {
         "end": Object {
           "column": 3,
@@ -61,7 +60,6 @@ Object {
           "line": 4,
         },
       },
-      "line": 4,
       "loc": Object {
         "end": Object {
           "column": 1,
