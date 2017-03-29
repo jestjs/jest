@@ -33,6 +33,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 'use strict';
 
 const queueRunner = require('../queueRunner');
+const treeProcessor = require('../treeProcessor');
 
 module.exports = function(j$) {
   function Env(options) {
@@ -191,14 +192,19 @@ module.exports = function(j$) {
         }
       }
 
-      const processor = new j$.TreeProcessor({
-        tree: topSuite,
-        runnableIds: runnablesToRun,
-        queueRunnerFactory,
-        nodeStart(suite) {
-          currentlyExecutingSuites.push(suite);
-          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
-          reporter.suiteStarted(suite.result);
+      reporter.jasmineStarted({
+        totalSpecsDefined,
+      });
+
+      currentlyExecutingSuites.push(topSuite);
+
+      treeProcessor({
+        finish() {
+          clearResourcesForRunnable(topSuite.id);
+          currentlyExecutingSuites.pop();
+          reporter.jasmineDone({
+            failedExpectations: topSuite.result.failedExpectations,
+          });
         },
         nodeComplete(suite, result) {
           if (!suite.disabled) {
@@ -207,28 +213,14 @@ module.exports = function(j$) {
           currentlyExecutingSuites.pop();
           reporter.suiteDone(result);
         },
-      });
-
-      if (!processor.processTree().valid) {
-        throw new Error(
-          'Invalid order: would cause a beforeAll or afterAll to be ' +
-            'run multiple times',
-        );
-      }
-
-      reporter.jasmineStarted({
-        totalSpecsDefined,
-      });
-
-      currentlyExecutingSuites.push(topSuite);
-
-      processor.execute(() => {
-        clearResourcesForRunnable(topSuite.id);
-        currentlyExecutingSuites.pop();
-
-        reporter.jasmineDone({
-          failedExpectations: topSuite.result.failedExpectations,
-        });
+        nodeStart(suite) {
+          currentlyExecutingSuites.push(suite);
+          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+          reporter.suiteStarted(suite.result);
+        },
+        queueRunnerFactory,
+        runnableIds: runnablesToRun,
+        tree: topSuite,
       });
     };
 
