@@ -38,6 +38,7 @@ module.exports = Object.assign({}, fbjsConfig, {
     'comma-style': [2, 'last'],
     'computed-property-spacing': [2, 'never'],
     'eol-last': [2],
+    'flowtype/no-weak-types': [2],
     'flowtype/object-type-delimiter': [2, 'comma'],
     'indent': [0],
     'jest/no-focused-tests': [2],
