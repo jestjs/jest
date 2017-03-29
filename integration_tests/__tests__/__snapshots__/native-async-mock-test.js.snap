@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mocks async functions 1`] = `
+Object {
+  "rest": " PASS  __tests__/native-async-mock-test.js
+  ✓ mock works with native async
+
+",
+  "summary": "Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+",
+}
+`;
