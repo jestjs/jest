@@ -2,7 +2,8 @@
   "extends": "./packages/eslint-config-fb-strict/index.js",
   "parser": "babel-eslint",
   "rules": {
-    "no-multiple-empty-lines": 1
+    "no-multiple-empty-lines": 1,
+    "flowtype/require-valid-file-annotation": 2
   },
   "plugins": [
     "markdown"
