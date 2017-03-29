@@ -11,11 +11,29 @@
 
 type Options = {
   finish: () => void,
-  nodeComplete: (suite: any, result: any) => void,
-  nodeStart: (suite: any) => void,
+  nodeComplete: (suite: TreeNode) => void,
+  nodeStart: (suite: TreeNode) => void,
   queueRunnerFactory: any,
   runnableIds: Array<string>,
-  tree: any,
+  tree: TreeNode,
+};
+
+type Stat = {
+  executable: boolean,
+  min: number,
+  nodes: Array<Stat>,
+  owner: TreeNode,
+};
+
+type TreeNode = {
+  afterAllFns: Array<any>,
+  beforeAllFns: Array<any>,
+  execute: (onComplete: () => void, enabled: boolean) => void,
+  id: string,
+  isExecutable: () => boolean,
+  onException: () => void,
+  sharedUserContext: () => any,
+  children?: Array<TreeNode>,
 };
 
 const defaultMin = Infinity;
@@ -23,7 +41,7 @@ const startingMin = (min: number) => min === -1 ? defaultMin : min;
 
 function treeProcessor(options: Options) {
   const {finish, nodeComplete, nodeStart, queueRunnerFactory, runnableIds, tree} = options;
-  const stats: Map<string, object> = new Map();
+  const stats: Map<string, Stat> = new Map();
 
   stats.set(tree.id, processNode(tree, false));
 
@@ -40,7 +58,11 @@ function treeProcessor(options: Options) {
     if (!node.children) {
       return {
         fn(done) {
-          node.execute(done, stats.get(node.id).executable);
+          const nodeStats = stats.get(node.id);
+          if (!nodeStats) {
+            throw new Error(`stats could not be found for ${node.id}.`);
+          }
+          node.execute(done, nodeStats.executable);
         },
       };
     }
@@ -49,7 +71,7 @@ function treeProcessor(options: Options) {
         nodeStart(node);
         queueRunnerFactory({
           onComplete() {
-            nodeComplete(node, node.getResult());
+            nodeComplete(node);
             done();
           },
           onException() {
@@ -62,7 +84,7 @@ function treeProcessor(options: Options) {
     };
   }
 
-  function processNode(node, parentEnabled) {
+  function processNode(node: TreeNode, parentEnabled: boolean) {
     const executableIndex = runnableIds.indexOf(node.id);
     parentEnabled = (parentEnabled || executableIndex !== -1) && node.isExecutable();
 
@@ -71,7 +93,7 @@ function treeProcessor(options: Options) {
         executable: parentEnabled,
         min: startingMin(executableIndex),
         owner: node,
-        nodes: [node],
+        nodes: [],
       };
     }
     const nodes = node.children.map(child => {
@@ -89,8 +111,12 @@ function treeProcessor(options: Options) {
     };
   }
 
-  function wrapChildren(node) {
-    const result = stats.get(node.id).nodes.map(child => executeNode(child.owner));
+  function wrapChildren(node: TreeNode) {
+    const nodeStats = stats.get(node.id);
+    if (!nodeStats) {
+      throw new Error(`stats could not be found for ${node.id}.`);
+    }
+    const result = nodeStats.nodes.map(child => executeNode(child.owner));
     return [...node.beforeAllFns, ...result, ...node.afterAllFns];
   }
 }

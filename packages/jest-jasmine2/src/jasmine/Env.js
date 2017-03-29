@@ -206,12 +206,12 @@ module.exports = function(j$) {
             failedExpectations: topSuite.result.failedExpectations,
           });
         },
-        nodeComplete(suite, result) {
+        nodeComplete(suite) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
           }
           currentlyExecutingSuites.pop();
-          reporter.suiteDone(result);
+          reporter.suiteDone(suite.getResult());
         },
         nodeStart(suite) {
           currentlyExecutingSuites.push(suite);
