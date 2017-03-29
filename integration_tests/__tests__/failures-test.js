@@ -44,3 +44,10 @@ test('throwing not Error objects', () => {
     extractSummary(stderr),
   )).toMatchSnapshot();
 });
+
+test('works with node assert', () => {
+  const {stderr} = runJest(dir, ['node-assertion-error-test.js']);
+  expect(stripInconsistentStackLines(
+    extractSummary(stderr),
+  )).toMatchSnapshot();
+});
