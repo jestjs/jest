@@ -40,7 +40,14 @@ const defaultMin = Infinity;
 const startingMin = (min: number) => min === -1 ? defaultMin : min;
 
 function treeProcessor(options: Options) {
-  const {finish, nodeComplete, nodeStart, queueRunnerFactory, runnableIds, tree} = options;
+  const {
+    finish,
+    nodeComplete,
+    nodeStart,
+    queueRunnerFactory,
+    runnableIds,
+    tree,
+  } = options;
   const stats: Map<string, Stat> = new Map();
 
   stats.set(tree.id, processNode(tree, false));
@@ -85,15 +92,15 @@ function treeProcessor(options: Options) {
   }
 
   function processNode(node: TreeNode, parentEnabled: boolean) {
-    const executableIndex = runnableIds.indexOf(node.id);
-    parentEnabled = (parentEnabled || executableIndex !== -1) && node.isExecutable();
+    const index = runnableIds.indexOf(node.id);
+    parentEnabled = (parentEnabled || index !== -1) && node.isExecutable();
 
     if (!node.children) {
       return {
         executable: parentEnabled,
-        min: startingMin(executableIndex),
-        owner: node,
+        min: startingMin(index),
         nodes: [],
+        owner: node,
       };
     }
     const nodes = node.children.map(child => {
@@ -102,7 +109,7 @@ function treeProcessor(options: Options) {
       return childStat;
     });
     const executable = nodes.some(child => child.executable);
-    const min = Math.min(startingMin(executableIndex), ...nodes.map(node => node.min));
+    const min = Math.min(startingMin(index), ...nodes.map(node => node.min));
     return {
       executable,
       min,
