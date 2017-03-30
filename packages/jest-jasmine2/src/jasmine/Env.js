@@ -138,10 +138,6 @@ module.exports = function(j$) {
       return catchExceptions;
     };
 
-    const catchException = function(e) {
-      return j$.Spec.isPendingSpecException(e) || catchExceptions;
-    };
-
     this.throwOnExpectationFailure = function(value) {
       throwOnExpectationFailure = !!value;
     };
@@ -165,13 +161,12 @@ module.exports = function(j$) {
       return seed;
     };
 
-    const queueRunnerFactory = function(options) {
-      options.catchException = catchException;
+    function queueRunnerFactory(options) {
       options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
       options.setTimeout = realSetTimeout;
-      queueRunner(options);
-    };
+      return queueRunner(options);
+    }
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
@@ -199,13 +194,6 @@ module.exports = function(j$) {
       currentlyExecutingSuites.push(topSuite);
 
       treeProcessor({
-        finish() {
-          clearResourcesForRunnable(topSuite.id);
-          currentlyExecutingSuites.pop();
-          reporter.jasmineDone({
-            failedExpectations: topSuite.result.failedExpectations,
-          });
-        },
         nodeComplete(suite) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
@@ -221,6 +209,12 @@ module.exports = function(j$) {
         queueRunnerFactory,
         runnableIds: runnablesToRun,
         tree: topSuite,
+      }).then(() => {
+        clearResourcesForRunnable(topSuite.id);
+        currentlyExecutingSuites.pop();
+        reporter.jasmineDone({
+          failedExpectations: topSuite.result.failedExpectations,
+        });
       });
     };
 

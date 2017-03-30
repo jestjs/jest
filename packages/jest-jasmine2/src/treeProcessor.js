@@ -10,7 +10,6 @@
 'use strict';
 
 type Options = {
-  finish: () => void,
   nodeComplete: (suite: TreeNode) => void,
   nodeStart: (suite: TreeNode) => void,
   queueRunnerFactory: any,
@@ -41,7 +40,6 @@ const startingMin = (min: number) => min === -1 ? defaultMin : min;
 
 function treeProcessor(options: Options) {
   const {
-    finish,
     nodeComplete,
     nodeStart,
     queueRunnerFactory,
@@ -52,8 +50,7 @@ function treeProcessor(options: Options) {
 
   stats.set(tree.id, processNode(tree, false));
 
-  queueRunnerFactory({
-    onComplete: finish,
+  return queueRunnerFactory({
     onException() {
       tree.onException.apply(tree, arguments);
     },
@@ -74,19 +71,17 @@ function treeProcessor(options: Options) {
       };
     }
     return {
-      fn(done) {
+      async fn(done) {
         nodeStart(node);
-        queueRunnerFactory({
-          onComplete() {
-            nodeComplete(node);
-            done();
-          },
+        await queueRunnerFactory({
           onException() {
             node.onException.apply(node, arguments);
           },
           queueableFns: wrapChildren(node),
           userContext: node.sharedUserContext(),
         });
+        nodeComplete(node);
+        done();
       },
     };
   }

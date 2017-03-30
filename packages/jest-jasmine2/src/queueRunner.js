@@ -16,7 +16,6 @@ const pTimeout = require('./p-timeout');
 type Options = {
   clearTimeout: (timeoutID: number) => void,
   fail: () => void,
-  onComplete: () => void,
   onException: () => void,
   queueableFns: Array<QueueableFn>,
   setTimeout: (func: () => void, delay: number) => number,
@@ -60,9 +59,7 @@ function queueRunner(options: Options) {
       },
     );
   };
-
-  return pMap(options.queueableFns, mapper, {concurrency: 1})
-    .then(options.onComplete);
+  return pMap(options.queueableFns, mapper, {concurrency: 1});
 }
 
 module.exports = queueRunner;

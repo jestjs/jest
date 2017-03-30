@@ -97,9 +97,8 @@ Spec.prototype.execute = function(onComplete, enabled) {
     onException() {
       self.onException.apply(self, arguments);
     },
-    onComplete: complete,
     userContext: this.userContext(),
-  });
+  }).then(() => complete(true));
 
   function complete(enabledAgain) {
     self.result.status = self.status(enabledAgain);
