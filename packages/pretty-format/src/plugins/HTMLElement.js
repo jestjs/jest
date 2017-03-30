@@ -14,15 +14,15 @@ import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
 
 const escapeHTML = require('./lib/escapeHTML');
 const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)/;
-const test = (maybeSet: any) => isHTMLElement;
+const test = isHTMLElement;
 
-function isHTMLElement(val: any) {
-  const toStringed = val.toString();
+function isHTMLElement(value: any) {
+  const toStringed = value.toString();
   return HTML_ELEMENT_REGEXP.test(toStringed) ||
     (toStringed === '[object Object]' &&
-      val.constructor &&
-      val.constructor.name &&
-      HTML_ELEMENT_REGEXP.test(val.constructor.name));
+      value.constructor !== undefined &&
+      value.constructor.name !== undefined &&
+      HTML_ELEMENT_REGEXP.test(value.constructor.name));
 }
 
 function printChildren(flatChildren, print, indent, colors, opts) {
@@ -46,7 +46,7 @@ function printAttributes(attributes, print, indent, colors, opts) {
       return opts.spacing +
         indent(colors.prop.open + attribute.name + colors.prop.close + '=') +
         colors.value.open +
-        attribute.value +
+        `"${attribute.value}"` +
         colors.value.close;
     })
     .join('');
@@ -61,7 +61,7 @@ const print = (
 ) => {
   let result = colors.tag.open + '<';
   const elementName = element.constructor
-    ? element.constructor.name + ' '
+    ? element.constructor.name
     : 'HTMLElement';
   result += elementName + colors.tag.close;
 

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  * 
- * @jest-environment jsdom
  */
 
 'use strict';
@@ -16,7 +15,7 @@ const prettyFormat = require('../');
 module.exports = {
   getPrettyPrint: plugins =>
     (received, expected, opts) => {
-      const prettyPrintImmutable = prettyFormat(
+      const prettyFormatted = prettyFormat(
         received,
         Object.assign(
           {
@@ -25,7 +24,7 @@ module.exports = {
           opts,
         ),
       );
-      const pass = prettyPrintImmutable === expected;
+      const pass = prettyFormatted === expected;
 
       const message = pass
         ? () =>
@@ -34,9 +33,9 @@ module.exports = {
             `Expected value to not be:\n` +
             `  ${this.utils.printExpected(expected)}\n` +
             `Received:\n` +
-            `  ${this.utils.printReceived(prettyPrintImmutable)}`
+            `  ${this.utils.printReceived(prettyFormatted)}`
         : () => {
-            const diffString = diff(expected, prettyPrintImmutable, {
+            const diffString = diff(expected, prettyFormatted, {
               expand: this.expand,
             });
             return this.utils.matcherHint('.toBe') +
@@ -44,10 +43,10 @@ module.exports = {
               `Expected value to be:\n` +
               `  ${this.utils.printExpected(expected)}\n` +
               `Received:\n` +
-              `  ${this.utils.printReceived(prettyPrintImmutable)}` +
+              `  ${this.utils.printReceived(prettyFormatted)}` +
               (diffString ? `\n\nDifference:\n\n${diffString}` : '');
           };
 
-      return {actual: prettyPrintImmutable, message, pass};
+      return {actual: prettyFormatted, message, pass};
     },
 };

@@ -21,30 +21,28 @@ expect.extend({toPrettyPrintTo});
 
 describe('HTMLElement Plugin', () => {
   it('supports a single HTML element', () => {
-    expect(document.createElement('div')).toPrettyPrintTo(
-      '<HTMLDivElement  />',
-    );
+    expect(document.createElement('div')).toPrettyPrintTo('<HTMLDivElement />');
   });
 
   it('supports an HTML element with a class property', () => {
     const parent = document.createElement('div');
     parent.className = 'classy';
 
-    expect(parent).toPrettyPrintTo('<HTMLDivElement \n  class=classy\n/>');
+    expect(parent).toPrettyPrintTo('<HTMLDivElement\n  class="classy"\n/>');
   });
 
   it('supports an HTML element with a title property', () => {
     const parent = document.createElement('div');
     parent.title = 'title text';
 
-    expect(parent).toPrettyPrintTo('<HTMLDivElement \n  title=title text\n/>');
+    expect(parent).toPrettyPrintTo('<HTMLDivElement\n  title="title text"\n/>');
   });
 
   it('supports an HTML element with a single attribute', () => {
     const parent = document.createElement('div');
     parent.setAttribute('class', 'classy');
 
-    expect(parent).toPrettyPrintTo('<HTMLDivElement \n  class=classy\n/>');
+    expect(parent).toPrettyPrintTo('<HTMLDivElement\n  class="classy"\n/>');
   });
 
   it('supports an HTML element with multiple attributes', () => {
@@ -54,7 +52,7 @@ describe('HTMLElement Plugin', () => {
 
     expect(
       parent,
-    ).toPrettyPrintTo('<HTMLDivElement \n  id=123\n  class=classy\n/>', {});
+    ).toPrettyPrintTo('<HTMLDivElement\n  id="123"\n  class="classy"\n/>', {});
   });
 
   it('supports an element with text content', () => {
@@ -62,7 +60,7 @@ describe('HTMLElement Plugin', () => {
     parent.innerHTML = 'texty texty';
 
     expect(parent).toPrettyPrintTo(
-      '<HTMLDivElement >\n  texty texty\n</HTMLDivElement >',
+      '<HTMLDivElement>\n  texty texty\n</HTMLDivElement>',
     );
   });
 
@@ -71,11 +69,11 @@ describe('HTMLElement Plugin', () => {
     const child = document.createElement('span');
     parent.appendChild(child);
     expect(parent).toPrettyPrintTo(
-      '<HTMLDivElement >\n  <HTMLSpanElement  />\n</HTMLDivElement >',
+      '<HTMLDivElement>\n  <HTMLSpanElement />\n</HTMLDivElement>',
     );
   });
 
-  it('supports nested elements with attributs', () => {
+  it('supports nested elements with attributes', () => {
     const parent = document.createElement('div');
     const child = document.createElement('span');
     parent.appendChild(child);
@@ -84,7 +82,7 @@ describe('HTMLElement Plugin', () => {
     child.setAttribute('class', 'classy');
 
     expect(parent).toPrettyPrintTo(
-      '<HTMLDivElement >\n  <HTMLSpanElement \n    id=123\n    class=classy\n  />\n</HTMLDivElement >',
+      '<HTMLDivElement>\n  <HTMLSpanElement\n    id="123"\n    class="classy"\n  />\n</HTMLDivElement>',
     );
   });
 
@@ -95,7 +93,7 @@ describe('HTMLElement Plugin', () => {
     child.textContent = 'texty texty';
 
     expect(parent).toPrettyPrintTo(
-      '<HTMLDivElement >\n  <HTMLSpanElement >\n    texty texty\n  </HTMLSpanElement >\n</HTMLDivElement >',
+      '<HTMLDivElement>\n  <HTMLSpanElement>\n    texty texty\n  </HTMLSpanElement>\n</HTMLDivElement>',
     );
   });
 });
