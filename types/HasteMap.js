@@ -16,12 +16,6 @@ import type HasteResolver from 'jest-resolve';
 export type HasteFS = FS;
 export type ModuleMap = _ModuleMap;
 
-export type HasteContext = {|
-  hasteFS: HasteFS,
-  moduleMap: ModuleMap,
-  resolver: HasteResolver,
-|};
-
 export type FileData = {[filepath: Path]: FileMetaData};
 export type MockData = {[id: string]: Path};
 export type ModuleMapData = {[id: string]: ModuleMapItem};

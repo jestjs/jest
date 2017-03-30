@@ -124,6 +124,11 @@ const users = [
     infoLink: 'https://coursera.org/',
   },
   {
+    caption: 'Deezer',
+    image: '/jest/img/logos/deezer.png',
+    infoLink: 'https://www.deezer.com/',
+  },
+  {
     caption: 'Discord',
     image: '/jest/img/logos/discord.png',
     infoLink: 'https://discordapp.com/',
@@ -169,9 +174,19 @@ const users = [
     infoLink: 'https://jane.com',
   },
   {
+    caption: 'Kickstarter',
+    image: '/jest/img/logos/kickstarter.png',
+    infoLink: 'https://www.kickstarter.com',
+  },
+  {
     caption: 'KLM Royal Dutch Airlines',
     image: '/jest/img/logos/klm.png',
     infoLink: 'https://www.klm.com/',
+  },
+  {
+    caption: 'NHL',
+    image: '/jest/img/logos/nhl.png',
+    infoLink: 'https://www.nhl.com/',
   },
   {
     caption: 'Quiqup',
