@@ -53,7 +53,7 @@ function queueRunner(options: Options) {
       () => {
         const error = new Error(
           'Timeout - Async callback was not invoked within timeout specified ' +
-          'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+            'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
         );
         options.onException(error);
       },

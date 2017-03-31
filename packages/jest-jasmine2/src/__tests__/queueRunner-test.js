@@ -19,11 +19,14 @@ describe('queueRunner', () => {
       clearTimeout,
       fail: () => {},
       onException: () => {},
-      queueableFns: [{
-        fn: fnOne,
-      }, {
-        fn: fnTwo,
-      }],
+      queueableFns: [
+        {
+          fn: fnOne,
+        },
+        {
+          fn: fnTwo,
+        },
+      ],
       setTimeout,
     };
     await queueRunner(options);
@@ -39,11 +42,14 @@ describe('queueRunner', () => {
       clearTimeout,
       fail,
       onException: () => {},
-      queueableFns: [{
-        fn: fnOne,
-      }, {
-        fn: fnTwo,
-      }],
+      queueableFns: [
+        {
+          fn: fnOne,
+        },
+        {
+          fn: fnTwo,
+        },
+      ],
       setTimeout,
     };
     await queueRunner(options);
@@ -64,11 +70,14 @@ describe('queueRunner', () => {
       clearTimeout,
       fail: () => {},
       onException,
-      queueableFns: [{
-        fn: fnOne,
-      }, {
-        fn: fnTwo,
-      }],
+      queueableFns: [
+        {
+          fn: fnOne,
+        },
+        {
+          fn: fnTwo,
+        },
+      ],
       setTimeout,
     };
     await queueRunner(options);
@@ -86,13 +95,16 @@ describe('queueRunner', () => {
       clearTimeout,
       fail: () => {},
       onException,
-      queueableFns: [{
-        fn: fnOne,
-        // It times out in zero seconds.
-        timeout: () => 0,
-      }, {
-        fn: fnTwo,
-      }],
+      queueableFns: [
+        {
+          fn: fnOne,
+          // It times out in zero seconds.
+          timeout: () => 0,
+        },
+        {
+          fn: fnTwo,
+        },
+      ],
       setTimeout,
     };
     await queueRunner(options);
@@ -101,7 +113,7 @@ describe('queueRunner', () => {
     // i.e. the `message` of the error passed to `onException`.
     expect(onException.mock.calls[0][0].message).toEqual(
       'Timeout - Async callback was not invoked within timeout specified ' +
-      'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+        'by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
     );
     expect(fnTwo).toHaveBeenCalled();
   });

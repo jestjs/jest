@@ -19,9 +19,9 @@ function messageFormatter({error, message, passed}) {
   if (!error) {
     return '';
   }
-  return (error.message && error.name) ?
-    `${error.name}: ${error.message}` :
-    `${error.toString()} thrown`;
+  return error.message && error.name
+    ? `${error.name}: ${error.message}`
+    : `${error.toString()} thrown`;
 }
 
 function stackFormatter(options, errorMessage) {

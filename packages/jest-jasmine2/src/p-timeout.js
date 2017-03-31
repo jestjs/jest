@@ -28,7 +28,8 @@ function pTimeout(
       err => {
         clearTimeout(timer);
         reject(err);
-      });
+      },
+    );
   });
 }
 

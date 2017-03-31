@@ -36,7 +36,6 @@ module.exports = {
         jest: false,
         pit: false,
         require: false,
-        spyOn: false,
         test: false,
         xdescribe: false,
         xit: false,
