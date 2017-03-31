@@ -33,7 +33,7 @@ function queueRunner(options: Options) {
     const promise = new Promise(resolve => {
       const next = once(resolve);
       next.fail = () => {
-        options.fail.call(null, arguments);
+        options.fail.apply(null, arguments);
         resolve();
       };
       try {
