@@ -48,10 +48,10 @@ Ran all test suites.
 
 exports[`only with expand arg 1`] = `
 " PASS  __tests__/only-constructs-test.js
+  ○ it
   ✓ test.only
   ✓ it.only
   ✓ fit
-  ○ it
   fdescribe
     ✓ it
     ✓ test

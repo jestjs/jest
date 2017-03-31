@@ -33,6 +33,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 'use strict';
 
 const queueRunner = require('../queueRunner');
+const treeProcessor = require('../treeProcessor');
 
 module.exports = function(j$) {
   function Env(options) {
@@ -137,10 +138,6 @@ module.exports = function(j$) {
       return catchExceptions;
     };
 
-    const catchException = function(e) {
-      return j$.Spec.isPendingSpecException(e) || catchExceptions;
-    };
-
     this.throwOnExpectationFailure = function(value) {
       throwOnExpectationFailure = !!value;
     };
@@ -164,13 +161,12 @@ module.exports = function(j$) {
       return seed;
     };
 
-    const queueRunnerFactory = function(options) {
-      options.catchException = catchException;
+    function queueRunnerFactory(options) {
       options.clearTimeout = realClearTimeout;
       options.fail = self.fail;
       options.setTimeout = realSetTimeout;
-      queueRunner(options);
-    };
+      return queueRunner(options);
+    }
 
     const topSuite = new j$.Suite({
       id: getNextSuiteId(),
@@ -191,41 +187,31 @@ module.exports = function(j$) {
         }
       }
 
-      const processor = new j$.TreeProcessor({
-        tree: topSuite,
-        runnableIds: runnablesToRun,
-        queueRunnerFactory,
-        nodeStart(suite) {
-          currentlyExecutingSuites.push(suite);
-          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
-          reporter.suiteStarted(suite.result);
-        },
-        nodeComplete(suite, result) {
-          if (!suite.disabled) {
-            clearResourcesForRunnable(suite.id);
-          }
-          currentlyExecutingSuites.pop();
-          reporter.suiteDone(result);
-        },
-      });
-
-      if (!processor.processTree().valid) {
-        throw new Error(
-          'Invalid order: would cause a beforeAll or afterAll to be ' +
-            'run multiple times',
-        );
-      }
-
       reporter.jasmineStarted({
         totalSpecsDefined,
       });
 
       currentlyExecutingSuites.push(topSuite);
 
-      processor.execute(() => {
+      treeProcessor({
+        nodeComplete(suite) {
+          if (!suite.disabled) {
+            clearResourcesForRunnable(suite.id);
+          }
+          currentlyExecutingSuites.pop();
+          reporter.suiteDone(suite.getResult());
+        },
+        nodeStart(suite) {
+          currentlyExecutingSuites.push(suite);
+          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+          reporter.suiteStarted(suite.result);
+        },
+        queueRunnerFactory,
+        runnableIds: runnablesToRun,
+        tree: topSuite,
+      }).then(() => {
         clearResourcesForRunnable(topSuite.id);
         currentlyExecutingSuites.pop();
-
         reporter.jasmineDone({
           failedExpectations: topSuite.result.failedExpectations,
         });
