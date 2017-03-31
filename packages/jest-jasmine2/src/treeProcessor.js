@@ -19,7 +19,6 @@ type Options = {
 
 type Stat = {
   executable: boolean,
-  min: number,
   nodes: Array<Stat>,
   owner: TreeNode,
 };
@@ -34,9 +33,6 @@ type TreeNode = {
   sharedUserContext: () => any,
   children?: Array<TreeNode>,
 };
-
-const defaultMin = Infinity;
-const startingMin = (min: number) => min === -1 ? defaultMin : min;
 
 function treeProcessor(options: Options) {
   const {
@@ -88,26 +84,23 @@ function treeProcessor(options: Options) {
 
   function processNode(node: TreeNode, parentEnabled: boolean) {
     const index = runnableIds.indexOf(node.id);
-    parentEnabled = (parentEnabled || index !== -1) && node.isExecutable();
+    const enabled = (parentEnabled || index !== -1) && node.isExecutable();
 
     if (!node.children) {
       return {
-        executable: parentEnabled,
-        min: startingMin(index),
+        executable: enabled,
         nodes: [],
         owner: node,
       };
     }
     const nodes = node.children.map(child => {
-      const childStat = processNode(child, parentEnabled);
+      const childStat = processNode(child, enabled);
       stats.set(child.id, childStat);
       return childStat;
     });
     const executable = nodes.some(child => child.executable);
-    const min = Math.min(startingMin(index), ...nodes.map(node => node.min));
     return {
       executable,
-      min,
       nodes,
       owner: node,
     };
