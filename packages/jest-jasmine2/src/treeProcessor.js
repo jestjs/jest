@@ -17,12 +17,6 @@ type Options = {
   tree: TreeNode,
 };
 
-type Stat = {
-  executable: boolean,
-  nodes: Array<Stat>,
-  owner: TreeNode,
-};
-
 type TreeNode = {
   afterAllFns: Array<any>,
   beforeAllFns: Array<any>,
@@ -42,27 +36,26 @@ function treeProcessor(options: Options) {
     runnableIds,
     tree,
   } = options;
-  const stats: Map<string, Stat> = new Map();
 
-  stats.set(tree.id, processNode(tree, false));
+  function isEnabled(node, parentEnabled) {
+    return (parentEnabled || runnableIds.indexOf(node.id) !== -1) &&
+      node.isExecutable();
+  }
 
   return queueRunnerFactory({
     onException() {
       tree.onException.apply(tree, arguments);
     },
-    queueableFns: wrapChildren(tree),
+    queueableFns: wrapChildren(tree, isEnabled(tree, false)),
     userContext: tree.sharedUserContext(),
   });
 
-  function executeNode(node) {
+  function executeNode(node, parentEnabled) {
+    const enabled = isEnabled(node, parentEnabled);
     if (!node.children) {
       return {
         fn(done) {
-          const nodeStats = stats.get(node.id);
-          if (!nodeStats) {
-            throw new Error(`stats could not be found for ${node.id}.`);
-          }
-          node.execute(done, nodeStats.executable);
+          node.execute(done, enabled);
         },
       };
     }
@@ -73,7 +66,7 @@ function treeProcessor(options: Options) {
           onException() {
             node.onException.apply(node, arguments);
           },
-          queueableFns: wrapChildren(node),
+          queueableFns: wrapChildren(node, enabled),
           userContext: node.sharedUserContext(),
         });
         nodeComplete(node);
@@ -82,36 +75,8 @@ function treeProcessor(options: Options) {
     };
   }
 
-  function processNode(node: TreeNode, parentEnabled: boolean) {
-    const index = runnableIds.indexOf(node.id);
-    const enabled = (parentEnabled || index !== -1) && node.isExecutable();
-
-    if (!node.children) {
-      return {
-        executable: enabled,
-        nodes: [],
-        owner: node,
-      };
-    }
-    const nodes = node.children.map(child => {
-      const childStat = processNode(child, enabled);
-      stats.set(child.id, childStat);
-      return childStat;
-    });
-    const executable = nodes.some(child => child.executable);
-    return {
-      executable,
-      nodes,
-      owner: node,
-    };
-  }
-
-  function wrapChildren(node: TreeNode) {
-    const nodeStats = stats.get(node.id);
-    if (!nodeStats) {
-      throw new Error(`stats could not be found for ${node.id}.`);
-    }
-    const result = nodeStats.nodes.map(child => executeNode(child.owner));
+  function wrapChildren(node: TreeNode, enabled: boolean) {
+    const result = node.children.map(child => executeNode(child, enabled));
     return [...node.beforeAllFns, ...result, ...node.afterAllFns];
   }
 }
