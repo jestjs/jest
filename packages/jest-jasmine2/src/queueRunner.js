@@ -32,8 +32,8 @@ function queueRunner(options: Options) {
   const mapper = ({fn, timeout}) => {
     const promise = new Promise(resolve => {
       const next = once(resolve);
-      next.fail = (...args) => {
-        options.fail(...args);
+      next.fail = () => {
+        options.fail.call(null, arguments);
         resolve();
       };
       try {
