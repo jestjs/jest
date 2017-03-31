@@ -22,7 +22,6 @@ type TreeNode = {
   beforeAllFns: Array<any>,
   execute: (onComplete: () => void, enabled: boolean) => void,
   id: string,
-  isExecutable: () => boolean,
   onException: () => void,
   sharedUserContext: () => any,
   children?: Array<TreeNode>,
@@ -38,14 +37,11 @@ function treeProcessor(options: Options) {
   } = options;
 
   function isEnabled(node, parentEnabled) {
-    return (parentEnabled || runnableIds.indexOf(node.id) !== -1) &&
-      node.isExecutable();
+    return parentEnabled || runnableIds.indexOf(node.id) !== -1;
   }
 
   return queueRunnerFactory({
-    onException() {
-      tree.onException.apply(tree, arguments);
-    },
+    onException: error => tree.onException.call(tree, error),
     queueableFns: wrapChildren(tree, isEnabled(tree, false)),
     userContext: tree.sharedUserContext(),
   });
@@ -63,9 +59,7 @@ function treeProcessor(options: Options) {
       async fn(done) {
         nodeStart(node);
         await queueRunnerFactory({
-          onException() {
-            node.onException.apply(node, arguments);
-          },
+          onException: error => node.onException.call(node, error),
           queueableFns: wrapChildren(node, enabled),
           userContext: node.sharedUserContext(),
         });
@@ -76,8 +70,11 @@ function treeProcessor(options: Options) {
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
-    const result = node.children.map(child => executeNode(child, enabled));
-    return [...node.beforeAllFns, ...result, ...node.afterAllFns];
+    if (!node.children) {
+      throw new Error('`node.children` is not defined.');
+    }
+    const children = node.children.map(child => executeNode(child, enabled));
+    return [...node.beforeAllFns, ...children, ...node.afterAllFns];
   }
 }
 
