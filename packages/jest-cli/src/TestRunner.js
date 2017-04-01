@@ -376,29 +376,21 @@ class TestRunner {
    * _checkDefaultReporters
    * Checks if we are going to add the default reporters or not
    */
-  _checkDefaultReporters(reporters: ReporterConfig): boolean {
-    return reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
+  _addDefaultReporters(reporters?: ReporterConfig): boolean {
+    return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
   }
 
   _setupReporters() {
     const config = this._config;
     const {reporters} = config;
-    let isDefault;
+    const addDefault = this._addDefaultReporters(reporters);
 
-    if (reporters && Array.isArray(reporters)) {
-      isDefault = this._checkDefaultReporters(reporters);
-      const customReporters = reporters.filter(reporter => {
-        return reporter !== DEFAULT_REPORTER_LABEL;
-      });
-      this._addCustomReporters(customReporters);
+    if (addDefault) {
+      this._setupDefaultReporters(config);
     }
 
-
-    /**
-     * Add Default Reporters in case if no reporters are added by default
-     */
-    if (isDefault || !reporters) {
-      this._setupDefaultReporters(config);
+    if (reporters && Array.isArray(reporters)) {
+      this._addCustomReporters(reporters);
     }
 
     if (config.collectCoverage) {
@@ -419,7 +411,6 @@ class TestRunner {
    * @param {config} Object Config object containing all the options
    */
   _setupDefaultReporters(config: Config) {
-
     this.addReporter(
       config.verbose
         ? new VerboseReporter(config)
@@ -467,7 +458,8 @@ class TestRunner {
    */
   _addCustomReporters(reporters: ReporterConfig) {
     this._validateCustomReporters(reporters);
-    reporters.forEach(reporter => {
+    const customReporter = reporters.filter(reporter => reporter !== 'default');
+    customReporter.forEach(reporter => {
       try {
         const {
           reporterPath, 
