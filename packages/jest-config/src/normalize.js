@@ -351,7 +351,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
       case 'moduleLoader':
       case 'modulePaths':
       case 'name':
-      case 'noDefaultReporters':
       case 'noStackTrace':
       case 'notify':
       case 'persistModuleRegistryBetweenSpecs':

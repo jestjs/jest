@@ -19,6 +19,11 @@ export type HasteConfig = {|
   providesModuleNodeModules: Array<string>,
 |};
 
+
+export type SimpleReporter = string;
+export type ComplexReporter = [string, Object];
+export type ReporterConfig = Array<SimpleReporter | ComplexReporter>;
+
 export type ConfigGlobals = Object;
 
 export type DefaultConfig = {|
@@ -86,11 +91,10 @@ export type Config = {|
   modulePathIgnorePatterns: Array<string>,
   modulePaths: Array<string>,
   name: string,
-  noDefaultReporters: boolean,
   noStackTrace: boolean,
   notify: boolean,
   preset: ?string,
-  reporters: Array<string | Array<string | Object>>,
+  reporters: ReporterConfig,
   resetMocks: boolean,
   resetModules: boolean,
   resolver: ?Path,
@@ -137,7 +141,7 @@ export type InitialConfig = {|
   forceExit?: boolean,
   globals?: ConfigGlobals,
   haste?: HasteConfig,
-  reporters?: Array<string | Array<string | Object>>,
+  reporters?: ReporterConfig,
   logHeapUsage?: boolean,
   logTransformErrors?: ?boolean,
   mapCoverage?: boolean,
@@ -149,7 +153,6 @@ export type InitialConfig = {|
   modulePathIgnorePatterns?: Array<string>,
   modulePaths?: Array<string>,
   name?: string,
-  noDefaultReporters?: boolean,
   noStackTrace?: boolean,
   notify?: boolean,
   preprocessorIgnorePatterns?: Array<Glob>,
