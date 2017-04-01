@@ -24,7 +24,7 @@ Although Jest may be considered React-specific test runner, in fact it is a univ
 
 ## MobX
 
-* [How to Test React and MobX with Jest](https://semaphoreci.com/community/tutorials/how-to-test-react-and-mobx-with-jest) by Will Stern [@willsterndev](https://twitter.com/willsterndev)
+* [How to Test React and MobX with Jest](https://semaphoreci.com/community/tutorials/how-to-test-react-and-mobx-with-jest) by Will Stern ([@willsterndev](https://twitter.com/willsterndev))
 
 ## Redux
 
