@@ -22,7 +22,6 @@ import type {Test, Tests} from 'types/TestRunner';
 import type BaseReporter from './reporters/BaseReporter';
 
 const {formatExecError} = require('jest-message-util');
-const assert = require('assert');
 
 const DefaultReporter = require('./reporters/DefaultReporter');
 const NotifyReporter = require('./reporters/NotifyReporter');
@@ -43,6 +42,10 @@ class CancelRun extends Error {
     super(message);
     this.name = 'CancelRun';
   }
+}
+
+class ReporterValidationError extends Error {
+
 }
 
 type Options = {|
@@ -76,7 +79,7 @@ class TestRunner {
     this._context = hasteContext;
     this._options = options;
     this._startRun = startRun;
-    this._setupReporters();
+    this._setupReporters(config);
   }
 
   addReporter(reporter: BaseReporter) {
@@ -283,14 +286,14 @@ class TestRunner {
     return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
   }
 
-  _setupReporters() {
-    const config = this._config;
+  _setupReporters(config: Config) {
     const {reporters} = config;
     const addDefault = this._addDefaultReporters(reporters);
 
     if (addDefault) {
       this._setupDefaultReporters(config);
     }
+
 
     if (reporters && Array.isArray(reporters)) {
       this._addCustomReporters(reporters);
@@ -380,18 +383,37 @@ class TestRunner {
    * Vaidates all the Custom Reporters and the format they are specified before
    * adding them within the application
    */
+
   _validateCustomReporters(customReporters: ReporterConfig) {
     // Validate Custom Reporters here
-    customReporters.forEach(reporter => {
-      if (typeof reporter === 'string') {
-        return;
-      } else if (typeof Array.isArray(reporter)) {
+    customReporters.forEach((reporter, index) => {
+      if (Array.isArray(reporter)) {
         const [reporterPath, reporterConfig] = reporter;
-        assert(
-          typeof reporterPath === 'string', 'reporterPath should be string'
+        if (typeof reporterPath !== 'string') {
+          throw new Error(
+            `Expected reporterPath for reporter at index ${index}` +
+            'to be string\n' +
+            'Got:\n' + 
+            typeof reporter
+          );
+        }
+
+        if (reporterConfig && typeof reporterConfig !== 'object') {
+          throw new Error(
+            `Expected configuration for reporter at index ${index}\n` +
+            'to be of type object\n' + 
+            'Got:\n' +
+            reporterConfig
+          );
+        }
+      } else if (typeof reporter !== 'string') {
+        throw new Error(
+          `Unexpected Custom Reporter Configuration at index ${index}\n` +
+          'Expected:\n' +
+          `array/string\n` + 
+          'Got:\n' +
+          typeof reporter
         );
-      } else {
-        throw new Error('reporter should be an array or a string');
       }
     });
   }
