@@ -12,7 +12,6 @@
 let createRuntime;
 
 describe('Runtime', () => {
-
   beforeEach(() => {
     createRuntime = require('createRuntime');
   });
@@ -36,8 +35,7 @@ describe('Runtime', () => {
         // Make sure we get a mock.
         expect(mock.fn()).toBe(undefined);
         expect(module.getModuleStateValue()).toBe(origModuleStateValue);
-      }),
-    );
+      }));
   });
 
   it('creates mock objects in the right environment', () =>
@@ -52,6 +50,5 @@ describe('Runtime', () => {
       const testObjectPrototype = Object.getPrototypeOf(module.object);
       const mockObjectPrototype = Object.getPrototypeOf(mockModule.object);
       expect(mockObjectPrototype).toBe(testObjectPrototype);
-    }),
-  );
+    }));
 });

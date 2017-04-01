@@ -25,17 +25,18 @@ function getModuleStateValue() {
   return moduleStateValue;
 }
 
-() => {
+const lazyRequire = () => {
   // Make sure ModuleWithSideEffects is part of the module map for
   // RegularModule.
   require('ModuleWithSideEffects');
 };
 
+exports.filename = module.filename;
 exports.getModuleStateValue = getModuleStateValue;
 exports.isRealModule = true;
-exports.setModuleStateValue = setModuleStateValue;
+exports.jest = jest;
+exports.lazyRequire = lazyRequire;
+exports.object = {};
 exports.parent = module.parent;
 exports.paths = module.paths;
-exports.filename = module.filename;
-exports.jest = jest;
-exports.object = {};
+exports.setModuleStateValue = setModuleStateValue;

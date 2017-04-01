@@ -48,6 +48,8 @@ This option is disabled by default. If you are introducing Jest to a large organ
 
 *Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`.*
 
+*Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround.*
+
 ### `browser` [boolean]
 Default: `false`
 
@@ -246,6 +248,8 @@ If enabled, the module registry for every test file will be reset before running
 
 ### `resolver` [string]
 Default: `undefined`
+
+##### available in Jest **20.0.0+**
 
 This option allows the use of a custom resolver. This resolver must be a node module that exports a function expecting a string as the first argument for the path to resolve and an object with the following structure as the second argument:
 

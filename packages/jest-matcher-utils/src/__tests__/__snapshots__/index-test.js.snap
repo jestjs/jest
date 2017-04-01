@@ -5,21 +5,21 @@ exports[`.stringify() reduces maxDepth if stringifying very large objects 1`] = 
 exports[`.stringify() reduces maxDepth if stringifying very large objects 2`] = `"{\\"a\\": 1, \\"b\\": {\\"0\\": \\"test\\", \\"1\\": \\"test\\", \\"2\\": \\"test\\", \\"3\\": \\"test\\", \\"4\\": \\"test\\", \\"5\\": \\"test\\", \\"6\\": \\"test\\", \\"7\\": \\"test\\", \\"8\\": \\"test\\", \\"9\\": \\"test\\"}}"`;
 
 exports[`.stringify() toJSON errors when comparing two objects 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m).toEqual([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>).toEqual(<green>expected</><dim>)
 
 Expected value to equal:
-  [32m{\\"b\\": 1, \\"toJSON\\": [Function toJSON]}[39m
+  <green>{\\"b\\": 1, \\"toJSON\\": [Function toJSON]}</>
 Received:
-  [31m{\\"a\\": 1, \\"toJSON\\": [Function toJSON]}[39m
+  <red>{\\"a\\": 1, \\"toJSON\\": [Function toJSON]}</>
 
 Difference:
 
-[32m- Expected[39m
-[31m+ Received[39m
+<green>- Expected</>
+<red>+ Received</>
 
-[2m Object {[22m
-[32m-  \\"b\\": 1,[39m
-[31m+  \\"a\\": 1,[39m
-[2m   \\"toJSON\\": [Function toJSON],[22m
-[2m }[22m"
+<dim> Object {
+<green>-  \\"b\\": 1,</>
+<red>+  \\"a\\": 1,</>
+<dim>   \\"toJSON\\": [Function toJSON],
+<dim> }"
 `;

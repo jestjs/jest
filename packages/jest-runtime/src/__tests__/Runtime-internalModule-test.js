@@ -32,8 +32,7 @@ describe('Runtime', () => {
         expect(() => {
           runtime.requireModule(modulePath);
         }).toThrow(new Error('preprocessor must not run.'));
-      }),
-    );
+      }));
 
     it('loads internal modules without applying transforms', () =>
       createRuntime(__filename, {
@@ -45,7 +44,6 @@ describe('Runtime', () => {
         );
         const exports = runtime.requireInternalModule(modulePath);
         expect(exports()).toBe('internal-module-data');
-      }),
-    );
+      }));
   });
 });

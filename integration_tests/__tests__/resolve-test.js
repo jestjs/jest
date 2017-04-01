@@ -13,5 +13,5 @@ const runJest = require('../runJest');
 
 test('resolve platform modules', () => {
   const result = runJest('resolve');
-  expect(result.status).toBe(process.platform !== 'win32' ? 0 : null);
+  expect(result.status).toBe(0);
 });

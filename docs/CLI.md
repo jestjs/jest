@@ -79,7 +79,7 @@ Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
 
 ### `--cache`
 
-Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. *Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at last two times slower.*
+Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. *Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower.*
 
 ### `--collectCoverageFrom=<glob>`
 

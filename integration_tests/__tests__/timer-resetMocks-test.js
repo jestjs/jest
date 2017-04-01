@@ -10,9 +10,6 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('run timers after resetAllMocks test', () => {
   const result = runJest('timer-resetMocks/after_resetAllMocks');

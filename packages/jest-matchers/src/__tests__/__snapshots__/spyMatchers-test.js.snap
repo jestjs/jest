@@ -1,450 +1,450 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].lastCalledWith([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].lastCalledWith(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`lastCalledWith works with jest.fn and arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).lastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was last called with:
-  [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`lastCalledWith works with jest.fn and arguments that match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.lastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
 
 Expected mock function to not have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`lastCalledWith works with jest.fn and many arguments 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.lastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.lastCalledWith(<green>expected</><dim>)
 
 Expected mock function to not have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`lastCalledWith works with jest.fn and many arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).lastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was last called with:
-  [31m[\\"foo\\", \\"bar3\\"][39m
-and [31mtwo more calls[39m."
+  <red>[\\"foo\\", \\"bar3\\"]</>
+and <red>two more calls</>."
 `;
 
 exports[`lastCalledWith works with jest.fn when not called 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).lastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).lastCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
-But it was [31mnot called[39m."
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
 `;
 
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].toBeCalled([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].toBeCalled(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toBeCalled works with jasmine.createSpy 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toBeCalled([22m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toBeCalled(<dim>)
 
 Expected spy to have been called."
 `;
 
 exports[`toBeCalled works with jasmine.createSpy 2`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toBeCalled([22m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toBeCalled(<dim>)
 
 Expected spy not to be called but it was called with:
-  [31mArray [][39m"
+  <red>Array []</>"
 `;
 
 exports[`toBeCalled works with jasmine.createSpy 3`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toBeCalled([22m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toBeCalled(<dim>)
 
 Matcher does not accept any arguments.
 Got:
-  number: [32m555[39m"
+  number: <green>555</>"
 `;
 
 exports[`toBeCalled works with jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toBeCalled([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toBeCalled(<dim>)
 
 Expected mock function to have been called."
 `;
 
 exports[`toBeCalled works with jest.fn 2`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toBeCalled([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toBeCalled(<dim>)
 
 Expected mock function not to be called but it was called with:
-  [31mArray [][39m"
+  <red>Array []</>"
 `;
 
 exports[`toBeCalled works with jest.fn 3`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toBeCalled([22m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toBeCalled(<dim>)
 
 Matcher does not accept any arguments.
 Got:
-  number: [32m555[39m"
+  number: <green>555</>"
 `;
 
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].toBeCalledWith([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].toBeCalledWith(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toBeCalledWith works with jest.fn and arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toBeCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toBeCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was called with:
-  [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toBeCalledWith works with jest.fn and arguments that match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toBeCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toBeCalledWith(<green>expected</><dim>)
 
 Expected mock function not to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toBeCalledWith works with jest.fn and many arguments 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toBeCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toBeCalledWith(<green>expected</><dim>)
 
 Expected mock function not to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toBeCalledWith works with jest.fn and many arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toBeCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toBeCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was called with:
-  [31m[\\"foo\\", \\"bar3\\"][39m, [31m[\\"foo\\", \\"bar2\\"][39m, [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar3\\"]</>, <red>[\\"foo\\", \\"bar2\\"]</>, <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toBeCalledWith works with jest.fn when not called 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toBeCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toBeCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
-But it was [31mnot called[39m."
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
 `;
 
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenCalled(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenCalled works with jasmine.createSpy 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenCalled(<dim>)
 
 Expected spy to have been called."
 `;
 
 exports[`toHaveBeenCalled works with jasmine.createSpy 2`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toHaveBeenCalled(<dim>)
 
 Expected spy not to be called but it was called with:
-  [31mArray [][39m"
+  <red>Array []</>"
 `;
 
 exports[`toHaveBeenCalled works with jasmine.createSpy 3`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalled(<dim>)
 
 Matcher does not accept any arguments.
 Got:
-  number: [32m555[39m"
+  number: <green>555</>"
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalled(<dim>)
 
 Expected mock function to have been called."
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 2`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalled(<dim>)
 
 Expected mock function not to be called but it was called with:
-  [31mArray [][39m"
+  <red>Array []</>"
 `;
 
 exports[`toHaveBeenCalled works with jest.fn 3`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalled([22m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalled(<dim>)
 
 Matcher does not accept any arguments.
 Got:
-  number: [32m555[39m"
+  number: <green>555</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 1`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalledTimes([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
 
 Expected value must be a number.
 Got:
-  object: [32m{}[39m"
+  object: <green>{}</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 2`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalledTimes([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
 
 Expected value must be a number.
 Got:
-  array: [32mArray [][39m"
+  array: <green>Array []</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 3`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalledTimes([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
 
 Expected value must be a number.
 Got:
-  boolean: [32mtrue[39m"
+  boolean: <green>true</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 4`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalledTimes([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
 
 Expected value must be a number.
 Got:
-  string: [32m\\"a\\"[39m"
+  string: <green>\\"a\\"</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 5`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalledTimes([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
 
 Expected value must be a number.
 Got:
-  map: [32mMap {}[39m"
+  map: <green>Map {}</>"
 `;
 
 exports[`toHaveBeenCalledTimes accepts only numbers 6`] = `
-"[2mexpect([22m[31mreceived[39m[2m)[.not].toHaveBeenCalledTimes([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>received</><dim>)[.not].toHaveBeenCalledTimes(<green>expected</><dim>)
 
 Expected value must be a number.
 Got:
-  function: [32m[Function anonymous][39m"
+  function: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveBeenCalledTimes fails if function called less than expected times 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenCalledTimes([22m[32m2[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenCalledTimes(<green>2</><dim>)
 
-Expected spy to have been called [32mtwo times[39m, but it was called [31mone time[39m."
+Expected spy to have been called <green>two times</>, but it was called <red>one time</>."
 `;
 
 exports[`toHaveBeenCalledTimes fails if function called more than expected times 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenCalledTimes([22m[32m2[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenCalledTimes(<green>2</><dim>)
 
-Expected spy to have been called [32mtwo times[39m, but it was called [31mthree times[39m."
+Expected spy to have been called <green>two times</>, but it was called <red>three times</>."
 `;
 
 exports[`toHaveBeenCalledTimes passes if function called equal to expected times 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toHaveBeenCalledTimes([22m[32m2[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toHaveBeenCalledTimes(<green>2</><dim>)
 
-Expected spy not to be called [32mtwo times[39m, but it was called exactly [31mtwo times[39m."
+Expected spy not to be called <green>two times</>, but it was called exactly <red>two times</>."
 `;
 
 exports[`toHaveBeenCalledTimes verifies that actual is a Spy 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].toHaveBeenCalledTimes([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].toHaveBeenCalledWith([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jasmine.createSpy and arguments that don't match 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected spy to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was called with:
-  [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jasmine.createSpy and arguments that match 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected spy not to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jasmine.createSpy and many arguments 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected spy not to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jasmine.createSpy and many arguments that don't match 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected spy to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was called with:
-  [31m[\\"foo\\", \\"bar3\\"][39m, [31m[\\"foo\\", \\"bar2\\"][39m, [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar3\\"]</>, <red>[\\"foo\\", \\"bar2\\"]</>, <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jasmine.createSpy when not called 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected spy to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
-But it was [31mnot called[39m."
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
 `;
 
 exports[`toHaveBeenCalledWith works with jest.fn and arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was called with:
-  [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jest.fn and arguments that match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected mock function not to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jest.fn and many arguments 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected mock function not to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jest.fn and many arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was called with:
-  [31m[\\"foo\\", \\"bar3\\"][39m, [31m[\\"foo\\", \\"bar2\\"][39m, [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar3\\"]</>, <red>[\\"foo\\", \\"bar2\\"]</>, <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toHaveBeenCalledWith works with jest.fn when not called 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
-But it was [31mnot called[39m."
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m)[.not].toHaveBeenLastCalledWith([22m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(<dim>)
 
-[31mjest.fn()[39m value must be a mock function or spy.
+<red>jest.fn()</> value must be a mock function or spy.
 Received:
-  function: [31m[Function fn][39m"
+  function: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jasmine.createSpy and arguments that don't match 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected spy to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was last called with:
-  [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jasmine.createSpy and arguments that match 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected spy to not have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jasmine.createSpy and many arguments 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).not.toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected spy to not have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jasmine.createSpy and many arguments that don't match 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected spy to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was last called with:
-  [31m[\\"foo\\", \\"bar3\\"][39m
-and [31mtwo more calls[39m."
+  <red>[\\"foo\\", \\"bar3\\"]</>
+and <red>two more calls</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with jasmine.createSpy when not called 1`] = `
-"[2mexpect([22m[31mspy[39m[2m).toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>spy</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected spy to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
-But it was [31mnot called[39m."
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with jest.fn and arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was last called with:
-  [31m[\\"foo\\", \\"bar1\\"][39m"
+  <red>[\\"foo\\", \\"bar1\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jest.fn and arguments that match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected mock function to not have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jest.fn and many arguments 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).not.toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected mock function to not have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m"
+  <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with jest.fn and many arguments that don't match 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
+  <green>[\\"foo\\", \\"bar\\"]</>
 But it was last called with:
-  [31m[\\"foo\\", \\"bar3\\"][39m
-and [31mtwo more calls[39m."
+  <red>[\\"foo\\", \\"bar3\\"]</>
+and <red>two more calls</>."
 `;
 
 exports[`toHaveBeenLastCalledWith works with jest.fn when not called 1`] = `
-"[2mexpect([22m[31mjest.fn()[39m[2m).toHaveBeenLastCalledWith([22m[32mexpected[39m[2m)[22m
+"<dim>expect(<red>jest.fn()</><dim>).toHaveBeenLastCalledWith(<green>expected</><dim>)
 
 Expected mock function to have been last called with:
-  [32m[\\"foo\\", \\"bar\\"][39m
-But it was [31mnot called[39m."
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
 `;

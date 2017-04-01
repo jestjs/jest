@@ -8,15 +8,12 @@
 'use strict';
 
 const runJest = require('../runJest');
-const skipOnWindows = require('skipOnWindows');
-
-skipOnWindows.suite();
 
 test('testNamePattern', () => {
   const path = require('path');
   const processorPath = path.resolve(
     __dirname,
-    '../testResultsProcessor/processor.js'
+    '../testResultsProcessor/processor.js',
   );
   const result = runJest.json('testResultsProcessor', [
     '--json',

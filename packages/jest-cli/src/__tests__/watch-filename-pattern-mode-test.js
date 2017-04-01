@@ -27,40 +27,48 @@ jest.mock('ansi-escapes', () => ({
   cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
 }));
 
-jest.mock('../SearchSource', () => class {
-  findMatchingTests(pattern) {
-    const paths = [
-      './path/to/file1-test.js',
-      './path/to/file2-test.js',
-      './path/to/file3-test.js',
-      './path/to/file4-test.js',
-      './path/to/file5-test.js',
-      './path/to/file6-test.js',
-      './path/to/file7-test.js',
-      './path/to/file8-test.js',
-      './path/to/file9-test.js',
-      './path/to/file10-test.js',
-      './path/to/file11-test.js',
-    ].filter(path =>  path.match(pattern));
+jest.mock(
+  '../SearchSource',
+  () =>
+    class {
+      findMatchingTests(pattern) {
+        const paths = [
+          './path/to/file1-test.js',
+          './path/to/file2-test.js',
+          './path/to/file3-test.js',
+          './path/to/file4-test.js',
+          './path/to/file5-test.js',
+          './path/to/file6-test.js',
+          './path/to/file7-test.js',
+          './path/to/file8-test.js',
+          './path/to/file9-test.js',
+          './path/to/file10-test.js',
+          './path/to/file11-test.js',
+        ].filter(path => path.match(pattern));
 
-    return {paths};
-  }
-});
+        return {paths};
+      }
+    },
+);
 
-jest.doMock('chalk', () => Object.assign(
-  new chalk.constructor({enabled: false}),
-  {stripColor: str => str},
-));
+jest.doMock('chalk', () =>
+  Object.assign(new chalk.constructor({enabled: false}), {
+    stripColor: str => str,
+  }));
 
-jest.doMock('../runJest', () => function() {
-  const args = Array.from(arguments);
-  runJestMock.apply(null, args);
+jest.doMock(
+  '../runJest',
+  () =>
+    function() {
+      const args = Array.from(arguments);
+      runJestMock.apply(null, args);
 
-  // Call the callback
-  args[args.length - 1]({snapshot: {}});
+      // Call the callback
+      args[args.length - 1]({snapshot: {}});
 
-  return Promise.resolve();
-});
+      return Promise.resolve();
+    },
+);
 
 jest.doMock('../lib/terminalUtils', () => ({
   getTerminalWidth: () => terminalWidth,
@@ -115,16 +123,11 @@ describe('Watch mode flows', () => {
     const toHex = char => Number(char.charCodeAt(0)).toString(16);
 
     // Write a pattern
-    ['p', '.', '*', '1', '0']
-    .map(toHex)
-    .forEach(assertPattern);
+    ['p', '.', '*', '1', '0'].map(toHex).forEach(assertPattern);
 
-    [KEYS.BACKSPACE, KEYS.BACKSPACE]
-    .forEach(assertPattern);
+    [KEYS.BACKSPACE, KEYS.BACKSPACE].forEach(assertPattern);
 
-    ['3']
-    .map(toHex)
-    .forEach(assertPattern);
+    ['3'].map(toHex).forEach(assertPattern);
 
     // Runs Jest again
     runJestMock.mockReset();

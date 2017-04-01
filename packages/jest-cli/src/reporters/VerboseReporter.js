@@ -21,12 +21,16 @@ const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const {ICONS} = require('../constants');
 
-class VerboseReporter extends DefaultReporter {
-  _config: Config;
+type Options = {|
+  expand: boolean,
+|};
 
-  constructor(config: Config) {
+class VerboseReporter extends DefaultReporter {
+  _options: Options;
+
+  constructor(options: Options) {
     super();
-    this._config = config;
+    this._options = options;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {
@@ -92,27 +96,26 @@ class VerboseReporter extends DefaultReporter {
 
   _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    const time = test.duration
-      ? ` (${test.duration.toFixed(0)}ms)`
-      : '';
+    const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
   _logTests(tests: Array<AssertionResult>, indentLevel: number) {
-    const config = this._config;
-
-    if (config.expand) {
+    if (this._options.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
-      const skippedCount = tests.reduce((result, test) => {
-        if (test.status === 'pending') {
-          result += 1;
-        } else {
-          this._logTest(test, indentLevel);
-        }
+      const skippedCount = tests.reduce(
+        (result, test) => {
+          if (test.status === 'pending') {
+            result += 1;
+          } else {
+            this._logTest(test, indentLevel);
+          }
 
-        return result;
-      }, 0);
+          return result;
+        },
+        0,
+      );
 
       if (skippedCount > 0) {
         this._logSkippedTests(skippedCount, indentLevel);
@@ -131,7 +134,6 @@ class VerboseReporter extends DefaultReporter {
     const indentation = '  '.repeat(indentLevel || 0);
     this.log(indentation + (str || ''));
   }
-
 }
 
 module.exports = VerboseReporter;

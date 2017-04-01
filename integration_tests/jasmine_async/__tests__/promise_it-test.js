@@ -30,8 +30,7 @@ describe('promise it', () => {
     return new Promise(resolve => {
       if (this.someContextValue !== 'value') {
         throw new Error(
-          'expected this.someContextValue to be set: ' +
-          this.someContextValue
+          'expected this.someContextValue to be set: ' + this.someContextValue
         );
       }
       resolve();
@@ -51,12 +50,20 @@ describe('promise it', () => {
     expect('sync').toBe('failed');
   });
 
-  it('succeeds if the test finishes in time', () => {
-    return new Promise(resolve => setTimeout(resolve, 10));
-  }, 250);
+  it(
+    'succeeds if the test finishes in time',
+    () => {
+      return new Promise(resolve => setTimeout(resolve, 10));
+    },
+    250
+  );
 
   // failing tests
-  it('fails if a custom timeout is exceeded', () => {
-    return new Promise(resolve => setTimeout(resolve, 100));
-  }, 10);
+  it(
+    'fails if a custom timeout is exceeded',
+    () => {
+      return new Promise(resolve => setTimeout(resolve, 100));
+    },
+    10
+  );
 });

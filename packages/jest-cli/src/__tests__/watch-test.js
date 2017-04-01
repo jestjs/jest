@@ -17,15 +17,19 @@ const {KEYS} = require('../constants');
 const runJestMock = jest.fn();
 
 jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
-jest.doMock('../runJest', () => function() {
-  const args = Array.from(arguments);
-  runJestMock.apply(null, args);
+jest.doMock(
+  '../runJest',
+  () =>
+    function() {
+      const args = Array.from(arguments);
+      runJestMock.apply(null, args);
 
-  // Call the callback
-  args[args.length - 1]({snapshot: {}});
+      // Call the callback
+      args[args.length - 1]({snapshot: {}});
 
-  return Promise.resolve();
-});
+      return Promise.resolve();
+    },
+);
 
 const watch = require('../watch');
 

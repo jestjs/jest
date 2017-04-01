@@ -46,31 +46,37 @@ beforeEach(() => {
 
 it('picks a name based on the rootDir', () => {
   const rootDir = '/root/path/foo';
-  const expected = crypto.createHash('md5')
+  const expected = crypto
+    .createHash('md5')
     .update('/root/path/foo')
     .digest('hex');
-  expect(normalize({
-    rootDir,
-  }).config.name).toBe(expected);
+  expect(
+    normalize({
+      rootDir,
+    }).config.name,
+  ).toBe(expected);
 });
 
 it('keeps custom names based on the rootDir', () => {
-  expect(normalize({
-    name: 'custom-name',
-    rootDir: '/root/path/foo',
-  }).config.name).toBe('custom-name');
+  expect(
+    normalize({
+      name: 'custom-name',
+      rootDir: '/root/path/foo',
+    }).config.name,
+  ).toBe('custom-name');
 });
 
 it('sets coverageReporters correctly when argv.json is set', () => {
-  expect(normalize({
-    rootDir: '/root/path/foo',
-  }, {
-    json: true,
-  }).config.coverageReporters).toEqual([
-    'json',
-    'lcov',
-    'clover',
-  ]);
+  expect(
+    normalize(
+      {
+        rootDir: '/root/path/foo',
+      },
+      {
+        json: true,
+      },
+    ).config.coverageReporters,
+  ).toEqual(['json', 'lcov', 'clover']);
 });
 
 describe('rootDir', () => {
@@ -109,13 +115,16 @@ describe('browser', () => {
 
 describe('collectCoverageOnlyFrom', () => {
   it('normalizes all paths relative to rootDir', () => {
-    const {config} = normalize({
-      collectCoverageOnlyFrom: {
-        'bar/baz': true,
-        'qux/quux/': true,
+    const {config} = normalize(
+      {
+        collectCoverageOnlyFrom: {
+          'bar/baz': true,
+          'qux/quux/': true,
+        },
+        rootDir: '/root/path/foo/',
       },
-      rootDir: '/root/path/foo/',
-    }, '/root/path');
+      '/root/path',
+    );
 
     const expected = {};
     expected[expectedPathFooBar] = true;
@@ -157,38 +166,29 @@ describe('collectCoverageOnlyFrom', () => {
 
 function testPathArray(key) {
   it('normalizes all paths relative to rootDir', () => {
-    const {config} = normalize({
-      [key]: [
-        'bar/baz',
-        'qux/quux/',
-      ],
-      rootDir: '/root/path/foo',
-    }, '/root/path');
+    const {config} = normalize(
+      {
+        [key]: ['bar/baz', 'qux/quux/'],
+        rootDir: '/root/path/foo',
+      },
+      '/root/path',
+    );
 
-    expect(config[key]).toEqual([
-      expectedPathFooBar, expectedPathFooQux,
-    ]);
+    expect(config[key]).toEqual([expectedPathFooBar, expectedPathFooQux]);
   });
 
   it('does not change absolute paths', () => {
     const {config} = normalize({
-      [key]: [
-        '/an/abs/path',
-        '/another/abs/path',
-      ],
+      [key]: ['/an/abs/path', '/another/abs/path'],
       rootDir: '/root/path/foo',
     });
 
-    expect(config[key]).toEqual([
-      expectedPathAbs, expectedPathAbsAnother,
-    ]);
+    expect(config[key]).toEqual([expectedPathAbs, expectedPathAbsAnother]);
   });
 
   it('substitutes <rootDir> tokens', () => {
     const {config} = normalize({
-      [key]: [
-        '<rootDir>/bar/baz',
-      ],
+      [key]: ['<rootDir>/bar/baz'],
       rootDir: '/root/path/foo',
     });
 
@@ -208,14 +208,17 @@ describe('transform', () => {
   });
 
   it('normalizes the path', () => {
-    const {config} = normalize({
-      rootDir: '/root/',
-      transform: {
-        [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
-        [DEFAULT_JS_PATTERN]: 'babel-jest',
-        'abs-path': '/qux/quux',
+    const {config} = normalize(
+      {
+        rootDir: '/root/',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
+          [DEFAULT_JS_PATTERN]: 'babel-jest',
+          'abs-path': '/qux/quux',
+        },
       },
-    }, '/root/path');
+      '/root/path',
+    );
 
     expect(config.transform).toEqual([
       [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
@@ -256,10 +259,13 @@ describe('setupTestFrameworkScriptFile', () => {
   });
 
   it('normalizes the path according to rootDir', () => {
-    const {config} = normalize({
-      rootDir: '/root/path/foo',
-      setupTestFrameworkScriptFile: 'bar/baz',
-    }, '/root/path');
+    const {config} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        setupTestFrameworkScriptFile: 'bar/baz',
+      },
+      '/root/path',
+    );
 
     expect(config.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
   });
@@ -287,13 +293,13 @@ describe('coveragePathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {config} = normalize({
-      coveragePathIgnorePatterns: [
-        'bar/baz',
-        'qux/quux',
-      ],
-      rootDir: '/root/path/foo',
-    }, '/root/path');
+    const {config} = normalize(
+      {
+        coveragePathIgnorePatterns: ['bar/baz', 'qux/quux'],
+        rootDir: '/root/path/foo',
+      },
+      '/root/path',
+    );
 
     expect(config.coveragePathIgnorePatterns).toEqual([
       joinForPattern('bar', 'baz'),
@@ -305,10 +311,7 @@ describe('coveragePathIgnorePatterns', () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
     const {config} = normalize({
-      coveragePathIgnorePatterns: [
-        'bar/baz',
-        'qux/quux/',
-      ],
+      coveragePathIgnorePatterns: ['bar/baz', 'qux/quux/'],
       rootDir: '/root/path/foo',
     });
 
@@ -320,10 +323,7 @@ describe('coveragePathIgnorePatterns', () => {
 
   it('substitutes <rootDir> tokens', () => {
     const {config} = normalize({
-      coveragePathIgnorePatterns: [
-        'hasNoToken',
-        '<rootDir>/hasAToken',
-      ],
+      coveragePathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
       rootDir: '/root/path/foo',
     });
 
@@ -338,13 +338,13 @@ describe('testPathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {config} = normalize({
-      rootDir: '/root/path/foo',
-      testPathIgnorePatterns: [
-        'bar/baz',
-        'qux/quux',
-      ],
-    }, '/root/path');
+    const {config} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        testPathIgnorePatterns: ['bar/baz', 'qux/quux'],
+      },
+      '/root/path',
+    );
 
     expect(config.testPathIgnorePatterns).toEqual([
       joinForPattern('bar', 'baz'),
@@ -357,10 +357,7 @@ describe('testPathIgnorePatterns', () => {
     // directories
     const {config} = normalize({
       rootDir: '/root/path/foo',
-      testPathIgnorePatterns: [
-        'bar/baz',
-        'qux/quux/',
-      ],
+      testPathIgnorePatterns: ['bar/baz', 'qux/quux/'],
     });
 
     expect(config.testPathIgnorePatterns).toEqual([
@@ -372,10 +369,7 @@ describe('testPathIgnorePatterns', () => {
   it('substitutes <rootDir> tokens', () => {
     const {config} = normalize({
       rootDir: '/root/path/foo',
-      testPathIgnorePatterns: [
-        'hasNoToken',
-        '<rootDir>/hasAToken',
-      ],
+      testPathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
     });
 
     expect(config.testPathIgnorePatterns).toEqual([
@@ -389,13 +383,13 @@ describe('modulePathIgnorePatterns', () => {
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {config} = normalize({
-      modulePathIgnorePatterns: [
-        'bar/baz',
-        'qux/quux',
-      ],
-      rootDir: '/root/path/foo',
-    }, '/root/path');
+    const {config} = normalize(
+      {
+        modulePathIgnorePatterns: ['bar/baz', 'qux/quux'],
+        rootDir: '/root/path/foo',
+      },
+      '/root/path',
+    );
 
     expect(config.modulePathIgnorePatterns).toEqual([
       joinForPattern('bar', 'baz'),
@@ -407,10 +401,7 @@ describe('modulePathIgnorePatterns', () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
     const {config} = normalize({
-      modulePathIgnorePatterns: [
-        'bar/baz',
-        'qux/quux/',
-      ],
+      modulePathIgnorePatterns: ['bar/baz', 'qux/quux/'],
       rootDir: '/root/path/foo',
     });
 
@@ -422,10 +413,7 @@ describe('modulePathIgnorePatterns', () => {
 
   it('substitutes <rootDir> tokens', () => {
     const {config} = normalize({
-      modulePathIgnorePatterns: [
-        'hasNoToken',
-        '<rootDir>/hasAToken',
-      ],
+      modulePathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
       rootDir: '/root/path/foo',
     });
 
@@ -489,15 +477,17 @@ describe('testEnvironment', () => {
       testEnvironment: 'jsdom',
     });
 
-    expect(config.testEnvironment)
-      .toEqual('node_modules/jest-environment-jsdom');
+    expect(config.testEnvironment).toEqual(
+      'node_modules/jest-environment-jsdom',
+    );
   });
 
   it('throws on invalid environment names', () => {
-    expect(() => normalize({
-      rootDir: '/root',
-      testEnvironment: 'phantom',
-    })).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      normalize({
+        rootDir: '/root',
+        testEnvironment: 'phantom',
+      })).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -516,8 +506,9 @@ describe('babel-jest', () => {
     });
 
     expect(config.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
-    expect(config.transform[0][1])
-      .toEqual(path.sep + 'node_modules' + path.sep + 'babel-jest');
+    expect(config.transform[0][1]).toEqual(
+      path.sep + 'node_modules' + path.sep + 'babel-jest',
+    );
     expect(config.setupFiles).toEqual([
       path.sep +
         'node_modules' +
@@ -526,7 +517,6 @@ describe('babel-jest', () => {
         path.sep +
         'runtime',
     ]);
-
   });
 
   it('uses babel-jest if babel-jest is explicitly specified in a custom transform config', () => {
@@ -548,7 +538,6 @@ describe('babel-jest', () => {
         path.sep +
         'runtime',
     ]);
-
   });
 
   it(`doesn't use babel-jest if its not available`, () => {
@@ -568,9 +557,7 @@ describe('babel-jest', () => {
     const {config} = normalize({
       rootDir: '/root',
       transform: {
-        [DEFAULT_JS_PATTERN]: ROOT_DIR + Resolver.findNodeModule(
-          'babel-jest',
-        ),
+        [DEFAULT_JS_PATTERN]: ROOT_DIR + Resolver.findNodeModule('babel-jest'),
       },
     });
 
@@ -582,12 +569,10 @@ describe('babel-jest', () => {
         path.sep +
         'runtime',
     ]);
-
   });
 });
 
 describe('Upgrade help', () => {
-
   let consoleWarn;
 
   beforeEach(() => {
@@ -659,7 +644,7 @@ describe('preset', () => {
         modulePathIgnorePatterns: ['b'],
         setupFiles: ['b'],
       }),
-      {virtual: true}
+      {virtual: true},
     );
   });
 
@@ -693,13 +678,16 @@ describe('preset', () => {
       rootDir: '/root/path/foo',
       setupFiles: ['a'],
     });
-    expect(config).toEqual(expect.objectContaining({
-      moduleNameMapper: expect.arrayContaining([['a', 'a'], ['b', 'b']]),
-      modulePathIgnorePatterns: expect.arrayContaining(['a', 'b']),
-      setupFiles: expect.arrayContaining(
-        ['/node_modules/a', '/node_modules/b']
-      ),
-    }));
+    expect(config).toEqual(
+      expect.objectContaining({
+        moduleNameMapper: expect.arrayContaining([['a', 'a'], ['b', 'b']]),
+        modulePathIgnorePatterns: expect.arrayContaining(['a', 'b']),
+        setupFiles: expect.arrayContaining([
+          '/node_modules/a',
+          '/node_modules/b',
+        ]),
+      }),
+    );
   });
 });
 
@@ -721,7 +709,7 @@ describe('preset without setupFiles', () => {
           modulePathIgnorePatterns: ['b'],
         };
       },
-      {virtual: true}
+      {virtual: true},
     );
   });
 
@@ -732,8 +720,10 @@ describe('preset without setupFiles', () => {
       setupFiles: ['a'],
     });
 
-    expect(config).toEqual(expect.objectContaining({
-      setupFiles: expect.arrayContaining(['/node_modules/a']),
-    }));
+    expect(config).toEqual(
+      expect.objectContaining({
+        setupFiles: expect.arrayContaining(['/node_modules/a']),
+      }),
+    );
   });
 });

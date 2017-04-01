@@ -9,6 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-editor-support": "^19.0.2",
-    "typescript": "^2.0.10"
+    "typescript": "^2.2.1"
   }
 }

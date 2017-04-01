@@ -18,12 +18,12 @@ skipOnWindows.suite();
 
 it('maps code coverage against original source', () => {
   const dir = path.resolve(__dirname, '../coverage-remapping');
-  run('npm install', dir);
+  run('yarn --no-lockfile', dir);
   runJest(dir, ['--coverage', '--mapCoverage', '--no-cache']);
 
   const coverageMapFile = path.join(
     __dirname,
-    '../coverage-remapping/coverage/coverage-final.json'
+    '../coverage-remapping/coverage/coverage-final.json',
   );
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));
 

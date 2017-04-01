@@ -115,13 +115,14 @@ module.exports = (
 
       const matchedTests = [];
 
-      this._cachedTestResults.forEach(({testResults}) => testResults.forEach((
-        {title},
-      ) => {
-        if (regex.test(title)) {
-          matchedTests.push(title);
-        }
-      }));
+      this._cachedTestResults.forEach(({testResults}) =>
+        testResults.forEach(({
+          title,
+        }) => {
+          if (regex.test(title)) {
+            matchedTests.push(title);
+          }
+        }));
 
       return matchedTests;
     }

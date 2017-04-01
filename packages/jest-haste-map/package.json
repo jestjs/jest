@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "fb-watchman": "^2.0.0",
-    "graceful-fs": "^4.1.6",
+    "graceful-fs": "^4.1.11",
     "jest-docblock": "^19.0.2",
     "micromatch": "^2.3.11",
     "sane": "~1.6.0",

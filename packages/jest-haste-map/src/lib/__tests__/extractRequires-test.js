@@ -13,7 +13,6 @@
 const extractRequires = require('../extractRequires');
 
 describe('extractRequires', () => {
-
   it('extracts both requires and imports from code', () => {
     const code = `
       import module1 from 'module1';

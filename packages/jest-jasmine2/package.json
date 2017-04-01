@@ -8,10 +8,12 @@
   "license": "BSD-3-Clause",
   "main": "build/index.js",
   "dependencies": {
-    "graceful-fs": "^4.1.6",
+    "graceful-fs": "^4.1.11",
     "jest-matcher-utils": "^19.0.0",
     "jest-matchers": "^19.0.0",
     "jest-message-util": "^19.0.0",
-    "jest-snapshot": "^19.0.2"
+    "jest-snapshot": "^19.0.2",
+    "once": "^1.4.0",
+    "p-map": "^1.1.1"
   }
 }

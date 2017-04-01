@@ -11,25 +11,9 @@
 
 'use strict';
 
+import type {Colors, Refs, StringOrNull, Plugins, Options} from './types.js';
+
 const style = require('ansi-styles');
-
-type Colors = Object;
-type Indent = (str: string) => string;
-type Refs = Array<any>;
-type Serialize = (val: any) => string;
-type StringOrNull = string | null; // but disallow undefined, unlike ?string
-
-type Plugin = {
-  print: (
-    val: any,
-    serialize: Serialize,
-    indent: Indent,
-    opts: Object,
-    colors: Colors,
-  ) => string,
-  test: Function,
-};
-type Plugins = Array<Plugin>;
 
 type Theme = {|
   content?: string,
@@ -41,30 +25,15 @@ type Theme = {|
 type InitialOptions = {|
   callToJSON?: boolean,
   escapeRegex?: boolean,
+  edgeSpacing?: string,
   highlight?: boolean,
   indent?: number,
   maxDepth?: number,
   min?: boolean,
   plugins?: Plugins,
   printFunctionName?: boolean,
+  spacing?: string,
   theme?: Theme,
-|};
-
-type Options = {|
-  callToJSON: boolean,
-  escapeRegex: boolean,
-  highlight: boolean,
-  indent: number,
-  maxDepth: number,
-  min: boolean,
-  plugins: Plugins,
-  printFunctionName: boolean,
-  theme: {|
-    content: string,
-    prop: string,
-    tag: string,
-    value: string,
-  |},
 |};
 
 const toString = Object.prototype.toString;
@@ -417,7 +386,7 @@ function printObject(
     keys = keys
       .filter(
         key =>
-          // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
+        // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
           !(typeof key === 'symbol' ||
             toString.call(key) === '[object Symbol]'),
       )
@@ -803,6 +772,7 @@ function print(
 
 const DEFAULTS: Options = {
   callToJSON: true,
+  edgeSpacing: '\n',
   escapeRegex: false,
   highlight: false,
   indent: 2,
@@ -810,6 +780,7 @@ const DEFAULTS: Options = {
   min: false,
   plugins: [],
   printFunctionName: true,
+  spacing: '\n',
   theme: {
     content: 'reset',
     prop: 'yellow',
@@ -891,7 +862,7 @@ function prettyFormat(val: any, initialOptions?: InitialOptions): string {
   const colors: Colors = {};
   Object.keys(opts.theme).forEach(key => {
     if (opts.highlight) {
-      const color = colors[key] = style[opts.theme[key]];
+      const color = (colors[key] = style[opts.theme[key]]);
       if (
         !color ||
         typeof color.close !== 'string' ||

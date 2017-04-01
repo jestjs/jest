@@ -9,7 +9,10 @@
  */
 'use strict';
 
-import type {MockFunctionMetadata as _MockFunctionMetadata, ModuleMocker as _ModuleMocker} from 'jest-mock';
+import type {
+  MockFunctionMetadata as _MockFunctionMetadata,
+  ModuleMocker as _ModuleMocker,
+} from 'jest-mock';
 
 export type MockFunctionMetadata = _MockFunctionMetadata;
 export type ModuleMocker = _ModuleMocker;

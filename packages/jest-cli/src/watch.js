@@ -9,12 +9,12 @@
  */
 'use strict';
 
-import type {HasteContext} from 'types/HasteMap';
+import type {Context} from 'types/Context';
 import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const createHasteContext = require('./lib/createHasteContext');
+const createTestContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
@@ -31,7 +31,7 @@ const watch = (
   pipe: stream$Writable | tty$WriteStream,
   argv: Object,
   hasteMap: HasteMap,
-  hasteContext: HasteContext,
+  hasteContext: Context,
   hasDeprecationWarnings?: boolean,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
@@ -55,7 +55,8 @@ const watch = (
   let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
-  let displayHelp = true;
+  let shouldDisplayWatchUsage = true;
+  let isWatchUsageDisplayed = false;
 
   testPathPatternPrompt.updateSearchSource(hasteContext);
 
@@ -65,7 +66,7 @@ const watch = (
     });
 
     if (validPaths.length) {
-      hasteContext = createHasteContext(config, {hasteFS, moduleMap});
+      hasteContext = createTestContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();
@@ -113,9 +114,14 @@ const watch = (
         // The old instance that was passed to Jest will still be interrupted
         // and prevent test runs from the previous run.
         testWatcher = new TestWatcher({isWatchMode: true});
-        if (displayHelp) {
+        if (shouldDisplayWatchUsage) {
           pipe.write(usage(argv, hasSnapshotFailure));
-          displayHelp = !process.env.JEST_HIDE_USAGE;
+          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+          isWatchUsageDisplayed = true;
+        } else {
+          pipe.write(showToggleUsagePrompt());
+          shouldDisplayWatchUsage = false;
+          isWatchUsageDisplayed = false;
         }
 
         testNamePatternPrompt.updateCachedTestResults(results.testResults);
@@ -195,8 +201,14 @@ const watch = (
         );
         break;
       case KEYS.QUESTION_MARK:
-        if (process.env.JEST_HIDE_USAGE) {
+        break;
+      case KEYS.W:
+        if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
+          pipe.write(ansiEscapes.cursorUp());
+          pipe.write(ansiEscapes.eraseDown);
           pipe.write(usage(argv, hasSnapshotFailure));
+          isWatchUsageDisplayed = true;
+          shouldDisplayWatchUsage = false;
         }
         break;
     }
@@ -285,5 +297,12 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
   /* eslint-enable max-len */
   return messages.filter(message => !!message).join(delimiter) + '\n';
 };
+
+const showToggleUsagePrompt = () =>
+  '\n' +
+  chalk.bold('Watch Usage: ') +
+  chalk.dim('Press ') +
+  'w' +
+  chalk.dim(' to show more.');
 
 module.exports = watch;

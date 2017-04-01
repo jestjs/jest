@@ -13,7 +13,6 @@ import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 
 const diff = require('jest-diff');
-const fileExists = require('jest-file-exists');
 const fs = require('fs');
 const path = require('path');
 const SnapshotState = require('./State');
@@ -27,24 +26,29 @@ const {
 } = require('jest-matcher-utils');
 const {SNAPSHOT_EXTENSION} = require('./utils');
 
+const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
+  hasteFS.exists(filePath) || fs.existsSync(filePath);
+
 const cleanup = (hasteFS: HasteFS, update: boolean) => {
   const pattern = '\\.' + SNAPSHOT_EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
   const filesRemoved = files
-    .filter(snapshotFile => !fileExists(
-      path.resolve(
-        path.dirname(snapshotFile),
-        '..',
-        path.basename(snapshotFile, '.' + SNAPSHOT_EXTENSION),
-      ),
-      hasteFS,
-    ))
+    .filter(
+      snapshotFile =>
+        !fileExists(
+          path.resolve(
+            path.dirname(snapshotFile),
+            '..',
+            path.basename(snapshotFile, '.' + SNAPSHOT_EXTENSION),
+          ),
+          hasteFS,
+        ),
+    )
     .map(snapshotFile => {
       if (update) {
         fs.unlinkSync(snapshotFile);
       }
-    })
-    .length;
+    }).length;
 
   return {
     filesRemoved,
@@ -81,27 +85,22 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 
     const expectedString = expected.trim();
     const actualString = actual.trim();
-    const diffMessage = diff(
-      expectedString,
-      actualString,
-      {
-        aAnnotation: 'Snapshot',
-        bAnnotation: 'Received',
-        expand: snapshotState.expand,
-      },
-    );
+    const diffMessage = diff(expectedString, actualString, {
+      aAnnotation: 'Snapshot',
+      bAnnotation: 'Received',
+      expand: snapshotState.expand,
+    });
 
-    const report =
-      () => `${RECEIVED_COLOR('Received value')} does not match ` +
+    const report = () =>
+      `${RECEIVED_COLOR('Received value')} does not match ` +
       `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
-      (diffMessage || (
-        RECEIVED_COLOR('- ' + expectedString) + '\n' +
-        EXPECTED_COLOR('+ ' + actualString)
-      ));
+      (diffMessage ||
+        RECEIVED_COLOR('- ' + expectedString) +
+          '\n' +
+          EXPECTED_COLOR('+ ' + actualString));
 
-    const message =
-      () => matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' +
-      report();
+    const message = () =>
+      matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' + report();
 
     // Passing the the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
@@ -139,9 +138,10 @@ const toThrowErrorMatchingSnapshot = function(received: any, expected: void) {
 
   if (error === undefined) {
     throw new Error(
-      matcherHint('.toThrowErrorMatchingSnapshot', '() => {}', '') + '\n\n' +
-      `Expected the function to throw an error.\n` +
-      `But it didn't throw anything.`,
+      matcherHint('.toThrowErrorMatchingSnapshot', '() => {}', '') +
+        '\n\n' +
+        `Expected the function to throw an error.\n` +
+        `But it didn't throw anything.`,
     );
   }
 

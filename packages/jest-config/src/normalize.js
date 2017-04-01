@@ -33,8 +33,8 @@ const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const ERROR = `${BULLET}Validation Error`;
 
-const createConfigError =
-  message => new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+const createConfigError = message =>
+  new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
 const setupPreset = (config: InitialConfig, configPreset: string) => {
   let preset;
@@ -52,17 +52,16 @@ const setupPreset = (config: InitialConfig, configPreset: string) => {
     // $FlowFixMe
     preset = require(presetModule);
   } catch (error) {
-    throw createConfigError(
-      `  Preset ${chalk.bold(presetPath)} not found.`
-    );
+    throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
   if (config.setupFiles) {
     config.setupFiles = (preset.setupFiles || []).concat(config.setupFiles);
   }
   if (config.modulePathIgnorePatterns) {
-    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns
-      .concat(config.modulePathIgnorePatterns);
+    config.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
+      config.modulePathIgnorePatterns,
+    );
   }
   if (config.moduleNameMapper) {
     config.moduleNameMapper = Object.assign(
@@ -112,14 +111,17 @@ const normalizeCollectCoverageOnlyFrom = (
   config: InitialConfig,
   key: string,
 ) => {
-  return Object.keys(config[key]).reduce((normObj, filePath) => {
-    filePath = path.resolve(
-      config.rootDir,
-      _replaceRootDirInPath(config.rootDir, filePath),
-    );
-    normObj[filePath] = true;
-    return normObj;
-  }, Object.create(null));
+  return Object.keys(config[key]).reduce(
+    (normObj, filePath) => {
+      filePath = path.resolve(
+        config.rootDir,
+        _replaceRootDirInPath(config.rootDir, filePath),
+      );
+      normObj[filePath] = true;
+      return normObj;
+    },
+    Object.create(null),
+  );
 };
 
 const normalizeCollectCoverageFrom = (config: InitialConfig, key: string) => {
@@ -154,23 +156,22 @@ const normalizeUnmockedModulePathPatterns = (
   return config[key].map(pattern =>
     utils.replacePathSepForRegex(
       pattern.replace(/<rootDir>/g, config.rootDir),
-    )
-  );
+    ));
 };
 
 const normalizePreprocessor = (config: InitialConfig) => {
   /* eslint-disable max-len */
   if (config.scriptPreprocessor && config.transform) {
     throw createConfigError(
-`  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transform')}.`
+      `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold('transform')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transform')}.`,
     );
   }
 
   if (config.preprocessorIgnorePatterns && config.transformIgnorePatterns) {
     throw createConfigError(
-`  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
-  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`
+      `  Options ${chalk.bold('preprocessorIgnorePatterns')} and ${chalk.bold('transformIgnorePatterns')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold('transformIgnorePatterns')}.`,
     );
   }
   /* eslint-enable max-len */
@@ -201,8 +202,11 @@ const normalizeMissingOptions = (config: InitialConfig) => {
   if (!config.testRunner || config.testRunner === 'jasmine2') {
     config.testRunner = require.resolve('jest-jasmine2');
   } else {
-    config.testRunner =
-      resolve(config.rootDir, 'testRunner', config.testRunner);
+    config.testRunner = resolve(
+      config.rootDir,
+      'testRunner',
+      config.testRunner,
+    );
   }
 
   return config;
@@ -212,7 +216,7 @@ const normalizeRootDir = (config: InitialConfig) => {
   // Assert that there *is* a rootDir
   if (!config.hasOwnProperty('rootDir')) {
     throw createConfigError(
-      `  Configuration option ${chalk.bold('rootDir')} must be specified.`
+      `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
   config.rootDir = path.normalize(config.rootDir);
@@ -230,7 +234,7 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
   if (argv.collectCoverageOnlyFrom) {
     const collectCoverageOnlyFrom = Object.create(null);
     argv.collectCoverageOnlyFrom.forEach(
-      path => collectCoverageOnlyFrom[path] = true
+      path => collectCoverageOnlyFrom[path] = true,
     );
     config.collectCoverageOnlyFrom = collectCoverageOnlyFrom;
   }
@@ -265,119 +269,120 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   const babelJest = setupBabelJest(config);
   const newConfig = Object.assign({}, DEFAULT_CONFIG);
 
-  Object.keys(config).reduce((newConfig, key) => {
-    let value;
-    switch (key) {
-      case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(config, key);
-        break;
-      case 'setupFiles':
-      case 'snapshotSerializers':
-        //$FlowFixMe
-        value = config[key].map(resolve.bind(null, config.rootDir, key));
-        break;
-      case 'roots':
-        //$FlowFixMe
-        value = config[key].map(filePath => path.resolve(
-          config.rootDir,
-          _replaceRootDirInPath(config.rootDir, filePath),
-        ));
-        break;
-      case 'collectCoverageFrom':
-        value = normalizeCollectCoverageFrom(config, key);
-        break;
-      case 'cacheDirectory':
-      case 'coverageDirectory':
-        value = path.resolve(
-          config.rootDir,
+  Object.keys(config).reduce(
+    (newConfig, key) => {
+      let value;
+      switch (key) {
+        case 'collectCoverageOnlyFrom':
+          value = normalizeCollectCoverageOnlyFrom(config, key);
+          break;
+        case 'setupFiles':
+        case 'snapshotSerializers':
           //$FlowFixMe
-          _replaceRootDirInPath(config.rootDir, config[key]),
-        );
-        break;
-      case 'setupTestFrameworkScriptFile':
-      case 'testResultsProcessor':
-      case 'resolver':
-        //$FlowFixMe
-        value = resolve(config.rootDir, key, config[key]);
-        break;
-      case 'moduleNameMapper':
-        //$FlowFixMe
-        value = Object.keys(config[key]).map(regex => [
-          regex,
+          value = config[key].map(resolve.bind(null, config.rootDir, key));
+          break;
+        case 'roots':
           //$FlowFixMe
-          _replaceRootDirTags(config.rootDir, config[key][regex]),
-        ]);
-        break;
-      case 'transform':
-        //$FlowFixMe
-        value = Object.keys(config[key]).map(regex => [
-          regex,
-          //$FlowFixMe
-          resolve(config.rootDir, key, config[key][regex]),
-        ]);
-        break;
-      case 'coveragePathIgnorePatterns':
-      case 'modulePathIgnorePatterns':
-      case 'testPathIgnorePatterns':
-      case 'transformIgnorePatterns':
-      case 'unmockedModulePathPatterns':
-        value = normalizeUnmockedModulePathPatterns(config, key);
-        break;
-      case 'haste':
-        value = Object.assign({}, config[key]);
-        if (value.hasteImplModulePath != null) {
-          value.hasteImplModulePath = resolve(
+          value = config[key].map(filePath =>
+            path.resolve(
+              config.rootDir,
+              _replaceRootDirInPath(config.rootDir, filePath),
+            ));
+          break;
+        case 'collectCoverageFrom':
+          value = normalizeCollectCoverageFrom(config, key);
+          break;
+        case 'cacheDirectory':
+        case 'coverageDirectory':
+          value = path.resolve(
             config.rootDir,
-            'haste.hasteImplModulePath',
-            value.hasteImplModulePath,
+            //$FlowFixMe
+            _replaceRootDirInPath(config.rootDir, config[key]),
           );
-        }
-        break;
-      case 'automock':
-      case 'bail':
-      case 'browser':
-      case 'cache':
-      case 'clearMocks':
-      case 'collectCoverage':
-      case 'coverageCollector':
-      case 'coverageReporters':
-      case 'coverageThreshold':
-      case 'globals':
-      case 'logHeapUsage':
-      case 'logTransformErrors':
-      case 'mapCoverage':
-      case 'moduleDirectories':
-      case 'moduleFileExtensions':
-      case 'moduleLoader':
-      case 'modulePaths':
-      case 'name':
-      case 'noStackTrace':
-      case 'notify':
-      case 'persistModuleRegistryBetweenSpecs':
-      case 'preset':
-      case 'replname':
-      case 'reporters':
-        value = _replaceRootDirTags(config.rootDir, config[key]);
-        break;
-      case 'resetMocks':
-      case 'resetModules':
-      case 'rootDir':
-      case 'testMatch':
-      case 'testEnvironment':
-      case 'testRegex':
-      case 'testReporter':
-      case 'testRunner':
-      case 'testURL':
-      case 'timers':
-      case 'updateSnapshot':
-      case 'verbose':
-      case 'watchman':
-        value = config[key];
-        break;
-    }
-    newConfig[key] = value;
-    return newConfig;
-  }, newConfig);
+          break;
+        case 'setupTestFrameworkScriptFile':
+        case 'testResultsProcessor':
+        case 'resolver':
+          //$FlowFixMe
+          value = resolve(config.rootDir, key, config[key]);
+          break;
+        case 'moduleNameMapper':
+          //$FlowFixMe
+          value = Object.keys(config[key]).map(regex => [
+            regex,
+            //$FlowFixMe
+            _replaceRootDirTags(config.rootDir, config[key][regex]),
+          ]);
+          break;
+        case 'transform':
+          //$FlowFixMe
+          value = Object.keys(config[key]).map(regex => [
+            regex,
+            //$FlowFixMe
+            resolve(config.rootDir, key, config[key][regex]),
+          ]);
+          break;
+        case 'coveragePathIgnorePatterns':
+        case 'modulePathIgnorePatterns':
+        case 'testPathIgnorePatterns':
+        case 'transformIgnorePatterns':
+        case 'unmockedModulePathPatterns':
+          value = normalizeUnmockedModulePathPatterns(config, key);
+          break;
+        case 'haste':
+          value = Object.assign({}, config[key]);
+          if (value.hasteImplModulePath != null) {
+            value.hasteImplModulePath = resolve(
+              config.rootDir,
+              'haste.hasteImplModulePath',
+              value.hasteImplModulePath,
+            );
+          }
+          break;
+        case 'automock':
+        case 'bail':
+        case 'browser':
+        case 'cache':
+        case 'clearMocks':
+        case 'collectCoverage':
+        case 'coverageCollector':
+        case 'coverageReporters':
+        case 'coverageThreshold':
+        case 'globals':
+        case 'logHeapUsage':
+        case 'logTransformErrors':
+        case 'mapCoverage':
+        case 'moduleDirectories':
+        case 'moduleFileExtensions':
+        case 'moduleLoader':
+        case 'modulePaths':
+        case 'name':
+        case 'noStackTrace':
+        case 'notify':
+        case 'persistModuleRegistryBetweenSpecs':
+        case 'preset':
+        case 'replname':
+        case 'resetMocks':
+        case 'resetModules':
+        case 'rootDir':
+        case 'testMatch':
+        case 'testEnvironment':
+        case 'testRegex':
+        case 'testReporter':
+        case 'testRunner':
+        case 'testURL':
+        case 'timers':
+        case 'updateSnapshot':
+        case 'verbose':
+        case 'watchman':
+          value = config[key];
+          break;
+      }
+      newConfig[key] = value;
+      return newConfig;
+    },
+    newConfig,
+  );
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

@@ -35,12 +35,10 @@ describe('hg', () => {
   afterEach(() => rimraf.sync(tmpdir));
 
   describe('isHGRepository', () => {
-
     it('returns null for non hg repo folder', () =>
       hg.isHGRepository(tmpdir).then(res => {
         expect(res).toBeNull();
-      }),
-    );
+      }));
 
     it('returns dirname for hg repo folder', () => {
       childProcess.spawnSync('hg', ['init', tmpdir]);
@@ -52,7 +50,6 @@ describe('hg', () => {
   });
 
   describe('findChangedFiles', () => {
-
     beforeEach(() => {
       childProcess.spawnSync('hg', ['init', tmpdir]);
     });
@@ -60,8 +57,7 @@ describe('hg', () => {
     it('returns an empty array for hg repo folder without modified files', () =>
       hg.findChangedFiles(tmpdir, options).then(res => {
         expect(res).toEqual([]);
-      }),
-    );
+      }));
 
     it('returns an array of modified files for hg repo folder', () => {
       fs.writeFileSync(tmpfile);

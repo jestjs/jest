@@ -25,8 +25,7 @@ describe('Runtime requireModule', () => {
         'RegularModule',
       );
       expect(exports.isRealModule).toBe(true);
-    }),
-  );
+    }));
 
   it('provides `module.parent` to modules', () =>
     createRuntime(__filename).then(runtime => {
@@ -39,8 +38,7 @@ describe('Runtime requireModule', () => {
         filename: 'mock.js',
         id: 'mockParent',
       });
-    }),
-  );
+    }));
 
   it('provides `module.filename` to modules', () =>
     createRuntime(__filename).then(runtime => {
@@ -48,11 +46,10 @@ describe('Runtime requireModule', () => {
         runtime.__mockRootPath,
         'RegularModule',
       );
-      expect(exports.filename.endsWith(
-        'test_root' + path.sep + 'RegularModule.js',
-      )).toBe(true);
-    }),
-  );
+      expect(
+        exports.filename.endsWith('test_root' + path.sep + 'RegularModule.js'),
+      ).toBe(true);
+    }));
 
   it('provides `module.paths` to modules', () => {
     const altModuleDir = 'bower_components';
@@ -65,9 +62,7 @@ describe('Runtime requireModule', () => {
       );
       expect(exports.paths.length).toBeGreaterThan(0);
       exports.paths.forEach(path => {
-        expect(
-          moduleDirectories.some(dir => path.endsWith(dir)),
-        ).toBe(true);
+        expect(moduleDirectories.some(dir => path.endsWith(dir))).toBe(true);
       });
     });
   });
@@ -76,11 +71,8 @@ describe('Runtime requireModule', () => {
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'DoesntExist');
-      }).toThrow(
-        new Error('Cannot find module \'DoesntExist\' from \'root.js\''),
-      );
-    }),
-  );
+      }).toThrow(new Error("Cannot find module 'DoesntExist' from 'root.js'"));
+    }));
 
   it('finds relative-path modules without file extension', () =>
     createRuntime(__filename).then(runtime => {
@@ -89,8 +81,7 @@ describe('Runtime requireModule', () => {
         './RegularModule',
       );
       expect(exports.isRealModule).toBe(true);
-    }),
-  );
+    }));
 
   it('finds relative-path modules with file extension', () =>
     createRuntime(__filename).then(runtime => {
@@ -99,26 +90,23 @@ describe('Runtime requireModule', () => {
         './RegularModule.js',
       );
       expect(exports.isRealModule).toBe(true);
-    }),
-  );
+    }));
 
   it('throws on non-existent relative-path modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, './DoesntExist');
       }).toThrow(
-        new Error('Cannot find module \'./DoesntExist\' from \'root.js\''),
+        new Error("Cannot find module './DoesntExist' from 'root.js'"),
       );
-    }),
-  );
+    }));
 
   it('finds node core built-in modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'fs');
       }).not.toThrow();
-    }),
-  );
+    }));
 
   it('finds and loads JSON files without file extension', () =>
     createRuntime(__filename).then(runtime => {
@@ -127,8 +115,7 @@ describe('Runtime requireModule', () => {
         './JSONFile',
       );
       expect(exports.isJSONModule).toBe(true);
-    }),
-  );
+    }));
 
   it('finds and loads JSON files with file extension', () =>
     createRuntime(__filename).then(runtime => {
@@ -137,8 +124,7 @@ describe('Runtime requireModule', () => {
         './JSONFile.json',
       );
       expect(exports.isJSONModule).toBe(true);
-    }),
-  );
+    }));
 
   it('requires a JSON file twice successfully', () =>
     createRuntime(__filename).then(runtime => {
@@ -153,8 +139,7 @@ describe('Runtime requireModule', () => {
       expect(exports1.isJSONModule).toBe(true);
       expect(exports2.isJSONModule).toBe(true);
       expect(exports1).toBe(exports2);
-    }),
-  );
+    }));
 
   it('provides manual mock when real module doesnt exist', () =>
     createRuntime(__filename).then(runtime => {
@@ -163,10 +148,9 @@ describe('Runtime requireModule', () => {
         'ExclusivelyManualMock',
       );
       expect(exports.isExclusivelyManualMockModule).toBe(true);
-    }),
-  );
+    }));
 
-  it(`doesn't override real modules with manual mocks when explicitly marked with .unmock()`, () =>
+  it(`doesn't override real modules with manual mocks when explicitly unmocked`, () =>
     createRuntime(__filename, {
       automock: true,
     }).then(runtime => {
@@ -178,8 +162,7 @@ describe('Runtime requireModule', () => {
         'ManuallyMocked',
       );
       expect(exports.isManualMockModule).toBe(false);
-    }),
-  );
+    }));
 
   it('resolves haste packages properly', () =>
     createRuntime(__filename).then(runtime => {
@@ -188,8 +171,7 @@ describe('Runtime requireModule', () => {
         'haste-package/core/module',
       );
       expect(hastePackage.isHastePackage).toBe(true);
-    }),
-  );
+    }));
 
   it('resolves node modules properly when crawling node_modules', () =>
     // While we are crawling a node module, we shouldn't put package.json
@@ -205,8 +187,7 @@ describe('Runtime requireModule', () => {
         'not-a-haste-package',
       );
       expect(hastePackage.isNodeModule).toBe(true);
-    }),
-  );
+    }));
 
   it('resolves platform extensions based on the default platform', () =>
     Promise.all([
@@ -271,8 +252,7 @@ describe('Runtime requireModule', () => {
         // cannot be found.
         expect(exports.platform).toBe('native');
       }),
-    ]),
-  );
+    ]));
 
   it('finds modules encoded in UTF-8 *with BOM*', () =>
     createRuntime(__filename).then(runtime => {
@@ -281,8 +261,7 @@ describe('Runtime requireModule', () => {
         './UTF8WithBOM.js',
       );
       expect(exports).toBe('isModuleEncodedInUTF8WithBOM');
-    }),
-  );
+    }));
 
   it('finds and loads JSON files encoded in UTF-8 *with BOM*', () =>
     createRuntime(__filename).then(runtime => {
@@ -291,7 +270,5 @@ describe('Runtime requireModule', () => {
         './UTF8WithBOM.json',
       );
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
-    }),
-  );
-
+    }));
 });

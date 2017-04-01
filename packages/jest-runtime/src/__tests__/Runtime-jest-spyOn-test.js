@@ -12,7 +12,6 @@
 let createRuntime;
 
 describe('Runtime', () => {
-
   beforeEach(() => {
     createRuntime = require('createRuntime');
   });
@@ -23,9 +22,11 @@ describe('Runtime', () => {
         const root = runtime.requireModule(runtime.__mockRootPath);
 
         let isOriginalCalled = false;
-        const obj = {method: () => {
-          isOriginalCalled = true;
-        }};
+        const obj = {
+          method: () => {
+            isOriginalCalled = true;
+          },
+        };
 
         const spy = root.jest.spyOn(obj, 'method');
 
@@ -33,7 +34,6 @@ describe('Runtime', () => {
 
         expect(isOriginalCalled).toBe(true);
         expect(spy).toHaveBeenCalled();
-      }),
-    );
+      }));
   });
 });

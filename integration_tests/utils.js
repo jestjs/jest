@@ -77,31 +77,30 @@ const createEmptyPackage = (directory, packageJson) => {
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
-    JSON.stringify(packageJson, null, 2)
+    JSON.stringify(packageJson, null, 2),
   );
-
 };
 
 const extractSummary = stdout => {
   const match = stdout.match(
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all test suites.*\n*$/gm
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*\nRan all test suites.*\n*$/gm,
   );
   if (!match) {
-    throw new Error(`
+    throw new Error(
+      `
       Could not find test summary in the output.
       OUTPUT:
         ${stdout}
-    `);
+    `,
+    );
   }
 
   const summary = match[0]
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
-  const rest = stdout
-    .slice(0, -match[0].length)
-    // remove all timestamps
-    .replace(/\s*\(.*ms\)/gm, '');
+  // remove all timestamps
+  const rest = stdout.slice(0, -match[0].length).replace(/\s*\(.*ms\)/gm, '');
 
   return {rest, summary};
 };

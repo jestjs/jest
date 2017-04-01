@@ -14,7 +14,6 @@ import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
 
-const fileExists = require('jest-file-exists');
 const {replacePathSepForRegex} = require('jest-regex-util');
 
 const snapshotDirRegex = new RegExp(
@@ -76,17 +75,22 @@ class DependencyResolver {
     const collectModules = (relatedPaths, moduleMap, changed) => {
       const visitedModules = new Set();
       while (changed.size) {
-        changed = new Set(moduleMap.filter(module => (
-          !visitedModules.has(module.file) &&
-          module.dependencies.some(dep => dep && changed.has(dep))
-        )).map(module => {
-          const file = module.file;
-          if (filter(file)) {
-            relatedPaths.add(file);
-          }
-          visitedModules.add(file);
-          return module.file;
-        }));
+        changed = new Set(
+          moduleMap
+            .filter(
+              module =>
+                !visitedModules.has(module.file) &&
+                module.dependencies.some(dep => dep && changed.has(dep)),
+            )
+            .map(module => {
+              const file = module.file;
+              if (filter(file)) {
+                relatedPaths.add(file);
+              }
+              visitedModules.add(file);
+              return module.file;
+            }),
+        );
       }
       return relatedPaths;
     };
@@ -98,18 +102,15 @@ class DependencyResolver {
     const relatedPaths = new Set();
     const changed = new Set();
     for (const path of paths) {
-      if (fileExists(path, this._hasteFS)) {
-        const module = this._hasteFS.exists(path);
-        if (module) {
-          // /path/to/__snapshots__/test.js.snap is always adjacent to
-          // /path/to/test.js
-          const modulePath = isSnapshotPath(path)
-            ? path.replace(snapshotFileRegex, '$1')
-            : path;
-          changed.add(modulePath);
-          if (filter(modulePath)) {
-            relatedPaths.add(modulePath);
-          }
+      if (this._hasteFS.exists(path)) {
+        // /path/to/__snapshots__/test.js.snap is always adjacent to
+        // /path/to/test.js
+        const modulePath = isSnapshotPath(path)
+          ? path.replace(snapshotFileRegex, '$1')
+          : path;
+        changed.add(modulePath);
+        if (filter(modulePath)) {
+          relatedPaths.add(modulePath);
         }
       }
     }

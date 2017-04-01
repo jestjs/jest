@@ -10,7 +10,6 @@
 
 jest.mock('read-pkg');
 
-const path = require('path');
 const loadFromPackage = require('../loadFromPackage');
 
 describe('loadFromPackage', () => {
@@ -20,17 +19,17 @@ describe('loadFromPackage', () => {
         "testMatch": ["match.js"]
       }
     }`,
-    'broken': `{
+    broken: `{
       "jest": {
         "testMatch": ["match.js"
       }
     }`,
-    'withRootDir': `{
+    withRootDir: `{
       "jest": {
         "rootDir": "testDir"
       }
     }`,
-    'withoutJest': `{
+    withoutJest: `{
     }`,
   };
 
@@ -39,22 +38,17 @@ describe('loadFromPackage', () => {
   });
 
   it('loads configuration from a `package.json` at `root`', async () => {
-    const {config} = await loadFromPackage('.', {});
+    const config = await loadFromPackage('.', {});
     expect(config.testMatch).toEqual(['match.js']);
   });
 
   it('returns a config object even if `jest` is not defined in `package.json`.', async () => {
-    const {config} = await loadFromPackage('withoutJest', {});
+    const config = await loadFromPackage('withoutJest', {});
     expect(config).toEqual(expect.anything());
   });
 
   it('returns null if the `package.json` at `root` cannot be parsed.', async () => {
     const result = await loadFromPackage('broken', {});
     expect(result).toBeNull();
-  });
-
-  it('resolves `rootDir` if defined.', async () => {
-    const {config} = await loadFromPackage('withRootDir', {});
-    expect(path.basename(config.rootDir)).toEqual('testDir');
   });
 });

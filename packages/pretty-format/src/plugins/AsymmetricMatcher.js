@@ -9,18 +9,20 @@
 
 'use strict';
 
+import type {Colors, Indent, Options, Print, Plugin} from '../types.js';
+
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 const SPACE = ' ';
 
 class ArrayContaining extends Array {}
 class ObjectContaining extends Object {}
 
-const printAsymmetricMatcher = (
+const print = (
   val: any,
-  print: Function,
-  indent: Function,
-  opts: Object,
-  colors: Object
+  print: Print,
+  indent: Indent,
+  opts: Options,
+  colors: Colors,
 ) => {
   const stringedValue = val.toString();
 
@@ -49,7 +51,6 @@ const printAsymmetricMatcher = (
   return val.toAsymmetricMatcher();
 };
 
-module.exports = {
-  print: printAsymmetricMatcher,
-  test: (object: any) => object && object.$$typeof === asymmetricMatcher,
-};
+const test = (object: any) => object && object.$$typeof === asymmetricMatcher;
+
+module.exports = ({print, test}: Plugin);

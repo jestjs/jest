@@ -126,7 +126,7 @@ class Resolver {
     // 1. Check if the module is a haste module.
     let module = this.getModule(moduleName);
     if (module) {
-      return this._moduleNameCache[key] = module;
+      return (this._moduleNameCache[key] = module);
     }
 
     // 2. Check if the module is a node module and resolve it based on
@@ -150,7 +150,7 @@ class Resolver {
       });
 
       if (module) {
-        return this._moduleNameCache[key] = module;
+        return (this._moduleNameCache[key] = module);
       }
     }
 
@@ -160,9 +160,9 @@ class Resolver {
     module = this.getPackage(parts.shift());
     if (module) {
       try {
-        return this._moduleNameCache[key] = require.resolve(
+        return (this._moduleNameCache[key] = require.resolve(
           path.join.apply(path, [path.dirname(module)].concat(parts)),
-        );
+        ));
       } catch (ignoredError) {}
     }
 
@@ -252,7 +252,7 @@ class Resolver {
       (absolutePath ? absolutePath + sep : '') +
       (mockPath ? mockPath + sep : '');
 
-    return this._moduleIDCache[key] = id;
+    return (this._moduleIDCache[key] = id);
   }
 
   _getModuleType(moduleName: string): 'node' | 'user' {

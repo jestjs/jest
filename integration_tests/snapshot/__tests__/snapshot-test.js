@@ -10,7 +10,6 @@
 'use strict';
 
 describe('snapshot', () => {
-
   it('works with plain objects and the title has `escape` characters', () => {
     const test = {
       a: 1,
@@ -24,9 +23,9 @@ describe('snapshot', () => {
 
   it('is not influenced by previous counter', () => {
     const test = {
-      a:43,
-      b:'43',
-      c:'fourtythree',
+      a: 43,
+      b: '43',
+      c: 'fourtythree',
     };
     expect(test).toMatchSnapshot();
   });

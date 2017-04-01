@@ -14,11 +14,11 @@ const args = require('./args');
 const chalk = require('chalk');
 const os = require('os');
 const path = require('path');
+const pkgDir = require('pkg-dir');
 const yargs = require('yargs');
 
 const {
   Console,
-  getPackageRoot,
   setGlobal,
   validateCLIOptions,
 } = require('jest-util');
@@ -32,10 +32,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = yargs
-      .usage(args.usage)
-      .options(args.options)
-      .argv;
+    argv = yargs.usage(args.usage).options(args.options).argv;
 
     validateCLIOptions(argv, args.options);
   }
@@ -57,43 +54,42 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
     return;
   }
 
-  const root = getPackageRoot();
+  const root = pkgDir.sync();
   const testFilePath = path.resolve(process.cwd(), argv._[0]);
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
-  readConfig(argv, root)
-    .then(({config}) => {
-      // Always disable automocking in scripts.
-      config = Object.assign({}, config, {
-        automock: false,
-        unmockedModulePathPatterns: null,
-      });
-      Runtime.createHasteContext(config, {
-        maxWorkers: os.cpus().length - 1,
-      })
-        .then(hasteMap => {
-          /* $FlowFixMe */
-          const TestEnvironment = require(config.testEnvironment);
-
-          const env = new TestEnvironment(config);
-          setGlobal(
-            env.global,
-            'console',
-            new Console(process.stdout, process.stderr),
-          );
-          env.global.jestConfig = config;
-
-          const runtime = new Runtime(config, env, hasteMap.resolver);
-          runtime.requireModule(testFilePath);
-        })
-        .catch(e => {
-          console.error(chalk.red(e));
-          process.on('exit', () => process.exit(1));
-        });
+  readConfig(argv, root).then(({config}) => {
+    // Always disable automocking in scripts.
+    config = Object.assign({}, config, {
+      automock: false,
+      unmockedModulePathPatterns: null,
     });
+    Runtime.createContext(config, {
+      maxWorkers: os.cpus().length - 1,
+    })
+      .then(hasteMap => {
+        /* $FlowFixMe */
+        const TestEnvironment = require(config.testEnvironment);
+
+        const env = new TestEnvironment(config);
+        setGlobal(
+          env.global,
+          'console',
+          new Console(process.stdout, process.stderr),
+        );
+        env.global.jestConfig = config;
+
+        const runtime = new Runtime(config, env, hasteMap.resolver);
+        runtime.requireModule(testFilePath);
+      })
+      .catch(e => {
+        console.error(chalk.red(e));
+        process.on('exit', () => process.exit(1));
+      });
+  });
 }
 
 exports.run = run;

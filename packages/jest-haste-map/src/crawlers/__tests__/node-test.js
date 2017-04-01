@@ -18,10 +18,13 @@ jest.mock('child_process', () => ({
       stdout: {
         on: jest.fn().mockImplementation((event, callback) => {
           if (event === 'data') {
-            setTimeout(() => {
-              callback(mockResponse);
-              setTimeout(closeCallback, 0);
-            }, 0);
+            setTimeout(
+              () => {
+                callback(mockResponse);
+                setTimeout(closeCallback, 0);
+              },
+              0,
+            );
           } else if (event === 'close') {
             closeCallback = callback;
           }
@@ -35,19 +38,23 @@ jest.mock('child_process', () => ({
 jest.mock('fs', () => {
   let mtime = 32;
   const stat = (path, callback) => {
-    setTimeout(() => callback(null, {
-      isDirectory() {
-        return path.endsWith('/directory');
-      },
-      isSymbolicLink() {
-        return false;
-      },
-      mtime: {
-        getTime() {
-          return mtime++;
-        },
-      },
-    }), 0);
+    setTimeout(
+      () =>
+        callback(null, {
+          isDirectory() {
+            return path.endsWith('/directory');
+          },
+          isSymbolicLink() {
+            return false;
+          },
+          mtime: {
+            getTime() {
+              return mtime++;
+            },
+          },
+        }),
+      0,
+    );
   };
   return {
     lstat: jest.fn(stat),

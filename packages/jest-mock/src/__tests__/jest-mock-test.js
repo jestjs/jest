@@ -54,10 +54,7 @@ describe('moduleMocker', () => {
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo['foo-bar']),
       );
-      expect(
-        !mock.name ||
-        mock.name === 'foo$bar',
-      ).toBeTruthy();
+      expect(!mock.name || mock.name === 'foo$bar').toBeTruthy();
     });
 
     it('special cases the mockConstructor name', () => {
@@ -66,10 +63,7 @@ describe('moduleMocker', () => {
         moduleMocker.getMetadata(mockConstructor),
       );
       // Depends on node version
-      expect(
-        !mock.name ||
-        mock.name === 'mockConstructor',
-      ).toBeTruthy();
+      expect(!mock.name || mock.name === 'mockConstructor').toBeTruthy();
     });
 
     it('wont interfere with previous mocks on a shared prototype', () => {
@@ -93,14 +87,19 @@ describe('moduleMocker', () => {
     });
 
     it('does not mock non-enumerable getters', () => {
-      const foo = Object.defineProperties({}, {
-        nonEnumGetter: {
-          get: () => { throw new Error(); },
+      const foo = Object.defineProperties(
+        {},
+        {
+          nonEnumGetter: {
+            get: () => {
+              throw new Error();
+            },
+          },
+          nonEnumMethod: {
+            value: () => {},
+          },
         },
-        nonEnumMethod: {
-          value: () => {},
-        },
-      });
+      );
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo),
       );
@@ -112,15 +111,18 @@ describe('moduleMocker', () => {
     });
 
     it('mocks getters of ES modules', () => {
-      const foo = Object.defineProperties({}, {
-        __esModule: {
-          value: true,
+      const foo = Object.defineProperties(
+        {},
+        {
+          __esModule: {
+            value: true,
+          },
+          enumGetter: {
+            enumerable: true,
+            get: () => 10,
+          },
         },
-        enumGetter: {
-          enumerable: true,
-          get: () => 10,
-        },
-      });
+      );
       const mock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(foo),
       );
@@ -164,9 +166,10 @@ describe('moduleMocker', () => {
     });
 
     it('mocks regexp instances', () => {
-      expect(
-        () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
-      ).not.toThrow();
+      expect(() =>
+        moduleMocker.generateFromMetadata(
+          moduleMocker.getMetadata(/a/),
+        )).not.toThrow();
     });
 
     describe('mocked functions', () => {
@@ -325,11 +328,13 @@ describe('moduleMocker', () => {
     it('should mock single call to a mock function', () => {
       const mockFn = moduleMocker.fn();
 
-      mockFn.mockImplementationOnce(() => {
-        return 'Foo';
-      }).mockImplementationOnce(() => {
-        return 'Bar';
-      });
+      mockFn
+        .mockImplementationOnce(() => {
+          return 'Foo';
+        })
+        .mockImplementationOnce(() => {
+          return 'Bar';
+        });
 
       expect(mockFn()).toBe('Foo');
       expect(mockFn()).toBe('Bar');
@@ -339,13 +344,16 @@ describe('moduleMocker', () => {
     it('should fallback to default mock function when no specific mock is available', () => {
       const mockFn = moduleMocker.fn();
 
-      mockFn.mockImplementationOnce(() => {
-        return 'Foo';
-      }).mockImplementationOnce(() => {
-        return 'Bar';
-      }).mockImplementation(() => {
-        return 'Default';
-      });
+      mockFn
+        .mockImplementationOnce(() => {
+          return 'Foo';
+        })
+        .mockImplementationOnce(() => {
+          return 'Bar';
+        })
+        .mockImplementation(() => {
+          return 'Default';
+        });
 
       expect(mockFn()).toBe('Foo');
       expect(mockFn()).toBe('Bar');
@@ -366,11 +374,13 @@ describe('moduleMocker', () => {
       let isOriginalCalled = false;
       let originalCallThis;
       let originalCallArguments;
-      const obj = {method() {
-        isOriginalCalled = true;
-        originalCallThis = this;
-        originalCallArguments = arguments;
-      }};
+      const obj = {
+        method() {
+          isOriginalCalled = true;
+          originalCallThis = this;
+          originalCallArguments = arguments;
+        },
+      };
 
       const spy = moduleMocker.spyOn(obj, 'method');
 

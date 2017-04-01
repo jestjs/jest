@@ -27,7 +27,7 @@ jest.doMock('fs', () => {
 });
 
 // Let's us use a per-test "jest process"
-let mockDebugProcess =  {};
+let mockDebugProcess = {};
 const mockCreateProcess = jest.fn(() => mockDebugProcess);
 jest.doMock('../Process.js', () => {
   return {

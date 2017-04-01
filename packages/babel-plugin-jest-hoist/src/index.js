@@ -133,8 +133,8 @@ FUNCTIONS.mock = args => {
 FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 
-FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
-  args.length === 0;
+FUNCTIONS.disableAutomock = (FUNCTIONS.enableAutomock = args =>
+  args.length === 0);
 
 module.exports = babel => {
   const isJest = callee =>

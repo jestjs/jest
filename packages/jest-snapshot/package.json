@@ -10,7 +10,6 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "jest-diff": "^19.0.0",
-    "jest-file-exists": "^19.0.0",
     "jest-matcher-utils": "^19.0.0",
     "jest-util": "^19.0.2",
     "natural-compare": "^1.4.0",

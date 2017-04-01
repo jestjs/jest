@@ -20,18 +20,14 @@ const testFunctions = Object.assign(Object.create(null), {
 
 const matchesTestFunction = object => object && testFunctions[object.name];
 
-const isCallToFocusedTestFunction = object => (
-  object &&
-  object.name[0] === 'f' &&
-  testFunctions[object.name.substring(1)]
-);
+const isCallToFocusedTestFunction = object =>
+  object && object.name[0] === 'f' && testFunctions[object.name.substring(1)];
 
 const isPropertyNamedOnly = property =>
   property && (property.name === 'only' || property.value === 'only');
 
-const isCallToTestOnlyFunction = callee => (
-  matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property)
-);
+const isCallToTestOnlyFunction = callee =>
+  matchesTestFunction(callee.object) && isPropertyNamedOnly(callee.property);
 
 module.exports = (context: EslintContext) => ({
   CallExpression(node: CallExpression) {
@@ -41,8 +37,7 @@ module.exports = (context: EslintContext) => ({
     }
 
     if (
-      callee.type === 'MemberExpression' &&
-      isCallToTestOnlyFunction(callee)
+      callee.type === 'MemberExpression' && isCallToTestOnlyFunction(callee)
     ) {
       context.report({
         message: 'Unexpected focused test.',
@@ -51,10 +46,7 @@ module.exports = (context: EslintContext) => ({
       return;
     }
 
-    if (
-      callee.type === 'Identifier' &&
-      isCallToFocusedTestFunction(callee)
-    ) {
+    if (callee.type === 'Identifier' && isCallToFocusedTestFunction(callee)) {
       context.report({
         message: 'Unexpected focused test.',
         node: callee,

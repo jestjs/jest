@@ -42,7 +42,7 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
         testEnvironment: customEnvironment,
-      })
+      }),
     );
   }
 
@@ -60,15 +60,17 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   const testConsole = new TestConsole(
     config.useStderr ? process.stderr : process.stdout,
     process.stderr,
-    (type, message) => getConsoleOutput(
-      config.rootDir,
-      !!config.verbose,
-      // 4 = the console call is buried 4 stack frames deep
-      BufferedConsole.write([], type, message, 4),
-    ),
+    (type, message) =>
+      getConsoleOutput(
+        config.rootDir,
+        !!config.verbose,
+        // 4 = the console call is buried 4 stack frames deep
+        BufferedConsole.write([], type, message, 4),
+      ),
   );
+  const cacheFS = {[path]: testSource};
   setGlobal(env.global, 'console', testConsole);
-  const runtime = new ModuleLoader(config, env, resolver);
+  const runtime = new ModuleLoader(config, env, resolver, cacheFS);
   const start = Date.now();
   return TestRunner(config, env, runtime, path)
     .then((result: TestResult) => {
@@ -84,22 +86,24 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
       return result;
     })
     .then(
-      result => Promise.resolve().then(() => {
-        env.dispose();
-        if (config.logHeapUsage) {
-          if (global.gc) {
-            global.gc();
+      result =>
+        Promise.resolve().then(() => {
+          env.dispose();
+          if (config.logHeapUsage) {
+            if (global.gc) {
+              global.gc();
+            }
+            result.memoryUsage = process.memoryUsage().heapUsed;
           }
-          result.memoryUsage = process.memoryUsage().heapUsed;
-        }
 
-        // Delay the resolution to allow log messages to be output.
-        return new Promise(resolve => setImmediate(() => resolve(result)));
-      }),
-      err => Promise.resolve().then(() => {
-        env.dispose();
-        throw err;
-      }),
+          // Delay the resolution to allow log messages to be output.
+          return new Promise(resolve => setImmediate(() => resolve(result)));
+        }),
+      err =>
+        Promise.resolve().then(() => {
+          env.dispose();
+          throw err;
+        }),
     );
 }
 

@@ -269,8 +269,9 @@ describe('watchman watch', () => {
       // if no changes have been made.
       expect(data.files['/fruits/banana.js']).toBe(mockMetadata);
 
-      expect(data.files['/fruits/tomato.js'])
-        .toBe(mockFiles['/fruits/tomato.js']);
+      expect(data.files['/fruits/tomato.js']).toBe(
+        mockFiles['/fruits/tomato.js'],
+      );
     });
   });
 

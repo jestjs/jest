@@ -15,21 +15,21 @@ import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
 export type Environment = {|
-  constructor(config: Config): void;
-  dispose(): void;
-  runScript(script: Script): any;
-  global: Global;
+  constructor(config: Config): void,
+  dispose(): void,
+  runScript(script: Script): any,
+  global: Global,
   fakeTimers: {
-    clearAllTimers(): void;
-    runAllImmediates(): void;
-    runAllTicks(): void;
-    runAllTimers(): void;
-    runTimersToTime(): void;
-    runOnlyPendingTimers(): void;
-    runWithRealTimers(callback: any): void;
-    useFakeTimers(): void;
-    useRealTimers(): void;
-  };
-  testFilePath: string;
-  moduleMocker: ModuleMocker;
+    clearAllTimers(): void,
+    runAllImmediates(): void,
+    runAllTicks(): void,
+    runAllTimers(): void,
+    runTimersToTime(): void,
+    runOnlyPendingTimers(): void,
+    runWithRealTimers(callback: any): void,
+    useFakeTimers(): void,
+    useRealTimers(): void,
+  },
+  testFilePath: string,
+  moduleMocker: ModuleMocker,
 |};

@@ -286,6 +286,58 @@ test('the best flavor is not coconut', () => {
 });
 ```
 
+### `.resolves`
+
+##### available in Jest **20.0.0+**
+
+If your code uses Promises, use the `.resolves` keyword, and Jest will wait for the Promise to resolve and then run an assertion on the resulting value.
+
+For example, this code tests that the Promise returned by `fetchData()` resolves and that the resulting value is peanut butter:
+
+```js
+test('fetchData() resolves and is peanut butter', () => {
+  // make sure to add a return statement
+  return expect(fetchData()).resolves.toBe('peanut butter');
+});
+```
+
+Alternatively, you can use `async/await` in combination with `.resolves`:
+
+```js
+test('fetchData() resolves and is peanut butter', async () => {
+  await expect(fetchData()).resolves.toBe('peanut butter');
+  await expect(fetchData()).resolves.not.toBe('coconut');
+});
+```
+
+### `.rejects`
+
+##### available in Jest **20.0.0+**
+
+If your code uses Promises, use the `.rejects` keyword, and Jest will wait for that Promise to reject and then run an assertion on the resulting value.
+
+For example, this code tests that the Promise returned by `fetchData()` rejects and that the resulting value is an error:
+
+```js
+test('fetchData() rejects to be error', () => {
+  // make sure to add a return statement
+  return expect(fetchData()).rejects.toEqual({
+    error: 'User not found',
+  });
+});
+```
+
+Alternatively, you can use `async/await` in combination with `.rejects`:
+
+```js
+test('fetchData() rejects to be error', async () => {
+  await expect(fetchData()).rejects.toEqual({
+    error: 'User not found',
+  });
+  await expect(fetchData()).rejects.not.toBe('Mark');
+});
+```
+
 ### `.toBe(value)`
 
 `toBe` just checks that a value is what you expect. It uses `===` to check
@@ -566,7 +618,7 @@ describe('my beverage', () => {
 
 ### `.toEqual(value)`
 
-Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity. For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity—this is also known as "deep equal". For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
 
 ```js
 const can1 = {
@@ -652,9 +704,9 @@ test('the house has my desired features', () => {
 });
 ```
 
-### `toHaveProperty(keyPath, value)`
+### `.toHaveProperty(keyPath, value)`
 
-Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. 
+Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object.
 For checking deeply nested properties in an object use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) for deep references.
 
 Optionally, you can provide a value to check if it's strictly equal to the `value` present
@@ -666,17 +718,17 @@ to check for the existence and values of various properties in the object.
 ```js
 // Object containing house features to be tested
 const houseForSale = {
-	bath: true,
-	kitchen: {
-		amenities: ['oven', 'stove', 'washer'],
-		area: 20,
-		wallColor: 'white'
-	},
+  bath: true,
   bedrooms: 4,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    area: 20,
+    wallColor: 'white',
+  },
 };
 
 test('this house has my desired features', () => {
-  // Simple Referencing 
+  // Simple Referencing
   expect(houseForSale).toHaveProperty('bath');
   expect(houseForSale).toHaveProperty('bedrooms', 4);
 
@@ -684,7 +736,11 @@ test('this house has my desired features', () => {
 
   // Deep referencing using dot notation
   expect(houseForSale).toHaveProperty('kitchen.area', 20);
-  expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer']);
+  expect(houseForSale).toHaveProperty('kitchen.amenities', [
+    'oven',
+    'stove',
+    'washer',
+  ]);
 
   expect(hosueForSale).not.toHaveProperty('kitchen.open');
 });
