@@ -19,7 +19,6 @@ export type HasteConfig = {|
   providesModuleNodeModules: Array<string>,
 |};
 
-
 export type SimpleReporter = string;
 export type ComplexReporter = [string, Object];
 export type ReporterConfig = Array<SimpleReporter | ComplexReporter>;
