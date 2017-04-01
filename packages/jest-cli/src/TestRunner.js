@@ -14,7 +14,10 @@ import type {
   SerializableError as TestError,
   TestResult,
 } from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
+import type {
+  Config, Path,
+  ReporterConfig,
+} from 'types/Config';
 import type {HasteContext, HasteFS} from 'types/HasteMap';
 import type {RunnerContext} from 'types/Reporters';
 import type BaseReporter from './reporters/BaseReporter';
@@ -22,6 +25,7 @@ import type BaseReporter from './reporters/BaseReporter';
 const {formatExecError} = require('jest-message-util');
 const {getType} = require('jest-matcher-utils');
 const prettyFormat = require('pretty-format');
+const assert = require('assert');
 
 
 const fs = require('graceful-fs');
@@ -37,6 +41,8 @@ const snapshot = require('jest-snapshot');
 const throat = require('throat');
 const workerFarm = require('worker-farm');
 const TestWatcher = require('./TestWatcher');
+
+const DEFAULT_REPORTER_LABEL = 'default';
 
 const FAIL = 0;
 const SLOW_TEST_TIME = 3000;
@@ -55,7 +61,6 @@ type Options = {|
 |};
 
 type OnRunFailure = (path: string, err: TestError) => void;
-
 type OnTestResult = (path: string, result: TestResult) => void;
 
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
@@ -367,11 +372,33 @@ class TestRunner {
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
+  /**
+   * _checkDefaultReporters
+   * Checks if we are going to add the default reporters or not
+   */
+  _checkDefaultReporters(reporters: ReporterConfig): boolean {
+    return reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
+  }
+
   _setupReporters() {
     const config = this._config;
+    const {reporters} = config;
+    let isDefault;
 
-    if (!config.noDefaultReporters) {
-      this._setupDefaultReporters();
+    if (reporters && Array.isArray(reporters)) {
+      isDefault = this._checkDefaultReporters(reporters);
+      const customReporters = reporters.filter(reporter => {
+        return reporter !== DEFAULT_REPORTER_LABEL;
+      });
+      this._addCustomReporters(customReporters);
+    }
+
+
+    /**
+     * Add Default Reporters in case if no reporters are added by default
+     */
+    if (isDefault || !reporters) {
+      this._setupDefaultReporters(config);
     }
 
     if (config.collectCoverage) {
@@ -388,10 +415,10 @@ class TestRunner {
 
   /**
    * _setupDefaultReporters
-   * Method for setting up the default reporters
+   * 
+   * @param {config} Object Config object containing all the options
    */
-  _setupDefaultReporters() {
-    const config = this._config;
+  _setupDefaultReporters(config: Config) {
 
     this.addReporter(
       config.verbose
@@ -403,49 +430,73 @@ class TestRunner {
   }
 
   /**
-   * Add Custom reporters to Jest
+   * gets the props for the given custom reporter, whether reporter is 
+   * defined as a String or an Array to make things simple for us.
+   */
+  _getReporterProps(reporter: any): Object {
+    const props = {};
+    let reporterPath, reporterConfig;
+
+    if (typeof reporter === 'string') {
+      reporterPath = reporter;
+    } else if (Array.isArray(reporter)) {
+      [reporterPath, reporterConfig] = reporter;
+    }
+
+    props['reporterPath'] = reporterPath;
+    props['reporterConfig'] = reporterConfig;
+
+    return props;
+  }
+
+  /**
+   * Adds Custom reporters to Jest
    * Custom reporters can be added to Jest using the reporters option in Jest
    * Config. The format for adding a custom reporter is following
    *
    * "reporters": [
    *    ["reporterPath/packageName", { option1: 'fasklj' }], 
    *    // Format if we want to specify options
-   *    
    *    "reporterName"
    *    // Format if we don't want to specify any options
    * ]
+   * 
+   * @private
+   * @param {ReporterConfig} reporters Array of reporters
+   *
    */
-  _addCustomReporters(reporters: any) {
-    let reporterPath, reporterConfig;
-
-    reporters.forEach(entry => {
-      if (Array.isArray(entry)) {
-        [reporterPath, reporterConfig] = entry;
-      } else {
-        if (typeof entry !== 'string') {
-          throw new Error(
-            'Unexpected Custom Reporter Entry\n' +
-            'Report Entry should be of type:\n' +
-            `\t\t ${chalk.bold(chalk.green('String / Array'))}\n` +
-            'Received:\n' +
-            `\t\t ${chalk.bold(chalk.red(getType(entry)))}`
-          )
-        }
-
-        reporterPath = entry;
-      }
-
+  _addCustomReporters(reporters: ReporterConfig) {
+    this._validateCustomReporters(reporters);
+    reporters.forEach(reporter => {
       try {
-        const reporter = require(reporterPath);
-        this.addReporter(new reporter(reporterConfig || {}));
+        const {
+          reporterPath, 
+          reporterConfig = {},
+        } = this._getReporterProps(reporter);
+        const Reporter = require(reporterPath);
+        this.addReporter(new Reporter(reporterConfig));
       } catch (error) {
-        throw new Error(
-          `Failed to set up reporter: \n` +
-          `Reporter Path:\n` +
-          `\t\t${prettyFormat(reporterPath)}` + 
-          'Reporter Configuration:\n' +
-          `\t\t${prettyFormat(reporterConfig)}`
+        throw error;
+      }
+    });
+  }
+
+  /**
+   * Vaidates all the Custom Reporters and the format they are specified before
+   * adding them within the application
+   */
+  _validateCustomReporters(customReporters: ReporterConfig) {
+    // Validate Custom Reporters here
+    customReporters.forEach(reporter => {
+      if (typeof reporter === 'string') {
+        return;
+      } else if (typeof Array.isArray(reporter)) {
+        const [reporterPath, reporterConfig] = reporter;
+        assert(
+          typeof reporterPath === 'string', 'reporterPath should be string'
         );
+      } else {
+        throw new Error('reporter should be an array or a string');
       }
     });
   }
