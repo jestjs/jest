@@ -194,6 +194,11 @@ const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  snapshotDirectory: {
+    default: undefined,
+    description: 'The directory where Jest should output its snapshot files.',
+    type: 'string',
+  },
   testNamePattern: {
     alias: 't',
     description: 'Run only tests with a name that matches the regex pattern.',

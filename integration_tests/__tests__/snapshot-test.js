@@ -57,6 +57,24 @@ const snapshotEscapeSubstitutionFile = path.resolve(
   'snapshot-escape-substitution-test.js.snap',
 );
 
+const customSnapshotDirArgv = path.resolve(
+  __dirname,
+  '../snapshot-custom-directory/argv/__snapshots__',
+);
+const customSnapshotDirFileArgv = path.resolve(
+  customSnapshotDirArgv,
+  'snapshot-custom-directory-test.js.snap',
+);
+
+const customSnapshotDirConfig = path.resolve(
+  __dirname,
+  '../snapshot-custom-directory/config/__snapshots__',
+);
+const customSnapshotDirFileConfig = path.resolve(
+  customSnapshotDirConfig,
+  'snapshot-custom-directory-test.js.snap',
+);
+
 const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
 
 const fileExists = filePath => {
@@ -82,6 +100,8 @@ describe('Snapshot', () => {
       snapshotEscapeFile,
       snapshotEscapeRegexFile,
       snapshotEscapeSubstitutionFile,
+      customSnapshotDirFileArgv,
+      customSnapshotDirFileConfig,
     ].forEach(file => {
       if (fileExists(file)) {
         fs.unlinkSync(file);
@@ -92,6 +112,12 @@ describe('Snapshot', () => {
     }
     if (fileExists(snapshotEscapeSnapshotDir)) {
       fs.rmdirSync(snapshotEscapeSnapshotDir);
+    }
+    if (fileExists(customSnapshotDirArgv)) {
+      fs.rmdirSync(customSnapshotDirArgv);
+    }
+    if (fileExists(customSnapshotDirConfig)) {
+      fs.rmdirSync(customSnapshotDirConfig);
     }
 
     fs.writeFileSync(snapshotEscapeTestFile, initialTestData, 'utf8');
@@ -192,6 +218,50 @@ describe('Snapshot', () => {
     expect(stderr).not.toMatch('1 snapshot written');
     expect(extractSummary(stderr).summary).toMatchSnapshot();
     expect(result.status).toBe(0);
+  });
+
+  it('works with `snapshotDirectory` argv specified', () => {
+    const result = runJest.json('snapshot-custom-directory', [
+      '--snapshotDirectory=<rootDir>/argv',
+    ]);
+    const json = result.json;
+
+    expect(json.numTotalTests).toBe(1);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(0);
+    expect(result.status).toBe(0);
+    expect(fileExists(customSnapshotDirFileArgv)).toBe(true);
+
+    const content = require(customSnapshotDirFileArgv);
+    expect(
+      content['snapshot-custom-directory stores in a custom directory 1'],
+    ).not.toBe(undefined);
+
+    const info = result.stderr.toString();
+    expect(info).toMatch('1 snapshot written in 1 test suite');
+    expect(extractSummary(info).summary).toMatchSnapshot();
+  });
+
+  it('works with `snapshotDirectory` config specified', () => {
+    const result = runJest.json('snapshot-custom-directory', []);
+    const json = result.json;
+
+    expect(json.numTotalTests).toBe(1);
+    expect(json.numPassedTests).toBe(1);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(0);
+    expect(result.status).toBe(0);
+    expect(fileExists(customSnapshotDirFileConfig)).toBe(true);
+
+    const content = require(customSnapshotDirFileConfig);
+    expect(
+      content['snapshot-custom-directory stores in a custom directory 1'],
+    ).not.toBe(undefined);
+
+    const info = result.stderr.toString();
+    expect(info).toMatch('1 snapshot written in 1 test suite');
+    expect(extractSummary(info).summary).toMatchSnapshot();
   });
 
   describe('Validation', () => {

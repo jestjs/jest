@@ -81,6 +81,24 @@ Ran all test suites.
 "
 `;
 
+exports[`Snapshot works with \`snapshotDirectory\` argv specified 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   1 added, 1 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
+exports[`Snapshot works with \`snapshotDirectory\` config specified 1`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   1 added, 1 total
+Time:        <<REPLACED>>
+Ran all test suites.
+"
+`;
+
 exports[`Snapshot works with escaped characters 1`] = `
 "Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total

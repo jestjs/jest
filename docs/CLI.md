@@ -165,6 +165,10 @@ The path to a module that runs some code to configure or set up the testing fram
 
 Prevent tests from printing messages through the console.
 
+### `--snapshotDirectory=<path>`
+
+The directory where Jest should output its snapshot files.
+
 ### `--testNamePattern=<regex>`
 
 Alias: `-t`. Run only tests with a name that matches the regex.

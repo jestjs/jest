@@ -56,6 +56,12 @@ test('getSnapshotPath()', () => {
   );
 });
 
+test('getSnapshotPath() with snapshotPath', () => {
+  expect(getSnapshotPath('/abc/cde/a-test.js', '/def')).toBe(
+    path.join('/def', '__snapshots__', 'a-test.js.snap'),
+  );
+});
+
 test('saveSnapshotFile() works with \r\n', () => {
   const filename = path.join(__dirname, 'remove-newlines.snap');
   const data = {

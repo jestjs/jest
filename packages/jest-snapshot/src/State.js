@@ -42,10 +42,10 @@ class SnapshotState {
   constructor(
     testPath: Path,
     update: boolean,
-    snapshotPath?: string,
+    snapshotPath: string,
     expand?: boolean,
   ) {
-    this._snapshotPath = snapshotPath || getSnapshotPath(testPath);
+    this._snapshotPath = getSnapshotPath(testPath, snapshotPath);
     const {data, dirty} = getSnapshotData(this._snapshotPath, update);
     this._snapshotData = data;
     this._dirty = dirty;

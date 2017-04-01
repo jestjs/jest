@@ -1,0 +1,6 @@
+{
+  "jest": {
+    "snapshotDirectory": "<rootDir>/config",
+    "testEnvironment": "node"
+  }
+}

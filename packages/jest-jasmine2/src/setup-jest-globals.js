@@ -115,7 +115,7 @@ module.exports = ({testPath, config}: Options) => {
   const snapshotState = initializeSnapshotState(
     testPath,
     config.updateSnapshot,
-    '',
+    config.snapshotDirectory,
     config.expand,
   );
   setState({snapshotState});

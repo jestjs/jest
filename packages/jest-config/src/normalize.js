@@ -231,6 +231,10 @@ const normalizeArgv = (config: InitialConfig, argv: Object) => {
     config.collectCoverageFrom = argv.collectCoverageFrom;
   }
 
+  if (argv.snapshotDirectory) {
+    config.snapshotDirectory = argv.snapshotDirectory;
+  }
+
   if (argv.collectCoverageOnlyFrom) {
     const collectCoverageOnlyFrom = Object.create(null);
     argv.collectCoverageOnlyFrom.forEach(
@@ -294,6 +298,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
           break;
         case 'cacheDirectory':
         case 'coverageDirectory':
+        case 'snapshotDirectory':
           value = path.resolve(
             config.rootDir,
             //$FlowFixMe
