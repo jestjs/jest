@@ -15,11 +15,8 @@ import type {
   TestResult,
 } from 'types/TestResult';
 import type {Config, ReporterConfig} from 'types/Config';
-import type {HasteFS} from 'types/HasteMap';
 import type {Context} from 'types/Context';
-import type {RunnerContext} from 'types/Reporters';
 import type {Test, Tests} from 'types/TestRunner';
-import type BaseReporter from './reporters/BaseReporter';
 
 const {formatExecError} = require('jest-message-util');
 
@@ -33,6 +30,7 @@ const snapshot = require('jest-snapshot');
 const throat = require('throat');
 const workerFarm = require('worker-farm');
 const TestWatcher = require('./TestWatcher');
+const ReporterDispatcher = require('./ReporterDispatcher');
 
 const DEFAULT_REPORTER_LABEL = 'default';
 const SLOW_TEST_TIME = 3000;
@@ -42,10 +40,6 @@ class CancelRun extends Error {
     super(message);
     this.name = 'CancelRun';
   }
-}
-
-class ReporterValidationError extends Error {
-
 }
 
 type Options = {|
@@ -82,7 +76,7 @@ class TestRunner {
     this._setupReporters(config);
   }
 
-  addReporter(reporter: BaseReporter) {
+  addReporter(reporter: Function) {
     this._dispatcher.register(reporter);
   }
 
@@ -279,21 +273,31 @@ class TestRunner {
   }
 
   /**
-   * _checkDefaultReporters
+   * addDefaultReporters
+   * 
+   * @api private
    * Checks if we are going to add the default reporters or not
+   * 
+   * @param {ReporterConfig} reporters Configuration for all the reporters
+   * @returns {boolean}
    */
   _addDefaultReporters(reporters?: ReporterConfig): boolean {
     return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
   }
 
+  /**
+   * Main method to Setup reporters to be used with TestRunner
+   * 
+   * @param {Config} config
+   * @api private
+   */
   _setupReporters(config: Config) {
     const {reporters} = config;
-    const addDefault = this._addDefaultReporters(reporters);
+    const isDefault: boolean = this._addDefaultReporters(reporters);
 
-    if (addDefault) {
+    if (isDefault) {
       this._setupDefaultReporters(config);
     }
-
 
     if (reporters && Array.isArray(reporters)) {
       this._addCustomReporters(reporters);
@@ -318,9 +322,7 @@ class TestRunner {
    */
   _setupDefaultReporters(config: Config) {
     this.addReporter(
-      config.verbose
-        ? new VerboseReporter(config)
-        : new DefaultReporter()
+      config.verbose ? new VerboseReporter(config) : new DefaultReporter(),
     );
 
     this.addReporter(new SummaryReporter());
@@ -368,12 +370,13 @@ class TestRunner {
     customReporter.forEach(reporter => {
       try {
         const {
-          reporterPath, 
+          reporterPath,
           reporterConfig = {},
         } = this._getReporterProps(reporter);
         const Reporter = require(reporterPath);
         this.addReporter(new Reporter(reporterConfig));
       } catch (error) {
+        // TODO A more elaborate error
         throw error;
       }
     });
@@ -383,7 +386,6 @@ class TestRunner {
    * Vaidates all the Custom Reporters and the format they are specified before
    * adding them within the application
    */
-
   _validateCustomReporters(customReporters: ReporterConfig) {
     // Validate Custom Reporters here
     customReporters.forEach((reporter, index) => {
@@ -392,27 +394,27 @@ class TestRunner {
         if (typeof reporterPath !== 'string') {
           throw new Error(
             `Expected reporterPath for reporter at index ${index}` +
-            'to be string\n' +
-            'Got:\n' + 
-            typeof reporter
+              'to be of type string\n' +
+              'Got:\n' +
+              typeof reporter,
           );
         }
 
         if (reporterConfig && typeof reporterConfig !== 'object') {
           throw new Error(
             `Expected configuration for reporter at index ${index}\n` +
-            'to be of type object\n' + 
-            'Got:\n' +
-            reporterConfig
+              'to be of type object\n' +
+              'Got:\n' +
+              reporterConfig,
           );
         }
       } else if (typeof reporter !== 'string') {
         throw new Error(
           `Unexpected Custom Reporter Configuration at index ${index}\n` +
-          'Expected:\n' +
-          `array/string\n` + 
-          'Got:\n' +
-          typeof reporter
+            'Expected:\n' +
+            `array/string\n` +
+            'Got:\n' +
+            typeof reporter,
         );
       }
     });
@@ -541,62 +543,6 @@ const buildFailureTestResult = (
     testResults: [],
   };
 };
-
-class ReporterDispatcher {
-  _disabled: boolean;
-  _reporters: Array<BaseReporter>;
-  _runnerContext: RunnerContext;
-
-  constructor(hasteFS: HasteFS, getTestSummary: () => string) {
-    this._runnerContext = {getTestSummary, hasteFS};
-    this._reporters = [];
-  }
-
-  register(reporter: BaseReporter): void {
-    this._reporters.push(reporter);
-  }
-
-  unregister(ReporterClass: Function) {
-    this._reporters = this._reporters.filter(
-      reporter => !(reporter instanceof ReporterClass),
-    );
-  }
-
-  onTestResult(config, testResult, results) {
-    this._reporters.forEach(reporter =>
-      reporter.onTestResult(config, testResult, results, this._runnerContext));
-  }
-
-  onTestStart(config, path) {
-    this._reporters.forEach(reporter =>
-      reporter.onTestStart(config, path, this._runnerContext));
-  }
-
-  onRunStart(config, results, options) {
-    this._reporters.forEach(reporter =>
-      reporter.onRunStart(config, results, this._runnerContext, options));
-  }
-
-  onRunComplete(config, results) {
-    this._reporters.forEach(reporter =>
-      reporter.onRunComplete(config, results, this._runnerContext));
-  }
-
-  // Return a list of last errors for every reporter
-  getErrors(): Array<Error> {
-    return this._reporters.reduce(
-      (list, reporter) => {
-        const error = reporter.getLastError();
-        return error ? list.concat(error) : list;
-      },
-      [],
-    );
-  }
-
-  hasErrors(): boolean {
-    return this.getErrors().length !== 0;
-  }
-}
 
 const getEstimatedTime = (timings, workers) => {
   if (!timings.length) {
