@@ -73,10 +73,10 @@ class TestRunner {
     this._context = hasteContext;
     this._options = options;
     this._startRun = startRun;
-    this._setupReporters(config);
+    this._setupReporters();
   }
 
-  addReporter(reporter: Function) {
+  addReporter(reporter: Object) {
     this._dispatcher.register(reporter);
   }
 
@@ -291,7 +291,8 @@ class TestRunner {
    * @param {Config} config
    * @api private
    */
-  _setupReporters(config: Config) {
+  _setupReporters() {
+    const config = this._config;
     const {reporters} = config;
     const isDefault: boolean = this._addDefaultReporters(reporters);
 
@@ -316,8 +317,7 @@ class TestRunner {
   }
 
   /**
-   * _setupDefaultReporters
-   * 
+   * _
    * @param {config} Object Config object containing all the options
    */
   _setupDefaultReporters(config: Config) {

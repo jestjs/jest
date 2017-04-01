@@ -1,3 +1,5 @@
-class AggregatedResults {
-    
+export default class AggregatedResults {
+  constructor() {
+      
+  }
 }

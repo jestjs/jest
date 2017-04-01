@@ -10,15 +10,23 @@
 
 'use strict';
 
-import type BaseReporter from './reporters/BaseReporter';
-import type {RunnerContext} from 'types/reporters';
+import type {RunnerContext} from 'types/Reporters';
 import type {HasteFS} from 'types/HasteMap';
-import type {Config} from 'types/Config';
+import type {Config, Path} from 'types/Config';
+import type {
+  TestResult, AggregatedResult,
+} from 'types/TestResult';
+
+export type RunOptions = {
+  estimatedTime: number,
+  showStatus: boolean,
+}
 
 class ReporterDispatcher {
   _disabled: boolean;
-  _reporters: Array<BaseReporter>;
+  _reporters: Array<Object>;
   _runnerContext: RunnerContext;
+  _requiredMethods: Array<string>;
 
   constructor(hasteFS: HasteFS, getTestSummary: () => string) {
     this._runnerContext = {getTestSummary, hasteFS};
@@ -27,19 +35,23 @@ class ReporterDispatcher {
     this._requiredMethods = ['getLastError'];
   }
 
-  register(reporter: Function): void {
+  register(reporter: Object): void {
     if (this._validateReporter(reporter)) {
       this._reporters.push(reporter);
     }
   }
 
-  unregister(ReporterClass: Function) {
+  unregister(ReporterClass: Function): void {
     this._reporters = this._reporters.filter(
       reporter => !(reporter instanceof ReporterClass),
     );
   }
 
-  onTestResult(config: Config, testResult, results) {
+  onTestResult(
+    config: Config,
+    testResult: TestResult, 
+    results: AggregatedResult
+  ) {
     this._callReporterMethod('onTestResult', [
       config,
       testResult,
@@ -48,7 +60,7 @@ class ReporterDispatcher {
     ]);
   }
 
-  onTestStart(config: Config, path) {
+  onTestStart(config: Config, path: Path) {
     this._callReporterMethod('onTestStart', [
       config,
       path,
@@ -56,7 +68,7 @@ class ReporterDispatcher {
     ]);
   }
 
-  onRunStart(config: Config, results, options) {
+  onRunStart(config: Config, results: AggregatedResult, options: RunOptions) {
     this._callReporterMethod('onRunStart', [
       config,
       results,
@@ -65,7 +77,7 @@ class ReporterDispatcher {
     ]);
   }
 
-  onRunComplete(config: Config, results) {
+  onRunComplete(config: Config, results: AggregatedResult) {
     this._callReporterMethod('onRunComplete', [
       config,
       results,
@@ -95,15 +107,15 @@ class ReporterDispatcher {
    * methods
    * 
    * @private
-   * @param   {BaseReporter} reporter reporter to be validated
+   * @param   {Object} reporter reporter to be validated
    * @returns {boolean} returns true if the reporter is validated
    */
-  _validateReporter(reporter: Object | BaseReporter) {
+  _validateReporter(reporter: Object) {
     return this._requiredMethods.every(method => {
-      if (!reporter[method]) {
+      if (typeof reporter[method] === 'function') {
         throw new Error(
           `Given method '${method}' does not exist on the reporter: ` +
-          (reporter.name || reporter)
+          reporter.name
         );
       }
 

@@ -21,14 +21,10 @@ const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const {ICONS} = require('../constants');
 
-type Options = {|
-  expand: boolean,
-|};
-
 class VerboseReporter extends DefaultReporter {
-  _options: Options;
+  _options: Config;
 
-  constructor(options: Options) {
+  constructor(options: Config) {
     super();
     this._options = options;
   }
