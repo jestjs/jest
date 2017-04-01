@@ -367,24 +367,29 @@ class TestRunner {
   _addCustomReporters(reporters: ReporterConfig) {
     this._validateCustomReporters(reporters);
     const customReporter = reporters.filter(reporter => reporter !== 'default');
-    customReporter.forEach(reporter => {
+    customReporter.forEach((reporter, index) => {
+      const {
+        reporterPath,
+        reporterConfig = {},
+      } = this._getReporterProps(reporter);
       try {
-        const {
-          reporterPath,
-          reporterConfig = {},
-        } = this._getReporterProps(reporter);
         const Reporter = require(reporterPath);
         this.addReporter(new Reporter(reporterConfig));
       } catch (error) {
-        // TODO A more elaborate error
-        throw error;
+        throw new Error(
+          'An error occured while adding the reporter at path ' +
+          reporterPath
+        );
       }
     });
   }
 
   /**
-   * Vaidates all the Custom Reporters and the format they are specified before
-   * adding them within the application
+   * Vaidates the Custom Reporter configurations
+   * and the format they are specified before
+   * adding them in the application
+   *
+   * @param {Array} customReporters
    */
   _validateCustomReporters(customReporters: ReporterConfig) {
     // Validate Custom Reporters here
@@ -394,27 +399,27 @@ class TestRunner {
         if (typeof reporterPath !== 'string') {
           throw new Error(
             `Expected reporterPath for reporter at index ${index}` +
-              'to be of type string\n' +
-              'Got:\n' +
-              typeof reporter,
+            'to be of type string\n' +
+            'Got:\n' +
+            typeof reporter,
           );
         }
 
         if (reporterConfig && typeof reporterConfig !== 'object') {
           throw new Error(
             `Expected configuration for reporter at index ${index}\n` +
-              'to be of type object\n' +
-              'Got:\n' +
-              reporterConfig,
+            'to be of type object\n' +
+            'Got:\n' +
+            reporterConfig,
           );
         }
       } else if (typeof reporter !== 'string') {
         throw new Error(
           `Unexpected Custom Reporter Configuration at index ${index}\n` +
-            'Expected:\n' +
-            `array/string\n` +
-            'Got:\n' +
-            typeof reporter,
+          'Expected:\n' +
+          `array/string\n` +
+          'Got:\n' +
+          typeof reporter,
         );
       }
     });

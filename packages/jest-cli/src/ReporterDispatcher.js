@@ -65,7 +65,7 @@ class ReporterDispatcher {
    * Helper mehtod to call only the methods that exist
    * on a given reporter
    *
-   * @  private
+   * @private
    * @param {string} method name of the mehtod to be called
    * @param {Array<any>} reporterArgs arguments passed in to call the reporter
    */
@@ -90,7 +90,8 @@ class ReporterDispatcher {
     return this._requiredMethods.every(method => {
       if (!reporter[method]) {
         throw new Error(
-          `Given method '${method}' does not exist on the reporter: ${reporter}`,
+          `Given method '${method}' does not exist on the reporter: ` +
+          (reporter.name || reporter)
         );
       }
 
