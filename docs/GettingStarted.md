@@ -35,11 +35,9 @@ test('adds 1 + 2 to equal 3', () => {
 Add the following section to your `package.json`:
 
 ```json
-{
-  "scripts": {
+{ "scripts": {
     "test": "jest"
-  }
-}
+}}
 ```
 
 Finally, run `npm test` and Jest will print this message:
