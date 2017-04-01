@@ -35,8 +35,10 @@ test('adds 1 + 2 to equal 3', () => {
 Add the following section to your `package.json`:
 
 ```json
-"scripts": {
-  "test": "jest"
+{
+  "scripts": {
+    "test": "jest"
+  }
 }
 ```
 
