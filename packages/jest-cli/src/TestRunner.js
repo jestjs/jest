@@ -273,15 +273,16 @@ class TestRunner {
   }
 
   /**
-   * addDefaultReporters
+   * _shouldAddDefaultReporters
    * 
    * @api private
-   * Checks if we are going to add the default reporters or not
+   * Checks if default reporters should be added or not
    * 
    * @param {ReporterConfig} reporters Configuration for all the reporters
-   * @returns {boolean}
+   * @returns {boolean} true if default reporters should be added
+   *                    otherwise false
    */
-  _addDefaultReporters(reporters?: ReporterConfig): boolean {
+  _shouldAddDefaultReporters(reporters?: ReporterConfig): boolean {
     return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
   }
 
@@ -376,10 +377,10 @@ class TestRunner {
         const Reporter = require(reporterPath);
         this.addReporter(new Reporter(reporterConfig));
       } catch (error) {
-        throw new Error(
-          'An error occured while adding the reporter at path ' +
-          reporterPath
+        console.error(
+          'An error occured while adding the reporter at path ' + reporterPath
         );
+        throw error;
       }
     });
   }
