@@ -8,8 +8,60 @@
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
 
-describe('Custom Reporters', () => {
+describe('Custom Reporters Integration', () => {
+  // Skipping on Windows, cos this till is only being tested on a
+  // Linux machine, if you have guts, test it on Windows, 
+  // and remove this if it works fine there. <3  
   skipOnWindows.suite();
+
+  test('valid string format for adding reporters', () => {
+    const reporterConfig = {
+      'reporters': [
+        '<rootDir>/reporters/TestReporter.js',
+      ],
+    };
+
+    const {status} = runJest('custom_reporters', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'add-test.js',
+    ]);
+
+    expect(status).toBe(0);
+  });
+
+  test('valid array format for adding reporters', () => {
+    const reporterConfig = {
+      'reporters': [
+        ['<rootDir>/reporters/TestReporter.js', {'Dmitrii Abramov': 'Awesome'}],
+      ],
+    };
+
+    const {status} = runJest('custom_reporters', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'add-test.js',
+    ]);
+
+    expect(status).toBe(0);
+  });
+
+  test('invalid format for adding reporters', () => {
+    const reporterConfig = {
+      'reporters': [
+        [3243242],
+      ],
+    };
+
+    const {status, stderr} = runJest('custom_reporters', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'add-test.js',
+    ]);
+
+    expect(stderr).toMatch('Expected reporterPath for reporter');
+    expect(status).toBe(1);
+  });
   
   test('TestReporter with all tests passing', () => {
     const {

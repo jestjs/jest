@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Custom Reporters IncompleteReporter for flexibility 1`] = `
+exports[`Custom Reporters Integration IncompleteReporter for flexibility 1`] = `
 "onRunComplete is called
 Passed Tests: 1
 Failed Tests: 0
@@ -8,7 +8,7 @@ Total Tests: 1
 "
 `;
 
-exports[`Custom Reporters TestReporter with all tests failing 1`] = `
+exports[`Custom Reporters Integration TestReporter with all tests failing 1`] = `
 Object {
   "onRunComplete": Object {
     "called": true,
@@ -39,7 +39,7 @@ Object {
 }
 `;
 
-exports[`Custom Reporters TestReporter with all tests passing 1`] = `
+exports[`Custom Reporters Integration TestReporter with all tests passing 1`] = `
 Object {
   "onRunComplete": Object {
     "called": true,
