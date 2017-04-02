@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom Reporters IncompleteReporter for flexibility 1`] = `
+"onRunComplete is called
+Passed Tests: 1
+Failed Tests: 0
+Total Tests: 1
+"
+`;
+
+exports[`Custom Reporters TestReporter with all tests failing 1`] = `
+Object {
+  "onRunComplete": Object {
+    "called": true,
+    "config": "object",
+    "numFailedTests": 1,
+    "numPassedTests": 0,
+    "numTotalTests": 1,
+  },
+  "onRunStart": Object {
+    "called": true,
+    "config": "object",
+    "options": "object",
+  },
+  "onTestResult": Object {
+    "called": true,
+    "times": 1,
+  },
+  "onTestStart": Object {
+    "called": true,
+    "config": false,
+    "path": true,
+  },
+  "options": Object {
+    "option1": "Hello",
+    "option2": "World",
+    "option3": "Amazing!!!",
+  },
+}
+`;
+
+exports[`Custom Reporters TestReporter with all tests passing 1`] = `
+Object {
+  "onRunComplete": Object {
+    "called": true,
+    "config": "object",
+    "numFailedTests": 0,
+    "numPassedTests": 1,
+    "numTotalTests": 1,
+  },
+  "onRunStart": Object {
+    "called": true,
+    "config": "object",
+    "options": "object",
+  },
+  "onTestResult": Object {
+    "called": true,
+    "times": 1,
+  },
+  "onTestStart": Object {
+    "called": true,
+    "config": false,
+    "path": true,
+  },
+  "options": Object {
+    "option1": "Hello",
+    "option2": "World",
+    "option3": "Amazing!!!",
+  },
+}
+`;
