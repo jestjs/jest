@@ -272,9 +272,7 @@ class TestRunner {
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
-  /**
-   * _shouldAddDefaultReporters
-   * 
+  /** 
    * @api private
    * Checks if default reporters should be added or not
    * 
@@ -295,7 +293,7 @@ class TestRunner {
   _setupReporters() {
     const config = this._config;
     const {reporters} = config;
-    const isDefault: boolean = this._addDefaultReporters(reporters);
+    const isDefault: boolean = this._shouldAddDefaultReporters(reporters);
 
     if (isDefault) {
       this._setupDefaultReporters(config);
