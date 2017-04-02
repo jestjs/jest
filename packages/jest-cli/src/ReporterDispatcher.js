@@ -32,7 +32,7 @@ class ReporterDispatcher {
     this._runnerContext = {getTestSummary, hasteFS};
     this._reporters = [];
 
-    this._requiredMethods = ['getLastError'];
+    this._requiredMethods = [];
   }
 
   register(reporter: Object): void {
@@ -127,7 +127,7 @@ class ReporterDispatcher {
   getErrors(): Array<Error> {
     return this._reporters.reduce(
       (list, reporter) => {
-        const error = reporter.getLastError();
+        const error = reporter.getLastError && reporter.getLastError();
         return error ? list.concat(error) : list;
       },
       [],
