@@ -112,7 +112,7 @@ class ReporterDispatcher {
    */
   _validateReporter(reporter: Object) {
     return this._requiredMethods.every(method => {
-      if (typeof reporter[method] === 'function') {
+      if (typeof reporter[method] !== 'function') {
         throw new Error(
           `Given method '${method}' does not exist on the reporter: ` +
           reporter.name
