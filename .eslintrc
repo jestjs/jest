@@ -5,7 +5,6 @@
     "no-multiple-empty-lines": 1,
     "flowtype/require-valid-file-annotation": 2,
     "flowtype/boolean-style": 2,
-    "flowtype/space-after-type-colon": 2,
     "flowtype/no-primitive-constructor-types": 2
   },
   "plugins": [
