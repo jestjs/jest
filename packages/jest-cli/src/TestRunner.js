@@ -364,13 +364,14 @@ class TestRunner {
    *
    */
   _addCustomReporters(reporters: ReporterConfig) {
-    this._validateCustomReporters(reporters);
     const customReporter = reporters.filter(reporter => reporter !== 'default');
+
     customReporter.forEach((reporter, index) => {
       const {
         reporterPath,
         reporterConfig = {},
       } = this._getReporterProps(reporter);
+
       try {
         const Reporter = require(reporterPath);
         this.addReporter(new Reporter(reporterConfig));
@@ -379,47 +380,6 @@ class TestRunner {
           'An error occured while adding the reporter at path ' + reporterPath
         );
         throw error;
-      }
-    });
-  }
-
-  /**
-   * Vaidates the Custom Reporter configurations
-   * and the format they are specified before
-   * adding them in the application
-   *
-   * @param {Array} customReporters
-   */
-  _validateCustomReporters(customReporters: ReporterConfig) {
-    // Validate Custom Reporters here
-    customReporters.forEach((reporter, index) => {
-      if (Array.isArray(reporter)) {
-        const [reporterPath, reporterConfig] = reporter;
-        if (typeof reporterPath !== 'string') {
-          throw new Error(
-            `Expected reporterPath for reporter at index ${index}` +
-            'to be of type string\n' +
-            'Got:\n' +
-            typeof reporter,
-          );
-        }
-
-        if (reporterConfig && typeof reporterConfig !== 'object') {
-          throw new Error(
-            `Expected configuration for reporter at index ${index}\n` +
-            'to be of type object\n' +
-            'Got:\n' +
-            reporterConfig,
-          );
-        }
-      } else if (typeof reporter !== 'string') {
-        throw new Error(
-          `Unexpected Custom Reporter Configuration at index ${index}\n` +
-          'Expected:\n' +
-          `array/string\n` +
-          'Got:\n' +
-          typeof reporter,
-        );
       }
     });
   }
