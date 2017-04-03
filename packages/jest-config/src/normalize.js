@@ -32,6 +32,7 @@ const DEPRECATED_CONFIG = require('./deprecated');
 const JSON_EXTENSION = '.json';
 const PRESET_NAME = 'jest-preset' + JSON_EXTENSION;
 const ERROR = `${BULLET}Validation Error`;
+const {validateReporters} = require('./reporterValidationErrors');
 
 const createConfigError = message =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -250,6 +251,7 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
   });
+  validateReporters(config.reporters);
 
   normalizePreprocessor(config);
   normalizeRootDir(config);
