@@ -68,7 +68,7 @@ export default function request(url) {
 }
 ```
 
-Now let's write a test for our async functionality. Using the `resolves` keyword
+Now let's write a test for our async functionality. Using the `resolves` keyword (available in Jest **20.0.0+**)
 ```js
 // __tests__/user-test.js
 jest.mock('../request');
