@@ -251,7 +251,10 @@ function normalize(config: InitialConfig, argv: Object = {}) {
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
   });
-  validateReporters(config.reporters);
+
+  if (config.reporters && Array.isArray(config.reporters)) {
+    validateReporters(config.reporters);
+  }
 
   normalizePreprocessor(config);
   normalizeRootDir(config);
