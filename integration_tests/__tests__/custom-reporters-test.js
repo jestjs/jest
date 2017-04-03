@@ -9,9 +9,6 @@ const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
 
 describe('Custom Reporters Integration', () => {
-  // Skipping on Windows, cos this till is only being tested on a
-  // Linux machine, if you have guts, test it on Windows, 
-  // and remove this if it works fine there. <3  
   skipOnWindows.suite();
 
   test('valid string format for adding reporters', () => {
