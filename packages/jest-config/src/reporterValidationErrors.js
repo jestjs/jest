@@ -5,10 +5,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
-// Many parts of this code should be handled 
-// by `jest-validate`
-
 const {ValidationError} = require('jest-validate');
 const {DOCUMENTATION_NOTE, BULLET} = require('./utils');
 
