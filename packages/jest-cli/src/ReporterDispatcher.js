@@ -13,14 +13,12 @@
 import type {RunnerContext} from 'types/Reporters';
 import type {HasteFS} from 'types/HasteMap';
 import type {Config, Path} from 'types/Config';
-import type {
-  TestResult, AggregatedResult,
-} from 'types/TestResult';
+import type {TestResult, AggregatedResult} from 'types/TestResult';
 
 export type RunOptions = {
   estimatedTime: number,
   showStatus: boolean,
-}
+};
 
 class ReporterDispatcher {
   _disabled: boolean;
@@ -49,8 +47,8 @@ class ReporterDispatcher {
 
   onTestResult(
     config: Config,
-    testResult: TestResult, 
-    results: AggregatedResult
+    testResult: TestResult,
+    results: AggregatedResult,
   ) {
     this._callReporterMethod('onTestResult', [
       config,
@@ -115,7 +113,7 @@ class ReporterDispatcher {
       if (typeof reporter[method] !== 'function') {
         throw new Error(
           `Given method '${method}' does not exist on the reporter: ` +
-          reporter.name
+            reporter.name,
         );
       }
 
