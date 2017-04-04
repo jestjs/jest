@@ -13,23 +13,22 @@ describe('Custom Reporters Integration', () => {
 
   test('valid string format for adding reporters', () => {
     const reporterConfig = {
-      'reporters': [
-        '<rootDir>/reporters/TestReporter.js',
-      ],
+      reporters: ['<rootDir>/reporters/TestReporter.js'],
     };
 
-    const {status} = runJest('custom_reporters', [
+    const {status, stdout} = runJest('custom_reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add-test.js',
     ]);
 
+    console.log(stdout);
     expect(status).toBe(0);
   });
 
   test('valid array format for adding reporters', () => {
     const reporterConfig = {
-      'reporters': [
+      reporters: [
         ['<rootDir>/reporters/TestReporter.js', {'Dmitrii Abramov': 'Awesome'}],
       ],
     };
@@ -45,9 +44,7 @@ describe('Custom Reporters Integration', () => {
 
   test('invalid format for adding reporters', () => {
     const reporterConfig = {
-      'reporters': [
-        [3243242],
-      ],
+      reporters: [[3243242]],
     };
 
     const {status, stderr} = runJest('custom_reporters', [
@@ -59,7 +56,7 @@ describe('Custom Reporters Integration', () => {
     expect(stderr).toMatch('Expected reporterPath for reporter');
     expect(status).toBe(1);
   });
-  
+
   test('TestReporter with all tests passing', () => {
     const {
       stdout,
@@ -71,9 +68,7 @@ describe('Custom Reporters Integration', () => {
     try {
       parsedJSON = JSON.parse(stdout);
     } catch (error) {
-      throw new Error(
-        'Failed to parse JSON, Check the Output of TestReporter'
-      );
+      throw new Error('Failed to parse JSON, Check the Output of TestReporter');
     }
 
     const {onRunComplete, onRunStart, onTestResult, onTestStart} = parsedJSON;
@@ -99,7 +94,7 @@ describe('Custom Reporters Integration', () => {
       status,
       stderr,
     } = runJest('custom_reporters', ['add-fail-test.js']);
-    
+
     try {
       parsedJSON = JSON.parse(stdout);
     } catch (error) {
@@ -126,9 +121,7 @@ describe('Custom Reporters Integration', () => {
     const {stdout, status} = runJest('custom_reporters', [
       '--config',
       JSON.stringify({
-        'reporters': [
-          '<rootDir>/reporters/IncompleteReporter.js',
-        ],
+        reporters: ['<rootDir>/reporters/IncompleteReporter.js'],
       }),
       'add-test.js',
     ]);
