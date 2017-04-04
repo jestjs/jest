@@ -1,11 +1,8 @@
 {
-    "jest": {
-        "reporters": [
-            ["<rootDir>/reporters/TestReporter.js", {
-                "option1": "Hello",
-                "option2": "World",
-                "option3": "Amazing!!!"
-            }]
-        ]
-    }
+  "jest": {
+    "reporters": [
+      132231332,
+      ["akljda", 2121]
+    ]
+  }
 }
