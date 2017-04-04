@@ -56,7 +56,7 @@ const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
 
 const getModuleNameMapper = (config: Config) => {
-  if (config.moduleNameMapper.length) {
+  if (Array.isArray(config.moduleNameMapper)) {
     return config.moduleNameMapper.map(([regex, moduleName]) => {
       return {moduleName, regex: new RegExp(regex)};
     });
