@@ -31,6 +31,7 @@ const throat = require('throat');
 const workerFarm = require('worker-farm');
 const TestWatcher = require('./TestWatcher');
 const ReporterDispatcher = require('./ReporterDispatcher');
+const chalk = require('chalk');
 
 const DEFAULT_REPORTER_LABEL = 'default';
 const SLOW_TEST_TIME = 3000;
@@ -276,7 +277,7 @@ class TestRunner {
    * Checks if default reporters should be added or not
    * @private
    */
-  _shouldAddDefaultReporters(reporters?: ReporterConfig): boolean {
+  _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
     return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
   }
 
@@ -309,10 +310,6 @@ class TestRunner {
     }
   }
 
-  /**
-   * _
-   * @param {config} Object Config object containing all the options
-   */
   _setupDefaultReporters(config: Config) {
     this.addReporter(
       config.verbose ? new VerboseReporter(config) : new DefaultReporter(),
@@ -323,6 +320,7 @@ class TestRunner {
 
   /**
    * Adds Custom reporters to Jest
+   * @private
    */
   _addCustomReporters(reporters: ReporterConfig) {
     const customReporter = reporters.filter(reporter => reporter !== 'default');
@@ -335,7 +333,9 @@ class TestRunner {
         this.addReporter(new Reporter(options));
       } catch (error) {
         console.error(
-          'An error occured while adding the reporter at path ' + path,
+          chalk.red(
+            'An error occured while adding the reporter at path' + path
+          )
         );
         throw error;
       }
@@ -351,12 +351,15 @@ class TestRunner {
    *  - path 
    */
   _getReporterProps(reporter: ReporterConfig) : Object {
+    let props = {};
     if (typeof reporter === 'string') {
-      return {path: reporter};
+      props = {path: reporter};
     } else if (Array.isArray(reporter)) {
       const [path, options] = reporter;
-      return {options, path};
+      props = {options, path};
     }
+
+    return props;
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {
