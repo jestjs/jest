@@ -21,60 +21,47 @@ const ERROR = `${BULLET} Reporter Validation Error`;
  * This is a highly specific reporter error and in the future will be
  * merged with jest-validate. Till then, we can make use of it. It works
  * and that's what counts most at this time
- * 
- * @param {Number} reporterIndex specific index at which reporter is present
- * @param {any} reporterValue value of the reporter, anything output by the user
- * 
- * @returns {ValidationError} validation error which can be thrown if needed
- * 
+
  */
 function createReporterError(
   reporterIndex: number,
   reporterValue: any,
 ): ValidationError {
-  const errorMessage = `\tReporter at index ${reporterIndex} must be of type:\n` +
+  const errorMessage = (
+    `Reporter at index ${reporterIndex} must be of type:\n` +
     `\t\t${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
     `\tbut instead received:\n` +
-    `\t\t${chalk.bold.red(getType(reporterValue))}`;
+    `\t\t${chalk.bold.red(getType(reporterValue))}`
+  );
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
 /**
- * createArrayReporterError
- * 
  * Reporter Error specific to Array configuration
- *
- * @param {Number} reporterIndex index for the given reporter config
- * @param {Number} valueIndex index of the 
- * @param {any} value value provided by the reporter
- * @param {any} expected expected value for the reporter
- *
- * @returns {ValidationError} ValidationError 
  */
 function createArrayReporterError(
   reporterIndex: number,
   valueIndex: number,
   value: any,
-  expected: any,
+  expectedType: string,
   valueName: string,
 ): ValidationError {
-  const errorMessage = `\tUnexpected value for ${valueName} at index ${valueIndex} of reporter` +
+  const errorMessage = (
+    `\tUnexpected value for ${valueName} at index ${valueIndex} of reporter` +
     `at index ${reporterIndex}\n` +
     '\tExpected:\n' +
-    `\t\t${chalk.bold.red(getType(expected))}\n` +
+    `\t\t${chalk.bold.red(expectedType)}\n` +
     '\tGot:\n' +
     `\t\t${chalk.bold.green(getType(value))}`;
+  )
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
 /**
- * valiates the each reporter within the reporters
- * using appropriate values
- * 
- * @param {Array<any>} reporterConfig configuration for the given reporter
- * @returns {boolean} true if all the given reporters are valid
+ * validates each reporter provided in the configuration
+ * @private
  */
 function validateReporters(reporterConfig: Array<mixed>): boolean {
   return reporterConfig.every((reporter, index) => {
@@ -94,16 +81,18 @@ function validateReporters(reporterConfig: Array<mixed>): boolean {
  * @param   {Array<mixed>} arrayReporter reporter to be validated
  * @returns {boolean} true if the reporter was validated
  */
-function validateArrayReporter(arrayReporter, reporterIndex) {
+function validateArrayReporter(
+  arrayReporter: Array<mixed>, reporterIndex: number
+) {
   const [path, options] = arrayReporter;
   if (typeof path !== 'string') {
-    throw createArrayReporterError(reporterIndex, 0, path, '', 'Path');
+    throw createArrayReporterError(reporterIndex, 0, path, 'string', 'Path');
   } else if (typeof options !== 'object') {
     throw createArrayReporterError(
       reporterIndex,
       1,
       options,
-      {},
+      'object',
       'Reporter Configuration',
     );
   }
