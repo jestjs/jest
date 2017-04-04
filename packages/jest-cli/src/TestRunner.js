@@ -273,12 +273,8 @@ class TestRunner {
   }
 
   /** 
-   * @api private
    * Checks if default reporters should be added or not
-   * 
-   * @param {ReporterConfig} reporters Configuration for all the reporters
-   * @returns {boolean} true if default reporters should be added
-   *                    otherwise false
+   * @private
    */
   _shouldAddDefaultReporters(reporters?: ReporterConfig): boolean {
     return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
@@ -286,9 +282,7 @@ class TestRunner {
 
   /**
    * Main method to Setup reporters to be used with TestRunner
-   * 
-   * @param {Config} config
-   * @api private
+   * @private
    */
   _setupReporters() {
     const config = this._config;
@@ -328,60 +322,41 @@ class TestRunner {
   }
 
   /**
-   * gets the props for the given custom reporter, whether reporter is 
-   * defined as a String or an Array to make things simple for us.
-   */
-  _getReporterProps(reporter: any): Object {
-    const props = {};
-    let reporterPath, reporterConfig;
-
-    if (typeof reporter === 'string') {
-      reporterPath = reporter;
-    } else if (Array.isArray(reporter)) {
-      [reporterPath, reporterConfig] = reporter;
-    }
-
-    props['reporterPath'] = reporterPath;
-    props['reporterConfig'] = reporterConfig;
-
-    return props;
-  }
-
-  /**
    * Adds Custom reporters to Jest
-   * Custom reporters can be added to Jest using the reporters option in Jest
-   * Config. The format for adding a custom reporter is following
-   *
-   * "reporters": [
-   *    ["reporterPath/packageName", { option1: 'fasklj' }], 
-   *    // Format if we want to specify options
-   *    "reporterName"
-   *    // Format if we don't want to specify any options
-   * ]
-   * 
-   * @private
-   * @param {ReporterConfig} reporters Array of reporters
-   *
    */
   _addCustomReporters(reporters: ReporterConfig) {
     const customReporter = reporters.filter(reporter => reporter !== 'default');
 
     customReporter.forEach((reporter, index) => {
-      const {
-        reporterPath,
-        reporterConfig = {},
-      } = this._getReporterProps(reporter);
+      const {options, path} = this._getReporterProps(reporter);
 
       try {
-        const Reporter = require(reporterPath);
-        this.addReporter(new Reporter(reporterConfig));
+        const Reporter = require(path);
+        this.addReporter(new Reporter(options));
       } catch (error) {
         console.error(
-          'An error occured while adding the reporter at path ' + reporterPath
+          'An error occured while adding the reporter at path ' + path,
         );
         throw error;
       }
     });
+  }
+
+  /**
+   * Get properties of a reporter in an object
+   * to make dealing with them less painful
+   *
+   * Objects contain the following properties:
+   *  - options
+   *  - path 
+   */
+  _getReporterProps(reporter: ReporterConfig) : Object {
+    if (typeof reporter === 'string') {
+      return {path: reporter};
+    } else if (Array.isArray(reporter)) {
+      const [path, options] = reporter;
+      return {options, path};
+    }
   }
 
   _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {
