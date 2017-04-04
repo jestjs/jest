@@ -29,16 +29,15 @@ const ERROR = `${BULLET} Reporter Validation Error`;
  * 
  */
 function createReporterError(
-    reporterIndex:number, reporterValue: any
-) : ValidationError {
-    const errorMessage = (
-        `\tReporter at index ${reporterIndex} must be of type:\n` +
-        `\t\t${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
-        `\tbut instead received:\n` +
-        `\t\t${chalk.bold.red(getType(reporterValue))}`
-    );
+  reporterIndex: number,
+  reporterValue: any,
+): ValidationError {
+  const errorMessage = `\tReporter at index ${reporterIndex} must be of type:\n` +
+    `\t\t${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
+    `\tbut instead received:\n` +
+    `\t\t${chalk.bold.red(getType(reporterValue))}`;
 
-    return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
+  return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
 /**
@@ -54,22 +53,20 @@ function createReporterError(
  * @returns {ValidationError} ValidationError 
  */
 function createArrayReporterError(
-    reporterIndex: number,
-    valueIndex: number, 
-    value: any,
-    expected: any,
-    valueName: string
+  reporterIndex: number,
+  valueIndex: number,
+  value: any,
+  expected: any,
+  valueName: string,
 ): ValidationError {
-    const errorMessage = (
-      `\tUnexpected value for ${valueName} at index ${valueIndex} of reporter` +
-      `at index ${reporterIndex}\n` +
-      '\tExpected:\n' +
-      `\t\t${chalk.bold.red(getType(expected))}\n` +
-      '\tGot:\n' +
-      `\t\t${chalk.bold.green(getType(value))}`
-    );
+  const errorMessage = `\tUnexpected value for ${valueName} at index ${valueIndex} of reporter` +
+    `at index ${reporterIndex}\n` +
+    '\tExpected:\n' +
+    `\t\t${chalk.bold.red(getType(expected))}\n` +
+    '\tGot:\n' +
+    `\t\t${chalk.bold.green(getType(value))}`;
 
-    return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
+  return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
 
 /**
@@ -79,7 +76,7 @@ function createArrayReporterError(
  * @param {Array<any>} reporterConfig configuration for the given reporter
  * @returns {boolean} true if all the given reporters are valid
  */
-function validateReporters(reporterConfig: Array<mixed>) : boolean {
+function validateReporters(reporterConfig: Array<mixed>): boolean {
   return reporterConfig.every((reporter, index) => {
     if (Array.isArray(reporter)) {
       throw validateArrayReporter(reporter, index);
@@ -103,13 +100,17 @@ function validateArrayReporter(arrayReporter, reporterIndex) {
     throw createArrayReporterError(reporterIndex, 0, path, '', 'Path');
   } else if (typeof options !== 'object') {
     throw createArrayReporterError(
-      reporterIndex, 1, options, {}, 'Reporter Configuration'
+      reporterIndex,
+      1,
+      options,
+      {},
+      'Reporter Configuration',
     );
   }
 }
 
 module.exports = {
-    createArrayReporterError,
-    createReporterError,
-    validateReporters,
+  createArrayReporterError,
+  createReporterError,
+  validateReporters,
 };
