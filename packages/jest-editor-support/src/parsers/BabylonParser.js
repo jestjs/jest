@@ -93,6 +93,7 @@ const parse = (file: string) => {
 
   const isFunctionCall = node => {
     return node.type === 'ExpressionStatement' &&
+      node.expression &&
       node.expression.type === 'CallExpression';
   };
 
@@ -107,8 +108,16 @@ const parse = (file: string) => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let {name} = node.expression.callee;
-    if (!name && node.expression.callee.object) {
+    let name = node && node.expression && node.expression.callee
+      ? node.expression.callee.name
+      : undefined;
+    if (
+      !name &&
+      node &&
+      node.expression &&
+      node.expression.callee &&
+      node.expression.callee.object
+    ) {
       name = node.expression.callee.object.name;
     }
     return name;
@@ -128,8 +137,8 @@ const parse = (file: string) => {
       return false;
     }
     let name: string;
-    let element = node.expression.callee;
-    while (!name) {
+    let element = node && node.expression ? node.expression.callee : undefined;
+    while (!name && element) {
       name = element.name;
       // Because expect may have acccessors taked on (.to.be) or
       // nothing (expect()) we have to check mulitple levels for the name
@@ -153,7 +162,7 @@ const parse = (file: string) => {
         foundItNode(element, file);
       } else if (isAnExpect(element)) {
         foundExpectNode(element, file);
-      } else if (element.type === 'VariableDeclaration') {
+      } else if (element && element.type === 'VariableDeclaration') {
         element.declarations
           .filter(
             declaration =>
@@ -161,8 +170,11 @@ const parse = (file: string) => {
           )
           .forEach(declaration => searchNodes(declaration.init.body, file));
       } else if (
+        element &&
         element.type === 'ExpressionStatement' &&
+        element.expression &&
         element.expression.type === 'AssignmentExpression' &&
+        element.expression.right &&
         isFunctionDeclaration(element.expression.right.type)
       ) {
         searchNodes(element.expression.right.body, file);
