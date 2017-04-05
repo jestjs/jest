@@ -16,13 +16,12 @@ describe('Custom Reporters Integration', () => {
       reporters: ['<rootDir>/reporters/TestReporter.js'],
     };
 
-    const {status, stdout} = runJest('custom_reporters', [
+    const {status} = runJest('custom_reporters', [
       '--config',
       JSON.stringify(reporterConfig),
       'add-test.js',
     ]);
 
-    console.log(stdout);
     expect(status).toBe(0);
   });
 
@@ -53,8 +52,8 @@ describe('Custom Reporters Integration', () => {
       'add-test.js',
     ]);
 
-    expect(stderr).toMatch('Expected reporterPath for reporter');
     expect(status).toBe(1);
+    expect(stderr).toMatchSnapshot();
   });
 
   test('TestReporter with all tests passing', () => {
@@ -63,62 +62,29 @@ describe('Custom Reporters Integration', () => {
       status,
       stderr,
     } = runJest('custom_reporters', ['add-test.js']);
-    let parsedJSON;
-
-    try {
-      parsedJSON = JSON.parse(stdout);
-    } catch (error) {
-      throw new Error('Failed to parse JSON, Check the Output of TestReporter');
-    }
-
-    const {onRunComplete, onRunStart, onTestResult, onTestStart} = parsedJSON;
+    const parsedJSON = JSON.parse(stdout);
 
     expect(status).toBe(0);
-    expect(stderr.trim()).toBeFalsy();
-
-    expect(onRunComplete.numPassedTests).toBe(1);
-    expect(onRunComplete.numFailedTests).toBe(0);
-    expect(onRunComplete.numTotalTests).toBe(1);
-
-    expect(onRunStart.called).toBeTruthy();
-    expect(onTestResult.called).toBeTruthy();
-    expect(onTestStart.called).toBeTruthy();
-
+    expect(stderr.trim()).toBe('');
     expect(parsedJSON).toMatchSnapshot();
   });
 
   test('TestReporter with all tests failing', () => {
-    let parsedJSON;
     const {
       stdout,
       status,
       stderr,
     } = runJest('custom_reporters', ['add-fail-test.js']);
 
-    try {
-      parsedJSON = JSON.parse(stdout);
-    } catch (error) {
-      throw new Error('Failed to parse JSON. Check the output of TestReporter');
-    }
-
-    const {onTestStart, onTestResult, onRunStart, onRunComplete} = parsedJSON;
+    const parsedJSON = JSON.parse(stdout);
 
     expect(status).toBe(1);
-    expect(stderr).toBeFalsy();
-
-    expect(onRunComplete.numPassedTests).toBe(0);
-    expect(onRunComplete.numFailedTests).toBe(1);
-    expect(onRunComplete.numTotalTests).toBe(1);
-
-    expect(onRunStart.called).toBeTruthy();
-    expect(onTestStart.called).toBeTruthy();
-    expect(onTestResult.called).toBeTruthy();
-
+    expect(stderr.trim()).toBe('');
     expect(parsedJSON).toMatchSnapshot();
   });
 
   test('IncompleteReporter for flexibility', () => {
-    const {stdout, status} = runJest('custom_reporters', [
+    const {stderr, stdout, status} = runJest('custom_reporters', [
       '--config',
       JSON.stringify({
         reporters: ['<rootDir>/reporters/IncompleteReporter.js'],
@@ -127,11 +93,7 @@ describe('Custom Reporters Integration', () => {
     ]);
 
     expect(status).toBe(0);
-
-    expect(stdout).toMatch('onRunComplete is called');
-    expect(stdout).toMatch('Passed Tests: 1');
-    expect(stdout).toMatch('Failed Tests: 0');
-    expect(stdout).toMatch('Total Tests: 1');
+    expect(stderr.trim()).toBe('');
 
     expect(stdout).toMatchSnapshot();
   });

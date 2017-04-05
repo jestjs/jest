@@ -32,9 +32,9 @@ Object {
     "path": true,
   },
   "options": Object {
-    "option1": "Hello",
-    "option2": "World",
-    "option3": "Amazing!!!",
+    "christop": "pojer",
+    "dmitrii": "abramov",
+    "hello": "world",
   },
 }
 `;
@@ -63,9 +63,24 @@ Object {
     "path": true,
   },
   "options": Object {
-    "option1": "Hello",
-    "option2": "World",
-    "option3": "Amazing!!!",
+    "christop": "pojer",
+    "dmitrii": "abramov",
+    "hello": "world",
   },
 }
+`;
+
+exports[`Custom Reporters Integration invalid format for adding reporters 1`] = `
+"●  Reporter Validation Error:
+
+	Unexpected value for Path at index 0 of reporter at index 0
+	Expected:
+		string
+	Got:
+		number
+
+  Configuration Documentation:
+  https://facebook.github.io/jest/docs/configuration.html
+
+"
 `;
