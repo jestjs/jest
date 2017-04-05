@@ -30,7 +30,7 @@ describe('promise it', () => {
     return new Promise(resolve => {
       if (this.someContextValue !== 'value') {
         throw new Error(
-          'expected this.someContextValue to be set: ' + this.someContextValue,
+          'expected this.someContextValue to be set: ' + this.someContextValue
         );
       }
       resolve();
@@ -55,7 +55,7 @@ describe('promise it', () => {
     () => {
       return new Promise(resolve => setTimeout(resolve, 10));
     },
-    250,
+    250
   );
 
   // failing tests
@@ -64,6 +64,6 @@ describe('promise it', () => {
     () => {
       return new Promise(resolve => setTimeout(resolve, 100));
     },
-    10,
+    10
   );
 });

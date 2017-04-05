@@ -29,14 +29,10 @@ class ReporterDispatcher {
   constructor(hasteFS: HasteFS, getTestSummary: () => string) {
     this._runnerContext = {getTestSummary, hasteFS};
     this._reporters = [];
-
-    this._requiredMethods = [];
   }
 
   register(reporter: Object): void {
-    if (this._validateReporter(reporter)) {
-      this._reporters.push(reporter);
-    }
+    this._reporters.push(reporter);
   }
 
   unregister(ReporterClass: Function): void {
@@ -96,28 +92,6 @@ class ReporterDispatcher {
       if (reporter[method]) {
         reporter[method](...reporterArgs);
       }
-    });
-  }
-
-  /**
-   * _validateReporter
-   * Validates the reporters to be added by checking for the required 
-   * methods
-   * 
-   * @private
-   * @param   {Object} reporter reporter to be validated
-   * @returns {boolean} returns true if the reporter is validated
-   */
-  _validateReporter(reporter: Object) {
-    return this._requiredMethods.every(method => {
-      if (typeof reporter[method] !== 'function') {
-        throw new Error(
-          `Given method '${method}' does not exist on the reporter: ` +
-            reporter.name,
-        );
-      }
-
-      return true;
     });
   }
 

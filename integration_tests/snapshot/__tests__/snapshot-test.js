@@ -32,7 +32,7 @@ describe('snapshot', () => {
 
   it('cannot be used with .not', () => {
     expect(() => expect('').not.toMatchSnapshot()).toThrow(
-      'Jest: `.not` cannot be used with `.toMatchSnapshot()`.',
+      'Jest: `.not` cannot be used with `.toMatchSnapshot()`.'
     );
   });
 
