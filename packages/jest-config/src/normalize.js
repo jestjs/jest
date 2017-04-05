@@ -22,6 +22,7 @@ const {
 } = require('./utils');
 const {NODE_MODULES, DEFAULT_JS_PATTERN} = require('./constants');
 const {ValidationError, validate} = require('jest-validate');
+const {validateReporters} = require('./reporterValidationErrors');
 const chalk = require('chalk');
 const crypto = require('crypto');
 const DEFAULT_CONFIG = require('./defaults');
@@ -255,6 +256,10 @@ function normalize(options: InitialOptions, argv: Object = {}) {
     exampleConfig: VALID_CONFIG,
   });
 
+  if (options.reporters && Array.isArray(options.reporters)) {
+    validateReporters(options.reporters);
+  }
+
   normalizePreprocessor(options);
   normalizeRootDir(options);
   normalizeMissingOptions(options);
@@ -374,6 +379,7 @@ function normalize(options: InitialOptions, argv: Object = {}) {
       case 'notify':
       case 'preset':
       case 'replname':
+      case 'reporters':
       case 'resetMocks':
       case 'resetModules':
       case 'rootDir':

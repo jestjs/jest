@@ -21,16 +21,12 @@ const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
 const {ICONS} = require('../constants');
 
-type Options = {|
-  expand: boolean,
-|};
-
 class VerboseReporter extends DefaultReporter {
-  _verboseOptions: Options;
+  _options: Config;
 
-  constructor(options: Options) {
+  constructor(options: Config) {
     super({verbose: true});
-    this._verboseOptions = options;
+    this._options = options;
   }
 
   static filterTestResults(testResults: Array<AssertionResult>) {

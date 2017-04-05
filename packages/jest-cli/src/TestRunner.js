@@ -14,11 +14,10 @@ import type {
   SerializableError as TestError,
   TestResult,
 } from 'types/TestResult';
-import type {GlobalConfig} from 'types/Config';
+import type {GlobalConfig, ReporterConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {PathPattern} from './SearchSource';
 import type {Test} from 'types/TestRunner';
-import type BaseReporter from './reporters/BaseReporter';
 
 const {formatExecError} = require('jest-message-util');
 
@@ -32,7 +31,10 @@ const snapshot = require('jest-snapshot');
 const throat = require('throat');
 const workerFarm = require('worker-farm');
 const TestWatcher = require('./TestWatcher');
+const ReporterDispatcher = require('./ReporterDispatcher');
+const chalk = require('chalk');
 
+const DEFAULT_REPORTER_LABEL = 'default';
 const SLOW_TEST_TIME = 3000;
 
 class CancelRun extends Error {
@@ -67,7 +69,7 @@ class TestRunner {
     this._setupReporters();
   }
 
-  addReporter(reporter: BaseReporter) {
+  addReporter(reporter: Object) {
     this._dispatcher.register(reporter);
   }
 
@@ -280,14 +282,35 @@ class TestRunner {
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
+  /**
+   * Checks if default reporters should be added or not
+   * @private
+   */
+  _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
+    return !reporters || reporters.indexOf(DEFAULT_REPORTER_LABEL) !== -1;
+  }
+
+  /**
+   * Main method to Setup reporters to be used with TestRunner
+   * @private
+   */
   _setupReporters() {
-    const {collectCoverage, expand, notify, verbose} = this._globalConfig;
+    const {collectCoverage, expand, notify, verbose, reporters} = this._globalConfig;
 
     this.addReporter(
       verbose
         ? new VerboseReporter({expand})
         : new DefaultReporter({verbose: !!verbose}),
     );
+    const isDefault = this._shouldAddDefaultReporters(reporters);
+
+    if (isDefault) {
+      this._setupDefaultReporters(this._globalConfig);
+    }
+
+    if (reporters && Array.isArray(reporters)) {
+      this._addCustomReporters(reporters);
+    }
 
     if (collectCoverage) {
       // coverage reporter dependency graph is pretty big and we don't
@@ -299,9 +322,62 @@ class TestRunner {
     }
 
     this.addReporter(new SummaryReporter(this._options));
+
     if (notify) {
       this.addReporter(new NotifyReporter(this._options.startRun));
     }
+  }
+
+  _setupDefaultReporters(config: Config) {
+    this.addReporter(
+      config.verbose ? new VerboseReporter(config) : new DefaultReporter(),
+    );
+
+    this.addReporter(new SummaryReporter(this._options));
+  }
+
+  /**
+   * Adds Custom reporters to Jest
+   * @private
+   */
+  _addCustomReporters(reporters: Array<ReporterConfig>) {
+    const customReporter = reporters.filter(reporter => reporter !== 'default');
+
+    customReporter.forEach((reporter, index) => {
+      const {options, path} = this._getReporterProps(reporter);
+
+      try {
+        const Reporter = require(path);
+        this.addReporter(new Reporter(options));
+      } catch (error) {
+        console.error(
+          chalk.red(
+            'An error occured while adding the reporter at path ' + path,
+          ),
+        );
+        throw error;
+      }
+    });
+  }
+
+  /**
+   * Get properties of a reporter in an object
+   * to make dealing with them less painful
+   *
+   * Objects contain the following properties:
+   *  - options
+   *  - path
+   */
+  _getReporterProps(reporter: ReporterConfig): Object {
+    let props = {};
+    if (typeof reporter === 'string') {
+      props = {path: reporter};
+    } else if (Array.isArray(reporter)) {
+      const [path, options] = reporter;
+      props = {options, path};
+    }
+
+    return props;
   }
 
   _bailIfNeeded(
@@ -437,59 +513,6 @@ const buildFailureTestResult = (
     testResults: [],
   };
 };
-
-class ReporterDispatcher {
-  _disabled: boolean;
-  _reporters: Array<BaseReporter>;
-
-  constructor() {
-    this._reporters = [];
-  }
-
-  register(reporter: BaseReporter): void {
-    this._reporters.push(reporter);
-  }
-
-  unregister(ReporterClass: Function) {
-    this._reporters = this._reporters.filter(
-      reporter => !(reporter instanceof ReporterClass),
-    );
-  }
-
-  onTestResult(test, testResult, results) {
-    this._reporters.forEach(reporter =>
-      reporter.onTestResult(test, testResult, results),
-    );
-  }
-
-  onTestStart(test) {
-    this._reporters.forEach(reporter => reporter.onTestStart(test));
-  }
-
-  onRunStart(config, results, options) {
-    this._reporters.forEach(reporter =>
-      reporter.onRunStart(config, results, options),
-    );
-  }
-
-  async onRunComplete(contexts, config, results) {
-    for (const reporter of this._reporters) {
-      await reporter.onRunComplete(contexts, config, results);
-    }
-  }
-
-  // Return a list of last errors for every reporter
-  getErrors(): Array<Error> {
-    return this._reporters.reduce((list, reporter) => {
-      const error = reporter.getLastError();
-      return error ? list.concat(error) : list;
-    }, []);
-  }
-
-  hasErrors(): boolean {
-    return this.getErrors().length !== 0;
-  }
-}
 
 const getEstimatedTime = (timings, workers) => {
   if (!timings.length) {
