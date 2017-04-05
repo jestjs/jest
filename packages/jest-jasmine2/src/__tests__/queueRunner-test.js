@@ -117,4 +117,17 @@ describe('queueRunner', () => {
     );
     expect(fnTwo).toHaveBeenCalled();
   });
+
+  it('calls `fail` with arguments', async () => {
+    const failFn = jest.fn(next => next.fail('miserably', 'failed'));
+    const options = {
+      clearTimeout,
+      fail: jest.fn(),
+      queueableFns: [{fn: failFn}],
+      setTimeout,
+    };
+    await queueRunner(options);
+
+    expect(options.fail).toHaveBeenCalledWith('miserably', 'failed');
+  });
 });

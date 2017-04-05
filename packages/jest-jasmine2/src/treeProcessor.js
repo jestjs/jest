@@ -74,7 +74,7 @@ function treeProcessor(options: Options) {
       throw new Error('`node.children` is not defined.');
     }
     const children = node.children.map(child => executeNode(child, enabled));
-    return [...node.beforeAllFns, ...children, ...node.afterAllFns];
+    return node.beforeAllFns.concat(children).concat(node.afterAllFns);
   }
 }
 
