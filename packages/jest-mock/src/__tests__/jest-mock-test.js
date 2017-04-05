@@ -35,6 +35,28 @@ describe('moduleMocker', () => {
       expect(moduleMocker.getMetadata(27).value).toEqual(27);
       expect(moduleMocker.getMetadata(false).value).toEqual(false);
     });
+
+    it('does not retrieve metadata for arrays', () => {
+      const array = [1, 2, 3];
+      const metadata = moduleMocker.getMetadata(array);
+      expect(metadata.value).toBeUndefined();
+      expect(metadata.members).toBeUndefined();
+      expect(metadata.type).toEqual('array');
+    });
+
+    it('does not retrieve metadata for undefined', () => {
+      const metadata = moduleMocker.getMetadata(undefined);
+      expect(metadata.value).toBeUndefined();
+      expect(metadata.members).toBeUndefined();
+      expect(metadata.type).toEqual('undefined');
+    });
+
+    it('does not retrieve metadata for null', () => {
+      const metadata = moduleMocker.getMetadata(null);
+      expect(metadata.value).toBeNull();
+      expect(metadata.members).toBeUndefined();
+      expect(metadata.type).toEqual('null');
+    });
   });
 
   describe('generateFromMetadata', () => {

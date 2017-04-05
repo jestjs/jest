@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const {formatResultsErrors} = require('../messages');
+const {formatResultsErrors, formatExecError} = require('../');
 
 const unixStackTrace = `  ` +
   `at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
@@ -38,4 +38,21 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
   );
 
   expect(messages).toMatchSnapshot();
+});
+
+it('.formatExecError()', () => {
+  const message = formatExecError(
+    {
+      testExecError: {
+        message: 'Whoops!',
+      },
+      testFilePath: '/test/error/file/path',
+    },
+    {
+      noStackTrace: false,
+    },
+    'path_test',
+  );
+
+  expect(message).toMatchSnapshot();
 });
