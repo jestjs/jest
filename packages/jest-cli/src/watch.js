@@ -286,9 +286,6 @@ const usage = (argv, snapshotFailure, delimiter = '\n') => {
     chalk.dim(' \u203A Press ') +
       'p' +
       chalk.dim(' to filter by a filename regex pattern.'),
-    chalk.dim(' \u203A Press ') +
-      't' +
-      chalk.dim(' to filter by a test name regex pattern.'),
     chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
     chalk.dim(' \u203A Press ') +
       'Enter' +
