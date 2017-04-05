@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`.formatExecError() 1`] = `
+"  <bold>● Test suite failed to run
+
+    Whoops!
+"
+`;
+
 exports[`should exclude jasmine from stack trace for Unix paths. 1`] = `
 "<bold><red>  <bold>● <bold>Unix test</>
 
