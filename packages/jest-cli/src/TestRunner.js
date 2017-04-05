@@ -287,7 +287,7 @@ class TestRunner {
    */
   _setupReporters() {
     const config = this._config;
-    const {reporters} = config;
+    const reporters = config.reporters;
     const isDefault: boolean = this._shouldAddDefaultReporters(reporters);
 
     if (isDefault) {
@@ -322,7 +322,7 @@ class TestRunner {
    * Adds Custom reporters to Jest
    * @private
    */
-  _addCustomReporters(reporters: ReporterConfig) {
+  _addCustomReporters(reporters: Array<ReporterConfig>) {
     const customReporter = reporters.filter(reporter => reporter !== 'default');
 
     customReporter.forEach((reporter, index) => {
@@ -334,8 +334,8 @@ class TestRunner {
       } catch (error) {
         console.error(
           chalk.red(
-            'An error occured while adding the reporter at path' + path
-          )
+            'An error occured while adding the reporter at path ' + path,
+          ),
         );
         throw error;
       }
@@ -350,7 +350,7 @@ class TestRunner {
    *  - options
    *  - path 
    */
-  _getReporterProps(reporter: ReporterConfig) : Object {
+  _getReporterProps(reporter: ReporterConfig): Object {
     let props = {};
     if (typeof reporter === 'string') {
       props = {path: reporter};

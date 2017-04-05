@@ -41,7 +41,7 @@ function treeProcessor(options: Options) {
   }
 
   return queueRunnerFactory({
-    onException: error => tree.onException(tree, error),
+    onException: error => tree.onException(error),
     queueableFns: wrapChildren(tree, isEnabled(tree, false)),
     userContext: tree.sharedUserContext(),
   });
@@ -59,7 +59,7 @@ function treeProcessor(options: Options) {
       async fn(done) {
         nodeStart(node);
         await queueRunnerFactory({
-          onException: error => node.onException(node, error),
+          onException: error => node.onException(error),
           queueableFns: wrapChildren(node, enabled),
           userContext: node.sharedUserContext(),
         });
