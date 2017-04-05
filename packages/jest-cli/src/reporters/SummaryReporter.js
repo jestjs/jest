@@ -132,10 +132,14 @@ class SummareReporter extends BaseReporter {
       let updateCommand;
       const event = process.env.npm_lifecycle_event;
       const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
+      const client = typeof process.env.npm_config_user_agent === 'string' &&
+        process.env.npm_config_user_agent.match('yarn') !== null
+        ? 'yarn'
+        : 'npm';
       if (config.watch) {
         updateCommand = 'press `u`';
       } else if (event) {
-        updateCommand = `run with \`npm ${prefix + event} -- -u\``;
+        updateCommand = `run with \`${client + ' ' + prefix + event} -- -u\``;
       } else {
         updateCommand = 're-run with `-u`';
       }
