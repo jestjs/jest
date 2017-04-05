@@ -9,11 +9,11 @@ const assign = require('object-assign');
 
 const center = React.createClass({
   render() {
-    let {style, ...props} = this.props;
-    style = assign({}, style, {textAlign: 'center'});
+    const {style, ...props} = this.props;
+    const newStyle = assign({}, style, {textAlign: 'center'});
 
     return (
-      <div {...props} style={style}>{this.props.children}</div>
+      <div {...props} style={newStyle}>{this.props.children}</div>
     );
   },
 });
