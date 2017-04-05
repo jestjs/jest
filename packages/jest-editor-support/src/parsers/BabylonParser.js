@@ -127,7 +127,7 @@ const parse = (file: string) => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let name: string;
+    let name: string = '';
     let element = node.expression.callee;
     while (!name) {
       name = element.name;
