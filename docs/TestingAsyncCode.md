@@ -60,6 +60,8 @@ test('the data is peanut butter', () => {
 });
 ```
 
+Be sure to return the promise - if you omit this `return` statement, your test will complete before `fetchData` completes.
+
 ##### available in Jest **20.0.0+**
 
 You can also use the `resolves` keyword in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
