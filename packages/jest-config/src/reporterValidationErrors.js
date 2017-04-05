@@ -21,18 +21,15 @@ const ERROR = `${BULLET} Reporter Validation Error`;
  * This is a highly specific reporter error and in the future will be
  * merged with jest-validate. Till then, we can make use of it. It works
  * and that's what counts most at this time
-
  */
 function createReporterError(
   reporterIndex: number,
   reporterValue: any,
 ): ValidationError {
-  const errorMessage = (
-    `Reporter at index ${reporterIndex} must be of type:\n` +
+  const errorMessage = `Reporter at index ${reporterIndex} must be of type:\n` +
     `\t\t${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
     `\tbut instead received:\n` +
-    `\t\t${chalk.bold.red(getType(reporterValue))}`
-  );
+    `\t\t${chalk.bold.red(getType(reporterValue))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
@@ -47,14 +44,12 @@ function createArrayReporterError(
   expectedType: string,
   valueName: string,
 ): ValidationError {
-  const errorMessage = (
-    `\tUnexpected value for ${valueName} at index ${valueIndex} of reporter` +
-    `at index ${reporterIndex}\n` +
+  const errorMessage = `\tUnexpected value for ${valueName} at index ${valueIndex} of reporter` +
+    ` at index ${reporterIndex}\n` +
     '\tExpected:\n' +
     `\t\t${chalk.bold.red(expectedType)}\n` +
     '\tGot:\n' +
     `\t\t${chalk.bold.green(getType(value))}`;
-  )
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
@@ -66,7 +61,7 @@ function createArrayReporterError(
 function validateReporters(reporterConfig: Array<mixed>): boolean {
   return reporterConfig.every((reporter, index) => {
     if (Array.isArray(reporter)) {
-      throw validateArrayReporter(reporter, index);
+      validateArrayReporter(reporter, index);
     } else if (typeof reporter !== 'string') {
       throw createReporterError(index, reporter);
     }
@@ -82,7 +77,8 @@ function validateReporters(reporterConfig: Array<mixed>): boolean {
  * @returns {boolean} true if the reporter was validated
  */
 function validateArrayReporter(
-  arrayReporter: Array<mixed>, reporterIndex: number
+  arrayReporter: Array<mixed>,
+  reporterIndex: number,
 ) {
   const [path, options] = arrayReporter;
   if (typeof path !== 'string') {
