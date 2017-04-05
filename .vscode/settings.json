@@ -1,8 +1,0 @@
-{
-  "jest.pathToJest": "npm run jest --",
-  "editor.rulers": [
-    80
-],
-"eslint.enable": true,
-"javascript.validate.enable": false
-}
