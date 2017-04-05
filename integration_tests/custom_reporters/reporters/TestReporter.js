@@ -72,10 +72,10 @@ class TestReporter {
 
     onRunComplete.called = true;
     onRunComplete.config = typeof config;
-    
+
     onRunComplete.numPassedTests = results.numPassedTests;
     onRunComplete.numFailedTests = results.numFailedTests;
-    onRunComplete.numTotalTests  = results.numTotalTests;
+    onRunComplete.numTotalTests = results.numTotalTests;
 
     // The Final Call
     process.stdout.write(JSON.stringify(this._statsCollected, null, 4));

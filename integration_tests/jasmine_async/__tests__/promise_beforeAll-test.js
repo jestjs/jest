@@ -21,7 +21,7 @@ describe('promise beforeAll', () => {
     () => {
       return new Promise(resolve => setTimeout(resolve, 10));
     },
-    500
+    500,
   );
 
   // passing tests
@@ -35,7 +35,7 @@ describe('promise beforeAll', () => {
       () => {
         return new Promise(resolve => setTimeout(resolve, 100));
       },
-      10
+      10,
     );
 
     it('fails', () => {});
