@@ -36,7 +36,7 @@ function parse(file: string) {
         itBlocks.push(position);
       } else {
         let element = node.expression;
-        let expectText: string;
+        let expectText: string = '';
         while (!expectText) {
           expectText = element.text;
           element = element.expression;
