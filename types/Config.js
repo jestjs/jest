@@ -19,7 +19,9 @@ export type HasteConfig = {|
   providesModuleNodeModules: Array<string>,
 |};
 
-export type ReporterConfig = Array<string | [string, Object]>;
+export type ReporterConfig = StringReporter | ArrayReporter;
+export type StringReporter = string;
+export type ArrayReporter = [string, Object];
 
 export type ConfigGlobals = Object;
 
