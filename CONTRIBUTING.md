@@ -41,6 +41,14 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) and to test what the version, switch to a command line.<br />
    To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on windows you may need to download either node.js or Chocolatey<br />
    
+     ```sh
+    yarn install
+    ```
+    To check your version of Yarn and ensure it's installed you can type:
+    ```sh
+    yarn --version
+    ```
+   
    For Window's (if you are using Powershell) there is an intermediary step for setting up the devDependencies:
    ```sh
    #Windows CMD
@@ -51,13 +59,6 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    export NODE_ENV=development
     ```
    
-    ```sh
-    yarn install
-    ```
-    To check your version of Yarn and ensure it's installed you can type:
-    ```sh
-    yarn --version
-    ```
 
 4. If you've added code that should be tested, add tests. You
    can use watch mode that continuously transforms changed files
