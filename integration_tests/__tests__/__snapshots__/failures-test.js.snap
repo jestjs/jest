@@ -323,7 +323,14 @@ Object {
 
   ● assert.doesNotThrow
 
-    AssertionError: Got unwanted exception..
+    assert.doesNotThrow(function)
+    
+    Expected the function not to throw an error.
+    Instead, it threw:
+      [Error: err!]
+    
+    Message:
+      Got unwanted exception..
       
       at _throws (assert.js:356:5)
       at Function.doesNotThrow (assert.js:375:3)
@@ -331,11 +338,17 @@ Object {
 
   ● assert.throws
 
-    AssertionError: Missing expected exception..
+    assert.throws(function)
+    
+    Expected the function to throw an error.
+    But it didn't throw anything.
+    
+    Message:
+      Missing expected exception..
       
       at _throws (assert.js:345:5)
       at Function.throws (assert.js:369:3)
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:76:10)
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:78:10)
 
   ✕ assert
   ✕ assert with a message
