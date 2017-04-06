@@ -40,7 +40,6 @@ const Spec = require('./Spec');
 const SpyRegistry = require('./SpyRegistry');
 const Suite = require('./Suite');
 const Timer = require('./Timer');
-const TreeProcessor = require('./TreeProcessor');
 
 exports.create = function() {
   const j$ = {};
@@ -60,7 +59,6 @@ exports.create = function() {
   j$.SpyRegistry = SpyRegistry;
   j$.Suite = Suite;
   j$.Timer = Timer;
-  j$.TreeProcessor = TreeProcessor;
   j$.version = '2.5.2-light';
 
   return j$;

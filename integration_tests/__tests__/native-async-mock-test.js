@@ -18,11 +18,16 @@ skipOnWindows.suite();
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
 
 test('mocks async functions', () => {
+  if (process.versions.node < '7.6.0') {
+    return;
+  }
   if (process.platform !== 'win32') {
-    run('npm install', dir);
+    run('yarn --no-lockfile', dir);
     linkJestPackage('babel-jest', dir);
   }
   // --no-cache because babel can cache stuff and result in false green
   const {stderr} = runJest(dir, ['--no-cache']);
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(extractSummary(stderr).summary).toMatch(
+    'Test Suites: 1 passed, 1 total',
+  );
 });

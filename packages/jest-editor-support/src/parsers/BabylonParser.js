@@ -23,7 +23,6 @@ const cache = Object.create(null);
 // This is a copy of babel-jest's parser, but it takes create-react-app
 // into account, and will return an empty JSON object instead of "".
 const getBabelRC = (filename, {useCache}) => {
-
   // Special case for create-react-app, which hides the .babelrc
   const paths: string[] = ['node_modules/react-scripts/'];
   let directory = filename;
@@ -128,7 +127,7 @@ const parse = (file: string) => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let name: string;
+    let name: string = '';
     let element = node.expression.callee;
     while (!name) {
       name = element.name;
