@@ -23,15 +23,14 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 1. Fork the repo and create your branch from `master`.
    A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
    
-   Open Git Bash (or Git Shell), and type: 
+   Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
    ```sh
    git clone https://github.com/<your_username>/jest
    cd jest
    git checkout -b my_branch
    ```
    Note:
-   Replace ``` <your_username> ``` with your github username
-   Replace ``` <my_branch> ``` with ``` <your_username>/jest ``
+   Replace `<your_username>` with your GitHub username
 
 2. Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360)
    for running development scripts. If you haven't already done so,
@@ -39,10 +38,10 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 
 3. Run `yarn install`.
    On Window's: 
-   To install [Yarn] and to test what the version, switch to a command line.
-   To install [Yarn] on windows you may need to download either node.js or Chocolatey
+   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) and to test what the version, switch to a command line.<br />
+   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on windows you may need to download either node.js or Chocolatey<br />
    
-   For Window's there is an intermediary step for setting up the devDependencies:
+   For Window's (if you are using Powershell) there is an intermediary step for setting up the devDependencies:
    ```sh
    #Windows CMD
    set NODE_ENV=development
@@ -52,12 +51,10 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    export NODE_ENV=development
     ```
    
-   All:
-   Open a command prompt and type:
     ```sh
     yarn install
     ```
-    To check your version of [Yarn] and ensure it is installed, in the command prompt type:
+    To check your version of Yarn and ensure it's installed you can type:
     ```sh
     yarn --version
     ```
