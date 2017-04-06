@@ -32,12 +32,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 'use strict';
 
-const diff = require('jest-diff');
-const {
-  matcherHint,
-  printReceived,
-  printExpected,
-} = require('jest-matcher-utils');
 const ExpectationFailed = require('../ExpectationFailed');
 const expectationResultFactory = require('../expectationResultFactory');
 
@@ -117,40 +111,29 @@ Spec.prototype.execute = function(onComplete, enabled) {
   }
 };
 
-Spec.prototype.onException = function onException(e) {
-  if (Spec.isPendingSpecException(e)) {
-    this.pend(extractCustomPendingMessage(e));
+Spec.prototype.onException = function onException(error) {
+  if (Spec.isPendingSpecException(error)) {
+    this.pend(extractCustomPendingMessage(error));
     return;
   }
 
-  if (e instanceof ExpectationFailed) {
+  if (error instanceof ExpectationFailed) {
     return;
   }
 
-  const {expected, actual} = e || {};
-  let message;
-  if (expected && actual) {
-    const diffString = diff(expected, actual, {
-      expand: this.expand,
-    });
-    message = matcherHint('.toBe') +
-      '\n\n' +
-      `Expected value to be (using ===):\n` +
-      `  ${printExpected(expected)}\n` +
-      `Received:\n` +
-      `  ${printReceived(actual)}` +
-      (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+  if (error instanceof require('assert').AssertionError) {
+    const assertionErrorMessage = require('jest-matchers/build/assert-support');
+    error = assertionErrorMessage(error, {expand: this.expand});
   }
 
   this.addExpectationResult(
     false,
     {
-      matcherName: 'blah',
-      message,
+      matcherName: '',
       passed: false,
       expected: '',
       actual: '',
-      error: e,
+      error,
     },
     true,
   );

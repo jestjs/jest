@@ -57,11 +57,12 @@ Object {
   "rest": " FAIL  __tests__/assertion-count-test.js
   ● .assertions() › throws
 
-    Error
-      Error: expect(received).toBeTruthy()
+    expect(received).toBeTruthy()
+    
+    Expected value to be truthy, instead received
+      false
       
-      Expected value to be truthy, instead received
-        false
+      at Object.throws (__tests__/assertion-count-test.js:14:17)
 
   ● .assertions() › throws
 
@@ -73,11 +74,12 @@ Object {
 
   ● .assertions() › throws on redeclare of assertion count
 
-    Error
-      Error: expect(received).toBeTruthy()
+    expect(received).toBeTruthy()
+    
+    Expected value to be truthy, instead received
+      false
       
-      Expected value to be truthy, instead received
-        false
+      at Object.redeclare (__tests__/assertion-count-test.js:18:17)
 
   ● .assertions() › throws on assertion
 
@@ -107,104 +109,254 @@ Object {
   "rest": " FAIL  __tests__/node-assertion-error-test.js
   ● assert
 
-    Error
-      AssertionError: false == true
+    assert.equal(received, expected) or assert(received) 
+    
+    Expected value to be (operator: ==):
+      true
+    Received:
+      false
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:16:3)
 
   ● assert with a message
 
-    Error
-      AssertionError: this is a message
+    assert.equal(received, expected) or assert(received) 
+    
+    Expected value to be (operator: ==):
+      true
+    Received:
+      false
+    
+    Message:
+      this is a message
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:20:3)
 
   ● assert.ok
 
-    Error
-      AssertionError: false == true
+    assert.equal(received, expected) or assert(received) 
+    
+    Expected value to be (operator: ==):
+      true
+    Received:
+      false
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:24:10)
 
   ● assert.ok with a message
 
-    Error
-      AssertionError: this is a message
+    assert.equal(received, expected) or assert(received) 
+    
+    Expected value to be (operator: ==):
+      true
+    Received:
+      false
+    
+    Message:
+      this is a message
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:28:10)
 
   ● assert.equal
 
-    Error
-      expect(received).toBe(expected)
+    assert.equal(received, expected) or assert(received) 
+    
+    Expected value to be (operator: ==):
+      2
+    Received:
+      1
       
-      Expected value to be (using ===):
-        2
-      Received:
-        1
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:32:10)
 
-  ● assert.equal with a message
+  ● assert.notEqual
 
-    Error
-      expect(received).toBe(expected)
+    assert.notEqual(received, expected)
+    
+    Expected value not to be (operator: !=):
+      1
+    Received:
+      1
+    
+    Difference:
+    
+    Compared values have no visual difference.
       
-      Expected value to be (using ===):
-        2
-      Received:
-        1
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:36:10)
 
   ● assert.deepEqual
 
-    Error
-      expect(received).toBe(expected)
-      
-      Expected value to be (using ===):
-        {\\"a\\": {\\"b\\": {\\"c\\": 6}}}
-      Received:
-        {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
-      
-      Difference:
-      
-      - Expected
-      + Received
-      
-      Object {
-          \\"a\\": Object {
-            \\"b\\": Object {
-      -       \\"c\\": 6,
-      +       \\"c\\": 5,
-            },
+    assert.deepEqual(received, expected)
+    
+    Expected value to deepEqual to:
+      {\\"a\\": {\\"b\\": {\\"c\\": 6}}}
+    Received:
+      {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
+    
+    Difference:
+    
+    - Expected
+    + Received
+    
+    Object {
+        \\"a\\": Object {
+          \\"b\\": Object {
+    -       \\"c\\": 6,
+    +       \\"c\\": 5,
           },
-        }
+        },
+      }
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:40:10)
 
   ● assert.deepEqual with a message
 
-    Error
-      expect(received).toBe(expected)
-      
-      Expected value to be (using ===):
-        {\\"a\\": {\\"b\\": {\\"c\\": 7}}}
-      Received:
-        {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
-      
-      Difference:
-      
-      - Expected
-      + Received
-      
-      Object {
-          \\"a\\": Object {
-            \\"b\\": Object {
-      -       \\"c\\": 7,
-      +       \\"c\\": 5,
-            },
+    assert.deepEqual(received, expected)
+    
+    Expected value to deepEqual to:
+      {\\"a\\": {\\"b\\": {\\"c\\": 7}}}
+    Received:
+      {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
+    
+    Message:
+      this is a message
+    
+    Difference:
+    
+    - Expected
+    + Received
+    
+    Object {
+        \\"a\\": Object {
+          \\"b\\": Object {
+    -       \\"c\\": 7,
+    +       \\"c\\": 5,
           },
-        }
+        },
+      }
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:44:10)
+
+  ● assert.notDeepEqual
+
+    assert.notDeepEqual(received, expected)
+    
+    Expected value to notDeepEqual to:
+      {\\"a\\": 1}
+    Received:
+      {\\"a\\": 1}
+    
+    Difference:
+    
+    Compared values have no visual difference.
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:48:10)
+
+  ● assert.strictEqual
+
+    assert.strictEqual(received, expected)
+    
+    Expected value to be (operator: ===):
+      NaN
+    Received:
+      1
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:52:10)
+
+  ● assert.notStrictEqual
+
+    assert.notStrictEqual(received, expected)
+    
+    Expected value not to be (operator: !==):
+      1
+    Received:
+      1
+    
+    Message:
+      My custom error message
+    
+    Difference:
+    
+    Compared values have no visual difference.
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:56:10)
+
+  ● assert.deepStrictEqual
+
+    assert.deepStrictEqual(received, expected)
+    
+    Expected value to deepStrictEqual to:
+      {\\"a\\": 2}
+    Received:
+      {\\"a\\": 1}
+    
+    Difference:
+    
+    - Expected
+    + Received
+    
+    Object {
+    -   \\"a\\": 2,
+    +   \\"a\\": 1,
+      }
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:60:10)
+
+  ● assert.notDeepStrictEqual
+
+    assert.notDeepStrictEqual(received, expected)
+    
+    Expected value to notDeepStrictEqual to:
+      {\\"a\\": 1}
+    Received:
+      {\\"a\\": 1}
+    
+    Difference:
+    
+    Compared values have no visual difference.
+      
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:64:10)
+
+  ● assert.ifError
+
+    Error
+      1 thrown
+
+  ● assert.doesNotThrow
+
+    AssertionError: Got unwanted exception..
+      
+      at _throws (assert.js:356:5)
+      at Function.doesNotThrow (assert.js:375:3)
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:72:10)
+
+  ● assert.throws
+
+    AssertionError: Missing expected exception..
+      
+      at _throws (assert.js:345:5)
+      at Function.throws (assert.js:369:3)
+      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:76:10)
 
   ✕ assert
   ✕ assert with a message
   ✕ assert.ok
   ✕ assert.ok with a message
   ✕ assert.equal
-  ✕ assert.equal with a message
+  ✕ assert.notEqual
   ✕ assert.deepEqual
   ✕ assert.deepEqual with a message
+  ✕ assert.notDeepEqual
+  ✕ assert.strictEqual
+  ✕ assert.notStrictEqual
+  ✕ assert.deepStrictEqual
+  ✕ assert.notDeepStrictEqual
+  ✕ assert.ifError
+  ✕ assert.doesNotThrow
+  ✕ assert.throws
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
-Tests:       8 failed, 8 total
+Tests:       16 failed, 16 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching \\"node-assertion-error-test.js\\".

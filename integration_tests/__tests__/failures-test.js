@@ -28,26 +28,16 @@ const stripInconsistentStackLines = summary => {
 test('throwing not Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throw-number-test.js']).stderr;
-  expect(stripInconsistentStackLines(
-    extractSummary(stderr),
-  )).toMatchSnapshot();
+  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['throw-string-test.js']).stderr;
-  expect(stripInconsistentStackLines(
-    extractSummary(stderr),
-  )).toMatchSnapshot();
+  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
-  expect(stripInconsistentStackLines(
-    extractSummary(stderr),
-  )).toMatchSnapshot();
+  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['assertion-count-test.js']).stderr;
-  expect(stripInconsistentStackLines(
-    extractSummary(stderr),
-  )).toMatchSnapshot();
+  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['node-assertion-error-test.js']);
-  expect(stripInconsistentStackLines(
-    extractSummary(stderr),
-  )).toMatchSnapshot();
+  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
 });
