@@ -10,63 +10,111 @@
 
 'use strict';
 
-function assertionErrorMessage(error: Error, options) {
-  const assertOperatorsMap = {
-    '!=': 'notEqual',
-    '!==': 'notStrictEqual',
-    '==': 'equal',
-    '===': 'strictEqual',
-  };
+const {
+  printReceived,
+  printExpected,
+} = require('jest-matcher-utils');
+const chalk = require('chalk');
+const diff = require('jest-diff');
 
-  const {expected, actual, message, operator} = error || {};
-  const {
-    printReceived,
-    printExpected,
-  } = require('jest-matcher-utils');
+declare class AssertionError extends Error {
+  name: string,
+  actual: ?string,
+  expected: ?string,
+  operator: ?string,
+  message: string,
+  generatedMessage: boolean,
+}
+import type {DiffOptions} from 'jest-diff/src/diffStrings';
 
-  if (expected !== undefined && actual !== undefined) {
-    const chalk = require('chalk');
-    const diff = require('jest-diff');
-    const diffString = diff(expected, actual, options);
-    const negator = operator.startsWith('!') || operator.startsWith('not');
-    const hasCustomMessage = !error.generatedMessage;
+const assertOperatorsMap = {
+  '!=': 'notEqual',
+  '!==': 'notStrictEqual',
+  '==': 'equal',
+  '===': 'strictEqual',
+};
 
-    const assertMatcherHint = () => {
-      let message = chalk.dim('assert') +
-        chalk.dim('.' + (assertOperatorsMap[operator] || operator)) +
-        chalk.dim('(') +
-        chalk.red('received') +
-        chalk.dim(', ') +
-        chalk.green('expected') +
-        chalk.dim(')');
+const getOperatorName = (operator: ?string, stack: string) => {
+  if (typeof operator === 'string') {
+    return assertOperatorsMap[operator] || operator;
+  }
+  if (stack.match('.doesNotThrow')) {
+    return 'doesNotThrow';
+  }
+  if (stack.match('.throws')) {
+    return 'throws';
+  }
+  return '';
+};
 
-      if (operator === '==') {
-        message += ' or ' +
-          chalk.dim('assert') +
-          chalk.dim('(') +
-          chalk.red('received') +
-          chalk.dim(') ');
-      }
+const operatorMessage = (operator: ?string, negator: boolean) =>
+  typeof operator === 'string' &&
+    (operator.startsWith('!') || operator.startsWith('='))
+    ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
+    : `to ${operator || ''} to:\n`;
 
-      return message;
-    };
+const assertThrowingMatcherHint = (operatorName: string) => {
+  return chalk.dim('assert') +
+    chalk.dim('.' + operatorName + '(') +
+    chalk.red('function') +
+    chalk.dim(')');
+};
 
-    const operatorMessage = () =>
-      operator.startsWith('!') || operator.startsWith('=')
-        ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
-        : `to ${operator} to:\n`;
+const assertMatcherHint = (operator: ?string, operatorName: string) => {
+  let message = chalk.dim('assert') +
+    chalk.dim('.' + operatorName + '(') +
+    chalk.red('received') +
+    chalk.dim(', ') +
+    chalk.green('expected') +
+    chalk.dim(')');
 
-    return assertMatcherHint() +
+  if (operator === '==') {
+    message += ' or ' +
+      chalk.dim('assert') +
+      chalk.dim('(') +
+      chalk.red('received') +
+      chalk.dim(') ');
+  }
+
+  return message;
+};
+
+function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
+  const {expected, actual, message, operator, stack} = error;
+  const diffString = diff(expected, actual, options);
+  const negator = typeof operator === 'string' &&
+    (operator.startsWith('!') || operator.startsWith('not'));
+  const hasCustomMessage = !error.generatedMessage;
+  const operatorName = getOperatorName(operator, stack);
+
+  if (operatorName === 'doesNotThrow') {
+    return assertThrowingMatcherHint(operatorName) +
       '\n\n' +
-      chalk.reset(`Expected value ${operatorMessage()}`) +
-      `  ${printExpected(expected)}\n` +
-      chalk.reset(`Received:\n`) +
+      chalk.reset(`Expected the function not to throw an error.\n`) +
+      chalk.reset(`Instead, it threw:\n`) +
       `  ${printReceived(actual)}` +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
-      (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
-      error.stack.replace(/AssertionError(.*)/g, '');
+      stack.replace(/AssertionError(.*)/g, '');
   }
-  return error;
+
+  if (operatorName === 'throws') {
+    return assertThrowingMatcherHint(operatorName) +
+      '\n\n' +
+      chalk.reset(`Expected the function to throw an error.\n`) +
+      chalk.reset(`But it didn't throw anything.`) +
+      chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+      stack.replace(/AssertionError(.*)/g, '');
+  }
+
+  return assertMatcherHint(operator, operatorName) +
+    '\n\n' +
+    chalk.reset(`Expected value ${operatorMessage(operator, negator)}`) +
+    `  ${printExpected(expected)}\n` +
+    chalk.reset(`Received:\n`) +
+    `  ${printReceived(actual)}` +
+    chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+    (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
+    stack.replace(/AssertionError(.*)/g, '');
 }
 
 module.exports = assertionErrorMessage;

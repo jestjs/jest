@@ -69,7 +69,9 @@ test('assert.ifError', () => {
 });
 
 test('assert.doesNotThrow', () => {
-  assert.doesNotThrow(() => {throw Error('err!')});
+  assert.doesNotThrow(() => {
+    throw Error('err!');
+  });
 });
 
 test('assert.throws', () => {
