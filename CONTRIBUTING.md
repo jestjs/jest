@@ -21,22 +21,44 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 *Before* submitting a pull request, please make sure the following is done…
 
 1. Fork the repo and create your branch from `master`.
-
+   A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
+   
+   Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
    ```sh
    git clone https://github.com/<your_username>/jest
    cd jest
    git checkout -b my_branch
    ```
+   Note:
+   Replace `<your_username>` with your GitHub username
 
 2. Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360)
    for running development scripts. If you haven't already done so,
    please [install yarn](https://yarnpkg.com/en/docs/install).
 
 3. Run `yarn install`.
-
-    ```sh
+   On Window's: 
+   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) and to test what the version, switch to a command line.<br />
+   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on windows you may need to download either node.js or Chocolatey<br />
+   
+     ```sh
     yarn install
     ```
+    To check your version of Yarn and ensure it's installed you can type:
+    ```sh
+    yarn --version
+    ```
+   
+   For Window's (if you are using Powershell) there is an intermediary step for setting up the devDependencies:
+   ```sh
+   #Windows CMD
+   set NODE_ENV=development
+   #Windows Powershell
+   $env:NODE_ENV="development"
+   #Terminal
+   export NODE_ENV=development
+    ```
+   
 
 4. If you've added code that should be tested, add tests. You
    can use watch mode that continuously transforms changed files
