@@ -116,7 +116,7 @@ Object {
     Received:
       false
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:16:3)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:16:3)
 
   ● assert with a message
 
@@ -130,7 +130,7 @@ Object {
     Message:
       this is a message
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:20:3)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:20:3)
 
   ● assert.ok
 
@@ -141,7 +141,7 @@ Object {
     Received:
       false
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:24:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:24:10)
 
   ● assert.ok with a message
 
@@ -155,7 +155,7 @@ Object {
     Message:
       this is a message
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:28:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:28:10)
 
   ● assert.equal
 
@@ -166,7 +166,7 @@ Object {
     Received:
       1
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:32:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:32:10)
 
   ● assert.notEqual
 
@@ -181,7 +181,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:36:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:36:10)
 
   ● assert.deepEqual
 
@@ -206,7 +206,7 @@ Object {
         },
       }
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:40:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:40:10)
 
   ● assert.deepEqual with a message
 
@@ -234,7 +234,7 @@ Object {
         },
       }
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:44:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:44:10)
 
   ● assert.notDeepEqual
 
@@ -249,7 +249,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:48:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:48:10)
 
   ● assert.strictEqual
 
@@ -260,7 +260,7 @@ Object {
     Received:
       1
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:52:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:52:10)
 
   ● assert.notStrictEqual
 
@@ -278,7 +278,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:56:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:56:10)
 
   ● assert.deepStrictEqual
 
@@ -299,7 +299,7 @@ Object {
     +   \\"a\\": 1,
       }
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:60:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:60:10)
 
   ● assert.notDeepStrictEqual
 
@@ -314,7 +314,7 @@ Object {
     
     Compared values have no visual difference.
       
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:64:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:64:10)
 
   ● assert.ifError
 
@@ -332,9 +332,7 @@ Object {
     Message:
       Got unwanted exception..
       
-      at _throws (assert.js:356:5)
-      at Function.doesNotThrow (assert.js:375:3)
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:72:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:72:10)
 
   ● assert.throws
 
@@ -346,9 +344,7 @@ Object {
     Message:
       Missing expected exception..
       
-      at _throws (assert.js:345:5)
-      at Function.throws (assert.js:369:3)
-      at Object.<anonymous>.test (__tests__/node-assertion-error-test.js:78:10)
+      at Object.<anonymous> (__tests__/node-assertion-error-test.js:78:10)
 
   ✕ assert
   ✕ assert with a message
