@@ -42,7 +42,7 @@ const getBabelRC = (filename, {useCache}) => {
     }
     const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
     if (fs.existsSync(configJsFilePath)) {
-      cache[directory] = JSON.stringify(require(configJsFilePath));
+      cache[directory] = JSON.stringify((require : any)(configJsFilePath));
       break;
     }
   }
