@@ -19,6 +19,7 @@ const jestPreset = require('babel-preset-jest');
 const path = require('path');
 
 const BABELRC_FILENAME = '.babelrc';
+const BABELRC_JS_FILENAME = '.babelrc.js';
 const THIS_FILE = fs.readFileSync(__filename);
 
 const cache = Object.create(null);
@@ -37,6 +38,11 @@ const getBabelRC = (filename, {useCache}) => {
     const configFilePath = path.join(directory, BABELRC_FILENAME);
     if (fs.existsSync(configFilePath)) {
       cache[directory] = fs.readFileSync(configFilePath, 'utf8');
+      break;
+    }
+    const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+    if (fs.existsSync(configJsFilePath)) {
+      cache[directory] = JSON.stringify(require(configJsFilePath));
       break;
     }
   }
@@ -91,7 +97,7 @@ const createTransformer = (options: any) => {
         babel = require('babel-core');
       }
 
-      if (!babel.util.canCompile(filename)) {
+      if (babel.util && !babel.util.canCompile(filename)) {
         return src;
       }
 
