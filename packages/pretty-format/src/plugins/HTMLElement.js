@@ -17,12 +17,11 @@ const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)/;
 const test = isHTMLElement;
 
 function isHTMLElement(value: any) {
-  const toStringed = value.toString();
-  return HTML_ELEMENT_REGEXP.test(toStringed) ||
-    (toStringed === '[object Object]' &&
-      value.constructor !== undefined &&
-      value.constructor.name !== undefined &&
-      HTML_ELEMENT_REGEXP.test(value.constructor.name));
+  return value !== undefined &&
+    value.nodeType === 1 &&
+    value.constructor !== undefined &&
+    value.constructor.name !== undefined &&
+    HTML_ELEMENT_REGEXP.test(value.constructor.name);
 }
 
 function printChildren(flatChildren, print, indent, colors, opts) {
