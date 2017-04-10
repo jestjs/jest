@@ -92,7 +92,7 @@ Suite.prototype.afterEach = function(fn) {
 };
 
 Suite.prototype.afterAll = function(fn) {
-  this.afterAllFns.push(fn);
+  this.afterAllFns.unshift(fn);
 };
 
 Suite.prototype.addChild = function(child) {
