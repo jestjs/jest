@@ -368,7 +368,7 @@ Default: `"jsdom"`
 The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/tmpvar/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead. 
 
 If some tests require another environment, you can add a `@jest-environment` docblock.
-##### available in Jest **19.0.0+**
+##### available in Jest **20.0.0+**
 
 ```js
 /**
