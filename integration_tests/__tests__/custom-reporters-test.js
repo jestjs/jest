@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
+'use strict';
+
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
-
-'use strict';
 
 describe('Custom Reporters Integration', () => {
   skipOnWindows.suite();
