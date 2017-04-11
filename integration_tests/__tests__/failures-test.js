@@ -21,7 +21,11 @@ skipOnWindows.suite();
 // snapshot tests fail on different machines. This function makes sure
 // this extra line is always removed.
 const stripInconsistentStackLines = summary => {
-  summary.rest = summary.rest.replace(/\n^.*process\._tickCallback.*$/gm, '');
+  summary.rest = summary.rest
+    .replace(/\n^.*process\._tickCallback.*$/gm, '')
+    .replace(/\n^.*_throws.*$/gm, '')
+    .replace(/\n^.*Function\..*(throws|doesNotThrow).*$/gm, '')
+    .replace(/(\n^.*Object.<anonymous>)\.test(.*$)/gm, '$1$2');
   return summary;
 };
 
@@ -34,5 +38,10 @@ test('throwing not Error objects', () => {
   stderr = runJest(dir, ['throw-object-test.js']).stderr;
   expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['assertion-count-test.js']).stderr;
+  expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
+});
+
+test('works with node assert', () => {
+  const {stderr} = runJest(dir, ['node-assertion-error-test.js']);
   expect(stripInconsistentStackLines(extractSummary(stderr))).toMatchSnapshot();
 });
