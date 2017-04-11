@@ -8,6 +8,8 @@
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
 
+'use strict';
+
 describe('Custom Reporters Integration', () => {
   skipOnWindows.suite();
 

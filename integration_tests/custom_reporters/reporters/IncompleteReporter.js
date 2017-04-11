@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 /**
  * IncompleteReporter
  * Reporter to test for the flexibility of the interface we implemented.

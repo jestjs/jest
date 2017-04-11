@@ -6,6 +6,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+'use strict';
+
 /**
  * TestReporter
  * Reporter for testing the outputs, without any extra 
@@ -44,7 +46,7 @@ class TestReporter {
   }
 
   onTestStart(config, path) {
-    const {onTestStart} = this._statsCollected;
+    const onTestStart = this._statsCollected.onTestStart;
 
     onTestStart.called = true;
     onTestStart.config = config === undefined;
@@ -52,7 +54,7 @@ class TestReporter {
   }
 
   onTestResult(config, testResult, results) {
-    const {onTestResult} = this._statsCollected;
+    const onTestResult = this._statsCollected.onTestResult;
 
     onTestResult.called = true;
     onTestResult.times++;
@@ -60,7 +62,7 @@ class TestReporter {
 
   onRunStart(config, results, options) {
     this.clearLine();
-    const {onRunStart} = this._statsCollected;
+    const onRunStart = this._statsCollected.onRunStart;
 
     onRunStart.called = true;
     onRunStart.config = typeof config;
@@ -68,7 +70,7 @@ class TestReporter {
   }
 
   onRunComplete(config, results) {
-    const {onRunComplete} = this._statsCollected;
+    const onRunComplete = this._statsCollected.onRunComplete;
 
     onRunComplete.called = true;
     onRunComplete.config = typeof config;

@@ -90,7 +90,7 @@ class ReporterDispatcher {
   _callReporterMethod(method: string, reporterArgs: Array<any>) {
     this._reporters.forEach(reporter => {
       if (reporter[method]) {
-        reporter[method].apply(undefined, reporterArgs);
+        reporter[method].apply(reporter, reporterArgs);
       }
     });
   }
