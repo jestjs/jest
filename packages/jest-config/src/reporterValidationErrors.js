@@ -44,8 +44,8 @@ function createArrayReporterError(
   expectedType: string,
   valueName: string,
 ): ValidationError {
-  const errorMessage = `Unexpected value for ${valueName} at index ${valueIndex} of reporter` +
-    ` at index ${reporterIndex}\n` +
+  const errorMessage = `Unexpected value for ${valueName} ` +
+    `at index ${valueIndex} of reporter at index ${reporterIndex}\n` +
     ' Expected:\n' +
     `   ${chalk.bold.red(expectedType)}\n` +
     ' Got:\n' +
