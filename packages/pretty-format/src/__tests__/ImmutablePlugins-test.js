@@ -14,11 +14,9 @@ const Immutable = require('immutable');
 const ReactElementPlugin = require('../plugins/ReactElement');
 const ReactTestComponentPlugin = require('../plugins/ReactTestComponent');
 const ImmutablePlugins = require('../plugins/ImmutablePlugins');
-const toPrettyPrintTo = require('./expect-util').getPrettyPrint([
-  ReactElementPlugin,
-  ReactTestComponentPlugin,
-  ...ImmutablePlugins,
-]);
+const toPrettyPrintTo = require('./expect-util').getPrettyPrint(
+  [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
+);
 
 expect.extend({toPrettyPrintTo});
 
