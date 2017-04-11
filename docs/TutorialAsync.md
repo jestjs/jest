@@ -68,7 +68,7 @@ export default function request(url) {
 }
 ```
 
-Now let's write a test for our async functionality.
+Now let's write a test for our async functionality. Using the `resolves` keyword (available in Jest **20.0.0+**)
 ```js
 // __tests__/user-test.js
 jest.mock('../request');
@@ -77,8 +77,7 @@ import * as user from '../user';
 
 // The promise that is being tested should be returned.
 it('works with promises', () => {
-  return user.getUserName(5)
-    .then(name => expect(name).toEqual('Paul'));
+  return expect(user.getUserName(5)).resolves.toEqual('Paul');
 });
 ```
 
@@ -94,8 +93,7 @@ how you'd write the same example from before:
 ```js
 // async/await can also be used.
 it('works with async/await', async () => {
-  const userName = await user.getUserName(4);
-  expect(userName).toEqual('Mark');
+  await expect(user.getUserName(4)).resolves.toEqual('Mark');
 });
 ```
 
@@ -106,32 +104,21 @@ and enable the feature in your `.babelrc` file.
 
 ### Error handling
 
-Errors can be handled in the standard JavaScript way: Either using `.catch()`
-directly on a Promise or through `try-catch` when using async/await. Note that
-if a Promise throws and the error is not handled, the test will fail. `expect.assertion(1)` makes sure that expectation was checked once. In this example it will fail if promise was resolved without throwing.
+Errors can be handled using the keyword `rejects` in your expect statement. This will verify that the promise rejects and perform an assertion on the resulting error.
 
 ```js
 // Testing for async errors can be done using `catch`.
 it('tests error with promises', () => {
-  // to be sure that `Promise` rejected and `expect` has been called once
-  expect.assertions(1); 
-
-  return user.getUserName(3)
-    .catch(e => expect(e).toEqual({
-      error: 'User with 3 not found.',
-    }));
+  return expect(user.getUserName(3)).rejects.toEqual({
+    error: 'User with 3 not found.',
+  });
 });
 
 // Or try-catch.
 it('tests error with async/await', async () => {
-  // to be sure that `await` throws error and `expect` has been called once
-  expect.assertions(1); 
-
-  try {
-    await user.getUserName(2);
-  } catch (object) {
-    expect(object.error).toEqual('User with 2 not found.');
-  }
+  await expect(user.getUserName(3)).rejects.toEqual({
+    error: 'User with 3 not found.',
+  });
 });
 ```
 

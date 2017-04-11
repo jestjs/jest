@@ -20,9 +20,11 @@ const fs = require('fs');
 const BABELRC_FILENAME = '.babelrc';
 const cache = Object.create(null);
 
-// This is an exact copy of babel-jest's parser
+// This is a copy of babel-jest's parser, but it takes create-react-app
+// into account, and will return an empty JSON object instead of "".
 const getBabelRC = (filename, {useCache}) => {
-  const paths = [];
+  // Special case for create-react-app, which hides the .babelrc
+  const paths: string[] = ['node_modules/react-scripts/'];
   let directory = filename;
   while (directory !== (directory = path.dirname(directory))) {
     if (useCache && cache[directory]) {
@@ -40,7 +42,8 @@ const getBabelRC = (filename, {useCache}) => {
     cache[directoryPath] = cache[directory];
   });
 
-  return cache[directory] || '';
+  // return an empy JSON parse compatible string
+  return cache[directory] || '{}';
 };
 
 const parse = (file: string) => {
@@ -124,7 +127,7 @@ const parse = (file: string) => {
     if (!isFunctionCall(node)) {
       return false;
     }
-    let name: string;
+    let name: string = '';
     let element = node.expression.callee;
     while (!name) {
       name = element.name;

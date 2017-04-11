@@ -67,7 +67,7 @@ function run(cliArgv?: Object, cliInfo?: Array<string>) {
       automock: false,
       unmockedModulePathPatterns: null,
     });
-    Runtime.createHasteContext(config, {
+    Runtime.createContext(config, {
       maxWorkers: os.cpus().length - 1,
     })
       .then(hasteMap => {

@@ -45,7 +45,7 @@ describe('SearchSource', () => {
         rootDir: '.',
         roots: [],
       }).config;
-      return Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+      return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
       });
     });
@@ -62,7 +62,7 @@ describe('SearchSource', () => {
           testMatch: null,
           testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
         }).config;
-        return Runtime.createHasteContext(config, {
+        return Runtime.createContext(config, {
           maxWorkers,
         }).then(hasteMap => {
           searchSource = new SearchSource(hasteMap, config);
@@ -93,7 +93,7 @@ describe('SearchSource', () => {
   describe('testPathsMatching', () => {
     beforeEach(() => {
       findMatchingTests = config =>
-        Runtime.createHasteContext(config, {
+        Runtime.createContext(config, {
           maxWorkers,
         }).then(hasteMap =>
           new SearchSource(hasteMap, config).findMatchingTests());
@@ -309,7 +309,7 @@ describe('SearchSource', () => {
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
-      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+      Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
         done();
       });
@@ -342,7 +342,7 @@ describe('SearchSource', () => {
         rootDir,
         testMatch,
       });
-      Runtime.createHasteContext(config, {maxWorkers}).then(hasteMap => {
+      Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
         searchSource = new SearchSource(hasteMap, config);
         done();
       });

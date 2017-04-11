@@ -19,7 +19,7 @@ describe('babel-jest', () => {
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
-      run('npm install', dir);
+      run('yarn --no-lockfile', dir);
       linkJestPackage('babel-jest', dir);
     }
   });
@@ -88,7 +88,7 @@ describe('multiple-transformers', () => {
 
   beforeEach(() => {
     if (process.platform !== 'win32') {
-      run('npm install', dir);
+      run('yarn --no-lockfile', dir);
       linkJestPackage('babel-jest', dir);
     }
   });
