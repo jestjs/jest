@@ -97,11 +97,6 @@ it('works with async/await', async () => {
 });
 ```
 
-To enable async/await in your project, install
-[`babel-plugin-transform-async-to-generator`](http://babeljs.io/docs/plugins/transform-async-to-generator/) or
-[`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/)
-and enable the feature in your `.babelrc` file.
-
 ### Error handling
 
 Errors can be handled using the keyword `rejects` in your expect statement. This will verify that the promise rejects and perform an assertion on the resulting error.
