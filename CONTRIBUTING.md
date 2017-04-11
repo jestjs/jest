@@ -37,9 +37,8 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
    please [install yarn](https://yarnpkg.com/en/docs/install).
 
 3. Run `yarn install`.
-   On Window's: 
-   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) and to test what the version, switch to a command line.<br />
-   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on windows you may need to download either node.js or Chocolatey<br />
+   On Windows:
+   To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
    
      ```sh
     yarn install
