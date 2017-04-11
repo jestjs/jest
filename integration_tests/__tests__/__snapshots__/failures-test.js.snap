@@ -103,3 +103,73 @@ Ran all test suites matching \\"assertion-count-test.js\\".
 ",
 }
 `;
+
+exports[`works with node assert 1`] = `
+Object {
+  "rest": " FAIL  __tests__/node-assertion-error-test.js
+  ● assert
+
+    AssertionError: false == true
+      
+      at Object.test (__tests__/node-assertion-error-test.js:16:3)
+
+  ● assert with a message
+
+    AssertionError: this is a message
+      
+      at Object.test (__tests__/node-assertion-error-test.js:20:3)
+
+  ● assert.ok
+
+    AssertionError: false == true
+      
+      at Object.test (__tests__/node-assertion-error-test.js:24:10)
+
+  ● assert.ok with a message
+
+    AssertionError: this is a message
+      
+      at Object.test (__tests__/node-assertion-error-test.js:28:10)
+
+  ● assert.equal
+
+    AssertionError: 1 == 2
+      
+      at Object.test (__tests__/node-assertion-error-test.js:32:10)
+
+  ● assert.equal with a message
+
+    AssertionError: this is a message
+      
+      at Object.test (__tests__/node-assertion-error-test.js:36:10)
+
+  ● assert.deepEqual
+
+    AssertionError: { a: { b: { c: 5 } } } deepEqual { a: { b: { c: 6 } } }
+      
+      at Object.test (__tests__/node-assertion-error-test.js:40:10)
+
+  ● assert.deepEqual with a message
+
+    AssertionError: this is a message
+      
+      at Object.test (__tests__/node-assertion-error-test.js:44:10)
+
+  ✕ assert
+  ✕ assert with a message
+  ✕ assert.ok
+  ✕ assert.ok with a message
+  ✕ assert.equal
+  ✕ assert.equal with a message
+  ✕ assert.deepEqual
+  ✕ assert.deepEqual with a message
+
+",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       8 failed, 8 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching \\"node-assertion-error-test.js\\".
+",
+}
+`;
