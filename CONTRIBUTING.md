@@ -47,17 +47,6 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
     ```sh
     yarn --version
     ```
-   
-   For Window's (if you are using Powershell) there is an intermediary step for setting up the devDependencies:
-   ```sh
-   #Windows CMD
-   set NODE_ENV=development
-   #Windows Powershell
-   $env:NODE_ENV="development"
-   #Terminal
-   export NODE_ENV=development
-    ```
-   
 
 4. If you've added code that should be tested, add tests. You
    can use watch mode that continuously transforms changed files
