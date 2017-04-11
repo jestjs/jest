@@ -26,12 +26,10 @@ function createReporterError(
   reporterIndex: number,
   reporterValue: any,
 ): ValidationError {
-  const errorMessage = (
-    `Reporter at index ${reporterIndex} must be of type:\n` +
+  const errorMessage = `Reporter at index ${reporterIndex} must be of type:\n` +
     `   ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
     ` but instead received:\n` +
-    `   ${chalk.bold.red(getType(reporterValue))}`
-  );
+    `   ${chalk.bold.red(getType(reporterValue))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
@@ -46,14 +44,12 @@ function createArrayReporterError(
   expectedType: string,
   valueName: string,
 ): ValidationError {
-  const errorMessage = (
-    `Unexpected value for ${valueName} at index ${valueIndex} of reporter` +
+  const errorMessage = `Unexpected value for ${valueName} at index ${valueIndex} of reporter` +
     ` at index ${reporterIndex}\n` +
     ' Expected:\n' +
     `   ${chalk.bold.red(expectedType)}\n` +
     ' Got:\n' +
-    `   ${chalk.bold.green(getType(value))}`
-  );
+    `   ${chalk.bold.green(getType(value))}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);
 }
