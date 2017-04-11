@@ -34,6 +34,13 @@ const assertOperatorsMap = {
   '===': 'strictEqual',
 };
 
+const humanReadableOperators = {
+  deepEqual: 'to deeply equal',
+  deepStrictEqual: 'to deeply and strictly equal',
+  notDeepEqual: 'not to deeply equal',
+  notDeepStrictEqual: 'not to deeply and strictly equal',
+};
+
 const getOperatorName = (operator: ?string, stack: string) => {
   if (typeof operator === 'string') {
     return assertOperatorsMap[operator] || operator;
@@ -49,9 +56,9 @@ const getOperatorName = (operator: ?string, stack: string) => {
 
 const operatorMessage = (operator: ?string, negator: boolean) =>
   typeof operator === 'string' &&
-    (operator.startsWith('!') || operator.startsWith('='))
+  (operator.startsWith('!') || operator.startsWith('=')
     ? `${negator ? 'not ' : ''}to be (operator: ${operator}):\n`
-    : `to ${operator || ''} to:\n`;
+    : `${humanReadableOperators[operator] || operator} to:\n`);
 
 const assertThrowingMatcherHint = (operatorName: string) => {
   return chalk.dim('assert') +

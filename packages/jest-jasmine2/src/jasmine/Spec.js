@@ -121,7 +121,7 @@ Spec.prototype.onException = function onException(error) {
   }
 
   if (error instanceof require('assert').AssertionError) {
-    const assertionErrorMessage = require('jest-matchers/build/assert-support');
+    const assertionErrorMessage = require('../assert-support');
     error = assertionErrorMessage(error, {expand: this.expand});
   }
 

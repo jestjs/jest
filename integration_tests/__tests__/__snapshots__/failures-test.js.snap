@@ -187,7 +187,7 @@ Object {
 
     assert.deepEqual(received, expected)
     
-    Expected value to deepEqual to:
+    Expected value to deeply equal to:
       {\\"a\\": {\\"b\\": {\\"c\\": 6}}}
     Received:
       {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
@@ -212,7 +212,7 @@ Object {
 
     assert.deepEqual(received, expected)
     
-    Expected value to deepEqual to:
+    Expected value to deeply equal to:
       {\\"a\\": {\\"b\\": {\\"c\\": 7}}}
     Received:
       {\\"a\\": {\\"b\\": {\\"c\\": 5}}}
@@ -240,7 +240,7 @@ Object {
 
     assert.notDeepEqual(received, expected)
     
-    Expected value to notDeepEqual to:
+    Expected value not to deeply equal to:
       {\\"a\\": 1}
     Received:
       {\\"a\\": 1}
@@ -284,7 +284,7 @@ Object {
 
     assert.deepStrictEqual(received, expected)
     
-    Expected value to deepStrictEqual to:
+    Expected value to deeply and strictly equal to:
       {\\"a\\": 2}
     Received:
       {\\"a\\": 1}
@@ -305,7 +305,7 @@ Object {
 
     assert.notDeepStrictEqual(received, expected)
     
-    Expected value to notDeepStrictEqual to:
+    Expected value not to deeply and strictly equal to:
       {\\"a\\": 1}
     Received:
       {\\"a\\": 1}
