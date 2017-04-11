@@ -350,7 +350,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         case 'cache':
         case 'clearMocks':
         case 'collectCoverage':
-        case 'coverageCollector':
         case 'coverageReporters':
         case 'coverageThreshold':
         case 'globals':
@@ -364,7 +363,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         case 'name':
         case 'noStackTrace':
         case 'notify':
-        case 'persistModuleRegistryBetweenSpecs':
         case 'preset':
         case 'replname':
         case 'reporters':
@@ -374,7 +372,6 @@ function normalize(config: InitialConfig, argv: Object = {}) {
         case 'testMatch':
         case 'testEnvironment':
         case 'testRegex':
-        case 'testReporter':
         case 'testRunner':
         case 'testURL':
         case 'timers':
