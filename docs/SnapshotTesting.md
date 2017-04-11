@@ -30,13 +30,14 @@ it('renders correctly', () => {
 
 The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/Link.react-test.js.snap) that looks like this:
 
-```json
-exports[`Link renders correctly 1`] = `
+```javascript
+exports[`renders correctly 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
