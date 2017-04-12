@@ -47,7 +47,6 @@ module.exports = class TestPathPatternPrompt {
     this._config = config;
     this._pipe = pipe;
     this._prompt = prompt;
-    (this: any).onChange = this.onChange.bind(this);
   }
 
   run(onSuccess: Function, onCancel: Function) {
@@ -56,10 +55,10 @@ module.exports = class TestPathPatternPrompt {
     this._pipe.write(usage());
     this._pipe.write(ansiEscapes.cursorShow);
 
-    this._prompt.enter(this.onChange, onSuccess, onCancel);
+    this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  onChange(pattern: string) {
+  _onChange(pattern: string) {
     let regex;
 
     try {
@@ -72,10 +71,10 @@ module.exports = class TestPathPatternPrompt {
 
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this.printTypeahead(pattern, paths, 10);
+    this._printTypeahead(pattern, paths, 10);
   }
 
-  printTypeahead(pattern: string, allResults: Array<Path>, max: number) {
+  _printTypeahead(pattern: string, allResults: Array<Path>, max: number) {
     const total = allResults.length;
     const results = allResults.slice(0, max);
     const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;

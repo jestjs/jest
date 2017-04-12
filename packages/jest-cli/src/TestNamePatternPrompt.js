@@ -38,7 +38,6 @@ module.exports = class TestNamePatternPrompt {
   constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
     this._pipe = pipe;
     this._prompt = prompt;
-    (this: any).onChange = this.onChange.bind(this);
   }
 
   run(onSuccess: Function, onCancel: Function) {
@@ -47,17 +46,17 @@ module.exports = class TestNamePatternPrompt {
     this._pipe.write(usage());
     this._pipe.write(ansiEscapes.cursorShow);
 
-    this._prompt.enter(this.onChange, onSuccess, onCancel);
+    this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  onChange(pattern: string) {
+  _onChange(pattern: string) {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this.printTypeahead(pattern, 10);
+    this._printTypeahead(pattern, 10);
   }
 
-  printTypeahead(pattern: string, max: number) {
-    const matchedTests = this.getMatchedTests(pattern);
+  _printTypeahead(pattern: string, max: number) {
+    const matchedTests = this._getMatchedTests(pattern);
 
     const total = matchedTests.length;
     const results = matchedTests.slice(0, max);
@@ -106,7 +105,7 @@ module.exports = class TestNamePatternPrompt {
     this._pipe.write(ansiEscapes.cursorRestorePosition);
   }
 
-  getMatchedTests(pattern: string) {
+  _getMatchedTests(pattern: string) {
     let regex;
 
     try {
