@@ -14,7 +14,7 @@ import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
-const createTestContext = require('./lib/createContext');
+const createContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
@@ -50,8 +50,8 @@ const watch = (
   });
 
   const prompt = new Prompt();
-  const testPathPatternPrompt = TestPathPatternPrompt(config, pipe, prompt);
-  const testNamePatternPrompt = TestNamePatternPrompt(config, pipe, prompt);
+  const testPathPatternPrompt = new TestPathPatternPrompt(config, pipe, prompt);
+  const testNamePatternPrompt = new TestNamePatternPrompt(pipe, prompt);
   let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
@@ -66,7 +66,7 @@ const watch = (
     });
 
     if (validPaths.length) {
-      hasteContext = createTestContext(config, {hasteFS, moduleMap});
+      hasteContext = createContext(config, {hasteFS, moduleMap});
       prompt.abort();
       testPathPatternPrompt.updateSearchSource(hasteContext);
       startRun();
