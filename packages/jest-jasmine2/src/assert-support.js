@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {DiffOptions} from 'jest-diff/src/diffStrings';
+
 const {
   printReceived,
   printExpected,
@@ -17,15 +19,15 @@ const {
 const chalk = require('chalk');
 const diff = require('jest-diff');
 
-declare class AssertionError extends Error {
-  name: string,
+type AssertionError = {|
   actual: ?string,
   expected: ?string,
-  operator: ?string,
-  message: string,
   generatedMessage: boolean,
-}
-import type {DiffOptions} from 'jest-diff/src/diffStrings';
+  message: string,
+  name: string,
+  operator: ?string,
+  stack: string,
+|};
 
 const assertOperatorsMap = {
   '!=': 'notEqual',
