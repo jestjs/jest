@@ -16,6 +16,8 @@ const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
 const createContext = require('./lib/createContext');
 const HasteMap = require('jest-haste-map');
+const isCI = require('is-ci');
+const isInteractive = process.stdout.isTTY && !isCI;
 const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
@@ -86,7 +88,7 @@ const watch = (
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
-    pipe.write(CLEAR);
+    isInteractive && pipe.write(CLEAR);
     preRunMessage.print(pipe);
     isRunning = true;
     return runJest(
