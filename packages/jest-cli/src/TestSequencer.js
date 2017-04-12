@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {Context} from 'types/Context';
 import type {Tests} from 'types/TestRunner';
 
 const fs = require('fs');
@@ -19,20 +19,22 @@ const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
 const FAIL = 0;
 const SUCCESS = 1;
 
-class TestSequencer {
-  _config: Config;
-  _cache: Object;
+type Cache = {
+  [key: string]: [0 | 1, number],
+};
 
-  constructor(config: Config) {
-    this._config = config;
+class TestSequencer {
+  _context: Context;
+  _cache: Cache;
+
+  constructor(context: Context) {
+    this._context = context;
     this._cache = {};
   }
 
   _getTestPerformanceCachePath() {
-    return getCacheFilePath(
-      this._config.cacheDirectory,
-      'perf-cache-' + this._config.name,
-    );
+    const {config} = this._context;
+    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
   // When running more tests than we have workers available, sort the tests
@@ -44,7 +46,7 @@ class TestSequencer {
   // subsequent runs we use that to run the slowest tests first, yielding the
   // fastest results.
   sort(testPaths: Array<string>): Tests {
-    const config = this._config;
+    const context = this._context;
     const stats = {};
     const fileSize = filePath =>
       stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
@@ -54,7 +56,7 @@ class TestSequencer {
 
     this._cache = {};
     try {
-      if (this._config.cache) {
+      if (context.config.cache) {
         this._cache = JSON.parse(
           fs.readFileSync(this._getTestPerformanceCachePath(), 'utf8'),
         );
@@ -82,7 +84,7 @@ class TestSequencer {
     });
 
     return testPaths.map(path => ({
-      config,
+      context,
       duration: this._cache[path] && this._cache[path][1],
       path,
     }));

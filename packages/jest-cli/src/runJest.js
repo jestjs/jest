@@ -84,11 +84,13 @@ const runJest = async (
 
     if (
       data.paths.length === 1 &&
-      config.silent !== true &&
-      config.verbose !== false
+      hasteContext.config.silent !== true &&
+      hasteContext.config.verbose !== false
     ) {
       // $FlowFixMe
-      config = Object.assign({}, config, {verbose: true});
+      config = (hasteContext.config = Object.assign({}, hasteContext.config, {
+        verbose: true,
+      }));
     }
 
     return data;
@@ -131,7 +133,7 @@ const runJest = async (
 
   const data = await source.getTestPaths(patternInfo);
   processTests(data);
-  const sequencer = new TestSequencer(config);
+  const sequencer = new TestSequencer(hasteContext);
   const tests = sequencer.sort(data.paths);
   const results = await runTests(tests);
   sequencer.cacheResults(tests, results);
