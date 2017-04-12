@@ -18,14 +18,16 @@ const SUCCESS = 1;
 
 let sequencer;
 
-const config = {
-  cache: true,
-  cacheDirectory: '/cache',
-  name: 'test',
+const context = {
+  config: {
+    cache: true,
+    cacheDirectory: '/cache',
+    name: 'test',
+  },
 };
 
 beforeEach(() => {
-  sequencer = new TestSequencer(config);
+  sequencer = new TestSequencer(context);
 
   fs.readFileSync = jest.fn(() => '{}');
   fs.statSync = jest.fn(filePath => ({size: filePath.length}));
@@ -33,8 +35,8 @@ beforeEach(() => {
 
 test('sorts by file size if there is no timing information', () => {
   expect(sequencer.sort(['/test-a.js', '/test-ab.js'])).toEqual([
-    {config, duration: undefined, path: '/test-ab.js'},
-    {config, duration: undefined, path: '/test-a.js'},
+    {context, duration: undefined, path: '/test-ab.js'},
+    {context, duration: undefined, path: '/test-a.js'},
   ]);
 });
 
@@ -45,8 +47,8 @@ test('sorts based on timing information', () => {
       '/test-ab.js': [SUCCESS, 3],
     }));
   expect(sequencer.sort(['/test-a.js', '/test-ab.js'])).toEqual([
-    {config, duration: 5, path: '/test-a.js'},
-    {config, duration: 3, path: '/test-ab.js'},
+    {context, duration: 5, path: '/test-a.js'},
+    {context, duration: 3, path: '/test-ab.js'},
   ]);
 });
 
@@ -61,10 +63,10 @@ test('sorts based on failures and timing information', () => {
   expect(
     sequencer.sort(['/test-a.js', '/test-ab.js', '/test-c.js', '/test-d.js']),
   ).toEqual([
-    {config, duration: 6, path: '/test-c.js'},
-    {config, duration: 0, path: '/test-ab.js'},
-    {config, duration: 5, path: '/test-a.js'},
-    {config, duration: 2, path: '/test-d.js'},
+    {context, duration: 6, path: '/test-c.js'},
+    {context, duration: 0, path: '/test-ab.js'},
+    {context, duration: 5, path: '/test-a.js'},
+    {context, duration: 2, path: '/test-d.js'},
   ]);
 });
 
@@ -86,11 +88,11 @@ test('sorts based on failures, timing information and file size', () => {
       '/test-efg.js',
     ]),
   ).toEqual([
-    {config, duration: undefined, path: '/test-efg.js'},
-    {config, duration: undefined, path: '/test-c.js'},
-    {config, duration: 1, path: '/test-ab.js'},
-    {config, duration: 5, path: '/test-a.js'},
-    {config, duration: 2, path: '/test-d.js'},
+    {context, duration: undefined, path: '/test-efg.js'},
+    {context, duration: undefined, path: '/test-c.js'},
+    {context, duration: 1, path: '/test-ab.js'},
+    {context, duration: 5, path: '/test-a.js'},
+    {context, duration: 2, path: '/test-d.js'},
   ]);
 });
 

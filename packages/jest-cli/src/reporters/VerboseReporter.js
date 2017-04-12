@@ -9,13 +9,13 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {
   AggregatedResult,
   AssertionResult,
   Suite,
   TestResult,
 } from 'types/TestResult';
+import type {Test} from 'types/TestRunner';
 
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
@@ -59,11 +59,11 @@ class VerboseReporter extends DefaultReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    super.onTestResult(config, result, aggregatedResults);
+    super.onTestResult(test, result, aggregatedResults);
     if (!result.testExecError && !result.skipped) {
       this._logTestResults(result.testResults);
     }

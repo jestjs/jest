@@ -121,7 +121,7 @@ class TestRunner {
         return;
       }
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      this._dispatcher.onTestResult(test, testResult, aggregatedResults);
       this._bailIfNeeded(aggregatedResults, watcher);
     };
 
@@ -132,11 +132,11 @@ class TestRunner {
       const testResult = buildFailureTestResult(test.path, error);
       testResult.failureMessage = formatExecError(
         testResult,
-        test.config,
+        test.context.config,
         test.path,
       );
       addResult(aggregatedResults, testResult);
-      this._dispatcher.onTestResult(config, testResult, aggregatedResults);
+      this._dispatcher.onTestResult(test, testResult, aggregatedResults);
     };
 
     const updateSnapshotState = () => {
@@ -199,8 +199,12 @@ class TestRunner {
                 throw new CancelRun();
               }
 
-              this._dispatcher.onTestStart(test.config, test.path);
-              return runTest(test.path, test.config, this._context.resolver);
+              this._dispatcher.onTestStart(test);
+              return runTest(
+                test.path,
+                test.context.config,
+                test.context.resolver,
+              );
             })
             .then(result => onResult(test, result))
             .catch(err => onFailure(test, err))),
@@ -228,17 +232,17 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = ({config, path}) =>
+    const runTestInWorker = test =>
       mutex(() => {
         if (watcher.isInterrupted()) {
           return Promise.reject();
         }
-        this._dispatcher.onTestStart(config, path);
+        this._dispatcher.onTestStart(test);
         return worker({
-          config,
-          path,
+          config: test.context.config,
+          path: test.path,
           rawModuleMap: watcher.isWatchMode()
-            ? this._context.moduleMap.getRawModuleMap()
+            ? test.context.moduleMap.getRawModuleMap()
             : null,
         });
       });
@@ -439,14 +443,13 @@ class ReporterDispatcher {
     );
   }
 
-  onTestResult(config, testResult, results) {
+  onTestResult(test, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(config, testResult, results, this._runnerContext));
+      reporter.onTestResult(test, testResult, results, this._runnerContext));
   }
 
-  onTestStart(config, path) {
-    this._reporters.forEach(reporter =>
-      reporter.onTestStart(config, path, this._runnerContext));
+  onTestStart(test) {
+    this._reporters.forEach(reporter => reporter.onTestStart(test));
   }
 
   onRunStart(config, results, options) {

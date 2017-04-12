@@ -11,6 +11,7 @@
 
 import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
+import type {Test} from 'types/TestRunner';
 import type {RunnerContext} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
@@ -40,7 +41,7 @@ class CoverageReporter extends BaseReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
