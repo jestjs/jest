@@ -284,9 +284,11 @@ class TestRunner {
       this.addReporter(new CoverageReporter());
     }
 
-    this.addReporter(new SummaryReporter({
-      getTestSummary: this._options.getTestSummary,
-    }));
+    this.addReporter(
+      new SummaryReporter({
+        getTestSummary: this._options.getTestSummary,
+      }),
+    );
     if (config.notify) {
       this.addReporter(new NotifyReporter(this._startRun));
     }
