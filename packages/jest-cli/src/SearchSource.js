@@ -25,13 +25,6 @@ const {
   replacePathSepForRegex,
 } = require('jest-regex-util');
 
-type SearchSourceConfig = {
-  roots: Array<Path>,
-  testMatch: Array<Glob>,
-  testRegex: string,
-  testPathIgnorePatterns: Array<string>,
-};
-
 type SearchResult = {|
   noSCM?: boolean,
   paths: Array<Path>,
@@ -83,7 +76,6 @@ const regexToMatcher = (testRegex: string) => {
 
 class SearchSource {
   _context: Context;
-  _config: SearchSourceConfig;
   _options: ResolveModuleConfig;
   _rootPattern: RegExp;
   _testIgnorePattern: ?RegExp;
@@ -94,13 +86,9 @@ class SearchSource {
     testPathIgnorePatterns: (path: Path) => boolean,
   };
 
-  constructor(
-    context: Context,
-    config: SearchSourceConfig,
-    options?: ResolveModuleConfig,
-  ) {
+  constructor(context: Context, options?: ResolveModuleConfig) {
+    const {config} = context;
     this._context = context;
-    this._config = config;
     this._options = options || {
       skipNodeResolution: false,
     };
@@ -199,7 +187,9 @@ class SearchSource {
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
-    return Promise.all(this._config.roots.map(determineSCM)).then(repos => {
+    return Promise.all(
+      this._context.config.roots.map(determineSCM),
+    ).then(repos => {
       if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
         return {
           noSCM: true,

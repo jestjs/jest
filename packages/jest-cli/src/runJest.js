@@ -113,7 +113,7 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
 };
 
 const getTestPaths = async (context, pattern, argv, pipe) => {
-  const source = new SearchSource(context, context.config);
+  const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
   if (!data.paths.length) {
     const localConsole = new Console(pipe, pipe);

@@ -45,15 +45,14 @@ describe('SearchSource', () => {
         rootDir: '.',
         roots: [],
       }).config;
-      return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
-        searchSource = new SearchSource(hasteMap, config);
+      return Runtime.createContext(config, {maxWorkers}).then(context => {
+        searchSource = new SearchSource(context);
       });
     });
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
     // infinite recursion.
-
-    it('supports ../ paths and unix separators via textRegex', () => {
+    it('supports ../ paths and unix separators via testRegex', () => {
       if (process.platform !== 'win32') {
         config = normalizeConfig({
           name,
@@ -64,8 +63,8 @@ describe('SearchSource', () => {
         }).config;
         return Runtime.createContext(config, {
           maxWorkers,
-        }).then(hasteMap => {
-          searchSource = new SearchSource(hasteMap, config);
+        }).then(context => {
+          searchSource = new SearchSource(context);
 
           const path = '/path/to/__tests__/foo/bar/baz/../../../test.js';
           expect(searchSource.isTestFilePath(path)).toEqual(true);
@@ -95,8 +94,8 @@ describe('SearchSource', () => {
       findMatchingTests = config =>
         Runtime.createContext(config, {
           maxWorkers,
-        }).then(hasteMap =>
-          new SearchSource(hasteMap, config).findMatchingTests());
+        }).then(context =>
+          new SearchSource(context).findMatchingTests());
     });
 
     it('finds tests matching a pattern via testRegex', () => {
@@ -309,8 +308,8 @@ describe('SearchSource', () => {
         name: 'SearchSource-findRelatedTests-tests',
         rootDir,
       });
-      Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
-        searchSource = new SearchSource(hasteMap, config);
+      Runtime.createContext(config, {maxWorkers}).then(context => {
+        searchSource = new SearchSource(context);
         done();
       });
     });
@@ -342,8 +341,8 @@ describe('SearchSource', () => {
         rootDir,
         testMatch,
       });
-      Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
-        searchSource = new SearchSource(hasteMap, config);
+      Runtime.createContext(config, {maxWorkers}).then(context => {
+        searchSource = new SearchSource(context);
         done();
       });
     });

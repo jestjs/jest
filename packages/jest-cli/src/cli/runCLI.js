@@ -56,44 +56,33 @@ module.exports = async (
       process.exit(0);
     }
 
-    if (argv.watch || argv.watchAll) {
-      const {config, hasDeprecationWarnings} = configs[0];
-      createDirectory(config.cacheDirectory);
-      const hasteMapInstance = Runtime.createHasteMap(config, {
-        console: new Console(pipe, pipe),
-        maxWorkers: getMaxWorkers(argv),
-        resetCache: !config.cache,
-        watch: config.watch,
-      });
+    const hasteMapInstances = Array(configs.length);
+    const contexts = await Promise.all(
+      configs.map(async ({config}, index) => {
+        createDirectory(config.cacheDirectory);
+        const hasteMapInstance = Runtime.createHasteMap(config, {
+          console: new Console(pipe, pipe),
+          maxWorkers: getMaxWorkers(argv),
+          resetCache: !config.cache,
+          watch: config.watch,
+        });
+        hasteMapInstances[index] = hasteMapInstance;
+        return createContext(config, await hasteMapInstance.build());
+      }),
+    );
 
-      const hasteMap = await hasteMapInstance.build();
-      const context = createContext(config, hasteMap);
-      if (hasDeprecationWarnings) {
+    if (argv.watch || argv.watchAll) {
+      if (configs.some(({hasDeprecationWarnings}) => hasDeprecationWarnings)) {
         try {
           await handleDeprecationWarnings(pipe, process.stdin);
-          return watch(config, pipe, argv, hasteMapInstance, context);
+          return watch(contexts, argv, pipe, hasteMapInstances);
         } catch (e) {
           process.exit(0);
         }
       }
 
-      return watch(config, pipe, argv, hasteMapInstance, context);
+      return watch(contexts, argv, pipe, hasteMapInstances);
     } else {
-      const contexts = await Promise.all(
-        configs.map(async ({config}) => {
-          createDirectory(config.cacheDirectory);
-          return createContext(
-            config,
-            await Runtime.createHasteMap(config, {
-              console: new Console(pipe, pipe),
-              maxWorkers: getMaxWorkers(argv),
-              resetCache: !config.cache,
-              watch: config.watch,
-            }).build(),
-          );
-        }),
-      );
-
       const startRun = () => {
         preRunMessage.print(pipe);
         runJest(
