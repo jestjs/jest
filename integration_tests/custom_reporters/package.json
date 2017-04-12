@@ -1,0 +1,11 @@
+{
+  "jest": {
+    "reporters": [
+      ["<rootDir>/reporters/TestReporter.js", {
+        "hello": "world",
+        "dmitrii": "abramov",
+        "christop": "pojer"
+      }]
+    ]
+  }
+}
