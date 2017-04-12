@@ -33,93 +33,104 @@ const usage = () =>
 
 const usageRows = usage().split('\n').length;
 
-module.exports = (
-  config: Config,
-  pipe: stream$Writable | tty$WriteStream,
-  prompt: Prompt,
-) => {
-  class TestPathPatternPrompt {
-    searchSource: SearchSource;
+module.exports = class TestPathPatternPrompt {
+  _config: Config;
+  _pipe: stream$Writable | tty$WriteStream;
+  _prompt: Prompt;
+  _searchSource: SearchSource;
 
-    constructor() {
-      (this: any).onChange = this.onChange.bind(this);
-    }
-
-    run(onSuccess: Function, onCancel: Function) {
-      pipe.write(ansiEscapes.cursorHide);
-      pipe.write(ansiEscapes.clearScreen);
-      pipe.write(usage());
-      pipe.write(ansiEscapes.cursorShow);
-
-      prompt.enter(this.onChange, onSuccess, onCancel);
-    }
-
-    onChange(pattern: string) {
-      let regex;
-
-      try {
-        regex = new RegExp(pattern, 'i');
-      } catch (e) {}
-
-      const paths = regex
-        ? this.searchSource.findMatchingTests(pattern).paths
-        : [];
-
-      pipe.write(ansiEscapes.eraseLine);
-      pipe.write(ansiEscapes.cursorLeft);
-      this.printTypeahead(pattern, paths, 10);
-    }
-
-    printTypeahead(pattern: string, allResults: Array<Path>, max: number) {
-      const total = allResults.length;
-      const results = allResults.slice(0, max);
-      const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
-
-      pipe.write(ansiEscapes.eraseDown);
-      pipe.write(inputText);
-      pipe.write(ansiEscapes.cursorSavePosition);
-
-      if (pattern) {
-        if (total) {
-          pipe.write(`\n\n Pattern matches ${total} ${pluralizeFile(total)}.`);
-        } else {
-          pipe.write(`\n\n Pattern matches no files.`);
-        }
-
-        const width = getTerminalWidth();
-        const prefix = `  ${chalk.dim('\u203A')} `;
-        const padding = stringLength(prefix) + 2;
-
-        results
-          .map(rawPath => {
-            const filePath = trimAndFormatPath(padding, config, rawPath, width);
-            return highlight(rawPath, filePath, pattern, config.rootDir);
-          })
-          .forEach(filePath =>
-            pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
-
-        if (total > max) {
-          const more = total - max;
-          pipe.write(
-            // eslint-disable-next-line max-len
-            `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeFile(more)}`)}`,
-          );
-        }
-      } else {
-        pipe.write(
-          // eslint-disable-next-line max-len
-          `\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`,
-        );
-      }
-
-      pipe.write(ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1));
-      pipe.write(ansiEscapes.cursorRestorePosition);
-    }
-
-    updateSearchSource(context: Context) {
-      this.searchSource = new SearchSource(context, config);
-    }
+  constructor(
+    config: Config,
+    pipe: stream$Writable | tty$WriteStream,
+    prompt: Prompt,
+  ) {
+    this._config = config;
+    this._pipe = pipe;
+    this._prompt = prompt;
+    (this: any).onChange = this.onChange.bind(this);
   }
 
-  return new TestPathPatternPrompt();
+  run(onSuccess: Function, onCancel: Function) {
+    this._pipe.write(ansiEscapes.cursorHide);
+    this._pipe.write(ansiEscapes.clearScreen);
+    this._pipe.write(usage());
+    this._pipe.write(ansiEscapes.cursorShow);
+
+    this._prompt.enter(this.onChange, onSuccess, onCancel);
+  }
+
+  onChange(pattern: string) {
+    let regex;
+
+    try {
+      regex = new RegExp(pattern, 'i');
+    } catch (e) {}
+
+    const paths = regex
+      ? this._searchSource.findMatchingTests(pattern).paths
+      : [];
+
+    this._pipe.write(ansiEscapes.eraseLine);
+    this._pipe.write(ansiEscapes.cursorLeft);
+    this.printTypeahead(pattern, paths, 10);
+  }
+
+  printTypeahead(pattern: string, allResults: Array<Path>, max: number) {
+    const total = allResults.length;
+    const results = allResults.slice(0, max);
+    const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
+
+    this._pipe.write(ansiEscapes.eraseDown);
+    this._pipe.write(inputText);
+    this._pipe.write(ansiEscapes.cursorSavePosition);
+
+    if (pattern) {
+      if (total) {
+        this._pipe.write(
+          `\n\n Pattern matches ${total} ${pluralizeFile(total)}.`,
+        );
+      } else {
+        this._pipe.write(`\n\n Pattern matches no files.`);
+      }
+
+      const width = getTerminalWidth();
+      const prefix = `  ${chalk.dim('\u203A')} `;
+      const padding = stringLength(prefix) + 2;
+
+      results
+        .map(rawPath => {
+          const filePath = trimAndFormatPath(
+            padding,
+            this._config,
+            rawPath,
+            width,
+          );
+          return highlight(rawPath, filePath, pattern, this._config.rootDir);
+        })
+        .forEach(filePath =>
+          this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
+
+      if (total > max) {
+        const more = total - max;
+        this._pipe.write(
+          // eslint-disable-next-line max-len
+          `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeFile(more)}`)}`,
+        );
+      }
+    } else {
+      this._pipe.write(
+        // eslint-disable-next-line max-len
+        `\n\n ${chalk.italic.yellow('Start typing to filter by a filename regex pattern.')}`,
+      );
+    }
+
+    this._pipe.write(
+      ansiEscapes.cursorTo(stringLength(inputText), usageRows - 1),
+    );
+    this._pipe.write(ansiEscapes.cursorRestorePosition);
+  }
+
+  updateSearchSource(context: Context) {
+    this._searchSource = new SearchSource(context, this._config);
+  }
 };
