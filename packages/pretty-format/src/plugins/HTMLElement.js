@@ -60,9 +60,7 @@ const print = (
   colors: Colors,
 ) => {
   let result = colors.tag.open + '<';
-  const elementName = element.constructor
-    ? element.tagName.toLowerCase()
-    : 'HTMLElement';
+  const elementName = element.tagName.toLowerCase();
   result += elementName + colors.tag.close;
 
   const hasAttributes = element.attributes && element.attributes.length;
