@@ -23,6 +23,14 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
     'expect(true).toBeDefined();',
     'expect([1, 2, 3]).toEqual([1, 2, 3]);',
     'expect(undefined).not.toBeDefined();',
+    {
+      code: 'expect(true).toBeSomethingWeird();',
+      options: [{extraMatchers: ['toBeSomethingWeird']}],
+    },
+    {
+      code: 'expect(true).not.toBeSomethingWeird();',
+      options: [{extraMatchers: ['toBeSomethingWeird']}],
+    },
   ],
 
   invalid: [
@@ -76,6 +84,67 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
           message: '"toBeDefined" was not called.',
         },
       ],
+    },
+    {
+      code: 'expect(true).not.toBeDefined;',
+      errors: [
+        {
+          message: '"toBeDefined" was not called.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).nope.toBeDefined;',
+      errors: [
+        {
+          message: '"nope" is not a valid property of expect.',
+        },
+        {
+          message: '"toBeDefined" was not called.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).nope.toBeDefined();',
+      errors: [
+        {
+          message: '"nope" is not a valid property of expect.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).toBeSomethingWeird();',
+      errors: [
+        {
+          message: '"toBeSomethingWeird" is not a known matcher.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).not.toBeSomethingWeird();',
+      errors: [
+        {
+          message: '"toBeSomethingWeird" is not a known matcher.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).not.toBeSomethingElseWeird();',
+      errors: [
+        {
+          message: '"toBeSomethingElseWeird" is not a known matcher.',
+        },
+      ],
+      options: [{extraMatchers: ['toBeSomethingWeird']}],
+    },
+    {
+      code: 'expect(true).not.toBeSomethingWeird();',
+      errors: [
+        {
+          message: '"toBeSomethingWeird" is not a known matcher.',
+        },
+      ],
+      options: [{extraTypos: ['toBeSomethingWeird']}],
     },
   ],
 });
