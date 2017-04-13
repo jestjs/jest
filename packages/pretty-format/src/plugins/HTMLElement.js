@@ -18,6 +18,7 @@ const test = isHTMLElement;
 
 function isHTMLElement(value: any) {
   return value !== undefined &&
+    value !== null &&
     value.nodeType === 1 &&
     value.constructor !== undefined &&
     value.constructor.name !== undefined &&
@@ -60,7 +61,7 @@ const print = (
 ) => {
   let result = colors.tag.open + '<';
   const elementName = element.constructor
-    ? element.constructor.name
+    ? element.tagName.toLowerCase()
     : 'HTMLElement';
   result += elementName + colors.tag.close;
 
