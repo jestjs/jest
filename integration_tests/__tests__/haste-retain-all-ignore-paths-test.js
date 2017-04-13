@@ -15,23 +15,19 @@ skipOnWindows.suite();
 it('does not run tests in node_modules/', () => {
   const result = runJest.json('haste-retain-all-ignore-paths').json;
 
-  const testNames = result.testResults
-      .map(res => res.name)
-      .sort();
+  const testNames = result.testResults.map(res => res.name).sort();
 
-  expect(testNames.some(
-    x => x.includes('library/__tests__/shouldnt-run.js'))).toBe(false);
+  expect(
+    testNames.some(x => x.includes('library/__tests__/shouldnt-run.js')),
+  ).toBe(false);
 });
 
 it('runs tests in src/node_modules/', () => {
   const result = runJest.json('haste-retain-all-ignore-paths').json;
 
-  const testNames = result.testResults
-      .map(res => res.name)
-      .sort();
+  const testNames = result.testResults.map(res => res.name).sort();
 
-  expect(testNames.some(
-    x => x.includes('src-library/__tests__/should-run.js'))).toBe(true);
+  expect(
+    testNames.some(x => x.includes('src-library/__tests__/should-run.js')),
+  ).toBe(true);
 });
-
-

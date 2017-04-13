@@ -38,9 +38,7 @@ const defaultOptions = {
 };
 
 describe('Runtime', () => {
-
   describe('createHasteMap', () => {
-
     it('retainAllFiles from haste config if provided', () => {
       const haste = Object.assign({}, defaultHasteConfig, {
         retainAllFiles: true,
@@ -60,7 +58,5 @@ describe('Runtime', () => {
 
       expect(hasteMap.options.retainAllFiles).toBe(false);
     });
-
   });
-
 });
