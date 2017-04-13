@@ -20,6 +20,7 @@ const installCommonGlobals = require('./installCommonGlobals');
 const mkdirp = require('mkdirp');
 const setGlobal = require('./setGlobal');
 const validateCLIOptions = require('./validateCLIOptions');
+const prepareStackTrace = require('./prepareStackTrace');
 
 const createDirectory = (path: string) => {
   try {
@@ -39,6 +40,7 @@ module.exports = {
   createDirectory,
   formatTestResults,
   installCommonGlobals,
+  prepareStackTrace,
   setGlobal,
   validateCLIOptions,
 };
