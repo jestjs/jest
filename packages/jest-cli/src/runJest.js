@@ -53,6 +53,10 @@ const runJest = async (
 ) => {
   const maxWorkers = getMaxWorkers(argv);
   const source = new SearchSource(hasteContext, config);
+  const testRunnerOptions = {
+    getTestSummary: () => getTestSummary(argv, patternInfo),
+    maxWorkers,
+  };
   let patternInfo = getTestPathPatternInfo(argv);
 
   const processTests = data => {
@@ -97,15 +101,10 @@ const runJest = async (
   };
 
   const runTests = async tests =>
-    new TestRunner(
-      hasteContext,
-      config,
-      {
-        getTestSummary: () => getTestSummary(argv, patternInfo),
-        maxWorkers,
-      },
-      startRun,
-    ).runTests(tests, testWatcher);
+    new TestRunner(hasteContext, config, testRunnerOptions, startRun).runTests(
+      tests,
+      testWatcher,
+    );
 
   const processResults = runResults => {
     if (config.testResultsProcessor) {
@@ -132,6 +131,11 @@ const runJest = async (
   };
 
   const data = await source.getTestPaths(patternInfo);
+  if (config.updateSnapshot === true) {
+    hasteContext.config = Object.assign({}, hasteContext.config, {
+      updateSnapshot: true,
+    });
+  }
   processTests(data);
   const sequencer = new TestSequencer(hasteContext);
   const tests = sequencer.sort(data.paths);
