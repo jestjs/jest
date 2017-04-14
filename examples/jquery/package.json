@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "babel-preset-env": "^1.4.0",
+    "babel-preset-env": "*",
     "jest": "*"
   },
   "dependencies": {
