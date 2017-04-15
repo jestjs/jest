@@ -77,7 +77,7 @@ to `false`.
 
 Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
 
-### Tests are Extremely Slow on Docker and/or Continuous Integration server.
+### Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
 While Jest is most of the time extremely fast on modern multi-core computers
 with fast SSDs, it may be slow on certain setups as our users [have](https://github.com/facebook/jest/issues/1395)
