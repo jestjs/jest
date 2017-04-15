@@ -98,8 +98,7 @@ it('works with async/await', async () => {
 ```
 
 To enable async/await in your project, install
-[`babel-plugin-transform-async-to-generator`](http://babeljs.io/docs/plugins/transform-async-to-generator/) or
-[`babel-preset-stage-3`](http://babeljs.io/docs/plugins/preset-stage-3/)
+[`babel-preset-env`](http://babeljs.io/docs/plugins/preset-env/)
 and enable the feature in your `.babelrc` file.
 
 ### Error handling
