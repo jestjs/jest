@@ -10,7 +10,6 @@
 'use strict';
 
 import type {Context} from 'types/Context';
-import type {Test} from 'types/TestRunner';
 import type TestWatcher from './TestWatcher';
 
 const fs = require('graceful-fs');
@@ -114,7 +113,6 @@ const getTestPaths = async (context, pattern, argv, pipe) => {
       }
     }
   }
-
   return data;
 };
 
@@ -150,31 +148,23 @@ const runJest = async (
   startRun: () => *,
   onComplete: (testResults: any) => void,
 ) => {
-  const maxWorkers = getMaxWorkers(argv);
   const context = contexts[0];
+  const maxWorkers = getMaxWorkers(argv);
+  const pattern = getTestPathPattern(argv);
+  const sequencer = new TestSequencer();
+  let allTests = [];
   const testRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(context, pattern, argv, pipe);
-      const sequencer = new TestSequencer(context);
-      const tests = sequencer.sort(matches.tests);
-      return {context, matches, sequencer, tests};
+      allTests = allTests.concat(matches.tests);
+      return {context, matches};
     }),
   );
 
-  const allTests = testRunData
-    .reduce((tests, testRun) => tests.concat(testRun.tests), [])
-    .sort((a: Test, b: Test) => {
-      if (a.duration != null && b.duration != null) {
-        return a.duration < b.duration ? 1 : -1;
-      }
-      return a.duration == null ? 1 : 0;
-    });
-
+  allTests = sequencer.sort(allTests);
   if (!allTests.length) {
     new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
-  }
-
-  if (
+  } else if (
     allTests.length === 1 &&
     context.config.silent !== true &&
     context.config.verbose !== false
@@ -200,8 +190,7 @@ const runJest = async (
     testPathPattern: formatTestPathPattern(pattern),
   }).runTests(allTests, testWatcher);
 
-  testRunData.forEach(({sequencer, tests}) =>
-    sequencer.cacheResults(tests, results));
+  sequencer.cacheResults(allTests, results);
 
   return processResults(results, {
     isJSON: argv.json,

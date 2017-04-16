@@ -11,7 +11,7 @@
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
-import type {Tests} from 'types/TestRunner';
+import type {Test, Tests} from 'types/TestRunner';
 
 const fs = require('fs');
 const getCacheFilePath = require('jest-haste-map').getCacheFilePath;
@@ -24,17 +24,29 @@ type Cache = {
 };
 
 class TestSequencer {
-  _context: Context;
-  _cache: Cache;
+  _cache: Map<Context, Cache>;
 
-  constructor(context: Context) {
-    this._context = context;
-    this._cache = {};
+  constructor() {
+    this._cache = new Map();
   }
 
-  _getTestPerformanceCachePath() {
-    const {config} = this._context;
+  _getCachePath(context: Context) {
+    const {config} = context;
     return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
+  }
+
+  _getCache(test: Test) {
+    const {context} = test;
+    if (!this._cache.has(context) && context.config.cache) {
+      try {
+        this._cache.set(
+          context,
+          JSON.parse(fs.readFileSync(this._getCachePath(context), 'utf8')),
+        );
+      } catch (e) {}
+    }
+
+    return this._cache.get(context) || {};
   }
 
   // When running more tests than we have workers available, sort the tests
@@ -47,51 +59,38 @@ class TestSequencer {
   // fastest results.
   sort(tests: Tests): Tests {
     const stats = {};
-    const fileSize = filePath =>
-      stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
-    const failed = filePath =>
-      this._cache[filePath] && this._cache[filePath][0] === FAIL;
-    const time = filePath => this._cache[filePath] && this._cache[filePath][1];
+    const fileSize = test =>
+      stats[test.path] || (stats[test.path] = fs.statSync(test.path).size);
+    const hasFailed = (cache, test) =>
+      cache[test.path] && cache[test.path][0] === FAIL;
+    const time = (cache, test) => cache[test.path] && cache[test.path][1];
 
-    this._cache = {};
-    try {
-      if (this._context.config.cache) {
-        this._cache = JSON.parse(
-          fs.readFileSync(this._getTestPerformanceCachePath(), 'utf8'),
-        );
-      }
-    } catch (e) {}
-
-    tests = tests.sort(({path: pathA}, {path: pathB}) => {
-      const failedA = failed(pathA);
-      const failedB = failed(pathB);
+    tests.forEach(test => test.duration = time(this._getCache(test), test));
+    return tests.sort((testA, testB) => {
+      const cacheA = this._getCache(testA);
+      const cacheB = this._getCache(testB);
+      const failedA = hasFailed(cacheA, testA);
+      const failedB = hasFailed(cacheB, testB);
+      const hasTimeA = testA.duration != null;
       if (failedA !== failedB) {
         return failedA ? -1 : 1;
+      } else if (hasTimeA != (testB.duration != null)) {
+        // Check if only one of two tests has timing information
+        return hasTimeA != null ? 1 : -1;
+      } else if (testA.duration != null && testB.duration != null) {
+        return testA.duration < testB.duration ? 1 : -1;
+      } else {
+        return fileSize(testA) < fileSize(testB) ? 1 : -1;
       }
-      const timeA = time(pathA);
-      const timeB = time(pathB);
-      const hasTimeA = timeA != null;
-      const hasTimeB = timeB != null;
-      // Check if only one of two tests has timing information
-      if (hasTimeA != hasTimeB) {
-        return hasTimeA ? 1 : -1;
-      }
-      if (timeA != null && !timeB != null) {
-        return timeA < timeB ? 1 : -1;
-      }
-      return fileSize(pathA) < fileSize(pathB) ? 1 : -1;
     });
-
-    tests.forEach(test => test.duration = time(test.path));
-    return tests;
   }
 
   cacheResults(tests: Tests, results: AggregatedResult) {
-    const cache = this._cache;
     const map = Object.create(null);
-    tests.forEach(({path}) => map[path] = true);
+    tests.forEach(test => map[test.path] = test);
     results.testResults.forEach(testResult => {
       if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
+        const cache = this._getCache(map[testResult.testFilePath]);
         const perf = testResult.perfStats;
         cache[testResult.testFilePath] = [
           testResult.numFailingTests ? FAIL : SUCCESS,
@@ -99,10 +98,9 @@ class TestSequencer {
         ];
       }
     });
-    fs.writeFileSync(
-      this._getTestPerformanceCachePath(),
-      JSON.stringify(cache),
-    );
+
+    this._cache.forEach((cache, context) =>
+      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)));
   }
 }
 
