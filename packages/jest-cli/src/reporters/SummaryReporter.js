@@ -12,6 +12,8 @@
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {Options as SummaryReporterOptions} from '../TestRunner';
+import type {PathPattern} from '../SearchSource';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
@@ -19,10 +21,6 @@ const BaseReporter = require('./BaseReporter');
 const {getSummary, pluralize} = require('./utils');
 const chalk = require('chalk');
 const getResultHeader = require('./getResultHeader');
-
-type Options = {|
-  getTestSummary: () => string,
-|};
 
 const ARROW = ' \u203A ';
 const FAIL_COLOR = chalk.bold.red;
@@ -62,9 +60,9 @@ const NPM_EVENTS = new Set([
 
 class SummaryReporter extends BaseReporter {
   _estimatedTime: number;
-  _options: Options;
+  _options: SummaryReporterOptions;
 
-  constructor(options: Options) {
+  constructor(options: SummaryReporterOptions) {
     super();
     this._options = options;
     this._estimatedTime = 0;
@@ -115,7 +113,12 @@ class SummaryReporter extends BaseReporter {
       if (numTotalTestSuites) {
         const testSummary = wasInterrupted
           ? chalk.bold.red('Test run was interrupted.')
-          : this._options.getTestSummary();
+          : this._getTestSummary(
+              contexts,
+              this._options.pattern,
+              this._options.testNamePattern,
+              this._options.testPathPattern,
+            );
         this.log(
           getSummary(aggregatedResults, {
             estimatedTime: this._estimatedTime,
@@ -232,6 +235,31 @@ class SummaryReporter extends BaseReporter {
       });
       this.log(''); // print empty line
     }
+  }
+
+  _getTestSummary(
+    contexts: Set<Context>,
+    pattern: PathPattern,
+    testNamePattern: string,
+    testPathPattern: string,
+  ) {
+    const testInfo = pattern.onlyChanged
+      ? chalk.dim(' related to changed files')
+      : pattern.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
+
+    const nameInfo = testNamePattern
+      ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
+      : '';
+
+    const contextInfo = contexts.size > 1
+      ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
+      : '';
+
+    return chalk.dim('Ran all test suites') +
+      testInfo +
+      nameInfo +
+      contextInfo +
+      chalk.dim('.');
   }
 }
 

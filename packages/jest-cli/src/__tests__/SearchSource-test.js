@@ -94,8 +94,7 @@ describe('SearchSource', () => {
       findMatchingTests = config =>
         Runtime.createContext(config, {
           maxWorkers,
-        }).then(context =>
-          new SearchSource(context).findMatchingTests());
+        }).then(context => new SearchSource(context).findMatchingTests());
     });
 
     it('finds tests matching a pattern via testRegex', () => {

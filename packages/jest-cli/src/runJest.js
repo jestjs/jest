@@ -11,7 +11,6 @@
 
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {PathPattern} from './SearchSource';
 import type TestWatcher from './TestWatcher';
 
 const fs = require('graceful-fs');
@@ -27,6 +26,11 @@ const getMaxWorkers = require('./lib/getMaxWorkers');
 const path = require('path');
 const setState = require('./lib/setState');
 
+const setConfig = (contexts, newConfig) =>
+  contexts.forEach(
+    context => context.config = Object.assign({}, context.config, newConfig),
+  );
+
 const formatTestPathPattern = pattern => {
   const testPattern = pattern.testPathPattern;
   const input = pattern.input;
@@ -35,31 +39,6 @@ const formatTestPathPattern = pattern => {
     ? `/${input || ''}/`
     : `"${input || ''}"`;
   return input === testPattern ? formattedInput : formattedPattern;
-};
-
-const getTestSummary = (
-  contexts: Array<Context>,
-  pattern: PathPattern,
-  testPathPattern: string,
-  testNamePattern: string,
-) => {
-  const testInfo = pattern.onlyChanged
-    ? chalk.dim(' related to changed files')
-    : pattern.input !== '' ? chalk.dim(' matching ') + testPathPattern : '';
-
-  const nameInfo = testNamePattern
-    ? chalk.dim(' with tests matching ') + `"${testNamePattern}"`
-    : '';
-
-  const contextInfo = contexts.length > 1
-    ? chalk.dim(' in ') + contexts.length + chalk.dim(' projects')
-    : '';
-
-  return chalk.dim('Ran all test suites') +
-    testInfo +
-    nameInfo +
-    contextInfo +
-    chalk.dim('.');
 };
 
 const getNoTestsFoundMessage = (testRunData, pattern) => {
@@ -116,7 +95,6 @@ const getTestPaths = async (context, pattern, argv, pipe) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
   if (!data.paths.length) {
-    const localConsole = new Console(pipe, pipe);
     if (pattern.onlyChanged && data.noSCM) {
       if (context.config.watch) {
         // Run all the tests
@@ -126,7 +104,7 @@ const getTestPaths = async (context, pattern, argv, pipe) => {
         pattern = getTestPathPattern(argv);
         data = await source.getTestPaths(pattern);
       } else {
-        localConsole.log(
+        new Console(pipe, pipe).log(
           'Jest can only find uncommitted changed files in a git or hg ' +
             'repository. If you make your project a git or hg ' +
             'repository (`git init` or `hg init`), Jest will be able ' +
@@ -138,6 +116,30 @@ const getTestPaths = async (context, pattern, argv, pipe) => {
   }
 
   return data;
+};
+
+const processResults = (runResults, options) => {
+  if (options.testResultsProcessor) {
+    /* $FlowFixMe */
+    runResults = require(options.testResultsProcessor)(runResults);
+  }
+  if (options.isJSON) {
+    if (options.outputFile) {
+      const outputFile = path.resolve(process.cwd(), options.outputFile);
+
+      fs.writeFileSync(
+        outputFile,
+        JSON.stringify(formatTestResults(runResults)),
+      );
+      process.stdout.write(
+        `Test results written to: ` +
+          `${path.relative(process.cwd(), outputFile)}\n`,
+      );
+    } else {
+      process.stdout.write(JSON.stringify(formatTestResults(runResults)));
+    }
+  }
+  return options.onComplete && options.onComplete(runResults);
 };
 
 const runJest = async (
@@ -159,30 +161,6 @@ const runJest = async (
     }),
   );
 
-  const processResults = runResults => {
-    if (context.config.testResultsProcessor) {
-      /* $FlowFixMe */
-      runResults = require(context.config.testResultsProcessor)(runResults);
-    }
-    if (argv.json) {
-      if (argv.outputFile) {
-        const outputFile = path.resolve(process.cwd(), argv.outputFile);
-
-        fs.writeFileSync(
-          outputFile,
-          JSON.stringify(formatTestResults(runResults)),
-        );
-        process.stdout.write(
-          `Test results written to: ` +
-            `${path.relative(process.cwd(), outputFile)}\n`,
-        );
-      } else {
-        process.stdout.write(JSON.stringify(formatTestResults(runResults)));
-      }
-    }
-    return onComplete && onComplete(runResults);
-  };
-
   const allTests = testRunData
     .reduce((tests, testRun) => tests.concat(testRun.tests), [])
     .sort((a: Test, b: Test) => {
@@ -193,8 +171,7 @@ const runJest = async (
     });
 
   if (!allTests.length) {
-    const localConsole = new Console(pipe, pipe);
-    localConsole.log(getNoTestsFoundMessage(testRunData, pattern));
+    new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
   }
 
   if (
@@ -202,35 +179,36 @@ const runJest = async (
     context.config.silent !== true &&
     context.config.verbose !== false
   ) {
-    contexts.forEach(
-      context =>
-        context.config = Object.assign({}, context.config, {verbose: true}),
-    );
+    setConfig(contexts, {verbose: true});
   }
 
   if (context.config.updateSnapshot === true) {
-     context.config = Object.assign({}, context.config, {
-      updateSnapshot: true,
-    });
+    setConfig(contexts, {updateSnapshot: true});
   }
 
-  const results = await new TestRunner(
-    context.config,
-    {
-      getTestSummary: () =>
-        getTestSummary(
-          contexts,
-          pattern,
-          formatTestPathPattern(pattern),
-          argv.testNamePattern,
-        ),
-      maxWorkers,
-    },
+  // When using more than one context, make all printed paths relative to the
+  // current cwd.
+  if (contexts.length > 1) {
+    setConfig(contexts, {rootDir: process.cwd()});
+  }
+
+  const results = await new TestRunner(context.config, {
+    maxWorkers,
+    pattern,
     startRun,
-  ).runTests(allTests, testWatcher);
+    testNamePattern: argv.testNamePattern,
+    testPathPattern: formatTestPathPattern(pattern),
+  }).runTests(allTests, testWatcher);
+
   testRunData.forEach(({sequencer, tests}) =>
     sequencer.cacheResults(tests, results));
-  return processResults(results);
+
+  return processResults(results, {
+    isJSON: argv.json,
+    onComplete,
+    outputFile: argv.outputFile,
+    testResultsProcessor: context.config.testResultsProcessor,
+  });
 };
 
 module.exports = runJest;

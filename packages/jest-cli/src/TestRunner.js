@@ -16,6 +16,7 @@ import type {
 } from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {Context} from 'types/Context';
+import type {PathPattern} from './SearchSource';
 import type {Test, Tests} from 'types/TestRunner';
 import type BaseReporter from './reporters/BaseReporter';
 
@@ -41,9 +42,12 @@ class CancelRun extends Error {
   }
 }
 
-type Options = {|
+export type Options = {|
   maxWorkers: number,
-  getTestSummary: () => string,
+  pattern: PathPattern,
+  startRun: () => *,
+  testNamePattern: string,
+  testPathPattern: string,
 |};
 
 type OnTestFailure = (test: Test, err: TestError) => void;
@@ -54,14 +58,12 @@ const TEST_WORKER_PATH = require.resolve('./TestWorker');
 class TestRunner {
   _config: Config;
   _options: Options;
-  _startRun: () => *;
   _dispatcher: ReporterDispatcher;
 
-  constructor(config: Config, options: Options, startRun: () => *) {
+  constructor(config: Config, options: Options) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher();
     this._options = options;
-    this._startRun = startRun;
     this._setupReporters();
   }
 
@@ -284,13 +286,9 @@ class TestRunner {
       this.addReporter(new CoverageReporter());
     }
 
-    this.addReporter(
-      new SummaryReporter({
-        getTestSummary: this._options.getTestSummary,
-      }),
-    );
+    this.addReporter(new SummaryReporter(this._options));
     if (config.notify) {
-      this.addReporter(new NotifyReporter(this._startRun));
+      this.addReporter(new NotifyReporter(this._options.startRun));
     }
   }
 

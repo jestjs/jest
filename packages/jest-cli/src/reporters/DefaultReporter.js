@@ -34,10 +34,7 @@ const isInteractive = process.stdin.isTTY && !isCI;
 
 class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
-  _currentlyRunning: Map<Path, Config>;
-  _currentStatusHeight: number;
   _err: write;
-  _lastAggregatedResults: AggregatedResult;
   _out: write;
   _status: Status;
 
