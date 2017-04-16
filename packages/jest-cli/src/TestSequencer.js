@@ -45,8 +45,7 @@ class TestSequencer {
   // After a test run we store the time it took to run a test and on
   // subsequent runs we use that to run the slowest tests first, yielding the
   // fastest results.
-  sort(testPaths: Array<string>): Tests {
-    const context = this._context;
+  sort(tests: Tests): Tests {
     const stats = {};
     const fileSize = filePath =>
       stats[filePath] || (stats[filePath] = fs.statSync(filePath).size);
@@ -56,14 +55,14 @@ class TestSequencer {
 
     this._cache = {};
     try {
-      if (context.config.cache) {
+      if (this._context.config.cache) {
         this._cache = JSON.parse(
           fs.readFileSync(this._getTestPerformanceCachePath(), 'utf8'),
         );
       }
     } catch (e) {}
 
-    testPaths = testPaths.sort((pathA, pathB) => {
+    tests = tests.sort(({path: pathA}, {path: pathB}) => {
       const failedA = failed(pathA);
       const failedB = failed(pathB);
       if (failedA !== failedB) {
@@ -83,11 +82,8 @@ class TestSequencer {
       return fileSize(pathA) < fileSize(pathB) ? 1 : -1;
     });
 
-    return testPaths.map(path => ({
-      context,
-      duration: this._cache[path] && this._cache[path][1],
-      path,
-    }));
+    tests.forEach(test => test.duration = time(test.path));
+    return tests;
   }
 
   cacheResults(tests: Tests, results: AggregatedResult) {

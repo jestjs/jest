@@ -13,6 +13,7 @@
 import type {Context} from 'types/Context';
 import type {Glob, Path} from 'types/Config';
 import type {ResolveModuleConfig} from 'types/Resolve';
+import type {Test} from 'types/TestRunner';
 
 const micromatch = require('micromatch');
 
@@ -27,8 +28,8 @@ const {
 
 type SearchResult = {|
   noSCM?: boolean,
-  paths: Array<Path>,
   stats?: {[key: string]: number},
+  tests: Array<Test>,
   total?: number,
 |};
 
@@ -62,7 +63,7 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
   }
 
   const matchers = globs.map(each => micromatch.matcher(each, {dot: true}));
-  return (path: Path) => matchers.some(each => each(path));
+  return path => matchers.some(each => each(path));
 };
 
 const regexToMatcher = (testRegex: string) => {
@@ -71,8 +72,15 @@ const regexToMatcher = (testRegex: string) => {
   }
 
   const regex = new RegExp(pathToRegex(testRegex));
-  return (path: Path) => regex.test(path);
+  return path => regex.test(path);
 };
+
+const toTests = (context, tests) =>
+  tests.map(path => ({
+    context,
+    duration: undefined,
+    path,
+  }));
 
 class SearchSource {
   _context: Context;
@@ -112,12 +120,12 @@ class SearchSource {
   }
 
   _filterTestPathsWithStats(
-    allPaths: Array<Path>,
+    allPaths: Array<Test>,
     testPathPattern?: StrOrRegExpPattern,
   ): SearchResult {
     const data = {
-      paths: [],
       stats: {},
+      tests: [],
       total: allPaths.length,
     };
 
@@ -128,11 +136,10 @@ class SearchSource {
     }
 
     const testCasesKeys = Object.keys(testCases);
-
-    data.paths = allPaths.filter(path => {
+    data.tests = allPaths.filter(test => {
       return testCasesKeys.reduce(
         (flag, key) => {
-          if (testCases[key](path)) {
+          if (testCases[key](test.path)) {
             data.stats[key] = ++data.stats[key] || 1;
             return flag && true;
           }
@@ -148,7 +155,7 @@ class SearchSource {
 
   _getAllTestPaths(testPathPattern: StrOrRegExpPattern): SearchResult {
     return this._filterTestPathsWithStats(
-      this._context.hasteFS.getAllFiles(),
+      toTests(this._context, this._context.hasteFS.getAllFiles()),
       testPathPattern,
     );
   }
@@ -168,12 +175,15 @@ class SearchSource {
       this._context.hasteFS,
     );
     return {
-      paths: dependencyResolver.resolveInverse(
-        allPaths,
-        this.isTestFilePath.bind(this),
-        {
-          skipNodeResolution: this._options.skipNodeResolution,
-        },
+      tests: toTests(
+        this._context,
+        dependencyResolver.resolveInverse(
+          allPaths,
+          this.isTestFilePath.bind(this),
+          {
+            skipNodeResolution: this._options.skipNodeResolution,
+          },
+        ),
       ),
     };
   }
@@ -183,7 +193,7 @@ class SearchSource {
       const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
       return this.findRelatedTests(new Set(resolvedPaths));
     }
-    return {paths: []};
+    return {tests: []};
   }
 
   findChangedTests(options: Options): Promise<SearchResult> {
@@ -193,7 +203,7 @@ class SearchSource {
       if (!repos.every(([gitRepo, hgRepo]) => gitRepo || hgRepo)) {
         return {
           noSCM: true,
-          paths: [],
+          tests: [],
         };
       }
       return Promise.all(
@@ -217,7 +227,7 @@ class SearchSource {
     } else if (pattern.testPathPattern != null) {
       return Promise.resolve(this.findMatchingTests(pattern.testPathPattern));
     } else {
-      return Promise.resolve({paths: []});
+      return Promise.resolve({tests: []});
     }
   }
 }

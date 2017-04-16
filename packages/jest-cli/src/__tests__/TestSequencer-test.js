@@ -26,6 +26,13 @@ const context = {
   },
 };
 
+const toTests = paths =>
+  paths.map(path => ({
+    context,
+    duration: undefined,
+    path,
+  }));
+
 beforeEach(() => {
   sequencer = new TestSequencer(context);
 
@@ -34,7 +41,7 @@ beforeEach(() => {
 });
 
 test('sorts by file size if there is no timing information', () => {
-  expect(sequencer.sort(['/test-a.js', '/test-ab.js'])).toEqual([
+  expect(sequencer.sort(toTests(['/test-a.js', '/test-ab.js']))).toEqual([
     {context, duration: undefined, path: '/test-ab.js'},
     {context, duration: undefined, path: '/test-a.js'},
   ]);
@@ -46,7 +53,7 @@ test('sorts based on timing information', () => {
       '/test-a.js': [SUCCESS, 5],
       '/test-ab.js': [SUCCESS, 3],
     }));
-  expect(sequencer.sort(['/test-a.js', '/test-ab.js'])).toEqual([
+  expect(sequencer.sort(toTests(['/test-a.js', '/test-ab.js']))).toEqual([
     {context, duration: 5, path: '/test-a.js'},
     {context, duration: 3, path: '/test-ab.js'},
   ]);
@@ -61,7 +68,9 @@ test('sorts based on failures and timing information', () => {
       '/test-d.js': [SUCCESS, 2],
     }));
   expect(
-    sequencer.sort(['/test-a.js', '/test-ab.js', '/test-c.js', '/test-d.js']),
+    sequencer.sort(
+      toTests(['/test-a.js', '/test-ab.js', '/test-c.js', '/test-d.js']),
+    ),
   ).toEqual([
     {context, duration: 6, path: '/test-c.js'},
     {context, duration: 0, path: '/test-ab.js'},
@@ -80,13 +89,15 @@ test('sorts based on failures, timing information and file size', () => {
       '/test-efg.js': [FAIL],
     }));
   expect(
-    sequencer.sort([
-      '/test-a.js',
-      '/test-ab.js',
-      '/test-c.js',
-      '/test-d.js',
-      '/test-efg.js',
-    ]),
+    sequencer.sort(
+      toTests([
+        '/test-a.js',
+        '/test-ab.js',
+        '/test-c.js',
+        '/test-d.js',
+        '/test-efg.js',
+      ]),
+    ),
   ).toEqual([
     {context, duration: undefined, path: '/test-efg.js'},
     {context, duration: undefined, path: '/test-c.js'},
@@ -105,7 +116,7 @@ test('writes the cache based on the results', () => {
     }));
 
   const testPaths = ['/test-a.js', '/test-b.js', '/test-c.js'];
-  const tests = sequencer.sort(testPaths);
+  const tests = sequencer.sort(toTests(testPaths));
   sequencer.cacheResults(tests, {
     testResults: [
       {

@@ -64,21 +64,16 @@ module.exports = class TestPathPatternPrompt {
       regex = new RegExp(pattern, 'i');
     } catch (e) {}
 
-    let paths = [];
+    let tests = [];
     if (regex) {
       this._searchSources.forEach(({searchSource, context}) => {
-        paths = paths.concat(
-          searchSource.findMatchingTests(pattern).paths.map(path => ({
-            context,
-            path,
-          })),
-        );
+        tests = tests.concat(searchSource.findMatchingTests(pattern).tests);
       });
     }
 
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this._printTypeahead(pattern, paths, 10);
+    this._printTypeahead(pattern, tests, 10);
   }
 
   _printTypeahead(pattern: string, allResults: Array<Test>, max: number) {

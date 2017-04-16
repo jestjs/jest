@@ -94,7 +94,7 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
 const getTestPaths = async (context, pattern, argv, pipe) => {
   const source = new SearchSource(context);
   let data = await source.getTestPaths(pattern);
-  if (!data.paths.length) {
+  if (!data.tests.length) {
     if (pattern.onlyChanged && data.noSCM) {
       if (context.config.watch) {
         // Run all the tests
@@ -156,7 +156,7 @@ const runJest = async (
     contexts.map(async context => {
       const matches = await getTestPaths(context, pattern, argv, pipe);
       const sequencer = new TestSequencer(context);
-      const tests = sequencer.sort(matches.paths);
+      const tests = sequencer.sort(matches.tests);
       return {context, matches, sequencer, tests};
     }),
   );

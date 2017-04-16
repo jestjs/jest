@@ -31,6 +31,10 @@ jest.mock(
   '../SearchSource',
   () =>
     class {
+      constructor(context) {
+        this._context = context;
+      }
+
       findMatchingTests(pattern) {
         const paths = [
           './path/to/file1-test.js',
@@ -46,7 +50,13 @@ jest.mock(
           './path/to/file11-test.js',
         ].filter(path => path.match(pattern));
 
-        return {paths};
+        return {
+          tests: paths.map(path => ({
+            context: this._context,
+            duration: null,
+            path,
+          })),
+        };
       }
     },
 );
