@@ -16,6 +16,9 @@ const Runtime = require('jest-runtime');
 const normalizeConfig = require('jest-config').normalize;
 const path = require('path');
 
+const skipOnWindows = require('skipOnWindows');
+skipOnWindows.suite();
+
 jest.mock('../TestRunner', () => {
   return class TestRunner {
     runTests() {
