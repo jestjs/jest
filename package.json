@@ -1,5 +1,7 @@
 {
   "private": true,
+  "name":"jest",
+  "version":"1.0.1",
   "devDependencies": {
     "ansi-regex": "^2.0.0",
     "ansi-styles": "^3.0.0",

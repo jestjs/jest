@@ -56,7 +56,6 @@ const getCacheKey = (
     configToJsonMap.set(
       config,
       stableStringify({
-        transform: config.transform,
         cacheDirectory: config.cacheDirectory,
         collectCoverage: config.collectCoverage,
         collectCoverageFrom: config.collectCoverageFrom,
@@ -69,6 +68,7 @@ const getCacheKey = (
         roots: config.roots,
         testMatch: config.testMatch,
         testRegex: config.testRegex,
+        transform: config.transform,
         transformIgnorePatterns: config.transformIgnorePatterns,
       }),
     );
