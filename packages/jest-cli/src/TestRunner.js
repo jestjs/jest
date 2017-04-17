@@ -163,8 +163,11 @@ class TestRunner {
 
     updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
-
-    this._dispatcher.onRunComplete(contexts, this._config, aggregatedResults);
+    await this._dispatcher.onRunComplete(
+      contexts,
+      this._config,
+      aggregatedResults,
+    );
 
     const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
       aggregatedResults.numRuntimeErrorTestSuites === 0);
@@ -286,7 +289,7 @@ class TestRunner {
       // coverage reporter dependency graph is pretty big and we don't
       // want to require it if we're not in the `--coverage` mode
       const CoverageReporter = require('./reporters/CoverageReporter');
-      this.addReporter(new CoverageReporter());
+      this.addReporter(new CoverageReporter(this._options.maxWorkers));
     }
 
     this.addReporter(new SummaryReporter(this._options));
@@ -304,12 +307,11 @@ class TestRunner {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
-        this._dispatcher.onRunComplete(
-          contexts,
-          this._config,
-          aggregatedResults,
-        );
-        process.exit(1);
+        const exit = () => process.exit(1);
+        this._dispatcher
+          .onRunComplete(contexts, this._config, aggregatedResults)
+          .then(exit)
+          .catch(exit);
       }
     }
   }
@@ -463,9 +465,11 @@ class ReporterDispatcher {
     );
   }
 
-  onRunComplete(contexts, config, results) {
-    this._reporters.forEach(reporter =>
-      reporter.onRunComplete(contexts, config, results),
+  onRunComplete(contexts, config, results): Promise<Array<any>> {
+    return Promise.all(
+      this._reporters.map(reporter =>
+        reporter.onRunComplete(contexts, config, results),
+      ),
     );
   }
 
