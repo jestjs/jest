@@ -28,7 +28,7 @@ const testPath = names => {
 it('gets plugins', () => {
   const {getSerializers} = require('../plugins');
   const plugins = getSerializers();
-  expect(plugins.length).toBe(8);
+  expect(plugins.length).toBe(9);
 });
 
 it('adds plugins from an empty array', () => testPath([]));
