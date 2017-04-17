@@ -12,7 +12,6 @@
 
 const runJest = require('../runJest');
 const TestWatcher = require('../TestWatcher');
-const Runtime = require('jest-runtime');
 const normalizeConfig = require('jest-config').normalize;
 const path = require('path');
 
@@ -57,6 +56,7 @@ beforeEach(() => {
     roots: [],
     updateSnapshot: true,
   }).config;
+  const Runtime = require('jest-runtime');
   return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
     hasteFS = hasteMap.hasteFS;
   });
