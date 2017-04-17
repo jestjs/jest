@@ -24,6 +24,29 @@ jest
   .mock('vm');
 
 jest.mock(
+  'test-preprocessor-2',
+  () => {
+    const escapeStrings = str => {
+      return str.replace(/'/, `'`);
+    };
+
+    return {
+      getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
+      process: (content, filename, config) => {
+        return `
+          const TRANSFORMED = {
+            filename: '${escapeStrings(filename)}',
+            script: '${escapeStrings(content)+'second'}',
+            config: '${escapeStrings(JSON.stringify(config))}',
+          };
+        `;
+      },
+    };
+  },
+  {virtual: true},
+);
+
+jest.mock(
   'test-preprocessor',
   () => {
     const escapeStrings = str => {
@@ -145,6 +168,23 @@ describe('transform', () => {
 
   beforeEach(reset);
 
+  it('retransform when transform argument is changed', () => {
+    let localConfig = Object.assign(config, {
+      transform: [['^.+\\.js$', 'test-preprocessor-2']],
+    });
+
+    const response = transform('/fruits/banana.js', localConfig).script;
+    const snapshot = vm.Script.mock.calls[0][0];
+
+    localConfig = Object.assign(config, {
+      transform: [['^.+\\.js$', 'test-preprocessor']],
+    });
+
+    reset();
+    transform('/fruits/banana.js', localConfig);
+    expect(vm.Script.mock.calls[0][0]).not.toEqual(snapshot);
+
+  });
   it('transforms a file properly', () => {
     config.collectCoverage = true;
     const response = transform('/fruits/banana.js', config).script;

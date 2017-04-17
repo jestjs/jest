@@ -41,11 +41,7 @@ function treeProcessor(options: Options) {
   }
 
   return queueRunnerFactory({
-<<<<<<< HEAD
     onException: error => tree.onException(error),
-=======
-    onException: error => tree.onException(tree, error),
->>>>>>> Correct lint errors
     queueableFns: wrapChildren(tree, isEnabled(tree, false)),
     userContext: tree.sharedUserContext(),
   });
