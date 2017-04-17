@@ -15,6 +15,7 @@ import type {DiffOptions} from './diffStrings';
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
 const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
 const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+const HTMLElementPlugin = require('pretty-format/build/plugins/HTMLElement');
 const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
 
 const chalk = require('chalk');
@@ -31,6 +32,7 @@ const PLUGINS = [
   ReactTestComponentPlugin,
   ReactElementPlugin,
   AsymmetricMatcherPlugin,
+  HTMLElementPlugin,
 ].concat(ImmutablePlugins);
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
