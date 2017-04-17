@@ -4,7 +4,7 @@
   },
   "devDependencies": {
     "babel-jest": "*",
-    "babel-preset-es2015": "*",
+    "babel-preset-env": "*",
     "babel-preset-react": "*",
     "jest": "*",
     "react-test-renderer": "*",
