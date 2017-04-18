@@ -89,7 +89,7 @@ module.exports = class TestNamePatternPrompt {
         const more = total - max;
         this._pipe.write(
           // eslint-disable-next-line max-len
-          `\n  ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
+          `\n ${chalk.dim(`\u203A and ${more} more ${pluralizeTest(more)}`)}`,
         );
       }
     } else {
