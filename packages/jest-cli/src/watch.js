@@ -10,7 +10,6 @@
 'use strict';
 
 import type {Context} from 'types/Context';
-import type {Config} from 'types/Config';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
@@ -22,29 +21,22 @@ const isValidPath = require('./lib/isValidPath');
 const preRunMessage = require('./preRunMessage');
 const runJest = require('./runJest');
 const setState = require('./lib/setState');
+const SearchSource = require('./SearchSource');
 const TestWatcher = require('./TestWatcher');
 const Prompt = require('./lib/Prompt');
 const TestPathPatternPrompt = require('./TestPathPatternPrompt');
 const TestNamePatternPrompt = require('./TestNamePatternPrompt');
 const {KEYS, CLEAR} = require('./constants');
 
+let hasExitListener = false;
+
 const watch = (
-  config: Config,
-  pipe: stream$Writable | tty$WriteStream,
+  contexts: Array<Context>,
   argv: Object,
-  hasteMap: HasteMap,
-  hasteContext: Context,
-  hasDeprecationWarnings?: boolean,
+  pipe: stream$Writable | tty$WriteStream,
+  hasteMapInstances: Array<HasteMap>,
   stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
-  if (hasDeprecationWarnings) {
-    return handleDeprecatedWarnings(pipe, stdin)
-      .then(() => {
-        watch(config, pipe, argv, hasteMap, hasteContext);
-      })
-      .catch(() => process.exit(0));
-  }
-
   setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern ||
@@ -52,35 +44,55 @@ const watch = (
   });
 
   const prompt = new Prompt();
-  const testPathPatternPrompt = new TestPathPatternPrompt(config, pipe, prompt);
+  const testPathPatternPrompt = new TestPathPatternPrompt(pipe, prompt);
   const testNamePatternPrompt = new TestNamePatternPrompt(pipe, prompt);
+  let searchSources = contexts.map(context => ({
+    context,
+    searchSource: new SearchSource(context),
+  }));
   let hasSnapshotFailure = false;
   let isRunning = false;
   let testWatcher;
   let shouldDisplayWatchUsage = true;
   let isWatchUsageDisplayed = false;
 
-  testPathPatternPrompt.updateSearchSource(hasteContext);
+  testPathPatternPrompt.updateSearchSources(searchSources);
 
-  hasteMap.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-    const validPaths = eventsQueue.filter(({filePath}) => {
-      return isValidPath(config, filePath);
+  hasteMapInstances.forEach((hasteMapInstance, index) => {
+    hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+      const validPaths = eventsQueue.filter(({filePath}) => {
+        return isValidPath(contexts[index].config, filePath);
+      });
+
+      if (validPaths.length) {
+        const context = (contexts[index] = createContext(
+          contexts[index].config,
+          {
+            hasteFS,
+            moduleMap,
+          },
+        ));
+        prompt.abort();
+        searchSources = searchSources.slice();
+        searchSources[index] = {
+          context,
+          searchSource: new SearchSource(context),
+        };
+        testPathPatternPrompt.updateSearchSources(searchSources);
+        startRun();
+      }
     });
-
-    if (validPaths.length) {
-      hasteContext = createContext(config, {hasteFS, moduleMap});
-      prompt.abort();
-      testPathPatternPrompt.updateSearchSource(hasteContext);
-      startRun();
-    }
   });
 
-  process.on('exit', () => {
-    if (prompt.isEntering()) {
-      pipe.write(ansiEscapes.cursorDown());
-      pipe.write(ansiEscapes.eraseDown);
-    }
-  });
+  if (!hasExitListener) {
+    hasExitListener = true;
+    process.on('exit', () => {
+      if (prompt.isEntering()) {
+        pipe.write(ansiEscapes.cursorDown());
+        pipe.write(ansiEscapes.eraseDown);
+      }
+    });
+  }
 
   const startRun = (overrideConfig: Object = {}) => {
     if (isRunning) {
@@ -91,44 +103,39 @@ const watch = (
     isInteractive && pipe.write(CLEAR);
     preRunMessage.print(pipe);
     isRunning = true;
-    return runJest(
-      hasteContext,
+    contexts.forEach(context => {
       // $FlowFixMe
-      Object.freeze(
+      context.config = Object.freeze(
         // $FlowFixMe
         Object.assign(
           {
             testNamePattern: argv.testNamePattern,
             testPathPattern: argv.testPathPattern,
           },
-          config,
+          context.config,
           overrideConfig,
         ),
-      ),
-      argv,
-      pipe,
-      testWatcher,
-      startRun,
-      results => {
-        isRunning = false;
-        hasSnapshotFailure = !!results.snapshot.failure;
-        // Create a new testWatcher instance so that re-runs won't be blocked.
-        // The old instance that was passed to Jest will still be interrupted
-        // and prevent test runs from the previous run.
-        testWatcher = new TestWatcher({isWatchMode: true});
-        if (shouldDisplayWatchUsage) {
-          pipe.write(usage(argv, hasSnapshotFailure));
-          shouldDisplayWatchUsage = false; // hide Watch Usage after first run
-          isWatchUsageDisplayed = true;
-        } else {
-          pipe.write(showToggleUsagePrompt());
-          shouldDisplayWatchUsage = false;
-          isWatchUsageDisplayed = false;
-        }
+      );
+    });
+    return runJest(contexts, argv, pipe, testWatcher, startRun, results => {
+      isRunning = false;
+      hasSnapshotFailure = !!results.snapshot.failure;
+      // Create a new testWatcher instance so that re-runs won't be blocked.
+      // The old instance that was passed to Jest will still be interrupted
+      // and prevent test runs from the previous run.
+      testWatcher = new TestWatcher({isWatchMode: true});
+      if (shouldDisplayWatchUsage) {
+        pipe.write(usage(argv, hasSnapshotFailure));
+        shouldDisplayWatchUsage = false; // hide Watch Usage after first run
+        isWatchUsageDisplayed = true;
+      } else {
+        pipe.write(showToggleUsagePrompt());
+        shouldDisplayWatchUsage = false;
+        isWatchUsageDisplayed = false;
+      }
 
-        testNamePatternPrompt.updateCachedTestResults(results.testResults);
-      },
-    ).then(() => {}, error => console.error(chalk.red(error.stack)));
+      testNamePatternPrompt.updateCachedTestResults(results.testResults);
+    }).catch(error => console.error(chalk.red(error.stack)));
   };
 
   const onKeypress = (key: string) => {
@@ -232,39 +239,6 @@ const watch = (
 
   startRun();
   return Promise.resolve();
-};
-
-const handleDeprecatedWarnings = (
-  pipe: stream$Writable | tty$WriteStream,
-  stdin: stream$Readable | tty$ReadStream = process.stdin,
-) => {
-  return new Promise((resolve, reject) => {
-    if (typeof stdin.setRawMode === 'function') {
-      const messages = [
-        chalk.red('There are deprecation warnings.\n'),
-        chalk.dim(' \u203A Press ') + 'Enter' + chalk.dim(' to continue.'),
-        chalk.dim(' \u203A Press ') + 'Esc' + chalk.dim(' to exit.'),
-      ];
-
-      pipe.write(messages.join('\n'));
-
-      // $FlowFixMe
-      stdin.setRawMode(true);
-      stdin.resume();
-      stdin.setEncoding('hex');
-      stdin.on('data', (key: string) => {
-        if (key === KEYS.ENTER) {
-          resolve();
-        } else if (
-          [KEYS.ESCAPE, KEYS.CONTROL_C, KEYS.CONTROL_D].indexOf(key) !== -1
-        ) {
-          reject();
-        }
-      });
-    } else {
-      resolve();
-    }
-  });
 };
 
 const usage = (argv, snapshotFailure, delimiter = '\n') => {

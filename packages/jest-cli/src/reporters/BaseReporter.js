@@ -11,8 +11,9 @@
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
+import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const preRunMessage = require('../preRunMessage');
 
@@ -26,7 +27,6 @@ class BaseReporter {
   onRunStart(
     config: Config,
     results: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
     preRunMessage.remove(process.stderr);
@@ -37,9 +37,9 @@ class BaseReporter {
   onTestStart(test: Test) {}
 
   onRunComplete(
+    contexts: Set<Context>,
     config: Config,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
   ): ?Promise<any> {}
 
   _setError(error: Error) {

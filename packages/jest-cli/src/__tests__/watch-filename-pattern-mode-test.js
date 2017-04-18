@@ -31,6 +31,10 @@ jest.mock(
   '../SearchSource',
   () =>
     class {
+      constructor(context) {
+        this._context = context;
+      }
+
       findMatchingTests(pattern) {
         const paths = [
           './path/to/file1-test.js',
@@ -46,7 +50,13 @@ jest.mock(
           './path/to/file11-test.js',
         ].filter(path => path.match(pattern));
 
-        return {paths};
+        return {
+          tests: paths.map(path => ({
+            context: this._context,
+            duration: null,
+            path,
+          })),
+        };
       }
     },
 );
@@ -80,35 +90,23 @@ afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
-  let hasteMap;
+  let hasteMapInstances;
   let argv;
-  let hasteContext;
-  let config;
-  let hasDeprecationWarnings;
+  let contexts;
   let stdin;
 
   beforeEach(() => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
-    hasteMap = {on: () => {}};
+    hasteMapInstances = [{on: () => {}}];
     argv = {};
-    hasteContext = {};
-    config = {};
-    hasDeprecationWarnings = false;
+    contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "P" enters pattern mode', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -144,16 +142,8 @@ describe('Watch mode flows', () => {
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 

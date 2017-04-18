@@ -12,10 +12,10 @@
 import type {Context} from './Context';
 import type {Path} from './Config';
 
-export type Test = {
+export type Test = {|
   context: Context,
   path: Path,
-  duration?: number,
-};
+  duration: ?number,
+|};
 
 export type Tests = Array<Test>;

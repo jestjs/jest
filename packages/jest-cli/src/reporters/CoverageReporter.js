@@ -11,8 +11,8 @@
 
 import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
+import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
-import type {RunnerContext} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 
@@ -60,11 +60,11 @@ class CoverageReporter extends BaseReporter {
   }
 
   onRunComplete(
+    contexts: Set<Context>,
     config: Config,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
   ) {
-    this._addUntestedFiles(config, runnerContext);
+    this._addUntestedFiles(contexts);
     let map = this._coverageMap;
     let sourceFinder: Object;
     if (config.mapCoverage) {
@@ -104,37 +104,42 @@ class CoverageReporter extends BaseReporter {
     this._checkThreshold(map, config);
   }
 
-  _addUntestedFiles(config: Config, runnerContext: RunnerContext) {
-    if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+  _addUntestedFiles(contexts: Set<Context>) {
+    const files = [];
+    contexts.forEach(context => {
+      const config = context.config;
+      if (config.collectCoverageFrom && config.collectCoverageFrom.length) {
+        context.hasteFS
+          .matchFilesWithGlob(config.collectCoverageFrom, config.rootDir)
+          .forEach(filePath =>
+            files.push({
+              config,
+              path: filePath,
+            }));
+      }
+    });
+    if (files.length) {
       if (isInteractive) {
         process.stderr.write(
           RUNNING_TEST_COLOR('Running coverage on untested files...'),
         );
       }
-      const files = runnerContext.hasteFS.matchFilesWithGlob(
-        config.collectCoverageFrom,
-        config.rootDir,
-      );
-
-      files.forEach(filename => {
-        if (!this._coverageMap.data[filename]) {
+      files.forEach(({config, path}) => {
+        if (!this._coverageMap.data[path]) {
           try {
-            const source = fs.readFileSync(filename).toString();
-            const result = generateEmptyCoverage(source, filename, config);
+            const source = fs.readFileSync(path).toString();
+            const result = generateEmptyCoverage(source, path, config);
             if (result) {
               this._coverageMap.addFileCoverage(result.coverage);
               if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
+                this._sourceMapStore.registerURL(path, result.sourceMapPath);
               }
             }
           } catch (e) {
             console.error(
               chalk.red(
                 `
-              Failed to collect coverage from ${filename}
+              Failed to collect coverage from ${path}
               ERROR: ${e}
               STACK: ${e.stack}
             `,

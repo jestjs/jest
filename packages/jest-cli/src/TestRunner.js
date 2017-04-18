@@ -16,8 +16,7 @@ import type {
 } from 'types/TestResult';
 import type {Config} from 'types/Config';
 import type {Context} from 'types/Context';
-import type {HasteFS} from 'types/HasteMap';
-import type {RunnerContext} from 'types/Reporters';
+import type {PathPattern} from './SearchSource';
 import type {Test, Tests} from 'types/TestRunner';
 import type BaseReporter from './reporters/BaseReporter';
 
@@ -43,9 +42,12 @@ class CancelRun extends Error {
   }
 }
 
-type Options = {|
+export type Options = {|
   maxWorkers: number,
-  getTestSummary: () => string,
+  pattern: PathPattern,
+  startRun: () => *,
+  testNamePattern: string,
+  testPathPattern: string,
 |};
 
 type OnTestFailure = (test: Test, err: TestError) => void;
@@ -54,26 +56,14 @@ type OnTestSuccess = (test: Test, result: TestResult) => void;
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
-  _context: Context;
   _config: Config;
   _options: Options;
-  _startRun: () => *;
   _dispatcher: ReporterDispatcher;
 
-  constructor(
-    hasteContext: Context,
-    config: Config,
-    options: Options,
-    startRun: () => *,
-  ) {
+  constructor(config: Config, options: Options) {
     this._config = config;
-    this._dispatcher = new ReporterDispatcher(
-      hasteContext.hasteFS,
-      options.getTestSummary,
-    );
-    this._context = hasteContext;
+    this._dispatcher = new ReporterDispatcher();
     this._options = options;
-    this._startRun = startRun;
     this._setupReporters();
   }
 
@@ -87,13 +77,14 @@ class TestRunner {
 
   async runTests(tests: Tests, watcher: TestWatcher) {
     const timings = [];
+    const contexts = new Set();
     tests.forEach(test => {
+      contexts.add(test.context);
       if (test.duration) {
         timings.push(test.duration);
       }
     });
 
-    const config = this._config;
     const aggregatedResults = createAggregatedResults(tests.length);
     const estimatedTime = Math.ceil(
       getEstimatedTime(timings, this._options.maxWorkers) / 1000,
@@ -122,7 +113,7 @@ class TestRunner {
       }
       addResult(aggregatedResults, testResult);
       this._dispatcher.onTestResult(test, testResult, aggregatedResults);
-      this._bailIfNeeded(aggregatedResults, watcher);
+      this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
     const onFailure = (test: Test, error: TestError) => {
@@ -140,19 +131,21 @@ class TestRunner {
     };
 
     const updateSnapshotState = () => {
-      const status = snapshot.cleanup(
-        this._context.hasteFS,
-        config.updateSnapshot,
-      );
-      aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-      aggregatedResults.snapshot.didUpdate = config.updateSnapshot;
-      aggregatedResults.snapshot.failure = !!(!config.updateSnapshot &&
+      contexts.forEach(context => {
+        const status = snapshot.cleanup(
+          context.hasteFS,
+          this._config.updateSnapshot,
+        );
+        aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
+      });
+      aggregatedResults.snapshot.didUpdate = this._config.updateSnapshot;
+      aggregatedResults.snapshot.failure = !!(!this._config.updateSnapshot &&
         (aggregatedResults.snapshot.unchecked ||
           aggregatedResults.snapshot.unmatched ||
           aggregatedResults.snapshot.filesRemoved));
     };
 
-    this._dispatcher.onRunStart(config, aggregatedResults, {
+    this._dispatcher.onRunStart(this._config, aggregatedResults, {
       estimatedTime,
       showStatus: !runInBand,
     });
@@ -170,7 +163,7 @@ class TestRunner {
     updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
 
-    this._dispatcher.onRunComplete(config, aggregatedResults);
+    this._dispatcher.onRunComplete(contexts, this._config, aggregatedResults);
 
     const anyTestFailures = !(aggregatedResults.numFailedTests === 0 &&
       aggregatedResults.numRuntimeErrorTestSuites === 0);
@@ -293,18 +286,26 @@ class TestRunner {
       this.addReporter(new CoverageReporter());
     }
 
-    this.addReporter(new SummaryReporter());
+    this.addReporter(new SummaryReporter(this._options));
     if (config.notify) {
-      this.addReporter(new NotifyReporter(this._startRun));
+      this.addReporter(new NotifyReporter(this._options.startRun));
     }
   }
 
-  _bailIfNeeded(aggregatedResults: AggregatedResult, watcher: TestWatcher) {
+  _bailIfNeeded(
+    contexts: Set<Context>,
+    aggregatedResults: AggregatedResult,
+    watcher: TestWatcher,
+  ) {
     if (this._config.bail && aggregatedResults.numFailedTests !== 0) {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {
-        this._dispatcher.onRunComplete(this._config, aggregatedResults);
+        this._dispatcher.onRunComplete(
+          contexts,
+          this._config,
+          aggregatedResults,
+        );
         process.exit(1);
       }
     }
@@ -426,10 +427,8 @@ const buildFailureTestResult = (
 class ReporterDispatcher {
   _disabled: boolean;
   _reporters: Array<BaseReporter>;
-  _runnerContext: RunnerContext;
 
-  constructor(hasteFS: HasteFS, getTestSummary: () => string) {
-    this._runnerContext = {getTestSummary, hasteFS};
+  constructor() {
     this._reporters = [];
   }
 
@@ -445,7 +444,7 @@ class ReporterDispatcher {
 
   onTestResult(test, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(test, testResult, results, this._runnerContext));
+      reporter.onTestResult(test, testResult, results));
   }
 
   onTestStart(test) {
@@ -454,12 +453,12 @@ class ReporterDispatcher {
 
   onRunStart(config, results, options) {
     this._reporters.forEach(reporter =>
-      reporter.onRunStart(config, results, this._runnerContext, options));
+      reporter.onRunStart(config, results, options));
   }
 
-  onRunComplete(config, results) {
+  onRunComplete(contexts, config, results) {
     this._reporters.forEach(reporter =>
-      reporter.onRunComplete(config, results, this._runnerContext));
+      reporter.onRunComplete(contexts, config, results));
   }
 
   // Return a list of last errors for every reporter
