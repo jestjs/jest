@@ -17,12 +17,14 @@ const HTML_ELEMENT_REGEXP = /(HTML\w*?Element)/;
 const test = isHTMLElement;
 
 function isHTMLElement(value: any) {
-  return value !== undefined &&
+  return (
+    value !== undefined &&
     value !== null &&
     value.nodeType === 1 &&
     value.constructor !== undefined &&
     value.constructor.name !== undefined &&
-    HTML_ELEMENT_REGEXP.test(value.constructor.name);
+    HTML_ELEMENT_REGEXP.test(value.constructor.name)
+  );
 }
 
 function printChildren(flatChildren, print, indent, colors, opts) {
@@ -43,11 +45,13 @@ function printAttributes(attributes, print, indent, colors, opts) {
   return attributes
     .sort()
     .map(attribute => {
-      return opts.spacing +
+      return (
+        opts.spacing +
         indent(colors.prop.open + attribute.name + colors.prop.close + '=') +
         colors.value.open +
         `"${attribute.value}"` +
-        colors.value.close;
+        colors.value.close
+      );
     })
     .join('');
 }
@@ -77,7 +81,8 @@ const print = (
   const closeInNewLine = hasAttributes && !opts.min;
   if (flatChildren.length) {
     const children = printChildren(flatChildren, print, indent, colors, opts);
-    result += colors.tag.open +
+    result +=
+      colors.tag.open +
       (closeInNewLine ? '\n' : '') +
       '>' +
       colors.tag.close +
@@ -90,10 +95,8 @@ const print = (
       '>' +
       colors.tag.close;
   } else {
-    result += colors.tag.open +
-      (closeInNewLine ? '\n' : ' ') +
-      '/>' +
-      colors.tag.close;
+    result +=
+      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
   }
 
   return result;

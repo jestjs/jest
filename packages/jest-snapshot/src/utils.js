@@ -128,7 +128,7 @@ const getSnapshotData = (snapshotPath: Path, update: boolean) => {
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
 const addExtraLineBreaks = string =>
-  string.includes('\n') ? `\n${string}\n` : string;
+  (string.includes('\n') ? `\n${string}\n` : string);
 
 const serialize = (data: any): string => {
   return addExtraLineBreaks(

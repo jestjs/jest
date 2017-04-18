@@ -11,10 +11,7 @@
 'use strict';
 
 const {stringify} = require('jest-matcher-utils');
-const {
-  getObjectSubset,
-  getPath,
-} = require('../utils');
+const {getObjectSubset, getPath} = require('../utils');
 
 describe('getPath()', () => {
   test('property exists', () => {

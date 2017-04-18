@@ -15,10 +15,10 @@ import type {Colors, Indent, Options, Print} from '../../types.js';
 const IMMUTABLE_NAMESPACE = 'Immutable.';
 const SPACE = ' ';
 
-const addKey = (isMap: boolean, key: any) => isMap ? key + ': ' : '';
+const addKey = (isMap: boolean, key: any) => (isMap ? key + ': ' : '');
 
 const addFinalEdgeSpacing = (length: number, edgeSpacing: string) =>
-  length > 0 ? edgeSpacing : '';
+  (length > 0 ? edgeSpacing : '');
 
 const printImmutable = (
   val: any,
@@ -30,7 +30,8 @@ const printImmutable = (
   isMap: boolean,
 ): string => {
   const [openTag, closeTag] = isMap ? ['{', '}'] : ['[', ']'];
-  let result = IMMUTABLE_NAMESPACE +
+  let result =
+    IMMUTABLE_NAMESPACE +
     immutableDataStructureName +
     SPACE +
     openTag +
@@ -40,16 +41,19 @@ const printImmutable = (
   val.forEach((item, key) =>
     immutableArray.push(
       indent(addKey(isMap, key) + print(item, print, indent, opts, colors)),
-    ));
+    ),
+  );
 
   result += immutableArray.join(',' + opts.spacing);
   if (!opts.min && immutableArray.length > 0) {
     result += ',';
   }
 
-  return result +
+  return (
+    result +
     addFinalEdgeSpacing(immutableArray.length, opts.edgeSpacing) +
-    closeTag;
+    closeTag
+  );
 };
 
 module.exports = printImmutable;

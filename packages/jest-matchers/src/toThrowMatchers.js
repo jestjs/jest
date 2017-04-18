@@ -13,9 +13,7 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
-const {
-  escapeStrForRegex,
-} = require('jest-regex-util');
+const {escapeStrForRegex} = require('jest-regex-util');
 const {
   formatStackTrace,
   separateMessageFromStack,
@@ -29,66 +27,66 @@ const {
   printExpected,
   printWithType,
 } = require('jest-matcher-utils');
-const {
-  equals,
-} = require('./jasmine-utils');
+const {equals} = require('./jasmine-utils');
 
-const createMatcher = matcherName =>
-  (actual: Function, expected: string | Error | RegExp) => {
-    const value = expected;
-    let error;
+const createMatcher = matcherName => (
+  actual: Function,
+  expected: string | Error | RegExp,
+) => {
+  const value = expected;
+  let error;
 
-    if (typeof actual !== 'function') {
-      throw new Error(
-        matcherHint(matcherName, 'function', getType(value)) +
-          '\n\n' +
-          'Received value must be a function, but instead ' +
-          `"${getType(actual)}" was found`,
-      );
-    }
+  if (typeof actual !== 'function') {
+    throw new Error(
+      matcherHint(matcherName, 'function', getType(value)) +
+        '\n\n' +
+        'Received value must be a function, but instead ' +
+        `"${getType(actual)}" was found`,
+    );
+  }
 
-    try {
-      actual();
-    } catch (e) {
-      error = e;
-    }
+  try {
+    actual();
+  } catch (e) {
+    error = e;
+  }
 
-    if (typeof expected === 'string') {
-      expected = new RegExp(escapeStrForRegex(expected));
-    }
+  if (typeof expected === 'string') {
+    expected = new RegExp(escapeStrForRegex(expected));
+  }
 
-    if (typeof expected === 'function') {
-      return toThrowMatchingError(matcherName, error, expected);
-    } else if (expected instanceof RegExp) {
-      return toThrowMatchingStringOrRegexp(matcherName, error, expected, value);
-    } else if (expected && typeof expected === 'object') {
-      return toThrowMatchingErrorInstance(matcherName, error, expected);
-    } else if (expected === undefined) {
-      const pass = error !== undefined;
-      return {
-        message: pass
-          ? () =>
-              matcherHint('.not' + matcherName, 'function', '') +
-              '\n\n' +
-              'Expected the function not to throw an error.\n' +
-              printActualErrorMessage(error)
-          : () =>
-              matcherHint(matcherName, 'function', getType(value)) +
-              '\n\n' +
-              'Expected the function to throw an error.\n' +
-              printActualErrorMessage(error),
-        pass,
-      };
-    } else {
-      throw new Error(
-        matcherHint('.not' + matcherName, 'function', getType(value)) +
-          '\n\n' +
-          'Unexpected argument passed.\nExpected: ' +
-          `${printExpected('string')}, ${printExpected('Error (type)')} or ${printExpected('regexp')}.\n` +
-          printWithType('Got', String(expected), printExpected),
-      );
-    }
-  };
+  if (typeof expected === 'function') {
+    return toThrowMatchingError(matcherName, error, expected);
+  } else if (expected instanceof RegExp) {
+    return toThrowMatchingStringOrRegexp(matcherName, error, expected, value);
+  } else if (expected && typeof expected === 'object') {
+    return toThrowMatchingErrorInstance(matcherName, error, expected);
+  } else if (expected === undefined) {
+    const pass = error !== undefined;
+    return {
+      message: pass
+        ? () =>
+            matcherHint('.not' + matcherName, 'function', '') +
+            '\n\n' +
+            'Expected the function not to throw an error.\n' +
+            printActualErrorMessage(error)
+        : () =>
+            matcherHint(matcherName, 'function', getType(value)) +
+            '\n\n' +
+            'Expected the function to throw an error.\n' +
+            printActualErrorMessage(error),
+      pass,
+    };
+  } else {
+    throw new Error(
+      matcherHint('.not' + matcherName, 'function', getType(value)) +
+        '\n\n' +
+        'Unexpected argument passed.\nExpected: ' +
+        `${printExpected('string')}, ${printExpected('Error (type)')} or ${printExpected('regexp')}.\n` +
+        printWithType('Got', String(expected), printExpected),
+    );
+  }
+};
 
 const matchers: MatchersObject = {
   toThrow: createMatcher('.toThrow'),
@@ -176,7 +174,8 @@ const toThrowMatchingError = (
 const printActualErrorMessage = error => {
   if (error) {
     const {message, stack} = separateMessageFromStack(error.stack);
-    return `Instead, it threw:\n` +
+    return (
+      `Instead, it threw:\n` +
       RECEIVED_COLOR(
         '  ' +
           highlightTrailingWhitespace(message, RECEIVED_BG) +
@@ -185,7 +184,8 @@ const printActualErrorMessage = error => {
             rootDir: process.cwd(),
             testMatch: [],
           }),
-      );
+      )
+    );
   }
 
   return `But it didn't throw anything.`;

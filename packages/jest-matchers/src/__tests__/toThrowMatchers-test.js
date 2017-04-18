@@ -17,7 +17,8 @@ class Error {
   constructor(message) {
     this.message = message;
     this.name = 'Error';
-    this.stack = 'Error\n' +
+    this.stack =
+      'Error\n' +
       '  at jestExpect' +
       ' (packages/jest-matchers/src/__tests__/toThrowMatchers-test.js:24:74)';
   }
@@ -48,9 +49,8 @@ class Error {
 
       test('did not throw at all', () => {
         expect(() =>
-          jestExpect(() => {})[toThrow](
-            'apple',
-          )).toThrowErrorMatchingSnapshot();
+          jestExpect(() => {})[toThrow]('apple'),
+        ).toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but message did not match', () => {
@@ -89,9 +89,8 @@ class Error {
 
       test('did not throw at all', () => {
         expect(() =>
-          jestExpect(() => {})[toThrow](
-            /apple/,
-          )).toThrowErrorMatchingSnapshot();
+          jestExpect(() => {})[toThrow](/apple/),
+        ).toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but message did not match', () => {
@@ -147,7 +146,8 @@ class Error {
 
       test('did not throw at all', () => {
         expect(() =>
-          expect(() => {})[toThrow](Err)).toThrowErrorMatchingSnapshot();
+          expect(() => {})[toThrow](Err),
+        ).toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but class did not match', () => {
@@ -169,12 +169,14 @@ class Error {
 
     test('invalid arguments', () => {
       expect(() =>
-        jestExpect(() => {})[toThrow](111)).toThrowErrorMatchingSnapshot();
+        jestExpect(() => {})[toThrow](111),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test('invalid actual', () => {
       expect(() =>
-        jestExpect('a string')[toThrow]()).toThrowErrorMatchingSnapshot();
+        jestExpect('a string')[toThrow](),
+      ).toThrowErrorMatchingSnapshot();
     });
   });
 });

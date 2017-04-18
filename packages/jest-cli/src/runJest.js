@@ -42,14 +42,16 @@ const formatTestPathPattern = pattern => {
 
 const getNoTestsFoundMessage = (testRunData, pattern) => {
   if (pattern.onlyChanged) {
-    return chalk.bold(
-      'No tests found related to files changed since last commit.\n',
-    ) +
+    return (
+      chalk.bold(
+        'No tests found related to files changed since last commit.\n',
+      ) +
       chalk.dim(
         pattern.watch
           ? 'Press `a` to run all tests, or run Jest with `--watchAll`.'
           : 'Run Jest without `-o` to run all tests.',
-      );
+      )
+    );
   }
 
   const pluralize = (word: string, count: number, ending: string) =>
@@ -83,11 +85,13 @@ const getNoTestsFoundMessage = (testRunData, pattern) => {
           `Jest Documentation: ` +
           `facebook.github.io/jest/docs/configuration.html`;
   });
-  return chalk.bold('No tests found') +
+  return (
+    chalk.bold('No tests found') +
     '\n' +
     individualResults.join('\n') +
     '\n' +
-    `Pattern: ${chalk.yellow(testPathPattern)} - 0 matches`;
+    `Pattern: ${chalk.yellow(testPathPattern)} - 0 matches`
+  );
 };
 
 const getTestPaths = async (context, pattern, argv, pipe) => {

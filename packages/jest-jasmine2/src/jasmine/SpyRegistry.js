@@ -52,15 +52,18 @@ function isSpy(putativeSpy) {
   if (!putativeSpy) {
     return false;
   }
-  return putativeSpy.and instanceof SpyStrategy &&
-    putativeSpy.calls instanceof CallTracker;
+  return (
+    putativeSpy.and instanceof SpyStrategy &&
+    putativeSpy.calls instanceof CallTracker
+  );
 }
 
 const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 
 function SpyRegistry(options) {
   options = options || {};
-  const currentSpies = options.currentSpies ||
+  const currentSpies =
+    options.currentSpies ||
     function() {
       return [];
     };

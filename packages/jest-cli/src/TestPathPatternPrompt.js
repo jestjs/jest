@@ -27,7 +27,7 @@ type SearchSources = Array<{|
   searchSource: SearchSource,
 |}>;
 
-const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
+const pluralizeFile = (total: number) => (total === 1 ? 'file' : 'files');
 
 const usage = () =>
   `\n ${chalk.bold('Pattern Mode Usage')}\n` +
@@ -109,7 +109,8 @@ module.exports = class TestPathPatternPrompt {
           return highlight(path, filePath, pattern, context.config.rootDir);
         })
         .forEach(filePath =>
-          this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
+          this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`),
+        );
 
       if (total > max) {
         const more = total - max;

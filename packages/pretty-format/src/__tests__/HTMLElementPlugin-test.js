@@ -50,8 +50,10 @@ describe('HTMLElement Plugin', () => {
     parent.setAttribute('id', 123);
     parent.setAttribute('class', 'classy');
 
-    expect(parent).toPrettyPrintTo('<div\n  id="123"\n  class="classy"\n/>', {
-    });
+    expect(parent).toPrettyPrintTo(
+      '<div\n  id="123"\n  class="classy"\n/>',
+      {},
+    );
   });
 
   it('supports an element with text content', () => {

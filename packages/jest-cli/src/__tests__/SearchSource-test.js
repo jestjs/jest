@@ -151,7 +151,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -169,7 +170,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -186,7 +188,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -203,7 +206,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -220,7 +224,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
       });
     });
@@ -234,7 +239,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
       });
     });
@@ -248,7 +254,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -265,7 +272,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
@@ -282,7 +290,8 @@ describe('SearchSource', () => {
       });
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
-          path.relative(rootDir, absPath));
+          path.relative(rootDir, absPath),
+        );
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),

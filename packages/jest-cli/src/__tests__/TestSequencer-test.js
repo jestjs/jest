@@ -62,7 +62,8 @@ test('sorts based on timing information', () => {
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
       '/test-ab.js': [SUCCESS, 3],
-    }));
+    }),
+  );
   expect(sequencer.sort(toTests(['/test-a.js', '/test-ab.js']))).toEqual([
     {context, duration: 5, path: '/test-a.js'},
     {context, duration: 3, path: '/test-ab.js'},
@@ -76,7 +77,8 @@ test('sorts based on failures and timing information', () => {
       '/test-ab.js': [FAIL, 0],
       '/test-c.js': [FAIL, 6],
       '/test-d.js': [SUCCESS, 2],
-    }));
+    }),
+  );
   expect(
     sequencer.sort(
       toTests(['/test-a.js', '/test-ab.js', '/test-c.js', '/test-d.js']),
@@ -97,7 +99,8 @@ test('sorts based on failures, timing information and file size', () => {
       '/test-c.js': [FAIL],
       '/test-d.js': [SUCCESS, 2],
       '/test-efg.js': [FAIL],
-    }));
+    }),
+  );
   expect(
     sequencer.sort(
       toTests([
@@ -123,7 +126,8 @@ test('writes the cache based on the results', () => {
       '/test-a.js': [SUCCESS, 5],
       '/test-b.js': [FAIL, 1],
       '/test-c.js': [FAIL],
-    }));
+    }),
+  );
 
   const testPaths = ['/test-a.js', '/test-b.js', '/test-c.js'];
   const tests = sequencer.sort(toTests(testPaths));
@@ -163,14 +167,14 @@ test('writes the cache based on the results', () => {
 test('works with multiple contexts', () => {
   fs.readFileSync = jest.fn(
     cacheName =>
-      cacheName.startsWith(path.sep + 'cache' + path.sep)
+      (cacheName.startsWith(path.sep + 'cache' + path.sep)
         ? JSON.stringify({
             '/test-a.js': [SUCCESS, 5],
             '/test-b.js': [FAIL, 1],
           })
         : JSON.stringify({
             '/test-c.js': [FAIL],
-          }),
+          })),
   );
 
   const testPaths = [

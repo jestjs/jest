@@ -135,9 +135,8 @@ class Resolver {
     // node modules (ie. are not relative requires). This enables us to speed
     // up resolution when we build a dependency graph because we don't have
     // to look at modules that may not exist and aren't mocked.
-    const skipResolution = options &&
-      options.skipNodeResolution &&
-      !moduleName.includes(path.sep);
+    const skipResolution =
+      options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
     if (!skipResolution) {
       module = Resolver.findNodeModule(moduleName, {
@@ -247,7 +246,8 @@ class Resolver {
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
-    const id = moduleType +
+    const id =
+      moduleType +
       sep +
       (absolutePath ? absolutePath + sep : '') +
       (mockPath ? mockPath + sep : '');
@@ -313,14 +313,16 @@ class Resolver {
               (_, index) => matches[parseInt(index, 10)],
             );
           }
-          return this.getModule(moduleName) ||
+          return (
+            this.getModule(moduleName) ||
             Resolver.findNodeModule(moduleName, {
               basedir: dirname,
               browser: this._options.browser,
               extensions,
               moduleDirectory,
               paths,
-            });
+            })
+          );
         }
       }
     }

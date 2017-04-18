@@ -16,7 +16,8 @@ const docblock = require('../');
 
 describe('docblock', () => {
   it('extracts valid docblock with line comment', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       ' * @providesModule foo' +
       os.EOL +
@@ -37,7 +38,8 @@ describe('docblock', () => {
   });
 
   it('extracts valid docblock', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       ' * @providesModule foo' +
       os.EOL +
@@ -50,7 +52,8 @@ describe('docblock', () => {
   });
 
   it('extracts valid docblock with more comments', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       ' * @providesModule foo' +
       os.EOL +
@@ -65,7 +68,8 @@ describe('docblock', () => {
   });
 
   it('extracts from invalid docblock', () => {
-    const code = '/*' +
+    const code =
+      '/*' +
       os.EOL +
       ' * @providesModule foo' +
       os.EOL +
@@ -78,7 +82,8 @@ describe('docblock', () => {
   });
 
   it('returns extract and parsedocblock', () => {
-    const code = '/** @provides module-name */' +
+    const code =
+      '/** @provides module-name */' +
       os.EOL +
       '' +
       '' +
@@ -94,7 +99,8 @@ describe('docblock', () => {
   });
 
   it('parses directives out of a docblock', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       '' +
       ' * @providesModule foo' +
@@ -115,7 +121,8 @@ describe('docblock', () => {
   });
 
   it('parses directives out of a docblock with comments', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       '' +
       ' * Copyright 2004-present Facebook. All Rights Reserved.' +
@@ -145,7 +152,8 @@ describe('docblock', () => {
   });
 
   it('parses directives out of a docblock with line comments', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       '' +
       ' * @providesModule foo' +
@@ -161,7 +169,8 @@ describe('docblock', () => {
   });
 
   it('parses multiline directives', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       '' +
       ' * Copyright 2004-present Facebook. All Rights Reserved.' +
@@ -191,7 +200,8 @@ describe('docblock', () => {
   });
 
   it('supports slashes in @providesModule directive', () => {
-    const code = '/**' +
+    const code =
+      '/**' +
       os.EOL +
       '' +
       ' * @providesModule apple/banana' +

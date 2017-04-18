@@ -10,9 +10,9 @@
 'use strict';
 
 export type Colors = Object;
-export type Indent = (string) => string;
+export type Indent = string => string;
 export type Refs = Array<any>;
-export type Print = (any) => string;
+export type Print = any => string;
 export type StringOrNull = string | null;
 
 export type Options = {|
@@ -42,7 +42,7 @@ export type Plugin = {
     opts: Options,
     colors: Colors,
   ) => string,
-  test: (any) => boolean,
+  test: any => boolean,
 };
 
 export type Plugins = Array<Plugin>;

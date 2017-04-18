@@ -96,7 +96,7 @@ const canUseWatchman = ((): boolean => {
 })();
 
 const escapePathSeparator = string =>
-  path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string;
+  (path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string);
 
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
@@ -253,9 +253,8 @@ class HasteMap extends EventEmitter {
           this._persist(hasteMap);
           const hasteFS = new HasteFS(hasteMap.files);
           const moduleMap = new HasteModuleMap(hasteMap.map, hasteMap.mocks);
-          const __hasteMapForTest = (process.env.NODE_ENV === 'test' &&
-            hasteMap) ||
-            null;
+          const __hasteMapForTest =
+            (process.env.NODE_ENV === 'test' && hasteMap) || null;
           return this._watch(hasteMap, hasteFS, moduleMap).then(() => ({
             __hasteMapForTest,
             hasteFS,
@@ -305,13 +304,13 @@ class HasteMap extends EventEmitter {
         map[id] = Object.create(null);
       }
       const moduleMap = map[id];
-      const platform = getPlatformExtension(
-        module[H.PATH],
-        this._options.platforms,
-      ) || H.GENERIC_PLATFORM;
+      const platform =
+        getPlatformExtension(module[H.PATH], this._options.platforms) ||
+        H.GENERIC_PLATFORM;
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const message = `jest-haste-map: @providesModule naming collision:\n` +
+        const message =
+          `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${module[H.PATH]} collides with ` +
           `${existingModule[H.PATH]}\n\nThis ` +
@@ -454,7 +453,8 @@ class HasteMap extends EventEmitter {
             } else {
               resolve(metadata);
             }
-          }));
+          }),
+        );
     }
 
     return this._workerPromise;
@@ -623,8 +623,8 @@ class HasteMap extends EventEmitter {
           const add = () => eventsQueue.push({filePath, stat, type});
 
           // Delete the file and all of its metadata.
-          const moduleName = hasteMap.files[filePath] &&
-            hasteMap.files[filePath][H.ID];
+          const moduleName =
+            hasteMap.files[filePath] && hasteMap.files[filePath][H.ID];
           delete hasteMap.files[filePath];
           delete hasteMap.map[moduleName];
           if (
@@ -698,8 +698,10 @@ class HasteMap extends EventEmitter {
       ? ignorePattern.test(filePath)
       : ignorePattern(filePath);
 
-    return ignoreMatched ||
-      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath));
+    return (
+      ignoreMatched ||
+      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
+    );
   }
 
   _isNodeModulesDir(filePath: Path): boolean {

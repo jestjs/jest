@@ -138,16 +138,23 @@ class Status {
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
-        content += wrapAnsiString(
-          RUNNING +
-            trimAndFormatPath(RUNNING_TEXT.length + 1, config, testPath, width),
-          width,
-        ) + '\n';
+        content +=
+          wrapAnsiString(
+            RUNNING +
+              trimAndFormatPath(
+                RUNNING_TEXT.length + 1,
+                config,
+                testPath,
+                width,
+              ),
+            width,
+          ) + '\n';
       }
     });
 
     if (this._showStatus && this._aggregatedResults) {
-      content += '\n' +
+      content +=
+        '\n' +
         getSummary(this._aggregatedResults, {
           estimatedTime: this._estimatedTime,
           roundTime: true,
@@ -178,13 +185,10 @@ class Status {
       // Perf optimization to avoid two separate renders When
       // one test finishes and another test starts executing.
       this._emitScheduled = true;
-      setTimeout(
-        () => {
-          this._emit();
-          this._emitScheduled = false;
-        },
-        100,
-      );
+      setTimeout(() => {
+        this._emit();
+        this._emitScheduled = false;
+      }, 100);
     }
   }
 

@@ -21,10 +21,7 @@ const DependencyResolver = require('jest-resolve-dependencies');
 
 const changedFiles = require('jest-changed-files');
 const path = require('path');
-const {
-  escapePathForRegex,
-  replacePathSepForRegex,
-} = require('jest-regex-util');
+const {escapePathForRegex, replacePathSepForRegex} = require('jest-regex-util');
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -137,17 +134,14 @@ class SearchSource {
 
     const testCasesKeys = Object.keys(testCases);
     data.tests = allPaths.filter(test => {
-      return testCasesKeys.reduce(
-        (flag, key) => {
-          if (testCases[key](test.path)) {
-            data.stats[key] = ++data.stats[key] || 1;
-            return flag && true;
-          }
-          data.stats[key] = data.stats[key] || 0;
-          return false;
-        },
-        true,
-      );
+      return testCasesKeys.reduce((flag, key) => {
+        if (testCases[key](test.path)) {
+          data.stats[key] = ++data.stats[key] || 1;
+          return flag && true;
+        }
+        data.stats[key] = data.stats[key] || 0;
+        return false;
+      }, true);
     });
 
     return data;
@@ -162,7 +156,8 @@ class SearchSource {
 
   isTestFilePath(path: Path): boolean {
     return Object.keys(this._testPathCases).every(key =>
-      this._testPathCases[key](path));
+      this._testPathCases[key](path),
+    );
   }
 
   findMatchingTests(testPathPattern: StrOrRegExpPattern): SearchResult {
@@ -215,7 +210,8 @@ class SearchSource {
       ).then(changedPathSets =>
         this.findRelatedTests(
           new Set(Array.prototype.concat.apply([], changedPathSets)),
-        ));
+        ),
+      );
     });
   }
 

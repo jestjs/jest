@@ -14,7 +14,8 @@ const testPath = names => {
   const {addSerializer, getSerializers} = require('../plugins');
   const prev = getSerializers();
   const added = names.map(name =>
-    require(require.resolve(`./plugins/${name}`)));
+    require(require.resolve(`./plugins/${name}`)),
+  );
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.

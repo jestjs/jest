@@ -19,7 +19,7 @@ const stringLength = require('string-length');
 const Prompt = require('./lib/Prompt');
 const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
 
-const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
+const pluralizeTest = (total: number) => (total === 1 ? 'test' : 'tests');
 
 const usage = () =>
   `\n ${chalk.bold('Pattern Mode Usage')}\n` +
@@ -117,13 +117,12 @@ module.exports = class TestNamePatternPrompt {
     const matchedTests = [];
 
     this._cachedTestResults.forEach(({testResults}) =>
-      testResults.forEach(({
-        title,
-      }) => {
+      testResults.forEach(({title}) => {
         if (regex.test(title)) {
           matchedTests.push(title);
         }
-      }));
+      }),
+    );
 
     return matchedTests;
   }

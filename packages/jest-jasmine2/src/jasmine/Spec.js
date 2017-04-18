@@ -40,16 +40,19 @@ function Spec(attrs) {
   this.id = attrs.id;
   this.description = attrs.description || '';
   this.queueableFn = attrs.queueableFn;
-  this.beforeAndAfterFns = attrs.beforeAndAfterFns ||
+  this.beforeAndAfterFns =
+    attrs.beforeAndAfterFns ||
     function() {
       return {befores: [], afters: []};
     };
-  this.userContext = attrs.userContext ||
+  this.userContext =
+    attrs.userContext ||
     function() {
       return {};
     };
   this.onStart = attrs.onStart || function() {};
-  this.getSpecName = attrs.getSpecName ||
+  this.getSpecName =
+    attrs.getSpecName ||
     function() {
       return '';
     };
@@ -183,8 +186,8 @@ const extractCustomPendingMessage = function(e) {
   const boilerplateStart = fullMessage.indexOf(
     Spec.pendingSpecExceptionMessage,
   );
-  const boilerplateEnd = boilerplateStart +
-    Spec.pendingSpecExceptionMessage.length;
+  const boilerplateEnd =
+    boilerplateStart + Spec.pendingSpecExceptionMessage.length;
 
   return fullMessage.substr(boilerplateEnd);
 };
