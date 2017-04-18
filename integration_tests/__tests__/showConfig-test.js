@@ -13,7 +13,7 @@ const path = require('path');
 const runJest = require('../runJest');
 const skipOnWindows = require('skipOnWindows');
 
-describe('jest --debug', () => {
+describe('jest --showConfig', () => {
   skipOnWindows.suite();
 
   const dir = path.resolve(__dirname, '..', 'verbose_reporter');
@@ -24,11 +24,16 @@ describe('jest --debug', () => {
     }
   });
 
-  it('outputs debugging info before running the test', () => {
-    const {stdout} = runJest(dir, ['--debug', '--no-cache']);
-    expect(stdout).toMatch('"version": "');
-    expect(stdout).toMatch('"framework": "jasmine2",');
-    expect(stdout).toMatch('"config": {');
-    // config contains many file paths so we cannot do snapshot test
+  it('outputs config info and exits', () => {
+    const root = path.join(__dirname, '..', '..', '..');
+    expect.addSnapshotSerializer({
+      print: val => val
+        .replace(new RegExp(root, 'g'), '/mocked/root/path')
+        .replace(/"name": "(.+)"/, '"name": "[md5 hash]"')
+        .replace(/"cacheDirectory": "(.+)"/, '"cacheDirectory": "/tmp/jest"'),
+      test: val => typeof val === 'string',
+    });
+    const {stdout} = runJest(dir, ['--showConfig', '--no-cache']);
+    expect(stdout).toMatchSnapshot();
   });
 });

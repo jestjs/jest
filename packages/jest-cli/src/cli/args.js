@@ -189,6 +189,10 @@ const options = {
       'set up the testing framework before each test.',
     type: 'string',
   },
+  showConfig: {
+    description: 'Print your jest config and then exits.',
+    type: 'boolean',
+  },
   silent: {
     default: false,
     description: 'Prevent tests from printing messages through the console.',

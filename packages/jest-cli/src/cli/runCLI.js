@@ -46,8 +46,12 @@ module.exports = (
   }
 
   const _run = async ({config, hasDeprecationWarnings}) => {
-    if (argv.debug) {
+    if (argv.debug || argv.showConfig) {
       logDebugMessages(config, pipe);
+    }
+
+    if (argv.showConfig) {
+      process.exit(0);
     }
 
     createDirectory(config.cacheDirectory);

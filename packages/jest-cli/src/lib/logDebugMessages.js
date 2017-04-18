@@ -20,9 +20,14 @@ const logDebugMessages = (
 ): void => {
   /* $FlowFixMe */
   const testFramework = require(config.testRunner);
-  pipe.write('jest version = ' + VERSION + '\n');
-  pipe.write('test framework = ' + testFramework.name + '\n');
-  pipe.write('config = ' + JSON.stringify(config, null, '  ') + '\n');
+  /* eslint-disable sort-keys */
+  const output = {
+    version: VERSION,
+    framework: testFramework.name,
+    config,
+  };
+  /* eslint-enable sort-keys */
+  pipe.write(JSON.stringify(output, null, '  ') + '\n');
 };
 
 module.exports = logDebugMessages;

@@ -161,6 +161,10 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 The path to a module that runs some code to configure or set up the testing framework before each test.
 
+### `--showConfig`
+
+Print your Jest config and then exits.
+
 ### `--silent`
 
 Prevent tests from printing messages through the console.
