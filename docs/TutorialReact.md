@@ -13,7 +13,11 @@ applications.
 
 ## Setup
 
-If you are just getting started with React, we recommend using [create-react-app](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)!
+### Setup with Create React App
+
+If you are just getting started with React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests)! You don't need to do any extra steps for setup, and can head straight to the next section.
+
+### Setup without Create React App
 
 If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](/jest/docs/getting-started.html#using-babel).
 
