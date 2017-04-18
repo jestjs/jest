@@ -12,6 +12,7 @@ jest.mock('fs');
 const TestSequencer = require('../TestSequencer');
 
 const fs = require('fs');
+const path = require('path');
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -162,7 +163,7 @@ test('writes the cache based on the results', () => {
 test('works with multiple contexts', () => {
   fs.readFileSync = jest.fn(
     cacheName =>
-      cacheName.startsWith('/cache/')
+      cacheName.startsWith(path.sep + 'cache' + path.sep)
         ? JSON.stringify({
             '/test-a.js': [SUCCESS, 5],
             '/test-b.js': [FAIL, 1],
