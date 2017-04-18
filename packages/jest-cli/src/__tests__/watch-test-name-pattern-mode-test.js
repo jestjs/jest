@@ -104,35 +104,23 @@ afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
-  let hasteMap;
+  let hasteMapInstances;
   let argv;
-  let hasteContext;
-  let config;
-  let hasDeprecationWarnings;
+  let contexts;
   let stdin;
 
   beforeEach(() => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
-    hasteMap = {on: () => {}};
+    hasteMapInstances = [{on: () => {}}];
     argv = {};
-    hasteContext = {};
-    config = {};
-    hasDeprecationWarnings = false;
+    contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "T" enters pattern mode', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.T);
@@ -168,16 +156,8 @@ describe('Watch mode flows', () => {
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.T);
 

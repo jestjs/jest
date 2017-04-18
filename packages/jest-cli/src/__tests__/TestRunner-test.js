@@ -30,7 +30,7 @@ jest.mock('../TestWorker', () => {});
 jest.mock('../reporters/DefaultReporter');
 
 test('.addReporter() .removeReporter()', () => {
-  const runner = new TestRunner({}, {}, {});
+  const runner = new TestRunner({}, {});
   const reporter = new SummaryReporter();
   runner.addReporter(reporter);
   expect(runner._dispatcher._reporters).toContain(reporter);
@@ -43,7 +43,7 @@ describe('_createInBandTestRun()', () => {
     const config = {watch: true};
     const rawModuleMap = jest.fn();
     const context = {config, moduleMap: {getRawModuleMap: () => rawModuleMap}};
-    const runner = new TestRunner(context, config, {maxWorkers: 2});
+    const runner = new TestRunner(config, {maxWorkers: 2});
 
     return runner
       ._createParallelTestRun(
@@ -70,7 +70,7 @@ describe('_createInBandTestRun()', () => {
   test('does not inject the rawModuleMap in non watch mode', () => {
     const config = {watch: false};
     const context = {config};
-    const runner = new TestRunner(context, config, {maxWorkers: 1});
+    const runner = new TestRunner(config, {maxWorkers: 1});
 
     return runner
       ._createParallelTestRun(

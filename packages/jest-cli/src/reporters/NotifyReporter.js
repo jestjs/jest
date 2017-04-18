@@ -11,6 +11,7 @@
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Config} from 'types/Config';
+import type {Context} from 'types/Context';
 
 const BaseReporter = require('./BaseReporter');
 const notifier = require('node-notifier');
@@ -29,7 +30,11 @@ class NotifyReporter extends BaseReporter {
     this._startRun = startRun;
   }
 
-  onRunComplete(config: Config, result: AggregatedResult): void {
+  onRunComplete(
+    contexts: Set<Context>,
+    config: Config,
+    result: AggregatedResult,
+  ): void {
     const success = result.numFailedTests === 0 &&
       result.numRuntimeErrorTestSuites === 0;
 

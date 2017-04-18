@@ -11,7 +11,8 @@
 'use strict';
 
 import type {Context} from 'types/Context';
-import type {Config, Path} from 'types/Config';
+import type {Test} from 'types/TestRunner';
+import type SearchSource from './SearchSource';
 
 const ansiEscapes = require('ansi-escapes');
 const chalk = require('chalk');
@@ -19,8 +20,12 @@ const {getTerminalWidth} = require('./lib/terminalUtils');
 const highlight = require('./lib/highlight');
 const stringLength = require('string-length');
 const {trimAndFormatPath} = require('./reporters/utils');
-const SearchSource = require('./SearchSource');
 const Prompt = require('./lib/Prompt');
+
+type SearchSources = Array<{|
+  context: Context,
+  searchSource: SearchSource,
+|}>;
 
 const pluralizeFile = (total: number) => total === 1 ? 'file' : 'files';
 
@@ -34,17 +39,11 @@ const usage = () =>
 const usageRows = usage().split('\n').length;
 
 module.exports = class TestPathPatternPrompt {
-  _config: Config;
   _pipe: stream$Writable | tty$WriteStream;
   _prompt: Prompt;
-  _searchSource: SearchSource;
+  _searchSources: SearchSources;
 
-  constructor(
-    config: Config,
-    pipe: stream$Writable | tty$WriteStream,
-    prompt: Prompt,
-  ) {
-    this._config = config;
+  constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
     this._pipe = pipe;
     this._prompt = prompt;
   }
@@ -65,16 +64,19 @@ module.exports = class TestPathPatternPrompt {
       regex = new RegExp(pattern, 'i');
     } catch (e) {}
 
-    const paths = regex
-      ? this._searchSource.findMatchingTests(pattern).paths
-      : [];
+    let tests = [];
+    if (regex) {
+      this._searchSources.forEach(({searchSource, context}) => {
+        tests = tests.concat(searchSource.findMatchingTests(pattern).tests);
+      });
+    }
 
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
-    this._printTypeahead(pattern, paths, 10);
+    this._printTypeahead(pattern, tests, 10);
   }
 
-  _printTypeahead(pattern: string, allResults: Array<Path>, max: number) {
+  _printTypeahead(pattern: string, allResults: Array<Test>, max: number) {
     const total = allResults.length;
     const results = allResults.slice(0, max);
     const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
@@ -97,14 +99,14 @@ module.exports = class TestPathPatternPrompt {
       const padding = stringLength(prefix) + 2;
 
       results
-        .map(rawPath => {
+        .map(({path, context}) => {
           const filePath = trimAndFormatPath(
             padding,
-            this._config,
-            rawPath,
+            context.config,
+            path,
             width,
           );
-          return highlight(rawPath, filePath, pattern, this._config.rootDir);
+          return highlight(path, filePath, pattern, context.config.rootDir);
         })
         .forEach(filePath =>
           this._pipe.write(`\n  ${chalk.dim('\u203A')} ${filePath}`));
@@ -129,7 +131,7 @@ module.exports = class TestPathPatternPrompt {
     this._pipe.write(ansiEscapes.cursorRestorePosition);
   }
 
-  updateSearchSource(context: Context) {
-    this._searchSource = new SearchSource(context, this._config);
+  updateSearchSources(searchSources: SearchSources) {
+    this._searchSources = searchSources;
   }
 };

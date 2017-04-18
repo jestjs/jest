@@ -11,11 +11,6 @@
 
 import type {FS} from 'jest-haste-map';
 
-export type RunnerContext = {|
-  hasteFS: FS,
-  getTestSummary: () => string,
-|};
-
 export type ReporterOnStartOptions = {|
   estimatedTime: number,
   showStatus: boolean,
