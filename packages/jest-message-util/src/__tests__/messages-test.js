@@ -11,7 +11,8 @@
 
 const {formatResultsErrors, formatExecError} = require('../');
 
-const unixStackTrace = `  ` +
+const unixStackTrace =
+  `  ` +
   `at stack (../jest-jasmine2/build/jasmine-2.4.1.js:1580:17)
   at Object.addResult (../jest-jasmine2/build/jasmine-2.4.1.js:1550:14)
   at jasmine.addResult (../jest-jasmine2/build/index.js:82:44)

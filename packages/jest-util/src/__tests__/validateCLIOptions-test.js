@@ -29,7 +29,8 @@ test('fails for unknown option', () => {
     unknown: 'unknown',
   };
   expect(() =>
-    validateCLIOptions(argv, options)).toThrowErrorMatchingSnapshot();
+    validateCLIOptions(argv, options),
+  ).toThrowErrorMatchingSnapshot();
 });
 
 test('fails for multiple unknown options', () => {
@@ -40,5 +41,6 @@ test('fails for multiple unknown options', () => {
     test: 'unknown',
   };
   expect(() =>
-    validateCLIOptions(argv, options)).toThrowErrorMatchingSnapshot();
+    validateCLIOptions(argv, options),
+  ).toThrowErrorMatchingSnapshot();
 });

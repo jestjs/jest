@@ -40,16 +40,19 @@ function Spec(attrs) {
   this.id = attrs.id;
   this.description = attrs.description || '';
   this.queueableFn = attrs.queueableFn;
-  this.beforeAndAfterFns = attrs.beforeAndAfterFns ||
+  this.beforeAndAfterFns =
+    attrs.beforeAndAfterFns ||
     function() {
       return {befores: [], afters: []};
     };
-  this.userContext = attrs.userContext ||
+  this.userContext =
+    attrs.userContext ||
     function() {
       return {};
     };
   this.onStart = attrs.onStart || function() {};
-  this.getSpecName = attrs.getSpecName ||
+  this.getSpecName =
+    attrs.getSpecName ||
     function() {
       return '';
     };
@@ -110,14 +113,19 @@ Spec.prototype.execute = function(onComplete, enabled) {
   }
 };
 
-Spec.prototype.onException = function onException(e) {
-  if (Spec.isPendingSpecException(e)) {
-    this.pend(extractCustomPendingMessage(e));
+Spec.prototype.onException = function onException(error) {
+  if (Spec.isPendingSpecException(error)) {
+    this.pend(extractCustomPendingMessage(error));
     return;
   }
 
-  if (e instanceof ExpectationFailed) {
+  if (error instanceof ExpectationFailed) {
     return;
+  }
+
+  if (error instanceof require('assert').AssertionError) {
+    const assertionErrorMessage = require('../assert-support');
+    error = assertionErrorMessage(error, {expand: this.expand});
   }
 
   this.addExpectationResult(
@@ -127,7 +135,7 @@ Spec.prototype.onException = function onException(e) {
       passed: false,
       expected: '',
       actual: '',
-      error: e,
+      error,
     },
     true,
   );
@@ -178,8 +186,8 @@ const extractCustomPendingMessage = function(e) {
   const boilerplateStart = fullMessage.indexOf(
     Spec.pendingSpecExceptionMessage,
   );
-  const boilerplateEnd = boilerplateStart +
-    Spec.pendingSpecExceptionMessage.length;
+  const boilerplateEnd =
+    boilerplateStart + Spec.pendingSpecExceptionMessage.length;
 
   return fullMessage.substr(boilerplateEnd);
 };

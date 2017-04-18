@@ -50,7 +50,8 @@ test('validates default jest-validate config', () => {
     expect(() =>
       validate(config, {
         exampleConfig: validConfig,
-      })).toThrowErrorMatchingSnapshot();
+      }),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -60,7 +61,8 @@ test(`pretty prints valid config for Function`, () => {
   expect(() =>
     validate(config, {
       exampleConfig: validConfig,
-    })).toThrowErrorMatchingSnapshot();
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });
 
 test('omits null and undefined config values', () => {

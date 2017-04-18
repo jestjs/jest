@@ -1,16 +1,15 @@
 {
   "dependencies": {
-    "react": "~15.3.1",
-    "react-dom": "~15.3.1"
+    "react": "15.4.2",
+    "react-dom": "15.4.2"
   },
   "devDependencies": {
     "babel-jest": "*",
-    "babel-preset-es2015": "*",
+    "babel-preset-env": "*",
     "babel-preset-react": "*",
-    "enzyme": "~2.4.1",
+    "enzyme": "*",
     "jest": "*",
-    "react-addons-test-utils": "15.3.2",
-    "regenerator-runtime": "*"
+    "react-addons-test-utils": "15.4.2"
   },
   "scripts": {
     "test": "jest"

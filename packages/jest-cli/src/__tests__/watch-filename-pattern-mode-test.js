@@ -29,32 +29,42 @@ jest.mock('ansi-escapes', () => ({
 
 jest.mock(
   '../SearchSource',
-  () =>
-    class {
-      findMatchingTests(pattern) {
-        const paths = [
-          './path/to/file1-test.js',
-          './path/to/file2-test.js',
-          './path/to/file3-test.js',
-          './path/to/file4-test.js',
-          './path/to/file5-test.js',
-          './path/to/file6-test.js',
-          './path/to/file7-test.js',
-          './path/to/file8-test.js',
-          './path/to/file9-test.js',
-          './path/to/file10-test.js',
-          './path/to/file11-test.js',
-        ].filter(path => path.match(pattern));
+  () => class {
+    constructor(context) {
+      this._context = context;
+    }
 
-        return {paths};
-      }
-    },
+    findMatchingTests(pattern) {
+      const paths = [
+        './path/to/file1-test.js',
+        './path/to/file2-test.js',
+        './path/to/file3-test.js',
+        './path/to/file4-test.js',
+        './path/to/file5-test.js',
+        './path/to/file6-test.js',
+        './path/to/file7-test.js',
+        './path/to/file8-test.js',
+        './path/to/file9-test.js',
+        './path/to/file10-test.js',
+        './path/to/file11-test.js',
+      ].filter(path => path.match(pattern));
+
+      return {
+        tests: paths.map(path => ({
+          context: this._context,
+          duration: null,
+          path,
+        })),
+      };
+    }
+  },
 );
 
 jest.doMock('chalk', () =>
   Object.assign(new chalk.constructor({enabled: false}), {
     stripColor: str => str,
-  }));
+  }),
+);
 
 jest.doMock(
   '../runJest',
@@ -80,35 +90,23 @@ afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
   let pipe;
-  let hasteMap;
+  let hasteMapInstances;
   let argv;
-  let hasteContext;
-  let config;
-  let hasDeprecationWarnings;
+  let contexts;
   let stdin;
 
   beforeEach(() => {
     terminalWidth = 80;
     pipe = {write: jest.fn()};
-    hasteMap = {on: () => {}};
+    hasteMapInstances = [{on: () => {}}];
     argv = {};
-    hasteContext = {};
-    config = {};
-    hasDeprecationWarnings = false;
+    contexts = [{config: {}}];
     stdin = new MockStdin();
   });
 
   it('Pressing "P" enters pattern mode', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
     stdin.emit(KEYS.P);
@@ -144,16 +142,8 @@ describe('Watch mode flows', () => {
   });
 
   it('Results in pattern mode get truncated appropriately', () => {
-    config = {rootDir: ''};
-    watch(
-      config,
-      pipe,
-      argv,
-      hasteMap,
-      hasteContext,
-      hasDeprecationWarnings,
-      stdin,
-    );
+    contexts[0].config = {rootDir: ''};
+    watch(contexts, argv, pipe, hasteMapInstances, stdin);
 
     stdin.emit(KEYS.P);
 

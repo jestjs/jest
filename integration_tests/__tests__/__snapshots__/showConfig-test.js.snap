@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jest --showConfig outputs config info and exits 1`] = `
+{
+  "config": {
+    "automock": false,
+    "bail": false,
+    "browser": false,
+    "cacheDirectory": "/tmp/jest",
+    "clearMocks": false,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json",
+      "text",
+      "lcov",
+      "clover"
+    ],
+    "expand": false,
+    "globals": {},
+    "haste": {
+      "providesModuleNodeModules": []
+    },
+    "mapCoverage": false,
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "node"
+    ],
+    "moduleNameMapper": {},
+    "modulePathIgnorePatterns": [],
+    "noStackTrace": false,
+    "notify": false,
+    "preset": null,
+    "resetMocks": false,
+    "resetModules": false,
+    "roots": [
+      "/mocked/root/path/jest/integration_tests/verbose_reporter"
+    ],
+    "snapshotSerializers": [],
+    "testEnvironment": "/mocked/root/path/jest/packages/jest-environment-node/build/index.js",
+    "testMatch": [
+      "**/__tests__/**/*.js?(x)",
+      "**/?(*.)(spec|test).js?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testRegex": "",
+    "testResultsProcessor": null,
+    "testURL": "about:blank",
+    "timers": "real",
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "useStderr": false,
+    "verbose": null,
+    "watch": false,
+    "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
+    "name": "[md5 hash]",
+    "setupFiles": [
+      "/mocked/root/path/jest/node_modules/regenerator-runtime/runtime.js"
+    ],
+    "testRunner": "/mocked/root/path/jest/packages/jest-jasmine2/build/index.js",
+    "transform": [
+      [
+        "^.+\\\\.jsx?$",
+        "/mocked/root/path/jest/integration_tests/verbose_reporter/node_modules/babel-jest/build/index.js"
+      ]
+    ],
+    "cache": false,
+    "watchman": true
+  },
+  "framework": "jasmine2",
+  "version": "19.0.2"
+}
+
+`;

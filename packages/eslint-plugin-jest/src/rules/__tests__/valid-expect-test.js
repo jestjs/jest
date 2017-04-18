@@ -23,6 +23,8 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
     'expect(true).toBeDefined();',
     'expect([1, 2, 3]).toEqual([1, 2, 3]);',
     'expect(undefined).not.toBeDefined();',
+    'expect(Promise.resolve(2)).resolves.toBeDefined();',
+    'expect(Promise.reject(2)).rejects.toBeDefined();',
   ],
 
   invalid: [
@@ -74,6 +76,22 @@ ruleTester.run('valid-expect', rules['valid-expect'], {
       errors: [
         {
           message: '"toBeDefined" was not called.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).not.toBeDefined;',
+      errors: [
+        {
+          message: '"toBeDefined" was not called.',
+        },
+      ],
+    },
+    {
+      code: 'expect(true).nope.toBeDefined;',
+      errors: [
+        {
+          message: '"nope" is not a valid property of expect.',
         },
       ],
     },

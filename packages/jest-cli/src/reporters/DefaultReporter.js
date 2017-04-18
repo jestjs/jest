@@ -14,7 +14,8 @@
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
 import type {Config, Path} from 'types/Config';
-import type {ReporterOnStartOptions, RunnerContext} from 'types/Reporters';
+import type {Test} from 'types/TestRunner';
+import type {ReporterOnStartOptions} from 'types/Reporters';
 
 const BaseReporter = require('./BaseReporter');
 const Status = require('./Status');
@@ -33,10 +34,7 @@ const isInteractive = process.stdin.isTTY && !isCI;
 
 class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
-  _currentlyRunning: Map<Path, Config>;
-  _currentStatusHeight: number;
   _err: write;
-  _lastAggregatedResults: AggregatedResult;
   _out: write;
   _status: Status;
 
@@ -77,13 +75,10 @@ class DefaultReporter extends BaseReporter {
         doFlush();
       } else {
         if (!timeout) {
-          timeout = setTimeout(
-            () => {
-              doFlush();
-              timeout = null;
-            },
-            100,
-          );
+          timeout = setTimeout(() => {
+            doFlush();
+            timeout = null;
+          }, 100);
         }
       }
     };
@@ -113,14 +108,13 @@ class DefaultReporter extends BaseReporter {
   onRunStart(
     config: Config,
     aggregatedResults: AggregatedResult,
-    runnerContext: RunnerContext,
     options: ReporterOnStartOptions,
   ) {
     this._status.runStarted(aggregatedResults, options);
   }
 
-  onTestStart(config: Config, testPath: Path) {
-    this._status.testStarted(testPath, config);
+  onTestStart(test: Test) {
+    this._status.testStarted(test.path, test.context.config);
   }
 
   onRunComplete() {
@@ -133,12 +127,20 @@ class DefaultReporter extends BaseReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    this._status.testFinished(config, testResult, aggregatedResults);
-    this._printTestFileSummary(testResult.testFilePath, config, testResult);
+    this._status.testFinished(
+      test.context.config,
+      testResult,
+      aggregatedResults,
+    );
+    this._printTestFileSummary(
+      testResult.testFilePath,
+      test.context.config,
+      testResult,
+    );
   }
 
   _printTestFileSummary(testPath: Path, config: Config, result: TestResult) {

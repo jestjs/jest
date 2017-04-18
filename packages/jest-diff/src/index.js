@@ -15,6 +15,7 @@ import type {DiffOptions} from './diffStrings';
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
 const ReactTestComponentPlugin = require('pretty-format/build/plugins/ReactTestComponent');
 const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
+const HTMLElementPlugin = require('pretty-format/build/plugins/HTMLElement');
 const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
 
 const chalk = require('chalk');
@@ -22,15 +23,13 @@ const diffStrings = require('./diffStrings');
 const {getType} = require('jest-matcher-utils');
 const prettyFormat = require('pretty-format');
 
-const {
-  NO_DIFF_MESSAGE,
-  SIMILAR_MESSAGE,
-} = require('./constants');
+const {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} = require('./constants');
 
 const PLUGINS = [
   ReactTestComponentPlugin,
   ReactElementPlugin,
   AsymmetricMatcherPlugin,
+  HTMLElementPlugin,
 ].concat(ImmutablePlugins);
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
@@ -67,9 +66,11 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
   }
 
   if (expectedType !== getType(b)) {
-    return '  Comparing two different types of values.' +
+    return (
+      '  Comparing two different types of values.' +
       ` Expected ${chalk.green(expectedType)} but ` +
-      `received ${chalk.red(getType(b))}.`;
+      `received ${chalk.red(getType(b))}.`
+    );
   }
 
   if (omitDifference) {

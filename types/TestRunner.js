@@ -9,12 +9,13 @@
  */
 'use strict';
 
-import type {Config, Path} from './Config';
+import type {Context} from './Context';
+import type {Path} from './Config';
 
-export type Test = {
-  config: Config,
+export type Test = {|
+  context: Context,
   path: Path,
-  duration?: number,
-};
+  duration: ?number,
+|};
 
 export type Tests = Array<Test>;

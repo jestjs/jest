@@ -17,11 +17,7 @@ const path = require('path');
 const pkgDir = require('pkg-dir');
 const yargs = require('yargs');
 
-const {
-  Console,
-  setGlobal,
-  validateCLIOptions,
-} = require('jest-util');
+const {Console, setGlobal, validateCLIOptions} = require('jest-util');
 const readConfig = require('jest-config').readConfig;
 const Runtime = require('../');
 

@@ -9,13 +9,13 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
 import type {
   AggregatedResult,
   AssertionResult,
   Suite,
   TestResult,
 } from 'types/TestResult';
+import type {Test} from 'types/TestRunner';
 
 const DefaultReporter = require('./DefaultReporter');
 const chalk = require('chalk');
@@ -59,11 +59,11 @@ class VerboseReporter extends DefaultReporter {
   }
 
   onTestResult(
-    config: Config,
+    test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
-    super.onTestResult(config, result, aggregatedResults);
+    super.onTestResult(test, result, aggregatedResults);
     if (!result.testExecError && !result.skipped) {
       this._logTestResults(result.testResults);
     }
@@ -104,18 +104,15 @@ class VerboseReporter extends DefaultReporter {
     if (this._options.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
-      const skippedCount = tests.reduce(
-        (result, test) => {
-          if (test.status === 'pending') {
-            result += 1;
-          } else {
-            this._logTest(test, indentLevel);
-          }
+      const skippedCount = tests.reduce((result, test) => {
+        if (test.status === 'pending') {
+          result += 1;
+        } else {
+          this._logTest(test, indentLevel);
+        }
 
-          return result;
-        },
-        0,
-      );
+        return result;
+      }, 0);
 
       if (skippedCount > 0) {
         this._logSkippedTests(skippedCount, indentLevel);

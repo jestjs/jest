@@ -20,7 +20,8 @@ jest.mock('worker-farm', () => {
   const mock = jest.fn(
     (options, worker) =>
       workerFarmMock = jest.fn((data, callback) =>
-        require(worker)(data, callback)),
+        require(worker)(data, callback),
+      ),
   );
   mock.end = jest.fn();
   return mock;
@@ -30,7 +31,7 @@ jest.mock('../TestWorker', () => {});
 jest.mock('../reporters/DefaultReporter');
 
 test('.addReporter() .removeReporter()', () => {
-  const runner = new TestRunner({}, {}, {});
+  const runner = new TestRunner({}, {});
   const reporter = new SummaryReporter();
   runner.addReporter(reporter);
   expect(runner._dispatcher._reporters).toContain(reporter);
@@ -42,13 +43,12 @@ describe('_createInBandTestRun()', () => {
   test('injects the rawModuleMap to each the worker in watch mode', () => {
     const config = {watch: true};
     const rawModuleMap = jest.fn();
-    const hasteContext = {moduleMap: {getRawModuleMap: () => rawModuleMap}};
-
-    const runner = new TestRunner(hasteContext, config, {maxWorkers: 2});
+    const context = {config, moduleMap: {getRawModuleMap: () => rawModuleMap}};
+    const runner = new TestRunner(config, {maxWorkers: 2});
 
     return runner
       ._createParallelTestRun(
-        [{config, path: './file-test.js'}, {config, path: './file2-test.js'}],
+        [{context, path: './file-test.js'}, {context, path: './file2-test.js'}],
         new TestWatcher({isWatchMode: config.watch}),
         () => {},
         () => {},
@@ -70,12 +70,12 @@ describe('_createInBandTestRun()', () => {
 
   test('does not inject the rawModuleMap in non watch mode', () => {
     const config = {watch: false};
-
-    const runner = new TestRunner({}, config, {maxWorkers: 1});
+    const context = {config};
+    const runner = new TestRunner(config, {maxWorkers: 1});
 
     return runner
       ._createParallelTestRun(
-        [{config, path: './file-test.js'}, {config, path: './file2-test.js'}],
+        [{context, path: './file-test.js'}, {context, path: './file2-test.js'}],
         new TestWatcher({isWatchMode: config.watch}),
         () => {},
         () => {},

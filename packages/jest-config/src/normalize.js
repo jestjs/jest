@@ -111,17 +111,14 @@ const normalizeCollectCoverageOnlyFrom = (
   config: InitialConfig,
   key: string,
 ) => {
-  return Object.keys(config[key]).reduce(
-    (normObj, filePath) => {
-      filePath = path.resolve(
-        config.rootDir,
-        _replaceRootDirInPath(config.rootDir, filePath),
-      );
-      normObj[filePath] = true;
-      return normObj;
-    },
-    Object.create(null),
-  );
+  return Object.keys(config[key]).reduce((normObj, filePath) => {
+    filePath = path.resolve(
+      config.rootDir,
+      _replaceRootDirInPath(config.rootDir, filePath),
+    );
+    normObj[filePath] = true;
+    return normObj;
+  }, Object.create(null));
 };
 
 const normalizeCollectCoverageFrom = (config: InitialConfig, key: string) => {
@@ -154,9 +151,8 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   return config[key].map(pattern =>
-    utils.replacePathSepForRegex(
-      pattern.replace(/<rootDir>/g, config.rootDir),
-    ));
+    utils.replacePathSepForRegex(pattern.replace(/<rootDir>/g, config.rootDir)),
+  );
 };
 
 const normalizePreprocessor = (config: InitialConfig) => {
@@ -269,117 +265,115 @@ function normalize(config: InitialConfig, argv: Object = {}) {
   const babelJest = setupBabelJest(config);
   const newConfig = Object.assign({}, DEFAULT_CONFIG);
 
-  Object.keys(config).reduce(
-    (newConfig, key) => {
-      let value;
-      switch (key) {
-        case 'collectCoverageOnlyFrom':
-          value = normalizeCollectCoverageOnlyFrom(config, key);
-          break;
-        case 'setupFiles':
-        case 'snapshotSerializers':
-          //$FlowFixMe
-          value = config[key].map(resolve.bind(null, config.rootDir, key));
-          break;
-        case 'roots':
-          //$FlowFixMe
-          value = config[key].map(filePath =>
-            path.resolve(
-              config.rootDir,
-              _replaceRootDirInPath(config.rootDir, filePath),
-            ));
-          break;
-        case 'collectCoverageFrom':
-          value = normalizeCollectCoverageFrom(config, key);
-          break;
-        case 'cacheDirectory':
-        case 'coverageDirectory':
-          value = path.resolve(
+  Object.keys(config).reduce((newConfig, key) => {
+    let value;
+    switch (key) {
+      case 'collectCoverageOnlyFrom':
+        value = normalizeCollectCoverageOnlyFrom(config, key);
+        break;
+      case 'setupFiles':
+      case 'snapshotSerializers':
+        //$FlowFixMe
+        value = config[key].map(resolve.bind(null, config.rootDir, key));
+        break;
+      case 'roots':
+        //$FlowFixMe
+        value = config[key].map(filePath =>
+          path.resolve(
             config.rootDir,
-            //$FlowFixMe
-            _replaceRootDirInPath(config.rootDir, config[key]),
+            _replaceRootDirInPath(config.rootDir, filePath),
+          ),
+        );
+        break;
+      case 'collectCoverageFrom':
+        value = normalizeCollectCoverageFrom(config, key);
+        break;
+      case 'cacheDirectory':
+      case 'coverageDirectory':
+        value = path.resolve(
+          config.rootDir,
+          //$FlowFixMe
+          _replaceRootDirInPath(config.rootDir, config[key]),
+        );
+        break;
+      case 'setupTestFrameworkScriptFile':
+      case 'testResultsProcessor':
+      case 'resolver':
+        //$FlowFixMe
+        value = resolve(config.rootDir, key, config[key]);
+        break;
+      case 'moduleNameMapper':
+        //$FlowFixMe
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          //$FlowFixMe
+          _replaceRootDirTags(config.rootDir, config[key][regex]),
+        ]);
+        break;
+      case 'transform':
+        //$FlowFixMe
+        value = Object.keys(config[key]).map(regex => [
+          regex,
+          //$FlowFixMe
+          resolve(config.rootDir, key, config[key][regex]),
+        ]);
+        break;
+      case 'coveragePathIgnorePatterns':
+      case 'modulePathIgnorePatterns':
+      case 'testPathIgnorePatterns':
+      case 'transformIgnorePatterns':
+      case 'unmockedModulePathPatterns':
+        value = normalizeUnmockedModulePathPatterns(config, key);
+        break;
+      case 'haste':
+        value = Object.assign({}, config[key]);
+        if (value.hasteImplModulePath != null) {
+          value.hasteImplModulePath = resolve(
+            config.rootDir,
+            'haste.hasteImplModulePath',
+            value.hasteImplModulePath,
           );
-          break;
-        case 'setupTestFrameworkScriptFile':
-        case 'testResultsProcessor':
-        case 'resolver':
-          //$FlowFixMe
-          value = resolve(config.rootDir, key, config[key]);
-          break;
-        case 'moduleNameMapper':
-          //$FlowFixMe
-          value = Object.keys(config[key]).map(regex => [
-            regex,
-            //$FlowFixMe
-            _replaceRootDirTags(config.rootDir, config[key][regex]),
-          ]);
-          break;
-        case 'transform':
-          //$FlowFixMe
-          value = Object.keys(config[key]).map(regex => [
-            regex,
-            //$FlowFixMe
-            resolve(config.rootDir, key, config[key][regex]),
-          ]);
-          break;
-        case 'coveragePathIgnorePatterns':
-        case 'modulePathIgnorePatterns':
-        case 'testPathIgnorePatterns':
-        case 'transformIgnorePatterns':
-        case 'unmockedModulePathPatterns':
-          value = normalizeUnmockedModulePathPatterns(config, key);
-          break;
-        case 'haste':
-          value = Object.assign({}, config[key]);
-          if (value.hasteImplModulePath != null) {
-            value.hasteImplModulePath = resolve(
-              config.rootDir,
-              'haste.hasteImplModulePath',
-              value.hasteImplModulePath,
-            );
-          }
-          break;
-        case 'automock':
-        case 'bail':
-        case 'browser':
-        case 'cache':
-        case 'clearMocks':
-        case 'collectCoverage':
-        case 'coverageReporters':
-        case 'coverageThreshold':
-        case 'globals':
-        case 'logHeapUsage':
-        case 'logTransformErrors':
-        case 'mapCoverage':
-        case 'moduleDirectories':
-        case 'moduleFileExtensions':
-        case 'moduleLoader':
-        case 'modulePaths':
-        case 'name':
-        case 'noStackTrace':
-        case 'notify':
-        case 'preset':
-        case 'replname':
-        case 'resetMocks':
-        case 'resetModules':
-        case 'rootDir':
-        case 'testMatch':
-        case 'testEnvironment':
-        case 'testRegex':
-        case 'testRunner':
-        case 'testURL':
-        case 'timers':
-        case 'updateSnapshot':
-        case 'verbose':
-        case 'watchman':
-          value = config[key];
-          break;
-      }
-      newConfig[key] = value;
-      return newConfig;
-    },
-    newConfig,
-  );
+        }
+        break;
+      case 'automock':
+      case 'bail':
+      case 'browser':
+      case 'cache':
+      case 'clearMocks':
+      case 'collectCoverage':
+      case 'coverageReporters':
+      case 'coverageThreshold':
+      case 'globals':
+      case 'logHeapUsage':
+      case 'logTransformErrors':
+      case 'mapCoverage':
+      case 'moduleDirectories':
+      case 'moduleFileExtensions':
+      case 'moduleLoader':
+      case 'modulePaths':
+      case 'name':
+      case 'noStackTrace':
+      case 'notify':
+      case 'preset':
+      case 'replname':
+      case 'resetMocks':
+      case 'resetModules':
+      case 'rootDir':
+      case 'testMatch':
+      case 'testEnvironment':
+      case 'testRegex':
+      case 'testRunner':
+      case 'testURL':
+      case 'timers':
+      case 'updateSnapshot':
+      case 'verbose':
+      case 'watchman':
+        value = config[key];
+        break;
+    }
+    newConfig[key] = value;
+    return newConfig;
+  }, newConfig);
 
   if (babelJest) {
     const regeneratorRuntimePath = Resolver.findNodeModule(

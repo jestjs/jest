@@ -83,6 +83,7 @@ describe('onRunComplete', () => {
 
   it('getLastError() returns an error when threshold is not met', () => {
     testReporter.onRunComplete(
+      new Set(),
       {
         collectCoverage: true,
         coverageThreshold: {
@@ -99,6 +100,7 @@ describe('onRunComplete', () => {
 
   it('getLastError() returns `undefined` when threshold is met', () => {
     testReporter.onRunComplete(
+      new Set(),
       {
         collectCoverage: true,
         coverageThreshold: {

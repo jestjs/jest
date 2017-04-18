@@ -113,6 +113,11 @@ const options = {
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
   },
+  experimentalProjects: {
+    description: 'A list of projects that use Jest to run all tests in a ' +
+      'single run.',
+    type: 'array',
+  },
   findRelatedTests: {
     description: 'Find related tests for a list of source files that were ' +
       'passed in as arguments. Useful for pre-commit hook integration to run ' +
@@ -188,6 +193,10 @@ const options = {
     description: 'The path to a module that runs some code to configure or ' +
       'set up the testing framework before each test.',
     type: 'string',
+  },
+  showConfig: {
+    description: 'Print your jest config and then exits.',
+    type: 'boolean',
   },
   silent: {
     default: false,

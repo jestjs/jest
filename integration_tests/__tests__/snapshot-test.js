@@ -130,7 +130,8 @@ describe('Snapshot', () => {
     expect(extractSummary(stderr).summary).toMatchSnapshot();
 
     // Write the second snapshot
-    const testData = `test('escape strings two', () => expect('two: \\\'\"').` +
+    const testData =
+      `test('escape strings two', () => expect('two: \\\'\"').` +
       `toMatchSnapshot());`;
     const newTestData = initialTestData + testData;
     fs.writeFileSync(snapshotEscapeTestFile, newTestData, 'utf8');
@@ -280,7 +281,8 @@ describe('Snapshot', () => {
       expect(Object.keys(beforeRemovingSnapshot).length - 1).toBe(
         Object.keys(afterRemovingSnapshot).length,
       );
-      const keyToCheck = 'snapshot works with plain objects and the ' +
+      const keyToCheck =
+        'snapshot works with plain objects and the ' +
         'title has `escape` characters 2';
       expect(beforeRemovingSnapshot[keyToCheck]).not.toBe(undefined);
       expect(afterRemovingSnapshot[keyToCheck]).toBe(undefined);

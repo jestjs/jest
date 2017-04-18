@@ -10,52 +10,15 @@
 'use strict';
 
 const React = require('react');
-const diff = require('jest-diff');
-const prettyFormat = require('../');
 const Immutable = require('immutable');
 const ReactElementPlugin = require('../plugins/ReactElement');
 const ReactTestComponentPlugin = require('../plugins/ReactTestComponent');
 const ImmutablePlugins = require('../plugins/ImmutablePlugins');
+const toPrettyPrintTo = require('./expect-util').getPrettyPrint(
+  [ReactElementPlugin, ReactTestComponentPlugin].concat(ImmutablePlugins),
+);
 
-expect.extend({
-  toPrettyPrintTo(received, expected, opts) {
-    const prettyPrintImmutable = prettyFormat(
-      received,
-      Object.assign(
-        {
-          plugins: [ReactElementPlugin, ReactTestComponentPlugin].concat(
-            ImmutablePlugins,
-          ),
-        },
-        opts,
-      ),
-    );
-    const pass = prettyPrintImmutable === expected;
-
-    const message = pass
-      ? () =>
-          this.utils.matcherHint('.not.toBe') +
-          '\n\n' +
-          `Expected value to not be:\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(prettyPrintImmutable)}`
-      : () => {
-          const diffString = diff(expected, prettyPrintImmutable, {
-            expand: this.expand,
-          });
-          return this.utils.matcherHint('.toBe') +
-            '\n\n' +
-            `Expected value to be:\n` +
-            `  ${this.utils.printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${this.utils.printReceived(prettyPrintImmutable)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '');
-        };
-
-    return {actual: prettyPrintImmutable, message, pass};
-  },
-});
+expect.extend({toPrettyPrintTo});
 
 describe('Immutable.OrderedSet plugin', () => {
   it('supports an empty set', () => {

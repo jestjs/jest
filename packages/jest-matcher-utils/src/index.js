@@ -14,11 +14,14 @@ const chalk = require('chalk');
 const prettyFormat = require('pretty-format');
 const AsymmetricMatcherPlugin = require('pretty-format/build/plugins/AsymmetricMatcher');
 const ReactElementPlugin = require('pretty-format/build/plugins/ReactElement');
+const HTMLElementPlugin = require('pretty-format/build/plugins/HTMLElement');
 const ImmutablePlugins = require('pretty-format/build/plugins/ImmutablePlugins');
 
-const PLUGINS = [AsymmetricMatcherPlugin, ReactElementPlugin].concat(
-  ImmutablePlugins,
-);
+const PLUGINS = [
+  AsymmetricMatcherPlugin,
+  ReactElementPlugin,
+  HTMLElementPlugin,
+].concat(ImmutablePlugins);
 
 export type ValueType =
   | 'array'
@@ -128,10 +131,12 @@ const printWithType = (
   print: (value: any) => string,
 ) => {
   const type = getType(received);
-  return name +
+  return (
+    name +
     ':' +
     (type !== 'null' && type !== 'undefined' ? '\n  ' + type + ': ' : ' ') +
-    print(received);
+    print(received)
+  );
 };
 
 const ensureNoExpected = (expected: any, matcherName: string) => {
@@ -189,12 +194,14 @@ const matcherHint = (
 ) => {
   const secondArgument = options && options.secondArgument;
   const isDirectExpectCall = options && options.isDirectExpectCall;
-  return chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
+  return (
+    chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
     RECEIVED_COLOR(received) +
     chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(') +
     EXPECTED_COLOR(expected) +
     (secondArgument ? `, ${EXPECTED_COLOR(secondArgument)}` : '') +
-    chalk.dim(')');
+    chalk.dim(')')
+  );
 };
 
 module.exports = {

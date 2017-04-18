@@ -309,13 +309,10 @@ describe('FakeTimers', () => {
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
       global.setTimeout(mock3, 0);
-      const intervalHandler = global.setInterval(
-        () => {
-          mock4();
-          global.clearInterval(intervalHandler);
-        },
-        200,
-      );
+      const intervalHandler = global.setInterval(() => {
+        mock4();
+        global.clearInterval(intervalHandler);
+      }, 200);
 
       timers.runAllTimers();
       expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4']);
@@ -396,12 +393,9 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers(global, moduleMocker, null, 100);
       timers.useFakeTimers();
 
-      global.setTimeout(
-        function infinitelyRecursingCallback() {
-          global.setTimeout(infinitelyRecursingCallback, 0);
-        },
-        0,
-      );
+      global.setTimeout(function infinitelyRecursingCallback() {
+        global.setTimeout(infinitelyRecursingCallback, 0);
+      }, 0);
 
       expect(() => {
         timers.runAllTimers();
@@ -429,12 +423,9 @@ describe('FakeTimers', () => {
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
       global.setTimeout(mock3, 0);
-      global.setInterval(
-        () => {
-          mock4();
-        },
-        200,
-      );
+      global.setInterval(() => {
+        mock4();
+      }, 200);
 
       // Move forward to t=50
       timers.runTimersToTime(50);
@@ -470,12 +461,9 @@ describe('FakeTimers', () => {
       const timers = new FakeTimers(global, moduleMocker, null, 100);
       timers.useFakeTimers();
 
-      global.setTimeout(
-        function infinitelyRecursingCallback() {
-          global.setTimeout(infinitelyRecursingCallback, 0);
-        },
-        0,
-      );
+      global.setTimeout(function infinitelyRecursingCallback() {
+        global.setTimeout(infinitelyRecursingCallback, 0);
+      }, 0);
 
       expect(() => {
         timers.runTimersToTime(50);
@@ -566,28 +554,19 @@ describe('FakeTimers', () => {
 
       const runOrder = [];
 
-      global.setTimeout(
-        function cb() {
-          runOrder.push('mock1');
-          global.setTimeout(cb, 100);
-        },
-        100,
-      );
+      global.setTimeout(function cb() {
+        runOrder.push('mock1');
+        global.setTimeout(cb, 100);
+      }, 100);
 
-      global.setTimeout(
-        function cb() {
-          runOrder.push('mock2');
-          global.setTimeout(cb, 0);
-        },
-        0,
-      );
+      global.setTimeout(function cb() {
+        runOrder.push('mock2');
+        global.setTimeout(cb, 0);
+      }, 0);
 
-      global.setInterval(
-        () => {
-          runOrder.push('mock3');
-        },
-        200,
-      );
+      global.setInterval(() => {
+        runOrder.push('mock3');
+      }, 200);
 
       global.setImmediate(() => {
         runOrder.push('mock4');
@@ -616,12 +595,9 @@ describe('FakeTimers', () => {
 
       const fn = jest.genMockFn();
       const timer = global.setTimeout(fn, 10);
-      global.setTimeout(
-        () => {
-          global.clearTimeout(timer);
-        },
-        0,
-      );
+      global.setTimeout(() => {
+        global.clearTimeout(timer);
+      }, 0);
 
       timers.runOnlyPendingTimers();
       expect(fn).not.toBeCalled();

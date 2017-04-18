@@ -12,7 +12,6 @@
 
 const {ChildProcess} = require('child_process');
 const EventEmitter = require('events');
-const {EOL} = require('os');
 const ProjectWorkspace = require('./ProjectWorkspace');
 const {createProcess} = require('./Process');
 
@@ -58,35 +57,18 @@ module.exports = class Settings extends EventEmitter {
   }
 
   getConfig(completed: any) {
-    // It'll want to run tests, we don't want that, so tell it to run tests
-    // in a non-existant folder.
-    const folderThatDoesntExist = 'hi-there-danger-are-you-following-along';
-    const args = ['--debug', folderThatDoesntExist];
-    this.debugprocess = this._createProcess(this.workspace, args);
+    this.debugprocess = this._createProcess(this.workspace, ['--showConfig']);
 
     this.debugprocess.stdout.on('data', (data: Buffer) => {
-      const string = data.toString();
+      const {config, version} = JSON.parse(data.toString());
       // We can give warnings to versions under 17 now
       // See https://github.com/facebook/jest/issues/2343 for moving this into
       // the config object
-      if (string.includes('jest version =')) {
-        const version = string
-          .split('jest version =')
-          .pop()
-          .split(EOL)[0]
-          .trim();
-        this.jestVersionMajor = parseInt(version, 10);
-      }
 
-      // Pull out the data for the config
-      if (string.includes('config =')) {
-        const jsonString = string
-          .split('config =')
-          .pop()
-          .split('No tests found')[0];
-        this.settings = JSON.parse(jsonString);
-        completed();
-      }
+      this.jestVersionMajor = parseInt(version.split('.').shift(), 10);
+      this.settings = config;
+
+      completed();
     });
   }
 };

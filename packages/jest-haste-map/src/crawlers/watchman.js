@@ -17,7 +17,8 @@ const H = require('../constants');
 const path = require('path');
 const watchman = require('fb-watchman');
 
-const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting.html';
+const watchmanURL =
+  'https://facebook.github.io/watchman/docs/troubleshooting.html';
 
 function isDescendant(root: string, child: string): boolean {
   return child.startsWith(root);
@@ -33,12 +34,7 @@ function WatchmanError(error: Error): Error {
 module.exports = function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const {
-    data,
-    extensions,
-    ignore,
-    roots,
-  } = options;
+  const {data, extensions, ignore, roots} = options;
 
   return new Promise((resolve, reject) => {
     const client = new watchman.Client();
@@ -117,8 +113,8 @@ module.exports = function watchmanCrawl(
                 const mtime = typeof fileData.mtime_ms === 'number'
                   ? fileData.mtime_ms
                   : fileData.mtime_ms.toNumber();
-                const isNew = !data.files[name] ||
-                  data.files[name][H.MTIME] !== mtime;
+                const isNew =
+                  !data.files[name] || data.files[name][H.MTIME] !== mtime;
                 if (isNew) {
                   // See ../constants.js
                   files[name] = ['', mtime, 0, []];

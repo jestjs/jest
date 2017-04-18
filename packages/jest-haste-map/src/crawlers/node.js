@@ -120,13 +120,7 @@ function findNative(
 module.exports = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const {
-    data,
-    extensions,
-    forceNodeFilesystemAPI,
-    ignore,
-    roots,
-  } = options;
+  const {data, extensions, forceNodeFilesystemAPI, ignore, roots} = options;
 
   return new Promise(resolve => {
     const callback = list => {

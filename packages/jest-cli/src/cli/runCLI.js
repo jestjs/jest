@@ -10,15 +10,16 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Path} from 'types/Config';
+import type {Config, Path} from 'types/Config';
 
 const Runtime = require('jest-runtime');
 
-const chalk = require('chalk');
 const {Console, clearLine} = require('jest-util');
 const {createDirectory} = require('jest-util');
+const chalk = require('chalk');
 const createContext = require('../lib/createContext');
 const getMaxWorkers = require('../lib/getMaxWorkers');
+const handleDeprecationWarnings = require('../lib/handleDeprecationWarnings');
 const logDebugMessages = require('../lib/logDebugMessages');
 const preRunMessage = require('../preRunMessage');
 const readConfig = require('jest-config').readConfig;
@@ -28,9 +29,9 @@ const watch = require('../watch');
 
 const VERSION = require('../../package.json').version;
 
-module.exports = (
+module.exports = async (
   argv: Object,
-  root: Path,
+  roots: Array<Path>,
   onComplete: (results: ?AggregatedResult) => void,
 ) => {
   const realFs = require('fs');
@@ -38,47 +39,57 @@ module.exports = (
   fs.gracefulify(realFs);
 
   const pipe = argv.json ? process.stderr : process.stdout;
-  argv = argv || {};
   if (argv.version) {
     pipe.write(`v${VERSION}\n`);
     onComplete && onComplete();
     return;
   }
 
-  const _run = async ({config, hasDeprecationWarnings}) => {
-    if (argv.debug) {
-      logDebugMessages(config, pipe);
+  const _run = async (
+    configs: Array<{config: Config, hasDeprecationWarnings: boolean}>,
+  ) => {
+    if (argv.debug || argv.showConfig) {
+      logDebugMessages(configs[0].config, pipe);
     }
 
-    createDirectory(config.cacheDirectory);
-    const hasteMapInstance = Runtime.createHasteMap(config, {
-      console: new Console(pipe, pipe),
-      maxWorkers: getMaxWorkers(argv),
-      resetCache: !config.cache,
-      watch: config.watch,
-    });
+    if (argv.showConfig) {
+      process.exit(0);
+    }
 
-    const hasteMap = await hasteMapInstance.build();
-    const context = createContext(config, hasteMap);
+    const hasteMapInstances = Array(configs.length);
+    const contexts = await Promise.all(
+      configs.map(async ({config}, index) => {
+        createDirectory(config.cacheDirectory);
+        const hasteMapInstance = Runtime.createHasteMap(config, {
+          console: new Console(pipe, pipe),
+          maxWorkers: getMaxWorkers(argv),
+          resetCache: !config.cache,
+          watch: config.watch,
+        });
+        hasteMapInstances[index] = hasteMapInstance;
+        return createContext(config, await hasteMapInstance.build());
+      }),
+    );
+
     if (argv.watch || argv.watchAll) {
-      return watch(
-        config,
-        pipe,
-        argv,
-        hasteMapInstance,
-        context,
-        hasDeprecationWarnings,
-      );
+      if (configs.some(({hasDeprecationWarnings}) => hasDeprecationWarnings)) {
+        try {
+          await handleDeprecationWarnings(pipe, process.stdin);
+          return watch(contexts, argv, pipe, hasteMapInstances);
+        } catch (e) {
+          process.exit(0);
+        }
+      }
+
+      return watch(contexts, argv, pipe, hasteMapInstances);
     } else {
       const startRun = () => {
         preRunMessage.print(pipe);
-        const testWatcher = new TestWatcher({isWatchMode: false});
-        return runJest(
-          context,
-          config,
+        runJest(
+          contexts,
           argv,
           pipe,
-          testWatcher,
+          new TestWatcher({isWatchMode: false}),
           startRun,
           onComplete,
         );
@@ -87,10 +98,12 @@ module.exports = (
     }
   };
 
-  readConfig(argv, root).then(_run).catch(error => {
+  try {
+    await _run(await Promise.all(roots.map(root => readConfig(argv, root))));
+  } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
     console.error(chalk.red(error.stack));
     process.exit(1);
-  });
+  }
 };

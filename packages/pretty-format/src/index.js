@@ -48,7 +48,8 @@ const NEWLINE_REGEXP = /\n/ig;
 const getSymbols = Object.getOwnPropertySymbols || (obj => []);
 
 function isToStringedArrayType(toStringed: string): boolean {
-  return toStringed === '[object Array]' ||
+  return (
+    toStringed === '[object Array]' ||
     toStringed === '[object ArrayBuffer]' ||
     toStringed === '[object DataView]' ||
     toStringed === '[object Float32Array]' ||
@@ -59,7 +60,8 @@ function isToStringedArrayType(toStringed: string): boolean {
     toStringed === '[object Uint8Array]' ||
     toStringed === '[object Uint8ClampedArray]' ||
     toStringed === '[object Uint16Array]' ||
-    toStringed === '[object Uint32Array]';
+    toStringed === '[object Uint32Array]'
+  );
 }
 
 function printNumber(val: number): string {
@@ -186,7 +188,8 @@ function printList(
     const innerIndent = prevIndent + indent;
 
     for (let i = 0; i < list.length; i++) {
-      body += innerIndent +
+      body +=
+        innerIndent +
         print(
           list[i],
           indent,
@@ -231,7 +234,8 @@ function printArguments(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  return (min ? '' : 'Arguments ') +
+  return (
+    (min ? '' : 'Arguments ') +
     printList(
       val,
       indent,
@@ -247,7 +251,8 @@ function printArguments(
       printFunctionName,
       escapeRegex,
       colors,
-    );
+    )
+  );
 }
 
 function printArray(
@@ -266,7 +271,8 @@ function printArray(
   escapeRegex: boolean,
   colors: Colors,
 ): string {
-  return (min ? '' : val.constructor.name + ' ') +
+  return (
+    (min ? '' : val.constructor.name + ' ') +
     printList(
       val,
       indent,
@@ -282,7 +288,8 @@ function printArray(
       printFunctionName,
       escapeRegex,
       colors,
-    );
+    )
+  );
 }
 
 function printMap(
@@ -386,7 +393,7 @@ function printObject(
     keys = keys
       .filter(
         key =>
-        // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
+          // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
           !(typeof key === 'symbol' ||
             toString.call(key) === '[object Symbol]'),
       )
@@ -472,7 +479,8 @@ function printSet(
     const innerIndent = prevIndent + indent;
 
     while (!current.done) {
-      result += innerIndent +
+      result +=
+        innerIndent +
         print(
           current.value[1],
           indent,
@@ -835,15 +843,12 @@ function normalizeTheme(themeOption: ?Theme) {
   // Silently ignore any keys in `theme` that are not in defaults.
   const themeRefined = themeOption;
   const themeDefaults = DEFAULTS.theme;
-  return Object.keys(themeDefaults).reduce(
-    (theme, key) => {
-      theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
-        ? themeRefined[key]
-        : themeDefaults[key];
-      return theme;
-    },
-    {},
-  );
+  return Object.keys(themeDefaults).reduce((theme, key) => {
+    theme[key] = Object.prototype.hasOwnProperty.call(themeOption, key)
+      ? themeRefined[key]
+      : themeDefaults[key];
+    return theme;
+  }, {});
 }
 
 function createIndent(indent: number): string {
