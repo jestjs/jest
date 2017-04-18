@@ -30,17 +30,24 @@ jest.mock('../TestRunner', () => {
 
 jest.mock('../SearchSource', () => {
   const SearchSource = require.requireActual('../SearchSource');
-  SearchSource.prototype.getTestPaths = () =>
-    Promise.resolve({
-      paths: ['/path.js'],
+  SearchSource.prototype.getTestPaths = function() {
+    return Promise.resolve({
       stats: {},
+      tests: [
+        {
+          context: this._context,
+          path: '/path.js',
+        },
+      ],
       total: 1,
     });
+  };
   return SearchSource;
 });
 
 jest.mock('../TestSequencer', () => {
   const TestSequencer = require.requireActual('../TestSequencer');
+  TestSequencer.prototype.sort = jest.fn(tests => tests);
   TestSequencer.prototype.cacheResults = jest.fn();
   return TestSequencer;
 });
@@ -64,15 +71,25 @@ if (process.platform !== 'win32') {
   });
 }
 
-test('passes updateSnapshot to hasteContext.config', async () => {
-  const hasteContext = {
-    config: {rootDir},
-    hasteFS,
-  };
+test('passes updateSnapshot to context.config', async () => {
+  const contexts = [
+    {
+      config,
+      hasteFS,
+    },
+    {
+      config: {
+        rootDir,
+        roots: [],
+        testPathIgnorePatterns: [],
+      },
+      hasteFS,
+    },
+  ];
   const noop = () => {};
   const argv = {};
   const pipe = process.stdout;
   const testWatcher = new TestWatcher({isWatchMode: true});
-  await runJest(hasteContext, config, argv, pipe, testWatcher, noop, noop);
-  expect(hasteContext.config.updateSnapshot).toBe(true);
+  await runJest(contexts, argv, pipe, testWatcher, noop, noop);
+  expect(contexts.every(({config}) => config.updateSnapshot)).toBe(true);
 });
