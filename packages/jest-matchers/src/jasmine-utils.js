@@ -103,10 +103,12 @@ function eq(a, b, aStack, bStack, customTesters) {
       return +a == +b;
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
-      return a.source == b.source &&
+      return (
+        a.source == b.source &&
         a.global == b.global &&
         a.multiline == b.multiline &&
-        a.ignoreCase == b.ignoreCase;
+        a.ignoreCase == b.ignoreCase
+      );
   }
   if (typeof a != 'object' || typeof b != 'object') {
     return false;
@@ -235,8 +237,9 @@ function keys(obj, isArray) {
 function has(obj, key) {
   // CUSTOM JEST CHANGE:
   // TODO(cpojer): remove the `obj[key] !== undefined` check.
-  return Object.prototype.hasOwnProperty.call(obj, key) &&
-    obj[key] !== undefined;
+  return (
+    Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined
+  );
 }
 
 function isA(typeName, value) {

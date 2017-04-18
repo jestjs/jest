@@ -35,8 +35,8 @@ class NotifyReporter extends BaseReporter {
     config: Config,
     result: AggregatedResult,
   ): void {
-    const success = result.numFailedTests === 0 &&
-      result.numRuntimeErrorTestSuites === 0;
+    const success =
+      result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
     if (success) {
       const title = util.format('%d%% Passed', 100);

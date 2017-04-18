@@ -24,13 +24,14 @@ JSDOMEnvironment.mockImplementation(function(config) {
   }
 });
 
-JSDOMEnvironment.prototype.runSourceText.mockImplementation(
-  function(sourceText, filename) {
-    return vm.runInNewContext(sourceText, this.global, {
-      displayErrors: false,
-      filename,
-    });
-  },
-);
+JSDOMEnvironment.prototype.runSourceText.mockImplementation(function(
+  sourceText,
+  filename,
+) {
+  return vm.runInNewContext(sourceText, this.global, {
+    displayErrors: false,
+    filename,
+  });
+});
 
 module.exports = JSDOMEnvironment;

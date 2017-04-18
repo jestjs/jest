@@ -261,8 +261,8 @@ class Runtime {
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
-    const manualMock = moduleName &&
-      this._resolver.getMockModule(from, moduleName);
+    const manualMock =
+      moduleName && this._resolver.getMockModule(from, moduleName);
     if (
       (!options || !options.isInternalModule) &&
       !moduleResource &&
@@ -407,15 +407,12 @@ class Runtime {
   }
 
   getSourceMapInfo() {
-    return Object.keys(this._sourceMapRegistry).reduce(
-      (result, sourcePath) => {
-        if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
-          result[sourcePath] = this._sourceMapRegistry[sourcePath];
-        }
-        return result;
-      },
-      {},
-    );
+    return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
+      if (fs.existsSync(this._sourceMapRegistry[sourcePath])) {
+        result[sourcePath] = this._sourceMapRegistry[sourcePath];
+      }
+      return result;
+    }, {});
   }
 
   setMock(
@@ -505,8 +502,9 @@ class Runtime {
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] = (this._moduleMocker.getMetadata({
-      }): any);
+      this._mockMetaDataCache[modulePath] = (this._moduleMocker.getMetadata(
+        {},
+      ): any);
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute

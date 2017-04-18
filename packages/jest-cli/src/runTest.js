@@ -14,11 +14,7 @@ import type {TestResult} from 'types/TestResult';
 import type {Resolver} from 'types/Resolve';
 
 const BufferedConsole = require('./lib/BufferedConsole');
-const {
-  Console,
-  NullConsole,
-  setGlobal,
-} = require('jest-util');
+const {Console, NullConsole, setGlobal} = require('jest-util');
 
 const {getTestEnvironment} = require('jest-config');
 const fs = require('fs');
@@ -74,7 +70,8 @@ function runTest(path: Path, config: Config, resolver: Resolver) {
   const start = Date.now();
   return TestRunner(config, env, runtime, path)
     .then((result: TestResult) => {
-      const testCount = result.numPassingTests +
+      const testCount =
+        result.numPassingTests +
         result.numFailingTests +
         result.numPendingTests;
       result.perfStats = {end: Date.now(), start};

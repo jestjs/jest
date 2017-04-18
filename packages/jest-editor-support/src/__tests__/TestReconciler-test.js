@@ -23,7 +23,8 @@ const reconcilerWithFile = (file: string): TestReconciler => {
 
 describe('Test Reconciler', () => {
   let parser: TestReconciler;
-  const dangerFilePath = '/Users/orta/dev/projects/danger/' +
+  const dangerFilePath =
+    '/Users/orta/dev/projects/danger/' +
     'danger-js/source/ci_source/_tests/_travis.test.js';
 
   describe('for a simple project', () => {
@@ -37,7 +38,8 @@ describe('Test Reconciler', () => {
 
     it('fails a failing method in the same file', () => {
       parser = reconcilerWithFile('failing_jest_json.json');
-      const testName = 'validates when all Travis environment' +
+      const testName =
+        'validates when all Travis environment' +
         ' vars are set and Josh K says so';
 
       const status = parser.stateForTestAssertion(dangerFilePath, testName);

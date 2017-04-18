@@ -93,7 +93,8 @@ class TestRunner {
     // Run in band if we only have one test or one worker available.
     // If we are confident from previous runs that the tests will finish quickly
     // we also run in band to reduce the overhead of spawning workers.
-    const runInBand = this._options.maxWorkers <= 1 ||
+    const runInBand =
+      this._options.maxWorkers <= 1 ||
       tests.length <= 1 ||
       (tests.length <= 20 &&
         timings.length > 0 &&
@@ -200,7 +201,8 @@ class TestRunner {
               );
             })
             .then(result => onResult(test, result))
-            .catch(err => onFailure(test, err))),
+            .catch(err => onFailure(test, err)),
+        ),
       Promise.resolve(),
     );
   }
@@ -263,7 +265,8 @@ class TestRunner {
       tests.map(test =>
         runTestInWorker(test)
           .then(testResult => onResult(test, testResult))
-          .catch(error => onError(error, test))),
+          .catch(error => onError(error, test)),
+      ),
     );
 
     const cleanup = () => workerFarm.end(farm);
@@ -350,7 +353,8 @@ const addResult = (
   testResult: TestResult,
 ): void => {
   aggregatedResults.testResults.push(testResult);
-  aggregatedResults.numTotalTests += testResult.numPassingTests +
+  aggregatedResults.numTotalTests +=
+    testResult.numPassingTests +
     testResult.numFailingTests +
     testResult.numPendingTests;
   aggregatedResults.numFailedTests += testResult.numFailingTests;
@@ -388,7 +392,8 @@ const addResult = (
   aggregatedResults.snapshot.unchecked += testResult.snapshot.unchecked;
   aggregatedResults.snapshot.unmatched += testResult.snapshot.unmatched;
   aggregatedResults.snapshot.updated += testResult.snapshot.updated;
-  aggregatedResults.snapshot.total += testResult.snapshot.added +
+  aggregatedResults.snapshot.total +=
+    testResult.snapshot.added +
     testResult.snapshot.matched +
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
@@ -444,7 +449,8 @@ class ReporterDispatcher {
 
   onTestResult(test, testResult, results) {
     this._reporters.forEach(reporter =>
-      reporter.onTestResult(test, testResult, results));
+      reporter.onTestResult(test, testResult, results),
+    );
   }
 
   onTestStart(test) {
@@ -453,23 +459,22 @@ class ReporterDispatcher {
 
   onRunStart(config, results, options) {
     this._reporters.forEach(reporter =>
-      reporter.onRunStart(config, results, options));
+      reporter.onRunStart(config, results, options),
+    );
   }
 
   onRunComplete(contexts, config, results) {
     this._reporters.forEach(reporter =>
-      reporter.onRunComplete(contexts, config, results));
+      reporter.onRunComplete(contexts, config, results),
+    );
   }
 
   // Return a list of last errors for every reporter
   getErrors(): Array<Error> {
-    return this._reporters.reduce(
-      (list, reporter) => {
-        const error = reporter.getLastError();
-        return error ? list.concat(error) : list;
-      },
-      [],
-    );
+    return this._reporters.reduce((list, reporter) => {
+      const error = reporter.getLastError();
+      return error ? list.concat(error) : list;
+    }, []);
   }
 
   hasErrors(): boolean {

@@ -133,8 +133,8 @@ FUNCTIONS.mock = args => {
 FUNCTIONS.unmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 
-FUNCTIONS.disableAutomock = (FUNCTIONS.enableAutomock = args =>
-  args.length === 0);
+FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
+  args.length === 0;
 
 module.exports = babel => {
   const isJest = callee =>
@@ -148,11 +148,13 @@ module.exports = babel => {
     const callee = expr.get('callee');
     const object = callee.get('object');
     const property = callee.get('property');
-    return property.isIdentifier() &&
+    return (
+      property.isIdentifier() &&
       FUNCTIONS[property.node.name] &&
       (object.isIdentifier(JEST_GLOBAL) ||
         (callee.isMemberExpression() && shouldHoistExpression(object))) &&
-      FUNCTIONS[property.node.name](expr.get('arguments'));
+      FUNCTIONS[property.node.name](expr.get('arguments'))
+    );
   };
   return {
     visitor: {

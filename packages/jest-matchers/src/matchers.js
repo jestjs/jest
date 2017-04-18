@@ -15,10 +15,7 @@ import type {MatchersObject} from 'types/Matchers';
 
 const diff = require('jest-diff');
 const {escapeStrForRegex} = require('jest-regex-util');
-const {
-  getObjectSubset,
-  getPath,
-} = require('./utils');
+const {getObjectSubset, getPath} = require('./utils');
 const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -30,9 +27,7 @@ const {
   printExpected,
   printWithType,
 } = require('jest-matcher-utils');
-const {
-  equals,
-} = require('./jasmine-utils');
+const {equals} = require('./jasmine-utils');
 
 type ContainIterable =
   | Array<any>
@@ -103,13 +98,15 @@ const matchers: MatchersObject = {
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
-          return matcherHint('.toBe') +
+          return (
+            matcherHint('.toBe') +
             '\n\n' +
             `Expected value to be (using ===):\n` +
             `  ${printExpected(expected)}\n` +
             `Received:\n` +
             `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+          );
         };
 
     // Passing the the actual and expected objects so that a custom reporter
@@ -421,8 +418,9 @@ const matchers: MatchersObject = {
       }
     }
 
-    const pass = converted.findIndex(item =>
-      equals(item, value, [iterableEquality])) !== -1;
+    const pass =
+      converted.findIndex(item => equals(item, value, [iterableEquality])) !==
+      -1;
     const message = pass
       ? () =>
           matcherHint('.not.toContainEqual', collectionType, 'value') +
@@ -457,13 +455,15 @@ const matchers: MatchersObject = {
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
-          return matcherHint('.toEqual') +
+          return (
+            matcherHint('.toEqual') +
             '\n\n' +
             `Expected value to equal:\n` +
             `  ${printExpected(expected)}\n` +
             `Received:\n` +
             `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+          );
         };
 
     // Passing the the actual and expected objects so that a custom reporter
@@ -668,12 +668,14 @@ const matchers: MatchersObject = {
               expand: this.expand,
             },
           );
-          return matcherHint('.toMatchObject') +
+          return (
+            matcherHint('.toMatchObject') +
             `\n\nExpected value to match object:\n` +
             `  ${printExpected(expectedObject)}` +
             `\nReceived:\n` +
             `  ${printReceived(receivedObject)}` +
-            (diffString ? `\nDifference:\n${diffString}` : '');
+            (diffString ? `\nDifference:\n${diffString}` : '')
+          );
         };
 
     return {message, pass};

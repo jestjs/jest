@@ -189,9 +189,8 @@ describe('moduleMocker', () => {
 
     it('mocks regexp instances', () => {
       expect(() =>
-        moduleMocker.generateFromMetadata(
-          moduleMocker.getMetadata(/a/),
-        )).not.toThrow();
+        moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
+      ).not.toThrow();
     });
 
     describe('mocked functions', () => {

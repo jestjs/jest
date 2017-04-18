@@ -130,10 +130,11 @@ class ArrayContaining extends AsymmetricMatcher {
       );
     }
 
-    return this.sample.length === 0 ||
+    return (
+      this.sample.length === 0 ||
       (Array.isArray(other) &&
-        this.sample.every(item =>
-          other.some(another => equals(item, another))));
+        this.sample.every(item => other.some(another => equals(item, another))))
+    );
   }
 
   toString() {

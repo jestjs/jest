@@ -320,7 +320,8 @@ var jsonlint = (function() {
               }
             var errStr = '';
             if (this.lexer.showPosition) {
-              errStr = 'Parse error on line ' +
+              errStr =
+                'Parse error on line ' +
                 (yylineno + 1) +
                 ':\n' +
                 this.lexer.showPosition() +
@@ -330,7 +331,8 @@ var jsonlint = (function() {
                 this.terminals_[symbol] +
                 "'";
             } else {
-              errStr = 'Parse error on line ' +
+              errStr =
+                'Parse error on line ' +
                 (yylineno + 1) +
                 ': Unexpected ' +
                 (symbol == 1 /*EOF*/
@@ -478,9 +480,9 @@ var jsonlint = (function() {
       },
       setInput: function(input) {
         this._input = input;
-        this._more = (this._less = (this.done = false));
-        this.yylineno = (this.yyleng = 0);
-        this.yytext = (this.matched = (this.match = ''));
+        this._more = this._less = this.done = false;
+        this.yylineno = this.yyleng = 0;
+        this.yytext = this.matched = this.match = '';
         this.conditionStack = ['INITIAL'];
         this.yylloc = {
           first_line: 1,
@@ -517,8 +519,9 @@ var jsonlint = (function() {
           0,
           this.matched.length - this.match.length,
         );
-        return (past.length > 20 ? '...' : '') +
-          past.substr(-20).replace(/\n/g, '');
+        return (
+          (past.length > 20 ? '...' : '') + past.substr(-20).replace(/\n/g, '')
+        );
       },
       upcomingInput: function() {
         var next = this.match;
