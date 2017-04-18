@@ -163,7 +163,7 @@ The path to a module that runs some code to configure or set up the testing fram
 
 ### `--showConfig`
 
-Print your jest config and then exits.
+Print your Jest config and then exits.
 
 ### `--silent`
 
