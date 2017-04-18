@@ -2,8 +2,6 @@
 
 exports[`jest --showConfig outputs config info and exits 1`] = `
 {
-  "version": "19.0.2",
-  "framework": "jasmine2",
   "config": {
     "automock": false,
     "bail": false,
@@ -77,7 +75,9 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     ],
     "cache": false,
     "watchman": true
-  }
+  },
+  "framework": "jasmine2",
+  "version": "19.0.2"
 }
 
 `;
