@@ -169,6 +169,10 @@ Print your Jest config and then exits.
 
 Prevent tests from printing messages through the console.
 
+### `--snapshotDirectory=<path>`
+
+The directory where Jest should output its snapshot files.
+
 ### `--testNamePattern=<regex>`
 
 Alias: `-t`. Run only tests with a name that matches the regex.

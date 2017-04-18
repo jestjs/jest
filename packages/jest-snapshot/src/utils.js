@@ -91,9 +91,9 @@ const keyToTestName = (key: string) => {
   return key.replace(/ \d+$/, '');
 };
 
-const getSnapshotPath = (testPath: Path) =>
+const getSnapshotPath = (testPath: Path, snapshotPath: Path) =>
   path.join(
-    path.join(path.dirname(testPath), '__snapshots__'),
+    path.join(snapshotPath || path.dirname(testPath), '__snapshots__'),
     path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
   );
 
