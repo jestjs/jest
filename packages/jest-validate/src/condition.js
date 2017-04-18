@@ -13,9 +13,11 @@
 const toString = Object.prototype.toString;
 
 const validationCondition = (option: any, validOption: any): boolean => {
-  return option === null ||
+  return (
+    option === null ||
     option === undefined ||
-    toString.call(option) === toString.call(validOption);
+    toString.call(option) === toString.call(validOption)
+  );
 };
 
 module.exports = validationCondition;

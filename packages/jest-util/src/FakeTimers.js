@@ -99,7 +99,8 @@ class FakeTimers {
 
   clearAllTimers() {
     this._immediates.forEach(immediate =>
-      this._fakeClearImmediate(immediate.uuid));
+      this._fakeClearImmediate(immediate.uuid),
+    );
     for (const uuid in this._timers) {
       delete this._timers[uuid];
     }

@@ -40,7 +40,8 @@ function getJest(packageRoot: Path) {
               'Please run `npm install` to use the version of Jest intended ' +
                 'for this project.',
             ),
-          ));
+          ),
+        );
       }
     }
     return jest;

@@ -75,13 +75,10 @@ class DefaultReporter extends BaseReporter {
         doFlush();
       } else {
         if (!timeout) {
-          timeout = setTimeout(
-            () => {
-              doFlush();
-              timeout = null;
-            },
-            100,
-          );
+          timeout = setTimeout(() => {
+            doFlush();
+            timeout = null;
+          }, 100);
         }
       }
     };

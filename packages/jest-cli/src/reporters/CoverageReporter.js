@@ -115,7 +115,8 @@ class CoverageReporter extends BaseReporter {
             files.push({
               config,
               path: filePath,
-            }));
+            }),
+          );
       }
     });
     if (files.length) {
@@ -159,31 +160,33 @@ class CoverageReporter extends BaseReporter {
       const results = map.getCoverageSummary().toJSON();
 
       function check(name, thresholds, actuals) {
-        return ['statements', 'branches', 'lines', 'functions'].reduce(
-          (errors, key) => {
-            const actual = actuals[key].pct;
-            const actualUncovered = actuals[key].total - actuals[key].covered;
-            const threshold = thresholds[key];
+        return [
+          'statements',
+          'branches',
+          'lines',
+          'functions',
+        ].reduce((errors, key) => {
+          const actual = actuals[key].pct;
+          const actualUncovered = actuals[key].total - actuals[key].covered;
+          const threshold = thresholds[key];
 
-            if (threshold != null) {
-              if (threshold < 0) {
-                if (threshold * -1 < actualUncovered) {
-                  errors.push(
-                    `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                      `exceeds ${name} threshold (${-1 * threshold})`,
-                  );
-                }
-              } else if (actual < threshold) {
+          if (threshold != null) {
+            if (threshold < 0) {
+              if (threshold * -1 < actualUncovered) {
                 errors.push(
-                  `Jest: Coverage for ${key} (${actual}` +
-                    `%) does not meet ${name} threshold (${threshold}%)`,
+                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                    `exceeds ${name} threshold (${-1 * threshold})`,
                 );
               }
+            } else if (actual < threshold) {
+              errors.push(
+                `Jest: Coverage for ${key} (${actual}` +
+                  `%) does not meet ${name} threshold (${threshold}%)`,
+              );
             }
-            return errors;
-          },
-          [],
-        );
+          }
+          return errors;
+        }, []);
       }
       const errors = check('global', config.coverageThreshold.global, results);
 

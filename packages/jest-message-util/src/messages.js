@@ -39,7 +39,7 @@ const trim = string => (string || '').replace(/^\s+/, '').replace(/\s+$/, '');
 // want to trim those, because they may have pointers to the column/character
 // which will get misaligned.
 const trimPaths = string =>
-  string.match(STACK_PATH_REGEXP) ? trim(string) : string;
+  (string.match(STACK_PATH_REGEXP) ? trim(string) : string);
 
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
@@ -81,13 +81,15 @@ const formatExecError = (
     message = MESSAGE_INDENT + 'Error: No message was provided';
   }
 
-  return TITLE_INDENT +
+  return (
+    TITLE_INDENT +
     TITLE_BULLET +
     EXEC_ERROR_MESSAGE +
     '\n\n' +
     message +
     stack +
-    '\n';
+    '\n'
+  );
 };
 
 const removeInternalStackEntries = (lines, config: StackTraceOptions) => {
@@ -158,13 +160,10 @@ const formatResultsErrors = (
   config: Config,
   testPath: ?Path,
 ): ?string => {
-  const failedResults = testResults.reduce(
-    (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({content, result}));
-      return errors;
-    },
-    [],
-  );
+  const failedResults = testResults.reduce((errors, result) => {
+    result.failureMessages.forEach(content => errors.push({content, result}));
+    return errors;
+  }, []);
 
   if (!failedResults.length) {
     return null;
@@ -182,13 +181,14 @@ const formatResultsErrors = (
         .map(line => MESSAGE_INDENT + line)
         .join('\n');
 
-      const title = chalk.bold.red(
-        TITLE_INDENT +
-          TITLE_BULLET +
-          result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-          (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-          result.title,
-      ) + '\n';
+      const title =
+        chalk.bold.red(
+          TITLE_INDENT +
+            TITLE_BULLET +
+            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+            (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+            result.title,
+        ) + '\n';
 
       return title + '\n' + message + '\n' + stack;
     })

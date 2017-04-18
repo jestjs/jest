@@ -184,30 +184,24 @@ const watch = (
         startRun();
         break;
       case KEYS.P:
-        testPathPatternPrompt.run(
-          testPathPattern => {
-            setState(argv, 'watch', {
-              testNamePattern: '',
-              testPathPattern,
-            });
+        testPathPatternPrompt.run(testPathPattern => {
+          setState(argv, 'watch', {
+            testNamePattern: '',
+            testPathPattern,
+          });
 
-            startRun();
-          },
-          onCancelPatternPrompt,
-        );
+          startRun();
+        }, onCancelPatternPrompt);
         break;
       case KEYS.T:
-        testNamePatternPrompt.run(
-          testNamePattern => {
-            setState(argv, 'watch', {
-              testNamePattern,
-              testPathPattern: '',
-            });
+        testNamePatternPrompt.run(testNamePattern => {
+          setState(argv, 'watch', {
+            testNamePattern,
+            testPathPattern: '',
+          });
 
-            startRun();
-          },
-          onCancelPatternPrompt,
-        );
+          startRun();
+        }, onCancelPatternPrompt);
         break;
       case KEYS.QUESTION_MARK:
         break;

@@ -148,9 +148,11 @@ const shouldTransform = (filename: Path, config: Config): boolean => {
 
   const ignoreRegexp = ignoreCache.get(config);
   const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return !!config.transform &&
+  return (
+    !!config.transform &&
     !!config.transform.length &&
-    (!config.transformIgnorePatterns.length || !isIgnored);
+    (!config.transformIgnorePatterns.length || !isIgnored)
+  );
 };
 
 const getFileCachePath = (
@@ -347,8 +349,8 @@ const transformAndBuildScript = (
   const content = stripShebang(fileSource || fs.readFileSync(filename, 'utf8'));
   let wrappedCode: string;
   let sourceMapPath: ?string = null;
-  const willTransform = !isInternalModule &&
-    (shouldTransform(filename, config) || instrument);
+  const willTransform =
+    !isInternalModule && (shouldTransform(filename, config) || instrument);
 
   try {
     if (willTransform) {

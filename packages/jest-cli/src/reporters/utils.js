@@ -45,8 +45,8 @@ const trimAndFormatPath = (
   const basenameLength = basename.length;
   if (basenameLength + 4 < maxLength) {
     const dirnameLength = maxLength - 4 - basenameLength;
-    dirname = '...' +
-      dirname.slice(dirname.length - dirnameLength, dirname.length);
+    dirname =
+      '...' + dirname.slice(dirname.length - dirnameLength, dirname.length);
     return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
   }
 
@@ -104,7 +104,8 @@ const getSummary = (
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
-  const suites = chalk.bold('Test Suites: ') +
+  const suites =
+    chalk.bold('Test Suites: ') +
     (suitesFailed ? chalk.bold.red(`${suitesFailed} failed`) + ', ' : '') +
     (suitesPending
       ? chalk.bold.yellow(`${suitesPending} skipped`) + ', '
@@ -115,13 +116,15 @@ const getSummary = (
       : suitesTotal) +
     ` total`;
 
-  const tests = chalk.bold('Tests:       ') +
+  const tests =
+    chalk.bold('Tests:       ') +
     (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
     (testsPending ? chalk.bold.yellow(`${testsPending} skipped`) + ', ' : '') +
     (testsPassed ? chalk.bold.green(`${testsPassed} passed`) + ', ' : '') +
     `${testsTotal} total`;
 
-  const snapshots = chalk.bold('Snapshots:   ') +
+  const snapshots =
+    chalk.bold('Snapshots:   ') +
     (snapshotsFailed
       ? chalk.bold.red(`${snapshotsFailed} failed`) + ', '
       : '') +
@@ -157,7 +160,8 @@ const renderTime = (runTime, estimatedTime, width) => {
       availableWidth,
     );
     if (availableWidth >= 2) {
-      time += '\n' +
+      time +=
+        '\n' +
         chalk.green.inverse(' ').repeat(length) +
         chalk.white.inverse(' ').repeat(availableWidth - length);
     }

@@ -17,9 +17,9 @@ const ERROR = `${BULLET} Validation Error`;
 const WARNING = `${BULLET} Validation Warning`;
 
 const format = (value: any): string =>
-  typeof value === 'function'
+  (typeof value === 'function'
     ? value.toString()
-    : require('pretty-format')(value, {min: true});
+    : require('pretty-format')(value, {min: true}));
 
 class ValidationError extends Error {
   name: string;

@@ -36,7 +36,8 @@ module.exports = (argv: Object, mode: 'watch' | 'watchAll', options?: {}) => {
   }
 
   argv.onlyChanged = false;
-  argv.onlyChanged = getTestPathPattern(argv).input === '' &&
+  argv.onlyChanged =
+    getTestPathPattern(argv).input === '' &&
     !argv.watchAll &&
     !argv.testNamePattern;
 

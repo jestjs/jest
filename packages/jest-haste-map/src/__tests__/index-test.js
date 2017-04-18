@@ -18,7 +18,8 @@ jest.mock('worker-farm', () => {
   const mock = jest.fn(
     (options, worker) =>
       workerFarmMock = jest.fn((data, callback) =>
-        require(worker)(data, callback)),
+        require(worker)(data, callback),
+      ),
   );
   mock.end = jest.fn();
   return mock;
@@ -27,11 +28,7 @@ jest.mock('worker-farm', () => {
 jest.mock('../crawlers/node');
 jest.mock('../crawlers/watchman', () =>
   jest.fn(options => {
-    const {
-      data,
-      ignore,
-      roots,
-    } = options;
+    const {data, ignore, roots} = options;
     data.clocks = mockClocks;
 
     const list = mockChangedFiles || mockFs;
@@ -46,7 +43,8 @@ jest.mock('../crawlers/watchman', () =>
     }
 
     return Promise.resolve(data);
-  }));
+  }),
+);
 
 jest.mock('sane', () => {
   const watcher = jest.fn(root => {
@@ -640,10 +638,12 @@ describe('HasteMap', () => {
     const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
-      Promise.reject(new Error('watchman error')));
+      Promise.reject(new Error('watchman error')),
+    );
 
     node.mockImplementation((roots, extensions, ignore, data) =>
-      Promise.reject(new Error('node error')));
+      Promise.reject(new Error('node error')),
+    );
 
     return new HasteMap(defaultConfig).build().then(
       () => expect(() => {}).toThrow(),

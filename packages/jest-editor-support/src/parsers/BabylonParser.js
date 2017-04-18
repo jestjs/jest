@@ -92,14 +92,18 @@ const parse = (file: string) => {
   };
 
   const isFunctionCall = node => {
-    return node.type === 'ExpressionStatement' &&
+    return (
+      node.type === 'ExpressionStatement' &&
       node.expression &&
-      node.expression.type === 'CallExpression';
+      node.expression.type === 'CallExpression'
+    );
   };
 
   const isFunctionDeclaration = (nodeType: string) => {
-    return nodeType === 'ArrowFunctionExpression' ||
-      nodeType === 'FunctionExpression';
+    return (
+      nodeType === 'ArrowFunctionExpression' ||
+      nodeType === 'FunctionExpression'
+    );
   };
 
   // Pull out the name of a CallExpression (describe/it)

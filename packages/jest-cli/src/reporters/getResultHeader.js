@@ -41,6 +41,8 @@ module.exports = (result: TestResult, config: Config) => {
     testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 
-  return `${status} ${formatTestPath(config, testPath)}` +
-    (testDetail.length ? ` (${testDetail.join(', ')})` : '');
+  return (
+    `${status} ${formatTestPath(config, testPath)}` +
+    (testDetail.length ? ` (${testDetail.join(', ')})` : '')
+  );
 };

@@ -25,7 +25,8 @@ const createCLIValidationError = (
 ) => {
   let title = `${BULLET} Unrecognized CLI Parameter`;
   let message;
-  const comment = `  ${chalk.bold('CLI Options Documentation')}:\n` +
+  const comment =
+    `  ${chalk.bold('CLI Options Documentation')}:\n` +
     `  http://facebook.github.io/jest/docs/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
@@ -34,11 +35,13 @@ const createCLIValidationError = (
       unrecognized,
       Array.from(allowedOptions),
     );
-    message = `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
+    message =
+      `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
       (didYouMeanMessage ? ` ${didYouMeanMessage}` : '');
   } else {
     title += 's';
-    message = `  Following options were not recognized:\n` +
+    message =
+      `  Following options were not recognized:\n` +
       `  ${chalk.bold(format(unrecognizedOptions))}`;
   }
 

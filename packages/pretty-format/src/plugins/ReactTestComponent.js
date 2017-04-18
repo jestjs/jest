@@ -45,7 +45,8 @@ function printProps(props: Object, print, indent, colors, opts) {
 
       if (typeof prop !== 'string') {
         if (printed.indexOf('\n') !== -1) {
-          printed = '{' +
+          printed =
+            '{' +
             opts.edgeSpacing +
             indent(indent(printed) + opts.edgeSpacing + '}');
         } else {
@@ -53,11 +54,13 @@ function printProps(props: Object, print, indent, colors, opts) {
         }
       }
 
-      return opts.spacing +
+      return (
+        opts.spacing +
         indent(colors.prop.open + name + colors.prop.close + '=') +
         colors.value.open +
         printed +
-        colors.value.close;
+        colors.value.close
+      );
     })
     .join('');
 }
@@ -87,7 +90,8 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
       colors,
       opts,
     );
-    result += colors.tag.open +
+    result +=
+      colors.tag.open +
       (closeInNewLine ? '\n' : '') +
       '>' +
       colors.tag.close +
@@ -100,10 +104,8 @@ function printInstance(instance: ReactTestChild, print, indent, colors, opts) {
       '>' +
       colors.tag.close;
   } else {
-    result += colors.tag.open +
-      (closeInNewLine ? '\n' : ' ') +
-      '/>' +
-      colors.tag.close;
+    result +=
+      colors.tag.open + (closeInNewLine ? '\n' : ' ') + '/>' + colors.tag.close;
   }
 
   return result;

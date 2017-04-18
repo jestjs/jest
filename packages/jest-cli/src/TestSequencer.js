@@ -100,7 +100,8 @@ class TestSequencer {
     });
 
     this._cache.forEach((cache, context) =>
-      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)));
+      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache)),
+    );
   }
 }
 

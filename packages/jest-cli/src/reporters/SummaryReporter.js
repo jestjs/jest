@@ -255,11 +255,13 @@ class SummaryReporter extends BaseReporter {
       ? chalk.dim(' in ') + contexts.size + chalk.dim(' projects')
       : '';
 
-    return chalk.dim('Ran all test suites') +
+    return (
+      chalk.dim('Ran all test suites') +
       testInfo +
       nameInfo +
       contextInfo +
-      chalk.dim('.');
+      chalk.dim('.')
+    );
   }
 }
 

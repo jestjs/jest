@@ -255,7 +255,8 @@ describe('transform', () => {
       version: 3,
     });
 
-    const content = 'var x = 1;\n' +
+    const content =
+      'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
       new Buffer(sourceMap).toString('base64');
 

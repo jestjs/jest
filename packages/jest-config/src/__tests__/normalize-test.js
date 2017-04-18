@@ -254,7 +254,8 @@ describe('setupTestFrameworkScriptFile', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(
-      name => name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+      name =>
+        (name.startsWith('/') ? name : '/root/path/foo' + path.sep + name),
     );
   });
 
@@ -487,7 +488,8 @@ describe('testEnvironment', () => {
       normalize({
         rootDir: '/root',
         testEnvironment: 'phantom',
-      })).toThrowErrorMatchingSnapshot();
+      }),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 
