@@ -27,10 +27,11 @@ describe('jest --showConfig', () => {
   it('outputs config info and exits', () => {
     const root = path.join(__dirname, '..', '..', '..');
     expect.addSnapshotSerializer({
-      print: val => val
-        .replace(new RegExp(root, 'g'), '/mocked/root/path')
-        .replace(/"name": "(.+)"/, '"name": "[md5 hash]"')
-        .replace(/"cacheDirectory": "(.+)"/, '"cacheDirectory": "/tmp/jest"'),
+      print: val =>
+        val
+          .replace(new RegExp(root, 'g'), '/mocked/root/path')
+          .replace(/"name": "(.+)"/, '"name": "[md5 hash]"')
+          .replace(/"cacheDirectory": "(.+)"/, '"cacheDirectory": "/tmp/jest"'),
       test: val => typeof val === 'string',
     });
     const {stdout} = runJest(dir, ['--showConfig', '--no-cache']);

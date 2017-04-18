@@ -17,30 +17,28 @@ jest.mock('../../../package.json', () => ({version: 123}));
 jest.mock('myRunner', () => ({name: 'My Runner'}), {virtual: true});
 
 const getPipe = () => ({write: jest.fn()});
-/* eslint-disable */
-const makeOutput = (config = {testRunner: 'myRunner'}) =>
+const print = (config = {testRunner: 'myRunner'}) =>
   JSON.stringify(
     {
-      version: 123,
-      framework: 'My Runner',
       config,
+      framework: 'My Runner',
+      version: 123,
     },
     null,
     '  ',
   );
-/* eslint-enable */
 
 describe('logDebugMessages', () => {
   it('Prints the jest version', () => {
     const pipe = getPipe();
     logDebugMessages({testRunner: 'myRunner'}, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(makeOutput() + '\n');
+    expect(pipe.write).toHaveBeenCalledWith(print() + '\n');
   });
 
   it('Prints the test framework name', () => {
     const pipe = getPipe();
     logDebugMessages({testRunner: 'myRunner'}, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(makeOutput() + '\n');
+    expect(pipe.write).toHaveBeenCalledWith(print() + '\n');
   });
 
   it('Prints the config object', () => {
@@ -53,6 +51,6 @@ describe('logDebugMessages', () => {
       watch: true,
     };
     logDebugMessages(config, pipe);
-    expect(pipe.write).toHaveBeenCalledWith(makeOutput(config) + '\n');
+    expect(pipe.write).toHaveBeenCalledWith(print(config) + '\n');
   });
 });
