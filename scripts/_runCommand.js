@@ -15,7 +15,7 @@ module.exports = function runCommand(cmd, args, cwd) {
     cwd = __dirname;
   }
 
-  const callArgs = args.split(' ');
+  const callArgs = typeof args === 'string' ? args.split(' ') : args;
   console.log(
     chalk.dim('$ cd ' + cwd) +
       '\n' +

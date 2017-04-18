@@ -8,28 +8,33 @@
 'use strict';
 
 const runCommand = require('./_runCommand');
-const getPackages = require('./_getPackages');
 
 const fs = require('graceful-fs');
 const path = require('path');
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
 
-const EXAMPLES_DIR = path.resolve(__dirname, '../examples');
-const JEST_CLI_PATH = path.resolve(__dirname, '../packages/jest-cli');
+const ROOT = path.resolve(__dirname, '..');
+const BABEL_JEST_PATH = path.resolve(ROOT, 'packages/babel-jest');
+const EXAMPLES_DIR = path.resolve(ROOT, 'examples');
+const JEST_CLI_PATH = path.resolve(ROOT, 'packages/jest-cli');
 const JEST_BIN_PATH = path.resolve(JEST_CLI_PATH, 'bin/jest.js');
 const NODE_VERSION = Number(process.version.match(/^v(\d+\.\d+)/)[1]);
 const SKIP_ON_OLD_NODE = ['react-native'];
-const VERSION = require('../lerna').version;
+const INSTALL = ['react-native'];
 
-const packages = getPackages();
-
-const examples = fs.readdirSync(EXAMPLES_DIR)
+const examples = fs
+  .readdirSync(EXAMPLES_DIR)
   .map(file => path.resolve(EXAMPLES_DIR, file))
   .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
 
-function runExampleTests(exampleDirectory) {
+const link = (exampleDirectory, from) => {
+  const nodeModules = exampleDirectory + path.sep + 'node_modules' + path.sep;
+  mkdirp.sync(nodeModules);
+  runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
+};
+
+examples.forEach(exampleDirectory => {
   console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleDirectory));
 
   const exampleName = path.basename(exampleDirectory);
@@ -38,37 +43,10 @@ function runExampleTests(exampleDirectory) {
     return;
   }
 
-  runCommand('yarn', 'install --pure-lockfile', exampleDirectory);
-  packages.forEach(pkg => {
-    const name = path.basename(pkg);
-    const directory = path.resolve(exampleDirectory, 'node_modules', name);
+  if (INSTALL.indexOf(exampleName) !== -1) {
+    runCommand('yarn', '--production', exampleDirectory);
+  }
 
-    if (fs.existsSync(directory)) {
-      rimraf.sync(directory);
-      mkdirp.sync(directory);
-      // Using `npm link jest-*` can create problems with module resolution,
-      // so instead of this we'll create a proxy module.
-      fs.writeFileSync(
-        path.resolve(directory, 'index.js'),
-        `module.exports = require('${pkg}');\n`,
-        'utf8'
-      );
-      fs.writeFileSync(
-        path.resolve(directory, 'package.json'),
-        `{"name": "${name}", "version": "${VERSION}"}\n`,
-        'utf8'
-      );
-    }
-  });
-
-  // overwrite the jest link and point it to the local jest-cli
-  mkdirp.sync(path.resolve(exampleDirectory, './node_modules/.bin'));
-  runCommand('ln',
-    `-sf ${JEST_BIN_PATH} ./node_modules/.bin/jest`,
-    exampleDirectory
-  );
-
-  runCommand('yarn', 'test', exampleDirectory);
-}
-
-examples.forEach(runExampleTests);
+  link(exampleDirectory, BABEL_JEST_PATH);
+  runCommand(JEST_BIN_PATH, '', exampleDirectory);
+});
