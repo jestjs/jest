@@ -50,17 +50,19 @@ let hasteFS;
 const maxWorkers = 2;
 const rootDir = path.resolve(__dirname, 'test_root');
 
-beforeEach(() => {
-  config = normalizeConfig({
-    rootDir,
-    roots: [],
-    updateSnapshot: true,
-  }).config;
-  const Runtime = require('jest-runtime');
-  return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
-    hasteFS = hasteMap.hasteFS;
+if (process.platform !== 'win32') {
+  beforeEach(() => {
+    config = normalizeConfig({
+      rootDir,
+      roots: [],
+      updateSnapshot: true,
+    }).config;
+    const Runtime = require('jest-runtime');
+    return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
+      hasteFS = hasteMap.hasteFS;
+    });
   });
-});
+}
 
 test('passes updateSnapshot to hasteContext.config', async () => {
   const hasteContext = {
