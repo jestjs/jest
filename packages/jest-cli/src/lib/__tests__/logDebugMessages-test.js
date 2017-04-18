@@ -8,6 +8,8 @@
 * @emails oncall+jsinfra
 */
 
+'use strict';
+
 const logDebugMessages = require('../logDebugMessages');
 
 jest.mock('../../../package.json', () => ({version: 123}));
@@ -15,42 +17,42 @@ jest.mock('../../../package.json', () => ({version: 123}));
 jest.mock('myRunner', () => ({name: 'My Runner'}), {virtual: true});
 
 const getPipe = () => ({write: jest.fn()});
+/* eslint-disable */
+const makeOutput = (config = {testRunner: 'myRunner'}) =>
+  JSON.stringify(
+    {
+      version: 123,
+      framework: 'My Runner',
+      config,
+    },
+    null,
+    '  ',
+  );
+/* eslint-enable */
 
 describe('logDebugMessages', () => {
   it('Prints the jest version', () => {
     const pipe = getPipe();
     logDebugMessages({testRunner: 'myRunner'}, pipe);
-    expect(pipe.write).toHaveBeenCalledWith('jest version = 123\n');
+    expect(pipe.write).toHaveBeenCalledWith(makeOutput() + '\n');
   });
 
   it('Prints the test framework name', () => {
     const pipe = getPipe();
     logDebugMessages({testRunner: 'myRunner'}, pipe);
-    expect(pipe.write).toHaveBeenCalledWith('test framework = My Runner\n');
+    expect(pipe.write).toHaveBeenCalledWith(makeOutput() + '\n');
   });
 
   it('Prints the config object', () => {
     const pipe = getPipe();
-    logDebugMessages(
-      {
-        automock: false,
-        rootDir: '/path/to/dir',
-        roots: ['path/to/dir/test'],
-        testRunner: 'myRunner',
-        watch: true,
-      },
-      pipe,
-    );
-    expect(pipe.write).toHaveBeenCalledWith(
-      `config = {
-  "automock": false,
-  "rootDir": "/path/to/dir",
-  "roots": [
-    "path/to/dir/test"
-  ],
-  "testRunner": "myRunner",
-  "watch": true
-}\n`,
-    );
+    const config = {
+      automock: false,
+      rootDir: '/path/to/dir',
+      roots: ['path/to/dir/test'],
+      testRunner: 'myRunner',
+      watch: true,
+    };
+    logDebugMessages(config, pipe);
+    expect(pipe.write).toHaveBeenCalledWith(makeOutput(config) + '\n');
   });
 });
