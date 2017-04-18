@@ -25,7 +25,7 @@ describe('Runtime', () => {
   describe('cli', () => {
     it('fails with no path', () => {
       const expectedOutput =
-        'Please provide a path to a script. ' + '(See --help for details)\n';
+        'Please provide a path to a script. (See --help for details)\n';
       expect(run([]).stdout).toBe(expectedOutput);
     });
 

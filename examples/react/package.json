@@ -1,14 +1,14 @@
 {
   "dependencies": {
-    "react": "~15.3.1",
-    "react-dom": "~15.3.1"
+    "react": "15.4.2",
+    "react-dom": "15.4.2"
   },
   "devDependencies": {
     "babel-jest": "*",
     "babel-preset-env": "*",
     "babel-preset-react": "*",
     "jest": "*",
-    "react-addons-test-utils": "~15.3.1"
+    "react-addons-test-utils": "15.4.2"
   },
   "scripts": {
     "test": "jest"

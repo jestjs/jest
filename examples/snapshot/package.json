@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "react": "^15.4.0"
+    "react": "15.4.2"
   },
   "devDependencies": {
     "babel-jest": "*",
