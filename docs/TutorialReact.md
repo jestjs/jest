@@ -178,7 +178,7 @@ The code for this example is available at
 
 If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
 
-You have to run `npm install --save-dev enzyme react-addons-test-utils` to use Enzyme (`react-addons-test-utils` is a peer dependency).
+You have to run `npm install --save-dev enzyme` to use Enzyme. If you are using a React below version 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's implement a simple checkbox which swaps between two labels:
 
