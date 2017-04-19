@@ -21,6 +21,34 @@ export type HasteConfig = {|
 
 export type ConfigGlobals = Object;
 
+export type GlobalConfig = {
+  bail: boolean,
+  collectCoverage: boolean,
+  collectCoverageFrom: Array<Glob>,
+  collectCoverageOnlyFrom: {[key: string]: boolean},
+  coverageDirectory: string,
+  coveragePathIgnorePatterns: Array<string>,
+  coverageReporters: Array<string>,
+  coverageThreshold: {global: {[key: string]: number}},
+  expand: boolean,
+  forceExit: boolean,
+  mapCoverage: boolean,
+  logHeapUsage: boolean,
+  logTransformErrors: ?boolean,
+  noStackTrace: boolean,
+  notify: boolean,
+  replname: ?string,
+  rootDir: Path,
+  silent: boolean,
+  testNamePattern: string,
+  testResultsProcessor: ?string,
+  updateSnapshot: boolean,
+  useStderr: boolean,
+  verbose: ?boolean,
+  watch: boolean,
+  watchman: boolean,
+};
+
 export type DefaultConfig = {|
   automock: boolean,
   bail: boolean,

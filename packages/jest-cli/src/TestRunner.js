@@ -14,7 +14,7 @@ import type {
   SerializableError as TestError,
   TestResult,
 } from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {PathPattern} from './SearchSource';
 import type {Test, Tests} from 'types/TestRunner';
@@ -56,11 +56,11 @@ type OnTestSuccess = (test: Test, result: TestResult) => void;
 const TEST_WORKER_PATH = require.resolve('./TestWorker');
 
 class TestRunner {
-  _config: Config;
+  _config: GlobalConfig;
   _options: Options;
   _dispatcher: ReporterDispatcher;
 
-  constructor(config: Config, options: Options) {
+  constructor(config: GlobalConfig, options: Options) {
     this._config = config;
     this._dispatcher = new ReporterDispatcher();
     this._options = options;

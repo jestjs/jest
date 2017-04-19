@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 
 const BaseReporter = require('./BaseReporter');
@@ -32,7 +32,7 @@ class NotifyReporter extends BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: Config,
+    config: GlobalConfig,
     result: AggregatedResult,
   ): void {
     const success =
