@@ -679,7 +679,7 @@ describe('grapefruits are healthy', () => {
 
 ### `.toMatchObject(object)`
 
-Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object.
+Use `.toMatchObject` to check that a JavaScript object matches a subset of the properties of an object. Works recursively, looking for a match no matter how deep in the object it lives.
 
 ```js
 const houseForSale = {
@@ -697,6 +697,34 @@ const desiredHouse = {
     amenities: ['oven', 'stove', 'washer'],
     wallColor: 'white',
   },
+};
+
+test('the house has my desired features', () => {
+  expect(houseForSale).toMatchObject(desiredHouse);
+});
+```
+
+or
+
+
+```js
+const houseForSale = {
+  bath: true,
+  bedrooms: 4,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    area: {
+      width: 20,
+      height: 30,
+    },
+    wallColor: 'white',
+  },
+};
+const desiredHouse = {
+  area: {
+    width: 20,
+    height: 30,
+  }
 };
 
 test('the house has my desired features', () => {

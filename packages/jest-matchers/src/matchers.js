@@ -75,10 +75,20 @@ const subsetEquality = (object, subset) => {
   if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
     return undefined;
   }
+
+  return shallowSubsetEquality(object, subset) || Object.keys(object).some((key) => {
+    return subsetEquality(object[key], subset)
+  });
+}
+const shallowSubsetEquality = (object, subset) => {
+  if (!isObjectWithKeys(object) || !isObjectWithKeys(subset)) {
+    return undefined;
+  }
+
   return Object.keys(subset).every(
     key =>
       object.hasOwnProperty(key) &&
-      equals(object[key], subset[key], [iterableEquality, subsetEquality]),
+      equals(object[key], subset[key], [iterableEquality, shallowSubsetEquality]),
   );
 };
 
