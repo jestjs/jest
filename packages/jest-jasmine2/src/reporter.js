@@ -134,6 +134,7 @@ class Jasmine2Reporter {
       ancestorTitles,
       duration,
       failureMessages: [],
+      failureStacksData: [],
       fullName: specResult.fullName,
       numPassingAsserts: 0, // Jasmine2 only returns an array of failed asserts.
       status,

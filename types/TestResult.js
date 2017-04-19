@@ -87,6 +87,7 @@ export type AssertionResult = {|
   ancestorTitles: Array<string>,
   duration?: Milliseconds,
   failureMessages: Array<string>,
+  failureStacksData: Array<Object>,
   fullName: string,
   numPassingAsserts: number,
   status: Status,

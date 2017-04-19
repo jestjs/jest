@@ -47,16 +47,18 @@ const prepareStackTrace = (
   }
 
   return (error: Error, structuredStackTrace: Array<CallSite>) => {
+    let data;
     const filteredStackTrace = structuredStackTrace
       .filter(
         (callsite, index) =>
           !filterNoise(callsite.getFileName(), index, patterns),
       )
       .map(callsite => {
-        const data = getCallSiteData(callsite);
+        data = getCallSiteData(callsite);
         return `at ${data.functionName} ` +
           `(${data.fileName}:${data.lineNumber}:${data.columnNumber})`;
       });
+    // error.stackTraceData = data;
 
     return `${error.name}: ` +
       `${error.message}\n${filteredStackTrace.join('\n')}`;
