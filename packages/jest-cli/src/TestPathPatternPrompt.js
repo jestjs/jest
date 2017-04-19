@@ -30,7 +30,7 @@ type SearchSources = Array<{|
 const pluralizeFile = (total: number) => (total === 1 ? 'file' : 'files');
 
 const usage = () =>
-  `\n ${chalk.bold('Pattern Mode Usage')}\n` +
+  `\n${chalk.bold('Pattern Mode Usage')}\n` +
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
   ` ${chalk.dim('\u203A Press')} Enter ` +
   `${chalk.dim('to apply pattern to all filenames.')}\n` +
@@ -48,9 +48,12 @@ module.exports = class TestPathPatternPrompt {
     this._prompt = prompt;
   }
 
-  run(onSuccess: Function, onCancel: Function) {
+  run(onSuccess: Function, onCancel: Function, options) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(ansiEscapes.clearScreen);
+    if (options && options.header) {
+      this._pipe.write(options.header);  
+    }
     this._pipe.write(usage());
     this._pipe.write(ansiEscapes.cursorShow);
 
