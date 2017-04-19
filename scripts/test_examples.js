@@ -29,15 +29,16 @@ const examples = fs
   .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
 
 const link = (exampleDirectory, from) => {
-  const nodeModules = exampleDirectory + path.sep + 'node_modules' + path.sep;
+  const nodeModules =
+    exampleDirectory + path.sep + 'node_modules' + path.sep + '*';
   mkdirp.sync(nodeModules);
   runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
 };
 
 examples.forEach(exampleDirectory => {
-  console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleDirectory));
-
   const exampleName = path.basename(exampleDirectory);
+  console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleName));
+
   if (NODE_VERSION < 6 && SKIP_ON_OLD_NODE.indexOf(exampleName) !== -1) {
     console.log(`Skipping ${exampleName} on node ${process.version}.`);
     return;

@@ -16,17 +16,10 @@ module.exports = function runCommand(cmd, args, cwd) {
   }
 
   const callArgs = typeof args === 'string' ? args.split(' ') : args;
-  console.log(
-    chalk.dim('$ cd ' + cwd) +
-      '\n' +
-      chalk.dim(
-        '  $ ' +
-          cmd +
-          ' ' +
-          (args.length > 1000 ? args.slice(0, 1000) + '...' : args)
-      ) +
-      '\n'
-  );
+  const displayArgs = args.length > 1000
+    ? args.slice(0, 1000) + '...'
+    : callArgs.join(' ');
+  console.log(chalk.dim('$ cd ' + cwd + `\n$ ${cmd} ${displayArgs}\n`));
   const result = spawn(cmd, callArgs, {
     cwd,
     stdio: 'inherit',
