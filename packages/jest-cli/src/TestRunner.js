@@ -247,7 +247,7 @@ class TestRunner {
       if (err.type === 'ProcessTerminatedError') {
         console.error(
           'A worker process has quit unexpectedly! ' +
-            'Most likely this an initialization error.',
+            'Most likely this is an initialization error.',
         );
         process.exit(1);
       }
