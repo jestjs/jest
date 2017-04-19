@@ -29,10 +29,13 @@ const examples = fs
   .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
 
 const link = (exampleDirectory, from) => {
-  const nodeModules =
-    exampleDirectory + path.sep + 'node_modules' + path.sep + '*';
+  const nodeModules = exampleDirectory + path.sep + 'node_modules' + path.sep;
   mkdirp.sync(nodeModules);
-  runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
+  try {
+    runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
+  } catch (error) {
+    // directory already exists
+  }
 };
 
 examples.forEach(exampleDirectory => {
