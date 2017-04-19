@@ -31,6 +31,7 @@ test('adds 1 + 2 to equal 3', () => {
   expect(sum(1, 2)).toBe(3);
 });
 ```
+> Note: Make sure the `__tests__/` folder is at the same level with `sum.js` file, otherwise the test can not be found.
 
 Add the following section to your `package.json`:
 
