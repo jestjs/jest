@@ -13,6 +13,7 @@ const fs = require('graceful-fs');
 const path = require('path');
 const chalk = require('chalk');
 const mkdirp = require('mkdirp');
+const rimraf = require('rimraf');
 
 const ROOT = path.resolve(__dirname, '..');
 const BABEL_JEST_PATH = path.resolve(ROOT, 'packages/babel-jest');
@@ -30,12 +31,10 @@ const examples = fs
 
 const link = (exampleDirectory, from) => {
   const nodeModules = exampleDirectory + path.sep + 'node_modules' + path.sep;
+  const localBabelJest = path.join(nodeModules, 'babel-jest');
   mkdirp.sync(nodeModules);
-  try {
-    runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
-  } catch (error) {
-    // directory already exists
-  }
+  rimraf.sync(localBabelJest);
+  runCommand('ln', ['-fs', from, nodeModules], exampleDirectory);
 };
 
 examples.forEach(exampleDirectory => {
