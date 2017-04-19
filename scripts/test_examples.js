@@ -11,7 +11,6 @@ const runCommand = require('./_runCommand');
 
 const fs = require('graceful-fs');
 const path = require('path');
-const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 
@@ -39,8 +38,6 @@ const link = (exampleDirectory, from) => {
 
 examples.forEach(exampleDirectory => {
   const exampleName = path.basename(exampleDirectory);
-  console.log(chalk.bold(chalk.cyan('Testing example: ') + exampleName));
-
   if (NODE_VERSION < 6 && SKIP_ON_OLD_NODE.indexOf(exampleName) !== -1) {
     console.log(`Skipping ${exampleName} on node ${process.version}.`);
     return;
@@ -51,5 +48,10 @@ examples.forEach(exampleDirectory => {
   }
 
   link(exampleDirectory, BABEL_JEST_PATH);
-  runCommand(JEST_BIN_PATH, '', exampleDirectory);
 });
+
+runCommand(
+  JEST_BIN_PATH,
+  '--experimentalProjects ' + examples.join(' '),
+  EXAMPLES_DIR
+);

@@ -27,9 +27,8 @@ module.exports = (context: EslintContext) => {
         // checking "expect()" arguments
         if (node.arguments.length > 1) {
           const secondArgumentLocStart = node.arguments[1].loc.start;
-          const lastArgumentLocEnd = node.arguments[
-            node.arguments.length - 1
-          ].loc.end;
+          const lastArgumentLocEnd =
+            node.arguments[node.arguments.length - 1].loc.end;
 
           context.report({
             loc: {
