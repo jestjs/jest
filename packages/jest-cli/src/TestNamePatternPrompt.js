@@ -40,11 +40,11 @@ module.exports = class TestNamePatternPrompt {
     this._prompt = prompt;
   }
 
-  run(onSuccess: Function, onCancel: Function, options) {
+  run(onSuccess: Function, onCancel: Function, options?: { header: string }) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(ansiEscapes.clearScreen);
     if (options && options.header) {
-      this._pipe.write(options.header);  
+      this._pipe.write(options.header);
     }
     this._pipe.write(usage());
     this._pipe.write(ansiEscapes.cursorShow);
