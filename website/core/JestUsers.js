@@ -1,4 +1,6 @@
 /**
+ * Copyright 2004-present Facebook. All Rights Reserved.
+ *
  * @providesModule JestUsers
  * @jsx React.DOM
  */
@@ -13,7 +15,7 @@ class JestUsers extends React.Component {
     const showcase = siteConfig.users.map(user => {
       return (
         <a href={user.infoLink}>
-          <img src={user.image} title={user.caption}/>
+          <img src={user.image} title={user.caption} />
         </a>
       );
     });
@@ -31,7 +33,12 @@ class JestUsers extends React.Component {
                 {showcase}
               </div>
               <p>{siteConfig[this.props.language].using.prompt}</p>
-              <a href="https://github.com/facebook/jest/edit/master/website/siteConfig.js" className="button">{siteConfig[this.props.language].using.prompt_cta}</a>
+              <a
+                href="https://github.com/facebook/jest/edit/master/website/siteConfig.js"
+                className="button"
+              >
+                {siteConfig[this.props.language].using.prompt_cta}
+              </a>
             </div>
           </Container>
         </div>
@@ -41,7 +48,7 @@ class JestUsers extends React.Component {
 }
 
 JestUsers.defaultProps = {
-  language: "en",
+  language: 'en',
 };
 
 module.exports = JestUsers;

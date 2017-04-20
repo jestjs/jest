@@ -26,9 +26,27 @@ class HomeSplash extends React.Component {
               <div className="section promoSection">
                 <div className="promoRow">
                   <div className="pluginRowBlock">
-                    <Button href="#use">{siteConfig[this.props.language].promo.try}</Button>
-                    <Button href={"/jest/docs/"+this.props.language+"/getting-started.html"}>{siteConfig[this.props.language].promo.get}</Button>
-                    <Button href={"/jest/docs/"+this.props.language+"/snapshot-testing.html"}>{siteConfig[this.props.language].promo.learn}</Button>
+                    <Button href="#use">
+                      {siteConfig[this.props.language].promo.try}
+                    </Button>
+                    <Button
+                      href={
+                        '/jest/docs/' +
+                          this.props.language +
+                          '/getting-started.html'
+                      }
+                    >
+                      {siteConfig[this.props.language].promo.get}
+                    </Button>
+                    <Button
+                      href={
+                        '/jest/docs/' +
+                          this.props.language +
+                          '/snapshot-testing.html'
+                      }
+                    >
+                      {siteConfig[this.props.language].promo.learn}
+                    </Button>
                   </div>
                 </div>
               </div>

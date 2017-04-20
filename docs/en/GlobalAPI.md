@@ -1,7 +1,7 @@
 ---
 id: api
 title: Globals
-layout: reference
+layout: docs
 category: API Reference
 permalink: docs/en/api.html
 next: expect

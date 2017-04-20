@@ -10,7 +10,7 @@ const optimist = require('optimist');
 const path = require('path');
 const reactMiddleware = require('react-page-middleware');
 
-console.log("server.js triggered...")
+console.log('server.js triggered...');
 
 const argv = optimist.argv;
 
@@ -49,11 +49,15 @@ const app = connect()
     next();
   })
   .use('/jest/blog/feed.xml', (req, res) => {
-    res.end(fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/feed.xml')) + '');
+    res.end(
+      fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/feed.xml')) + ''
+    );
   })
   .use('/jest/blog/atom.xml', (req, res) => {
-    res.end(fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + '');
-    console.log("DONE")
+    res.end(
+      fs.readFileSync(path.join(FILE_SERVE_ROOT, 'jest/blog/atom.xml')) + ''
+    );
+    console.log('DONE');
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(connect['static'](FILE_SERVE_ROOT))

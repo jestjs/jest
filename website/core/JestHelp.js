@@ -1,9 +1,13 @@
 /**
+ * Copyright 2004-present Facebook. All Rights Reserved.
+ *
  * @providesModule JestHelp
  * @jsx React.DOM
  */
 
 /* eslint-disable sort-keys, max-len, no-multi-str */
+
+'use strict';
 
 const React = require('React');
 const Site = require('Site');
@@ -15,11 +19,10 @@ const siteConfig = require('../siteConfig.js');
 
 const JestHelp = React.createClass({
   render() {
-
     const supportLinks = [
       siteConfig[this.props.language].support.browse,
       siteConfig[this.props.language].support.join,
-      siteConfig[this.props.language].support.uptodate
+      siteConfig[this.props.language].support.uptodate,
     ];
 
     return (
@@ -44,7 +47,7 @@ const JestHelp = React.createClass({
 });
 
 JestHelp.defaultProps = {
-  language: "en",
+  language: 'en',
 };
 
 module.exports = JestHelp;

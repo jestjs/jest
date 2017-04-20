@@ -1,7 +1,7 @@
 ---
 id: expect
 title: Expect
-layout: reference
+layout: docs
 category: API Reference
 permalink: docs/en/expect.html
 previous: api

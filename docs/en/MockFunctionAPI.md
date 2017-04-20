@@ -1,7 +1,7 @@
 ---
 id: mock-function-api
 title: Mock Functions
-layout: reference
+layout: docs
 category: API Reference
 permalink: docs/en/mock-function-api.html
 previous: expect

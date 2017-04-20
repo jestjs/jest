@@ -122,6 +122,8 @@ then modify your `package.json` so the `jest` section looks something like:
     "moduleFileExtensions": [
       "ts",
       "tsx",
+      "js",
+      "json"
     ]
   }
 }

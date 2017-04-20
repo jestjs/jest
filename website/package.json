@@ -7,6 +7,7 @@
     "crowdin-download": "crowdin-cli --config ../crowdin.yaml download -b master"
   },
   "dependencies": {
+    "prettier": "^1.2.2",
     "classnames": "2.2.4",
     "connect": "2.8.3",
     "feed": "0.3.0",

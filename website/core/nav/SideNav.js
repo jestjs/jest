@@ -26,13 +26,17 @@ class SideNav extends React.Component {
             </div>
           </section>
         </div>
-        <script dangerouslySetInnerHTML={{__html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           var toggler = document.getElementById('navToggler');
           var nav = document.getElementById('docsNav');
           toggler.onclick = function() {
             nav.classList.toggle('docsSliderActive');
           };
-        `}} />
+        `,
+          }}
+        />
       </nav>
     );
   }
@@ -49,20 +53,24 @@ class SideNav extends React.Component {
   }
 
   getLocalizedCategoryString(category) {
-    let categoryString = siteConfig[this.props.language]["localized-strings"][category];
-    if(typeof categoryString == "undefined") {
+    let categoryString = siteConfig[this.props.language]['localized-strings'][
+      category
+    ];
+    if (typeof categoryString == 'undefined') {
       categoryString = category;
     }
-    return categoryString
+    return categoryString;
   }
 
   getLocalizedString(metadata) {
-    let localizedString = "";
+    let localizedString = '';
 
-    if(typeof metadata.localized_id == "undefined") {
+    if (typeof metadata.localized_id == 'undefined') {
       localizedString = metadata.title;
     } else {
-      localizedString = siteConfig[this.props.language]["localized-strings"][metadata.localized_id]
+      localizedString = siteConfig[this.props.language]['localized-strings'][
+        metadata.localized_id
+      ];
     }
 
     return localizedString;
@@ -84,22 +92,19 @@ class SideNav extends React.Component {
 
   renderItemLink(link) {
     const itemClasses = classNames('navListItem', {
-      'navListItemActive': (link.id === this.props.current.id),
+      navListItemActive: link.id === this.props.current.id,
     });
     const linkClasses = classNames('navItem', {
-      'navItemActive': (link.id === this.props.current.id),
+      navItemActive: link.id === this.props.current.id,
     });
     return (
       <li className={itemClasses} key={link.id}>
-        <a
-          className={linkClasses}
-          href={this.getLink(link)}>
+        <a className={linkClasses} href={this.getLink(link)}>
           {this.getLocalizedString(link)}
         </a>
       </li>
     );
   }
-
 }
 
 SideNav.defaultProps = {

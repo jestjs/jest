@@ -5,8 +5,7 @@
  * @jsx React.DOM
  */
 
- /* eslint-disable sort-keys */
-
+/* eslint-disable sort-keys */
 
 const Metadata = require('Metadata');
 const React = require('React');
@@ -16,7 +15,8 @@ const SideNav = require('SideNav');
 class DocsSidebar extends React.Component {
   getCategories(language) {
     const metadatas = Metadata.files.filter(metadata => {
-      return metadata.layout === this.props.layout && metadata.language === language
+      return metadata.layout === this.props.layout &&
+        metadata.language === language;
     });
 
     // Build a hashmap of article_id -> metadata
@@ -33,11 +33,7 @@ class DocsSidebar extends React.Component {
       if (metadata.next) {
         if (!articles[metadata.next]) {
           throw new Error(
-            '`next: ' +
-            metadata.next +
-            '` in ' +
-            metadata.id +
-            ' doesn\'t exist'
+            '`next: ' + metadata.next + '` in ' + metadata.id + " doesn't exist"
           );
         }
         previous[articles[metadata.next].id] = metadata.id;

@@ -5,6 +5,8 @@ layout: docs
 category: Guides
 permalink: docs/en/troubleshooting.html
 previous: testing-frameworks
+next: api
+
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.

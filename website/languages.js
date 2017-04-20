@@ -1,339 +1,257 @@
-var languages = [
+/**
+ * Copyright 2004-present Facebook. All Rights Reserved.
+ *
+ */
+const languages = [
   {
-    "name": "English",
-    "tag": "en",
-    "enabled": true,
-    "accept_languages": [
-      "en",
-      "en-us",
-      "en-au",
-      "en-nz",
-      "en-za",
-      "en-bz",
-      "en-tt"
-    ]
+    accept_languages: ['ja'],
+    enabled: false,
+    name: '日本語',
+    tag: 'ja',
   },
   {
-    "name": "Afrikaans",
-    "tag": "af",
-    "enabled": false,
-    "accept_languages": [
-      "af"
-    ]
+    accept_languages: [
+      'en',
+      'en-au',
+      'en-bz',
+      'en-nz',
+      'en-tt',
+      'en-us',
+      'en-za',
+    ],
+    enabled: true,
+    name: 'English',
+    tag: 'en',
   },
   {
-    "name": "العربية",
-    "tag": "ar",
-    "enabled": false,
-    "accept_languages": [
-      "ar-sa",
-      "ar-iq",
-      "ar-eg",
-      "ar-ly",
-      "ar-dz",
-      "ar-ma",
-      "ar-tn",
-      "ar-om",
-      "ar-ye",
-      "ar-sy",
-      "ar-jo",
-      "ar-lb",
-      "ar-kw",
-      "ar-ae",
-      "ar-bh",
-      "ar-qa"
-    ]
+    accept_languages: [
+      'ar-ae',
+      'ar-bh',
+      'ar-dz',
+      'ar-eg',
+      'ar-iq',
+      'ar-jo',
+      'ar-kw',
+      'ar-lb',
+      'ar-ly',
+      'ar-ma',
+      'ar-om',
+      'ar-qa',
+      'ar-sa',
+      'ar-sy',
+      'ar-tn',
+      'ar-ye',
+    ],
+    enabled: false,
+    name: 'العربية',
+    tag: 'ar',
   },
   {
-    "name": "Bosanski",
-    "tag": "bs-BA",
-    "enabled": false,
-    "accept_languages": [
-      "bs-BA"
-    ]
+    accept_languages: ['bs-BA'],
+    enabled: false,
+    name: 'Bosanski',
+    tag: 'bs-BA',
   },
   {
-    "name": "Català",
-    "tag": "ca",
-    "enabled": false,
-    "accept_languages": [
-      "ca"
-    ]
+    accept_languages: ['ca'],
+    enabled: false,
+    name: 'Català',
+    tag: 'ca',
   },
   {
-    "name": "Čeština",
-    "tag": "cs",
-    "enabled": false,
-    "accept_languages": [
-      "cs"
-    ]
+    accept_languages: ['cs'],
+    enabled: false,
+    name: 'Čeština',
+    tag: 'cs',
   },
   {
-    "name": "Dansk",
-    "tag": "da",
-    "enabled": false,
-    "accept_languages": [
-      "da"
-    ]
+    accept_languages: ['da'],
+    enabled: false,
+    name: 'Dansk',
+    tag: 'da',
   },
   {
-    "name": "Deutsch",
-    "tag": "de",
-    "enabled": false,
-    "accept_languages": [
-      "de",
-      "de-ch",
-      "de-at",
-      "de-lu",
-      "de-li"
-    ]
+    accept_languages: ['de', 'de-at', 'de-ch', 'de-li', 'de-lu'],
+    enabled: false,
+    name: 'Deutsch',
+    tag: 'de',
   },
   {
-    "name": "Ελληνικά",
-    "tag": "el",
-    "enabled": false,
-    "accept_languages": [
-      "el"
-    ]
+    accept_languages: ['el'],
+    enabled: false,
+    name: 'Ελληνικά',
+    tag: 'el',
   },
   {
-    "name": "Español",
-    "tag": "es-ES",
-    "enabled": false,
-    "accept_languages": [
-      "es",
-      "es-mx",
-      "es-gt",
-      "es-cr",
-      "es-pa",
-      "es-do",
-      "es-ve",
-      "es-co",
-      "es-pe",
-      "es-ar",
-      "es-ec",
-      "es-cl",
-      "es-uy",
-      "es-py",
-      "es-bo",
-      "es-sv",
-      "es-hn",
-      "es-ni",
-      "es-pr"
-    ]
+    accept_languages: [
+      'es',
+      'es-ar',
+      'es-bo',
+      'es-cl',
+      'es-co',
+      'es-cr',
+      'es-do',
+      'es-ec',
+      'es-gt',
+      'es-hn',
+      'es-mx',
+      'es-ni',
+      'es-pa',
+      'es-pe',
+      'es-pr',
+      'es-py',
+      'es-sv',
+      'es-uy',
+      'es-ve',
+    ],
+    enabled: false,
+    name: 'Español',
+    tag: 'es-ES',
   },
   {
-    "name": "فارسی",
-    "tag": "fa-IR",
-    "enabled": false,
-    "accept_languages": [
-      "fa",
-      "fa-IR"
-    ]
+    accept_languages: ['fa', 'fa-IR'],
+    enabled: false,
+    name: 'فارسی',
+    tag: 'fa-IR',
   },
   {
-    "name": "Suomi",
-    "tag": "fi",
-    "enabled": false,
-    "accept_languages": [
-      "fi"
-    ]
+    accept_languages: ['fi'],
+    enabled: false,
+    name: 'Suomi',
+    tag: 'fi',
   },
   {
-    "name": "Français",
-    "tag": "fr",
-    "enabled": false,
-    "accept_languages": [
-      "fr",
-      "fr-be",
-      "fr-ca",
-      "fr-ch",
-      "fr-lu"
-    ]
+    accept_languages: ['fr', 'fr-be', 'fr-ca', 'fr-ch', 'fr-lu'],
+    enabled: false,
+    name: 'Français',
+    tag: 'fr',
   },
   {
-    "name": "עִברִית",
-    "tag": "he",
-    "enabled": false,
-    "accept_languages": [
-      "he"
-    ]
+    accept_languages: ['he'],
+    enabled: false,
+    name: 'עִברִית',
+    tag: 'he',
   },
   {
-    "name": "Magyar",
-    "tag": "hu",
-    "enabled": false,
-    "accept_languages": [
-      "hu",
-      "hu-HU"
-    ]
+    accept_languages: ['hu', 'hu-HU'],
+    enabled: false,
+    name: 'Magyar',
+    tag: 'hu',
   },
   {
-    "name": "Bahasa Indonesia",
-    "tag": "id-ID",
-    "enabled": false,
-    "accept_languages": [
-      "id"
-    ]
+    accept_languages: ['id'],
+    enabled: false,
+    name: 'Bahasa Indonesia',
+    tag: 'id-ID',
   },
   {
-    "name": "Italiano",
-    "tag": "it",
-    "enabled": false,
-    "accept_languages": [
-      "it",
-      "it-ch"
-    ]
+    accept_languages: ['it', 'it-ch'],
+    enabled: false,
+    name: 'Italiano',
+    tag: 'it',
   },
   {
-    "name": "日本語",
-    "tag": "ja",
-    "enabled": false,
-    "accept_languages": [
-      "ja"
-    ]
+    accept_languages: ['af'],
+    enabled: false,
+    name: 'Afrikaans',
+    tag: 'af',
   },
   {
-    "name": "한국어",
-    "tag": "ko",
-    "enabled": false,
-    "accept_languages": [
-      "ko"
-    ]
+    accept_languages: ['ko'],
+    enabled: false,
+    name: '한국어',
+    tag: 'ko',
   },
   {
-    "name": "मराठी",
-    "tag": "mr-IN",
-    "enabled": false,
-    "accept_languages": [
-      "mr"
-    ]
+    accept_languages: ['mr'],
+    enabled: false,
+    name: 'मराठी',
+    tag: 'mr-IN',
   },
   {
-    "name": "Nederlands",
-    "tag": "nl",
-    "enabled": false,
-    "accept_languages": [
-      "nl",
-      "nl-be"
-    ]
+    accept_languages: ['nl', 'nl-be'],
+    enabled: false,
+    name: 'Nederlands',
+    tag: 'nl',
   },
   {
-    "name": "Norsk",
-    "tag": "no-NO",
-    "enabled": false,
-    "accept_languages": [
-      "no",
-      "no-NO"
-    ]
+    accept_languages: ['no', 'no-NO'],
+    enabled: false,
+    name: 'Norsk',
+    tag: 'no-NO',
   },
   {
-    "name": "Polskie",
-    "tag": "pl",
-    "enabled": false,
-    "accept_languages": [
-      "pl"
-    ]
+    accept_languages: ['pl'],
+    enabled: false,
+    name: 'Polskie',
+    tag: 'pl',
   },
   {
-    "name": "Português",
-    "tag": "pt-PT",
-    "enabled": false,
-    "accept_languages": [
-      "pt"
-    ]
+    accept_languages: ['pt'],
+    enabled: false,
+    name: 'Português',
+    tag: 'pt-PT',
   },
   {
-    "name": "Português (Brasil)",
-    "tag": "pt-BR",
-    "enabled": false,
-    "accept_languages": [
-      "pt-br"
-    ]
+    accept_languages: ['pt-br'],
+    enabled: false,
+    name: 'Português (Brasil)',
+    tag: 'pt-BR',
   },
   {
-    "name": "Română",
-    "tag": "ro",
-    "enabled": false,
-    "accept_languages": [
-      "ro"
-    ]
+    accept_languages: ['ro'],
+    enabled: false,
+    name: 'Română',
+    tag: 'ro',
   },
   {
-    "name": "Русский",
-    "tag": "ru",
-    "enabled": false,
-    "accept_languages": [
-      "ru",
-      "ru-mo"
-    ]
+    accept_languages: ['ru', 'ru-mo'],
+    enabled: false,
+    name: 'Русский',
+    tag: 'ru',
   },
   {
-    "name": "Slovenský",
-    "tag": "sk-SK",
-    "enabled": false,
-    "accept_languages": [
-      "sk"
-    ]
+    accept_languages: ['sk'],
+    enabled: false,
+    name: 'Slovenský',
+    tag: 'sk-SK',
   },
   {
-    "name": "Српски језик (Ћирилица)",
-    "tag": "sr",
-    "enabled": false,
-    "accept_languages": [
-      "sr"
-    ]
+    accept_languages: ['sr'],
+    enabled: false,
+    name: 'Српски језик (Ћирилица)',
+    tag: 'sr',
   },
   {
-    "name": "Svenska",
-    "tag": "sv-SE",
-    "enabled": false,
-    "accept_languages": [
-      "sv",
-      "sv-fi"
-    ]
+    accept_languages: ['sv', 'sv-fi'],
+    enabled: false,
+    name: 'Svenska',
+    tag: 'sv-SE',
   },
   {
-    "name": "Türkçe",
-    "tag": "tr",
-    "enabled": false,
-    "accept_languages": [
-      "tr"
-    ]
+    accept_languages: ['tr'],
+    enabled: false,
+    name: 'Türkçe',
+    tag: 'tr',
   },
   {
-    "name": "Українська",
-    "tag": "uk",
-    "enabled": false,
-    "accept_languages": [
-      "uk"
-    ]
+    accept_languages: ['uk'],
+    enabled: false,
+    name: 'Українська',
+    tag: 'uk',
   },
   {
-    "name": "Tiếng Việt",
-    "tag": "vi",
-    "enabled": false,
-    "accept_languages": [
-      "vi"
-    ]
+    accept_languages: ['vi'],
+    enabled: false,
+    name: 'Tiếng Việt',
+    tag: 'vi',
   },
   {
-    "name": "中文",
-    "tag": "zh-Hans",
-    "enabled": false,
-    "accept_languages": [
-      "zh-cn",
-      "zh-hk",
-      "zh-tw",
-      "zh-sg"
-    ]
+    accept_languages: ['zh-cn', 'zh-hk', 'zh-sg', 'zh-tw'],
+    enabled: false,
+    name: '中文',
+    tag: 'zh-Hans',
   },
-  {
-    "name": "繁體中文",
-    "tag": "zh-Hant",
-    "enabled": false,
-    "accept_languages": []
-  }
+  {accept_languages: ['zh-Hant'], enabled: false, name: '繁體中文', tag: 'zh-Hant'},
 ];
-
 module.exports = languages;
