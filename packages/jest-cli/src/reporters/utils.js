@@ -10,7 +10,7 @@
 
 'use strict';
 
-import type {Config, Path} from 'types/Config';
+import type {Path} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
 
 const chalk = require('chalk');
@@ -27,7 +27,7 @@ const PROGRESS_BAR_WIDTH = 40;
 
 const trimAndFormatPath = (
   pad: number,
-  config: Config,
+  config: {rootDir: Path},
   testPath: Path,
   columns: number,
 ): string => {
@@ -62,12 +62,12 @@ const trimAndFormatPath = (
   );
 };
 
-const formatTestPath = (config: Config, testPath: Path) => {
+const formatTestPath = (config: {rootDir: Path}, testPath: Path) => {
   const {dirname, basename} = relativePath(config, testPath);
   return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const relativePath = (config: Config, testPath: Path) => {
+const relativePath = (config: {rootDir: Path}, testPath: Path) => {
   testPath = path.relative(config.rootDir, testPath);
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
