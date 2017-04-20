@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Options as SummaryReporterOptions} from '../TestRunner';
 import type {PathPattern} from '../SearchSource';
@@ -80,7 +80,7 @@ class SummaryReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
@@ -90,7 +90,7 @@ class SummaryReporter extends BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
@@ -130,7 +130,7 @@ class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSnapshotSummary(snapshots: SnapshotSummary, config: Config) {
+  _printSnapshotSummary(snapshots: SnapshotSummary, config: GlobalConfig) {
     if (
       snapshots.added ||
       snapshots.filesRemoved ||
@@ -215,7 +215,7 @@ class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSummary(aggregatedResults: AggregatedResult, config: Config) {
+  _printSummary(aggregatedResults: AggregatedResult, config: GlobalConfig) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
     const failedTests = aggregatedResults.numFailedTests;

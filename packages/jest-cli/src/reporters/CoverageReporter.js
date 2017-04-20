@@ -10,7 +10,7 @@
 'use strict';
 
 import type {AggregatedResult, CoverageMap, TestResult} from 'types/TestResult';
-import type {Config} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
@@ -61,7 +61,7 @@ class CoverageReporter extends BaseReporter {
 
   onRunComplete(
     contexts: Set<Context>,
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
   ) {
     this._addUntestedFiles(contexts);
@@ -155,7 +155,7 @@ class CoverageReporter extends BaseReporter {
     }
   }
 
-  _checkThreshold(map: CoverageMap, config: Config) {
+  _checkThreshold(map: CoverageMap, config: GlobalConfig) {
     if (config.coverageThreshold) {
       const results = map.getCoverageSummary().toJSON();
 

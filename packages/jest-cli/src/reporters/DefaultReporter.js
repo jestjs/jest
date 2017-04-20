@@ -13,7 +13,7 @@
 'use strict';
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {Config, Path} from 'types/Config';
+import type {Config, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
@@ -106,7 +106,7 @@ class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    config: Config,
+    config: GlobalConfig,
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
