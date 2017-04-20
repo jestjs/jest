@@ -29,6 +29,14 @@ class LanguageDropDown extends React.Component {
           );
       });
 
+    enabledLanguages.push(
+      <li key="recruiting">
+        <a href="https://crowdin.com/project/jest" target="_blank">
+          Help Translate
+        </a>
+      </li>
+    );
+
     return (
       <span>
       <li>
@@ -45,11 +53,7 @@ class LanguageDropDown extends React.Component {
       <script dangerouslySetInnerHTML={{__html: `
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
-        languagesMenuItem.addEventListener("blur", function(){
-            // languagesDropDown.className = "hide";
-        });
         languagesMenuItem.addEventListener("click", function(){
-          console.log(languagesDropDown.className)
           if(languagesDropDown.className == "hide") { 
             languagesDropDown.className = "visible";
           } else {
@@ -71,7 +75,7 @@ class HeaderNav extends React.Component {
   }
 
   makeLinks(link) {
-    link.href = link.href.replace(/\/en\//, '\/' + this.props.language + '\/')
+    link.href = link.href.replace(/\/LANGUAGE\//, '\/' + this.props.language + '\/')
     return (
       <li key={link.section}>
         <a
@@ -119,10 +123,9 @@ class HeaderNav extends React.Component {
 
 HeaderNav.defaultProps = {
   linksInternal: [
-    // {section: 'i18n', href: '/jest/languages.html', text: 'Language'},
-    {section: 'docs', href: '/jest/docs/en/getting-started.html', text: 'Docs'},
-    {section: 'api', href: '/jest/docs/en/api.html', text: 'API'},
-    {section: 'help', href: '/jest/en/help.html', text: 'Help'},
+    {section: 'docs', href: '/jest/docs/LANGUAGE/getting-started.html', text: 'Docs'},
+    {section: 'api', href: '/jest/docs/LANGUAGE/api.html', text: 'API'},
+    {section: 'help', href: '/jest/LANGUAGE/help.html', text: 'Help'},
     {section: 'blog', href: '/jest/blog/', text: 'Blog'},
   ],
   linksExternal: [

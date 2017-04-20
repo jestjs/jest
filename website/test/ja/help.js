@@ -1,1 +1,0 @@
-const React = require('React'); const JestHelp = require('JestHelp'); const support = React.createClass({ render() { return (<JestHelp language={'ja'} />)}}); module.exports = support;

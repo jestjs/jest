@@ -10,8 +10,8 @@ next: timer-mocks
 
 First, enable Babel support in Jest as documented in the [Getting Started](/jest/docs/getting-started.html#using-babel) guide.
 
-Let's implement a simple module that fetches user data from an API and returns the user name.
-
+Let's implement a simple module that fetches user data from an API and
+returns the user name.
 ```js
 // user.js
 import request from './request';
@@ -21,9 +21,11 @@ export function getUserName(userID) {
 }
 ```
 
-In the above implementation we expect the `request.js` module to return a promise. We chain a call to `then` to receive the user name.
+In the above implementation we expect the `request.js` module to return a
+promise. We chain a call to `then` to receive the user name.
 
-Now imagine an implementation of `request.js` that goes to the network and fetches some user data:
+Now imagine an implementation of `request.js` that goes to the network and
+fetches some user data:
 
 ```js
 // request.js
@@ -43,7 +45,9 @@ export default function request(url) {
 }
 ```
 
-Because we don't want to go to the network in our test, we are going to create a manual mock for our `request.js` module in the `__mocks__` folder. It could look something like this:
+Because we don't want to go to the network in our test, we are going to create
+a manual mock for our `request.js` module in the `__mocks__` folder.
+It could look something like this:
 
 ```js
 // __mocks__/request.js
@@ -65,7 +69,6 @@ export default function request(url) {
 ```
 
 Now let's write a test for our async functionality. Using the `resolves` keyword (available in Jest **20.0.0+**)
-
 ```js
 // __tests__/user-test.js
 jest.mock('../request');
@@ -78,11 +81,14 @@ it('works with promises', () => {
 });
 ```
 
-We call `jest.mock('../request')` to tell Jest to use our manual mock. `it` expects the return value to be a Promise that is going to be resolved. You can chain as many Promises as you like and call `expect` at any time, as long as you return a Promise at the end.
+We call `jest.mock('../request')` to tell Jest to use our manual mock. `it` expects the return value to be a Promise that is going to be resolved.
+You can chain as many Promises as you like and call `expect` at any time, as
+long as you return a Promise at the end.
 
 ### `async`/`await`
 
-Writing tests using the `async`/`await` syntax is easy. Here is how you'd write the same example from before:
+Writing tests using the `async`/`await` syntax is easy. Here is
+how you'd write the same example from before:
 
 ```js
 // async/await can also be used.
@@ -115,6 +121,8 @@ it('tests error with async/await', async () => {
 });
 ```
 
-The code for this example is available at [examples/async](https://github.com/facebook/jest/tree/master/examples/async).
+The code for this example is available at
+[examples/async](https://github.com/facebook/jest/tree/master/examples/async).
 
-If you'd like to test timers, like `setTimeout`, take a look at the [Timer mocks](/jest/docs/timer-mocks.html) documentation.
+If you'd like to test timers, like `setTimeout`, take a look at the
+[Timer mocks](/jest/docs/timer-mocks.html) documentation.

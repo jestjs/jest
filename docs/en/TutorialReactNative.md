@@ -8,14 +8,14 @@ previous: tutorial-react
 next: tutorial-async
 ---
 
-At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/) applications.
+At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/)
+applications.
 
 Get a deeper insight into testing a working example React Native app reading the following series: [Part 1: Jest – Snapshot come into play](https://blog.callstack.io/unit-testing-react-native-with-the-new-jest-i-snapshots-come-into-play-68ba19b1b9fe#.12zbnbgwc) and [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://blog.callstack.io/unit-testing-react-native-with-the-new-jest-ii-redux-snapshots-for-your-actions-and-reducers-8559f6f8050b).
 
 ## Setup
 
 Starting from react-native version 0.38, a Jest setup is included by default when running `react-native init`. The following configuration should be automatically added to your package.json file:
-
 ```json
 // package.json
   "scripts": {
@@ -137,7 +137,8 @@ exports[`Intro renders correctly 1`] = `
 
 The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
-The code for this example is available at [examples/react-native](https://github.com/facebook/jest/tree/master/examples/react-native).
+The code for this example is available at
+[examples/react-native](https://github.com/facebook/jest/tree/master/examples/react-native).
 
 ## Preset configuration
 
@@ -220,13 +221,13 @@ If you end up mocking the same modules over and over it is recommended to define
 
 Currently it is required to require react-native before loading the test renderer:
 
-    import 'react-native';
-    // Require after react-native
-    import renderer from 'react-test-renderer';
-    
+```
+import 'react-native';
+// Require after react-native
+import renderer from 'react-test-renderer';
+```
 
 ### `@providesModule`
-
 If you'd like to use Facebook's `@providesModule` module system through an npm package, the default haste config option must be overwritten and npm modules must be added to `providesModuleNodeModules`:
 
 ```json

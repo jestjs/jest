@@ -20,12 +20,14 @@ If you are using [Mocha](https://mochajs.org), [AVA](https://github.com/avajs/av
 
 Install Jest Codemods with `npm` by running:
 
-    npm install -g jest-codemods
-    
+```
+npm install -g jest-codemods
+```
 
 To transform your existing tests, navigate to the project containing the tests and run:
 
-    jest-codemods
-    
+```
+jest-codemods
+```
 
 More information can be found at https://github.com/skovhus/jest-codemods.

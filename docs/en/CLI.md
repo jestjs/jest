@@ -12,38 +12,32 @@ The `jest` command line runner has a number of useful options. You can run `jest
 ## Running from the command line
 
 Run all tests (default):
-
 ```bash
 jest
 ```
 
 Run only the tests that were specified with a pattern or filename:
-
 ```bash
 jest my-test #or
 jest path/to/my-test.js
 ```
 
 Run tests related to changed files based on hg/git (uncommitted files):
-
 ```bash
 jest -o
 ```
 
 Run tests related to `path/to/fileA.js` and `path/to/fileB.js`:
-
 ```bash
 jest --findRelatedTests path/to/fileA.js path/to/fileB.js
 ```
 
 Run tests that match this spec name (match against the name in describe and it, basically).
-
 ```bash
 jest -t name-of-spec
 ```
 
 Run watch mode:
-
 ```bash
 jest --watch #runs jest -o by default
 jest --watchAll #runs all tests

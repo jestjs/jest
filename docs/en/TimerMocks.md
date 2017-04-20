@@ -8,7 +8,10 @@ previous: tutorial-async
 next: manual-mocks
 ---
 
-The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
+The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`,
+`clearInterval`) are less than ideal for a testing environment since they depend
+on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time.
+[Great Scott!](https://www.youtube.com/watch?v=5gVv10J4nio)
 
 ```javascript
 // timerGame.js
@@ -44,7 +47,9 @@ Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out se
 
 ## Run All Timers
 
-Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
+Another test we might want to write for this module is one that asserts that the
+callback is called after 1 second. To do this, we're going to use Jest's timer
+control APIs to fast-forward time right in the middle of the test:
 
 ```javascript
   test('calls the callback after 1 second', () => {
@@ -67,7 +72,10 @@ Another test we might want to write for this module is one that asserts that the
 
 ## Run Pending Timers
 
-There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
+There are also scenarios where you might have a recursive timer -- that is a
+timer that sets a new timer in its own callback. For these, running all the
+timers would be an endless loop… so something like `jest.runAllTimers()` is not
+desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
 
 ```javascript
 // infiniteTimerGame.js
@@ -162,46 +170,8 @@ it('calls the callback after 1 second via runTimersToTime', () => {
 });
 ```
 
-Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
+Lastly, it may occasionally be useful in some tests to be able to clear all of
+the pending timers. For this, we have `jest.clearAllTimers()`.
 
-## Run Timers to Time
-
-Another possibility is use `jest.runTimersToTime(msToRun)`. When this API is called, all pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed within msToRun milliseconds, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
-
-```javascript
-// timerGame.js
-'use strict';
-
-function timerGame(callback) {
-  console.log('Ready....go!');
-  setTimeout(() => {
-    console.log('Times up -- stop!');
-    callback && callback();
-  }, 1000);
-}
-
-module.exports = timerGame;
-```
-
-```javascript
-it('calls the callback after 1 second via runTimersToTime', () => {
-    const timerGame = require('../timerGame');
-    const callback = jest.fn();
-
-    timerGame(callback);
-
-    // At this point in time, the callback should not have been called yet
-    expect(callback).not.toBeCalled();
-
-    // Fast-forward until all timers have been executed
-    jest.runTimersToTime(1000);
-
-    // Now our callback should have been called!
-    expect(callback).toBeCalled();
-    expect(callback.mock.calls.length).toBe(1);
-  });
-```
-
-Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
-
-The code for this example is available at [examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).
+The code for this example is available at
+[examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).

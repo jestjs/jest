@@ -8,9 +8,15 @@ previous: setup-teardown
 next: more-resources
 ---
 
-Mock functions make it easy to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with `new`, and allowing test-time configuration of return values.
+Mock functions make it easy to test the links between code by erasing the actual
+implementation of a function, capturing calls to the function (and the
+parameters passed in those calls), capturing instances of constructor functions
+when instantiated with `new`, and allowing test-time configuration of return
+values.
 
-There are two ways to get your hands on mock functions: Either by `require()`ing a mocked component (via `jest.mock('moduleName')`) or by explicitly requesting one from `jest.fn()` in your test:
+There are two ways to get your hands on mock functions: Either by
+`require()`ing a mocked component (via `jest.mock('moduleName')`)
+or by explicitly requesting one from `jest.fn()` in your test:
 
 ```javascript
 const myMock = jest.fn();
@@ -22,7 +28,9 @@ console.log(myMock.mock.calls);
 
 ## `.mock` property
 
-All mock functions have this special `.mock` property, which is where data about how the function has been called is kept. The `.mock` property also tracks the value of `this` for each call, so it is possible to inspect this as well:
+All mock functions have this special `.mock` property, which is where data about
+how the function has been called is kept. The `.mock` property also tracks the
+value of `this` for each call, so it is possible to inspect this as well:
 
 ```javascript
 const myMock = jest.fn();
@@ -36,7 +44,8 @@ console.log(myMock.mock.instances);
 // > [ <a>, <b> ]
 ```
 
-These mock members are very useful in tests to assert how these functions get called, or instantiated:
+These mock members are very useful in tests to assert how these functions get
+called, or instantiated:
 
 ```javascript
 // The function was called exactly once
@@ -58,7 +67,8 @@ expect(someMockFunction.mock.instances[0].name).toEqual('test');
 
 ## Mock Return Values
 
-Mock functions can also be used to inject test values into your code during a test:
+Mock functions can also be used to inject test values into your code during a
+test:
 
 ```javascript
 const myMock = jest.fn();
@@ -73,7 +83,11 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
-Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
+Mock functions are also very effective in code that uses a functional
+continuation-passing style. Code written in this style helps avoid the need for
+complicated stubs that recreate behavior of the real component they're standing
+in for, in favor of injecting values directly into the test right before they're
+used.
 
 ```javascript
 const filterTestFn = jest.fn();
@@ -92,11 +106,17 @@ console.log(filterTestFn.mock.calls);
 // > [ [11], [12] ]
 ```
 
-Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. In these cases, try to avoid the temptation to implement logic inside of any function that's not directly being tested.
+Most real-world examples actually involve getting ahold of a mock function on a
+dependent component and configuring that, but the technique is the same. In
+these cases, try to avoid the temptation to implement logic inside of any
+function that's not directly being tested.
 
 ## Mock Implementations
 
-Still, there are cases where it's useful to go beyond the ability to specify return values and full-on replace the implementation of a mock function. This can be done with `jest.fn` or the `mockImplementationOnce` method on mock functions.
+Still, there are cases where it's useful to go beyond the ability to specify
+return values and full-on replace the implementation of a mock function. This
+can be done with `jest.fn` or the `mockImplementationOnce` method
+on mock functions.
 
 ```javascript
 const myMockFn = jest.fn(cb => cb(null, true));
@@ -108,7 +128,8 @@ myMockFn((err, val) => console.log(val));
 // > true
 ```
 
-The `mockImplementation` method is useful when you need to define the default implementation of a mock function that is created from another module:
+The `mockImplementation` method is useful when you need to define the default
+implementation of a mock function that is created from another module:
 
 ```js
 // foo.js
@@ -126,7 +147,10 @@ foo();
 // > 42
 ```
 
-When you need to recreate a complex behavior of a mock function such that multiple function calls produce different results, use the `mockImplementationOnce` method:
+
+When you need to recreate a complex behavior of a mock function such that
+multiple function calls produce different results, use the
+`mockImplementationOnce` method:
 
 ```javascript
 const myMockFn = jest.fn()
@@ -140,7 +164,9 @@ myMockFn((err, val) => console.log(val));
 // > false
 ```
 
-When the mocked function runs out of implementations defined with `mockImplementationOnce`, it will execute the default implementation set with `jest.fn` (if it is defined):
+When the mocked function runs out of implementations defined with
+`mockImplementationOnce`, it will execute the default implementation
+set with `jest.fn` (if it is defined):
 
 ```javascript
 const myMockFn = jest.fn(() => 'default')
@@ -151,7 +177,9 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 // > 'first call', 'second call', 'default', 'default'
 ```
 
-For cases where we have methods that are typically chained (and thus always need to return `this`), we have a sugary API to simplify this in the form of a `.mockReturnThis()` function that also sits on all mocks:
+For cases where we have methods that are typically chained (and thus always need
+to return `this`), we have a sugary API to simplify this in the form of a
+`.mockReturnThis()` function that also sits on all mocks:
 
 ```javascript
 const myObj = {
@@ -169,7 +197,8 @@ const otherObj = {
 
 ## Custom Matchers
 
-Finally, in order to make it simpler to assert how mock functions have been called, we've added some custom matcher functions for you:
+Finally, in order to make it simpler to assert how mock functions have been
+called, we've added some custom matcher functions for you:
 
 ```javascript
 // The mock function was called at least once
@@ -182,7 +211,9 @@ expect(mockFunc).toBeCalledWith(arg1, arg2);
 expect(mockFunc).lastCalledWith(arg1, arg2);
 ```
 
-These matchers are really just sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
+These matchers are really just sugar for common forms of inspecting the `.mock`
+property. You can always do this manually yourself if that's more to your taste
+or if you need to do something more specific:
 
 ```javascript
 // The mock function was called at least once

@@ -71,8 +71,9 @@ Since we just updated our component to point to a different address, it's reason
 
 To resolve this, we will need to update our snapshot artifacts. You can run Jest with a flag that will tell it to re-generate snapshots:
 
-    jest --updateSnapshot
-    
+```
+jest --updateSnapshot
+```
 
 Go ahead and accept the changes by running the above command. You may also use the equivalent single-character `-u` flag to re-generate snapshots if you prefer. This will re-generate snapshot artifacts for all failing snapshot tests. If we had any additional failing snapshot tests due to an unintentional bug, we would need to fix the bug before re-generating snapshots to avoid recording snapshots of the buggy behavior.
 
@@ -86,8 +87,9 @@ Your tests should be deterministic. That is, running the same tests multiple tim
 
 For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](/jest/docs/mock-functions.html) to return a consistent value every time the test is run:
 
-    Date.now = jest.fn(() => 1482363367071);
-    
+```
+Date.now = jest.fn(() => 1482363367071);
+```
 
 Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
 
@@ -97,4 +99,5 @@ As you've learned, snapshot testing was built to make it easier to write tests f
 
 ## Additional Uses
 
-Snapshots can capture any serializable value. Common examples are [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console-test.js) or API responses.
+Snapshots can capture any serializable value. Common examples are [snapshotting CLI output](https://github.com/facebook/jest/blob/master/integration_tests/__tests__/console-test.js
+) or API responses.

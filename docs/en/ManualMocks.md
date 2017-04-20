@@ -27,7 +27,8 @@ Manual mocks are defined by writing a module in a `__mocks__/` subdirectory imme
 
 When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, manual mocks will take precedence over node modules even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory.
+Here's a contrived example where we have a module that provides a summary of
+all the files in a given directory.
 
 ```javascript
 // FileSummarizer.js
@@ -45,7 +46,10 @@ function summarizeFilesInDirectorySync(directory) {
 exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 ```
 
-Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module by extending an automatic mock. Our manual mock will implement custom versions of the `fs` APIs that we can build on for our tests:
+Since we'd like our tests to avoid actually hitting the disk (that's pretty
+slow and fragile), we create a manual mock for the `fs` module by extending an
+automatic mock. Our manual mock will implement custom versions of the `fs` APIs
+that we can build on for our tests:
 
 ```javascript
 // __mocks__/fs.js
@@ -113,12 +117,25 @@ describe('listFilesInDirectorySync', () => {
 });
 ```
 
-The example mock shown here uses [`jest.genMockFromModule`](/jest/docs/jest-object.html#jestgenmockfrommodulemodulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can simply export your own functions from the mock file. One downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
+The example mock shown here uses [`jest.genMockFromModule`](/jest/docs/jest-object.html#jestgenmockfrommodulemodulename)
+to generate an automatic mock, and overrides its default behavior. This is the
+recommended approach, but is completely optional. If you do not want to use the
+automatic mock at all, you can simply export your own functions from the mock
+file. One downside to fully manual mocks is that they're manual –
+meaning you have to manually update them any time the module they are mocking
+changes. Because of this, it's best to use or extend the automatic mock when it
+works for your needs.
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using `require.requireActual(moduleName)` in your manual mock and amending it with mock functions before exporting it.
 
-The code for this example is available at [examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
+The code for this example is available at
+[examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
 
 ### Using with ES module imports
 
-If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) then you'll normally be inclined to put your `import` statements at the top of the test file. But often you need to instruct Jest to use a mock before modules use it. For this reason, Jest will automatically hoist `jest.mock` calls to the top of the module (before any imports). To learn more about this and see it in action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
+then you'll normally be inclined to put your `import` statements at the top of
+the test file. But often you need to instruct Jest to use a mock before modules
+use it. For this reason, Jest will automatically hoist `jest.mock` calls to the
+top of the module (before any imports). To learn more about this and see it in
+action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).

@@ -1,5 +1,5 @@
 project_identifier: jest
-api_key: 9ceb09217adc38100918d6d71b7ba74e
+api_key_env: CROWDIN_API_KEY
 base_path: ..
 
 files:
