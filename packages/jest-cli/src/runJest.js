@@ -10,20 +10,19 @@
 'use strict';
 
 import type {Context} from 'types/Context';
+import type {GlobalConfig} from 'types/Config';
 import type TestWatcher from './TestWatcher';
 
+const {Console, formatTestResults} = require('jest-util');
+const chalk = require('chalk');
 const fs = require('graceful-fs');
-
+const getMaxWorkers = require('./lib/getMaxWorkers');
+const getTestPathPattern = require('./lib/getTestPathPattern');
+const path = require('path');
 const SearchSource = require('./SearchSource');
+const setState = require('./lib/setState');
 const TestRunner = require('./TestRunner');
 const TestSequencer = require('./TestSequencer');
-
-const getTestPathPattern = require('./lib/getTestPathPattern');
-const chalk = require('chalk');
-const {Console, formatTestResults} = require('jest-util');
-const getMaxWorkers = require('./lib/getMaxWorkers');
-const path = require('path');
-const setState = require('./lib/setState');
 
 const setConfig = (contexts, newConfig) =>
   contexts.forEach(
@@ -145,6 +144,7 @@ const processResults = (runResults, options) => {
 };
 
 const runJest = async (
+  globalConfig: GlobalConfig,
   contexts: Array<Context>,
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
@@ -152,7 +152,6 @@ const runJest = async (
   startRun: () => *,
   onComplete: (testResults: any) => void,
 ) => {
-  const context = contexts[0];
   const maxWorkers = getMaxWorkers(argv);
   const pattern = getTestPathPattern(argv);
   const sequencer = new TestSequencer();
@@ -170,13 +169,16 @@ const runJest = async (
     new Console(pipe, pipe).log(getNoTestsFoundMessage(testRunData, pattern));
   } else if (
     allTests.length === 1 &&
-    context.config.silent !== true &&
-    context.config.verbose !== false
+    globalConfig.silent !== true &&
+    globalConfig.verbose !== false
   ) {
+    globalConfig = Object.freeze(
+      Object.assign({}, globalConfig, {verbose: true}),
+    );
     setConfig(contexts, {verbose: true});
   }
 
-  if (context.config.updateSnapshot === true) {
+  if (globalConfig.updateSnapshot === true) {
     setConfig(contexts, {updateSnapshot: true});
   }
 
@@ -186,7 +188,7 @@ const runJest = async (
     setConfig(contexts, {rootDir: process.cwd()});
   }
 
-  const results = await new TestRunner(context.config, {
+  const results = await new TestRunner(globalConfig, {
     maxWorkers,
     pattern,
     startRun,
@@ -200,7 +202,7 @@ const runJest = async (
     isJSON: argv.json,
     onComplete,
     outputFile: argv.outputFile,
-    testResultsProcessor: context.config.testResultsProcessor,
+    testResultsProcessor: globalConfig.testResultsProcessor,
   });
 };
 

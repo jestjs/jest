@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import type {Config} from 'types/Config';
+import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {Environment} from 'types/Environment';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
@@ -22,12 +22,18 @@ const path = require('path');
 const JASMINE = require.resolve('./jasmine/jasmine-light.js');
 
 function jasmine2(
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult> {
-  const reporter = new JasmineReporter(config, environment, testPath);
+  const reporter = new JasmineReporter(
+    globalConfig,
+    config,
+    environment,
+    testPath,
+  );
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create();
 

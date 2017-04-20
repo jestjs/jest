@@ -9,12 +9,12 @@
  */
 'use strict';
 
-import type {Config} from './Config';
+import type {ProjectConfig} from './Config';
 import type {HasteFS, ModuleMap} from './HasteMap';
 import type HasteResolver from 'jest-resolve';
 
 export type Context = {|
-  config: Config,
+  config: ProjectConfig,
   hasteFS: HasteFS,
   moduleMap: ModuleMap,
   resolver: HasteResolver,

@@ -77,6 +77,28 @@ exports[`jest --showConfig outputs config info and exits 1`] = `
     "watchman": true
   },
   "framework": "jasmine2",
+  "globalConfig": {
+    "bail": false,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json",
+      "text",
+      "lcov",
+      "clover"
+    ],
+    "expand": false,
+    "mapCoverage": false,
+    "noStackTrace": false,
+    "notify": false,
+    "rootDir": "/mocked/root/path/jest/integration_tests/verbose_reporter",
+    "testResultsProcessor": null,
+    "useStderr": false,
+    "verbose": null,
+    "watch": false,
+    "watchman": true
+  },
   "version": "19.0.2"
 }
 
