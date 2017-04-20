@@ -14,9 +14,9 @@ const Container = require('Container');
 const SideNav = require('SideNav');
 
 class DocsSidebar extends React.Component {
-  getCategories() {
+  getCategories(language) {
     const metadatas = Metadata.files.filter(metadata => {
-      return metadata.layout === this.props.layout;
+      return metadata.layout === this.props.layout && metadata.language === language
     });
 
     // Build a hashmap of article_id -> metadata
@@ -79,9 +79,10 @@ class DocsSidebar extends React.Component {
     return (
       <Container className="docsNavContainer" id="docsNav" wrapper={false}>
         <SideNav
+          language={this.props.metadata.language}
           root={this.props.root}
           title={this.props.title}
-          contents={this.getCategories()}
+          contents={this.getCategories(this.props.metadata.language)}
           current={this.props.metadata}
         />
       </Container>
@@ -97,7 +98,7 @@ DocsSidebar.propTypes = {
 
 DocsSidebar.defaultProps = {
   layout: 'docs',
-  root: '/jest/docs/getting-started.html',
+  root: '/jest/docs/en/getting-started.html',
   title: 'Docs',
 };
 

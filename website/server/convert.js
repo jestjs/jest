@@ -12,6 +12,8 @@ const toSlug = require('../core/toSlug');
 
 const argv = optimist.argv;
 
+console.log("convert.js triggered...")
+
 function splitHeader(content) {
   const lines = content.split('\n');
   let i = 1;
@@ -89,7 +91,9 @@ const insertTableOfContents = rawContent => {
   return rawContent.replace(TABLE_OF_CONTENTS_TOKEN, tableOfContents);
 };
 
-function buildFile(layout, metadata, rawContent) {
+function buildFile(layout, metadata, rawContent, language) {
+  if(typeof language == "undefined") language = "en";
+
   if (rawContent && rawContent.indexOf(TABLE_OF_CONTENTS_TOKEN) !== -1) {
     rawContent = insertTableOfContents(rawContent);
   }
@@ -105,7 +109,7 @@ function buildFile(layout, metadata, rawContent) {
     rawContent && '  statics: { content: content },',
     '  render: function() {',
     '    return (',
-    '      <Layout metadata={' + JSON.stringify(metadata) + '}>',
+    '      <Layout metadata={' + JSON.stringify(metadata) + '} language="'+language+'">',
     rawContent && '        {content}',
     '      </Layout>',
     '    );',
@@ -124,11 +128,12 @@ function execute() {
   const DOCS_MD_DIR = '../docs/';
   const BLOG_MD_DIR = '../blog/';
 
-  globEach('src/jest/docs/*.*', rmFile);
+  globEach('src/jest/docs/**', rmFile);
   globEach('src/jest/blog/*.*', rmFile);
 
+  // Extracts the Getting started content from GettingStarted.md and inserts into repo's README
   const gettingStarted = splitHeader(
-    fs.readFileSync(DOCS_MD_DIR + 'GettingStarted.md', 'utf8')
+    fs.readFileSync(DOCS_MD_DIR + 'en/GettingStarted.md', 'utf8')
   ).content
     .replace(/\(\/jest\//g, '(https://facebook.github.io/jest/');
 
@@ -140,18 +145,44 @@ function execute() {
     readme.slice(readme.indexOf(guideEnd));
   fs.writeFileSync('../README.md', readme);
 
-  glob(DOCS_MD_DIR + '**/*.*', (er, files) => {
+  const regexSubFolder = /..\/docs\/(.*)\/.*/;
+
+  // for docs
+  glob(DOCS_MD_DIR + '**', (er, files) => {
+
     const metadatas = {
       files: [],
     };
 
     files.forEach(file => {
+      
+      // extract language
+      var language = "en";
+      var match = regexSubFolder.exec(file);
+      if(match) {
+        language = match[1];
+      }
+
       const extension = path.extname(file);
       if (extension === '.md' || extension === '.markdown') {
+
         const res = extractMetadata(fs.readFileSync(file, 'utf8'));
         const metadata = res.metadata;
         const rawContent = res.rawContent;
         metadata.source = path.basename(file);
+
+        // in permalink replace /en/ language with localized folder
+        metadata.permalink = metadata.permalink.replace(/\/en\//g, "/" + language + "/")
+        // change ids previous, next
+        metadata.localized_id = metadata.id
+        metadata.id = language + "-" + metadata.id;
+        if(metadata.previous ) {
+          metadata.previous = language + "-" + metadata.previous;
+        }
+        if(metadata.next) {
+          metadata.next = language + "-" + metadata.next;
+        }
+        metadata.language = language;
         metadatas.files.push(metadata);
 
         if (metadata.permalink.match(/^https?:/)) {
@@ -164,7 +195,7 @@ function execute() {
 
         writeFileAndCreateFolder(
           'src/jest/' + metadata.permalink.replace(/\.html$/, '.js'),
-          buildFile(layout, metadata, rawContent)
+          buildFile(layout, metadata, rawContent, language)
         );
       }
 
@@ -184,6 +215,7 @@ function execute() {
     );
   });
 
+  // For the blog
   glob(BLOG_MD_DIR + '**/*.*', (er, files) => {
     const metadatas = {
       files: [],

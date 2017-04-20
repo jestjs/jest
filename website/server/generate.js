@@ -5,6 +5,8 @@ const mkdirp = require('mkdirp');
 const server = require('./server.js');
 const feed = require('./feed');
 
+console.log("Generate.js triggered...")
+
 // Sadly, our setup fatals when doing multiple concurrent requests
 // I don't have the time to dig into why, it's easier to just serialize
 // requests.
@@ -42,6 +44,7 @@ queue.push(cb => {
 
 glob('src/**/*.*', (er, files) => {
   files.forEach(file => {
+    console.log("debug", file)
     let targetFile = file.replace(/^src/, 'build');
 
     if (file.match(/\.js$/)) {

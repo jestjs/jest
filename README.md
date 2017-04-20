@@ -16,9 +16,8 @@
 <generated_getting_started_start />
 Install Jest using `npm`:
 
-```
-npm install --save-dev jest
-```
+    npm install --save-dev jest
+    
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
@@ -42,17 +41,18 @@ test('adds 1 + 2 to equal 3', () => {
 Add the following section to your `package.json`:
 
 ```json
-"scripts": {
-  "test": "jest"
+{
+  "scripts": {
+    "test": "jest"
+  }
 }
 ```
 
 Finally, run `npm test` and Jest will print this message:
 
-```
-PASS  ./sum.test.js
-✓ adds 1 + 2 to equal 3 (5ms)
-```
+    PASS  ./sum.test.js
+    ✓ adds 1 + 2 to equal 3 (5ms)
+    
 
 **You just successfully wrote your first test using Jest!**
 
@@ -76,9 +76,8 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
-```
-npm install --save-dev babel-jest regenerator-runtime
-```
+    npm install --save-dev babel-jest regenerator-runtime
+    
 
 *Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn*
 
@@ -92,9 +91,7 @@ Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file 
 
 You are now set up to use all ES6 features and React specific syntax.
 
-> Note: If you are using a more complicated Babel configuration, using Babel's `env` option,
-keep in mind that Jest will automatically define `NODE_ENV` as `test`.
-It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
+> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test`. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
 
 ### Using webpack
 
@@ -104,9 +101,8 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 To use TypeScript in your tests, install the `ts-jest` package and the types for Jest.
 
-```
-npm install --save-dev ts-jest @types/jest
-```
+    npm install --save-dev ts-jest @types/jest
+    
 
 then modify your `package.json` so the `jest` section looks something like:
 
@@ -124,8 +120,7 @@ then modify your `package.json` so the `jest` section looks something like:
     ]
   }
 }
-```
-<generated_getting_started_end />
+```<generated_getting_started_end />
 
 ## Documentation
 

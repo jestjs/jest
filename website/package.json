@@ -2,9 +2,12 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "node server/generate.js",
-    "gh-pages": "node publish-gh-pages.js"
+    "gh-pages": "node publish-gh-pages.js",
+    "crowdin-upload": "crowdin-cli --config ../crowdin.yaml upload sources --auto-update -b master",
+    "crowdin-download": "crowdin-cli --config ../crowdin.yaml download -b master"
   },
   "dependencies": {
+    "classnames": "2.2.4",
     "connect": "2.8.3",
     "feed": "0.3.0",
     "fs.extra": "*",
@@ -14,7 +17,6 @@
     "optimist": "0.6.0",
     "react": "0.13.2",
     "react-page-middleware": "git://github.com/facebook/react-page-middleware.git",
-    "classnames": "2.2.4",
     "request": "*"
   },
   "devDependencies": {

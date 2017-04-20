@@ -18,13 +18,13 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href="/jest/docs/getting-started.html">Getting Started</a>
-            <a href="/jest/docs/snapshot-testing.html">Guides</a>
-            <a href="/jest/docs/api.html">API Reference</a>
+            <a href={"/jest/docs/"+this.props.language+"/getting-started.html"}>Getting Started</a>
+            <a href={"/jest/docs/"+this.props.language+"/snapshot-testing.html"}>Guides</a>
+            <a href={"/jest/docs/"+this.props.language+"/api.html"}>API Reference</a>
           </div>
           <div>
             <h5>Community</h5>
-            <a href="/jest/users.html">User Showcase</a>
+            <a href={"/jest/"+this.props.language+"/users.html"}>User Showcase</a>
             <a href="http://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a>
             <a href="https://discordapp.com/channels/102860784329052160/103622435865104384">Jest Chat</a>
             <a href="https://twitter.com/fbjest" target="_blank">Twitter</a>
