@@ -68,6 +68,7 @@ const getCacheKey = (
         roots: config.roots,
         testMatch: config.testMatch,
         testRegex: config.testRegex,
+        transform: config.transform,
         transformIgnorePatterns: config.transformIgnorePatterns,
       }),
     );
