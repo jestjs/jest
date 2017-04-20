@@ -13,8 +13,7 @@ import type {Global} from 'types/Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
-const FakeTimers = require('jest-util').FakeTimers;
-const installCommonGlobals = require('jest-util').installCommonGlobals;
+const {FakeTimers, installCommonGlobals} = require('jest-util');
 const mock = require('jest-mock');
 
 class JSDOMEnvironment {
@@ -31,8 +30,8 @@ class JSDOMEnvironment {
     const global = (this.global = this.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
-    this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global, config.globals);
+    global.Error.stackTraceLimit = 100;
+    installCommonGlobals(global, config);
 
     this.moduleMocker = new mock.ModuleMocker(global);
     this.fakeTimers = new FakeTimers(global, this.moduleMocker, config);

@@ -9,7 +9,8 @@
 */
 'use strict';
 
-import type {ConfigGlobals} from 'types/Config';
+const prepareStackTrace = require('./prepareStackTrace');
+import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
 
 function deepCopy(obj) {
@@ -25,7 +26,7 @@ function deepCopy(obj) {
   return newObj;
 }
 
-module.exports = (global: Global, globals: ConfigGlobals) => {
+module.exports = (global: Global, config: Config) => {
   // Forward some APIs
   global.Buffer = Buffer;
 
@@ -51,8 +52,10 @@ module.exports = (global: Global, globals: ConfigGlobals) => {
   global.process.listeners = process.listeners.bind(process);
   global.process.listenerCount = process.listenerCount.bind(process);
 
+  global.Error.prepareStackTrace = prepareStackTrace();
+
   global.setImmediate = setImmediate;
   global.clearImmediate = clearImmediate;
 
-  Object.assign(global, deepCopy(globals));
+  Object.assign(global, deepCopy(config.globals));
 };
