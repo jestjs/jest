@@ -58,7 +58,6 @@ const prepareStackTrace = (
         return `at ${data.functionName} ` +
           `(${data.fileName}:${data.lineNumber}:${data.columnNumber})`;
       });
-    // error.stackTraceData = data;
 
     return `${error.name}: ` +
       `${error.message}\n${filteredStackTrace.join('\n')}`;

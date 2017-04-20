@@ -9,7 +9,7 @@
 */
 'use strict';
 
-const {prepareStackTrace} = require('jest-util');
+const prepareStackTrace = require('./prepareStackTrace');
 import type {Config} from 'types/Config';
 import type {Global} from 'types/Global';
 
