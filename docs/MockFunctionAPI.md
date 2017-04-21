@@ -59,6 +59,11 @@ This is useful when you want to completely restore a mock back to its initial st
 
 Beware that `mockReset` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
+### `mockFn.mockRestore()`
+Removes the mock and restores the initial implementation.
+
+This is useful when you want to mock functions in certain test cases and restore the original implementation in others.
+
 ### `mockFn.mockImplementation(fn)`
 Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
