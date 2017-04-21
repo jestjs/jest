@@ -19,7 +19,7 @@ const stringLength = require('string-length');
 const Prompt = require('./lib/Prompt');
 const formatTestNameByPattern = require('./lib/formatTestNameByPattern');
 
-const pluralizeTest = (total: number) => (total === 1 ? 'test' : 'tests');
+const pluralizeTest = (total: number) => total === 1 ? 'test' : 'tests';
 
 const usage = () =>
   `\n${chalk.bold('Pattern Mode Usage')}\n` +
@@ -40,7 +40,7 @@ module.exports = class TestNamePatternPrompt {
     this._prompt = prompt;
   }
 
-  run(onSuccess: Function, onCancel: Function, options?: { header: string }) {
+  run(onSuccess: Function, onCancel: Function, options?: {header: string}) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(ansiEscapes.clearScreen);
     if (options && options.header) {
@@ -124,8 +124,7 @@ module.exports = class TestNamePatternPrompt {
         if (regex.test(title)) {
           matchedTests.push(title);
         }
-      }),
-    );
+      }));
 
     return matchedTests;
   }

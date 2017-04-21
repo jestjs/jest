@@ -7,26 +7,26 @@
  *
  * @flow
  */
-"use strict";
+'use strict';
 
-import type { Context } from "types/Context";
+import type {Context} from 'types/Context';
 
-const ansiEscapes = require("ansi-escapes");
-const chalk = require("chalk");
-const createContext = require("./lib/createContext");
-const HasteMap = require("jest-haste-map");
-const isCI = require("is-ci");
+const ansiEscapes = require('ansi-escapes');
+const chalk = require('chalk');
+const createContext = require('./lib/createContext');
+const HasteMap = require('jest-haste-map');
+const isCI = require('is-ci');
 const isInteractive = process.stdout.isTTY && !isCI;
-const isValidPath = require("./lib/isValidPath");
-const preRunMessage = require("./preRunMessage");
-const runJest = require("./runJest");
-const setState = require("./lib/setState");
-const SearchSource = require("./SearchSource");
-const TestWatcher = require("./TestWatcher");
-const Prompt = require("./lib/Prompt");
-const TestPathPatternPrompt = require("./TestPathPatternPrompt");
-const TestNamePatternPrompt = require("./TestNamePatternPrompt");
-const { KEYS, CLEAR } = require("./constants");
+const isValidPath = require('./lib/isValidPath');
+const preRunMessage = require('./preRunMessage');
+const runJest = require('./runJest');
+const setState = require('./lib/setState');
+const SearchSource = require('./SearchSource');
+const TestWatcher = require('./TestWatcher');
+const Prompt = require('./lib/Prompt');
+const TestPathPatternPrompt = require('./TestPathPatternPrompt');
+const TestNamePatternPrompt = require('./TestNamePatternPrompt');
+const {KEYS, CLEAR} = require('./constants');
 
 let hasExitListener = false;
 
@@ -35,12 +35,12 @@ const watch = (
   argv: Object,
   pipe: stream$Writable | tty$WriteStream,
   hasteMapInstances: Array<HasteMap>,
-  stdin?: stream$Readable | tty$ReadStream = process.stdin
+  stdin?: stream$Readable | tty$ReadStream = process.stdin,
 ) => {
-  setState(argv, argv.watch ? "watch" : "watchAll", {
+  setState(argv, argv.watch ? 'watch' : 'watchAll', {
     testNamePattern: argv.testNamePattern,
     testPathPattern: argv.testPathPattern ||
-      (Array.isArray(argv._) ? argv._.join("|") : "")
+      (Array.isArray(argv._) ? argv._.join('|') : ''),
   });
 
   const prompt = new Prompt();
@@ -48,7 +48,7 @@ const watch = (
   const testNamePatternPrompt = new TestNamePatternPrompt(pipe, prompt);
   let searchSources = contexts.map(context => ({
     context,
-    searchSource: new SearchSource(context)
+    searchSource: new SearchSource(context),
   }));
   let hasSnapshotFailure = false;
   let isRunning = false;
@@ -59,8 +59,8 @@ const watch = (
   testPathPatternPrompt.updateSearchSources(searchSources);
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
-    hasteMapInstance.on("change", ({ eventsQueue, hasteFS, moduleMap }) => {
-      const validPaths = eventsQueue.filter(({ filePath }) => {
+    hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
+      const validPaths = eventsQueue.filter(({filePath}) => {
         return isValidPath(contexts[index].config, filePath);
       });
 
@@ -69,14 +69,14 @@ const watch = (
           contexts[index].config,
           {
             hasteFS,
-            moduleMap
-          }
+            moduleMap,
+          },
         ));
         prompt.abort();
         searchSources = searchSources.slice();
         searchSources[index] = {
           context,
-          searchSource: new SearchSource(context)
+          searchSource: new SearchSource(context),
         };
         testPathPatternPrompt.updateSearchSources(searchSources);
         startRun();
@@ -86,7 +86,7 @@ const watch = (
 
   if (!hasExitListener) {
     hasExitListener = true;
-    process.on("exit", () => {
+    process.on('exit', () => {
       if (prompt.isEntering()) {
         pipe.write(ansiEscapes.cursorDown());
         pipe.write(ansiEscapes.eraseDown);
@@ -99,7 +99,7 @@ const watch = (
       return null;
     }
 
-    testWatcher = new TestWatcher({ isWatchMode: true });
+    testWatcher = new TestWatcher({isWatchMode: true});
     isInteractive && pipe.write(CLEAR);
     preRunMessage.print(pipe);
     isRunning = true;
@@ -110,11 +110,11 @@ const watch = (
         Object.assign(
           {
             testNamePattern: argv.testNamePattern,
-            testPathPattern: argv.testPathPattern
+            testPathPattern: argv.testPathPattern,
           },
           context.config,
-          overrideConfig
-        )
+          overrideConfig,
+        ),
       );
     });
     return runJest(contexts, argv, pipe, testWatcher, startRun, results => {
@@ -123,7 +123,7 @@ const watch = (
       // Create a new testWatcher instance so that re-runs won't be blocked.
       // The old instance that was passed to Jest will still be interrupted
       // and prevent test runs from the previous run.
-      testWatcher = new TestWatcher({ isWatchMode: true });
+      testWatcher = new TestWatcher({isWatchMode: true});
       if (shouldDisplayWatchUsage) {
         pipe.write(usage(argv, hasSnapshotFailure));
         shouldDisplayWatchUsage = false; // hide Watch Usage after first run
@@ -155,7 +155,7 @@ const watch = (
       testWatcher &&
       [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T].indexOf(key) !== -1
     ) {
-      testWatcher.setState({ interrupted: true });
+      testWatcher.setState({interrupted: true});
       return;
     }
 
@@ -167,55 +167,55 @@ const watch = (
         startRun();
         break;
       case KEYS.U:
-        startRun({ updateSnapshot: true });
+        startRun({updateSnapshot: true});
         break;
       case KEYS.A:
-        setState(argv, "watchAll", {
-          testNamePattern: "",
-          testPathPattern: ""
+        setState(argv, 'watchAll', {
+          testNamePattern: '',
+          testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.C:
-        setState(argv, "watch", {
-          testNamePattern: "",
-          testPathPattern: ""
+        setState(argv, 'watch', {
+          testNamePattern: '',
+          testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.O:
-        setState(argv, "watch", {
-          testNamePattern: "",
-          testPathPattern: ""
+        setState(argv, 'watch', {
+          testNamePattern: '',
+          testPathPattern: '',
         });
         startRun();
         break;
       case KEYS.P:
         testPathPatternPrompt.run(
           testPathPattern => {
-            setState(argv, "watch", {
-              testNamePattern: "",
-              testPathPattern
+            setState(argv, 'watch', {
+              testNamePattern: '',
+              testPathPattern,
             });
 
             startRun();
           },
           onCancelPatternPrompt,
-          { header: activeFilters(argv) + "\n" }
+          {header: activeFilters(argv) + '\n'},
         );
         break;
       case KEYS.T:
         testNamePatternPrompt.run(
           testNamePattern => {
-            setState(argv, "watch", {
+            setState(argv, 'watch', {
               testNamePattern,
-              testPathPattern: argv.testPathPattern
+              testPathPattern: argv.testPathPattern,
             });
 
             startRun();
           },
           onCancelPatternPrompt,
-          { header: activeFilters(argv) + "\n" }
+          {header: activeFilters(argv) + '\n'},
         );
         break;
       case KEYS.QUESTION_MARK:
@@ -239,78 +239,80 @@ const watch = (
     pipe.write(ansiEscapes.cursorShow);
   };
 
-  if (typeof stdin.setRawMode === "function") {
+  if (typeof stdin.setRawMode === 'function') {
     stdin.setRawMode(true);
     stdin.resume();
-    stdin.setEncoding("hex");
-    stdin.on("data", onKeypress);
+    stdin.setEncoding('hex');
+    stdin.on('data', onKeypress);
   }
 
   startRun();
   return Promise.resolve();
 };
 
-const activeFilters = (argv, delimiter = "\n") => {
-  const { testNamePattern, testPathPattern } = argv;
+const activeFilters = (argv, delimiter = '\n') => {
+  const {testNamePattern, testPathPattern} = argv;
   if (testNamePattern || testPathPattern) {
     const filters = [
       testPathPattern
-        ? chalk.dim("filename ") + chalk.yellow("/" + testPathPattern + "/")
+        ? chalk.dim('filename ') + chalk.yellow('/' + testPathPattern + '/')
         : null,
       testNamePattern
-        ? chalk.dim("test name ") + chalk.yellow("/" + testNamePattern + "/")
-        : null
+        ? chalk.dim('test name ') + chalk.yellow('/' + testNamePattern + '/')
+        : null,
     ]
       .filter(f => !!f)
-      .join(", ");
+      .join(', ');
 
-    const messages = ["\n" + chalk.bold("Active Filters: ") + filters];
+    const messages = ['\n' + chalk.bold('Active Filters: ') + filters];
 
     return messages.filter(message => !!message).join(delimiter);
   }
 
-  return "";
+  return '';
 };
 
-const usage = (argv, snapshotFailure, delimiter = "\n") => {
+const usage = (argv, snapshotFailure, delimiter = '\n') => {
   const messages = [
     activeFilters(argv),
     argv.testPathPattern || argv.testNamePattern
-      ? chalk.dim(" \u203A Press ") + "c" + chalk.dim(" to clear filters.")
+      ? chalk.dim(' \u203A Press ') + 'c' + chalk.dim(' to clear filters.')
       : null,
-    "\n" + chalk.bold("Watch Usage"),
+    '\n' + chalk.bold('Watch Usage'),
     argv.watch
-      ? chalk.dim(" \u203A Press ") + "a" + chalk.dim(" to run all tests.")
+      ? chalk.dim(' \u203A Press ') + 'a' + chalk.dim(' to run all tests.')
       : null,
     (argv.watchAll || argv.testPathPattern || argv.testNamePattern) &&
       !argv.noSCM
-      ? chalk.dim(" \u203A Press ") +
-          "o" +
-          chalk.dim(" to only run tests related to changed files.")
+      ? chalk.dim(' \u203A Press ') +
+          'o' +
+          chalk.dim(' to only run tests related to changed files.')
       : null,
     snapshotFailure
-      ? chalk.dim(" \u203A Press ") +
-          "u" +
-          chalk.dim(" to update failing snapshots.")
+      ? chalk.dim(' \u203A Press ') +
+          'u' +
+          chalk.dim(' to update failing snapshots.')
       : null,
-    chalk.dim(" \u203A Press ") +
-      "p" +
-      chalk.dim(" to filter by a filename regex pattern."),
-    chalk.dim(" \u203A Press ") +
-      "t" +
-      chalk.dim(" to filter by a test name regex pattern."),
-    chalk.dim(" \u203A Press ") + "q" + chalk.dim(" to quit watch mode."),
-    chalk.dim(" \u203A Press ") + "Enter" + chalk.dim(" to trigger a test run.")
+    chalk.dim(' \u203A Press ') +
+      'p' +
+      chalk.dim(' to filter by a filename regex pattern.'),
+    chalk.dim(' \u203A Press ') +
+      't' +
+      chalk.dim(' to filter by a test name regex pattern.'),
+    chalk.dim(' \u203A Press ') + 'q' + chalk.dim(' to quit watch mode.'),
+    chalk.dim(' \u203A Press ') +
+      'Enter' +
+      chalk.dim(' to trigger a test run.'),
   ];
 
-  return messages.filter(message => !!message).join(delimiter) + "\n";
+  return messages.filter(message => !!message).join(delimiter) + '\n';
 };
 
 const showToggleUsagePrompt = () =>
-  "\n" +
-  chalk.bold("Watch Usage: ") +
-  chalk.dim("Press ") +
-  "w" +
-  chalk.dim(" to show more.");
+  '\n' +
+  chalk.bold('Watch Usage: ') +
+  chalk.dim('Press ') +
+  'w' +
+  chalk.dim(' to show more.');
 
 module.exports = watch;
