@@ -23,7 +23,8 @@ class CustomConsole extends Console {
   _stdout: stream$Writable;
   _formatBuffer: Formatter;
 
-  constructor(stdout: Object, stderr: Object, formatBuffer: ?Formatter) {
+  constructor(stdout: stream$Writable, stderr: stream$Writable, 
+              formatBuffer: ?Formatter) {
     super(stdout, stderr);
     this._formatBuffer = formatBuffer || ((type, message) => message);
   }
